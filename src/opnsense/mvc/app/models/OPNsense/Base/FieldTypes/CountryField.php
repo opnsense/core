@@ -28,9 +28,6 @@
 
 namespace OPNsense\Base\FieldTypes;
 
-use Phalcon\Filter\Validation\Validator\InclusionIn;
-use OPNsense\Base\Validators\CsvListValidator;
-
 /**
  * Class CountryField field type to select iso3166 countries
  * @package OPNsense\Base\FieldTypes

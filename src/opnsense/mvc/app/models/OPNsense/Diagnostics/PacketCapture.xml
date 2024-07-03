@@ -9,10 +9,7 @@
                 <AllowDynamic>Y</AllowDynamic>
                 <Multiple>Y</Multiple>
             </interface>
-            <description type="TextField">
-                <Mask>/^(.){1,255}$/u</Mask>
-                <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
-            </description>
+            <description type="DescriptionField"/>
             <promiscuous type="BooleanField">
               <Default>0</Default>
               <Required>Y</Required>

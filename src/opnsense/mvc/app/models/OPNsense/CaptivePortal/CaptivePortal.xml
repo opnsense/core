@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/captiveportal</mount>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <description>Captive portal application model</description>
     <items>
         <zones>
@@ -25,6 +25,12 @@
                     </filters>
                     <ValidationMessage>At least one interface must be selected</ValidationMessage>
                 </interfaces>
+                <interfaces_inbound type="InterfaceField">
+                    <Multiple>Y</Multiple>
+                    <filters>
+                        <enable>/^(?!0).*$/</enable>
+                    </filters>
+                </interfaces_inbound>
                 <authservers type="AuthenticationServerField">
                     <Multiple>Y</Multiple>
                 </authservers>
@@ -58,23 +64,14 @@
                     <Mask>/^([0-9a-zA-Z.,_\-]){0,1024}$/u</Mask>
                     <ValidationMessage>Please enter a valid servername, ip address or leave this option blank</ValidationMessage>
                 </servername>
-                <allowedAddresses type="CSVListField">
-                    <Mask>/^([\/0-9.,])*/u</Mask>
-                    <ValidationMessage>Please enter valid addresses</ValidationMessage>
+                <allowedAddresses type="NetworkField">
+                    <FieldSeparator>,</FieldSeparator>
+                    <asList>Y</asList>
+                    <WildcardEnabled>N</WildcardEnabled>
                 </allowedAddresses>
-                <allowedMACAddresses type="CSVListField">
-                    <ChangeCase>lower</ChangeCase>
-                    <Mask>/^((([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})([,]){0,1}))*/u</Mask>
-                    <ValidationMessage>Please enter valid mac addresses</ValidationMessage>
+                <allowedMACAddresses type="MacAddressField">
+                    <asList>Y</asList>
                 </allowedMACAddresses>
-                <transparentHTTPProxy type="BooleanField">
-                    <Default>0</Default>
-                    <Required>Y</Required>
-                </transparentHTTPProxy>
-                <transparentHTTPSProxy type="BooleanField">
-                    <Default>0</Default>
-                    <Required>Y</Required>
-                </transparentHTTPSProxy>
                 <extendedPreAuthData type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>
@@ -89,10 +86,8 @@
                     </Model>
                     <ValidationMessage>Related template not found</ValidationMessage>
                 </template>
-                <description type="TextField">
+                <description type="DescriptionField">
                     <Required>Y</Required>
-                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
-                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </zone>
         </zones>

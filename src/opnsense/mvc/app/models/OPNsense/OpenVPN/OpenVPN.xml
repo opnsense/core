@@ -79,7 +79,7 @@
                     <FieldSeparator>,</FieldSeparator>
                     <asList>Y</asList>
                 </wins_servers>
-                <description type="TextField"/>
+                <description type="DescriptionField"/>
             </Overwrite>
         </Overwrites>
         <Instances>
@@ -95,8 +95,9 @@
                     <Required>Y</Required>
                     <Default>tun</Default>
                     <OptionValues>
-                        <tun>tun</tun>
-                        <tap>tap</tap>
+                        <tun>TUN</tun>
+                        <tap>TAP</tap>
+                        <ovpn>DCO (experimental)</ovpn>
                     </OptionValues>
                 </dev_type>
                 <verb type="OptionField">
@@ -161,6 +162,10 @@
                 <server_ipv6 type="NetworkField">
                     <WildcardEnabled>N</WildcardEnabled>
                 </server_ipv6>
+                <bridge_gateway type="NetworkField">
+                    <WildcardEnabled>N</WildcardEnabled>
+                </bridge_gateway>
+                <bridge_pool type="TextField"/>
                 <route type="NetworkField">
                     <FieldSeparator>,</FieldSeparator>
                     <asList>Y</asList>
@@ -240,7 +245,6 @@
                     </OptionValues>
                 </data-ciphers>
                 <data-ciphers-fallback type="OptionField">
-                    <Multiple>Y</Multiple>
                     <OptionValues>
                         <AES-256-GCM>AES-256-GCM</AES-256-GCM>
                         <AES-128-GCM>AES-128-GCM</AES-128-GCM>
@@ -273,6 +277,13 @@
                         <remote-random>remote-random</remote-random>
                     </OptionValues>
                 </various_flags>
+                <various_push_flags type="OptionField">
+                    <Multiple>Y</Multiple>
+                    <OptionValues>
+                        <block-outside-dns>push block-outside-dns</block-outside-dns>
+                        <register-dns>push register-dns</register-dns>
+                    </OptionValues>
+                </various_push_flags>
                 <username_as_common_name type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>
@@ -311,6 +322,10 @@
                         <notipv4 value="!ipv4">not ipv4 (default)</notipv4>
                     </OptionValues>
                 </redirect_gateway>
+                <route_metric type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                </route_metric>
                 <register_dns type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>
@@ -343,7 +358,7 @@
                     <type>carp</type>
                     <key>mvc</key>
                 </carp_depend_on>
-                <description type="TextField"/>
+                <description type="DescriptionField"/>
             </Instance>
         </Instances>
         <StaticKeys>
@@ -360,7 +375,7 @@
                     <Required>Y</Required>
                     <ValidationMessage>A key is required, generate one with the button</ValidationMessage>
                 </key>
-                <description type="TextField"/>
+                <description type="DescriptionField"/>
             </StaticKey>
         </StaticKeys>
     </items>

@@ -63,6 +63,10 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($model_dir
                         echo "*** " .  $mdl_class_info->getName() . " Migration failed, check log for details\n";
                     }
                 } elseif (!empty($version_post)) {
+                    if ($mig_performed) {
+                        echo "Migrated " .  $mdl_class_info->getName() . "\n";
+                        $executed_migration = true;
+                    }
                     /* only relevant for debugging: */
                     //echo "Keep version " . $mdl_class_info->getName() . " (" . $version_post . ")\n";
                 } else {

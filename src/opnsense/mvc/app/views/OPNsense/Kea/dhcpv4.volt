@@ -51,7 +51,7 @@
             }
         );
 
-        $("#grid-reservations").UIBootgrid(
+        let grid_reservations = $("#grid-reservations").UIBootgrid(
             {   search:'/api/kea/dhcpv4/search_reservation',
                 get:'/api/kea/dhcpv4/get_reservation/',
                 set:'/api/kea/dhcpv4/set_reservation/',
@@ -79,6 +79,31 @@
                 updateServiceControlUI('kea');
             }
         });
+
+        /**
+         * Reservations csv download and upload
+         */
+        $("#download_reservations").click(function(e){
+            e.preventDefault();
+            window.open("/api/kea/dhcpv4/download_reservations");
+        });
+        $("#upload_reservations").SimpleFileUploadDlg({
+            onAction: function(){
+                grid_reservations.bootgrid('reload');
+            }
+        });
+
+        /**
+         *
+         */
+        $("#subnet4\\.option_data_autocollect").change(function(){
+            if ($(this).is(':checked')) {
+                $(".option_data_autocollect").closest('tr').hide();
+            } else {
+                $(".option_data_autocollect").closest('tr').show();
+            }
+        });
+
     });
 </script>
 
@@ -100,6 +125,7 @@
                 <tr>
                   <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                   <th data-column-id="subnet" data-type="string">{{ lang._('Subnet') }}</th>
+                  <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
                   <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                 </tr>
             </thead>
@@ -109,7 +135,7 @@
                 <tr>
                     <td></td>
                     <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-primary pull-right"><span class="fa fa-fw fa-plus"></span></button>
+                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
                     </td>
                 </tr>
             </tfoot>
@@ -135,7 +161,17 @@
                 <tr>
                     <td></td>
                     <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-primary pull-right"><span class="fa fa-fw fa-plus"></span></button>
+                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
+                        <button
+                            id="upload_reservations"
+                            type="button"
+                            data-title="{{ lang._('Import reservations') }}"
+                            data-endpoint='/api/kea/dhcpv4/upload_reservations'
+                            title="{{ lang._('Import csv') }}"
+                            data-toggle="tooltip"
+                            class="btn btn-xs"
+                        ><span class="fa fa-fw fa-upload"></span></button>
+                        <button id="download_reservations" type="button" title="{{ lang._('Export as csv') }}" data-toggle="tooltip"  class="btn btn-xs"><span class="fa fa-fw fa-table"></span></button>
                     </td>
                 </tr>
             </tfoot>
@@ -158,7 +194,7 @@
                 <tr>
                     <td></td>
                     <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-primary pull-right"><span class="fa fa-fw fa-plus"></span></button>
+                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
                     </td>
                 </tr>
             </tfoot>

@@ -1,9 +1,11 @@
 <menu>
     <VPN>
-      <WireGuard cssClass="fa fa-lock fa-fw" order="150">
-          <Settings order="10" url="/ui/wireguard/general/"/>
-          <Diagnostics order="20" url="/ui/wireguard/diagnostics/"/>
-          <LogFile order="70" VisibleName="Log File" url="/ui/diagnostics/log/core/wireguard"/>
+      <WireGuard cssClass="fa fa-lock fa-fw">
+          <Instances order="10" url="/ui/wireguard/general#instances"/>
+          <Peers order="20" url="/ui/wireguard/general#peers"/>
+          <PeerGenerator order="30" visibleName="Peer generator" url="/ui/wireguard/general#configbuilder"/>
+          <Status order="40" url="/ui/wireguard/diagnostics/"/>
+          <LogFile order="50" VisibleName="Log File" url="/ui/diagnostics/log/core/wireguard"/>
       </WireGuard>
     </VPN>
 </menu>

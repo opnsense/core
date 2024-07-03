@@ -11,7 +11,7 @@
                 <Required>Y</Required>
                 <NetMaskAllowed>N</NetMaskAllowed>
             </ipaddress>
-            <descr type="TextField"/>
+            <descr type="DescriptionField"/>
         </neighbor>
     </items>
 </model>

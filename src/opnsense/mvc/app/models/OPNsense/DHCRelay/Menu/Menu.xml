@@ -1,0 +1,8 @@
+<menu>
+    <Services>
+        <DHCRelay cssClass="fa fa-bullseye fa-fw">
+            <Configuration url="/ui/dhcrelay/relay"/>
+            <LogFile VisibleName="Log File" url="/ui/diagnostics/log/core/dhcrelay"/>
+        </DHCRelay>
+    </Services>
+</menu>

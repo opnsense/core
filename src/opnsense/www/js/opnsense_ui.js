@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -98,6 +98,8 @@ function saveFormToEndpoint(url, formid, callback_ok, disable_dialog, callback_f
                 // execute callback function
                 callback_ok(data);
             }
+        } else if ( callback_fail !== undefined ) {
+            callback_fail(data);
         }
     });
 }
@@ -303,39 +305,28 @@ function addMultiSelectClearUI() {
     $('[id*="clear-options"]').each(function() {
         $(this).click(function() {
             const id = $(this).attr("id").replace(/_*clear-options_*/, '');
-            BootstrapDialog.confirm({
-                title: 'Deselect or remove all items ?',
-                message: 'Deselect or remove all items ?',
-                type: BootstrapDialog.TYPE_DANGER,
-                closable: true,
-                draggable: true,
-                btnCancelLabel: 'Cancel',
-                btnOKLabel: 'Yes',
-                btnOKClass: 'btn-primary',
-                callback: function(result) {
-                    if(result) {
-                        let element = $('select[id="' + id + '"]');
-                        if (element.hasClass("tokenize")) {
-                            // trigger close on all Tokens
-                            element.tokenize2().trigger('tokenize:clear');
-                            element.change();
-                        } else {
-                            // remove options from selection
-                            element.find('option').prop('selected',false);
-                            if (element.hasClass('selectpicker')) {
-                                element.selectpicker('refresh');
-                            }
-                        }
-                    }
-                    // In case this modal was triggered from another modal, fix focus issues
-                    $('.modal').on("hidden.bs.modal", function () {
-                        if($('.modal:visible').length)
-                        {
-                            $('body').addClass('modal-open');
-                        }
-                    });
+            let element = $('select[id="' + id + '"]');
+            if (element.hasClass("tokenize")) {
+                // trigger close on all Tokens
+                element.tokenize2().trigger('tokenize:clear');
+                element.change();
+            } else {
+                // remove options from selection
+                element.find('option').prop('selected',false);
+                if (element.hasClass('selectpicker')) {
+                    element.selectpicker('refresh');
                 }
-            });
+            }
+        });
+    });
+    $('[id*="select-options"]').each(function() {
+        const id = $(this).attr("id").replace(/_*select-options_*/, '');
+        $(this).click(function() {
+            let element = $('select[id="' + id + '"]');
+            element.find('option').prop('selected', true);
+            if (element.hasClass('selectpicker')) {
+                element.selectpicker('refresh');
+            }
         });
     });
     $('[id*="copy-options"]').each(function() {
@@ -367,6 +358,37 @@ function addMultiSelectClearUI() {
                 });
                 target.change(); // signal subscribers about changed data
             });
+        });
+    });
+    /* Tokenizer <-> text for quick edits */
+    $('[id*="to-text"]').each(function() {
+        $(this).click(function(e) {
+            e.preventDefault();
+            let id = $(this).attr("id").replace(/_*to-text_*/, '');
+            let source = $('div[id="select_' + id + '"]').hide().find('select');
+            let destination = $('div[id="textarea_' + id + '"]').show().find('textarea');
+            if (!source.hasClass('text_area_hooked')) {
+                /* Switch to normal tokenizer view on change() */
+                source.addClass('text_area_hooked');
+                source.change(function(){
+                    $('a[id="to-select_' + id + '"]').click();
+                });
+            }
+            destination.val(source.val().join('\n'));
+            destination.unbind('change').change(function(){
+                source.tokenize2().trigger('tokenize:clear');
+                $.each($(this).val().split("\n"), function( index, value ) {
+                    source.tokenize2().trigger('tokenize:tokens:add', [value, value, true]);
+                });
+            });
+        });
+    });
+    $('[id*="to-select"]').each(function() {
+        $(this).click(function(e) {
+            e.preventDefault();
+            let id = $(this).attr("id").replace(/_*to-select_*/, '');
+            $('div[id="select_' + id + '"]').show();
+            $('div[id="textarea_' + id + '"]').hide();
         });
     });
 }
@@ -584,6 +606,9 @@ $.fn.SimpleActionButton = function (params) {
                     if (this_button.data('service-widget')) {
                         updateServiceControlUI(this_button.data('service-widget'));
                     }
+                    if (this_button.data('grid-reload')) {
+                        std_bootgrid_reload(this_button.data('grid-reload'));
+                    }
                 });
             }).fail(function () {
                 this_button.find('.reload_progress').removeClass("fa fa-spinner fa-pulse");
@@ -594,5 +619,182 @@ $.fn.SimpleActionButton = function (params) {
     return this.each(function () {
         const button = this_button.construct();
         return button;
+    });
+}
+
+
+/**
+ *  File upload dialog, constructs a modal, asks for a file to upload and sets {'payload': ..,, 'filename': ...}
+ *  to specified endpoint. Endppoint response should contain validation errors including messages and row sequences,
+ *  specified as :
+ *  {
+ *     validations: [
+ *          {
+ *            'sequence': X << sequence number,  first data record starts at 0
+ *            'message': '' << validation message
+ *          }
+ *     ]
+ *  }
+ *
+ *      data-endpoint='/path/to/my/endpoint'
+ *      data-title="Apply text"
+ */
+$.fn.SimpleFileUploadDlg = function (params) {
+    let this_button = this;
+
+    this.construct = function () {
+        this_button.click(function(){
+            let content = $("<div/>");
+            let fileinp = $("<input type='file'/>");
+            let error_output = $("<textarea style='display:none; max-width:100%; height:200px;'/>");
+            let doinp = $('<button style="display:none" type="button" class="btn btn-xs"/>');
+            doinp.append($('<span class="fa fa-fw fa-check"></span>'));
+
+            content.append(
+                $("<table/>").append(
+                    $("<tr/>").append(
+                        $("<td style='width:200px;'/>").append(fileinp),
+                        $("<td/>").append(doinp)
+                    ),
+                    $("<tr/>").append($("<td colspan='2' style='height:10px;'/>"))
+                )
+            );
+            content.append(error_output);
+            fileinp.change(function(evt) {
+                if (evt.target.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(readerEvt) {
+                        doinp.data('payload', readerEvt.target.result);
+                        doinp.data('filename', fileinp.val().split('\\').pop());
+                        doinp.show();
+                    };
+                    reader.readAsBinaryString(evt.target.files[0]);
+                }
+            });
+            let dialog = BootstrapDialog.show({
+                title: this_button.data('title'),
+                type: BootstrapDialog.TYPE_DEFAULT,
+                message: content
+            });
+            doinp.click(function(){
+                let eparams =  {
+                    'payload': $(this).data('payload'),
+                    'filename': $(this).data('filename')
+                };
+                ajaxCall(this_button.data('endpoint'), eparams, function (data, status) {
+                    if (params && params.onAction) {
+                        params.onAction(data, status);
+                    }
+                    if (data.validations && data.validations.length > 0) {
+                        // When validation errors are returned, write to textarea including original data lines.
+                        let output = [];
+                        let records = params.payload.split('\n');
+                        records.shift();
+                        for (r=0; r < records.length; ++r) {
+                            let found = false;
+                            for (i=0; i < data.validations.length ; ++i) {
+                                if (r == data.validations[i].sequence) {
+                                    if (!found) {
+                                        output.push(records[data.validations[i].sequence]);
+                                        found = true;
+                                    }
+                                    output.push('!! ' + data.validations[i].message);
+                                }
+                            }
+                        }
+                        error_output.val(output.join('\n')).show();
+                    } else {
+                        dialog.close();
+                    }
+                });
+            });
+        });
+    }
+
+    return this.each(function () {
+        const button = this_button.construct();
+        return button;
+    });
+}
+
+/**
+ * Changes an input to a selector with manual input option.
+ * Expects the following structure:
+ *      {
+ *          group_name: {
+ *              label: 'this items label',
+ *              items: {                    << omit to mark the manual (empty) input
+ *                  key: 'value',
+ *              }
+ *          }
+ *      }
+ * @param {*} params data structure to use for the select picker
+ */
+$.fn.replaceInputWithSelector = function (data) {
+    let that = this;
+    this.new_item = function() {
+        let $div = $("<div/>");
+        let $table = $('<table style="max-width: 348px"/>');
+        $table.append(
+            $("<tr/>").append(
+                $("<td/>").append($('<select data-live-search="true" data-size="5" data-width="348px"/>'))
+            )
+        );
+        $table.append(
+            $("<tr/>").append(
+                $("<td/>").append($('<input style="display:none;" type="text"/>'))
+            )
+        );
+        $div.append($table);
+        return $div;
+    }
+
+    this.construct = function () {
+        let options = [];
+        Object.keys(data).forEach((key, idx) => {
+            if (data[key].items !== undefined) {
+                let optgrp = $("<optgroup/>").attr('label', data[key].label);
+                Object.keys(data[key].items).forEach((key2, idx2) => {
+                    let this_item = data[key].items[key2];
+                    optgrp.append($("<option/>").val(key2).text(this_item));
+                });
+                options.push(optgrp);
+            } else {
+                options.push($("<option/>").val('').text(data[key].label));
+            }
+        });
+        let $target = that.new_item();
+        $(this).replaceWith($target);
+        let $this_input = $target.find('input');
+        let $this_select = $target.find('select');
+        for (i=0; i < options.length; ++i) {
+            $this_select.append(options[i].clone());
+        }
+        $this_select.attr('for', $(this).attr('id')).selectpicker();
+        $this_select.change(function(){
+            let $value = $(this).val();
+            if ($value !== '') {
+                $this_input.val($value);
+                $this_input.hide();
+            } else {
+                $this_input.show();
+            }
+        });
+        $this_input.attr('id', $(this).attr('id'));
+        $this_input.change(function(){
+            $this_select.val($(this).val());
+            if ($this_select.val() === null || $this_select.val() == '') {
+                $this_select.val('');
+                $this_input.show();
+            } else {
+                $this_input.hide();
+            }
+            $this_select.selectpicker('refresh');
+        });
+        $this_input.show();
+    }
+
+    return this.each(function () {
+        return $.proxy(that.construct, $(this))();
     });
 }

@@ -48,10 +48,7 @@ class AccessController extends ApiControllerBase
     private function clientSession(string $zoneid)
     {
         $backend = new Backend();
-        $allClientsRaw = $backend->configdpRun(
-            "captiveportal list_clients",
-            [$zoneid, 'json']
-        );
+        $allClientsRaw = $backend->configdpRun("captiveportal list_clients", [$zoneid]);
         $allClients = json_decode($allClientsRaw, true);
         if ($allClients != null) {
             // search for client by ip address
@@ -190,8 +187,7 @@ class AccessController extends ApiControllerBase
                                 (string)$cpZone->zoneid,
                                 $userName,
                                 $clientIp,
-                                $authServerName,
-                                'json'
+                                $authServerName
                             ]
                         );
                         $CPsession = json_decode($CPsession, true);
@@ -248,10 +244,7 @@ class AccessController extends ApiControllerBase
             ) {
                 // you can only disconnect a connected client
                 $backend = new Backend();
-                $statusRAW = $backend->configdpRun(
-                    "captiveportal disconnect",
-                    [$zoneid, $clientSession['sessionId'], 'json']
-                );
+                $statusRAW = $backend->configdpRun("captiveportal disconnect", [$zoneid, $clientSession['sessionId']]);
                 $status = json_decode($statusRAW, true);
                 if ($status != null) {
                     $this->getLogger("captiveportal")->info(

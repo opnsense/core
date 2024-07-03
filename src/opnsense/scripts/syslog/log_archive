@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2020-2021 Deciso B.V.
+ * Copyright (C) 2020-2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,10 @@ require_once("util.inc");
 require_once("interfaces.inc");
 require_once("plugins.inc");
 
-$preserve_logs = !empty($config['syslog']['preservelogs']) ? $config['syslog']['preservelogs'] : 31;
+$mdl = new \OPNsense\Syslog\Syslog();
+
+$preserve_logs = (string)$mdl->general->maxpreserve;
+$maxfilesize = (string)$mdl->general->maxfilesize;
 
 // gather all syslog created local logs (filename starts with directory name_[8 digits].log)
 $relevant_logs = [];
@@ -53,8 +56,30 @@ foreach(new RecursiveIteratorIterator($it) as $file) {
 }
 
 // remove expired logs and set latest.log symlink
+$rotate = false;
 foreach ($relevant_logs as $log_subject => $items)  {
     rsort($items);
+    /**
+     * Force a manual rotate when maxfilesize is specified and the newest file exceeds the specified limit.
+     */
+    if (!empty($maxfilesize) && (filesize($items[0]) / 1024 / 1024) > $maxfilesize) {
+        if (isset($items[1]) && preg_match('/.*_(\d){8}\.log$/', $items[0])) {
+            /* Extract rotate sequence number from filename in format XXX_YYYYMMDD.log or XXX_YYYYMMDD.SEQ.log */
+            $fparts = explode('_', $items[1]);
+            $parts = explode('.', $fparts[count($fparts)-1]);
+            $seq = (count($parts) == 3 && ctype_digit($parts[1]) ? (int)$parts[1] : 0)  + 1;
+        } elseif (preg_match('/.*_(\d){8}\.log$/', $items[0])) {
+            $seq = 1;
+        } else {
+            // already rotated
+            continue;
+        }
+        /* Suffix sequence number to last filename, rename and schedule a rotate (syslog-ng reload) */
+        $new_filename = sprintf('%s.%04d.log', explode('.', $items[0])[0], $seq);
+        array_unshift($items, array_shift($items), $new_filename);
+        rename($items[0], $new_filename);
+        $rotate = true;
+    }
     if (count($items) > $preserve_logs) {
         foreach (array_slice($items, $preserve_logs) as $filename) {
             @unlink($filename);
@@ -67,4 +92,8 @@ foreach ($relevant_logs as $log_subject => $items)  {
         @unlink($link);
         @symlink($items[0], $link);
     }
+}
+
+if ($rotate) {
+    system_syslog_start();
 }

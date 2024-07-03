@@ -77,8 +77,6 @@ class Alias extends BaseModel
         $sources[] = [['nat', 'outbound', 'rule'], ['destination', 'network']];
         $sources[] = [['nat', 'outbound', 'rule'], ['dstport']];
         $sources[] = [['nat', 'outbound', 'rule'], ['target']];
-        $sources[] = [['load_balancer', 'lbpool'], ['port']];
-        $sources[] = [['load_balancer', 'virtual_server'], ['port']];
         $sources[] = [['staticroutes', 'route'], ['network']];
         // os-firewall plugin paths
         $sources[] = [['OPNsense', 'Firewall', 'Filter', 'rules', 'rule'], ['source_net']];
@@ -219,28 +217,19 @@ class Alias extends BaseModel
     public function getByName($name, $flush = false)
     {
         if ($flush) {
-            // Flush false negative results (searched earlier, didn't exist at the time) as positive matches will
-            // always be resolved.
+            // Flush cache in case model data has been changed.
             $this->aliasReferenceCache = [];
         }
-        // cache alias uuid references, but always validate existence before return.
+        if (empty($this->aliasReferenceCache)) {
+            // cache alias uuid references, but always validate existence before return.
+            foreach ($this->aliases->alias->iterateItems() as $uuid => $alias) {
+                $this->aliasReferenceCache[(string)$alias->name] = $alias;
+            }
+        }
         if (isset($this->aliasReferenceCache[$name])) {
-            $uuid = $this->aliasReferenceCache[$name];
-            if ($uuid === false) {
-                return null;
-            }
-            $alias = $this->getNodeByReference('aliases.alias.' . $uuid);
-            if ($alias != null && (string)$alias->name == $name) {
-                return $alias;
-            }
+            return $this->aliasReferenceCache[$name];
+        } else {
+            return null;
         }
-        foreach ($this->aliases->alias->iterateItems() as $uuid => $alias) {
-            if ((string)$alias->name == $name) {
-                $this->aliasReferenceCache[$name] = $uuid;
-                return $alias;
-            }
-        }
-        $this->aliasReferenceCache[$name] = false;
-        return null;
     }
 }

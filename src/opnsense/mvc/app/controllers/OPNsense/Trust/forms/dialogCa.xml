@@ -1,0 +1,109 @@
+<form>
+    <field>
+        <id>ca.action</id>
+        <label>Method</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>ca.descr</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Key</label>
+        <style>action action_internal action_ocsp</style>
+    </field>
+    <field>
+        <id>ca.key_type</id>
+        <label>Key type</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>ca.digest</id>
+        <label>Digest Algorithm</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>ca.caref</id>
+        <label>Issuer</label>
+        <style>selectpicker action action_internal action_ocsp</style>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>ca.lifetime</id>
+        <label>Lifetime (days)</label>
+        <type>text</type>
+    </field>
+    <field>
+        <type>header</type>
+        <label>General</label>
+        <style>action action_internal action_ocsp</style>
+    </field>
+    <field>
+        <id>ca.country</id>
+        <label>Country Code</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>ca.state</id>
+        <label>State or Province</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>ca.city</id>
+        <label>City</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>ca.organization</id>
+        <label>Organization</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>ca.organizationalunit</id>
+        <label>Organizational Unit</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>ca.email</id>
+        <label>Email Address</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>ca.commonname</id>
+        <label>Common Name</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>ca.ocsp_uri</id>
+        <label>OCSP uri</label>
+        <type>text</type>
+        <style>action action_internal</style>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Output (PEM format)</label>
+        <collapse>true</collapse>
+        <style>pem_section</style>
+    </field>
+    <field>
+        <id>ca.crt_payload</id>
+        <label>Certificate data</label>
+        <type>textbox</type>
+    </field>
+    <field>
+        <id>ca.prv_payload</id>
+        <label>Private key data</label>
+        <type>textbox</type>
+    </field>
+    <field>
+        <id>ca.serial</id>
+        <label>Serial for next certificate</label>
+        <help>
+            Enter a decimal number to be used as the serial number for the next certificate to be created using this CA.
+            Will be auto incremented when a new certificate is created.
+        </help>
+        <type>text</type>
+    </field>
+</form>

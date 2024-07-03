@@ -40,6 +40,11 @@ ifname=${2%%:[*}
 rasrca=${2##*:[}
 rasrca=${rasrca%]}
 
+if grep -q "^interface ${ifname%%:slaac} " /var/etc/radvd.conf; then
+	echo "Rejecting own configuration."
+	exit 0
+fi
+
 # ${1} indicates whether DNS information should be added or deleted.
 
 if [ "${1}" = "-a" ]; then

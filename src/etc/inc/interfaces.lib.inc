@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2023 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2024 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -304,8 +304,15 @@ function legacy_interfaces_details($intf = null)
                 $result[$current_interface]["options"][] = strtolower(trim($option));
             }
         } elseif (strpos($line, "\tether ") !== false) {
-            // mac address
+            // current mac address
             $result[$current_interface]["macaddr"] = $line_parts[1];
+            // fill original as well if not found
+            if (!isset($result[$current_interface]['macaddr_hw'])) {
+                $result[$current_interface]['macaddr_hw'] = $line_parts[1];
+            }
+        } elseif (strpos($line, "\thwaddr ") !== false) {
+            // original mac address
+            $result[$current_interface]['macaddr_hw'] = $line_parts[1];
         } elseif (strpos($line, "\tinet ") !== false) {
             // IPv4 information
             unset($mask);
@@ -338,6 +345,7 @@ function legacy_interfaces_details($intf = null)
             $tmp = [
                 'autoconf' => false,
                 'deprecated' => false,
+                'detached' => false,
                 'ipaddr' => $addr,
                 'link-local' => !!preg_match('/^fe[89ab][0-9a-f]:/i', $addr),
                 'tentative' => false,
@@ -361,6 +369,8 @@ function legacy_interfaces_details($intf = null)
                     $tmp['autoconf'] = true;
                 } elseif ($line_parts[$i] == 'deprecated') {
                     $tmp['deprecated'] = true;
+                } elseif ($line_parts[$i] == 'detached') {
+                    $tmp['detached'] = true;
                 } elseif ($line_parts[$i] == 'tentative') {
                     $tmp['tentative'] = true;
                 }
@@ -416,13 +426,16 @@ function legacy_interfaces_details($intf = null)
             $result[$current_interface]['laggstatistics']['active ports'] = trim(explode(":", $next_line)[1]);
             $next_line = $ifconfig_data[$lineid + 2];
             $result[$current_interface]['laggstatistics']['flapping'] = trim(explode(":", $next_line)[1]);
-        } elseif (preg_match("/laggport: (.*)\Wflags=\d+<(.*)> state=\d+<(.*)>$/", $line, $matches)) {
+        } elseif (
+            preg_match("/laggport: (.*)\Wflags=\d+<(.*)> state=\d+<(.*)>$/", $line, $matches) ||
+            preg_match("/laggport: (.*)\Wflags=\d+<(.*)>.*/", $line, $matches)
+        ) {
             if (empty($result[$current_interface]['laggport'])) {
                 $result[$current_interface]['laggport'] = [];
             }
             $result[$current_interface]['laggport'][trim($matches[1])] = [
                 "flags" => explode(",", strtolower($matches[2])),
-                "state" => explode(",", strtolower($matches[3])),
+                "state" => isset($matches[3]) ? explode(",", strtolower($matches[3])) : [],
             ];
         } elseif (strpos($line, "\tgroups: ") !== false) {
             array_shift($line_parts);
@@ -442,8 +455,15 @@ function legacy_interfaces_details($intf = null)
                 "status" => $line_parts[1],
                 "vhid" => $line_parts[3],
                 "advbase" => $line_parts[5],
-                "advskew" => $line_parts[7]
+                "advskew" => $line_parts[7],
+                "peer" => null,
+                "peer6" => null,
             );
+            if (isset($ifconfig_data[$lineid + 1]) && strpos($ifconfig_data[$lineid + 1], "peer6") !== false) {
+                preg_match("/\Wpeer (.*)\Wpeer6 (.*)$/", $ifconfig_data[$lineid + 1], $matches);
+                $result[$current_interface]["carp"][$line_parts[3]]['peer'] = $matches[1];
+                $result[$current_interface]["carp"][$line_parts[3]]['peer6'] = $matches[2];
+            }
         } elseif (strpos($line, "\tvxlan") !== false) {
             if (empty($result[$current_interface]["vxlan"])) {
                 $result[$current_interface]["vxlan"] = [];

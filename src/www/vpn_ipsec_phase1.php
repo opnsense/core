@@ -1106,7 +1106,7 @@ endforeach; ?>
                   <tr>
                     <td><a id="help_for_installpolicy" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Install policy");?></td>
                     <td>
-                      <input name="installpolicy" type="checkbox" id="rekey_enable" value="yes" <?= !empty($pconfig['installpolicy']) ? "checked=\"checked\"" : ""; ?> />
+                      <input name="installpolicy" type="checkbox" id="installpolicy" value="yes" <?= !empty($pconfig['installpolicy']) ? "checked=\"checked\"" : ""; ?> />
                       <div class="hidden" data-for="help_for_installpolicy">
                         <?=gettext("Decides whether IPsec policies are installed in the kernel by the charon daemon for a given connection. ".
                                    "When using route-based mode (VTI) this needs to be disabled."); ?>

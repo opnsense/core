@@ -36,6 +36,9 @@ namespace OPNsense\Base\Constraints;
  */
 class UniqueConstraint extends BaseConstraint
 {
+    private static $itemmap = [];
+    private static $validationSequence = 0;
+
     /**
      * Executes validation
      *
@@ -51,37 +54,52 @@ class UniqueConstraint extends BaseConstraint
             if (!$node->isRequired() && empty((string)$node)) {
                 return true;
             }
-            $containerNode = $node;
-            $nodeName = $node->getInternalXMLTagName();
-            $parentNode = $node->getParentNode();
-            $level = 0;
-            // dive into parent
-            while ($containerNode != null && !$containerNode->isArrayType()) {
-                $containerNode = $containerNode->getParentNode();
-                $level++;
+            $mdl = $node->getParentModel();
+            if ($mdl === null || $mdl->getValidationSequence() != static::$validationSequence) {
+                // reset cache, new validation round.
+                static::$validationSequence = $mdl !== null ? $mdl->getValidationSequence() : 0;
+                static::$itemmap = [];
             }
-            if ($containerNode != null && $level == 2) {
-                // collect (additional) key fields
-                $keyFields = array($nodeName);
-                $keyFields = array_unique(array_merge($keyFields, $this->getOptionValueList('addFields')));
-                // calculate the key for this node
-                $nodeKey = '';
-                foreach ($keyFields as $field) {
-                    $nodeKey .= $fieldSeparator . $parentNode->$field;
+            $keyFields = array_unique(
+                array_merge(
+                    [$node->getInternalXMLTagName()],
+                    $this->getOptionValueList('addFields')
+                )
+            );
+            asort($keyFields);
+            $nodeKey = implode('|', $keyFields);
+            $parentNode = $node->getParentNode();
+            // calculate the key for this node
+            if (!isset(static::$itemmap[$nodeKey])) {
+                static::$itemmap[$nodeKey] = [];
+                $level = 0;
+                // dive into parent
+                $containerNode = $node;
+                while ($containerNode != null && !$containerNode->isArrayType()) {
+                    $containerNode = $containerNode->getParentNode();
+                    $level++;
                 }
-                // when an ArrayField is found in range, traverse nodes and compare keys
-                foreach ($containerNode->iterateItems() as $item) {
-                    if ($item !== $parentNode) {
-                        $itemKey = '';
+                if ($containerNode != null && $level == 2) {
+                    // when an ArrayField is found in range, traverse nodes and compare keys
+                    foreach ($containerNode->iterateItems() as $item) {
+                        $itemValue = '';
                         foreach ($keyFields as $field) {
-                            $itemKey .= $fieldSeparator . $item->$field;
+                            $itemValue .= $fieldSeparator . $item->$field;
                         }
-                        if ($itemKey == $nodeKey) {
-                            $this->appendMessage($validator, $attribute);
-                            return false;
+                        if (empty(static::$itemmap[$nodeKey][$itemValue])) {
+                            static::$itemmap[$nodeKey][$itemValue] = 0;
                         }
+                        static::$itemmap[$nodeKey][$itemValue]++;
                     }
                 }
+            }
+            $nodeValue = '';
+            foreach ($keyFields as $field) {
+                $nodeValue .= $fieldSeparator . $parentNode->$field;
+            }
+            if ((static::$itemmap[$nodeKey][$nodeValue] ?? 0) > 1) {
+                $this->appendMessage($validator, $attribute);
+                return false;
             }
         }
         return true;

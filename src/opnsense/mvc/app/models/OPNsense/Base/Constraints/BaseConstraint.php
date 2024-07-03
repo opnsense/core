@@ -29,7 +29,7 @@
 namespace OPNsense\Base\Constraints;
 
 use OPNsense\Base\BaseValidator;
-use Phalcon\Messages\Message;
+use OPNsense\Base\Messages\Message;
 
 abstract class BaseConstraint extends BaseValidator
 {

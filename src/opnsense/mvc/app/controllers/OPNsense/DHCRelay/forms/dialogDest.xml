@@ -1,0 +1,16 @@
+<form>
+    <field>
+        <id>destination.name</id>
+        <label>Name</label>
+        <type>text</type>
+        <help>Enter a unique name for this relay destination.</help>
+    </field>
+    <field>
+        <id>destination.server</id>
+        <label>Server</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>A list of server IP addresses to relay DHCP requests to.</help>
+    </field>
+</form>

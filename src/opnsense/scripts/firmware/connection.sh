@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2021-2022 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2021-2024 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,10 +30,16 @@ TEE="/usr/bin/tee -a"
 : > ${LOCKFILE}
 
 URL=$(opnsense-update -M)
+URLX=$(opnsense-update -X)
 POPT="-c4 -s1500"
 
 HOST=${URL#*://}
 HOST=${HOST%%/*}
+HOSTIP=
+
+HOSTX=${URLX#*://}
+HOSTX=${HOSTX%%/*}
+
 IPV4=$(host -t A ${HOST} | head -n 1 | cut -d\  -f4)
 IPV6=$(host -t AAAA ${HOST} | head -n 1 | cut -d\  -f5)
 
@@ -50,6 +56,7 @@ if [ -n "${IPV4}" -a -z "${IPV4%%*.*}" ]; then
 	(ping -4 ${POPT} ${IPV4} 2>&1) | ${TEE} ${LOCKFILE}
 	echo "Checking connectivity for repository (IPv4): ${URL}" | ${TEE} ${LOCKFILE}
 	(pkg -4 update -f 2>&1) | ${TEE} ${LOCKFILE}
+	HOSTIP=1
 else
 	echo "No IPv4 address could be found for host: ${HOST}" | ${TEE} ${LOCKFILE}
 fi
@@ -59,8 +66,19 @@ if [ -n "${IPV6}" -a -z "${IPV6%%*:*}" ]; then
 	(ping -6 ${POPT} ${IPV6} 2>&1) | ${TEE} ${LOCKFILE}
 	echo "Checking connectivity for repository (IPv6): ${URL}" | ${TEE} ${LOCKFILE}
 	(pkg -6 update -f 2>&1) | ${TEE} ${LOCKFILE}
+	HOSTIP=1
 else
 	echo "No IPv6 address could be found for host: ${HOST}" | ${TEE} ${LOCKFILE}
+fi
+
+if [ -n "${HOSTIP}" ]; then
+	echo "Checking server certificate for host: ${HOST}" | ${TEE} ${LOCKFILE}
+	echo | openssl s_client -quiet -no_ign_eof ${HOST}:443 2>&1 | ${TEE} ${LOCKFILE}
+fi
+
+if [ "${HOST}" != "${HOSTX}" ]; then
+	echo "Checking server certificate for host: ${HOSTX}" | ${TEE} ${LOCKFILE}
+	echo | openssl s_client -quiet -no_ign_eof ${HOSTX}:443 2>&1| ${TEE} ${LOCKFILE}
 fi
 
 echo '***DONE***' >> ${LOCKFILE}

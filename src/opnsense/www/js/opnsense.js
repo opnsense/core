@@ -215,6 +215,7 @@ function setFormData(parent,data) {
 function handleFormValidation(parent, validationErrors)
 {
     $("#" + parent).find("[id]").each(function () {
+        let target = $("*[id*='" + $(this).prop('id') + "']");
         if (validationErrors !== undefined && $(this).prop('id') in validationErrors) {
             let message = validationErrors[$(this).prop('id')];
             $("span[id='help_block_" + $(this).prop('id') + "']").empty();
@@ -225,9 +226,15 @@ function handleFormValidation(parent, validationErrors)
             } else {
                 $("span[id='help_block_" + $(this).prop('id') + "']").text(message);
             }
-            $("*[id*='" + $(this).prop('id') + "']").addClass("has-error");
+            target.addClass("has-error");
+            /* make sure to always unhide row when triggering a validation */
+            if (!target.closest('tr').is(':visible')) {
+                target.closest('tr').show();
+            }
+            /* scroll to element with validation issue */
+            target[0].scrollIntoView();
         } else {
-            $("*[id*='" + $(this).prop('id') + "']").removeClass("has-error");
+            target.removeClass("has-error");
             $("span[id='help_block_" + $(this).prop('id') + "']").empty();
         }
     });
@@ -324,4 +331,24 @@ function watchScrollPosition() {
             }
         });
     }
+}
+
+/**
+ * Simple wrapper to download a file received via an api endpoint
+ * @param {*} payload
+ * @param {*} filename
+ * @param {*} file_type
+ */
+function download_content(payload, filename, file_type) {
+    let a_tag = $('<a></a>').attr('href','data:application/json;charset=utf8,' + encodeURIComponent(payload))
+        .attr('download', filename).appendTo('body');
+
+    a_tag.ready(function() {
+        if ( window.navigator.msSaveOrOpenBlob && window.Blob ) {
+            var blob = new Blob( [ payload ], { type: file_type } );
+            navigator.msSaveOrOpenBlob( blob, filename);
+        } else {
+            a_tag.get(0).click();
+        }
+    });
 }

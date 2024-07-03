@@ -60,7 +60,7 @@ class RoutesController extends ApiMutableModelControllerBase
      * Update route with given properties
      * @param string $uuid internal id
      * @return array save result + validation output
-     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
+     * @throws \OPNsense\Base\ValidationException when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function setrouteAction($uuid)
@@ -80,7 +80,7 @@ class RoutesController extends ApiMutableModelControllerBase
      * Add new route and set with attributes from post
      * @return array save result + validation output
      * @throws \OPNsense\Base\ModelException when not bound to model
-     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
+     * @throws \OPNsense\Base\ValidationException when field validations fail
      * @throws \ReflectionException
      */
     public function addrouteAction()
@@ -103,7 +103,7 @@ class RoutesController extends ApiMutableModelControllerBase
      * Delete route by uuid, save contents to tmp for removal on apply
      * @param string $uuid internal id
      * @return array save status
-     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
+     * @throws \OPNsense\Base\ValidationException when field validations fail
      * @throws \ReflectionException when not bound to model
      * @throws \OPNsense\Base\ModelException when not bound to model
      */
@@ -123,7 +123,7 @@ class RoutesController extends ApiMutableModelControllerBase
      * @param string $uuid id to toggled
      * @param string|null $disabled set disabled by default
      * @return array status
-     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
+     * @throws \OPNsense\Base\ValidationException when field validations fail
      * @throws \ReflectionException when not bound to model
      * @throws \OPNsense\Base\ModelException when not bound to model
      */

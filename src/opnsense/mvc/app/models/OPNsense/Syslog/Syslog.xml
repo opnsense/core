@@ -1,12 +1,21 @@
 <model>
     <mount>//OPNsense/Syslog</mount>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <items>
         <general>
             <enabled type="BooleanField">
-              <Default>1</Default>
-              <Required>Y</Required>
+                <Default>1</Default>
+                <Required>Y</Required>
             </enabled>
+            <loglocal type="BooleanField">
+                <Default>1</Default>
+                <Required>Y</Required>
+            </loglocal>
+            <maxpreserve type="IntegerField">
+                <Default>31</Default>
+                <Required>Y</Required>
+            </maxpreserve>
+            <maxfilesize type="IntegerField"/>
         </general>
         <destinations>
             <destination type="ArrayField">
@@ -29,8 +38,6 @@
                 <program type="JsonKeyValueStoreField">
                   <Multiple>Y</Multiple>
                   <ConfigdPopulateAct>syslog list applications</ConfigdPopulateAct>
-                  <SourceFile>/tmp/syslog_applications.json</SourceFile>
-                  <ConfigdPopulateTTL>20</ConfigdPopulateTTL>
                   <SortByValue>Y</SortByValue>
                   <ValidationMessage>Specify valid source applications.</ValidationMessage>
                 </program>
@@ -89,7 +96,7 @@
                   <Default>0</Default>
                   <Required>Y</Required>
                 </rfc5424>
-                <description type="TextField"/>
+                <description type="DescriptionField"/>
             </destination>
         </destinations>
     </items>

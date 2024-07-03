@@ -49,6 +49,19 @@ class TrafficController extends ApiControllerBase
         return json_decode($response, true);
     }
 
+    public function streamAction($poll_interval = 1)
+    {
+        return $this->configdStream(
+            'interface stream traffic',
+            [$poll_interval],
+            [
+                'Content-Type: text/event-stream',
+                'Cache-Control: no-cache',
+            ],
+            $poll_interval + 1
+        );
+    }
+
     /**
      * retrieve interface top traffic hosts
      * @param $interfaces string comma separated list of interfaces

@@ -29,7 +29,7 @@
 namespace OPNsense\Interfaces;
 
 use OPNsense\Base\BaseModel;
-use Phalcon\Messages\Message;
+use OPNsense\Base\Messages\Message;
 
 /**
  * Class Lagg
@@ -55,27 +55,36 @@ class Lagg extends BaseModel
                 }
             }
         }
-        foreach ($this->getFlatNodes() as $key => $node) {
-            if ($validateFullModel || $node->isFieldChanged()) {
-                if ($node->getParentNode()->getInternalXMLTagName() === 'lagg') {
-                    $uuid = $node->getParentNode()->getAttributes()['uuid'];
-                    if ($node->getInternalXMLTagName() == 'members') {
-                        $tmp = [];
-                        foreach (explode(',', (string)$node) as $intf) {
-                            if (!empty($members[$intf]) && count($members[$intf]) > 1) {
-                                $tmp[] = $intf;
-                            }
-                        }
-                        if (!empty($tmp)) {
-                            $messages->appendMessage(
-                                new Message(
-                                    sprintf(gettext('Members %s are already used in other laggs.'), implode(',', $tmp)),
-                                    $key
-                                )
-                            );
-                        }
-                    }
+
+        foreach ($this->lagg->iterateItems() as $node) {
+            if (!$validateFullModel && !$node->isFieldChanged()) {
+                continue;
+            }
+            $uuid = $node->getAttributes()['uuid'];
+            $key = $node->__reference;
+            $members = explode(',', (string)$node->members);
+
+            $tmp = [];
+            foreach ($members as $intf) {
+                if (!empty($members[$intf]) && count($members[$intf]) > 1) {
+                    $tmp[] = $intf;
                 }
+            }
+            if (!empty($tmp)) {
+                $messages->appendMessage(
+                    new Message(
+                        sprintf(gettext('Members %s are already used in other laggs.'), implode(',', $tmp)),
+                        $key . '.members'
+                    )
+                );
+            }
+            if (!empty((string)$node->primary_member) && !in_array((string)$node->primary_member, $members)) {
+                $messages->appendMessage(
+                    new Message(
+                        sprintf(gettext('Primary member %s not in member list.'), (string)$node->primary_member),
+                        $key . '.primary_member'
+                    )
+                );
             }
         }
         return $messages;

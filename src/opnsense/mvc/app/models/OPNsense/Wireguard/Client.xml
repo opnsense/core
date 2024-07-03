@@ -1,10 +1,10 @@
 <model>
     <mount>//OPNsense/wireguard/client</mount>
     <description>WireGuard peer configuration</description>
-    <version>0.0.7</version>
+    <version>1.0.0</version>
     <items>
         <clients>
-            <client type="ArrayField">
+            <client type=".\ClientField">
                 <enabled type="BooleanField">
                     <Default>1</Default>
                     <Required>Y</Required>
@@ -20,22 +20,53 @@
                         <check001>
                             <ValidationMessage>Public keys should be unique.</ValidationMessage>
                             <type>UniqueConstraint</type>
+                            <addFields>
+                                <field1>serveraddress</field1>
+                                <field2>serverport</field2>
+                            </addFields>
                         </check001>
                     </Constraints>
                 </pubkey>
                 <psk type="Base64Field"/>
                 <tunneladdress type="NetworkField">
+                    <NetMaskRequired>Y</NetMaskRequired>
                     <FieldSeparator>,</FieldSeparator>
                     <Required>Y</Required>
                     <asList>Y</asList>
                 </tunneladdress>
-                <serveraddress type="HostnameField"/>
-                <serverport type="PortField"/>
+                <serveraddress type="HostnameField">
+                    <Constraints>
+                        <check001>
+                            <reference>pubkey.check001</reference>
+                        </check001>
+                    </Constraints>
+                </serveraddress>
+                <serverport type="PortField">
+                    <Constraints>
+                        <check001>
+                            <reference>pubkey.check001</reference>
+                        </check001>
+                    </Constraints>
+                </serverport>
+                <endpoint type="IPPortField" volatile="true">
+                    <HostnameAllowed>Y</HostnameAllowed>
+                    <ValidationMessage>Please specify a valid host:port combination.</ValidationMessage>
+                </endpoint>
                 <keepalive type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>86400</MaximumValue>
                     <ValidationMessage>Please specify a value between 1 and 86400.</ValidationMessage>
                 </keepalive>
+                <servers type="ModelRelationField" volatile="true">
+                    <Model>
+                        <template>
+                            <source>OPNsense.Wireguard.Server</source>
+                            <items>servers.server</items>
+                            <display>name</display>
+                        </template>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                </servers>
             </client>
         </clients>
     </items>

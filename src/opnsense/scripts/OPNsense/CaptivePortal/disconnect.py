@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2024 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -28,35 +28,23 @@
     --------------------------------------------------------------------------------------
     disconnect client
 """
-import sys
+import argparse
 import ujson
 from lib.db import DB
 from lib.ipfw import IPFW
 
-# parse input parameters
-parameters = {'sessionid': None, 'zoneid': None, 'output_type': 'plain'}
-current_param = None
-for param in sys.argv[1:]:
-    if len(param) > 1 and param[0] == '/' and param[1:] in parameters:
-        current_param = param[1:].lower()
-    elif current_param is not None:
-        parameters[current_param] = param.strip()
-        current_param = None
 
-# disconnect client
+parser = argparse.ArgumentParser()
+parser.add_argument('session', help='session id to delete', type=str)
+parser.add_argument('-z', help='optional zoneid to filter on', type=str)
+args = parser.parse_args()
+
 response = {'terminateCause': 'UNKNOWN'}
-if parameters['sessionid'] is not None and parameters['zoneid'] is not None:
-    # remove client
-    client_session_info = DB().del_client(parameters['zoneid'], parameters['sessionid'])
-    if client_session_info is not None:
-        if client_session_info['ip_address']:
-            IPFW().delete(parameters['zoneid'], client_session_info['ip_address'])
-        client_session_info['terminateCause'] = 'User-Request'
-        response = client_session_info
+client_session_info = DB().del_client(int(args.z) if str(args.z).isdigit() else None, args.session)
+if client_session_info is not None:
+    if client_session_info['ip_address']:
+        IPFW().delete(client_session_info['zoneid'], client_session_info['ip_address'])
+    client_session_info['terminateCause'] = 'User-Request'
+    response = client_session_info
 
-# output result as plain text or json
-if parameters['output_type'] != 'json':
-    for item in response:
-        print ('%20s %s' % (item, response[item]))
-else:
-    print(ujson.dumps(response))
+print(ujson.dumps(response))

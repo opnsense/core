@@ -1,0 +1,126 @@
+<model>
+    <mount>/cert+</mount>
+    <version>1.0.0</version>
+    <items>
+        <cert type=".\CertificatesField">
+            <refid type="TextField"/>
+            <descr type="DescriptionField">
+                <Required>Y</Required>
+            </descr>
+            <caref type="CertificateField">
+                <type>ca</type>
+                <BlankDesc>self-signed</BlankDesc>
+                <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
+            </caref>
+            <crt type="TextField"/>
+            <csr type="TextField"/>
+            <prv type="TextField"/>
+            <action type="OptionField" volatile="true">
+                <Default>internal</Default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <internal>Create an internal Certificate</internal>
+                    <external>Create a Certificate Signing Request</external>
+                    <import>Import an existing Certificate</import>
+                    <sign_csr>Sign a Certificate Signing Request</sign_csr>
+                    <import_csr>Import certificate (signed by CA)</import_csr>
+                    <reissue>Reissue and replace certificate (does not restart services)</reissue>
+                    <manual>Manual</manual>
+                </OptionValues>
+            </action>
+            <key_type type="OptionField" volatile="true">
+                <Required>Y</Required>
+                <Default>2048</Default>
+                <OptionValues>
+                    <RSA-512 value='512'>RSA-512</RSA-512>
+                    <RSA-1024 value='1024'>RSA-1024</RSA-1024>
+                    <RSA-2048 value='2048'>RSA-2048</RSA-2048>
+                    <RSA-3072 value='3072'>RSA-3072</RSA-3072>
+                    <RSA-4096 value='4096'>RSA-4096</RSA-4096>
+                    <RSA-8192 value='8192'>RSA-8192</RSA-8192>
+                    <prime256v1>Elliptic Curve prime256v1</prime256v1>
+                    <secp384r1>Elliptic Curve secp384r1</secp384r1>
+                    <secp521r1>Elliptic Curve secp521r1</secp521r1>
+                </OptionValues>
+            </key_type>
+            <digest type="OptionField" volatile="true">
+                <Required>Y</Required>
+                <Default>sha256</Default>
+                <OptionValues>
+                    <sha1>SHA1</sha1>
+                    <sha224>SHA224</sha224>
+                    <sha256>SHA256</sha256>
+                    <sha384>SHA384</sha384>
+                    <sha512>SHA512</sha512>
+                </OptionValues>
+            </digest>
+            <cert_type type="OptionField" volatile="true">
+                <Required>Y</Required>
+                <Default>usr_cert</Default>
+                <OptionValues>
+                    <usr_cert>Client Certificate</usr_cert>
+                    <server_cert>Server Certificate</server_cert>
+                    <combined_server_client>Combined Client/Server Certificate</combined_server_client>
+                    <v3_ca>Certificate Authority</v3_ca>
+                </OptionValues>
+            </cert_type>
+            <lifetime type="IntegerField" volatile="true">
+                <Required>Y</Required>
+                <Default>397</Default>
+            </lifetime>
+            <private_key_location type="OptionField" volatile="true">
+                <Required>Y</Required>
+                <Default>firewall</Default>
+                <OptionValues>
+                    <firewall>Save on this firewall</firewall>
+                    <local>Download and do not save</local>
+                </OptionValues>
+            </private_key_location>
+            <city type="TextField" volatile="true">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f\n]*$/</Mask>
+            </city>
+            <state type="TextField" volatile="true">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f\n]*$/</Mask>
+            </state>
+            <organization type="TextField" volatile="true">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f\n]*$/</Mask>
+            </organization>
+            <organizationalunit type="TextField" volatile="true">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f\n]*$/</Mask>
+            </organizationalunit>
+            <country type="CountryField" volatile="true">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f\n]*$/</Mask>
+                <Default>NL</Default>
+                <Required>Y</Required>
+            </country>
+            <email type="TextField" volatile="true">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f\n]*$/</Mask>
+            </email>
+            <commonname type="TextField" volatile="true">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f\n]*$/</Mask>
+            </commonname>
+            <ocsp_uri type="UrlField" volatile="true"/>
+            <altnames_dns type="TextField" volatile="true">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f]*$/</Mask>
+            </altnames_dns>
+            <altnames_ip type="TextField" volatile="true">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f]*$/</Mask>
+            </altnames_ip>
+            <altnames_uri type="TextField" volatile="true">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f]*$/</Mask>
+            </altnames_uri>
+            <altnames_email type="TextField" volatile="true">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f]*$/</Mask>
+            </altnames_email>
+            <crt_payload type="TextField" volatile="true"/>
+            <csr_payload type="TextField" volatile="true"/>
+            <prv_payload type="TextField" volatile="true"/>
+            <rfc3280_purpose type="TextField" volatile="true"/>
+            <in_use type="BooleanField" volatile="true"/>
+
+            <name type="TextField" volatile="true"/>
+            <valid_from type="TextField" volatile="true"/>
+            <valid_to type="TextField" volatile="true"/>
+        </cert>
+    </items>
+</model>

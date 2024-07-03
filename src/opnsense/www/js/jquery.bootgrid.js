@@ -1239,6 +1239,9 @@ Grid.defaults = {
               return value ? moment(parseInt(value)*1000) : "";
            },
            to: function (value) {
+              if (!moment.isMoment(value)) {
+                 value = moment(parseInt(value)*1000);
+              }
               return value ? value.format("lll") : "";
            }
         },

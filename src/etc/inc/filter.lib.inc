@@ -202,17 +202,20 @@ function filter_core_rules_system($fw, $defaults)
 {
     global $config;
 
+    $dhcrelay6_interfaces = plugins_run('dhcrelay_interfaces', ['inet6']);
+    $dhcrelay6_interfaces = !empty($dhcrelay6_interfaces['dhcrelay']) ? $dhcrelay6_interfaces['dhcrelay'] : [];
+
     // block All IPv6 except loopback traffic
     $fw->registerFilterRule(
         1,
         array('interface' => 'lo0', 'ipprotocol' => 'inet6', 'disabled' => isset($config['system']['ipv6allow']),
-          'descr' => 'Pass all loopback IPv6', '#ref' => 'system_advanced_firewall.php#ipv6allow'),
+          'descr' => 'Pass all loopback IPv6', '#ref' => 'system_advanced_network.php#ipv6allow'),
         $defaults['pass']
     );
     $fw->registerFilterRule(
         1,
         array('ipprotocol' => 'inet6','descr' => 'Block all IPv6', 'disabled' => isset($config['system']['ipv6allow']),
-            '#ref' => 'system_advanced_firewall.php#ipv6allow'),
+            '#ref' => 'system_advanced_network.php#ipv6allow'),
         $defaults['block']
     );
 
@@ -344,29 +347,27 @@ function filter_core_rules_system($fw, $defaults)
     foreach ($fw->getInterfaceMapping() as $intf => $intfinfo) {
         // allow DHCPv6 client out, before adding bogons (sequence 1, bogons @ 5)
         if (isset($config['system']['ipv6allow']) && in_array($intfinfo['ipaddrv6'], array("slaac","dhcp6"))) {
-            $fw->registerFilterRule(
-                1,
-                array('protocol' => 'udp', 'from' => 'fe80::/10', 'from_port' => 546, 'to' => 'fe80::/10',
-                    'interface' => $intf, 'to_port' => 546, 'descr' => 'allow dhcpv6 client in ' . $intfinfo['descr'],
-                    '#ref' => 'system_advanced_firewall.php#ipv6allow'),
-                $defaults['pass']
-            );
-            $fw->registerFilterRule(
-                1,
-                array('protocol' => 'udp', 'from_port' => 547,'to_port' => 546, 'direction' => 'in',
-                    'interface' => $intf, 'descr' => 'allow dhcpv6 client in ' . $intfinfo['descr'],
-                    '#ref' => 'system_advanced_firewall.php#ipv6allow'),
-                $defaults['pass']
-            );
-            $dhcpv6_opts = array(
+            $fw->registerFilterRule(1, [
                 'descr' => 'allow dhcpv6 client in ' . $intfinfo['descr'],
-                '#ref' => 'system_advanced_firewall.php#ipv6allow',
+                '#ref' => 'system_advanced_network.php#ipv6allow',
+                'interface' => $intf,
+                'protocol' => 'udp',
+                'from' => 'fe80::/10',
+                /* omit from_port as the server may use a different source port */
+                'to' => 'fe80::/10',
+                'to_port' => 546,
+            ], $defaults['pass']);
+            $dhcpv6_opts = [
+                'descr' => 'allow dhcpv6 client out ' . $intfinfo['descr'],
+                '#ref' => 'system_advanced_network.php#ipv6allow',
                 'direction' => 'out',
                 'interface' => $intf,
                 'protocol' => 'udp',
+                'from' => 'fe80::/10',
                 'from_port' => 546,
+                'to' => 'fe80::/10',
                 'to_port' => 547,
-            );
+            ];
             if (isset($intfinfo['dhcp6vlanprio'])) {
                  $dhcpv6_opts['set-prio'] = $intfinfo['dhcp6vlanprio'];
             }
@@ -481,10 +482,7 @@ function filter_core_rules_system($fw, $defaults)
             default:
                 $dhcpdv6_enabled = isset($config['dhcpdv6'][$intf]['enable']);
                 $track6_enabled = isset($intfinfo['track6-interface']);
-                $dhcrelay6_interfaces = array();
-                if (!empty($config['dhcrelay6']['interface']) && isset($config['dhcrelay6']['enable'])) {
-                    $dhcrelay6_interfaces = explode(',', $config['dhcrelay6']['interface']);
-                }
+
                 if ($dhcpdv6_enabled || $track6_enabled || in_array($intf, $dhcrelay6_interfaces)) {
                     $fw->registerFilterRule(
                         1,
@@ -614,6 +612,9 @@ function filter_core_rules_user($fw)
     if (isset($config['filter']['rule'])) {
         // register user rules
         foreach ($config['filter']['rule'] as $idx => $rule) {
+            if (!is_array($rule)) {
+                continue;
+            }
             // calculate a hash for this area so we can track this rule, we should replace this
             // with uuid's on the rules like the new style models do eventually.
             $rule['label'] = OPNsense\Firewall\Util::calcRuleHash($rule);

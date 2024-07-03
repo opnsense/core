@@ -475,7 +475,7 @@ $( document ).ready(function() {
                       </td>
 
                       <td>
-                        <span title="<?=htmlspecialchars(get_alias_description($natent['target']));?>" data-toggle="tooltip" data-html="true">
+                        <span title="<?= html_safe(get_alias_description($natent['target'])) ?>" data-toggle="tooltip" data-html="true">
                           <?=$natent['target'];?>
                         </span>
 

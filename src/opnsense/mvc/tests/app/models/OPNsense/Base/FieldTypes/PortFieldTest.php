@@ -50,7 +50,7 @@ class PortFieldTest extends Field_Framework_TestCase
      */
     public function testRequiredEmpty()
     {
-        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\OPNsense\Base\ValidationException::class);
         $this->expectExceptionMessage("PresenceOf");
         $field = new PortField();
         $field->setRequired("Y");

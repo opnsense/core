@@ -171,17 +171,27 @@ function pf_firewall($fw)
 
     $mdlFilter = new OPNsense\Firewall\Filter();
 
-    foreach ($mdlFilter->rules->rule->sortedBy(["sequence"]) as $key => $rule) {
-         $content = $rule->serialize();
-         $content["#ref"] = "ui/firewall/filter#" . (string)$rule->getAttributes()['uuid'];
-         $fw->registerFilterRule($rule->getPriority(), $content);
+    foreach ($mdlFilter->rules->rule->sortedBy(['sequence']) as $key => $rule) {
+        $content = $rule->serialize();
+        $content['#ref'] = 'ui/firewall/filter#' . (string)$rule->getAttributes()['uuid'];
+        $fw->registerFilterRule($rule->getPriority(), $content);
     }
 
-    foreach ($mdlFilter->snatrules->rule->sortedBy(["sequence"]) as $key => $rule) {
+    foreach ($mdlFilter->snatrules->rule->sortedBy(['sequence']) as $key => $rule) {
          $fw->registerSNatRule(50, $rule->serialize());
     }
-    foreach ($mdlFilter->npt->rule->sortedBy(["sequence"]) as $key => $rule) {
-         $fw->registerNptRule(50, $rule->serialize());
+
+    foreach ($mdlFilter->onetoone->rule->sortedBy(['sequence']) as $key => $rule) {
+        $rule_a = $rule->serialize();
+        /* XXX the default value merge will fail if the empty default is kept */
+        if (isset($rule_a['natreflection']) && $rule_a['natreflection'] == '') {
+            unset($rule_a['natreflection']);
+        }
+        $fw->registerDNatRule(500, $rule_a);
+    }
+
+    foreach ($mdlFilter->npt->rule->sortedBy(['sequence']) as $key => $rule) {
+        $fw->registerNptRule(50, $rule->serialize());
     }
 }
 
@@ -208,7 +218,7 @@ function pf_xmlrpc_sync()
     $result[] = array(
         'description' => gettext('Firewall Rules'),
         'help' => gettext('Synchronize the firewall rules to the other HA host.'),
-        'section' => 'filter',
+        'section' => 'filter,OPNsense.Firewall.Filter.rules',
         'id' => 'rules',
         'services' => ['pf'],
     );
@@ -239,7 +249,7 @@ function pf_xmlrpc_sync()
     $result[] = array(
         'description' => gettext('NAT'),
         'help' => gettext('Synchronize the NAT rules over to the other HA host.'),
-        'section' => 'nat',
+        'section' => 'nat,OPNsense.Firewall.Filter.snatrules,OPNsense.Firewall.Filter.npt,OPNsense.Firewall.Filter.onetoone',
         'id' => 'nat',
         'services' => ['pf'],
     );

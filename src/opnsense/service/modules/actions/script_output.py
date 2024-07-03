@@ -23,7 +23,12 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 """
+import fcntl
+import glob
+import hashlib
+import os
 import tempfile
+import time
 import traceback
 import subprocess
 from .. import syslog_error
@@ -31,16 +36,43 @@ from .base import BaseAction
 
 
 class Action(BaseAction):
+    temp_prefix = 'tmpcfd_'
+    cached_results = None
     def execute(self, parameters, message_uuid, *args, **kwargs):
         super().execute(parameters, message_uuid, *args, **kwargs)
         try:
             script_command = self._cmd_builder(parameters)
+            script_hash = hashlib.sha256(script_command.encode()).hexdigest() if self.cache_ttl else None
         except TypeError as e:
             return str(e)
 
+        if Action.cached_results is None:
+            # cache cleanup on startup (first executed script_output action)
+            for filename in glob.glob("%s/%s*"% (tempfile.gettempdir(), Action.temp_prefix)):
+                os.remove(filename)
+            Action.cached_results = {}
+        elif self.cache_ttl is not None and len(Action.cached_results) > 0:
+            # cache expire
+            now = time.time()
+            for key in list(Action.cached_results.keys()):
+                if Action.cached_results[key]['expire'] < now:
+                    del Action.cached_results[key]
+
         try:
+            if script_hash in Action.cached_results and os.path.isfile(Action.cached_results[script_hash]['filename']):
+                with open(Action.cached_results[script_hash]['filename']) as output_stream:
+                    fcntl.flock(output_stream, fcntl.LOCK_EX)
+                    output_stream.seek(0)
+                    return output_stream.read()
             with tempfile.NamedTemporaryFile() as error_stream:
-                with tempfile.NamedTemporaryFile() as output_stream:
+                tparm = {'prefix': Action.temp_prefix, 'delete': script_hash is None}
+                with tempfile.NamedTemporaryFile(**tparm) as output_stream:
+                    fcntl.flock(output_stream, fcntl.LOCK_EX)
+                    if script_hash:
+                        Action.cached_results[script_hash] = {
+                            'filename': output_stream.name,
+                            'expire': time.time() + self.cache_ttl
+                        }
                     subprocess.check_call(script_command, env=self.config_environment, shell=True,
                                           stdout=output_stream, stderr=error_stream)
                     output_stream.seek(0)

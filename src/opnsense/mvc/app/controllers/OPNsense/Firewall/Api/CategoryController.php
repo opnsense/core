@@ -48,20 +48,15 @@ class CategoryController extends ApiMutableModelControllerBase
      * @return array search results
      * @throws \ReflectionException
      */
-    public function searchItemAction()
+    public function searchItemAction($add_empty = '0')
     {
-        return $this->searchBase("categories.category", array('name', 'auto', 'color'), "name");
-    }
-
-    /**
-     * search categories with an empty (no category) at the beginning
-     * @return array search results
-     * @throws \ReflectionException
-     */
-    public function searchNoCategoryItemAction()
-    {
-        $result = $this->searchBase("categories.category", array('name', 'auto', 'color'), "name");
-        array_unshift($result['rows'], array('uuid' => "", 'name' => gettext("(No Category)"), 'auto' => "", 'color' => ""));
+        $result = $this->searchBase("categories.category", null, "name");
+        if (!empty($add_empty)) {
+            array_unshift(
+                $result['rows'],
+                ['uuid' => "", 'name' => gettext("(No Category)"), 'auto' => "", 'color' => ""]
+            );
+        }
         return $result;
     }
 
@@ -69,7 +64,7 @@ class CategoryController extends ApiMutableModelControllerBase
      * Update category with given properties
      * @param string $uuid internal id
      * @return array save result + validation output
-     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
+     * @throws \OPNsense\Base\ValidationException when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function setItemAction($uuid)
@@ -90,7 +85,7 @@ class CategoryController extends ApiMutableModelControllerBase
      * Add new category and set with attributes from post
      * @return array save result + validation output
      * @throws \OPNsense\Base\ModelException when not bound to model
-     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
+     * @throws \OPNsense\Base\ValidationException when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function addItemAction()
@@ -113,7 +108,7 @@ class CategoryController extends ApiMutableModelControllerBase
      * Delete alias by uuid, save contents to tmp for removal on apply
      * @param string $uuid internal id
      * @return array save status
-     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
+     * @throws \OPNsense\Base\ValidationException when field validations fail
      * @throws \ReflectionException when not bound to model
      * @throws \OPNsense\Base\UserException when unable to delete
      */

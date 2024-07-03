@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3
 """
-    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2024 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -26,29 +26,18 @@
     --------------------------------------------------------------------------------------
     update (or add) client/session restrictions
 """
-import sys
+import argparse
 import ujson
 from lib.db import DB
 
-parameters = {'zoneid': '', 'sessionid': None, 'session_timeout': None, 'output_type': 'plain'}
-current_param = None
-for param in sys.argv[1:]:
-    if len(param) > 1 and param[0] == '/' and param[1:] in parameters:
-        current_param = param[1:].lower()
-    elif current_param is not None:
-        parameters[current_param] = param.strip()
-        current_param = None
+parser = argparse.ArgumentParser()
+parser.add_argument('-zoneid', help='zone number to allow this user in', type=str, required=True)
+parser.add_argument('-sessionid', help='session id', type=str, required=True)
+parser.add_argument('-session_timeout', help='authentication source', type=str)
+args = parser.parse_args()
 
-response = dict()
-if parameters['zoneid'] is not None and parameters['sessionid'] is not None:
-    db = DB()
-    response['response'] = db.update_session_restrictions(parameters['zoneid'],
-                                                          parameters['sessionid'],
-                                                          parameters['session_timeout'])
 
-# output result as plain text or json
-if parameters['output_type'] != 'json':
-    for item in response:
-        print ('%20s %s' % (item, response[item]))
-else:
-    print(ujson.dumps(response))
+response = {
+    'response': DB().update_session_restrictions(args.zoneid, args.sessionid, args.session_timeout)
+}
+print(ujson.dumps(response))

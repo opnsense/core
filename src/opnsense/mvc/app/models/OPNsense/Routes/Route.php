@@ -1,37 +1,35 @@
 <?php
 
-/**
- *    Copyright (C) 2017 Fabian Franz
- *    Copyright (C) 2015-2017 Deciso B.V.
+/*
+ * Copyright (C) 2017 Fabian Franz
+ * Copyright (C) 2015-2017 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 namespace OPNsense\Routes;
 
-use Phalcon\Messages\Message;
+use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
 
 /**
@@ -41,9 +39,7 @@ use OPNsense\Base\BaseModel;
 class Route extends BaseModel
 {
     /**
-     * extended validations
-     * @param bool $validateFullModel validate full model or only changed fields
-     * @return \Phalcon\Messages\Messages
+     * {@inheritdoc}
      */
     public function performValidation($validateFullModel = false)
     {
@@ -60,7 +56,11 @@ class Route extends BaseModel
                     // Gateway addresses are stored in the result list received from configd.
                     // Unfortunately we can't trust the config here, so we use the list results here.
                     $gateways = $route->gateway->getNodeData();
-                    $gateway = isset($gateways[(string)$route->gateway]) ? $gateways[(string)$route->gateway] : null;
+                    if (!isset($gateways[(string)$route->gateway])) {
+                        /* an invalid gateway ends up with another validation error so skip below */
+                        continue;
+                    }
+                    $gateway = $gateways[(string)$route->gateway];
                     $tmp = explode("-", $gateway['value']);
                     $gateway_ip = !empty($tmp) ? trim(end($tmp)) : "";
                     $gateway_proto = strpos($gateway_ip, ":") !== false ? "inet6" : "inet";

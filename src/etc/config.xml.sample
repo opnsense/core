@@ -187,15 +187,6 @@
       <value>default</value>
     </item>
     <item>
-      <descr><![CDATA[
-        Redirect attacks are the purposeful mass-issuing of ICMP type 5 packets. In a normal network, redirects
-        to the end stations should not be required. This option enables the NIC to drop all inbound ICMP redirect
-        packets without returning a response.
-      ]]></descr>
-      <tunable>net.inet.icmp.drop_redirect</tunable>
-      <value>1</value>
-    </item>
-    <item>
       <descr><![CDATA[Maximum outgoing UDP datagram size]]></descr>
       <tunable>net.local.dgram.maxdgram</tunable>
       <value>default</value>
@@ -236,7 +227,7 @@
     <disablechecksumoffloading>1</disablechecksumoffloading>
     <disablesegmentationoffloading>1</disablesegmentationoffloading>
     <disablelargereceiveoffloading>1</disablelargereceiveoffloading>
-    <ipv6allow/>
+    <ipv6allow>1</ipv6allow>
     <powerd_ac_mode>hadp</powerd_ac_mode>
     <powerd_battery_mode>hadp</powerd_battery_mode>
     <powerd_normal_mode>hadp</powerd_normal_mode>
@@ -331,49 +322,6 @@
   <rrd>
     <enable/>
   </rrd>
-  <load_balancer>
-    <monitor_type>
-      <name>ICMP</name>
-      <type>icmp</type>
-      <descr><![CDATA[ICMP]]></descr>
-      <options/>
-    </monitor_type>
-    <monitor_type>
-      <name>TCP</name>
-      <type>tcp</type>
-      <descr><![CDATA[Generic TCP]]></descr>
-      <options/>
-    </monitor_type>
-    <monitor_type>
-      <name>HTTP</name>
-      <type>http</type>
-      <descr><![CDATA[Generic HTTP]]></descr>
-      <options>
-        <path>/</path>
-        <host/>
-        <code>200</code>
-      </options>
-    </monitor_type>
-    <monitor_type>
-      <name>HTTPS</name>
-      <type>https</type>
-      <descr><![CDATA[Generic HTTPS]]></descr>
-      <options>
-        <path>/</path>
-        <host/>
-        <code>200</code>
-      </options>
-    </monitor_type>
-    <monitor_type>
-      <name>SMTP</name>
-      <type>send</type>
-      <descr><![CDATA[Generic SMTP]]></descr>
-      <options>
-        <send/>
-        <expect>220 *</expect>
-      </options>
-    </monitor_type>
-  </load_balancer>
   <ntpd>
     <prefer>0.opnsense.pool.ntp.org</prefer>
   </ntpd>

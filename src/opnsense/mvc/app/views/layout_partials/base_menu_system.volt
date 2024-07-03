@@ -6,7 +6,7 @@
                     {% for topMenuItem in menuSystem %}
                         {% if topMenuItem.Children|length >= 1 %}
                             <a href="#{{ topMenuItem.Id }}" class="list-group-item {% if topMenuItem.Selected %}  active-menu-title {% endif  %}" data-toggle="collapse" data-parent="#mainmenu">
-                                <span class="{{ topMenuItem.CssClass }} __iconspacer"></span>{{ lang._(topMenuItem.VisibleName) }}
+                                <span class="{{ topMenuItem.CssClass }} __iconspacer"></span><span style="word-break: keep-all">{{ lang._(topMenuItem.VisibleName) }}</span>
                             </a>
                             <div class="collapse  {% if topMenuItem.Selected %} active-menu in {% endif  %}" id="{{ topMenuItem.Id }}">
                                 {% for subMenuItem in topMenuItem.Children %}

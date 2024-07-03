@@ -46,28 +46,35 @@ function view_cache_safe($url)
     return $url;
 }
 
-try {
-    /**
-     * Read the configuration
-     */
-    $config = include __DIR__ . "/../mvc/app/config/config.php";
+/**
+ * return safe HTML encoded version of input string
+ * @param string $text to make HTML safe
+ * @return string
+ */
+function view_html_safe($text)
+{
+    /* gettext() embedded in JavaScript can cause syntax errors */
+    return str_replace("\n", '&#10;', htmlspecialchars($text ?? '', ENT_QUOTES | ENT_HTML401));
+}
 
-    /**
-     * Read auto-loader
-     */
+try {
+    $config = include __DIR__ . "/../mvc/app/config/config.php";
     include __DIR__ . "/../mvc/app/config/loader.php";
 
-    /**
-     * Read services
-     */
-    include __DIR__ . "/../mvc/app/config/services.php";
+    $router = new OPNsense\Mvc\Router('/ui/');
+    try {
+        $response = $router->routeRequest($_SERVER['REQUEST_URI'], [
+            'controller' => 'IndexController',
+            'action' => 'indexAction',
+        ]);
+    } catch (\OPNsense\Mvc\Exceptions\DispatchException) {
+        // unroutable (page not found), present page not found controller
+        $response = $router->routeRequest('/ui/core/index/index');
+    }
 
-    /**
-     * Handle the request
-     */
-    $application = new \Phalcon\Mvc\Application($di);
-
-    echo $application->handle($_SERVER['REQUEST_URI'])->getContent();
+    if (!$response->isSent()) {
+        $response->send();
+    }
 } catch (\Error | \Exception $e) {
     error_log($e);
 

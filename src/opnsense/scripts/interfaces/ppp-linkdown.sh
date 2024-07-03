@@ -19,9 +19,7 @@ if [ "${AF}" = "inet" ]; then
 elif [ "${AF}" = "inet6" ]; then
 	# remove previous SLAAC addresses as the ISP may
 	# not respond to these in the upcoming session
-	ifconfig ${IF} | grep -e autoconf -e deprecated | while read FAMILY ADDR MORE; do
-		ifconfig ${IF} ${FAMILY} ${ADDR} -alias
-	done
+	/usr/local/sbin/ifctl -i ${IF} -f
 
 	/usr/local/sbin/ifctl -i ${IF} -6nd
 	/usr/local/sbin/ifctl -i ${IF} -6rd

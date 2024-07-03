@@ -1,0 +1,145 @@
+<form>
+    <field>
+        <id>cert.action</id>
+        <label>Method</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>cert.descr</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Key</label>
+        <style>action action_internal action_reissue action_internal action_external action_sign_csr</style>
+    </field>
+    <field>
+        <id>cert.cert_type</id>
+        <label>Type</label>
+        <type>dropdown</type>
+        <style>selectpicker action action_internal action_reissue action_sign_csr</style>
+    </field>
+    <field>
+        <id>cert.private_key_location</id>
+        <label>Private key location</label>
+        <style>selectpicker action action_internal</style>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>cert.key_type</id>
+        <label>Key type</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>cert.digest</id>
+        <label>Digest Algorithm</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>cert.caref</id>
+        <label>Issuer</label>
+        <style>selectpicker action action_internal action_reissue action_sign_csr</style>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>cert.lifetime</id>
+        <label>Lifetime (days)</label>
+        <type>text</type>
+    </field>
+    <field>
+        <type>header</type>
+        <label>General</label>
+        <style>action action_internal action_reissue action_internal action_external</style>
+    </field>
+    <field>
+        <id>cert.country</id>
+        <label>Country Code</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>cert.state</id>
+        <label>State or Province</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>cert.city</id>
+        <label>City</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>cert.organization</id>
+        <label>Organization</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>cert.organizationalunit</id>
+        <label>Organizational Unit</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>cert.email</id>
+        <label>Email Address</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>cert.commonname</id>
+        <label>Common Name</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>cert.ocsp_uri</id>
+        <label>OCSP uri</label>
+        <type>text</type>
+        <style>action action_internal action_reissue</style>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Alternative Names</label>
+        <collapse>true</collapse>
+        <style>action action_internal action_reissue action_internal action_external action_sign_csr</style>
+    </field>
+    <field>
+        <id>cert.altnames_dns</id>
+        <label>DNS domain names</label>
+        <type>textbox</type>
+    </field>
+    <field>
+        <id>cert.altnames_ip</id>
+        <label>IP adresses</label>
+        <type>textbox</type>
+    </field>
+    <field>
+        <id>cert.altnames_uri</id>
+        <label>URIs</label>
+        <type>textbox</type>
+    </field>
+    <field>
+        <id>cert.altnames_email</id>
+        <label>Email addresses</label>
+        <type>textbox</type>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Output (PEM format)</label>
+        <collapse>true</collapse>
+        <style>pem_section</style>
+    </field>
+    <field>
+        <id>cert.crt_payload</id>
+        <label>Certificate data</label>
+        <type>textbox</type>
+    </field>
+    <field>
+        <id>cert.prv_payload</id>
+        <label>Private key data</label>
+        <type>textbox</type>
+        <style>action  action_internal  action_external  action_import  action_import_csr  action_reissue  action_manual</style>
+    </field>
+    <field>
+        <id>cert.csr_payload</id>
+        <label>Certificate signing request</label>
+        <type>textbox</type>
+        <style>selectpicker action action_import_csr action_sign_csr</style>
+    </field>
+</form>

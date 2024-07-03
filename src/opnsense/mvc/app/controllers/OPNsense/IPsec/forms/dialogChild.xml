@@ -93,6 +93,7 @@
         <id>child.esp_proposals</id>
         <label>ESP proposals</label>
         <type>select_multiple</type>
+        <style>selectpicker cipher_tooltip</style>
         <size>10</size>
     </field>
     <field>

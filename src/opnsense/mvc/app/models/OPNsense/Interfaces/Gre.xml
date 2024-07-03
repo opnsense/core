@@ -1,0 +1,45 @@
+<model>
+    <mount>/gres</mount>
+    <version>1.0.0</version>
+    <description>GRE interfaces</description>
+    <items>
+        <gre type="ArrayField">
+            <local-addr type=".\LinkAddressField" volatile="true">
+                <Required>Y</Required>
+                <Default>wan</Default>
+            </local-addr>
+            <!--
+                local address is either an interface, carp address or an ordinary address.
+                The LinkAddressField type dispatches into the fields below and validates the options available.
+            -->
+            <if type="TextField"/>
+            <ipaddr type="TextField"/>
+            <greif type="TextField">
+                <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>Gre already exists!</ValidationMessage>
+                        <type>UniqueConstraint</type>
+                    </check001>
+                </Constraints>
+                <Mask>/^gre(\d)*$/</Mask>
+            </greif>
+            <remote-addr type="NetworkField">
+                <NetMaskAllowed>N</NetMaskAllowed>
+            </remote-addr>
+            <tunnel-local-addr type="NetworkField">
+                <NetMaskAllowed>N</NetMaskAllowed>
+            </tunnel-local-addr>
+            <tunnel-remote-addr type="NetworkField">
+                <NetMaskAllowed>N</NetMaskAllowed>
+            </tunnel-remote-addr>
+            <tunnel-remote-net type="IntegerField">
+                <Required>Y</Required>
+                <Default>32</Default>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>128</MaximumValue>
+            </tunnel-remote-net>
+            <descr type="DescriptionField"/>
+        </gre>
+    </items>
+</model>

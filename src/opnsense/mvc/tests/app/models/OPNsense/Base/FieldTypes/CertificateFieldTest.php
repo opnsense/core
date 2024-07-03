@@ -35,7 +35,7 @@ require_once 'Field_Framework_TestCase.php';
 // @CodingStandardsIgnoreEnd
 
 use OPNsense\Base\FieldTypes\CertificateField;
-use Phalcon\Di\FactoryDefault;
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Config;
 
 class CertificateFieldTest extends Field_Framework_TestCase
@@ -47,7 +47,7 @@ class CertificateFieldTest extends Field_Framework_TestCase
     {
         $this->assertInstanceOf('\OPNsense\Base\FieldTypes\CertificateField', new CertificateField());
         // switch config to test set for this type
-        FactoryDefault::getDefault()->get('config')->globals->config_path = __DIR__ . '/CertificateFieldTest/';
+        (new AppConfig())->update('globals.config_path', __DIR__ . '/CertificateFieldTest/');
         Config::getInstance()->forceReload();
     }
 
@@ -83,7 +83,7 @@ class CertificateFieldTest extends Field_Framework_TestCase
      */
     public function testSelectSetWithUnknownValue()
     {
-        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\OPNsense\Base\ValidationException::class);
         $this->expectExceptionMessage("CsvListValidator");
         // init field
         $field = new CertificateField();
@@ -112,7 +112,7 @@ class CertificateFieldTest extends Field_Framework_TestCase
      */
     public function testSelectSetOnSingleValue()
     {
-        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\OPNsense\Base\ValidationException::class);
         $this->expectExceptionMessage("InclusionIn");
         // init field
         $field = new CertificateField();

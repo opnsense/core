@@ -38,8 +38,6 @@ class ViewTranslator extends Gettext
 {
     public function _($translateKey, array $placeholders = []): string
     {
-        $translateValue = parent::_($translateKey, $placeholders);
-        /* gettext() embedded in JavaScript can cause syntax errors */
-        return str_replace("\n", '&#10;', htmlspecialchars($translateValue ?? '', ENT_QUOTES | ENT_HTML401));
+        return view_html_safe(parent::_($translateKey, $placeholders));
     }
 }

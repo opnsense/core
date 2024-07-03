@@ -273,16 +273,11 @@ if (!empty($config['hasync'])) {
         }
     }
 
-    // map configuration directives to config sections
-    $section_cnf = array();
-    foreach (plugins_xmlrpc_sync() as $syncid => $syncconf) {
-        $section_cnf['synchronize'.$syncid] = $syncconf['section'];
-    }
-
-    $sections = array();
-    foreach ($section_cnf as $cnf_key => $cnf_sections) {
-        if (isset($hasync[$cnf_key])) {
-            foreach (explode(',', $cnf_sections) as $section) {
+    $sections = [];
+    $syncitems = array_filter(explode(',', $hasync['syncitems'] ?? ''));
+    foreach (plugins_xmlrpc_sync() as $cnf_key => $cnf) {
+        if (in_array($cnf_key, $syncitems)) {
+            foreach (array_filter(explode(',', $cnf['section'] ?? '')) as $section) {
                 $sections[] = $section;
             }
         }

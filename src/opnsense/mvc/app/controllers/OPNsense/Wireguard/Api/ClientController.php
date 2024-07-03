@@ -33,6 +33,7 @@ use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Config;
 use OPNsense\Wireguard\Server;
 use OPNsense\Core\Backend;
+use OPNsense\Firewall\Util;
 
 class ClientController extends ApiMutableModelControllerBase
 {
@@ -44,27 +45,39 @@ class ClientController extends ApiMutableModelControllerBase
         return ['psk' => trim((new Backend())->configdRun('wireguard gen_psk')), 'status' => 'ok' ];
     }
 
+    public function listServersAction()
+    {
+        if ($this->request->isGet()) {
+            $results = ['rows' => [], 'status' => 'ok'];
+            foreach ((new Server())->servers->server->iterateItems() as $key => $node) {
+                $results['rows'][] = [
+                    'uuid' => $key,
+                    'name' => (string)$node->name
+                ];
+            }
+            return $results;
+        }
+        return ['status' => 'failed'];
+    }
+
     public function searchClientAction()
     {
+        $servers = $this->request->get('servers');
+        $filter_funct = function ($record) use ($servers) {
+            return empty($servers) || array_intersect(explode(',', $record->servers), $servers);
+        };
+
         return $this->searchBase(
             'clients.client',
-            ["enabled", "name", "pubkey", "tunneladdress", "serveraddress", "serverport"]
+            ["enabled", "name", "pubkey", "tunneladdress", "serveraddress", "serverport", "servers"],
+            null,
+            $filter_funct
         );
     }
 
     public function getClientAction($uuid = null)
     {
-        $result = $this->getBase('client', 'clients.client', $uuid);
-        if (!empty($result['client'])) {
-            $result['client']['servers'] = [];
-            foreach ((new Server())->servers->server->iterateItems() as $key => $node) {
-                $result['client']['servers'][$key] = [
-                    'value' => (string)$node->name,
-                    'selected' => in_array($uuid, explode(',', (string)$node->peers)) ? '1' : '0'
-                ];
-            }
-        }
-        return $result;
+        return $this->getBase('client', 'clients.client', $uuid);
     }
 
     public function addClientAction()
@@ -74,6 +87,17 @@ class ClientController extends ApiMutableModelControllerBase
 
     public function delClientAction($uuid)
     {
+        if ($this->request->isPost()) {
+            Config::getInstance()->lock();
+            $mdl = new Server();
+            foreach ($mdl->servers->server->iterateItems() as $key => $node) {
+                $peers = array_filter(explode(',', (string)$node->peers));
+                if (in_array($uuid, $peers)) {
+                    $node->peers = implode(',', array_diff($peers, [$uuid]));
+                }
+            }
+            $mdl->serializeToConfig(false, true);
+        }
         return $this->delBase('clients.client', $uuid);
     }
 
@@ -117,5 +141,85 @@ class ClientController extends ApiMutableModelControllerBase
     public function toggleClientAction($uuid)
     {
         return $this->toggleBase('clients.client', $uuid);
+    }
+
+    public function getClientBuilderAction()
+    {
+        return $this->getBase('configbuilder', 'clients.client', null);
+    }
+
+    public function addClientBuilderAction()
+    {
+        $uuid = null;
+        if ($this->request->isPost() && !empty($this->request->getPost('configbuilder'))) {
+            Config::getInstance()->lock();
+            $mdl = new Server();
+            $uuid = $this->getModel()->clients->generateUUID();
+            $server = $this->request->getPost('configbuilder')['server'];
+            foreach ($mdl->servers->server->iterateItems() as $key => $node) {
+                if ($key == $server) {
+                    $peers = array_filter(explode(',', (string)$node->peers));
+                    $node->peers = implode(',', array_merge($peers, [$uuid]));
+                    break;
+                }
+            }
+            /**
+             * Save to in memory model.
+             * Ignore validations as $uuid might be new or trigger an existing validation issue.
+             * Persisting the data is handled by setBase()
+             */
+            $mdl->serializeToConfig(false, true);
+        }
+
+        return $this->setBase('configbuilder', 'clients.client', $uuid);
+    }
+
+    public function getServerInfoAction($uuid = null)
+    {
+        $result = ['status' => 'failed'];
+        if ($this->request->isGet()) {
+            $peers = [];
+            $subnets = [];
+            $used_addresses = []; /* We cleanse addresses before storing here, to allow string matching */
+
+            foreach ((new Server())->servers->server->iterateItems() as $key => $node) {
+                if ($key == $uuid) {
+                    $peers = array_filter(explode(',', (string)$node->peers));
+                    $result['endpoint'] = (string)$node->endpoint;
+                    $result['peer_dns'] = (string)$node->peer_dns;
+                    $result['mtu'] = (string)$node->mtu;
+                    $result['pubkey'] = (string)$node->pubkey;
+                    foreach (array_filter(explode(',', (string)$node->tunneladdress)) as $addr) {
+                        $proto = str_contains($addr, ':') ? 'inet6' : 'inet';
+                        if (!isset($subnets[$proto])) {
+                            $subnets[$proto] = $addr;
+                        }
+                        $used_addresses[] = inet_ntop(inet_pton(explode('/', $addr)[0]));
+                    }
+                    foreach ($peers as $peer) {
+                        $this_peer = $this->getModel()->getNodeByReference('clients.client.' . $peer);
+                        if ($this_peer != null) {
+                            foreach (array_filter(explode(',', (string)$this_peer->tunneladdress)) as $addr) {
+                                $used_addresses[] = inet_ntop(inet_pton(explode('/', $addr)[0]));
+                            }
+                        }
+                    }
+                    $tunneladdress = [];
+                    foreach ($subnets as $cidr) {
+                        foreach (Util::cidrRangeIterator($cidr) as $addr) {
+                            if (!in_array($addr, $used_addresses)) {
+                                $netmask = str_contains($addr, ':') ? '128' : '32';
+                                $tunneladdress[] = $addr . '/' . $netmask;
+                                break;
+                            }
+                        }
+                    }
+                    $result['address'] = implode(',', $tunneladdress);
+                    $result['status'] = 'ok';
+                    break;
+                }
+            }
+        }
+        return $result;
     }
 }

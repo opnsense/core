@@ -50,7 +50,7 @@ class CountryFieldTest extends Field_Framework_TestCase
      */
     public function testRequiredEmpty()
     {
-        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\OPNsense\Base\ValidationException::class);
         $this->expectExceptionMessage("PresenceOf");
         $field = new CountryField();
         $field->eventPostLoading();
@@ -101,7 +101,7 @@ class CountryFieldTest extends Field_Framework_TestCase
      */
     public function testSelectSetWithUnknownValue()
     {
-        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\OPNsense\Base\ValidationException::class);
         $this->expectExceptionMessage("CsvListValidator");
         // init field
         $field = new CountryField();
@@ -144,7 +144,7 @@ class CountryFieldTest extends Field_Framework_TestCase
      */
     public function testSelectSetOnSingleValue()
     {
-        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\OPNsense\Base\ValidationException::class);
         $this->expectExceptionMessage("InclusionIn");
         // init field
         $field = new CountryField();

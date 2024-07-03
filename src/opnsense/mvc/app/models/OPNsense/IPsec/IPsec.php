@@ -29,7 +29,7 @@
 
 namespace OPNsense\IPsec;
 
-use Phalcon\Messages\Message;
+use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
 
 /**
@@ -72,11 +72,7 @@ class IPsec extends BaseModel
     }
 
     /**
-     * Validates a keyPair instance within a model.
-     * @param $nodeKey string Fully-qualified key of the keyPair instance within a model
-     * @param $keyPair \OPNsense\Base\FieldTypes\BaseField Field instance of a keyPair
-     * @param $messages \Phalcon\Messages\Messages Validation message group
-     * @return array key size and fingerprint
+     * {@inheritdoc}
      */
     private function validateKeyPair($nodeKey, $keyPair, $messages)
     {

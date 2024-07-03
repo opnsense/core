@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2022 Deciso B.V.
+ * Copyright (C) 2017-2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,8 +28,7 @@
 
 namespace OPNsense\Base\FieldTypes;
 
-use OPNsense\Base\Validators\NetworkValidator;
-use OPNsense\Base\Validators\HostValidator;
+use OPNsense\Base\Validators\CallbackValidator;
 
 /**
  * @package OPNsense\Base\FieldTypes
@@ -70,6 +69,20 @@ class HostnameField extends BaseField
      * @var bool zone root (@) enabled
      */
     protected $internalZoneRootAllowed = false;
+
+    /**
+     * @var bool dns name as defined by RFC2181 (lifting some constraints)
+     */
+    protected $internalIsDNSName = false;
+
+    /**
+     * is dns name as defined by RFC2181
+     * @param string $value Y/N
+     */
+    public function setIsDNSName($value)
+    {
+        $this->internalIsDNSName = trim(strtoupper($value)) == "Y";
+    }
 
     /**
      * ip addresses allowed
@@ -143,8 +156,8 @@ class HostnameField extends BaseField
         if ($this->internalAsList) {
             // return result as list
             $result = [];
-            foreach (explode(',', $this->internalValue) as $net) {
-                $result[$net] = array("value" => $net, "selected" => 1);
+            foreach (explode($this->internalFieldSeparator, $this->internalValue) as $net) {
+                $result[$net] = ["value" => $net, "selected" => 1];
             }
             return $result;
         } else {
@@ -168,14 +181,43 @@ class HostnameField extends BaseField
     public function getValidators()
     {
         $validators = parent::getValidators();
+        $sender = $this;
         if ($this->internalValue != null) {
-            $validators[] = new HostValidator([
-                'message' => $this->getValidationMessage(),
-                'split' => $this->internalFieldSeparator,
-                'allowip' => $this->internalIpAllowed,
-                'hostwildcard' => $this->internalHostWildcardAllowed,
-                'fqdnwildcard' => $this->internalFqdnWildcardAllowed,
-                'zoneroot' => $this->internalZoneRootAllowed,
+            $validators[] = new CallbackValidator(["callback" => function ($data) use ($sender) {
+                $result = false;
+                $response = [];
+                if ($sender->internalFieldSeparator == null) {
+                    $values = [$data];
+                } else {
+                    $values = explode($sender->internalFieldSeparator, $data);
+                }
+                foreach ($values as $value) {
+                    // set filter options
+                    $filterOptDomain = $sender->internalIsDNSName ? 0 : FILTER_FLAG_HOSTNAME;
+                    $val_is_ip = filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6) !== false;
+                    if ($sender->internalFqdnWildcardAllowed && substr($value, 0, 2) == '*.') {
+                        $value = substr($value, 2);
+                    } elseif ($sender->internalZoneRootAllowed && substr($value, 0, 2) == '@.') {
+                        $value = substr($value, 2);
+                    }
+                    if ($sender->internalZoneRootAllowed && $value == '@') {
+                        $result = true;
+                    } elseif ($sender->internalHostWildcardAllowed && $value == '*') {
+                        $result = true;
+                    } elseif ($sender->internalIpAllowed && $val_is_ip) {
+                        $result = true;
+                    } elseif (filter_var($value, FILTER_VALIDATE_DOMAIN, $filterOptDomain) !== false) {
+                        // internalIpAllowed = false and ip address offered,  trigger validation
+                        $result = $val_is_ip ? false : true;
+                    }
+                    if (!$result) {
+                        // append validation message
+                        $response[] = $this->getValidationMessage();
+                        break;
+                    }
+                }
+                return $response;
+            }
             ]);
         }
         return $validators;

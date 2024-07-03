@@ -34,7 +34,7 @@ use OPNsense\Base\ApiControllerBase;
 use OPNsense\Diagnostics\Netflow;
 use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
-use Phalcon\Filter\FilterFactory;
+use OPNsense\Core\SanitizeFilter;
 
 /**
  * Class NetworkinsightController
@@ -63,7 +63,7 @@ class NetworkinsightController extends ApiControllerBase
         $emulation = null
     ) {
         // cleanse input
-        $filter = (new FilterFactory())->newInstance();
+        $filter = new SanitizeFilter();
         $provider = $filter->sanitize($provider, "alnum");
         $measure = $filter->sanitize($measure, "string");
         $from_date = $filter->sanitize($from_date, "int");
@@ -150,7 +150,7 @@ class NetworkinsightController extends ApiControllerBase
         $max_hits = null
     ) {
         // cleanse input
-        $filter = (new FilterFactory())->newInstance();
+        $filter = new SanitizeFilter();
         $provider = $filter->sanitize($provider, "alnum");
         $from_date = $filter->sanitize($from_date, "int");
         $to_date = $filter->sanitize($to_date, "int");

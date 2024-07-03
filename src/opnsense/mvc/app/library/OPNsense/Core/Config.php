@@ -28,10 +28,8 @@
 
 namespace OPNsense\Core;
 
-use Phalcon\Di\FactoryDefault;
-use Phalcon\Logger\Logger;
-use Phalcon\Logger\Adapter\Syslog;
-use Phalcon\Logger\Formatter\Line;
+use OPNsense\Core\AppConfig;
+use OPNsense\Core\Syslog;
 
 /**
  * Class Config provides access to systems config xml
@@ -326,21 +324,14 @@ class Config extends Singleton
     protected function init()
     {
         $this->statusIsLocked = false;
-        $this->config_file = FactoryDefault::getDefault()->get('config')->globals->config_path . "config.xml";
+        $this->config_file = (new AppConfig())->globals->config_path . "config.xml";
         try {
             $this->load();
         } catch (\Exception $e) {
             $this->simplexml = null;
             // there was an issue with loading the config, try to restore the last backup
             $backups = $this->getBackups();
-            $adapter = new Syslog('audit', ['option' => LOG_PID,'facility' => LOG_LOCAL5]);
-            $adapter->setFormatter(new Line('%message%'));
-            $logger = new Logger(
-                'messages',
-                [
-                    'main' => $adapter
-                ]
-            );
+            $logger = new Syslog('audit', null, LOG_LOCAL5);
             if (count($backups) > 0) {
                 // load last backup
                 $logger->error(gettext('No valid config.xml found, attempting last known config restore.'));
@@ -423,7 +414,6 @@ class Config extends Singleton
     {
         $this->simplexml = null;
         $this->statusIsValid = false;
-
         // exception handling
         if (!file_exists($this->config_file)) {
             throw new ConfigException('file not found');
@@ -496,7 +486,7 @@ class Config extends Singleton
                 }
             }
         }
-        $revision['time'] = empty($timestamp) ? microtime(true) : $timestamp;
+        $revision['time'] = microtime(true);
 
         return $revision;
     }
@@ -560,7 +550,7 @@ class Config extends Singleton
     {
         openlog("audit", LOG_ODELAY, LOG_AUTH);
         syslog(LOG_NOTICE, sprintf(
-            "user %s%s changed configuration to %s in %s%s",
+            "user %s%s changed configuration to %s in %s %s",
             $revision['username'],
             !empty($revision['impersonated_by']) ? sprintf(" (%s)", $revision['impersonated_by']) : '',
             $backup_filename,
@@ -763,14 +753,7 @@ class Config extends Singleton
                     // use syslog to trigger a new configd event, which should signal a syshook config (in batch).
                     // Although we include the backup filename, the event handler is responsible to determine the
                     // last processed event itself. (it's merely added for debug purposes)
-                    $adapter = new Syslog('config', ['option' => LOG_PID,'facility' => LOG_LOCAL5]);
-                    $adapter->setFormatter(new Line('%message%'));
-                    $logger = new Logger(
-                        'messages',
-                        [
-                            'main' => $adapter
-                        ]
-                    );
+                    $logger = new Syslog('config', null, LOG_LOCAL5);
                     $logger->info("config-event: new_config " . $backup_filename);
                 }
                 flock($this->config_file_handle, LOCK_UN);
@@ -797,14 +780,16 @@ class Config extends Singleton
 
     /**
      * lock configuration
-     * @param boolean $reload reload config from open file handle to enforce synchronicity
+     * @param boolean $reload reload config from open file handle to enforce synchronicity, when not already locked
      */
     public function lock($reload = true)
     {
         if ($this->config_file_handle !== null) {
             flock($this->config_file_handle, LOCK_EX);
+            $do_reload = $reload && !$this->statusIsLocked;
             $this->statusIsLocked = true;
-            if ($reload) {
+            if ($do_reload) {
+                /* Only lock when the exclusive lock wasn't ours yet. */
                 $this->load();
             }
         }

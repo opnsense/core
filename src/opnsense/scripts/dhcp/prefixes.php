@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2022-2023 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2022-2024 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2012 Seth Mos <seth.mos@dds.nl>
  * All rights reserved.
  *
@@ -61,7 +61,10 @@ foreach (new SplFileObject($leases_file) as $line) {
                 break;
             case 'ia-pd':
                 if (!empty($ia_pd) && !empty($active)) {
-                    $duid_arr[$duid]['prefix'] = $ia_pd;
+                    if (empty($duid_arr[$duid]['prefix'])) {
+                        $duid_arr[$duid]['prefix'] = [];
+                    }
+                    $duid_arr[$duid]['prefix'][] = $ia_pd;
                 }
                 break;
         }
@@ -75,7 +78,7 @@ foreach (new SplFileObject($leases_file) as $line) {
 }
 
 /* since a route requires a gateway address try to derive it from static mapping as well */
-foreach (plugins_run('static_mapping') as $map) {
+foreach (plugins_run('static_mapping:dhcpd') as $map) {
     foreach ($map as $host) {
         if (empty($host['duid'])) {
             continue;
@@ -115,8 +118,10 @@ if (!empty($dhcpd_log)) {
 /* collect active leases */
 foreach ($duid_arr as $entry) {
     if (!empty($entry['prefix']) && !empty($entry['address'])) {
-        /* new or reassigned takes priority */
-        $routes[$entry['prefix']] = $entry['address'];
+        foreach ($entry['prefix'] as $prefix) {
+            /* new or reassigned takes priority */
+            $routes[$prefix] = $entry['address'];
+        }
     }
 }
 

@@ -28,7 +28,7 @@
 
 namespace OPNsense\IPsec;
 
-use Phalcon\Messages\Message;
+use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
@@ -90,6 +90,18 @@ class Swanctl extends BaseModel
                 } else {
                     $vti_inets[$prop] = strpos((string)$node->$prop, ':') > 0 ? 'inet6' : 'inet';
                 }
+            }
+
+            if (
+                (empty((string)$node->local) && !empty((string)$node->remote)) ||
+                (!empty((string)$node->local) && empty((string)$node->remote))
+            ) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("A local and remote address should be provided or both should be left empty"),
+                        $key . ".local"
+                    )
+                );
             }
 
             if ($vti_inets['local'] != $vti_inets['remote']) {

@@ -34,4 +34,16 @@ namespace OPNsense\Base\FieldTypes;
  */
 class ContainerField extends BaseField
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function isFieldChanged()
+    {
+        foreach (parent::iterateItems() as $child) {
+            if ($child->isFieldChanged()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

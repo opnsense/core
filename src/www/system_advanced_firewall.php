@@ -35,7 +35,6 @@ require_once("system.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
-    $pconfig['ipv6allow'] = isset($config['system']['ipv6allow']);
     $pconfig['disablefilter'] = !empty($config['system']['disablefilter']);
     $pconfig['optimization'] = isset($config['system']['optimization']) ? $config['system']['optimization'] : "normal";
     $pconfig['state-policy'] = isset($config['system']['state-policy']) ;
@@ -64,6 +63,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['syncookies_adaptend'] = isset($config['system']['syncookies_adaptend']) ? $config['system']['syncookies_adaptend'] : null;
     $pconfig['keepcounters'] = !empty($config['system']['keepcounters']);
     $pconfig['pfdebug'] = !empty($config['system']['pfdebug']) ?  $config['system']['pfdebug'] : 'urgent';
+
+    /* XXX wrong storage location */
+    $pconfig['logdefaultblock'] = empty($config['syslog']['nologdefaultblock']);
+    $pconfig['logdefaultpass'] = empty($config['syslog']['nologdefaultpass']);
+    $pconfig['logoutboundnat'] = !empty($config['syslog']['logoutboundnat']);
+    $pconfig['logbogons'] = empty($config['syslog']['nologbogons']);
+    $pconfig['logprivatenets'] = empty($config['syslog']['nologprivatenets']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     $input_errors = array();
@@ -132,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['lb_use_sticky']);
         }
 
-        if ($pconfig['noantilockout'] == "yes") {
+        if (!empty($pconfig['noantilockout'])) {
             $config['system']['webgui']['noantilockout'] = true;
         } elseif (isset($config['system']['webgui']['noantilockout'])) {
             unset($config['system']['webgui']['noantilockout']);
@@ -142,12 +148,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['srctrack'] = $pconfig['srctrack'];
         } elseif (isset($config['system']['srctrack'])) {
             unset($config['system']['srctrack']);
-        }
-
-        if (!empty($pconfig['ipv6allow'])) {
-            $config['system']['ipv6allow'] = true;
-        } elseif (isset($config['system']['ipv6allow'])) {
-            unset($config['system']['ipv6allow']);
         }
 
         if (!empty($pconfig['disablefilter'])) {
@@ -241,8 +241,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['syncookies_adaptstart']);
             unset($config['system']['syncookies_adaptend']);
         }
+
         $config['system']['keepcounters'] = !empty($pconfig['keepcounters']);
         $config['system']['pfdebug'] = !empty($pconfig['pfdebug']) ? $pconfig['pfdebug'] : '';
+
+        if (empty($config['syslog'])) {
+            $config['syslog'] = [];
+        }
+
+        $config['syslog']['nologdefaultblock'] = empty($pconfig['logdefaultblock']);
+        $config['syslog']['nologdefaultpass'] = empty($pconfig['logdefaultpass']);
+        $config['syslog']['nologbogons'] = empty($pconfig['logbogons']);
+        $config['syslog']['nologprivatenets'] = empty($pconfig['logprivatenets']);
+        $config['syslog']['logoutboundnat'] = !empty($pconfig['logoutboundnat']);
 
         write_config();
 
@@ -290,29 +301,6 @@ include("head.inc");
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td style="width:22%"><strong><?= gettext('IPv6 Options') ?></strong></td>
-                <td style="width:78%; text-align:right">
-                  <small><?=gettext("full help"); ?> </small>
-                  <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_ipv6allow" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Allow IPv6"); ?></td>
-                <td>
-                  <input name="ipv6allow" type="checkbox" value="yes" <?= !empty($pconfig['ipv6allow']) ? "checked=\"checked\"" :"";?> onclick="enable_change(false)" />
-                  <?=gettext("Allow IPv6"); ?>
-                  <div class="hidden" data-for="help_for_ipv6allow">
-                    <?=gettext("All IPv6 traffic will be blocked by the firewall unless this box is checked."); ?><br />
-                    <?=gettext("NOTE: This does not disable any IPv6 features on the firewall, it only blocks traffic."); ?><br />
-                  </div>
-                </td>
-              </tr>
-<?php           if (count($config['interfaces']) > 1): ?>
-            </table>
-          </div>
-          <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped opnsense_standard_table_form">
-              <tr>
                 <td style="width:22%"><strong><?= gettext('Network Address Translation') ?></strong></td>
                 <td style="width:78%"></td>
               </tr>
@@ -345,7 +333,6 @@ include("head.inc");
                   </div>
                 </td>
               </tr>
-<?php           endif; ?>
             </table>
           </div>
           <div class="content-box tab-content table-responsive __mb">
@@ -469,6 +456,55 @@ include("head.inc");
                     <?=gettext("By default schedules clear the states of existing connections when the expiration time has come. ".
                                         "This option overrides that behavior by not clearing states for existing connections."); ?>
                   </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
+              <tr>
+                <td style="width:22%"><strong><?= gettext('Logging') ?></strong></td>
+                <td style="width:78%"></td>
+              </tr>
+              <tr>
+                <td><a id="help_for_logdefaultblock" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Default block') ?></td>
+                <td>
+                  <input name="logdefaultblock" type="checkbox" value="yes" <?=!empty($pconfig['logdefaultblock']) ? "checked=\"checked\"" : ""; ?> />
+                  <?=gettext("Log packets matched from the default block rules");?>
+                  <div class="hidden" data-for="help_for_logdefaultblock">
+                    <?=gettext("Packets that are blocked by the implicit default block rule will not be logged if you uncheck this option. Per-rule logging options are still respected.");?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_logdefaultpass" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Default pass') ?></td>
+                <td>
+                  <input name="logdefaultpass" type="checkbox" id="logdefaultpass" value="yes" <?=!empty($pconfig['logdefaultpass']) ? "checked=\"checked\"" :""; ?> />
+                  <?=gettext("Log packets matched from the default pass rules");?>
+                  <div class="hidden" data-for="help_for_logdefaultpass">
+                    <?=gettext("Packets that are allowed by the implicit default pass rule will be logged if you check this option. Per-rule logging options are still respected.");?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Outbound NAT') ?></td>
+                <td>
+                  <input name="logoutboundnat" type="checkbox" id="logoutboundnat" value="yes" <?= !empty($pconfig['logoutboundnat']) ? 'checked="checked"' : '' ?> />
+                  <?= gettext('Log packets matched by automatic outbound NAT rules') ?>
+                </td>
+              </tr>
+              <tr>
+                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Bogon networks') ?></td>
+                <td>
+                  <input name="logbogons" type="checkbox" id="logbogons" value="yes" <?=!empty($pconfig['logbogons']) ? "checked=\"checked\"" : ""; ?> />
+                  <?=gettext("Log packets blocked by 'Block Bogon Networks' rules");?>
+                </td>
+              </tr>
+              <tr>
+                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Private networks') ?></td>
+                <td>
+                  <input name="logprivatenets" type="checkbox" id="logprivatenets" value="yes" <?= !empty($pconfig['logprivatenets']) ? 'checked="checked"' : '' ?> />
+                  <?=gettext("Log packets blocked by 'Block Private Networks' rules");?>
                 </td>
               </tr>
             </table>

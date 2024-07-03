@@ -1,4 +1,2 @@
-kea-dhcp4.conf:/usr/local/etc/kea/kea-dhcp4.conf
 rc.conf.d:/etc/rc.conf.d/kea
 keactrl.conf:/usr/local/etc/kea/keactrl.conf
-kea-ctrl-agent.conf:/usr/local/etc/kea/kea-ctrl-agent.conf

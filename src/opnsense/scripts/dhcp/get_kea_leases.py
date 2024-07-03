@@ -29,6 +29,7 @@
 import ipaddress
 import subprocess
 import argparse
+import os
 import csv
 import ujson
 
@@ -38,7 +39,7 @@ if __name__ == '__main__':
     parser.add_argument('--proto', help='protocol to fetch (inet, inet6)', default='inet', choices=['inet'])
     inputargs = parser.parse_args()
     if inputargs.proto == 'inet':
-        filename = '/tmp/kea-leases4.csv' # '/var/db/kea/kea-leases4.csv'
+        filename = '/var/db/kea/kea-leases4.csv'
 
     ranges = {}
     this_interface = None
@@ -51,18 +52,34 @@ if __name__ == '__main__':
 
     result = {'records': []}
     header = None
-    with open(filename, 'r') as csvfile:
-        for idx, record in enumerate(csv.reader(csvfile, delimiter=',', quotechar='"')):
-            if idx == 0:
-                header = record
-            elif header:
-                named_record = {'if': None}
-                for findx, field in enumerate(record):
-                    if findx < len(header):
-                        named_record[header[findx]] = field
-                for net in ranges:
-                    if net.overlaps(ipaddress.ip_network(named_record['address'])):
-                        named_record['if'] = ranges[net]
-                result['records'].append(named_record)
+    # Lease processing after cleanup according to KEA
+    # https://github.com/isc-projects/kea/blob/ef1f878f5272d/src/lib/dhcpsrv/memfile_lease_mgr.h#L1039-L1051
+    if os.path.isfile('%s.completed' % filename):
+        filenames = ['%s.completed' % filename, filename]
+    else:
+        filenames = ['%s.2' % filename, '%s.1' % filename, filename]
 
-    print (ujson.dumps(result))
+    leases = {}
+    for filename in filenames:
+        if not os.path.isfile(filename):
+            continue
+        with open(filename, 'r') as csvfile:
+            for idx, record in enumerate(csv.reader(csvfile, delimiter=',', quotechar='"')):
+                rec_key = ','.join(record[:2])
+                if idx == 0:
+                    header = record
+                elif header:
+                    named_record = {'if': None}
+                    for findx, field in enumerate(record):
+                        if findx < len(header):
+                            named_record[header[findx]] = field
+                    if rec_key in leases:
+                        named_record['if'] = leases[rec_key]['if']
+                    else:
+                        # prevent additional range check when lease was already found in an earlier set.
+                        for net in ranges:
+                            if net.overlaps(ipaddress.ip_network(named_record['address'])):
+                                named_record['if'] = ranges[net]
+                    leases[rec_key] = named_record
+
+    print (ujson.dumps({'records': list(leases.values())}))

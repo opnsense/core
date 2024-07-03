@@ -60,9 +60,7 @@
                     <Mask>/^(.){1,255}$/</Mask>
                     <ValidationMessage>Input too long.</ValidationMessage>
                 </parameters>
-                <description type="TextField">
-                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
-                    <ValidationMessage>Enter a description.</ValidationMessage>
+                <description type="DescriptionField">
                     <Required>Y</Required>
                 </description>
             </job>

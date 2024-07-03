@@ -29,7 +29,7 @@
 namespace OPNsense\Firewall;
 
 use OPNsense\Core\Config;
-use Phalcon\Messages\Message;
+use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
 use OPNsense\Firewall\Util;
 
@@ -40,6 +40,8 @@ class Filter extends BaseModel
      */
     public function performValidation($validateFullModel = false)
     {
+        $config = Config::getInstance()->object();
+
         // standard model validations
         $messages = parent::performValidation($validateFullModel);
         foreach ([$this->rules->rule, $this->snatrules->rule] as $rules) {
@@ -95,21 +97,76 @@ class Filter extends BaseModel
                 }
             }
         }
+
         foreach ($this->npt->rule->iterateItems() as $rule) {
             if ($validateFullModel || $rule->isFieldChanged()) {
-                if (!empty((string)$rule->destination_net) && !empty((string)$rule->trackif)) {
-                    $messages->appendMessage(new Message(
-                        gettext("A track interface is only allowed without an extrenal prefix."),
-                        $rule->trackif->__reference
-                    ));
+                if (!empty((string)$rule->trackif)) {
+                    if (!empty((string)$rule->destination_net)) {
+                        $messages->appendMessage(new Message(
+                            gettext('A track interface is only allowed without an external prefix.'),
+                            $rule->trackif->__reference
+                        ));
+                    }
+
+                    if (
+                        (empty($config->interfaces->{$rule->interface}->ipaddrv6) ||
+                        $config->interfaces->{$rule->interface}->ipaddrv6 != 'dhcp6') ||
+                        empty($config->interfaces->{$rule->trackif}->{'track6-interface'}) ||
+                        $config->interfaces->{$rule->trackif}->{'track6-interface'} != (string)$rule->interface
+                    ) {
+                        $messages->appendMessage(new Message(
+                            gettext('This interface is not tracking the current rule interface.'),
+                            $rule->trackif->__reference
+                        ));
+                    }
                 }
+
                 if (!empty((string)$rule->destination_net) && !empty((string)$rule->source_net)) {
-                    $dparts = explode('/', (string)$rule->destination_net);
-                    $sparts = explode('/', (string)$rule->source_net);
-                    if (count($dparts) == 2 && count($sparts) == 2 && $dparts[1] != $sparts[1]) {
+                    /* defaults to /128 */
+                    $dparts = explode('/', (string)$rule->destination_net . '/128');
+                    $sparts = explode('/', (string)$rule->source_net . '/128');
+                    if ($dparts[1] != $sparts[1]) {
                         $messages->appendMessage(new Message(
                             gettext("External subnet should match internal subnet."),
                             $rule->destination_net->__reference
+                        ));
+                    }
+                }
+            }
+        }
+        /* 1 to 1 mappings */
+        foreach ($this->onetoone->rule->iterateItems() as $rule) {
+            if ($validateFullModel || $rule->isFieldChanged()) {
+                $ipprotos = [];
+                $subnets = [];
+                foreach (['source_net', 'destination_net', 'external'] as $fieldname) {
+                    $subnets[$fieldname] = null;
+                    if (Util::isSubnet($rule->$fieldname) || Util::isIpAddress($rule->$fieldname)) {
+                        $ipprotos[$fieldname] = strpos($rule->$fieldname, ':') === false ? "inet" : "inet6";
+                        $subnet_default = $ipprotos[$fieldname] == 'inet' ? '32' : '128';
+                        $subnets[$fieldname] = explode('/', $rule->$fieldname . '/' . $subnet_default)[1];
+                    }
+                }
+                if (count(array_unique(array_values($ipprotos))) > 1) {
+                    foreach (array_keys($ipprotos) as $fieldname) {
+                        $messages->appendMessage(new Message(
+                            gettext("IP protocol families should match."),
+                            $rule->$fieldname->__reference
+                        ));
+                    }
+                }
+
+                if ($rule->type == 'binat' && !empty((string)$rule->enabled)) {
+                    /* binat rules are more strict,  when not enabled, we may skip the validations to ease migration */
+                    if (empty($ipprotos['source_net'])) {
+                        $messages->appendMessage(new Message(
+                            gettext("For BINAT rules only addresses or subnets are allowed."),
+                            $rule->source_net->__reference
+                        ));
+                    } elseif ($subnets['external'] != $subnets['source_net']) {
+                        $messages->appendMessage(new Message(
+                            gettext("External subnet should match internal subnet."),
+                            $rule->external->__reference
                         ));
                     }
                 }

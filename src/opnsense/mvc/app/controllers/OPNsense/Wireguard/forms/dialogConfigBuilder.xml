@@ -1,0 +1,73 @@
+<form>
+    <field>
+        <id>configbuilder.servers</id>
+        <label>Instance</label>
+        <type>dropdown</type>
+        <help>Choose an instance to create a new peer for.</help>
+    </field>
+    <field>
+        <id>configbuilder.endpoint</id>
+        <label>Endpoint</label>
+        <type>text</type>
+        <help>Specify how to reach the instance, usually the public address of this firewall. (e.g. my.endpoint.local:51820)</help>
+    </field>
+    <field>
+        <id>configbuilder.name</id>
+        <label>Name</label>
+        <type>text</type>
+        <help>Set the name for this peer.</help>
+    </field>
+    <field>
+        <id>configbuilder.pubkey</id>
+        <label>Public key</label>
+        <type>text</type>
+        <help>Public key of this peer. You can generate the key using the private key piped to "wg pubkey".</help>
+    </field>
+    <field>
+        <id>configbuilder.privkey</id>
+        <label>Private key</label>
+        <type>text</type>
+        <help>Private key of this peer, not stored on this host, only used for the configuration below.</help>
+    </field>
+    <field>
+        <id>configbuilder.address</id>
+        <label>Address</label>
+        <type>text</type>
+        <help>List of addresses to use on the remote peer, these will be allowed (and optionally routed) from this instance.</help>
+    </field>
+    <field>
+        <id>configbuilder.psk</id>
+        <label>Pre-shared key</label>
+        <type>text</type>
+        <help>Optional shared secret (PSK) for this peer.</help>
+    </field>
+    <field>
+        <id>configbuilder.tunneladdress</id>
+        <label>Allowed IPs</label>
+        <type>text</type>
+        <help>List of networks allowed to pass through the tunnel adapter. Use CIDR notation like 10.0.0.0/24.</help>
+    </field>
+    <field>
+        <id>configbuilder.keepalive</id>
+        <label>Keepalive interval</label>
+        <type>text</type>
+        <help>Set persistent keepalive interval in seconds.</help>
+    </field>
+    <field>
+        <id>configbuilder.peer_dns</id>
+        <label>DNS Servers</label>
+        <type>text</type>
+        <help>Comma-separated list of DNS servers to use on the peer.</help>
+    </field>
+    <field>
+        <id>configbuilder.output</id>
+        <label>Config</label>
+        <type>textbox</type>
+    </field>
+    <field>
+        <label>Store and generate next</label>
+        <id>configbuilder.store_btn</id>
+        <type>info</type>
+        <help>Store the public parts of this peer and generate a keypair for the next.</help>
+    </field>
+</form>

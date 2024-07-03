@@ -115,10 +115,8 @@
                     <MaximumValue>3000</MaximumValue>
                     <ValidationMessage>Please choose a value between 1 and 3000</ValidationMessage>
                 </delay>
-                <description type="TextField">
+                <description type="DescriptionField">
                     <Required>Y</Required>
-                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
-                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </pipe>
         </pipes>
@@ -200,10 +198,8 @@
                         </check001>
                     </Constraints>
                 </pie_enable>
-                <description type="TextField">
+                <description type="DescriptionField">
                     <Required>Y</Required>
-                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
-                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
                 <origin type="TextField">
                     <Mask>/^([a-z,A-Z,1-9]){0,30}$/</Mask>
@@ -349,9 +345,7 @@
                     <ValidationMessage>Related pipe or queue not found</ValidationMessage>
                     <Required>Y</Required>
                 </target>
-                <description type="TextField">
-                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</Mask>
-                </description>
+                <description type="DescriptionField"/>
                 <origin type="TextField">
                     <Mask>/^([a-z,A-Z,1-9]){0,30}$/</Mask>
                     <ValidationMessage>origin should be regular text of max 30 characters</ValidationMessage>

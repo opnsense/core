@@ -118,8 +118,17 @@ class ArrayField extends BaseField
      */
     public function add()
     {
-        $new_record = array();
+        $nodeUUID = $this->generateUUID();
+        $container_node = $this->newContainerField($this->__reference . "." . $nodeUUID, $this->internalXMLTagName);
+
+        $template_ref = $this->internalTemplateNode->__reference;
         foreach ($this->internalTemplateNode->iterateItems() as $key => $node) {
+            $new_node = clone $node;
+            $new_node->setInternalReference($container_node->__reference . "." . $key);
+            $new_node->applyDefault();
+            $new_node->setChanged();
+            $container_node->addChildNode($key, $new_node);
+
             if ($node->isContainer()) {
                 foreach ($node->iterateRecursiveItems() as $subnode) {
                     if (is_a($subnode, "OPNsense\\Base\\FieldTypes\\ArrayField")) {
@@ -127,18 +136,19 @@ class ArrayField extends BaseField
                         throw new \Exception("Unsupported copy, Array doesn't support nesting.");
                     }
                 }
-            }
-            $new_record[$key] = clone $node;
-        }
 
-        $nodeUUID = $this->generateUUID();
-        $container_node = $this->newContainerField($this->__reference . "." . $nodeUUID, $this->internalXMLTagName);
-        foreach ($new_record as $key => $node) {
-            // initialize field with new internal id and defined default value
-            $node->setInternalReference($container_node->__reference . "." . $key);
-            $node->applyDefault();
-            $node->setChanged();
-            $container_node->addChildNode($key, $node);
+                /**
+                 * XXX: incomplete, only supports one nesting level of container fields. In the long run we probably
+                 *      should refactor the add() function to push identifiers differently.
+                 */
+                foreach ($node->iterateItems() as $subkey => $subnode) {
+                    $new_subnode = clone $subnode;
+                    $new_subnode->setInternalReference($new_node->__reference . "." . $subkey);
+                    $new_subnode->applyDefault();
+                    $new_subnode->setChanged();
+                    $new_node->addChildNode($subkey, $new_subnode);
+                }
+            }
         }
 
         // make sure we have a UUID on repeating child items
@@ -192,12 +202,13 @@ class ArrayField extends BaseField
             $sortKey = '';
             foreach ($fieldNames as $fieldName) {
                 if (isset($node->internalChildnodes[$fieldName])) {
-                    if (is_numeric((string)$node->$fieldName)) {
+                    $payload = $node->$fieldName->getDescription();
+                    if (is_numeric($payload)) {
                         // align numeric values right for sorting, not perfect but works for integer type values
-                        $sortKey .= sprintf("%" . $MAX_KEY_LENGTH . "s,", $node->$fieldName);
+                        $sortKey .= sprintf("%" . $MAX_KEY_LENGTH . "s,", $payload);
                     } else {
                         // normal text sorting, align left
-                        $sortKey .= sprintf("%-" . $MAX_KEY_LENGTH . "s,", $node->$fieldName);
+                        $sortKey .= sprintf("%-" . $MAX_KEY_LENGTH . "s,", $payload);
                     }
                 }
             }
@@ -263,5 +274,84 @@ class ArrayField extends BaseField
             }
         }
         return false;
+    }
+
+    /**
+     * @param bool $include_static include non importable static items
+     * @param array $exclude fieldnames to exclude
+     * @return array simple array set
+     */
+    public function asRecordSet($include_static = false, $exclude = [])
+    {
+        $records = [];
+        $iterator =  $include_static ? $this->iterateItems() : parent::iterateItems();
+        foreach ($iterator as $akey => $anode) {
+            $record = [];
+            foreach ($anode->iterateItems() as $tag => $node) {
+                if (!in_array($tag, $exclude)) {
+                    $record[$tag] = (string)$node;
+                }
+            }
+            $records[] = $record;
+        }
+        return $records;
+    }
+
+    /**
+     * @param array $records payload to merge
+     * @param array $keyfields search criteria
+     * @param function $data_callback inline data modification
+     * @return array exceptions
+     */
+    public function importRecordSet($records, $keyfields = [], $data_callback = null)
+    {
+        $results = ['validations' => [], 'inserted' => 0, 'updated' => 0, 'uuids' => []];
+        $records = is_array($records) ? $records : [];
+        $current = [];
+        if (!empty($keyfields)) {
+            foreach (parent::iterateItems() as $node) {
+                $keydata = [];
+                foreach ($keyfields as $keyfield) {
+                    $keydata[] = (string)$node->$keyfield;
+                }
+                $key = implode("\n", $keydata);
+                if (isset($current[$key])) {
+                    $current[$key] = null;
+                } else {
+                    $current[$key] = $node;
+                }
+            }
+        }
+
+        foreach ($records as $idx => $record) {
+            if (is_callable($data_callback)) {
+                $data_callback($record);
+            }
+            $keydata = [];
+            foreach ($keyfields as $keyfield) {
+                $keydata[] = (string)$record[$keyfield] ?? '';
+            }
+            $key = implode("\n", $keydata);
+            $node = null;
+            if (isset($current[$key])) {
+                if ($current[$key] === null) {
+                    $results['validations'][] = ['sequence' => $idx, 'message' => gettext('Duplicate key entry found')];
+                    continue;
+                } else {
+                    $node = $current[$key];
+                }
+            }
+            if ($node === null) {
+                $results['inserted'] += 1;
+                $node = $this->add();
+            } else {
+                $results['updated'] += 1;
+            }
+            $results['uuids'][$node->getAttributes()['uuid']] = $idx;
+            foreach ($record as $fieldname => $content) {
+                $node->$fieldname = (string)$content;
+            }
+        }
+        return $results;
     }
 }

@@ -120,10 +120,10 @@ include("fbegin.inc");?>
         <section class="col-xs-12">
           <div class="content-box wizard" style="padding: 20px;">
             <div class="table-responsive">
-<?php if (file_exists("/usr/local/opnsense/www/themes/{$themename}/build/images/default-logo.svg")): ?>
-              <img src=" <?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.svg") ?>" border="0" alt="logo" style="max-width:380px;" />
+<?php if (get_themed_filename('/images/default-logo.svg', true)): ?>
+              <img src="<?= cache_safe(get_themed_filename('/images/default-logo.svg')) ?>" border="0" alt="logo" style="max-width:380px;" />
 <?php else: ?>
-              <img src=" <?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.png") ?>" border="0" alt="logo" style="max-width:380px;" />
+              <img src="<?= cache_safe(get_themed_filename('/images/default-logo.png')) ?>" border="0" alt="logo" style="max-width:380px;" />
 <?php endif ?>
               <br />
               <div class="content-box-main" style="padding-bottom:0px;">

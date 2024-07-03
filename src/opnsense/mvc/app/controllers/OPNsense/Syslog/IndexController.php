@@ -42,8 +42,12 @@ class IndexController extends \OPNsense\Base\IndexController
      */
     public function indexAction()
     {
+        // local settings form
+        $this->view->localForm = $this->getForm('local');
+
         // link destination dialog
         $this->view->formDialogDestination = $this->getForm("dialogDestination");
+
         // choose template
         $this->view->pick('OPNsense/Syslog/index');
     }

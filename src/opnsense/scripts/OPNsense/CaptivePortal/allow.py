@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2024 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -28,48 +28,28 @@
     --------------------------------------------------------------------------------------
     allow user/host to captive portal
 """
+import argparse
 import sys
 import ujson
 from lib.db import DB
 from lib.arp import ARP
 from lib.ipfw import IPFW
 
-# parse input parameters
-parameters = {'username': '', 'ip_address': None, 'zoneid': None, 'authenticated_via': None, 'output_type': 'plain'}
-current_param = None
-for param in sys.argv[1:]:
-    if len(param) > 1 and param[0] == '/':
-        current_param = param[1:].lower()
-    elif current_param is not None:
-        if current_param in parameters:
-            parameters[current_param] = param.strip()
-        current_param = None
+parser = argparse.ArgumentParser()
+parser.add_argument('-username', help='username', type=str, required=True)
+parser.add_argument('-zoneid', help='zone number to allow this user in', type=str, required=True)
+parser.add_argument('-authenticated_via', help='authentication source', type=str)
+parser.add_argument('-ip_address', help='source ip address', type=str)
+args = parser.parse_args()
 
-# create new session
-if parameters['ip_address'] is not None and parameters['zoneid'] is not None:
-    cpDB = DB()
-    cpIPFW = IPFW()
-    arp_entry = ARP().get_by_ipaddress(parameters['ip_address'])
-    if arp_entry is not None:
-        mac_address = arp_entry['mac']
-    else:
-        mac_address = None
-
-    response = cpDB.add_client(zoneid=parameters['zoneid'],
-                               authenticated_via=parameters['authenticated_via'],
-                               username=parameters['username'],
-                               ip_address=parameters['ip_address'],
-                               mac_address=mac_address
-                               )
-    cpIPFW.add_to_table(table_number=parameters['zoneid'], address=parameters['ip_address'])
-    response['clientState'] = 'AUTHORIZED'
-else:
-    response = {'clientState': 'UNKNOWN'}
-
-
-# output result as plain text or json
-if parameters['output_type'] != 'json':
-    for item in response:
-        print ('%20s %s' % (item, response[item]))
-else:
-    print(ujson.dumps(response))
+arp_entry = ARP().get_by_ipaddress(args.ip_address)
+response = DB().add_client(
+    zoneid=args.zoneid,
+    authenticated_via=args.authenticated_via,
+    username=args.username,
+    ip_address=args.ip_address,
+    mac_address=arp_entry['mac'] if arp_entry is not None else None
+)
+IPFW().add_to_table(table_number=args.zoneid, address=args.ip_address)
+response['clientState'] = 'AUTHORIZED'
+print(ujson.dumps(response))

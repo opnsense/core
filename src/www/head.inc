@@ -1,17 +1,5 @@
 <?php
 
-function system_get_language_code()
-{
-    global $config;
-
-    if (isset($config['system']['language'])) {
-        // a language code, as per [RFC3066]
-        return htmlspecialchars(str_replace("_", "-", $config['system']['language']), ENT_QUOTES | ENT_HTML401);
-    }
-
-    return 'en-US';
-}
-
 // link menu system
 $menu = new OPNsense\Base\Menu\MenuSystem();
 /* XXX generating breadcrumbs requires getItems() call */
@@ -22,13 +10,11 @@ if (isset($extraBreadcrumb)) {
     $menuBreadcrumbs[] = array('name' => $extraBreadcrumb);
 }
 
-$themename = html_safe(get_current_theme());
-
 $pagetitle = html_safe(gentitle(array_reverse($menuBreadcrumbs), ' | '));
 $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $config['system']['domain']));
 
 ?><!doctype html>
-<html lang="<?=system_get_language_code();?>" class="no-js">
+<html lang="<?= get_current_lang() ?>" class="no-js">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -44,7 +30,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     <title><?= $pagetitle ?></title>
 
     <!-- include (theme) style -->
-    <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/themes/{$themename}/build/css/main.css") ?>">
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename('/css/main.css')) ?>">
 
     <!-- TODO: move to theme style -->
     <style>
@@ -77,7 +63,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     </style>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="<?= cache_safe("/ui/themes/{$themename}/build/images/favicon.png") ?>">
+    <link rel="shortcut icon" href="<?= cache_safe(get_themed_filename('/images/favicon.png')) ?>">
 
     <!-- legacy browser functions -->
     <script src="<?= cache_safe("/ui/js/polyfills.js") ?>"></script>
@@ -275,7 +261,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     });
     //]]>
     </script>
-<?php if (file_exists("/usr/local/opnsense/www/themes/{$themename}/build/js/theme.js")): ?>
-    <script src="<?= cache_safe("/ui/themes/{$themename}/build/js/theme.js") ?>"></script>
+<?php if (get_themed_filename('/js/theme.js', true)): ?>
+    <script src="<?= cache_safe(get_themed_filename('/js/theme.js')) ?>"></script>
 <?php endif ?>
 </head>

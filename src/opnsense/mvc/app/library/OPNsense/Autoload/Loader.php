@@ -1,0 +1,63 @@
+<?php
+
+/*
+ * Copyright (C) 2024 Deciso B.V.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+namespace OPNsense\Autoload;
+
+class Loader
+{
+    private $probe_dirs = [];
+    private $is_registered = false;
+    private $classes_loaded = [];
+
+    public function __construct($dirs = null)
+    {
+        $this->probe_dirs = $dirs;
+    }
+
+    protected function autoload($className)
+    {
+        if (!in_array($className, $this->classes_loaded)) {
+            $class_path = str_replace("\\", DIRECTORY_SEPARATOR, $className) . '.php';
+            foreach ($this->probe_dirs as $dirname) {
+                $dirname = rtrim($dirname, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+                if (is_file($dirname . $class_path)) {
+                    require_once($dirname . $class_path);
+                }
+            }
+            $this->classes_loaded[] = $className;
+        }
+    }
+
+    public function register()
+    {
+        if (!$this->is_registered) {
+            spl_autoload_register([$this, "autoload"], true);
+            $this->is_registered = true;
+        }
+    }
+}

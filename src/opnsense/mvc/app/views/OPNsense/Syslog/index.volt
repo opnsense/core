@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2019 Deciso B.V.
+ # Copyright (c) 2019-2024 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -25,8 +25,13 @@
  #}
 
 <script>
-
     $( document ).ready(function() {
+        var data_get_map = {'frm_local_settings':"/api/syslog/settings/get"};
+        mapDataToFormUI(data_get_map).done(function(data){
+            formatTokenizersUI();
+            $('.selectpicker').selectpicker('refresh');
+        });
+
         $("#grid-destinations").UIBootgrid(
             {   search:'/api/syslog/settings/searchDestinations',
                 get:'/api/syslog/settings/getDestination/',
@@ -43,10 +48,30 @@
                 });
             }
         });
-        /**
-         * Reconfigure syslog
-         */
-        $("#reconfigureAct").SimpleActionButton();
+
+        $("#reconfigureAct").SimpleActionButton({
+            onPreAction: function () {
+              const dfObj = new $.Deferred();
+              saveFormToEndpoint("/api/syslog/settings/set", 'frm_local_settings', function () { dfObj.resolve(); }, true, function () { dfObj.reject(); });
+              return dfObj;
+            }
+        });
+        $("#resetAct").SimpleActionButton({
+            onPreAction: function () {
+                const dfObj = new $.Deferred();
+                BootstrapDialog.show({
+                    type:BootstrapDialog.TYPE_DANGER,
+                    closable: false, // otherwise the spinner keeps running
+                    title: "{{ lang._('Syslog') }}",
+                    message: "{{ lang._('Do you really want to reset the log files? This will erase all local log data.') }}",
+                    buttons: [
+                        { label: "{{ lang._('No') }}", action: function(dialogRef) { dialogRef.close(); dfObj.reject(); } },
+                        { cssClass: 'btn-danger', label: "{{ lang._('Yes') }}", action: function(dialogRef) { dialogRef.close(); dfObj.resolve(); } }
+                   ]
+                });
+                return dfObj;
+            }
+        })
         updateServiceControlUI('syslog');
 
         $("#destination\\.transport").change(function(){
@@ -60,16 +85,20 @@
             });
         });
     });
-
 </script>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-    <li class="active"><a data-toggle="tab" id="destinations" href="#tab_destinations">{{ lang._('Destinations') }}</a></li>
+    <li class="active"><a data-toggle="tab" id="local" href="#tab_local">{{ lang._('Local') }}</a></li>
+    <li><a data-toggle="tab" id="remote" href="#tab_remote">{{ lang._('Remote') }}</a></li>
     <li><a data-toggle="tab" id="statistics" href="#tab_statistics">{{ lang._('Statistics') }}</a></li>
 </ul>
 <div class="tab-content content-box">
-    <div id="tab_destinations" class="tab-pane fade in active">
-        <!-- tab page "destinations" -->
+    <div id="tab_local" class="tab-pane fade in active __mb">
+        <!-- tab page "local" -->
+        {{ partial("layout_partials/base_form",['fields':localForm,'id':'frm_local_settings'])}}
+    </div>
+    <div id="tab_remote" class="tab-pane fade in">
+        <!-- tab page "remote" -->
         <table id="grid-destinations" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogDestination" data-editAlert="syslogChangeMessage">
             <thead>
             <tr>
@@ -93,6 +122,7 @@
             </tr>
             </tfoot>
         </table>
+        <hr/>
     </div>
     <div id="tab_statistics" class="tab-pane fade in">
         <table id="grid-statistics" class="table table-condensed table-hover table-striped table-responsive">
@@ -110,20 +140,25 @@
             <tbody>
             </tbody>
         </table>
+        <hr/>
     </div>
-    <div class="col-md-12">
+    <div class="col-md-12 __mb">
         <div id="syslogChangeMessage" class="alert alert-info" style="display: none" role="alert">
             {{ lang._('After changing settings, please remember to apply them with the button below') }}
         </div>
-        <hr/>
         <button class="btn btn-primary" id="reconfigureAct"
                 data-endpoint='/api/syslog/service/reconfigure'
                 data-label="{{ lang._('Apply') }}"
                 data-service-widget="syslog"
-                data-error-title="{{ lang._('Error reconfiguring syslog') }}"
+                data-error-title="{{ lang._('Error reconfiguring Syslog') }}"
                 type="button"
         ></button>
-        <br/><br/>
+        <button class="btn pull-right" id="resetAct"
+                data-endpoint='/api/syslog/service/reset'
+                data-label="{{ lang._('Reset Log Files') }}"
+                data-error-title="{{ lang._('Error resetting Syslog') }}"
+                type="button"
+        ></button>
     </div>
 </div>
 

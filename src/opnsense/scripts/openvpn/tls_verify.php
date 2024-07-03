@@ -28,7 +28,6 @@
  */
 require_once("script/load_phalcon.php");
 require_once("util.inc");
-require_once("certs.inc");
 
 /**
  * verify certificate depth
@@ -42,12 +41,12 @@ function do_verify($serverid)
         return "OpenVPN '$serverid' was not found. Denying authentication for user {$username}";
     }
     $certificate_depth = getenv('certificate_depth') !== false ? getenv('certificate_depth') : 0;
-    $allowed_depth = !empty($a_server['cert_depth']) ? $a_server['cert_depth'] : 1;
+    $allowed_depth = !empty($a_server['cert_depth']) ? $a_server['cert_depth'] : $certificate_depth;
     if ($certificate_depth > $allowed_depth) {
         return "Certificate depth {$certificate_depth} exceeded max allowed depth of {$allowed_depth}.";
     } elseif ($a_server['use_ocsp'] && $certificate_depth == 0) {
         $serial = getenv('tls_serial_' . $certificate_depth);
-        $ocsp_response = ocsp_validate("/var/etc/openvpn/instance-" . $serverid . ".ca", $serial);
+        $ocsp_response = OPNsense\Trust\Store::ocsp_validate("/var/etc/openvpn/instance-" . $serverid . ".ca", $serial);
         if (!$ocsp_response['pass']) {
             return sprintf(
                 "[serial : %s] @ %s - %s (%s)",

@@ -29,16 +29,15 @@
 import argparse
 import asyncio
 import decimal
+import ipaddress
 import subprocess
 import os
 import sys
 import math
 import ujson
-import netaddr
 import dns.resolver
 from dns.asyncresolver import Resolver
 from concurrent.futures import ThreadPoolExecutor
-from netaddr import IPNetwork, IPAddress, AddrFormatError
 
 
 def iftop(interface, target):
@@ -57,11 +56,11 @@ def local_addresses():
     for line in sp.stdout.split('\n'):
         if line.find('\tinet') > -1:
             try:
-                ip = IPAddress(line.split()[1].split('%')[0])
-            except AddrFormatError:
+                ip = ipaddress.ip_address(line.split()[1].split('%')[0])
+            except ValueError:
                 ip = None
 
-            if ip and not ip.is_loopback() and not ip.is_link_local():
+            if ip and not ip.is_loopback and not ip.is_link_local:
                 result.append(ip)
     return result
 
@@ -148,10 +147,10 @@ if __name__ == '__main__':
                 }
                 # attach tags (type of address)
                 try:
-                    ip = IPAddress(parts[0])
+                    ip = ipaddress.ip_address(parts[0])
                     if ip in all_local_addresses:
                         item['tags'].append('local')
-                    if ip.is_private():
+                    if ip.is_private:
                         item['tags'].append('private')
                 except subprocess.TimeoutExpired:
                     pass

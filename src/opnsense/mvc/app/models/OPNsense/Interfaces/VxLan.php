@@ -28,7 +28,7 @@
 
 namespace OPNsense\Interfaces;
 
-use Phalcon\Messages\Message;
+use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
 
 class VxLan extends BaseModel
@@ -39,17 +39,13 @@ class VxLan extends BaseModel
 
         // Initialize variables
         foreach ($this->vxlan->iterateItems() as $vxlan) {
+            $key = $vxlan->__reference;
             $vxlangroup = (string) $vxlan->vxlangroup;
             $vxlanremote = (string) $vxlan->vxlanremote;
             $vxlandev = (string) $vxlan->vxlandev;
 
             // Validate that values in Fields have been changed, prevents configuration save lockout when invalid data is present.
-            if (
-                $validateFullModel ||
-                $vxlan->vxlangroup->isFieldChanged() ||
-                $vxlan->vxlanremote->isFieldChanged() ||
-                $vxlan->vxlandev->isFieldChanged()
-            ) {
+            if ($validateFullModel || $vxlan->isFieldChanged()) {
                 // Validation 1: At least one of vxlangroup and vxlanremote must be populated, but not both.
                 if (
                     (!empty($vxlangroup) && !empty($vxlanremote)) ||
@@ -57,12 +53,12 @@ class VxLan extends BaseModel
                 ) {
                     $messages->appendMessage(new Message(
                         gettext("Remote address -or- Multicast group has to be specified"),
-                        "vxlan.vxlanremote",
+                        $key . ".vxlanremote",
                         "GroupOrRemote"
                     ));
                     $messages->appendMessage(new Message(
                         gettext("Multicast group -or- Remote address has to be specified"),
-                        "vxlan.vxlangroup",
+                        $key . ".vxlangroup",
                         "GroupOrRemote"
                     ));
                 }
@@ -71,7 +67,7 @@ class VxLan extends BaseModel
                 if (!empty($vxlanremote) && !empty($vxlandev)) {
                     $messages->appendMessage(new Message(
                         gettext("Remote address is specified, Device must be None"),
-                        "vxlan.vxlandev",
+                        $key . ".vxlandev",
                         "DeviceRequirementForRemote"
                     ));
                 }
@@ -80,7 +76,7 @@ class VxLan extends BaseModel
                 if (!empty($vxlangroup) && empty($vxlandev)) {
                     $messages->appendMessage(new Message(
                         gettext("Multicast group is specified, a Device must also be specified"),
-                        "vxlan.vxlandev",
+                        $key . ".vxlandev",
                         "DeviceRequirementForGroup"
                     ));
                 }

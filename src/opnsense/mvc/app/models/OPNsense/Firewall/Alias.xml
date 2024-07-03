@@ -78,10 +78,7 @@
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Related category not found.</ValidationMessage>
                 </categories>
-                <description type="TextField">
-                    <Mask>/^(.){1,255}$/u</Mask>
-                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
-                </description>
+                <description type="DescriptionField"/>
             </alias>
         </aliases>
     </items>

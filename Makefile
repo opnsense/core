@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2023 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2024 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -123,7 +123,7 @@ CORE_COPYRIGHT_YEARS?=	2014-2024
 CORE_DEPENDS_aarch64?=	py${CORE_PYTHON}-duckdb \
 			py${CORE_PYTHON}-numpy \
 			py${CORE_PYTHON}-pandas \
-			suricata-devel
+			suricata
 
 CORE_DEPENDS_amd64?=	beep \
 			${CORE_DEPENDS_aarch64}
@@ -132,6 +132,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			choparp \
 			cpustats \
 			dhcp6c \
+			dhcrelay \
 			dnsmasq \
 			dpinger \
 			expiretable \
@@ -141,7 +142,6 @@ CORE_DEPENDS?=		ca_root_nss \
 			hostapd \
 			ifinfo \
 			iftop \
-			isc-dhcp44-relay \
 			isc-dhcp44-server \
 			kea \
 			lighttpd \
@@ -189,9 +189,9 @@ CORE_DEPENDS?=		ca_root_nss \
 			sudo \
 			syslog-ng \
 			unbound \
-			wireguard-kmod \
 			wpa_supplicant \
 			zip \
+			${CORE_ADDITIONS} \
 			${CORE_DEPENDS_${CORE_ARCH}}
 
 WRKDIR?=${.CURDIR}/work
@@ -245,8 +245,8 @@ manifest:
 		fi; \
 	done
 	@echo "}"
-	@if [ -f ${WRKSRC}/usr/local/opnsense/version/core ]; then \
-	    echo "annotations $$(cat ${WRKSRC}/usr/local/opnsense/version/core)"; \
+	@if [ -f ${WRKSRC}${LOCALBASE}/opnsense/version/core ]; then \
+	    echo "annotations $$(cat ${WRKSRC}${LOCALBASE}/opnsense/version/core)"; \
 	fi
 
 .if ${.TARGETS:Mupgrade}
@@ -324,7 +324,7 @@ package: plist-check package-check clean-wrksrc
 	@${CORE_MAKE} DESTDIR=${WRKSRC} install
 	@echo " done"
 	@echo ">>> Generated version info for ${CORE_NAME}-${CORE_PKGVERSION}:"
-	@cat ${WRKSRC}/usr/local/opnsense/version/core
+	@cat ${WRKSRC}${LOCALBASE}/opnsense/version/core
 	@echo -n ">>> Generating metadata for ${CORE_NAME}-${CORE_PKGVERSION}..."
 	@${CORE_MAKE} DESTDIR=${WRKSRC} metadata
 	@echo " done"
@@ -409,10 +409,6 @@ lint: plist-check lint-shell lint-xml lint-model lint-exec lint-php
 sweep:
 	find ${.CURDIR}/src -type f -name "*.map" -print0 | \
 	    xargs -0 -n1 rm
-	if grep -nr sourceMappingURL= ${.CURDIR}/src; then \
-		echo "Mentions of sourceMappingURL must be removed"; \
-		exit 1; \
-	fi
 	find ${.CURDIR}/src ! -name "*.min.*" ! -name "*.svg" \
 	    ! -name "*.ser" -type f -print0 | \
 	    xargs -0 -n1 ${.CURDIR}/Scripts/cleanfile
@@ -460,7 +456,7 @@ license: debug
 
 sync: license plist-fix
 
-ARGS=	diff mfc
+ARGS=	diff feed mfc
 
 # handle argument expansion for required targets
 .for TARGET in ${.TARGETS}
@@ -489,6 +485,9 @@ diff: ensure-stable
 	else \
 		git diff --stat -p ${CORE_STABLE} ${.CURDIR}/${diff_ARGS:[1]}; \
 	fi
+
+feed: ensure-stable
+	@git log --stat -p --reverse ${CORE_STABLE}...${feed_ARGS:[1]}~1
 
 mfc: ensure-stable clean-mfcdir
 .for MFC in ${mfc_ARGS}
@@ -520,6 +519,11 @@ devel ${CORE_DEVEL}:
 rebase:
 	@git checkout ${CORE_STABLE}
 	@git rebase -i
+	@git checkout ${CORE_DEVEL}
+
+reset:
+	@git checkout ${CORE_STABLE}
+	@git reset --hard HEAD~1
 	@git checkout ${CORE_DEVEL}
 
 log: ensure-stable

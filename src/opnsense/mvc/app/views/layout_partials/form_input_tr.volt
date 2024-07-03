@@ -74,10 +74,12 @@
         {% elseif type == "checkbox" %}
             <input type="checkbox"  class="{{style|default('')}}" id="{{ id }}">
         {% elseif type in ["select_multiple", "dropdown"] %}
+            <div id="select_{{ id }}">
             <select {% if type == 'select_multiple' %}multiple="multiple"{% endif %}
                     data-size="{{size|default(10)}}"
                     id="{{ id }}"
                     class="{{style|default('selectpicker')}}"
+                    data-container="body"
                     {% if hint|default(false) %}data-hint="{{hint}}"{% endif %}
                     data-width="{{width|default("346px")}}"
                     data-allownew="{{allownew|default("false")}}"
@@ -86,12 +88,26 @@
                     {% if separator|default(false) %}data-separator="{{separator}}"{% endif %}
             ></select>
             {% if type == 'select_multiple' %}
-              {% if style|default('selectpicker') != "tokenize" %}<br />{% endif %}
-              <a href="#" class="text-danger" id="clear-options_{{ id }}"><i class="fa fa-times-circle"></i> <small>{{ lang._('Clear All') }}</small></a>
-              {% if style|default('selectpicker') == "tokenize" %}&nbsp;&nbsp;<a href="#" class="text-danger" id="copy-options_{{ id }}"><i class="fa fa-copy"></i> <small>{{ lang._('Copy') }}</small></a>
+              <?php $this_style = explode(' ', $style ?? '');?>
+              {% if "tokenize" not in this_style  %}<br />{% endif %}
+                <a href="#" class="text-danger" id="clear-options_{{ id }}"><i class="fa fa-times-circle"></i> <small>{{ lang._('Clear All') }}</small></a>
+              {% if "tokenize" in this_style  %}&nbsp;&nbsp;<a href="#" class="text-danger" id="copy-options_{{ id }}"><i class="fa fa-copy"></i> <small>{{ lang._('Copy') }}</small></a>
               &nbsp;&nbsp;<a href="#" class="text-danger" id="paste-options_{{ id }}" style="display:none"><i class="fa fa-paste"></i> <small>{{ lang._('Paste') }}</small></a>
+              {%    if allownew|default("false") %}
+              &nbsp;&nbsp;<a href="#" class="text-danger" id="to-text_{{ id }}" ><i class="fa fa-file-text-o"></i> <small>{{ lang._('Text') }}</small> </a>
+              {%    endif %}
+              {% else %}
+                &nbsp;
+                <a href="#" class="text-danger" id="select-options_{{ id }}"><i class="fa fa-check-circle"></i> <small>{{ lang._('Select All') }}</small></a>
               {% endif %}
             {% endif %}
+            </div>
+            <div id="textarea_{{ id }}" style="display: none;">
+                <textarea>
+
+                </textarea>
+                <a href="#" class="text-danger" id="to-select_{{ id }}" ><i class="fa fa-th-list"></i> <small>{{ lang._('Back') }}</small> </a>
+            </div>
         {% elseif type == "password" %}
             <input type="password" autocomplete="new-password" class="form-control {{style|default('')}}" size="{{size|default("50")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} >
         {% elseif type == "textbox" %}

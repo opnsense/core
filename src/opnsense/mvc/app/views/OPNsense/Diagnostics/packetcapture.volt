@@ -121,7 +121,7 @@
                                   )
                                 ).append(
                                    $("<td>").append(
-                                     $("<span style='width:100%'/>").html($("<code/>").html(line.raw))
+                                     $("<span style='width:100%; word-break: break-word;'/>").html($("<code/>").html(line.raw))
                                    )
                                 )
                               );

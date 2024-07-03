@@ -216,7 +216,7 @@ EOD;
     $lighty_port = $port;
 
     $lighty_use_syslog = '';
-    if (!isset($config['syslog']['nologlighttpd'])) {
+    if (empty($config['syslog']['nologlighttpd'])) {
         $lighty_use_syslog = <<<EOD
 ## where to send error/access-messages to
 server.syslog-facility = "daemon"
@@ -350,10 +350,11 @@ mimetype.assign             = (
 
 ## deny access the file-extensions
 #
-# ~    is for backupfiles from vi, emacs, joe, ...
-# .inc is often used for code includes which should in general not be part
-#      of the document-root
-url.access-deny             = ( "~", ".inc" )
+# ~     is for backupfiles from vi, emacs, joe, ...
+# .core is for core dumps that may be created during PHP execution
+# .inc  is often used for code includes which should in general not be part
+#       of the document-root
+url.access-deny             = ( "~", , ".core", ".inc" )
 
 
 ######### Options that are good to be but not necessary to be changed #######
@@ -433,8 +434,9 @@ EOD;
             $listener = "[{$listener}]";
         }
         $lighty_config .= "\$SERVER[\"socket\"] == \"{$listener}:{$lighty_port}\" {\n";
+        $lighty_config .= "\t\$HTTP[\"url\"] =~ \"^/api/\" {\n\t\tserver.stream-response-body = 2\n\t}\n";
         if ($config['system']['webgui']['protocol'] == "https") {
-            $lighty_config .= '    ssl.engine = "enable"' . PHP_EOL;
+            $lighty_config .= "\tssl.engine = \"enable\"" . PHP_EOL;
         }
         $lighty_config .= "}\n";
     }

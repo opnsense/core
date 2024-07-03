@@ -36,6 +36,8 @@ from hashlib import md5
 import argparse
 import ujson
 import subprocess
+import time
+import select
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from log_helper import reverse_log_reader
 from params import update_params
@@ -74,7 +76,6 @@ def fetch_rule_details():
     """ Fetch rule descriptions from the current running config if available
         :return : rule details per line number
     """
-    line_id_map = dict()
     if os.path.isfile('/tmp/rules.debug'):
         # parse running config, fetch all md5 hashed labels
         rule_map = dict()
@@ -87,101 +88,140 @@ def fetch_rule_details():
                         if len(rule_md5) == 32 and set(rule_md5).issubset(HEX_DIGITS):
                             rule_map[rule_md5] = ''.join(lbl.split('"')[2:]).strip().strip('# : ')
 
-
     return rule_map
+
+def parse_record(record, running_conf_descr):
+    """ parse filterlog record
+        :return: rule
+    """
+    rule = dict()
+    metadata = dict()
+    # rule metadata (unique hash, hostname, timestamp)
+    if re.search('filterlog\[\d*\]:', record['line']):
+        # rfc3164 format
+        log_ident = re.split('filterlog[^:]*:', record['line'])
+        tmp = log_ident[0].split()
+        metadata['__host__'] = tmp.pop()
+        metadata['__timestamp__'] = ' '.join(tmp)
+        rulep = log_ident[1].strip().split(',')
+    else:
+        # rfc5424 format
+        tmp = record['line'].split()
+        metadata['__timestamp__'] = tmp[1].split('+')[0]
+        metadata['__host__'] = tmp[2]
+        rulep = tmp[-1].strip().split(',')
+
+    metadata['__digest__'] = md5(record['line'].encode()).hexdigest()
+    update_rule(rule, metadata, rulep, fields_general)
+
+    if 'action' not in rule:
+        # not a filter log line, skip
+        return None
+    elif 'ipversion' in rule:
+        if rule['ipversion'] == '4':
+            update_rule(rule, metadata, rulep, fields_ipv4)
+            if 'protonum' in rule:
+                if rule['protonum'] == '17': # UDP
+                    update_rule(rule, metadata, rulep, fields_ipv4_udp)
+                elif rule['protonum'] == '6': # TCP
+                    update_rule(rule, metadata, rulep, fields_ipv4_tcp)
+                elif rule['protonum'] == '112': # CARP
+                    update_rule(rule, metadata, rulep, fields_ipv4_carp)
+        elif rule['ipversion'] == '6':
+            update_rule(rule, metadata, rulep, fields_ipv6)
+            if 'protonum' in rule:
+                if rule['protonum'] == '17': # UDP
+                    update_rule(rule, metadata, rulep, fields_ipv6_udp)
+                elif rule['protonum'] == '6': # TCP
+                    update_rule(rule, metadata, rulep, fields_ipv6_tcp)
+                elif rule['protonum'] == '112': # CARP
+                    update_rule(rule, metadata, rulep, fields_ipv6_carp)
+
+    rule.update(metadata)
+    rule['label'] = ''
+    if rule['rid'] != '0':
+        # rule id in latest record format, don't use rule sequence number in that case
+        if rule['rid'] in running_conf_descr:
+            rule['label'] = running_conf_descr[rule['rid']]
+    elif rule['action'] not in ['pass', 'block']:
+        # no id for translation rules
+        rule['label'] = "%s rule" % rule['action']
+    elif len(rulep) > 0 and len(rulep[-1]) == 32 and set(rulep[-1]).issubset(HEX_DIGITS):
+        # rule id appended in record format, don't use rule sequence number in that case either
+        rule['rid'] = rulep[-1]
+        if rulep[-1] in running_conf_descr:
+            rule['label'] = running_conf_descr[rulep[-1]]
+        # obsolete md5 in log record
+        else:
+            rule['label'] = ''
+
+    return rule
 
 
 if __name__ == '__main__':
     # read parameters
-    parameters = {'limit': '0', 'digest': ''}
+    parameters = {'limit': '0', 'digest': '', 'stream': False, 'nlines': '5'}
     update_params(parameters)
     parameters['limit'] = int(parameters['limit'])
 
     # parse current running config
     running_conf_descr = fetch_rule_details()
 
-    result = list()
-    filter_logs = []
-    if os.path.isdir('/var/log/filter'):
-        filter_logs = list(sorted(glob.glob("/var/log/filter/filter_*.log"), reverse=True))
-    if os.path.isfile('/var/log/filter.log'):
-        filter_logs.append('/var/log/filter.log')
+    if parameters['stream'] != False:
+        # tail symlink to latest log, use -F to follow file rotation
+        f = subprocess.Popen(
+            ['tail', '-n' + parameters['nlines'], '-F', '/var/log/filter/latest.log'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            bufsize=0,
+            text=True
+        )
 
-    for filename in filter_logs:
-        do_exit = False
-        for record in reverse_log_reader(filename):
-            if record['line'].find('filterlog') > -1:
-                rule = dict()
-                metadata = dict()
-                # rule metadata (unique hash, hostname, timestamp)
-                if re.search('filterlog\[\d*\]:', record['line']):
-                    # rfc3164 format
-                    log_ident = re.split('filterlog[^:]*:', record['line'])
-                    tmp = log_ident[0].split()
-                    metadata['__host__'] = tmp.pop()
-                    metadata['__timestamp__'] = ' '.join(tmp)
-                    rulep = log_ident[1].strip().split(',')
-                else:
-                    # rfc5424 format
-                    tmp = record['line'].split()
-                    metadata['__timestamp__'] = tmp[1].split('+')[0]
-                    metadata['__host__'] = tmp[2]
-                    rulep = tmp[-1].strip().split(',')
-
-                metadata['__digest__'] = md5(record['line'].encode()).hexdigest()
-                update_rule(rule, metadata, rulep, fields_general)
-
-                if 'action' not in rule:
-                    # not a filter log line, skip
+        last_t = time.time()
+        try:
+            while True:
+                ready, _, _ = select.select([f.stdout], [], [], 1)
+                if not ready:
+                    # timeout, send keepalive
+                    print("event: keepalive\ndata:\n\n", flush=True)
                     continue
-                elif 'ipversion' in rule:
-                    if rule['ipversion'] == '4':
-                        update_rule(rule, metadata, rulep, fields_ipv4)
-                        if 'protonum' in rule:
-                            if rule['protonum'] == '17': # UDP
-                                update_rule(rule, metadata, rulep, fields_ipv4_udp)
-                            elif rule['protonum'] == '6': # TCP
-                                update_rule(rule, metadata, rulep, fields_ipv4_tcp)
-                            elif rule['protonum'] == '112': # CARP
-                                update_rule(rule, metadata, rulep, fields_ipv4_carp)
-                    elif rule['ipversion'] == '6':
-                        update_rule(rule, metadata, rulep, fields_ipv6)
-                        if 'protonum' in rule:
-                            if rule['protonum'] == '17': # UDP
-                                update_rule(rule, metadata, rulep, fields_ipv6_udp)
-                            elif rule['protonum'] == '6': # TCP
-                                update_rule(rule, metadata, rulep, fields_ipv6_tcp)
-                            elif rule['protonum'] == '112': # CARP
-                                update_rule(rule, metadata, rulep, fields_ipv6_carp)
-
-                rule.update(metadata)
-                rule['label'] = ''
-                if rule['rid'] != '0':
-                    # rule id in latest record format, don't use rule sequence number in that case
-                    if rule['rid'] in running_conf_descr:
-                        rule['label'] = running_conf_descr[rule['rid']]
-                elif rule['action'] not in ['pass', 'block']:
-                    # no id for translation rules
-                    rule['label'] = "%s rule" % rule['action']
-                elif len(rulep) > 0 and len(rulep[-1]) == 32 and set(rulep[-1]).issubset(HEX_DIGITS):
-                    # rule id appended in record format, don't use rule sequence number in that case either
-                    rule['rid'] = rulep[-1]
-                    if rulep[-1] in running_conf_descr:
-                        rule['label'] = running_conf_descr[rulep[-1]]
-                    # obsolete md5 in log record
-                    else:
-                        rule['label'] = ''
-
-                result.append(rule)
-
-                # handle exit criteria, row limit or last digest
-                if parameters['limit'] != 0 and len(result) >= parameters['limit']:
-                    do_exit = True
-                elif parameters['digest'].strip() != '' and parameters['digest'] == rule['__digest__']:
-                    do_exit = True
-                if do_exit:
+                line = f.stdout.readline()
+                if line and line.find('filterlog') > -1:
+                    t = time.time()
+                    if (t - last_t) > 30:
+                        # update running conf
+                        last_t = t
+                        running_conf_descr = fetch_rule_details()
+                    rule = parse_record({'line': line}, running_conf_descr)
+                    if rule != None:
+                        print(f"event: message\ndata: {ujson.dumps(rule)}\n\n", flush=True)
+                else:
                     break
-        if do_exit:
-            break
+        except KeyboardInterrupt:
+            f.kill()
+    else:
+        result = list()
+        filter_logs = []
+        if os.path.isdir('/var/log/filter'):
+            filter_logs = list(sorted(glob.glob("/var/log/filter/filter_*.log"), reverse=True))
+        if os.path.isfile('/var/log/filter.log'):
+            filter_logs.append('/var/log/filter.log')
 
-    print (ujson.dumps(result))
+        for filename in filter_logs:
+            do_exit = False
+            for record in reverse_log_reader(filename):
+                if record['line'].find('filterlog') > -1:
+                    rule = parse_record(record, running_conf_descr)
+                    if (rule != None):
+                        result.append(rule)
+                    # handle exit criteria, row limit or last digest
+                    if parameters['limit'] != 0 and len(result) >= parameters['limit']:
+                        do_exit = True
+                    elif parameters['digest'].strip() != '' and parameters['digest'] == rule['__digest__']:
+                        do_exit = True
+                    if do_exit:
+                        break
+            if do_exit:
+                break
+
+        print (ujson.dumps(result))

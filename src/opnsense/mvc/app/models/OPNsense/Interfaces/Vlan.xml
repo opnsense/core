@@ -47,7 +47,7 @@
                     <opt2 value="802.1ad">802.1ad</opt2>
                 </OptionValues>
             </proto>
-            <descr type="TextField"/>
+            <descr type="DescriptionField"/>
             <vlanif type="TextField">
               <Required>Y</Required>
               <Constraints>

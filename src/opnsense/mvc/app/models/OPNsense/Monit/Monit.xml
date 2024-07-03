@@ -1,6 +1,6 @@
 <model>
    <mount>//OPNsense/monit</mount>
-   <version>1.0.12</version>
+   <version>1.0.13</version>
    <description>Monit settings</description>
    <items>
       <general>
@@ -22,12 +22,11 @@
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>Start Delay needs to be an integer value between 0 and 86400</ValidationMessage>
          </startdelay>
-         <mailserver type="CSVListField">
+         <mailserver type="HostnameField">
             <Default>127.0.0.1</Default>
             <Required>Y</Required>
-            <Multiple>Y</Multiple>
-            <Mask>/^([0-9a-zA-Z\.,_\-:]){0,1024}$/u</Mask>
-            <ChangeCase>lower</ChangeCase>
+            <asList>Y</asList>
+            <FieldSeparator>,</FieldSeparator>
             <ValidationMessage>Please specify a valid servername or IP address.</ValidationMessage>
          </mailserver>
          <port type="IntegerField">
@@ -76,9 +75,26 @@
          <httpdEnabled type="BooleanField">
             <Default>0</Default>
             <Required>Y</Required>
+            <Constraints>
+                <check002>
+                    <reference>httpdPassword.check001</reference>
+                </check002>
+            </Constraints>
          </httpdEnabled>
-         <httpdUsername type="TextField"/>
-         <httpdPassword type="TextField"/>
+         <httpdUsername type="TextField">
+            <Default>root</Default>
+            <Required>Y</Required>
+         </httpdUsername>
+         <httpdPassword type="TextField">
+            <Constraints>
+                <check001>
+                    <ValidationMessage>A value is required.</ValidationMessage>
+                    <type>SetIfConstraint</type>
+                    <field>httpdEnabled</field>
+                    <check>1</check>
+                </check001>
+            </Constraints>
+	 </httpdPassword>
          <httpdPort type="IntegerField">
             <Default>2812</Default>
             <Required>Y</Required>
@@ -155,10 +171,7 @@
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>Reminder needs to be an integer value between 0 and 86400</ValidationMessage>
          </reminder>
-         <description type="TextField">
-            <Mask>/^.{1,255}$/u</Mask>
-            <ValidationMessage>Enter a description.</ValidationMessage>
-         </description>
+         <description type="DescriptionField"/>
       </alert>
       <service type="ArrayField">
          <enabled type="BooleanField">
@@ -176,7 +189,7 @@
                </check001>
             </Constraints>
          </name>
-         <description type="TextField"/>
+         <description type="DescriptionField"/>
          <type type="OptionField">
             <Required>Y</Required>
             <OptionValues>

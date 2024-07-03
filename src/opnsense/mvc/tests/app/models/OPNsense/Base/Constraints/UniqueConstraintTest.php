@@ -34,9 +34,8 @@ use OPNsense\Base\FieldTypes\TextField;
 
 class UniqueTestContainer extends ArrayField
 {
-    private $uniqueConstraints = [];
-    private $valuesRequired = false;
-    private $internalNodes = [];
+    private bool $valuesRequired = false;
+    private array $internalNodes = [];
 
     /**
      * @param $nodes a single node or an array of nodes
@@ -48,47 +47,48 @@ class UniqueTestContainer extends ArrayField
     {
         // UniqueConstraint requires a depth of 2, so add a container node
         $container = new ContainerField();
-        $constraint = new UniqueConstraint();
-        $this->addChildNode('UniqueTest', $container);
-        $addFields = [];
-        $fields_added = false;
+        $idx = count($this->internalNodes);
+        $this->addChildNode('item' . $idx, $container);
         foreach ($nodes as $name => $value) {
             $node = new TextField(null, $name);
             $node->setRequired($this->valuesRequired ? "Y" : "N");
-            if ($name === array_key_first($nodes)) {
-                $constraint->setOption('node', $node);
-                $constraint->setOption('name', $name);
-                $constraint->setOption('ValidationMessage', 'Validation Failed');
-            } else {
-                $addFields[] = $name;
-                $fields_added = true;
-            }
-            $node->setValue($value);
+            $node->setValue((string)$value);
             $container->addChildNode($name, $node);
-            $this->internalNodes[] = $node;
         }
-
-        if ($fields_added) {
-            $constraint->setOption('addFields', $addFields);
-        }
-
-        $this->uniqueConstraints[] = $constraint;
+        $this->internalNodes[] = $nodes;
     }
 
     public function setRequired($required)
     {
         $this->valuesRequired = $required;
 
-        foreach ($this->internalNodes as $node) {
-            /* cover earlier set nodes */
-            $node->setRequired($this->valuesRequired ? "Y" : "N");
+        foreach ($this->iterateItems() as $records) {
+            foreach ($records->iterateItems() as $node) {
+                /* cover earlier set nodes */
+                $node->setRequired($this->valuesRequired ? "Y" : "N");
+            }
         }
     }
 
     public function validate()
     {
+        $uniqueConstraints = [];
         $validator = new \OPNsense\Base\Validation();
-        foreach ($this->uniqueConstraints as $idx => $constraint) {
+        foreach ($this->internalNodes as $idx => $nodes) {
+            $addFields = [];
+            $constraint = new UniqueConstraint();
+            foreach ($nodes as $name => $value) {
+                if ($name === array_key_first($nodes)) {
+                    $constraint->setOption('node', $this->{'item' . $idx}->$name);
+                    $constraint->setOption('name', $name);
+                    $constraint->setOption('ValidationMessage', 'Validation Failed');
+                } else {
+                    $addFields[] = $name;
+                }
+            }
+            if ($addFields) {
+                $constraint->setOption('addFields', $addFields);
+            }
             $validator->add($idx, $constraint);
         }
         $msgs = $validator->validate([]);
@@ -106,12 +106,13 @@ class UniqueConstraintTest extends \PHPUnit\Framework\Testcase
         $container->addNode(['unique_test' => 'value2']);
 
         $msgs = $container->validate();
-        $this->assertEquals(0, $msgs->count());
+        $this->assertEquals(0, count($msgs));
 
         $container->addNode(['unique_test' => 'value1']);
 
         $msgs = $container->validate();
-        $this->assertEquals(1, $msgs->count());
+
+        $this->assertEquals(2, count($msgs));
     }
 
     public function testMultipleNonEqualAndEqualValues()
@@ -121,12 +122,12 @@ class UniqueConstraintTest extends \PHPUnit\Framework\Testcase
         $container->addNode(['unique_test' => 'value1', 'unique_test2' => 'value3']);
 
         $msgs = $container->validate();
-        $this->assertEquals(0, $msgs->count());
+        $this->assertEquals(0, count($msgs));
 
         $container->addNode(['unique_test' => 'value1', 'unique_test2' => 'value2']);
 
         $msgs = $container->validate();
-        $this->assertEquals(1, $msgs->count());
+        $this->assertEquals(2, count($msgs));
     }
 
     public function testEmptyValuesNotRequiredAndRequired()
@@ -137,13 +138,13 @@ class UniqueConstraintTest extends \PHPUnit\Framework\Testcase
 
         $msgs = $container->validate();
 
-        $this->assertEquals(0, $msgs->count());
+        $this->assertEquals(0, count($msgs));
 
         $container->setRequired(true);
 
         $msgs = $container->validate();
 
-        $this->assertEquals(1, $msgs->count());
+        $this->assertEquals(2, count($msgs));
     }
 
     public function testMultipleEmptyValuesNotRequiredAndRequired()
@@ -151,16 +152,15 @@ class UniqueConstraintTest extends \PHPUnit\Framework\Testcase
         $container = new UniqueTestContainer();
         $container->addNode(['unique_test' => '', 'unique_test2' => '']);
         $container->addNode(['unique_test' => '', 'unique_test2' => '']);
-
         $msgs = $container->validate();
 
-        $this->assertEquals(0, $msgs->count());
+        $this->assertEquals(0, count($msgs));
 
         $container->setRequired(true);
 
         $msgs = $container->validate();
 
-        $this->assertEquals(1, $msgs->count());
+        $this->assertEquals(2, count($msgs));
     }
 
     public function testFirstValueEmptyPassAll()
@@ -171,12 +171,12 @@ class UniqueConstraintTest extends \PHPUnit\Framework\Testcase
 
         $msgs = $container->validate();
 
-        $this->assertEquals(0, $msgs->count());
+        $this->assertEquals(0, count($msgs));
 
         $container->setRequired(true);
 
         $msgs = $container->validate();
 
-        $this->assertEquals(1, $msgs->count());
+        $this->assertEquals(2, count($msgs));
     }
 }

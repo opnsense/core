@@ -115,18 +115,18 @@ function firewall_rule_item_proto($filterent)
       "mtraceresp" => gettext("mtrace response"),
       "mtrace" => gettext("mtrace messages")
     );
-    if (isset($filterent['protocol']) && $filterent['protocol'] == 'icmp' && !empty($filterent['icmptype'])) {
+    if (isset($filterent['protocol']) && $filterent['protocol'] == 'icmp') {
         $result = $record_ipprotocol;
-        $icmplabel = $icmptypes[$filterent['icmptype']] ?? $filterent['icmptype'];
+        $icmplabel = $icmptypes[$filterent['icmptype'] ?? ''] ?? $filterent['icmptype'];
         $result .= sprintf(
           '<span data-toggle="tooltip" title="ICMP type: %s">%s</span>',
           html_safe($icmplabel),
           isset($filterent['protocol']) ? strtoupper($filterent['protocol']) : '*'
         );
         return $result;
-    } elseif (isset($filterent['protocol']) && !empty($filterent['icmp6-type'])) {
+    } elseif (isset($filterent['protocol']) && $filterent['protocol'] == 'ipv6-icmp') {
         $result = $record_ipprotocol;
-        $icmplabel = $icmp6types[$filterent['icmp6-type']] ?? $filterent['icmp6-type'];
+        $icmplabel = $icmp6types[$filterent['icmp6-type'] ?? ''] ?? $filterent['icmp6-type'];
         $result .= sprintf(
           '<span data-toggle="tooltip" title="ICMP6 type: %s">%s</span>',
           html_safe($icmplabel),
@@ -717,16 +717,16 @@ $( document ).ready(function() {
                         <i class="fa fa-question-circle" data-toggle="collapse" data-target=".rule_md5_hash" ></i>
                       </td>
                       <td class="text-nowrap button-th">
-                        <a href="<?= url_safe('firewall_rules_edit.php?if=%s', array($selected_if)) ?>" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                        <a href="<?= url_safe('firewall_rules_edit.php?if=%s', array($selected_if)) ?>" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>" aria-label="<?= html_safe(gettext('Add')) ?>">
                           <i class="fa fa-plus fa-fw"></i>
                         </a>
-                        <button id="move_<?= count($a_filter) ?>" name="move_<?= count($a_filter) ?>_x" data-toggle="tooltip" title="<?= html_safe(gettext('Move selected rules to end')) ?>" class="act_move btn btn-default btn-xs">
+                        <button id="move_<?= count($a_filter) ?>" name="move_<?= count($a_filter) ?>_x" data-toggle="tooltip" title="<?= html_safe(gettext('Move selected rules to end')) ?>" class="act_move btn btn-default btn-xs" aria-label="<?=gettext("Move selected rules to end"); ?>">
                           <i class="fa fa-arrow-left fa-fw"></i>
                         </button>
-                        <button id="del_x" title="<?= html_safe(gettext('Delete selected')) ?>" data-toggle="tooltip" class="act_delete btn btn-default btn-xs">
+                        <button id="del_x" title="<?= html_safe(gettext('Delete selected')) ?>" data-toggle="tooltip" class="act_delete btn btn-default btn-xs" aria-label="<?=gettext("delete selected"); ?>">
                           <i class="fa fa-trash fa-fw"></i>
                         </button>
-                        <button title="<?= html_safe(gettext('Enable selected')) ?>" data-toggle="tooltip" class="act_toggle_enable btn btn-default btn-xs">
+                        <button title="<?= html_safe(gettext('Enable selected')) ?>" data-toggle="tooltip" class="act_toggle_enable btn btn-default btn-xs" aria-label="<?=gettext("Enable selected"); ?>">
                           <i class="fa fa-check-square-o fa-fw"></i>
                         </button>
                         <button title="<?= html_safe(gettext('Disable selected')) ?>" data-toggle="tooltip" class="act_toggle_disable btn btn-default btn-xs">
@@ -751,6 +751,7 @@ $( document ).ready(function() {
                     'floating' => gettext('Floating rules'),
                     'group' => gettext('Group rules'),
                     'internal2' => gettext('Automatically generated rules (end of ruleset)'),
+                    'automation'  => gettext('Rules from Automation'),
                 ];
                 foreach ($fw->iterateFilterRules() as $rule):
                     $is_selected = false;
@@ -771,7 +772,7 @@ $( document ).ready(function() {
                     } elseif (($rule->getInterface() == "" || strpos($rule->getInterface(), ",") !== false) && $selected_if == "FloatingRules") {
                         // floating type of rule and "floating" view
                         $is_selected = true;
-                    } elseif ($rule->getInterface() == "" || in_array($selected_if, explode(',', $rule->getInterface())) || in_array($rule->getInterface(), $ifgroups)) {
+                    } elseif ($rule->getInterface() == "" || !empty(array_intersect(array_merge([$selected_if], $ifgroups), explode(',', $rule->getInterface())))) {
                         // rule is floating or of group type and matches this interface
                         $is_selected = true;
                     }
@@ -836,7 +837,7 @@ $( document ).ready(function() {
                               <a style="cursor: pointer;" title="<?=html_safe(gettext('Affects all interfaces'));?>" data-placement='bottom' data-toggle="tooltip">
                                 <?=$intf_count;?>
                               </a>
-                          <?php elseif ($intf_count != '1' || $selected_if == 'FloatingRules'): ?>
+                          <?php elseif ($intf_count != '1' || $selected_if != $rule->getInterface() || $selected_if == 'FloatingRules'): ?>
                             <?= !empty($rule->getRawRule()['interfacenot']) ? '!' : '';?>
                             <a style="cursor: pointer;" class='interface_tooltip' data-interfaces="<?=$rule->getInterface();?>">
                               <?=$intf_count;?>
@@ -995,7 +996,7 @@ $( document ).ready(function() {
                       </div>
                     </td>
                     <td>
-                      <button id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("Move selected rules before this rule")) ?>" class="act_move btn btn-default btn-xs">
+                      <button id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("Move selected rules before this rule")) ?>" class="act_move btn btn-default btn-xs" aria-label="<?= html_safe(gettext("Move selected rules before this rule")) ?>">
                         <i class="fa fa-arrow-left fa-fw"></i>
                       </button>
 <?php if (isset($filterent['type'])): ?>
@@ -1004,14 +1005,14 @@ $( document ).ready(function() {
                       // if for some reason (broken config) a rule is in there which doesn't have a related nat rule
                       // make sure we are able to delete it.
 ?>
-                      <a href="firewall_rules_edit.php?if=<?=$selected_if;?>&id=<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs">
+                      <a href="firewall_rules_edit.php?if=<?=$selected_if;?>&id=<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" aria-label="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs">
                         <i class="fa fa-pencil fa-fw"></i>
                       </a>
-                      <a href="firewall_rules_edit.php?if=<?=$selected_if;?>&dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Clone')) ?>">
+                      <a href="firewall_rules_edit.php?if=<?=$selected_if;?>&dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Clone')) ?>" aria-label="<?= html_safe(gettext('Clone')) ?>">
                         <i class="fa fa-clone fa-fw"></i>
                       </a>
 <?php endif ?>
-                      <a id="del_<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                      <a id="del_<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs" aria-label="<?= html_safe(gettext('Delete')) ?>">
                         <i class="fa fa-trash fa-fw"></i>
                       </a>
                     </td>

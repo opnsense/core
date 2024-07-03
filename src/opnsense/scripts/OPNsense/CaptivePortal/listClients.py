@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2024 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -26,50 +26,16 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
-    list connected clients for a captive portal zone
+    list connected clients for a (or all) captive portal zone(s)
 """
-import sys
-import time
+import argparse
 import ujson
 from lib.db import DB
 
 # parse input parameters
-parameters = {'zoneid': None, 'output_type': 'plain'}
-current_param = None
-for param in sys.argv[1:]:
-    if len(param) > 1 and param[0] == '/':
-        current_param = param[1:].lower()
-    elif current_param is not None:
-        if current_param in parameters:
-            parameters[current_param] = param.strip()
-        current_param = None
+parser = argparse.ArgumentParser()
+parser.add_argument('-z', help='optional zoneid to filter on', type=str)
+args = parser.parse_args()
 
-if parameters['zoneid'] is not None:
-    response = DB().list_clients(parameters['zoneid'])
-else:
-    response = []
-
-# output result as plain text or json
-if parameters['output_type'] != 'json':
-    heading = {
-        'sessionId': 'sessionid',
-        'userName': 'username',
-        'ipAddress': 'ip_address',
-        'macAddress': 'mac_address',
-        'total_bytes': 'total_bytes',
-        'idletime': 'idletime',
-        'totaltime': 'totaltime',
-        'acc_timeout': 'acc_session_timeout'
-    }
-    heading_format = '%(sessionId)-30s %(userName)-25s %(ipAddress)-20s %(macAddress)-20s '\
-                   + '%(total_bytes)-15s %(idletime)-10s %(totaltime)-10s %(acc_timeout)-10s'
-    print (heading_format % heading)
-    for item in response:
-        item['total_bytes'] = (item['bytes_out'] + item['bytes_in'])
-        item['idletime'] = time.time() - item['last_accessed']
-        item['totaltime'] = time.time() - item['startTime']
-        frmt = '%(sessionId)-30s %(userName)-25s %(ipAddress)-20s %(macAddress)-20s '\
-             + '%(total_bytes)-15s %(idletime)-10d %(totaltime)-10d %(acc_session_timeout)-10s'
-        print (frmt % item)
-else:
-    print(ujson.dumps(response))
+response = DB().list_clients(int(args.z) if str(args.z).isdigit() else None)
+print(ujson.dumps(response))

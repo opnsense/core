@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/wireguard/server</mount>
     <description>WireGuard instance configuration</description>
-    <version>0.0.4</version>
+    <version>1.0.0</version>
     <items>
         <servers>
             <server type=".\ServerField">
@@ -16,21 +16,10 @@
                 </name>
                 <instance type="AutoNumberField">
                     <Required>Y</Required>
+                    <MinimumValue>0</MinimumValue>
                 </instance>
-                <pubkey type="TextField">
-                    <Required>Y</Required>
-                    <ValidationMessage>A public key is required</ValidationMessage>
-                </pubkey>
-                <pubkey type="Base64Field">
-                    <Required>Y</Required>
-                    <Constraints>
-                        <check001>
-                            <ValidationMessage>Public keys should be unique.</ValidationMessage>
-                            <type>UniqueConstraint</type>
-                        </check001>
-                    </Constraints>
-                </pubkey>
-                <privkey type="TextField">
+                <pubkey type="Base64Field"/>
+                <privkey type="Base64Field">
                     <Required>Y</Required>
                     <ValidationMessage>A private key is required</ValidationMessage>
                 </privkey>
@@ -39,8 +28,11 @@
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>9300</MaximumValue>
                 </mtu>
-                <dns type="CSVListField">
-                    <Mask>/^([a-fA-F0-9\.:\[\]]*?,)*([a-fA-F0-9\.:\[\]]*)$/</Mask>
+                <dns type="NetworkField">
+                    <FieldSeparator>,</FieldSeparator>
+                    <asList>Y</asList>
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <WildcardEnabled>N</WildcardEnabled>
                     <ValidationMessage>Please use valid IPv4 or IPv6 addresses.</ValidationMessage>
                 </dns>
                 <tunneladdress type="NetworkField">
@@ -74,8 +66,11 @@
                         </template>
                     </Model>
                     <Multiple>Y</Multiple>
-                    <ValidationMessage>Choose an Peer.</ValidationMessage>
+                    <ValidationMessage>Choose a peer.</ValidationMessage>
                 </peers>
+                <!-- Peer generator storage [default values] -->
+                <endpoint type="TextField"/>
+                <peer_dns type="TextField"/>
             </server>
         </servers>
     </items>

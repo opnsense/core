@@ -30,8 +30,7 @@ namespace OPNsense\Firewall\FieldTypes;
 
 use OPNsense\Base\FieldTypes\BaseField;
 use OPNsense\Base\Validators\CallbackValidator;
-use Phalcon\Filter\Validation\Validator\Regex;
-use Phalcon\Filter\Validation\Validator\ExclusionIn;
+use OPNsense\Firewall\Util;
 
 /**
  * Class AliasNameField
@@ -70,28 +69,26 @@ class AliasNameField extends BaseField
             'upperlimit', 'urpf-failed', 'user'
         );
         if ($this->internalValue != null) {
-            // add validations to deny reserved keywords, service/protocol names and invalid characters
-            $validators[] = new ExclusionIn(array(
-                'message' => sprintf(
-                    gettext('The name cannot be the internally reserved keyword "%s".'),
-                    (string)$this
-                ),
-                'domain' => $reservedwords));
-            $validators[] = new Regex([
-                'message' => gettext('The name must start with a letter or single underscore, be less than 32 characters and only consist of alphanumeric characters or underscores.'),
-                /* avoids single "_" and prefixes of "__" here too */
-                'pattern' => '/^([a-zA-Z]|(([_a-zA-Z][a-zA-Z0-9]|[a-zA-Z][_a-zA-Z0-9])[_a-zA-Z0-9]{0,29}))$/'
-            ]);
             $validators[] = new CallbackValidator(
                 [
-                    "callback" => function ($value) {
+                    "callback" => function ($value) use ($reservedwords) {
+                        $result = [];
+                        /* avoids single "_" and prefixes of "__" here too */
                         if (
-                            getservbyname($value, 'tcp') ||
-                            getservbyname($value, 'udp') || getprotobyname($value)
+                            !preg_match(
+                                '/^([a-zA-Z]|(([_a-zA-Z][a-zA-Z0-9]|[a-zA-Z][_a-zA-Z0-9])[_a-zA-Z0-9]{0,29}))$/',
+                                $value
+                            )
                         ) {
-                            return array(gettext('Reserved protocol or service names may not be used'));
+                            $result[] = gettext('The name must start with a letter or single underscore, be less than 32 characters and only consist of alphanumeric characters or underscores.');
                         }
-                        return array();
+                        if (in_array($value, $reservedwords)) {
+                            $result[] = gettext('The name cannot be the internally reserved keyword "%s".');
+                        }
+                        if (Util::getservbyname($value) || getprotobyname($value)) {
+                            $result[] = gettext('Reserved protocol or service names may not be used');
+                        }
+                        return $result;
                     }
                 ]
             );

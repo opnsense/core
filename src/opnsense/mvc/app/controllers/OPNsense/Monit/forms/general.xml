@@ -92,6 +92,11 @@
       <advanced>true</advanced>
    </field>
    <field>
+      <type>header</type>
+      <label>HTTPD settings</label>
+      <advanced>true</advanced>
+   </field>
+   <field>
       <id>monit.general.httpdEnabled</id>
       <label>Enable HTTPD</label>
       <type>checkbox</type>
@@ -99,10 +104,21 @@
       <advanced>true</advanced>
    </field>
    <field>
+      <id>monit.general.httpdUsername</id>
+      <label>Monit HTTPD Username</label>
+      <type>text</type>
+      <advanced>true</advanced>
+   </field>
+   <field>
+      <id>monit.general.httpdPassword</id>
+      <label>Monit HTTPD Password</label>
+      <type>text</type>
+      <advanced>true</advanced>
+   </field>
+   <field>
       <id>monit.general.httpdPort</id>
       <label>Monit HTTPD Port</label>
       <type>text</type>
-      <help><![CDATA[The listen port of the Monit httpd service.]]></help>
       <advanced>true</advanced>
    </field>
    <field>

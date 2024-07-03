@@ -671,6 +671,11 @@ table{
     padding-right: 10px;
 }
 
+hr {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
 #mainmenu .glyphicon{
     vertical-align: -2px;
 }
@@ -870,5 +875,14 @@ div[data-for*="help_for"] {
 }
 
 #OPNsenseStdWaitDialog div.modal-body {
+  padding: 15px;
+}
+
+.modal-body {
+  max-height: calc(100vh - 265px);
+  overflow-y: auto;
+}
+
+.modal-footer {
   padding: 15px;
 }

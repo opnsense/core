@@ -155,7 +155,7 @@ class ServiceController extends ApiControllerBase
                             $route_entry['id'] = $idx;
                             $route_entry['description'] =  '';
                             if (!empty($config_payload[$idx])) {
-                                $route_entry['description'] = (string)$config_payload[$idx]->description ?? '';
+                                $route_entry['description'] = (string)$config_payload[$idx]['description'] ?? '';
                             }
                             $records[] = $route_entry;
                         }

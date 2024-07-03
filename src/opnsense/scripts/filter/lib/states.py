@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015-2021 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2024 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -161,10 +161,23 @@ def query_states(rule_label, filter_str):
                         record["pkts"] = [int(s) for s in part.split()[0].split(':')]
                     elif part.endswith("bytes"):
                         record["bytes"] = [int(s) for s in part.split()[0].split(':')]
+                    elif part in [
+                        'allow-opts', 'sloppy', 'no-sync', 'psync-ack', 'no-df', 'random-id', 'reassemble-tcp'
+                    ]:
+                        record["flags"].append(part)
             elif parts[0] == "id:":
                 # XXX: in order to kill a state, we need to pass both the id and the creator, so it seeems to make
                 #      sense to uniquely identify the state by the combined number
                 record["id"] = "%s/%s" % (parts[1], parts[3])
+                if len(parts) > 5:
+                    # gateway, route-to, dup-to, reply-to option
+                    rt = parts[4].rstrip(':')
+                    if rt in ['route-to', 'dup-to', 'reply-to', 'gateway']:
+                        record[rt] = parts[5]
+                        if len(parts) > 7 and parts[7].isdigit():
+                            record['rtable'] = int(parts[7])
+                    elif rt == 'rtable' and  parts[5].isdigit():
+                        record['rtable'] = int(parts[5])
             if rule_label != "" and record['label'].lower().find(rule_label) == -1:
                 # label
                 continue
@@ -173,7 +186,7 @@ def query_states(rule_label, filter_str):
                 for filter_net in filter_net_clauses:
                     try:
                         match = False
-                        for field in ['src_addr', 'dst_addr', 'nat_addr']:
+                        for field in ['src_addr', 'dst_addr', 'nat_addr', 'gateway']:
                             port_field = "%s_port" % field[0:3]
                             if record[field] is not None and addr_parser.overlaps(filter_net[0], record[field]):
                                 if filter_net[1] is None or filter_net[1] == record[port_field]:
@@ -203,9 +216,11 @@ def query_states(rule_label, filter_str):
                 'descr': '',
                 'nat_addr': None,
                 'nat_port': None,
+                'gateway': None,
                 'iface': parts[0],
                 'proto': parts[1],
-                'ipproto': addr_parser.split_ip_port(parts[2])['ipproto']
+                'ipproto': addr_parser.split_ip_port(parts[2])['ipproto'],
+                'flags': []
             }
             if parts[3].find('(') > -1:
                 # NAT enabled
@@ -232,17 +247,20 @@ def query_states(rule_label, filter_str):
 
 
 
-def query_top(rule_label, filter_str):
+def query_top():
     addr_parser = AddressParser()
-    result = list()
-    rule_labels = fetch_rule_labels()
+    result = {
+        'details': [],
+        'metadata': {
+            'labels': fetch_rule_labels()
+        }
+    }
+
     sp = subprocess.run(
-        ['/usr/local/sbin/pftop', '-w', '1000', '-b','-v', 'long','9999999999999'],
+        ['/usr/local/sbin/pftop', '-w', '1000', '-b','-v', 'long','200000'],
         capture_output=True,
         text=True
     )
-
-    filter_net_clauses, filter_clauses = split_filter_clauses(filter_str)
 
     for rownum, line in enumerate(sp.stdout.strip().split('\n')):
         parts = line.strip().split()
@@ -255,7 +273,7 @@ def query_top(rule_label, filter_str):
                 'dst_addr': addr_parser.split_ip_port(parts[3])['addr'],
                 'dst_port': addr_parser.split_ip_port(parts[3])['port'],
                 'gw_addr': None,
-                'gw_port': None,
+                'gw_port': None
             }
             if parts[4].count(':') > 2 or parts[4].count('.') > 2:
                 record['gw_addr'] = addr_parser.split_ip_port(parts[4])['addr']
@@ -286,12 +304,6 @@ def query_top(rule_label, filter_str):
                 record['bytes'] = 0
             record['avg'] = int(parts[idx+5]) if parts[idx+5].isdigit() else 0
             record['rule'] = parts[idx+6]
-            if record['rule'] in rule_labels:
-                record['label'] = rule_labels[record['rule']]['rid']
-                record['descr'] = rule_labels[record['rule']]['descr']
-            else:
-                record['label'] = None
-                record['descr'] = None
             for timefield in ['age', 'expire']:
                 if ':' in record[timefield]:
                     tmp = record[timefield].split(':')
@@ -303,35 +315,7 @@ def query_top(rule_label, filter_str):
                 else:
                     record[timefield] = 0
 
-            if rule_label != "" and record['label'].lower().find(rule_label) == -1:
-                # label
-                continue
-            elif filter_clauses or filter_net_clauses:
-                match = False
-                for filter_net in filter_net_clauses:
-                    try:
-                        match = False
-                        for field in ['src_addr', 'dst_addr', 'gw_addr']:
-                            port_field = "%s_port" % field[0:3]
-                            if record[field] is not None and addr_parser.overlaps(filter_net[0], record[field]):
-                                if filter_net[1] is None or filter_net[1] == record[port_field]:
-                                    match = True
-                        if not match:
-                            break
-                    except:
-                        continue
-                if not match:
-                    continue
 
-                if filter_clauses:
-                    search_line = " ".join(str(item) for item in filter(None, record.values()))
-                    for filter_clause in filter_clauses:
-                        if search_line.find(filter_clause) == -1:
-                            match = False
-                            break
-                    if not match:
-                        continue
-
-            result.append(record)
+            result['details'].append(record)
 
     return result

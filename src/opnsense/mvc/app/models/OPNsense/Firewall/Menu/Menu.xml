@@ -1,6 +1,6 @@
 <menu>
     <Firewall>
-        <Automation order="1000" cssClass="fa fa-gear">
+        <Automation cssClass="fa fa-gear">
             <Filter order="50" url="/ui/firewall/filter/">
                 <FilterRef url="/ui/firewall/filter#*" visibility="hidden"/>
             </Filter>
@@ -9,6 +9,9 @@
             </SourceNat>
         </Automation>
         <NAT>
+            <OneToOne order="200" VisibleName="One-to-One" url="/ui/firewall/one_to_one/">
+                <FilterRef url="/ui/firewall/one_to_one#*" visibility="hidden"/>
+            </OneToOne>
             <NPTv6 order="400" url="/ui/firewall/npt/">
                 <FilterRef url="/ui/firewall/npt#*" visibility="hidden"/>
             </NPTv6>

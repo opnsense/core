@@ -38,15 +38,15 @@ $aclObj = new \OPNsense\Core\ACL();
     <div class="container-fluid">
       <div class="navbar-header">
         <a class="navbar-brand" href="/index.php">
-<?php if (file_exists("/usr/local/opnsense/www/themes/{$themename}/build/images/default-logo.svg")): ?>
-        <img class="brand-logo" src="<?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.svg") ?>" height="30" alt="logo" />
+<?php if (get_themed_filename('/images/default-logo.svg', true)): ?>
+        <img class="brand-logo" src="<?= cache_safe(get_themed_filename('/images/default-logo.svg')) ?>" height="30" alt="logo" />
 <?php else: ?>
-        <img class="brand-logo" src="<?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.png") ?>" height="30" alt="logo" />
+        <img class="brand-logo" src="<?= cache_safe(get_themed_filename('/images/default-logo.png')) ?>" height="30" alt="logo" />
 <?php endif ?>
-<?php if (file_exists("/usr/local/opnsense/www/themes/{$themename}/build/images/icon-logo.svg")): ?>
-        <img class="brand-icon" src="<?= cache_safe("/ui/themes/{$themename}/build/images/icon-logo.svg") ?>" height="30" alt="icon" />
+<?php if (get_themed_filename('/images/icon-logo.svg', true)): ?>
+        <img class="brand-icon" src="<?= cache_safe(get_themed_filename('/images/icon-logo.svg')) ?>" height="30" alt="icon" />
 <?php else: ?>
-        <img class="brand-icon" src="<?= cache_safe("/ui/themes/{$themename}/build/images/icon-logo.png") ?>" height="30" alt="icon" />
+        <img class="brand-icon" src="<?= cache_safe(get_themed_filename('/images/icon-logo.png')) ?>" height="30" alt="icon" />
 <?php endif ?>
         </a>
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
@@ -89,7 +89,7 @@ $aclObj = new \OPNsense\Core\ACL();
                           foreach($menuSystem as $topMenuItem): ?>
 <?php
                           if (count($topMenuItem->Children) >= 1): ?>
-                            <a href="#<?=$topMenuItem->Id;?>" class="list-group-item <?= $topMenuItem->Selected ? 'active-menu-title' : ''; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="<?=$topMenuItem->CssClass;?> __iconspacer"></span><?=html_safe(gettext($topMenuItem->VisibleName));?>  </a>
+                            <a href="#<?=$topMenuItem->Id;?>" class="list-group-item <?= $topMenuItem->Selected ? 'active-menu-title' : ''; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="<?=$topMenuItem->CssClass;?> __iconspacer"></span><span style="word-break: keep-all"><?= html_safe(gettext($topMenuItem->VisibleName)) ?></span></a>
                             <div class="collapse <?=$topMenuItem->Selected ? 'active-menu in' :'';?>" id="<?=$topMenuItem->Id;?>">
 <?php
                             foreach($topMenuItem->Children as $subMenuItem): ?>

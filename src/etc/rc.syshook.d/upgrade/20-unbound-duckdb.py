@@ -26,19 +26,25 @@
 """
 import sys
 import os
-import shutil
-import glob
 sys.path.insert(0, "/usr/local/opnsense/site-python")
-from duckdb_helper import DbConnection
+from duckdb_helper import export_database
 
-# export database in case the new storage version doesn't match
-with DbConnection('/var/unbound/data/unbound.duckdb', read_only=True) as db:
-    if db is not None and db.connection is not None:
-        os.makedirs('/var/cache/unbound.duckdb', mode=0o750, exist_ok=True)
-        shutil.chown('/var/cache/unbound.duckdb', 'unbound', 'unbound')
-        db.connection.execute("EXPORT DATABASE '/var/cache/unbound.duckdb';")
-        for filename in glob.glob('/var/cache/unbound.duckdb/*'):
-            shutil.chown(filename, 'unbound', 'unbound')
+
+if os.path.isfile('/var/unbound/data/unbound.duckdb'):
+    if not os.path.isfile('/var/unbound/data/stats'):
+        print('Unbound DNS stats disabled')
+        sys.exit(0)
+
+    if os.path.isfile('/var/run/unbound_logger.pid'):
+        pid = open('/var/run/unbound_logger.pid').read().strip()
+        try:
+            os.kill(int(pid), 9)
+        except ProcessLookupError:
+            pass
+
+    if export_database('/var/unbound/data/unbound.duckdb', '/var/cache/unbound.duckdb', 'unbound', 'unbound'):
         print('Unbound DNS database exported successfully.')
     else:
         print('Unbound DNS database export not required.')
+else:
+    print('Unbound DNS database not found, no export needed.')

@@ -1,0 +1,80 @@
+<form>
+    <field>
+        <id>crl.crlmethod</id>
+        <label>Method</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>crl.caref</id>
+        <label>CA reference</label>
+        <type>info</type>
+    </field>
+    <field>
+        <id>crl.descr</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>crl.text</id>
+        <label>CRL data</label>
+        <type>textbox</type>
+        <style>crlmethod crlmethod_existing</style>
+    </field>
+    <field>
+        <id>crl.serial</id>
+        <label>Serial</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>crl.lifetime</id>
+        <label>Lifetime (days)</label>
+        <type>text</type>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Revocations per type</label>
+        <style>crlmethod crlmethod_internal</style>
+    </field>
+    <field>
+        <id>crl.revoked_reason_0</id>
+        <label>Unspecified</label>
+        <type>select_multiple</type>
+        <style>selectpicker revoked</style>
+    </field>
+    <field>
+        <id>crl.revoked_reason_1</id>
+        <label>Key Compromise</label>
+        <type>select_multiple</type>
+        <style>selectpicker revoked</style>
+    </field>
+    <field>
+        <id>crl.revoked_reason_2</id>
+        <label>CA Compromise</label>
+        <type>select_multiple</type>
+        <style>selectpicker revoked</style>
+    </field>
+    <field>
+        <id>crl.revoked_reason_3</id>
+        <label>Affiliation Changed</label>
+        <type>select_multiple</type>
+        <style>selectpicker revoked</style>
+    </field>
+    <field>
+        <id>crl.revoked_reason_4</id>
+        <label>Superseded</label>
+        <type>select_multiple</type>
+        <style>selectpicker revoked</style>
+    </field>
+    <field>
+        <id>crl.revoked_reason_5</id>
+        <label>Cessation of Operation</label>
+        <type>select_multiple</type>
+        <style>selectpicker revoked</style>
+    </field>
+    <field>
+        <id>crl.revoked_reason_6</id>
+        <label>Certificate Hold</label>
+        <type>select_multiple</type>
+        <style>selectpicker revoked</style>
+    </field>
+</form>

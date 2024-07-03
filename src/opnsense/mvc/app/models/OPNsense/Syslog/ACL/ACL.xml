@@ -1,8 +1,8 @@
 <acl>
     <page-diagnostics-logs-settings-targets>
-        <name>Diagnostics: Logs: Settings/Targets</name>
+        <name>System: Settings: Logging</name>
         <patterns>
-            <pattern>ui/syslog/*</pattern>
+            <pattern>ui/syslog</pattern>
             <pattern>api/syslog/*</pattern>
         </patterns>
     </page-diagnostics-logs-settings-targets>

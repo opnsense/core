@@ -1,4 +1,4 @@
-# Copyright (c) 2023 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2023-2024 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -23,7 +23,8 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-CORE_ABI?=	23.7
+CORE_ABI?=	24.1
+CORE_ADDITIONS?=#empty
 CORE_MESSAGE?=	Carry on my wayward son
 CORE_NAME?=	opnsense-devel
 # adjust src/root/boot/lua/logo-hourglass.lua.in accordingly:

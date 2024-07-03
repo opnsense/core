@@ -54,7 +54,15 @@
                 <MaximumValue>254</MaximumValue>
                 <ValidationMessage>Invalid skew value, acceptable values are 0 to 255.</ValidationMessage>
             </advskew>
-            <descr type="TextField"/>
+            <peer type="NetworkField">
+                <NetMaskAllowed>N</NetMaskAllowed>
+                <AddressFamily>ipv4</AddressFamily>
+            </peer>
+            <peer6 type="NetworkField">
+                <NetMaskAllowed>N</NetMaskAllowed>
+                <AddressFamily>ipv6</AddressFamily>
+            </peer6>
+            <descr type="DescriptionField"/>
         </vip>
     </items>
 </model>

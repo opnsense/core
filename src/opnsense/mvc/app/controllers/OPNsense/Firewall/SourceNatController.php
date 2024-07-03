@@ -32,6 +32,7 @@ class SourceNatController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->pick('OPNsense/Firewall/filter');
+        $this->view->SavePointBtns = true;
         $this->view->ruleController = "source_nat";
         $this->view->gridFields = [
             [

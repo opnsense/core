@@ -33,6 +33,7 @@ use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Core\Firmware;
+use OPNsense\Core\SanitizeFilter;
 
 /**
  * Class FirmwareController
@@ -131,7 +132,7 @@ class FirmwareController extends ApiMutableModelControllerBase
 
             if (!empty($response['upgrade_packages'])) {
                 foreach ($response['upgrade_packages'] as $listing) {
-                    if (!empty($listing['size'])) {
+                    if (!empty($listing['size']) && is_numeric($listing['size'])) {
                         $update_size += $listing['size'];
                     }
                 }
@@ -242,7 +243,7 @@ class FirmwareController extends ApiMutableModelControllerBase
 
             if (isset($response['upgrade_sets'])) {
                 foreach ($response['upgrade_sets'] as $value) {
-                    if (!empty($value['size'])) {
+                    if (!empty($value['size']) && is_numeric($value['size'])) {
                         $upgrade_size += $value['size'];
                     }
                     $sorted[$value['name']] = array(
@@ -356,13 +357,7 @@ class FirmwareController extends ApiMutableModelControllerBase
         }
 
         $this->sessionClose(); // long running action, close session
-
-        $filter = new \Phalcon\Filter\Filter([
-            'version' => function ($value) {
-                return preg_replace('/[^0-9a-zA-Z\.]/', '', $value);
-            }
-        ]);
-        $version = $filter->sanitize($version, 'version');
+        $version = (new SanitizeFilter())->sanitize($version, 'version');
 
         $backend = new Backend();
         $html = trim($backend->configdRun(sprintf('firmware changelog html %s', $version)));
@@ -411,12 +406,7 @@ class FirmwareController extends ApiMutableModelControllerBase
 
         if ($this->request->isPost()) {
             // sanitize package name
-            $filter = new \Phalcon\Filter\Filter([
-                'scrub' => function ($value) {
-                    return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
-                }
-            ]);
-            $package = $filter->sanitize($package, 'scrub');
+            $package = (new SanitizeFilter())->sanitize($package, 'pkgname');
             $text = trim($backend->configdRun(sprintf('firmware license %s', $package)));
             if (!empty($text)) {
                 $response['license'] = $text;
@@ -589,13 +579,7 @@ class FirmwareController extends ApiMutableModelControllerBase
                 sprintf("[Firmware] User %s executed a reinstall of package %s", $this->getUserName(), $pkg_name)
             );
             $response['status'] = 'ok';
-            // sanitize package name
-            $filter = new \Phalcon\Filter\Filter([
-                'pkgname' => function ($value) {
-                    return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
-                }
-            ]);
-            $pkg_name = $filter->sanitize($pkg_name, "pkgname");
+            $pkg_name = (new SanitizeFilter())->sanitize($pkg_name, "pkgname");
             // execute action
             $response['msg_uuid'] = trim($backend->configdpRun("firmware reinstall", array($pkg_name), true));
         } else {
@@ -663,13 +647,7 @@ class FirmwareController extends ApiMutableModelControllerBase
                 sprintf("[Firmware] User %s executed an install of package %s", $this->getUserName(), $pkg_name)
             );
             $response['status'] = 'ok';
-            // sanitize package name
-            $filter = new \Phalcon\Filter\Filter([
-                'pkgname' => function ($value) {
-                    return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
-                }
-            ]);
-            $pkg_name = $filter->sanitize($pkg_name, "pkgname");
+            $pkg_name = (new SanitizeFilter())->sanitize($pkg_name, "pkgname");
             // execute action
             $response['msg_uuid'] = trim($backend->configdpRun("firmware install", array($pkg_name), true));
         } else {
@@ -697,12 +675,7 @@ class FirmwareController extends ApiMutableModelControllerBase
             );
             $response['status'] = 'ok';
             // sanitize package name
-            $filter = new \Phalcon\Filter\Filter([
-                'pkgname' => function ($value) {
-                    return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
-                }
-            ]);
-            $pkg_name = $filter->sanitize($pkg_name, "pkgname");
+            $pkg_name = (new SanitizeFilter())->sanitize($pkg_name, "pkgname");
             // execute action
             $response['msg_uuid'] = trim($backend->configdpRun("firmware remove", array($pkg_name), true));
         } else {
@@ -728,12 +701,7 @@ class FirmwareController extends ApiMutableModelControllerBase
             $this->getLogger('audit')->notice(
                 sprintf("[Firmware] User %s locked package %s", $this->getUserName(), $pkg_name)
             );
-            $filter = new \Phalcon\Filter\Filter([
-                'pkgname' => function ($value) {
-                    return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
-                }
-            ]);
-            $pkg_name = $filter->sanitize($pkg_name, "pkgname");
+            $pkg_name = (new SanitizeFilter())->sanitize($pkg_name, "pkgname");
         } else {
             $pkg_name = null;
         }
@@ -764,12 +732,7 @@ class FirmwareController extends ApiMutableModelControllerBase
             $this->getLogger('audit')->notice(
                 sprintf("[Firmware] User %s unlocked package %s", $this->getUserName(), $pkg_name)
             );
-            $filter = new \Phalcon\Filter\Filter([
-                'pkgname' => function ($value) {
-                    return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
-                }
-            ]);
-            $pkg_name = $filter->sanitize($pkg_name, "pkgname");
+            $pkg_name = (new SanitizeFilter())->sanitize($pkg_name, "pkgname");
         } else {
             $pkg_name = null;
         }
@@ -834,13 +797,7 @@ class FirmwareController extends ApiMutableModelControllerBase
         $response = array();
 
         if ($this->request->isPost()) {
-            // sanitize package name
-            $filter = new \Phalcon\Filter\Filter([
-                'scrub' => function ($value) {
-                    return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
-                }
-            ]);
-            $package = $filter->sanitize($package, 'scrub');
+            $package = (new SanitizeFilter())->sanitize($package, 'pkgname');
             $text = trim($backend->configdRun(sprintf('firmware details %s', $package)));
             if (!empty($text)) {
                 $response['details'] = $text;

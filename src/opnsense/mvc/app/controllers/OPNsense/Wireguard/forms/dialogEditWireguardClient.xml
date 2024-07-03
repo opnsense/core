@@ -29,7 +29,7 @@
         <style>tokenize</style>
         <type>select_multiple</type>
         <allownew>true</allownew>
-        <help>List of addresses allowed to pass trough the tunnel adapter. Please use CIDR notation like 10.0.0.1/24.</help>
+        <help>List of networks allowed to pass trough the tunnel adapter. Use CIDR notation like 10.0.0.0/24.</help>
     </field>
     <field>
         <id>client.serveraddress</id>

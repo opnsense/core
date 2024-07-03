@@ -124,7 +124,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         if ($this->request->isPost()) {
             if ($rollback_revision != null) {
                 // background rollback timer
-                (new Backend())->configdpRun('pfplugin rollback_timer', [$rollback_revision], true);
+                (new Backend())->configdpRun('filter rollback_timer', [$rollback_revision], true);
             }
             return array("status" => (new Backend())->configdRun('filter reload'));
         } else {
@@ -136,7 +136,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
     {
         if ($this->request->isPost()) {
             return array(
-                "status" => (new Backend())->configdpRun('pfplugin cancel_rollback', [$rollback_revision])
+                "status" => (new Backend())->configdpRun('filter cancel_rollback', [$rollback_revision])
             );
         } else {
             return array("status" => "error");

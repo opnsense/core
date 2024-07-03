@@ -253,16 +253,14 @@ function _dnsmasq_add_host_entries()
     }
 
     if (isset($dnsmasqcfg['regdhcpstatic'])) {
-        $domain = $config['system']['domain'];
-        if (!empty($config['dnsmasq']['regdhcpdomain'])) {
-            $domain = $config['dnsmasq']['regdhcpdomain'];
-        }
-
-        foreach (plugins_run('static_mapping', [null, true, $domain, legacy_interfaces_details()]) as $map) {
+        foreach (plugins_run('static_mapping', [null, true, legacy_interfaces_details()]) as $map) {
             foreach ($map as $host) {
                 if (empty($host['hostname'])) {
                     /* cannot register without a hostname */
                     continue;
+                }
+                if (empty($host['domain'])) {
+                    $host['domain'] = $config['system']['domain'];
                 }
                 if (isset($host['ipaddr'])) {
                     $dhosts .= "{$host['ipaddr']}\t{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";

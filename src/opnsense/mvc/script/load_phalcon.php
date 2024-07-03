@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,20 +26,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-use Phalcon\Di\FactoryDefault;
+require_once(__DIR__ . '/../app/library/OPNsense/Autoload/Loader.php');
 
-$di = new FactoryDefault();
-$phalcon_config = include("/usr/local/opnsense/mvc/app/config/config.php");
+use OPNsense\Autoload\Loader;
 
-$loader = new Phalcon\Autoload\Loader();
-$loader->setDirectories(
-    array(
-        $phalcon_config->application->controllersDir,
-        $phalcon_config->application->modelsDir,
-        $phalcon_config->application->libraryDir
-    )
-)->register();
+$phalcon_config = include('/usr/local/opnsense/mvc/app/config/config.php');
 
-$di->set('config', $phalcon_config);
-
-unset($phalcon_config);
+(new Loader([
+    $phalcon_config->application->controllersDir,
+    $phalcon_config->application->modelsDir,
+    $phalcon_config->application->libraryDir,
+]))->register();

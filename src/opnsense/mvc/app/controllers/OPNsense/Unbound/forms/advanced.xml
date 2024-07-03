@@ -34,6 +34,16 @@
         </help>
     </field>
     <field>
+        <id>unbound.advanced.aggressivensec</id>
+        <label>Aggressive NSEC</label>
+        <type>checkbox</type>
+        <help>
+            Enable RFC8198-based aggressive use of the DNSSEC-Validated cache.
+            Helps to reduce the query rate towards targets but may lead to false negative responses
+            if there are errors in the zone config.
+        </help>
+    </field>
+    <field>
         <id>unbound.advanced.qnameminstrict</id>
         <label>Strict QNAME Minimisation</label>
         <type>checkbox</type>
@@ -182,7 +192,7 @@
         <help>
             Time in milliseconds before replying to the client with expired data. This essentially enables the serve-
             stable behavior as specified in RFC 8767 that first tries to resolve before immediately responding with expired
-            data. A recommended value per RF 8767 is 1800. Setting this to 0 will disable this behavior.
+            data. A recommended value per RFC 8767 is 1800. Setting this to 0 will disable this behavior.
         </help>
     </field>
     <field>

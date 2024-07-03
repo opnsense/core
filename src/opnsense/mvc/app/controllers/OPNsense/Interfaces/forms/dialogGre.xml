@@ -1,0 +1,43 @@
+<form>
+    <field>
+        <id>gre.greif</id>
+        <label>Device</label>
+        <type>info</type>
+    </field>
+    <field>
+        <id>gre.local-addr</id>
+        <label>Local address</label>
+        <type>text</type>
+        <style>net_selector</style>
+    </field>
+    <field>
+        <id>gre.remote-addr</id>
+        <label>Remote address</label>
+        <type>text</type>
+        <help>Peer address where encapsulated gre packets will be sent.</help>
+    </field>
+    <field>
+        <id>gre.tunnel-local-addr</id>
+        <label>Tunnel local address</label>
+        <type>text</type>
+        <help>Local gre tunnel endpoint</help>
+    </field>
+    <field>
+        <id>gre.tunnel-remote-addr</id>
+        <label>Tunnel remote address</label>
+        <type>text</type>
+        <help>Remote gre tunnel endpoint</help>
+    </field>
+    <field>
+        <id>gre.tunnel-remote-net</id>
+        <label>Tunnel netmask / prefix</label>
+        <type>text</type>
+        <help>Netmask [ipv4] or prefix [ipv6] to use for this tunnel</help>
+    </field>
+    <field>
+        <id>gre.descr</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>You may enter a description here for your reference (not parsed).</help>
+    </field>
+</form>

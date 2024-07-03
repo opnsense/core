@@ -339,20 +339,18 @@ function core_cron()
 
 function core_syslog()
 {
-    $logfacilities = array();
+    $logfacilities = [];
 
-    $logfacilities['audit'] = array('facility' => array('audit'));
-    $logfacilities['configd'] = array('facility' => array('configd.py'));
-    $logfacilities['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay'));
-    $logfacilities['lighttpd'] = array('facility' => array('lighttpd'));
-    $logfacilities['pkg'] = array('facility' => array('pkg', 'pkg-static'));
-    $logfacilities['portalauth'] = array('facility' => array('captiveportal'));
-    $logfacilities['ppps'] = array('facility' => array('ppp'));
-    $logfacilities['resolver'] = array('facility' => array('unbound'));
-    $logfacilities['routing'] = array('facility' => array(
-          'radvd', 'routed', 'rtsold', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd'
-    ));
-    $logfacilities['wireless'] = array('facility' => array('hostapd'));
+    $logfacilities['audit'] = ['facility' => ['audit']];
+    $logfacilities['configd'] = ['facility' => ['configd.py']];
+    $logfacilities['dhcpd'] = ['facility' => ['dhcpd']];
+    $logfacilities['lighttpd'] = ['facility' => ['lighttpd']];
+    $logfacilities['pkg'] = ['facility' => ['pkg', 'pkg-static']];
+    $logfacilities['portalauth'] = ['facility' => ['captiveportal']];
+    $logfacilities['ppps'] = ['facility' => ['ppp']];
+    $logfacilities['resolver'] = ['facility' => ['unbound']];
+    $logfacilities['routing'] = ['facility' => ['routed', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd']];
+    $logfacilities['wireless'] = ['facility' => ['hostapd']];
 
     return $logfacilities;
 }
@@ -399,23 +397,11 @@ function core_xmlrpc_sync()
         'services' => ["dhcpd"],
     );
     $result[] = array(
-        'description' => gettext('DHCPv4: Relay'),
-        'section' => 'dhcrelay',
-        'id' => 'dhcrelay',
-        'services' => ["dhcrelay"],
-    );
-    $result[] = array(
         'description' => gettext('DHCPDv6'),
         'help' => gettext('Synchronize DHCPv6 including router advertisements.'),
         'section' => 'dhcpdv6',
         'id' => 'dhcpdv6',
         'services' => ["dhcpdv6", "radvd"],
-    );
-    $result[] = array(
-        'description' => gettext('DHCPv6: Relay'),
-        'section' => 'dhcrelay6',
-        'id' => 'dhcrelay6',
-        'services' => ["dhcrelay6"],
     );
     $result[] = array(
         'description' => gettext('Virtual IPs'),
@@ -460,6 +446,11 @@ function core_xmlrpc_sync()
         'id' => 'webgui',
         'services' => ["webgui"],
     );
+    $result[] = array(
+        'description' => gettext('Backup - Google Drive'),
+        'section' => 'system.remotebackup',
+        'id' => 'remotebackup'
+    );
 
     return $result;
 }
@@ -471,6 +462,8 @@ function core_configure()
         'dns_reload' => ['system_resolver_configure'],
         'firmware_reload' => ['system_firmware_configure'],
         'route_reload' => ['core_routing_batch:2'],
+        'syslog_reset' => ['system_syslog_reset'],
+        'trust_reload' => ['system_trust_configure'],
         'user_changed' => ['core_user_changed_groups:2'],
     ];
 }

@@ -28,9 +28,8 @@
 
 namespace OPNsense\Core;
 
-use Phalcon\Logger\Logger;
-use Phalcon\Logger\Adapter\Syslog;
-use Phalcon\Logger\Formatter\Line;
+use OPNsense\Core\AppConfig;
+use OPNsense\Core\Syslog;
 
 /**
  * Class Backend
@@ -57,23 +56,7 @@ class Backend
      */
     protected function getLogger($ident = 'configd.py')
     {
-        $formatter = new Line('%message%');
-        $adapter = new Syslog(
-            $ident,
-            [
-                'option'   => LOG_PID,
-                'facility' => LOG_LOCAL4,
-            ]
-        );
-        $adapter->setFormatter($formatter);
-        $logger = new Logger(
-            'messages',
-            [
-                'main' => $adapter
-            ]
-        );
-
-        return $logger;
+        return new Syslog($ident, null, LOG_LOCAL2);
     }
 
     /**
@@ -82,15 +65,20 @@ class Backend
      * @param bool $detach detach process
      * @param int $timeout timeout in seconds
      * @param int $connect_timeout connect timeout in seconds
+     * @param int $poll_timeout poll timeout after connect
      * @return resource|null
      * @throws \Exception
      */
-    public function configdStream($event, $detach = false, $timeout = 120, $connect_timeout = 10)
+    public function configdStream($event, $detach = false, $connect_timeout = 10, $poll_timeout = 2)
     {
-        $poll_timeout = 2; // poll timeout interval
-
         // wait until socket exist for a maximum of $connect_timeout
-        $timeout_wait = $connect_timeout;
+        $simulate_mode = false;
+        if (!file_exists($this->configdSocket) && (!empty((string)(new AppConfig())->globals->simulate_mode))) {
+            $timeout_wait = -1;
+            $simulate_mode = true;
+        } else {
+            $timeout_wait = $connect_timeout;
+        }
         $errorMessage = "";
         while (
             !file_exists($this->configdSocket) ||
@@ -99,10 +87,10 @@ class Backend
             sleep(1);
             $timeout_wait -= 1;
             if ($timeout_wait <= 0) {
-                if (file_exists($this->configdSocket)) {
+                if (file_exists($this->configdSocket) && !$simulate_mode) {
                     $this->getLogger()->error("Failed to connect to configd socket: $errorMessage while executing " . $event);
                     return null;
-                } else {
+                } elseif (!$simulate_mode) {
                     $this->getLogger()->error("failed waiting for configd (doesn't seem to be running)");
                 }
                 return null;
@@ -125,24 +113,25 @@ class Backend
      * send event to backend using command parameter list (which will be quoted for proper handling)
      * @param string $event event string
      * @param array $params list of parameters to send with command
+     * @param int $poll_timeout poll timeout after connect
      * @param bool $detach detach process
      * @param int $timeout timeout in seconds
      * @param int $connect_timeout connect timeout in seconds
      * @return resource|null
      * @throws \Exception
      */
-    public function configdpStream($event, $params = [], $detach = false, $timeout = 120, $connect_timeout = 10)
+    public function configdpStream($event, $params = [], $poll_timeout = 2, $detach = false, $timeout = 120, $connect_timeout = 10)
     {
         if (!is_array($params)) {
             /* just in case there's only one parameter */
-            $params = array($params);
+            $params = [$params];
         }
 
         foreach ($params as $param) {
             $event .= ' ' . escapeshellarg($param ?? '');
         }
 
-        return $this->configdStream($event, $detach, $timeout, $connect_timeout);
+        return $this->configdStream($event, $detach, $connect_timeout, $poll_timeout);
     }
 
 
@@ -161,11 +150,11 @@ class Backend
         $errorOfStream = 'Execute error';
         $resp = '';
 
-        $stream = $this->configdStream($event, $detach, $timeout, $connect_timeout);
+        $stream = $this->configdStream($event, $detach, $connect_timeout);
 
         // read response data
         $starttime = time();
-        while (true) {
+        while (is_resource($stream)) {
             $resp = $resp . stream_get_contents($stream);
 
             if (strpos($resp, $endOfStream) !== false) {
@@ -203,11 +192,11 @@ class Backend
      * @return string
      * @throws \Exception
      */
-    public function configdpRun($event, $params = array(), $detach = false, $timeout = 120, $connect_timeout = 10)
+    public function configdpRun($event, $params = [], $detach = false, $timeout = 120, $connect_timeout = 10)
     {
         if (!is_array($params)) {
             /* just in case there's only one parameter */
-            $params = array($params);
+            $params = [$params];
         }
 
         foreach ($params as $param) {

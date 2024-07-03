@@ -35,7 +35,7 @@ require_once 'Field_Framework_TestCase.php';
 // @CodingStandardsIgnoreEnd
 
 use OPNsense\Base\FieldTypes\NetworkAliasField;
-use Phalcon\Di\FactoryDefault;
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Config;
 
 class NetworkAliasFieldTest extends Field_Framework_TestCase
@@ -47,7 +47,7 @@ class NetworkAliasFieldTest extends Field_Framework_TestCase
     {
         $this->assertInstanceOf('\OPNsense\Base\FieldTypes\NetworkAliasField', new NetworkAliasField());
         // switch config to test set for this type
-        FactoryDefault::getDefault()->get('config')->globals->config_path = __DIR__ . '/NetworkAliasFieldTest/';
+        (new AppConfig())->update('globals.config_path', __DIR__ . '/NetworkAliasFieldTest/');
         Config::getInstance()->forceReload();
     }
 

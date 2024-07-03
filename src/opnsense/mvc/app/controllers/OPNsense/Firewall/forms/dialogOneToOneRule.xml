@@ -1,0 +1,86 @@
+<form>
+    <field>
+        <id>rule.enabled</id>
+        <label>enabled</label>
+        <type>checkbox</type>
+        <help>Enable this rule</help>
+    </field>
+    <field>
+        <id>rule.sequence</id>
+        <label>Sequence</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>rule.log</id>
+        <label>Log</label>
+        <type>checkbox</type>
+        <help>Log packets that are handled by this rule</help>
+    </field>
+    <field>
+        <id>rule.interface</id>
+        <label>Interface</label>
+        <type>dropdown</type>
+        <help>Choose which interface this rule applies to. Hint: in most cases, you'll want to use WAN here</help>
+    </field>
+    <field>
+        <id>rule.type</id>
+        <label>Type</label>
+        <type>dropdown</type>
+        <help>
+        Select BINAT (default) or NAT here, when nets are equally sized binat is usually the best option.Using NAT we can also map unequal sized networks.
+A BINAT rule specifies a bidirectional mapping between an external and internal network and can be used from both ends, nat only applies in one direction.
+        </help>
+    </field>
+
+    <field>
+        <id>rule.external</id>
+        <label>External network (Target)</label>
+        <type>text</type>
+        <help>Enter the external subnet's starting address for the 1:1 mapping or network. This is the address or network the traffic will translate to/from.</help>
+    </field>
+    <field>
+        <id>rule.source_not</id>
+        <label>Source / Invert</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Use this option to invert the sense of the match.</help>
+    </field>
+    <field>
+        <id>rule.source_net</id>
+        <label>Source / Internal</label>
+        <type>text</type>
+        <style>net_selector</style>
+        <help>Enter the internal subnet for the 1:1 mapping.</help>
+    </field>
+    <field>
+        <id>rule.destination_not</id>
+        <label>Destination / Invert</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Use this option to invert the sense of the match.</help>
+    </field>
+    <field>
+        <id>rule.destination_net</id>
+        <label>Destination</label>
+        <type>text</type>
+        <style>net_selector</style>
+        <help>The 1:1 mapping will only be used for connections to or from the specified destination. Hint: this is usually 'any'.</help>
+    </field>
+    <field>
+        <id>rule.categories</id>
+        <label>Categories</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <help>For grouping purposes you may select multiple groups here to organize items.</help>
+    </field>
+    <field>
+        <id>rule.natreflection</id>
+        <label>NAT reflection</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>rule.description</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+</form>

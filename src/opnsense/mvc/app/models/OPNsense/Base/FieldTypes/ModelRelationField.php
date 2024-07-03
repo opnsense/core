@@ -28,9 +28,6 @@
 
 namespace OPNsense\Base\FieldTypes;
 
-use Phalcon\Filter\Validation\Validator\InclusionIn;
-use OPNsense\Base\Validators\CsvListValidator;
-
 /**
  * Class ModelRelationField defines a relation to another entity within the model, acts like a select item.
  * @package OPNsense\Base\FieldTypes
@@ -104,15 +101,7 @@ class ModelRelationField extends BaseListField
                     foreach ($modelObj->getNodeByReference($modelData['items'])->iterateItems() as $node) {
                         $descriptions = [];
                         foreach ($displayKeys as $displayKey) {
-                            if ($node->$displayKey != null) {
-                                if ($node->$displayKey->getObjectType() == 'ModelRelationField') {
-                                    $descriptions[] = $node->$displayKey->display_value();
-                                } else {
-                                    $descriptions[] =  (string)$node->$displayKey;
-                                }
-                            } else {
-                                $descriptions[] = "";
-                            }
+                            $descriptions[] = $node->$displayKey != null ? $node->$displayKey->getDescription() : '';
                         }
                         if (!isset($node->getAttributes()['uuid'])) {
                             continue;
@@ -211,15 +200,15 @@ class ModelRelationField extends BaseListField
     }
 
     /**
-     * @return string string display value of this field
+     * {@inheritdoc}
      */
-    public function display_value()
+    public function getDescription()
     {
         $tmp = [];
         foreach (explode(',', $this->internalValue) as $key) {
             $tmp[] = $this->internalOptionList[$key] ?? '';
         }
-        return implode(',', $tmp);
+        return implode(', ', $tmp);
     }
 
 

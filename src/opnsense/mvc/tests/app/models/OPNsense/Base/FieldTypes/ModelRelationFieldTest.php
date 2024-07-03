@@ -34,14 +34,14 @@ require_once __DIR__ . '/../BaseModel/TestModel.php';
 // @CodingStandardsIgnoreEnd
 
 use OPNsense\Base\FieldTypes\ModelRelationField;
-use Phalcon\Di\FactoryDefault;
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Config;
 
 class ModelRelationFieldTest extends Field_Framework_TestCase
 {
     protected function setUp(): void
     {
-        FactoryDefault::getDefault()->get('config')->globals->config_path = __DIR__ . '/ModelRelationFieldTest/';
+        (new AppConfig())->update('globals.config_path', __DIR__ . '/ModelRelationFieldTest/');
         Config::getInstance()->forceReload();
     }
 
@@ -86,7 +86,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         ));
         $field->eventPostLoading();
         $field->setValue("5ea2a35c-b02b-485a-912b-d077e639bf9f,60e1bc02-6817-4940-bbd3-61d0cf439a8a");
-        $this->assertEquals($this->validate($field), ['Phalcon\Filter\Validation\Validator\InclusionIn']);
+        $this->assertEquals($this->validate($field), ['InclusionIn']);
     }
 
     /**
@@ -123,7 +123,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         ));
         $field->eventPostLoading();
         $field->setValue("");
-        $this->assertEquals($this->validate($field), ['Phalcon\Filter\Validation\Validator\PresenceOf']);
+        $this->assertEquals($this->validate($field), ['PresenceOf']);
     }
 
     /**
@@ -267,7 +267,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         ));
         $field->eventPostLoading();
         $field->setValue("XX5ea2a35c-b02b-485a-912b-d077e639bf9f");
-        $this->assertEquals($this->validate($field), ['Phalcon\Filter\Validation\Validator\InclusionIn']);
+        $this->assertEquals($this->validate($field), ['InclusionIn']);
     }
 
     /**
@@ -324,7 +324,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         ));
         $field->eventPostLoading();
         $field->setValue("4d0e2835-7a19-4a19-8c23-e12383827594,5ea2a35c-b02b-485a-912b-d077e639bf9f");
-        $this->assertEquals($this->validate($field), ['Phalcon\Filter\Validation\Validator\InclusionIn']);
+        $this->assertEquals($this->validate($field), ['InclusionIn']);
     }
 
     /**

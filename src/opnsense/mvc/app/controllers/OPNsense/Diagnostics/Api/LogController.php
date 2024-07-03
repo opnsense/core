@@ -30,7 +30,7 @@ namespace OPNsense\Diagnostics\Api;
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
-use Phalcon\Filter\Filter;
+use OPNsense\Core\SanitizeFilter;
 
 /**
  * @inherit
@@ -45,11 +45,7 @@ class LogController extends ApiControllerBase
         $searchPhrase = '';
         $severities = '';
         // create filter to sanitize input data
-        $filter = new Filter([
-            'query' => function ($value) {
-                return preg_replace("/[^0-9,a-z,A-Z, ,*,\-,_,.,\#]/", "", $value);
-            }
-        ]);
+        $filter = new SanitizeFilter();
 
         $backend = new Backend();
         $this->sessionClose();
@@ -108,6 +104,27 @@ class LogController extends ApiControllerBase
                         'Pragma: no-cache',
                         'Expires: 0'
                     ]
+                );
+            } elseif ($action == "live") {
+                $offset = $this->request->get('offset', 'int', 0);
+
+                if ($this->request->get('searchPhrase', 'string', '') != "") {
+                    $searchPhrase = $filter->sanitize($this->request->get('searchPhrase'), "query");
+                }
+                if ($this->request->get('severity', 'string', '') != "") {
+                    $severities = $this->request->get('severity');
+                    $severities = is_array($severities) ? implode(",", $severities) : $severities;
+                    $severities = $filter->sanitize($severities, "query");
+                }
+
+                return $this->configdStream(
+                    'system diag log_live',
+                    [$offset, $searchPhrase, $module, $scope, $severities],
+                    [
+                        'Content-Type: text/event-stream',
+                        'Cache-Control: no-cache'
+                    ],
+                    60 /* XXX */
                 );
             }
         }

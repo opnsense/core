@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
     <items>
         <general>
             <enabled type="BooleanField">
@@ -61,6 +61,10 @@
             <prefetch type="BooleanField"/>
             <prefetchkey type="BooleanField"/>
             <dnssecstripped type="BooleanField"/>
+            <aggressivensec type="BooleanField">
+                <Required>Y</Required>
+                <Default>1</Default>
+            </aggressivensec>
             <serveexpired type="BooleanField"/>
             <serveexpiredreplyttl type="NumericField"/>
             <serveexpiredttl type="NumericField"/>
@@ -164,10 +168,7 @@
                     <NetMaskRequired>Y</NetMaskRequired>
                     <asList>Y</asList>
                 </networks>
-                <description type="TextField">
-                    <Mask>/^(.){1,255}$/u</Mask>
-                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
-                </description>
+                <description type="DescriptionField"/>
             </acl>
         </acls>
         <dnsbl>
@@ -248,8 +249,9 @@
                         <forward>Forward</forward>
                     </OptionValues>
                 </type>
-                <domain type="TextField">
-                    <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
+                <domain type="HostnameField">
+                    <IsDNSName>Y</IsDNSName>
+                    <IpAllowed>N</IpAllowed>
                     <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                 </domain>
                 <server type="NetworkField">
@@ -332,10 +334,7 @@
                         </check002>
                     </Constraints>
                 </server>
-                <description type="TextField">
-                    <Mask>/^(.){1,255}$/u</Mask>
-                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
-                </description>
+                <description type="DescriptionField"/>
             </host>
         </hosts>
         <aliases>
@@ -378,10 +377,7 @@
                     <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
                     <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                 </domain>
-                <description type="TextField">
-                    <Mask>/^(.){1,255}$/u</Mask>
-                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
-                </description>
+                <description type="DescriptionField"/>
             </alias>
         </aliases>
         <domains>
@@ -402,10 +398,7 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </forward_tcp_upstream>
-                <description type="TextField">
-                    <Mask>/^(.){1,255}$/u</Mask>
-                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
-                </description>
+                <description type="DescriptionField"/>
             </domain>
         </domains>
     </items>

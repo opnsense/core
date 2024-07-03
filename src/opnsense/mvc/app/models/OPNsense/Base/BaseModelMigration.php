@@ -31,7 +31,6 @@
 namespace OPNsense\Base;
 
 use OPNsense\Core\Config;
-use Phalcon\Logger\Adapter\Syslog;
 
 /**
  * @package OPNsense\Base

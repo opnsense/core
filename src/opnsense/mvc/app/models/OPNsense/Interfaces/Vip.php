@@ -28,7 +28,7 @@
 
 namespace OPNsense\Interfaces;
 
-use Phalcon\Messages\Message;
+use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
@@ -42,12 +42,12 @@ class Vip extends BaseModel
     {
         $messages = parent::performValidation($validateFullModel);
 
-        $unqiue_addrs = [];
+        $unique_addrs = [];
         $carp_vhids = [];
         $vips = [];
 
         // collect changed VIP entries
-        $vip_fields = ['mode', 'subnet', 'subnet_bits', 'password', 'vhid', 'interface'];
+        $vip_fields = ['mode', 'subnet', 'subnet_bits', 'password', 'vhid', 'interface', 'peer', 'peer6'];
         foreach ($this->getFlatNodes() as $key => $node) {
             $tagName = $node->getInternalXMLTagName();
             $parentNode = $node->getParentNode();
@@ -160,6 +160,23 @@ class Vip extends BaseModel
                         )
                     );
                 }
+                /* XXX: ideally we shouldn't need the validations below, but when using the same vhid for
+                 *      ipv4 and ipv6 one will always flip back to multicast */
+                if (strpos($subnet, ':') === false && !empty((string)$node->peer6)) {
+                    $messages->appendMessage(
+                        new Message(
+                            gettext('An (unicast) address can only be configured for the same protocol family.'),
+                            $key . ".peer6"
+                        )
+                    );
+                } elseif (strpos($subnet, ':') !== false && !empty((string)$node->peer)) {
+                    $messages->appendMessage(
+                        new Message(
+                            gettext('An (unicast) address can only be configured for the same protocol family.'),
+                            $key . ".peer"
+                        )
+                    );
+                }
             } elseif (
                 (string)$node->mode == 'ipalias' &&
                 !empty((string)$node->vhid) && (
@@ -197,7 +214,7 @@ class Vip extends BaseModel
     public function whereUsed($address)
     {
         $relevant_paths = [
-          'nat.outbound.rule.' => gettext('Address %s referenced by outboud nat rule "%s"'),
+          'nat.outbound.rule.' => gettext('Address %s referenced by outbound nat rule "%s"'),
           'nat.rule.' => gettext('Address %s referenced by port forward "%s"'),
         ];
         $usages = [];

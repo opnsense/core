@@ -29,6 +29,176 @@
 require_once("plugins.inc.d/openvpn.inc");
 require_once("util.inc");
 
+function cert_create(&$cert, $caref, $keylen_curve, $lifetime, $dn, $digest_alg, $x509_extensions = 'usr_cert', $extns = [])
+{
+    $ca = &lookup_ca($caref);
+    if (!$ca) {
+        return false;
+    }
+
+    $ca_str_crt = base64_decode($ca['crt']);
+    $ca_str_key = base64_decode($ca['prv']);
+    $ca_res_crt = openssl_x509_read($ca_str_crt);
+    $ca_res_key = openssl_pkey_get_private(array(0 => $ca_str_key, 1 => ""));
+    if (!$ca_res_key) {
+        return false;
+    }
+    $ca_serial = ++$ca['serial'];
+
+    // handle parameters which can only be set via the configuration file
+    $config_filename = create_temp_openssl_config($extns);
+
+    $args = array(
+        'config' => $config_filename,
+        'x509_extensions' => $x509_extensions,
+        'digest_alg' => $digest_alg,
+        'encrypt_key' => false
+    );
+    if (is_numeric($keylen_curve)) {
+        $args['private_key_type'] = OPENSSL_KEYTYPE_RSA;
+        $args['private_key_bits'] = (int)$keylen_curve;
+    } else {
+        $args['private_key_type'] = OPENSSL_KEYTYPE_EC;
+        $args['curve_name'] = $keylen_curve;
+    }
+
+    // generate a new key pair
+    $res_key = openssl_pkey_new($args);
+    if (!$res_key) {
+        return false;
+    }
+
+    // generate a certificate signing request
+    $res_csr = openssl_csr_new($dn, $res_key, $args);
+    if (!$res_csr) {
+        return false;
+    }
+
+    // self sign the certificate
+    $res_crt = openssl_csr_sign(
+        $res_csr,
+        $ca_res_crt,
+        $ca_res_key,
+        $lifetime,
+        $args,
+        $ca_serial
+    );
+    if (!$res_crt) {
+        return false;
+    }
+
+    // export our certificate data
+    if (
+        !openssl_pkey_export($res_key, $str_key) ||
+        !openssl_x509_export($res_crt, $str_crt)
+    ) {
+        return false;
+    }
+
+    // return our certificate information
+    $cert['caref'] = $caref;
+    $cert['crt'] = base64_encode($str_crt);
+    $cert['prv'] = base64_encode($str_key);
+
+    // remove tempfile (template)
+    unlink($config_filename);
+
+    return true;
+}
+
+function ca_create(&$ca, $keylen_curve, $lifetime, $dn, $digest_alg, $caref = null, $x509_extensions = 'v3_ca', $extns = [])
+{
+    // handle parameters which can only be set via the configuration file
+    $config_filename = create_temp_openssl_config($extns);
+
+    $args = [
+        'config' => $config_filename,
+        'x509_extensions' => $x509_extensions,
+        'digest_alg' => $digest_alg,
+        'encrypt_key' => false
+    ];
+    if (is_numeric($keylen_curve)) {
+        $args['private_key_type'] = OPENSSL_KEYTYPE_RSA;
+        $args['private_key_bits'] = (int)$keylen_curve;
+    } else {
+        $args['private_key_type'] = OPENSSL_KEYTYPE_EC;
+        $args['curve_name'] = $keylen_curve;
+    }
+
+    if (!empty($caref)) {
+        // intermediate type CA, could also be an OCSP verification cert
+        $signing_ca = &lookup_ca($caref);
+        if (!$signing_ca) {
+            return false;
+        }
+        $signing_ca_res_crt = openssl_x509_read(base64_decode($signing_ca['crt']));
+        $signing_ca_res_key = openssl_pkey_get_private(array(0 => base64_decode($signing_ca['prv']) , 1 => ""));
+        if (!$signing_ca_res_crt || !$signing_ca_res_key) {
+            return false;
+        }
+        // XXX: side affect (unavoidable given legacy constraints), updating parent serial number
+        $signing_ca_serial = ++$signing_ca['serial'];
+    } else {
+        $signing_ca_serial = 0;
+        $signing_ca_res_crt = null;
+        // generate a new key pair
+        $signing_ca_res_key = openssl_pkey_new($args);
+        if (!$signing_ca_res_key) {
+            return false;
+        }
+    }
+
+    // generate a certificate signing request
+    $res_csr = openssl_csr_new($dn, $signing_ca_res_key, $args);
+    if (!$res_csr) {
+        return false;
+    }
+
+    // self sign the certificate
+    $res_crt = openssl_csr_sign($res_csr, $signing_ca_res_crt, $signing_ca_res_key, $lifetime, $args, $signing_ca_serial);
+    if (!$res_crt) {
+        return false;
+    }
+
+    // export our certificate data
+    if (!openssl_pkey_export($signing_ca_res_key, $str_key) || !openssl_x509_export($res_crt, $str_crt)) {
+        return false;
+    }
+
+    // return our ca information
+    $ca['crt'] = base64_encode($str_crt);
+    $ca['prv'] = base64_encode($str_key);
+    $ca['x509_extensions'] = $x509_extensions;
+    $ca['serial'] = 0;
+    if (!empty($caref)) {
+        $ca['caref'] = $caref;
+    }
+
+    return true;
+}
+
+/**
+ * Create a temporary config file, to help with calls that require properties that can only be set via the config file.
+ *
+ * @param $dn
+ * @return bool|string The name of the temporary config file.
+ */
+function create_temp_openssl_config(&$extns)
+{
+    // define temp filename to use for openssl.cnf and add extensions values to it
+    $configFilename = tempnam(sys_get_temp_dir(), 'ssl');
+
+    $template = file_get_contents('/usr/local/etc/ssl/opnsense.cnf');
+
+    foreach (array_keys($extns) as $extnTag) {
+        $template_extn = $extnTag . ' = ' . str_replace(array("\r", "\n"), '', $extns[$extnTag]);
+        // Overwrite the placeholders for this property
+        $template = str_replace('###OPNsense:' . $extnTag . '###', $template_extn, $template);
+    }
+    file_put_contents($configFilename, $template);
+    return $configFilename;
+}
+
 function cert_get_subject_hash($crt)
 {
     $str_crt = base64_decode($crt);

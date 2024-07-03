@@ -53,6 +53,9 @@
             <pattern>index.php*</pattern>
             <pattern>widgets/widgets/*.widget.php*</pattern>
             <pattern>widgets/api/get.php*</pattern>
+            <pattern>ui/core/dashboard</pattern>
+            <pattern>ui/js/widgets/*</pattern>
+            <pattern>api/core/dashboard/*</pattern>
             <pattern>api/diagnostics/dns/reverse_lookup*</pattern>
             <pattern>api/routes/gateway/status*</pattern>
             <pattern>api/diagnostics/interface/getInterfaceNames</pattern>
@@ -71,6 +74,20 @@
             <pattern>api/monit/status/get/xml</pattern>
         </patterns>
     </page-dashboard-widgets>
+    <page-dashboard-widget-interfaces>
+        <name>Dashboard: Interfaces overview widget</name>
+        <patterns>
+            <pattern>ui/core/dashboard</pattern>
+            <pattern>api/interfaces/overview/*</pattern>
+        </patterns>
+    </page-dashboard-widget-interfaces>
+    <page-dashboard-widget-cpu>
+        <name>Dashboard: CPU Usage widget</name>
+        <patterns>
+            <pattern>ui/core/dashboard</pattern>
+            <pattern>api/diagnostics/cpu_usage/*</pattern>
+        </patterns>
+    </page-dashboard-widget-cpu>
     <page-diagnostics-authentication>
         <name>Diagnostics: Authentication</name>
         <patterns>
@@ -107,8 +124,8 @@
     <page-diagnostics-logs-dhcp>
         <name>Diagnostics: Logs: DHCP</name>
         <patterns>
-            <pattern>ui/diagnostics/log/core/dhcp/*</pattern>
-            <pattern>api/diagnostics/log/core/dhcp/*</pattern>
+            <pattern>ui/diagnostics/log/core/dhcpd/*</pattern>
+            <pattern>api/diagnostics/log/core/dhcpd/*</pattern>
         </patterns>
     </page-diagnostics-logs-dhcp>
     <page-diagnostics-logs-gateways>
@@ -118,12 +135,6 @@
             <pattern>api/diagnostics/log/core/gateways/*</pattern>
         </patterns>
     </page-diagnostics-logs-gateways>
-    <page-diagnostics-logs-settings>
-        <name>Diagnostics: Logs: Settings</name>
-        <patterns>
-            <pattern>diag_logs_settings.php*</pattern>
-        </patterns>
-    </page-diagnostics-logs-settings>
     <page-diagnostics-logs-system>
         <name>Diagnostics: Logs: System</name>
         <patterns>
@@ -227,18 +238,6 @@
             <pattern>api/firewall/category/*</pattern>
         </patterns>
     </page-firewall-categories>
-    <page-firewall-nat-1-1>
-        <name>Firewall: NAT: 1:1</name>
-        <patterns>
-            <pattern>firewall_nat_1to1.php*</pattern>
-        </patterns>
-    </page-firewall-nat-1-1>
-    <page-firewall-nat-1-1-edit>
-        <name>Firewall: NAT: 1:1: Edit</name>
-        <patterns>
-            <pattern>firewall_nat_1to1_edit.php*</pattern>
-        </patterns>
-    </page-firewall-nat-1-1-edit>
     <page-firewall-nat-outbound>
         <name>Firewall: NAT: Outbound</name>
         <patterns>
@@ -347,28 +346,18 @@
             <pattern>interfaces_bridge.php*</pattern>
         </patterns>
     </page-interfaces-bridge>
-    <page-interfaces-gif>
+    <page-interfaces-gif-edit>
         <name>Interfaces: GIF</name>
         <patterns>
-            <pattern>interfaces_gif.php*</pattern>
-        </patterns>
-    </page-interfaces-gif>
-    <page-interfaces-gif-edit>
-        <name>Interfaces: GIF: Edit</name>
-        <patterns>
-            <pattern>interfaces_gif_edit.php*</pattern>
+            <pattern>ui/interfaces/gif</pattern>
+            <pattern>ui/interfaces/gif_settings/*</pattern>
         </patterns>
     </page-interfaces-gif-edit>
-    <page-interfaces-gre>
+    <page-interfaces-gre-edit>
         <name>Interfaces: GRE</name>
         <patterns>
-            <pattern>interfaces_gre.php*</pattern>
-        </patterns>
-    </page-interfaces-gre>
-    <page-interfaces-gre-edit>
-        <name>Interfaces: GRE: Edit</name>
-        <patterns>
-            <pattern>interfaces_gre_edit.php*</pattern>
+            <pattern>ui/interfaces/gre</pattern>
+            <pattern>ui/interfaces/gre_settings/*</pattern>
         </patterns>
     </page-interfaces-gre-edit>
     <page-interfaces-groups-edit>
@@ -414,12 +403,6 @@
             <pattern>wizard.php?xml=system</pattern>
         </patterns>
     </page-wizard-system>
-    <page-services-dhcprelay>
-        <name>Services: DHCP Relay</name>
-        <patterns>
-            <pattern>services_dhcp_relay.php*</pattern>
-        </patterns>
-    </page-services-dhcprelay>
     <page-services-dhcpserver-editstaticmapping>
         <name>Services: DHCP Server: Edit static mapping</name>
         <patterns>
@@ -432,12 +415,6 @@
             <pattern>services_dhcp.php*</pattern>
         </patterns>
     </page-services-dhcpserver>
-    <page-services-dhcpv6relay>
-        <name>Services: DHCPv6 Relay</name>
-        <patterns>
-            <pattern>services_dhcpv6_relay.php*</pattern>
-        </patterns>
-    </page-services-dhcpv6relay>
     <page-services-dhcpserverv6-editstaticmapping>
         <name>Services: DHCPv6 Server: Edit static mapping</name>
         <patterns>
@@ -598,19 +575,22 @@
     <page-system-camanager>
         <name>System: CA Manager</name>
         <patterns>
-            <pattern>system_camanager.php*</pattern>
+            <pattern>ui/trust/ca</pattern>
+            <pattern>api/trust/ca/*</pattern>
         </patterns>
     </page-system-camanager>
     <page-system-certmanager>
         <name>System: Certificate Manager</name>
         <patterns>
-            <pattern>system_certmanager.php*</pattern>
+            <pattern>ui/trust/cert</pattern>
+            <pattern>api/trust/cert/*</pattern>
         </patterns>
     </page-system-certmanager>
     <page-system-crlmanager>
         <name>System: CRL Manager</name>
         <patterns>
-            <pattern>system_crlmanager.php*</pattern>
+            <pattern>ui/trust/crl</pattern>
+            <pattern>api/trust/crl/*</pattern>
         </patterns>
     </page-system-crlmanager>
     <page-system-firmware-manualupdate>
@@ -662,7 +642,8 @@
     <page-system-hasync>
         <name>System: High Availability</name>
         <patterns>
-            <pattern>system_hasync.php*</pattern>
+            <pattern>ui/core/hasync</pattern>
+            <pattern>api/core/hasync/*</pattern>
         </patterns>
     </page-system-hasync>
     <page-system-license>

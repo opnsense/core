@@ -62,12 +62,14 @@ function get_vhid_status()
 /**
  * mimic wg-quick behaviour, but bound to our config
  */
-function wg_start($server, $fhandle, $ifcfgflag = 'up')
+function wg_start($server, $fhandle, $ifcfgflag = 'up', $reload = false)
 {
     if (!does_interface_exist($server->interface)) {
         mwexecf('/sbin/ifconfig wg create name %s', [$server->interface]);
         mwexecf('/sbin/ifconfig %s group wireguard', [$server->interface]);
+        $reload = true;
     }
+
     mwexecf('/usr/bin/wg syncconf %s %s', [$server->interface, $server->cnfFilename]);
 
     /* The tunneladdress can be empty, so array_filter without callback filters empty strings out. */
@@ -78,7 +80,6 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up')
     if (!empty((string)$server->mtu)) {
         mwexecf('/sbin/ifconfig %s mtu %s', [$server->interface, $server->mtu]);
     }
-    mwexecf('/sbin/ifconfig %s %s', [$server->interface, $ifcfgflag]);
 
     if (empty((string)$server->disableroutes)) {
         /**
@@ -90,22 +91,35 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up')
          *      where these (and maybe other) static routes hook into.
          **/
         $peers = explode(',', $server->peers);
-        $routes_to_add = ['inet' => [], 'inet6' => []];
+        $routes_to_add = $routes_to_skip = ['inet' => [], 'inet6' => []];
+
+        /* calculate subnets to skip because these are automatically attached by instance address */
+        foreach (array_filter(explode(',', (string)$server->tunneladdress)) as $alias) {
+            $ipproto = strpos($alias, ':') === false ? 'inet' : 'inet6';
+            $alias = explode('/', $alias);
+            $alias = ($ipproto == 'inet' ? gen_subnet($alias[0], $alias[1]) :
+                gen_subnetv6($alias[0], $alias[1])) . "/{$alias[1]}";
+            $routes_to_skip[$ipproto][] = $alias;
+        }
+
         foreach ((new OPNsense\Wireguard\Client())->clients->client->iterateItems() as $key => $client) {
             if (empty((string)$client->enabled) || !in_array($key, $peers)) {
                 continue;
             }
-            foreach (explode(',', (string)$client->tunneladdress) as $tunneladdress) {
-                $ipproto = strpos($tunneladdress, ":") === false ? "inet" :  "inet6";
+            foreach (explode(',', (string)$client->tunneladdress) as $address) {
+                $ipproto = strpos($address, ":") === false ? "inet" :  "inet6";
+                $address = explode('/', $address);
+                $address = ($ipproto == 'inet' ? gen_subnet($address[0], $address[1]) :
+                    gen_subnetv6($address[0], $address[1])) . "/{$address[1]}";
                 /* wg-quick seems to prevent /0 being routed and translates this automatically */
-                if (str_ends_with(trim($tunneladdress), '/0')) {
+                if (str_ends_with(trim($address), '/0')) {
                     if ($ipproto == 'inet') {
                         array_push($routes_to_add[$ipproto], '0.0.0.0/1', '128.0.0.0/1');
                     } else {
                         array_push($routes_to_add[$ipproto], '::/1', '8000::/1');
                     }
-                } else {
-                    $routes_to_add[$ipproto][] = $tunneladdress;
+                } elseif (!in_array($address, $routes_to_skip[$ipproto])) {
+                    $routes_to_add[$ipproto][] = $address;
                 }
             }
         }
@@ -116,16 +130,22 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up')
         }
     } elseif (!empty((string)$server->gateway)) {
         /* Only bind the gateway ip to the tunnel */
-        $ipprefix = strpos($tunneladdress, ":") === false ? "-4" :  "-6";
+        $ipprefix = strpos($server->gateway, ":") === false ? "-4" :  "-6";
         mwexecf('/sbin/route -q -n add %s %s -iface %s', [$ipprefix, $server->gateway, $server->interface]);
     }
+
+    if ($reload) {
+        interfaces_restart_by_device(false, [(string)$server->interface]);
+    }
+
+    mwexecf('/sbin/ifconfig %s %s', [$server->interface, $ifcfgflag]);
 
     // flush checksum to ease change detection
     fseek($fhandle, 0);
     ftruncate($fhandle, 0);
     fwrite($fhandle, @md5_file($server->cnfFilename) . "|" . wg_reconfigure_hash($server));
+
     syslog(LOG_NOTICE, "wireguard instance {$server->name} ({$server->interface}) started");
-    interfaces_restart_by_device(false, [(string)$server->interface], false);
 }
 
 /**
@@ -253,10 +273,13 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
                                 )
                             );
                         }
+
                         if (
                             @md5_file($node->cnfFilename) != get_stat_hash($statHandle)['file'] ||
                             empty($ifdetails[(string)$node->interface])
                         ) {
+                            $reload = false;
+
                             if (get_stat_hash($statHandle)['interface'] != wg_reconfigure_hash($node)) {
                                 // Fluent reloading not supported for this instance, make sure the user is informed
                                 syslog(
@@ -264,14 +287,27 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
                                     "wireguard instance {$node->name} ({$node->interface}) " .
                                     "can not reconfigure without stopping it first."
                                 );
-                                wg_stop($node);
+
+                                /*
+                                 * Scrub interface, although dropping and recreating is more clean, there are
+                                 * side affects in doing so. Dropping the addresses should drop the associated
+                                 * routes and force a full reload (also of attached interface).
+                                 */
+                                interfaces_addresses_flush((string)$node->interface, 4, $ifdetails);
+                                interfaces_addresses_flush((string)$node->interface, 6, $ifdetails);
+                                $reload = true;
                             }
-                            wg_start($node, $statHandle, $carp_if_flag);
-                        } else {
-                            // when triggered via a CARP event, check our interface status [UP|DOWN]
-                            if ($ifstatus !=  $carp_if_flag) {
-                                mwexecf('/sbin/ifconfig %s %s', [$node->interface, $carp_if_flag]);
-                            }
+
+                            wg_start($node, $statHandle, $carp_if_flag, $reload);
+                        /* when triggered via a CARP event, check our interface status [UP|DOWN] */
+                        } elseif ($ifstatus != $carp_if_flag) {
+                            syslog(
+                                LOG_NOTICE,
+                                "wireguard instance {$node->name} ({$node->interface}) " .
+                                "switching to " . strtoupper($carp_if_flag)
+                            );
+
+                            mwexecf('/sbin/ifconfig %s %s', [$node->interface, $carp_if_flag]);
                         }
                         break;
                 }
@@ -296,8 +332,9 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
         }
     }
 
-    if (count($server_devs)) {
-        configd_run('filter reload'); /* XXX required for NAT rules, but needs coalescing */
+    if (count($server_devs) && $action == 'restart') {
+        /* XXX required for filter/NAT rules, as interface was recreated, rules might not match anymore */
+        configd_run('filter reload');
     }
 }
 closelog();

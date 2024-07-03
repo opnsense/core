@@ -123,6 +123,7 @@ function unbound_service_stop()
 
     mwexecf('/sbin/umount %s', '/var/unbound/dev', true);
     mwexecf('/sbin/umount %s', '/var/unbound/usr/local/lib/' . readlink('/usr/local/bin/python3'), true);
+    mwexecf('/sbin/umount %s', '/var/unbound/lib', true);
 }
 
 function unbound_generate_config()
@@ -142,6 +143,7 @@ function unbound_generate_config()
 
     mwexecf('/sbin/mount -t devfs devfs %s', '/var/unbound/dev');
     mwexecf('/sbin/mount -r -t nullfs %s %s', [$python_dir, $chroot_python_dir]);
+    mwexecf('/sbin/mount -r -t nullfs %s %s', ['/lib', '/var/unbound/lib']);
 
     $optimization = unbound_optimization();
 
@@ -340,6 +342,12 @@ remote-control:
 EOD;
 
     file_put_contents('/var/unbound/unbound.conf', $unboundconf);
+
+    /* Unbound load tripping over this file is very strange so make it a very safe rewrite */
+    $root_hints_tmp = tempnam('/var/unbound', 'root.hints.');
+    copy('/usr/local/opnsense/data/unbound/root.min.hints', $root_hints_tmp);
+    rename($root_hints_tmp, '/var/unbound/root.hints');
+
     configd_run('template reload OPNsense/Unbound/*');
 }
 
@@ -583,11 +591,14 @@ function unbound_add_host_entries($ifconfig_details)
     }
 
     if (!empty($general['regdhcpstatic'])) {
-        foreach (plugins_run('static_mapping', [null, true, $config['system']['domain'], $ifconfig_details]) as $map) {
+        foreach (plugins_run('static_mapping', [null, true, $ifconfig_details]) as $map) {
             foreach ($map as $host) {
                 if (empty($host['hostname'])) {
                     /* cannot register without a hostname */
                     continue;
+                }
+                if (empty($host['domain'])) {
+                    $host['domain'] = $config['system']['domain'];
                 }
                 if (isset($host['ipaddr'])) {
                     $unbound_entries .= "local-data-ptr: \"{$host['ipaddr']} {$host['hostname']}.{$host['domain']}\"\n";
