@@ -256,4 +256,16 @@
             <notavailable>N/A</notavailable>
         </translations>
     </ipsectunnels>
+    <Wireguard>
+        <filename>Wireguard.js</filename>
+        <endpoints>
+            <endpoint>/api/wireguard/service/show</endpoint>
+            <endpoint>/api/wireguard/general/get</endpoint>
+        </endpoints>
+        <translations>
+            <title>Wireguard</title>
+            <unconfigured>Wireguard is currently disabled. Click to configure IPsec.</unconfigured>
+            <notunnels>There are currently no tunnels.</notunnels>
+        </translations>
+    </Wireguard>
 </metadata>
