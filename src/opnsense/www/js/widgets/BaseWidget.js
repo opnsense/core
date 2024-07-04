@@ -29,7 +29,7 @@ export default class BaseWidget {
         this.config = config;
         this.id = null;
         this.translations = {};
-        this.tickTimeout = 5000; // Default tick timeout
+        this.tickTimeout = 5; // Default tick timeout
         this.resizeHandles = "all"
         this.eventSource = null;
         this.eventSourceUrl = null;

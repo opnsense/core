@@ -32,8 +32,8 @@ export default class IpsecLeases extends BaseTableWidget {
         this.resizeHandles = "e, w";
         this.currentLeases = {};
 
-        // Since we only update when dataHasChanged we can almost update in real time
-        this.tickTimeout = 2000;
+        // Since we only update when dataChanged we can almost update in real time
+        this.tickTimeout = 2;
 
     }
 
@@ -82,24 +82,9 @@ export default class IpsecLeases extends BaseTableWidget {
         $('#ipsecLeaseTable').empty().append($error);
     }
 
-    // Checks if the lease data has changed to prevent unnecessary updates
-    dataHasChanged(newLeases) {
-
-        // Serialize the new and current leases to JSON strings for deep comparison
-        const newLeasesString = JSON.stringify(newLeases);
-        const currentLeasesString = JSON.stringify(this.currentLeases);
-
-        if (newLeasesString !== currentLeasesString) {
-            this.currentLeases = newLeases; // Update the current state with the new data
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     // Function to process leases data and update the UI accordingly
     processLeases(newLeases) {
-        if (!this.dataHasChanged(newLeases)) {
+        if (!this.dataChanged('ipsecleases', newLeases)) {
             return; // No changes detected, do not update the UI
         }
 

@@ -30,7 +30,7 @@ export default class Monit extends BaseTableWidget {
     constructor() {
         super();
 
-        this.tickTimeout = 20000;
+        this.tickTimeout = 20;
     }
 
     getMarkup() {

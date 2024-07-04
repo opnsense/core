@@ -29,7 +29,7 @@ import BaseTableWidget from "./BaseTableWidget.js";
 export default class SystemInformation extends BaseTableWidget {
     constructor() {
         super();
-        this.tickTimeout = 1000;
+        this.tickTimeout = 1;
     }
 
     getMarkup() {

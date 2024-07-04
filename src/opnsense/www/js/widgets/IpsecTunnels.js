@@ -32,8 +32,8 @@ export default class IpsecTunnels extends BaseTableWidget {
         this.resizeHandles = "e, w";
         this.currentTunnels = {};
 
-        // Since we only update when dataHasChanged we can almost update in real time
-        this.tickTimeout = 2000;
+        // Since we only update when dataChanged we can almost update in real time
+        this.tickTimeout = 2;
 
     }
 
@@ -82,23 +82,8 @@ export default class IpsecTunnels extends BaseTableWidget {
         $('#ipsecTunnelTable'). empty().append($error);
     }
 
-    // Checks if the tunnel data has changed to prevent unnecessary updates
-    dataHasChanged(newTunnels) {
-
-        // Convert tunnel objects to a string to perform a deep comparison
-        const newTunnelsString = JSON.stringify(newTunnels);
-        const currentTunnelsString = JSON.stringify(this.currentTunnels);
-
-        if (newTunnelsString !== currentTunnelsString) {
-            this.currentTunnels = newTunnels; // Update the current state with new data
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     processTunnels(newTunnels) {
-        if (!this.dataHasChanged(newTunnels)) {
+        if (!this.dataChanged('', newTunnels)) {
             return; // No changes detected, do not update the UI
         }
 

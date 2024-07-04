@@ -29,7 +29,7 @@ import BaseTableWidget from "./BaseTableWidget.js";
 export default class Announcements extends BaseTableWidget {
     constructor() {
         super();
-        this.tickTimeout = 3600000;
+        this.tickTimeout = 3600;
     }
 
     getGridOptions() {
