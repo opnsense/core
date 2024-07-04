@@ -140,8 +140,8 @@ class LogMatcher:
             filenames = glob.glob("%s/%s_*.log" % (log_basename, log_basename.split('/')[-1].split('.')[0]))
             for filename in sorted(filenames, reverse=True):
                 log_filenames.append(filename)
-            # legacy log output is always stashed last
-            log_filenames.append("%s.log" % log_basename)
+        # legacy log output is always stashed last
+        log_filenames.append("%s.log" % log_basename)
         if module != 'core':
             log_filenames.append("/var/log/%s_%s.log" % (module, os.path.basename(filename)))
 

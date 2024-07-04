@@ -34,6 +34,7 @@ export default class BaseWidget {
         this.eventSource = null;
         this.eventSourceUrl = null;
         this.eventSourceOnData = null;
+        this.cachedData = {};
     }
 
     /* Public functions */
@@ -96,6 +97,20 @@ export default class BaseWidget {
     }
 
     /* Utility/protected functions */
+
+    dataChanged(id, data) {
+        if (id in this.cachedData) {
+            if (JSON.stringify(this.cachedData[id]) !== JSON.stringify(data)) {
+                this.cachedData[id] = data;
+                return true;
+            }
+        } else {
+            this.cachedData[id] = data;
+            return true;
+        }
+
+        return false;
+    }
 
     setWidgetConfig(config) {
         this.config['widget'] = config;

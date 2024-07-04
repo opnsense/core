@@ -16,7 +16,7 @@
         </endpoints>
         <translations>
             <title>System Information</title>
-            <name>name</name>
+            <name>Name</name>
             <versions>Versions</versions>
             <updates>Updates</updates>
             <datetime>Current date/time</datetime>
@@ -153,7 +153,7 @@
         </translations>
     </swap>
     <carp>
-        <filename>CARP Status</filename>
+        <filename>Carp.js</filename>
         <endpoints>
             <endpoint>/api/diagnostics/interface/get_vip_status</endpoint>
         </endpoints>

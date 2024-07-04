@@ -51,6 +51,10 @@ export default class Interfaces extends BaseTableWidget {
 
     async onWidgetTick() {
         await ajaxGet('/api/interfaces/overview/interfacesInfo', {}, (data, status) => {
+            if (!this.dataChanged('interfaces', data)) {
+                return;
+            }
+
             let rows = [];
             data.rows.map((intf_data) => {
                 if (!intf_data.hasOwnProperty('config') || intf_data.enabled == false) {

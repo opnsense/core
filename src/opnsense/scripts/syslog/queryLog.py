@@ -52,7 +52,6 @@ if __name__ == '__main__':
     if inputargs.filename != "":
         limit = int(inputargs.limit) if inputargs.limit.isdigit()  else 0
         offset = int(inputargs.offset) if inputargs.offset.isdigit() else 0
-        severity = inputargs.severity.split(',') if inputargs.severity.strip() != '' else []
         log_matcher = LogMatcher(inputargs.filter, inputargs.filename, inputargs.module, inputargs.severity)
         for record in log_matcher.match_records():
             result['total_rows'] += 1
