@@ -62,7 +62,7 @@
     </td>
     <td>
         {% if type == "text" %}
-            <input  type="text"
+            <input  type="text" aria-label="{{label|safe}}"
                     class="form-control {{style|default('')}}"
                     size="{{size|default("50")}}"
                     id="{{ id }}"
@@ -72,10 +72,10 @@
         {% elseif type == "hidden" %}
             <input type="hidden" id="{{ id }}" class="{{style|default('')}}" >
         {% elseif type == "checkbox" %}
-            <input type="checkbox"  class="{{style|default('')}}" id="{{ id }}">
+            <input type="checkbox"  class="{{style|default('')}}" id="{{ id }}" aria-label="{{label|safe}}">
         {% elseif type in ["select_multiple", "dropdown"] %}
             <div id="select_{{ id }}">
-            <select {% if type == 'select_multiple' %}multiple="multiple"{% endif %}
+            <select aria-label="{{label|safe}}" {% if type == 'select_multiple' %}multiple="multiple"{% endif %}
                     data-size="{{size|default(10)}}"
                     id="{{ id }}"
                     class="{{style|default('selectpicker')}}"
@@ -109,9 +109,9 @@
                 <a href="#" class="text-danger" id="to-select_{{ id }}" ><i class="fa fa-th-list"></i> <small>{{ lang._('Back') }}</small> </a>
             </div>
         {% elseif type == "password" %}
-            <input type="password" autocomplete="new-password" class="form-control {{style|default('')}}" size="{{size|default("50")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} >
+            <input type="password" autocomplete="new-password" class="form-control {{style|default('')}}" size="{{size|default("50")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} aria-label="{{label|safe}}">
         {% elseif type == "textbox" %}
-            <textarea class="{{style|default('')}}" rows="{{height|default("5")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }}></textarea>
+            <textarea class="{{style|default('')}}" rows="{{height|default("5")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} aria-label="{{label|safe}}"></textarea>
         {% elseif type == "info" %}
             <span  class="{{style|default('')}}" id="{{ id }}"></span>
         {% endif %}
