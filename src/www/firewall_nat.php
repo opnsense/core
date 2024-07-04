@@ -339,21 +339,21 @@ $( document ).ready(function() {
                       <th><?=gettext("IP");?></th>
                       <th><?=gettext("Ports");?></th>
                       <th><?=gettext("Description");?></th>
-                      <th class="text-nowrap">
-                        <a href="firewall_nat_edit.php" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                      <th role="cell" class="text-nowrap">
+                        <a href="firewall_nat_edit.php" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>" aria-label="<?= html_safe(gettext('Add')) ?>"">
                           <i class="fa fa-plus fa-fw"></i>
                         </a>
 <?php if (count($a_nat)): ?>
-                        <button id="move_<?= count($a_nat) ?>" name="move_<?= count($a_nat) ?>_x" data-toggle="tooltip" title="<?=html_safe(gettext("Move selected rules to end"))?>" class="act_move btn btn-default btn-xs">
+                        <button id="move_<?= count($a_nat) ?>" name="move_<?= count($a_nat) ?>_x" data-toggle="tooltip" title="<?=html_safe(gettext("Move selected rules to end"))?>" aria-label="<?=html_safe(gettext("Move selected rules to end"))?>" class="act_move btn btn-default btn-xs">
                           <i class="fa fa-arrow-left fa-fw"></i>
                         </button>
-                        <button id="del_x" title="<?=html_safe(gettext("Delete selected"))?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                        <button id="del_x" title="<?=html_safe(gettext("Delete selected"))?>" aria-label="<?=html_safe(gettext("Delete selected"))?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                           <i class="fa fa-trash fa-fw"></i>
                         </button>
-                        <button title="<?= html_safe(gettext('Enable selected')) ?>" data-toggle="tooltip" class="act_toggle_enable btn btn-default btn-xs">
+                        <button title="<?= html_safe(gettext('Enable selected')) ?>" aria-label="<?= html_safe(gettext('Enable selected')) ?>" data-toggle="tooltip" class="act_toggle_enable btn btn-default btn-xs">
                           <i class="fa fa-check-square-o fa-fw"></i>
                         </button>
-                        <button title="<?= html_safe(gettext('Disable selected')) ?>" data-toggle="tooltip" class="act_toggle_disable btn btn-default btn-xs">
+                        <button title="<?= html_safe(gettext('Disable selected')) ?>" aria-label="<?= html_safe(gettext('Disable selected')) ?>" data-toggle="tooltip" class="act_toggle_disable btn btn-default btn-xs">
                           <i class="fa fa-square-o fa-fw"></i>
                         </button>
 <?php endif ?>
@@ -424,7 +424,7 @@ $( document ).ready(function() {
                             <?=htmlspecialchars(pprint_address($natent['source'])); ?>
                           </span>
                           <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['source']['address']);?>"
-                              title="<?=gettext("edit alias");?>" data-toggle="tooltip">
+                              title="<?=gettext("edit alias");?>" aria-label="<?=gettext("edit alias");?>" data-toggle="tooltip">
                             <i class="fa fa-list"></i>
                           </a>
 <?php                   else: ?>
@@ -438,7 +438,7 @@ $( document ).ready(function() {
                             <?=htmlspecialchars(pprint_port($natent['source']['port'])); ?>&nbsp;
                           </span>
                           <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['source']['port']);?>"
-                              title="<?=gettext("edit alias");?>" data-toggle="tooltip">
+                              title="<?=gettext("edit alias");?>" aria-label="<?=gettext("edit alias");?>" data-toggle="tooltip">
                             <i class="fa fa-list"></i>
                           </a>
 <?php                   else: ?>
@@ -452,7 +452,7 @@ $( document ).ready(function() {
                             <?=htmlspecialchars(pprint_address($natent['destination'])); ?>
                           </span>
                           <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['destination']['address']);?>"
-                              title="<?=gettext("edit alias");?>" data-toggle="tooltip">
+                              title="<?=gettext("edit alias");?>" aria-label="<?=gettext("edit alias");?>" data-toggle="tooltip">
                             <i class="fa fa-list"></i>
                           </a>
 <?php                   else: ?>
@@ -466,7 +466,7 @@ $( document ).ready(function() {
                             <?=htmlspecialchars(pprint_port($natent['destination']['port'])); ?>&nbsp;
                           </span>
                           <a href="/ui/firewall/alias/index/<?=htmlspecialchars($natent['destination']['port']);?>"
-                              title="<?=gettext("edit alias");?>" data-toggle="tooltip">
+                              title="<?=gettext("edit alias");?>" aria-label="<?=gettext("edit alias");?>" data-toggle="tooltip">
                             <i class="fa fa-list"></i>
                           </a>
 <?php                   else: ?>
@@ -481,7 +481,7 @@ $( document ).ready(function() {
 
 <?php                   if (is_alias($natent['target'])): ?>
                         &nbsp;<a href="/ui/firewall/alias/index/<?=$natent['target'];?>"
-                                 title="<?=gettext("edit alias");?>" data-toggle="tooltip"><i class="fa fa-list"></i> </a>
+                                 title="<?=gettext("edit alias");?>" aria-label="<?=gettext("edit alias");?>" data-toggle="tooltip"><i class="fa fa-list"></i> </a>
 <?php                   endif; ?>
                       </td>
 
@@ -502,7 +502,7 @@ $( document ).ready(function() {
                             <?=htmlspecialchars(pprint_port($localport));?>&nbsp;
                           </span>
                           <a href="/ui/firewall/alias/index/<?=htmlspecialchars($localport);?>"
-                              title="<?=gettext("edit alias");?>" data-toggle="tooltip">
+                              title="<?=gettext("edit alias");?>" aria-label="<?=gettext("edit alias");?>" data-toggle="tooltip">
                             <i class="fa fa-list"></i>
                           </a>
 <?php                   else: ?>
@@ -515,16 +515,16 @@ $( document ).ready(function() {
                       </td>
 
                       <td>
-                        <a type="submit" id="move_<?=$nnats;?>" name="move_<?=$nnats;?>_x" data-toggle="tooltip" title="<?=html_safe(gettext("Move selected rules before this rule"))?>" class="act_move btn btn-default btn-xs">
+                        <a type="submit" id="move_<?=$nnats;?>" name="move_<?=$nnats;?>_x" data-toggle="tooltip" title="<?=html_safe(gettext("Move selected rules before this rule"))?>" aria-label="<?=html_safe(gettext("Move selected rules before this rule"))?>" class="act_move btn btn-default btn-xs">
                           <i class="fa fa-arrow-left fa-fw"></i>
                         </a>
-                        <a href="firewall_nat_edit.php?id=<?=$nnats;?>" data-toggle="tooltip" title="<?=html_safe(gettext("Edit"))?>" class="btn btn-default btn-xs">
+                        <a href="firewall_nat_edit.php?id=<?=$nnats;?>" data-toggle="tooltip" title="<?=html_safe(gettext("Edit"))?>" aria-label="<?=html_safe(gettext("Edit"))?>" class="btn btn-default btn-xs">
                           <i class="fa fa-pencil fa-fw"></i>
                         </a>
-                        <a id="del_<?=$nnats;?>" title="<?=html_safe(gettext("Delete"))?>" data-toggle="tooltip" class="act_delete btn btn-default btn-xs">
+                        <a id="del_<?=$nnats;?>" title="<?=html_safe(gettext("Delete"))?>" aria-label="<?=html_safe(gettext("Delete"))?>" data-toggle="tooltip" class="act_delete btn btn-default btn-xs">
                           <i class="fa fa-trash fa-fw"></i>
                         </a>
-                        <a href="firewall_nat_edit.php?dup=<?=$nnats;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=html_safe(gettext("Clone"))?>">
+                        <a href="firewall_nat_edit.php?dup=<?=$nnats;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=html_safe(gettext("Clone"))?>" aria-label="<?=html_safe(gettext("Clone"))?>">
                           <i class="fa fa-clone fa-fw"></i>
                         </a>
                       </td>
