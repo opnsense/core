@@ -502,7 +502,7 @@ class WidgetManager  {
         const interval = setInterval(async () => {
             await onWidgetTick();
             this._updateGrid();
-        }, widget.tickTimeout);
+        }, widget.tickTimeout * 1000);
         // store the reference to the tick routine so we can clear it later on widget removal
         this.widgetTickRoutines[widget.id] = interval;
     }

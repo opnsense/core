@@ -29,7 +29,7 @@ import BaseGaugeWidget from "./BaseGaugeWidget.js";
 export default class Swap extends BaseGaugeWidget {
     constructor() {
         super();
-        this.tickTimeout = 15000;
+        this.tickTimeout = 15;
     }
 
     async onMarkupRendered() {
