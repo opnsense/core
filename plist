@@ -1984,6 +1984,7 @@
 /usr/local/opnsense/www/js/widgets/SystemInformation.js
 /usr/local/opnsense/www/js/widgets/ThermalSensors.js
 /usr/local/opnsense/www/js/widgets/Traffic.js
+/usr/local/opnsense/www/js/widgets/Wireguard.js
 /usr/local/opnsense/www/themes/opnsense/LICENSE
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/SourceSansPro-Bold/SourceSansPro-Bold.eot
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/SourceSansPro-Bold/SourceSansPro-Bold.otf
