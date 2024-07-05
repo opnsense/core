@@ -153,6 +153,10 @@ export default class BaseTableWidget extends BaseWidget {
             this.tables[id].data = data;
         }
 
+        if (rowIdentifier !== null) {
+            rowIdentifier = rowIdentifier.replace(/[:/]/gi, '__');
+        }
+
         data.forEach(row => {
             let $gridRow = options.headerPosition === 'top'
                 ? $(`<div class="grid-row"></div>`)

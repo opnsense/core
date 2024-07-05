@@ -266,4 +266,19 @@
             <notunnels>There are currently no tunnels.</notunnels>
         </translations>
     </Wireguard>
+    <services>
+        <filename>Services.js</filename>
+        <endpoints>
+            <endpoint>/api/core/service/*</endpoint>
+        </endpoints>
+        <translations>
+            <title>Services</title>
+            <noservices>No services found</noservices>
+            <running>Running</running>
+            <stopped>Stopped</stopped>
+            <restart>Restart</restart>
+            <stop>Stop</stop>
+            <start>Start</start>
+        </translations>
+    </services>
 </metadata>
