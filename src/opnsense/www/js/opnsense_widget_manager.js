@@ -422,38 +422,14 @@ class WidgetManager  {
             };
         });
 
-        // Convert each _onMarkupRendered(widget) to a promise
-        let promises = tasks.map(({ id, func }) => ({
-            id,
-            promise: new Promise(resolve => resolve(func()))
-        }));
-
-        // Fire away and handle errors
-        const results = await Promise.all(promises.map(({ id, promise }) =>
-            promise.catch(error => ({ error, id }))
-        ));
-
-        const errors = results.filter(result => {
-            if (result && 'error' in result) {
-                return result.error instanceof Error
-            }
+        let functions = tasks.map(({ id, func }) => {
+            return () => new Promise((resolve) => {
+                resolve(func().then(result => ({ result, id })).catch(error => this._displayError(id, error)));
+            });
         });
 
-        if (errors.length > 0) {
-            errors.forEach(({ error, id }) => {
-                console.error(`Failed to load content for widget: ${id}, Error:`, error);
-
-                const widget =  $(`.widget-${id} > .widget-content > .panel-divider`);
-                widget.nextAll().remove()
-                widget.after(`
-                    <div class="widget-error">
-                        <i class="fa fa-exclamation-circle text-danger"></i>
-                        <br/>
-                        ${this.gettext.failed}
-                    </div>
-                `);
-            });
-        }
+        // Fire away
+        await Promise.all(functions.map(f => f()));
     }
 
     // Executed for each widget; starts the widget-specific tick routine.
@@ -497,14 +473,37 @@ class WidgetManager  {
 
         // start the widget-specific tick routine
         let onWidgetTick = widget.onWidgetTick.bind(widget);
-        await onWidgetTick();
-        this._updateGrid(this.widgetHTMLElements[widget.id]);
-        const interval = setInterval(async () => {
+        try {
             await onWidgetTick();
-            this._updateGrid();
+            this._updateGrid(this.widgetHTMLElements[widget.id]);
+        } catch (error) {
+            this._displayError(widget.id, error);
+        }
+        const interval = setInterval(async () => {
+            try {
+                await onWidgetTick();
+                this._updateGrid(this.widgetHTMLElements[widget.id]);
+            } catch (error) {
+                this._displayError(widget.id, error);
+            }
         }, widget.tickTimeout * 1000);
         // store the reference to the tick routine so we can clear it later on widget removal
         this.widgetTickRoutines[widget.id] = interval;
+    }
+
+    _displayError(widgetId, error) {
+        console.error(`Failed to load content for widget: ${widgetId}, Error:`, error);
+
+        const widget =  $(`.widget-${widgetId} > .widget-content > .panel-divider`);
+        widget.nextAll().remove()
+        widget.after(`
+            <div class="widget-error">
+                <i class="fa fa-exclamation-circle text-danger"></i>
+                <br/>
+                ${this.gettext.failed}
+            </div>
+        `);
+        this._updateGrid(this.widgetHTMLElements[widgetId]);
     }
 
     // Recalculate widget/grid dimensions

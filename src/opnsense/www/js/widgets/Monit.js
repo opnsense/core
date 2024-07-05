@@ -80,36 +80,35 @@ export default class Monit extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        await ajaxGet('/api/monit/status/get/xml', {}, (data, status) => {
-            if (data['result'] !== 'ok') {
-                $('#monit-table').html(`<a href="/ui/monit">${this.translations.unconfigured}</a>`);
-                return;
-            }
+        const data =  await this.ajaxGet('/api/monit/status/get/xml');
+        if (data['result'] !== 'ok') {
+            $('#monit-table').html(`<a href="/ui/monit">${this.translations.unconfigured}</a>`);
+            return;
+        }
 
-            let rows = [];
-            $.each(data['status']['service'], (index, service) => {
-                let color = this.statusColors[service['status']] || "text-success";
-                let icon = this.serviceIcons[service['@attributes']['type']] || "fa-circle";
+        let rows = [];
+        $.each(data['status']['service'], (index, service) => {
+            let color = this.statusColors[service['status']] || "text-success";
+            let icon = this.serviceIcons[service['@attributes']['type']] || "fa-circle";
 
-                let $header = $(`
-                    <div>
-                        <i class="fa fa-circle text-muted ${color}" style="font-size: 11px; cursor: pointer;"
-                            data-toggle="tooltip" title="${this.statusMap[service['status']]}">
-                        </i>
-                        &nbsp;
-                        <i class="fa ${icon}" style="font-size: 11px;"
-                            data-toggle="tooltip" title="${this.serviceMap[service['@attributes']['type']]}">
-                        </i>
-                        &nbsp;
-                        <a href="/ui/monit/status">${service['name']}</a>
-                    </div>
-                `);
+            let $header = $(`
+                <div>
+                    <i class="fa fa-circle text-muted ${color}" style="font-size: 11px; cursor: pointer;"
+                        data-toggle="tooltip" title="${this.statusMap[service['status']]}">
+                    </i>
+                    &nbsp;
+                    <i class="fa ${icon}" style="font-size: 11px;"
+                        data-toggle="tooltip" title="${this.serviceMap[service['@attributes']['type']]}">
+                    </i>
+                    &nbsp;
+                    <a href="/ui/monit/status">${service['name']}</a>
+                </div>
+            `);
 
-                rows.push([$header.prop('outerHTML'), '']);
+            rows.push([$header.prop('outerHTML'), '']);
 
-            });
-
-            this.updateTable('monit-table', rows);
         });
+
+        this.updateTable('monit-table', rows);
     }
 }

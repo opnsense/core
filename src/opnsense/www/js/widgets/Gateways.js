@@ -47,51 +47,50 @@ export default class Gateways extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        await ajaxGet('/api/routes/gateway/status', {} , (data, status) => {
-            if (data.items === undefined) {
-                return;
+        const data = await this.ajaxGet('/api/routes/gateway/status', {});
+        if (data.items === undefined) {
+            return;
+        }
+
+        if (!data.items.length) {
+            $('#gateway-table').html(`<a href="/ui/routing/configuration">${this.translations.unconfigured}</a>`);
+            return;
+        }
+
+        data.items.forEach(({name, address, status, loss, delay, stddev, status_translated}) => {
+            let color = "text-success";
+            switch (status) {
+                case "force_down":
+                case "down":
+                    color = "text-danger";
+                    break;
+                case "loss":
+                case "delay":
+                case "delay+loss":
+                    color = "text-warning";
+                    break;
             }
 
-            if (!data.items.length) {
-                $('#gateway-table').html(`<a href="/ui/routing/configuration">${this.translations.unconfigured}</a>`);
-                return;
-            }
+            let gw = `<div>
+                <i class="fa fa-circle text-muted ${color}" style="font-size: 11px; cursor: pointer;"
+                    data-toggle="tooltip" title="${status_translated}">
+                </i>
+                &nbsp;
+                <a href="/ui/routing/configuration">${name}</a>
+                &nbsp;
+                <br/>
+                <div style="margin-top: 5px; margin-bottom: 5px; font-size: 15px;">${address}</div>
+            </div>`
 
-            data.items.forEach(({name, address, status, loss, delay, stddev, status_translated}) => {
-                let color = "text-success";
-                switch (status) {
-                    case "force_down":
-                    case "down":
-                        color = "text-danger";
-                        break;
-                    case "loss":
-                    case "delay":
-                    case "delay+loss":
-                        color = "text-warning";
-                        break;
-                }
+            let stats = `<div>
+                ${delay === '~' ? '' : `<div><b>${this.translations.rtt}</b>: ${delay}</div>`}
+                ${delay === '~' ? '' : `<div><b>${this.translations.rttd}</b>: ${stddev}</div>`}
+                ${delay === '~' ? '' : `<div><b>${this.translations.loss}</b>: ${loss}</div>`}
+            </div>`
 
-                let gw = `<div>
-                    <i class="fa fa-circle text-muted ${color}" style="font-size: 11px; cursor: pointer;"
-                        data-toggle="tooltip" title="${status_translated}">
-                    </i>
-                    &nbsp;
-                    <a href="/ui/routing/configuration">${name}</a>
-                    &nbsp;
-                    <br/>
-                    <div style="margin-top: 5px; margin-bottom: 5px; font-size: 15px;">${address}</div>
-                </div>`
-
-                let stats = `<div>
-                    ${delay === '~' ? '' : `<div><b>${this.translations.rtt}</b>: ${delay}</div>`}
-                    ${delay === '~' ? '' : `<div><b>${this.translations.rttd}</b>: ${stddev}</div>`}
-                    ${delay === '~' ? '' : `<div><b>${this.translations.loss}</b>: ${loss}</div>`}
-                </div>`
-
-                this.updateTable('gateway-table', [[gw, stats]], `gw_${name}`);
-            });
-
-            $('[data-toggle="tooltip"]').tooltip();
+            this.updateTable('gateway-table', [[gw, stats]], `gw_${name}`);
         });
+
+        $('[data-toggle="tooltip"]').tooltip();
     }
 }

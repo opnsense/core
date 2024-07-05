@@ -42,15 +42,14 @@ export default class Swap extends BaseGaugeWidget {
     }
 
     async onWidgetTick() {
-        ajaxGet('/api/core/system/system_swap', {}, (data, status) => {
-            let total = 0;
-            let used = 0;
-            for (const swapDevice of data['swap']) {
-                total += parseInt(swapDevice.total);
-                used += parseInt(swapDevice.used);
-            }
+        const data = await this.ajaxGet('/api/core/system/system_swap');
+        let total = 0;
+        let used = 0;
+        for (const swapDevice of data['swap']) {
+            total += parseInt(swapDevice.total);
+            used += parseInt(swapDevice.used);
+        }
 
-            super.updateChart([(used / 1024), (total - used) / 1024]);
-        });
+        super.updateChart([(used / 1024), (total - used) / 1024]);
     }
 }

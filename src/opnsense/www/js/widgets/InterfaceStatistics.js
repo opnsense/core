@@ -64,48 +64,47 @@ export default class InterfaceStatistics extends BaseWidget {
     }
 
     async onWidgetTick() {
-        ajaxGet('/api/diagnostics/traffic/interface', {}, (data, status) => {
-            let sortedSet = {};
-            let i = 0;
-            let colors = Chart.colorschemes.tableau.Classic10;
-            for (const intf in data.interfaces) {
-                const obj = data.interfaces[intf];
-                this.labels.indexOf(obj.name) === -1 && this.labels.push(obj.name);
-                obj.data = parseInt(obj["packets received"]) + parseInt(obj["packets transmitted"]);
-                obj.color = colors[i % colors.length]
-                this.rawData[obj.name] = obj;
+        const data = await this.ajaxGet('/api/diagnostics/traffic/interface');
+        let sortedSet = {};
+        let i = 0;
+        let colors = Chart.colorschemes.tableau.Classic10;
+        for (const intf in data.interfaces) {
+            const obj = data.interfaces[intf];
+            this.labels.indexOf(obj.name) === -1 && this.labels.push(obj.name);
+            obj.data = parseInt(obj["packets received"]) + parseInt(obj["packets transmitted"]);
+            obj.color = colors[i % colors.length]
+            this.rawData[obj.name] = obj;
 
-                sortedSet[i] = {'name': obj.name, 'data': obj.data};
-                i++;
-            }
+            sortedSet[i] = {'name': obj.name, 'data': obj.data};
+            i++;
+        }
 
-            this.sortedLabels = [];
-            this.sortedData = [];
-            Object.values(sortedSet).sort((a, b) => b.data - a.data).forEach(item => {
-                this.sortedLabels.push(item.name);
-                this.sortedData.push(item.data);
-            });
-
-            let formattedData = this._getIndexedData(data.interfaces);
-            this.dataset = {
-                label: 'statistics',
-                data:  formattedData.data,
-                backgroundColor: formattedData.colors,
-                hoverBackgroundColor: formattedData.colors.map((color) => this._setAlpha(color, 0.5)),
-                fill: true,
-                borderWidth: 2,
-                hoverOffset: 10,
-            }
-
-            if (this.chart.config.data.datasets.length > 0) {
-                this.chart.config.data.datasets[0].data = this.dataset.data;
-            } else {
-                this.chart.config.data.labels = this.labels;
-                this.chart.config.data.datasets.push(this.dataset);
-            }
-
-            this.chart.update();
+        this.sortedLabels = [];
+        this.sortedData = [];
+        Object.values(sortedSet).sort((a, b) => b.data - a.data).forEach(item => {
+            this.sortedLabels.push(item.name);
+            this.sortedData.push(item.data);
         });
+
+        let formattedData = this._getIndexedData(data.interfaces);
+        this.dataset = {
+            label: 'statistics',
+            data:  formattedData.data,
+            backgroundColor: formattedData.colors,
+            hoverBackgroundColor: formattedData.colors.map((color) => this._setAlpha(color, 0.5)),
+            fill: true,
+            borderWidth: 2,
+            hoverOffset: 10,
+        }
+
+        if (this.chart.config.data.datasets.length > 0) {
+            this.chart.config.data.datasets[0].data = this.dataset.data;
+        } else {
+            this.chart.config.data.labels = this.labels;
+            this.chart.config.data.datasets.push(this.dataset);
+        }
+
+        this.chart.update();
     }
 
     async onMarkupRendered() {

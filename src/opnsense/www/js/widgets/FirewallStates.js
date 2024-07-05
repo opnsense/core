@@ -41,10 +41,9 @@ export default class FirewallStates extends BaseGaugeWidget {
     }
 
     async onWidgetTick() {
-        ajaxGet('/api/diagnostics/firewall/pf_states', {}, (data, status) => {
-            let current = parseInt(data.current);
-            let limit = parseInt(data.limit);
-            super.updateChart([current, (limit - current)]);
-        });
+        const data = await this.ajaxGet('/api/diagnostics/firewall/pf_states');
+        let current = parseInt(data.current);
+        let limit = parseInt(data.limit);
+        super.updateChart([current, (limit - current)]);
     }
 }

@@ -152,35 +152,34 @@ export default class Disk extends BaseGaugeWidget {
     }
 
     async onWidgetTick() {
-        ajaxGet('/api/core/system/systemDisk', {}, (data, status) => {
-            if (data.devices !== undefined) {
-                let set = this.detailed_chart.config.data;
-                let init = set.labels.length === 0;
-                this.detailed_chart.config.data.datasets[0].data = [];
-                this.detailed_chart.config.data.datasets[1].data = [];
-                let totals = [];
-                for (const device of data.devices) {
-                    let used = this._convertToBytes(device.used);
-                    let total = this._convertToBytes(device.blocks);
-                    let free = total - used;
-                    if (device.mountpoint === '/') {
-                        this.chart.config.data.datasets[0].pct = [device.used_pct, (100 - device.used_pct)];
-                        super.updateChart([used, free]);
-                    }
-                    totals.push(total);
-
-                    if (init) {
-                        this.detailed_chart.config.data.types.push(device.type);
-                        this.detailed_chart.config.data.labels.push(device.mountpoint);
-                    }
-                    this.detailed_chart.config.data.datasets[0].data.push(used);
-                    this.detailed_chart.config.data.datasets[1].data.push(free);
+        const data = await this.ajaxGet('/api/core/system/systemDisk');
+        if (data.devices !== undefined) {
+            let set = this.detailed_chart.config.data;
+            let init = set.labels.length === 0;
+            this.detailed_chart.config.data.datasets[0].data = [];
+            this.detailed_chart.config.data.datasets[1].data = [];
+            let totals = [];
+            for (const device of data.devices) {
+                let used = this._convertToBytes(device.used);
+                let total = this._convertToBytes(device.blocks);
+                let free = total - used;
+                if (device.mountpoint === '/') {
+                    this.chart.config.data.datasets[0].pct = [device.used_pct, (100 - device.used_pct)];
+                    super.updateChart([used, free]);
                 }
+                totals.push(total);
 
-                this.detailed_chart.config.options.scales.x.max = Math.max(...totals);
-                this.detailed_chart.update();
+                if (init) {
+                    this.detailed_chart.config.data.types.push(device.type);
+                    this.detailed_chart.config.data.labels.push(device.mountpoint);
+                }
+                this.detailed_chart.config.data.datasets[0].data.push(used);
+                this.detailed_chart.config.data.datasets[1].data.push(free);
             }
-        });
+
+            this.detailed_chart.config.options.scales.x.max = Math.max(...totals);
+            this.detailed_chart.update();
+        }
     }
 
     onWidgetResize(elem, width, height) {

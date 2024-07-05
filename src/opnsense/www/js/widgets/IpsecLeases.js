@@ -55,25 +55,21 @@ export default class IpsecLeases extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        try {
-            const ipsecStatusResponse = await ajaxGet('/api/ipsec/Connections/isEnabled', {});
+        const ipsecStatusResponse = await this.ajaxGet('/api/ipsec/Connections/isEnabled');
 
-            if (!ipsecStatusResponse.enabled) {
-                this.displayError(`${this.translations.unconfigured}`);
-                return;
-            }
-
-            const data = await ajaxGet('/api/ipsec/leases/pools', {});
-
-            if (!data || !data.leases || data.leases.length === 0) {
-                this.displayError(`${this.translations.noleases}`);
-                return;
-            }
-
-            this.processLeases(data.leases);
-        } catch (error) {
-            this.displayError(`${this.translations.nodata}`);
+        if (!ipsecStatusResponse.enabled) {
+            this.displayError(`${this.translations.unconfigured}`);
+            return;
         }
+
+        const data = await this.ajaxGet('/api/ipsec/leases/pools');
+
+        if (!data || !data.leases || data.leases.length === 0) {
+            this.displayError(`${this.translations.noleases}`);
+            return;
+        }
+
+        this.processLeases(data.leases);
     }
 
     // Utility function to display errors within the widget

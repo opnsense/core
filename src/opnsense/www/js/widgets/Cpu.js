@@ -83,9 +83,8 @@ export default class Cpu extends BaseWidget {
     }
 
     async onMarkupRendered() {
-        ajaxGet('/api/diagnostics/cpu_usage/getcputype', {}, (data, status) => {
-            $('.cpu-type').text(data);
-        });
+        const data = await this.ajaxGet('/api/diagnostics/cpu_usage/getcputype');
+        $('.cpu-type').text(data);
 
         let total_ts = new TimeSeries();
         let intr_ts = new TimeSeries();

@@ -48,24 +48,24 @@ export default class Announcements extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        await ajaxGet('/api/core/dashboard/product_info_feed', {}, (data, status) => {
-            if (!data.items.length) {
-                $('#announcements-table').html(`${this.translations.no_feed}`);
-                return;
-            }
-            let rows = [];
-            data.items.forEach(({ title, description, link, pubDate, guid }) => {
-                description = $('<div/>').html(description).text();
-                rows.push(`
-                        <div>
-                            <a href="${link}" target='_new'">${title}</a>
-                        </div>
-                        <div>
-                            ${description}
-                        </div>
-                    `);
-            });
-            this.updateTable('announcements-table', rows.map(row => [row]));
+        const data = await this.ajaxGet('/api/core/dashboard/product_info_feed');
+
+        if (!data.items.length) {
+            $('#announcements-table').html(`${this.translations.no_feed}`);
+            return;
+        }
+        let rows = [];
+        data.items.forEach(({ title, description, link, pubDate, guid }) => {
+            description = $('<div/>').html(description).text();
+            rows.push(`
+                    <div>
+                        <a href="${link}" target='_new'">${title}</a>
+                    </div>
+                    <div>
+                        ${description}
+                    </div>
+                `);
         });
+        this.updateTable('announcements-table', rows.map(row => [row]));
     }
 }

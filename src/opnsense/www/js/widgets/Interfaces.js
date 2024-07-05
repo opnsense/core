@@ -50,64 +50,63 @@ export default class Interfaces extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        await ajaxGet('/api/interfaces/overview/interfacesInfo', {}, (data, status) => {
-            if (!this.dataChanged('interfaces', data)) {
+        const data = await this.ajaxGet('/api/interfaces/overview/interfacesInfo');
+        if (!this.dataChanged('interfaces', data)) {
+            return;
+        }
+
+        let rows = [];
+        data.rows.map((intf_data) => {
+            if (!intf_data.hasOwnProperty('config') || intf_data.enabled == false) {
                 return;
             }
 
-            let rows = [];
-            data.rows.map((intf_data) => {
-                if (!intf_data.hasOwnProperty('config') || intf_data.enabled == false) {
-                    return;
-                }
+            if (intf_data.config.hasOwnProperty('virtual') && intf_data.config.virtual == '1') {
+                return;
+            }
 
-                if (intf_data.config.hasOwnProperty('virtual') && intf_data.config.virtual == '1') {
-                    return;
-                }
+            let row = [];
 
-                let row = [];
+            row.push($(`
+                <div class="interface-info if-name">
+                    <i class="fa fa-plug text-${intf_data.status === 'up' ? 'success' : 'danger'}" title="" data-toggle="tooltip" data-original-title="${intf_data.status}"></i>
+                    <b class="interface-descr" onclick="location.href='/interfaces.php?if=${intf_data.identifier}'">
+                        ${intf_data.description}
+                    </b>
+                </div>
+            `).prop('outerHTML'));
 
-                row.push($(`
-                    <div class="interface-info if-name">
-                        <i class="fa fa-plug text-${intf_data.status === 'up' ? 'success' : 'danger'}" title="" data-toggle="tooltip" data-original-title="${intf_data.status}"></i>
-                        <b class="interface-descr" onclick="location.href='/interfaces.php?if=${intf_data.identifier}'">
-                            ${intf_data.description}
-                        </b>
-                    </div>
-                `).prop('outerHTML'));
+            let media = (!'media' in intf_data ? intf_data.cell_mode : intf_data.media) ?? '';
+            row.push($(`
+                <div class="interface-info-detail">
+                    <div>${media}</div>
+                </div>
+            `).prop('outerHTML'));
 
-                let media = (!'media' in intf_data ? intf_data.cell_mode : intf_data.media) ?? '';
-                row.push($(`
-                    <div class="interface-info-detail">
-                        <div>${media}</div>
-                    </div>
-                `).prop('outerHTML'));
+            let ipv4 = '';
+            let ipv6 = '';
+            if ('ipv4' in intf_data && intf_data.ipv4.length > 0) {
+                ipv4 = intf_data.ipv4[0].ipaddr;
+            }
 
-                let ipv4 = '';
-                let ipv6 = '';
-                if ('ipv4' in intf_data && intf_data.ipv4.length > 0) {
-                    ipv4 = intf_data.ipv4[0].ipaddr;
-                }
+            if ('ipv6' in intf_data && intf_data.ipv6.length > 0) {
+                ipv6 = intf_data.ipv6[0].ipaddr;
+            }
 
-                if ('ipv6' in intf_data && intf_data.ipv6.length > 0) {
-                    ipv6 = intf_data.ipv6[0].ipaddr;
-                }
+            row.push($(`
+                <div class="interface-info">
+                    ${ipv4}
+                    <div style="flex-basis: 100%; height: 0;"></div>
+                    ${ipv6}
+                </div>
+            `).prop('outerHTML'));
 
-                row.push($(`
-                    <div class="interface-info">
-                        ${ipv4}
-                        <div style="flex-basis: 100%; height: 0;"></div>
-                        ${ipv6}
-                    </div>
-                `).prop('outerHTML'));
-
-                rows.push(row);
-            });
-
-            super.updateTable('if-table', rows);
-
-            $('[data-toggle="tooltip"]').tooltip();
+            rows.push(row);
         });
+
+        super.updateTable('if-table', rows);
+
+        $('[data-toggle="tooltip"]').tooltip();
     }
 
     onWidgetResize(elem, width, height) {

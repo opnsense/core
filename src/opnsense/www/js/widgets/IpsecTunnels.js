@@ -55,25 +55,21 @@ export default class IpsecTunnels extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        try {
-            const ipsecStatusResponse = await ajaxGet('/api/ipsec/Connections/isEnabled', {});
+        const ipsecStatusResponse = await this.ajaxGet('/api/ipsec/Connections/isEnabled');
 
-            if (!ipsecStatusResponse.enabled) {
-                this.displayError(`${this.translations.unconfigured}`);
-                return;
-            }
-
-            const response = await ajaxGet('/api/ipsec/Sessions/searchPhase1', {});
-
-            if (!response || !response.rows || response.rows.length === 0) {
-                this.displayError(`${this.translations.notunnels}`);
-                return;
-            }
-
-            this.processTunnels(response.rows);
-        } catch (error) {
-            this.displayError(`${this.translations.nodata}`);
+        if (!ipsecStatusResponse.enabled) {
+            this.displayError(`${this.translations.unconfigured}`);
+            return;
         }
+
+        const response = await this.ajaxGet('/api/ipsec/Sessions/searchPhase1');
+
+        if (!response || !response.rows || response.rows.length === 0) {
+            this.displayError(`${this.translations.notunnels}`);
+            return;
+        }
+
+        this.processTunnels(response.rows);
     }
 
     // Utility function to display errors within the widget

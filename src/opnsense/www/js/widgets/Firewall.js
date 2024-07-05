@@ -170,20 +170,8 @@ export default class Firewall extends BaseTableWidget {
     }
 
     async onMarkupRendered() {
-        let exit = false;
-        ajaxGet('/api/diagnostics/interface/getInterfaceNames', {}, (data, status) => {
-            if (status !== 'success') {
-                console.error('Failed to fetch interface descriptions');
-                exit = true;
-                return;
-            }
-
-            this.ifMap = data;
-        });
-
-        if (exit) {
-            return;
-        }
+        const data = await this.ajaxGet('/api/diagnostics/interface/getInterfaceNames');
+        this.ifMap = data;
 
         super.openEventSource('/api/diagnostics/firewall/streamLog', this._onMessage.bind(this));
 

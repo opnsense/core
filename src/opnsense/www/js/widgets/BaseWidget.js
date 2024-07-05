@@ -98,6 +98,38 @@ export default class BaseWidget {
 
     /* Utility/protected functions */
 
+    ajaxGet(url, data={}) {
+        return new Promise((resolve, reject) => {
+            function makeRequest() {
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: data,
+                    tryCount: 0,
+                    retryLimit: 3,
+                    timeout: 1000,
+                    success: function (responseData) {
+                        resolve(responseData);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        if (textStatus === 'timeout') {
+                            this.tryCount++;
+                            if (this.tryCount <= this.retryLimit) {
+                                $.ajax(this);
+                                return;
+                            }
+                        }
+                        reject({ xhr, textStatus, errorThrown });
+                    }
+                });
+            }
+
+            makeRequest();
+        });
+    }
+
     dataChanged(id, data) {
         if (id in this.cachedData) {
             if (JSON.stringify(this.cachedData[id]) !== JSON.stringify(data)) {
