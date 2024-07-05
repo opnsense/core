@@ -35,6 +35,11 @@ export default class BaseWidget {
         this.eventSourceUrl = null;
         this.eventSourceOnData = null;
         this.cachedData = {};
+
+        /* Connection timeout params */
+        this.timeoutPeriod = 1000;
+        this.retryLimit = 3;
+        this.eventSourceRetryCount = 0; // retrycount for $.ajax is managed in its own scope
     }
 
     /* Public functions */
@@ -99,6 +104,8 @@ export default class BaseWidget {
     /* Utility/protected functions */
 
     ajaxGet(url, data={}) {
+        let retryLimit = this.retryLimit;
+        let timeoutPeriod = this.timeoutPeriod;
         return new Promise((resolve, reject) => {
             function makeRequest() {
                 $.ajax({
@@ -108,8 +115,8 @@ export default class BaseWidget {
                     contentType: 'application/json',
                     data: data,
                     tryCount: 0,
-                    retryLimit: 3,
-                    timeout: 1000,
+                    retryLimit: retryLimit,
+                    timeout: timeoutPeriod,
                     success: function (responseData) {
                         resolve(responseData);
                     },
@@ -151,9 +158,26 @@ export default class BaseWidget {
     openEventSource(url, onMessage) {
         this.closeEventSource();
 
+        if (this.eventSourceRetryCount >= this.retryLimit) {
+            return;
+        }
+
         this.eventSourceUrl = url;
         this.eventSourceOnData = onMessage;
         this.eventSource = new EventSource(url);
+
+        /* Unlike $.ajax, EventSource does not have a timeout mechanism */
+        let timeoutHandler = setTimeout(() => {
+            this.closeEventSource();
+            this.eventSourceRetryCount++;
+            this.openEventSource(url, onMessage);
+        }, this.timeoutPeriod);
+
+        this.eventSource.onopen = (event) => {
+            clearTimeout(timeoutHandler);
+            this.eventSourceRetryCount = 0;
+        };
+
         this.eventSource.onmessage = onMessage;
         this.eventSource.onerror = (e) => {
             if (this.eventSource.readyState == EventSource.CONNECTING) {
