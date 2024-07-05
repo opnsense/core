@@ -59,7 +59,7 @@ function openvpn_services()
             foreach ($config['openvpn']["openvpn-{$mode}"] as $setting) {
                 if (empty($setting['disable'])) {
                     $pconfig = array();
-                    $pconfig['description'] = "OpenVPN {$mode}: " . htmlspecialchars($setting['description']);
+                    $pconfig['description'] = "OpenVPN {$mode}: " . htmlspecialchars($setting['description'] ?? '');
                     $pconfig['pidfile'] = "/var/run/openvpn_{$mode}{$setting['vpnid']}.pid";
                     $pconfig['php']['restart'] = array('openvpn_configure_single');
                     $pconfig['php']['start'] = array('openvpn_configure_single');
