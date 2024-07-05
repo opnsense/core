@@ -237,7 +237,6 @@
             <users>Users</users>
             <unconfigured>IPsec is currently disabled. Click to configure IPsec.</unconfigured>
             <noleases>There are currently no leases.</noleases>
-            <nodata>Failed to load data.</nodata>
         </translations>
     </ipsecleases>
     <ipsectunnels>
@@ -252,7 +251,6 @@
             <total>Tunnels</total>
             <unconfigured>IPsec is currently disabled. Click to configure IPsec.</unconfigured>
             <notunnels>There are currently no tunnels.</notunnels>
-            <nodata>Failed to load data.</nodata>
             <notavailable>N/A</notavailable>
         </translations>
     </ipsectunnels>
