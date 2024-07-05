@@ -264,7 +264,7 @@
         </endpoints>
         <translations>
             <title>Wireguard</title>
-            <unconfigured>Wireguard is currently disabled. Click to configure IPsec.</unconfigured>
+            <unconfigured>Wireguard is currently disabled. Click to configure Wireguard.</unconfigured>
             <notunnels>There are currently no tunnels.</notunnels>
         </translations>
     </Wireguard>
