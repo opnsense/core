@@ -164,8 +164,7 @@ netflow_start()
     # forward netflow packets, make sure $netflow_int_destination forwards to localhost (127.0.0.1)
     if [ "$netflow_destinations" != "" ]; then
         netflow_port=$(echo $netflow_int_destination | /usr/bin/sed 's/:/ /g' | /usr/bin/awk '{print $2}')
-        destinations=$(echo $netflow_destinations | /usr/bin/sed 's/:/\//g')
-        /usr/sbin/daemon -p /var/run/netflow_samplicate.pid -u nobody /usr/local/bin/samplicate  -s 127.0.0.1 -p $netflow_port $destinations
+        /usr/sbin/daemon -p /var/run/netflow_samplicate.pid -u nobody /usr/local/bin/samplicate  -s 127.0.0.1 -p $netflow_port $netflow_destinations
     fi
 
 }
