@@ -26,7 +26,6 @@
             </version>
             <targets type="IPPortField">
                 <AsList>Y</AsList>
-                <AddressFamily>ipv4</AddressFamily>
             </targets>
         </capture>
         <collect>
