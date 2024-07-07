@@ -327,7 +327,7 @@ function display_error_form($text)
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
 
-    <title><?= gettext('Error') ?> | <?= $product->name() ?></title>
+    <title><?= gettext('Error') ?> | <?= $product->name() ?><?= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $config['system']['domain'])) ?></title>
 
     <link href="<?= cache_safe(get_themed_filename('/css/main.css')) ?>" rel="stylesheet">
     <link href="<?= cache_safe(get_themed_filename('/images/favicon.png')) ?>" rel="shortcut icon">
@@ -368,7 +368,7 @@ function display_login_form($Login_Error)
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
 
-    <title><?= gettext('Login') ?> | <?= $product->name() ?></title>
+    <title><?= gettext('Login') ?> | <?= $product->name() ?><?= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $config['system']['domain'])) ?></title>
 
     <link href="<?= cache_safe(get_themed_filename('/css/main.css')) ?>" rel="stylesheet">
     <link href="<?= cache_safe(get_themed_filename('/images/favicon.png')) ?>" rel="shortcut icon">
