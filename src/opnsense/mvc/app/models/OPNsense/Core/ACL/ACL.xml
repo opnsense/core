@@ -14,7 +14,7 @@
             <pattern>index.php*</pattern>
             <pattern>ui/core/dashboard</pattern>
             <pattern>api/core/dashboard/*</pattern>
-            <pattern>api/core/system/systemInformation</pattern>
+            <pattern>api/diagnostics/system/systemInformation</pattern>
         </patterns>
     </page-system-login-logout>
     <page-getserviceproviders>
