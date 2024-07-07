@@ -76,9 +76,11 @@ export default class Wireguard extends BaseTableWidget {
     }
 
     processTunnels(newTunnels) {
-        let tunnels = newTunnels.map(row => ({
+        let tunnels = newTunnels.filter(row => row.type == 'peer').map(row => ({
             ifname: row.ifname ? row.if + ' (' + row.ifname + ') ' : row.if,
             name: row.name,
+            rx: row['transfer-rx'] ? this._formatBytes(row['transfer-rx']) : '-',
+            tx: row['transfer-tx'] ? this._formatBytes(row['transfer-tx']) : '-',
             pubkey: row['public-key'],
             latest_handhake: row['latest-handshake'],
             latest_handhake_fmt: row['latest-handshake'] ? moment.unix(row['latest-handshake']).local().format('YYYY-MM-DD HH:mm:ss') : '-'
@@ -91,14 +93,14 @@ export default class Wireguard extends BaseTableWidget {
         tunnels.forEach(tunnel => {
             let row = `
                 <div>
-                    <span>
+                    <div data-toggle="tooltip" title="${tunnel.pubkey}">
                         <b>${tunnel.ifname}</b>
-                        <span style="font-size: 20px;">↔</span>
+                        <i class="fa fa-arrows-h" aria-hidden="true"></i>
                         <b>${tunnel.name}</b>
-                    </span>
-                    <br/>
-                    <div style="margin-top: 5px; margin-bottom: 5px; nowrap;">
-                        ${tunnel.pubkey}
+                    </div>
+                    <div>
+                        ${this.translations.rx} : ${tunnel.rx}
+                        ${this.translations.tx} : ${tunnel.tx}
                     </div>
                     <div>
                         ${tunnel.latest_handhake_fmt}
