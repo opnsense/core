@@ -12,6 +12,9 @@
         <name>Lobby: Login / Logout / Dashboard</name>
         <patterns>
             <pattern>index.php*</pattern>
+            <pattern>ui/core/dashboard</pattern>
+            <pattern>api/core/dashboard/*</pattern>
+            <pattern>api/core/system/systemInformation</pattern>
         </patterns>
     </page-system-login-logout>
     <page-getserviceproviders>
@@ -51,43 +54,98 @@
         <name>Dashboard (all)</name>
         <patterns>
             <pattern>index.php*</pattern>
-            <pattern>widgets/widgets/*.widget.php*</pattern>
-            <pattern>widgets/api/get.php*</pattern>
-            <pattern>ui/core/dashboard</pattern>
-            <pattern>ui/js/widgets/*</pattern>
+            <pattern>ui/core/dashboard*</pattern>
             <pattern>api/core/dashboard/*</pattern>
-            <pattern>api/diagnostics/dns/reverse_lookup*</pattern>
-            <pattern>api/routes/gateway/status*</pattern>
+            <pattern>api/diagnostics/interface/get_vip_status</pattern>
+            <pattern>api/diagnostics/cpu_usage/*</pattern>
+            <pattern>api/diagnostics/firewall/streamLog</pattern>
             <pattern>api/diagnostics/interface/getInterfaceNames</pattern>
-            <pattern>api/diagnostics/firewall/log</pattern>
+            <pattern>api/diagnostics/firewall/pf_states</pattern>
+            <pattern>api/routes/gateway/status</pattern>
+            <pattern>api/interfaces/overview/interfacesInfo</pattern>
+            <pattern>api/diagnostics/traffic/*</pattern>
+            <pattern>api/diagnostics/system/systemDisk</pattern>
+            <pattern>api/diagnostics/system/system_mbuf</pattern>
+            <pattern>api/diagnostics/system/systemResources</pattern>
+            <pattern>api/diagnostics/system/system_swap</pattern>
+            <pattern>api/diagnostics/system/systemInformation</pattern>
+            <pattern>api/diagnostics/system/systemTemperature</pattern>
             <pattern>api/monit/status/get/xml</pattern>
-            <pattern>api/diagnostics/traffic/interface</pattern>
+            <pattern>api/diagnostics/log/core/*</pattern>
+            <pattern>api/ipsec/connections/*</pattern>
+            <pattern>api/ipsec/leases/*</pattern>
+            <pattern>api/ipsec/sessions/*</pattern>
         </patterns>
     </page-dashboard-all>
-    <page-dashboard-widgets>
-        <name>Dashboard (widgets only)</name>
-        <patterns>
-            <pattern>widgets/widgets/*.widget.php*</pattern>
-            <pattern>api/routes/gateway/status*</pattern>
-            <pattern>api/diagnostics/interface/getInterfaceNames</pattern>
-            <pattern>api/diagnostics/firewall/log</pattern>
-            <pattern>api/monit/status/get/xml</pattern>
-        </patterns>
-    </page-dashboard-widgets>
-    <page-dashboard-widget-interfaces>
-        <name>Dashboard: Interfaces overview widget</name>
+    <!--
+    Below are some sidgets that don't fully belong to existing components, if anyone asks to grant access
+    to specific users for these, it might be better to debate what is really needed besides the existing
+    dashboard-all role (e.g. dasboard-informational as role to goup these might also work for example).
+
+     <page-dashboard-widget-system-information>
+        <name>Dashboard: System Information widget</name>
         <patterns>
             <pattern>ui/core/dashboard</pattern>
-            <pattern>api/interfaces/overview/*</pattern>
+            <pattern>api/core/dashboard/*</pattern>
+            <pattern>api/diagnostics/system/systemInformation</pattern>
         </patterns>
-    </page-dashboard-widget-interfaces>
+    </page-dashboard-widget-system-information>
     <page-dashboard-widget-cpu>
         <name>Dashboard: CPU Usage widget</name>
         <patterns>
             <pattern>ui/core/dashboard</pattern>
+            <pattern>api/core/dashboard/*</pattern>
             <pattern>api/diagnostics/cpu_usage/*</pattern>
         </patterns>
     </page-dashboard-widget-cpu>
+    <page-dashboard-widget-disk>
+        <name>Dashboard: Disk Usage widget</name>
+        <patterns>
+            <pattern>ui/core/dashboard</pattern>
+            <pattern>api/core/dashboard/*</pattern>
+            <pattern>api/core/system/systemDisk</pattern>
+        </patterns>
+    </page-dashboard-widget-disk>
+    <page-dashboard-widget-firewallstates>
+        <name>Dashboard: Firewall States Usage widget</name>
+        <patterns>
+            <pattern>ui/core/dashboard</pattern>
+            <pattern>api/core/dashboard/*</pattern>
+            <pattern>api/diagnostics/firewall/pf_states</pattern>
+        </patterns>
+    </page-dashboard-widget-firewallstates>
+    <page-dashboard-widget-mbuf>
+        <name>Dashboard: Mbuf Usage widget</name>
+        <patterns>
+            <pattern>ui/core/dashboard</pattern>
+            <pattern>api/core/dashboard/*</pattern>
+            <pattern>api/core/system/system_mbuf</pattern>
+        </patterns>
+    </page-dashboard-widget-mbuf>
+    <page-dashboard-widget-memory>
+        <name>Dashboard: Memory Usage widget</name>
+        <patterns>
+            <pattern>ui/core/dashboard</pattern>
+            <pattern>api/core/dashboard/*</pattern>
+            <pattern>api/core/system/systemResources</pattern>
+        </patterns>
+    </page-dashboard-widget-memory>
+    <page-dashboard-widget-swap>
+        <name>Dashboard: Swap Usage widget</name>
+        <patterns>
+            <pattern>ui/core/dashboard</pattern>
+            <pattern>api/core/dashboard/*</pattern>
+            <pattern>api/core/system/system_swap</pattern>
+        </patterns>
+    </page-dashboard-widget-swap>
+    <page-dashboard-widget-thermal-sensors>
+        <name>Dashboard: Thermal Sensors widget</name>
+        <patterns>
+            <pattern>ui/core/dashboard</pattern>
+            <pattern>api/core/dashboard/*</pattern>
+            <pattern>api/core/system/systemTemperature</pattern>
+        </patterns>
+    </page-dashboard-widget-thermal-sensors> -->
     <page-diagnostics-authentication>
         <name>Diagnostics: Authentication</name>
         <patterns>
@@ -315,6 +373,7 @@
         <name>Diagnostics: Logs: Firewall: Live View</name>
         <patterns>
             <pattern>ui/diagnostics/firewall/log*</pattern>
+            <pattern>api/diagnostics/firewall/streamLog</pattern>
             <pattern>api/diagnostics/firewall/log*</pattern>
             <pattern>api/diagnostics/interface/getInterfaceNames*</pattern>
             <pattern>api/diagnostics/dns/reverse_lookup*</pattern>
@@ -607,6 +666,7 @@
         <patterns>
             <pattern>ui/routing/configuration</pattern>
             <pattern>api/routing/settings/*</pattern>
+            <pattern>api/routes/gateway/status</pattern>
         </patterns>
     </page-system-gateways>
     <page-system-gatewaygroups>

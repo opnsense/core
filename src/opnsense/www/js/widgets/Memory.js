@@ -50,7 +50,7 @@ export default class Memory extends BaseGaugeWidget {
     }
 
     async onWidgetTick() {
-        const data = await this.ajaxGet('/api/core/system/systemResources');
+        const data = await this.ajaxGet('/api/diagnostics/system/systemResources');
         if (data.memory.total !== undefined) {
             let used = parseInt(data.memory.used_frmt);
             let arc = data.memory.hasOwnProperty('arc') ? parseInt(data.memory.arc_frmt) : 0;

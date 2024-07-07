@@ -42,14 +42,14 @@ export default class SystemInformation extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        const data = await this.ajaxGet('/api/core/system/systemTime');
+        const data = await this.ajaxGet('/api/diagnostics/system/systemTime');
         $('#datetime').text(data['datetime']);
         $('#uptime').text(data['uptime']);
         $('#config').text(data['config']);
     }
 
     async onMarkupRendered() {
-        const data = await this.ajaxGet('/api/core/system/systemInformation');
+        const data = await this.ajaxGet('/api/diagnostics/system/systemInformation');
         let rows = [];
         for (let [key, value] of Object.entries(data)) {
             if (!key in this.translations) {

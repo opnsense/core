@@ -179,7 +179,7 @@ export default class ThermalSensors extends BaseWidget {
     }
 
     async onWidgetTick() {
-        const data = await this.ajaxGet('/api/core/system/systemTemperature');
+        const data = await this.ajaxGet('/api/diagnostics/system/systemTemperature');
         if (!data || !data.length) {
             $(`.${this.id}-chart-container`).html(`
                 <a href="/system_advanced_misc.php">${this.translations.unconfigured}</a>
