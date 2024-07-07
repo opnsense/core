@@ -77,7 +77,12 @@
             <pattern>api/ipsec/sessions/*</pattern>
         </patterns>
     </page-dashboard-all>
-    <page-dashboard-widget-system-information>
+    <!--
+    Below are some sidgets that don't fully belong to existing components, if anyone asks to grant access
+    to specific users for these, it might be better to debate what is really needed besides the existing
+    dashboard-all role (e.g. dasboard-informational as role to goup these might also work for example).
+
+     <page-dashboard-widget-system-information>
         <name>Dashboard: System Information widget</name>
         <patterns>
             <pattern>ui/core/dashboard</pattern>
@@ -140,7 +145,7 @@
             <pattern>api/core/dashboard/*</pattern>
             <pattern>api/core/system/systemTemperature</pattern>
         </patterns>
-    </page-dashboard-widget-thermal-sensors>
+    </page-dashboard-widget-thermal-sensors> -->
     <page-diagnostics-authentication>
         <name>Diagnostics: Authentication</name>
         <patterns>
