@@ -459,7 +459,7 @@ def set_answer_block(qstate, qdata, query, bl=None):
     dnssec_status = sec_status_secure if ctx.dnssec_enabled else sec_status_unchecked
     logger = mod_env['logger']
 
-    if ctx.rcode == RCODE_NXDOMAIN or ctx.rcode == RCODE_REFUSED:
+    if ctx.rcode in [RCODE_NXDOMAIN, RCODE_REFUSED]:
         # exit early
         qstate.return_rcode = RCODE_REFUSED if ctx.rcode == RCODE_REFUSED else RCODE_NXDOMAIN
         if logger.stats_enabled:
