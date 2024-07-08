@@ -594,9 +594,12 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Disabled");?></td>
+                    <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Disabled");?></td>
                     <td>
                       <input name="disabled" type="checkbox" id="disabled" <?= $pconfig['disabled'] ? "checked=\"checked\"" : "" ?> />
+                      <div class="hidden" data-for="help_for_disabled">
+                        <?=gettext("Deny authentication, only applicable for local users");?>
+                      </div>
                     </td>
                   </tr>
                   <tr>
