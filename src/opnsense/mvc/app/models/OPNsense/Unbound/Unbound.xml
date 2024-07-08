@@ -227,12 +227,12 @@
                 <MaskPerItem>Y</MaskPerItem>
             </wildcards>
             <rcode type="OptionField">
-                <Default>1</Default>
+                <Default>NOERROR</Default>
                 <Required>Y</Required>
                 <OptionValues>
-                    <opt1 value="REFUSED">REFUSED</opt1>
-                    <opt2 value="NXDOMAIN">NXDOMAIN</opt2>
-                    <opt3 value="NOERROR">A</opt3>
+                    <REFUSED>REFUSED</REFUSED>
+                    <NXDOMAIN>NXDOMAIN</NXDOMAIN>
+                    <NOERROR>A</NOERROR>
                 </OptionValues>
             </rcode>
             <address type="NetworkField">
