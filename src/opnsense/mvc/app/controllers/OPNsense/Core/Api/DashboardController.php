@@ -95,13 +95,13 @@ class DashboardController extends ApiControllerBase
         $result['modules'] = [];
         $metadata = $this->getMetadata();
         foreach ($metadata as $md) {
-            foreach($md as $widgetId => $metadataAttributes) {
+            foreach ($md as $widgetId => $metadataAttributes) {
                 $widgetId = (string)$widgetId;
                 $fname = (string)$metadataAttributes->filename;
                 $endpoints = (array)($metadataAttributes->endpoints->endpoint ?? []);
                 $translations = (array)($metadataAttributes->translations ?? []);
 
-                if(!$this->canAccessEndpoints($endpoints)) {
+                if (!$this->canAccessEndpoints($endpoints)) {
                     continue;
                 }
 
@@ -109,7 +109,7 @@ class DashboardController extends ApiControllerBase
                     continue;
                 }
 
-                foreach($translations as $key => $value) {
+                foreach ($translations as $key => $value) {
                     $translations[$key] = gettext($value);
                 }
 

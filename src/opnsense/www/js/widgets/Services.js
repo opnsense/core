@@ -93,7 +93,7 @@ export default class Services extends BaseTableWidget {
                 </span>
                 </div>
             `);
-            
+
             $buttonContainer.append(this.serviceControl(actions));
 
             super.updateTable('services-table', [[description, $buttonContainer.prop('outerHTML')]], service.id);
