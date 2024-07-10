@@ -182,12 +182,7 @@ function pf_firewall($fw)
     }
 
     foreach ($mdlFilter->onetoone->rule->sortedBy(['sequence']) as $key => $rule) {
-        $rule_a = $rule->serialize();
-        /* XXX the default value merge will fail if the empty default is kept */
-        if (isset($rule_a['natreflection']) && $rule_a['natreflection'] == '') {
-            unset($rule_a['natreflection']);
-        }
-        $fw->registerDNatRule(500, $rule_a);
+        $fw->registerDNatRule(500, $rule->serialize());
     }
 
     foreach ($mdlFilter->npt->rule->sortedBy(['sequence']) as $key => $rule) {

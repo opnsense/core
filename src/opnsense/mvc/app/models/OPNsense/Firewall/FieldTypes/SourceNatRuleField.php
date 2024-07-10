@@ -65,7 +65,12 @@ class SourceNatRuleContainerField extends ContainerField
                     if ((string)$node != 'any') {
                         $result[$target_fieldname] = (string)$node;
                     }
-                } else {
+                } elseif ((string)$node != '') {
+                    /*
+                     * XXX: Omit empty values to allow array_merge() to overlay default values in Plugin.php.
+                     *      In the long run its likely better to move default values inside serialize() action for
+                     *      clarity, but that only makes sense if legacy components are gone.
+                     **/
                     $result[$target_fieldname] = (string)$node;
                 }
             }
