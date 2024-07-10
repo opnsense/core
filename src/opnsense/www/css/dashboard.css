@@ -87,14 +87,37 @@
     font-size: 0.5em;
 }
 
-.close-handle {
+.close-handle,
+.edit-handle {
+    margin-left: 0.5em;
     vertical-align: middle;
     text-align: right;
     cursor: pointer;
 }
 
-.close-handle > i {
-    font-size: 0.7em;
+.close-handle > i,
+.edit-handle > i {
+    font-size: 0.8em;
+}
+
+.widget-header-left {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex: 1;
+}
+
+.widget-command-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex: 1;
+}
+
+.widget-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .panel-divider {

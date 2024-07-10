@@ -79,7 +79,7 @@
             <endpoint>/api/diagnostics/system/systemResources</endpoint>
         </endpoints>
         <translations>
-            <title>Memory usage</title>
+            <title>Memory</title>
             <used>Used</used>
             <free>Free</free>
             <arc>ARC</arc>
@@ -91,7 +91,7 @@
             <endpoint>/api/diagnostics/system/systemDisk</endpoint>
         </endpoints>
         <translations>
-            <title>Disk usage</title>
+            <title>Disk</title>
             <used>Used</used>
             <free>Free</free>
         </translations>

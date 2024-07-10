@@ -29,6 +29,8 @@ import BaseGaugeWidget from "./BaseGaugeWidget.js";
 export default class Memory extends BaseGaugeWidget {
     constructor() {
         super();
+
+        this.tickTimeout = 60;
     }
 
     async onMarkupRendered() {
@@ -50,7 +52,7 @@ export default class Memory extends BaseGaugeWidget {
     }
 
     async onWidgetTick() {
-        const data = await this.ajaxGet('/api/diagnostics/system/systemResources');
+        const data = await this.ajaxCall('/api/diagnostics/system/systemResources');
         if (data.memory.total !== undefined) {
             let used = parseInt(data.memory.used_frmt);
             let arc = data.memory.hasOwnProperty('arc') ? parseInt(data.memory.arc_frmt) : 0;

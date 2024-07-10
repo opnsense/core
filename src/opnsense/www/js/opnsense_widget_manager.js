@@ -95,7 +95,6 @@ class WidgetManager  {
         this.widgetTickRoutines = {}; // id -> tick routines
         this.grid = null; // gridstack instance
         this.moduleDiff = []; // list of module ids that are allowed, but not currently rendered
-        this.renderDefaultDashboard = true;
         this.resizeObserver = new ResizeObserverWrapper();
     }
 
@@ -122,13 +121,10 @@ class WidgetManager  {
             dataType: 'json',
             contentType: 'application/json'
         }).then(async (data) => {
-            if ('dashboard' in data && data.dashboard != null) {
-                this.renderDefaultDashboard = false;
-                let configuration = JSON.parse(data.dashboard);
-                configuration.forEach(item => {
-                    this.widgetConfigurations[item.id] = item;
-                });
-            }
+            let configuration = JSON.parse(data.dashboard);
+            configuration.forEach(item => {
+                this.widgetConfigurations[item.id] = item;
+            });
 
             const promises = data.modules.map(async (item) => {
                 const mod = await import('/ui/js/widgets/' + item.module + '?t='+Date.now());
@@ -148,24 +144,12 @@ class WidgetManager  {
             throw new Error('No widgets loaded');
         }
 
-        if (!this.renderDefaultDashboard) {
-            // restore
-            for (const [id, configuration] of Object.entries(this.widgetConfigurations)) {
-                if (id in this.loadedModules) {
-                    try {
-                        this._createGridStackWidget(id, this.loadedModules[id], configuration);
-                    } catch (error) {
-                        console.error('Failed to create widget', id, error);
-                    }
-                }
-            }
-        } else {
-            // default
-            for (const [identifier, widgetClass] of Object.entries(this.loadedModules)) {
+        for (const [id, configuration] of Object.entries(this.widgetConfigurations)) {
+            if (id in this.loadedModules) {
                 try {
-                    this._createGridStackWidget(identifier, widgetClass);
+                    this._createGridStackWidget(id, this.loadedModules[id], configuration);
                 } catch (error) {
-                    console.error('Failed to create widget', identifier, error);
+                    console.error('Failed to create widget', id, error);
                 }
             }
         }
@@ -173,15 +157,16 @@ class WidgetManager  {
         this.moduleDiff = Object.keys(this.loadedModules).filter(x => !Object.keys(this.widgetConfigurations).includes(x));
     }
 
-    _createGridStackWidget(id, widgetClass, config = {}) {
+    _createGridStackWidget(id, widgetClass, persistedConfig = {}) {
         // merge persisted config with defaults
-        config = {
+        let config = {
             callbacks: {
                 // pre-bind the updateGrid function to the widget instance
                 updateGrid: this._updateGrid.bind(this, this.widgetHTMLElements[id]),
             },
-            ...config,
+            ...persistedConfig,
         }
+
         // instantiate widget
         const widget = new widgetClass(config);
         // make id accessible to the widget, useful for traceability (e.g. data-widget-id attribute in the DOM)
@@ -202,28 +187,16 @@ class WidgetManager  {
         let content = widget.getMarkup();
         let $panel = this._makeWidget(id, this.widgetTranslations[id].title, content);
 
-        if (id in this.widgetConfigurations) {
-            this.widgetConfigurations[id].content = $panel.prop('outerHTML');
-        } else {
-            // let each widget override settings
-            const options = widget.getGridOptions();
-            let gridElement = {
-                content: $panel.prop('outerHTML'),
-                id: id,
-                ...options
-            };
+        const options = widget.getGridOptions();
+        const gridElement = {
+            content: $panel.prop('outerHTML'),
+            id: id,
+            minW: 2, // force a minimum width of 2 unless specified otherwise
+            ...config,
+            ...options
+        };
 
-            // lock the system information widget
-            if (id == 'systeminformation') {
-                gridElement = {
-                    x: 0, y: 0,
-                    id: id,
-                    ...gridElement,
-                };
-            }
-
-            this.widgetConfigurations[id] = gridElement;
-        }
+        this.widgetConfigurations[id] = gridElement;
     }
 
     // runs only once
@@ -295,6 +268,17 @@ class WidgetManager  {
                 if (widgetConfig) {
                     item['widget'] = widgetConfig;
                 }
+
+                // XXX the gridstack save() behavior is inconsistent with the responsive columnWidth option,
+                // as the calculation will return impossible values for the x, y, w and h attributes.
+                // For now, the gs-{x,y,w,h} attributes are a better representation of the grid for layout persistence
+                let elem = $(this.widgetHTMLElements[item.id]);
+                item.x = parseInt(elem.attr('gs-x')) ?? 1;
+                item.y = parseInt(elem.attr('gs-y')) ?? 1;
+                item.w = parseInt(elem.attr('gs-w')) ?? 1;
+                item.h = parseInt(elem.attr('gs-h')) ?? 1;
+
+                delete item['callbacks'];
             });
 
             $.ajax({
@@ -447,6 +431,21 @@ class WidgetManager  {
         await onMarkupRendered();
         $(`.spinner-${widget.id}`).remove();
 
+        // retrieve widget-specific options
+        const options = widget.getWidgetOptions();
+        if (!$.isEmptyObject(options)) {
+            let $editHandle = $(`
+                <div id="edit-handle-${widget.id}" class="edit-handle">
+                    <i class="fa fa-pencil"></i>
+                </div>
+            `);
+            $(`#close-handle-${widget.id}`).before($editHandle);
+
+            $editHandle.click((event) => {
+                // TODO: implement
+            });
+        }
+
         // XXX this code enforces per-widget resize handle definitions, which isn't natively
         // supported by GridStack.
         $(this.widgetHTMLElements[widget.id]).attr('gs-resize-handles', widget.getResizeHandles());
@@ -523,10 +522,12 @@ class WidgetManager  {
         let $content = $(`<div class="widget-content"></div>`);
         let $header = $(`
             <div class="widget-header">
-                <div></div>
-                <div id="${identifier}-title"><b>${title}</b></div>
-                <div id="close-handle-${identifier}" class="close-handle">
-                    <i class="fa fa-times fa-xs"></i>
+                <div class="widget-header-left"></div>
+                <div id="${identifier}-title" class="widget-title"><b>${title}</b></div>
+                <div class="widget-command-container">
+                    <div id="close-handle-${identifier}" class="close-handle">
+                        <i class="fa fa-times fa-xs"></i>
+                    </div>
                 </div>
             </div>
         `);

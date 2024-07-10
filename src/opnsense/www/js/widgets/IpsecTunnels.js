@@ -31,10 +31,6 @@ export default class IpsecTunnels extends BaseTableWidget {
         super();
         this.resizeHandles = "e, w";
         this.currentTunnels = {};
-
-        // Since we only update when dataChanged we can almost update in real time
-        this.tickTimeout = 2;
-
     }
 
     getGridOptions() {
@@ -55,14 +51,14 @@ export default class IpsecTunnels extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        const ipsecStatusResponse = await this.ajaxGet('/api/ipsec/Connections/isEnabled');
+        const ipsecStatusResponse = await this.ajaxCall('/api/ipsec/Connections/isEnabled');
 
         if (!ipsecStatusResponse.enabled) {
             this.displayError(`${this.translations.unconfigured}`);
             return;
         }
 
-        const response = await this.ajaxGet('/api/ipsec/Sessions/searchPhase1');
+        const response = await this.ajaxCall('/api/ipsec/Sessions/searchPhase1');
 
         if (!response || !response.rows || response.rows.length === 0) {
             this.displayError(`${this.translations.notunnels}`);

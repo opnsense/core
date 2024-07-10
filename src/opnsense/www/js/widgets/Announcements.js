@@ -35,7 +35,7 @@ export default class Announcements extends BaseTableWidget {
     getGridOptions() {
         return {
             // trigger overflow-y:scroll after 650px height
-            sizeToContent: 650
+            sizeToContent: 350
         }
     }
 
@@ -48,7 +48,7 @@ export default class Announcements extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        const data = await this.ajaxGet('/api/core/dashboard/product_info_feed');
+        const data = await this.ajaxCall('/api/core/dashboard/product_info_feed');
 
         if (!data.items.length) {
             $('#announcements-table').html(`${this.translations.no_feed}`);

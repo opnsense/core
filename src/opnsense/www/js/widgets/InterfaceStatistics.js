@@ -64,7 +64,7 @@ export default class InterfaceStatistics extends BaseWidget {
     }
 
     async onWidgetTick() {
-        const data = await this.ajaxGet('/api/diagnostics/traffic/interface');
+        const data = await this.ajaxCall('/api/diagnostics/traffic/interface');
         let sortedSet = {};
         let i = 0;
         let colors = Chart.colorschemes.tableau.Classic10;

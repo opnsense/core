@@ -29,6 +29,8 @@ import BaseGaugeWidget from "./BaseGaugeWidget.js";
 export default class Mbuf extends BaseGaugeWidget {
     constructor() {
         super();
+
+        this.tickTimeout = 60;
     }
 
     async onMarkupRendered() {
@@ -41,7 +43,7 @@ export default class Mbuf extends BaseGaugeWidget {
     }
 
     async onWidgetTick() {
-        const data = await this.ajaxGet('/api/diagnostics/system/system_mbuf');
+        const data = await this.ajaxCall('/api/diagnostics/system/system_mbuf');
         let current = parseInt(data['mbuf-statistics']['cluster-total']);
         let limit = parseInt(data['mbuf-statistics']['cluster-max']);
         super.updateChart([current, (limit - current)]);

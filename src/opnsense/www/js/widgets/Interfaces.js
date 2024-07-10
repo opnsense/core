@@ -35,7 +35,7 @@ export default class Interfaces extends BaseTableWidget {
     getGridOptions() {
         return {
             // trigger overflow-y:scroll after 650px height
-            sizeToContent: 650
+            sizeToContent: 350
         }
     }
 
@@ -50,7 +50,7 @@ export default class Interfaces extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        const data = await this.ajaxGet('/api/interfaces/overview/interfacesInfo');
+        const data = await this.ajaxCall('/api/interfaces/overview/interfacesInfo');
         if (!this.dataChanged('interfaces', data)) {
             return;
         }

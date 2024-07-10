@@ -53,8 +53,9 @@ $( document ).ready(function() {
     let widgetManager = new WidgetManager({
         float: false,
         columnOpts: {
-            columnWidth: 300
+            breakpoints: [{w: 500, c:1}, {w:900, c:3}, {w:9999, c:12}]
         },
+        columns: 12,
         margin: 5,
         alwaysShowResizeHandle: false,
         sizeToContent: true,

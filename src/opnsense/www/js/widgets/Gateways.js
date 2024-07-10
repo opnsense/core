@@ -34,7 +34,7 @@ export default class Gateways extends BaseTableWidget {
     getGridOptions() {
         return {
             // trigger overflow-y:scroll after 650px height
-            sizeToContent: 650
+            sizeToContent: 650,
         }
     }
 
@@ -47,7 +47,7 @@ export default class Gateways extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        const data = await this.ajaxGet('/api/routes/gateway/status', {});
+        const data = await this.ajaxCall('/api/routes/gateway/status');
         if (data.items === undefined) {
             return;
         }

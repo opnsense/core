@@ -47,7 +47,7 @@ export default class Carp extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        const data = await this.ajaxGet('/api/diagnostics/interface/get_vip_status');
+        const data = await this.ajaxCall('/api/diagnostics/interface/get_vip_status');
         if (!data.rows.length) {
             $('#carp-table').html(`<a href="/ui/interfaces/vip">${this.translations.unconfigured}</a>`);
             return;

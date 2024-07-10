@@ -63,19 +63,19 @@ export default class Cpu extends BaseWidget {
         <div class="cpu-canvas-container">
             <div class="smoothie-container">
                 <b>${this.translations.total}</b>
-                <div><canvas id="cpu-usage" style="width: 80%; height: 50px;"></canvas></div>
+                <div><canvas id="cpu-usage" style="width: 100%; height: 50px;"></canvas></div>
             </div>
             <div class="smoothie-container">
                 <b>${this.translations.interrupt}</b>
-                <div><canvas id="cpu-usage-intr" style="width: 80%; height: 50px;"></canvas></div>
+                <div><canvas id="cpu-usage-intr" style="width: 100%; height: 50px;"></canvas></div>
             </div>
             <div class="smoothie-container">
                 <b>${this.translations.user}</b>
-                <div><canvas id="cpu-usage-user" style="width: 80%; height: 50px;"></canvas></div>
+                <div><canvas id="cpu-usage-user" style="width: 100%; height: 50px;"></canvas></div>
             </div>
             <div class="smoothie-container">
                 <b>${this.translations.system}</b>
-                <div><canvas id="cpu-usage-sys" style="width: 80%; height: 50px;"></canvas></div>
+                <div><canvas id="cpu-usage-sys" style="width: 100%; height: 50px;"></canvas></div>
             </div>
         </div>`);
 
@@ -83,7 +83,7 @@ export default class Cpu extends BaseWidget {
     }
 
     async onMarkupRendered() {
-        const data = await this.ajaxGet('/api/diagnostics/cpu_usage/getcputype');
+        const data = await this.ajaxCall('/api/diagnostics/cpu_usage/getcputype');
         $('.cpu-type').text(data);
 
         let total_ts = new TimeSeries();

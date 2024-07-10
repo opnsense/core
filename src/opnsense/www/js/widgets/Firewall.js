@@ -170,7 +170,7 @@ export default class Firewall extends BaseTableWidget {
     }
 
     async onMarkupRendered() {
-        const data = await this.ajaxGet('/api/diagnostics/interface/getInterfaceNames');
+        const data = await this.ajaxCall('/api/diagnostics/interface/getInterfaceNames');
         this.ifMap = data;
 
         super.openEventSource('/api/diagnostics/firewall/streamLog', this._onMessage.bind(this));
@@ -275,7 +275,7 @@ export default class Firewall extends BaseTableWidget {
     }
 
     onWidgetResize(elem, width, height) {
-        if (width < 660) {
+        if (width < 700) {
             $('#fw-chart').show();
             $('#fw-table-container').hide();
         } else {

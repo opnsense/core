@@ -29,7 +29,6 @@ import BaseTableWidget from "./BaseTableWidget.js";
 export default class SystemInformation extends BaseTableWidget {
     constructor() {
         super();
-        this.tickTimeout = 1;
     }
 
     getMarkup() {
@@ -42,14 +41,14 @@ export default class SystemInformation extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        const data = await this.ajaxGet('/api/diagnostics/system/systemTime');
+        const data = await this.ajaxCall('/api/diagnostics/system/systemTime');
         $('#datetime').text(data['datetime']);
         $('#uptime').text(data['uptime']);
         $('#config').text(data['config']);
     }
 
     async onMarkupRendered() {
-        const data = await this.ajaxGet('/api/diagnostics/system/systemInformation');
+        const data = await this.ajaxCall('/api/diagnostics/system/systemInformation');
         let rows = [];
         for (let [key, value] of Object.entries(data)) {
             if (!key in this.translations) {

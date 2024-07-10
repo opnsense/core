@@ -29,7 +29,7 @@ export default class BaseWidget {
         this.config = config;
         this.id = null;
         this.translations = {};
-        this.tickTimeout = 5; // Default tick timeout
+        this.tickTimeout = 10; // Default tick timeout
         this.resizeHandles = "all"
         this.eventSource = null;
         this.eventSourceUrl = null;
@@ -71,6 +71,10 @@ export default class BaseWidget {
         return {};
     }
 
+    getWidgetOptions() {
+        return {};
+    }
+
     getMarkup() {
         return $("");
     }
@@ -103,13 +107,13 @@ export default class BaseWidget {
 
     /* Utility/protected functions */
 
-    ajaxGet(url, data={}) {
+    ajaxCall(url, data={}, method='GET') {
         let retryLimit = this.retryLimit;
         let timeoutPeriod = this.timeoutPeriod;
         return new Promise((resolve, reject) => {
             function makeRequest() {
                 $.ajax({
-                    type: 'GET',
+                    type: method,
                     url: url,
                     dataType: 'json',
                     contentType: 'application/json',

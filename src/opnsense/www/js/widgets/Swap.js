@@ -29,7 +29,7 @@ import BaseGaugeWidget from "./BaseGaugeWidget.js";
 export default class Swap extends BaseGaugeWidget {
     constructor() {
         super();
-        this.tickTimeout = 15;
+        this.tickTimeout = 60;
     }
 
     async onMarkupRendered() {
@@ -42,7 +42,7 @@ export default class Swap extends BaseGaugeWidget {
     }
 
     async onWidgetTick() {
-        const data = await this.ajaxGet('/api/diagnostics/system/system_swap');
+        const data = await this.ajaxCall('/api/diagnostics/system/system_swap');
         let total = 0;
         let used = 0;
         for (const swapDevice of data['swap']) {

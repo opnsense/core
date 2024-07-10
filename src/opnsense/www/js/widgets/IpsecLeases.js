@@ -31,10 +31,6 @@ export default class IpsecLeases extends BaseTableWidget {
         super();
         this.resizeHandles = "e, w";
         this.currentLeases = {};
-
-        // Since we only update when dataChanged we can almost update in real time
-        this.tickTimeout = 2;
-
     }
 
     getGridOptions() {
@@ -55,14 +51,14 @@ export default class IpsecLeases extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        const ipsecStatusResponse = await this.ajaxGet('/api/ipsec/Connections/isEnabled');
+        const ipsecStatusResponse = await this.ajaxCall('/api/ipsec/Connections/isEnabled');
 
         if (!ipsecStatusResponse.enabled) {
             this.displayError(`${this.translations.unconfigured}`);
             return;
         }
 
-        const data = await this.ajaxGet('/api/ipsec/leases/pools');
+        const data = await this.ajaxCall('/api/ipsec/leases/pools');
 
         if (!data || !data.leases || data.leases.length === 0) {
             this.displayError(`${this.translations.noleases}`);

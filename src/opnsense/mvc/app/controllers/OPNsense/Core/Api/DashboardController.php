@@ -79,6 +79,21 @@ class DashboardController extends ApiControllerBase
         return simplexml_import_dom($combinedXml);
     }
 
+    private function getDefaultDashboard()
+    {
+        return [
+            ['id' => 'systeminformation', 'x' => 0, 'y' => 0],
+            ['id' => 'memory', 'x' => 2, 'y' => 0],
+            ['id' => 'disk', 'x' => 3, 'y' => 0],
+            ['id' => 'interfacestatistics', 'x' => 4, 'y' => 0, 'w' => 4],
+            ['id' => 'cpu', 'x' => 8, 'y' => 0],
+            ['id' => 'announcements', 'x' => 8, 'y' => 2],
+            ['id' => 'traffic', 'x' => 2, 'y' => 2],
+            ['id' => 'gateways', 'x' => 10, 'y' => 0],
+            ['id' => 'firewall', 'x' => 4, 'y' => 2, 'w' => 4],
+        ];
+    }
+
     public function getDashboardAction()
     {
         $this->sessionClose();
@@ -121,7 +136,7 @@ class DashboardController extends ApiControllerBase
             }
         }
 
-        $result['dashboard'] = !empty($dashboard) ? base64_decode($dashboard) : null;
+        $result['dashboard'] = !empty($dashboard) ? base64_decode($dashboard) : json_encode($this->getDefaultDashboard());
 
         return $result;
     }

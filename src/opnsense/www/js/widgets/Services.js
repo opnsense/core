@@ -30,15 +30,13 @@ export default class Services extends BaseTableWidget {
     constructor() {
         super();
 
-        this.tickTimeout = 5;
-
         this.locked = false;
     }
 
     getGridOptions() {
         return {
-            // trigger overflow-y:scroll after 850px height
-            sizeToContent: 650
+            // trigger overflow-y:scroll after 650px height
+            sizeToContent: 350,
         }
     }
 
@@ -59,7 +57,7 @@ export default class Services extends BaseTableWidget {
     }
 
     async updateServices() {
-        const data = await this.ajaxGet('/api/core/service/search');
+        const data = await this.ajaxCall('/api/core/service/search');
 
         if (!data || !data.rows || data.rows.length === 0) {
             this.displayError(this.translations.noservices);

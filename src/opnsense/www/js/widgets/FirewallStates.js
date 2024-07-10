@@ -29,6 +29,8 @@ import BaseGaugeWidget from "./BaseGaugeWidget.js";
 export default class FirewallStates extends BaseGaugeWidget {
     constructor() {
         super();
+
+        this.tickTimeout = 60;
     }
 
     async onMarkupRendered() {
@@ -41,7 +43,7 @@ export default class FirewallStates extends BaseGaugeWidget {
     }
 
     async onWidgetTick() {
-        const data = await this.ajaxGet('/api/diagnostics/firewall/pf_states');
+        const data = await this.ajaxCall('/api/diagnostics/firewall/pf_states');
         let current = parseInt(data.current);
         let limit = parseInt(data.limit);
         super.updateChart([current, (limit - current)]);

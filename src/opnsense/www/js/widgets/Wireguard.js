@@ -32,7 +32,6 @@ export default class Wireguard extends BaseTableWidget {
         super();
         this.resizeHandles = "e, w";
         this.currentTunnels = {};
-        this.tickTimeout = 5;
     }
 
     getGridOptions() {
@@ -53,13 +52,13 @@ export default class Wireguard extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        const wg = await this.ajaxGet('/api/wireguard/general/get');
+        const wg = await this.ajaxCall('/api/wireguard/general/get');
         if (!wg.general || !wg.general.enabled) {
             this.displayError(`${this.translations.unconfigured}`);
             return;
         }
 
-        const response = await this.ajaxGet('/api/wireguard/service/show');
+        const response = await this.ajaxCall('/api/wireguard/service/show');
 
         if (!response || !response.rows || response.rows.length === 0) {
             this.displayError(`${this.translations.notunnels}`);
