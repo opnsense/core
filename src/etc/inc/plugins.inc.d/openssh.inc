@@ -123,19 +123,12 @@ function openssh_configure_do($verbose = false, $interface = '')
     /* make ssh home directory */
     @mkdir('/var/empty', 0555, true);
 
-    $keys = array(
+    $keys = [
         /* .pub files are implied */
         'rsa' => 'ssh_host_rsa_key',
         'ecdsa' => 'ssh_host_ecdsa_key',
         'ed25519' => 'ssh_host_ed25519_key',
-    );
-
-    $keys_dep = array(
-        /* .pub files are implied */
-        'dsa' => 'ssh_host_dsa_key',
-    );
-
-    $keys_all = array_merge($keys, $keys_dep);
+    ];
 
     /* Check for all needed key files. If any are missing, the keys need to be regenerated. */
     $generate_keys = false;
@@ -191,7 +184,7 @@ function openssh_configure_do($verbose = false, $interface = '')
         $sshconf .= "PasswordAuthentication no\n";
     }
 
-    foreach ($keys_all as $name) {
+    foreach ($keys as $name) {
         $file = "/conf/sshd/{$name}";
         if (!file_exists($file)) {
             continue;
