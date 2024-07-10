@@ -57,6 +57,8 @@ class MHA1_0_0 extends BaseModelMigration
             if (!empty((string)$model->pfsyncenabled)) {
                 $model->pfsyncversion = '1301'; // on upgrade keep legacy pfsync version
             }
+        } else {
+            throw new \Exception('Missing (configd) ha options list');
         }
     }
 }
