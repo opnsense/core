@@ -154,7 +154,7 @@ export default class BaseTableWidget extends BaseWidget {
         }
 
         if (rowIdentifier !== null) {
-            rowIdentifier = rowIdentifier.replace(/[:/]/gi, '__');
+            rowIdentifier = this.sanitizeSelector(rowIdentifier);
         }
 
         data.forEach(row => {

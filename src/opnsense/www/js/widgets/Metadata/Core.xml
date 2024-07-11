@@ -285,4 +285,16 @@
             <start>Start</start>
         </translations>
     </services>
+    <openvpnclients>
+        <filename>OpenVPNClients.js</filename>
+        <endpoints>
+            <endpoint>/api/openvpn/service/search_sessions</endpoint>
+        </endpoints>
+        <translations>
+            <title>OpenVPN Client Connections</title>
+            <noclients>No clients connected</noclients>
+            <server>Server</server>
+            <kill>Kill connection</kill>
+        </translations>
+    </openvpnclients>
 </metadata>

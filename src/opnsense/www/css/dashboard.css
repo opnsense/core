@@ -38,6 +38,10 @@
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
+.transition-spinner, transition-check {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
 .hide {
     opacity: 0;
     transform: scale(0);
@@ -350,3 +354,9 @@ div {
     text-align: center;
 }
 /* ----- */
+
+.ovpn-common-name {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

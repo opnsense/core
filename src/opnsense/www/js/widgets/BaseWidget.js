@@ -227,4 +227,66 @@ export default class BaseWidget {
             return "";
         }
     }
+
+    sanitizeSelector(selector) {
+        return selector.replace(/[:/.]/gi, '__');
+    }
+
+    startCommandTransition(id, $target) {
+        /**
+         * Note: this function works best wen applied to an element
+         * inside a div with at least the following styles:
+         *     display: flex;
+         *     align-items: center;
+         *     justify-content: center;
+         */
+        id = this.sanitizeSelector(id);
+        let $container = $(`
+            <span class="transition-icon-container">
+                <i class="fa fa-spinner fa-spin hide transition-spinner" id="spinner-${id}" style="font-size: 13px;"></i>
+                <i class="fa fa-check checkmark hide transition-check" id="check-${id}" style="font-size: 13px;"></i>
+            </span>
+        `);
+
+        // Copy inline styles from target to container
+        let inlineStyles = $target.attr('style');
+        if (inlineStyles) {
+            $container.attr('style', inlineStyles);
+        }
+
+        $target.before($container);
+        $target.addClass('show');
+        $target.toggleClass('show hide');
+        $(`#spinner-${id}`).addClass('show');
+        $target.prop('disabled', true);
+    }
+
+    async endCommandTransition(id, $target, success=true) {
+        id = this.sanitizeSelector(id);
+        let $container = $target.prev('.transition-icon-container');
+        let $spinner = $container.find(`#spinner-${id}`);
+        let $check = $container.find(`#check-${id}`);
+
+        return new Promise(resolve => {
+            if (success) {
+                setTimeout(() => {
+                    $spinner.removeClass('show').addClass('hide');
+                    $check.toggleClass('hide show');
+                    setTimeout(() => {
+                        $check.toggleClass('hide show');
+                        $target.prop('disabled', false);
+                        $target.toggleClass('show hide');
+                        $container.remove();
+                        resolve();
+                    }, 500);
+                }, 200);
+            } else {
+                $target.toggleClass('show hide');
+                $target.prop('disabled', false);
+                $spinner.removeClass('show').addClass('hide');
+                $container.remove();
+                resolve();
+            }
+        });
+    }
 }
