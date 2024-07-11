@@ -289,6 +289,7 @@
         <filename>OpenVPNClients.js</filename>
         <endpoints>
             <endpoint>/api/openvpn/service/search_sessions</endpoint>
+            <endpoint>/api/openvpn/service/kill_session</endpoint>
         </endpoints>
         <translations>
             <title>OpenVPN Client Connections</title>

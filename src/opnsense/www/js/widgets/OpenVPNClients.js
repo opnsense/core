@@ -53,11 +53,11 @@ export default class OpenVPNClients extends BaseTableWidget {
     async _killClient(id, commonName) {
         let split = id.split('_');
         let params = {server_id: split[0], session_id: split[1]};
-        await this.ajaxCall('/api/openvpn/service/kill_session/', JSON.stringify(params), 'POST').then(async (data) => {
+        await this.ajaxCall('/api/openvpn/service/kill_session', JSON.stringify(params), 'POST').then(async (data) => {
             if (data && data.status === 'not_found') {
                 // kill by common name
                 params.session_id = commonName;
-                await this.ajaxCall('/api/openvpn/service/kill_session/', JSON.stringify(params), 'POST');
+                await this.ajaxCall('/api/openvpn/service/kill_session', JSON.stringify(params), 'POST');
             }
         });
     }
