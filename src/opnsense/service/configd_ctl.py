@@ -109,7 +109,7 @@ if not os.path.exists(configd_socket_name):
 
 # command to execute
 if not args.command:
-   exec_commands=['configd', 'actions']
+    exec_commands=['configd actions']
 else:
     exec_commands=[' '.join(args.command)]
 
