@@ -163,8 +163,9 @@ export default class OpenVPNClients extends BaseTableWidget {
 
             });
 
-            $('.ovpn-client-command').tooltip({container: 'body'});
         };
+
+        $('.ovpn-client-command').tooltip({container: 'body'});
     }
 
     async onWidgetTick() {
