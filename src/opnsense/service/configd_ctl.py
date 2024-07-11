@@ -88,7 +88,7 @@ parser.add_argument(
     help="threshold between events,  wait this interval before executing commands, combine input into single events",
     type=float
 )
-parser.add_argument("command", help="command(s) to execute", nargs="+")
+parser.add_argument("command", help="command(s) to execute", nargs="*")
 args = parser.parse_args()
 
 syslog.openlog(os.path.basename(sys.argv[0]))
@@ -110,9 +110,17 @@ if not os.path.exists(configd_socket_name):
 
 # command(s) to execute
 if args.m:
+    # select list command when not otherwise specified
+    if not args.command:
+        args.command = ['configd actions']
+
     # execute multiple commands at once ( -m "action1 param .." "action2 param .." )
     exec_commands=args.command
 else:
+    # select list command when not otherwise specified
+    if not args.command:
+        args.command = ['configd', 'actions']
+
     # execute single command sequence
     exec_commands=[' '.join(args.command)]
 
