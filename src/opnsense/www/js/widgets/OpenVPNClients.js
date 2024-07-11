@@ -100,23 +100,23 @@ export default class OpenVPNClients extends BaseTableWidget {
                 // sort the sessions per server
                 server.clients.sort((a, b) => (b.bytes_received + b.bytes_sent) - (a.bytes_received + a.bytes_sent));
                 server.clients.forEach((client) => {
-                    let color = "text-success";
+                    let color = "text-muted";
                     // disabled servers are not included in the list. Stopped servers have no "status" property
                     if (client.status) {
-                        // server active, status may either be 'ok' or 'failed'
                         if (client.status === 'failed') {
                             color = "text-danger";
                         } else {
                             color = "text-success";
                         }
-                    } else {
-                        // server is stopped
-                        color = "text-muted";
                     }
+
                     $clients.append($(`
                         <div class="ovpn-client-container">
                             <div class="ovpn-common-name">
-                                <i class="fa fa-circle ${color}" style="font-size: 11px;">
+                                <i class="ovpn-client-status fa fa-circle ${color}"
+                                   style="font-size: 11px; cursor: pointer;"
+                                   data-toggle="tooltip"
+                                   title="${client.status}">
                                 </i>
                                 &nbsp;
                                 <a href="/ui/openvpn/status">${client.common_name}</a>
@@ -164,13 +164,16 @@ export default class OpenVPNClients extends BaseTableWidget {
             });
 
         };
-
-        $('.ovpn-client-command').tooltip({container: 'body'});
     }
 
     async onWidgetTick() {
         if (!this.locked) {
+            $('.ovpn-client-command').tooltip('hide');
+            $('.ovpn-client-status').tooltip('hide');
             await this.updateClients();
         }
+
+        $('.ovpn-client-command').tooltip({container: 'body'});
+        $('.ovpn-client-status').tooltip({container: 'body'});
     }
 }
