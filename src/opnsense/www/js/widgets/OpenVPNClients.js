@@ -150,7 +150,20 @@ export default class OpenVPNClients extends BaseTableWidget {
                 $clients = $(`<a href="/ui/openvpn/status">${this.translations.noclients}</a>`);
             }
 
-            this.updateTable('ovpn-client-table', [[`${this.translations.server} ${server.description}`, $clients.prop('outerHTML')]], `server_${server_id}`);
+            let clientInfo = server.clients ? `
+                <br/>
+                <div style="padding-bottom: 5px; padding-top: 5px; font-size: 12px;">
+                    ${this.translations.clients}: ${server.clients.length}
+                </div>` : '';
+
+            let $serverHeader = $(`
+                <div>
+                    ${this.translations.server} ${server.description}
+                    ${clientInfo}
+                </div>
+            `);
+
+            this.updateTable('ovpn-client-table', [[$serverHeader.prop('outerHTML'), $clients.prop('outerHTML')]], `server_${server_id}`);
 
             $('.ovpn-command-kill').on('click', async (event) => {
                 this.locked = true;
