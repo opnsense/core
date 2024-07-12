@@ -296,6 +296,20 @@
             <noclients>No clients connected</noclients>
             <server>Server</server>
             <kill>Kill connection</kill>
+            <clients>Clients</clients>
         </translations>
     </openvpnclients>
+    <openvpnservers>
+        <filename>OpenVPNServers.js</filename>
+        <endpoints>
+            <endpoint>/api/openvpn/service/search_sessions</endpoint>
+        </endpoints>
+        <translations>
+            <title>OpenVPN Server Connections</title>
+            <noserver>Not connected to any server</noserver>
+            <server>Server</server>
+            <client>Client</client>
+            <stopped>Stopped</stopped>
+        </translations>
+    </openvpnservers>
 </metadata>
