@@ -365,7 +365,7 @@ function filter_core_rules_system($fw, $defaults)
                 'protocol' => 'udp',
                 'from' => 'fe80::/10',
                 'from_port' => 546,
-                'to' => 'fe80::/10',
+                'to' => 'fe80::/10,ff02::/16',
                 'to_port' => 547,
             ];
             if (isset($intfinfo['dhcp6vlanprio'])) {
