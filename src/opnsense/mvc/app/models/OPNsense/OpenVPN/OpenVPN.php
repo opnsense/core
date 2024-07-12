@@ -481,6 +481,9 @@ class OpenVPN extends BaseModel
                             "content" => "{$node->username}\n{$node->password}\n"
                         ];
                     }
+                    if (!empty((string)$node->remote_cert_tls)) {
+                        $options['remote-cert-tls'] = 'server';
+                    }
                     // XXX: In some cases it might be practical to drop privileges, for server mode this will be
                     //      more difficult due to the associated script actions (and their requirements).
                     //$options['user'] = 'openvpn';
@@ -497,6 +500,9 @@ class OpenVPN extends BaseModel
                         $options['crl-verify'] = "/var/etc/openvpn/server-{$node_uuid}.crl-verify";
                     }
                     $options['verify-client-cert'] = (string)$node->verify_client_cert;
+                    if (!empty((string)$node->remote_cert_tls)) {
+                        $options['remote-cert-tls'] = 'client';
+                    }
                     if (in_array($node->dev_type, ['tun', 'ovpn']) && !empty((string)$node->server)) {
                         $parts = explode('/', (string)$node->server);
                         $mask = Util::CIDRToMask($parts[1]);

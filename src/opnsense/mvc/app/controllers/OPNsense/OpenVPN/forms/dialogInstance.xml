@@ -159,6 +159,17 @@
         <help>Select a certificate to use for this service.</help>
     </field>
     <field>
+        <id>instance.remote_cert_tls</id>
+        <label>Verify Remote Certificate</label>
+        <type>checkbox</type>
+        <help>
+            Require that peer certificated was signed with an explicit "key usage" and "extended key usage" based on RFC 3280 rules.
+            This is a useful security option for both servers and clients. For clients, to ensure that the host they connect to is a designated server;
+            and for servers, to prevent man-in-the-middle attacks where an authorized client attempts to connect to another client by impersonating
+            the server.
+        </help>
+    </field>
+    <field>
         <id>instance.ca</id>
         <label>Certificate Authority</label>
         <type>dropdown</type>
