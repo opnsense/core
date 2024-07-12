@@ -163,7 +163,7 @@
         <label>Verify Remote Certificate</label>
         <type>checkbox</type>
         <help>
-            Require that peer certificated was signed with an explicit "key usage" and "extended key usage" based on RFC 3280 rules.
+            Require that the peer certificate was signed with an explicit "key usage" and "extended key usage" based on RFC 3280 rules.
             This is a useful security option for both servers and clients. For clients, to ensure that the host they connect to is a designated server;
             and for servers, to prevent man-in-the-middle attacks where an authorized client attempts to connect to another client by impersonating
             the server.
