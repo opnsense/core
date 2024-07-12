@@ -162,7 +162,9 @@ class WidgetManager  {
         let config = {
             callbacks: {
                 // pre-bind the updateGrid function to the widget instance
-                updateGrid: this._updateGrid.bind(this, this.widgetHTMLElements[id]),
+                updateGrid: () => {
+                    this._updateGrid.call(this, this.widgetHTMLElements[id])
+                }
             },
             ...persistedConfig,
         }

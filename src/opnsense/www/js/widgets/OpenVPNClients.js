@@ -27,8 +27,8 @@
 import BaseTableWidget from "./BaseTableWidget.js";
 
 export default class OpenVPNClients extends BaseTableWidget {
-    constructor() {
-        super();
+    constructor(config) {
+        super(config);
         this.resizeHandles = "e, w";
 
         this.locked = false;
@@ -131,13 +131,17 @@ export default class OpenVPNClients extends BaseTableWidget {
                                 </span>
                             </div>
                             <div>
-                                ${client.real_address} / ${client.virtual_address}
+                                ${client.real_address} | ${client.virtual_address}
                             </div>
                             <div>
                                 ${client.connected_since}
                             </div>
                             <div style="padding-bottom: 10px;">
-                                RX: ${this._formatBytes(client.bytes_received, 0)} / TX: ${this._formatBytes(client.bytes_sent, 0)}
+                                <i class="fa fa-arrow-down" style="font-size: 13px;"></i>
+                                ${this._formatBytes(client.bytes_received, 0)}
+                                |
+                                <i class="fa fa-arrow-up" style="font-size: 13px;"></i>
+                                ${this._formatBytes(client.bytes_sent, 0)}
                             </div>
                         </div>
                     `));
@@ -157,10 +161,10 @@ export default class OpenVPNClients extends BaseTableWidget {
 
                 this.startCommandTransition(rowId, $target);
                 await this._killClient(rowId, commonName);
-                await this.endCommandTransition(rowId, $target);
+                await this.endCommandTransition(rowId, $target, true, true);
                 await this.updateClients();
+                this.config.callbacks.updateGrid();
                 this.locked = false;
-
             });
 
         };

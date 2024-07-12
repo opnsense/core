@@ -261,7 +261,7 @@ export default class BaseWidget {
         $target.prop('disabled', true);
     }
 
-    async endCommandTransition(id, $target, success=true) {
+    async endCommandTransition(id, $target, success=true, hide=false) {
         id = this.sanitizeSelector(id);
         let $container = $target.prev('.transition-icon-container');
         let $spinner = $container.find(`#spinner-${id}`);
@@ -275,12 +275,17 @@ export default class BaseWidget {
                     setTimeout(() => {
                         $check.toggleClass('hide show');
                         $target.prop('disabled', false);
-                        $target.toggleClass('show hide');
+                        if (!hide) {
+                            $target.toggleClass('show hide');
+                        }
                         $container.remove();
                         resolve();
                     }, 500);
                 }, 200);
             } else {
+                if (!hide) {
+                    $target.toggleClass('show hide');
+                }
                 $target.toggleClass('show hide');
                 $target.prop('disabled', false);
                 $spinner.removeClass('show').addClass('hide');
