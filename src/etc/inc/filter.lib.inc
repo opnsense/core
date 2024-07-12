@@ -352,8 +352,8 @@ function filter_core_rules_system($fw, $defaults)
                 '#ref' => 'system_advanced_network.php#ipv6allow',
                 'interface' => $intf,
                 'protocol' => 'udp',
-                'from' => 'fe80::/10',
-                /* omit from_port as the server may use a different source port */
+                /* omit 'from' as the server may use a GUA instead */
+                /* omit 'from_port' as the server may use a different source port */
                 'to' => 'fe80::/10',
                 'to_port' => 546,
             ], $defaults['pass']);
