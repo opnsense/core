@@ -1981,6 +1981,7 @@
 /usr/local/opnsense/www/js/widgets/Metadata/Core.xml
 /usr/local/opnsense/www/js/widgets/Monit.js
 /usr/local/opnsense/www/js/widgets/OpenVPNClients.js
+/usr/local/opnsense/www/js/widgets/OpenVPNServers.js
 /usr/local/opnsense/www/js/widgets/Services.js
 /usr/local/opnsense/www/js/widgets/Swap.js
 /usr/local/opnsense/www/js/widgets/SystemInformation.js
