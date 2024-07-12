@@ -55,6 +55,8 @@ export default class Interfaces extends BaseTableWidget {
             return;
         }
 
+        $('.if-status-icon').tooltip('hide');
+
         let rows = [];
         data.rows.map((intf_data) => {
             if (!intf_data.hasOwnProperty('config') || intf_data.enabled == false) {
@@ -69,7 +71,7 @@ export default class Interfaces extends BaseTableWidget {
 
             row.push($(`
                 <div class="interface-info if-name">
-                    <i class="fa fa-plug text-${intf_data.status === 'up' ? 'success' : 'danger'}" title="" data-toggle="tooltip" data-original-title="${intf_data.status}"></i>
+                    <i class="fa fa-plug text-${intf_data.status === 'up' ? 'success' : 'danger'} if-status-icon" title="" data-toggle="tooltip" data-original-title="${intf_data.status}"></i>
                     <b class="interface-descr" onclick="location.href='/interfaces.php?if=${intf_data.identifier}'">
                         ${intf_data.description}
                     </b>
@@ -106,7 +108,7 @@ export default class Interfaces extends BaseTableWidget {
 
         super.updateTable('if-table', rows);
 
-        $('[data-toggle="tooltip"]').tooltip();
+        $('.if-status-icon').tooltip({container: 'body'});
     }
 
     onWidgetResize(elem, width, height) {

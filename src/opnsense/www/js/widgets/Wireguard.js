@@ -75,6 +75,7 @@ export default class Wireguard extends BaseTableWidget {
     }
 
     processTunnels(newTunnels) {
+        $('.wireguard-interface').tooltip('hide');
         let tunnels = newTunnels.filter(row => row.type == 'peer').map(row => ({
             ifname: row.ifname ? row.if + ' (' + row.ifname + ') ' : row.if,
             name: row.name,
@@ -92,9 +93,9 @@ export default class Wireguard extends BaseTableWidget {
         tunnels.forEach(tunnel => {
             let row = `
                 <div>
-                    <div data-toggle="tooltip" title="${tunnel.pubkey}">
+                    <div data-toggle="tooltip" class="wireguard-interface" title="${tunnel.pubkey}">
                         <b>${tunnel.ifname}</b>
-                        <i class="fa fa-arrows-h" aria-hidden="true"></i>
+                        <i class="fa fa-arrows-h " aria-hidden="true"></i>
                         <b>${tunnel.name}</b>
                     </div>
                     <div>
@@ -112,6 +113,6 @@ export default class Wireguard extends BaseTableWidget {
         super.updateTable('wgTunnelTable', rows.map(row => [row]));
 
         // Activate tooltips for new dynamic elements
-        $('[data-toggle="tooltip"]').tooltip();
+        $('.wireguard-interface').tooltip();
     }
 }

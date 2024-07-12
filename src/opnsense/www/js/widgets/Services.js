@@ -50,7 +50,7 @@ export default class Services extends BaseTableWidget {
     serviceControl(actions) {
         return actions.map(({ action, id, title, icon }) => `
             <button data-service_action="${action}" data-service="${id}"
-                  class="btn btn-xs btn-default srv_status_act2" title="${title}">
+                  class="btn btn-xs btn-default srv_status_act2" title="${title}" data-toggle="tooltip">
                 <i class="fa fa-fw fa-${icon}"></i>
             </button>
         `).join('');
@@ -67,6 +67,9 @@ export default class Services extends BaseTableWidget {
         if (!this.dataChanged('services', data)) {
             return;
         }
+
+        $('.service-status').tooltip('hide');
+        $('.srv_status_act2').tooltip('hide');
 
         for (const service of data.rows) {
             let name = service.name;
@@ -85,7 +88,7 @@ export default class Services extends BaseTableWidget {
             let $buttonContainer = $(`<div>
                 <span class="label label-opnsense label-opnsense-xs
                              label-${service.running ? 'success' : 'danger'}
-                             bootgrid-tooltip
+                             service-status"
                              data-toggle="tooltip" title="${service.running ? this.translations.running : this.translations.stopped}">
                     <i class="fa fa-${service.running ? 'play' : 'stop'} fa-fw"></i>
                 </span>
@@ -97,7 +100,8 @@ export default class Services extends BaseTableWidget {
             super.updateTable('services-table', [[description, $buttonContainer.prop('outerHTML')]], service.id);
         }
 
-        $('[data-toggle="tooltip"]').tooltip();
+        $('.service-status').tooltip({container: 'body'});
+        $('.srv_status_act2').tooltip({container: 'body'});
 
         $('.srv_status_act2').on('click', async (event) => {
             this.locked = true;

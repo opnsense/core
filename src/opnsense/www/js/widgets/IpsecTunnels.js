@@ -79,6 +79,8 @@ export default class IpsecTunnels extends BaseTableWidget {
             return; // No changes detected, do not update the UI
         }
 
+        $('.ipsectunnels-status-icon').tooltip('hide');
+
         let tunnels = newTunnels.map(tunnel => ({
             localAddrs: tunnel['local-addrs'],
             remoteAddrs: tunnel['remote-addrs'],
@@ -104,7 +106,7 @@ export default class IpsecTunnels extends BaseTableWidget {
         tunnels.forEach(tunnel => {
             let row = `
                 <div>
-                    <i class="fa ${tunnel.statusIcon}" style="cursor: pointer;"
+                    <i class="fa ${tunnel.statusIcon} ipsectunnels-status-icon" style="cursor: pointer;"
                         data-toggle="tooltip" title="${tunnel.connected ? this.translations.online : this.translations.offline}">
                     </i>
                     &nbsp;
@@ -121,6 +123,6 @@ export default class IpsecTunnels extends BaseTableWidget {
         super.updateTable('ipsecTunnelTable', rows.map(row => [row]));
 
         // Activate tooltips for new dynamic elements
-        $('[data-toggle="tooltip"]').tooltip();
+        $('.ipsectunnels-status-icon').tooltip({container: 'body'});
     }
 }

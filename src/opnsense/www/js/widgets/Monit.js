@@ -86,6 +86,9 @@ export default class Monit extends BaseTableWidget {
             return;
         }
 
+        $('.monit-status-icon').tooltip('hide');
+        $('.monit-type-icon').tooltip('hide');
+
         let rows = [];
         $.each(data['status']['service'], (index, service) => {
             let color = this.statusColors[service['status']] || "text-success";
@@ -93,11 +96,11 @@ export default class Monit extends BaseTableWidget {
 
             let $header = $(`
                 <div>
-                    <i class="fa fa-circle text-muted ${color}" style="font-size: 11px; cursor: pointer;"
+                    <i class="fa fa-circle text-muted ${color} monit-status-icon" style="font-size: 11px; cursor: pointer;"
                         data-toggle="tooltip" title="${this.statusMap[service['status']]}">
                     </i>
                     &nbsp;
-                    <i class="fa ${icon}" style="font-size: 11px;"
+                    <i class="fa ${icon} monit-type-icon" style="font-size: 11px;"
                         data-toggle="tooltip" title="${this.serviceMap[service['@attributes']['type']]}">
                     </i>
                     &nbsp;
@@ -110,5 +113,8 @@ export default class Monit extends BaseTableWidget {
         });
 
         this.updateTable('monit-table', rows);
+
+        $('.monit-status-icon').tooltip({container: 'body'});
+        $('.monit-type-icon').tooltip({container: 'body'});
     }
 }

@@ -53,6 +53,8 @@ export default class Carp extends BaseTableWidget {
             return;
         }
 
+        $('.carp-status-icon').tooltip('hide');
+
         let ifs = {};
 
         data.rows.forEach(({ interface: iface, vhid, status, status_txt, subnet, mode, vhid_txt }) => {
@@ -70,7 +72,7 @@ export default class Carp extends BaseTableWidget {
             let $intf = `<div><a href="/ui/interfaces/vip">${primary.interface} @ VHID ${primary.vhid}</a></div>`;
             let vips = [
                 `<div>
-                    <span class="bootgrid-tooltip badge badge-pill"
+                    <span class="badge badge-pill carp-status-icon"
                             data-toggle="tooltip"
                             title="${primary.vhid_txt}"
                             style="background-color: ${primary.status == 'MASTER' ? 'green' : 'primary'}">
@@ -83,7 +85,7 @@ export default class Carp extends BaseTableWidget {
             aliases.forEach(({ status, status_txt, subnet }) => {
                 vips.push(`
                     <div>
-                        <span class="bootgrid-tooltip badge badge-pill"
+                        <span class="badge badge-pill carp-status-icon"
                                 data-toggle="tooltip"
                                 title="${primary.vhid_txt}"
                                 style="background-color: ${status == 'MASTER' ? 'green' : 'primary'}">
@@ -97,6 +99,6 @@ export default class Carp extends BaseTableWidget {
             this.updateTable('carp-table', [[$intf, vips]], `carp_${primary.interface}_${primary.vhid}`);
         });
 
-        $('[data-toggle="tooltip"]').tooltip();
+        $('.carp-status-icon').tooltip({container: 'body'});
     }
 }
