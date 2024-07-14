@@ -339,7 +339,7 @@ $( document ).ready(function() {
                       <th><?=gettext("IP");?></th>
                       <th><?=gettext("Ports");?></th>
                       <th><?=gettext("Description");?></th>
-                      <th class="text-nowrap">
+                      <th role="cell" class="text-nowrap">
                         <a href="firewall_nat_edit.php" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
                           <i class="fa fa-plus fa-fw"></i>
                         </a>
