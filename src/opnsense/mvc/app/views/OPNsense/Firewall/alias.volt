@@ -252,12 +252,12 @@
             });
 
             $(".geoip_select").selectpicker();
-            $(".geoip_select").change(function(){
+            $("select.geoip_select").change(function(){
                 // unlink on change event
                 $("#alias\\.content").unbind('tokenize:tokens:change');
                 // copy items from geoip fields to content field
                 $("#alias\\.content").tokenize2().trigger('tokenize:clear');
-                $(".geoip_select").each(function () {
+                $("select.geoip_select").each(function () {
                     $.each($(this).val(), function(key, item){
                         $("#alias\\.content").tokenize2().trigger('tokenize:tokens:add', item);
                     });
