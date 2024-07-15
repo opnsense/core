@@ -318,11 +318,22 @@ class WidgetManager  {
 
             let $content = $('<div></div>');
             let $select = $('<select id="widget-selection" data-container="body" class="selectpicker" multiple="multiple"></select>');
+
+            // Sort options
+            let options = [];
             for (const [id, widget] of Object.entries(this.loadedModules)) {
                 if (this.moduleDiff.includes(id)) {
-                    $select.append($(`<option value="${id}">${this.widgetTranslations[id].title}</option>`));
+                    options.push({
+                        value: id,
+                        text: this.widgetTranslations[id].title
+                    });
                 }
             }
+            options.sort((a, b) => a.text.localeCompare(b.text));
+            options.forEach(option => {
+                $select.append($(`<option value="${option.value}">${option.text}</option>`));
+            });
+
             $content.append($select);
 
             BootstrapDialog.show({
