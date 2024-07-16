@@ -26,7 +26,7 @@
 CORE_ABI?=	24.7
 CORE_ADDITIONS?=#empty
 CORE_MESSAGE?=	TBA
-CORE_NAME?=	opnsense-devel
+CORE_NAME?=	opnsense
 # adjust src/root/boot/lua/logo-hourglass.lua.in accordingly:
 CORE_NICKNAME?=	Not Yet
-CORE_TYPE?=	development
+CORE_TYPE?=	community
