@@ -341,8 +341,11 @@ class WidgetManager  {
                         dialog.close();
                     }
                 }],
-                onshown: (dialog) => {
+                onshown: function (dialog) {
                     $('#widget-selection').selectpicker();
+                },
+                onhide: function (dialog) {
+                    $('#widget-selection').selectpicker('destroy');
                 }
             });
         });
