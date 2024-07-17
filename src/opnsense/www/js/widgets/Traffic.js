@@ -165,14 +165,18 @@ export default class Traffic extends BaseWidget {
             this.initialized = true;
         }
 
+        let config = null;
+        if (this.configChanged) {
+            config = await this.getWidgetConfig();
+        }
+
         for (let chart of Object.values(this.charts)) {
             Object.keys(data.interfaces).forEach((intf) => {
-                chart.config.data.datasets.forEach(async (dataset) => {
+                chart.config.data.datasets.forEach((dataset) => {
                     if (dataset.intf === intf) {
                         let elapsed_time = data.time - dataset.last_time;
                         if (this.configChanged) {
                             // check hidden status of dataset
-                            const config = await this.getWidgetConfig();
                             dataset.hidden = !config.interfaces.includes(data.interfaces[intf].name);
                         }
                         dataset.data.push({
