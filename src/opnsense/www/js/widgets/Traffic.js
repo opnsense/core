@@ -27,8 +27,8 @@
 import BaseWidget from "./BaseWidget.js";
 
 export default class Traffic extends BaseWidget {
-    constructor() {
-        super();
+    constructor(config) {
+        super(config);
 
         this.charts = {
             trafficIn: null,
@@ -36,6 +36,8 @@ export default class Traffic extends BaseWidget {
         };
         this.initialized = false;
         this.datasets = {inbytes: [], outbytes: []};
+        this.configurable = true;
+        this.configChanged = false;
     }
 
     _set_alpha(color, opacity) {
@@ -54,7 +56,7 @@ export default class Traffic extends BaseWidget {
                 maintainAspectRatio: false,
                 scaleShowLabels: false,
                 tooltipEvents: [],
-                pointDot: false,
+                pointDot: true,
                 scaleShowGridLines: true,
                 responsive: true,
                 normalized: true,
@@ -121,7 +123,9 @@ export default class Traffic extends BaseWidget {
         };
     }
 
-    _initialize(data) {
+    async _initialize(data) {
+        const config = await this.getWidgetConfig();
+        this.datasets = {inbytes: [], outbytes: []};
         for (const dir of ['inbytes', 'outbytes']) {
             let colors = Chart.colorschemes.tableau.Classic10;
             let i = 0;
@@ -130,7 +134,7 @@ export default class Traffic extends BaseWidget {
                 i++;
                 this.datasets[dir].push({
                     label: data.interfaces[intf].name,
-                    hidden: false, // XXX
+                    hidden: !config.interfaces.includes(data.interfaces[intf].name),
                     borderColor: colors[idx],
                     backgroundColor: this._set_alpha(colors[idx], 0.5),
                     pointHoverBackgroundColor: colors[idx],
@@ -147,10 +151,9 @@ export default class Traffic extends BaseWidget {
 
         this.charts.trafficIn = new Chart($('#traffic-in')[0].getContext('2d'), this._chartConfig(this.datasets.inbytes));
         this.charts.trafficOut = new Chart($('#traffic-out')[0].getContext('2d'), this._chartConfig(this.datasets.outbytes));
-        this.initialized = true;
     }
 
-    _onMessage(event) {
+    async _onMessage(event) {
         if (!event) {
             super.closeEventSource();
         }
@@ -158,15 +161,20 @@ export default class Traffic extends BaseWidget {
         const data = JSON.parse(event.data);
 
         if (!this.initialized) {
-            this._initialize(data);
+            await this._initialize(data);
             this.initialized = true;
         }
 
         for (let chart of Object.values(this.charts)) {
             Object.keys(data.interfaces).forEach((intf) => {
-                chart.config.data.datasets.forEach((dataset) => {
+                chart.config.data.datasets.forEach(async (dataset) => {
                     if (dataset.intf === intf) {
                         let elapsed_time = data.time - dataset.last_time;
+                        if (this.configChanged) {
+                            // check hidden status of dataset
+                            const config = await this.getWidgetConfig();
+                            dataset.hidden = !config.interfaces.includes(data.interfaces[intf].name);
+                        }
                         dataset.data.push({
                             x: new Date(data.time * 1000.0),
                             y: Math.round(((data.interfaces[intf][dataset.src_field]) / elapsed_time) * 8, 0)
@@ -177,6 +185,10 @@ export default class Traffic extends BaseWidget {
                 });
             });
             chart.update('quiet');
+        }
+
+        if (this.configChanged) {
+            this.configChanged = false;
         }
     }
 
@@ -197,6 +209,29 @@ export default class Traffic extends BaseWidget {
 
     async onMarkupRendered() {
         super.openEventSource('/api/diagnostics/traffic/stream/1', this._onMessage.bind(this));
+    }
+
+    async getWidgetOptions() {
+        const interfaces = await this.ajaxCall('/api/diagnostics/traffic/interface');
+        return {
+            interfaces: {
+                title: this.translations.interfaces,
+                type: 'select_multiple',
+                options: Object.entries(interfaces.interfaces).map(([key,intf]) => {
+                    return {
+                        value: intf.name,
+                        selected: this.config.widget?.interfaces?.includes(intf.name) ?? false
+                    };
+                }),
+                default: Object.entries(interfaces.interfaces)
+                    .filter(([key, intf]) => key === 'lan' || key === 'wan')
+                    .map(([key, intf]) => (intf.name))
+            }
+        };
+    }
+
+    onWidgetOptionsChanged(options) {
+        this.configChanged = true;
     }
 
     onWidgetClose() {

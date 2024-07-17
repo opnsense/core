@@ -257,61 +257,8 @@ class WidgetManager  {
         $('#save-grid').hide();
 
         // Click event for save button
-        $('#save-grid').click(() => {
-            // Show the spinner when the save operation starts
-            $('#save-btn-text').toggleClass("show hide");
-            $('#save-spinner').addClass('show');
-            $('#save-grid').prop('disabled', true);
-
-            let items = this.grid.save(false);
-            items.forEach((item) => {
-                // Store widget-specific configuration
-                let widgetConfig = this.widgetClasses[item.id].getWidgetConfig();
-                if (widgetConfig) {
-                    item['widget'] = widgetConfig;
-                }
-
-                // XXX the gridstack save() behavior is inconsistent with the responsive columnWidth option,
-                // as the calculation will return impossible values for the x, y, w and h attributes.
-                // For now, the gs-{x,y,w,h} attributes are a better representation of the grid for layout persistence
-                let elem = $(this.widgetHTMLElements[item.id]);
-                item.x = parseInt(elem.attr('gs-x')) ?? 1;
-                item.y = parseInt(elem.attr('gs-y')) ?? 1;
-                item.w = parseInt(elem.attr('gs-w')) ?? 1;
-                item.h = parseInt(elem.attr('gs-h')) ?? 1;
-
-                delete item['callbacks'];
-            });
-
-            $.ajax({
-                type: "POST",
-                url: "/api/core/dashboard/saveWidgets",
-                dataType: "text",
-                contentType: 'text/plain',
-                data: JSON.stringify(items),
-                complete: (data, status) => {
-                    setTimeout(() => {
-                        let response = JSON.parse(data.responseText);
-
-                        if (response['result'] == 'failed') {
-                            console.error('Failed to save widgets', data);
-                            $('#save-grid').prop('disabled', false);
-                            $('#save-spinner').removeClass('show').addClass('hide');
-                            $('#save-btn-text').removeClass('hide').addClass('show');
-                        } else {
-                            $('#save-spinner').removeClass('show').addClass('hide');
-                            $('#save-check').toggleClass("hide show");
-                            setTimeout(() => {
-                                // Hide the save button upon successful save
-                                $('#save-grid').hide();
-                                $('#save-check').toggleClass("show hide");
-                                $('#save-btn-text').toggleClass("hide show");
-                                $('#save-grid').prop('disabled', false);
-                            }, 500)
-                        }
-                    }, 300); // Artificial delay to give more feedback on button click
-                }
-            });
+        $('#save-grid').click(async () => {
+            await this._saveDashboard();
         });
 
         $('#add_widget').click(() => {
@@ -339,11 +286,12 @@ class WidgetManager  {
             BootstrapDialog.show({
                 title: this.gettext.addwidget,
                 draggable: true,
+                animate: false,
                 message: $content,
                 buttons: [{
                     label: this.gettext.add,
                     hotkey: 13,
-                    action: async (dialog) => {
+                    action: (dialog) => {
                         let ids = $('select', dialog.$modalContent).val();
                         let changed = false;
                         for (const id of ids) {
@@ -445,8 +393,7 @@ class WidgetManager  {
         $(`.spinner-${widget.id}`).remove();
 
         // retrieve widget-specific options
-        const options = widget.getWidgetOptions();
-        if (!$.isEmptyObject(options)) {
+        if (widget.isConfigurable()) {
             let $editHandle = $(`
                 <div id="edit-handle-${widget.id}" class="edit-handle">
                     <i class="fa fa-pencil"></i>
@@ -454,8 +401,8 @@ class WidgetManager  {
             `);
             $(`#close-handle-${widget.id}`).before($editHandle);
 
-            $editHandle.click((event) => {
-                // TODO: implement
+            $editHandle.on('click', async (event) => {
+                await this._renderOptionsForm(widget);
             });
         }
 
@@ -551,6 +498,142 @@ class WidgetManager  {
         $panel.append($content);
 
         return $panel;
+    }
+
+    async _saveDashboard() {
+        // Show the spinner when the save operation starts
+        $('#save-btn-text').toggleClass("show hide");
+        $('#save-spinner').addClass('show');
+        $('#save-grid').prop('disabled', true);
+
+        let items = this.grid.save(false);
+        items = await Promise.all(items.map(async (item) => {
+            let widgetConfig = await this.widgetClasses[item.id].getWidgetConfig();
+            if (widgetConfig) {
+                item['widget'] = widgetConfig;
+            }
+
+            // XXX the gridstack save() behavior is inconsistent with the responsive columnWidth option,
+            // as the calculation will return impossible values for the x, y, w and h attributes.
+            // For now, the gs-{x,y,w,h} attributes are a better representation of the grid for layout persistence
+            let elem = $(this.widgetHTMLElements[item.id]);
+            item.x = parseInt(elem.attr('gs-x')) ?? 1;
+            item.y = parseInt(elem.attr('gs-y')) ?? 1;
+            item.w = parseInt(elem.attr('gs-w')) ?? 1;
+            item.h = parseInt(elem.attr('gs-h')) ?? 1;
+
+            delete item['callbacks'];
+            return item;
+        }));
+
+        $.ajax({
+            type: "POST",
+            url: "/api/core/dashboard/saveWidgets",
+            dataType: "text",
+            contentType: 'text/plain',
+            data: JSON.stringify(items),
+            complete: (data, status) => {
+                setTimeout(() => {
+                    let response = JSON.parse(data.responseText);
+
+                    if (response['result'] == 'failed') {
+                        console.error('Failed to save widgets', data);
+                        $('#save-grid').prop('disabled', false);
+                        $('#save-spinner').removeClass('show').addClass('hide');
+                        $('#save-btn-text').removeClass('hide').addClass('show');
+                    } else {
+                        $('#save-spinner').removeClass('show').addClass('hide');
+                        $('#save-check').toggleClass("hide show");
+                        setTimeout(() => {
+                            // Hide the save button upon successful save
+                            $('#save-grid').hide();
+                            $('#save-check').toggleClass("show hide");
+                            $('#save-btn-text').toggleClass("hide show");
+                            $('#save-grid').prop('disabled', false);
+                        }, 500)
+                    }
+                }, 300); // Artificial delay to give more feedback on button click
+            }
+        });
+    }
+
+    async _renderOptionsForm(widget) {
+        let $content = $(`<div class="widget-options"></div>`);
+
+        // parse widget options
+        const options = await widget.getWidgetOptions();
+        for (const [key, value] of Object.entries(options)) {
+            let $option = $(`<div class="widget-option-container"></div>`);
+            switch (value.type) {
+                case 'select_multiple':
+                    let $select = $(`<select class="widget_optionsform_selectpicker"
+                                     id="${value.id}"
+                                     data-container="body"
+                                     class="selectpicker"
+                                     multiple="multiple"></select>`);
+
+                    for (const option of value.options) {
+                        $select.append($(`<option value="${option.value}" ${option.selected ? 'selected' : ''}>${option.value}</option>`));
+                    }
+
+                    if (value.options.every(obj => !obj.selected)) {
+                        // No selection, apply the default.
+                        $select.val(value.default);
+                    }
+
+                    $option.append($(`<div><b>${value.title}</b></div>`));
+                    $option.append($select);
+                    break;
+                default:
+                    console.error('Unknown option type', value.type);
+                    continue;
+            }
+
+            $content.append($option);
+        }
+
+        // present widget options
+        BootstrapDialog.show({
+            title: this.gettext.options,
+            draggable: true,
+            animate: false,
+            message: $content,
+            buttons: [{
+                label: this.gettext.ok,
+                hotkey: 13,
+                action: (dialog) => {
+                    let values = {};
+                    for (const [key, value] of Object.entries(options)) {
+                        switch (value.type) {
+                            case 'select_multiple':
+                                values[key] = $(`#${value.id}`).val();
+                                if (values[key].count === 0) {
+                                    values[key] = value.default;
+                                }
+                                break;
+                            default:
+                                console.error('Unknown option type', value.type);
+                        }
+                    }
+
+                    widget.setWidgetConfig(values);
+                    widget.onWidgetOptionsChanged(values);
+                    $('#save-grid').show();
+                    dialog.close();
+                }
+            }, {
+                label: this.gettext.cancel,
+                action: (dialog) => {
+                    dialog.close();
+                }
+            }],
+            onshown: function(dialog) {
+                $('.widget_optionsform_selectpicker').selectpicker();
+            },
+            onhide: function(dialog) {
+                $('.widget_optionsform_selectpicker').selectpicker('destroy');
+            }
+        });
     }
 
     _onWidgetClose(id) {
