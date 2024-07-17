@@ -40,6 +40,8 @@ export default class BaseWidget {
         this.timeoutPeriod = 1000;
         this.retryLimit = 3;
         this.eventSourceRetryCount = 0; // retrycount for $.ajax is managed in its own scope
+
+        this.configurable = false;
     }
 
     /* Public functions */
@@ -48,12 +50,30 @@ export default class BaseWidget {
         return this.resizeHandles;
     }
 
-    getWidgetConfig() {
-        if (this.config !== undefined && 'widget' in this.config) {
-            return this.config['widget'];
-        }
+    setWidgetConfig(config) {
+        this.config['widget'] = config;
+    }
 
-        return false;
+    async getWidgetConfig() {
+        let widget_config = {};
+        if (this.config !== undefined && 'widget' in this.config) {
+            widget_config = this.config['widget'];
+        }
+        const options = await this.getWidgetOptions();
+        return Object.entries(options).reduce((acc, [key, value]) => {
+            if (key in widget_config &&
+                widget_config[key] !== null &&
+                widget_config[key] !== undefined &&
+                (typeof(widget_config[key] === 'array') && widget_config[key].length !== 0) &&
+                (typeof(widget_config[key] === 'object') && Object.keys(widget_config[key]).length !== 0) &&
+                (typeof(widget_config[key] === 'string') && widget_config[key].length !== 0)
+            ) {
+                acc[key] = widget_config[key];
+            } else {
+                acc[key] = value.default;
+            }
+            return acc;
+        }, {});
     }
 
     setId(id) {
@@ -64,14 +84,14 @@ export default class BaseWidget {
         this.translations = translations;
     }
 
-    /* Public virtual functions */
+    isConfigurable() {
+        return this.configurable;
+    }
+
+    /* Public virtual/override functions */
 
     getGridOptions() {
         // per-widget gridstack options override
-        return {};
-    }
-
-    getWidgetOptions() {
         return {};
     }
 
@@ -103,6 +123,14 @@ export default class BaseWidget {
                 this.closeEventSource();
             }
         }
+    }
+
+    async getWidgetOptions() {
+        return {};
+    }
+
+    onWidgetOptionsChanged(options) {
+        return null;
     }
 
     /* Utility/protected functions */
@@ -153,10 +181,6 @@ export default class BaseWidget {
         }
 
         return false;
-    }
-
-    setWidgetConfig(config) {
-        this.config['widget'] = config;
     }
 
     openEventSource(url, onMessage) {

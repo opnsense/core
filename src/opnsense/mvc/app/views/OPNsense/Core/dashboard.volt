@@ -64,11 +64,13 @@ $( document ).ready(function() {
         }
     }, {
         'save': "{{ lang._('Save') }}",
+        'ok': "{{ lang._('OK') }}",
         'restore': "{{ lang._('Restore default layout') }}",
         'addwidget': "{{ lang._('Add Widget') }}",
         'add': "{{ lang._('Add') }}",
         'cancel': "{{ lang._('Cancel') }}",
         'failed': "{{ lang._('Failed to load widget') }}",
+        'options': "{{ lang._('Options') }}",
     });
     widgetManager.initialize();
 });

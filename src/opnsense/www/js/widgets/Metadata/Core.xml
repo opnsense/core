@@ -71,6 +71,7 @@
             <title>Traffic Graph</title>
             <trafficin>Traffic In</trafficin>
             <trafficout>Traffic Out</trafficout>
+            <interfaces>Interfaces</interfaces>
         </translations>
     </traffic>
     <memory>
