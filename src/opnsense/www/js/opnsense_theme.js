@@ -44,7 +44,6 @@ $(document).ready(function () {
         headerH = $('.navbar').height(),
         li_itemH = $('a.list-group-item').height(),
         navHeight = (countA * 70) + (headerH + footH - li_itemH),
-				
     events = {
         mouseenter: function () {
             var navigation = $('#navigation.col-sidebar-left');
