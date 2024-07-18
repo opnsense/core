@@ -52,7 +52,6 @@ $(document).ready(function () {
         
             navigation.css('width', '415px');
             if (nextDiv.not('in')) {
-							
                 /* calculate coordinates for submenu */
                 var winHeight = $(window).height(),
                     offsetTop = that.offset().top,
