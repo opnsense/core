@@ -32,18 +32,18 @@
 $(document).ready(function () {
     // traverse loaded css files
     var toggle_sidebar_loaded = false,
-        mouse = 'mouseenter mouseleave',
-        layer_a = $('#mainmenu > div > a'),
-        layer_div = $('#mainmenu > div > div'),
-        layer2_a = $('#mainmenu > div > div > a'),
-        layer2_div = $('#mainmenu > div > div > div'),
-        navigation = $('#navigation'),
-        mainmenu = $('#mainmenu'),
-        countA = layer_a.length,
-        footH = $('.page-foot').height(),
-        headerH = $('.navbar').height(),
-        li_itemH = $('a.list-group-item').height(),
-        navHeight = (countA * 70) + (headerH + footH - li_itemH),
+    mouse = 'mouseenter mouseleave',
+    layer_a = $('#mainmenu > div > a'),
+    layer_div = $('#mainmenu > div > div'),
+    layer2_a = $('#mainmenu > div > div > a'),
+    layer2_div = $('#mainmenu > div > div > div'),
+    navigation = $('#navigation'),
+    mainmenu = $('#mainmenu'),
+    countA = layer_a.length,
+    footH = $('.page-foot').height(),
+    headerH = $('.navbar').height(),
+    li_itemH = $('a.list-group-item').height(),
+    navHeight = (countA * 70) + (headerH + footH - li_itemH),
     events = {
         mouseenter: function () {
             var navigation = $('#navigation.col-sidebar-left');
