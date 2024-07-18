@@ -66,6 +66,7 @@ $( document ).ready(function() {
         'save': "{{ lang._('Save') }}",
         'ok': "{{ lang._('OK') }}",
         'restore': "{{ lang._('Restore default layout') }}",
+        'restoreconfirm': "{{ lang._('Are you sure you want to restore the default widget layout?') }}",
         'addwidget': "{{ lang._('Add Widget') }}",
         'add': "{{ lang._('Add') }}",
         'cancel': "{{ lang._('Cancel') }}",
