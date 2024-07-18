@@ -36,7 +36,7 @@ export default class Services extends BaseTableWidget {
     getGridOptions() {
         return {
             // trigger overflow-y:scroll after 650px height
-            sizeToContent: 350,
+            sizeToContent: 650,
         }
     }
 

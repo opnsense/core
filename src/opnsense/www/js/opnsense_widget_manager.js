@@ -86,6 +86,7 @@ class ResizeObserverWrapper {
 class WidgetManager  {
     constructor(gridStackOptions = {}, gettext = {}) {
         this.gridStackOptions = gridStackOptions;
+        this.runtimeOptions = {}; // runtime changes to the gridstack options that are to be persisted
         this.gettext = gettext;
         this.loadedModules = {}; // id -> widget module
         this.widgetTranslations = {}; // id -> translations
@@ -99,6 +100,9 @@ class WidgetManager  {
     }
 
     async initialize() {
+        // render header buttons, make sure this always runs so a user can clear the grid if necessary
+        this._renderHeader();
+
         try {
             // import allowed modules and current persisted configuration
             await this._loadWidgets();
@@ -106,8 +110,6 @@ class WidgetManager  {
             this._initializeWidgets();
             // render grid and append widget markup
             this._initializeGridStack();
-            // render header buttons
-            this._renderHeader();
             // load all dynamic content and start tick routines
             await this._loadDynamicContent();
         } catch (error) {
@@ -121,10 +123,17 @@ class WidgetManager  {
             dataType: 'json',
             contentType: 'application/json'
         }).then(async (data) => {
-            let configuration = JSON.parse(data.dashboard);
-            configuration.forEach(item => {
-                this.widgetConfigurations[item.id] = item;
-            });
+            try {
+                let configuration = JSON.parse(data.dashboard);
+                configuration.widgets.forEach(item => {
+                    this.widgetConfigurations[item.id] = item;
+                });
+
+                this.runtimeOptions = configuration.options;
+            } catch (error) {
+                // persisted config likely out of date, reset to defaults
+                this._restoreDefaults(false);
+            }
 
             const promises = data.modules.map(async (item) => {
                 const mod = await import('/ui/js/widgets/' + item.module + '?t='+Date.now());
@@ -203,7 +212,15 @@ class WidgetManager  {
 
     // runs only once
     _initializeGridStack() {
-        this.grid = GridStack.init(this.gridStackOptions);
+        let runtimeConfig = {}
+
+        // translate runtime options to gridstack options
+        if (this.runtimeOptions.gridLocked) {
+            runtimeConfig.disableMove = true;
+            runtimeConfig.disableResize = true;
+        }
+
+        this.grid = GridStack.init({...this.gridStackOptions, ...runtimeConfig});
         // before we render the grid, register the added event so we can store the Element type objects
         this.grid.on('added', (event, items) => {
             // store Elements for later use, such as update() and resizeToContent()
@@ -224,6 +241,12 @@ class WidgetManager  {
         // force the cell height of each widget to the lowest value. The grid will adjust the height
         // according to the content of the widget.
         this.grid.cellHeight(1);
+
+        if (this.runtimeOptions.gridLocked) {
+            $('#lock-grid').trigger('click');
+            $('#lock-grid').trigger('mouseup');
+            $('#save-grid').hide();
+        }
     }
 
     _renderHeader() {
@@ -325,27 +348,29 @@ class WidgetManager  {
         });
 
         $('#restore-defaults').click(() => {
-            $.ajax({type: "POST", url: "/api/core/dashboard/restoreDefaults"}).done((response) => {
-                if (response['result'] == 'failed') {
-                    console.error('Failed to restore default widgets');
-                } else {
-                    window.location.reload();
-                }
-            });
+            this._restoreDefaults();
         });
 
         $('#lock-grid').on('click', () => {
             $('#lock-grid').toggleClass('btn-pressed');
 
             if ($('#lock-grid').hasClass('btn-pressed')) {
-              this.grid.enableMove(false);
-              this.grid.enableResize(false);
-              $('.widget-content').css('cursor', 'default');
+                this.grid.enableMove(false);
+                this.grid.enableResize(false);
+                $('.widget-content').css('cursor', 'default');
+                $('.close-handle').hide();
+                $('.edit-handle').hide();
+                this.runtimeOptions.gridLocked = true;
             } else {
-              this.grid.enableMove(true);
-              this.grid.enableResize(true);
-              $('.widget-content').css('cursor', 'grab');
+                this.grid.enableMove(true);
+                this.grid.enableResize(true);
+                $('.widget-content').css('cursor', 'grab');
+                $('.close-handle').show();
+                $('.edit-handle').show();
+                this.runtimeOptions.gridLocked = false;
             }
+
+            $('#save-grid').show();
         });
 
         $('#lock-grid').mouseup(function() {
@@ -400,6 +425,10 @@ class WidgetManager  {
                 </div>
             `);
             $(`#close-handle-${widget.id}`).before($editHandle);
+
+            if (this.runtimeOptions.gridLocked) {
+                $editHandle.hide();
+            }
 
             $editHandle.on('click', async (event) => {
                 await this._renderOptionsForm(widget);
@@ -500,6 +529,21 @@ class WidgetManager  {
         return $panel;
     }
 
+    _restoreDefaults(confirmDialog = true) {
+        if (confirmDialog) {
+            if (!confirm(this.gettext.restoreconfirm)) {
+                return;
+            }
+        }
+        $.ajax({type: "POST", url: "/api/core/dashboard/restoreDefaults"}).done((response) => {
+            if (response['result'] == 'failed') {
+                console.error('Failed to restore default widgets');
+            } else {
+                window.location.reload();
+            }
+        });
+    }
+
     async _saveDashboard() {
         // Show the spinner when the save operation starts
         $('#save-btn-text').toggleClass("show hide");
@@ -526,12 +570,17 @@ class WidgetManager  {
             return item;
         }));
 
+        const payload = {
+            options: {...this.runtimeOptions},
+            widgets: items
+        };
+
         $.ajax({
             type: "POST",
             url: "/api/core/dashboard/saveWidgets",
             dataType: "text",
             contentType: 'text/plain',
-            data: JSON.stringify(items),
+            data: JSON.stringify(payload),
             complete: (data, status) => {
                 setTimeout(() => {
                     let response = JSON.parse(data.responseText);
