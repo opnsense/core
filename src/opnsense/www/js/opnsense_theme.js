@@ -167,16 +167,16 @@ $(document).ready(function () {
         });
 
         /* main function - sidebar mouseenter */
-       mainmenu.mouseenter(function () {
-           if (navigation.hasClass('col-sidebar-left')) {
-               transition_duration(0);
-               const layersWithEvents = [layer_a, layer2_a];
-               const layersWithEvents2 = [layer_div, layer2_div];
-						 
-               layersWithEvents.forEach(layer => layer.on(events));
-               layersWithEvents2.forEach(layer => layer.on(events2));
-           }
-       });
+        mainmenu.mouseenter(function () {
+            if (navigation.hasClass('col-sidebar-left')) {
+                transition_duration(0);
+                const layersWithEvents = [layer_a, layer2_a];
+                const layersWithEvents2 = [layer_div, layer2_div];
+
+                layersWithEvents.forEach(layer => layer.on(events));
+                layersWithEvents2.forEach(layer => layer.on(events2));
+            }
+        });
 
         /* main function - sidebar mouseleave */
         mainmenu.mouseleave(function () {
