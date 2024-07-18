@@ -49,7 +49,7 @@ $(document).ready(function () {
             var navigation = $('#navigation.col-sidebar-left');
             var that = $(this);
             var nextDiv = that.next('div');
-        
+
             navigation.css('width', '415px');
             if (nextDiv.not('in')) {
                 /* calculate coordinates for submenu */
@@ -59,7 +59,7 @@ $(document).ready(function () {
                     divHeight = nextDiv.height(),
                     divTop = offsetTop - winscrTop,
                     currentHeight = divTop + divHeight;
-            
+
                 that.trigger('click');
                 close_submenu(this);
 
@@ -70,7 +70,7 @@ $(document).ready(function () {
                 }
             }
         },
-				
+
         mouseleave: function () {
             $('#navigation.col-sidebar-left').css('width', '70px');
             layer_a.off(events).on(events);
@@ -82,7 +82,7 @@ $(document).ready(function () {
             $(this).blur();
         }
     },
-		
+
     events2 = {
         mouseenter: function () {
             $('#navigation.col-sidebar-left').css('width', '415px');
@@ -133,12 +133,12 @@ $(document).ready(function () {
         navigation.toggleClass('col-sidebar-left');
         $('main').toggleClass('col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2 col-lg-12');
         $('.toggle-sidebar > i').toggleClass('fa-chevron-right fa-chevron-left');
-				
+
         if (navigation.hasClass('col-sidebar-left')) {
             $('.brand-logo').css('display', 'none');
             $('.brand-icon').css('display', 'inline-block');
             trigger_sidebar();
-						
+
             if (store && window.localStorage) {
                 localStorage.setItem('toggle_sidebar_preset', 1);
                 transition_duration(0);
@@ -147,7 +147,7 @@ $(document).ready(function () {
             $('.brand-icon').css('display', 'none');
             $('.brand-logo').css('display', 'inline-block');
             $('#navigation.page-side.col-xs-12.col-sm-3.col-lg-2.hidden-xs').css('width', '');
-						
+
             if (store && window.localStorage) {
                 localStorage.setItem('toggle_sidebar_preset', 0);
                 mouse_events_off();
@@ -182,7 +182,7 @@ $(document).ready(function () {
                 const layersWithAria = [layer_a, layer2_a];
                 const layersToRemoveStyle = [layer_div, layer2_div];
                 const layersToOffEvents = [{ layer: layer2_a, events: events }, { layer: layer_div, events: events2 }, { layer: layer2_div, events: events2 }];
-						
+
                 layersWithAria.forEach(layer => layer.attr('aria-expanded', 'false').next('div').removeClass('in'));
                 layersToRemoveStyle.forEach(layer => layer.removeAttr('style'));
                 layersToOffEvents.forEach(({ layer, events }) => layer.off(events));
@@ -194,12 +194,12 @@ $(document).ready(function () {
             var win = $(window),
                 winHeight = win.height(),
                 winWidth = win.width();
-					
+
             if ((winHeight < navHeight || winWidth < 760) && navigation.not('col-sidebar-hidden')) {
                 navigation.addClass('col-sidebar-hidden');
                 mouse_events_off();
                 toggle_btn.hide();
-								
+
                 if (navigation.hasClass('col-sidebar-left')) {
                     opnsense_sidebar_toggle(false);
                     mouse_events_off();
@@ -209,7 +209,7 @@ $(document).ready(function () {
                 navigation.removeClass('col-sidebar-hidden');
                 transition_duration(0);
                 toggle_btn.show();
-								
+
                 if (window.localStorage && localStorage.getItem('toggle_sidebar_preset') == 1) {
                     opnsense_sidebar_toggle(false);
                 }
