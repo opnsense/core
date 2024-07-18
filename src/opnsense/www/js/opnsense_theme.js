@@ -124,8 +124,8 @@ $(document).ready(function () {
     /* close all non-focused submenus */
     function close_submenu(r) {
         ['nextAll', 'prevAll'].forEach(direction => {
-        $(r)[direction]('a').addClass('collapsed').attr('aria-expanded', 'false');
-        $(r)[direction]('div').removeClass('in').attr('aria-expanded', 'false');
+            $(r)[direction]('a').addClass('collapsed').attr('aria-expanded', 'false');
+            $(r)[direction]('div').removeClass('in').attr('aria-expanded', 'false');
         });
     }
 
