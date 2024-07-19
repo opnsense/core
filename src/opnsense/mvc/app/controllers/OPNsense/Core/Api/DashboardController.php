@@ -201,6 +201,9 @@ class DashboardController extends ApiControllerBase
         $output = curl_exec($ch);
         curl_close($ch);
         $payload = simplexml_load_string($output);
+        if (empty($payload)) {
+            return $result;
+        }
         foreach ($payload->channel->children() as $key => $node) {
             if ($key == 'item') {
                 $result['items'][] = [
