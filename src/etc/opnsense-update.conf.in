@@ -1,4 +1,4 @@
 # configuration for opnsense-update(8), do not edit
 
-UPGRADE_RELEASE="24.7.r1"
+UPGRADE_RELEASE="24.7.r2"
 UPGRADE_HINT="FreeBSD:14:%%CORE_ARCH%%/24.7"
