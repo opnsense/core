@@ -471,6 +471,11 @@ deflate.cache-dir = "/tmp/lighttpdcompress/"
 
 expire.url = ( "" => "access 50 hours" )
 
+\$HTTP["url"] =~ "^/ui/js/widgets/" {
+    expire.url = ( "" => "access 10 seconds" )
+}
+
+
 EOD;
 
     /* add HTTP to HTTPS redirect */
