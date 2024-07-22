@@ -102,6 +102,8 @@ export default class BaseGaugeWidget extends BaseWidget {
                 id: 'custom_positioned_text',
                 beforeDatasetsDraw: (chart, _, __) => {
                     let data = chart.config.data.datasets[0].data;
+                    let bodyFamily = window.getComputedStyle(document.body, null).getPropertyValue('font-family');
+                    let headingFamily = window.getComputedStyle(document.querySelector('h1'), null).getPropertyValue('font-family');
                     if (data.length !== 0) {
                         let width = chart.width;
                         let height = chart.height;
@@ -113,7 +115,7 @@ export default class BaseGaugeWidget extends BaseWidget {
                         let secondaryText = _options.secondaryText(data, chart);
 
                         let fontSize = (height / divisor).toFixed(2);
-                        ctx.font = fontSize + "em SourceSansProSemiBold";
+                        ctx.font = fontSize + "em " + headingFamily;
                         ctx.textBaseline = "middle";
                         ctx.fillStyle = Chart.defaults.color;
 
@@ -124,7 +126,7 @@ export default class BaseGaugeWidget extends BaseWidget {
 
                         if (secondaryText) {
                             fontSize = (height / 90).toFixed(2);
-                            ctx.font = fontSize + "em SourceSansProRegular";
+                            ctx.font = fontSize + "em " + bodyFamily;
                             ctx.textBaseline = "middle";
                             ctx.fillStyle = Chart.defaults.color;
 
