@@ -178,6 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['backupcount'] = isset($config['system']['backupcount']) ? $config['system']['backupcount'] : null;
     $pconfig['rebootafterrestore'] = true;
     $pconfig['keepconsole'] = true;
+    $pconfig['flush_history'] = true;
     $pconfig['decrypt'] = false;
     foreach ($backupFactory->listProviders() as $providerId => $provider) {
         foreach ($provider['handle']->getConfigurationFields() as $field) {
@@ -364,6 +365,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if ($do_reboot) {
                 $savemsg .= ' ' . gettext("The system is rebooting now. This may take one minute.");
             }
+            if (empty($input_errors) && !empty($pconfig['flush_history'])) {
+                configd_run('system flush config_history');
+                write_config('System restore flushed local history');
+            }
         }
     } elseif (!empty($mode)){
         // setup backup provider, collect provider settings and save/validate
@@ -459,8 +464,10 @@ $( document ).ready(function() {
     $("#decryptconf").change();
 
      $('#restorearea').change(function () {
+        $("#flush_history").attr('checked', false);
          if ($('#restorearea option:selected').text() == '') {
              $.restorearea_warned = 0;
+             $("#flush_history").attr('checked', true);
          } else if ($.restorearea_warned != 1) {
              $.restorearea_warned = 1;
              BootstrapDialog.confirm({
@@ -578,6 +585,9 @@ $( document ).ready(function() {
                     <?=gettext("Reboot after a successful restore."); ?><br/>
                     <input name="keepconsole" type="checkbox" id="keepconsole" <?= !empty($pconfig['keepconsole']) ? 'checked="checked"' : '' ?>/>
                     <?=gettext("Exclude console settings from import."); ?><br/>
+                    <input name="flush_history" type="checkbox" id="flush_history" <?= !empty($pconfig['flush_history']) ? 'checked="checked"' : '' ?>/>
+                    <?=gettext("Flush (full) local configuration history."); ?><br/>
+
                     <input name="decrypt" type="checkbox" id="decryptconf" <?= !empty($pconfig['decrypt']) ? 'checked="checked"' : '' ?>/>
                     <?=gettext("Configuration file is encrypted."); ?>
                     <div class="hidden table-responsive __mt" id="decrypt_opts">

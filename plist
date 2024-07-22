@@ -1178,6 +1178,7 @@
 /usr/local/opnsense/scripts/system/activity.py
 /usr/local/opnsense/scripts/system/certctl.py
 /usr/local/opnsense/scripts/system/cpu.py
+/usr/local/opnsense/scripts/system/flush_config_history
 /usr/local/opnsense/scripts/system/nameservers.php
 /usr/local/opnsense/scripts/system/remote_backup.php
 /usr/local/opnsense/scripts/system/rfc5246_cipher_suites.csv
