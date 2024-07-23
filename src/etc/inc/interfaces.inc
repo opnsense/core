@@ -2270,40 +2270,13 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     /*
-     * Do not try to reapply the spoofed MAC if it's already applied.
+     * Don't try to reapply the spoofed MAC if it's already applied.
      * When ifconfig link is used, it cycles the interface down/up,
      * which triggers the interface config again, which attempts to
-     * spoof the MAC again which cycles the link again.
+     * spoof the MAC again which cycles the link again...
      */
-    $mac_prev = $ifconfig_details[$realhwif]['macaddr'] ?? '';
-    $mac_next = !empty($wancfg['spoofmac']) ? $wancfg['spoofmac'] : ($ifconfig_details[$realhwif]['macaddr_hw'] ?? '');
-    if (!empty($mac_prev) && !empty($mac_next) && strcasecmp($mac_prev, $mac_next)) {
-        /*
-         * When the hardware interface matches the IPv6 interface where we set
-         * the MAC address we can assist in providing the accompanying link-local
-         * address (EUI-64 embedded MAC address) by nudging the kernel to reapply
-         * this address due to the auto_linklocal field which we do not operate
-         * unless for bridges, but that one is a reversed use case.
-         *
-         * Delete all link-local addresses and send the "down" event to bring
-         * the kernel into the transition where it will auto-add the right
-         * address on the following "up" event.
-         */
-        $mac_cmd[] = exec_safe('/sbin/ifconfig %s link %s', [$realhwif, $mac_next]);
-        if ($realhwif == $realifv6) {
-            $ll_found = false;
-            foreach (array_keys(interfaces_addresses($realifv6, true, $ifconfig_details)) as $tmpiface) {
-                if (is_linklocal($tmpiface)) {
-                    $tmpip = explode('%', $tmpiface)[0];
-                    legacy_interface_deladdress($realifv6, $tmpip, 6);
-                    $ll_found = true;
-                }
-            }
-            if ($ll_found) {
-                $mac_cmd[] = 'down';
-            }
-        }
-        mwexec(join(' ', $mac_cmd));
+    if (!empty($wancfg['spoofmac']) && strcasecmp($wancfg['spoofmac'], get_interface_mac($realhwif, $ifconfig_details))) {
+        mwexecf('/sbin/ifconfig %s link %s', [$realhwif, $wancfg['spoofmac']]);
     }
 
     /* only try to set media properties when requested */
