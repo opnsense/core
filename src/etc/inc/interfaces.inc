@@ -2277,7 +2277,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      */
     $mac_prev = $ifconfig_details[$realhwif]['macaddr'] ?? '';
     $mac_next = !empty($wancfg['spoofmac']) ? $wancfg['spoofmac'] : ($ifconfig_details[$realhwif]['macaddr_hw'] ?? '');
-    if (!empty($mac_prev) && !empty($mac_next) && strcasecmp($mac_prev, $mac_next)) {
+    if (!empty($mac_prev) && !empty($mac_next) && $mac_next !== '00:00:00:00:00:00' && strcasecmp($mac_prev, $mac_next)) {
         /*
          * When the hardware interface matches the IPv6 interface where we set
          * the MAC address we can assist in providing the accompanying link-local
