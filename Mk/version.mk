@@ -25,8 +25,8 @@
 
 CORE_ABI?=	24.7
 CORE_ADDITIONS?=#empty
-CORE_MESSAGE?=	TBA
+CORE_MESSAGE?=	Rising up, back on the street...
 CORE_NAME?=	opnsense
 # adjust src/root/boot/lua/logo-hourglass.lua.in accordingly:
-CORE_NICKNAME?=	Not Yet
+CORE_NICKNAME?=	Thriving Tiger
 CORE_TYPE?=	community
