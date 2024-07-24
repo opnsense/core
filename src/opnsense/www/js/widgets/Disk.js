@@ -37,6 +37,7 @@ export default class Disk extends BaseGaugeWidget {
     _convertToBytes(sizeString) {
         // intentionally multiply by 1000 to retain original data format
         const units = {
+            'B': 1,
             'K': 1000,
             'M': 1000 * 1000,
             'G': 1000 * 1000 * 1000,
