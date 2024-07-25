@@ -274,6 +274,15 @@ class ApiControllerBase extends ControllerRoot
                             } else {
                                 // link username on successful login
                                 $this->logged_in_user = $authResult['username'];
+                                // if body is send as json data, parse to $_POST first
+                                $dispatchError = $this->parseJsonBodyData();
+                                if ($dispatchError != null) {
+                                    $this->response->setStatusCode(400, "Bad Request");
+                                    $this->response->setContentType('application/json', 'UTF-8');
+                                    $this->response->setJsonContent(['status'  => 400, 'message' => $dispatchError]);
+                                    $this->response->send();
+                                    return false;
+                                }
 
                                 // pass revision context to config object
                                 Config::getInstance()->setRevisionContext([
