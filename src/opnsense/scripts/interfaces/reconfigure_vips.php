@@ -56,8 +56,8 @@ foreach (legacy_interfaces_details() as $ifname => $ifcnf) {
                         if ($vhid['vhid'] == $address['vhid']) {
                             $addresses[$key]['advbase'] = $vhid['advbase'];
                             $addresses[$key]['advskew'] = $vhid['advskew'];
-                            $addresses[$key]['peer'] = $vhid['peer'];
-                            $addresses[$key]['peer6'] = $vhid['peer6'];
+                            $addresses[$key]['peer'] = !empty($vhid['peer']) ? $vhid['peer'] : '224.0.0.18';
+                            $addresses[$key]['peer6'] = !empty($vhid['peer6']) ? $vhid['peer6'] : 'ff02::12';
                         }
                     }
                 }
