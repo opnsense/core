@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2022 Deciso B.V.
+ * Copyright (C) 2022-2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,23 +26,44 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\IPsec;
+namespace OPNsense\IPsec\FieldTypes;
 
-class ConnectionsController extends \OPNsense\Base\IndexController
+use OPNsense\Base\FieldTypes\BaseListField;
+
+/**
+ * @package OPNsense\Base\FieldTypes
+ */
+class CharonLogLevelField extends BaseListField
 {
-    public function indexAction()
-    {
-        $this->view->pick('OPNsense/IPsec/connections');
-        $this->view->formDialogConnection = $this->getForm('dialogConnection');
-        $this->view->formDialogLocal = $this->getForm('dialogLocal');
-        $this->view->formDialogRemote = $this->getForm('dialogRemote');
-        $this->view->formDialogChild = $this->getForm('dialogChild');
-        $this->view->formDialogPool = $this->getForm('dialogPool');
-    }
+    /**
+     * {@inheritdoc}
+     */
+    protected $internalDefaultValue = "1";
 
-    public function settingsAction()
+    /**
+     * {@inheritdoc}
+     */
+    protected $internalValue = "1";
+
+    /**
+     * {@inheritdoc}
+     */
+    protected $internalIsRequired = true;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function actionPostLoadingEvent()
     {
-        $this->view->pick('OPNsense/IPsec/settings');
-        $this->view->formSettings = $this->getForm('settings');
+        $this->internalOptionList = [
+            "-1" => gettext("Absolutely silent"),
+            "0" => gettext("Very basic auditing logs, (e.g. SA up/SA down)"),
+            "1" => gettext("Generic control flow with errors (default)"),
+            "2" => gettext("More detailed debugging control flow"),
+            "3" => gettext("Including RAW data dumps in hex"),
+            "4" => gettext("Also include sensitive material in dumps, e.g. keys"),
+        ];
+
+        return parent::actionPostLoadingEvent();
     }
 }

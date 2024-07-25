@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2022 Deciso B.V.
+ * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,23 +26,30 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\IPsec;
+namespace OPNsense\IPsec\Api;
 
-class ConnectionsController extends \OPNsense\Base\IndexController
+use OPNsense\Base\ApiMutableModelControllerBase;
+
+/**
+ * Class SetttingsController
+ * @package OPNsense\IPsec\Api
+ */
+class SettingsController extends ApiMutableModelControllerBase
 {
-    public function indexAction()
-    {
-        $this->view->pick('OPNsense/IPsec/connections');
-        $this->view->formDialogConnection = $this->getForm('dialogConnection');
-        $this->view->formDialogLocal = $this->getForm('dialogLocal');
-        $this->view->formDialogRemote = $this->getForm('dialogRemote');
-        $this->view->formDialogChild = $this->getForm('dialogChild');
-        $this->view->formDialogPool = $this->getForm('dialogPool');
-    }
+    protected static $internalModelName = 'ipsec';
+    protected static $internalModelClass = 'OPNsense\IPsec\IPsec';
 
-    public function settingsAction()
+    /**
+     * @inheritdoc
+     */
+    public function getAction()
     {
-        $this->view->pick('OPNsense/IPsec/settings');
-        $this->view->formSettings = $this->getForm('settings');
+        $data = parent::getAction();
+        return [
+            self::$internalModelName => [
+                'general' => $data[self::$internalModelName]['general'],
+                'charon' => $data[self::$internalModelName]['charon'],
+            ]
+        ];
     }
 }
