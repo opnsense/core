@@ -43,6 +43,7 @@ foreach ((new \OPNsense\Routing\Gateways())->gatewaysIndexedByName() as $gname =
         $gatewayItem['loss'] = $gateways_status[$gname]['loss'];
         $gatewayItem['delay'] = $gateways_status[$gname]['delay'];
         $gatewayItem['stddev'] = $gateways_status[$gname]['stddev'];
+        $gatewayItem['monitor'] = $gateways_status[$gname]['monitor'];
         switch ($gatewayItem['status']) {
             case 'none':
                 $gatewayItem['status_translated'] = gettext('Online');
@@ -72,6 +73,7 @@ foreach ((new \OPNsense\Routing\Gateways())->gatewaysIndexedByName() as $gname =
         $gatewayItem['loss'] = '~';
         $gatewayItem['stddev'] = '~';
         $gatewayItem['delay'] = '~';
+        $gatewayItem['monitor'] = '~';
     }
 
     $result[] = $gatewayItem;
