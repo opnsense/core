@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2020 Deciso B.V.
+ * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@ use OPNsense\Base\BaseModelMigration;
 use OPNsense\Core\Config;
 use OPNsense\IPsec\IPsec;
 
-class M1_0_1 extends BaseModelMigration
+class M1_0_2 extends BaseModelMigration
 {
     /**
      * Migrate pre-shared-keys from both IPsec legacy and user administration
@@ -43,45 +43,38 @@ class M1_0_1 extends BaseModelMigration
             return;
         }
         $cnf = Config::getInstance()->object();
+        if (!isset($cnf->ipsec)) {
+            return;
+        }
         $all_idents = [];
-        if (isset($cnf->system->user)) {
-            foreach ($cnf->system->user as $user) {
-                if (!empty((string)$user->ipsecpsk)) {
-                    $all_idents[(string)$user->name] = [
-                        'ident' => (string)$user->name,
-                        'Key' => (string)$user->ipsecpsk,
-                        'keyType' => 'PSK'
-                    ];
-                    unset($user->ipsecpsk);
-                }
+        if (isset($cnf->ipsec->max_ikev1_exchanges) && $cnf->ipsec->max_ikev1_exchanges != '') {
+            $model->charon->max_ikev1_exchanges = (string)$cnf->ipsec->max_ikev1_exchanges;
+            unset($cnf->ipsec->max_ikev1_exchanges);
+        }
+
+        $keys = [];
+        foreach ($cnf->ipsec->children() as $key => $value) {
+            if (strpos($key, 'ipsec_') === 0 && strlen($key) == 9) {
+                $log_item = substr($key, 6);
+                $model->charon->syslog->daemon->$log_item = (string)$value;
+                $keys[] = $key;
             }
         }
-        if (isset($cnf->ipsec->mobilekey)) {
-            foreach ($cnf->ipsec->mobilekey as $mobilekey) {
-                if (!empty((string)$mobilekey->ident) && !empty((string)$mobilekey->{'pre-shared-key'})) {
-                    $all_idents[(string)$mobilekey->ident] = [
-                        'ident' => (string)$mobilekey->ident,
-                        'Key' => (string)$mobilekey->{'pre-shared-key'},
-                        'keyType' => !empty((string)$mobilekey->type) ? (string)$mobilekey->type : 'PSK'
-                    ];
-                }
-            }
-            unset($cnf->ipsec->mobilekey);
+        foreach ($keys as $key) {
+            unset($cnf->ipsec->$key);
         }
-        if (!empty($all_idents)) {
-            foreach ($all_idents as $ident) {
-                $node = null;
-                foreach ($model->preSharedKeys->preSharedKey->iterateItems() as $psk) {
-                    if ($ident['ident'] == (string)$psk->ident && isset($all_idents[(string)$psk->ident])) {
-                        $node = $psk;
-                        break;
-                    }
-                }
-                if ($node === null) {
-                    $node = $model->preSharedKeys->preSharedKey->Add();
-                }
-                $node->setNodes($ident);
-            }
+
+        if (isset($cnf->ipsec->passthrough_networks) && $cnf->ipsec->passthrough_networks != '') {
+            $model->general->passthrough_networks = (string)$cnf->ipsec->passthrough_networks;
+            unset($cnf->ipsec->passthrough_networks);
+        }
+        if (isset($cnf->ipsec->disablevpnrules) && !empty((string)$cnf->ipsec->disablevpnrules)) {
+            $model->general->disablevpnrules = "1";
+            unset($cnf->ipsec->disablevpnrules);
+        }
+        if (isset($cnf->ipsec->preferred_oldsa) && !empty((string)$cnf->ipsec->preferred_oldsa)) {
+            $model->general->preferred_oldsa = "1";
+            unset($cnf->ipsec->preferred_oldsa);
         }
     }
 }

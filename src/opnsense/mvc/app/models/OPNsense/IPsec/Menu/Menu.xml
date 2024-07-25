@@ -11,7 +11,7 @@
             </Mobile>
             <Keys order="30" VisibleName="Pre-Shared Keys" url="/ui/ipsec/pre_shared_keys/"/>
             <KeyPairs order="40" VisibleName="Key Pairs" url="/ui/ipsec/key_pairs" />
-            <Settings order="50" VisibleName="Advanced Settings" url="/vpn_ipsec_settings.php"/>
+            <Settings order="50" VisibleName="Advanced Settings" url="/ui/ipsec/connections/settings"/>
             <Status order="60" VisibleName="Status Overview" url="/ui/ipsec/sessions"/>
             <Leases order="70" VisibleName="Lease Status" url="/ui/ipsec/leases"/>
             <SAD order="80" VisibleName="Security Association Database" url="/ui/ipsec/sad"/>

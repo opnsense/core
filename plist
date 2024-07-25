@@ -344,6 +344,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/SadController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/SessionsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/SpdController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/TunnelController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/VtiController.php
@@ -365,6 +366,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogRemote.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogSPD.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogVTI.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/settings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/GifSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/GreSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/LaggSettingsController.php
@@ -699,6 +701,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Migrations/M1_0_6.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Migrations/M1_0_7.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/IPsec/FieldTypes/CharonLogLevelField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/FieldTypes/ConnnectionField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/FieldTypes/IKEAdressField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/FieldTypes/IPsecProposalField.php
@@ -710,6 +713,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Migrations/M1_0_1.php
+/usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Swanctl.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Swanctl.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/ACL/ACL.xml
@@ -860,6 +864,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/pre_shared_keys.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/sad.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/sessions.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/IPsec/settings.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/spd.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/tunnels.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/vti.volt
@@ -2196,7 +2201,6 @@
 /usr/local/www/vpn_ipsec_mobile.php
 /usr/local/www/vpn_ipsec_phase1.php
 /usr/local/www/vpn_ipsec_phase2.php
-/usr/local/www/vpn_ipsec_settings.php
 /usr/local/www/vpn_openvpn_client.php
 /usr/local/www/vpn_openvpn_server.php
 /usr/local/www/wizard.php
