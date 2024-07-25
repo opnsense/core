@@ -530,6 +530,10 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     }
 
     $conf .= "dev-type {$settings['dev_mode']}\n";
+    if ($settings['dev_mode'] == 'tun') {
+        /* legacy does not support DCO */
+        $conf .= "disable-dco\n";
+    }
     $conf .= "dev-node /dev/{$devnode}\n";
     $conf .= "writepid /var/run/openvpn_{$mode_id}.pid\n";
     $conf .= "script-security 3\n";
