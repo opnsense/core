@@ -65,6 +65,9 @@ export default class Traffic extends BaseWidget {
                         fill: true,
                         cubicInterpolationMode: 'monotone',
                         clip: 0
+                    },
+                    point: {
+                        radius: 0
                     }
                 },
                 scales: {
