@@ -237,6 +237,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/HasyncController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/MenuController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/ServiceController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/SnapshotsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/SystemController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/BackupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/DashboardController.php
@@ -247,7 +248,9 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/LicenseController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/RebootController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/ServiceController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/SnapshotsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/hasyncSettings.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/snapshot.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/IndexController.php
@@ -830,6 +833,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/not_found.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/reboot.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/service.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Core/snapshot.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Cron/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/DHCPv4/leases.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/DHCPv6/leases.volt
@@ -1184,6 +1188,7 @@
 /usr/local/opnsense/scripts/syslog/queryLog.py
 /usr/local/opnsense/scripts/syslog/streamLog.py
 /usr/local/opnsense/scripts/system/activity.py
+/usr/local/opnsense/scripts/system/bectl.py
 /usr/local/opnsense/scripts/system/certctl.py
 /usr/local/opnsense/scripts/system/cpu.py
 /usr/local/opnsense/scripts/system/flush_config_history
