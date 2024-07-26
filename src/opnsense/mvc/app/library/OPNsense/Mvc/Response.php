@@ -61,7 +61,7 @@ class Response
      * @param string|null $charset optional characterset
      * @return void
      */
-    public function setContentType(string $contentType, ?string $charset): void
+    public function setContentType(string $contentType, ?string $charset = null): void
     {
         if (!empty($charset)) {
             $contentType .= '; charset=' . $charset;
