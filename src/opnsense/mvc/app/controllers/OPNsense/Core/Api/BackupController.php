@@ -197,7 +197,7 @@ class BackupController extends ApiControllerBase
                         $hostname = $payload->system->hostname . "." . $payload->system->domain;
                     }
                     $target_filename = urlencode('config-' . $hostname . '-' . explode('/config-', $filename, 2)[1]);
-                    $this->response->setContentType('application/octet-stream');
+                    $this->response->setContentType('application/octet-stream', 'UTF-8');
                     $this->response->setRawHeader("Content-Disposition: attachment; filename=" . $target_filename);
                     $this->response->setRawHeader("Content-length: " . filesize($filename));
                     $this->response->setRawHeader("Pragma: no-cache");
