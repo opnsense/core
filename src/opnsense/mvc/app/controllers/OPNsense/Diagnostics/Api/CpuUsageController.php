@@ -44,8 +44,8 @@ class CpuUsageController extends ApiControllerBase
         return [sprintf(
             gettext('%s (%s cores, %s threads)'),
             $sysctls['hw.model'],
-            $sysctls['kern.smp.cpus'],
-            $sysctls['kern.smp.cores']
+            $sysctls['kern.smp.cores'],
+            $sysctls['kern.smp.cpus']
         )];
     }
 
