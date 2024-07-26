@@ -1,0 +1,16 @@
+<model>
+    <mount>//OPNsense/BootEnvironments/general</mount>
+    <description>
+        A mesh VPN that makes it easy to connect your devices, wherever they are.
+    </description>
+    <items>
+        <bootenv>
+            <uuid type="TextField">
+                <Required>N</Required>
+            </uuid>
+            <name type="TextField">
+                <Required>Y</Required>
+            </name>
+        </bootenv>
+    </items>
+</model>
