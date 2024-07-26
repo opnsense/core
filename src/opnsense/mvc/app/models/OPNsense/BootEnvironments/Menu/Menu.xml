@@ -1,0 +1,7 @@
+<menu>
+    <System>
+        <BootEnvironments VisibleName="Boot Environments" cssClass="fa fa-database fa-fw">
+            <General VisibleName="General" url="/ui/bootenvironments/general"/>
+        </BootEnvironments>
+    </System>
+</menu>
