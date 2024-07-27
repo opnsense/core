@@ -105,8 +105,14 @@ switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
         plugins_configure('dhcp', false, ['inet6']);
         break;
     default:
-        /* flush SLAAC addressing in order to make any of our own addresses preferred */
-        shell_safe('/usr/local/sbin/ifctl -i %s -f', $device);
+        /*
+         * XXX We would like to discourage SLAAC addressing here but
+         * in reality this is highly ISP dependent and the kernel is
+         * not forthcoming in the quest as it likes to prefer this because
+         * it came first breaking some setups but making others work at
+         * the same time making it impractical to infer which setup we
+         * currently require.
+         */
         break;
 }
 
