@@ -353,18 +353,6 @@ outputs:
 {%     endif %}
             metadata: yes
             tagged-packets: yes
-        - http:
-            extended: yes
-        - dns:
-        - tls:
-            extended: yes
-        - files:
-            force-magic: no
-        - smtp:
-            extended: yes
-        - ftp:
-        - rdp:
-        - flow
 {% endif %}
 
   # deprecated - unified2 alert format for use with Barnyard2
