@@ -337,6 +337,13 @@ outputs:
       identity: "suricata"
       facility: local5
       level: Info
+      community-id: true
+      community-id-seed: 0
+      xff:
+        enabled: yes
+        mode: extra-data
+        deployment: reverse
+        header: X-Forwarded-For
       types:
         - alert:
 {%     if not helpers.empty('OPNsense.IDS.general.LogPayload') %}
@@ -344,8 +351,8 @@ outputs:
              payload-buffer-size: 4kb
              payload-printable: yes
 {%     endif %}
-             http: yes
-             tls: yes
+            metadata: yes
+            tagged-packets: yes
 {% endif %}
 
   # deprecated - unified2 alert format for use with Barnyard2
