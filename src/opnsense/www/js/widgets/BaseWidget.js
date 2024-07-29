@@ -37,7 +37,7 @@ export default class BaseWidget {
         this.cachedData = {};
 
         /* Connection timeout params */
-        this.timeoutPeriod = 1000;
+        this.timeoutPeriod = 5000;
         this.retryLimit = 3;
         this.eventSourceRetryCount = 0; // retrycount for $.ajax is managed in its own scope
 
