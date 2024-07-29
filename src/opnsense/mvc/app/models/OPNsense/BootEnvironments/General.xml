@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/BootEnvironments/general</mount>
     <description>
-        A mesh VPN that makes it easy to connect your devices, wherever they are.
+        Adds support for FreeBSD boot environments
     </description>
     <items>
         <bootenv>
