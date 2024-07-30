@@ -274,6 +274,7 @@
                     <OptionValues>
                         <client-to-client>client-to-client</client-to-client>
                         <duplicate-cn>duplicate-cn</duplicate-cn>
+                        <float>float</float>
                         <passtos>passtos</passtos>
                         <persist-remote-ip>persist-remote-ip</persist-remote-ip>
                         <route-nopull>route-nopull</route-nopull>
