@@ -277,9 +277,9 @@
                         <float>float</float>
                         <passtos>passtos</passtos>
                         <persist-remote-ip>persist-remote-ip</persist-remote-ip>
-                        <route-nopull>route-nopull</route-nopull>
-                        <route-noexec>route-noexec</route-noexec>
                         <remote-random>remote-random</remote-random>
+                        <route-noexec>route-noexec</route-noexec>
+                        <route-nopull>route-nopull</route-nopull>
                     </OptionValues>
                 </various_flags>
                 <various_push_flags type="OptionField">
