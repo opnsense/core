@@ -70,6 +70,7 @@ function system_sysctl_defaults()
     global $config;
 
     return [
+        'debug.kassert.warn_only' => [ 'default' => '1' ],
         'hw.ibrs_disable' => [ 'default' => '0' ],
         'hw.ixl.enable_head_writeback' => [ 'default' => '0', 'required' => true ],
         'hw.syscons.kbd_reboot' => [ 'default' => '0' ],
