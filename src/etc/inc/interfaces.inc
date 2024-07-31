@@ -95,9 +95,9 @@ function interfaces_bring_up($interface)
     legacy_interface_flags($interface, 'up');
 }
 
-function does_interface_exist($interface)
+function does_interface_exist($interface, $flag = 'all')
 {
-    return !empty($interface) && in_array($interface, legacy_interface_listget());
+    return !empty($interface) && in_array($interface, legacy_interface_listget($flag));
 }
 
 function interfaces_loopback_configure($verbose = false)
