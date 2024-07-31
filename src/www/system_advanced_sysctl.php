@@ -148,6 +148,9 @@ foreach ($a_system as $default) {
     } elseif (!empty($a_sysctl[$default]['type'])) {
         $next['type'] = $a_sysctl[$default]['type'];
     }
+    if (!empty($a_defaults[$default]['description'])) {
+        $next['descr'] = $a_defaults[$default]['description'];
+    }
     $a_tunable[] = $next;
 }
 
