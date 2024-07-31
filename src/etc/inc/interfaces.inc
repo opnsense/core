@@ -1248,15 +1248,20 @@ EOD;
     /* appease netgraph by setting the correct node name */
     shell_safe('/usr/sbin/daemon -f /usr/local/opnsense/scripts/interfaces/ppp-rename.sh %s %s %s', [$interface, $ifcfg['if'], $ppp['type']]);
 
-    /* wait for up to 10 seconds for the interface to appear (ppp(oe)) */
+    /* wait for up to 30 seconds for the interface to appear in UP state (ppp(oe)) */
     $i = 0;
-    while ($i < 10) {
-        exec("/sbin/ifconfig " . escapeshellarg($ppp['if']) . " 2>&1", $out, $ret);
-        if ($ret == 0) {
+    $interface_is_up = false;
+    while ($i < 30) {
+        if (does_interface_exist($ppp['if'], 'up')) {
+            $interface_is_up = true;
             break;
         }
         sleep(1);
         $i++;
+    }
+
+    if (!$interface_is_up) {
+        log_msg("Waiting threshold exceeded - interface $interface is still not UP in interface_ppps_configure().", LOG_WARNING);
     }
 
     switch ($ppp['type']) {
