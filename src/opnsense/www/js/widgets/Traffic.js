@@ -240,7 +240,11 @@ export default class Traffic extends BaseWidget {
 
     onWidgetClose() {
         super.onWidgetClose();
-        this.charts.trafficIn.destroy();
-        this.charts.trafficOut.destroy();
+        if (this.charts.trafficIn !== null) {
+            this.charts.trafficIn.destroy();
+        }
+        if (this.charts.trafficOut !== null) {
+            this.charts.trafficOut.destroy();
+        }
     }
 }
