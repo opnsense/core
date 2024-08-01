@@ -642,7 +642,7 @@ $( document ).ready(function() {
     <div id="category_block" style="z-index:-100;">
         <select class="selectpicker hidden-xs hidden-sm hidden-md" data-live-search="true" data-size="5"  multiple title="<?=gettext("Select category");?>" id="fw_category">
         </select>
-        <button id="btn_inspect" class="btn btn-default hidden-xs">
+        <button id="btn_inspect" class="btn btn-default">
           <i class="fa fa-eye" aria-hidden="true"></i>
           <?=gettext("Inspect");?>
         </button>
