@@ -54,7 +54,7 @@ export default class Monit extends BaseTableWidget {
         };
 
         this.statusColors = {
-            "1": "text-danger",
+            "0": "text-success",
             "2": "text-warning",
             "3": "text-warning"
         };
@@ -91,13 +91,14 @@ export default class Monit extends BaseTableWidget {
 
         let rows = [];
         $.each(data['status']['service'], (index, service) => {
-            let color = this.statusColors[service['status']] || "text-success";
+            let color = this.statusColors[service['status']] || "text-danger";
+            let statusTooltip = this.statusMap[service['status']] || this.translations.failed;
             let icon = this.serviceIcons[service['@attributes']['type']] || "fa-circle";
 
             let $header = $(`
                 <div>
                     <i class="fa fa-circle text-muted ${color} monit-status-icon" style="font-size: 11px; cursor: pointer;"
-                        data-toggle="tooltip" title="${this.statusMap[service['status']]}">
+                        data-toggle="tooltip" title="${statusTooltip}">
                     </i>
                     &nbsp;
                     <i class="fa ${icon} monit-type-icon" style="font-size: 11px;"
