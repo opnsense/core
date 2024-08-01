@@ -144,9 +144,18 @@ class CertificatesField extends ArrayField
             } elseif (!empty((string)$node->crt_payload)) {
                 $node->action = 'manual';
             }
-            $tmp = Config::getInstance()->object()->xpath("//*[text() = '{$node->refid}']");
-            if (is_array($tmp) && count($tmp) > 1) {
-                $node->in_use = '1';
+            /* determine in use, but skip irrelevant sections */
+            foreach (Config::getInstance()->object()->xpath("//*[text() = '{$node->refid}']") as $xmlnode) {
+                $tmp = [];
+                do {
+                    $xmlnode = $xmlnode[0]->xpath('..');
+                    $tmp[] = $xmlnode[0]->getName();
+                } while ($xmlnode[0]->xpath('../..') != null && count($tmp) < 2);
+                $path = implode(".", array_reverse($tmp));
+                if (!empty($tmp) && !in_array($path, ['system.user', 'cert'])) {
+                    $node->in_use = '1';
+                    break;
+                }
             }
         }
         return parent::actionPostLoadingEvent();
