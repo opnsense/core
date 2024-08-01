@@ -39,7 +39,8 @@ trap "echo 'Boot interrupted'; exit 1" 3
 HOME=/
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin
 REQUESTS_CA_BUNDLE=/etc/ssl/cert.pem
-export HOME PATH REQUESTS_CA_BUNDLE
+ZPOOL_IMPORT_PATH=/dev
+export HOME PATH REQUESTS_CA_BUNDLE ZPOOL_IMPORT_PATH
 
 echo "Mounting filesystems..."
 
