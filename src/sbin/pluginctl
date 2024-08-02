@@ -165,10 +165,16 @@ if (isset($opts['h'])) {
     echo "\t-X XMLRPC sync metadata dump\n";
     echo "\t-x XMLRPC sync key/value list\n";
 } elseif (isset($opts['4']) || isset($opts['6'])) {
-    $int = $args[0] ?? '';
+    $ints = !empty($args[0]) ? [$args[0]] : array_keys($config['interfaces'] ?? []);
+    $ifconfig_details = legacy_interfaces_details();
     $ret = [];
-    if (!empty($config['interfaces'][$int])) {
-        $ifconfig_details = legacy_interfaces_details();
+
+    foreach ($ints as $int) {
+        if (empty($config['interfaces'][$int])) {
+            continue;
+        }
+
+        $ret[$int] = [];
 
         foreach (['inet' => '4', 'inet6' => '6'] as $family => $opt) {
             if (!isset($opts[$opt])) {
@@ -178,7 +184,7 @@ if (isset($opts['h'])) {
             $raw = $opt === '4' ? interfaces_primary_address($int, $ifconfig_details) :
                 interfaces_primary_address6($int, $ifconfig_details);
 
-            $ret[] = [
+            $ret[$int][] = [
                 'address' => $raw[0],
                 'network' => $raw[1],
                 'bits' => $raw[2],
@@ -188,7 +194,7 @@ if (isset($opts['h'])) {
             ];
         }
     }
-    echo json_encode($ret, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
+    echo json_encode(!empty($ret) ? $ret : new ArrayObject(), JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
 } elseif (isset($opts['D'])) {
     echo json_encode(legacy_interfaces_details($args[0] ?? null), JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
 } elseif (isset($opts['d'])) {
