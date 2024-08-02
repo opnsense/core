@@ -85,15 +85,8 @@ export default class Interfaces extends BaseTableWidget {
                 </div>
             `).prop('outerHTML'));
 
-            let ipv4 = '';
-            let ipv6 = '';
-            if ('ipv4' in intf_data && intf_data.ipv4.length > 0) {
-                ipv4 = intf_data.ipv4[0].ipaddr;
-            }
-
-            if ('ipv6' in intf_data && intf_data.ipv6.length > 0) {
-                ipv6 = intf_data.ipv6[0].ipaddr;
-            }
+            let ipv4 = intf_data.addr4;
+            let ipv6 = intf_data.addr6;
 
             row.push($(`
                 <div class="interface-info">
