@@ -79,6 +79,25 @@ class SessionsController extends ApiControllerBase
                     $record['phase1desc'] = $phase1s[$record['ikeid']];
                 }
                 $record['connected'] = !empty($record['sas']);
+                /* aggregate child-sas [phase2] information */
+                $agg_fields = [
+                    'bytes-in' => 0,
+                    'bytes-out' => 0,
+                    'packets-in' => 0,
+                    'packets-out' => 0
+                ];
+                $record['install-time'] = null;
+                foreach ($record['sas'] as $sa) {
+                    if (!empty($sa['child-sas'])) {
+                        foreach ($sa['child-sas'] as $csa) {
+                            foreach (array_keys($agg_fields) as $fieldname) {
+                                $agg_fields[$fieldname] += $csa[$fieldname];
+                            }
+                            $record['install-time'] = max($record['install-time'], $csa['install-time']);
+                        }
+                    }
+                }
+                $record = array_merge($record, $agg_fields);
                 unset($record['children']);
                 unset($record['sas']);
                 $records[] = $record;
