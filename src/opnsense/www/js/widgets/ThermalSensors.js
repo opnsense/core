@@ -218,13 +218,17 @@ export default class ThermalSensors extends BaseWidget {
         const uniqueTemperatures = new Set(coreTemperatures);
 
         let result = [];
+
         if (uniqueTemperatures.size === 1) {
             // If all temperatures are the same, include only the first core
             result.push(data.find(item => item.type === 'core'));
         } else {
             // Include all cores with differing temperatures
-            result = data.filter(item => item.type !== 'core' || coreTemperatures.filter(temp => temp !== parseFloat(item.temperature)).length > 0);
+            result.push(...data.filter(item => item.type === 'core'));
         }
+
+        // Push all other sensors found in the system
+        result.push(...data.filter(item => item.type !== 'core'));
 
         return result;
     }
