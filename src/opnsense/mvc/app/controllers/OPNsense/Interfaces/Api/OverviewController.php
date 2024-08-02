@@ -111,9 +111,10 @@ class OverviewController extends ApiControllerBase
         $cfg = Config::getInstance()->object();
         $result = [];
 
-        /* quick information */
+        /* abbreviated information */
         $ifinfo = json_decode($backend->configdpRun('interface list ifconfig', [$interface]), true);
         $routes = json_decode($backend->configdRun('interface routes list -n json'), true);
+        $ifaddr = json_decode($backend->configdRun('interface address'), true);
 
         /* detailed information */
         if ($detailed) {
@@ -180,6 +181,11 @@ class OverviewController extends ApiControllerBase
             $tmp['description'] = !empty($config['descr']) ? $config['descr'] : strtoupper($config['identifier']);
             $tmp['enabled'] = !empty($config['enable']);
             $tmp['link_type'] = !empty($config['ipaddr']) ? $config['ipaddr'] : 'none';
+            foreach ([4, 6] as $primary) {
+                $addr = $ifaddr[$config['identifier']][$primary != 4] ?? [];
+                $tmp['addr' . $primary] = !empty($addr['address']) ?
+                    "{$addr['address']}/{$addr['bits']}" : '';
+            }
             if (Util::isIpAddress($tmp['link_type'])) {
                 $tmp['link_type'] = 'static';
             } elseif (empty($config['ipaddr']) && !empty(!empty($config['ipaddrv6']))) {
