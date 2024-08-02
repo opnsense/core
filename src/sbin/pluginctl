@@ -168,14 +168,25 @@ if (isset($opts['h'])) {
     $int = $args[0] ?? '';
     $ret = [];
     if (!empty($config['interfaces'][$int])) {
-        $raw = isset($opts['4']) ? interfaces_primary_address($int) : interfaces_primary_address6($int);
-        $ret = [
-            'address' => $raw[0],
-            'network' => $raw[1],
-            'bits' => $raw[2],
-            'device' => $raw[3],
-            'interface' => $int,
-        ];
+        $ifconfig_details = legacy_interfaces_details();
+
+        foreach (['inet' => '4', 'inet6' => '6'] as $family => $opt) {
+            if (!isset($opts[$opt])) {
+                continue;
+            }
+
+            $raw = $opt === '4' ? interfaces_primary_address($int, $ifconfig_details) :
+                interfaces_primary_address6($int, $ifconfig_details);
+
+            $ret[] = [
+                'address' => $raw[0],
+                'network' => $raw[1],
+                'bits' => $raw[2],
+                'device' => $raw[3],
+                'interface' => $int,
+                'family' => $family,
+            ];
+        }
     }
     echo json_encode($ret, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
 } elseif (isset($opts['D'])) {
