@@ -192,7 +192,7 @@ class IPsec extends BaseModel
                 $result[$key] = $this->traverseItems($item);
             } elseif (is_a($item, "OPNsense\\Base\\FieldTypes\\BooleanField")) {
                 $result[$key] = !empty((string)$item) ? 'yes' : 'no';
-            } else {
+            } elseif ((string)$item != '') {
                 $result[$key] = (string)$item;
             }
         }
