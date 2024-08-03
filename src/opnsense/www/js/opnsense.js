@@ -340,7 +340,7 @@ function watchScrollPosition() {
  * @param {*} file_type
  */
 function download_content(payload, filename, file_type) {
-    let a_tag = $('<a></a>').attr('href','data:application/json;charset=utf8,' + encodeURIComponent(payload))
+    let a_tag = $('<a></a>').attr('href','data:'+file_type+',' + encodeURIComponent(payload))
         .attr('download', filename).appendTo('body');
 
     a_tag.ready(function() {
