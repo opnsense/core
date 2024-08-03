@@ -55,6 +55,11 @@
                 <Default>1</Default>
                 <Required>Y</Required>
             </ignore_acquire_ts>
+            <retransmit_tries type="IntegerField"/>
+            <retransmit_timeout type="NumericField"/>
+            <retransmit_base type="NumericField"/>
+            <retransmit_jitter type="IntegerField"/>
+            <retransmit_limit type="IntegerField"/>
             <syslog>
                 <ike_name type="BooleanField">
                     <Default>1</Default>

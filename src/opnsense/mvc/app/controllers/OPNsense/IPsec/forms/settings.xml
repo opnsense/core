@@ -1,10 +1,5 @@
 <form>
     <tab id="ipsec-general" description="General">
-        <!-- <field>
-            <id>ipsec.general.enabled</id>
-            <label>enabled</label>
-            <type>checkbox</type>
-        </field> -->
         <field>
             <id>ipsec.general.max_ikev1_exchanges</id>
             <label>Maximum IKEv1 phase 2 exchanges</label>
@@ -82,6 +77,40 @@
             <label>Init limit half open</label>
             <type>text</type>
             <help>Limit new connections based on the current number of half open IKE_SAs.</help>
+        </field>
+        <field>
+            <type>header</type>
+            <label>Retransmission</label>
+        </field>
+        <field>
+            <id>ipsec.charon.retransmit_tries</id>
+            <label>Tries</label>
+            <type>text</type>
+            <help>Number of retransmissions to send before giving up.</help>
+        </field>
+        <field>
+            <id>ipsec.charon.retransmit_timeout</id>
+            <label>Timeout</label>
+            <type>text</type>
+            <help>Timeout in seconds.</help>
+        </field>
+        <field>
+            <id>ipsec.charon.retransmit_base</id>
+            <label>Base</label>
+            <type>text</type>
+            <help>Base of exponential backoff</help>
+        </field>
+        <field>
+            <id>ipsec.charon.retransmit_jitter</id>
+            <label>Jitter</label>
+            <type>text</type>
+            <help>Maximum jitter in percent to apply randomly to calculated retransmission timeout (0 to disable)</help>
+        </field>
+        <field>
+            <id>ipsec.charon.retransmit_limit</id>
+            <label>Limit</label>
+            <type>text</type>
+            <help>Upper limit in seconds for calculated retransmission timeout (0 to disable)</help>
         </field>
     </tab>
     <tab id="ipsec-syslog" description="Syslog">
