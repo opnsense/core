@@ -159,9 +159,7 @@ class PacketCaptureController extends ApiMutableModelControllerBase
             $this->response->setRawHeader("Content-length: " . filesize($payload['filename']));
             $this->response->setRawHeader("Pragma: no-cache");
             $this->response->setRawHeader("Expires: 0");
-            ob_clean();
-            flush();
-            readfile($payload['filename']);
+            $this->response->setContent(fopen($payload['filename'], 'r'));
         }
     }
 
