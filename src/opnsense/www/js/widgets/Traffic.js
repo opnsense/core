@@ -141,6 +141,7 @@ export default class Traffic extends BaseWidget {
                     pointHoverBorderColor: colors[idx],
                     pointBackgroundColor: colors[idx],
                     pointBorderColor: colors[idx],
+                    pointRadius: 0,
                     intf: intf,
                     last_time: data.time,
                     src_field: dir,
