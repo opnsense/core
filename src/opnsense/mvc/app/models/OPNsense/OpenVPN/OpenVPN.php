@@ -149,6 +149,13 @@ class OpenVPN extends BaseModel
                     $key . ".keepalive_timeout"
                 ));
             }
+
+            if ($instance->dev_type == 'ovpn' && strpos($instance->proto, 'udp') === false) {
+                $messages->appendMessage(new Message(
+                    gettext('DCO type instances only support UDP mode.'),
+                    $key . ".proto"
+                ));
+            }
         }
         return $messages;
     }
