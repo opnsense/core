@@ -198,7 +198,7 @@ class WidgetManager  {
         let content = widget.getMarkup();
         let $panel = this._makeWidget(id, this.widgetTranslations[id].title, content);
 
-        let options = widget.getGridOptions(persistedConfig);
+        let options = widget.getGridOptions();
 
         if ('sizeToContent' in options && 'h' in persistedConfig) {
             // override the sizeToContent option with the persisted height to allow for manual resizing with scrollbar
