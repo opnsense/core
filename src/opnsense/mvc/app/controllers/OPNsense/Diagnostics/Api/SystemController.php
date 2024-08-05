@@ -235,8 +235,8 @@ class SystemController extends ApiControllerBase
                 $tempItem['device'] = $parts[0];
                 $tempItem['device_seq'] = filter_var($tempItem['device'], FILTER_SANITIZE_NUMBER_INT);
                 $tempItem['temperature'] = trim(str_replace('C', '', $parts[1]));
-                $tempItem['type'] = strpos($tempItem['device'], 'hw.acpi') !== false ? "zone" : "core";
-                $tempItem['type_translated'] = $tempItem['type'] == "zone" ? gettext("Zone") : gettext("Core");
+                $tempItem['type'] = strpos($tempItem['device'], 'hw.acpi') !== false ? 'zone' : 'cpu';
+                $tempItem['type_translated'] = $tempItem['type'] == 'zone' ? gettext('Zone') : gettext('CPU');
                 $result[] = $tempItem;
             }
         }
