@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseWidget from "./BaseWidget.js";
+import BaseWidget from 'widget-base';
 
 export default class BaseGaugeWidget extends BaseWidget {
     constructor() {
