@@ -213,24 +213,7 @@ export default class ThermalSensors extends BaseWidget {
             item.temperature_fahrenheit = toFahrenheit(parseFloat(item.temperature)).toFixed(1);
         });
 
-        // Find CPUs with differing temperatures
-        const cpuTemperatures = data.filter(item => item.type === 'cpu').map(item => parseFloat(item.temperature));
-        const uniqueTemperatures = new Set(cpuTemperatures);
-
-        let result = [];
-
-        if (uniqueTemperatures.size === 1) {
-            // If all temperatures are the same, include only the first CPU
-            result.push(data.find(item => item.type === 'cpu'));
-        } else {
-            // Include all CPUs with differing temperatures (but HT siblings may be shown)
-            result.push(...data.filter(item => item.type === 'cpu'));
-        }
-
-        // Push all other sensors found in the system
-        result.push(...data.filter(item => item.type !== 'cpu'));
-
-        return result;
+        return data;
     }
 
     onWidgetClose() {
