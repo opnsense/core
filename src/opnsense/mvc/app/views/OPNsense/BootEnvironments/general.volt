@@ -1,20 +1,18 @@
 <script>
     $(document).ready(function() {
-        // get be data
-        var be_get_data_map = {'frmGeneral':'/api/bootenvironments/general/get'};
         // load initial data
 
         let grid_env = $("#grid-env").UIBootgrid({
             get: '/api/bootenvironments/general/get/',
             set: '/api/bootenvironments/general/set/',
-            add: '/api/bootenvironments/general/addBootEnv/',
+            add: '/api/bootenvironments/general/add/',
             del: '/api/bootenvironments/general/delBootEnv/',
-            search: '/api/bootenvironments/general/list',
+            search: '/api/bootenvironments/general/search',
             commands: {
                 activate_be: {
                     method: function(event) {
                         let uuid = $(this).data("row-id") !== undefined ? $(this).data("row-id") : '';
-                        ajaxCall('/api/bootenvironments/general/activate/', { uuid: uuid}, function(data, status){
+                        ajaxCall('/api/bootenvironments/general/activate/' + uuid, {},  function(data, status){
                             if (data.result) {
                                 BootstrapDialog.show({
                                     title: "{{ lang._('Activation successful') }}",
@@ -31,7 +29,7 @@
                                 });
                                 $('#grid-env').bootgrid('reload');
                             }
-                        }); 
+                        });
                     },
                     classname: 'fa fa-fw fa-check',
                     title: "{{ lang._('activate boot environment') }}",
@@ -47,7 +45,7 @@
                         let rowId = row.uuid;
                         let elements = '<div class="break">'
                         + '<button type="button" class="btn btn-xs btn-default command-activate_be bootgrid-tooltip" data-row-id="' + rowId + '" title="Activate"><span class="fa fa-fw fa-check"></span></button>'
-                        + '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + rowId + '"><span class="fa fa-fw fa-pencil"></span></button>' 
+                        + '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + rowId + '"><span class="fa fa-fw fa-pencil"></span></button>'
                         + '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + rowId + '"><span class="fa fa-fw fa-clone"></span></button>';
                         if (!row.virtual) {
                             elements += '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + rowId + '"><span class="fa fa-fw fa-trash-o"></span></button>';
