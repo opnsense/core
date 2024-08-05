@@ -288,7 +288,13 @@ class Util
         if (empty(self::$servbynames)) {
             foreach (explode("\n", file_get_contents('/etc/services')) as $line) {
                 if (strlen($line) > 1 && $line[0] != '#') {
-                    self::$servbynames[preg_split('/\s+/', $line)[0]] = true;
+                    foreach (preg_split('/\s+/', $line) as $idx => $tmp) {
+                        if ($tmp[0] == '#') {
+                            break;
+                        } elseif ($idx != 1) {
+                            self::$servbynames[$tmp] = true;
+                        }
+                    }
                 }
             }
         }
