@@ -20,6 +20,7 @@
             <versions>Versions</versions>
             <updates>Updates</updates>
             <datetime>Current date/time</datetime>
+            <loadavg>Load average</loadavg>
             <uptime>Uptime</uptime>
             <config>Last configuration change</config>
         </translations>
