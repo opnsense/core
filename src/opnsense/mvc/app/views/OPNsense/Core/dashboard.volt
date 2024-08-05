@@ -40,6 +40,16 @@
 <script src="{{ cache_safe('/ui/js/smoothie.js') }}"></script>
 <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/dashboard.css', theme_name)) }}" rel="stylesheet" />
 
+<script type="importmap">
+    {
+        "imports": {
+            "widget-base": "{{ cache_safe('/ui/js/widgets/BaseWidget.js') }}",
+            "widget-base-table": "{{ cache_safe('/ui/js/widgets/BaseTableWidget.js') }}",
+            "widget-base-gauge": "{{ cache_safe('/ui/js/widgets/BaseGaugeWidget.js') }}"
+        }
+    }
+</script>
+
 <script>
 $( document ).ready(function() {
     let chartBackgroundColor = getComputedStyle(document.body).getPropertyValue('--chart-js-background-color').trim();
