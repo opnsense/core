@@ -29,7 +29,6 @@ import BaseTableWidget from "./BaseTableWidget.js";
 export default class OpenVPNClients extends BaseTableWidget {
     constructor(config) {
         super(config);
-        this.resizeHandles = "e, w";
 
         this.locked = false;
     }
