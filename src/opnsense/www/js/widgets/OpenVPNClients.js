@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseTableWidget from "./BaseTableWidget.js";
+import BaseTableWidget from 'widget-base-table';
 
 export default class OpenVPNClients extends BaseTableWidget {
     constructor(config) {
