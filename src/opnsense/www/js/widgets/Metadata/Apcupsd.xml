@@ -1,0 +1,26 @@
+<metadata>
+    <Apcupsd>
+        <filename>Apcupsd.js</filename>
+        <endpoints>
+            <endpoint>/api/Apcupsd/getUpsStatus</endpoint>
+        </endpoints>
+        <translations>
+            <title>APC UPS Status</title>
+            <t_unconfigured>APC UPS is not available or not configured.</t_unconfigured>
+            <t_statusColorSuccess>text-success</t_statusColorSuccess>
+            <t_statusColorWarning>text-warning</t_statusColorWarning>
+            <t_statusColorDanger>text-danger</t_statusColorDanger>
+            <t_statusTextWaiting>Waiting</t_statusTextWaiting>
+            <t_statusTextOffline>Offline</t_statusTextOffline>
+            <t_statusTextError>Data fetch error</t_statusTextError>
+            <t_statusNameOffline>Offline</t_statusNameOffline>
+            <t_statusNameOnline>Online</t_statusNameOnline>
+            <t_mode>Mode</t_mode>
+            <t_status>Status</t_status>
+            <t_battery_runtime>Battery Runtime</t_battery_runtime>
+            <t_load>Load</t_load>
+            <t_int_temp>Internal Temperature</t_int_temp>
+            <t_unable_to_connect>Unable to connect</t_unable_to_connect>
+        </translations>
+    </Apcupsd>
+</metadata>
