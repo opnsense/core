@@ -198,7 +198,13 @@ class WidgetManager  {
         let content = widget.getMarkup();
         let $panel = this._makeWidget(id, this.widgetTranslations[id].title, content);
 
-        const options = widget.getGridOptions();
+        let options = widget.getGridOptions(persistedConfig);
+
+        if ('sizeToContent' in options && 'h' in persistedConfig) {
+            // override the sizeToContent option with the persisted height to allow for manual resizing with scrollbar
+            options.sizeToContent = persistedConfig.h;
+        }
+
         const gridElement = {
             content: $panel.prop('outerHTML'),
             id: id,

@@ -29,7 +29,6 @@ import BaseTableWidget from "./BaseTableWidget.js";
 export default class IpsecLeases extends BaseTableWidget {
     constructor() {
         super();
-        this.resizeHandles = "e, w";
         this.currentLeases = {};
     }
 

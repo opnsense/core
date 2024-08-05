@@ -29,13 +29,12 @@ import BaseTableWidget from "./BaseTableWidget.js";
 export default class Interfaces extends BaseTableWidget {
     constructor() {
         super();
-        this.resizeHandles = "e, w";
     }
 
     getGridOptions() {
         return {
             // trigger overflow-y:scroll after 650px height
-            sizeToContent: 350
+            sizeToContent: 650
         }
     }
 

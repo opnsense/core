@@ -30,7 +30,6 @@ import BaseTableWidget from "./BaseTableWidget.js";
 export default class Wireguard extends BaseTableWidget {
     constructor() {
         super();
-        this.resizeHandles = "e, w";
         this.currentTunnels = {};
     }
 

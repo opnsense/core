@@ -29,7 +29,6 @@ import BaseTableWidget from "./BaseTableWidget.js";
 export default class OpenVPNServers extends BaseTableWidget {
     constructor() {
         super();
-        this.resizeHandles = "e, w";
     }
 
     getGridOptions() {
