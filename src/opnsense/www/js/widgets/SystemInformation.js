@@ -42,8 +42,9 @@ export default class SystemInformation extends BaseTableWidget {
 
     async onWidgetTick() {
         const data = await this.ajaxCall('/api/diagnostics/system/systemTime');
-        $('#datetime').text(data['datetime']);
         $('#uptime').text(data['uptime']);
+        $('#loadavg').text(data['loadavg']);
+        $('#datetime').text(data['datetime']);
         $('#config').text(data['config']);
     }
 
@@ -64,6 +65,7 @@ export default class SystemInformation extends BaseTableWidget {
         }
 
         rows.push([[this.translations['uptime']], $('<span id="uptime">').prop('outerHTML')]);
+        rows.push([[this.translations['loadavg']], $('<span id="loadavg">').prop('outerHTML')]);
         rows.push([[this.translations['datetime']], $('<span id="datetime">').prop('outerHTML')]);
         rows.push([[this.translations['config']], $('<span id="config">').prop('outerHTML')]);
         super.updateTable('sysinfo-table', rows);
