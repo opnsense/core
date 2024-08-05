@@ -35,7 +35,7 @@ parser.add_argument('--name', help='name of boot environment to create', require
 parser.add_argument('--from-source', help='boot environment to clone')
 inputargs = parser.parse_args()
 
-if inputargs.name is not None:
+if inputargs.name is not None and inputargs.name != '':
     be_name=inputargs.name
 else:
     be_name="BE-{date:%Y%m%d%H%M%S}".format(date=datetime.datetime.now())

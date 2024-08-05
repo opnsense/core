@@ -1,11 +1,11 @@
 <form>
     <field>
-        <id>bootenv.uuid</id>
+        <id>uuid</id>
         <label>UUID</label>
-        <type>hidden</type>
+        <type>text</type>
     </field>
     <field>
-        <id>bootenv.name</id>
+        <id>name</id>
         <label>Name</label>
         <type>text</type>
     </field>
