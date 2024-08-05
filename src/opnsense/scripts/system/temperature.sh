@@ -45,7 +45,16 @@ else
 	# variable names and not their content at the same time and
 	# as long as we can find something that matches our search.
 	SYSCTLS=$(sysctl -aN | grep temperature)
-	if [ -n "${SYSCTLS}" ]; then
+
+	# Return only every other "cpu" temperature if hyper-thread enabled.  i.e. 2 threads per core.
+	CORE_THREADS=$(sysctl -n kern.smp.threads_per_core)
+	if [ "${CORE_THREADS}" == "2" ]; then
+		SYSCTLS=$(echo "${SYSCTLS}" | grep -v 'cpu\.[0-9]*[13579]\.')
+		if [ -n "${SYSCTLS}" ]; then
+			sysctl -e ${SYSCTLS} | perl -pe 's/cpu.\K\d+/$&\/'${CORE_THREADS}'/ge' | sort
+		fi
+
+	elif [ -n "${SYSCTLS}" ]; then
 		sysctl -e ${SYSCTLS} | sort
 	fi
 fi
