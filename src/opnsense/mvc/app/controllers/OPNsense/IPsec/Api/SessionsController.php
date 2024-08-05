@@ -98,7 +98,6 @@ class SessionsController extends ApiControllerBase
                     }
                 }
                 $record = array_merge($record, $agg_fields);
-                /* */
                 unset($record['children']);
                 unset($record['sas']);
                 $records[] = $record;
