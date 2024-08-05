@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2024 Cedrik Pischem
+ * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,7 +30,7 @@ import BaseTableWidget from "./BaseTableWidget.js";
 export default class IpsecTunnels extends BaseTableWidget {
     constructor() {
         super();
-        this.currentTunnels = {};
+        this.resizeHandles = "e, w";
     }
 
     getGridOptions() {
@@ -77,20 +78,20 @@ export default class IpsecTunnels extends BaseTableWidget {
         if (!this.dataChanged('', newTunnels)) {
             return; // No changes detected, do not update the UI
         }
-
         $('.ipsectunnels-status-icon').tooltip('hide');
-
         let tunnels = newTunnels.map(tunnel => ({
-            localAddrs: tunnel['local-addrs'],
-            remoteAddrs: tunnel['remote-addrs'],
+            phase1desc: tunnel.phase1desc || this.translations.notavailable,
+            localAddrs: tunnel['local-addrs'] || this.translations.notavailable,
+            remoteAddrs: tunnel['remote-addrs'] || this.translations.notavailable,
+            installTime: tunnel['install-time'], // No fallback since we check if it is null
+            bytesIn: tunnel['bytes-in'] != null ? this._formatBytes(tunnel['bytes-in']) : this.translations.notavailable,
+            bytesOut: tunnel['bytes-out'] != null ? this._formatBytes(tunnel['bytes-out']) : this.translations.notavailable,
             connected: tunnel.connected,
-            statusIcon: tunnel.connected ? 'fa-exchange text-success' : 'fa-exchange text-danger',
-            phase1desc: tunnel.phase1desc || this.translations.notavailable
+            statusIcon: tunnel.connected ? 'fa-exchange text-success' : 'fa-exchange text-danger'
         }));
 
         // Sort by connected status, offline first then online
         tunnels.sort((a, b) => a.connected === b.connected ? 0 : a.connected ? -1 : 1);
-
         let onlineCount = tunnels.filter(tunnel => tunnel.connected).length;
         let offlineCount = tunnels.length - onlineCount;
 
@@ -99,10 +100,18 @@ export default class IpsecTunnels extends BaseTableWidget {
             <div>
                 <span><b>${this.translations.total}:</b> ${tunnels.length} - <b>${this.translations.online}:</b> ${onlineCount} - <b>${this.translations.offline}:</b> ${offlineCount}</span>
             </div>`;
-
         let rows = [summaryRow];
+
         // Generate HTML for each tunnel
         tunnels.forEach(tunnel => {
+            let installTimeInfo = tunnel.installTime === null
+                ? `<span style="font-size: 12px;"><em>${this.translations.nophase2connected}</em></span>`
+                : `<span style="font-size: 12px;"><em>${this.translations.installtime}: ${tunnel.installTime}</em></span>`;
+
+            let bytesInfo = tunnel.installTime !== null
+                ? `<span style="font-size: 12px;"><em>${this.translations.bytesin}: ${tunnel.bytesIn} - ${this.translations.bytesout}: ${tunnel.bytesOut}</em></span>`
+            : '';
+
             let row = `
                 <div>
                     <i class="fa ${tunnel.statusIcon} ipsectunnels-status-icon" style="cursor: pointer;"
@@ -111,8 +120,14 @@ export default class IpsecTunnels extends BaseTableWidget {
                     &nbsp;
                     <span><b>${tunnel.phase1desc}</b></span>
                     <br/>
-                    <div style="margin-top: 5px; margin-bottom: 5px;">
-                        <span>${tunnel.localAddrs} <span style="font-size: 20px;">↔</span> ${tunnel.remoteAddrs}</span>
+                    <div>
+                        <span>${tunnel.localAddrs} <span style="font-size: 18px;">↔</span> ${tunnel.remoteAddrs}</span>
+                    </div>
+                    <div>
+                        ${installTimeInfo}
+                    </div>
+                    <div>
+                        ${bytesInfo}
                     </div>
                 </div>`;
             rows.push(row);

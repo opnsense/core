@@ -255,6 +255,10 @@
             <unconfigured>IPsec is currently disabled. Click to configure IPsec.</unconfigured>
             <notunnels>There are currently no tunnels.</notunnels>
             <notavailable>N/A</notavailable>
+            <bytesin>rx</bytesin>
+            <bytesout>tx</bytesout>
+            <installtime>Install Time</installtime>
+            <nophase2connected>No children installed.</nophase2connected>
         </translations>
     </ipsectunnels>
     <Wireguard>
