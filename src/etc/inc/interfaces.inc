@@ -90,11 +90,6 @@ function convert_128bit_to_ipv6($ip6bin)
     return $ip6addr;
 }
 
-function interfaces_bring_up($interface)
-{
-    legacy_interface_flags($interface, 'up');
-}
-
 function does_interface_exist($interface, $flag = 'all')
 {
     return !empty($interface) && in_array($interface, legacy_interface_listget($flag));
@@ -171,7 +166,7 @@ function interfaces_vlan_configure($verbose = false)
 
 function _interfaces_vlan_configure($vlan)
 {
-    interfaces_bring_up($vlan['if']); /* XXX overreach? */
+    legacy_interface_flags($vlan['if'], 'up'); /* XXX overreach? */
 
     /* destroy is a safety precaution, when configuring via api or gui this function should only be called on new vlans */
     legacy_interface_destroy($vlan['vlanif']);
@@ -179,7 +174,7 @@ function _interfaces_vlan_configure($vlan)
 
     legacy_vlan_tag($vlan['vlanif'], $vlan['if'], $vlan['tag'], $vlan['pcp'], $vlan['proto']);
 
-    interfaces_bring_up($vlan['vlanif']);
+    legacy_interface_flags($vlan['vlanif'], 'up');
 }
 
 function interfaces_wlan_clone($device)
@@ -269,7 +264,7 @@ function _interfaces_bridge_configure($bridge)
     foreach ($members as $member => $device) {
         configure_interface_hardware($device);
         legacy_interface_mtu($device, $mtu);
-        interfaces_bring_up($device);
+        legacy_interface_flags($device, 'up');
         legacy_bridge_member($bridge['bridgeif'], $device);
     }
 
@@ -379,7 +374,7 @@ function _interfaces_bridge_configure($bridge)
         }
     }
 
-    interfaces_bring_up($bridge['bridgeif']);
+    legacy_interface_flags($bridge['bridgeif'], 'up');
 
     return $ret;
 }
@@ -454,7 +449,7 @@ function _interfaces_lagg_configure($lagg)
              */
             legacy_interface_mtu($member, $mtu);
             configure_interface_hardware($member);
-            interfaces_bring_up($member);
+            legacy_interface_flags($member, 'up');
             mwexecf('/sbin/ifconfig %s laggport %s', [$lagg['laggif'], $member]);
         }
     }
@@ -471,7 +466,7 @@ function _interfaces_lagg_configure($lagg)
         mwexecf('/sbin/ifconfig %s lagghash %s', [$lagg['laggif'], $configured_hash]);
     }
 
-    interfaces_bring_up($lagg['laggif']);
+    legacy_interface_flags($lagg['laggif'], 'up');
 }
 
 function interfaces_gre_configure($device)
@@ -544,7 +539,7 @@ function _interfaces_gre_configure($gre)
         ]);
     }
 
-    interfaces_bring_up($gre['greif']);
+    legacy_interface_flags($gre['greif'], 'up');
 
     /* XXX: write XXX_router file */
     mwexecf('/usr/local/sbin/ifctl -i %s -%s -rd -a %s', [
@@ -639,7 +634,7 @@ function _interfaces_gif_configure($gif)
     $flags = (empty($gif['link1']) ? "-" : "") . "link1 " . (empty($gif['link2']) ? "-" : "") . "link2";
     legacy_interface_flags($gif['gifif'], $flags);
 
-    interfaces_bring_up($gif['gifif']);
+    legacy_interface_flags($gif['gifif'], 'up');
 
     /* XXX: remove below routing block in 24.7 */
     if (!empty($remote_gw)) {
@@ -990,7 +985,7 @@ function interface_ppps_configure($interface)
     foreach ($ports as $pid => $port) {
         switch ($ppp['type']) {
             case 'pppoe':
-                interfaces_bring_up($port);
+                legacy_interface_flags($port, 'up');
                 break;
             case 'pptp':
             case 'l2tp':
@@ -998,7 +993,7 @@ function interface_ppps_configure($interface)
                 if (is_ipaddr($localips[$pid])) {
                     // Manually configure interface IP/subnet
                     legacy_interface_setaddress($port, "{$localips[$pid]}/{$subnets[$pid]}");
-                    interfaces_bring_up($port);
+                    legacy_interface_flags($port, 'up');
                 } elseif (empty($localips[$pid])) {
                     $localips[$pid] = get_interface_ip($port); // try to get the interface IP from the port
                 }
@@ -3246,7 +3241,7 @@ EOD;
     fwrite($fd, $dhclientconf);
     fclose($fd);
 
-    interfaces_bring_up($wanif);
+    legacy_interface_flags($wanif, 'up');
 
     mwexecf('/sbin/dhclient -c %s -p %s %s', array(
         "/var/etc/dhclient_{$interface}.conf",
@@ -3727,7 +3722,7 @@ function link_interface_to_bridge($interface, $attach_device = null, $ifconfig_d
                 legacy_interface_mtu($attach_device, $ifconfig_details[$bridge['bridgeif']]['mtu']);
             }
 
-            interfaces_bring_up($attach_device);
+            legacy_interface_flags($attach_device, 'up');
             legacy_bridge_member($bridge['bridgeif'], $attach_device);
         }
 
