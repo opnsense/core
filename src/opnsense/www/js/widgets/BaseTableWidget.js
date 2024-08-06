@@ -195,7 +195,7 @@ export default class BaseTableWidget extends BaseWidget {
                     to: 255,
                     opacity: 1,
                 }, {
-                    duration: 50,
+                    duration: 500,
                     easing: 'linear',
                     step: function() {
                         $gridRow.css('background-color', 'initial');
