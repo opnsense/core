@@ -76,7 +76,9 @@ export default class IpsecTunnels extends BaseTableWidget {
         if (!this.dataChanged('', newTunnels)) {
             return; // No changes detected, do not update the UI
         }
+
         $('.ipsectunnels-status-icon').tooltip('hide');
+
         let tunnels = newTunnels.map(tunnel => ({
             phase1desc: tunnel.phase1desc || this.translations.notavailable,
             localAddrs: tunnel['local-addrs'] || this.translations.notavailable,
@@ -90,6 +92,7 @@ export default class IpsecTunnels extends BaseTableWidget {
 
         // Sort by connected status, offline first then online
         tunnels.sort((a, b) => a.connected === b.connected ? 0 : a.connected ? -1 : 1);
+
         let onlineCount = tunnels.filter(tunnel => tunnel.connected).length;
         let offlineCount = tunnels.length - onlineCount;
 
@@ -98,6 +101,7 @@ export default class IpsecTunnels extends BaseTableWidget {
             <div>
                 <span><b>${this.translations.total}:</b> ${tunnels.length} - <b>${this.translations.online}:</b> ${onlineCount} - <b>${this.translations.offline}:</b> ${offlineCount}</span>
             </div>`;
+
         let rows = [summaryRow];
 
         // Generate HTML for each tunnel
