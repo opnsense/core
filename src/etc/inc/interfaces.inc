@@ -1261,7 +1261,7 @@ EOD;
     }
 
     if (!$interface_is_up) {
-        log_msg("Waiting threshold exceeded - interface $interface is still not UP in interface_ppps_configure().", LOG_WARNING);
+        log_msg("interface_ppps_configure() waiting threshold exceeded - device {$interface} is still not up", LOG_WARNING);
     }
 
     switch ($ppp['type']) {
