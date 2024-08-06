@@ -278,7 +278,7 @@ class WidgetManager  {
         $btn_group.append($(`<button class="btn btn-secondary" id="restore-defaults">${this.gettext.restore}</button>`));
         $btn_group.append($(`
             <button class="btn btn-secondary" id="lock-grid">
-                <i class="fa fa-lock" style="font-size: 14px;"></i>
+                <i class="fa fa-unlock fa-fw"></i>
             </button>
         `));
 
@@ -361,9 +361,10 @@ class WidgetManager  {
         });
 
         $('#lock-grid').on('click', () => {
-            $('#lock-grid').toggleClass('btn-pressed');
+            $('#lock-grid').toggleClass('active');
 
-            if ($('#lock-grid').hasClass('btn-pressed')) {
+            if ($('#lock-grid').hasClass('active')) {
+                $('#lock-grid i').removeClass('fa-unlock').addClass('fa-lock');
                 this.grid.enableMove(false);
                 this.grid.enableResize(false);
                 $('.widget-content').css('cursor', 'default');
@@ -371,6 +372,7 @@ class WidgetManager  {
                 $('.edit-handle').hide();
                 this.runtimeOptions.gridLocked = true;
             } else {
+                $('#lock-grid i').removeClass('fa-lock').addClass('fa-unlock');
                 this.grid.enableMove(true);
                 this.grid.enableResize(true);
                 $('.widget-content').css('cursor', 'grab');

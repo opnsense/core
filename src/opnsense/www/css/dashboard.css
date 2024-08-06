@@ -2,11 +2,6 @@
     --chart-js-font-color: #000000;
 }
 
-.btn-pressed, .btn-pressed:hover {
-    background-color: #d94f00;
-    color: white;
-}
-
 .fa-spinner {
     font-size: 2em;
 }
