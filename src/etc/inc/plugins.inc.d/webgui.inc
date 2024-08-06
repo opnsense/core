@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2021 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2024 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -90,6 +90,11 @@ function webgui_configure_do($verbose = false, $interface = '')
         $listeners[] = $tmpaddr;
     }
 
+    if (!count($listeners)) {
+        service_log("empty.\n", $verbose);
+        return;
+    }
+
     chdir('/usr/local/www');
 
     /* defaults */
@@ -121,7 +126,19 @@ function webgui_configure_do($verbose = false, $interface = '')
         $ca = ca_chain($cert);
     }
 
-    webgui_generate_config($portarg, $crt, $key, $ca, $listeners);
+    $confdir = '/usr/local/etc/lighttpd_webgui';
+    $conftxt = webgui_generate_config($portarg, $crt, $key, $ca, $listeners, $confdir);
+
+    $fp = fopen("{$confdir}/lighttpd.conf", 'a+e');
+    if (!$fp || !flock($fp, LOCK_EX | LOCK_NB)) {
+        fclose($fp);
+        @unlink($tempfile);
+        service_log("locked.\n", $verbose);
+        return;
+    }
+
+    ftruncate($fp, 0);
+    fwrite($fp, $conftxt);
 
     /* regenerate the php.ini files in case the setup has changed */
     configd_run('template reload OPNsense/WebGui');
@@ -141,12 +158,15 @@ function webgui_configure_do($verbose = false, $interface = '')
     /* stop the frontend when the generation was completed */
     killbypid('/var/run/lighty-webConfigurator.pid', 'INT');
 
-    /* start lighttpd */
-    if (!count($listeners) || mwexec('/usr/local/bin/flock -ne /var/run/lighty-webConfigurator.pid /usr/local/sbin/lighttpd -f /var/etc/lighty-webConfigurator.conf')) {
+    /* start lighttpd (the flock may be overkill but this has always been fragile so keep it) */
+    if (mwexecf('/usr/local/bin/flock -ne /var/run/lighty-webConfigurator.pid /usr/local/sbin/lighttpd -f %s/lighttpd.conf', [$confdir])) {
         service_log("failed.\n", $verbose);
     } else {
         service_log("done.\n", $verbose);
     }
+
+    flock($fp, LOCK_UN);
+    fclose($fp);
 }
 
 function webgui_create_selfsigned($verbose = false)
@@ -190,12 +210,12 @@ function webgui_create_selfsigned($verbose = false)
     service_log("done.\n", $verbose);
 }
 
-function webgui_generate_config($port, $cert, $key, $ca, $listeners)
+function webgui_generate_config($port, $cert, $key, $ca, $listeners, $confdir)
 {
     global $config;
 
-    $cert_location = '/var/etc/cert.pem';
-    $key_location = '/var/etc/key.pem';
+    $cert_location = "{$confdir}/cert.pem";
+    $key_location = "{$confdir}/key.pem";
 
     @mkdir('/tmp/lighttpdcompress');
     shell_safe('rm -rf /tmp/lighttpdcompress/*');
@@ -266,7 +286,7 @@ server.modules              = (
 )
 
 # additional optional modules to load or additional module configurations
-include "/usr/local/etc/lighttpd_webgui/conf.d/*.conf"
+include "{$confdir}/conf.d/*.conf"
 
 server.max-keep-alive-requests = 15
 server.max-keep-alive-idle = 30
@@ -496,5 +516,5 @@ EOD;
         }
     }
 
-    @file_put_contents('/var/etc/lighty-webConfigurator.conf', $lighty_config);
+    return $lighty_config;
 }
