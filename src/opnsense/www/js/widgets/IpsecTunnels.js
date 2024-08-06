@@ -1,6 +1,5 @@
 /*
  * Copyright (C) 2024 Cedrik Pischem
- * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +29,6 @@ import BaseTableWidget from "./BaseTableWidget.js";
 export default class IpsecTunnels extends BaseTableWidget {
     constructor() {
         super();
-        this.resizeHandles = "e, w";
     }
 
     getGridOptions() {
