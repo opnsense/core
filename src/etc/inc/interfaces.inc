@@ -1258,7 +1258,7 @@ EOD;
         $i++;
     }
 
-    if (!$interface_is_up) {
+    if ($i >= 30) {
         log_msg("interface_ppps_configure() waiting threshold exceeded - device {$interface} is still not up", LOG_WARNING);
     }
 
