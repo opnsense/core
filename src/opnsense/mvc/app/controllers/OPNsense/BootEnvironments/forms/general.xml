@@ -2,7 +2,7 @@
     <field>
         <id>uuid</id>
         <label>UUID</label>
-        <type>text</type>
+        <type>hidden</type>
     </field>
     <field>
         <id>name</id>

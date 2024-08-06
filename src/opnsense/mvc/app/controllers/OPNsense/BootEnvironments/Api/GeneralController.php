@@ -30,28 +30,83 @@ namespace OPNsense\BootEnvironments\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Base\UserException;
 use OPNsense\BootEnvironments\BootEnvironments;
 
 
 class GeneralController extends ApiControllerBase
 {
-    private function findByUuid($uuid)
+    private array $environments = [];
+
+    /**
+     * @param string $fieldname property to search
+     * @param string $value value the property should have
+     * @return array|null
+     */
+    private function find($fieldname, $value)
     {
-        $data = json_decode(trim((new Backend())->configdRun('bootenvironments list')), true) ?? [];
-        foreach ($data as $record) {
-            if ($record['uuid'] == $uuid) {
+        if (empty($this->environments)) {
+            $this->environments = json_decode(trim((new Backend())->configdRun('bootenvironments list')), true) ?? [];
+        }
+        foreach ($this->environments as $record) {
+            if (isset($record[$fieldname]) && $record[$fieldname] == $value) {
                 return $record;
             }
         }
         return null;
     }
 
+    /**
+     * @param string $uuid generated uuid to search (calculated by name)
+     * @return array|null
+     */
+    private function findByUuid($uuid)
+    {
+        return $this->find('uuid', $uuid);
+    }
+
+    /**
+     * @param string $name boot environment name, the actual key of the record
+     * @return array|null
+     */
+    private function findByName($name)
+    {
+        return $this->find('name', $name);
+    }
+
+    /**
+     * allow all but whitespaces for now
+     * @param string $name boot environment name
+     */
+    private function isValidName($name)
+    {
+        return !preg_match('/\s/', $name);
+    }
+
+    /**
+     * @return boolean is this a supported feature (ZFS enabled)
+     */
+    public function isSupportedAction()
+    {
+        $result = json_decode((new Backend())->configdRun('bootenvironments supported'), true) ?? [];
+        return ['supported' => !empty($result) && $result['status'] == 'OK'];
+    }
+
+    /**
+     * search boot environments
+     * @return array
+     */
     public function searchAction()
     {
-        $records = json_decode(trim((new Backend())->configdRun('bootenvironments list')), true) ?? [];
+        $records = json_decode((new Backend())->configdRun('bootenvironments list'), true) ?? [];
         return $this->searchRecordsetBase($records);
     }
 
+    /**
+     * fetch an environment by uuid, return new when not found or $uuid equals null
+     * @param string $uuid
+     * @return array
+     */
     public function getAction($uuid = null)
     {
         if (!empty($uuid)) {
@@ -64,94 +119,125 @@ class GeneralController extends ApiControllerBase
         return ['name' => 'BE'.date("YmdHis"), 'uuid' => ''];
     }
 
+    /**
+     * create a new bootenvironment
+     * @param string $uuid uuid to save
+     * @return array status
+     */
     public function setAction($uuid)
     {
         if ($this->request->isPost() && $this->request->hasPost('name')) {
-            /**
-             * XXX:
-             *      We need to fix this, name is actually the same as $uuid, which means input may either be invalid
-             *      or already exist.
-             */
             $name =  $this->request->getPost('name', 'string', null);
 
             $be = $this->findByUuid($uuid);
-            if (empty($be)) {
-                return ['status' => 'error', 'message' => 'Boot environment not found'];
-            }
+            $new_be = $this->findByName($name);
 
-            // check boot environment name
-            if ($be['name'] !== $name) {
+            if (!empty($be) && $be['name'] == $name) {
+                /* skip, unchanged */
+                return ['status' => 'ok'];
+            } elseif (!empty($be) && empty($new_be) && $this->isValidName($name)) {
                 return json_decode(
-                    trim((new Backend())->configdRun("bootenvironments rename {$be['name']} {$name}")),
+                    (new Backend())->configdpRun("bootenvironments rename", [$be['name'], $name]),
                     true
                 );
+            } else {
+                if (!empty($new_be)) {
+                    $msg = gettext('A boot environment already exists by this name');
+                } elseif (!$this->isValidName($name)){
+                    $msg = gettext('Invalid name specified');
+                } else {
+                    $msg = gettext('Boot environment not found');
+                }
+                return [
+                    'status' => 'failed',
+                    'validations' => [
+                        'name' => $msg
+                    ]
+                ];
             }
         }
 
         return ['status' => 'failed'];
     }
 
+    /**
+     * add or clone a boot environment
+     * @return array status
+     */
     public function addAction()
     {
-
-        $response = ['status' => 'failed', 'result' => 'error'];
         if ($this->request->isPost()) {
             $uuid =  $this->request->getPost('uuid', 'string', '');
             $name =  $this->request->getPost('name', 'string', '');
 
-            $backend = new Backend();
-            if (!empty($uuid)) {
+            $msg = null;
+            if ($this->findByName($name)) {
+                $msg = gettext('A boot environment already exists by this name');
+            } elseif (!$this->isValidName($name)){
+                $msg = gettext('Invalid name specified');
+            }
+            if (!empty($uuid) && empty($msg)) {
+                /* clone environment */
                 $be = $this->findByUuid($uuid);
-                /**
-                 * XXX:
-                 *      Multiple things may go wrong here:
-                 *         * we can't find the entry, which should likey raise a user exception
-                 *         * the newly choosen name does already exist, in which case we should also abort
-                 */
-
                 if (empty($be)) {
-                    return ['status' => 'error', 'message' => 'Boot environment not found'];
+                    $msg = gettext('Boot environment not found');
+                } else {
+                    return json_decode(
+                        (new Backend())->configdpRun("bootenvironments clone", [$name, $be['name']]), true
+                    );
                 }
-                $cloneFrom = $be['name'];
-                return json_decode(
-                    trim($backend->configdRun("bootenvironments clone {$name} {$cloneFrom}")),
-                    true
-                );
-            } else {
-                /**
-                 * XXX:
-                 *    should check for existance of the name
-                 */
-                return $backend->configdRun("bootenvironments create {$name}");
+            } elseif (empty($msg)) {
+                return (new Backend())->configdpRun("bootenvironments create", [$name]);
+            }
+
+            if ($msg) {
+                return [
+                    'status' => 'failed',
+                    'validations' => [
+                        'name' => $msg
+                    ]
+                ];
             }
         }
         return ['status' => 'failed'];
     }
 
-    public function delAction($uuid): array
+    /**
+     * delete an environment by uuid
+     * @param string $uuid
+     * @return array
+     * @throws UserException when not found (or possible)
+     */
+    public function delAction($uuid)
     {
         if ($this->request->isPost()) {
             $be = $this->findByUuid($uuid);
+            /* XXX: can we always drop a BE? how about when it's being used */
             if (empty($be)) {
-                return ['status' => 'error', 'message' => 'Boot environment not found'];
+                throw new UserException(gettext("Boot environment not found"), gettext("Boot environments"));
             }
-            return (json_decode(trim((new Backend())->configdRun("bootenvironments destroy {$be['name']}")), true));
+            return (json_decode((new Backend())->configdpRun("bootenvironments destroy", [$be['name']]), true));
         }
         return ['status' => 'failed'];
     }
 
 
-    public function activateAction($uuid): array
+    /**
+     * activate an environment by uuid
+     * @param string $uuid
+     * @return array
+     * @throws UserException when not found (or possible)
+     */
+    public function activateAction($uuid)
     {
-        $response = ['status' => 'failed', 'result' => 'error'];
+
         if ($this->request->isPost()) {
             $be = $this->findByUuid($uuid);
             if (empty($be)) {
-                /* XXX: likely better to throw a UserException here */
-                return ['status' => false, 'message' => 'Boot environment not found'];
+                throw new UserException(gettext("Boot environment not found"), gettext("Boot environments"));
             }
-            return json_decode(trim((new Backend())->configdRun("bootenvironments activate {$be['name']}")), true);
+            return json_decode((new Backend())->configdpRun("bootenvironments activate", [$be['name']]), true);
         }
-        return $response;
+        return ['status' => 'failed'];
     }
 }
