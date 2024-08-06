@@ -180,15 +180,19 @@
             if (event.originalEvent !== undefined) {
                 // not called on form open, only when the user chooses a new ca
                 ajaxGet('/api/trust/cert/ca_info/' + $(this).val(), {}, function(data, status){
+                    let fields = ['city', 'state', 'country', 'name', 'email', 'organization', 'ocsp_uri'];
                     if (data.name !== undefined) {
-                        [
-                            'city', 'state', 'country', 'name', 'email', 'organization', 'ocsp_uri'
-                        ].forEach(function(field){
+                        fields.forEach(function(field){
                             if (data[field]) {
                                 $("#cert\\." + field).val(data[field]);
                             }
                         });
+                    } else {
+                        fields.forEach(function(field){
+                            $("#cert\\." + field).val('');
+                        });
                     }
+
                     $("#cert\\.country").selectpicker('refresh');
                 });
             }
