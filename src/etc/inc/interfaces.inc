@@ -1239,6 +1239,9 @@ EOD;
         @unlink('/var/spool/lock/LCK..' . basename($port));
     }
 
+    /* precaution for post-start 'up' check */
+    legacy_interface_flags($interface, 'down', false);
+
     /* fire up mpd */
     mwexecf(
         '/usr/local/sbin/mpd5 -b -d /var/etc -f %s -p %s -s ppp %s',
@@ -1248,15 +1251,19 @@ EOD;
     /* appease netgraph by setting the correct node name */
     shell_safe('/usr/sbin/daemon -f /usr/local/opnsense/scripts/interfaces/ppp-rename.sh %s %s %s', [$interface, $ifcfg['if'], $ppp['type']]);
 
-    /* wait for up to 10 seconds for the interface to appear (ppp(oe)) */
+    /* wait for functional device */
+    $max = 20;
     $i = 0;
-    while ($i < 10) {
-        exec("/sbin/ifconfig " . escapeshellarg($ppp['if']) . " 2>&1", $out, $ret);
-        if ($ret == 0) {
+    while ($i < $max) {
+        sleep(1);
+        if (does_interface_exist($ppp['if'], 'up')) {
             break;
         }
-        sleep(1);
         $i++;
+    }
+
+    if ($i >= $max) {
+        log_msg("interface_ppps_configure() waiting threshold exceeded - device {$interface} is still not up", LOG_WARNING);
     }
 
     switch ($ppp['type']) {
