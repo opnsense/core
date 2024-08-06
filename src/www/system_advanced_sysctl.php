@@ -142,7 +142,7 @@ foreach ($a_tunable as $key => &$tunable) {
 
 foreach ($a_system as $default) {
     /* display system defaults as well */
-    $next = [ 'tunable' => $default, 'value' => 'default', 'descr' => $a_sysctl[$default]['description'] ];
+    $next = [ 'tunable' => $default, 'value' => 'default', 'descr' => $a_sysctl[$default]['description'] ?? '' ];
     if (!empty($a_defaults[$default]['type'])) {
         $next['type'] = $a_defaults[$default]['type'];
     } elseif (!empty($a_sysctl[$default]['type'])) {
