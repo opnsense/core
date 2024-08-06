@@ -64,10 +64,17 @@ export default class OpenVPNServers extends BaseTableWidget {
             let color = "text-muted";
             // disabled servers are not included in the list. Stopped servers have no "status" property
             if (server.status) {
-                if (server.status === 'failed') {
-                    color = "text-danger";
-                } else {
-                    color = "text-success";
+                switch (server.status) {
+                    case 'connected':
+                    case 'ok':
+                        color = "text-success";
+                        break;
+                    case 'failed':
+                        color = "text-danger";
+                        break;
+                    default:
+                        color = "text-warning";
+                        break;
                 }
             } else {
                 stopped = true;

@@ -239,6 +239,7 @@ export default class BaseWidget {
     }
 
     _formatBytes(value, decimals = 2) {
+        value = Number(value);
         if (isNaN(value) || value === null || value <= 0) {
             return "";
         }
@@ -254,7 +255,7 @@ export default class BaseWidget {
     }
 
     sanitizeSelector(selector) {
-        return selector.replace(/[:/.]/gi, '__');
+        return String(selector).replace(/[:/.]/gi, '__');
     }
 
     startCommandTransition(id, $target) {
