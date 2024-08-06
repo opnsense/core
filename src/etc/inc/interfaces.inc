@@ -1251,10 +1251,10 @@ EOD;
     /* wait for functional device */
     $i = 0;
     while ($i < 30) {
+        sleep(1);
         if (does_interface_exist($ppp['if'], 'up')) {
             break;
         }
-        sleep(1);
         $i++;
     }
 
