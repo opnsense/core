@@ -1239,6 +1239,9 @@ EOD;
         @unlink('/var/spool/lock/LCK..' . basename($port));
     }
 
+    /* precaution for post-start 'up' check */
+    legacy_interface_flags($interface, 'down');
+
     /* fire up mpd */
     mwexecf(
         '/usr/local/sbin/mpd5 -b -d /var/etc -f %s -p %s -s ppp %s',
