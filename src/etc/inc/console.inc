@@ -106,7 +106,7 @@ function _set_networking_interfaces_ports($probe = false)
 
     foreach ($iflist as $iface => $ifa) {
         $iflist_all[$iface] = $ifa;
-        interfaces_bring_up($iface);
+        legacy_interface_flags($iface, 'up');
     }
 
     if ($probe) {
