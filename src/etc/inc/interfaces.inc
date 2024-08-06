@@ -1248,7 +1248,7 @@ EOD;
     /* appease netgraph by setting the correct node name */
     shell_safe('/usr/sbin/daemon -f /usr/local/opnsense/scripts/interfaces/ppp-rename.sh %s %s %s', [$interface, $ifcfg['if'], $ppp['type']]);
 
-    /* wait for up to 30 seconds for the interface to appear in UP state (ppp(oe)) */
+    /* wait for functional device */
     $i = 0;
     $interface_is_up = false;
     while ($i < 30) {
