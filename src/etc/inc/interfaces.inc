@@ -1252,7 +1252,6 @@ EOD;
     $i = 0;
     while ($i < 30) {
         if (does_interface_exist($ppp['if'], 'up')) {
-            $interface_is_up = true;
             break;
         }
         sleep(1);
