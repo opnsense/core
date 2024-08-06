@@ -83,7 +83,7 @@ function webgui_configure_do($verbose = false, $interface = '')
     $listeners = count($interfaces) ? [] : ['0.0.0.0', '::'];
 
     foreach (interfaces_addresses($interfaces) as $tmpaddr => $info) {
-        if (!$info['bind']) {
+        if (!$info['bind'] || ($info['family'] == 'inet6' && $info['tentative'])) {
             continue;
         }
 
