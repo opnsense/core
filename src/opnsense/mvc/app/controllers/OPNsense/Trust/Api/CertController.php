@@ -207,7 +207,7 @@ class CertController extends ApiMutableModelControllerBase
         return ['status' => 'failed'];
     }
 
-    public function caInfoAction($caref)
+    public function caInfoAction($caref = null)
     {
         if ($this->request->isGet()) {
             $ca = CertStore::getCACertificate($caref);
