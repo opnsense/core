@@ -46,6 +46,7 @@ else
 	# as long as we can find something that matches our search.
 	SYSCTLS=$(sysctl -aN | grep temperature)
 	if [ -n "${SYSCTLS}" ]; then
+		sleep 1	# Avoid returning elevated and highly fluctuating "CPU" (core) temperatures
 		sysctl -e ${SYSCTLS} | sort
 	fi
 fi
