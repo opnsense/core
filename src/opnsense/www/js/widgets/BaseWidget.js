@@ -239,18 +239,18 @@ export default class BaseWidget {
     }
 
     _formatBytes(value, decimals = 2) {
-        if (isNaN(value) || value === null || value < 0) {
+        if (isNaN(value) || value === null || value <= 0) {
             return "";
         }
 
         const fileSizeTypes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
         const ndx = Math.floor(Math.log(value) / Math.log(1000));
 
-        if (ndx === 0) {
-            return value.toFixed(decimals) + ' ' + fileSizeTypes[0];
+        if (ndx > 0) {
+            return (value / Math.pow(1000, ndx)).toFixed(decimals) + ' ' + fileSizeTypes[ndx];
         }
 
-        return (value / Math.pow(1000, ndx)).toFixed(decimals) + ' ' + fileSizeTypes[ndx];
+        return value.toFixed(decimals) + ' ' + fileSizeTypes[0];
     }
 
     sanitizeSelector(selector) {
