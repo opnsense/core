@@ -1,5 +1,6 @@
 <?php
 /*
+ * Copyright (C) 2024 Deciso B.V.
  * Copyright (C) 2024 Sheridan Computers Limited
  * All rights reserved.
  *
@@ -32,19 +33,7 @@ class GeneralController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
-        $backEnd = new Backend();
-        $backResult = json_decode(trim($backEnd->configdRun('bootenvironments supported')), true);
-        if ($backResult === null or ! is_array($backResult)) {
-            $this->view->pick('OPNsense/BootEnvironments/unsupported');
-        }
-
-        $status = $backResult['status'] ?? null;
-        if ($status === 'OK') {
-            $this->view->pick('OPNsense/BootEnvironments/general');
-            $this->view->generalForm = $this->getForm('general');
-            return;
-        }
-
-        $this->view->pick('OPNsense/BootEnvironments/unsupported');
+        $this->view->pick('OPNsense/BootEnvironments/general');
+        $this->view->generalForm = $this->getForm('general');
     }
 }

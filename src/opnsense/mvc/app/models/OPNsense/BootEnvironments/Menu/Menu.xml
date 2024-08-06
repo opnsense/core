@@ -1,7 +1,5 @@
 <menu>
     <System>
-        <BootEnvironments VisibleName="Boot Environments" cssClass="fa fa-database fa-fw">
-            <General VisibleName="General" url="/ui/bootenvironments/general"/>
-        </BootEnvironments>
+        <BootEnvironments VisibleName="Boot Environments" cssClass="fa fa-database fa-fw" url="/ui/bootenvironments/general"/>
     </System>
 </menu>
