@@ -1250,7 +1250,6 @@ EOD;
 
     /* wait for functional device */
     $i = 0;
-    $interface_is_up = false;
     while ($i < 30) {
         if (does_interface_exist($ppp['if'], 'up')) {
             $interface_is_up = true;
