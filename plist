@@ -149,8 +149,9 @@
 /usr/local/etc/rc.syshook.d/stop/80-freebsd
 /usr/local/etc/rc.syshook.d/stop/90-backup
 /usr/local/etc/rc.syshook.d/stop/99-config
-/usr/local/etc/rc.syshook.d/update/10-refresh
+/usr/local/etc/rc.syshook.d/update/10-refresh.sh
 /usr/local/etc/rc.syshook.d/upgrade/20-unbound-duckdb.py
+/usr/local/etc/rc.syshook.d/upgrade/90-cleanup.sh
 /usr/local/etc/ssl/opnsense.cnf
 /usr/local/etc/strongswan.opnsense.d/README
 /usr/local/etc/unbound.opnsense.d/README
