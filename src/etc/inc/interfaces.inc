@@ -1240,7 +1240,7 @@ EOD;
     }
 
     /* precaution for post-start 'up' check */
-    legacy_interface_flags($interface, 'down');
+    legacy_interface_flags($interface, 'down', false);
 
     /* fire up mpd */
     mwexecf(
