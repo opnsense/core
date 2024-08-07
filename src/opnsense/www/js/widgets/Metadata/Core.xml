@@ -208,8 +208,6 @@
             <network>Network</network>
             <ok>OK</ok>
             <failed>Failed</failed>
-            <changed>Changed</changed>
-            <unchanged>Not changed</unchanged>
             <type>Type</type>
             <unconfigured>Monit is disabled or not configured.</unconfigured>
         </translations>
