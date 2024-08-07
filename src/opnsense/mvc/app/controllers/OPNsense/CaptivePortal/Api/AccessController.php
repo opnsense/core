@@ -244,7 +244,7 @@ class AccessController extends ApiControllerBase
             ) {
                 // you can only disconnect a connected client
                 $backend = new Backend();
-                $statusRAW = $backend->configdpRun("captiveportal disconnect", [$zoneid, $clientSession['sessionId']]);
+                $statusRAW = $backend->configdpRun("captiveportal disconnect", [$clientSession['sessionId']]);
                 $status = json_decode($statusRAW, true);
                 if ($status != null) {
                     $this->getLogger("captiveportal")->info(
