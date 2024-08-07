@@ -27,7 +27,12 @@
                     options: {
                         selection: false,
                         multiSelect: false,
-                        rowSelect: false
+                        rowSelect: false,
+                        formatters: {
+                            "timestamp": function (column, row) {
+                                return moment.unix(row[column.id]).local().format('YYYY-MM-DD HH:mm');
+                            }
+                        }
                     }
                 });
 
@@ -52,11 +57,11 @@
                 <thead>
                     <tr>
                         <th data-column-id="uuid" data-type="string" data-visible="false" data-identifier="true" data-sortable="false">{{ lang._('uuid') }}</th>
-                        <th data-column-id="name" data-type="string" data-visible="true" data-identifier="false" data-sortable="false">{{ lang._('Name') }}</th>
+                        <th data-column-id="name" data-type="string" data-visible="true" data-identifier="false">{{ lang._('Name') }}</th>
                         <th data-column-id="active" data-type="string" data-visible="true" data-sortable="false">{{ lang._('Active') }}</th>
-                        <th data-column-id="mountpoint" data-type="string" data-visible="true" data-sortable="false">{{ lang._('Mountpoint') }}</th>
+                        <th data-column-id="mountpoint" data-type="string" data-visible="true">{{ lang._('Mountpoint') }}</th>
                         <th data-column-id="size" data-type="string" data-visible="true" data-sortable="false">{{ lang._('Size') }}</th>
-                        <th data-column-id="created" data-type="string" data-visible="true" data-sortable="false">{{ lang._('Created') }}</th>
+                        <th data-column-id="created" data-type="string" data-formatter="timestamp">{{ lang._('Created') }}</th>
                         <th data-column-id="commands" data-width="9em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                     </tr>
                 </thead>
