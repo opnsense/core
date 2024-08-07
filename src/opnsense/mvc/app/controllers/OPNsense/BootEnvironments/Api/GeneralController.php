@@ -212,9 +212,11 @@ class GeneralController extends ApiControllerBase
     {
         if ($this->request->isPost()) {
             $be = $this->findByUuid($uuid);
-            /* XXX: can we always drop a BE? how about when it's being used */
             if (empty($be)) {
                 throw new UserException(gettext("Boot environment not found"), gettext("Boot environments"));
+            }
+            if (!empty($be['active'])) {
+                throw new UserException(gettext("Cannot delete active boot environment"), gettext("Boot environments"));
             }
             return (json_decode((new Backend())->configdpRun("bootenvironments destroy", [$be['name']]), true));
         }
