@@ -1247,7 +1247,7 @@ EOD;
     shell_safe('/usr/sbin/daemon -f /usr/local/opnsense/scripts/interfaces/ppp-rename.sh %s %s %s', [$interface, $ifcfg['if'], $ppp['type']]);
 
     /* wait for functional device */
-    $max = 30;
+    $max = 20;
     $i = 0;
     while ($i < $max) {
         sleep(1);
