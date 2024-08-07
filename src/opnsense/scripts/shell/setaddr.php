@@ -542,6 +542,12 @@ if (console_prompt_for_yn('Restore web GUI access defaults?', 'n')) {
         unset($config['system']['webgui']['noantilockout']);
         $restart_webgui = true;
     }
+    if (isset($config['interfaces']['lan'])) {
+        $config['interfaces']['lan']['antilockout'] = true;
+        $restart_webgui = true;
+    } else {
+        echo "Could not enable anti lockout rule because no LAN interface was found.\n";
+    }
     if (isset($config['system']['webgui']['interfaces'])) {
         unset($config['system']['webgui']['interfaces']);
         $restart_webgui = true;
