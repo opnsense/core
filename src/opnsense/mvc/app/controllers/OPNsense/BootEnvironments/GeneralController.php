@@ -31,6 +31,16 @@ use OPNsense\Core\Backend;
 
 class GeneralController extends \OPNsense\Base\IndexController
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected function templateJSIncludes()
+    {
+        return array_merge(parent::templateJSIncludes(), [
+            '/ui/js/moment-with-locales.min.js'
+        ]);
+    }
+
     public function indexAction()
     {
         $this->view->pick('OPNsense/BootEnvironments/general');

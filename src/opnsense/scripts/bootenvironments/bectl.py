@@ -1,5 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
+    Copyright (c) 2024 Deciso B.V.
     Copyright (c) 2024 Sheridan Computers Limited
     All rights reserved.
 
@@ -23,113 +24,72 @@
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
+    ------------------------------------------------------------------------------------------
+    Simple wrapper around bectl shell command
 """
+import argparse
+import datetime
+import json
+import time
+import uuid
 from subprocess import Popen, run, PIPE
 
-def activate_be(be_name: str, t: bool = False) -> bool:
-    """
-    This function activate a BE.
-    :param be_name: Name of the BE to activate.
-    :param t: If True, the BE will be activated even if it is mounted.
-    """
-    option = '-t' if t else ''
-    cmd_list = ['bectl', 'activate', be_name]
-    if option == '-t':
-        cmd_list.insert(2, option)
-    bectl_process = run(cmd_list, stdout=PIPE)
-    return bectl_process.returncode == 0
 
-def create_be(new_be_name: str, non_active_be: str = None, recursive: bool = False) -> bool:
-    """
-    This function create a BE.
-    :param new_be_name: Name of the new BE.
-    :param non_active_be: Name of the non active BE.
-    :param recursive: If True, the BE will be created recursively.
-    """
-    cmd_list = ['bectl', 'create']
-    if recursive is True:
-        cmd_list.append('-r')
-    if non_active_be is not None:
-        cmd_list.append('-e')
-        cmd_list.append(non_active_be.strip())
-    cmd_list.append(new_be_name)
-    bectl_process = run(cmd_list)
-    return bectl_process.returncode == 0
-
-def destroy_be(be_name: str, F: bool = False, o: bool = False):
-    """
-    This function destroy a BE.
-    :param be_name: Name of the BE to destroy.
-    :param F: If True, the BE will be destroyed even if it is active.
-    :param o: If True, the BE will be destroyed even if it is mounted.
-    """
-    option = '-'
-    option += 'F' if F else ''
-    option += 'o' if o else ''
-    cmd_list = ['bectl', 'destroy', be_name]
-    if option != '-':
-        cmd_list.insert(2, option)
-    bectl_process = run(cmd_list)
-    return bectl_process.returncode == 0
-
-def rename_be(original_be_name: str, new_be_name: str):
-    """
-    This function rename a BE.
-    :param original_be_name: Name of the BE to rename.
-    :param new_be_name: New name of the BE.
-    """
-    cmd_list = ['bectl', 'rename', original_be_name, new_be_name]
-    bectl_process = run(cmd_list)
-    return bectl_process.returncode == 0
-
-def mount_be(be_name: str, path: str = None) -> str:
-    """
-    This function mounts the BE.
-    :param be_name: Name of the BE to mount.
-    :param path: The path where the BE will be mounted. If not provided,
-    a bectl will create a random one.
-    :return: The path where the BE is mounted.
-    """
-    cmd_list = ['bectl', 'mount', be_name]
-    cmd_list.append(path) if path else None
-    bectl_process = run(
-        cmd_list,
-        universal_newlines=True,
-        encoding='utf-8'
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'action',
+        help='action to perform, see bectl for details',
+        choices=['is_supported', 'activate', 'create', 'clone', 'destroy', 'list', 'rename']
     )
-    assert bectl_process.returncode == 0
-    return bectl_process.stdout.strip()
-
-def umount_be(be_name: str):
-    """
-    This function unmount the BE.
-    :param be_name: Name of the BE to unmount.
-    """
-    cmd_list = ['bectl', 'umount', be_name]
-    bectl_process = run(cmd_list)
-    return bectl_process.returncode == 0
-
-def get_be_list() -> list:
-    """
-    This function get the list of BEs.
-    :return: A list of BEs.
-    """
-    cmd_list = ['bectl', 'list', '-H']
-    bectl_output: Popen[str] = Popen(
-        cmd_list,
-        stdout=PIPE,
-        close_fds=True,
-        universal_newlines=True,
-        encoding='utf-8'
-    )
-    bectl_list = bectl_output.stdout.read().splitlines()
-    return bectl_list
-
-def is_file_system_zfs() -> bool:
-    """
-    This function check if the file system is zfs.
-    :return: True if the file system is zfs, False otherwise.
-    """
-    cmd_list = ['df', '-Tt', 'zfs', '/']
-    df_output = run(cmd_list, stdout=PIPE)
-    return df_output.returncode == 0
+    parser.add_argument('--beName', help='name of boot environment', type=str)
+    parser.add_argument('--from-source', help='boot environment to clone', type=str)
+    inputargs = parser.parse_args()
+    if run(['df', '-Tt', 'zfs', '/'], capture_output=True).returncode != 0:
+        print(json.dumps({"status": "failed", "result": "Unsupported root filesystem"}))
+    elif inputargs.action == 'is_supported':
+        print(json.dumps({"status": "OK", "message": "File system is ZFS"}))
+    elif inputargs.action == 'list':
+        result = []
+        for line in run(['bectl', 'list', '-H'], capture_output=True, text=True).stdout.split("\n"):
+            parts = line.split("\t")
+            if len(parts) >= 5:
+                result.append({
+                    "uuid": str(uuid.uuid3(uuid.NAMESPACE_DNS, parts[0])),
+                    "name": parts[0],
+                    "active": parts[1],
+                    "mountpoint": parts[2],
+                    "size": parts[3],
+                    "created_str": parts[4],
+                    "created": time.mktime(datetime.datetime.strptime(parts[4], "%Y-%m-%d %H:%M").timetuple())
+                })
+        print(json.dumps(result))
+    elif inputargs.action == 'activate' and inputargs.beName:
+        if run(['bectl', 'activate', inputargs.beName], capture_output=True).returncode == 0:
+            print(json.dumps({"status": "ok", "result": 'Boot environment activated'}))
+        else:
+            print(json.dumps({"status": "failed", "result": "An error ocurred whilst activating the boot environment"}))
+    elif inputargs.action == 'create':
+        name = inputargs.beName if inputargs.beName else "BE-{date:%Y%m%d%H%M%S}".format(date=datetime.datetime.now())
+        if run(['bectl', 'create', name], capture_output=True).returncode == 0:
+            print(json.dumps({"status": "ok", "result": "Boot environment created"}))
+        else:
+            print(json.dumps({"status": "failed", "result": "Error: Could not create boot environment"}))
+    elif inputargs.action == 'clone' and inputargs.from_source:
+        name = inputargs.beName if inputargs.beName else "BE-{date:%Y%m%d%H%M%S}".format(date=datetime.datetime.now())
+        if run(['bectl', 'create', '-e', inputargs.from_source, name], capture_output=True).returncode == 0:
+            print(json.dumps({"status": "ok", "result": "Boot environment created"}))
+        else:
+            print(json.dumps({"status": "failed", "result": "Error: Could not create boot environment"}))
+    elif inputargs.action == 'destroy' and inputargs.beName:
+        if run(['bectl', 'destroy', inputargs.beName], capture_output=True).returncode == 0:
+            print(json.dumps({"status": "ok", "result": 'Boot environment destroyed'}))
+        else:
+            print(json.dumps({"status": "failed", "result": "An error ocurred whilst destroying the boot environment"}))
+    elif inputargs.action == 'rename' and inputargs.beName and inputargs.from_source:
+        if run(['bectl', 'rename', inputargs.from_source, inputargs.beName], capture_output=True).returncode == 0:
+            print(json.dumps({"status": "ok", "result": "Boot environment renamed"}))
+        else:
+            print(json.dumps({"status": "failed", "result": "Error: Could not rename boot environment"}))
+    else:
+        print(json.dumps({"status": "failed", "result": "Incomplete argument list"}))
