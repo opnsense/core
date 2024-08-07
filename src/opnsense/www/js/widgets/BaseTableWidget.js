@@ -149,6 +149,7 @@ export default class BaseTableWidget extends BaseWidget {
         let options = this.tables[id].options;
 
         if (!options.rotation && rowIdentifier == null) {
+            $table.children('.grid-row').remove();
             $table.children('.flextable-row').remove();
             this.tables[id].data = data;
         }
