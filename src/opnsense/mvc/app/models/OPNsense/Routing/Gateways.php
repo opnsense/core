@@ -272,30 +272,6 @@ class Gateways extends BaseModel
                 case '6to4':
                     $realif = "{$ifname}_stf";
                     break;
-                case 'dhcp6':
-                case 'slaac':
-                case 'staticv6':
-                    if (isset($ifcfg['dhcp6usev4iface'])) {
-                        break;
-                    }
-                    switch ($ifcfg['ipaddr'] ?? 'none') {
-                        case 'l2tp':
-                        case 'pppoe':
-                        case 'pptp':
-                            if (!empty($this->configHandle->ppps)) {
-                                foreach ($this->configHandle->ppps->children() as $ppp) {
-                                    if ($realif == $ppp->if) {
-                                        $ports = explode(',', $ppp->ports);
-                                        $realif = $this->getRealInterface($definedIntf, $ports[0]);
-                                        break;
-                                    }
-                                }
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
                 default:
                     break;
             }

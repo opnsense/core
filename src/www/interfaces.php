@@ -430,19 +430,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dhcpoverridemtu'] = empty($a_interfaces[$if]['dhcphonourmtu']) ? true : null;
     $pconfig['dhcp6-ia-pd-send-hint'] = isset($a_interfaces[$if]['dhcp6-ia-pd-send-hint']);
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);
-    $pconfig['dhcp6usev4iface'] = isset($a_interfaces[$if]['dhcp6usev4iface']);
     $pconfig['track6-prefix-id--hex'] = sprintf("%x", empty($pconfig['track6-prefix-id']) ? 0 : $pconfig['track6-prefix-id']);
     $pconfig['track6_ifid--hex'] = isset($pconfig['track6_ifid']) && $pconfig['track6_ifid'] != '' ? sprintf("%x", $pconfig['track6_ifid']) : '';
     $pconfig['dhcp6-prefix-id--hex'] = isset($pconfig['dhcp6-prefix-id']) && $pconfig['dhcp6-prefix-id'] != '' ? sprintf("%x", $pconfig['dhcp6-prefix-id']) : '';
     $pconfig['dhcp6_ifid--hex'] = isset($pconfig['dhcp6_ifid']) && $pconfig['dhcp6_ifid'] != '' ? sprintf("%x", $pconfig['dhcp6_ifid']) : '';
     $pconfig['dhcpd6track6allowoverride'] = isset($a_interfaces[$if]['dhcpd6track6allowoverride']);
-
-    /*
-     * Due to the settings being split per interface type, we need
-     * to copy the settings that use the same config directive.
-     */
-    $pconfig['staticv6usev4iface'] = $pconfig['dhcp6usev4iface'];
-    $pconfig['slaacusev4iface'] = $pconfig['dhcp6usev4iface'];
 
     // ipv4 type (from ipaddr)
     if (is_ipaddrv4($pconfig['ipaddr'])) {
@@ -816,11 +808,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                 }
                 break;
-            case 'pppoev6':
-                if ($pconfig['type'] != 'pppoe') {
-                    $input_errors[] = gettext('IPv6 PPPoE mode requires PPPoE IPv4 mode.');
-                }
-                break;
         }
 
         /* normalize MAC addresses - lowercase and convert Windows-ized hyphenated MACs to colon delimited */
@@ -1174,9 +1161,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // switch ipv6 config by type
             switch ($pconfig['type6']) {
                 case 'staticv6':
-                    if (!empty($pconfig['staticv6usev4iface'])) {
-                        $new_config['dhcp6usev4iface'] = true;
-                    }
                     $new_config['ipaddrv6'] = $pconfig['ipaddrv6'];
                     $new_config['subnetv6'] = $pconfig['subnetv6'];
                     if ($pconfig['gatewayv6'] != 'none') {
@@ -1184,9 +1168,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                     break;
                 case 'slaac':
-                    if (!empty($pconfig['slaacusev4iface'])) {
-                        $new_config['dhcp6usev4iface'] = true;
-                    }
                     $new_config['ipaddrv6'] = 'slaac';
                     break;
                 case 'dhcp6':
@@ -1197,9 +1178,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                     if (!empty($pconfig['dhcp6prefixonly'])) {
                         $new_config['dhcp6prefixonly'] = true;
-                    }
-                    if (!empty($pconfig['dhcp6usev4iface'])) {
-                        $new_config['dhcp6usev4iface'] = true;
                     }
                     if (isset($pconfig['dhcp6vlanprio']) && $pconfig['dhcp6vlanprio'] !== '') {
                         $new_config['dhcp6vlanprio'] = $pconfig['dhcp6vlanprio'];
@@ -1575,7 +1553,7 @@ include("head.inc");
       $("#type").change();
 
       $("#type6").change(function(){
-          $('#staticv6, #slaac, #dhcp6, #6rd, #track6').hide();
+          $('#staticv6, #dhcp6, #6rd, #track6').hide();
           $("#" +$(this).val()).show();
       });
       $("#type6").change();
@@ -2644,15 +2622,6 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
-                          <td><a id="help_for_staticv6usev4iface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use IPv4 connectivity"); ?></td>
-                          <td>
-                            <input name="staticv6usev4iface" type="checkbox" id="staticv6usev4iface" value="yes" <?=!empty($pconfig['staticv6usev4iface']) ? "checked=\"checked\"" : ""; ?> />
-                            <div class="hidden" data-for="help_for_staticv6usev4iface">
-                              <?= gettext('Set the IPv6 address on the IPv4 PPP connectivity link.') ?>
-                            </div>
-                          </td>
-                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -2680,15 +2649,6 @@ include("head.inc");
                             </select>
                             <div class="hidden" data-for="help_for_dhcp6vlanprio">
                               <?= gettext('Certain ISPs may require that DHCPv6 requests are sent with a specific VLAN priority.') ?>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a id="help_for_dhcp6usev4iface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Use IPv4 connectivity') ?></td>
-                          <td>
-                            <input name="dhcp6usev4iface" type="checkbox" id="dhcp6usev4iface" value="yes" <?=!empty($pconfig['dhcp6usev4iface']) ? "checked=\"checked\"" : ""; ?> />
-                            <div class="hidden" data-for="help_for_dhcp6usev4iface">
-                              <?= gettext('Request the IPv6 information through the IPv4 PPP connectivity link.') ?>
                             </div>
                           </td>
                         </tr>
@@ -2906,29 +2866,6 @@ include("head.inc");
                             <input name="adv_dhcp6_config_file_override_path" type="text" id="adv_dhcp6_config_file_override_path"  value="<?=$pconfig['adv_dhcp6_config_file_override_path'];?>" />
                             <div class="hidden" data-for="help_for_adv_dhcp6_config_file_override_path">
                               <?= gettext('The value in this field is the full absolute path to a DHCP client configuration file.') ?>
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                <!-- Section : SLAAC -->
-                <div class="tab-content content-box col-xs-12 __mb" id="slaac" style="display:none">
-                  <div class="table-responsive">
-                    <table class="table table-striped opnsense_standard_table_form">
-                      <thead>
-                        <tr>
-                          <th colspan="2"><?=gettext("SLAAC configuration"); ?></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td style="width:22%"><a id="help_for_slaacusev4iface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use IPv4 connectivity"); ?></td>
-                          <td style="width:78%">
-                            <input name="slaacusev4iface" type="checkbox" id="slaacusev4iface" value="yes" <?=!empty($pconfig['slaacusev4iface']) ? "checked=\"checked\"" : ""; ?> />
-                            <div class="hidden" data-for="help_for_slaacusev4iface">
-                              <?= gettext('Request the IPv6 information through the IPv4 PPP connectivity link.') ?>
                             </div>
                           </td>
                         </tr>
