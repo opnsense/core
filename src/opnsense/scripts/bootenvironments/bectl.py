@@ -30,9 +30,10 @@
 import argparse
 import datetime
 import json
+import subprocess
+import sys
 import time
 import uuid
-from subprocess import Popen, run, PIPE
 
 
 if __name__ == '__main__':
@@ -45,51 +46,55 @@ if __name__ == '__main__':
     parser.add_argument('--beName', help='name of boot environment', type=str)
     parser.add_argument('--from-source', help='boot environment to clone', type=str)
     inputargs = parser.parse_args()
-    if run(['df', '-Tt', 'zfs', '/'], capture_output=True).returncode != 0:
-        print(json.dumps({"status": "failed", "result": "Unsupported root filesystem"}))
+
+    cmd = []
+    error_msg = None
+    if subprocess.run(['df', '-Tt', 'zfs', '/'], capture_output=True).returncode != 0:
+        error_msg = 'Unsupported root filesystem'
     elif inputargs.action == 'is_supported':
         print(json.dumps({"status": "OK", "message": "File system is ZFS"}))
     elif inputargs.action == 'list':
-        result = []
-        for line in run(['bectl', 'list', '-H'], capture_output=True, text=True).stdout.split("\n"):
-            parts = line.split("\t")
-            if len(parts) >= 5:
-                result.append({
-                    "uuid": str(uuid.uuid3(uuid.NAMESPACE_DNS, parts[0])),
-                    "name": parts[0],
-                    "active": parts[1],
-                    "mountpoint": parts[2],
-                    "size": parts[3],
-                    "created_str": parts[4],
-                    "created": time.mktime(datetime.datetime.strptime(parts[4], "%Y-%m-%d %H:%M").timetuple())
-                })
-        print(json.dumps(result))
+        cmd = ['bectl', 'list', '-H']
     elif inputargs.action == 'activate' and inputargs.beName:
-        if run(['bectl', 'activate', inputargs.beName], capture_output=True).returncode == 0:
-            print(json.dumps({"status": "ok", "result": 'Boot environment activated'}))
-        else:
-            print(json.dumps({"status": "failed", "result": "An error ocurred whilst activating the boot environment"}))
+        cmd = ['bectl', 'activate', inputargs.beName]
     elif inputargs.action == 'create':
         name = inputargs.beName if inputargs.beName else "BE-{date:%Y%m%d%H%M%S}".format(date=datetime.datetime.now())
-        if run(['bectl', 'create', name], capture_output=True).returncode == 0:
-            print(json.dumps({"status": "ok", "result": "Boot environment created"}))
-        else:
-            print(json.dumps({"status": "failed", "result": "Error: Could not create boot environment"}))
+        cmd = ['bectl', 'create', name]
     elif inputargs.action == 'clone' and inputargs.from_source:
         name = inputargs.beName if inputargs.beName else "BE-{date:%Y%m%d%H%M%S}".format(date=datetime.datetime.now())
-        if run(['bectl', 'create', '-e', inputargs.from_source, name], capture_output=True).returncode == 0:
-            print(json.dumps({"status": "ok", "result": "Boot environment created"}))
-        else:
-            print(json.dumps({"status": "failed", "result": "Error: Could not create boot environment"}))
+        cmd = ['bectl', 'create', '-e', inputargs.from_source, name]
     elif inputargs.action == 'destroy' and inputargs.beName:
-        if run(['bectl', 'destroy', inputargs.beName], capture_output=True).returncode == 0:
-            print(json.dumps({"status": "ok", "result": 'Boot environment destroyed'}))
-        else:
-            print(json.dumps({"status": "failed", "result": "An error ocurred whilst destroying the boot environment"}))
+        cmd = ['bectl', 'destroy', inputargs.beName]
     elif inputargs.action == 'rename' and inputargs.beName and inputargs.from_source:
-        if run(['bectl', 'rename', inputargs.from_source, inputargs.beName], capture_output=True).returncode == 0:
-            print(json.dumps({"status": "ok", "result": "Boot environment renamed"}))
-        else:
-            print(json.dumps({"status": "failed", "result": "Error: Could not rename boot environment"}))
+        cmd = ['bectl', 'rename', inputargs.from_source, inputargs.beName]
     else:
         print(json.dumps({"status": "failed", "result": "Incomplete argument list"}))
+        sys.exit(-1)
+
+    if error_msg:
+        print(json.dumps({"status": "failed", "result": error_msg}))
+    elif len(cmd) > 0:
+        sp = subprocess.run(cmd, capture_output=True, text=True)
+        if sp.returncode != 0:
+            print(json.dumps({"status": "failed", "result": sp.stderr.strip()}))
+        elif inputargs.action == 'list':
+            result = []
+            for line in sp.stdout.split("\n"):
+                parts = line.split("\t")
+                if len(parts) >= 5:
+                    result.append({
+                        "uuid": str(uuid.uuid3(uuid.NAMESPACE_DNS, parts[0])),
+                        "name": parts[0],
+                        "active": parts[1],
+                        "mountpoint": parts[2],
+                        "size": parts[3],
+                        "created_str": parts[4],
+                        "created": time.mktime(datetime.datetime.strptime(parts[4], "%Y-%m-%d %H:%M").timetuple())
+                    })
+            print(json.dumps(result))
+        else:
+            print(json.dumps({
+                "status": "ok",
+                "result": 'bootenvironment executed %s successfully' % inputargs.action
+            }))
+
