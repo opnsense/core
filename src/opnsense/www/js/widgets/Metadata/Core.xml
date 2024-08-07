@@ -138,7 +138,7 @@
             <endpoint>/api/diagnostics/system/system_mbuf</endpoint>
         </endpoints>
         <translations>
-            <title>Mbuf Usage</title>
+            <title>Mbuf</title>
             <used>Used</used>
             <free>Free</free>
         </translations>
@@ -149,7 +149,7 @@
             <endpoint>/api/diagnostics/system/system_swap</endpoint>
         </endpoints>
         <translations>
-            <title>Swap Usage</title>
+            <title>Swap</title>
             <used>Used</used>
             <free>Free</free>
         </translations>
