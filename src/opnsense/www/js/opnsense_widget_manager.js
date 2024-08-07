@@ -331,6 +331,13 @@ class WidgetManager  {
                                 this.grid.addWidget(this.widgetConfigurations[id]);
                                 this._onMarkupRendered(this.widgetClasses[id]);
                                 this._updateGrid(this.widgetHTMLElements[id]);
+
+                                if (this.runtimeOptions.gridLocked) {
+                                    $('.widget-content').css('cursor', 'default');
+                                    $('.close-handle').hide();
+                                    $('.edit-handle').hide();
+                                }
+
                                 changed = true;
                             }
                         }
