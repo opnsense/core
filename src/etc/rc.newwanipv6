@@ -99,7 +99,7 @@ interfaces_vips_configure($interface, 6);
 $greifs = link_interface_to_gre($interface, true, 6);
 $gififs = link_interface_to_gif($interface, true, 6);
 
-switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
+switch (isset($config['system']['ipv6allow']) ? ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') : 'none') {
     case 'slaac':
         /* require immediate reconfiguration before reconfiguring clients */
         plugins_configure('dhcp', false, ['inet6']);
