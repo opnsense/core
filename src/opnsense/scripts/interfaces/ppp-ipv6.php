@@ -56,7 +56,7 @@ switch (isset($config['system']['ipv6allow']) ? ($config['interfaces'][$interfac
         interface_dhcpv6_configure($interface, $config['interfaces'][$interface]);
         /* signal this succeeded to avoid triggering a newwanip event right away */
         exit(0);
-   default:
+    default:
         interface_static6_configure($interface, $config['interfaces'][$interface]);
         system_routing_configure(false, $interface, true, 'inet6');
 }
