@@ -51,9 +51,9 @@ class Gdrive extends Base implements IBackupProvider
             "value" => null
         );
         $fields[] = array(
-            "name" => "GDriveEmail",
+            "name" => "GDriveUID",
             "type" => "text",
-            "label" => gettext("Email Address"),
+            "label" => gettext("Unique ID"),
             "help" => gettext("Client-ID in the Google cloud console"),
             "value" => null
         );
@@ -192,7 +192,7 @@ class Gdrive extends Base implements IBackupProvider
                 try {
                     $client = new \Google\API\Drive();
                     $client->login(
-                        (string)$config->system->remotebackup->GDriveEmail,
+                        (string)$config->system->remotebackup->GDriveUID,
                         (string)$config->system->remotebackup->GDriveP12key
                     );
                 } catch (Exception $e) {
