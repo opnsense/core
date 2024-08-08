@@ -252,12 +252,11 @@
             <offline>Offline</offline>
             <total>Tunnels</total>
             <unconfigured>IPsec is currently disabled. Click to configure IPsec.</unconfigured>
-            <notunnels>There are currently no tunnels.</notunnels>
+            <notunnels>No Phase1 configured.</notunnels>
             <notavailable>N/A</notavailable>
-            <bytesin>Bytes In</bytesin>
-            <bytesout>Bytes Out</bytesout>
-            <installtime>Install Time</installtime>
-            <nophase2connected>No children installed.</nophase2connected>
+            <nophase2connected>No Phase2 connected.</nophase2connected>
+            <connect>Connect</connect>
+            <disconnect>Disconnect</disconnect>
         </translations>
     </ipsectunnels>
     <Wireguard>

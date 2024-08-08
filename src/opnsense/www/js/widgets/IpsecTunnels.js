@@ -29,11 +29,12 @@ import BaseTableWidget from 'widget-base-table';
 export default class IpsecTunnels extends BaseTableWidget {
     constructor() {
         super();
+        this.locked = false; // Add a lock mechanism
+        this.tickTimeout = 4;
     }
 
     getGridOptions() {
         return {
-            // Automatically triggers vertical scrolling after reaching 650px in height
             sizeToContent: 650
         };
     }
@@ -49,34 +50,52 @@ export default class IpsecTunnels extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        const ipsecStatusResponse = await this.ajaxCall('/api/ipsec/Connections/isEnabled');
+        if (!this.locked) { // Check if the widget is locked
+            const ipsecStatusResponse = await this.ajaxCall('/api/ipsec/Connections/isEnabled');
 
-        if (!ipsecStatusResponse.enabled) {
-            this.displayError(`${this.translations.unconfigured}`);
-            return;
+            if (!ipsecStatusResponse.enabled) {
+                this.displayError(`${this.translations.unconfigured}`);
+                return;
+            }
+
+            const response = await this.ajaxCall('/api/ipsec/Sessions/searchPhase1');
+
+            if (!response || !response.rows || response.rows.length === 0) {
+                this.displayError(`${this.translations.notunnels}`);
+                return;
+            }
+
+            if (!this.dataChanged('', response.rows)) {
+                return; // No changes detected, do not update the UI
+            }
+
+            this.processTunnels(response.rows);
         }
-
-        const response = await this.ajaxCall('/api/ipsec/Sessions/searchPhase1');
-
-        if (!response || !response.rows || response.rows.length === 0) {
-            this.displayError(`${this.translations.notunnels}`);
-            return;
-        }
-
-        this.processTunnels(response.rows);
     }
 
-    // Utility function to display errors within the widget
     displayError(message) {
         const $error = $(`<div class="error-message"><a href="/ui/ipsec/connections">${message}</a></div>`);
-        $('#ipsecTunnelTable'). empty().append($error);
+        $('#ipsecTunnelTable').empty().append($error);
+    }
+
+    async connectTunnel(ikeid) {
+        this.locked = true;
+        await this.ajaxCall(`/api/ipsec/sessions/connect/${ikeid}`, JSON.stringify({ikeid: ikeid}), 'POST');
+        const response = await this.ajaxCall('/api/ipsec/Sessions/searchPhase1');
+        this.processTunnels(response.rows); // Refresh the tunnels
+        this.locked = false;
+    }
+
+    async disconnectTunnel(ikeid) {
+        this.locked = true;
+        await this.ajaxCall(`/api/ipsec/sessions/disconnect/${ikeid}`, JSON.stringify({ikeid: ikeid}), 'POST');
+        const response = await this.ajaxCall('/api/ipsec/Sessions/searchPhase1');
+        this.processTunnels(response.rows); // Refresh the tunnels
+        this.locked = false;
     }
 
     processTunnels(newTunnels) {
-        if (!this.dataChanged('', newTunnels)) {
-            return; // No changes detected, do not update the UI
-        }
-
+        $('[data-toggle="tooltip"]').tooltip('hide');
         $('.ipsectunnels-status-icon').tooltip('hide');
 
         let tunnels = newTunnels.map(tunnel => ({
@@ -87,58 +106,97 @@ export default class IpsecTunnels extends BaseTableWidget {
             bytesIn: tunnel['bytes-in'] != null ? this._formatBytes(tunnel['bytes-in']) : this.translations.notavailable,
             bytesOut: tunnel['bytes-out'] != null ? this._formatBytes(tunnel['bytes-out']) : this.translations.notavailable,
             connected: tunnel.connected,
+            ikeid: tunnel.ikeid,
             statusIcon: tunnel.connected ? 'fa-exchange text-success' : 'fa-exchange text-danger'
         }));
 
-        // Sort by connected status, offline first then online
         tunnels.sort((a, b) => a.connected === b.connected ? 0 : a.connected ? -1 : 1);
 
         let onlineCount = tunnels.filter(tunnel => tunnel.connected).length;
         let offlineCount = tunnels.length - onlineCount;
 
-        // Summary row for tunnel counts
         let summaryRow = `
             <div>
-                <span><b>${this.translations.total}:</b> ${tunnels.length} - <b>${this.translations.online}:</b> ${onlineCount} - <b>${this.translations.offline}:</b> ${offlineCount}</span>
+                <span>${this.translations.total}: ${tunnels.length} | ${this.translations.online}: ${onlineCount} | ${this.translations.offline}: ${offlineCount}</span>
             </div>`;
 
         let rows = [summaryRow];
 
-        // Generate HTML for each tunnel
         tunnels.forEach(tunnel => {
             let installTimeInfo = tunnel.installTime === null
-                ? `<span style="font-size: 12px;"><em>${this.translations.nophase2connected}</em></span>`
-                : `<span style="font-size: 12px;"><em>${this.translations.installtime}: ${tunnel.installTime}</em></span>`;
+                ? `<span><a href="/ui/ipsec/sessions">${this.translations.nophase2connected}</a></span>`
+                : `<span>${this.translations.installtime}: ${tunnel.installTime}s</span>`;
 
             let bytesInfo = tunnel.installTime !== null
-                ? `<span style="font-size: 12px;"><em>${this.translations.bytesin}: ${tunnel.bytesIn} - ${this.translations.bytesout}: ${tunnel.bytesOut}</em></span>`
-            : '';
+                ? `<div style="padding-bottom: 10px;">
+                       <i class="fa fa-arrow-down" style="font-size: 13px;"></i>
+                       ${tunnel.bytesIn}
+                       |
+                       <i class="fa fa-arrow-up" style="font-size: 13px;"></i>
+                       ${tunnel.bytesOut}
+                   </div>`
+                : '';
+
+            let connectDisconnectButton = tunnel.connected
+                ? `<span class="ipsec-disconnect" data-ikeid="${tunnel.ikeid}" style="cursor: pointer; float: right; margin-left: auto; margin-right: 10px;" data-toggle="tooltip" title="${this.translations.disconnect}">
+                        <i class="fa fa-times" style="font-size: 13px;"></i>
+                   </span>`
+                : `<span class="ipsec-connect" data-ikeid="${tunnel.ikeid}" style="cursor: pointer; float: right; margin-left: auto; margin-right: 10px;" data-toggle="tooltip" title="${this.translations.connect}">
+                        <i class="fa fa-play" style="font-size: 13px;"></i>
+                   </span>`;
 
             let row = `
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center;">
+                        <i class="fa ${tunnel.statusIcon} ipsectunnels-status-icon" style="cursor: pointer;"
+                            data-toggle="tooltip" title="${tunnel.connected ? this.translations.online : this.translations.offline}">
+                        </i>
+                        &nbsp;
+                        <span><b>${tunnel.phase1desc}</b></span>
+                    </div>
+                    <div>
+                        ${connectDisconnectButton}
+                    </div>
+                </div>
                 <div>
-                    <i class="fa ${tunnel.statusIcon} ipsectunnels-status-icon" style="cursor: pointer;"
-                        data-toggle="tooltip" title="${tunnel.connected ? this.translations.online : this.translations.offline}">
-                    </i>
-                    &nbsp;
-                    <span><b>${tunnel.phase1desc}</b></span>
-                    <br/>
-                    <div>
-                        <span>${tunnel.localAddrs} <span style="font-size: 18px;">↔</span> ${tunnel.remoteAddrs}</span>
-                    </div>
-                    <div>
-                        ${installTimeInfo}
-                    </div>
-                    <div>
-                        ${bytesInfo}
-                    </div>
+                    <span>${tunnel.localAddrs} | ${tunnel.remoteAddrs}</span>
+                </div>
+                <div>
+                    ${installTimeInfo}
+                </div>
+                <div>
+                    ${bytesInfo}
                 </div>`;
             rows.push(row);
         });
 
-        // Update the HTML table with the sorted rows
         super.updateTable('ipsecTunnelTable', rows.map(row => [row]));
 
-        // Activate tooltips for new dynamic elements
         $('.ipsectunnels-status-icon').tooltip({container: 'body'});
+        $('[data-toggle="tooltip"]').tooltip({container: 'body'});
+
+        $('.ipsec-connect').on('click', async (event) => {
+            this.locked = true;
+
+            let $target = $(event.currentTarget);
+            let ikeid = $target.data('ikeid');
+
+            this.startCommandTransition(ikeid, $target);
+            await this.connectTunnel(ikeid);
+            await this.endCommandTransition(ikeid, $target, true, true);
+            this.locked = false;
+        });
+
+        $('.ipsec-disconnect').on('click', async (event) => {
+            this.locked = true;
+
+            let $target = $(event.currentTarget);
+            let ikeid = $target.data('ikeid');
+
+            this.startCommandTransition(ikeid, $target);
+            await this.disconnectTunnel(ikeid);
+            await this.endCommandTransition(ikeid, $target, true, true);
+            this.locked = false;
+        });
     }
 }
