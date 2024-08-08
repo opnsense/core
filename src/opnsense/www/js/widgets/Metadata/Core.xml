@@ -252,9 +252,9 @@
             <offline>Offline</offline>
             <total>Tunnels</total>
             <unconfigured>IPsec is currently disabled. Click to configure IPsec.</unconfigured>
-            <notunnels>No Phase1 configured.</notunnels>
+            <notunnels>Phase1 unconfigured</notunnels>
             <notavailable>N/A</notavailable>
-            <nophase2connected>No Phase2 connected.</nophase2connected>
+            <nophase2connected>Phase2 disconnected</nophase2connected>
             <connect>Connect</connect>
             <disconnect>Disconnect</disconnect>
         </translations>
