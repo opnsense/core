@@ -1085,6 +1085,7 @@
 /usr/local/opnsense/scripts/interfaces/mpd.script
 /usr/local/opnsense/scripts/interfaces/ping.py
 /usr/local/opnsense/scripts/interfaces/portprobe.py
+/usr/local/opnsense/scripts/interfaces/ppp-ipv6.php
 /usr/local/opnsense/scripts/interfaces/ppp-linkdown.sh
 /usr/local/opnsense/scripts/interfaces/ppp-linkup.sh
 /usr/local/opnsense/scripts/interfaces/ppp-rename.sh

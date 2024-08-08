@@ -932,6 +932,40 @@ function interfaces_ptpid_next()
     return $ptpid;
 }
 
+function interface_ppps_bound($interface, $family = null)
+{
+    global $config;
+
+    $ifcfg = $config['interfaces'][$interface] ?? null;
+    $ppps = $config['ppps']['ppp'] ?? null;
+    $bound = false;
+
+    if (!interface_ppps_capable($ifcfg, $ppps)) {
+        return $bound;
+    }
+
+    /* XXX ignore $family for backwards compat at the moment */
+    $bound = isset($wancfg['dhcp6usev4iface']);
+
+    return $bound;
+}
+
+function interface_ppps_capable($ifcfg, $ppps)
+{
+    if (empty($ifcfg) || empty($ppps)) {
+        return false;
+    }
+
+    foreach ($ppps as $ppp) {
+        if ($ifcfg['if'] == $ppp['if']) {
+            /* we only test for PPP capability that needs mpd5 */
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function interface_ppps_configure($interface)
 {
     global $config;
@@ -2380,7 +2414,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         case 'dhcp6':
             mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled up', $realifv6);
 
-            if (!isset($wancfg['dhcp6usev4iface'])) {
+            if (!interface_ppps_bound($interface)) {
                 interface_dhcpv6_prepare($interface, $wancfg);
                 interface_dhcpv6_configure($interface, $wancfg);
             }
@@ -2395,7 +2429,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             interface_track6_configure($interface, $wancfg, $reload || $linkup);
             break;
         default:
-            if (!isset($wancfg['dhcp6usev4iface'])) {
+            if (!interface_ppps_bound($interface)) {
                 interface_static6_configure($interface, $wancfg);
             }
             break;
