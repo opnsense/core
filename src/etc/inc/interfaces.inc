@@ -945,7 +945,19 @@ function interface_ppps_configure($interface)
         return;
     }
 
+    $ipv4_mode = false;
     $ipv6_mode = false;
+
+    switch ($ifcfg['ipaddr'] ?? 'none') {
+        case 'ppp':
+        case 'pppoe':
+        case 'pptp':
+        case 'l2tp':
+            $ipv4_mode = true;
+            break;
+        default:
+            break;
+    }
 
     switch ($ifcfg['ipaddrv6'] ?? 'none') {
         case 'dhcp6':
@@ -957,18 +969,26 @@ function interface_ppps_configure($interface)
             break;
     }
 
+    if (!$ipv4_mode && !$ipv6_mode) {
+        return;
+    }
+
     /* for IPv6 we need the mode to render in the configuration */
     $ipv6_mode = $ipv6_mode ? 'enable' : 'disable';
 
+    $ppp = null;
+
     if (isset($config['ppps']['ppp'])) {
-        foreach ($config['ppps']['ppp'] as $ppp) {
-            if ($ifcfg['if'] == $ppp['if']) {
+        foreach ($config['ppps']['ppp'] as $tmp) {
+            if ($ifcfg['if'] == $tmp['if']) {
+                $ppp = $tmp;
                 break;
             }
         }
     }
 
-    if (!isset($ppp) || $ifcfg['if'] != $ppp['if']) {
+    /* XXX since interface_ppps_capable() verified this it is likely spurious to check */
+    if (empty($ppp)) {
         log_msg("interface_ppps_configure() cannot find PPP config for device {$ifcfg['if']}", LOG_ERR);
         return;
     }
@@ -1068,12 +1088,15 @@ EOD;
 
     $mpdconf .= "  set iface up-script /usr/local/opnsense/scripts/interfaces/ppp-linkup.sh\n";
     $mpdconf .= "  set iface down-script /usr/local/opnsense/scripts/interfaces/ppp-linkdown.sh\n";
-    if ($ppp['type'] == "ppp") {
-        $localip = is_ipaddr($ppp['localip']) ? $ppp['localip'] : '0.0.0.0';
-        $gateway = is_ipaddr($ppp['gateway']) ? $ppp['gateway'] : '0.0.0.0';
-        $mpdconf .= "  set ipcp ranges {$localip}/0 {$gateway}/0\n";
-    } else {
-        $mpdconf .= "  set ipcp ranges 0.0.0.0/0 0.0.0.0/0\n";
+
+    if ($ipv4_mode) {
+        if ($ppp['type'] == 'ppp') {
+            $localip = is_ipaddr($ppp['localip']) ? $ppp['localip'] : '0.0.0.0';
+            $gateway = is_ipaddr($ppp['gateway']) ? $ppp['gateway'] : '0.0.0.0';
+            $mpdconf .= "  set ipcp ranges {$localip}/0 {$gateway}/0\n";
+        } else {
+            $mpdconf .= "  set ipcp ranges 0.0.0.0/0 0.0.0.0/0\n";
+        }
     }
 
     if (isset($ppp['vjcomp'])) {
