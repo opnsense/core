@@ -275,6 +275,9 @@
                     <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
                     <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                 </domain>
+                <ttl type="IntegerField">
+                    <Required>N</Required>
+                </ttl>
                 <rr type="OptionField">
                     <Required>Y</Required>
                     <Default>A</Default>

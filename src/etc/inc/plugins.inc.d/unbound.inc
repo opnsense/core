@@ -550,6 +550,11 @@ function unbound_add_host_entries($ifconfig_details)
                     }
                 }
 
+                if (empty($host->ttl))
+                    $ttl = 3600;
+                else
+                    $ttl = $host->ttl;
+
                 foreach ($tmp_aliases as $alias) {
                     $override_is_main = $alias === $tmp_aliases[0];
 
@@ -563,7 +568,7 @@ function unbound_add_host_entries($ifconfig_details)
                             /* Handle wildcard entries which have "*" as a hostname. Since we added a . above, we match on "*.". */
                             if ($alias['hostname'] == '*.') {
                                 $unbound_entries .= "local-zone: \"{$alias['domain']}\" redirect\n";
-                                $unbound_entries .= "local-data: \"{$alias['domain']} IN {$host->rr} {$host->server}\"\n";
+                                $unbound_entries .= "local-data: \"{$alias['domain']} $ttl IN {$host->rr} {$host->server}\"\n";
                             } else {
                                 if (($override_is_main || $tmp_aliases[0]['hostname'] === '*') && !in_array($host->server, $ptr_records, true)) {
                                     /* Only generate a PTR record for the non-alias override and only if the IP is not already associated with a PTR.
@@ -574,11 +579,11 @@ function unbound_add_host_entries($ifconfig_details)
                                 } else {
                                     syslog(LOG_WARNING, 'PTR record already exists for ' . $alias['hostname'] . $alias['domain'] . '(' . $host->server . ')');
                                 }
-                                $unbound_entries .= "local-data: \"{$alias['hostname']}{$alias['domain']} IN {$host->rr} {$host->server}\"\n";
+                                $unbound_entries .= "local-data: \"{$alias['hostname']}{$alias['domain']} $ttl IN {$host->rr} {$host->server}\"\n";
                             }
                             break;
                         case 'MX':
-                            $unbound_entries .= "local-data: \"{$alias['hostname']}{$alias['domain']} IN MX {$host->mxprio} {$host->mx}\"\n";
+                            $unbound_entries .= "local-data: \"{$alias['hostname']}{$alias['domain']} $ttl IN MX {$host->mxprio} {$host->mx}\"\n";
                             break;
                     }
 
