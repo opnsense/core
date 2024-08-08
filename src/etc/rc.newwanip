@@ -98,7 +98,7 @@ switch (isset($config['system']['ipv6allow']) ? ($config['interfaces'][$interfac
             interface_dhcpv6_configure($interface, $config['interfaces'][$interface]);
         }
         break;
-   default:
+    default:
         if (isset($config['interfaces'][$interface]['dhcp6usev4iface'])) {
             interface_static6_configure($interface, $config['interfaces'][$interface]);
             system_routing_configure(false, $interface, true, 'inet6');
