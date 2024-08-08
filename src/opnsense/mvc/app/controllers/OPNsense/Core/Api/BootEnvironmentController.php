@@ -25,16 +25,14 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OPNsense\BootEnvironments\Api;
+namespace OPNsense\Core\Api;
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
-use OPNsense\Core\Config;
 use OPNsense\Base\UserException;
-use OPNsense\BootEnvironments\BootEnvironments;
 
 
-class GeneralController extends ApiControllerBase
+class BootEnvironmentController extends ApiControllerBase
 {
     private array $environments = [];
 
@@ -46,7 +44,7 @@ class GeneralController extends ApiControllerBase
     private function find($fieldname, $value)
     {
         if (empty($this->environments)) {
-            $this->environments = json_decode(trim((new Backend())->configdRun('bootenvironments list')), true) ?? [];
+            $this->environments = json_decode(trim((new Backend())->configdRun('bootenvironment list')), true) ?? [];
         }
         foreach ($this->environments as $record) {
             if (isset($record[$fieldname]) && $record[$fieldname] == $value) {
@@ -88,7 +86,7 @@ class GeneralController extends ApiControllerBase
      */
     public function isSupportedAction()
     {
-        $result = json_decode((new Backend())->configdRun('bootenvironments supported'), true) ?? [];
+        $result = json_decode((new Backend())->configdRun('bootenvironment supported'), true) ?? [];
         return ['supported' => !empty($result) && $result['status'] == 'OK'];
     }
 
@@ -98,7 +96,7 @@ class GeneralController extends ApiControllerBase
      */
     public function searchAction()
     {
-        $records = json_decode((new Backend())->configdRun('bootenvironments list'), true) ?? [];
+        $records = json_decode((new Backend())->configdRun('bootenvironment list'), true) ?? [];
         return $this->searchRecordsetBase($records);
     }
 
@@ -137,7 +135,7 @@ class GeneralController extends ApiControllerBase
                 return ['status' => 'ok'];
             } elseif (!empty($be) && empty($new_be) && $this->isValidName($name)) {
                 return json_decode(
-                    (new Backend())->configdpRun("bootenvironments rename", [$be['name'], $name]),
+                    (new Backend())->configdpRun("bootenvironment rename", [$be['name'], $name]),
                     true
                 );
             } else {
@@ -183,11 +181,11 @@ class GeneralController extends ApiControllerBase
                     $msg = gettext('Boot environment not found');
                 } else {
                     return json_decode(
-                        (new Backend())->configdpRun("bootenvironments clone", [$name, $be['name']]), true
+                        (new Backend())->configdpRun("bootenvironment clone", [$name, $be['name']]), true
                     );
                 }
             } elseif (empty($msg)) {
-                return (new Backend())->configdpRun("bootenvironments create", [$name]);
+                return (new Backend())->configdpRun("bootenvironment create", [$name]);
             }
 
             if ($msg) {
@@ -215,10 +213,10 @@ class GeneralController extends ApiControllerBase
             if (empty($be)) {
                 throw new UserException(gettext("Boot environment not found"), gettext("Boot environments"));
             }
-            if ($be['active'] !== '-') {
+            if ($be['active'] != '-') {
                 throw new UserException(gettext("Cannot delete active boot environment"), gettext("Boot environments"));
             }
-            return (json_decode((new Backend())->configdpRun("bootenvironments destroy", [$be['name']]), true));
+            return (json_decode((new Backend())->configdpRun("bootenvironment destroy", [$be['name']]), true));
         }
         return ['status' => 'failed'];
     }
@@ -238,7 +236,7 @@ class GeneralController extends ApiControllerBase
             if (empty($be)) {
                 throw new UserException(gettext("Boot environment not found"), gettext("Boot environments"));
             }
-            return json_decode((new Backend())->configdpRun("bootenvironments activate", [$be['name']]), true);
+            return json_decode((new Backend())->configdpRun("bootenvironment activate", [$be['name']]), true);
         }
         return ['status' => 'failed'];
     }

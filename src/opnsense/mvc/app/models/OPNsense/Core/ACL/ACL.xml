@@ -652,6 +652,13 @@
             <pattern>api/trust/crl/*</pattern>
         </patterns>
     </page-system-crlmanager>
+    <page-system-bootenvironment>
+        <name>System: Boot Environments</name>
+        <patterns>
+            <pattern>ui/bootenvironments/*</pattern>
+            <pattern>api/bootenvironments/*</pattern>
+        </patterns>
+    </page-system-bootenvironment>
     <page-system-firmware-manualupdate>
         <name>System: Firmware</name>
         <patterns>

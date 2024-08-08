@@ -1,9 +1,0 @@
-<acl>
-    <page-system-bootenvironments>
-        <name>System: Boot Environments</name>
-        <patterns>
-            <pattern>ui/bootenvironments/*</pattern>
-            <pattern>api/bootenvironments/*</pattern>
-        </patterns>
-    </page-system-bootenvironments>
-</acl>

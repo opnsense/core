@@ -25,11 +25,10 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OPNsense\BootEnvironments;
+namespace OPNsense\Core;
 
-use OPNsense\Core\Backend;
 
-class GeneralController extends \OPNsense\Base\IndexController
+class BootEnvironmentController extends \OPNsense\Base\IndexController
 {
     /**
      * {@inheritdoc}
@@ -43,7 +42,7 @@ class GeneralController extends \OPNsense\Base\IndexController
 
     public function indexAction()
     {
-        $this->view->pick('OPNsense/BootEnvironments/general');
-        $this->view->generalForm = $this->getForm('general');
+        $this->view->pick('OPNsense/Core/bootenvironment');
+        $this->view->BEForm = $this->getForm('bootenvironment');
     }
 }
