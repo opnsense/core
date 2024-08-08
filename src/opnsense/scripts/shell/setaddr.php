@@ -65,7 +65,7 @@ function console_get_interface_from_ppp($realif)
     global $config;
 
     if (isset($config['ppps']['ppp'])) {
-        foreach ($config['ppps']['ppp'] as $pppid => $ppp) {
+        foreach ($config['ppps']['ppp'] as $ppp) {
             if ($realif == $ppp['if']) {
                 $ifaces = explode(',', $ppp['ports']);
                 return $ifaces[0];

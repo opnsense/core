@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2023 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2024 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2006 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -91,18 +91,7 @@ switch (isset($config['system']['ipv6allow']) ? ($config['interfaces'][$interfac
         interface_6rd_configure($interface, $config['interfaces'][$interface], true);
         system_routing_configure(false, $interface); /* XXX interface recreation breaks attached routes */
         break;
-    case 'dhcp6':
-    case 'slaac':
-        if (isset($config['interfaces'][$interface]['dhcp6usev4iface'])) {
-            interface_dhcpv6_prepare($interface, $config['interfaces'][$interface]);
-            interface_dhcpv6_configure($interface, $config['interfaces'][$interface]);
-        }
-        break;
-   default:
-        if (isset($config['interfaces'][$interface]['dhcp6usev4iface'])) {
-            interface_static6_configure($interface, $config['interfaces'][$interface]);
-            system_routing_configure(false, $interface, true, 'inet6');
-        }
+    default:
         break;
 }
 
