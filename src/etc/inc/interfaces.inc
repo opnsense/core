@@ -961,12 +961,13 @@ function interface_ppps_configure($interface)
     $ipv6_mode = $ipv6_mode ? 'enable' : 'disable';
 
     if (isset($config['ppps']['ppp'])) {
-        foreach ($config['ppps']['ppp'] as $pppid => $ppp) {
+        foreach ($config['ppps']['ppp'] as $ppp) {
             if ($ifcfg['if'] == $ppp['if']) {
                 break;
             }
         }
     }
+
     if (!isset($ppp) || $ifcfg['if'] != $ppp['if']) {
         log_msg("interface_ppps_configure() cannot find PPP config for device {$ifcfg['if']}", LOG_ERR);
         return;
@@ -1068,16 +1069,8 @@ EOD;
     $mpdconf .= "  set iface up-script /usr/local/opnsense/scripts/interfaces/ppp-linkup.sh\n";
     $mpdconf .= "  set iface down-script /usr/local/opnsense/scripts/interfaces/ppp-linkdown.sh\n";
     if ($ppp['type'] == "ppp") {
-        if (is_ipaddr($ppp['localip'])) {
-            $localip = $ppp['localip'];
-        } else {
-            $localip = '0.0.0.0';
-        }
-        if (is_ipaddr($ppp['gateway'])) {
-            $gateway = $ppp['gateway'];
-        } else {
-            $gateway = "10.64.64.{$pppid}";
-        }
+        $localip = is_ipaddr($ppp['localip']) ? $ppp['localip'] : '0.0.0.0';
+        $gateway = is_ipaddr($ppp['gateway']) ? $ppp['gateway'] : '0.0.0.0';
         $mpdconf .= "  set ipcp ranges {$localip}/0 {$gateway}/0\n";
     } else {
         $mpdconf .= "  set ipcp ranges 0.0.0.0/0 0.0.0.0/0\n";
