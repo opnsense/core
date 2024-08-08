@@ -932,10 +932,6 @@ function interfaces_ptpid_next()
     return $ptpid;
 }
 
-/*
- * This function can configure PPPoE, MLPPP (PPPoE), PPTP.
- * It writes the mpd config file to /var/etc every time the link is opened.
- */
 function interface_ppps_configure($interface)
 {
     global $config;
@@ -949,8 +945,20 @@ function interface_ppps_configure($interface)
         return;
     }
 
-    // mpd5 modem chat script expected in the same directory as the mpd_xxx.conf files
-    @copy('/usr/local/opnsense/scripts/interfaces/mpd.script', '/var/etc/mpd.script');
+    $ipv6_mode = false;
+
+    switch ($ifcfg['ipaddrv6'] ?? 'none') {
+        case 'dhcp6':
+        case 'pppoev6':
+        case 'slaac':
+            $ipv6_mode = true;
+            break;
+        default:
+            break;
+    }
+
+    /* for IPv6 we need the mode to render in the configuration */
+    $ipv6_mode = $ipv6_mode ? 'enable' : 'disable';
 
     if (isset($config['ppps']['ppp'])) {
         foreach ($config['ppps']['ppp'] as $pppid => $ppp) {
@@ -960,7 +968,7 @@ function interface_ppps_configure($interface)
         }
     }
     if (!isset($ppp) || $ifcfg['if'] != $ppp['if']) {
-        log_msg("Can't find PPP config for {$ifcfg['if']} in interface_ppps_configure().", LOG_ERR);
+        log_msg("interface_ppps_configure() cannot find PPP config for device {$ifcfg['if']}", LOG_ERR);
         return;
     }
 
@@ -973,6 +981,7 @@ function interface_ppps_configure($interface)
             }
         }
     }
+
     $localips = isset($ppp['localip']) ? explode(',', $ppp['localip']) : [];
     $gateways = isset($ppp['gateway']) ? explode(',', $ppp['gateway']) : [];
     $subnets = isset($ppp['subnet']) ? explode(',', $ppp['subnet']) : [];
@@ -1017,19 +1026,6 @@ function interface_ppps_configure($interface)
                 log_msg("Unknown {$ppp['type']} configured as PPP interface.", LOG_ERR);
                 break;
         }
-    }
-
-    $ipv6_mode = 'disable';
-
-    switch ($ifcfg['ipaddrv6'] ?? 'none') {
-        /* XXX should be limited to 'pppoev6' match but some ISPs seem to require both racing away */
-        case 'dhcp6':
-        case 'pppoev6':
-        case 'slaac':
-            $ipv6_mode = 'enable';
-            break;
-        default:
-            break;
     }
 
     // Construct the mpd.conf file
@@ -1095,6 +1091,7 @@ EOD;
         $mpdconf .= "  set ipcp enable req-pri-dns\n";
         $mpdconf .= "  set ipcp enable req-sec-dns\n";
     }
+
     foreach ($ports as $pid => $port) {
         $mpdconf_arr = [];
         $port = get_real_interface($port);
@@ -1208,21 +1205,16 @@ EOD;
         $mpdconf .= "\topen\n";
     }
 
-    $fd = fopen("/var/etc/mpd_{$interface}.conf", "w");
-    if (!$fd) {
-        log_msg("Error: cannot open mpd_{$interface}.conf in interface_ppps_configure().", LOG_ERR);
-        return;
-    }
-
-    // Write out mpd_ppp.conf
-    fwrite($fd, $mpdconf);
-    fclose($fd);
-    unset($mpdconf);
-
     /* stop the service as a precaution */
     killbypid("/var/run/{$ppp['type']}_{$interface}.pid");
 
-    // Create the uptime log if requested and if it doesn't exist already, or delete it if it is no longer requested.
+    /* mpd5 modem chat script expected in the same directory as the mpd_xxx.conf files */
+    @copy('/usr/local/opnsense/scripts/interfaces/mpd.script', '/var/etc/mpd.script');
+
+    /* write the configuration */
+    @file_put_contents("/var/etc/mpd_{$interface}.conf", $mpdconf);
+
+    /* create the uptime log if requested */
     if (isset($ppp['uptime'])) {
         @touch("/conf/{$ifcfg['if']}.log");
     } else {
