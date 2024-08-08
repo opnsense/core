@@ -53,7 +53,7 @@ class Gdrive extends Base implements IBackupProvider
         $fields[] = array(
             "name" => "GDriveEmail",
             "type" => "text",
-            "label" => gettext("Email Address"),
+            "label" => gettext("Unique ID"),
             "help" => gettext("Client-ID in the Google cloud console"),
             "value" => null
         );
