@@ -30,7 +30,7 @@ import BaseTableWidget from 'widget-base-table';
 export default class Wireguard extends BaseTableWidget {
     constructor() {
         super();
-        this.currentTunnels = {};
+        this.tickTimeout = 4;
     }
 
     getGridOptions() {
@@ -64,6 +64,10 @@ export default class Wireguard extends BaseTableWidget {
             return;
         }
 
+        if (!this.dataChanged('', response.rows)) {
+            return; // No changes detected, do not update the UI
+        }
+
         this.processTunnels(response.rows);
     }
 
@@ -75,43 +79,63 @@ export default class Wireguard extends BaseTableWidget {
 
     processTunnels(newTunnels) {
         $('.wireguard-interface').tooltip('hide');
+
+        let now = moment().unix(); // Current time in seconds
         let tunnels = newTunnels.filter(row => row.type == 'peer').map(row => ({
             ifname: row.ifname ? row.if + ' (' + row.ifname + ') ' : row.if,
             name: row.name,
-            rx: row['transfer-rx'] ? this._formatBytes(row['transfer-rx']) : '-',
-            tx: row['transfer-tx'] ? this._formatBytes(row['transfer-tx']) : '-',
-            pubkey: row['public-key'],
-            latest_handhake: row['latest-handshake'],
-            latest_handhake_fmt: row['latest-handshake'] ? moment.unix(row['latest-handshake']).local().format('YYYY-MM-DD HH:mm:ss') : '-'
+            allowed_ips: row['allowed-ips'] || this.translations.notavailable,
+            rx: row['transfer-rx'] ? this._formatBytes(row['transfer-rx']) : this.translations.notavailable,
+            tx: row['transfer-tx'] ? this._formatBytes(row['transfer-tx']) : this.translations.notavailable,
+            latest_handshake: row['latest-handshake'], // No fallback since we handle if 0
+            latest_handshake_fmt: row['latest-handshake'] ? moment.unix(row['latest-handshake']).local().format('YYYY-MM-DD HH:mm:ss') : null,
+            connected: row['latest-handshake'] && (now - row['latest-handshake']) <= 180, // Considered online if last handshake was within 3 minutes
+            statusIcon: row['latest-handshake'] && (now - row['latest-handshake']) <= 180 ? 'fa-exchange text-success' : 'fa-exchange text-danger'
         }));
 
-        tunnels.sort((a, b) => a.latest_handhake === b.latest_handhake ? 0 : a.latest_handhake ? -1 : 1);
+        tunnels.sort((a, b) => a.connected === b.connected ? 0 : a.connected ? -1 : 1);
 
-        let rows = [];
-        // Generate HTML for each tunnel
+        let onlineCount = tunnels.filter(tunnel => tunnel.connected).length;
+        let offlineCount = tunnels.length - onlineCount;
+
+        let summaryRow = `
+            <div>
+                <span>${this.translations.total}: ${tunnels.length} | ${this.translations.online}: ${onlineCount} | ${this.translations.offline}: ${offlineCount}</span>
+            </div>`;
+
+        let rows = [summaryRow];
+
         tunnels.forEach(tunnel => {
             let row = `
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center;">
+                        <i class="fa ${tunnel.statusIcon} wireguard-interface" style="cursor: pointer;"
+                            data-toggle="tooltip" title="${tunnel.connected ? this.translations.online : this.translations.offline}">
+                        </i>
+                        &nbsp;
+                        <span><b>${tunnel.ifname}</b></span>
+                    </div>
+                </div>
                 <div>
-                    <div data-toggle="tooltip" class="wireguard-interface" title="${tunnel.pubkey}">
-                        <b>${tunnel.ifname}</b>
-                        <i class="fa fa-arrows-h " aria-hidden="true"></i>
-                        <b>${tunnel.name}</b>
-                    </div>
-                    <div>
-                        ${this.translations.rx} : ${tunnel.rx}
-                        ${this.translations.tx} : ${tunnel.tx}
-                    </div>
-                    <div>
-                        ${tunnel.latest_handhake_fmt}
-                    </div>
+                    <span><a href="/ui/wireguard/general#peers">${tunnel.name}</a> | ${tunnel.allowed_ips}</span>
+                </div>
+                <div>
+                    ${tunnel.latest_handshake_fmt
+                        ? `<span>${tunnel.latest_handshake_fmt}</span>
+                           <div style="padding-bottom: 10px;">
+                               <i class="fa fa-arrow-down" style="font-size: 13px;"></i>
+                               ${tunnel.rx}
+                               |
+                               <i class="fa fa-arrow-up" style="font-size: 13px;"></i>
+                               ${tunnel.tx}
+                           </div>`
+                        : `<span>${this.translations.disconnected}</span>`}
                 </div>`;
             rows.push(row);
         });
 
-        // Update the HTML table with the sorted rows
         super.updateTable('wgTunnelTable', rows.map(row => [row]));
 
-        // Activate tooltips for new dynamic elements
-        $('.wireguard-interface').tooltip();
+        $('.wireguard-interface').tooltip({container: 'body'});
     }
 }

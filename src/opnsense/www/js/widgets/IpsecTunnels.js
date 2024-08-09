@@ -103,8 +103,8 @@ export default class IpsecTunnels extends BaseTableWidget {
             localAddrs: tunnel['local-addrs'] || this.translations.notavailable,
             remoteAddrs: tunnel['remote-addrs'] || this.translations.notavailable,
             installTime: tunnel['install-time'], // No fallback since we check if it is null
-            bytesIn: tunnel['bytes-in'] != null ? this._formatBytes(tunnel['bytes-in']) : this.translations.notavailable,
-            bytesOut: tunnel['bytes-out'] != null ? this._formatBytes(tunnel['bytes-out']) : this.translations.notavailable,
+            bytesIn: tunnel['bytes-in'] != null && tunnel['bytes-in'] !== 0 ? this._formatBytes(tunnel['bytes-in']) : this.translations.notavailable,
+            bytesOut: tunnel['bytes-out'] != null && tunnel['bytes-out'] !== 0 ? this._formatBytes(tunnel['bytes-out']) : this.translations.notavailable,
             connected: tunnel.connected,
             ikeid: tunnel.ikeid,
             statusIcon: tunnel.connected ? 'fa-exchange text-success' : 'fa-exchange text-danger'
@@ -124,7 +124,7 @@ export default class IpsecTunnels extends BaseTableWidget {
 
         tunnels.forEach(tunnel => {
             let installTimeInfo = tunnel.installTime === null
-                ? `<span><a href="/ui/ipsec/sessions">${this.translations.nophase2connected}</a></span>`
+                ? `<span>${this.translations.nophase2connected}</span>`
                 : `<span>${this.translations.installtime}: ${tunnel.installTime}s</span>`;
 
             let bytesInfo = tunnel.installTime !== null
@@ -159,7 +159,7 @@ export default class IpsecTunnels extends BaseTableWidget {
                     </div>
                 </div>
                 <div>
-                    <span>${tunnel.localAddrs} | ${tunnel.remoteAddrs}</span>
+                    <span><a href="/ui/ipsec/sessions">${tunnel.localAddrs} | ${tunnel.remoteAddrs}</a></span>
                 </div>
                 <div>
                     ${installTimeInfo}

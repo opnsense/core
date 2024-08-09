@@ -269,9 +269,12 @@
         <translations>
             <title>Wireguard</title>
             <unconfigured>Wireguard is currently disabled. Click to configure Wireguard.</unconfigured>
-            <notunnels>There are currently no tunnels.</notunnels>
-            <rx>rx</rx>
-            <tx>tx</tx>
+            <notunnels>No tunnels connected</notunnels>
+            <online>Online</online>
+            <offline>Offline</offline>
+            <total>Tunnels</total>
+            <notavailable>N/A</notavailable>
+            <disconnected>Peer disconnected</disconnected>
         </translations>
     </Wireguard>
     <services>
