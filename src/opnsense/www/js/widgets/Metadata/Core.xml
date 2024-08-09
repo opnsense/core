@@ -254,6 +254,7 @@
             <unconfigured>IPsec is currently disabled. Click to configure IPsec.</unconfigured>
             <notunnels>Phase1 unconfigured</notunnels>
             <notavailable>N/A</notavailable>
+            <installtime>Install Time</installtime>
             <nophase2connected>Phase2 disconnected</nophase2connected>
             <connect>Connect</connect>
             <disconnect>Disconnect</disconnect>
