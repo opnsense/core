@@ -89,7 +89,7 @@ CORE_VERSION?=	${CORE_COMMIT:[1]}
 CORE_REVISION?=	${CORE_COMMIT:[2]}
 CORE_HASH?=	${CORE_COMMIT:[3]}
 
-CORE_DEVEL?=	master
+CORE_MAIN?=	master
 CORE_STABLE?=	stable/${CORE_ABI}
 
 _CORE_SERIES=	${CORE_VERSION:S/./ /g}
@@ -499,7 +499,7 @@ mfc: ensure-stable clean-mfcdir
 	@mv ${MFCDIR}/$$(basename ${MFC}) ${MFC}
 	@git add -f .
 	@if ! git diff --quiet HEAD; then \
-		git commit -m "${MFC}: sync with ${CORE_DEVEL}"; \
+		git commit -m "${MFC}: sync with ${CORE_MAIN}"; \
 	fi
 .else
 	@git checkout ${CORE_STABLE}
@@ -507,24 +507,24 @@ mfc: ensure-stable clean-mfcdir
 		git cherry-pick --abort; \
 	fi
 .endif
-	@git checkout ${CORE_DEVEL}
+	@git checkout ${CORE_MAIN}
 .endfor
 
 stable:
 	@git checkout ${CORE_STABLE}
 
-devel ${CORE_DEVEL}:
-	@git checkout ${CORE_DEVEL}
+devel main ${CORE_MAIN}:
+	@git checkout ${CORE_MAIN}
 
 rebase:
 	@git checkout ${CORE_STABLE}
 	@git rebase -i
-	@git checkout ${CORE_DEVEL}
+	@git checkout ${CORE_MAIN}
 
 reset:
 	@git checkout ${CORE_STABLE}
 	@git reset --hard HEAD~1
-	@git checkout ${CORE_DEVEL}
+	@git checkout ${CORE_MAIN}
 
 log: ensure-stable
 	@git log --stat -p ${CORE_STABLE}
@@ -532,7 +532,7 @@ log: ensure-stable
 push:
 	@git checkout ${CORE_STABLE}
 	@git push
-	@git checkout ${CORE_DEVEL}
+	@git checkout ${CORE_MAIN}
 
 migrate:
 	@src/opnsense/mvc/script/run_migrations.php
