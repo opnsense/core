@@ -984,17 +984,25 @@ function interface_ppps_capable($ifcfg, $ppps)
     return false;
 }
 
-function interface_ppps_parent($device)
+function interface_ppps_hardware($device)
 {
+    $devices = [$device];
+
     foreach (config_read_array('ppps', 'ppp') as $ppp) {
         if ($device == $ppp['if']) {
-            /* XXX MLPPP will return multiple */
-            $ports = explode(',', $ppp['ports']);
-            return get_real_interface($ports[0]);
+            $devices = [];
+            foreach (explode(',', $ppp['ports']) as $port) {
+                /*
+                 * XXX We only have get_real_interface() here because
+                 * PPP may be assigned to an assigned interface!  :(
+                 */
+                $devices[] = get_real_interface($port);
+            }
+            break;
         }
     }
 
-    return $device;
+    return $devices;
 }
 
 function interface_ppps_reset($interface, $suspend, $ifcfg, $ppps)
@@ -2310,7 +2318,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     $realifv6 = get_real_interface($interface, 'inet6');
 
     /* get the correct hardware interface if PPP is involved or return the one we have */
-    $realhwif = interface_ppps_parent($realif);
+    $realhwif = array_shift(interface_ppps_hardware($realif)); /* XXX support all MLPPP devices */
 
     if ($reload) {
         foreach (plugins_devices() as $device) {
