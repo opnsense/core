@@ -89,7 +89,8 @@ CORE_VERSION?=	${CORE_COMMIT:[1]}
 CORE_REVISION?=	${CORE_COMMIT:[2]}
 CORE_HASH?=	${CORE_COMMIT:[3]}
 
-CORE_MAIN?=	master
+CORE_MAINS=	master devel main
+CORE_MAIN?=	${CORE_MAINS:[1]}
 CORE_STABLE?=	stable/${CORE_ABI}
 
 _CORE_SERIES=	${CORE_VERSION:S/./ /g}
@@ -513,7 +514,7 @@ mfc: ensure-stable clean-mfcdir
 stable:
 	@git checkout ${CORE_STABLE}
 
-devel main ${CORE_MAIN}:
+${CORE_MAINS}:
 	@git checkout ${CORE_MAIN}
 
 rebase:
