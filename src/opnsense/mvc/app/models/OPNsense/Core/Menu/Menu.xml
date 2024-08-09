@@ -72,6 +72,7 @@
                 <Edit url="/system_advanced_sysctl.php*" visibility="hidden"/>
             </Tunables>
         </Settings>
+        <Snapshots cssClass="fa fa-database fa-fw" url="/ui/core/boot_environment/"/>
         <Trust cssClass="fa fa-certificate fa-fw">
             <Authorities url="/ui/trust/ca"/>
             <Certificates url="/ui/trust/cert"/>
