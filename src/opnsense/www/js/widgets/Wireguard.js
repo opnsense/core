@@ -105,6 +105,7 @@ export default class Wireguard extends BaseTableWidget {
 
         let rows = [summaryRow];
 
+        // Generate HTML for each tunnel
         tunnels.forEach(tunnel => {
             let row = `
                 <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -134,8 +135,10 @@ export default class Wireguard extends BaseTableWidget {
             rows.push(row);
         });
 
+        // Update the HTML table with the sorted rows
         super.updateTable('wgTunnelTable', rows.map(row => [row]));
 
+        // Activate tooltips for new dynamic elements
         $('.wireguard-interface').tooltip({container: 'body'});
     }
 }

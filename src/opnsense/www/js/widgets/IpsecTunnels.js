@@ -35,6 +35,7 @@ export default class IpsecTunnels extends BaseTableWidget {
 
     getGridOptions() {
         return {
+            // Automatically triggers vertical scrolling after reaching 650px in height
             sizeToContent: 650
         };
     }
@@ -73,6 +74,7 @@ export default class IpsecTunnels extends BaseTableWidget {
         }
     }
 
+    // Utility function to display errors within the widget
     displayError(message) {
         const $error = $(`<div class="error-message"><a href="/ui/ipsec/connections">${message}</a></div>`);
         $('#ipsecTunnelTable').empty().append($error);
@@ -110,11 +112,13 @@ export default class IpsecTunnels extends BaseTableWidget {
             statusIcon: tunnel.connected ? 'fa-exchange text-success' : 'fa-exchange text-danger'
         }));
 
+        // Sort by connected status, offline first then online
         tunnels.sort((a, b) => a.connected === b.connected ? 0 : a.connected ? -1 : 1);
 
         let onlineCount = tunnels.filter(tunnel => tunnel.connected).length;
         let offlineCount = tunnels.length - onlineCount;
 
+        // Summary row for tunnel counts
         let summaryRow = `
             <div>
                 <span>${this.translations.total}: ${tunnels.length} | ${this.translations.online}: ${onlineCount} | ${this.translations.offline}: ${offlineCount}</span>
@@ -122,6 +126,7 @@ export default class IpsecTunnels extends BaseTableWidget {
 
         let rows = [summaryRow];
 
+        // Generate HTML for each tunnel
         tunnels.forEach(tunnel => {
             let installTimeInfo = tunnel.installTime === null
                 ? `<span>${this.translations.nophase2connected}</span>`
@@ -170,11 +175,14 @@ export default class IpsecTunnels extends BaseTableWidget {
             rows.push(row);
         });
 
+        // Update the HTML table with the sorted rows
         super.updateTable('ipsecTunnelTable', rows.map(row => [row]));
 
+        // Activate tooltips for new dynamic elements
         $('.ipsectunnels-status-icon').tooltip({container: 'body'});
         $('[data-toggle="tooltip"]').tooltip({container: 'body'});
 
+        // Event listeners for the connect and disconnect buttons
         $('.ipsec-connect').on('click', async (event) => {
             this.locked = true;
 
