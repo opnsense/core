@@ -107,7 +107,11 @@ class Response
             fpassthru($this->content);
             @fclose($this->content);
         } elseif (!empty($this->content)) {
-            echo $this->content;
+            if (is_array($this->content)) {
+                echo json_encode($this->content);
+            } else {
+                echo $this->content;
+            }
         }
 
         $this->sent = true;

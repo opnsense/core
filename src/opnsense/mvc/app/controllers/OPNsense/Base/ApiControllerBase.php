@@ -268,7 +268,7 @@ class ApiControllerBase extends ControllerRoot
                                 // not authenticated
                                 $this->response->setStatusCode(403, "Forbidden");
                                 $this->response->setContentType('application/json', 'UTF-8');
-                                $this->response->setJsonContent(['status'  => 403,'message' => 'Forbidden']);
+                                $this->response->setContent(['status'  => 403,'message' => 'Forbidden']);
                                 $this->response->send();
                                 return false;
                             } else {
@@ -279,7 +279,7 @@ class ApiControllerBase extends ControllerRoot
                                 if ($dispatchError != null) {
                                     $this->response->setStatusCode(400, "Bad Request");
                                     $this->response->setContentType('application/json', 'UTF-8');
-                                    $this->response->setJsonContent(['status'  => 400, 'message' => $dispatchError]);
+                                    $this->response->setContent(['status'  => 400, 'message' => $dispatchError]);
                                     $this->response->send();
                                     return false;
                                 }
@@ -301,7 +301,7 @@ class ApiControllerBase extends ControllerRoot
             // not authenticated
             $this->response->setStatusCode(401, "Unauthorized");
             $this->response->setContentType('application/json', 'UTF-8');
-            $this->response->setJsonContent(['status'  => 401, 'message' => 'Authentication Failed']);
+            $this->response->setContent(['status'  => 401, 'message' => 'Authentication Failed']);
             $this->response->send();
             return false;
         } else {
