@@ -75,8 +75,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($configure_unbound) {
         unbound_configure_do();
     } else {
-        plugins_configure('monitor');
-        rrd_configure();
+      plugins_configure('monitor');
+      rrd_configure();
+      /* XXX: rrd graphs depend on a cronjob, we can probably remove this in a future version when the job is unconditional */
+      system_cron_configure();
     }
 
 }

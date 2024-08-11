@@ -295,6 +295,14 @@ function core_cron()
     $jobs[]['autocron'] = array('/usr/local/sbin/ping_hosts.sh', '*/4');
     $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d firmware changelog cron', '0', '22');
 
+    /**
+     * rrd graph collector, only execute when script is present and not locked by rrd_configure()
+     */
+    $jobs[]['autocron'] = [
+        'test -e /var/db/rrd/updaterrd.sh && /usr/local/bin/flock -n -E 1 /var/db/rrd/updaterrd.sh /var/db/rrd/updaterrd.sh',
+        '*'
+    ];
+
     if (!empty($config['system']['rrdbackup']) && $config['system']['rrdbackup'] > 0) {
         $jobs[]['autocron'] = array(
             '/usr/local/etc/rc.syshook.d/backup/20-rrd',
