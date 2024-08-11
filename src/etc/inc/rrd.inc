@@ -62,43 +62,8 @@ function rrd_configure($verbose = false, $bootup = false)
     $ntpd = "ntpd.rrd";
     $cputemp = "-cputemp.rrd";
 
-    $rrdtool = "/usr/local/bin/rrdtool";
-    $netstat = "/usr/bin/netstat";
     $awk = "/usr/bin/awk";
     $pfctl = "/sbin/pfctl";
-    $sysctl = "/sbin/sysctl";
-    $cpustats = "/usr/local/sbin/cpustats";
-    $ifconfig = "/sbin/ifconfig";
-    $ntpq = "/usr/local/sbin/ntpq";
-
-    $rrdtrafficinterval = 60;
-    $rrdwirelessinterval = 60;
-    $rrdpacketsinterval = 60;
-    $rrdstatesinterval = 60;
-    $rrdlbpoolinterval = 60;
-    $rrdprocinterval = 60;
-    $rrdmeminterval = 60;
-    $rrdmbufinterval = 60;
-    $rrdcellularinterval = 60;
-    $rrdvpninterval = 60;
-    $rrdntpdinterval = 60;
-    $rrdcputempinterval = 60;
-
-    $trafficvalid = $rrdtrafficinterval * 2;
-    $wirelessvalid = $rrdwirelessinterval * 2;
-    $packetsvalid = $rrdpacketsinterval * 2;
-    $statesvalid = $rrdstatesinterval * 2;
-    $procvalid = $rrdlbpoolinterval * 2;
-    $memvalid = $rrdmeminterval * 2;
-    $mbufvalid = $rrdmbufinterval * 2;
-    $cellularvalid = $rrdcellularinterval * 2;
-    $vpnvalid = $rrdvpninterval * 2;
-    $ntpdvalid = $rrdntpdinterval * 2;
-    $cputempvalid = $rrdcputempinterval * 2;
-
-    /* Assume 2*10GigE for now */
-    $downstream = 2500000000;
-    $upstream = 2500000000;
 
     /* XXX: kill off traffic collectors, remove when we know the update required a reboot */
     killbypid('/var/run/updaterrd.pid');
@@ -112,6 +77,7 @@ function rrd_configure($verbose = false, $bootup = false)
         /* open file handle to update script and lock it in exclusive mode */
         @touch('/var/db/rrd/updaterrd.sh');
         $fobj = new \OPNsense\Core\FileObject('/var/db/rrd/updaterrd.sh', 'r+', 0755, LOCK_EX);
+        $rrd_factory = new \OPNsense\RRD\Factory();
 
         /* db update script */
         $rrdupdatesh = "#!/bin/sh\n";
@@ -135,66 +101,24 @@ function rrd_configure($verbose = false, $bootup = false)
             }
 
             /* TRAFFIC, set up the rrd file */
-            if (!file_exists("$rrddbpath$ifname$traffic")) {
-                $rrdcreate = "$rrdtool create $rrddbpath$ifname$traffic --step $rrdtrafficinterval ";
-                $rrdcreate .= "DS:inpass:COUNTER:$trafficvalid:0:$downstream ";
-                $rrdcreate .= "DS:outpass:COUNTER:$trafficvalid:0:$upstream ";
-                $rrdcreate .= "DS:inblock:COUNTER:$trafficvalid:0:$downstream ";
-                $rrdcreate .= "DS:outblock:COUNTER:$trafficvalid:0:$upstream ";
-                $rrdcreate .= "DS:inpass6:COUNTER:$trafficvalid:0:$downstream ";
-                $rrdcreate .= "DS:outpass6:COUNTER:$trafficvalid:0:$upstream ";
-                $rrdcreate .= "DS:inblock6:COUNTER:$trafficvalid:0:$downstream ";
-                $rrdcreate .= "DS:outblock6:COUNTER:$trafficvalid:0:$upstream ";
-                $rrdcreate .= "RRA:AVERAGE:0.5:1:1200 ";
-                $rrdcreate .= "RRA:AVERAGE:0.5:5:720 ";
-                $rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
-                $rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
-
-                rrd_create($rrdcreate);
-                unset($rrdcreate);
-            }
-
-            /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-            if ($bootup) {
-                mwexec("$rrdtool update $rrddbpath$ifname$traffic N:U:U:U:U:U:U:U:U");
-            }
+            $rrd = $rrd_factory->get('Traffic', "$rrddbpath$ifname$traffic");
+            $rrd->create()->update();
 
             $rrdupdatesh .= "\n";
             $rrdupdatesh .= "# polling traffic for interface $ifname $realif IPv4/IPv6 counters \n";
-            $rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$traffic N:";
+            $rrdupdatesh .= $rrd->update_cmd() ;
             $rrdupdatesh .= "`$pfctl -vvsI -i {$realif} | awk '\\\n";
             $rrdupdatesh .= "/In4\/Pass/ { b4pi = \$6 };/Out4\/Pass/ { b4po = \$6 };/In4\/Block/ { b4bi = \$6 };/Out4\/Block/ { b4bo = \$6 };\\\n";
             $rrdupdatesh .= "/In6\/Pass/ { b6pi = \$6 };/Out6\/Pass/ { b6po = \$6 };/In6\/Block/ { b6bi = \$6 };/Out6\/Block/ { b6bo = \$6 };\\\n";
             $rrdupdatesh .= "END {print b4pi \":\" b4po \":\" b4bi \":\" b4bo \":\" b6pi \":\" b6po \":\" b6bi \":\" b6bo};'`\n";
 
             /* PACKETS, set up the rrd file */
-            if (!file_exists("$rrddbpath$ifname$packets")) {
-                $rrdcreate = "$rrdtool create $rrddbpath$ifname$packets --step $rrdpacketsinterval ";
-                $rrdcreate .= "DS:inpass:COUNTER:$packetsvalid:0:$downstream ";
-                $rrdcreate .= "DS:outpass:COUNTER:$packetsvalid:0:$upstream ";
-                $rrdcreate .= "DS:inblock:COUNTER:$packetsvalid:0:$downstream ";
-                $rrdcreate .= "DS:outblock:COUNTER:$packetsvalid:0:$upstream ";
-                $rrdcreate .= "DS:inpass6:COUNTER:$packetsvalid:0:$downstream ";
-                $rrdcreate .= "DS:outpass6:COUNTER:$packetsvalid:0:$upstream ";
-                $rrdcreate .= "DS:inblock6:COUNTER:$packetsvalid:0:$downstream ";
-                $rrdcreate .= "DS:outblock6:COUNTER:$packetsvalid:0:$upstream ";
-                $rrdcreate .= "RRA:AVERAGE:0.5:1:1200 ";
-                $rrdcreate .= "RRA:AVERAGE:0.5:5:720 ";
-                $rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
-                $rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
-
-                rrd_create($rrdcreate);
-                unset($rrdcreate);
-            }
-
-            /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-            if ($bootup) {
-                mwexec("$rrdtool update $rrddbpath$ifname$packets N:U:U:U:U:U:U:U:U");
-            }
+            $rrd = $rrd_factory->get('Packets', "$rrddbpath$ifname$packets");
+            $rrd->create()->update();
 
             $rrdupdatesh .= "\n";
             $rrdupdatesh .= "# polling packets for interface $ifname $realif \n";
-            $rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$packets N:";
+            $rrdupdatesh .= $rrd->update_cmd();
             $rrdupdatesh .= "`$pfctl -vvsI -i {$realif} | awk '\\\n";
             $rrdupdatesh .= "/In4\/Pass/ { b4pi = \$4 };/Out4\/Pass/ { b4po = \$4 };/In4\/Block/ { b4bi = \$4 };/Out4\/Block/ { b4bo = \$4 };\\\n";
             $rrdupdatesh .= "/In6\/Pass/ { b6pi = \$4 };/Out6\/Pass/ { b6po = \$4 };/In6\/Block/ { b6bi = \$4 };/Out6\/Block/ { b6bo = \$4 };\\\n";
@@ -202,49 +126,19 @@ function rrd_configure($verbose = false, $bootup = false)
 
             /* WIRELESS, set up the rrd file */
             if (isset($config['interfaces'][$ifname]['wireless']['mode']) && $config['interfaces'][$ifname]['wireless']['mode'] == "bss") {
-                if (!file_exists("$rrddbpath$ifname$wireless")) {
-                    $rrdcreate = "$rrdtool create $rrddbpath$ifname$wireless --step $rrdwirelessinterval ";
-                    $rrdcreate .= "DS:snr:GAUGE:$wirelessvalid:0:1000 ";
-                    $rrdcreate .= "DS:rate:GAUGE:$wirelessvalid:0:1000 ";
-                    $rrdcreate .= "DS:channel:GAUGE:$wirelessvalid:0:1000 ";
-                    $rrdcreate .= "RRA:AVERAGE:0.5:1:1200 ";
-                    $rrdcreate .= "RRA:AVERAGE:0.5:5:720 ";
-                    $rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
-                    $rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
-
-                    rrd_create($rrdcreate);
-                    unset($rrdcreate);
-                }
-
-                /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-                if ($bootup) {
-                    mwexec("$rrdtool update $rrddbpath$ifname$wireless N:U:U:U");
-                }
+                $rrd = $rrd_factory->get('Wireless', "$rrddbpath$ifname$wireless");
+                $rrd->create()->update();
 
                 $rrdupdatesh .= "\n";
                 $rrdupdatesh .= "# polling wireless for interface $ifname $realif \n";
-                $rrdupdatesh .= "WIFI=`$ifconfig {$realif} list sta| $awk 'gsub(\"M\", \"\") {getline 2;print substr(\$5, 0, length(\$5)-2) \":\" $4 \":\" $3}'`\n";
-                $rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$wireless N:\${WIFI}\n";
+                $rrdupdatesh .= "WIFI=`/sbin/ifconfig {$realif} list sta| $awk 'gsub(\"M\", \"\") {getline 2;print substr(\$5, 0, length(\$5)-2) \":\" $4 \":\" $3}'`\n";
+                $rrdupdatesh .= $rrd->update_cmd() . "\${WIFI}\n";
             }
 
             /* OpenVPN, set up the rrd file */
             if (isset($ovpn_servers[$ifname])) {
-                if (!file_exists("$rrddbpath$ifname$vpnusers")) {
-                    $rrdcreate = "$rrdtool create $rrddbpath$ifname$vpnusers --step $rrdvpninterval ";
-                    $rrdcreate .= "DS:users:GAUGE:$vpnvalid:0:10000 ";
-                    $rrdcreate .= "RRA:AVERAGE:0.5:1:1200 ";
-                    $rrdcreate .= "RRA:AVERAGE:0.5:5:720 ";
-                    $rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
-                    $rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
-
-                    rrd_create($rrdcreate);
-                    unset($rrdcreate);
-                }
-
-                /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-                if ($bootup) {
-                    mwexec("$rrdtool update $rrddbpath$ifname$vpnusers N:U");
-                }
+                $rrd = $rrd_factory->get('Wireless', "$rrddbpath$ifname$vpnusers");
+                $rrd->create()->update();
                 $rrdupdatesh .= "\n";
                 $rrdupdatesh .= "# polling vpn users for interface $ifname\n";
                 $rrdupdatesh .= "list_current_users() {\n";
@@ -254,7 +148,7 @@ function rrd_configure($verbose = false, $bootup = false)
                 $rrdupdatesh .= " echo \"quit\"\n";
                 $rrdupdatesh .= "}\n";
                 $rrdupdatesh .= "OVPN=`list_current_users | nc -U {$ovpn_servers[$ifname]['sockFilename']} | awk -F\",\" '/^CLIENT_LIST/ {print \$2}' | wc -l | awk '{print $1}'`\n";
-                $rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$vpnusers N:\${OVPN}\n";
+                $rrdupdatesh .= $rrd->update_cmd() . "\${OVPN}\n";
             }
         }
 
@@ -262,177 +156,63 @@ function rrd_configure($verbose = false, $bootup = false)
         $ifname = "system";
 
         /* STATES, create pf states database */
-        if (! file_exists("$rrddbpath$ifname$states")) {
-            $rrdcreate = "$rrdtool create $rrddbpath$ifname$states --step $rrdstatesinterval ";
-            $rrdcreate .= "DS:pfrate:GAUGE:$statesvalid:0:10000000 ";
-            $rrdcreate .= "DS:pfstates:GAUGE:$statesvalid:0:10000000 ";
-            $rrdcreate .= "DS:pfnat:GAUGE:$statesvalid:0:10000000 ";
-            $rrdcreate .= "DS:srcip:GAUGE:$statesvalid:0:10000000 ";
-            $rrdcreate .= "DS:dstip:GAUGE:$statesvalid:0:10000000 ";
-            $rrdcreate .= "RRA:AVERAGE:0.5:1:1200 ";
-            $rrdcreate .= "RRA:AVERAGE:0.5:5:720 ";
-            $rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
-            $rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
-
-            rrd_create($rrdcreate);
-            unset($rrdcreate);
-        }
-
-        /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-        if ($bootup) {
-            mwexec("$rrdtool update $rrddbpath$ifname$states N:U:U:U:U:U");
-        }
+        $rrd = $rrd_factory->get('States', "$rrddbpath$ifname$states");
+        $rrd->create()->update();
 
         /* the pf states gathering function. */
         $rrdupdatesh .= "\n";
-        $rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$states N:`/usr/local/opnsense/scripts/system/rrd_pfstate_info.py`\n\n";
+        $rrdupdatesh .= $rrd->update_cmd() . "`/usr/local/opnsense/scripts/system/rrd_pfstate_info.py`\n\n";
         /* End pf states statistics */
 
         /* CPU, create CPU statistics database */
-        if (!file_exists("$rrddbpath$ifname$proc")) {
-            $rrdcreate = "$rrdtool create $rrddbpath$ifname$proc --step $rrdprocinterval ";
-            $rrdcreate .= "DS:user:GAUGE:$procvalid:0:10000000 ";
-            $rrdcreate .= "DS:nice:GAUGE:$procvalid:0:10000000 ";
-            $rrdcreate .= "DS:system:GAUGE:$procvalid:0:10000000 ";
-            $rrdcreate .= "DS:interrupt:GAUGE:$procvalid:0:10000000 ";
-            $rrdcreate .= "DS:processes:GAUGE:$procvalid:0:10000000 ";
-            $rrdcreate .= "RRA:AVERAGE:0.5:1:1200 ";
-            $rrdcreate .= "RRA:AVERAGE:0.5:5:720 ";
-            $rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
-            $rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
-
-            rrd_create($rrdcreate);
-            unset($rrdcreate);
-        }
-
-        /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-        if ($bootup) {
-            mwexec("$rrdtool update $rrddbpath$ifname$proc N:U:U:U:U:U");
-        }
+        $rrd = $rrd_factory->get('Processor', "$rrddbpath$ifname$proc");
+        $rrd->create()->update();
 
         /* the CPU stats gathering function. */
-        $rrdupdatesh .= "CPU=`$cpustats | cut -f1-4 -d':'`\n";
+        $rrdupdatesh .= "CPU=`/usr/local/sbin/cpustats | cut -f1-4 -d':'`\n";
         /* Using ps uxaH will count all processes including system threads. Top was undercounting. */
         $rrdupdatesh .= "PROCS=`ps uxaH | wc -l | awk '{print \$1;}'`\n";
-        $rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$proc N:\${CPU}:\${PROCS}\n";
+        $rrdupdatesh .= $rrd->update_cmd() . "\${CPU}:\${PROCS}\n";
         /* End CPU statistics */
 
         /* Memory, create Memory statistics database */
-        if (!file_exists("$rrddbpath$ifname$mem")) {
-            $rrdcreate = "$rrdtool create $rrddbpath$ifname$mem --step $rrdmeminterval ";
-            $rrdcreate .= "DS:active:GAUGE:$memvalid:0:10000000 ";
-            $rrdcreate .= "DS:inactive:GAUGE:$memvalid:0:10000000 ";
-            $rrdcreate .= "DS:free:GAUGE:$memvalid:0:10000000 ";
-            $rrdcreate .= "DS:cache:GAUGE:$memvalid:0:10000000 ";
-            $rrdcreate .= "DS:wire:GAUGE:$memvalid:0:10000000 ";
-            $rrdcreate .= "RRA:MIN:0.5:1:1200 ";
-            $rrdcreate .= "RRA:MIN:0.5:5:720 ";
-            $rrdcreate .= "RRA:MIN:0.5:60:1860 ";
-            $rrdcreate .= "RRA:MIN:0.5:1440:2284 ";
-            $rrdcreate .= "RRA:AVERAGE:0.5:1:1200 ";
-            $rrdcreate .= "RRA:AVERAGE:0.5:5:720 ";
-            $rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
-            $rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
-            $rrdcreate .= "RRA:MAX:0.5:1:1200 ";
-            $rrdcreate .= "RRA:MAX:0.5:5:720 ";
-            $rrdcreate .= "RRA:MAX:0.5:60:1860 ";
-            $rrdcreate .= "RRA:MAX:0.5:1440:2284";
-
-            rrd_create($rrdcreate);
-            unset($rrdcreate);
-        }
-
-        /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-        if ($bootup) {
-            mwexec("$rrdtool update $rrddbpath$ifname$mem N:U:U:U:U:U");
-        }
+        $rrd = $rrd_factory->get('Memory', "$rrddbpath$ifname$mem");
+        $rrd->create()->update();
 
         /* the Memory stats gathering function. */
-        $rrdupdatesh .= "MEM=`$sysctl -n vm.stats.vm.v_page_count vm.stats.vm.v_active_count vm.stats.vm.v_inactive_count vm.stats.vm.v_free_count vm.stats.vm.v_cache_count vm.stats.vm.v_wire_count | ";
+        $rrdupdatesh .= "MEM=`/sbin/sysctl -n vm.stats.vm.v_page_count vm.stats.vm.v_active_count vm.stats.vm.v_inactive_count vm.stats.vm.v_free_count vm.stats.vm.v_cache_count vm.stats.vm.v_wire_count | ";
         $rrdupdatesh .= " $awk '{getline active;getline inactive;getline free;getline cache;getline wire;printf ";
         $rrdupdatesh .= "((active/$0) * 100)\":\"((inactive/$0) * 100)\":\"((free/$0) * 100)\":\"((cache/$0) * 100)\":\"(wire/$0 * 100)}'`\n";
-        $rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$mem N:\${MEM}\n";
+        $rrdupdatesh .= $rrd->update_cmd() . "\${MEM}\n";
         /* End Memory statistics */
 
         /* mbuf, create mbuf statistics database */
-        if (!file_exists("$rrddbpath$ifname$mbuf")) {
-            $rrdcreate = "$rrdtool create $rrddbpath$ifname$mbuf --step $rrdmbufinterval ";
-            $rrdcreate .= "DS:current:GAUGE:$mbufvalid:0:10000000 ";
-            $rrdcreate .= "DS:cache:GAUGE:$mbufvalid:0:10000000 ";
-            $rrdcreate .= "DS:total:GAUGE:$mbufvalid:0:10000000 ";
-            $rrdcreate .= "DS:max:GAUGE:$mbufvalid:0:10000000 ";
-            $rrdcreate .= "RRA:MIN:0.5:1:1200 ";
-            $rrdcreate .= "RRA:MIN:0.5:5:720 ";
-            $rrdcreate .= "RRA:MIN:0.5:60:1860 ";
-            $rrdcreate .= "RRA:MIN:0.5:1440:2284 ";
-            $rrdcreate .= "RRA:AVERAGE:0.5:1:1200 ";
-            $rrdcreate .= "RRA:AVERAGE:0.5:5:720 ";
-            $rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
-            $rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
-            $rrdcreate .= "RRA:MAX:0.5:1:1200 ";
-            $rrdcreate .= "RRA:MAX:0.5:5:720 ";
-            $rrdcreate .= "RRA:MAX:0.5:60:1860 ";
-            $rrdcreate .= "RRA:MAX:0.5:1440:2284";
-
-            rrd_create($rrdcreate);
-            unset($rrdcreate);
-        }
-
-        /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-        if ($bootup) {
-            mwexec("$rrdtool update $rrddbpath$ifname$mbuf N:U:U:U:U");
-        }
+        $rrd = $rrd_factory->get('Mbuf', "$rrddbpath$ifname$mbuf");
+        $rrd->create()->update();
 
         /* the mbuf stats gathering function. */
-        $rrdupdatesh .= "MBUF=`$netstat -m | ";
+        $rrdupdatesh .= "MBUF=`/usr/bin/netstat -m | ";
         $rrdupdatesh .= " $awk '/mbuf clusters in use/ { gsub(/\//, \":\", $1); print $1; }'`\n";
-        $rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$mbuf N:\${MBUF}\n";
+        $rrdupdatesh .= $rrd->update_cmd() ."\${MBUF}\n";
         /* End mbuf statistics */
 
         /* End System statistics */
 
         /* NTP, set up the ntpd rrd file */
         if (isset($config['ntpd']['statsgraph'])) {
-            /* set up the ntpd rrd file */
-            if (!file_exists("$rrddbpath$ntpd")) {
-                $rrdcreate = "$rrdtool create $rrddbpath$ntpd --step $rrdntpdinterval ";
-                $rrdcreate .= "DS:offset:GAUGE:$ntpdvalid:-1000:1000 ";
-                $rrdcreate .= "DS:sjit:GAUGE:$ntpdvalid:0:1000 ";
-                $rrdcreate .= "DS:cjit:GAUGE:$ntpdvalid:0:1000 ";
-                $rrdcreate .= "DS:wander:GAUGE:$ntpdvalid:0:1000 ";
-                $rrdcreate .= "DS:freq:GAUGE:$ntpdvalid:0:1000 ";
-                $rrdcreate .= "DS:disp:GAUGE:$ntpdvalid:0:1000 ";
-                $rrdcreate .= "RRA:MIN:0.5:1:1200 ";
-                $rrdcreate .= "RRA:MIN:0.5:5:720 ";
-                $rrdcreate .= "RRA:MIN:0.5:60:1860 ";
-                $rrdcreate .= "RRA:MIN:0.5:1440:2284 ";
-                $rrdcreate .= "RRA:AVERAGE:0.5:1:1200 ";
-                $rrdcreate .= "RRA:AVERAGE:0.5:5:720 ";
-                $rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
-                $rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
-                $rrdcreate .= "RRA:MAX:0.5:1:1200 ";
-                $rrdcreate .= "RRA:MAX:0.5:5:720 ";
-                $rrdcreate .= "RRA:MAX:0.5:60:1860 ";
-                $rrdcreate .= "RRA:MAX:0.5:1440:2284 ";
+            $rrd = $rrd_factory->get('Ntp', "$rrddbpath$ntpd");
+            $rrd->create()->update();
 
-                rrd_create($rrdcreate);
-                unset($rrdcreate);
-            }
-
-            /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-            if ($bootup) {
-                mwexec("$rrdtool update $rrddbpath$ntpd N:U:U:U:U:U:U");
-            }
             /* the ntp stats gathering function. */
             $rrdupdatesh .= "\n";
-            $rrdupdatesh .= "$ntpq -c rv | $awk 'BEGIN{ RS=\",\"}{ print }' >> /tmp/ntp-rrdstats.$$\n";
+            $rrdupdatesh .= "/usr/local/sbin/ntpq -c rv | $awk 'BEGIN{ RS=\",\"}{ print }' >> /tmp/ntp-rrdstats.$$\n";
             $rrdupdatesh .= "NOFFSET=`grep offset /tmp/ntp-rrdstats.$$ | awk 'BEGIN{FS=\"=\"}{print $2}'`\n";
             $rrdupdatesh .= "NFREQ=`grep frequency /tmp/ntp-rrdstats.$$ | awk 'BEGIN{FS=\"=\"}{print $2}'`\n";
             $rrdupdatesh .= "NSJIT=`grep sys_jitter /tmp/ntp-rrdstats.$$ | awk 'BEGIN{FS=\"=\"}{print $2}'`\n";
             $rrdupdatesh .= "NCJIT=`grep clk_jitter /tmp/ntp-rrdstats.$$ | awk 'BEGIN{FS=\"=\"}{print $2}'`\n";
             $rrdupdatesh .= "NWANDER=`grep clk_wander /tmp/ntp-rrdstats.$$ | awk 'BEGIN{FS=\"=\"}{print $2}'`\n";
             $rrdupdatesh .= "NDISPER=`grep rootdisp /tmp/ntp-rrdstats.$$ | awk 'BEGIN{FS=\"=\"}{print $2}'`\n";
-            $rrdupdatesh .= "$rrdtool update $rrddbpath$ntpd \N:\${NOFFSET}:\${NSJIT}:\${NCJIT}:\${NWANDER}:\${NFREQ}:\${NDISPER}\n";
+            $rrdupdatesh .= $rrd->update_cmd() . "\${NOFFSET}:\${NSJIT}:\${NCJIT}:\${NWANDER}:\${NFREQ}:\${NDISPER}\n";
             $rrdupdatesh .= "rm /tmp/ntp-rrdstats.$$\n";
             $rrdupdatesh .= "\n";
         }
@@ -440,38 +220,12 @@ function rrd_configure($verbose = false, $bootup = false)
 
         /* CPU Temperature */
         /* the CPU Temperature gathering Function. */
-        /* Cpu Temp, create CPU Temperature database */
-        if (!file_exists("$rrddbpath$ifname$cputemp")) {
-            $rrdcreate = "$rrdtool create $rrddbpath$ifname$cputemp --step $rrdcputempinterval ";
-            $rrdcreate .= "DS:cpu0temp:GAUGE:$cputempvalid:-273:5000 ";
-            $rrdcreate .= "RRA:MIN:0.5:1:1000 ";
-            $rrdcreate .= "RRA:MIN:0.5:5:1000 ";
-            $rrdcreate .= "RRA:MIN:0.5:60:1000 ";
-            $rrdcreate .= "RRA:MIN:0.5:720:3000 ";
-            $rrdcreate .= "RRA:AVERAGE:0.5:1:1000 ";
-            $rrdcreate .= "RRA:AVERAGE:0.5:5:1000 ";
-            $rrdcreate .= "RRA:AVERAGE:0.5:60:1000 ";
-            $rrdcreate .= "RRA:AVERAGE:0.5:720:3000 ";
-            $rrdcreate .= "RRA:MAX:0.5:1:1000 ";
-            $rrdcreate .= "RRA:MAX:0.5:5:1000 ";
-            $rrdcreate .= "RRA:MAX:0.5:60:1000 ";
-            $rrdcreate .= "RRA:MAX:0.5:720:3000 ";
-            $rrdcreate .= "RRA:LAST:0.5:1:1000 ";
-            $rrdcreate .= "RRA:LAST:0.5:5:1000 ";
-            $rrdcreate .= "RRA:LAST:0.5:60:1000 ";
-            $rrdcreate .= "RRA:LAST:0.5:720:3000 ";
-
-            rrd_create($rrdcreate);
-        }
-
-        /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-        if ($bootup) {
-            mwexec("$rrdtool update $rrddbpath$ifname$cputemp N:U");
-        }
+        $rrd = $rrd_factory->get('Temperature', "$rrddbpath$ifname$cputemp");
+        $rrd->create()->update();
 
         /* the CPU Temperature gathering function */
         $rrdupdatesh .= "CPUTEMP=\$(/usr/local/opnsense/scripts/system/temperature.sh rrd)\n";
-        $rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$cputemp N:\${CPUTEMP}\n";
+        $rrdupdatesh .= $rrd->update_cmd() . "\${CPUTEMP}\n";
         /* end CPU Temp gathering */
 
         /* Start gateway quality */
@@ -509,7 +263,7 @@ function rrd_configure($verbose = false, $bootup = false)
                 stddev=\$(echo "scale=7; \$stddev / 1000 / 1000" | /usr/bin/bc)
             fi
 
-            {$rrdtool} update {$rrddbpath}\$gw-quality.rrd -t loss:delay:stddev N:\$loss:\$delay:\$stddev
+            /usr/local/bin/rrdtool update {$rrddbpath}\$gw-quality.rrd -t loss:delay:stddev N:\$loss:\$delay:\$stddev
      done
 
 EOD;
@@ -532,30 +286,8 @@ EOD;
 
 function rrd_create_gateway_quality($rrd_file, $unknown = false)
 {
-    $rrdtool = '/usr/local/bin/rrdtool';
-
-    $rrdinterval = 60;
-    $valid = $rrdinterval * 2;
-
-    /* GATEWAY QUALITY, set up the rrd file */
-    if (!file_exists("$rrd_file")) {
-        $rrdcreate = "$rrdtool create $rrd_file --step $rrdinterval ";
-        $rrdcreate .= "DS:loss:GAUGE:$valid:0:100 ";
-        $rrdcreate .= "DS:delay:GAUGE:$valid:0:100000 ";
-        $rrdcreate .= "DS:stddev:GAUGE:$valid:0:100000 ";
-        $rrdcreate .= "RRA:AVERAGE:0.5:1:1200 ";
-        $rrdcreate .= "RRA:AVERAGE:0.5:5:720 ";
-        $rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
-        $rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
-
-        rrd_create($rrdcreate);
-        $unknown = true;
-    }
-
-    /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-    if ($unknown) {
-        mwexec("$rrdtool update $rrd_file N:U:U:U");
-    }
+    $rrd = (new \OPNsense\RRD\Factory())->get('GatewayQuality', $rrd_file);
+    $rrd->create()->update();
 }
 
 function rrd_export()
