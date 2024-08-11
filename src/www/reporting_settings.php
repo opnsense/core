@@ -77,8 +77,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } else {
         plugins_configure('monitor');
         rrd_configure();
+        /* XXX: rrd graphs depend on a cronjob, we can probably remove this in a future version when the job is unconditional */
+        system_cron_configure();
     }
-
 }
 
 $all_rrd_files = json_decode(configd_run('health list'), true);

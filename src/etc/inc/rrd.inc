@@ -100,7 +100,7 @@ function rrd_configure($verbose = false, $bootup = false)
     $downstream = 2500000000;
     $upstream = 2500000000;
 
-    /* kill off traffic collectors */
+    /* XXX: kill off traffic collectors, remove when we know the update required a reboot */
     killbypid('/var/run/updaterrd.pid');
 
     if (isset($config['rrd']['enable'])) {
@@ -109,16 +109,14 @@ function rrd_configure($verbose = false, $bootup = false)
             mkdir($rrddbpath, 0775);
         }
         chown($rrddbpath, "nobody");
+        /* open file handle to update script and lock it in exclusive mode */
+        $fobj = new \OPNsense\Core\FileObject('/var/db/rrd/updaterrd.sh', 'r+', 0755, LOCK_EX);
 
         /* db update script */
         $rrdupdatesh = "#!/bin/sh\n";
         $rrdupdatesh .= "\n";
         $rrdupdatesh .= "export TERM=dumb\n";
         $rrdupdatesh .= "\n";
-        $rrdupdatesh .= "counter=1\n";
-        $rrdupdatesh .= "while [ \"\$counter\" -ne 0 ]\n";
-        $rrdupdatesh .= "do\n";
-        $rrdupdatesh .= "";
 
         $ifdescrs = get_configured_interface_with_descr();
         /* IPsec counters */
@@ -541,19 +539,12 @@ function rrd_configure($verbose = false, $bootup = false)
 
 EOD;
 
-        $rrdupdatesh .= "\n";
-        $rrdupdatesh .= "     for UNUSED in \$(seq 1 60); do sleep 1; done\n";
-        $rrdupdatesh .= "done\n";
-
         /* write the rrd update script */
-        $updaterrdscript = '/var/db/rrd/updaterrd.sh';
-        $fd = fopen($updaterrdscript, 'w');
-        fwrite($fd, $rrdupdatesh);
-        fclose($fd);
-        chmod($updaterrdscript, 0755);
-
-        /* start traffic collector */
-        mwexecf('/usr/sbin/daemon -f -p %s %s', ['/var/run/updaterrd.pid', $updaterrdscript]);
+        $fobj->seek(0)->truncate(0)->write($rrdupdatesh);
+        unset($fobj);
+    } elseif (file_exists('/var/db/rrd/updaterrd.sh')) {
+        /* remove script, stop collecting. cron checks for existence if this file */
+        unlink('/var/db/rrd/updaterrd.sh');
     }
 
     $databases = glob("{$rrddbpath}/*.rrd");
