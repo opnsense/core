@@ -323,6 +323,7 @@
     <enable/>
   </rrd>
   <ntpd>
+    <pool_server>0.opnsense.pool.ntp.org 1.opnsense.pool.ntp.org 2.opnsense.pool.ntp.org 3.opnsense.pool.ntp.org</pool_server>
     <prefer>0.opnsense.pool.ntp.org</prefer>
   </ntpd>
   <widgets>
