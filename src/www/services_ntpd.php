@@ -75,10 +75,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     // parse timeservers
     $pconfig['timeservers_host'] = array();
+    $pconfig['timeservers_pool'] = array();
     $pconfig['timeservers_noselect'] = array();
     $pconfig['timeservers_prefer'] = array();
     $pconfig['timeservers_iburst'] = array();
     if (!empty($config['system']['timeservers'])) {
+        $pconfig['timeservers_pool'] = !empty($a_ntpd['pool_server']) ? explode(' ', $a_ntpd['pool_server']) : array();
         $pconfig['timeservers_noselect'] = !empty($a_ntpd['noselect']) ? explode(' ', $a_ntpd['noselect']) : array();
         $pconfig['timeservers_prefer'] = !empty($a_ntpd['prefer']) ? explode(' ', $a_ntpd['prefer']) : array();
         $pconfig['timeservers_iburst'] = !empty($a_ntpd['iburst']) ? explode(' ', $a_ntpd['iburst']) : array();
@@ -115,13 +117,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         // list types
         $config['system']['timeservers'] = trim(implode(' ', $pconfig['timeservers_host']));
+        $a_ntpd['pool_server'] = !empty($pconfig['timeservers_pool']) ? trim(implode(' ', $pconfig['timeservers_pool'])) : null;
         $a_ntpd['noselect'] = !empty($pconfig['timeservers_noselect']) ? trim(implode(' ', $pconfig['timeservers_noselect'])) : null;
         $a_ntpd['prefer'] = !empty($pconfig['timeservers_prefer']) ? trim(implode(' ', $pconfig['timeservers_prefer'])) : null;
         $a_ntpd['iburst'] = !empty($pconfig['timeservers_iburst']) ? trim(implode(' ', $pconfig['timeservers_iburst'])) : null;
         $a_ntpd['interface'] = !empty($pconfig['interface']) ? implode(',', $pconfig['interface']) : null;
 
         // unset empty
-        foreach (array('noselect', 'prefer', 'iburst', 'interface') as $fieldname) {
+        foreach (array('pool_server', 'noselect', 'prefer', 'iburst', 'interface') as $fieldname) {
             if (empty($a_ntpd[$fieldname])) {
                 unset($a_ntpd[$fieldname]);
             }
@@ -256,6 +259,7 @@ include("head.inc");
                           <tr>
                             <th></th>
                             <th><?=gettext("Network"); ?></th>
+                            <th><?=gettext("Pool"); ?></th>
                             <th><?=gettext("Prefer"); ?></th>
                             <th><?=gettext("Iburst"); ?></th>
                             <th><?=gettext("Do not use"); ?></th>
@@ -273,6 +277,9 @@ include("head.inc");
                             </td>
                             <td>
                               <input name="timeservers_host[]" type="text" value="<?=$timeserver;?>" />
+                            </td>
+                            <td>
+                              <input name="timeservers_pool[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_pool']) && in_array($timeserver, $pconfig['timeservers_pool']) ? 'checked="checked"' : '' ?>/>
                             </td>
                             <td>
                               <input name="timeservers_prefer[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_prefer']) && in_array($timeserver, $pconfig['timeservers_prefer']) ? 'checked="checked"' : '' ?>/>
@@ -298,6 +305,8 @@ include("head.inc");
                       <div class="hidden" data-for="help_for_timeservers">
                         <?=gettext('For best results three to five servers should be configured here.'); ?>
                         <?=gettext('When no servers are specified NTP will be completely disabled.'); ?>
+                        <br />
+                        <?= gettext('The "pool" option indicates that the specified hostname represents a server pool instead of a single server.') ?>
                         <br />
                         <?= gettext('The "prefer" option indicates that NTP should favor the use of this server more than all others.') ?>
                         <br />
