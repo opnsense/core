@@ -32,6 +32,56 @@ hw.acpi.thermal.tz0.temperature
 hw.temperature.CPU
 "
 
+# count_cpu gets the number of cpu
+count_cpu() {
+	local n
+	n=$(sysctl -n hw.ncpu)
+
+	if [ $? -ne 0 ]
+	then
+		n=0
+	fi
+	eval "$1=$n"
+}
+
+read_cpu_temperatures() {
+	local ncpu=0
+	count_cpu ncpu
+	if [ $ncpu -gt 0 ]
+	then
+		sysctl -i -e $(jot -w 'dev.cpu.%d.temperature' $ncpu 0)
+	fi
+	sysctl -i -e hw.temperature.CPU
+}
+
+# count_thermal_zones gets the number of thermal zones
+count_thermal_zones() {
+	local n=0
+	while true
+	do
+		sysctl -n hw.acpi.thermal.tz${n}.temperature > /dev/null 2>/dev/null
+		if [ $? -ne 0 ]
+		then
+			break
+		fi
+		n=$((n + 1))
+	done
+	eval "$1=$n"
+}
+
+read_thermal_zone_temperatures() {
+	local ntz=0
+	count_thermal_zones ntz
+	if [ $ntz -gt 0 ]; then
+		sysctl -i -e $(jot -w 'hw.acpi.thermal.tz%d.temperature' $ntz 0)
+	fi
+}
+
+read_temperatures() {
+	read_cpu_temperatures
+	read_thermal_zone_temperatures
+}
+
 if [ "${CMD}" = 'rrd' ]; then
 	for SYSCTL in ${SYSCTLS}; do
 		TEMP=$(sysctl -i -n ${SYSCTL} | sed 's/C//g')
@@ -41,11 +91,5 @@ if [ "${CMD}" = 'rrd' ]; then
 		fi
 	done
 else
-	# The grep is opportunistic, but at least we only grep the
-	# variable names and not their content at the same time and
-	# as long as we can find something that matches our search.
-	SYSCTLS=$(sysctl -aN | grep temperature)
-	if [ -n "${SYSCTLS}" ]; then
-		sysctl -e ${SYSCTLS} | sort
-	fi
+	read_temperatures
 fi
