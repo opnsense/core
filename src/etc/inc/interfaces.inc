@@ -2318,7 +2318,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     $realifv6 = get_real_interface($interface, 'inet6');
 
     /* get the correct hardware interface if PPP is involved or return the one we have */
-    $realhwif = array_shift(interface_ppps_hardware($realif)); /* XXX support all MLPPP devices */
+    $realhwif = interface_ppps_hardware($realif)[0]; /* XXX support all MLPPP devices */
 
     if ($reload) {
         foreach (plugins_devices() as $device) {
