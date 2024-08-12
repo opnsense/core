@@ -957,7 +957,7 @@ function interface_ppps_bound($interface, $family = null)
     if ($family == 4) {
         /* use this to steer configuration based on newwanip event */
         $bound = $ipv4_mode;
-    } else if ($family == 6) {
+    } elseif ($family == 6) {
         /* use this to steer configuration based on newwanipv6 event */
         $bound = !$ipv4_mode && $ipv6_mode;
     } else {
