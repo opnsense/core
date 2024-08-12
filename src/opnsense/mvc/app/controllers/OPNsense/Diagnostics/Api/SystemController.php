@@ -226,19 +226,29 @@ class SystemController extends ApiControllerBase
 
     public function systemTemperatureAction()
     {
+        $backend = new Backend();
         $result = [];
 
-        foreach (explode("\n", (new Backend())->configdRun('system temp')) as $temp) {
-            $parts = explode('=', $temp);
-            if (count($parts) >= 2) {
-                $tempItem = array();
-                $tempItem['device'] = $parts[0];
-                $tempItem['device_seq'] = filter_var($tempItem['device'], FILTER_SANITIZE_NUMBER_INT);
-                $tempItem['temperature'] = trim(str_replace('C', '', $parts[1]));
-                $tempItem['type'] = strpos($tempItem['device'], 'hw.acpi') !== false ? 'zone' : 'cpu';
-                $tempItem['type_translated'] = $tempItem['type'] == 'zone' ? gettext('Zone') : gettext('CPU');
-                $result[] = $tempItem;
+        /* read temperatures individually from previously derived sensors */
+        $sensors = explode("\n", $backend->configdRun('system sensors'));
+        $temps = json_decode($backend->configdpRun('system sysctl values', join(',', $sensors)), true);
+
+        foreach ($temps as $name => $value) {
+            $tempItem = [];
+            $tempItem['device'] = $name;
+            $tempItem['device_seq'] = filter_var($tempItem['device'], FILTER_SANITIZE_NUMBER_INT); /* XXX too opportunistic */
+            $tempItem['temperature'] = trim(str_replace('C', '', $value));
+            $tempItem['type_translated'] = gettext('CPU');
+            $tempItem['type'] = 'cpu';
+            if (strpos($tempItem['device'], 'hw.acpi') !== false) {
+                $tempItem['type_translated'] = gettext('Zone');
+                $tempItem['type'] = 'zone';
+            /* XXX may or may not be a good idea */
+            } elseif (strpos($tempItem['device'], 'dev.amdtemp') !== false) {
+                $tempItem['type_translated'] = gettext('AMD');
+                $tempItem['type'] = 'amd';
             }
+            $result[] = $tempItem;
         }
 
         return $result;
