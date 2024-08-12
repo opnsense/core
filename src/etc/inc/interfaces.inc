@@ -1235,7 +1235,7 @@ EOD;
     }
 
     /* precaution for post-start 'up' check */
-    legacy_interface_flags($interface, 'down', false);
+    legacy_interface_flags($ifcfg['if'], 'down', false);
 
     /* fire up mpd */
     mwexecf(
@@ -1251,7 +1251,7 @@ EOD;
     $i = 0;
     while ($i < $max) {
         sleep(1);
-        if (does_interface_exist($ppp['if'], 'up')) {
+        if (does_interface_exist($ifcfg['if'], 'up')) {
             break;
         }
         $i++;
