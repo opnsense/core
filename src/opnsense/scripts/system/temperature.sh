@@ -44,7 +44,15 @@ else
 	# The grep is opportunistic, but at least we only grep the
 	# variable names and not their content at the same time and
 	# as long as we can find something that matches our search.
-	SYSCTLS=$(sysctl -aN | grep temperature)
+
+	# Save/retrieve file instead of reconstructing SYSCTLS every time.
+	SYSCTLS_FILE='/tmp/SYSCTLS_Thermal_Sensors_Widget'
+	if [ ! -s "${SYSCTLS_FILE}" ]; then
+		sysctl -aN | grep temperature > "${SYSCTLS_FILE}"
+	fi
+
+	SYSCTLS=$(cat "${SYSCTLS_FILE}")
+
 	if [ -n "${SYSCTLS}" ]; then
 		sysctl -e ${SYSCTLS} | sort
 	fi
