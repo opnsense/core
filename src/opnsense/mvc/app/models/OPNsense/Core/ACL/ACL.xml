@@ -653,7 +653,7 @@
         </patterns>
     </page-system-crlmanager>
     <page-snapshots>
-        <name>System: Snapshotss</name>
+        <name>System: Snapshots</name>
         <patterns>
             <pattern>ui/snapshots/*</pattern>
             <pattern>api/snapshots/*</pattern>
