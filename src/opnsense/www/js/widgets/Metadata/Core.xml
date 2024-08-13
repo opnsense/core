@@ -252,7 +252,7 @@
             <offline>Offline</offline>
             <total>Tunnels</total>
             <unconfigured>IPsec is currently disabled. Click to configure IPsec.</unconfigured>
-            <notunnels>Phase1 unconfigured</notunnels>
+            <notunnels>Phase1 not configured</notunnels>
             <notavailable>N/A</notavailable>
             <installtime>Install Time</installtime>
             <nophase2connected>Phase2 disconnected</nophase2connected>
