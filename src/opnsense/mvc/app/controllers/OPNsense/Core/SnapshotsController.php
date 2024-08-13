@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (C) 2024 Deciso B.V.
  * Copyright (C) 2024 Sheridan Computers Limited
@@ -26,7 +27,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 namespace OPNsense\Core;
-
 
 class SnapshotsController extends \OPNsense\Base\IndexController
 {

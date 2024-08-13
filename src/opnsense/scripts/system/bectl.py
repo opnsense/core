@@ -97,4 +97,3 @@ if __name__ == '__main__':
                 "status": "ok",
                 "result": 'bootenvironment executed %s successfully' % inputargs.action
             }))
-

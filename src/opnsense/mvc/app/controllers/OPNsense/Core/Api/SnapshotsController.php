@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (C) 2024 Deciso B.V.
  * Copyright (C) 2024 Sheridan Computers Limited
@@ -30,7 +31,6 @@ namespace OPNsense\Core\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Base\UserException;
-
 
 class SnapshotsController extends ApiControllerBase
 {
@@ -114,7 +114,7 @@ class SnapshotsController extends ApiControllerBase
             }
         }
         // new or not found
-        return ['name' => 'BE'.date("YmdHis"), 'uuid' => ''];
+        return ['name' => 'BE' . date('YmdHis'), 'uuid' => ''];
     }
 
     /**
@@ -141,7 +141,7 @@ class SnapshotsController extends ApiControllerBase
             } else {
                 if (!empty($new_be)) {
                     $msg = gettext('A snapshot already exists by this name');
-                } elseif (!$this->isValidName($name)){
+                } elseif (!$this->isValidName($name)) {
                     $msg = gettext('Invalid name specified');
                 } else {
                     $msg = gettext('Snapshot not found');
@@ -171,7 +171,7 @@ class SnapshotsController extends ApiControllerBase
             $msg = null;
             if ($this->findByName($name)) {
                 $msg = gettext('A snapshot already exists by this name');
-            } elseif (!$this->isValidName($name)){
+            } elseif (!$this->isValidName($name)) {
                 $msg = gettext('Invalid name specified');
             }
             if (!empty($uuid) && empty($msg)) {
@@ -181,7 +181,8 @@ class SnapshotsController extends ApiControllerBase
                     $msg = gettext('Snapshot not found');
                 } else {
                     return json_decode(
-                        (new Backend())->configdpRun("zfs snapshot clone", [$name, $be['name']]), true
+                        (new Backend())->configdpRun('zfs snapshot clone', [$name, $be['name']]),
+                        true
                     );
                 }
             } elseif (empty($msg)) {
