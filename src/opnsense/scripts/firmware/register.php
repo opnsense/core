@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (c) 2021-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2021-2024 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+$obsolete = ['firewall', 'wireguard'];
 $action = $name = 'undefined';
 $type = ''; /* empty default */
 
@@ -48,10 +49,6 @@ require_once('script/load_phalcon.php');
 use OPNsense\Core\Config;
 
 $config = Config::getInstance()->object();
-
-if ($action == 'resync_factory' && !isset($config->trigger_initial_wizard)) {
-    exit();
-}
 
 function plugins_config_get($config)
 {
@@ -139,6 +136,7 @@ function plugins_disk_get()
     return $found;
 }
 
+$changed = $action !== 'resync_factory';
 $plugins = plugins_config_get($config);
 $found = plugins_disk_get();
 
@@ -161,10 +159,25 @@ switch ($action) {
     case 'resync_factory':
         if (!isset($config->system->firmware->type)) {
             $config->system->firmware->addChild('type');
+            $changed = true;
         }
         if ($config->system->firmware->type != $type) {
             echo "Registering release type: " . (!empty($type) ? $type : 'community') . PHP_EOL;
             $config->system->firmware->type = $type;
+            $changed = true;
+        }
+
+        $count = count($plugins);
+        foreach ($obsolete as $name) {
+            $plugins = plugins_remove_sibling("os-{$name}-devel", $plugins);
+            $plugins = plugins_remove_sibling("os-{$name}", $plugins);
+        }
+        if ($count != count($plugins)) {
+            $changed = true;
+        }
+
+        if (isset($config->trigger_initial_wizard)) {
+            break;
         }
         /* FALLTHROUGH */
     case 'resync':
@@ -183,7 +196,10 @@ switch ($action) {
         }
         break;
     default:
-        exit();
+        $changed = false;
+        break;
 }
 
-plugins_config_set($config, $plugins);
+if ($changed) {
+    plugins_config_set($config, $plugins);
+}
