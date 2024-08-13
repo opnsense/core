@@ -230,7 +230,6 @@ class SnapshotsController extends ApiControllerBase
      */
     public function activateAction($uuid)
     {
-
         if ($this->request->isPost()) {
             $be = $this->findByUuid($uuid);
             if (empty($be)) {
