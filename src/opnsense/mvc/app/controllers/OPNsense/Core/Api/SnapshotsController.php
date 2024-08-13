@@ -32,7 +32,7 @@ use OPNsense\Core\Backend;
 use OPNsense\Base\UserException;
 
 
-class BootEnvironmentController extends ApiControllerBase
+class SnapshotsController extends ApiControllerBase
 {
     private array $environments = [];
 
@@ -44,7 +44,7 @@ class BootEnvironmentController extends ApiControllerBase
     private function find($fieldname, $value)
     {
         if (empty($this->environments)) {
-            $this->environments = json_decode(trim((new Backend())->configdRun('bootenvironment list')), true) ?? [];
+            $this->environments = json_decode(trim((new Backend())->configdRun('zfs snapshot list')), true) ?? [];
         }
         foreach ($this->environments as $record) {
             if (isset($record[$fieldname]) && $record[$fieldname] == $value) {
@@ -64,7 +64,7 @@ class BootEnvironmentController extends ApiControllerBase
     }
 
     /**
-     * @param string $name boot environment name, the actual key of the record
+     * @param string $name snapshot name, the actual key of the record
      * @return array|null
      */
     private function findByName($name)
@@ -74,7 +74,7 @@ class BootEnvironmentController extends ApiControllerBase
 
     /**
      * allow all but whitespaces for now
-     * @param string $name boot environment name
+     * @param string $name snapshot name
      */
     private function isValidName($name)
     {
@@ -86,17 +86,17 @@ class BootEnvironmentController extends ApiControllerBase
      */
     public function isSupportedAction()
     {
-        $result = json_decode((new Backend())->configdRun('bootenvironment supported'), true) ?? [];
+        $result = json_decode((new Backend())->configdRun('zfs snapshot supported'), true) ?? [];
         return ['supported' => !empty($result) && $result['status'] == 'OK'];
     }
 
     /**
-     * search boot environments
+     * search snapshots
      * @return array
      */
     public function searchAction()
     {
-        $records = json_decode((new Backend())->configdRun('bootenvironment list'), true) ?? [];
+        $records = json_decode((new Backend())->configdRun('zfs snapshot list'), true) ?? [];
         return $this->searchRecordsetBase($records);
     }
 
@@ -118,7 +118,7 @@ class BootEnvironmentController extends ApiControllerBase
     }
 
     /**
-     * create a new bootenvironment
+     * create a new snapshot
      * @param string $uuid uuid to save
      * @return array status
      */
@@ -135,16 +135,16 @@ class BootEnvironmentController extends ApiControllerBase
                 return ['status' => 'ok'];
             } elseif (!empty($be) && empty($new_be) && $this->isValidName($name)) {
                 return json_decode(
-                    (new Backend())->configdpRun("bootenvironment rename", [$be['name'], $name]),
+                    (new Backend())->configdpRun("zfs snapshot rename", [$be['name'], $name]),
                     true
                 );
             } else {
                 if (!empty($new_be)) {
-                    $msg = gettext('A boot environment already exists by this name');
+                    $msg = gettext('A snapshot already exists by this name');
                 } elseif (!$this->isValidName($name)){
                     $msg = gettext('Invalid name specified');
                 } else {
-                    $msg = gettext('Boot environment not found');
+                    $msg = gettext('Snapshot not found');
                 }
                 return [
                     'status' => 'failed',
@@ -159,7 +159,7 @@ class BootEnvironmentController extends ApiControllerBase
     }
 
     /**
-     * add or clone a boot environment
+     * add or clone a snapshot
      * @return array status
      */
     public function addAction()
@@ -170,7 +170,7 @@ class BootEnvironmentController extends ApiControllerBase
 
             $msg = null;
             if ($this->findByName($name)) {
-                $msg = gettext('A boot environment already exists by this name');
+                $msg = gettext('A snapshot already exists by this name');
             } elseif (!$this->isValidName($name)){
                 $msg = gettext('Invalid name specified');
             }
@@ -178,14 +178,14 @@ class BootEnvironmentController extends ApiControllerBase
                 /* clone environment */
                 $be = $this->findByUuid($uuid);
                 if (empty($be)) {
-                    $msg = gettext('Boot environment not found');
+                    $msg = gettext('Snapshot not found');
                 } else {
                     return json_decode(
-                        (new Backend())->configdpRun("bootenvironment clone", [$name, $be['name']]), true
+                        (new Backend())->configdpRun("zfs snapshot clone", [$name, $be['name']]), true
                     );
                 }
             } elseif (empty($msg)) {
-                return (new Backend())->configdpRun("bootenvironment create", [$name]);
+                return (new Backend())->configdpRun("zfs snapshot create", [$name]);
             }
 
             if ($msg) {
@@ -211,19 +211,19 @@ class BootEnvironmentController extends ApiControllerBase
         if ($this->request->isPost()) {
             $be = $this->findByUuid($uuid);
             if (empty($be)) {
-                throw new UserException(gettext("Boot environment not found"), gettext("Boot environments"));
+                throw new UserException(gettext("Snapshot not found"), gettext("Snapshots"));
             }
             if ($be['active'] != '-') {
-                throw new UserException(gettext("Cannot delete active boot environment"), gettext("Boot environments"));
+                throw new UserException(gettext("Cannot delete active snapshot"), gettext("Snapshots"));
             }
-            return (json_decode((new Backend())->configdpRun("bootenvironment destroy", [$be['name']]), true));
+            return (json_decode((new Backend())->configdpRun("zfs snapshot destroy", [$be['name']]), true));
         }
         return ['status' => 'failed'];
     }
 
 
     /**
-     * activate an environment by uuid
+     * activate a snapshot by uuid
      * @param string $uuid
      * @return array
      * @throws UserException when not found (or possible)
@@ -234,9 +234,9 @@ class BootEnvironmentController extends ApiControllerBase
         if ($this->request->isPost()) {
             $be = $this->findByUuid($uuid);
             if (empty($be)) {
-                throw new UserException(gettext("Boot environment not found"), gettext("Boot environments"));
+                throw new UserException(gettext("Snapshot not found"), gettext("Snapshots"));
             }
-            return json_decode((new Backend())->configdpRun("bootenvironment activate", [$be['name']]), true);
+            return json_decode((new Backend())->configdpRun("zfs snapshot activate", [$be['name']]), true);
         }
         return ['status' => 'failed'];
     }

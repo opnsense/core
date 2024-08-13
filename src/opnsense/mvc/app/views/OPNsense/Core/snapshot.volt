@@ -3,19 +3,19 @@
         /* always hide "uuid" row in edit form */
         $("#row_uuid").hide();
         /* before rendering anything, check if ZFS is supported */
-        ajaxGet('/api/core/boot_environment/is_supported/', {}, function(data, status) {
+        ajaxGet('/api/core/snapshots/is_supported/', {}, function(data, status) {
             if (data && data.supported) {
                 $("#grid-env").UIBootgrid({
-                    get: '/api/core/boot_environment/get/',
-                    set: '/api/core/boot_environment/set/',
-                    add: '/api/core/boot_environment/add/',
-                    del: '/api/core/boot_environment/del/',
-                    search: '/api/core/boot_environment/search',
+                    get: '/api/core/snapshots/get/',
+                    set: '/api/core/snapshots/set/',
+                    add: '/api/core/snapshots/add/',
+                    del: '/api/core/snapshots/del/',
+                    search: '/api/core/snapshots/search',
                     commands: {
                         activate_be: {
                             method: function(event) {
                                 let uuid = $(this).data("row-id") !== undefined ? $(this).data("row-id") : '';
-                                ajaxCall('/api/core/boot_environment/activate/' + uuid, {},  function(data, status){
+                                ajaxCall('/api/core/snapshots/activate/' + uuid, {},  function(data, status){
                                     if (data.result) {
                                         $('#grid-env').bootgrid('reload');
                                     }
@@ -47,7 +47,7 @@
 </script>
 
 <div id="supported_block" class="content-box" style="display: none;">
-    <table id="grid-env" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="frmBE">
+    <table id="grid-env" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="frmSnapshot">
         <thead>
             <tr>
                 <th data-column-id="uuid" data-type="string" data-visible="false" data-identifier="true" data-sortable="false">{{ lang._('uuid') }}</th>
@@ -75,10 +75,10 @@
 <div id="unsupported_block" style="padding: 10px; display: none;">
     <div class="alert alert-warning" role="alert">
         <i class="fa fa-fw fa-warning"></i>
-        {{ lang._('Snapshots (boot environments) are only available when a ZFS file system is used.') }}
+        {{ lang._('Snapshots are only available when a ZFS file system is used.') }}
         <br/>
         {{ lang._('For more information on how to migrate to ZFS, please refer to our documentation or support resources.') }}
       </div>
 </div>
 
-{{ partial("layout_partials/base_dialog",['fields':BEForm,'id':'frmBE', 'label':lang._('Edit boot environment')])}}
+{{ partial("layout_partials/base_dialog",['fields':SnapshotForm,'id':'frmSnapshot', 'label':lang._('Edit boot environment')])}}

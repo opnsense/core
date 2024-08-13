@@ -28,7 +28,7 @@
 namespace OPNsense\Core;
 
 
-class BootEnvironmentController extends \OPNsense\Base\IndexController
+class SnapshotsController extends \OPNsense\Base\IndexController
 {
     /**
      * {@inheritdoc}
@@ -42,7 +42,7 @@ class BootEnvironmentController extends \OPNsense\Base\IndexController
 
     public function indexAction()
     {
-        $this->view->pick('OPNsense/Core/bootenvironment');
-        $this->view->BEForm = $this->getForm('bootenvironment');
+        $this->view->pick('OPNsense/Core/snapshot');
+        $this->view->SnapshotForm = $this->getForm('snapshot');
     }
 }

@@ -652,13 +652,13 @@
             <pattern>api/trust/crl/*</pattern>
         </patterns>
     </page-system-crlmanager>
-    <page-system-bootenvironment>
-        <name>System: Boot Environments</name>
+    <page-snapshots>
+        <name>System: Snapshotss</name>
         <patterns>
-            <pattern>ui/bootenvironments/*</pattern>
-            <pattern>api/bootenvironments/*</pattern>
+            <pattern>ui/snapshots/*</pattern>
+            <pattern>api/snapshots/*</pattern>
         </patterns>
-    </page-system-bootenvironment>
+    </page-snapshots>
     <page-system-firmware-manualupdate>
         <name>System: Firmware</name>
         <patterns>
