@@ -81,4 +81,4 @@
       </div>
 </div>
 
-{{ partial("layout_partials/base_dialog",['fields':SnapshotForm,'id':'frmSnapshot', 'label':lang._('Edit boot environment')])}}
+{{ partial("layout_partials/base_dialog",['fields':SnapshotForm,'id':'frmSnapshot', 'label':lang._('Edit snapshot')])}}
