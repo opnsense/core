@@ -22,7 +22,7 @@
                                 });
                             },
                             classname: 'fa fa-fw fa-check',
-                            title: "{{ lang._('activate boot environment') }}",
+                            title: "{{ lang._('Activate') }}",
                             sequence: 10
                         },
                     },
