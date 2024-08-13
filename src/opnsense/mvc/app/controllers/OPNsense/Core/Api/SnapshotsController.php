@@ -220,8 +220,6 @@ class SnapshotsController extends ApiControllerBase
         }
         return ['status' => 'failed'];
     }
-
-
     /**
      * activate a snapshot by uuid
      * @param string $uuid
