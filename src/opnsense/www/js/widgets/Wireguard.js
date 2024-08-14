@@ -30,7 +30,6 @@ import BaseTableWidget from 'widget-base-table';
 export default class Wireguard extends BaseTableWidget {
     constructor() {
         super();
-        this.tickTimeout = 4;
     }
 
     getGridOptions() {
@@ -43,7 +42,7 @@ export default class Wireguard extends BaseTableWidget {
     getMarkup() {
         let $container = $('<div></div>');
         let $wgTunnelTable = this.createTable('wgTunnelTable', {
-            headerPosition: 'none'
+            headerPosition: 'left'
         });
 
         $container.append($wgTunnelTable);
@@ -64,7 +63,7 @@ export default class Wireguard extends BaseTableWidget {
             return;
         }
 
-        if (!this.dataChanged('', response.rows)) {
+        if (!this.dataChanged('wg-tunnels', response.rows)) {
             return; // No changes detected, do not update the UI
         }
 
@@ -78,6 +77,7 @@ export default class Wireguard extends BaseTableWidget {
     }
 
     processTunnels(newTunnels) {
+        console.log(newTunnels);
         $('.wireguard-interface').tooltip('hide');
 
         let now = moment().unix(); // Current time in seconds
@@ -90,7 +90,8 @@ export default class Wireguard extends BaseTableWidget {
             latest_handshake: row['latest-handshake'], // No fallback since we handle if 0
             latest_handshake_fmt: row['latest-handshake'] ? moment.unix(row['latest-handshake']).local().format('YYYY-MM-DD HH:mm:ss') : null,
             connected: row['latest-handshake'] && (now - row['latest-handshake']) <= 180, // Considered online if last handshake was within 3 minutes
-            statusIcon: row['latest-handshake'] && (now - row['latest-handshake']) <= 180 ? 'fa-exchange text-success' : 'fa-exchange text-danger'
+            statusIcon: row['latest-handshake'] && (now - row['latest-handshake']) <= 180 ? 'fa-exchange text-success' : 'fa-exchange text-danger',
+            publicKey: row['public-key']
         }));
 
         tunnels.sort((a, b) => a.connected === b.connected ? 0 : a.connected ? -1 : 1);
@@ -103,11 +104,11 @@ export default class Wireguard extends BaseTableWidget {
                 <span>${this.translations.total}: ${tunnels.length} | ${this.translations.online}: ${onlineCount} | ${this.translations.offline}: ${offlineCount}</span>
             </div>`;
 
-        let rows = [summaryRow];
+        super.updateTable('wgTunnelTable', [[summaryRow, '']], 'wg-summary');
 
         // Generate HTML for each tunnel
         tunnels.forEach(tunnel => {
-            let row = `
+            let header = `
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div style="display: flex; align-items: center;">
                         <i class="fa ${tunnel.statusIcon} wireguard-interface" style="cursor: pointer;"
@@ -116,7 +117,8 @@ export default class Wireguard extends BaseTableWidget {
                         &nbsp;
                         <span><b>${tunnel.ifname}</b></span>
                     </div>
-                </div>
+                </div>`;
+            let row = `
                 <div>
                     <span><a href="/ui/wireguard/general#peers">${tunnel.name}</a> | ${tunnel.allowed_ips}</span>
                 </div>
@@ -132,11 +134,10 @@ export default class Wireguard extends BaseTableWidget {
                            </div>`
                         : `<span>${this.translations.disconnected}</span>`}
                 </div>`;
-            rows.push(row);
-        });
 
-        // Update the HTML table with the sorted rows
-        super.updateTable('wgTunnelTable', rows.map(row => [row]));
+            // Update the HTML table with the sorted rows
+            super.updateTable('wgTunnelTable', [[header, row]], tunnel.publicKey);
+        });
 
         // Activate tooltips for new dynamic elements
         $('.wireguard-interface').tooltip({container: 'body'});

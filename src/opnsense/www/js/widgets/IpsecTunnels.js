@@ -30,7 +30,6 @@ export default class IpsecTunnels extends BaseTableWidget {
     constructor() {
         super();
         this.locked = false; // Add a lock mechanism
-        this.tickTimeout = 4;
     }
 
     getGridOptions() {
@@ -43,7 +42,7 @@ export default class IpsecTunnels extends BaseTableWidget {
     getMarkup() {
         let $container = $('<div></div>');
         let $ipsecTunnelTable = this.createTable('ipsecTunnelTable', {
-            headerPosition: 'none'
+            headerPosition: 'left'
         });
 
         $container.append($ipsecTunnelTable);
@@ -66,7 +65,7 @@ export default class IpsecTunnels extends BaseTableWidget {
                 return;
             }
 
-            if (!this.dataChanged('', response.rows)) {
+            if (!this.dataChanged('ipsec-tunnels', response.rows)) {
                 return; // No changes detected, do not update the UI
             }
 
@@ -81,19 +80,15 @@ export default class IpsecTunnels extends BaseTableWidget {
     }
 
     async connectTunnel(ikeid) {
-        this.locked = true;
         await this.ajaxCall(`/api/ipsec/sessions/connect/${ikeid}`, JSON.stringify({ikeid: ikeid}), 'POST');
         const response = await this.ajaxCall('/api/ipsec/Sessions/searchPhase1');
         this.processTunnels(response.rows); // Refresh the tunnels
-        this.locked = false;
     }
 
     async disconnectTunnel(ikeid) {
-        this.locked = true;
         await this.ajaxCall(`/api/ipsec/sessions/disconnect/${ikeid}`, JSON.stringify({ikeid: ikeid}), 'POST');
         const response = await this.ajaxCall('/api/ipsec/Sessions/searchPhase1');
         this.processTunnels(response.rows); // Refresh the tunnels
-        this.locked = false;
     }
 
     processTunnels(newTunnels) {
@@ -124,7 +119,7 @@ export default class IpsecTunnels extends BaseTableWidget {
                 <span>${this.translations.total}: ${tunnels.length} | ${this.translations.online}: ${onlineCount} | ${this.translations.offline}: ${offlineCount}</span>
             </div>`;
 
-        let rows = [summaryRow];
+        super.updateTable('ipsecTunnelTable', [[summaryRow, '']], 'ipsec-summary');
 
         // Generate HTML for each tunnel
         tunnels.forEach(tunnel => {
@@ -150,7 +145,7 @@ export default class IpsecTunnels extends BaseTableWidget {
                         <i class="fa fa-play" style="font-size: 13px;"></i>
                    </span>`;
 
-            let row = `
+            let header = `
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div style="display: flex; align-items: center;">
                         <i class="fa ${tunnel.statusIcon} ipsectunnels-status-icon" style="cursor: pointer;"
@@ -159,24 +154,23 @@ export default class IpsecTunnels extends BaseTableWidget {
                         &nbsp;
                         <span><b>${tunnel.phase1desc}</b></span>
                     </div>
-                    <div>
-                        ${connectDisconnectButton}
-                    </div>
-                </div>
-                <div>
+                </div>`;
+
+            let row = `
+                <div style="display: flex; justify-content: center; align-items: center;">
                     <span><a href="/ui/ipsec/sessions">${tunnel.localAddrs} | ${tunnel.remoteAddrs}</a></span>
+                    ${connectDisconnectButton}
                 </div>
                 <div>
                     ${installTimeInfo}
                 </div>
                 <div>
                     ${bytesInfo}
-                </div>`;
-            rows.push(row);
-        });
+                </div>
+            `;
 
-        // Update the HTML table with the sorted rows
-        super.updateTable('ipsecTunnelTable', rows.map(row => [row]));
+            super.updateTable('ipsecTunnelTable', [[header, row]], tunnel.ikeid);
+        });
 
         // Activate tooltips for new dynamic elements
         $('.ipsectunnels-status-icon').tooltip({container: 'body'});
