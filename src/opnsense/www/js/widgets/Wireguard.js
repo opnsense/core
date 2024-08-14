@@ -77,7 +77,6 @@ export default class Wireguard extends BaseTableWidget {
     }
 
     processTunnels(newTunnels) {
-        console.log(newTunnels);
         $('.wireguard-interface').tooltip('hide');
 
         let now = moment().unix(); // Current time in seconds

@@ -185,7 +185,6 @@ export default class IpsecTunnels extends BaseTableWidget {
 
             this.startCommandTransition(ikeid, $target);
             await this.connectTunnel(ikeid);
-            await this.endCommandTransition(ikeid, $target, true, true);
             this.locked = false;
         });
 
@@ -197,7 +196,6 @@ export default class IpsecTunnels extends BaseTableWidget {
 
             this.startCommandTransition(ikeid, $target);
             await this.disconnectTunnel(ikeid);
-            await this.endCommandTransition(ikeid, $target, true, true);
             this.locked = false;
         });
     }
