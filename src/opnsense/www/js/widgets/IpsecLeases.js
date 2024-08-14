@@ -29,7 +29,7 @@ import BaseTableWidget from 'widget-base-table';
 export default class IpsecLeases extends BaseTableWidget {
     constructor() {
         super();
-        this.currentLeases = {};
+        this.tickTimeout = 4;
     }
 
     getGridOptions() {
@@ -64,6 +64,10 @@ export default class IpsecLeases extends BaseTableWidget {
             return;
         }
 
+        if (!this.dataChanged('ipsecleases', data.leases)) {
+            return; // No changes detected, do not update the UI
+        }
+
         this.processLeases(data.leases);
     }
 
@@ -75,10 +79,6 @@ export default class IpsecLeases extends BaseTableWidget {
 
     // Function to process leases data and update the UI accordingly
     processLeases(newLeases) {
-        if (!this.dataChanged('ipsecleases', newLeases)) {
-            return; // No changes detected, do not update the UI
-        }
-
         $('.ipsecleases-status-icon').tooltip('hide');
 
         let users = {}; // Initialize an object to store user data indexed by user names
@@ -111,7 +111,7 @@ export default class IpsecLeases extends BaseTableWidget {
         // Prepare a summary row for user counts
         let userCountsRow = `
             <div>
-                <span><b>${this.translations.users}:</b> ${totalUsersCount} - <b>${this.translations.online}:</b> ${onlineUsersCount} - <b>${this.translations.offline}:</b> ${offlineUsersCount}</span>
+                <span>${this.translations.users}: ${totalUsersCount} | ${this.translations.online}: ${onlineUsersCount} | ${this.translations.offline}: ${offlineUsersCount}</span>
             </div>`;
 
         let rows = [userCountsRow];
