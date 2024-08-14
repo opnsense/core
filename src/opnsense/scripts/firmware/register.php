@@ -169,6 +169,7 @@ switch ($action) {
 
         $count = count($plugins);
         foreach ($obsolete as $name) {
+            /* remove logic is reversed but we remove both anyway */
             $plugins = plugins_remove_sibling("os-{$name}-devel", $plugins);
             $plugins = plugins_remove_sibling("os-{$name}", $plugins);
         }
