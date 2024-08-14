@@ -126,6 +126,11 @@ core_check()
 	CORE=$(opnsense-version -n)
 	PROGRESS=
 
+	if [ -z "${CORE}" ]; then
+		echo "Could not determine core package name."
+		return
+	fi
+
 	if [ -z "$(pkg query %n ${CORE})" ]; then
 		echo "Core package \"${CORE}\" not known to package database." | ${TEE} ${LOCKFILE}
 		return
