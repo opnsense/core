@@ -43,8 +43,9 @@
             <title>CPU</title>
             <total>Total</total>
             <user>User</user>
-            <system>System</system>
-            <interrupt>Interrupt</interrupt>
+            <sys>System</sys>
+            <intr>Interrupt</intr>
+            <graphs>Graphs</graphs>
         </translations>
     </cpu>
     <interfacestatistics>

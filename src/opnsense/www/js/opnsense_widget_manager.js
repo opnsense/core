@@ -629,6 +629,7 @@ class WidgetManager  {
 
         // parse widget options
         const options = await widget.getWidgetOptions();
+        const config = await widget.getWidgetConfig();
         for (const [key, value] of Object.entries(options)) {
             let $option = $(`<div class="widget-option-container"></div>`);
             switch (value.type) {
@@ -640,12 +641,8 @@ class WidgetManager  {
                                      multiple="multiple"></select>`);
 
                     for (const option of value.options) {
-                        $select.append($(`<option value="${option.value}" ${option.selected ? 'selected' : ''}>${option.value}</option>`));
-                    }
-
-                    if (value.options.every(obj => !obj.selected)) {
-                        // No selection, apply the default.
-                        $select.val(value.default);
+                        let selected = config[key].includes(option.value);
+                        $select.append($(`<option value="${option.value}" ${selected ? 'selected' : ''}>${option.label}</option>`));
                     }
 
                     $option.append($(`<div><b>${value.title}</b></div>`));
@@ -668,7 +665,7 @@ class WidgetManager  {
             buttons: [{
                 label: this.gettext.ok,
                 hotkey: 13,
-                action: (dialog) => {
+                action: async (dialog) => {
                     let values = {};
                     for (const [key, value] of Object.entries(options)) {
                         switch (value.type) {
@@ -684,7 +681,7 @@ class WidgetManager  {
                     }
 
                     widget.setWidgetConfig(values);
-                    widget.onWidgetOptionsChanged(values);
+                    await widget.onWidgetOptionsChanged(values);
                     $('#save-grid').show();
                     dialog.close();
                 }
