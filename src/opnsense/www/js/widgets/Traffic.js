@@ -225,7 +225,7 @@ export default class Traffic extends BaseWidget {
                 options: Object.entries(interfaces.interfaces).map(([key,intf]) => {
                     return {
                         value: intf.name,
-                        selected: this.config.widget?.interfaces?.includes(intf.name) ?? false
+                        label: intf.name,
                     };
                 }),
                 default: Object.entries(interfaces.interfaces)
