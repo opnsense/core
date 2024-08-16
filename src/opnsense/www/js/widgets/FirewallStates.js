@@ -24,8 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseGaugeWidget from 'widget-base-gauge';
-
 export default class FirewallStates extends BaseGaugeWidget {
     constructor() {
         super();

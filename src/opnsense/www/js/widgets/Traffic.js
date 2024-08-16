@@ -24,8 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseWidget from 'widget-base';
-
 export default class Traffic extends BaseWidget {
     constructor(config) {
         super(config);

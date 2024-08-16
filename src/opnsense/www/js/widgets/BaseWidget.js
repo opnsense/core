@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export default class BaseWidget {
+class BaseWidget {
     constructor(config) {
         this.config = config;
         this.id = null;
