@@ -1432,26 +1432,40 @@ if (isset($a_interfaces[$if]['wireless'])) {
 // Find all possible media options for the interface
 $mediaopts_list = legacy_interface_details($pconfig['if'])['supported_media'] ?? [];
 
-$types4 = [
-    'none' => gettext('None'),
-    'staticv4' => gettext('Static IPv4'),
-    'dhcp' => gettext('DHCP'),
-    'ppp' => gettext('PPP'),
-    'pppoe' => gettext('PPPoE'),
-    'pptp' => gettext('PPTP'),
-    'l2tp' => gettext('L2TP'),
-];
+$types4 = $types6 = ['none' => gettext('None')];
 
-$types6 = [
-    'none' => gettext('None'),
-    'staticv6' => gettext('Static IPv6'),
-    'dhcp6' => gettext('DHCPv6'),
-    'pppoev6' => gettext('PPPoEv6'),
-    'slaac' => gettext('SLAAC'),
-    '6rd' => gettext('6rd Tunnel'),
-    '6to4' => gettext('6to4 Tunnel'),
-    'track6' => gettext('Track Interface')
-];
+if (!interface_ppps_capable($a_interfaces[$if], $a_ppps)) {
+    $types4['staticv4'] = gettext('Static IPv4');
+    $types4['dhcp'] = gettext('DHCP');
+
+    $types6['staticv6'] = gettext('Static IPv6');
+    $types6['dhcp6'] = gettext('DHCPv6');
+    $types6['slaac'] = gettext('SLAAC');
+    $types6['6rd'] = gettext('6rd Tunnel');
+    $types6['6to4'] = gettext('6to4 Tunnel');
+    $types6['track6'] = gettext('Track Interface');
+} else {
+    switch ($a_ppps[$pppid]['type']) {
+        case 'ppp':
+            $types4['ppp'] = gettext('PPP');
+            break;
+        case 'pppoe':
+            $types4['pppoe'] = gettext('PPPoE');
+            $types6['pppoev6'] = gettext('PPPoEv6');
+            break;
+        case 'pptp':
+            $types4['pptp'] = gettext('PPTP');
+            break;
+        case 'l2tp':
+            $types4['l2tp'] = gettext('L2TP');
+            break;
+        default:
+            break;
+    }
+
+    $types6['dhcp6'] = gettext('DHCPv6');
+    $types6['slaac'] = gettext('SLAAC');
+}
 
 include("head.inc");
 ?>
