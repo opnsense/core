@@ -75,9 +75,10 @@ export default class Cpu extends BaseWidget {
         }
     }
 
-    onWidgetOptionsChanged(options) {
+    async onWidgetOptionsChanged(options) {
         this.graphs.filter(x => !options.graphs.includes(x)).forEach(graph => $(`#cpu-${graph}`).hide());
-        this.graphs = options.graphs;
+        const config = await this.getWidgetConfig();
+        this.graphs = config.graphs
         this.graphs.forEach(graph => $(`#cpu-${graph}`).show());
     }
 

@@ -235,7 +235,7 @@ export default class Traffic extends BaseWidget {
         };
     }
 
-    onWidgetOptionsChanged(options) {
+    async onWidgetOptionsChanged(options) {
         this.configChanged = true;
     }
 

@@ -665,7 +665,7 @@ class WidgetManager  {
             buttons: [{
                 label: this.gettext.ok,
                 hotkey: 13,
-                action: (dialog) => {
+                action: async (dialog) => {
                     let values = {};
                     for (const [key, value] of Object.entries(options)) {
                         switch (value.type) {
@@ -681,7 +681,7 @@ class WidgetManager  {
                     }
 
                     widget.setWidgetConfig(values);
-                    widget.onWidgetOptionsChanged(values);
+                    await widget.onWidgetOptionsChanged(values);
                     $('#save-grid').show();
                     dialog.close();
                 }
