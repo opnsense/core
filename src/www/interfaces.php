@@ -1432,6 +1432,27 @@ if (isset($a_interfaces[$if]['wireless'])) {
 // Find all possible media options for the interface
 $mediaopts_list = legacy_interface_details($pconfig['if'])['supported_media'] ?? [];
 
+$types4 = [
+    'none' => gettext('None'),
+    'staticv4' => gettext('Static IPv4'),
+    'dhcp' => gettext('DHCP'),
+    'ppp' => gettext('PPP'),
+    'pppoe' => gettext('PPPoE'),
+    'pptp' => gettext('PPTP'),
+    'l2tp' => gettext('L2TP'),
+];
+
+$types6 = [
+    'none' => gettext('None'),
+    'staticv6' => gettext('Static IPv6'),
+    'dhcp6' => gettext('DHCPv6'),
+    'pppoev6' => gettext('PPPoEv6'),
+    'slaac' => gettext('SLAAC'),
+    '6rd' => gettext('6rd Tunnel'),
+    '6to4' => gettext('6to4 Tunnel'),
+    'track6' => gettext('Track Interface')
+];
+
 include("head.inc");
 ?>
 
@@ -1858,13 +1879,10 @@ include("head.inc");
                         <tr>
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("IPv4 Configuration Type"); ?></td>
                           <td>
-                          <select name="type" class="selectpicker" data-style="btn-default" id="type">
-<?php
-                            $types4 = array("none" => gettext("None"), "staticv4" => gettext("Static IPv4"), "dhcp" => gettext("DHCP"), "ppp" => gettext("PPP"), "pppoe" => gettext("PPPoE"), "pptp" => gettext("PPTP"), "l2tp" => gettext("L2TP"));
-                            foreach ($types4 as $key => $opt):?>
-                            <option value="<?=$key;?>" <?=$key == $pconfig['type'] ? "selected=\"selected\"" : "";?> ><?=$opt;?></option>
-<?php
-                            endforeach;?>
+                            <select name="type" class="selectpicker" data-style="btn-default" id="type">
+<?php foreach ($types4 as $key => $opt): ?>
+                              <option value="<?= html_safe($key) ?>" <?=$key == $pconfig['type'] ? 'selected="selected"' : '' ?> ><?= $opt ?></option>
+<?php endforeach ?>
                             </select>
                           </td>
                         </tr>
@@ -1872,12 +1890,9 @@ include("head.inc");
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("IPv6 Configuration Type"); ?></td>
                           <td>
                             <select name="type6" class="selectpicker" data-style="btn-default" id="type6">
-<?php
-                            $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"), "dhcp6" => gettext("DHCPv6"), "pppoev6" => gettext("PPPoEv6"), "slaac" => gettext("SLAAC"), "6rd" => gettext("6rd Tunnel"), "6to4" => gettext("6to4 Tunnel"), "track6" => gettext("Track Interface"));
-                            foreach ($types6 as $key => $opt):?>
-                              <option value="<?=$key;?>" <?=$key == $pconfig['type6'] ? "selected=\"selected\"" : "";?> ><?=$opt;?></option>
-<?php
-                            endforeach;?>
+<?php foreach ($types6 as $key => $opt): ?>
+                              <option value="<?= html_safe($key) ?>" <?=$key == $pconfig['type6'] ? 'selected="selected"' : '' ?> ><?= $opt ?></option>
+<?php endforeach ?>
                             </select>
                           </td>
                         </tr>
@@ -2311,23 +2326,9 @@ include("head.inc");
                       </thead>
                       <tbody>
                         <tr>
-                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Modem Port"); ?></td>
+                          <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Modem Port') ?></td>
                           <td>
-                            <select name="ports" id="ports" data-size="10" class="selectpicker" data-style="btn-default">
-<?php
-                            $portlist = glob("/dev/cua*");
-                            $modems = glob("/dev/modem*");
-                            $portlist = array_merge($portlist, $modems);
-                            foreach ($portlist as $port):
-                              if (preg_match("/\.(lock|init)$/", $port)) {
-                                  continue;
-                              }?>
-                              <option value="<?=trim($port);?>" <?=$pconfig['ports'] == $port ? "selected=\"selected\"" : "" ;?>>
-                                <?=$port;?>
-                              </option>
-<?php
-                            endforeach;?>
-                            </select>
+                            <?= $pconfig['ports'] ?>
                           </td>
                         </tr>
                         <tr>
@@ -2947,7 +2948,7 @@ include("head.inc");
                             <select name='track6-interface' class='selectpicker' data-style='btn-default' >
 <?php
                             foreach ($ifdescrs as $iface => $ifcfg):
-                              switch ($config['interfaces'][$iface]['ipaddrv6']) {
+                              switch ($config['interfaces'][$iface]['ipaddrv6'] ?? 'none') {
                                 case '6rd':
                                 case '6to4':
                                 case 'dhcp6':
