@@ -42,7 +42,7 @@ class LogMatcher:
             self.filter = filter.replace('*', '.*').lower()
             if self.filter.find('*') == -1:
                 # no wildcard operator, assume partial match
-                self.filter = ".*%s.*" % filter
+                self.filter = ".*%s.*" % self.filter
             self.filter_regexp = re.compile(self.filter)
         except re.error:
             # remove illegal expression
