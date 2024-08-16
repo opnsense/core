@@ -25,8 +25,11 @@
  */
 
 export default class Gateways extends BaseTableWidget {
-    constructor() {
-        super();
+    constructor(config) {
+        super(config);
+
+        this.configurable = true;
+        this.cachedGateways = []; // prevent fetch when loading options
     }
 
     getGridOptions() {
@@ -44,19 +47,57 @@ export default class Gateways extends BaseTableWidget {
         return $('<div></div>').append($gateway_table);
     }
 
-    async onWidgetTick() {
-        $('.gateways-status-icon').tooltip('hide');
+    async _fetchGateways() {
         const data = await this.ajaxCall('/api/routes/gateway/status');
-        if (data.items === undefined) {
-            return;
+        if (!data.items || !data.items.length) {
+            return false;
         }
 
-        if (!data.items.length) {
+        return data.items;
+    }
+
+    async onWidgetOptionsChanged(options) {
+        await this._updateGateways();
+    }
+
+    async getWidgetOptions() {
+        return {
+            gateways: {
+                title: this.translations.title,
+                type: 'select_multiple',
+                options: this.cachedGateways.map((name) => {
+                    return {
+                        value: name,
+                        label: name,
+                    };
+                }),
+                default: this.cachedGateways
+            }
+        }
+    }
+
+    async onWidgetTick() {
+        await this._updateGateways();
+    }
+
+    async _updateGateways() {
+        $('.gateways-status-icon').tooltip('hide');
+
+        const gateways = await this._fetchGateways();
+        if (!gateways) {
             $('#gateway-table').html(`<a href="/ui/routing/configuration">${this.translations.unconfigured}</a>`);
             return;
         }
+        this.cachedGateways = gateways.map(({ name }) => name);
 
-        data.items.forEach(({name, address, status, loss, delay, stddev, status_translated}) => {
+        const config = await this.getWidgetConfig();
+
+        let data = [];
+        gateways.forEach(({name, address, status, loss, delay, stddev, status_translated}) => {
+            if (!config.gateways.includes(name)) {
+                return;
+            }
+
             let color = "text-success";
             switch (status) {
                 case "force_down":
@@ -87,8 +128,10 @@ export default class Gateways extends BaseTableWidget {
                 ${delay === '~' ? '' : `<div><b>${this.translations.loss}</b>: ${loss}</div>`}
             </div>`
 
-            this.updateTable('gateway-table', [[gw, stats]], `gw_${name}`);
+            data.push([gw, stats]);
         });
+
+        this.updateTable('gateway-table', data);
 
         $('.gateways-status-icon').tooltip({container: 'body'});
     }
