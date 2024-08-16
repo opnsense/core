@@ -1434,13 +1434,20 @@ $mediaopts_list = legacy_interface_details($pconfig['if'])['supported_media'] ??
 
 $types4 = $types6 = ['none' => gettext('None')];
 
+/* XXX historic mess */
+$types6['staticv6'] = gettext('Static IPv6');
+/* always eligible */
+$types6['dhcp6'] = gettext('DHCPv6');
+$types6['slaac'] = gettext('SLAAC');
+
 if (!interface_ppps_capable($a_interfaces[$if], $a_ppps)) {
+    /* do not offer these raw types as a transition back from PPP */
     $types4['staticv4'] = gettext('Static IPv4');
     $types4['dhcp'] = gettext('DHCP');
+    /* only offer PPPoE for inline creation */
+    $types4['pppoe'] = gettext('PPPoE');
 
-    $types6['staticv6'] = gettext('Static IPv6');
-    $types6['dhcp6'] = gettext('DHCPv6');
-    $types6['slaac'] = gettext('SLAAC');
+    $types6['pppoev6'] = gettext('PPPoEv6');
     $types6['6rd'] = gettext('6rd Tunnel');
     $types6['6to4'] = gettext('6to4 Tunnel');
     $types6['track6'] = gettext('Track Interface');
@@ -1462,9 +1469,6 @@ if (!interface_ppps_capable($a_interfaces[$if], $a_ppps)) {
         default:
             break;
     }
-
-    $types6['dhcp6'] = gettext('DHCPv6');
-    $types6['slaac'] = gettext('SLAAC');
 }
 
 include("head.inc");
