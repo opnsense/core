@@ -139,8 +139,10 @@ export default class Cpu extends BaseWidget {
         let viewPort = document.getElementsByClassName('page-content-main')[0].getBoundingClientRect().width;
         if (width > (viewPort / 2)) {
             $('.cpu-canvas-container').css('flex-direction', 'row');
+            $('.smoothie-container').css('margin', '0px 10px 0px 10px');
         } else {
             $('.cpu-canvas-container').css('flex-direction', 'column');
+            $('.smoothie-container').css('margin', '0px');
         }
 
         return true;
