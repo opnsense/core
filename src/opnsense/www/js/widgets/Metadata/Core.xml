@@ -314,7 +314,7 @@
         </endpoints>
         <translations>
             <title>OpenVPN Server Connections</title>
-            <noserver>Not connected to any server</noserver>
+            <noservers>Not connected to any server</noserver>
             <server>Server</server>
             <client>Client</client>
             <stopped>Stopped</stopped>
