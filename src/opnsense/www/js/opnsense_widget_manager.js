@@ -682,6 +682,7 @@ class WidgetManager  {
 
                     widget.setWidgetConfig(values);
                     await widget.onWidgetOptionsChanged(values);
+                    this._updateGrid(this.widgetHTMLElements[widget.id]);
                     $('#save-grid').show();
                     dialog.close();
                 }
