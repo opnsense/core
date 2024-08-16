@@ -24,8 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseWidget from 'widget-base';
-
 export default class ThermalSensors extends BaseWidget {
     constructor() {
         super();

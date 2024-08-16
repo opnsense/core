@@ -24,9 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseWidget from 'widget-base';
-
-export default class BaseTableWidget extends BaseWidget {
+class BaseTableWidget extends BaseWidget {
     constructor(config) {
         super(config);
 

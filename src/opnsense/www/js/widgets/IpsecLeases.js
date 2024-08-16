@@ -24,8 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseTableWidget from 'widget-base-table';
-
 export default class IpsecLeases extends BaseTableWidget {
     constructor() {
         super();
