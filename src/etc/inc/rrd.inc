@@ -110,6 +110,7 @@ function rrd_configure($verbose = false, $bootup = false)
         }
         chown($rrddbpath, "nobody");
         /* open file handle to update script and lock it in exclusive mode */
+        @touch('/var/db/rrd/updaterrd.sh');
         $fobj = new \OPNsense\Core\FileObject('/var/db/rrd/updaterrd.sh', 'r+', 0755, LOCK_EX);
 
         /* db update script */
