@@ -62,7 +62,7 @@
         <type>checkbox</type>
         <help>
             <![CDATA[If this option is set, then DHCP static mappings will be registered in Unbound, so that their name can be resolved.
-            You should also set the domain in <a href="/system_general.php">System: General setup</a> to the proper value.]]>
+            You should also set the domain in <a href="/system_general.php">System: Settings: General</a> to the proper value.]]>
         </help>
     </field>
     <field>
