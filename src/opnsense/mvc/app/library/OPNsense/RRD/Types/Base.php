@@ -28,7 +28,7 @@
 
 namespace OPNsense\RRD\Types;
 
-class Base
+abstract class Base
 {
     /**
      * standard dataset values when undefined.
@@ -37,6 +37,7 @@ class Base
     protected int $ds_min = 0;
     protected int $ds_max = 1000000000;
     private string $filename;
+    protected static string $basedir = '/var/db/rrd/';
 
     /**
      * DS:ds-name:{GAUGE | COUNTER | DERIVE | DCOUNTER | DDERIVE | ABSOLUTE}:heartbeat:min:max
@@ -75,6 +76,15 @@ class Base
     public function __construct(string $filename)
     {
         $this->filename = $filename;
+    }
+
+    /**
+     * @param array collected stats for the type
+     * @return array list of filenames
+     */
+    public static function filenameGenerator(array $payload)
+    {
+        return [];
     }
 
     /**
@@ -153,14 +163,24 @@ class Base
     /**
      * update the dataset
      */
-    public function update(?array $dataset = null)
+    public function update(array $dataset = [], bool $debug=false)
     {
         $values = [];
-        for ($i=0 ; $i < count($this->datasets) ; ++$i) {
-            $values[] = !empty($dataset) && isset($dataset[$i]) ? $dataset[$i] : 'U';
+        $map_by_name = count($dataset) > 0 && !isset($dataset[0]);
+        foreach ($this->datasets as $idx => $ds) {
+            if ($map_by_name) {
+                $value = isset($dataset[$ds[0]]) ? $dataset[$ds[0]] : 'U';
+            } else {
+                $value = !empty($dataset) && isset($dataset[$i]) ? $dataset[$i] : 'U';
+            }
+            $values[] = $value;
+            if ($value == 'U' && $debug) {
+                echo sprintf("[%s] '%s' missing in datafeed\n", get_class($this), $ds[0]);
+            }
         }
         $cmd_text = sprintf('/usr/local/bin/rrdtool update %s N:%s 2>&1', $this->filename, implode(':', $values));
-        exec($cmd_text, $rrdcreateoutput, $rrdcreatereturn);
+        echo $cmd_text . "\n";
+        //exec($cmd_text, $rrdcreateoutput, $rrdcreatereturn);
         return $this;
     }
 
@@ -170,5 +190,14 @@ class Base
     public function update_cmd()
     {
         return sprintf('/usr/local/bin/rrdtool update %s N:', $this->filename);
+    }
+
+    /**
+     * @return string name of the Stats class this type requires data from.
+     */
+    public static function wantsStats()
+    {
+        $tmp = explode('\\', static::class);
+        return array_pop($tmp);
     }
 }

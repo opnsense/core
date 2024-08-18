@@ -26,45 +26,38 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\RRD\Types;
+namespace OPNsense\RRD\Stats;
 
-class Mbuf extends Base
+class Memory extends Base
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected int $ds_heartbeat =  120;
-    protected int $ds_min = 0;
-    protected int $ds_max = 10000000;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct(string $filename)
+    public function run()
     {
-        parent::__construct($filename);
-        $this->addDatasets(['current', 'cache', 'total', 'max'], 'GAUGE');
-        $this->setRRA([
-            ['MIN', 0.5, 1, 1200],
-            ['MIN', 0.5, 5, 720],
-            ['MIN', 0.5, 60, 1860],
-            ['MIN', 0.5, 1440, 2284],
-            ['AVERAGE', 0.5, 1, 1200],
-            ['AVERAGE', 0.5, 5, 720],
-            ['AVERAGE', 0.5, 60, 1860],
-            ['AVERAGE', 0.5, 1440, 2284],
-            ['MAX', 0.5, 1, 1200],
-            ['MAX', 0.5, 5, 720],
-            ['MAX', 0.5, 60, 1860],
-            ['MAX', 0.5, 1440, 2284],
-        ]);
-    }
+        $sysctls = [
+            'vm.stats.vm.v_page_count',
+            'vm.stats.vm.v_active_count',
+            'vm.stats.vm.v_inactive_count',
+            'vm.stats.vm.v_free_count',
+            'vm.stats.vm.v_cache_count',
+            'vm.stats.vm.v_wire_count'
+        ];
 
-    /**
-     * @inheritdoc
-     */
-    public static function filenameGenerator(array $payload)
-    {
-        return [static::$basedir . 'system-mbuf.rrd'];
+        $memory = $this->shellCmd('/sbin/sysctl ' . implode(' ', $sysctls));
+        if (!empty($memory)) {
+            $percentages = [];
+            $data = [];
+            foreach ($memory as $idx => $item) {
+                // strip vm.stats.vm.v_ and collect into $result
+                $tmp = explode(':', substr($item, 14));
+                $data[$tmp[0]] = trim($tmp[1]);
+                if ($idx > 0) {
+                    $percentages[explode('_', $tmp[0])[0]] = ($data[$tmp[0]] / $data['page_count']) * 100.0;
+                }
+            }
+            return $percentages;
+        }
+        return [];
     }
 }
+
+
+

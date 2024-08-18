@@ -26,45 +26,32 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\RRD\Types;
+namespace OPNsense\RRD\Stats;
 
-class Mbuf extends Base
+class GatewayQuality extends Base
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected int $ds_heartbeat =  120;
-    protected int $ds_min = 0;
-    protected int $ds_max = 10000000;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct(string $filename)
+    public function run()
     {
-        parent::__construct($filename);
-        $this->addDatasets(['current', 'cache', 'total', 'max'], 'GAUGE');
-        $this->setRRA([
-            ['MIN', 0.5, 1, 1200],
-            ['MIN', 0.5, 5, 720],
-            ['MIN', 0.5, 60, 1860],
-            ['MIN', 0.5, 1440, 2284],
-            ['AVERAGE', 0.5, 1, 1200],
-            ['AVERAGE', 0.5, 5, 720],
-            ['AVERAGE', 0.5, 60, 1860],
-            ['AVERAGE', 0.5, 1440, 2284],
-            ['MAX', 0.5, 1, 1200],
-            ['MAX', 0.5, 5, 720],
-            ['MAX', 0.5, 60, 1860],
-            ['MAX', 0.5, 1440, 2284],
-        ]);
-    }
+        $result = [];
+        foreach (glob('/var/run/dpinger_*.sock') as $filename) {
+            $fp = @stream_socket_client("unix://{$filename}", $errno, $errstr, 1);
+            if (!$fp) {
+                continue;
+            }
 
-    /**
-     * @inheritdoc
-     */
-    public static function filenameGenerator(array $payload)
-    {
-        return [static::$basedir . 'system-mbuf.rrd'];
+            $dinfo = '';
+            while (!feof($fp)) {
+                $dinfo .= fgets($fp, 1024);
+            }
+            fclose($fp);
+            $record = explode(' ', $dinfo);
+            $result[$record[0]] = [
+                'gwname' => $record[0],
+                'delay' => sprintf('%.07f', $record[1] / 1000.0 / 1000.0),
+                'stddev' => sprintf('%.07f', $record[2] / 1000.0 / 1000.0),
+                'loss' => $record[3]
+            ];
+        }
+        return $result;
     }
 }

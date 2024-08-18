@@ -26,45 +26,27 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\RRD\Types;
+namespace OPNsense\RRD\Stats;
 
-class Mbuf extends Base
+class Processor extends Base
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected int $ds_heartbeat =  120;
-    protected int $ds_min = 0;
-    protected int $ds_max = 10000000;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct(string $filename)
+    public function run()
     {
-        parent::__construct($filename);
-        $this->addDatasets(['current', 'cache', 'total', 'max'], 'GAUGE');
-        $this->setRRA([
-            ['MIN', 0.5, 1, 1200],
-            ['MIN', 0.5, 5, 720],
-            ['MIN', 0.5, 60, 1860],
-            ['MIN', 0.5, 1440, 2284],
-            ['AVERAGE', 0.5, 1, 1200],
-            ['AVERAGE', 0.5, 5, 720],
-            ['AVERAGE', 0.5, 60, 1860],
-            ['AVERAGE', 0.5, 1440, 2284],
-            ['MAX', 0.5, 1, 1200],
-            ['MAX', 0.5, 5, 720],
-            ['MAX', 0.5, 60, 1860],
-            ['MAX', 0.5, 1440, 2284],
-        ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function filenameGenerator(array $payload)
-    {
-        return [static::$basedir . 'system-mbuf.rrd'];
+        $cpustats = $this->shellCmd('/usr/local/sbin/cpustats');
+        $ps = $this->shellCmd('/bin/ps uxaH');
+        if (!empty($cpustats) && !empty($ps)) {
+            $tmp = explode(':', $cpustats[0]);
+            return [
+                'user' => $tmp[0],
+                'nice' => $tmp[1],
+                'system' => $tmp[2],
+                'interrupt' => $tmp[3],
+                'processes' => count($ps)-1
+            ];
+        }
+        return [];
     }
 }
+
+
+

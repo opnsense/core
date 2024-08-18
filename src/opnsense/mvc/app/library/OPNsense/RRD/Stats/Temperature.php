@@ -26,45 +26,24 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\RRD\Types;
+namespace OPNsense\RRD\Stats;
 
-class Mbuf extends Base
+class Temperature extends Base
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected int $ds_heartbeat =  120;
-    protected int $ds_min = 0;
-    protected int $ds_max = 10000000;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct(string $filename)
+    public function run()
     {
-        parent::__construct($filename);
-        $this->addDatasets(['current', 'cache', 'total', 'max'], 'GAUGE');
-        $this->setRRA([
-            ['MIN', 0.5, 1, 1200],
-            ['MIN', 0.5, 5, 720],
-            ['MIN', 0.5, 60, 1860],
-            ['MIN', 0.5, 1440, 2284],
-            ['AVERAGE', 0.5, 1, 1200],
-            ['AVERAGE', 0.5, 5, 720],
-            ['AVERAGE', 0.5, 60, 1860],
-            ['AVERAGE', 0.5, 1440, 2284],
-            ['MAX', 0.5, 1, 1200],
-            ['MAX', 0.5, 5, 720],
-            ['MAX', 0.5, 60, 1860],
-            ['MAX', 0.5, 1440, 2284],
-        ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function filenameGenerator(array $payload)
-    {
-        return [static::$basedir . 'system-mbuf.rrd'];
+        $data = $this->shellCmd(
+            '/sbin/sysctl -n dev.cpu.0.temperature hw.acpi.thermal.tz0.temperature hw.temperature.CPU'
+        );
+        if (!empty($data)) {
+            return $data[0];
+        }
+        return null;
     }
 }
+
+
+
+
+
+

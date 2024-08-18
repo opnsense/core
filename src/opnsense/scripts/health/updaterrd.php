@@ -32,16 +32,7 @@ require_once('script/load_phalcon.php');
 use OPNsense\Core\Config;
 
 
-$ifdescrs = [];
-foreach (Config::getInstance()->object()->interfaces->children() as $ifname => $node) {
-    if (isset($node->enable)) {
-        $ifdescrs[(string)$node->if] = !empty((string)$node->descr) ? (string)$node->descr : $ifname;
-    }
-}
-$ifdescrs['ipsec'] = "IPsec";
-$ovpn_servers = (new OPNsense\OpenVPN\OpenVPN())->serverDevices();
-foreach ($ovpn_servers as $ifname => $data) {
-    $ifdescrs[$ifname] = $data['descr'];
-}
+$rrd_factory = new \OPNsense\RRD\Factory();
 
-print_r($ifdescrs);
+$payload = $rrd_factory->collect();
+//print_r($payload);
