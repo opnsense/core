@@ -282,6 +282,7 @@
                     let min; // holds calculated minimum value
                     let max; // holds calculated maximum value
                     let average; // holds calculated average
+                    let average_count; // holds count (denominator) for average calculation
 
                     let t; // general date/time variable
                     let item; // used for name of key
@@ -298,9 +299,10 @@
 
                     for (let index = 0; index < data["set"]["data"].length; ++index) {
                         rowcounter = 0;
-                        min = 0;
+                        min = Number.MAX_VALUE // 1.7976931348623157e+308
                         max = 0;
                         average = 0;
+                        average_count = 0;
                         if (data["set"]["data"][index]["disabled"] != true) {
                             table_head += '<th>' + data["set"]["data"][index]["key"] + '</th>';
                             keyname = data["set"]["data"][index]["key"].toString();
@@ -323,23 +325,30 @@
                                         csvData[rowcounter]["date_time"] = t.toString();
                                     }
                                     csvData[rowcounter][keyname] = data["set"]["data"][index]["values"][value_index][1];
-                                    if (data["set"]["data"][index]["values"][value_index][1] < min) {
+                                    if (Math.abs(data["set"]["data"][index]["values"][value_index][1]) < Math.abs(min)) {
                                         min = data["set"]["data"][index]["values"][value_index][1];
                                     }
-                                    if (data["set"]["data"][index]["values"][value_index][1] > max) {
+                                    if (Math.abs(data["set"]["data"][index]["values"][value_index][1]) > Math.abs(max)) {
                                         max = data["set"]["data"][index]["values"][value_index][1];
                                     }
                                     if (!isNaN(data["set"]["data"][index]["values"][value_index][1])) {
                                         average += data["set"]["data"][index]["values"][value_index][1];
+                                        ++average_count;
                                     }
                                     ++rowcounter;
                                 }
                             }
                             if (min_max_average[keyname] === undefined) {
                                 min_max_average[keyname] = {};
-                                min_max_average[keyname]["min"] = min;
-                                min_max_average[keyname]["max"] = max;
-                                min_max_average[keyname]["average"] = average / rowcounter;
+                                if (average_count > 0) {
+                                    min_max_average[keyname]["min"] = min;
+                                    min_max_average[keyname]["max"] = max;
+                                    min_max_average[keyname]["average"] = average / average_count;
+                                } else {
+                                    min_max_average[keyname]["min"] = '';
+                                    min_max_average[keyname]["max"] = '';
+                                    min_max_average[keyname]["average"] = '';
+                                }
                             }
 
                         }
