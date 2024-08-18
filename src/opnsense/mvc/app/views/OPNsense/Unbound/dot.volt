@@ -58,7 +58,7 @@
                         );
                     } else {
                         $('div[id="control_label_unbound.forwarding.info"]').append(
-                            "<span>{{ lang._('There are no system nameservers configured. Please do so in ') }}<a href=\"/system_general.php\">System: General setup</a></span>"
+                            "<span>{{ lang._('There are no system nameservers configured. Please do so in ') }}<a href=\"/system_general.php\">System: Settings: General</a></span>"
                         );
                     }
 
