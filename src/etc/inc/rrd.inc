@@ -137,7 +137,7 @@ function rrd_configure($verbose = false, $bootup = false)
 
             /* OpenVPN, set up the rrd file */
             if (isset($ovpn_servers[$ifname])) {
-                $rrd = $rrd_factory->get('Wireless', "$rrddbpath$ifname$vpnusers");
+                $rrd = $rrd_factory->get('OpenVPN', "$rrddbpath$ifname$vpnusers");
                 $rrd->create()->update();
                 $rrdupdatesh .= "\n";
                 $rrdupdatesh .= "# polling vpn users for interface $ifname\n";
