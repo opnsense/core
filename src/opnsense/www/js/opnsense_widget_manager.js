@@ -94,6 +94,7 @@ class WidgetManager  {
         this.widgetClasses = {}; // id -> instantiated widget module
         this.widgetHTMLElements = {}; // id -> Element types
         this.widgetTickRoutines = {}; // id -> tick routines
+        this.errorStates = {} // id -> error state
         this.grid = null; // gridstack instance
         this.moduleDiff = []; // list of module ids that are allowed, but not currently rendered
         this.resizeObserver = new ResizeObserverWrapper();
@@ -479,29 +480,43 @@ class WidgetManager  {
 
         // start the widget-specific tick routine
         let onWidgetTick = widget.onWidgetTick.bind(widget);
-        try {
-            await onWidgetTick();
-            this._updateGrid(this.widgetHTMLElements[widget.id]);
-        } catch (error) {
-            this._displayError(widget.id, error);
-        }
-        const interval = setInterval(async () => {
+        const tick = async () => {
             try {
                 await onWidgetTick();
+                this._clearError(widget.id);
                 this._updateGrid(this.widgetHTMLElements[widget.id]);
             } catch (error) {
                 this._displayError(widget.id, error);
             }
+        }
+
+        await tick();
+        const interval = setInterval(async () => {
+            await tick();
         }, widget.tickTimeout * 1000);
         // store the reference to the tick routine so we can clear it later on widget removal
         this.widgetTickRoutines[widget.id] = interval;
     }
 
+    _clearError(widgetId) {
+        if (widgetId in this.errorStates && this.errorStates[widgetId]) {
+            $(`.widget-${widgetId} > .widget-content > .widget-error`).remove();
+            const widget = $(`.widget-${widgetId} > .widget-content > .panel-divider`);
+            widget.nextAll().show();
+            this.errorStates[widgetId] = false;
+        }
+    }
+
     _displayError(widgetId, error) {
+        if (widgetId in this.errorStates && this.errorStates[widgetId]) {
+            return;
+        }
+
+        this.errorStates[widgetId] = true;
         console.error(`Failed to load content for widget: ${widgetId}, Error:`, error);
 
         const widget =  $(`.widget-${widgetId} > .widget-content > .panel-divider`);
-        widget.nextAll().remove()
+        widget.nextAll().hide();
         widget.after(`
             <div class="widget-error">
                 <i class="fa fa-exclamation-circle text-danger"></i>
