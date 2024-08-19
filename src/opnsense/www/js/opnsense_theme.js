@@ -51,9 +51,7 @@ $(document).ready(function () {
             var nextDiv = that.next('div');
 
             navigation.css('width', '415px');
-            if (that.next('div').hasClass('in')) {
-                /* no action needed */
-            } else {
+            if (!that.next('div').hasClass('in')) {
                 /* calculate coordinates for submenu */
                 var winHeight = $(window).height(),
                     offsetTop = that.offset().top,
