@@ -55,6 +55,7 @@
         </endpoints>
         <translations>
             <title>Interface Statistics</title>
+            <interface>Interface</interface>
             <bytesin>Bytes In</bytesin>
             <bytesout>Bytes Out</bytesout>
             <packetsin>Packets In</packetsin>
