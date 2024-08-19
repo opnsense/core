@@ -87,7 +87,7 @@ export default class Traffic extends BaseWidget {
                     y: {
                         ticks: {
                             callback: (value, index, values) => {
-                                return this._formatBytes(value);
+                                return this._formatBits(value);
                             }
                         }
                     }
@@ -105,7 +105,7 @@ export default class Traffic extends BaseWidget {
                         intersect: false,
                         callbacks: {
                             label: (context) => {
-                                return context.dataset.label + ": " + this._formatBytes(context.dataset.data[context.dataIndex].y).toString();
+                                return context.dataset.label + ": " + this._formatBits(context.dataset.data[context.dataIndex].y).toString();
                             }
                         }
                       },

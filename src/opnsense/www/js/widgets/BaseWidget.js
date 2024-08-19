@@ -238,20 +238,29 @@ class BaseWidget {
         return color + op.toString(16).toUpperCase();
     }
 
+    _formatBits(value, decimals = 2) {
+        return this._formatField(value, decimals, true);
+    }
+
     _formatBytes(value, decimals = 2) {
+        return this._formatField(value, decimals);
+    }
+
+    _formatField(value, decimals = 2, bits = false) {
         value = Number(value);
         if (isNaN(value) || value === null || value <= 0) {
             return "";
         }
 
-        const fileSizeTypes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+        let fileSizeTypes = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
         const ndx = Math.floor(Math.log(value) / Math.log(1000));
 
+        const suffix = bits ? 'b' : 'B';
         if (ndx > 0) {
-            return (value / Math.pow(1000, ndx)).toFixed(decimals) + ' ' + fileSizeTypes[ndx];
+            return `${(value / Math.pow(1000, ndx)).toFixed(decimals)} ${fileSizeTypes[ndx]}${suffix}`;
         }
 
-        return value.toFixed(decimals) + ' ' + fileSizeTypes[0];
+        return `${value.toFixed(decimals)} ${fileSizeTypes[0]}${suffix}`;
     }
 
     sanitizeSelector(selector) {
