@@ -55,29 +55,6 @@ function is_bogonsv6_used()
     return $usebogonsv6;
 }
 
-/* lock configuration file */
-function filter_lock($lock = 'filter', $op = LOCK_EX)
-{
-    if (!file_exists("{/tmp/{$lock}.lock")) {
-        @touch("/tmp/{$lock}.lock");
-    }
-
-    if ($fp = fopen("/tmp/{$lock}.lock", 'a+e')) {
-        if (flock($fp, $op)) {
-            return $fp;
-        } else {
-            fclose($fp);
-        }
-    }
-}
-
-/* unlock configuration file */
-function filter_unlock($fp)
-{
-    flock($fp, LOCK_UN);
-    fclose($fp);
-}
-
 /* sort by interface only, retain the original order of rules that apply to
    the same interface */
 function filter_rules_sort()
@@ -181,7 +158,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     service_log('Configuring firewall.', $verbose);
 
     /* Use filter lock to not allow concurrent filter reloads during this run. */
-    $locked = filter_lock();
+    $fobj = new \OPNsense\Core\FileObject('/tmp/filter.lock', 'a+', null, LOCK_EX);
 
     ifgroup_setup();
 
@@ -288,7 +265,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     } else {
         mwexec("/sbin/pfctl -d", true);
 
-        filter_unlock($locked);
+        unset($fobj);
+
         closelog();
         reopenlog();
 
@@ -396,7 +374,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         syslog(LOG_ERR, 'ERROR: Could not write new rules!');
         file_put_contents('/tmp/rules.error', gettext('ERROR: Could not write new rules!'));
 
-        filter_unlock($locked);
+        unset($fobj);
+
         closelog();
         reopenlog();
 
@@ -438,7 +417,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
             sprintf(gettext('There were error(s) loading the rules: %s%s'), $rules_error[0], $config_line)
         );
 
-        filter_unlock($locked);
+        unset($fobj);
+
         closelog();
         reopenlog();
 
@@ -472,7 +452,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     killbypid('/var/run/filterlog.pid');
     mwexec('/usr/local/sbin/filterlog -i pflog0 -p /var/run/filterlog.pid');
 
-    filter_unlock($locked);
+    unset($fobj);
+
     closelog();
     reopenlog();
 
