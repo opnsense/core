@@ -2830,14 +2830,11 @@ function interface_dhcpv6_configure($interface, $wancfg)
     /* always kill rtsold in case of reconfigure */
     killbypid('/var/run/rtsold.pid');
 
-    $rtsoldcommand = exec_safe(
-        '/usr/sbin/rtsold -p %s -A %s -R %s -a -u',
-        array(
-            '/var/run/rtsold.pid',
-            '/var/etc/rtsold_script.sh',
-            '/usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh',
-        )
-    );
+    $rtsoldcommand = exec_safe('/usr/sbin/rtsold -aiu -p %s -A %s -R %s', [
+        '/var/run/rtsold.pid',
+        '/var/etc/rtsold_script.sh',
+        '/usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh',
+    ]);
 
     if (!empty($syscfg['dhcp6_debug'])) {
         $mode = [ '1' => ' -d', '2' => ' -D' ];
