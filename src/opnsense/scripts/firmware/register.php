@@ -177,7 +177,7 @@ switch ($action) {
             $changed = true;
         }
 
-        if (isset($config->trigger_initial_wizard)) {
+        if (!isset($config->trigger_initial_wizard)) {
             break;
         }
         /* FALLTHROUGH */
