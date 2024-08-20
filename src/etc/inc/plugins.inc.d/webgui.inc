@@ -132,13 +132,13 @@ function webgui_configure_do($verbose = false, $interface = '')
     $fp = fopen("{$confdir}/lighttpd.conf", 'a+e');
     if (!$fp || !flock($fp, LOCK_EX | LOCK_NB)) {
         fclose($fp);
-        @unlink($tempfile);
         service_log("locked.\n", $verbose);
         return;
     }
 
     ftruncate($fp, 0);
     fwrite($fp, $conftxt);
+    fflush($fp);
 
     /* regenerate the php.ini files in case the setup has changed */
     configd_run('template reload OPNsense/WebGui');
