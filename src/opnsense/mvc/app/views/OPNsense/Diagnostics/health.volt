@@ -197,8 +197,8 @@
         // array used for cvs export option
         csvData = [];
 
-        // array used for min/max/average table when shown
-        let min_max_average = {};
+        // array used for min/max/average/last table when shown
+        let min_max_average_last = {};
 
         // info bar - hide averages info bar while refreshing data
         $('#averages').hide();
@@ -283,6 +283,7 @@
                     let max; // holds calculated maximum value
                     let average; // holds calculated average
                     let average_count; // holds count (denominator) for average calculation
+                    let last; // holds last value
 
                     let t; // general date/time variable
                     let item; // used for name of key
@@ -334,35 +335,39 @@
                                     if (!isNaN(data["set"]["data"][index]["values"][value_index][1])) {
                                         average += data["set"]["data"][index]["values"][value_index][1];
                                         ++average_count;
+                                        last = data["set"]["data"][index]["values"][value_index][1];
                                     }
                                     ++rowcounter;
                                 }
                             }
-                            if (min_max_average[keyname] === undefined) {
-                                min_max_average[keyname] = {};
+                            if (min_max_average_last[keyname] === undefined) {
+                                min_max_average_last[keyname] = {};
                                 if (average_count > 0) {
-                                    min_max_average[keyname]["min"] = min;
-                                    min_max_average[keyname]["max"] = max;
-                                    min_max_average[keyname]["average"] = average / average_count;
+                                    min_max_average_last[keyname]["min"] = min;
+                                    min_max_average_last[keyname]["max"] = max;
+                                    min_max_average_last[keyname]["average"] = average / average_count;
+                                    min_max_average_last[keyname]["last"] = last;
                                 } else {
-                                    min_max_average[keyname]["min"] = '';
-                                    min_max_average[keyname]["max"] = '';
-                                    min_max_average[keyname]["average"] = '';
+                                    min_max_average_last[keyname]["min"] = '';
+                                    min_max_average_last[keyname]["max"] = '';
+                                    min_max_average_last[keyname]["average"] = '';
+                                    min_max_average_last[keyname]["last"] = '';
                                 }
                             }
 
                         }
                     }
 
-                    for ( item in min_max_average) {
+                    for ( item in min_max_average_last) {
                         table_view_rows += "<tr>";
                         table_view_rows += "<td>" + item + "</td>";
-                        table_view_rows += "<td>" + min_max_average[item]["min"].toString() + "</td>";
-                        table_view_rows += "<td>" + min_max_average[item]["max"].toString() + "</td>";
-                        table_view_rows += "<td>" + min_max_average[item]["average"].toString() + "</td>";
+                        table_view_rows += "<td>" + min_max_average_last[item]["min"].toString() + "</td>";
+                        table_view_rows += "<td>" + min_max_average_last[item]["max"].toString() + "</td>";
+                        table_view_rows += "<td>" + min_max_average_last[item]["average"].toString() + "</td>";
+                        table_view_rows += "<td>" + min_max_average_last[item]["last"].toString() + "</td>";
                         table_view_rows += "</tr>";
                     }
-                    $('#table_view_general_heading').html('<th>item</th><th>min</th><th>max</th><th>average</th>');
+                    $('#table_view_general_heading').html('<th>item</th><th>min</th><th>max</th><th>average</th><th>last</th>');
                     $('#table_view_general_rows').html(table_view_rows);
                     table_view_rows = "";
 
@@ -580,7 +585,7 @@
             </div>
         </div>
 
-        <!-- place holder for the general table with min/max/averages, is hidden by default -->
+        <!-- place holder for the general table with min/max/averages/last, is hidden by default -->
         <div id="chart_general_table" class="col-md-12" style="display: none;">
             <div class="panel panel-default">
                 <div class="panel-heading">
