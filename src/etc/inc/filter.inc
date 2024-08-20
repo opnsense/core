@@ -158,7 +158,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     service_log('Configuring firewall.', $verbose);
 
     /* Use filter lock to not allow concurrent filter reloads during this run. */
-    $fobj = new \OPNsense\Core\FileObject('/tmp/filter.lock', 'a+', null, LOCK_EX);
+    $fobj = new \OPNsense\Core\FileObject('/tmp/rules.debug', 'a+', 0600, LOCK_EX);
 
     ifgroup_setup();
 
@@ -370,19 +370,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     mwexecf('ifconfig > %s', '/tmp/ifconfig.debug');
 
-    if (!@file_put_contents('/tmp/rules.debug', $rules, LOCK_EX)) {
-        syslog(LOG_ERR, 'ERROR: Could not write new rules!');
-        file_put_contents('/tmp/rules.error', gettext('ERROR: Could not write new rules!'));
-
-        unset($fobj);
-
-        closelog();
-        reopenlog();
-
-        service_log("failed.\n", $verbose);
-
-        return;
-    }
+    $fobj->truncate(0)->write($rules);
 
     @file_put_contents('/tmp/rules.limits', $limitrules);
     mwexec('/sbin/pfctl -Of /tmp/rules.limits');
