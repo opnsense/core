@@ -1434,9 +1434,8 @@ $mediaopts_list = legacy_interface_details($pconfig['if'])['supported_media'] ??
 
 $types4 = $types6 = ['none' => gettext('None')];
 
-/* XXX historic mess */
-$types6['staticv6'] = gettext('Static IPv6');
 /* always eligible */
+$types6['staticv6'] = gettext('Static IPv6');
 $types6['dhcp6'] = gettext('DHCPv6');
 $types6['slaac'] = gettext('SLAAC');
 
