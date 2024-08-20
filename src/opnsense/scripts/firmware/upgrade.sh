@@ -49,7 +49,7 @@ if opnsense-update -u > ${PIPEFILE} 2>&1; then
 	fi
 
 	# abort pending upgrades
-	opnsense-update -e >> ${LOCKFILE} 2>&1
+	opnsense-update -es >> ${LOCKFILE} 2>&1
 fi
 
 echo '***DONE***' >> ${LOCKFILE}
