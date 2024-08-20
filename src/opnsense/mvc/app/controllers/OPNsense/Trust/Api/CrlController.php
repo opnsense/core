@@ -373,6 +373,35 @@ class CrlController extends ApiControllerBase
         return ['status' => 'failed'];
     }
 
+    /**
+     * drop CRL by certificate reference
+     */
+    public function delAction($caref)
+    {
+        if ($this->request->isPost() && !empty($caref)) {
+            Config::getInstance()->lock();
+            $config = Config::getInstance()->object();
+            $to_delete = [];
+            foreach ($config->crl as $node) {
+                if ((string)$node->caref == $caref) {
+                    $to_delete[] = $node;
+                }
+            }
+            foreach ($to_delete as $cert) {
+                $dom = dom_import_simplexml($cert);
+                $dom->parentNode->removeChild($dom);
+            }
+            if (count($to_delete) > 0) {
+                Config::getInstance()->save();
+                return ['status' => 'deleted'];
+            } else {
+                Config::getInstance()->unlock();
+                return ['status' => 'not found'];
+            }
+        }
+        return ['status' => 'failed'];
+    }
+
 
     public function rawDumpAction($caref)
     {
