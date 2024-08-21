@@ -264,12 +264,14 @@ class WidgetManager  {
             </button>
         `));
         $btn_group.append($(`
-            <button class="btn btn-default" id="add_widget">
+            <button class="btn btn-default" id="add_widget" style="display: none;" data-toggle="tooltip" title="${this.gettext.addwidget}">
                 <i class="fa fa-plus-circle fa-fw"></i>
-                ${this.gettext.addwidget}
             </button>
         `));
-        $btn_group.append($(`<button class="btn btn-secondary" id="restore-defaults">${this.gettext.restore}</button>`));
+        $btn_group.append($(`
+            <button class="btn btn-secondary" style="display:none;" id="restore-defaults" data-toggle="tooltip" title=" ${this.gettext.restore}">
+                <i class="fa fa-window-restore fa-fw"></i>
+            </button>`));
         $btn_group.append($(`
             <button class="btn btn-secondary" id="edit-grid" data-toggle="tooltip" title="${this.gettext.edit}">
                 <i class="fa fa-pencil fa-fw"></i>
@@ -278,6 +280,10 @@ class WidgetManager  {
 
         // Append the button group to the container
         $btn_group.appendTo($btn_group_container);
+
+        $('#add_widget').tooltip({placement: 'bottom', container: 'body'});
+        $('#restore-defaults').tooltip({placement: 'bottom', container: 'body'});
+        $('#edit-grid').tooltip({placement: 'bottom', container: 'body'});
 
         // Initially hide the save button
         $('#save-grid').hide();
@@ -374,6 +380,8 @@ class WidgetManager  {
                 $('.widget-content').css('cursor', 'grab');
                 $('.close-handle').show();
                 $('.edit-handle').show();
+                $('#add_widget').show();
+                $('#restore-defaults').show();
             } else {
                 this.runtimeOptions.editMode = false;
                 this.grid.enableMove(false);
@@ -381,14 +389,14 @@ class WidgetManager  {
                 $('.widget-content').css('cursor', 'default');
                 $('.close-handle').hide();
                 $('.edit-handle').hide();
+                $('#add_widget').hide();
+                $('#restore-defaults').hide();
             }
         });
 
         $('#edit-grid').mouseup(function() {
             $(this).blur();
         });
-
-        $('#edit-grid').tooltip();
     }
 
     /* Executes all widget post-render callbacks asynchronously and in "parallel".
@@ -626,8 +634,13 @@ class WidgetManager  {
                             $('#save-check').toggleClass("show hide");
                             $('#save-btn-text').toggleClass("hide show");
                             $('#save-grid').prop('disabled', false);
+
+                            if ($('#edit-grid').hasClass('active')) {
+                                $('#edit-grid').click();
+                            }
                         }, 500)
                     }
+
                 }, 300); // Artificial delay to give more feedback on button click
             }
         });
