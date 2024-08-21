@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         }
-        write_config('Firewall: NAT: Outbound, toggle NAT rule');
+        write_config('Firewall: NAT: Port Forward, toggle NAT rule');
         mark_subsystem_dirty('natconf');
         header(url_safe('Location: /firewall_nat.php'));
         exit;
