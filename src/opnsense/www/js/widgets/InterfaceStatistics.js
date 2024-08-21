@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseWidget from 'widget-base-table';
+import BaseTableWidget from 'widget-base-table';
 
 export default class InterfaceStatistics extends BaseTableWidget {
     constructor() {
