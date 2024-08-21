@@ -932,10 +932,22 @@ function interfaces_ptpid_next()
     return $ptpid;
 }
 
-/*
- * This function can configure PPPoE, MLPPP (PPPoE), PPTP.
- * It writes the mpd config file to /var/etc every time the link is opened.
- */
+function interface_ppps_capable($ifcfg, $ppps)
+{
+    if (empty($ifcfg) || empty($ppps)) {
+        return false;
+    }
+
+    foreach ($ppps as $ppp) {
+        if ($ifcfg['if'] == $ppp['if']) {
+            /* we only test for PPP capability that needs mpd5 */
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function interface_ppps_configure($interface)
 {
     global $config;
