@@ -134,7 +134,7 @@ class WidgetManager  {
                 this.persistedOptions = configuration.options;
             } catch (error) {
                 // persisted config likely out of date, reset to defaults
-                this._restoreDefaults(false);
+                this.__restoreDefaults();
             }
 
             const promises = data.modules.map(async (item) => {
@@ -322,6 +322,7 @@ class WidgetManager  {
                 message: $content,
                 buttons: [{
                     label: this.gettext.add,
+                    cssClass: 'btn-primary',
                     hotkey: 13,
                     action: (dialog) => {
                         let ids = $('select', dialog.$modalContent).val();
@@ -564,18 +565,38 @@ class WidgetManager  {
         return $panel;
     }
 
-    _restoreDefaults(confirmDialog = true) {
-        if (confirmDialog) {
-            if (!confirm(this.gettext.restoreconfirm)) {
-                return;
-            }
-        }
+    __restoreDefaults(dialog) {
         $.ajax({type: "POST", url: "/api/core/dashboard/restoreDefaults"}).done((response) => {
             if (response['result'] == 'failed') {
                 console.error('Failed to restore default widgets');
+                if (dialog !== undefined) {
+                    dialog.close();
+                }
             } else {
                 window.location.reload();
             }
+        })
+    }
+
+    _restoreDefaults() {
+        BootstrapDialog.show({
+            title: this.gettext.restore,
+            draggable: true,
+            animate: false,
+            message: this.gettext.restoreconfirm,
+            buttons: [{
+                label: this.gettext.ok,
+                cssClass: 'btn-primary',
+                hotkey: 13,
+                action: async (dialog) => {
+                    this.__restoreDefaults(dialog);
+                }
+            }, {
+                label: this.gettext.cancel,
+                action: (dialog) => {
+                    dialog.close();
+                }
+            }]
         });
     }
 
@@ -686,6 +707,7 @@ class WidgetManager  {
             message: $content,
             buttons: [{
                 label: this.gettext.ok,
+                cssClass: 'btn-primary',
                 hotkey: 13,
                 action: async (dialog) => {
                     let values = {};
