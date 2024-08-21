@@ -86,7 +86,8 @@ class ResizeObserverWrapper {
 class WidgetManager  {
     constructor(gridStackOptions = {}, gettext = {}) {
         this.gridStackOptions = gridStackOptions;
-        this.runtimeOptions = {}; // runtime changes to the gridstack options that are to be persisted
+        this.runtimeOptions = {}; // non-persisted runtime options
+        this.persistedOptions = {}; // persisted options
         this.gettext = gettext;
         this.loadedModules = {}; // id -> widget module
         this.widgetTranslations = {}; // id -> translations
@@ -130,7 +131,7 @@ class WidgetManager  {
                     this.widgetConfigurations[item.id] = item;
                 });
 
-                this.runtimeOptions = configuration.options;
+                this.persistedOptions = configuration.options;
             } catch (error) {
                 // persisted config likely out of date, reset to defaults
                 this._restoreDefaults(false);
@@ -221,11 +222,8 @@ class WidgetManager  {
     _initializeGridStack() {
         let runtimeConfig = {}
 
-        // translate runtime options to gridstack options
-        if (this.runtimeOptions.gridLocked) {
-            runtimeConfig.disableMove = true;
-            runtimeConfig.disableResize = true;
-        }
+        // XXX runtimeConfig can be populated with additional options based on the persistedOptions
+        // structure to accomodate for persisted (gridstack) configuration options in the future.
 
         this.grid = GridStack.init({...this.gridStackOptions, ...runtimeConfig});
         // before we render the grid, register the added event so we can store the Element type objects
@@ -248,12 +246,6 @@ class WidgetManager  {
         // force the cell height of each widget to the lowest value. The grid will adjust the height
         // according to the content of the widget.
         this.grid.cellHeight(1);
-
-        if (this.runtimeOptions.gridLocked) {
-            $('#lock-grid').trigger('click');
-            $('#lock-grid').trigger('mouseup');
-            $('#save-grid').hide();
-        }
     }
 
     _renderHeader() {
@@ -278,8 +270,8 @@ class WidgetManager  {
         `));
         $btn_group.append($(`<button class="btn btn-secondary" id="restore-defaults">${this.gettext.restore}</button>`));
         $btn_group.append($(`
-            <button class="btn btn-secondary" id="lock-grid">
-                <i class="fa fa-unlock fa-fw"></i>
+            <button class="btn btn-secondary" id="edit-grid" data-toggle="tooltip" title="${this.gettext.edit}">
+                <i class="fa fa-pencil fa-fw"></i>
             </button>
         `));
 
@@ -333,10 +325,10 @@ class WidgetManager  {
                                 this._onMarkupRendered(this.widgetClasses[id]);
                                 this._updateGrid(this.widgetHTMLElements[id]);
 
-                                if (this.runtimeOptions.gridLocked) {
-                                    $('.widget-content').css('cursor', 'default');
-                                    $('.close-handle').hide();
-                                    $('.edit-handle').hide();
+                                if (this.runtimeOptions.editMode) {
+                                    $('.widget-content').css('cursor', 'grab');
+                                    $('.close-handle').show();
+                                    $('.edit-handle').show();
                                 }
 
                                 changed = true;
@@ -368,33 +360,31 @@ class WidgetManager  {
             this._restoreDefaults();
         });
 
-        $('#lock-grid').on('click', () => {
-            $('#lock-grid').toggleClass('active');
+        $('#edit-grid').on('click', () => {
+            $('#edit-grid').toggleClass('active');
 
-            if ($('#lock-grid').hasClass('active')) {
-                $('#lock-grid i').removeClass('fa-unlock').addClass('fa-lock');
-                this.grid.enableMove(false);
-                this.grid.enableResize(false);
-                $('.widget-content').css('cursor', 'default');
-                $('.close-handle').hide();
-                $('.edit-handle').hide();
-                this.runtimeOptions.gridLocked = true;
-            } else {
-                $('#lock-grid i').removeClass('fa-lock').addClass('fa-unlock');
+            if ($('#edit-grid').hasClass('active')) {
+                this.runtimeOptions.editMode = true;
                 this.grid.enableMove(true);
                 this.grid.enableResize(true);
                 $('.widget-content').css('cursor', 'grab');
                 $('.close-handle').show();
                 $('.edit-handle').show();
-                this.runtimeOptions.gridLocked = false;
+            } else {
+                this.runtimeOptions.editMode = false;
+                this.grid.enableMove(false);
+                this.grid.enableResize(false);
+                $('.widget-content').css('cursor', 'default');
+                $('.close-handle').hide();
+                $('.edit-handle').hide();
             }
-
-            $('#save-grid').show();
         });
 
-        $('#lock-grid').mouseup(function() {
+        $('#edit-grid').mouseup(function() {
             $(this).blur();
         });
+
+        $('#edit-grid').tooltip();
     }
 
     /* Executes all widget post-render callbacks asynchronously and in "parallel".
@@ -439,14 +429,14 @@ class WidgetManager  {
         // retrieve widget-specific options
         if (widget.isConfigurable()) {
             let $editHandle = $(`
-                <div id="edit-handle-${widget.id}" class="edit-handle">
+                <div id="edit-handle-${widget.id}" class="edit-handle" style="display: none;">
                     <i class="fa fa-pencil"></i>
                 </div>
             `);
             $(`#close-handle-${widget.id}`).before($editHandle);
 
-            if (this.runtimeOptions.gridLocked) {
-                $editHandle.hide();
+            if (this.runtimeOptions.editMode) {
+                $editHandle.show();
             }
 
             $editHandle.on('click', async (event) => {
@@ -547,7 +537,7 @@ class WidgetManager  {
                 <div class="widget-header-left"></div>
                 <div id="${identifier}-title" class="widget-title"><b>${title}</b></div>
                 <div class="widget-command-container">
-                    <div id="close-handle-${identifier}" class="close-handle">
+                    <div id="close-handle-${identifier}" class="close-handle" style="display: none;">
                         <i class="fa fa-times fa-xs"></i>
                     </div>
                 </div>

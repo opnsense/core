@@ -82,7 +82,7 @@ class DashboardController extends ApiControllerBase
     private function getDefaultDashboard()
     {
         return [
-            'options' => ['gridLocked' => false],
+            'options' => [],
             'widgets' => [
                 ['id' => 'systeminformation', 'x' => 0, 'y' => 0],
                 ['id' => 'memory', 'x' => 2, 'y' => 0],
