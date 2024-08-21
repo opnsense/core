@@ -258,10 +258,11 @@ class WidgetManager  {
 
     _renderHeader() {
         // Serialization options
-        let $btn_group = $('.btn-group-container');
+        let $btn_group_container = $('.btn-group-container');
+        let $btn_group = $('<div\>').addClass('btn-group');
 
         // Append Save button and directly next to it, a hidden spinner
-        $btn_group.append($(`
+        $btn_group_container.append($(`
             <button class="btn btn-primary" id="save-grid">
                 <span id="save-btn-text" class="show">${this.gettext.save}</span>
                 <span id="icon-container">
@@ -282,6 +283,9 @@ class WidgetManager  {
                 <i class="fa fa-unlock fa-fw"></i>
             </button>
         `));
+
+        // Append the button group to the container
+        $btn_group.appendTo($btn_group_container);
 
         // Initially hide the save button
         $('#save-grid').hide();
