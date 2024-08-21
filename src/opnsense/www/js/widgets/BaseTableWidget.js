@@ -32,24 +32,6 @@ export default class BaseTableWidget extends BaseWidget {
 
         this.tables = {};
         this.curSize = null;
-        this.sizeStates = {
-            0: {
-                '.flextable-row': {'padding': ''},
-                '.flextable-header .flex-cell': {'border-bottom': 'solid 1px'},
-                '.flex-cell': {'width': '100%'},
-                '.column': {'width': '100%'},
-                '.flex-subcell': {'width': '100%'},
-            },
-            450: {
-                '.flextable-row': {'padding': '0.5em 0.5em'},
-                '.flextable-header .flex-cell': {'border-bottom': ''},
-                '.flex-cell': {'width': this._calculateColumnWidth.bind(this)},
-                '.column .flex-cell': {'width': '100%'},
-                '.column': {'width': ''},
-                '.flex-subcell': {'width': ''},
-            }
-        }
-        this.widths = Object.keys(this.sizeStates).sort();
     }
 
     _calculateColumnWidth() {
@@ -94,6 +76,7 @@ export default class BaseTableWidget extends BaseWidget {
          * headers: list of headers to display. Only applicable for headerPosition: top.
          * sortIndex: index of the column to sort on. Only applicable for headerPosition: top.
          * sortOrder: 'asc' or 'desc'. Only applicable for headerPosition: top.
+         * headerBreakpoint: width in pixels beforing switching to a column layout. Only applicable for headerPosition: left.
          *
          */
         if (this.options === null) {
@@ -106,11 +89,32 @@ export default class BaseTableWidget extends BaseWidget {
             rotation: false,
             sortIndex: null,
             sortOrder: 'desc',
+            headerBreakpoint: 450,
             ...options
         }
 
         let $table = null;
         let $headerContainer = null;
+        this.headerBreakpoint = mergedOpts.headerBreakpoint;
+
+        this.sizeStates = {
+            0: {
+                '.flextable-row': {'padding': ''},
+                '.flextable-header .flex-cell': {'border-bottom': 'solid 1px'},
+                '.flex-cell': {'width': '100%'},
+                '.column': {'width': '100%'},
+                '.flex-subcell': {'width': '100%'},
+            },
+            [this.headerBreakpoint]: {
+                '.flextable-row': {'padding': '0.5em 0.5em'},
+                '.flextable-header .flex-cell': {'border-bottom': ''},
+                '.flex-cell': {'width': this._calculateColumnWidth.bind(this)},
+                '.column .flex-cell': {'width': '100%'},
+                '.column': {'width': ''},
+                '.flex-subcell': {'width': ''},
+            }
+        }
+        this.widths = Object.keys(this.sizeStates).sort();
 
         if (mergedOpts.headerPosition === 'top') {
             /* CSS grid implementation */
@@ -165,9 +169,9 @@ export default class BaseTableWidget extends BaseWidget {
             let newElement = true;
 
             if (rowIdentifier !== null) {
-                let $existingRow = $(`#id_${rowIdentifier}`);
+                let $existingRow = $(`#${this.id}_${rowIdentifier}`);
                 if ($existingRow.length === 0) {
-                    $gridRow.attr('id', `id_${rowIdentifier}`);
+                    $gridRow.attr('id', `${this.id}_${rowIdentifier}`);
                 } else {
                     $gridRow = $existingRow.empty();
                     newElement = false;
@@ -183,7 +187,7 @@ export default class BaseTableWidget extends BaseWidget {
                     $table.append($gridRow);
                 }
             } else {
-                $(`#id_${rowIdentifier}`).replaceWith($gridRow);
+                $(`#${this.id}_${rowIdentifier}`).replaceWith($gridRow);
             }
 
             if (options.headerPosition === 'top' && options.sortIndex !== null) {
@@ -280,6 +284,10 @@ export default class BaseTableWidget extends BaseWidget {
     }
 
     onWidgetResize(elem, width, height) {
+        if (this.widths == null || this.sizeStates == null) {
+            return false;
+        }
+
         let lowIndex = 0;
         for (let i = 0; i < this.widths.length; i++) {
             if (this.widths[i] <= width) {

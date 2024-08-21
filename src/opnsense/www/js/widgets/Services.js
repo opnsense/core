@@ -29,7 +29,6 @@ import BaseTableWidget from 'widget-base-table';
 export default class Services extends BaseTableWidget {
     constructor() {
         super();
-
         this.locked = false;
     }
 
@@ -42,7 +41,8 @@ export default class Services extends BaseTableWidget {
 
     getMarkup() {
         let $table = this.createTable('services-table', {
-            headerPosition: 'left'
+            headerPosition: 'left',
+            headerBreakpoint: 270
         });
         return $(`<div id="services-container"></div>`).append($table);
     }
@@ -50,7 +50,7 @@ export default class Services extends BaseTableWidget {
     serviceControl(actions) {
         return actions.map(({ action, id, title, icon }) => `
             <button data-service_action="${action}" data-service="${id}"
-                  class="btn btn-xs btn-default srv_status_act2" title="${title}" data-toggle="tooltip">
+                  class="btn btn-xs btn-default srv_status_act2" style="font-size: 10px;" title="${title}" data-toggle="tooltip">
                 <i class="fa fa-fw fa-${icon}"></i>
             </button>
         `).join('');
@@ -64,16 +64,12 @@ export default class Services extends BaseTableWidget {
             return;
         }
 
-        if (!this.dataChanged('services', data)) {
-            return;
-        }
-
         $('.service-status').tooltip('hide');
         $('.srv_status_act2').tooltip('hide');
 
         for (const service of data.rows) {
             let name = service.name;
-            let description = service.description;
+            let $description = $(`<div style="font-size: 12px;">${service.description}</div>`);
 
             let actions = [];
             if (service.locked) {
@@ -85,11 +81,12 @@ export default class Services extends BaseTableWidget {
                 actions.push({ action: 'start', id: service.id, title: this.translations.start, icon: 'play' });
             }
 
-            let $buttonContainer = $(`<div>
+            let $buttonContainer = $(`<div style="display: flex; align-items: center; justify-content: flex-start;">
                 <span class="label label-opnsense label-opnsense-xs
                              label-${service.running ? 'success' : 'danger'}
                              service-status"
-                             data-toggle="tooltip" title="${service.running ? this.translations.running : this.translations.stopped}">
+                             data-toggle="tooltip" title="${service.running ? this.translations.running : this.translations.stopped}"
+                             style="font-size: 10px;">
                     <i class="fa fa-${service.running ? 'play' : 'stop'} fa-fw"></i>
                 </span>
                 </div>
@@ -97,7 +94,7 @@ export default class Services extends BaseTableWidget {
 
             $buttonContainer.append(this.serviceControl(actions));
 
-            super.updateTable('services-table', [[description, $buttonContainer.prop('outerHTML')]], service.id);
+            super.updateTable('services-table', [[$description.prop('outerHTML'), $buttonContainer.prop('outerHTML')]], service.id);
         }
 
         $('.service-status').tooltip({container: 'body'});
@@ -107,10 +104,10 @@ export default class Services extends BaseTableWidget {
             this.locked = true;
             event.preventDefault();
             let $elem = $(event.currentTarget);
-            const icon = $elem.find('i').clone();
-            $elem.remove('i').html('<i class="fa fa-spinner fa-spin fa-fw" style="font-size: 1em;"></i>');
-            await $.post(`/api/core/service/${$elem.data('service_action')}/${$elem.data('service')}`);
-            $elem.remove('i').html(icon);
+            let $icon = $elem.children(0);
+            this.startCommandTransition($elem.data('service'), $icon);
+            const result = await this.ajaxCall(`/api/core/service/${$elem.data('service_action')}/${$elem.data('service')}`, {}, 'POST');
+            await this.endCommandTransition($elem.data('service'), $icon, true, false);
             await this.updateServices();
             this.locked = false;
         });
