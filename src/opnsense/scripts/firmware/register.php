@@ -136,24 +136,26 @@ function plugins_disk_get()
     return $found;
 }
 
-$changed = $action !== 'resync_factory';
 $plugins = plugins_config_get($config);
 $found = plugins_disk_get();
+$changed = false;
 
 switch ($action) {
     case 'install':
         if (!plugins_disk_found($name, $found)) {
-            return;
+            break;
         }
         $plugins = plugins_remove_sibling($name, $plugins);
         $plugins[$name] = 'hello';
+        $changed = true;
         break;
     case 'remove':
         if (plugins_disk_found($name, $found)) {
-            return;
+            break;
         }
         if (isset($plugins[$name])) {
             unset($plugins[$name]);
+            $changed = true;
         }
         break;
     case 'resync_factory':
@@ -173,10 +175,9 @@ switch ($action) {
             $plugins = plugins_remove_sibling("os-{$name}-devel", $plugins);
             $plugins = plugins_remove_sibling("os-{$name}", $plugins);
         }
-        if ($count != count($plugins)) {
-            $changed = true;
-        }
+        $changed |= $count != count($plugins);
 
+        /* 'resync_factory' short mode without 'resync' during normal operation */
         if (!isset($config->trigger_initial_wizard)) {
             break;
         }
@@ -186,18 +187,23 @@ switch ($action) {
             if (!plugins_disk_found($name, $found)) {
                 echo "Unregistering plugin: $name" . PHP_EOL;
                 unset($plugins[$name]);
+                $changed = true;
             }
         }
         foreach ($found as $name) {
             if (!isset($plugins[$name])) {
                 echo "Registering plugin: $name" . PHP_EOL;
                 $plugins[$name] = 'yep';
+                $changed = true;
             }
+
+            $count = count($plugins);
+            /* always try to scrub siblings just in case */
             $plugins = plugins_remove_sibling($name, $plugins);
+            $changed |= $count != count($plugins);
         }
         break;
     default:
-        $changed = false;
         break;
 }
 
