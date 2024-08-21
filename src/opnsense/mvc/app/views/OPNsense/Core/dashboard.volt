@@ -58,6 +58,8 @@ $( document ).ready(function() {
         columnOpts: {
             breakpoints: [{w: 500, c:1}, {w:900, c:3}, {w:9999, c:12}]
         },
+        disableDrag: true,
+        disableResize: true,
         columns: 12,
         margin: 5,
         alwaysShowResizeHandle: false,
@@ -75,6 +77,7 @@ $( document ).ready(function() {
         'cancel': "{{ lang._('Cancel') }}",
         'failed': "{{ lang._('Failed to load widget') }}",
         'options': "{{ lang._('Options') }}",
+        'edit': "{{ lang._('Edit Dashboard') }}",
     });
     widgetManager.initialize();
 });
