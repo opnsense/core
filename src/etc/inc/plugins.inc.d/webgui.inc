@@ -56,7 +56,7 @@ function webgui_configure_defer($verbose = false, $sleep = 3)
     service_log("deferred.\n", $verbose);
 }
 
-function webgui_configure_do($verbose = false, $interface_map = '')
+function webgui_configure_do($verbose = false, $interface_map = null)
 {
     global $config;
 
@@ -69,7 +69,7 @@ function webgui_configure_do($verbose = false, $interface_map = '')
 
     /* 'newwanip_map' configuration is the only event to take second argument */
     if (!empty($interface_map)) {
-        if (!count(array_intersect($interface_map, $interfaces)) {
+        if (!count(array_intersect(explode(',', $interface_map), $interfaces))) {
             return;
         }
     }

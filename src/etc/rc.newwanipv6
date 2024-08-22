@@ -132,5 +132,5 @@ foreach ($interfaces as $interface) {
     plugins_configure('newwanip', false, [$interface, 'inet6']);
 }
 
-plugins_configure('newwanip_map', false, [join(',' $interfaces), 'inet6']);
+plugins_configure('newwanip_map', false, [join(',', $interfaces), 'inet6']);
 rrd_configure();
