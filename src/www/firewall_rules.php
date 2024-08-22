@@ -651,7 +651,7 @@ $( document ).ready(function() {
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
-        <?php print_service_banner('firewall'); ?>
+        <?php print_firewall_banner() ?>
         <div id="fw-alert-box" class="col-xs-12 <?=!is_subsystem_dirty('filter') && !isset($savemsg) ? "hidden":"";?>">
           <div class="alert alert-info" role="alert">
             <div id="fw-alert-changes" class="fw-alert-messages <?=!is_subsystem_dirty('filter') ? "hidden":"";?>">

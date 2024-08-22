@@ -306,7 +306,7 @@ $( document ).ready(function() {
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
-<?php   print_service_banner('firewall'); ?>
+<?php   print_firewall_banner() ?>
 <?php   if (isset($savemsg)) print_info_box($savemsg); ?>
 <?php   if (is_subsystem_dirty('natconf')): ?>
 <?php     print_info_box_apply(gettext("The NAT configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
