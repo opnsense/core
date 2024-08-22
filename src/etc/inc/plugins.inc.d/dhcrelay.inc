@@ -32,7 +32,7 @@ function dhcrelay_configure()
         'bootup' => ['dhcrelay_configure_do'],
         'dhcrelay' => ['dhcrelay_configure_do:2'],
         'local' => ['dhcrelay_configure_do'],
-        'newwanip' => ['dhcrelay_configure_if:3'],
+        'newwanip_map' => ['dhcrelay_configure_map:3'],
     ];
 }
 
@@ -208,15 +208,17 @@ function dhcrelay_interfaces($family = null)
     return array_keys(dhcrelay_instances($family));
 }
 
-function dhcrelay_configure_if($verbose = false, $interface = null, $family = null)
+function dhcrelay_configure_map($verbose = false, $interface_map = null, $family = null)
 {
     $instances = dhcrelay_instances($family);
 
-    if (empty($instances[$interface])) {
+    if (empty($interface_map)) {
         return;
     }
 
-    foreach ($instances[$interface] as $id) {
-        dhcrelay_configure_do($verbose, $id);
+    foreach (explode(',', $interface_map) as $interface) {
+        foreach ($instances[$interface] ?? [] as $id) {
+            dhcrelay_configure_do($verbose, $id);
+        }
     }
 }
