@@ -586,7 +586,7 @@ class WidgetManager  {
             buttons: [{
                 label: this.gettext.ok,
                 hotkey: 13,
-                action: async (dialog) => {
+                action: (dialog) => {
                     this.__restoreDefaults(dialog);
                 }
             }, {
