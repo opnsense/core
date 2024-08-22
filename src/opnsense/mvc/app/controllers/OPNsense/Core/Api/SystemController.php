@@ -80,6 +80,7 @@ class SystemController extends ApiControllerBase
                         unset($statuses[$subsystem]);
                     }
                 } else {
+                    /* XXX exiting loop causing global endpoint failure */
                     return $response;
                 }
             }
