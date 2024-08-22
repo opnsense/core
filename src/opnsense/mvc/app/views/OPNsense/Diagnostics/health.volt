@@ -192,7 +192,7 @@
         let maxitems = 120;
 
         let detail = $('input:radio[name=detail]:checked').val() ?? '0';
-        let inverse = $('input:radio[name=inverse]:checked').val() == 1 ? '1' : '0';
+        let inverse = $('input:radio[name=inverse]:checked').val() == 1 ? true : false;
 
         // array used for cvs export option
         csvData = [];
@@ -206,8 +206,18 @@
         // info bar - show loading info bar while refreshing data
         $('#loading').show();
         // API call to request data
-        ajaxGet("/api/diagnostics/systemhealth/getSystemHealth/" + rrd_name + "/" + inverse + "/" + detail, {}, function (data, status) {
+        ajaxGet("/api/diagnostics/systemhealth/getSystemHealth/" + rrd_name + "/" + detail, {}, function (data, status) {
             if (status == "success") {
+                // RRD value strings to numbers
+                for (let index = 0; index < data["set"]["data"].length; ++index) {
+                    let sign = '';
+                    if (inverse && index % 2 != 0) {
+                        sign = '-';
+                    }
+                    for (let value_index = 0; value_index < data["set"]["data"][index]["values"].length; ++value_index) {
+                        data["set"]["data"][index]["values"][value_index][1] = Number(sign + data["set"]["data"][index]["values"][value_index][1]);
+                    }
+                }
                 let stepsize = data["set"]["step_size"];
                 let scale = "{{ lang._('seconds') }}";
                 let dtformat = '%m-%d %H:%M';
@@ -319,7 +329,9 @@
                                     if (data["set"]["data"][index]["values"][value_index][1] > max) {
                                         max = data["set"]["data"][index]["values"][value_index][1];
                                     }
-                                    average += data["set"]["data"][index]["values"][value_index][1];
+                                    if (!isNaN(data["set"]["data"][index]["values"][value_index][1])) {
+                                        average += data["set"]["data"][index]["values"][value_index][1];
+                                    }
                                     ++rowcounter;
                                 }
                             }
@@ -353,6 +365,9 @@
                             table_view_rows += "<tr><td>" + counter.toString() + "</td><td>" + parseInt(item / 1000).toString() + "</td>";
                         }
                         for (let value in table_row_data[item]) {
+                            if (isNaN(table_row_data[item][value])) {
+                                table_row_data[item][value] = '';
+                            }
                             table_view_rows += "<td>" + table_row_data[item][value] + "</td>";
                         }
                         ++counter;
