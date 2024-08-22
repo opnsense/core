@@ -30,8 +30,9 @@ function dhcrelay_configure()
 {
     return [
         'bootup' => ['dhcrelay_configure_do'],
-        'dhcrelay' => ['dhcrelay_configure_do:3'],
+        'dhcrelay' => ['dhcrelay_configure_do:2'],
         'local' => ['dhcrelay_configure_do'],
+        'newwanip_map' => ['dhcrelay_configure_map:3'],
     ];
 }
 
@@ -109,7 +110,7 @@ function dhcrelay_configure_do($verbose = false, $id = null)
         return;
     }
 
-    service_log('Starting DHCP relays...', $verbose);
+    service_log(sprintf('Starting DHCP relay%s...', empty($id) ? 's' : " {$id}"), $verbose);
 
     $iflist = get_configured_interface_with_descr();
     $ifconfig_details = legacy_interfaces_details();
@@ -172,10 +173,10 @@ function dhcrelay_configure_do($verbose = false, $id = null)
     service_log("done.\n", $verbose);
 }
 
-function dhcrelay_interfaces($family = null)
+function dhcrelay_instances($family = null)
 {
     $mdl = new \OPNsense\DHCRelay\DHCRelay();
-    $interfaces = [];
+    $instances = [];
 
     foreach ($mdl->relays->iterateItems() as $relay) {
         if ((string)$relay->enabled != '1') {
@@ -192,8 +193,32 @@ function dhcrelay_interfaces($family = null)
             continue;
         }
 
-        $interfaces[(string)$relay->interface] = 1;
+        if (!isset($instances[(string)$relay->interface])) {
+            $instances[(string)$relay->interface] = [];
+        }
+
+        $instances[(string)$relay->interface][] = $relay->getAttribute('uuid');
     }
 
-    return array_keys($interfaces);
+    return $instances;
+}
+
+function dhcrelay_interfaces($family = null)
+{
+    return array_keys(dhcrelay_instances($family));
+}
+
+function dhcrelay_configure_map($verbose = false, $interface_map = null, $family = null)
+{
+    $instances = dhcrelay_instances($family);
+
+    if (empty($interface_map)) {
+        return;
+    }
+
+    foreach (explode(',', $interface_map) as $interface) {
+        foreach ($instances[$interface] ?? [] as $id) {
+            dhcrelay_configure_do($verbose, $id);
+        }
+    }
 }
