@@ -33,7 +33,7 @@ function webgui_configure()
     return [
         'early' => ['webgui_configure_do'],
         'local' => ['webgui_configure_do'],
-        'newwanip' => ['webgui_configure_do:2'],
+        'newwanip_map' => ['webgui_configure_do:2'],
         'webgui' => ['webgui_configure_do'],
     ];
 }
@@ -56,7 +56,7 @@ function webgui_configure_defer($verbose = false, $sleep = 3)
     service_log("deferred.\n", $verbose);
 }
 
-function webgui_configure_do($verbose = false, $interface = '')
+function webgui_configure_do($verbose = false, $interface_map = '')
 {
     global $config;
 
@@ -67,15 +67,11 @@ function webgui_configure_do($verbose = false, $interface = '')
         array_unshift($interfaces, 'lo0');
     }
 
-    /* 'newwanip' configuration is the only event to take second argument */
-    if (!empty($interface)) {
-        if (in_array($interface, $interfaces)) {
-            /* funnel through configd to avoid race conditions */
-            webgui_configure_defer($verbose, 0);
+    /* 'newwanip_map' configuration is the only event to take second argument */
+    if (!empty($interface_map)) {
+        if (!count(array_intersect($interface_map, $interfaces)) {
+            return;
         }
-
-        /* nothing else to do */
-        return;
     }
 
     service_log('Starting web GUI...', $verbose);
