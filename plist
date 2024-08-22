@@ -556,6 +556,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/System/AbstractStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/CrashReporterStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/FirewallStatus.php
+/usr/local/opnsense/mvc/app/library/OPNsense/System/Status/LiveMediaStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/SystemStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Trust/Store.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/BaseModel.php
