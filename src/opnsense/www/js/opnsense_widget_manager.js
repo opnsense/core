@@ -322,7 +322,6 @@ class WidgetManager  {
                 message: $content,
                 buttons: [{
                     label: this.gettext.add,
-                    cssClass: 'btn-primary',
                     hotkey: 13,
                     action: (dialog) => {
                         let ids = $('select', dialog.$modalContent).val();
@@ -586,7 +585,6 @@ class WidgetManager  {
             message: this.gettext.restoreconfirm,
             buttons: [{
                 label: this.gettext.ok,
-                cssClass: 'btn-primary',
                 hotkey: 13,
                 action: async (dialog) => {
                     this.__restoreDefaults(dialog);
@@ -707,7 +705,6 @@ class WidgetManager  {
             message: $content,
             buttons: [{
                 label: this.gettext.ok,
-                cssClass: 'btn-primary',
                 hotkey: 13,
                 action: async (dialog) => {
                     let values = {};
