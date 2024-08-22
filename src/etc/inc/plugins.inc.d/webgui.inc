@@ -33,7 +33,7 @@ function webgui_configure()
     return [
         'early' => ['webgui_configure_do'],
         'local' => ['webgui_configure_do'],
-        'newwanip' => ['webgui_configure_do:2'],
+        'newwanip_map' => ['webgui_configure_do:2'],
         'webgui' => ['webgui_configure_do'],
     ];
 }
@@ -56,26 +56,31 @@ function webgui_configure_defer($verbose = false, $sleep = 3)
     service_log("deferred.\n", $verbose);
 }
 
-function webgui_configure_do($verbose = false, $interface = '')
+function webgui_configure_do($verbose = false, $interface_map = null)
 {
     global $config;
 
+    if (!plugins_argument_map($interface_map)) {
+        return;
+    }
+
     $interfaces = [];
+
     if (!empty($config['system']['webgui']['interfaces'])) {
         $interfaces = explode(',', $config['system']['webgui']['interfaces']);
         /* place loopback with good IPv4 first for server.bind */
         array_unshift($interfaces, 'lo0');
     }
 
-    /* 'newwanip' configuration is the only event to take second argument */
-    if (!empty($interface)) {
-        if (in_array($interface, $interfaces)) {
-            /* funnel through configd to avoid race conditions */
-            webgui_configure_defer($verbose, 0);
+    if (!empty($interface_map)) {
+        /*
+         * Match explicit interfaces reload request to bound interfaces.
+         * If none are configured we do not reload either as we are bound
+         * to all.
+         */
+        if (!count(array_intersect($interface_map, $interfaces))) {
+            return;
         }
-
-        /* nothing else to do */
-        return;
     }
 
     service_log('Starting web GUI...', $verbose);
