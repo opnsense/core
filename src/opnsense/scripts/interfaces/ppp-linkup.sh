@@ -18,6 +18,8 @@ if [ -n "${4}" ]; then
 	ROUTER="-a $(echo ${4} | cut -d% -f1)"
 fi
 
+/usr/bin/logger -t ppp "ppp-linkup: executing on ${1} for ${2}"
+
 if [ "${2}" = "inet" ]; then
 	/usr/local/sbin/ifctl -i ${1} -4nd ${DNS1} ${DNS2}
 	/usr/local/sbin/ifctl -i ${1} -4rd ${ROUTER}
