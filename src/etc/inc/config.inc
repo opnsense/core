@@ -48,16 +48,11 @@ final class product
         self::$data = json_decode(file_get_contents('/usr/local/opnsense/version/core'), true);
 
         /* boot detection */
-        $bootflag = '/var/run/booting';
-        if (!file_exists($bootflag)) {
-            @touch($bootflag);
-        }
-        $fp = fopen($bootflag, 'r');
+        self::$data['product_booting'] = false;
+        $fp = fopen('/var/run/booting', 'a+e');
         if ($fp) {
             self::$data['product_booting'] = !flock($fp, LOCK_SH | LOCK_NB);
             fclose($fp);
-        } else {
-            self::$data['product_booting'] = false;
         }
 
         /* development flag */
