@@ -130,7 +130,7 @@ filter_configure_sync();
 
 foreach ($interfaces as $interface) {
     plugins_configure('vpn', false, [$interface]);
-    plugins_configure('newwanip', false, [$interface]);
+    plugins_configure('newwanip', false, [$interface, 'inet6']);
 }
 
 rrd_configure();
