@@ -181,8 +181,9 @@ function unbound_generate_config()
     $bindints = '';
     if (!empty($general['active_interface'])) {
         $active_interfaces = explode(',', $general['active_interface']);
-        $active_interfaces[] = 'lo0';
-        $addresses = array();
+        array_unshift($active_interfaces, 'lo0');
+
+        $addresses = [];
 
         foreach (interfaces_addresses($active_interfaces) as $tmpaddr => $info) {
             if ($info['name'] == 'lo0' && $info['family'] == 'inet' && $tmpaddr != '127.0.0.1') {
