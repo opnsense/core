@@ -372,12 +372,6 @@ function core_xmlrpc_sync()
     $result = array();
 
     $result[] = array(
-        'description' => gettext('Dashboard'),
-        'help' => gettext('Synchronize dashboard widgets.'),
-        'section' => 'widgets',
-        'id' => 'widgets',
-    );
-    $result[] = array(
         'description' => gettext('Users and Groups'),
         'help' => gettext('Synchronize the users and groups over to the other HA host.'),
         'section' => 'system.user,system.group',
