@@ -41,7 +41,7 @@ function dnsmasq_configure()
     return [
         'dns' => ['dnsmasq_configure_do'],
         'local' => ['dnsmasq_configure_do'],
-        'newwanip' => ['dnsmasq_configure_do'],
+        'newwanip_map' => ['dnsmasq_configure_do'],
     ];
 }
 
