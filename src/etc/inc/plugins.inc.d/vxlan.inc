@@ -28,10 +28,10 @@
 
 function vxlan_configure()
 {
-    return array(
-        'newwanip' => array('vxlan_configure_do'),
-        'vxlan' => array('vxlan_configure_do'),
-    );
+    return [
+        'newwanip_map' => ['vxlan_configure_do'],
+        'vxlan' => ['vxlan_configure_do'],
+    ];
 }
 
 function vxlan_devices()

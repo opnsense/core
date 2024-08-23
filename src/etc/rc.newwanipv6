@@ -129,7 +129,7 @@ filter_configure_sync();
 
 foreach ($interfaces as $interface) {
     plugins_configure('vpn', false, [$interface]);
-    plugins_configure('newwanip', false, [$interface]);
+    plugins_configure('newwanip', false, [$interface]); /* XXX remove in 25.1 */
 }
 
 plugins_configure('newwanip_map', false, [join(',', $interfaces), 'inet6']);
