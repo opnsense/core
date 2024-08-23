@@ -564,7 +564,7 @@ $(document).ready(function() {
                     <?=sprintf(
                       gettext('The %sSSL certificate manager%s can be used to ' .
                       'create or import certificates if required.'),
-                      '<a href="/system_certmanager.php">', '</a>'
+                      '<a href="/ui/trust/cert">', '</a>'
                     );?>
                   </div>
                 </td>
