@@ -584,9 +584,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
                 system_routing_configure();
                 filter_configure();
-                foreach ($toapplylist as $ifapply => $ifcfgo) {
-                    plugins_configure('newwanip', false, [$ifapply]);
-                }
+                plugins_configure('newwanip_map', false, [join(',', array_keys($toapplylist))]);
                 rrd_configure();
             }
 
