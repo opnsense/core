@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2023 Deciso B.V.
+ * Copyright (C) 2023-2024 Deciso B.V.
  * Copyright (C) 2018 Michael Muenz <m.muenz@gmail.com>
  * All rights reserved.
  *
@@ -144,12 +144,12 @@ function wireguard_prepare($device)
 function wireguard_configure()
 {
     return [
-        'newwanip' => ['wireguard_sync:2'],
-        'vpn' => ['wireguard_configure_do:2'],
+        'newwanip_map' => ['wireguard_sync'],
+        'vpn' => ['wireguard_configure_do'],
     ];
 }
 
-function wireguard_configure_do($verbose = false, $unused = '')
+function wireguard_configure_do($verbose = false)
 {
     if (!wireguard_enabled()) {
         return;
@@ -162,7 +162,7 @@ function wireguard_configure_do($verbose = false, $unused = '')
     service_log("done.\n", $verbose);
 }
 
-function wireguard_sync($verbose = false, $unused = '')
+function wireguard_sync($verbose = false)
 {
     if (!wireguard_enabled()) {
         return;
