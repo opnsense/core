@@ -2,7 +2,7 @@
 
 /*
  * Copyright (C) 2018 Fabian Franz
- * Copyright (C) 2015-2023 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2024 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2015 Manuel Faux <mfaux@conf.at>
  * Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
@@ -43,7 +43,7 @@ function unbound_configure()
         'dns' => ['unbound_configure_do'],
         'early' => ['unbound_cache_flush'],
         'local' => ['unbound_configure_do'],
-        'newwanip' => ['unbound_configure_do:2'],
+        'newwanip_map' => ['unbound_configure_do:2'],
         'unbound_start' => ['unbound_configure_do'],
         'unbound_stop' => ['unbound_service_stop'],
     ];
@@ -356,18 +356,20 @@ function unbound_cache_flush()
     configd_run('unbound cache flush');
 }
 
-function unbound_match_interface($interface)
+function unbound_match_interface($interface_map)
 {
     $general = config_read_array('OPNsense', 'unboundplus', 'general');
 
-    if (empty($interface)) {
+    if (empty($interface_map)) {
         /* emulate non-interface reload */
         return true;
     }
 
+    $interface_map = explode(',', $interface_map);
+
     if (!empty($general['active_interface'])) {
         foreach (explode(',', $general['active_interface']) as $used) {
-            if ($used == $interface) {
+            if (in_array($used, $interface_map)) {
                 return true;
             }
         }
@@ -375,7 +377,7 @@ function unbound_match_interface($interface)
 
     if (!empty($general['outgoing_interface'])) {
         foreach (explode(',', $general['outgoing_interface']) as $used) {
-            if ($used == $interface) {
+            if (in_array($used, $interface_map)) {
                 return true;
             }
         }
@@ -389,14 +391,14 @@ function unbound_match_interface($interface)
     return false;
 }
 
-function unbound_configure_do($verbose = false, $interface = null)
+function unbound_configure_do($verbose = false, $interface_map = null)
 {
     global $config;
 
     $mdl = new \OPNsense\Unbound\Unbound();
 
     /* try to avoid restarting, but make sure to let it start if it is not running */
-    if (!unbound_match_interface($interface) && isvalidpid('/var/run/unbound.pid')) {
+    if (!unbound_match_interface($interface_map) && isvalidpid('/var/run/unbound.pid')) {
         return;
     }
 
