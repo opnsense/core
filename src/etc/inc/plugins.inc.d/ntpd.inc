@@ -87,7 +87,7 @@ function ntpd_configure()
     return [
         'bootup' => ['ntpd_configure_do'],
         'local' => ['ntpd_configure_do'],
-        'newwanip' => ['ntpd_configure_do'],
+        'newwanip_map' => ['ntpd_configure_do'],
     ];
 }
 
