@@ -74,7 +74,8 @@ class LogController extends ApiControllerBase
                     $searchPhrase,
                     $module,
                     $scope,
-                    $severities
+                    $severities,
+                    $this->request->getPost('validFrom', null, '0')
                 ]);
                 $result = json_decode($response, true);
                 if ($result != null) {
@@ -119,7 +120,7 @@ class LogController extends ApiControllerBase
 
                 return $this->configdStream(
                     'system diag log_live',
-                    [$offset, $searchPhrase, $module, $scope, $severities],
+                    [$offset, $searchPhrase, $module, $scope, $severities, $this->request->get('validFrom', null, '0')],
                     [
                         'Content-Type: text/event-stream',
                         'Cache-Control: no-cache'
