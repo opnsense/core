@@ -42,10 +42,13 @@ class LogController extends ApiControllerBase
         $module = substr($name, 0, strlen($name) - 6);
         $scope = count($arguments) > 0 ? $arguments[0] : "";
         $action = count($arguments) > 1 ? $arguments[1] : "";
-        $searchPhrase = '';
-        $severities = '';
-        // create filter to sanitize input data
-        $filter = new SanitizeFilter();
+        /* parameters could either be delivered via POST or GET */
+        $searchPhrase = $this->request->get('searchPhrase', null, '');
+        $severities = $this->request->get('severity', 'string', '');
+        if (is_array($severities)) {
+            $severities = implode(",", $severities);
+        }
+        $validFrom = $this->request->get('validFrom', null, '0');
 
         $backend = new Backend();
         $this->sessionClose();
@@ -59,15 +62,6 @@ class LogController extends ApiControllerBase
                 $itemsPerPage = min($itemsPerPage == -1 ? 5000 : $itemsPerPage, 9999);
                 $currentPage = $this->request->getPost('current', 'int', 1);
 
-                if ($this->request->getPost('searchPhrase', 'string', '') != "") {
-                    $searchPhrase = $filter->sanitize($this->request->getPost('searchPhrase'), "query");
-                }
-                if ($this->request->getPost('severity', 'string', '') != "") {
-                    $severities = $this->request->getPost('severity');
-                    $severities = is_array($severities) ? implode(",", $severities) : $severities;
-                    $severities = $filter->sanitize($severities, "query");
-                }
-
                 $response = $backend->configdpRun("system diag log", [
                     $itemsPerPage,
                     ($currentPage - 1) * $itemsPerPage,
@@ -75,7 +69,7 @@ class LogController extends ApiControllerBase
                     $module,
                     $scope,
                     $severities,
-                    $this->request->getPost('validFrom', null, '0')
+                    $validFrom
                 ]);
                 $result = json_decode($response, true);
                 if ($result != null) {
@@ -87,17 +81,9 @@ class LogController extends ApiControllerBase
             }
         } elseif ($this->request->isGet() && substr($name, -6) == 'Action') {
             if ($action == "export") {
-                if ($this->request->get('searchPhrase', 'string', '') != "") {
-                    $searchPhrase = $filter->sanitize($this->request->get('searchPhrase'), "query");
-                }
-                if ($this->request->get('severity', 'string', '') != "") {
-                    $severities = $this->request->get('severity');
-                    $severities = is_array($severities) ? implode(",", $severities) : $severities;
-                    $severities = $filter->sanitize($severities, "query");
-                }
                 return $this->configdStream(
                     'system diag log_stream',
-                    [0, 0, $searchPhrase, $module, $scope, $severities],
+                    [0, 0, $searchPhrase, $module, $scope, $severities, $validFrom],
                     [
                         'Content-Type: text/csv',
                         'Content-Disposition: attachment; filename=' . $scope . '.log',
@@ -108,19 +94,9 @@ class LogController extends ApiControllerBase
                 );
             } elseif ($action == "live") {
                 $offset = $this->request->get('offset', 'int', 0);
-
-                if ($this->request->get('searchPhrase', 'string', '') != "") {
-                    $searchPhrase = $filter->sanitize($this->request->get('searchPhrase'), "query");
-                }
-                if ($this->request->get('severity', 'string', '') != "") {
-                    $severities = $this->request->get('severity');
-                    $severities = is_array($severities) ? implode(",", $severities) : $severities;
-                    $severities = $filter->sanitize($severities, "query");
-                }
-
                 return $this->configdStream(
                     'system diag log_live',
-                    [$offset, $searchPhrase, $module, $scope, $severities, $this->request->get('validFrom', null, '0')],
+                    [$offset, $searchPhrase, $module, $scope, $severities],
                     [
                         'Content-Type: text/event-stream',
                         'Cache-Control: no-cache'
