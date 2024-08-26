@@ -45,6 +45,7 @@ if (set_networking_interfaces_ports()) {
     system_routing_configure(true);
     filter_configure_sync(true);
     plugins_configure('local', true);
-    plugins_configure('vpn', true);
+    plugins_configure('vpn_map', true);
+    plugins_configure('vpn', true); /* XXX remove in 25.1 */
     rrd_configure(true);
 }

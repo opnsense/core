@@ -1086,7 +1086,7 @@ function openvpn_configure_single($id)
     }
 }
 
-function openvpn_configure_do($verbose = false, $interface = '', $carp_event = false)
+function openvpn_configure_do($verbose = false, $interface_map = null, $carp_event = false)
 {
     global $config;
 
@@ -1096,31 +1096,24 @@ function openvpn_configure_do($verbose = false, $interface = '', $carp_event = f
         return;
     }
 
-    if (!empty($interface)) {
-        log_msg(sprintf(
-            'Resyncing OpenVPN instances for interface %s.',
-            convert_friendly_interface_to_friendly_descr($interface)
-        ), LOG_INFO);
-    } else {
-        log_msg('Resyncing OpenVPN instances.', LOG_INFO);
-    }
-
     service_log('Syncing OpenVPN settings...', $verbose);
 
-    $reconfigure_count = 0;
+    $interface_map = !empty($interface_map) ? explode(',', $interface_map) : [];
+    $reconfigured = false;
+
     foreach (array('server', 'client') as $mode) {
         if (isset($config['openvpn']["openvpn-{$mode}"])) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as $settings) {
-                if (empty($interface) || $interface == $settings['interface']) {
+                if (empty($interface_map) || in_array($settings['interface'], $interface_map)) {
                     openvpn_reconfigure($mode, $settings, $carp_event);
                     openvpn_restart($mode, $settings, $carp_event);
-                    $reconfigure_count++;
+                    $reconfigured = true;
                 }
             }
         }
     }
 
-    if ($reconfigure_count > 0) {
+    if ($reconfigured) {
         configd_run('filter reload'); /* XXX required for NAT rules, but needs coalescing */
     }
 
