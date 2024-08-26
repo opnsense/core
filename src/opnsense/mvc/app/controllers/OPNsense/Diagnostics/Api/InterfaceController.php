@@ -49,7 +49,7 @@ class InterfaceController extends ApiControllerBase
         $config = Config::getInstance()->object();
         if ($config->interfaces->count() > 0) {
             foreach ($config->interfaces->children() as $key => $node) {
-                $intfmap[(string)$node->if] = !empty((string)$node->descr) ? (string)$node->descr : $key;
+                $intfmap[(string)$node->if] = !empty((string)$node->descr) ? (string)$node->descr : strtoupper($key);
             }
         }
         return $intfmap;
