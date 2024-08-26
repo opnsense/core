@@ -127,15 +127,8 @@ class CaController extends ApiMutableModelControllerBase
                             }
                         }
                         $certmdl = new Cert();
-                        foreach ($certmdl->cert->iterateItems() as $cert) {
-                            $x509_2 = openssl_x509_parse((string)$cert->crt_payload);
-                            if ($x509_2 !== false) {
-                                if ($this->compare_issuer($x509_2['issuer'], $x509['subject'])) {
-                                    $cert->caref = (string)$node->refid;
-                                }
-                            }
-                        }
-                        $certmdl->serializeToConfig();
+                        $certmdl->linkCaRefs(null, $this->getModel());
+                        $certmdl->serializeToConfig(false, true); /* we need to force save to maintain integrity */
                     }
                 }
                 break;
