@@ -81,6 +81,7 @@
                     class="{{style|default('selectpicker')}}"
                     data-container="body"
                     {% if hint|default(false) %}data-hint="{{hint}}"{% endif %}
+                    {% if hint|default(false) %}data-none-selected-text="{{hint}}"{% endif %}
                     data-width="{{width|default("346px")}}"
                     data-allownew="{{allownew|default("false")}}"
                     data-sortable="{{sortable|default("false")}}"
