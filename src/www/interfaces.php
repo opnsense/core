@@ -1490,6 +1490,9 @@ if (!interface_ppps_capable($a_interfaces[$if], $a_ppps)) {
         default:
             break;
     }
+
+    $types6['6rd'] = gettext('6rd Tunnel');
+    $types6['6to4'] = gettext('6to4 Tunnel');
 }
 
 include("head.inc");
