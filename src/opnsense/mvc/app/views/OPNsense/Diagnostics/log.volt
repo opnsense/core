@@ -222,10 +222,10 @@
                             <option value="Debug">{{ lang._('Debug') }}</option>
                         </select>
                         <select id="validFrom_filter" data-title="{{ lang._('History') }}" class="filter_act selectpicker" data-width="200px">
-                            <option selected="selected" value="day">{{ lang._('1 Day') }}</option>
-                            <option value="week">{{ lang._('1 Week') }}</option>
-                            <option value="month">{{ lang._('1 Month') }}</option>
-                            <option value="all">{{ lang._('All') }}</option>
+                            <option selected="selected" value="day">{{ lang._('Last day') }}</option>
+                            <option value="week">{{ lang._('Last week') }}</option>
+                            <option value="month">{{ lang._('Last month') }}</option>
+                            <option value="all">{{ lang._('No limit') }}</option>
                         </select>
                     </div>
                 </div>
