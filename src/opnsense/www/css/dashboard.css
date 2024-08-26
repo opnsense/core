@@ -2,10 +2,6 @@
     --chart-js-font-color: #000000;
 }
 
-.fa-spinner {
-    font-size: 2em;
-}
-
 #save-grid {
     width: inherit;
     height: inherit;
@@ -80,10 +76,7 @@
 
 .widget-spinner {
     margin-top: 20px;
-}
-
-.fa-stack.small {
-    font-size: 0.5em;
+    font-size: 2em;
 }
 
 .close-handle,
