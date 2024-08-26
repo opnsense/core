@@ -61,15 +61,15 @@
             <retransmit_jitter type="IntegerField"/>
             <retransmit_limit type="IntegerField"/>
             <syslog>
-                <ike_name type="BooleanField">
-                    <Default>1</Default>
-                    <Required>Y</Required>
-                </ike_name>
-                <log_level type="BooleanField">
-                    <Default>0</Default>
-                    <Required>Y</Required>
-                </log_level>
                 <daemon>
+                    <ike_name type="BooleanField">
+                        <Default>1</Default>
+                        <Required>Y</Required>
+                    </ike_name>
+                    <log_level type="BooleanField">
+                        <Default>0</Default>
+                        <Required>Y</Required>
+                    </log_level>
                     <app type=".\CharonLogLevelField"/>
                     <asn type=".\CharonLogLevelField"/>
                     <cfg type=".\CharonLogLevelField"/>
