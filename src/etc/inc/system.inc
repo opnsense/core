@@ -128,6 +128,7 @@ function system_sysctl_defaults()
         'vfs.read_max' => [ 'default' => '32' ],
         'vfs.zfs.dirty_data_sync_percent' => [ 'default' => '5', 'required' => true ],
         'vfs.zfs.txg.timeout' => [ 'default' => '90', 'required' => true ],
+        'vm.numa.disabled' => [ 'default' => '1', 'required' => true ],
         'vm.pmap.pti' => [ 'default' => '1' ],
     ];
 }
