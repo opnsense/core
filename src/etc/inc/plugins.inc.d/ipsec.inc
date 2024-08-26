@@ -228,7 +228,7 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
 {
     global $config;
     if (
-        empty((new \OPNsense\IPsec\IPsec())->general->disablevpnrules) &&
+        (string)(new \OPNsense\IPsec\IPsec())->general->disablevpnrules == '0' &&
             isset($config['ipsec']['enable']) && isset($config['ipsec']['phase1'])
     ) {
         $enable_replyto = empty($config['system']['disablereplyto']);
