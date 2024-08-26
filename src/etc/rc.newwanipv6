@@ -118,7 +118,6 @@ switch (isset($config['system']['ipv6allow']) ? ($config['interfaces'][$interfac
 
 interfaces_restart_by_device(false, array_merge($greifs, $gififs));
 
-/* XXX handling reloads for tracked interfaces is difficult, for now reload multiple times */
 $interfaces = array_keys(link_interface_to_track6($interface, true));
 array_unshift($interfaces, $interface);
 
