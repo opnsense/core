@@ -101,6 +101,7 @@ export default class Services extends BaseTableWidget {
         $('.srv_status_act2').on('click', async (event) => {
             this.locked = true;
             event.preventDefault();
+            event.currentTarget.blur();
             let $elem = $(event.currentTarget);
             let $icon = $elem.children(0);
             this.startCommandTransition($elem.data('service'), $icon);
