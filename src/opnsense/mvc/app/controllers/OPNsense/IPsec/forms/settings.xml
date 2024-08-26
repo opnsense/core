@@ -119,13 +119,13 @@
             <label>Generic settings</label>
         </field>
         <field>
-            <id>ipsec.charon.syslog.ike_name</id>
+            <id>ipsec.charon.syslog.daemon.ike_name</id>
             <label>Ike Name</label>
             <type>checkbox</type>
             <help>Prefix each log entry with the connection name and a unique numerical identifier for each IKE_SA.</help>
         </field>
         <field>
-            <id>ipsec.charon.syslog.log_level</id>
+            <id>ipsec.charon.syslog.daemon.log_level</id>
             <label>Log Level</label>
             <type>checkbox</type>
             <help>Add the log level of each message after the subsystem (e.g. [IKE2]).</help>
