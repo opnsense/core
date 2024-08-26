@@ -32,10 +32,10 @@ use OPNsense\Base\BaseModelMigration;
 use OPNsense\Core\Config;
 use OPNsense\IPsec\IPsec;
 
-class M1_0_2 extends BaseModelMigration
+class M1_0_3 extends BaseModelMigration
 {
     /**
-     * Migrate pre-shared-keys from advanced settings legacy page stored under "ipsec" section
+     * Migrate the previously missing advanced setting that was stored under "system" section
      */
     public function run($model)
     {
@@ -43,34 +43,12 @@ class M1_0_2 extends BaseModelMigration
             return;
         }
         $cnf = Config::getInstance()->object();
-        if (!isset($cnf->ipsec)) {
+        if (!isset($cnf->system)) {
             return;
         }
-        $all_idents = [];
-        if (isset($cnf->ipsec->max_ikev1_exchanges) && $cnf->ipsec->max_ikev1_exchanges != '') {
-            $model->charon->max_ikev1_exchanges = (string)$cnf->ipsec->max_ikev1_exchanges;
-            unset($cnf->ipsec->max_ikev1_exchanges);
-        }
-
-        $keys = [];
-        foreach ($cnf->ipsec->children() as $key => $value) {
-            if (strpos($key, 'ipsec_') === 0 && strlen($key) == 9) {
-                $log_item = substr($key, 6);
-                $model->charon->syslog->daemon->$log_item = (string)$value;
-                $keys[] = $key;
-            }
-        }
-        foreach ($keys as $key) {
-            unset($cnf->ipsec->$key);
-        }
-
-        if (isset($cnf->ipsec->passthrough_networks) && $cnf->ipsec->passthrough_networks != '') {
-            $model->general->passthrough_networks = (string)$cnf->ipsec->passthrough_networks;
-            unset($cnf->ipsec->passthrough_networks);
-        }
-        if (isset($cnf->ipsec->preferred_oldsa) && !empty((string)$cnf->ipsec->preferred_oldsa)) {
-            $model->general->preferred_oldsa = "1";
-            unset($cnf->ipsec->preferred_oldsa);
+        if (isset($cnf->system->disablevpnrules) && !empty((string)$cnf->system->disablevpnrules)) {
+            $model->general->disablevpnrules = '1';
+            unset($cnf->system->disablevpnrules);
         }
     }
 }
