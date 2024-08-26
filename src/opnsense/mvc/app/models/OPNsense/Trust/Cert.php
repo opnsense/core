@@ -57,7 +57,7 @@ class Cert extends BaseModel
      * @param null|Ca $ca_mdl optional Ca model to use, comstructs one when not offered
      * @return void
      */
-    public function linkCaRefs(?string $refid=null, mixed $ca_mdl=null): void
+    public function linkCaRefs(?string $refid = null, mixed $ca_mdl = null): void
     {
         $ca_subjects = [];
         foreach ($this->cert->iterateItems() as $cert) {
