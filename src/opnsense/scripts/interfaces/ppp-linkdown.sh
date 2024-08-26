@@ -5,7 +5,7 @@ export PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin
 IF="${1}"
 AF="${2}"
 
-/usr/bin/logger -t ppp "ppp-linkdown: executing on ${1} for ${2}"
+/usr/bin/logger -t ppp "ppp-linkdown: executing on ${IF} for ${AF}"
 
 ngctl shutdown ${IF}:
 

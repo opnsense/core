@@ -2,6 +2,9 @@
 
 export PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin
 
+IF="${1}"
+AF="${2}"
+
 DNS1=
 if echo "${6}" | grep -q dns1; then
 	DNS1="-a $(echo "${6}" | awk '{print $2}')"
@@ -18,22 +21,22 @@ if [ -n "${4}" ]; then
 	ROUTER="-a $(echo ${4} | cut -d% -f1)"
 fi
 
-/usr/bin/logger -t ppp "ppp-linkup: executing on ${1} for ${2}"
+/usr/bin/logger -t ppp "ppp-linkup: executing on ${IF} for ${AF}"
 
-if [ "${2}" = "inet" ]; then
-	/usr/local/sbin/ifctl -i ${1} -4nd ${DNS1} ${DNS2}
-	/usr/local/sbin/ifctl -i ${1} -4rd ${ROUTER}
-	/usr/local/opnsense/scripts/interfaces/ppp-ipv6.php ${1} 4
-	/usr/local/sbin/configctl -d interface newip ${1} force
-elif [ "${2}" = "inet6" ]; then
-	/usr/local/sbin/ifctl -i ${1} -6nd ${DNS1} ${DNS2}
-	/usr/local/sbin/ifctl -i ${1} -6rd ${ROUTER}
-	if ! /usr/local/opnsense/scripts/interfaces/ppp-ipv6.php ${1} 6; then
+if [ "${AF}" = "inet" ]; then
+	/usr/local/sbin/ifctl -i ${IF} -4nd ${DNS1} ${DNS2}
+	/usr/local/sbin/ifctl -i ${IF} -4rd ${ROUTER}
+	/usr/local/opnsense/scripts/interfaces/ppp-ipv6.php ${IF} 4
+	/usr/local/sbin/configctl -d interface newip ${IF} force
+elif [ "${AF}" = "inet6" ]; then
+	/usr/local/sbin/ifctl -i ${IF} -6nd ${DNS1} ${DNS2}
+	/usr/local/sbin/ifctl -i ${IF} -6rd ${ROUTER}
+	if ! /usr/local/opnsense/scripts/interfaces/ppp-ipv6.php ${IF} 6; then
 		# trigger event here since no higher layer IPv6 will trigger it
-		/usr/local/sbin/configctl -d interface newipv6 ${1} force
+		/usr/local/sbin/configctl -d interface newipv6 ${IF} force
 	fi
 fi
 
-touch /tmp/${1}_uptime
+touch /tmp/${IF}_uptime
 
 exit 0
