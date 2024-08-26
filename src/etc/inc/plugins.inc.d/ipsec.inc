@@ -120,7 +120,7 @@ function ipsec_configure()
 {
     return [
         'ipsec' => ['ipsec_configure_do:2'],
-        'vpn' => ['ipsec_configure_do:2'],
+        'vpn_map' => ['ipsec_configure_do:2'],
     ];
 }
 
@@ -1232,23 +1232,31 @@ function ipsec_write_secrets()
     return $secrets;
 }
 
-function ipsec_configure_do($verbose = false, $interface = '')
+function ipsec_configure_do($verbose = false, $interface_map = null)
 {
     global $config;
 
-    if (!empty($interface)) {
-         $active = false;
+    if (!plugins_argument_map($interface_map)) {
+        return;
+    }
+
+    if (!empty($interface_map)) {
+        $active = false;
+
         if (isset($config['ipsec']['phase1'])) {
             foreach ($config['ipsec']['phase1'] as $phase1) {
-                if (!isset($phase1['disabled']) && $phase1['interface'] == $interface) {
+                if (!isset($phase1['disabled']) && in_array($phase1['interface'], $interface_map)) {
                     $active = true;
+                    break;
                 }
             }
         }
+
         if (!$active) {
             return;
         }
     }
+
     $ipsec_mdl = new \OPNsense\IPsec\IPsec();
 
     /* configure VTI if needed */
