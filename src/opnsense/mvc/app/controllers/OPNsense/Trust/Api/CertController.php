@@ -110,6 +110,7 @@ class CertController extends ApiMutableModelControllerBase
                         $error = gettext('Invalid private key provided');
                     }
                 }
+                $this->getModel()->linkCaRefs($node->refid);
                 break;
             case 'import_csr':
                 if (CertStore::parseX509((string)$node->crt_payload) === false) {
