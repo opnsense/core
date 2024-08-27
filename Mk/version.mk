@@ -30,3 +30,5 @@ CORE_NAME?=	opnsense
 # adjust src/root/boot/lua/logo-hourglass.lua.in accordingly:
 CORE_NICKNAME?=	Thriving Tiger
 CORE_TYPE?=	community
+# plugins that were migrated to core are here
+CORE_CONFLICTS?=firewall wireguard wireguard-go
