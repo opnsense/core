@@ -112,7 +112,7 @@ function plugins_disk_get()
         }
 
         if (!empty($ret['product_conflicts'])) {
-            foreach (explode(' ', $ret['product_conflicts']) as $conflict) {
+            foreach (preg_split('/\s+/', $ret['product_conflicts']) as $conflict) {
                 $obsolete[$conflict] = "I'm not even here";
             }
         }

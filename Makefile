@@ -199,6 +199,9 @@ CORE_DEPENDS?=		ca_root_nss \
 CORE_CONFLICTS+=	${CONFLICT}-devel
 .endfor
 
+# assume conflicts are just for plugins
+CORE_CONFLICTS:=	${CORE_CONFLICTS:S/^/os-/g:O}
+
 WRKDIR?=${.CURDIR}/work
 WRKSRC?=${WRKDIR}/src
 PKGDIR?=${WRKDIR}/pkg
