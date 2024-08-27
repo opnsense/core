@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (c) 2021-2024 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2021-2022 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-$obsolete = ['firewall', 'wireguard'];
 $action = $name = 'undefined';
 $type = ''; /* empty default */
 
@@ -49,6 +48,10 @@ require_once('script/load_phalcon.php');
 use OPNsense\Core\Config;
 
 $config = Config::getInstance()->object();
+
+if ($action == 'resync_factory' && !isset($config->trigger_initial_wizard)) {
+    exit();
+}
 
 function plugins_config_get($config)
 {
@@ -138,48 +141,30 @@ function plugins_disk_get()
 
 $plugins = plugins_config_get($config);
 $found = plugins_disk_get();
-$changed = false;
 
 switch ($action) {
     case 'install':
         if (!plugins_disk_found($name, $found)) {
-            break;
+            return;
         }
         $plugins = plugins_remove_sibling($name, $plugins);
         $plugins[$name] = 'hello';
-        $changed = true;
         break;
     case 'remove':
         if (plugins_disk_found($name, $found)) {
-            break;
+            return;
         }
         if (isset($plugins[$name])) {
             unset($plugins[$name]);
-            $changed = true;
         }
         break;
     case 'resync_factory':
         if (!isset($config->system->firmware->type)) {
             $config->system->firmware->addChild('type');
-            $changed = true;
         }
         if ($config->system->firmware->type != $type) {
             echo "Registering release type: " . (!empty($type) ? $type : 'community') . PHP_EOL;
             $config->system->firmware->type = $type;
-            $changed = true;
-        }
-
-        $count = count($plugins);
-        foreach ($obsolete as $name) {
-            /* remove logic is reversed but we remove both anyway */
-            $plugins = plugins_remove_sibling("os-{$name}-devel", $plugins);
-            $plugins = plugins_remove_sibling("os-{$name}", $plugins);
-        }
-        $changed |= $count != count($plugins);
-
-        /* 'resync_factory' short mode without 'resync' during normal operation */
-        if (!isset($config->trigger_initial_wizard)) {
-            break;
         }
         /* FALLTHROUGH */
     case 'resync':
@@ -187,26 +172,18 @@ switch ($action) {
             if (!plugins_disk_found($name, $found)) {
                 echo "Unregistering plugin: $name" . PHP_EOL;
                 unset($plugins[$name]);
-                $changed = true;
             }
         }
         foreach ($found as $name) {
             if (!isset($plugins[$name])) {
                 echo "Registering plugin: $name" . PHP_EOL;
                 $plugins[$name] = 'yep';
-                $changed = true;
             }
-
-            $count = count($plugins);
-            /* always try to scrub siblings just in case */
             $plugins = plugins_remove_sibling($name, $plugins);
-            $changed |= $count != count($plugins);
         }
         break;
     default:
-        break;
+        exit();
 }
 
-if ($changed) {
-    plugins_config_set($config, $plugins);
-}
+plugins_config_set($config, $plugins);
