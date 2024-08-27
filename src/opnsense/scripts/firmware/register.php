@@ -27,8 +27,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-$obsolete = ['firewall', 'wireguard'];
 $action = $name = 'undefined';
+$obsolete = []; /* empty default */
 $type = ''; /* empty default */
 
 if (count($argv) > 1) {
@@ -76,30 +76,18 @@ function plugins_config_set($config, $plugins)
     Config::getInstance()->save();
 }
 
-function plugins_disk_found($name, $found)
+function plugins_disk_found($name)
 {
+    global $found;
+
     $bare = preg_replace('/^os-|-devel$/', '', $name);
 
     return isset($found[$bare]) && $found[$bare] == $name;
 }
 
-function plugins_remove_sibling($name, $plugins)
-{
-    $other = preg_replace('/-devel$/', '', $name);
-    if ($other == $name) {
-        $other .= '-devel';
-    }
-
-    if (isset($plugins[$other])) {
-        unset($plugins[$other]);
-    }
-
-    return $plugins;
-}
-
 function plugins_disk_get()
 {
-    global $type;
+    global $type, $obsolete;
 
     $found = [];
 
@@ -123,6 +111,12 @@ function plugins_disk_get()
             continue;
         }
 
+        if (!empty($ret['product_conflicts'])) {
+            foreach (explode(' ', $ret['product_conflicts']) as $conflict) {
+                $obsolete[$conflict] = "I'm not even here";
+            }
+        }
+
         if ($prefix == 'core') {
             if (strpos($ret['product_id'], '-') !== false) {
                 $type = preg_replace('/[^-]+-/', '', $ret['product_id']);
@@ -133,6 +127,8 @@ function plugins_disk_get()
         $found[$filename] = $ret['product_id'];
     }
 
+    $obsolete = array_keys($obsolete);
+
     return $found;
 }
 
@@ -142,49 +138,30 @@ $changed = false;
 
 switch ($action) {
     case 'install':
-        if (!plugins_disk_found($name, $found)) {
-            break;
+        if (plugins_disk_found($name) && !isset($plugins[$name])) {
+            $plugins[$name] = "hello, it's me";
+            $changed = true;
         }
-        $plugins = plugins_remove_sibling($name, $plugins);
-        $plugins[$name] = 'hello';
-        $changed = true;
         break;
     case 'remove':
-        if (plugins_disk_found($name, $found)) {
-            break;
-        }
-        if (isset($plugins[$name])) {
+        if (!plugins_disk_found($name) && isset($plugins[$name])) {
             unset($plugins[$name]);
             $changed = true;
         }
         break;
-    case 'resync_factory':
-        if (!isset($config->system->firmware->type)) {
-            $config->system->firmware->addChild('type');
-            $changed = true;
-        }
-        if ($config->system->firmware->type != $type) {
-            echo "Registering release type: " . (!empty($type) ? $type : 'community') . PHP_EOL;
-            $config->system->firmware->type = $type;
-            $changed = true;
-        }
-
-        $count = count($plugins);
-        foreach ($obsolete as $name) {
-            /* remove logic is reversed but we remove both anyway */
-            $plugins = plugins_remove_sibling("os-{$name}-devel", $plugins);
-            $plugins = plugins_remove_sibling("os-{$name}", $plugins);
-        }
-        $changed |= $count != count($plugins);
-
-        /* 'resync_factory' short mode without 'resync' during normal operation */
+    case 'sync':
+        /*
+         * Short mode without 'resync' during normal operation
+         * also ensures firmware type and obsolete removal below.
+         */
         if (!isset($config->trigger_initial_wizard)) {
             break;
         }
+
         /* FALLTHROUGH */
     case 'resync':
         foreach (array_keys($plugins) as $name) {
-            if (!plugins_disk_found($name, $found)) {
+            if (!plugins_disk_found($name) && isset($plugins[$name])) {
                 echo "Unregistering plugin: $name" . PHP_EOL;
                 unset($plugins[$name]);
                 $changed = true;
@@ -196,15 +173,29 @@ switch ($action) {
                 $plugins[$name] = 'yep';
                 $changed = true;
             }
-
-            $count = count($plugins);
-            /* always try to scrub siblings just in case */
-            $plugins = plugins_remove_sibling($name, $plugins);
-            $changed |= $count != count($plugins);
         }
         break;
     default:
-        break;
+        echo "Registering nothing." . PHP_EOL;
+        exit(1);
+}
+
+/* fixup missing firmware type if necessary */
+if (!isset($config->system->firmware->type)) {
+    $config->system->firmware->addChild('type');
+    $changed = true;
+}
+if ($config->system->firmware->type != $type) {
+    $config->system->firmware->type = $type;
+    $changed = true;
+}
+
+/* scrub obsolete plugins if necessary */
+foreach ($obsolete as $name) {
+    if (isset($plugins[$name])) {
+        unset($plugins[$name]);
+        $changed = true;
+    }
 }
 
 if ($changed) {

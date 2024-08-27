@@ -195,6 +195,10 @@ CORE_DEPENDS?=		ca_root_nss \
 			${CORE_ADDITIONS} \
 			${CORE_DEPENDS_${CORE_ARCH}}
 
+.for CONFLICT in ${CORE_CONFLICTS}
+CORE_CONFLICTS+=	${CONFLICT}-devel
+.endfor
+
 WRKDIR?=${.CURDIR}/work
 WRKSRC?=${WRKDIR}/src
 PKGDIR?=${WRKDIR}/pkg

@@ -159,7 +159,7 @@ function convert_config($verbose = false)
     }
 
     /* factory reset on release type and plugins if necessary */
-    $cmd = '/usr/local/opnsense/scripts/firmware/register.php resync_factory';
+    $cmd = '/usr/local/opnsense/scripts/firmware/register.php sync';
     if ($verbose) {
         passthru($cmd);
     } else {
