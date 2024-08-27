@@ -30,3 +30,5 @@ CORE_NAME?=	opnsense-devel
 # adjust src/root/boot/lua/logo-hourglass.lua.in accordingly:
 CORE_NICKNAME?=	Not Yet
 CORE_TYPE?=	development
+# plugins that were migrated to core are here
+CORE_CONFLICTS?=firewall wireguard wireguard-go
