@@ -106,8 +106,14 @@ class DashboardController extends ApiControllerBase
         $config = Config::getInstance()->object();
         foreach ($config->system->user as $node) {
             if ($this->getUserName() === (string)$node->name) {
-                $dashboard = (string)$node->dashboard;
+                // json_decode returns null if json is invalid
+                $dashboard = json_decode(base64_decode((string)$node->dashboard), true);
+                break;
             }
+        }
+
+        if (empty($dashboard)) {
+            $dashboard = $this->getDefaultDashboard();
         }
 
         $result['modules'] = [];
@@ -139,7 +145,13 @@ class DashboardController extends ApiControllerBase
             }
         }
 
-        $result['dashboard'] = !empty($dashboard) ? base64_decode($dashboard) : json_encode($this->getDefaultDashboard());
+        // filter widgets according to metadata
+        $moduleIds = array_column($result['modules'], 'id');
+        $filteredWidgets = array_filter($dashboard['widgets'], function ($widget) use ($moduleIds) {
+            return in_array($widget['id'], $moduleIds);
+        });
+        $dashboard['widgets'] = array_values($filteredWidgets);
+        $result['dashboard'] = $dashboard;
 
         return $result;
     }
@@ -152,6 +164,11 @@ class DashboardController extends ApiControllerBase
             $dashboard = $this->request->getRawBody();
             if (strlen($dashboard) > (1024 * 1024)) {
                 // prevent saving large blobs of data
+                return $result;
+            }
+
+            // Force the correct format using json_decode()
+            if (json_decode($dashboard, true) === null) {
                 return $result;
             }
 
