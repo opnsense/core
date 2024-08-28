@@ -35,9 +35,10 @@ require_once 'filter.inc';
 
 exit_on_bootup();
 
+/* when called with an argument we are in gateway switch mode */
 $recover_only = !empty($argv[1]);
 
-// drop deleted routes
+/* drop deleted routes */
 foreach (glob("/tmp/delete_route_*.todo") as $filename) {
     $network = trim(file_get_contents($filename));
     $inet = (is_subnetv6($network) ? "-inet6" : "-inet");
@@ -46,7 +47,6 @@ foreach (glob("/tmp/delete_route_*.todo") as $filename) {
 }
 
 system_routing_configure(true, null, !$recover_only);
-filter_configure_sync(true, false);
 
 if ($recover_only) {
     foreach (dpinger_status() as $status) {
@@ -56,3 +56,5 @@ if ($recover_only) {
         }
     }
 }
+
+filter_configure_sync(true, false);
