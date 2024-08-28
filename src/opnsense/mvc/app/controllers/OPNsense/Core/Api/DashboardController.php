@@ -147,7 +147,7 @@ class DashboardController extends ApiControllerBase
 
         // filter widgets according to metadata
         $moduleIds = array_column($result['modules'], 'id');
-        $filteredWidgets = array_filter($dashboard['widgets'], function($widget) use ($moduleIds) {
+        $filteredWidgets = array_filter($dashboard['widgets'], function ($widget) use ($moduleIds) {
             return in_array($widget['id'], $moduleIds);
         });
         $dashboard['widgets'] = array_values($filteredWidgets);
