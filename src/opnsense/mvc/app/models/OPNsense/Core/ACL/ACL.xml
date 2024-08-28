@@ -15,6 +15,7 @@
             <pattern>ui/core/dashboard</pattern>
             <pattern>api/core/dashboard/*</pattern>
             <pattern>api/diagnostics/system/systemInformation</pattern>
+            <pattern>api/diagnostics/system/systemTime</pattern>
         </patterns>
     </page-system-login-logout>
     <page-getserviceproviders>
@@ -88,6 +89,7 @@
             <pattern>ui/core/dashboard</pattern>
             <pattern>api/core/dashboard/*</pattern>
             <pattern>api/diagnostics/system/systemInformation</pattern>
+            <pattern>api/diagnostics/system/systemTime</pattern>
         </patterns>
     </page-dashboard-widget-system-information>
     <page-dashboard-widget-cpu>

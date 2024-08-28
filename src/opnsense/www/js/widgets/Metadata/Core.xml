@@ -13,6 +13,7 @@
         <filename>SystemInformation.js</filename>
         <endpoints>
             <endpoint>/api/diagnostics/system/systemInformation</endpoint>
+            <endpoint>/api/diagnostics/system/systemTime</endpoint>
         </endpoints>
         <translations>
             <title>System Information</title>

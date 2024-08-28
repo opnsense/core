@@ -126,7 +126,7 @@ class WidgetManager  {
             contentType: 'application/json'
         }).then(async (data) => {
             try {
-                let configuration = JSON.parse(data.dashboard);
+                let configuration = data.dashboard;
                 configuration.widgets.forEach(item => {
                     this.widgetConfigurations[item.id] = item;
                 });
@@ -625,7 +625,7 @@ class WidgetManager  {
         }));
 
         const payload = {
-            options: {...this.runtimeOptions},
+            options: {...this.persistedOptions},
             widgets: items
         };
 
