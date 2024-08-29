@@ -674,7 +674,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
                 break;
             case "ppp":
-                $reqdfields = explode(" ", "ports phone");
+                $reqdfields = explode(" ", "phone");
                 $reqdfieldsn = array(gettext("Modem Port"),gettext("Phone Number"));
                 do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
                 break;
@@ -1116,8 +1116,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $new_ppp_config['ptpid'] = $pconfig['ptpid'];
                     $new_ppp_config['type'] = $pconfig['type'];
                     $new_ppp_config['if'] = $pconfig['type'].$pconfig['ptpid'];
-                    if (!empty($pconfig['ppp_port'])) {
-                        $new_ppp_config['ports'] = $pconfig['ppp_port'];
+                    /* XXX inline creation */
+                    if (!empty($pconfig['ports'])) {
+                        $new_ppp_config['ports'] = $pconfig['ports'];
                     } else {
                         $new_ppp_config['ports'] = $old_config['if'];
                     }
@@ -1139,11 +1140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $new_ppp_config['ptpid'] = $pconfig['ptpid'];
                     $new_ppp_config['type'] = $pconfig['type'];
                     $new_ppp_config['if'] = $pconfig['type'].$pconfig['ptpid'];
-                    if (!empty($pconfig['ppp_port'])) {
-                        $new_ppp_config['ports'] = $pconfig['ppp_port'];
-                    } else {
-                        $new_ppp_config['ports'] = $old_config['if'];
-                    }
+                    $new_ppp_config['ports'] = $pconfig['ports'];
                     $new_ppp_config['username'] = $pconfig['pptp_username'];
                     $new_ppp_config['password'] = base64_encode($pconfig['pptp_password']);
                     $new_ppp_config['localip'] = $pconfig['localip'];
@@ -3622,7 +3619,7 @@ include("head.inc");
                           <input id="cancel" type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/interfaces.php'" />
                           <input name="if" type="hidden" id="if" value="<?=$if;?>" />
 <?php if ($pconfig['if'] == $a_ppps[$pppid]['if']): ?>
-                            <input name="ppp_port" type="hidden" value="<?=$pconfig['ports'];?>" />
+                          <input name="ports" type="hidden" value="<?=$pconfig['ports'];?>" />
 <?php endif ?>
                           <input name="ptpid" type="hidden" value="<?=$pconfig['ptpid'];?>" />
                         </td>
