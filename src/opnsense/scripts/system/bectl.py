@@ -58,10 +58,10 @@ if __name__ == '__main__':
     elif inputargs.action == 'activate' and inputargs.beName:
         cmd = ['bectl', 'activate', inputargs.beName]
     elif inputargs.action == 'create':
-        name = inputargs.beName if inputargs.beName else "BE-{date:%Y%m%d%H%M%S}".format(date=datetime.datetime.now())
+        name = inputargs.beName if inputargs.beName else "{date:%Y%m%d%H%M%S}".format(date=datetime.datetime.now())
         cmd = ['bectl', 'create', name]
     elif inputargs.action == 'clone' and inputargs.from_source:
-        name = inputargs.beName if inputargs.beName else "BE-{date:%Y%m%d%H%M%S}".format(date=datetime.datetime.now())
+        name = inputargs.beName if inputargs.beName else "{date:%Y%m%d%H%M%S}".format(date=datetime.datetime.now())
         cmd = ['bectl', 'create', '-e', inputargs.from_source, name]
     elif inputargs.action == 'destroy' and inputargs.beName:
         cmd = ['bectl', 'destroy', inputargs.beName]
