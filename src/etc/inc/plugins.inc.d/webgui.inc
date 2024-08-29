@@ -429,8 +429,9 @@ EOD;
             $suites_selected = explode(":", $config['system']['webgui']['ssl-ciphers']);
             $tls_suites_selected = array_diff($suites_selected, $tls13_suites);
             $tls13_suites_selected = array_intersect($tls13_suites, $suites_selected);
+            $tlsminproto = empty($tls_suites_selected) ? 'TLSv1.3' : 'TLSv1';
             $lighty_config .= "ssl.openssl.ssl-conf-cmd = (\n";
-            $lighty_config .= "    \"MinProtocol\" => \"TLSv1\"";
+            $lighty_config .= "    \"MinProtocol\" => \"{$tlsminproto}\"";
             if ($tls13_suites_selected) {
                 $lighty_config .= ",\n    \"Ciphersuites\" => \"" . implode(":", $tls13_suites_selected) . "\"";
             }
