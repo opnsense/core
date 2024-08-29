@@ -632,8 +632,8 @@ class WidgetManager  {
         $.ajax({
             type: "POST",
             url: "/api/core/dashboard/saveWidgets",
-            dataType: "text",
-            contentType: 'text/plain',
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
             data: JSON.stringify(payload),
             complete: (data, status) => {
                 setTimeout(() => {
