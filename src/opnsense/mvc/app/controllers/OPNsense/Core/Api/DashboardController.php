@@ -160,15 +160,11 @@ class DashboardController extends ApiControllerBase
     {
         $result = ['result' => 'failed'];
 
-        if ($this->request->isPost() && !empty($this->request->getRawBody())) {
-            $dashboard = $this->request->getRawBody();
+        if ($this->request->isPost() && $this->request->hasPost('widgets')) {
+            $dashboard = json_encode($this->request->getPost());
             if (strlen($dashboard) > (1024 * 1024)) {
                 // prevent saving large blobs of data
-                return $result;
-            }
-
-            // Force the correct format using json_decode()
-            if (json_decode($dashboard, true) === null) {
+                $result['message'] = 'dashboard size limit reached';
                 return $result;
             }
 
