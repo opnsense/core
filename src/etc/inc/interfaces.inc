@@ -1290,10 +1290,21 @@ function interfaces_carp_setup()
     global $config;
 
     if (!empty($config['hasync']['pfsyncinterface'])) {
-        $carp_sync_int = get_real_interface($config['hasync']['pfsyncinterface']);
+        /*
+         * We are just checking the actual attached interface here as get_real_interface()
+         * was not dependable when the selected interface does not exist for any reason.
+         *
+         * What the current method tells us is that we are going to ignore whether this
+         * interface is currently enabled or not.  To avoid breakage we will keep it so
+         * although in reality disabling your pfsync interface should cause it to stop
+         * syncing.
+         */
+        if (!empty($config['interfaces'][$config['hasync']['pfsyncinterface']]['if'])) {
+            $syncdev = $config['interfaces'][$config['hasync']['pfsyncinterface']]['if'];
+        }
     }
 
-    if (!empty($carp_sync_int) && !empty($config['hasync']['pfsyncenabled'])) {
+    if (!empty($syncdev)) {
         if (!empty($config['hasync']['pfsyncpeerip']) && is_ipaddrv4($config['hasync']['pfsyncpeerip'])) {
             $syncpeer = "syncpeer " . escapeshellarg($config['hasync']['pfsyncpeerip']);
         } else {
@@ -1305,12 +1316,12 @@ function interfaces_carp_setup()
             $version = 'version ' . escapeshellarg($config['hasync']['pfsyncversion']);
         }
 
-        $intf_stats = legacy_interfaces_details();
+        $intf_stats = legacy_interfaces_details(); /* XXX could require passing this down */
 
-        mwexec("/sbin/ifconfig pfsync0 syncdev {$carp_sync_int} {$syncpeer} {$version} up");
+        mwexec("/sbin/ifconfig pfsync0 syncdev {$syncdev} {$syncpeer} {$version} up");
 
-        if (!empty($intf_stats[$carp_sync_int]['mtu'])) {
-            mwexec("/sbin/ifconfig pfsync0 mtu " . escapeshellarg($intf_stats[$carp_sync_int]['mtu']));
+        if (!empty($intf_stats[$syncdev]['mtu'])) {
+            mwexecf('/sbin/ifconfig pfsync0 mtu %s', [$intf_stats[$syncdev]['mtu']]);
         }
     } else {
         mwexec('/sbin/ifconfig pfsync0 -syncdev -syncpeer down');

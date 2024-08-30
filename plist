@@ -636,6 +636,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/M1_0_1.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/MHA1_0_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/MHA1_0_1.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/repositories/opnsense.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Cron.php
