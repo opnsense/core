@@ -204,7 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("A valid URL must be specified for the network bootfile.");
         }
 
-        if (count($input_errors) == 0) {
+        if (count($input_errors) == 0 && !empty($pconfig['enable'])) {
             $range_from = $pconfig['range_from'];
             $range_to = $pconfig['range_to'];
 
