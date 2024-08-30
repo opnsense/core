@@ -16,16 +16,10 @@
         <help>When this device is configured as CARP backup it will disconnect all PPP type interfaces and try to reconnect them when becoming master again.</help>
     </field>
     <field>
-        <id>hasync.pfsyncenabled</id>
-        <label>Synchronize States</label>
-        <type>checkbox</type>
-        <help>pfsync transfers state insertion, update, and deletion messages between firewalls.</help>
-    </field>
-    <field>
         <id>hasync.pfsyncinterface</id>
-        <label>Synchronize Interface</label>
+        <label>Synchronize all states via</label>
         <type>dropdown</type>
-        <help>If Synchronize States is enabled, it will utilize this interface for communication. Best choose a dedicated interface for this type of communication to prevent manipulation of states causing security issues.</help>
+        <help>This enables state insertion, update, and deletion messages between firewalls by utilizing the selected interface for communication. Best choose a dedicated interface for this type of communication to prevent manipulation of states causing security issues.</help>
     </field>
     <field>
         <id>hasync.pfsyncversion</id>

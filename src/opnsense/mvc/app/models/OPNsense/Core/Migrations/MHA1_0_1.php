@@ -33,10 +33,10 @@ use OPNsense\Core\Hasync;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 
-class MHA1_0_0 extends BaseModelMigration
+class MHA1_0_1 extends BaseModelMigration
 {
     /**
-     * Migrate legacy ha settings
+     * Remove pfsyncenabled by folding it into the pfsyncinterface setting
      * @param $model
      */
     public function run($model)
@@ -44,28 +44,16 @@ class MHA1_0_0 extends BaseModelMigration
         if (!($model instanceof Hasync)) {
             return;
         }
-        $services = json_decode((new Backend())->configdRun('system ha options') ?? '', true);
-        if (!empty($services)) {
-            $src = Config::getInstance()->object()->hasync;
-            $syncitems = [];
-            foreach (array_keys($services) as $service) {
-                if (!empty((string)$src->{'synchronize' . $service})) {
-                    $syncitems[] = $service;
-                }
-            }
-            $model->syncitems = implode(',', $syncitems);
-            if (!empty((string)$model->pfsyncenabled)) {
-                $model->pfsyncversion = '1301'; // on upgrade keep legacy pfsync version
-            }
-            if (empty($src->pfsyncenabled)) {
-                /* disabe via pfsyncinterface if not set */
-                $model->pfsyncinterface = null;
-            } else {
-                /* may need to disable if previous value is no longer available */
-                $model->pfsyncinterface->normalizeValue();
-            }
+
+        $src = Config::getInstance()->object()->hasync;
+
+        /* duplicated effort from 1.0.0 since that was functional on early 24.7.x */
+        if (empty($src->pfsyncenabled)) {
+            /* disabe via pfsyncinterface if not set */
+            $model->pfsyncinterface = null;
         } else {
-            throw new \Exception('Missing (configd) ha options list');
+            /* may need to disable if previous value is no longer available */
+            $model->pfsyncinterface->normalizeValue();
         }
     }
 }
