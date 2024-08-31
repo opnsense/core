@@ -36,6 +36,7 @@ class Ntp extends Base
     protected int $ds_heartbeat =  120;
     protected int $ds_min = 0;
     protected int $ds_max = 1000;
+    protected static string $stdfilename = 'ntpd.rrd';
 
     /**
      * {@inheritdoc}

@@ -34,9 +34,9 @@ class States extends Base
     {
         $data = $this->shellCmd('/usr/local/opnsense/scripts/system/rrd_pfstate_info.py');
         if (!empty($data)) {
-            return $data[0];
+            return explode(':', $data[0]);
         }
-        return null;
+        return [];
     }
 }
 

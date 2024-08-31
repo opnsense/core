@@ -36,6 +36,8 @@ class OpenVPN extends Base
     protected int $ds_heartbeat =  120;
     protected int $ds_min = 0;
     protected int $ds_max = 10000;
+    protected static string $stdfilename = '%s-vpnusers.rrd';
+
 
     /**
      * {@inheritdoc}
@@ -44,5 +46,15 @@ class OpenVPN extends Base
     {
         parent::__construct($filename);
         $this->addDatasets(['users'], 'GAUGE');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function payloadSplitter(array $payload)
+    {
+        foreach ($payload as $intf => $data) {
+            yield static::$basedir . sprintf(static::$stdfilename, $intf) => $data;
+        }
     }
 }

@@ -44,7 +44,7 @@ class GatewayQuality extends Base
                 $dinfo .= fgets($fp, 1024);
             }
             fclose($fp);
-            $record = explode(' ', $dinfo);
+            $record = explode(' ', trim($dinfo));
             $result[$record[0]] = [
                 'gwname' => $record[0],
                 'delay' => sprintf('%.07f', $record[1] / 1000.0 / 1000.0),

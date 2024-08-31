@@ -36,9 +36,9 @@ class Temperature extends Base
             '/sbin/sysctl -n dev.cpu.0.temperature hw.acpi.thermal.tz0.temperature hw.temperature.CPU'
         );
         if (!empty($data)) {
-            return $data[0];
+            return [$data[0]];
         }
-        return null;
+        return [];
     }
 }
 

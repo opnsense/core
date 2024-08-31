@@ -38,6 +38,7 @@ abstract class Base
     protected int $ds_max = 1000000000;
     private string $filename;
     protected static string $basedir = '/var/db/rrd/';
+    protected static string $stdfilename = '';
 
     /**
      * DS:ds-name:{GAUGE | COUNTER | DERIVE | DCOUNTER | DDERIVE | ABSOLUTE}:heartbeat:min:max
@@ -79,12 +80,16 @@ abstract class Base
     }
 
     /**
+     * Maps datasets (stats) to input a new type object requires
+     *
      * @param array collected stats for the type
-     * @return array list of filenames
+     * @return \Iterator<string, array>
      */
-    public static function filenameGenerator(array $payload)
+    public static function payloadSplitter(array $payload)
     {
-        return [];
+        if (!empty(static::$stdfilename)) {
+            yield static::$basedir . static::$stdfilename => $payload;
+        }
     }
 
     /**
@@ -171,7 +176,7 @@ abstract class Base
             if ($map_by_name) {
                 $value = isset($dataset[$ds[0]]) ? $dataset[$ds[0]] : 'U';
             } else {
-                $value = !empty($dataset) && isset($dataset[$i]) ? $dataset[$i] : 'U';
+                $value = !empty($dataset) && isset($dataset[$idx]) ? $dataset[$idx] : 'U';
             }
             $values[] = $value;
             if ($value == 'U' && $debug) {
@@ -179,8 +184,10 @@ abstract class Base
             }
         }
         $cmd_text = sprintf('/usr/local/bin/rrdtool update %s N:%s 2>&1', $this->filename, implode(':', $values));
-        echo $cmd_text . "\n";
-        //exec($cmd_text, $rrdcreateoutput, $rrdcreatereturn);
+        exec($cmd_text, $rrdcreateoutput, $rrdcreatereturn);
+        if ($rrdcreatereturn != 0 && $debug) {
+            echo sprintf("[cmd failed] %s\n", $cmd_text);
+        }
         return $this;
     }
 

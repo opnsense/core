@@ -36,6 +36,7 @@ class Mbuf extends Base
     protected int $ds_heartbeat =  120;
     protected int $ds_min = 0;
     protected int $ds_max = 10000000;
+    protected static string $stdfilename = 'system-mbuf.rrd';
 
     /**
      * {@inheritdoc}
@@ -58,13 +59,5 @@ class Mbuf extends Base
             ['MAX', 0.5, 60, 1860],
             ['MAX', 0.5, 1440, 2284],
         ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function filenameGenerator(array $payload)
-    {
-        return [static::$basedir . 'system-mbuf.rrd'];
     }
 }

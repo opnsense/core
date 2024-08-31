@@ -36,6 +36,7 @@ class Packets extends Base
     protected int $ds_heartbeat =  120;
     protected int $ds_min = 0;
     protected int $ds_max = 2500000000;
+    protected static string $stdfilename = '%s-packets.rrd';
 
     /**
      * {@inheritdoc}
@@ -47,5 +48,33 @@ class Packets extends Base
             ['inpass','outpass','inblock','outblock','inpass6','outpass6','inblock6','outblock6'],
             'COUNTER'
         );
+    }
+
+    /**
+     * Packets is a subcollection of Interfaces
+     */
+    public static function wantsStats()
+    {
+        return 'Interfaces';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function payloadSplitter(array $payload)
+    {
+        foreach ($payload as $intf => $data) {
+            $tmp = [
+                'inpass' => $data['in4_pass_packets'],
+                'outpass' => $data['out4_pass_packets'],
+                'inblock' => $data['in4_block_packets'],
+                'outblock' => $data['out4_block_packets'],
+                'inpass6' => $data['in6_pass_packets'],
+                'outpass6' => $data['out6_pass_packets'],
+                'inblock6' => $data['in6_block_packets'],
+                'outblock6' => $data['out6_block_packets']
+            ];
+            yield static::$basedir . sprintf(static::$stdfilename, $intf) => $tmp;
+        }
     }
 }

@@ -36,6 +36,7 @@ class Traffic extends Base
     protected int $ds_heartbeat =  120;
     protected int $ds_min = 0;
     protected int $ds_max = 2500000000;
+    protected static string $stdfilename = '%s-traffic.rrd';
 
     /**
      * {@inheritdoc}
@@ -47,5 +48,33 @@ class Traffic extends Base
             ['inpass','outpass','inblock','outblock','inpass6','outpass6','inblock6','outblock6'],
             'COUNTER'
         );
+    }
+
+    /**
+     * Traffic is a subcollection of Interfaces
+     */
+    public static function wantsStats()
+    {
+        return 'Interfaces';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function payloadSplitter(array $payload)
+    {
+        foreach ($payload as $intf => $data) {
+            $tmp = [
+                'inpass' => $data['in4_pass_bytes'],
+                'outpass' => $data['out4_pass_bytes'],
+                'inblock' => $data['in4_block_bytes'],
+                'outblock' => $data['out4_block_bytes'],
+                'inpass6' => $data['in6_pass_bytes'],
+                'outpass6' => $data['out6_pass_bytes'],
+                'inblock6' => $data['in6_block_bytes'],
+                'outblock6' => $data['out6_block_bytes']
+            ];
+            yield static::$basedir . sprintf(static::$stdfilename, $intf) => $tmp;
+        }
     }
 }

@@ -36,6 +36,7 @@ class Processor extends Base
     protected int $ds_heartbeat =  120;
     protected int $ds_min = 0;
     protected int $ds_max = 10000000;
+    protected static string $stdfilename = 'system-processor.rrd';
 
     /**
      * {@inheritdoc}

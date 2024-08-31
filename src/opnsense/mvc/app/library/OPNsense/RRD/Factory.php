@@ -106,7 +106,7 @@ class Factory
     /**
      * update all registered RRD graphs
      */
-    public function updateAll()
+    public function updateAll($debug=false)
     {
         foreach (glob(sprintf("%s/Types/*.php", __DIR__)) as $filename) {
             $classname = substr(basename($filename),0, -4);
@@ -116,11 +116,24 @@ class Factory
                 if ($cls->isInstantiable() && $cls->isSubclassOf('OPNsense\\RRD\\Types\\Base')) {
                     $wants = call_user_func([$fclassname, 'wantsStats']);
                     $the_data = $this->getData($wants);
-                    if (!empty($the_data)) {
-                        foreach (call_user_func([$fclassname, 'filenameGenerator'], [$the_data]) as $target_filename) {
-                            //$obj = $cls->newInstance();
-                            echo $target_filename ."\n";
-                        }
+                    if (empty($the_data)) {
+                        continue;
+                    }
+                    /**
+                     *  Because some data sets should be split into multiple targets, we need a facility to map
+                     *  (a part) of the dataset to the target.
+                     *
+                     *  In most cases an RRD type results in a single target, in which case the 'type' knows where
+                     *  it should render the content to by default.
+                     *
+                     *  If the type+stats combination results in multiple targets we need to leave this mapping
+                     *  somewhere, in which case the 'Type' is the most logical place
+                     *  as being responsible for the actual output.
+                     */
+                    foreach (call_user_func([$fclassname, 'payloadSplitter'], $the_data) as $tfilename => $data) {
+                        $obj = $cls->newInstance($tfilename);
+                        $obj->create(); /* only creates when no target exists yet */
+                        $obj->update($data, $debug);
                     }
 
                 }

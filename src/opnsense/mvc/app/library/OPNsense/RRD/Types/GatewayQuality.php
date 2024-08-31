@@ -36,6 +36,7 @@ class GatewayQuality extends Base
     protected int $ds_heartbeat =  120;
     protected int $ds_min = 0;
     protected int $ds_max = 2500000000;
+    protected static string $stdfilename = '%s-quality.rrd';
 
     /**
      * {@inheritdoc}
@@ -43,6 +44,16 @@ class GatewayQuality extends Base
     public function __construct(string $filename)
     {
         parent::__construct($filename);
-        $this->addDatasets(['loss','outpdelayass','stddev'], 'GAUGE');
+        $this->addDatasets(['loss','delay','stddev'], 'GAUGE');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function payloadSplitter(array $payload)
+    {
+        foreach ($payload as $gw => $data) {
+            yield static::$basedir . sprintf(static::$stdfilename, $gw) => $data;
+        }
     }
 }

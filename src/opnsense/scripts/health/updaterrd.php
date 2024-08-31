@@ -29,10 +29,26 @@
 
 require_once('script/load_phalcon.php');
 
-use OPNsense\Core\Config;
 
+$opts = getopt('hd', [], $optind);
+$args = array_slice($argv, $optind);
+
+if (isset($opts['h'])) {
+    echo "Usage: updaterrd.php [-h] [-d]\n\n";
+    echo "\t-d debug mode, output errors to stdout\n";
+    exit(0);
+}
+
+$start_time = microtime(True);
 
 $rrd_factory = new \OPNsense\RRD\Factory();
+$rrd_factory->collect()->updateAll(isset($opts['d']));
 
-$payload = $rrd_factory->collect();
-//print_r($payload);
+if (isset($opts['d'])) {
+    $collect_time = 0.0;
+    echo sprintf("total runtime [seconds] \t: %0.2f\n", microtime(True) - $start_time);
+    foreach ($rrd_factory->getRawStats() as $name => $payload) {
+        $collect_time += $payload['runtime'];
+    }
+    echo sprintf("total collection [seconds] \t: %0.2f\n", $collect_time);
+}
