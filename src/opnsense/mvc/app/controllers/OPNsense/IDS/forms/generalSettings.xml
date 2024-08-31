@@ -122,4 +122,53 @@
         <help>Send package payload to the log for further analyses.</help>
         <advanced>true</advanced>
     </field>
+    <field>
+        <id>ids.general.eveLog.http.enable</id>
+        <label>Enable eve HTTP logging</label>
+        <type>checkbox</type>
+        <help>Send HTTP metadata to eve-log for further analyses.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.eveLog.http.extended</id>
+        <label>Eve HTTP extended logging</label>
+        <type>checkbox</type>
+        <help>Add extended information to eve HTTP logging.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.eveLog.http.dumpAllHeaders</id>
+        <label>Eve HTTP dump all headers</label>
+        <type>dropdown</type>
+        <help>Make eve HTTP logging dump all HTTP headers. You may choose to dump headers for requests or responses or both.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.eveLog.tls.enable</id>
+        <label>Enable eve TLS logging</label>
+        <type>checkbox</type>
+        <help>Send TLS metadata to eve-log for further analyses.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.eveLog.tls.extended</id>
+        <label>Eve TLS extended logging</label>
+        <type>checkbox</type>
+        <help>Add extended information to eve TLS logging. For example, SNI field.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.eveLog.tls.sessionResumption</id>
+        <label>Eve TLS log session resumption</label>
+        <type>checkbox</type>
+        <help>Output TLS transaction where the session is resumed using a session id</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.eveLog.tls.custom</id>
+        <label>Eve TLS custom logging</label>
+        <type>select_multiple</type>
+        <help>Custom TLS fields to include in eve-log for TLS. (Overrides extended if non-empty).</help>
+        <advanced>true</advanced>
+    </field>
 </form>
