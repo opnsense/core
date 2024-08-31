@@ -1428,8 +1428,8 @@ function interfaces_vips_configure($interface, $family = null)
         return;
     }
 
-    $carp_setup = false;
-    $anyproxyarp = false;
+    $proxyarp = false;
+    $pfsync = false;
 
     foreach ($config['virtualip']['vip'] as $vip) {
         if ($vip['interface'] != $interface) {
@@ -1444,23 +1444,23 @@ function interfaces_vips_configure($interface, $family = null)
 
         switch ($vip['mode']) {
             case 'proxyarp':
-                $anyproxyarp = true;
+                $proxyarp = true;
                 break;
             case 'ipalias':
                 interface_ipalias_configure($vip);
                 break;
             case 'carp':
-                $carp_setup = true;
                 interface_carp_configure($vip);
+                $pfsync = true;
                 break;
         }
     }
 
-    if ($carp_setup) {
+    if ($pfsync) {
         interfaces_carp_setup();
     }
 
-    if ($anyproxyarp) {
+    if ($proxyarp) {
         interface_proxyarp_configure();
     }
 }
