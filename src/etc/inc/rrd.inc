@@ -256,32 +256,6 @@ function rrd_configure($verbose = false, $bootup = false)
                 $rrdupdatesh .= "OVPN=`list_current_users | nc -U {$ovpn_servers[$ifname]['sockFilename']} | awk -F\",\" '/^CLIENT_LIST/ {print \$2}' | wc -l | awk '{print $1}'`\n";
                 $rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$vpnusers N:\${OVPN}\n";
             }
-
-            /* 3G interfaces */
-            if (preg_match("/ppp[0-9]+/i", $realif)) {
-                if (!file_exists("$rrddbpath$ifname$cellular")) {
-                    $rrdcreate = "$rrdtool create $rrddbpath$ifname$cellular --step $rrdcellularinterval ";
-                    $rrdcreate .= "DS:rssi:GAUGE:$cellularvalid:0:100 ";
-                    $rrdcreate .= "DS:upstream:GAUGE:$cellularvalid:0:100000000 ";
-                    $rrdcreate .= "DS:downstream:GAUGE:$cellularvalid:0:100000000 ";
-                    $rrdcreate .= "RRA:AVERAGE:0.5:1:1200 ";
-                    $rrdcreate .= "RRA:AVERAGE:0.5:5:720 ";
-                    $rrdcreate .= "RRA:AVERAGE:0.5:60:1860 ";
-                    $rrdcreate .= "RRA:AVERAGE:0.5:1440:2284 ";
-                    rrd_create($rrdcreate);
-                    unset($rrdcreate);
-                }
-
-                /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-                if ($bootup) {
-                    mwexec("$rrdtool update $rrddbpath$ifname$cellular N:U:U:U");
-                }
-
-                $rrdupdatesh .= "\n";
-                $rrdupdatesh .= "# polling 3G\n";
-                $rrdupdatesh .= "GSTATS=`awk -F, 'getline 2 {print \$2 \":\" \$8 \":\" \$9}' < /tmp/3gstats.$ifname`\n";
-                $rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$cellular N:\"\$GSTATS\"";
-            }
         }
 
         /* System only statistics */
