@@ -296,12 +296,14 @@ function core_cron()
     $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d firmware changelog cron', '0', '22');
 
     /**
-     * rrd graph collector, only execute when script is present and not locked by rrd_configure()
+     * rrd graph collector, only schedule execution when enabled
      */
-    $jobs[]['autocron'] = [
-        'test -e /var/db/rrd/updaterrd.sh && /usr/local/bin/flock -n -E 1 /var/db/rrd/updaterrd.sh /var/db/rrd/updaterrd.sh',
-        '*'
-    ];
+    if (isset($config['rrd']['enable'])) {
+        $jobs[]['autocron'] = [
+            '/usr/local/bin/flock -n -E 0 -o /tmp/updaterrd.lock /usr/local/opnsense/scripts/health/updaterrd.php',
+            '*'
+        ];
+    }
 
     if (!empty($config['system']['rrdbackup']) && $config['system']['rrdbackup'] > 0) {
         $jobs[]['autocron'] = array(

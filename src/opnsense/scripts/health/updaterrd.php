@@ -39,7 +39,18 @@ if (isset($opts['h'])) {
     exit(0);
 }
 
+$rrdcnf = OPNsense\Core\Config::getInstance()->object()->rrd;
+if ($rrdcnf === null || !isset($rrdcnf->enable)) {
+    echo "RRD statistics disabled... exit\n";
+    exit(0);
+}
+
 $start_time = microtime(True);
+
+if (!is_dir('/var/db/rrd')) {
+    @mkdir('/var/db/rrd', 0775);
+    @chown('/var/db/rrd', 'nobody');
+}
 
 $rrd_factory = new \OPNsense\RRD\Factory();
 $rrd_factory->collect()->updateAll(isset($opts['d']));
