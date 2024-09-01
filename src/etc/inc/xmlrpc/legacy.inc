@@ -249,7 +249,7 @@ function restore_config_section_xmlrpc($new_config)
         }
 
         if ($pfsync) {
-            interfaces_carp_setup();
+            interfaces_pfsync_configure();
         }
 
         if ($proxyarp) {

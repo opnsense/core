@@ -47,6 +47,13 @@ function pf_services()
     return $services;
 }
 
+function pf_configure()
+{
+    return [
+        'pfsync' => ['interfaces_pfsync_configure'],
+    ];
+}
+
 function pf_cron()
 {
     global $config;

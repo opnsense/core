@@ -1333,7 +1333,7 @@ EOD;
     }
 }
 
-function interfaces_carp_setup()
+function interfaces_pfsync_configure()
 {
     global $config;
 
@@ -1457,7 +1457,7 @@ function interfaces_vips_configure($interface, $family = null)
     }
 
     if ($pfsync) {
-        interfaces_carp_setup();
+        interfaces_pfsync_configure();
     }
 
     if ($proxyarp) {
