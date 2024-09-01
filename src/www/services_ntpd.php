@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     // swap fields, really stupid field usage which we are not going to change now....
-    foreach (array('kod', 'limited', 'nomodify', 'nopeer', 'notrap') as $fieldname) {
+    foreach (array('kod', 'limited', 'nomodify', 'nopeer', 'notrap', 'noquery') as $fieldname) {
         $pconfig[$fieldname] = empty($pconfig[$fieldname]);
     }
 
