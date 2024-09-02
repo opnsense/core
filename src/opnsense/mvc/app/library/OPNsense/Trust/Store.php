@@ -459,7 +459,7 @@ class Store
                 }
             }
 
-            // rfc3280 purpose definitions
+            // rfc3280 purpose definitions (+ cert_type derivative field)
             $result['rfc3280_purpose'] = '';
             if (
                 in_array('TLS Web Server Authentication', $purpose['extendedKeyUsage']) &&
@@ -469,18 +469,21 @@ class Store
                 )
             ) {
                 $result['rfc3280_purpose'] = 'id-kp-serverAuth';
+                $both = in_array('TLS Web Client Authentication', $purpose['extendedKeyUsage']);
+                $result['cert_type'] = $both ? 'combined_server_client' : 'server_cert';
             } elseif (
                 in_array('TLS Web Client Authentication', $purpose['extendedKeyUsage']) &&
                 in_array('Digital Signature', $purpose['keyUsage'])
             ) {
                 $result['rfc3280_purpose'] = 'id-kp-clientAuth';
+                $result['cert_type'] = 'usr_cert';
             } elseif (
                 in_array('OCSP Signing', $purpose['extendedKeyUsage']) &&
                 in_array('Digital Signature', $purpose['keyUsage'])
             ) {
                 $result['rfc3280_purpose'] = 'id-kp-OCSPSigning';
             }
-            //
+
             return $result;
         }
         return false;
