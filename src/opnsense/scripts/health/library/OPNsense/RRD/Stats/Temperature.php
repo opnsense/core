@@ -41,9 +41,3 @@ class Temperature extends Base
         return [];
     }
 }
-
-
-
-
-
-

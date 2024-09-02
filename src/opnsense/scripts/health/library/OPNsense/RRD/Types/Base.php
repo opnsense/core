@@ -103,10 +103,10 @@ abstract class Base
     public function addDataset(
         string $name,
         string $opp,
-        ?int $heartbeat=null,
-        ?int $min=null,
-        ?int $max=null
-    ){
+        ?int $heartbeat = null,
+        ?int $min = null,
+        ?int $max = null
+    ) {
         $this->datasets[] = [
             $name,
             $opp,
@@ -128,12 +128,12 @@ abstract class Base
     public function addDatasets(
         array $names,
         string $opp,
-        ?int $heartbeat=null,
-        ?int $min=null,
-        ?int $max=null
-    ){
+        ?int $heartbeat = null,
+        ?int $min = null,
+        ?int $max = null
+    ) {
         foreach ($names as $name) {
-            $this->addDataset($name, $opp, $heartbeat,  $min,  $max);
+            $this->addDataset($name, $opp, $heartbeat, $min, $max);
         }
         return $this;
     }
@@ -143,7 +143,7 @@ abstract class Base
      * @param bool $overwrite overwrite when file exists
      * @return $this
      */
-    public function create($overwrite=false)
+    public function create($overwrite = false)
     {
         if (!$overwrite && file_exists($this->filename)) {
             return $this;
@@ -152,8 +152,7 @@ abstract class Base
         foreach ($this->datasets as $dataset) {
             $cmd_text .= 'DS:' . implode(':', $dataset) . ' ';
         }
-        foreach ($this->round_robin_archives as $rra)
-        {
+        foreach ($this->round_robin_archives as $rra) {
             $cmd_text .=  'RRA:' . implode(':', $rra) . ' ';
         }
         $cmd_text .= ' 2>&1';
@@ -174,7 +173,7 @@ abstract class Base
      * @param bool $debug throw debug messages to stdout
      * @return $this
      */
-    public function update(array $dataset = [], bool $debug=false)
+    public function update(array $dataset = [], bool $debug = false)
     {
         $values = [];
         $map_by_name = count($dataset) > 0 && !isset($dataset[0]);

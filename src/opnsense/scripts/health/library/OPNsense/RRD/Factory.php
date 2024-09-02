@@ -28,10 +28,11 @@
 
 namespace OPNsense\RRD;
 
-
 use ReflectionClass;
 
-class TypeNotFound extends \Exception { }
+class TypeNotFound extends \Exception
+{
+}
 
 /**
  * RRD Factory class, offers access to RRD types and statistics.
@@ -52,7 +53,7 @@ class Factory
     public function get(string $type, string $target)
     {
         try {
-            $cls = new ReflectionClass('\\OPNsense\\RRD\\Types\\'. $type);
+            $cls = new ReflectionClass('\\OPNsense\\RRD\\Types\\' . $type);
             if (!$cls->isInstantiable() || !$cls->isSubclassOf('OPNsense\\RRD\\Types\\Base')) {
                 throw new TypeNotFound(sprintf("%s not found", $type));
             }
@@ -71,8 +72,8 @@ class Factory
     {
         $this->stats = [];
         foreach (glob(sprintf("%s/Stats/*.php", __DIR__)) as $filename) {
-            $classname = substr(basename($filename),0, -4);
-            $cls = new ReflectionClass('\\OPNsense\\RRD\\Stats\\'. $classname);
+            $classname = substr(basename($filename), 0, -4);
+            $cls = new ReflectionClass('\\OPNsense\\RRD\\Stats\\' . $classname);
             if ($cls->isInstantiable() &&  $cls->isSubclassOf('OPNsense\\RRD\\Stats\\Base')) {
                 try {
                     $start_time = microtime(true);
@@ -82,7 +83,7 @@ class Factory
                         'data' => $tmp,
                         'runtime' => microtime(true) - $start_time
                     ];
-                }  catch (\Error | \Exception $e) {
+                } catch (\Error | \Exception $e) {
                     echo $e;
                     syslog(LOG_ERR, sprintf("Error collecting %s [%s]", $classname, $e));
                 }
@@ -113,11 +114,11 @@ class Factory
      * update all registered RRD graphs
      * @return $this
      */
-    public function updateAll($debug=false)
+    public function updateAll($debug = false)
     {
         foreach (glob(sprintf("%s/Types/*.php", __DIR__)) as $filename) {
-            $classname = substr(basename($filename),0, -4);
-            $fclassname = '\\OPNsense\\RRD\\Types\\'. $classname;
+            $classname = substr(basename($filename), 0, -4);
+            $fclassname = '\\OPNsense\\RRD\\Types\\' . $classname;
             try {
                 $cls = new ReflectionClass($fclassname);
                 if ($cls->isInstantiable() && $cls->isSubclassOf('OPNsense\\RRD\\Types\\Base')) {
@@ -142,7 +143,6 @@ class Factory
                         $obj->create(); /* only creates when no target exists yet */
                         $obj->update($data, $debug);
                     }
-
                 }
             } catch (\Error | \Exception $e) {
                 echo $e;

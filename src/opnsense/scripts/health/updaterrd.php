@@ -53,7 +53,7 @@ if ($rrdcnf === null || !isset($rrdcnf->enable)) {
     exit(0);
 }
 
-$start_time = microtime(True);
+$start_time = microtime(true);
 
 if (!is_dir('/var/db/rrd')) {
     @mkdir('/var/db/rrd', 0775);
@@ -65,7 +65,7 @@ $rrd_factory->collect()->updateAll(isset($opts['d']));
 
 if (isset($opts['d'])) {
     $collect_time = 0.0;
-    echo sprintf("total runtime [seconds] \t: %0.2f\n", microtime(True) - $start_time);
+    echo sprintf("total runtime [seconds] \t: %0.2f\n", microtime(true) - $start_time);
     foreach ($rrd_factory->getRawStats() as $name => $payload) {
         $collect_time += $payload['runtime'];
     }

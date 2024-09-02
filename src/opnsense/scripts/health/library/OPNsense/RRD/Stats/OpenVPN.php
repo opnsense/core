@@ -51,6 +51,3 @@ class OpenVPN extends Base
         return $result;
     }
 }
-
-
-

@@ -41,12 +41,9 @@ class Processor extends Base
                 'nice' => $tmp[1],
                 'system' => $tmp[2],
                 'interrupt' => $tmp[3],
-                'processes' => count($ps)-1
+                'processes' => count($ps) - 1
             ];
         }
         return [];
     }
 }
-
-
-

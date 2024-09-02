@@ -58,6 +58,3 @@ class Ntp extends Base
         return $data;
     }
 }
-
-
-
