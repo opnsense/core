@@ -44,7 +44,6 @@ $inc_files = [
     'interfaces.inc',
     'system.inc',
     'filter.inc',
-    'rrd.inc',
 ];
 
 foreach ($inc_files as $inc_file) {
