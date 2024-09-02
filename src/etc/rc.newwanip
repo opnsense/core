@@ -117,4 +117,3 @@ if (is_ipaddr($cacheip) && $ip != $cacheip) {
 
 plugins_configure('vpn_map', false, [$interface, 'inet']);
 plugins_configure('newwanip_map', false, [$interface, 'inet']);
-rrd_configure();

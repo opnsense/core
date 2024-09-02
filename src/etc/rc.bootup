@@ -101,7 +101,6 @@ filter_configure_sync(true);
 plugins_configure('monitor', true, [null, true]);
 plugins_configure('vpn_map', true);
 plugins_configure('bootup', true);
-rrd_configure(true, true);
 
 system_powerd_configure(true); /* XXX this seems misplaced */
 

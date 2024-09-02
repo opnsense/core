@@ -128,4 +128,3 @@ foreach ($interfaces as $interface) {
 filter_configure_sync();
 plugins_configure('vpn_map', false, [join(',', $interfaces), 'inet6']);
 plugins_configure('newwanip_map', false, [join(',', $interfaces), 'inet6']);
-rrd_configure();

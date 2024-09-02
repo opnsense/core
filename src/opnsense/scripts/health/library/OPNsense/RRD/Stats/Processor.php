@@ -1,8 +1,7 @@
-#!/usr/local/bin/php
 <?php
 
 /*
- * Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,36 +26,27 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("config.inc");
-require_once("interfaces.inc");
-require_once("filter.inc");
-require_once("auth.inc");
-require_once('rrd.inc');
-require_once("util.inc");
-require_once("system.inc");
-require_once("interfaces.inc");
+namespace OPNsense\RRD\Stats;
 
-exit_on_bootup();
-
-if (count($argv) > 1 && is_numeric($argv[1])) {
-    // starting delayed.
-    sleep($argv[1]);
+class Processor extends Base
+{
+    public function run()
+    {
+        $cpustats = $this->shellCmd('/usr/local/sbin/cpustats');
+        $ps = $this->shellCmd('/bin/ps uxaH');
+        if (!empty($cpustats) && !empty($ps)) {
+            $tmp = explode(':', $cpustats[0]);
+            return [
+                'user' => $tmp[0],
+                'nice' => $tmp[1],
+                'system' => $tmp[2],
+                'interrupt' => $tmp[3],
+                'processes' => count($ps)-1
+            ];
+        }
+        return [];
+    }
 }
 
-/* core service reload */
-system_firmware_configure(true);
-system_trust_configure(true);
-system_login_configure(true);
-system_cron_configure(true);
-system_timezone_configure(true);
-system_hostname_configure(true);
-system_resolver_configure(true);
-interfaces_configure(true);
-system_routing_configure(true);
-filter_configure_sync(true);
-plugins_configure('local', true);
-plugins_configure('vpn_map', true);
 
-/* plugins service reload */
-passthru('/usr/local/etc/rc.freebsd stop');
-passthru('/usr/local/etc/rc.freebsd start');
+

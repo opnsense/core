@@ -577,7 +577,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 system_routing_configure();
                 filter_configure();
                 plugins_configure('newwanip_map', false, [join(',', array_keys($toapplylist))]);
-                rrd_configure();
             }
 
             clear_subsystem_dirty('interfaces');

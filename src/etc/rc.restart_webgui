@@ -18,4 +18,3 @@ if (count($argv) > 1) {
 }
 
 webgui_configure_do(true);
-rrd_configure(true);
