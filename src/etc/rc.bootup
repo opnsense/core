@@ -100,7 +100,6 @@ plugins_configure('dns', true);
 filter_configure_sync(true);
 plugins_configure('monitor', true, [null, true]);
 plugins_configure('vpn_map', true);
-plugins_configure('vpn', true); /* XXX remove in 25.1 */
 plugins_configure('bootup', true);
 rrd_configure(true, true);
 
