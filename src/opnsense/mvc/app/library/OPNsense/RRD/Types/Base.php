@@ -98,6 +98,7 @@ abstract class Base
      * @param int $heartbeat heartbeat to use, default when null
      * @param int $min min value to use, default when null
      * @param int $max max value to use, default when null
+     * @return $this
      */
     public function addDataset(
         string $name,
@@ -122,6 +123,7 @@ abstract class Base
      * @param int $heartbeat heartbeat to use, default when null
      * @param int $min min value to use, default when null
      * @param int $max max value to use, default when null
+     * @return $this
      */
     public function addDatasets(
         array $names,
@@ -139,6 +141,7 @@ abstract class Base
     /**
      * create or replace RRD database
      * @param bool $overwrite overwrite when file exists
+     * @return $this
      */
     public function create($overwrite=false)
     {
@@ -167,6 +170,9 @@ abstract class Base
 
     /**
      * update the dataset
+     * @param array $dataset [named] dataset to use
+     * @param bool $debug throw debug messages to stdout
+     * @return $this
      */
     public function update(array $dataset = [], bool $debug=false)
     {
@@ -189,14 +195,6 @@ abstract class Base
             echo sprintf("[cmd failed] %s\n", $cmd_text);
         }
         return $this;
-    }
-
-    /**
-     * temporary wrapper to return rrd update command (without measurements)
-     */
-    public function update_cmd()
-    {
-        return sprintf('/usr/local/bin/rrdtool update %s N:', $this->filename);
     }
 
     /**

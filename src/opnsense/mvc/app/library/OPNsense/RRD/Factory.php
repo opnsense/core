@@ -33,6 +33,9 @@ use ReflectionClass;
 
 class TypeNotFound extends \Exception { }
 
+/**
+ * RRD Factory class, offers access to RRD types and statistics.
+ */
 class Factory
 {
     /**
@@ -43,6 +46,8 @@ class Factory
     /**
      * @param string $type type of rrd graph to get
      * @param string $target filename to store data in
+     * @return \OPNsense\RRD\Types\Base
+     * @throws TypeNotFound if the class is not found or has an improper type
      */
     public function get(string $type, string $target)
     {
@@ -60,6 +65,7 @@ class Factory
     /**
      * collect statistics to feed to rrd, generates an array containing classnames including runtimes and payload
      * for example: ['Mbuf'] => ['data' => [], 'runtime' => 0.1555]
+     * @return $this
      */
     public function collect()
     {
@@ -105,6 +111,7 @@ class Factory
 
     /**
      * update all registered RRD graphs
+     * @return $this
      */
     public function updateAll($debug=false)
     {

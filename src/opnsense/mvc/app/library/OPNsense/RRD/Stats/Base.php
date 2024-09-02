@@ -51,9 +51,10 @@ abstract class Base
 
     /**
      * run simple shell command
-     * @return array output lines
+     * @param string $cmd command to execute
+     * @return array output lines when returnvalue equals 0
      */
-    protected function shellCmd($cmd)
+    protected function shellCmd(string $cmd)
     {
         exec($cmd . '  2>&1', $payload, $returncode);
         if ($returncode == 0 && !empty($payload[0])) {
@@ -77,7 +78,7 @@ abstract class Base
                         'name' => !empty((string)$node->descr) ? (string)$node->descr : $ifname,
                         'if' => (string)$node->if
                     ];
-                    /* XXX: get_real_interface()  */
+                    /* relevant parts from get_real_interface() using in old rrd.inc  */
                     if (isset($node->wireless) && !strstr((string)$node->if, '_wlan')) {
                         self::$metadata['interfaces'][$ifname]['if'] .= '_wlan0';
                     }
