@@ -27,8 +27,16 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once('script/load_phalcon.php');
+/* loader : add library path in this directory to our normal path */
+require_once('/usr/local/opnsense/mvc/app/library/OPNsense/Autoload/Loader.php');
+$phalcon_config = include('/usr/local/opnsense/mvc/app/config/config.php');
 
+(new OPNsense\Autoload\Loader([
+    $phalcon_config->application->modelsDir,
+    $phalcon_config->application->libraryDir,
+    __DIR__ . '/library/'])
+)->register();
+/* end loader */
 
 $opts = getopt('hd', [], $optind);
 $args = array_slice($argv, $optind);
