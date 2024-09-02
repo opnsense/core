@@ -46,6 +46,4 @@ if (set_networking_interfaces_ports()) {
     filter_configure_sync(true);
     plugins_configure('local', true);
     plugins_configure('vpn_map', true);
-    /* rrd graphs depend on a cronjob */
-    system_cron_configure();
 }
