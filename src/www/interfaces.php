@@ -757,6 +757,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
                 break;
             case '6rd':
+                if ($pconfig['type'] == 'none') {
+                    $input_errors[] = gettext('6RD requires an IPv4 configuration type to operate on.');
+                }
                 if (empty($pconfig['gateway-6rd']) || !is_ipaddrv4($pconfig['gateway-6rd'])) {
                     $input_errors[] = gettext('6RD border relay gateway must be a valid IPv4 address.');
                 }
@@ -772,16 +775,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 foreach (array_keys($ifdescrs) as $ifent) {
                     if ($if != $ifent && ($config['interfaces'][$ifent]['ipaddrv6'] == $pconfig['type6'])) {
                         if ($config['interfaces'][$ifent]['prefix-6rd'] == $pconfig['prefix-6rd']) {
-                            $input_errors[] = gettext("You can only have one interface configured in 6rd with same prefix.");
+                            $input_errors[] = gettext('You can only have one interface configured in 6rd with same prefix.');
                             break;
                         }
                     }
                 }
                 break;
-            case "6to4":
+            case '6to4':
+                if ($pconfig['type'] == 'none') {
+                    $input_errors[] = gettext('6to4 requires an IPv4 configuration type to operate on.');
+                }
                 foreach (array_keys($ifdescrs) as $ifent) {
                     if ($if != $ifent && ($config['interfaces'][$ifent]['ipaddrv6'] == $pconfig['type6'])) {
-                        $input_errors[] = sprintf(gettext("You can only have one interface configured as 6to4."), $pconfig['type6']);
+                        $input_errors[] = gettext('You can only have one interface configured as 6to4.');
                         break;
                     }
                 }
@@ -1453,7 +1459,7 @@ $mediaopts_list = legacy_interface_details($pconfig['if'])['supported_media'] ??
 
 $types4 = $types6 = ['none' => gettext('None')];
 
-/* always eligible */
+/* always eligible (leading) */
 $types6['staticv6'] = gettext('Static IPv6');
 $types6['dhcp6'] = gettext('DHCPv6');
 $types6['slaac'] = gettext('SLAAC');
@@ -1462,13 +1468,10 @@ if (!interface_ppps_capable($a_interfaces[$if], $a_ppps)) {
     /* do not offer these raw types as a transition back from PPP */
     $types4['staticv4'] = gettext('Static IPv4');
     $types4['dhcp'] = gettext('DHCP');
-    /* only offer PPPoE for inline creation */
-    $types4['pppoe'] = gettext('PPPoE');
 
+    /* XXX only offer PPPoE for inline creation */
+    $types4['pppoe'] = gettext('PPPoE');
     $types6['pppoev6'] = gettext('PPPoEv6');
-    $types6['6rd'] = gettext('6rd Tunnel');
-    $types6['6to4'] = gettext('6to4 Tunnel');
-    $types6['track6'] = gettext('Track Interface');
 } else {
     switch ($a_ppps[$pppid]['type']) {
         case 'ppp':
@@ -1491,6 +1494,11 @@ if (!interface_ppps_capable($a_interfaces[$if], $a_ppps)) {
     $types6['6rd'] = gettext('6rd Tunnel');
     $types6['6to4'] = gettext('6to4 Tunnel');
 }
+
+/* always eligible (trailing) */
+$types6['6rd'] = gettext('6rd Tunnel');
+$types6['6to4'] = gettext('6to4 Tunnel');
+$types6['track6'] = gettext('Track Interface');
 
 include("head.inc");
 ?>
