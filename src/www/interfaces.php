@@ -33,7 +33,6 @@
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
-require_once("rrd.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
@@ -585,7 +584,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 system_routing_configure(false, array_keys($toapplylist));
                 filter_configure();
                 plugins_configure('early'); /* ensure GUI and SSH access */
-                rrd_configure();
             }
 
             clear_subsystem_dirty('interfaces');

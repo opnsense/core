@@ -69,7 +69,7 @@ function dpinger_services()
 function dpinger_configure()
 {
     return [
-        'monitor' => ['dpinger_configure_do:3'],
+        'monitor' => ['dpinger_configure_do:2'],
     ];
 }
 
@@ -127,7 +127,7 @@ function dpinger_instances($extended = false)
     return $instances;
 }
 
-function dpinger_configure_do($verbose = false, $gwname_map = null, $bootup = false)
+function dpinger_configure_do($verbose = false, $gwname_map = null)
 {
     if (!plugins_argument_map($gwname_map)) {
         return;
@@ -243,13 +243,6 @@ function dpinger_configure_do($verbose = false, $gwname_map = null, $bootup = fa
                 $routes[$gateway['monitor']] = $gateway['gateway'];
             }
         }
-
-        /*
-         * Create custom RRD graph with suitable settings that
-         * may differ from the daemon's standards.
-         */
-        require_once("rrd.inc");
-        rrd_create_gateway_quality("/var/db/rrd/{$gateway['name']}-quality.rrd", $bootup);
 
         /* log warnings via syslog */
         $params  = '-S ';

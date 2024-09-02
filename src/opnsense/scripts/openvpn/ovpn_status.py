@@ -57,7 +57,7 @@ def ovpn_cmd(filename, cmd):
 
 
 def ovpn_status(filename):
-    response = {}
+    response = {'socket': filename}
     buffer = ovpn_cmd(filename, 'status 3')
     if buffer is None:
         return {'status': 'failed'}

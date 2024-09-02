@@ -32,7 +32,6 @@
 require_once("config.inc");
 require_once("auth.inc");
 require_once("filter.inc");
-require_once("rrd.inc");
 require_once("util.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
@@ -121,5 +120,3 @@ plugins_configure('vpn_map', false, [$interface, 'inet']);
 plugins_configure('vpn', false, [$interface]);
 plugins_configure('newwanip', false, [$interface]);
 plugins_configure('newwanip_map', false, [$interface, 'inet']);
-
-rrd_configure();

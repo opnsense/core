@@ -1,8 +1,7 @@
-#!/usr/local/bin/php
 <?php
 
 /*
- * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,23 +26,24 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("config.inc");
-require_once("console.inc");
-require_once("filter.inc");
-require_once("util.inc");
-require_once("system.inc");
-require_once("interfaces.inc");
+namespace OPNsense\RRD\Stats;
 
-if (set_networking_interfaces_ports()) {
-    /* need to stop local servers to prevent faulty leases */
-    killbypid('/var/dhcpd/var/run/dhcpd.pid');
-    killbypid('/var/dhcpd/var/run/dhcpdv6.pid');
-    killbypid('/var/run/radvd.pid');
-
-    interfaces_configure(true);
-    system_routing_configure(true);
-    filter_configure_sync(true);
-    plugins_configure('local', true);
-    plugins_configure('vpn_map', true);
-    plugins_configure('vpn', true);
+class Processor extends Base
+{
+    public function run()
+    {
+        $cpustats = $this->shellCmd('/usr/local/sbin/cpustats');
+        $ps = $this->shellCmd('/bin/ps uxaH');
+        if (!empty($cpustats) && !empty($ps)) {
+            $tmp = explode(':', $cpustats[0]);
+            return [
+                'user' => $tmp[0],
+                'nice' => $tmp[1],
+                'system' => $tmp[2],
+                'interrupt' => $tmp[3],
+                'processes' => count($ps) - 1
+            ];
+        }
+        return [];
+    }
 }

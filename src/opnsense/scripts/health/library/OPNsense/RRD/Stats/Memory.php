@@ -1,8 +1,7 @@
-#!/usr/local/bin/php
 <?php
 
 /*
- * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,23 +26,35 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("config.inc");
-require_once("console.inc");
-require_once("filter.inc");
-require_once("util.inc");
-require_once("system.inc");
-require_once("interfaces.inc");
+namespace OPNsense\RRD\Stats;
 
-if (set_networking_interfaces_ports()) {
-    /* need to stop local servers to prevent faulty leases */
-    killbypid('/var/dhcpd/var/run/dhcpd.pid');
-    killbypid('/var/dhcpd/var/run/dhcpdv6.pid');
-    killbypid('/var/run/radvd.pid');
+class Memory extends Base
+{
+    public function run()
+    {
+        $sysctls = [
+            'vm.stats.vm.v_page_count',
+            'vm.stats.vm.v_active_count',
+            'vm.stats.vm.v_inactive_count',
+            'vm.stats.vm.v_free_count',
+            'vm.stats.vm.v_cache_count',
+            'vm.stats.vm.v_wire_count'
+        ];
 
-    interfaces_configure(true);
-    system_routing_configure(true);
-    filter_configure_sync(true);
-    plugins_configure('local', true);
-    plugins_configure('vpn_map', true);
-    plugins_configure('vpn', true);
+        $memory = $this->shellCmd('/sbin/sysctl ' . implode(' ', $sysctls));
+        if (!empty($memory)) {
+            $percentages = [];
+            $data = [];
+            foreach ($memory as $idx => $item) {
+                // strip vm.stats.vm.v_ and collect into $result
+                $tmp = explode(':', substr($item, 14));
+                $data[$tmp[0]] = trim($tmp[1]);
+                if ($idx > 0) {
+                    $percentages[explode('_', $tmp[0])[0]] = ($data[$tmp[0]] / $data['page_count']) * 100.0;
+                }
+            }
+            return $percentages;
+        }
+        return [];
+    }
 }

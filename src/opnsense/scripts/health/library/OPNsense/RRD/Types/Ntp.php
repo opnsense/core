@@ -1,8 +1,7 @@
-#!/usr/local/bin/php
 <?php
 
 /*
- * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+ * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,23 +26,39 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("config.inc");
-require_once("console.inc");
-require_once("filter.inc");
-require_once("util.inc");
-require_once("system.inc");
-require_once("interfaces.inc");
+namespace OPNsense\RRD\Types;
 
-if (set_networking_interfaces_ports()) {
-    /* need to stop local servers to prevent faulty leases */
-    killbypid('/var/dhcpd/var/run/dhcpd.pid');
-    killbypid('/var/dhcpd/var/run/dhcpdv6.pid');
-    killbypid('/var/run/radvd.pid');
+class Ntp extends Base
+{
+    /**
+     * {@inheritdoc}
+     */
+    protected int $ds_heartbeat =  120;
+    protected int $ds_min = 0;
+    protected int $ds_max = 1000;
+    protected static string $stdfilename = 'ntpd.rrd';
 
-    interfaces_configure(true);
-    system_routing_configure(true);
-    filter_configure_sync(true);
-    plugins_configure('local', true);
-    plugins_configure('vpn_map', true);
-    plugins_configure('vpn', true);
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct(string $filename)
+    {
+        parent::__construct($filename);
+        $this->addDataset('offset', 'GAUGE', 120, -1000, 1000);
+        $this->addDatasets(['sjit', 'cjit', 'wander', 'freq', 'disp'], 'GAUGE');
+        $this->setRRA([
+            ['MIN', 0.5, 1, 1200],
+            ['MIN', 0.5, 5, 720],
+            ['MIN', 0.5, 60, 1860],
+            ['MIN', 0.5, 1440, 2284],
+            ['AVERAGE', 0.5, 1, 1200],
+            ['AVERAGE', 0.5, 5, 720],
+            ['AVERAGE', 0.5, 60, 1860],
+            ['AVERAGE', 0.5, 1440, 2284],
+            ['MAX', 0.5, 1, 1200],
+            ['MAX', 0.5, 5, 720],
+            ['MAX', 0.5, 60, 1860],
+            ['MAX', 0.5, 1440, 2284],
+        ]);
+    }
 }
