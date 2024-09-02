@@ -240,13 +240,6 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
             }
         }
 
-        /*
-         * Create custom RRD graph with suitable settings that
-         * may differ from the daemon's standards.
-         */
-        require_once("rrd.inc");
-        rrd_create_gateway_quality("/var/db/rrd/{$gateway['name']}-quality.rrd", $bootup);
-
         /* log warnings via syslog */
         $params  = '-S ';
 
