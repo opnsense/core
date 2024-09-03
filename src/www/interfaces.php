@@ -575,7 +575,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
                 system_routing_configure();
                 filter_configure();
-                plugins_configure('local');
+                plugins_configure('early'); /* ensure GUI and SSH access */
             }
 
             clear_subsystem_dirty('interfaces');
