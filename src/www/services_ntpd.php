@@ -48,7 +48,7 @@ $copy_fields = [
     'maxclock',
     'nomodify',
     'nopeer',
-    'noquery',
+    'noquery2',
     'noserve',
     'notrap',
     'orphan',
@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     // swap fields, really stupid field usage which we are not going to change now....
-    foreach (array('kod', 'limited', 'nomodify', 'nopeer', 'notrap') as $fieldname) {
+    foreach (array('kod', 'limited', 'nomodify', 'nopeer', 'notrap', 'noquery2') as $fieldname) {
         $pconfig[$fieldname] = empty($pconfig[$fieldname]);
     }
 
@@ -423,7 +423,7 @@ include("head.inc");
                       <input name="nomodify" type="checkbox" id="nomodify"<?=empty($pconfig['nomodify']) ? " checked=\"checked\"" : ""; ?> />
                       <?=gettext("Deny state modifications (i.e. run time configuration) by ntpq and ntpdc"); ?>
                       <br />
-                      <input name="noquery" type="checkbox" id="noquery"<?=!empty($pconfig['noquery']) ? " checked=\"checked\"" : ""; ?> />
+                      <input name="noquery2" type="checkbox" id="noquery2"<?=empty($pconfig['noquery2']) ? " checked=\"checked\"" : ""; ?> />
                       <?=gettext("Disable ntpq and ntpdc queries"); ?>
                       <br />
                       <input name="noserve" type="checkbox" id="noserve"<?=!empty($pconfig['noserve']) ? " checked=\"checked\"" : ""; ?> />
