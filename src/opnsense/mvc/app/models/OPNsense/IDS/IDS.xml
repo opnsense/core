@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/IDS</mount>
-    <version>1.0.9</version>
+    <version>1.1.0</version>
     <description>OPNsense IDS</description>
     <items>
         <rules>
