@@ -122,7 +122,7 @@
             <Traceroute VisibleName="Trace Route" url="/ui/diagnostics/traceroute"/>
         </Diagnostics>
     </Interfaces>
-    <Firewall order="40" cssClass="glyphicon glyphicon-fire">
+    <Firewall order="40" cssClass="fa fa-fire">
         <Aliases url="/ui/firewall/alias" cssClass="fa fa-list-alt fa-fw">
             <Edit url="/ui/firewall/alias/*" visibility="hidden"/>
         </Aliases>
