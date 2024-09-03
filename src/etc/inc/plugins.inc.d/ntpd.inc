@@ -396,7 +396,7 @@ function ntpd_configure_do($verbose = false)
     if (empty($config['ntpd']['nomodify'])) { /*note: this one works backwards */
         $ntpaccess .= ' nomodify';
     }
-    if (empty($config['ntpd']['noquery'])) { /*note: this one works backwards */
+    if (empty($config['ntpd']['noquery2'])) { /*note: this one works backwards */
         $ntpaccess .= ' noquery';
     }
     if (empty($config['ntpd']['notrap'])) { /*note: this one works backwards */
