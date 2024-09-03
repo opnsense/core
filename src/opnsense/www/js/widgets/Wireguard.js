@@ -88,7 +88,8 @@ export default class Wireguard extends BaseTableWidget {
             latest_handshake_fmt: row['latest-handshake'] ? moment.unix(row['latest-handshake']).local().format('YYYY-MM-DD HH:mm:ss') : null,
             connected: row['latest-handshake'] && (now - row['latest-handshake']) <= 180, // Considered online if last handshake was within 3 minutes
             statusIcon: row['latest-handshake'] && (now - row['latest-handshake']) <= 180 ? 'fa-exchange text-success' : 'fa-exchange text-danger',
-            publicKey: row['public-key']
+            publicKey: row['public-key'],
+            uniqueId: `${row.if}_${row['public-key']}`
         }));
 
         tunnels.sort((a, b) => a.connected === b.connected ? 0 : a.connected ? -1 : 1);
@@ -133,7 +134,7 @@ export default class Wireguard extends BaseTableWidget {
                 </div>`;
 
             // Update the HTML table with the sorted rows
-            super.updateTable('wgTunnelTable', [[header, row]], tunnel.publicKey);
+            super.updateTable('wgTunnelTable', [[header, row]], tunnel.uniqueId);
         });
 
         // Activate tooltips for new dynamic elements
