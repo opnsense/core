@@ -89,7 +89,7 @@ export default class Wireguard extends BaseTableWidget {
             connected: row['latest-handshake'] && (now - row['latest-handshake']) <= 180, // Considered online if last handshake was within 3 minutes
             statusIcon: row['latest-handshake'] && (now - row['latest-handshake']) <= 180 ? 'fa-exchange text-success' : 'fa-exchange text-danger',
             publicKey: row['public-key'],
-            uniqueId: `${row.if}_${row['public-key']}`
+            uniqueId: row.if + row['public-key']
         }));
 
         tunnels.sort((a, b) => a.connected === b.connected ? 0 : a.connected ? -1 : 1);
