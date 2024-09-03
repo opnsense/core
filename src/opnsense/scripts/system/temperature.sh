@@ -24,28 +24,10 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-CMD=${1}
-
-SYSCTLS="
-dev.cpu.0.temperature
-hw.acpi.thermal.tz0.temperature
-hw.temperature.CPU
-"
-
-if [ "${CMD}" = 'rrd' ]; then
-	for SYSCTL in ${SYSCTLS}; do
-		TEMP=$(sysctl -i -n ${SYSCTL} | sed 's/C//g')
-		if [ -n "${TEMP}" ]; then
-			echo ${TEMP}
-			break
-		fi
-	done
-else
-	# The grep is opportunistic, but at least we only grep the
-	# variable names and not their content at the same time and
-	# as long as we can find something that matches our search.
-	SYSCTLS=$(sysctl -aN | grep temperature)
-	if [ -n "${SYSCTLS}" ]; then
-		sysctl -e ${SYSCTLS} | sort
-	fi
+# The grep is opportunistic, but at least we only grep the
+# variable names and not their content at the same time and
+# as long as we can find something that matches our search.
+SYSCTLS=$(sysctl -aN | grep temperature)
+if [ -n "${SYSCTLS}" ]; then
+	sysctl -e ${SYSCTLS} | sort
 fi
