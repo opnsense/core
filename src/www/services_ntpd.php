@@ -49,7 +49,7 @@ $copy_fields = [
     'maxclock',
     'nomodify',
     'nopeer',
-    'noquery',
+    'query',
     'noserve',
     'notrap',
     'orphan',
@@ -63,6 +63,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     foreach ($copy_fields as $fieldname) {
         $pconfig[$fieldname] = isset($a_ntpd[$fieldname]) ? $a_ntpd[$fieldname] : '';
     }
+
+    // inverted
+    $pconfig['noquery'] = empty($pconfig['query']);
 
     // base64 encoded
     $pconfig['leapsec'] = base64_decode(chunk_split($pconfig['leapsec']));
@@ -104,6 +107,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (count($input_errors) == 0) {
+        // inverted
+        $pconfig['query'] = empty($pconfig['noquery']);
+
         // copy fields
         foreach ($copy_fields as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
