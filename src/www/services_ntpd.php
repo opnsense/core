@@ -331,7 +331,7 @@ include("head.inc");
                         <br />
                         <?= gettext('The "iburst" option enables faster clock synchronisation on startup at the expense of the peer.') ?>
                         <br />
-                        <?= gettext('The "do not use" option indicates that NTP should not use this server for time, but stats for this server will be collected and displayed.') ?>
+                        <?= gettext('The "do not use" option indicates that NTP should not use this server for time, but stats for this server will be collected and displayed. Note: pool.ntp.org and its subdomains are always treated as pool. This option is not available for pools.') ?>
                       </div>
                     </td>
                   </tr>
