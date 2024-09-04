@@ -883,6 +883,7 @@ function system_trust_configure($verbose = false)
     global $config;
 
     service_log('Writing trust files...', $verbose);
+    $trust = new \OPNsense\Trust\General();
 
     /*
      * Write separate files because certcl will blacklist the whole file
@@ -917,7 +918,7 @@ function system_trust_configure($verbose = false)
             }
             $ca = "# OPNsense trust authority: {$entry['descr']}\n";
             $ca_count = 0;
-            $include_intermediates = !empty($config['system']['store_intermediate_certs']);
+            $include_intermediates = !empty((string)$trust->store_intermediate_certs);
             foreach ($user_cas as $user_ca) {
                 if (!empty(trim($user_ca))) {
                     $certinfo = @openssl_x509_parse($user_ca);

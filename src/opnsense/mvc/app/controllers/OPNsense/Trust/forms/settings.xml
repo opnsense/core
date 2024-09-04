@@ -1,0 +1,10 @@
+<form>
+    <field>
+        <id>trust.store_intermediate_certs</id>
+        <label>Store intermediate</label>
+        <type>checkbox</type>
+        <help>Allow local defined intermediate certificate authorities to be used in the local trust store.
+            We advise to only store root certificates to prevent cross signed ones causing breakage when included but expired later in the chain.
+        </help>
+    </field>
+</form>

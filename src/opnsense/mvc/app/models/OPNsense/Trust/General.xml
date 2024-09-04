@@ -1,0 +1,11 @@
+<model>
+    <mount>//OPNsense/trust/general</mount>
+    <description>Trust general settings</description>
+    <version>1.0.0</version>
+    <items>
+        <store_intermediate_certs type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </store_intermediate_certs>
+    </items>
+</model>
