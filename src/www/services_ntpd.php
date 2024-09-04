@@ -192,6 +192,30 @@ include("head.inc");
         $("#show_advanced_ntpd").click();
     }
 
+    // disable the "noselect" checkbox for pool.ntp.org pools
+    $('#timeservers_table > tbody > tr').each(function() {
+        var timeserver = $(this).find('input[name="timeservers_host[]"]').val();
+        var noselectCheckbox = $(this).find('input[name="timeservers_noselect[]"]');
+        if (timeserver.includes('pool.ntp.org')) {
+            noselectCheckbox.prop('checked', false);
+            noselectCheckbox.prop('disabled', true);
+        } else {
+            noselectCheckbox.prop('disabled', false);
+        }
+    });
+    // also check for pools on input change for each row
+    $('#timeservers_table > tbody > tr').on('input', 'input[name="timeservers_host[]"]', function() {
+        var row = $(this).closest('tr');
+        var timeserver = row.find('input[name="timeservers_host[]"]').val();
+        var noselectCheckbox = row.find('input[name="timeservers_noselect[]"]');
+        if (timeserver.includes('pool.ntp.org')) {
+            noselectCheckbox.prop('checked', false);
+            noselectCheckbox.prop('disabled', true);
+        } else {
+            noselectCheckbox.prop('disabled', false);
+        }
+    });
+
     /**
      *  Aliases
      */
