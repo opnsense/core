@@ -605,6 +605,16 @@ class WidgetManager  {
         $('#save-grid').prop('disabled', true);
 
         let items = this.grid.save(false);
+        let saveNewXY = this.grid.getColumn() >= 12;
+
+        // prevent restricting the grid to a few columns when saving on a smaller screen
+        if (!saveNewXY) {
+            items.forEach((item) => {
+                item.x = this.widgetConfigurations[item.id].x;
+                item.y = this.widgetConfigurations[item.id].y;
+            });
+        }
+
         items = await Promise.all(items.map(async (item) => {
             let widgetConfig = await this.widgetClasses[item.id].getWidgetConfig();
             if (widgetConfig) {
@@ -614,11 +624,13 @@ class WidgetManager  {
             // XXX the gridstack save() behavior is inconsistent with the responsive columnWidth option,
             // as the calculation will return impossible values for the x, y, w and h attributes.
             // For now, the gs-{x,y,w,h} attributes are a better representation of the grid for layout persistence
-            let elem = $(this.widgetHTMLElements[item.id]);
-            item.x = parseInt(elem.attr('gs-x')) ?? 1;
-            item.y = parseInt(elem.attr('gs-y')) ?? 1;
-            item.w = parseInt(elem.attr('gs-w')) ?? 1;
-            item.h = parseInt(elem.attr('gs-h')) ?? 1;
+            if (saveNewXY) {
+                let elem = $(this.widgetHTMLElements[item.id]);
+                item.x = parseInt(elem.attr('gs-x')) ?? 1;
+                item.y = parseInt(elem.attr('gs-y')) ?? 1;
+                item.w = parseInt(elem.attr('gs-w')) ?? 1;
+                item.h = parseInt(elem.attr('gs-h')) ?? 1;
+            }
 
             delete item['callbacks'];
             return item;
