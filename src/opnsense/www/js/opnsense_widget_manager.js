@@ -614,11 +614,17 @@ class WidgetManager  {
             // XXX the gridstack save() behavior is inconsistent with the responsive columnWidth option,
             // as the calculation will return impossible values for the x, y, w and h attributes.
             // For now, the gs-{x,y,w,h} attributes are a better representation of the grid for layout persistence
-            let elem = $(this.widgetHTMLElements[item.id]);
-            item.x = parseInt(elem.attr('gs-x')) ?? 1;
-            item.y = parseInt(elem.attr('gs-y')) ?? 1;
-            item.w = parseInt(elem.attr('gs-w')) ?? 1;
-            item.h = parseInt(elem.attr('gs-h')) ?? 1;
+            if (this.grid.getColumn() >= 12) {
+                let elem = $(this.widgetHTMLElements[item.id]);
+                item.x = parseInt(elem.attr('gs-x')) ?? 1;
+                item.y = parseInt(elem.attr('gs-y')) ?? 1;
+                item.w = parseInt(elem.attr('gs-w')) ?? 1;
+                item.h = parseInt(elem.attr('gs-h')) ?? 1;
+            } else {
+                // prevent restricting the grid to a few columns when saving on a smaller screen
+                item.x = this.widgetConfigurations[item.id].x;
+                item.y = this.widgetConfigurations[item.id].y;
+            }
 
             delete item['callbacks'];
             return item;
