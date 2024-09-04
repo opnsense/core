@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3
 """
-    Copyright (c) 2023 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2023-2024 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -30,26 +30,54 @@ import glob
 import sys
 import os
 import OpenSSL.crypto
+from cryptography import x509
 
 TRUSTPATH = ['/usr/share/certs/trusted', '/usr/local/share/certs', '/usr/local/etc/ssl/certs']
 BLACKLISTPATH = ['/usr/share/certs/blacklisted', '/usr/local/etc/ssl/blacklisted']
 CERTDESTDIR = '/etc/ssl/certs'
 BLACKLISTDESTDIR = '/etc/ssl/blacklisted'
 
-def get_cert(filename):
+
+def get_name_hash_file_pattern(filename):
+    fext = os.path.splitext(filename)[1][1:].lower()
     try:
-        return OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, open(filename, "rb").read())
-    except OpenSSL.crypto.Error:
+        if fext == 'crl':
+            x509_item = x509.load_pem_x509_crl(open(filename, 'rb').read())
+        elif fext in ['pem', 'cer', 'crt']:
+            tmp = x509.load_pem_x509_certificates(open(filename, 'rb').read())
+            if len(tmp) > 1:
+                print('Skipping %s as it does not contain exactly one certificate' % filename)
+                return None
+            x509_item = tmp[0]
+        else:
+            # not supported
+            return None
+    except (ValueError, TypeError):
         return None
 
+    tmp = OpenSSL.crypto.X509().get_issuer()
+    for item in x509_item.issuer:
+        setattr(tmp, item.rfc4514_attribute_name, item.value)
+
+    return '%s.%s%%d' % (hex(tmp.hash()).lstrip('0x').zfill(8), 'r' if fext == 'crl' else '')
+
+def get_cert_common_name(filename):
+    try:
+        issuer = x509.load_pem_x509_certificate(open(filename, 'rb').read()).issuer
+        for item in issuer:
+            if item.rfc4514_attribute_name == 'CN':
+                return item.value
+        return issuer.rfc4514_string()
+    except (ValueError, TypeError):
+        return None
 
 def cmd_list():
     print('Listing Trusted Certificates:')
     for filename in glob.glob('%s/*.[0-9]' % CERTDESTDIR):
         basename = os.path.basename(filename)
-        cert = get_cert(filename)
-        if cert:
-            print("%s\t%s" % (basename, cert.get_subject().commonName))
+        cn = get_cert_common_name(filename)
+        if cn:
+            print("%s\t%s" % (basename, cn))
         else:
             print('Invalid certificate %s' % basename)
 
@@ -58,9 +86,9 @@ def cmd_blacklisted():
     print('Listing Blacklisted Certificates:')
     for filename in glob.glob('%s/*.[0-9]' % BLACKLISTDESTDIR):
         basename = os.path.basename(filename)
-        cert = get_cert(filename)
-        if cert:
-            print("%s\t%s" % (basename, cert.get_subject().commonName))
+        cn = get_cert_common_name(filename)
+        if cn:
+            print("%s\t%s" % (basename, cn))
         else:
             print('Invalid certificate %s' % basename)
 
@@ -72,14 +100,11 @@ def cmd_rehash():
             targetname = 'trusted' if path in TRUSTPATH else 'blacklisted'
             print("Scanning %s for certificates..." % path)
             for filename in glob.glob('%s/*' % path):
-                if not os.path.splitext(filename)[1][1:] in ['pem', 'cer', 'crl','crt']:
-                    continue
-                cert = get_cert(filename)
-                if cert:
-                    nhash = hex(cert.subject_name_hash()).lstrip('0x').zfill(8)
-                    if nhash not in targets[targetname]:
-                        targets[targetname][nhash] = []
-                    targets[targetname][nhash].append(filename)
+                pattern = get_name_hash_file_pattern(filename)
+                if pattern:
+                    if pattern not in targets[targetname]:
+                        targets[targetname][pattern] = []
+                    targets[targetname][pattern].append(filename)
 
     for path in [BLACKLISTDESTDIR, CERTDESTDIR]:
         for filename in glob.glob('%s/*.[0-9]' % path):
@@ -87,15 +112,17 @@ def cmd_rehash():
                 os.unlink(filename)
 
     for target_name in targets:
-        for hash in targets[target_name]:
-            for seq, filename in enumerate(targets[target_name][hash]):
+        for pattern in targets[target_name]:
+            for seq, filename in enumerate(targets[target_name][pattern]):
                 if target_name == 'blacklisted':
-                    os.symlink(os.path.relpath(filename, BLACKLISTDESTDIR), "%s/%s.%d" % (BLACKLISTDESTDIR, hash, seq))
+                    os.symlink(os.path.relpath(filename, BLACKLISTDESTDIR), "%s/%s" % (BLACKLISTDESTDIR, pattern % seq))
                 else:
                     if hash in targets['blacklisted']:
-                        print("Skipping blacklisted certificate %s (%s/%s.%d)" % (filename, BLACKLISTDESTDIR, hash, seq))
+                        print(
+                            "Skipping blacklisted certificate %s (%s/%s)" % (filename, BLACKLISTDESTDIR, pattern % seq)
+                        )
                     else:
-                        os.symlink(os.path.relpath(filename, CERTDESTDIR), "%s/%s.%d" % (CERTDESTDIR, hash, seq))
+                        os.symlink(os.path.relpath(filename, CERTDESTDIR), "%s/%s" % (CERTDESTDIR, pattern % seq))
 
 
 if __name__ == '__main__':
