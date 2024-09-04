@@ -37,7 +37,7 @@ config_read_array('ipsec', 'phase1');
 
 // define formfields
 $form_fields = "user_source,local_group,radius_source,pool_address,pool_netbits,pool_address_v6,pool_netbits_v6,net_list
-,save_passwd,dns_domain,dns_split,dns_server1,dns_server2,dns_server3
+,net_list_explicit,save_passwd,dns_domain,dns_split,dns_server1,dns_server2,dns_server3
 ,dns_server4,wins_server1,wins_server2,pfs_group,login_banner";
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -65,6 +65,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     if (isset($config['ipsec']['client']['net_list'])) {
         $pconfig['net_list'] = true;
+    }
+    if (isset($config['ipsec']['client']['net_list_explicit'])) {
+        $pconfig['net_list_explicit'] = $config['ipsec']['client']['net_list_explicit'];
     }
 
     if (isset($config['ipsec']['client']['save_passwd'])) {
@@ -142,11 +145,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("A valid IP address for 'WINS Server #2' must be specified.");
         }
 
+        if (!empty($pconfig['net_list_explicit'])) {
+            $net_list_array=preg_split("/[ ,]+/", $pconfig['net_list_explicit']);
+            foreach ($net_list_array as $curr_cidr) {
+                if (!is_subnet($curr_cidr)) {
+                    $input_errors[] = gettext("A valid network list of accessible networks must be specified.");
+                    break;
+                }
+            }
+        }
+
         if (count($input_errors) == 0) {
             $client = array();
             $copy_fields = "user_source,local_group,radius_source,pool_address,pool_netbits,pool_address_v6,
             pool_netbits_v6,dns_domain,dns_server1,dns_server2,dns_server3,dns_server4,wins_server1,wins_server2
-            ,dns_split,pfs_group,login_banner";
+            ,dns_split,pfs_group,login_banner,net_list_explicit";
             foreach (explode(",", $copy_fields) as $fieldname) {
                 $fieldname = trim($fieldname);
                 if (!empty($pconfig[$fieldname])) {
@@ -199,6 +212,7 @@ $( document ).ready(function() {
   pool_change();
   pool_v6_change();
   dns_domain_change();
+  net_list_change();
   dns_split_change();
   dns_server_change();
   wins_server_change();
@@ -248,6 +262,19 @@ function dns_domain_change() {
     $("#dns_domain").addClass('hidden');
     $("#dns_domain").removeClass('show');
   }
+}
+
+function net_list_change() {
+  if (document.iform.net_list_enable.checked){
+    document.iform.net_list_explicit.disabled = 0;
+    $("#net_list_explicit").addClass('show');
+    $("#net_list_explicit").removeClass('hidden');
+  } else {
+    document.iform.net_list_explicit.disabled = 1;
+    $("#net_list_explicit").addClass('hidden');
+    $("#net_list_explicit").removeClass('show');
+  }
+
 }
 
 function dns_split_change() {
@@ -493,10 +520,14 @@ foreach ($auth_servers as $auth_key => $auth_server) : ?>
                       </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Network List') ?></td>
+                    <td><a id="help_for_net_list_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i><?=gettext('Network List') ?></td>
                     <td>
-                      <input name="net_list" type="checkbox" id="net_list_enable" value="yes" <?= !empty($pconfig['net_list']) ? "checked=\"checked\"" : "";?> />
+                      <input name="net_list" type="checkbox" id="net_list_enable" value="yes" <?= !empty($pconfig['net_list']) ? "checked=\"checked\"" : "";?> onclick="net_list_change()" />
                       <?= gettext('Provide a list of accessible networks to clients') ?>
+                      <input name="net_list_explicit" type="text" class="form-control" id="net_list_explicit" size="30" value="<?=$pconfig['net_list_explicit'];?>" />
+                      <div class="hidden" data-for="help_for_net_list_enable">
+                      <?= gettext('Enter a comma-separated list of networks. If left blank, the defined networks in IPsec Phase2 will be used.') ?>
+                      </div>
                     </td>
                   </tr>
                   <tr>

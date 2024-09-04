@@ -964,7 +964,11 @@ function ipsec_write_strongswan_conf()
         if (!empty($net_list)) {
             $net_list_str = implode(",", $net_list);
             $strongswanTree['charon']['plugins']['attr']['subnet'] = $net_list_str;
-            $strongswanTree['charon']['plugins']['attr']['split-include'] = $net_list_str;
+            if(!empty($a_client['net_list_explicit'])) {
+                $strongswanTree['charon']['plugins']['attr']['split-include'] = $a_client['net_list_explicit'];
+            } else {
+                $strongswanTree['charon']['plugins']['attr']['split-include'] = $net_list_str;
+            }
         }
         $cfgservers = [];
         foreach (array('dns_server1', 'dns_server2', 'dns_server3', 'dns_server4') as $dns_server) {
