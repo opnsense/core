@@ -330,15 +330,15 @@ function ntpd_configure_do($verbose = false)
     $noselect = isset($config['ntpd']['noselect']) ? explode(' ', $config['ntpd']['noselect']) : [];
     $prefer = isset($config['ntpd']['prefer']) ? explode(' ', $config['ntpd']['prefer']) : [];
     $iburst = isset($config['ntpd']['iburst']) ? explode(' ', $config['ntpd']['iburst']) : [];
-    $have_pools = false;
 
     $ntpcfg .= "\n\n# Upstream Servers\n";
     /* foreach through ntp servers and write out to ntpd.conf */
     foreach (explode(' ', $config['system']['timeservers']) as $ts) {
+        $is_pool = false;
         /* Determine if Network Time Server is from the NTP Pool or not */
         if (preg_match("/\.pool\.ntp\.org$/", $ts)) {
             $ntpcfg .= "pool {$ts}";
-            $have_pools = true;
+            $is_pool = true;
         } else {
             $ntpcfg .= "server {$ts}";
         }
@@ -350,7 +350,7 @@ function ntpd_configure_do($verbose = false)
             $ntpcfg .= ' prefer';
         }
         /* "noselect" option is not valid with pools */
-        if ((in_array($ts, $noselect)) && ($have_pools === false)) {
+        if ((in_array($ts, $noselect)) && ($is_pool === false)) {
             $ntpcfg .= ' noselect';
         }
         $ntpcfg .= "\n";
