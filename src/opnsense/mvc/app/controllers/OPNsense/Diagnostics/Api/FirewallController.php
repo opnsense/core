@@ -59,16 +59,16 @@ class FirewallController extends ApiControllerBase
         }
     }
 
-    public function streamLogAction()
+    public function streamLogAction($lines = 5)
     {
         return $this->configdStream(
             'filter stream log',
-            [],
+            [$lines],
             [
                 'Content-Type: text/event-stream',
                 'Cache-Control: no-cache'
             ],
-            60
+            /* this stream implements a keepalive, the default poll_timeout of 2 should suffice */
         );
     }
 

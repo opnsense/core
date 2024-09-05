@@ -39,19 +39,20 @@
         };
         var interface_descriptions = {};
         let hostnameMap = {};
+        let stream = null;
 
         /**
          * reverse lookup address fields (replace address part for hostname if found)
          */
         function reverse_lookup() {
             let to_fetch = [];
-            let unfinshed_lookup = false;
+            let unfinished_lookup = false;
              $(".address").each(function(){
                 let address = $(this).data('address');
                 if (!hostnameMap.hasOwnProperty(address) && !to_fetch.includes(address)) {
                     // limit dns fetches to 50 per cycle
                     if (to_fetch.length >= 50) {
-                        unfinshed_lookup = true;
+                        unfinished_lookup = true;
                         return;
                     }
                     to_fetch.push(address);
@@ -77,7 +78,7 @@
                             hostnameMap[address] = data[address];
                         }
                     });
-                    if (unfinshed_lookup) {
+                    if (unfinished_lookup) {
                         // schedule next fetch
                         reverse_lookup();
                     }
@@ -223,12 +224,100 @@
             return t_fetched;
         }
 
-
-        function fetch_log() {
-            let record_spec = [];
+        function fetch_initial_data(digest='')
+        {
             // Overfetch for limited display scope to increase the chance of being able to find matches.
-            // As we fetch once per second, we would be limited to 25 records/sec of log data when 25 is selected.
             let max_rows = Math.max(1000, parseInt($("#limit").val()));
+            ajaxGet('/api/diagnostics/firewall/log/', {'digest': digest, 'limit': max_rows}, function(data, status) {
+                if (status == 'error') {
+                    return;
+                } else if (data !== undefined && data.length > 0) {
+                    let rows = parse_records(data);
+                    if (rows !== false && rows.length > 0) {
+                        insert_log_rows(rows);
+                    }
+                }
+            });
+        }
+
+        function debounce_queue_limited(fn, delay, limit)
+        {
+            let timeout;
+            let eventQueue = [];
+
+            const processQueue = () => {
+                if (eventQueue.length > 0) {
+                    fn(eventQueue);
+                    eventQueue = [];
+                }
+            };
+
+            return function(event) {
+                if (!event) {
+                    fn(false);
+                    return;
+                }
+                eventQueue.push(event);
+
+                if (eventQueue.length >= limit) {
+                    clearTimeout(timeout);
+                    processQueue();
+                }
+
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    processQueue();
+                }, delay);
+            };
+        }
+
+        function open_stream()
+        {
+            if (stream === null) {
+                stream = new EventSource('/api/diagnostics/firewall/streamLog/0');
+                // Events may come in very quickly, therefore debounce to update the UI in batches
+                stream.onmessage = debounce_queue_limited(function (events) {
+                    if (!events) {
+                        close_stream();
+                        return;
+                    }
+
+                    let records = [];
+                    events.forEach(event => {
+                        records.push(JSON.parse(event.data));
+                    })
+                    let rows = parse_records(records);
+                    if (!rows || rows.length == 0) {
+                        return;
+                    }
+
+                    insert_log_rows(rows);
+                }, 200, 50);
+                stream.onerror = function(event) {
+                    close_stream(true);
+                };
+            }
+        }
+
+        function close_stream(error = false)
+        {
+            if (stream !== null) {
+                stream.close();
+                stream = null;
+
+                if (error) {
+                    // XXX inform user or retry?
+                    $("#auto_refresh").prop('checked', false);
+                }
+            }
+        }
+
+        function parse_records(records) {
+            if (records === undefined || records.length == 0) {
+                return false;
+            }
+
+            let record_spec = [];
             // read heading, contains field specs
             $("#grid-log > thead > tr > th ").each(function () {
                 record_spec.push({
@@ -237,173 +326,172 @@
                     'class': $(this).attr('class')
                 });
             });
-            // read last digest (record hash) from top data row
-            var last_digest = $("#grid-log > tbody > tr:first > td:first").text();
-            // fetch new log lines and add on top of grid-log
-            ajaxGet('/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': max_rows}, function(data, status) {
-                if (status == 'error') {
-                    // stop poller on failure
-                    $("#auto_refresh").prop('checked', false);
-                } else if (last_digest != '' && $("#grid-log > tbody > tr").length == 1){
-                    // $("#limit").change(); called, this request should be discarted (data grid reset)
-                    return;
-                } else if (data !== undefined && data.length > 0) {
-                    let record;
-                    let trs = [];
-                    while ((record = data.pop()) != null) {
-                        if (record['__digest__'] != last_digest) {
-                            var log_tr = $("<tr>");
-                            if (record.interface !== undefined && interface_descriptions[record.interface] !== undefined) {
-                                record['interface_name'] = interface_descriptions[record.interface];
-                            } else {
-                                record['interface_name'] = record.interface;
+
+            let record;
+            let trs = [];
+            while ((record = records.pop()) != null) {
+                var log_tr = $("<tr>");
+                if (record.interface !== undefined && interface_descriptions[record.interface] !== undefined) {
+                    record['interface_name'] = interface_descriptions[record.interface];
+                } else {
+                    record['interface_name'] = record.interface;
+                }
+                log_tr.data('details', record);
+                log_tr.hide();
+                $.each(record_spec, function(idx, field){
+                    var log_td = $('<td>').addClass(field['class']);
+                    var column_name = field['column-id'];
+                    var content = null;
+                    switch (field['type']) {
+                        case 'icon':
+                            var icon = field_type_icons[record[column_name]];
+                            if (icon != undefined) {
+                                log_td.html('<i class="fa '+icon+'" aria-hidden="true"></i><span style="display:none">'+record[column_name]+'</span>');
                             }
-                            log_tr.data('details', record);
-                            log_tr.hide();
-                            $.each(record_spec, function(idx, field){
-                                var log_td = $('<td>').addClass(field['class']);
-                                var column_name = field['column-id'];
-                                var content = null;
-                                switch (field['type']) {
-                                    case 'icon':
-                                        var icon = field_type_icons[record[column_name]];
-                                        if (icon != undefined) {
-                                            log_td.html('<i class="fa '+icon+'" aria-hidden="true"></i><span style="display:none">'+record[column_name]+'</span>');
-                                        }
-                                        break;
-                                    case 'address':
-                                        log_td.text(record[column_name]);
-                                        log_td.addClass('address');
-                                        log_td.data('address', record[column_name]);
-                                        if (record[column_name+'port'] !== undefined) {
-                                            if (record['ipversion'] == 6) {
-                                                log_td.text('['+log_td.text()+']:'+record[column_name+'port']);
-                                            } else {
-                                                log_td.text(log_td.text()+':'+record[column_name+'port']);
-                                            }
-                                        }
-                                        break;
-                                    case 'info':
-                                        log_td.html('<button class="act_info btn btn-xs fa fa-info-circle" aria-hidden="true"></i>');
-                                        break;
-                                    case 'label':
-                                        // record data is always html-escaped. no special protection required
-                                        log_td.html(record[column_name]);
-                                        break;
-                                    default:
-                                        if (record[column_name] != undefined) {
-                                            log_td.text(record[column_name]);
-                                        }
-                                }
-                                log_tr.append(log_td);
-                            });
-
-                            if (record['action'] == 'pass') {
-                                log_tr.addClass('fw_pass');
-                            } else if (record['action'] == 'block') {
-                                log_tr.addClass('fw_block');
-                            } else if (record['action'] == 'rdr' || record['action'] == 'nat' || record['action'] == 'binat') {
-                                log_tr.addClass('fw_nat');
-                            }
-                            trs.unshift(log_tr);
-                        }
-                    }
-                    $("#grid-log > tbody > tr:first").before(trs);
-                    // apply filter after load
-                    apply_filter();
-
-                    /**
-                     * Limit output, try to keep max X records on screen.
-                     * By removing the invisible items first, we should be able to keep the filtered ones
-                     * longer in scope. In theory the number of items in memory can grow to 2 x max_rows, but
-                     * in practice that's not really an issue.
-                     */
-                    $("#grid-log > tbody > tr:not(:visible):gt("+max_rows+")").remove();
-                    $("#grid-log > tbody > tr:visible:gt("+max_rows+")").remove();
-
-                    // bind info buttons
-                    $(".act_info").unbind('click').click(function(){
-                        var sender_tr = $(this).parent().parent();
-                        var sender_details = sender_tr.data('details');
-                        var hidden_columns = ['__spec__', '__host__', '__digest__'];
-                        var map_icon = ['dir', 'action'];
-                        var sorted_keys = Object.keys(sender_details).sort();
-                        var tbl = $('<table class="table table-condensed table-hover"/>');
-                        var tbl_tbody = $("<tbody/>");
-                        for (let i=0 ; i < sorted_keys.length; i++) {
-                            if (hidden_columns.indexOf(sorted_keys[i]) === -1 ) {
-                                var row = $("<tr/>");
-                                var icon = null;
-                                if (map_icon.indexOf(sorted_keys[i]) !== -1) {
-                                    if (field_type_icons[sender_details[sorted_keys[i]]] !== undefined) {
-                                        icon = $("<i/>");
-                                        icon.addClass("fa fa-fw").addClass(field_type_icons[sender_details[sorted_keys[i]]]);
-                                    }
-                                }
-                                row.append($("<td/>").text(sorted_keys[i]));
-                                if (sorted_keys[i] == 'rid') {
-                                  // rid field, links to rule origin
-                                  var rid = sender_details[sorted_keys[i]];
-                                  var rid_td = $("<td/>").addClass("act_info_fld_"+sorted_keys[i]);
-                                  if (rid.length == 32) {
-                                      var rid_link = $("<a target='_blank' href='/firewall_rule_lookup.php?rid=" + rid + "'/>");
-                                      rid_link.text(rid);
-                                      rid_td.append($("<i/>").addClass('fa fa-fw fa-search'));
-                                      rid_td.append(rid_link);
-                                  }
-                                  row.append(rid_td);
-                                } else if (icon === null) {
-                                  row.append($("<td/>").addClass("act_info_fld_"+sorted_keys[i]).html(
-                                    sender_details[sorted_keys[i]]
-                                  ));
+                            break;
+                        case 'address':
+                            log_td.text(record[column_name]);
+                            log_td.addClass('address');
+                            log_td.data('address', record[column_name]);
+                            if (record[column_name+'port'] !== undefined) {
+                                if (record['ipversion'] == 6) {
+                                    log_td.text('['+log_td.text()+']:'+record[column_name+'port']);
                                 } else {
-                                  row.append($("<td/>")
-                                      .append(icon)
-                                      .append($("<span/>").addClass("act_info_fld_"+sorted_keys[i]).text(
-                                        " [" + sender_details[sorted_keys[i]] + "]"
-                                      ))
-                                  );
+                                    log_td.text(log_td.text()+':'+record[column_name+'port']);
                                 }
-                                tbl_tbody.append(row);
+                            }
+                            break;
+                        case 'info':
+                            log_td.html('<button class="act_info btn btn-xs fa fa-info-circle" aria-hidden="true"></i>');
+                            break;
+                        case 'label':
+                            // record data is always html-escaped. no special protection required
+                            log_td.html(record[column_name]);
+                            break;
+                        default:
+                            if (record[column_name] != undefined) {
+                                log_td.text(record[column_name]);
+                            }
+                    }
+                    log_tr.append(log_td);
+                });
+
+                if (record['action'] == 'pass') {
+                    log_tr.addClass('fw_pass');
+                } else if (record['action'] == 'block') {
+                    log_tr.addClass('fw_block');
+                } else if (record['action'] == 'rdr' || record['action'] == 'nat' || record['action'] == 'binat') {
+                    log_tr.addClass('fw_nat');
+                }
+                trs.unshift(log_tr);
+            }
+
+            return trs;
+        }
+
+        function insert_log_rows(rows)
+        {
+            // XXX flashy animation, not very UX friendly
+            rows.forEach(function(row) {
+                $("#grid-log > tbody > tr:first").before(row);
+                row.fadeIn(400, function() {
+                    row.animate({backgroundColor: 'transparent'}, 1000);
+                });
+            })
+            // apply filter after load
+            apply_filter();
+
+            /**
+             * Limit output, try to keep max X records on screen.
+             * By removing the invisible items first, we should be able to keep the filtered ones
+             * longer in scope. In theory the number of items in memory can grow to 2 x max_rows, but
+             * in practice that's not really an issue.
+             */
+            let max_rows = Math.max(1000, parseInt($("#limit").val()));
+            $("#grid-log > tbody > tr:not(:visible):gt("+max_rows+")").remove();
+            $("#grid-log > tbody > tr:visible:gt("+max_rows+")").remove();
+
+            // bind info buttons
+            $(".act_info").unbind('click').click(function(){
+                var sender_tr = $(this).parent().parent();
+                var sender_details = sender_tr.data('details');
+                var hidden_columns = ['__spec__', '__host__', '__digest__'];
+                var map_icon = ['dir', 'action'];
+                var sorted_keys = Object.keys(sender_details).sort();
+                var tbl = $('<table class="table table-condensed table-hover"/>');
+                var tbl_tbody = $("<tbody/>");
+                for (let i=0 ; i < sorted_keys.length; i++) {
+                    if (hidden_columns.indexOf(sorted_keys[i]) === -1 ) {
+                        var row = $("<tr/>");
+                        var icon = null;
+                        if (map_icon.indexOf(sorted_keys[i]) !== -1) {
+                            if (field_type_icons[sender_details[sorted_keys[i]]] !== undefined) {
+                                icon = $("<i/>");
+                                icon.addClass("fa fa-fw").addClass(field_type_icons[sender_details[sorted_keys[i]]]);
                             }
                         }
-                        tbl.append(tbl_tbody);
-                        BootstrapDialog.show({
-                           title: "{{ lang._('Detailed rule info') }}",
-                           message: tbl,
-                           type: BootstrapDialog.TYPE_INFO,
-                           draggable: true,
-                           buttons: [{
-                             label: '<i class="fa fa-search" aria-hidden="true"></i>',
-                             action: function(){
-                               $(this).unbind('click');
-                               $(".act_info_fld_src, .act_info_fld_dst").each(function(){
-                                  var target_field = $(this);
-                                  ajaxGet('/api/diagnostics/dns/reverse_lookup', {'address': target_field.text()}, function(data, status) {
-                                      if (data[target_field.text()] != undefined) {
-                                          var resolv_output = data[target_field.text()];
-                                          if (target_field.text() != resolv_output) {
-                                              target_field.text(target_field.text() + ' [' + resolv_output + ']');
-                                          }
-                                      }
-                                      target_field.prepend('<i class="fa fa-search" aria-hidden="true"></i>&nbsp;');
-                                  });
-                               });
-                             }
-                           },{
-                             label: "{{ lang._('Close') }}",
-                             action: function(dialogItself){
-                               dialogItself.close();
-                             }
-                           }]
-                        });
-                    });
-                    // reverse lookup when selected
-                    if ($('#dolookup').is(':checked')) {
-                        reverse_lookup();
+                        row.append($("<td/>").text(sorted_keys[i]));
+                        if (sorted_keys[i] == 'rid') {
+                            // rid field, links to rule origin
+                            var rid = sender_details[sorted_keys[i]];
+                            var rid_td = $("<td/>").addClass("act_info_fld_"+sorted_keys[i]);
+                            if (rid.length == 32) {
+                                var rid_link = $("<a target='_blank' href='/firewall_rule_lookup.php?rid=" + rid + "'/>");
+                                rid_link.text(rid);
+                                rid_td.append($("<i/>").addClass('fa fa-fw fa-search'));
+                                rid_td.append(rid_link);
+                            }
+                            row.append(rid_td);
+                        } else if (icon === null) {
+                            row.append($("<td/>").addClass("act_info_fld_"+sorted_keys[i]).html(
+                            sender_details[sorted_keys[i]]
+                            ));
+                        } else {
+                            row.append($("<td/>")
+                                .append(icon)
+                                .append($("<span/>").addClass("act_info_fld_"+sorted_keys[i]).text(
+                                " [" + sender_details[sorted_keys[i]] + "]"
+                                ))
+                            );
+                        }
+                        tbl_tbody.append(row);
                     }
                 }
+                tbl.append(tbl_tbody);
+                BootstrapDialog.show({
+                    title: "{{ lang._('Detailed rule info') }}",
+                    message: tbl,
+                    type: BootstrapDialog.TYPE_INFO,
+                    draggable: true,
+                    buttons: [{
+                        label: '<i class="fa fa-search" aria-hidden="true"></i>',
+                        action: function(){
+                        $(this).unbind('click');
+                        $(".act_info_fld_src, .act_info_fld_dst").each(function(){
+                            var target_field = $(this);
+                            ajaxGet('/api/diagnostics/dns/reverse_lookup', {'address': target_field.text()}, function(data, status) {
+                                if (data[target_field.text()] != undefined) {
+                                    var resolv_output = data[target_field.text()];
+                                    if (target_field.text() != resolv_output) {
+                                        target_field.text(target_field.text() + ' [' + resolv_output + ']');
+                                    }
+                                }
+                                target_field.prepend('<i class="fa fa-search" aria-hidden="true"></i>&nbsp;');
+                            });
+                        });
+                        }
+                    },{
+                        label: "{{ lang._('Close') }}",
+                        action: function(dialogItself){
+                        dialogItself.close();
+                        }
+                    }]
+                });
             });
+
+            if ($("#dolookup").is(':checked')) {
+                reverse_lookup();
+            }
         }
 
         // matcher
@@ -519,17 +607,26 @@
         // reset log content on limit change, forces a reload
         $("#limit").change(function(){
             $('#grid-log > tbody').html("<tr></tr>");
+            close_stream();
+            fetch_initial_data();
+            open_stream();
         });
 
-        function poller() {
+        $("#auto_refresh").change(function(){
             if ($("#auto_refresh").is(':checked')) {
-                fetch_log();
+                // we may have missed data while the stream was closed, so fetch up until the last digest
+                let last_digest = $("#grid-log > tbody > tr:first > td:first").text();
+                fetch_initial_data(last_digest);
+                open_stream();
+            } else {
+                close_stream();
             }
-            setTimeout(poller, 1000);
-        }
-        // manual refresh
-        $("#refresh").click(function(){
-            fetch_log();
+        });
+
+        $("#dolookup").change(function(){
+            if ($("#dolookup").is(':checked')) {
+                reverse_lookup();
+            }
         });
 
         // templates actions
@@ -665,8 +762,8 @@
 
         });
 
-        // startup poller
-        poller();
+        fetch_initial_data();
+        open_stream();
     });
 </script>
 <style>
