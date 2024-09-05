@@ -107,7 +107,7 @@ def cmd_rehash():
                     targets[targetname][pattern].append(filename)
 
     for path in [BLACKLISTDESTDIR, CERTDESTDIR]:
-        for filename in glob.glob('%s/*.[0-9]' % path):
+        for filename in glob.glob('%s/*.[0-9]' % path) + glob.glob('%s/*.r[0-9]' % path):
             if os.path.islink(filename):
                 os.unlink(filename)
 
