@@ -239,7 +239,7 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
                 $carp_if_flag = 'down';
             }
             $server_devs[] = (string)$node->interface;
-            $statHandle = fopen($node->statFilename, "a+");
+            $statHandle = fopen($node->statFilename, 'a+e');
             if (flock($statHandle, LOCK_EX)) {
                 $ifdetails = legacy_interfaces_details((string)$node->interface);
                 switch ($action) {
