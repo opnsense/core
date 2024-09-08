@@ -29,6 +29,7 @@
 namespace OPNsense\Trust\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Core\Backend;
 
 /**
  * Class SettingsController
@@ -38,4 +39,14 @@ class SettingsController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'trust';
     protected static $internalModelClass = 'OPNsense\Trust\General';
+
+    public function reconfigureAction()
+    {
+        if ($this->request->isPost()) {
+            (new Backend())->configdRun('system trust configure', true);
+            return ['status' => 'ok'];
+        }
+        return ['status' => 'failed'];
+
+    }
 }

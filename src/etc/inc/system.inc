@@ -957,11 +957,22 @@ function system_trust_configure($verbose = false)
 
             if ($ca_count) {
                 $ca_file = sprintf($ca_files, $i . '.crt');
-                file_put_contents(sprintf($ca_file, $i), $ca);
-                chmod(sprintf($ca_file, $i), 0644);
+                \OPNsense\Core\File::file_put_contents(sprintf($ca_file, $i), $ca, 0644);
             }
         }
     }
+
+    if (!empty((string)$trust->install_crls)) {
+        # deploy all collected CRL's into the trust store, they will be hashed into /etc/ssl/certs/ by certctl eventually
+        foreach (config_read_array('crl') as $i => $entry) {
+            if (!empty($entry) && !empty($entry['text'])) {
+                $crl_file = sprintf($ca_files, $i . '.crl');
+                $payload = base64_decode($entry['text']) ?? '';
+                \OPNsense\Core\File::file_put_contents(sprintf($crl_file, $i), $payload, 0644);
+            }
+        }
+    }
+
 
     service_log("done.\n", $verbose);
 

@@ -42,6 +42,14 @@ POSSIBILITY OF SUCH DAMAGE.
                 return dfObj;
             }
         });
+
+        $("#trust\\.enable_config_constraints").change(function(){
+            if ($(this).is(':checked')) {
+                $(".config_constraints").closest('tr').show();
+            } else {
+                $(".config_constraints").closest('tr').hide();
+            }
+        });
     });
 </script>
 
@@ -54,10 +62,9 @@ POSSIBILITY OF SUCH DAMAGE.
         <div class="col-md-12">
             <br/>
             <button class="btn btn-primary" id="reconfigureAct"
-                    data-endpoint='/api/wazuhagent/service/reconfigure'
+                    data-endpoint='/api/trust/settings/reconfigure'
                     data-label="{{ lang._('Apply') }}"
-                    data-service-widget="wazuh_agent"
-                    data-error-title="{{ lang._('Error reconfiguring Wazuh Agent') }}"
+                    data-error-title="{{ lang._('Error reconfiguring Trust') }}"
                     type="button"
             ></button>
             <br/><br/>
