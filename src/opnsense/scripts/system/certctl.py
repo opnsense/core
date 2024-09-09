@@ -31,36 +31,42 @@ import sys
 import os
 import OpenSSL.crypto
 from cryptography import x509
+from cryptography.hazmat.primitives import serialization
 
 TRUSTPATH = ['/usr/share/certs/trusted', '/usr/local/share/certs', '/usr/local/etc/ssl/certs']
-BLACKLISTPATH = ['/usr/share/certs/blacklisted', '/usr/local/etc/ssl/blacklisted']
+BLACKLISTPATH = ['/usr/share/certs/untrusted', '/usr/share/certs/blacklisted', '/usr/local/etc/ssl/blacklisted']
 CERTDESTDIR = '/etc/ssl/certs'
 BLACKLISTDESTDIR = '/etc/ssl/blacklisted'
 
 
-def get_name_hash_file_pattern(filename):
+def certificate_iterator(filename):
     fext = os.path.splitext(filename)[1][1:].lower()
     try:
         if fext == 'crl':
-            x509_item = x509.load_pem_x509_crl(open(filename, 'rb').read())
+            x509_items = [x509.load_pem_x509_crl(open(filename, 'rb').read())]
         elif fext in ['pem', 'cer', 'crt']:
-            tmp = x509.load_pem_x509_certificates(open(filename, 'rb').read())
-            # XXX: should be enabled after investigating the ca_root_nss situation
-            # if len(tmp) > 1:
-            #     print('Skipping %s as it does not contain exactly one certificate' % filename)
-            #     return None
-            x509_item = tmp[0]
+            x509_items = x509.load_pem_x509_certificates(open(filename, 'rb').read())
         else:
             # not supported
             return None
     except (ValueError, TypeError):
         return None
 
-    tmp = OpenSSL.crypto.X509().get_issuer()
-    for item in x509_item.issuer:
-        setattr(tmp, item.rfc4514_attribute_name, item.value)
+    needs_copy = len(x509_items) > 1
+    for x509_item in x509_items:
+        data = x509_item.public_bytes(serialization.Encoding.PEM) if needs_copy else filename
+        tmp = OpenSSL.crypto.X509().get_issuer()
+        for item in x509_item.issuer:
+            setattr(tmp, item.rfc4514_attribute_name, item.value)
+        hashval = hex(tmp.hash()).lstrip('0x').zfill(8)
+        yield {
+            'hash': hashval,
+            'target_pattern': '%s.%s%%d' % (hashval, 'r' if fext == 'crl' else ''),
+            'type': 'copy' if needs_copy else 'link',
+            'data': data,
+            'filename': filename
+        }
 
-    return '%s.%s%%d' % (hex(tmp.hash()).lstrip('0x').zfill(8), 'r' if fext == 'crl' else '')
 
 def get_cert_common_name(filename):
     try:
@@ -101,29 +107,40 @@ def cmd_rehash():
             targetname = 'trusted' if path in TRUSTPATH else 'blacklisted'
             print("Scanning %s for certificates..." % path)
             for filename in glob.glob('%s/*' % path):
-                pattern = get_name_hash_file_pattern(filename)
-                if pattern:
+                for record in certificate_iterator(filename):
+                    pattern = record['target_pattern']
                     if pattern not in targets[targetname]:
                         targets[targetname][pattern] = []
-                    targets[targetname][pattern].append(filename)
+                    if record['type'] == 'copy' and len(targets[targetname][pattern]) > 0:
+                        # skip hardcopies when a link or hardcopy already exists
+                        continue
+                    targets[targetname][pattern].append(record)
 
     for path in [BLACKLISTDESTDIR, CERTDESTDIR]:
         for filename in glob.glob('%s/*.[0-9]' % path) + glob.glob('%s/*.r[0-9]' % path):
             if os.path.islink(filename):
                 os.unlink(filename)
+            else:
+                os.remove(filename)
 
     for target_name in targets:
         for pattern in targets[target_name]:
-            for seq, filename in enumerate(targets[target_name][pattern]):
-                if target_name == 'blacklisted':
-                    os.symlink(os.path.relpath(filename, BLACKLISTDESTDIR), "%s/%s" % (BLACKLISTDESTDIR, pattern % seq))
+            for seq, record in enumerate(targets[target_name][pattern]):
+                is_bl = target_name == 'blacklisted'
+                src_filename = os.path.relpath(record['filename'], BLACKLISTDESTDIR if is_bl else CERTDESTDIR)
+                dst_filename = "%s/%s" % (BLACKLISTDESTDIR if is_bl else CERTDESTDIR, pattern % seq)
+                if not is_bl and hash in targets['blacklisted']:
+                    print(
+                        "Skipping blacklisted certificate %s (%s/%s)" % (filename, BLACKLISTDESTDIR, pattern % seq)
+                    )
+                    continue
+
+                if record['type'] == 'copy':
+                    with open(dst_filename, 'wb') as f_out:
+                        f_out.write(record['data'])
+                    os.chmod(dst_filename, 0o644)
                 else:
-                    if hash in targets['blacklisted']:
-                        print(
-                            "Skipping blacklisted certificate %s (%s/%s)" % (filename, BLACKLISTDESTDIR, pattern % seq)
-                        )
-                    else:
-                        os.symlink(os.path.relpath(filename, CERTDESTDIR), "%s/%s" % (CERTDESTDIR, pattern % seq))
+                    os.symlink(src_filename, dst_filename)
 
 
 if __name__ == '__main__':
