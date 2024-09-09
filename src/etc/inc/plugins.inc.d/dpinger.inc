@@ -127,7 +127,7 @@ function dpinger_instances($extended = false)
     return $instances;
 }
 
-function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
+function dpinger_configure_do($verbose = false, $gwname = null)
 {
     service_log(sprintf('Setting up gateway monitor%s...', empty($gwname) ? 's' : " {$gwname}"), $verbose);
 

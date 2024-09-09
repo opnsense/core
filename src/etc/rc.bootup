@@ -97,7 +97,7 @@ plugins_configure('dhcp', true);
 plugins_configure('dns', true);
 
 filter_configure_sync(true);
-plugins_configure('monitor', true, [null, true]);
+plugins_configure('monitor', true);
 plugins_configure('vpn_map', true);
 plugins_configure('bootup', true);
 
