@@ -67,6 +67,10 @@ export default class Carp extends BaseTableWidget {
         });
 
         Object.values(ifs).forEach(({ primary, aliases }) => {
+            if (primary == null) {
+                return;
+            }
+
             let $intf = `<div><a href="/ui/interfaces/vip">${primary.interface} @ VHID ${primary.vhid}</a></div>`;
             let vips = [
                 `<div>
