@@ -45,9 +45,10 @@ def get_name_hash_file_pattern(filename):
             x509_item = x509.load_pem_x509_crl(open(filename, 'rb').read())
         elif fext in ['pem', 'cer', 'crt']:
             tmp = x509.load_pem_x509_certificates(open(filename, 'rb').read())
-            if len(tmp) > 1:
-                print('Skipping %s as it does not contain exactly one certificate' % filename)
-                return None
+            # XXX: should be enabled after investigating the ca_root_nss situation
+            # if len(tmp) > 1:
+            #     print('Skipping %s as it does not contain exactly one certificate' % filename)
+            #     return None
             x509_item = tmp[0]
         else:
             # not supported
