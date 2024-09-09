@@ -26,6 +26,7 @@ fi
 if [ "${AF}" = "inet" ]; then
 	/usr/local/sbin/ifctl -i ${IF} -4nd ${DNS1} ${DNS2}
 	/usr/local/sbin/ifctl -i ${IF} -4rd ${ROUTER}
+	/usr/local/opnsense/scripts/interfaces/ppp-ipv6.php ${IF} 4
 	/usr/local/sbin/configctl -d interface newip ${IF} force
 elif [ "${AF}" = "inet6" ]; then
 	/usr/local/sbin/ifctl -i ${IF} -6nd ${DNS1} ${DNS2}
