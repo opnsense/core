@@ -129,7 +129,8 @@ CORE_DEPENDS_aarch64?=	py${CORE_PYTHON}-duckdb \
 CORE_DEPENDS_amd64?=	beep \
 			${CORE_DEPENDS_aarch64}
 
-CORE_DEPENDS?=		choparp \
+CORE_DEPENDS?=		ca_root_nss \
+			choparp \
 			cpustats \
 			dhcp6c \
 			dhcrelay \
