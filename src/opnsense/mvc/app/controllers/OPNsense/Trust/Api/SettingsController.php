@@ -47,6 +47,5 @@ class SettingsController extends ApiMutableModelControllerBase
             return ['status' => 'ok'];
         }
         return ['status' => 'failed'];
-
     }
 }

@@ -191,9 +191,13 @@ class VipSettingsController extends ApiMutableModelControllerBase
             foreach ($this->getModel()->vip->iterateItems() as $vip) {
                 if ((string)$vip->mode == 'ipalias' && (string)$vip->vhid == (string)$node->vhid) {
                     $vhid = (string)$node->vhid;
-                    throw new UserException(sprintf(
-                        gettext("Cannot delete CARP Virtual IP, IP Alias with VHID Group %s still exists."), $vhid),
-                        gettext("Error"));
+                    throw new UserException(
+                        sprintf(
+                            gettext("Cannot delete CARP Virtual IP, IP Alias with VHID Group %s still exists."),
+                            $vhid
+                        ),
+                        gettext("Error")
+                    );
                 }
             }
         }
