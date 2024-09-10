@@ -30,7 +30,6 @@
 """
 import subprocess
 import os
-import sys
 import ujson
 import csv
 import argparse
@@ -38,7 +37,9 @@ import argparse
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--format', help='format',choices=['full', 'key_value'], default='full')
+    parser.add_argument('--filter', help='filter version', choices=['TLSv1.3', 'pre-TLSv1.3', ''])
     inputargs = parser.parse_args()
+
     # source https://www.iana.org/assignments/tls-parameters/tls-parameters-4.csv
     rfc5246_file = '%s/rfc5246_cipher_suites.csv' % os.path.dirname(os.path.realpath(__file__))
     rfc5246 = dict()
@@ -48,10 +49,17 @@ if __name__ == '__main__':
                 rfc5246[row[0]] = {'description': row[1]}
 
     result = {}
-    sp = subprocess.run(['/usr/local/bin/openssl', 'ciphers', '-V'], capture_output=True, text=True)
+    # use opnsense.cnf template to avoid generic config constraints limiting options
+    ossl_env = os.environ.copy()
+    ossl_env['OPENSSL_CONF'] = '/usr/local/etc/ssl/opnsense.cnf'
+    sp = subprocess.run(['/usr/local/bin/openssl', 'ciphers', '-V'], capture_output=True, text=True, env=ossl_env)
     for line in sp.stdout.split("\n"):
         parts = line.strip().split()
         if len(parts) > 1:
+            if parts[3] == 'TLSv1.3' and inputargs.filter not in [None, '', 'TLSv1.3']:
+                continue
+            elif parts[3] != 'TLSv1.3' and inputargs.filter not in [None, '', 'pre-TLSv1.3']:
+                continue
             cipher_id = parts[0]
             cipher_key = parts[2]
             item = {'version': parts[3], 'id': cipher_id, 'description': ''}

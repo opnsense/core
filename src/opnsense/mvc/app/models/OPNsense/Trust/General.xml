@@ -1,0 +1,53 @@
+<model>
+    <mount>//OPNsense/trust/general</mount>
+    <description>Trust general settings</description>
+    <version>1.0.0</version>
+    <items>
+        <store_intermediate_certs type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </store_intermediate_certs>
+        <install_crls type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </install_crls>
+        <enable_legacy_sect type="BooleanField">
+            <Default>1</Default>
+            <Required>Y</Required>
+        </enable_legacy_sect>
+        <enable_config_constraints type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </enable_config_constraints>
+        <!-- https://docs.openssl.org/3.0/man3/SSL_CONF_cmd/#supported-configuration-file-commands -->
+        <CipherString type="JsonKeyValueStoreField">
+            <Multiple>Y</Multiple>
+            <ConfigdPopulateAct>system ssl ciphers-keyval pre-TLSv1.3</ConfigdPopulateAct>
+            <SortByValue>Y</SortByValue>
+        </CipherString>
+        <Ciphersuites type="JsonKeyValueStoreField">
+            <Multiple>Y</Multiple>
+            <ConfigdPopulateAct>system ssl ciphers-keyval TLSv1.3</ConfigdPopulateAct>
+            <SortByValue>Y</SortByValue>
+        </Ciphersuites>
+        <groups type="JsonKeyValueStoreField">
+            <Multiple>Y</Multiple>
+            <ConfigdPopulateAct>system tls groups</ConfigdPopulateAct>
+            <SortByValue>Y</SortByValue>
+        </groups>
+        <MinProtocol type="OptionField">
+            <OptionValues>
+                <TLSv1>TLSv1</TLSv1>
+                <TLSv1.1>TLSv1.1</TLSv1.1>
+                <TLSv1.2>TLSv1.2</TLSv1.2>
+                <TLSv1.3>TLSv1.3</TLSv1.3>
+            </OptionValues>
+        </MinProtocol>
+        <MinProtocol_DTLS type="OptionField">
+            <OptionValues>
+                <DTLSv1>DTLSv1</DTLSv1>
+                <DTLSv1.1>DTLSv1.1</DTLSv1.1>
+            </OptionValues>
+        </MinProtocol_DTLS>
+    </items>
+</model>
