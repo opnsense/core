@@ -94,6 +94,7 @@ class CertController extends ApiMutableModelControllerBase
                 );
                 if (!empty($data['csr'])) {
                     $node->csr = base64_encode($data['csr']);
+                    $node->prv = base64_encode($data['prv']);
                 } else {
                     $error = $data['error'] ?? '';
                 }
