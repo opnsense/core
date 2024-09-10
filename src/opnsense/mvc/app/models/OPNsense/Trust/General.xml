@@ -37,7 +37,6 @@
         </groups>
         <MinProtocol type="OptionField">
             <OptionValues>
-                <SSLv3>SSLv3</SSLv3>
                 <TLSv1>TLSv1</TLSv1>
                 <TLSv1.1>TLSv1.1</TLSv1.1>
                 <TLSv1.2>TLSv1.2</TLSv1.2>

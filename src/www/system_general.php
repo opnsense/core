@@ -223,15 +223,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         /* time zone change first */
         system_timezone_configure();
-
-        if ($sync_trust) {
-            /*
-             * FreeBSD trust store integration is slow so we need
-             * to avoid processing when setting is unchanged.
-             */
-            system_trust_configure();
-        }
-
         system_hostname_configure();
         system_resolver_configure();
         plugins_configure('dns');
