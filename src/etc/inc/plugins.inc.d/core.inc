@@ -467,6 +467,7 @@ function core_configure()
         'syslog_reset' => ['system_syslog_reset'],
         'trust_reload' => ['system_trust_configure'],
         'user_changed' => ['core_user_changed_groups:2'],
+        'crl' => ['core_trust_crl'],
     ];
 }
 
@@ -501,5 +502,18 @@ function core_user_changed_groups($unused, $username)
                 }
             }
         }
+    }
+}
+
+/**
+ * When CRL's are deployed locally, we need to flush them to disk.
+ * If at some point in time it turns out this event is too slow, we should split system_trust_configure() and possibly
+ * certctl.py to only process CRL's on demand.
+ */
+function core_trust_crl()
+{
+    $trust = new \OPNsense\Trust\General();
+    if (!empty((string)$trust->install_crls)) {
+        system_trust_configure();
     }
 }
