@@ -30,6 +30,7 @@ namespace OPNsense\Trust\Api;
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Base\UserException;
+use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Trust\Store as CertStore;
 
@@ -367,6 +368,7 @@ class CrlController extends ApiControllerBase
                     }
                 }
                 Config::getInstance()->save();
+                (new Backend())->configdRun('system trust crl', true);
                 return ['status' => 'saved'];
             }
         }
@@ -393,6 +395,7 @@ class CrlController extends ApiControllerBase
             }
             if (count($to_delete) > 0) {
                 Config::getInstance()->save();
+                (new Backend())->configdRun('system trust crl', true);
                 return ['status' => 'deleted'];
             } else {
                 Config::getInstance()->unlock();
