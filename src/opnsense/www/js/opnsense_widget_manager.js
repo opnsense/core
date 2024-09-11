@@ -161,6 +161,21 @@ class WidgetManager  {
                     this._createGridStackWidget(id, this.loadedModules[id], configuration);
                 } catch (error) {
                     console.error('Failed to create widget', id, error);
+
+                    let $panel = this._makeWidget(id, this.widgetTranslations[id].title, 'XXX failed to load');
+                    const gridElement = {
+                        content: $panel.prop('outerHTML'),
+                        id: id,
+                        minW: 2, // force a minimum width of 2 unless specified otherwise
+                        ...configuration,
+                    };
+
+                    this.widgetConfigurations[id] = gridElement;
+
+                    // XXX does not work
+                    $(`#close-handle-${id}`).click((event) => {
+                        this._onWidgetClose(widget.id);
+                    });
                 }
             }
         }
