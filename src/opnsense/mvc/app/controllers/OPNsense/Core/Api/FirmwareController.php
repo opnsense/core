@@ -770,7 +770,7 @@ class FirmwareController extends ApiMutableModelControllerBase
         $this->sessionClose(); // long running action, close session
         $backend = new Backend();
         $result = array('status' => 'running');
-        $cmd_result = trim($backend->configdRun('firmware status'));
+        $cmd_result = trim($backend->configdRun('firmware status') ?? '');
 
         $result['log'] = $cmd_result;
 
