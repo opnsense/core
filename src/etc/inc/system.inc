@@ -883,6 +883,7 @@ function system_trust_configure($verbose = false)
     global $config;
 
     service_log('Writing trust files...', $verbose);
+
     $trust = new \OPNsense\Trust\General();
 
     /*
@@ -972,7 +973,6 @@ function system_trust_configure($verbose = false)
             }
         }
     }
-
 
     service_log("done.\n", $verbose);
 
