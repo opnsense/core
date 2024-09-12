@@ -37,15 +37,15 @@ $a_gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($_GET['getpic']=="true") {
-      $pic_type = explode(".", $config['system']['picture_filename'])[1];
-      if ($config['system']['picture']) {
-          $data = base64_decode($config['system']['picture']);
-      }
-      header("Content-Disposition: inline; filename=\"{$config['system']['picture_filename']}\"");
-      header("Content-Type: image/{$pic_type}");
-      header("Content-Length: " . strlen($data));
-      echo $data;
-      exit;
+        $pic_type = explode(".", $config['system']['picture_filename'])[1];
+        if ($config['system']['picture']) {
+            $data = base64_decode($config['system']['picture']);
+        }
+        header("Content-Disposition: inline; filename=\"{$config['system']['picture_filename']}\"");
+        header("Content-Type: image/{$pic_type}");
+        header("Content-Length: " . strlen($data));
+        echo $data;
+        exit;
     }
 
     $pconfig = array();
@@ -89,17 +89,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $reqdfieldsn = array(gettext("Hostname"),gettext("Domain"));
 
     if (is_uploaded_file($_FILES['pictfile']['tmp_name'])) {
-      $fd_pic = fopen($_FILES['pictfile']['tmp_name'], "rb");
-      while (($buf=fread($fd_pic, 8192)) != '') {
-          $data .= $buf;
-      }
-      fclose($fd_pic);
-      if (!$data) {
-        $input_errors[] = gettext("Could not read uploaded file.");
-      } else {
-        $pconfig['picture'] = base64_encode($data);
-        $pconfig['picture_filename'] = basename($_FILES['pictfile']['name']);
-      }
+        if ($_FILES['pictfile']['size'] > (10 * 1024 * 1024)) {
+            $input_errors[] = gettext("The image file is too large. Please upload something smaller than 10MB.");
+        } else {
+            $fd_pic = fopen($_FILES['pictfile']['tmp_name'], "rb");
+            while (($buf=fread($fd_pic, 8192)) != '') {
+                $data .= $buf;
+            }
+            fclose($fd_pic);
+            if (!$data) {
+                $input_errors[] = gettext("Could not read uploaded file.");
+            } else {
+                $pconfig['picture'] = base64_encode($data);
+                $pconfig['picture_filename'] = basename($_FILES['pictfile']['name']);
+            }
+        }
     }
 
     if (empty($pconfig['dnsallowoverride_exclude'])) {
