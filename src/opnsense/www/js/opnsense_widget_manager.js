@@ -138,15 +138,18 @@ class WidgetManager  {
             }
 
             const promises = data.modules.map(async (item) => {
-                const mod = await import('/ui/js/widgets/' + item.module + '?t='+Date.now());
-                this.loadedModules[item.id] = mod.default;
-                this.widgetTranslations[item.id] = item.translations;
+                try {
+                    const mod = await import('/ui/js/widgets/' + item.module + '?t='+Date.now());
+                    this.loadedModules[item.id] = mod.default;
+                } catch (error) {
+                    console.error('Could not import module', item.module, error);
+                } finally {
+                    this.widgetTranslations[item.id] = item.translations;
+                }
             });
 
             // Load all modules simultaneously - this shouldn't take long
-            const results = await Promise.all(promises.map(p => p.catch(e => e)));
-            const errors = results.filter(result => (result instanceof Error));
-            if (errors.length > 0) console.error('Failed to load one or more widgets:', errors);
+            await Promise.all(promises);
         });
     }
 
@@ -156,12 +159,23 @@ class WidgetManager  {
         }
 
         for (const [id, configuration] of Object.entries(this.widgetConfigurations)) {
-            if (id in this.loadedModules) {
-                try {
-                    this._createGridStackWidget(id, this.loadedModules[id], configuration);
-                } catch (error) {
-                    console.error('Failed to create widget', id, error);
-                }
+            try {
+                this._createGridStackWidget(id, this.loadedModules[id], configuration);
+            } catch (error) {
+                console.error(error);
+
+                let $panel = this._makeWidget(id, this.widgetTranslations[id].title, `
+                    <div class="widget-error">
+                        <i class="fa fa-exclamation-circle text-danger"></i>
+                        <br/>
+                        ${this.gettext.failed}
+                    </div>
+                `);
+                this.widgetConfigurations[id] = {
+                    id: id,
+                    content: $panel.prop('outerHTML'),
+                    ...configuration
+                };
             }
         }
 
@@ -169,6 +183,10 @@ class WidgetManager  {
     }
 
     _createGridStackWidget(id, widgetClass, persistedConfig = {}) {
+        if (!(id in this.loadedModules)) {
+            throw new Error('Widget not loaded');
+        }
+
         // merge persisted config with defaults
         let config = {
             callbacks: {
@@ -246,6 +264,13 @@ class WidgetManager  {
         // force the cell height of each widget to the lowest value. The grid will adjust the height
         // according to the content of the widget.
         this.grid.cellHeight(1);
+
+        // click handlers for widget removal.
+        for (const id of Object.keys(this.widgetConfigurations)) {
+            $(`#close-handle-${id}`).click((event) => {
+                this._onWidgetClose(id);
+            });
+        }
     }
 
     _renderHeader() {
@@ -425,7 +450,7 @@ class WidgetManager  {
 
     // Executed for each widget; starts the widget-specific tick routine.
     async _onMarkupRendered(widget) {
-        // click handler for widget removal.
+        // click handler for widget removal
         $(`#close-handle-${widget.id}`).click((event) => {
             this._onWidgetClose(widget.id);
         });
@@ -750,8 +775,8 @@ class WidgetManager  {
 
     _onWidgetClose(id) {
         clearInterval(this.widgetTickRoutines[id]);
-        this.widgetClasses[id].onWidgetClose();
+        if (id in this.widgetClasses) this.widgetClasses[id].onWidgetClose();
         this.grid.removeWidget(this.widgetHTMLElements[id]);
-        this.moduleDiff.push(id);
+        if (id in this.loadedModules) this.moduleDiff.push(id);
     }
 }
