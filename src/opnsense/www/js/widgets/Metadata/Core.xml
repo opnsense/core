@@ -322,4 +322,14 @@
             <stopped>Stopped</stopped>
         </translations>
     </openvpnservers>
+    <picture>
+        <filename>Picture.js</filename>
+        <endpoints>
+            <endpoint>/api/core/dashboard/picture</endpoint>
+        </endpoints>
+        <translations>
+            <title>Picture</title>
+            <nopicture>No picture available. You can configure one via System: Settings: General.</nopicture>
+        </translations>
+    </picture>
 </metadata>
