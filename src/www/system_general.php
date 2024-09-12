@@ -89,10 +89,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $reqdfieldsn = array(gettext("Hostname"),gettext("Domain"));
 
     if (is_uploaded_file($_FILES['pictfile']['tmp_name'])) {
-      $mime = image_type_to_mime_type(exif_imagetype($_FILES['pictfile']['tmp_name']));
-      if (!$mime) {
-        $input_errors[] = gettext("The uploaded file is not a valid image file.");
-      }
       $fd_pic = fopen($_FILES['pictfile']['tmp_name'], "rb");
       while (($buf=fread($fd_pic, 8192)) != '') {
           $data .= $buf;
