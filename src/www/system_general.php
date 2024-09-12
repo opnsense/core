@@ -415,7 +415,7 @@ $( document ).ready(function() {
             <tr>
               <td><a id="help_for_picture" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Picture"); ?></td>
               <td id="pict_td">
-<?php           if (!empty($pconfig['picture'])): ?>
+<?php if (!empty($pconfig['picture'])): ?>
                 <div id="picture" style="padding: 5px; padding-left: 15px; padding-top: 15px; position: relative;">
                   <button id="remove_picture" style="position: absolute; top: 2px; left: 2px; z-index: 100; font-size: 12px; cursor: pointer;">
                       <i class="fa fa-trash"></i>
