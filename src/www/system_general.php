@@ -425,7 +425,7 @@ $( document ).ready(function() {
                   </a>
                 </div>
 <?php           else: ?>
-                <input name="pictfile" type="file" size="40" class="btn btn-secondary" id="pictfile"/>
+                <input name="pictfile" type="file" size="40" id="pictfile"/>
 <?php           endif ?>
                 <div class="hidden" data-for="help_for_picture">
                   <?=gettext("Upload a picture, to be displayed in the Picture widget on the dashboard."); ?>
