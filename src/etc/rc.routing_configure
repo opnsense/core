@@ -49,12 +49,16 @@ foreach (glob("/tmp/delete_route_*.todo") as $filename) {
 system_routing_configure(true, null, !$recover_only);
 
 if ($recover_only) {
+    $gwnames = [];
+
     foreach (return_gateways_status() as $status) {
         if ($status['status'] == 'down') {
             /* try to recover monitors stuck in down state ignoring "force_down" */
-            plugins_configure('monitor', true, [$status['name']]);
+            $gwnames[] = $status['name'];
         }
     }
+
+    plugins_configure('monitor', true, [$gwnames]);
 }
 
 filter_configure_sync(true, false);

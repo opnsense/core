@@ -3759,12 +3759,13 @@ function interfaces_restart_by_device($verbose, $devices, $reconfigure = true)
         }
     }
 
-    foreach (array_keys($restartifs) as $ifname) {
-        if ($reconfigure) {
+    if ($reconfigure) {
+        foreach (array_keys($restartifs) as $ifname) {
             interface_configure($verbose, $ifname);
         }
-        system_routing_configure($verbose, $ifname);
     }
+
+    system_routing_configure($verbose, array_keys($restartifs));
 }
 
 function link_interface_to_bridge($interface, $attach_device = null, $ifconfig_details = [/* must be set for attach to work */])

@@ -121,9 +121,7 @@ interfaces_restart_by_device(false, array_merge($greifs, $gififs));
 $interfaces = array_keys(link_interface_to_track6($interface, true));
 array_unshift($interfaces, $interface);
 
-foreach ($interfaces as $interface) {
-    system_routing_configure(false, $interface, true, 'inet6');
-}
+system_routing_configure(false, $interfaces, true, 'inet6');
 
 filter_configure_sync();
 plugins_configure('vpn_map', false, [join(',', $interfaces), 'inet6']);

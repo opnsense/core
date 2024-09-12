@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2023 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2024 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -649,17 +649,17 @@ function system_default_route($gw, $routes)
     mwexecf('/sbin/route add -%s default %s', [$family, $gateway]);
 }
 
-function system_routing_configure($verbose = false, $interface = null, $monitor = true, $family = null)
+function system_routing_configure($verbose = false, $interface_map = null, $monitor = true, $family = null)
 {
     global $config;
 
-    service_log(sprintf('Setting up routes%s...', empty($interface) ? '' : " for {$interface}"), $verbose);
-
-    if (!empty($interface)) {
-        log_msg("ROUTING: entering configure using '{$interface}'", LOG_DEBUG);
-    } else {
-        log_msg("ROUTING: entering configure using defaults", LOG_DEBUG);
+    if (!plugins_argument_map($interface_map)) {
+        return;
     }
+
+    log_msg(sprintf('ROUTING: entering configure using %s', empty($interface_map) ? 'defaults' : join(', ', $interface_map)), LOG_DEBUG);
+
+    service_log(sprintf('Setting up routes%s...', empty($interface_map) ? '' : ' for ' . join(', ', $interface_map)), $verbose);
 
     $ifdetails = legacy_interfaces_details();
     $gateways = new \OPNsense\Routing\Gateways();
@@ -670,7 +670,7 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
         /* check if we need to add a required interface route to the gateway (IPv4 only) */
         if ($gateway['ipprotocol'] !== 'inet' || ($family !== null && $family !== 'inet')) {
             continue;
-        } elseif (!empty($interface) && $interface != $gateway['interface']) {
+        } elseif (!empty($interface_map) && !in_array($gateway['interface'], $interface_map)) {
             continue;
         }
 
@@ -696,7 +696,7 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
             continue;
         }
 
-        if (isset($config['system']['gw_switch_default']) || empty($interface) || $interface == $gateway['interface']) {
+        if (isset($config['system']['gw_switch_default']) || empty($interface_map) || in_array($gateway['interface'], $interface_map)) {
             if (empty($ifdetails[$gateway['if']][$type][0])) {
                 log_msg("ROUTING: refusing to set {$ipproto} gateway on addressless {$gateway['interface']}({$gateway['if']})", LOG_ERR);
                 continue;
@@ -717,7 +717,7 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
                 continue;
             }
             $gateway = $gateways_arr[$rtent['gateway']];
-            if (!empty($interface) && $interface != $gateway['interface']) {
+            if (!empty($interface_map) && !in_array($gateway['interface'], $interface_map)) {
                 continue;
             }
 
@@ -774,25 +774,22 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
     service_log("done.\n", $verbose);
 
     if ($monitor) {
-        if (!empty($interface)) {
-            $reloads = [];
+        /* reload requested monitors only or reload in full */
+        $gwnames = !empty($interface_map) ? [] : null;
 
+        if (!empty($interface_map)) {
             foreach ($gateways->gatewaysIndexedByName() as $name => $gateway) {
                 if ($family !== null && $family !== $gateway['ipprotocol']) {
                     continue;
                 }
 
-                if ($interface == $gateway['interface']) {
-                    $reloads[] = $name;
+                if (in_array($gateway['interface'], $interface_map)) {
+                    $gwnames[] = $name;
                 }
             }
-
-            foreach ($reloads as $reload) {
-                plugins_configure('monitor', $verbose, [$reload]);
-            }
-        } else {
-            plugins_configure('monitor', $verbose);
         }
+
+        plugins_configure('monitor', $verbose, [$gwnames]);
     }
 }
 

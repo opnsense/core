@@ -127,12 +127,16 @@ function dpinger_instances($extended = false)
     return $instances;
 }
 
-function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
+function dpinger_configure_do($verbose = false, $gwname_map = null, $bootup = false)
 {
-    service_log(sprintf('Setting up gateway monitor%s...', empty($gwname) ? 's' : " {$gwname}"), $verbose);
+    if (!plugins_argument_map($gwname_map)) {
+        return;
+    }
+
+    service_log(sprintf('Setting up gateway monitor%s...', empty($gwname_map) ? '' : ' for ' . join(', ', $gwname_map)), $verbose);
 
     foreach (dpinger_processes() as $running_gwname => $proc) {
-        if (!empty($gwname) && $running_gwname != $gwname) {
+        if (!empty($gwname_map) && !in_array($running_gwname, $gwname_map)) {
             continue;
         }
         if (isvalidpid($proc['pidfile'])) {
@@ -140,7 +144,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
         }
     }
 
-    if (!empty($gwname) && $gwname == ':watcher:') {
+    if (!empty($gwname_map) && in_array(':watcher:', $gwname_map)) {
         /* allow the watcher to be restarted as well */
         killbypid('/var/run/gateway_watcher.pid');
     }
@@ -149,7 +153,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
     $routes = [];
 
     foreach (dpinger_instances() as $name => $gateway) {
-        if (!empty($gwname) && $gwname != $name) {
+        if (!empty($gwname_map) && !in_array($name, $gwname_map)) {
             continue;
         }
 
