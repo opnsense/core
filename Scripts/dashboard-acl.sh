@@ -25,7 +25,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-WIDGETS=$(find src/opnsense/www/js/widgets -name "*.js")
+WIDGETS=$(find -s src/opnsense/www/js/widgets -name "*.js")
 
 for WIDGET in ${WIDGETS}; do
 	ENDPOINTS=$(grep -o 'this\.ajaxCall([^,)]*' ${WIDGET} | cut -c 15- |
