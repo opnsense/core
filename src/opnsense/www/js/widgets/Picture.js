@@ -44,7 +44,6 @@ export default class Picture extends BaseWidget {
                     <a href="/system_general.php">${this.translations.nopicture}</a>
                 </div>
             `);
-            this.config.callbacks.updateGrid();
         });
     }
 }
