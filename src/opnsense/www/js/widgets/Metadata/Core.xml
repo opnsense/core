@@ -329,7 +329,7 @@
         </endpoints>
         <translations>
             <title>Picture</title>
-            <nopicture>No picture available. You can configure one in the system general settings</nopicture>
+            <nopicture>No picture available. You can configure one via System: Settings: General.</nopicture>
         </translations>
     </picture>
 </metadata>
