@@ -286,6 +286,9 @@ function plugins_configure($hook, $verbose = false, $args = [])
                          * An optional argument count parameter can be
                          * given by the plugin, which allows to securely
                          * pull more info from the configure call spot.
+                         *
+                         * Otherwise the default is assumed to be ":1"
+                         * only, which is the $verbose flag, see below.
                          */
                         if (substr_count($task, ':')) {
                             list($argf, $argc) = explode(':', $task);
