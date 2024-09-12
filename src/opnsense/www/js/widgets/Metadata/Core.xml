@@ -325,7 +325,7 @@
     <picture>
         <filename>Picture.js</filename>
         <endpoints>
-            <endpoint>/system_general.php*</endpoint>
+            <endpoint>/api/core/dashboard/picture</endpoint>
         </endpoints>
         <translations>
             <title>Picture</title>

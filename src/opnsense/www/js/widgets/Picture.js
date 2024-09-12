@@ -34,16 +34,26 @@ export default class Picture extends BaseWidget {
     }
 
     async onMarkupRendered() {
-        $('#picture').attr('src', '/system_general.php?getpic=true');
+        const data = await this.ajaxCall('/api/core/dashboard/picture');
+        if (data.result !== 'ok') {
+            this._showError();
+            return;
+        }
+
+        $('#picture').attr('src', `data:${data.mime};base64,${data.picture}`);
         $('#picture').on('load', () => {
             this.config.callbacks.updateGrid();
         });
         $('#picture').on('error', () => {
-            $('#picture-container').html(`
-                <div class="error-message">
-                    <a href="/system_general.php">${this.translations.nopicture}</a>
-                </div>
-            `);
+            this._showError();
         });
+    }
+
+    _showError() {
+        $('#picture-container').html(`
+            <div class="error-message">
+                <a href="/system_general.php">${this.translations.nopicture}</a>
+            </div>
+        `);
     }
 }
