@@ -30,7 +30,7 @@ export default class Picture extends BaseWidget {
     }
 
     getMarkup() {
-        return $('<div id="picture-container" style="padding: 5px;"><img id="picture" style="width: 100%; height: 100%;"></div>');
+        return $('<div id="picture-container" style="padding: 5px;"><img id="picture" class="img-responsive center-block"></div>');
     }
 
     async onMarkupRendered() {
