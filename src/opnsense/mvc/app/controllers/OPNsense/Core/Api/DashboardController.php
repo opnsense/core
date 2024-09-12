@@ -231,4 +231,23 @@ class DashboardController extends ApiControllerBase
         }
         return $result;
     }
+
+    public function pictureAction()
+    {
+        $result = ['result' => 'failed'];
+        $config = Config::getInstance()->object();
+        if (!empty($config->system->picture) && !empty($config->system->picture_filename)) {
+            $ext = pathinfo((string)$config->system->picture_filename, PATHINFO_EXTENSION);
+            if (empty($ext)) {
+                return $result;
+            }
+            return [
+                'result' => 'ok',
+                'mime' => 'image/' . $ext,
+                'picture' => (string)$config->system->picture,
+            ];
+        }
+
+        return $result;
+    }
 }
