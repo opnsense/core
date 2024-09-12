@@ -573,7 +573,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     interface_configure(false, $ifapply, true);
                 }
 
-                system_routing_configure();
+                system_routing_configure(false, array_keys($toapplylist));
                 filter_configure();
                 plugins_configure('early'); /* ensure GUI and SSH access */
             }
