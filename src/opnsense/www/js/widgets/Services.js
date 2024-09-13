@@ -79,7 +79,8 @@ export default class Services extends BaseTableWidget {
                 actions.push({ action: 'start', id: service.id, title: this.translations.start, icon: 'play' });
             }
 
-            let $buttonContainer = $(`<div style="display: flex; align-items: center; justify-content: flex-start;">
+            let $buttonContainer = $(`
+                <div style="margin-left: 45%">
                 <span class="label label-opnsense label-opnsense-xs
                              label-${service.running ? 'success' : 'danger'}
                              service-status"
