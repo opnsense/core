@@ -238,8 +238,8 @@
         <filename>IpsecLeases.js</filename>
         <link>/ui/ipsec/leases</link>
         <endpoints>
-            <endpoint>/api/ipsec/connections/*</endpoint>
-            <endpoint>/api/ipsec/leases/*</endpoint>
+            <endpoint>/api/ipsec/connections/isEnabled</endpoint>
+            <endpoint>/api/ipsec/leases/pools</endpoint>
         </endpoints>
         <translations>
             <title>IPsec Leases</title>
@@ -254,8 +254,10 @@
         <filename>IpsecTunnels.js</filename>
         <link>/ui/ipsec/sessions</link>
         <endpoints>
-            <endpoint>/api/ipsec/connections/*</endpoint>
-            <endpoint>/api/ipsec/sessions/*</endpoint>
+            <endpoint>/api/ipsec/connections/isEnabled</endpoint>
+            <endpoint>/api/ipsec/sessions/searchPhase1</endpoint>
+            <endpoint>/api/ipsec/sessions/connect/*</endpoint>
+            <endpoint>/api/ipsec/sessions/disconnect/*</endpoint>
         </endpoints>
         <translations>
             <title>IPsec Tunnels</title>
