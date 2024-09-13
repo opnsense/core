@@ -395,6 +395,9 @@ lint-model:
 		done; \
 	done
 
+lint-acl:
+	@${.CURDIR}/Scripts/dashboard-acl.sh
+
 SCRIPTDIRS!=	find ${.CURDIR}/src/opnsense/scripts -type d -depth 1
 
 lint-exec:
@@ -412,7 +415,7 @@ LINTBIN?=	${.CURDIR}/contrib/parallel-lint/parallel-lint
 lint-php:
 	@${LINTBIN} src
 
-lint: plist-check lint-shell lint-xml lint-model lint-exec lint-php
+lint: plist-check lint-shell lint-xml lint-model lint-acl lint-exec lint-php
 
 sweep:
 	find ${.CURDIR}/src -type f -name "*.map" -print0 | \

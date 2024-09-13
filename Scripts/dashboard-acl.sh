@@ -25,18 +25,51 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-WIDGETS=$(find -s src/opnsense/www/js/widgets -name "*.js")
+WIDGETDIR=src/opnsense/www/js/widgets
+
+WIDGETS=$(find -s ${WIDGETDIR} -name "*.js")
+METADATA=$(find -s ${WIDGETDIR}/Metadata -name "*.xml")
 
 for WIDGET in ${WIDGETS}; do
-	ENDPOINTS=$(grep -o 'this\.ajaxCall([^,)]*' ${WIDGET} | cut -c 15- |
-	    tr -d "'" | tr -d '`' | sed 's:\$.*:*:')
-	if [ -z "${ENDPOINTS}" ]; then
+	FILENAME=$(basename ${WIDGET})
+	if [ -z "${FILENAME%Base*}" ]; then
+		# ignore base classes
 		continue
 	fi
 
-	echo ">>> $(basename ${WIDGET%.js}):"
+	ENDPOINTS=$((grep -o 'this\.ajaxCall([^,)]*' ${WIDGET} | cut -c 15-;
+	    grep -o 'super\.openEventSource([^,)]*' ${WIDGET} | cut -c 23-) |
+	    tr -d "'" | tr -d '`' | sed 's:\$.*:*:' | sort -u)
 
-	for ENDPOINT in ${ENDPOINTS}; do
-		echo "${ENDPOINT}"
+	if [ -z "${ENDPOINTS}" ]; then
+		echo "No endpoints found for ${WIDGET}"
+		exit 1
+	fi
+
+	REGISTERED=
+
+	for METAFILE in ${METADATA}; do
+		if grep -q "<filename>${FILENAME}</filename>" ${METAFILE}; then
+			REGISTERED=$(xmllint ${METAFILE} --xpath '//*[filename="'"${FILENAME}"'"]//endpoints//endpoint' |
+			    sed -e 's:^[^>]*>::' -e 's:<[^<]*$::' | sort)
+			break
+		fi
 	done
+
+	if [ -z "${REGISTERED}" ]; then
+		echo "Did not find metadata for ${WIDGET}"
+		exit 1
+	fi
+
+	if [ "${REGISTERED}" != "${ENDPOINTS}" ]; then
+		echo "Registered widget endpoints do not match:"
+		echo "<<<<<<< ${WIDGET}"
+		echo "${ENDPOINTS}"
+		echo ========
+		echo "${REGISTERED}"
+		echo ">>>>>>> ${METAFILE}"
+		exit 1
+	fi
+
+	# XXX finally, check the registered endpoints against actual ACL defintions
 done
