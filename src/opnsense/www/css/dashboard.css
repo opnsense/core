@@ -2,6 +2,10 @@
     --chart-js-font-color: #000000;
 }
 
+.ui-resizable-handle {
+    opacity: 0 !important;
+}
+
 #save-grid {
     width: inherit;
     height: inherit;
