@@ -150,9 +150,18 @@ openlog("openvpn", LOG_ODELAY, LOG_AUTH);
 
 /* parse environment variables */
 $parms = [];
-$parmlist = ['auth_server', 'auth_method', 'common_name', 'auth_file', 'auth_defer', 'auth_control_file'];
+$parmlist = ['auth_server', 'auth_method', 'common_name', 'auth_file', 'auth_defer', 'auth_control_file', 'untrusted_ip', 'untrusted_ip6'];
 foreach ($parmlist as $key) {
     $parms[$key] = isset(getenv()[$key]) ? getenv()[$key] : null;
+}
+
+global $remote_address;
+if (!empty($parms['untrusted_ip6'])) {
+    $parms['remote_address'] = $parms['untrusted_ip6'];
+    $remote_address = $parms['untrusted_ip6'];
+} elseif (!empty($parms['untrusted_ip'])) {
+    $parms['remote_address'] = $parms['untrusted_ip'];
+    $remote_address = $parms['untrusted_ip'];
 }
 
 /* perform authentication */
