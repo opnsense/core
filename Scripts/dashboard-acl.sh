@@ -37,7 +37,7 @@ for WIDGET in ${WIDGETS}; do
 		continue
 	fi
 
-	ENDPOINTS=$((grep -o 'this\.ajaxCall([^,)]*' ${WIDGET} | cut -c 15-;
+	ENDPOINTS=$( (grep -o 'this\.ajaxCall([^,)]*' ${WIDGET} | cut -c 15-;
 	    grep -o 'super\.openEventSource([^,)]*' ${WIDGET} | cut -c 23-) |
 	    tr -d "'" | tr -d '`' | sed 's:\$.*:*:' | sort -u)
 
