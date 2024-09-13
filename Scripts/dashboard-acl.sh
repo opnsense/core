@@ -74,10 +74,14 @@ for WIDGET in ${WIDGETS}; do
 	fi
 
 	for ENDPOINT in ${ENDPOINTS}; do
-		if ! grep -q "<pattern>${ENDPOINT#"/"}</pattern>" ${ACLS}; then
-			echo "Unknown ACL for ${WIDGET}:"
-			echo ${ENDPOINT}
-			exit 1
+		PATTERN=${ENDPOINT#/}
+		if ! grep -q "<pattern>${PATTERN}</pattern>" ${ACLS}; then
+			PATTERN=${PATTERN%/*}
+			if ! grep -q "<pattern>${PATTERN}/\*</pattern>" ${ACLS}; then
+				echo "Unknown ACL for ${WIDGET}:"
+				echo ${ENDPOINT}
+				exit 1
+			fi
 		fi
 	done
 done
