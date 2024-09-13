@@ -28,7 +28,7 @@
 ACLDIR=src/opnsense/mvc/app/models
 WIDGETDIR=src/opnsense/www/js/widgets
 
-ACLS=$(find -s ${ACLDIR} -name "ACL.xml")
+ACLS=$(find -s ${ACLDIR} -name "ACL.xml"; if [ -d "${1}" ]; then find -s ${1}/${ACLDIR} -name "ACL.xml"; fi)
 METADATA=$(find -s ${WIDGETDIR}/Metadata -name "*.xml")
 WIDGETS=$(find -s ${WIDGETDIR} -name "*.js")
 
