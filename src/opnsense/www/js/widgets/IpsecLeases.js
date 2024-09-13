@@ -48,7 +48,7 @@ export default class IpsecLeases extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        const ipsecStatusResponse = await this.ajaxCall('/api/ipsec/Connections/isEnabled');
+        const ipsecStatusResponse = await this.ajaxCall('/api/ipsec/connections/isEnabled');
 
         if (!ipsecStatusResponse.enabled) {
             this.displayError(`${this.translations.unconfigured}`);

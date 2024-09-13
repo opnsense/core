@@ -49,14 +49,14 @@ export default class IpsecTunnels extends BaseTableWidget {
 
     async onWidgetTick() {
         if (!this.locked) { // Check if the widget is locked
-            const ipsecStatusResponse = await this.ajaxCall('/api/ipsec/Connections/isEnabled');
+            const ipsecStatusResponse = await this.ajaxCall('/api/ipsec/connections/isEnabled');
 
             if (!ipsecStatusResponse.enabled) {
                 this.displayError(`${this.translations.unconfigured}`);
                 return;
             }
 
-            const response = await this.ajaxCall('/api/ipsec/Sessions/searchPhase1');
+            const response = await this.ajaxCall('/api/ipsec/sessions/searchPhase1');
 
             if (!response || !response.rows || response.rows.length === 0) {
                 this.displayError(`${this.translations.notunnels}`);
@@ -79,13 +79,13 @@ export default class IpsecTunnels extends BaseTableWidget {
 
     async connectTunnel(ikeid) {
         await this.ajaxCall(`/api/ipsec/sessions/connect/${ikeid}`, JSON.stringify({ikeid: ikeid}), 'POST');
-        const response = await this.ajaxCall('/api/ipsec/Sessions/searchPhase1');
+        const response = await this.ajaxCall('/api/ipsec/sessions/searchPhase1');
         this.processTunnels(response.rows); // Refresh the tunnels
     }
 
     async disconnectTunnel(ikeid) {
         await this.ajaxCall(`/api/ipsec/sessions/disconnect/${ikeid}`, JSON.stringify({ikeid: ikeid}), 'POST');
-        const response = await this.ajaxCall('/api/ipsec/Sessions/searchPhase1');
+        const response = await this.ajaxCall('/api/ipsec/sessions/searchPhase1');
         this.processTunnels(response.rows); // Refresh the tunnels
     }
 

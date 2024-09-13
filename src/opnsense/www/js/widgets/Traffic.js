@@ -211,7 +211,7 @@ export default class Traffic extends BaseWidget {
     }
 
     async onMarkupRendered() {
-        super.openEventSource('/api/diagnostics/traffic/stream/1', this._onMessage.bind(this));
+        super.openEventSource(`/api/diagnostics/traffic/stream/${'1'}`, this._onMessage.bind(this));
     }
 
     async getWidgetOptions() {
