@@ -364,6 +364,7 @@ class WidgetManager  {
 
                                 if (this.runtimeOptions.editMode) {
                                     $('.widget-content').css('cursor', 'grab');
+                                    $('.link-handle').hide();
                                     $('.close-handle').show();
                                     $('.edit-handle').show();
                                 }
@@ -405,6 +406,7 @@ class WidgetManager  {
                 this.grid.enableMove(true);
                 this.grid.enableResize(true);
                 $('.widget-content').css('cursor', 'grab');
+                $('.link-handle').hide();
                 $('.close-handle').show();
                 $('.edit-handle').show();
                 $('#add_widget').show();
@@ -414,6 +416,7 @@ class WidgetManager  {
                 this.grid.enableMove(false);
                 this.grid.enableResize(false);
                 $('.widget-content').css('cursor', 'default');
+                $('.link-handle').show();
                 $('.close-handle').hide();
                 $('.edit-handle').hide();
                 $('#add_widget').hide();
@@ -571,7 +574,7 @@ class WidgetManager  {
     _makeWidget(identifier, content) {
         const title = this.widgetTranslations[identifier].title;
         const link = this.breakoutLinks[identifier] !== "" ? `
-                <div id="link-handle-${identifier}">
+                <div id="link-handle-${identifier}" class="link-handle">
                     <a href="${this.breakoutLinks[identifier]}" target="_blank">
                         <i class="fa fa-external-link fa-xs"></i>
                     </a>
@@ -581,11 +584,10 @@ class WidgetManager  {
         let $content = $(`<div class="widget-content"></div>`);
         let $header = $(`
             <div class="widget-header">
-                <div class="widget-header-left">
-                    ${link}
-                </div>
+                <div class="widget-header-left"></div>
                 <div id="${identifier}-title" class="widget-title"><b>${title}</b></div>
                 <div class="widget-command-container">
+                    ${link}
                     <div id="close-handle-${identifier}" class="close-handle" style="display: none;">
                         <i class="fa fa-times fa-xs"></i>
                     </div>
