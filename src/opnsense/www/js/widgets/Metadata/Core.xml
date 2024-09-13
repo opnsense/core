@@ -28,6 +28,7 @@
     </systeminformation>
     <interfaces>
         <filename>Interfaces.js</filename>
+        <link>/ui/interfaces/overview</link>
         <endpoints>
             <endpoint>/api/interfaces/overview/interfacesInfo</endpoint>
         </endpoints>
@@ -68,6 +69,7 @@
     </interfacestatistics>
     <traffic>
         <filename>Traffic.js</filename>
+        <link>/ui/diagnostics/traffic</link>
         <endpoints>
             <endpoint>/api/diagnostics/traffic/*</endpoint>
         </endpoints>
@@ -103,6 +105,7 @@
     </disk>
     <firewall>
         <filename>Firewall.js</filename>
+        <link>/ui/diagnostics/firewall/log</link>
         <endpoints>
             <endpoint>/api/diagnostics/firewall/streamLog</endpoint>
             <endpoint>/api/diagnostics/interface/getInterfaceNames</endpoint>
@@ -159,6 +162,7 @@
     </swap>
     <carp>
         <filename>Carp.js</filename>
+        <link>/ui/interfaces/vip</link>
         <endpoints>
             <endpoint>/api/diagnostics/interface/get_vip_status</endpoint>
         </endpoints>
@@ -171,6 +175,7 @@
     </carp>
     <gateways>
         <filename>Gateways.js</filename>
+        <link>/ui/routing/configuration</link>
         <endpoints>
             <endpoint>/api/routes/gateway/status</endpoint>
         </endpoints>
@@ -195,6 +200,7 @@
     </thermalsensors>
     <monit>
         <filename>Monit.js</filename>
+        <link>/ui/monit</link>
         <endpoints>
             <endpoint>/api/monit/status/get/xml</endpoint>
         </endpoints>
@@ -230,6 +236,7 @@
     </livelog>
     <ipsecleases>
         <filename>IpsecLeases.js</filename>
+        <link>/ui/ipsec/leases</link>
         <endpoints>
             <endpoint>/api/ipsec/connections/*</endpoint>
             <endpoint>/api/ipsec/leases/*</endpoint>
@@ -245,6 +252,7 @@
     </ipsecleases>
     <ipsectunnels>
         <filename>IpsecTunnels.js</filename>
+        <link>/ui/ipsec/sessions</link>
         <endpoints>
             <endpoint>/api/ipsec/connections/*</endpoint>
             <endpoint>/api/ipsec/sessions/*</endpoint>
@@ -265,6 +273,7 @@
     </ipsectunnels>
     <Wireguard>
         <filename>Wireguard.js</filename>
+        <link>/ui/wireguard/general</link>
         <endpoints>
             <endpoint>/api/wireguard/service/show</endpoint>
             <endpoint>/api/wireguard/general/get</endpoint>
@@ -282,6 +291,7 @@
     </Wireguard>
     <services>
         <filename>Services.js</filename>
+        <link>/ui/core/service</link>
         <endpoints>
             <endpoint>/api/core/service/*</endpoint>
         </endpoints>
@@ -297,6 +307,7 @@
     </services>
     <openvpnclients>
         <filename>OpenVPNClients.js</filename>
+        <link>/ui/openvpn/status</link>
         <endpoints>
             <endpoint>/api/openvpn/service/search_sessions</endpoint>
             <endpoint>/api/openvpn/service/kill_session</endpoint>
@@ -311,6 +322,7 @@
     </openvpnclients>
     <openvpnservers>
         <filename>OpenVPNServers.js</filename>
+        <link>/ui/openvpn/status</link>
         <endpoints>
             <endpoint>/api/openvpn/service/search_sessions</endpoint>
         </endpoints>
@@ -324,6 +336,7 @@
     </openvpnservers>
     <picture>
         <filename>Picture.js</filename>
+        <link>/system_general.php</link>
         <endpoints>
             <endpoint>/api/core/dashboard/picture</endpoint>
         </endpoints>

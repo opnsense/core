@@ -123,8 +123,13 @@ class DashboardController extends ApiControllerBase
             foreach ($md as $widgetId => $metadataAttributes) {
                 $widgetId = (string)$widgetId;
                 $fname = (string)$metadataAttributes->filename;
+                $link = (string)$metadataAttributes->link;
                 $endpoints = (array)($metadataAttributes->endpoints->endpoint ?? []);
                 $translations = (array)($metadataAttributes->translations ?? []);
+
+                if (!empty($link)) {
+                    $endpoints[] = $link;
+                }
 
                 if (!$this->canAccessEndpoints($endpoints)) {
                     continue;
@@ -141,6 +146,7 @@ class DashboardController extends ApiControllerBase
                 $result['modules'][] = [
                     'id' => $widgetId,
                     'module' => $fname,
+                    'link' => $link,
                     'translations' => $translations
                 ];
             }

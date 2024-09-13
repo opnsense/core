@@ -90,6 +90,7 @@ class WidgetManager  {
         this.persistedOptions = {}; // persisted options
         this.gettext = gettext;
         this.loadedModules = {}; // id -> widget module
+        this.breakoutLinks = {}; // id -> breakout links
         this.widgetTranslations = {}; // id -> translations
         this.widgetConfigurations = {}; // id -> per-widget configuration
         this.widgetClasses = {}; // id -> instantiated widget module
@@ -144,6 +145,7 @@ class WidgetManager  {
                 } catch (error) {
                     console.error('Could not import module', item.module, error);
                 } finally {
+                    this.breakoutLinks[item.id] = item.link;
                     this.widgetTranslations[item.id] = item.translations;
                 }
             });
@@ -164,7 +166,7 @@ class WidgetManager  {
             } catch (error) {
                 console.error(error);
 
-                let $panel = this._makeWidget(id, this.widgetTranslations[id].title, `
+                let $panel = this._makeWidget(id, `
                     <div class="widget-error">
                         <i class="fa fa-exclamation-circle text-danger"></i>
                         <br/>
@@ -216,7 +218,7 @@ class WidgetManager  {
 
         // setup generic panels
         let content = widget.getMarkup();
-        let $panel = this._makeWidget(id, this.widgetTranslations[id].title, content);
+        let $panel = this._makeWidget(id, content);
 
         let options = widget.getGridOptions();
 
@@ -362,6 +364,7 @@ class WidgetManager  {
 
                                 if (this.runtimeOptions.editMode) {
                                     $('.widget-content').css('cursor', 'grab');
+                                    $('.link-handle').hide();
                                     $('.close-handle').show();
                                     $('.edit-handle').show();
                                 }
@@ -403,6 +406,7 @@ class WidgetManager  {
                 this.grid.enableMove(true);
                 this.grid.enableResize(true);
                 $('.widget-content').css('cursor', 'grab');
+                $('.link-handle').hide();
                 $('.close-handle').show();
                 $('.edit-handle').show();
                 $('#add_widget').show();
@@ -412,6 +416,7 @@ class WidgetManager  {
                 this.grid.enableMove(false);
                 this.grid.enableResize(false);
                 $('.widget-content').css('cursor', 'default');
+                $('.link-handle').show();
                 $('.close-handle').hide();
                 $('.edit-handle').hide();
                 $('#add_widget').hide();
@@ -566,7 +571,15 @@ class WidgetManager  {
     }
 
     // Generic widget panels
-    _makeWidget(identifier, title, content) {
+    _makeWidget(identifier, content) {
+        const title = this.widgetTranslations[identifier].title;
+        const link = this.breakoutLinks[identifier] !== "" ? `
+                <div id="link-handle-${identifier}" class="link-handle">
+                    <a href="${this.breakoutLinks[identifier]}" target="_blank">
+                        <i class="fa fa-external-link fa-xs"></i>
+                    </a>
+                </div>
+        ` : '';
         let $panel = $(`<div class="widget widget-${identifier}"></div>`);
         let $content = $(`<div class="widget-content"></div>`);
         let $header = $(`
@@ -574,6 +587,7 @@ class WidgetManager  {
                 <div class="widget-header-left"></div>
                 <div id="${identifier}-title" class="widget-title"><b>${title}</b></div>
                 <div class="widget-command-container">
+                    ${link}
                     <div id="close-handle-${identifier}" class="close-handle" style="display: none;">
                         <i class="fa fa-times fa-xs"></i>
                     </div>

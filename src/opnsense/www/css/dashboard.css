@@ -83,6 +83,7 @@
     font-size: 2em;
 }
 
+.link-handle,
 .close-handle,
 .edit-handle {
     margin-left: 0.5em;
@@ -91,9 +92,11 @@
     cursor: pointer;
 }
 
+.link-handle > a,
 .close-handle > i,
 .edit-handle > i {
     font-size: 0.8em;
+    color: black;
 }
 
 .widget-header-left {
