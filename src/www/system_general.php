@@ -297,9 +297,8 @@ $( document ).ready(function() {
     $("#dnsallowoverride").change();
 
     $("#remove_picture").click(function(event){
-        event.preventDefault();
         $("#picture").remove();
-        $("#pict_td").html('<input name="pictfile" type="file" size="40" class="btn btn-secondary" id="pictfile"/>');
+        $('#save').click();
     });
 });
 //]]>
@@ -553,7 +552,7 @@ $( document ).ready(function() {
             <tr>
               <td style="width:22%"></td>
               <td>
-                <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
+                <input name="Submit" id="save" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
               </td>
             </tr>
           </table>
