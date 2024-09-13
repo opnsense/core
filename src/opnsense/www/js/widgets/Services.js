@@ -55,7 +55,7 @@ export default class Services extends BaseTableWidget {
     }
 
     async updateServices() {
-        const data = await this.ajaxCall('/api/core/service/search');
+        const data = await this.ajaxCall(`/api/core/service/${'search'}`);
 
         if (!data || !data.rows || data.rows.length === 0) {
             this.displayError(this.translations.noservices);
