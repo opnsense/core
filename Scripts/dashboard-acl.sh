@@ -25,10 +25,12 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
+ACLDIR=src/opnsense/mvc/app/models
 WIDGETDIR=src/opnsense/www/js/widgets
 
-WIDGETS=$(find -s ${WIDGETDIR} -name "*.js")
+ACLS=$(find -s ${ACLDIR} -name "ACL.xml")
 METADATA=$(find -s ${WIDGETDIR}/Metadata -name "*.xml")
+WIDGETS=$(find -s ${WIDGETDIR} -name "*.js")
 
 for WIDGET in ${WIDGETS}; do
 	FILENAME=$(basename ${WIDGET})
@@ -37,8 +39,8 @@ for WIDGET in ${WIDGETS}; do
 		continue
 	fi
 
-	ENDPOINTS=$( (grep -o 'this\.ajaxCall([^,)]*' ${WIDGET} | cut -c 15-;
-	    grep -o 'super\.openEventSource([^,)]*' ${WIDGET} | cut -c 23-) |
+	ENDPOINTS=$( (grep -o 'this\.ajaxCall([^,)]*' ${WIDGET} | cut -c 15-; \
+	    grep -o 'super\.openEventSource([^,)]*' ${WIDGET} | cut -c 23-) | \
 	    tr -d "'" | tr -d '`' | sed 's:\$.*:*:' | sort -u)
 
 	if [ -z "${ENDPOINTS}" ]; then
@@ -50,7 +52,7 @@ for WIDGET in ${WIDGETS}; do
 
 	for METAFILE in ${METADATA}; do
 		if grep -q "<filename>${FILENAME}</filename>" ${METAFILE}; then
-			REGISTERED=$(xmllint ${METAFILE} --xpath '//*[filename="'"${FILENAME}"'"]//endpoints//endpoint' |
+			REGISTERED=$(xmllint ${METAFILE} --xpath '//*[filename="'"${FILENAME}"'"]//endpoints//endpoint' | \
 			    sed -e 's:^[^>]*>::' -e 's:<[^<]*$::' | sort)
 			break
 		fi
@@ -71,5 +73,11 @@ for WIDGET in ${WIDGETS}; do
 		exit 1
 	fi
 
-	# XXX finally, check the registered endpoints against actual ACL defintions
+	for ENDPOINT in ${ENDPOINTS}; do
+		if ! grep -q "<pattern>${ENDPOINT#"/"}</pattern>" ${ACLS}; then
+			echo "Unknown ACL for ${WIDGET}:"
+			echo ${ENDPOINT}
+			exit 1
+		fi
+	done
 done
