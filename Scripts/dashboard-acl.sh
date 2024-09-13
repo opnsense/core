@@ -74,10 +74,16 @@ for WIDGET in ${WIDGETS}; do
 	fi
 
 	for ENDPOINT in ${ENDPOINTS}; do
+		# do a full match here
 		PATTERN=${ENDPOINT#/}
-		if ! grep -q "<pattern>${PATTERN}</pattern>" ${ACLS}; then
-			PATTERN=${PATTERN%/*}
-			if ! grep -q "<pattern>${PATTERN}/\*</pattern>" ${ACLS}; then
+		if ! grep -Fq "<pattern>${PATTERN}</pattern>" ${ACLS}; then
+			if [ -z "${PATTERN%%*/\*}" ]; then
+				# already a wildcard match, allow lower path
+				PATTERN=${PATTERN%/*}
+			fi
+			# do a wildcard match as a fallback
+			PATTERN=${PATTERN%/*}/*
+			if ! grep -Fq "<pattern>${PATTERN}</pattern>" ${ACLS}; then
 				echo "Unknown ACL for ${WIDGET}:"
 				echo ${ENDPOINT}
 				exit 1
