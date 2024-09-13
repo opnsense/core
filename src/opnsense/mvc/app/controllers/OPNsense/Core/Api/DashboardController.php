@@ -84,15 +84,16 @@ class DashboardController extends ApiControllerBase
         return [
             'options' => [],
             'widgets' => [
-                ['id' => 'systeminformation', 'x' => 0, 'y' => 0],
+                ['id' => 'systeminformation', 'x' => 0, 'y' => 0, 'w' => 2],
                 ['id' => 'memory', 'x' => 2, 'y' => 0],
                 ['id' => 'disk', 'x' => 3, 'y' => 0],
                 ['id' => 'interfacestatistics', 'x' => 4, 'y' => 0, 'w' => 4],
-                ['id' => 'cpu', 'x' => 8, 'y' => 0],
-                ['id' => 'announcements', 'x' => 8, 'y' => 2],
-                ['id' => 'traffic', 'x' => 2, 'y' => 2],
-                ['id' => 'gateways', 'x' => 10, 'y' => 0],
-                ['id' => 'firewall', 'x' => 4, 'y' => 2, 'w' => 4],
+                ['id' => 'firewall', 'x' => 8, 'y' => 0, 'w' => 4],
+                ['id' => 'gateways', 'x' => 2, 'y' => 1, 'w' => 2],
+                ['id' => 'services', 'x' => 4, 'y' => 1, 'w' => '4'],
+                ['id' => 'traffic', 'x' => 8, 'y' => 1, 'w' => 4],
+                ['id' => 'cpu', 'x' => 0, 'y' => 1, 'w' => 2],
+                ['id' => 'announcements', 'x' => 2, 'y' => 2, 'w' => 2],
             ]
         ];
     }
