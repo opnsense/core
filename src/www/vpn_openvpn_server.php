@@ -1073,7 +1073,25 @@ $( document ).ready(function() {
                     <tr class="opt_mode opt_mode_server_tls_user">
                       <td style="width:22%"><a id="help_for_strictusercn" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Strict User/CN Matching"); ?></td>
                       <td>
-                        <input name="strictusercn" type="checkbox" value="yes" <?=!empty($pconfig['strictusercn']) ? "checked=\"checked\"" : "" ;?> />
+                        <select name="strictusercn" class="selectpicker">
+                          <option value=""><?=gettext('No') ?></option>
+<?php
+                          $openvpn_strictusercn = array(
+                            1 => gettext('Yes'),
+                            2 => gettext('Yes (case insensitive)'),
+                          );
+			  $value = $pconfig['strictusercn']=="yes"?1:$pconfig['strictusercn'];
+                          foreach ($openvpn_strictusercn as $strictusercn => $strictusercndesc) :
+                              $selected = "";
+                              if ($strictusercn == $value) {
+                                  $selected = " selected=\"selected\"";
+                              }
+                          ?>
+                            <option value="<?= $strictusercn ?>" <?= $selected ?>><?= $strictusercndesc ?></option>
+<?php
+                        endforeach; ?>
+                        </select>
+
                         <div class="hidden" data-for="help_for_strictusercn">
                           <span>
                               <?=gettext("When authenticating users, enforce a match between the Common Name of the client certificate and the username given at login."); ?>
