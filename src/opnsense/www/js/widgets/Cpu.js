@@ -106,8 +106,7 @@ export default class Cpu extends BaseWidget {
     }
 
     async onMarkupRendered() {
-        let name = 'getcputype';
-        const data = await this.ajaxCall(`/api/diagnostics/cpu_usage/${name}`);
+        const data = await this.ajaxCall(`/api/diagnostics/cpu_usage/${'getcputype'}`);
         $('.cpu-type').text(data);
 
         const config = await this.getWidgetConfig();
@@ -124,8 +123,7 @@ export default class Cpu extends BaseWidget {
             }
         });
 
-        name = 'stream';
-        super.openEventSource(`/api/diagnostics/cpu_usage/${name}`, (event) => {
+        super.openEventSource(`/api/diagnostics/cpu_usage/${'stream'}`, (event) => {
             if (!event) {
                 super.closeEventSource();
             }
