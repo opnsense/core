@@ -2331,12 +2331,13 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
     $realif = get_real_interface($interface);
     $realifv6 = get_real_interface($interface, 'inet6');
+    $devices = plugins_devices();
 
     /* get the correct hardware interface if PPP is involved or return the one we have */
     $realhwif = interface_ppps_hardware($realif)[0]; /* XXX support all MLPPP devices */
 
     if ($reload) {
-        foreach (plugins_devices() as $device) {
+        foreach ($devices as $device) {
             if (empty($device['function']) || empty($device['names'])) {
                 continue;
             }
@@ -2374,15 +2375,35 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         interface_wireless_configure($realif, $wancfg);
     }
 
+    /* get expected and current MAC address from the configuration and system */
+    $mac_prev = $ifconfig_details[$realhwif]['macaddr'] ?? '';
+    $mac_next = !empty($wancfg['spoofmac']) ? $wancfg['spoofmac'] : ($ifconfig_details[$realhwif]['macaddr_hw'] ?? '');
+
+    /*
+     * Disable MAC spoofing if the device type does not support it,
+     * its use is prohibited or when it is otherwise reserved.
+     */
+    foreach ($devices as $device) {
+        if (preg_match('/' . $device['pattern'] . '/', $realhwif)) {
+            if (isset($device['spoofmac']) && $device['spoofmac'] == false) {
+                $mac_next = '';
+            }
+            break;
+        }
+    }
+
+    /* in case of LAGG the empty MAC may be used which we need to ignore */
+    if ($mac_next == '00:00:00:00:00:00') {
+        $mac_next = '';
+    }
+
     /*
      * Do not try to reapply the spoofed MAC if it's already applied.
      * When ifconfig link is used, it cycles the interface down/up,
      * which triggers the interface config again, which attempts to
      * spoof the MAC again which cycles the link again.
      */
-    $mac_prev = $ifconfig_details[$realhwif]['macaddr'] ?? '';
-    $mac_next = !empty($wancfg['spoofmac']) ? $wancfg['spoofmac'] : ($ifconfig_details[$realhwif]['macaddr_hw'] ?? '');
-    if (!empty($mac_prev) && !empty($mac_next) && $mac_next !== '00:00:00:00:00:00' && strcasecmp($mac_prev, $mac_next)) {
+    if (!empty($mac_prev) && !empty($mac_next) && strcasecmp($mac_prev, $mac_next)) {
         /*
          * When the hardware interface matches the IPv6 interface where we set
          * the MAC address we can assist in providing the accompanying link-local
