@@ -659,13 +659,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("The DHCPv6 Server is active on this interface and it can be used only with a static IPv6 configuration. Please disable the DHCPv6 Server service on this interface first, then change the interface configuration.");
         }
 
-        if ($pconfig['type'] != 'none' || $pconfig['type6'] != 'none') {
-            foreach (plugins_devices() as $device) {
-                if (!isset($device['configurable']) || $device['configurable'] == true) {
-                    continue;
-                }
-                if (preg_match('/' . $device['pattern'] . '/', $pconfig['if'])) {
+        foreach (plugins_devices() as $device) {
+            if (!preg_match('/' . $device['pattern'] . '/', $pconfig['if'])) {
+                continue;
+            }
+
+            if (isset($device['configurable']) && $device['configurable'] == false) {
+                if ($pconfig['type'] != 'none' || $pconfig['type6'] != 'none') {
                     $input_errors[] = gettext('Cannot assign an IP configuration type to a tunnel interface.');
+                }
+            }
+
+            if (isset($device['spoofmac']) && $device['spoofmac'] == false) {
+                if (!empty($pconfig['spoofmac'])) {
+                    $input_errors[] = gettext('Cannot assign a MAC address to this type of interface.');
                 }
             }
         }
