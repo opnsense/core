@@ -395,6 +395,9 @@ lint-model:
 		done; \
 	done
 
+lint-acl:
+	@${.CURDIR}/Scripts/dashboard-acl.sh
+
 SCRIPTDIRS!=	find ${.CURDIR}/src/opnsense/scripts -type d -depth 1
 
 lint-exec:
