@@ -348,4 +348,22 @@
             <nopicture>No picture available. You can configure one via System: Settings: General.</nopicture>
         </translations>
     </picture>
+    <leases>
+        <filename>Leases.js</filename>
+        <endpoints>
+            <endpoint>/api/dhcpv4/leases/searchLease</endpoint>
+        </endpoints>
+        <translations>
+            <title>DHCPv4 Leases</title>
+            <servicedisabled>DHCPv4 service is not running</servicedisabled>
+            <enabled>Online</enabled>
+            <disabled>Offline</disabled>
+            <ip>IP</ip>
+            <mac>MAC</mac>
+            <hostname>Hostname</hostname>
+            <type>Type</type>
+            <undefined>N/A</undefined>
+            <nolease>No leases</nolease>
+        </translations>
+    </leases>
 </metadata>
