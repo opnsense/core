@@ -853,23 +853,6 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
     }
 
     switch ($ifcfg['ipaddr'] ?? 'none') {
-        case 'ppp':
-        case 'pppoe':
-        case 'pptp':
-        case 'l2tp':
-            if (!empty($ppps)) {
-                foreach ($ppps as $ppp) {
-                    if ($ifcfg['if'] == $ppp['if']) {
-                        if (isset($ppp['ondemand']) && $suspend) {
-                            configdp_run('interface reconfigure', [$interface], true);
-                        } else {
-                            killbypid("/var/run/{$ppp['type']}_{$interface}.pid");
-                        }
-                        break;
-                    }
-                }
-            }
-            break;
         case 'dhcp':
             killbypid("/var/run/dhclient.{$realif}.pid");
             break;
@@ -888,6 +871,9 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
             }
         }
     }
+
+    /* check reset of running PPP configuration inside function */
+    interface_ppps_reset($interface, $suspend, $ifcfg, $ppps);
 
     /* clear stale state associated with this interface */
     mwexecf('/usr/local/sbin/ifctl -4c -i %s', $realif);
@@ -957,15 +943,56 @@ function interface_ppps_capable($ifcfg, $ppps)
     return false;
 }
 
+function interface_ppps_hardware($device)
+{
+    $devices = [$device];
+
+    foreach (config_read_array('ppps', 'ppp') as $ppp) {
+        if ($device == $ppp['if']) {
+            $devices = [];
+            foreach (explode(',', $ppp['ports']) as $port) {
+                /*
+                 * XXX We only have get_real_interface() here because
+                 * PPP may be assigned to an assigned interface!  :(
+                 */
+                $devices[] = get_real_interface($port);
+            }
+            break;
+        }
+    }
+
+    return $devices;
+}
+
+function interface_ppps_reset($interface, $suspend, $ifcfg, $ppps)
+{
+    if (!interface_ppps_capable($ifcfg, $ppps)) {
+        return;
+    }
+
+    foreach ($ppps as $ppp) {
+        if ($ifcfg['if'] == $ppp['if']) {
+            if (isset($ppp['ondemand']) && $suspend) {
+                configdp_run('interface reconfigure', [$interface], true);
+            } else {
+                killbypid("/var/run/{$ppp['type']}_{$interface}.pid");
+            }
+            break;
+        }
+    }
+}
+
 function interface_ppps_configure($interface)
 {
     global $config;
 
-    /* Return for unassigned interfaces. This is a minimum requirement. */
-    if (empty($config['interfaces'][$interface])) {
+    $ifcfg = $config['interfaces'][$interface] ?? null;
+    $ppps = $config['ppps']['ppp'] ?? null;
+
+    if (!interface_ppps_capable($ifcfg, $ppps)) {
         return;
     }
-    $ifcfg = $config['interfaces'][$interface];
+
     if (!isset($ifcfg['enable'])) {
         return;
     }
@@ -1004,13 +1031,11 @@ function interface_ppps_configure($interface)
     $ppp = null;
     $idx = 0;
 
-    if (isset($config['ppps']['ppp'])) {
-        foreach ($config['ppps']['ppp'] as $i => $tmp) {
-            if ($ifcfg['if'] == $tmp['if']) {
-                $ppp = $tmp;
-                $idx = $i;
-                break;
-            }
+    foreach ($ppps as $i => $tmp) {
+        if ($ifcfg['if'] == $tmp['if']) {
+            $ppp = $tmp;
+            $idx = $i;
+            break;
         }
     }
 
@@ -2264,19 +2289,8 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     $realif = get_real_interface($interface);
     $realifv6 = get_real_interface($interface, 'inet6');
 
-    switch ($wancfg['ipaddr'] ?? 'none') {
-        case 'l2tp':
-        case 'ppp':
-        case 'pppoe':
-        case 'pptp':
-            /* hardware device underneath software node */
-            $realhwif = get_ppp_parent($realif);
-            break;
-        default:
-            /* hardware device remains a hardware device */
-            $realhwif = $realif;
-            break;
-    }
+    /* get the correct hardware interface if PPP is involved or return the one we have */
+    $realhwif = interface_ppps_hardware($realif)[0]; /* XXX support all MLPPP devices */
 
     if ($reload) {
         foreach (plugins_devices() as $device) {
@@ -2385,15 +2399,12 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         interface_configure_mtu($realhwif, $wancfg['mtu'], $ifconfig_details);
     }
 
+    /* since the connectivity can include IPv4 and/or IPv6 let the function decide */
+    interface_ppps_configure($interface);
+
     switch ($wancfg['ipaddr'] ?? 'none') {
         case 'dhcp':
             interface_dhcp_configure($interface);
-            break;
-        case 'l2tp':
-        case 'ppp':
-        case 'pppoe':
-        case 'pptp':
-            interface_ppps_configure($interface);
             break;
         default:
             interface_static_configure($interface, $wancfg);
@@ -3530,18 +3541,6 @@ function convert_friendly_interface_to_friendly_descr($interface)
     return $ifdesc;
 }
 
-function get_ppp_parent($ifcfg_if)
-{
-    foreach (config_read_array('ppps', 'ppp') as $ppp) {
-        if ($ifcfg_if == $ppp['if']) {
-            $ports = explode(',', $ppp['ports']);
-            return get_real_interface($ports[0]);
-        }
-    }
-
-    return null;
-}
-
 /* collect hardware device parents for VLAN, LAGG and bridges */
 function interface_parent_devices($device, $as_interface = false)
 {
@@ -3637,7 +3636,7 @@ function get_real_interface($interface = 'wan', $family = 'all')
                             case 'pppoe':
                             case 'pptp':
                                 /* except for "ppp" all have parent interfaces */
-                                $realif = get_ppp_parent($realif);
+                                $realif = interface_ppps_hardware($realif)[0];
                                 break;
                             default:
                                 break;
