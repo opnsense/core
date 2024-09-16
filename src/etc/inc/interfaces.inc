@@ -1038,15 +1038,14 @@ function interface_ppps_configure($interface)
         return;
     }
 
-    $ipv4_mode = false;
-    $ipv6_mode = false;
+    $ipv4_mode = $ipv6_mode = 'disable';
 
     switch ($ifcfg['ipaddr'] ?? 'none') {
         case 'ppp':
         case 'pppoe':
         case 'pptp':
         case 'l2tp':
-            $ipv4_mode = true;
+            $ipv4_mode = 'enable';
             break;
         default:
             break;
@@ -1056,19 +1055,15 @@ function interface_ppps_configure($interface)
         case 'dhcp6':
         case 'pppoev6':
         case 'slaac':
-            $ipv6_mode = true;
+            $ipv6_mode = 'enable';
             break;
         default:
             break;
     }
 
-    if (!$ipv4_mode && !$ipv6_mode) {
+    if ($ipv4_mode != 'enable' && $ipv6_mode != 'enable') {
         return;
     }
-
-    /* we need the mode to render in the configuration */
-    $ipv4_mode = $ipv4_mode ? 'enable' : 'disable';
-    $ipv6_mode = $ipv6_mode ? 'enable' : 'disable';
 
     $ppp = null;
     $idx = 0;
@@ -1079,12 +1074,6 @@ function interface_ppps_configure($interface)
             $idx = $i;
             break;
         }
-    }
-
-    /* XXX since interface_ppps_capable() verified this it is likely spurious to check */
-    if (empty($ppp)) {
-        log_msg("interface_ppps_configure() cannot find PPP config for device {$ifcfg['if']}", LOG_ERR);
-        return;
     }
 
     $ports = explode(',', $ppp['ports']);
