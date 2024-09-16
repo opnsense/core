@@ -36,7 +36,7 @@ $all_intf_details = legacy_interfaces_details();
 $a_gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    if ($_GET['getpic']=="true") {
+    if (!empty($_GET['getpic'])) {
         $pic_type = explode(".", $config['system']['picture_filename'])[1];
         if ($config['system']['picture']) {
             $data = base64_decode($config['system']['picture']);
