@@ -62,7 +62,15 @@ export default class Leases extends BaseTableWidget {
         }
 
         // Fetch lease information
-        const leaseData = await this.ajaxCall('/api/dhcpv4/leases/searchLease');
+        let eparams =  {
+                    current:1,
+                    inactive:false,
+                    rowCount:-1,
+                    searchPhrase:"",
+                    selected_interfaces:[],
+                    sort: {}
+                };
+        const leaseData = await this.ajaxCall('/api/dhcpv4/leases/searchLease', JSON.stringify(eparams),'POST');
         if (!leaseData || !leaseData.rows || leaseData.rows.length === 0) {
             this.displayError(this.translations.nolease);
             return;
