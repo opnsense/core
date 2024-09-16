@@ -415,7 +415,7 @@ LINTBIN?=	${.CURDIR}/contrib/parallel-lint/parallel-lint
 lint-php:
 	@${LINTBIN} src
 
-lint: plist-check lint-shell lint-xml lint-model lint-exec lint-php
+lint: plist-check lint-shell lint-xml lint-model lint-acl lint-exec lint-php
 
 sweep:
 	find ${.CURDIR}/src -type f -name "*.map" -print0 | \
