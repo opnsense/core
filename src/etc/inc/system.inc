@@ -787,9 +787,7 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
                 }
             }
 
-            foreach ($reloads as $reload) {
-                plugins_configure('monitor', $verbose, [$reload]);
-            }
+            plugins_configure('monitor', $verbose, [$reloads]);
         } else {
             plugins_configure('monitor', $verbose);
         }
