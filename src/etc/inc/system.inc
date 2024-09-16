@@ -774,23 +774,22 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
     service_log("done.\n", $verbose);
 
     if ($monitor) {
-        if (!empty($interface_map)) {
-            $reloads = [];
+        /* reload requested monitors only or reload in full */
+        $gwnames = !empty($interface_map) ? [] : null;
 
+        if (!empty($interface_map)) {
             foreach ($gateways->gatewaysIndexedByName() as $name => $gateway) {
                 if ($family !== null && $family !== $gateway['ipprotocol']) {
                     continue;
                 }
 
                 if (in_array($gateway['interface'], $interface_map)) {
-                    $reloads[] = $name;
+                    $gwnames[] = $name;
                 }
             }
-
-            plugins_configure('monitor', $verbose, [$reloads]);
-        } else {
-            plugins_configure('monitor', $verbose);
         }
+
+        plugins_configure('monitor', $verbose, [$gwnames]);
     }
 }
 

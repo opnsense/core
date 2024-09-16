@@ -133,8 +133,7 @@ function dpinger_configure_do($verbose = false, $gwname_map = null)
         return;
     }
 
-    $suffix = empty($gwname_map) ? 's' : (is_array($gwname_map) && count($gwname_map) > 1 ? 's ' . join(', ', $gwname_map) : '');
-    service_log(sprintf('Setting up gateway monitor%s...', $suffix), $verbose);
+    service_log(sprintf('Setting up gateway monitor%s...', empty($interface_map) ? '' : ' for ' . join(', ', $gwname_map)), $verbose);
 
     foreach (dpinger_processes() as $running_gwname => $proc) {
         if (!empty($gwname_map) && !in_array($running_gwname, $gwname_map)) {
