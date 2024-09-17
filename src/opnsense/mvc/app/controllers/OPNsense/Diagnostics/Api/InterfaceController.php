@@ -367,7 +367,7 @@ class InterfaceController extends ApiControllerBase
         return array("message" => "error");
     }
 
-    public function getPfSyncNodesAction()
+    public function getPfsyncNodesAction()
     {
         $records = json_decode((new Backend())->configdRun("filter list pfsync json"), true) ?? [];
         $records = !empty($records['nodes']) ? $records['nodes'] : [];
