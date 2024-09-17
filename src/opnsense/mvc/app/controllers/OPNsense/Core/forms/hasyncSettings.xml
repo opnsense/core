@@ -47,7 +47,7 @@
         <type>text</type>
         <help>
             Enter the IP address of the firewall to which the selected configuration sections should be synchronized.
-            This should be empty on the backup machine, when only an address is offered, but webui configurions should be equal (port and protocol)
+            This should be empty on the backup machine. When an IP address is offered, both web GUI configurations should be equal (port and protocol).
         </help>
     </field>
     <field>
