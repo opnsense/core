@@ -39,7 +39,7 @@ function dhcrelay_configure()
 function dhcrelay_run()
 {
     return [
-        'dhcrelay_interfaces' => 'dhcrelay_interfaces',
+        'dhcrelay_interfaces' => 'dhcrelay_bound_interfaces',
     ];
 }
 
@@ -173,7 +173,7 @@ function dhcrelay_configure_do($verbose = false, $id = null)
     service_log("done.\n", $verbose);
 }
 
-function dhcrelay_instances($family = null)
+function dhcrelay_bound_instances($family = null)
 {
     $mdl = new \OPNsense\DHCRelay\DHCRelay();
     $instances = [];
@@ -203,18 +203,20 @@ function dhcrelay_instances($family = null)
     return $instances;
 }
 
-function dhcrelay_interfaces($family = null)
+function dhcrelay_bound_interfaces($family = null)
 {
-    return array_keys(dhcrelay_instances($family));
+    return array_keys(dhcrelay_bound_instances($family));
 }
 
 function dhcrelay_configure_map($verbose = false, $interface_map = null, $family = null)
 {
-    $instances = dhcrelay_instances($family);
+    /* XXX use plugins_argument_map() */
 
     if (empty($interface_map)) {
         return;
     }
+
+    $instances = dhcrelay_bound_instances($family);
 
     foreach (explode(',', $interface_map) as $interface) {
         foreach ($instances[$interface] ?? [] as $id) {
