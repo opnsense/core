@@ -11,8 +11,8 @@
         <patterns>
             <pattern>ui/diagnostics/interface/vip</pattern>
             <pattern>api/diagnostics/interface/carp_status</pattern>
-            <pattern>api/diagnostics/interface/get_vip_status/*</pattern>
-            <pattern>api/diagnostics/interface/get_pfsync_nodes/*</pattern>
+            <pattern>api/diagnostics/interface/get_vip_status</pattern>
+            <pattern>api/diagnostics/interface/get_pfsync_nodes</pattern>
         </patterns>
     </page-status-carp>
     <page-interfaces-vxlan>
