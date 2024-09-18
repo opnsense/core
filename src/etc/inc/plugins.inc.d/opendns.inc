@@ -31,7 +31,7 @@ function opendns_configure()
     return [
         'bootup' => ['opendns_configure_do'],
         'local' => ['opendns_configure_do'],
-        'newwanip_map' => ['opendns_configure_do'],
+        'newwanip' => ['opendns_configure_do'],
     ];
 }
 
