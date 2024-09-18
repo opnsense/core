@@ -37,7 +37,7 @@ function openvpn_configure()
         'crl' => ['openvpn_refresh_crls:0'],
         'remote' => ['openvpn_configure_do'],
         'openvpn' => ['openvpn_configure_do:2'],
-        'vpn_map' => ['openvpn_configure_do:2'],
+        'vpn' => ['openvpn_configure_do:2'],
     ];
 }
 

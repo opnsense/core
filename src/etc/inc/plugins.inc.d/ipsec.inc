@@ -120,7 +120,7 @@ function ipsec_configure()
 {
     return [
         'ipsec' => ['ipsec_configure_do:2'],
-        'vpn_map' => ['ipsec_configure_do:2'],
+        'vpn' => ['ipsec_configure_do:2'],
     ];
 }
 

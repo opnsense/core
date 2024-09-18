@@ -54,7 +54,7 @@ interfaces_configure(true);
 system_routing_configure(true);
 filter_configure_sync(true);
 plugins_configure('local', true);
-plugins_configure('vpn_map', true);
+plugins_configure('vpn', true);
 
 /* plugins service reload */
 passthru('/usr/local/etc/rc.freebsd stop');

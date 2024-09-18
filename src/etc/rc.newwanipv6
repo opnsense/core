@@ -124,6 +124,5 @@ system_routing_configure(false, $interfaces, true, 'inet6');
 
 filter_configure_sync();
 
-/* XXX after 25.1 drop the "_map" suffix again */
-plugins_configure('vpn_map', false, [join(',', $interfaces), 'inet6']);
+plugins_configure('vpn', false, [join(',', $interfaces), 'inet6']);
 plugins_configure('newwanip_map', false, [join(',', $interfaces), 'inet6']);
