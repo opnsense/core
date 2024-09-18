@@ -1096,9 +1096,12 @@ function openvpn_configure_do($verbose = false, $interface_map = null, $carp_eve
         return;
     }
 
+    if (!plugins_argument_map($interface_map)) {
+        return;
+    }
+
     service_log('Syncing OpenVPN settings...', $verbose);
 
-    $interface_map = !empty($interface_map) ? explode(',', $interface_map) : [];
     $reconfigured = false;
 
     foreach (array('server', 'client') as $mode) {
