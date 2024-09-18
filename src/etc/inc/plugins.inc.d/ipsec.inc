@@ -1236,8 +1236,11 @@ function ipsec_configure_do($verbose = false, $interface_map = null)
 {
     global $config;
 
-    if (!empty($interface)) {
-        $interface_map = explode(',', $interface_map);
+    if (!plugins_argument_map($interface_map)) {
+        return;
+    }
+
+    if (!empty($interface_map)) {
         $active = false;
 
         if (isset($config['ipsec']['phase1'])) {
