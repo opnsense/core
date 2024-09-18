@@ -88,6 +88,10 @@ function openssh_configure_do($verbose = false, $interface_map = null)
 {
     global $config;
 
+    if (!plugins_argument_map($interface_map)) {
+        return;
+    }
+
     $sshcfg = null;
 
     if (isset($config['system']['ssh']['enabled'])) {
@@ -103,16 +107,15 @@ function openssh_configure_do($verbose = false, $interface_map = null)
     }
 
     $interfaces = [];
+
     if (!empty($sshcfg['interfaces'])) {
         $interfaces = explode(',', $sshcfg['interfaces']);
         array_unshift($interfaces, 'lo0');
     }
 
-    /* 'newwanip_map' configuration is the only event to take second argument */
-    if (!empty($interface_map)) {
-        if (!count(array_intersect(explode(',', $interface_map), $interfaces))) {
-            return;
-        }
+    /* return if interfaces specified do not match or interfaces are not bound at all */
+    if (!empty($interface_map) && !count(array_intersect($interface_map, $interfaces))) {
+        return;
     }
 
     /* lock the config generation and service start/stop, also secures key generation */
