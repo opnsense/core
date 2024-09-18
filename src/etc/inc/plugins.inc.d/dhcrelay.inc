@@ -29,10 +29,10 @@
 function dhcrelay_configure()
 {
     return [
-        'bootup' => ['dhcrelay_configure_do'],
-        'dhcrelay' => ['dhcrelay_configure_do:2'],
-        'local' => ['dhcrelay_configure_do'],
-        'newwanip_map' => ['dhcrelay_configure_map:3'],
+        'bootup' => ['dhcrelay_configure_id'],
+        'dhcrelay' => ['dhcrelay_configure_id:2'],
+        'local' => ['dhcrelay_configure_id'],
+        'newwanip_map' => ['dhcrelay_configure_if:3'],
     ];
 }
 
@@ -61,8 +61,8 @@ function dhcrelay_services()
             $pconfig['name'] = 'dhcrelay';
             $pconfig['description'] = (strpos((string)$dst->server, '.') !== false ?
                 gettext('DHCPv4 Relay') : gettext('DHCPv6 Relay')) . " ({$relay->interface})";
-            $pconfig['php']['restart'] = ['dhcrelay_configure_do'];
-            $pconfig['php']['start'] = ['dhcrelay_configure_do'];
+            $pconfig['php']['restart'] = ['dhcrelay_configure_id'];
+            $pconfig['php']['start'] = ['dhcrelay_configure_id'];
             $pconfig['php']['args'] = ['verbose', 'id'];
             $pconfig['pidfile'] = "/var/run/dhcrelay-{$relay->getAttribute('uuid')}.pid";
             $pconfig['id'] = $relay->getAttribute('uuid');
@@ -88,14 +88,18 @@ function dhcrelay_xmlrpc_sync()
     return $result;
 }
 
-function dhcrelay_configure_do($verbose = false, $id = null)
+function dhcrelay_configure_id($verbose = false, $id_map = null)
 {
+    if (!plugins_argument_map($id_map)) {
+        return;
+    }
+
     $mdl = new \OPNsense\DHCRelay\DHCRelay();
     $relays = [];
 
     foreach ($mdl->relays->iterateItems() as $relay) {
         $target_id = $relay->getAttribute('uuid');
-        if ($id != null && $id != $target_id) {
+        if (!empty($id_map) && !in_array($target_id, $id_map)) {
             continue;
         }
 
@@ -110,7 +114,7 @@ function dhcrelay_configure_do($verbose = false, $id = null)
         return;
     }
 
-    service_log(sprintf('Starting DHCP relay%s...', empty($id) ? 's' : " {$id}"), $verbose);
+    service_log(sprintf('Starting DHCP relay%s...', empty($id_map) ? 's' : ' for ' . join(', ', $id_map)), $verbose);
 
     $iflist = get_configured_interface_with_descr();
     $ifconfig_details = legacy_interfaces_details();
@@ -118,7 +122,7 @@ function dhcrelay_configure_do($verbose = false, $id = null)
     foreach ($relays as $relay) {
         $destination = $mdl->getNodeByReference("destinations.{$relay->destination}");
         if ($destination == null) {
-            log_msg("dhcrelay_configure_do() found no destination server for $interface($device)", LOG_WARNING);
+            log_msg("dhcrelay_configure_id() found no destination server for $interface($device)", LOG_WARNING);
             continue;
         }
 
@@ -128,7 +132,7 @@ function dhcrelay_configure_do($verbose = false, $id = null)
         $device = get_real_interface($interface, $family);
 
         if (empty($device) || !isset($ifconfig_details[$device]) || $ifconfig_details[$device]['macaddr'] == '00:00:00:00:00:00') {
-            log_msg("dhcrelay_configure_do() found no device or ethernet address for $interface($device)", LOG_WARNING);
+            log_msg("dhcrelay_configure_id() found no device or ethernet address for $interface($device)", LOG_WARNING);
             continue;
         }
 
@@ -136,7 +140,7 @@ function dhcrelay_configure_do($verbose = false, $id = null)
             !isset($iflist[$interface]) || ($family == 'inet' && !get_interface_ip($interface, $ifconfig_details)) ||
             ($family == 'inet6' && !get_interface_ipv6($interface, $ifconfig_details))
         ) {
-            log_msg("dhcrelay_configure_do() found no suitable IP address for $interface($device)", LOG_WARNING);
+            log_msg("dhcrelay_configure_id() found no suitable IP address for $interface($device)", LOG_WARNING);
             continue;
         }
 
@@ -153,7 +157,7 @@ function dhcrelay_configure_do($verbose = false, $id = null)
             if ($family == 'inet6') {
                 $routeif = shell_safe('/sbin/route -6 get %s | grep interface: | awk \'{ print $2 }\'', $server);
                 if (empty($routeif)) {
-                    log_msg("dhcrelay_configure_do() found no suitable route to $server for $interface($device)", LOG_WARNING);
+                    log_msg("dhcrelay_configure_id() found no suitable route to $server for $interface($device)", LOG_WARNING);
                     continue;
                 }
                 $server .= '%' . $routeif;
@@ -163,7 +167,7 @@ function dhcrelay_configure_do($verbose = false, $id = null)
         }
 
         if (!$has_servers) {
-            log_msg("dhcrelay_configure_do() has no reachable servers for $interface($device)", LOG_WARNING);
+            log_msg("dhcrelay_configure_id() has no reachable servers for $interface($device)", LOG_WARNING);
             continue;
         }
 
@@ -208,19 +212,21 @@ function dhcrelay_bound_interfaces($family = null)
     return array_keys(dhcrelay_bound_instances($family));
 }
 
-function dhcrelay_configure_map($verbose = false, $interface_map = null, $family = null)
+function dhcrelay_configure_if($verbose = false, $interface_map = null, $family = null)
 {
-    /* XXX use plugins_argument_map() */
-
-    if (empty($interface_map)) {
+    if (!plugins_argument_map($interface_map)) {
         return;
     }
 
     $instances = dhcrelay_bound_instances($family);
+    $relays = [];
 
-    foreach (explode(',', $interface_map) as $interface) {
+    foreach ($interface_map ?? [] as $interface) {
         foreach ($instances[$interface] ?? [] as $id) {
-            dhcrelay_configure_do($verbose, $id);
+            /* grab relevant instances for batch invoke below */
+            $relays[] = $id;
         }
     }
+
+    dhcrelay_configure_id($verbose, $relays);
 }
