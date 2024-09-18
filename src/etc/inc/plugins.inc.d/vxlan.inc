@@ -29,7 +29,7 @@
 function vxlan_configure()
 {
     return [
-        'newwanip_map' => ['vxlan_configure_do'],
+        'newwanip' => ['vxlan_configure_do'],
         'vxlan' => ['vxlan_configure_do'],
     ];
 }
