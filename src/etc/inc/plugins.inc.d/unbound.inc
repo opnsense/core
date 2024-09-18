@@ -366,8 +366,6 @@ function unbound_match_interface($interface_map)
         return true;
     }
 
-    $interface_map = explode(',', $interface_map);
-
     if (!empty($general['active_interface'])) {
         foreach (explode(',', $general['active_interface']) as $used) {
             if (in_array($used, $interface_map)) {
@@ -395,6 +393,10 @@ function unbound_match_interface($interface_map)
 function unbound_configure_do($verbose = false, $interface_map = null)
 {
     global $config;
+
+    if (!plugins_argument_map($interface_map)) {
+        return;
+    }
 
     $mdl = new \OPNsense\Unbound\Unbound();
 
