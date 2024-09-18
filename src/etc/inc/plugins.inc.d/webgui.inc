@@ -60,16 +60,25 @@ function webgui_configure_do($verbose = false, $interface_map = null)
 {
     global $config;
 
+    if (!plugins_argument_map($interface_map)) {
+        return;
+    }
+
     $interfaces = [];
+
     if (!empty($config['system']['webgui']['interfaces'])) {
         $interfaces = explode(',', $config['system']['webgui']['interfaces']);
         /* place loopback with good IPv4 first for server.bind */
         array_unshift($interfaces, 'lo0');
     }
 
-    /* 'newwanip_map' configuration is the only event to take second argument */
     if (!empty($interface_map)) {
-        if (!count(array_intersect(explode(',', $interface_map), $interfaces))) {
+        /*
+         * Match explicit interfaces reload request to bound interfaces.
+         * If none are configured we do not reload either as we are bound
+         * to all.
+         */
+        if (!count(array_intersect($interface_map, $interfaces))) {
             return;
         }
     }
