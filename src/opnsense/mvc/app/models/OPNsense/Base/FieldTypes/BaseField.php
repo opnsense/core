@@ -364,6 +364,14 @@ abstract class BaseField
     }
 
     /**
+     * return field current value
+     * @return null|string field current value
+     */
+    public function getCurrentValue(): ?string {
+        return (string)$this->internalValue;
+    }
+
+    /**
      * default setter
      * @param string $value set field value
      */

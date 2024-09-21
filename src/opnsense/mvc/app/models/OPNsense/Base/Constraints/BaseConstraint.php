@@ -43,7 +43,7 @@ abstract class BaseConstraint extends BaseValidator
         $node_class = get_class($node);
         if ($node_class == "OPNsense\Base\FieldTypes\BooleanField") {
             return empty((string)$node);
-        } elseif (empty((string)$node) || (string)$node == "0") {
+        } elseif (empty((string)$node->getCurrentValue()) || (string)$node->getCurrentValue() == "0") {
             return true;
         }
         return false;
