@@ -69,8 +69,8 @@ class ComparedToFieldConstraint extends BaseConstraint
             if (
                 !$this->is_constraint_fulfilled(
                     $operator,
-                    floatval((string)$node->getCurrentValue()),
-                    floatval((string)$other_node_content->getCurrentValue())
+                    $this->asFloat($node),
+                    $this->asFloat($other_node_content)
                 )
             ) {
                 $this->appendMessage($validator, $attribute);
