@@ -156,6 +156,12 @@ class OpenVPN extends BaseModel
                     $key . ".proto"
                 ));
             }
+            if ((string)$instance->{'auth-gen-token'} != '0' && (string)$instance->{'reneg-sec'} == '0') {
+                $messages->appendMessage(new Message(
+                    gettext('A token lifetime requires a non zero Renegotiate time.'),
+                    $key . ".auth-gen-token"
+                ));
+            }
         }
         return $messages;
     }
