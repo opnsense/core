@@ -50,24 +50,6 @@ abstract class BaseConstraint extends BaseValidator
     }
 
     /**
-     * check if field value is numeric
-     * @param $node
-     * @return bool
-     */
-    public function isNumeric($node): bool {
-        return is_numeric((string)$node->getCurrentValue());
-    }
-
-    /**
-     * Try to convert to current value as float
-     * @param $node
-     * @return float
-     */
-    public function asFloat($node): float {
-        return floatval((string)$node->getCurrentValue());
-    }
-
-    /**
      * @param $validator
      * @param $attribute
      */
