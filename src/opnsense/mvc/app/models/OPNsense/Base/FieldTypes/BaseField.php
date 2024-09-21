@@ -372,6 +372,22 @@ abstract class BaseField
     }
 
     /**
+     * check if field value is numeric
+     * @return bool
+     */
+    public function isNumeric(): bool {
+        return is_numeric($this->getCurrentValue());
+    }
+
+    /**
+     * Try to convert to current value as float
+     * @return float
+     */
+    public function asFloat(): float {
+        return floatval($this->getCurrentValue());
+    }
+
+    /**
      * default setter
      * @param string $value set field value
      */

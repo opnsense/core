@@ -61,7 +61,7 @@ class ComparedToFieldConstraint extends BaseConstraint
             // if the other field is not set, or invalid type -> ignore this constraint
             if (
                 $this->isEmpty($other_node_content) ||
-                    !$this->isNumeric($node) && !$this->isNumeric($other_node_content)
+                    !$node->isNumeric() && !$other_node_content->isNumeric()
             ) {
                 return true;
             }
@@ -69,8 +69,8 @@ class ComparedToFieldConstraint extends BaseConstraint
             if (
                 !$this->is_constraint_fulfilled(
                     $operator,
-                    $this->asFloat($node),
-                    $this->asFloat($other_node_content)
+                    $node->asFloat(),
+                    $other_node_content->asFloat(),
                 )
             ) {
                 $this->appendMessage($validator, $attribute);
