@@ -501,12 +501,12 @@ abstract class BaseField
     }
 
     /**
-     * check if current value is NOT empty  (either boolean field as false or an empty field)
+     * check if current value is empty  (either boolean field as false or an empty field)
      * @return bool
      */
-    public function isNotEmpty(): bool
+    public function isEmpty(): bool
     {
-        return !empty($this->getCurrentValue());
+        return empty($this->getCurrentValue());
     }
 
     public function isRequired(): bool
@@ -520,7 +520,7 @@ abstract class BaseField
      */
     public function isEmptyAndRequired(): bool
     {
-        return $this->internalIsRequired && !$this->isNotEmpty();
+        return $this->internalIsRequired && $this->isEmpty();
     }
 
     /**
