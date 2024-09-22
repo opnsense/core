@@ -368,7 +368,7 @@ abstract class BaseField
      * @return null|string field current value
      */
     public function getCurrentValue(): ?string {
-        return (string)$this->internalValue;
+        return trim((string)$this->internalValue);
     }
 
     /**
@@ -496,6 +496,24 @@ abstract class BaseField
         }
     }
 
+    /**
+     * check if current value is empty  (either boolean field as false or an empty field)
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return empty($this->getCurrentValue()); // "0" is already considered false by `empty()`
+    }
+
+    /**
+     * check if current value is NOT empty  (either boolean field as false or an empty field)
+     * @return bool
+     */
+    public function isNotEmpty()
+    {
+        return !$this->isEmpty();
+    }
+
     public function isRequired()
     {
         return $this->internalIsRequired;
@@ -507,7 +525,7 @@ abstract class BaseField
      */
     public function isEmptyAndRequired()
     {
-        if ($this->internalIsRequired && ($this->internalValue == "" || $this->internalValue == null)) {
+        if ($this->internalIsRequired && $this->isEmpty()) {
             return true;
         } else {
             return false;
