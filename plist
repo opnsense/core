@@ -1370,13 +1370,11 @@
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/openvpn.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/pkg.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/portalauth.conf
-/usr/local/opnsense/service/templates/OPNsense/Syslog/local/ppps.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/resolver.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/routing.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/suricata.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/vpn.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/wireguard.conf
-/usr/local/opnsense/service/templates/OPNsense/Syslog/local/wireless.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/newsyslog.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/Syslog/sources/001-local.conf

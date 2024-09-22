@@ -100,20 +100,16 @@
             <Devices url="/interfaces_wireless.php">
                 <Edit url="/interfaces_wireless_edit.php*" visibility="hidden"/>
             </Devices>
-            <LogFile VisibleName="Log File" url="/ui/diagnostics/log/core/wireless"/>
         </Wireless>
-        <PPP order="950" VisibleName="Point-to-Point" cssClass="fa fa-tty fa-fw">
-            <Devices url="/interfaces_ppps.php">
-                <Edit url="/interfaces_ppps_edit.php*" visibility="hidden"/>
-            </Devices>
-            <LogFile VisibleName="Log File" url="/ui/diagnostics/log/core/ppps"/>
-        </PPP>
         <Types VisibleName="Other Types" order="960" cssClass="fa fa-archive fa-fw">
             <Bridge url="/interfaces_bridge.php">
                 <Edit url="/interfaces_bridge_edit.php*" visibility="hidden"/>
             </Bridge>
             <GIF url="/ui/interfaces/gif"/>
             <GRE url="/ui/interfaces/gre"/>
+            <PPP VisibleNae="Point-to-Point" url="/interfaces_ppps.php">
+                <Edit url="/interfaces_ppps_edit.php*" visibility="hidden"/>
+            </PPP>
         </Types>
         <Diagnostics order="970" cssClass="fa fa-medkit fa-fw">
             <DNSLookup VisibleName="DNS Lookup" url="/ui/diagnostics/dns_diagnostics"/>
