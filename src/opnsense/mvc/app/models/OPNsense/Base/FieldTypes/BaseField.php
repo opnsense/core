@@ -520,7 +520,7 @@ abstract class BaseField
      */
     public function isEmptyAndRequired(): bool
     {
-        return $this->internalIsRequired && $this->isEmpty();
+        return $this->internalIsRequired && ($this->internalValue == "" || $this->internalValue == null);
     }
 
     /**
