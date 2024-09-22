@@ -53,7 +53,7 @@ class SingleSelectConstraint extends BaseConstraint
             $Fields = array_unique(array_merge(array($nodeName), $this->getOptionValueList('addFields')));
             $countNotEmpty = 0;
             foreach ($Fields as $fieldname) {
-                if (!$parentNode->$fieldname?->isNotEmpty()) {
+                if ($parentNode->$fieldname?->isNotEmpty()) {
                     $countNotEmpty++;
                 }
             }

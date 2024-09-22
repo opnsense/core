@@ -367,7 +367,8 @@ abstract class BaseField
      * return field current value
      * @return null|string field current value
      */
-    public function getCurrentValue(): ?string {
+    public function getCurrentValue(): ?string
+    {
         return trim((string)$this->internalValue);
     }
 
@@ -375,7 +376,8 @@ abstract class BaseField
      * check if field value is numeric
      * @return bool
      */
-    public function isNumeric(): bool {
+    public function isNumeric(): bool
+    {
         return is_numeric($this->getCurrentValue());
     }
 
@@ -383,7 +385,8 @@ abstract class BaseField
      * Try to convert to current value as float
      * @return float
      */
-    public function asFloat(): float {
+    public function asFloat(): float
+    {
         return floatval($this->getCurrentValue());
     }
 
@@ -509,12 +512,12 @@ abstract class BaseField
      * check if current value is NOT empty  (either boolean field as false or an empty field)
      * @return bool
      */
-    public function isNotEmpty()
+    public function isNotEmpty(): bool
     {
         return !$this->isEmpty();
     }
 
-    public function isRequired()
+    public function isRequired(): bool
     {
         return $this->internalIsRequired;
     }
