@@ -51,7 +51,7 @@ class UniqueConstraint extends BaseConstraint
         $node = $this->getOption('node');
         $fieldSeparator = chr(10) . chr(0);
         if ($node) {
-            if (!$node->isRequired() && !$node->isNotEmpty()) {
+            if (!$node->isRequired() && $node->isEmpty()) {
                 return true;
             }
             $mdl = $node->getParentModel();
