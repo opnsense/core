@@ -56,7 +56,7 @@ class SetIfConstraint extends BaseConstraint
         $check = $this->getOption('check');
         if ($node) {
             $parentNode = $node->getParentNode();
-            if ($node->isEmpty() && (string)$parentNode->$field_name == $check) {
+            if (!$node->isNotEmpty() && (string)$parentNode->$field_name == $check) {
                 $this->appendMessage($validator, $attribute);
             }
         }
