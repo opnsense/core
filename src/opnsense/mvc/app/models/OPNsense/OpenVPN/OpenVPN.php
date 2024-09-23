@@ -162,7 +162,6 @@ class OpenVPN extends BaseModel
                     $key . ".auth-gen-token"
                 ));
             }
-
         }
         return $messages;
     }
