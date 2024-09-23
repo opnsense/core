@@ -72,7 +72,7 @@ if __name__ == '__main__':
                 break
             # exit when data found is older than provided valid_from
             try:
-                if valid_from and isoparse(record['timestamp']).timestamp() < valid_from:
+                if valid_from and record.get('timestamp') and isoparse(record['timestamp']).timestamp() < valid_from:
                     break
             except ValueError:
                 pass
