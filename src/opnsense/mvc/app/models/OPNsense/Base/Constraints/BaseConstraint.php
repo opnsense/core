@@ -33,7 +33,6 @@ use OPNsense\Base\Messages\Message;
 
 abstract class BaseConstraint extends BaseValidator
 {
-
     /**
      * @param $validator
      * @param $attribute
