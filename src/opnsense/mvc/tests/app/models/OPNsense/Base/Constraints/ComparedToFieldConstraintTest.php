@@ -78,6 +78,44 @@ class ComparedToFieldConstraintTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(true, $ret);
     }
 
+    // zero values
+    public function test_if_it_validates_zero_number_ranges_correctly_with_lt_and_error()
+    {
+        $validator = new \OPNsense\Base\Validation();
+        $validate = $this->make_validator(2, 0, 'test', 'lt');
+        $ret = $validate->validate($validator, '');
+        $messages = $validator->getMessages();
+        $this->assertEquals(1, count($messages));
+        $this->assertEquals(true, $ret);
+    }
+    public function test_if_it_validates_zero_number_ranges_correctly_with_gt_and_error()
+    {
+        $validator = new \OPNsense\Base\Validation();
+        $validate = $this->make_validator(0, 2, 'test', 'gt');
+        $ret = $validate->validate($validator, '');
+        $messages = $validator->getMessages();
+        $this->assertEquals(1, count($messages));
+        $this->assertEquals(true, $ret);
+    }
+    public function test_if_it_validates_zero_number_ranges_correctly_with_lt_and_no_error()
+    {
+        $validator = new \OPNsense\Base\Validation();
+        $validate = $this->make_validator(0, 2, 'test', 'lt');
+        $ret = $validate->validate($validator, '');
+        $messages = $validator->getMessages();
+        $this->assertEquals(0, count($messages));
+        $this->assertEquals(true, $ret);
+    }
+    public function test_if_it_validates_zero_number_ranges_correctly_with_gt_and_no_error()
+    {
+        $validator = new \OPNsense\Base\Validation();
+        $validate = $this->make_validator(2, 0, 'test', 'gt');
+        $ret = $validate->validate($validator, '');
+        $messages = $validator->getMessages();
+        $this->assertEquals(0, count($messages));
+        $this->assertEquals(true, $ret);
+    }
+
     // Empty values
     public function test_if_it_validates_node_empty_values_correctly_with_gt_and_no_error()
     {

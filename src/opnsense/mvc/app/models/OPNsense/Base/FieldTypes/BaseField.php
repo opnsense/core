@@ -509,6 +509,15 @@ abstract class BaseField
         return empty($this->getCurrentValue());
     }
 
+    /**
+     * check if current value is empty AND NOT zero (either boolean field as false or an empty field)
+     * @return bool
+     */
+    public function isEmptyButZero(): bool
+    {
+        return $this->getCurrentValue() !== "0" && $this->isEmpty();
+    }
+
     public function isRequired(): bool
     {
         return $this->internalIsRequired;
