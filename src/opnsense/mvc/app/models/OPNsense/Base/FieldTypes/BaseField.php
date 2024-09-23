@@ -369,7 +369,7 @@ abstract class BaseField
      */
     public function getCurrentValue(): ?string
     {
-        return trim((string)$this->internalValue);
+        return (string)$this->internalValue;
     }
 
     /**
