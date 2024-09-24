@@ -503,7 +503,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     if (substr($settings['protocol'], 0, 3) == "TCP") {
         $proto = "{$proto}-{$mode}";
     }
-    $cipher = $settings['crypto'];
+    $cipher = $settings['crypto'] ?? '';
 
     /* defaults to SHA1, so use it when unset to maintain compatibility */
     $digest = !empty($settings['digest']) ? $settings['digest'] : 'SHA1';
@@ -543,6 +543,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     $conf .= "persist-tun\n";
     $conf .= "persist-key\n";
     $conf .= "proto {$proto}\n";
+    /* can both be '' or 'none' depending on the age of the config */
     if (!empty($cipher) && $cipher != 'none') {
         $conf .= "cipher {$cipher}\n";
     }
