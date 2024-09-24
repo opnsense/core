@@ -23,9 +23,14 @@
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
+    --------------------------------------------------------------------------------------------------------------
+    Simple CRL Distributionpoint downloader using the CA's configured in the central trust store
+    Script returns exit status 0 when nothing has changed, 1 when changes have been made so a rehash can be scheduled
 """
 import glob
+import hashlib
 import urllib
+import os
 import subprocess
 import ldap3
 import requests
@@ -39,7 +44,7 @@ TRUSTPATH = ['/usr/share/certs/trusted', '/usr/local/share/certs', '/usr/local/e
 def fetch_crl(uri):
     p = urllib.parse.urlparse(uri)
     payload = None
-    if p.scheme and p.scheme.lower() == 'ldap':
+    if p.scheme.lower() == 'ldap':
         server = ldap3.Server(p.netloc)
         conn = ldap3.Connection(server, auto_bind=True)
         conn.search(
@@ -53,7 +58,7 @@ def fetch_crl(uri):
                 if value and key.split(';')[0].lower() == 'certificaterevocationlist':
                     payload = value[0]
                     break
-    elif p.scheme and p.scheme.lower() == 'http':
+    elif p.scheme.lower() == 'http':
         r = requests.get(uri)
         if r.status_code >= 200 and r.status_code < 300:
             payload = r.content
@@ -76,7 +81,12 @@ def fetch_crl(uri):
         'pem': crl.public_bytes(serialization.Encoding.PEM).decode()
     }
 
+
 def main():
+    changes = 0
+    output_pattern = '/usr/local/share/certs/ca-crl-upd-opn-%s.crl'
+    crl_files = []
+    dp_uri = ''
     for path in TRUSTPATH:
         for filename in glob.glob('%s/*[.pem|.crt]' % path):
             try:
@@ -84,7 +94,10 @@ def main():
                 for ext in cert.extensions:
                     if type(ext.value) is CRLDistributionPoints:
                         for Distributionpoint in ext.value:
-                            this_crl = fetch_crl(Distributionpoint.full_name[0].value)
+                            dp_uri = Distributionpoint.full_name[0].value
+                            target_filename = output_pattern % hashlib.sha256(dp_uri.encode()).hexdigest()
+                            this_crl = fetch_crl(dp_uri)
+                            crl_files.append(target_filename)
                             # use local trust store to validate if the received CRL is valid
                             sp = subprocess.run(
                                 ['/usr/local/bin/openssl', 'crl', '-verify'],
@@ -93,16 +106,28 @@ def main():
                                 text=True
                             )
                             if sp.stderr.strip() == 'verify OK':
-                                print('ok')
-                                print(filename)
-
-                            print(this_crl)
-                            sys.exit(0)
-                            #print(Distributionpoint.full_name[0].value)
+                                if os.path.isfile(target_filename):
+                                    if open(target_filename).read() == this_crl['pem']:
+                                        print('[-] skip unchanged crl from %s' % dp_uri)
+                                        continue
+                                with open(target_filename, 'w') as f_out:
+                                    print('[+] store crl from %s' % dp_uri)
+                                    f_out.write(this_crl['pem'])
+                                    changes += 1
+                            else:
+                                print('[-] skip crl from %s (%s)' % (dp_uri, sp.stderr.strip()))
             except Exception as e:
                 # error handling
-                print(e)
+                print('[-] error processing %s [%s]' % (dp_uri, e))
+
+    # cleanup unused CRLs within our responsible scope
+    for filename in glob.glob(output_pattern % '*'):
+        if filename not in crl_files:
+            os.unlink(filename)
+            changes += 1
+
+    return changes
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(0 if main() == 0 else 1)
