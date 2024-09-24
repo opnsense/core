@@ -264,7 +264,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   }
 
                   foreach ($a_devices as $device) {
-                      if (!isset($device['configurable']) || $device['configurable'] == true) {
+                      if ($device['configurable']) {
                           continue;
                       }
                       if (preg_match('/' . $device['pattern'] . '/', $ifdev)) {

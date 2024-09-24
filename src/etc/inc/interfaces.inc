@@ -2333,7 +2333,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      */
     foreach ($devices as $device) {
         if (preg_match('/' . $device['pattern'] . '/', $realhwif)) {
-            if (isset($device['spoofmac']) && $device['spoofmac'] == false) {
+            if ($device['spoofmac'] == false) {
                 $mac_next = '';
             }
             break;

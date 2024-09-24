@@ -93,7 +93,13 @@ function plugins_services()
 
 function plugins_devices()
 {
-    $devices = array();
+    $devices = [];
+    $defaults = [
+        'configurable' => true, /* allow to configure IP connectivity */
+        'pattern' => '^impossiblecontrolmatch$', /* never match by default */
+        'spoofmac' => true, /* allow to change the MAC address */
+        'volatile' => false, /* device known to persist */
+    ];
 
     foreach (plugins_scan() as $name => $path) {
         try {
@@ -104,6 +110,11 @@ function plugins_devices()
         $func = sprintf('%s_devices', $name);
         if (function_exists($func)) {
             foreach ($func() as $work) {
+                foreach ($defaults as $key => $val) {
+                    if (!isset($work[$key])) {
+                        $work[$key] = $val;
+                    }
+                }
                 $devices[] = $work;
             }
         }

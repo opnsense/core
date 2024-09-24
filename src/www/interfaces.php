@@ -664,7 +664,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 continue;
             }
 
-            if (isset($device['configurable']) && $device['configurable'] == false) {
+            if (!$device['configurable']) {
                 if ($pconfig['type'] != 'none' || $pconfig['type6'] != 'none') {
                     $input_errors[] = gettext('Cannot assign an IP configuration type to a tunnel interface.');
                 }
