@@ -376,6 +376,8 @@ class OpenVPN extends BaseModel
                     'digest' => (string)$node->auth,
                     'description' => (string)$node->description,
                     'use_ocsp' => !empty((string)$node->use_ocsp),
+                    // legacy only (backwards compatibility)
+                    'crypto' => (string)$node->{'data-ciphers-fallback'},
                 ];
             }
         }
