@@ -114,11 +114,18 @@ class CertController extends ApiMutableModelControllerBase
                 $this->getModel()->linkCaRefs($node->refid);
                 break;
             case 'import_csr':
-                if (CertStore::parseX509((string)$node->crt_payload) === false) {
-                    $error = gettext('Invalid X509 certificate provided');
-                } else {
+                /* certificate should be signed by something we trust */
+                $tmp = CertStore::verify((string)$node->crt_payload);
+                if ($tmp['exit_status'] === 0) {
                     $node->crt = base64_encode((string)$node->crt_payload);
-                    $node->csr = null;
+                } else {
+                    /* try to grab some useful feedback from stderr to append to the message */
+                    $msg = '';
+                    $parts = explode("\n", $tmp['stderr']);
+                    if (count($parts) > 2) {
+                        $msg = $parts[1];
+                    }
+                    $error = sprintf(gettext('Invalid X509 certificate provided : %s'), $msg);
                 }
                 break;
             case 'sign_csr':
