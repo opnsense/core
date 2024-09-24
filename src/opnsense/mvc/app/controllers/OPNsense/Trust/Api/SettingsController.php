@@ -44,6 +44,8 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         if ($this->request->isPost()) {
             (new Backend())->configdRun('system trust configure', true);
+            /* CRL fetches are scheduled */
+            (new Backend())->configdRun('cron restart', true);
             return ['status' => 'ok'];
         }
         return ['status' => 'failed'];

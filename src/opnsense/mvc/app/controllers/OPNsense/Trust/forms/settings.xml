@@ -18,10 +18,15 @@
         <help>Store all configured CRL's in the default trust store.</help>
     </field>
     <field>
+        <id>trust.fetch_crls</id>
+        <label>Auto fetch CRL's</label>
+        <type>checkbox</type>
+        <help>Schedule an hourly job to download CRLs using the defined Distributionpoints in the CAs deployed in our trust store.</help>
+    </field>
+    <field>
         <type>header</type>
         <label>Configuration constraints</label>
     </field>
-
     <field>
         <id>trust.enable_legacy_sect</id>
         <label>Enable legacy</label>
