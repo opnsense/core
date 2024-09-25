@@ -118,18 +118,14 @@ def cmd_rehash():
                         continue
                     targets[targetname][pattern].append(record)
 
-    for path in [BLACKLISTDESTDIR, CERTDESTDIR]:
-        for filename in glob.glob('%s/*.[0-9]' % path) + glob.glob('%s/*.r[0-9]' % path):
-            if os.path.islink(filename):
-                os.unlink(filename)
-            else:
-                os.remove(filename)
 
+    current_target_files = []
+    changes = 0
     for target_name in targets:
         for pattern in targets[target_name]:
             for seq, record in enumerate(targets[target_name][pattern]):
                 is_bl = target_name == 'blacklisted'
-                src_filename = os.path.relpath(record['filename'], BLACKLISTDESTDIR if is_bl else CERTDESTDIR)
+                src_filename = record['filename']
                 dst_filename = "%s/%s" % (BLACKLISTDESTDIR if is_bl else CERTDESTDIR, pattern % seq)
                 if not is_bl and hash in targets['blacklisted']:
                     print(
@@ -137,12 +133,50 @@ def cmd_rehash():
                     )
                     continue
 
+                current_target_files.append(dst_filename)
+                if os.path.islink(dst_filename) and os.readlink(dst_filename) == src_filename:
+                    continue # unchanged
+                elif os.path.isfile(dst_filename) and open(dst_filename, 'rb').read() == record['data']:
+                    continue # unchanged
+
+                changes += 1
                 if record['type'] == 'copy':
+                    if os.path.islink(dst_filename):
+                        os.unlink(dst_filename)
                     with open(dst_filename, 'wb') as f_out:
                         f_out.write(record['data'])
                     os.chmod(dst_filename, 0o644)
                 else:
+                    if os.path.isfile(dst_filename):
+                        os.remove(dst_filename)
                     os.symlink(src_filename, dst_filename)
+
+    for path in [BLACKLISTDESTDIR, CERTDESTDIR]:
+        for filename in glob.glob('%s/*.[0-9]' % path) + glob.glob('%s/*.r[0-9]' % path):
+            if filename in current_target_files:
+                continue
+            elif os.path.islink(filename):
+                os.unlink(filename)
+            else:
+                os.remove(filename)
+            changes += 1
+    print("Changed %d links" % changes)
+
+    # link certs/crls to ports openssl version
+    current_target_files = []
+    for filename in glob.glob('%s/*.[0-9]' % CERTDESTDIR) + glob.glob('%s/*.r[0-9]' % CERTDESTDIR):
+        target_filename = '/usr/local/openssl/certs/%s' % os.path.basename(filename)
+        current_target_files.append(target_filename)
+        if not os.path.islink(target_filename) and os.path.isfile(target_filename):
+            os.remove(target_filename)
+        elif os.path.islink(target_filename):
+            continue
+        os.symlink(filename, target_filename)
+
+    for filename in glob.glob('/usr/local/openssl/certs/*'):
+        if filename not in current_target_files:
+            os.remove(filename)
+
 
 
 if __name__ == '__main__':
