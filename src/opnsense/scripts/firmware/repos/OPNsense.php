@@ -50,11 +50,11 @@ if (!empty($config->system->firmware->subscription)) {
 }
 
 if (!empty($config->system->firmware->mirror)) {
-    $args[] = exec_safe('-m %s', str_replace('/', '\/', $config->system->firmware->mirror . $url_sub));
+    $args[] = exec_safe('-m %s', $config->system->firmware->mirror . $url_sub);
 }
 
 if (!empty($config->system->firmware->flavour)) {
-    $args[] = exec_safe('-n %s', str_replace('/', '\/', (string)$config->system->firmware->flavour));
+    $args[] = exec_safe('-n %s', (string)$config->system->firmware->flavour);
 }
 
 /* rewrite the config via the defaults and possible arguments */
