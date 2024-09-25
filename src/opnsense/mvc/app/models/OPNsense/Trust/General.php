@@ -29,7 +29,30 @@
 namespace OPNsense\Trust;
 
 use OPNsense\Base\BaseModel;
+use OPNsense\Base\Messages\Message;
 
 class General extends BaseModel
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function performValidation($validateFullModel = false)
+    {
+        $messages = parent::performValidation($validateFullModel);
+        $enable_config_constraints = false;
+        foreach (['CipherString', 'Ciphersuites', 'groups', 'MinProtocol', 'MinProtocol_DTLS'] as $fieldname) {
+            if (!empty((string)$this->$fieldname)) {
+                $enable_config_constraints = true;
+            }
+        }
+        if (!$enable_config_constraints && !empty((string)$this->enable_config_constraints)) {
+            $messages->appendMessage(
+                new Message(
+                    gettext("Can not enable config constraints without modifying one of them"),
+                    "enable_config_constraints"
+                )
+            );
+        }
+        return $messages;
+    }
 }
