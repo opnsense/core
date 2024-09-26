@@ -55,6 +55,7 @@
                 <Default>1</Default>
                 <Required>Y</Required>
             </ignore_acquire_ts>
+            <make_before_break type="BooleanField"/>
             <retransmit_tries type="IntegerField"/>
             <retransmit_timeout type="NumericField"/>
             <retransmit_base type="NumericField"/>
