@@ -45,4 +45,14 @@
         Leave empty to use this machines hostname
         </help>
     </field>
+    <field>
+        <id>dhcpv4.ha.max_unacked_clients</id>
+        <label>Max Unacked clients</label>
+        <type>text</type>
+        <help>
+        This specifies the number of clients which send messages to the partner but appear to not receive any response.
+        A higher value needs a busier environment in order to consider a member down, when set to 0,
+        any network disruption will cause a failover to happen.
+        </help>
+    </field>
 </form>

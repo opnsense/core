@@ -229,7 +229,7 @@ class KeaDhcpv4 extends BaseModel
                                 'heartbeat-delay' => 10000,
                                 'max-response-delay' => 60000,
                                 'max-ack-delay' => 5000,
-                                'max-unacked-clients' => 5,
+                                'max-unacked-clients' => (int)((string)$this->ha->max_unacked_clients),
                                 'sync-timeout' => 60000,
                             ]
                         ]
