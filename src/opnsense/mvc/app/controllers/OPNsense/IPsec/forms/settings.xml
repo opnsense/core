@@ -79,6 +79,12 @@
             <help>Limit new connections based on the current number of half open IKE_SAs.</help>
         </field>
         <field>
+            <id>ipsec.charon.make_before_break</id>
+            <label>Make Before Break</label>
+            <type>checkbox</type>
+            <help>Initiate IKEv2 reauthentication with a make-before-break instead of a break-before-make scheme. Make-before-break uses overlapping IKE and CHILD SA during reauthentication by first recreating all new SAs before deleting the old ones. This behavior can be beneficial to avoid connectivity gaps during reauthentication, but requires support for overlapping SAs by the peer.</help>
+        </field>
+        <field>
             <type>header</type>
             <label>Retransmission</label>
         </field>
