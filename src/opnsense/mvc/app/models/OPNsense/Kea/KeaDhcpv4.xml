@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Kea/dhcp4</mount>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>Kea DHCPv4 configuration</description>
     <items>
         <general>
@@ -25,9 +25,15 @@
                 <Default>0</Default>
                 <Required>Y</Required>
             </enabled>
-            <this_server_name  type="TextField">
+            <this_server_name type="TextField">
                 <Mask>/^([0-9a-zA-Z.\:\-,_]){0,1024}$/u</Mask>
             </this_server_name>
+            <max_unacked_clients type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>65535</MaximumValue>
+                <Default>2</Default>
+                <Required>Y</Required>
+            </max_unacked_clients>
         </ha>
         <subnets>
             <subnet4 type="ArrayField">
