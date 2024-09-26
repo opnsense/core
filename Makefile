@@ -178,12 +178,12 @@ CORE_DEPENDS?=		ca_root_nss \
 			pkg \
 			py${CORE_PYTHON}-Jinja2 \
 			py${CORE_PYTHON}-dnspython \
+			py${CORE_PYTHON}-ldap3 \
 			py${CORE_PYTHON}-netaddr \
 			py${CORE_PYTHON}-requests \
 			py${CORE_PYTHON}-sqlite3 \
 			py${CORE_PYTHON}-ujson \
 			py${CORE_PYTHON}-vici \
-			py${CORE_PYTHON}-ldap3 \
 			radvd \
 			rrdtool \
 			samplicator \
