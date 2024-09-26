@@ -142,8 +142,7 @@ function vxlan_configure_do($verbose = false, $device = null)
         // The device will be busy, first bring it down, apply changes, then bring it back up
         if ($isChanged) {
             mwexecf('/sbin/ifconfig %s down', [$device_name]);
-            mwexecf($ifcnfcmd, $ifcnfcmdp);
-            mwexecf('/sbin/ifconfig %s up', [$device_name]);
+            mwexecf($ifcnfcmd . ' up', $ifcnfcmdp);
             $changed_devices[] = $device_name;
         }
     }
