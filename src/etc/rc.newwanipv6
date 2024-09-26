@@ -126,11 +126,11 @@ system_routing_configure(false, $interfaces, true, 'inet6');
 filter_configure_sync();
 
 /* keep compat between mapped and unmapped events until 24.7 is EoL */
-plugins_configure('vpn_map', false, [$interfaces, 'inet6']);
+plugins_configure('vpn_map', false, [join(',', $interfaces), 'inet6']);
 foreach ($interfaces as $interface) {
     plugins_configure('vpn', false, [$interface]);
     plugins_configure('newwanip', false, [$interface]);
 }
-plugins_configure('newwanip_map', false, [$interfaces, 'inet6']);
+plugins_configure('newwanip_map', false, [join(',', $interfaces), 'inet6']);
 
 rrd_configure();
