@@ -170,6 +170,16 @@
       <value>default</value>
     </item>
     <item>
+      <descr><![CDATA[Allow pages to be mapped simultaneously writable and executable]]></descr>
+      <tunable>kern.elf32.allow_wx</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Allow pages to be mapped simultaneously writable and executable]]></descr>
+      <tunable>kern.elf64.allow_wx</tunable>
+      <value>default</value>
+    </item>
+    <item>
       <descr><![CDATA[Hide processes running as other groups]]></descr>
       <tunable>security.bsd.see_other_gids</tunable>
       <value>default</value>

@@ -76,6 +76,8 @@ function system_sysctl_defaults()
         'hw.syscons.kbd_reboot' => [ 'default' => '0' ],
         'hw.uart.console' => [ 'default' => 'io:0x3f8,br:' . system_console_speed(), 'type' => 't' ], /* XXX support comconsole_port if needed */
         'kern.coredump' => [ 'default' => '0', 'required' => true ],
+        'kern.elf32.allow_wx' => [ 'default' => '0', 'description' => 'Allow pages to be mapped simultaneously writable and executable' ],
+        'kern.elf64.allow_wx' => [ 'default' => '0', 'description' => 'Allow pages to be mapped simultaneously writable and executable' ],
         'kern.ipc.maxsockbuf' => [ 'default' => '4262144' ],
         'kern.randompid' => [ 'default' => '1' ],
         'net.enc.in.ipsec_bpf_mask' => [ 'default' => '2', 'required' => true ], /* after processing */
@@ -1345,3 +1347,4 @@ function reset_factory_defaults($sync = true)
         mwexec_bg($shutdown_cmd);
     }
 }
+
