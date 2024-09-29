@@ -79,7 +79,7 @@ class Helpers(object):
         :param tag: tag in dot notation (section.item)
         :return: boolean
         """
-        return self.getNodeByTag(tag)
+        return self.getNodeByTag(tag) is not None
 
     def empty(self, tag):
         """ check if either the node does not exist or is empty
