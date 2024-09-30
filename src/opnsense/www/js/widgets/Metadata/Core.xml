@@ -339,6 +339,7 @@
     </openvpnservers>
     <picture>
         <filename>Picture.js</filename>
+        <link>/system_general.php</link>
         <endpoints>
             <endpoint>/api/core/dashboard/picture</endpoint>
         </endpoints>
