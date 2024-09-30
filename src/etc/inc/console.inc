@@ -53,8 +53,8 @@ function timeout($timer = 7)
 
 function is_interface_mismatch($locked = true)
 {
-    $patterns = ['^impossiblecontrolmatch$'];
     $mismatch = false;
+    $patterns = [];
 
     foreach (plugins_devices() as $device) {
         if (!$device['volatile']) {
@@ -62,14 +62,14 @@ function is_interface_mismatch($locked = true)
         }
     }
 
-    $regex = '/' . implode('|', $patterns) . '/';
+    $regex = count($patterns) ? '/' . implode('|', $patterns) . '/' : null;
 
     foreach (legacy_config_get_interfaces(['virtual' => false]) as $ifname => $ifcfg) {
         if ($locked && !empty($ifcfg['lock'])) {
             /* Do not mismatch if any lock was issued */
             $mismatch = false;
             break;
-        } elseif (preg_match($regex, $ifcfg['if'])) {
+        } elseif (!empty($regex) && preg_match($regex, $ifcfg['if'])) {
             /* Do not check these interfaces */
             continue;
         } elseif (does_interface_exist($ifcfg['if']) == false) {
