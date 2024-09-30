@@ -84,8 +84,6 @@ function reopenlog()
 
 reopenlog();
 
-register_shutdown_function('closelog');
-
 require_once("xmlparse.inc");
 require_once("legacy_bindings.inc");
 require_once("certs.inc");

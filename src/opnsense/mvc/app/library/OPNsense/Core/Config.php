@@ -557,7 +557,6 @@ class Config extends Singleton
             !empty($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : $_SERVER['SCRIPT_NAME'],
             $revision['description'] ?? ''
         ));
-        closelog();
     }
 
     /**

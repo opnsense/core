@@ -52,5 +52,4 @@ if ($server) {
     }
 }
 
-closelog();
 exit(0);

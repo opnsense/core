@@ -161,7 +161,6 @@ $response = do_auth($parms['common_name'], $parms['auth_server'], $parms['auth_m
 if (is_string($response)) {
     // send failure message to log
     syslog(LOG_WARNING, $response);
-    closelog();
 }
 
 if (!empty($parms['auth_defer'])) {
