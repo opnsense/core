@@ -9,11 +9,10 @@
         </patterns>
     </page-diagnostics-backup-restore>
     <page-system-login-logout>
-        <name>Lobby: Login / Dashboard / License / Logout</name>
+        <name>Lobby: Dashboard</name>
         <patterns>
             <pattern>index.php*</pattern>
             <pattern>ui/core/dashboard</pattern>
-            <pattern>ui/core/license</pattern>
             <pattern>api/core/dashboard/*</pattern>
             <pattern>api/diagnostics/cpu_usage/*</pattern>
             <pattern>api/diagnostics/firewall/pf_states</pattern>
@@ -620,6 +619,12 @@
             <pattern>api/core/hasync/*</pattern>
         </patterns>
     </page-system-hasync>
+    <page-system-license>
+        <name>Lobby: License</name>
+        <patterns>
+            <pattern>ui/core/license</pattern>
+        </patterns>
+    </page-system-license>
     <page-system-staticroutes>
         <name>System: Static Routes</name>
         <patterns>
@@ -641,7 +646,7 @@
         </patterns>
     </page-system-usermanager-addprivs>
     <page-system-usermanager-passwordmg>
-        <name>System: User Password Manager</name>
+        <name>Lobby: Password</name>
         <patterns>
             <pattern>system_usermanager_passwordmg.php*</pattern>
         </patterns>
