@@ -133,6 +133,12 @@ class OpenVPN extends BaseModel
                         $key . ".verify_client_cert"
                     ));
                 }
+                if ((string)$instance->{'auth-gen-token'} != '0' && (string)$instance->{'reneg-sec'} == '0') {
+                    $messages->appendMessage(new Message(
+                        gettext('A token lifetime requires a non zero Renegotiate time.'),
+                        $key . ".auth-gen-token"
+                    ));
+                }
             }
             if (!empty((string)$instance->cert)) {
                 $tmp = Store::getCertificate((string)$instance->cert);
@@ -154,12 +160,6 @@ class OpenVPN extends BaseModel
                 $messages->appendMessage(new Message(
                     gettext('DCO type instances only support UDP mode.'),
                     $key . ".proto"
-                ));
-            }
-            if ((string)$instance->{'auth-gen-token'} != '0' && (string)$instance->{'reneg-sec'} == '0') {
-                $messages->appendMessage(new Message(
-                    gettext('A token lifetime requires a non zero Renegotiate time.'),
-                    $key . ".auth-gen-token"
                 ));
             }
         }
@@ -614,6 +614,12 @@ class OpenVPN extends BaseModel
                             $options['push'][] = "\"dhcp-option NTP {$opt}\"";
                         }
                     }
+                    foreach (['auth-gen-token'] as $opt) {
+                        if ((string)$node->$opt != '') {
+                            $options[$opt] = str_replace(',', ':', (string)$node->$opt);
+                        }
+                    }
+
                 }
                 $options['persist-tun'] = null;
                 $options['persist-key'] = null;
@@ -639,11 +645,7 @@ class OpenVPN extends BaseModel
                 $options['up'] = '/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkup';
                 $options['down'] = '/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkdown';
 
-                foreach (
-                    [
-                    'reneg-sec', 'auth-gen-token', 'port', 'local', 'data-ciphers', 'data-ciphers-fallback', 'auth'
-                    ] as $opt
-                ) {
+                foreach (['reneg-sec', 'port', 'local', 'data-ciphers', 'data-ciphers-fallback', 'auth'] as $opt) {
                     if ((string)$node->$opt != '') {
                         $options[$opt] = str_replace(',', ':', (string)$node->$opt);
                     }
