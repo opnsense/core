@@ -9,13 +9,21 @@
         </patterns>
     </page-diagnostics-backup-restore>
     <page-system-login-logout>
-        <name>Lobby: Login / Logout / Dashboard</name>
+        <name>Lobby: Login / Dashboard / License / Logout</name>
         <patterns>
             <pattern>index.php*</pattern>
             <pattern>ui/core/dashboard</pattern>
+            <pattern>ui/core/license</pattern>
             <pattern>api/core/dashboard/*</pattern>
+            <pattern>api/diagnostics/cpu_usage/*</pattern>
+            <pattern>api/diagnostics/firewall/pf_states</pattern>
+            <pattern>api/diagnostics/system/systemDisk</pattern>
             <pattern>api/diagnostics/system/systemInformation</pattern>
+            <pattern>api/diagnostics/system/systemResources</pattern>
+            <pattern>api/diagnostics/system/systemTemperature</pattern>
             <pattern>api/diagnostics/system/systemTime</pattern>
+            <pattern>api/diagnostics/system/system_mbuf</pattern>
+            <pattern>api/diagnostics/system/system_swap</pattern>
         </patterns>
     </page-system-login-logout>
     <page-getserviceproviders>
@@ -45,23 +53,6 @@
             <pattern>api/core/system/dismissStatus</pattern>
         </patterns>
     </page-system-status>
-    <page-dashboard-all>
-        <name>Dashboard (all)</name>
-        <patterns>
-            <pattern>index.php*</pattern>
-            <pattern>ui/core/dashboard*</pattern>
-            <pattern>api/core/dashboard/*</pattern>
-            <pattern>api/diagnostics/cpu_usage/*</pattern>
-            <pattern>api/diagnostics/firewall/pf_states</pattern>
-            <pattern>api/diagnostics/system/systemDisk</pattern>
-            <pattern>api/diagnostics/system/system_mbuf</pattern>
-            <pattern>api/diagnostics/system/systemResources</pattern>
-            <pattern>api/diagnostics/system/system_swap</pattern>
-            <pattern>api/diagnostics/system/systemInformation</pattern>
-            <pattern>api/diagnostics/system/systemTime</pattern>
-            <pattern>api/diagnostics/system/systemTemperature</pattern>
-        </patterns>
-    </page-dashboard-all>
     <page-diagnostics-authentication>
         <name>Diagnostics: Authentication</name>
         <patterns>
@@ -629,12 +620,6 @@
             <pattern>api/core/hasync/*</pattern>
         </patterns>
     </page-system-hasync>
-    <page-system-license>
-        <name>System: License</name>
-        <patterns>
-            <pattern>ui/core/license*</pattern>
-        </patterns>
-    </page-system-license>
     <page-system-staticroutes>
         <name>System: Static Routes</name>
         <patterns>
