@@ -21,17 +21,11 @@
     <page-getserviceproviders>
         <name>AJAX: Get Service Providers</name>
         <patterns>
+            <!-- XXX license added here for menu visibility reasons -->
             <pattern>ui/core/license</pattern>
             <pattern>getserviceproviders.php*</pattern>
         </patterns>
     </page-getserviceproviders>
-    <page-getstats>
-        <name>AJAX: Get Stats</name>
-        <patterns>
-            <pattern>ui/core/license</pattern>
-            <pattern>widgets/api/get.php*</pattern>
-        </patterns>
-    </page-getstats>
     <page-all>
         <name>All pages</name>
         <patterns>
