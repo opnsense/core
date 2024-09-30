@@ -281,6 +281,7 @@ install:
 	# try to update the current system if it looks like one
 	@touch ${LOCALBASE}/opnsense/www/index.php
 .endif
+	@rm -f /tmp/opnsense_acl_cache.json /tmp/opnsense_menu_cache.xml
 
 collect:
 	@(cd ${.CURDIR}/src; find * -type f) | while read FILE; do \
