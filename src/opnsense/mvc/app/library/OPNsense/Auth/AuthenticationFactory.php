@@ -204,7 +204,6 @@ class AuthenticationFactory
                                 get_class($service),
                                 get_class($authenticator)
                             ));
-                            closelog();
                             return true;
                         } else {
                             // since checkConstraints() is defined on the service, who doesn't know about the
@@ -216,7 +215,6 @@ class AuthenticationFactory
                                 get_class($service),
                                 get_class($authenticator)
                             ));
-                            closelog();
                             return false;
                         }
                     } else {
@@ -238,7 +236,6 @@ class AuthenticationFactory
             !empty($service) ? get_class($service) : '-',
             !empty($authenticator) ? get_class($authenticator) : '-'
         ));
-        closelog();
         return false;
     }
 
