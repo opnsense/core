@@ -619,7 +619,6 @@ class OpenVPN extends BaseModel
                             $options[$opt] = str_replace(',', ':', (string)$node->$opt);
                         }
                     }
-
                 }
                 $options['persist-tun'] = null;
                 $options['persist-key'] = null;

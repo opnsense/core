@@ -267,7 +267,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
         unset($fobj);
 
-        closelog();
         reopenlog();
 
         service_log("done.\n", $verbose);
@@ -407,7 +406,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
         unset($fobj);
 
-        closelog();
         reopenlog();
 
         service_log("failed.\n", $verbose);
@@ -442,7 +440,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     unset($fobj);
 
-    closelog();
     reopenlog();
 
     service_log("done.\n", $verbose);
