@@ -57,25 +57,15 @@
             <pattern>index.php*</pattern>
             <pattern>ui/core/dashboard*</pattern>
             <pattern>api/core/dashboard/*</pattern>
-            <pattern>api/diagnostics/interface/get_vip_status</pattern>
             <pattern>api/diagnostics/cpu_usage/*</pattern>
-            <pattern>api/diagnostics/firewall/streamLog</pattern>
-            <pattern>api/diagnostics/interface/getInterfaceNames</pattern>
             <pattern>api/diagnostics/firewall/pf_states</pattern>
-            <pattern>api/routes/gateway/status</pattern>
-            <pattern>api/interfaces/overview/interfacesInfo</pattern>
-            <pattern>api/diagnostics/traffic/*</pattern>
             <pattern>api/diagnostics/system/systemDisk</pattern>
             <pattern>api/diagnostics/system/system_mbuf</pattern>
             <pattern>api/diagnostics/system/systemResources</pattern>
             <pattern>api/diagnostics/system/system_swap</pattern>
             <pattern>api/diagnostics/system/systemInformation</pattern>
+            <pattern>api/diagnostics/system/systemTime</pattern>
             <pattern>api/diagnostics/system/systemTemperature</pattern>
-            <pattern>api/monit/status/get/xml</pattern>
-            <pattern>api/diagnostics/log/core/*</pattern>
-            <pattern>api/ipsec/connections/*</pattern>
-            <pattern>api/ipsec/leases/*</pattern>
-            <pattern>api/ipsec/sessions/*</pattern>
         </patterns>
     </page-dashboard-all>
     <page-diagnostics-authentication>
@@ -307,7 +297,7 @@
             <pattern>ui/diagnostics/firewall/log*</pattern>
             <pattern>api/diagnostics/firewall/streamLog</pattern>
             <pattern>api/diagnostics/firewall/log*</pattern>
-            <pattern>api/diagnostics/interface/getInterfaceNames*</pattern>
+            <pattern>api/diagnostics/interface/getInterfaceNames</pattern>
             <pattern>api/diagnostics/dns/reverse_lookup*</pattern>
             <pattern>api/diagnostics/lvtemplate/*</pattern>
         </patterns>
@@ -507,10 +497,10 @@
         </patterns>
     </page-status-systemlogs-wireless>
     <page-status-trafficgraph>
-        <name>Status: Traffic Graph</name>
+        <name>Reporting: Traffic</name>
         <patterns>
-            <pattern>ui/diagnostics/traffic*</pattern>
-            <pattern>api/diagnostics/traffic*</pattern>
+            <pattern>ui/diagnostics/traffic</pattern>
+            <pattern>api/diagnostics/traffic/*</pattern>
         </patterns>
     </page-status-trafficgraph>
     <page-status-dnsoverview>
