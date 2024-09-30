@@ -203,7 +203,7 @@
         <filename>Monit.js</filename>
         <link>/ui/monit</link>
         <endpoints>
-            <endpoint>/api/monit/status/get/xml</endpoint>
+            <endpoint>/api/monit/status/get/*</endpoint>
         </endpoints>
         <translations>
             <title>Monit Status</title>
