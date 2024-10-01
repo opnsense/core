@@ -53,7 +53,7 @@
         </patterns>
     </page-system-status>
     <page-dashboard-all>
-        <name>Dashboard (all)</name>
+        <name>DEPRECATED: Dashboard (all)</name>
         <patterns>
             <pattern>index.php*</pattern>
             <pattern>ui/core/dashboard*</pattern>
