@@ -1035,12 +1035,6 @@ function interface_ppps_configure($interface)
         }
     }
 
-    /* XXX since interface_ppps_capable() verified this it is likely spurious to check */
-    if (empty($ppp)) {
-        log_msg("interface_ppps_configure() cannot find PPP config for device {$ifcfg['if']}", LOG_ERR);
-        return;
-    }
-
     $ports = explode(',', $ppp['ports']);
     if ($ppp['type'] != "ppp") {
         foreach ($ports as $pid => $port) {
