@@ -104,6 +104,7 @@ interfaces_restart_by_device(false, array_merge($greifs, $gififs));
 ifgroup_setup();
 
 system_routing_configure(false, $interface, true, 'inet');
+
 filter_configure_sync();
 
 if (is_ipaddr($cacheip) && $ip != $cacheip) {
