@@ -279,9 +279,11 @@ class CertController extends ApiMutableModelControllerBase
                 $result['error'] = gettext('Misssing certificate');
             } elseif ($type == 'crt') {
                 $result['status'] = 'ok';
+                $result['descr'] = (string)$node->descr;
                 $result['payload'] = (string)$node->crt_payload;
             } elseif ($type == 'prv') {
                 $result['status'] = 'ok';
+                $result['descr'] = (string)$node->descr;
                 $result['payload'] = (string)$node->prv_payload;
             } elseif ($type == 'pkcs12') {
                 $passphrase = $this->request->getPost('password', null, '');
@@ -294,6 +296,7 @@ class CertController extends ApiMutableModelControllerBase
                 if (!empty($tmp['payload'])) {
                     // binary data, we need to encode it to deliver it to the client
                     $result['payload_b64'] = base64_encode($tmp['payload']);
+                    $result['descr'] = (string)$node->descr;
                     $result['status'] = 'ok';
                 } else {
                     $result['error'] = $tmp['error'] ?? '';

@@ -237,9 +237,11 @@ class CaController extends ApiMutableModelControllerBase
                 $result['error'] = gettext('Misssing certificate');
             } elseif ($type == 'crt') {
                 $result['status'] = 'ok';
+                $result['descr'] = (string)$node->descr;
                 $result['payload'] = (string)$node->crt_payload;
             } elseif ($type == 'prv') {
                 $result['status'] = 'ok';
+                $result['descr'] = (string)$node->descr;
                 $result['payload'] = (string)$node->prv_payload;
             }
         }

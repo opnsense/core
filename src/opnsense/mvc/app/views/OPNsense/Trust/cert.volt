@@ -109,10 +109,10 @@
                                             if (data.payload_b64) {
                                                 mediatype += ';base64';
                                                 payload = data.payload_b64;
-                                                filename = 'cert.p12';
+                                                filename = data.descr + '.p12';
                                             } else if (data.payload) {
                                                 payload = data.payload;
-                                                filename = $type.val() + '.pem';
+                                                filename = data.descr + '_' + $type.val() + '.pem';
                                             }
                                             if (payload !== null) {
                                                 download_content(payload, filename, mediatype);
