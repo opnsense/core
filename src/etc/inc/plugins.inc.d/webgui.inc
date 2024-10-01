@@ -33,7 +33,7 @@ function webgui_configure()
     return [
         'early' => ['webgui_configure_do'],
         'local' => ['webgui_configure_do'],
-        'newwanip_map' => ['webgui_configure_do:2'],
+        'newwanip' => ['webgui_configure_do:2'],
         'webgui' => ['webgui_configure_do'],
     ];
 }

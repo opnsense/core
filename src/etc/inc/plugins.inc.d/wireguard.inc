@@ -144,7 +144,7 @@ function wireguard_prepare($device)
 function wireguard_configure()
 {
     return [
-        'newwanip_map' => ['wireguard_sync'],
+        'newwanip' => ['wireguard_sync'],
         'vpn' => ['wireguard_configure_do'],
     ];
 }

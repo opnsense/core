@@ -41,7 +41,7 @@ function openssh_configure()
     return [
         'early' => ['openssh_configure_do'],
         'local' => ['openssh_configure_do'],
-        'newwanip_map' => ['openssh_configure_do:2'],
+        'newwanip' => ['openssh_configure_do:2'],
     ];
 }
 
