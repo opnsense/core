@@ -997,15 +997,14 @@ function interface_ppps_configure($interface)
         return;
     }
 
-    $ipv4_mode = false;
-    $ipv6_mode = false;
+    $ipv4_mode = $ipv6_mode = 'disable';
 
     switch ($ifcfg['ipaddr'] ?? 'none') {
         case 'ppp':
         case 'pppoe':
         case 'pptp':
         case 'l2tp':
-            $ipv4_mode = true;
+            $ipv4_mode = 'enable';
             break;
         default:
             break;
@@ -1015,18 +1014,15 @@ function interface_ppps_configure($interface)
         case 'dhcp6':
         case 'pppoev6':
         case 'slaac':
-            $ipv6_mode = true;
+            $ipv6_mode = 'enable';
             break;
         default:
             break;
     }
 
-    if (!$ipv4_mode && !$ipv6_mode) {
+    if ($ipv4_mode != 'enable' && $ipv6_mode != 'enable') {
         return;
     }
-
-    /* for IPv6 we need the mode to render in the configuration */
-    $ipv6_mode = $ipv6_mode ? 'enable' : 'disable';
 
     $ppp = null;
     $idx = 0;
@@ -1112,6 +1108,7 @@ startup:
 default:
 {$ppp['type']}client:
   create bundle static {$interface}
+  set bundle {$ipv4_mode} ipcp
   set bundle {$ipv6_mode} ipv6cp
   set iface name {$ifcfg['if']}
 
@@ -1141,7 +1138,7 @@ EOD;
     $mpdconf .= "  set iface up-script /usr/local/opnsense/scripts/interfaces/ppp-linkup.sh\n";
     $mpdconf .= "  set iface down-script /usr/local/opnsense/scripts/interfaces/ppp-linkdown.sh\n";
 
-    if ($ipv4_mode) {
+    if ($ipv4_mode == 'enable') {
         if ($ppp['type'] == 'ppp') {
             $localip = is_ipaddr($ppp['localip']) ? $ppp['localip'] : '0.0.0.0';
             $gateway = is_ipaddr($ppp['gateway']) ? $ppp['gateway'] : "10.64.64.{$idx}";
@@ -1149,15 +1146,15 @@ EOD;
         } else {
             $mpdconf .= "  set ipcp ranges 0.0.0.0/0 0.0.0.0/0\n";
         }
-    }
 
-    if (isset($ppp['vjcomp'])) {
-        $mpdconf .= "  set ipcp no vjcomp\n";
-    }
+        if (isset($ppp['vjcomp'])) {
+            $mpdconf .= "  set ipcp no vjcomp\n";
+        }
 
-    if (isset($config['system']['dnsallowoverride'])) {
-        $mpdconf .= "  set ipcp enable req-pri-dns\n";
-        $mpdconf .= "  set ipcp enable req-sec-dns\n";
+        if (isset($config['system']['dnsallowoverride'])) {
+            $mpdconf .= "  set ipcp enable req-pri-dns\n";
+            $mpdconf .= "  set ipcp enable req-sec-dns\n";
+        }
     }
 
     foreach ($ports as $pid => $port) {
