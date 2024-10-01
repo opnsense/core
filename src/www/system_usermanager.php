@@ -434,6 +434,19 @@ $( document ).ready(function() {
         $('#otp_qrcode').show();
     });
 
+    // Show OTP
+    var otp_hidden = true;
+    $('#show_otp').on("click", function () {
+        if (otp_hidden) {
+            var hidden = document.getElementById("otp_seed").value;
+            document.getElementById("otp_seed_text").textContent = hidden;
+            otp_hidden = false;
+        } else {
+            document.getElementById("otp_seed_text").textContent = '****************';
+            otp_hidden = true;
+        }
+    });
+
     // remove user
     $(".act-del-user").click(function(event){
       var userid = $(this).data('userid');
@@ -913,9 +926,13 @@ $( document ).ready(function() {
                   <tr>
                     <td><a id="help_for_otp_seed" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('OTP seed') ?></td>
                     <td>
-                      <input name="otp_seed" type="text" value="<?=$pconfig['otp_seed'];?>"/>
+                      <?php // on initial install, there is no OTP seed.  Check if it is set ?>
+                      <textarea id="otp_seed_text" cols="65" rows="1"><?= isset($pconfig['otp_seed']) ? gettext('****************') : "";?></textarea>
+                      <input id="otp_seed" name="otp_seed" type="hidden" value="<?=$pconfig['otp_seed'];?>"/>
                       <input type="checkbox" name="gen_otp_seed"/>
                       <small><?= gettext('Generate new secret (160 bit)') ?></small>
+                      <input id="show_otp" type="checkbox"/>
+                      <small><?= gettext('Show OTP seed') ?></small>
                       <div class="hidden" data-for="help_for_otp_seed">
                         <?=gettext("OTP (base32) seed to use when a one time password authenticator is used");?><br/>
                       </div>
