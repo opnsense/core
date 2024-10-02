@@ -82,7 +82,7 @@
                                         '/api/trust/ca/generate_file/'+uuid+'/'+$type.val(),
                                         params,
                                         function(data, status) {
-                                            download_content(data.payload, $type.val() + '.pem', 'application/octet-stream');
+                                            download_content(data.payload, data.descr + '_' + $type.val() + '.pem', 'application/octet-stream');
                                         }
                                     )
                                     dialogItself.close();
