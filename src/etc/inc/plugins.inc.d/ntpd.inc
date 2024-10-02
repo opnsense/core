@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2024 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -424,21 +424,33 @@ function ntpd_configure_do($verbose = false)
         $ntpcfg .= "leapfile /var/db/leap-seconds\n";
     }
 
-    $interfaces = [];
-    if (isset($config['ntpd']['interface'])) {
-        $interfaces = explode(',', $config['ntpd']['interface']);
-    }
+    /* only bind to given interfaces or IP aliases */
+    if (!empty($config['ntpd']['interface'])) {
+        $ntpifs = ['lo0'];
+        $ntpaddrs = [];
 
-    if (is_array($interfaces) && count($interfaces)) {
+        foreach (explode(',', $config['ntpd']['interface']) as $interface) {
+            if (!is_ipaddr($interface)) {
+                $ntpifs[] = $interface;
+            } else {
+                $ntpaddrs[] = $interface;
+            }
+            /* XXX _vip constructs have always been ignored */
+        }
+
+        foreach (interfaces_addresses($ntpifs) as $tmpaddr => $info) {
+            if (!$info['bind']) {
+                continue;
+            }
+
+            $ntpaddrs[] = $tmpaddr;
+        }
+
         $ntpcfg .= "interface ignore all\n";
         $ntpcfg .= "interface ignore wildcard\n";
-        foreach ($interfaces as $interface) {
-            if (!is_ipaddr($interface)) {
-                $interface = get_real_interface($interface);
-            }
-            if (!empty($interface)) {
-                $ntpcfg .= "interface listen {$interface}\n";
-            }
+
+        foreach ($ntpaddrs as $addr) {
+            $ntpcfg .= "interface listen {$addr}\n";
         }
     }
 

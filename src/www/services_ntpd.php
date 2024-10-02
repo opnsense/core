@@ -334,7 +334,7 @@ include("head.inc");
                       <select id="interface" name="interface[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
 <?php
                       foreach ($interfaces as $iface => $ifacename):
-                          if (!is_ipaddr(get_interface_ip($iface)) && !is_ipaddr($iface)) {
+                          if (!is_ipaddr($iface) && !is_ipaddrv4(get_interface_ip($iface)) && !is_ipaddrv6(get_interface_ipv6($iface))) {
                               continue;
                           }?>
                           <option value="<?=$iface;?>" <?= !empty($pconfig['interface']) && in_array($iface, $pconfig['interface']) ? 'selected="selected"' : '' ?>>

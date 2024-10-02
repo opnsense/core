@@ -3846,7 +3846,7 @@ function ip_in_interface_alias_subnet($interface, $ipalias)
     return false;
 }
 
-function get_interface_ip($interface = 'wan', $ifconfig_details = null)
+function get_interface_ip($interface, $ifconfig_details = null)
 {
     if (is_ipaddrv4($interface)) {
         return $interface;
@@ -3867,7 +3867,7 @@ function get_interface_ip($interface = 'wan', $ifconfig_details = null)
     return $ip;
 }
 
-function get_interface_ipv6($interface = 'wan', $ifconfig_details = null, $mode = 'primary')
+function get_interface_ipv6($interface, $ifconfig_details = null, $mode = 'primary')
 {
     if (is_ipaddrv6($interface)) {
         return $interface;
