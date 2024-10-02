@@ -104,15 +104,15 @@
                                         params,
                                         function(data, status) {
                                             let payload = null;
-                                            let filename = null;
+                                            let filename = data.descr + '_' ;
                                             let mediatype = 'application/octet-stream';
                                             if (data.payload_b64) {
                                                 mediatype += ';base64';
                                                 payload = data.payload_b64;
-                                                filename = 'cert.p12';
+                                                filename += 'cert.p12';
                                             } else if (data.payload) {
                                                 payload = data.payload;
-                                                filename = $type.val() + '.pem';
+                                                filename += $type.val() + '.pem';
                                             }
                                             if (payload !== null) {
                                                 download_content(payload, filename, mediatype);
