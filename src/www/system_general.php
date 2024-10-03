@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $reqdfields = explode(" ", "hostname domain");
     $reqdfieldsn = array(gettext("Hostname"),gettext("Domain"));
 
-    if (is_uploaded_file($_FILES['pictfile']['tmp_name'])) {
+    if (!empty($_FILES['pictfile']) && is_uploaded_file($_FILES['pictfile']['tmp_name'])) {
         if ($_FILES['pictfile']['size'] > (10 * 1024 * 1024)) {
             $input_errors[] = gettext("The image file is too large. Please upload something smaller than 10MB.");
         } else {
@@ -104,6 +104,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $pconfig['picture_filename'] = basename($_FILES['pictfile']['name']);
             }
         }
+    }
+
+    if (!empty($pconfig['picture']) && !empty($pconfig['picture_filename'])) {
+        $config['system']['picture'] = $pconfig['picture'];
+        $config['system']['picture_filename'] = $pconfig['picture_filename'];
+    } elseif (isset($pconfig['del_picture']) && $pconfig['del_picture'] == 'true') {
+        unset($config['system']['picture']);
+        unset($config['system']['picture_filename']);
     }
 
     if (empty($pconfig['dnsallowoverride_exclude'])) {
@@ -182,14 +190,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['language'] = $pconfig['language'];
         $config['system']['timezone'] = $pconfig['timezone'];
         $config['theme'] =  $pconfig['theme'];
-
-        if (!empty($pconfig['picture']) && !empty($pconfig['picture_filename'])) {
-            $config['system']['picture'] = $pconfig['picture'];
-            $config['system']['picture_filename'] = $pconfig['picture_filename'];
-        } elseif (isset($config['system']['picture'])) {
-            unset($config['system']['picture']);
-            unset($config['system']['picture_filename']);
-        }
 
         if (!empty($pconfig['prefer_ipv4'])) {
             $config['system']['prefer_ipv4'] = true;
@@ -311,6 +311,7 @@ $( document ).ready(function() {
 
     $("#remove_picture").click(function(event){
         $("#picture").remove();
+        $("#del_picture").val("true");
         $('#save').click();
     });
 });
@@ -423,6 +424,7 @@ $( document ).ready(function() {
                     <img style="border:0px solid; max-width:25%; max-height:25%" src="/system_general.php?getpic=true" alt="picture" />
                   </a>
                 </div>
+                <input type="hidden" name="del_picture" id="del_picture" value="false"></input>
 <?php           else: ?>
                 <input name="pictfile" type="file" size="40" id="pictfile"/>
 <?php           endif ?>
