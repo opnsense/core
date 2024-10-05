@@ -40,6 +40,17 @@
                         request['carefs'] = $('#ca_filter').val();
                     }
                     return request;
+                },
+                formatters: {
+                    in_use: function (column, row) {
+                        if (row.in_use === '1') {
+                            return "<span class=\"fa fa-fw fa-check\" data-value=\"1\" data-row-id=\"" + row.uuid + "\"></span>";
+                        } else if (row.is_user === '1') {
+                            return "<span class=\"fa fa-fw fa-user-o\" data-value=\"1\" data-row-id=\"" + row.uuid + "\"></span>";
+                        } else {
+                            return "<span class=\"fa fa-fw fa-times\" data-value=\"0\" data-row-id=\"" + row.uuid + "\"></span>";
+                        }
+                    }
                 }
             },
             commands: {
@@ -283,7 +294,7 @@
             <thead>
                 <tr>
                     <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                    <th data-column-id="in_use" data-width="6em" data-type="string" data-formatter="boolean">{{ lang._('In use') }}</th>
+                    <th data-column-id="in_use" data-width="6em" data-type="string" data-formatter="in_use">{{ lang._('In use') }}</th>
                     <th data-column-id="descr" data-width="15em" data-type="string">{{ lang._('Description') }}</th>
                     <th data-column-id="caref" data-width="15em" data-type="string">{{ lang._('Issuer') }}</th>
                     <th data-column-id="rfc3280_purpose" data-width="10em"  data-type="string">{{ lang._('Purpose') }}</th>

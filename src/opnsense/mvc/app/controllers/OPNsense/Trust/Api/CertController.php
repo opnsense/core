@@ -174,7 +174,7 @@ class CertController extends ApiMutableModelControllerBase
         };
         return $this->searchBase(
             'cert',
-            ['refid', 'descr', 'caref', 'rfc3280_purpose', 'name', 'valid_from', 'valid_to' , 'in_use'],
+            ['refid', 'descr', 'caref', 'rfc3280_purpose', 'name', 'valid_from', 'valid_to' , 'in_use', 'is_user'],
             null,
             $filter_funct
         );
