@@ -85,7 +85,7 @@
                     <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
                 </destination_port>
                 <gateway type="JsonKeyValueStoreField">
-                    <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
+                    <ConfigdPopulateAct>interface gateways list -g</ConfigdPopulateAct>
                     <ValidationMessage>Specify a valid gateway from the list matching the networks ip protocol.</ValidationMessage>
                 </gateway>
                 <log type="BooleanField">
