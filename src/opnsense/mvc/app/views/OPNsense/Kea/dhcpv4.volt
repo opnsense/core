@@ -120,7 +120,7 @@
     </div>
     <!-- subnets / pools  -->
     <div id="subnets" class="tab-pane fade in">
-        <table id="grid-subnets" class="table table-condensed table-hover table-striped" data-editDialog="DialogSubnet">
+        <table id="grid-subnets" class="table table-condensed table-hover table-striped" data-editDialog="DialogSubnet" data-editAlert="keaChangeMessage">
             <thead>
                 <tr>
                   <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
@@ -143,7 +143,7 @@
     </div>
     <!-- reservations -->
     <div id="reservations" class="tab-pane fade in">
-        <table id="grid-reservations" class="table table-condensed table-hover table-striped" data-editDialog="DialogReservation">
+        <table id="grid-reservations" class="table table-condensed table-hover table-striped" data-editDialog="DialogReservation" data-editAlert="keaChangeMessage">
             <thead>
                 <tr>
                   <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
@@ -179,7 +179,7 @@
     </div>
     <!-- HA - peers -->
     <div id="ha-peers" class="tab-pane fade in">
-        <table id="grid-ha-peers" class="table table-condensed table-hover table-striped" data-editDialog="DialogPeer">
+        <table id="grid-ha-peers" class="table table-condensed table-hover table-striped" data-editDialog="DialogPeer" data-editAlert="keaChangeMessage">
             <thead>
                 <tr>
                   <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
@@ -200,13 +200,15 @@
             </tfoot>
         </table>
     </div>
-
 </div>
 
 <section class="page-content-main">
     <div class="content-box">
         <div class="col-md-12">
             <br/>
+            <div id="keaChangeMessage" class="alert alert-info" style="display: none" role="alert">
+                {{ lang._('After changing settings, please remember to apply them') }}
+            </div>
             <button class="btn btn-primary" id="reconfigureAct"
                     data-endpoint='/api/kea/service/reconfigure'
                     data-label="{{ lang._('Apply') }}"
