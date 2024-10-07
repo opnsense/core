@@ -147,7 +147,7 @@ def cmd_rehash():
                         f_out.write(record['data'])
                     os.chmod(dst_filename, 0o644)
                 else:
-                    if os.path.isfile(dst_filename):
+                    if os.path.isfile(dst_filename) or os.path.islink(dst_filename):
                         os.remove(dst_filename)
                     os.symlink(src_filename, dst_filename)
 
