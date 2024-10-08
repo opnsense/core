@@ -26,6 +26,7 @@
     -----------------------------------------------------------------------------------------------
     Simple re-implementation of certctl tool in FreeBSD (only supporting the parameters we use)
 """
+
 import glob
 import sys
 import os
@@ -39,7 +40,6 @@ TRUSTPATH = ['/usr/share/certs/trusted', '/usr/local/share/certs', '/usr/local/e
 BLACKLISTPATH = ['/usr/share/certs/untrusted', '/usr/share/certs/blacklisted', '/usr/local/etc/ssl/blacklisted']
 CERTDESTDIR = '/etc/ssl/certs'
 BLACKLISTDESTDIR = '/etc/ssl/blacklisted'
-
 
 def certificate_iterator(filename):
     fext = os.path.splitext(filename)[1][1:].lower()
@@ -160,7 +160,13 @@ def cmd_rehash():
             else:
                 os.remove(filename)
             changes += 1
-    print("Changed %d links" % changes)
+
+    if changes == 0:
+        print("certctl: No changes to trust store were made.")
+    elif changes == 1:
+        print("certctl: Modified 1 trust store link.")
+    else:
+        print("certctl: Modified %d trust store links." % changes)
 
     # link certs/crls to ports openssl version
     current_target_files = []
