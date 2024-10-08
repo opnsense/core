@@ -100,6 +100,6 @@ def main(domains, target_filename, debug=False):
 parser = argparse.ArgumentParser()
 parser.add_argument("-d", help="debug", action="store_true")
 parser.add_argument("-t", help="target filename", type=str, default="/dev/stdout")
-parser.add_argument('domains', metavar='N', type=str, nargs='+', help='list of domains to merge')
+parser.add_argument('domains', metavar='N', type=str, nargs='*', help='list of domains to merge')
 args = parser.parse_args()
 main(args.domains, args.t, args.d)

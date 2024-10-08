@@ -1056,6 +1056,7 @@
 /usr/local/opnsense/scripts/firmware/check.sh
 /usr/local/opnsense/scripts/firmware/connection.sh
 /usr/local/opnsense/scripts/firmware/health.sh
+/usr/local/opnsense/scripts/firmware/hostnames.sh
 /usr/local/opnsense/scripts/firmware/install.sh
 /usr/local/opnsense/scripts/firmware/latest.php
 /usr/local/opnsense/scripts/firmware/launcher.sh
@@ -1238,6 +1239,7 @@
 /usr/local/opnsense/scripts/system/temperature.sh
 /usr/local/opnsense/scripts/system/tls_groups.py
 /usr/local/opnsense/scripts/system/trigger_config_changed_events.py
+/usr/local/opnsense/scripts/system/update-crl-fetch.py
 /usr/local/opnsense/scripts/unbound/blocklists.py
 /usr/local/opnsense/scripts/unbound/blocklists/__init__.py
 /usr/local/opnsense/scripts/unbound/blocklists/default_bl.py
