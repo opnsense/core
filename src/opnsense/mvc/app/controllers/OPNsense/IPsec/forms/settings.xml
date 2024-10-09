@@ -1,15 +1,6 @@
 <form>
     <tab id="ipsec-general" description="General">
         <field>
-            <id>ipsec.general.max_ikev1_exchanges</id>
-            <label>Maximum IKEv1 phase 2 exchanges</label>
-            <type>checkbox</type>
-            <help>
-                Maximum number of IKEv1 phase 2 exchanges per IKE_SA to keep state about and track concurrently.
-                When using multiple phase 2 definitions a higher value than the default (3) would be advisable to prevent re-keying issues
-            </help>
-        </field>
-        <field>
             <id>ipsec.general.preferred_oldsa</id>
             <label>Prefer older IPsec SAs</label>
             <type>checkbox</type>
@@ -39,6 +30,15 @@
         </field>
     </tab>
     <tab id="ipsec-charon" description="Charon">
+        <field>
+            <id>ipsec.charon.max_ikev1_exchanges</id>
+            <label>Maximum IKEv1 phase 2 exchanges</label>
+            <type>text</type>
+            <help>
+                Maximum number of IKEv1 phase 2 exchanges per IKE_SA to keep state about and track concurrently.
+                When using multiple phase 2 definitions a higher value than the default (3) would be advisable to prevent re-keying issues
+            </help>
+        </field>
         <field>
             <id>ipsec.charon.ignore_acquire_ts</id>
             <label>Ignore acquire ts</label>
