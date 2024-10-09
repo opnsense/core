@@ -57,10 +57,18 @@ def certificate_iterator(filename):
     needs_copy = len(x509_items) > 1
     for x509_item in x509_items:
         data = x509_item.public_bytes(serialization.Encoding.PEM) if needs_copy else filename
-        tmp = OpenSSL.crypto.X509().get_issuer()
-        for item in x509_item.issuer:
-            setattr(tmp, item.rfc4514_attribute_name, item.value)
-        hashval = hex(tmp.hash()).lstrip('0x').zfill(8)
+        # XXX: need to check subject_name_hash as below for crl does not offer the same results in all cases
+        if fext == 'crl':
+            tmp = OpenSSL.crypto.X509().get_issuer()
+            for item in x509_item.issuer:
+                setattr(tmp, item.rfc4514_attribute_name, item.value)
+            hashval = hex(tmp.hash()).lstrip('0x').zfill(8)
+        else:
+            cert = OpenSSL.crypto.load_certificate(
+                OpenSSL.crypto.FILETYPE_PEM,
+                x509_item.public_bytes(serialization.Encoding.PEM)
+            )
+            hashval = hex(cert.subject_name_hash()).lstrip('0x').zfill(8)
         yield {
             'hash': hashval,
             'target_pattern': '%s.%s%%d' % (hashval, 'r' if fext == 'crl' else ''),
