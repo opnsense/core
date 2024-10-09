@@ -314,6 +314,10 @@
                 <auth-gen-token type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                 </auth-gen-token>
+                <provision_exclusive type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </provision_exclusive>
                 <redirect_gateway type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>

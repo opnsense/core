@@ -170,9 +170,10 @@ class OpenVPN extends BaseModel
      * Retrieve overwrite content in legacy format
      * @param string $server_id vpnid
      * @param string $common_name certificate common name (or username when specified)
+     * @param array $overlay overwrite CSO properties
      * @return array legacy overwrite data
      */
-    public function getOverwrite($server_id, $common_name)
+    public function getOverwrite($server_id, $common_name, $overlay = [])
     {
         $result = [];
         foreach ($this->Overwrites->Overwrite->iterateItems() as $cso) {
@@ -230,6 +231,29 @@ class OpenVPN extends BaseModel
                     foreach (explode(',', (string)$cso->{$fieldname . 's'}) as $idx => $item) {
                         $result[$fieldname . (string)($idx + 1)] = $item;
                     }
+                }
+            }
+        }
+
+        if (empty($result)) {
+            $result['common_name'] = $common_name;
+        }
+
+        // overlay is fed by authentication backends and takes precedence
+        $result = array_merge($result, $overlay);
+
+        // check if provisioning by authentication backend is mandatory
+        foreach ($this->Instances->Instance->iterateItems() as $node_uuid => $node) {
+            if (
+                (!empty((string)$node->enabled)) &&
+                ($server_id == $node_uuid) &&
+                ((string)$node->role == 'server') &&
+                (!empty((string)$node->provision_exclusive))
+            ) {
+                if (!empty((string)$node->server) && empty($result['tunnel_network'])) {
+                    return [];
+                } elseif (!empty((string)$node->server_ipv6) && empty($result['tunnel_networkv6'])) {
+                    return [];
                 }
             }
         }
