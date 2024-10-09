@@ -383,6 +383,7 @@ EOD;
         config_read_array('interfaces', 'lan');
         $config['interfaces']['lan']['if'] = $lanif;
         $config['interfaces']['lan']['enable'] = true;
+        $config['interfaces']['lan']['antilockout'] = true;
 
         if ($new) {
             $config['interfaces']['lan']['ipaddr'] = '192.168.1.1';
