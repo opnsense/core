@@ -125,12 +125,10 @@ function do_auth($common_name, $serverid, $method, $auth_file)
                     LOG_NOTICE,
                     "Locate overwrite for '{$common_name}' using server '{$serverid}' (vpnid: {$a_server['vpnid']})"
                 );
-                $cso = (new OPNsense\OpenVPN\OpenVPN())->getOverwrite($serverid, $common_name);
+                $cso = (new OPNsense\OpenVPN\OpenVPN())->getOverwrite($serverid, $common_name, parse_auth_properties($authenticator->getLastAuthProperties()));
                 if (empty($cso)) {
-                    $cso = array("common_name" => $common_name);
+                    return "authentication failed for user '{$username}'. No tunnel network provisioned, but required.";
                 }
-
-                $cso = array_merge($cso, parse_auth_properties($authenticator->getLastAuthProperties()));
                 $cso_filename = openvpn_csc_conf_write($cso, $a_server);
                 if (!empty($cso_filename)) {
                     $tmp = empty($a_server['cso_login_matching']) ? "CSO [CN]" : "CSO [USER]";
