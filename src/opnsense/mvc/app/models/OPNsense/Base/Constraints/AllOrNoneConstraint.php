@@ -53,7 +53,7 @@ class AllOrNoneConstraint extends BaseConstraint
             $countEmpty = 0;
             $countNotEmpty = 0;
             foreach ($Fields as $fieldname) {
-                if (empty((string)$parentNode->$fieldname)) {
+                if (is_null($parentNode->$fieldname) || $parentNode->$fieldname->isEmpty()) {
                     $countEmpty++;
                 } else {
                     $countNotEmpty++;

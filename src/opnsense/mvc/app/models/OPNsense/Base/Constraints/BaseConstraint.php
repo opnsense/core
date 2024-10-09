@@ -34,22 +34,6 @@ use OPNsense\Base\Messages\Message;
 abstract class BaseConstraint extends BaseValidator
 {
     /**
-     * check if field is empty  (either boolean field as false or an empty field)
-     * @param $node
-     * @return bool
-     */
-    public function isEmpty($node)
-    {
-        $node_class = get_class($node);
-        if ($node_class == "OPNsense\Base\FieldTypes\BooleanField") {
-            return empty((string)$node);
-        } elseif (empty((string)$node) || (string)$node == "0") {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * @param $validator
      * @param $attribute
      */
