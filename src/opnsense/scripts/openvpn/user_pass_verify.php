@@ -95,7 +95,8 @@ function do_auth($common_name, $serverid, $method, $auth_file)
     $a_server = $serverid !== null ? (new OPNsense\OpenVPN\OpenVPN())->getInstanceById($serverid, 'server') : null;
     if ($a_server == null) {
         return "OpenVPN '$serverid' was not found. Denying authentication for user {$username}";
-    } elseif (!empty($a_server['strictusercn']) && $username != $common_name) {
+    } elseif (!empty($a_server['strictusercn']) && ((($a_server['strictusercn']==2) && (strtolower($username) != strtolower($common_name))) ||
+                                                    (($a_server['strictusercn']!=2) && ($username != $common_name)))) {
         return sprintf(
             "Username does not match certificate common name (%s != %s), access denied.",
             $username,
