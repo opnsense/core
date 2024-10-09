@@ -312,6 +312,17 @@ Set to 0 to disable, remember to change your client as well.
         </help>
     </field>
     <field>
+        <id>instance.provision_exclusive</id>
+        <label>Require Client Provisioning</label>
+        <type>checkbox</type>
+        <style>role role_server</style>
+        <advanced>true</advanced>
+        <help>
+        Require, as a condition for authentication, that a tunnel address will be provisioned either from a local defined client-specific override or offered by an authenticator (such as RADIUS) .
+        This is similar to OpenVPN's 'ccd-exclusive' option, but stricter as we expect the client to receive a tunnel address for the protocol used.
+        </help>
+    </field>
+    <field>
         <type>header</type>
         <label>Routing</label>
     </field>
