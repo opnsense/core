@@ -1,0 +1,118 @@
+#!/usr/local/bin/php
+<?php
+
+/*
+ * Copyright (C) 2023 Franco Fichtner <franco@opnsense.org>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+require_once 'script/load_phalcon.php';
+
+$api = new OPNsense\Auth\API();
+
+$rest_arg_index = null;
+$opts = getopt('u:j', ['json'], $rest_arg_index);
+$args = array_slice($argv, $rest_arg_index);
+if (0 == count($args)) {
+    print_usage();
+}
+
+$username = get_opts_value($opts, ['u'], exec('whoami'));
+$json_output = get_opts_value($opts, ['j', 'json'], false);
+
+switch ($args[0]) {
+    case 'create':
+        if (1 != count($args)) {
+            print_usage();
+        }
+
+        $secret = $api->createKey($username);
+
+        if (null == $secret) {
+            print_error('Username "%s" not found', $username);
+        }
+
+        if ($json_output) {
+            echo json_encode($secret)."\n";
+        } else {
+            foreach ($secret as $key => $value) {
+                printf("%s=%s\n", $key, $value);
+            }
+        }
+
+        break;
+
+    case 'delete':
+        if (2 != count($args)) {
+            print_usage();
+        }
+        $apikey = $args[1];
+
+        $isFound = $api->dropKey($username, $apikey);
+        if (!$isFound) {
+            print_error('API key not found');
+        }
+        break;
+
+    default:
+        print_usage();
+}
+
+function print_usage()
+{
+    echo "Usage:\n";
+    echo "       opnsense-apikey [-u username] [-j | --json] create \n";
+    echo "       opnsense-apikey [-u username] delete [apikey]\n";
+
+    exit(1);
+}
+
+function print_error(string $format)
+{
+    $argv = func_get_args();
+    $format = array_shift($argv);
+    vprintf($format."\n", $argv);
+
+    exit(1);
+}
+
+function get_opts_value(array $opts, array $names, $default)
+{
+    $value = $default;
+
+    foreach ($names as $name) {
+        if (isset($opts[$name]) and '' !== $opts[$name]) {
+            if (is_bool($opts[$name])) {
+                $value = true;
+            } else {
+                $value = $opts[$name];
+            }
+            break;
+        }
+    }
+
+    return $value;
+}
+
+exit(0);
