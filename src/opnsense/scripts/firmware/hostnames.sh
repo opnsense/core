@@ -27,15 +27,37 @@
 # collect HTTPS URLs related to firmware and provide the
 # deduplicated host names thereof for further processing
 
-# XXX add other URLs here from pkg repo configurations
 URLS=$(opnsense-update -M; opnsense-update -X)
+
+# Make a few assumptions about plugged pkg repositories:
+#
+# * grab the "url" key, delimited with double quotes
+# * remove the spurious "pkg+" prefix to treat it as raw HTTP(S)
+# * match config name against known enabled repos
+
+REPOS=$(opnsense-verify -l | awk '{ print $1 }')
+
+for CONF in $(find /etc/pkg /usr/local/etc/pkg/repos -name '*.conf' -type f); do
+	for REPO in ${REPOS}; do
+		if [ "${REPO}.conf" = "$(basename ${CONF})" ]; then
+			URL=$(grep 'url:.*"' ${CONF})
+			if [ -n "${URL}" ]; then
+				URL=${URL#*'"'}
+				URL=${URL#pkg+}
+				URLS="${URLS}
+${URL%%'"'*}"
+			fi
+			continue 2
+		fi
+	done
+done
 
 for HOST in $( (for URL in ${URLS}; do
 	if [ -n "${URL##https://*}" ]; then
 		continue
 	fi
-	HOST=${URL#*://}
-	HOST=${HOST%%/*}
 
-	echo ${HOST}
+	HOST=${URL#*://}
+	echo ${HOST%%/*}
+
 done) | sort -u); do echo ${HOST}; done
