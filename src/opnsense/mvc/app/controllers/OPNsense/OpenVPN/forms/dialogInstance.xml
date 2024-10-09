@@ -318,11 +318,8 @@ Set to 0 to disable, remember to change your client as well.
         <style>role role_server</style>
         <advanced>true</advanced>
         <help>
-        Require, as a condition of authentication, that a connecting client must be provisioned from an authentication backend.
-        If no authentication method or the local database has been selected, a client-specific override must be present
-        with at least the common name and a tunnel network specified (IPv4/IPv6). For other backends, the backend must
-        at least provide the client IP address. This is similar to OpenVPN's 'ccd-exclusive' option, but stricter
-        as the authentication backend must supply an IP address for the client.
+        Require, as a condition for authentication, that a tunnel address will be provisioned either from a local defined client-specific override or offered by an authenticator (such as RADIUS) .
+        This is similar to OpenVPN's 'ccd-exclusive' option, but stricter as we expect the client to receive a tunnel address for the protocol used.
         </help>
     </field>
     <field>

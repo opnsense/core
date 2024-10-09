@@ -171,7 +171,7 @@ class OpenVPN extends BaseModel
      * @param string $server_id vpnid
      * @param string $common_name certificate common name (or username when specified)
      * @param array $overlay overwrite CSO properties
-     * @return array legacy overwrite data
+     * @return array legacy overwrite data, empty when failed
      */
     public function getOverwrite($server_id, $common_name, $overlay = [])
     {
@@ -245,10 +245,10 @@ class OpenVPN extends BaseModel
         // check if provisioning by authentication backend is mandatory
         foreach ($this->Instances->Instance->iterateItems() as $node_uuid => $node) {
             if (
-                (!empty((string)$node->enabled)) &&
-                ($server_id == $node_uuid) &&
-                ((string)$node->role == 'server') &&
-                (!empty((string)$node->provision_exclusive))
+                !empty((string)$node->enabled) &&
+                $server_id == $node_uuid &&
+                (string)$node->role == 'server' &&
+                !empty((string)$node->provision_exclusive)
             ) {
                 if (!empty((string)$node->server) && empty($result['tunnel_network'])) {
                     return [];
