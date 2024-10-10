@@ -99,7 +99,7 @@ fi
 
 if [ -n "$(opnsense-update -x)" ]; then
 	# business mirror compliance requires
-	# disabling # the use of TLS below 1.3
+	# disabling the use of TLS below 1.3
 	export SSL_NO_TLS1="yes"
 	export SSL_NO_TLS1_1="yes"
 	export SSL_NO_TLS1_2="yes"
@@ -117,6 +117,7 @@ if [ -n "$(opnsense-update -x)" ]; then
 			mv ${CRL_TMP} ${CRL_FILE}
 		fi
 	fi
+
 	# CRL file is ready for use now
 	export SSL_CRL_FILE="${CRL_FILE}"
 fi
