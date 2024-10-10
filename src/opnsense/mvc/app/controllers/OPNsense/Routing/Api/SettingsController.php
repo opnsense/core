@@ -205,12 +205,14 @@ class SettingsController extends ApiMutableModelControllerBase
                 }
 
                 $groups = [];
-                foreach ($cfg->gateways->children() as $tag => $gw_group) {
-                    if ($tag == 'gateway_group' && !empty($gw_group)) {
-                        foreach ($gw_group->item as $item) {
-                            $name = explode("|", (string)$item);
-                            if ($name[0] == $gateway->name) {
-                                $groups[] = (string)$gw_group->name;
+                if ($cfg->gateways->count() > 0) {
+                    foreach ($cfg->gateways->children() as $tag => $gw_group) {
+                        if ($tag == 'gateway_group' && !empty($gw_group)) {
+                            foreach ($gw_group->item as $item) {
+                                $name = explode("|", (string)$item);
+                                if ($name[0] == $gateway->name) {
+                                    $groups[] = (string)$gw_group->name;
+                                }
                             }
                         }
                     }
