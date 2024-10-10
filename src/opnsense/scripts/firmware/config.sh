@@ -55,7 +55,47 @@ upgrade
 # initialize environment to operate in
 env_init()
 {
-	# XXX move modifications to this spot
+	CRL_FILE=/tmp/libfetch_crl.$(date +"%y%m%d%H")
+
+	# clean up old CRL files if found
+	for FILE in $(find /tmp/ -name "libfetch_crl.*"); do
+		if [ "${FILE}" != "${CRL_FILE}" ]; then
+			rm ${FILE}
+		fi
+	done
+
+	if [ -n "$(opnsense-update -x)" ]; then
+		# business mirror compliance requires
+		# disabling the use of TLS below 1.3
+		export SSL_NO_TLS1="yes"
+		export SSL_NO_TLS1_1="yes"
+		export SSL_NO_TLS1_2="yes"
+
+		# refresh CRL file for libfetch consumption
+		if [ ! -s ${CRL_FILE} ]; then
+			# collect firmware-relevant hostnames using TLS
+			# in order to prepare a matching CRL bundle
+			HOSTS=$(/usr/local/opnsense/scripts/firmware/hostnames.sh)
+			CRL_TMP=$(mktemp -q /tmp/libfetch_tmp.XXXXXX)
+
+			if /usr/local/opnsense/scripts/system/update-crl-fetch.py \
+			    ${HOSTS} > ${CRL_TMP}; then
+				mv ${CRL_TMP} ${CRL_FILE}
+			else
+				# in case of problems clear the file and leave an
+				# empty one for the next run also in order to let
+				# libfetch complain about the missing CRLs
+				rm ${CRL_TMP}
+				: > ${CRL_FILE}
+			fi
+		fi
+
+		# CRL file is ready for use now
+		export SSL_CRL_FILE="${CRL_FILE}"
+	else
+		# unused so ok to remove
+		rm ${CRL_FILE}
+	fi
 }
 
 for COMMAND in ${COMMANDS}; do

@@ -79,37 +79,6 @@ if [ -n "${DO_RANDOM}" ]; then
 	sleep ${DO_RANDOM#"-r "}
 fi
 
-if [ -n "$(opnsense-update -x)" ]; then
-	# business mirror compliance requires
-	# disabling the use of TLS below 1.3
-	export SSL_NO_TLS1="yes"
-	export SSL_NO_TLS1_1="yes"
-	export SSL_NO_TLS1_2="yes"
-
-	# implement CRL checking for libfetch
-	CRL_FILE=/tmp/libfetch_crl.$(date +"%y%m%d%H")
-	if [ ! -s ${CRL_FILE} ]; then
-		# collect firmware-relevant hostnames using TLS
-		# in order to prepare a matching CRL bundle
-		HOSTS=$(/usr/local/opnsense/scripts/firmware/hostnames.sh)
-		CRL_TMP=$(mktemp -q /tmp/libfetch_crl.tmp.XXXXXX)
-
-		# make sure to not clobber the file when this fails
-		if /usr/local/opnsense/scripts/system/update-crl-fetch.py ${HOSTS} > ${CRL_TMP}; then
-			mv ${CRL_TMP} ${CRL_FILE}
-		else
-			# in case of problems clear the file and leave an
-			# empty one for the next run also in order to let
-			# libfetch complain about the missing CRLs
-			rm ${CRL_TMP}
-			: > ${CRL_FILE}
-		fi
-	fi
-
-	# CRL file is ready for use now
-	export SSL_CRL_FILE="${CRL_FILE}"
-fi
-
 if [ -z "${DO_UNLOCKED}" ]; then
 	${FLOCK} -n -o ${LOCKFILE} ${COMMAND} "${@}"
 else
