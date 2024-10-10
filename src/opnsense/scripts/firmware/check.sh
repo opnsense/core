@@ -37,12 +37,11 @@
 # downgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
 # upgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
 
-JSONFILE="/tmp/pkg_upgrade.json"
-LOCKFILE="/tmp/pkg_upgrade.progress"
-OUTFILE="/tmp/pkg_update.out"
-TEE="/usr/bin/tee -a"
+. /usr/local/opnsense/scripts/firmware/config.sh
 
 LICENSEFILE="/usr/local/opnsense/version/core.license"
+JSONFILE="/tmp/pkg_upgrade.json"
+OUTFILE="/tmp/pkg_update.out"
 
 CUSTOMPKG=${1}
 
