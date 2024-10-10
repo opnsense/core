@@ -24,11 +24,10 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-LOCKFILE="/tmp/pkg_upgrade.progress"
-MTREE="mtree -e -p /"
-PRODUCT="OPNsense"
-TEE="/usr/bin/tee -a"
+. /usr/local/opnsense/scripts/firmware/config.sh
+
 TMPFILE=/tmp/pkg_check.exclude
+MTREE="mtree -e -p /"
 
 : > ${LOCKFILE}
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2020-2021 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2024 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -24,32 +24,43 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-. /usr/local/opnsense/scripts/firmware/config.sh
+# source of common configuration related subroutines and variables
 
-MUSTCHECK="yes"
+LOCKFILE=${LOCKFILE:-/tmp/pkg_upgrade.progress}
+BASEDIR="/usr/local/opnsense/scripts/firmware"
+PIPEFILE="/tmp/pkg_upgrade.pipe"
+FLOCK="/usr/local/bin/flock"
+SELF=$(basename ${0%.sh})
+TEE="/usr/bin/tee -a"
+PRODUCT="OPNsense"
 
-for PACKAGE in $(/usr/local/sbin/pluginctl -g system.firmware.plugins | \
-    /usr/bin/sed 's/,/ /g'); do
-	if ! pkg query %n ${PACKAGE} > /dev/null; then
-		if [ -n "${MUSTCHECK}" ] ; then
-			COREPKG=$(opnsense-version -n)
-			COREVER=$(opnsense-version -v)
-			REPOVER=$(pkg rquery %v ${COREPKG})
+# accepted commands for launcher.sh
+COMMANDS="
+changelog
+check
+connection
+health
+install
+lock
+reinstall
+remove
+resync
+security
+sync
+unlock
+update
+upgrade
+"
 
-			# plugins must pass a version check on up-to-date core package
-			if [ "$(pkg version -t ${COREVER} ${REPOVER})" = "<" ]; then
-				echo "Installation out of date. The update to ${COREPKG}-${REPOVER} is required." | ${TEE} ${LOCKFILE}
-				break
-			fi
+# initialize environment to operate in
+env_init()
+{
+	# XXX move modifications to this spot
+}
 
-			MUSTCHECK=
-		fi
-
-		(pkg install -y ${PACKAGE} 2>&1) | ${TEE} ${LOCKFILE}
-		(/usr/local/opnsense/scripts/firmware/register.php install ${PACKAGE} 2>&1) | ${TEE} ${LOCKFILE}
+for COMMAND in ${COMMANDS}; do
+	if [ "${SELF}" = ${COMMAND} ]; then
+		env_init
+		break;
 	fi
 done
-
-if [ -z "${MUSTCHECK}" ]; then
-	(pkg autoremove -y 2>&1) | ${TEE} ${LOCKFILE}
-fi

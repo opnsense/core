@@ -1054,6 +1054,7 @@
 /usr/local/opnsense/scripts/filter/update_tables.py
 /usr/local/opnsense/scripts/firmware/changelog.sh
 /usr/local/opnsense/scripts/firmware/check.sh
+/usr/local/opnsense/scripts/firmware/config.sh
 /usr/local/opnsense/scripts/firmware/connection.sh
 /usr/local/opnsense/scripts/firmware/health.sh
 /usr/local/opnsense/scripts/firmware/hostnames.sh

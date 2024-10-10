@@ -24,25 +24,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-BASEDIR="/usr/local/opnsense/scripts/firmware"
-LOCKFILE="/tmp/pkg_upgrade.progress"
-FLOCK="/usr/local/bin/flock -n -o"
-COMMANDS="
-changelog
-check
-connection
-health
-install
-lock
-reinstall
-remove
-resync
-security
-sync
-unlock
-update
-upgrade
-"
+. /usr/local/opnsense/scripts/firmware/config.sh
 
 DO_RANDOM=
 DO_SCRIPT=
@@ -129,7 +111,7 @@ if [ -n "$(opnsense-update -x)" ]; then
 fi
 
 if [ -z "${DO_UNLOCKED}" ]; then
-	${FLOCK} ${LOCKFILE} ${COMMAND} "${@}"
+	${FLOCK} -n -o ${LOCKFILE} ${COMMAND} "${@}"
 else
 	env LOCKFILE=/dev/null ${COMMAND} "${@}"
 fi
