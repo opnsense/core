@@ -115,6 +115,12 @@ if [ -n "$(opnsense-update -x)" ]; then
 		# make sure to not clobber the file when this fails
 		if /usr/local/opnsense/scripts/system/update-crl-fetch.py ${HOSTS} > ${CRL_TMP}; then
 			mv ${CRL_TMP} ${CRL_FILE}
+		else
+			# in case of problems clear the file and leave an
+			# empty one for the next run also in order to let
+			# libfetch complain about the missing CRLs
+			rm ${CRL_TMP}
+			: > ${CRL_FILE}
 		fi
 	fi
 
