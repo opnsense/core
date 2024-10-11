@@ -96,11 +96,14 @@ function do_auth($common_name, $serverid, $method, $auth_file)
     if ($a_server == null) {
         return "OpenVPN '$serverid' was not found. Denying authentication for user {$username}";
     } elseif (!empty($a_server['strictusercn']) && $username != $common_name) {
-        return sprintf(
-            "Username does not match certificate common name (%s != %s), access denied.",
-            $username,
-            $common_name
-        );
+        // only ignore case when explicitly set (strictusercn=2)
+        if (!($a_server['strictusercn'] == 2 && strtolower($username) == strtolower($common_name))) {
+            return sprintf(
+                "Username does not match certificate common name (%s != %s), access denied.",
+                $username,
+                $common_name
+            );
+        }
     } elseif (empty($a_server['authmode'])) {
         return 'No authentication server has been selected to authenticate against. ' .
         "Denying authentication for user {$username}";
