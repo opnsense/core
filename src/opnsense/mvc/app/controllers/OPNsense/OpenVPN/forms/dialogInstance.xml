@@ -271,8 +271,8 @@
     <field>
         <id>instance.strictusercn</id>
         <label>Strict User/CN Matching</label>
-        <type>checkbox</type>
-        <style>role role_server</style>
+        <type>dropdown</type>
+        <style>selectpicker role role_server</style>
         <help>When authenticating users, enforce a match between the Common Name of the client certificate and the username given at login.</help>
     </field>
     <field>
