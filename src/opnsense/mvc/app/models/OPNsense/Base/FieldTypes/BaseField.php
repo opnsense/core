@@ -513,7 +513,7 @@ abstract class BaseField
      * check if current value is empty AND NOT zero (either boolean field as false or an empty field)
      * @return bool
      */
-    public function isEmptyButZero(): bool
+    public function isEmptyString(): bool
     {
         return $this->getCurrentValue() !== "0" && $this->isEmpty();
     }
