@@ -930,7 +930,6 @@
 /usr/local/opnsense/mvc/script/load_phalcon.php
 /usr/local/opnsense/mvc/script/run_migrations.php
 /usr/local/opnsense/mvc/script/run_validations.php
-/usr/local/opnsense/mvc/tests/PHPunit.xml
 /usr/local/opnsense/mvc/tests/app/config/config.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/BaseModel/Migrations/M0_0_1.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/BaseModel/Migrations/M1_0_0.php
@@ -966,6 +965,7 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/TextFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest/config.xml
+/usr/local/opnsense/mvc/tests/phpunit.xml
 /usr/local/opnsense/mvc/tests/setup.php
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/allow.py
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/cp-background-process.py
