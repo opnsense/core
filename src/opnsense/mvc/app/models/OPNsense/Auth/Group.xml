@@ -1,0 +1,31 @@
+<model>
+    <mount>/system/group+</mount>
+    <version>1.0.0</version>
+    <items>
+        <group type="ArrayField">
+            <gid type=".\GidField"/>
+            <name type="TextField">
+                <Mask>/^[a-zA-Z0-9\.\-_]{1,32}$/</Mask>
+                <ValidationMessage>A groupname must contain a maximum of 32 alfanumeric characters</ValidationMessage>
+                <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <type>UniqueConstraint</type>
+                        <ValidationMessage>This groupname already exist.</ValidationMessage>
+                    </check001>
+                </Constraints>
+            </name>
+            <scope type="TextField">
+                <Default>user</Default>
+                <Required>Y</Required>
+            </scope>
+            <description type="DescriptionField"/>
+            <priv type=".\PrivField">
+                <Multiple>Y</Multiple>
+            </priv>
+            <member type=".\MemberField">
+                <Multiple>Y</Multiple>
+            </member>
+        </group>
+    </items>
+</model>

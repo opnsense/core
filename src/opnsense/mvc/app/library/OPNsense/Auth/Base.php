@@ -47,7 +47,7 @@ abstract class Base
     /**
      * @var array internal list of LDAP errors
      */
-    protected $lastAuthErrors = array();
+    protected $lastAuthErrors = [];
 
     /**
      * return group memberships
@@ -56,7 +56,7 @@ abstract class Base
      */
     private function groups($username)
     {
-        $groups = array();
+        $groups = [];
         $user = $this->getUser($username);
         if ($user != null) {
             $uid = (string)$user->uid;
@@ -86,7 +86,7 @@ abstract class Base
      */
     public function checkPolicy($username, $old_password, $new_password)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -187,7 +187,7 @@ abstract class Base
             // update when changed
             if ($user == null && $createuser) {
                 // user creation when enabled
-                $add_user = json_decode((new Backend())->configdpRun("auth add user", array($username)), true);
+                $add_user = json_decode((new Backend())->configdpRun("auth add user",[$username]), true);
                 if (!empty($add_user) && $add_user['status'] == 'ok') {
                     Config::getInstance()->forceReload();
                     $user = $this->getUser($username);
@@ -207,7 +207,8 @@ abstract class Base
                         $members = array_merge($members, explode(',', $member));
                     }
                     if (in_array((string)$user->uid, $members) && empty($ldap_groups[$lc_groupname])) {
-                        unset($group->member[array_search((string)$user->uid, (array)$group->member)]);
+                        unset($members[array_search((string)$user->uid, $members)]);
+                        $group->member = implode(',', $members);
                         syslog(LOG_NOTICE, sprintf(
                             'User: policy change for %s unlink group %s',
                             $username,
@@ -220,12 +221,12 @@ abstract class Base
                             (string)$group->name,
                             $ldap_groups[$lc_groupname]
                         ));
-                        $group->addChild('member', (string)$user->uid);
+                        $group->member = implode(',', array_merge($members, [(string)$user->uid]));
                     }
                 }
             }
             Config::getInstance()->save();
-            (new Backend())->configdpRun("auth user changed", array($username));
+            (new Backend())->configdpRun("auth user changed",[$username]);
         }
     }
 

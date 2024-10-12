@@ -216,31 +216,6 @@ function userIsAdmin($username)
     return userHasPrivilege($user, 'page-all');
 }
 
-function auth_get_shells($uid = 0)
-{
-    $shells = ['' => '/usr/sbin/nologin'];
-
-    if ($uid == 0) {
-        $shells = ['' => '/usr/local/sbin/opnsense-shell'];
-    }
-
-    $etc_shells = @file_get_contents('/etc/shells');
-    if (!empty($etc_shells)) {
-        $etc_shells = explode("\n", $etc_shells);
-        foreach ($etc_shells as $shell) {
-            $shell = trim($shell);
-            if (
-                !empty($shell) && strpos($shell, '#') !== 0 &&
-                strpos($shell, '/usr/local/sbin/opnsense-') !== 0
-            ) {
-                $shells[$shell] = $shell;
-            }
-        }
-    }
-
-    return $shells;
-}
-
 function local_sync_accounts()
 {
     global $config;
@@ -428,17 +403,6 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     mwexecf('/usr/sbin/pw %s %s', array($lock_account, $user_name), true);
 }
 
-function local_user_del($user)
-{
-    /* remove all memberships */
-    local_user_set_groups($user);
-
-    /* delete from pw db */
-    mwexecf('/usr/sbin/pw userdel -n %s -r', $user['name']);
-
-    /* Delete user from groups needs a call to write_config() */
-    local_group_del_user($user);
-}
 
 function local_user_set_password(&$user, $password = null)
 {
@@ -508,77 +472,6 @@ function local_user_get_groups($user)
     return $groups;
 }
 
-function local_user_set_groups($user, $new_groups = null)
-{
-    global $config, $groupindex;
-
-    if (!isset($config['system']['group'])) {
-        return;
-    }
-
-    $cur_groups = local_user_get_groups($user);
-    $mod_groups = array();
-
-    if (!is_array($new_groups)) {
-        $new_groups = array();
-    }
-
-    if (!is_array($cur_groups)) {
-        $cur_groups = array();
-    }
-
-    /* determine which memberships to add */
-    foreach ($new_groups as $groupname) {
-        if (in_array($groupname, $cur_groups) || !isset($groupindex[$groupname])) {
-            // continue if group is already in current list or the groupname is invalid
-            continue;
-        }
-        $group = &config_read_array('system', 'group', $groupindex[$groupname]);
-        $group['member'][] = $user['uid'];
-        $mod_groups[] = $group;
-    }
-
-    /* determine which memberships to remove */
-    foreach ($cur_groups as $groupname) {
-        if (in_array($groupname, $new_groups)) {
-            continue;
-        }
-        if (!isset($config['system']['group'][$groupindex[$groupname]])) {
-            continue;
-        }
-        $group = &config_read_array('system', 'group', $groupindex[$groupname]);
-        if (is_array($group['member'])) {
-            $index = array_search($user['uid'], $group['member']);
-            array_splice($group['member'], $index, 1);
-            $mod_groups[] = $group;
-        }
-    }
-
-    /* sync all modified groups */
-    foreach ($mod_groups as $group) {
-        local_group_set($group);
-    }
-}
-
-function local_group_del_user($user)
-{
-    global $config;
-
-    if (!isset($config['system']['group'])) {
-        return;
-    }
-
-    foreach ($config['system']['group'] as $group) {
-        if (isset($group['member'])) {
-            foreach ($group['member'] as $idx => $uid) {
-                if ($user['uid'] == $uid) {
-                    unset($config['system']['group']['member'][$idx]);
-                }
-            }
-        }
-    }
-}
-
 function local_group_set($group)
 {
     if (!isset($group['name']) || !isset($group['gid'])) {
@@ -605,12 +498,6 @@ function local_group_set($group)
     }
 
     mwexecf('/usr/sbin/pw %s %s -g %s -M %s', array($group_op, $group_name, $group_gid, $group_members));
-}
-
-function local_group_del($group)
-{
-    /* delete from group db */
-    mwexecf('/usr/sbin/pw groupdel %s', $group['name']);
 }
 
 
