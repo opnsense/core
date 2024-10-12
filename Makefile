@@ -559,7 +559,7 @@ test: debug
 		exit 1; \
 	fi
 	@cd ${.CURDIR}/src/opnsense/mvc/tests && \
-	    phpunit --configuration PHPunit.xml || true; \
+	    phpunit || true; \
 	    rm -f .phpunit.result.cache
 
 checkout:
