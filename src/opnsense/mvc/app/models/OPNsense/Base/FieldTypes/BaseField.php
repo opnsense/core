@@ -365,15 +365,15 @@ abstract class BaseField
 
     /**
      * default setter
-     * @param string $value set field value
+     * @param SimpleXMLElement|string $value set field value
      */
     public function setValue($value)
     {
         // if first set and not altered by the user, store initial value
         if ($this->internalFieldLoaded === false && $this->internalInitialValue === false) {
-            $this->internalInitialValue = $value;
+            $this->internalInitialValue = (string)$value;
         }
-        $this->internalValue = $value;
+        $this->internalValue = (string)$value;
         // apply filters, may be extended later.
         $filters = array('applyFilterChangeCase');
         foreach ($filters as $filter) {

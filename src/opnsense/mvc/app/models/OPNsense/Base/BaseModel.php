@@ -241,7 +241,7 @@ abstract class BaseModel
                 }
                 if ($config_data != null && isset($config_data->$tagName)) {
                     // set field content from config (if available)
-                    $fieldObject->setValue((string)$config_data->$tagName);
+                    $fieldObject->setValue($config_data->$tagName);
                 }
             } else {
                 // add new child node container, always try to pass config data
