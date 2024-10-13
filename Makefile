@@ -558,8 +558,7 @@ test: debug
 		echo "Installed version does not match, expected ${CORE_PKGVERSION}"; \
 		exit 1; \
 	fi
-	@cd ${.CURDIR}/src/opnsense/mvc/tests && \
-	    phpunit || true; \
+	@cd ${.CURDIR}/src/opnsense/mvc/tests && phpunit || true; \
 	    rm -f .phpunit.result.cache
 
 checkout:
