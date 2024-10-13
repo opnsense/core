@@ -91,7 +91,10 @@
                 .tickFormat(d3.format(',.1s'));
 
         chart.focusHeight(80);
-        chart.interpolate('step-before');
+        chart.interpolate('linear');
+
+        chart.isArea(false);
+        chart.focus.isArea(false);
 
         // dispatch when one of the streams is enabled/disabled
         chart.dispatch.on('stateChange', function (e) {
