@@ -172,18 +172,20 @@ function &getGroupEntry($name)
 
 function get_user_privileges(&$user)
 {
-    if (!isset($user['priv']) || !is_array($user['priv'])) {
-        $privs = array();
-    } else {
-        $privs = $user['priv'];
+    $privs = [];
+    /* legacy listtags() ensures 'priv' will be an array when offered, also when there's only one  */
+    foreach (!empty($user['priv']) ? (array)$user['priv'] : [] as $item) {
+        foreach (array_filter(explode(',', $item)) as $priv) {
+            $privs[] = $priv;
+        }
     }
 
-    $names = local_user_get_groups($user);
-
-    foreach ($names as $name) {
+    foreach (local_user_get_groups($user) as $name) {
         $group = getGroupEntry($name);
-        if (isset($group['priv']) && is_array($group['priv'])) {
-            $privs = array_merge($privs, $group['priv']);
+        foreach (!empty($group['priv']) ? (array)$group['priv'] : [] as $item) {
+            foreach (array_filter(explode(',', $item)) as $priv) {
+                $privs[] = $priv;
+            }
         }
     }
     return $privs;
