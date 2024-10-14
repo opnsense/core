@@ -183,6 +183,9 @@ function openssh_configure_do($verbose = false, $interface_map = null)
         $sshconf .= "ChallengeResponseAuthentication no\n";
         $sshconf .= "PasswordAuthentication no\n";
     }
+    if (!empty($sshcfg['rekeylimit'])) {
+        $sshconf .= sprintf("RekeyLimit %s\n", $sshcfg['rekeylimit']);
+    }
 
     foreach ($keys as $name) {
         $file = "/conf/sshd/{$name}";
