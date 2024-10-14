@@ -36,7 +36,6 @@ class Leases4Controller extends ApiControllerBase
 {
     public function searchAction()
     {
-        $this->sessionClose();
         $selected_interfaces = $this->request->get('selected_interfaces');
         $backend = new Backend();
         $interfaces = [];
