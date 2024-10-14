@@ -100,7 +100,6 @@ class DashboardController extends ApiControllerBase
 
     public function getDashboardAction()
     {
-        $this->sessionClose();
         $result = [];
         $dashboard = null;
 
