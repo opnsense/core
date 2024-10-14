@@ -50,7 +50,6 @@ class SessionsController extends ApiControllerBase
      */
     public function searchPhase1Action()
     {
-        $this->sessionClose();
         $records = [];
         $config = Config::getInstance()->object();
         $data = $this->list_status();
@@ -112,7 +111,6 @@ class SessionsController extends ApiControllerBase
      */
     public function searchPhase2Action()
     {
-        $this->sessionClose();
         $records = [];
         $selected_conn = $this->request->getPost('id', 'string', '');
         $config = Config::getInstance()->object();
@@ -168,7 +166,6 @@ class SessionsController extends ApiControllerBase
     public function connectAction($id)
     {
         if ($this->request->isPost()) {
-            $this->sessionClose();
             (new Backend())-> configdpRun('ipsec connect', [$id]);
             return ["result" => "ok"];
         }
@@ -183,7 +180,6 @@ class SessionsController extends ApiControllerBase
     public function disconnectAction($id)
     {
         if ($this->request->isPost()) {
-            $this->sessionClose();
             (new Backend())-> configdpRun('ipsec disconnect', [$id]);
             return ["result" => "ok"];
         }
