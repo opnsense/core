@@ -128,8 +128,6 @@ class AccessController extends ApiControllerBase
             // return empty result on CORS preflight
             return [];
         } elseif ($this->request->isPost()) {
-            // close session for long running action
-            $this->sessionClose();
             // init variables for authserver object and name
             $authServer = null;
             $authServerName = "";
@@ -235,7 +233,6 @@ class AccessController extends ApiControllerBase
             // return empty result on CORS preflight
             return [];
         } else {
-            $this->sessionClose();
             $clientSession = $this->clientSession((string)$zoneid);
             if (
                 $clientSession['clientState'] == 'AUTHORIZED' &&
@@ -269,7 +266,6 @@ class AccessController extends ApiControllerBase
             // return empty result on CORS preflight
             return [];
         } elseif ($this->request->isPost() || $this->request->isGet()) {
-            $this->sessionClose();
             $clientSession = $this->clientSession((string)$zoneid);
             return $clientSession;
         }
