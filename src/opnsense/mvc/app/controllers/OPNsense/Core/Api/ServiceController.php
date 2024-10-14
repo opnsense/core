@@ -44,8 +44,6 @@ class ServiceController extends ApiControllerBase
      */
     public function searchAction()
     {
-        $this->sessionClose();
-
         $data = json_decode((new Backend())->configdRun('service list'), true);
         $records = [];
 
@@ -77,8 +75,6 @@ class ServiceController extends ApiControllerBase
             return ['result' => 'failed'];
         }
 
-        $this->sessionClose();
-
         (new Backend())->configdpRun('service start', [$name, $id]);
 
         return ['result' => 'ok'];
@@ -96,8 +92,6 @@ class ServiceController extends ApiControllerBase
             return ['result' => 'failed'];
         }
 
-        $this->sessionClose();
-
         (new Backend())->configdpRun('service restart', [$name, $id]);
 
         return ['result' => 'ok'];
@@ -114,8 +108,6 @@ class ServiceController extends ApiControllerBase
         if (!$this->request->isPost()) {
             return ['result' => 'failed'];
         }
-
-        $this->sessionClose();
 
         (new Backend())->configdpRun('service stop', [$name, $id]);
 
