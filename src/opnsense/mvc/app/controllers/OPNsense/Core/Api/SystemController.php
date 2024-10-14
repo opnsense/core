@@ -63,8 +63,6 @@ class SystemController extends ApiControllerBase
 
     public function statusAction()
     {
-        $this->sessionClose();
-
         $response = ["status" => "failed"];
 
         $backend = new Backend();
@@ -160,8 +158,6 @@ class SystemController extends ApiControllerBase
 
     public function dismissStatusAction()
     {
-        $this->sessionClose();
-
         if ($this->request->isPost() && $this->request->hasPost("subject")) {
             $acl = new ACL();
             $backend = new Backend();
