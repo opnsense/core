@@ -281,7 +281,6 @@ class ConnectionsController extends ApiMutableModelControllerBase
      */
     public function isEnabledAction()
     {
-        $this->sessionClose();
         return [
             'enabled' => isset(Config::getInstance()->object()->ipsec->enable)
         ];
@@ -293,7 +292,6 @@ class ConnectionsController extends ApiMutableModelControllerBase
     public function toggleAction($enabled = null)
     {
         if ($this->request->isPost()) {
-            $this->sessionClose();
             Config::getInstance()->lock();
             $config = Config::getInstance()->object();
             if ($enabled == "0" || $enabled == "1") {
