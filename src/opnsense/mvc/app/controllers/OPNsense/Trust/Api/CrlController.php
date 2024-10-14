@@ -87,7 +87,6 @@ class CrlController extends ApiControllerBase
 
     public function searchAction()
     {
-        $this->sessionClose();
         $config = Config::getInstance()->object();
         $items = [];
         foreach ($config->ca as $node) {
