@@ -37,7 +37,6 @@ class LeasesController extends ApiControllerBase
 {
     public function searchLeaseAction()
     {
-        $this->sessionClose();
         $inactive = $this->request->get('inactive');
         $selected_interfaces = $this->request->get('selected_interfaces');
         $backend = new Backend();
@@ -194,7 +193,6 @@ class LeasesController extends ApiControllerBase
         $result = ["result" => "failed"];
 
         if ($this->request->isPost()) {
-            $this->sessionClose();
             $response = json_decode((new Backend())->configdpRun("dhcpd remove lease", [$ip]), true);
             if ($response["removed_leases"] != "0") {
                 $result["result"] = "deleted";
