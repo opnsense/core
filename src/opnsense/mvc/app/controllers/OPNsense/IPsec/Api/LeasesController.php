@@ -44,7 +44,6 @@ class LeasesController extends ApiControllerBase
      */
     public function searchAction()
     {
-        $this->sessionClose();
         $pools = $this->request->get('pool');
         $filter_funct = null;
         if (!empty($pools)) {
@@ -64,7 +63,6 @@ class LeasesController extends ApiControllerBase
      */
     public function poolsAction()
     {
-        $this->sessionClose();
         $data = json_decode((new Backend())->configdRun('ipsec list leases'), true);
         return (!empty($data) && !empty($data['pools'])) ? $data : ['pools' => []];
     }
