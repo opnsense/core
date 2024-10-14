@@ -45,7 +45,6 @@ class SadController extends ApiControllerBase
      */
     public function searchAction()
     {
-        $this->sessionClose();
         $data = json_decode((new Backend())->configdRun('ipsec list sad'), true);
         $records = (!empty($data) && !empty($data['records'])) ? $data['records'] : [];
 
@@ -106,7 +105,6 @@ class SadController extends ApiControllerBase
     public function deleteAction($id)
     {
         if ($this->request->isPost()) {
-            $this->sessionClose();
             $data = json_decode((new Backend())-> configdpRun('ipsec saddelete', [$id]), true);
             if ($data) {
                 $data['result'] = "ok";

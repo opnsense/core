@@ -68,7 +68,6 @@ class TunnelController extends ApiControllerBase
             'pre_shared_key' => 'Mutual PSK'
         ];
         $items = [];
-        $this->sessionClose();
         $config = Config::getInstance()->object();
         if (!empty($config->ipsec->phase1)) {
             $idx = 0;
@@ -144,7 +143,6 @@ class TunnelController extends ApiControllerBase
             'aesxcbc' => 'AES-XCBC'
         ];
         $items = [];
-        $this->sessionClose();
         $config = Config::getInstance()->object();
         if (!empty($config->ipsec->phase2)) {
             $p2idx = 0;
@@ -260,7 +258,6 @@ class TunnelController extends ApiControllerBase
     {
         if ($this->request->isPost()) {
             $phase_ids = [];
-            $this->sessionClose();
             Config::getInstance()->lock();
             $config = Config::getInstance()->object();
             foreach ([$config->ipsec->phase1, $config->ipsec->phase2] as $phid => $phase) {
@@ -297,7 +294,6 @@ class TunnelController extends ApiControllerBase
     public function togglePhase1Action($ikeid, $enabled = null)
     {
         if ($this->request->isPost()) {
-            $this->sessionClose();
             Config::getInstance()->lock();
             $config = Config::getInstance()->object();
             if (!empty($config->ipsec->phase1)) {
@@ -333,7 +329,6 @@ class TunnelController extends ApiControllerBase
     public function delPhase2Action($seqid)
     {
         if ($this->request->isPost()) {
-            $this->sessionClose();
             Config::getInstance()->lock();
             $config = Config::getInstance()->object();
             if ((string)intval($seqid) == $seqid && isset($config->ipsec->phase2[intval($seqid)])) {
@@ -353,7 +348,6 @@ class TunnelController extends ApiControllerBase
     public function togglePhase2Action($seqid, $enabled = null)
     {
         if ($this->request->isPost()) {
-            $this->sessionClose();
             Config::getInstance()->lock();
             $config = Config::getInstance()->object();
             if ((string)intval($seqid) == $seqid && isset($config->ipsec->phase2[intval($seqid)])) {
@@ -383,7 +377,6 @@ class TunnelController extends ApiControllerBase
     public function toggleAction($enabled = null)
     {
         if ($this->request->isPost()) {
-            $this->sessionClose();
             Config::getInstance()->lock();
             $config = Config::getInstance()->object();
             if ($enabled == "0" || $enabled == "1") {
