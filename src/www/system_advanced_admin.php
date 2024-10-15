@@ -41,9 +41,9 @@ $ssh_rekeylimit_choices = [
   '' => gettext('System defaults'),
   'default 60s' => gettext('60 seconds'),
   'default 600s' => gettext('10 minutes'),
-  '512MB 60s' => gettext('512MB, 60 seconds'),
-  '512MB 600s' => gettext('512MB, 10 minutes'),
-  '512MB 1h' => gettext('512MB, 1 hour'),
+  '512M 60s' => gettext('512MB, 60 seconds'),
+  '512M 600s' => gettext('512MB, 10 minutes'),
+  '512M 1h' => gettext('512MB, 1 hour'),
   '1G 60s' => gettext('1GB, 60 seconds'),
   '1G 1h' => gettext('1GB, 1 hour'),
 ];
