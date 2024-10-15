@@ -160,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
     if (!empty($pconfig['ssh-rekeylimit']) && !isset($ssh_rekeylimit_choices[$pconfig['ssh-rekeylimit']])) {
-        $input_errors[] = gettext('Invalid RekeyLimit option.');
+        $input_errors[] = gettext('Invalid rekey limit option.');
     }
 
 
@@ -912,7 +912,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr class="show-advanced-crypto" style="display:none">
-                <td><a id="help_for_sshrekeylimit" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("RekeyLimit"); ?></td>
+                <td><a id="help_for_sshrekeylimit" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Rekey Limit"); ?></td>
                 <td>
                     <select name="ssh-rekeylimit" class="selectpicker advanced-crypto" data-live-search="true">
 <?php foreach ($ssh_rekeylimit_choices as $option => $descr): ?>
