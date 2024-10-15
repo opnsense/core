@@ -101,7 +101,6 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     public function startAction()
     {
         if ($this->request->isPost()) {
-            $this->sessionClose();
             $backend = new Backend();
             $response = trim($backend->configdRun(escapeshellarg(static::$internalServiceName) . ' start'));
             return array('response' => $response);
@@ -118,7 +117,6 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     public function stopAction()
     {
         if ($this->request->isPost()) {
-            $this->sessionClose();
             $backend = new Backend();
             $response = trim($backend->configdRun(escapeshellarg(static::$internalServiceName) . ' stop'));
             return array('response' => $response);
@@ -135,7 +133,6 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     public function restartAction()
     {
         if ($this->request->isPost()) {
-            $this->sessionClose();
             $backend = new Backend();
             $response = trim($backend->configdRun(escapeshellarg(static::$internalServiceName) . ' restart'));
             return array('response' => $response);
@@ -181,8 +178,6 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     public function reconfigureAction()
     {
         if ($this->request->isPost()) {
-            $this->sessionClose();
-
             $backend = new Backend();
 
             if (!$this->serviceEnabled() || $this->reconfigureForceRestart()) {
