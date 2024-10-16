@@ -10,6 +10,7 @@ the disk and apply a clean system using either "Install (ZFS)" or "Install
 typing "%%UPGRADE_RELEASE%%" when prompted.</p>
 <p>Make sure to read the migration notes and account for possible breaking changes.</p>
 <p>Please backup your configuration, preview the new version via live image or
-in a virtual machine. Create snapshots. If all else fails, report back
+in a virtual machine. If applicable, create VM snapshots or use the built-in
+snapshot feature available on ZFS installations. If all else fails, report back
 <a href="https://forum.opnsense.org/" target="_blank">in the forums</a> for
 assistance.</p>
