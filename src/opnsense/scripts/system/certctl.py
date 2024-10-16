@@ -39,7 +39,7 @@ from cryptography.hazmat.primitives import serialization
 TRUSTPATH = ['/usr/share/certs/trusted', '/usr/local/share/certs', '/usr/local/etc/ssl/certs']
 BLACKLISTPATH = ['/usr/share/certs/untrusted', '/usr/share/certs/blacklisted', '/usr/local/etc/ssl/blacklisted']
 CERTDESTDIR = '/etc/ssl/certs'
-BLACKLISTDESTDIR = '/etc/ssl/blacklisted'
+BLACKLISTDESTDIR = '/etc/ssl/untrusted'
 
 def certificate_iterator(filename):
     fext = os.path.splitext(filename)[1][1:].lower()
