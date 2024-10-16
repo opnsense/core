@@ -149,7 +149,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (!empty($pconfig['ssl-ciphers'])) {
-        // TLS 1.3 validation
         $ciphers = json_decode(configd_run("system ssl ciphers"), true) ?? [];
         foreach ($ciphers as $cipher => $settings) {
             if ($settings['version'] == 'TLSv1.3' && in_array($cipher, $pconfig['ssl-ciphers'])
@@ -159,11 +158,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
     }
+
     if (!empty($pconfig['ssh-rekeylimit']) && !isset($ssh_rekeylimit_choices[$pconfig['ssh-rekeylimit']])) {
         $input_errors[] = gettext('Invalid rekey limit option.');
     }
-
-
 
     if (count($input_errors) == 0) {
         $newinterfaces = !empty($pconfig['webguiinterfaces']) ? implode(',', $pconfig['webguiinterfaces']) : '';
