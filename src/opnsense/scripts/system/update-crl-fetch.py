@@ -35,7 +35,7 @@ from cryptography import x509
 from cryptography.hazmat.primitives import serialization
 from cryptography.x509.extensions import CRLDistributionPoints
 
-def fetch_certs(domains, debug=False):
+def fetch_certs(domains):
     result = []
     for domain in domains:
         try:
@@ -48,20 +48,18 @@ def fetch_certs(domains, debug=False):
         url = 'https://%s' % domain
         try:
             print('# [i] fetch certificate for %s' % url)
-            with requests.get(url, timeout=0.1, stream=True) as response:
+            with requests.get(url, timeout=30, stream=True) as response:
                 # XXX: in python > 3.13, replace with sock.get_verified_chain()
                 for cert in response.raw.connection.sock._sslobj.get_verified_chain():
                     result.append(cert.public_bytes(1).encode()) # _ssl.ENCODING_PEM
         except Exception as e:
             # XXX: probably too broad, but better make sure
-            print("[!!] Chain fetch failed for %s" % url, file=sys.stderr)
-            if debug:
-                print("\tException: %s" % e, file=sys.stderr)
+            print("[!!] Chain fetch failed for %s (%s)" % (url, e), file=sys.stderr)
 
 
     return result
 
-def main(domains, target_filename, debug=False):
+def main(domains, target_filename):
     # fetch the crl's known in our trust store
     crl_bundle = []
     for filename in glob.glob('/etc/ssl/certs/*.r[0-9]'):
@@ -69,7 +67,7 @@ def main(domains, target_filename, debug=False):
             with open(filename, 'r') as f_in:
                 crl_bundle.append(f_in.read().strip())
     # add the ones being supplied via the domain distribution points
-    for pem in fetch_certs(domains, debug):
+    for pem in fetch_certs(domains):
         try:
             dp_uri = None
             cert = x509.load_pem_x509_certificate(pem)
@@ -87,19 +85,16 @@ def main(domains, target_filename, debug=False):
             print("[!!] Error processing pem file (%s)" % cert.issuer if cert else '' , file=sys.stderr)
         except Exception as e:
             if dp_uri:
-                print("[!!] CRL fetch failed for %s" % dp_uri, file=sys.stderr)
+                print("[!!] CRL fetch failed for %s (%s)" % (dp_uri, e), file=sys.stderr)
             else:
-                print("[!!] CRL fetch issue (%s)" % cert.issuer if cert else '' , file=sys.stderr)
-            if debug:
-                print("\tException: %s" % e, file=sys.stderr)
+                print("[!!] CRL fetch issue (%s) (%s)" % (cert.issuer if cert else '', e) , file=sys.stderr)
 
     # flush out bundle
     with open(target_filename, 'w') as f_out:
         f_out.write("\n".join(crl_bundle) + "\n")
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-d", help="debug", action="store_true")
 parser.add_argument("-t", help="target filename", type=str, default="/dev/stdout")
 parser.add_argument('domains', metavar='N', type=str, nargs='*', help='list of domains to merge')
 args = parser.parse_args()
-main(args.domains, args.t, args.d)
+main(args.domains, args.t)
