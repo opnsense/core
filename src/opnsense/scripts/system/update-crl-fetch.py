@@ -48,7 +48,7 @@ def fetch_certs(domains):
         url = 'https://%s' % domain
         try:
             print('# [i] fetch certificate for %s' % url)
-            with requests.get(url, timeout=0.1, stream=True) as response:
+            with requests.get(url, timeout=30, stream=True) as response:
                 # XXX: in python > 3.13, replace with sock.get_verified_chain()
                 for cert in response.raw.connection.sock._sslobj.get_verified_chain():
                     result.append(cert.public_bytes(1).encode()) # _ssl.ENCODING_PEM
