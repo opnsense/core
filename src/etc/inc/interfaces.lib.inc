@@ -397,6 +397,13 @@ function legacy_interfaces_details($intf = null)
             $result[$current_interface]['media_raw'] = substr(trim($line), 7);
         } elseif (preg_match("/media (.*)/", $line, $matches)) {
             $result[$current_interface]["supported_media"][] = str_replace(" mediaopt ", " ", trim($matches[1]));
+        } elseif (preg_match("/plugged: (.*)/", $line, $matches)) {
+            $result[$current_interface]['sfp_transceiver_plugged'] = $matches[1];
+        } elseif (preg_match("/vendor:\s+(.*)\s+PN:(.*)\s+SN:\s+(.*)\s+DATE:\s+(.*)/", $line, $matches)) {
+            $result[$current_interface]['sfp_transceiver_vendor'] = $matches[1];
+            $result[$current_interface]['sfp_transceiver_part_number'] = $matches[2];
+            $result[$current_interface]['sfp_transceiver_serial_number'] = $matches[3];
+            $result[$current_interface]['sfp_transceiver_manufacturing_date'] = $matches[4];
         } elseif (preg_match("/status: (.*)$/", $line, $matches)) {
             $result[$current_interface]['status'] = $matches[1];
         } elseif (preg_match("/channel (\S*)/", $line, $matches)) {
