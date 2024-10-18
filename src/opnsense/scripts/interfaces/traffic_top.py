@@ -38,6 +38,7 @@ import ujson
 import dns.resolver
 from dns.asyncresolver import Resolver
 from concurrent.futures import ThreadPoolExecutor
+import ipaddress
 
 
 def iftop(interface, target):
@@ -64,6 +65,14 @@ def local_addresses():
                 result.append(ip)
     return result
 
+def ipv6_gateways():
+    result = {}
+    sp = subprocess.run(['/usr/local/opnsense/scripts/routes/ipv6_gateways.php'], capture_output=True, text=True)
+    for line in sp.stdout.strip().split('\n'):
+        subnet, name = line.split('\t')
+        result[subnet] = name
+    return result
+
 def from_bformat(value):
     value = value.lower()
     if value.endswith('kb'):
@@ -84,6 +93,7 @@ def to_bformat(value):
 class AsyncLookup:
     def __init__(self):
         self._results = {}
+        self.all_ipv6_gateways = ipv6_gateways()
 
     async def request_ittr(self, addresses):
         self._results = {}
@@ -93,15 +103,47 @@ class AsyncLookup:
             return
         dnsResolver.timeout = 2
         tasks = []
+        address_mapping = {}
+
         for address in addresses:
-            tasks.append(dnsResolver.resolve_address(address))
+            try:
+                if ":" in address:
+                    ipv6_obj = ipaddress.IPv6Address(address)
+                    matched_gateway = self.get_gateway_for_ipv6(ipv6_obj)
+                    if matched_gateway:
+                        last_part = address.split(":")[-1]
+                        self._results[address] = f"{last_part}@{matched_gateway}"
+                    else:
+                        reverse_ip = '.'.join(reversed(ipv6_obj.exploded.replace(":", ""))) + ".ip6.arpa"
+                        tasks.append(dnsResolver.resolve(reverse_ip, "PTR"))
+                        address_mapping[reverse_ip] = address
+                else:
+                    reverse_ip = '.'.join(reversed(address.split("."))) + ".in-addr.arpa"
+                    tasks.append(dnsResolver.resolve(reverse_ip, "PTR"))
+                    address_mapping[reverse_ip] = address
+
+            except Exception:
+                continue
+
         responses = await asyncio.gather(*tasks, return_exceptions=True)
-        for response in responses:
-            if type(response) is dns.resolver.Answer:
-                addr = ".".join(reversed(response.canonical_name.to_text().replace('.in-addr.arpa.', '').split('.')))
+
+        for response, reverse_ip in zip(responses, address_mapping.keys()):
+            original_address = address_mapping[reverse_ip]
+            if isinstance(response, dns.resolver.Answer):
                 for item in response.response.answer:
-                    if type(item) is dns.rrset.RRset and len(item.items) > 0:
-                        self._results[addr] = str(list(item.items)[0])
+                    if isinstance(item, dns.rrset.RRset) and len(item.items) > 0:
+                        self._results[original_address] = str(list(item.items)[0])
+
+        return self._results
+
+    def get_gateway_for_ipv6(self, ipv6_address):
+        for subnet, gateway in self.all_ipv6_gateways.items():
+            network = ipaddress.IPv6Network(subnet)
+            if network.prefixlen == 128:
+                continue
+            if network.supernet_of(ipaddress.IPv6Network(ipv6_address.exploded + "/128")):
+                return gateway
+        return None
 
     def collect(self, addresses):
         loop = asyncio.new_event_loop()
