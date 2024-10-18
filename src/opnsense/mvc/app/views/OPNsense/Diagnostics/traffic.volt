@@ -269,14 +269,21 @@ POSSIBILITY OF SUCH DAMAGE.
          * iftop (top talkers) update
          */
         function updateTopTable(data) {
+            const zeroBytes = byteFormat(0);
+            const useBytes = $('#units').val() === 'bytes';
+            const zeroBitOrBytes = useBytes ? zeroBytes + "/s" : "0 b";
+            const bitByteCoefficient = useBytes ? 8 : 1;
+            const rateHighlightTreshold = 8 * 0.5 * 1024 * 1024; // 0.5 MB/s
+            const totalHighlightTreshold = 10 * 1024 * 1024; // 10 MB
+            const ttl = 120; // keep visible for ttl seconds
+
             let target = $("#rxTopTable > tbody");
             let update_stamp = Math.trunc(Date.now() / 1000.0);
-            let update_stamp_iso = (new Date()).toISOString();
             Object.keys(data).forEach(function(intf) {
                 let intf_label = $("#interfaces > option[value="+intf+"]").data('content');
                     for (var i=0; i < data[intf]['records'].length ; i++) {
                         let item = data[intf]['records'][i];
-                        let tr = target.find("tr[data-address='"+item.address+"']");
+                        let tr = /** @type JQuery */ target.find("tr[data-address='"+item.address+"']");
                         if (tr.length === 0) {
                             tr = $("<tr/>");
                             tr.attr("data-address", item.address); // XXX: find matches on tag
@@ -286,53 +293,80 @@ POSSIBILITY OF SUCH DAMAGE.
                             tr.append($("<td/>").html(intf_label));
                             if (item.rname) {
                                 tr.append(
-                                  $("<td/>").append(
+                                  $("<td class='host'/>").append(
                                       $("<span/>").text(item.rname), $("<small/>").text("("+item.address+")")
                                   )
                                 );
                             } else {
-                                tr.append($("<td/>").text(item.address));
+                                tr.append($("<td class='host'/>").text(item.address));
                             }
-                            tr.append($("<td class='bps_in'/>").text("0b"));
-                            tr.append($("<td class='bps_out'/>").text("0b"));
-                            tr.append($("<td class='bps_max_in'/>").text("0b"));
-                            tr.append($("<td class='bps_max_out'/>").text("0b"));
-                            tr.append($("<td class='total_in'/>").text("0b"));
-                            tr.append($("<td class='total_out'/>").text("0b"));
+                            tr.append($("<td class='bps_in'/>").text(zeroBitOrBytes));
+                            tr.append($("<td class='bps_out'/>").text(zeroBitOrBytes));
+                            tr.append($("<td class='bps_max_in'/>").text(zeroBitOrBytes));
+                            tr.append($("<td class='bps_max_out'/>").text(zeroBitOrBytes));
+                            tr.append($("<td class='total_in'/>").text(zeroBytes));
+                            tr.append($("<td class='total_out'/>").text(zeroBytes));
                             tr.append($("<td class='last_seen'/>"));
+                            tr.append($("<td class='actions'><button data-action='view' type='button' class='btn btn-xs btn-default' data-toggle='tooltip' title='{{ lang._('Show related sessions') }}'><span class='fa fa-fw fa-search'></span></button></td>"));
+                            tr.on("click", function () {
+                                $(this).toggleClass('tracked');
+                            });
+                            tr.find("[data-action='view']").on("click", function (e) {
+                                e.stopPropagation();
+                                window.open('/ui/diagnostics/firewall/pf_top?search=' + encodeURIComponent($(this).closest('tr').attr("data-address")));
+                            });
+                            tr.find('[data-toggle="tooltip"]').tooltip();
                             target.append(tr);
                         }
                         ['in', 'out'].forEach(function(dir) {
-                            tr.data('bps_'+dir, item['rate_bits'+dir]);
+                            tr.data('bps_'+dir, item['rate_bits_'+dir]);
                             tr.data('total_'+ dir, tr.data('total_'+ dir) + item['cumulative_bytes_'+dir]);
                             tr.data('last_seen', update_stamp);
-                            tr.find('td.last_seen').text(update_stamp_iso);
+                            tr.find('td.last_seen').text("now");
                             if (parseInt(tr.data('bps_max_'+dir)) < item['rate_bits_'+dir]) {
                                   tr.data('bps_max_'+dir, item['rate_bits_'+dir]);
-                                  tr.find('td.bps_max_'+dir).text(item['rate_'+dir]);
+                                  tr.find('td.bps_max_'+dir).text(useBytes ? byteFormat(item['rate_bits_'+dir] / bitByteCoefficient) + "/s" : item['rate_'+dir]);
                             }
-                            tr.find('td.bps_'+dir).text(item['rate_'+dir]);
+                            tr.find('td.bps_'+dir).text(useBytes ? byteFormat(item['rate_bits_'+dir] / bitByteCoefficient) + "/s" : item['rate_'+dir]);
                             tr.find('td.total_'+dir).text(byteFormat(tr.data('total_'+ dir)));
                         });
                     }
             });
-            let ttl = 120; // keep visible for ttl seconds
+
             target.find('tr').each(function(){
-                if (parseInt($(this).data('last_seen')) < (update_stamp - ttl)) {
-                    $(this).remove();
-                } else if (parseInt($(this).data('last_seen')) != update_stamp) {
+                const tr = /** @type JQuery */ $(this);
+                if (parseInt(tr.data('last_seen')) < (update_stamp - ttl)) {
+                    tr.remove();
+                } else if (parseInt(tr.data('last_seen')) != update_stamp) {
                     // reset measurements not in this set
-                    $(this).data('bps_in', 0);
-                    $(this).data('bps_out', 0);
-                    $(this).find('td.bps_in').text("0b");
-                    $(this).find('td.bps_out').text("0b");
+                    tr.data('bps_in', 0);
+                    tr.data('bps_out', 0);
+                    tr.find('td.bps_in').text(zeroBitOrBytes);
+                    tr.find('td.bps_out').text(zeroBitOrBytes);
                 }
+
+                let secondsSinceLastUpdate = update_stamp - parseInt(tr.data('last_seen'));
+                tr.find('td.last_seen').text(secondsSinceLastUpdate ? secondsSinceLastUpdate + " s ago" : "now");
+
+                let unanswered = tr.data('total_in') === 0 || tr.data('total_out') === 0;
+                let active_in = tr.data('bps_in') > rateHighlightTreshold;
+                let active_out = tr.data('bps_out') > rateHighlightTreshold;
+                let total_in = tr.data('total_in') > totalHighlightTreshold;
+                let total_out = tr.data('total_out') > totalHighlightTreshold;
+                let active = (active_in || active_out || total_in || total_out) && !unanswered;
+                tr.find('td.bps_in').toggleClass('active', active_in);
+                tr.find('td.bps_out').toggleClass('active', active_out);
+                tr.find('td.total_in').toggleClass('active', total_in);
+                tr.find('td.total_out').toggleClass('active', total_out);
+                tr.toggleClass('unanswered', unanswered);
+                tr.toggleClass('active', active);
             });
+
             // sort by current top consumer
             target.find('tr').sort(function(a, b) {
                 let a_total = parseInt($(a).data('bps_in')) + parseInt($(a).data('bps_out'));
                 let b_total = parseInt($(b).data('bps_in')) + parseInt($(b).data('bps_out'));
-                if (b_total == 0 && a_total == 0) {
+                if (b_total === 0 && a_total === 0) {
                     // sort by age (last seen)
                     return  parseInt($(b).data('last_seen')) - parseInt($(a).data('last_seen'));
                 } else {
@@ -370,6 +404,12 @@ POSSIBILITY OF SUCH DAMAGE.
                     })
                 }
             })
+        });
+
+        $("#units").change(function() {
+            if (window.localStorage) {
+                window.localStorage.setItem("api.diagnostics.traffic.units", $(this).val());
+            }
         });
 
         /**
@@ -424,6 +464,12 @@ POSSIBILITY OF SUCH DAMAGE.
                     g_charts['traffic'].push(graph);
                 }
             });
+
+            $("#units").val('bits');
+            if (window.localStorage && window.localStorage.getItem("api.diagnostics.traffic.units") !== null) {
+                $("#units").val(window.localStorage.getItem("api.diagnostics.traffic.units"));
+            }
+            $('#units').selectpicker('refresh');
 
             /**
              * poll for new stats and update selected charts
@@ -503,6 +549,10 @@ POSSIBILITY OF SUCH DAMAGE.
             }
         });
 
+        // directly activate another tab
+        if (window.location.hash === '#toptalkers') {
+            $('#gtid_tab').trigger('click');
+        }
     });
 
 
@@ -528,6 +578,13 @@ POSSIBILITY OF SUCH DAMAGE.
     <div class="pull-right">
         <div class="right">
             <select class="selectpicker" id="interfaces" multiple=multiple>
+            </select>
+            &nbsp;
+        </div>
+        <div class="left">
+            <select class="selectpicker" id="units" data-width="auto">
+                <option value="bits">bits</option>
+                <option value="bytes">bytes</option>
             </select>
             &nbsp;
         </div>
@@ -586,13 +643,13 @@ POSSIBILITY OF SUCH DAMAGE.
                     <tr>
                         <th></th>
                         <th>{{ lang._('Address') }}</th>
-                        <th>{{ lang._('In (bps)') }}</th>
-                        <th>{{ lang._('Out (bps)') }}</th>
-                        <th>{{ lang._('In max(bps)') }}</th>
-                        <th>{{ lang._('Out max(bps)') }}</th>
+                        <th>{{ lang._('In') }}</th>
+                        <th>{{ lang._('Out') }}</th>
+                        <th>{{ lang._('In max') }}</th>
+                        <th>{{ lang._('Out max') }}</th>
                         <th>{{ lang._('Total In') }}</th>
                         <th>{{ lang._('Total Out') }}</th>
-                        <th>{{ lang._('Timestamp') }}</th>
+                        <th>{{ lang._('Last seen') }}</th>
                     </tr>
                 </thead>
                 <tbody>
