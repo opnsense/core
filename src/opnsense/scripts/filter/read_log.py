@@ -181,9 +181,9 @@ if __name__ == '__main__':
         line_threshold = 10
         line_count = 0
         throttle_interval = 100 # ms
+        counter = {}
+        start_t_ms = time.time() * 1000
         try:
-            counter = {}
-            start_t_ms = (time.time() * 1000)
             while True:
                 ready, _, _ = select.select([f.stdout], [], [], 1)
                 if not ready:
@@ -199,8 +199,7 @@ if __name__ == '__main__':
                         running_conf_descr = fetch_rule_details()
                     rule = parse_record({'line': line}, running_conf_descr)
                     if rule != None:
-                        if rule['rid'] != '0':
-                            counter[rule['rid']] = counter.get(rule['rid'], 0) + 1
+                        counter[rule['rid']] = counter.get(rule['rid'], 0) + 1
                         rule['counter'] = counter[rule['rid']]
 
                         line_count += 1
@@ -209,7 +208,7 @@ if __name__ == '__main__':
                             print(f"event: message\ndata: {ujson.dumps(rule)}\n\n", flush=True)
                         elif elapsed >= throttle_interval:
                             line_count = 0
-                            start_t_ms = (time.time() * 1000)
+                            start_t_ms = time.time() * 1000
                 else:
                     break
         except KeyboardInterrupt:
