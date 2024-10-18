@@ -407,15 +407,15 @@ class Util
      */
     public static function isIPInCIDR($ip, $cidr)
     {
-        if (!self::isIpAddress($ip)) {
+        if (!self::isIpAddress($ip) || !self::isSubnet($cidr)) {
             return false;
-        }
-
-        if (str_contains($ip, ':')) {
+        } elseif (str_contains($ip, ':') && str_contains($cidr, ':')) {
             return self::isIPv6InCIDR($ip, $cidr);
+        } elseif (!str_contains($ip, ':') && !str_contains($cidr, ':')) {
+            return self::isIPv4InCIDR($ip, $cidr);
         }
+        return false;
 
-        return self::isIPv4InCIDR($ip, $cidr);
     }
 
     /**
