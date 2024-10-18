@@ -38,6 +38,7 @@ import ujson
 import dns.resolver
 from dns.asyncresolver import Resolver
 from concurrent.futures import ThreadPoolExecutor
+import ipaddress
 
 
 def iftop(interface, target):
@@ -94,14 +95,31 @@ class AsyncLookup:
         dnsResolver.timeout = 2
         tasks = []
         for address in addresses:
-            tasks.append(dnsResolver.resolve_address(address))
+            try:
+                if ":" in address:
+                    ipv6_obj = ipaddress.IPv6Address(address)
+                    reverse_ip = '.'.join(reversed(ipv6_obj.exploded.replace(":", ""))) + ".ip6.arpa"
+                else:
+                    reverse_ip = '.'.join(reversed(address.split("."))) + ".in-addr.arpa"
+
+                tasks.append(dnsResolver.resolve(reverse_ip, "PTR"))
+            except Exception as e:
+                return
+
         responses = await asyncio.gather(*tasks, return_exceptions=True)
-        for response in responses:
-            if type(response) is dns.resolver.Answer:
-                addr = ".".join(reversed(response.canonical_name.to_text().replace('.in-addr.arpa.', '').split('.')))
+
+        for response, address in zip(responses, addresses):
+            if isinstance(response, dns.resolver.Answer):
+                if ":" in address:
+                    addr = str(ipaddress.IPv6Address(address))
+                else:
+                    addr = ".".join(reversed(response.canonical_name.to_text().replace('.in-addr.arpa.', '').split('.')))
+
                 for item in response.response.answer:
-                    if type(item) is dns.rrset.RRset and len(item.items) > 0:
+                    if isinstance(item, dns.rrset.RRset) and len(item.items) > 0:
                         self._results[addr] = str(list(item.items)[0])
+
+        return self._results
 
     def collect(self, addresses):
         loop = asyncio.new_event_loop()
