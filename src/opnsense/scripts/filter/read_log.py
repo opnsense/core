@@ -178,8 +178,10 @@ if __name__ == '__main__':
         )
 
         last_t = time.time()
+        throttle = 100
         try:
             while True:
+                start_t = time.time()
                 ready, _, _ = select.select([f.stdout], [], [], 1)
                 if not ready:
                     # timeout, send keepalive
@@ -197,6 +199,10 @@ if __name__ == '__main__':
                         print(f"event: message\ndata: {ujson.dumps(rule)}\n\n", flush=True)
                 else:
                     break
+
+                elapsed = round((time.time() - start_t) * 1000)
+                ttw = max(0, throttle - elapsed)
+                time.sleep(ttw / 1000)
         except KeyboardInterrupt:
             f.kill()
     else:
