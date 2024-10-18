@@ -415,7 +415,6 @@ class Util
             return self::isIPv4InCIDR($ip, $cidr);
         }
         return false;
-
     }
 
     /**
