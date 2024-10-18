@@ -257,7 +257,7 @@ class FirewallController extends ApiControllerBase
                 }
                 foreach (['dst_addr', 'src_addr', 'gw_addr'] as $addr) {
                     foreach ($networks as $net) {
-                        if (Util::isIPInCIDR($row[$addr] ?? '', $net)) {
+                        if (str_contains($row[$addr], ':') === str_contains($net, ':') && Util::isIPInCIDR($row[$addr] ?? '', $net)) {
                             return true;
                         }
                     }
