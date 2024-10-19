@@ -397,6 +397,18 @@ function legacy_interfaces_details($intf = null)
             $result[$current_interface]['media_raw'] = substr(trim($line), 7);
         } elseif (preg_match("/media (.*)/", $line, $matches)) {
             $result[$current_interface]["supported_media"][] = str_replace(" mediaopt ", " ", trim($matches[1]));
+        } elseif (preg_match("/plugged: (.*)/", $line, $matches)) {
+            $result[$current_interface]['sfp'] = [
+                'plugged' => $matches[1]
+            ];
+        } elseif (
+            isset($result[$current_interface]['sfp']) && /* safety precaution, plugged should be in the previous line */
+            preg_match("/vendor:\s+(.*)\s+PN:(.*)\s+SN:\s+(.*)\s+DATE:\s+(.*)/", $line, $matches)
+        ) {
+            $result[$current_interface]['sfp']['vendor'] = $matches[1];
+            $result[$current_interface]['sfp']['part_number'] = $matches[2];
+            $result[$current_interface]['sfp']['serial_number'] = $matches[3];
+            $result[$current_interface]['sfp']['manufacturing_date'] = $matches[4];
         } elseif (preg_match("/status: (.*)$/", $line, $matches)) {
             $result[$current_interface]['status'] = $matches[1];
         } elseif (preg_match("/channel (\S*)/", $line, $matches)) {
