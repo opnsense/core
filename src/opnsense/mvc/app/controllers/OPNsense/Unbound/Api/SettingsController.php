@@ -175,7 +175,7 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         return $this->searchBase(
             'hosts.host',
-            ['enabled', 'hostname', 'domain', 'rr', 'mxprio', 'mx', 'server', 'description'],
+            ['enabled', 'hostname', 'domain', 'rr', 'mxprio', 'mx', 'server', 'ttl', 'description'],
             'hostname',
             null,
             SORT_NATURAL | SORT_FLAG_CASE
