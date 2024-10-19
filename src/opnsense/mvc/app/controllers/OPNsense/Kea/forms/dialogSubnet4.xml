@@ -93,9 +93,21 @@
         <help>TFTP server address or fqdn</help>
     </field>
     <field>
-        <id>subnet4.option_data.boot_file_name</id>
-        <label>TFTP bootfile name</label>
+        <id>subnet4.client_classes.x86_uefi_file</id>
+        <label>x86 UEFI (32-bit) bootfile name</label>
         <type>text</type>
-        <help>Boot filename to request</help>
+        <help>Boot filename to request for 32-bit x86 UEFI systems.</help>
+    </field>
+    <field>
+        <id>subnet4.client_classes.x64_uefi_file</id>
+        <label>x64 UEFI/EBC (64-bit) bootfile name</label>
+        <type>text</type>
+        <help>Boot filename to request for 64-bit x64 UEFI/EBC systems.</help>
+    </field>
+    <field>
+        <id>subnet4.client_classes.boot_file</id>
+        <label>Default bootfile name</label>
+        <type>text</type>
+        <help>Boot filename to request if no other boot file matches (e.g. legacy BIOS boot).</help>
     </field>
 </form>

@@ -90,10 +90,18 @@
                     <tftp_server_name type="TextField">
                         <Mask>/^([^\n"])*$/u</Mask>
                     </tftp_server_name>
-                    <boot_file_name type="TextField">
-                        <Mask>/^([^\n"])*$/u</Mask>
-                    </boot_file_name>
                 </option_data>
+                <client_classes>
+                    <x86_uefi_file type="TextField">
+                        <Mask>/^([^\n"])*$/u</Mask>
+                    </x86_uefi_file>
+                    <x64_uefi_file type="TextField">
+                        <Mask>/^([^\n"])*$/u</Mask>
+                    </x64_uefi_file>
+                    <boot_file type="TextField">
+                        <Mask>/^([^\n"])*$/u</Mask>
+                    </boot_file>
+                </client_classes>
                 <pools type=".\KeaPoolsField">
                 </pools>
                 <description type="DescriptionField"/>
