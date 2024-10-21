@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2017-2023 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2017-2024 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@
 
 TMPFILE=/tmp/pkg_check.exclude
 MTREE="mtree -e -p /"
+CMD=${1}
 
 : > ${LOCKFILE}
 
@@ -135,7 +136,7 @@ core_check()
 		return
 	fi
 
-	echo "Core package \"${CORE}\" has $(pkg query %#d ${CORE}) dependencies to check." | ${TEE} ${LOCKFILE}
+	echo "Core package \"${CORE}\" at $(opnsense-version -v) has $(pkg query %#d ${CORE}) dependencies to check." | ${TEE} ${LOCKFILE}
 
 	for DEP in $( (echo ${CORE}; pkg query %dn ${CORE}) | sort -u); do
 		if [ -z "${PROGRESS}" ]; then
@@ -166,7 +167,7 @@ EOF
 			PROGRESS=
 		fi
 
-		RVER=$(pkg rquery -r ${PRODUCT} %v ${DEP})
+		RVER=$(pkg rquery -r ${PRODUCT} %v ${DEP} 2> /dev/null)
 		if [ -z "${RVER}" ]; then
 			if [ -n "${PROGRESS}" ]; then
 				echo | ${TEE} ${LOCKFILE}
@@ -223,34 +224,49 @@ echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 echo ">>> Root file system: $(mount | awk '$3 == "/" { print $1 }')" | ${TEE} ${LOCKFILE}
 
-set_check kernel
-set_check base
-
-echo ">>> Check installed repositories" | ${TEE} ${LOCKFILE}
-(opnsense-verify -l 2>&1) | ${TEE} ${LOCKFILE}
-
-echo ">>> Check installed plugins" | ${TEE} ${LOCKFILE}
-PLUGINS=$(pkg query -g '%n %v' 'os-*' 2>&1)
-if [ -n "${PLUGINS}" ]; then
-	(echo "${PLUGINS}") | ${TEE} ${LOCKFILE}
-else
-	echo "No plugins found." | ${TEE} ${LOCKFILE}
+if [ -z "${CMD}" -o "${CMD}" = "kernel" ]; then
+	set_check kernel
 fi
 
-echo ">>> Check locked packages" | ${TEE} ${LOCKFILE}
-LOCKED=$(pkg lock -lq 2>&1)
-if [ -n "${LOCKED}" ]; then
-	(echo "${LOCKED}") | ${TEE} ${LOCKFILE}
-else
-	echo "No locks found." | ${TEE} ${LOCKFILE}
+if [ -z "${CMD}" -o "${CMD}" = "base" ]; then
+	set_check base
 fi
 
-echo ">>> Check for missing package dependencies" | ${TEE} ${LOCKFILE}
-(pkg check -dan 2>&1) | ${TEE} ${LOCKFILE}
+if [ -z "${CMD}" -o "${CMD}" = "repos" ]; then
+	echo ">>> Check installed repositories" | ${TEE} ${LOCKFILE}
+	(opnsense-verify -l 2>&1) | ${TEE} ${LOCKFILE}
+fi
 
-echo ">>> Check for missing or altered package files" | ${TEE} ${LOCKFILE}
-(pkg check -sa 2>&1) | ${TEE} ${LOCKFILE}
+if [ -z "${CMD}" -o "${CMD}" = "plugins" ]; then
+	echo ">>> Check installed plugins" | ${TEE} ${LOCKFILE}
+	PLUGINS=$(pkg query -g '%n %v' 'os-*' 2>&1)
+	if [ -n "${PLUGINS}" ]; then
+		(echo "${PLUGINS}") | ${TEE} ${LOCKFILE}
+	else
+		echo "No plugins found." | ${TEE} ${LOCKFILE}
+	fi
+fi
 
-core_check
+if [ -z "${CMD}" -o "${CMD}" = "locked" ]; then
+	echo ">>> Check locked packages" | ${TEE} ${LOCKFILE}
+	LOCKED=$(pkg lock -lq 2>&1)
+	if [ -n "${LOCKED}" ]; then
+		(echo "${LOCKED}") | ${TEE} ${LOCKFILE}
+	else
+		echo "No locks found." | ${TEE} ${LOCKFILE}
+	fi
+fi
+
+if [ -z "${CMD}" -o "${CMD}" = "packages" ]; then
+	echo ">>> Check for missing package dependencies" | ${TEE} ${LOCKFILE}
+	(pkg check -dan 2>&1) | ${TEE} ${LOCKFILE}
+
+	echo ">>> Check for missing or altered package files" | ${TEE} ${LOCKFILE}
+	(pkg check -sa 2>&1) | ${TEE} ${LOCKFILE}
+fi
+
+if [ -z "${CMD}" -o "${CMD}" = "core" ]; then
+	core_check
+fi
 
 echo '***DONE***' >> ${LOCKFILE}
