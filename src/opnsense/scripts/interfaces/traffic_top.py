@@ -104,7 +104,7 @@ class AsyncLookup:
 
                 tasks.append(dnsResolver.resolve(reverse_ip, "PTR"))
             except Exception as e:
-                return
+                continue
 
         responses = await asyncio.gather(*tasks, return_exceptions=True)
 
