@@ -30,6 +30,7 @@
 import glob
 import sys
 import os
+import subprocess
 import warnings
 warnings.filterwarnings('ignore', message='.*cryptography', )
 import OpenSSL.crypto
@@ -43,26 +44,27 @@ BLACKLISTDESTDIR = '/etc/ssl/untrusted'
 
 def certificate_iterator(filename):
     fext = os.path.splitext(filename)[1][1:].lower()
+    needs_copy = False
     try:
         if fext == 'crl':
-            x509_items = [x509.load_pem_x509_crl(open(filename, 'rb').read())]
+            x509_items = [filename]
         elif fext in ['pem', 'cer', 'crt']:
             x509_items = x509.load_pem_x509_certificates(open(filename, 'rb').read())
+            needs_copy = len(x509_items) > 1
         else:
             # not supported
             return None
     except (ValueError, TypeError):
         return None
 
-    needs_copy = len(x509_items) > 1
     for x509_item in x509_items:
-        data = x509_item.public_bytes(serialization.Encoding.PEM) if needs_copy else filename
-        # XXX: need to check subject_name_hash as below for crl does not offer the same results in all cases
         if fext == 'crl':
-            tmp = OpenSSL.crypto.X509().get_issuer()
-            for item in x509_item.issuer:
-                setattr(tmp, item.rfc4514_attribute_name, item.value)
-            hashval = hex(tmp.hash()).lstrip('0x').zfill(8)
+            # XXX: pyOpenSSL doesn't offer access to subject_name_hash(), so we have to call openssl direct here
+            spparams = ['/usr/bin/openssl', 'crl', '-in', filename, '-hash', '-noout']
+            sp = subprocess.run(spparams, capture_output=True, text=True)
+            if sp.returncode != 0:
+                continue
+            hashval = sp.stdout
         else:
             cert = OpenSSL.crypto.load_certificate(
                 OpenSSL.crypto.FILETYPE_PEM,
@@ -73,7 +75,7 @@ def certificate_iterator(filename):
             'hash': hashval,
             'target_pattern': '%s.%s%%d' % (hashval, 'r' if fext == 'crl' else ''),
             'type': 'copy' if needs_copy else 'link',
-            'data': data,
+            'data': x509_item.public_bytes(serialization.Encoding.PEM) if needs_copy and x509_item else filename,
             'filename': filename
         }
 
