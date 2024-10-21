@@ -60,7 +60,7 @@ env_init()
 	# clean up old CRL files if found
 	for FILE in $(find /tmp/ -name "libfetch_crl.*"); do
 		if [ "${FILE}" != "${CRL_FILE}" ]; then
-			rm ${FILE}
+			rm -f ${FILE}
 		fi
 	done
 
@@ -85,7 +85,7 @@ env_init()
 				# in case of problems clear the file and leave an
 				# empty one for the next run also in order to let
 				# libfetch complain about the missing CRLs
-				rm ${CRL_TMP}
+				rm -f ${CRL_TMP}
 				: > ${CRL_FILE}
 			fi
 		fi
@@ -94,7 +94,7 @@ env_init()
 		export SSL_CRL_FILE="${CRL_FILE}"
 	else
 		# unused so ok to remove
-		rm ${CRL_FILE}
+		rm -f ${CRL_FILE}
 	fi
 }
 
