@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2024 Deciso B.V. 
+    Copyright (c) 2024 Deciso B.V.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
