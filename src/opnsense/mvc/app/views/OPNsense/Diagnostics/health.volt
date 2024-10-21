@@ -372,6 +372,7 @@
                             return d3.time.format(dtformat)(new Date(d))
                         });
                 chart.yAxis.axisLabel(data["y-axis_label"]);
+                chart.forceY([0]);
                 chart.useInteractiveGuideline(true);
                 chart.interactive(true);
 
