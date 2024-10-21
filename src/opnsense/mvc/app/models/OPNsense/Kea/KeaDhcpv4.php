@@ -39,8 +39,8 @@ class KeaDhcpv4 extends BaseModel
 {
     /**
      * Before persisting data into the model, update option_data fields for selected subnets.
-     * setNodes() is used in most cases (at least from our base controller), which should make this a relatvily
-     * save entrypoint to enforce some data.
+     * setNodes() is used in most cases (at least from our base controller), which should make this a relatively
+     * safe entrypoint to enforce some data.
      */
     public function setNodes($data)
     {
@@ -133,6 +133,60 @@ class KeaDhcpv4 extends BaseModel
         return $hostname;
     }
 
+    private function getClientClasses()
+    {
+        $result = [];
+        foreach ($this->subnets->subnet4->iterateItems() as $subnet) {
+            $nondefault_class_names = [];
+            /* client-classes */
+            foreach ($subnet->client_classes->iterateItems() as $key => $value) {
+                $class_name = str_replace(['.', '/', '_'], '-', (string)$subnet->subnet . '-' . $key);
+                $option_data = [
+                    'name' => "boot-file-name",
+                    'data' => (string)$value
+                ];
+                if ($key == 'x86_uefi_file') {
+                    $nondefault_class_names[] = $class_name;
+                    $result[] = [
+                        'name' => $class_name,
+                        'test' => "option[93].hex == 0x0006",
+                        'only-if-required' => true,
+                        'option-data' => [$option_data]
+                    ];
+                } elseif ($key == 'x64_uefi_file') {
+                    $nondefault_class_names[] = $class_name;
+                    $result[] = [
+                        'name' => $class_name,
+                        'test' => "option[93].hex == 0x0007 or option[93].hex == 0x0009",
+                        'only-if-required' => true,
+                        'option-data' => [$option_data]
+                    ];
+                } elseif ($key == 'boot_file') {
+                    $tests = [];
+                    foreach ($nondefault_class_names as $nondefault_class_name) {
+                        $tests[] = "not member('" . $nondefault_class_name . "')";
+                    }
+                    $result[] = [
+                        'name' => $class_name,
+                        'test' => implode(" and ", $tests),
+                        'only-if-required' => true,
+                        'option-data' => [$option_data]
+                    ];
+                }
+            }
+        }
+        return $result;
+    }
+
+    private function getClientClassNames($client_classes = [])
+    {
+        $result = [];
+        foreach ($client_classes as $client_class) {
+            $result[] = $client_class['name'];
+        }
+        return $result;
+    }
+
     private function getConfigSubnets()
     {
         $result = [];
@@ -144,6 +198,7 @@ class KeaDhcpv4 extends BaseModel
                 'next-server' => (string)$subnet->next_server,
                 'option-data' => [],
                 'pools' => [],
+                'require-client-classes' => [],
                 'reservations' => []
             ];
             /* standard option-data elements */
@@ -164,6 +219,10 @@ class KeaDhcpv4 extends BaseModel
             /* add pools */
             foreach (array_filter(explode("\n", $subnet->pools)) as $pool) {
                 $record['pools'][] = ['pool' => $pool];
+            }
+            /* add required classes */
+            foreach ($this->getClientClassNames($this->getClientClasses()) as $client_class_name) {
+                $record['require-client-classes'][] = $client_class_name;
             }
             /* static reservations */
             foreach ($this->reservations->reservation->iterateItems() as $key => $reservation) {
@@ -210,6 +269,7 @@ class KeaDhcpv4 extends BaseModel
                         'severity' => 'INFO',
                     ]
                 ],
+                'client-classes' => $this->getClientClasses(),
                 'subnet4' => $this->getConfigSubnets(),
             ]
         ];
