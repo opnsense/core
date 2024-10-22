@@ -146,18 +146,41 @@ class PacketCaptureController extends ApiMutableModelControllerBase
      * download pcap(s)
      */
     public function downloadAction($jobid)
-    {
-        $payload = json_decode((new Backend())->configdpRun('interface capture archive', [$jobid]), true);
-        if (!empty($payload) && !empty($payload['filename'])) {
-            $this->response->setContentType('application/octet-stream');
-            $this->response->setRawHeader("Content-Disposition: attachment; filename=" . basename($payload['filename']));
-            $this->response->setRawHeader("Content-length: " . filesize($payload['filename']));
-            $this->response->setRawHeader("Pragma: no-cache");
-            $this->response->setRawHeader("Expires: 0");
-            $this->response->setContent(fopen($payload['filename'], 'r'));
+{
+    $this->sessionClose();
+    
+    $payload = json_decode((new Backend())->configdpRun('interface capture archive', [$jobid]), true);
+    
+    if (!empty($payload) && !empty($payload['filename'])) {
+        $filename = $payload['filename'];
+        
+        if (file_exists($filename)) {
+            $filesize = filesize($filename);
+            
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename="' . basename($filename) . '"');
+            header('Content-Length: ' . $filesize);
+            header('Pragma: no-cache');
+            header('Expires: 0');
+            
+            ob_clean();
+            flush();
+            
+            if (readfile($filename) === false) {
+                $this->response->setJsonContent(["errorMessage" => "Failed to send the file."]);
+                return;
+            }
+            
+            exit();
+        } else {
+            $this->response->setJsonContent(["errorMessage" => "File not found."]);
+            return;
         }
+    } else {
+        $this->response->setJsonContent(["errorMessage" => "Error processing the request."]);
+        return;
     }
-
+}
     /**
      * fetch mac info
      */
