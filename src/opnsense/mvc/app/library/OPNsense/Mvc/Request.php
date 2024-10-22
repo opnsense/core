@@ -59,6 +59,14 @@ class Request
     }
 
     /**
+     * @return string request scheme (http, https)
+     */
+    public function getScheme(): string
+    {
+         return isset($_SERVER['HTTPS']) ? 'https' : 'http';
+    }
+
+    /**
      * @return string method name (GET, POST, PUT, ...)
      */
     public function getMethod(): string
