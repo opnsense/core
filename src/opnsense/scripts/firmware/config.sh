@@ -62,7 +62,8 @@ env_init()
 		export SSL_NO_TLS1_1="yes"
 		export SSL_NO_TLS1_2="yes"
 
-		# refresh CRL file for libfetch consumption...
+		# refresh CRL files for libfetch consumption...
+		HOSTS=$(/usr/local/opnsense/scripts/firmware/hostnames.sh)
 		if /usr/local/opnsense/scripts/system/update-crl-fetch.py ${HOSTS}; then
 			/usr/local/opnsense/scripts/system/certctl.py rehash
 		fi
