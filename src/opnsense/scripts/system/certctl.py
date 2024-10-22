@@ -64,7 +64,7 @@ def certificate_iterator(filename):
             sp = subprocess.run(spparams, capture_output=True, text=True)
             if sp.returncode != 0:
                 continue
-            hashval = sp.stdout
+            hashval = sp.stdout.strip()
         else:
             cert = OpenSSL.crypto.load_certificate(
                 OpenSSL.crypto.FILETYPE_PEM,
