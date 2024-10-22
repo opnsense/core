@@ -59,6 +59,14 @@ class Request
     }
 
     /**
+     * @return bool true if $_GET has index set
+     */
+    public function hasQuery($name): bool
+    {
+        return isset($_GET[$name]);
+    }
+
+    /**
      * @return string request scheme (http, https)
      */
     public function getScheme(): string
