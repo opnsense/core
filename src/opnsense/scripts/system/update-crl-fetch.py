@@ -39,6 +39,7 @@ from cryptography.x509.extensions import CRLDistributionPoints
 def fetch_certs(domains):
     result = []
     for domain in domains:
+        depth = 0
         try:
             ipaddress.ip_address(domain)
         except ValueError:
@@ -52,7 +53,8 @@ def fetch_certs(domains):
             with requests.get(url, timeout=30, stream=True) as response:
                 # XXX: in python > 3.13, replace with sock.get_verified_chain()
                 for cert in response.raw.connection.sock._sslobj.get_verified_chain():
-                    result.append(cert.public_bytes(1).encode()) # _ssl.ENCODING_PEM
+                    result.append({'domain': domain, 'depth': depth, 'pem': cert.public_bytes(1).encode()}) # _ssl.ENCODING_PEM
+                    depth += 1
         except Exception as e:
             # XXX: probably too broad, but better make sure
             print("[!!] Chain fetch failed for %s (%s)" % (url, e), file=sys.stderr)
@@ -71,10 +73,10 @@ def main(domains, target, lifetime):
         os.unlink(crl_index)
 
     with open(crl_index, 'a+') as sys.stdout:
-        for pem in fetch_certs(domains):
+        for fetched in fetch_certs(domains):
             try:
                 dp_uri = None
-                cert = x509.load_pem_x509_certificate(pem)
+                cert = x509.load_pem_x509_certificate(fetched['pem'])
                 for ext in cert.extensions:
                     if type(ext.value) is CRLDistributionPoints:
                         for Distributionpoint in ext.value:
@@ -84,21 +86,21 @@ def main(domains, target, lifetime):
                             response = requests.get(dp_uri)
                             if 200 <= response.status_code <= 299:
                                 crl = x509.load_der_x509_crl(response.content)
-                                crl_bundle.append(crl.public_bytes(serialization.Encoding.PEM).decode().strip())
+                                crl_bundle.append({"domain": fetched['domain'], "depth": fetched['depth'], "name": str(cert.subject), "data": crl.public_bytes(serialization.Encoding.PEM).decode().strip()})
             except ValueError:
-                print("[!!] Error processing pem file (%s)" % cert.issuer if cert else '' , file=sys.stderr)
+                print("[!!] Error processing pem file (%s)" % cert.subject if cert else '' , file=sys.stderr)
             except Exception as e:
                 if dp_uri:
                     print("[!!] CRL fetch failed for %s (%s)" % (dp_uri, e), file=sys.stderr)
                 else:
-                    print("[!!] CRL fetch issue (%s) (%s)" % (cert.issuer if cert else '', e) , file=sys.stderr)
+                    print("[!!] CRL fetch issue (%s) (%s)" % (cert.subject if cert else '', e) , file=sys.stderr)
 
     for i in glob.glob(target + '*.crl'):
         os.unlink(i)
 
     for i in crl_bundle:
-        with open(target + '%d.crl' % crl_bundle.index(i), 'w') as f_out:
-            f_out.write(i + "\n")
+       with open(target + "%s-%d.crl" % (i['domain'], i['depth']), 'w') as f_out:
+            f_out.write("# " + i['name'] + "\n" + i['data'] + "\n")
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-l", help="CRL cache lifetime", type=int, default=3600)
