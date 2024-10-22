@@ -51,6 +51,14 @@ class Request
     }
 
     /**
+     * @return string request uri
+     */
+    public function getURI(): string
+    {
+        return $_SERVER['REQUEST_URI'] ?? '';
+    }
+
+    /**
      * @return string method name (GET, POST, PUT, ...)
      */
     public function getMethod(): string
