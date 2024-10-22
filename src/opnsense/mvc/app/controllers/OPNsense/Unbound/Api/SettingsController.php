@@ -127,12 +127,7 @@ class SettingsController extends ApiMutableModelControllerBase
             return $record->type == $this->type;
         };
 
-        return $this->searchBase(
-            'dots.dot',
-            array('enabled', 'server', 'port', 'verify', 'type', 'domain'),
-            null,
-            $filter_fn
-        );
+        return $this->searchBase('dots.dot',null , null, $filter_fn);
     }
 
     public function getForwardAction($uuid = null)
