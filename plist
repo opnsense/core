@@ -476,7 +476,6 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/acl.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/advanced.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogAcl.xml
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogDomainOverride.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogDot.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogHostAlias.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogHostOverride.xml
@@ -806,12 +805,11 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Trust/General.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Trust/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/ACL/ACL.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/FieldTypes/UnboundDomainField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/FieldTypes/UnboundInterfaceField.php
-/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/FieldTypes/UnboundServerField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_1.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_11.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_3.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_5.php
