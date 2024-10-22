@@ -30,14 +30,18 @@ import glob
 import ipaddress
 import sys
 import os
-import requests
+import time
+sys.path.insert(0, "/usr/local/opnsense/site-python")
+import tls_helper
 from cryptography import x509
 from cryptography.hazmat.primitives import serialization
 from cryptography.x509.extensions import CRLDistributionPoints
 
+
 def fetch_certs(domains):
     result = []
     for domain in domains:
+        depth = 0
         try:
             ipaddress.ip_address(domain)
         except ValueError:
@@ -48,53 +52,78 @@ def fetch_certs(domains):
         url = 'https://%s' % domain
         try:
             print('# [i] fetch certificate for %s' % url)
-            with requests.get(url, timeout=30, stream=True) as response:
+            with tls_helper.RequestsWrapper().get(url, timeout=30, stream=True) as response:
                 # XXX: in python > 3.13, replace with sock.get_verified_chain()
                 for cert in response.raw.connection.sock._sslobj.get_verified_chain():
-                    result.append(cert.public_bytes(1).encode()) # _ssl.ENCODING_PEM
+                    result.append({'domain': domain, 'depth': depth, 'pem': cert.public_bytes(1).encode()}) # _ssl.ENCODING_PEM
+                    depth += 1
         except Exception as e:
             # XXX: probably too broad, but better make sure
             print("[!!] Chain fetch failed for %s (%s)" % (url, e), file=sys.stderr)
 
-
     return result
 
-def main(domains, target_filename):
-    # fetch the crl's known in our trust store
-    crl_bundle = []
-    for filename in glob.glob('/etc/ssl/certs/*.r[0-9]'):
-        if os.path.isfile(filename):
-            with open(filename, 'r') as f_in:
-                crl_bundle.append(f_in.read().strip())
-    # add the ones being supplied via the domain distribution points
-    for pem in fetch_certs(domains):
-        try:
-            dp_uri = None
-            cert = x509.load_pem_x509_certificate(pem)
-            for ext in cert.extensions:
-                if type(ext.value) is CRLDistributionPoints:
-                    for Distributionpoint in ext.value:
-                        dp_uri = Distributionpoint.full_name[0].value
-                        print("# [i] fetch CRL from %s" % dp_uri)
-                        # XXX: only support http for now
-                        response = requests.get(dp_uri)
-                        if 200 <= response.status_code <= 299:
-                            crl = x509.load_der_x509_crl(response.content)
-                            crl_bundle.append(crl.public_bytes(serialization.Encoding.PEM).decode().strip())
-        except ValueError:
-            print("[!!] Error processing pem file (%s)" % cert.issuer if cert else '' , file=sys.stderr)
-        except Exception as e:
-            if dp_uri:
-                print("[!!] CRL fetch failed for %s (%s)" % (dp_uri, e), file=sys.stderr)
-            else:
-                print("[!!] CRL fetch issue (%s) (%s)" % (cert.issuer if cert else '', e) , file=sys.stderr)
 
-    # flush out bundle
-    with open(target_filename, 'w') as f_out:
-        f_out.write("\n".join(crl_bundle) + "\n")
+def main(domains, target, lifetime):
+    crl_index = target + 'index'
+    crl_bundle = []
+
+    domains = sorted(set(domains))
+    current = ",".join(domains)
+
+    # assume we run under a firmware lock
+    if os.path.isfile(crl_index):
+        crl_stale = False
+
+        with open(crl_index, "r") as idx:
+            if idx.readline().strip('\n') != current:
+                crl_stale = True
+
+        fstat = os.stat(crl_index)
+        if (time.time() - fstat.st_mtime) >= lifetime and fstat.st_size > 0:
+            crl_stale = True
+
+        if not crl_stale:
+            # failure means do not rehash now
+            exit(1)
+
+        os.unlink(crl_index)
+
+    with open(crl_index, 'a+') as sys.stdout:
+        print(current);
+
+        for fetched in fetch_certs(domains):
+            try:
+                dp_uri = None
+                cert = x509.load_pem_x509_certificate(fetched['pem'])
+                for ext in cert.extensions:
+                    if type(ext.value) is CRLDistributionPoints:
+                        for Distributionpoint in ext.value:
+                            dp_uri = Distributionpoint.full_name[0].value
+                            print("# [i] fetch CRL from %s" % dp_uri)
+                            # XXX: only support http for now
+                            response = tls_helper.RequestsWrapper().get(dp_uri)
+                            if 200 <= response.status_code <= 299:
+                                crl = x509.load_der_x509_crl(response.content)
+                                crl_bundle.append({"domain": fetched['domain'], "depth": fetched['depth'], "name": str(cert.subject), "data": crl.public_bytes(serialization.Encoding.PEM).decode().strip()})
+            except ValueError:
+                print("[!!] Error processing pem file (%s)" % cert.subject if cert else '' , file=sys.stderr)
+            except Exception as e:
+                if dp_uri:
+                    print("[!!] CRL fetch failed for %s (%s)" % (dp_uri, e), file=sys.stderr)
+                else:
+                    print("[!!] CRL fetch issue (%s) (%s)" % (cert.subject if cert else '', e) , file=sys.stderr)
+
+    for i in glob.glob(target + '*.crl'):
+        os.unlink(i)
+
+    for i in crl_bundle:
+       with open(target + "%s-%d.crl" % (i['domain'], i['depth']), 'w') as f_out:
+            f_out.write("# " + i['name'] + "\n" + i['data'] + "\n")
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-t", help="target filename", type=str, default="/dev/stdout")
+parser.add_argument("-l", help="CRL cache lifetime", type=int, default=3600)
+parser.add_argument("-t", help="target filename prefix", type=str, default="/usr/local/share/certs/ca-crl-firmware-")
 parser.add_argument('domains', metavar='N', type=str, nargs='*', help='list of domains to merge')
 args = parser.parse_args()
-main(args.domains, args.t)
+main(args.domains, args.t, args.l)
