@@ -270,6 +270,8 @@
                 </enabled>
                 <hostname type="HostnameField">
                     <HostWildcardAllowed>Y</HostWildcardAllowed>
+                    <IsDNSName>Y</IsDNSName>
+                    <IpAllowed>N</IpAllowed>
                 </hostname>
                 <domain type="TextField">
                     <Required>Y</Required>
@@ -365,6 +367,8 @@
                         </check001>
                     </Constraints>
                     <HostWildcardAllowed>Y</HostWildcardAllowed>
+                    <IsDNSName>Y</IsDNSName>
+                    <IpAllowed>N</IpAllowed>
                 </hostname>
                 <domain type="TextField">
                     <Constraints>
