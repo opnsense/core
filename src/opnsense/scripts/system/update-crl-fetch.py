@@ -98,7 +98,7 @@ def main(domains, target, lifetime):
 
     for i in crl_bundle:
         with open(target + '%d.crl' % crl_bundle.index(i), 'w') as f_out:
-            f_out.write(i)
+            f_out.write(i + "\n")
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-l", help="CRL cache lifetime", type=int, default=3600)
