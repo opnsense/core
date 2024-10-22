@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2022 Deciso B.V.
+ * Copyright (C) 2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,42 +26,28 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Unbound\FieldTypes;
+namespace OPNsense\Unbound\Migrations;
 
-use OPNsense\Base\FieldTypes\BaseField;
-use OPNsense\Base\Validators\CallbackValidator;
-use OPNsense\Firewall\Util;
+use OPNsense\Base\BaseModelMigration;
+use OPNsense\Core\Config;
 
-/**
- * Class UnboundServerField
- * @package OPNsense\Unbound\FieldTypes
- */
-class UnboundServerField extends BaseField
+class M1_0_11 extends BaseModelMigration
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected $internalIsContainer = false;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getValidators()
+    public function run($model)
     {
-        $validators = parent::getValidators();
-        if ($this->internalValue != null) {
-            $validators[] = new CallbackValidator([
-                "callback" => function ($value) {
-                    $parts = explode("@", $value);
-                    if (count($parts) == 2 && (!Util::isIpAddress($parts[0]) || !Util::isPort($parts[1]))) {
-                        return [gettext("A valid IP address and port must be specified, for example 192.168.100.10@5353.")];
-                    } elseif (count($parts) != 2 && !Util::isIpAddress($value)) {
-                        return [gettext("A valid IP address must be specified, for example 192.168.100.10.")];
-                    }
-                    return [];
+        $config = Config::getInstance()->object();
+        if (isset($config->OPNsense->unboundplus) && isset($config->OPNsense->unboundplus->domains->domain)) {
+            foreach ($config->OPNsense->unboundplus->domains->children() as $domain) {
+                $new_item = $model->dots->dot->Add();
+                $new_item->enabled = (string)$domain->enabled;
+                $new_item->type = 'forward';
+                $new_item->domain = (string)$domain->domain;
+                $parts = explode('@', (string)$domain->server);
+                $new_item->server = $parts[0];
+                if (isset($parts[1])) {
+                    $new_item->port = $parts[1];
                 }
-            ]);
+            }
         }
-        return $validators;
     }
 }

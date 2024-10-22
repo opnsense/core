@@ -266,44 +266,6 @@ class SettingsController extends ApiMutableModelControllerBase
         return $this->toggleBase('aliases.alias', $uuid, $enabled);
     }
 
-    /* Domain overrides */
-
-    public function searchDomainOverrideAction()
-    {
-        return $this->searchBase(
-            'domains.domain',
-            ['enabled', 'domain', 'server', 'description'],
-            "domain",
-            null,
-            SORT_NATURAL | SORT_FLAG_CASE
-        );
-    }
-
-    public function getDomainOverrideAction($uuid = null)
-    {
-        return $this->getBase('domain', 'domains.domain', $uuid);
-    }
-
-    public function addDomainOverrideAction()
-    {
-        return $this->addBase('domain', 'domains.domain');
-    }
-
-    public function delDomainOverrideAction($uuid)
-    {
-        return $this->delBase('domains.domain', $uuid);
-    }
-
-    public function setDomainOverrideAction($uuid)
-    {
-        return $this->setBase('domain', 'domains.domain', $uuid);
-    }
-
-    public function toggleDomainOverrideAction($uuid, $enabled = null)
-    {
-        return $this->toggleBase('domains.domain', $uuid, $enabled);
-    }
-
     /* ACLs */
 
     public function searchAclAction()
