@@ -524,7 +524,12 @@ function filter_core_rules_system($fw, $defaults)
         }
     }
     // loopback. dont log internal communications
-    $fw->registerFilterRule(5, array('interface' => 'lo0', 'log' => false, 'descr' => 'pass loopback', 'statetype' => 'none'), $defaults['pass']);
+    if (!empty($config['system']['syncookies'])) {
+        /* temporary work-around, syncookies require states to avoid dropping traffic */
+        $fw->registerFilterRule(5, array('interface' => 'lo0', 'log' => false, 'descr' => 'pass loopback'), $defaults['pass']);
+    } else {
+        $fw->registerFilterRule(5, array('interface' => 'lo0', 'log' => false, 'descr' => 'pass loopback', 'statetype' => 'none'), $defaults['pass']);
+    }
     // out from this Firewall
     $fw->registerFilterRule(
         5,

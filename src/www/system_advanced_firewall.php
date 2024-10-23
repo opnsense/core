@@ -786,6 +786,10 @@ include("head.inc");
                   </div>
                   <div class="hidden" data-for="help_for_syncookies">
                       <?=gettext("When syncookies are active, pf will answer each incoming TCP SYN with a syncookie SYNACK, without allocating any resources.");?>
+                      <br/>
+                      <strong>
+                      <?=gettext("NOTE: this feature does require all tcp rules to be state aware, issues are to be expected when creating stateless rules");?>
+                      </strong>
                   </div>
                 </td>
               </tr>
