@@ -85,7 +85,8 @@ def fetch_rule_details():
                     lbl = line.split(' label ')[-1]
                     if lbl.count('"') >= 2:
                         rule_md5 = lbl.split('"')[1]
-                        if len(rule_md5) == 32 and set(rule_md5).issubset(HEX_DIGITS):
+                        # detect either calculated md5 hash (calcRuleHash) or rule uuid
+                        if len(rule_md5) >= 32 and set(rule_md5.replace('-', '')).issubset(HEX_DIGITS):
                             rule_map[rule_md5] = ''.join(lbl.split('"')[2:]).strip().strip('# : ')
 
     return rule_map

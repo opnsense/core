@@ -50,7 +50,9 @@ class FilterRuleContainerField extends ContainerField
      */
     public function serialize()
     {
-        $result = array();
+        $result = [
+            'label' => $this->getAttribute('uuid')
+        ];
         $map_manual = ['source_net', 'source_not', 'source_port', 'destination_net', 'destination_not',
             'destination_port', 'enabled', 'description', 'sequence', 'action'];
         // 1-on-1 map (with type conversion if needed)
