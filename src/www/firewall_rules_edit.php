@@ -891,7 +891,7 @@ include("head.inc");
 <?php
                     endif;
 
-                    foreach (legacy_config_get_interfaces(array("enable" => true)) as $iface => $ifdetail): ?>
+                    foreach (legacy_config_get_interfaces(["enable" => true], ['lo0']) as $iface => $ifdetail): ?>
                         <option value="<?=$iface;?>"
                             <?= !empty($pconfig['interface']) && (
                                   $iface == $pconfig['interface'] ||

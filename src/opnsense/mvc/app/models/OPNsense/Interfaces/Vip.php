@@ -244,4 +244,17 @@ class Vip extends BaseModel
         }
         return $usages;
     }
+
+    /**
+     * @return bool true if any of the configured vips is a carp type
+     */
+    public function isCarpEnabled()
+    {
+        foreach ($this->vip->iterateItems() as $vip) {
+            if ($vip->mode == 'carp') {
+                return true;
+            }
+        }
+        return false;
+    }
 }
