@@ -153,7 +153,7 @@ class Local extends Base implements IAuthConnector
     {
         $userObject = $this->getUser($username);
         if ($userObject != null) {
-            if (isset($userObject->disabled)) {
+            if (!empty((string)$userObject->disabled)) {
                 // disabled user
                 return false;
             }

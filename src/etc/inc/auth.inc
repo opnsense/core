@@ -328,7 +328,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     $is_expired = !empty($user['expires']) &&
         strtotime('-1 day') > strtotime(date('m/d/Y', strtotime($user['expires'])));
 
-    $is_disabled = isset($user['disabled']);
+    $is_disabled = !empty($user['disabled']);
 
     $is_unlocked = !$is_disabled && !$is_expired;
 
