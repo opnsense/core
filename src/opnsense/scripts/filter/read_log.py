@@ -147,7 +147,7 @@ def parse_record(record, running_conf_descr):
     elif rule['action'] not in ['pass', 'block']:
         # no id for translation rules
         rule['label'] = "%s rule" % rule['action']
-    elif len(rulep) > 0 and len(rulep[-1]) == 32 and set(rulep[-1]).issubset(HEX_DIGITS):
+    elif len(rulep) > 0 and len(rulep[-1]) >= 32 and set(rulep[-1].replace('-', '')).issubset(HEX_DIGITS):
         # rule id appended in record format, don't use rule sequence number in that case either
         rule['rid'] = rulep[-1]
         if rulep[-1] in running_conf_descr:
