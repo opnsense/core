@@ -21,4 +21,9 @@
         <label>Type</label>
         <type>dropdown</type>
     </field>
+    <field>
+        <id>preSharedKey.description</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
 </form>

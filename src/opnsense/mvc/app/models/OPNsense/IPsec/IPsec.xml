@@ -146,6 +146,7 @@
                     </OptionValues>
                 </keyType>
                 <Key type="TextField"/>
+                <description type="DescriptionField"/>
             </preSharedKey>
         </preSharedKeys>
     </items>
