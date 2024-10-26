@@ -68,6 +68,20 @@ POSSIBILITY OF SUCH DAMAGE.
             }
         }
 
+        function format_time(sec) {
+            const hours = Math.floor(sec / 3600);
+            const minutes = Math.floor((sec % 3600) / 60);
+            const seconds = sec % 60;
+
+            if (hours > 0) {
+                return `${hours} h ${minutes} m`;
+            } else if (minutes > 0) {
+                return `${minutes} m ${seconds} s`;
+            } else {
+                return `${seconds} s`;
+            }
+        }
+
         /**
          * create new traffic chart
          */
@@ -287,9 +301,11 @@ POSSIBILITY OF SUCH DAMAGE.
                         if (tr.length === 0) {
                             tr = $("<tr/>");
                             tr.attr("data-address", item.address); // XXX: find matches on tag
-                            tr.data('bps_in', 0).data('bps_out', 0).data('bps_max_in', 0)
-                              .data('bps_max_out', 0).data('total_in', 0).data('total_out', 0)
-                              .data('intf', intf);
+                            tr.data('bps_in', 0).data('bps_out', 0)
+                                .data('bps_max_in', 0).data('bps_max_out', 0)
+                                .data('total_in', 0).data('total_out', 0)
+                                .data('first_seen', update_stamp)
+                                .data('intf', intf);
                             tr.append($("<td/>").html(intf_label));
                             if (item.rname) {
                                 tr.append(
@@ -306,6 +322,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             tr.append($("<td class='bps_max_out'/>").text(zeroBitOrBytes));
                             tr.append($("<td class='total_in'/>").text(zeroBytes));
                             tr.append($("<td class='total_out'/>").text(zeroBytes));
+                            tr.append($("<td class='first_seen'/>"));
                             tr.append($("<td class='last_seen'/>"));
                             tr.append($("<td class='actions'><button data-action='view' type='button' class='btn btn-xs btn-default' data-toggle='tooltip' title='{{ lang._('Show related sessions') }}'><span class='fa fa-fw fa-search'></span></button></td>"));
                             tr.on("click", function () {
@@ -321,8 +338,6 @@ POSSIBILITY OF SUCH DAMAGE.
                         ['in', 'out'].forEach(function(dir) {
                             tr.data('bps_'+dir, item['rate_bits_'+dir]);
                             tr.data('total_'+ dir, tr.data('total_'+ dir) + item['cumulative_bytes_'+dir]);
-                            tr.data('last_seen', update_stamp);
-                            tr.find('td.last_seen').text("now");
                             if (parseInt(tr.data('bps_max_'+dir)) < item['rate_bits_'+dir]) {
                                   tr.data('bps_max_'+dir, item['rate_bits_'+dir]);
                                   tr.find('td.bps_max_'+dir).text(useBytes ? byteFormat(item['rate_bits_'+dir] / bitByteCoefficient) + "/s" : item['rate_'+dir]);
@@ -330,6 +345,9 @@ POSSIBILITY OF SUCH DAMAGE.
                             tr.find('td.bps_'+dir).text(useBytes ? byteFormat(item['rate_bits_'+dir] / bitByteCoefficient) + "/s" : item['rate_'+dir]);
                             tr.find('td.total_'+dir).text(byteFormat(tr.data('total_'+ dir)));
                         });
+                        tr.data('last_seen', update_stamp);
+                        tr.find('td.first_seen').text("now");
+                        tr.find('td.last_seen').text("now");
                     }
             });
 
@@ -346,7 +364,9 @@ POSSIBILITY OF SUCH DAMAGE.
                 }
 
                 let secondsSinceLastUpdate = update_stamp - parseInt(tr.data('last_seen'));
-                tr.find('td.last_seen').text(secondsSinceLastUpdate ? secondsSinceLastUpdate + " s ago" : "now");
+                tr.find('td.last_seen').text(secondsSinceLastUpdate ? format_time(secondsSinceLastUpdate) + " ago" : "now");
+                let secondsSinceFirstSeen = update_stamp - parseInt(tr.data('first_seen'));
+                tr.find('td.first_seen').text(secondsSinceFirstSeen ? format_time(secondsSinceFirstSeen) + " ago" : "now");
 
                 let unanswered = tr.data('total_in') === 0 || tr.data('total_out') === 0;
                 let active_in = tr.data('bps_in') > rateHighlightTreshold;
@@ -649,6 +669,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         <th>{{ lang._('Out max') }}</th>
                         <th>{{ lang._('Total In') }}</th>
                         <th>{{ lang._('Total Out') }}</th>
+                        <th>{{ lang._('First seen') }}</th>
                         <th>{{ lang._('Last seen') }}</th>
                     </tr>
                 </thead>
