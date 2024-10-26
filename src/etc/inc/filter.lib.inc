@@ -206,13 +206,6 @@ function filter_core_rules_system($fw, $defaults)
     $dhcrelay6_interfaces = plugins_run('dhcrelay_interfaces', ['inet6']);
     $dhcrelay6_interfaces = !empty($dhcrelay6_interfaces['dhcrelay']) ? $dhcrelay6_interfaces['dhcrelay'] : [];
 
-    // block All IPv6 except loopback traffic
-    $fw->registerFilterRule(
-        1,
-        array('interface' => 'lo0', 'ipprotocol' => 'inet6', 'disabled' => isset($config['system']['ipv6allow']),
-          'descr' => 'Pass all loopback IPv6', '#ref' => 'system_advanced_network.php#ipv6allow'),
-        $defaults['pass']
-    );
     $fw->registerFilterRule(
         1,
         ['ipprotocol' => 'inet6','descr' => 'Block all IPv6', 'disabled' => !$ipv6_disabled,
@@ -529,10 +522,6 @@ function filter_core_rules_system($fw, $defaults)
                 break;
         }
     }
-
-    // loopback. dont log internal communications
-    /* temporary work-around, syncookies require states to avoid dropping traffic */
-    $fw->registerFilterRule(5, array('interface' => 'lo0', 'log' => false, 'descr' => 'pass loopback'), $defaults['pass']);
 
     // out from this Firewall
     $fw->registerFilterRule(
