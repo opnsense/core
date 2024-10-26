@@ -15,6 +15,10 @@
                 <Default>4000</Default>
                 <Required>Y</Required>
             </valid_lifetime>
+            <lfc_interval type="IntegerField">
+                <Default>1800</Default>
+                <Required>Y</Required>
+            </lfc_interval>
             <fwrules type="BooleanField">
                 <Required>Y</Required>
                 <Default>1</Default>

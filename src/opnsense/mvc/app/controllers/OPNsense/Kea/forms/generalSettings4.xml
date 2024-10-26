@@ -22,6 +22,12 @@
         <help>Defines how long the addresses (leases) given out by the server are valid (in seconds)</help>
     </field>
     <field>
+        <id>dhcpv4.general.lfc_interval</id>
+        <label>Lease File Cleanup Interval</label>
+        <type>text</type>
+        <help>Defines how often the lease file cleanup occurs (in seconds)</help>
+    </field>
+    <field>
         <id>dhcpv4.general.fwrules</id>
         <label>Firewall rules</label>
         <type>checkbox</type>
