@@ -58,10 +58,10 @@ class GroupNameField extends BaseField
                         $result[] = gettext('Only letters, digits and underscores are allowed as the group name.');
                     }
                     if (!empty($value) && strlen($value) > 15) {
-                        $result[] = gettext('The group name shall not be longer than 15 characters.');
+                        $result[] = gettext('The group name must not be longer than 15 characters.');
                     }
-                    if (preg_match('/[0-9]$/', $value, $match)) {
-                        $result[] = gettext('The group name shall not end in a digit.');
+                    if (preg_match('/^[0-9]|[0-9]$/', $value, $match)) {
+                        $result[] = gettext('The group name must not start or end with a digit.');
                     }
                     $cnf = Config::getInstance()->object();
                     if (!empty($cnf->$value) && empty($cnf->$value->virtual)) {
