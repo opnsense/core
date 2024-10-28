@@ -135,11 +135,6 @@
       <value>default</value>
     </item>
     <item>
-      <descr><![CDATA[Disable receive and send checksum offload for vtnet(4). Recommended for most KVM based cloud providers.]]></descr>
-      <tunable>hw.vtnet.csum_disable</tunable>
-      <value>default</value>
-    </item>
-    <item>
       <descr><![CDATA[Enable TCP extended debugging]]></descr>
       <tunable>net.inet.tcp.log_debug</tunable>
       <value>default</value>
