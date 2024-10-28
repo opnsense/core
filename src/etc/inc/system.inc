@@ -73,7 +73,6 @@ function system_sysctl_defaults()
         'debug.kassert.warn_only' => [ 'default' => '1', 'required' => true, 'description' => 'KASSERT triggers a panic (0) or just a warning (1)', 'type' => 'w' ],
         'hw.ibrs_disable' => [ 'default' => '0' ],
         'hw.ixl.enable_head_writeback' => [ 'default' => '0', 'required' => true ],
-        'hw.vtnet.csum_disable' => [ 'default' => '1', 'required' => true ],
         'hw.syscons.kbd_reboot' => [ 'default' => '0' ],
         'hw.vtnet.csum_disable' => [ 'default' => '1', 'required' => true ],
         'hw.uart.console' => [ 'default' => 'io:0x3f8,br:' . system_console_speed(), 'type' => 't' ], /* XXX support comconsole_port if needed */
