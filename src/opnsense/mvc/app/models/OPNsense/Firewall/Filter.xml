@@ -32,6 +32,9 @@
                 </quick>
                 <interface type="InterfaceField">
                     <Multiple>Y</Multiple>
+                    <Filters>
+                        <if>/^(?!lo0$).*/</if>
+                    </Filters>
                     <AllowDynamic>Y</AllowDynamic>
                 </interface>
                 <direction type="OptionField">
@@ -126,6 +129,9 @@
                 <interface type="InterfaceField">
                     <Required>Y</Required>
                     <Default>lan</Default>
+                    <Filters>
+                        <if>/^(?!lo0$).*/</if>
+                    </Filters>
                     <AllowDynamic>Y</AllowDynamic>
                 </interface>
                 <ipprotocol type="OptionField">
@@ -214,6 +220,9 @@
                 <interface type="InterfaceField">
                     <Required>Y</Required>
                     <Default>lan</Default>
+                    <Filters>
+                        <if>/^(?!lo0$).*/</if>
+                    </Filters>
                     <AllowDynamic>Y</AllowDynamic>
                 </interface>
                 <source_net type="NetworkField">
@@ -263,6 +272,9 @@
                 <interface type="InterfaceField">
                     <Required>Y</Required>
                     <Default>wan</Default>
+                    <Filters>
+                        <if>/^(?!lo0$).*/</if>
+                    </Filters>
                     <AllowDynamic>Y</AllowDynamic>
                 </interface>
                 <type type="OptionField">
