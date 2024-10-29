@@ -31,10 +31,12 @@ import ipaddress
 import sys
 import os
 import time
-import requests
+sys.path.insert(0, "/usr/local/opnsense/site-python")
+import tls_helper
 from cryptography import x509
 from cryptography.hazmat.primitives import serialization
 from cryptography.x509.extensions import CRLDistributionPoints
+
 
 def fetch_certs(domains):
     result = []
@@ -50,7 +52,7 @@ def fetch_certs(domains):
         url = 'https://%s' % domain
         try:
             print('# [i] fetch certificate for %s' % url)
-            with requests.get(url, timeout=30, stream=True) as response:
+            with tls_helper.RequestsWrapper().get(url, timeout=30, stream=True) as response:
                 # XXX: in python > 3.13, replace with sock.get_verified_chain()
                 for cert in response.raw.connection.sock._sslobj.get_verified_chain():
                     result.append({'domain': domain, 'depth': depth, 'pem': cert.public_bytes(1).encode()}) # _ssl.ENCODING_PEM
@@ -60,6 +62,7 @@ def fetch_certs(domains):
             print("[!!] Chain fetch failed for %s (%s)" % (url, e), file=sys.stderr)
 
     return result
+
 
 def main(domains, target, lifetime):
     crl_index = target + 'index'
@@ -83,7 +86,7 @@ def main(domains, target, lifetime):
                             dp_uri = Distributionpoint.full_name[0].value
                             print("# [i] fetch CRL from %s" % dp_uri)
                             # XXX: only support http for now
-                            response = requests.get(dp_uri)
+                            response = tls_helper.RequestsWrapper().get(dp_uri)
                             if 200 <= response.status_code <= 299:
                                 crl = x509.load_der_x509_crl(response.content)
                                 crl_bundle.append({"domain": fetched['domain'], "depth": fetched['depth'], "name": str(cert.subject), "data": crl.public_bytes(serialization.Encoding.PEM).decode().strip()})
