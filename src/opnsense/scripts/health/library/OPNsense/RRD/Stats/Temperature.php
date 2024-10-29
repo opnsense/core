@@ -33,7 +33,7 @@ class Temperature extends Base
     public function run()
     {
         $data = $this->shellCmd(
-            '/sbin/sysctl -n dev.cpu.0.temperature hw.acpi.thermal.tz0.temperature hw.temperature.CPU'
+            '/sbin/sysctl -ni dev.cpu.0.temperature hw.acpi.thermal.tz0.temperature hw.temperature.CPU | sed s/C//g'
         );
         if (!empty($data)) {
             return [$data[0]];
