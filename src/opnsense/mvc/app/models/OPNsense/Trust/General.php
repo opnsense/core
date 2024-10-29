@@ -40,14 +40,16 @@ class General extends BaseModel
     {
         $messages = parent::performValidation($validateFullModel);
         $enable_config_constraints = false;
-        foreach ([
+        foreach (
+            [
             'CipherString',
             'Ciphersuites',
             'groups',
             'MinProtocol',
             'MinProtocol_DTLS',
             'SignatureAlgorithms'
-        ] as $fieldname) {
+            ] as $fieldname
+        ) {
             if (!empty((string)$this->$fieldname)) {
                 $enable_config_constraints = true;
             }
