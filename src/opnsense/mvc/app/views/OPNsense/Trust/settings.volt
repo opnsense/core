@@ -40,7 +40,7 @@
                 return dfObj;
             }
         });
-
+        $(".config_constraints").closest('tr').hide();
         $("#trust\\.enable_config_constraints").change(function(){
             if ($(this).is(':checked')) {
                 $(".config_constraints").closest('tr').show();
