@@ -54,6 +54,13 @@
         <help>Sets the available ciphersuites for TLSv1.3.</help>
     </field>
     <field>
+        <id>trust.SignatureAlgorithms</id>
+        <label>SignatureAlgorithms</label>
+        <type>select_multiple</type>
+        <style>config_constraints selectpicker</style>
+        <help>Sets the available SignatureAlgorithms.</help>
+    </field>
+    <field>
         <id>trust.groups</id>
         <label>DHGroups / Curves</label>
         <type>select_multiple</type>

@@ -65,9 +65,19 @@ CipherString = {{OPNsense.trust.general.CipherString|replace(',',':')}}
 {%     if not helpers.empty('OPNsense.trust.general.Ciphersuites') %}
 Ciphersuites = {{OPNsense.trust.general.Ciphersuites|replace(',',':')}}
 {%     endif %}
+{%     if not helpers.empty('OPNsense.trust.general.SignatureAlgorithms') %}
+SignatureAlgorithms = {{OPNsense.trust.general.SignatureAlgorithms|replace(',',':')}}
+{%     endif %}
 {%     if not helpers.empty('OPNsense.trust.general.groups') %}
 Groups = {{OPNsense.trust.general.groups|replace(',',':')}}
 {%     endif %}
+{%     if not helpers.empty('OPNsense.trust.general.MinProtocol') %}
+MinProtocol = {{OPNsense.trust.general.MinProtocol}}
+{%     endif %}
+{%     if not helpers.empty('OPNsense.trust.general.MinProtocol_DTLS') %}
+MinProtocol = {{OPNsense.trust.general.MinProtocol_DTLS}}
+{%     endif %}
+
 {% endif %}
 
 # List of providers to load

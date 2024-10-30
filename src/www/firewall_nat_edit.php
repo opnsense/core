@@ -561,7 +561,7 @@ $( document ).ready(function() {
                   <td>
                       <select name="interface[]" class="selectpicker" data-width="348px" data-live-search="true" multiple="multiple">
 <?php
-                        foreach (legacy_config_get_interfaces(array("enable" => true)) as $iface => $ifdetail): ?>
+                        foreach (legacy_config_get_interfaces(["enable" => true], ['lo0']) as $iface => $ifdetail): ?>
                         <option value="<?=$iface;?>" <?= in_array($iface, $pconfig['interface'] ?? []) ? "selected=\"selected\"" : ""; ?>>
                           <?=htmlspecialchars($ifdetail['descr']);?>
                         </option>

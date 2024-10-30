@@ -48,15 +48,15 @@ class LeasesController extends ApiControllerBase
         $interfaces = [];
 
         /* get ARP data to match online clients */
-        $arp_data = json_decode($backend->configdRun('dhcpd list arp'), true);
+        $arp_data = json_decode($backend->configdRun('dhcpd list arp'), true) ?? [];
         /* get static leases */
-        $sleases = json_decode($backend->configdRun('dhcpd list static 0'), true);
+        $sleases = json_decode($backend->configdRun('dhcpd list static 0'), true) ?? [];
         /* get dynamic leases, include inactive leases if requested */
-        $leases = json_decode($backend->configdpRun('dhcpd list leases', [$inactive]), true);
+        $leases = json_decode($backend->configdpRun('dhcpd list leases', [$inactive]), true) ?? [];
         /* get manufacturer info */
-        $mac_man = json_decode($backend->configdRun('interface list macdb'), true);
+        $mac_man = json_decode($backend->configdRun('interface list macdb'), true) ?? [];
         /* get ifconfig info to match IPs to interfaces */
-        $ifconfig = json_decode($backend->configdRun('interface list ifconfig'), true);
+        $ifconfig = json_decode($backend->configdRun('interface list ifconfig'), true) ?? [];
 
         /* get all device names and their associated interface names */
         foreach ($config->interfaces->children() as $if => $if_props) {

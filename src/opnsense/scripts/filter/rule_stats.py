@@ -71,7 +71,7 @@ if __name__ == '__main__':
                     lbl = prev_line.split(' label ')[-1]
                     if lbl.count('"') >= 2:
                         rule_md5 = lbl.split('"')[1]
-                        if len(rule_md5) == 32 and set(rule_md5).issubset(hex_digits):
+                        if len(rule_md5) >= 32 and set(rule_md5.replace('-', '')).issubset(hex_digits):
                             if rule_md5 in results:
                                 # aggregate raw pf rules (a single rule in out ruleset could be expanded)
                                 for key in stats:

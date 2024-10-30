@@ -32,7 +32,7 @@ HEX_DIGITS = set("0123456789abcdef")
 result = list()
 unique_ids = set()
 for record in fetch_rule_labels().values():
-    if len(record['rid']) == 32 and set(record['rid']).issubset(HEX_DIGITS):
+    if len(record['rid']) >= 32 and set(record['rid'].replace('-', '')).issubset(HEX_DIGITS):
         if record['rid'] not in unique_ids:
             if record['descr'] != "":
                 result.append({'id': record['rid'], 'descr': record['descr']})

@@ -149,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $pconfig['usernamefld'] = $a_user[$id]['name'];
             }
             $pconfig['groups'] = local_user_get_groups($a_user[$id]);
-            $pconfig['disabled'] = isset($a_user[$id]['disabled']);
+            $pconfig['disabled'] = !empty($a_user[$id]['disabled']);
             foreach ($fieldnames as $fieldname) {
                 if (isset($a_user[$id][$fieldname])) {
                     $pconfig[$fieldname] = $a_user[$id][$fieldname];
@@ -1017,7 +1017,7 @@ $( document ).ready(function() {
                     <tr>
                       <td>
 <?php
-                        if (isset($userent['disabled'])) {
+                        if (!empty($userent['disabled'])) {
                             $usrimg = 'text-muted';
                         } elseif (userIsAdmin($userent['name'])) {
                             $usrimg = 'text-danger';

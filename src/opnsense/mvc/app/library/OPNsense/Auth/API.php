@@ -160,7 +160,7 @@ class API extends Base implements IAuthConnector
         }
 
         if ($userObject != null) {
-            if (isset($userObject->disabled)) {
+            if (!empty((string)$userObject->disabled)) {
                 // disabled user
                 return false;
             }
