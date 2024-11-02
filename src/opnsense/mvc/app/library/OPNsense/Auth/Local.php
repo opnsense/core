@@ -149,7 +149,7 @@ class Local extends Base implements IAuthConnector
      * @param string $password user password
      * @return bool authentication status
      */
-    public function authenticate($username, $password)
+    protected function _authenticate($username, $password)
     {
         $userObject = $this->getUser($username);
         if ($userObject != null) {
