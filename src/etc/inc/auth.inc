@@ -348,12 +348,12 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     }
 
     if ($user_uid == 0) {
-        $user_shell = isset($user['shell']) ? $user['shell'] : '/usr/local/sbin/opnsense-shell';
+        $user_shell = !empty($user['shell']) ? $user['shell'] : '/usr/local/sbin/opnsense-shell';
         $user_group = 'wheel';
         $user_home = '/root';
     } else {
         $is_admin = userIsAdmin($user['name']);
-        $user_shell = $is_admin && isset($user['shell']) ? $user['shell'] : '/usr/sbin/nologin';
+        $user_shell = $is_admin && !empty($user['shell']) ? $user['shell'] : '/usr/sbin/nologin';
         $user_group = $is_admin ? 'wheel' : 'nobody';
         $user_home = "/home/{$user_name}";
     }
@@ -412,7 +412,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     @chgrp($user_home, $user_group);
 
     /* write out ssh authorized key file */
-    if ($is_unlocked && isset($user['authorizedkeys'])) {
+    if ($is_unlocked && !empty($user['authorizedkeys'])) {
         @mkdir("{$user_home}/.ssh", 0700);
         @chown("{$user_home}/.ssh", $user_name);
         $keys = base64_decode($user['authorizedkeys']);
