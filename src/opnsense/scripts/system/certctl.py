@@ -37,8 +37,8 @@ import OpenSSL.crypto
 from cryptography import x509
 from cryptography.hazmat.primitives import serialization
 
-TRUSTPATH = ['/usr/share/certs/trusted', '/usr/local/share/certs', '/usr/local/etc/ssl/certs']
-UNTRUSTEDPATH = ['/usr/share/certs/untrusted', '/usr/local/etc/ssl/untrusted', '/usr/local/etc/ssl/blacklisted']
+TRUSTPATH = ['/usr/share/certs/trusted', '/usr/local/share/certs']
+UNTRUSTEDPATH = ['/usr/share/certs/untrusted', '/usr/local/share/certs/untrusted']
 CERTDESTDIR = '/etc/ssl/certs'
 UNTRUSTDESTDIR = '/etc/ssl/untrusted'
 
