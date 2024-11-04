@@ -82,11 +82,11 @@ def certificate_iterator(filename):
 
 def get_cert_common_name(filename):
     try:
-        issuer = x509.load_pem_x509_certificate(open(filename, 'rb').read()).issuer
-        for item in issuer:
+        subject = x509.load_pem_x509_certificate(open(filename, 'rb').read()).subject
+        for item in subject:
             if item.rfc4514_attribute_name == 'CN':
                 return item.value
-        return issuer.rfc4514_string()
+        return subject.rfc4514_string()
     except (ValueError, TypeError):
         return None
 
