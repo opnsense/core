@@ -980,7 +980,7 @@ function system_trust_configure($verbose = false)
 
     /* collect all the file content and write it to compatibility bundle locations */
     $ca_bundle = [];
-    foreach (glob('/etc/ssl/certs/*.[0-9]') as $file) {
+    foreach (glob('/etc/ssl/certs/*.[r0-9]*') as $file) {
         $ca_bundle[] = file_get_contents($file);
     }
     $ca_bundle = join("\n", $ca_bundle);
