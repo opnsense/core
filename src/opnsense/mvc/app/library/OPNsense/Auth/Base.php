@@ -284,5 +284,4 @@ abstract class Base
 
         return $result;
     }
-
 }
