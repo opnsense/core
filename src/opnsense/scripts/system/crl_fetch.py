@@ -39,7 +39,7 @@ from cryptography import x509
 from cryptography.hazmat.primitives import serialization
 from cryptography.x509.extensions import CRLDistributionPoints
 
-TRUSTPATH = ['/usr/share/certs/trusted', '/usr/local/share/certs', '/usr/local/etc/ssl/certs']
+TRUSTPATH = ['/usr/share/certs/trusted', '/usr/local/share/certs']
 
 def fetch_crl(uri):
     p = urllib.parse.urlparse(uri)

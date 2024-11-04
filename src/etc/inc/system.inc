@@ -884,8 +884,8 @@ function system_trust_configure($verbose = false)
     $trust = new \OPNsense\Trust\General();
 
     /*
-     * Write separate files because certcl will blacklist the whole file
-     * if the first certificate matches.  Unfortunately the blacklisting
+     * Write separate files because certctl will ignore the whole file
+     * if the first certificate matches.  Unfortunately the behaviour
      * can also be harmful because it overrides the user choice given
      * through our GUI autorities section.
      *
@@ -961,7 +961,7 @@ function system_trust_configure($verbose = false)
     }
 
     if (!empty((string)$trust->install_crls)) {
-        # deploy all collected CRL's into the trust store, they will be hashed into /etc/ssl/certs/ by certctl eventually
+        /* deploy all collected CRL's into the trust store, they will be hashed into /etc/ssl/certs by certctl eventually */
         foreach (config_read_array('crl') as $i => $entry) {
             if (!empty($entry) && !empty($entry['text'])) {
                 $crl_file = sprintf($ca_files, $i . '.crl');
@@ -984,7 +984,7 @@ function system_trust_configure($verbose = false)
         $ca_bundle[] = file_get_contents($file);
     }
     $ca_bundle = join("\n", $ca_bundle);
-    foreach (['/etc/ssl/cert.pem', '/usr/local/etc/ssl/cert.pem', '/usr/local/openssl/cert.pem'] as $pem) {
+    foreach (['/etc/ssl/cert.pem', '/usr/local/openssl/cert.pem', '/usr/local/etc/ssl/cert.pem'] as $pem) {
         @unlink($pem); /* do not clobber symlink target */
         file_put_contents($pem, $ca_bundle);
         chmod($pem, 0644);
