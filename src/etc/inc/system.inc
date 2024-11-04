@@ -885,8 +885,8 @@ function system_trust_configure($verbose = false)
     $trust = new \OPNsense\Trust\General();
 
     /*
-     * Write separate files because certcl will blacklist the whole file
-     * if the first certificate matches.  Unfortunately the blacklisting
+     * Write separate files because certctl will ignore the whole file
+     * if the first certificate matches.  Unfortunately the behaviour
      * can also be harmful because it overrides the user choice given
      * through our GUI autorities section.
      *
