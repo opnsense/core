@@ -70,6 +70,7 @@ env_init()
 
 		# ...and then tell libfetch to verify from trust store
 		export SSL_CA_CERT_PATH="/etc/ssl/certs"
+		export SSL_CRL_OPTIONAL="yes"
 		export SSL_CRL_VERIFY="yes"
 	fi
 }
