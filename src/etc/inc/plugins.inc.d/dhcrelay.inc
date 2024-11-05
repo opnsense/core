@@ -32,7 +32,7 @@ function dhcrelay_configure()
         'bootup' => ['dhcrelay_configure_id'],
         'dhcrelay' => ['dhcrelay_configure_id:2'],
         'local' => ['dhcrelay_configure_id'],
-        'newwanip_map' => ['dhcrelay_configure_if:3'],
+        'newwanip' => ['dhcrelay_configure_if:3'],
     ];
 }
 

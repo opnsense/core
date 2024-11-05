@@ -476,7 +476,6 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/acl.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/advanced.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogAcl.xml
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogDomainOverride.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogDot.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogHostAlias.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogHostOverride.xml
@@ -806,12 +805,11 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Trust/General.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Trust/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/ACL/ACL.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/FieldTypes/UnboundDomainField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/FieldTypes/UnboundInterfaceField.php
-/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/FieldTypes/UnboundServerField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_1.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_11.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_3.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_5.php
@@ -932,8 +930,9 @@
 /usr/local/opnsense/mvc/script/load_phalcon.php
 /usr/local/opnsense/mvc/script/run_migrations.php
 /usr/local/opnsense/mvc/script/run_validations.php
-/usr/local/opnsense/mvc/tests/PHPunit.xml
 /usr/local/opnsense/mvc/tests/app/config/config.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/ACL/AclConfig/config.xml
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/ACL/AclTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/BaseModel/Migrations/M0_0_1.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/BaseModel/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/BaseModel/Migrations/M1_0_1.php
@@ -968,6 +967,7 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/TextFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest/config.xml
+/usr/local/opnsense/mvc/tests/phpunit.xml
 /usr/local/opnsense/mvc/tests/setup.php
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/allow.py
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/cp-background-process.py
@@ -1054,8 +1054,10 @@
 /usr/local/opnsense/scripts/filter/update_tables.py
 /usr/local/opnsense/scripts/firmware/changelog.sh
 /usr/local/opnsense/scripts/firmware/check.sh
+/usr/local/opnsense/scripts/firmware/config.sh
 /usr/local/opnsense/scripts/firmware/connection.sh
 /usr/local/opnsense/scripts/firmware/health.sh
+/usr/local/opnsense/scripts/firmware/hostnames.sh
 /usr/local/opnsense/scripts/firmware/install.sh
 /usr/local/opnsense/scripts/firmware/latest.php
 /usr/local/opnsense/scripts/firmware/launcher.sh
@@ -1143,6 +1145,7 @@
 /usr/local/opnsense/scripts/ipsec/connect.py
 /usr/local/opnsense/scripts/ipsec/disconnect.py
 /usr/local/opnsense/scripts/ipsec/get_legacy_vti.php
+/usr/local/opnsense/scripts/ipsec/get_swanctl.py
 /usr/local/opnsense/scripts/ipsec/lib/__init__.py
 /usr/local/opnsense/scripts/ipsec/list_leases.py
 /usr/local/opnsense/scripts/ipsec/list_sad.py
@@ -1238,6 +1241,7 @@
 /usr/local/opnsense/scripts/system/temperature.sh
 /usr/local/opnsense/scripts/system/tls_groups.py
 /usr/local/opnsense/scripts/system/trigger_config_changed_events.py
+/usr/local/opnsense/scripts/system/update-crl-fetch.py
 /usr/local/opnsense/scripts/unbound/blocklists.py
 /usr/local/opnsense/scripts/unbound/blocklists/__init__.py
 /usr/local/opnsense/scripts/unbound/blocklists/default_bl.py
@@ -1413,6 +1417,7 @@
 /usr/local/opnsense/site-python/log_helper.py
 /usr/local/opnsense/site-python/params.py
 /usr/local/opnsense/site-python/sqlite3_helper.py
+/usr/local/opnsense/site-python/tls_helper.py
 /usr/local/opnsense/site-python/watchers/__init__.py
 /usr/local/opnsense/site-python/watchers/dhcpd.py
 /usr/local/opnsense/version/core

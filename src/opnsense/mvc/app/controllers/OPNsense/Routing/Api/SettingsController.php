@@ -43,7 +43,6 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         $result = ["status" => "failed"];
         if ($this->request->isPost()) {
-            $this->sessionClose();
             (new Backend())->configdRun('interface routes configure');
             $result = ["status" => "ok"];
         }

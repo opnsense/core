@@ -124,6 +124,12 @@
                 <ip_address type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
                     <AddressFamily>ipv4</AddressFamily>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                        </check001>
+                    </Constraints>
                 </ip_address>
                 <hw_address type="MacAddressField">
                     <Required>Y</Required>

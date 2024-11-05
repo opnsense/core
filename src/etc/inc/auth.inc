@@ -172,18 +172,20 @@ function &getGroupEntry($name)
 
 function get_user_privileges(&$user)
 {
-    if (!isset($user['priv']) || !is_array($user['priv'])) {
-        $privs = array();
-    } else {
-        $privs = $user['priv'];
+    $privs = [];
+    /* legacy listtags() ensures 'priv' will be an array when offered, also when there's only one  */
+    foreach (!empty($user['priv']) ? (array)$user['priv'] : [] as $item) {
+        foreach (array_filter(explode(',', $item)) as $priv) {
+            $privs[] = $priv;
+        }
     }
 
-    $names = local_user_get_groups($user);
-
-    foreach ($names as $name) {
+    foreach (local_user_get_groups($user) as $name) {
         $group = getGroupEntry($name);
-        if (isset($group['priv']) && is_array($group['priv'])) {
-            $privs = array_merge($privs, $group['priv']);
+        foreach (!empty($group['priv']) ? (array)$group['priv'] : [] as $item) {
+            foreach (array_filter(explode(',', $item)) as $priv) {
+                $privs[] = $priv;
+            }
         }
     }
     return $privs;
@@ -326,7 +328,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     $is_expired = !empty($user['expires']) &&
         strtotime('-1 day') > strtotime(date('m/d/Y', strtotime($user['expires'])));
 
-    $is_disabled = isset($user['disabled']);
+    $is_disabled = !empty($user['disabled']);
 
     $is_unlocked = !$is_disabled && !$is_expired;
 
@@ -346,12 +348,12 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     }
 
     if ($user_uid == 0) {
-        $user_shell = isset($user['shell']) ? $user['shell'] : '/usr/local/sbin/opnsense-shell';
+        $user_shell = !empty($user['shell']) ? $user['shell'] : '/usr/local/sbin/opnsense-shell';
         $user_group = 'wheel';
         $user_home = '/root';
     } else {
         $is_admin = userIsAdmin($user['name']);
-        $user_shell = $is_admin && isset($user['shell']) ? $user['shell'] : '/usr/sbin/nologin';
+        $user_shell = $is_admin && !empty($user['shell']) ? $user['shell'] : '/usr/sbin/nologin';
         $user_group = $is_admin ? 'wheel' : 'nobody';
         $user_home = "/home/{$user_name}";
     }
@@ -410,7 +412,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     @chgrp($user_home, $user_group);
 
     /* write out ssh authorized key file */
-    if ($is_unlocked && isset($user['authorizedkeys'])) {
+    if ($is_unlocked && !empty($user['authorizedkeys'])) {
         @mkdir("{$user_home}/.ssh", 0700);
         @chown("{$user_home}/.ssh", $user_name);
         $keys = base64_decode($user['authorizedkeys']);

@@ -345,7 +345,7 @@
                                   // rid field, links to rule origin
                                   var rid = sender_details[sorted_keys[i]];
                                   var rid_td = $("<td/>").addClass("act_info_fld_"+sorted_keys[i]);
-                                  if (rid.length == 32) {
+                                  if (rid.length >= 32) {
                                       var rid_link = $("<a target='_blank' href='/firewall_rule_lookup.php?rid=" + rid + "'/>");
                                       rid_link.text(rid);
                                       rid_td.append($("<i/>").addClass('fa fa-fw fa-search'));

@@ -25,12 +25,10 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-CMD=${1}
-LOCKFILE="/tmp/pkg_upgrade.progress"
-PIPEFILE="/tmp/pkg_upgrade.pipe"
-TEE="/usr/bin/tee -a"
+. /usr/local/opnsense/scripts/firmware/config.sh
 
-DO_FORCE=
+CMD=${1}
+FORCE=
 
 : > ${LOCKFILE}
 rm -f ${PIPEFILE}
@@ -41,7 +39,7 @@ echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 # figure out if we are crossing ABIs
 if [ "$(opnsense-version -a)" != "$(opnsense-version -x)" ]; then
-	DO_FORCE="-f"
+	FORCE="-f"
 fi
 
 # figure out the release type from config
@@ -55,7 +53,7 @@ ALWAYS_REBOOT=$(/usr/local/sbin/pluginctl -g system.firmware.reboot)
 PKGS_HASH=$(pkg query %n-%v 2> /dev/null | sha256)
 
 # upgrade all packages if possible
-(opnsense-update ${DO_FORCE} -pt "opnsense${SUFFIX}" 2>&1) | ${TEE} ${LOCKFILE}
+(opnsense-update ${FORCE} -pt "opnsense${SUFFIX}" 2>&1) | ${TEE} ${LOCKFILE}
 
 # restart the web server
 (/usr/local/etc/rc.restart_webgui 2>&1) | ${TEE} ${LOCKFILE}
@@ -67,9 +65,9 @@ fi
 
 # if we can update base, we'll do that as well
 ${TEE} ${LOCKFILE} < ${PIPEFILE} &
-if opnsense-update ${DO_FORCE} -bk -c > ${PIPEFILE} 2>&1; then
+if opnsense-update ${FORCE} -bk -c > ${PIPEFILE} 2>&1; then
 	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	if opnsense-update ${DO_FORCE} -bk > ${PIPEFILE} 2>&1; then
+	if opnsense-update ${FORCE} -bk > ${PIPEFILE} 2>&1; then
 		echo '***REBOOT***' >> ${LOCKFILE}
 		sleep 5
 		/usr/local/etc/rc.reboot

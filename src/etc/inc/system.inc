@@ -75,6 +75,7 @@ function system_sysctl_defaults()
         'hw.ixl.enable_head_writeback' => [ 'default' => '0', 'required' => true ],
         'hw.syscons.kbd_reboot' => [ 'default' => '0' ],
         'hw.uart.console' => [ 'default' => 'io:0x3f8,br:' . system_console_speed(), 'type' => 't' ], /* XXX support comconsole_port if needed */
+        'hw.vtnet.csum_disable' => [ 'default' => '1', 'required' => true ],
         'kern.coredump' => [ 'default' => '0', 'required' => true ],
         'kern.ipc.maxsockbuf' => [ 'default' => '4262144' ],
         'kern.randompid' => [ 'default' => '1' ],
@@ -884,8 +885,8 @@ function system_trust_configure($verbose = false)
     $trust = new \OPNsense\Trust\General();
 
     /*
-     * Write separate files because certcl will blacklist the whole file
-     * if the first certificate matches.  Unfortunately the blacklisting
+     * Write separate files because certctl will ignore the whole file
+     * if the first certificate matches.  Unfortunately the behaviour
      * can also be harmful because it overrides the user choice given
      * through our GUI autorities section.
      *
@@ -961,7 +962,7 @@ function system_trust_configure($verbose = false)
     }
 
     if (!empty((string)$trust->install_crls)) {
-        # deploy all collected CRL's into the trust store, they will be hashed into /etc/ssl/certs/ by certctl eventually
+        /* deploy all collected CRL's into the trust store, they will be hashed into /etc/ssl/certs by certctl eventually */
         foreach (config_read_array('crl') as $i => $entry) {
             if (!empty($entry) && !empty($entry['text'])) {
                 $crl_file = sprintf($ca_files, $i . '.crl');
@@ -980,11 +981,11 @@ function system_trust_configure($verbose = false)
 
     /* collect all the file content and write it to compatibility bundle locations */
     $ca_bundle = [];
-    foreach (glob('/etc/ssl/certs/*.[0-9]') as $file) {
+    foreach (glob('/etc/ssl/certs/*.[r0-9]*') as $file) {
         $ca_bundle[] = file_get_contents($file);
     }
     $ca_bundle = join("\n", $ca_bundle);
-    foreach (['/etc/ssl/cert.pem', '/usr/local/etc/ssl/cert.pem', '/usr/local/openssl/cert.pem'] as $pem) {
+    foreach (['/etc/ssl/cert.pem', '/usr/local/openssl/cert.pem', '/usr/local/etc/ssl/cert.pem'] as $pem) {
         @unlink($pem); /* do not clobber symlink target */
         file_put_contents($pem, $ca_bundle);
         chmod($pem, 0644);

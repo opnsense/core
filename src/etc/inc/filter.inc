@@ -267,7 +267,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
         unset($fobj);
 
-        closelog();
         reopenlog();
 
         service_log("done.\n", $verbose);
@@ -354,6 +353,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     $rules .= filter_setup_logging_interfaces($cnfint);
     $rules .= "\n";
     $rules .= "set skip on pfsync0\n";
+    $rules .= "set skip on lo0\n";
     $rules .= "\n";
     $rules .= filter_generate_scrubbing($cnfint);
     $rules .= "\n";
@@ -407,7 +407,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
         unset($fobj);
 
-        closelog();
         reopenlog();
 
         service_log("failed.\n", $verbose);
@@ -442,7 +441,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     unset($fobj);
 
-    closelog();
     reopenlog();
 
     service_log("done.\n", $verbose);

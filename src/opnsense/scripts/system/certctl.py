@@ -26,57 +26,67 @@
     -----------------------------------------------------------------------------------------------
     Simple re-implementation of certctl tool in FreeBSD (only supporting the parameters we use)
 """
+
 import glob
 import sys
 import os
+import subprocess
 import warnings
 warnings.filterwarnings('ignore', message='.*cryptography', )
 import OpenSSL.crypto
 from cryptography import x509
 from cryptography.hazmat.primitives import serialization
 
-TRUSTPATH = ['/usr/share/certs/trusted', '/usr/local/share/certs', '/usr/local/etc/ssl/certs']
-BLACKLISTPATH = ['/usr/share/certs/untrusted', '/usr/share/certs/blacklisted', '/usr/local/etc/ssl/blacklisted']
+TRUSTPATH = ['/usr/share/certs/trusted', '/usr/local/share/certs']
+UNTRUSTEDPATH = ['/usr/share/certs/untrusted', '/usr/local/share/certs/untrusted']
 CERTDESTDIR = '/etc/ssl/certs'
-BLACKLISTDESTDIR = '/etc/ssl/blacklisted'
-
+UNTRUSTDESTDIR = '/etc/ssl/untrusted'
 
 def certificate_iterator(filename):
     fext = os.path.splitext(filename)[1][1:].lower()
+    needs_copy = False
     try:
         if fext == 'crl':
-            x509_items = [x509.load_pem_x509_crl(open(filename, 'rb').read())]
+            x509_items = [filename]
         elif fext in ['pem', 'cer', 'crt']:
             x509_items = x509.load_pem_x509_certificates(open(filename, 'rb').read())
+            needs_copy = len(x509_items) > 1
         else:
             # not supported
             return None
     except (ValueError, TypeError):
         return None
 
-    needs_copy = len(x509_items) > 1
     for x509_item in x509_items:
-        data = x509_item.public_bytes(serialization.Encoding.PEM) if needs_copy else filename
-        tmp = OpenSSL.crypto.X509().get_issuer()
-        for item in x509_item.issuer:
-            setattr(tmp, item.rfc4514_attribute_name, item.value)
-        hashval = hex(tmp.hash()).lstrip('0x').zfill(8)
+        if fext == 'crl':
+            # XXX: pyOpenSSL doesn't offer access to subject_name_hash(), so we have to call openssl direct here
+            spparams = ['/usr/bin/openssl', 'crl', '-in', filename, '-hash', '-noout']
+            sp = subprocess.run(spparams, capture_output=True, text=True)
+            if sp.returncode != 0:
+                continue
+            hashval = sp.stdout.strip()
+        else:
+            cert = OpenSSL.crypto.load_certificate(
+                OpenSSL.crypto.FILETYPE_PEM,
+                x509_item.public_bytes(serialization.Encoding.PEM)
+            )
+            hashval = hex(cert.subject_name_hash()).lstrip('0x').zfill(8)
         yield {
             'hash': hashval,
             'target_pattern': '%s.%s%%d' % (hashval, 'r' if fext == 'crl' else ''),
             'type': 'copy' if needs_copy else 'link',
-            'data': data,
+            'data': x509_item.public_bytes(serialization.Encoding.PEM) if needs_copy and x509_item else filename,
             'filename': filename
         }
 
 
 def get_cert_common_name(filename):
     try:
-        issuer = x509.load_pem_x509_certificate(open(filename, 'rb').read()).issuer
-        for item in issuer:
+        subject = x509.load_pem_x509_certificate(open(filename, 'rb').read()).subject
+        for item in subject:
             if item.rfc4514_attribute_name == 'CN':
                 return item.value
-        return issuer.rfc4514_string()
+        return subject.rfc4514_string()
     except (ValueError, TypeError):
         return None
 
@@ -91,9 +101,9 @@ def cmd_list():
             print('Invalid certificate %s' % basename)
 
 
-def cmd_blacklisted():
-    print('Listing Blacklisted Certificates:')
-    for filename in glob.glob('%s/*.[0-9]' % BLACKLISTDESTDIR):
+def cmd_untrusted():
+    print('Listing Untrusted Certificates:')
+    for filename in glob.glob('%s/*.[0-9]' % UNTRUSTDESTDIR):
         basename = os.path.basename(filename)
         cn = get_cert_common_name(filename)
         if cn:
@@ -103,10 +113,10 @@ def cmd_blacklisted():
 
 
 def cmd_rehash():
-    targets = {'trusted': {}, 'blacklisted': {}}
-    for path in BLACKLISTPATH + TRUSTPATH:
+    targets = {'trusted': {}, 'untrusted': {}}
+    for path in UNTRUSTEDPATH + TRUSTPATH:
         if os.path.isdir(path):
-            targetname = 'trusted' if path in TRUSTPATH else 'blacklisted'
+            targetname = 'trusted' if path in TRUSTPATH else 'untrusted'
             print("Scanning %s for certificates..." % path)
             for filename in glob.glob('%s/*' % path):
                 for record in certificate_iterator(filename):
@@ -124,12 +134,12 @@ def cmd_rehash():
     for target_name in targets:
         for pattern in targets[target_name]:
             for seq, record in enumerate(targets[target_name][pattern]):
-                is_bl = target_name == 'blacklisted'
+                is_ut = target_name == 'untrusted'
                 src_filename = record['filename']
-                dst_filename = "%s/%s" % (BLACKLISTDESTDIR if is_bl else CERTDESTDIR, pattern % seq)
-                if not is_bl and hash in targets['blacklisted']:
+                dst_filename = "%s/%s" % (UNTRUSTDESTDIR if is_ut else CERTDESTDIR, pattern % seq)
+                if not is_ut and hash in targets['untrusted']:
                     print(
-                        "Skipping blacklisted certificate %s (%s/%s)" % (filename, BLACKLISTDESTDIR, pattern % seq)
+                        "Skipping untrusted certificate %s (%s/%s)" % (filename, UNTRUSTDESTDIR, pattern % seq)
                     )
                     continue
 
@@ -147,11 +157,11 @@ def cmd_rehash():
                         f_out.write(record['data'])
                     os.chmod(dst_filename, 0o644)
                 else:
-                    if os.path.isfile(dst_filename):
+                    if os.path.isfile(dst_filename) or os.path.islink(dst_filename):
                         os.remove(dst_filename)
                     os.symlink(src_filename, dst_filename)
 
-    for path in [BLACKLISTDESTDIR, CERTDESTDIR]:
+    for path in [UNTRUSTDESTDIR, CERTDESTDIR]:
         for filename in glob.glob('%s/*.[0-9]' % path) + glob.glob('%s/*.r[0-9]' % path):
             if filename in current_target_files:
                 continue
@@ -160,7 +170,13 @@ def cmd_rehash():
             else:
                 os.remove(filename)
             changes += 1
-    print("Changed %d links" % changes)
+
+    if changes == 0:
+        print("certctl: No changes to trust store were made.")
+    elif changes == 1:
+        print("certctl: Modified 1 trust store link.")
+    else:
+        print("certctl: Modified %d trust store links." % changes)
 
     # link certs/crls to ports openssl version
     current_target_files = []
@@ -183,13 +199,13 @@ if __name__ == '__main__':
     cmds =  {
         'list': cmd_list,
         'rehash': cmd_rehash,
-        'blacklisted': cmd_blacklisted
+        'untrusted': cmd_untrusted
     }
     if len(sys.argv) < 2 or sys.argv[1] not in cmds:
         script_name = os.path.basename(sys.argv[0])
         print('Manage the TLS trusted certificates on the system')
         print('%s list\n\tList trusted certificates' % script_name)
-        print('%s blacklisted\n\tList blacklisted certificates' % script_name)
+        print('%s untrusted\n\tList untrusted certificates' % script_name)
         print('%s rehash\n\tGenerate hash links for all certificates' % script_name)
     else:
         cmds[sys.argv[1]]()

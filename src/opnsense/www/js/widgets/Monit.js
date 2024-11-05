@@ -63,7 +63,7 @@ export default class Monit extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        const data = await this.ajaxCall('/api/monit/status/get/xml');
+        const data = await this.ajaxCall(`/api/monit/status/get/${'xml'}`);
         if (data['result'] !== 'ok') {
             $('#monit-table').html(`<a href="/ui/monit">${this.translations.unconfigured}</a>`);
             return;

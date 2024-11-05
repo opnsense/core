@@ -281,6 +281,7 @@ install:
 	# try to update the current system if it looks like one
 	@touch ${LOCALBASE}/opnsense/www/index.php
 .endif
+	@rm -f /tmp/opnsense_acl_cache.json /tmp/opnsense_menu_cache.xml
 
 collect:
 	@(cd ${.CURDIR}/src; find * -type f) | while read FILE; do \
@@ -557,8 +558,7 @@ test: debug
 		echo "Installed version does not match, expected ${CORE_PKGVERSION}"; \
 		exit 1; \
 	fi
-	@cd ${.CURDIR}/src/opnsense/mvc/tests && \
-	    phpunit --configuration PHPunit.xml || true; \
+	@cd ${.CURDIR}/src/opnsense/mvc/tests && phpunit || true; \
 	    rm -f .phpunit.result.cache
 
 checkout:

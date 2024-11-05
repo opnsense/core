@@ -45,8 +45,8 @@
     <page-vpn-ipsec-editkeys>
         <name>VPN: IPsec: Edit Pre-Shared Keys</name>
         <patterns>
-            <pattern>api/ipsec/pre_shared_keys</pattern>
             <pattern>ui/ipsec/pre_shared_keys</pattern>
+            <pattern>api/ipsec/pre_shared_keys</pattern>
         </patterns>
     </page-vpn-ipsec-editkeys>
     <page-vpn-ipsec-mobile>

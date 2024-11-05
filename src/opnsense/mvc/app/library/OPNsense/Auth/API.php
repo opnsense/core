@@ -134,7 +134,7 @@ class API extends Base implements IAuthConnector
      * @param string $password user password
      * @return bool authentication status
      */
-    public function authenticate($username, $password)
+    public function _authenticate($username, $password)
     {
         // reset auth properties
         $this->lastAuthProperties = array();
@@ -160,7 +160,7 @@ class API extends Base implements IAuthConnector
         }
 
         if ($userObject != null) {
-            if (isset($userObject->disabled)) {
+            if (!empty((string)$userObject->disabled)) {
                 // disabled user
                 return false;
             }

@@ -100,7 +100,6 @@ class DashboardController extends ApiControllerBase
 
     public function getDashboardAction()
     {
-        $this->sessionClose();
         $result = [];
         $dashboard = null;
 
@@ -127,8 +126,8 @@ class DashboardController extends ApiControllerBase
                 $endpoints = (array)($metadataAttributes->endpoints->endpoint ?? []);
                 $translations = (array)($metadataAttributes->translations ?? []);
 
-                if (!empty($link)) {
-                    $endpoints[] = $link;
+                if (!empty($link) && !$this->canAccessEndpoints([$link])) {
+                    $link = '';
                 }
 
                 if (!$this->canAccessEndpoints($endpoints)) {

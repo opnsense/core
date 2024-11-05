@@ -36,6 +36,7 @@ class Temperature extends Base
     protected int $ds_heartbeat =  120;
     protected int $ds_min = -273;
     protected int $ds_max = 5000;
+    protected static string $stdfilename = 'system-cputemp.rrd';
 
     /**
      * {@inheritdoc}

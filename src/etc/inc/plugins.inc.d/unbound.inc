@@ -43,7 +43,7 @@ function unbound_configure()
         'dns' => ['unbound_configure_do'],
         'early' => ['unbound_cache_flush'],
         'local' => ['unbound_configure_do'],
-        'newwanip_map' => ['unbound_configure_do:2'],
+        'newwanip' => ['unbound_configure_do:2'],
         'unbound_start' => ['unbound_configure_do'],
         'unbound_stop' => ['unbound_service_stop'],
     ];
@@ -621,6 +621,5 @@ function unbound_add_host_entries($ifconfig_details)
 
     file_put_contents('/var/unbound/host_entries.conf', $unbound_entries);
 
-    closelog();
     reopenlog();
 }

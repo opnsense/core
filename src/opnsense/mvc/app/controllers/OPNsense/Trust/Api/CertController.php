@@ -30,6 +30,7 @@ namespace OPNsense\Trust\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\UserException;
+use OPNsense\Core\ACL;
 use OPNsense\Core\Config;
 use OPNsense\Trust\Store as CertStore;
 
@@ -176,12 +177,18 @@ class CertController extends ApiMutableModelControllerBase
     public function searchAction()
     {
         $carefs = $this->request->get('carefs');
-        $filter_funct = function ($record) use ($carefs) {
-            return empty($carefs) || array_intersect(explode(',', $record->caref), $carefs);
+        $user = $this->request->get('user');
+        $filter_funct = function ($record) use ($carefs, $user) {
+            $match_ca = empty($carefs) || array_intersect(explode(',', $record->caref), $carefs);
+            $match_user = empty($user) || (in_array($record->commonname, $user));
+            return $match_ca && $match_user;
         };
         return $this->searchBase(
             'cert',
-            ['refid', 'descr', 'caref', 'rfc3280_purpose', 'name', 'valid_from', 'valid_to' , 'in_use'],
+            [
+                'refid', 'descr', 'caref', 'rfc3280_purpose', 'name',
+                'valid_from', 'valid_to' , 'in_use', 'is_user', 'commonname'
+            ],
             null,
             $filter_funct
         );
@@ -264,6 +271,28 @@ class CertController extends ApiMutableModelControllerBase
     }
 
     /**
+     * @return list of users when the logged in user is allowed to query usermanagement
+     */
+    public function userListAction()
+    {
+        $result = [];
+        if ($this->request->isGet() && (new ACL())->isPageAccessible($_SESSION['Username'], '/api/auth/user')) {
+            $result['rows'] = [];
+            if (isset(Config::getInstance()->object()->system->user)) {
+                foreach (Config::getInstance()->object()->system->user as $user) {
+                    if (isset($user->name)) {
+                        $result['rows'][] = [
+                            'name' => (string)$user->name
+                        ];
+                    }
+                }
+            }
+            $result['count'] = count($result['rows']);
+        }
+        return $result;
+    }
+
+    /**
      * generate file download content
      * @param string $uuid certificate reference
      * @param string $type one of crt/prv/pkcs12,
@@ -275,6 +304,7 @@ class CertController extends ApiMutableModelControllerBase
         $result = ['status' => 'failed'];
         if ($this->request->isPost() && !empty($uuid)) {
             $node = $this->getModel()->getNodeByReference('cert.' . $uuid);
+            $result['descr'] = $node !== null ? (string)$node->descr : '';
             if ($node === null || empty((string)$node->crt_payload)) {
                 $result['error'] = gettext('Misssing certificate');
             } elseif ($type == 'crt') {

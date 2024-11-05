@@ -233,6 +233,7 @@ class CaController extends ApiMutableModelControllerBase
         $result = ['status' => 'failed'];
         if ($this->request->isPost() && !empty($uuid)) {
             $node = $this->getModel()->getNodeByReference('ca.' . $uuid);
+            $result['descr'] = $node !== null ? (string)$node->descr : '';
             if ($node === null || empty((string)$node->crt_payload)) {
                 $result['error'] = gettext('Misssing certificate');
             } elseif ($type == 'crt') {

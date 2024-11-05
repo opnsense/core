@@ -39,7 +39,21 @@
                     if ( $('#ca_filter').val().length > 0) {
                         request['carefs'] = $('#ca_filter').val();
                     }
+                    if ( $('#user_filter').val().length > 0) {
+                        request['user'] = $('#user_filter').val();
+                    }
                     return request;
+                },
+                formatters: {
+                    in_use: function (column, row) {
+                        if (row.in_use === '1') {
+                            return "<span class=\"fa fa-fw fa-check\" data-value=\"1\" data-row-id=\"" + row.uuid + "\"></span>";
+                        } else if (row.is_user === '1') {
+                            return "<span class=\"fa fa-fw fa-user-o\" data-value=\"1\" data-row-id=\"" + row.uuid + "\"></span>";
+                        } else {
+                            return "<span class=\"fa fa-fw fa-times\" data-value=\"0\" data-row-id=\"" + row.uuid + "\"></span>";
+                        }
+                    }
                 }
             },
             commands: {
@@ -104,15 +118,15 @@
                                         params,
                                         function(data, status) {
                                             let payload = null;
-                                            let filename = null;
+                                            let filename = data.descr + '_' ;
                                             let mediatype = 'application/octet-stream';
                                             if (data.payload_b64) {
                                                 mediatype += ';base64';
                                                 payload = data.payload_b64;
-                                                filename = 'cert.p12';
+                                                filename += 'cert.p12';
                                             } else if (data.payload) {
                                                 payload = data.payload;
-                                                filename = $type.val() + '.pem';
+                                                filename += $type.val() + '.pem';
                                             }
                                             if (payload !== null) {
                                                 download_content(payload, filename, mediatype);
@@ -144,20 +158,33 @@
                     }
                 });
             }
-            /* create new cert with predefined CN */
-            if (window.location.hash != "") {
-                let tmp = window.location.hash.split('=');
-                if (tmp.length == 2 && tmp[0] == '#new') {
-                    console.log(tmp);
-                    $("#btn_new_cert").click();
-                    // XXX: probably needs a better hook, but fill username when dialog is loaded
-                    setTimeout(function(){
-                        $("#cert\\.commonname").val(tmp[1]);
-                    }, 500);
-                    history.pushState(null, null, '#');
+            if ($("#user_filter > option").length == 0) {
+                let selected_user = null;
+                if (window.location.hash != "") {
+                    let tmp = window.location.hash.split('=');
+                    if (tmp.length == 2 && tmp[0] == '#user') {
+                        selected_user = tmp[1];
+                        history.pushState(null, null, '#');
+                    }
                 }
+                ajaxGet('/api/trust/cert/user_list', {}, function(data, status){
+                    if (data.rows !== undefined) {
+                        for (let i=0; i < data.rows.length ; ++i) {
+                            let row = data.rows[i];
+                            let opt = $("<option/>").val(row.name).html(row.name);
+                            if (selected_user == row.name) {
+                                opt.prop('selected', 'selected');
+                            }
+                            $("#user_filter").append(opt);
+                        }
+                        $("#user_filter").selectpicker('refresh');
+                        if (selected_user) {
+                            /* XXX: will re-query, ignore the glitch for now. */
+                            $('#grid-cert').bootgrid('reload');
+                        }
+                    }
+                });
             }
-
         });
         /**
          * register handler to download private key on save
@@ -169,7 +196,7 @@
         });
 
         $("#filter_container").detach().prependTo('#grid-cert-header > .row > .actionBar > .actions');
-        $("#ca_filter").change(function(){
+        $(".cert_filter").change(function(){
             $('#grid-cert').bootgrid('reload');
         });
 
@@ -247,6 +274,13 @@
             }
         });
 
+        /* fill common name with preselected username */
+        $("#cert\\.commonname").change(function(){
+            if ($(this).val() === '' && $("#user_filter").val() !== '') {
+                $(this).val($("#user_filter").val());
+            }
+        });
+
     });
 
 </script>
@@ -275,7 +309,9 @@
         <div class="hidden">
             <!-- filter per type container -->
             <div id="filter_container" class="btn-group">
-                <select id="ca_filter"  data-title="{{ lang._('Authority') }}" class="selectpicker" data-live-search="true" data-size="5"  multiple data-width="200px">
+                <select id="ca_filter"  data-title="{{ lang._('Authority') }}" class="selectpicker cert_filter" data-live-search="true" data-size="5"  multiple data-width="200px">
+                </select>
+                <select id="user_filter"  data-title="{{ lang._('User client certificate') }}" class="selectpicker cert_filter" data-live-search="true" data-size="5"  multiple data-width="200px">
                 </select>
             </div>
         </div>
@@ -283,7 +319,7 @@
             <thead>
                 <tr>
                     <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                    <th data-column-id="in_use" data-width="6em" data-type="string" data-formatter="boolean">{{ lang._('In use') }}</th>
+                    <th data-column-id="in_use" data-width="6em" data-type="string" data-formatter="in_use">{{ lang._('In use') }}</th>
                     <th data-column-id="descr" data-width="15em" data-type="string">{{ lang._('Description') }}</th>
                     <th data-column-id="caref" data-width="15em" data-type="string">{{ lang._('Issuer') }}</th>
                     <th data-column-id="rfc3280_purpose" data-width="10em"  data-type="string">{{ lang._('Purpose') }}</th>

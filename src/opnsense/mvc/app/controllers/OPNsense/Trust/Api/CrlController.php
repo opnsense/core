@@ -87,7 +87,6 @@ class CrlController extends ApiControllerBase
 
     public function searchAction()
     {
-        $this->sessionClose();
         $config = Config::getInstance()->object();
         $items = [];
         foreach ($config->ca as $node) {
@@ -202,7 +201,7 @@ class CrlController extends ApiControllerBase
                 $ca_key_str = false;
                 foreach ($config->ca as $node) {
                     if ((string)$node->refid == $caref) {
-                        $ca_crt_str = !empty((string)$node->prv) ? base64_decode((string)$node->crt) : false;
+                        $ca_crt_str = !empty((string)$node->crt) ? base64_decode((string)$node->crt) : false;
                         $ca_key_str = !empty((string)$node->prv) ? base64_decode((string)$node->prv) : false;
                         break;
                     }

@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/OpenVPN</mount>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>OpenVPN</description>
     <items>
         <Overwrites>
@@ -293,9 +293,14 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </username_as_common_name>
-                <strictusercn type="BooleanField">
-                    <Default>0</Default>
+                <strictusercn type="OptionField">
                     <Required>Y</Required>
+                    <Default>0</Default>
+                    <OptionValues>
+                        <o0 value="0">No</o0>
+                        <o1 value="1">Yes</o1>
+                        <o2 value="2">Yes (case insensitive)</o2>
+                    </OptionValues>
                 </strictusercn>
                 <username type="TextField"/>
                 <password type="TextField"/>
@@ -314,6 +319,10 @@
                 <auth-gen-token type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                 </auth-gen-token>
+                <provision_exclusive type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </provision_exclusive>
                 <redirect_gateway type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>

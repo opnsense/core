@@ -1,0 +1,440 @@
+<?xml version="1.0"?>
+<opnsense>
+  <trigger_initial_wizard/>
+  <theme>opnsense</theme>
+  <sysctl>
+    <item>
+      <descr><![CDATA[Increase UFS read-ahead speeds to match the state of hard drives and NCQ.]]></descr>
+      <tunable>vfs.read_max</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Set the ephemeral port range to be lower.]]></descr>
+      <tunable>net.inet.ip.portrange.first</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Drop packets to closed TCP ports without returning a RST]]></descr>
+      <tunable>net.inet.tcp.blackhole</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Do not send ICMP port unreachable messages for closed UDP ports]]></descr>
+      <tunable>net.inet.udp.blackhole</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Randomize the ID field in IP packets]]></descr>
+      <tunable>net.inet.ip.random_id</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[
+        Source routing is another way for an attacker to try to reach non-routable addresses behind your box.
+        It can also be used to probe for information about your internal networks. These functions come enabled
+        as part of the standard FreeBSD core system.
+      ]]></descr>
+      <tunable>net.inet.ip.sourceroute</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[
+        Source routing is another way for an attacker to try to reach non-routable addresses behind your box.
+        It can also be used to probe for information about your internal networks. These functions come enabled
+        as part of the standard FreeBSD core system.
+      ]]></descr>
+      <tunable>net.inet.ip.accept_sourceroute</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[
+        This option turns off the logging of redirect packets because there is no limit and this could fill
+        up your logs consuming your whole hard drive.
+      ]]></descr>
+      <tunable>net.inet.icmp.log_redirect</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Drop SYN-FIN packets (breaks RFC1379, but nobody uses it anyway)]]></descr>
+      <tunable>net.inet.tcp.drop_synfin</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Enable sending IPv6 redirects]]></descr>
+      <tunable>net.inet6.ip6.redirect</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Enable privacy settings for IPv6 (RFC 4941)]]></descr>
+      <tunable>net.inet6.ip6.use_tempaddr</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Prefer privacy addresses and use them over the normal addresses]]></descr>
+      <tunable>net.inet6.ip6.prefer_tempaddr</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Generate SYN cookies for outbound SYN-ACK packets]]></descr>
+      <tunable>net.inet.tcp.syncookies</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Maximum incoming/outgoing TCP datagram size (receive)]]></descr>
+      <tunable>net.inet.tcp.recvspace</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Maximum incoming/outgoing TCP datagram size (send)]]></descr>
+      <tunable>net.inet.tcp.sendspace</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Do not delay ACK to try and piggyback it onto a data packet]]></descr>
+      <tunable>net.inet.tcp.delayed_ack</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Maximum outgoing UDP datagram size]]></descr>
+      <tunable>net.inet.udp.maxdgram</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Handling of non-IP packets which are not passed to pfil (see if_bridge(4))]]></descr>
+      <tunable>net.link.bridge.pfil_onlyip</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Set to 1 to additionally filter on the physical interface for locally destined packets]]></descr>
+      <tunable>net.link.bridge.pfil_local_phys</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Set to 0 to disable filtering on the incoming and outgoing member interfaces.]]></descr>
+      <tunable>net.link.bridge.pfil_member</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Set to 1 to enable filtering on the bridge interface]]></descr>
+      <tunable>net.link.bridge.pfil_bridge</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Allow unprivileged access to tap(4) device nodes]]></descr>
+      <tunable>net.link.tap.user_open</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Randomize PID's (see src/sys/kern/kern_fork.c: sysctl_kern_randompid())]]></descr>
+      <tunable>kern.randompid</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Disable CTRL+ALT+Delete reboot from keyboard.]]></descr>
+      <tunable>hw.syscons.kbd_reboot</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Enable TCP extended debugging]]></descr>
+      <tunable>net.inet.tcp.log_debug</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Set ICMP Limits]]></descr>
+      <tunable>net.inet.icmp.icmplim</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[TCP Offload Engine]]></descr>
+      <tunable>net.inet.tcp.tso</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[UDP Checksums]]></descr>
+      <tunable>net.inet.udp.checksum</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Maximum socket buffer size]]></descr>
+      <tunable>kern.ipc.maxsockbuf</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Page Table Isolation (Meltdown mitigation, requires reboot.)]]></descr>
+      <tunable>vm.pmap.pti</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Disable Indirect Branch Restricted Speculation (Spectre V2 mitigation)]]></descr>
+      <tunable>hw.ibrs_disable</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Hide processes running as other groups]]></descr>
+      <tunable>security.bsd.see_other_gids</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Hide processes running as other users]]></descr>
+      <tunable>security.bsd.see_other_uids</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Enable/disable sending of ICMP redirects in response to IP packets for which a better,
+        and for the sender directly reachable, route and next hop is known.]]></descr>
+      <tunable>net.inet.ip.redirect</tunable>
+      <value>default</value>
+    </item>
+    <item>
+      <descr><![CDATA[Maximum outgoing UDP datagram size]]></descr>
+      <tunable>net.local.dgram.maxdgram</tunable>
+      <value>default</value>
+    </item>
+  </sysctl>
+  <system>
+    <optimization>normal</optimization>
+    <hostname>OPNsense</hostname>
+    <domain>localdomain</domain>
+    <dnsallowoverride>1</dnsallowoverride>
+    <group>
+      <name>admins</name>
+      <description><![CDATA[System Administrators]]></description>
+      <scope>system</scope>
+      <gid>1999</gid>
+      <member>0</member>
+      <priv>page-all</priv>
+    </group>
+    <group>
+      <name>testg1</name>
+      <description><![CDATA[testg1]]></description>
+      <member>2001</member>
+      <priv>user-config-readonly</priv>
+    </group>
+    <group>
+      <name>testg2</name>
+      <description><![CDATA[testg2]]></description>
+      <member>2002</member>
+      <priv>page-diagnostics-arptable</priv>
+    </group>
+    <group>
+      <name>testg3</name>
+      <description><![CDATA[testg3]]></description>
+      <member>2003</member>
+      <priv>page-diagnostics-arptable</priv>
+      <priv>page-diagnostics-ndptable</priv>
+      <priv>page-diagnostics-limiter-info</priv>
+    </group>
+    <user>
+      <name>root</name>
+      <descr><![CDATA[System Administrator]]></descr>
+      <scope>system</scope>
+      <groupname>admins</groupname>
+      <password>$2y$10$YRVoF4SgskIsrXOvOQjGieB9XqHPRra9R7d80B3BZdbY/j21TwBfS</password>
+      <uid>0</uid>
+    </user>
+    <user>
+      <name>test1</name>
+      <descr><![CDATA[test1]]></descr>
+      <priv>user-config-readonly</priv>
+      <uid>2000</uid>
+    </user>
+    <user>
+      <name>test2</name>
+      <descr><![CDATA[test2]]></descr>
+      <uid>2001</uid>
+      <priv>page-diagnostics-arptable</priv>
+    </user>
+    <user>
+      <name>test3</name>
+      <descr><![CDATA[test3]]></descr>
+      <uid>2002</uid>
+    </user>
+    <user>
+      <name>test4</name>
+      <descr><![CDATA[test4]]></descr>
+      <uid>2003</uid>
+    </user>
+    <nextuid>2004</nextuid>
+    <nextgid>2004</nextgid>
+    <timezone>Etc/UTC</timezone>
+    <timeservers>0.opnsense.pool.ntp.org 1.opnsense.pool.ntp.org 2.opnsense.pool.ntp.org 3.opnsense.pool.ntp.org</timeservers>
+    <webgui>
+      <protocol>https</protocol>
+    </webgui>
+    <disablenatreflection>yes</disablenatreflection>
+    <usevirtualterminal>1</usevirtualterminal>
+    <disableconsolemenu/>
+    <disablevlanhwfilter>1</disablevlanhwfilter>
+    <disablechecksumoffloading>1</disablechecksumoffloading>
+    <disablesegmentationoffloading>1</disablesegmentationoffloading>
+    <disablelargereceiveoffloading>1</disablelargereceiveoffloading>
+    <ipv6allow>1</ipv6allow>
+    <powerd_ac_mode>hadp</powerd_ac_mode>
+    <powerd_battery_mode>hadp</powerd_battery_mode>
+    <powerd_normal_mode>hadp</powerd_normal_mode>
+    <bogons>
+      <interval>monthly</interval>
+    </bogons>
+    <pf_share_forward>1</pf_share_forward>
+    <lb_use_sticky>1</lb_use_sticky>
+    <ssh>
+      <group>admins</group>
+    </ssh>
+    <rrdbackup>-1</rrdbackup>
+    <netflowbackup>-1</netflowbackup>
+  </system>
+  <interfaces>
+    <wan>
+      <enable>1</enable>
+      <if>mismatch1</if>
+      <mtu/>
+      <ipaddr>dhcp</ipaddr>
+      <ipaddrv6>dhcp6</ipaddrv6>
+      <subnet/>
+      <gateway/>
+      <blockpriv>1</blockpriv>
+      <blockbogons>1</blockbogons>
+      <dhcphostname/>
+      <media/>
+      <mediaopt/>
+      <dhcp6-ia-pd-len>0</dhcp6-ia-pd-len>
+    </wan>
+    <lan>
+      <enable>1</enable>
+      <if>mismatch0</if>
+      <ipaddr>192.168.1.1</ipaddr>
+      <subnet>24</subnet>
+      <ipaddrv6>track6</ipaddrv6>
+      <subnetv6>64</subnetv6>
+      <media/>
+      <mediaopt/>
+      <track6-interface>wan</track6-interface>
+      <track6-prefix-id>0</track6-prefix-id>
+    </lan>
+  </interfaces>
+  <dhcpd>
+    <lan>
+      <enable/>
+      <range>
+        <from>192.168.1.100</from>
+        <to>192.168.1.199</to>
+      </range>
+    </lan>
+  </dhcpd>
+  <unbound>
+    <enable>1</enable>
+  </unbound>
+  <snmpd>
+    <syslocation/>
+    <syscontact/>
+    <rocommunity>public</rocommunity>
+  </snmpd>
+  <nat>
+    <outbound>
+      <mode>automatic</mode>
+    </outbound>
+  </nat>
+  <filter>
+    <rule>
+      <type>pass</type>
+      <ipprotocol>inet</ipprotocol>
+      <descr><![CDATA[Default allow LAN to any rule]]></descr>
+      <interface>lan</interface>
+      <source>
+        <network>lan</network>
+      </source>
+      <destination>
+        <any/>
+      </destination>
+    </rule>
+    <rule>
+      <type>pass</type>
+      <ipprotocol>inet6</ipprotocol>
+      <descr><![CDATA[Default allow LAN IPv6 to any rule]]></descr>
+      <interface>lan</interface>
+      <source>
+        <network>lan</network>
+      </source>
+      <destination>
+        <any/>
+      </destination>
+    </rule>
+  </filter>
+  <rrd>
+    <enable/>
+  </rrd>
+  <ntpd>
+    <prefer>0.opnsense.pool.ntp.org</prefer>
+  </ntpd>
+  <tests>
+    <OPNsense>
+      <TestModel version="1.0.0">
+        <general>
+          <FromEmail>test@test.nl</FromEmail>
+        </general>
+        <arraytypes>
+          <item uuid="4a9ed3d2-1bf2-4806-8c50-309ad2bef9bb">
+            <number>1</number>
+            <optfield/>
+          </item>
+          <item uuid="72ca25cc-1af9-417b-aa94-31547ae113f7">
+            <number>2</number>
+            <optfield/>
+          </item>
+          <item uuid="bf4d01e1-fe6a-4963-86e3-f64b34689a3c">
+            <number>3</number>
+            <optfield/>
+          </item>
+          <item uuid="4700175e-1894-4581-a5fa-14c42a5b7a86">
+            <number>4</number>
+            <optfield/>
+          </item>
+          <item uuid="82907bce-dea1-4cf6-ab3d-56cd476c029b">
+            <number>5</number>
+            <optfield/>
+          </item>
+          <item uuid="7a24da61-d3ea-4ef6-8007-08d6d13bb498">
+            <number>6</number>
+            <optfield/>
+          </item>
+          <item uuid="9ff09e72-4823-4be4-9367-2bf6cdbb3d17">
+            <number>7</number>
+            <optfield/>
+          </item>
+          <item uuid="b96f65c8-feb8-40fa-9dcc-81122652a45d">
+            <number>8</number>
+            <optfield/>
+          </item>
+          <item uuid="6869a562-363b-4679-a988-bffc4b16af8a">
+            <number>9</number>
+            <optfield/>
+          </item>
+          <item uuid="98ab8dd5-9f38-40e5-a59b-9a7b74247e7a">
+            <number>10</number>
+            <optfield/>
+          </item>
+        </arraytypes>
+        <AllOrNone>
+          <value1/>
+          <value2/>
+          <value3/>
+        </AllOrNone>
+        <SingleSelect>
+          <value1/>
+          <value2/>
+          <value3/>
+        </SingleSelect>
+        <DependConstraint>
+          <value1>0</value1>
+          <value2/>
+        </DependConstraint>
+        <simpleList/>
+      </TestModel>
+    </OPNsense>
+  </tests>
+  <revision>
+    <username>(system)</username>
+    <description>/usr/local/bin/phpunit made changes</description>
+    <time>1728827548.8245</time>
+  </revision>
+</opnsense>

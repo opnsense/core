@@ -233,7 +233,7 @@ class MenuSystem
                     $iftargets['wl'][$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
                 }
                 // "Firewall: Rules" menu tab...
-                if (isset($node->enable)) {
+                if (isset($node->enable) && $node->if != 'lo0') {
                     $iftargets['fw'][$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
                 }
                 // "Services: DHCPv[46]" menu tab:

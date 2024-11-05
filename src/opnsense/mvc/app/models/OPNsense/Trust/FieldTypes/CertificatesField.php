@@ -107,6 +107,12 @@ class CertificatesField extends ArrayField
 
     protected function actionPostLoadingEvent()
     {
+        $usernames = [];
+        foreach (Config::getInstance()->object()->system->user as $user) {
+            if (isset($user->name)) {
+                $usernames[] = (string)$user->name;
+            }
+        }
         foreach ($this->internalChildnodes as $node) {
             $node->csr_payload = !empty((string)$node->csr) ? (string)base64_decode($node->csr) : '';
             $node->crt_payload = !empty((string)$node->crt) ? (string)base64_decode($node->crt) : '';
@@ -157,6 +163,8 @@ class CertificatesField extends ArrayField
                     break;
                 }
             }
+
+            $node->is_user = in_array((string)$node->commonname, $usernames) ? '1' : '0';
         }
         return parent::actionPostLoadingEvent();
     }

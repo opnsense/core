@@ -94,11 +94,11 @@ export default class Firewall extends BaseTableWidget {
         // increase counters
         if (!this.counters[data.rid]) {
             this.counters[data.rid] = {
-                count: 1,
+                count: data.counter,
                 label: data.label ?? ''
             }
         } else {
-            this.counters[data.rid].count++;
+            this.counters[data.rid].count = data.counter;
         }
 
         let popContent = $(`

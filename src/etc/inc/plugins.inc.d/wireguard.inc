@@ -144,7 +144,7 @@ function wireguard_prepare($device)
 function wireguard_configure()
 {
     return [
-        'newwanip_map' => ['wireguard_sync'],
+        'newwanip' => ['wireguard_sync'],
         'vpn' => ['wireguard_configure_do'],
     ];
 }
@@ -181,14 +181,9 @@ function wireguard_sync($verbose = false)
 
     service_log('Synchronizing WireGuard VPN...', $verbose);
 
-    openlog('wireguard', LOG_ODELAY, LOG_AUTH);
-
     foreach ($instances as $device => $config) {
         mwexecf('/usr/bin/wg syncconf %s %s', [$device, $config]);
     }
-
-    closelog();
-    reopenlog();
 
     service_log("done.\n", $verbose);
 }

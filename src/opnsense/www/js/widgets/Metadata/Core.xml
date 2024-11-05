@@ -203,7 +203,7 @@
         <filename>Monit.js</filename>
         <link>/ui/monit</link>
         <endpoints>
-            <endpoint>/api/monit/status/get/xml</endpoint>
+            <endpoint>/api/monit/status/get/*</endpoint>
         </endpoints>
         <translations>
             <title>Monit Status</title>
@@ -345,7 +345,7 @@
         </endpoints>
         <translations>
             <title>Picture</title>
-            <nopicture>No picture available. You can configure one via System: Settings: General.</nopicture>
+            <nopicture>No picture was supplied for this system.</nopicture>
         </translations>
     </picture>
 </metadata>
