@@ -68,14 +68,30 @@ def main(domains, target, lifetime):
     crl_index = target + 'index'
     crl_bundle = []
 
+    domains = sorted(set(domains))
+    current = ",".join(domains)
+
+    # assume we run under a firmware lock
     if os.path.isfile(crl_index):
+        crl_stale = False
+
+        with open(crl_index, "r") as idx:
+            if idx.readline().strip('\n') != current:
+                crl_stale = True
+
         fstat = os.stat(crl_index)
-        if (time.time() - fstat.st_mtime) < lifetime and fstat.st_size > 0:
+        if (time.time() - fstat.st_mtime) >= lifetime and fstat.st_size > 0:
+            crl_stale = True
+
+        if not crl_stale:
             # failure means do not rehash now
             exit(1)
+
         os.unlink(crl_index)
 
     with open(crl_index, 'a+') as sys.stdout:
+        print(current);
+
         for fetched in fetch_certs(domains):
             try:
                 dp_uri = None
