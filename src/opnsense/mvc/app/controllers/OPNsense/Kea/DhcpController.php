@@ -58,5 +58,6 @@ class DhcpController extends \OPNsense\Base\IndexController
     public function leases4Action()
     {
         $this->view->pick('OPNsense/Kea/leases4');
+        $this->view->formDialogReservation = $this->getForm("dialogReservation4");
     }
 }

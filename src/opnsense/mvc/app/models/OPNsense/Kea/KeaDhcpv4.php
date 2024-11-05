@@ -195,7 +195,7 @@ class KeaDhcpv4 extends BaseModel
                     'type' => 'memfile',
                     'persist' => true,
                     'name' => '/var/db/kea/kea-leases4.csv',
-        		    'lfc-interval' => (int)$this->general->lfc_interval->__toString(),
+                    'lfc-interval' => (int)$this->general->lfc_interval->__toString(),
                 ],
                 'control-socket' => [
                     'socket-type' => 'unix',
