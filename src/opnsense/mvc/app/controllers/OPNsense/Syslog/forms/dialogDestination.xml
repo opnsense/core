@@ -40,6 +40,11 @@
     <type>text</type>
   </field>
   <field>
+    <id>destination.localip</id>
+    <label>Local IP</label>
+    <type>text</type>
+  </field>
+  <field>
     <id>destination.certificate</id>
     <style>transport_type_tls4 transport_type_tls6 transport_type</style>
     <label>Certificate</label>
