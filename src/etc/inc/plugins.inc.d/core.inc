@@ -499,7 +499,10 @@ function core_user_changed_groups($unused, $username)
                     $current_groups = explode(" ", $out[0]);
                 }
                 foreach ($config['system']['group'] as $group) {
-                    $in_group = !empty($group['member']) && in_array($user['uid'], $group['member']);
+                    $in_group = false;
+                    foreach (!empty($group['member']) ? $group['member'] : [] as $grp) {
+                        $in_group = $in_group || in_array($user['uid'], explode(',', $grp));
+                    }
                     $to_remove = in_array($group['name'], $current_groups) && !$in_group;
                     $to_add = !in_array($group['name'], $current_groups) && $in_group;
                     if ($to_remove || $to_add) {

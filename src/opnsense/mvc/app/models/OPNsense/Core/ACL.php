@@ -132,11 +132,16 @@ class ACL
             $allGroupPrivs[$groupkey] = [];
             foreach ($groupNode->children() as $itemKey => $node) {
                 $node_data = (string)$node;
-                if ($itemKey == "member" && $node_data != "" && isset($userUidMap[$node_data])) {
-                    $username = $userUidMap[$node_data];
-                    if ($this->userDatabase[$username]["uid"] == $node_data) {
-                        $this->userDatabase[$username]["groups"][] = $groupkey;
-                        $this->userDatabase[$username]["gids"][] = (string)$groupNode->gid;
+                if ($itemKey == "member" && $node_data != "") {
+                    foreach (explode(',', $node_data) as $member) {
+                        if (!isset($userUidMap[$member])) {
+                            continue;
+                        }
+                        $username = $userUidMap[$member];
+                        if ($this->userDatabase[$username]["uid"] == $member) {
+                            $this->userDatabase[$username]["groups"][] = $groupkey;
+                            $this->userDatabase[$username]["gids"][] = (string)$groupNode->gid;
+                        }
                     }
                 } elseif ($itemKey == "priv") {
                     foreach (array_filter(explode(',', $node_data)) as $privname) {
@@ -310,7 +315,7 @@ class ACL
                     $group_privs = [];
                     $userInGrp = false;
                     foreach ($groupNode->children() as $itemKey => $node) {
-                        if ($node->getName() == "member" && (string)$node == $uid) {
+                        if ($node->getName() == "member" && in_array($uid, explode(',', $node))) {
                             $userInGrp = true;
                         } elseif ($node->getName() == "priv") {
                             $group_privs = array_merge($group_privs, array_filter(explode(',', $node)));

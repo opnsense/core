@@ -486,7 +486,7 @@ function local_user_get_groups($user)
 {
     global $config;
 
-    $groups = array();
+    $groups = [];
 
     if (!isset($config['system']['group'])) {
         return $groups;
@@ -494,8 +494,11 @@ function local_user_get_groups($user)
 
     foreach ($config['system']['group'] as $group) {
         if (isset($group['member'])) {
-            if (in_array($user['uid'], $group['member'])) {
-                $groups[] = $group['name'];
+            foreach ($group['member'] as $member) {
+                if (in_array($user['uid'], explode(',', $member))) {
+                    $groups[] = $group['name'];
+                    break;
+                }
             }
         }
     }
@@ -587,7 +590,11 @@ function local_group_set($group)
     $group_members = '';
 
     if (!empty($group['member']) && count($group['member']) > 0) {
-        $group_members = implode(',', $group['member']);
+        $members = [];
+        foreach ($group['member'] as $member) {
+            $members = array_merge($members, explode(',', $member));
+        }
+        $group_members = implode(',', $members);
     }
 
     $ret = mwexecf('/usr/sbin/pw groupshow %s', $group_name, true);
