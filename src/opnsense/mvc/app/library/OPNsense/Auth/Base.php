@@ -202,22 +202,18 @@ abstract class Base
             foreach ($cnf->system->group as $group) {
                 $lc_groupname = strtolower((string)$group->name);
                 if (in_array($lc_groupname, $sync_groups)) {
-                    if (
-                        in_array((string)$user->uid, (array)$group->member)
-                          && empty($ldap_groups[$lc_groupname])
-                    ) {
-                        while (in_array((string)$user->uid, (array)$group->member)) {
-                            unset($group->member[array_search((string)$user->uid, (array)$group->member)]);
-                        }
+                    $members = [];
+                    foreach ($group->member as $member) {
+                        $members = array_merge($members, explode(',', $member));
+                    }
+                    if (in_array((string)$user->uid, $members) && empty($ldap_groups[$lc_groupname])) {
+                        unset($group->member[array_search((string)$user->uid, (array)$group->member)]);
                         syslog(LOG_NOTICE, sprintf(
                             'User: policy change for %s unlink group %s',
                             $username,
                             (string)$group->name
                         ));
-                    } elseif (
-                        !in_array((string)$user->uid, (array)$group->member)
-                          && !empty($ldap_groups[$lc_groupname])
-                    ) {
+                    } elseif (!in_array((string)$user->uid, $members) && !empty($ldap_groups[$lc_groupname])) {
                         syslog(LOG_NOTICE, sprintf(
                             'User: policy change for %s link group %s [%s]',
                             $username,
