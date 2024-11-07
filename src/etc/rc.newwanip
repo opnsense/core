@@ -109,6 +109,7 @@ filter_configure_sync();
 if (is_ipaddr($cacheip) && $ip != $cacheip) {
     log_msg("IP address change detected, killing states of old ip $cacheip");
     mwexecf('/sbin/pfctl -k 0.0.0.0/0 -k %s', $cacheip);
+    mwexecf('/sbin/pfctl -k gateway -k %s', $cacheip);
     mwexecf('/sbin/pfctl -k %s', $cacheip);
 }
 
