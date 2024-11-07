@@ -56,7 +56,7 @@ if [ $ENTRIES_MAX -gt $((2*ENTRIES_TOT-${ENTRIES_V4:-0}+LINES_V4)) ]; then
     # as they are being operated by a separate GUI option
     egrep -v "^100.64.0.0/10|^192.168.0.0/16|^172.16.0.0/12|^10.0.0.0/8" ${WORKDIR}/fullbogons-ipv4.txt > ${DESTDIR}/bogons
     RESULT=`/sbin/pfctl -t bogons -T replace -f ${DESTDIR}/bogons 2>&1`
-    echo "$RESULT" | awk '{ print "Bogons V4 file downloaded: " $0 }' | logger
+    echo "$RESULT" | awk '{ print "Bogons V4 file updated: " $0 }' | logger
 else
     echo "Not updating IPv4 bogons (increase table-entries limit)" | logger
 fi
@@ -71,14 +71,14 @@ if [ $BOGONS_V6_TABLE_COUNT -gt 0 ]; then
     if [ $ENTRIES_MAX -gt $((2*ENTRIES_TOT-${ENTRIES_V6:-0}+LINES_V6)) ]; then
         egrep -iv "^fc00::/7" ${WORKDIR}/fullbogons-ipv6.txt > ${DESTDIR}/bogonsv6
         RESULT=`/sbin/pfctl -t bogonsv6 -T replace -f ${DESTDIR}/bogonsv6 2>&1`
-        echo "$RESULT" | awk '{ print "Bogons V6 file downloaded: " $0 }' | logger
+        echo "$RESULT" | awk '{ print "Bogons V6 file updated: " $0 }' | logger
     else
         echo "Not saving or updating IPv6 bogons (increase table-entries limit)" | logger
     fi
 else
     if [ $ENTRIES_MAX -gt $((2*ENTRIES_TOT+LINES_V6)) ]; then
         egrep -iv "^fc00::/7" ${WORKDIR}/fullbogons-ipv6.txt > ${DESTDIR}/bogonsv6
-        echo "Bogons V6 file downloaded but not updating IPv6 bogons table because IPv6 Allow is off" | logger
+        echo "Not updating IPv6 bogons table because IPv6 Allow is off" | logger
     else
         echo "Not saving IPv6 bogons table (IPv6 Allow is off and table-entries limit is potentially too low)" | logger
     fi
