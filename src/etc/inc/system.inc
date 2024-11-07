@@ -985,7 +985,10 @@ function system_trust_configure($verbose = false)
         $ca_bundle[] = file_get_contents($file);
     }
     $ca_bundle = join("\n", $ca_bundle);
-    foreach (['/etc/ssl/cert.pem', '/usr/local/openssl/cert.pem', '/usr/local/etc/ssl/cert.pem'] as $pem) {
+    foreach (['/etc/ssl/cert.pem', '/usr/local/openssl/cert.pem'] as $pem) {
+        @unlink($pem); /* remove permanently as we use the directory */
+    }
+    foreach (['/usr/local/etc/ssl/cert.pem'] as $pem) {
         @unlink($pem); /* do not clobber symlink target */
         file_put_contents($pem, $ca_bundle);
         chmod($pem, 0644);
@@ -1142,7 +1145,7 @@ function system_cron_configure($verbose = false)
     $crontab_contents .= "# /etc/crontab, see the crontab(5) manual page.\n";
     $crontab_contents .= "SHELL=/bin/sh\n";
     $crontab_contents .= "PATH=/etc:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin\n";
-    $crontab_contents .= "REQUESTS_CA_BUNDLE=/etc/ssl/cert.pem\n";
+    $crontab_contents .= "REQUESTS_CA_BUNDLE=/usr/local/etc/ssl/cert.pem\n";
     $crontab_contents .= "#minute\thour\tmday\tmonth\twday\tcommand\n";
 
     foreach ($autocron as $item) {
