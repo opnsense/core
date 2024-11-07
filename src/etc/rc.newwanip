@@ -66,8 +66,13 @@ if (!is_ipaddr($ip)) {
     return;
 }
 
+$gw = trim(@file_get_contents("/tmp/{$device}_router") ?? '');
+
 $cacheip_file = "/tmp/{$device}_oldip";
 $cacheip = trim(@file_get_contents($cacheip_file));
+
+$cachegw_file = "/tmp/{$device}_oldgw";
+$cachegw = trim(@file_get_contents($cachegw_file));
 
 if ($force == 'no' && $ip == $cacheip) {
     log_msg("No IP change detected (current: {$ip}, interface: {$interface})", LOG_INFO);
@@ -109,12 +114,15 @@ filter_configure_sync();
 if (is_ipaddr($cacheip) && $ip != $cacheip) {
     log_msg("IP address change detected, killing states of old ip $cacheip");
     mwexecf('/sbin/pfctl -k 0.0.0.0/0 -k %s', $cacheip);
-    mwexecf('/sbin/pfctl -k gateway -k %s', $cacheip);
+    if (is_ipaddr($cachegw)) {
+        mwexecf('/sbin/pfctl -k gateway -k %s', $cachegw);
+    }
     mwexecf('/sbin/pfctl -k %s', $cacheip);
 }
 
 /* register IP change not before this point as basic connectivity is needed */
 @file_put_contents($cacheip_file, $ip . PHP_EOL);
+@file_put_contents($cachegw_file, $gw . PHP_EOL);
 
 plugins_configure('vpn', false, [[$interface], 'inet']);
 plugins_configure('newwanip', false, [[$interface], 'inet']);
