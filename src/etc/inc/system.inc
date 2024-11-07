@@ -984,7 +984,10 @@ function system_trust_configure($verbose = false)
         $ca_bundle[] = file_get_contents($file);
     }
     $ca_bundle = join("\n", $ca_bundle);
-    foreach (['/etc/ssl/cert.pem', '/usr/local/openssl/cert.pem', '/usr/local/etc/ssl/cert.pem'] as $pem) {
+    foreach (['/etc/ssl/cert.pem', '/usr/local/openssl/cert.pem'] as $pem) {
+        @unlink($pem); /* remove permanently as we use the directory */
+    }
+    foreach (['/usr/local/etc/ssl/cert.pem'] as $pem) {
         @unlink($pem); /* do not clobber symlink target */
         file_put_contents($pem, $ca_bundle);
         chmod($pem, 0644);
