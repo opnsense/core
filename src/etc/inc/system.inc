@@ -566,7 +566,7 @@ function system_interface_route($gw, $routes)
 
     if (!$far) {
         /* special case tries to turn on far gateway when required for dynamic gateway */
-        $dynamicgw = trim(@file_get_contents("/tmp/{$device}_router") ?? '');
+        $dynamicgw = OPNsense\Interface\Autoconf::getRouter($device, 'inet');
         if (!empty($dynamicgw) && $gateway === $dynamicgw) {
             list (, $network) = interfaces_primary_address($interface);
             if (!empty($network) && !ip_in_subnet($gateway, $network)) {
