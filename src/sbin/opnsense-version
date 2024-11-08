@@ -23,7 +23,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-DEFAULTS="\${product_name} \${product_version}"
+DEFAULTS="\${product_name} \${product_version} \(\${product_arch}\)"
 VERSIONDIR="/usr/local/opnsense/version"
 PLUGINCTL="/usr/local/sbin/pluginctl"
 PKG="/usr/local/sbin/pkg-static"
