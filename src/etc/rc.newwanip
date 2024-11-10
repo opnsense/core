@@ -66,8 +66,13 @@ if (!is_ipaddr($ip)) {
     return;
 }
 
+$gw = OPNsense\Interface\Autoconf::getRouter($device, 'inet');
+
 $cacheip_file = "/tmp/{$device}_oldip";
 $cacheip = trim(@file_get_contents($cacheip_file));
+
+$cachegw_file = "/tmp/{$device}_oldgw";
+$cachegw = trim(@file_get_contents($cachegw_file));
 
 if ($force == 'no' && $ip == $cacheip) {
     log_msg("No IP change detected (current: {$ip}, interface: {$interface})", LOG_INFO);
@@ -107,13 +112,19 @@ system_routing_configure(false, $interface, true, 'inet');
 filter_configure_sync();
 
 if (is_ipaddr($cacheip) && $ip != $cacheip) {
-    log_msg("IP address change detected, killing states of old ip $cacheip");
+    log_msg("IP address change detected, killing states for $cacheip");
     mwexecf('/sbin/pfctl -k 0.0.0.0/0 -k %s', $cacheip);
     mwexecf('/sbin/pfctl -k %s', $cacheip);
 }
 
-/* register IP change not before this point as basic connectivity is needed */
 @file_put_contents($cacheip_file, $ip . PHP_EOL);
+
+if (is_ipaddr($cachegw) && is_ipaddr($gw) && $gw != $cachegw) {
+    log_msg("IP gateway change detected, killing states for $cachegw");
+    mwexecf('/sbin/pfctl -k gateway -k %s', $cachegw);
+}
+
+@file_put_contents($cachegw_file, $gw . PHP_EOL);
 
 /* keep compat between mapped and unmapped events until 24.7 is EoL */
 plugins_configure('vpn_map', false, [$interface, 'inet']);
