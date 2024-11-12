@@ -42,6 +42,7 @@ class Leases4Controller extends ApiControllerBase
 
         $leases = json_decode($backend->configdpRun('kea list leases4'), true) ?? [];
         $ifconfig = json_decode($backend->configdRun('interface list ifconfig'), true);
+        $mac_db = json_decode($backend->configdRun('interface list macdb'), true) ?? [];
 
         $ifmap = [];
         foreach (Config::getInstance()->object()->interfaces->children() as $if => $if_props) {
@@ -60,6 +61,15 @@ class Leases4Controller extends ApiControllerBase
                     $record['if_descr'] = $ifmap[$record['if']]['descr'];
                     $record['if_name'] = $ifmap[$record['if']]['key'];
                     $interfaces[$ifmap[$record['if']]['key']] = $ifmap[$record['if']]['descr'];
+
+                    // include manufacturer info
+                    $record['mac_info'] = '';
+                    if ($record['hwaddr'] != '') {
+                        $mac = strtoupper(substr(str_replace(':', '', $record['hwaddr']), 0, 6));
+                        if (array_key_exists($mac, $mac_db)) {
+                            $record['mac_info'] = $mac_db[$mac];
+                        }
+                    }
                 }
             }
         } else {
