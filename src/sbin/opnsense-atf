@@ -23,7 +23,10 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+PATTERNS="-e ^passed -e ^skipped -e ^failed"
+TESTDIR=/usr/src/tests/sys/netpfil/pf
 __RUNNING_INSIDE_ATF_RUN=internal-yes-value
+
 export __RUNNING_INSIDE_ATF_RUN
 
 if [ "$(id -u)" != "0" ]; then
@@ -31,25 +34,102 @@ if [ "$(id -u)" != "0" ]; then
 	exit 1
 fi
 
-TESTDIR=/usr/src/tests/sys/netpfil/pf
-TESTFILE=${1:-unkown}
+DO_ALL=
+DO_DEBUG=
+DO_LIST=
 
-TEST=${TESTDIR}/${1}.sh
+while getopts adlV OPT; do
+	case ${OPT} in
+	a)
+		DO_ALL="-a"
+		;;
+	d)
+		DO_DEBUG="-d"
+		PATTERNS="-e ."
+		;;
+	l)
+		DO_LIST="-l"
+		;;
+	V)
+		DO_VERBOSE="-V"
+		;;
+	*)
+		echo "Usage: man ${0##*/}" >&2
+		exit 1
+		;;
+	esac
+done
 
-if [ ! -f "${TEST}" ]; then
-	echo "Unsupported test case: ${TESTFILE}" >&2
-	exit 1
+shift $((OPTIND - 1))
+
+if [ -n "${DO_VERBOSE}" ]; then
+	set -x
 fi
 
-grep ^atf_test_case ${TEST} | tr -d '"' | awk '{ print $2 " " $3}' | while read CASE CLEANUP; do
-	/usr/libexec/atf-sh ${TEST} ${CASE} > /dev/null 2>&1
-	RET=${?}
-	if [ -n "${CLEANUP}" ]; then
-		/usr/libexec/atf-sh ${TEST} ${CASE}:cleanup > /dev/null 2>&1
+list()
+{
+	for TESTFILE in $(find -s ${TESTDIR} -name "*.sh"); do
+		TESTFILE=$(basename ${TESTFILE})
+		echo ${TESTFILE%.sh}
+	done
+}
+
+run()
+{
+	TESTFILE=${1%%:*}
+	TESTCASE=${1#*:}
+
+	TEST=${TESTDIR}/${TESTFILE}.sh
+
+	if [ "${TESTCASE}" = "${1}" ]; then
+		TESTCASE=
 	fi
-	RESULT=failed
-	if [ ${RET} -eq 0 ]; then
-		RESULT=passed
+
+	if [ ! -f "${TEST}" ]; then
+		echo "Unsupported test case: ${TESTFILE}" >&2
+		exit 1
 	fi
-	echo ">>> $(basename ${TESTDIR}):${TESTFILE}:${CASE}: ${RESULT}"
+
+	grep ^atf_test_case ${TEST} | tr -d '"' | awk '{ print $2 " " $3}' | while read CASE CLEANUP; do
+		if [ -n "${TESTCASE}" -a "${TESTCASE}" != "${CASE}" ]; then
+			continue
+		fi
+		RESULT=$( (/usr/libexec/atf-sh ${TEST} ${CASE} 2>&1) | grep ${PATTERNS})
+		if [ -n "${CLEANUP}" ]; then
+			/usr/libexec/atf-sh ${TEST} ${CASE}:cleanup > /dev/null 2>&1
+		fi
+		if [ -z "${DO_DEBUG}" ]; then
+			echo ">>> $(basename ${TESTDIR})(${TESTFILE}:${CASE}): ${RESULT}"
+		else
+			echo "${RESULT}"
+		fi
+	done
+}
+
+if [ -n "${DO_LIST}" ]; then
+	list
+	exit 0
+fi
+
+TESTS=${@}
+if [ -n "${DO_ALL}" ]; then
+	TESTS=$(list)
+fi
+
+# We could consider copying the whole test setup
+# somewhere else # but the whole thing needs to
+# be redesigned anyway.  Fudge this locally.
+chmod 555 ${TESTDIR}/../common/*.sh ${TESTDIR}/../common/*.py ${TESTDIR}/*.py
+
+# More loose madness here, best to wrap a package
+pkg install -Ay py311-scapy jq > /dev/null
+
+for TEST in ${TESTS}; do
+	run ${TEST}
 done
+
+if [ -z "${TESTS}" ]; then
+	echo "Nothing to do."
+fi
+
+chmod 644 ${TESTDIR}/../common/*.sh ${TESTDIR}/../common/*.py ${TESTDIR}/*.py
