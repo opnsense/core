@@ -30,7 +30,7 @@ LOCKFILE=${LOCKFILE:-/tmp/pkg_upgrade.progress}
 BASEDIR="/usr/local/opnsense/scripts/firmware"
 PIPEFILE="/tmp/pkg_upgrade.pipe"
 FLOCK="/usr/local/bin/flock"
-SELF=$(basename ${0%.sh})
+SELF=$(basename ${1%.sh})
 TEE="/usr/bin/tee -a"
 PRODUCT="OPNsense"
 
