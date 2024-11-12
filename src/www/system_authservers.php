@@ -852,7 +852,8 @@ endif; ?>
                   <td>
                     <input id="sync_memberof" name="sync_memberof" type="checkbox" <?= empty($pconfig['sync_memberof']) ? '' : 'checked="checked"';?> />
                     <div class="hidden" data-for="help_for_sync_memberof">
-                      <?= gettext("Synchronize groups specified by memberOf or class attribute after login, this option requires to enable read properties. ".
+                      <?= gettext("For LDAP: Synchronize groups specified by memberOf or class attribute after login, this option requires to enable read properties. ".
+                                  "For RADIUS: Retrieve group from returned CLASS attribute. ".
                                   "Groups will be extracted from the first CN= section and will only be considered when already existing in OPNsense. ".
                                   "Group memberships will be persisted in OPNsense. ".
                                   "Use the server test tool to check if memberOf is returned by your LDAP server before enabling.");?>
