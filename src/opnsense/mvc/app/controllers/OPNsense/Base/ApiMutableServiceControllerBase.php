@@ -200,7 +200,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
 
             if ($this->serviceEnabled()) {
                 $runStatus = $this->statusAction();
-                if ($runStatus['status'] != 'running') {
+                if ($runStatus['status'] != 'running' || $this->reconfigureForceRestart()) {
                     $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' start');
                 } else {
                     $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' reload');

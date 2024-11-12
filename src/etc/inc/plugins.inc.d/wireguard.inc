@@ -49,9 +49,9 @@ function wireguard_services()
                     'restart' => ["wireguard restart {$key}"],
                     'stop' => ["wireguard stop {$key}"],
                 ],
-                'nocheck' => true, /* no daemon to check */
+                'name' => 'wireguard',
+                'nocheck' => true,
                 'id' => $key,
-                'name' => "wireguard"
             ];
         }
     }
