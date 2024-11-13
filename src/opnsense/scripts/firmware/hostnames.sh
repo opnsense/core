@@ -29,7 +29,7 @@
 
 URLS=$(opnsense-update -M; opnsense-update -X)
 
-# Make a few assumptions about plugged pkg repositories:
+# Make a few assumptions about plugged package repositories:
 #
 # * grab the "url" key, delimited with double quotes
 # * remove the spurious "pkg+" prefix to treat it as raw HTTP(S)
