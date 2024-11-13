@@ -113,16 +113,19 @@ class PrivController extends ApiMutableModelControllerBase
         $result = parent::setAction();
         if ($result['result'] != 'failed') {
             $mdl = $this->getModel();
-            $u_uuids = explode(',', $mdl->users->getCurrentValue());
-            $g_uuids = explode(',', $mdl->groups->getCurrentValue());
             $usermdl = new User();
             $groupmdl = new Group();
             foreach ([$usermdl->user, $groupmdl->group] as $topic) {
+                if ($topic == $usermdl->user) {
+                   $uuids = explode(',', $mdl->users->getCurrentValue());
+                } else {
+                   $uuids = explode(',', $mdl->groups->getCurrentValue());
+                }
                 foreach ($topic->iterateItems() as $uuid => $item) {
                     $privlist = array_filter(explode(',', $item->priv->getCurrentValue()));
-                    if (!in_array($uuid, $u_uuids) && in_array($id, $privlist)) {
-                        unset($privlist[array_search($uuid, $privlist)]);
-                    } elseif (in_array($uuid, $u_uuids) && !in_array($id, $privlist)) {
+                    if (!in_array($uuid, $uuids) && in_array($id, $privlist)) {
+                        unset($privlist[array_search($id, $privlist)]);
+                    } elseif (in_array($uuid, $uuids) && !in_array($id, $privlist)) {
                         $privlist[] = $id;
                     } else {
                         continue;
