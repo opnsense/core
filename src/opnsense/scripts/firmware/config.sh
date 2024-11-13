@@ -31,6 +31,7 @@ BASEDIR="/usr/local/opnsense/scripts/firmware"
 PIPEFILE="/tmp/pkg_upgrade.pipe"
 FLOCK="/usr/local/bin/flock"
 SELF=$(basename ${1%.sh})
+PKG="/usr/local/sbin/pkg"
 TEE="/usr/bin/tee -a"
 PRODUCT="OPNsense"
 
@@ -39,9 +40,12 @@ COMMANDS="
 changelog
 check
 connection
+details
 health
 install
 lock
+query
+reboot
 reinstall
 remove
 resync
