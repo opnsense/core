@@ -27,8 +27,6 @@
 
 . /usr/local/opnsense/scripts/firmware/config.sh
 
-LICENSEDIR="/usr/local/share/licenses"
-
 PACKAGE=${1}
 
 LICENSES=$(${PKG} query %L ${PACKAGE})

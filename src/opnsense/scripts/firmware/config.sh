@@ -28,6 +28,7 @@
 
 LOCKFILE=${LOCKFILE:-/tmp/pkg_upgrade.progress}
 BASEDIR="/usr/local/opnsense/scripts/firmware"
+LICENSEDIR="/usr/local/share/licenses"
 PIPEFILE="/tmp/pkg_upgrade.pipe"
 FLOCK="/usr/local/bin/flock"
 SELF=$(basename ${0%.sh})
