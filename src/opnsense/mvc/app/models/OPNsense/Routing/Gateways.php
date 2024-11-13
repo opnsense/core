@@ -62,9 +62,9 @@ class Gateways extends BaseModel
                 if (empty((string)$gateway->$key) || (string)$gateway->$key == 'dynamic') {
                     continue;
                 } elseif ((string)$gateway->ipprotocol === 'inet' && !Util::isIpv4Address((string)$gateway->$key)) {
-                    $messages->appendMessage(new Message(gettext('Invalid IPv4 address'), $ref . '.' . $tag));
+                    $messages->appendMessage(new Message(gettext('Invalid IPv4 address'), $ref . '.' . $key));
                 } elseif ((string)$gateway->ipprotocol === 'inet6' && !Util::isIpv6Address((string)$gateway->$key)) {
-                    $messages->appendMessage(new Message(gettext('Invalid IPv6 address'), $ref . '.' . $tag));
+                    $messages->appendMessage(new Message(gettext('Invalid IPv6 address'), $ref . '.' . $key));
                 }
             }
             if (intval((string)$gateway->current_latencylow) > intval((string)$gateway->current_latencyhigh)) {
