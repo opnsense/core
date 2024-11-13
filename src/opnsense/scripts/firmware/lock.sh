@@ -41,7 +41,7 @@ elif [ "${PACKAGE}" = "kernel" ]; then
 	echo "Locking kernel set" >> ${LOCKFILE}
 	opnsense-update -kL >> ${LOCKFILE} 2>&1
 else
-	pkg lock -y ${PACKAGE} >> ${LOCKFILE} 2>&1
+	${PKG} lock -y ${PACKAGE} >> ${LOCKFILE} 2>&1
 fi
 
 echo '***DONE***' >> ${LOCKFILE}

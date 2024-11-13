@@ -50,7 +50,7 @@ if [ -n "${IPV4}" -a -z "${IPV4%%*.*}" ]; then
 	echo "Checking connectivity for host: ${HOST} -> ${IPV4}" | ${TEE} ${LOCKFILE}
 	(ping -4 ${POPT} ${IPV4} 2>&1) | ${TEE} ${LOCKFILE}
 	echo "Checking connectivity for repository (IPv4): ${URL}" | ${TEE} ${LOCKFILE}
-	(pkg -4 update -f 2>&1) | ${TEE} ${LOCKFILE}
+	(${PKG} -4 update -f 2>&1) | ${TEE} ${LOCKFILE}
 else
 	echo "No IPv4 address could be found for host: ${HOST}" | ${TEE} ${LOCKFILE}
 fi
@@ -59,7 +59,7 @@ if [ -n "${IPV6}" -a -z "${IPV6%%*:*}" ]; then
 	echo "Checking connectivity for host: ${HOST} -> ${IPV6}" | ${TEE} ${LOCKFILE}
 	(ping -6 ${POPT} ${IPV6} 2>&1) | ${TEE} ${LOCKFILE}
 	echo "Checking connectivity for repository (IPv6): ${URL}" | ${TEE} ${LOCKFILE}
-	(pkg -6 update -f 2>&1) | ${TEE} ${LOCKFILE}
+	(${PKG} -6 update -f 2>&1) | ${TEE} ${LOCKFILE}
 else
 	echo "No IPv6 address could be found for host: ${HOST}" | ${TEE} ${LOCKFILE}
 fi

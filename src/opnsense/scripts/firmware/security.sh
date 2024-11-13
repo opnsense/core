@@ -30,5 +30,5 @@
 
 echo "***GOT REQUEST TO AUDIT SECURITY***" >> ${LOCKFILE}
 echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
-(pkg audit -F 2>&1) | ${TEE} ${LOCKFILE}
+(${PKG} audit -F 2>&1) | ${TEE} ${LOCKFILE}
 echo '***DONE***' >> ${LOCKFILE}

@@ -34,8 +34,8 @@ PACKAGE=${1}
 echo "***GOT REQUEST TO REMOVE***" >> ${LOCKFILE}
 echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
-pkg remove -y ${PACKAGE} >> ${LOCKFILE} 2>&1
+${PKG} remove -y ${PACKAGE} >> ${LOCKFILE} 2>&1
 /usr/local/opnsense/scripts/firmware/register.php remove ${PACKAGE} >> ${LOCKFILE} 2>&1
-pkg autoremove -y >> ${LOCKFILE} 2>&1
+${PKG} autoremove -y >> ${LOCKFILE} 2>&1
 
 echo '***DONE***' >> ${LOCKFILE}

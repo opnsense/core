@@ -131,14 +131,14 @@ core_check()
 		return
 	fi
 
-	if [ -z "$(pkg query %n ${CORE})" ]; then
+	if [ -z "$(${PKG} query %n ${CORE})" ]; then
 		echo "Core package \"${CORE}\" not known to package database." | ${TEE} ${LOCKFILE}
 		return
 	fi
 
-	echo "Core package \"${CORE}\" at $(opnsense-version -v) has $(pkg query %#d ${CORE}) dependencies to check." | ${TEE} ${LOCKFILE}
+	echo "Core package \"${CORE}\" at $(opnsense-version -v) has $(${PKG} query %#d ${CORE}) dependencies to check." | ${TEE} ${LOCKFILE}
 
-	for DEP in $( (echo ${CORE}; pkg query %dn ${CORE}) | sort -u); do
+	for DEP in $( (echo ${CORE}; ${PKG} query %dn ${CORE}) | sort -u); do
 		if [ -z "${PROGRESS}" ]; then
 			echo -n "Checking packages: ." | ${TEE} ${LOCKFILE}
 			PROGRESS=1
@@ -147,7 +147,7 @@ core_check()
 		fi
 
 		read REPO LVER AUTO VITA << EOF
-$(pkg query "%R %v %a %V" ${DEP})
+$(${PKG} query "%R %v %a %V" ${DEP})
 EOF
 
 		if [ -z "${REPO}${LVER}${AUTO}${VITA}" ]; then
@@ -167,7 +167,7 @@ EOF
 			PROGRESS=
 		fi
 
-		RVER=$(pkg rquery -r ${PRODUCT} %v ${DEP} 2> /dev/null)
+		RVER=$(${PKG} rquery -r ${PRODUCT} %v ${DEP} 2> /dev/null)
 		if [ -z "${RVER}" ]; then
 			if [ -n "${PROGRESS}" ]; then
 				echo | ${TEE} ${LOCKFILE}
@@ -239,7 +239,7 @@ fi
 
 if [ -z "${CMD}" -o "${CMD}" = "plugins" ]; then
 	echo ">>> Check installed plugins" | ${TEE} ${LOCKFILE}
-	PLUGINS=$(pkg query -g '%n %v' 'os-*' 2>&1)
+	PLUGINS=$(${PKG} query -g '%n %v' 'os-*' 2>&1)
 	if [ -n "${PLUGINS}" ]; then
 		(echo "${PLUGINS}") | ${TEE} ${LOCKFILE}
 	else
@@ -249,7 +249,7 @@ fi
 
 if [ -z "${CMD}" -o "${CMD}" = "locked" ]; then
 	echo ">>> Check locked packages" | ${TEE} ${LOCKFILE}
-	LOCKED=$(pkg lock -lq 2>&1)
+	LOCKED=$(${PKG} lock -lq 2>&1)
 	if [ -n "${LOCKED}" ]; then
 		(echo "${LOCKED}") | ${TEE} ${LOCKFILE}
 	else
@@ -259,10 +259,10 @@ fi
 
 if [ -z "${CMD}" -o "${CMD}" = "packages" ]; then
 	echo ">>> Check for missing package dependencies" | ${TEE} ${LOCKFILE}
-	(pkg check -dan 2>&1) | ${TEE} ${LOCKFILE}
+	(${PKG} check -dan 2>&1) | ${TEE} ${LOCKFILE}
 
 	echo ">>> Check for missing or altered package files" | ${TEE} ${LOCKFILE}
-	(pkg check -sa 2>&1) | ${TEE} ${LOCKFILE}
+	(${PKG} check -sa 2>&1) | ${TEE} ${LOCKFILE}
 fi
 
 if [ -z "${CMD}" -o "${CMD}" = "core" ]; then

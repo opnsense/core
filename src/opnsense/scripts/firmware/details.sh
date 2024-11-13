@@ -26,4 +26,6 @@
 
 . /usr/local/opnsense/scripts/firmware/config.sh
 
-${PKG} rquery -U "%c\n\n%e\n\nMaintainer: %m" "${1}"
+PACKAGE=${1}
+
+${PKG} rquery -U "%c\n\n%e\n\nMaintainer: %m" ${PACKAGE}
