@@ -109,7 +109,7 @@ fi
 (${PKG} update -f 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
 
 # always update the package manager so we can see the real updates directly
-(${PKG} upgrade -r ${product_repo} -Uy pkg 2>&1) | ${TEE} ${LOCKFILE}
+(${PKG} upgrade -r ${product_repo} -Uy 'pkg' 2>&1) | ${TEE} ${LOCKFILE}
 
 # parse early errors
 if grep -q 'No address record' ${OUTFILE}; then

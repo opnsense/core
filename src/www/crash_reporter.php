@@ -84,7 +84,7 @@ function upload_crash_report($files, $agent)
 
 include('head.inc');
 
-$plugins = implode(' ',  explode("\n", shell_safe('pkg info -g "os-*"')));
+$plugins = implode(' ',  explode("\n", shell_safe('/usr/local/sbin/pkg-static info -g "os-*"')));
 $product = product::getInstance();
 
 $crash_report_header = sprintf(

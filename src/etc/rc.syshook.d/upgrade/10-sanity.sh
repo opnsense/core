@@ -7,7 +7,7 @@ if [ -z "${CORE}" ]; then
 	exit 1
 fi
 
-if [ -z "$(pkg query %n ${CORE})" ]; then
+if [ -z "$(/usr/local/sbin/pkg-static query %n ${CORE})" ]; then
 	echo "Core package \"${CORE}\" not known to package database."
 	exit 1
 fi
