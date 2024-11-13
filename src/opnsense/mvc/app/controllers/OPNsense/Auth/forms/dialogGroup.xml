@@ -11,7 +11,7 @@
     </field>
     <field>
         <id>group.name</id>
-        <label>Username</label>
+        <label>Group name</label>
         <type>text</type>
     </field>
     <field>

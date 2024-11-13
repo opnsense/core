@@ -70,8 +70,8 @@
                     <th data-column-id="id" data-type="string" data-identifier="true">{{ lang._('ID') }}</th>
                     <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
                     <th data-column-id="match" data-type="string" data-formatter="lines">{{ lang._('Match') }}</th>
-                    <th data-column-id="users" data-type="string" data-formatter="count">{{ lang._('Users') }}</th>
-                    <th data-column-id="groups" data-type="string" data-formatter="count">{{ lang._('Groups') }}</th>
+                    <th data-column-id="users" data-type="string" data-formatter="count" data-sortable="false">{{ lang._('Users') }}</th>
+                    <th data-column-id="groups" data-type="string" data-formatter="count" data-sortable="false">{{ lang._('Groups') }}</th>
                     <th data-column-id="commands" data-width="10em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                 </tr>
             </thead>

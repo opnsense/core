@@ -65,6 +65,7 @@
                                             const payload = 'key='+data.key +'\n' + 'secret='+data.secret +'\n';
                                             let filename = data.hostname + '_' + username + '_apikey.txt';
                                             download_content(payload, filename, 'text/plain;charset=utf8');
+                                            $("#grid-apikey").bootgrid('reload');
                                         });
                                     }
                                 });
@@ -102,7 +103,6 @@
                                 )
                             );
                         }
-                        console.log(row.shell_warning);
                         return container.html();
                     }
                 }
@@ -191,6 +191,9 @@
                 <tr>
                     <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                     <th data-column-id="name" data-type="string" data-formatter="username">{{ lang._('Name') }}</th>
+                    <th data-column-id="email" data-type="string" data-visible="false">{{ lang._('Email') }}</th>
+                    <th data-column-id="comments" data-type="string" data-visible="false">{{ lang._('Comments') }}</th>
+                    <th data-column-id="language" data-type="string" data-visible="false">{{ lang._('Language') }}</th>
                     <th data-column-id="group_memberships" data-type="string">{{ lang._('Groups') }}</th>
                     <th data-column-id="descr" data-type="string">{{ lang._('Description') }}</th>
                     <th data-column-id="commands" data-width="10em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
