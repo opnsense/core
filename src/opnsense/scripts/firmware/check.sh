@@ -106,10 +106,10 @@ if /usr/local/opnsense/scripts/firmware/changelog.sh fetch >> ${LOCKFILE} 2>&1; 
 fi
 
 : > ${OUTFILE}
-(pkg update -f 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
+(${PKG} update -f 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
 
-# always update pkg so we can see the real updates directly
-(pkg upgrade -r ${product_repo} -Uy pkg 2>&1) | ${TEE} ${LOCKFILE}
+# always update the package manager so we can see the real updates directly
+(${PKG} upgrade -r ${product_repo} -Uy pkg 2>&1) | ${TEE} ${LOCKFILE}
 
 # parse early errors
 if grep -q 'No address record' ${OUTFILE}; then
@@ -147,13 +147,14 @@ else
     : > ${OUTFILE}
 
     # now check what happens when we would go ahead
-    (pkg upgrade ${force_all} -Un 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
+    (${PKG} upgrade ${force_all} -Un 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
     if  [ -n "${CUSTOMPKG}" ]; then
-        (pkg install -Un "${CUSTOMPKG}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
+        (${PKG} install -Un "${CUSTOMPKG}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
     elif [ "${product_id}" != "${product_target}" ]; then
-        (pkg install -r ${product_repo} -Un "${product_target}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
-    elif [ -z "$(pkg rquery %n ${product_id})" ]; then
-        # although this should say "to update matching" we emulate for check below as pkg does not catch this
+        (${PKG} install -r ${product_repo} -Un "${product_target}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
+    elif [ -z "$(${PKG} rquery %n ${product_id})" ]; then
+        # although this should say "to update matching" we emulate for
+        # check below as the package manager does not catch this
         echo "self: No packages available to install matching '${product_id}'" | ${TEE} ${LOCKFILE} ${OUTFILE}
     fi
 
@@ -243,7 +244,7 @@ else
                             if [ -n "$packages_removed" ]; then
                                 packages_removed=$packages_removed","
                             fi
-                            packages_removed=$packages_removed"{\"name\":\"$i\",\"repository\":\"$(pkg query %R ${i})\","
+                            packages_removed=$packages_removed"{\"name\":\"$i\",\"repository\":\"$(${PKG} query %R ${i})\","
                         fi
                     fi
                     if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
@@ -297,12 +298,12 @@ else
         download_size=$(grep 'to be downloaded' ${OUTFILE} | awk -F '[ ]' '{print $1$2}' | tr '\n' ',' | sed 's/,$//')
 
         # see if packages indicate a new version (not revision) of base / kernel
-        LQUERY=$(pkg query %v opnsense-update)
+        LQUERY=$(${PKG} query %v opnsense-update)
         LQUERY=${LQUERY%%_*}
-        RQUERY=$(pkg rquery %v opnsense-update)
+        RQUERY=$(${PKG} rquery %v opnsense-update)
         RQUERY=${RQUERY%%_*}
 
-        if [ -n "${force_all}" -o "$(pkg version -t ${LQUERY} ${RQUERY})" = "<" ]; then
+        if [ -n "${force_all}" -o "$(${PKG} version -t ${LQUERY} ${RQUERY})" = "<" ]; then
             kernel_to_reboot="${RQUERY}"
             base_to_reboot="${RQUERY}"
         fi

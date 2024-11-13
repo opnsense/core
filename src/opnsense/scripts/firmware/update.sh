@@ -50,7 +50,7 @@ fi
 
 # read reboot flag and record current package name and version state
 ALWAYS_REBOOT=$(/usr/local/sbin/pluginctl -g system.firmware.reboot)
-PKGS_HASH=$(pkg query %n-%v 2> /dev/null | sha256)
+PKGS_HASH=$(${PKG} query %n-%v 2> /dev/null | sha256)
 
 # upgrade all packages if possible
 (opnsense-update ${FORCE} -pt "opnsense${SUFFIX}" 2>&1) | ${TEE} ${LOCKFILE}
@@ -75,7 +75,7 @@ if opnsense-update ${FORCE} -bk -c > ${PIPEFILE} 2>&1; then
 fi
 
 if [ -n "${ALWAYS_REBOOT}" ]; then
-	if [ "${PKGS_HASH}" != "$(pkg query %n-%v 2> /dev/null | sha256)" ]; then
+	if [ "${PKGS_HASH}" != "$(${PKG} query %n-%v 2> /dev/null | sha256)" ]; then
 		echo '***REBOOT***' >> ${LOCKFILE}
 		sleep 5
 		/usr/local/etc/rc.reboot
