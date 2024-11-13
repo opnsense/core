@@ -43,6 +43,7 @@
     <id>destination.localip</id>
     <label>Local IP</label>
     <type>text</type>
+    <help>Optional bind to specific local ip.</help>
   </field>
   <field>
     <id>destination.certificate</id>
