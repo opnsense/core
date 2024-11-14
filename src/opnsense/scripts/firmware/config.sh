@@ -38,6 +38,7 @@ PRODUCT="OPNsense"
 
 # accepted commands for launcher.sh
 COMMANDS="
+bogons
 changelog
 check
 connection
