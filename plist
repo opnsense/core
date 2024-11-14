@@ -1390,6 +1390,8 @@
 /usr/local/opnsense/service/templates/OPNsense/Syslog/syslog-ng-lockout.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/syslog-ng.conf
 /usr/local/opnsense/service/templates/OPNsense/Trust/+TARGETS
+/usr/local/opnsense/service/templates/OPNsense/Trust/etc.openssl.cnf
+/usr/local/opnsense/service/templates/OPNsense/Trust/local.openssl.cnf
 /usr/local/opnsense/service/templates/OPNsense/Trust/openssl.cnf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/access_lists.conf
