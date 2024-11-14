@@ -29,7 +29,6 @@ REQUEST="AUDIT CONNECTIVITY"
 . /usr/local/opnsense/scripts/firmware/config.sh
 
 URL=$(opnsense-update -M)
-URLX=$(opnsense-update -X)
 POPT="-c4 -s1500"
 
 HOST=${URL#*://}
