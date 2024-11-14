@@ -49,6 +49,7 @@ MTREE_PATTERNS="
 ./etc/remote
 ./etc/shells
 ./etc/spwd.db
+./etc/ssl/openssl.cnf
 ./etc/ttys
 ./root/.cshrc
 ./root/.profile
