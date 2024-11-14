@@ -1050,8 +1050,8 @@
 /usr/local/opnsense/scripts/filter/run_unittests.py
 /usr/local/opnsense/scripts/filter/tests/__init__.py
 /usr/local/opnsense/scripts/filter/tests/alias_tests.py
-/usr/local/opnsense/scripts/filter/update_bogons.sh
 /usr/local/opnsense/scripts/filter/update_tables.py
+/usr/local/opnsense/scripts/firmware/bogons.sh
 /usr/local/opnsense/scripts/firmware/changelog.sh
 /usr/local/opnsense/scripts/firmware/check.sh
 /usr/local/opnsense/scripts/firmware/config.sh

@@ -1,49 +1,53 @@
 #!/bin/sh
 
+# Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>
+# Copyright (C) 2005 Scott Ullrich <sullrich@gmail.com>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+#    this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+# OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+. /usr/local/opnsense/scripts/firmware/config.sh
+
 URL="$(opnsense-update -X)/sets/bogons.txz"
 DESTDIR="/usr/local/etc"
 WORKDIR="/tmp/bogons"
 FETCH="fetch -qT 30"
-RETRIES=3
-
-COMMAND=${1}
 
 echo "bogons update starting" | logger
 
-while [ ${RETRIES} -gt 0 ]; do
-    if [ "${COMMAND}" = "cron" ]; then
-        VALUE=$(jot -r 1 1 900)
-        echo "bogons update is sleeping for ${VALUE} seconds" | logger
-        sleep ${VALUE}
-    fi
+rm -rf ${WORKDIR}
+mkdir -p ${WORKDIR}
 
-    echo "bogons update is beginning the update cycle" | logger
+${FETCH} -o ${WORKDIR}/bogons.txz.sig "${URL}.sig"
+${FETCH} -o ${WORKDIR}/bogons.txz "${URL}"
 
-    rm -rf ${WORKDIR}
-    mkdir -p ${WORKDIR}
-
-    ${FETCH} -o ${WORKDIR}/bogons.txz.sig "${URL}.sig"
-    ${FETCH} -o ${WORKDIR}/bogons.txz "${URL}"
-
-    if [ ! -f ${WORKDIR}/bogons.txz ]; then
-        echo "bogons update cannot download ${URL}" | logger
-    elif ! opnsense-verify -q ${WORKDIR}/bogons.txz; then
-        echo "bogons update cannot verify ${URL}" | logger
-    elif ! tar -C ${WORKDIR} -xJf ${WORKDIR}/bogons.txz; then
-        echo "bogons update cannot extract ${URL}" | logger
-    else
-        break
-    fi
-
-    if [ "${COMMAND}" = "cron" ]; then
-        RETRIES=$((RETRIES - 1))
-    else
-        RETRIES=0
-    fi
-done
-
-if [ ${RETRIES} -eq 0 ]; then
-    echo "update bogons is aborting the update cycle" | logger
+if [ ! -f ${WORKDIR}/bogons.txz ]; then
+    echo "bogons update cannot download ${URL}" | logger
+    exit 1
+elif ! opnsense-verify -q ${WORKDIR}/bogons.txz; then
+    echo "bogons update cannot verify ${URL}" | logger
+    exit 1
+elif ! tar -C ${WORKDIR} -xJf ${WORKDIR}/bogons.txz; then
+    echo "bogons update cannot extract ${URL}" | logger
     exit 1
 fi
 
