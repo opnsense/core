@@ -86,7 +86,7 @@ fi
 # initialize environment to operate in
 env_init()
 {
-	if [ -n "$(opnsense-update -x)" ]; then
+	if [ -n "$(opnsense-update -x)" -o -e /var/run/development ]; then
 		# business mirror compliance requires
 		# disabling the use of TLS below 1.3
 		export SSL_NO_TLS1="yes"
