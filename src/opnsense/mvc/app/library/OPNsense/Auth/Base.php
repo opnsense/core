@@ -252,7 +252,6 @@ abstract class Base
         return $this->lastAuthErrors;
     }
 
-
     /**
      * authenticate user, implementation when using this base classes authenticate()
      * @param string $username username to authenticate
