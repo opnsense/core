@@ -25,14 +25,11 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+REQUEST="UNLOCK"
+
 . /usr/local/opnsense/scripts/firmware/config.sh
 
 PACKAGE=${1}
-
-: > ${LOCKFILE}
-
-echo "***GOT REQUEST TO UNLOCK***" >> ${LOCKFILE}
-echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 if [ "${PACKAGE}" = "base" ]; then
 	echo "Unlocking base set" >> ${LOCKFILE}
@@ -44,4 +41,4 @@ else
 	${PKG} unlock -y ${PACKAGE} >> ${LOCKFILE} 2>&1
 fi
 
-echo '***DONE***' >> ${LOCKFILE}
+output_done

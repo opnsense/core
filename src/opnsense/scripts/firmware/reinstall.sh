@@ -25,15 +25,12 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+REQUEST="REINSTALL"
+
 . /usr/local/opnsense/scripts/firmware/config.sh
 
 PACKAGE=${1}
 REBOOT=
-
-: > ${LOCKFILE}
-
-echo "***GOT REQUEST TO REINSTALL***" >> ${LOCKFILE}
-echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 if [ "${PACKAGE}" = "base" ]; then
 	if opnsense-update -Tb; then
@@ -62,10 +59,7 @@ else
 fi
 
 if [ -n "${REBOOT}" ]; then
-	echo '***REBOOT***' >> ${LOCKFILE}
-	# give the frontend some time to figure out that a reboot is coming
-	sleep 5
-	/usr/local/etc/rc.reboot
+	output_reboot
 fi
 
-echo '***DONE***' >> ${LOCKFILE}
+output_done

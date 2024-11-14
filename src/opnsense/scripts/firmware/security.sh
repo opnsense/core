@@ -24,11 +24,10 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+REQUEST="AUDIT SECURITY"
+
 . /usr/local/opnsense/scripts/firmware/config.sh
 
-: > ${LOCKFILE}
-
-echo "***GOT REQUEST TO AUDIT SECURITY***" >> ${LOCKFILE}
-echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 (${PKG} audit -F 2>&1) | ${TEE} ${LOCKFILE}
-echo '***DONE***' >> ${LOCKFILE}
+
+output_done

@@ -24,13 +24,13 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+REQUEST="AUDIT HEALTH"
+
 . /usr/local/opnsense/scripts/firmware/config.sh
 
 TMPFILE=/tmp/pkg_check.exclude
 MTREE="mtree -e -p /"
 CMD=${1}
-
-: > ${LOCKFILE}
 
 MTREE_PATTERNS="
 ./.cshrc
@@ -219,9 +219,6 @@ EOF
 	fi
 }
 
-echo "***GOT REQUEST TO AUDIT HEALTH***" >> ${LOCKFILE}
-echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
-
 echo ">>> Root file system: $(mount | awk '$3 == "/" { print $1 }')" | ${TEE} ${LOCKFILE}
 
 if [ -z "${CMD}" -o "${CMD}" = "kernel" ]; then
@@ -269,4 +266,4 @@ if [ -z "${CMD}" -o "${CMD}" = "core" ]; then
 	core_check
 fi
 
-echo '***DONE***' >> ${LOCKFILE}
+output_done

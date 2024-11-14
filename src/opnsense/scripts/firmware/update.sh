@@ -25,17 +25,15 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+REQUEST="UPDATE"
+
 . /usr/local/opnsense/scripts/firmware/config.sh
 
 CMD=${1}
 FORCE=
 
-: > ${LOCKFILE}
 rm -f ${PIPEFILE}
 mkfifo ${PIPEFILE}
-
-echo "***GOT REQUEST TO UPDATE***" >> ${LOCKFILE}
-echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 # figure out if we are crossing ABIs
 if [ "$(opnsense-version -a)" != "$(opnsense-version -x)" ]; then
@@ -60,7 +58,7 @@ PKGS_HASH=$(${PKG} query %n-%v 2> /dev/null | sha256)
 
 # run plugin resolver if requested
 if [ "${CMD}" = "sync" ]; then
-	. /usr/local/opnsense/scripts/firmware/sync.subr.sh
+	/usr/local/opnsense/scripts/firmware/sync.subr.sh
 fi
 
 # if we can update base, we'll do that as well
@@ -68,18 +66,14 @@ ${TEE} ${LOCKFILE} < ${PIPEFILE} &
 if opnsense-update ${FORCE} -bk -c > ${PIPEFILE} 2>&1; then
 	${TEE} ${LOCKFILE} < ${PIPEFILE} &
 	if opnsense-update ${FORCE} -bk > ${PIPEFILE} 2>&1; then
-		echo '***REBOOT***' >> ${LOCKFILE}
-		sleep 5
-		/usr/local/etc/rc.reboot
+		output_reboot
 	fi
 fi
 
 if [ -n "${ALWAYS_REBOOT}" ]; then
 	if [ "${PKGS_HASH}" != "$(${PKG} query %n-%v 2> /dev/null | sha256)" ]; then
-		echo '***REBOOT***' >> ${LOCKFILE}
-		sleep 5
-		/usr/local/etc/rc.reboot
+		output_reboot
 	fi
 fi
 
-echo '***DONE***' >> ${LOCKFILE}
+output_done

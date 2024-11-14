@@ -37,16 +37,18 @@
 # downgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
 # upgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
 
+# clear the file before we may wait for other init glue below
+JSONFILE="/tmp/pkg_upgrade.json"
+rm -f ${JSONFILE}
+
+REQUEST="CHECK FOR UPDATES"
+
 . /usr/local/opnsense/scripts/firmware/config.sh
 
 LICENSEFILE="/usr/local/opnsense/version/core.license"
-JSONFILE="/tmp/pkg_upgrade.json"
 OUTFILE="/tmp/pkg_update.out"
 
 CUSTOMPKG=${1}
-
-rm -f ${JSONFILE}
-: > ${LOCKFILE}
 
 base_to_reboot=
 connection="error"
@@ -86,9 +88,6 @@ product_xabi=$(opnsense-version -x)
 if [ -n "${product_xabi}" -a "${product_abi}" != "${product_xabi}" ]; then
     force_all="-f"
 fi
-
-echo "***GOT REQUEST TO CHECK FOR UPDATES***" >> ${LOCKFILE}
-echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 # business subscriptions come with additional license metadata
 if [ -n "$(opnsense-update -x)" ]; then
@@ -417,4 +416,4 @@ cat > ${JSONFILE} << EOF
 }
 EOF
 
-echo '***DONE***' >> ${LOCKFILE}
+output_done

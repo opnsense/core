@@ -24,9 +24,9 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-. /usr/local/opnsense/scripts/firmware/config.sh
+REQUEST="AUDIT CONNECTIVITY"
 
-: > ${LOCKFILE}
+. /usr/local/opnsense/scripts/firmware/config.sh
 
 URL=$(opnsense-update -M)
 URLX=$(opnsense-update -X)
@@ -42,9 +42,6 @@ IPV6=$(host -t AAAA ${HOST} | head -n 1 | cut -d\  -f5)
 export PKG_DBDIR=/tmp/firmware.repo.check
 rm -rf ${PKG_DBDIR}
 mkdir -p ${PKG_DBDIR}
-
-echo "***GOT REQUEST TO AUDIT CONNECTIVITY***" >> ${LOCKFILE}
-echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 if [ -n "${IPV4}" -a -z "${IPV4%%*.*}" ]; then
 	echo "Checking connectivity for host: ${HOST} -> ${IPV4}" | ${TEE} ${LOCKFILE}
@@ -70,4 +67,4 @@ for HOST in $(/usr/local/opnsense/scripts/firmware/hostnames.sh); do
 	echo | openssl s_client -quiet -no_ign_eof ${HOST}:443 2>&1 | ${TEE} ${LOCKFILE}
 done
 
-echo '***DONE***' >> ${LOCKFILE}
+output_done

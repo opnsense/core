@@ -57,6 +57,31 @@ update
 upgrade
 "
 
+output_request()
+{
+	: > ${LOCKFILE}
+	echo ""***GOT REQUEST TO ${1}***"" >> ${LOCKFILE}
+	echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
+}
+
+output_done()
+{
+	echo '***DONE***' >> ${LOCKFILE}
+	exit 0
+}
+
+output_reboot()
+{
+	echo '***REBOOT***' >> ${LOCKFILE}
+	sleep 5
+	/usr/local/etc/rc.reboot
+}
+
+# if output is requested clear file and set new request right away
+if [ -n "${REQUEST}" ]; then
+	output_request "${REQUEST}"
+fi
+
 # initialize environment to operate in
 env_init()
 {

@@ -25,14 +25,11 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+REQUEST="INSTALL"
+
 . /usr/local/opnsense/scripts/firmware/config.sh
 
 PACKAGE=${1}
-
-: > ${LOCKFILE}
-
-echo "***GOT REQUEST TO INSTALL***" >> ${LOCKFILE}
-echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 if [ "${PACKAGE#os-}" != "${PACKAGE}" ]; then
 	COREPKG=$(opnsense-version -n)
@@ -42,8 +39,7 @@ if [ "${PACKAGE#os-}" != "${PACKAGE}" ]; then
 	# plugins must pass a version check on up-to-date core package
 	if [ "$(${PKG} version -t ${COREVER} ${REPOVER})" = "<" ]; then
 		echo "Installation out of date. The update to ${COREPKG}-${REPOVER} is required." | ${TEE} ${LOCKFILE}
-		echo '***DONE***' >> ${LOCKFILE}
-		exit
+		output_done
 	fi
 fi
 
@@ -51,4 +47,4 @@ fi
 (/usr/local/opnsense/scripts/firmware/register.php install ${PACKAGE} 2>&1) | ${TEE} ${LOCKFILE}
 (${PKG} autoremove -y 2>&1) | ${TEE} ${LOCKFILE}
 
-echo '***DONE***' >> ${LOCKFILE}
+output_done
