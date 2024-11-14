@@ -30,7 +30,6 @@ MUSTCHECK="yes"
 
 for PACKAGE in $(/usr/local/sbin/pluginctl -g system.firmware.plugins | \
     /usr/bin/sed 's/,/ /g'); do
-	echo "foobar $PACKAGE" | ${TEE} ${LOCKFILE}
 	if ! ${PKG} query %n ${PACKAGE} > /dev/null; then
 		if [ -n "${MUSTCHECK}" ] ; then
 			COREPKG=$(opnsense-version -n)
