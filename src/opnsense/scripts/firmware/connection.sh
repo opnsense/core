@@ -29,7 +29,6 @@
 : > ${LOCKFILE}
 
 URL=$(opnsense-update -M)
-URLX=$(opnsense-update -X)
 POPT="-c4 -s1500"
 
 HOST=${URL#*://}
