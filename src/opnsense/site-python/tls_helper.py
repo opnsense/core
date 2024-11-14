@@ -73,7 +73,7 @@ class PlatformTLSAdaptor(HTTPAdapter):
                 ctx_args['ciphers'] = openssl_conf['cipherstring']
 
             cls.ssl_context = create_urllib3_context(**ctx_args)
-            cls.ssl_context.load_verify_locations('/etc/ssl/cert.pem')
+            cls.ssl_context.load_verify_locations('/usr/local/etc/ssl/cert.pem')
             if openssl_conf['minprotocol']:
                 for item in openssl_conf['minprotocol'].split("\n"):
                     if item == 'TLSv1':
