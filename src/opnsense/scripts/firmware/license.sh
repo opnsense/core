@@ -29,8 +29,8 @@
 
 PACKAGE=${1}
 
-LICENSES=$(pkg query %L ${PACKAGE})
-VERSION=$(pkg query %v ${PACKAGE})
+LICENSES=$(${PKG} query %L ${PACKAGE})
+VERSION=$(${PKG} query %v ${PACKAGE})
 
 IFS=', '
 
