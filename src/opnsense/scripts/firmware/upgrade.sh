@@ -25,14 +25,12 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+REQUEST="UPGRADE"
+
 . /usr/local/opnsense/scripts/firmware/config.sh
 
-: > ${LOCKFILE}
 rm -f ${PIPEFILE}
 mkfifo ${PIPEFILE}
-
-echo "***GOT REQUEST TO UPGRADE***" >> ${LOCKFILE}
-echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 ${TEE} ${LOCKFILE} < ${PIPEFILE} &
 if opnsense-update -u > ${PIPEFILE} 2>&1; then
@@ -40,9 +38,7 @@ if opnsense-update -u > ${PIPEFILE} 2>&1; then
 	if /usr/local/etc/rc.syshook upgrade > ${PIPEFILE} 2>&1; then
 		${TEE} ${LOCKFILE} < ${PIPEFILE} &
 		if opnsense-update -K > ${PIPEFILE} 2>&1; then
-			echo '***REBOOT***' >> ${LOCKFILE}
-			sleep 5
-			/usr/local/etc/rc.reboot
+			output_reboot
 		fi
 	fi
 
@@ -50,4 +46,4 @@ if opnsense-update -u > ${PIPEFILE} 2>&1; then
 	opnsense-update -es >> ${LOCKFILE} 2>&1
 fi
 
-echo '***DONE***' >> ${LOCKFILE}
+output_done
