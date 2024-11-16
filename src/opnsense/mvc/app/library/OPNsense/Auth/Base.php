@@ -143,8 +143,9 @@ abstract class Base
      * @param string $memberof list (\n separated) of groups
      * @param array $scope list of groups that should be considered
      * @param boolean $createuser create user when it does not exist
+     * @param array $default_groups list of groups to always add
      */
-    protected function setGroupMembership($username, $memberof, $scope = [], $createuser = false)
+    protected function setGroupMembership($username, $memberof, $scope = [], $createuser = false, $default_groups = [])
     {
         $user = $this->getUser($username);
         // gather known and user configured groups to be able to compare the results from ldap
@@ -160,16 +161,20 @@ abstract class Base
                 }
             }
         }
+        // append default groups
+        $ldap_groups = [];
+        foreach ($default_groups as $key) {
+            $ldap_groups[$key] = $key;
+        }
         // collect all groups from the memberof attribute, store full object path for logging
         // first cn= defines our local groupname
-        $ldap_groups = [];
         foreach (explode("\n", $memberof) as $member) {
             if (stripos($member, "cn=") === 0) {
                 $ldap_groups[strtolower(explode(",", substr($member, 3))[0])] = $member;
             }
         }
         // list of enabled groups (all when empty), so we can ignore some local groups if needed
-        $sync_groups = !empty($scope) ? $scope : $known_groups;
+        $sync_groups = !empty($scope) ? array_merge($scope, $default_groups) : $known_groups;
 
         //
         // sort groups and intersect with $sync_groups to determine difference.

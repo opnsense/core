@@ -132,6 +132,12 @@ class LDAP extends Base implements IAuthConnector
     private $ldapSyncMemberOfLimit = null;
 
     /**
+     * list of groups to add by default
+     */
+    private $ldapSyncDefaultGroups = [];
+
+
+    /**
      * @var array internal list of authentication properties (returned by radius auth)
      */
     private $lastAuthProperties = array();
@@ -267,7 +273,8 @@ class LDAP extends Base implements IAuthConnector
             "ldap_read_properties" => "ldapReadProperties",
             "ldap_sync_memberof" => "ldapSyncMemberOf",
             "ldap_sync_memberof_constraint" => "ldapSyncMemberOfConstraint",
-            "ldap_sync_memberof_groups" => "ldapSyncMemberOfLimit"
+            "ldap_sync_memberof_groups" => "ldapSyncMemberOfLimit",
+            "ldap_sync_default_groups" => "ldapSyncDefaultGroups"
         );
 
         // map properties 1-on-1
@@ -504,6 +511,7 @@ class LDAP extends Base implements IAuthConnector
 
         if ($ldap_is_connected) {
             $this->lastAuthProperties['dn'] = $user_dn;
+            $this->lastAuthProperties['memberOf'] = '';
             if ($this->ldapReadProperties) {
                 $sr = @ldap_read($this->ldapHandle, $user_dn, '(objectclass=*)', ['*', 'memberOf']);
                 $info = $sr !== false ? @ldap_get_entries($this->ldapHandle, $sr) : [];
@@ -519,13 +527,17 @@ class LDAP extends Base implements IAuthConnector
                         }
                     }
                     // update group policies when applicable
-                    if ($this->ldapSyncMemberOf && !empty($this->lastAuthProperties['memberof'])) {
+                    if ($this->ldapSyncMemberOf || $this->ldapSyncCreateLocalUsers) {
                         // list of enabled groups, so we can ignore some local groups if needed
+                        $sync_groups = [];
+                        $default_groups = [];
                         if (!empty($this->ldapSyncMemberOfLimit)) {
                             $sync_groups = explode(",", strtolower($this->ldapSyncMemberOfLimit));
-                        } else {
-                            $sync_groups = [];
                         }
+                        if (!empty($this->ldapSyncDefaultGroups)) {
+                            $default_groups = explode(",", strtolower($this->ldapSyncDefaultGroups));
+                        }
+
                         if ($this->ldapSyncMemberOfConstraint) {
                             // Filter "memberOf" results to those recorded in ldapAuthcontainers, where
                             // the first part of the member is considered the group name, the rest should be an exact
@@ -549,7 +561,8 @@ class LDAP extends Base implements IAuthConnector
                             $username,
                             $membersOf,
                             $sync_groups,
-                            $this->ldapSyncCreateLocalUsers
+                            $this->ldapSyncCreateLocalUsers,
+                            $default_groups
                         );
                     }
                 }

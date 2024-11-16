@@ -95,6 +95,11 @@ class Radius extends Base implements IAuthConnector
      */
     private $syncMemberOfLimit = [];
 
+    /**
+     * @var array list of groups to add by default
+     */
+    private $syncDefaultGroups = [];
+
 
     /**
      * type name in configuration
@@ -144,6 +149,9 @@ class Radius extends Base implements IAuthConnector
         }
         if (!empty($config['sync_memberof_groups'])) {
             $this->syncMemberOfLimit = explode(",", strtolower($config['sync_memberof_groups']));
+        }
+        if (!empty($config['sync_default_groups'])) {
+            $this->syncDefaultGroups = explode(",", strtolower($config['sync_default_groups']));
         }
     }
 
@@ -531,12 +539,13 @@ class Radius extends Base implements IAuthConnector
                             }
                         }
                         // update group policies when applicable
-                        if ($this->syncMemberOf) {
+                        if ($this->syncMemberOf || $this->syncCreateLocalUsers) {
                             $this->setGroupMembership(
                                 $username,
                                 $this->lastAuthProperties['class'] ?? '',
                                 $this->syncMemberOfLimit,
-                                $this->syncCreateLocalUsers
+                                $this->syncCreateLocalUsers,
+                                $this->syncDefaultGroups
                             );
                         }
                         return true;
