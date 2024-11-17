@@ -31,6 +31,7 @@ namespace OPNsense\Auth\Api;
 require_once 'base32/Base32.php';
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\UserException;
+use OPNsense\Auth\Group;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 
@@ -52,32 +53,25 @@ class UserController extends ApiMutableModelControllerBase
     protected function setBaseHook($node)
     {
         if (!empty($this->request->getPost(static::$internalModelName)) && $this->request->isPost()) {
-            /* XXX: Merge group membership, move to model when group model exists */
             $data = $this->request->getPost(static::$internalModelName);
-            if (!empty($data['group_memberships'])) {
-                $this_gids = explode(',', $data['group_memberships']);
-                $this_uid = (string)$node->uid;
-                foreach (Config::getInstance()->object()->system->children() as $tag => $node) {
-                    if ($tag == 'group') {
-                        $in_group = in_array((string)$node->gid, $this_gids);
-                        if (isset($node->member)) {
-                            for ($i = count($node->member) -1 ; $i >= 0 ; --$i) {
-                                if ($node->member[$i] == $this_uid) {
-                                    if (!$in_group) {
-                                        unset($node->member[$i]);
-                                    } else {
-                                        continue 2;
-                                    }
-                                }
-                            }
-                        }
-                        if ($in_group) {
-                            $node->addChild('member', $this_uid);
-                        }
-                    }
+            $this_uid = (string)$node->uid;
+            $this_gids = !empty($data['group_memberships']) ? explode(',', $data['group_memberships']) : [];
+            $groupmdl = new Group();
+            foreach ($groupmdl->group->iterateItems() as $uuid => $group) {
+                $members = explode(',', $group->member->getCurrentValue());
+                if (in_array($this_uid, $members) && !in_array($group->gid, $this_gids)) {
+                    unset($members[array_search($this_uid, $members)]);
+                } elseif (!in_array($this_uid, $members) && in_array($group->gid, $this_gids)) {
+                    $members[] = $this_uid;
+                } else {
+                    continue;
                 }
+                $group->member = implode(',', $members);
             }
-            /* Password handling */
+            /* will be persisted by regular save */
+            $groupmdl->serializeToConfig(false, true);
+
+                /* Password handling */
             if (!empty($data['scrambled_password']) || !empty($data['password'])) {
                 if (!empty($data['scrambled_password'])) {
                     /* generate a random password */
