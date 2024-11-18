@@ -28,6 +28,12 @@
         <help>Automatically add a basic set of firewall rules to allow dhcp traffic, more fine grained controls can be offered manually when disabling this option.</help>
     </field>
     <field>
+        <id>dhcpv4.general.dhcp_socket_type</id>
+        <label>Socket Type</label>
+        <type>dropdown</type>
+        <help>Socket type used for DHCP communication</help>
+    </field>
+    <field>
         <type>header</type>
         <label>High Availability</label>
     </field>

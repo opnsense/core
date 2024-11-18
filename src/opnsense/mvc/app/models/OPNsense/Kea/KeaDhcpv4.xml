@@ -19,6 +19,14 @@
                 <Required>Y</Required>
                 <Default>1</Default>
             </fwrules>
+            <dhcp_socket_type type="OptionField">
+                <Default>udp</Default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <udp>udp</udp>
+                    <raw>raw</raw>
+                </OptionValues>
+            </dhcp_socket_type>
         </general>
         <ha>
             <enabled type="BooleanField">
