@@ -57,7 +57,7 @@ stats:
   enabled: yes
   # The interval field (in seconds) controls the interval at
   # which stats are updated in the log.
-  interval: 8
+  interval: 300
   # Add decode events to stats.
   #decoder-events: true
   # Decoder event prefix in stats. Has been 'decoder' before, but that leads
