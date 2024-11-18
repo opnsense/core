@@ -30,6 +30,7 @@ namespace OPNsense\Auth\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\UserException;
+use OPNsense\Core\ACL;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 
@@ -42,6 +43,16 @@ class GroupController extends ApiMutableModelControllerBase
     protected static $internalModelName = 'group';
     protected static $internalModelClass = 'OPNsense\Auth\Group';
 
+    protected function setBaseHook($node)
+    {
+        $this->getModel()->serializeToConfig(false, true);
+        if (!(new ACL())->isPageAccessible($this->getUserName(), '/api/auth/group')) {
+            throw new UserException(
+                sprintf(gettext("User %s can not lock itself out"), $this->getUserName()),
+                gettext("Usermanager")
+            );
+        }
+    }
 
     public function searchAction()
     {

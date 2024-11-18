@@ -32,6 +32,7 @@ require_once 'base32/Base32.php';
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\UserException;
 use OPNsense\Auth\Group;
+use OPNsense\Core\ACL;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 
@@ -71,7 +72,14 @@ class UserController extends ApiMutableModelControllerBase
             /* will be persisted by regular save */
             $groupmdl->serializeToConfig(false, true);
 
-                /* Password handling */
+            if (!(new ACL())->isPageAccessible($this->getUserName(), '/api/auth/user')) {
+                throw new UserException(
+                    sprintf(gettext("User %s can not lock itself out"), $this->getUserName()),
+                    gettext("Usermanager")
+                );
+            }
+
+            /* Password handling */
             if (!empty($data['scrambled_password']) || !empty($data['password'])) {
                 if (!empty($data['scrambled_password'])) {
                     /* generate a random password */
@@ -194,7 +202,15 @@ class UserController extends ApiMutableModelControllerBase
             Config::getInstance()->lock();
             $node = $this->getModel()->getNodeByReference('user.' . $uuid);
             if ($node->scope == 'system') {
-                throw new UserException(sprintf(gettext("Not allowed to delete system user %s"), $node->name));
+                throw new UserException(
+                    sprintf(gettext("Not allowed to delete system user %s"), $node->name),
+                    gettext("Usermanager")
+                );
+            } elseif ($node->name == $this->getUserName()) {
+                throw new UserException(
+                    sprintf(gettext("Not allowed to remove logged in user %s"), $node->name),
+                    gettext("Usermanager")
+                );
             }
             if (!empty($node)) {
                 $username = (string)$node->name;
