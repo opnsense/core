@@ -34,7 +34,6 @@
                     <o2 value="/bin/tcsh">/bin/tcsh</o2>
                 </OptionValues>
             </shell>
-            <user_dn type="TextField"/>
             <password type="UpdateOnlyTextField"/>
             <scrambled_password type="BooleanField"  volatile="true"/>
             <landing_page type="TextField"/>

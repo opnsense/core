@@ -97,11 +97,6 @@ class LDAP extends Base implements IAuthConnector
     private $ldapURLType = null;
 
     /**
-     * @var array list of already known usernames vs distinguished names
-     */
-    private $userDNmap = array();
-
-    /**
      * @var bool if true, startTLS will be initialized
      */
     private $useStartTLS = false;
@@ -269,7 +264,6 @@ class LDAP extends Base implements IAuthConnector
             'ldap_extended_query' => 'ldapExtendedQuery',
             'ldap_authcn' => 'ldapAuthcontainers',
             'ldap_scope' => 'ldapScope',
-            'local_users' => 'userDNmap',
             'ldap_read_properties' => 'ldapReadProperties',
             'ldap_sync_memberof' => 'ldapSyncMemberOf',
             'ldap_sync_memberof_constraint' => 'ldapSyncMemberOfConstraint',
@@ -492,10 +486,6 @@ class LDAP extends Base implements IAuthConnector
         if (empty($password)) {
             // prevent anonymous bind
             return false;
-        } elseif (array_key_exists($username, $this->userDNmap)) {
-            // we can map $username to distinguished name, just feed to connect
-            $user_dn = $this->userDNmap[$username];
-            $ldap_is_connected = $this->connect($this->ldapBindURL, $this->userDNmap[$username], $password);
         } else {
             // we don't know this users distinguished name, try to find it
             if ($this->connect($this->ldapBindURL, $this->ldapBindDN, $this->ldapBindPassword)) {
