@@ -511,12 +511,13 @@ class LDAP extends Base implements IAuthConnector
 
         if ($ldap_is_connected) {
             $this->lastAuthProperties['dn'] = $user_dn;
-            $this->lastAuthProperties['memberOf'] = '';
+            $this->lastAuthProperties['memberof'] = '';
             if ($this->ldapReadProperties) {
                 $sr = @ldap_read($this->ldapHandle, $user_dn, '(objectclass=*)', ['*', 'memberOf']);
                 $info = $sr !== false ? @ldap_get_entries($this->ldapHandle, $sr) : [];
                 if (!empty($info['count'])) {
                     foreach ($info[0] as $ldap_key => $ldap_value) {
+                        $ldap_key = strtolower($ldap_key); /* enforce lowercase, we expect memberof */
                         if (!is_numeric($ldap_key) && $ldap_key !== 'count') {
                             if (isset($ldap_value['count'])) {
                                 unset($ldap_value['count']);
@@ -540,7 +541,9 @@ class LDAP extends Base implements IAuthConnector
                     $default_groups = explode(",", strtolower($this->ldapSyncDefaultGroups));
                 }
 
-                if ($this->ldapSyncMemberOfConstraint) {
+                if (!$this->ldapSyncMemberOf) {
+                    $membersOf = $default_groups;
+                } elseif ($this->ldapSyncMemberOfConstraint) {
                     // Filter "memberOf" results to those recorded in ldapAuthcontainers, where
                     // the first part of the member is considered the group name, the rest should be an exact
                     // (case insensitive) match.

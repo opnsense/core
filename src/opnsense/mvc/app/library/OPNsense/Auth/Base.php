@@ -206,7 +206,9 @@ abstract class Base
                         in_array((string)$user->uid, (array)$group->member)
                           && empty($ldap_groups[$lc_groupname])
                     ) {
-                        unset($group->member[array_search((string)$user->uid, (array)$group->member)]);
+                        while (in_array((string)$user->uid, (array)$group->member)) {
+                            unset($group->member[array_search((string)$user->uid, (array)$group->member)]);
+                        }
                         syslog(LOG_NOTICE, sprintf(
                             'User: policy change for %s unlink group %s',
                             $username,
