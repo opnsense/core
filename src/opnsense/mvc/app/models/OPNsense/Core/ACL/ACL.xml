@@ -607,13 +607,13 @@
             <pattern>api/auth/group/*</pattern>
         </patterns>
     </page-system-groupmanager>
-    <page-system-groupmanager-addprivs>
+    <page-system-usermanager-addprivs>
         <name>System: Access: Privileges</name>
         <patterns>
             <pattern>ui/auth/priv</pattern>
             <pattern>api/auth/priv/*</pattern>
         </patterns>
-    </page-system-groupmanager-addprivs>
+    </page-system-usermanager-addprivs>
     <page-system-hasync>
         <name>System: High Availability</name>
         <patterns>
