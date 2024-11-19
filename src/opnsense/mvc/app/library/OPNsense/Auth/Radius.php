@@ -100,7 +100,6 @@ class Radius extends Base implements IAuthConnector
      */
     private $syncDefaultGroups = [];
 
-
     /**
      * type name in configuration
      * @return string
@@ -528,7 +527,9 @@ class Radius extends Base implements IAuthConnector
                                     $this->lastAuthProperties['Framed-Route'][] = $resa['data'];
                                     break;
                                 case RADIUS_CLASS:
-                                    if (!empty($this->lastAuthProperties['class'])) {
+                                    if (!$this->syncMemberOf) {
+                                        break;
+                                    } elseif (!empty($this->lastAuthProperties['class'])) {
                                         $this->lastAuthProperties['class'] .= "\n" . $resa['data'];
                                     } else {
                                         $this->lastAuthProperties['class'] = $resa['data'];
@@ -543,7 +544,7 @@ class Radius extends Base implements IAuthConnector
                             $this->setGroupMembership(
                                 $username,
                                 $this->lastAuthProperties['class'] ?? '',
-                                $this->syncMemberOfLimit,
+                                $this->syncMemberOf ? $this->syncMemberOfLimit : $this->syncDefaultGroups,
                                 $this->syncCreateLocalUsers,
                                 $this->syncDefaultGroups
                             );
