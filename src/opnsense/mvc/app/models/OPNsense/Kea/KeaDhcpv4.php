@@ -189,7 +189,8 @@ class KeaDhcpv4 extends BaseModel
             'Dhcp4' => [
                 'valid-lifetime' => (int)$this->general->valid_lifetime->__toString(),
                 'interfaces-config' => [
-                    'interfaces' => $this->getConfigPhysicalInterfaces()
+                    'interfaces' => $this->getConfigPhysicalInterfaces(),
+                    'dhcp-socket-type' => (string)$this->general->dhcp_socket_type
                 ],
                 'lease-database' => [
                     'type' => 'memfile',
