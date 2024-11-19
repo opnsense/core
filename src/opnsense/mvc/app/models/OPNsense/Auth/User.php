@@ -148,4 +148,36 @@ class User extends BaseModel
         }
         return $messages;
     }
+
+    /**
+     * @param string password
+     * @return hash, type dependend on configuration
+     */
+    public function generatePasswordHash($password)
+    {
+        $hash = false;
+        $webgui = Config::getInstance()->object()->system->webgui;
+        if (
+            !empty($webgui) &&
+            !empty((string)$webgui->enable_password_policy_constraints) &&
+            !empty((string)$webgui->password_policy_compliance)
+        ) {
+            /* compliance SHA-512 hashing */
+            $process = proc_open(
+                '/usr/local/bin/openssl passwd -6 -stdin',
+                [['pipe', 'r'], ['pipe', 'w']],
+                $pipes
+            );
+            if (is_resource($process)) {
+                fwrite($pipes[0], $password);
+                fclose($pipes[0]);
+                $hash = trim(stream_get_contents($pipes[1]));
+                fclose($pipes[1]);
+                proc_close($process);
+            }
+        } else {
+            $hash = password_hash($password, PASSWORD_BCRYPT, [ 'cost' => 11 ]);
+        }
+        return $hash;
+    }
 }
