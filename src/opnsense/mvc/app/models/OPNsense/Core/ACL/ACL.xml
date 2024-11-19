@@ -601,19 +601,19 @@
         </patterns>
     </page-system-generalsetup>
     <page-system-groupmanager>
-        <name>System: Group manager</name>
+        <name>System: Access: Groups</name>
         <patterns>
             <pattern>ui/auth/group</pattern>
             <pattern>api/auth/group/*</pattern>
         </patterns>
     </page-system-groupmanager>
-    <page-system-groupmanager>
+    <page-system-groupmanager-addprivs>
         <name>System: Access: Privileges</name>
         <patterns>
             <pattern>ui/auth/priv</pattern>
             <pattern>api/auth/priv/*</pattern>
         </patterns>
-    </page-system-groupmanager>
+    </page-system-groupmanager-addprivs>
     <page-system-hasync>
         <name>System: High Availability</name>
         <patterns>
@@ -635,7 +635,7 @@
         </patterns>
     </page-system-staticroutes>
     <page-system-usermanager>
-        <name>System: User Manager</name>
+        <name>System: Access: Users</name>
         <patterns>
             <pattern>ui/auth/user</pattern>
             <pattern>api/auth/user/*</pattern>
