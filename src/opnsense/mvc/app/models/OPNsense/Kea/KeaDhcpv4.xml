@@ -20,7 +20,7 @@
                 <Default>1</Default>
             </fwrules>
             <dhcp_socket_type type="OptionField">
-                <Default>udp</Default>
+                <Default>raw</Default>
                 <Required>Y</Required>
                 <OptionValues>
                     <udp>udp</udp>
