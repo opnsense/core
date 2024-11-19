@@ -136,7 +136,6 @@ class LDAP extends Base implements IAuthConnector
      */
     private $ldapSyncDefaultGroups = [];
 
-
     /**
      * @var array internal list of authentication properties (returned by radius auth)
      */
