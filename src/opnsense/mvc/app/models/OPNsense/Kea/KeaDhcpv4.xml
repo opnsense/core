@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Kea/dhcp4</mount>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <description>Kea DHCPv4 configuration</description>
     <items>
         <general>
@@ -19,6 +19,14 @@
                 <Required>Y</Required>
                 <Default>1</Default>
             </fwrules>
+            <dhcp_socket_type type="OptionField">
+                <Default>raw</Default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <udp>udp</udp>
+                    <raw>raw</raw>
+                </OptionValues>
+            </dhcp_socket_type>
         </general>
         <ha>
             <enabled type="BooleanField">
