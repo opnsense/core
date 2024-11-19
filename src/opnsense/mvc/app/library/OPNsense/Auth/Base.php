@@ -207,7 +207,9 @@ abstract class Base
                         $members = array_merge($members, explode(',', $member));
                     }
                     if (in_array((string)$user->uid, $members) && empty($ldap_groups[$lc_groupname])) {
-                        unset($members[array_search((string)$user->uid, $members)]);
+                        while (in_array((string)$user->uid, $members) && empty($ldap_groups[$lc_groupname])) {
+                            unset($members[array_search((string)$user->uid, $members)]);
+                        }
                         $group->member = implode(',', $members);
                         syslog(LOG_NOTICE, sprintf(
                             'User: policy change for %s unlink group %s',
