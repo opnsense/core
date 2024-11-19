@@ -100,7 +100,6 @@ class Radius extends Base implements IAuthConnector
      */
     private $syncDefaultGroups = [];
 
-
     /**
      * type name in configuration
      * @return string
