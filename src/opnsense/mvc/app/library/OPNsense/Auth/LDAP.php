@@ -542,7 +542,7 @@ class LDAP extends Base implements IAuthConnector
                 }
 
                 if (!$this->ldapSyncMemberOf) {
-                    $membersOf = $default_groups;
+                    $sync_groups = $default_groups;
                 } elseif ($this->ldapSyncMemberOfConstraint) {
                     // Filter "memberOf" results to those recorded in ldapAuthcontainers, where
                     // the first part of the member is considered the group name, the rest should be an exact
