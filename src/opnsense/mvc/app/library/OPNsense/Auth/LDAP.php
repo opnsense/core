@@ -260,21 +260,22 @@ class LDAP extends Base implements IAuthConnector
      */
     public function setProperties($config)
     {
-        $confMap = array("ldap_protver" => "ldapVersion",
-            "ldap_basedn" => "baseSearchDN",
-            "ldap_binddn" => "ldapBindDN",
-            "ldap_bindpw" => "ldapBindPassword",
-            "ldap_attr_user" => "ldapAttributeUser",
-            "ldap_extended_query" => "ldapExtendedQuery",
-            "ldap_authcn" => "ldapAuthcontainers",
-            "ldap_scope" => "ldapScope",
-            "local_users" => "userDNmap",
-            "ldap_read_properties" => "ldapReadProperties",
-            "ldap_sync_memberof" => "ldapSyncMemberOf",
-            "ldap_sync_memberof_constraint" => "ldapSyncMemberOfConstraint",
-            "ldap_sync_memberof_groups" => "ldapSyncMemberOfLimit",
-            "ldap_sync_default_groups" => "ldapSyncDefaultGroups"
-        );
+        $confMap = [
+            'ldap_protver' => 'ldapVersion',
+            'ldap_basedn' => 'baseSearchDN',
+            'ldap_binddn' => 'ldapBindDN',
+            'ldap_bindpw' => 'ldapBindPassword',
+            'ldap_attr_user' => 'ldapAttributeUser',
+            'ldap_extended_query' => 'ldapExtendedQuery',
+            'ldap_authcn' => 'ldapAuthcontainers',
+            'ldap_scope' => 'ldapScope',
+            'local_users' => 'userDNmap',
+            'ldap_read_properties' => 'ldapReadProperties',
+            'ldap_sync_memberof' => 'ldapSyncMemberOf',
+            'ldap_sync_memberof_constraint' => 'ldapSyncMemberOfConstraint',
+            'ldap_sync_memberof_groups' => 'ldapSyncMemberOfLimit',
+            'ldap_sync_default_groups' => 'ldapSyncDefaultGroups',
+        ];
 
         // map properties 1-on-1
         foreach ($confMap as $confSetting => $objectProperty) {
