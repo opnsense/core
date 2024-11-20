@@ -251,36 +251,4 @@ abstract class Base
     {
         return $this->lastAuthErrors;
     }
-
-    /**
-     * authenticate user, implementation when using this base classes authenticate()
-     * @param string $username username to authenticate
-     * @param string $password user password
-     * @return bool
-     */
-    protected function _authenticate($username, $password)
-    {
-        return false;
-    }
-
-    /**
-     * authenticate user, when failed, make sure we always spend the same time for the sequence.
-     * This also adds a penalty for failed attempts.
-     * @param string $username username to authenticate
-     * @param string $password user password
-     * @return bool
-     */
-    public function authenticate($username, $password)
-    {
-        $tstart = microtime(true);
-        $expected_time = 2000000; /* failed login, aim at 2 seconds total time */
-        $result = $this->_authenticate($username, $password);
-
-        $timeleft = $expected_time - ((microtime(true) - $tstart) * 1000000);
-        if (!$result && $timeleft > 0) {
-            usleep($timeleft);
-        }
-
-        return $result;
-    }
 }

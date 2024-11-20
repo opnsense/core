@@ -140,7 +140,7 @@ trait TOTP
      * @param string $password user password
      * @return bool authentication status
      */
-    protected function _authenticate($username, $password)
+    public function authenticate($username, $password)
     {
         $userObject = $this->getUser($username);
         if ($userObject != null && !empty($userObject->otp_seed)) {
