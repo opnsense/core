@@ -158,7 +158,7 @@ trait TOTP
                 $otp_seed = \Base32\Base32::decode($userObject->otp_seed);
                 if ($this->authTOTP($otp_seed, $code)) {
                     // token valid, do parents auth
-                    return parent::authenticate($username, $userPassword);
+                    return parent::_authenticate($username, $userPassword);
                 }
             }
         }
