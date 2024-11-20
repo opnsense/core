@@ -65,6 +65,17 @@ output_request()
 	echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 }
 
+output_text()
+{
+	echo "${1}" | ${TEE} ${LOCKFILE}
+}
+
+output_cmd()
+{
+	# also capture stderr in this case
+	eval "(${1}) 2>&1" | ${TEE} ${LOCKFILE}
+}
+
 output_done()
 {
 	echo '***DONE***' >> ${LOCKFILE}
@@ -87,6 +98,10 @@ fi
 env_init()
 {
 	if [ -n "$(opnsense-update -x)" -o -e /var/run/development ]; then
+		if [ -n "${REQUEST}" ]; then
+			output_text "Strict TLS 1.3 and CRL checking is enabled."
+		fi
+
 		# business mirror compliance requires
 		# disabling the use of TLS below 1.3
 		export SSL_NO_TLS1="yes"
