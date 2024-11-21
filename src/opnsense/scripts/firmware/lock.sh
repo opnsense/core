@@ -32,13 +32,13 @@ REQUEST="LOCK"
 PACKAGE=${1}
 
 if [ "${PACKAGE}" = "base" ]; then
-	echo "Locking base set" >> ${LOCKFILE}
-	opnsense-update -bL >> ${LOCKFILE} 2>&1
+	output_text "Locking base set"
+	output_cmd "opnsense-update -bL"
 elif [ "${PACKAGE}" = "kernel" ]; then
-	echo "Locking kernel set" >> ${LOCKFILE}
-	opnsense-update -kL >> ${LOCKFILE} 2>&1
+	output_text "Locking kernel set"
+	output_cmd "opnsense-update -kL"
 else
-	${PKG} lock -y ${PACKAGE} >> ${LOCKFILE} 2>&1
+	output_cmd "${PKG} lock -y ${PACKAGE}"
 fi
 
 output_done

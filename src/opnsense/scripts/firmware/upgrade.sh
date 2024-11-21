@@ -29,21 +29,15 @@ REQUEST="UPGRADE"
 
 . /usr/local/opnsense/scripts/firmware/config.sh
 
-rm -f ${PIPEFILE}
-mkfifo ${PIPEFILE}
-
-${TEE} ${LOCKFILE} < ${PIPEFILE} &
-if opnsense-update -u > ${PIPEFILE} 2>&1; then
-	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	if /usr/local/etc/rc.syshook upgrade > ${PIPEFILE} 2>&1; then
-		${TEE} ${LOCKFILE} < ${PIPEFILE} &
-		if opnsense-update -K > ${PIPEFILE} 2>&1; then
+if output_cmd "opnsense-update -u"; then
+	if output_cmd "/usr/local/etc/rc.syshook upgrade"; then
+		if output_cmd "opnsense-update -K"; then
 			output_reboot
 		fi
 	fi
 
 	# abort pending upgrades
-	opnsense-update -es >> ${LOCKFILE} 2>&1
+	output_cmd "opnsense-update -es"
 fi
 
 output_done

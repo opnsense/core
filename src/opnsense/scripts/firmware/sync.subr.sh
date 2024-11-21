@@ -38,18 +38,18 @@ for PACKAGE in $(/usr/local/sbin/pluginctl -g system.firmware.plugins | \
 
 			# plugins must pass a version check on up-to-date core package
 			if [ "$(${PKG} version -t ${COREVER} ${REPOVER})" = "<" ]; then
-				echo "Installation out of date. The update to ${COREPKG}-${REPOVER} is required." | ${TEE} ${LOCKFILE}
+				output_text "Installation out of date. The update to ${COREPKG}-${REPOVER} is required."
 				break
 			fi
 
 			MUSTCHECK=
 		fi
 
-		(${PKG} install -y ${PACKAGE} 2>&1) | ${TEE} ${LOCKFILE}
-		(/usr/local/opnsense/scripts/firmware/register.php install ${PACKAGE} 2>&1) | ${TEE} ${LOCKFILE}
+		output_cmd "${PKG} install -y ${PACKAGE}"
+		output_cmd "${BASEDIR}/register.php install ${PACKAGE}"
 	fi
 done
 
 if [ -z "${MUSTCHECK}" ]; then
-	(${PKG} autoremove -y 2>&1) | ${TEE} ${LOCKFILE}
+	output_cmd "${PKG} autoremove -y"
 fi

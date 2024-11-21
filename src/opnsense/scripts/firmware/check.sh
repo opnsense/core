@@ -91,24 +91,24 @@ fi
 
 # business subscriptions come with additional license metadata
 if [ -n "$(opnsense-update -x)" ]; then
-    echo -n "Fetching subscription information, please wait... " >> ${LOCKFILE}
-    if fetch -qT 30 -o ${LICENSEFILE} "$(opnsense-update -M)/subscription" >> ${LOCKFILE} 2>&1; then
-        echo "done" >> ${LOCKFILE}
+    output_text -n "Fetching subscription information, please wait... "
+    if output_cmd "fetch -qT 30 -o ${LICENSEFILE} '$(opnsense-update -M)/subscription'"; then
+        output_text "done"
     fi
 else
     rm -f ${LICENSEFILE}
 fi
 
-echo -n "Fetching changelog information, please wait... " >> ${LOCKFILE}
-if /usr/local/opnsense/scripts/firmware/changelog.sh fetch >> ${LOCKFILE} 2>&1; then
-    echo "done" >> ${LOCKFILE}
+output_text -n "Fetching changelog information, please wait... "
+if output_cmd "${BASEDIR}/changelog.sh fetch"; then
+    output_text "done"
 fi
 
 : > ${OUTFILE}
-(${PKG} update -f 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
+output_cmd "${PKG} update -f" ${OUTFILE}
 
 # always update the package manager so we can see the real updates directly
-(${PKG} upgrade -r ${product_repo} -Uy 'pkg' 2>&1) | ${TEE} ${LOCKFILE}
+output_cmd "${PKG} upgrade -r ${product_repo} -Uy 'pkg'"
 
 # parse early errors
 if grep -q 'No address record' ${OUTFILE}; then
@@ -146,15 +146,15 @@ else
     : > ${OUTFILE}
 
     # now check what happens when we would go ahead
-    (${PKG} upgrade ${force_all} -Un 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
+    output_cmd "${PKG} upgrade ${force_all} -Un" ${OUTFILE}
     if  [ -n "${CUSTOMPKG}" ]; then
-        (${PKG} install -Un "${CUSTOMPKG}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
+        output_cmd "${PKG} install -Un '${CUSTOMPKG}'" ${OUTFILE}
     elif [ "${product_id}" != "${product_target}" ]; then
-        (${PKG} install -r ${product_repo} -Un "${product_target}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
+        output_cmd "${PKG} install -r ${product_repo} -Un '${product_target}'" ${OUTFILE}
     elif [ -z "$(${PKG} rquery %n ${product_id})" ]; then
         # although this should say "to update matching" we emulate for
         # check below as the package manager does not catch this
-        echo "self: No packages available to install matching '${product_id}'" | ${TEE} ${LOCKFILE} ${OUTFILE}
+        output_text "self: No packages available to install matching '${product_id}'" ${OUTFILE}
     fi
 
     # Check for additional repository errors

@@ -31,8 +31,8 @@ REQUEST="REMOVE"
 
 PACKAGE=${1}
 
-${PKG} remove -y ${PACKAGE} >> ${LOCKFILE} 2>&1
-/usr/local/opnsense/scripts/firmware/register.php remove ${PACKAGE} >> ${LOCKFILE} 2>&1
-${PKG} autoremove -y >> ${LOCKFILE} 2>&1
+output_cmd "${PKG} remove -y ${PACKAGE}"
+output_cmd "${BASEDIR}/register.php remove ${PACKAGE}"
+output_cmd "${PKG} autoremove -y"
 
 output_done

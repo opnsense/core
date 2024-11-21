@@ -28,6 +28,6 @@ REQUEST="RESYNC"
 
 . /usr/local/opnsense/scripts/firmware/config.sh
 
-/usr/local/opnsense/scripts/firmware/register.php resync >> ${LOCKFILE} 2>&1
+output_cmd "${BASEDIR}/register.php resync"
 
 output_done

@@ -72,30 +72,30 @@ set_check()
 
 	VER=$(opnsense-version -v ${SET})
 
-	echo ">>> Check installed ${SET} version" | ${TEE} ${LOCKFILE}
+	output_text ">>> Check installed ${SET} version"
 
 	if [ -z "${VER}" -o -z "${VERSION}" ]; then
-		echo "Failed to determine version info." | ${TEE} ${LOCKFILE}
+		output_text "Failed to determine version info."
 	elif [ "${VER}" != "${VERSION}" ]; then
-		echo "Version ${VER} is incorrect, expected: ${VERSION}" | ${TEE} ${LOCKFILE}
+		output_text "Version ${VER} is incorrect, expected: ${VERSION}"
 	else
-		echo "Version ${VER} is correct." | ${TEE} ${LOCKFILE}
+		output_text "Version ${VER} is correct."
 	fi
 
 	FILE=/usr/local/opnsense/version/${SET}.mtree
 
 	if [ ! -f ${FILE} ]; then
-		echo "Cannot verify ${SET}: missing ${FILE}" | ${TEE} ${LOCKFILE}
+		output_text "Cannot verify ${SET}: missing ${FILE}"
 		return
 	fi
 
 	if [ ! -f ${FILE}.sig ]; then
-		echo "Unverified consistency check for ${SET}: missing ${FILE}.sig" | ${TEE} ${LOCKFILE}
+		output_text "Unverified consistency check for ${SET}: missing ${FILE}.sig"
 	elif ! opnsense-verify -q ${FILE}; then
-		echo "Unverified consistency check for ${SET}: invalid ${FILE}.sig" | ${TEE} ${LOCKFILE}
+		output_text "Unverified consistency check for ${SET}: invalid ${FILE}.sig"
 	fi
 
-	echo ">>> Check for missing or altered ${SET} files" | ${TEE} ${LOCKFILE}
+	output_text ">>> Check for missing or altered ${SET} files"
 
 	echo "${MTREE_PATTERNS}" > ${TMPFILE}
 
@@ -107,14 +107,14 @@ set_check()
 
 	if [ ${MTREE_RET} -eq 0 ]; then
 		if [ "${MTREE_MIA}" = "0" ]; then
-			echo "No problems detected." | ${TEE} ${LOCKFILE}
+			output_text "No problems detected."
 		else
-			echo "Missing files: ${MTREE_MIA}" | ${TEE} ${LOCKFILE}
-			echo "${MTREE_OUT}" | ${TEE} ${LOCKFILE}
+			output_text "Missing files: ${MTREE_MIA}"
+			output_text "${MTREE_OUT}"
 		fi
 	else
-		echo "Error ${MTREE_RET} occurred." | ${TEE} ${LOCKFILE}
-		echo "${MTREE_OUT}" | ${TEE} ${LOCKFILE}
+		output_text "Error ${MTREE_RET} occurred."
+		output_text "${MTREE_OUT}"
 	fi
 
 	rm ${TMPFILE}
@@ -122,29 +122,29 @@ set_check()
 
 core_check()
 {
-	echo ">>> Check for core packages consistency" | ${TEE} ${LOCKFILE}
+	output_text ">>> Check for core packages consistency"
 
 	CORE=$(opnsense-version -n)
 	PROGRESS=
 
 	if [ -z "${CORE}" ]; then
-		echo "Could not determine core package name."
+		output_text "Could not determine core package name."
 		return
 	fi
 
 	if [ -z "$(${PKG} query %n ${CORE})" ]; then
-		echo "Core package \"${CORE}\" not known to package database." | ${TEE} ${LOCKFILE}
+		output_text "Core package \"${CORE}\" not known to package database."
 		return
 	fi
 
-	echo "Core package \"${CORE}\" at $(opnsense-version -v) has $(${PKG} query %#d ${CORE}) dependencies to check." | ${TEE} ${LOCKFILE}
+	output_text "Core package \"${CORE}\" at $(opnsense-version -v) has $(${PKG} query %#d ${CORE}) dependencies to check."
 
 	for DEP in $( (echo ${CORE}; ${PKG} query %dn ${CORE}) | sort -u); do
 		if [ -z "${PROGRESS}" ]; then
-			echo -n "Checking packages: ." | ${TEE} ${LOCKFILE}
+			output_text -n "Checking packages: ."
 			PROGRESS=1
 		else
-			echo -n "." | ${TEE} ${LOCKFILE}
+			output_text -n "."
 		fi
 
 		read REPO LVER AUTO VITA << EOF
@@ -153,33 +153,33 @@ EOF
 
 		if [ -z "${REPO}${LVER}${AUTO}${VITA}" ]; then
 			if [ -n "${PROGRESS}" ]; then
-				echo | ${TEE} ${LOCKFILE}
+				output_text
 			fi
-			echo "Package not installed: ${DEP}" | ${TEE} ${LOCKFILE}
+			output_text "Package not installed: ${DEP}"
 			PROGRESS=
 			continue
 		fi
 
 		if [ "${REPO}" != ${PRODUCT} ]; then
 			if [ -n "${PROGRESS}" ]; then
-				echo | ${TEE} ${LOCKFILE}
+				output_text
 			fi
-			echo "${DEP}-${LVER} repository mismatch: ${REPO}" | ${TEE} ${LOCKFILE}
+			output_text "${DEP}-${LVER} repository mismatch: ${REPO}"
 			PROGRESS=
 		fi
 
 		RVER=$(${PKG} rquery -r ${PRODUCT} %v ${DEP} 2> /dev/null)
 		if [ -z "${RVER}" ]; then
 			if [ -n "${PROGRESS}" ]; then
-				echo | ${TEE} ${LOCKFILE}
+				output_text
 			fi
-			echo "${DEP}-${LVER} has no upstream equivalent" | ${TEE} ${LOCKFILE}
+			output_text "${DEP}-${LVER} has no upstream equivalent"
 			PROGRESS=
 		elif [ "${RVER}" != "${LVER}" ]; then
 			if [ -n "${PROGRESS}" ]; then
-				echo | ${TEE} ${LOCKFILE}
+				output_text
 			fi
-			echo "${DEP}-${LVER} version mismatch, expected ${RVER}" | ${TEE} ${LOCKFILE}
+			output_text "${DEP}-${LVER} version mismatch, expected ${RVER}"
 			PROGRESS=
 		fi
 
@@ -200,27 +200,27 @@ EOF
 
 		if [ "${AUTO}" != ${AUTOEXPECT} ]; then
 			if [ -n "${PROGRESS}" ]; then
-				echo | ${TEE} ${LOCKFILE}
+				output_text
 			fi
-			echo "${DEP}-${LVER} is ${AUTOSET} to automatic" | ${TEE} ${LOCKFILE}
+			output_text "${DEP}-${LVER} is ${AUTOSET} to automatic"
 			PROGRESS=
 		fi
 
 		if [ "${VITA}" != ${VITAEXPECT} ]; then
 			if [ -n "${PROGRESS}" ]; then
-				echo | ${TEE} ${LOCKFILE}
+				output_text
 			fi
-			echo "${DEP}-${LVER} is ${VITASET} to vital" | ${TEE} ${LOCKFILE}
+			output_text "${DEP}-${LVER} is ${VITASET} to vital"
 			PROGRESS=
 		fi
 	done
 
 	if [ -n "${PROGRESS}" ]; then
-		echo " done" | ${TEE} ${LOCKFILE}
+		output_text " done"
 	fi
 }
 
-echo ">>> Root file system: $(mount | awk '$3 == "/" { print $1 }')" | ${TEE} ${LOCKFILE}
+output_text ">>> Root file system: $(mount | awk '$3 == "/" { print $1 }')"
 
 if [ -z "${CMD}" -o "${CMD}" = "kernel" ]; then
 	set_check kernel
@@ -231,36 +231,36 @@ if [ -z "${CMD}" -o "${CMD}" = "base" ]; then
 fi
 
 if [ -z "${CMD}" -o "${CMD}" = "repos" ]; then
-	echo ">>> Check installed repositories" | ${TEE} ${LOCKFILE}
-	(opnsense-verify -l 2>&1) | ${TEE} ${LOCKFILE}
+	output_text ">>> Check installed repositories"
+	output_cmd "opnsense-verify -l"
 fi
 
 if [ -z "${CMD}" -o "${CMD}" = "plugins" ]; then
-	echo ">>> Check installed plugins" | ${TEE} ${LOCKFILE}
+	output_text ">>> Check installed plugins"
 	PLUGINS=$(${PKG} query -g '%n %v' 'os-*' 2>&1)
 	if [ -n "${PLUGINS}" ]; then
-		(echo "${PLUGINS}") | ${TEE} ${LOCKFILE}
+		output_text "${PLUGINS}"
 	else
-		echo "No plugins found." | ${TEE} ${LOCKFILE}
+		output_text "No plugins found."
 	fi
 fi
 
 if [ -z "${CMD}" -o "${CMD}" = "locked" ]; then
-	echo ">>> Check locked packages" | ${TEE} ${LOCKFILE}
+	output_text ">>> Check locked packages"
 	LOCKED=$(${PKG} lock -lq 2>&1)
 	if [ -n "${LOCKED}" ]; then
-		(echo "${LOCKED}") | ${TEE} ${LOCKFILE}
+		output_text "${LOCKED}"
 	else
-		echo "No locks found." | ${TEE} ${LOCKFILE}
+		output_text "No locks found."
 	fi
 fi
 
 if [ -z "${CMD}" -o "${CMD}" = "packages" ]; then
-	echo ">>> Check for missing package dependencies" | ${TEE} ${LOCKFILE}
-	(${PKG} check -dan 2>&1) | ${TEE} ${LOCKFILE}
+	output_text ">>> Check for missing package dependencies"
+	output_cmd "${PKG} check -dan"
 
-	echo ">>> Check for missing or altered package files" | ${TEE} ${LOCKFILE}
-	(${PKG} check -sa 2>&1) | ${TEE} ${LOCKFILE}
+	output_text ">>> Check for missing or altered package files"
+	output_cmd "${PKG} check -sa"
 fi
 
 if [ -z "${CMD}" -o "${CMD}" = "core" ]; then
