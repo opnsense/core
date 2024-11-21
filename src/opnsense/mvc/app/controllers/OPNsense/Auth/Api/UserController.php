@@ -106,12 +106,12 @@ class UserController extends ApiMutableModelControllerBase
     public function searchAction()
     {
         $result = $this->searchBase('user');
-        if (!empty($result['rows'])){
+        if (!empty($result['rows'])) {
             /* XXX: this is a bit of a gimmick, for performance reasons we might decide to drop this at some point  */
             foreach ($result['rows'] as &$row) {
                 $row['is_admin'] = in_array('page-all', $this->getModel()->getUserPrivs($row['name'])) ? '1' : '0';
                 /* shells usually start with a /, prevent default text and translations triggering the warning */
-                $row['shell_warning'] = strpos($row['shell'], '/') === 0 && empty($row['is_admin']) ? '1' :'0';
+                $row['shell_warning'] = strpos($row['shell'], '/') === 0 && empty($row['is_admin']) ? '1' : '0';
             }
         }
         return $result;
@@ -155,7 +155,7 @@ class UserController extends ApiMutableModelControllerBase
         if ($result['result'] != 'failed') {
             $data = $this->request->getPost(static::$internalModelName);
             if (!empty($data['name'])) {
-                (new Backend())->configdRun('auth sync user '. $data['name']);
+                (new Backend())->configdRun('auth sync user ' . $data['name']);
             }
         }
         return $result;
@@ -167,7 +167,7 @@ class UserController extends ApiMutableModelControllerBase
         if ($result['result'] != 'failed') {
             $data = $this->request->getPost(static::$internalModelName);
             if (!empty($data['name'])) {
-                (new Backend())->configdRun('auth sync user '. $data['name']);
+                (new Backend())->configdRun('auth sync user ' . $data['name']);
             }
         }
         return $result;
@@ -196,7 +196,7 @@ class UserController extends ApiMutableModelControllerBase
         }
         $result = $this->delBase('user', $uuid);
         if ($username != null) {
-            (new Backend())->configdRun('auth sync user '. $username);
+            (new Backend())->configdRun('auth sync user ' . $username);
         }
         return $result;
     }
@@ -240,5 +240,4 @@ class UserController extends ApiMutableModelControllerBase
         }
         return ["result" => "failed"];
     }
-
 }

@@ -30,7 +30,6 @@ namespace OPNsense\Auth;
 
 class PrivController extends \OPNsense\Base\IndexController
 {
-
     public function indexAction()
     {
         $this->view->formDialogEditPriv = $this->getForm("dialogPriv");

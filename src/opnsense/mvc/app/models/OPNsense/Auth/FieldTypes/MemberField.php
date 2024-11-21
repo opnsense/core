@@ -44,7 +44,6 @@ class MemberField extends BaseListField
             foreach ((new User())->user->iterateItems() as $node) {
                 self::$uid_list[(string)$node->uid] = (string)$node->name;
             }
-
         }
         $this->internalOptionList = self::$uid_list;
     }

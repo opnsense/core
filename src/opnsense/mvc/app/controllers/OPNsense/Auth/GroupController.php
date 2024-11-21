@@ -30,7 +30,6 @@ namespace OPNsense\Auth;
 
 class GroupController extends \OPNsense\Base\IndexController
 {
-
     public function indexAction()
     {
         $this->view->formDialogEditGroup = $this->getForm("dialogGroup");

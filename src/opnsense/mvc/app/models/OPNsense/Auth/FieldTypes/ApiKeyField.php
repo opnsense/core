@@ -135,5 +135,3 @@ class ApiKeyField extends BaseField
         return $result;
     }
 }
-
-

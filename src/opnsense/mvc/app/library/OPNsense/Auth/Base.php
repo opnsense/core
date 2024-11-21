@@ -187,7 +187,7 @@ abstract class Base
             // update when changed
             if ($user == null && $createuser) {
                 // user creation when enabled
-                $add_user = json_decode((new Backend())->configdpRun("auth add user",[$username]), true);
+                $add_user = json_decode((new Backend())->configdpRun("auth add user", [$username]), true);
                 if (!empty($add_user) && $add_user['status'] == 'ok') {
                     Config::getInstance()->forceReload();
                     $user = $this->getUser($username);
@@ -228,7 +228,7 @@ abstract class Base
                 }
             }
             Config::getInstance()->save();
-            (new Backend())->configdpRun("auth user changed",[$username]);
+            (new Backend())->configdpRun("auth user changed", [$username]);
         }
     }
 

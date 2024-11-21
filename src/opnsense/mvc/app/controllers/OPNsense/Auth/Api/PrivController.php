@@ -34,7 +34,6 @@ use OPNsense\Auth\Group;
 use OPNsense\Core\ACL;
 use OPNsense\Core\Config;
 
-
 /**
  * Class PrivController
  * @package OPNsense\Auth\Api
@@ -117,9 +116,9 @@ class PrivController extends ApiMutableModelControllerBase
             $groupmdl = new Group();
             foreach ([$usermdl->user, $groupmdl->group] as $topic) {
                 if ($topic == $usermdl->user) {
-                   $uuids = explode(',', $mdl->users->getCurrentValue());
+                    $uuids = explode(',', $mdl->users->getCurrentValue());
                 } else {
-                   $uuids = explode(',', $mdl->groups->getCurrentValue());
+                    $uuids = explode(',', $mdl->groups->getCurrentValue());
                 }
                 foreach ($topic->iterateItems() as $uuid => $item) {
                     $privlist = array_filter(explode(',', $item->priv->getCurrentValue()));
@@ -139,5 +138,4 @@ class PrivController extends ApiMutableModelControllerBase
         }
         return $result;
     }
-
 }

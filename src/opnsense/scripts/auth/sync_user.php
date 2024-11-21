@@ -73,7 +73,7 @@ if (isset($opts['h']) || empty($opts['u'])) {
     if ($update_user) {
         local_user_set($update_user, false, $localusers[$username] ?? []);
         /* signal backend that the user has changed. (update groups) */
-        mwexecf('/usr/local/sbin/pluginctl -c user_changed '. $username);
+        mwexecf('/usr/local/sbin/pluginctl -c user_changed ' . $username);
         echo json_encode(["status" => "updated"]);
     } else {
         echo json_encode(["status" => "not_found"]);

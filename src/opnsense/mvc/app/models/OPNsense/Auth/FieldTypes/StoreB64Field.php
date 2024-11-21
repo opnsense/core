@@ -53,5 +53,3 @@ class StoreB64Field extends TextField
         }
     }
 }
-
-

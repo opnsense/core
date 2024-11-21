@@ -69,7 +69,7 @@ class GroupController extends ApiMutableModelControllerBase
         $result = $this->addBase('group', 'group');
         if ($result['result'] != 'failed') {
             $data = $this->request->getPost(static::$internalModelName);
-            (new Backend())->configdRun('auth sync group '. $data['name']);
+            (new Backend())->configdRun('auth sync group ' . $data['name']);
         }
         return $result;
     }
@@ -79,7 +79,7 @@ class GroupController extends ApiMutableModelControllerBase
         $result = $this->setBase('group', 'group', $uuid);
         if ($result['result'] != 'failed') {
             $data = $this->request->getPost(static::$internalModelName);
-            (new Backend())->configdRun('auth sync group '. $data['name']);
+            (new Backend())->configdRun('auth sync group ' . $data['name']);
         }
         return $result;
     }
@@ -99,7 +99,7 @@ class GroupController extends ApiMutableModelControllerBase
         }
         $result = $this->delBase('group', $uuid);
         if ($groupname != null) {
-            (new Backend())->configdRun('auth sync group '. $groupname);
+            (new Backend())->configdRun('auth sync group ' . $groupname);
         }
         return $result;
     }

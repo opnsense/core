@@ -57,7 +57,7 @@ class GidField extends IntegerField
             foreach ($this->getParentModel()->group->iterateItems() as $group) {
                 $gids[] = (int)$group->gid->getCurrentValue();
             }
-            for ($i=2000; true; $i++) {
+            for ($i = 2000; true; $i++) {
                 if (!in_array($i, $gids)) {
                     parent::setValue((string)$i);
                     break;
@@ -107,5 +107,3 @@ class GidField extends IntegerField
         return $validators;
     }
 }
-
-

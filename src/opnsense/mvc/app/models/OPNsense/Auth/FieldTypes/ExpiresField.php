@@ -78,5 +78,3 @@ class ExpiresField extends TextField
         return $validators;
     }
 }
-
-

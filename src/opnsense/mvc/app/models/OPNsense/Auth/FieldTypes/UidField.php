@@ -57,7 +57,7 @@ class UidField extends IntegerField
             foreach ($this->getParentModel()->user->iterateItems() as $user) {
                 $uids[] = (int)$user->uid->getCurrentValue();
             }
-            for ($i=2000; true; $i++) {
+            for ($i = 2000; true; $i++) {
                 if (!in_array($i, $uids)) {
                     parent::setValue((string)$i);
                     break;
@@ -107,5 +107,3 @@ class UidField extends IntegerField
         return $validators;
     }
 }
-
-
