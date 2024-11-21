@@ -601,17 +601,19 @@
         </patterns>
     </page-system-generalsetup>
     <page-system-groupmanager>
-        <name>System: Group manager</name>
+        <name>System: Access: Groups</name>
         <patterns>
-            <pattern>system_groupmanager.php*</pattern>
+            <pattern>ui/auth/group</pattern>
+            <pattern>api/auth/group/*</pattern>
         </patterns>
     </page-system-groupmanager>
-    <page-system-groupmanager-addprivs>
-        <name>System: Group Manager: Add Privileges</name>
+    <page-system-usermanager-addprivs>
+        <name>System: Access: Privileges</name>
         <patterns>
-            <pattern>system_usermanager_addprivs.php?group*</pattern>
+            <pattern>ui/auth/priv</pattern>
+            <pattern>api/auth/priv/*</pattern>
         </patterns>
-    </page-system-groupmanager-addprivs>
+    </page-system-usermanager-addprivs>
     <page-system-hasync>
         <name>System: High Availability</name>
         <patterns>
@@ -633,18 +635,12 @@
         </patterns>
     </page-system-staticroutes>
     <page-system-usermanager>
-        <name>System: User Manager</name>
+        <name>System: Access: Users</name>
         <patterns>
-            <pattern>system_usermanager.php*</pattern>
-            <pattern>system_usermanager_import_ldap.php*</pattern>
+            <pattern>ui/auth/user</pattern>
+            <pattern>api/auth/user/*</pattern>
         </patterns>
     </page-system-usermanager>
-    <page-system-usermanager-addprivs>
-        <name>System: User Manager: Add Privileges</name>
-        <patterns>
-            <pattern>system_usermanager_addprivs.php?user*</pattern>
-        </patterns>
-    </page-system-usermanager-addprivs>
     <page-system-usermanager-passwordmg>
         <name>Lobby: Password</name>
         <patterns>

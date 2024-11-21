@@ -29,6 +29,7 @@
 namespace OPNsense\Auth;
 
 use OPNsense\Core\Config;
+use OPNsense\Auth\User;
 
 /**
  * Class API key/secret database connector (connect to legacy xml structure).
@@ -39,7 +40,7 @@ class API extends Base implements IAuthConnector
     /**
      * @var array internal list of authentication properties
      */
-    private $lastAuthProperties = array();
+    private $lastAuthProperties = [];
 
     /**
      * type name in configuration
@@ -69,63 +70,6 @@ class API extends Base implements IAuthConnector
     }
 
     /**
-     * generate a new api key for an existing user
-     * @param $username username
-     * @return array|null apikey/secret pair
-     */
-    public function createKey($username)
-    {
-        $configObj = Config::getInstance()->object();
-        foreach ($configObj->system->children() as $key => $value) {
-            if ($key == 'user' && (string)$username == (string)$value->name) {
-                if (!isset($value->apikeys)) {
-                    $apikeys = $value->addChild('apikeys');
-                } else {
-                    $apikeys = $value->apikeys;
-                }
-                $item = $apikeys->addChild('item');
-
-                $newKey = base64_encode(random_bytes(60));
-                $newSecret = base64_encode(random_bytes(60));
-
-                $item->addChild('key', $newKey);
-                $item->addChild('secret', crypt($newSecret, '$6$'));
-                Config::getInstance()->save();
-                $response = array('key' => $newKey, 'secret' => $newSecret);
-                return $response;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * remove user api key
-     * @param string $username username
-     * @param string $apikey api key
-     * @return bool key found
-     */
-    public function dropKey($username, $apikey)
-    {
-        $configObj = Config::getInstance()->object();
-        foreach ($configObj->system->children() as $key => $value) {
-            if ($key == 'user' && (string)$username == (string)$value->name) {
-                if (isset($value->apikeys)) {
-                    $indx = 0;
-                    foreach ($value->apikeys->children() as $apiNodeId => $apiNode) {
-                        if ($apiNodeId == 'item' && (string)$apiNode->key == $apikey) {
-                            unset($value->apikeys->item[$indx]);
-                            Config::getInstance()->save();
-                            return true;
-                        }
-                        $indx++;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
      * authenticate user against local database (in config.xml)
      * @param string $username username to authenticate
      * @param string $password user password
@@ -134,47 +78,74 @@ class API extends Base implements IAuthConnector
     public function _authenticate($username, $password)
     {
         // reset auth properties
-        $this->lastAuthProperties = array();
+        $this->lastAuthProperties = [];
 
         // search local user in database
-        $configObj = Config::getInstance()->object();
-        $userObject = null;
-        $apiKey = null;
-        $apiSecret = null;
-        foreach ($configObj->system->children() as $key => $value) {
-            if ($key == 'user') {
-                if (!empty($value->apikeys)) {
-                    foreach ($value->apikeys->children() as $apikey) {
-                        if (!empty($apikey->key) &&  (string)$apikey->key == $username) {
-                            // api key found, stop search
-                            $userObject = $value;
-                            $apiSecret = (string)$apikey->secret;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
+        $userinfo = (new User())->getApiKeySecret($username);
 
-        if ($userObject != null) {
-            if (!empty((string)$userObject->disabled)) {
+        if ($userinfo != null) {
+            if (!empty($userinfo['disabled'])) {
                 // disabled user
                 return false;
             }
             if (
-                !empty($userObject->expires)
-                && strtotime("-1 day") > strtotime(date("m/d/Y", strtotime((string)$userObject->expires)))
+                !empty($userinfo['expires'])
+                && strtotime("-1 day") > strtotime(date("m/d/Y", strtotime($userinfo['expires'])))
             ) {
                 // expired user
                 return false;
             }
-            if (password_verify($password, $apiSecret)) {
+            if (password_verify($password, $userinfo['secret'])) {
                 // password ok, return successfully authentication
-                $this->lastAuthProperties['username'] = (string)$userObject->name;
+                $this->lastAuthProperties['username'] = $userinfo['name'];
                 return true;
             }
         }
 
+        return false;
+    }
+
+    /**
+     * generate a new api key for an existing user, backwards compatibility stub
+     * @param $username username
+     * @return array|null apikey/secret pair
+     */
+    public function createKey($username)
+    {
+        Config::getInstance()->lock();
+        $mdl = new \OPNsense\Auth\User();
+        $user = $mdl->getUserByName($username);
+        if ($user) {
+            $tmp = $user->apikeys->add();
+            if (!empty($tmp)) {
+                $mdl->serializeToConfig(false, true);
+                Config::getInstance()->save();
+                return $tmp;
+            }
+        }
+        Config::getInstance()->unlock();
+        return false;
+    }
+
+    /**
+     * remove user api key, backwards compatibility stub
+     * @param string $username username
+     * @param string $apikey api key
+     * @return bool key found
+     */
+    public function dropKey($username, $apikey)
+    {
+        Config::getInstance()->lock();
+        $mdl = new \OPNsense\Auth\User();
+        $user = $mdl->getUserByName($username);
+        if ($user) {
+            if ($user->apikeys->del($apikey)) {
+                $mdl->serializeToConfig(false, true);
+                Config::getInstance()->save();
+                return true;
+            }
+        }
+        Config::getInstance()->unlock();
         return false;
     }
 }

@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2021 Deciso B.V.
+ * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,53 +27,55 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once('script/load_phalcon.php');
-require_once('legacy_bindings.inc');
-use OPNsense\Core\Config;
-use OPNsense\Auth\User;
+require_once("auth.inc");
+require_once("config.inc");
 
-$opts = getopt('hu:o', array(), $optind);
+$opts = getopt('hu:', [], $optind);
 $args = array_slice($argv, $optind);
-
 if (isset($opts['h']) || empty($opts['u'])) {
-    echo "Usage: add_user.php [-h] \n";
+    echo "Usage: sync_user.php [-h] \n";
     echo "\t-h show this help text and exit\n";
     echo "\t-u [required] username\n";
-    echo "\t-o origin (default=automation)";
     exit(-1);
 } else {
-    Config::getInstance()->lock();
-    $input_errors = [];
-    $usermdl = new User();
-    $user = $usermdl->user->Add();
-    $user->name = $opts['u'];
-    $user->scope = !empty($opts['o']) ? $opts['o'] : 'automation';
+    $username = $opts['u'];
+    $a_user = &config_read_array('system', 'user');
 
-    /* generate a random password */
-    $password = random_bytes(50);
-    while (($i = strpos($password, "\0")) !== false) {
-        $password[$i] = random_bytes(1);
-    }
-    $hash = $usermdl->generatePasswordHash($password);
-    if ($hash !== false && strpos($hash, '$') === 0) {
-        /* model validation won't pass when no password is offered */
-        $user->password = $hash;
-    }
-
-    $valMsgs = $usermdl->performValidation();
-    foreach ($valMsgs as $field => $msg) {
-        if (strpos($msg->getField(), $user->__reference) !== false) {
-            $input_errors[] = $msg->getMessage();
+    $localusers = [];
+    exec("/usr/sbin/pw usershow -a", $data, $ret);
+    if (!$ret) {
+        foreach ($data as $record) {
+            $line = explode(':', $record);
+            // filter system managed users
+            if (count($line) < 3 ||  !strncmp($line[0], '_', 1) || ($line[2] < 2000 && $line[0] != 'root') || $line[2] > 65000) {
+                continue;
+            }
+            $localusers[$line[0]] = $line;
         }
     }
-    if (empty($input_errors)) {
-        if ($usermdl->serializeToConfig(false, true)) {
-            Config::getInstance()->save();
+
+    $update_user = null;
+    $userdb = [];
+    foreach ($a_user as $userent) {
+        $userdb[] = $userent['name'];
+        if ($userent['name'] == $username) {
+            $update_user = $userent;
         }
-        configdp_run('auth user changed', [$userent['name']]);
-        echo json_encode(["status" => "ok", "uid" => (string)$user->uid, "name" => (string)$user->name]);
+    }
+
+    /* rename/delete situations */
+    foreach ($localusers as $item) {
+        if (!in_array($item[0], $userdb)) {
+            mwexecf('/usr/sbin/pw userdel -n %s', [$item[0]]);
+        }
+    }
+    /* add or update when found */
+    if ($update_user) {
+        local_user_set($update_user, false, $localusers[$username] ?? []);
+        /* signal backend that the user has changed. (update groups) */
+        mwexecf('/usr/local/sbin/pluginctl -c user_changed '. $username);
+        echo json_encode(["status" => "updated"]);
     } else {
-        echo json_encode(["status" => "failed", "messages" => $input_errors]);
-        Config::getInstance()->unlock();
+        echo json_encode(["status" => "not_found"]);
     }
 }
