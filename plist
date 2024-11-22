@@ -1108,7 +1108,6 @@
 /usr/local/opnsense/scripts/firmware/security.sh
 /usr/local/opnsense/scripts/firmware/sync.sh
 /usr/local/opnsense/scripts/firmware/sync.subr.sh
-/usr/local/opnsense/scripts/firmware/tests.sh
 /usr/local/opnsense/scripts/firmware/unlock.sh
 /usr/local/opnsense/scripts/firmware/update.sh
 /usr/local/opnsense/scripts/firmware/upgrade.sh

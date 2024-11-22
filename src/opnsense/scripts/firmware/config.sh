@@ -53,7 +53,6 @@ remove
 resync
 security
 sync
-tests
 unlock
 update
 upgrade
