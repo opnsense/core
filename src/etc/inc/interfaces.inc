@@ -2037,29 +2037,7 @@ EOD;
             fwrite($fd_set, "{$wpa_supplicant} -B -i {$if} -c /var/etc/wpa_supplicant_{$if}.conf\n");
         }
         if ($wlcfg['mode'] == "hostap") {
-            /* add line to script to restore old mac to make hostapd happy */
-            if (file_exists("/tmp/{$if}_oldmac")) {
-                $if_oldmac = file_get_contents("/tmp/{$if}_oldmac");
-                if (is_macaddr($if_oldmac)) {
-                    fwrite($fd_set, "{$ifconfig} " . escapeshellarg($if) .
-                        " link " . escapeshellarg($if_oldmac) . "\n");
-                }
-            }
-
             fwrite($fd_set, "{$hostapd} -B -P /var/run/hostapd_{$if}.pid /var/etc/hostapd_{$if}.conf\n");
-
-            /* add line to script to restore spoofed mac after running hostapd */
-            if (file_exists("/tmp/{$if}_oldmac")) {
-                if ($wancfg['spoofmac']) {
-                    $if_curmac = $wancfg['spoofmac'];
-                } else {
-                    $if_curmac = get_interface_mac($if);
-                }
-                if (is_macaddr($if_curmac)) {
-                    fwrite($fd_set, "{$ifconfig} " . escapeshellarg($if) .
-                        " link " . escapeshellarg($if_curmac) . "\n");
-                }
-            }
         }
     }
 
