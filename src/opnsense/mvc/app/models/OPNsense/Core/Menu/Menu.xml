@@ -86,34 +86,7 @@
             <Services url="/ui/core/service"/>
         </Diagnostics>
     </System>
-    <Interfaces order="30" cssClass="fa fa-sitemap">
-        <Assignments url="/interfaces_assign.php" cssClass="fa fa-pencil fa-fw"/>
-        <Devices cssClass="fa fa-archive fa-fw">
-            <Bridge url="/interfaces_bridge.php">
-                <Edit url="/interfaces_bridge_edit.php*" visibility="hidden"/>
-            </Bridge>
-            <GIF url="/ui/interfaces/gif"/>
-            <GRE url="/ui/interfaces/gre"/>
-            <PPP VisibleName="Point-to-Point" url="/interfaces_ppps.php">
-                <Edit url="/interfaces_ppps_edit.php*" visibility="hidden"/>
-            </PPP>
-        </Devices>
-        <Neighbors url="/ui/interfaces/neighbor" cssClass="fa fa-users fa-fw"/>
-        <Overview url="/ui/interfaces/overview" cssClass="fa fa-tasks fa-fw"/>
-        <Settings url="/system_advanced_network.php" cssClass="fa fa-cogs fa-fw"/>
-        <Wireless cssClass="fa fa-wifi fa-fw">
-            <Devices url="/interfaces_wireless.php">
-                <Edit url="/interfaces_wireless_edit.php*" visibility="hidden"/>
-            </Devices>
-        </Wireless>
-        <Diagnostics order="100" cssClass="fa fa-medkit fa-fw">
-            <DNSLookup VisibleName="DNS Lookup" url="/ui/diagnostics/dns_diagnostics"/>
-            <PacketCapture VisibleName="Packet Capture" url="/ui/diagnostics/packet_capture"/>
-            <Ping url="/ui/diagnostics/ping"/>
-            <TestPort VisibleName="Port Probe" url="/ui/diagnostics/portprobe"/>
-            <Traceroute VisibleName="Trace Route" url="/ui/diagnostics/traceroute"/>
-        </Diagnostics>
-    </Interfaces>
+    <Interfaces order="30" cssClass="fa fa-sitemap"/>
     <Firewall order="40" cssClass="glyphicon glyphicon-fire">
         <Aliases url="/ui/firewall/alias" cssClass="fa fa-list-alt fa-fw">
             <Edit url="/ui/firewall/alias/*" visibility="hidden"/>
