@@ -166,15 +166,6 @@ function dpinger_configure_do($verbose = false, $gwname_map = null)
 
         $gwifip = null;
 
-        /*
-         * Interface IP is needed since dpinger will bind a socket to it.
-         * However the config GUI should already have checked this and when
-         * PPPoE is used the IP address is set to "dynamic".  So using
-         * is_ipaddrv4() or is_ipaddrv6() to identify packet type would be
-         * wrong, especially as further checks (that can cope with the
-         * "dynamic" case) are present inside the if block.  So using
-         * $gateway['ipprotocol'] is the better option.
-         */
         if ($gateway['ipprotocol'] == 'inet') {
             if (is_ipaddrv4($gateway['gateway'])) {
                 foreach (interfaces_addresses($gateway['interface'], false, $ifconfig_details) as $addr) {
