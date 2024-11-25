@@ -607,13 +607,6 @@
             <pattern>api/auth/group/*</pattern>
         </patterns>
     </page-system-groupmanager>
-    <page-system-usermanager-addprivs>
-        <name>System: Access: Privileges</name>
-        <patterns>
-            <pattern>ui/auth/priv</pattern>
-            <pattern>api/auth/priv/*</pattern>
-        </patterns>
-    </page-system-usermanager-addprivs>
     <page-system-hasync>
         <name>System: High Availability</name>
         <patterns>
@@ -641,6 +634,13 @@
             <pattern>api/auth/user/*</pattern>
         </patterns>
     </page-system-usermanager>
+    <page-system-usermanager-addprivs>
+        <name>System: Access: Privileges</name>
+        <patterns>
+            <pattern>ui/auth/priv</pattern>
+            <pattern>api/auth/priv/*</pattern>
+        </patterns>
+    </page-system-usermanager-addprivs>
     <page-system-usermanager-passwordmg>
         <name>Lobby: Password</name>
         <patterns>
