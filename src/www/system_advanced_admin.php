@@ -800,8 +800,7 @@ $(document).ready(function() {
                   <input name="sshpasswordauth" type="checkbox" value="yes" <?= empty($pconfig['sshpasswordauth']) ? '' : 'checked="checked"' ?> />
                   <?=gettext("Permit password login"); ?>
                   <div class="hidden" data-for="help_for_sshpasswordauth">
-                    <?=sprintf(gettext("When disabled, authorized keys need to be configured for each %sUser%s that has been granted secure shell access."),
-                              '<a href="system_usermanager.php">', '</a>') ?>
+                    <?= gettext('When disabled, authorized keys need to be configured for each user that has been granted secure shell access.') ?>
                   </div>
                 </td>
               </tr>
