@@ -1316,10 +1316,6 @@ if (!interface_ppps_capable($a_interfaces[$if], $a_ppps)) {
     /* do not offer these raw types as a transition back from PPP */
     $types4['staticv4'] = gettext('Static IPv4');
     $types4['dhcp'] = gettext('DHCP');
-
-    /* XXX only offer PPPoE for inline creation */
-    $types4['pppoe'] = gettext('PPPoE');
-    $types6['pppoev6'] = gettext('PPPoEv6');
 } else {
     switch ($a_ppps[$pppid]['type']) {
         case 'ppp':
