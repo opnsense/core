@@ -339,6 +339,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     }
 
+    /* locate PPP details (if any) */
+    $pppid = count($a_ppps);
+    foreach ($a_ppps as $key => $ppp) {
+        if ($a_interfaces[$if]['if'] == $ppp['if']) {
+            $pppid = $key;
+            break;
+        }
+    }
+
     $pconfig = [];
     $std_copy_fieldnames = [
         'adv_dhcp6_authentication_statement_algorithm',
@@ -435,6 +444,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dhcp6_ifid--hex'] = isset($pconfig['dhcp6_ifid']) && $pconfig['dhcp6_ifid'] != '' ? sprintf("%x", $pconfig['dhcp6_ifid']) : '';
     $pconfig['dhcpd6track6allowoverride'] = isset($a_interfaces[$if]['dhcpd6track6allowoverride']);
 
+    $pconfig['ports'] = isset($a_ppps[$pppid]['ports']) ? $a_ppps[$pppid]['ports'] : null;
+
     // ipv4 type (from ipaddr)
     if (is_ipaddrv4($pconfig['ipaddr'])) {
         $pconfig['type'] = "staticv4";
@@ -457,41 +468,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['type6'] = $pconfig['ipaddrv6'];
         }
         $pconfig['ipaddrv6'] = null;
-    }
-
-    /* locate PPP details (if any) */
-    $pppid = count($a_ppps);
-    foreach ($a_ppps as $key => $ppp) {
-        if ($a_interfaces[$if]['if'] == $ppp['if']) {
-            $pppid = $key;
-            break;
-        }
-    }
-
-    $std_ppp_copy_fieldnames = array("ptpid", "ports", "username", "phone", "apn", "provider", "idletimeout", "localip", 'hostuniq');
-    foreach ($std_ppp_copy_fieldnames as $fieldname) {
-        $pconfig[$fieldname] = isset($a_ppps[$pppid][$fieldname]) ? $a_ppps[$pppid][$fieldname] : null;
-    }
-
-    $pconfig['password'] = base64_decode($a_ppps[$pppid]['password']); // ppp password field
-    $pconfig['pppoe_dialondemand'] = isset($a_ppps[$pppid]['ondemand']);
-    $pconfig['pptp_dialondemand'] = isset($a_ppps[$pppid]['ondemand']);
-    $pconfig['pppoe_password'] = $pconfig['password']; // pppoe password field
-    $pconfig['pppoe_username'] = $pconfig['username'];
-    $pconfig['pppoe_hostuniq'] = $pconfig['hostuniq'];
-    $pconfig['pppoe_idletimeout'] = $pconfig['idletimeout'];
-
-    $pconfig['pptp_username'] = $pconfig['username'];
-    $pconfig['pptp_password'] = $pconfig['password'];
-    $pconfig['pptp_subnet'] = $a_ppps[$pppid]['subnet'];
-    $pconfig['pptp_remote'] = $a_ppps[$pppid]['gateway'];
-    $pconfig['pptp_idletimeout'] = $a_ppps[$pppid]['timeout'];
-
-    if (isset($a_ppps[$pppid])) {
-        $pconfig['pppid'] = $pppid;
-    } else {
-        $pconfig['ptpid'] = interfaces_ptpid_next();
-        $pppid = count($a_ppps);
     }
 
     if (isset($a_interfaces[$if]['wireless'])) {
@@ -562,6 +538,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     $ifgroup = !empty($_GET['group']) ? $_GET['group'] : '';
 
+    /* locate PPP details (if any) */
+    $pppid = count($a_ppps);
+    foreach ($a_ppps as $key => $ppp) {
+        if ($a_interfaces[$if]['if'] == $ppp['if']) {
+            $pppid = $key;
+            break;
+        }
+    }
+
+    $pconfig['ports'] = isset($a_ppps[$pppid]['ports']) ? $a_ppps[$pppid]['ports'] : null;
+
     if (!empty($pconfig['apply'])) {
         if (!is_subsystem_dirty('interfaces')) {
             $intput_errors[] = gettext("You have already applied your settings!");
@@ -624,17 +611,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         exit;
     } else {
-        // locate sequence in ppp list
-        $pppid = count($a_ppps);
-        foreach ($a_ppps as $key => $ppp) {
-            if ($a_interfaces[$if]['if'] == $ppp['if']) {
-                $pppid = $key;
-                break;
-            }
-        }
-
-        $old_ppps = $a_ppps;
-
         foreach ($ifdescrs as $ifent => $ifcfg) {
             if ($if != $ifent && $ifcfg['descr'] == $pconfig['descr']) {
                 $input_errors[] = gettext("An interface with the specified description already exists.");
@@ -677,41 +653,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if (!empty($pconfig['adv_dhcp_config_file_override'] && !file_exists($pconfig['adv_dhcp_config_file_override_path']))) {
                     $input_errors[] = sprintf(gettext('The DHCP override file "%s" does not exist.'), $pconfig['adv_dhcp_config_file_override_path']);
                 }
-                break;
-            case "ppp":
-                $reqdfields = explode(" ", "phone");
-                $reqdfieldsn = array(gettext("Modem Port"),gettext("Phone Number"));
-                do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
-                break;
-            case "pppoe":
-                if (!empty($pconfig['pppoe_dialondemand'])) {
-                    $reqdfields = explode(" ", "pppoe_username pppoe_password pppoe_dialondemand pppoe_idletimeout");
-                    $reqdfieldsn = array(gettext("PPPoE username"),gettext("PPPoE password"),gettext("Dial on demand"),gettext("Idle timeout value"));
-                } else {
-                    $reqdfields = explode(" ", "pppoe_username pppoe_password");
-                    $reqdfieldsn = array(gettext("PPPoE username"),gettext("PPPoE password"));
-                }
-                do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
-                break;
-            case "pptp":
-                if (!empty($pconfig['pptp_dialondemand'])) {
-                    $reqdfields = explode(" ", "pptp_username pptp_password localip pptp_subnet pptp_remote pptp_dialondemand pptp_idletimeout");
-                    $reqdfieldsn = array(gettext("PPTP username"),gettext("PPTP password"),gettext("PPTP local IP address"),gettext("PPTP subnet"),gettext("PPTP remote IP address"),gettext("Dial on demand"),gettext("Idle timeout value"));
-                } else {
-                    $reqdfields = explode(" ", "pptp_username pptp_password localip pptp_subnet pptp_remote");
-                    $reqdfieldsn = array(gettext("PPTP username"),gettext("PPTP password"),gettext("PPTP local IP address"),gettext("PPTP subnet"),gettext("PPTP remote IP address"));
-                }
-                do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
-                break;
-            case "l2tp":
-                if (!empty($pconfig['pptp_dialondemand'])) {
-                    $reqdfields = explode(" ", "pptp_username pptp_password pptp_remote pptp_dialondemand pptp_idletimeout");
-                    $reqdfieldsn = array(gettext("L2TP username"),gettext("L2TP password"),gettext("L2TP remote IP address"),gettext("Dial on demand"),gettext("Idle timeout value"));
-                } else {
-                    $reqdfields = explode(" ", "pptp_username pptp_password pptp_remote");
-                    $reqdfieldsn = array(gettext("L2TP username"),gettext("L2TP password"),gettext("L2TP remote IP address"));
-                }
-                do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
                 break;
         }
 
@@ -898,28 +839,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = gettext("A valid gateway must be specified.");
             }
         }
-        if (!empty($pconfig['provider']) && !is_domain($pconfig['provider'])){
-            $input_errors[] = gettext("The service name contains invalid characters.");
-        }
-        if (!empty($pconfig['pppoe_idletimeout']) && !is_numericint($pconfig['pppoe_idletimeout'])) {
-            $input_errors[] = gettext("The idle timeout value must be an integer.");
-        }
 
-        if (!empty($pconfig['localip']) && !is_ipaddrv4($pconfig['localip'])) {
-            $input_errors[] = gettext("A valid PPTP local IP address must be specified.");
-        }
-        if (!empty($pconfig['pptp_subnet']) && !is_numeric($pconfig['pptp_subnet'])) {
-            $input_errors[] = gettext("A valid PPTP subnet bit count must be specified.");
-        }
-        if (!empty($pconfig['pptp_remote']) && !is_ipaddrv4($pconfig['pptp_remote']) && !is_hostname($pconfig['gateway'][$iface])) {
-            $input_errors[] = gettext("A valid PPTP remote IP address must be specified.");
-        }
-        if (!empty($pconfig['pptp_idletimeout']) && !is_numericint($pconfig['pptp_idletimeout'])) {
-            $input_errors[] = gettext("The idle timeout value must be an integer.");
-        }
         if (!empty($pconfig['spoofmac']) && !is_macaddr($pconfig['spoofmac'])) {
             $input_errors[] = gettext("A valid MAC address must be specified.");
         }
+
         if (!empty($pconfig['mtu'])) {
             $mtu_low = 576;
             $mtu_high = 65535;
@@ -1039,7 +963,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $old_config['realif'] = get_real_interface($if);
             $old_config['realifv6'] = get_real_interface($if, "inet6");
             $new_config = array();
-            $new_ppp_config = !empty($a_ppps[$pppid]) ? $a_ppps[$pppid] : [];
 
             // copy physical interface data (wireless is a strange case, partly managed via interface_sync_wireless_clones)
             $new_config['if'] = $old_config['if'];
@@ -1109,58 +1032,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         $new_config['dhcpvlanprio'] = $pconfig['dhcpvlanprio'];
                     }
                     break;
-                case "ppp":
-                    $new_config['if'] = $pconfig['type'] . $pconfig['ptpid'];
+                case 'l2tp':
+                case 'ppp':
+                case 'pppoe':
+                case 'pptp':
                     $new_config['ipaddr'] = $pconfig['type'];
-                    $new_ppp_config['ptpid'] = $pconfig['ptpid'];
-                    $new_ppp_config['type'] = $pconfig['type'];
-                    $new_ppp_config['if'] = $pconfig['type'].$pconfig['ptpid'];
-                    $new_ppp_config['ports'] = $pconfig['ports'];
-                    $new_ppp_config['username'] = $pconfig['username'];
-                    $new_ppp_config['password'] = base64_encode($pconfig['password']);
-                    $new_ppp_config['phone'] = $pconfig['phone'];
-                    $new_ppp_config['apn'] = $pconfig['apn'];
-                    break;
-                case "pppoe":
-                    $new_config['if'] = $pconfig['type'].$pconfig['ptpid'];
-                    $new_config['ipaddr'] = $pconfig['type'];
-                    $new_ppp_config['ptpid'] = $pconfig['ptpid'];
-                    $new_ppp_config['type'] = $pconfig['type'];
-                    $new_ppp_config['if'] = $pconfig['type'].$pconfig['ptpid'];
-                    /* XXX inline creation */
-                    if (!empty($pconfig['ports'])) {
-                        $new_ppp_config['ports'] = $pconfig['ports'];
-                    } else {
-                        $new_ppp_config['ports'] = $old_config['if'];
-                    }
-                    $new_ppp_config['username'] = $pconfig['pppoe_username'];
-                    $new_ppp_config['password'] = base64_encode($pconfig['pppoe_password']);
-                    $new_ppp_config['provider'] = $pconfig['provider'];
-                    if (!empty($pconfig['pppoe_hostuniq'])) {
-                        $new_ppp_config['hostuniq'] = $pconfig['pppoe_hostuniq'];
-                    }
-                    $new_ppp_config['ondemand'] = !empty($pconfig['pppoe_dialondemand']);
-                    if (!empty($pconfig['pppoe_idletimeout'])) {
-                        $new_ppp_config['idletimeout'] = $pconfig['pppoe_idletimeout'];
-                    }
-                    break;
-                case "pptp":
-                case "l2tp":
-                    $new_config['if'] = $pconfig['type'].$pconfig['ptpid'];
-                    $new_config['ipaddr'] = $pconfig['type'];
-                    $new_ppp_config['ptpid'] = $pconfig['ptpid'];
-                    $new_ppp_config['type'] = $pconfig['type'];
-                    $new_ppp_config['if'] = $pconfig['type'].$pconfig['ptpid'];
-                    $new_ppp_config['ports'] = $pconfig['ports'];
-                    $new_ppp_config['username'] = $pconfig['pptp_username'];
-                    $new_ppp_config['password'] = base64_encode($pconfig['pptp_password']);
-                    $new_ppp_config['localip'] = $pconfig['localip'];
-                    $new_ppp_config['subnet'] = $pconfig['pptp_subnet'];
-                    $new_ppp_config['gateway'] = $pconfig['pptp_remote'];
-                    $new_ppp_config['ondemand'] = !empty($pconfig['pptp_dialondemand']);
-                    if (!empty($pconfig['pptp_idletimeout'])) {
-                        $new_ppp_config['idletimeout'] = $pconfig['pptp_idletimeout'];
-                    }
                     break;
             }
 
@@ -1375,15 +1251,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
 
-            if (count($new_ppp_config) > 0) {
-                // ppp details changed
-                $a_ppps[$pppid] = $new_ppp_config;
-            } elseif (!empty($a_ppps[$pppid])) {
-                // ppp removed
-                $new_config['if'] = $a_ppps[$pppid]['ports'];
-                unset($a_ppps[$pppid]);
-            }
-
             // save interface details
             $a_interfaces[$if] = $new_config;
 
@@ -1401,7 +1268,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (empty($toapplylist[$if])) {
                 // only flush if the running config is not in our list yet
                 $toapplylist[$if]['ifcfg'] = $old_config;
-                $toapplylist[$if]['ppps'] = $old_ppps;
+                $toapplylist[$if]['ppps'] = $a_ppps;
                 file_put_contents('/tmp/.interfaces.apply', serialize($toapplylist));
             }
 
@@ -1559,42 +1426,21 @@ include("head.inc");
       $("#ieee8021x").click(toggle_wirelesscfg);
       toggle_allcfg();
 
-      //
-      $("#type").change(function(){
-          $('#staticv4, #dhcp, #pppoe, #pptp, #ppp').hide();
-          if ($(this).val() == "l2tp") {
-              $("#pptp").show();
+      $("#type").change(function () {
+          $('#staticv4, #dhcp, #ppp').hide();
+          if ($(this).val() == 'l2tp' || $(this).val() == 'pptp' || $(this).val() == 'pppoe') {
+              $("#ppp").show();
           } else {
               $("#" +$(this).val()).show();
           }
           switch ($(this).val()) {
-            case "ppp": {
-              $('#country').children().remove();
-              $('#provider_list').children().remove();
-              $('#providerplan').children().remove();
-              $.ajax("getserviceproviders.php",{
-                success: function(response) {
-                  var responseTextArr = response.split("\n");
-                  responseTextArr.sort();
-                  $.each(responseTextArr, function(index, value) {
-                    let country = value.split(':');
-                    $('#country').append(new Option(country[0], country[1]));
-                  });
-                }
-              });
-              $('#trcountry').removeClass("hidden");
-              $("#mtu_calc").show();
-              break;
-            }
             case "pppoe":
             case "pptp":
               $("#mtu_calc").show();
               break;
             default:
-              // hide mtu calculation for non ppp types
               $("#mtu_calc").hide();
           }
-
       });
       $("#type").change();
 
@@ -1696,74 +1542,6 @@ include("head.inc");
       if ($("#adv_dhcp6_id_assoc_statement_prefix_enable").prop('checked')) {
           $("#show_adv_dhcp6_id_assoc_statement_prefix").removeClass("hidden");
       }
-
-      // ppp -> country change
-      $("#country").change(function(){
-          $('#provider_list').children().remove();
-          $('#providerplan').children().remove();
-          $.ajax("getserviceproviders.php",{
-              type: 'post',
-              data: {country : $('#country').val()},
-              success: function(response) {
-                var responseTextArr = response.split("\n");
-                responseTextArr.sort();
-                $.each(responseTextArr, function(index, value) {
-                  $('#provider_list').append(new Option(value, value));
-                });
-              }
-          });
-          $('#trprovider').removeClass("hidden");
-          $('#trproviderplan').addClass("hidden");
-      });
-
-      $('#trprovider').change(function() {
-          $('#providerplan').children().remove();
-          $('#providerplan').append(new Option('', ''));
-          $.ajax('getserviceproviders.php', {
-            type: 'post',
-            data: {country : jQuery('#country').val(), provider : $('#provider_list').val()},
-            success: function(response) {
-              var responseTextArr = response.split("\n");
-              responseTextArr.sort();
-              jQuery.each(responseTextArr, function(index, value) {
-                if (value != '') {
-                  let providerplan = value.split(':');
-                  $('#providerplan').append(new Option(
-                    providerplan[0] + ' - ' + providerplan[1],
-                    providerplan[1]
-                  ));
-                }
-              });
-            }
-          });
-          $('#trproviderplan').removeClass("hidden");
-      });
-
-      $("#trproviderplan").change(function() {
-          $.ajax("getserviceproviders.php", {
-              type: 'post',
-              data: {country : $('#country').val(), provider : $('#provider_list').val(), plan : $('#providerplan').val()},
-              success: function(data,textStatus,response) {
-                  var xmldoc = response.responseXML;
-                  var provider = xmldoc.getElementsByTagName('connection')[0];
-                  $('#username').val('');
-                  $('#password').val('');
-                  if (provider.getElementsByTagName('apn')[0].firstChild.data == "CDMA") {
-                      $('#phone').val('#777');
-                      $('#apn').val('');
-                  } else {
-                      $('#phone').val('*99#');
-                      $('#apn').val(provider.getElementsByTagName('apn')[0].firstChild.data);
-                  }
-                  if (provider.getElementsByTagName('username')[0].firstChild != null) {
-                      $('#username').val(provider.getElementsByTagName('username')[0].firstChild.data);
-                  }
-                  if (provider.getElementsByTagName('password')[0].firstChild != null) {
-                      $('#password').val(provider.getElementsByTagName('password')[0].firstChild.data);
-                  }
-              }
-          });
-      });
 
       $("#mtu").change(function(){
         // ppp uses an mtu
@@ -2346,95 +2124,7 @@ include("head.inc");
                     <table class="table table-striped opnsense_standard_table_form">
                       <thead>
                         <tr>
-                          <th colspan="2"><?=gettext("PPP configuration"); ?></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Modem Port') ?></td>
-                          <td>
-                            <?= $pconfig['ports'] ?>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style="width:22%"><a id="help_for_country" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Service Provider"); ?></td>
-                          <td style="width:78%">
-                            <table class="table table-condensed">
-                              <tr id="trcountry" class="hidden">
-                                <td><?=gettext("Country:"); ?></td>
-                                <td>
-                                  <select name="country" id="country">
-                                    <option></option>
-                                  </select>
-                                </td>
-                              </tr>
-                              <tr id="trprovider" class="hidden">
-                                <td><?=gettext("Provider:"); ?> &nbsp;&nbsp;</td>
-                                <td>
-                                  <select name="provider_list" id="provider_list">
-                                    <option></option>
-                                  </select>
-                                </td>
-                              </tr>
-                              <tr id="trproviderplan" class="hidden">
-                                <td><?=gettext("Plan:"); ?> &nbsp;&nbsp;</td>
-                                <td>
-                                  <select name="providerplan" id="providerplan">
-                                    <option></option>
-                                  </select>
-                                </td>
-                              </tr>
-                            </table>
-                            <div class="hidden" data-for="help_for_country">
-                              <?=gettext("Select to fill in data for your service provider."); ?>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Username"); ?></td>
-                          <td>
-                            <input name="username" type="text" id="username" value="<?=$pconfig['username'];?>" />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Password"); ?></td>
-                          <td>
-                            <input name="password" type="password" autocomplete="new-password" id="password" value="<?=$pconfig['password'];?>" />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Phone Number"); ?></td>
-                          <td>
-                            <input name="phone" type="text" id="phone" size="12" value="<?=$pconfig['phone'];?>" />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Access Point Name (APN)"); ?></td>
-                          <td>
-                            <input name="apn" type="text" id="apn" value="<?=$pconfig['apn'];?>" />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><?=gettext("Advanced PPP"); ?></td>
-                          <td>
-                            <?php if (!empty($a_ppps[$pppid])): ?>
-                              <?= sprintf(gettext('%sClick here%s to edit PPP configuration.'), url_safe('<a href="/interfaces_ppps_edit.php?id=%d">', $pppid), '</a>') ?>
-                            <?php else: ?>
-                              <?= sprintf(gettext("%sClick here%s to create a PPP configuration."), '<a href="/interfaces_ppps_edit.php">', '</a>') ?>
-                            <?php endif; ?>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                <!-- Section : PPPOE -->
-                <div class="tab-content content-box col-xs-12 __mb" id="pppoe" style="display:none">
-                  <div class="table-responsive">
-                    <table class="table table-striped opnsense_standard_table_form">
-                      <thead>
-                        <tr>
-                          <th colspan="2"><?=gettext("PPPoE configuration"); ?></th>
+                          <th colspan="2"><?= gettext('Point-to-Point configuration') ?></th>
                         </tr>
                       </thead>
                       <tbody>
@@ -2442,152 +2132,12 @@ include("head.inc");
                           <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext('Modem Port') ?></td>
                           <td style="width:78%">
                             <?= $pconfig['ports'] ?>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Username"); ?></td>
-                          <td style="width:78%">
-                              <input name="pppoe_username" type="text" id="pppoe_username" value="<?=$pconfig['pppoe_username'];?>" />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Password"); ?></td>
-                          <td>
-                            <input name="pppoe_password" type="password" autocomplete="new-password" id="pppoe_password" value="<?=htmlspecialchars($pconfig['pppoe_password']);?>" />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a id="help_for_provider" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Service name"); ?></td>
-                          <td>
-                            <input name="provider" type="text" id="provider" value="<?=$pconfig['provider'];?>" />
-                            <div class="hidden" data-for="help_for_provider">
-                              <?= gettext('This field can usually be left empty unless specified by the provider.') ?>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a id="help_for_pppoe_hostuniq" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Host-Uniq"); ?></td>
-                          <td>
-                            <input name="pppoe_hostuniq" type="text" id="pppoe_hostuniq" value="<?=$pconfig['pppoe_hostuniq'];?>" />
-                            <div class="hidden" data-for="help_for_pppoe_hostuniq">
-                              <?= gettext('This field can usually be left empty unless specified by the provider.') ?>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a id="help_for_pppoe_dialondemand" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Dial on demand"); ?></td>
-                          <td>
-                            <input name="pppoe_dialondemand" type="checkbox" id="pppoe_dialondemand" value="enable" <?= !empty($pconfig['pppoe_dialondemand']) ? "checked=\"checked\"" : ""; ?> />
-                            <?=gettext("Enable Dial-On-Demand mode"); ?>
-                            <div class="hidden" data-for="help_for_pppoe_dialondemand">
-                              <?=gettext("This option causes the interface to operate in dial-on-demand mode, allowing you to have a 'virtual full time' connection. The interface is configured, but the actual connection of the link is delayed until qualifying outgoing traffic is detected."); ?>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a id="help_for_pppoe_idletimeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Idle timeout"); ?></td>
-                          <td>
-                            <input name="pppoe_idletimeout" type="text" id="pppoe_idletimeout" value="<?=$pconfig['pppoe_idletimeout'];?>" /> <?=gettext("seconds"); ?>
-                            <div class="hidden" data-for="help_for_pppoe_idletimeout">
-                              <?=gettext("If no qualifying outgoing packets are transmitted for the specified number of seconds, the connection is brought down. An idle timeout of zero disables this feature."); ?>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced and MLPPP"); ?></td>
-                          <?php if (!empty($a_ppps[$pppid])): ?>
-                            <td>
-                            <?= sprintf(gettext('%sClick here%s for additional PPPoE configuration options. Save first if you made changes.'), url_safe('<a href="/interfaces_ppps_edit.php?id=%d">', $pppid), '</a>') ?>
-                            </td>
-                          <?php else: ?>
-                            <td>
-                            <?= sprintf(gettext('%sClick here%s for advanced PPPoE configuration options and MLPPP configuration.'),'<a href="/interfaces_ppps_edit.php">','</a>') ?>
-                            </td>
-                          <?php endif; ?>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                <!-- Section : PPTP / L2TP -->
-                <div class="tab-content content-box col-xs-12 __mb" id="pptp" style="display:none">
-                  <div class="table-responsive">
-                    <table class="table table-striped opnsense_standard_table_form">
-                      <thead>
-                        <tr>
-                          <th colspan="2"><?=gettext("PPTP/L2TP configuration"); ?></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext('Modem Port') ?></td>
-                          <td style="width:78%">
-                            <?= $pconfig['ports'] ?>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Username"); ?></td>
-                          <td style="width:78%">
-                            <input name="pptp_username" type="text" id="pptp_username" value="<?=$pconfig['pptp_username'];?>" />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Password"); ?></td>
-                          <td>
-                            <input name="pptp_password" type="password" autocomplete="new-password" id="pptp_password" value="<?=$pconfig['pptp_password'];?>" />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Local IP address"); ?></td>
-                          <td>
-                            <table>
-                              <tr>
-                                <td style="width:348px">
-                                  <input name="localip" type="text" id="localip"  value="<?=$pconfig['localip'];?>" />
-                                </td>
-                                <td>
-                                  <select name="pptp_subnet" class="selectpicker" data-width="auto" data-style="btn-default" data-size="10" id="pptp_subnet">
-                                    <?php for ($i = 31; $i > 0; $i--): ?>
-                                      <option value="<?=$i;?>" <?= $i == $pconfig['pptp_subnet'] ? 'selected="selected"' : ''; ?>>
-                                        <?=$i;?>
-                                      </option>
-                                    <?php endfor; ?>
-                                  </select>
-                                </td>
-                              </tr>
-                            </table>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Remote IP address"); ?></td>
-                          <td>
-                            <input name="pptp_remote" type="text" id="pptp_remote" value="<?=$pconfig['pptp_remote'];?>" />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a id="help_for_pptp_dialondemand" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Dial on demand"); ?></td>
-                          <td>
-                            <input name="pptp_dialondemand" type="checkbox" id="pptp_dialondemand" value="enable" <?=!empty($pconfig['pptp_dialondemand']) ? 'checked="checked"' : '' ?> />
-                            <?=gettext("Enable Dial-On-Demand mode"); ?>
-                            <div class="hidden" data-for="help_for_pptp_dialondemand">
-                              <?=gettext("This option causes the interface to operate in dial-on-demand mode, allowing you to have a 'virtual full time' connection. The interface is configured, but the actual connection of the link is delayed until qualifying outgoing traffic is detected."); ?>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Idle timeout"); ?></td>
-                          <td>
-                            <input name="pptp_idletimeout" type="text" id="pptp_idletimeout" value="<?=htmlspecialchars($pconfig['pptp_idletimeout']);?>" /> <?=gettext("seconds"); ?><br /><?=gettext("If no qualifying outgoing packets are transmitted for the specified number of seconds, the connection is brought down. An idle timeout of zero disables this feature."); ?>
                           </td>
                         </tr>
                         <tr>
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced"); ?></td>
                             <td>
-                          <?php if (!empty($a_ppps[$pppid])): ?>
-                            <?= sprintf(gettext("%sClick here%s for additional PPTP and L2TP configuration options. Save first if you made changes."), url_safe('<a href="/interfaces_ppps_edit.php?id=%d">', $pppid), '</a>') ?>
-                          <?php else: ?>
-                            <?= sprintf(gettext('%sClick here%s for advanced PPTP and L2TP configuration options.'),'<a href="/interfaces_ppps_edit.php">','</a>') ?>
-                          <?php endif; ?>
+                              <?= sprintf(gettext('%sClick here%s for PPP-specific configuration options.  Save first if you made changes.'), url_safe('<a href="/interfaces_ppps_edit.php?id=%d">', $pppid), '</a>') ?>
                             </td>
                         </tr>
                       </tbody>
@@ -3631,10 +3181,6 @@ include("head.inc");
                           <input id="save" name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
                           <input id="cancel" type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/interfaces.php'" />
                           <input name="if" type="hidden" id="if" value="<?=$if;?>" />
-<?php if ($pconfig['if'] == $a_ppps[$pppid]['if']): ?>
-                          <input name="ports" type="hidden" value="<?=$pconfig['ports'];?>" />
-<?php endif ?>
-                          <input name="ptpid" type="hidden" value="<?=$pconfig['ptpid'];?>" />
                         </td>
                       </tr>
                     </table>

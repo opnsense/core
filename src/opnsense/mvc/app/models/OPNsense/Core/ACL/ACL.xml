@@ -25,14 +25,6 @@
             <pattern>api/diagnostics/system/system_swap</pattern>
         </patterns>
     </page-system-login-logout>
-    <page-getserviceproviders>
-        <name>AJAX: Get Service Providers</name>
-        <patterns>
-            <!-- XXX license added here for menu visibility reasons -->
-            <pattern>ui/core/license</pattern>
-            <pattern>getserviceproviders.php*</pattern>
-        </patterns>
-    </page-getserviceproviders>
     <page-all>
         <name>All pages</name>
         <patterns>
@@ -342,6 +334,7 @@
         <name>Interfaces: PPPs: Edit</name>
         <patterns>
             <pattern>interfaces_ppps_edit.php*</pattern>
+            <pattern>getserviceproviders.php*</pattern>
         </patterns>
     </page-interfaces-ppps-edit>
     <page-interfaces>

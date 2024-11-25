@@ -31,6 +31,32 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
+function interfaces_ptpid_used($ptpid)
+{
+    global $config;
+
+    if (isset($config['ppps']['ppp'])) {
+        foreach ($config['ppps']['ppp'] as & $settings) {
+            if ($ptpid == $settings['ptpid']) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+function interfaces_ptpid_next()
+{
+    $ptpid = 0;
+
+    while (interfaces_ptpid_used($ptpid)) {
+        $ptpid++;
+    }
+
+    return $ptpid;
+}
+
 function serial_devices()
 {
     // collect 3g/4g modems
