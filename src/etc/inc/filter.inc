@@ -529,7 +529,7 @@ function filter_generate_scrubbing(&$FilterIflist)
         $scrub_gen_opts = !empty($config['system']['scrubnodf']) ? ' no-df ' : '';
         $scrub_gen_opts .= (!empty($config['system']['scrubrnid']) ? ' random-id ' : '');
         foreach ($FilterIflist as $scrubcfg) {
-            if (is_numeric($scrubcfg['mss'] ?? '') && !in_array($scrubcfg['if'], ['pppoe', 'pptp', 'l2tp'])) {
+            if (is_numeric($scrubcfg['mss'] ?? '')) {
                 /**
                  * Legacy MSS clamping on interface expects outbound packets to be scrubbed in order to work.
                  * https://github.com/pfsense/pfsense/commit/7c382a8
