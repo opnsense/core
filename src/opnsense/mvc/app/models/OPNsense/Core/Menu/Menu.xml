@@ -96,7 +96,7 @@
                 <Edit url="/interfaces_wireless_edit.php*" visibility="hidden"/>
             </Devices>
         </Wireless>
-        <Types VisibleName="Other Types" order="960" cssClass="fa fa-archive fa-fw">
+        <Types order="960" cssClass="fa fa-archive fa-fw">
             <Bridge url="/interfaces_bridge.php">
                 <Edit url="/interfaces_bridge_edit.php*" visibility="hidden"/>
             </Bridge>
