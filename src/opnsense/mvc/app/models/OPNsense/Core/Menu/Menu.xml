@@ -87,16 +87,8 @@
         </Diagnostics>
     </System>
     <Interfaces order="30" cssClass="fa fa-sitemap">
-        <Assignments order="900" url="/interfaces_assign.php" cssClass="fa fa-pencil fa-fw"/>
-        <Overview VisibleName="Overview" order="910" url="/ui/interfaces/overview" cssClass="fa fa-tasks fa-fw"/>
-        <Settings order="920" url="/system_advanced_network.php" cssClass="fa fa-cogs fa-fw"/>
-        <Neighbors order="930" url="/ui/interfaces/neighbor" cssClass="fa fa-users fa-fw"/>
-        <Wireless order="940" cssClass="fa fa-wifi fa-fw">
-            <Devices url="/interfaces_wireless.php">
-                <Edit url="/interfaces_wireless_edit.php*" visibility="hidden"/>
-            </Devices>
-        </Wireless>
-        <Types order="960" cssClass="fa fa-archive fa-fw">
+        <Assignments url="/interfaces_assign.php" cssClass="fa fa-pencil fa-fw"/>
+        <Devices cssClass="fa fa-archive fa-fw">
             <Bridge url="/interfaces_bridge.php">
                 <Edit url="/interfaces_bridge_edit.php*" visibility="hidden"/>
             </Bridge>
@@ -105,8 +97,16 @@
             <PPP VisibleName="Point-to-Point" url="/interfaces_ppps.php">
                 <Edit url="/interfaces_ppps_edit.php*" visibility="hidden"/>
             </PPP>
-        </Types>
-        <Diagnostics order="970" cssClass="fa fa-medkit fa-fw">
+        </Devices>
+        <Neighbors url="/ui/interfaces/neighbor" cssClass="fa fa-users fa-fw"/>
+        <Overview url="/ui/interfaces/overview" cssClass="fa fa-tasks fa-fw"/>
+        <Settings url="/system_advanced_network.php" cssClass="fa fa-cogs fa-fw"/>
+        <Wireless cssClass="fa fa-wifi fa-fw">
+            <Devices url="/interfaces_wireless.php">
+                <Edit url="/interfaces_wireless_edit.php*" visibility="hidden"/>
+            </Devices>
+        </Wireless>
+        <Diagnostics order="100" cssClass="fa fa-medkit fa-fw">
             <DNSLookup VisibleName="DNS Lookup" url="/ui/diagnostics/dns_diagnostics"/>
             <PacketCapture VisibleName="Packet Capture" url="/ui/diagnostics/packet_capture"/>
             <Ping url="/ui/diagnostics/ping"/>
