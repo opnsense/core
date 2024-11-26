@@ -31,7 +31,7 @@
 # read until we have asked the kernel.  Caching this and unifying
 # with RRD collection is a worthwile goal.  No hackery in the
 # meantime to avoid adding something we cannot get rid of later.
-SYSCTLS=$(sysctl -aN | grep temperature)
+SYSCTLS=$(sysctl -N dev.cpu hw.acpi.thermal | fgrep temperature)
 if [ -n "${SYSCTLS}" ]; then
 	sysctl -e ${SYSCTLS} | sort
 fi
