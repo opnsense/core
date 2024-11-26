@@ -7121,9 +7121,6 @@ ul.nav > li.dropdown > ul.dropdown-menu > li > a {
   }
 }
 
-li:last-child > a {
-  border-right: 1px solid transparent !important;
-}
 @media (max-width: 767px) {
   li:last-child > a {
     margin-bottom: 0;
@@ -7407,3 +7404,5 @@ div[data-for*=help_for] {
 .modal-footer {
   padding: 15px;
 }
+
+/*# sourceMappingURL=main.css.map */
