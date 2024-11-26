@@ -331,7 +331,7 @@ class WidgetManager  {
                 if (this.moduleDiff.includes(id)) {
                     options.push({
                         value: id,
-                        text: this.widgetTranslations[id].title
+                        text: this.widgetTranslations[id].title ?? id
                     });
                 }
             }
