@@ -31,7 +31,7 @@
 require_once("guiconfig.inc");
 require_once("system.inc");
 
-$input_errors = array();
+$input_errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['Submit'])) {
@@ -40,6 +40,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $input_errors[] = gettext('You do not have the permission to perform this action.');
         }
     }
+}
+
+$default_config_ip = '192.168.1.1'; /* failsafe default */
+if (is_file('/usr/local/etc/config.xml')) {
+    try {
+        $restore_conf = load_config_from_file('/usr/local/etc/config.xml');
+        if (
+          is_array($restore_conf) &&
+          !empty($restore_conf['interfaces']) &&
+          !empty($restore_conf['interfaces']['lan']) &&
+          !empty($restore_conf['interfaces']['lan']['ipaddr'])
+        ) {
+            $default_config_ip = $restore_conf['interfaces']['lan']['ipaddr'];
+        }
+    } catch (Exception $e) { }
 }
 
 include("head.inc");
@@ -74,7 +89,7 @@ $(document).ready(function() {
           <p><strong> <?=gettext('If you click "Yes", the system will:')?></strong></p>
           <ul>
             <li><?= gettext('Reset to factory defaults') ?></li>
-            <li><?= gettext('LAN IP address will be reset to 192.168.1.1') ?></li>
+            <li><?= sprintf(gettext('LAN IP address will be reset to %s'), $default_config_ip) ?></li>
             <li><?= gettext('System will be configured as a DHCP server on the default LAN interface') ?></li>
             <li><?= gettext('WAN interface will be set to obtain an address automatically from a DHCP server') ?></li>
             <li><?= gettext('Admin user name and password will be reset') ?></li>
