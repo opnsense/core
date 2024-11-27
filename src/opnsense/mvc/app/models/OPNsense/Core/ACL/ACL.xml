@@ -163,6 +163,13 @@
             <pattern>api/diagnostics/portprobe/*</pattern>
         </patterns>
     </page-diagnostics-testport>
+    <page-diagnostics-dns_diagnostics>
+        <name>Interfaces: Diagnostics: DNS Lookup</name>
+        <patterns>
+            <pattern>ui/diagnostics/dns_diagnostics</pattern>
+            <pattern>api/diagnostics/dns_diagnostics/*</pattern>
+        </patterns>
+    </page-diagnostics-dns_diagnostics>
     <page-diagnostics-traceroute>
         <name>Diagnostics: Traceroute</name>
         <patterns>
