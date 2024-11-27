@@ -165,7 +165,8 @@ class Router
      */
     private function parsePath(string $path, array $defaults): array
     {
-        $pathElements = explode("/", rtrim($path, '/'));
+        $pathElements = array_values(array_filter(explode("/", $path)));
+
         $result = [
             "namespace" => null,
             "controller" => null,
