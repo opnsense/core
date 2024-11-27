@@ -115,7 +115,7 @@ class Router
      */
     public function routeRequest(string $uri, array $defaults = []): Response
     {
-        $path = parse_url($uri)['path'];
+        $path = parse_url('/' . ltrim($uri, '/'))['path'] ?? '';
 
         if (!str_starts_with($path, $this->prefix)) {
             throw new InvalidUriException("Invalid route path: " . $uri);
@@ -165,7 +165,8 @@ class Router
      */
     private function parsePath(string $path, array $defaults): array
     {
-        $pathElements = explode("/", rtrim($path, '/'));
+        $pathElements = array_values(array_filter(explode("/", $path)));
+
         $result = [
             "namespace" => null,
             "controller" => null,
