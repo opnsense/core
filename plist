@@ -2089,10 +2089,7 @@
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/bootstrap/glyphicons-halflings-regular.svg
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/bootstrap/glyphicons-halflings-regular.ttf
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/bootstrap/glyphicons-halflings-regular.woff
-/usr/local/opnsense/www/themes/opnsense/assets/stylesheets/_bootstrap-compass.scss
-/usr/local/opnsense/www/themes/opnsense/assets/stylesheets/_bootstrap-mincer.scss
-/usr/local/opnsense/www/themes/opnsense/assets/stylesheets/_bootstrap-sprockets.scss
-/usr/local/opnsense/www/themes/opnsense/assets/stylesheets/bootstrap-dialog.less
+/usr/local/opnsense/www/themes/opnsense/assets/stylesheets/bootstrap-dialog.scss
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/bootstrap-select/less/bootstrap-select.less
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/bootstrap-select/less/variables.less
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/bootstrap/_alerts.scss
@@ -2164,8 +2161,11 @@
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/bootstrap/mixins/_text-emphasis.scss
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/bootstrap/mixins/_text-overflow.scss
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/bootstrap/mixins/_vendor-prefixes.scss
+/usr/local/opnsense/www/themes/opnsense/assets/stylesheets/config/colors.scss
+/usr/local/opnsense/www/themes/opnsense/assets/stylesheets/dashboard.scss
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/main.scss
 /usr/local/opnsense/www/themes/opnsense/build/css/bootstrap-dialog.css
+/usr/local/opnsense/www/themes/opnsense/build/css/dashboard.css
 /usr/local/opnsense/www/themes/opnsense/build/css/main.css
 /usr/local/opnsense/www/themes/opnsense/build/fonts/LICENSE.SourceSansPro.txt
 /usr/local/opnsense/www/themes/opnsense/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.eot

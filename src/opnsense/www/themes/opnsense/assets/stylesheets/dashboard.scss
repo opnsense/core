@@ -1,0 +1,350 @@
+@import "config/colors";
+
+:root {
+    --chart-js-font-color: map-get($colors, text-color);
+}
+
+.ui-resizable-handle {
+    opacity: 0 !important;
+}
+
+#save-grid {
+    width: inherit;
+    height: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+    position: relative;
+    width: 50px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+#save-btn-text, #icon-container {
+    position: absolute;
+}
+
+#icon-container {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#save-spinner, #save-check {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.transition-spinner, transition-check {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.hide {
+    opacity: 0;
+    transform: scale(0);
+}
+
+.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.grid-stack-item-content {
+  text-align: center;
+  border-style: solid;
+  border-color: transparentize(map-get($colors, brand-primary), 0.85);
+  border-width: 2px;
+  background-color: map-get($colors, page-content-head-background);
+  border-radius: 0.5em 0.5em 0.5em 0.5em;
+}
+
+.widget-error {
+    margin: 50px;
+    color: map-get($colors, dashboard-widget-error)
+}
+
+.widget-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 1px;
+    cursor: default;
+}
+
+.widget-header {
+    margin-top: 0.5em;
+    margin-left: 1em;
+    margin-right: 1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.widget-spinner {
+    margin-top: 20px;
+    font-size: 2em;
+}
+
+.link-handle,
+.close-handle,
+.edit-handle {
+    margin-left: 0.5em;
+    vertical-align: middle;
+    text-align: right;
+    cursor: pointer;
+}
+
+.link-handle > a,
+.close-handle > i,
+.edit-handle > i {
+    font-size: 0.8em;
+}
+
+.widget-header-left {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex: 1;
+}
+
+.widget-command-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex: 1;
+}
+
+.widget-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.panel-divider {
+    width: 100%;
+    text-align: center;
+    height: 8px;
+    margin-bottom: 10px;
+}
+
+table {
+    table-layout: fixed;
+}
+
+td {
+    word-break: break-all;
+}
+
+.line {
+    display: inline-block;
+    height: 1px;
+    width: 70%;
+    background: map-get($colors, brand-primary);
+    margin: 5px;
+}
+
+.canvas-container {
+    position: relative;
+}
+
+.cpu-canvas-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.smoothie-container {
+    width: 100%;
+}
+
+.smoothie-chart-tooltip {
+  z-index: 1; /* necessary to force to foreground */
+  background: rgba(50, 50, 50, 0.9);
+  padding-left: 15px;
+  padding-right: 15px;
+  color: white;
+  font-size: 13px;
+  border-radius: 0.5em 0.5em 0.5em 0.5em;
+  pointer-events: none;
+}
+
+.flex-container {
+    display: flex;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.gateway-info {
+  margin: 5px;
+  padding: 5px;
+  font-size: 13px;
+}
+
+.gateway-detail-container {
+    display: none;
+    margin: 5px;
+}
+
+.interface-info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    height: 100%;
+}
+
+.nowrap {
+    flex-wrap: nowrap;
+}
+
+.gateway-graph {
+    display: none;
+}
+
+.flex-container > .gateway-graph {
+    font-size: 13px;
+}
+
+.vertical-center-row {
+    height: 100%;
+    display: inline;
+}
+
+.interfaces-info {
+  margin: 5px;
+  font-size: 13px;
+}
+
+.interface-descr {
+    margin-left: 10px;
+    font-size: 15px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.interfaces-detail-container {
+    margin: 5px;
+    display: none;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.d-flex > .justify-content-start {
+    justify-content: start;
+}
+
+.d-flex > .justify-content-end {
+    justify-content: end;
+}
+
+#chartjs-toolip {
+    z-index: 20;
+}
+
+/* CPU widget */
+.cpu-type {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+/* ----- */
+
+/* Custom flex table */
+div {
+    box-sizing: border-box;
+}
+
+.flextable-container {
+    display: block;
+    margin: 2em auto;
+    width: 95%;
+    max-width: 1200px;
+}
+
+.flextable-header {
+    display: flex;
+    flex-flow: row wrap;
+    padding: 0.5em 0.5em;
+    border-top: solid 1px transparentize(map-get($colors, brand-primary), 0.85);
+}
+
+.flextable-row {
+    display: flex;
+    flex-flow: row wrap;
+    padding: 0.5em 0.5em;
+    border-top: solid 1px transparentize(map-get($colors, brand-primary), 0.85);
+    align-items: center;
+}
+
+.flextable-header .flex-cell {
+    font-weight: bold;
+}
+
+.flextable-row:hover {
+    background: map-get($colors, content-background) !important;
+}
+
+.flex-cell {
+    text-align: left;
+    word-break: break-word;
+}
+
+.column {
+    display: flex;
+    flex-flow: column wrap;
+    width: 50%;
+    padding: 0;
+}
+.column .flex-cell {
+    display: flex;
+    flex-flow: row wrap;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    border-top: transparentize(map-get($colors, brand-primary), 0.85);
+}
+.column .flex-cell:hover {
+    background: map-get($colors, content-background);
+}
+.flex-subcell {
+    width: 100%;
+    text-align: left;
+}
+
+.column .flex-cell:not(:last-child) {
+    border-bottom: solid 1px transparentize(map-get($colors, brand-primary), 0.85);
+}
+/* ----- */
+
+/* CSS grid responsive table */
+.grid-header-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+}
+
+.grid-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    border-top: 1px solid transparentize(map-get($colors, brand-primary), 0.85);
+    opacity: 0.4;
+}
+
+.grid-row:hover {
+    background: map-get($colors, content-background) !important;
+}
+
+.grid-header {
+    border-top: 1px solid transparentize(map-get($colors, brand-primary), 0.85);
+    font-weight: bold;
+}
+
+.grid-item {
+    padding: 4px;
+    text-align: center;
+}
+/* ----- */
+
+.ovpn-common-name {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

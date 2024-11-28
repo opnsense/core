@@ -1,3 +1,5 @@
+@import "config/colors";
+
 .modal-backdrop {
   z-index: -1;
 }
@@ -48,7 +50,7 @@
 
     &.type-primary {
         .modal-header {
-            background-color: #D94F00;
+            background-color: map-get($colors, brand-primary);
         }
     }
 
