@@ -72,11 +72,15 @@ output_request()
 output_text()
 {
 	DO_OPT=
+	DO_OUT=
 
-	while getopts n OPT; do
+	while getopts no: OPT; do
 		case ${OPT} in
 		n)
 			DO_OPT="-n"
+			;;
+		o)
+			DO_OUT=${OPTARG}
 			;;
 		*)
 			# ignore unknown
@@ -86,13 +90,30 @@ output_text()
 
 	shift $((OPTIND - 1))
 
-	echo ${DO_OPT} "${1}" | ${TEE} ${LOCKFILE} ${2}
+	echo ${DO_OPT} "${1}" | ${TEE} ${LOCKFILE} ${DO_OUT}
 }
 
 output_cmd()
 {
+	DO_OUT=
+
+	while getopts o: OPT; do
+		case ${OPT} in
+		o)
+			DO_OUT=${OPTARG}
+			;;
+		*)
+			# ignore unknown
+			;;
+		esac
+	done
+
+	shift $((OPTIND - 1))
+
+	# pipe needed for grabbing the command return value
+	${TEE} ${LOCKFILE} ${DO_OUT} < ${PIPEFILE} &
+
 	# also capture stderr in this case
-	${TEE} ${LOCKFILE} ${2} < ${PIPEFILE} &
 	eval "(${1}) 2>&1" > ${PIPEFILE}
 }
 
