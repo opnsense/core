@@ -75,8 +75,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } else if ($act == 'reset') {
         // reset tunables to factory defaults (when available)
-        if (file_exists('/usr/local/etc/config.xml.sample')) {
-            $factory_config = load_config_from_file('/usr/local/etc/config.xml.sample');
+        if (file_exists('/usr/local/etc/config.xml')) {
+            $factory_config = load_config_from_file('/usr/local/etc/config.xml');
             if (!empty($factory_config['sysctl']) && !empty($factory_config['sysctl']['item'])){
                 $a_tunable = $factory_config['sysctl']['item'];
                 mark_subsystem_dirty('sysctl');
