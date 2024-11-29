@@ -376,6 +376,7 @@
         <name>Interfaces: PPPs: Edit</name>
         <patterns>
             <pattern>interfaces_ppps_edit.php*</pattern>
+            <pattern>getserviceproviders.php*</pattern>
         </patterns>
     </page-interfaces-ppps-edit>
     <page-interfaces>
