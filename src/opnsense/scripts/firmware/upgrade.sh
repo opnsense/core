@@ -29,15 +29,15 @@ REQUEST="UPGRADE"
 
 . /usr/local/opnsense/scripts/firmware/config.sh
 
-if output_cmd "opnsense-update -u"; then
-	if output_cmd "/usr/local/etc/rc.syshook upgrade"; then
-		if output_cmd "opnsense-update -K"; then
+if output_cmd opnsense-update -u; then
+	if output_cmd /usr/local/etc/rc.syshook upgrade; then
+		if output_cmd opnsense-update -K; then
 			output_reboot
 		fi
 	fi
 
 	# abort pending upgrades
-	output_cmd "opnsense-update -es"
+	output_cmd opnsense-update -es
 fi
 
 output_done

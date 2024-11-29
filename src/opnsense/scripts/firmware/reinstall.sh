@@ -34,27 +34,27 @@ PACKAGE=${1}
 if [ "${PACKAGE}" = "base" ]; then
 	if opnsense-update -Tb; then
 		# force reinstall intended
-		if output_cmd "opnsense-update -bf"; then
+		if output_cmd opnsense-update -bf; then
 			output_reboot
 		fi
 	else
 		# for locked message only
-		output_cmd "opnsense-update -b"
+		output_cmd opnsense-update -b
 	fi
 elif [ "${PACKAGE}" = "kernel" ]; then
 	if opnsense-update -Tk; then
 		# force reinstall intended
-		if output_cmd "opnsense-update -kf"; then
+		if output_cmd opnsense-update -kf; then
 			output_reboot
 		fi
 	else
 		# for locked message only
-		output_cmd "opnsense-update -k"
+		output_cmd opnsense-update -k
 	fi
 else
-	output_cmd "opnsense-revert -l ${PACKAGE}"
-	output_cmd "${BASEDIR}/register.php install ${PACKAGE}"
-	output_cmd "${PKG} autoremove -y"
+	output_cmd opnsense-revert -l "${PACKAGE}"
+	output_cmd ${BASEDIR}/register.php install "${PACKAGE}"
+	output_cmd ${PKG} autoremove -y
 fi
 
 output_done

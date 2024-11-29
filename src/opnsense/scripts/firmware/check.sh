@@ -92,7 +92,7 @@ fi
 # business subscriptions come with additional license metadata
 if [ -n "$(opnsense-update -x)" ]; then
     output_text -n "Fetching subscription information, please wait... "
-    if output_cmd "fetch -qT 30 -o '${LICENSEFILE}' '$(opnsense-update -M)/subscription'"; then
+    if output_cmd fetch -qT 30 -o "${LICENSEFILE}" "$(opnsense-update -M)/subscription"; then
         output_text "done"
     fi
 else
@@ -100,15 +100,15 @@ else
 fi
 
 output_text -n "Fetching changelog information, please wait... "
-if output_cmd "${BASEDIR}/changelog.sh fetch"; then
+if output_cmd ${BASEDIR}/changelog.sh fetch; then
     output_text "done"
 fi
 
 : > ${OUTFILE}
-output_cmd -o ${OUTFILE} "${PKG} update -f"
+output_cmd -o ${OUTFILE} ${PKG} update -f
 
 # always update the package manager so we can see the real updates directly
-output_cmd "${PKG} upgrade -r '${product_repo}' -Uy 'pkg'"
+output_cmd ${PKG} upgrade -r "${product_repo}" -Uy pkg
 
 # parse early errors
 if grep -q 'No address record' ${OUTFILE}; then
@@ -146,11 +146,11 @@ else
     : > ${OUTFILE}
 
     # now check what happens when we would go ahead
-    output_cmd -o ${OUTFILE} "${PKG} upgrade ${force_all} -Un"
+    output_cmd -o ${OUTFILE} ${PKG} upgrade ${force_all} -Un
     if  [ -n "${CUSTOMPKG}" ]; then
-        output_cmd -o ${OUTFILE} "${PKG} install -Un '${CUSTOMPKG}'"
+        output_cmd -o ${OUTFILE} ${PKG} install -Un "${CUSTOMPKG}"
     elif [ "${product_id}" != "${product_target}" ]; then
-        output_cmd -o ${OUTFILE} "${PKG} install -r '${product_repo}' -Un '${product_target}'"
+        output_cmd -o ${OUTFILE} ${PKG} install -r "${product_repo}" -Un "${product_target}"
     elif [ -z "$(${PKG} rquery %n ${product_id})" ]; then
         # although this should say "to update matching" we emulate for
         # check below as the package manager does not catch this

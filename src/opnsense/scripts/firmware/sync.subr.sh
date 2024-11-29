@@ -45,11 +45,11 @@ for PACKAGE in $(/usr/local/sbin/pluginctl -g system.firmware.plugins | \
 			MUSTCHECK=
 		fi
 
-		output_cmd "${PKG} install -y ${PACKAGE}"
-		output_cmd "${BASEDIR}/register.php install ${PACKAGE}"
+		output_cmd ${PKG} install -y "${PACKAGE}"
+		output_cmd ${BASEDIR}/register.php install "${PACKAGE}"
 	fi
 done
 
 if [ -z "${MUSTCHECK}" ]; then
-	output_cmd "${PKG} autoremove -y"
+	output_cmd ${PKG} autoremove -y
 fi

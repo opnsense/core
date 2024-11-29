@@ -232,7 +232,7 @@ fi
 
 if [ -z "${CMD}" -o "${CMD}" = "repos" ]; then
 	output_text ">>> Check installed repositories"
-	output_cmd "opnsense-verify -l"
+	output_cmd opnsense-verify -l
 fi
 
 if [ -z "${CMD}" -o "${CMD}" = "plugins" ]; then
@@ -257,10 +257,10 @@ fi
 
 if [ -z "${CMD}" -o "${CMD}" = "packages" ]; then
 	output_text ">>> Check for missing package dependencies"
-	output_cmd "${PKG} check -dan"
+	output_cmd ${PKG} check -dan
 
 	output_text ">>> Check for missing or altered package files"
-	output_cmd "${PKG} check -sa"
+	output_cmd ${PKG} check -sa
 fi
 
 if [ -z "${CMD}" -o "${CMD}" = "core" ]; then

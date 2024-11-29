@@ -28,6 +28,6 @@ REQUEST="AUDIT SECURITY"
 
 . /usr/local/opnsense/scripts/firmware/config.sh
 
-output_cmd "${PKG} audit -F"
+output_cmd ${PKG} audit -F
 
 output_done

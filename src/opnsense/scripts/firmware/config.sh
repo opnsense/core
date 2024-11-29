@@ -95,6 +95,7 @@ output_text()
 
 output_cmd()
 {
+	DO_CMD=
 	DO_OUT=
 
 	while getopts o: OPT; do
@@ -110,11 +111,22 @@ output_cmd()
 
 	shift $((OPTIND - 1))
 
+	for ARG in "${@}"; do
+		# single quote will not execute for safety
+		if [ -z "${ARG##*"'"*}" ]; then
+			output_text "firmware: safety violation in argument during ${REQUEST}"
+			return 1
+		fi
+
+		# append safely to argument in single quotes
+		DO_CMD="${DO_CMD} '$(echo ${ARG})'"
+	done
+
 	# pipe needed for grabbing the command return value
 	${TEE} ${LOCKFILE} ${DO_OUT} < ${PIPEFILE} &
 
 	# also capture stderr in this case
-	eval "(${1}) 2>&1" > ${PIPEFILE}
+	eval "(${DO_CMD}) 2>&1" > ${PIPEFILE}
 }
 
 output_done()

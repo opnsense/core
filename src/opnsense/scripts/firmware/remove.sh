@@ -31,8 +31,8 @@ REQUEST="REMOVE"
 
 PACKAGE=${1}
 
-output_cmd "${PKG} remove -y ${PACKAGE}"
-output_cmd "${BASEDIR}/register.php remove ${PACKAGE}"
-output_cmd "${PKG} autoremove -y"
+output_cmd ${PKG} remove -y "${PACKAGE}"
+output_cmd ${BASEDIR}/register.php remove "${PACKAGE}"
+output_cmd ${PKG} autoremove -y
 
 output_done

@@ -43,8 +43,8 @@ if [ "${PACKAGE#os-}" != "${PACKAGE}" ]; then
 	fi
 fi
 
-output_cmd "${PKG} install -y ${PACKAGE}"
-output_cmd "${BASEDIR}/register.php install ${PACKAGE}"
-output_cmd "${PKG} autoremove -y"
+output_cmd ${PKG} install -y "${PACKAGE}"
+output_cmd ${BASEDIR}/register.php install "${PACKAGE}"
+output_cmd ${PKG} autoremove -y
 
 output_done

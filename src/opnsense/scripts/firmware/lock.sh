@@ -33,12 +33,12 @@ PACKAGE=${1}
 
 if [ "${PACKAGE}" = "base" ]; then
 	output_text "Locking base set"
-	output_cmd "opnsense-update -bL"
+	output_cmd opnsense-update -bL
 elif [ "${PACKAGE}" = "kernel" ]; then
 	output_text "Locking kernel set"
-	output_cmd "opnsense-update -kL"
+	output_cmd opnsense-update -kL
 else
-	output_cmd "${PKG} lock -y ${PACKAGE}"
+	output_cmd ${PKG} lock -y "${PACKAGE}"
 fi
 
 output_done
