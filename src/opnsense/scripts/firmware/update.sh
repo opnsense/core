@@ -32,9 +32,6 @@ REQUEST="UPDATE"
 CMD=${1}
 FORCE=
 
-rm -f ${PIPEFILE}
-mkfifo ${PIPEFILE}
-
 # figure out if we are crossing ABIs
 if [ "$(opnsense-version -a)" != "$(opnsense-version -x)" ]; then
 	FORCE="-f"
@@ -62,8 +59,7 @@ if [ "${CMD}" = "sync" ]; then
 fi
 
 # if we can update base, we'll do that as well
-${TEE} ${LOCKFILE} < ${PIPEFILE} &
-if opnsense-update ${FORCE} -bk -c > ${PIPEFILE} 2>&1; then
+if opnsense-update ${FORCE} -bk -c; then
 	${TEE} ${LOCKFILE} < ${PIPEFILE} &
 	if opnsense-update ${FORCE} -bk > ${PIPEFILE} 2>&1; then
 		output_reboot

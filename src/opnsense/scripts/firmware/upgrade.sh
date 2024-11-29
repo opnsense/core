@@ -29,9 +29,6 @@ REQUEST="UPGRADE"
 
 . /usr/local/opnsense/scripts/firmware/config.sh
 
-rm -f ${PIPEFILE}
-mkfifo ${PIPEFILE}
-
 ${TEE} ${LOCKFILE} < ${PIPEFILE} &
 if opnsense-update -u > ${PIPEFILE} 2>&1; then
 	${TEE} ${LOCKFILE} < ${PIPEFILE} &

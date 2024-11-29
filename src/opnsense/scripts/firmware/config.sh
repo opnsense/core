@@ -61,19 +61,39 @@ upgrade
 output_request()
 {
 	: > ${LOCKFILE}
+
+	rm -f ${PIPEFILE}
+	mkfifo ${PIPEFILE}
+
 	echo ""***GOT REQUEST TO ${1}***"" >> ${LOCKFILE}
 	echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 }
 
 output_text()
 {
-	echo "${1}" | ${TEE} ${LOCKFILE}
+	DO_OPT=
+
+	while getopts n OPT; do
+		case ${OPT} in
+		n)
+			DO_OPT="-n"
+			;;
+		*)
+			# ignore unknown
+			;;
+		esac
+	done
+
+	shift $((OPTIND - 1))
+
+	echo ${DO_OPT} "${1}" | ${TEE} ${LOCKFILE} ${2}
 }
 
 output_cmd()
 {
 	# also capture stderr in this case
-	eval "(${1}) 2>&1" | ${TEE} ${LOCKFILE}
+	${TEE} ${LOCKFILE} ${2} < ${PIPEFILE} &
+	eval "(${1}) 2>&1" > ${PIPEFILE}
 }
 
 output_done()
