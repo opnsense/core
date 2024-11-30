@@ -112,6 +112,9 @@ output_cmd()
 	shift $((OPTIND - 1))
 
 	for ARG in "${@}"; do
+		# transform first to trap replacements
+		ARG="$(echo "${ARG}")"
+
 		# single quote will not execute for safety
 		if [ -z "${ARG##*"'"*}" ]; then
 			output_text "firmware: safety violation in argument during ${REQUEST}"
@@ -119,7 +122,7 @@ output_cmd()
 		fi
 
 		# append safely to argument in single quotes
-		DO_CMD="${DO_CMD} '$(echo ${ARG})'"
+		DO_CMD="${DO_CMD} '${ARG}'"
 	done
 
 	# pipe needed for grabbing the command return value
