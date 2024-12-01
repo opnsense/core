@@ -50,7 +50,7 @@
 .grid-stack-item-content {
   text-align: center;
   border-style: solid;
-  border-color: rgba(217, 79, 0, 0.15);
+  border-color: rgba(192, 62, 20, 0.15);
   border-width: 2px;
   background-color: #FBFBFB;
   border-radius: 0.5em 0.5em 0.5em 0.5em;
@@ -137,7 +137,7 @@ td {
   display: inline-block;
   height: 1px;
   width: 70%;
-  background: #D94F00;
+  background: #C03E14;
   margin: 5px;
 }
 
@@ -262,14 +262,14 @@ div {
   display: flex;
   flex-flow: row wrap;
   padding: 0.5em 0.5em;
-  border-top: solid 1px rgba(217, 79, 0, 0.15);
+  border-top: solid 1px rgba(192, 62, 20, 0.15);
 }
 
 .flextable-row {
   display: flex;
   flex-flow: row wrap;
   padding: 0.5em 0.5em;
-  border-top: solid 1px rgba(217, 79, 0, 0.15);
+  border-top: solid 1px rgba(192, 62, 20, 0.15);
   align-items: center;
 }
 
@@ -299,7 +299,7 @@ div {
   width: 100%;
   padding: 0;
   border: 0;
-  border-top: rgba(217, 79, 0, 0.15);
+  border-top: rgba(192, 62, 20, 0.15);
 }
 
 .column .flex-cell:hover {
@@ -312,7 +312,7 @@ div {
 }
 
 .column .flex-cell:not(:last-child) {
-  border-bottom: solid 1px rgba(217, 79, 0, 0.15);
+  border-bottom: solid 1px rgba(192, 62, 20, 0.15);
 }
 
 /* ----- */
@@ -325,7 +325,7 @@ div {
 .grid-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  border-top: 1px solid rgba(217, 79, 0, 0.15);
+  border-top: 1px solid rgba(192, 62, 20, 0.15);
   opacity: 0.4;
 }
 
@@ -334,7 +334,7 @@ div {
 }
 
 .grid-header {
-  border-top: 1px solid rgba(217, 79, 0, 0.15);
+  border-top: 1px solid rgba(192, 62, 20, 0.15);
   font-weight: bold;
 }
 
@@ -349,3 +349,5 @@ div {
   align-items: center;
   justify-content: center;
 }
+
+/*# sourceMappingURL=dashboard.css.map */

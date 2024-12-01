@@ -69,6 +69,8 @@
 @import "bootstrap/utilities";
 @import "bootstrap/responsive-utilities";
 
+
+
 *{
     -webkit-font-smoothing: antialiased;
 }
@@ -257,12 +259,18 @@ div.content-box.wizard {
 
     &-head{
         background: map-get($colors, login-modal-head-background);
-        height: 75px;
+        height: 70px !important;
         padding: 0 20px;
+        .navbar-brand {
+          padding: 5px 0px !important;
+          img {
+            height: 60px ;
+          }
+        }
     }
 
     &-content{
-        padding: 20px 20px 20px 20px;
+        padding: 0px 20px 20px 20px;
     }
 }
 
@@ -417,7 +425,7 @@ main.page-content.col-lg-12 {
 }
 
 button.toggle-sidebar {
-  color: #FFF;
+  color: map-get($colors, navbar-default-color);
   background-color: transparent;
   font-size: 14px;
   border: none;
@@ -639,8 +647,15 @@ hr {
     border-radius: 0 !important;
 }
 
-.navbar-brand{
-    padding: 10px 20px;
+.navbar-brand {
+    padding: 1px 11px;
+
+    img.brand-logo {
+      height: 48px;
+    }
+    img.brand-icon {
+      height: 48px;
+    }
 }
 
 .label-opnsense {
