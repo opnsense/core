@@ -3382,19 +3382,19 @@ select[multiple].input-lg,
 .btn-primary {
   color: #fff;
   background-color: #C03E14;
-  border-color: #D95100;
+  border-color: #C03E14;
 }
 .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open > .btn-primary.dropdown-toggle {
   color: #fff;
   background-color: #922f0f;
-  border-color: #9c3a00;
+  border-color: #892c0e;
 }
 .btn-primary:active, .btn-primary.active, .open > .btn-primary.dropdown-toggle {
   background-image: none;
 }
 .btn-primary.disabled, .btn-primary.disabled:hover, .btn-primary.disabled:focus, .btn-primary.disabled:active, .btn-primary.disabled.active, .btn-primary[disabled], .btn-primary[disabled]:hover, .btn-primary[disabled]:focus, .btn-primary[disabled]:active, .btn-primary[disabled].active, fieldset[disabled] .btn-primary, fieldset[disabled] .btn-primary:hover, fieldset[disabled] .btn-primary:focus, fieldset[disabled] .btn-primary:active, fieldset[disabled] .btn-primary.active {
   background-color: #C03E14;
-  border-color: #D95100;
+  border-color: #C03E14;
 }
 .btn-primary .badge {
   color: #C03E14;
@@ -6850,6 +6850,9 @@ div.content-box.wizard div img {
 }
 .login-modal-content {
   padding: 0px 20px 20px 20px;
+}
+.login-modal-content form.clearfix, .login-modal-content form.content-box {
+  margin-right: 9px;
 }
 
 @media (min-width: 768px) {

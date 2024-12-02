@@ -154,7 +154,7 @@ $btn-default-border:             #e5e5e5 !default;
 
 $btn-primary-color:              #fff !default;
 $btn-primary-bg:                 $brand-primary !default;
-$btn-primary-border:             #D95100 !default;
+$btn-primary-border:             map-get($colors, brand-primary) !default;
 
 $btn-success-color:              #fff !default;
 $btn-success-bg:                 $brand-success !default;

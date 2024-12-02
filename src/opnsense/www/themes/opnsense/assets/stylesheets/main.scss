@@ -271,6 +271,9 @@ div.content-box.wizard {
 
     &-content{
         padding: 0px 20px 20px 20px;
+        form.clearfix {
+          margin-right: 9px;
+        }
     }
 }
 
