@@ -1302,12 +1302,12 @@ Grid.defaults = {
         dropDownMenuText: "dropdown-text", // must be a unique class name or constellation of class names within the actionDropDown
         footer: "bootgrid-footer container-fluid",
         header: "bootgrid-header container-fluid",
-        icon: "icon glyphicon",
-        iconColumns: "glyphicon-th-list",
-        iconDown: "glyphicon-chevron-down",
-        iconRefresh: "glyphicon-refresh",
-        iconSearch: "glyphicon-search",
-        iconUp: "glyphicon-chevron-up",
+        icon: "icon fa-solid",
+        iconColumns: "fa-list",
+        iconDown: "fa-chevron-down",
+        iconRefresh: "fa-arrows-rotate",
+        iconSearch: "fa-magnifying-glass",
+        iconUp: "fa-chevron-up",
         infos: "infos", // must be a unique class name or constellation of class names within the header and footer,
         left: "text-left",
         pagination: "pagination", // must be a unique class name or constellation of class names within the header and footer
