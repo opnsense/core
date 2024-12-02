@@ -29,6 +29,7 @@
 namespace OPNsense\Auth\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Base\UserException;
 use OPNsense\Auth\User;
 use OPNsense\Auth\Group;
 use OPNsense\Core\ACL;
@@ -134,6 +135,12 @@ class PrivController extends ApiMutableModelControllerBase
             }
             $usermdl->serializeToConfig(false, true);
             $groupmdl->serializeToConfig(false, true);
+            if (!(new ACL())->isPageAccessible($this->getUserName(), '/api/auth/priv')) {
+                throw new UserException(
+                    sprintf(gettext("User %s can not lock itself out"), $this->getUserName()),
+                    gettext("Usermanager")
+                );
+            }
             Config::getInstance()->save();
         }
         return $result;
