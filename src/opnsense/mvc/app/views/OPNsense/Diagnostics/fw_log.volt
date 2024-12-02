@@ -206,7 +206,7 @@
             $('#templ_name').val("");
             $('#templates').empty();
             $('#templates').append($('<option/>', {value: "00000", text: "None"}).data('template', {'filters': "0", 'or': "0"}).addClass("disp_none_opt templates"));
-            $('#templates').append($('<option/>', {value: "00001", text: "New"}).data('template', {'filters': "0", 'or': "0"}).data('icon','glyphicon-file').addClass("add_new_opt templ_save"));
+            $('#templates').append($('<option/>', {value: "00001", text: "New"}).data('template', {'filters': "0", 'or': "0"}).attr('data-icon','fa-solid fa-file').addClass("add_new_opt templ_save"));
             $('#templates').selectpicker('refresh');
             $('.templates').show();
             $('.templ_save').hide();
