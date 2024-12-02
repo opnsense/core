@@ -96,6 +96,9 @@
                   <Default>0</Default>
                   <Required>Y</Required>
                 </rfc5424>
+                <localip type="HostnameField">
+                    <Required>N</Required>
+                </localip>
                 <description type="DescriptionField"/>
             </destination>
         </destinations>
