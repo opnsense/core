@@ -6911,7 +6911,7 @@ main.page-content.col-lg-12 {
   border-bottom: 2px transparent;
   border-right: 1px solid rgba(0, 0, 0, 0.15);
 }
-#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.fa, #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.glyphicon {
+#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.fa, #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.fa-solid, #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.glyphicon {
   visibility: visible;
   font-size: 20px;
 }

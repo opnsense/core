@@ -336,7 +336,7 @@ main.page-content.col-lg-12 {
         border-bottom: 2px transparent;
         border-right: 1px solid rgba(0,0,0,.15);
         > span {
-          &.fa, &.glyphicon {
+          &.fa, &.fa-solid, &.glyphicon {
             visibility: visible;
             font-size: 20px;
           }
