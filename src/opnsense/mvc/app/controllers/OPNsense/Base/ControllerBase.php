@@ -84,7 +84,10 @@ class ControllerBase extends ControllerRoot
             // bootstrap dialog
             '/css/bootstrap-dialog.css',
             // Font awesome
-            '/ui/css/font-awesome.min.css',
+            '/ui/assets/fontawesome/css/fontawesome.min.css',
+            '/ui/assets/fontawesome/css/solid.min.css',
+            '/ui/assets/fontawesome/css/brands.min.css',
+            '/ui/assets/fontawesome/css/v4-shims.min.css',
             // JQuery Tokenize2 (https://zellerda.github.io/Tokenize2/)
             '/css/tokenize2.css',
             // Bootgrid (grid system from http://www.jquery-bootgrid.com/ )
