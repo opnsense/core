@@ -6839,11 +6839,11 @@ div.content-box.wizard div img {
 }
 .login-modal-head {
   background: #fff;
-  height: 70px !important;
+  height: 75px !important;
   padding: 0 20px;
 }
 .login-modal-head .navbar-brand {
-  padding: 5px 0px !important;
+  padding: 10px 0px !important;
 }
 .login-modal-head .navbar-brand img {
   height: 60px;

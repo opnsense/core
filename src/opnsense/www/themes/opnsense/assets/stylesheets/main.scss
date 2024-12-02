@@ -259,10 +259,10 @@ div.content-box.wizard {
 
     &-head{
         background: map-get($colors, login-modal-head-background);
-        height: 70px !important;
+        height: 75px !important;
         padding: 0 20px;
         .navbar-brand {
-          padding: 5px 0px !important;
+          padding: 10px 0px !important;
           img {
             height: 60px ;
           }
