@@ -221,7 +221,7 @@ class Radius extends Base implements IAuthConnector
                 $error = radius_strerror($radius);
             } elseif (!radius_put_int($radius, RADIUS_NAS_PORT, 0)) {
                 $error = radius_strerror($radius);
-            } elseif (!radius_put_int($radius, RADIUS_NAS_PORT_TYPE, RADIUS_ETHERNET)) {
+            } elseif (!radius_put_int($radius, RADIUS_NAS_PORT_TYPE, RADIUS_VIRTUAL)) {
                 $error = radius_strerror($radius);
             } elseif (!radius_put_string($radius, RADIUS_USER_NAME, $username)) {
                 $error = radius_strerror($radius);
@@ -289,7 +289,7 @@ class Radius extends Base implements IAuthConnector
                 $error = radius_strerror($radius);
             } elseif (!radius_put_int($radius, RADIUS_NAS_PORT, 0)) {
                 $error = radius_strerror($radius);
-            } elseif (!radius_put_int($radius, RADIUS_NAS_PORT_TYPE, RADIUS_ETHERNET)) {
+            } elseif (!radius_put_int($radius, RADIUS_NAS_PORT_TYPE, RADIUS_VIRTUAL)) {
                 $error = radius_strerror($radius);
             } elseif (!radius_put_string($radius, RADIUS_USER_NAME, $username)) {
                 $error = radius_strerror($radius);
@@ -370,7 +370,7 @@ class Radius extends Base implements IAuthConnector
                 $error = radius_strerror($radius);
             } elseif (!radius_put_int($radius, RADIUS_NAS_PORT, 0)) {
                 $error = radius_strerror($radius);
-            } elseif (!radius_put_int($radius, RADIUS_NAS_PORT_TYPE, RADIUS_ETHERNET)) {
+            } elseif (!radius_put_int($radius, RADIUS_NAS_PORT_TYPE, RADIUS_VIRTUAL)) {
                 $error = radius_strerror($radius);
             } elseif (!radius_put_string($radius, RADIUS_USER_NAME, $username)) {
                 $error = radius_strerror($radius);
@@ -444,7 +444,7 @@ class Radius extends Base implements IAuthConnector
             $error = radius_strerror($radius);
         } elseif (!radius_put_int($radius, RADIUS_NAS_PORT, 0)) {
             $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_NAS_PORT_TYPE, RADIUS_ETHERNET)) {
+        } elseif (!radius_put_int($radius, RADIUS_NAS_PORT_TYPE, RADIUS_VIRTUAL)) {
             $error = radius_strerror($radius);
         } else {
             // Implement extra protocols in this section.
