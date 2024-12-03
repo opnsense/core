@@ -28,7 +28,7 @@ export default class Certificates extends BaseTableWidget {
 
     constructor(config) {
         super(config);
-        this.tickTimeout = 30;
+        this.tickTimeout = 180;
         this.configurable = true;
         this.configChanged = false;
     }
@@ -141,6 +141,7 @@ export default class Certificates extends BaseTableWidget {
         $('.certificate-tooltip').tooltip('hide');
 
         const hiddenItems = config.hiddenItems || [];
+        console.log("Hidden Items:", hiddenItems);
         const rows = [];
 
         if (cas.length > 0) {
@@ -177,7 +178,6 @@ export default class Certificates extends BaseTableWidget {
 
         let apacheRows = [];
 
-        // Use endpointExists to check for Apache endpoint availability
         if (await this.endpointExists('/api/apache/gateway/certs')) {
             const apacheResponse = await this.ajaxCall('/api/apache/gateway/certs');
             apacheRows = apacheResponse.rows || [];
@@ -187,19 +187,19 @@ export default class Certificates extends BaseTableWidget {
 
         if (caResponse.rows) {
             caResponse.rows.forEach(ca => {
-                hiddenItemOptions.push({ value: `ca-${ca.descr}`, label: ca.descr });
+                hiddenItemOptions.push({ value: `${ca.descr}`, label: ca.descr });
             });
         }
 
         if (certResponse.rows) {
             certResponse.rows.forEach(cert => {
-                hiddenItemOptions.push({ value: `cert-${cert.descr}`, label: cert.descr });
+                hiddenItemOptions.push({ value: `${cert.descr}`, label: cert.descr });
             });
         }
 
         if (apacheRows.length > 0) {
             apacheRows.forEach(cert => {
-                hiddenItemOptions.push({ value: `apache-${cert.descr}`, label: cert.descr });
+                hiddenItemOptions.push({ value: `${cert.descr}`, label: cert.descr });
             });
         }
 
@@ -216,6 +216,7 @@ export default class Certificates extends BaseTableWidget {
 
     async onWidgetOptionsChanged() {
         this.configChanged = true;
+        await this.onWidgetTick();
     }
 }
 
