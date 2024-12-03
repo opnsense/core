@@ -49,10 +49,31 @@ export default class Certificates extends BaseTableWidget {
         return $container;
     }
 
+    // Do not trigger danger modal if endpoint does not exist
+    async endpointExists(url) {
+        return new Promise((resolve) => {
+            $.ajax({
+                url: url,
+                type: 'HEAD',
+                success: function() {
+                    resolve(true);
+                },
+                error: function() {
+                    resolve(false);
+                }
+            });
+        });
+    }
+
     async onWidgetTick() {
         const cas = (await this.ajaxCall('/api/trust/ca/search')).rows || [];
         const certs = (await this.ajaxCall('/api/trust/cert/search')).rows || [];
-        const apacheCerts = (await this.ajaxCall('/api/apache/gateway/certs')).rows || [];
+        let apacheCerts = [];
+
+        // This endpoint only exists when os-OPNWAF is installed
+        if (await this.endpointExists('/api/apache/gateway/certs')) {
+            apacheCerts = (await this.ajaxCall('/api/apache/gateway/certs')).rows || [];
+        }
 
         if (cas.length === 0 && certs.length === 0 && apacheCerts.length === 0) {
             this.displayError(`${this.translations.noitems}`);
@@ -86,10 +107,11 @@ export default class Certificates extends BaseTableWidget {
                         : 'text-success';
 
                 const statusText = remainingDays === 0 ? this.translations.expired : this.translations.valid;
+                const iconClass = remainingDays === 0 ? 'fa fa-unlock' : 'fa fa-lock';
 
                 const row = `
                     <div>
-                        <i class="fa fa-lock ${colorClass} certificate-tooltip" style="cursor: pointer;"
+                        <i class="${iconClass} ${colorClass} certificate-tooltip" style="cursor: pointer;"
                             data-tooltip="${type}-${item.descr}" title="${statusText}">
                         </i>
                         &nbsp;
@@ -148,11 +170,18 @@ export default class Certificates extends BaseTableWidget {
     }
 
     async getWidgetOptions() {
-        const [caResponse, certResponse, apacheResponse] = await Promise.all([
+        const [caResponse, certResponse] = await Promise.all([
             this.ajaxCall('/api/trust/ca/search'),
-            this.ajaxCall('/api/trust/cert/search'),
-            this.ajaxCall('/api/apache/gateway/certs')
+            this.ajaxCall('/api/trust/cert/search')
         ]);
+
+        let apacheRows = [];
+
+        // Use endpointExists to check for Apache endpoint availability
+        if (await this.endpointExists('/api/apache/gateway/certs')) {
+            const apacheResponse = await this.ajaxCall('/api/apache/gateway/certs');
+            apacheRows = apacheResponse.rows || [];
+        }
 
         const hiddenItemOptions = [];
 
@@ -168,8 +197,8 @@ export default class Certificates extends BaseTableWidget {
             });
         }
 
-        if (apacheResponse.rows) {
-            apacheResponse.rows.forEach(cert => {
+        if (apacheRows.length > 0) {
+            apacheRows.forEach(cert => {
                 hiddenItemOptions.push({ value: `apache-${cert.descr}`, label: cert.descr });
             });
         }
