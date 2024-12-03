@@ -43,25 +43,25 @@ rm -rf ${PKG_DBDIR}
 mkdir -p ${PKG_DBDIR}
 
 if [ -n "${IPV4}" -a -z "${IPV4%%*.*}" ]; then
-	output_text "Checking connectivity for host: ${HOST} -> ${IPV4}"
+	output_txt "Checking connectivity for host: ${HOST} -> ${IPV4}"
 	output_cmd ping -4 ${POPT} "${IPV4}"
-	output_text "Checking connectivity for repository (IPv4): ${URL}"
+	output_txt "Checking connectivity for repository (IPv4): ${URL}"
 	output_cmd ${PKG} -4 update -f
 else
-	output_text "No IPv4 address could be found for host: ${HOST}"
+	output_txt "No IPv4 address could be found for host: ${HOST}"
 fi
 
 if [ -n "${IPV6}" -a -z "${IPV6%%*:*}" ]; then
-	output_text "Checking connectivity for host: ${HOST} -> ${IPV6}"
+	output_txt "Checking connectivity for host: ${HOST} -> ${IPV6}"
 	output_cmd ping -6 ${POPT} "${IPV6}"
-	output_text "Checking connectivity for repository (IPv6): ${URL}"
+	output_txt "Checking connectivity for repository (IPv6): ${URL}"
 	output_cmd ${PKG} -6 update -f
 else
-	output_text "No IPv6 address could be found for host: ${HOST}"
+	output_txt "No IPv6 address could be found for host: ${HOST}"
 fi
 
 for HOST in $(/usr/local/opnsense/scripts/firmware/hostnames.sh); do
-	output_text "Checking server certificate for host: ${HOST}"
+	output_txt "Checking server certificate for host: ${HOST}"
 	# XXX -crl_check and -crl_check_all are possible but -CRL pass is not working
 	echo | output_cmd openssl s_client -quiet -no_ign_eof "${HOST}:443"
 done

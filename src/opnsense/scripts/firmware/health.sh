@@ -72,30 +72,30 @@ set_check()
 
 	VER=$(opnsense-version -v ${SET})
 
-	output_text ">>> Check installed ${SET} version"
+	output_txt ">>> Check installed ${SET} version"
 
 	if [ -z "${VER}" -o -z "${VERSION}" ]; then
-		output_text "Failed to determine version info."
+		output_txt "Failed to determine version info."
 	elif [ "${VER}" != "${VERSION}" ]; then
-		output_text "Version ${VER} is incorrect, expected: ${VERSION}"
+		output_txt "Version ${VER} is incorrect, expected: ${VERSION}"
 	else
-		output_text "Version ${VER} is correct."
+		output_txt "Version ${VER} is correct."
 	fi
 
 	FILE=/usr/local/opnsense/version/${SET}.mtree
 
 	if [ ! -f ${FILE} ]; then
-		output_text "Cannot verify ${SET}: missing ${FILE}"
+		output_txt "Cannot verify ${SET}: missing ${FILE}"
 		return
 	fi
 
 	if [ ! -f ${FILE}.sig ]; then
-		output_text "Unverified consistency check for ${SET}: missing ${FILE}.sig"
+		output_txt "Unverified consistency check for ${SET}: missing ${FILE}.sig"
 	elif ! opnsense-verify -q ${FILE}; then
-		output_text "Unverified consistency check for ${SET}: invalid ${FILE}.sig"
+		output_txt "Unverified consistency check for ${SET}: invalid ${FILE}.sig"
 	fi
 
-	output_text ">>> Check for missing or altered ${SET} files"
+	output_txt ">>> Check for missing or altered ${SET} files"
 
 	echo "${MTREE_PATTERNS}" > ${TMPFILE}
 
@@ -107,14 +107,14 @@ set_check()
 
 	if [ ${MTREE_RET} -eq 0 ]; then
 		if [ "${MTREE_MIA}" = "0" ]; then
-			output_text "No problems detected."
+			output_txt "No problems detected."
 		else
-			output_text "Missing files: ${MTREE_MIA}"
-			output_text "${MTREE_OUT}"
+			output_txt "Missing files: ${MTREE_MIA}"
+			output_txt "${MTREE_OUT}"
 		fi
 	else
-		output_text "Error ${MTREE_RET} occurred."
-		output_text "${MTREE_OUT}"
+		output_txt "Error ${MTREE_RET} occurred."
+		output_txt "${MTREE_OUT}"
 	fi
 
 	rm ${TMPFILE}
@@ -122,29 +122,29 @@ set_check()
 
 core_check()
 {
-	output_text ">>> Check for core packages consistency"
+	output_txt ">>> Check for core packages consistency"
 
 	CORE=$(opnsense-version -n)
 	PROGRESS=
 
 	if [ -z "${CORE}" ]; then
-		output_text "Could not determine core package name."
+		output_txt "Could not determine core package name."
 		return
 	fi
 
 	if [ -z "$(${PKG} query %n ${CORE})" ]; then
-		output_text "Core package \"${CORE}\" not known to package database."
+		output_txt "Core package \"${CORE}\" not known to package database."
 		return
 	fi
 
-	output_text "Core package \"${CORE}\" at $(opnsense-version -v) has $(${PKG} query %#d ${CORE}) dependencies to check."
+	output_txt "Core package \"${CORE}\" at $(opnsense-version -v) has $(${PKG} query %#d ${CORE}) dependencies to check."
 
 	for DEP in $( (echo ${CORE}; ${PKG} query %dn ${CORE}) | sort -u); do
 		if [ -z "${PROGRESS}" ]; then
-			output_text -n "Checking packages: ."
+			output_txt -n "Checking packages: ."
 			PROGRESS=1
 		else
-			output_text -n "."
+			output_txt -n "."
 		fi
 
 		read REPO LVER AUTO VITA << EOF
@@ -153,33 +153,33 @@ EOF
 
 		if [ -z "${REPO}${LVER}${AUTO}${VITA}" ]; then
 			if [ -n "${PROGRESS}" ]; then
-				output_text
+				output_txt
 			fi
-			output_text "Package not installed: ${DEP}"
+			output_txt "Package not installed: ${DEP}"
 			PROGRESS=
 			continue
 		fi
 
 		if [ "${REPO}" != ${PRODUCT} ]; then
 			if [ -n "${PROGRESS}" ]; then
-				output_text
+				output_txt
 			fi
-			output_text "${DEP}-${LVER} repository mismatch: ${REPO}"
+			output_txt "${DEP}-${LVER} repository mismatch: ${REPO}"
 			PROGRESS=
 		fi
 
 		RVER=$(${PKG} rquery -r ${PRODUCT} %v ${DEP} 2> /dev/null)
 		if [ -z "${RVER}" ]; then
 			if [ -n "${PROGRESS}" ]; then
-				output_text
+				output_txt
 			fi
-			output_text "${DEP}-${LVER} has no upstream equivalent"
+			output_txt "${DEP}-${LVER} has no upstream equivalent"
 			PROGRESS=
 		elif [ "${RVER}" != "${LVER}" ]; then
 			if [ -n "${PROGRESS}" ]; then
-				output_text
+				output_txt
 			fi
-			output_text "${DEP}-${LVER} version mismatch, expected ${RVER}"
+			output_txt "${DEP}-${LVER} version mismatch, expected ${RVER}"
 			PROGRESS=
 		fi
 
@@ -200,27 +200,27 @@ EOF
 
 		if [ "${AUTO}" != ${AUTOEXPECT} ]; then
 			if [ -n "${PROGRESS}" ]; then
-				output_text
+				output_txt
 			fi
-			output_text "${DEP}-${LVER} is ${AUTOSET} to automatic"
+			output_txt "${DEP}-${LVER} is ${AUTOSET} to automatic"
 			PROGRESS=
 		fi
 
 		if [ "${VITA}" != ${VITAEXPECT} ]; then
 			if [ -n "${PROGRESS}" ]; then
-				output_text
+				output_txt
 			fi
-			output_text "${DEP}-${LVER} is ${VITASET} to vital"
+			output_txt "${DEP}-${LVER} is ${VITASET} to vital"
 			PROGRESS=
 		fi
 	done
 
 	if [ -n "${PROGRESS}" ]; then
-		output_text " done"
+		output_txt " done"
 	fi
 }
 
-output_text ">>> Root file system: $(mount | awk '$3 == "/" { print $1 }')"
+output_txt ">>> Root file system: $(mount | awk '$3 == "/" { print $1 }')"
 
 if [ -z "${CMD}" -o "${CMD}" = "kernel" ]; then
 	set_check kernel
@@ -231,35 +231,35 @@ if [ -z "${CMD}" -o "${CMD}" = "base" ]; then
 fi
 
 if [ -z "${CMD}" -o "${CMD}" = "repos" ]; then
-	output_text ">>> Check installed repositories"
+	output_txt ">>> Check installed repositories"
 	output_cmd opnsense-verify -l
 fi
 
 if [ -z "${CMD}" -o "${CMD}" = "plugins" ]; then
-	output_text ">>> Check installed plugins"
+	output_txt ">>> Check installed plugins"
 	PLUGINS=$(${PKG} query -g '%n %v' 'os-*' 2>&1)
 	if [ -n "${PLUGINS}" ]; then
-		output_text "${PLUGINS}"
+		output_txt "${PLUGINS}"
 	else
-		output_text "No plugins found."
+		output_txt "No plugins found."
 	fi
 fi
 
 if [ -z "${CMD}" -o "${CMD}" = "locked" ]; then
-	output_text ">>> Check locked packages"
+	output_txt ">>> Check locked packages"
 	LOCKED=$(${PKG} lock -lq 2>&1)
 	if [ -n "${LOCKED}" ]; then
-		output_text "${LOCKED}"
+		output_txt "${LOCKED}"
 	else
-		output_text "No locks found."
+		output_txt "No locks found."
 	fi
 fi
 
 if [ -z "${CMD}" -o "${CMD}" = "packages" ]; then
-	output_text ">>> Check for missing package dependencies"
+	output_txt ">>> Check for missing package dependencies"
 	output_cmd ${PKG} check -dan
 
-	output_text ">>> Check for missing or altered package files"
+	output_txt ">>> Check for missing or altered package files"
 	output_cmd ${PKG} check -sa
 fi
 

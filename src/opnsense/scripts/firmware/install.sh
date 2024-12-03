@@ -38,7 +38,7 @@ if [ "${PACKAGE#os-}" != "${PACKAGE}" ]; then
 
 	# plugins must pass a version check on up-to-date core package
 	if [ "$(${PKG} version -t ${COREVER} ${REPOVER})" = "<" ]; then
-		output_text "Installation out of date. The update to ${COREPKG}-${REPOVER} is required."
+		output_txt "Installation out of date. The update to ${COREPKG}-${REPOVER} is required."
 		output_done
 	fi
 fi

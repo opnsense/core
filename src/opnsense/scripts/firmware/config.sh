@@ -69,7 +69,7 @@ output_request()
 	echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 }
 
-output_text()
+output_txt()
 {
 	DO_OPT=
 	DO_OUT=
@@ -117,7 +117,7 @@ output_cmd()
 
 		# single quote will not execute for safety
 		if [ -z "${ARG##*"'"*}" ]; then
-			output_text "firmware: safety violation in argument during ${REQUEST}"
+			output_txt "firmware: safety violation in argument during ${REQUEST}"
 			return 1
 		fi
 
@@ -155,7 +155,7 @@ env_init()
 {
 	if [ -n "$(opnsense-update -x)" -o -e /var/run/development ]; then
 		if [ -n "${REQUEST}" ]; then
-			output_text "Strict TLS 1.3 and CRL checking is enabled."
+			output_txt "Strict TLS 1.3 and CRL checking is enabled."
 		fi
 
 		# business mirror compliance requires
