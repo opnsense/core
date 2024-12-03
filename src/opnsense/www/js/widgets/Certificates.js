@@ -28,6 +28,7 @@ export default class Certificates extends BaseTableWidget {
 
     constructor(config) {
         super(config);
+        this.tickTimeout = 30;
         this.configurable = true;
         this.configChanged = false;
     }
@@ -51,14 +52,15 @@ export default class Certificates extends BaseTableWidget {
     async onWidgetTick() {
         const cas = (await this.ajaxCall('/api/trust/ca/search')).rows || [];
         const certs = (await this.ajaxCall('/api/trust/cert/search')).rows || [];
+        const apacheCerts = (await this.ajaxCall('/api/apache/gateway/certs')).rows || [];
 
-        if (cas.length === 0 && certs.length === 0) {
+        if (cas.length === 0 && certs.length === 0 && apacheCerts.length === 0) {
             this.displayError(`${this.translations.noitems}`);
             return;
         }
 
         this.clearError();
-        await this.processCertificates(cas, certs);
+        await this.processCertificates(cas, certs, apacheCerts);
     }
 
     displayError(message) {
@@ -91,7 +93,7 @@ export default class Certificates extends BaseTableWidget {
                             data-tooltip="${type}-${item.descr}" title="${statusText}">
                         </i>
                         &nbsp;
-                        <span><b>${item.descr}${type === 'ca' ? ' (CA)' : ''}</b></span>
+                        <span><b>${item.descr}</b></span>
                         <br/>
                         <div style="margin-top: 5px; margin-bottom: 5px;">
                             <i>${this.translations.expires}</i> ${remainingDays} ${this.translations.days},
@@ -103,10 +105,10 @@ export default class Certificates extends BaseTableWidget {
         });
     }
 
-    async processCertificates(cas, certs) {
+    async processCertificates(cas, certs, apacheCerts) {
         const config = await this.getWidgetConfig() || {};
 
-        if (!this.dataChanged('certificates', { cas, certs }) && !this.configChanged) {
+        if (!this.dataChanged('certificates', { cas, certs, apacheCerts }) && !this.configChanged) {
             return;
         }
 
@@ -122,8 +124,13 @@ export default class Certificates extends BaseTableWidget {
         if (cas.length > 0) {
             this.processItems(cas, 'ca', hiddenItems, rows);
         }
+
         if (certs.length > 0) {
             this.processItems(certs, 'cert', hiddenItems, rows);
+        }
+
+        if (apacheCerts.length > 0) {
+            this.processItems(apacheCerts, 'apache', hiddenItems, rows);
         }
 
         if (rows.length === 0) {
@@ -141,22 +148,29 @@ export default class Certificates extends BaseTableWidget {
     }
 
     async getWidgetOptions() {
-        const [caResponse, certResponse] = await Promise.all([
+        const [caResponse, certResponse, apacheResponse] = await Promise.all([
             this.ajaxCall('/api/trust/ca/search'),
-            this.ajaxCall('/api/trust/cert/search')
+            this.ajaxCall('/api/trust/cert/search'),
+            this.ajaxCall('/api/apache/gateway/certs')
         ]);
 
         const hiddenItemOptions = [];
 
         if (caResponse.rows) {
             caResponse.rows.forEach(ca => {
-                hiddenItemOptions.push({ value: ca.descr, label: `${ca.descr} (CA)` });
+                hiddenItemOptions.push({ value: `ca-${ca.descr}`, label: ca.descr });
             });
         }
 
         if (certResponse.rows) {
             certResponse.rows.forEach(cert => {
-                hiddenItemOptions.push({ value: cert.descr, label: cert.descr });
+                hiddenItemOptions.push({ value: `cert-${cert.descr}`, label: cert.descr });
+            });
+        }
+
+        if (apacheResponse.rows) {
+            apacheResponse.rows.forEach(cert => {
+                hiddenItemOptions.push({ value: `apache-${cert.descr}`, label: cert.descr });
             });
         }
 
@@ -175,3 +189,4 @@ export default class Certificates extends BaseTableWidget {
         this.configChanged = true;
     }
 }
+
