@@ -69,14 +69,18 @@ output_request()
 	echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 }
 
-output_text()
+output_txt()
 {
 	DO_OPT=
+	DO_OUT=
 
-	while getopts n OPT; do
+	while getopts no: OPT; do
 		case ${OPT} in
 		n)
 			DO_OPT="-n"
+			;;
+		o)
+			DO_OUT=${OPTARG}
 			;;
 		*)
 			# ignore unknown
@@ -86,14 +90,46 @@ output_text()
 
 	shift $((OPTIND - 1))
 
-	echo ${DO_OPT} "${1}" | ${TEE} ${LOCKFILE} ${2}
+	echo ${DO_OPT} "${1}" | ${TEE} ${LOCKFILE} ${DO_OUT}
 }
 
 output_cmd()
 {
+	DO_CMD=
+	DO_OUT=
+
+	while getopts o: OPT; do
+		case ${OPT} in
+		o)
+			DO_OUT=${OPTARG}
+			;;
+		*)
+			# ignore unknown
+			;;
+		esac
+	done
+
+	shift $((OPTIND - 1))
+
+	for ARG in "${@}"; do
+		# transform first to trap replacements
+		ARG="$(echo "${ARG}")"
+
+		# single quote will not execute for safety
+		if [ -z "${ARG##*"'"*}" ]; then
+			output_txt "firmware: safety violation in argument during ${REQUEST}"
+			return 1
+		fi
+
+		# append safely to argument in single quotes
+		DO_CMD="${DO_CMD} '${ARG}'"
+	done
+
+	# pipe needed for grabbing the command return value
+	${TEE} ${LOCKFILE} ${DO_OUT} < ${PIPEFILE} &
+
 	# also capture stderr in this case
-	${TEE} ${LOCKFILE} ${2} < ${PIPEFILE} &
-	eval "(${1}) 2>&1" > ${PIPEFILE}
+	eval "(${DO_CMD}) 2>&1" > ${PIPEFILE}
 }
 
 output_done()
@@ -119,7 +155,7 @@ env_init()
 {
 	if [ -n "$(opnsense-update -x)" -o -e /var/run/development ]; then
 		if [ -n "${REQUEST}" ]; then
-			output_text "Strict TLS 1.3 and CRL checking is enabled."
+			output_txt "Strict TLS 1.3 and CRL checking is enabled."
 		fi
 
 		# business mirror compliance requires
