@@ -3,3 +3,4 @@ rc.conf.d:/etc/rc.conf.d/netflow
 flowd.rc.conf.d:/etc/rc.conf.d/flowd
 flowd_aggregate.rc.conf.d:/etc/rc.conf.d/flowd_aggregate
 flowd.conf:/usr/local/etc/flowd.conf
+flowd_aggregate.yaml:/usr/local/etc/flowd_aggregate.yaml
