@@ -141,7 +141,6 @@ export default class Certificates extends BaseTableWidget {
         $('.certificate-tooltip').tooltip('hide');
 
         const hiddenItems = config.hiddenItems || [];
-        console.log("Hidden Items:", hiddenItems);
         const rows = [];
 
         if (cas.length > 0) {
