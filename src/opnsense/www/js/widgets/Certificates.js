@@ -109,6 +109,10 @@ export default class Certificates extends BaseTableWidget {
                 const statusText = remainingDays === 0 ? this.translations.expired : this.translations.valid;
                 const iconClass = remainingDays === 0 ? 'fa fa-unlock' : 'fa fa-lock';
 
+                const expirationText = remainingDays === 0
+                    ? `${this.translations.expiredon} ${validTo.toLocaleString()}`
+                    : `${this.translations.expiresin} ${remainingDays} ${this.translations.days}, ${validTo.toLocaleString()}`;
+
                 const row = `
                     <div>
                         <i class="${iconClass} ${colorClass} certificate-tooltip" style="cursor: pointer;"
@@ -118,8 +122,7 @@ export default class Certificates extends BaseTableWidget {
                         <span><b>${item.descr}</b></span>
                         <br/>
                         <div style="margin-top: 5px; margin-bottom: 5px;">
-                            <i>${this.translations.expires}</i> ${remainingDays} ${this.translations.days},
-                            ${validTo.toLocaleString()}
+                            ${expirationText}
                         </div>
                     </div>`;
                 rows.push({ html: row, expirationDate: validTo });

@@ -360,7 +360,8 @@
             <noitems>No certificates to display.</noitems>
             <expired>Expired</expired>
             <valid>Valid</valid>
-            <expires>Expires in</expires>
+            <expiresin>Expires in</expiresin>
+            <expiredon>Expired on</expiredon>
             <days>days</days>
             <hiddenitems>Hidden Certificates</hiddenitems>
         </translations>
