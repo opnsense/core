@@ -91,13 +91,17 @@ export default class Certificates extends BaseTableWidget {
                     ? `${this.translations.expiredon} ${validTo.toLocaleString()}`
                     : `${this.translations.expiresin} ${remainingDays} ${this.translations.days}, ${validTo.toLocaleString()}`;
 
+                const descrContent = (type === 'cert' || type === 'ca')
+                    ? `<a href="/ui/trust/${type === 'cert' ? 'cert' : 'ca'}#SearchPhrase=${encodeURIComponent(item.descr)}" class="${type}-link">${item.descr}</a>`
+                    : `<b>${item.descr}</b>`;
+
                 const row = `
                     <div>
                         <i class="${iconClass} ${colorClass} certificate-tooltip" style="cursor: pointer;"
                             data-tooltip="${type}-${item.descr}" title="${statusText}">
                         </i>
                         &nbsp;
-                        <span><b>${item.descr}</b></span>
+                        <span>${descrContent}</span>
                         <br/>
                         <div style="margin-top: 5px; margin-bottom: 5px;">
                             ${expirationText}
@@ -182,4 +186,3 @@ export default class Certificates extends BaseTableWidget {
         await this.onWidgetTick();
     }
 }
-

@@ -160,6 +160,29 @@
                 }
             }
         });
+
+        /* For certificate dashboard widget */
+        function handleSearchPhrase(hashKey, searchFieldSelector) {
+            const hash = window.location.hash;
+            const searchField = $(searchFieldSelector);
+
+            if (hash.includes(hashKey)) {
+                const searchPhrase = decodeURIComponent(hash.split('=')[1]);
+                if (searchField.val() !== searchPhrase) {
+                    searchField.val(searchPhrase).trigger('keyup');
+                    history.replaceState(null, null, window.location.pathname + window.location.search);
+                }
+            }
+        }
+
+        grid_cert.on("loaded.rs.jquery.bootgrid", function () {
+            handleSearchPhrase('#SearchPhrase=', '.search-field');
+        });
+
+        $(window).on('hashchange', function () {
+            handleSearchPhrase('#SearchPhrase=', '.search-field');
+        });
+
     });
 
 </script>
