@@ -49,39 +49,17 @@ export default class Certificates extends BaseTableWidget {
         return $container;
     }
 
-    // Do not trigger danger modal if endpoint does not exist
-    async endpointExists(url) {
-        return new Promise((resolve) => {
-            $.ajax({
-                url: url,
-                type: 'HEAD',
-                success: function() {
-                    resolve(true);
-                },
-                error: function() {
-                    resolve(false);
-                }
-            });
-        });
-    }
-
     async onWidgetTick() {
         const cas = (await this.ajaxCall('/api/trust/ca/search')).rows || [];
         const certs = (await this.ajaxCall('/api/trust/cert/search')).rows || [];
-        let apacheCerts = [];
 
-        // This endpoint only exists when os-OPNWAF is installed
-        if (await this.endpointExists('/api/apache/gateway/certs')) {
-            apacheCerts = (await this.ajaxCall('/api/apache/gateway/certs')).rows || [];
-        }
-
-        if (cas.length === 0 && certs.length === 0 && apacheCerts.length === 0) {
+        if (cas.length === 0 && certs.length === 0) {
             this.displayError(`${this.translations.noitems}`);
             return;
         }
 
         this.clearError();
-        await this.processCertificates(cas, certs, apacheCerts);
+        await this.processCertificates(cas, certs);
     }
 
     displayError(message) {
@@ -130,10 +108,10 @@ export default class Certificates extends BaseTableWidget {
         });
     }
 
-    async processCertificates(cas, certs, apacheCerts) {
+    async processCertificates(cas, certs) {
         const config = await this.getWidgetConfig() || {};
 
-        if (!this.dataChanged('certificates', { cas, certs, apacheCerts }) && !this.configChanged) {
+        if (!this.dataChanged('certificates', { cas, certs }) && !this.configChanged) {
             return;
         }
 
@@ -152,10 +130,6 @@ export default class Certificates extends BaseTableWidget {
 
         if (certs.length > 0) {
             this.processItems(certs, 'cert', hiddenItems, rows);
-        }
-
-        if (apacheCerts.length > 0) {
-            this.processItems(apacheCerts, 'apache', hiddenItems, rows);
         }
 
         if (rows.length === 0) {
@@ -178,13 +152,6 @@ export default class Certificates extends BaseTableWidget {
             this.ajaxCall('/api/trust/cert/search')
         ]);
 
-        let apacheRows = [];
-
-        if (await this.endpointExists('/api/apache/gateway/certs')) {
-            const apacheResponse = await this.ajaxCall('/api/apache/gateway/certs');
-            apacheRows = apacheResponse.rows || [];
-        }
-
         const hiddenItemOptions = [];
 
         if (caResponse.rows) {
@@ -195,12 +162,6 @@ export default class Certificates extends BaseTableWidget {
 
         if (certResponse.rows) {
             certResponse.rows.forEach(cert => {
-                hiddenItemOptions.push({ value: `${cert.descr}`, label: cert.descr });
-            });
-        }
-
-        if (apacheRows.length > 0) {
-            apacheRows.forEach(cert => {
                 hiddenItemOptions.push({ value: `${cert.descr}`, label: cert.descr });
             });
         }
