@@ -36,7 +36,5 @@ while :; do
 		PREVIOUS=${CURRENT}
 	fi
 
-	# Redirect sleep stdout/stderr to avoid it holding the pipe from the daemon
-	# wrapper process open.
-	sleep "${INTERVAL}" >/dev/null 2>&1
+	sleep "${INTERVAL}"
 done
