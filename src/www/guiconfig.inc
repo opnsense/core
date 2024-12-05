@@ -385,7 +385,7 @@ function gentitle($breadcrumbs, $navlevelsep = ': ')
     return join($navlevelsep, $output) . "$gentitle_suffix";
 }
 
-function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendport)
+function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendport, $merge_mask=false)
 {
     if (isset($adr['any'])) {
         $padr = "any";
@@ -401,6 +401,9 @@ function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendp
             } else {
                 $pmask = 32;
             }
+        }
+        if ($merge_mask && is_ipaddr($padr)) {
+            $padr = $padr . '/' . $pmask;
         }
     }
 
