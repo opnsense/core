@@ -48,11 +48,16 @@ final class product
         self::$data = json_decode(file_get_contents('/usr/local/opnsense/version/core'), true);
 
         /* boot detection */
-        self::$data['product_booting'] = false;
-        $fp = fopen('/var/run/booting', 'a+e');
+        $bootflag = '/var/run/booting';
+        if (!file_exists($bootflag)) {
+            @touch($bootflag);
+        }
+        $fp = fopen($bootflag, 'r');
         if ($fp) {
             self::$data['product_booting'] = !flock($fp, LOCK_SH | LOCK_NB);
             fclose($fp);
+        } else {
+            self::$data['product_booting'] = false;
         }
 
         /* development flag */
@@ -83,6 +88,8 @@ function reopenlog()
 }
 
 reopenlog();
+
+register_shutdown_function('closelog');
 
 require_once("xmlparse.inc");
 require_once("legacy_bindings.inc");
@@ -157,7 +164,7 @@ function convert_config($verbose = false)
     }
 
     /* factory reset on release type and plugins if necessary */
-    $cmd = '/usr/local/opnsense/scripts/firmware/register.php sync';
+    $cmd = '/usr/local/opnsense/scripts/firmware/register.php resync_factory';
     if ($verbose) {
         passthru($cmd);
     } else {
@@ -244,7 +251,7 @@ function &config_read_array()
 
     foreach (func_get_args() as $key) {
         if (!isset($current[$key]) || !is_array($current[$key])) {
-            $current[$key] = [];
+            $current[$key] = array();
         }
         $current = &$current[$key];
     }
@@ -268,7 +275,7 @@ function make_config_revision_entry($desc = '')
         $desc = sprintf('%s made changes', $_SERVER['SCRIPT_NAME']);
     }
 
-    $revision = [];
+    $revision = array();
     $revision['username'] = $username;
     $revision['time'] = microtime(true);
     $revision['description'] = $desc;
@@ -281,14 +288,11 @@ function make_config_revision_entry($desc = '')
  * @param array $filters list of filters to apply
  * @return array interfaces
  */
-function legacy_config_get_interfaces($filters = [], $exclude_ifs = [])
+function legacy_config_get_interfaces($filters = array())
 {
-    $interfaces = [];
+    $interfaces = array();
 
     foreach (config_read_array('interfaces') as $ifname => $iface) {
-        if (in_array($ifname, $exclude_ifs)) {
-            continue;
-        }
         // undo stupid listags() turning our item into a new array, preventing certain names to be used as interface.
         // see src/etc/inc/xmlparse.inc
         if (isset($iface[0])) {

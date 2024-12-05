@@ -1,3 +1,5 @@
+// endpoint:/api/core/system/systemTemperature
+
 /*
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
@@ -23,6 +25,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
+import BaseWidget from "./BaseWidget.js";
 
 export default class ThermalSensors extends BaseWidget {
     constructor() {
@@ -172,20 +176,21 @@ export default class ThermalSensors extends BaseWidget {
 
         this.chart = new Chart(context, config);
 
-        $(`#${this.id}-title`).append(`&nbsp;<i class="fa fa-question-circle thermalsensors-info-icon" data-toggle="tooltip" title="${this.translations.help}"></i>`);
-        $('.thermalsensors-info-icon').tooltip({container: 'body'});
+        $(`#${this.id}-title`).append(`&nbsp;<i class="fa fa-question-circle" data-toggle="tooltip" title="${this.translations.help}"></i>`);
+        $('[data-toggle="tooltip"]').tooltip({container: 'body', triger: 'hover'});
     }
 
     async onWidgetTick() {
-        const data = await this.ajaxCall('/api/diagnostics/system/systemTemperature');
-        if (!data || !data.length) {
-            $(`.${this.id}-chart-container`).html(`
-                <a href="/system_advanced_misc.php">${this.translations.unconfigured}</a>
-            `).css('margin', '2em auto')
-            return;
-        }
-        let parsed = this._parseSensors(data);
-        this._update(parsed);
+        ajaxGet('/api/core/system/systemTemperature', { }, (data, status) => {
+            if (!data || !data.length) {
+                $(`.${this.id}-chart-container`).html(`
+                    <a href="/system_advanced_misc.php">${this.translations.unconfigured}</a>
+                `).css('margin', '2em auto')
+                return;
+            }
+            let parsed = this._parseSensors(data);
+            this._update(parsed);
+        });
     }
 
     _update(data = []) {
@@ -211,7 +216,20 @@ export default class ThermalSensors extends BaseWidget {
             item.temperature_fahrenheit = toFahrenheit(parseFloat(item.temperature)).toFixed(1);
         });
 
-        return data;
+        // Find cores with differing temperatures
+        const coreTemperatures = data.filter(item => item.type === 'core').map(item => parseFloat(item.temperature));
+        const uniqueTemperatures = new Set(coreTemperatures);
+
+        let result = [];
+        if (uniqueTemperatures.size === 1) {
+            // If all temperatures are the same, include only the first core
+            result.push(data.find(item => item.type === 'core'));
+        } else {
+            // Include all cores with differing temperatures
+            result = data.filter(item => item.type !== 'core' || coreTemperatures.filter(temp => temp !== parseFloat(item.temperature)).length > 0);
+        }
+
+        return result;
     }
 
     onWidgetClose() {

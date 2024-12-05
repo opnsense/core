@@ -31,6 +31,7 @@
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
+require_once("rrd.inc");
 require_once("system.inc");
 require_once("plugins.inc.d/unbound.inc");
 
@@ -75,9 +76,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         unbound_configure_do();
     } else {
         plugins_configure('monitor');
-        /* rrd graphs depend on a cronjob */
-        system_cron_configure();
+        rrd_configure();
     }
+
 }
 
 $all_rrd_files = json_decode(configd_run('health list'), true);

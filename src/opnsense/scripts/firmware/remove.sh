@@ -25,14 +25,16 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-REQUEST="REMOVE"
-
-. /usr/local/opnsense/scripts/firmware/config.sh
-
+LOCKFILE=/tmp/pkg_upgrade.progress
 PACKAGE=${1}
 
-output_cmd ${PKG} remove -y "${PACKAGE}"
-output_cmd ${BASEDIR}/register.php remove "${PACKAGE}"
-output_cmd ${PKG} autoremove -y
+: > ${LOCKFILE}
 
-output_done
+echo "***GOT REQUEST TO REMOVE***" >> ${LOCKFILE}
+echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
+
+pkg remove -y ${PACKAGE} >> ${LOCKFILE} 2>&1
+/usr/local/opnsense/scripts/firmware/register.php remove ${PACKAGE} >> ${LOCKFILE} 2>&1
+pkg autoremove -y >> ${LOCKFILE} 2>&1
+
+echo '***DONE***' >> ${LOCKFILE}

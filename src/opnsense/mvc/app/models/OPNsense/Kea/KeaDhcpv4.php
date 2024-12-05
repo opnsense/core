@@ -189,8 +189,7 @@ class KeaDhcpv4 extends BaseModel
             'Dhcp4' => [
                 'valid-lifetime' => (int)$this->general->valid_lifetime->__toString(),
                 'interfaces-config' => [
-                    'interfaces' => $this->getConfigPhysicalInterfaces(),
-                    'dhcp-socket-type' => (string)$this->general->dhcp_socket_type
+                    'interfaces' => $this->getConfigPhysicalInterfaces()
                 ],
                 'lease-database' => [
                     'type' => 'memfile',
@@ -230,7 +229,7 @@ class KeaDhcpv4 extends BaseModel
                                 'heartbeat-delay' => 10000,
                                 'max-response-delay' => 60000,
                                 'max-ack-delay' => 5000,
-                                'max-unacked-clients' => (int)((string)$this->ha->max_unacked_clients),
+                                'max-unacked-clients' => 5,
                                 'sync-timeout' => 60000,
                             ]
                         ]

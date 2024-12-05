@@ -31,10 +31,9 @@ require_once 'config.inc';
 require_once 'util.inc';
 require_once 'interfaces.inc';
 
-$mdl = (new \OPNsense\Routing\Gateways());
-$gateways = $mdl->gatewaysIndexedByName(true, true, true);
+$gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName(true, true, true);
 
-$ret = [];
+$ret = array();
 
 foreach ($gateways as $gateway) {
     if (is_ipaddr($gateway['gateway'] ?? '')) {
@@ -44,17 +43,4 @@ foreach ($gateways as $gateway) {
     }
 }
 
-$opts = getopt('gh', [], $optind);
-$args = array_slice($argv, $optind);
-
-if (isset($opts['h'])) {
-    echo "Usage: gateways.php [-g] [-h]\n\n";
-    echo "\t-g add gateway groups\n";
-} else {
-    if (isset($opts['g'])) {
-        foreach ($mdl->getGroupNames() as $name) {
-            $ret[$name] = $name;
-        }
-    }
-    echo json_encode($ret) . PHP_EOL;
-}
+echo json_encode($ret) . PHP_EOL;

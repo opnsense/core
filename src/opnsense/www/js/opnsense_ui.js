@@ -730,18 +730,14 @@ $.fn.SimpleFileUploadDlg = function (params) {
  *      }
  * @param {*} params data structure to use for the select picker
  */
-$.fn.replaceInputWithSelector = function (data, multiple=false) {
+$.fn.replaceInputWithSelector = function (data) {
     let that = this;
     this.new_item = function() {
         let $div = $("<div/>");
         let $table = $('<table style="max-width: 348px"/>');
-        let $select = $('<select data-live-search="true" data-size="5" data-width="348px"/>');
-        if (multiple) {
-            $select.attr('multiple', 'multiple');
-        }
         $table.append(
             $("<tr/>").append(
-                $("<td/>").append($select)
+                $("<td/>").append($('<select data-live-search="true" data-size="5" data-width="348px"/>'))
             )
         );
         $table.append(
@@ -777,9 +773,6 @@ $.fn.replaceInputWithSelector = function (data, multiple=false) {
         $this_select.attr('for', $(this).attr('id')).selectpicker();
         $this_select.change(function(){
             let $value = $(this).val();
-            if (Array.isArray($value)) {
-                $value = $value.filter(value => value !== '').join(',');
-            }
             if ($value !== '') {
                 $this_input.val($value);
                 $this_input.hide();
@@ -789,12 +782,8 @@ $.fn.replaceInputWithSelector = function (data, multiple=false) {
         });
         $this_input.attr('id', $(this).attr('id'));
         $this_input.change(function(){
-            if (multiple) {
-                $this_select.val($(this).val().split(','));
-            } else {
-                $this_select.val($(this).val());
-            }
-            if ($(this).val() === '' || $this_select.val() === null || $this_select.val() == '') {
+            $this_select.val($(this).val());
+            if ($this_select.val() === null || $this_select.val() == '') {
                 $this_select.val('');
                 $this_input.show();
             } else {

@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/OpenVPN</mount>
-    <version>1.0.1</version>
+    <version>1.0.0</version>
     <description>OpenVPN</description>
     <items>
         <Overwrites>
@@ -42,12 +42,6 @@
                 <route_gateway type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
                 </route_gateway>
-                <keepalive_interval type="IntegerField">
-                    <MinimumValue>0</MinimumValue>
-                </keepalive_interval>
-                <keepalive_timeout type="IntegerField">
-                    <MinimumValue>0</MinimumValue>
-                </keepalive_timeout>
                 <redirect_gateway type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>
@@ -216,10 +210,6 @@
                         <item5 value="5">Five (Client+4xIntermediate+Server)</item5>
                     </OptionValues>
                 </cert_depth>
-                <remote_cert_tls type="BooleanField">
-                    <Default>0</Default>
-                    <Required>Y</Required>
-                </remote_cert_tls>
                 <verify_client_cert type="OptionField">
                     <Required>Y</Required>
                     <Default>require</Default>
@@ -292,12 +282,11 @@
                     <OptionValues>
                         <client-to-client>client-to-client</client-to-client>
                         <duplicate-cn>duplicate-cn</duplicate-cn>
-                        <float>float</float>
                         <passtos>passtos</passtos>
                         <persist-remote-ip>persist-remote-ip</persist-remote-ip>
-                        <remote-random>remote-random</remote-random>
-                        <route-noexec>route-noexec</route-noexec>
                         <route-nopull>route-nopull</route-nopull>
+                        <route-noexec>route-noexec</route-noexec>
+                        <remote-random>remote-random</remote-random>
                     </OptionValues>
                 </various_flags>
                 <various_push_flags type="OptionField">
@@ -311,14 +300,9 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </username_as_common_name>
-                <strictusercn type="OptionField">
-                    <Required>Y</Required>
+                <strictusercn type="BooleanField">
                     <Default>0</Default>
-                    <OptionValues>
-                        <o0 value="0">No</o0>
-                        <o1 value="1">Yes</o1>
-                        <o2 value="2">Yes (case insensitive)</o2>
-                    </OptionValues>
+                    <Required>Y</Required>
                 </strictusercn>
                 <username type="TextField"/>
                 <password type="TextField"/>
@@ -337,10 +321,6 @@
                 <auth-gen-token type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                 </auth-gen-token>
-                <provision_exclusive type="BooleanField">
-                    <Default>0</Default>
-                    <Required>Y</Required>
-                </provision_exclusive>
                 <redirect_gateway type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>

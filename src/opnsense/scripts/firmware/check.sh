@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2024 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2023 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -37,18 +37,17 @@
 # downgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
 # upgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
 
-# clear the file before we may wait for other init glue below
 JSONFILE="/tmp/pkg_upgrade.json"
-rm -f ${JSONFILE}
-
-REQUEST="CHECK FOR UPDATES"
-
-. /usr/local/opnsense/scripts/firmware/config.sh
+LOCKFILE="/tmp/pkg_upgrade.progress"
+OUTFILE="/tmp/pkg_update.out"
+TEE="/usr/bin/tee -a"
 
 LICENSEFILE="/usr/local/opnsense/version/core.license"
-OUTFILE="/tmp/pkg_update.out"
 
 CUSTOMPKG=${1}
+
+rm -f ${JSONFILE}
+: > ${LOCKFILE}
 
 base_to_reboot=
 connection="error"
@@ -89,26 +88,29 @@ if [ -n "${product_xabi}" -a "${product_abi}" != "${product_xabi}" ]; then
     force_all="-f"
 fi
 
+echo "***GOT REQUEST TO CHECK FOR UPDATES***" >> ${LOCKFILE}
+echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
+
 # business subscriptions come with additional license metadata
 if [ -n "$(opnsense-update -x)" ]; then
-    output_txt -n "Fetching subscription information, please wait... "
-    if output_cmd fetch -qT 30 -o "${LICENSEFILE}" "$(opnsense-update -M)/subscription"; then
-        output_txt "done"
+    echo -n "Fetching subscription information, please wait... " >> ${LOCKFILE}
+    if fetch -qT 30 -o ${LICENSEFILE} "$(opnsense-update -M)/subscription" >> ${LOCKFILE} 2>&1; then
+        echo "done" >> ${LOCKFILE}
     fi
 else
     rm -f ${LICENSEFILE}
 fi
 
-output_txt -n "Fetching changelog information, please wait... "
-if output_cmd ${BASEDIR}/changelog.sh fetch; then
-    output_txt "done"
+echo -n "Fetching changelog information, please wait... " >> ${LOCKFILE}
+if /usr/local/opnsense/scripts/firmware/changelog.sh fetch >> ${LOCKFILE} 2>&1; then
+    echo "done" >> ${LOCKFILE}
 fi
 
 : > ${OUTFILE}
-output_cmd -o ${OUTFILE} ${PKG} update -f
+(pkg update -f 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
 
-# always update the package manager so we can see the real updates directly
-output_cmd ${PKG} upgrade -r "${product_repo}" -Uy pkg
+# always update pkg so we can see the real updates directly
+(pkg upgrade -r ${product_repo} -Uy pkg 2>&1) | ${TEE} ${LOCKFILE}
 
 # parse early errors
 if grep -q 'No address record' ${OUTFILE}; then
@@ -146,15 +148,14 @@ else
     : > ${OUTFILE}
 
     # now check what happens when we would go ahead
-    output_cmd -o ${OUTFILE} ${PKG} upgrade ${force_all} -Un
+    (pkg upgrade ${force_all} -Un 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
     if  [ -n "${CUSTOMPKG}" ]; then
-        output_cmd -o ${OUTFILE} ${PKG} install -Un "${CUSTOMPKG}"
+        (pkg install -Un "${CUSTOMPKG}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
     elif [ "${product_id}" != "${product_target}" ]; then
-        output_cmd -o ${OUTFILE} ${PKG} install -r "${product_repo}" -Un "${product_target}"
-    elif [ -z "$(${PKG} rquery %n ${product_id})" ]; then
-        # although this should say "to update matching" we emulate for
-        # check below as the package manager does not catch this
-        output_txt -o ${OUTFILE} "self: No packages available to install matching '${product_id}'"
+        (pkg install -r ${product_repo} -Un "${product_target}" 2>&1) | ${TEE} ${LOCKFILE} ${OUTFILE}
+    elif [ -z "$(pkg rquery %n ${product_id})" ]; then
+        # although this should say "to update matching" we emulate for check below as pkg does not catch this
+        echo "self: No packages available to install matching '${product_id}'" | ${TEE} ${LOCKFILE} ${OUTFILE}
     fi
 
     # Check for additional repository errors
@@ -243,7 +244,7 @@ else
                             if [ -n "$packages_removed" ]; then
                                 packages_removed=$packages_removed","
                             fi
-                            packages_removed=$packages_removed"{\"name\":\"$i\",\"repository\":\"$(${PKG} query %R ${i})\","
+                            packages_removed=$packages_removed"{\"name\":\"$i\",\"repository\":\"$(pkg query %R ${i})\","
                         fi
                     fi
                     if [ "$(expr $linecount + 1)" -eq "$itemcount" ]; then
@@ -297,12 +298,12 @@ else
         download_size=$(grep 'to be downloaded' ${OUTFILE} | awk -F '[ ]' '{print $1$2}' | tr '\n' ',' | sed 's/,$//')
 
         # see if packages indicate a new version (not revision) of base / kernel
-        LQUERY=$(${PKG} query %v opnsense-update)
+        LQUERY=$(pkg query %v opnsense-update)
         LQUERY=${LQUERY%%_*}
-        RQUERY=$(${PKG} rquery %v opnsense-update)
+        RQUERY=$(pkg rquery %v opnsense-update)
         RQUERY=${RQUERY%%_*}
 
-        if [ -n "${force_all}" -o "$(${PKG} version -t ${LQUERY} ${RQUERY})" = "<" ]; then
+        if [ -n "${force_all}" -o "$(pkg version -t ${LQUERY} ${RQUERY})" = "<" ]; then
             kernel_to_reboot="${RQUERY}"
             base_to_reboot="${RQUERY}"
         fi
@@ -416,4 +417,4 @@ cat > ${JSONFILE} << EOF
 }
 EOF
 
-output_done
+echo '***DONE***' >> ${LOCKFILE}

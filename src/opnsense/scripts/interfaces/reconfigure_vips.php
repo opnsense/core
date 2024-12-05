@@ -33,8 +33,7 @@ require_once("interfaces.inc");
 require_once("util.inc");
 
 $addresses = [];
-$proxyarp = false;
-
+$anyproxyarp = false;
 foreach (legacy_interfaces_details() as $ifname => $ifcnf) {
     foreach (['ipv4', 'ipv6'] as $proto) {
         if (!empty($ifcnf[$proto])) {
@@ -57,8 +56,8 @@ foreach (legacy_interfaces_details() as $ifname => $ifcnf) {
                         if ($vhid['vhid'] == $address['vhid']) {
                             $addresses[$key]['advbase'] = $vhid['advbase'];
                             $addresses[$key]['advskew'] = $vhid['advskew'];
-                            $addresses[$key]['peer'] = !empty($vhid['peer']) ? $vhid['peer'] : '224.0.0.18';
-                            $addresses[$key]['peer6'] = !empty($vhid['peer6']) ? $vhid['peer6'] : 'ff02::12';
+                            $addresses[$key]['peer'] = $vhid['peer'];
+                            $addresses[$key]['peer6'] = $vhid['peer6'];
                         }
                     }
                 }
@@ -80,7 +79,7 @@ foreach (glob("/tmp/delete_vip_*.todo") as $filename) {
             legacy_interface_deladdress($addresses[$address]['if'], $address, is_ipaddrv6($address) ? 6 : 4);
         } else {
             // not found, likely proxy arp
-            $proxyarp = true;
+            $anyproxyarp = true;
         }
     }
     unlink($filename);
@@ -108,7 +107,7 @@ if (!empty($config['virtualip']['vip'])) {
             $peer = !empty($vipent['peer']) ? $vipent['peer'] : '224.0.0.18';
             $peer6 = !empty($vipent['peer6']) ? $vipent['peer6'] : 'ff02::12';
             if ($vipent['mode'] == 'proxyarp') {
-                $proxyarp = true;
+                $anyproxyarp = true;
             }
             if (in_array($vipent['mode'], ['proxyarp', 'other'])) {
                 if (isset($addresses[$subnet])) {
@@ -150,6 +149,6 @@ if (!empty($config['virtualip']['vip'])) {
     }
 }
 
-if ($proxyarp) {
+if ($anyproxyarp) {
     interface_proxyarp_configure();
 }

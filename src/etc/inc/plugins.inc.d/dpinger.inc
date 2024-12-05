@@ -69,7 +69,7 @@ function dpinger_services()
 function dpinger_configure()
 {
     return [
-        'monitor' => ['dpinger_configure_do:2'],
+        'monitor' => ['dpinger_configure_do:3'],
     ];
 }
 
@@ -127,16 +127,12 @@ function dpinger_instances($extended = false)
     return $instances;
 }
 
-function dpinger_configure_do($verbose = false, $gwname_map = null)
+function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
 {
-    if (!plugins_argument_map($gwname_map)) {
-        return;
-    }
-
-    service_log(sprintf('Setting up gateway monitor%s...', empty($gwname_map) ? '' : ' for ' . join(', ', $gwname_map)), $verbose);
+    service_log(sprintf('Setting up gateway monitor%s...', empty($gwname) ? 's' : " {$gwname}"), $verbose);
 
     foreach (dpinger_processes() as $running_gwname => $proc) {
-        if (!empty($gwname_map) && !in_array($running_gwname, $gwname_map)) {
+        if (!empty($gwname) && $running_gwname != $gwname) {
             continue;
         }
         if (isvalidpid($proc['pidfile'])) {
@@ -144,7 +140,7 @@ function dpinger_configure_do($verbose = false, $gwname_map = null)
         }
     }
 
-    if (!empty($gwname_map) && in_array(':watcher:', $gwname_map)) {
+    if (!empty($gwname) && $gwname == ':watcher:') {
         /* allow the watcher to be restarted as well */
         killbypid('/var/run/gateway_watcher.pid');
     }
@@ -153,7 +149,7 @@ function dpinger_configure_do($verbose = false, $gwname_map = null)
     $routes = [];
 
     foreach (dpinger_instances() as $name => $gateway) {
-        if (!empty($gwname_map) && !in_array($name, $gwname_map)) {
+        if (!empty($gwname) && $gwname != $name) {
             continue;
         }
 
@@ -166,6 +162,15 @@ function dpinger_configure_do($verbose = false, $gwname_map = null)
 
         $gwifip = null;
 
+        /*
+         * Interface IP is needed since dpinger will bind a socket to it.
+         * However the config GUI should already have checked this and when
+         * PPPoE is used the IP address is set to "dynamic".  So using
+         * is_ipaddrv4() or is_ipaddrv6() to identify packet type would be
+         * wrong, especially as further checks (that can cope with the
+         * "dynamic" case) are present inside the if block.  So using
+         * $gateway['ipprotocol'] is the better option.
+         */
         if ($gateway['ipprotocol'] == 'inet') {
             if (is_ipaddrv4($gateway['gateway'])) {
                 foreach (interfaces_addresses($gateway['interface'], false, $ifconfig_details) as $addr) {
@@ -234,6 +239,13 @@ function dpinger_configure_do($verbose = false, $gwname_map = null)
                 $routes[$gateway['monitor']] = $gateway['gateway'];
             }
         }
+
+        /*
+         * Create custom RRD graph with suitable settings that
+         * may differ from the daemon's standards.
+         */
+        require_once("rrd.inc");
+        rrd_create_gateway_quality("/var/db/rrd/{$gateway['name']}-quality.rrd", $bootup);
 
         /* log warnings via syslog */
         $params  = '-S ';

@@ -57,6 +57,8 @@ class ServiceController extends ApiMutableServiceControllerBase
     {
         $status = "failed";
         if ($this->request->isPost()) {
+            // close session for long running action
+            $this->sessionClose();
             $mdlIDS = new IDS();
             $runStatus = $this->statusAction();
             // we should always have a cron item configured for IDS, let's create one upon first reconfigure.
@@ -113,6 +115,8 @@ class ServiceController extends ApiMutableServiceControllerBase
     {
         $status = "failed";
         if ($this->request->isPost()) {
+            // close session for long running action
+            $this->sessionClose();
             $backend = new Backend();
             // we have to trigger a template reload to be sure we have the right download configuration
             // ideally we should only regenerate the download config, but that's not supported at the moment.
@@ -144,6 +148,8 @@ class ServiceController extends ApiMutableServiceControllerBase
     {
         $status = "failed";
         if ($this->request->isPost()) {
+            // close session for long running action
+            $this->sessionClose();
             $backend = new Backend();
             // flush rule configuration
             $bckresult = trim($backend->configdRun('template reload OPNsense/IDS'));
@@ -164,6 +170,7 @@ class ServiceController extends ApiMutableServiceControllerBase
     public function queryAlertsAction()
     {
         if ($this->request->isPost()) {
+            $this->sessionClose();
             // fetch query parameters (limit results to prevent out of memory issues)
             $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
             $currentPage = $this->request->getPost('current', 'int', 1);
@@ -206,6 +213,7 @@ class ServiceController extends ApiMutableServiceControllerBase
      */
     public function getAlertInfoAction($alertId, $fileid = "")
     {
+        $this->sessionClose();
         $backend = new Backend();
         $id = (new SanitizeFilter())->sanitize($alertId, "int");
         $response = $backend->configdpRun("ids query alerts", array(1, 0, "filepos/" . $id, $fileid));
@@ -224,6 +232,7 @@ class ServiceController extends ApiMutableServiceControllerBase
      */
     public function getAlertLogsAction()
     {
+        $this->sessionClose();
         $backend = new Backend();
         $response = $backend->configdRun("ids list alertlogs");
         $result = json_decode($response, true);
@@ -247,6 +256,8 @@ class ServiceController extends ApiMutableServiceControllerBase
     public function dropAlertLogAction()
     {
         if ($this->request->isPost()) {
+            // close session for long running action
+            $this->sessionClose();
             $backend = new Backend();
             $filename = $this->request->getPost('filename', 'string', null);
             if ($filename != null) {

@@ -111,10 +111,9 @@ class OverviewController extends ApiControllerBase
         $cfg = Config::getInstance()->object();
         $result = [];
 
-        /* abbreviated information */
+        /* quick information */
         $ifinfo = json_decode($backend->configdpRun('interface list ifconfig', [$interface]), true);
         $routes = json_decode($backend->configdRun('interface routes list -n json'), true);
-        $ifaddr = json_decode($backend->configdRun('interface address'), true);
 
         /* detailed information */
         if ($detailed) {
@@ -181,11 +180,6 @@ class OverviewController extends ApiControllerBase
             $tmp['description'] = !empty($config['descr']) ? $config['descr'] : strtoupper($config['identifier']);
             $tmp['enabled'] = !empty($config['enable']);
             $tmp['link_type'] = !empty($config['ipaddr']) ? $config['ipaddr'] : 'none';
-            foreach ([4, 6] as $primary) {
-                $addr = $ifaddr[$config['identifier']][$primary != 4] ?? [];
-                $tmp['addr' . $primary] = !empty($addr['address']) ?
-                    "{$addr['address']}/{$addr['bits']}" : '';
-            }
             if (Util::isIpAddress($tmp['link_type'])) {
                 $tmp['link_type'] = 'static';
             } elseif (empty($config['ipaddr']) && !empty(!empty($config['ipaddrv6']))) {
@@ -247,6 +241,7 @@ class OverviewController extends ApiControllerBase
 
     public function interfacesInfoAction($details = false)
     {
+        $this->sessionClose();
         $result = $this->parseIfInfo(null, $details);
         return $this->searchRecordsetBase(
             $result,
@@ -256,6 +251,7 @@ class OverviewController extends ApiControllerBase
 
     public function getInterfaceAction($if = null)
     {
+        $this->sessionClose();
         $result = ["message" => "failed"];
         if ($if != null) {
             $ifinfo = $this->parseIfInfo($if, true)[0] ?? [];
@@ -296,6 +292,7 @@ class OverviewController extends ApiControllerBase
 
     public function reloadInterfaceAction($identifier = null)
     {
+        $this->sessionClose();
         $result = ["message" => "failed"];
 
         if ($identifier != null) {
@@ -308,6 +305,7 @@ class OverviewController extends ApiControllerBase
 
     public function exportAction()
     {
+        $this->sessionClose();
         $this->response->setRawHeader('Content-Type: application/json');
         $this->response->setRawHeader('Content-Disposition: attachment; filename=ifconfig.json');
         echo json_encode($this->parseIfInfo(null, true));

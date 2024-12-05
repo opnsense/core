@@ -459,7 +459,7 @@ class Store
                 }
             }
 
-            // rfc3280 purpose definitions (+ cert_type derivative field)
+            // rfc3280 purpose definitions
             $result['rfc3280_purpose'] = '';
             if (
                 in_array('TLS Web Server Authentication', $purpose['extendedKeyUsage']) &&
@@ -469,21 +469,18 @@ class Store
                 )
             ) {
                 $result['rfc3280_purpose'] = 'id-kp-serverAuth';
-                $both = in_array('TLS Web Client Authentication', $purpose['extendedKeyUsage']);
-                $result['cert_type'] = $both ? 'combined_server_client' : 'server_cert';
             } elseif (
                 in_array('TLS Web Client Authentication', $purpose['extendedKeyUsage']) &&
                 in_array('Digital Signature', $purpose['keyUsage'])
             ) {
                 $result['rfc3280_purpose'] = 'id-kp-clientAuth';
-                $result['cert_type'] = 'usr_cert';
             } elseif (
                 in_array('OCSP Signing', $purpose['extendedKeyUsage']) &&
                 in_array('Digital Signature', $purpose['keyUsage'])
             ) {
                 $result['rfc3280_purpose'] = 'id-kp-OCSPSigning';
             }
-
+            //
             return $result;
         }
         return false;
@@ -512,48 +509,27 @@ class Store
     }
 
     /**
-     * wrapper around proc_open()
-     * @param string $cmd command to execute
-     * @param string $stdin data to push into <stdin>
-     * @return array [stdout|stderr|exit_status]
-     */
-    private static function proc_open(string $cmd, string $stdin)
-    {
-        $result = ['exit_status' => -1, 'stderr' => '', 'stdout' => ''];
-        $process = proc_open(
-            $cmd,
-            [["pipe", "r"], ["pipe", "w"], ["pipe", "w"]],
-            $pipes
-        );
-        if (is_resource($process)) {
-            fwrite($pipes[0], $stdin);
-            fclose($pipes[0]);
-            $result['stdout'] = stream_get_contents($pipes[1]);
-            fclose($pipes[1]);
-            $result['stderr'] = stream_get_contents($pipes[2]);
-            fclose($pipes[2]);
-            $result['exit_status'] = proc_close($process);
-        }
-        return $result;
-    }
-
-    /**
-     * verify offered cert agains local trust store
-     * @param string $cert certificate
-     * @return array [stdout|stderr|exit_status]
-     */
-    public static function verify($cert)
-    {
-        return static::proc_open('/usr/local/bin/openssl verify', $cert);
-    }
-
-    /**
      * @param string $cert certificate
      * @return array [stdout|stderr]
      */
     public static function dumpX509($cert)
     {
-        return static::proc_open('/usr/local/bin/openssl x509 -fingerprint -sha256 -text', $cert);
+        $result = [];
+        $process = proc_open(
+            '/usr/local/bin/openssl x509 -fingerprint -sha256 -text',
+            [["pipe", "r"], ["pipe", "w"], ["pipe", "w"]],
+            $pipes
+        );
+        if (is_resource($process)) {
+            fwrite($pipes[0], $cert);
+            fclose($pipes[0]);
+            $result['stdout'] = stream_get_contents($pipes[1]);
+            fclose($pipes[1]);
+            $result['stderr'] = stream_get_contents($pipes[2]);
+            fclose($pipes[2]);
+            proc_close($process);
+        }
+        return $result;
     }
 
     /**
@@ -562,7 +538,22 @@ class Store
      */
     public static function dumpCSR($csr)
     {
-        return static::proc_open('/usr/local/bin/openssl req -text -noout', $csr);
+        $result = [];
+        $process = proc_open(
+            '/usr/local/bin/openssl req -text -noout',
+            [["pipe", "r"], ["pipe", "w"], ["pipe", "w"]],
+            $pipes
+        );
+        if (is_resource($process)) {
+            fwrite($pipes[0], $csr);
+            fclose($pipes[0]);
+            $result['stdout'] = stream_get_contents($pipes[1]);
+            fclose($pipes[1]);
+            $result['stderr'] = stream_get_contents($pipes[2]);
+            fclose($pipes[2]);
+            proc_close($process);
+        }
+        return $result;
     }
 
     /**
@@ -571,8 +562,25 @@ class Store
      */
     public static function dumpCRL($cert)
     {
-        return static::proc_open('/usr/local/bin/openssl crl -fingerprint -sha256 -text', $cert);
+        $result = [];
+        $process = proc_open(
+            '/usr/local/bin/openssl crl -fingerprint -sha256 -text',
+            [["pipe", "r"], ["pipe", "w"], ["pipe", "w"]],
+            $pipes
+        );
+        if (is_resource($process)) {
+            fwrite($pipes[0], $cert);
+            fclose($pipes[0]);
+            $result['stdout'] = stream_get_contents($pipes[1]);
+            fclose($pipes[1]);
+            $result['stderr'] = stream_get_contents($pipes[2]);
+            fclose($pipes[2]);
+            proc_close($process);
+        }
+        return $result;
     }
+
+
 
     /**
      * Extract certificate chain

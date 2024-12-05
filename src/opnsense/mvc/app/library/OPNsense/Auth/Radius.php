@@ -95,10 +95,6 @@ class Radius extends Base implements IAuthConnector
      */
     private $syncMemberOfLimit = [];
 
-    /**
-     * @var array list of groups to add by default
-     */
-    private $syncDefaultGroups = [];
 
     /**
      * type name in configuration
@@ -148,9 +144,6 @@ class Radius extends Base implements IAuthConnector
         }
         if (!empty($config['sync_memberof_groups'])) {
             $this->syncMemberOfLimit = explode(",", strtolower($config['sync_memberof_groups']));
-        }
-        if (!empty($config['sync_default_groups'])) {
-            $this->syncDefaultGroups = explode(",", strtolower($config['sync_default_groups']));
         }
     }
 
@@ -417,8 +410,6 @@ class Radius extends Base implements IAuthConnector
      */
     public function authenticate($username, $password)
     {
-        global $remote_address;
-
         $this->lastAuthProperties = array();// reset auth properties
         $radius = radius_auth_open();
 
@@ -441,8 +432,6 @@ class Radius extends Base implements IAuthConnector
         } elseif (!radius_put_int($radius, RADIUS_SERVICE_TYPE, RADIUS_LOGIN)) {
             $error = radius_strerror($radius);
         } elseif (!radius_put_int($radius, RADIUS_FRAMED_PROTOCOL, RADIUS_ETHERNET)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_string($radius, RADIUS_CALLING_STATION_ID, $remote_address)) {
             $error = radius_strerror($radius);
         } elseif (!radius_put_string($radius, RADIUS_NAS_IDENTIFIER, $this->nasIdentifier)) {
             $error = radius_strerror($radius);
@@ -531,9 +520,7 @@ class Radius extends Base implements IAuthConnector
                                     $this->lastAuthProperties['Framed-Route'][] = $resa['data'];
                                     break;
                                 case RADIUS_CLASS:
-                                    if (!$this->syncMemberOf) {
-                                        break;
-                                    } elseif (!empty($this->lastAuthProperties['class'])) {
+                                    if (!empty($this->lastAuthProperties['class'])) {
                                         $this->lastAuthProperties['class'] .= "\n" . $resa['data'];
                                     } else {
                                         $this->lastAuthProperties['class'] = $resa['data'];
@@ -544,13 +531,12 @@ class Radius extends Base implements IAuthConnector
                             }
                         }
                         // update group policies when applicable
-                        if ($this->syncMemberOf || $this->syncCreateLocalUsers) {
+                        if ($this->syncMemberOf) {
                             $this->setGroupMembership(
                                 $username,
                                 $this->lastAuthProperties['class'] ?? '',
-                                $this->syncMemberOf ? $this->syncMemberOfLimit : $this->syncDefaultGroups,
-                                $this->syncCreateLocalUsers,
-                                $this->syncDefaultGroups
+                                $this->syncMemberOfLimit,
+                                $this->syncCreateLocalUsers
                             );
                         }
                         return true;

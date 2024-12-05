@@ -1,13 +1,12 @@
 .modal-backdrop {
   z-index: -1;
 }
-
 .bootstrap-dialog {
   /* dialog types */
   /**
-   * Icon animation
-   * Copied from font-awesome: http://fontawesome.io/
-   **/
+     * Icon animation
+     * Copied from font-awesome: http://fontawesome.io/
+     **/
   /** End of icon animation **/
 }
 .bootstrap-dialog .modal-header {
@@ -45,7 +44,7 @@
   background-color: #B0CDDB;
 }
 .bootstrap-dialog.type-primary .modal-header {
-  background-color: #C03E14;
+  background-color: #EA7105;
 }
 .bootstrap-dialog.type-success .modal-header {
   background-color: #9BD275;
@@ -112,5 +111,3 @@
     transform: rotate(359deg);
   }
 }
-
-/*# sourceMappingURL=bootstrap-dialog.css.map */

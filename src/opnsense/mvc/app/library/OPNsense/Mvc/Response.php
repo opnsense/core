@@ -61,7 +61,7 @@ class Response
      * @param string|null $charset optional characterset
      * @return void
      */
-    public function setContentType(string $contentType, ?string $charset = null): void
+    public function setContentType(string $contentType, ?string $charset): void
     {
         if (!empty($charset)) {
             $contentType .= '; charset=' . $charset;
@@ -107,11 +107,7 @@ class Response
             fpassthru($this->content);
             @fclose($this->content);
         } elseif (!empty($this->content)) {
-            if (is_array($this->content)) {
-                echo json_encode($this->content);
-            } else {
-                echo $this->content;
-            }
+            echo $this->content;
         }
 
         $this->sent = true;

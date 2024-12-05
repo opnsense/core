@@ -25,12 +25,12 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-. /usr/local/opnsense/scripts/firmware/config.sh
+LICENSEDIR="/usr/local/share/licenses"
 
 PACKAGE=${1}
 
-LICENSES=$(${PKG} query %L ${PACKAGE})
-VERSION=$(${PKG} query %v ${PACKAGE})
+LICENSES=$(pkg query %L ${PACKAGE})
+VERSION=$(pkg query %v ${PACKAGE})
 
 IFS=', '
 

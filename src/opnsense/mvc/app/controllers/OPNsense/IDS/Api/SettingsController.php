@@ -84,6 +84,7 @@ class SettingsController extends ApiMutableModelControllerBase
     public function searchInstalledRulesAction()
     {
         if ($this->request->isPost()) {
+            $this->sessionClose();
             // create filter to sanitize input data
             $filter = new SanitizeFilter();
 
@@ -169,6 +170,7 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         // request list of installed rules
         if (!empty($sid)) {
+            $this->sessionClose();
             $backend = new Backend();
             $response = $backend->configdpRun("ids query rules", array(1, 0,'sid/' . $sid));
             $data = json_decode($response, true);
@@ -226,6 +228,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function listRuleMetadataAction()
     {
+        $this->sessionClose();
         $response = (new Backend())->configdRun("ids list rulemetadata");
         $data = json_decode($response, true);
         if ($data != null) {
@@ -292,6 +295,7 @@ class SettingsController extends ApiMutableModelControllerBase
     public function getRulesetpropertiesAction()
     {
         $result = array('properties' => array());
+        $this->sessionClose();
         $backend = new Backend();
         $response = $backend->configdRun("ids list installablerulesets");
         $data = json_decode($response, true);
@@ -320,6 +324,7 @@ class SettingsController extends ApiMutableModelControllerBase
         $result = array("result" => "failed");
         if ($this->request->isPost() && $this->request->hasPost("properties")) {
             // only update properties available in "ids list installablerulesets"
+            $this->sessionClose();
             $backend = new Backend();
             $response = $backend->configdRun("ids list installablerulesets");
             $data = json_decode($response, true);
@@ -364,6 +369,7 @@ class SettingsController extends ApiMutableModelControllerBase
     public function listRulesetsAction()
     {
         $result = array();
+        $this->sessionClose();
         $result['rows'] = $this->listInstallableRules();
         // sort by description
         usort($result['rows'], function ($item1, $item2) {
@@ -384,6 +390,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function getRulesetAction($id)
     {
+        $this->sessionClose();
         $rules = $this->listInstallableRules();
         foreach ($rules as $rule) {
             if ($rule['filename'] == $id) {
@@ -406,6 +413,7 @@ class SettingsController extends ApiMutableModelControllerBase
         $result = array("result" => "failed");
         if ($this->request->isPost()) {
             // we're only allowed to edit filenames which have an install ruleset, request valid ones from configd
+            $this->sessionClose();
             $backend = new Backend();
             $response = $backend->configdRun("ids list installablerulesets");
             $data = json_decode($response, true);
@@ -441,6 +449,7 @@ class SettingsController extends ApiMutableModelControllerBase
         $update_count = 0;
         $result = array("status" => "none");
         if ($this->request->isPost()) {
+            $this->sessionClose();
             $backend = new Backend();
             $response = $backend->configdRun("ids list installablerulesets");
             $data = json_decode($response, true);
@@ -482,6 +491,7 @@ class SettingsController extends ApiMutableModelControllerBase
     public function toggleRuleAction($sids, $enabled = null)
     {
         if ($this->request->isPost()) {
+            $this->sessionClose();
             $update_count = 0;
             foreach (explode(",", $sids) as $sid) {
                 $ruleinfo = $this->getRuleInfoAction($sid);
@@ -537,6 +547,7 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         $result = array("result" => "failed");
         if ($this->request->isPost() && $this->request->hasPost("action")) {
+            $this->sessionClose();
             if ($this->request->hasPost('enabled')) {
                 $this->toggleRuleAction($sid, $this->request->getPost("enabled", "int", null));
             }

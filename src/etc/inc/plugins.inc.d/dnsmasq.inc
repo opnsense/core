@@ -118,8 +118,7 @@ function dnsmasq_configure_do($verbose = false)
 
     if (!empty($config['dnsmasq']['interface'])) {
         $interfaces = explode(',', $config['dnsmasq']['interface']);
-        array_unshift($interfaces, 'lo0');
-
+        $interfaces[] = 'lo0';
         $addresses = [];
 
         foreach (interfaces_addresses($interfaces) as $tmpaddr => $info) {

@@ -90,9 +90,14 @@ function convert_128bit_to_ipv6($ip6bin)
     return $ip6addr;
 }
 
-function does_interface_exist($interface, $flag = 'all')
+function interfaces_bring_up($interface)
 {
-    return !empty($interface) && in_array($interface, legacy_interface_listget($flag));
+    legacy_interface_flags($interface, 'up');
+}
+
+function does_interface_exist($interface)
+{
+    return !empty($interface) && in_array($interface, legacy_interface_listget());
 }
 
 function interfaces_loopback_configure($verbose = false)
@@ -166,7 +171,7 @@ function interfaces_vlan_configure($verbose = false)
 
 function _interfaces_vlan_configure($vlan)
 {
-    legacy_interface_flags($vlan['if'], 'up'); /* XXX overreach? */
+    interfaces_bring_up($vlan['if']); /* XXX overreach? */
 
     /* destroy is a safety precaution, when configuring via api or gui this function should only be called on new vlans */
     legacy_interface_destroy($vlan['vlanif']);
@@ -174,7 +179,7 @@ function _interfaces_vlan_configure($vlan)
 
     legacy_vlan_tag($vlan['vlanif'], $vlan['if'], $vlan['tag'], $vlan['pcp'], $vlan['proto']);
 
-    legacy_interface_flags($vlan['vlanif'], 'up');
+    interfaces_bring_up($vlan['vlanif']);
 }
 
 function interfaces_wlan_clone($device)
@@ -264,7 +269,7 @@ function _interfaces_bridge_configure($bridge)
     foreach ($members as $member => $device) {
         configure_interface_hardware($device);
         legacy_interface_mtu($device, $mtu);
-        legacy_interface_flags($device, 'up');
+        interfaces_bring_up($device);
         legacy_bridge_member($bridge['bridgeif'], $device);
     }
 
@@ -374,7 +379,7 @@ function _interfaces_bridge_configure($bridge)
         }
     }
 
-    legacy_interface_flags($bridge['bridgeif'], 'up');
+    interfaces_bring_up($bridge['bridgeif']);
 
     return $ret;
 }
@@ -449,7 +454,7 @@ function _interfaces_lagg_configure($lagg)
              */
             legacy_interface_mtu($member, $mtu);
             configure_interface_hardware($member);
-            legacy_interface_flags($member, 'up');
+            interfaces_bring_up($member);
             mwexecf('/sbin/ifconfig %s laggport %s', [$lagg['laggif'], $member]);
         }
     }
@@ -466,7 +471,7 @@ function _interfaces_lagg_configure($lagg)
         mwexecf('/sbin/ifconfig %s lagghash %s', [$lagg['laggif'], $configured_hash]);
     }
 
-    legacy_interface_flags($lagg['laggif'], 'up');
+    interfaces_bring_up($lagg['laggif']);
 }
 
 function interfaces_gre_configure($device)
@@ -539,7 +544,7 @@ function _interfaces_gre_configure($gre)
         ]);
     }
 
-    legacy_interface_flags($gre['greif'], 'up');
+    interfaces_bring_up($gre['greif']);
 
     /* XXX: write XXX_router file */
     mwexecf('/usr/local/sbin/ifctl -i %s -%s -rd -a %s', [
@@ -634,7 +639,7 @@ function _interfaces_gif_configure($gif)
     $flags = (empty($gif['link1']) ? "-" : "") . "link1 " . (empty($gif['link2']) ? "-" : "") . "link2";
     legacy_interface_flags($gif['gifif'], $flags);
 
-    legacy_interface_flags($gif['gifif'], 'up');
+    interfaces_bring_up($gif['gifif']);
 
     /* XXX: remove below routing block in 24.7 */
     if (!empty($remote_gw)) {
@@ -853,6 +858,23 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
     }
 
     switch ($ifcfg['ipaddr'] ?? 'none') {
+        case 'ppp':
+        case 'pppoe':
+        case 'pptp':
+        case 'l2tp':
+            if (!empty($ppps)) {
+                foreach ($ppps as $ppp) {
+                    if ($ifcfg['if'] == $ppp['if']) {
+                        if (isset($ppp['ondemand']) && $suspend) {
+                            configdp_run('interface reconfigure', [$interface], true);
+                        } else {
+                            killbypid("/var/run/{$ppp['type']}_{$interface}.pid");
+                        }
+                        break;
+                    }
+                }
+            }
+            break;
         case 'dhcp':
             killbypid("/var/run/dhclient.{$realif}.pid");
             break;
@@ -872,9 +894,6 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
         }
     }
 
-    /* check reset of running PPP configuration inside function */
-    interface_ppps_reset($interface, $suspend, $ifcfg, $ppps);
-
     /* clear stale state associated with this interface */
     mwexecf('/usr/local/sbin/ifctl -4c -i %s', $realif);
     mwexecf('/usr/local/sbin/ifctl -6c -i %s', $realifv6);
@@ -892,162 +911,62 @@ function interface_suspend($interface)
     interface_reset($interface, false, true);
 }
 
-function interface_ppps_bound($interface, $family = null)
+function interfaces_ptpid_used($ptpid)
 {
     global $config;
 
-    $ifcfg = $config['interfaces'][$interface] ?? null;
-    $ppps = $config['ppps']['ppp'] ?? null;
-    $bound = false;
-
-    if (!interface_ppps_capable($ifcfg, $ppps)) {
-        return $bound;
-    }
-
-    $ipv4_mode = false;
-    $ipv6_mode = false;
-
-    switch ($ifcfg['ipaddr'] ?? 'none') {
-        case 'ppp':
-        case 'pppoe':
-        case 'pptp':
-        case 'l2tp':
-            $ipv4_mode = true;
-            break;
-        default:
-            break;
-    }
-
-    switch ($ifcfg['ipaddrv6'] ?? 'none') {
-        case 'dhcp6':
-        case 'pppoev6':
-        case 'slaac':
-            $ipv6_mode = true;
-            break;
-        default:
-            break;
-    }
-
-    if ($family == 4) {
-        /* use this to steer configuration based on newwanip event */
-        $bound = $ipv4_mode;
-    } elseif ($family == 6) {
-        /* use this to steer configuration based on newwanipv6 event */
-        $bound = !$ipv4_mode && $ipv6_mode;
-    } else {
-        /* use this to prevent doing any early setup in general */
-        $bound = $ipv4_mode || $ipv6_mode;
-    }
-
-    return $bound;
-}
-
-function interface_ppps_capable($ifcfg, $ppps)
-{
-    if (empty($ifcfg) || empty($ppps)) {
-        return false;
-    }
-
-    foreach ($ppps as $ppp) {
-        if ($ifcfg['if'] == $ppp['if']) {
-            /* we only test for PPP capability that needs mpd5 */
-            return true;
+    if (isset($config['ppps']['ppp'])) {
+        foreach ($config['ppps']['ppp'] as & $settings) {
+            if ($ptpid == $settings['ptpid']) {
+                return true;
+            }
         }
     }
 
     return false;
 }
 
-function interface_ppps_hardware($device)
+function interfaces_ptpid_next()
 {
-    $devices = [$device];
+    $ptpid = 0;
 
-    foreach (config_read_array('ppps', 'ppp') as $ppp) {
-        if ($device == $ppp['if']) {
-            $devices = [];
-            foreach (explode(',', $ppp['ports']) as $port) {
-                /*
-                 * XXX We only have get_real_interface() here because
-                 * PPP may be assigned to an assigned interface!  :(
-                 */
-                $devices[] = get_real_interface($port);
-            }
-            break;
-        }
+    while (interfaces_ptpid_used($ptpid)) {
+        $ptpid++;
     }
 
-    return $devices;
+    return $ptpid;
 }
 
-function interface_ppps_reset($interface, $suspend, $ifcfg, $ppps)
-{
-    if (!interface_ppps_capable($ifcfg, $ppps)) {
-        return;
-    }
-
-    foreach ($ppps as $ppp) {
-        if ($ifcfg['if'] == $ppp['if']) {
-            if (isset($ppp['ondemand']) && $suspend) {
-                configdp_run('interface reconfigure', [$interface], true);
-            } else {
-                killbypid("/var/run/{$ppp['type']}_{$interface}.pid");
-            }
-            break;
-        }
-    }
-}
-
+/*
+ * This function can configure PPPoE, MLPPP (PPPoE), PPTP.
+ * It writes the mpd config file to /var/etc every time the link is opened.
+ */
 function interface_ppps_configure($interface)
 {
     global $config;
 
-    $ifcfg = $config['interfaces'][$interface] ?? null;
-    $ppps = $config['ppps']['ppp'] ?? null;
-
-    if (!interface_ppps_capable($ifcfg, $ppps)) {
+    /* Return for unassigned interfaces. This is a minimum requirement. */
+    if (empty($config['interfaces'][$interface])) {
         return;
     }
-
+    $ifcfg = $config['interfaces'][$interface];
     if (!isset($ifcfg['enable'])) {
         return;
     }
 
-    $ipv4_mode = $ipv6_mode = 'disable';
+    // mpd5 modem chat script expected in the same directory as the mpd_xxx.conf files
+    @copy('/usr/local/opnsense/scripts/interfaces/mpd.script', '/var/etc/mpd.script');
 
-    switch ($ifcfg['ipaddr'] ?? 'none') {
-        case 'ppp':
-        case 'pppoe':
-        case 'pptp':
-        case 'l2tp':
-            $ipv4_mode = 'enable';
-            break;
-        default:
-            break;
-    }
-
-    switch ($ifcfg['ipaddrv6'] ?? 'none') {
-        case 'dhcp6':
-        case 'pppoev6':
-        case 'slaac':
-            $ipv6_mode = 'enable';
-            break;
-        default:
-            break;
-    }
-
-    if ($ipv4_mode != 'enable' && $ipv6_mode != 'enable') {
-        return;
-    }
-
-    $ppp = null;
-    $idx = 0;
-
-    foreach ($ppps as $i => $tmp) {
-        if ($ifcfg['if'] == $tmp['if']) {
-            $ppp = $tmp;
-            $idx = $i;
-            break;
+    if (isset($config['ppps']['ppp'])) {
+        foreach ($config['ppps']['ppp'] as $pppid => $ppp) {
+            if ($ifcfg['if'] == $ppp['if']) {
+                break;
+            }
         }
+    }
+    if (!isset($ppp) || $ifcfg['if'] != $ppp['if']) {
+        log_msg("Can't find PPP config for {$ifcfg['if']} in interface_ppps_configure().", LOG_ERR);
+        return;
     }
 
     $ports = explode(',', $ppp['ports']);
@@ -1059,7 +978,6 @@ function interface_ppps_configure($interface)
             }
         }
     }
-
     $localips = isset($ppp['localip']) ? explode(',', $ppp['localip']) : [];
     $gateways = isset($ppp['gateway']) ? explode(',', $ppp['gateway']) : [];
     $subnets = isset($ppp['subnet']) ? explode(',', $ppp['subnet']) : [];
@@ -1072,7 +990,7 @@ function interface_ppps_configure($interface)
     foreach ($ports as $pid => $port) {
         switch ($ppp['type']) {
             case 'pppoe':
-                legacy_interface_flags($port, 'up');
+                interfaces_bring_up($port);
                 break;
             case 'pptp':
             case 'l2tp':
@@ -1080,7 +998,7 @@ function interface_ppps_configure($interface)
                 if (is_ipaddr($localips[$pid])) {
                     // Manually configure interface IP/subnet
                     legacy_interface_setaddress($port, "{$localips[$pid]}/{$subnets[$pid]}");
-                    legacy_interface_flags($port, 'up');
+                    interfaces_bring_up($port);
                 } elseif (empty($localips[$pid])) {
                     $localips[$pid] = get_interface_ip($port); // try to get the interface IP from the port
                 }
@@ -1106,6 +1024,19 @@ function interface_ppps_configure($interface)
         }
     }
 
+    $ipv6_mode = 'disable';
+
+    switch ($ifcfg['ipaddrv6'] ?? 'none') {
+        /* XXX should be limited to 'pppoev6' match but some ISPs seem to require both racing away */
+        case 'dhcp6':
+        case 'pppoev6':
+        case 'slaac':
+            $ipv6_mode = 'enable';
+            break;
+        default:
+            break;
+    }
+
     // Construct the mpd.conf file
     $mpdconf = <<<EOD
 startup:
@@ -1117,7 +1048,6 @@ startup:
 default:
 {$ppp['type']}client:
   create bundle static {$interface}
-  set bundle {$ipv4_mode} ipcp
   set bundle {$ipv6_mode} ipv6cp
   set iface name {$ifcfg['if']}
 
@@ -1146,26 +1076,30 @@ EOD;
 
     $mpdconf .= "  set iface up-script /usr/local/opnsense/scripts/interfaces/ppp-linkup.sh\n";
     $mpdconf .= "  set iface down-script /usr/local/opnsense/scripts/interfaces/ppp-linkdown.sh\n";
-
-    if ($ipv4_mode == 'enable') {
-        if ($ppp['type'] == 'ppp') {
-            $localip = is_ipaddr($ppp['localip']) ? $ppp['localip'] : '0.0.0.0';
-            $gateway = is_ipaddr($ppp['gateway']) ? $ppp['gateway'] : "10.64.64.{$idx}";
-            $mpdconf .= "  set ipcp ranges {$localip}/0 {$gateway}/0\n";
+    if ($ppp['type'] == "ppp") {
+        if (is_ipaddr($ppp['localip'])) {
+            $localip = $ppp['localip'];
         } else {
-            $mpdconf .= "  set ipcp ranges 0.0.0.0/0 0.0.0.0/0\n";
+            $localip = '0.0.0.0';
         }
-
-        if (isset($ppp['vjcomp'])) {
-            $mpdconf .= "  set ipcp no vjcomp\n";
+        if (is_ipaddr($ppp['gateway'])) {
+            $gateway = $ppp['gateway'];
+        } else {
+            $gateway = "10.64.64.{$pppid}";
         }
-
-        if (isset($config['system']['dnsallowoverride'])) {
-            $mpdconf .= "  set ipcp enable req-pri-dns\n";
-            $mpdconf .= "  set ipcp enable req-sec-dns\n";
-        }
+        $mpdconf .= "  set ipcp ranges {$localip}/0 {$gateway}/0\n";
+    } else {
+        $mpdconf .= "  set ipcp ranges 0.0.0.0/0 0.0.0.0/0\n";
     }
 
+    if (isset($ppp['vjcomp'])) {
+        $mpdconf .= "  set ipcp no vjcomp\n";
+    }
+
+    if (isset($config['system']['dnsallowoverride'])) {
+        $mpdconf .= "  set ipcp enable req-pri-dns\n";
+        $mpdconf .= "  set ipcp enable req-sec-dns\n";
+    }
     foreach ($ports as $pid => $port) {
         $mpdconf_arr = [];
         $port = get_real_interface($port);
@@ -1279,16 +1213,21 @@ EOD;
         $mpdconf .= "\topen\n";
     }
 
+    $fd = fopen("/var/etc/mpd_{$interface}.conf", "w");
+    if (!$fd) {
+        log_msg("Error: cannot open mpd_{$interface}.conf in interface_ppps_configure().", LOG_ERR);
+        return;
+    }
+
+    // Write out mpd_ppp.conf
+    fwrite($fd, $mpdconf);
+    fclose($fd);
+    unset($mpdconf);
+
     /* stop the service as a precaution */
     killbypid("/var/run/{$ppp['type']}_{$interface}.pid");
 
-    /* mpd5 modem chat script expected in the same directory as the mpd_xxx.conf files */
-    @copy('/usr/local/opnsense/scripts/interfaces/mpd.script', '/var/etc/mpd.script');
-
-    /* write the configuration */
-    @file_put_contents("/var/etc/mpd_{$interface}.conf", $mpdconf);
-
-    /* create the uptime log if requested */
+    // Create the uptime log if requested and if it doesn't exist already, or delete it if it is no longer requested.
     if (isset($ppp['uptime'])) {
         @touch("/conf/{$ifcfg['if']}.log");
     } else {
@@ -1300,9 +1239,6 @@ EOD;
         @unlink('/var/spool/lock/LCK..' . basename($port));
     }
 
-    /* precaution for post-start 'up' check */
-    legacy_interface_flags($ifcfg['if'], 'down', false);
-
     /* fire up mpd */
     mwexecf(
         '/usr/local/sbin/mpd5 -b -d /var/etc -f %s -p %s -s ppp %s',
@@ -1312,19 +1248,15 @@ EOD;
     /* appease netgraph by setting the correct node name */
     shell_safe('/usr/sbin/daemon -f /usr/local/opnsense/scripts/interfaces/ppp-rename.sh %s %s %s', [$interface, $ifcfg['if'], $ppp['type']]);
 
-    /* wait for functional device */
-    $max = 20;
+    /* wait for up to 10 seconds for the interface to appear (ppp(oe)) */
     $i = 0;
-    while ($i < $max) {
-        sleep(1);
-        if (does_interface_exist($ifcfg['if'], 'up')) {
+    while ($i < 10) {
+        exec("/sbin/ifconfig " . escapeshellarg($ppp['if']) . " 2>&1", $out, $ret);
+        if ($ret == 0) {
             break;
         }
+        sleep(1);
         $i++;
-    }
-
-    if ($i >= $max) {
-        log_msg("interface_ppps_configure() waiting threshold exceeded - device {$ifcfg['if']} is still not up", LOG_WARNING);
     }
 
     switch ($ppp['type']) {
@@ -1339,26 +1271,15 @@ EOD;
     }
 }
 
-function interfaces_pfsync_configure()
+function interfaces_carp_setup()
 {
     global $config;
 
     if (!empty($config['hasync']['pfsyncinterface'])) {
-        /*
-         * We are just checking the actual attached interface here as get_real_interface()
-         * was not dependable when the selected interface does not exist for any reason.
-         *
-         * What the current method tells us is that we are going to ignore whether this
-         * interface is currently enabled or not.  To avoid breakage we will keep it so
-         * although in reality disabling your pfsync interface should cause it to stop
-         * syncing.
-         */
-        if (!empty($config['interfaces'][$config['hasync']['pfsyncinterface']]['if'])) {
-            $syncdev = $config['interfaces'][$config['hasync']['pfsyncinterface']]['if'];
-        }
+        $carp_sync_int = get_real_interface($config['hasync']['pfsyncinterface']);
     }
 
-    if (!empty($syncdev)) {
+    if (!empty($carp_sync_int) && !empty($config['hasync']['pfsyncenabled'])) {
         if (!empty($config['hasync']['pfsyncpeerip']) && is_ipaddrv4($config['hasync']['pfsyncpeerip'])) {
             $syncpeer = "syncpeer " . escapeshellarg($config['hasync']['pfsyncpeerip']);
         } else {
@@ -1370,12 +1291,12 @@ function interfaces_pfsync_configure()
             $version = 'version ' . escapeshellarg($config['hasync']['pfsyncversion']);
         }
 
-        $intf_stats = legacy_interfaces_details(); /* XXX could require passing this down */
+        $intf_stats = legacy_interfaces_details();
 
-        mwexec("/sbin/ifconfig pfsync0 syncdev {$syncdev} {$syncpeer} {$version} up");
+        mwexec("/sbin/ifconfig pfsync0 syncdev {$carp_sync_int} {$syncpeer} {$version} up");
 
-        if (!empty($intf_stats[$syncdev]['mtu'])) {
-            mwexecf('/sbin/ifconfig pfsync0 mtu %s', [$intf_stats[$syncdev]['mtu']]);
+        if (!empty($intf_stats[$carp_sync_int]['mtu'])) {
+            mwexec("/sbin/ifconfig pfsync0 mtu " . escapeshellarg($intf_stats[$carp_sync_int]['mtu']));
         }
     } else {
         mwexec('/sbin/ifconfig pfsync0 -syncdev -syncpeer down');
@@ -1434,8 +1355,8 @@ function interfaces_vips_configure($interface, $family = null)
         return;
     }
 
-    $proxyarp = false;
-    $pfsync = false;
+    $carp_setup = false;
+    $anyproxyarp = false;
 
     foreach ($config['virtualip']['vip'] as $vip) {
         if ($vip['interface'] != $interface) {
@@ -1450,23 +1371,23 @@ function interfaces_vips_configure($interface, $family = null)
 
         switch ($vip['mode']) {
             case 'proxyarp':
-                $proxyarp = true;
+                $anyproxyarp = true;
                 break;
             case 'ipalias':
                 interface_ipalias_configure($vip);
                 break;
             case 'carp':
+                $carp_setup = true;
                 interface_carp_configure($vip);
-                $pfsync = true;
                 break;
         }
     }
 
-    if ($pfsync) {
-        interfaces_pfsync_configure();
+    if ($carp_setup) {
+        interfaces_carp_setup();
     }
 
-    if ($proxyarp) {
+    if ($anyproxyarp) {
         interface_proxyarp_configure();
     }
 }
@@ -2052,7 +1973,29 @@ EOD;
             fwrite($fd_set, "{$wpa_supplicant} -B -i {$if} -c /var/etc/wpa_supplicant_{$if}.conf\n");
         }
         if ($wlcfg['mode'] == "hostap") {
+            /* add line to script to restore old mac to make hostapd happy */
+            if (file_exists("/tmp/{$if}_oldmac")) {
+                $if_oldmac = file_get_contents("/tmp/{$if}_oldmac");
+                if (is_macaddr($if_oldmac)) {
+                    fwrite($fd_set, "{$ifconfig} " . escapeshellarg($if) .
+                        " link " . escapeshellarg($if_oldmac) . "\n");
+                }
+            }
+
             fwrite($fd_set, "{$hostapd} -B -P /var/run/hostapd_{$if}.pid /var/etc/hostapd_{$if}.conf\n");
+
+            /* add line to script to restore spoofed mac after running hostapd */
+            if (file_exists("/tmp/{$if}_oldmac")) {
+                if ($wancfg['spoofmac']) {
+                    $if_curmac = $wancfg['spoofmac'];
+                } else {
+                    $if_curmac = get_interface_mac($if);
+                }
+                if (is_macaddr($if_curmac)) {
+                    fwrite($fd_set, "{$ifconfig} " . escapeshellarg($if) .
+                        " link " . escapeshellarg($if_curmac) . "\n");
+                }
+            }
         }
     }
 
@@ -2272,13 +2215,23 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
     $realif = get_real_interface($interface);
     $realifv6 = get_real_interface($interface, 'inet6');
-    $devices = plugins_devices();
 
-    /* get the correct hardware interface if PPP is involved or return the one we have */
-    $realhwif = interface_ppps_hardware($realif)[0]; /* XXX support all MLPPP devices */
+    switch ($wancfg['ipaddr'] ?? 'none') {
+        case 'l2tp':
+        case 'ppp':
+        case 'pppoe':
+        case 'pptp':
+            /* hardware device underneath software node */
+            $realhwif = get_ppp_parent($realif);
+            break;
+        default:
+            /* hardware device remains a hardware device */
+            $realhwif = $realif;
+            break;
+    }
 
     if ($reload) {
-        foreach ($devices as $device) {
+        foreach (plugins_devices() as $device) {
             if (empty($device['function']) || empty($device['names'])) {
                 continue;
             }
@@ -2316,34 +2269,14 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         interface_wireless_configure($realif, $wancfg);
     }
 
-    /* get expected and current MAC address from the configuration and system */
-    $mac_prev = $ifconfig_details[$realhwif]['macaddr'] ?? '';
-    $mac_next = !empty($wancfg['spoofmac']) ? $wancfg['spoofmac'] : ($ifconfig_details[$realhwif]['macaddr_hw'] ?? '');
-
-    /*
-     * Disable MAC spoofing if the device type does not support it,
-     * its use is prohibited or when it is otherwise reserved.
-     */
-    foreach ($devices as $device) {
-        if (preg_match('/' . $device['pattern'] . '/', $realhwif)) {
-            if ($device['spoofmac'] == false) {
-                $mac_next = '';
-            }
-            break;
-        }
-    }
-
-    /* in case of LAGG the empty MAC may be used which we need to ignore */
-    if ($mac_next == '00:00:00:00:00:00') {
-        $mac_next = '';
-    }
-
     /*
      * Do not try to reapply the spoofed MAC if it's already applied.
      * When ifconfig link is used, it cycles the interface down/up,
      * which triggers the interface config again, which attempts to
      * spoof the MAC again which cycles the link again.
      */
+    $mac_prev = $ifconfig_details[$realhwif]['macaddr'] ?? '';
+    $mac_next = !empty($wancfg['spoofmac']) ? $wancfg['spoofmac'] : ($ifconfig_details[$realhwif]['macaddr_hw'] ?? '');
     if (!empty($mac_prev) && !empty($mac_next) && strcasecmp($mac_prev, $mac_next)) {
         /*
          * When the hardware interface matches the IPv6 interface where we set
@@ -2404,12 +2337,15 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         interface_configure_mtu($realhwif, $wancfg['mtu'], $ifconfig_details);
     }
 
-    /* since the connectivity can include IPv4 and/or IPv6 let the function decide */
-    interface_ppps_configure($interface);
-
     switch ($wancfg['ipaddr'] ?? 'none') {
         case 'dhcp':
             interface_dhcp_configure($interface);
+            break;
+        case 'l2tp':
+        case 'ppp':
+        case 'pppoe':
+        case 'pptp':
+            interface_ppps_configure($interface);
             break;
         default:
             interface_static_configure($interface, $wancfg);
@@ -2434,7 +2370,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         case 'dhcp6':
             mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled up', $realifv6);
 
-            if (!interface_ppps_bound($interface)) {
+            if (!isset($wancfg['dhcp6usev4iface'])) {
                 interface_dhcpv6_prepare($interface, $wancfg);
                 interface_dhcpv6_configure($interface, $wancfg);
             }
@@ -2449,7 +2385,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             interface_track6_configure($interface, $wancfg, $reload || $linkup);
             break;
         default:
-            if (!interface_ppps_bound($interface)) {
+            if (!isset($wancfg['dhcp6usev4iface'])) {
                 interface_static6_configure($interface, $wancfg);
             }
             break;
@@ -2479,8 +2415,8 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         plugins_configure('ipsec', $verbose, [$interface]);
         plugins_configure('dhcp', $verbose);
         plugins_configure('dns', $verbose);
-        /* XXX not ideal but avoids "errors" in the log */
-        plugins_configure('newwanip:rfc2136', $verbose, [[$interface]]);
+        /* XXX move this up the call stack */
+        configdp_run('rfc2136 reload', [$interface]);
     }
 
     /* XXX device dependency plugin hook */
@@ -2807,11 +2743,14 @@ function interface_dhcpv6_configure($interface, $wancfg)
     /* always kill rtsold in case of reconfigure */
     killbypid('/var/run/rtsold.pid');
 
-    $rtsoldcommand = exec_safe('/usr/sbin/rtsold -aiu -p %s -A %s -R %s', [
-        '/var/run/rtsold.pid',
-        '/var/etc/rtsold_script.sh',
-        '/usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh',
-    ]);
+    $rtsoldcommand = exec_safe(
+        '/usr/sbin/rtsold -p %s -A %s -R %s -a -u',
+        array(
+            '/var/run/rtsold.pid',
+            '/var/etc/rtsold_script.sh',
+            '/usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh',
+        )
+    );
 
     if (!empty($syscfg['dhcp6_debug'])) {
         $mode = [ '1' => ' -d', '2' => ' -D' ];
@@ -3327,7 +3266,7 @@ EOD;
     fwrite($fd, $dhclientconf);
     fclose($fd);
 
-    legacy_interface_flags($wanif, 'up');
+    interfaces_bring_up($wanif);
 
     mwexecf('/sbin/dhclient -c %s -p %s %s', array(
         "/var/etc/dhclient_{$interface}.conf",
@@ -3543,6 +3482,18 @@ function convert_friendly_interface_to_friendly_descr($interface)
     return $ifdesc;
 }
 
+function get_ppp_parent($ifcfg_if)
+{
+    foreach (config_read_array('ppps', 'ppp') as $ppp) {
+        if ($ifcfg_if == $ppp['if']) {
+            $ports = explode(',', $ppp['ports']);
+            return get_real_interface($ports[0]);
+        }
+    }
+
+    return null;
+}
+
 /* collect hardware device parents for VLAN, LAGG and bridges */
 function interface_parent_devices($device, $as_interface = false)
 {
@@ -3625,6 +3576,24 @@ function get_real_interface($interface = 'wan', $family = 'all')
                     case '6rd':
                     case '6to4':
                         $realif = "{$interface}_stf";
+                        break;
+                    case 'dhcp6':
+                    case 'slaac':
+                    case 'staticv6':
+                        if (isset($cfg['dhcp6usev4iface'])) {
+                            /* keep preset as requested */
+                            break;
+                        }
+                        switch ($cfg['ipaddr'] ?? 'none') {
+                            case 'l2tp':
+                            case 'pppoe':
+                            case 'pptp':
+                                /* except for "ppp" all have parent interfaces */
+                                $realif = get_ppp_parent($realif);
+                                break;
+                            default:
+                                break;
+                        }
                         break;
                     default:
                         break;
@@ -3743,13 +3712,12 @@ function interfaces_restart_by_device($verbose, $devices, $reconfigure = true)
         }
     }
 
-    if ($reconfigure) {
-        foreach (array_keys($restartifs) as $ifname) {
+    foreach (array_keys($restartifs) as $ifname) {
+        if ($reconfigure) {
             interface_configure($verbose, $ifname);
         }
+        system_routing_configure($verbose, $ifname);
     }
-
-    system_routing_configure($verbose, array_keys($restartifs));
 }
 
 function link_interface_to_bridge($interface, $attach_device = null, $ifconfig_details = [/* must be set for attach to work */])
@@ -3779,7 +3747,7 @@ function link_interface_to_bridge($interface, $attach_device = null, $ifconfig_d
                 legacy_interface_mtu($attach_device, $ifconfig_details[$bridge['bridgeif']]['mtu']);
             }
 
-            legacy_interface_flags($attach_device, 'up');
+            interfaces_bring_up($attach_device);
             legacy_bridge_member($bridge['bridgeif'], $attach_device);
         }
 

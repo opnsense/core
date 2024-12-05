@@ -32,9 +32,6 @@
                 </quick>
                 <interface type="InterfaceField">
                     <Multiple>Y</Multiple>
-                    <Filters>
-                        <if>/^(?!lo0$).*/</if>
-                    </Filters>
                     <AllowDynamic>Y</AllowDynamic>
                 </interface>
                 <direction type="OptionField">
@@ -61,7 +58,6 @@
                 <source_net type="NetworkAliasField">
                     <Default>any</Default>
                     <Required>Y</Required>
-                    <Multiple>Y</Multiple>
                 </source_net>
                 <source_not type="BooleanField">
                     <Default>0</Default>
@@ -77,7 +73,6 @@
                 <destination_net type="NetworkAliasField">
                     <Default>any</Default>
                     <Required>Y</Required>
-                    <Multiple>Y</Multiple>
                 </destination_net>
                 <destination_not type="BooleanField">
                     <Default>0</Default>
@@ -90,7 +85,7 @@
                     <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
                 </destination_port>
                 <gateway type="JsonKeyValueStoreField">
-                    <ConfigdPopulateAct>interface gateways list -g</ConfigdPopulateAct>
+                    <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
                     <ValidationMessage>Specify a valid gateway from the list matching the networks ip protocol.</ValidationMessage>
                 </gateway>
                 <log type="BooleanField">
@@ -131,9 +126,6 @@
                 <interface type="InterfaceField">
                     <Required>Y</Required>
                     <Default>lan</Default>
-                    <Filters>
-                        <if>/^(?!lo0$).*/</if>
-                    </Filters>
                     <AllowDynamic>Y</AllowDynamic>
                 </interface>
                 <ipprotocol type="OptionField">
@@ -222,9 +214,6 @@
                 <interface type="InterfaceField">
                     <Required>Y</Required>
                     <Default>lan</Default>
-                    <Filters>
-                        <if>/^(?!lo0$).*/</if>
-                    </Filters>
                     <AllowDynamic>Y</AllowDynamic>
                 </interface>
                 <source_net type="NetworkField">
@@ -274,9 +263,6 @@
                 <interface type="InterfaceField">
                     <Required>Y</Required>
                     <Default>wan</Default>
-                    <Filters>
-                        <if>/^(?!lo0$).*/</if>
-                    </Filters>
                     <AllowDynamic>Y</AllowDynamic>
                 </interface>
                 <type type="OptionField">

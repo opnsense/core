@@ -24,8 +24,6 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-. /usr/local/opnsense/scripts/firmware/config.sh
-
 LIC="BSD2CLAUSE"
 OS="FreeBSD"
 REPO="OPNsense"
@@ -52,14 +50,14 @@ ${BN}${SEP}${BV}${SEP}${OS} userland set${SEP}${BS}${SEP}${BL}${SEP}0${SEP}${LIC
 ${KN}${SEP}${KV}${SEP}${OS} kernel set${SEP}${KS}${SEP}${KL}${SEP}0${SEP}${LIC}${SEP}${REPO}${SEP}opnsense/kernel
 EOF
 
-	${PKG} query "%n|||%v|||%c|||%sh|||%k|||%a|||%L|||%R|||%o"
+	pkg query "%n|||%v|||%c|||%sh|||%k|||%a|||%L|||%R|||%o"
 	;;
 remote)
-	${PKG} update -q && ${PKG} rquery -U "%n|||%v|||%c|||%sh|||0|||0|||%L|||%R|||%o"
+	pkg update -q && pkg rquery -U "%n|||%v|||%c|||%sh|||0|||0|||%L|||%R|||%o"
 	;;
 tiers)
 	# fetching annotations is not as easy to query so always ask for annotations from remote end
-	${PKG} update -q && ${PKG} rquery '%n|||%At|||%Av' | grep '|||product_tier|||'
+	pkg update -q && pkg rquery '%n|||%At|||%Av' | grep '|||product_tier|||'
 	;;
 *)
 	;;

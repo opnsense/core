@@ -268,22 +268,41 @@ class ApiControllerBase extends ControllerRoot
                                 // not authenticated
                                 $this->response->setStatusCode(403, "Forbidden");
                                 $this->response->setContentType('application/json', 'UTF-8');
-                                $this->response->setContent(['status'  => 403,'message' => 'Forbidden']);
+                                $this->response->setJsonContent(['status'  => 403,'message' => 'Forbidden']);
                                 $this->response->send();
                                 return false;
                             } else {
-                                // link username on successful login
-                                $this->logged_in_user = $authResult['username'];
+                                // authentication + authorization successful.
+                                // pre validate request and communicate back to the user on errors
+                                $callMethodName = $dispatcher->getActionName() . 'Action';
+                                $dispatchError = null;
+                                // check number of parameters using reflection
+                                $object_info = new \ReflectionObject($this);
+                                if ($object_info->hasMethod($callMethodName)) {
+                                    // only inspect parameters if object exists
+                                    $req_c = $object_info->getMethod($callMethodName)->getNumberOfRequiredParameters();
+                                    if ($req_c > count($dispatcher->getParams())) {
+                                        $dispatchError = 'action ' . $dispatcher->getActionName() .
+                                            ' expects at least ' . $req_c . ' parameter(s)';
+                                    }
+                                }
                                 // if body is send as json data, parse to $_POST first
-                                $dispatchError = $this->parseJsonBodyData();
+                                $dispatchError = empty($dispatchError) ? $this->parseJsonBodyData() : $dispatchError;
+
                                 if ($dispatchError != null) {
+                                    // send error to client
                                     $this->response->setStatusCode(400, "Bad Request");
                                     $this->response->setContentType('application/json', 'UTF-8');
-                                    $this->response->setContent(['status'  => 400, 'message' => $dispatchError]);
+                                    $this->response->setJsonContent(
+                                        array('message' => $dispatchError,
+                                            'status'  => 400)
+                                    );
                                     $this->response->send();
                                     return false;
                                 }
 
+                                // link username on successful login
+                                $this->logged_in_user = $authResult['username'];
                                 // pass revision context to config object
                                 Config::getInstance()->setRevisionContext([
                                     'username' => $authResult['username'],
@@ -301,7 +320,7 @@ class ApiControllerBase extends ControllerRoot
             // not authenticated
             $this->response->setStatusCode(401, "Unauthorized");
             $this->response->setContentType('application/json', 'UTF-8');
-            $this->response->setContent(['status'  => 401, 'message' => 'Authentication Failed']);
+            $this->response->setJsonContent(['status'  => 401, 'message' => 'Authentication Failed']);
             $this->response->send();
             return false;
         } else {

@@ -371,7 +371,7 @@ class Voucher extends Base implements IAuthConnector
      * @param string $password user password
      * @return bool authentication status
      */
-    protected function _authenticate($username, $password)
+    public function authenticate($username, $password)
     {
         $stmt = $this->dbHandle->prepare('
             select username, password, validity, expirytime, starttime

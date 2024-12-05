@@ -1,3 +1,5 @@
+// endpoint:/api/routes/gateway/status
+
 /*
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
@@ -24,18 +26,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export default class Gateways extends BaseTableWidget {
-    constructor(config) {
-        super(config);
+import BaseTableWidget from "./BaseTableWidget.js";
 
-        this.configurable = true;
-        this.cachedGateways = []; // prevent fetch when loading options
+export default class Gateways extends BaseTableWidget {
+    constructor() {
+        super();
     }
 
     getGridOptions() {
         return {
             // trigger overflow-y:scroll after 650px height
-            sizeToContent: 650,
+            sizeToContent: 650
         }
     }
 
@@ -47,92 +48,52 @@ export default class Gateways extends BaseTableWidget {
         return $('<div></div>').append($gateway_table);
     }
 
-    async _fetchGateways() {
-        const data = await this.ajaxCall('/api/routes/gateway/status');
-        if (!data.items || !data.items.length) {
-            return false;
-        }
-
-        return data.items;
-    }
-
-    async onWidgetOptionsChanged(options) {
-        await this._updateGateways();
-    }
-
-    async getWidgetOptions() {
-        return {
-            gateways: {
-                title: this.translations.title,
-                type: 'select_multiple',
-                options: this.cachedGateways.map((name) => {
-                    return {
-                        value: name,
-                        label: name,
-                    };
-                }),
-                default: this.cachedGateways
-            }
-        }
-    }
-
     async onWidgetTick() {
-        await this._updateGateways();
-    }
-
-    async _updateGateways() {
-        $('.gateways-status-icon').tooltip('hide');
-
-        const gateways = await this._fetchGateways();
-        if (!gateways) {
-            $('#gateway-table').html(`<a href="/ui/routing/configuration">${this.translations.unconfigured}</a>`);
-            return;
-        }
-        this.cachedGateways = gateways.map(({ name }) => name);
-
-        const config = await this.getWidgetConfig();
-
-        let data = [];
-        gateways.forEach(({name, address, status, loss, delay, stddev, status_translated}) => {
-            if (!config.gateways.includes(name)) {
+        await ajaxGet('/api/routes/gateway/status', {} , (data, status) => {
+            if (data.items === undefined) {
                 return;
             }
 
-            let color = "text-success";
-            switch (status) {
-                case "force_down":
-                case "down":
-                    color = "text-danger";
-                    break;
-                case "loss":
-                case "delay":
-                case "delay+loss":
-                    color = "text-warning";
-                    break;
+            if (!data.items.length) {
+                $('#gateway-table').html(`<a href="/ui/routing/configuration">${this.translations.unconfigured}</a>`);
+                return;
             }
 
-            let gw = `<div>
-                <i class="fa fa-circle text-muted ${color} gateways-status-icon" style="font-size: 11px; cursor: pointer;"
-                    data-toggle="tooltip" title="${status_translated}">
-                </i>
-                &nbsp;
-                <a href="/ui/routing/configuration">${name}</a>
-                &nbsp;
-                <br/>
-                <div style="margin-top: 5px; margin-bottom: 5px; font-size: 15px;">${address}</div>
-            </div>`
+            data.items.forEach(({name, address, status, loss, delay, stddev, status_translated}) => {
+                let color = "text-success";
+                switch (status) {
+                    case "force_down":
+                    case "down":
+                        color = "text-danger";
+                        break;
+                    case "loss":
+                    case "delay":
+                    case "delay+loss":
+                        color = "text-warning";
+                        break;
+                }
 
-            let stats = `<div>
-                ${delay === '~' ? '' : `<div><b>${this.translations.rtt}</b>: ${delay}</div>`}
-                ${delay === '~' ? '' : `<div><b>${this.translations.rttd}</b>: ${stddev}</div>`}
-                ${delay === '~' ? '' : `<div><b>${this.translations.loss}</b>: ${loss}</div>`}
-            </div>`
+                let gw = `<div>
+                    <i class="fa fa-circle text-muted ${color}" style="font-size: 11px; cursor: pointer;"
+                        data-toggle="tooltip" title="${status_translated}">
+                    </i>
+                    &nbsp;
+                    <a href="/ui/routing/configuration">${name}</a>
+                    &nbsp;
+                    <br/>
+                    <div style="margin-top: 5px; margin-bottom: 5px; font-size: 15px;">${address}</div>
+                </div>`
 
-            data.push([gw, stats]);
+                let stats = `<div>
+                    ${delay === '~' ? '' : `<div><b>${this.translations.rtt}</b>: ${delay}</div>`}
+                    ${delay === '~' ? '' : `<div><b>${this.translations.rttd}</b>: ${stddev}</div>`}
+                    ${delay === '~' ? '' : `<div><b>${this.translations.loss}</b>: ${loss}</div>`}
+                </div>`
+
+                this.updateTable('gateway-table', [[gw, stats]], `gw_${name}`);
+            });
+
+            $('[data-toggle="tooltip"]').tooltip();
         });
-
-        this.updateTable('gateway-table', data);
-
-        $('.gateways-status-icon').tooltip({container: 'body'});
     }
 }

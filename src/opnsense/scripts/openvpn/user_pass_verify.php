@@ -82,17 +82,13 @@ function do_auth($common_name, $serverid, $method, $auth_file)
     }
     if (strpos($password, 'SCRV1:') === 0) {
         // static-challenge https://github.com/OpenVPN/openvpn/blob/v2.4.7/doc/management-notes.txt#L1146
-        // QUICK HACK for local used Radius dependencies
-        // validate and concat password into our default otp_token+password
-        // validate and concat password into our default password+otp_token
+        // validate and concat password into our default pin+password
         $tmp = explode(':', $password);
         if (count($tmp) == 3) {
             $pass = base64_decode($tmp[1]);
-            $otp_token = base64_decode($tmp[2]);
-            if ($pass !== false && $otp_token !== false) {
-                // QUICK HACK for local used Radius dependencies
-                // $password = $otp_token . $pass;
-                $password = $pass . $otp_token;
+            $pin = base64_decode($tmp[2]);
+            if ($pass !== false && $pin !== false) {
+                $password = $pin . $pass;
             }
         }
     }
@@ -100,14 +96,11 @@ function do_auth($common_name, $serverid, $method, $auth_file)
     if ($a_server == null) {
         return "OpenVPN '$serverid' was not found. Denying authentication for user {$username}";
     } elseif (!empty($a_server['strictusercn']) && $username != $common_name) {
-        // only ignore case when explicitly set (strictusercn=2)
-        if (!($a_server['strictusercn'] == 2 && strtolower($username) == strtolower($common_name))) {
-            return sprintf(
-                "Username does not match certificate common name (%s != %s), access denied.",
-                $username,
-                $common_name
-            );
-        }
+        return sprintf(
+            "Username does not match certificate common name (%s != %s), access denied.",
+            $username,
+            $common_name
+        );
     } elseif (empty($a_server['authmode'])) {
         return 'No authentication server has been selected to authenticate against. ' .
         "Denying authentication for user {$username}";
@@ -132,10 +125,12 @@ function do_auth($common_name, $serverid, $method, $auth_file)
                     LOG_NOTICE,
                     "Locate overwrite for '{$common_name}' using server '{$serverid}' (vpnid: {$a_server['vpnid']})"
                 );
-                $cso = (new OPNsense\OpenVPN\OpenVPN())->getOverwrite($serverid, $common_name, parse_auth_properties($authenticator->getLastAuthProperties()));
+                $cso = (new OPNsense\OpenVPN\OpenVPN())->getOverwrite($serverid, $common_name);
                 if (empty($cso)) {
-                    return "authentication failed for user '{$username}'. No tunnel network provisioned, but required.";
+                    $cso = array("common_name" => $common_name);
                 }
+
+                $cso = array_merge($cso, parse_auth_properties($authenticator->getLastAuthProperties()));
                 $cso_filename = openvpn_csc_conf_write($cso, $a_server);
                 if (!empty($cso_filename)) {
                     $tmp = empty($a_server['cso_login_matching']) ? "CSO [CN]" : "CSO [USER]";
@@ -155,18 +150,9 @@ openlog("openvpn", LOG_ODELAY, LOG_AUTH);
 
 /* parse environment variables */
 $parms = [];
-$parmlist = ['auth_server', 'auth_method', 'common_name', 'auth_file', 'auth_defer', 'auth_control_file', 'untrusted_ip', 'untrusted_ip6'];
+$parmlist = ['auth_server', 'auth_method', 'common_name', 'auth_file', 'auth_defer', 'auth_control_file'];
 foreach ($parmlist as $key) {
     $parms[$key] = isset(getenv()[$key]) ? getenv()[$key] : null;
-}
-
-global $remote_address;
-if (!empty($parms['untrusted_ip6'])) {
-    $parms['remote_address'] = $parms['untrusted_ip6'];
-    $remote_address = $parms['untrusted_ip6'];
-} elseif (!empty($parms['untrusted_ip'])) {
-    $parms['remote_address'] = $parms['untrusted_ip'];
-    $remote_address = $parms['untrusted_ip'];
 }
 
 /* perform authentication */
@@ -175,6 +161,7 @@ $response = do_auth($parms['common_name'], $parms['auth_server'], $parms['auth_m
 if (is_string($response)) {
     // send failure message to log
     syslog(LOG_WARNING, $response);
+    closelog();
 }
 
 if (!empty($parms['auth_defer'])) {

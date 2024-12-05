@@ -25,16 +25,23 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-REQUEST="UPDATE"
-
-. /usr/local/opnsense/scripts/firmware/config.sh
-
 CMD=${1}
-FORCE=
+LOCKFILE="/tmp/pkg_upgrade.progress"
+PIPEFILE="/tmp/pkg_upgrade.pipe"
+TEE="/usr/bin/tee -a"
+
+DO_FORCE=
+
+: > ${LOCKFILE}
+rm -f ${PIPEFILE}
+mkfifo ${PIPEFILE}
+
+echo "***GOT REQUEST TO UPDATE***" >> ${LOCKFILE}
+echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 # figure out if we are crossing ABIs
 if [ "$(opnsense-version -a)" != "$(opnsense-version -x)" ]; then
-	FORCE="-f"
+	DO_FORCE="-f"
 fi
 
 # figure out the release type from config
@@ -45,30 +52,36 @@ fi
 
 # read reboot flag and record current package name and version state
 ALWAYS_REBOOT=$(/usr/local/sbin/pluginctl -g system.firmware.reboot)
-PKGS_HASH=$(${PKG} query %n-%v 2> /dev/null | sha256)
+PKGS_HASH=$(pkg query %n-%v 2> /dev/null | sha256)
 
 # upgrade all packages if possible
-output_cmd opnsense-update ${FORCE} -pt "opnsense${SUFFIX}"
+(opnsense-update ${DO_FORCE} -pt "opnsense${SUFFIX}" 2>&1) | ${TEE} ${LOCKFILE}
 
 # restart the web server
-output_cmd /usr/local/etc/rc.restart_webgui
+(/usr/local/etc/rc.restart_webgui 2>&1) | ${TEE} ${LOCKFILE}
 
 # run plugin resolver if requested
 if [ "${CMD}" = "sync" ]; then
-	/usr/local/opnsense/scripts/firmware/sync.subr.sh
+	. /usr/local/opnsense/scripts/firmware/sync.subr.sh
 fi
 
 # if we can update base, we'll do that as well
-if opnsense-update ${FORCE} -bk -c; then
-	if output_cmd opnsense-update ${FORCE} -bk; then
-		output_reboot
+${TEE} ${LOCKFILE} < ${PIPEFILE} &
+if opnsense-update ${DO_FORCE} -bk -c > ${PIPEFILE} 2>&1; then
+	${TEE} ${LOCKFILE} < ${PIPEFILE} &
+	if opnsense-update ${DO_FORCE} -bk > ${PIPEFILE} 2>&1; then
+		echo '***REBOOT***' >> ${LOCKFILE}
+		sleep 5
+		/usr/local/etc/rc.reboot
 	fi
 fi
 
 if [ -n "${ALWAYS_REBOOT}" ]; then
-	if [ "${PKGS_HASH}" != "$(${PKG} query %n-%v 2> /dev/null | sha256)" ]; then
-		output_reboot
+	if [ "${PKGS_HASH}" != "$(pkg query %n-%v 2> /dev/null | sha256)" ]; then
+		echo '***REBOOT***' >> ${LOCKFILE}
+		sleep 5
+		/usr/local/etc/rc.reboot
 	fi
 fi
 
-output_done
+echo '***DONE***' >> ${LOCKFILE}

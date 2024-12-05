@@ -105,6 +105,7 @@ class Dhcpv4Controller extends ApiMutableModelControllerBase
     public function downloadReservationsAction()
     {
         if ($this->request->isGet()) {
+            $this->sessionClose();
             $this->exportCsv($this->getModel()->reservations->reservation->asRecordSet(false, ['subnet']));
         }
     }
@@ -112,6 +113,7 @@ class Dhcpv4Controller extends ApiMutableModelControllerBase
     public function uploadReservationsAction()
     {
         if ($this->request->isPost() && $this->request->hasPost('payload')) {
+            $this->sessionClose();
             $subnets = [];
             foreach ($this->getModel()->subnets->subnet4->iterateItems() as $key => $node) {
                 $subnets[(string)$node->subnet] = $key;

@@ -35,10 +35,9 @@ require_once 'filter.inc';
 
 exit_on_bootup();
 
-/* when called with an argument we are in gateway switch mode */
-$recover_only = !empty($argv[1]);
+$want_monitor = empty($argv[1]);
 
-/* drop deleted routes */
+// drop deleted routes
 foreach (glob("/tmp/delete_route_*.todo") as $filename) {
     $network = trim(file_get_contents($filename));
     $inet = (is_subnetv6($network) ? "-inet6" : "-inet");
@@ -46,19 +45,5 @@ foreach (glob("/tmp/delete_route_*.todo") as $filename) {
     unlink($filename);
 }
 
-system_routing_configure(true, null, !$recover_only);
-
-if ($recover_only) {
-    $gwnames = [];
-
-    foreach (return_gateways_status() as $status) {
-        if ($status['status'] == 'down') {
-            /* try to recover monitors stuck in down state ignoring "force_down" */
-            $gwnames[] = $status['name'];
-        }
-    }
-
-    plugins_configure('monitor', true, [$gwnames]);
-}
-
+system_routing_configure(true, null, $want_monitor);
 filter_configure_sync(true, false);

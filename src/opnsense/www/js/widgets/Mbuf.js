@@ -1,3 +1,5 @@
+// endpoint:/api/core/system/system_mbuf
+
 /*
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
@@ -24,11 +26,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+import BaseGaugeWidget from "./BaseGaugeWidget.js";
+
 export default class Mbuf extends BaseGaugeWidget {
     constructor() {
         super();
-
-        this.tickTimeout = 60;
     }
 
     async onMarkupRendered() {
@@ -41,9 +43,10 @@ export default class Mbuf extends BaseGaugeWidget {
     }
 
     async onWidgetTick() {
-        const data = await this.ajaxCall('/api/diagnostics/system/system_mbuf');
-        let current = parseInt(data['mbuf-statistics']['cluster-total']);
-        let limit = parseInt(data['mbuf-statistics']['cluster-max']);
-        super.updateChart([current, (limit - current)]);
+        ajaxGet('/api/core/system/system_mbuf', {}, (data, status) => {
+            let current = parseInt(data['mbuf-statistics']['cluster-total']);
+            let limit = parseInt(data['mbuf-statistics']['cluster-max']);
+            super.updateChart([current, (limit - current)]);
+        });
     }
 }

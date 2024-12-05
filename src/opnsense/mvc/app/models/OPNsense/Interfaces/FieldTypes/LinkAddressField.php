@@ -138,7 +138,6 @@ class LinkAddressField extends BaseField
      */
     public function setValue($value)
     {
-        $value = (string)$value;
         $parent = $this->getParentNode();
         if (Util::isIpAddress($value)) {
             $parent->ipaddr = $value;

@@ -61,8 +61,4 @@ if __name__ == '__main__':
         print(record, flush=True)
 
     for record in log_matcher.live_match_records():
-        if record is None:
-            # keepalive
-            print("event: keepalive\ndata:\n\n", flush=True)
-        else:
-            print(f"event: log\ndata:{ujson.dumps(record)}\n\n", flush=True)
+        print(f"event: message\ndata:{ujson.dumps(record)}\n\n", flush=True)

@@ -55,6 +55,29 @@ function is_bogonsv6_used()
     return $usebogonsv6;
 }
 
+/* lock configuration file */
+function filter_lock($lock = 'filter', $op = LOCK_EX)
+{
+    if (!file_exists("{/tmp/{$lock}.lock")) {
+        @touch("/tmp/{$lock}.lock");
+    }
+
+    if ($fp = fopen("/tmp/{$lock}.lock", 'a+e')) {
+        if (flock($fp, $op)) {
+            return $fp;
+        } else {
+            fclose($fp);
+        }
+    }
+}
+
+/* unlock configuration file */
+function filter_unlock($fp)
+{
+    flock($fp, LOCK_UN);
+    fclose($fp);
+}
+
 /* sort by interface only, retain the original order of rules that apply to
    the same interface */
 function filter_rules_sort()
@@ -158,7 +181,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     service_log('Configuring firewall.', $verbose);
 
     /* Use filter lock to not allow concurrent filter reloads during this run. */
-    $fobj = new \OPNsense\Core\FileObject('/tmp/rules.debug', 'a+', 0600, LOCK_EX);
+    $locked = filter_lock();
 
     ifgroup_setup();
 
@@ -265,8 +288,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     } else {
         mwexec("/sbin/pfctl -d", true);
 
-        unset($fobj);
-
+        filter_unlock($locked);
+        closelog();
         reopenlog();
 
         service_log("done.\n", $verbose);
@@ -353,7 +376,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     $rules .= filter_setup_logging_interfaces($cnfint);
     $rules .= "\n";
     $rules .= "set skip on pfsync0\n";
-    $rules .= "set skip on lo0\n";
     $rules .= "\n";
     $rules .= filter_generate_scrubbing($cnfint);
     $rules .= "\n";
@@ -370,7 +392,18 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     mwexecf('ifconfig > %s', '/tmp/ifconfig.debug');
 
-    $fobj->truncate(0)->write($rules);
+    if (!@file_put_contents('/tmp/rules.debug', $rules, LOCK_EX)) {
+        syslog(LOG_ERR, 'ERROR: Could not write new rules!');
+        file_put_contents('/tmp/rules.error', gettext('ERROR: Could not write new rules!'));
+
+        filter_unlock($locked);
+        closelog();
+        reopenlog();
+
+        service_log("failed.\n", $verbose);
+
+        return;
+    }
 
     @file_put_contents('/tmp/rules.limits', $limitrules);
     mwexec('/sbin/pfctl -Of /tmp/rules.limits');
@@ -405,8 +438,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
             sprintf(gettext('There were error(s) loading the rules: %s%s'), $rules_error[0], $config_line)
         );
 
-        unset($fobj);
-
+        filter_unlock($locked);
+        closelog();
         reopenlog();
 
         service_log("failed.\n", $verbose);
@@ -439,8 +472,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     killbypid('/var/run/filterlog.pid');
     mwexec('/usr/local/sbin/filterlog -i pflog0 -p /var/run/filterlog.pid');
 
-    unset($fobj);
-
+    filter_unlock($locked);
+    closelog();
     reopenlog();
 
     service_log("done.\n", $verbose);
@@ -530,7 +563,7 @@ function filter_generate_scrubbing(&$FilterIflist)
         $scrub_gen_opts = !empty($config['system']['scrubnodf']) ? ' no-df ' : '';
         $scrub_gen_opts .= (!empty($config['system']['scrubrnid']) ? ' random-id ' : '');
         foreach ($FilterIflist as $scrubcfg) {
-            if (is_numeric($scrubcfg['mss'] ?? '')) {
+            if (is_numeric($scrubcfg['mss'] ?? '') && !in_array($scrubcfg['if'], ['pppoe', 'pptp', 'l2tp'])) {
                 /**
                  * Legacy MSS clamping on interface expects outbound packets to be scrubbed in order to work.
                  * https://github.com/pfsense/pfsense/commit/7c382a8

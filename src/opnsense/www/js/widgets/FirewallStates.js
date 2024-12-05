@@ -1,3 +1,5 @@
+// endpoint:/api/diagnostics/firewall/pf_states
+
 /*
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
@@ -24,11 +26,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+import BaseGaugeWidget from "./BaseGaugeWidget.js";
+
 export default class FirewallStates extends BaseGaugeWidget {
     constructor() {
         super();
-
-        this.tickTimeout = 60;
     }
 
     async onMarkupRendered() {
@@ -41,9 +43,10 @@ export default class FirewallStates extends BaseGaugeWidget {
     }
 
     async onWidgetTick() {
-        const data = await this.ajaxCall('/api/diagnostics/firewall/pf_states');
-        let current = parseInt(data.current);
-        let limit = parseInt(data.limit);
-        super.updateChart([current, (limit - current)]);
+        ajaxGet('/api/diagnostics/firewall/pf_states', {}, (data, status) => {
+            let current = parseInt(data.current);
+            let limit = parseInt(data.limit);
+            super.updateChart([current, (limit - current)]);
+        });
     }
 }

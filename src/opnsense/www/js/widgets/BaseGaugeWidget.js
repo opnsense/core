@@ -24,7 +24,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-class BaseGaugeWidget extends BaseWidget {
+import BaseWidget from "./BaseWidget.js";
+
+export default class BaseGaugeWidget extends BaseWidget {
     constructor() {
         super();
 
@@ -39,12 +41,6 @@ class BaseGaugeWidget extends BaseWidget {
                 </div>
             </div>
         `);
-    }
-
-    getGridOptions() {
-        return {
-            minW: 1
-        };
     }
 
     createGaugeChart(options) {
@@ -74,7 +70,6 @@ class BaseGaugeWidget extends BaseWidget {
                         hoverBackgroundColor: _options.colorMap.map((color) => this._setAlpha(color, 0.5)),
                         hoverOffset: 10,
                         fill: true
-
                     }
                 ]
             },
@@ -82,7 +77,10 @@ class BaseGaugeWidget extends BaseWidget {
                 responsive: true,
                 maintainAspectRatio: true,
                 aspectRatio: 2,
-                cutout: '60%',
+                layout: {
+                    padding: 10
+                },
+                cutout: '64%',
                 rotation: 270,
                 circumference: 180,
                 plugins: {
@@ -100,36 +98,32 @@ class BaseGaugeWidget extends BaseWidget {
                 id: 'custom_positioned_text',
                 beforeDatasetsDraw: (chart, _, __) => {
                     let data = chart.config.data.datasets[0].data;
-                    let bodyFamily = window.getComputedStyle(document.body, null).getPropertyValue('font-family');
-                    let headingFamily = window.getComputedStyle(document.querySelector('h1'), null).getPropertyValue('font-family');
                     if (data.length !== 0) {
                         let width = chart.width;
                         let height = chart.height;
                         let ctx = chart.ctx;
                         ctx.restore();
 
-                        let divisor = 60;
+                        let divisor = 114;
                         let primaryText = _options.primaryText(data, chart);
                         let secondaryText = _options.secondaryText(data, chart);
 
+                        if (secondaryText) {
+                            divisor = 135;
+                        }
+
                         let fontSize = (height / divisor).toFixed(2);
-                        ctx.font = fontSize + "em " + headingFamily;
+                        ctx.font = fontSize + "em SourceSansProSemiBold";
                         ctx.textBaseline = "middle";
                         ctx.fillStyle = Chart.defaults.color;
 
                         let textX = Math.round((width - ctx.measureText(primaryText).width) / 2);
-                        let textY = (height * (secondaryText ? 0.70 : 0.75));
-
+                        let textY = (height * 0.66);
                         ctx.fillText(primaryText, textX, textY);
 
                         if (secondaryText) {
-                            fontSize = (height / 90).toFixed(2);
-                            ctx.font = fontSize + "em " + bodyFamily;
-                            ctx.textBaseline = "middle";
-                            ctx.fillStyle = Chart.defaults.color;
-
                             let textBX = Math.round((width - ctx.measureText(secondaryText).width) / 2);
-                            let textBY = height * 0.90;
+                            let textBY = height * 0.83;
                             ctx.fillText(secondaryText, textBX, textBY);
                         }
 

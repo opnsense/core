@@ -85,11 +85,6 @@
 
 </script>
 
-<style>
-    .modal-body {
-        min-height: 410px;
-    }
-</style>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" href="#grid-categories">{{ lang._('Categories') }}</a></li>

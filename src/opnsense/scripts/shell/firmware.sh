@@ -74,7 +74,7 @@ if [ -n "${RELEASE}" ]; then
 	echo
 
 	PROMPT="${RELEASE}/${PROMPT}"
-elif CHANGELOG=$(${LAUNCHER} -u reboot); then
+elif CHANGELOG=$(/usr/local/opnsense/scripts/firmware/reboot.sh); then
 	echo "This update requires a reboot."
 	echo
 fi

@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2004 Fred Mol <fredmol@xs4all.nl>
- * Copyright (C) 2015-2024 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2022 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,23 +38,23 @@ function openssh_enabled()
 
 function openssh_configure()
 {
-    return [
-        'early' => ['openssh_configure_do'],
-        'local' => ['openssh_configure_do'],
-        'newwanip' => ['openssh_configure_do:2'],
-    ];
+    return array(
+        'early' => array('openssh_configure_do'),
+        'local' => array('openssh_configure_do'),
+        'newwanip' => array('openssh_configure_do:2'),
+    );
 }
 
 function openssh_services()
 {
-    $services = [];
+    $services = array();
 
     if (openssh_enabled()) {
-        $pconfig = [];
+        $pconfig = array();
         $pconfig['description'] = gettext('Secure Shell Daemon');
-        $pconfig['configd']['restart'] = ['openssh restart'];
-        $pconfig['configd']['start'] = ['openssh start'];
-        $pconfig['configd']['stop'] = ['openssh stop'];
+        $pconfig['configd']['restart'] = array('openssh restart');
+        $pconfig['configd']['start'] = array('openssh start');
+        $pconfig['configd']['stop'] = array('openssh stop');
         $pconfig['pidfile'] = '/var/run/sshd.pid';
         $pconfig['name'] = 'openssh';
         $services[] = $pconfig;
@@ -69,12 +69,15 @@ function openssh_services()
  */
 function openssh_xmlrpc_sync()
 {
-    return [[
+    $result = [];
+    $result[] = array(
         'description' => gettext('OpenSSH'),
         'section' => 'system.ssh',
-        'services' => ['openssh'],
         'id' => 'ssh',
-    ]];
+        'services' => ["openssh"],
+    );
+
+    return $result;
 }
 
 
@@ -84,13 +87,9 @@ function openssh_stop()
     mwexecf('/bin/pkill -af %s', '/usr/local/sbin/sshd', true);
 }
 
-function openssh_configure_do($verbose = false, $interface_map = null)
+function openssh_configure_do($verbose = false, $interface = '')
 {
     global $config;
-
-    if (!plugins_argument_map($interface_map)) {
-        return;
-    }
 
     $sshcfg = null;
 
@@ -98,7 +97,7 @@ function openssh_configure_do($verbose = false, $interface_map = null)
         $sshcfg = $config['system']['ssh'];
     } elseif (!isset($config['system']['ssh']['noauto']) && is_install_media()) {
         /* only revert to installer config when ssh is not set at all */
-        $sshcfg = ['permitrootlogin' => 1, 'passwordauth' => 1];
+        $sshcfg = array('permitrootlogin' => 1, 'passwordauth' => 1);
     }
 
     if ($sshcfg === null) {
@@ -106,20 +105,15 @@ function openssh_configure_do($verbose = false, $interface_map = null)
         return;
     }
 
-    $interfaces = [];
-
+    $interfaces = array();
     if (!empty($sshcfg['interfaces'])) {
         $interfaces = explode(',', $sshcfg['interfaces']);
-        array_unshift($interfaces, 'lo0');
+        $interfaces[] = 'lo0';
     }
 
-    /* return if interfaces specified do not match or interfaces are not bound at all */
-    if (!empty($interface_map) && !count(array_intersect($interface_map, $interfaces))) {
+    if (!empty($interface) && !in_array($interface, $interfaces)) {
         return;
     }
-
-    /* lock the config generation and service start/stop, also secures key generation */
-    $fobj = new \OPNsense\Core\FileObject('/usr/local/etc/ssh/sshd_config', 'a+', null, LOCK_EX);
 
     openssh_stop();
 
@@ -129,12 +123,19 @@ function openssh_configure_do($verbose = false, $interface_map = null)
     /* make ssh home directory */
     @mkdir('/var/empty', 0555, true);
 
-    $keys = [
+    $keys = array(
         /* .pub files are implied */
         'rsa' => 'ssh_host_rsa_key',
         'ecdsa' => 'ssh_host_ecdsa_key',
         'ed25519' => 'ssh_host_ed25519_key',
-    ];
+    );
+
+    $keys_dep = array(
+        /* .pub files are implied */
+        'dsa' => 'ssh_host_dsa_key',
+    );
+
+    $keys_all = array_merge($keys, $keys_dep);
 
     /* Check for all needed key files. If any are missing, the keys need to be regenerated. */
     $generate_keys = false;
@@ -147,12 +148,18 @@ function openssh_configure_do($verbose = false, $interface_map = null)
     }
 
     if ($generate_keys) {
+        /* XXX replace with file lock */
+        if (is_subsystem_dirty('sshdkeys')) {
+            return;
+        }
+        mark_subsystem_dirty('sshdkeys');
         foreach ($keys as $type => $name) {
             $file = "/conf/sshd/{$name}";
             @unlink("{$file}.pub");
             @unlink($file);
-            mwexecf('/usr/local/bin/ssh-keygen -t %s -N "" -f %s', [$type, $file]);
+            mwexecf('/usr/local/bin/ssh-keygen -t %s -N "" -f %s', array($type, $file));
         }
+        clear_subsystem_dirty('sshdkeys');
     }
 
     $sshport = isset($sshcfg['port']) ? $sshcfg['port'] : 22;
@@ -183,11 +190,8 @@ function openssh_configure_do($verbose = false, $interface_map = null)
         $sshconf .= "ChallengeResponseAuthentication no\n";
         $sshconf .= "PasswordAuthentication no\n";
     }
-    if (!empty($sshcfg['rekeylimit'])) {
-        $sshconf .= sprintf("RekeyLimit %s\n", $sshcfg['rekeylimit']);
-    }
 
-    foreach ($keys as $name) {
+    foreach ($keys_all as $name) {
         $file = "/conf/sshd/{$name}";
         if (!file_exists($file)) {
             continue;
@@ -195,7 +199,7 @@ function openssh_configure_do($verbose = false, $interface_map = null)
         $sshconf .= "HostKey {$file}\n";
     }
 
-    $listeners = [];
+    $listeners = array();
 
     foreach (interfaces_addresses($interfaces) as $tmpaddr => $info) {
         if (!$info['bind']) {
@@ -239,18 +243,18 @@ function openssh_configure_do($verbose = false, $interface_map = null)
             if (in_array($elem, $supported[$adv['key']])) {
                 $selected[] = $elem;
             } else {
-                log_msg("OpenSSH: Configured {$adv['node']} value '{$elem}' is not supported.", LOG_WARNING);
+                syslog(LOG_WARNING, "OpenSSH: Configured {$adv['node']} value '{$elem}' is not supported.");
             }
         }
 
         if (count($selected) == 0) {
-            log_msg("OpenSSH: No configured {$adv['node']} value is supported - using defaults.", LOG_WARNING);
+            syslog(LOG_WARNING, "OpenSSH: No configured {$adv['node']} value is supported - using defaults.");
         } else {
             $sshconf .= $adv['config'] . ' ' . implode(',', $selected) . PHP_EOL;
         }
     }
 
-    $fobj->truncate(0)->write($sshconf);
+    file_put_contents("/usr/local/etc/ssh/sshd_config", $sshconf);
 
     service_log('Configuring OpenSSH...', $verbose);
 
@@ -259,6 +263,4 @@ function openssh_configure_do($verbose = false, $interface_map = null)
     } else {
         service_log("done.\n", $verbose);
     }
-
-    unset($fobj);
 }

@@ -55,6 +55,7 @@ class ServiceController extends ApiMutableServiceControllerBase
             return ['result' => 'failed'];
         }
 
+        $this->sessionClose();
         $backend = new Backend();
         $backend->configdRun('interface invoke registration');
         $backend->configdRun('template reload ' . escapeshellarg(static::$internalServiceTemplate));

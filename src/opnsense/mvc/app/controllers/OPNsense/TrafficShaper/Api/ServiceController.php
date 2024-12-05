@@ -46,6 +46,9 @@ class ServiceController extends ApiControllerBase
     public function reconfigureAction()
     {
         if ($this->request->isPost()) {
+            // close session for long running action
+            $this->sessionClose();
+
             $backend = new Backend();
             $backend->configdRun('template reload OPNsense/IPFW');
             $bckresult = trim($backend->configdRun("ipfw reload"));
@@ -67,6 +70,9 @@ class ServiceController extends ApiControllerBase
     public function flushreloadAction()
     {
         if ($this->request->isPost()) {
+            // close session for long running action
+            $this->sessionClose();
+
             $backend = new Backend();
             $status = trim($backend->configdRun("ipfw flush"));
             $status = trim($backend->configdRun("ipfw reload"));
@@ -83,6 +89,8 @@ class ServiceController extends ApiControllerBase
     {
         $result = array("status" => "failed");
         if ($this->request->isGet()) {
+            // close session for long running action
+            $this->sessionClose();
             $ipfwstats = json_decode((new Backend())->configdRun("ipfw stats"), true);
             if ($ipfwstats != null) {
                 // ipfw stats are structured as they would be using the various ipfw commands, let's reformat

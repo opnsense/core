@@ -53,6 +53,8 @@ class ServiceController extends ApiMutableServiceControllerBase
     public function resetAction()
     {
         if ($this->request->isPost()) {
+            $this->sessionClose();
+
             $backend = new Backend();
             if ('OK' == trim($backend->configdRun('syslog reset'))) {
                 return ['status' => 'ok'];
@@ -68,6 +70,7 @@ class ServiceController extends ApiMutableServiceControllerBase
      */
     public function statsAction()
     {
+        $this->sessionClose();
         // transform stats data to recordset
         $destinations = array();
         foreach ($this->getModel()->destinations->destination->iterateItems() as $destid => $dest) {

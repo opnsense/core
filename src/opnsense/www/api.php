@@ -33,10 +33,7 @@ try {
     });
 
     $router = new OPNsense\Mvc\Router('/api/', 'Api');
-    $response = $router->routeRequest($_SERVER['REQUEST_URI'], [
-            'action' => 'indexAction',
-    ]);
-
+    $response = $router->routeRequest($_SERVER['REQUEST_URI']);
     if (!$response->isSent()) {
         $response->send();
     }

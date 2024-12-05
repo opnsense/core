@@ -24,15 +24,21 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-REQUEST="AUDIT CONNECTIVITY"
+LOCKFILE="/tmp/pkg_upgrade.progress"
+TEE="/usr/bin/tee -a"
 
-. /usr/local/opnsense/scripts/firmware/config.sh
+: > ${LOCKFILE}
 
 URL=$(opnsense-update -M)
+URLX=$(opnsense-update -X)
 POPT="-c4 -s1500"
 
 HOST=${URL#*://}
 HOST=${HOST%%/*}
+HOSTIP=
+
+HOSTX=${URLX#*://}
+HOSTX=${HOSTX%%/*}
 
 IPV4=$(host -t A ${HOST} | head -n 1 | cut -d\  -f4)
 IPV6=$(host -t AAAA ${HOST} | head -n 1 | cut -d\  -f5)
@@ -42,28 +48,37 @@ export PKG_DBDIR=/tmp/firmware.repo.check
 rm -rf ${PKG_DBDIR}
 mkdir -p ${PKG_DBDIR}
 
+echo "***GOT REQUEST TO AUDIT CONNECTIVITY***" >> ${LOCKFILE}
+echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
+
 if [ -n "${IPV4}" -a -z "${IPV4%%*.*}" ]; then
-	output_txt "Checking connectivity for host: ${HOST} -> ${IPV4}"
-	output_cmd ping -4 ${POPT} "${IPV4}"
-	output_txt "Checking connectivity for repository (IPv4): ${URL}"
-	output_cmd ${PKG} -4 update -f
+	echo "Checking connectivity for host: ${HOST} -> ${IPV4}" | ${TEE} ${LOCKFILE}
+	(ping -4 ${POPT} ${IPV4} 2>&1) | ${TEE} ${LOCKFILE}
+	echo "Checking connectivity for repository (IPv4): ${URL}" | ${TEE} ${LOCKFILE}
+	(pkg -4 update -f 2>&1) | ${TEE} ${LOCKFILE}
+	HOSTIP=1
 else
-	output_txt "No IPv4 address could be found for host: ${HOST}"
+	echo "No IPv4 address could be found for host: ${HOST}" | ${TEE} ${LOCKFILE}
 fi
 
 if [ -n "${IPV6}" -a -z "${IPV6%%*:*}" ]; then
-	output_txt "Checking connectivity for host: ${HOST} -> ${IPV6}"
-	output_cmd ping -6 ${POPT} "${IPV6}"
-	output_txt "Checking connectivity for repository (IPv6): ${URL}"
-	output_cmd ${PKG} -6 update -f
+	echo "Checking connectivity for host: ${HOST} -> ${IPV6}" | ${TEE} ${LOCKFILE}
+	(ping -6 ${POPT} ${IPV6} 2>&1) | ${TEE} ${LOCKFILE}
+	echo "Checking connectivity for repository (IPv6): ${URL}" | ${TEE} ${LOCKFILE}
+	(pkg -6 update -f 2>&1) | ${TEE} ${LOCKFILE}
+	HOSTIP=1
 else
-	output_txt "No IPv6 address could be found for host: ${HOST}"
+	echo "No IPv6 address could be found for host: ${HOST}" | ${TEE} ${LOCKFILE}
 fi
 
-for HOST in $(/usr/local/opnsense/scripts/firmware/hostnames.sh); do
-	output_txt "Checking server certificate for host: ${HOST}"
-	# XXX -crl_check and -crl_check_all are possible but -CRL pass is not working
-	echo | output_cmd openssl s_client -quiet -no_ign_eof "${HOST}:443"
-done
+if [ -n "${HOSTIP}" ]; then
+	echo "Checking server certificate for host: ${HOST}" | ${TEE} ${LOCKFILE}
+	echo | openssl s_client -quiet -no_ign_eof ${HOST}:443 2>&1 | ${TEE} ${LOCKFILE}
+fi
 
-output_done
+if [ "${HOST}" != "${HOSTX}" ]; then
+	echo "Checking server certificate for host: ${HOSTX}" | ${TEE} ${LOCKFILE}
+	echo | openssl s_client -quiet -no_ign_eof ${HOSTX}:443 2>&1| ${TEE} ${LOCKFILE}
+fi
+
+echo '***DONE***' >> ${LOCKFILE}

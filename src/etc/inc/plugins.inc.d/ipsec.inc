@@ -227,8 +227,9 @@ function ipsec_devices()
 function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
 {
     global $config;
+
     if (
-        (string)(new \OPNsense\IPsec\IPsec())->general->disablevpnrules == '0' &&
+        !isset($config['system']['disablevpnrules']) &&
             isset($config['ipsec']['enable']) && isset($config['ipsec']['phase1'])
     ) {
         $enable_replyto = empty($config['system']['disablereplyto']);
@@ -263,16 +264,12 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                                       "quick" => false,
                                       "type" => "pass",
                                       "statetype" => "keep",
-                                      "#ref" => "ui/ipsec/connections/settings",
+                                      "#ref" => "vpn_ipsec_settings.php#disablevpnrules",
                                       "descr" => "IPsec: " . (!empty($ph1ent['descr']) ? $ph1ent['descr'] : $rgip)
                                     );
 
                     // find gateway
                     $gwname = $fw->getGateways()->getInterfaceGateway($interface, $ph1ent['protocol'], true, 'name');
-                    if ((strpos($rgip, ':') === false ? 'inet' : 'inet6') != $ph1ent['protocol']) {
-                        // XXX: prevent route-to when gateway and remote address family mismatch
-                        $enable_routeto = false;
-                    }
                     // register rules
                     $fw->registerFilterRule(
                         500000,
@@ -922,8 +919,25 @@ function ipsec_write_strongswan_conf()
     $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : [];
     $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : [];
     $a_client = isset($config['ipsec']['client']) ? $config['ipsec']['client'] : [];
-
-    $strongswanTree = (new \OPNsense\IPsec\IPsec())->strongswanTree();
+    $strongswanTree = [
+        '# Automatically generated, please do not modify' => '',
+        'starter' => [
+            'load_warning' => 'no'
+        ],
+        'charon' => [
+            'threads' => 16,
+            'ikesa_table_size' => 32,
+            'ikesa_table_segments' => 4,
+            'init_limit_half_open' => 1000,
+            'ignore_acquire_ts' => 'yes',
+            'syslog' => [
+                'identifier' => 'charon',
+                'daemon' => [
+                    'ike_name' => 'yes'
+                ]
+            ]
+        ]
+    ];
 
     foreach ($a_phase1 as $ph1ent) {
         if (isset($ph1ent['disabled'])) {
@@ -939,6 +953,21 @@ function ipsec_write_strongswan_conf()
     $strongswanTree['charon']['install_routes'] = 'no';
     if (isset($a_client['enable']) && isset($a_client['net_list'])) {
         $strongswanTree['charon']['cisco_unity'] = 'yes';
+    }
+    if (!empty($config['ipsec']['max_ikev1_exchanges'])) {
+        $strongswanTree['charon']['max_ikev1_exchanges'] = $config['ipsec']['max_ikev1_exchanges'];
+    }
+
+    // Debugging configuration
+    // lkey is the log key, which is a three-letter abbreviation of the subsystem to log, e.g. `ike`.
+    // The value will be a number between -1 (silent) and 4 (highest verbosity).
+    foreach (array_keys(IPSEC_LOG_SUBSYSTEMS) as $lkey) {
+        if (
+            isset($config['ipsec']["ipsec_{$lkey}"]) && is_numeric($config['ipsec']["ipsec_{$lkey}"]) &&
+            array_key_exists(intval($config['ipsec']["ipsec_{$lkey}"]), IPSEC_LOG_LEVELS)
+        ) {
+            $strongswanTree['charon']['syslog']['daemon'][$lkey] = $config['ipsec']["ipsec_{$lkey}"];
+        }
     }
 
     $strongswanTree['charon']['plugins'] = [];
@@ -1232,32 +1261,23 @@ function ipsec_write_secrets()
     return $secrets;
 }
 
-function ipsec_configure_do($verbose = false, $interface_map = null)
+function ipsec_configure_do($verbose = false, $interface = '')
 {
     global $config;
 
-    if (!plugins_argument_map($interface_map)) {
-        return;
-    }
-
-    if (!empty($interface_map)) {
-        $active = false;
-
+    if (!empty($interface)) {
+         $active = false;
         if (isset($config['ipsec']['phase1'])) {
             foreach ($config['ipsec']['phase1'] as $phase1) {
-                if (!isset($phase1['disabled']) && in_array($phase1['interface'], $interface_map)) {
+                if (!isset($phase1['disabled']) && $phase1['interface'] == $interface) {
                     $active = true;
-                    break;
                 }
             }
         }
-
         if (!$active) {
             return;
         }
     }
-
-    $ipsec_mdl = new \OPNsense\IPsec\IPsec();
 
     /* configure VTI if needed */
     ipsec_configure_vti();
@@ -1265,12 +1285,11 @@ function ipsec_configure_do($verbose = false, $interface_map = null)
     ipsec_setup_pinghosts();
 
     //  Prefer older IPsec SAs (advanced setting)
-    if (!empty((string)$ipsec_mdl->general->preferred_oldsa)) {
+    if (isset($config['ipsec']['preferoldsa'])) {
         set_single_sysctl('net.key.preferred_oldsa', '-30');
     } else {
         set_single_sysctl('net.key.preferred_oldsa', '0');
     }
-
 
     $ipseccfg = $config['ipsec'] ?? [];
     $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : [];
@@ -1310,14 +1329,14 @@ function ipsec_configure_do($verbose = false, $interface_map = null)
     $swanctl = (new \OPNsense\IPsec\Swanctl())->getConfig();
     $swanctl['secrets'] = ipsec_write_secrets();
 
-    if ((string)$ipsec_mdl->general->passthrough_networks) {
+    if (!empty($config['ipsec']['passthrough_networks'])) {
         $swanctl['connections']['pass'] = [
             'remote_addrs' => '127.0.0.1',
             'unique' => 'replace',
             'children' => [
                 'pass' => [
-                        'local_ts' => (string)$ipsec_mdl->general->passthrough_networks,
-                        'remote_ts' => (string)$ipsec_mdl->general->passthrough_networks,
+                        'local_ts' => $config['ipsec']['passthrough_networks'],
+                        'remote_ts' => $config['ipsec']['passthrough_networks'],
                         'mode' => 'pass',
                         'start_action' => 'route'
                     ]

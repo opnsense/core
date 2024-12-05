@@ -206,9 +206,8 @@ function restore_config_section_xmlrpc($new_config)
      * Handle virtual ips
      */
     if (isset($new_config['virtualip']['vip'])) {
-        $proxyarp = false;
-        $pfsync = false;
-
+        $carp_setuped = false;
+        $anyproxyarp = false;
         if (isset($config['virtualip']['vip'])) {
             foreach ($config['virtualip']['vip'] as $vip) {
                 $vipKey = get_unique_vip_key($vip);
@@ -230,14 +229,14 @@ function restore_config_section_xmlrpc($new_config)
 
                 switch ($vip['mode']) {
                     case "proxyarp":
-                        $proxyarp = true;
+                        $anyproxyarp = true;
                         break;
                     case "ipalias":
                         interface_ipalias_configure($vip);
                         break;
                     case "carp":
+                        $carp_setuped = true;
                         interface_carp_configure($vip);
-                        $pfsync = true;
                         break;
                 }
             }
@@ -248,11 +247,11 @@ function restore_config_section_xmlrpc($new_config)
             interface_vip_bring_down($oldvip);
         }
 
-        if ($pfsync) {
-            interfaces_pfsync_configure();
+        if ($carp_setuped) {
+            interfaces_carp_setup();
         }
 
-        if ($proxyarp) {
+        if ($anyproxyarp) {
             interface_proxyarp_configure();
         }
     }

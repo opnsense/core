@@ -51,6 +51,7 @@ class ServiceController extends ApiMutableServiceControllerBase
     {
         if ($this->request->isPost()) {
             $result['status'] = 'ok';
+            $this->sessionClose();
             $backend = new Backend();
             $result['function'] = 'check';
             $result['template'] = trim($backend->configdRun('template reload OPNsense/Monit'));
@@ -72,6 +73,7 @@ class ServiceController extends ApiMutableServiceControllerBase
     public function reconfigureAction()
     {
         if ($this->request->isPost()) {
+            $this->sessionClose();
             $result['function'] = "reconfigure";
             $result['status'] = 'failed';
             $backend = new Backend();

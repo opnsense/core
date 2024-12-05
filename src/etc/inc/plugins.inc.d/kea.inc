@@ -55,6 +55,7 @@ function kea_run()
 function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details = null)
 {
     $staticmap = [];
+
     $keav4 = new \OPNsense\Kea\KeaDhcpv4();
 
     if ($proto == 6 || empty((string)$keav4->general->enabled)) {
@@ -63,22 +64,12 @@ function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details
     }
 
     foreach ($keav4->reservations->reservation->iterateItems() as $reservation) {
-        $hostname = !empty((string)$reservation->hostname) ? (string)$reservation->hostname : null;
         $ip_address = (string)$reservation->ip_address;
-        if ($valid_addresses) {
-            if (empty($ip_address) || empty($hostname)) {
-                continue;
-            } elseif (
-                filter_var((string)$reservation->hostname, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false
-            ) {
-                syslog(
-                    LOG_WARNING,
-                    sprintf("KEA: refusing to register non standard hostname [%s]", $reservation->hostname)
-                );
-                continue;
-            }
+        if (empty($ip_address) && $valid_addresses) {
+            continue;
         }
 
+        $hostname = !empty((string)$reservation->hostname) ? (string)$reservation->hostname : null;
         $description = !empty((string)$reservation->description) ? (string)$reservation->description : null;
 
         $subnet_node = $keav4->getNodeByReference("subnets.subnet4.{$reservation->subnet}");

@@ -120,6 +120,9 @@ class NetflowController extends ApiControllerBase
     public function reconfigureAction()
     {
         if ($this->request->isPost()) {
+            // close session for long running action
+            $this->sessionClose();
+
             // reconfigure netflow
             $backend = new Backend();
             $backend->configdRun('template reload OPNsense/Netflow');

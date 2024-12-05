@@ -45,6 +45,7 @@ class DnsController extends ApiControllerBase
     public function reverseLookupAction()
     {
         if ($this->request->isGet() && $this->request->has('address')) {
+            $this->sessionClose(); // long running action, close session
             if (is_array($this->request->get('address'))) {
                 $address = $this->request->get('address');
             } else {

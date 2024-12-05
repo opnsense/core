@@ -38,7 +38,7 @@ import watchers.dhcpd
 
 if __name__ == '__main__':
     # do we use reverse DNS lookup ?
-    arp_arg = '-a' if '-r' in sys.argv else '-an'
+    arp_arg = '-an' if '-r' in sys.argv else '-a'
 
     # index mac database (shipped with netaddr)
     macdb = dict()

@@ -361,7 +361,6 @@ $.fn.UIBootgrid = function (params) {
                             }
                             std_bootgrid_reload(this_grid.attr('id'));
                             this_grid.showSaveAlert(event);
-                            saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
                         }, true, function(){
                             saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
                         });
@@ -409,7 +408,6 @@ $.fn.UIBootgrid = function (params) {
                             }
                             std_bootgrid_reload(this_grid.attr('id'));
                             this_grid.showSaveAlert(event);
-                            saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
                         }, true, function(){
                             saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
                         });
@@ -496,7 +494,6 @@ $.fn.UIBootgrid = function (params) {
                             }
                             std_bootgrid_reload(this_grid.attr('id'));
                             this_grid.showSaveAlert(event);
-                            saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
                         }, true, function(){
                             saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
                         });

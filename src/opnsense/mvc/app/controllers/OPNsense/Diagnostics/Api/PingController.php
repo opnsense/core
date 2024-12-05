@@ -75,6 +75,7 @@ class PingController extends ApiMutableModelControllerBase
     {
         $result = ['status' => 'failed'];
         if ($this->request->isPost()) {
+            $this->sessionClose();
             $payload = json_decode((new Backend())->configdpRun('interface ping start', [$jobid]) ?? '', true);
             if (!empty($payload)) {
                 $result = $payload;
@@ -90,6 +91,7 @@ class PingController extends ApiMutableModelControllerBase
     {
         $result = ['status' => 'failed'];
         if ($this->request->isPost()) {
+            $this->sessionClose();
             $payload = json_decode((new Backend())->configdpRun('interface ping stop', [$jobid]) ?? '', true);
             if (!empty($payload)) {
                 $result = $payload;
@@ -105,6 +107,7 @@ class PingController extends ApiMutableModelControllerBase
     {
         $result = ['status' => 'failed'];
         if ($this->request->isPost()) {
+            $this->sessionClose();
             $payload = json_decode((new Backend())->configdpRun('interface ping remove', [$jobid]) ?? '', true);
             if (!empty($payload)) {
                 $result = $payload;
@@ -118,6 +121,7 @@ class PingController extends ApiMutableModelControllerBase
      */
     public function searchJobsAction()
     {
+        $this->sessionClose();
         $data = json_decode((new Backend())->configdRun('interface ping list') ?? '', true);
         $records = (!empty($data) && !empty($data['jobs'])) ? $data['jobs'] : [];
         return $this->searchRecordsetBase($records);

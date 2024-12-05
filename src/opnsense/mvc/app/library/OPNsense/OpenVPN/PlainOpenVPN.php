@@ -90,11 +90,8 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
     protected function openvpnConfParts()
     {
         $conf = [];
-        if (!empty($this->config['dev_mode']) && $this->config['dev_mode'] == 'tap') {
-            $conf[] = "dev tap";
-        } else {
-            $conf[] = "dev tun";
-        }
+
+        $conf[] = "dev " . (!empty($this->config['dev_mode']) ? $this->config['dev_mode'] : 'tun');
 
         $conf[] = "persist-tun";
         $conf[] = "persist-key";

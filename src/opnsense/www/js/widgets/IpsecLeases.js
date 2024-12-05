@@ -1,3 +1,5 @@
+// endpoint:/api/ipsec/*
+
 /*
  * Copyright (C) 2024 Cedrik Pischem
  * All rights reserved.
@@ -24,10 +26,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+import BaseTableWidget from "./BaseTableWidget.js";
+
 export default class IpsecLeases extends BaseTableWidget {
     constructor() {
         super();
-        this.tickTimeout = 4;
+        this.resizeHandles = "e, w";
+        this.currentLeases = {};
+
+        // Since we only update when dataHasChanged we can almost update in real time
+        this.tickTimeout = 2000;
+
     }
 
     getGridOptions() {
@@ -48,25 +57,25 @@ export default class IpsecLeases extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        const ipsecStatusResponse = await this.ajaxCall('/api/ipsec/connections/isEnabled');
+        try {
+            const ipsecStatusResponse = await ajaxGet('/api/ipsec/Connections/isEnabled', {});
 
-        if (!ipsecStatusResponse.enabled) {
-            this.displayError(`${this.translations.unconfigured}`);
-            return;
+            if (!ipsecStatusResponse.enabled) {
+                this.displayError(`${this.translations.unconfigured}`);
+                return;
+            }
+
+            const data = await ajaxGet('/api/ipsec/leases/pools', {});
+
+            if (!data || !data.leases || data.leases.length === 0) {
+                this.displayError(`${this.translations.noleases}`);
+                return;
+            }
+
+            this.processLeases(data.leases);
+        } catch (error) {
+            this.displayError(`${this.translations.nodata}`);
         }
-
-        const data = await this.ajaxCall('/api/ipsec/leases/pools');
-
-        if (!data || !data.leases || data.leases.length === 0) {
-            this.displayError(`${this.translations.noleases}`);
-            return;
-        }
-
-        if (!this.dataChanged('ipsecleases', data.leases)) {
-            return; // No changes detected, do not update the UI
-        }
-
-        this.processLeases(data.leases);
     }
 
     // Utility function to display errors within the widget
@@ -75,9 +84,26 @@ export default class IpsecLeases extends BaseTableWidget {
         $('#ipsecLeaseTable').empty().append($error);
     }
 
+    // Checks if the lease data has changed to prevent unnecessary updates
+    dataHasChanged(newLeases) {
+
+        // Serialize the new and current leases to JSON strings for deep comparison
+        const newLeasesString = JSON.stringify(newLeases);
+        const currentLeasesString = JSON.stringify(this.currentLeases);
+
+        if (newLeasesString !== currentLeasesString) {
+            this.currentLeases = newLeases; // Update the current state with the new data
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     // Function to process leases data and update the UI accordingly
     processLeases(newLeases) {
-        $('.ipsecleases-status-icon').tooltip('hide');
+        if (!this.dataHasChanged(newLeases)) {
+            return; // No changes detected, do not update the UI
+        }
 
         let users = {}; // Initialize an object to store user data indexed by user names
 
@@ -109,7 +135,7 @@ export default class IpsecLeases extends BaseTableWidget {
         // Prepare a summary row for user counts
         let userCountsRow = `
             <div>
-                <span>${this.translations.users}: ${totalUsersCount} | ${this.translations.online}: ${onlineUsersCount} | ${this.translations.offline}: ${offlineUsersCount}</span>
+                <span><b>${this.translations.users}:</b> ${totalUsersCount} - <b>${this.translations.online}:</b> ${onlineUsersCount} - <b>${this.translations.offline}:</b> ${offlineUsersCount}</span>
             </div>`;
 
         let rows = [userCountsRow];
@@ -120,7 +146,7 @@ export default class IpsecLeases extends BaseTableWidget {
 
             let row = `
                 <div>
-                    <i class="fa fa-user ${userStatusClass} ipsecleases-status-icon" style="cursor: pointer;"
+                    <i class="fa fa-user ${userStatusClass}" style="cursor: pointer;"
                         data-toggle="tooltip" title="${userStatusTitle}">
                     </i>
                     &nbsp;
@@ -137,6 +163,6 @@ export default class IpsecLeases extends BaseTableWidget {
         super.updateTable('ipsecLeaseTable', rows.map(row => [row]));
 
         // Activate tooltips for new dynamic elements
-        $('.ipsecleases-status-icon').tooltip({container: 'body'});
+        $('[data-toggle="tooltip"]').tooltip();
     }
 }

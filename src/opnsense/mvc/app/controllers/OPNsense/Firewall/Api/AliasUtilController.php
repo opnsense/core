@@ -75,6 +75,7 @@ class AliasUtilController extends ApiControllerBase
      */
     public function aliasesAction()
     {
+        $this->sessionClose();
         $backend = new Backend();
         $result = json_decode($backend->configdRun("filter list tables json"));
         if ($result !== null) {
@@ -91,6 +92,8 @@ class AliasUtilController extends ApiControllerBase
      */
     public function listAction($alias)
     {
+        $this->sessionClose();
+
         $itemsPerPage = intval($this->request->getPost('rowCount', 'int', -1));
         $currentPage = intval($this->request->getPost('current', 'int', 1));
         $offset = $itemsPerPage > 0 ? ($currentPage - 1) * $itemsPerPage : 0;
@@ -147,6 +150,7 @@ class AliasUtilController extends ApiControllerBase
      */
     public function updateBogonsAction()
     {
+        $this->sessionClose();
         $backend = new Backend();
         $backend->configdRun('filter update bogons');
         return array('status' => 'done');
@@ -160,6 +164,7 @@ class AliasUtilController extends ApiControllerBase
     public function flushAction($alias)
     {
         if ($this->request->isPost()) {
+            $this->sessionClose();
             $backend = new Backend();
             $backend->configdpRun("filter delete table", array($alias, "ALL"));
             return array("status" => "done");
@@ -175,6 +180,7 @@ class AliasUtilController extends ApiControllerBase
      */
     public function deleteAction($alias)
     {
+        $this->sessionClose();
         if ($this->request->isPost() && $this->request->hasPost("address")) {
             Config::getInstance()->lock();
             $address = $this->request->getPost("address");
@@ -221,6 +227,7 @@ class AliasUtilController extends ApiControllerBase
      */
     public function addAction($alias)
     {
+        $this->sessionClose();
         if ($this->request->isPost() && $this->request->hasPost("address")) {
             Config::getInstance()->lock();
             $address = $this->request->getPost("address");
@@ -266,6 +273,7 @@ class AliasUtilController extends ApiControllerBase
      */
     public function findReferencesAction()
     {
+        $this->sessionClose();
         if ($this->request->isPost() && $this->request->hasPost('ip')) {
             $ip = $this->request->getPost('ip');
             if (preg_match("/[^0-9a-f\:\.\/_]/", $ip)) {

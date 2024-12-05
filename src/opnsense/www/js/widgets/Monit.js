@@ -1,3 +1,5 @@
+// endpoint:/api/monit/status/get/xml
+
 /*
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
@@ -24,9 +26,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+import BaseTableWidget from "./BaseTableWidget.js";
+
 export default class Monit extends BaseTableWidget {
     constructor() {
         super();
+
+        this.tickTimeout = 20000;
     }
 
     getMarkup() {
@@ -49,7 +55,13 @@ export default class Monit extends BaseTableWidget {
             "8": "fa-globe"
         };
 
-        this.serviceMap = [
+        this.statusColors = {
+            "1": "text-danger",
+            "2": "text-warning",
+            "3": "text-warning"
+        };
+
+       this.serviceMap = [
             this.translations.filesystem,
             this.translations.directory,
             this.translations.file,
@@ -60,55 +72,46 @@ export default class Monit extends BaseTableWidget {
             this.translations.custom,
             this.translations.network
         ];
+
+        this.statusMap = [
+            this.translations.ok,
+            this.translations.failed,
+            this.translations.changed,
+            this.translations.unchanged
+        ];
     }
 
     async onWidgetTick() {
-        const data = await this.ajaxCall(`/api/monit/status/get/${'xml'}`);
-        if (data['result'] !== 'ok') {
-            $('#monit-table').html(`<a href="/ui/monit">${this.translations.unconfigured}</a>`);
-            return;
-        }
+        await ajaxGet('/api/monit/status/get/xml', {}, (data, status) => {
+            if (data['result'] !== 'ok') {
+                $('#monit-table').html(`<a href="/ui/monit">${this.translations.unconfigured}</a>`);
+                return;
+            }
 
-        let newServices = data['status']['service'];
+            let rows = [];
+            $.each(data['status']['service'], (index, service) => {
+                let color = this.statusColors[service['status']] || "text-success";
+                let icon = this.serviceIcons[service['@attributes']['type']] || "fa-circle";
 
-        if (!this.dataChanged('monit-services', newServices)) {
-            return;
-        }
+                let $header = $(`
+                    <div>
+                        <i class="fa fa-circle text-muted ${color}" style="font-size: 11px; cursor: pointer;"
+                            data-toggle="tooltip" title="${this.statusMap[service['status']]}">
+                        </i>
+                        &nbsp;
+                        <i class="fa ${icon}" style="font-size: 11px;"
+                            data-toggle="tooltip" title="${this.serviceMap[service['@attributes']['type']]}">
+                        </i>
+                        &nbsp;
+                        <a href="/ui/monit/status">${service['name']}</a>
+                    </div>
+                `);
 
-        this.processServices(newServices);
-    }
+                rows.push([$header.prop('outerHTML'), '']);
 
-    processServices(newServices) {
-        $('.monit-status-icon').tooltip('hide');
-        $('.monit-type-icon').tooltip('hide');
+            });
 
-        let rows = [];
-        $.each(newServices, (index, service) => {
-            // We imply that status 0 is ok, and all others are failed. E.g. ping check status 16384 is failed.
-            let statusColor = service.status === "0" ? "text-success" : "text-danger";
-            let statusTooltip = service.status === "0" ? this.translations.ok : this.translations.failed;
-            let serviceIcon = this.serviceIcons[service['@attributes']['type']] || "fa-circle";
-
-            let $header = $(`
-                <div>
-                    <i class="fa fa-circle text-muted ${statusColor} monit-status-icon" style="font-size: 11px; cursor: pointer;"
-                        data-toggle="tooltip" title="${statusTooltip}">
-                    </i>
-                    &nbsp;
-                    <i class="fa ${serviceIcon} monit-type-icon" style="font-size: 11px;"
-                        data-toggle="tooltip" title="${this.serviceMap[service['@attributes']['type']]}">
-                    </i>
-                    &nbsp;
-                    <a href="/ui/monit/status">${service['name']}</a>
-                </div>
-            `);
-
-            rows.push([$header.prop('outerHTML'), '']);
+            this.updateTable('monit-table', rows);
         });
-
-        this.updateTable('monit-table', rows);
-
-        $('.monit-status-icon').tooltip({container: 'body'});
-        $('.monit-type-icon').tooltip({container: 'body'});
     }
 }

@@ -49,6 +49,8 @@ function validate_partial_mac_list($maclist)
 function reconfigure_dhcpd()
 {
     system_resolver_configure();
+    plugins_configure('dns');
+    clear_subsystem_dirty('hosts');
     dhcpd_dhcp4_configure();
     clear_subsystem_dirty('staticmaps');
 }
@@ -437,7 +439,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['dhcpd'][$if]['staticmap'][$_POST['id']]);
             write_config();
             if (isset($config['dhcpd'][$if]['enable'])) {
-                mark_subsystem_dirty('staticmaps');
+              mark_subsystem_dirty('staticmaps');
+              mark_subsystem_dirty('hosts');
             }
         }
         header(url_safe('Location: /services_dhcp.php?if=%s', array($if)));

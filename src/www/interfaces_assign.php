@@ -30,6 +30,7 @@
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
+require_once("rrd.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
@@ -263,7 +264,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   }
 
                   foreach ($a_devices as $device) {
-                      if ($device['configurable']) {
+                      if (!isset($device['configurable']) || $device['configurable'] == true) {
                           continue;
                       }
                       if (preg_match('/' . $device['pattern'] . '/', $ifdev)) {
@@ -297,10 +298,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   }
               }
           }
-          /* XXX huh? */
           write_config();
           if ($changes > 0) {
+              // reload filter, rrd when interfaces have changed (original from apply action)
               filter_configure();
+              rrd_configure();
           }
           header(url_safe('Location: /interfaces_assign.php'));
           exit;

@@ -25,10 +25,13 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-REQUEST="SYNC"
+LOCKFILE=/tmp/pkg_upgrade.progress
 
-. /usr/local/opnsense/scripts/firmware/config.sh
+: > ${LOCKFILE}
 
-/usr/local/opnsense/scripts/firmware/sync.subr.sh > /dev/null
+echo "***GOT REQUEST TO SYNC***" >> ${LOCKFILE}
+echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
-output_done
+. /usr/local/opnsense/scripts/firmware/sync.subr.sh > /dev/null
+
+echo '***DONE***' >> ${LOCKFILE}

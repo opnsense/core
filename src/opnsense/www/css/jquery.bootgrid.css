@@ -18,14 +18,12 @@
   vertical-align: middle;
   width: 180px;
 }
-.bootgrid-header .search .fa-solid,
-.bootgrid-footer .search .fa-solid {
+.bootgrid-header .search .glyphicon,
+.bootgrid-footer .search .glyphicon {
   top: 0;
 }
 .bootgrid-header .search .fa,
-.bootgrid-header .search .fa-solid,
-.bootgrid-footer .search .fa,
-.bootgrid-footer .search .fa-solid {
+.bootgrid-footer .search .fa {
   display: table-cell;
 }
 .bootgrid-header .search.search-field::-ms-clear,

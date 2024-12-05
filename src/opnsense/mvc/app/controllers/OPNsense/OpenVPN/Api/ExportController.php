@@ -36,7 +36,6 @@ use OPNsense\Trust\Store;
 use OPNsense\OpenVPN\OpenVPN;
 use OPNsense\OpenVPN\Export;
 use OPNsense\OpenVPN\ExportFactory;
-use OPNsense\Trust\Cert;
 
 /**
  * Class ExportController handles client export functions
@@ -126,6 +125,23 @@ class ExportController extends ApiControllerBase
     }
 
     /**
+     * find CA record
+     * @param string $caref
+     * @return mixed
+     */
+    private function getCA($caref)
+    {
+        if (isset(Config::getInstance()->object()->ca)) {
+            foreach (Config::getInstance()->object()->ca as $cert) {
+                if (isset($cert->refid) && (string)$caref == $cert->refid) {
+                    return $cert;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Determine configured settings for selected server
      * @param string $vpnid server handle
      * @return array
@@ -192,21 +208,24 @@ class ExportController extends ApiControllerBase
         ];
         $server = (new OpenVPN())->getInstanceById($vpnid);
         if ($server !== null) {
-            $usernames = [];
-            foreach (Config::getInstance()->object()->system->user as $user) {
-                $usernames[] = (string)$user->name;
+            // collect certificates for this server's ca
+            if (isset(Config::getInstance()->object()->cert)) {
+                foreach (Config::getInstance()->object()->cert as $cert) {
+                    if (isset($cert->refid) && isset($cert->caref) && $server['caref'] == $cert->caref) {
+                        $result[(string)$cert->refid] = array(
+                            "description" => (string)$cert->descr,
+                            "users" => array()
+                        );
+                    }
+                }
             }
-            foreach ((new Cert())->cert->iterateItems() as $cert) {
-                if ($cert->caref == $server['caref']) {
-                    $result[(string)$cert->refid] = [
-                        "description" => (string)$cert->descr,
-                        "users" => []
-                    ];
-                    if (
-                        in_array($cert->commonname, $usernames) &&
-                        in_array($cert->cert_type, ['usr_cert', 'combined_server_client'])
-                    ) {
-                        $result[(string)$cert->refid]['users'][] = (string)$cert->commonname;
+            // collect linked users
+            foreach (Config::getInstance()->object()->system->user as $user) {
+                if (isset($user->cert)) {
+                    foreach ($user->cert as $cert) {
+                        if (!empty($result[(string)$cert])) {
+                            $result[(string)$cert]['users'][] = (string)$user->name;
+                        }
                     }
                 }
             }

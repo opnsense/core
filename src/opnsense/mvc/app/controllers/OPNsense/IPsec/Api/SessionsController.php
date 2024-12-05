@@ -50,6 +50,7 @@ class SessionsController extends ApiControllerBase
      */
     public function searchPhase1Action()
     {
+        $this->sessionClose();
         $records = [];
         $config = Config::getInstance()->object();
         $data = $this->list_status();
@@ -78,25 +79,6 @@ class SessionsController extends ApiControllerBase
                     $record['phase1desc'] = $phase1s[$record['ikeid']];
                 }
                 $record['connected'] = !empty($record['sas']);
-                /* aggregate child-sas [phase2] information */
-                $agg_fields = [
-                    'bytes-in' => 0,
-                    'bytes-out' => 0,
-                    'packets-in' => 0,
-                    'packets-out' => 0
-                ];
-                $record['install-time'] = null;
-                foreach ($record['sas'] as $sa) {
-                    if (!empty($sa['child-sas'])) {
-                        foreach ($sa['child-sas'] as $csa) {
-                            foreach (array_keys($agg_fields) as $fieldname) {
-                                $agg_fields[$fieldname] += $csa[$fieldname];
-                            }
-                            $record['install-time'] = max($record['install-time'], $csa['install-time']);
-                        }
-                    }
-                }
-                $record = array_merge($record, $agg_fields);
                 unset($record['children']);
                 unset($record['sas']);
                 $records[] = $record;
@@ -111,6 +93,7 @@ class SessionsController extends ApiControllerBase
      */
     public function searchPhase2Action()
     {
+        $this->sessionClose();
         $records = [];
         $selected_conn = $this->request->getPost('id', 'string', '');
         $config = Config::getInstance()->object();
@@ -166,6 +149,7 @@ class SessionsController extends ApiControllerBase
     public function connectAction($id)
     {
         if ($this->request->isPost()) {
+            $this->sessionClose();
             (new Backend())-> configdpRun('ipsec connect', [$id]);
             return ["result" => "ok"];
         }
@@ -180,6 +164,7 @@ class SessionsController extends ApiControllerBase
     public function disconnectAction($id)
     {
         if ($this->request->isPost()) {
+            $this->sessionClose();
             (new Backend())-> configdpRun('ipsec disconnect', [$id]);
             return ["result" => "ok"];
         }
