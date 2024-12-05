@@ -97,15 +97,6 @@ class NetworkAliasField extends BaseListField
     /**
      * {@inheritdoc}
      */
-    public function setMultiple($value)
-    {
-        // XXX: only single items are supported
-        throw new \Exception("Unsupported feature setMultiple()");
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getDescription()
     {
         if (isset($this->internalOptionList[(string)$this])) {

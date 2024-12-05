@@ -28,18 +28,104 @@
 
 namespace OPNsense\Firewall;
 
+use OPNsense\Firewall\Alias;
+
+
 /**
  * Class Rule basic rule parsing logic
  * @package OPNsense\Firewall
  */
 abstract class Rule
 {
-    protected $rule = array();
-    protected $interfaceMapping = array();
-    protected $ruleDebugInfo = array();
+    protected $rule = [];
+    protected $interfaceMapping = [];
+    protected $ruleDebugInfo = [];
+    protected static $aliasMap = [];
 
     /* ease the reuse of parsing for pf keywords by using class constants */
     const PARSE_PROTO = 'parseReplaceSimple,tcp/udp:{tcp udp}|a/n:"a/n",proto ';
+
+    protected function loadAliasMap()
+    {
+        if (empty(static::$aliasMap)) {
+            static::$aliasMap['any'] = 'any';
+            static::$aliasMap['(self)'] = '(self)';
+            foreach ($this->interfaceMapping as $ifname => $payload) {
+                if (!empty($payload['if'])) {
+                    static::$aliasMap[$ifname] = sprintf("(%s:network)", $payload['if']);
+                    if (preg_match("/^(wan|lan|opt[0-9]+)$/", $ifname, $matches)) {
+                        static::$aliasMap[$ifname . 'ip'] = sprintf("(%s)", $payload['if']);
+                    }
+                }
+            }
+            foreach ((new Alias())->aliases->alias->iterateItems() as $alias) {
+                if (preg_match("/port/i", (string)$alias->type)) {
+                    continue;
+                }
+                static::$aliasMap[(string)$alias->name] = sprintf('$%s', $alias->name);
+            }
+        }
+    }
+
+    /**
+     *  maps address definitions into tags our pf(4) ruleset understands
+     */
+    protected function mapAddressInfo(&$rule)
+    {
+        foreach (['from', 'to'] as $tag) {
+            /* always strip placeholders (e.g. <alias>) so we validate them as we would for an ordinary alias */
+            $content = !empty($rule[$tag]) ? trim($rule[$tag], '<>') : '';
+            if (empty($rule[$tag]) && $rule[$tag] != '0') {
+                /* any source/destination (omit value) */
+                null;
+            } elseif (str_starts_with($rule[$tag], '<') && str_ends_with($rule[$tag], '>')) {
+                /* literal alias by automated rules, unvalidated, might want to change the callers some day */
+                null;
+            } elseif (str_starts_with($rule[$tag], '(') && str_ends_with($rule[$tag], ')')) {
+                /* literal interface by automated rules, unvalidated, might want to change the callers some day */
+                null;
+            } elseif (isset(static::$aliasMap[$rule[$tag]])) {
+                $is_interface = isset($this->interfaceMapping[$rule[$tag]]);
+                $rule[$tag] = static::$aliasMap[$rule[$tag]];
+                /* historically pf(4) excludes link-local on :network to avoid anti-spoof overlap */
+                if ($rule['ipprotocol'] == 'inet6' && $is_interface && $this instanceof FilterRule) {
+                    $rule[$tag] .= ',fe80::/10';
+                }
+            } elseif (!Util::isIpAddress($rule[$tag]) && !Util::isSubnet($rule[$tag])) {
+                $rule['disabled'] = true;
+                $rule[$tag] = json_encode($rule[$tag]);
+                $this->log("Unable to convert address, see {$tag} for details");
+            }
+            if (!empty($rule[$tag . '_not']) && !empty($rule[$tag]) && $rule[$tag] != 'any') {
+                $rule[$tag] = '!' . $rule[$tag];
+            }
+
+            /* port handling */
+            $pfield = sprintf('%s_port', $tag);
+            if (isset($rule[$pfield])) {
+                $port = str_replace('-', ':', $rule[$pfield]);
+                if (strpos($port, ':any') !== false xor strpos($port, 'any:') !== false) {
+                    // convert 'any' to upper or lower bound when provided in range. e.g. 80:any --> 80:65535
+                    $port = str_replace('any', strpos($port, ':any') !== false ? '65535' : '1', $port);
+                }
+                if ($port == 'any') {
+                    $rule[$pfield] = null;
+                } elseif (Util::isPort($port)) {
+                    $rule[$pfield] = $port;
+                } elseif (Util::isAlias($port)) {
+                    $rule[$pfield] = '$' . $port;
+                    if (!Util::isAlias($port, true)) {
+                        // unable to map port
+                        $rule['disabled'] = true;
+                        $this->log("Unable to map port {$port}, empty?");
+                    }
+                } elseif (!empty($port)) {
+                    $rule['disabled'] = true;
+                    $this->log("Unable to map port {$port}, config error?");
+                }
+            }
+        }
+    }
 
     /**
      * init Rule
@@ -50,6 +136,7 @@ abstract class Rule
     {
         $this->interfaceMapping = $interfaceMapping;
         $this->rule = $conf;
+        $this->loadAliasMap();
     }
 
     /**
@@ -173,34 +260,49 @@ abstract class Rule
      */
     protected function reader($type = null)
     {
-        $interfaces = empty($this->rule['interface']) ? array(null) : explode(',', $this->rule['interface']);
-        foreach ($interfaces as $interface) {
-            if (isset($this->rule['ipprotocol']) && $this->rule['ipprotocol'] == 'inet46') {
-                $ipprotos = array('inet', 'inet6');
-            } elseif (isset($this->rule['ipprotocol'])) {
-                $ipprotos = array($this->rule['ipprotocol']);
-            } elseif (!empty($type) && $type = 'npt') {
-                $ipprotos = array('inet6');
-            } else {
-                $ipprotos = array(null);
-            }
-
-            foreach ($ipprotos as $ipproto) {
-                $rule = $this->rule;
-                if ($ipproto == 'inet6' && !empty($this->interfaceMapping[$interface]['IPv6_override'])) {
-                    $rule['interface'] = $this->interfaceMapping[$interface]['IPv6_override'];
-                } else {
-                    $rule['interface'] = $interface;
+        $rule = array_replace([], $this->rule); /* deep copy before use */
+        $this->legacyMoveAddressFields($rule);
+        $interfaces = empty($rule['interface']) ? [null] : explode(',', $rule['interface']);
+        $froms = empty($rule['from']) ? [null] : explode(',', $rule['from']);
+        $tos = empty($rule['to']) ? [null] : explode(',', $rule['to']);
+        if (isset($rule['ipprotocol']) && $rule['ipprotocol'] == 'inet46') {
+            $ipprotos = ['inet', 'inet6'];
+        } elseif (isset($rule['ipprotocol'])) {
+            $ipprotos = [$rule['ipprotocol']];
+        } elseif (!empty($type) && $type = 'npt') {
+            $ipprotos = ['inet6'];
+        } else {
+            $ipprotos = [null];
+        }
+        /* generate cartesian product of fields that may contain multiple options */
+        $meta_rules = [];
+        foreach ($froms as $from) {
+            foreach ($tos as $to) {
+                foreach ($interfaces as $interface) {
+                    foreach ($ipprotos as $ipproto) {
+                        $meta_rules[] = [
+                            'ipprotocol' => $ipproto,
+                            'interface' => $interface,
+                            'from' => $from,
+                            'to' => $to
+                        ];
+                    }
                 }
-                $rule['ipprotocol'] = $ipproto;
-                $this->convertAddress($rule);
-                // disable rule when interface not found
-                if (!empty($interface) && empty($this->interfaceMapping[$interface]['if'])) {
-                    $this->log("Interface {$interface} not found");
-                    $rule['disabled'] = true;
-                }
-                yield $rule;
             }
+        }
+        foreach ($meta_rules as $meta_rule) {
+            $rulecpy = array_merge($rule, $meta_rule);
+            $this->mapAddressInfo($rulecpy);
+            $interface = $rulecpy['interface'];
+            if ($rulecpy['ipprotocol'] == 'inet6' && !empty($this->interfaceMapping[$interface]['IPv6_override'])) {
+                $rulecpy['interface'] = $this->interfaceMapping[$interface]['IPv6_override'];
+            }
+            // disable rule when interface not found
+            if (!empty($interface) && empty($this->interfaceMapping[$interface]['if'])) {
+                $this->log("Interface {$interface} not found");
+                $rulecpy['disabled'] = true;
+            }
+            yield $rulecpy;
         }
     }
 
@@ -236,12 +338,12 @@ abstract class Rule
     }
 
     /**
-     * convert source/destination address entries as used by the gui
+     * convert source/destination structures as used by the gui into simple flat structures.
      * @param array $rule rule
      */
-    protected function convertAddress(&$rule)
+    protected function legacyMoveAddressFields(&$rule)
     {
-        $fields = array();
+        $fields = [];
         $fields['source'] = 'from';
         $fields['destination'] = 'to';
         $interfaces = $this->interfaceMapping;
@@ -250,61 +352,18 @@ abstract class Rule
                 if (isset($rule[$tag]['any'])) {
                     $rule[$target] = 'any';
                 } elseif (!empty($rule[$tag]['network'])) {
-                    $network_name = $rule[$tag]['network'];
-                    $matches = '';
-                    if ($network_name == '(self)') {
-                        $rule[$target] = $network_name;
-                    } elseif (preg_match("/^(wan|lan|opt[0-9]+)ip$/", $network_name, $matches)) {
-                        if (!empty($interfaces[$matches[1]]['if'])) {
-                            $rule[$target] = "({$interfaces[$matches[1]]['if']})";
-                        }
-                    } elseif (!empty($interfaces[$network_name]['if'])) {
-                        $rule[$target] = "({$interfaces[$network_name]['if']}:network)";
-                        if ($rule['ipprotocol'] == 'inet6' && $this instanceof FilterRule && $rule['interface'] == $network_name) {
-                            /* historically pf(4) excludes link-local on :network to avoid anti-spoof overlap */
-                            $rule[$target] .= ',fe80::/10';
-                        }
-                    } elseif (Util::isIpAddress($rule[$tag]['network']) || Util::isSubnet($rule[$tag]['network'])) {
-                        $rule[$target] = $rule[$tag]['network'];
-                    } elseif (Util::isAlias($rule[$tag]['network'])) {
-                        $rule[$target] = '$' . $rule[$tag]['network'];
-                    } elseif ($rule[$tag]['network'] == 'any') {
-                        $rule[$target] = $rule[$tag]['network'];
-                    }
-                } elseif (!empty($rule[$tag]['address'])) {
-                    if (
-                        Util::isIpAddress($rule[$tag]['address']) || Util::isSubnet($rule[$tag]['address']) ||
-                        Util::isPort($rule[$tag]['address'])
-                    ) {
-                        $rule[$target] = $rule[$tag]['address'];
-                    } elseif (Util::isAlias($rule[$tag]['address'])) {
-                        $rule[$target] = '$' . $rule[$tag]['address'];
-                    }
+                    $rule[$target] = $rule[$tag]['network'];
+                }  elseif (!empty($rule[$tag]['address'])) {
+                    $rule[$target] = $rule[$tag]['address'];
                 }
-                if (!empty($rule[$target]) && $rule[$target] != 'any' && isset($rule[$tag]['not'])) {
-                    $rule[$target] = "!" . $rule[$target];
-                }
-                if (isset($rule['protocol']) && in_array(strtolower($rule['protocol']), array("tcp","udp","tcp/udp"))) {
-                    $port = !empty($rule[$tag]['port']) ? str_replace('-', ':', $rule[$tag]['port']) : null;
-                    if ($port == null || $port == 'any') {
-                        $port = null;
-                    } elseif (strpos($port, ':any') !== false xor strpos($port, 'any:') !== false) {
-                        // convert 'any' to upper or lower bound when provided in range. e.g. 80:any --> 80:65535
-                        $port = str_replace('any', strpos($port, ':any') !== false ? '65535' : '1', $port);
-                    }
-                    if (Util::isPort($port)) {
-                        $rule[$target . "_port"] = $port;
-                    } elseif (Util::isAlias($port)) {
-                        $rule[$target . "_port"] = '$' . $port;
-                        if (!Util::isAlias($port, true)) {
-                            // unable to map port
-                            $rule['disabled'] = true;
-                            $this->log("Unable to map port {$port}, empty?");
-                        }
-                    } elseif (!empty($port)) {
-                        $rule['disabled'] = true;
-                        $this->log("Unable to map port {$port}, config error?");
-                    }
+                $rule[$target . '_not'] = isset($rule[$tag]['not']); /* to be used in mapAddressInfo() */
+
+                if (
+                    isset($rule['protocol']) &&
+                    in_array(strtolower($rule['protocol']), ["tcp", "udp", "tcp/udp"]) &&
+                    !empty($rule[$tag]['port'])
+                ) {
+                    $rule[$target . "_port"] = $rule[$tag]['port'];
                 }
                 if (!isset($rule[$target])) {
                     // couldn't convert address, disable rule

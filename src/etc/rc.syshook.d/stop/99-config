@@ -1,7 +1,7 @@
 #!/usr/local/bin/php
 <?php
 
-$fp = fopen('/conf/config.xml', 'a+');
+$fp = fopen('/conf/config.xml', 'a+e');
 if (flock($fp, LOCK_EX)) {
     flock($fp, LOCK_UN);
     fclose($fp);

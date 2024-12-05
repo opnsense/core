@@ -28,6 +28,12 @@
         <help>Automatically add a basic set of firewall rules to allow dhcp traffic, more fine grained controls can be offered manually when disabling this option.</help>
     </field>
     <field>
+        <id>dhcpv4.general.dhcp_socket_type</id>
+        <label>Socket Type</label>
+        <type>dropdown</type>
+        <help>Socket type used for DHCP communication</help>
+    </field>
+    <field>
         <type>header</type>
         <label>High Availability</label>
     </field>
@@ -43,6 +49,16 @@
         <type>text</type>
         <help>The name of this server, should match with one of the entries in the HA peers.
         Leave empty to use this machines hostname
+        </help>
+    </field>
+    <field>
+        <id>dhcpv4.ha.max_unacked_clients</id>
+        <label>Max Unacked clients</label>
+        <type>text</type>
+        <help>
+        This specifies the number of clients which send messages to the partner but appear to not receive any response.
+        A higher value needs a busier environment in order to consider a member down, when set to 0,
+        any network disruption will cause a failover to happen.
         </help>
     </field>
 </form>

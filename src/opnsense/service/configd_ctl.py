@@ -78,7 +78,6 @@ def exec_config_cmd(exec_command):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-m", help="execute multiple arguments at once", action="store_true")
 parser.add_argument("-e", help="use as event handler, execute command on receiving input", action="store_true")
 parser.add_argument("-d", help="detach the execution of the command and return immediately", action="store_true")
 parser.add_argument("-q", help="run quietly by muting standard output", action="store_true")
@@ -88,7 +87,7 @@ parser.add_argument(
     help="threshold between events,  wait this interval before executing commands, combine input into single events",
     type=float
 )
-parser.add_argument("command", help="command(s) to execute", nargs="+")
+parser.add_argument("command", help="command(s) to execute", nargs="*")
 args = parser.parse_args()
 
 syslog.openlog(os.path.basename(sys.argv[0]))
@@ -108,12 +107,10 @@ if not os.path.exists(configd_socket_name):
     print('configd socket missing (@%s)'%configd_socket_name, file=sys.stderr)
     sys.exit(-1)
 
-# command(s) to execute
-if args.m:
-    # execute multiple commands at once ( -m "action1 param .." "action2 param .." )
-    exec_commands=args.command
+# command to execute
+if not args.command:
+    exec_commands=['configd actions']
 else:
-    # execute single command sequence
     exec_commands=[' '.join(args.command)]
 
 if args.e:

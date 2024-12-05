@@ -16,8 +16,13 @@
     <Interfaces>
         <Diagnostics>
             <ARPTable VisibleName="ARP Table" url="/ui/diagnostics/interface/arp"/>
+            <DNSLookup VisibleName="DNS Lookup" url="/ui/diagnostics/dns_diagnostics"/>
             <NDPTable VisibleName="NDP Table" url="/ui/diagnostics/interface/ndp"/>
             <Netstat VisibleName="Netstat" url="/ui/diagnostics/interface/netstat"/>
+            <PacketCapture VisibleName="Packet Capture" url="/ui/diagnostics/packet_capture"/>
+            <Ping url="/ui/diagnostics/ping"/>
+            <TestPort VisibleName="Port Probe" url="/ui/diagnostics/portprobe"/>
+            <Traceroute VisibleName="Trace Route" url="/ui/diagnostics/traceroute"/>
         </Diagnostics>
     </Interfaces>
 </menu>

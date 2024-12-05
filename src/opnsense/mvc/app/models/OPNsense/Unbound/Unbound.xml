@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>1.0.9</version>
+    <version>1.0.11</version>
     <items>
         <general>
             <enabled type="BooleanField">
@@ -120,6 +120,7 @@
             <numqueriesperthread type="NumericField"/>
             <outgoingrange type="NumericField"/>
             <jostletimeout type="NumericField"/>
+            <discardtimeout type="NumericField"/>
             <cachemaxttl type="NumericField"/>
             <cachemaxnegativettl type="NumericField"/>
             <cacheminttl type="NumericField"/>
@@ -259,6 +260,11 @@
                 </server>
                 <port type="PortField"/>
                 <verify type="HostnameField"/>
+                <forward_tcp_upstream type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </forward_tcp_upstream>
+                <description type="DescriptionField"/>
             </dot>
         </dots>
         <hosts>
@@ -269,6 +275,8 @@
                 </enabled>
                 <hostname type="HostnameField">
                     <HostWildcardAllowed>Y</HostWildcardAllowed>
+                    <IsDNSName>Y</IsDNSName>
+                    <IpAllowed>N</IpAllowed>
                 </hostname>
                 <domain type="TextField">
                     <Required>Y</Required>
@@ -364,6 +372,8 @@
                         </check001>
                     </Constraints>
                     <HostWildcardAllowed>Y</HostWildcardAllowed>
+                    <IsDNSName>Y</IsDNSName>
+                    <IpAllowed>N</IpAllowed>
                 </hostname>
                 <domain type="TextField">
                     <Constraints>
@@ -380,26 +390,5 @@
                 <description type="DescriptionField"/>
             </alias>
         </aliases>
-        <domains>
-            <domain type="ArrayField">
-                <enabled type="BooleanField">
-                    <Default>1</Default>
-                    <Required>Y</Required>
-                </enabled>
-                <domain type=".\UnboundDomainField">
-                    <Required>Y</Required>
-                    <ValidationMessage>A valid domain must be specified.</ValidationMessage>
-                </domain>
-                <server type=".\UnboundServerField">
-                    <Required>Y</Required>
-                    <ValidationMessage>A valid IP must be specified.</ValidationMessage>
-                </server>
-                <forward_tcp_upstream type="BooleanField">
-                    <Default>0</Default>
-                    <Required>Y</Required>
-                </forward_tcp_upstream>
-                <description type="DescriptionField"/>
-            </domain>
-        </domains>
     </items>
 </model>

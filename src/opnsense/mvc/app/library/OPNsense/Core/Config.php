@@ -557,7 +557,6 @@ class Config extends Singleton
             !empty($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : $_SERVER['SCRIPT_NAME'],
             $revision['description'] ?? ''
         ));
-        closelog();
     }
 
     /**
@@ -627,7 +626,7 @@ class Config extends Singleton
      */
     private function overwrite($filename)
     {
-        $fhandle = fopen($this->config_file, "r+");
+        $fhandle = fopen($this->config_file, "a+e");
         if (flock($fhandle, LOCK_EX)) {
             fseek($fhandle, 0);
             chmod($this->config_file, 0640);

@@ -1,1 +1,2 @@
-openssl.cnf:/usr/local/openssl/openssl.cnf
+local.openssl.cnf:/usr/local/openssl/openssl.cnf
+etc.openssl.cnf:/etc/ssl/openssl.cnf

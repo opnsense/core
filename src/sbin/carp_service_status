@@ -36,7 +36,7 @@ define("SRV_FAIL_FACTOR", pow(2, 20));
 
 // init carp service status
 openlog("carp", LOG_ODELAY, LOG_DAEMON);
-$fp = fopen('/var/run/carp_service_status.lock', 'a+');
+$fp = fopen('/var/run/carp_service_status.lock', 'a+e');
 if (flock($fp, LOCK_EX)) {
     $current_demotion = get_single_sysctl("net.inet.carp.demotion");
     $failed_services = array();

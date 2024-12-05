@@ -75,8 +75,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } else if ($act == 'reset') {
         // reset tunables to factory defaults (when available)
-        if (file_exists('/usr/local/etc/config.xml.sample')) {
-            $factory_config = load_config_from_file('/usr/local/etc/config.xml.sample');
+        if (file_exists('/usr/local/etc/config.xml')) {
+            $factory_config = load_config_from_file('/usr/local/etc/config.xml');
             if (!empty($factory_config['sysctl']) && !empty($factory_config['sysctl']['item'])){
                 $a_tunable = $factory_config['sysctl']['item'];
                 mark_subsystem_dirty('sysctl');
@@ -142,11 +142,14 @@ foreach ($a_tunable as $key => &$tunable) {
 
 foreach ($a_system as $default) {
     /* display system defaults as well */
-    $next = [ 'tunable' => $default, 'value' => 'default', 'descr' => $a_sysctl[$default]['description'] ];
+    $next = [ 'tunable' => $default, 'value' => 'default', 'descr' => $a_sysctl[$default]['description'] ?? '' ];
     if (!empty($a_defaults[$default]['type'])) {
         $next['type'] = $a_defaults[$default]['type'];
     } elseif (!empty($a_sysctl[$default]['type'])) {
         $next['type'] = $a_sysctl[$default]['type'];
+    }
+    if (!empty($a_defaults[$default]['description'])) {
+        $next['descr'] = $a_defaults[$default]['description'];
     }
     $a_tunable[] = $next;
 }

@@ -25,31 +25,19 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-LOCKFILE="/tmp/pkg_upgrade.progress"
-PIPEFILE="/tmp/pkg_upgrade.pipe"
-TEE="/usr/bin/tee -a"
+REQUEST="UPGRADE"
 
-: > ${LOCKFILE}
-rm -f ${PIPEFILE}
-mkfifo ${PIPEFILE}
+. /usr/local/opnsense/scripts/firmware/config.sh
 
-echo "***GOT REQUEST TO UPGRADE***" >> ${LOCKFILE}
-echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
-
-${TEE} ${LOCKFILE} < ${PIPEFILE} &
-if opnsense-update -u > ${PIPEFILE} 2>&1; then
-	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	if /usr/local/etc/rc.syshook upgrade > ${PIPEFILE} 2>&1; then
-		${TEE} ${LOCKFILE} < ${PIPEFILE} &
-		if opnsense-update -K > ${PIPEFILE} 2>&1; then
-			echo '***REBOOT***' >> ${LOCKFILE}
-			sleep 5
-			/usr/local/etc/rc.reboot
+if output_cmd opnsense-update -u; then
+	if output_cmd /usr/local/etc/rc.syshook upgrade; then
+		if output_cmd opnsense-update -K; then
+			output_reboot
 		fi
 	fi
 
 	# abort pending upgrades
-	opnsense-update -e >> ${LOCKFILE} 2>&1
+	output_cmd opnsense-update -es
 fi
 
-echo '***DONE***' >> ${LOCKFILE}
+output_done

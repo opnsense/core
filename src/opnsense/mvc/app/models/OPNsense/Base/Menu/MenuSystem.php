@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2050-2020 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2020 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2015 Deciso B.V.
  * All rights reserved.
  *
@@ -233,7 +233,7 @@ class MenuSystem
                     $iftargets['wl'][$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
                 }
                 // "Firewall: Rules" menu tab...
-                if (isset($node->enable)) {
+                if (isset($node->enable) && $node->if != 'lo0') {
                     $iftargets['fw'][$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
                 }
                 // "Services: DHCPv[46]" menu tab:

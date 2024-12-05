@@ -24,31 +24,14 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-BASEDIR="/usr/local/opnsense/scripts/firmware"
-LOCKFILE="/tmp/pkg_upgrade.progress"
-FLOCK="/usr/local/bin/flock -n -o"
-COMMANDS="
-changelog
-check
-connection
-health
-install
-lock
-reinstall
-remove
-resync
-security
-sync
-unlock
-update
-upgrade
-"
+. /usr/local/opnsense/scripts/firmware/config.sh
 
 DO_RANDOM=
 DO_SCRIPT=
 DO_UNLOCKED=
+DO_VERBOSE=
 
-while getopts r:s:u OPT; do
+while getopts r:s:uV OPT; do
 	case ${OPT} in
 	r)
 		DO_RANDOM="-r $(jot -r 1 1 ${OPTARG})"
@@ -59,6 +42,9 @@ while getopts r:s:u OPT; do
 	u)
 		DO_UNLOCKED="-u"
 		;;
+	V)
+		DO_VERBOSE="-V"
+		;;
 	*)
 		# ignore unknown
 		;;
@@ -66,6 +52,10 @@ while getopts r:s:u OPT; do
 done
 
 shift $((OPTIND - 1))
+
+if [ -n "${DO_VERBOSE}" ]; then
+	set -x
+fi
 
 if [ -n "${DO_SCRIPT}" ]; then
 	COMMAND=${DO_SCRIPT#"-s "}
@@ -97,15 +87,8 @@ if [ -n "${DO_RANDOM}" ]; then
 	sleep ${DO_RANDOM#"-r "}
 fi
 
-# business mirror compliance requires disabling the use of TLS below 1.3
-if [ -n "$(opnsense-update -x)" ]; then
-	export SSL_NO_TLS1="yes"
-	export SSL_NO_TLS1_1="yes"
-	export SSL_NO_TLS1_2="yes"
-fi
-
 if [ -z "${DO_UNLOCKED}" ]; then
-	${FLOCK} ${LOCKFILE} ${COMMAND} "${@}"
+	${FLOCK} -n -o ${LOCKFILE} ${COMMAND} "${@}"
 else
 	env LOCKFILE=/dev/null ${COMMAND} "${@}"
 fi

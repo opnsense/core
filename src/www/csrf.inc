@@ -43,6 +43,7 @@ class LegacyCSRF
                 ($config['system']['webgui']['protocol'] == "https"),
                 true
             );
+            session_set_cookie_params(["SameSite" => "Lax"]);
             session_start();
             $secure = $config['system']['webgui']['protocol'] == 'https';
             setcookie(session_name(), session_id(), 0, '/', '', $secure, true);

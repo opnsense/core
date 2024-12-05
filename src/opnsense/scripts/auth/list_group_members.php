@@ -47,10 +47,11 @@ if (isset($cnf->system->group)) {
         }
         $result[$gid] = ['name' => $group_name, 'members' => []];
         if (isset($group->member)) {
-            foreach ($group->member as $member) {
-                $member_uid = (string)$member;
-                if (isset($uid_map[$member_uid])) {
-                    $result[$gid]['members'][] = $uid_map[$member_uid];
+            foreach ($group->member as $item) {
+                foreach (explode(',', (string)$item) as $member_uid) {
+                    if (isset($uid_map[$member_uid])) {
+                        $result[$gid]['members'][] = $uid_map[$member_uid];
+                    }
                 }
             }
         }

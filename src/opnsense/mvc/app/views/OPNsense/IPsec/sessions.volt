@@ -133,6 +133,9 @@
               <th data-column-id="local-addrs" data-type="string">{{ lang._('Local IP') }}</th>
               <th data-column-id="remote-id" data-type="string">{{ lang._('Remote ID') }}</th>
               <th data-column-id="remote-addrs" data-type="string">{{ lang._('Remote IP') }}</th>
+              <th data-column-id="install-time" data-type="string">{{ lang._('Time') }}</th>
+              <th data-column-id="bytes-in" data-type="numeric" data-formatter="bytes">{{ lang._('Bytes in') }}</th>
+              <th data-column-id="bytes-out" data-type="numeric"  data-formatter="bytes">{{ lang._('Bytes out') }}</th>
               <th data-column-id="local-class"  data-visible="false" data-type="string">{{ lang._('Local Auth') }}</th>
               <th data-column-id="remote-class"  data-visible="false" data-type="string">{{ lang._('Remote Auth') }}</th>
               <th data-column-id="commands" data-width="4em" data-formatter="commands" data-sortable="false"></th>

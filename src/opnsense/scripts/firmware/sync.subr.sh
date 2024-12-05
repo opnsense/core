@@ -24,32 +24,32 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-LOCKFILE="/tmp/pkg_upgrade.progress"
+. /usr/local/opnsense/scripts/firmware/config.sh
+
 MUSTCHECK="yes"
-TEE="/usr/bin/tee -a"
 
 for PACKAGE in $(/usr/local/sbin/pluginctl -g system.firmware.plugins | \
     /usr/bin/sed 's/,/ /g'); do
-	if ! pkg query %n ${PACKAGE} > /dev/null; then
+	if ! ${PKG} query %n ${PACKAGE} > /dev/null; then
 		if [ -n "${MUSTCHECK}" ] ; then
 			COREPKG=$(opnsense-version -n)
 			COREVER=$(opnsense-version -v)
-			REPOVER=$(pkg rquery %v ${COREPKG})
+			REPOVER=$(${PKG} rquery %v ${COREPKG})
 
 			# plugins must pass a version check on up-to-date core package
-			if [ "$(pkg version -t ${COREVER} ${REPOVER})" = "<" ]; then
-				echo "Installation out of date. The update to ${COREPKG}-${REPOVER} is required." | ${TEE} ${LOCKFILE}
+			if [ "$(${PKG} version -t ${COREVER} ${REPOVER})" = "<" ]; then
+				output_txt "Installation out of date. The update to ${COREPKG}-${REPOVER} is required."
 				break
 			fi
 
 			MUSTCHECK=
 		fi
 
-		(pkg install -y ${PACKAGE} 2>&1) | ${TEE} ${LOCKFILE}
-		(/usr/local/opnsense/scripts/firmware/register.php install ${PACKAGE} 2>&1) | ${TEE} ${LOCKFILE}
+		output_cmd ${PKG} install -y "${PACKAGE}"
+		output_cmd ${BASEDIR}/register.php install "${PACKAGE}"
 	fi
 done
 
 if [ -z "${MUSTCHECK}" ]; then
-	(pkg autoremove -y 2>&1) | ${TEE} ${LOCKFILE}
+	output_cmd ${PKG} autoremove -y
 fi

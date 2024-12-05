@@ -1784,7 +1784,10 @@ if (typeof jQuery === 'undefined') {
   Tooltip.prototype.fixTitle = function () {
     var $e = this.$element
     if ($e.attr('title') || typeof $e.attr('data-original-title') != 'string') {
-      $e.attr('data-original-title', $e.attr('title') || '').attr('title', '')
+      if (!$e.attr('aria-label') && !$e.text().trim()) {
+        $e.attr('aria-label', $e.attr('title'));
+      }
+      $e.attr('data-original-title', $e.attr('title') || '').attr('title', '');
     }
   }
 

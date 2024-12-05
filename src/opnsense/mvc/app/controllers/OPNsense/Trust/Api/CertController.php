@@ -30,6 +30,7 @@ namespace OPNsense\Trust\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\UserException;
+use OPNsense\Core\ACL;
 use OPNsense\Core\Config;
 use OPNsense\Trust\Store as CertStore;
 
@@ -94,6 +95,7 @@ class CertController extends ApiMutableModelControllerBase
                 );
                 if (!empty($data['csr'])) {
                     $node->csr = base64_encode($data['csr']);
+                    $node->prv = base64_encode($data['prv']);
                 } else {
                     $error = $data['error'] ?? '';
                 }
@@ -110,13 +112,21 @@ class CertController extends ApiMutableModelControllerBase
                         $error = gettext('Invalid private key provided');
                     }
                 }
+                $this->getModel()->linkCaRefs($node->refid);
                 break;
             case 'import_csr':
-                if (CertStore::parseX509((string)$node->crt_payload) === false) {
-                    $error = gettext('Invalid X509 certificate provided');
-                } else {
+                /* certificate should be signed by something we trust */
+                $tmp = CertStore::verify((string)$node->crt_payload);
+                if ($tmp['exit_status'] === 0) {
                     $node->crt = base64_encode((string)$node->crt_payload);
-                    $node->csr = null;
+                } else {
+                    /* try to grab some useful feedback from stderr to append to the message */
+                    $msg = '';
+                    $parts = explode("\n", $tmp['stderr']);
+                    if (count($parts) > 2) {
+                        $msg = $parts[1];
+                    }
+                    $error = sprintf(gettext('Invalid X509 certificate provided : %s'), $msg);
                 }
                 break;
             case 'sign_csr':
@@ -167,12 +177,18 @@ class CertController extends ApiMutableModelControllerBase
     public function searchAction()
     {
         $carefs = $this->request->get('carefs');
-        $filter_funct = function ($record) use ($carefs) {
-            return empty($carefs) || array_intersect(explode(',', $record->caref), $carefs);
+        $user = $this->request->get('user');
+        $filter_funct = function ($record) use ($carefs, $user) {
+            $match_ca = empty($carefs) || array_intersect(explode(',', $record->caref), $carefs);
+            $match_user = empty($user) || (in_array($record->commonname, $user));
+            return $match_ca && $match_user;
         };
         return $this->searchBase(
             'cert',
-            ['refid', 'descr', 'caref', 'rfc3280_purpose', 'name', 'valid_from', 'valid_to' , 'in_use'],
+            [
+                'uuid', 'refid', 'descr', 'caref', 'rfc3280_purpose', 'name',
+                'valid_from', 'valid_to' , 'in_use', 'is_user', 'commonname'
+            ],
             null,
             $filter_funct
         );
@@ -200,14 +216,14 @@ class CertController extends ApiMutableModelControllerBase
             Config::getInstance()->lock();
             $node = $this->getModel()->getNodeByReference('cert.' . $uuid);
             if ($node !== null) {
-                $this->checkAndThrowValueInUse((string)$node->refid, false, false, ['cert']);
+                $this->checkAndThrowValueInUse((string)$node->refid, false, false, ['cert', 'system.user']);
             }
             return $this->delBase('cert', $uuid);
         }
         return ['status' => 'failed'];
     }
 
-    public function caInfoAction($caref)
+    public function caInfoAction($caref = null)
     {
         if ($this->request->isGet()) {
             $ca = CertStore::getCACertificate($caref);
@@ -255,6 +271,28 @@ class CertController extends ApiMutableModelControllerBase
     }
 
     /**
+     * @return list of users when the logged in user is allowed to query usermanagement
+     */
+    public function userListAction()
+    {
+        $result = [];
+        if ($this->request->isGet() && (new ACL())->isPageAccessible($_SESSION['Username'], '/api/auth/user')) {
+            $result['rows'] = [];
+            if (isset(Config::getInstance()->object()->system->user)) {
+                foreach (Config::getInstance()->object()->system->user as $user) {
+                    if (isset($user->name)) {
+                        $result['rows'][] = [
+                            'name' => (string)$user->name
+                        ];
+                    }
+                }
+            }
+            $result['count'] = count($result['rows']);
+        }
+        return $result;
+    }
+
+    /**
      * generate file download content
      * @param string $uuid certificate reference
      * @param string $type one of crt/prv/pkcs12,
@@ -266,6 +304,7 @@ class CertController extends ApiMutableModelControllerBase
         $result = ['status' => 'failed'];
         if ($this->request->isPost() && !empty($uuid)) {
             $node = $this->getModel()->getNodeByReference('cert.' . $uuid);
+            $result['descr'] = $node !== null ? (string)$node->descr : '';
             if ($node === null || empty((string)$node->crt_payload)) {
                 $result['error'] = gettext('Misssing certificate');
             } elseif ($type == 'crt') {
@@ -285,6 +324,7 @@ class CertController extends ApiMutableModelControllerBase
                 if (!empty($tmp['payload'])) {
                     // binary data, we need to encode it to deliver it to the client
                     $result['payload_b64'] = base64_encode($tmp['payload']);
+                    $result['status'] = 'ok';
                 } else {
                     $result['error'] = $tmp['error'] ?? '';
                 }

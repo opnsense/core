@@ -91,7 +91,7 @@
         <id>instance.server</id>
         <label>Server (IPv4)</label>
         <type>text</type>
-        <style>role role_server_tun</style>
+        <style>role role_server_tun role_server_ovpn</style>
         <help>
             This directive will set up an OpenVPN server which will allocate addresses to clients out of the given network/netmask.
             The server itself will take the .1 address of the given network for use as the server-side endpoint of the local TUN/TAP interface
@@ -101,7 +101,7 @@
         <id>instance.server_ipv6</id>
         <label>Server (IPv6)</label>
         <type>text</type>
-        <style>role role_server_tun</style>
+        <style>role role_server_tun role_server_ovpn</style>
         <help>
             This directive will set up an OpenVPN server which will allocate addresses to clients out of the given network/netmask.
             The server itself will take the next base address (+1) of the given network for use as the server-side endpoint of the local TUN/TAP interface
@@ -157,6 +157,17 @@
         <label>Certificate</label>
         <type>dropdown</type>
         <help>Select a certificate to use for this service.</help>
+    </field>
+    <field>
+        <id>instance.remote_cert_tls</id>
+        <label>Verify Remote Certificate</label>
+        <type>checkbox</type>
+        <help>
+            Require that the peer certificate was signed with an explicit "key usage" and "extended key usage" based on RFC 3280 rules.
+            This is a useful security option for both servers and clients. For clients, to ensure that the host they connect to is a designated server;
+            and for servers, to prevent man-in-the-middle attacks where an authorized client attempts to connect to another client by impersonating
+            the server.
+        </help>
     </field>
     <field>
         <id>instance.ca</id>
@@ -260,8 +271,8 @@
     <field>
         <id>instance.strictusercn</id>
         <label>Strict User/CN Matching</label>
-        <type>checkbox</type>
-        <style>role role_server</style>
+        <type>dropdown</type>
+        <style>selectpicker role role_server</style>
         <help>When authenticating users, enforce a match between the Common Name of the client certificate and the username given at login.</help>
     </field>
     <field>
@@ -298,6 +309,17 @@ Set to 0 to disable, remember to change your client as well.
         On the server side the server will do the token authentication internally and it will
         NOT do any additional authentications against configured external user/password authentication mechanisms.
         When set to 0, the token will never expire, any other value specifies the lifetime in seconds.
+        </help>
+    </field>
+    <field>
+        <id>instance.provision_exclusive</id>
+        <label>Require Client Provisioning</label>
+        <type>checkbox</type>
+        <style>role role_server</style>
+        <advanced>true</advanced>
+        <help>
+        Require, as a condition for authentication, that a tunnel address will be provisioned either from a local defined client-specific override or offered by an authenticator (such as RADIUS) .
+        This is similar to OpenVPN's 'ccd-exclusive' option, but stricter as we expect the client to receive a tunnel address for the protocol used.
         </help>
     </field>
     <field>

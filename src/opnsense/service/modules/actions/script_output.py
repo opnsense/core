@@ -56,6 +56,8 @@ class Action(BaseAction):
             now = time.time()
             for key in list(Action.cached_results.keys()):
                 if Action.cached_results[key]['expire'] < now:
+                    if os.path.isfile(Action.cached_results[key]['filename']):
+                        os.remove(Action.cached_results[key]['filename'])
                     del Action.cached_results[key]
 
         try:

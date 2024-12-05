@@ -30,7 +30,7 @@ namespace OPNsense\IPsec\Migrations;
 
 use OPNsense\Base\BaseModelMigration;
 use OPNsense\Core\Config;
-use OPNsense\Core\Shell;
+use OPNsense\IPsec\IPsec;
 
 class M1_0_0 extends BaseModelMigration
 {
@@ -39,6 +39,9 @@ class M1_0_0 extends BaseModelMigration
      */
     public function post($model)
     {
+        if (!$model instanceof IPsec) {
+            return;
+        }
         $cnf = Config::getInstance()->object();
         if (isset($cnf->ipsec->phase1) && isset($cnf->ipsec->phase2)) {
             $reqids = [];

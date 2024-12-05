@@ -32,42 +32,48 @@
 $(document).ready(function () {
     // traverse loaded css files
     var toggle_sidebar_loaded = false,
-    winHeight = $(window).height(),
     mouse = 'mouseenter mouseleave',
-    layer1_a = $('#mainmenu > div > a'),
-    layer1_div = $('#mainmenu > div > div'),
+    layer_a = $('#mainmenu > div > a'),
+    layer_div = $('#mainmenu > div > div'),
     layer2_a = $('#mainmenu > div > div > a'),
     layer2_div = $('#mainmenu > div > div > div'),
     navigation = $('#navigation'),
     mainmenu = $('#mainmenu'),
-    countA = $('#mainmenu > div > a').length,
+    countA = layer_a.length,
     footH = $('.page-foot').height(),
     headerH = $('.navbar').height(),
     li_itemH = $('a.list-group-item').height(),
-    navHeight = (countA * 70) + ((footH + headerH) - (li_itemH + countA)),
+    navHeight = (countA * 70) + (headerH + footH - li_itemH),
     events = {
         mouseenter: function () {
-            $('#navigation.col-sidebar-left').css('width', '415px');
+            var navigation = $('#navigation.col-sidebar-left');
             var that = $(this);
-            if (that.next('div').hasClass('in')) {
-                /* no action needed */
-            } else {
-                var offsetTop = that.offset().top,
-                winscrTop = $(window).scrollTop(),
-                divHeight = that.next('div').height(),
-                divTop = (offsetTop - winscrTop),
-                currentHeight = (divTop + divHeight),
-                thatTrigger = that.trigger('click');
+            var nextDiv = that.next('div');
+
+            navigation.css('width', '415px');
+            if (!nextDiv.hasClass('in')) {
+                /* calculate coordinates for submenu */
+                var winHeight = $(window).height(),
+                    offsetTop = that.offset().top,
+                    winscrTop = $(window).scrollTop(),
+                    divHeight = nextDiv.height(),
+                    divTop = offsetTop - winscrTop,
+                    currentHeight = divTop + divHeight;
+
+                that.trigger('click');
                 close_submenu(this);
+
+                /* check if submenu has enough space expanding down  - if not expand submenu up */
                 if (currentHeight > (winHeight - li_itemH)) {
-                    var divPos = (divHeight > divTop) ? - ((divHeight - divTop) - li_itemH) : 3,
-                    viewresult = that.next('div').css('margin-top', - divHeight - divPos);
+                    var divPos = (divHeight > divTop) ? -((divHeight - divTop) - li_itemH) : 3;
+                    nextDiv.css('margin-top', -divHeight - divPos);
                 }
             }
         },
+
         mouseleave: function () {
             $('#navigation.col-sidebar-left').css('width', '70px');
-            layer1_a.off(events).on(events);
+            layer_a.off(events).on(events);
         },
         mousedown: function () {
             $(this).trigger('click');
@@ -76,6 +82,7 @@ $(document).ready(function () {
             $(this).blur();
         }
     },
+
     events2 = {
         mouseenter: function () {
             $('#navigation.col-sidebar-left').css('width', '415px');
@@ -98,17 +105,15 @@ $(document).ready(function () {
 
     /* disable mouseevents on toggle and resize */
     function mouse_events_off() {
-        layer1_a.off(mouse);
-        layer2_a.off(mouse);
-        layer1_div.off(mouse);
-        layer2_div.off(mouse);
+        const layers = [layer_a, layer2_a, layer_div, layer2_div];
+        layers.forEach(layer => layer.off(mouse));
     }
 
     /* trigger mouseevents and remove opened submenus on startup */
     function trigger_sidebar() {
-        layer1_a.first().trigger('mouseenter').trigger('mouseleave');
-        layer1_div.removeClass('in');
-        layer2_div.removeClass('in');
+        layer_a.first().trigger('mouseenter').trigger('mouseleave');
+        const layers = [layer_div, layer2_div];
+        layers.forEach(layer => layer.removeClass('in'));
     }
 
     /* menu delay - transition duration - time */
@@ -118,20 +123,22 @@ $(document).ready(function () {
 
     /* close all non-focused submenus */
     function close_submenu(r) {
-        $(r).nextAll('a').addClass('collapsed').attr('aria-expanded', 'false');
-        $(r).prevAll('a').addClass('collapsed').attr('aria-expanded', 'false');
-        $(r).nextAll('div').removeClass('in').attr('aria-expanded', 'false');
-        $(r).prevAll('div').removeClass('in').attr('aria-expanded', 'false');
+        ['nextAll', 'prevAll'].forEach(direction => {
+            $(r)[direction]('a').addClass('collapsed').attr('aria-expanded', 'false');
+            $(r)[direction]('div').removeClass('in').attr('aria-expanded', 'false');
+        });
     }
 
     function opnsense_sidebar_toggle(store) {
         navigation.toggleClass('col-sidebar-left');
         $('main').toggleClass('col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2 col-lg-12');
         $('.toggle-sidebar > i').toggleClass('fa-chevron-right fa-chevron-left');
+
         if (navigation.hasClass('col-sidebar-left')) {
             $('.brand-logo').css('display', 'none');
             $('.brand-icon').css('display', 'inline-block');
             trigger_sidebar();
+
             if (store && window.localStorage) {
                 localStorage.setItem('toggle_sidebar_preset', 1);
                 transition_duration(0);
@@ -140,6 +147,7 @@ $(document).ready(function () {
             $('.brand-icon').css('display', 'none');
             $('.brand-logo').css('display', 'inline-block');
             $('#navigation.page-side.col-xs-12.col-sm-3.col-lg-2.hidden-xs').css('width', '');
+
             if (store && window.localStorage) {
                 localStorage.setItem('toggle_sidebar_preset', 0);
                 mouse_events_off();
@@ -160,43 +168,48 @@ $(document).ready(function () {
         mainmenu.mouseenter(function () {
             if (navigation.hasClass('col-sidebar-left')) {
                 transition_duration(0);
-                layer1_a.on(events);
-                layer2_a.on(events);
-                layer1_div.on(events2);
-                layer2_div.on(events2);
+                const layersWithEvents = [layer_a, layer2_a];
+                const layersWithEvents2 = [layer_div, layer2_div];
+
+                layersWithEvents.forEach(layer => layer.on(events));
+                layersWithEvents2.forEach(layer => layer.on(events2));
             }
         });
 
         /* main function - sidebar mouseleave */
         mainmenu.mouseleave(function () {
             if (navigation.hasClass('col-sidebar-left')) {
-                layer1_a.attr('aria-expanded', 'false').next('div').removeClass('in');
-                layer2_a.attr('aria-expanded', 'false').next('div').removeClass('in');
-                layer1_div.removeAttr('style');
-                layer2_div.removeAttr('style');
-                layer2_a.off(events);
-                layer1_div.off(events2);
-                layer2_div.off(events2);
-            }
+                const layersWithAria = [layer_a, layer2_a];
+                const layersToRemoveStyle = [layer_div, layer2_div];
+                const layersToOffEvents = [{ layer: layer2_a, events: events }, { layer: layer_div, events: events2 }, { layer: layer2_div, events: events2 }];
+
+                layersWithAria.forEach(layer => layer.attr('aria-expanded', 'false').next('div').removeClass('in'));
+                layersToRemoveStyle.forEach(layer => layer.removeAttr('style'));
+                layersToOffEvents.forEach(({ layer, events }) => layer.off(events));
+           }
         });
 
         /* on resize - toggle sidebar/main navigation */
         $(window).on('resize', function () {
-            var win = $(this);
-            winHeight = win.height();
-            if ((win.height() < navHeight || win.width() < 760) && navigation.not('col-sidebar-hidden')) {
+            var win = $(window),
+                winHeight = win.height(),
+                winWidth = win.width();
+
+            if ((winHeight < navHeight || winWidth < 760) && navigation.not('col-sidebar-hidden')) {
                 navigation.addClass('col-sidebar-hidden');
                 mouse_events_off();
                 toggle_btn.hide();
+
                 if (navigation.hasClass('col-sidebar-left')) {
                     opnsense_sidebar_toggle(false);
                     mouse_events_off();
                     transition_duration(350);
                 }
-            } else if ((win.height() >= navHeight && win.width() >= 760) && navigation.hasClass('col-sidebar-hidden')) {
+            } else if ((winHeight >= navHeight && winWidth >= 760) && navigation.hasClass('col-sidebar-hidden')) {
                 navigation.removeClass('col-sidebar-hidden');
                 transition_duration(0);
                 toggle_btn.show();
+
                 if (window.localStorage && localStorage.getItem('toggle_sidebar_preset') == 1) {
                     opnsense_sidebar_toggle(false);
                 }
