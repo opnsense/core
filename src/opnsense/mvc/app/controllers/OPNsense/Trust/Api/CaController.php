@@ -142,7 +142,7 @@ class CaController extends ApiMutableModelControllerBase
     {
         return $this->searchBase(
             'ca',
-            ['refid', 'descr', 'caref', 'name', 'refcount', 'valid_from', 'valid_to'],
+            ['uuid', 'refid', 'descr', 'caref', 'name', 'refcount', 'valid_from', 'valid_to'],
         );
     }
 
