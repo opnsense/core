@@ -42,6 +42,12 @@
                 <route_gateway type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
                 </route_gateway>
+                <keepalive_interval type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                </keepalive_interval>
+                <keepalive_timeout type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                </keepalive_timeout>
                 <redirect_gateway type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>
@@ -159,9 +165,21 @@
                     <WildcardEnabled>N</WildcardEnabled>
                     <Strict>Y</Strict>
                 </server>
+                <ifconfig_pool_start type="NetworkField">
+                    <WildcardEnabled>N</WildcardEnabled>
+                    <Strict>Y</Strict>
+                </ifconfig_pool_start>
+                <ifconfig_pool_end type="NetworkField">
+                    <WildcardEnabled>N</WildcardEnabled>
+                    <Strict>Y</Strict>
+                </ifconfig_pool_end>
                 <server_ipv6 type="NetworkField">
                     <WildcardEnabled>N</WildcardEnabled>
                 </server_ipv6>
+                <ifconfig_ipv6_pool_bits type="NetworkField">
+                    <WildcardEnabled>N</WildcardEnabled>
+                    <Strict>Y</Strict>
+                </ifconfig_ipv6_pool_bits>
                 <bridge_gateway type="NetworkField">
                     <WildcardEnabled>N</WildcardEnabled>
                 </bridge_gateway>

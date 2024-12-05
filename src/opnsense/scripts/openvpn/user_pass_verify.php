@@ -82,13 +82,17 @@ function do_auth($common_name, $serverid, $method, $auth_file)
     }
     if (strpos($password, 'SCRV1:') === 0) {
         // static-challenge https://github.com/OpenVPN/openvpn/blob/v2.4.7/doc/management-notes.txt#L1146
-        // validate and concat password into our default pin+password
+        // QUICK HACK for local used Radius dependencies
+        // validate and concat password into our default otp_token+password
+        // validate and concat password into our default password+otp_token
         $tmp = explode(':', $password);
         if (count($tmp) == 3) {
             $pass = base64_decode($tmp[1]);
-            $pin = base64_decode($tmp[2]);
-            if ($pass !== false && $pin !== false) {
-                $password = $pin . $pass;
+            $otp_token = base64_decode($tmp[2]);
+            if ($pass !== false && $otp_token !== false) {
+                // QUICK HACK for local used Radius dependencies
+                // $password = $otp_token . $pass;
+                $password = $pass . $otp_token;
             }
         }
     }
@@ -151,9 +155,18 @@ openlog("openvpn", LOG_ODELAY, LOG_AUTH);
 
 /* parse environment variables */
 $parms = [];
-$parmlist = ['auth_server', 'auth_method', 'common_name', 'auth_file', 'auth_defer', 'auth_control_file'];
+$parmlist = ['auth_server', 'auth_method', 'common_name', 'auth_file', 'auth_defer', 'auth_control_file', 'untrusted_ip', 'untrusted_ip6'];
 foreach ($parmlist as $key) {
     $parms[$key] = isset(getenv()[$key]) ? getenv()[$key] : null;
+}
+
+global $remote_address;
+if (!empty($parms['untrusted_ip6'])) {
+    $parms['remote_address'] = $parms['untrusted_ip6'];
+    $remote_address = $parms['untrusted_ip6'];
+} elseif (!empty($parms['untrusted_ip'])) {
+    $parms['remote_address'] = $parms['untrusted_ip'];
+    $remote_address = $parms['untrusted_ip'];
 }
 
 /* perform authentication */
