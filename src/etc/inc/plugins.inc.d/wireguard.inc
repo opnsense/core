@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2023 Deciso B.V.
+ * Copyright (C) 2023-2024 Deciso B.V.
  * Copyright (C) 2018 Michael Muenz <m.muenz@gmail.com>
  * All rights reserved.
  *
@@ -49,9 +49,9 @@ function wireguard_services()
                     'restart' => ["wireguard restart {$key}"],
                     'stop' => ["wireguard stop {$key}"],
                 ],
-                'nocheck' => true, /* no daemon to check */
+                'name' => 'wireguard',
+                'nocheck' => true,
                 'id' => $key,
-                'name' => "wireguard"
             ];
         }
     }
@@ -144,12 +144,12 @@ function wireguard_prepare($device)
 function wireguard_configure()
 {
     return [
-        'newwanip' => ['wireguard_sync:2'],
-        'vpn' => ['wireguard_configure_do:2'],
+        'newwanip' => ['wireguard_sync'],
+        'vpn' => ['wireguard_configure_do'],
     ];
 }
 
-function wireguard_configure_do($verbose = false, $unused = '')
+function wireguard_configure_do($verbose = false)
 {
     if (!wireguard_enabled()) {
         return;
@@ -162,7 +162,7 @@ function wireguard_configure_do($verbose = false, $unused = '')
     service_log("done.\n", $verbose);
 }
 
-function wireguard_sync($verbose = false, $unused = '')
+function wireguard_sync($verbose = false)
 {
     if (!wireguard_enabled()) {
         return;
@@ -181,14 +181,9 @@ function wireguard_sync($verbose = false, $unused = '')
 
     service_log('Synchronizing WireGuard VPN...', $verbose);
 
-    openlog('wireguard', LOG_ODELAY, LOG_AUTH);
-
     foreach ($instances as $device => $config) {
         mwexecf('/usr/bin/wg syncconf %s %s', [$device, $config]);
     }
-
-    closelog();
-    reopenlog();
 
     service_log("done.\n", $verbose);
 }

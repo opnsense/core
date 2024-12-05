@@ -128,6 +128,7 @@
                 <th data-column-id="type" data-type="string">{{ lang._('Type') }}</th>
                 <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
                 <th data-column-id="common_name" data-type="string">{{ lang._('Common Name') }}</th>
+                <th data-column-id="username" data-type="string">{{ lang._('Username') }}</th>
                 <th data-column-id="real_address" data-type="string">{{ lang._('Real Address') }}</th>
                 <th data-column-id="virtual_address" data-type="string">{{ lang._('Virtual IPv4 Address') }}</th>
                 <th data-column-id="virtual_ipv6_address" data-type="string">{{ lang._('Virtual IPv6 Address') }}</th>

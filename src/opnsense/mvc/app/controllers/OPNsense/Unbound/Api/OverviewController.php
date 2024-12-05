@@ -37,7 +37,6 @@ class OverviewController extends ApiControllerBase
 {
     public function isEnabledAction()
     {
-        $this->sessionClose();
         $config = Config::getInstance()->object();
         return [
             'enabled' => (new \OPNsense\Unbound\Unbound())->getNodes()['general']['stats']
@@ -53,7 +52,6 @@ class OverviewController extends ApiControllerBase
 
     public function RollingAction($timeperiod, $clients = '0')
     {
-        $this->sessionClose();
         $interval = filter_var($timeperiod, FILTER_SANITIZE_NUMBER_INT) == 1 ? 60 : 600;
         $type = !empty($clients) ? 'clients' : 'rolling';
         $response = (new Backend())->configdpRun('unbound qstats ' . $type, [$interval, $timeperiod]);
@@ -62,7 +60,6 @@ class OverviewController extends ApiControllerBase
 
     public function totalsAction($maximum)
     {
-        $this->sessionClose();
         $response = (new Backend())->configdpRun('unbound qstats totals', [$maximum]);
         $parsed = json_decode($response, true);
         if (!is_array($parsed)) {
@@ -86,8 +83,6 @@ class OverviewController extends ApiControllerBase
 
     public function searchQueriesAction()
     {
-        $this->sessionClose();
-
         $client = $this->request->get("client", null);
         $time_start = $this->request->get("timeStart", null);
         $time_end = $this->request->get("timeEnd", null);

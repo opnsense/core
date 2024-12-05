@@ -127,12 +127,7 @@ class SettingsController extends ApiMutableModelControllerBase
             return $record->type == $this->type;
         };
 
-        return $this->searchBase(
-            'dots.dot',
-            array('enabled', 'server', 'port', 'verify', 'type', 'domain'),
-            null,
-            $filter_fn
-        );
+        return $this->searchBase('dots.dot', null, null, $filter_fn);
     }
 
     public function getForwardAction($uuid = null)
@@ -269,44 +264,6 @@ class SettingsController extends ApiMutableModelControllerBase
     public function toggleHostAliasAction($uuid, $enabled = null)
     {
         return $this->toggleBase('aliases.alias', $uuid, $enabled);
-    }
-
-    /* Domain overrides */
-
-    public function searchDomainOverrideAction()
-    {
-        return $this->searchBase(
-            'domains.domain',
-            ['enabled', 'domain', 'server', 'description'],
-            "domain",
-            null,
-            SORT_NATURAL | SORT_FLAG_CASE
-        );
-    }
-
-    public function getDomainOverrideAction($uuid = null)
-    {
-        return $this->getBase('domain', 'domains.domain', $uuid);
-    }
-
-    public function addDomainOverrideAction()
-    {
-        return $this->addBase('domain', 'domains.domain');
-    }
-
-    public function delDomainOverrideAction($uuid)
-    {
-        return $this->delBase('domains.domain', $uuid);
-    }
-
-    public function setDomainOverrideAction($uuid)
-    {
-        return $this->setBase('domain', 'domains.domain', $uuid);
-    }
-
-    public function toggleDomainOverrideAction($uuid, $enabled = null)
-    {
-        return $this->toggleBase('domains.domain', $uuid, $enabled);
     }
 
     /* ACLs */

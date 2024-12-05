@@ -50,9 +50,9 @@ class DependConstraint extends BaseConstraint
         $node = $this->getOption('node');
         if ($node) {
             $parentNode = $node->getParentNode();
-            if ($this->isEmpty($node)) {
+            if ($node->isEmpty()) {
                 foreach (array_unique($this->getOptionValueList('addFields')) as $fieldname) {
-                    if (!$this->isEmpty($parentNode->$fieldname)) {
+                    if (!is_null($parentNode->$fieldname) && !$parentNode->$fieldname->isEmpty()) {
                         $this->appendMessage($validator, $attribute);
                         break;
                     }

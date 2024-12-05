@@ -2,7 +2,7 @@
 
 /*
  * Copyright (C) 2018 Fabian Franz
- * Copyright (C) 2015-2023 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2024 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2015 Manuel Faux <mfaux@conf.at>
  * Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
@@ -135,7 +135,7 @@ function unbound_generate_config()
     $python_dir = "/usr/local/lib/{$pythonv}";
     $chroot_python_dir = "/var/unbound{$python_dir}";
 
-    $dirs = ['/data', '/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run', $python_dir];
+    $dirs = ['/data', '/dev', '/etc', '/lib', '/run', '/usr', '/var/db', '/var/run', $python_dir];
 
     foreach ($dirs as $dir) {
         mwexecf('/bin/mkdir -p %s', "/var/unbound{$dir}");
@@ -181,8 +181,9 @@ function unbound_generate_config()
     $bindints = '';
     if (!empty($general['active_interface'])) {
         $active_interfaces = explode(',', $general['active_interface']);
-        $active_interfaces[] = 'lo0';
-        $addresses = array();
+        array_unshift($active_interfaces, 'lo0');
+
+        $addresses = [];
 
         foreach (interfaces_addresses($active_interfaces) as $tmpaddr => $info) {
             if ($info['name'] == 'lo0' && $info['family'] == 'inet' && $tmpaddr != '127.0.0.1') {
@@ -356,18 +357,18 @@ function unbound_cache_flush()
     configd_run('unbound cache flush');
 }
 
-function unbound_match_interface($interface)
+function unbound_match_interface($interface_map)
 {
     $general = config_read_array('OPNsense', 'unboundplus', 'general');
 
-    if (empty($interface)) {
+    if (empty($interface_map)) {
         /* emulate non-interface reload */
         return true;
     }
 
     if (!empty($general['active_interface'])) {
         foreach (explode(',', $general['active_interface']) as $used) {
-            if ($used == $interface) {
+            if (in_array($used, $interface_map)) {
                 return true;
             }
         }
@@ -375,7 +376,7 @@ function unbound_match_interface($interface)
 
     if (!empty($general['outgoing_interface'])) {
         foreach (explode(',', $general['outgoing_interface']) as $used) {
-            if ($used == $interface) {
+            if (in_array($used, $interface_map)) {
                 return true;
             }
         }
@@ -389,14 +390,18 @@ function unbound_match_interface($interface)
     return false;
 }
 
-function unbound_configure_do($verbose = false, $interface = null)
+function unbound_configure_do($verbose = false, $interface_map = null)
 {
     global $config;
+
+    if (!plugins_argument_map($interface_map)) {
+        return;
+    }
 
     $mdl = new \OPNsense\Unbound\Unbound();
 
     /* try to avoid restarting, but make sure to let it start if it is not running */
-    if (!unbound_match_interface($interface) && isvalidpid('/var/run/unbound.pid')) {
+    if (!unbound_match_interface($interface_map) && isvalidpid('/var/run/unbound.pid')) {
         return;
     }
 
@@ -616,6 +621,5 @@ function unbound_add_host_entries($ifconfig_details)
 
     file_put_contents('/var/unbound/host_entries.conf', $unbound_entries);
 
-    closelog();
     reopenlog();
 }

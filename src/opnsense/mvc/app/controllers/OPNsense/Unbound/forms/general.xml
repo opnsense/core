@@ -20,6 +20,7 @@
             Queries to other interface IPs not selected below are discarded.
             The default behavior is to respond to queries on every available IPv4 and IPv6 address.
         </help>
+        <hint>All (recommended)</hint>
     </field>
     <field>
         <id>unbound.general.dnssec</id>
@@ -62,7 +63,7 @@
         <type>checkbox</type>
         <help>
             <![CDATA[If this option is set, then DHCP static mappings will be registered in Unbound, so that their name can be resolved.
-            You should also set the domain in <a href="/system_general.php">System: General setup</a> to the proper value.]]>
+            You should also set the domain in <a href="/system_general.php">System: Settings: General</a> to the proper value.]]>
         </help>
     </field>
     <field>
@@ -116,6 +117,7 @@
         <label>Outgoing Network Interfaces</label>
         <type>select_multiple</type>
         <advanced>true</advanced>
+        <hint>All (recommended)</hint>
         <help>
             Utilize different network interfaces that Unbound will use to send queries to authoritative servers and receive their replies.
             By default all interfaces are used. Note that setting explicit outgoing interfaces only works when they are statically configured.

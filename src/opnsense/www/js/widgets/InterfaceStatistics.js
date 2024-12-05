@@ -1,5 +1,3 @@
-// endpoint:/api/diagnostics/traffic/interface
-
 /*
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
@@ -26,9 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseWidget from "./BaseWidget.js";
-
-export default class InterfaceStatistics extends BaseWidget {
+export default class InterfaceStatistics extends BaseTableWidget {
     constructor() {
         super();
 
@@ -41,13 +37,31 @@ export default class InterfaceStatistics extends BaseWidget {
     }
 
     getMarkup() {
-        return $(`
-        <div class="interface-statistics-chart-container">
-            <div class="canvas-container">
-                <canvas id="intf-stats"></canvas>
-            </div>
-        </div>
-        `);
+        let $container = $('<div id="if-stats-container"></div>');
+        let $table = this.createTable('interface-statistics-table', {
+            headerPosition: 'top',
+            headers: [
+                this.translations.interface,
+                this.translations.bytesin,
+                this.translations.bytesout,
+                this.translations.packetsin,
+                this.translations.packetsout,
+                this.translations.errorsin,
+                this.translations.errorsout,
+                this.translations.collisions
+            ]
+        });
+        let $chartContainer = $(`
+            <div class="interface-statistics-chart-container">
+                <div class="canvas-container">
+                    <canvas id="intf-stats"></canvas>
+                </div>
+            </div>`
+        );
+
+        $container.append($table);
+        $container.append($chartContainer);
+        return $container;
     }
 
     _getIndexedData(data) {
@@ -66,48 +80,63 @@ export default class InterfaceStatistics extends BaseWidget {
     }
 
     async onWidgetTick() {
-        ajaxGet('/api/diagnostics/traffic/interface', {}, (data, status) => {
-            let sortedSet = {};
-            let i = 0;
-            let colors = Chart.colorschemes.tableau.Classic10;
-            for (const intf in data.interfaces) {
-                const obj = data.interfaces[intf];
-                this.labels.indexOf(obj.name) === -1 && this.labels.push(obj.name);
-                obj.data = parseInt(obj["packets received"]) + parseInt(obj["packets transmitted"]);
-                obj.color = colors[i % colors.length]
-                this.rawData[obj.name] = obj;
+        const data = await this.ajaxCall('/api/diagnostics/traffic/interface');
 
-                sortedSet[i] = {'name': obj.name, 'data': obj.data};
-                i++;
-            }
+        for (const [id, obj] of Object.entries(data.interfaces)) {
+            super.updateTable('interface-statistics-table', [
+                [
+                    $(`<a href="/interfaces.php?if=${id}">${obj.name}</a>`).prop('outerHTML'),
+                    this._formatBytes(parseInt(obj["bytes received"])) || "0",
+                    this._formatBytes(parseInt(obj["bytes transmitted"])) || "0",
+                    parseInt(obj["packets received"]).toLocaleString(),
+                    parseInt(obj["packets transmitted"]).toLocaleString(),
+                    parseInt(obj["input errors"]).toLocaleString(),
+                    parseInt(obj["output errors"]).toLocaleString(),
+                    parseInt(obj["collisions"]).toLocaleString()
+                ]
+            ], id);
+        }
 
-            this.sortedLabels = [];
-            this.sortedData = [];
-            Object.values(sortedSet).sort((a, b) => b.data - a.data).forEach(item => {
-                this.sortedLabels.push(item.name);
-                this.sortedData.push(item.data);
-            });
+        let sortedSet = {};
+        let i = 0;
+        let colors = Chart.colorschemes.tableau.Classic10;
+        for (const intf in data.interfaces) {
+            const obj = data.interfaces[intf];
+            this.labels.indexOf(obj.name) === -1 && this.labels.push(obj.name);
+            obj.data = parseInt(obj["packets received"]) + parseInt(obj["packets transmitted"]);
+            obj.color = colors[i % colors.length]
+            this.rawData[obj.name] = obj;
 
-            let formattedData = this._getIndexedData(data.interfaces);
-            this.dataset = {
-                label: 'statistics',
-                data:  formattedData.data,
-                backgroundColor: formattedData.colors,
-                hoverBackgroundColor: formattedData.colors.map((color) => this._setAlpha(color, 0.5)),
-                fill: true,
-                borderWidth: 2,
-                hoverOffset: 10,
-            }
+            sortedSet[i] = {'name': obj.name, 'data': obj.data};
+            i++;
+        }
 
-            if (this.chart.config.data.datasets.length > 0) {
-                this.chart.config.data.datasets[0].data = this.dataset.data;
-            } else {
-                this.chart.config.data.labels = this.labels;
-                this.chart.config.data.datasets.push(this.dataset);
-            }
-
-            this.chart.update();
+        this.sortedLabels = [];
+        this.sortedData = [];
+        Object.values(sortedSet).sort((a, b) => b.data - a.data).forEach(item => {
+            this.sortedLabels.push(item.name);
+            this.sortedData.push(item.data);
         });
+
+        let formattedData = this._getIndexedData(data.interfaces);
+        this.dataset = {
+            label: 'statistics',
+            data:  formattedData.data,
+            backgroundColor: formattedData.colors,
+            hoverBackgroundColor: formattedData.colors.map((color) => this._setAlpha(color, 0.5)),
+            fill: true,
+            borderWidth: 2,
+            hoverOffset: 10,
+        }
+
+        if (this.chart.config.data.datasets.length > 0) {
+            this.chart.config.data.datasets[0].data = this.dataset.data;
+        } else {
+            this.chart.config.data.labels = this.labels;
+            this.chart.config.data.datasets.push(this.dataset);
+        }
+
+        this.chart.update();
     }
 
     async onMarkupRendered() {
@@ -182,6 +211,15 @@ export default class InterfaceStatistics extends BaseWidget {
                 this.chart.options.plugins.legend.display = false;
             }
         }
+
+        if (width < 700) {
+            $('#intf-stats').show();
+            $('#interface-statistics-table').hide();
+        } else {
+            $('#intf-stats').hide();
+            $('#interface-statistics-table').show();
+        }
+
         return true;
     }
 

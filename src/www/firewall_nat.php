@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         }
-        write_config('Firewall: NAT: Outbound, toggle NAT rule');
+        write_config('Firewall: NAT: Port Forward, toggle NAT rule');
         mark_subsystem_dirty('natconf');
         header(url_safe('Location: /firewall_nat.php'));
         exit;
@@ -306,7 +306,7 @@ $( document ).ready(function() {
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
-<?php   print_service_banner('firewall'); ?>
+<?php   print_firewall_banner() ?>
 <?php   if (isset($savemsg)) print_info_box($savemsg); ?>
 <?php   if (is_subsystem_dirty('natconf')): ?>
 <?php     print_info_box_apply(gettext("The NAT configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
@@ -339,7 +339,7 @@ $( document ).ready(function() {
                       <th><?=gettext("IP");?></th>
                       <th><?=gettext("Ports");?></th>
                       <th><?=gettext("Description");?></th>
-                      <th class="text-nowrap">
+                      <th role="cell" class="text-nowrap">
                         <a href="firewall_nat_edit.php" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
                           <i class="fa fa-plus fa-fw"></i>
                         </a>

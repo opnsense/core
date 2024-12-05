@@ -93,7 +93,13 @@ function plugins_services()
 
 function plugins_devices()
 {
-    $devices = array();
+    $devices = [];
+    $defaults = [
+        'configurable' => true, /* allow to configure IP connectivity */
+        'pattern' => '^impossiblecontrolmatch$', /* never match by default */
+        'spoofmac' => true, /* allow to change the MAC address */
+        'volatile' => false, /* device known to persist */
+    ];
 
     foreach (plugins_scan() as $name => $path) {
         try {
@@ -104,6 +110,11 @@ function plugins_devices()
         $func = sprintf('%s_devices', $name);
         if (function_exists($func)) {
             foreach ($func() as $work) {
+                foreach ($defaults as $key => $val) {
+                    if (!isset($work[$key])) {
+                        $work[$key] = $val;
+                    }
+                }
                 $devices[] = $work;
             }
         }
@@ -286,6 +297,9 @@ function plugins_configure($hook, $verbose = false, $args = [])
                          * An optional argument count parameter can be
                          * given by the plugin, which allows to securely
                          * pull more info from the configure call spot.
+                         *
+                         * Otherwise the default is assumed to be ":1"
+                         * only, which is the $verbose flag, see below.
                          */
                         if (substr_count($task, ':')) {
                             list($argf, $argc) = explode(':', $task);
@@ -380,4 +394,38 @@ function plugins_xmlrpc_sync()
         }
     }
     return $sync_settings;
+}
+
+function plugins_argument_map(&$arg)
+{
+    /* record the caller for a sensible log message */
+    $caller = !empty(debug_backtrace()[1]['function']) ? debug_backtrace()[1]['function'] : 'unknown';
+
+    /* return value signals we have work to do */
+    $ret = true;
+    $tmp = $arg;
+
+    if (is_array($arg)) {
+        /* no need to deal with this now */
+    } elseif (is_string($arg)) {
+        /* backwards compat with single string arguments */
+        $tmp = explode(',', $arg);
+        $ret = !!strlen($arg);
+    } elseif (!is_null($arg)) {
+        log_msg(sprintf('%s: plugin argument map type "%s" not supported', $caller, gettype($arg)), LOG_WARNING);
+        $ret = false;
+    }
+
+    if (is_array($tmp)) {
+        /* remove empty values or duplicates */
+        $tmp = array_unique(array_filter($tmp));
+        $ret = !!count($tmp);
+    }
+
+    if ($ret) {
+        /* only modify argument if there is work to do */
+        $arg = $tmp;
+    }
+
+    return $ret;
 }

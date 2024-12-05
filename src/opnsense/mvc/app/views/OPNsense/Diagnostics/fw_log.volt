@@ -206,7 +206,7 @@
             $('#templ_name').val("");
             $('#templates').empty();
             $('#templates').append($('<option/>', {value: "00000", text: "None"}).data('template', {'filters': "0", 'or': "0"}).addClass("disp_none_opt templates"));
-            $('#templates').append($('<option/>', {value: "00001", text: "New"}).data('template', {'filters': "0", 'or': "0"}).data('icon','glyphicon-file').addClass("add_new_opt templ_save"));
+            $('#templates').append($('<option/>', {value: "00001", text: "New"}).data('template', {'filters': "0", 'or': "0"}).attr('data-icon','fa-solid fa-file').addClass("add_new_opt templ_save"));
             $('#templates').selectpicker('refresh');
             $('.templates').show();
             $('.templ_save').hide();
@@ -345,7 +345,7 @@
                                   // rid field, links to rule origin
                                   var rid = sender_details[sorted_keys[i]];
                                   var rid_td = $("<td/>").addClass("act_info_fld_"+sorted_keys[i]);
-                                  if (rid.length == 32) {
+                                  if (rid.length >= 32) {
                                       var rid_link = $("<a target='_blank' href='/firewall_rule_lookup.php?rid=" + rid + "'/>");
                                       rid_link.text(rid);
                                       rid_td.append($("<i/>").addClass('fa fa-fw fa-search'));

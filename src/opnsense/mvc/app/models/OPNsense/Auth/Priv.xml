@@ -1,0 +1,26 @@
+<model>
+    <mount>:memory:</mount>
+    <version>1.0.0</version>
+    <items>
+        <users type="ModelRelationField">
+            <Model>
+                <user>
+                    <source>OPNsense.Auth.User</source>
+                    <items>user</items>
+                    <display>name</display>
+                </user>
+            </Model>
+            <Multiple>Y</Multiple>
+        </users>
+        <groups type="ModelRelationField">
+            <Model>
+                <user>
+                    <source>OPNsense.Auth.Group</source>
+                    <items>group</items>
+                    <display>name</display>
+                </user>
+            </Model>
+            <Multiple>Y</Multiple>
+        </groups>
+    </items>
+</model>

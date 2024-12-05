@@ -77,6 +77,19 @@ class Filter extends BaseModel
                             $rule->source_net->__reference
                         ));
                     }
+                    // when multiple values are offered for source/destination, prevent "any" being used in combination
+                    foreach (['source_net', 'destination_net'] as $fieldname) {
+                        if (
+                            strpos($rule->$fieldname, ',') !== false &&
+                            in_array('any', explode(',', $rule->$fieldname))
+                        ) {
+                            $messages->appendMessage(new Message(
+                                gettext("Any can not be combined with other aliases"),
+                                $rule->$fieldname->__reference
+                            ));
+                        }
+                    }
+
                     // Additional source nat validations
                     if ($rule->target !== null) {
                         $target_is_addr = Util::isSubnet($rule->target) || Util::isIpAddress($rule->target);

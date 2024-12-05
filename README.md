@@ -113,8 +113,8 @@ For php code you will need to have `phpcs` and `phpcbf` installed.
 You can use the package `php-codesniffer` on Debian/Ubuntu.
 Python code will require `pycodestyle`.
 
-For easier development you may want to use an OPNsense VM and run:
-`pkg install os-debug` that will install all the necessary tools.
+For easier development you may want to use an OPNsense VM and install
+the `os-debug` plugin that will offer the necessary tools.
 
 make sweep
 ----------

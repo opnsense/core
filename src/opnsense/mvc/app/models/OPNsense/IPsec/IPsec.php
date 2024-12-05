@@ -183,4 +183,31 @@ class IPsec extends BaseModel
             'type' => $keyType
         ];
     }
+
+    private function traverseItems($node)
+    {
+        $result = [];
+        foreach ($node->iterateItems() as $key => $item) {
+            if ($item->isContainer()) {
+                $result[$key] = $this->traverseItems($item);
+            } elseif (is_a($item, "OPNsense\\Base\\FieldTypes\\BooleanField")) {
+                $result[$key] = !empty((string)$item) ? 'yes' : 'no';
+            } elseif ((string)$item != '') {
+                $result[$key] = (string)$item;
+            }
+        }
+        return $result;
+    }
+
+    public function strongswanTree()
+    {
+        $result = [
+            '# Automatically generated, please do not modify' => '',
+            'starter' => [
+                'load_warning' => 'no'
+            ],
+            'charon' => $this->traverseItems($this->charon)
+        ];
+        return $result;
+    }
 }

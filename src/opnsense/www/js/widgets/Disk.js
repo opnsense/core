@@ -1,5 +1,3 @@
-// endpoint:/api/core/system/systemDisk
-
 /*
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
@@ -26,18 +24,18 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseGaugeWidget from "./BaseGaugeWidget.js";
-
 export default class Disk extends BaseGaugeWidget {
     constructor() {
         super();
 
         this.detailed_chart = null;
+        this.tickTimeout = 300;
     }
 
     _convertToBytes(sizeString) {
         // intentionally multiply by 1000 to retain original data format
         const units = {
+            'B': 1,
             'K': 1000,
             'M': 1000 * 1000,
             'G': 1000 * 1000 * 1000,
@@ -154,35 +152,34 @@ export default class Disk extends BaseGaugeWidget {
     }
 
     async onWidgetTick() {
-        ajaxGet('/api/core/system/systemDisk', {}, (data, status) => {
-            if (data.devices !== undefined) {
-                let set = this.detailed_chart.config.data;
-                let init = set.labels.length === 0;
-                this.detailed_chart.config.data.datasets[0].data = [];
-                this.detailed_chart.config.data.datasets[1].data = [];
-                let totals = [];
-                for (const device of data.devices) {
-                    let used = this._convertToBytes(device.used);
-                    let total = this._convertToBytes(device.blocks);
-                    let free = total - used;
-                    if (device.mountpoint === '/') {
-                        this.chart.config.data.datasets[0].pct = [device.used_pct, (100 - device.used_pct)];
-                        super.updateChart([used, free]);
-                    }
-                    totals.push(total);
-
-                    if (init) {
-                        this.detailed_chart.config.data.types.push(device.type);
-                        this.detailed_chart.config.data.labels.push(device.mountpoint);
-                    }
-                    this.detailed_chart.config.data.datasets[0].data.push(used);
-                    this.detailed_chart.config.data.datasets[1].data.push(free);
+        const data = await this.ajaxCall('/api/diagnostics/system/systemDisk');
+        if (data.devices !== undefined) {
+            let set = this.detailed_chart.config.data;
+            let init = set.labels.length === 0;
+            this.detailed_chart.config.data.datasets[0].data = [];
+            this.detailed_chart.config.data.datasets[1].data = [];
+            let totals = [];
+            for (const device of data.devices) {
+                let used = this._convertToBytes(device.used);
+                let total = this._convertToBytes(device.blocks);
+                let free = total - used;
+                if (device.mountpoint === '/') {
+                    this.chart.config.data.datasets[0].pct = [device.used_pct, (100 - device.used_pct)];
+                    super.updateChart([used, free]);
                 }
+                totals.push(total);
 
-                this.detailed_chart.config.options.scales.x.max = Math.max(...totals);
-                this.detailed_chart.update();
+                if (init) {
+                    this.detailed_chart.config.data.types.push(device.type);
+                    this.detailed_chart.config.data.labels.push(device.mountpoint);
+                }
+                this.detailed_chart.config.data.datasets[0].data.push(used);
+                this.detailed_chart.config.data.datasets[1].data.push(free);
             }
-        });
+
+            this.detailed_chart.config.options.scales.x.max = Math.max(...totals);
+            this.detailed_chart.update();
+        }
     }
 
     onWidgetResize(elem, width, height) {

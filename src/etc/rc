@@ -38,8 +38,9 @@ trap "echo 'Boot interrupted'; exit 1" 3
 
 HOME=/
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin
-REQUESTS_CA_BUNDLE=/etc/ssl/cert.pem
-export HOME PATH REQUESTS_CA_BUNDLE
+REQUESTS_CA_BUNDLE=/usr/local/etc/ssl/cert.pem
+ZPOOL_IMPORT_PATH=/dev
+export HOME PATH REQUESTS_CA_BUNDLE ZPOOL_IMPORT_PATH
 
 echo "Mounting filesystems..."
 
@@ -162,7 +163,7 @@ fi
 # clear growfs marker now that we are read/write
 rm -f ${GROWFS_MARKER}
 
-# see if / is writable (aka. non-LiveCD boot)
+# see if / is writable (aka. not a live media boot)
 if _tmpdir=$(mktemp -d -q /.diskless.XXXXXX); then
 	# only remove the directory
 	rmdir ${_tmpdir}

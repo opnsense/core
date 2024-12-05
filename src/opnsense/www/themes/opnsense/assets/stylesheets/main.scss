@@ -1,46 +1,4 @@
-$colors: (
-  orange: #D94F00,
-  lightgrey: #F7F7F7,
-  lightergrey: #FBFBFB,
-  darkgrey: #3C3C3B,
-  bordergrey: #E5E5E5,
-);
-
-$zindex: (
-  header: 2,
-  footer: 2,
-  main: 1,
-  sidebar: 3,
-);
-
-// format dashboard widget headers
-.widgetdiv {
-    .content-box-head {
-        background: #E8E8E8 !important;
-        color: map-get($colors, darkgrey) !important;
-        padding-bottom: 1px !important;
-        padding-top:  1px !important;
-        padding-right: 1px !important;
-        padding-left: 5px !important;
-        min-height: 25px !important;
-
-        .btn-group {
-            .btn {
-                color: map-get($colors, darkgrey) !important;
-                background: #E8E8E8 !important;
-                border: 0px;
-                .glyphicon {
-                    color: map-get($colors, darkgrey) !important;
-                }
-            }
-        }
-        .list-inline {
-            li > h3 {
-                padding-top: 4px;
-            }
-        }
-    }
-}
+@import "config/colors";
 
 @font-face {
   font-family: 'SourceSansProBold';
@@ -111,14 +69,15 @@ $zindex: (
 @import "bootstrap/utilities";
 @import "bootstrap/responsive-utilities";
 
+
+
 *{
     -webkit-font-smoothing: antialiased;
 }
 
 html, body{
   height: 100%;
-  font-family: 'SourceSansProRegular';
-  background-color: #FFF;
+  background-color: map-get($colors, body-background);
 }
 
 body{
@@ -130,43 +89,42 @@ body{
   touch-action: none; }
 
 .page-head{
-  background: map-get($colors, darkgrey);
   top: 0;
   left: 0;
   position: fixed;
   width: 100%;
-  z-index: map-get($zindex, header);
+  z-index: 2;
 }
 
 .page-content{
   height: calc(100% - 52px);
   padding-top: 52px;
   position: relative;
-  z-index: map-get($zindex, main);
+  z-index: 1;
 
   > .row{
     height: 100%;
   }
 }
 
-.page-content-head{
-  background: map-get($colors, lightergrey);
+.page-content-head {
+  background: map-get($colors, page-content-head-background);
   border-bottom: 1px solid rgba(#D9D9D9, .50);
   padding-bottom: 15px;
   padding-top: 20px;
 
-  .navbar-nav{
+  .navbar-nav {
     width: 100%;
   }
 
-  h1,h2,h3{
+  h1,h2,h3 {
     line-height: 1;
     margin: 0;
   }
 }
 
-.page-content-main{
-  background: map-get($colors, lightgrey);
+.page-content-main {
+  background: map-get($colors, content-background);
   min-height: calc(100% - 64px);
   padding: 15px 0 (15px + 58px);
 }
@@ -181,44 +139,35 @@ body{
   margin-top: 52px;
   position: fixed;
   top: 0;
-  z-index: map-get($zindex, sidebar);
+  z-index: 3;
 
   @extend .hidden-xs;
 }
 
-.page-side-nav {
-
-  &--active{
-    background: map-get($colors, lightgrey);
-    border-left: 3px solid map-get($colors, orange);
-  }
-}
-
-.page-foot{
-  background: map-get($colors, lightergrey);
+.page-foot {
+  background: map-get($colors, page-foot-background);
   bottom: 0;
   border-top: 1px solid rgba(#D9D9D9, .50);
   font-size: 12px;
   padding: 20px 0;
   position: fixed;
   width: 100%;
-  z-index: map-get($zindex, footer);
+  z-index: 2;
 }
 
-.content-box{
-  background: #FFF;
-  border: 1px solid map-get($colors, bordergrey);;
+.content-box {
+  background: map-get($colors, body-background);
+  border: 1px solid map-get($colors, border-default);
 
   @extend .clearfix;
 
-  &-head{
-  @extend .page-content-head;
+  &-head {
+    @extend .page-content-head;
   }
 
-  &-main{
-  //background: map-get($colors, lightgrey);
-  padding-bottom: 15px;
-  padding-top: 15px;
+  &-main {
+    padding-bottom: 15px;
+    padding-top: 15px;
   }
 }
 
@@ -282,8 +231,8 @@ div.content-box.wizard {
     }
 }
 
-.page-login{
-    background: map-get($colors, lightgrey);
+.page-login {
+    background: map-get($colors, content-background);
 
     .container{
         min-height: 100%;
@@ -303,35 +252,27 @@ div.content-box.wizard {
 
     &-container{
         background: #FFF;
-        border: 1px solid map-get($colors, bordergrey);
+        border: 1px solid map-get($colors, border-default);
         max-width: 400px;
         margin: 100px auto 15px auto;
     }
 
     &-head{
-        background: map-get($colors, darkgrey);
-        height: 75px;
+        background: map-get($colors, login-modal-head-background);
+        height: 75px !important;
         padding: 0 20px;
+        .navbar-brand {
+          padding: 10px 0px !important;
+          img {
+            height: 60px ;
+          }
+        }
     }
 
     &-content{
-        padding: 20px 20px 20px 20px;
-    }
-
-    &-foot{
-        background: map-get($colors, lightgrey);
-        border-top: 1px solid map-get($colors, bordergrey);
-        height: 60px;
-        padding: 20px 20px 0 20px;
-
-        a{
-            color: #7D7D7D;
-            text-decoration: none;
-
-            &:hover{
-                color: darken(#7D7D7D, 10%);
-                text-decoration: underline;
-            }
+        padding: 0px 20px 20px 20px;
+        form.clearfix {
+          margin-right: 9px;
         }
     }
 }
@@ -395,10 +336,10 @@ main.page-content.col-lg-12 {
         padding-left: 0px;
         padding-right: 0px;
         padding-top: 12px;
-        border-bottom: 2px solid map-get($colors, lightergrey);
-        border-right: 1px solid #D9D9D9;
+        border-bottom: 2px transparent;
+        border-right: 1px solid rgba(0,0,0,.15);
         > span {
-          &.fa, &.glyphicon {
+          &.fa, &.fa-solid, &.glyphicon {
             visibility: visible;
             font-size: 20px;
           }
@@ -487,7 +428,7 @@ main.page-content.col-lg-12 {
 }
 
 button.toggle-sidebar {
-  color: #FFF;
+  color: map-get($colors, navbar-default-color);
   background-color: transparent;
   font-size: 14px;
   border: none;
@@ -513,7 +454,7 @@ ul.nav > li.dropdown > ul.dropdown-menu > li > a {
 
 .nav-tabs {
   margin-right: 1px;
-  border-bottom: 1px solid darken(map-get($colors, bordergrey), 30%);
+  border-bottom: 1px solid darken(map-get($colors, border-default), 30%);
 }
 
 .nav-tabs > li {
@@ -535,7 +476,7 @@ ul.nav > li.dropdown > ul.dropdown-menu > li > a {
   border-right: 1px solid darken(#FBFBFB, 5%);
   border-top: 1px solid darken(#FBFBFB, 5%);
   border-left: 1px solid darken(#FBFBFB, 5%);
-  border-bottom: 1px solid darken(map-get($colors, bordergrey), 30%);
+  border-bottom: 1px solid darken(map-get($colors, border-default), 30%);
 }
 
 .nav-tabs > li.active > a {
@@ -545,9 +486,9 @@ ul.nav > li.dropdown > ul.dropdown-menu > li > a {
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
 .nav-tabs > li.active > a:focus {
-  border-right: 1px solid darken(map-get($colors, bordergrey), 30%);
-  border-top: 1px solid darken(map-get($colors, bordergrey), 30%);
-  border-left: 1px solid darken(map-get($colors, bordergrey), 30%);
+  border-right: 1px solid darken(map-get($colors, border-default), 30%);
+  border-top: 1px solid darken(map-get($colors, border-default), 30%);
+  border-left: 1px solid darken(map-get($colors, border-default), 30%);
 }
 
 .nav-tabs > li > a.visible-lg-inline-block:not(.pull-right) {
@@ -563,44 +504,17 @@ ul.nav > li.dropdown > ul.dropdown-menu > li > a {
 }
 
 
-.nav-tabs.nav-justified{
-  border-right:1px solid map-get($colors, bordergrey);
-  > li {
-    border-bottom:1px solid map-get($colors, bordergrey);
-    border-top:1px solid map-get($colors, bordergrey);
-    border-left:1px solid map-get($colors, bordergrey);
-    border-radius: 0px;
-    background: map-get($colors, lightgrey);
-  > a {
-    color: map-get($colors, darkgrey);
-    font-family: 'SourceSansProSemibold';
-
-    @media (min-width:$screen-sm-min){
-    border-bottom: 1px solid transparent;
-  }
-  }
-  }
-
-  > li.active > a{
-  @media (max-width:$screen-xs-max){
-    border-right: 0 !important;
-  }
-  }
-  }
-
-  > li.active + li > a{
+> li.active + li > a {
   @media (min-width:$screen-sm-min){
     border-left: 1px solid transparent;
   }
-  }
+}
 
-  li:last-child > a{
-    border-right:1px solid transparent !important;
-
-    @media (max-width:$screen-xs-max){
+li:last-child > a{
+  @media (max-width:$screen-xs-max){
     margin-bottom: 0;
   }
-  }
+}
 
 .btn .glyphicon {
     vertical-align: -1px;
@@ -622,11 +536,6 @@ table{
     .nav-tabs.nav-justified > .active > a:focus {
         border: 0px !important;
     }
-}
-
-.table th, strong, b{
-    font-family: 'SourceSansProSemibold';
-    font-weight: normal;
 }
 
 .table > tbody > tr > td:last-child{
@@ -693,7 +602,7 @@ hr {
     }
 
     &:before{
-        background: #D94F00;
+        background: map-get($colors, brand-primary);
         content: "";
         height: 42px;
         min-height: 100%;
@@ -718,7 +627,7 @@ hr {
 .active-menu-title, .active-menu a{
     text-decoration: none;
     position: relative;
-    background-color: #F5F5F5;
+    background-color: map-get($colors, content-background);
 
     &:before{
         width: 3px;
@@ -730,7 +639,7 @@ hr {
 }
 
 .active-menu a:before{
-    background: #ED9A50;
+    background: lighten(map-get($colors, brand-primary), 30%);
 }
 
 .alert.alert-danger{
@@ -741,8 +650,15 @@ hr {
     border-radius: 0 !important;
 }
 
-.navbar-brand{
-    padding: 10px 20px;
+.navbar-brand {
+    padding: 1px 11px;
+
+    img.brand-logo {
+      height: 48px;
+    }
+    img.brand-icon {
+      height: 48px;
+    }
 }
 
 .label-opnsense {
@@ -774,17 +690,17 @@ hr {
   height:5px;
 }
 ::-webkit-scrollbar-track {
-  background: #f7f7f7;
+  background: lighten(map-get($colors, border-default), 30%);
   box-shadow: 0px 0px 0px;
   border-radius:0;
 }
 ::-webkit-scrollbar-thumb {
-  background: #e5e5e5;
-  border: thin solid #e5e5e5;
+  background: map-get($colors, border-default);
+  border: thin solid map-get($colors, border-default);
   border-radius: 0px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background:#e5e5e5;
+  background: map-get($colors, border-default);
 }
 
 .widgetdiv {
@@ -794,7 +710,7 @@ hr {
 
 select {
   overflow: hidden;
-  border: 1px solid #ccc;
+  border: 1px solid  darken(map-get($colors, border-default), 20%);
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;

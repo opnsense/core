@@ -71,7 +71,6 @@ class ServiceController extends ApiControllerBase
      */
     public function searchSessionsAction()
     {
-        $this->sessionClose();
         $data = json_decode((new Backend())->configdRun('openvpn connections client,server') ?? '', true) ?? [];
         $records = [];
         $roles = ['client', 'server'];
@@ -98,6 +97,8 @@ class ServiceController extends ApiControllerBase
                             $tmp = array_merge($stats, $client);
                             $tmp['id'] .= '_' . $client['real_address'];
                             $tmp['is_client'] = true;
+                            unset($tmp['client_list']);
+                            unset($tmp['routing_table']);
                             $records[] = $tmp;
                         }
                     } else {
@@ -175,7 +176,6 @@ class ServiceController extends ApiControllerBase
         if (!$this->request->isPost()) {
             return ['result' => 'failed'];
         }
-        $this->sessionClose();
         $server_id = $this->request->get('server_id', null);
         $session_id = $this->request->get('session_id', null);
         if ($server_id != null && $session_id != null) {
@@ -199,8 +199,6 @@ class ServiceController extends ApiControllerBase
             return ['result' => 'failed'];
         }
 
-        $this->sessionClose();
-
         (new Backend())->configdpRun('service start', ['openvpn', $id]);
 
         return ['result' => 'ok'];
@@ -215,8 +213,6 @@ class ServiceController extends ApiControllerBase
         if (!$this->request->isPost() || $id == null) {
             return ['result' => 'failed'];
         }
-
-        $this->sessionClose();
 
         (new Backend())->configdpRun('service stop', ['openvpn', $id]);
 
@@ -233,8 +229,6 @@ class ServiceController extends ApiControllerBase
             return ['result' => 'failed'];
         }
 
-        $this->sessionClose();
-
         (new Backend())->configdpRun('service restart', ['openvpn', $id]);
 
         return ['result' => 'ok'];
@@ -249,9 +243,9 @@ class ServiceController extends ApiControllerBase
             return ['result' => 'failed'];
         }
 
-        $this->sessionClose();
-
-        (new Backend())->configdpRun('openvpn configure');
+        $backend = new Backend();
+        $backend->configdRun('openvpn configure');
+        $backend->configdRun('interface invoke registration');
 
         return ['result' => 'ok'];
     }

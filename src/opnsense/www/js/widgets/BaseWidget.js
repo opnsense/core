@@ -24,16 +24,24 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export default class BaseWidget {
+class BaseWidget {
     constructor(config) {
         this.config = config;
         this.id = null;
         this.translations = {};
-        this.tickTimeout = 5000; // Default tick timeout
+        this.tickTimeout = 10; // Default tick timeout
         this.resizeHandles = "all"
         this.eventSource = null;
         this.eventSourceUrl = null;
         this.eventSourceOnData = null;
+        this.cachedData = {};
+
+        /* Connection timeout params */
+        this.timeoutPeriod = 5000;
+        this.retryLimit = 3;
+        this.eventSourceRetryCount = 0; // retrycount for $.ajax is managed in its own scope
+
+        this.configurable = false;
     }
 
     /* Public functions */
@@ -42,12 +50,30 @@ export default class BaseWidget {
         return this.resizeHandles;
     }
 
-    getWidgetConfig() {
-        if (this.config !== undefined && 'widget' in this.config) {
-            return this.config['widget'];
-        }
+    setWidgetConfig(config) {
+        this.config['widget'] = config;
+    }
 
-        return false;
+    async getWidgetConfig() {
+        let widget_config = {};
+        if (this.config !== undefined && 'widget' in this.config) {
+            widget_config = this.config['widget'];
+        }
+        const options = await this.getWidgetOptions();
+        return Object.entries(options).reduce((acc, [key, value]) => {
+            if (key in widget_config &&
+                widget_config[key] !== null &&
+                widget_config[key] !== undefined &&
+                (typeof(widget_config[key] === 'array') && widget_config[key].length !== 0) &&
+                (typeof(widget_config[key] === 'object') && Object.keys(widget_config[key]).length !== 0) &&
+                (typeof(widget_config[key] === 'string') && widget_config[key].length !== 0)
+            ) {
+                acc[key] = widget_config[key];
+            } else {
+                acc[key] = value.default;
+            }
+            return acc;
+        }, {});
     }
 
     setId(id) {
@@ -58,7 +84,11 @@ export default class BaseWidget {
         this.translations = translations;
     }
 
-    /* Public virtual functions */
+    isConfigurable() {
+        return this.configurable;
+    }
+
+    /* Public virtual/override functions */
 
     getGridOptions() {
         // per-widget gridstack options override
@@ -95,18 +125,87 @@ export default class BaseWidget {
         }
     }
 
+    async getWidgetOptions() {
+        return {};
+    }
+
+    onWidgetOptionsChanged(options) {
+        return null;
+    }
+
     /* Utility/protected functions */
 
-    setWidgetConfig(config) {
-        this.config['widget'] = config;
+    ajaxCall(url, data={}, method='GET') {
+        let retryLimit = this.retryLimit;
+        let timeoutPeriod = this.timeoutPeriod;
+        return new Promise((resolve, reject) => {
+            function makeRequest() {
+                $.ajax({
+                    type: method,
+                    url: url,
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: data,
+                    tryCount: 0,
+                    retryLimit: retryLimit,
+                    timeout: timeoutPeriod,
+                    success: function (responseData) {
+                        resolve(responseData);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        if (textStatus === 'timeout') {
+                            this.tryCount++;
+                            if (this.tryCount <= this.retryLimit) {
+                                $.ajax(this);
+                                return;
+                            }
+                        }
+                        reject({ xhr, textStatus, errorThrown });
+                    }
+                });
+            }
+
+            makeRequest();
+        });
+    }
+
+    dataChanged(id, data) {
+        if (id in this.cachedData) {
+            if (JSON.stringify(this.cachedData[id]) !== JSON.stringify(data)) {
+                this.cachedData[id] = data;
+                return true;
+            }
+        } else {
+            this.cachedData[id] = data;
+            return true;
+        }
+
+        return false;
     }
 
     openEventSource(url, onMessage) {
         this.closeEventSource();
 
+        if (this.eventSourceRetryCount >= this.retryLimit) {
+            return;
+        }
+
         this.eventSourceUrl = url;
         this.eventSourceOnData = onMessage;
         this.eventSource = new EventSource(url);
+
+        /* Unlike $.ajax, EventSource does not have a timeout mechanism */
+        let timeoutHandler = setTimeout(() => {
+            this.closeEventSource();
+            this.eventSourceRetryCount++;
+            this.openEventSource(url, onMessage);
+        }, this.timeoutPeriod);
+
+        this.eventSource.onopen = (event) => {
+            clearTimeout(timeoutHandler);
+            this.eventSourceRetryCount = 0;
+        };
+
         this.eventSource.onmessage = onMessage;
         this.eventSource.onerror = (e) => {
             if (this.eventSource.readyState == EventSource.CONNECTING) {
@@ -139,17 +238,95 @@ export default class BaseWidget {
         return color + op.toString(16).toUpperCase();
     }
 
+    _formatBits(value, decimals = 2) {
+        return this._formatField(value, decimals, true);
+    }
+
     _formatBytes(value, decimals = 2) {
-        if (!isNaN(value) && value > 0) {
-            let fileSizeTypes = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
-            let ndx = Math.floor(Math.log(value) / Math.log(1000) );
-            if (ndx > 0) {
-                return  (value / Math.pow(1000, ndx)).toFixed(2) + ' ' + fileSizeTypes[ndx];
-            } else {
-                return value.toFixed(2);
-            }
-        } else {
+        return this._formatField(value, decimals);
+    }
+
+    _formatField(value, decimals = 2, bits = false) {
+        value = Number(value);
+        if (isNaN(value) || value === null || value <= 0) {
             return "";
         }
+
+        let fileSizeTypes = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
+        const ndx = Math.floor(Math.log(value) / Math.log(1000));
+
+        const suffix = bits ? 'b' : 'B';
+        if (ndx > 0) {
+            return `${(value / Math.pow(1000, ndx)).toFixed(decimals)} ${fileSizeTypes[ndx]}${suffix}`;
+        }
+
+        return `${value.toFixed(decimals)} ${fileSizeTypes[0]}${suffix}`;
+    }
+
+    sanitizeSelector(selector) {
+        return String(selector).replace(/[:/.=+]/gi, '__');
+    }
+
+    startCommandTransition(id, $target) {
+        /**
+         * Note: this function works best wen applied to an element
+         * inside a div with at least the following styles:
+         *     display: flex;
+         *     align-items: center;
+         *     justify-content: center;
+         */
+        id = this.sanitizeSelector(id);
+        let $container = $(`
+            <span class="transition-icon-container">
+                <i class="fa fa-spinner fa-spin hide transition-spinner" id="spinner-${id}" style="font-size: 13px;"></i>
+                <i class="fa fa-check checkmark hide transition-check" id="check-${id}" style="font-size: 13px;"></i>
+            </span>
+        `);
+
+        // Copy inline styles from target to container
+        let inlineStyles = $target.attr('style');
+        if (inlineStyles) {
+            $container.attr('style', inlineStyles);
+        }
+
+        $target.before($container);
+        $target.addClass('show');
+        $target.toggleClass('show hide');
+        $(`#spinner-${id}`).addClass('show');
+        $target.prop('disabled', true);
+    }
+
+    async endCommandTransition(id, $target, success=true, hide=false) {
+        id = this.sanitizeSelector(id);
+        let $container = $target.prev('.transition-icon-container');
+        let $spinner = $container.find(`#spinner-${id}`);
+        let $check = $container.find(`#check-${id}`);
+
+        return new Promise(resolve => {
+            if (success) {
+                setTimeout(() => {
+                    $spinner.removeClass('show').addClass('hide');
+                    $check.toggleClass('hide show');
+                    setTimeout(() => {
+                        $check.toggleClass('hide show');
+                        $target.prop('disabled', false);
+                        if (!hide) {
+                            $target.toggleClass('show hide');
+                        }
+                        $container.remove();
+                        resolve();
+                    }, 500);
+                }, 200);
+            } else {
+                if (!hide) {
+                    $target.toggleClass('show hide');
+                }
+                $target.toggleClass('show hide');
+                $target.prop('disabled', false);
+                $spinner.removeClass('show').addClass('hide');
+                $container.remove();
+                resolve();
+            }
+        });
     }
 }

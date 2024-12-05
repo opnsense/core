@@ -31,7 +31,6 @@ require_once("config.inc");
 require_once("console.inc");
 require_once("filter.inc");
 require_once("util.inc");
-require_once("rrd.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
@@ -46,5 +45,4 @@ if (set_networking_interfaces_ports()) {
     filter_configure_sync(true);
     plugins_configure('local', true);
     plugins_configure('vpn', true);
-    rrd_configure(true);
 }

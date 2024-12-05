@@ -2,13 +2,8 @@
     --chart-js-font-color: #000000;
 }
 
-.btn-pressed, .btn-pressed:hover {
-    background-color: #d94f00;
-    color: white;
-}
-
-.fa-spinner {
-    font-size: 2em;
+.ui-resizable-handle {
+    opacity: 0 !important;
 }
 
 #save-grid {
@@ -35,6 +30,10 @@
 }
 
 #save-spinner, #save-check {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.transition-spinner, transition-check {
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
@@ -67,7 +66,7 @@
     width: 100%;
     height: 100%;
     padding: 1px;
-    cursor: grab;
+    cursor: default;
 }
 
 .widget-header {
@@ -81,20 +80,43 @@
 
 .widget-spinner {
     margin-top: 20px;
+    font-size: 2em;
 }
 
-.fa-stack.small {
-    font-size: 0.5em;
-}
-
-.close-handle {
+.link-handle,
+.close-handle,
+.edit-handle {
+    margin-left: 0.5em;
     vertical-align: middle;
     text-align: right;
     cursor: pointer;
 }
 
-.close-handle > i {
-    font-size: 0.7em;
+.link-handle > a,
+.close-handle > i,
+.edit-handle > i {
+    font-size: 0.8em;
+    color: black;
+}
+
+.widget-header-left {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex: 1;
+}
+
+.widget-command-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex: 1;
+}
+
+.widget-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .panel-divider {
@@ -240,7 +262,6 @@ div {
 .flextable-header {
     display: flex;
     flex-flow: row wrap;
-    transition: 0.5s;
     padding: 0.5em 0.5em;
     border-top: solid 1px rgba(217, 79, 0, 0.15);
 }
@@ -248,7 +269,6 @@ div {
 .flextable-row {
     display: flex;
     flex-flow: row wrap;
-    transition: 0.5s;
     padding: 0.5em 0.5em;
     border-top: solid 1px rgba(217, 79, 0, 0.15);
     align-items: center;
@@ -260,7 +280,6 @@ div {
 
 .flextable-row:hover {
     background: #F5F5F5 !important;
-    transition: 500ms;
 }
 
 .flex-cell {
@@ -284,7 +303,6 @@ div {
 }
 .column .flex-cell:hover {
     background: #F5F5F5;
-    transition: 500ms;
 }
 .flex-subcell {
     width: 100%;
@@ -305,15 +323,12 @@ div {
 .grid-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    background-color: #f7e2d6; /* fade-in color, transitions to transparent */
     border-top: 1px solid #f7e2d6;
-    transition: 0.5s;
     opacity: 0.4;
 }
 
 .grid-row:hover {
     background: #F5F5F5 !important;
-    transition: 500ms;
 }
 
 .grid-header {
@@ -327,3 +342,9 @@ div {
     text-align: center;
 }
 /* ----- */
+
+.ovpn-common-name {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

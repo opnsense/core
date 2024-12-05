@@ -27,8 +27,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("auth.inc");
-require_once("config.inc");
+require_once('script/load_phalcon.php');
+require_once('legacy_bindings.inc');
+use OPNsense\Core\Config;
+use OPNsense\Auth\User;
 
 $opts = getopt('hu:o', array(), $optind);
 $args = array_slice($argv, $optind);
@@ -40,37 +42,38 @@ if (isset($opts['h']) || empty($opts['u'])) {
     echo "\t-o origin (default=automation)";
     exit(-1);
 } else {
-    OPNsense\Core\Config::getInstance()->lock();
-    $config = OPNsense\Core\Config::getInstance()->toArray(listtags());
-    $a_user = &config_read_array('system', 'user');
+    Config::getInstance()->lock();
     $input_errors = [];
-    if (preg_match("/[^a-zA-Z0-9\.\-_]/", $opts['u'])) {
-        $input_errors[] = gettext("The username contains invalid characters.");
-    } elseif (strlen($opts['u']) > 32) {
-        $input_errors[] = gettext("The username is longer than 32 characters.");
-    } else {
-        foreach ($a_user as $userent) {
-            if ($userent['name'] == $opts['u']) {
-                $input_errors[] = gettext("Another entry with the same username already exists.");
-                break;
-            }
-        }
+    $usermdl = new User();
+    $user = $usermdl->user->Add();
+    $user->name = $opts['u'];
+    $user->scope = !empty($opts['o']) ? $opts['o'] : 'automation';
+
+    /* generate a random password */
+    $password = random_bytes(50);
+    while (($i = strpos($password, "\0")) !== false) {
+        $password[$i] = random_bytes(1);
+    }
+    $hash = $usermdl->generatePasswordHash($password);
+    if ($hash !== false && strpos($hash, '$') === 0) {
+        /* model validation won't pass when no password is offered */
+        $user->password = $hash;
     }
 
+    $valMsgs = $usermdl->performValidation();
+    foreach ($valMsgs as $field => $msg) {
+        if (strpos($msg->getField(), $user->__reference) !== false) {
+            $input_errors[] = $msg->getMessage();
+        }
+    }
     if (empty($input_errors)) {
-        $userent = [];
-        $userent['uid'] = $config['system']['nextuid']++;
-        $userent['name'] = $opts['u'];
-        $userent['descr'] = "";
-        $userent['scope'] = !empty($opts['o']) ? $opts['o'] : 'automation';
-        local_user_set_password($userent);
-        local_user_set($userent);
-        $a_user[] = $userent;
-        write_config(sprintf("user \"%s\" created", $userent['name']));
-        // XXX: signal backend that the user has changed.
+        if ($usermdl->serializeToConfig(false, true)) {
+            Config::getInstance()->save();
+        }
         configdp_run('auth user changed', [$userent['name']]);
-        echo json_encode(["status" => "ok", "uid" => $userent['uid'], "name" => $userent['name']]);
+        echo json_encode(["status" => "ok", "uid" => (string)$user->uid, "name" => (string)$user->name]);
     } else {
         echo json_encode(["status" => "failed", "messages" => $input_errors]);
+        Config::getInstance()->unlock();
     }
 }

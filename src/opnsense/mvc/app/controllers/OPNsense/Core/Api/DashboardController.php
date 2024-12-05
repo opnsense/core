@@ -31,248 +31,146 @@ namespace OPNsense\Core\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\ACL;
 use OPNsense\Core\Config;
+use SimpleXMLElement;
 
 class DashboardController extends ApiControllerBase
 {
-    private function getTranslations()
+    private $metadataFileLocation = "/usr/local/opnsense/www/js/widgets/Metadata";
+    private $acl = null;
+
+    public function __construct()
     {
-        return [
-            'cpu' => [
-                'title' => gettext('CPU'),
-                'total' => gettext('Total'),
-                'interrupt' => gettext('Interrupt'),
-                'user' => gettext('User'),
-                'system' => gettext('System'),
-            ],
-            'interfaces' => [
-                'title' => gettext('Interfaces'),
-            ],
-            'systeminformation' => [
-                'title' => gettext('System Information'),
-                'name' => gettext('Name'),
-                'versions' => gettext('Versions'),
-                'updates' => gettext('Updates'),
-                'datetime' => gettext('Current date/time'),
-                'uptime' => gettext('Uptime'),
-                'config' => gettext('Last configuration change')
-            ],
-            'interfacestatistics' => [
-                'title' => gettext('Interface Statistics'),
-                'bytesin' => gettext('Bytes In'),
-                'bytesout' => gettext('Bytes Out'),
-                'packetsin' => gettext('Packets In'),
-                'packetsout' => gettext('Packets Out'),
-                'errorsin' => gettext('Errors In'),
-                'errorsout' => gettext('Errors Out'),
-                'collisions' => gettext('Collisions'),
-            ],
-            'traffic' => [
-                'title' => gettext('Traffic Graph'),
-                'trafficin' => gettext('Traffic In'),
-                'trafficout' => gettext('Traffic Out'),
-            ],
-            'memory' => [
-                'title' => gettext('Memory usage'),
-                'used' => gettext('Used'),
-                'free' => gettext('Free'),
-                'arc' => gettext('ARC'),
-            ],
-            'disk' => [
-                'title' => gettext('Disk usage'),
-                'used' => gettext('Used'),
-                'free' => gettext('Free'),
-            ],
-            'wireguard' => [
-                'title' => gettext('Wireguard'),
-                'instance' => gettext('Instance'),
-                'peer' => gettext('Peer'),
-                'pubkey' => gettext('Public Key'),
-                'handshake' => gettext('Latest handshake'),
-            ],
-            'firewall' => [
-                'title' => gettext('Firewall'),
-                'action' => gettext('Action'),
-                'time' => gettext('Time'),
-                'interface' => gettext('Interface'),
-                'source' => gettext('Source'),
-                'destination' => gettext('Destination'),
-                'port' => gettext('Port'),
-                'matchedrule' => gettext('Matched rule'),
-                'click' => gettext('Click to track this rule in Live View'),
-                'label' => gettext('Label'),
-                'count' => gettext('Count'),
-                'livelog' => gettext('Live Log'),
-                'events' => gettext('Events'),
-                'nodata' => gettext('Waiting for data')
-            ],
-            'firewallstates' => [
-                'title' => gettext('Firewall States'),
-                'used' => gettext('Used'),
-                'free' => gettext('Free'),
-            ],
-            'mbuf' => [
-                'title' => gettext('MBUF Usage'),
-                'used' => gettext('Used'),
-                'free' => gettext('Free'),
-            ],
-            'swap' => [
-                'title' => gettext('SWAP Usage'),
-                'used' => gettext('Used'),
-                'free' => gettext('Free'),
-            ],
-            'carp' => [
-                'title' => gettext('CARP Status'),
-                'unconfigured' => gettext('No CARP Interfaces configured. Click to configure CARP.'),
-                'carp' => gettext('CARP IP'),
-                'alias' => gettext('IP Alias'),
-            ],
-            'gateways' => [
-                'title' => gettext('Gateways'),
-                'unconfigured' => gettext('No Gateways configured. Click to configure gateways.'),
-                'rtt' => gettext('RTT'),
-                'rttd' => gettext('RTTd'),
-                'loss' => gettext('Loss'),
-            ],
-            'thermalsensors' => [
-                'title' => gettext('Thermal Sensors'),
-                'help' => gettext('CPU thermal sensors often measure the same temperature for each core. If this is the case, only the first core is shown.'),
-                'unconfigured' => gettext('Thermal sensors not available or not configured.')
-            ],
-            'monit' => [
-                'title' => gettext('Monit Status'),
-                'filesystem' => gettext('Filesystem'),
-                'directory' => gettext('Directory'),
-                'file' => gettext('File'),
-                'process' => gettext('Process'),
-                'host' => gettext('Host'),
-                'system' => gettext('System'),
-                'fifo' => gettext('FIFO'),
-                'custom' => gettext('Custom'),
-                'network' => gettext('Network'),
-                'ok' => gettext('OK'),
-                'failed' => gettext('Failed'),
-                'changed' => gettext('Changed'),
-                'unchanged' => gettext('Not changed'),
-                'type' => gettext('Type'),
-                'unconfigured' => gettext('Monit is disabled or not configured.'),
-            ],
-            'livelog' => [
-                'title' => gettext('Live Log'),
-                'time' => gettext('Time'),
-                'severity' => gettext('Severity'),
-                'process' => gettext('Process'),
-                'message' => gettext('Message'),
-            ],
-            'ipsecleases' => [
-                'title' => gettext('IPsec Leases'),
-                'online' => gettext('Online'),
-                'offline' => gettext('Offline'),
-                'users' => gettext('Users'),
-                'unconfigured' => gettext('IPsec is currently disabled. Click to configure IPsec.'),
-                'noleases' => gettext('There are currently no leases.'),
-                'nodata' => gettext('Failed to load data.'),
-            ],
-            'ipsectunnels' => [
-                'title' => gettext('IPsec Tunnels'),
-                'online' => gettext('Online'),
-                'offline' => gettext('Offline'),
-                'total' => gettext('Tunnels'),
-                'unconfigured' => gettext('IPsec is currently disabled. Click to configure IPsec.'),
-                'notunnels' => gettext('There are currently no tunnels.'),
-                'nodata' => gettext('Failed to load data.'),
-                'notavailable' => gettext('n/a'),
-            ]
-        ];
+        $this->acl = new ACL();
     }
 
-    private function canAccessEndpoints($fname)
+    private function canAccessEndpoints($endpoints)
     {
-        if (!file_exists($fname)) {
-            return false;
-        }
-
-        $handle = fopen($fname, "r");
-
-        if ($handle) {
-            $lines = [];
-            while (($line = fgets($handle)) !== false) {
-                if (strpos($line, "// endpoint:") === 0) {
-                    $endpoint = explode(':', trim($line))[1] ?? null;
-                    if (!empty($endpoint)) {
-                        $endpoint = strstr($endpoint, ' ', true) ?: $endpoint;
-                        $lines[] = $endpoint;
-                    }
-                    continue;
-                }
-                break;
-            }
-
-            fclose($handle);
-
-            $acl = new ACL();
-            foreach ($lines as $line) {
-                if (!$acl->isPageAccessible($this->getUserName(), $line)) {
-                    return false;
-                }
+        foreach ($endpoints as $endpoint) {
+            if (!$this->acl->isPageAccessible($this->getUserName(), $endpoint)) {
+                return false;
             }
         }
 
         return true;
     }
 
+    private function getMetadata()
+    {
+        $combinedXml = new \DOMDocument('1.0');
+        $root = $combinedXml->createElement('metadata');
+        $combinedXml->appendChild($root);
+        foreach (glob($this->metadataFileLocation . '/*.xml') as $file) {
+            $metadataXml = simplexml_load_file($file);
+            if ($metadataXml === false) {
+                // not a valid xml file
+                continue;
+            }
+
+            if ($metadataXml->getName() !== "metadata") {
+                // wrong type
+                continue;
+            }
+
+            $node = dom_import_simplexml($metadataXml);
+            $node = $root->ownerDocument->importNode($node, true);
+            $root->appendChild($node);
+        }
+
+        return simplexml_import_dom($combinedXml);
+    }
+
+    private function getDefaultDashboard()
+    {
+        return [
+            'options' => [],
+            'widgets' => [
+                ['id' => 'systeminformation', 'x' => 0, 'y' => 0, 'w' => 2],
+                ['id' => 'memory', 'x' => 2, 'y' => 0],
+                ['id' => 'disk', 'x' => 3, 'y' => 0],
+                ['id' => 'interfacestatistics', 'x' => 4, 'y' => 0, 'w' => 4],
+                ['id' => 'firewall', 'x' => 8, 'y' => 0, 'w' => 4],
+                ['id' => 'gateways', 'x' => 2, 'y' => 1, 'w' => 2],
+                ['id' => 'services', 'x' => 4, 'y' => 1, 'w' => '4'],
+                ['id' => 'traffic', 'x' => 8, 'y' => 1, 'w' => 4],
+                ['id' => 'cpu', 'x' => 0, 'y' => 1, 'w' => 2],
+                ['id' => 'announcements', 'x' => 2, 'y' => 2, 'w' => 2],
+            ]
+        ];
+    }
+
     public function getDashboardAction()
     {
-        $this->sessionClose();
         $result = [];
         $dashboard = null;
 
         $config = Config::getInstance()->object();
         foreach ($config->system->user as $node) {
             if ($this->getUserName() === (string)$node->name) {
-                $dashboard = (string)$node->dashboard;
+                // json_decode returns null if json is invalid
+                $dashboard = json_decode(base64_decode((string)$node->dashboard), true);
+                break;
             }
         }
 
-        $widgetModules = array_filter(
-            glob('/usr/local/opnsense/www/js/widgets/*.js'),
-            function ($element) {
-                $base = basename($element);
-                if (str_contains($base, '.js') && !str_contains($base, 'Base')) {
-                    return $this->canAccessEndpoints($element);
-                }
-
-                return false;
-            }
-        );
-
-        $widgetModules = array_map(function ($element) {
-            return basename($element);
-        }, $widgetModules);
+        if (empty($dashboard)) {
+            $dashboard = $this->getDefaultDashboard();
+        }
 
         $result['modules'] = [];
-        foreach ($widgetModules as $module) {
-            $id = strtolower(basename($module, '.js'));
-            $result['modules'][] = [
-                'id' => $id,
-                'module' => basename($module),
-                'translations' => $this->getTranslations()[$id] ?? []
-            ];
+        $metadata = $this->getMetadata();
+        foreach ($metadata as $md) {
+            foreach ($md as $widgetId => $metadataAttributes) {
+                $widgetId = (string)$widgetId;
+                $fname = (string)$metadataAttributes->filename;
+                $link = (string)$metadataAttributes->link;
+                $endpoints = (array)($metadataAttributes->endpoints->endpoint ?? []);
+                $translations = (array)($metadataAttributes->translations ?? []);
+
+                if (!empty($link) && !$this->canAccessEndpoints([$link])) {
+                    $link = '';
+                }
+
+                if (!$this->canAccessEndpoints($endpoints)) {
+                    continue;
+                }
+
+                if (!file_exists('/usr/local/opnsense/www/js/widgets/' . $fname)) {
+                    continue;
+                }
+
+                foreach ($translations as $key => $value) {
+                    $translations[$key] = gettext($value);
+                }
+
+                $result['modules'][] = [
+                    'id' => $widgetId,
+                    'module' => $fname,
+                    'link' => $link,
+                    'translations' => $translations
+                ];
+            }
         }
 
-        $result['dashboard'] = !empty($dashboard) ? base64_decode($dashboard) : null;
+        // filter widgets according to metadata
+        $moduleIds = array_column($result['modules'], 'id');
+        $filteredWidgets = array_filter($dashboard['widgets'], function ($widget) use ($moduleIds) {
+            return in_array($widget['id'], $moduleIds);
+        });
+        $dashboard['widgets'] = array_values($filteredWidgets);
+        $result['dashboard'] = $dashboard;
 
         return $result;
     }
 
     public function saveWidgetsAction()
     {
-
         $result = ['result' => 'failed'];
 
-        if ($this->request->isPost() && !empty($this->request->getRawBody())) {
-            $dashboard = $this->request->getRawBody();
+        if ($this->request->isPost() && $this->request->hasPost('widgets')) {
+            $dashboard = json_encode($this->request->getPost());
             if (strlen($dashboard) > (1024 * 1024)) {
                 // prevent saving large blobs of data
+                $result['message'] = 'dashboard size limit reached';
                 return $result;
             }
 
@@ -296,16 +194,63 @@ class DashboardController extends ApiControllerBase
     {
         $result = ['result' => 'failed'];
 
-        $config = Config::getInstance()->object();
-        $name = $this->getUserName();
+        if ($this->request->isPost()) {
+            $config = Config::getInstance()->object();
+            $name = $this->getUserName();
 
-        foreach ($config->system->user as $node) {
-            if ($name === (string)$node->name) {
-                $node->dashboard = null;
-                Config::getInstance()->save();
-                $result = ['result' => 'saved'];
-                break;
+            foreach ($config->system->user as $node) {
+                if ($name === (string)$node->name) {
+                    $node->dashboard = null;
+                    Config::getInstance()->save();
+                    $result = ['result' => 'saved'];
+                    break;
+                }
             }
+        }
+
+        return $result;
+    }
+
+    public function productInfoFeedAction()
+    {
+        $result = ['items' => []];
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://forum.opnsense.org/index.php?board=11.0&action=.xml;limit=5;type=rss2');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $output = curl_exec($ch);
+        curl_close($ch);
+        $payload = simplexml_load_string($output);
+        if (empty($payload)) {
+            return $result;
+        }
+        foreach ($payload->channel->children() as $key => $node) {
+            if ($key == 'item') {
+                $result['items'][] = [
+                    'title' => (string)$node->title,
+                    'description' => (string)$node->description,
+                    'link' => (string)$node->link,
+                    'pubDate' => (string)$node->pubDate,
+                    'guid' => (string)$node->guid
+                ];
+            }
+        }
+        return $result;
+    }
+
+    public function pictureAction()
+    {
+        $result = ['result' => 'failed'];
+        $config = Config::getInstance()->object();
+        if (!empty($config->system->picture) && !empty($config->system->picture_filename)) {
+            $ext = pathinfo((string)$config->system->picture_filename, PATHINFO_EXTENSION);
+            if (empty($ext)) {
+                return $result;
+            }
+            return [
+                'result' => 'ok',
+                'mime' => 'image/' . $ext,
+                'picture' => (string)$config->system->picture,
+            ];
         }
 
         return $result;
