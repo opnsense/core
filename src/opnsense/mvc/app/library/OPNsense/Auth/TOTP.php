@@ -140,7 +140,7 @@ trait TOTP
      * @param string $password user password
      * @return bool authentication status
      */
-    public function authenticate($username, $password)
+    protected function _authenticate($username, $password)
     {
         $userObject = $this->getUser($username);
         if ($userObject != null && !empty($userObject->otp_seed)) {
@@ -158,7 +158,7 @@ trait TOTP
                 $otp_seed = \Base32\Base32::decode($userObject->otp_seed);
                 if ($this->authTOTP($otp_seed, $code)) {
                     // token valid, do parents auth
-                    return parent::authenticate($username, $userPassword);
+                    return parent::_authenticate($username, $userPassword);
                 }
             }
         }

@@ -1,5 +1,3 @@
-// endpoint:/api/diagnostics/log/*
-
 /*
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
@@ -25,8 +23,6 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
-import BaseTableWidget from "./BaseTableWidget.js";
 
 export default class LiveLog extends BaseTableWidget {
     constructor(config) {
@@ -55,9 +51,9 @@ export default class LiveLog extends BaseTableWidget {
             offset: 10,
             searchPhrase: '',
             severity: ''
-        });
+        }).toString();
 
-        super.openEventSource(`/api/diagnostics/log/core/system/live?${params.toString()}`, (event) => {
+        super.openEventSource(`/api/diagnostics/log/core/system/${'live?' + params}`, (event) => {
             if (!event) {
                 super.closeEventSource();
             }

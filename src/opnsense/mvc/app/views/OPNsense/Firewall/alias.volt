@@ -252,12 +252,12 @@
             });
 
             $(".geoip_select").selectpicker();
-            $(".geoip_select").change(function(){
+            $("select.geoip_select").change(function(){
                 // unlink on change event
                 $("#alias\\.content").unbind('tokenize:tokens:change');
                 // copy items from geoip fields to content field
                 $("#alias\\.content").tokenize2().trigger('tokenize:clear');
-                $(".geoip_select").each(function () {
+                $("select.geoip_select").each(function () {
                     $.each($(this).val(), function(key, item){
                         $("#alias\\.content").tokenize2().trigger('tokenize:tokens:add', item);
                     });
@@ -700,7 +700,7 @@
 </section>
 
 {# Edit dialog #}
-<div class="modal fade" id="DialogAlias" tabindex="-1" role="dialog" aria-labelledby="DialogAliasLabel" aria-hidden="true">
+<div class="modal fade" id="DialogAlias" tabindex="-1" role="dialog" aria-labelledby="DialogAliasLabel">
     <div class="modal-backdrop fade in"></div>
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

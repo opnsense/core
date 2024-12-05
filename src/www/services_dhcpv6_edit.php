@@ -141,8 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config();
 
         if (isset($config['dhcpdv6'][$if]['enable'])) {
-            mark_subsystem_dirty('staticmaps');
-            mark_subsystem_dirty('hosts');
+            mark_subsystem_dirty('staticmapsv6');
         }
 
         header(url_safe('Location: /services_dhcpv6.php?if=%s', array($if)));

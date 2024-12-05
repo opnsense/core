@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2018-2023 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2018-2024 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -23,7 +23,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-DEFAULTS="\${product_name} \${product_version}"
+DEFAULTS="\${product_name} \${product_version} \(\${product_arch}\)"
 VERSIONDIR="/usr/local/opnsense/version"
 PLUGINCTL="/usr/local/sbin/pluginctl"
 PKG="/usr/local/sbin/pkg-static"
@@ -33,13 +33,16 @@ OUTPUT=
 DO_CHECK=
 DO_ORIGIN=
 
-while getopts AaceHilNnOstVvwx OPT; do
+while getopts AaCceHilNnOstVvwx OPT; do
 	case ${OPT} in
 	A)
 		OUTPUT="${OUTPUT} \${product_arch}"
 		;;
 	a)
 		OUTPUT="${OUTPUT} \${product_abi}"
+		;;
+	C)
+		OUTPUT="${OUTPUT} \${product_conflicts}"
 		;;
 	c)
 		DO_CHECK="-c"
@@ -215,4 +218,7 @@ core)
 	;;
 esac
 
-eval echo ${OUTPUT}
+OUTPUT=$(eval echo ${OUTPUT})
+if [ -n "${OUTPUT}" ]; then
+	echo "${OUTPUT}"
+fi

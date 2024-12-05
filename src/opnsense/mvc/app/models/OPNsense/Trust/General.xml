@@ -1,0 +1,78 @@
+<model>
+    <mount>//OPNsense/trust/general</mount>
+    <description>Trust general settings</description>
+    <version>1.0.1</version>
+    <items>
+        <store_intermediate_certs type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </store_intermediate_certs>
+        <install_crls type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </install_crls>
+        <fetch_crls type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </fetch_crls>
+        <enable_legacy_sect type="BooleanField">
+            <Default>1</Default>
+            <Required>Y</Required>
+        </enable_legacy_sect>
+        <enable_config_constraints type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </enable_config_constraints>
+        <!-- https://docs.openssl.org/3.0/man3/SSL_CONF_cmd/#supported-configuration-file-commands -->
+        <CipherString type="JsonKeyValueStoreField">
+            <Multiple>Y</Multiple>
+            <ConfigdPopulateAct>system ssl ciphers-keyval pre-TLSv1.3</ConfigdPopulateAct>
+            <SortByValue>Y</SortByValue>
+        </CipherString>
+        <Ciphersuites type="JsonKeyValueStoreField">
+            <Multiple>Y</Multiple>
+            <ConfigdPopulateAct>system ssl ciphers-keyval TLSv1.3</ConfigdPopulateAct>
+            <SortByValue>Y</SortByValue>
+        </Ciphersuites>
+        <!-- XXX: unfortunately we can't seem to query the options from openssl, so we need a static list here -->
+        <SignatureAlgorithms type="OptionField">
+            <Multiple>Y</Multiple>
+            <OptionValues>
+                <o1 value="ECDSA+SHA256">ECDSA+SHA256</o1>
+                <o2 value="ECDSA+SHA384">ECDSA+SHA384</o2>
+                <o3 value="ECDSA+SHA512">ECDSA+SHA512</o3>
+                <o4 value="ed25519:ed448">ed25519:ed448</o4>
+                <o5 value="rsa_pss_pss_sha256">rsa_pss_pss_sha256</o5>
+                <o6 value="rsa_pss_pss_sha384">rsa_pss_pss_sha384</o6>
+                <o7 value="rsa_pss_pss_sha512">rsa_pss_pss_sha512</o7>
+                <o8 value="rsa_pss_rsae_sha256">rsa_pss_rsae_sha256</o8>
+                <o9 value="rsa_pss_rsae_sha384">rsa_pss_rsae_sha384</o9>
+                <o10 value="rsa_pss_rsae_sha512">rsa_pss_rsae_sha512</o10>
+                <o11 value="RSA+SHA256">RSA+SHA256</o11>
+                <o12 value="RSA+SHA384">RSA+SHA384</o12>
+                <o13 value="RSA+SHA512">RSA+SHA512</o13>
+                <o14 value="ECDSA+SHA224">ECDSA+SHA224</o14>
+                <o15 value="RSA+SHA224">RSA+SHA224</o15>
+            </OptionValues>
+        </SignatureAlgorithms>
+        <groups type="JsonKeyValueStoreField">
+            <Multiple>Y</Multiple>
+            <ConfigdPopulateAct>system tls groups</ConfigdPopulateAct>
+            <SortByValue>Y</SortByValue>
+        </groups>
+        <MinProtocol type="OptionField">
+            <OptionValues>
+                <TLSv1>TLSv1</TLSv1>
+                <TLSv1.1>TLSv1.1</TLSv1.1>
+                <TLSv1.2>TLSv1.2</TLSv1.2>
+                <TLSv1.3>TLSv1.3</TLSv1.3>
+            </OptionValues>
+        </MinProtocol>
+        <MinProtocol_DTLS type="OptionField">
+            <OptionValues>
+                <DTLSv1>DTLSv1</DTLSv1>
+                <DTLSv1.1>DTLSv1.1</DTLSv1.1>
+            </OptionValues>
+        </MinProtocol_DTLS>
+    </items>
+</model>

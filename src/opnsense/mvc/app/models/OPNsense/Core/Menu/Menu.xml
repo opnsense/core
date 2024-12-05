@@ -1,16 +1,15 @@
 <menu>
     <Lobby order="10" cssClass="fa fa-laptop">
-        <Dashboard order="0" url="/index.php" cssClass="fa fa-dashboard fa-fw">
+        <Dashboard order="0" url="/ui/core/dashboard" cssClass="fa fa-dashboard fa-fw">
             <Args url="/index.php*" visibility="hidden"/>
             <Root url="/" visibility="hidden"/>
             <RootArgs url="/?*" visibility="hidden"/>
         </Dashboard>
-        <Dashboard_new order="1" VisibleName="Dashboard [new]" url="/ui/core/dashboard" cssClass="fa fa-dashboard fa-fw"/>
-        <License order="2" url="/ui/core/license" cssClass="fa fa-balance-scale fa-fw"/>
-        <Password order="3" url="/system_usermanager_passwordmg.php" cssClass="fa fa-key fa-fw">
+        <License order="1" url="/ui/core/license" cssClass="fa fa-balance-scale fa-fw"/>
+        <Password order="2" url="/system_usermanager_passwordmg.php" cssClass="fa fa-key fa-fw">
             <Edit url="/system_usermanager_passwordmg.php*" visibility="hidden"/>
         </Password>
-        <Logout order="4" url="/index.php?logout" cssClass="fa fa-sign-out fa-fw"/>
+        <Logout order="3" url="/index.php?logout" cssClass="fa fa-sign-out fa-fw"/>
     </Lobby>
     <Reporting order="15" cssClass="fa fa-area-chart">
         <Settings order="10" url="/reporting_settings.php" cssClass="fa fa-cog fa-fw"/>
@@ -19,14 +18,9 @@
     </Reporting>
     <System order="20" cssClass="fa fa-server">
         <Access cssClass="fa fa-users fa-fw">
-            <Users order="10" url="/system_usermanager.php">
-                <All url="/system_usermanager.php*" visibility="hidden"/>
-                <Privileges url="/system_usermanager_addprivs.php?user*" visibility="hidden"/>
-            </Users>
-            <Groups order="20" url="/system_groupmanager.php">
-                <All url="/system_groupmanager.php*" visibility="hidden"/>
-                <Privileges url="/system_usermanager_addprivs.php?group*" visibility="hidden"/>
-            </Groups>
+            <Users order="10" url="/ui/auth/user"/>
+            <Groups order="20" url="/ui/auth/group"/>
+            <Privileges order="25" url="/ui/auth/priv"/>
             <Servers order="30" url="/system_authservers.php">
                 <Edit url="/system_authservers.php*" visibility="hidden"/>
             </Servers>
@@ -73,10 +67,12 @@
                 <Edit url="/system_advanced_sysctl.php*" visibility="hidden"/>
             </Tunables>
         </Settings>
+        <Snapshots cssClass="fa fa-hdd-o fa-fw" url="/ui/core/snapshots/"/>
         <Trust cssClass="fa fa-certificate fa-fw">
             <Authorities url="/ui/trust/ca"/>
             <Certificates url="/ui/trust/cert"/>
             <Revocation url="/ui/trust/crl"/>
+            <Settings url="/ui/trust/settings"/>
         </Trust>
         <Wizard url="/wizard.php?xml=system" cssClass="fa fa-magic fa-fw"/>
         <LogFiles order="150" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
@@ -90,39 +86,8 @@
             <Services url="/ui/core/service"/>
         </Diagnostics>
     </System>
-    <Interfaces order="30" cssClass="fa fa-sitemap">
-        <Assignments order="900" url="/interfaces_assign.php" cssClass="fa fa-pencil fa-fw"/>
-        <Overview VisibleName="Overview" order="910" url="/ui/interfaces/overview" cssClass="fa fa-tasks fa-fw"/>
-        <Settings order="920" url="/system_advanced_network.php" cssClass="fa fa-cogs fa-fw"/>
-        <Neighbors order="930" url="/ui/interfaces/neighbor" cssClass="fa fa-users fa-fw"/>
-        <Wireless order="940" cssClass="fa fa-wifi fa-fw">
-            <Devices url="/interfaces_wireless.php">
-                <Edit url="/interfaces_wireless_edit.php*" visibility="hidden"/>
-            </Devices>
-            <LogFile VisibleName="Log File" url="/ui/diagnostics/log/core/wireless"/>
-        </Wireless>
-        <PPP order="950" VisibleName="Point-to-Point" cssClass="fa fa-tty fa-fw">
-            <Devices url="/interfaces_ppps.php">
-                <Edit url="/interfaces_ppps_edit.php*" visibility="hidden"/>
-            </Devices>
-            <LogFile VisibleName="Log File" url="/ui/diagnostics/log/core/ppps"/>
-        </PPP>
-        <Types VisibleName="Other Types" order="960" cssClass="fa fa-archive fa-fw">
-            <Bridge url="/interfaces_bridge.php">
-                <Edit url="/interfaces_bridge_edit.php*" visibility="hidden"/>
-            </Bridge>
-            <GIF url="/ui/interfaces/gif"/>
-            <GRE url="/ui/interfaces/gre"/>
-        </Types>
-        <Diagnostics order="970" cssClass="fa fa-medkit fa-fw">
-            <DNSLookup VisibleName="DNS Lookup" url="/ui/diagnostics/dns_diagnostics"/>
-            <PacketCapture VisibleName="Packet Capture" url="/ui/diagnostics/packet_capture"/>
-            <Ping url="/ui/diagnostics/ping"/>
-            <TestPort VisibleName="Port Probe" url="/ui/diagnostics/portprobe"/>
-            <Traceroute VisibleName="Trace Route" url="/ui/diagnostics/traceroute"/>
-        </Diagnostics>
-    </Interfaces>
-    <Firewall order="40" cssClass="glyphicon glyphicon-fire">
+    <Interfaces order="30" cssClass="fa fa-sitemap"/>
+    <Firewall order="40" cssClass="fa fa-fire">
         <Aliases url="/ui/firewall/alias" cssClass="fa fa-list-alt fa-fw">
             <Edit url="/ui/firewall/alias/*" visibility="hidden"/>
         </Aliases>

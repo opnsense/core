@@ -47,7 +47,6 @@ class FirewallController extends ApiControllerBase
     public function logAction()
     {
         if ($this->request->isGet()) {
-            $this->sessionClose(); // long running action, close session
             $digest = empty($this->request->get('digest')) ? "" : $this->request->get('digest');
             $limit = empty($this->request->get('limit')) ? 1000 : $this->request->get('limit');
             $backend = new Backend();
@@ -106,7 +105,6 @@ class FirewallController extends ApiControllerBase
     public function statsAction()
     {
         if ($this->request->isGet()) {
-            $this->sessionClose(); // long running action, close session
             $limit = empty($this->request->get('limit')) ? 5000 : $this->request->get('limit');
             $group_by = empty($this->request->get('group_by')) ? "interface" : $this->request->get('group_by');
             $records = json_decode((new Backend())->configdpRun("filter read log", array($limit)), true);
@@ -164,7 +162,6 @@ class FirewallController extends ApiControllerBase
     public function queryStatesAction()
     {
         if ($this->request->isPost()) {
-            $this->sessionClose();
             $ifnames = [];
             $ifnames["lo0"] = gettext("loopback");
             if (Config::getInstance()->object()->interfaces->count() > 0) {
@@ -226,7 +223,6 @@ class FirewallController extends ApiControllerBase
     public function queryPfTopAction()
     {
         if ($this->request->isPost()) {
-            $this->sessionClose();
             $pftop = json_decode((new Backend())->configdpRun('filter diag top') ?? '', true) ?? [];
 
             $clauses = [];

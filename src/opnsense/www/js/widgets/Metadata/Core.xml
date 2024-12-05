@@ -1,0 +1,369 @@
+<metadata>
+    <announcements>
+        <filename>Announcements.js</filename>
+        <endpoints>
+            <endpoint>/api/core/dashboard/product_info_feed</endpoint>
+        </endpoints>
+        <translations>
+            <title>Announcements</title>
+            <no_feed>Unable to contact information feed.</no_feed>
+        </translations>
+    </announcements>
+    <systeminformation>
+        <filename>SystemInformation.js</filename>
+        <endpoints>
+            <endpoint>/api/diagnostics/system/systemInformation</endpoint>
+            <endpoint>/api/diagnostics/system/systemTime</endpoint>
+        </endpoints>
+        <translations>
+            <title>System Information</title>
+            <name>Name</name>
+            <versions>Versions</versions>
+            <updates>Updates</updates>
+            <datetime>Current date/time</datetime>
+            <loadavg>Load average</loadavg>
+            <uptime>Uptime</uptime>
+            <config>Last configuration change</config>
+        </translations>
+    </systeminformation>
+    <interfaces>
+        <filename>Interfaces.js</filename>
+        <link>/ui/interfaces/overview</link>
+        <endpoints>
+            <endpoint>/api/interfaces/overview/interfacesInfo</endpoint>
+        </endpoints>
+        <translations>
+            <title>Interfaces</title>
+        </translations>
+    </interfaces>
+    <cpu>
+        <filename>Cpu.js</filename>
+        <endpoints>
+            <endpoint>/api/diagnostics/cpu_usage/*</endpoint>
+        </endpoints>
+        <translations>
+            <title>CPU</title>
+            <total>Total</total>
+            <user>User</user>
+            <sys>System</sys>
+            <intr>Interrupt</intr>
+            <graphs>Graphs</graphs>
+        </translations>
+    </cpu>
+    <interfacestatistics>
+        <filename>InterfaceStatistics.js</filename>
+        <endpoints>
+            <endpoint>/api/diagnostics/traffic/interface</endpoint>
+        </endpoints>
+        <translations>
+            <title>Interface Statistics</title>
+            <interface>Interface</interface>
+            <bytesin>Bytes In</bytesin>
+            <bytesout>Bytes Out</bytesout>
+            <packetsin>Packets In</packetsin>
+            <packetsout>Packets Out</packetsout>
+            <errorsin>Errors In</errorsin>
+            <errorsout>Errors Out</errorsout>
+            <collisions>Collisions</collisions>
+        </translations>
+    </interfacestatistics>
+    <traffic>
+        <filename>Traffic.js</filename>
+        <link>/ui/diagnostics/traffic</link>
+        <endpoints>
+            <endpoint>/api/diagnostics/traffic/stream/*</endpoint>
+            <endpoint>/api/diagnostics/traffic/interface</endpoint>
+        </endpoints>
+        <translations>
+            <title>Traffic Graph</title>
+            <trafficin>Traffic In</trafficin>
+            <trafficout>Traffic Out</trafficout>
+            <interfaces>Interfaces</interfaces>
+        </translations>
+    </traffic>
+    <memory>
+        <filename>Memory.js</filename>
+        <endpoints>
+            <endpoint>/api/diagnostics/system/systemResources</endpoint>
+        </endpoints>
+        <translations>
+            <title>Memory</title>
+            <used>Used</used>
+            <free>Free</free>
+            <arc>ARC</arc>
+        </translations>
+    </memory>
+    <disk>
+        <filename>Disk.js</filename>
+        <endpoints>
+            <endpoint>/api/diagnostics/system/systemDisk</endpoint>
+        </endpoints>
+        <translations>
+            <title>Disk</title>
+            <used>Used</used>
+            <free>Free</free>
+        </translations>
+    </disk>
+    <firewall>
+        <filename>Firewall.js</filename>
+        <link>/ui/diagnostics/firewall/log</link>
+        <endpoints>
+            <endpoint>/api/diagnostics/firewall/streamLog</endpoint>
+            <endpoint>/api/diagnostics/interface/getInterfaceNames</endpoint>
+        </endpoints>
+        <translations>
+            <title>Firewall</title>
+            <action>Action</action>
+            <time>Time</time>
+            <interface>Interface</interface>
+            <source>Source</source>
+            <destination>Destination</destination>
+            <port>Port</port>
+            <matchedrule>Matched rule</matchedrule>
+            <click>Click to track this rule in Live View</click>
+            <label>Label</label>
+            <count>Count</count>
+            <livelog>Live Log</livelog>
+            <events>Events</events>
+            <nodata>Waiting for data</nodata>
+        </translations>
+    </firewall>
+    <firewallstates>
+        <filename>FirewallStates.js</filename>
+        <endpoints>
+            <endpoint>/api/diagnostics/firewall/pf_states</endpoint>
+        </endpoints>
+        <translations>
+            <title>Firewall States</title>
+            <used>Used</used>
+            <free>Free</free>
+        </translations>
+    </firewallstates>
+    <mbuf>
+        <filename>Mbuf.js</filename>
+        <endpoints>
+            <endpoint>/api/diagnostics/system/system_mbuf</endpoint>
+        </endpoints>
+        <translations>
+            <title>Mbuf</title>
+            <used>Used</used>
+            <free>Free</free>
+        </translations>
+    </mbuf>
+    <swap>
+        <filename>Swap.js</filename>
+        <endpoints>
+            <endpoint>/api/diagnostics/system/system_swap</endpoint>
+        </endpoints>
+        <translations>
+            <title>Swap</title>
+            <used>Used</used>
+            <free>Free</free>
+        </translations>
+    </swap>
+    <carp>
+        <filename>Carp.js</filename>
+        <link>/ui/interfaces/vip</link>
+        <endpoints>
+            <endpoint>/api/diagnostics/interface/get_vip_status</endpoint>
+        </endpoints>
+        <translations>
+            <title>CARP Status</title>
+            <unconfigured>No CARP Interfaces configured. Click to configure CARP.</unconfigured>
+            <carp>CARP IP</carp>
+            <alias>IP Alias</alias>
+        </translations>
+    </carp>
+    <gateways>
+        <filename>Gateways.js</filename>
+        <link>/ui/routing/configuration</link>
+        <endpoints>
+            <endpoint>/api/routes/gateway/status</endpoint>
+        </endpoints>
+        <translations>
+            <title>Gateways</title>
+            <unconfigured>No Gateways configured. Click to configure gateways.</unconfigured>
+            <rtt>RTT</rtt>
+            <rttd>RTTd</rttd>
+            <loss>Loss</loss>
+        </translations>
+    </gateways>
+    <thermalsensors>
+        <filename>ThermalSensors.js</filename>
+        <endpoints>
+            <endpoint>/api/diagnostics/system/systemTemperature</endpoint>
+        </endpoints>
+        <translations>
+            <title>Thermal Sensors</title>
+            <help>CPU thermal sensors often measure the same temperature for each CPU.</help>
+            <unconfigured>Thermal sensors not available or not configured.</unconfigured>
+        </translations>
+    </thermalsensors>
+    <monit>
+        <filename>Monit.js</filename>
+        <link>/ui/monit</link>
+        <endpoints>
+            <endpoint>/api/monit/status/get/*</endpoint>
+        </endpoints>
+        <translations>
+            <title>Monit Status</title>
+            <filesystem>Filesystem</filesystem>
+            <directory>Directory</directory>
+            <file>File</file>
+            <process>Process</process>
+            <host>Host</host>
+            <system>System</system>
+            <fifo>FIFO</fifo>
+            <custom>Custom</custom>
+            <network>Network</network>
+            <ok>OK</ok>
+            <failed>Failed</failed>
+            <type>Type</type>
+            <unconfigured>Monit is disabled or not configured.</unconfigured>
+        </translations>
+    </monit>
+    <livelog>
+        <filename>LiveLog.js</filename>
+        <endpoints>
+            <endpoint>/api/diagnostics/log/core/system/*</endpoint>
+        </endpoints>
+        <translations>
+            <title>Live Log</title>
+            <time>Time</time>
+            <severity>Severity</severity>
+            <process>Process</process>
+            <message>Message</message>
+        </translations>
+    </livelog>
+    <ipsecleases>
+        <filename>IpsecLeases.js</filename>
+        <link>/ui/ipsec/leases</link>
+        <endpoints>
+            <endpoint>/api/ipsec/connections/isEnabled</endpoint>
+            <endpoint>/api/ipsec/leases/pools</endpoint>
+        </endpoints>
+        <translations>
+            <title>IPsec Leases</title>
+            <online>Online</online>
+            <offline>Offline</offline>
+            <users>Users</users>
+            <unconfigured>IPsec is currently disabled. Click to configure IPsec.</unconfigured>
+            <noleases>There are currently no leases.</noleases>
+        </translations>
+    </ipsecleases>
+    <ipsectunnels>
+        <filename>IpsecTunnels.js</filename>
+        <link>/ui/ipsec/sessions</link>
+        <endpoints>
+            <endpoint>/api/ipsec/connections/isEnabled</endpoint>
+            <endpoint>/api/ipsec/sessions/searchPhase1</endpoint>
+            <endpoint>/api/ipsec/sessions/connect/*</endpoint>
+            <endpoint>/api/ipsec/sessions/disconnect/*</endpoint>
+        </endpoints>
+        <translations>
+            <title>IPsec Tunnels</title>
+            <online>Online</online>
+            <offline>Offline</offline>
+            <total>Tunnels</total>
+            <unconfigured>IPsec is currently disabled. Click to configure IPsec.</unconfigured>
+            <notunnels>Phase1 not configured</notunnels>
+            <notavailable>N/A</notavailable>
+            <installtime>Install Time</installtime>
+            <nophase2connected>Phase2 disconnected</nophase2connected>
+            <connect>Connect</connect>
+            <disconnect>Disconnect</disconnect>
+        </translations>
+    </ipsectunnels>
+    <Wireguard>
+        <filename>Wireguard.js</filename>
+        <link>/ui/wireguard/general</link>
+        <endpoints>
+            <endpoint>/api/wireguard/service/show</endpoint>
+            <endpoint>/api/wireguard/general/get</endpoint>
+        </endpoints>
+        <translations>
+            <title>Wireguard</title>
+            <unconfigured>Wireguard is currently disabled. Click to configure Wireguard.</unconfigured>
+            <notunnels>No tunnels connected</notunnels>
+            <online>Online</online>
+            <offline>Offline</offline>
+            <total>Tunnels</total>
+            <notavailable>N/A</notavailable>
+            <disconnected>Peer disconnected</disconnected>
+        </translations>
+    </Wireguard>
+    <services>
+        <filename>Services.js</filename>
+        <link>/ui/core/service</link>
+        <endpoints>
+            <endpoint>/api/core/service/*</endpoint>
+        </endpoints>
+        <translations>
+            <title>Services</title>
+            <noservices>No services found</noservices>
+            <running>Running</running>
+            <stopped>Stopped</stopped>
+            <restart>Restart</restart>
+            <stop>Stop</stop>
+            <start>Start</start>
+        </translations>
+    </services>
+    <openvpnclients>
+        <filename>OpenVPNClients.js</filename>
+        <link>/ui/openvpn/status</link>
+        <endpoints>
+            <endpoint>/api/openvpn/service/search_sessions</endpoint>
+            <endpoint>/api/openvpn/service/kill_session</endpoint>
+        </endpoints>
+        <translations>
+            <title>OpenVPN Client Connections</title>
+            <noclients>No clients connected</noclients>
+            <server>Server</server>
+            <kill>Kill connection</kill>
+            <clients>Clients</clients>
+        </translations>
+    </openvpnclients>
+    <openvpnservers>
+        <filename>OpenVPNServers.js</filename>
+        <link>/ui/openvpn/status</link>
+        <endpoints>
+            <endpoint>/api/openvpn/service/search_sessions</endpoint>
+        </endpoints>
+        <translations>
+            <title>OpenVPN Server Connections</title>
+            <noservers>Not connected to any server</noservers>
+            <server>Server</server>
+            <client>Client</client>
+            <stopped>Stopped</stopped>
+        </translations>
+    </openvpnservers>
+    <picture>
+        <filename>Picture.js</filename>
+        <link>/system_general.php</link>
+        <endpoints>
+            <endpoint>/api/core/dashboard/picture</endpoint>
+        </endpoints>
+        <translations>
+            <title>Picture</title>
+            <nopicture>No picture was supplied for this system.</nopicture>
+        </translations>
+    </picture>
+    <certificates>
+        <filename>Certificates.js</filename>
+        <link>/ui/trust/cert</link>
+        <endpoints>
+            <endpoint>/api/trust/ca/search</endpoint>
+            <endpoint>/api/trust/cert/search</endpoint>
+        </endpoints>
+        <translations>
+            <title>Certificates</title>
+            <noitems>No certificates to display.</noitems>
+            <expired>Expired</expired>
+            <valid>Valid</valid>
+            <expiresin>Expires in</expiresin>
+            <expiredon>Expired on</expiredon>
+            <days>days</days>
+            <hiddenitems>Hidden Certificates</hiddenitems>
+        </translations>
+    </certificates>
+</metadata>

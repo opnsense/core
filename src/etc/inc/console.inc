@@ -53,23 +53,23 @@ function timeout($timer = 7)
 
 function is_interface_mismatch($locked = true)
 {
-    $patterns = ['^impossiblecontrolmatch$'];
     $mismatch = false;
+    $patterns = [];
 
     foreach (plugins_devices() as $device) {
-        if (!empty($device['volatile'])) {
+        if ($device['volatile']) {
             $patterns[] = "({$device['pattern']})";
         }
     }
 
-    $regex = '/' . implode('|', $patterns) . '/';
+    $regex = count($patterns) ? '/' . implode('|', $patterns) . '/' : null;
 
     foreach (legacy_config_get_interfaces(['virtual' => false]) as $ifname => $ifcfg) {
         if ($locked && !empty($ifcfg['lock'])) {
             /* Do not mismatch if any lock was issued */
             $mismatch = false;
             break;
-        } elseif (preg_match($regex, $ifcfg['if'])) {
+        } elseif (!empty($regex) && preg_match($regex, $ifcfg['if'])) {
             /* Do not check these interfaces */
             continue;
         } elseif (does_interface_exist($ifcfg['if']) == false) {
@@ -106,7 +106,7 @@ function _set_networking_interfaces_ports($probe = false)
 
     foreach ($iflist as $iface => $ifa) {
         $iflist_all[$iface] = $ifa;
-        interfaces_bring_up($iface);
+        legacy_interface_flags($iface, 'up');
     }
 
     if ($probe) {

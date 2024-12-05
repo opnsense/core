@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Kea/dhcp4</mount>
-    <version>1.0.0</version>
+    <version>1.0.2</version>
     <description>Kea DHCPv4 configuration</description>
     <items>
         <general>
@@ -19,15 +19,29 @@
                 <Required>Y</Required>
                 <Default>1</Default>
             </fwrules>
+            <dhcp_socket_type type="OptionField">
+                <Default>raw</Default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <udp>udp</udp>
+                    <raw>raw</raw>
+                </OptionValues>
+            </dhcp_socket_type>
         </general>
         <ha>
             <enabled type="BooleanField">
                 <Default>0</Default>
                 <Required>Y</Required>
             </enabled>
-            <this_server_name  type="TextField">
+            <this_server_name type="TextField">
                 <Mask>/^([0-9a-zA-Z.\:\-,_]){0,1024}$/u</Mask>
             </this_server_name>
+            <max_unacked_clients type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>65535</MaximumValue>
+                <Default>2</Default>
+                <Required>Y</Required>
+            </max_unacked_clients>
         </ha>
         <subnets>
             <subnet4 type="ArrayField">
@@ -114,6 +128,12 @@
                 <ip_address type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
                     <AddressFamily>ipv4</AddressFamily>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                        </check001>
+                    </Constraints>
                 </ip_address>
                 <hw_address type="MacAddressField">
                     <Required>Y</Required>

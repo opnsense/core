@@ -39,18 +39,18 @@ require_once('system.inc');
 function get_vhid_status()
 {
     $vhids = [];
-    $uuids = [];
     foreach ((new OPNsense\Interfaces\Vip())->vip->iterateItems() as $id => $item) {
         if ($item->mode == 'carp') {
-            $uuids[(string)$item->vhid] =  $id;
             $vhids[$id] = ['status' => 'DISABLED', 'vhid' => (string)$item->vhid];
         }
     }
     foreach (legacy_interfaces_details() as $ifdata) {
         if (!empty($ifdata['carp'])) {
             foreach ($ifdata['carp'] as $data) {
-                if (isset($uuids[$data['vhid']])) {
-                    $vhids[$uuids[$data['vhid']]] = ['status' => $data['status'], 'vhid' => $data['vhid']];
+                foreach ($vhids as $id => &$item) {
+                    if ($item['vhid'] == $data['vhid']) {
+                        $item['status'] = $data['status'];
+                    }
                 }
             }
         }
@@ -130,7 +130,7 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up', $reload = false)
         }
     } elseif (!empty((string)$server->gateway)) {
         /* Only bind the gateway ip to the tunnel */
-        $ipprefix = strpos($tunneladdress, ":") === false ? "-4" :  "-6";
+        $ipprefix = strpos($server->gateway, ":") === false ? "-4" :  "-6";
         mwexecf('/sbin/route -q -n add %s %s -iface %s', [$ipprefix, $server->gateway, $server->interface]);
     }
 
@@ -239,7 +239,7 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
                 $carp_if_flag = 'down';
             }
             $server_devs[] = (string)$node->interface;
-            $statHandle = fopen($node->statFilename, "a+");
+            $statHandle = fopen($node->statFilename, 'a+e');
             if (flock($statHandle, LOCK_EX)) {
                 $ifdetails = legacy_interfaces_details((string)$node->interface);
                 switch ($action) {
@@ -337,4 +337,3 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
         configd_run('filter reload');
     }
 }
-closelog();

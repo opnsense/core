@@ -1,0 +1,56 @@
+<model>
+    <mount>/system/user+</mount>
+    <version>1.0.0</version>
+    <items>
+        <user type="ArrayField">
+            <uid type=".\UidField"/>
+            <name type="TextField">
+                <Mask>/^[a-zA-Z0-9\.\-_]{1,32}$/</Mask>
+                <ValidationMessage>A username must contain a maximum of 32 alfanumeric characters</ValidationMessage>
+                <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <type>UniqueConstraint</type>
+                        <ValidationMessage>This username already exist.</ValidationMessage>
+                    </check001>
+                </Constraints>
+            </name>
+            <disabled type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </disabled>
+            <scope type="TextField">
+                <Default>user</Default>
+                <Required>Y</Required>
+            </scope>
+            <expires type=".\ExpiresField"/>
+            <authorizedkeys type=".\StoreB64Field"/>
+            <otp_seed type="TextField"/>
+            <shell type="OptionField">
+                <BlankDesc>Default (none for all but root)</BlankDesc>
+                <OptionValues>
+                    <o0 value="/bin/csh">/bin/csh</o0>
+                    <o1 value="/bin/sh">/bin/sh</o1>
+                    <o2 value="/bin/tcsh">/bin/tcsh</o2>
+                </OptionValues>
+            </shell>
+            <password type="UpdateOnlyTextField"/>
+            <scrambled_password type="BooleanField"  volatile="true"/>
+            <landing_page type="TextField"/>
+            <comment type="TextField"/>
+            <email type="TextField"/>
+            <apikeys type=".\ApiKeyField"/>
+            <priv type=".\PrivField">
+                <Multiple>Y</Multiple>
+            </priv>
+            <language type="JsonKeyValueStoreField">
+                <ConfigdPopulateAct>system list locales</ConfigdPopulateAct>
+                <BlankDesc>Default</BlankDesc>
+            </language>
+            <group_memberships type=".\GroupMembershipField" volatile="true">
+                <Multiple>Y</Multiple>
+            </group_memberships>
+            <descr type="DescriptionField"/>
+        </user>
+    </items>
+</model>

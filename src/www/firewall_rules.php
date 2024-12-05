@@ -642,7 +642,7 @@ $( document ).ready(function() {
     <div id="category_block" style="z-index:-100;">
         <select class="selectpicker hidden-xs hidden-sm hidden-md" data-live-search="true" data-size="5"  multiple title="<?=gettext("Select category");?>" id="fw_category">
         </select>
-        <button id="btn_inspect" class="btn btn-default hidden-xs">
+        <button id="btn_inspect" class="btn btn-default">
           <i class="fa fa-eye" aria-hidden="true"></i>
           <?=gettext("Inspect");?>
         </button>
@@ -651,7 +651,7 @@ $( document ).ready(function() {
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
-        <?php print_service_banner('firewall'); ?>
+        <?php print_firewall_banner() ?>
         <div id="fw-alert-box" class="col-xs-12 <?=!is_subsystem_dirty('filter') && !isset($savemsg) ? "hidden":"";?>">
           <div class="alert alert-info" role="alert">
             <div id="fw-alert-changes" class="fw-alert-messages <?=!is_subsystem_dirty('filter') ? "hidden":"";?>">
@@ -717,16 +717,16 @@ $( document ).ready(function() {
                         <i class="fa fa-question-circle" data-toggle="collapse" data-target=".rule_md5_hash" ></i>
                       </td>
                       <td class="text-nowrap button-th">
-                        <a href="<?= url_safe('firewall_rules_edit.php?if=%s', array($selected_if)) ?>" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                        <a href="<?= url_safe('firewall_rules_edit.php?if=%s', array($selected_if)) ?>" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>" aria-label="<?= html_safe(gettext('Add')) ?>">
                           <i class="fa fa-plus fa-fw"></i>
                         </a>
-                        <button id="move_<?= count($a_filter) ?>" name="move_<?= count($a_filter) ?>_x" data-toggle="tooltip" title="<?= html_safe(gettext('Move selected rules to end')) ?>" class="act_move btn btn-default btn-xs">
+                        <button id="move_<?= count($a_filter) ?>" name="move_<?= count($a_filter) ?>_x" data-toggle="tooltip" title="<?= html_safe(gettext('Move selected rules to end')) ?>" class="act_move btn btn-default btn-xs" aria-label="<?=gettext("Move selected rules to end"); ?>">
                           <i class="fa fa-arrow-left fa-fw"></i>
                         </button>
-                        <button id="del_x" title="<?= html_safe(gettext('Delete selected')) ?>" data-toggle="tooltip" class="act_delete btn btn-default btn-xs">
+                        <button id="del_x" title="<?= html_safe(gettext('Delete selected')) ?>" data-toggle="tooltip" class="act_delete btn btn-default btn-xs" aria-label="<?=gettext("delete selected"); ?>">
                           <i class="fa fa-trash fa-fw"></i>
                         </button>
-                        <button title="<?= html_safe(gettext('Enable selected')) ?>" data-toggle="tooltip" class="act_toggle_enable btn btn-default btn-xs">
+                        <button title="<?= html_safe(gettext('Enable selected')) ?>" data-toggle="tooltip" class="act_toggle_enable btn btn-default btn-xs" aria-label="<?=gettext("Enable selected"); ?>">
                           <i class="fa fa-check-square-o fa-fw"></i>
                         </button>
                         <button title="<?= html_safe(gettext('Disable selected')) ?>" data-toggle="tooltip" class="act_toggle_disable btn btn-default btn-xs">
@@ -996,7 +996,7 @@ $( document ).ready(function() {
                       </div>
                     </td>
                     <td>
-                      <button id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("Move selected rules before this rule")) ?>" class="act_move btn btn-default btn-xs">
+                      <button id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("Move selected rules before this rule")) ?>" class="act_move btn btn-default btn-xs" aria-label="<?= html_safe(gettext("Move selected rules before this rule")) ?>">
                         <i class="fa fa-arrow-left fa-fw"></i>
                       </button>
 <?php if (isset($filterent['type'])): ?>
@@ -1005,14 +1005,14 @@ $( document ).ready(function() {
                       // if for some reason (broken config) a rule is in there which doesn't have a related nat rule
                       // make sure we are able to delete it.
 ?>
-                      <a href="firewall_rules_edit.php?if=<?=$selected_if;?>&id=<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs">
+                      <a href="firewall_rules_edit.php?if=<?=$selected_if;?>&id=<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" aria-label="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs">
                         <i class="fa fa-pencil fa-fw"></i>
                       </a>
-                      <a href="firewall_rules_edit.php?if=<?=$selected_if;?>&dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Clone')) ?>">
+                      <a href="firewall_rules_edit.php?if=<?=$selected_if;?>&dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Clone')) ?>" aria-label="<?= html_safe(gettext('Clone')) ?>">
                         <i class="fa fa-clone fa-fw"></i>
                       </a>
 <?php endif ?>
-                      <a id="del_<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                      <a id="del_<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs" aria-label="<?= html_safe(gettext('Delete')) ?>">
                         <i class="fa fa-trash fa-fw"></i>
                       </a>
                     </td>

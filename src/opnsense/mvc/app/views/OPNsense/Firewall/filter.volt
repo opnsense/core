@@ -106,7 +106,36 @@
         // replace all "net" selectors with details retrieved from "list_network_select_options" endpoint
         ajaxGet('/api/firewall/{{ruleController}}/list_network_select_options', [], function(data, status){
             if (data.single) {
-                $(".net_selector").replaceInputWithSelector(data);
+                $(".net_selector").each(function(){
+                    $(this).replaceInputWithSelector(data, $(this).hasClass('net_selector_multi'));
+                    /* enforce single selection when "single host or network" or "any" are selected */
+                    if ($(this).hasClass('net_selector_multi')) {
+                        $("select[for='" + $(this).attr('id') + "']").on('shown.bs.select', function(){
+                            $(this).data('previousValue', $(this).val());
+                        }).change(function(){
+                            let prev = Array.isArray($(this).data('previousValue')) ? $(this).data('previousValue') : [];
+                            let is_single = $(this).val().includes('') || $(this).val().includes('any');
+                            let was_single = prev.includes('') || prev.includes('any');
+                            let refresh = false;
+                            if (was_single && is_single && $(this).val().length > 1) {
+                                $(this).val($(this).val().filter(value => !prev.includes(value)));
+                                refresh = true;
+                            } else if (is_single && $(this).val().length > 1) {
+                                if ($(this).val().includes('any') && !prev.includes('any')) {
+                                    $(this).val('any');
+                                } else{
+                                    $(this).val('');
+                                }
+                                refresh = true;
+                            }
+                            if (refresh) {
+                                $(this).selectpicker('refresh');
+                                $(this).trigger('change');
+                            }
+                            $(this).data('previousValue', $(this).val());
+                        });
+                    }
+                });
             }
         });
     });

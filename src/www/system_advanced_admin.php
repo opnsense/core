@@ -37,6 +37,16 @@ require_once("system.inc");
 
 $a_group = &config_read_array('system', 'group');
 $a_authmode = auth_get_authserver_list();
+$ssh_rekeylimit_choices = [
+  '' => gettext('System defaults'),
+  'default 60s' => gettext('60 seconds'),
+  'default 600s' => gettext('10 minutes'),
+  '512M 60s' => gettext('512MB, 60 seconds'),
+  '512M 600s' => gettext('512MB, 10 minutes'),
+  '512M 1h' => gettext('512MB, 1 hour'),
+  '1G 60s' => gettext('1GB, 60 seconds'),
+  '1G 1h' => gettext('1GB, 1 hour'),
+];
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = [];
@@ -73,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ssh-macs'] = !empty($config['system']['ssh']['macs']) ? explode(',', $config['system']['ssh']['macs']) : [];
     $pconfig['ssh-keys'] = !empty($config['system']['ssh']['keys']) ? explode(',', $config['system']['ssh']['keys']) : [];
     $pconfig['ssh-keysig'] = !empty($config['system']['ssh']['keysig']) ? explode(',', $config['system']['ssh']['keysig']) : [];
+    $pconfig['ssh-rekeylimit'] = !empty($config['system']['ssh']['rekeylimit']) ? $config['system']['ssh']['rekeylimit'] : '';
     $pconfig['sshpasswordauth'] = isset($config['system']['ssh']['passwordauth']);
     $pconfig['sshdpermitrootlogin'] = isset($config['system']['ssh']['permitrootlogin']);
     $pconfig['quietlogin'] = isset($config['system']['webgui']['quietlogin']);
@@ -138,7 +149,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (!empty($pconfig['ssl-ciphers'])) {
-        // TLS 1.3 validation
         $ciphers = json_decode(configd_run("system ssl ciphers"), true) ?? [];
         foreach ($ciphers as $cipher => $settings) {
             if ($settings['version'] == 'TLSv1.3' && in_array($cipher, $pconfig['ssl-ciphers'])
@@ -147,6 +157,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 break;
             }
         }
+    }
+
+    if (!empty($pconfig['ssh-rekeylimit']) && !isset($ssh_rekeylimit_choices[$pconfig['ssh-rekeylimit']])) {
+        $input_errors[] = gettext('Invalid rekey limit option.');
     }
 
     if (count($input_errors) == 0) {
@@ -306,6 +320,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['ssh']['macs'] = !empty($pconfig['ssh-macs']) ? implode(',', $pconfig['ssh-macs']) : null;
         $config['system']['ssh']['keys'] = !empty($pconfig['ssh-keys']) ? implode(',', $pconfig['ssh-keys']) : null;
         $config['system']['ssh']['keysig'] = !empty($pconfig['ssh-keysig']) ? implode(',', $pconfig['ssh-keysig']) : null;
+        $config['system']['ssh']['rekeylimit'] =  !empty($pconfig['ssh-rekeylimit']) ? $pconfig['ssh-rekeylimit'] : null;
 
         if (!empty($pconfig['enablesshd'])) {
             $config['system']['ssh']['enabled'] = 'enabled';
@@ -564,7 +579,7 @@ $(document).ready(function() {
                     <?=sprintf(
                       gettext('The %sSSL certificate manager%s can be used to ' .
                       'create or import certificates if required.'),
-                      '<a href="/system_certmanager.php">', '</a>'
+                      '<a href="/ui/trust/cert">', '</a>'
                     );?>
                   </div>
                 </td>
@@ -785,8 +800,7 @@ $(document).ready(function() {
                   <input name="sshpasswordauth" type="checkbox" value="yes" <?= empty($pconfig['sshpasswordauth']) ? '' : 'checked="checked"' ?> />
                   <?=gettext("Permit password login"); ?>
                   <div class="hidden" data-for="help_for_sshpasswordauth">
-                    <?=sprintf(gettext("When disabled, authorized keys need to be configured for each %sUser%s that has been granted secure shell access."),
-                              '<a href="system_usermanager.php">', '</a>') ?>
+                    <?= gettext('When disabled, authorized keys need to be configured for each user that has been granted secure shell access.') ?>
                   </div>
                 </td>
               </tr>
@@ -891,6 +905,21 @@ $(document).ready(function() {
                     </select>
                     <div class="hidden" data-for="help_for_sshkeysig">
                       <?=gettext("The signature algorithms that are used for public key authentication");?>
+                    </div>
+                </td>
+              </tr>
+              <tr class="show-advanced-crypto" style="display:none">
+                <td><a id="help_for_sshrekeylimit" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Rekey Limit"); ?></td>
+                <td>
+                    <select name="ssh-rekeylimit" class="selectpicker advanced-crypto" data-live-search="true">
+<?php foreach ($ssh_rekeylimit_choices as $option => $descr): ?>
+                      <option value="<?=$option;?>" <?= $option == $pconfig['ssh-rekeylimit'] ? 'selected="selected"' : '' ?>>
+                        <?=$descr;?>
+                      </option>
+<?php endforeach ?>
+                    </select>
+                    <div class="hidden" data-for="help_for_sshrekeylimit">
+                      <?=gettext("Specifies the maximum amount of data that may be transmitted or received before the session key is renegotiated within a given time. The defaults depend on cipher and are usually the best option.");?>
                     </div>
                 </td>
               </tr>

@@ -24,11 +24,13 @@
         <id>crl.serial</id>
         <label>Serial</label>
         <type>text</type>
+        <style>crlmethod crlmethod_internal</style>
     </field>
     <field>
         <id>crl.lifetime</id>
         <label>Lifetime (days)</label>
         <type>text</type>
+        <style>crlmethod crlmethod_internal</style>
     </field>
     <field>
         <type>header</type>

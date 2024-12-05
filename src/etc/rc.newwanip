@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2023 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2024 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2006 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -32,7 +32,6 @@
 require_once("config.inc");
 require_once("auth.inc");
 require_once("filter.inc");
-require_once("rrd.inc");
 require_once("util.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
@@ -67,8 +66,13 @@ if (!is_ipaddr($ip)) {
     return;
 }
 
+$gw = OPNsense\Interface\Autoconf::getRouter($device, 'inet');
+
 $cacheip_file = "/tmp/{$device}_oldip";
 $cacheip = trim(@file_get_contents($cacheip_file));
+
+$cachegw_file = "/tmp/{$device}_oldgw";
+$cachegw = trim(@file_get_contents($cachegw_file));
 
 if ($force == 'no' && $ip == $cacheip) {
     log_msg("No IP change detected (current: {$ip}, interface: {$interface})", LOG_INFO);
@@ -85,24 +89,13 @@ $gififs = link_interface_to_gif($interface, true, 4);
 switch (isset($config['system']['ipv6allow']) ? ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') : 'none') {
     case '6to4':
         interface_6to4_configure($interface, $config['interfaces'][$interface], true);
-        system_routing_configure(false, $interface); /* XXX interface recreation breaks attached routes */
+        system_routing_configure(false, $interface, true, 'inet6'); /* interface recreation breaks attached routes */
         break;
     case '6rd':
         interface_6rd_configure($interface, $config['interfaces'][$interface], true);
-        system_routing_configure(false, $interface); /* XXX interface recreation breaks attached routes */
+        system_routing_configure(false, $interface, true, 'inet6'); /* interface recreation breaks attached routes */
         break;
-    case 'dhcp6':
-    case 'slaac':
-        if (isset($config['interfaces'][$interface]['dhcp6usev4iface'])) {
-            interface_dhcpv6_prepare($interface, $config['interfaces'][$interface]);
-            interface_dhcpv6_configure($interface, $config['interfaces'][$interface]);
-        }
-        break;
-   default:
-        if (isset($config['interfaces'][$interface]['dhcp6usev4iface'])) {
-            interface_static6_configure($interface, $config['interfaces'][$interface]);
-            system_routing_configure(false, $interface, true, 'inet6');
-        }
+    default:
         break;
 }
 
@@ -115,17 +108,23 @@ interfaces_restart_by_device(false, array_merge($greifs, $gififs));
 ifgroup_setup();
 
 system_routing_configure(false, $interface, true, 'inet');
+
 filter_configure_sync();
 
 if (is_ipaddr($cacheip) && $ip != $cacheip) {
-    log_msg("IP address change detected, killing states of old ip $cacheip");
+    log_msg("IP address change detected, killing states for $cacheip");
     mwexecf('/sbin/pfctl -k 0.0.0.0/0 -k %s', $cacheip);
     mwexecf('/sbin/pfctl -k %s', $cacheip);
 }
 
-/* register IP change not before this point as basic connectivity is needed */
 @file_put_contents($cacheip_file, $ip . PHP_EOL);
 
-plugins_configure('vpn', false, [$interface]);
-plugins_configure('newwanip', false, [$interface]);
-rrd_configure();
+if (is_ipaddr($cachegw) && is_ipaddr($gw) && $gw != $cachegw) {
+    log_msg("IP gateway change detected, killing states for $cachegw");
+    mwexecf('/sbin/pfctl -k gateway -k %s', $cachegw);
+}
+
+@file_put_contents($cachegw_file, $gw . PHP_EOL);
+
+plugins_configure('vpn', false, [[$interface], 'inet']);
+plugins_configure('newwanip', false, [[$interface], 'inet']);

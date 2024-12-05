@@ -50,7 +50,9 @@ class FilterRuleContainerField extends ContainerField
      */
     public function serialize()
     {
-        $result = array();
+        $result = [
+            'label' => $this->getAttribute('uuid')
+        ];
         $map_manual = ['source_net', 'source_not', 'source_port', 'destination_net', 'destination_not',
             'destination_port', 'enabled', 'description', 'sequence', 'action'];
         // 1-on-1 map (with type conversion if needed)
@@ -68,24 +70,22 @@ class FilterRuleContainerField extends ContainerField
             }
         }
         // source / destination mapping
-        $result['source'] = array();
         if (!empty((string)$this->source_net)) {
-            $result['source']['network'] = (string)$this->source_net;
+            $result['from'] = (string)$this->source_net;
             if (!empty((string)$this->source_not)) {
-                $result['source']['not'] = true;
+                $result['from_not'] = true;
             }
             if (!empty((string)$this->source_port)) {
-                $result['source']['port'] = (string)$this->source_port;
+                $result['from_port'] = (string)$this->source_port;
             }
         }
-        $result['destination'] = array();
         if (!empty((string)$this->destination_net)) {
-            $result['destination']['network'] = (string)$this->destination_net;
+            $result['to'] = (string)$this->destination_net;
             if (!empty((string)$this->destination_not)) {
-                $result['destination']['not'] = true;
+                $result['to_not'] = true;
             }
             if (!empty((string)$this->destination_port)) {
-                $result['destination']['port'] = (string)$this->destination_port;
+                $result['to_port'] = (string)$this->destination_port;
             }
         }
         // field mappings and differences

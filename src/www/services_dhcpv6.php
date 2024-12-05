@@ -37,10 +37,8 @@ require_once("plugins.inc.d/dhcpd.inc");
 function reconfigure_dhcpd()
 {
     system_resolver_configure();
-    plugins_configure('dns');
-    clear_subsystem_dirty('hosts');
     dhcpd_dhcp6_configure();
-    clear_subsystem_dirty('staticmaps');
+    clear_subsystem_dirty('staticmapsv6');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -206,7 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("A valid URL must be specified for the network bootfile.");
         }
 
-        if (count($input_errors) == 0) {
+        if (count($input_errors) == 0 && !empty($pconfig['enable'])) {
             $range_from = $pconfig['range_from'];
             $range_to = $pconfig['range_to'];
 
@@ -325,7 +323,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             write_config();
             if (isset($config['dhcpdv6'][$if]['enable'])) {
                 mark_subsystem_dirty('staticmapsv6');
-                mark_subsystem_dirty('hosts');
             }
         }
         exit;
@@ -420,7 +417,7 @@ include("head.inc");
       <div class="row">
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
         <?php if (isset($savemsg)) print_info_box($savemsg); ?>
-        <?php if (is_subsystem_dirty('staticmaps')): ?><p>
+        <?php if (is_subsystem_dirty('staticmapsv6')): ?><p>
         <?php print_info_box_apply(gettext("The static mapping configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
         <?php endif; ?>
         <section class="col-xs-12">

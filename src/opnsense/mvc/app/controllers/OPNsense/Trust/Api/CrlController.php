@@ -30,6 +30,7 @@ namespace OPNsense\Trust\Api;
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Base\UserException;
+use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Trust\Store as CertStore;
 
@@ -86,7 +87,6 @@ class CrlController extends ApiControllerBase
 
     public function searchAction()
     {
-        $this->sessionClose();
         $config = Config::getInstance()->object();
         $items = [];
         foreach ($config->ca as $node) {
@@ -196,61 +196,61 @@ class CrlController extends ApiControllerBase
                 if (empty($x509->loadCRL((string)$payload['text']))) {
                     $validations['crl.text'] = gettext('Invalid CRL provided.');
                 }
-            }
-
-            $ca_crt_str = false;
-            $ca_key_str = false;
-            foreach ($config->ca as $node) {
-                if ((string)$node->refid == $caref) {
-                    $ca_crt_str = !empty((string)$node->prv) ? base64_decode((string)$node->crt) : false;
-                    $ca_key_str = !empty((string)$node->prv) ? base64_decode((string)$node->prv) : false;
-                    break;
-                }
-            }
-            $ca_cert = new \phpseclib3\File\X509();
-            if (!$ca_crt_str) {
-                $validations['crl.caref'] = gettext('Certificate does not seem to exist');
-            } elseif (!$ca_key_str) {
-                $validations['crl.caref'] = gettext('Certificate private key missing');
             } else {
-                /* Load in the CA's cert */
-                $ca_cert->loadX509($ca_crt_str);
-                if (!$ca_cert->validateDate()) {
-                    $validations['crl.caref'] = gettext('Cert revocation error: CA certificate invalid: invalid date');
-                } else {
-                    /* get the private key to sign the new (updated) CRL */
-                    try {
-                        $ca_key = \phpseclib3\Crypt\PublicKeyLoader::loadPrivateKey($ca_key_str);
-                        if (method_exists($ca_key, 'withPadding')) {
-                            $ca_key = $ca_key->withPadding(
-                                \phpseclib3\Crypt\RSA::ENCRYPTION_PKCS1 | \phpseclib3\Crypt\RSA::SIGNATURE_PKCS1
-                            );
-                        }
-                        $ca_cert->setPrivateKey($ca_key);
-                    } catch (\phpseclib3\Exception\NoKeyLoadedException $e) {
-                        $validations['crl.caref'] = gettext('Cert revocation error: Unable to load CA private key');
+                $ca_crt_str = false;
+                $ca_key_str = false;
+                foreach ($config->ca as $node) {
+                    if ((string)$node->refid == $caref) {
+                        $ca_crt_str = !empty((string)$node->crt) ? base64_decode((string)$node->crt) : false;
+                        $ca_key_str = !empty((string)$node->prv) ? base64_decode((string)$node->prv) : false;
+                        break;
                     }
                 }
-            }
-            $x509_crl = new \phpseclib3\File\X509();
-            if (empty($validations['crl.caref'])) {
-                    /*
-                    * create empty CRL. A quirk with phpseclib is that in order to correctly sign
-                    * a new CRL, a CA must be loaded using a separate X509 container, which is passed
-                    * to signCRL(). However, to validate the resulting signature, the original X509
-                    * CRL container must load the same CA using loadCA() with a direct reference
-                    * to the CA's public cert.
-                    */
-                    $x509_crl->loadCA($ca_crt_str);
-                    $x509_crl->loadCRL($x509_crl->saveCRL($x509_crl->signCRL($ca_cert, $x509_crl)));
-
-                    /* Now validate the CRL to see if everything went well */
-                try {
-                    if (!$x509_crl->validateSignature(false)) {
-                        $validations['crl.caref'] = gettext('Cert revocation error: CRL signature invalid');
+                $ca_cert = new \phpseclib3\File\X509();
+                if (!$ca_crt_str) {
+                    $validations['crl.caref'] = gettext('Certificate does not seem to exist');
+                } elseif (!$ca_key_str) {
+                    $validations['crl.caref'] = gettext('Certificate private key missing');
+                } else {
+                    /* Load in the CA's cert */
+                    $ca_cert->loadX509($ca_crt_str);
+                    if (!$ca_cert->validateDate()) {
+                        $validations['crl.caref'] = gettext('Cert revocation error: CA certificate invalid: invalid date');
+                    } else {
+                        /* get the private key to sign the new (updated) CRL */
+                        try {
+                            $ca_key = \phpseclib3\Crypt\PublicKeyLoader::loadPrivateKey($ca_key_str);
+                            if (method_exists($ca_key, 'withPadding')) {
+                                $ca_key = $ca_key->withPadding(
+                                    \phpseclib3\Crypt\RSA::ENCRYPTION_PKCS1 | \phpseclib3\Crypt\RSA::SIGNATURE_PKCS1
+                                );
+                            }
+                            $ca_cert->setPrivateKey($ca_key);
+                        } catch (\phpseclib3\Exception\NoKeyLoadedException $e) {
+                            $validations['crl.caref'] = gettext('Cert revocation error: Unable to load CA private key');
+                        }
                     }
-                } catch (Exception $e) {
-                    $validations['crl.caref'] = gettext('Cert revocation error: CRL signature invalid') . " " . $e;
+                }
+                $x509_crl = new \phpseclib3\File\X509();
+                if (empty($validations['crl.caref'])) {
+                        /*
+                        * create empty CRL. A quirk with phpseclib is that in order to correctly sign
+                        * a new CRL, a CA must be loaded using a separate X509 container, which is passed
+                        * to signCRL(). However, to validate the resulting signature, the original X509
+                        * CRL container must load the same CA using loadCA() with a direct reference
+                        * to the CA's public cert.
+                        */
+                        $x509_crl->loadCA($ca_crt_str);
+                        $x509_crl->loadCRL($x509_crl->saveCRL($x509_crl->signCRL($ca_cert, $x509_crl)));
+
+                        /* Now validate the CRL to see if everything went well */
+                    try {
+                        if (!$x509_crl->validateSignature(false)) {
+                            $validations['crl.caref'] = gettext('Cert revocation error: CRL signature invalid');
+                        }
+                    } catch (Exception $e) {
+                        $validations['crl.caref'] = gettext('Cert revocation error: CRL signature invalid') . " " . $e;
+                    }
                 }
             }
 
@@ -296,7 +296,7 @@ class CrlController extends ApiControllerBase
                     }
                     $crl->refid = uniqid();
                 }
-                if ((string)$node->crlmethod == 'existing') {
+                if ($payload['crlmethod'] == 'existing') {
                     $crl->text = base64_encode((string)$payload['text']);
                 }
                 $crl->caref = (string)$caref;
@@ -304,6 +304,7 @@ class CrlController extends ApiControllerBase
                 $crl->descr = (string)$payload['descr'];
                 $crl->serial = !empty($payload['serial']) ? $payload['serial'] : $crl->serial;
                 $crl->serial = ((int)((string)$crl->serial)) + 1;
+                $crl->crlmethod = (string)$payload['crlmethod'];
                 $to_delete = [];
                 $crl_certs = [];
                 foreach ($crl->cert as $cert) {
@@ -366,7 +367,38 @@ class CrlController extends ApiControllerBase
                     }
                 }
                 Config::getInstance()->save();
+                (new Backend())->configdRun('system trust crl', true);
                 return ['status' => 'saved'];
+            }
+        }
+        return ['status' => 'failed'];
+    }
+
+    /**
+     * drop CRL by certificate reference
+     */
+    public function delAction($caref)
+    {
+        if ($this->request->isPost() && !empty($caref)) {
+            Config::getInstance()->lock();
+            $config = Config::getInstance()->object();
+            $to_delete = [];
+            foreach ($config->crl as $node) {
+                if ((string)$node->caref == $caref) {
+                    $to_delete[] = $node;
+                }
+            }
+            foreach ($to_delete as $cert) {
+                $dom = dom_import_simplexml($cert);
+                $dom->parentNode->removeChild($dom);
+            }
+            if (count($to_delete) > 0) {
+                Config::getInstance()->save();
+                (new Backend())->configdRun('system trust crl', true);
+                return ['status' => 'deleted'];
+            } else {
+                Config::getInstance()->unlock();
+                return ['status' => 'not found'];
             }
         }
         return ['status' => 'failed'];

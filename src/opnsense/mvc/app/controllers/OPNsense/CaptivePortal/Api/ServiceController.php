@@ -46,9 +46,6 @@ class ServiceController extends ApiControllerBase
     public function reconfigureAction()
     {
         if ($this->request->isPost()) {
-            // close session for long running action
-            $this->sessionClose();
-
             $backend = new Backend();
             // the ipfw rules need to know about all the zones, so we need to reload ipfw for the portal to work
             $backend->configdRun('template reload OPNsense/IPFW');
@@ -119,7 +116,6 @@ class ServiceController extends ApiControllerBase
     public function saveTemplateAction()
     {
         if ($this->request->isPost() && $this->request->hasPost("name")) {
-            $this->sessionClose();
             $templateName = $this->request->getPost("name", "striptags");
             $mdlCP = new CaptivePortal();
             if ($this->request->hasPost("uuid")) {
@@ -204,7 +200,6 @@ class ServiceController extends ApiControllerBase
      */
     public function searchTemplatesAction()
     {
-        $this->sessionClose();
         $mdlCP = new CaptivePortal();
         $grid = new UIModelGrid($mdlCP->templates->template);
         return $grid->fetchBindRequest(

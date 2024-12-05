@@ -396,7 +396,7 @@ function ntpd_configure_do($verbose = false)
     if (empty($config['ntpd']['nomodify'])) { /*note: this one works backwards */
         $ntpaccess .= ' nomodify';
     }
-    if (!empty($config['ntpd']['noquery'])) {
+    if (empty($config['ntpd']['query'])) {
         $ntpaccess .= ' noquery';
     }
     if (empty($config['ntpd']['notrap'])) { /*note: this one works backwards */
@@ -411,6 +411,10 @@ function ntpd_configure_do($verbose = false)
     }
     $ntpcfg .= "\nrestrict default {$ntpaccess}";
     $ntpcfg .= "\nrestrict -6 default {$ntpaccess}";
+    /* Do not break status_ntpd.php page with restrict noquery */
+    $ntplocal = str_replace(' noquery', '', $ntpaccess);
+    $ntpcfg .= "\nrestrict 127.0.0.1 {$ntplocal}";
+    $ntpcfg .= "\nrestrict ::1 {$ntplocal}";
     $ntpcfg .= "\n";
 
     /* A leapseconds file is really only useful if this clock is stratum 1 */

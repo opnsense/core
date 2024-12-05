@@ -1,0 +1,86 @@
+<form>
+    <field>
+        <type>header</type>
+        <label>General Settings</label>
+    </field>
+    <field>
+        <id>trust.store_intermediate_certs</id>
+        <label>Store intermediate</label>
+        <type>checkbox</type>
+        <help>Allow local defined intermediate certificate authorities to be used in the local trust store.
+            We advise to only store root certificates to prevent cross signed ones causing breakage when included but expired later in the chain.
+        </help>
+    </field>
+    <field>
+        <id>trust.install_crls</id>
+        <label>Store CRL's</label>
+        <type>checkbox</type>
+        <help>Store all configured CRL's in the default trust store.</help>
+    </field>
+    <field>
+        <id>trust.fetch_crls</id>
+        <label>Auto fetch CRL's</label>
+        <type>checkbox</type>
+        <help>Schedule an hourly job to download CRLs using the defined Distributionpoints in the CAs deployed in our trust store.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Configuration constraints</label>
+    </field>
+    <field>
+        <id>trust.enable_legacy_sect</id>
+        <label>Enable legacy</label>
+        <type>checkbox</type>
+        <help>Enable Legacy Providers.</help>
+    </field>
+    <field>
+        <id>trust.enable_config_constraints</id>
+        <label>Enable</label>
+        <type>checkbox</type>
+        <help>Enable custom constraints.</help>
+    </field>
+    <field>
+        <id>trust.CipherString</id>
+        <label>CipherString</label>
+        <type>select_multiple</type>
+        <style>config_constraints selectpicker</style>
+        <help>Sets the ciphersuite list for TLSv1.2 and below.</help>
+    </field>
+    <field>
+        <id>trust.Ciphersuites</id>
+        <label>Ciphersuites</label>
+        <type>select_multiple</type>
+        <style>config_constraints selectpicker</style>
+        <help>Sets the available ciphersuites for TLSv1.3.</help>
+    </field>
+    <field>
+        <id>trust.SignatureAlgorithms</id>
+        <label>SignatureAlgorithms</label>
+        <type>select_multiple</type>
+        <style>config_constraints selectpicker</style>
+        <help>Sets the available SignatureAlgorithms.</help>
+    </field>
+    <field>
+        <id>trust.groups</id>
+        <label>DHGroups / Curves</label>
+        <type>select_multiple</type>
+        <style>config_constraints selectpicker</style>
+        <help>Limit the default set of built-in curves to be used when using the standard openssl configuration.</help>
+    </field>
+    <field>
+        <id>trust.MinProtocol</id>
+        <label>MinProtocol</label>
+        <type>dropdown</type>
+        <style>config_constraints selectpicker</style>
+        <help>Sets the minimum supported SSL or TLS version.</help>
+    </field>
+    <field>
+        <id>trust.MinProtocol_DTLS</id>
+        <label>MinProtocol (DTLS)</label>
+        <type>dropdown</type>
+        <style>config_constraints selectpicker</style>
+        <help>Sets the minimum supported DTLS version, when configuring MinProtocol and leaving this empty,
+        DTLS will be disabled.
+        </help>
+    </field>
+</form>
