@@ -89,7 +89,8 @@ CORE_VERSION?=	${CORE_COMMIT:[1]}
 CORE_REVISION?=	${CORE_COMMIT:[2]}
 CORE_HASH?=	${CORE_COMMIT:[3]}
 
-CORE_DEVEL?=	master
+CORE_MAINS=	master main
+CORE_MAIN?=	${CORE_MAINS:[1]}
 CORE_STABLE?=	stable/${CORE_ABI}
 
 _CORE_SERIES=	${CORE_VERSION:S/./ /g}
@@ -177,6 +178,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			pkg \
 			py${CORE_PYTHON}-Jinja2 \
 			py${CORE_PYTHON}-dnspython \
+			py${CORE_PYTHON}-ldap3 \
 			py${CORE_PYTHON}-netaddr \
 			py${CORE_PYTHON}-requests \
 			py${CORE_PYTHON}-sqlite3 \
@@ -193,6 +195,13 @@ CORE_DEPENDS?=		ca_root_nss \
 			zip \
 			${CORE_ADDITIONS} \
 			${CORE_DEPENDS_${CORE_ARCH}}
+
+.for CONFLICT in ${CORE_CONFLICTS}
+CORE_CONFLICTS+=	${CONFLICT}-devel
+.endfor
+
+# assume conflicts are just for plugins
+CORE_CONFLICTS:=	${CORE_CONFLICTS:S/^/os-/g:O}
 
 WRKDIR?=${.CURDIR}/work
 WRKSRC?=${WRKDIR}/src
@@ -272,6 +281,7 @@ install:
 	# try to update the current system if it looks like one
 	@touch ${LOCALBASE}/opnsense/www/index.php
 .endif
+	@rm -f /tmp/opnsense_acl_cache.json /tmp/opnsense_menu_cache.xml
 
 collect:
 	@(cd ${.CURDIR}/src; find * -type f) | while read FILE; do \
@@ -387,6 +397,9 @@ lint-model:
 		done; \
 	done
 
+lint-acl:
+	@${.CURDIR}/Scripts/dashboard-acl.sh
+
 SCRIPTDIRS!=	find ${.CURDIR}/src/opnsense/scripts -type d -depth 1
 
 lint-exec:
@@ -404,7 +417,7 @@ LINTBIN?=	${.CURDIR}/contrib/parallel-lint/parallel-lint
 lint-php:
 	@${LINTBIN} src
 
-lint: plist-check lint-shell lint-xml lint-model lint-exec lint-php
+lint: plist-check lint-shell lint-xml lint-model lint-acl lint-exec lint-php
 
 sweep:
 	find ${.CURDIR}/src -type f -name "*.map" -print0 | \
@@ -499,7 +512,7 @@ mfc: ensure-stable clean-mfcdir
 	@mv ${MFCDIR}/$$(basename ${MFC}) ${MFC}
 	@git add -f .
 	@if ! git diff --quiet HEAD; then \
-		git commit -m "${MFC}: sync with ${CORE_DEVEL}"; \
+		git commit -m "${MFC}: sync with ${CORE_MAIN}"; \
 	fi
 .else
 	@git checkout ${CORE_STABLE}
@@ -507,24 +520,24 @@ mfc: ensure-stable clean-mfcdir
 		git cherry-pick --abort; \
 	fi
 .endif
-	@git checkout ${CORE_DEVEL}
+	@git checkout ${CORE_MAIN}
 .endfor
 
 stable:
 	@git checkout ${CORE_STABLE}
 
-devel ${CORE_DEVEL}:
-	@git checkout ${CORE_DEVEL}
+${CORE_MAINS}:
+	@git checkout ${CORE_MAIN}
 
 rebase:
 	@git checkout ${CORE_STABLE}
 	@git rebase -i
-	@git checkout ${CORE_DEVEL}
+	@git checkout ${CORE_MAIN}
 
 reset:
 	@git checkout ${CORE_STABLE}
 	@git reset --hard HEAD~1
-	@git checkout ${CORE_DEVEL}
+	@git checkout ${CORE_MAIN}
 
 log: ensure-stable
 	@git log --stat -p ${CORE_STABLE}
@@ -532,7 +545,7 @@ log: ensure-stable
 push:
 	@git checkout ${CORE_STABLE}
 	@git push
-	@git checkout ${CORE_DEVEL}
+	@git checkout ${CORE_MAIN}
 
 migrate:
 	@src/opnsense/mvc/script/run_migrations.php
@@ -545,8 +558,7 @@ test: debug
 		echo "Installed version does not match, expected ${CORE_PKGVERSION}"; \
 		exit 1; \
 	fi
-	@cd ${.CURDIR}/src/opnsense/mvc/tests && \
-	    phpunit --configuration PHPunit.xml || true; \
+	@cd ${.CURDIR}/src/opnsense/mvc/tests && phpunit || true; \
 	    rm -f .phpunit.result.cache
 
 checkout:

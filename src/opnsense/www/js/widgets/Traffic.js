@@ -1,5 +1,3 @@
-// endpoint:/api/diagnostics/traffic/*
-
 /*
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
@@ -26,11 +24,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseWidget from "./BaseWidget.js";
-
 export default class Traffic extends BaseWidget {
-    constructor() {
-        super();
+    constructor(config) {
+        super(config);
 
         this.charts = {
             trafficIn: null,
@@ -38,6 +34,8 @@ export default class Traffic extends BaseWidget {
         };
         this.initialized = false;
         this.datasets = {inbytes: [], outbytes: []};
+        this.configurable = true;
+        this.configChanged = false;
     }
 
     _set_alpha(color, opacity) {
@@ -56,7 +54,7 @@ export default class Traffic extends BaseWidget {
                 maintainAspectRatio: false,
                 scaleShowLabels: false,
                 tooltipEvents: [],
-                pointDot: false,
+                pointDot: true,
                 scaleShowGridLines: true,
                 responsive: true,
                 normalized: true,
@@ -89,7 +87,7 @@ export default class Traffic extends BaseWidget {
                     y: {
                         ticks: {
                             callback: (value, index, values) => {
-                                return this._formatBytes(value);
+                                return this._formatBits(value);
                             }
                         }
                     }
@@ -107,7 +105,7 @@ export default class Traffic extends BaseWidget {
                         intersect: false,
                         callbacks: {
                             label: (context) => {
-                                return context.dataset.label + ": " + this._formatBytes(context.dataset.data[context.dataIndex].y).toString();
+                                return context.dataset.label + ": " + this._formatBits(context.dataset.data[context.dataIndex].y).toString();
                             }
                         }
                       },
@@ -123,7 +121,9 @@ export default class Traffic extends BaseWidget {
         };
     }
 
-    _initialize(data) {
+    async _initialize(data) {
+        const config = await this.getWidgetConfig();
+        this.datasets = {inbytes: [], outbytes: []};
         for (const dir of ['inbytes', 'outbytes']) {
             let colors = Chart.colorschemes.tableau.Classic10;
             let i = 0;
@@ -132,13 +132,14 @@ export default class Traffic extends BaseWidget {
                 i++;
                 this.datasets[dir].push({
                     label: data.interfaces[intf].name,
-                    hidden: false, // XXX
+                    hidden: !config.interfaces.includes(data.interfaces[intf].name),
                     borderColor: colors[idx],
                     backgroundColor: this._set_alpha(colors[idx], 0.5),
                     pointHoverBackgroundColor: colors[idx],
                     pointHoverBorderColor: colors[idx],
                     pointBackgroundColor: colors[idx],
                     pointBorderColor: colors[idx],
+                    pointRadius: 0,
                     intf: intf,
                     last_time: data.time,
                     src_field: dir,
@@ -149,10 +150,9 @@ export default class Traffic extends BaseWidget {
 
         this.charts.trafficIn = new Chart($('#traffic-in')[0].getContext('2d'), this._chartConfig(this.datasets.inbytes));
         this.charts.trafficOut = new Chart($('#traffic-out')[0].getContext('2d'), this._chartConfig(this.datasets.outbytes));
-        this.initialized = true;
     }
 
-    _onMessage(event) {
+    async _onMessage(event) {
         if (!event) {
             super.closeEventSource();
         }
@@ -160,8 +160,13 @@ export default class Traffic extends BaseWidget {
         const data = JSON.parse(event.data);
 
         if (!this.initialized) {
-            this._initialize(data);
+            await this._initialize(data);
             this.initialized = true;
+        }
+
+        let config = null;
+        if (this.configChanged) {
+            config = await this.getWidgetConfig();
         }
 
         for (let chart of Object.values(this.charts)) {
@@ -169,6 +174,10 @@ export default class Traffic extends BaseWidget {
                 chart.config.data.datasets.forEach((dataset) => {
                     if (dataset.intf === intf) {
                         let elapsed_time = data.time - dataset.last_time;
+                        if (this.configChanged) {
+                            // check hidden status of dataset
+                            dataset.hidden = !config.interfaces.includes(data.interfaces[intf].name);
+                        }
                         dataset.data.push({
                             x: new Date(data.time * 1000.0),
                             y: Math.round(((data.interfaces[intf][dataset.src_field]) / elapsed_time) * 8, 0)
@@ -179,6 +188,10 @@ export default class Traffic extends BaseWidget {
                 });
             });
             chart.update('quiet');
+        }
+
+        if (this.configChanged) {
+            this.configChanged = false;
         }
     }
 
@@ -198,12 +211,39 @@ export default class Traffic extends BaseWidget {
     }
 
     async onMarkupRendered() {
-        super.openEventSource('/api/diagnostics/traffic/stream/1', this._onMessage.bind(this));
+        super.openEventSource(`/api/diagnostics/traffic/stream/${'1'}`, this._onMessage.bind(this));
+    }
+
+    async getWidgetOptions() {
+        const interfaces = await this.ajaxCall('/api/diagnostics/traffic/interface');
+        return {
+            interfaces: {
+                title: this.translations.interfaces,
+                type: 'select_multiple',
+                options: Object.entries(interfaces.interfaces).map(([key,intf]) => {
+                    return {
+                        value: intf.name,
+                        label: intf.name,
+                    };
+                }),
+                default: Object.entries(interfaces.interfaces)
+                    .filter(([key, intf]) => key === 'lan' || key === 'wan')
+                    .map(([key, intf]) => (intf.name))
+            }
+        };
+    }
+
+    async onWidgetOptionsChanged(options) {
+        this.configChanged = true;
     }
 
     onWidgetClose() {
         super.onWidgetClose();
-        this.charts.trafficIn.destroy();
-        this.charts.trafficOut.destroy();
+        if (this.charts.trafficIn !== null) {
+            this.charts.trafficIn.destroy();
+        }
+        if (this.charts.trafficOut !== null) {
+            this.charts.trafficOut.destroy();
+        }
     }
 }

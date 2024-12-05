@@ -47,7 +47,7 @@ abstract class Base
     /**
      * @var array internal list of LDAP errors
      */
-    protected $lastAuthErrors = array();
+    protected $lastAuthErrors = [];
 
     /**
      * return group memberships
@@ -56,7 +56,7 @@ abstract class Base
      */
     private function groups($username)
     {
-        $groups = array();
+        $groups = [];
         $user = $this->getUser($username);
         if ($user != null) {
             $uid = (string)$user->uid;
@@ -86,7 +86,7 @@ abstract class Base
      */
     public function checkPolicy($username, $old_password, $new_password)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -143,8 +143,9 @@ abstract class Base
      * @param string $memberof list (\n separated) of groups
      * @param array $scope list of groups that should be considered
      * @param boolean $createuser create user when it does not exist
+     * @param array $default_groups list of groups to always add
      */
-    protected function setGroupMembership($username, $memberof, $scope = [], $createuser = false)
+    protected function setGroupMembership($username, $memberof, $scope = [], $createuser = false, $default_groups = [])
     {
         $user = $this->getUser($username);
         // gather known and user configured groups to be able to compare the results from ldap
@@ -160,16 +161,20 @@ abstract class Base
                 }
             }
         }
+        // append default groups
+        $ldap_groups = [];
+        foreach ($default_groups as $key) {
+            $ldap_groups[$key] = $key;
+        }
         // collect all groups from the memberof attribute, store full object path for logging
         // first cn= defines our local groupname
-        $ldap_groups = [];
         foreach (explode("\n", $memberof) as $member) {
             if (stripos($member, "cn=") === 0) {
                 $ldap_groups[strtolower(explode(",", substr($member, 3))[0])] = $member;
             }
         }
         // list of enabled groups (all when empty), so we can ignore some local groups if needed
-        $sync_groups = !empty($scope) ? $scope : $known_groups;
+        $sync_groups = !empty($scope) ? array_merge($scope, $default_groups) : $known_groups;
 
         //
         // sort groups and intersect with $sync_groups to determine difference.
@@ -182,7 +187,7 @@ abstract class Base
             // update when changed
             if ($user == null && $createuser) {
                 // user creation when enabled
-                $add_user = json_decode((new Backend())->configdpRun("auth add user", array($username)), true);
+                $add_user = json_decode((new Backend())->configdpRun("auth add user", [$username]), true);
                 if (!empty($add_user) && $add_user['status'] == 'ok') {
                     Config::getInstance()->forceReload();
                     $user = $this->getUser($username);
@@ -197,32 +202,33 @@ abstract class Base
             foreach ($cnf->system->group as $group) {
                 $lc_groupname = strtolower((string)$group->name);
                 if (in_array($lc_groupname, $sync_groups)) {
-                    if (
-                        in_array((string)$user->uid, (array)$group->member)
-                          && empty($ldap_groups[$lc_groupname])
-                    ) {
-                        unset($group->member[array_search((string)$user->uid, (array)$group->member)]);
+                    $members = [];
+                    foreach ($group->member as $member) {
+                        $members = array_merge($members, explode(',', $member));
+                    }
+                    if (in_array((string)$user->uid, $members) && empty($ldap_groups[$lc_groupname])) {
+                        while (in_array((string)$user->uid, $members) && empty($ldap_groups[$lc_groupname])) {
+                            unset($members[array_search((string)$user->uid, $members)]);
+                        }
+                        $group->member = implode(',', $members);
                         syslog(LOG_NOTICE, sprintf(
                             'User: policy change for %s unlink group %s',
                             $username,
                             (string)$group->name
                         ));
-                    } elseif (
-                        !in_array((string)$user->uid, (array)$group->member)
-                          && !empty($ldap_groups[$lc_groupname])
-                    ) {
+                    } elseif (!in_array((string)$user->uid, $members) && !empty($ldap_groups[$lc_groupname])) {
                         syslog(LOG_NOTICE, sprintf(
                             'User: policy change for %s link group %s [%s]',
                             $username,
                             (string)$group->name,
                             $ldap_groups[$lc_groupname]
                         ));
-                        $group->addChild('member', (string)$user->uid);
+                        $group->member = implode(',', array_merge($members, [(string)$user->uid]));
                     }
                 }
             }
             Config::getInstance()->save();
-            (new Backend())->configdpRun("auth user changed", array($username));
+            (new Backend())->configdpRun("auth user changed", [$username]);
         }
     }
 
@@ -250,5 +256,37 @@ abstract class Base
     public function getLastAuthErrors()
     {
         return $this->lastAuthErrors;
+    }
+
+    /**
+     * authenticate user, implementation when using this base classes authenticate()
+     * @param string $username username to authenticate
+     * @param string $password user password
+     * @return bool
+     */
+    protected function _authenticate($username, $password)
+    {
+        return false;
+    }
+
+    /**
+     * authenticate user, when failed, make sure we always spend the same time for the sequence.
+     * This also adds a penalty for failed attempts.
+     * @param string $username username to authenticate
+     * @param string $password user password
+     * @return bool
+     */
+    public function authenticate($username, $password)
+    {
+        $tstart = microtime(true);
+        $expected_time = 2000000; /* failed login, aim at 2 seconds total time */
+        $result = $this->_authenticate($username, $password);
+
+        $timeleft = $expected_time - ((microtime(true) - $tstart) * 1000000);
+        if (!$result && $timeleft > 0) {
+            usleep($timeleft);
+        }
+
+        return $result;
     }
 }

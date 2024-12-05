@@ -1,6 +1,7 @@
 {
     "product_abi": "%%CORE_ABI%%",
     "product_arch": "%%CORE_ARCH%%",
+    "product_conflicts": "%%CORE_CONFLICTS%%",
     "product_copyright_owner": "%%CORE_COPYRIGHT_HOLDER%%",
     "product_copyright_url": "%%CORE_COPYRIGHT_WWW%%",
     "product_copyright_years": "%%CORE_COPYRIGHT_YEARS%%",

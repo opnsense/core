@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2021 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2016-2024 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -70,6 +70,7 @@ CORE_SYSLOGNG?=	${_CORE_SYSLOGNG:S/./ /g:[1..2]:tW:S/ /./g}
 REPLACEMENTS=	CORE_ABI \
 		CORE_ARCH \
 		CORE_COMMIT \
+		CORE_CONFLICTS \
 		CORE_COPYRIGHT_HOLDER \
 		CORE_COPYRIGHT_WWW \
 		CORE_COPYRIGHT_YEARS \

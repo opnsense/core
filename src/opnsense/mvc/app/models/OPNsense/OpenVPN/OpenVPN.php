@@ -133,6 +133,12 @@ class OpenVPN extends BaseModel
                         $key . ".verify_client_cert"
                     ));
                 }
+                if ((string)$instance->{'auth-gen-token'} != '0' && (string)$instance->{'reneg-sec'} == '0') {
+                    $messages->appendMessage(new Message(
+                        gettext('A token lifetime requires a non zero Renegotiate time.'),
+                        $key . ".auth-gen-token"
+                    ));
+                }
             }
             if (!empty((string)$instance->cert)) {
                 $tmp = Store::getCertificate((string)$instance->cert);
@@ -149,6 +155,13 @@ class OpenVPN extends BaseModel
                     $key . ".keepalive_timeout"
                 ));
             }
+
+            if ($instance->dev_type == 'ovpn' && strpos($instance->proto, 'udp') === false) {
+                $messages->appendMessage(new Message(
+                    gettext('DCO type instances only support UDP mode.'),
+                    $key . ".proto"
+                ));
+            }
         }
         return $messages;
     }
@@ -157,9 +170,10 @@ class OpenVPN extends BaseModel
      * Retrieve overwrite content in legacy format
      * @param string $server_id vpnid
      * @param string $common_name certificate common name (or username when specified)
-     * @return array legacy overwrite data
+     * @param array $overlay overwrite CSO properties
+     * @return array legacy overwrite data, empty when failed
      */
-    public function getOverwrite($server_id, $common_name)
+    public function getOverwrite($server_id, $common_name, $overlay = [])
     {
         $result = [];
         foreach ($this->Overwrites->Overwrite->iterateItems() as $cso) {
@@ -217,6 +231,29 @@ class OpenVPN extends BaseModel
                     foreach (explode(',', (string)$cso->{$fieldname . 's'}) as $idx => $item) {
                         $result[$fieldname . (string)($idx + 1)] = $item;
                     }
+                }
+            }
+        }
+
+        if (empty($result)) {
+            $result['common_name'] = $common_name;
+        }
+
+        // overlay is fed by authentication backends and takes precedence
+        $result = array_merge($result, $overlay);
+
+        // check if provisioning by authentication backend is mandatory
+        foreach ($this->Instances->Instance->iterateItems() as $node_uuid => $node) {
+            if (
+                !empty((string)$node->enabled) &&
+                $server_id == $node_uuid &&
+                (string)$node->role == 'server' &&
+                !empty((string)$node->provision_exclusive)
+            ) {
+                if (!empty((string)$node->server) && empty($result['tunnel_network'])) {
+                    return [];
+                } elseif (!empty((string)$node->server_ipv6) && empty($result['tunnel_networkv6'])) {
+                    return [];
                 }
             }
         }
@@ -363,6 +400,8 @@ class OpenVPN extends BaseModel
                     'digest' => (string)$node->auth,
                     'description' => (string)$node->description,
                     'use_ocsp' => !empty((string)$node->use_ocsp),
+                    // legacy only (backwards compatibility)
+                    'crypto' => (string)$node->{'data-ciphers-fallback'},
                 ];
             }
         }
@@ -481,6 +520,9 @@ class OpenVPN extends BaseModel
                             "content" => "{$node->username}\n{$node->password}\n"
                         ];
                     }
+                    if (!empty((string)$node->remote_cert_tls)) {
+                        $options['remote-cert-tls'] = 'server';
+                    }
                     // XXX: In some cases it might be practical to drop privileges, for server mode this will be
                     //      more difficult due to the associated script actions (and their requirements).
                     //$options['user'] = 'openvpn';
@@ -497,6 +539,9 @@ class OpenVPN extends BaseModel
                         $options['crl-verify'] = "/var/etc/openvpn/server-{$node_uuid}.crl-verify";
                     }
                     $options['verify-client-cert'] = (string)$node->verify_client_cert;
+                    if (!empty((string)$node->remote_cert_tls)) {
+                        $options['remote-cert-tls'] = 'client';
+                    }
                     if (in_array($node->dev_type, ['tun', 'ovpn']) && !empty((string)$node->server)) {
                         $parts = explode('/', (string)$node->server);
                         $mask = Util::CIDRToMask($parts[1]);
@@ -593,6 +638,11 @@ class OpenVPN extends BaseModel
                             $options['push'][] = "\"dhcp-option NTP {$opt}\"";
                         }
                     }
+                    foreach (['auth-gen-token'] as $opt) {
+                        if ((string)$node->$opt != '') {
+                            $options[$opt] = str_replace(',', ':', (string)$node->$opt);
+                        }
+                    }
                 }
                 $options['persist-tun'] = null;
                 $options['persist-key'] = null;
@@ -618,11 +668,7 @@ class OpenVPN extends BaseModel
                 $options['up'] = '/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkup';
                 $options['down'] = '/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkdown';
 
-                foreach (
-                    [
-                    'reneg-sec', 'auth-gen-token', 'port', 'local', 'data-ciphers', 'data-ciphers-fallback', 'auth'
-                    ] as $opt
-                ) {
+                foreach (['reneg-sec', 'port', 'local', 'data-ciphers', 'data-ciphers-fallback', 'auth'] as $opt) {
                     if ((string)$node->$opt != '') {
                         $options[$opt] = str_replace(',', ':', (string)$node->$opt);
                     }

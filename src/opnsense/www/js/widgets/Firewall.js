@@ -1,6 +1,3 @@
-// endpoint:/api/diagnostics/firewall/streamLog
-// endpoint:/api/diagnostics/interface/getInterfaceNames
-
 /*
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
@@ -26,8 +23,6 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
-import BaseTableWidget from "./BaseTableWidget.js";
 
 export default class Firewall extends BaseTableWidget {
     constructor(config) {
@@ -99,11 +94,11 @@ export default class Firewall extends BaseTableWidget {
         // increase counters
         if (!this.counters[data.rid]) {
             this.counters[data.rid] = {
-                count: 1,
+                count: data.counter,
                 label: data.label ?? ''
             }
         } else {
-            this.counters[data.rid].count++;
+            this.counters[data.rid].count = data.counter;
         }
 
         let popContent = $(`
@@ -173,20 +168,8 @@ export default class Firewall extends BaseTableWidget {
     }
 
     async onMarkupRendered() {
-        let exit = false;
-        ajaxGet('/api/diagnostics/interface/getInterfaceNames', {}, (data, status) => {
-            if (status !== 'success') {
-                console.error('Failed to fetch interface descriptions');
-                exit = true;
-                return;
-            }
-
-            this.ifMap = data;
-        });
-
-        if (exit) {
-            return;
-        }
+        const data = await this.ajaxCall('/api/diagnostics/interface/getInterfaceNames');
+        this.ifMap = data;
 
         super.openEventSource('/api/diagnostics/firewall/streamLog', this._onMessage.bind(this));
 
@@ -290,7 +273,7 @@ export default class Firewall extends BaseTableWidget {
     }
 
     onWidgetResize(elem, width, height) {
-        if (width < 660) {
+        if (width < 700) {
             $('#fw-chart').show();
             $('#fw-table-container').hide();
         } else {

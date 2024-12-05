@@ -62,7 +62,7 @@ if ($action == 'maintenance') {
     }
     echo json_encode(['status' => 'ok', 'action' => 'disable']);
 } elseif ($action == 'enable') {
-    interfaces_carp_setup();
+    interfaces_pfsync_configure();
     set_single_sysctl('net.inet.carp.allow', '1');
     foreach ($a_vip as $vip) {
         if (!empty($vip['vhid'])) {

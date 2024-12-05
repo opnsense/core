@@ -1,7 +1,7 @@
 <script>
     $( document ).ready(function() {
         $("#grid-vips").UIBootgrid({
-          search:'/api/diagnostics/interface/get_vip_status/',
+          search:'/api/diagnostics/interface/get_vip_status',
           options:{
               requestHandler: function(request){
                   if ( $('#mode_filter').val().length > 0) {
@@ -55,7 +55,7 @@
           }
         });
         $("#grid-pfsyncnodes").UIBootgrid({
-          search:'/api/diagnostics/interface/get_pfsync_nodes/',
+          search:'/api/diagnostics/interface/get_pfsync_nodes',
         });
         $("#mode_filter").change(function(){
             $('#grid-vips').bootgrid('reload');

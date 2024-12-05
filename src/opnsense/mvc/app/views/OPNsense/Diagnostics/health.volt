@@ -81,7 +81,7 @@
 
         chart.x2Axis
                 .tickFormat(function (d) {
-                    return d3.time.format('%x')(new Date(d))
+                    return d3.time.format('%Y-%m-%d')(new Date(d))
                 });
 
         chart.yAxis
@@ -210,7 +210,7 @@
             if (status == "success") {
                 let stepsize = data["set"]["step_size"];
                 let scale = "{{ lang._('seconds') }}";
-                let dtformat = '%m/%d %H:%M';
+                let dtformat = '%m-%d %H:%M';
 
                 // set defaults based on stepsize
                 if (stepsize >= 86400) {
@@ -372,6 +372,7 @@
                             return d3.time.format(dtformat)(new Date(d))
                         });
                 chart.yAxis.axisLabel(data["y-axis_label"]);
+                chart.forceY([0]);
                 chart.useInteractiveGuideline(true);
                 chart.interactive(true);
 

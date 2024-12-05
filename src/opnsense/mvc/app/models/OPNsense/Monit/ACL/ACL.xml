@@ -4,7 +4,9 @@
       <description>Allow access to the 'Services: Monit System Monitoring' page.</description>
       <patterns>
          <pattern>ui/monit/*</pattern>
-         <pattern>api/monit/*</pattern>
+         <pattern>api/monit/service/*</pattern>
+         <pattern>api/monit/settings/*</pattern>
+         <pattern>api/monit/status/*</pattern>
       </patterns>
    </page-services-monit>
 </acl>

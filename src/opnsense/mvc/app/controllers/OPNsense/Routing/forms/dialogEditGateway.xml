@@ -138,6 +138,6 @@
         <label>Data Length</label>
         <advanced>true</advanced>
         <type>text</type>
-        <help>Specify the number of data bytes to be sent. Default is 0.</help>
+        <help>Specify the number of data bytes to be sent. Default is 1.</help>
     </field>
 </form>

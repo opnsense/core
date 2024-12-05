@@ -1,5 +1,9 @@
 <form>
     <field>
+        <type>header</type>
+        <label>General Settings</label>
+    </field>
+    <field>
         <id>ids.general.enabled</id>
         <label>Enabled</label>
         <type>checkbox</type>
@@ -16,6 +20,65 @@
         <label>Promiscuous mode</label>
         <type>checkbox</type>
         <help>Enable promiscuous mode, for certain setups (like IPS with vlans), this is required to actually capture data on the physical interface.</help>
+    </field>
+    <field>
+        <id>ids.general.interfaces</id>
+        <label>Interfaces</label>
+        <type>select_multiple</type>
+        <help>Select interface(s) to use. When enabling IPS, make sure the (virtual) driver supports this feature.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Detection</label>
+    </field>
+    <field>
+        <id>ids.general.MPMAlgo</id>
+        <label>Pattern matcher</label>
+        <type>dropdown</type>
+        <help>Select the multi-pattern matcher algorithm to use.</help>
+    </field>
+    <field>
+        <id>ids.general.detect.Profile</id>
+        <label>Detect Profile</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>The detection engine builds internal groups of signatures. The engine allow us to specify the profile to use for them, to manage memory on an efficient way keeping a good performance.</help>
+    </field>
+    <field>
+        <id>ids.general.detect.toclient_groups</id>
+        <label>ToClient</label>
+        <style>detect_custom</style>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>If Custom is specified. The detection engine tries to split out separate signatures into groups so that a packet is only inspected against signatures that can actually match. As in large rule set this would result in way too many groups and memory usage similar groups are merged together.</help>
+    </field>
+    <field>
+        <id>ids.general.detect.toserver_groups</id>
+        <label>ToServer</label>
+        <style>detect_custom</style>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>If Custom is specified. The detection engine tries to split out separate signatures into groups so that a packet is only inspected against signatures that can actually match. As in large rule set this would result in way too many groups and memory usage similar groups are merged together.</help>
+    </field>
+    <field>
+        <id>ids.general.homenet</id>
+        <label>Home networks</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>Networks to interpret as local</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.defaultPacketSize</id>
+        <label>default packet size</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>With this option, you can set the size of the packets on your network. It is possible that bigger packets have to be processed sometimes. The engine can still process these bigger packets, but processing it will lower the performance.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Logging</label>
     </field>
     <field>
         <id>ids.general.syslog</id>
@@ -41,57 +104,6 @@
         <advanced>true</advanced>
     </field>
     <field>
-        <id>ids.general.MPMAlgo</id>
-        <label>Pattern matcher</label>
-        <type>dropdown</type>
-        <help>Select the multi-pattern matcher algorithm to use.</help>
-    </field>
-        <field>
-        <id>ids.general.detect.Profile</id>
-        <label>Detect Profile</label>
-        <type>dropdown</type>
-        <advanced>true</advanced>
-        <help>The detection engine builds internal groups of signatures. The engine allow us to specify the profile to use for them, to manage memory on an efficient way keeping a good performance.</help>
-    </field>
-    <field>
-        <id>ids.general.detect.toclient_groups</id>
-        <label>ToClient</label>
-        <style>detect_custom</style>
-        <type>text</type>
-        <advanced>true</advanced>
-        <help>If Custom is specified. The detection engine tries to split out separate signatures into groups so that a packet is only inspected against signatures that can actually match. As in large rule set this would result in way too many groups and memory usage similar groups are merged together.</help>
-    </field>
-    <field>
-        <id>ids.general.detect.toserver_groups</id>
-        <label>ToServer</label>
-        <style>detect_custom</style>
-        <type>text</type>
-        <advanced>true</advanced>
-        <help>If Custom is specified. The detection engine tries to split out separate signatures into groups so that a packet is only inspected against signatures that can actually match. As in large rule set this would result in way too many groups and memory usage similar groups are merged together.</help>
-    </field>
-    <field>
-        <id>ids.general.interfaces</id>
-        <label>Interfaces</label>
-        <type>select_multiple</type>
-        <help>Select interface(s) to use. When enabling IPS, only use physical interfaces here (no vlans etc).</help>
-    </field>
-    <field>
-        <id>ids.general.homenet</id>
-        <label>Home networks</label>
-        <type>select_multiple</type>
-        <style>tokenize</style>
-        <allownew>true</allownew>
-        <help>Networks to interpret as local</help>
-        <advanced>true</advanced>
-    </field>
-    <field>
-        <id>ids.general.defaultPacketSize</id>
-        <label>default packet size</label>
-        <type>text</type>
-        <advanced>true</advanced>
-        <help>With this option, you can set the size of the packets on your network. It is possible that bigger packets have to be processed sometimes. The engine can still process these bigger packets, but processing it will lower the performance.</help>
-    </field>
-    <field>
         <id>ids.general.AlertLogrotate</id>
         <label>Rotate log</label>
         <type>dropdown</type>
@@ -108,6 +120,55 @@
         <label>Log package payload</label>
         <type>checkbox</type>
         <help>Send package payload to the log for further analyses.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.eveLog.http.enable</id>
+        <label>Enable eve HTTP logging</label>
+        <type>checkbox</type>
+        <help>Send HTTP metadata to eve-log for further analyses.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.eveLog.http.extended</id>
+        <label>Eve HTTP extended logging</label>
+        <type>checkbox</type>
+        <help>Add extended information to eve HTTP logging.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.eveLog.http.dumpAllHeaders</id>
+        <label>Eve HTTP dump all headers</label>
+        <type>dropdown</type>
+        <help>Make eve HTTP logging dump all HTTP headers. You may choose to dump headers for requests or responses or both.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.eveLog.tls.enable</id>
+        <label>Enable eve TLS logging</label>
+        <type>checkbox</type>
+        <help>Send TLS metadata to eve-log for further analyses.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.eveLog.tls.extended</id>
+        <label>Eve TLS extended logging</label>
+        <type>checkbox</type>
+        <help>Add extended information to eve TLS logging. For example, SNI field.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.eveLog.tls.sessionResumption</id>
+        <label>Eve TLS log session resumption</label>
+        <type>checkbox</type>
+        <help>Output TLS transaction where the session is resumed using a session id</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.eveLog.tls.custom</id>
+        <label>Eve TLS custom logging</label>
+        <type>select_multiple</type>
+        <help>Custom TLS fields to include in eve-log for TLS. (Overrides extended if non-empty).</help>
         <advanced>true</advanced>
     </field>
 </form>

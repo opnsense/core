@@ -78,7 +78,7 @@ class ControllerRoot extends Controller
         $lang = $this->langcode;
 
         foreach ($config->system->children() as $key => $node) {
-            if ($key == 'language') {
+            if ($key == 'language' && !empty((string)$node)) {
                 $lang = (string)$node;
                 break;
             }
@@ -87,7 +87,7 @@ class ControllerRoot extends Controller
         if ($this->session->has('Username')) {
             $username = $this->session->get('Username');
             foreach ($config->system->user as $user) {
-                if ($username == (string)$user->name && isset($user->language)) {
+                if ($username == (string)$user->name && !empty((string)$user->language)) {
                     $lang = (string)$user->language;
                     break;
                 }

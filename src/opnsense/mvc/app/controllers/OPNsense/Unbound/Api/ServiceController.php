@@ -41,7 +41,6 @@ class ServiceController extends ApiMutableServiceControllerBase
 
     public function dnsblAction()
     {
-        $this->sessionClose();
         $backend = new Backend();
         $backend->configdRun('template reload ' . escapeshellarg(static::$internalServiceTemplate));
         $response = $backend->configdRun(static::$internalServiceName . ' dnsbl');
@@ -54,7 +53,6 @@ class ServiceController extends ApiMutableServiceControllerBase
      */
     public function reconfigureGeneralAction()
     {
-        $this->sessionClose();
         $backend = new Backend();
         $backend->configdRun('dns reload');
         $result = $this->reconfigureAction();

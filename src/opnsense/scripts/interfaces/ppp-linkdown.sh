@@ -4,10 +4,8 @@ export PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin
 
 IF="${1}"
 AF="${2}"
-IP="${3}"
-GW=
 
-DEFAULTGW=$(route -n get -${AF} default | grep gateway: | awk '{print $2}')
+/usr/bin/logger -t ppp "ppp-linkdown: executing on ${IF} for ${AF}"
 
 ngctl shutdown ${IF}:
 

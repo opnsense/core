@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2022 Deciso B.V.
+ * Copyright (C) 2022-2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@ namespace OPNsense\IPsec\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Config;
+use OPNsense\Core\Backend;
 
 /**
  * Class ConnectionsController
@@ -281,7 +282,6 @@ class ConnectionsController extends ApiMutableModelControllerBase
      */
     public function isEnabledAction()
     {
-        $this->sessionClose();
         return [
             'enabled' => isset(Config::getInstance()->object()->ipsec->enable)
         ];
@@ -293,7 +293,6 @@ class ConnectionsController extends ApiMutableModelControllerBase
     public function toggleAction($enabled = null)
     {
         if ($this->request->isPost()) {
-            $this->sessionClose();
             Config::getInstance()->lock();
             $config = Config::getInstance()->object();
             if ($enabled == "0" || $enabled == "1") {
@@ -310,5 +309,21 @@ class ConnectionsController extends ApiMutableModelControllerBase
             return ['status' => 'ok'];
         }
         return ['status' => 'failed'];
+    }
+
+    /**
+     * Fetch the contents of swanctl.conf
+     */
+    public function swanctlAction()
+    {
+        $backend = new Backend();
+
+        $responseArray = json_decode($backend->configdRun('ipsec get swanctl'), true);
+
+        if (isset($responseArray['error'])) {
+            return ["status" => "failed", "message" => $responseArray['message']];
+        }
+
+        return ["status" => "success", "content" => $responseArray['content']];
     }
 }

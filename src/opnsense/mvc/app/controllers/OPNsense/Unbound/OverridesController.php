@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2022 Stephan de Wit <stephan.de.wit@deciso.com>
+ * Copyright (C) 2022-2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,5 @@ class OverridesController extends IndexController
         $this->view->pick('OPNsense/Unbound/overrides');
         $this->view->formDialogHostOverride = $this->getForm("dialogHostOverride");
         $this->view->formDialogHostAlias = $this->getForm("dialogHostAlias");
-        $this->view->formDialogDomainOverride = $this->getForm("dialogDomainOverride");
     }
 }

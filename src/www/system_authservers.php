@@ -53,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     $pconfig = [];
     $pconfig['sync_memberof_groups'] = [];
+    $pconfig['sync_default_groups'] = [];
     if ($act == "new") {
         $pconfig['ldap_protver'] = 3;
         $pconfig['radius_srvcs'] = "both";
@@ -96,6 +97,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (!empty($a_server[$id]['ldap_sync_memberof_groups'])) {
                 $pconfig['sync_memberof_groups'] = explode(",", $a_server[$id]['ldap_sync_memberof_groups']);
             }
+            if (!empty($a_server[$id]['ldap_sync_default_groups'])) {
+              $pconfig['sync_default_groups'] = explode(",", $a_server[$id]['ldap_sync_default_groups']);
+          }
         } elseif ($pconfig['type'] == "radius") {
             $pconfig['radius_host'] = $a_server[$id]['host'] ?? '';
             $pconfig['radius_auth_port'] = $a_server[$id]['radius_auth_port'] ?? '';
@@ -117,6 +121,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['sync_create_local_users'] = !empty($a_server[$id]['sync_create_local_users']);
             if (!empty($a_server[$id]['sync_memberof_groups'])) {
                 $pconfig['sync_memberof_groups'] = explode(",", $a_server[$id]['sync_memberof_groups']);
+            }
+            if (!empty($a_server[$id]['sync_default_groups'])) {
+                $pconfig['sync_default_groups'] = explode(",", $a_server[$id]['sync_default_groups']);
             }
         } elseif ($pconfig['type'] == 'local') {
             foreach (['password_policy_duration', 'enable_password_policy_constraints',
@@ -256,6 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               $server['ldap_sync_memberof'] = !empty($pconfig['sync_memberof']);
               $server['ldap_sync_memberof_constraint'] = !empty($pconfig['sync_memberof_constraint']);
               $server['ldap_sync_memberof_groups'] = !empty($pconfig['sync_memberof_groups']) ? implode(",", $pconfig['sync_memberof_groups']) : [];
+              $server['ldap_sync_default_groups'] = !empty($pconfig['sync_default_groups']) ? implode(",", $pconfig['sync_default_groups']) : [];
               $server['ldap_sync_create_local_users'] = !empty($pconfig['sync_create_local_users']);
           } elseif ($server['type'] == "radius") {
               $server['host'] = $pconfig['radius_host'];
@@ -281,6 +289,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               }
               $server['sync_memberof'] = !empty($pconfig['sync_memberof']);
               $server['sync_memberof_groups'] = !empty($pconfig['sync_memberof_groups']) ? implode(",", $pconfig['sync_memberof_groups']) : [];
+              $server['sync_default_groups'] = !empty($pconfig['sync_default_groups']) ? implode(",", $pconfig['sync_default_groups']) : [];
               $server['sync_create_local_users'] = !empty($pconfig['sync_create_local_users']);
           } elseif ($server['type'] == 'local') {
               foreach (['password_policy_duration', 'enable_password_policy_constraints',
@@ -530,14 +539,12 @@ $( document ).ready(function() {
                 $("#sync_memberof_constraint").prop('disabled', false);
             }
             $("#sync_memberof_groups").prop('disabled', false);
-            $("#sync_create_local_users").prop('disabled', false);
         } else {
             $("#sync_memberof").prop('disabled', true);
             if ($("#type").val() !== 'radius') {
-              $("#sync_memberof_constraint").prop('disabled', true);
+                $("#sync_memberof_constraint").prop('disabled', true);
             }
             $("#sync_memberof_groups").prop('disabled', true);
-            $("#sync_create_local_users").prop('disabled', true);
         }
     });
     $("#ldap_read_properties").change();
@@ -859,6 +866,22 @@ endif; ?>
                     </div>
                   </td>
                 </tr>
+                <tr class="auth_ldap auth_radius auth_ldap-totp auth_options hidden">
+                  <td><a id="help_for_sync_default_groups" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Default groups'); ?></td>
+                  <td>
+                    <select name='sync_default_groups[]' id="sync_default_groups" class="selectpicker" multiple="multiple">
+<?php
+                    foreach (config_read_array('system', 'group') as $group):
+                        $selected = !empty($pconfig['sync_default_groups']) && in_array($group['name'], $pconfig['sync_default_groups']) ? 'selected="selected"' : ''; ?>
+                      <option value="<?= $group['name'] ?>" <?= $selected ?>><?= $group['name'] ?></option>
+<?php
+                    endforeach; ?>
+                    </select>
+                    <div class="hidden" data-for="help_for_sync_default_groups">
+                      <?= gettext("Group(s) to add by default when creating users");?>
+                    </div>
+                  </td>
+                </tr>
                 <tr class="auth_ldap auth_ldap-totp auth_options hidden">
                   <td><a id="help_for_sync_memberof_constraint" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Constraint groups'); ?></td>
                   <td>
@@ -891,7 +914,7 @@ endif; ?>
                     <input id="sync_create_local_users" name="sync_create_local_users" type="checkbox" <?= empty($pconfig['sync_create_local_users']) ? '' : 'checked="checked"';?> />
                     <div class="hidden" data-for="help_for_sync_create_local_users">
                       <?= gettext(
-                        "To be used in combination with synchronize groups, allow the authenticator to create new local users after ".
+                        "To be used in combination with synchronize or default groups, allow the authenticator to create new local users after ".
                         "successful login with group memberships returned for the user."
                       );?>
                     </div>
