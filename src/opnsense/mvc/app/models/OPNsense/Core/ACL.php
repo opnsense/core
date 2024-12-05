@@ -39,17 +39,17 @@ class ACL
     /**
      * @var array user database
      */
-    private $userDatabase = array();
+    private $userDatabase = [];
 
     /**
      * @var array privileges per group
      */
-    private $allGroupPrivs = array();
+    private $allGroupPrivs = [];
 
     /**
      * @var array page/endpoint mapping structure
      */
-    private $ACLtags = array();
+    private $ACLtags = [];
 
     /**
      * @var string location to store serialized acl
@@ -68,12 +68,12 @@ class ACL
      */
     private function loadPageMap()
     {
-        $pageMap = array();
+        $pageMap = [];
 
         foreach ($this->ACLtags as $aclKey => $aclItem) {
             // check if acl item already exists if there's acl content for it
             if (!array_key_exists($aclKey, $pageMap) && (isset($aclItem["match"]) || isset($aclItem["pattern"]))) {
-                $pageMap[$aclKey] = array();
+                $pageMap[$aclKey] = [];
             }
             if (isset($aclItem["match"])) {
                 foreach ($aclItem['match'] as $matchexpr) {
@@ -92,32 +92,33 @@ class ACL
         $pageMap = $this->loadPageMap();
 
         // create privilege mappings
-        $this->userDatabase = array();
-        $this->allGroupPrivs = array();
+        $this->userDatabase = [];
+        $this->allGroupPrivs = [];
 
-        $groupmap = array();
+        $groupmap = [];
 
         // gather user / group data from config.xml
         $config = Config::getInstance()->object();
-        $userUidMap = array();
+        $userUidMap = [];
         if ($config->system->count() > 0) {
             foreach ($config->system->children() as $key => $node) {
                 if ($key == 'user') {
                     $username = (string)$node->name;
                     $uid = (string)$node->uid;
                     $userUidMap[$uid] = $username;
-                    $this->userDatabase[$username] = array();
+                    $this->userDatabase[$username] = [];
                     $this->userDatabase[$username]['uid'] = $uid;
-                    $this->userDatabase[$username]['groups'] = array();
-                    $this->userDatabase[$username]['gids'] = array();
-                    $this->userDatabase[$username]['priv'] = array();
+                    $this->userDatabase[$username]['groups'] = [];
+                    $this->userDatabase[$username]['gids'] = [];
+                    $this->userDatabase[$username]['priv'] = [];
                     if (!empty($node->landing_page)) {
                         $this->userDatabase[$username]['landing_page'] = (string)$node->landing_page;
                     }
                     foreach ($node->priv as $priv) {
-                        $privname = (string)$priv;
-                        if (array_key_exists($privname, $pageMap)) {
-                            $this->userDatabase[$username]['priv'][] = $pageMap[$privname];
+                        foreach (array_filter(explode(',', $priv)) as $privname) {
+                            if (array_key_exists($privname, $pageMap)) {
+                                $this->userDatabase[$username]['priv'][] = $pageMap[$privname];
+                            }
                         }
                     }
                 } elseif ($key == 'group') {
@@ -128,18 +129,25 @@ class ACL
 
         // interpret group privilege data and update user data with group information.
         foreach ($groupmap as $groupkey => $groupNode) {
-            $allGroupPrivs[$groupkey] = array();
+            $allGroupPrivs[$groupkey] = [];
             foreach ($groupNode->children() as $itemKey => $node) {
                 $node_data = (string)$node;
-                if ($itemKey == "member" && $node_data != "" && isset($userUidMap[$node_data])) {
-                    $username = $userUidMap[$node_data];
-                    if ($this->userDatabase[$username]["uid"] == $node_data) {
-                        $this->userDatabase[$username]["groups"][] = $groupkey;
-                        $this->userDatabase[$username]["gids"][] = (string)$groupNode->gid;
+                if ($itemKey == "member" && $node_data != "") {
+                    foreach (explode(',', $node_data) as $member) {
+                        if (!isset($userUidMap[$member])) {
+                            continue;
+                        }
+                        $username = $userUidMap[$member];
+                        if ($this->userDatabase[$username]["uid"] == $member) {
+                            $this->userDatabase[$username]["groups"][] = $groupkey;
+                            $this->userDatabase[$username]["gids"][] = (string)$groupNode->gid;
+                        }
                     }
                 } elseif ($itemKey == "priv") {
-                    if (array_key_exists($node_data, $pageMap)) {
-                        $this->allGroupPrivs[$groupkey][] = $pageMap[$node_data];
+                    foreach (array_filter(explode(',', $node_data)) as $privname) {
+                        if (array_key_exists($privname, $pageMap)) {
+                            $this->allGroupPrivs[$groupkey][] = $pageMap[$privname];
+                        }
                     }
                 }
             }
@@ -290,8 +298,8 @@ class ACL
     public function hasPrivilege($username, $reqpriv)
     {
         $uid = null;
-        $privs = array();
-        $groups = array();
+        $privs = [];
+        $groups = [];
         $config = Config::getInstance()->object();
         if ($config->system->count() > 0) {
             foreach ($config->system->children() as $key => $node) {
@@ -304,13 +312,13 @@ class ACL
             }
             foreach ($config->system->children() as $key => $groupNode) {
                 if ($key == 'group') {
-                    $group_privs = array();
+                    $group_privs = [];
                     $userInGrp = false;
                     foreach ($groupNode->children() as $itemKey => $node) {
-                        if ($node->getName() == "member" && (string)$node == $uid) {
+                        if ($node->getName() == "member" && in_array($uid, explode(',', $node))) {
                             $userInGrp = true;
                         } elseif ($node->getName() == "priv") {
-                            $group_privs[] = (string)$node;
+                            $group_privs = array_merge($group_privs, array_filter(explode(',', $node)));
                         }
                     }
                     if ($userInGrp) {
@@ -381,9 +389,9 @@ class ACL
     public function getPrivList()
     {
         // convert json priv map to array
-        $priv_list = array();
+        $priv_list = [];
         foreach ($this->ACLtags as $aclKey => $aclItem) {
-            $priv_list[$aclKey] = array();
+            $priv_list[$aclKey] = [];
             foreach ($aclItem as $propName => $propValue) {
                 if ($propName == 'name') {
                     // translate name tag

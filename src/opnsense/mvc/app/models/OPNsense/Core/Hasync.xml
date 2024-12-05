@@ -1,7 +1,7 @@
 <model>
     <mount>//hasync</mount>
     <migration_prefix>MHA</migration_prefix>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>HA sync</description>
     <items>
         <disablepreempt type="BooleanField">
@@ -12,14 +12,9 @@
             <Default>0</Default>
             <Required>Y</Required>
         </disconnectppps>
-        <pfsyncenabled type="BooleanField">
-            <Default>0</Default>
-            <Required>Y</Required>
-        </pfsyncenabled>
         <pfsyncinterface type="InterfaceField">
-            <Required>Y</Required>
-            <Default>lan</Default>
             <AllowDynamic>Y</AllowDynamic>
+            <BlankDesc>Disabled</BlankDesc>
             <filters>
                 <virtual>/^(?!1).*$/</virtual>
             </filters>

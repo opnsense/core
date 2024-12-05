@@ -5,6 +5,8 @@
         <patterns>
             <pattern>ui/kea/dhcp/v4</pattern>
             <pattern>api/kea/dhcpv4/*</pattern>
+            <pattern>api/kea/leases4/*</pattern>
+            <pattern>api/kea/service/*</pattern>
         </patterns>
     </page-dhcp-kea-v4>
 </acl>

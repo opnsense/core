@@ -1,13 +1,98 @@
 <model>
     <mount>//OPNsense/IPsec</mount>
-    <version>1.0.1</version>
+    <version>1.0.3</version>
     <description>OPNsense IPsec</description>
     <items>
         <general>
             <enabled type="LegacyLinkField">
                 <Source>ipsec.enable</Source>
             </enabled>
+            <preferred_oldsa type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </preferred_oldsa>
+            <disablevpnrules type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </disablevpnrules>
+            <passthrough_networks  type="NetworkField">
+                <FieldSeparator>,</FieldSeparator>
+                <asList>Y</asList>
+                <WildcardEnabled>N</WildcardEnabled>
+            </passthrough_networks>
         </general>
+        <charon>
+            <max_ikev1_exchanges type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>65536</MaximumValue>
+                <ValidationMessage>Maximum IKEv1 phase 2 exchanges should be a positive integer number.</ValidationMessage>
+            </max_ikev1_exchanges>
+            <threads type="IntegerField">
+                <Default>16</Default>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>65536</MaximumValue>
+                <Required>Y</Required>
+            </threads>
+            <ikesa_table_size type="IntegerField">
+                <Default>32</Default>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>65536</MaximumValue>
+                <Required>Y</Required>
+            </ikesa_table_size>
+            <ikesa_table_segments type="IntegerField">
+                <Default>4</Default>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>65536</MaximumValue>
+                <Required>Y</Required>
+            </ikesa_table_segments>
+            <init_limit_half_open type="IntegerField">
+                <Default>1000</Default>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>65536</MaximumValue>
+                <Required>Y</Required>
+            </init_limit_half_open>
+            <ignore_acquire_ts type="BooleanField">
+                <Default>1</Default>
+                <Required>Y</Required>
+            </ignore_acquire_ts>
+            <make_before_break type="BooleanField"/>
+            <retransmit_tries type="IntegerField"/>
+            <retransmit_timeout type="NumericField"/>
+            <retransmit_base type="NumericField"/>
+            <retransmit_jitter type="IntegerField"/>
+            <retransmit_limit type="IntegerField"/>
+            <syslog>
+                <daemon>
+                    <ike_name type="BooleanField">
+                        <Default>1</Default>
+                        <Required>Y</Required>
+                    </ike_name>
+                    <log_level type="BooleanField">
+                        <Default>0</Default>
+                        <Required>Y</Required>
+                    </log_level>
+                    <app type=".\CharonLogLevelField"/>
+                    <asn type=".\CharonLogLevelField"/>
+                    <cfg type=".\CharonLogLevelField"/>
+                    <chd type=".\CharonLogLevelField"/>
+                    <dmn type=".\CharonLogLevelField"/>
+                    <enc type=".\CharonLogLevelField"/>
+                    <esp type=".\CharonLogLevelField"/>
+                    <ike type=".\CharonLogLevelField"/>
+                    <imc type=".\CharonLogLevelField"/>
+                    <imv type=".\CharonLogLevelField"/>
+                    <imv type=".\CharonLogLevelField"/>
+                    <job type=".\CharonLogLevelField"/>
+                    <knl type=".\CharonLogLevelField"/>
+                    <lib type=".\CharonLogLevelField"/>
+                    <mgr type=".\CharonLogLevelField"/>
+                    <net type=".\CharonLogLevelField"/>
+                    <pts type=".\CharonLogLevelField"/>
+                    <tls type=".\CharonLogLevelField"/>
+                    <tnc type=".\CharonLogLevelField"/>
+                </daemon>
+            </syslog>
+        </charon>
         <keyPairs>
             <keyPair type="ArrayField">
                 <name type="TextField">
@@ -61,6 +146,7 @@
                     </OptionValues>
                 </keyType>
                 <Key type="TextField"/>
+                <description type="DescriptionField"/>
             </preSharedKey>
         </preSharedKeys>
     </items>

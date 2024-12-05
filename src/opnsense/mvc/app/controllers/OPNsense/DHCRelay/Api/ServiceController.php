@@ -43,8 +43,6 @@ class ServiceController extends ApiControllerBase
             return ['status' => 'failed'];
         }
 
-        $this->sessionClose();
-
         (new Backend())->configdRun('dhcrelay configure');
 
         return ['status' => 'ok'];

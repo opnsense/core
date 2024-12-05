@@ -57,7 +57,7 @@ stats:
   enabled: yes
   # The interval field (in seconds) controls the interval at
   # which stats are updated in the log.
-  interval: 8
+  interval: 300
   # Add decode events to stats.
   #decoder-events: true
   # Decoder event prefix in stats. Has been 'decoder' before, but that leads
@@ -208,14 +208,18 @@ outputs:
             #packethdr: no
 
 
-#        - http:
-#            #extended: yes     # enable this for extended logging information
+{%      if not helpers.empty('OPNsense.IDS.general.eveLog.http.enable') %}
+        - http:
+            extended: {{ 'no' if helpers.empty('OPNsense.IDS.general.eveLog.http.extended') else 'yes' }}
             # custom allows additional HTTP fields to be included in eve-log.
             # the example below adds three additional fields when uncommented
             #custom: [Accept-Encoding, Accept-Language, Authorization]
             # set this value to one and only one from {both, request, response}
             # to dump all HTTP headers for every HTTP request and/or response
-            # dump-all-headers: none
+{%          if not helpers.empty('OPNsense.IDS.general.eveLog.http.dumpAllHeaders') %}
+            dump-all-headers: {{OPNsense.IDS.general.eveLog.http.dumpAllHeaders}}
+{%          endif %}
+{%       endif %}
 #        - dns:
             # This configuration uses the new DNS logging format,
             # the old configuration is still available:
@@ -244,13 +248,17 @@ outputs:
             # DNS record types to log, based on the query type.
             # Default: all.
             #types: [a, aaaa, cname, mx, ns, ptr, txt]
-        #- tls:
-            extended: yes     # enable this for extended logging information
+{%      if not helpers.empty('OPNsense.IDS.general.eveLog.tls.enable') %}
+        - tls:
+            extended: {{ 'no' if helpers.empty('OPNsense.IDS.general.eveLog.tls.extended') else 'yes' }}
             # output TLS transaction where the session is resumed using a
             # session id
-            #session-resumption: no
+            session-resumption: {{ 'no' if helpers.empty('OPNsense.IDS.general.eveLog.tls.sessionResumption') else 'yes' }}
             # custom controls which TLS fields that are included in eve-log
-            #custom: [subject, issuer, session_resumed, serial, fingerprint, sni, version, not_before, not_after, certificate, chain, ja3, ja3s]
+{%          if not helpers.empty('OPNsense.IDS.general.eveLog.tls.custom') %}
+            custom: [{{ OPNsense.IDS.general.eveLog.tls.custom }}]
+{%          endif %}
+{%      endif %}
         #- files:
             force-magic: no   # force logging magic on all logged files
             # force logging of checksums, available hash functions are md5,
@@ -337,6 +345,13 @@ outputs:
       identity: "suricata"
       facility: local5
       level: Info
+      community-id: true
+      community-id-seed: 0
+      xff:
+        enabled: yes
+        mode: extra-data
+        deployment: reverse
+        header: X-Forwarded-For
       types:
         - alert:
 {%     if not helpers.empty('OPNsense.IDS.general.LogPayload') %}
@@ -344,8 +359,8 @@ outputs:
              payload-buffer-size: 4kb
              payload-printable: yes
 {%     endif %}
-             http: yes
-             tls: yes
+             metadata: yes
+             tagged-packets: yes
 {% endif %}
 
   # deprecated - unified2 alert format for use with Barnyard2

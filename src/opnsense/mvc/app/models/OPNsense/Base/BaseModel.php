@@ -241,7 +241,7 @@ abstract class BaseModel
                 }
                 if ($config_data != null && isset($config_data->$tagName)) {
                     // set field content from config (if available)
-                    $fieldObject->setValue((string)$config_data->$tagName);
+                    $fieldObject->setValue($config_data->$tagName);
                 }
             } else {
                 // add new child node container, always try to pass config data
@@ -605,6 +605,12 @@ abstract class BaseModel
                     unset($node[0]);
                 }
             }
+            /**
+             * Target offset equals the parent of internal mountpoint.
+             * e.g. /system/user should place new entries at /system
+             **/
+            $pxpath = implode("/", array_slice(explode("/", $xpath), 0, -1));
+            $toDom = dom_import_simplexml($target_node->xpath($pxpath)[0]);
             foreach ($newNodes as $node) {
                 if ($node !== null) {
                     $toDom->appendChild($toDom->ownerDocument->importNode($node, true));

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2024 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2016 IT-assistans Sverige AB
  * Copyright (C) 2015-2016 Deciso B.V.
  * All rights reserved.
@@ -101,13 +101,12 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     public function startAction()
     {
         if ($this->request->isPost()) {
-            $this->sessionClose();
             $backend = new Backend();
             $response = trim($backend->configdRun(escapeshellarg(static::$internalServiceName) . ' start'));
-            return array('response' => $response);
-        } else {
-            return array('response' => array());
+            return ['response' => $response];
         }
+
+        return ['response' => []];
     }
 
     /**
@@ -118,13 +117,12 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     public function stopAction()
     {
         if ($this->request->isPost()) {
-            $this->sessionClose();
             $backend = new Backend();
             $response = trim($backend->configdRun(escapeshellarg(static::$internalServiceName) . ' stop'));
-            return array('response' => $response);
-        } else {
-            return array('response' => array());
+            return ['response' => $response];
         }
+
+        return ['response' => []];
     }
 
     /**
@@ -135,17 +133,16 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     public function restartAction()
     {
         if ($this->request->isPost()) {
-            $this->sessionClose();
             $backend = new Backend();
             $response = trim($backend->configdRun(escapeshellarg(static::$internalServiceName) . ' restart'));
-            return array('response' => $response);
-        } else {
-            return array('response' => array());
+            return ['response' => $response];
         }
+
+        return ['response' => []];
     }
 
     /**
-     * reconfigure force restart check, return zero for soft-reload
+     * reconfigure force restart check, return zero and define 'reload' backend action for soft-reload
      */
     protected function reconfigureForceRestart()
     {
@@ -181,11 +178,11 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     public function reconfigureAction()
     {
         if ($this->request->isPost()) {
-            $this->sessionClose();
-
+            $restart = $this->reconfigureForceRestart();
+            $enabled = $this->serviceEnabled();
             $backend = new Backend();
 
-            if (!$this->serviceEnabled() || $this->reconfigureForceRestart()) {
+            if ($restart || !$enabled) {
                 $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' stop');
             }
 
@@ -203,19 +200,18 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
                 }
             }
 
-            if ($this->serviceEnabled()) {
-                $runStatus = $this->statusAction();
-                if ($runStatus['status'] != 'running') {
+            if ($enabled) {
+                if ($restart || $this->statusAction()['status'] != 'running') {
                     $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' start');
                 } else {
                     $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' reload');
                 }
             }
 
-            return array('status' => 'ok');
-        } else {
-            return array('status' => 'failed');
+            return ['status' => 'ok'];
         }
+
+        return ['status' => 'failed'];
     }
 
     /**
@@ -242,13 +238,13 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
             $status = 'unknown';
         }
 
-        return array(
-          'status' => $status,
-          'widget' => array(
-              'caption_stop' => gettext("stop service"),
-              'caption_start' => gettext("start service"),
-              'caption_restart' => gettext("restart service")
-          )
-        );
+        return [
+            'status' => $status,
+            'widget' => [
+                'caption_restart' => gettext('Restart'),
+                'caption_start' => gettext('Start'),
+                'caption_stop' => gettext('Stop'),
+            ],
+        ];
     }
 }

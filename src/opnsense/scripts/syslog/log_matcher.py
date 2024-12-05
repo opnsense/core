@@ -28,29 +28,29 @@
 
 import os
 import glob
-import re
 import sys
 import subprocess
+import select
 from logformats import FormatContainer, BaseLogFormat
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from log_helper import reverse_log_reader
 
 class LogMatcher:
     def __init__(self, filter, filename, module, severity):
-        try:
-            self.filter = filter.replace('*', '.*').lower()
-            if self.filter.find('*') == -1:
-                # no wildcard operator, assume partial match
-                self.filter = ".*%s.*" % filter
-            self.filter_regexp = re.compile(self.filter)
-        except re.error:
-            # remove illegal expression
-            self.filter_regexp = re.compile('.*')
-
+        self.filter_clauses = filter.lower().split()
         self.filename = filename
         self.log_filenames = self.fetch_log_filenames(filename, module)
         self.severity = severity.split(',') if severity.strip() != '' else []
         self.row_number = 0
+
+    def _match_line(self, line):
+        # matcher, checks if all clauses are matched.
+        tmp = line.lower()
+        for clause in self.filter_clauses:
+            if tmp.find(clause) == -1:
+                return False
+
+        return line != ''
 
     def live_match_records(self):
         # row number does not make sense anymore, set it to 0
@@ -60,11 +60,21 @@ class LogMatcher:
             latest = self.log_filenames[0] if len(self.log_filenames) > 0 else ''
         if os.path.exists(latest):
             format_container = FormatContainer(latest)
-            p = subprocess.Popen(['tail', '-f', '-n 0', latest], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, bufsize=0)
+            p = subprocess.Popen(
+                ['tail', '-f', '-n 0', latest],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                bufsize=0,
+                text=True
+            )
             try:
-                for line in iter(p.stdout.readline, b''):
-                    line = line.decode()
-                    if line != "" and self.filter_regexp.match(('%s' % line).lower()):
+                while True:
+                    ready, _, _ = select.select([p.stdout], [], [], 1)
+                    if not ready:
+                        yield None
+                        continue
+                    line = p.stdout.readline()
+                    if self._match_line(line):
                         record = self.parse_line(line, format_container)
                         if len(self.severity) == 0 or record['severity'] is None or record['severity'] in self.severity:
                             yield record
@@ -79,7 +89,7 @@ class LogMatcher:
                 format_container = FormatContainer(filename)
                 for rec in reverse_log_reader(filename):
                     self.row_number += 1
-                    if rec['line'] != "" and self.filter_regexp.match(('%s' % rec['line']).lower()):
+                    if self._match_line(rec['line']):
                         record = self.parse_line(rec['line'], format_container)
                         if len(self.severity) == 0 or record['severity'] is None or record['severity'] in self.severity:
                             yield record
@@ -129,8 +139,8 @@ class LogMatcher:
             filenames = glob.glob("%s/%s_*.log" % (log_basename, log_basename.split('/')[-1].split('.')[0]))
             for filename in sorted(filenames, reverse=True):
                 log_filenames.append(filename)
-            # legacy log output is always stashed last
-            log_filenames.append("%s.log" % log_basename)
+        # legacy log output is always stashed last
+        log_filenames.append("%s.log" % log_basename)
         if module != 'core':
             log_filenames.append("/var/log/%s_%s.log" % (module, os.path.basename(filename)))
 

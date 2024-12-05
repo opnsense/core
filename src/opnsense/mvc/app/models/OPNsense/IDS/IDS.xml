@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/IDS</mount>
-    <version>1.0.9</version>
+    <version>1.1.0</version>
     <description>OPNsense IDS</description>
     <items>
         <rules>
@@ -243,6 +243,57 @@
                     <vvvv>DEBUG (4)</vvvv>
                 </OptionValues>
             </verbosity>
+            <eveLog>
+                <http>
+                    <enable type="BooleanField">
+                        <Default>0</Default>
+                        <Required>Y</Required>
+                    </enable>
+                    <extended type="BooleanField">
+                        <Default>0</Default>
+                        <Required>Y</Required>
+                    </extended>
+                    <dumpAllHeaders type="OptionField">
+                        <OptionValues>
+                            <request>Request</request>
+                            <response>Response</response>
+                            <both>Both</both>
+                        </OptionValues>
+                    </dumpAllHeaders>
+                </http>
+                <tls>
+                    <enable type="BooleanField">
+                        <Default>0</Default>
+                        <Required>Y</Required>
+                    </enable>
+                    <extended type="BooleanField">
+                        <Default>0</Default>
+                        <Required>Y</Required>
+                    </extended>
+                    <sessionResumption type="BooleanField">
+                        <Default>0</Default>
+                        <Required>Y</Required>
+                    </sessionResumption>
+                    <custom type="OptionField">
+                        <OptionValues>
+                            <subject>subject</subject>
+                            <issuer>issuer</issuer>
+                            <session_resumed>session_resumed</session_resumed>
+                            <serial>serial</serial>
+                            <fingerprint>fingerprint</fingerprint>
+                            <sni>sni</sni>
+                            <version>version</version>
+                            <not_before>not_before</not_before>
+                            <not_after>not_after</not_after>
+                            <certificate>certificate</certificate>
+                            <chain>chain</chain>
+                            <ja3>ja3</ja3>
+                            <ja3s>ja3s</ja3s>
+                        </OptionValues>
+                        <Multiple>Y</Multiple>
+                    </custom>
+                </tls>
+            </eveLog>
         </general>
     </items>
 </model>

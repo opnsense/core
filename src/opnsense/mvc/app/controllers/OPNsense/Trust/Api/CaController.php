@@ -127,15 +127,8 @@ class CaController extends ApiMutableModelControllerBase
                             }
                         }
                         $certmdl = new Cert();
-                        foreach ($certmdl->cert->iterateItems() as $cert) {
-                            $x509_2 = openssl_x509_parse((string)$cert->crt_payload);
-                            if ($x509_2 !== false) {
-                                if ($this->compare_issuer($x509_2['issuer'], $x509['subject'])) {
-                                    $cert->caref = (string)$node->refid;
-                                }
-                            }
-                        }
-                        $certmdl->serializeToConfig();
+                        $certmdl->linkCaRefs(null, $this->getModel());
+                        $certmdl->serializeToConfig(false, true); /* we need to force save to maintain integrity */
                     }
                 }
                 break;
@@ -149,7 +142,7 @@ class CaController extends ApiMutableModelControllerBase
     {
         return $this->searchBase(
             'ca',
-            ['refid', 'descr', 'caref', 'name', 'refcount', 'valid_from', 'valid_to'],
+            ['uuid', 'refid', 'descr', 'caref', 'name', 'refcount', 'valid_from', 'valid_to'],
         );
     }
 
@@ -240,6 +233,7 @@ class CaController extends ApiMutableModelControllerBase
         $result = ['status' => 'failed'];
         if ($this->request->isPost() && !empty($uuid)) {
             $node = $this->getModel()->getNodeByReference('ca.' . $uuid);
+            $result['descr'] = $node !== null ? (string)$node->descr : '';
             if ($node === null || empty((string)$node->crt_payload)) {
                 $result['error'] = gettext('Misssing certificate');
             } elseif ($type == 'crt') {
