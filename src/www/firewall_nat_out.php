@@ -262,7 +262,7 @@ include("head.inc");
     <div class="container-fluid">
       <div class="row">
 <?php
-        print_service_banner('firewall');
+        print_firewall_banner();
         if (isset($savemsg))
             print_info_box($savemsg);
         if (is_subsystem_dirty('natconf'))

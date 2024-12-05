@@ -52,11 +52,45 @@ tsa_policy3 = 1.2.3.4.5.7
 
 [openssl_init]
 providers = provider_sect
+{% if not helpers.empty('OPNsense.trust.general.enable_config_constraints') %}
+ssl_conf = ssl_sect
+
+[ssl_sect]
+system_default = system_default_sect
+
+[system_default_sect]
+{%     if not helpers.empty('OPNsense.trust.general.CipherString') %}
+CipherString = {{OPNsense.trust.general.CipherString|replace(',',':')}}
+{%     endif %}
+{%     if not helpers.empty('OPNsense.trust.general.Ciphersuites') %}
+Ciphersuites = {{OPNsense.trust.general.Ciphersuites|replace(',',':')}}
+{%     endif %}
+{%     if not helpers.empty('OPNsense.trust.general.SignatureAlgorithms') %}
+SignatureAlgorithms = {{OPNsense.trust.general.SignatureAlgorithms|replace(',',':')}}
+{%     endif %}
+{%     if not helpers.empty('OPNsense.trust.general.groups') %}
+Groups = {{OPNsense.trust.general.groups|replace(',',':')}}
+{%     endif %}
+{%     if not helpers.empty('OPNsense.trust.general.MinProtocol') %}
+MinProtocol = {{OPNsense.trust.general.MinProtocol}}
+{%     endif %}
+{%     if not helpers.empty('OPNsense.trust.general.MinProtocol_DTLS') %}
+MinProtocol = {{OPNsense.trust.general.MinProtocol_DTLS}}
+{%     endif %}
+
+{% endif %}
 
 # List of providers to load
 [provider_sect]
 default = default_sect
+{% if not helpers.empty('OPNsense.trust.general.enable_legacy_sect') %}
 legacy = legacy_sect
+
+[legacy_sect]
+activate = 1
+
+{% endif %}
+
 # The fips section name should match the section name inside the
 # included fipsmodule.cnf.
 # fips = fips_sect
@@ -72,8 +106,6 @@ legacy = legacy_sect
 [default_sect]
 activate = 1
 
-[legacy_sect]
-activate = 1
 
 
 ####################################################################

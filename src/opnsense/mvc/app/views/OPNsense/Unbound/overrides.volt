@@ -185,7 +185,6 @@ $( document ).ready(function() {
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li><a data-toggle="tab" href="#host_overrides" id="host_overrides_tab">{{ lang._('Host Overrides') }}</a></li>
-    <li><a data-toggle="tab" href="#domain_overrides" id="domain_overrides_tab">{{ lang._('Domain Overrides') }}</a></li>
 </ul>
 <div class="tab-content content-box col-xs-12 __mb">
     <!-- host overrides -->
@@ -218,35 +217,6 @@ $( document ).ready(function() {
             {{ lang._('Entries in this section override individual results from the forwarders.') }}
             {{ lang._('Use these for changing DNS results or for adding custom DNS records.') }}
             {{ lang._('Keep in mind that all resource record types (i.e. A, AAAA, MX, etc. records) of a specified host below are being overwritten.') }}
-        </div>
-    </div>
-    <!-- domain overrides -->
-    <div id="domain_overrides" class="tab-pane fade in">
-        <table id="grid-domains" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogDomainOverride" data-editAlert="OverrideChangeMessage">
-            <thead>
-            <tr>
-                <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-                <th data-column-id="domain" data-type="string">{{ lang._('Domain') }}</th>
-                <th data-column-id="server" data-type="string">{{ lang._('IP') }}</th>
-                <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
-                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Edit') }} | {{ lang._('Delete') }}</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td></td>
-                <td>
-                    <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                    <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
-                </td>
-            </tr>
-            </tfoot>
-        </table>
-        <div id="infosection" class="tab-content col-xs-12 __mb">
-            {{ lang._('Entries in this area override an entire domain by specifying an authoritative DNS server to be queried for that domain.') }}
         </div>
     </div>
 </div>

@@ -159,7 +159,7 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
             continue;
         }
         $instance_ids[] = $key;
-        $statHandle = fopen($node->statFilename, "a+");
+        $statHandle = fopen($node->statFilename, 'a+e');
         if (flock($statHandle, LOCK_EX)) {
             $instance_stats = ovpn_instance_stats($node, $statHandle);
             $destroy_if = !empty($instance_stats['dev_type']) && $instance_stats['dev_type'] != $node->dev_type;
@@ -229,6 +229,4 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
             }
         }
     }
-
-    closelog();
 }

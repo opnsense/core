@@ -1,5 +1,3 @@
-// endpoint:/api/diagnostics/interface/get_vip_status
-
 /*
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
@@ -26,8 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseTableWidget from "./BaseTableWidget.js";
-
 export default class Carp extends BaseTableWidget {
     constructor() {
         super();
@@ -49,57 +45,62 @@ export default class Carp extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        await ajaxGet('/api/diagnostics/interface/get_vip_status', {}, (data, status) => {
-            if (!data.rows.length) {
-                $('#carp-table').html(`<a href="/ui/interfaces/vip">${this.translations.unconfigured}</a>`);
+        const data = await this.ajaxCall('/api/diagnostics/interface/get_vip_status');
+        if (!data.rows.length) {
+            $('#carp-table').html(`<a href="/ui/interfaces/vip">${this.translations.unconfigured}</a>`);
+            return;
+        }
+
+        $('.carp-status-icon').tooltip('hide');
+
+        let ifs = {};
+
+        data.rows.forEach(({ interface: iface, vhid, status, status_txt, subnet, mode, vhid_txt }) => {
+            let key = `${iface}_${vhid}`;
+            let obj = { interface: iface, vhid, status, status_txt, subnet: subnet ?? '', mode, vhid_txt };
+
+            if (!ifs[key]) {
+                ifs[key] = { primary: null, aliases: [] };
+            }
+
+            obj.mode === 'carp' ? ifs[key].primary = obj : ifs[key].aliases.push(obj);
+        });
+
+        Object.values(ifs).forEach(({ primary, aliases }) => {
+            if (primary == null) {
                 return;
             }
 
-            let ifs = {};
+            let $intf = `<div><a href="/ui/interfaces/vip">${primary.interface} @ VHID ${primary.vhid}</a></div>`;
+            let vips = [
+                `<div>
+                    <span class="badge badge-pill carp-status-icon"
+                            data-toggle="tooltip"
+                            title="${primary.vhid_txt}"
+                            style="background-color: ${primary.status == 'MASTER' ? 'green' : 'primary'}">
+                        ${primary.status_txt}
+                    </span>
+                    ${primary.subnet} (${this.translations.carp})
+                </div>`
+            ];
 
-            data.rows.forEach(({ interface: iface, vhid, status, status_txt, subnet, mode, vhid_txt }) => {
-                let key = `${iface}_${vhid}`;
-                let obj = { interface: iface, vhid, status, status_txt, subnet: subnet ?? '', mode, vhid_txt };
-
-                if (!ifs[key]) {
-                    ifs[key] = { primary: null, aliases: [] };
-                }
-
-                obj.mode === 'carp' ? ifs[key].primary = obj : ifs[key].aliases.push(obj);
-            });
-
-            Object.values(ifs).forEach(({ primary, aliases }) => {
-                let $intf = `<div><a href="/ui/interfaces/vip">${primary.interface} @ VHID ${primary.vhid}</a></div>`;
-                let vips = [
-                    `<div>
-                        <span class="bootgrid-tooltip badge badge-pill"
-                              data-toggle="tooltip"
-                              title="${primary.vhid_txt}"
-                              style="background-color: ${primary.status == 'MASTER' ? 'green' : 'primary'}">
-                            ${primary.status_txt}
+            aliases.forEach(({ status, status_txt, subnet }) => {
+                vips.push(`
+                    <div>
+                        <span class="badge badge-pill carp-status-icon"
+                                data-toggle="tooltip"
+                                title="${primary.vhid_txt}"
+                                style="background-color: ${status == 'MASTER' ? 'green' : 'primary'}">
+                            ${status_txt}
                         </span>
-                        ${primary.subnet} (${this.translations.carp})
-                    </div>`
-                ];
-
-                aliases.forEach(({ status, status_txt, subnet }) => {
-                    vips.push(`
-                        <div>
-                            <span class="bootgrid-tooltip badge badge-pill"
-                                  data-toggle="tooltip"
-                                  title="${primary.vhid_txt}"
-                                  style="background-color: ${status == 'MASTER' ? 'green' : 'primary'}">
-                                ${status_txt}
-                            </span>
-                            ${subnet} (${this.translations.alias})
-                        </div>
-                    `);
-                });
-
-                this.updateTable('carp-table', [[$intf, vips]], `carp_${primary.interface}_${primary.vhid}`);
+                        ${subnet} (${this.translations.alias})
+                    </div>
+                `);
             });
 
-            $('[data-toggle="tooltip"]').tooltip();
+            this.updateTable('carp-table', [[$intf, vips]], `carp_${primary.interface}_${primary.vhid}`);
         });
+
+        $('.carp-status-icon').tooltip({container: 'body'});
     }
 }

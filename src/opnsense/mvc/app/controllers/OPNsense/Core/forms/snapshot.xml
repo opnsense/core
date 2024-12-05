@@ -1,0 +1,12 @@
+<form>
+    <field>
+        <id>uuid</id>
+        <label>UUID</label>
+        <type>hidden</type>
+    </field>
+    <field>
+        <id>name</id>
+        <label>Name</label>
+        <type>text</type>
+    </field>
+</form>

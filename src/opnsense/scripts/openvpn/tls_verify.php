@@ -71,9 +71,7 @@ openlog("openvpn", LOG_ODELAY, LOG_AUTH);
 $response = do_verify(getenv('auth_server'));
 if ($response !== true) {
     syslog(LOG_WARNING, "tls-verify : {$response}");
-    closelog();
     exit(1);
-} else {
-    closelog();
-    exit(0);
 }
+
+exit(0);

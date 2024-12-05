@@ -336,7 +336,7 @@ $( document ).ready(function() {
                       <?= sprintf(gettext("If this option is set, then DHCP static mappings will ".
                           "be registered in Dnsmasq, so that their name can be ".
                           "resolved. You should also set the domain in %s".
-                          "System: General setup%s to the proper value."),'<a href="system_general.php">','</a>');?>
+                          "System: Settings: General%s to the proper value."),'<a href="system_general.php">','</a>');?>
                     </div>
                   </td>
                 </tr>

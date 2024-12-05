@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (c) 2021-2023 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2021-2024 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,8 +34,7 @@ $changelogfile = '/usr/local/opnsense/changelog/index.json';
 list ($series, $version) = explode(' ', shell_safe('opnsense-version -Vv'));
 $version = explode('_', $version)[0];
 
-$ret = json_decode(@file_get_contents($changelogfile), true);
-if ($ret != null) {
+if (empty($argv[1]) && ($ret = json_decode(@file_get_contents($changelogfile), true)) != null) {
     foreach ($ret as $entry) {
         if ($entry['series'] == $series) {
             if (version_compare($entry['version'], $version, '>')) {
@@ -45,5 +44,5 @@ if ($ret != null) {
     }
 }
 
-# emit the latest stable version or the current version if unknown
+# emit the latest stable version or the current version if unknown or requested
 echo $version . PHP_EOL;

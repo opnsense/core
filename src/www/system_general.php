@@ -36,6 +36,18 @@ $all_intf_details = legacy_interfaces_details();
 $a_gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (!empty($_GET['getpic'])) {
+        $pic_type = explode(".", $config['system']['picture_filename'])[1];
+        if ($config['system']['picture']) {
+            $data = base64_decode($config['system']['picture']);
+        }
+        header("Content-Disposition: inline; filename=\"{$config['system']['picture_filename']}\"");
+        header("Content-Type: image/{$pic_type}");
+        header("Content-Length: " . strlen($data));
+        echo $data;
+        exit;
+    }
+
     $pconfig = array();
 
     if (isset($_GET['savemsg'])) {
@@ -54,9 +66,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['hostname'] = $config['system']['hostname'];
     $pconfig['language'] = $config['system']['language'];
     $pconfig['prefer_ipv4'] = isset($config['system']['prefer_ipv4']);
-    $pconfig['store_intermediate_certs'] = isset($config['system']['store_intermediate_certs']);
     $pconfig['theme'] = $config['theme'] ?? '';
     $pconfig['timezone'] = empty($config['system']['timezone']) ? 'Etc/UTC' : $config['system']['timezone'];
+    $pconfig['picture'] = $config['system']['picture'] ?? null;
 
     $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);
 
@@ -74,6 +86,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     /* input validation */
     $reqdfields = explode(" ", "hostname domain");
     $reqdfieldsn = array(gettext("Hostname"),gettext("Domain"));
+
+    if (!empty($_FILES['pictfile']) && is_uploaded_file($_FILES['pictfile']['tmp_name'])) {
+        if ($_FILES['pictfile']['size'] > (10 * 1024 * 1024)) {
+            $input_errors[] = gettext("The image file is too large. Please upload something smaller than 10MB.");
+        } else {
+            $fd_pic = fopen($_FILES['pictfile']['tmp_name'], "rb");
+            while (($buf=fread($fd_pic, 8192)) != '') {
+                $data .= $buf;
+            }
+            fclose($fd_pic);
+            if (!$data) {
+                $input_errors[] = gettext("Could not read uploaded file.");
+            } else {
+                $pconfig['picture'] = base64_encode($data);
+                $pconfig['picture_filename'] = basename($_FILES['pictfile']['name']);
+            }
+        }
+    }
+
+    if (!empty($pconfig['picture']) && !empty($pconfig['picture_filename'])) {
+        $config['system']['picture'] = $pconfig['picture'];
+        $config['system']['picture_filename'] = $pconfig['picture_filename'];
+    } elseif (isset($pconfig['del_picture']) && $pconfig['del_picture'] == 'true') {
+        unset($config['system']['picture']);
+        unset($config['system']['picture_filename']);
+    }
 
     if (empty($pconfig['dnsallowoverride_exclude'])) {
         $pconfig['dnsallowoverride_exclude'] = [];
@@ -158,9 +196,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['prefer_ipv4']);
         }
 
-        $sync_trust = !empty($pconfig['store_intermediate_certs']) !== isset($config['system']['store_intermediate_certs']);
-        $config['system']['store_intermediate_certs'] = !empty($pconfig['store_intermediate_certs']);
-
         if (!empty($pconfig['dnsallowoverride'])) {
             $config['system']['dnsallowoverride'] = true;
             $config['system']['dnsallowoverride_exclude'] = implode(',', $pconfig['dnsallowoverride_exclude']);
@@ -227,15 +262,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         /* time zone change first */
         system_timezone_configure();
-
-        if ($sync_trust) {
-            /*
-             * FreeBSD trust store integration is slow so we need
-             * to avoid processing when setting is unchanged.
-             */
-            system_trust_configure();
-        }
-
         system_hostname_configure();
         system_resolver_configure();
         plugins_configure('dns');
@@ -269,6 +295,12 @@ $( document ).ready(function() {
         }
     });
     $("#dnsallowoverride").change();
+
+    $("#remove_picture").click(function(event){
+        $("#picture").remove();
+        $("#del_picture").val("true");
+        $('#save').click();
+    });
 });
 //]]>
 </script>
@@ -285,7 +317,7 @@ $( document ).ready(function() {
     }
 ?>
     <section class="col-xs-12">
-      <form method="post">
+      <form method="post" enctype="multipart/form-data">
         <div class="content-box tab-content __mb">
           <table class="table table-striped opnsense_standard_table_form">
             <tr>
@@ -367,30 +399,29 @@ $( document ).ready(function() {
                 </div>
               </td>
             </tr>
-          </table>
-        </div>
-
-        <div class="content-box tab-content __mb">
-          <table class="table table-striped opnsense_standard_table_form">
             <tr>
-              <td style="width:22%"><strong><?= gettext('Trust') ?></strong></td>
-              <td style="width:78%"></td>
-            </tr>
-            <tr>
-              <td><a id="help_for_trust_store_intermediate_certs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Store intermediate"); ?></td>
-              <td>
-                <input name="store_intermediate_certs" type="checkbox" id="store_intermediate_certs" <?= !empty($pconfig['store_intermediate_certs']) ? "checked=\"checked\"" : "";?> />
-                <div class="hidden" data-for="help_for_trust_store_intermediate_certs">
-                  <?=gettext(
-                    "Allow local defined intermediate certificate authorities to be used in the local trust store. ".
-                    "We advise to only store root certificates to prevent cross signed ones causing breakage when included but expired later in the chain."
-                  ); ?>
+              <td><a id="help_for_picture" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Picture"); ?></td>
+              <td id="pict_td">
+<?php if (!empty($pconfig['picture'])): ?>
+                <div id="picture" style="padding: 5px; padding-left: 15px; padding-top: 15px; position: relative;">
+                  <button id="remove_picture" style="position: absolute; top: 2px; left: 2px; z-index: 100; font-size: 12px; cursor: pointer;">
+                      <i class="fa fa-trash"></i>
+                  </button>
+                  <a href='/system_general.php?getpic=true' target='_blank'>
+                    <img style="border:0px solid; max-width:25%; max-height:25%" src="/system_general.php?getpic=true" alt="picture" />
+                  </a>
+                </div>
+                <input type="hidden" name="del_picture" id="del_picture" value="false"></input>
+<?php           else: ?>
+                <input name="pictfile" type="file" size="40" id="pictfile"/>
+<?php           endif ?>
+                <div class="hidden" data-for="help_for_picture">
+                  <?=gettext("Upload a picture, to be displayed in the Picture widget on the dashboard."); ?>
                 </div>
               </td>
             </tr>
           </table>
         </div>
-
 
         <div class="content-box tab-content __mb">
           <table class="table table-striped opnsense_standard_table_form">
@@ -523,7 +554,7 @@ $( document ).ready(function() {
             <tr>
               <td style="width:22%"></td>
               <td>
-                <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
+                <input name="Submit" id="save" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
               </td>
             </tr>
           </table>

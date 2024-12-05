@@ -1,5 +1,3 @@
-// endpoint:/api/diagnostics/cpu_usage/*
-
 /*
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
@@ -26,12 +24,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseWidget from "./BaseWidget.js";
-
 export default class Cpu extends BaseWidget {
-    constructor() {
-        super();
+    constructor(config) {
+        super(config);
         this.resizeHandles = "e, w";
+        this.configurable = true;
+        this.graphs = ['total', 'intr', 'user', 'sys'];
     }
 
     _createChart(selector, timeSeries) {
@@ -59,25 +57,48 @@ export default class Cpu extends BaseWidget {
         });
     }
 
+    async getWidgetOptions() {
+        return {
+            graphs: {
+                title: this.translations.graphs,
+                type: 'select_multiple',
+                options: ['total', 'intr', 'user', 'sys'].map((value) => {
+                    return {
+                        value: value,
+                        label: this.translations[value]
+                    }
+                }),
+                default: ['total']
+            }
+        }
+    }
+
+    async onWidgetOptionsChanged(options) {
+        this.graphs.filter(x => !options.graphs.includes(x)).forEach(graph => $(`#cpu-${graph}`).hide());
+        const config = await this.getWidgetConfig();
+        this.graphs = config.graphs
+        this.graphs.forEach(graph => $(`#cpu-${graph}`).show());
+    }
+
     getMarkup() {
         let $container = $(`
         <div class="cpu-type"></div>
         <div class="cpu-canvas-container">
-            <div class="smoothie-container">
+            <div id="cpu-total" class="smoothie-container">
                 <b>${this.translations.total}</b>
-                <div><canvas id="cpu-usage" style="width: 80%; height: 50px;"></canvas></div>
+                <div><canvas id="cpu-usage-total" style="width: 100%; height: 50px;"></canvas></div>
             </div>
-            <div class="smoothie-container">
-                <b>${this.translations.interrupt}</b>
-                <div><canvas id="cpu-usage-intr" style="width: 80%; height: 50px;"></canvas></div>
+            <div id="cpu-intr" class="smoothie-container">
+                <b>${this.translations.intr}</b>
+                <div><canvas id="cpu-usage-intr" style="width: 100%; height: 50px;"></canvas></div>
             </div>
-            <div class="smoothie-container">
+            <div id="cpu-user" class="smoothie-container">
                 <b>${this.translations.user}</b>
-                <div><canvas id="cpu-usage-user" style="width: 80%; height: 50px;"></canvas></div>
+                <div><canvas id="cpu-usage-user" style="width: 100%; height: 50px;"></canvas></div>
             </div>
-            <div class="smoothie-container">
-                <b>${this.translations.system}</b>
-                <div><canvas id="cpu-usage-sys" style="width: 80%; height: 50px;"></canvas></div>
+            <div id="cpu-sys" class="smoothie-container">
+                <b>${this.translations.sys}</b>
+                <div><canvas id="cpu-usage-sys" style="width: 100%; height: 50px;"></canvas></div>
             </div>
         </div>`);
 
@@ -85,28 +106,32 @@ export default class Cpu extends BaseWidget {
     }
 
     async onMarkupRendered() {
-        ajaxGet('/api/diagnostics/cpu_usage/getcputype', {}, (data, status) => {
-            $('.cpu-type').text(data);
+        const data = await this.ajaxCall(`/api/diagnostics/cpu_usage/${'getcputype'}`);
+        $('.cpu-type').text(data);
+
+        const config = await this.getWidgetConfig();
+
+        let ts = {};
+        this.graphs.forEach((graph) => {
+            let timeSeries = new TimeSeries();
+            this._createChart(`cpu-usage-${graph}`, timeSeries);
+            ts[graph] = timeSeries;
+
+            if (!config.graphs.includes(graph)) {
+                // hide canvas container
+                $(`#cpu-${graph}`).hide();
+            }
         });
 
-        let total_ts = new TimeSeries();
-        let intr_ts = new TimeSeries();
-        let user_ts = new TimeSeries();
-        let sys_ts = new TimeSeries();
-        this._createChart('cpu-usage', total_ts);
-        this._createChart('cpu-usage-intr', intr_ts);
-        this._createChart('cpu-usage-user', user_ts);
-        this._createChart('cpu-usage-sys', sys_ts);
-        super.openEventSource('/api/diagnostics/cpu_usage/stream', (event) => {
+        super.openEventSource(`/api/diagnostics/cpu_usage/${'stream'}`, (event) => {
             if (!event) {
                 super.closeEventSource();
             }
             const data = JSON.parse(event.data);
             let date = Date.now();
-            total_ts.append(date, data.total);
-            intr_ts.append(date, data.intr);
-            user_ts.append(date, data.user);
-            sys_ts.append(date, data.sys);
+            this.graphs.forEach((graph) => {
+                ts[graph].append(date, data[graph]);
+            });
         });
     }
 
@@ -114,8 +139,10 @@ export default class Cpu extends BaseWidget {
         let viewPort = document.getElementsByClassName('page-content-main')[0].getBoundingClientRect().width;
         if (width > (viewPort / 2)) {
             $('.cpu-canvas-container').css('flex-direction', 'row');
+            $('.smoothie-container').css('margin', '0px 10px 0px 10px');
         } else {
             $('.cpu-canvas-container').css('flex-direction', 'column');
+            $('.smoothie-container').css('margin', '0px');
         }
 
         return true;

@@ -55,4 +55,5 @@ convert_config(true);
 system_firmware_configure(true);
 system_trust_configure(true);
 system_login_configure(true);
+system_cron_configure(true);
 system_syslog_start(true);

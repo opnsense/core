@@ -97,11 +97,6 @@ class LDAP extends Base implements IAuthConnector
     private $ldapURLType = null;
 
     /**
-     * @var array list of already known usernames vs distinguished names
-     */
-    private $userDNmap = array();
-
-    /**
      * @var bool if true, startTLS will be initialized
      */
     private $useStartTLS = false;
@@ -130,6 +125,11 @@ class LDAP extends Base implements IAuthConnector
      * limit the groups which will be considered for sync, empty means all
      */
     private $ldapSyncMemberOfLimit = null;
+
+    /**
+     * list of groups to add by default
+     */
+    private $ldapSyncDefaultGroups = [];
 
     /**
      * @var array internal list of authentication properties (returned by radius auth)
@@ -255,20 +255,21 @@ class LDAP extends Base implements IAuthConnector
      */
     public function setProperties($config)
     {
-        $confMap = array("ldap_protver" => "ldapVersion",
-            "ldap_basedn" => "baseSearchDN",
-            "ldap_binddn" => "ldapBindDN",
-            "ldap_bindpw" => "ldapBindPassword",
-            "ldap_attr_user" => "ldapAttributeUser",
-            "ldap_extended_query" => "ldapExtendedQuery",
-            "ldap_authcn" => "ldapAuthcontainers",
-            "ldap_scope" => "ldapScope",
-            "local_users" => "userDNmap",
-            "ldap_read_properties" => "ldapReadProperties",
-            "ldap_sync_memberof" => "ldapSyncMemberOf",
-            "ldap_sync_memberof_constraint" => "ldapSyncMemberOfConstraint",
-            "ldap_sync_memberof_groups" => "ldapSyncMemberOfLimit"
-        );
+        $confMap = [
+            'ldap_protver' => 'ldapVersion',
+            'ldap_basedn' => 'baseSearchDN',
+            'ldap_binddn' => 'ldapBindDN',
+            'ldap_bindpw' => 'ldapBindPassword',
+            'ldap_attr_user' => 'ldapAttributeUser',
+            'ldap_extended_query' => 'ldapExtendedQuery',
+            'ldap_authcn' => 'ldapAuthcontainers',
+            'ldap_scope' => 'ldapScope',
+            'ldap_read_properties' => 'ldapReadProperties',
+            'ldap_sync_memberof' => 'ldapSyncMemberOf',
+            'ldap_sync_memberof_constraint' => 'ldapSyncMemberOfConstraint',
+            'ldap_sync_memberof_groups' => 'ldapSyncMemberOfLimit',
+            'ldap_sync_default_groups' => 'ldapSyncDefaultGroups',
+        ];
 
         // map properties 1-on-1
         foreach ($confMap as $confSetting => $objectProperty) {
@@ -349,7 +350,7 @@ class LDAP extends Base implements IAuthConnector
         // Note: All TLS options must be set before ldap_connect is called
         if ($this->ldapURLType != "standard") {
             ldap_set_option(null, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_HARD);
-            ldap_set_option(null, LDAP_OPT_X_TLS_CACERTFILE, "/etc/ssl/cert.pem");
+            ldap_set_option(null, LDAP_OPT_X_TLS_CACERTFILE, '/usr/local/etc/ssl/cert.pem');
         } else {
             ldap_set_option(null, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_NEVER);
         }
@@ -472,12 +473,23 @@ class LDAP extends Base implements IAuthConnector
     }
 
     /**
-     * authenticate user against ldap server
+     * authenticate user against ldap server without Base's timer
      * @param string $username username to authenticate
      * @param string $password user password
      * @return bool authentication status
      */
     public function authenticate($username, $password)
+    {
+        return $this->_authenticate($username, $password);
+    }
+
+    /**
+     * authenticate user against ldap server, implementation as described in Base class
+     * @param string $username username to authenticate
+     * @param string $password user password
+     * @return bool authentication status
+     */
+    protected function _authenticate($username, $password)
     {
         $ldap_is_connected = false;
         $user_dn = null;
@@ -485,10 +497,6 @@ class LDAP extends Base implements IAuthConnector
         if (empty($password)) {
             // prevent anonymous bind
             return false;
-        } elseif (array_key_exists($username, $this->userDNmap)) {
-            // we can map $username to distinguished name, just feed to connect
-            $user_dn = $this->userDNmap[$username];
-            $ldap_is_connected = $this->connect($this->ldapBindURL, $this->userDNmap[$username], $password);
         } else {
             // we don't know this users distinguished name, try to find it
             if ($this->connect($this->ldapBindURL, $this->ldapBindDN, $this->ldapBindPassword)) {
@@ -504,11 +512,13 @@ class LDAP extends Base implements IAuthConnector
 
         if ($ldap_is_connected) {
             $this->lastAuthProperties['dn'] = $user_dn;
+            $this->lastAuthProperties['memberof'] = '';
             if ($this->ldapReadProperties) {
                 $sr = @ldap_read($this->ldapHandle, $user_dn, '(objectclass=*)', ['*', 'memberOf']);
                 $info = $sr !== false ? @ldap_get_entries($this->ldapHandle, $sr) : [];
                 if (!empty($info['count'])) {
                     foreach ($info[0] as $ldap_key => $ldap_value) {
+                        $ldap_key = strtolower($ldap_key); /* enforce lowercase, we expect memberof */
                         if (!is_numeric($ldap_key) && $ldap_key !== 'count') {
                             if (isset($ldap_value['count'])) {
                                 unset($ldap_value['count']);
@@ -518,41 +528,48 @@ class LDAP extends Base implements IAuthConnector
                             }
                         }
                     }
-                    // update group policies when applicable
-                    if ($this->ldapSyncMemberOf && !empty($this->lastAuthProperties['memberof'])) {
-                        // list of enabled groups, so we can ignore some local groups if needed
-                        if (!empty($this->ldapSyncMemberOfLimit)) {
-                            $sync_groups = explode(",", strtolower($this->ldapSyncMemberOfLimit));
-                        } else {
-                            $sync_groups = [];
-                        }
-                        if ($this->ldapSyncMemberOfConstraint) {
-                            // Filter "memberOf" results to those recorded in ldapAuthcontainers, where
-                            // the first part of the member is considered the group name, the rest should be an exact
-                            // (case insensitive) match.
-                            // (e.g. : cn=mygroup,cn=users,dc=opnsense,dc=local matches cn=users,dc=opnsense,dc=local)
-                            $membersOf = [];
-                            $tmp_containers = explode(";", strtolower($this->ldapAuthcontainers));
-                            foreach (explode("\n", $this->lastAuthProperties['memberof']) as $member) {
-                                foreach ($tmp_containers as $tmp_container) {
-                                    $tmp = explode(",", strtolower($member), 2);
-                                    if (count($tmp) > 1 && $tmp[1] == $tmp_container) {
-                                        $membersOf[] = $member;
-                                    }
-                                }
-                            }
-                            $membersOf = implode("\n", $membersOf);
-                        } else {
-                            $membersOf = $this->lastAuthProperties['memberof'];
-                        }
-                        $this->setGroupMembership(
-                            $username,
-                            $membersOf,
-                            $sync_groups,
-                            $this->ldapSyncCreateLocalUsers
-                        );
-                    }
                 }
+            }
+            // update group policies when applicable
+            if (($this->ldapSyncMemberOf && $this->ldapReadProperties) || $this->ldapSyncCreateLocalUsers) {
+                // list of enabled groups, so we can ignore some local groups if needed
+                $sync_groups = [];
+                $default_groups = [];
+                if (!empty($this->ldapSyncMemberOfLimit)) {
+                    $sync_groups = explode(",", strtolower($this->ldapSyncMemberOfLimit));
+                }
+                if (!empty($this->ldapSyncDefaultGroups)) {
+                    $default_groups = explode(",", strtolower($this->ldapSyncDefaultGroups));
+                }
+
+                if (!$this->ldapSyncMemberOf) {
+                    $sync_groups = $default_groups;
+                } elseif ($this->ldapSyncMemberOfConstraint) {
+                    // Filter "memberOf" results to those recorded in ldapAuthcontainers, where
+                    // the first part of the member is considered the group name, the rest should be an exact
+                    // (case insensitive) match.
+                    // (e.g. : cn=mygroup,cn=users,dc=opnsense,dc=local matches cn=users,dc=opnsense,dc=local)
+                    $membersOf = [];
+                    $tmp_containers = explode(";", strtolower($this->ldapAuthcontainers));
+                    foreach (explode("\n", $this->lastAuthProperties['memberof']) as $member) {
+                        foreach ($tmp_containers as $tmp_container) {
+                            $tmp = explode(",", strtolower($member), 2);
+                            if (count($tmp) > 1 && $tmp[1] == $tmp_container) {
+                                $membersOf[] = $member;
+                            }
+                        }
+                    }
+                    $membersOf = implode("\n", $membersOf);
+                } else {
+                    $membersOf = $this->lastAuthProperties['memberof'];
+                }
+                $this->setGroupMembership(
+                    $username,
+                    $membersOf,
+                    $sync_groups,
+                    $this->ldapSyncCreateLocalUsers,
+                    $default_groups
+                );
             }
         }
 

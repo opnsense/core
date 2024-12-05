@@ -44,7 +44,6 @@ class TrafficController extends ApiControllerBase
      */
     public function InterfaceAction()
     {
-        $this->sessionClose(); // long running action, close session
         $response = (new Backend())->configdRun('interface show traffic');
         return json_decode($response, true);
     }
@@ -70,7 +69,6 @@ class TrafficController extends ApiControllerBase
     public function TopAction($interfaces)
     {
         $response = [];
-        $this->sessionClose(); // long running action, close session
         $config = Config::getInstance()->object();
         $iflist = [];
         $ifmap = [];
