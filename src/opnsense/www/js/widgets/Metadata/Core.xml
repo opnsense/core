@@ -348,4 +348,22 @@
             <nopicture>No picture was supplied for this system.</nopicture>
         </translations>
     </picture>
+    <certificates>
+        <filename>Certificates.js</filename>
+        <link>/ui/trust/cert</link>
+        <endpoints>
+            <endpoint>/api/trust/ca/search</endpoint>
+            <endpoint>/api/trust/cert/search</endpoint>
+        </endpoints>
+        <translations>
+            <title>Certificates</title>
+            <noitems>No certificates to display.</noitems>
+            <expired>Expired</expired>
+            <valid>Valid</valid>
+            <expiresin>Expires in</expiresin>
+            <expiredon>Expired on</expiredon>
+            <days>days</days>
+            <hiddenitems>Hidden Certificates</hiddenitems>
+        </translations>
+    </certificates>
 </metadata>

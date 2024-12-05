@@ -281,6 +281,33 @@
             }
         });
 
+        /* For certificate dashboard widget */
+        function handleSearchAndEdit() {
+            const hash = window.location.hash;
+
+            if (hash.includes('#SearchPhrase=')) {
+                const searchPhrase = decodeURIComponent(hash.split('=')[1]);
+                const searchField = $('.search-field');
+
+                if (searchField.val() !== searchPhrase) {
+                    searchField.val(searchPhrase).trigger('keyup');
+
+                    // Wait for grid to reload after search and simulate edit button click
+                    $('#grid-cert').one("loaded.rs.jquery.bootgrid", function () {
+                        const editButton = $(`#grid-cert .command-edit[data-row-id="${searchPhrase}"]`);
+                        if (editButton.length) {
+                            editButton.trigger('click');
+                        }
+                    });
+
+                    history.replaceState(null, null, window.location.pathname + window.location.search);
+                }
+            }
+        }
+
+        $('#grid-cert').on("loaded.rs.jquery.bootgrid", handleSearchAndEdit);
+        $(window).on('hashchange', handleSearchAndEdit);
+
     });
 
 </script>
