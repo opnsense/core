@@ -36,5 +36,5 @@ while :; do
 		PREVIOUS=${CURRENT}
 	fi
 
-	sleep "${INTERVAL}"
+	sleep "${INTERVAL}" >/dev/null 2>&1
 done
