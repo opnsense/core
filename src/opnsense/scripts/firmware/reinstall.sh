@@ -25,46 +25,36 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-LOCKFILE=/tmp/pkg_upgrade.progress
+REQUEST="REINSTALL"
+
+. /usr/local/opnsense/scripts/firmware/config.sh
+
 PACKAGE=${1}
-REBOOT=
-
-: > ${LOCKFILE}
-
-echo "***GOT REQUEST TO REINSTALL***" >> ${LOCKFILE}
-echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 if [ "${PACKAGE}" = "base" ]; then
 	if opnsense-update -Tb; then
 		# force reinstall intended
-		if opnsense-update -bf >> ${LOCKFILE} 2>&1; then
-			REBOOT=1
+		if output_cmd opnsense-update -bf; then
+			output_reboot
 		fi
 	else
 		# for locked message only
-		opnsense-update -b >> ${LOCKFILE} 2>&1
+		output_cmd opnsense-update -b
 	fi
 elif [ "${PACKAGE}" = "kernel" ]; then
 	if opnsense-update -Tk; then
 		# force reinstall intended
-		if opnsense-update -kf >> ${LOCKFILE} 2>&1; then
-			REBOOT=1
+		if output_cmd opnsense-update -kf; then
+			output_reboot
 		fi
 	else
 		# for locked message only
-		opnsense-update -k >> ${LOCKFILE} 2>&1
+		output_cmd opnsense-update -k
 	fi
 else
-	opnsense-revert -l ${PACKAGE} >> ${LOCKFILE} 2>&1
-	/usr/local/opnsense/scripts/firmware/register.php install ${PACKAGE} >> ${LOCKFILE} 2>&1
-	pkg autoremove -y >> ${LOCKFILE} 2>&1
+	output_cmd opnsense-revert -l "${PACKAGE}"
+	output_cmd ${BASEDIR}/register.php install "${PACKAGE}"
+	output_cmd ${PKG} autoremove -y
 fi
 
-if [ -n "${REBOOT}" ]; then
-	echo '***REBOOT***' >> ${LOCKFILE}
-	# give the frontend some time to figure out that a reboot is coming
-	sleep 5
-	/usr/local/etc/rc.reboot
-fi
-
-echo '***DONE***' >> ${LOCKFILE}
+output_done

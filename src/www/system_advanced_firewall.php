@@ -785,7 +785,8 @@ include("head.inc");
                     </table>
                   </div>
                   <div class="hidden" data-for="help_for_syncookies">
-                      <?=gettext("When syncookies are active, pf will answer each incoming TCP SYN with a syncookie SYNACK, without allocating any resources.");?>
+                      <?=gettext('When syncookies are active, the firewall will answer each incoming TCP SYN with a syncookie SYN ACK for all state tracked connections ' .
+                                 'without allocating any resources. TCP connections bound to stateless rules will be silently dropped for implementational reasons.') ?>
                   </div>
                 </td>
               </tr>

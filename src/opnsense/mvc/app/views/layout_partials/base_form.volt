@@ -83,7 +83,7 @@
             <col class="col-md-4"/>
             <col class="col-md-5"/>
         </colgroup>
-        <thead style="cursor: pointer;">
+        <thead style="cursor: pointer;" class="{{field['style']|default('')}}">
           <tr {% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
             <th colspan="3">
                 <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px;">

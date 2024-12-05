@@ -1,14 +1,32 @@
 <menu>
     <Interfaces>
-        <VIP order="930" VisibleName="Virtual IPs" cssClass="fa fa-clone fa-fw">
+        <Assignments order="200" url="/interfaces_assign.php" cssClass="fa fa-pencil fa-fw"/>
+        <Devices order="210" cssClass="fa fa-archive fa-fw">
+            <Bridge url="/interfaces_bridge.php">
+                <Edit url="/interfaces_bridge_edit.php*" visibility="hidden"/>
+            </Bridge>
+            <GIF url="/ui/interfaces/gif"/>
+            <GRE url="/ui/interfaces/gre"/>
+            <LAGG url="/ui/interfaces/lagg"/>
+            <Loopback url="/ui/interfaces/loopback"/>
+            <PPP VisibleName="Point-to-Point" url="/interfaces_ppps.php">
+                <Edit url="/interfaces_ppps_edit.php*" visibility="hidden"/>
+            </PPP>
+            <VLAN url="/ui/interfaces/vlan"/>
+            <VXLAN url="/ui/interfaces/vxlan"/>
+        </Devices>
+        <Neighbors order="220" url="/ui/interfaces/neighbor" cssClass="fa fa-users fa-fw"/>
+        <Overview order="230" url="/ui/interfaces/overview" cssClass="fa fa-tasks fa-fw"/>
+        <Settings order="240" url="/system_advanced_network.php" cssClass="fa fa-cogs fa-fw"/>
+        <VIP order="250" VisibleName="Virtual IPs" cssClass="fa fa-clone fa-fw">
             <Settings url="/ui/interfaces/vip"/>
             <Status url="/ui/diagnostics/interface/vip"/>
         </VIP>
-        <Types>
-            <LAGG url="/ui/interfaces/lagg"/>
-            <Loopback url="/ui/interfaces/loopback"/>
-            <VLAN url="/ui/interfaces/vlan"/>
-            <VXLAN url="/ui/interfaces/vxlan"/>
-        </Types>
+        <Wireless order="260" cssClass="fa fa-wifi fa-fw">
+            <Devices url="/interfaces_wireless.php">
+                <Edit url="/interfaces_wireless_edit.php*" visibility="hidden"/>
+            </Devices>
+        </Wireless>
+        <Diagnostics order="270" cssClass="fa fa-medkit fa-fw"/>
     </Interfaces>
 </menu>

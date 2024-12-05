@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2014-2015 Deciso B.V.
+ # Copyright (c) 2014-2024 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -58,7 +58,7 @@
                         );
                     } else {
                         $('div[id="control_label_unbound.forwarding.info"]').append(
-                            "<span>{{ lang._('There are no system nameservers configured. Please do so in ') }}<a href=\"/system_general.php\">System: General setup</a></span>"
+                            "<span>{{ lang._('There are no system nameservers configured. Please do so in ') }}<a href=\"/system_general.php\">System: Settings: General</a></span>"
                         );
                     }
 
@@ -90,8 +90,12 @@
         /* Hide/unhide verify field based on type */
         if ("{{selected_forward}}" == "forward") {
             $('tr[id="row_dot.verify"]').addClass('hidden');
+            $('tr[id="row_dot.forward_tcp_upstream"]').removeClass('hidden');
         } else {
             $('tr[id="row_dot.verify"]').removeClass('hidden');
+            $('tr[id="row_dot.forward_tcp_upstream"]').addClass('hidden');
+            /* remove advanced option toggle (currently no advanced options for DNS over TLS) */
+            $("#show_advanced_formDialogDialogEdit").closest('td').html('');
         }
 
         /*************************************************************************************************************
@@ -133,6 +137,7 @@
                 {% if (selected_forward|default("") == "") %}
                 <th data-column-id="verify" data-type="int">{{ lang._('Hostname') }}</th>
                 {% endif %}
+                <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
                 <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Edit') }} | {{ lang._('Delete') }}</th>
                 <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
             </tr>

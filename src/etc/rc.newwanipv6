@@ -32,7 +32,6 @@
 require_once("config.inc");
 require_once("auth.inc");
 require_once("filter.inc");
-require_once("rrd.inc");
 require_once("util.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
@@ -99,32 +98,31 @@ interfaces_vips_configure($interface, 6);
 $greifs = link_interface_to_gre($interface, true, 6);
 $gififs = link_interface_to_gif($interface, true, 6);
 
-switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
+switch (isset($config['system']['ipv6allow']) ? ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') : 'none') {
     case 'slaac':
         /* require immediate reconfiguration before reconfiguring clients */
         plugins_configure('dhcp', false, ['inet6']);
         break;
     default:
-        /* flush SLAAC addressing in order to make any of our own addresses preferred */
-        shell_safe('/usr/local/sbin/ifctl -i %s -f', $device);
+        /*
+         * XXX We would like to discourage SLAAC addressing here but
+         * in reality this is highly ISP dependent and the kernel is
+         * not forthcoming in the quest as it likes to prefer this because
+         * it came first breaking some setups but making others work at
+         * the same time making it impractical to infer which setup we
+         * currently require.
+         */
         break;
 }
 
 interfaces_restart_by_device(false, array_merge($greifs, $gififs));
 
-/* XXX handling reloads for tracked interfaces is difficult, for now reload multiple times */
 $interfaces = array_keys(link_interface_to_track6($interface, true));
 array_unshift($interfaces, $interface);
 
-foreach ($interfaces as $interface) {
-    system_routing_configure(false, $interface, true, 'inet6');
-}
+system_routing_configure(false, $interfaces, true, 'inet6');
 
 filter_configure_sync();
 
-foreach ($interfaces as $interface) {
-    plugins_configure('vpn', false, [$interface]);
-    plugins_configure('newwanip', false, [$interface]);
-}
-
-rrd_configure();
+plugins_configure('vpn', false, [$interfaces, 'inet6']);
+plugins_configure('newwanip', false, [$interfaces, 'inet6']);

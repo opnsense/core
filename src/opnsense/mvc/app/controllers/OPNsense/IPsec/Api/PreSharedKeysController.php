@@ -46,7 +46,7 @@ class PreSharedKeysController extends ApiMutableModelControllerBase
      */
     public function searchItemAction()
     {
-        return $this->searchBase('preSharedKeys.preSharedKey', ['ident', 'remote_ident', 'keyType']);
+        return $this->searchBase('preSharedKeys.preSharedKey', ['ident', 'remote_ident', 'keyType', 'description']);
     }
 
     /**

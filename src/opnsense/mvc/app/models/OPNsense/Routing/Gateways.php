@@ -62,9 +62,9 @@ class Gateways extends BaseModel
                 if (empty((string)$gateway->$key) || (string)$gateway->$key == 'dynamic') {
                     continue;
                 } elseif ((string)$gateway->ipprotocol === 'inet' && !Util::isIpv4Address((string)$gateway->$key)) {
-                    $messages->appendMessage(new Message(gettext('Invalid IPv4 address'), $ref . '.' . $tag));
+                    $messages->appendMessage(new Message(gettext('Invalid IPv4 address'), $ref . '.' . $key));
                 } elseif ((string)$gateway->ipprotocol === 'inet6' && !Util::isIpv6Address((string)$gateway->$key)) {
-                    $messages->appendMessage(new Message(gettext('Invalid IPv6 address'), $ref . '.' . $tag));
+                    $messages->appendMessage(new Message(gettext('Invalid IPv6 address'), $ref . '.' . $key));
                 }
             }
             if (intval((string)$gateway->current_latencylow) > intval((string)$gateway->current_latencyhigh)) {
@@ -271,30 +271,6 @@ class Gateways extends BaseModel
                 case '6rd':
                 case '6to4':
                     $realif = "{$ifname}_stf";
-                    break;
-                case 'dhcp6':
-                case 'slaac':
-                case 'staticv6':
-                    if (isset($ifcfg['dhcp6usev4iface'])) {
-                        break;
-                    }
-                    switch ($ifcfg['ipaddr'] ?? 'none') {
-                        case 'l2tp':
-                        case 'pppoe':
-                        case 'pptp':
-                            if (!empty($this->configHandle->ppps)) {
-                                foreach ($this->configHandle->ppps->children() as $ppp) {
-                                    if ($realif == $ppp->if) {
-                                        $ports = explode(',', $ppp->ports);
-                                        $realif = $this->getRealInterface($definedIntf, $ports[0]);
-                                        break;
-                                    }
-                                }
-                            }
-                            break;
-                        default:
-                            break;
-                    }
                     break;
                 default:
                     break;

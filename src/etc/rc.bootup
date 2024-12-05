@@ -44,7 +44,6 @@ $inc_files = [
     'interfaces.inc',
     'system.inc',
     'filter.inc',
-    'rrd.inc',
 ];
 
 foreach ($inc_files as $inc_file) {
@@ -92,16 +91,15 @@ interfaces_configure(true);
 system_resolver_configure(true); /* adapts to runtime interface configuration */
 filter_configure_sync(true);
 plugins_configure('early', true);
-system_routing_configure(true, null, false);
+system_routing_configure(true, null, 'ignore');
 
 plugins_configure('dhcp', true);
 plugins_configure('dns', true);
 
 filter_configure_sync(true);
-plugins_configure('monitor', true, [null, true]);
+plugins_configure('monitor', true);
 plugins_configure('vpn', true);
 plugins_configure('bootup', true);
-rrd_configure(true, true);
 
 system_powerd_configure(true); /* XXX this seems misplaced */
 

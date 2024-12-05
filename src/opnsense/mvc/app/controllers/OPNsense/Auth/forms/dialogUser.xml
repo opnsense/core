@@ -1,0 +1,101 @@
+<form>
+    <field>
+        <id>user.scope</id>
+        <label>Defined By</label>
+        <type>info</type>
+    </field>
+    <field>
+        <id>user.uid</id>
+        <label>uid</label>
+        <type>info</type>
+    </field>
+    <field>
+        <id>user.disabled</id>
+        <label>Disabled</label>
+        <type>checkbox</type>
+        <help>Deny authentication, only applicable for local users</help>
+    </field>
+    <field>
+        <id>user.name</id>
+        <label>Username</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>user.password</id>
+        <label>Password</label>
+        <type>password</type>
+    </field>
+    <field>
+        <id>user.scrambled_password</id>
+        <label>Scrambled Password</label>
+        <type>checkbox</type>
+        <help>Generate a scrambled password to prevent local database logins for this user.</help>
+    </field>
+    <field>
+        <id>user.descr</id>
+        <label>Full name</label>
+        <type>text</type>
+        <help>User's full name, for your own information only</help>
+    </field>
+    <field>
+        <id>user.email</id>
+        <label>E-mail</label>
+        <type>text</type>
+        <help>User's e-mail address, for your own information only</help>
+    </field>
+    <field>
+        <id>user.comment</id>
+        <label>Comment</label>
+        <type>textbox</type>
+        <help>User comment, for your own information only</help>
+    </field>
+    <field>
+        <id>user.landing_page</id>
+        <label>Preferred landing page</label>
+        <type>text</type>
+        <help>Preferred landing page after login or authentication failure</help>
+    </field>
+    <field>
+        <id>user.language</id>
+        <label>Language</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>user.shell</id>
+        <label>Login shell</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>user.expires</id>
+        <label>Expiration date</label>
+        <type>text</type>
+        <style>datepicker</style>
+    </field>
+    <field>
+        <id>user.group_memberships</id>
+        <label>Group membership</label>
+        <type>select_multiple</type>
+    </field>
+    <field>
+        <id>user.priv</id>
+        <label>Privileges</label>
+        <type>select_multiple</type>
+    </field>
+    <field>
+        <id>user.certs</id>
+        <label>User Certificates</label>
+        <type>info</type>
+        <help>Client certificates matching this username by common name</help>
+    </field>
+    <field>
+        <id>user.otp_seed</id>
+        <label>OTP seed</label>
+        <type>text</type>
+        <style>otp_seed otp_default_hidden</style>
+    </field>
+    <field>
+        <id>user.authorizedkeys</id>
+        <label>Authorized Keys</label>
+        <type>textbox</type>
+    </field>
+</form>

@@ -37,6 +37,7 @@ import argparse
 import ujson
 import subprocess
 import time
+import select
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from log_helper import reverse_log_reader
 from params import update_params
@@ -84,7 +85,8 @@ def fetch_rule_details():
                     lbl = line.split(' label ')[-1]
                     if lbl.count('"') >= 2:
                         rule_md5 = lbl.split('"')[1]
-                        if len(rule_md5) == 32 and set(rule_md5).issubset(HEX_DIGITS):
+                        # detect either calculated md5 hash (calcRuleHash) or rule uuid
+                        if len(rule_md5) >= 32 and set(rule_md5.replace('-', '')).issubset(HEX_DIGITS):
                             rule_map[rule_md5] = ''.join(lbl.split('"')[2:]).strip().strip('# : ')
 
     return rule_map
@@ -145,7 +147,7 @@ def parse_record(record, running_conf_descr):
     elif rule['action'] not in ['pass', 'block']:
         # no id for translation rules
         rule['label'] = "%s rule" % rule['action']
-    elif len(rulep) > 0 and len(rulep[-1]) == 32 and set(rulep[-1]).issubset(HEX_DIGITS):
+    elif len(rulep) > 0 and len(rulep[-1]) >= 32 and set(rulep[-1].replace('-', '')).issubset(HEX_DIGITS):
         # rule id appended in record format, don't use rule sequence number in that case either
         rule['rid'] = rulep[-1]
         if rulep[-1] in running_conf_descr:
@@ -173,12 +175,23 @@ if __name__ == '__main__':
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             bufsize=0,
+            text=True
         )
 
         last_t = time.time()
+        line_threshold = 10
+        line_count = 0
+        throttle_interval = 100 # ms
+        counter = {}
+        start_t_ms = time.time() * 1000
         try:
             while True:
-                line = f.stdout.readline().decode('utf-8')
+                ready, _, _ = select.select([f.stdout], [], [], 1)
+                if not ready:
+                    # timeout, send keepalive
+                    print("event: keepalive\ndata:\n\n", flush=True)
+                    continue
+                line = f.stdout.readline()
                 if line and line.find('filterlog') > -1:
                     t = time.time()
                     if (t - last_t) > 30:
@@ -187,7 +200,16 @@ if __name__ == '__main__':
                         running_conf_descr = fetch_rule_details()
                     rule = parse_record({'line': line}, running_conf_descr)
                     if rule != None:
-                        print(f"event: message\ndata: {ujson.dumps(rule)}\n\n", flush=True)
+                        counter[rule['rid']] = counter.get(rule['rid'], 0) + 1
+                        rule['counter'] = counter[rule['rid']]
+
+                        line_count += 1
+                        elapsed = (time.time() * 1000) - start_t_ms
+                        if elapsed < throttle_interval and line_count <= line_threshold:
+                            print(f"event: message\ndata: {ujson.dumps(rule)}\n\n", flush=True)
+                        elif elapsed >= throttle_interval:
+                            line_count = 0
+                            start_t_ms = time.time() * 1000
                 else:
                     break
         except KeyboardInterrupt:

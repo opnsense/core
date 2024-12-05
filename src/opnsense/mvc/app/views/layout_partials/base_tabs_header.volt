@@ -40,9 +40,9 @@
 
         <li role="presentation" class="dropdown {% if formData['activetab']|default("") == active_subtab %}active{% endif %}">
             <a data-toggle="dropdown" href="#" class="dropdown-toggle pull-right visible-lg-inline-block visible-md-inline-block visible-xs-inline-block visible-sm-inline-block" role="button">
-                <b><span class="caret"></span></b>
+                <span class="caret"></span>
             </a>
-            <a data-toggle="tab" onclick="$('#subtab_item_{{tab['subtabs'][0][0]}}').click();" class="visible-lg-inline-block visible-md-inline-block visible-xs-inline-block visible-sm-inline-block" style="border-right:0px;"><b>{{tab[1]}}</b></a>
+            <a data-toggle="tab" onclick="$('#subtab_item_{{tab['subtabs'][0][0]}}').click();" class="visible-lg-inline-block visible-md-inline-block visible-xs-inline-block visible-sm-inline-block" style="border-right:0px;">{{tab[1]}}</a>
             <ul class="dropdown-menu" role="menu">
                 {% for subtab in tab['subtabs']|default({})%}
                 <li class="{% if formData['activetab']|default("") == subtab[0] %}active{% endif %}">
@@ -55,7 +55,7 @@
         {# Standard Tab #}
         <li {% if formData['activetab']|default("") == tab[0] %} class="active" {% endif %}>
                 <a data-toggle="tab" href="#tab_{{tab[0]}}">
-                    <b>{{tab[1]}}</b>
+                    {{tab[1]}}
                 </a>
         </li>
     {% endif %}

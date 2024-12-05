@@ -40,7 +40,8 @@ $server = (new OPNsense\OpenVPN\OpenVPN())->getInstanceById($vpnid, 'server');
 if ($server) {
     $cso = (new OPNsense\OpenVPN\OpenVPN())->getOverwrite($vpnid, $common_name);
     if (empty($cso)) {
-        $cso = array("common_name" => $common_name);
+        syslog(LOG_NOTICE, "authentication failed for user '{$common_name}'. No tunnel network provisioned, but required.");
+        exit(1);
     }
     if (!empty($config_file)) {
         $cso_filename = openvpn_csc_conf_write($cso, $server, $config_file);
@@ -52,5 +53,4 @@ if ($server) {
     }
 }
 
-closelog();
 exit(0);

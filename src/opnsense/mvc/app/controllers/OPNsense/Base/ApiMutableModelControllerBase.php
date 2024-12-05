@@ -381,7 +381,6 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         $filter_funct = null,
         $sort_flags = SORT_NATURAL | SORT_FLAG_CASE
     ) {
-        $this->sessionClose();
         $element = $this->getModel();
         foreach (explode('.', $path) as $step) {
             $element = $element->{$step};

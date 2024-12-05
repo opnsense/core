@@ -1,0 +1,235 @@
+<form>
+    <tab id="ipsec-general" description="General">
+        <field>
+            <id>ipsec.general.preferred_oldsa</id>
+            <label>Prefer older IPsec SAs</label>
+            <type>checkbox</type>
+            <help>
+                By default, if several SAs match, the newest one is preferred if it's at least 30 seconds old.
+                Select this option to always prefer old SAs over new ones.
+            </help>
+        </field>
+        <field>
+            <id>ipsec.general.disablevpnrules</id>
+            <label>Disable legacy auto-added VPN rules.</label>
+            <type>checkbox</type>
+            <help>
+                This option only applies to legacy tunnel configurations, connections do require manual firewall
+                rules being setup.
+            </help>
+        </field>
+        <field>
+            <id>ipsec.general.passthrough_networks</id>
+            <label>Passthrough networks</label>
+            <type>select_multiple</type>
+            <style>tokenize</style>
+            <help>
+                This exempts traffic for one or more subnets from getting processed by the IPsec stack in the kernel.
+                When sending all traffic to the remote location, you probably want to add your lan network(s) here.
+            </help>
+        </field>
+    </tab>
+    <tab id="ipsec-charon" description="Charon">
+        <field>
+            <id>ipsec.charon.max_ikev1_exchanges</id>
+            <label>Maximum IKEv1 phase 2 exchanges</label>
+            <type>text</type>
+            <help>
+                Maximum number of IKEv1 phase 2 exchanges per IKE_SA to keep state about and track concurrently.
+                When using multiple phase 2 definitions a higher value than the default (3) would be advisable to prevent re-keying issues
+            </help>
+        </field>
+        <field>
+            <id>ipsec.charon.ignore_acquire_ts</id>
+            <label>Ignore acquire ts</label>
+            <type>checkbox</type>
+            <help>
+                    If this is disabled the traffic selectors from the kernel’s acquire events,
+                    which are derived from the triggering packet, are prepended to the traffic selectors from the
+                    configuration for IKEv2 connection. By enabling this, such specific traffic selectors will be ignored and
+                    only the ones in the config will be sent.
+                    This always happens for IKEv1 connections as the protocol only supports one set of traffic selectors per CHILD SA
+            </help>
+        </field>
+        <field>
+            <id>ipsec.charon.threads</id>
+            <label>Threads</label>
+            <type>text</type>
+            <help>
+                Number of worker threads in Several of these are reserved for long running tasks in internal modules and plugins.
+                Therefore, make sure you don’t set this value too low.
+            </help>
+        </field>
+        <field>
+            <id>ipsec.charon.ikesa_table_size</id>
+            <label>IKESA table size</label>
+            <type>text</type>
+            <help>Size of the IKE SA hash table</help>
+        </field>
+        <field>
+            <id>ipsec.charon.ikesa_table_segments</id>
+            <label>IKESA table segments</label>
+            <type>text</type>
+            <help>Number of exclusively locked segments in the hash table.</help>
+        </field>
+        <field>
+            <id>ipsec.charon.init_limit_half_open</id>
+            <label>Init limit half open</label>
+            <type>text</type>
+            <help>Limit new connections based on the current number of half open IKE_SAs.</help>
+        </field>
+        <field>
+            <id>ipsec.charon.make_before_break</id>
+            <label>Make Before Break</label>
+            <type>checkbox</type>
+            <help>Initiate IKEv2 reauthentication with a make-before-break instead of a break-before-make scheme. Make-before-break uses overlapping IKE and CHILD SA during reauthentication by first recreating all new SAs before deleting the old ones. This behavior can be beneficial to avoid connectivity gaps during reauthentication, but requires support for overlapping SAs by the peer.</help>
+        </field>
+        <field>
+            <type>header</type>
+            <label>Retransmission</label>
+        </field>
+        <field>
+            <id>ipsec.charon.retransmit_tries</id>
+            <label>Tries</label>
+            <type>text</type>
+            <help>Number of retransmissions to send before giving up.</help>
+        </field>
+        <field>
+            <id>ipsec.charon.retransmit_timeout</id>
+            <label>Timeout</label>
+            <type>text</type>
+            <help>Timeout in seconds.</help>
+        </field>
+        <field>
+            <id>ipsec.charon.retransmit_base</id>
+            <label>Base</label>
+            <type>text</type>
+            <help>Base of exponential backoff</help>
+        </field>
+        <field>
+            <id>ipsec.charon.retransmit_jitter</id>
+            <label>Jitter</label>
+            <type>text</type>
+            <help>Maximum jitter in percent to apply randomly to calculated retransmission timeout (0 to disable)</help>
+        </field>
+        <field>
+            <id>ipsec.charon.retransmit_limit</id>
+            <label>Limit</label>
+            <type>text</type>
+            <help>Upper limit in seconds for calculated retransmission timeout (0 to disable)</help>
+        </field>
+    </tab>
+    <tab id="ipsec-syslog" description="Syslog">
+        <field>
+            <type>header</type>
+            <label>Generic settings</label>
+        </field>
+        <field>
+            <id>ipsec.charon.syslog.daemon.ike_name</id>
+            <label>Ike Name</label>
+            <type>checkbox</type>
+            <help>Prefix each log entry with the connection name and a unique numerical identifier for each IKE_SA.</help>
+        </field>
+        <field>
+            <id>ipsec.charon.syslog.daemon.log_level</id>
+            <label>Log Level</label>
+            <type>checkbox</type>
+            <help>Add the log level of each message after the subsystem (e.g. [IKE2]).</help>
+        </field>
+        <field>
+            <type>header</type>
+            <label>Loglevel</label>
+        </field>
+        <field>
+            <id>ipsec.charon.syslog.daemon.app</id>
+            <label>Applications other than daemons</label>
+            <type>dropdown</type>
+        </field>
+        <field>
+            <id>ipsec.charon.syslog.daemon.asn</id>
+            <label>Low-level encoding/decoding (ASN.1, X.509 etc.)</label>
+            <type>dropdown</type>
+        </field>
+        <field>
+            <id>ipsec.charon.syslog.daemon.cfg</id>
+            <label>Configuration management and plugins</label>
+            <type>dropdown</type>
+        </field>
+        <field>
+            <id>ipsec.charon.syslog.daemon.chd</id>
+            <label>CHILD_SA/IPsec SA</label>
+            <type>dropdown</type>
+        </field>
+        <field>
+            <id>ipsec.charon.syslog.daemon.dmn</id>
+            <label>Main daemon setup/cleanup/signal handling</label>
+            <type>dropdown</type>
+        </field>
+        <field>
+            <id>ipsec.charon.syslog.daemon.enc</id>
+            <label>Packet encoding/decoding encryption/decryption operations</label>
+            <type>dropdown</type>
+        </field>
+        <field>
+            <id>ipsec.charon.syslog.daemon.esp</id>
+            <label>libipsec library messages</label>
+            <type>dropdown</type>
+        </field>
+        <field>
+            <id>ipsec.charon.syslog.daemon.ike</id>
+            <label>IKE_SA/ISAKMP SA</label>
+            <type>dropdown</type>
+        </field>
+        <field>
+            <id>ipsec.charon.syslog.daemon.imc</id>
+            <label>Integrity Measurement Collector</label>
+            <type>dropdown</type>
+        </field>
+        <field>
+            <id>ipsec.charon.syslog.daemon.imv</id>
+            <label>Integrity Measurement Verifier</label>
+            <type>dropdown</type>
+        </field>
+        <field>
+            <id>ipsec.charon.syslog.daemon.job</id>
+            <label>Jobs queuing/processing and thread pool management</label>
+            <type>dropdown</type>
+        </field>
+        <field>
+            <id>ipsec.charon.syslog.daemon.knl</id>
+            <label>IPsec/Networking kernel interface</label>
+            <type>dropdown</type>
+        </field>
+        <field>
+            <id>ipsec.charon.syslog.daemon.lib</id>
+            <label>libstrongwan library messages</label>
+            <type>dropdown</type>
+        </field>
+        <field>
+            <id>ipsec.charon.syslog.daemon.mgr</id>
+            <label>IKE_SA manager, handling synchronization for IKE_SA access</label>
+            <type>dropdown</type>
+        </field>
+        <field>
+            <id>ipsec.charon.syslog.daemon.net</id>
+            <label>IKE network communication</label>
+            <type>dropdown</type>
+        </field>
+        <field>
+            <id>ipsec.charon.syslog.daemon.pts</id>
+            <label>Platform Trust Service</label>
+            <type>dropdown</type>
+        </field>
+        <field>
+            <id>ipsec.charon.syslog.daemon.tls</id>
+            <label>libtls library messages</label>
+            <type>dropdown</type>
+        </field>
+        <field>
+            <id>ipsec.charon.syslog.daemon.tnc</id>
+            <label>Trusted Network Connect</label>
+            <type>dropdown</type>
+        </field>
+    </tab>
+    <activetab>ipsec-general</activetab>
+</form>

@@ -40,7 +40,7 @@ class FirewallStatus extends AbstractStatus
 
         if (file_exists($this->rules_error)) {
             $this->internalMessage = file_get_contents($this->rules_error);
-            $this->internalStatus = constant("static::STATUS_ERROR");
+            $this->internalStatus = static::STATUS_ERROR;
             $info = stat($this->rules_error);
             if (!empty($info['mtime'])) {
                 $this->internalTimestamp = $info['mtime'];

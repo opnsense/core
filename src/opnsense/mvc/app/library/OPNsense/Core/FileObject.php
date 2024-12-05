@@ -118,11 +118,15 @@ class FileObject
      * write contents to this file
      * @param string $data start position
      * @param int $length length to write
+     * @param bool $sync flush data
      * @return this
      */
-    public function write(string $data, ?int $length = null)
+    public function write(string $data, ?int $length = null, bool $sync = true)
     {
         fwrite($this->fhandle, $data, $length);
+        if ($sync) {
+            fflush($this->fhandle);
+        }
         return $this;
     }
 

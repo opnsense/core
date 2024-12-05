@@ -155,9 +155,6 @@ class RoutesController extends ApiMutableModelControllerBase
     public function reconfigureAction()
     {
         if ($this->request->isPost()) {
-            // close session for long running action
-            $this->sessionClose();
-
             $backend = new Backend();
             $bckresult = trim($backend->configdRun('interface routes configure'));
             if ($bckresult == 'OK') {

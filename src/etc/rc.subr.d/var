@@ -30,7 +30,7 @@
 
 USE_MFS_VAR=$(grep -c 'use_mfs_var[^_]' /conf/config.xml)
 
-# see if / is writable (aka. non-LiveCD boot)
+# see if / is writable (aka. not a live media boot)
 if _tmpdir=$(mktemp -d -q /.diskless.XXXXXX); then
 	# only remove the directory
 	rmdir ${_tmpdir}

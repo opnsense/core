@@ -58,6 +58,7 @@ class Session
                 (Config::getInstance())->object()->system->webgui->protocol == 'https',
                 true
             );
+            session_set_cookie_params(["SameSite" => "Lax"]);
             session_start();
             $shouldClose = true;
         }

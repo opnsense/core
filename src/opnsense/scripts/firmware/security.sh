@@ -24,12 +24,10 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-LOCKFILE="/tmp/pkg_upgrade.progress"
-TEE="/usr/bin/tee -a"
+REQUEST="AUDIT SECURITY"
 
-: > ${LOCKFILE}
+. /usr/local/opnsense/scripts/firmware/config.sh
 
-echo "***GOT REQUEST TO AUDIT SECURITY***" >> ${LOCKFILE}
-echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
-(pkg audit -F 2>&1) | ${TEE} ${LOCKFILE}
-echo '***DONE***' >> ${LOCKFILE}
+output_cmd ${PKG} audit -F
+
+output_done

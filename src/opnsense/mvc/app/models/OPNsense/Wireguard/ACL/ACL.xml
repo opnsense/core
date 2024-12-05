@@ -3,7 +3,10 @@
       <name>VPN: WireGuard</name>
       <patterns>
          <pattern>ui/wireguard/*</pattern>
-         <pattern>api/wireguard/*</pattern>
+         <pattern>api/wireguard/server/*</pattern>
+         <pattern>api/wireguard/client/*</pattern>
+         <pattern>api/wireguard/general/*</pattern>
+         <pattern>api/wireguard/service/*</pattern>
       </patterns>
    </page-wireguard-config>
 </acl>

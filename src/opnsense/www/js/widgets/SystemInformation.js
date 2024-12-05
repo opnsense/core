@@ -1,5 +1,3 @@
-// endpoint:/api/core/system/systemInformation
-
 /*
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
@@ -26,12 +24,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseTableWidget from "./BaseTableWidget.js";
-
 export default class SystemInformation extends BaseTableWidget {
     constructor() {
         super();
-        this.tickTimeout = 1000;
     }
 
     getMarkup() {
@@ -44,33 +39,33 @@ export default class SystemInformation extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        await ajaxGet('/api/core/system/systemTime', {}, (data, status) => {
-            $('#datetime').text(data['datetime']);
-            $('#uptime').text(data['uptime']);
-            $('#config').text(data['config']);
-        });
+        const data = await this.ajaxCall('/api/diagnostics/system/systemTime');
+        $('#uptime').text(data['uptime']);
+        $('#loadavg').text(data['loadavg']);
+        $('#datetime').text(data['datetime']);
+        $('#config').text(data['config']);
     }
 
     async onMarkupRendered() {
-        await ajaxGet('/api/core/system/systemInformation', {}, (data, status) => {
-            let rows = [];
-            for (let [key, value] of Object.entries(data)) {
-                if (!key in this.translations) {
-                    console.error('Missing translation for ' + key);
-                    continue;
-                }
-
-                if (key === 'updates') {
-                    value = $('<a>').attr('href', '/ui/core/firmware#checkupdate').text(value).prop('outerHTML');
-                }
-
-                rows.push([[this.translations[key]], value]);
+        const data = await this.ajaxCall('/api/diagnostics/system/systemInformation');
+        let rows = [];
+        for (let [key, value] of Object.entries(data)) {
+            if (!key in this.translations) {
+                console.error('Missing translation for ' + key);
+                continue;
             }
 
-            rows.push([[this.translations['uptime']], $('<span id="uptime">').prop('outerHTML')]);
-            rows.push([[this.translations['datetime']], $('<span id="datetime">').prop('outerHTML')]);
-            rows.push([[this.translations['config']], $('<span id="config">').prop('outerHTML')]);
-            super.updateTable('sysinfo-table', rows);
-        });
+            if (key === 'updates') {
+                value = $('<a>').attr('href', '/ui/core/firmware#checkupdate').text(value).prop('outerHTML');
+            }
+
+            rows.push([[this.translations[key]], value]);
+        }
+
+        rows.push([[this.translations['uptime']], $('<span id="uptime">').prop('outerHTML')]);
+        rows.push([[this.translations['loadavg']], $('<span id="loadavg">').prop('outerHTML')]);
+        rows.push([[this.translations['datetime']], $('<span id="datetime">').prop('outerHTML')]);
+        rows.push([[this.translations['config']], $('<span id="config">').prop('outerHTML')]);
+        super.updateTable('sysinfo-table', rows);
     }
 }

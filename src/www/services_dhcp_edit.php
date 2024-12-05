@@ -250,7 +250,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (isset($config['dhcpd'][$if]['enable'])) {
             mark_subsystem_dirty('staticmaps');
-            mark_subsystem_dirty('hosts');
         }
 
         header(url_safe('Location: /services_dhcp.php?if=%s', array($if)));

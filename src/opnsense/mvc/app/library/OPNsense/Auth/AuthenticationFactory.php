@@ -42,28 +42,6 @@ class AuthenticationFactory
     var $lastUsedAuth = null;
 
     /**
-     * search already known local userDN's into simple mapping if auth method is current standard method
-     * @param string $authserver auth server name
-     * @return array list of dn's
-     */
-    private function fetchUserDNs($authserver = null)
-    {
-        $result = array();
-        $configObj = Config::getInstance()->object();
-        if (
-            $authserver == null || (isset($configObj->system->webgui->authmode) &&
-                (string)$configObj->system->webgui->authmode == $authserver)
-        ) {
-            foreach ($configObj->system->children() as $key => $value) {
-                if ($key == 'user' && !empty($value->user_dn)) {
-                    $result[(string)$value->name] = (string)$value->user_dn;
-                }
-            }
-        }
-        return $result;
-    }
-
-    /**
      * list installed auth connectors
      * @return array
      */
@@ -120,7 +98,6 @@ class AuthenticationFactory
      */
     public function get($authserver)
     {
-        $localUserMap = array();
         $servers = $this->listServers();
         $servers['Local API'] = array("name" => "Local API Database", "type" => "api");
         // create a new auth connector
@@ -129,15 +106,8 @@ class AuthenticationFactory
             if (!empty($connectors[$servers[$authserver]['type']])) {
                 $authObject = $connectors[$servers[$authserver]['type']]['classHandle']->newInstance();
             }
-            if (in_array($servers[$authserver]['type'], array('ldap', 'ldap-totp'))) {
-                $localUserMap = $this->fetchUserDNs();
-            }
-
             if (isset($authObject)) {
                 $props = $servers[$authserver];
-                // when a local user exist and has a different (distinguished) name on the authenticator we already
-                // know of, we send the mapping to the authenticator as property "local_users".
-                $props['local_users'] = $localUserMap;
                 $authObject->setProperties($props);
                 return $authObject;
             }
@@ -204,7 +174,6 @@ class AuthenticationFactory
                                 get_class($service),
                                 get_class($authenticator)
                             ));
-                            closelog();
                             return true;
                         } else {
                             // since checkConstraints() is defined on the service, who doesn't know about the
@@ -216,7 +185,6 @@ class AuthenticationFactory
                                 get_class($service),
                                 get_class($authenticator)
                             ));
-                            closelog();
                             return false;
                         }
                     } else {
@@ -238,7 +206,6 @@ class AuthenticationFactory
             !empty($service) ? get_class($service) : '-',
             !empty($authenticator) ? get_class($authenticator) : '-'
         ));
-        closelog();
         return false;
     }
 
