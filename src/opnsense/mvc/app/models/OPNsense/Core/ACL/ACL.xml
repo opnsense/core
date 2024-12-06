@@ -561,8 +561,8 @@
     <page-snapshots>
         <name>System: Snapshots</name>
         <patterns>
-            <pattern>ui/snapshots/*</pattern>
-            <pattern>api/snapshots/*</pattern>
+            <pattern>ui/core/snapshots</pattern>
+            <pattern>api/core/snapshots/*</pattern>
         </patterns>
     </page-snapshots>
     <page-system-firmware-manualupdate>
