@@ -832,7 +832,6 @@ function handleSearchAndEdit(gridSelector) {
                 });
             }
 
-            history.replaceState(null, null, window.location.pathname + window.location.search);
         }
     }
 }
