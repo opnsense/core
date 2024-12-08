@@ -813,7 +813,7 @@ $.fn.replaceInputWithSelector = function (data, multiple=false) {
 /**
  * Processes URL hash to activate a tab and/or perform search or edit actions in a grid.
  * - Supports hashes with direct actions like "#edit=UUID" or "#search=UUID" without a tab.
- * - If the hash includes a tab name, $ must be used (e.g., "#peers$edit=UUID").
+ * - If the hash includes a tab name, & must be used (e.g., "#peers&edit=UUID").
  *
  * Example Usage:
  *     $('#grid-cert').on("loaded.rs.jquery.bootgrid", function () {
@@ -826,7 +826,7 @@ function handleSearchAndEdit(gridSelector) {
     const hash = window.location.hash.slice(1);
     if (!hash) return;
 
-    const splitIndex = hash.indexOf('$');
+    const splitIndex = hash.indexOf('&');
     const tabName = splitIndex !== -1 ? hash.substring(0, splitIndex) : null;
     const action = splitIndex !== -1 ? hash.substring(splitIndex + 1) : hash;
 
