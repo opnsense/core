@@ -112,7 +112,6 @@ export default class Wireguard extends BaseTableWidget {
                     connected: row['latest-handshake'] && (now - row['latest-handshake']) <= 180, // Considered online if last handshake was within 3 minutes
                     statusIcon: row['latest-handshake'] && (now - row['latest-handshake']) <= 180 ? 'fa-exchange text-success' : 'fa-exchange text-danger',
                     publicKey: publicKey,
-                    uniqueId: row.if + publicKey
                 };
             });
 
@@ -158,7 +157,7 @@ export default class Wireguard extends BaseTableWidget {
                 </div>`;
 
             // Update the HTML table with the sorted rows
-            super.updateTable('wgTunnelTable', [[header, row]], tunnel.uniqueId);
+            super.updateTable('wgTunnelTable', [[header, row]], tunnel.uuid);
         });
 
         // Activate tooltips for new dynamic elements
