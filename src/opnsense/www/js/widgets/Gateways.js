@@ -36,7 +36,7 @@ export default class Gateways extends BaseTableWidget {
         return {
             // trigger overflow-y:scroll after 650px height
             sizeToContent: 650,
-        }
+        };
     }
 
     getMarkup() {
@@ -48,12 +48,12 @@ export default class Gateways extends BaseTableWidget {
     }
 
     async _fetchGateways() {
-        const data = await this.ajaxCall('/api/routes/gateway/status');
-        if (!data.items || !data.items.length) {
+        const data = await this.ajaxCall('/api/routing/settings/searchGateway/');
+        if (!data.rows || !data.rows.length) {
             return false;
         }
 
-        return data.items;
+        return data.rows;
     }
 
     async onWidgetOptionsChanged(options) {
@@ -65,15 +65,15 @@ export default class Gateways extends BaseTableWidget {
             gateways: {
                 title: this.translations.title,
                 type: 'select_multiple',
-                options: this.cachedGateways.map((name) => {
+                options: this.cachedGateways.map(({ name, uuid }) => {
                     return {
-                        value: name,
+                        value: uuid,
                         label: name,
                     };
                 }),
-                default: this.cachedGateways
-            }
-        }
+                default: this.cachedGateways.map(({ uuid }) => uuid),
+            },
+        };
     }
 
     async onWidgetTick() {
@@ -88,18 +88,18 @@ export default class Gateways extends BaseTableWidget {
             $('#gateway-table').html(`<a href="/ui/routing/configuration">${this.translations.unconfigured}</a>`);
             return;
         }
-        this.cachedGateways = gateways.map(({ name }) => name);
+        this.cachedGateways = gateways.map(({ name, uuid }) => ({ name, uuid }));
 
         const config = await this.getWidgetConfig();
 
         let data = [];
-        gateways.forEach(({name, address, status, loss, delay, stddev, status_translated}) => {
+        gateways.forEach(({ uuid, name, gateway: address, status, loss, delay, stddev, status_translated }) => {
             if (!config.gateways.includes(name)) {
                 return;
             }
 
             let color = "text-success";
-            switch (status) {
+            switch (status.toLowerCase()) {
                 case "force_down":
                 case "down":
                     color = "text-danger";
@@ -116,17 +116,17 @@ export default class Gateways extends BaseTableWidget {
                     data-toggle="tooltip" title="${status_translated}">
                 </i>
                 &nbsp;
-                <a href="/ui/routing/configuration#search=${name}">${name}</a>
+                <a href="/ui/routing/configuration#edit=${uuid}">${name}</a>
                 &nbsp;
                 <br/>
                 <div style="margin-top: 5px; margin-bottom: 5px; font-size: 15px;">${address}</div>
-            </div>`
+            </div>`;
 
             let stats = `<div>
                 ${delay === '~' ? '' : `<div><b>${this.translations.rtt}</b>: ${delay}</div>`}
-                ${delay === '~' ? '' : `<div><b>${this.translations.rttd}</b>: ${stddev}</div>`}
-                ${delay === '~' ? '' : `<div><b>${this.translations.loss}</b>: ${loss}</div>`}
-            </div>`
+                ${stddev === '~' ? '' : `<div><b>${this.translations.rttd}</b>: ${stddev}</div>`}
+                ${loss === '~' ? '' : `<div><b>${this.translations.loss}</b>: ${loss}</div>`}
+            </div>`;
 
             data.push([gw, stats]);
         });
