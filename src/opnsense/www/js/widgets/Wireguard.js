@@ -142,7 +142,7 @@ export default class Wireguard extends BaseTableWidget {
                 </div>`;
             let row = `
                 <div>
-                    <span><a href="/ui/wireguard/general#peers$edit=${tunnel.uuid}">${tunnel.name}</a> | ${tunnel.allowed_ips}</span>
+                    <span><a href="/ui/wireguard/general#peers&edit=${tunnel.uuid}">${tunnel.name}</a> | ${tunnel.allowed_ips}</span>
                 </div>
                 <div>
                     ${tunnel.latest_handshake_fmt
