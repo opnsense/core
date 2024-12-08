@@ -116,7 +116,7 @@ export default class Gateways extends BaseTableWidget {
                     data-toggle="tooltip" title="${status_translated}">
                 </i>
                 &nbsp;
-                <a href="/ui/routing/configuration#edit=${name}">${name}</a>
+                <a href="/ui/routing/configuration#search=${name}">${name}</a>
                 &nbsp;
                 <br/>
                 <div style="margin-top: 5px; margin-bottom: 5px; font-size: 15px;">${address}</div>
