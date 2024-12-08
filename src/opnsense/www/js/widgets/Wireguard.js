@@ -61,11 +61,14 @@ export default class Wireguard extends BaseTableWidget {
             return;
         }
 
+        const clientData = await this.ajaxCall('/api/wireguard/client/get');
+        const uuidMapping = this.buildUuidMapping(clientData);
+
         if (!this.dataChanged('wg-tunnels', response.rows)) {
             return; // No changes detected, do not update the UI
         }
 
-        this.processTunnels(response.rows);
+        this.processTunnels(response.rows, uuidMapping);
     }
 
     displayError(message) {
@@ -74,23 +77,44 @@ export default class Wireguard extends BaseTableWidget {
         );
     }
 
-    processTunnels(newTunnels) {
+    buildUuidMapping(clientData) {
+        let mapping = {};
+        if (clientData && clientData.client && clientData.client.clients && clientData.client.clients.client) {
+            const clients = clientData.client.clients.client;
+            for (const [uuid, details] of Object.entries(clients)) {
+                if (details && details.pubkey) {
+                    // Map public key from client details to UUID
+                    mapping[details.pubkey] = uuid;
+                }
+            }
+        }
+        return mapping;
+    }
+
+    processTunnels(newTunnels, uuidMapping) {
         $('.wireguard-interface').tooltip('hide');
 
         let now = moment().unix(); // Current time in seconds
-        let tunnels = newTunnels.filter(row => row.type == 'peer').map(row => ({
-            ifname: row.ifname ? row.if + ' (' + row.ifname + ') ' : row.if,
-            name: row.name,
-            allowed_ips: row['allowed-ips'] || this.translations.notavailable,
-            rx: row['transfer-rx'] ? this._formatBytes(row['transfer-rx']) : this.translations.notavailable,
-            tx: row['transfer-tx'] ? this._formatBytes(row['transfer-tx']) : this.translations.notavailable,
-            latest_handshake: row['latest-handshake'], // No fallback since we handle if 0
-            latest_handshake_fmt: row['latest-handshake'] ? moment.unix(row['latest-handshake']).local().format('YYYY-MM-DD HH:mm:ss') : null,
-            connected: row['latest-handshake'] && (now - row['latest-handshake']) <= 180, // Considered online if last handshake was within 3 minutes
-            statusIcon: row['latest-handshake'] && (now - row['latest-handshake']) <= 180 ? 'fa-exchange text-success' : 'fa-exchange text-danger',
-            publicKey: row['public-key'],
-            uniqueId: row.if + row['public-key']
-        }));
+        let tunnels = newTunnels
+            .filter(row => row.type == 'peer')
+            .map(row => {
+                const publicKey = row['public-key'];
+                const uuid = uuidMapping[publicKey] || '';
+                return {
+                    uuid: uuid,
+                    ifname: row.ifname ? row.if + ' (' + row.ifname + ') ' : row.if,
+                    name: row.name,
+                    allowed_ips: row['allowed-ips'] || this.translations.notavailable,
+                    rx: row['transfer-rx'] ? this._formatBytes(row['transfer-rx']) : this.translations.notavailable,
+                    tx: row['transfer-tx'] ? this._formatBytes(row['transfer-tx']) : this.translations.notavailable,
+                    latest_handshake: row['latest-handshake'], // No fallback since we handle if 0
+                    latest_handshake_fmt: row['latest-handshake'] ? moment.unix(row['latest-handshake']).local().format('YYYY-MM-DD HH:mm:ss') : null,
+                    connected: row['latest-handshake'] && (now - row['latest-handshake']) <= 180, // Considered online if last handshake was within 3 minutes
+                    statusIcon: row['latest-handshake'] && (now - row['latest-handshake']) <= 180 ? 'fa-exchange text-success' : 'fa-exchange text-danger',
+                    publicKey: publicKey,
+                    uniqueId: row.if + publicKey
+                };
+            });
 
         tunnels.sort((a, b) => a.connected === b.connected ? 0 : a.connected ? -1 : 1);
 
@@ -118,7 +142,7 @@ export default class Wireguard extends BaseTableWidget {
                 </div>`;
             let row = `
                 <div>
-                    <span><a href="/ui/wireguard/general#peers">${tunnel.name}</a> | ${tunnel.allowed_ips}</span>
+                    <span><a href="/ui/wireguard/general#peers$edit=${tunnel.uuid}">${tunnel.name}</a> | ${tunnel.allowed_ips}</span>
                 </div>
                 <div>
                     ${tunnel.latest_handshake_fmt
