@@ -809,3 +809,53 @@ $.fn.replaceInputWithSelector = function (data, multiple=false) {
         return $.proxy(that.construct, $(this))();
     });
 }
+
+/**
+ * Processes URL hash to activate a tab and/or perform search or edit actions in a grid.
+ * - Supports hashes with direct actions like "#edit=UUID" or "#search=UUID" without a tab.
+ * - If the hash includes a tab name, & must be used (e.g., "#peers&edit=UUID").
+ *
+ * Example Usage:
+ *     $('#grid-cert').on("loaded.rs.jquery.bootgrid", function () {
+ *         handleSearchAndEdit('#grid-cert');
+ *     });
+ *
+ * @param {string} gridSelector - The selector for the grid to target (e.g., '#grid-cert').
+ */
+function handleSearchAndEdit(gridSelector) {
+    const hash = window.location.hash.slice(1);
+    if (!hash) return;
+
+    const splitIndex = hash.indexOf('&');
+    const tabName = splitIndex !== -1 ? hash.substring(0, splitIndex) : null;
+    const action = splitIndex !== -1 ? hash.substring(splitIndex + 1) : hash;
+
+    if (tabName) {
+        const tabElement = $(`a[href="#${tabName}"]`);
+        if (tabElement.length) {
+            tabElement.tab('show');
+        }
+    }
+
+    if (action) {
+        const [prefix, rawPhrase] = action.includes('=') ? action.split('=') : [null, null];
+        const decodedPhrase = rawPhrase ? decodeURIComponent(rawPhrase.trim()) : null;
+        if (!decodedPhrase) return;
+
+        const searchField = $('.search-field');
+        if (searchField.val() !== decodedPhrase) {
+            searchField.val(decodedPhrase).trigger('keyup');
+        }
+
+        if (prefix === 'edit') {
+            $(gridSelector).one("loaded.rs.jquery.bootgrid", function () {
+                const editButton = $(`${gridSelector} .command-edit[data-row-id="${decodedPhrase}"]`);
+                if (editButton.length) {
+                    editButton.trigger('click');
+                }
+            });
+        }
+    }
+
+    history.replaceState(null, null, window.location.pathname + window.location.search);
+}

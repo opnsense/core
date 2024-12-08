@@ -69,7 +69,7 @@ class ClientController extends ApiMutableModelControllerBase
 
         return $this->searchBase(
             'clients.client',
-            ["enabled", "name", "pubkey", "tunneladdress", "serveraddress", "serverport", "servers"],
+            ["uuid", "enabled", "name", "pubkey", "tunneladdress", "serveraddress", "serverport", "servers"],
             null,
             $filter_funct
         );

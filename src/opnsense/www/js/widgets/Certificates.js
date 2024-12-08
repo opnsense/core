@@ -92,7 +92,7 @@ export default class Certificates extends BaseTableWidget {
                     : `${this.translations.expiresin} ${remainingDays} ${this.translations.days}, ${validTo.toLocaleString()}`;
 
                 const descrContent = (type === 'cert' || type === 'ca')
-                    ? `<a href="/ui/trust/${type === 'cert' ? 'cert' : 'ca'}#SearchPhrase=${encodeURIComponent(item.uuid)}" class="${type}-link">${item.descr}</a>`
+                    ? `<a href="/ui/trust/${type === 'cert' ? 'cert' : 'ca'}#edit=${encodeURIComponent(item.uuid)}" class="${type}-link">${item.descr}</a>`
                     : `<b>${item.descr}</b>`;
 
                 const row = `
