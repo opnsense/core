@@ -240,13 +240,16 @@ class SystemController extends ApiControllerBase
             $tempItem['temperature'] = trim(str_replace('C', '', $value));
             $tempItem['type_translated'] = gettext('CPU');
             $tempItem['type'] = 'cpu';
-            if (strpos($tempItem['device'], 'hw.acpi') !== false) {
+            if (str_starts_with($tempItem['device'], 'hw.acpi') !== false) {
                 $tempItem['type_translated'] = gettext('Zone');
                 $tempItem['type'] = 'zone';
             /* XXX may or may not be a good idea */
-            } elseif (strpos($tempItem['device'], 'dev.amdtemp') !== false) {
+            } elseif (str_starts_with($tempItem['device'], 'dev.amdtemp') !== false) {
                 $tempItem['type_translated'] = gettext('AMD');
                 $tempItem['type'] = 'amd';
+            } else if (str_starts_with($tempItem['device'], 'dev.pchtherm') !== false) {
+                $tempItem['type'] = 'pch';
+                $tempItem['type_translated'] = gettext('Platform');
             }
             $result[] = $tempItem;
         }
