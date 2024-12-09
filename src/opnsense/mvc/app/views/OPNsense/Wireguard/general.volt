@@ -268,9 +268,6 @@
         $('#grid-peers').on("loaded.rs.jquery.bootgrid", function () {
             handleSearchAndEdit('#grid-peers');
         });
-        $(window).on('hashchange', function () {
-            handleSearchAndEdit('#grid-peers');
-        });
 
     });
 </script>

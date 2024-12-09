@@ -106,9 +106,6 @@
         $('#grid-sessions').on("loaded.rs.jquery.bootgrid", function () {
             handleSearchAndEdit('#grid-sessions');
         });
-        $(window).on('hashchange', function () {
-            handleSearchAndEdit('#grid-sessions');
-        });
 
     });
 
