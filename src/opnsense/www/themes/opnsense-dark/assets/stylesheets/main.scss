@@ -831,14 +831,3 @@ ul.jqtree-tree .jqtree-title {
 }
 
 
-.bootgrid-header .actionBar .btn-group > .btn-group .dropdown-menu .dropdown-item:hover,
-.bootgrid-footer .infoBar .btn-group > .btn-group .dropdown-menu .dropdown-item:hover,
-.bootgrid-header .actionBar .btn-group > .btn-group .dropdown-menu .dropdown-item:focus,
-.bootgrid-footer .infoBar .btn-group > .btn-group .dropdown-menu .dropdown-item:focus {
-  background-color: map-get($colors, content-background) !important;
-}
-
-.bootgrid-table td.loading,
-.bootgrid-table td.no-results {
-  background: map-get($colors, content-background) !important;
-}

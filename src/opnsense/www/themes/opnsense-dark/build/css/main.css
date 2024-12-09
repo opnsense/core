@@ -2493,7 +2493,7 @@ th {
 
 .table-hover > tbody > tr:hover > td,
 .table-hover > tbody > tr:hover > th {
-  background-color: #C1C1c1;
+  background-color: rgba(193, 193, 193, 0.4784313725);
 }
 
 table col[class*=col-] {
@@ -2519,12 +2519,12 @@ table th[class*=col-] {
 .table > tfoot > tr > th.active,
 .table > tfoot > tr.active > td,
 .table > tfoot > tr.active > th {
-  background-color: #C1C1c1;
+  background-color: rgba(193, 193, 193, 0.4784313725);
 }
 
 .table-hover > tbody > tr > td.active:hover,
 .table-hover > tbody > tr > th.active:hover, .table-hover > tbody > tr.active:hover > td, .table-hover > tbody > tr:hover > .active, .table-hover > tbody > tr.active:hover > th {
-  background-color: #b4b4b4;
+  background-color: rgba(180, 180, 180, 0.4784313725);
 }
 
 .table > thead > tr > td.success,
@@ -7374,14 +7374,4 @@ ul.jqtree-tree .jqtree-title {
   color: #fff !important;
 }
 
-.bootgrid-header .actionBar .btn-group > .btn-group .dropdown-menu .dropdown-item:hover,
-.bootgrid-footer .infoBar .btn-group > .btn-group .dropdown-menu .dropdown-item:hover,
-.bootgrid-header .actionBar .btn-group > .btn-group .dropdown-menu .dropdown-item:focus,
-.bootgrid-footer .infoBar .btn-group > .btn-group .dropdown-menu .dropdown-item:focus {
-  background-color: #1a1d27 !important;
-}
-
-.bootgrid-table td.loading,
-.bootgrid-table td.no-results {
-  background: #1a1d27 !important;
-}
+/*# sourceMappingURL=main.css.map */

@@ -135,7 +135,7 @@ $table-bg:                      transparent !default;
 //** Background color used for `.table-striped`.
 $table-bg-accent:               map-get($colors, table-bg-accent) !default;
 //** Background color used for `.table-hover`.
-$table-bg-hover:                #C1C1c1 !default;
+$table-bg-hover:                #c1c1c17a !default;
 $table-bg-active:               $table-bg-hover !default;
 
 //** Border color for table and cell borders.
