@@ -68,6 +68,17 @@ class BaseWidget {
                 (typeof(widget_config[key] === 'object') && Object.keys(widget_config[key]).length !== 0) &&
                 (typeof(widget_config[key] === 'string') && widget_config[key].length !== 0)
             ) {
+                if (typeof(widget_config[key] === 'array')) {
+                    const optionsArr = value.options.map(v => v.value);
+                    if (!(widget_config[key].some(v => optionsArr.includes(v)))) {
+                        // if there is config data, but none of the
+                        // options match, set it to the default.
+                        // currently only implemented for the array case
+                        acc[key] = value.default;
+                        return acc;
+                    }
+                }
+
                 acc[key] = widget_config[key];
             } else {
                 acc[key] = value.default;
