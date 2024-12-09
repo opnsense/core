@@ -116,7 +116,7 @@ export default class OpenVPNClients extends BaseTableWidget {
                                    title="${client.status}">
                                 </i>
                                 &nbsp;
-                                <a href="/ui/openvpn/status">${client.common_name}</a>
+                                <a href="/ui/openvpn/status#search=${client.common_name}">${client.common_name}</a>
 
                                 <span class="ovpn-client-command ovpn-command-kill"
                                   data-row-id="${client.id}"
