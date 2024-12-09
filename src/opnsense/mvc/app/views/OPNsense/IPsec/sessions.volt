@@ -116,6 +116,15 @@
         });
 
         updateServiceControlUI('ipsec');
+
+        /* for ipsec tunnels widget */
+        $('#grid-phase1').on("loaded.rs.jquery.bootgrid", function () {
+            handleSearchAndEdit('#grid-phase1');
+        });
+        $(window).on('hashchange', function () {
+            handleSearchAndEdit('#grid-phase1');
+        });
+
     });
 
 </script>

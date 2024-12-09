@@ -102,6 +102,7 @@ export default class IpsecTunnels extends BaseTableWidget {
             bytesOut: tunnel['bytes-out'] != null && tunnel['bytes-out'] !== 0 ? this._formatBytes(tunnel['bytes-out']) : this.translations.notavailable,
             connected: tunnel.connected,
             ikeid: tunnel.ikeid,
+            name: tunnel.name,
             statusIcon: tunnel.connected ? 'fa-exchange text-success' : 'fa-exchange text-danger'
         }));
 
@@ -156,7 +157,7 @@ export default class IpsecTunnels extends BaseTableWidget {
 
             let row = `
                 <div style="display: flex; justify-content: center; align-items: center;">
-                    <span><a href="/ui/ipsec/sessions">${tunnel.localAddrs} | ${tunnel.remoteAddrs}</a></span>
+                    <span><a href="/ui/ipsec/sessions#search=${tunnel.name}">${tunnel.localAddrs} | ${tunnel.remoteAddrs}</a></span>
                     ${connectDisconnectButton}
                 </div>
                 <div>
