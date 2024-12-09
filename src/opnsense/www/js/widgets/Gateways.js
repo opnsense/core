@@ -111,7 +111,9 @@ export default class Gateways extends BaseTableWidget {
                     data-toggle="tooltip" title="${status}">
                 </i>
                 &nbsp;
-                <a href="/ui/routing/configuration#edit=${uuid}">${name}</a>
+                <a href="/ui/routing/configuration#edit=${encodeURIComponent(uuid)}" target="_blank" rel="noopener noreferrer">
+                    ${name}
+                </a>
                 &nbsp;
                 <br/>
                 <div style="margin-top: 5px; margin-bottom: 5px; font-size: 15px;">${address}</div>
