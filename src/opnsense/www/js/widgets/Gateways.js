@@ -93,27 +93,22 @@ export default class Gateways extends BaseTableWidget {
         const config = await this.getWidgetConfig();
 
         let data = [];
-        gateways.forEach(({ uuid, name, gateway: address, status, loss, delay, stddev, status_translated }) => {
-            if (!config.gateways.includes(name)) {
+        gateways.forEach(({ uuid, name, gateway: address, status, loss, delay, stddev }) => {
+            if (!config.gateways.includes(uuid)) {
                 return;
             }
 
             let color = "text-success";
-            switch (status.toLowerCase()) {
-                case "force_down":
-                case "down":
-                    color = "text-danger";
-                    break;
-                case "loss":
-                case "delay":
-                case "delay+loss":
-                    color = "text-warning";
-                    break;
+
+            if (status.toLowerCase().includes("offline")) {
+                color = "text-danger";
+            } else if (status.toLowerCase() !== "online") {
+                color = "text-warning";
             }
 
             let gw = `<div>
                 <i class="fa fa-circle text-muted ${color} gateways-status-icon" style="font-size: 11px; cursor: pointer;"
-                    data-toggle="tooltip" title="${status_translated}">
+                    data-toggle="tooltip" title="${status}">
                 </i>
                 &nbsp;
                 <a href="/ui/routing/configuration#edit=${uuid}">${name}</a>
