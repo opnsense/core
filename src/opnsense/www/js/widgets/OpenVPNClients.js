@@ -146,7 +146,9 @@ export default class OpenVPNClients extends BaseTableWidget {
                     `));
                 });
             } else {
-                $clients = $(`<a href="/ui/openvpn/status">${this.translations.noclients}</a>`);
+                $clients = $(`<a href="/ui/openvpn/status#search=${encodeURIComponent(server.description)}" target="_blank" rel="noopener noreferrer">
+                    ${this.translations.noclients}
+                </a>`);
             }
 
             let clientInfo = server.clients ? `
