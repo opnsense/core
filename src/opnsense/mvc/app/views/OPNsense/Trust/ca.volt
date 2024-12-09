@@ -165,9 +165,6 @@
         $('#grid-cert').on("loaded.rs.jquery.bootgrid", function () {
             handleSearchAndEdit('#grid-cert');
         });
-        $(window).on('hashchange', function () {
-            handleSearchAndEdit('#grid-cert');
-        });
 
     });
 

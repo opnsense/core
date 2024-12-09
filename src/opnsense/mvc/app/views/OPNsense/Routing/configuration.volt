@@ -95,9 +95,6 @@
         $('#grid-gateways').on("loaded.rs.jquery.bootgrid", function () {
             handleSearchAndEdit('#grid-gateways');
         });
-        $(window).on('hashchange', function () {
-            handleSearchAndEdit('#grid-gateways');
-        });
 
     });
 </script>

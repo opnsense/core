@@ -77,9 +77,6 @@
         $('#grid-vips').on("loaded.rs.jquery.bootgrid", function () {
             handleSearchAndEdit('#grid-vips');
         });
-        $(window).on('hashchange', function () {
-            handleSearchAndEdit('#grid-vips');
-        });
 
     });
 </script>
