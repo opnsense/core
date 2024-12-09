@@ -132,7 +132,7 @@ export default class Traffic extends BaseWidget {
                 i++;
                 this.datasets[dir].push({
                     label: data.interfaces[intf].name,
-                    hidden: !config.interfaces.includes(data.interfaces[intf].name),
+                    hidden: !config.interfaces.includes(intf),
                     borderColor: colors[idx],
                     backgroundColor: this._set_alpha(colors[idx], 0.5),
                     pointHoverBackgroundColor: colors[idx],
@@ -176,7 +176,7 @@ export default class Traffic extends BaseWidget {
                         let elapsed_time = data.time - dataset.last_time;
                         if (this.configChanged) {
                             // check hidden status of dataset
-                            dataset.hidden = !config.interfaces.includes(data.interfaces[intf].name);
+                            dataset.hidden = !config.interfaces.includes(intf);
                         }
                         dataset.data.push({
                             x: new Date(data.time * 1000.0),
@@ -215,20 +215,25 @@ export default class Traffic extends BaseWidget {
     }
 
     async getWidgetOptions() {
-        const interfaces = await this.ajaxCall('/api/diagnostics/traffic/interface');
+        const data = await this.ajaxCall('/api/diagnostics/traffic/interface');
+
+        const interfaces = Object.entries(data.interfaces).map(([key, intf]) => {
+            return [key, intf.name]
+        });
+
         return {
             interfaces: {
                 title: this.translations.interfaces,
                 type: 'select_multiple',
-                options: Object.entries(interfaces.interfaces).map(([key,intf]) => {
+                options: interfaces.map(([key,intf]) => {
                     return {
-                        value: intf.name,
-                        label: intf.name,
+                        value: key,
+                        label: intf,
                     };
                 }),
-                default: Object.entries(interfaces.interfaces)
-                    .filter(([key, intf]) => key === 'lan' || key === 'wan')
-                    .map(([key, intf]) => (intf.name))
+                default: interfaces
+                    .filter(([key]) => key === 'lan' || key === 'wan')
+                    .map(([key]) => (key))
             }
         };
     }
