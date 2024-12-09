@@ -263,6 +263,12 @@
         $(window).on('hashchange', function(e) {
             $('a[href="' + window.location.hash + '"]').click()
         });
+
+        /* for wireguard widget */
+        $('#grid-peers').on("loaded.rs.jquery.bootgrid", function () {
+            handleSearchAndEdit('#grid-peers');
+        });
+
     });
 </script>
 
