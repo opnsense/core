@@ -30,7 +30,6 @@ namespace OPNsense\Firewall;
 
 use OPNsense\Firewall\Alias;
 
-
 /**
  * Class Rule basic rule parsing logic
  * @package OPNsense\Firewall
@@ -353,7 +352,7 @@ abstract class Rule
                     $rule[$target] = 'any';
                 } elseif (!empty($rule[$tag]['network'])) {
                     $rule[$target] = $rule[$tag]['network'];
-                }  elseif (!empty($rule[$tag]['address'])) {
+                } elseif (!empty($rule[$tag]['address'])) {
                     $rule[$target] = $rule[$tag]['address'];
                 }
                 $rule[$target . '_not'] = isset($rule[$tag]['not']); /* to be used in mapAddressInfo() */
