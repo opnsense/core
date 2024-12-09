@@ -71,7 +71,11 @@ export default class Carp extends BaseTableWidget {
                 return;
             }
 
-            let $intf = `<div><a href="/ui/interfaces/vip#search=${primary.interface}">${primary.interface} @ VHID ${primary.vhid}</a></div>`;
+            let $intf = `<div>
+                <a href="/ui/interfaces/vip#search=${encodeURIComponent(primary.interface)}" target="_blank" rel="noopener noreferrer">
+                    ${primary.interface} @ VHID ${primary.vhid}
+                </a>
+            </div>`;
             let vips = [
                 `<div>
                     <span class="badge badge-pill carp-status-icon"

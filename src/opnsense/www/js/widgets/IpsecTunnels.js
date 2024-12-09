@@ -157,7 +157,11 @@ export default class IpsecTunnels extends BaseTableWidget {
 
             let row = `
                 <div style="display: flex; justify-content: center; align-items: center;">
-                    <span><a href="/ui/ipsec/sessions#search=${tunnel.name}">${tunnel.localAddrs} | ${tunnel.remoteAddrs}</a></span>
+                <span>
+                    <a href="/ui/ipsec/sessions#search=${encodeURIComponent(tunnel.name)}" target="_blank" rel="noopener noreferrer">
+                        ${tunnel.localAddrs} | ${tunnel.remoteAddrs}
+                    </a>
+                </span>
                     ${connectDisconnectButton}
                 </div>
                 <div>
