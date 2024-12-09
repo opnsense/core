@@ -101,6 +101,15 @@
         });
 
         $("#type_filter_container").detach().prependTo('#grid-sessions-header > .row > .actionBar > .actions');
+
+        /* for openvpn widgets */
+        $('#grid-sessions').on("loaded.rs.jquery.bootgrid", function () {
+            handleSearchAndEdit('#grid-sessions');
+        });
+        $(window).on('hashchange', function () {
+            handleSearchAndEdit('#grid-sessions');
+        });
+
     });
 
 </script>

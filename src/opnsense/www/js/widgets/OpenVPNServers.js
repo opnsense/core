@@ -86,7 +86,7 @@ export default class OpenVPNServers extends BaseTableWidget {
                         title="${server.status || this.translations.stopped}">
                     </i>
                     &nbsp;
-                    <a href="/ui/openvpn/status">${server.description || this.translations.client}</a>
+                    <a href="/ui/openvpn/status#search=${server.description}">${server.description || this.translations.client}</a>
                     <i class="fa fa-arrows-h" style="font-size: 13px;"></i>
                     ${server.real_address || ''}
                 </div>
