@@ -842,11 +842,6 @@ function handleSearchAndEdit(gridSelector) {
         const decodedPhrase = rawPhrase ? decodeURIComponent(rawPhrase.trim()) : null;
         if (!decodedPhrase) return;
 
-        const searchField = $('.search-field');
-        if (searchField.val() !== decodedPhrase) {
-            searchField.val(decodedPhrase).trigger('keyup');
-        }
-
         if (prefix === 'edit') {
             $(gridSelector).one("loaded.rs.jquery.bootgrid", function () {
                 const editButton = $(`${gridSelector} .command-edit[data-row-id="${decodedPhrase}"]`);
@@ -854,6 +849,11 @@ function handleSearchAndEdit(gridSelector) {
                     editButton.trigger('click');
                 }
             });
+        }
+
+        const searchField = $('.search-field');
+        if (searchField.val() !== decodedPhrase) {
+            searchField.val(decodedPhrase).trigger('keyup');
         }
     }
 
