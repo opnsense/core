@@ -74,9 +74,7 @@
         $("#reconfigureAct").SimpleActionButton();
 
         /* for carp widget */
-        $('#grid-vips').on("loaded.rs.jquery.bootgrid", function () {
-            handleSearchAndEdit('#grid-vips');
-        });
+        handleSearchAndEdit('#grid-vips');
 
     });
 </script>

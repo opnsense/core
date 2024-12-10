@@ -265,9 +265,7 @@
         });
 
         /* for wireguard widget */
-        $('#grid-peers').on("loaded.rs.jquery.bootgrid", function () {
-            handleSearchAndEdit('#grid-peers');
-        });
+        handleSearchAndEdit('#grid-peers');
 
     });
 </script>
