@@ -162,9 +162,7 @@
         });
 
         /* for certificate widget */
-        $('#grid-cert').on("loaded.rs.jquery.bootgrid", function () {
-            handleSearchAndEdit('#grid-cert');
-        });
+        handleSearchAndEdit('#grid-cert');
 
     });
 

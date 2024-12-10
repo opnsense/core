@@ -117,11 +117,8 @@
 
         updateServiceControlUI('ipsec');
 
-        /* for ipsec tunnels widget */
-        $('#grid-phase1').on("loaded.rs.jquery.bootgrid", function () {
-            handleSearchAndEdit('#grid-phase1');
-        });
-
+        /* for ipsec widget */
+        handleSearchAndEdit('#grid-phase1');
     });
 
 </script>
