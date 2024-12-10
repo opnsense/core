@@ -263,6 +263,10 @@
         $(window).on('hashchange', function(e) {
             $('a[href="' + window.location.hash + '"]').click()
         });
+
+        /* for wireguard widget */
+        handleSearchAndEdit('#grid-peers');
+
     });
 </script>
 

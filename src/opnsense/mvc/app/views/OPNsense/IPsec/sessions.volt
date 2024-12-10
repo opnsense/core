@@ -116,6 +116,9 @@
         });
 
         updateServiceControlUI('ipsec');
+
+        /* for ipsec widget */
+        handleSearchAndEdit('#grid-phase1');
     });
 
 </script>
