@@ -1583,7 +1583,11 @@ EOD;
 
     if (count($dhcpdv6ifs) > 0) {
         mwexec('/usr/local/sbin/dhcpd -6 -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpdv6.conf -pf /var/run/dhcpdv6.pid ' . join(' ', $dhcpdv6ifs));
-        mwexecf('/usr/sbin/daemon -f -p %s %s', ['/var/run/dhcpleases6.pid', '/usr/local/opnsense/scripts/dhcp/prefixes.sh']);
+
+        # The -m0 parameter prevents the script keeping a pipe connection open
+        # to the daemon parent process, which can cause restart failures, due to
+        # the sleep process running for longer than the shell script.
+        mwexecf('/usr/sbin/daemon -m0 -f -p %s %s', ['/var/run/dhcpleases6.pid', '/usr/local/opnsense/scripts/dhcp/prefixes.sh']);
     }
 
     service_log("done.\n", $verbose);
