@@ -158,6 +158,8 @@
       $("#filter_container").detach().prependTo('#grid-log-header > .row > .actionBar > .actions');
       $(".filter_act").tooltip();
 
+      // populate search with url hash
+      handleSearchAndEdit('#grid-log');
 
       function switch_mode(value) {
           let select = $("#severity_filter");
