@@ -119,7 +119,6 @@
         });
 
         updateServiceControlUI('ipsec');
-
     });
 
 </script>
