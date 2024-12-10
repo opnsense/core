@@ -159,9 +159,7 @@
       $(".filter_act").tooltip();
 
       // populate search with url hash
-      $('#grid-log').on("loaded.rs.jquery.bootgrid", function () {
-          handleSearchAndEdit('#grid-log');
-      });
+      handleSearchAndEdit('#grid-log');
 
       function switch_mode(value) {
           let select = $("#severity_filter");
