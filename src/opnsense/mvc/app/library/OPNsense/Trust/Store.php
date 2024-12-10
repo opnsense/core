@@ -438,13 +438,13 @@ class Store
                 foreach (explode(',', trim($crt['extensions']['subjectAltName'])) as $altname) {
                     $parts = explode(':', trim($altname), 2);
                     $target = $altname_map[$parts[0]];
-                    if (isset($altnames[$target])) {
+                    if (!isset($altnames[$target])) {
                         $altnames[$target] = [];
                     }
                     $altnames[$target][] = $parts[1];
                 }
                 foreach ($altnames as $key => $values) {
-                    $result[$target] = implode('\n', $values);
+                    $result[$target] = implode("\n", $values);
                 }
             }
 
