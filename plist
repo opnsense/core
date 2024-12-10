@@ -2184,12 +2184,12 @@
 /usr/local/opnsense/www/themes/opnsense-dark/assets/stylesheets/config/colors.scss
 /usr/local/opnsense/www/themes/opnsense-dark/assets/stylesheets/dashboard.scss
 /usr/local/opnsense/www/themes/opnsense-dark/assets/stylesheets/dns-overview.scss
-/usr/local/opnsense/www/themes/opnsense-dark/assets/stylesheets/jquery.bootgrid.css
 /usr/local/opnsense/www/themes/opnsense-dark/assets/stylesheets/main.scss
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/bootstrap-dialog.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/bootstrap-select.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/dashboard.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/dns-overview.css
+/usr/local/opnsense/www/themes/opnsense-dark/build/css/jquery.bootgrid.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/main.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/nv.d3.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/tokenize2.css
