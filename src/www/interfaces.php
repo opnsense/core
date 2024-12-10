@@ -583,7 +583,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
                 system_routing_configure(false, array_keys($toapplylist));
                 filter_configure();
-                plugins_configure('early'); /* ensure GUI and SSH access */
+                configd_run('webgui restart 3', true);
             }
 
             clear_subsystem_dirty('interfaces');
