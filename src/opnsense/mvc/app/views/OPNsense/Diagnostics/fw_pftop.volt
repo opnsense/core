@@ -94,6 +94,15 @@
                 }
             }
         });
+
+        // search from query string - coming from Traffic view
+        const searchParams = new URLSearchParams(window.location.search);
+        const qsearch = searchParams.get('search');
+        if (qsearch) {
+            const searchElement = $('.search.form-group input.search-field');
+            searchElement.val(qsearch);
+            searchElement.trigger('keyup');
+        }
     });
 
 </script>
