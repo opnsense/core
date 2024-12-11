@@ -28,8 +28,8 @@
 
 namespace OPNsense\Base\FieldTypes;
 
-use OPNsense\Base\Validators\CsvListValidator;
-use OPNsense\Base\Validators\InclusionIn;
+use OPNsense\Base\Validators\CallbackValidator;
+
 
 /**
  * Class BaseListField
@@ -148,20 +148,21 @@ abstract class BaseListField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
-            $args = [
-                'domain' => [],
-                'message' => $this->getValidationMessage(),
-            ];
-            foreach (array_keys($this->internalOptionList) as $key) {
-                $args['domain'][] = (string)$key;
-            }
-            if ($this->internalMultiSelect) {
-                // field may contain more than one option
-                $validators[] = new CsvListValidator($args);
-            } else {
-                // single option selection
-                $validators[] = new InclusionIn($args);
-            }
+            $that = $this;
+            $validators[] = new CallbackValidator(["callback" => function ($data) use ($that) {
+                $messages = [];
+                if ($that->internalMultiSelect) {
+                    foreach (explode(",", $data) as $valItem) {
+                        if (!isset($this->internalOptionList[$valItem])) {
+                            $messages[] = $this->getValidationMessage();
+                            break;
+                        }
+                    }
+                } elseif (!isset($this->internalOptionList[$data])) {
+                    $messages[] = $this->getValidationMessage();
+                }
+                return $messages;
+            }]);
         }
         return $validators;
     }
