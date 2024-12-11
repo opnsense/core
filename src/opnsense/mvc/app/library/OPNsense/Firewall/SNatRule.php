@@ -92,10 +92,11 @@ class SNatRule extends Rule
                     $rule['disabled'] = true;
                 }
             } elseif (preg_match("/^(wan|lan|opt[0-9]+)ip$/", $rule['target'], $matches)) {
-                $rule['target'] = "({$this->interfaceMapping["{$matches[1]}"]['if']}:0)";
                 if (empty($this->interfaceMapping["{$matches[1]}"])) {
                     $this->log("SNAT / target missing");
                     $rule['disabled'] = true;
+                } else {
+                    $rule['target'] = "({$this->interfaceMapping["{$matches[1]}"]['if']}:0)";
                 }
             }
             foreach (array("sourceport", "dstport", "natport") as $fieldname) {
