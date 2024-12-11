@@ -284,7 +284,7 @@ abstract class Base
 
         $timeleft = $expected_time - ((microtime(true) - $tstart) * 1000000);
         if (!$result && $timeleft > 0) {
-            usleep($timeleft);
+            usleep((int)$timeleft);
         }
 
         return $result;
