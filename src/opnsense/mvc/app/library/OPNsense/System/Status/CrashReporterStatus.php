@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2022 Deciso B.V.
+ * Copyright (C) 2022-2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@ namespace OPNsense\System\Status;
 
 use OPNsense\System\AbstractStatus;
 use OPNsense\Core\Config;
+use OPNsense\System\SystemStatusCode;
 
 class CrashReporterStatus extends AbstractStatus
 {
@@ -38,6 +39,8 @@ class CrashReporterStatus extends AbstractStatus
         $src_logs = array_merge(glob('/var/crash/textdump*'), glob('/var/crash/vmcore*'));
         $php_log = '/tmp/PHP_errors.log';
 
+        $this->internalPriority = 10;
+        $this->internalTitle = gettext('Crash Reporter');
         $this->internalLogLocation = '/crash_reporter.php';
 
         $src_errors = count($src_logs) > 0;
@@ -61,10 +64,10 @@ class CrashReporterStatus extends AbstractStatus
         if ($php_errors || $src_errors) {
             $this->internalMessage = gettext('An issue was detected and can be reviewed using the firmware crash reporter.');
             if ($php_errors) {
-                $this->internalStatus = Config::getInstance()->object()->system->deployment != 'development' ? static::STATUS_ERROR : static::STATUS_NOTICE;
+                $this->internalStatus = Config::getInstance()->object()->system->deployment != 'development' ? SystemStatusCode::ERROR : SystemStatusCode::NOTICE;
             }
-            if ($src_errors && $this->internalStatus != static::STATUS_ERROR) {
-                $this->internalStatus = static::STATUS_WARNING;
+            if ($src_errors && $this->internalStatus != SystemStatusCode::ERROR) {
+                $this->internalStatus = SystemStatusCode::WARNING;
             }
         }
     }

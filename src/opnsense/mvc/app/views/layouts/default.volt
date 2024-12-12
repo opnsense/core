@@ -96,22 +96,9 @@
                 initFormAdvancedUI();
                 addMultiSelectClearUI();
 
-                // Create status dialog instance
-                let dialog = new BootstrapDialog({
-                     title: '{{ lang._('System Status')}}',
-                     buttons: [{
-                         label: '{{ lang._('Close') }}',
-                         action: function(dialogRef) {
-                             dialogRef.close();
-                         }
-                     }],
-                });
-
+                // artificial delay for UX reasons
                 setTimeout(function () {
-                    updateSystemStatus().then((data) => {
-                        let status = parseStatus(data);
-                        registerStatusDelegate(dialog, status);
-                    });
+                  updateSystemStatus();
                 }, 500);
 
                 // Register collapsible table headers
@@ -279,6 +266,12 @@
             </ul>
           </div>
         </header>
+
+        <!-- notification banner -->
+        <div class="container-fluid">
+            <div id="notification-banner" class="alert alert-info" style="display: none; margin: 10px 0 10px 0; padding: 10px; text-align: center"></div>
+        </div>
+
         <!-- page content -->
         <section class="page-content-main">
           <div class="container-fluid">

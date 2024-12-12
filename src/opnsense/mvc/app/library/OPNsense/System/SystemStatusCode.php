@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2022-2024 Deciso B.V.
+ * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,33 +26,20 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\System\Status;
+namespace OPNsense\System;
 
-use OPNsense\System\AbstractStatus;
-use OPNsense\System\SystemStatusCode;
-
-class FirewallStatus extends AbstractStatus
+enum SystemStatusCode:int
 {
-    protected $rules_error = '/tmp/rules.error';
+    case ERROR = -1;
+    case WARNING = 0;
+    case NOTICE = 1;
+    case OK = 2;
 
-    public function __construct()
-    {
-        $this->internalPriority = 20;
-        $this->internalTitle = gettext('Firewall');
-        $this->internalLogLocation = '/ui/diagnostics/log/core/firewall';
-
-        if (file_exists($this->rules_error)) {
-            $this->internalMessage = file_get_contents($this->rules_error); /* XXX */
-            $this->internalStatus = SystemStatusCode::ERROR;
-            $info = stat($this->rules_error);
-            if (!empty($info['mtime'])) {
-                $this->internalTimestamp = $info['mtime'];
-            }
+    public static function toValueNameArray(): array {
+        $result = [];
+        foreach (self::cases() as $case) {
+            $result[$case->value] = $case->name;
         }
-    }
-
-    public function dismissStatus()
-    {
-        @unlink($this->rules_error);
+        return $result;
     }
 }

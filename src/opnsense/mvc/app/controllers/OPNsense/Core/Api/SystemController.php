@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2019-2022 Deciso B.V.
+ *    Copyright (C) 2019-2024 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -34,6 +34,8 @@ use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\ACL;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\System\SystemStatus;
+use OPNsense\System\SystemStatusCode;
 
 /**
  * Class SystemController
@@ -68,29 +70,45 @@ class SystemController extends ApiControllerBase
         $backend = new Backend();
         $statuses = json_decode(trim($backend->configdRun('system status')), true);
         if ($statuses) {
-            $order = [-1 => 'Error', 0 => 'Warning', 1 => 'Notice', 2 => 'OK'];
-
+            $order = SystemStatusCode::toValueNameArray();
             $acl = new ACL();
+
             foreach ($statuses as $subsystem => $status) {
                 $statuses[$subsystem]['status'] = $order[$status['statusCode']];
                 if (!empty($status['logLocation'])) {
                     if (!$acl->isPageAccessible($this->getUserName(), $status['logLocation'])) {
                         unset($statuses[$subsystem]);
+                        continue;
                     }
-                } else {
-                    /* XXX exiting loop causing global endpoint failure */
-                    return $response;
                 }
             }
 
-            /* Sort on the highest error level after the ACL check */
+            /* Sort on the highest notification (non-persistent) error level after the ACL check */
             $statusCodes = array_map(function ($v) {
-                return $v['statusCode'];
+                return $v['persistent'] ? SystemStatusCode::OK : $v['statusCode'];
             }, array_values($statuses));
             sort($statusCodes);
-            $statuses['System'] = [
-                'status' => $order[$statusCodes[0] ?? 2]
+
+            $response['metadata'] = [
+                /* 'system' represents the status of the top notification after sorting */
+                'system' => [
+                    'status' => $order[$statusCodes[0] ?? 2],
+                    'message' => gettext('No pending messages'),
+                    'title' => gettext('System'),
+                ],
+                'translations' => [
+                    'dialogTitle' => gettext('System Status'),
+                    'dialogCloseButton' => gettext('Close')
+                ]
             ];
+
+            // sort on status code and priority where priority is the tie breaker
+            uasort($statuses, function ($a, $b) {
+                if ($a['statusCode'] === $b['statusCode']) {
+                    return $a['priority'] <=> $b['priority'];
+                }
+                return $a['statusCode'] <=> $b['statusCode'];
+            });
 
             foreach ($statuses as &$status) {
                 if (!empty($status['timestamp'])) {
@@ -150,7 +168,8 @@ class SystemController extends ApiControllerBase
                 }
             }
 
-            $response = $statuses;
+            $response['subsystems'] = $statuses;
+            unset($response['status']);
         }
 
         return $response;

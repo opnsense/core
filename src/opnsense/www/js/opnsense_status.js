@@ -1,5 +1,5 @@
 /**
- *    Copyright (C) 2022 Deciso B.V.
+ *    Copyright (C) 2022-2024 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -25,53 +25,63 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  */
 
-function updateStatusDialog(dialog, status, subjectRef = null) {
-    let $ret = $('<div><div><a data-dismiss="modal" class="btn btn-default" style="width:100%;text-align:left;" href="#"><h4><span class="fa fa-circle text-muted"></span>&nbsp;System</h4><p>No pending messages.</p></a></div></div>');
+function updateStatusDialog(dialog, status) {
+    let $ret = $(`
+        <div>
+            <a data-dismiss="modal" class="btn btn-default" style="width:100%; text-align: left;" href="#">
+                <h4>
+                    <span class="fa fa-circle text-muted">
+                    </span>
+                    &nbsp;
+                    System
+                </h4>
+                <p>No pending messages.</p>
+            </a>
+        </div>
+    `);
+
     let $message = $(
         '<div>' +
         '<div id="opn-status-list"></div>' +
         '</div>'
     );
 
-    for (let subject in status.data) {
-        if (subject === 'System') {
-            continue;
-        }
-        let statusObject = status.data[subject];
-        if (status.data[subject].status == "OK") {
-            continue;
-        }
-
+    for (let [shortname, subject] of Object.entries(status)) {
         $message.find('a').last().addClass('__mb');
 
-        let formattedSubject = subject.replace(/([A-Z])/g, ' $1').trim();
-        if (status.data[subject].age != undefined) {
-            formattedSubject += '&nbsp;<small>(' + status.data[subject].age + ')</small>';
+        let formattedSubject = subject.title;
+        if (subject.age != undefined) {
+            formattedSubject += '&nbsp;<small>(' + subject.age + ')</small>';
         }
-        let listItem = '<a class="btn btn-default" style="width:100%;text-align:left;" href="' + statusObject.logLocation + '">' +
-            '<h4><span class="' + statusObject.icon + '"></span>&nbsp;' + formattedSubject +
-            '<button id="dismiss-'+ subject + '" class="close"><span aria-hidden="true">&times;</span></button></h4></div>' +
-            '<p style="white-space: pre-wrap;">' + statusObject.message + '</p></a>';
 
-        let referral = statusObject.logLocation;
+        let ref = subject.logLocation != null ? `href="${subject.logLocation}"` : '';
+        let $closeBtn = `
+            <button id="dismiss-${shortname}" class="close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        `;
+        let $listItem = $(`
+            <a class="btn btn-default" style="width:100%; text-align: left;" ${ref}>
+                <h4>
+                    <span class="${subject.icon}"></span>
+                    &nbsp;
+                    ${formattedSubject}
+                    ${subject.persistent ? '' : $closeBtn}
+                </h4>
+                <p style="white-space: pre-wrap;">${subject.message}</p>
+            </a>
+        `)
 
-        $message.find('#opn-status-list').append(listItem);
+        $message.find('#opn-status-list').append($listItem);
 
-        $message.find('#dismiss-' + subject).on('click', function (e) {
+        $message.find('#dismiss-' + shortname).on('click', function (e) {
             e.preventDefault();
             $.ajax('/api/core/system/dismissStatus', {
                 type: 'post',
-                data: {'subject': subject},
+                data: {'subject': shortname},
                 dialogRef: dialog,
-                subjectRef: subject,
                 success: function() {
-                    updateSystemStatus().then((data) => {
-                        let newStatus = parseStatus(data);
-                        let $newMessage = updateStatusDialog(this.dialogRef, newStatus, this.subjectRef);
-                        this.dialogRef.setMessage($newMessage);
-                        $('#system_status').attr("class", newStatus.data['System'].icon);
-                        registerStatusDelegate(this.dialogRef, newStatus);
-                    });
+                    updateSystemStatus(this.dialogRef);
                 }
             });
         });
@@ -81,49 +91,107 @@ function updateStatusDialog(dialog, status, subjectRef = null) {
     return $ret;
 }
 
-function parseStatus(data) {
-    let status = {};
-    let severity = BootstrapDialog.TYPE_PRIMARY;
-    $.each(data, function(subject, statusObject) {
-        switch (statusObject.status) {
-            case "Error":
-                statusObject.icon = 'fa fa-circle text-danger'
-                if (subject != 'System') break;
-                severity = BootstrapDialog.TYPE_DANGER;
-                break;
-            case "Warning":
-                statusObject.icon = 'fa fa-circle text-warning';
-                if (subject != 'System') break;
-                severity = BootstrapDialog.TYPE_WARNING;
-                break;
-            case "Notice":
-                statusObject.icon = 'fa fa-circle text-info';
-                if (subject != 'System') break;
-                severity = BootstrapDialog.TYPE_INFO;
-                break;
-            default:
-                statusObject.icon = 'fa fa-circle text-muted';
-                if (subject != 'System') break;
-                break;
-        }
-        $('#system_status').removeClass().addClass(statusObject.icon);
-    });
-    status.severity = severity;
-    status.data = data;
-
-    return status;
+function parseStatusIcon(subject) {
+    switch (subject.status) {
+        case "ERROR":
+            subject.icon = 'fa fa-circle text-danger';
+            subject.banner = 'alert-danger';
+            subject.severity = BootstrapDialog.TYPE_DANGER;
+            break;
+        case "WARNING":
+            subject.icon = 'fa fa-circle text-warning';
+            subject.banner ='alert-warning';
+            subject.severity = BootstrapDialog.TYPE_WARNING;
+            break;
+        case "NOTICE":
+            subject.icon = 'fa fa-circle text-info';
+            subject.banner = 'alert-info';
+            subject.severity = BootstrapDialog.TYPE_INFO;
+            break;
+        default:
+            subject.icon = 'fa fa-circle text-muted';
+            subject.banner = 'alert-info';
+            subject.severity = BootstrapDialog.TYPE_PRIMARY;
+            break;
+    }
 }
 
-function registerStatusDelegate(dialog, status) {
-    $("#system_status").click(function() {
-        dialog.setMessage(function(dialogRef) {
-            let $message = updateStatusDialog(dialogRef, status);
-            return $message;
+function fetchSystemStatus() {
+    return new Promise((resolve, reject) => {
+        ajaxGet('/api/core/system/status', {}, function (data) {
+            resolve(data);
         });
-        dialog.open();
     });
 }
 
-function updateSystemStatus() {
-    return $.ajax('/api/core/system/status', { type: 'get', dataType: 'json' });
+function parseStatus(data) {
+    let system = data.metadata.system;
+
+    // handle initial page load status icon
+    parseStatusIcon(system);
+    $('#system_status').removeClass().addClass(system.icon);
+
+    let notifications = {};
+    let bannerMessages = {};
+    for (let [shortname, subject] of Object.entries(data.subsystems)) {
+        parseStatusIcon(subject);
+
+        if (subject.status == "OK")
+            continue;
+
+        if (subject.persistent) {
+            bannerMessages[shortname] = subject;
+        } else {
+            notifications[shortname] = subject;
+        }
+    }
+
+    return {
+        'banners': bannerMessages,
+        'notifications': notifications
+    };
+}
+
+function updateSystemStatus(dialog = null) {
+    fetchSystemStatus().then((data) => {
+        let status = parseStatus(data); // will also update status icon
+
+        if (dialog != null) {
+            dialog.setMessage(function(dialogRef) {
+                return updateStatusDialog(dialogRef, status.notifications);
+            })
+        }
+
+        if (!$.isEmptyObject(status.banners)) {
+            let banner = Object.values(status.banners)[0];
+            $('#notification-banner').addClass(banner.banner).show().html(banner.message);
+        }
+    });
+
+    $("#system_status").click(function() {
+        fetchSystemStatus().then((data) => {
+            let translations = data.metadata.translations;
+            let status = parseStatus(data);
+
+            dialog = new BootstrapDialog({
+                title: translations.dialogTitle,
+                buttons: [{
+                    id: 'close',
+                    label: translations.dialogCloseButton,
+                    action: function(dialogRef) {
+                        dialogRef.close();
+                    }
+                }],
+            });
+
+            dialog.setMessage(function(dialogRef) {
+                // intentionally do banners first, as these should always show on top
+                // in both cases normal backend sorting applies
+                return updateStatusDialog(dialogRef, {...status.banners, ...status.notifications});
+            })
+
+            dialog.open();
+        });
+    });
+
 }
