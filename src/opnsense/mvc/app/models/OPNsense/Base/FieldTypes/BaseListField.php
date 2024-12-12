@@ -30,7 +30,6 @@ namespace OPNsense\Base\FieldTypes;
 
 use OPNsense\Base\Validators\CallbackValidator;
 
-
 /**
  * Class BaseListField
  * @package OPNsense\Base\FieldTypes
