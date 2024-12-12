@@ -570,6 +570,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/LiveMediaStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/SystemBootingStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/SystemStatus.php
+/usr/local/opnsense/mvc/app/library/OPNsense/System/SystemStatusCode.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Trust/Store.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/FieldTypes/ApiKeyField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/FieldTypes/ExpiresField.php
