@@ -36,7 +36,7 @@ export default class Gateways extends BaseTableWidget {
         return {
             // trigger overflow-y:scroll after 650px height
             sizeToContent: 650,
-        }
+        };
     }
 
     getMarkup() {
@@ -48,12 +48,12 @@ export default class Gateways extends BaseTableWidget {
     }
 
     async _fetchGateways() {
-        const data = await this.ajaxCall('/api/routes/gateway/status');
-        if (!data.items || !data.items.length) {
+        const data = await this.ajaxCall('/api/routing/settings/searchGateway/');
+        if (!data.rows || !data.rows.length) {
             return false;
         }
 
-        return data.items;
+        return data.rows;
     }
 
     async onWidgetOptionsChanged(options) {
@@ -61,19 +61,21 @@ export default class Gateways extends BaseTableWidget {
     }
 
     async getWidgetOptions() {
+        const gateways = await this._fetchGateways();
+
         return {
             gateways: {
                 title: this.translations.title,
                 type: 'select_multiple',
-                options: this.cachedGateways.map((name) => {
+                options: gateways.map(({ name, uuid }) => {
                     return {
-                        value: name,
+                        value: uuid,
                         label: name,
                     };
                 }),
-                default: this.cachedGateways
-            }
-        }
+                default: gateways.map(({ uuid }) => uuid),
+            },
+        };
     }
 
     async onWidgetTick() {
@@ -88,45 +90,42 @@ export default class Gateways extends BaseTableWidget {
             $('#gateway-table').html(`<a href="/ui/routing/configuration">${this.translations.unconfigured}</a>`);
             return;
         }
-        this.cachedGateways = gateways.map(({ name }) => name);
+        this.cachedGateways = gateways.map(({ name, uuid }) => ({ name, uuid }));
 
         const config = await this.getWidgetConfig();
 
         let data = [];
-        gateways.forEach(({name, address, status, loss, delay, stddev, status_translated}) => {
-            if (!config.gateways.includes(name)) {
+        gateways.forEach(({ uuid, name, gateway: address, status, loss, delay, stddev }) => {
+            if (!config.gateways.includes(uuid)) {
                 return;
             }
 
             let color = "text-success";
-            switch (status) {
-                case "force_down":
-                case "down":
-                    color = "text-danger";
-                    break;
-                case "loss":
-                case "delay":
-                case "delay+loss":
-                    color = "text-warning";
-                    break;
+
+            if (status.toLowerCase().includes("offline")) {
+                color = "text-danger";
+            } else if (status.toLowerCase() !== "online") {
+                color = "text-warning";
             }
 
             let gw = `<div>
                 <i class="fa fa-circle text-muted ${color} gateways-status-icon" style="font-size: 11px; cursor: pointer;"
-                    data-toggle="tooltip" title="${status_translated}">
+                    data-toggle="tooltip" title="${status}">
                 </i>
                 &nbsp;
-                <a href="/ui/routing/configuration">${name}</a>
+                <a href="/ui/routing/configuration#edit=${encodeURIComponent(uuid)}" target="_blank" rel="noopener noreferrer">
+                    ${name}
+                </a>
                 &nbsp;
                 <br/>
                 <div style="margin-top: 5px; margin-bottom: 5px; font-size: 15px;">${address}</div>
-            </div>`
+            </div>`;
 
             let stats = `<div>
                 ${delay === '~' ? '' : `<div><b>${this.translations.rtt}</b>: ${delay}</div>`}
-                ${delay === '~' ? '' : `<div><b>${this.translations.rttd}</b>: ${stddev}</div>`}
-                ${delay === '~' ? '' : `<div><b>${this.translations.loss}</b>: ${loss}</div>`}
-            </div>`
+                ${stddev === '~' ? '' : `<div><b>${this.translations.rttd}</b>: ${stddev}</div>`}
+                ${loss === '~' ? '' : `<div><b>${this.translations.loss}</b>: ${loss}</div>`}
+            </div>`;
 
             data.push([gw, stats]);
         });

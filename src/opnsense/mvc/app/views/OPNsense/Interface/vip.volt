@@ -72,6 +72,10 @@
         });
 
         $("#reconfigureAct").SimpleActionButton();
+
+        /* for carp widget */
+        handleSearchAndEdit('#grid-vips');
+
     });
 </script>
 <div class="tab-content content-box">

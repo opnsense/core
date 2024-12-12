@@ -90,6 +90,10 @@
         });
 
         $("#reconfigureAct").SimpleActionButton();
+
+        /* for gateway widget */
+        handleSearchAndEdit('#grid-gateways');
+
     });
 </script>
 
