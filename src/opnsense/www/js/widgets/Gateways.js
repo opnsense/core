@@ -61,17 +61,19 @@ export default class Gateways extends BaseTableWidget {
     }
 
     async getWidgetOptions() {
+        const gateways = await this._fetchGateways();
+
         return {
             gateways: {
                 title: this.translations.title,
                 type: 'select_multiple',
-                options: this.cachedGateways.map(({ name, uuid }) => {
+                options: gateways.map(({ name, uuid }) => {
                     return {
                         value: uuid,
                         label: name,
                     };
                 }),
-                default: this.cachedGateways.map(({ uuid }) => uuid),
+                default: gateways.map(({ uuid }) => uuid),
             },
         };
     }
