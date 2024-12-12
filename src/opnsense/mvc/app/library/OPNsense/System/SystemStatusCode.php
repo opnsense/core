@@ -28,14 +28,15 @@
 
 namespace OPNsense\System;
 
-enum SystemStatusCode:int
+enum SystemStatusCode: int
 {
     case ERROR = -1;
     case WARNING = 0;
     case NOTICE = 1;
     case OK = 2;
 
-    public static function toValueNameArray(): array {
+    public static function toValueNameArray(): array
+    {
         $result = [];
         foreach (self::cases() as $case) {
             $result[$case->value] = $case->name;
