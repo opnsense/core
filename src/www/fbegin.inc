@@ -199,7 +199,3 @@ $aclObj = new \OPNsense\Core\ACL();
       </div>
     </header>
 
-    <!-- notification banner -->
-    <div class="container-fluid">
-        <div id="notification-banner" class="alert alert-info" style="display: none; margin: 10px 0 10px 0; padding: 10px; text-align: center"></div>
-    </div>

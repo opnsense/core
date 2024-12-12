@@ -164,7 +164,15 @@ function updateSystemStatus(dialog = null) {
 
         if (!$.isEmptyObject(status.banners)) {
             let banner = Object.values(status.banners)[0];
-            $('#notification-banner').addClass(banner.banner).show().html(banner.message);
+            $('.page-content-main > .container-fluid > .row').prepend($(`
+                <div class="container-fluid">
+                    <div id="notification-banner" class="alert alert-info ${banner.banner}"
+                        style="padding: 10px; text-align: center;">
+                        ${banner.message}
+                    </div>
+                </div>
+            `));
+
         }
     });
 
