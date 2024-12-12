@@ -818,50 +818,36 @@ $.fn.replaceInputWithSelector = function (data, multiple=false) {
  * @param {string} gridSelector - The selector for the grid to target (e.g., '#grid-cert').
  */
 function handleSearchAndEdit(gridSelector) {
-    let gridLoaded = false;
+    const hash = window.location.hash.slice(1);
+    if (!hash) return;
 
-    const processHash = () => {
-        if (!gridLoaded) return;
+    const splitIndex = hash.indexOf('&');
+    const tabName = splitIndex !== -1 ? hash.substring(0, splitIndex) : null;
+    const action = splitIndex !== -1 ? hash.substring(splitIndex + 1) : hash;
 
-        const hash = window.location.hash.slice(1);
-        if (!hash) return;
+    if (tabName) {
+        const tabElement = $(`a[href="#${tabName}"]`);
+        if (tabElement.length) {
+            tabElement.tab('show');
+        }
+    }
 
-        const splitIndex = hash.indexOf('&');
-        const tabName = splitIndex !== -1 ? hash.substring(0, splitIndex) : null;
-        const action = splitIndex !== -1 ? hash.substring(splitIndex + 1) : hash;
+    if (action) {
+        const [prefix, rawPhrase] = action.includes('=') ? action.split('=') : [null, null];
+        const decodedPhrase = rawPhrase ? decodeURIComponent(rawPhrase.trim()) : null;
+        if (!decodedPhrase) return;
 
-        if (tabName) {
-            const tabElement = $(`a[href="#${tabName}"]`);
-            if (tabElement.length) {
-                tabElement.tab('show');
-            }
+        if (prefix === 'edit') {
+            let btn = $(`<button data-row-id="${decodedPhrase}"></button>`);
+            btn.on('click', $(gridSelector).data("_instance").command_edit);
+            btn.trigger('click');
         }
 
-        if (action) {
-            const [prefix, rawPhrase] = action.includes('=') ? action.split('=') : [null, null];
-            const decodedPhrase = rawPhrase ? decodeURIComponent(rawPhrase.trim()) : null;
-            if (!decodedPhrase) return;
-
-            if (prefix === 'edit') {
-                const editButton = $(`${gridSelector} .command-edit[data-row-id="${decodedPhrase}"]`);
-                if (editButton.length) {
-                    editButton.trigger('click');
-                }
-            }
-
-            const searchField = $('.search-field');
-            if (searchField.val() !== decodedPhrase) {
-                searchField.val(decodedPhrase).trigger('keyup');
-            }
+        // if edit was requested, this will execute in the background
+        const searchField = $('.search-field');
+        if (searchField.val() !== decodedPhrase) {
+            // XXX it would be nice if the bootgrid search delay could be avoided here
+            searchField.val(decodedPhrase).trigger('keyup');
         }
-
-        history.replaceState(null, null, window.location.pathname + window.location.search);
-    };
-
-    $(gridSelector).one("loaded.rs.jquery.bootgrid", function () {
-        gridLoaded = true;
-        processHash();
-
-        $(window).on('hashchange', processHash);
-    });
+    }
 }

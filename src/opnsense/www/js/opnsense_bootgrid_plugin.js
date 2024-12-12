@@ -609,6 +609,9 @@ $.fn.UIBootgrid = function (params) {
                 });
             });
 
+            // expose grid instance for external events
+            $(this).data('_instance', grid);
+
             return grid;
         }
     }));
