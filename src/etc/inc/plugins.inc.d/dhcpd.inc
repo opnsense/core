@@ -251,7 +251,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
         }
 
         foreach (config_read_array('virtualip', 'vip') as $vip) {
-            if ($vip['interface'] != $dhcpv6if || !is_ipaddrv6($vip['subnet']) || $vip['subnet_bits'] == '128') {
+            if ($vip['interface'] != $dhcpv6if || !is_ipaddrv6($vip['subnet'])) {
                 continue;
             }
 
@@ -263,7 +263,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
                 continue;
             }
 
-            if (!empty($vip['nobind'])) {
+            if ($vip['subnet_bits'] == '128' || !empty($vip['nobind'])) {
                 continue;
             }
 
