@@ -36,11 +36,24 @@
                 selection: true,
                 formatters:{
                     commands: function (column, row) {
-                        if (row['connected']) {
-                            return  '<button type="button" class="btn btn-xs btn-default command-disconnect" data-toggle="tooltip" title="{{ lang._('Disconnect') }}" data-row-id="' + row.name + '"><span class="fa fa-remove fa-fw"></span></button>';
-                        } else {
-                            return  '<button type="button" class="btn btn-xs btn-default command-connect" data-toggle="tooltip" title="{{ lang._('Connect') }}" data-row-id="' + row.name + '"><span class="fa fa-play fa-fw"></span></button>';
-                        }
+                        let connect = "{{ lang._('Connect') }}";
+                        let disconnect = "{{ lang._('Disconnect') }}";
+                        return $(`
+                        <div>
+                            <button type="button" class="btn btn-xs btn-default command-${row['connected'] ? 'disconnect' : 'connect'}"
+                                data-toggle="tooltip"
+                                title="${row['connected'] ? disconnect: connect}"
+                                data-row-id=${row.name}>
+                                <span class="fa ${row['connected'] ? 'fa-remove' : 'fa-play'} fa-fw"></span>
+                            </button>
+
+                            <a href="/ui/diagnostics/log/core/ipsec#search=${encodeURIComponent(row.name)}"
+                                class="btn btn-xs btn-default" data-toggle="tooltip"
+                                title="{{ lang._('Search Logs') }}" target="_blank" rel="noopener noreferrer" style="margin-left: 2px;">
+                                <span class="fa fa-search fa-fw"></span>
+                            </a>
+                        </div>
+                        `).prop('outerHTML');
                     },
                     status: function (column, row) {
                         if (row['connected']) {
@@ -141,7 +154,7 @@
               <th data-column-id="bytes-out" data-type="numeric"  data-formatter="bytes">{{ lang._('Bytes out') }}</th>
               <th data-column-id="local-class"  data-visible="false" data-type="string">{{ lang._('Local Auth') }}</th>
               <th data-column-id="remote-class"  data-visible="false" data-type="string">{{ lang._('Remote Auth') }}</th>
-              <th data-column-id="commands" data-width="4em" data-formatter="commands" data-sortable="false"></th>
+              <th data-column-id="commands" data-width="6em" data-formatter="commands" data-sortable="false"></th>
           </tr>
         </thead>
         <tbody>
