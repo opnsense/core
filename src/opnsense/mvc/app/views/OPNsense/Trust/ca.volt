@@ -34,6 +34,9 @@
             add:'/api/trust/ca/add/',
             set:'/api/trust/ca/set/',
             del:'/api/trust/ca/del/',
+            options: {
+                initialSearchPhrase: getUrlHash('search')
+            },
             commands: {
                 raw_dump: {
                     method: function(event){
@@ -160,10 +163,6 @@
                 }
             }
         });
-
-        /* for certificate widget */
-        handleSearchAndEdit('#grid-cert');
-
     });
 
 </script>

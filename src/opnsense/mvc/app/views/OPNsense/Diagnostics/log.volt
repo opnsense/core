@@ -49,6 +49,7 @@
 
       let grid_log = $("#grid-log").UIBootgrid({
           options:{
+              initialSearchPhrase: getUrlHash('search'),
               sorting:false,
               rowSelect: false,
               selection: false,
@@ -157,9 +158,6 @@
       // move filter into action header
       $("#filter_container").detach().prependTo('#grid-log-header > .row > .actionBar > .actions');
       $(".filter_act").tooltip();
-
-      // populate search with url hash
-      handleSearchAndEdit('#grid-log');
 
       function switch_mode(value) {
           let select = $("#severity_filter");

@@ -41,12 +41,13 @@
                 del: '/api/wireguard/client/delClient/',
                 toggle: '/api/wireguard/client/toggleClient/',
                 options:{
-                requestHandler: function(request){
-                    if ( $('#server_filter').val().length > 0) {
-                        request['servers'] = $('#server_filter').val();
+                    initialSearchPhrase: getUrlHash('search'),
+                    requestHandler: function(request){
+                        if ( $('#server_filter').val().length > 0) {
+                            request['servers'] = $('#server_filter').val();
+                        }
+                        return request;
                     }
-                    return request;
-                }
             }
         });
         grid_peers.on("loaded.rs.jquery.bootgrid", function (e){

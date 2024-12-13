@@ -35,6 +35,8 @@
             set:'/api/trust/cert/set/',
             del:'/api/trust/cert/del/',
             options:{
+                triggerEditFor: getUrlHash('edit'),
+                initialSearchPhrase: getUrlHash('search'),
                 requestHandler: function(request){
                     if ( $('#ca_filter').val().length > 0) {
                         request['carefs'] = $('#ca_filter').val();
@@ -280,10 +282,6 @@
                 $(this).val($("#user_filter").val());
             }
         });
-
-        /* for certificate widget */
-        handleSearchAndEdit('#grid-cert');
-
     });
 
 </script>

@@ -129,6 +129,7 @@ $.fn.UIBootgrid = function (params) {
             multiSelect: true,
             rowCount:[7,14,20,50,100,-1],
             url: params['search'],
+            initialSearchPhrase: "",
             ajaxSettings: {
                 contentType: 'application/json;charset=utf-8',
                 dataType: "json",
@@ -141,6 +142,7 @@ $.fn.UIBootgrid = function (params) {
             },
             datakey: 'uuid',
             useRequestHandlerOnGet: false,
+            triggerEditFor: '',
             formatters: {
                 commands: function (column, row) {
                     let html = [];
@@ -242,6 +244,10 @@ $.fn.UIBootgrid = function (params) {
             this_grid.requestHandler = null;
         }
         this_grid.onBeforeRenderDialog = gridopt.onBeforeRenderDialog;
+
+        if (gridopt.triggerEditFor) {
+            this_grid.command_edit(null, gridopt.triggerEditFor);
+        }
 
         // construct a new grid
         return this_grid.bootgrid(gridopt).on("loaded.rs.jquery.bootgrid", function (e) {
@@ -389,11 +395,13 @@ $.fn.UIBootgrid = function (params) {
     /**
      * edit event
      */
-    this.command_edit = function(event) {
-        event.stopPropagation();
+    this.command_edit = function(event, uuid = null) {
+        if (uuid === null)
+            event.stopPropagation();
         let editDlg = this_grid.attr('data-editDialog');
         if (editDlg !== undefined) {
-            let uuid = $(this).data("row-id") !== undefined ? $(this).data("row-id") : '';
+            if (uuid === null)
+                uuid = $(this).data("row-id") !== undefined ? $(this).data("row-id") : '';
             let saveDlg = this_grid.init_save_btn();
             this_grid.show_edit_dialog(event, params['get'] + uuid).done(function(){
                 saveDlg.unbind('click').click(function(){
@@ -608,9 +616,6 @@ $.fn.UIBootgrid = function (params) {
                     }
                 });
             });
-
-            // expose grid instance for external events
-            $(this).data('_instance', grid);
 
             return grid;
         }

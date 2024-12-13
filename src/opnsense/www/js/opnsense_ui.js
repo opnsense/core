@@ -811,13 +811,11 @@ $.fn.replaceInputWithSelector = function (data, multiple=false) {
 }
 
 /**
- * Processes URL hash to activate a tab and/or perform search or edit actions in a grid.
- * - Supports hashes with direct actions like "#edit=UUID" or "#search=UUID" without a tab.
+ * Parse URL hash to activate a tab and/or fetch search or edit phrase for use in a grid.
+ * - Supports hashes with direct actions: "#edit=UUID" or "#search=UUID" without a tab.
  * - If the hash includes a tab name, & must be used (e.g., "#peers&edit=UUID").
- *
- * @param {string} gridSelector - The selector for the grid to target (e.g., '#grid-cert').
  */
-function handleSearchAndEdit(gridSelector) {
+function getUrlHash(key=null) {
     const hash = window.location.hash.slice(1);
     if (!hash) return;
 
@@ -834,20 +832,10 @@ function handleSearchAndEdit(gridSelector) {
 
     if (action) {
         const [prefix, rawPhrase] = action.includes('=') ? action.split('=') : [null, null];
-        const decodedPhrase = rawPhrase ? decodeURIComponent(rawPhrase.trim()) : null;
-        if (!decodedPhrase) return;
+        const decodedPhrase = rawPhrase ? decodeURIComponent(rawPhrase.trim()) : '';
 
-        if (prefix === 'edit') {
-            let btn = $(`<button data-row-id="${decodedPhrase}"></button>`);
-            btn.on('click', $(gridSelector).data("_instance").command_edit);
-            btn.trigger('click');
-        }
-
-        // if edit was requested, this will execute in the background
-        const searchField = $('.search-field');
-        if (searchField.val() !== decodedPhrase) {
-            // XXX it would be nice if the bootgrid search delay could be avoided here
-            searchField.val(decodedPhrase).trigger('keyup');
-        }
+        if ((prefix === key) || (key === null)) return decodedPhrase;
     }
+
+    return '';
 }

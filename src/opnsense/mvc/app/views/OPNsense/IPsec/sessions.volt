@@ -31,6 +31,7 @@
         let grid_phase1 = $("#grid-phase1").UIBootgrid({
             search:'/api/ipsec/sessions/search_phase1',
             options:{
+                initialSearchPhrase: getUrlHash('search'),
                 multiSelect: false,
                 rowSelect: true,
                 selection: true,
@@ -129,9 +130,6 @@
         });
 
         updateServiceControlUI('ipsec');
-
-        /* for ipsec widget */
-        handleSearchAndEdit('#grid-phase1');
     });
 
 </script>
