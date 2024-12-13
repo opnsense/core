@@ -178,7 +178,7 @@
         <filename>Gateways.js</filename>
         <link>/ui/routing/configuration</link>
         <endpoints>
-            <endpoint>/api/routes/gateway/status</endpoint>
+            <endpoint>/api/routing/settings/searchGateway</endpoint>
         </endpoints>
         <translations>
             <title>Gateways</title>
