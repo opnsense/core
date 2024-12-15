@@ -29,6 +29,56 @@
 require_once("IXR/IXR_Library.php");
 
 /**
+ * Simple wrapper around xmlrpc sync using configuration data.
+ * In the long run we should likely switch to RESTful implementations as xmlrpc is rather old and less common
+ * nowadays.
+ *
+ * @param string $method method to call
+ * @param array $params parameters to pass
+ * @param bool $debug debug mode
+ * @return array
+ */
+function xmlrpc_execute($method, $params = [], $debug = false)
+{
+    global $config;
+    $synchronizeto = null;
+    $hasync = $config['hasync'];
+    if (is_ipaddrv6($hasync['synchronizetoip'])) {
+        $hasync['synchronizetoip'] = "[{$hasync['synchronizetoip']}]";
+    }
+
+    if (!empty($hasync['synchronizetoip'])) {
+        // determine target url
+        if (substr($hasync['synchronizetoip'],0, 4) == 'http') {
+            // URL provided
+            if (substr($hasync['synchronizetoip'], strlen($hasync['synchronizetoip'])-1, 1) == '/') {
+                $synchronizeto = $hasync['synchronizetoip']."xmlrpc.php";
+            } else {
+                $synchronizeto = $hasync['synchronizetoip']."/xmlrpc.php";
+            }
+        } elseif (!empty($config['system']['webgui']['protocol'])) {
+            // no url provided, assume the backup is using the same settings as our box.
+            $port = $config['system']['webgui']['port'];
+            if (!empty($port)) {
+                $synchronizeto =  $config['system']['webgui']['protocol'] . '://'.$hasync['synchronizetoip'].':'.$port."/xmlrpc.php";
+            } else {
+                $synchronizeto =  $config['system']['webgui']['protocol'] . '://'.$hasync['synchronizetoip']."/xmlrpc.php" ;
+            }
+        }
+
+        $username = empty($hasync['username']) ? "root" : $hasync['username'];
+        $client = new SimpleXMLRPC_Client($synchronizeto,240);
+        $client->debug=$debug;
+        $client->setCredentials($username, $hasync['password']);
+        if ($client->query($method, $params)) {
+            return $client->getResponse();
+        }
+    }
+    return false;
+}
+
+
+/**
  * Simple XMLRPC client based on the components from IXR
  * mainly used for backward compatibility of ha sync feature
  * Class SimpleXMLRPC_Client
@@ -63,6 +113,13 @@ class SimpleXMLRPC_Client
      * @var int
      */
     private $timeout = 60;
+
+
+    /**
+     * request url
+     * @var string
+     */
+    private $url = '';
 
     /**
      * (last) response message
