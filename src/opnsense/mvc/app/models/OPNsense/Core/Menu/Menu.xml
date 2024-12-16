@@ -51,7 +51,7 @@
         </Gateways>
         <HighAvailability VisibleName="High Availability" cssClass="fa fa-refresh fa-fw">
             <Settings order="100" url="/ui/core/hasync"/>
-            <Status order="200" url="/status_habackup.php"/>
+            <Status order="200" url="/ui/core/hasync_status"/>
         </HighAvailability>
         <Routes cssClass="fa fa-map-signs fa-fw">
             <Configuration order="10" url="/ui/routes" />

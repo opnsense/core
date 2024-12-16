@@ -54,7 +54,13 @@ class HasyncStatusController extends ApiControllerBase
     {
         $data = json_decode((new Backend())->configdRun('system ha services_cached'), true);
         $records = !empty($data['response']) ? $data['response'] : [];
-        return $this->searchRecordsetBase($records);
+        return $this->searchRecordsetBase($records, null, null, function(&$record){
+            $record['uid'] = $record['name'] ?? '';
+            if (!empty($record['id'])) {
+                $record['uid'] .= '_' . $record['id'];
+            }
+            return true;
+        });
     }
 
     public function stopAction($service = null, $service_id = null)
