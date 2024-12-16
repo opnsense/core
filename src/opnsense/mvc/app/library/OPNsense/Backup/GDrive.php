@@ -195,7 +195,7 @@ class Gdrive extends Base implements IBackupProvider
                         (string)$config->system->remotebackup->GDriveEmail,
                         (string)$config->system->remotebackup->GDriveP12key
                     );
-                } catch (Exception $e) {
+                } catch (\Error | \Exception $e) {
                     syslog(LOG_ERR, "error connecting to Google Drive");
                     return array();
                 }
@@ -207,7 +207,7 @@ class Gdrive extends Base implements IBackupProvider
                 // read filelist ({prefix}*.xml)
                 try {
                     $files = $client->listFiles((string)$config->system->remotebackup->GDriveFolderID);
-                } catch (Exception $e) {
+                } catch (\Error | \Exception $e) {
                     syslog(LOG_ERR, "error while fetching filelist from Google Drive");
                     return array();
                 }
@@ -240,7 +240,7 @@ class Gdrive extends Base implements IBackupProvider
                         if ($bck_data == $confdata) {
                             $target_filename = null;
                         }
-                    } catch (Exception $e) {
+                    } catch (\Error | \Exception $e) {
                         syslog(LOG_ERR, "unable to download " .
                             $configfiles[array_keys($configfiles)[0]]->description . " from Google Drive (" . $e . ")");
                     }
@@ -253,7 +253,7 @@ class Gdrive extends Base implements IBackupProvider
                             $target_filename,
                             $confdata_enc
                         );
-                    } catch (Exception $e) {
+                    } catch (\Error | \Exception $e) {
                         syslog(LOG_ERR, "unable to upload " . $target_filename . " to Google Drive (" . $e . ")");
                         return array();
                     }
