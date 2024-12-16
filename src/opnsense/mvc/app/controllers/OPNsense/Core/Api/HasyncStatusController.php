@@ -57,7 +57,7 @@ class HasyncStatusController extends ApiControllerBase
         return $this->searchRecordsetBase($records);
     }
 
-    public function stopAction($service=null, $service_id=null)
+    public function stopAction($service = null, $service_id = null)
     {
         if ($this->request->isPost()) {
             return $this->remoteServiceAction('stop', $service, $service_id);
@@ -65,7 +65,7 @@ class HasyncStatusController extends ApiControllerBase
         return ["status" => "failed"];
     }
 
-    public function startAction($service=null, $service_id=null)
+    public function startAction($service = null, $service_id = null)
     {
         if ($this->request->isPost()) {
             return $this->remoteServiceAction('start', $service, $service_id);
@@ -73,7 +73,7 @@ class HasyncStatusController extends ApiControllerBase
         return ["status" => "failed"];
     }
 
-    public function restartAction($service=null, $service_id=null)
+    public function restartAction($service = null, $service_id = null)
     {
         if ($this->request->isPost()) {
             return $this->remoteServiceAction('restart', $service, $service_id);
@@ -81,7 +81,7 @@ class HasyncStatusController extends ApiControllerBase
         return ["status" => "failed"];
     }
 
-    public function restartAllAction($service=null, $service_id=null)
+    public function restartAllAction($service = null, $service_id = null)
     {
         if (true || $this->request->isPost()) {
             $backend = new Backend();

@@ -49,26 +49,26 @@ function xmlrpc_execute($method, $params = [], $debug = false)
 
     if (!empty($hasync['synchronizetoip'])) {
         // determine target url
-        if (substr($hasync['synchronizetoip'],0, 4) == 'http') {
+        if (substr($hasync['synchronizetoip'], 0, 4) == 'http') {
             // URL provided
-            if (substr($hasync['synchronizetoip'], strlen($hasync['synchronizetoip'])-1, 1) == '/') {
-                $synchronizeto = $hasync['synchronizetoip']."xmlrpc.php";
+            if (substr($hasync['synchronizetoip'], strlen($hasync['synchronizetoip']) - 1, 1) == '/') {
+                $synchronizeto = $hasync['synchronizetoip'] . "xmlrpc.php";
             } else {
-                $synchronizeto = $hasync['synchronizetoip']."/xmlrpc.php";
+                $synchronizeto = $hasync['synchronizetoip'] . "/xmlrpc.php";
             }
         } elseif (!empty($config['system']['webgui']['protocol'])) {
             // no url provided, assume the backup is using the same settings as our box.
             $port = $config['system']['webgui']['port'];
             if (!empty($port)) {
-                $synchronizeto =  $config['system']['webgui']['protocol'] . '://'.$hasync['synchronizetoip'].':'.$port."/xmlrpc.php";
+                $synchronizeto =  $config['system']['webgui']['protocol'] . '://' . $hasync['synchronizetoip'] . ':' . $port . "/xmlrpc.php";
             } else {
-                $synchronizeto =  $config['system']['webgui']['protocol'] . '://'.$hasync['synchronizetoip']."/xmlrpc.php" ;
+                $synchronizeto =  $config['system']['webgui']['protocol'] . '://' . $hasync['synchronizetoip'] . "/xmlrpc.php";
             }
         }
 
         $username = empty($hasync['username']) ? "root" : $hasync['username'];
-        $client = new SimpleXMLRPC_Client($synchronizeto,240);
-        $client->debug=$debug;
+        $client = new SimpleXMLRPC_Client($synchronizeto, 240);
+        $client->debug = $debug;
         $client->setCredentials($username, $hasync['password']);
         if ($client->query($method, $params)) {
             return $client->getResponse();

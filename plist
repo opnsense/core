@@ -244,6 +244,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/DashboardController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/FirmwareController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/HasyncController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/HasyncStatusController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/MenuController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/SnapshotsController.php
