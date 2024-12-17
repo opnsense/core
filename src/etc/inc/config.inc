@@ -211,7 +211,6 @@ function write_config($desc = '', $backup = true)
         null;
     }
 
-
     $cnf = OPNsense\Core\Config::getInstance();
     $cnf->fromArray($config);
     $revision_info = make_config_revision_entry($desc);
