@@ -98,7 +98,7 @@
 
                 // artificial delay for UX reasons
                 setTimeout(function () {
-                  updateSystemStatus();
+                    updateSystemStatus();
                 }, 500);
 
                 // Register collapsible table headers
