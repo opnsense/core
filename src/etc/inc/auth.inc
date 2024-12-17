@@ -403,7 +403,6 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     mwexecf('/usr/sbin/pw %s %s', array($lock_account, $user_name), true);
 }
 
-
 function local_user_set_password(&$user, $password = null)
 {
     $local = config_read_array('system', 'webgui');
