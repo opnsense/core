@@ -500,7 +500,6 @@ function local_group_set($group)
     mwexecf('/usr/sbin/pw %s %s -g %s -M %s', array($group_op, $group_name, $group_gid, $group_members));
 }
 
-
 /**
  * @param $name string name of the authentication system configured on the authentication server page or 'Local Database' for local authentication
  * @return array|bool false if the authentication server was not found, otherwise the configuration of the authentication server
