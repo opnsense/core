@@ -37,7 +37,7 @@ set -e
 # will tell us itself.  With this we shield the firmware shell run from
 # the complexity of GUI/API updates so that bugs are most likely avoided.
 
-LAUNCHER="/usr/local/opnsense/scripts/firmware/launcher.sh"
+LAUNCHER="/usr/local/opnsense/scripts/firmware/launcher.sh -S"
 RELEASE=$(opnsense-update -vR)
 PROMPT="y/N"
 CHANGELOG=

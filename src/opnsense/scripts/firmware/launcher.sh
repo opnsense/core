@@ -31,10 +31,13 @@ DO_SCRIPT=
 DO_UNLOCKED=
 DO_VERBOSE=
 
-while getopts r:s:uV OPT; do
+while getopts r:Ss:uV OPT; do
 	case ${OPT} in
 	r)
 		DO_RANDOM="-r $(jot -r 1 1 ${OPTARG})"
+		;;
+	S)
+		DO_SCRIPT="-S"
 		;;
 	s)
 		DO_SCRIPT="-s ${OPTARG}"
@@ -57,7 +60,7 @@ if [ -n "${DO_VERBOSE}" ]; then
 	set -x
 fi
 
-if [ -n "${DO_SCRIPT}" ]; then
+if [ -n "${DO_SCRIPT}" -a "${DO_SCRIPT}" != "-S" ]; then
 	COMMAND=${DO_SCRIPT#"-s "}
 else
 	FOUND=
@@ -93,6 +96,7 @@ else
 	env LOCKFILE=/dev/null ${COMMAND} "${@}"
 fi
 
+# important: capture actual command return value here
 RET=${?}
 
 # backend expects us to avoid returning errors
