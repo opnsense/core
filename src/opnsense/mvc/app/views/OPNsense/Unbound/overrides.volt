@@ -181,6 +181,10 @@ $( document ).ready(function() {
     #infosection {
         margin: 1em;
     }
+    #infosection_aliases {
+        margin: 1em;
+        padding: 0;
+    }
 </style>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
@@ -245,6 +249,9 @@ $( document ).ready(function() {
         </tr>
         </tfoot>
     </table>
+    <div id="infosection_aliases" class="tab-content col-xs-12 __mb">
+        {{ lang._('Select a host override entry from the host overrides table to show its aliases.') }}
+    </div>
 </div>
 <!-- reconfigure -->
 <div class="tab-content content-box col-xs-12 __mb">
