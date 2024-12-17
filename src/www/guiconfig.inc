@@ -302,7 +302,7 @@ function get_std_save_message($plain = false)
     /* we need this wrapped in gettext at least once */
     if (!empty($config['hasync']['synchronizetoip'])) {
         if (!$plain) {
-            $lnk_start = '<a href="status_habackup.php">';
+            $lnk_start = '<a href="/ui/core/hasync_status">';
             $lnk_end = '</a>';
         }
         return sprintf(
