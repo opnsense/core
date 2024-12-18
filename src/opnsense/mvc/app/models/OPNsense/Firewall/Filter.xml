@@ -97,6 +97,14 @@
                     <ConfigdPopulateAct>interface gateways list -g</ConfigdPopulateAct>
                     <ValidationMessage>Specify a valid gateway from the list matching the networks ip protocol.</ValidationMessage>
                 </gateway>
+                <replyto  type="JsonKeyValueStoreField">
+                    <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
+                    <ValidationMessage>Specify a valid gateway from the list matching the networks ip protocol.</ValidationMessage>
+                </replyto>
+                <disablereplyto type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </disablereplyto>
                 <log type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>

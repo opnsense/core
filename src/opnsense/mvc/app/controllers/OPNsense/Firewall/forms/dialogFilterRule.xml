@@ -1,6 +1,29 @@
 <form>
     <field>
         <type>header</type>
+        <label>Organisation</label>
+    </field>
+    <field>
+        <id>rule.sequence</id>
+        <label>Sequence</label>
+        <type>text</type>
+        <help>The order in which rules are being considered.</help>
+    </field>
+    <field>
+        <id>rule.categories</id>
+        <label>Categories</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <help>For grouping purposes you may select multiple groups here to organize items.</help>
+    </field>
+    <field>
+        <id>rule.description</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>You may enter a description here for your reference (not parsed).</help>
+    </field>
+    <field>
+        <type>header</type>
         <label>General Settings</label>
     </field>
     <field>
@@ -8,11 +31,6 @@
         <label>enabled</label>
         <type>checkbox</type>
         <help>Enable this rule</help>
-    </field>
-    <field>
-        <id>rule.sequence</id>
-        <label>Sequence</label>
-        <type>text</type>
     </field>
     <field>
         <id>rule.action</id>
@@ -92,6 +110,16 @@
         <help>Destination port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
     </field>
     <field>
+        <id>rule.log</id>
+        <label>Log</label>
+        <type>checkbox</type>
+        <help>Log packets that are handled by this rule</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Source routing</label>
+    </field>
+    <field>
         <id>rule.gateway</id>
         <label>Gateway</label>
         <type>dropdown</type>
@@ -100,21 +128,19 @@
         </help>
     </field>
     <field>
-        <id>rule.log</id>
-        <label>Log</label>
+        <id>rule.disablereplyto</id>
+        <label>Disable reply-to</label>
         <type>checkbox</type>
-        <help>Log packets that are handled by this rule</help>
+        <style>disable_replyto</style>
+        <help>Explicit disable reply-to for this rule</help>
     </field>
     <field>
-        <id>rule.categories</id>
-        <label>Categories</label>
-        <type>select_multiple</type>
-        <style>tokenize</style>
-        <help>For grouping purposes you may select multiple groups here to organize items.</help>
-    </field>
-    <field>
-        <id>rule.description</id>
-        <label>Description</label>
-        <type>text</type>
+        <id>rule.replyto</id>
+        <label>Reply-to</label>
+        <type>dropdown</type>
+        <style>enable_replyto selectpicker</style>
+        <help>
+            Determines how packets route back in the opposite direction (replies), when set to default, packets on WAN type interfaces reply to their connected gateway on the interface (unless globally disabled). A specific gateway may be chosen as well here. This setting is only relevant in the context of a state, for stateless rules there is no defined opposite direction.
+        </help>
     </field>
 </form>

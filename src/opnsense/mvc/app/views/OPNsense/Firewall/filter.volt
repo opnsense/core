@@ -138,6 +138,15 @@
                 });
             }
         });
+
+        $(".disable_replyto").change(function(){
+            let reply_to_tr = $(".enable_replyto").closest('tr');
+            if ($(this).is(':checked')) {
+                reply_to_tr.hide();
+            } else {
+                reply_to_tr.show();
+            }
+        });
     });
 </script>
 
