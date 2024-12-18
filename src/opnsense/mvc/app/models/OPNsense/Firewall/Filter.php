@@ -107,6 +107,15 @@ class Filter extends BaseModel
                             ));
                         }
                     }
+
+                    if (!empty((string)$rule->interfacenot) && (
+                        count(explode(',', $rule->interface)) != 1 || empty((string)$rule->interface)
+                    )) {
+                        $messages->appendMessage(new Message(
+                            gettext("Inverting interfaces is only allowed for single targets to avoid mis-interpretations"),
+                            $rule->interfacenot->__reference
+                        ));
+                    }
                 }
             }
         }

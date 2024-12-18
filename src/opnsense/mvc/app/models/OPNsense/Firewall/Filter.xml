@@ -30,6 +30,10 @@
                     <Default>1</Default>
                     <Required>Y</Required>
                 </quick>
+                <interfacenot type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </interfacenot>
                 <interface type="InterfaceField">
                     <Multiple>Y</Multiple>
                     <Filters>

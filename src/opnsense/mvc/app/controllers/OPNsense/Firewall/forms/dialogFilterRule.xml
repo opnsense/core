@@ -50,6 +50,12 @@
         </help>
     </field>
     <field>
+        <id>rule.interfacenot</id>
+        <label>Interface / Invert</label>
+        <type>checkbox</type>
+        <help>Use all but selected interfaces</help>
+    </field>
+    <field>
         <id>rule.interface</id>
         <label>Interface</label>
         <type>select_multiple</type>
