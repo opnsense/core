@@ -51,6 +51,7 @@
                     <OptionValues>
                         <inet>IPv4</inet>
                         <inet6>IPv6</inet6>
+                        <inet46>IPv4+IPv6</inet46>
                     </OptionValues>
                 </ipprotocol>
                 <protocol type="ProtocolField">
