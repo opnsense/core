@@ -57,6 +57,9 @@
                 <protocol type="ProtocolField">
                     <Required>Y</Required>
                     <Default>any</Default>
+                    <AddOptions>
+                        <opt1 value='TCP/UDP'>TCP/UDP</opt1>
+                    </AddOptions>
                 </protocol>
                 <!-- XXX: should map internally to  'source' => array('network' => $source_net, "not" => true|false) -->
                 <source_net type="NetworkAliasField">
@@ -148,6 +151,9 @@
                 <protocol type="ProtocolField">
                     <Required>Y</Required>
                     <Default>any</Default>
+                    <AddOptions>
+                        <opt1 value='TCP/UDP'>TCP/UDP</opt1>
+                    </AddOptions>
                 </protocol>
                 <source_net type="NetworkAliasField">
                     <Default>any</Default>
