@@ -165,7 +165,10 @@ class Router
      */
     private function parsePath(string $path, array $defaults): array
     {
-        $pathElements = array_values(array_filter(explode("/", $path)));
+        $empty_filter = function($value) {
+            return $value !== '';
+        };
+        $pathElements = array_values(array_filter(explode("/", $path), $empty_filter));
 
         $result = [
             "namespace" => null,
