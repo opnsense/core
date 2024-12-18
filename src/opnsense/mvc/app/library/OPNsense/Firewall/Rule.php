@@ -42,7 +42,7 @@ abstract class Rule
     protected static $aliasMap = [];
 
     /* ease the reuse of parsing for pf keywords by using class constants */
-    const PARSE_PROTO = 'parseReplaceSimple,tcp/udp:{tcp udp}|TCP/UDP:{tcp udp}|a/n:"a/n",proto ';
+    const PARSE_PROTO = 'parseReplaceSimple,tcp/udp:{tcp udp}|a/n:"a/n",proto ';
 
     protected function loadAliasMap()
     {
@@ -292,6 +292,10 @@ abstract class Rule
         foreach ($meta_rules as $meta_rule) {
             $rulecpy = array_merge($rule, $meta_rule);
             $this->mapAddressInfo($rulecpy);
+            if (!empty($rulecpy['protocol'])) {
+                /* lowercase to avoid mismatching lookups */
+                $rulecpy['protocol'] = strtolower($rulecpy['protocol']);
+            }
             $interface = $rulecpy['interface'];
             if ($rulecpy['ipprotocol'] == 'inet6' && !empty($this->interfaceMapping[$interface]['IPv6_override'])) {
                 $rulecpy['interface'] = $this->interfaceMapping[$interface]['IPv6_override'];

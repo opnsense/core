@@ -1,5 +1,9 @@
 <form>
     <field>
+        <type>header</type>
+        <label>General Settings</label>
+    </field>
+    <field>
         <id>rule.enabled</id>
         <label>enabled</label>
         <type>checkbox</type>
