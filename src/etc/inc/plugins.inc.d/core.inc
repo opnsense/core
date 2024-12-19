@@ -291,7 +291,6 @@ function core_cron()
     $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d syslog archive', '1');
     $jobs[]['autocron'] = array('/usr/local/sbin/expiretable -v -t 3600 sshlockout', '2');
     $jobs[]['autocron'] = array('/usr/local/sbin/expiretable -v -t 3600 virusprot', '3');
-    $jobs[]['autocron'] = array('/usr/local/etc/rc.expireaccounts', '4');
     $jobs[]['autocron'] = array('/usr/local/sbin/ping_hosts.sh', '*/4');
     $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d firmware changelog cron', '0', '22');
 
