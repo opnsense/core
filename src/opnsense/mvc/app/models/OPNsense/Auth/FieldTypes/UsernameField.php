@@ -31,7 +31,6 @@ namespace OPNsense\Auth\FieldTypes;
 use OPNsense\Base\FieldTypes\BaseField;
 use OPNsense\Base\Validators\CallbackValidator;
 
-
 class UsernameField extends BaseField
 {
     protected $internalIsContainer = false;
@@ -48,7 +47,6 @@ class UsernameField extends BaseField
             /* user without shell account, different constraints */
             return gettext('A username must contain alfanumeric characters or a valid email address');
         }
-
     }
 
     /**

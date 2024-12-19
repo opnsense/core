@@ -582,6 +582,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/FieldTypes/PrivField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/FieldTypes/StoreB64Field.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/FieldTypes/UidField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Auth/FieldTypes/UsernameField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/Group.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/Group.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/Priv.php
