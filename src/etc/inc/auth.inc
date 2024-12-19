@@ -243,6 +243,10 @@ function local_sync_accounts()
         $config_map[$section] = [];
         if (is_array($config['system'][$section])) {
             foreach ($config['system'][$section] as $item) {
+                if ($section == 'user' && empty($item['shell'])) {
+                    /* no shell, no local user */
+                    continue;
+                }
                 $this_id = $section == 'user' ? $item['uid'] : $item['gid'];
                 $config_map[$section][(string)$this_id] = $item['name'];
             }
@@ -266,7 +270,7 @@ function local_sync_accounts()
         }
     }
 
-    /* sync all local users */
+    /* sync all local users with a shell account configured (filtered in local_user_set()) */
     if (is_array($config['system']['user'])) {
         foreach ($config['system']['user'] as $user) {
             $userattrs = !empty($current_data['user'][$user['uid']]) ? $current_data['user'][$user['uid']] : [];
@@ -288,6 +292,9 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
 
     if (empty($user['password'])) {
         auth_log("Cannot set user {$user['name']}: password is missing");
+        return;
+    } elseif (empty($user['shell'])) {
+        /* no shell, no local user */
         return;
     }
 

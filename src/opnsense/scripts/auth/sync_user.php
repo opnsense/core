@@ -41,6 +41,10 @@ if (isset($opts['h']) || empty($opts['u'])) {
     $username = $opts['u'];
     $a_user = &config_read_array('system', 'user');
 
+    /**
+     * XXX: If performance will be challenging at some point in time, we can cut some of the local user handling,
+     *      currently we need this to remove the shell account when dropped on update.
+     */
     $localusers = [];
     exec("/usr/sbin/pw usershow -a", $data, $ret);
     if (!$ret) {
@@ -57,7 +61,10 @@ if (isset($opts['h']) || empty($opts['u'])) {
     $update_user = null;
     $userdb = [];
     foreach ($a_user as $userent) {
-        $userdb[] = $userent['name'];
+        if (!empty($userent['shell'])) {
+            /* only users with a shell account are allowed to have a local entry */
+            $userdb[] = $userent['name'];
+        }
         if ($userent['name'] == $username) {
             $update_user = $userent;
         }
@@ -71,8 +78,14 @@ if (isset($opts['h']) || empty($opts['u'])) {
     }
     /* add or update when found */
     if ($update_user) {
+        /* without a shell configured, local_user_set() will just return */
         local_user_set($update_user, false, $localusers[$username] ?? []);
-        /* signal backend that the user has changed. (update groups) */
+        /**
+         * Signal backend that the user has changed.
+         * When the user has shell access, this will update the local group database.
+         * In theory there could be other handlers registered to the same event, which is the reason
+         * we will signal it here
+         */
         mwexecf('/usr/local/sbin/pluginctl -c user_changed ' . $username);
         echo json_encode(["status" => "updated"]);
     } else {

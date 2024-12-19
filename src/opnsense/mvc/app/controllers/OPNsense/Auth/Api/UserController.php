@@ -155,7 +155,7 @@ class UserController extends ApiMutableModelControllerBase
         if ($result['result'] != 'failed') {
             $data = $this->request->getPost(static::$internalModelName);
             if (!empty($data['name'])) {
-                (new Backend())->configdRun('auth sync user ' . $data['name']);
+                (new Backend())->configdRun('auth sync user', [$data['name']]);
             }
         }
         return $result;
@@ -167,7 +167,7 @@ class UserController extends ApiMutableModelControllerBase
         if ($result['result'] != 'failed') {
             $data = $this->request->getPost(static::$internalModelName);
             if (!empty($data['name'])) {
-                (new Backend())->configdRun('auth sync user ' . $data['name']);
+                (new Backend())->configdRun('auth sync user', [$data['name']]);
             }
         }
         return $result;
@@ -196,7 +196,7 @@ class UserController extends ApiMutableModelControllerBase
         }
         $result = $this->delBase('user', $uuid);
         if ($username != null) {
-            (new Backend())->configdRun('auth sync user ' . $username);
+            (new Backend())->configdRun('auth sync user', [$username]);
         }
         return $result;
     }
