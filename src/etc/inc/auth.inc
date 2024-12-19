@@ -300,7 +300,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
 
     @mkdir('/home', 0755);
 
-    $user_pass = $user['password'];
+    $user_pass = '*'; /* integrated authentication stores passwords, set local to unreachable */
     $user_name = $user['name'];
     $user_uid = $user['uid'];
     $comment = str_replace(array(':', '!', '@'), ' ', $user['descr']);
@@ -326,7 +326,6 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
          * authentication is off.
          */
         $lock_account = 'unlock';
-        $user_pass = '*';
     }
 
     if ($user_uid == 0) {
@@ -344,11 +343,6 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     $user_gid = $user_group == 'wheel' ? 0 : 65534;
 
     if (!$force_password) {
-        /* passwords only when integrated auth is disabled or forced */
-        if (empty($config['system']['disableintegratedauth'])) {
-            $user_pass = '*';
-        }
-
         /* read from pw db if not provided (batch mode) */
         if ($userattrs === null) {
             $fd = popen("/usr/sbin/pw usershow -n {$user_name}", 'r');
@@ -365,8 +359,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
         $user_op = 'useradd -m -k /usr/share/skel -o';
     } elseif (
         $userattrs[0] == $user_name &&
-        /* match only if disabled or enabled in order to detect a change */
-        ($userattrs[1] == '*' && $user_pass == '*' || $userattrs[1] != '*' && $user_pass != '*') &&
+        $userattrs[1] == '*' &&
         $userattrs[2] == $user_uid &&
         $userattrs[3] == $user_gid &&
         $userattrs[7] == $comment &&
