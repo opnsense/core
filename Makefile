@@ -417,6 +417,8 @@ LINTBIN?=	${.CURDIR}/contrib/parallel-lint/parallel-lint
 lint-php:
 	@${LINTBIN} src
 
+glint: sweep style-fix plist-fix lint
+
 lint: plist-check lint-shell lint-xml lint-model lint-acl lint-exec lint-php
 
 sweep:
