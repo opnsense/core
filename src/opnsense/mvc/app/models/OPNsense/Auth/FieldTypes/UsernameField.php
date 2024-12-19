@@ -42,10 +42,10 @@ class UsernameField extends BaseField
     {
         if (!empty((string)$this->getParentNode()->shell)) {
             /* shell user */
-            return gettext('A username must contain a maximum of 32 alfanumeric characters');
+            return gettext('A username must contain a maximum of 32 alphanumeric characters.');
         } else {
             /* user without shell account, different constraints */
-            return gettext('A username must contain alfanumeric characters or a valid email address');
+            return gettext('A username must contain alphanumeric characters or a valid email address.');
         }
     }
 

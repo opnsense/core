@@ -6,7 +6,7 @@
             <gid type=".\GidField"/>
             <name type="TextField">
                 <Mask>/^[a-zA-Z0-9\.\-_]{1,32}$/</Mask>
-                <ValidationMessage>A groupname must contain a maximum of 32 alfanumeric characters</ValidationMessage>
+                <ValidationMessage>A groupname must contain a maximum of 32 alphanumeric characters.</ValidationMessage>
                 <Required>Y</Required>
                 <Constraints>
                     <check001>
