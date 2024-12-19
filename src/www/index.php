@@ -60,7 +60,7 @@ if (isset($config['trigger_initial_wizard']) || isset($_GET['wizard_done'])):
       <div class="container-fluid col-xs-12 col-sm-10 col-md-9">
         <div class="row">
           <section class="col-xs-12">
-            <div class="content-box wizard" style="padding: 20px;">
+            <div class="content-box" style="padding: 20px;">
               <div class="table-responsive">
   <?php if (get_themed_filename('/images/default-logo.svg', true)): ?>
                 <img src="<?= cache_safe(get_themed_filename('/images/default-logo.svg')) ?>" border="0" alt="logo" style="max-width:380px;" />

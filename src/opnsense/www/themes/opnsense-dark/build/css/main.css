@@ -6761,10 +6761,6 @@ body {
   padding-top: 15px;
 }
 
-div.content-box.wizard div img {
-  filter: invert(25%);
-}
-
 .tab-content {
   border-top: 0px;
   padding: 0px 0;
