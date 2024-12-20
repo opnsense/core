@@ -49,6 +49,7 @@
                 <Multiple>Y</Multiple>
             </group_memberships>
             <descr type="DescriptionField"/>
+            <dashboard type="TextField"/>
         </user>
     </items>
 </model>
