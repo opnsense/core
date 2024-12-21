@@ -338,6 +338,14 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
         $user_shell = $is_admin && !empty($user['shell']) ? $user['shell'] : '/usr/sbin/nologin';
         $user_group = $is_admin ? 'wheel' : 'nobody';
         $user_home = "/home/{$user_name}";
+
+        if (!file_exists($user_shell)) {
+            // If the shell doesn't exist and it's one we know how to install, then install it.
+            if ($user_shell === '/usr/local/bin/bash') {
+                $backend = new OPNsense\Core\Backend();
+                $backend->configdpRun("firmware install", array('bash'), true);
+            }
+	}
     }
 
     // XXX: primary group id can only be wheel or nobody, otherwise we should map the correct numbers for comparison
