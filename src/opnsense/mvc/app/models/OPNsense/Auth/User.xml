@@ -30,6 +30,7 @@
                     <o0 value="/bin/csh">/bin/csh</o0>
                     <o1 value="/bin/sh">/bin/sh</o1>
                     <o2 value="/bin/tcsh">/bin/tcsh</o2>
+                    <o3 value="/usr/local/bin/bash">/usr/local/bin/bash</o3>
                 </OptionValues>
             </shell>
             <password type="UpdateOnlyTextField"/>
