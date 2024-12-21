@@ -33,6 +33,7 @@
 
 require_once("interfaces.inc");
 require_once("util.inc");
+require_once("config.inc");
 
 function auth_log($message, $prio = LOG_ERR)
 {
