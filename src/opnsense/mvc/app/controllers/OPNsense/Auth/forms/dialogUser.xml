@@ -64,6 +64,7 @@
         <id>user.shell</id>
         <label>Login shell</label>
         <type>dropdown</type>
+        <help>Shells which are not part of the base install will be installed if necessary.</help>
     </field>
     <field>
         <id>user.expires</id>
