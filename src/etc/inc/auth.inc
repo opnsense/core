@@ -345,7 +345,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
                 $backend = new OPNsense\Core\Backend();
                 $backend->configdpRun("firmware install", array('bash'), true);
             }
-	}
+        }
     }
 
     // XXX: primary group id can only be wheel or nobody, otherwise we should map the correct numbers for comparison
