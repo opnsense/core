@@ -27,8 +27,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+require_once("config.inc"); // config must be loaded first
 require_once("auth.inc");
-require_once("config.inc");
 
 $opts = getopt('hu:', [], $optind);
 $args = array_slice($argv, $optind);
