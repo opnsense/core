@@ -42,6 +42,12 @@
                 <route_gateway type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
                 </route_gateway>
+                <keepalive_interval type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                </keepalive_interval>
+                <keepalive_timeout type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                </keepalive_timeout>
                 <redirect_gateway type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>
