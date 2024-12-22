@@ -57,7 +57,11 @@ switch ($action) {
         echo json_encode(['status' => 'done']);
         break;
     case 'version':
-        echo json_encode(['response' => xmlrpc_execute('opnsense.firmware_version')]);
+        $payload = xmlrpc_execute('opnsense.firmware_version');
+        if (isset($payload['firmware'])) {
+            $payload['firmware']['_my_version'] = shell_safe('opnsense-version -v core');
+        }
+        echo json_encode(['response' => $payload]);
         break;
     case 'services':
         echo json_encode(['response' => xmlrpc_execute('opnsense.list_services')]);
