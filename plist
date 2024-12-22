@@ -1264,6 +1264,7 @@
 /usr/local/opnsense/scripts/system/flush_config_history
 /usr/local/opnsense/scripts/system/get_locales.php
 /usr/local/opnsense/scripts/system/ha_xmlrpc_exec.php
+/usr/local/opnsense/scripts/system/list_shells.py
 /usr/local/opnsense/scripts/system/nameservers.php
 /usr/local/opnsense/scripts/system/remote_backup.php
 /usr/local/opnsense/scripts/system/rfc5246_cipher_suites.csv
