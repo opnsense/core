@@ -329,17 +329,18 @@ function ntpd_configure_do($verbose = false)
 
     $noselect = isset($config['ntpd']['noselect']) ? explode(' ', $config['ntpd']['noselect']) : [];
     $prefer = isset($config['ntpd']['prefer']) ? explode(' ', $config['ntpd']['prefer']) : [];
+    $pool_server = isset($config['ntpd']['pool_server']) ? explode(' ', $config['ntpd']['pool_server']) : [];
     $iburst = isset($config['ntpd']['iburst']) ? explode(' ', $config['ntpd']['iburst']) : [];
 
     $ntpcfg .= "\n\n# Upstream Servers\n";
     /* foreach through ntp servers and write out to ntpd.conf */
     foreach (explode(' ', $config['system']['timeservers']) as $ts) {
-        /* Determine if Network Time Server is from the NTP Pool or not */
-        if (preg_match("/\.pool\.ntp\.org$/", $ts)) {
-            $ntpcfg .= "pool {$ts}";
+        if (in_array($ts, $pool_server)) {
+            $ntpcfg .= "pool";
         } else {
-            $ntpcfg .= "server {$ts}";
+            $ntpcfg .= "server";
         }
+        $ntpcfg .= " {$ts}";
         if (in_array($ts, $iburst)) {
             $ntpcfg .= ' iburst';
         }
