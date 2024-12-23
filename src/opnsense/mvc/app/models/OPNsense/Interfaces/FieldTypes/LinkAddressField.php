@@ -93,17 +93,16 @@ class LinkAddressField extends BaseField
     public function getValidators()
     {
         $validators = parent::getValidators();
-        if ($this->internalValue != null) {
-            $validators[] = new CallbackValidator(["callback" => function ($data) {
-                $messages = [];
-                if (isset(self::$known_addresses[$data])) {
-                    return $messages;
-                } elseif (!Util::isIpAddress($data)) {
-                    $messages[] = gettext('A valid network address is required.');
-                }
+
+        $validators[] = new CallbackValidator(["callback" => function ($data) {
+            $messages = [];
+            if (isset(self::$known_addresses[$data])) {
                 return $messages;
-            }]);
-        }
+            } elseif (!Util::isIpAddress($data)) {
+                $messages[] = gettext('A valid network address is required.');
+            }
+            return $messages;
+        }]);
 
         return $validators;
     }
@@ -113,24 +112,29 @@ class LinkAddressField extends BaseField
      */
     public function getDescription()
     {
-        if (isset(self::$known_addresses[$this->internalValue])) {
-            return self::$known_addresses[$this->internalValue];
+        $value = $this->getCurrentValue() ?? '';
+
+        if (isset(self::$known_addresses[$value])) {
+            return self::$known_addresses[$value];
         }
-        return $this->internalValue;
+
+        return $value;
     }
 
     /**
      * return either ipaddr or if field, only one should be used, addresses are preferred.
      */
-    public function __toString()
+    public function getCurrentValue(): ?string
     {
         $parent = $this->getParentNode();
+
         foreach (['ipaddr', 'if'] as $fieldname) {
             if (!empty((string)$parent->$fieldname)) {
                 return (string)$parent->$fieldname;
             }
         }
-        return (string)$this->internalValue;
+
+        return null;
     }
 
     /**
