@@ -10,6 +10,24 @@
                     <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
+                <statetype type="OptionField">
+                    <Required>Y</Required>
+                    <Default>keep</Default>
+                    <OptionValues>
+                        <keep>keep state</keep>
+                        <sloppy>sloppy state</sloppy>
+                        <modulate>modulate state</modulate>
+                        <synproxy>synproxy state</synproxy>
+                        <none>no state</none>
+                    </OptionValues>
+                </statetype>
+                <state-policy type="OptionField">
+                    <BlankDesc>default</BlankDesc>
+                    <OptionValues>
+                        <if-bound>Bind states to interface</if-bound>
+                        <floating>Floating states</floating>
+                    </OptionValues>
+                </state-policy>
                 <sequence type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>99999</MaximumValue>
@@ -113,6 +131,14 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </log>
+                <nosync type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </nosync>
+                <nopfsync type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </nopfsync>
                 <categories type="ModelRelationField">
                     <Model>
                         <rulesets>

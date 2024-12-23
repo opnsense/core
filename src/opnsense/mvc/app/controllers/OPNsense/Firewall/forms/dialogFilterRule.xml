@@ -17,6 +17,12 @@
         <help>For grouping purposes you may select multiple groups here to organize items.</help>
     </field>
     <field>
+        <id>rule.nosync</id>
+        <label>No XMLRPC Sync</label>
+        <type>checkbox</type>
+        <help>Hint: This prevents the rule on Master from automatically syncing to other CARP members. This does NOT prevent the rule from being overwritten on Slave.</help>
+    </field>
+    <field>
         <id>rule.description</id>
         <label>Description</label>
         <type>text</type>
@@ -120,6 +126,28 @@
         <label>Log</label>
         <type>checkbox</type>
         <help>Log packets that are handled by this rule</help>
+    </field>
+    <field>
+        <id>rule.nopfsync</id>
+        <label>NO pfsync</label>
+        <type>checkbox</type>
+        <help>Hint: This prevents states created by this rule to be sync'ed over pfsync.</help>
+    </field>
+    <field>
+        <id>rule.statetype</id>
+        <label>State type</label>
+        <type>dropdown</type>
+        <help>State tracking mechanism to use, default is full stateful tracking, sloppy ignores sequence numbers, use none for stateless rules.</help>
+    </field>
+    <field>
+        <id>rule.state-policy</id>
+        <label>State type</label>
+        <type>dropdown</type>
+        <help>
+            Choose how states created by this rule are treated, default (as defined in advanced),
+            floating in which case states are valid on all interfaces or interface bound.
+            Interface bound states are more secure, floating more flexible
+        </help>
     </field>
     <field>
         <type>header</type>
