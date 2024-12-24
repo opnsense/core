@@ -118,11 +118,15 @@ class Filter extends BaseModel
                             $rule->interfacenot->__reference
                         ));
                     }
-                    if ($rule->statetype == 'none' && !empty((string)$rule->statetimeout)) {
-                        $messages->appendMessage(new Message(
-                            gettext("You cannot specify the state timeout (advanced option) if statetype is none."),
-                            $rule->statetimeout->__reference
-                        ));
+                    if ($rule->statetype == 'none') {
+                        foreach (['statetimeout', 'max', 'max-src-states', 'max-src-nodes'] as $fieldname) {
+                            if (!empty((string)$rule->$fieldname)) {
+                                $messages->appendMessage(new Message(
+                                    gettext("Invalid option when statetype is none."),
+                                    $rule->$fieldname->__reference
+                                ));
+                            }
+                        }
                     }
                     if (!in_array($rule->protocol, ['TCP', 'TCP/UDP']) && !empty((string)$rule->statetimeout)) {
                         $messages->appendMessage(new Message(

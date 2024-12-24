@@ -155,6 +155,16 @@
         <advanced>true</advanced>
     </field>
     <field>
+        <id>rule.max</id>
+        <label>Max states</label>
+        <type>text</type>
+        <help>
+            Limits the number of concurrent states the rule may create.
+            When this limit is reached, further packets that would create state are dropped until existing states time out.
+        </help>
+        <advanced>true</advanced>
+    </field>
+    <field>
         <id>rule.max-src-nodes</id>
         <label>Max source nodes</label>
         <type>text</type>

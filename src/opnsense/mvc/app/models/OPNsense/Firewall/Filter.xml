@@ -148,6 +148,9 @@
                 <max-src-states type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                 </max-src-states>
+                <max type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                </max>
                 <categories type="ModelRelationField">
                     <Model>
                         <rulesets>
