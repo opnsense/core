@@ -141,8 +141,13 @@
                 </nopfsync>
                 <statetimeout type="IntegerField">
                     <MinimumValue>1</MinimumValue>
-                    <MaximumValue>65536</MaximumValue>
                 </statetimeout>
+                <max-src-nodes type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                </max-src-nodes>
+                <max-src-states type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                </max-src-states>
                 <categories type="ModelRelationField">
                     <Model>
                         <rulesets>

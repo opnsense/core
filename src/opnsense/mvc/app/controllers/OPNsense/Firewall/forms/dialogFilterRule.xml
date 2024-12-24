@@ -155,6 +155,20 @@
         <advanced>true</advanced>
     </field>
     <field>
+        <id>rule.max-src-nodes</id>
+        <label>Max source nodes</label>
+        <type>text</type>
+        <help>Limits the maximum number of source addresses which can simultaneously have state table entries.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>rule.max-src-states</id>
+        <label>Max source states</label>
+        <type>text</type>
+        <help>Limits the maximum number of simultaneous state entries that a single source address can create with this rule.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
         <id>rule.nopfsync</id>
         <label>NO pfsync</label>
         <type>checkbox</type>
