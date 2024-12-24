@@ -51,6 +51,12 @@
         </help>
     </field>
     <field>
+        <id>hasync.verifypeer</id>
+        <label>Verify peer</label>
+        <type>checkbox</type>
+        <help>In most cases the target host will be a directly attached neighbor in which case TLS verification can be ignored.</help>
+    </field>
+    <field>
         <id>hasync.username</id>
         <label>Remote System Username</label>
         <type>text</type>
