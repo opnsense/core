@@ -128,10 +128,8 @@
         <help>Log packets that are handled by this rule</help>
     </field>
     <field>
-        <id>rule.nopfsync</id>
-        <label>NO pfsync</label>
-        <type>checkbox</type>
-        <help>Hint: This prevents states created by this rule to be sync'ed over pfsync.</help>
+        <type>header</type>
+        <label>Stateful firewall</label>
     </field>
     <field>
         <id>rule.statetype</id>
@@ -148,6 +146,19 @@
             floating in which case states are valid on all interfaces or interface bound.
             Interface bound states are more secure, floating more flexible
         </help>
+    </field>
+    <field>
+        <id>rule.statetimeout</id>
+        <label>State timeout</label>
+        <type>text</type>
+        <help>State Timeout in seconds (TCP only)</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>rule.nopfsync</id>
+        <label>NO pfsync</label>
+        <type>checkbox</type>
+        <help>Hint: This prevents states created by this rule to be sync'ed over pfsync.</help>
     </field>
     <field>
         <type>header</type>

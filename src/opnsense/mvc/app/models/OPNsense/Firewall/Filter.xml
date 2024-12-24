@@ -139,6 +139,10 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </nopfsync>
+                <statetimeout type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>65536</MaximumValue>
+                </statetimeout>
                 <categories type="ModelRelationField">
                     <Model>
                         <rulesets>

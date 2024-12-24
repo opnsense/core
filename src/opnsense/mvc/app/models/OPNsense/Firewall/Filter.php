@@ -118,6 +118,18 @@ class Filter extends BaseModel
                             $rule->interfacenot->__reference
                         ));
                     }
+                    if ($rule->statetype == 'none' && !empty((string)$rule->statetimeout)) {
+                        $messages->appendMessage(new Message(
+                            gettext("You cannot specify the state timeout (advanced option) if statetype is none."),
+                            $rule->statetimeout->__reference
+                        ));
+                    }
+                    if (!in_array($rule->protocol, ['TCP', 'TCP/UDP']) && !empty((string)$rule->statetimeout)) {
+                        $messages->appendMessage(new Message(
+                            gettext("You can only specify the state timeout (advanced option) for TCP protocol."),
+                            $rule->statetimeout->__reference
+                        ));
+                    }
                 }
             }
         }
