@@ -131,6 +131,10 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </log>
+                <allowopts type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </allowopts>
                 <nosync type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>

@@ -56,6 +56,13 @@
         </help>
     </field>
     <field>
+        <id>rule.allowopts</id>
+        <label>Allow options</label>
+        <type>checkbox</type>
+        <help>This allows packets with IP options to pass. Otherwise they are blocked by default.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
         <id>rule.interfacenot</id>
         <label>Interface / Invert</label>
         <type>checkbox</type>
