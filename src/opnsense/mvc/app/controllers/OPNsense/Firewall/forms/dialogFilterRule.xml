@@ -162,6 +162,20 @@
         <advanced>true</advanced>
     </field>
     <field>
+        <id>rule.adaptivestart</id>
+        <label>Adaptive Timeouts [start]</label>
+        <type>text</type>
+        <help>When the number of state entries exceeds this value, adaptive scaling begins. All timeout values are scaled linearly with factor (adaptive.end - number of states) / (adaptive.end - adaptive.start).</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>rule.adaptiveend</id>
+        <label>Adaptive Timeouts [end]</label>
+        <type>text</type>
+        <help>When reaching this number of state entries, all timeout values become zero, effectively purging all state entries immediately. This value is used to define the scale factor, it should not actually be reached (set a lower state limit).</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
         <id>rule.max</id>
         <label>Max states</label>
         <type>text</type>

@@ -155,6 +155,12 @@
                 <max type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                 </max>
+                <adaptivestart type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                </adaptivestart>
+                <adaptiveend type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                </adaptiveend>
                 <categories type="ModelRelationField">
                     <Model>
                         <rulesets>

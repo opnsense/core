@@ -119,7 +119,9 @@ class Filter extends BaseModel
                         ));
                     }
                     if ($rule->statetype == 'none') {
-                        foreach (['statetimeout', 'max', 'max-src-states', 'max-src-nodes'] as $fieldname) {
+                        foreach ([
+                            'statetimeout', 'max', 'max-src-states', 'max-src-nodes', 'adaptivestart', 'adaptiveend'
+                        ] as $fieldname) {
                             if (!empty((string)$rule->$fieldname)) {
                                 $messages->appendMessage(new Message(
                                     gettext("Invalid option when statetype is none."),
@@ -132,6 +134,40 @@ class Filter extends BaseModel
                         $messages->appendMessage(new Message(
                             gettext("You can only specify the state timeout (advanced option) for TCP protocol."),
                             $rule->statetimeout->__reference
+                        ));
+                    }
+                    if (empty((string)$rule->max) && ($rule->adaptivestart == '0' || $rule->adaptiveend == '0')) {
+                        $messages->appendMessage(new Message(
+                            gettext('Disabling adaptive timeouts is only supported in combination with a configured maximum number of states for the same rule.'),
+                            $rule->max->__reference
+                        ));
+                    } elseif ($rule->adaptivestart == '0' xor $rule->adaptiveend == '0') {
+                        $messages->appendMessage(new Message(
+                            gettext("Adaptive timeouts must be disabled together."),
+                            $rule->adaptivestart->__reference
+                        ));
+                    } elseif (!empty((string)$rule->adaptivestart) xor !empty((string)$rule->adaptiveend)) {
+                        $messages->appendMessage(new Message(
+                            gettext("The adaptive timouts values must be set together."),
+                            $rule->adaptivestart->__reference
+                        ));
+                    } elseif (
+                        !empty((string)$rule->max) &&
+                        !empty((string)$rule->adaptiveend) &&
+                        (int)$rule->max->getCurrentValue() > (int)$rule->adaptiveend->getCurrentValue()
+                    ) {
+                        $messages->appendMessage(new Message(
+                            gettext("The value of adaptive.end must be greater than the Max states value."),
+                            $rule->adaptiveend->__reference
+                        ));
+                    } elseif (
+                        !empty((string)$rule->adaptivestart) &&
+                        !empty((string)$rule->adaptiveend) &&
+                        (int)$rule->adaptivestart->getCurrentValue() > (int)$rule->adaptiveend->getCurrentValue()
+                    ) {
+                        $messages->appendMessage(new Message(
+                            gettext("The value of adaptive.end must be greater than adaptive.start value."),
+                            $rule->adaptiveend->__reference
                         ));
                     }
                 }
