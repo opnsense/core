@@ -668,7 +668,7 @@ $.fn.SimpleFileUploadDlg = function (params) {
                         doinp.data('filename', fileinp.val().split('\\').pop());
                         doinp.show();
                     };
-                    reader.readAsBinaryString(evt.target.files[0]);
+                    reader.readAsText(evt.target.files[0]);
                 }
             });
             let dialog = BootstrapDialog.show({
@@ -688,7 +688,7 @@ $.fn.SimpleFileUploadDlg = function (params) {
                     if (data.validations && data.validations.length > 0) {
                         // When validation errors are returned, write to textarea including original data lines.
                         let output = [];
-                        let records = params.payload.split('\n');
+                        let records = eparams.payload.split('\n');
                         records.shift();
                         for (r=0; r < records.length; ++r) {
                             let found = false;
