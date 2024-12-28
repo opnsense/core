@@ -242,8 +242,14 @@
     </field>
     <field>
         <type>header</type>
-        <label>Packet mangling</label>
+        <label>Priority</label>
         <collapse>true</collapse>
+    </field>
+    <field>
+        <id>rule.prio</id>
+        <label>Match priority</label>
+        <type>dropdown</type>
+        <help>Only match packets which have the given queueing priority assigned.</help>
     </field>
     <field>
         <id>rule.set-prio</id>
