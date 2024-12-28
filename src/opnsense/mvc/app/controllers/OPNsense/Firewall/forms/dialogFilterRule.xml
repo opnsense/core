@@ -135,6 +135,20 @@
         <help>Log packets that are handled by this rule</help>
     </field>
     <field>
+        <id>rule.tcpflags1</id>
+        <label>TCP flags</label>
+        <type>select_multiple</type>
+        <help>Use this to choose TCP flags that must be set this rule to match.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>rule.tcpflags2</id>
+        <label>TCP flags [out of]</label>
+        <type>select_multiple</type>
+        <help>Use this to choose TCP flags that must be cleared for this rule to match.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
         <type>header</type>
         <label>Stateful firewall</label>
     </field>

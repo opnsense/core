@@ -132,7 +132,7 @@ class Filter extends BaseModel
                         }
                     }
                     if (!in_array($rule->protocol, ['TCP', 'TCP/UDP'])) {
-                        foreach (['statetimeout', 'max-src-conn'] as $fieldname) {
+                        foreach (['statetimeout', 'max-src-conn', 'tcpflags1', 'tcpflags2'] as $fieldname) {
                             if (!empty((string)$rule->$fieldname)) {
                                 $messages->appendMessage(new Message(
                                     gettext("Invalid option for other than TCP protocol choices."),
@@ -140,6 +140,12 @@ class Filter extends BaseModel
                                 ));
                             }
                         }
+                    }
+                    if (!empty((string)$rule->tcpflags1) && empty((string)$rule->tcpflags2)) {
+                        $messages->appendMessage(new Message(
+                            gettext("If you specify TCP flags that should be set you should specify out of which flags as well."),
+                            $rule->tcpflags2->__reference
+                        ));
                     }
                     if (empty((string)$rule->max) && ($rule->adaptivestart == '0' || $rule->adaptiveend == '0')) {
                         $messages->appendMessage(new Message(
