@@ -190,6 +190,12 @@
                         <opt7 value="7">Network Control (7, highest)</opt7>
                     </OptionValues>
                 </set-prio-low>
+                <tag type="TextField">
+                    <Mask>/^([0-9a-zA-Z.,_\-]){0,512}$/u</Mask>
+                </tag>
+                <tagged type="TextField">
+                    <Mask>/^([0-9a-zA-Z.,_\-]){0,512}$/u</Mask>
+                </tagged>
                 <categories type="ModelRelationField">
                     <Model>
                         <rulesets>

@@ -243,6 +243,7 @@
     <field>
         <type>header</type>
         <label>Packet mangling</label>
+        <collapse>true</collapse>
     </field>
     <field>
         <id>rule.set-prio</id>
@@ -263,5 +264,29 @@
             Used in combination with set priority, packets which have a TOS of lowdelay and TCP ACKs with no
             data payload will be assigned this priority when offered.
         </help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Internal tagging</label>
+        <collapse>true</collapse>
+    </field>
+    <field>
+        <id>rule.tag</id>
+        <label>Set local tag</label>
+        <type>text</type>
+        <help>
+            Packets matching this rule will be tagged with the specified string.
+            The tag acts as an internal marker that can be used to identify these packets later on.
+            This can be used, for example, to provide trust between interfaces and to determine if packets have
+            been processed by translation rules.  Tags are "sticky", meaning that the packet will be tagged even
+            if the rule is not the last matching rule.  Further matching rules can replace the tag with a
+            new one but will not remove a previously applied tag.  A packet is only ever assigned one tag at a time.
+        </help>
+    </field>
+    <field>
+        <id>rule.tagged</id>
+        <label>Match local tag</label>
+        <type>text</type>
+        <help>Used to specify that packets must already be tagged with the given tag in order to match the rule.</help>
     </field>
 </form>
