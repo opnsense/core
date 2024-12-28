@@ -152,6 +152,9 @@
                 <max-src-states type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                 </max-src-states>
+                <max-src-conn type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                </max-src-conn>
                 <max type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                 </max>

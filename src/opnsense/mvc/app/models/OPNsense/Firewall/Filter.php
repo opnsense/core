@@ -120,7 +120,8 @@ class Filter extends BaseModel
                     }
                     if ($rule->statetype == 'none') {
                         foreach ([
-                            'statetimeout', 'max', 'max-src-states', 'max-src-nodes', 'adaptivestart', 'adaptiveend'
+                            'statetimeout', 'max', 'max-src-states', 'max-src-nodes', 'adaptivestart', 'adaptiveend',
+                            'max-src-conn'
                         ] as $fieldname) {
                             if (!empty((string)$rule->$fieldname)) {
                                 $messages->appendMessage(new Message(
@@ -130,11 +131,15 @@ class Filter extends BaseModel
                             }
                         }
                     }
-                    if (!in_array($rule->protocol, ['TCP', 'TCP/UDP']) && !empty((string)$rule->statetimeout)) {
-                        $messages->appendMessage(new Message(
-                            gettext("You can only specify the state timeout (advanced option) for TCP protocol."),
-                            $rule->statetimeout->__reference
-                        ));
+                    if (!in_array($rule->protocol, ['TCP', 'TCP/UDP'])) {
+                        foreach (['statetimeout', 'max-src-conn'] as $fieldname) {
+                            if (!empty((string)$rule->$fieldname)) {
+                                $messages->appendMessage(new Message(
+                                    gettext("Invalid option for other than TCP protocol choices."),
+                                    $rule->$fieldname->__reference
+                                ));
+                            }
+                        }
                     }
                     if (empty((string)$rule->max) && ($rule->adaptivestart == '0' || $rule->adaptiveend == '0')) {
                         $messages->appendMessage(new Message(

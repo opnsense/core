@@ -200,6 +200,13 @@
         <advanced>true</advanced>
     </field>
     <field>
+        <id>rule.max-src-conn</id>
+        <label>Max source connections</label>
+        <type>text</type>
+        <help>Limit the maximum number of simultaneous TCP connections which have completed the 3-way handshake that a single host can make.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
         <id>rule.nopfsync</id>
         <label>NO pfsync</label>
         <type>checkbox</type>
