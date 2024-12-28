@@ -164,6 +164,32 @@
                 <adaptiveend type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                 </adaptiveend>
+                <set-prio type="OptionField">
+                    <BlankDesc>Keep current priority</BlankDesc>
+                    <OptionValues>
+                        <opt1 value="1">Background (1, lowest)</opt1>
+                        <opt0 value="0">Best Effort (0, default)</opt0>
+                        <opt2 value="2">Excellent Effort (2)</opt2>
+                        <opt3 value="3">Critical Applications (3)</opt3>
+                        <opt4 value="4">Video (4)</opt4>
+                        <opt5 value="5">Voice (5)</opt5>
+                        <opt6 value="6">Internetwork Control (6)</opt6>
+                        <opt7 value="7">Network Control (7, highest)</opt7>
+                    </OptionValues>
+                </set-prio>
+                <set-prio-low type="OptionField">
+                    <BlankDesc>Keep current priority</BlankDesc>
+                    <OptionValues>
+                        <opt1 value="1">Background (1, lowest)</opt1>
+                        <opt0 value="0">Best Effort (0, default)</opt0>
+                        <opt2 value="2">Excellent Effort (2)</opt2>
+                        <opt3 value="3">Critical Applications (3)</opt3>
+                        <opt4 value="4">Video (4)</opt4>
+                        <opt5 value="5">Voice (5)</opt5>
+                        <opt6 value="6">Internetwork Control (6)</opt6>
+                        <opt7 value="7">Network Control (7, highest)</opt7>
+                    </OptionValues>
+                </set-prio-low>
                 <categories type="ModelRelationField">
                     <Model>
                         <rulesets>

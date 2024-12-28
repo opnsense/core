@@ -240,4 +240,28 @@
             Determines how packets route back in the opposite direction (replies), when set to default, packets on WAN type interfaces reply to their connected gateway on the interface (unless globally disabled). A specific gateway may be chosen as well here. This setting is only relevant in the context of a state, for stateless rules there is no defined opposite direction.
         </help>
     </field>
+    <field>
+        <type>header</type>
+        <label>Packet mangling</label>
+    </field>
+    <field>
+        <id>rule.set-prio</id>
+        <label>Set priority</label>
+        <type>dropdown</type>
+        <help>
+            Packets matching this rule will be assigned a specific queueing priority. If the
+            packet is transmitted on a vlan(4) interface, the queueing priority
+            will be written as the priority code point in the 802.1Q VLAN
+            header
+        </help>
+    </field>
+    <field>
+        <id>rule.set-prio-low</id>
+        <label>Set priority [low-delay]</label>
+        <type>dropdown</type>
+        <help>
+            Used in combination with set priority, packets which have a TOS of lowdelay and TCP ACKs with no
+            data payload will be assigned this priority when offered.
+        </help>
+    </field>
 </form>

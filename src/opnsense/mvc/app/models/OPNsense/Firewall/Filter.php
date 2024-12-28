@@ -143,7 +143,8 @@ class Filter extends BaseModel
                     }
                     if (empty((string)$rule->max) && ($rule->adaptivestart == '0' || $rule->adaptiveend == '0')) {
                         $messages->appendMessage(new Message(
-                            gettext('Disabling adaptive timeouts is only supported in combination with a configured maximum number of states for the same rule.'),
+                            gettext('Disabling adaptive timeouts is only supported in ".
+                                "combination with a configured maximum number of states for the same rule.'),
                             $rule->max->__reference
                         ));
                     } elseif ($rule->adaptivestart == '0' xor $rule->adaptiveend == '0') {
@@ -175,6 +176,15 @@ class Filter extends BaseModel
                             $rule->adaptiveend->__reference
                         ));
                     }
+
+                    if ((string)$rule->{'set-prio'} == '' && (string)$rule->{'set-prio-low'} != '') {
+                        $messages->appendMessage(new Message(
+                            gettext("Set priority for low latency and acknowledgements ".
+                                "requires a set priority for normal packets."),
+                            $rule->{'set-prio-low'}->__reference
+                        ));
+                    }
+
                 }
             }
         }
