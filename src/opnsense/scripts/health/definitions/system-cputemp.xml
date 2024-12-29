@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<systemhealth>
+    <file-match>.*-cputemp$</file-match>
+    <title>System Information - CPU Temperature </title>
+    <y-axis_label>°C</y-axis_label>
+</systemhealth>
