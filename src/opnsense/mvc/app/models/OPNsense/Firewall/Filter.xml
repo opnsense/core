@@ -158,6 +158,26 @@
                 <max type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                 </max>
+                <max-src-conn-rate type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                </max-src-conn-rate>
+                <max-src-conn-rates type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                </max-src-conn-rates>
+                <overload  type="ModelRelationField">
+                    <Model>
+                        <aliases>
+                            <source>OPNsense.Firewall.Alias</source>
+                            <items>aliases.alias</items>
+                            <display>name</display>
+                            <filters>
+                                <enabled>/^(?!0).*$/</enabled>
+                                <type>/^(?!(port)).*$/</type>
+                            </filters>
+                        </aliases>
+                    </Model>
+                    <ValidationMessage>Alias not found.</ValidationMessage>
+                </overload>
                 <adaptivestart type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                 </adaptivestart>

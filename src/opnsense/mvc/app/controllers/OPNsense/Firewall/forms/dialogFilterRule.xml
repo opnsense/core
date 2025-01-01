@@ -226,6 +226,31 @@
         <advanced>true</advanced>
     </field>
     <field>
+        <id>rule.max-src-conn-rate</id>
+        <label>Max new connections [c]</label>
+        <type>text</type>
+        <help>Maximum new connections per host, measured over time.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>rule.max-src-conn-rates</id>
+        <label>Max new connections [s]</label>
+        <type>text</type>
+        <help>Time interval (seconds) to measure the number of connections</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>rule.overload</id>
+        <label>Overload table</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>
+            Overload table used when max new connections per time interval has been reached.
+            The default virusprot table comes with a default block rule in floating rules,
+            alternatively specify your own table here
+        </help>
+    </field>
+    <field>
         <id>rule.nopfsync</id>
         <label>NO pfsync</label>
         <type>checkbox</type>

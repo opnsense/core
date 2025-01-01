@@ -114,7 +114,8 @@ class Filter extends BaseModel
                         )
                     ) {
                         $messages->appendMessage(new Message(
-                            gettext("Inverting interfaces is only allowed for single targets to avoid mis-interpretations"),
+                            gettext("Inverting interfaces is only allowed for ".
+                                "single targets to avoid mis-interpretations"),
                             $rule->interfacenot->__reference
                         ));
                     }
@@ -132,7 +133,10 @@ class Filter extends BaseModel
                         }
                     }
                     if (!in_array($rule->protocol, ['TCP', 'TCP/UDP'])) {
-                        foreach (['statetimeout', 'max-src-conn', 'tcpflags1', 'tcpflags2'] as $fieldname) {
+                        foreach ([
+                            'statetimeout', 'max-src-conn', 'tcpflags1', 'tcpflags2',
+                            'max-src-conn-rate', 'max-src-conn-rates', 'overload'
+                        ] as $fieldname) {
                             if (!empty((string)$rule->$fieldname)) {
                                 $messages->appendMessage(new Message(
                                     gettext("Invalid option for other than TCP protocol choices."),
@@ -141,9 +145,18 @@ class Filter extends BaseModel
                             }
                         }
                     }
+                    if (!empty((string)$rule->{'max-src-conn-rate'}) xor !empty((string)$rule->{'max-src-conn-rates'})) {
+                        $tmp = empty((string)$rule->{'max-src-conn-rate'}) ? 'max-src-conn-rate' : 'max-src-conn-rates';
+                        $messages->appendMessage(new Message(
+                            gettext("Need to specify both a number of connections and a time interval."),
+                            $rule->$tmp->__reference
+                        ));
+                    }
+
                     if (!empty((string)$rule->tcpflags1) && empty((string)$rule->tcpflags2)) {
                         $messages->appendMessage(new Message(
-                            gettext("If you specify TCP flags that should be set you should specify out of which flags as well."),
+                            gettext("If you specify TCP flags that should be set ".
+                                "you should specify out of which flags as well."),
                             $rule->tcpflags2->__reference
                         ));
                     }
