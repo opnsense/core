@@ -291,6 +291,11 @@
         </help>
     </field>
     <field>
+        <id>rule.tos</id>
+        <label>Match TOS / DSCP</label>
+        <type>dropdown</type>
+    </field>
+    <field>
         <type>header</type>
         <label>Internal tagging</label>
         <collapse>true</collapse>

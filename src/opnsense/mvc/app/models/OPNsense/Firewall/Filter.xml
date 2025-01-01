@@ -247,6 +247,7 @@
                     <ValidationMessage>Related category not found.</ValidationMessage>
                 </categories>
                 <sched type=".\ScheduleField"/>
+                <tos type=".\TosField"/>
                 <description type="DescriptionField"/>
             </rule>
         </rules>
