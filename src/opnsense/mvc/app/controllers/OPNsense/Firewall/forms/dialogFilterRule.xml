@@ -149,6 +149,11 @@
         <advanced>true</advanced>
     </field>
     <field>
+        <id>rule.sched</id>
+        <label>Schedule</label>
+        <type>dropdown</type>
+    </field>
+    <field>
         <type>header</type>
         <label>Stateful firewall</label>
     </field>

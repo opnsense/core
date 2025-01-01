@@ -246,6 +246,7 @@
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Related category not found.</ValidationMessage>
                 </categories>
+                <sched type=".\ScheduleField"/>
                 <description type="DescriptionField"/>
             </rule>
         </rules>

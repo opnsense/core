@@ -714,6 +714,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/GroupField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/GroupNameField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/InterfaceField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/ScheduleField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/SourceNatRuleField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Filter.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Filter.xml
