@@ -1,0 +1,17 @@
+<form>
+    <field>
+        <id>item.tunable</id>
+        <label>Tunable</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>item.value</id>
+        <label>Value</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>item.descr</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+</form>
