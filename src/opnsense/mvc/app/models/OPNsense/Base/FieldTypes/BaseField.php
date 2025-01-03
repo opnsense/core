@@ -356,11 +356,11 @@ abstract class BaseField
 
     /**
      * return string interpretation of this field
-     * @return null|string string interpretation of this field
+     * @return string string interpretation of this field
      */
     public function __toString()
     {
-        return (string)$this->internalValue;
+        return $this->getCurrentValue() ?? '';
     }
 
     /**
