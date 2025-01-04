@@ -1,0 +1,17 @@
+<form>
+    <field>
+        <id>sysctl.tunable</id>
+        <label>Tunable</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>sysctl.value</id>
+        <label>Value</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>sysctl.descr</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+</form>

@@ -78,6 +78,8 @@
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Related category not found.</ValidationMessage>
                 </categories>
+                <current_items type="IntegerField" volatile="true"/>
+                <last_updated type="TextField" volatile="true"/>
                 <description type="DescriptionField"/>
             </alias>
         </aliases>

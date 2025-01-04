@@ -84,16 +84,10 @@ class AliasField extends ArrayField
             }
         }
         foreach ($this->iterateItems() as $node) {
-            $current_items = new IntegerField();
-            $current_items->setInternalIsVirtual();
-            $last_updated = new TextField();
-            $last_updated->setInternalIsVirtual();
             if (!empty((string)$node->name) && !empty(self::$current_stats[(string)$node->name])) {
-                $current_items->setValue(self::$current_stats[(string)$node->name]['count']);
-                $last_updated->setValue(self::$current_stats[(string)$node->name]['updated']);
+                $node->current_items->setValue(self::$current_stats[(string)$node->name]['count']);
+                $node->last_updated->setValue(self::$current_stats[(string)$node->name]['updated']);
             }
-            $node->addChildNode('current_items', $current_items);
-            $node->addChildNode('last_updated', $last_updated);
         }
     }
 }

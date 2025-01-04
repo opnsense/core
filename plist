@@ -249,6 +249,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/SnapshotsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/SystemController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/TunablesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/BackupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/DashboardController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/FirmwareController.php
@@ -260,8 +261,10 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/RebootController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/SnapshotsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/TunablesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/hasyncSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/snapshot.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/tunable.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/IndexController.php
@@ -657,6 +660,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL/ACL.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/FieldTypes/TunableField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Firmware.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Firmware.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Hasync.php
@@ -666,6 +670,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/M1_0_1.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/MHA1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/MHA1_0_1.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/Tunables.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/Tunables.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/repositories/opnsense.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Cron.php
@@ -714,7 +720,9 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/GroupField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/GroupNameField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/InterfaceField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/ScheduleField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/SourceNatRuleField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/TosField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Filter.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Filter.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Group.php
@@ -870,6 +878,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/reboot.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/service.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/snapshot.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Core/tunables.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Cron/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/DHCPv4/leases.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/DHCPv6/leases.volt
@@ -1264,6 +1273,7 @@
 /usr/local/opnsense/scripts/system/flush_config_history
 /usr/local/opnsense/scripts/system/get_locales.php
 /usr/local/opnsense/scripts/system/ha_xmlrpc_exec.php
+/usr/local/opnsense/scripts/system/list_shells.py
 /usr/local/opnsense/scripts/system/nameservers.php
 /usr/local/opnsense/scripts/system/remote_backup.php
 /usr/local/opnsense/scripts/system/rfc5246_cipher_suites.csv
@@ -1272,6 +1282,7 @@
 /usr/local/opnsense/scripts/system/status.php
 /usr/local/opnsense/scripts/system/swapinfo.py
 /usr/local/opnsense/scripts/system/sysctl.py
+/usr/local/opnsense/scripts/system/sysctl_defaults.php
 /usr/local/opnsense/scripts/system/tls_groups.py
 /usr/local/opnsense/scripts/system/trigger_config_changed_events.py
 /usr/local/opnsense/scripts/system/update-crl-fetch.py
@@ -2411,7 +2422,6 @@
 /usr/local/www/system_advanced_firewall.php
 /usr/local/www/system_advanced_misc.php
 /usr/local/www/system_advanced_network.php
-/usr/local/www/system_advanced_sysctl.php
 /usr/local/www/system_authservers.php
 /usr/local/www/system_gateway_groups.php
 /usr/local/www/system_gateway_groups_edit.php

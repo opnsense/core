@@ -1,7 +1,7 @@
 <model>
     <mount>//hasync</mount>
     <migration_prefix>MHA</migration_prefix>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <description>HA sync</description>
     <items>
         <disablepreempt type="BooleanField">
@@ -31,6 +31,10 @@
             </OptionValues>
         </pfsyncversion>
         <synchronizetoip type="TextField"/>  <!-- XXX: accepts uri or address -->
+        <verifypeer type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </verifypeer>
         <username type="TextField"/>
         <password type="TextField"/>  <!-- XXX -->
         <syncitems type="JsonKeyValueStoreField">

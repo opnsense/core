@@ -31,6 +31,9 @@
                 $("#remote_firmware_version").text(data.response.firmware.version);
                 $("#remote_base_version").text(data.response.base.version);
                 $("#remote_kernel_version").text(data.response.kernel.version);
+                if (data.response.firmware.version != data.response.firmware._my_version) {
+                    $("#version_warning").show();
+                }
                 $("#grid_services").UIBootgrid({
                     search:'/api/core/hasync_status/services/',
                     options: {
@@ -157,6 +160,10 @@
                     </div>
                 </section>
                 <section class="col-xs-12">
+                    <div id="version_warning" class="alert alert-warning" role="alert" style="display: none;">
+                        {{ lang._('Remote version differs from this machines, please update first before using any of the actions below to avoid breakage.')}}
+                    </div>
+
                     <div class="content-box">
                         <div class="table-responsive">
                             <table id="grid_services" class="table table-condensed table-hover table-striped table-responsive">

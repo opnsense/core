@@ -72,6 +72,8 @@ function xmlrpc_execute($method, $params = [], $debug = false)
         $client->setCredentials($username, $hasync['password']);
         if ($client->query($method, $params)) {
             return $client->getResponse();
+        } else {
+            throw new Exception($client->error);
         }
     }
     return false;
@@ -159,11 +161,15 @@ class SimpleXMLRPC_Client
      */
     public function setCredentials($username, $password)
     {
-        $this->authHeader = 'Authorization: Basic ' . base64_encode("$username:$password") . "\r\n";
+        $this->authHeader = 'Authorization: Basic ' . base64_encode("$username:$password");
     }
 
     public function query()
     {
+        /* XXX: xmlrpc is legacy, callers always import legacy config */
+        global $config;
+        $tls_verify = !empty($config['hasync']) && !empty($config['hasync']['verifypeer']);
+
         // create xmlrpc request object
         $args = func_get_args();
         $method = array_shift($args);
@@ -171,37 +177,36 @@ class SimpleXMLRPC_Client
         $request_xml = $request->getXml();
 
         // setup http headers
-        $headers = 'Host: ' . $this->server . "\r\n";
-        $headers .= "User-Agent: XML_RPC\r\n";
-        $headers .= "Content-Type: text/xml\r\n";
-        $headers .= 'Content-Length: ' . $request->getLength() . "\r\n";
+        $headers = ['Host: ' . $this->server];
+        $headers[] = "User-Agent: XML_RPC";
+        $headers[] = "Content-Type: text/xml";
         if ($this->authHeader != null) {
-            $headers .= $this->authHeader;
+            $headers[] = $this->authHeader;
         }
 
-        $this->request_send = $headers . $request_xml;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $this->url);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+        if (!$tls_verify) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        }
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLINFO_HEADER_OUT, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $request_xml);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $this->response_received = curl_exec($ch);
         if ($this->debug) {
-            echo sprintf(">>> send %d bytes: \n%s\n", strlen($this->request_send), $this->request_send);
+            print_r(curl_getinfo($ch));
         }
-
-        // setup a stream context
-        $context = stream_context_create(array('http' => array(
-            'method' => "POST",
-            'header' => $headers,
-            'content' => $request_xml,
-            'timeout' => $this->timeout
-            ),
-            "ssl" => array(
-                "verify_peer" => false,
-                "verify_peer_name" => false,
-            )
-        ));
-
-        $this->response_received = @file_get_contents($this->url, false, $context);
         if ($this->response_received === false) {
-            $this->error = 'fetch error. remote host down?';
+            $this->error = 'fetch error. remote host down? (' . curl_error($ch) . ')';
+            curl_close($ch);
             return false;
         }
+
+        curl_close($ch);
 
         if ($this->debug) {
             echo sprintf(">>> received %d bytes: \n%s\n", strlen($this->response_received), $this->response_received);

@@ -24,13 +24,9 @@
             <expires type=".\ExpiresField"/>
             <authorizedkeys type=".\StoreB64Field"/>
             <otp_seed type="TextField"/>
-            <shell type="OptionField">
+            <shell type="JsonKeyValueStoreField">
+                <ConfigdPopulateAct>system list shells</ConfigdPopulateAct>
                 <BlankDesc>Default (none for all but root)</BlankDesc>
-                <OptionValues>
-                    <o0 value="/bin/csh">/bin/csh</o0>
-                    <o1 value="/bin/sh">/bin/sh</o1>
-                    <o2 value="/bin/tcsh">/bin/tcsh</o2>
-                </OptionValues>
             </shell>
             <password type="UpdateOnlyTextField"/>
             <scrambled_password type="BooleanField"  volatile="true"/>

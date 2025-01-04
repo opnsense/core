@@ -751,6 +751,10 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
 
             /* XXX some day we might want to convert to safer mwexecf() */
             $cmd = " -{$ipproto} {$blackhole} " . escapeshellarg($rtent['network']) . " ";
+            if (is_ipaddrv6($gatewayip) && $ipproto == 'inet') {
+                /* rfc5549: gateway protocol differs, so we need to define it as well */
+                $cmd .= ' -inet6 ';
+            }
 
             if (!empty($rtent['disabled'])) {
                 mwexec("/sbin/route delete {$cmd}", true);

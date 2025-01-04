@@ -17,6 +17,12 @@
         <help>For grouping purposes you may select multiple groups here to organize items.</help>
     </field>
     <field>
+        <id>rule.nosync</id>
+        <label>No XMLRPC Sync</label>
+        <type>checkbox</type>
+        <help>Hint: This prevents the rule on Master from automatically syncing to other CARP members. This does NOT prevent the rule from being overwritten on Slave.</help>
+    </field>
+    <field>
         <id>rule.description</id>
         <label>Description</label>
         <type>text</type>
@@ -48,6 +54,13 @@
             If a packet matches a rule specifying quick, then that rule is considered the last matching rule and the specified action is taken.
             When a rule does not have quick enabled, the last matching rule wins.
         </help>
+    </field>
+    <field>
+        <id>rule.allowopts</id>
+        <label>Allow options</label>
+        <type>checkbox</type>
+        <help>This allows packets with IP options to pass. Otherwise they are blocked by default.</help>
+        <advanced>true</advanced>
     </field>
     <field>
         <id>rule.interfacenot</id>
@@ -122,6 +135,128 @@
         <help>Log packets that are handled by this rule</help>
     </field>
     <field>
+        <id>rule.tcpflags1</id>
+        <label>TCP flags</label>
+        <type>select_multiple</type>
+        <help>Use this to choose TCP flags that must be set this rule to match.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>rule.tcpflags2</id>
+        <label>TCP flags [out of]</label>
+        <type>select_multiple</type>
+        <help>Use this to choose TCP flags that must be cleared for this rule to match.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>rule.sched</id>
+        <label>Schedule</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Stateful firewall</label>
+    </field>
+    <field>
+        <id>rule.statetype</id>
+        <label>State type</label>
+        <type>dropdown</type>
+        <help>State tracking mechanism to use, default is full stateful tracking, sloppy ignores sequence numbers, use none for stateless rules.</help>
+    </field>
+    <field>
+        <id>rule.state-policy</id>
+        <label>State type</label>
+        <type>dropdown</type>
+        <help>
+            Choose how states created by this rule are treated, default (as defined in advanced),
+            floating in which case states are valid on all interfaces or interface bound.
+            Interface bound states are more secure, floating more flexible
+        </help>
+    </field>
+    <field>
+        <id>rule.statetimeout</id>
+        <label>State timeout</label>
+        <type>text</type>
+        <help>State Timeout in seconds (TCP only)</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>rule.adaptivestart</id>
+        <label>Adaptive Timeouts [start]</label>
+        <type>text</type>
+        <help>When the number of state entries exceeds this value, adaptive scaling begins. All timeout values are scaled linearly with factor (adaptive.end - number of states) / (adaptive.end - adaptive.start).</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>rule.adaptiveend</id>
+        <label>Adaptive Timeouts [end]</label>
+        <type>text</type>
+        <help>When reaching this number of state entries, all timeout values become zero, effectively purging all state entries immediately. This value is used to define the scale factor, it should not actually be reached (set a lower state limit).</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>rule.max</id>
+        <label>Max states</label>
+        <type>text</type>
+        <help>
+            Limits the number of concurrent states the rule may create.
+            When this limit is reached, further packets that would create state are dropped until existing states time out.
+        </help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>rule.max-src-nodes</id>
+        <label>Max source nodes</label>
+        <type>text</type>
+        <help>Limits the maximum number of source addresses which can simultaneously have state table entries.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>rule.max-src-states</id>
+        <label>Max source states</label>
+        <type>text</type>
+        <help>Limits the maximum number of simultaneous state entries that a single source address can create with this rule.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>rule.max-src-conn</id>
+        <label>Max source connections</label>
+        <type>text</type>
+        <help>Limit the maximum number of simultaneous TCP connections which have completed the 3-way handshake that a single host can make.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>rule.max-src-conn-rate</id>
+        <label>Max new connections [c]</label>
+        <type>text</type>
+        <help>Maximum new connections per host, measured over time.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>rule.max-src-conn-rates</id>
+        <label>Max new connections [s]</label>
+        <type>text</type>
+        <help>Time interval (seconds) to measure the number of connections</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>rule.overload</id>
+        <label>Overload table</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>
+            Overload table used when max new connections per time interval has been reached.
+            The default virusprot table comes with a default block rule in floating rules,
+            alternatively specify your own table here
+        </help>
+    </field>
+    <field>
+        <id>rule.nopfsync</id>
+        <label>NO pfsync</label>
+        <type>checkbox</type>
+        <help>Hint: This prevents states created by this rule to be sync'ed over pfsync.</help>
+    </field>
+    <field>
         <type>header</type>
         <label>Source routing</label>
     </field>
@@ -148,5 +283,65 @@
         <help>
             Determines how packets route back in the opposite direction (replies), when set to default, packets on WAN type interfaces reply to their connected gateway on the interface (unless globally disabled). A specific gateway may be chosen as well here. This setting is only relevant in the context of a state, for stateless rules there is no defined opposite direction.
         </help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Priority</label>
+        <collapse>true</collapse>
+    </field>
+    <field>
+        <id>rule.prio</id>
+        <label>Match priority</label>
+        <type>dropdown</type>
+        <help>Only match packets which have the given queueing priority assigned.</help>
+    </field>
+    <field>
+        <id>rule.set-prio</id>
+        <label>Set priority</label>
+        <type>dropdown</type>
+        <help>
+            Packets matching this rule will be assigned a specific queueing priority. If the
+            packet is transmitted on a vlan(4) interface, the queueing priority
+            will be written as the priority code point in the 802.1Q VLAN
+            header
+        </help>
+    </field>
+    <field>
+        <id>rule.set-prio-low</id>
+        <label>Set priority [low-delay]</label>
+        <type>dropdown</type>
+        <help>
+            Used in combination with set priority, packets which have a TOS of lowdelay and TCP ACKs with no
+            data payload will be assigned this priority when offered.
+        </help>
+    </field>
+    <field>
+        <id>rule.tos</id>
+        <label>Match TOS / DSCP</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Internal tagging</label>
+        <collapse>true</collapse>
+    </field>
+    <field>
+        <id>rule.tag</id>
+        <label>Set local tag</label>
+        <type>text</type>
+        <help>
+            Packets matching this rule will be tagged with the specified string.
+            The tag acts as an internal marker that can be used to identify these packets later on.
+            This can be used, for example, to provide trust between interfaces and to determine if packets have
+            been processed by translation rules.  Tags are "sticky", meaning that the packet will be tagged even
+            if the rule is not the last matching rule.  Further matching rules can replace the tag with a
+            new one but will not remove a previously applied tag.  A packet is only ever assigned one tag at a time.
+        </help>
+    </field>
+    <field>
+        <id>rule.tagged</id>
+        <label>Match local tag</label>
+        <type>text</type>
+        <help>Used to specify that packets must already be tagged with the given tag in order to match the rule.</help>
     </field>
 </form>

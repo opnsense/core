@@ -63,9 +63,7 @@
                 <Edit url="/system_general.php*" visibility="hidden"/>
             </General>
             <Miscellaneous url="/system_advanced_misc.php"/>
-            <Tunables url="/system_advanced_sysctl.php">
-                <Edit url="/system_advanced_sysctl.php*" visibility="hidden"/>
-            </Tunables>
+            <Tunables url="/ui/core/tunables"/>
         </Settings>
         <Snapshots cssClass="fa fa-hdd-o fa-fw" url="/ui/core/snapshots"/>
         <Trust cssClass="fa fa-certificate fa-fw">

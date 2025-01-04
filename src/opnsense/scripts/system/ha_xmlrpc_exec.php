@@ -35,33 +35,41 @@ $action = $argv[1] ?? '';
 $service = $argv[2] ?? '';
 $service_id = $argv[3] ?? '';
 
-switch ($action) {
-    case 'stop':
-        $result = xmlrpc_execute('opnsense.stop_service', ['service' => $service, 'id' => $service_id]);
-        echo json_encode(['response' => $result, 'status' => 'ok']);
-        break;
-    case 'start':
-        $result = xmlrpc_execute('opnsense.start_service', ['service' => $service, 'id' => $service_id]);
-        echo json_encode(['response' => $result, 'status' => 'ok']);
-        break;
-    case 'restart':
-        $result = xmlrpc_execute('opnsense.restart_service', ['service' => $service, 'id' => $service_id]);
-        echo json_encode(['response' => $result, 'status' => 'ok']);
-        break;
-    case 'reload_templates':
-        xmlrpc_execute('opnsense.configd_reload_all_templates');
-        echo json_encode(['status' => 'done']);
-        break;
-    case 'exec_sync':
-        configd_run('filter sync');
-        echo json_encode(['status' => 'done']);
-        break;
-    case 'version':
-        echo json_encode(['response' => xmlrpc_execute('opnsense.firmware_version')]);
-        break;
-    case 'services':
-        echo json_encode(['response' => xmlrpc_execute('opnsense.list_services')]);
-        break;
-    default:
-        echo json_encode(['status' => 'error', 'message' => 'usage ha_xmlrpc_exec.php action [service_id]']);
+try {
+    switch ($action) {
+        case 'stop':
+            $result = xmlrpc_execute('opnsense.stop_service', ['service' => $service, 'id' => $service_id]);
+            echo json_encode(['response' => $result, 'status' => 'ok']);
+            break;
+        case 'start':
+            $result = xmlrpc_execute('opnsense.start_service', ['service' => $service, 'id' => $service_id]);
+            echo json_encode(['response' => $result, 'status' => 'ok']);
+            break;
+        case 'restart':
+            $result = xmlrpc_execute('opnsense.restart_service', ['service' => $service, 'id' => $service_id]);
+            echo json_encode(['response' => $result, 'status' => 'ok']);
+            break;
+        case 'reload_templates':
+            xmlrpc_execute('opnsense.configd_reload_all_templates');
+            echo json_encode(['status' => 'done']);
+            break;
+        case 'exec_sync':
+            configd_run('filter sync');
+            echo json_encode(['status' => 'done']);
+            break;
+        case 'version':
+            $payload = xmlrpc_execute('opnsense.firmware_version');
+            if (isset($payload['firmware'])) {
+                $payload['firmware']['_my_version'] = shell_safe('opnsense-version -v core');
+            }
+            echo json_encode(['response' => $payload]);
+            break;
+        case 'services':
+            echo json_encode(['response' => xmlrpc_execute('opnsense.list_services')]);
+            break;
+        default:
+            echo json_encode(['status' => 'error', 'message' => 'usage ha_xmlrpc_exec.php action [service_id]']);
+    }
+} catch (Exception $e) {
+    echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
 }

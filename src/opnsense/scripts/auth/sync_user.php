@@ -27,8 +27,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("auth.inc");
 require_once("config.inc");
+require_once("auth.inc");
 
 $opts = getopt('hu:', [], $optind);
 $args = array_slice($argv, $optind);

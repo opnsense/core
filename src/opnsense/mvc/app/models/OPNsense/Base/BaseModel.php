@@ -306,18 +306,13 @@ abstract class BaseModel
     }
 
     /**
-     * Construct new model type, using its own xml template
+     * fetch model definition after basic validations
+     * @return SimpleXMLElement
      * @throws ModelException if the model xml is not found or invalid
      * @throws ReflectionException
      */
-    public function __construct()
+    private function getModelXML()
     {
-        // setup config handle to singleton config singleton
-        $internalConfigHandle = Config::getInstance();
-
-        // init new root node, all details are linked to this
-        $this->internalData = new ContainerField();
-
         // determine our caller's filename and try to find the model definition xml
         // throw error on failure
         $class_info = new ReflectionClass($this);
@@ -335,6 +330,23 @@ abstract class BaseModel
         if (!$model_xml->mount) {
             throw new ModelException('model xml ' . $model_filename . ' missing mount definition');
         }
+        return $model_xml;
+    }
+
+    /**
+     * Construct new model type, using its own xml template
+     * @throws ModelException if the model xml is not found or invalid
+     * @throws ReflectionException
+     */
+    public function __construct()
+    {
+        // setup config handle to singleton config singleton
+        $internalConfigHandle = Config::getInstance();
+
+        // init new root node, all details are linked to this
+        $this->internalData = new ContainerField();
+
+        $model_xml = $this->getModelXML();
         if (!empty($model_xml->version)) {
             $this->internal_model_version = (string)$model_xml->version;
         }
@@ -816,5 +828,25 @@ abstract class BaseModel
     public function getVersion()
     {
         return $this->internal_current_model_version ?? '<unversioned>';
+    }
+
+    /**
+     * reset model to its defaults (flush all content)
+     * @throws ModelException if the model xml is not found or invalid
+     * @throws ReflectionException
+     * @return this
+     */
+    public function Default()
+    {
+        $this->internalData = new ContainerField();
+        $config_array = new SimpleXMLElement('<opnsense/>');
+        $model_xml = $this->getModelXML();
+        if (!empty($model_xml->version) && $this->internal_model_version != (string)$model_xml->version) {
+            throw new ModelException('Unable to reset to defaults as model on disk is not the same as in memory');
+        }
+        $this->parseXml($model_xml->items, $config_array, $this->internalData);
+        // trigger post loading event
+        $this->internalData->eventPostLoading();
+        return $this;
     }
 }
