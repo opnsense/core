@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2022 Deciso B.V.
+ * Copyright (C) 2022-2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,7 @@ class SystemStatus
         foreach ($statuses as $statusClass) {
             $obj = new $statusClass();
             $reflect = new \ReflectionClass($obj);
-            $shortName = str_replace('Status', '', $reflect->getShortName());
+            $shortName = strtolower(str_replace('Status', '', $reflect->getShortName()));
             $this->objectMap[$shortName] = $obj;
 
             if ($shortName == 'System') {
@@ -72,10 +72,13 @@ class SystemStatus
             }
 
             $result[$shortName] = [
+                'title' => $obj->getTitle(),
                 'statusCode' => $obj->getStatus(),
                 'message' => $obj->getMessage(),
                 'logLocation' => $obj->getLogLocation(),
                 'timestamp' => $obj->getTimestamp(),
+                'persistent' => $obj->getPersistent(),
+                'priority' => $obj->getPriority(),
             ];
         }
 

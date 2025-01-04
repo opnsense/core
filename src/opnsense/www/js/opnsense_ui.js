@@ -730,14 +730,18 @@ $.fn.SimpleFileUploadDlg = function (params) {
  *      }
  * @param {*} params data structure to use for the select picker
  */
-$.fn.replaceInputWithSelector = function (data) {
+$.fn.replaceInputWithSelector = function (data, multiple=false) {
     let that = this;
     this.new_item = function() {
         let $div = $("<div/>");
         let $table = $('<table style="max-width: 348px"/>');
+        let $select = $('<select data-live-search="true" data-size="5" data-width="348px"/>');
+        if (multiple) {
+            $select.attr('multiple', 'multiple');
+        }
         $table.append(
             $("<tr/>").append(
-                $("<td/>").append($('<select data-live-search="true" data-size="5" data-width="348px"/>'))
+                $("<td/>").append($select)
             )
         );
         $table.append(
@@ -773,6 +777,9 @@ $.fn.replaceInputWithSelector = function (data) {
         $this_select.attr('for', $(this).attr('id')).selectpicker();
         $this_select.change(function(){
             let $value = $(this).val();
+            if (Array.isArray($value)) {
+                $value = $value.filter(value => value !== '').join(',');
+            }
             if ($value !== '') {
                 $this_input.val($value);
                 $this_input.hide();
@@ -782,8 +789,12 @@ $.fn.replaceInputWithSelector = function (data) {
         });
         $this_input.attr('id', $(this).attr('id'));
         $this_input.change(function(){
-            $this_select.val($(this).val());
-            if ($this_select.val() === null || $this_select.val() == '') {
+            if (multiple) {
+                $this_select.val($(this).val().split(','));
+            } else {
+                $this_select.val($(this).val());
+            }
+            if ($(this).val() === '' || $this_select.val() === null || $this_select.val() == '') {
                 $this_select.val('');
                 $this_input.show();
             } else {
@@ -797,4 +808,34 @@ $.fn.replaceInputWithSelector = function (data) {
     return this.each(function () {
         return $.proxy(that.construct, $(this))();
     });
+}
+
+/**
+ * Parse URL hash to activate a tab and/or fetch search or edit phrase for use in a grid.
+ * - Supports hashes with direct actions: "#edit=UUID" or "#search=UUID" without a tab.
+ * - If the hash includes a tab name, & must be used (e.g., "#peers&edit=UUID").
+ */
+function getUrlHash(key=null) {
+    const hash = window.location.hash.slice(1);
+    if (!hash) return;
+
+    const splitIndex = hash.indexOf('&');
+    const tabName = splitIndex !== -1 ? hash.substring(0, splitIndex) : null;
+    const action = splitIndex !== -1 ? hash.substring(splitIndex + 1) : hash;
+
+    if (tabName) {
+        const tabElement = $(`a[href="#${tabName}"]`);
+        if (tabElement.length) {
+            tabElement.tab('show');
+        }
+    }
+
+    if (action) {
+        const [prefix, rawPhrase] = action.includes('=') ? action.split('=') : [null, null];
+        const decodedPhrase = rawPhrase ? decodeURIComponent(rawPhrase.trim()) : '';
+
+        if ((prefix === key) || (key === null)) return decodedPhrase;
+    }
+
+    return '';
 }

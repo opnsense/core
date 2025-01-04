@@ -302,7 +302,7 @@ function get_std_save_message($plain = false)
     /* we need this wrapped in gettext at least once */
     if (!empty($config['hasync']['synchronizetoip'])) {
         if (!$plain) {
-            $lnk_start = '<a href="status_habackup.php">';
+            $lnk_start = '<a href="/ui/core/hasync_status">';
             $lnk_end = '</a>';
         }
         return sprintf(
@@ -385,7 +385,7 @@ function gentitle($breadcrumbs, $navlevelsep = ': ')
     return join($navlevelsep, $output) . "$gentitle_suffix";
 }
 
-function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendport)
+function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendport, $merge_mask=false)
 {
     if (isset($adr['any'])) {
         $padr = "any";
@@ -401,6 +401,9 @@ function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendp
             } else {
                 $pmask = 32;
             }
+        }
+        if ($merge_mask && is_ipaddr($padr)) {
+            $padr = $padr . '/' . $pmask;
         }
     }
 

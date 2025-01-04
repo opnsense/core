@@ -171,14 +171,6 @@ body{
   }
 }
 
-div.content-box.wizard {
-    div {
-        img {
-            filter:invert(25%);
-        }
-    }
-}
-
 .tab-content{
   border-top: 0px;
   padding: 0px 0;
@@ -828,17 +820,4 @@ ul.jqtree-tree .jqtree-title {
 
 .nvtooltip {
   color: #fff !important;
-}
-
-
-.bootgrid-header .actionBar .btn-group > .btn-group .dropdown-menu .dropdown-item:hover,
-.bootgrid-footer .infoBar .btn-group > .btn-group .dropdown-menu .dropdown-item:hover,
-.bootgrid-header .actionBar .btn-group > .btn-group .dropdown-menu .dropdown-item:focus,
-.bootgrid-footer .infoBar .btn-group > .btn-group .dropdown-menu .dropdown-item:focus {
-  background-color: map-get($colors, content-background) !important;
-}
-
-.bootgrid-table td.loading,
-.bootgrid-table td.no-results {
-  background: map-get($colors, content-background) !important;
 }

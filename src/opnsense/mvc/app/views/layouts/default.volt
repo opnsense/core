@@ -96,22 +96,9 @@
                 initFormAdvancedUI();
                 addMultiSelectClearUI();
 
-                // Create status dialog instance
-                let dialog = new BootstrapDialog({
-                     title: '{{ lang._('System Status')}}',
-                     buttons: [{
-                         label: '{{ lang._('Close') }}',
-                         action: function(dialogRef) {
-                             dialogRef.close();
-                         }
-                     }],
-                });
-
+                // artificial delay for UX reasons
                 setTimeout(function () {
-                    updateSystemStatus().then((data) => {
-                        let status = parseStatus(data);
-                        registerStatusDelegate(dialog, status);
-                    });
+                    updateSystemStatus();
                 }, 500);
 
                 // Register collapsible table headers
@@ -279,10 +266,13 @@
             </ul>
           </div>
         </header>
+
         <!-- page content -->
         <section class="page-content-main">
           <div class="container-fluid">
             <div class="row">
+                <!-- notification banner dynamically inserted here (opnsense_status.js) -->
+
                 <section class="col-xs-12">
                     <div id="messageregion"></div>
                         {{ content() }}

@@ -7,6 +7,7 @@
                 add:'/api/interfaces/vip_settings/addItem/',
                 del:'/api/interfaces/vip_settings/delItem/',
                 options:{
+                    initialSearchPhrase: getUrlHash('search'),
                     requestHandler: function(request){
                         if ( $('#mode_filter').val().length > 0) {
                             request['mode'] = $('#mode_filter').val();

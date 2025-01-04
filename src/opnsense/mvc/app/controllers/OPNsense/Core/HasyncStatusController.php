@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,37 +26,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Base\Validators;
+namespace OPNsense\Core;
 
-use OPNsense\Base\BaseValidator;
-use OPNsense\Base\Messages\Message;
-
-/**
- * Class CsvListValidator validate a string list against a list of options
- * @package OPNsense\Base\Validators
- */
-class CsvListValidator extends BaseValidator
+class HasyncStatusController extends \OPNsense\Base\IndexController
 {
-    /**
-     * Executes validation
-     *
-     * @param $validator
-     * @param string $attribute
-     * @return boolean
-     */
-    public function validate($validator, $attribute): bool
+    public function indexAction()
     {
-        $value = $validator->getValue($attribute);
-        $domain = $this->getOption('domain');
-        $msg = $this->getOption('message');
-
-        foreach (explode(",", $value) as $valItem) {
-            if (!in_array($valItem, $domain)) {
-                $validator->appendMessage(new Message($msg, $attribute, 'CsvListValidator'));
-                return false;
-            }
-        }
-
-        return true;
+        $this->view->pick('OPNsense/Core/hasync_status');
     }
 }

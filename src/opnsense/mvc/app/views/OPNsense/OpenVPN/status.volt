@@ -31,6 +31,7 @@
         let grid_sessions = $("#grid-sessions").UIBootgrid({
             search:'/api/openvpn/service/search_sessions',
             options:{
+                initialSearchPhrase: getUrlHash('search'),
                 selection: false,
                 formatters:{
                     commands: function (column, row) {

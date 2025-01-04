@@ -219,7 +219,7 @@ class DashboardController extends ApiControllerBase
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $output = curl_exec($ch);
         curl_close($ch);
-        $payload = simplexml_load_string($output);
+        $payload = @simplexml_load_string($output);
         if (empty($payload)) {
             return $result;
         }

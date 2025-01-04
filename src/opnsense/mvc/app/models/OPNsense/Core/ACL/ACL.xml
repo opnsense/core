@@ -407,7 +407,8 @@
     <page-status-habackup>
         <name>Status: HA backup</name>
         <patterns>
-            <pattern>status_habackup.php</pattern>
+            <pattern>ui/core/hasync_status</pattern>
+            <pattern>api/core/hasync_status/*</pattern>
         </patterns>
     </page-status-habackup>
     <page-status-dhcpleases>
@@ -561,8 +562,8 @@
     <page-snapshots>
         <name>System: Snapshots</name>
         <patterns>
-            <pattern>ui/snapshots/*</pattern>
-            <pattern>api/snapshots/*</pattern>
+            <pattern>ui/core/snapshots</pattern>
+            <pattern>api/core/snapshots/*</pattern>
         </patterns>
     </page-snapshots>
     <page-system-firmware-manualupdate>

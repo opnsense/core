@@ -157,11 +157,12 @@ class Dispatcher
         $controller->response = $response;
         $controller->security = new Security($session, $request);
 
-        $controller->initialize();
-
         if ($controller->beforeExecuteRoute($this) === false) {
             return false;
         }
+        /* call initialize() after authentication */
+        $controller->initialize();
+
         $this->returnedValue = $controller->{$this->action}(...$this->parameters);
         $session->close();
         $controller->afterExecuteRoute($this);

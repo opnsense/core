@@ -291,7 +291,6 @@ function core_cron()
     $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d syslog archive', '1');
     $jobs[]['autocron'] = array('/usr/local/sbin/expiretable -v -t 3600 sshlockout', '2');
     $jobs[]['autocron'] = array('/usr/local/sbin/expiretable -v -t 3600 virusprot', '3');
-    $jobs[]['autocron'] = array('/usr/local/etc/rc.expireaccounts', '4');
     $jobs[]['autocron'] = array('/usr/local/sbin/ping_hosts.sh', '*/4');
     $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d firmware changelog cron', '0', '22');
 
@@ -492,7 +491,7 @@ function core_user_changed_groups($unused, $username)
     global $config;
     if (is_array($config['system']['user'])) {
         foreach ($config['system']['user'] as $user) {
-            if ($user['name'] == $username) {
+            if ($user['name'] == $username && !empty($user['shell'])) {
                 exec("/usr/bin/groups " . escapeshellarg($username) . ' 2>/dev/null', $out, $ret);
                 $current_groups = [];
                 if (!$ret) {

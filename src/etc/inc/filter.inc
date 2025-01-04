@@ -352,8 +352,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     $rules .= "{$aliases} \n";
     $rules .= filter_setup_logging_interfaces($cnfint);
     $rules .= "\n";
-    $rules .= "set skip on pfsync0\n";
     $rules .= "set skip on lo0\n";
+    $rules .= "set skip on pfsync0\n";
     $rules .= "\n";
     $rules .= filter_generate_scrubbing($cnfint);
     $rules .= "\n";

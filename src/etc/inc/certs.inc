@@ -40,7 +40,8 @@ function &lookup_ca($refid)
         }
     }
 
-    return false;
+    $false = false;
+    return $false;
 }
 
 function &lookup_ca_by_subject($subject)
@@ -94,6 +95,9 @@ function ca_chain_array(&$cert)
     if ($cert['caref']) {
         $chain = array();
         $crt = lookup_ca($cert['caref']);
+        if (!$crt) {
+            return false;
+        }
         $chain[] = $crt;
         while ($crt) {
             $caref = isset($crt['caref']) ? $crt['caref'] : false;

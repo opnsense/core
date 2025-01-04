@@ -1,8 +1,7 @@
-#!/usr/local/bin/php
 <?php
 
 /*
- * Copyright (C) 2009 Shrew Soft Inc. <mgrooms@shrew.net>
+ * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,28 +26,21 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once 'config.inc';
-require_once 'auth.inc';
+namespace OPNsense\System;
 
-$a_users = &config_read_array('system', 'user');
+enum SystemStatusCode: int
+{
+    case ERROR = -1;
+    case WARNING = 0;
+    case NOTICE = 1;
+    case OK = 2;
 
-$removed = 0;
-
-foreach ($a_users as &$user) {
-    if (empty($user['expires']) || isset($user['disabled'])) {
-        continue;
+    public static function toValueNameArray(): array
+    {
+        $result = [];
+        foreach (self::cases() as $case) {
+            $result[$case->value] = $case->name;
+        }
+        return $result;
     }
-
-    echo "User {$user['name']} expires {$user['expires']}\n";
-
-    if (strtotime('-1 day') > strtotime($user['expires'])) {
-        echo "Disabling user '{$user['name']}'\n";
-        $user['disabled'] = true;
-        $removed++;
-    }
-}
-
-if ($removed > 0) {
-    write_config("Expired {$removed} user accounts");
-    local_sync_accounts();
 }

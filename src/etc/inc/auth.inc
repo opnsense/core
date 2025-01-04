@@ -243,6 +243,10 @@ function local_sync_accounts()
         $config_map[$section] = [];
         if (is_array($config['system'][$section])) {
             foreach ($config['system'][$section] as $item) {
+                if ($section == 'user' && empty($item['shell'])) {
+                    /* no shell, no local user */
+                    continue;
+                }
                 $this_id = $section == 'user' ? $item['uid'] : $item['gid'];
                 $config_map[$section][(string)$this_id] = $item['name'];
             }
@@ -266,7 +270,7 @@ function local_sync_accounts()
         }
     }
 
-    /* sync all local users */
+    /* sync all local users with a shell account configured (filtered in local_user_set()) */
     if (is_array($config['system']['user'])) {
         foreach ($config['system']['user'] as $user) {
             $userattrs = !empty($current_data['user'][$user['uid']]) ? $current_data['user'][$user['uid']] : [];
@@ -289,11 +293,14 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     if (empty($user['password'])) {
         auth_log("Cannot set user {$user['name']}: password is missing");
         return;
+    } elseif (empty($user['shell'])) {
+        /* no shell, no local user */
+        return;
     }
 
     @mkdir('/home', 0755);
 
-    $user_pass = $user['password'];
+    $user_pass = '*'; /* integrated authentication stores passwords, set local to unreachable */
     $user_name = $user['name'];
     $user_uid = $user['uid'];
     $comment = str_replace(array(':', '!', '@'), ' ', $user['descr']);
@@ -319,7 +326,6 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
          * authentication is off.
          */
         $lock_account = 'unlock';
-        $user_pass = '*';
     }
 
     if ($user_uid == 0) {
@@ -337,11 +343,6 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     $user_gid = $user_group == 'wheel' ? 0 : 65534;
 
     if (!$force_password) {
-        /* passwords only when integrated auth is disabled or forced */
-        if (empty($config['system']['disableintegratedauth'])) {
-            $user_pass = '*';
-        }
-
         /* read from pw db if not provided (batch mode) */
         if ($userattrs === null) {
             $fd = popen("/usr/sbin/pw usershow -n {$user_name}", 'r');
@@ -358,8 +359,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
         $user_op = 'useradd -m -k /usr/share/skel -o';
     } elseif (
         $userattrs[0] == $user_name &&
-        /* match only if disabled or enabled in order to detect a change */
-        ($userattrs[1] == '*' && $user_pass == '*' || $userattrs[1] != '*' && $user_pass != '*') &&
+        $userattrs[1] == '*' &&
         $userattrs[2] == $user_uid &&
         $userattrs[3] == $user_gid &&
         $userattrs[7] == $comment &&
@@ -402,7 +402,6 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
 
     mwexecf('/usr/sbin/pw %s %s', array($lock_account, $user_name), true);
 }
-
 
 function local_user_set_password(&$user, $password = null)
 {
@@ -499,7 +498,6 @@ function local_group_set($group)
 
     mwexecf('/usr/sbin/pw %s %s -g %s -M %s', array($group_op, $group_name, $group_gid, $group_members));
 }
-
 
 /**
  * @param $name string name of the authentication system configured on the authentication server page or 'Local Database' for local authentication

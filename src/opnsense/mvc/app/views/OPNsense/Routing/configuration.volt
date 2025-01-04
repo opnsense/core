@@ -35,6 +35,8 @@
             del:'/api/routing/settings/delGateway/',
             toggle:'/api/routing/settings/toggleGateway/',
             options: {
+                triggerEditFor: getUrlHash('edit'),
+                initialSearchPhrase: getUrlHash('search'),
                 selection: false,
                 multiSelect: false,
                 rowSelect: false,
@@ -90,6 +92,7 @@
         });
 
         $("#reconfigureAct").SimpleActionButton();
+
     });
 </script>
 

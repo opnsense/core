@@ -63,7 +63,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['httpaccesslog'] = isset($config['system']['webgui']['httpaccesslog']);
     $pconfig['disableconsolemenu'] = isset($config['system']['disableconsolemenu']);
     $pconfig['usevirtualterminal'] = isset($config['system']['usevirtualterminal']);
-    $pconfig['disableintegratedauth'] = !empty($config['system']['disableintegratedauth']);
     $pconfig['sudo_allow_wheel'] = $config['system']['sudo_allow_wheel'];
     $pconfig['sudo_allow_group'] = isset($config['system']['sudo_allow_group']) ? $config['system']['sudo_allow_group'] : null;
     $pconfig['user_allow_gen_token'] = isset($config['system']['user_allow_gen_token']) ? explode(",", $config['system']['user_allow_gen_token']) : [];
@@ -239,12 +238,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['usevirtualterminal'] = true;
         } elseif (isset($config['system']['usevirtualterminal'])) {
             unset($config['system']['usevirtualterminal']);
-        }
-
-        if (!empty($pconfig['disableintegratedauth'])) {
-            $config['system']['disableintegratedauth'] = true;
-        } elseif (isset($config['system']['disableintegratedauth'])) {
-            unset($config['system']['disableintegratedauth']);
         }
 
         if (!empty($pconfig['sudo_allow_wheel'])) {
@@ -1039,16 +1032,6 @@ $(document).ready(function() {
                     <?= gettext('Select one or more authentication servers to validate user credentials against. ' .
                         'Multiple servers can make sense with remote authentication methods to provide a fallback ' .
                         'during connectivity issues. When nothing is specified the default of "Local Database" is used.') ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td></td>
-                <td>
-                  <input name="disableintegratedauth" type="checkbox" value="yes" <?= empty($pconfig['disableintegratedauth']) ? '' : 'checked="checked"' ?>  />
-                  <?=gettext("Disable integrated authentication"); ?>
-                  <div class="hidden" data-for="help_for_authmode">
-                    <?= gettext('When set, console login, SSH, and other system services can only use standard UNIX account authentication.') ?>
                   </div>
                 </td>
               </tr>

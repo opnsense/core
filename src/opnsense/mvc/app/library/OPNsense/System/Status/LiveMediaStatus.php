@@ -29,14 +29,16 @@
 namespace OPNsense\System\Status;
 
 use OPNsense\System\AbstractStatus;
+use OPNsense\System\SystemStatusCode;
 use OPNsense\Core\Config;
 
 class LiveMediaStatus extends AbstractStatus
 {
     public function __construct()
     {
-        /* XXX historically tied to the dashboard but only given because controller will not allow an omission */
-        $this->internalLogLocation = '/ui/core/dashboard';
+        $this->internalPriority = 2;
+        $this->internalPersistent = true;
+        $this->internalTitle = gettext('Live Media');
 
         /*
          * Despite unionfs underneath, / is still not writeable,
@@ -54,7 +56,7 @@ class LiveMediaStatus extends AbstractStatus
             return;
         }
 
-        $this->internalStatus = static::STATUS_WARNING;
+        $this->internalStatus = SystemStatusCode::NOTICE;
         $this->internalMessage = gettext('You are currently running in live media mode. A reboot will reset the configuration.');
         if (empty(Config::getInstance()->object()->system->ssh->noauto)) {
             exec('/bin/pgrep -anx sshd', $output, $retval); /* XXX portability shortcut */

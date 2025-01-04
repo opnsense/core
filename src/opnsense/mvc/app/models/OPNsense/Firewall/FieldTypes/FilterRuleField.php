@@ -54,7 +54,7 @@ class FilterRuleContainerField extends ContainerField
             'label' => $this->getAttribute('uuid')
         ];
         $map_manual = ['source_net', 'source_not', 'source_port', 'destination_net', 'destination_not',
-            'destination_port', 'enabled', 'description', 'sequence', 'action'];
+            'destination_port', 'enabled', 'description', 'sequence', 'action', 'replyto'];
         // 1-on-1 map (with type conversion if needed)
         foreach ($this->iterateItems() as $key => $node) {
             if (!in_array($key, $map_manual)) {
@@ -70,30 +70,29 @@ class FilterRuleContainerField extends ContainerField
             }
         }
         // source / destination mapping
-        $result['source'] = array();
         if (!empty((string)$this->source_net)) {
-            $result['source']['network'] = (string)$this->source_net;
+            $result['from'] = (string)$this->source_net;
             if (!empty((string)$this->source_not)) {
-                $result['source']['not'] = true;
+                $result['from_not'] = true;
             }
             if (!empty((string)$this->source_port)) {
-                $result['source']['port'] = (string)$this->source_port;
+                $result['from_port'] = (string)$this->source_port;
             }
         }
-        $result['destination'] = array();
         if (!empty((string)$this->destination_net)) {
-            $result['destination']['network'] = (string)$this->destination_net;
+            $result['to'] = (string)$this->destination_net;
             if (!empty((string)$this->destination_not)) {
-                $result['destination']['not'] = true;
+                $result['to_not'] = true;
             }
             if (!empty((string)$this->destination_port)) {
-                $result['destination']['port'] = (string)$this->destination_port;
+                $result['to_port'] = (string)$this->destination_port;
             }
         }
         // field mappings and differences
         $result['disabled'] = empty((string)$this->enabled);
         $result['descr'] = (string)$this->description;
         $result['type'] = (string)$this->action;
+        $result['reply-to'] = (string)$this->replyto;
         if (strpos((string)$this->interface, ",") !== false) {
             $result['floating'] = true;
         }

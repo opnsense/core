@@ -39,7 +39,7 @@
     </field>
     <field>
         <type>header</type>
-        <label><![CDATA[Configuration Synchronization Settings (XMLRPC Sync) <a href="/status_habackup.php">Perform synchronization </a>]]></label>
+        <label><![CDATA[Configuration Synchronization Settings (XMLRPC Sync) <a href="/ui/core/hasync_status">Perform synchronization </a>]]></label>
     </field>
     <field>
         <id>hasync.synchronizetoip</id>

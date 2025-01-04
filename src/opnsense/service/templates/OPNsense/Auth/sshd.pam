@@ -5,18 +5,14 @@
 # auth
 #auth		sufficient	pam_krb5.so		no_warn try_first_pass
 #auth		sufficient	pam_ssh.so		no_warn try_first_pass
-{% if system.disableintegratedauth|default('0') == '0' %}
 auth		sufficient	pam_opnsense.so		authtok_prompt=Password:
-{% endif %}
 auth		required	pam_unix.so		no_warn try_first_pass authtok_prompt=Password:
 
 # account
 account		required	pam_nologin.so
 #account	required	pam_krb5.so
 account		required	pam_login_access.so
-{% if system.disableintegratedauth|default('0') == '0' %}
 account		sufficient	pam_opnsense.so
-{% endif %}
 account		required	pam_unix.so
 
 # session

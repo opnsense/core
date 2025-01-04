@@ -29,20 +29,22 @@
 namespace OPNsense\System\Status;
 
 use OPNsense\System\AbstractStatus;
+use OPNsense\System\SystemStatusCode;
 
 class SystemBootingStatus extends AbstractStatus
 {
     public function __construct()
     {
-        /* XXX historically tied to the dashboard but only given because controller will not allow an omission */
-        $this->internalLogLocation = '/ui/core/dashboard';
+        $this->internalPriority = 1;
+        $this->internalPersistent = true;
+        $this->internalTitle = gettext('System Booting');
 
         /* XXX boot detection from final class product in config.inc */
         $fp = fopen('/var/run/booting', 'a+e');
         if ($fp) {
             if (!flock($fp, LOCK_SH | LOCK_NB)) {
                 $this->internalMessage = gettext('The system is currently booting. Not all services have been started yet.');
-                $this->internalStatus = static::STATUS_WARNING;
+                $this->internalStatus = SystemStatusCode::WARNING;
             }
             fclose($fp);
         }

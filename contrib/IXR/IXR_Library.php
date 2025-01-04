@@ -176,6 +176,7 @@ class IXR_Message
     var $faultString;
     var $methodName;
     var $params;
+    var $currentTag;
 
     // Current variable stacks
     var $_arraystructs = array();   // The stack used to keep track of the current array/struct

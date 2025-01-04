@@ -80,6 +80,7 @@
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20230717
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20240105
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20240611
+/usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20241217
 /usr/local/etc/rc
 /usr/local/etc/rc.bootup
 /usr/local/etc/rc.carp_service_status.d/.placeholder
@@ -90,7 +91,6 @@
 /usr/local/etc/rc.d/configd
 /usr/local/etc/rc.d/flowd_aggregate
 /usr/local/etc/rc.d/netflow
-/usr/local/etc/rc.expireaccounts
 /usr/local/etc/rc.filter_configure
 /usr/local/etc/rc.filter_synchronize
 /usr/local/etc/rc.firmware
@@ -244,6 +244,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/DashboardController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/FirmwareController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/HasyncController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/HasyncStatusController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/MenuController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/SnapshotsController.php
@@ -253,6 +254,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/FirmwareController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/HaltController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/HasyncController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/HasyncStatusController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/IndexController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/LicenseController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/RebootController.php
@@ -570,6 +572,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/LiveMediaStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/SystemBootingStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/SystemStatus.php
+/usr/local/opnsense/mvc/app/library/OPNsense/System/SystemStatusCode.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Trust/Store.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/FieldTypes/ApiKeyField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/FieldTypes/ExpiresField.php
@@ -579,6 +582,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/FieldTypes/PrivField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/FieldTypes/StoreB64Field.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/FieldTypes/UidField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Auth/FieldTypes/UsernameField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/Group.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/Group.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/Priv.php
@@ -637,9 +641,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validation.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/ValidationException.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/CallbackValidator.php
-/usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/CsvListValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/Email.php
-/usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/InclusionIn.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/IntegerValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/MinMaxValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/NetworkValidator.php
@@ -862,6 +864,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/firmware.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/halt.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/hasync.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Core/hasync_status.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/license.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/not_found.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/reboot.volt
@@ -1260,6 +1263,7 @@
 /usr/local/opnsense/scripts/system/crl_fetch.py
 /usr/local/opnsense/scripts/system/flush_config_history
 /usr/local/opnsense/scripts/system/get_locales.php
+/usr/local/opnsense/scripts/system/ha_xmlrpc_exec.php
 /usr/local/opnsense/scripts/system/nameservers.php
 /usr/local/opnsense/scripts/system/remote_backup.php
 /usr/local/opnsense/scripts/system/rfc5246_cipher_suites.csv
@@ -2189,6 +2193,7 @@
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/bootstrap-select.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/dashboard.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/dns-overview.css
+/usr/local/opnsense/www/themes/opnsense-dark/build/css/jquery.bootgrid.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/main.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/nv.d3.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/tokenize2.css
@@ -2400,7 +2405,6 @@
 /usr/local/www/services_ntpd_pps.php
 /usr/local/www/services_opendns.php
 /usr/local/www/services_router_advertisements.php
-/usr/local/www/status_habackup.php
 /usr/local/www/status_ntpd.php
 /usr/local/www/status_wireless.php
 /usr/local/www/system_advanced_admin.php

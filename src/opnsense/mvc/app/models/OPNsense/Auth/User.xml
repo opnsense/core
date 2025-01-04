@@ -4,9 +4,7 @@
     <items>
         <user type="ArrayField">
             <uid type=".\UidField"/>
-            <name type="TextField">
-                <Mask>/^[a-zA-Z0-9\.\-_]{1,32}$/</Mask>
-                <ValidationMessage>A username must contain a maximum of 32 alfanumeric characters</ValidationMessage>
+            <name type=".\UsernameField">
                 <Required>Y</Required>
                 <Constraints>
                     <check001>
@@ -51,6 +49,7 @@
                 <Multiple>Y</Multiple>
             </group_memberships>
             <descr type="DescriptionField"/>
+            <dashboard type="TextField"/>
         </user>
     </items>
 </model>

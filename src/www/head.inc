@@ -183,22 +183,9 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
           $('html,aside').scrollTop(($(this).offset().top - navbar_center));
       });
 
-      // Create status dialog instance
-      let dialog = new BootstrapDialog({
-          title: "<?= html_safe(gettext('System Status')) ?>",
-          buttons: [{
-              label: "<?= html_safe(gettext('Close')) ?>",
-              action: function(dialogRef) {
-                  dialogRef.close();
-              }
-          }],
-      });
-
+      // artifical delay for UX reasons
       setTimeout(function () {
-          updateSystemStatus().then((data) => {
-              let status = parseStatus(data);
-              registerStatusDelegate(dialog, status);
-          });
+          updateSystemStatus();
       }, 500);
 
       // hook in live menu search

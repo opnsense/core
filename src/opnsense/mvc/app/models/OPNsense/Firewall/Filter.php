@@ -41,20 +41,20 @@ class Filter extends BaseModel
     public function performValidation($validateFullModel = false)
     {
         $config = Config::getInstance()->object();
-
+        $port_protos = ['TCP', 'UDP', 'TCP/UDP'];
         // standard model validations
         $messages = parent::performValidation($validateFullModel);
         foreach ([$this->rules->rule, $this->snatrules->rule] as $rules) {
             foreach ($rules->iterateItems() as $rule) {
                 if ($validateFullModel || $rule->isFieldChanged()) {
                     // port / protocol validation
-                    if (!empty((string)$rule->source_port) && !in_array($rule->protocol, ['TCP', 'UDP'])) {
+                    if (!empty((string)$rule->source_port) && !in_array($rule->protocol, $port_protos)) {
                         $messages->appendMessage(new Message(
                             gettext("Source ports are only valid for tcp or udp type rules."),
                             $rule->source_port->__reference
                         ));
                     }
-                    if (!empty((string)$rule->destination_port) && !in_array($rule->protocol, ['TCP', 'UDP'])) {
+                    if (!empty((string)$rule->destination_port) && !in_array($rule->protocol, $port_protos)) {
                         $messages->appendMessage(new Message(
                             gettext("Destination ports are only valid for tcp or udp type rules."),
                             $rule->destination_port->__reference
@@ -77,6 +77,19 @@ class Filter extends BaseModel
                             $rule->source_net->__reference
                         ));
                     }
+                    // when multiple values are offered for source/destination, prevent "any" being used in combination
+                    foreach (['source_net', 'destination_net'] as $fieldname) {
+                        if (
+                            strpos($rule->$fieldname, ',') !== false &&
+                            in_array('any', explode(',', $rule->$fieldname))
+                        ) {
+                            $messages->appendMessage(new Message(
+                                gettext("Any can not be combined with other aliases"),
+                                $rule->$fieldname->__reference
+                            ));
+                        }
+                    }
+
                     // Additional source nat validations
                     if ($rule->target !== null) {
                         $target_is_addr = Util::isSubnet($rule->target) || Util::isIpAddress($rule->target);
@@ -87,12 +100,23 @@ class Filter extends BaseModel
                                 $rule->target->__reference
                             ));
                         }
-                        if (!empty((string)$rule->target_port) && !in_array($rule->protocol, ['TCP', 'UDP'])) {
+                        if (!empty((string)$rule->target_port) && !in_array($rule->protocol, $port_protos)) {
                             $messages->appendMessage(new Message(
                                 gettext("Target ports are only valid for tcp or udp type rules."),
                                 $rule->target_port->__reference
                             ));
                         }
+                    }
+
+                    if (
+                        !empty((string)$rule->interfacenot) && (
+                        count(explode(',', $rule->interface)) != 1 || empty((string)$rule->interface)
+                        )
+                    ) {
+                        $messages->appendMessage(new Message(
+                            gettext("Inverting interfaces is only allowed for single targets to avoid mis-interpretations"),
+                            $rule->interfacenot->__reference
+                        ));
                     }
                 }
             }

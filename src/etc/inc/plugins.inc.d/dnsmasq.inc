@@ -178,6 +178,7 @@ function dnsmasq_configure_do($verbose = false)
     if (isset($config['dnsmasq']['dnssec'])) {
         $args .= ' --dnssec ';
         $args .= ' --trust-anchor=.,20326,8,2,E06D44B80B8F1D39A95C0B0D7C65D08458E880409BBC683457104237C7F8EC8D ';
+        $args .= ' --trust-anchor=.,38696,8,2,683D2D0ACB8C9B712A1948B27F741219298D0A450D612C483AF444A4C0FB2B16 ';
     }
 
     if (isset($config['dnsmasq']['log_queries'])) {

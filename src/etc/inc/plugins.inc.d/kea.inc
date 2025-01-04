@@ -69,7 +69,7 @@ function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details
             if (empty($ip_address) || empty($hostname)) {
                 continue;
             } elseif (
-                filter_var((string)$reservation->hostname, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false
+                filter_var((string)$reservation->hostname, FILTER_VALIDATE_DOMAIN) === false
             ) {
                 syslog(
                     LOG_WARNING,

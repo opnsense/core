@@ -464,6 +464,8 @@ style-model:
 
 style: style-python style-php
 
+glint: sweep style-fix plist-fix lint
+
 license: debug
 	@${.CURDIR}/Scripts/license > ${.CURDIR}/LICENSE
 

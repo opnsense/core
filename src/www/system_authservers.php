@@ -98,8 +98,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $pconfig['sync_memberof_groups'] = explode(",", $a_server[$id]['ldap_sync_memberof_groups']);
             }
             if (!empty($a_server[$id]['ldap_sync_default_groups'])) {
-              $pconfig['sync_default_groups'] = explode(",", $a_server[$id]['ldap_sync_default_groups']);
-          }
+                $pconfig['sync_default_groups'] = explode(",", $a_server[$id]['ldap_sync_default_groups']);
+            }
         } elseif ($pconfig['type'] == "radius") {
             $pconfig['radius_host'] = $a_server[$id]['host'] ?? '';
             $pconfig['radius_auth_port'] = $a_server[$id]['radius_auth_port'] ?? '';

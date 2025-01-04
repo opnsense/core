@@ -34,10 +34,23 @@ namespace OPNsense\Base\FieldTypes;
  */
 class ProtocolField extends BaseListField
 {
+    private $additionalOptions = [];
+
     /**
      * @var array cached collected protocols
      */
-    private static $internalStaticOptionList = array();
+    private static $internalStaticOptionList = [];
+
+    /**
+     * setter for maximum value
+     * @param integer $value
+     */
+    public function setAddOptions($value)
+    {
+        if (is_array($value)) {
+            $this->additionalOptions = $value;
+        }
+    }
 
     /**
      * generate validation data (list of protocols)
@@ -46,20 +59,26 @@ class ProtocolField extends BaseListField
     {
         /* IPv6 extension headers are skipped by the packet filter, we cannot police them */
         $ipv6_ext = array('IPV6-ROUTE', 'IPV6-FRAG', 'IPV6-OPTS', 'IPV6-NONXT', 'MOBILITY-HEADER');
-        if (empty(self::$internalStaticOptionList)) {
-            self::$internalStaticOptionList = array('any' => gettext('any'));
+        $opt_hash = empty($this->additionalOptions) ? hash('sha256', json_encode($this->additionalOptions)) : '-';
+        if (empty(self::$internalStaticOptionList[$opt_hash])) {
+            self::$internalStaticOptionList[$opt_hash] = ['any' => gettext('any')];
             foreach (explode("\n", file_get_contents('/etc/protocols')) as $line) {
                 if (substr($line, 0, 1) != "#") {
                     $parts = preg_split('/\s+/', $line);
                     if (count($parts) >= 4 && $parts[1] > 0) {
                         $protocol = trim(strtoupper($parts[0]));
                         if (!in_array($protocol, $ipv6_ext) && !isset(self::$internalStaticOptionList[$protocol])) {
-                            self::$internalStaticOptionList[$protocol] = $protocol;
+                            self::$internalStaticOptionList[$opt_hash][$protocol] = $protocol;
                         }
                     }
                 }
             }
+            /* append additional options */
+            foreach ($this->additionalOptions as $prop => $value) {
+                self::$internalStaticOptionList[$opt_hash][$prop] = $value;
+            }
+            asort(self::$internalStaticOptionList[$opt_hash], SORT_NATURAL | SORT_FLAG_CASE);
         }
-        $this->internalOptionList = self::$internalStaticOptionList;
+        $this->internalOptionList = self::$internalStaticOptionList[$opt_hash];
     }
 }

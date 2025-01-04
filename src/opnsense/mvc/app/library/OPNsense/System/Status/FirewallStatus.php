@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2022 Deciso B.V.
+ * Copyright (C) 2022-2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,7 @@
 namespace OPNsense\System\Status;
 
 use OPNsense\System\AbstractStatus;
+use OPNsense\System\SystemStatusCode;
 
 class FirewallStatus extends AbstractStatus
 {
@@ -36,11 +37,13 @@ class FirewallStatus extends AbstractStatus
 
     public function __construct()
     {
+        $this->internalPriority = 20;
+        $this->internalTitle = gettext('Firewall');
         $this->internalLogLocation = '/ui/diagnostics/log/core/firewall';
 
         if (file_exists($this->rules_error)) {
-            $this->internalMessage = file_get_contents($this->rules_error);
-            $this->internalStatus = static::STATUS_ERROR;
+            $this->internalMessage = file_get_contents($this->rules_error); /* XXX */
+            $this->internalStatus = SystemStatusCode::ERROR;
             $info = stat($this->rules_error);
             if (!empty($info['mtime'])) {
                 $this->internalTimestamp = $info['mtime'];
