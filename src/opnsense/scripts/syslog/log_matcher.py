@@ -28,7 +28,6 @@
 
 import os
 import glob
-import re
 import sys
 import subprocess
 import select
@@ -38,20 +37,20 @@ from log_helper import reverse_log_reader
 
 class LogMatcher:
     def __init__(self, filter, filename, module, severity):
-        try:
-            self.filter = filter.replace('*', '.*').lower()
-            if self.filter.find('*') == -1:
-                # no wildcard operator, assume partial match
-                self.filter = ".*%s.*" % filter
-            self.filter_regexp = re.compile(self.filter)
-        except re.error:
-            # remove illegal expression
-            self.filter_regexp = re.compile('.*')
-
+        self.filter_clauses = filter.lower().split()
         self.filename = filename
         self.log_filenames = self.fetch_log_filenames(filename, module)
         self.severity = severity.split(',') if severity.strip() != '' else []
         self.row_number = 0
+
+    def _match_line(self, line):
+        # matcher, checks if all clauses are matched.
+        tmp = line.lower()
+        for clause in self.filter_clauses:
+            if tmp.find(clause) == -1:
+                return False
+
+        return line != ''
 
     def live_match_records(self):
         # row number does not make sense anymore, set it to 0
@@ -75,7 +74,7 @@ class LogMatcher:
                         yield None
                         continue
                     line = p.stdout.readline()
-                    if line != "" and self.filter_regexp.match(('%s' % line).lower()):
+                    if self._match_line(line):
                         record = self.parse_line(line, format_container)
                         if len(self.severity) == 0 or record['severity'] is None or record['severity'] in self.severity:
                             yield record
@@ -90,7 +89,7 @@ class LogMatcher:
                 format_container = FormatContainer(filename)
                 for rec in reverse_log_reader(filename):
                     self.row_number += 1
-                    if rec['line'] != "" and self.filter_regexp.match(('%s' % rec['line']).lower()):
+                    if self._match_line(rec['line']):
                         record = self.parse_line(rec['line'], format_container)
                         if len(self.severity) == 0 or record['severity'] is None or record['severity'] in self.severity:
                             yield record

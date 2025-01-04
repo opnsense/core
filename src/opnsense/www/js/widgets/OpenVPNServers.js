@@ -24,12 +24,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseTableWidget from "./BaseTableWidget.js";
-
 export default class OpenVPNServers extends BaseTableWidget {
     constructor() {
         super();
-        this.resizeHandles = "e, w";
     }
 
     getGridOptions() {
@@ -65,10 +62,17 @@ export default class OpenVPNServers extends BaseTableWidget {
             let color = "text-muted";
             // disabled servers are not included in the list. Stopped servers have no "status" property
             if (server.status) {
-                if (server.status === 'failed') {
-                    color = "text-danger";
-                } else {
-                    color = "text-success";
+                switch (server.status) {
+                    case 'connected':
+                    case 'ok':
+                        color = "text-success";
+                        break;
+                    case 'failed':
+                        color = "text-danger";
+                        break;
+                    default:
+                        color = "text-warning";
+                        break;
                 }
             } else {
                 stopped = true;
@@ -82,7 +86,9 @@ export default class OpenVPNServers extends BaseTableWidget {
                         title="${server.status || this.translations.stopped}">
                     </i>
                     &nbsp;
-                    <a href="/ui/openvpn/status">${server.description || this.translations.client}</a>
+                    <a href="/ui/openvpn/status#search=${encodeURIComponent(server.description)}" target="_blank" rel="noopener noreferrer">
+                        ${server.description || this.translations.client}
+                    </a>
                     <i class="fa fa-arrows-h" style="font-size: 13px;"></i>
                     ${server.real_address || ''}
                 </div>

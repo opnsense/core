@@ -82,29 +82,38 @@ class DashboardController extends ApiControllerBase
     private function getDefaultDashboard()
     {
         return [
-            ['id' => 'systeminformation', 'x' => 0, 'y' => 0],
-            ['id' => 'memory', 'x' => 2, 'y' => 0],
-            ['id' => 'disk', 'x' => 3, 'y' => 0],
-            ['id' => 'interfacestatistics', 'x' => 4, 'y' => 0, 'w' => 4],
-            ['id' => 'cpu', 'x' => 8, 'y' => 0],
-            ['id' => 'announcements', 'x' => 8, 'y' => 2],
-            ['id' => 'traffic', 'x' => 2, 'y' => 2],
-            ['id' => 'gateways', 'x' => 10, 'y' => 0],
-            ['id' => 'firewall', 'x' => 4, 'y' => 2, 'w' => 4],
+            'options' => [],
+            'widgets' => [
+                ['id' => 'systeminformation', 'x' => 0, 'y' => 0, 'w' => 2],
+                ['id' => 'memory', 'x' => 2, 'y' => 0],
+                ['id' => 'disk', 'x' => 3, 'y' => 0],
+                ['id' => 'interfacestatistics', 'x' => 4, 'y' => 0, 'w' => 4],
+                ['id' => 'firewall', 'x' => 8, 'y' => 0, 'w' => 4],
+                ['id' => 'gateways', 'x' => 2, 'y' => 1, 'w' => 2],
+                ['id' => 'services', 'x' => 4, 'y' => 1, 'w' => '4'],
+                ['id' => 'traffic', 'x' => 8, 'y' => 1, 'w' => 4],
+                ['id' => 'cpu', 'x' => 0, 'y' => 1, 'w' => 2],
+                ['id' => 'announcements', 'x' => 2, 'y' => 2, 'w' => 2],
+            ]
         ];
     }
 
     public function getDashboardAction()
     {
-        $this->sessionClose();
         $result = [];
         $dashboard = null;
 
         $config = Config::getInstance()->object();
         foreach ($config->system->user as $node) {
             if ($this->getUserName() === (string)$node->name) {
-                $dashboard = (string)$node->dashboard;
+                // json_decode returns null if json is invalid
+                $dashboard = json_decode(base64_decode((string)$node->dashboard), true);
+                break;
             }
+        }
+
+        if (empty($dashboard)) {
+            $dashboard = $this->getDefaultDashboard();
         }
 
         $result['modules'] = [];
@@ -113,8 +122,13 @@ class DashboardController extends ApiControllerBase
             foreach ($md as $widgetId => $metadataAttributes) {
                 $widgetId = (string)$widgetId;
                 $fname = (string)$metadataAttributes->filename;
+                $link = (string)$metadataAttributes->link;
                 $endpoints = (array)($metadataAttributes->endpoints->endpoint ?? []);
                 $translations = (array)($metadataAttributes->translations ?? []);
+
+                if (!empty($link) && !$this->canAccessEndpoints([$link])) {
+                    $link = '';
+                }
 
                 if (!$this->canAccessEndpoints($endpoints)) {
                     continue;
@@ -131,12 +145,19 @@ class DashboardController extends ApiControllerBase
                 $result['modules'][] = [
                     'id' => $widgetId,
                     'module' => $fname,
+                    'link' => $link,
                     'translations' => $translations
                 ];
             }
         }
 
-        $result['dashboard'] = !empty($dashboard) ? base64_decode($dashboard) : json_encode($this->getDefaultDashboard());
+        // filter widgets according to metadata
+        $moduleIds = array_column($result['modules'], 'id');
+        $filteredWidgets = array_filter($dashboard['widgets'], function ($widget) use ($moduleIds) {
+            return in_array($widget['id'], $moduleIds);
+        });
+        $dashboard['widgets'] = array_values($filteredWidgets);
+        $result['dashboard'] = $dashboard;
 
         return $result;
     }
@@ -145,10 +166,11 @@ class DashboardController extends ApiControllerBase
     {
         $result = ['result' => 'failed'];
 
-        if ($this->request->isPost() && !empty($this->request->getRawBody())) {
-            $dashboard = $this->request->getRawBody();
+        if ($this->request->isPost() && $this->request->hasPost('widgets')) {
+            $dashboard = json_encode($this->request->getPost());
             if (strlen($dashboard) > (1024 * 1024)) {
                 // prevent saving large blobs of data
+                $result['message'] = 'dashboard size limit reached';
                 return $result;
             }
 
@@ -197,7 +219,10 @@ class DashboardController extends ApiControllerBase
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $output = curl_exec($ch);
         curl_close($ch);
-        $payload = simplexml_load_string($output);
+        $payload = @simplexml_load_string($output);
+        if (empty($payload)) {
+            return $result;
+        }
         foreach ($payload->channel->children() as $key => $node) {
             if ($key == 'item') {
                 $result['items'][] = [
@@ -209,6 +234,25 @@ class DashboardController extends ApiControllerBase
                 ];
             }
         }
+        return $result;
+    }
+
+    public function pictureAction()
+    {
+        $result = ['result' => 'failed'];
+        $config = Config::getInstance()->object();
+        if (!empty($config->system->picture) && !empty($config->system->picture_filename)) {
+            $ext = pathinfo((string)$config->system->picture_filename, PATHINFO_EXTENSION);
+            if (empty($ext)) {
+                return $result;
+            }
+            return [
+                'result' => 'ok',
+                'mime' => 'image/' . $ext,
+                'picture' => (string)$config->system->picture,
+            ];
+        }
+
         return $result;
     }
 }

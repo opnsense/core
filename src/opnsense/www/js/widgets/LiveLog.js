@@ -24,8 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseTableWidget from "./BaseTableWidget.js";
-
 export default class LiveLog extends BaseTableWidget {
     constructor(config) {
         super(config);
@@ -53,9 +51,9 @@ export default class LiveLog extends BaseTableWidget {
             offset: 10,
             searchPhrase: '',
             severity: ''
-        });
+        }).toString();
 
-        super.openEventSource(`/api/diagnostics/log/core/system/live?${params.toString()}`, (event) => {
+        super.openEventSource(`/api/diagnostics/log/core/system/${'live?' + params}`, (event) => {
             if (!event) {
                 super.closeEventSource();
             }

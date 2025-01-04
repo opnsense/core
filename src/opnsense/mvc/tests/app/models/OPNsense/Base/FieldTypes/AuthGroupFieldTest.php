@@ -71,7 +71,7 @@ class AuthGroupFieldTest extends Field_Framework_TestCase
     public function testSelectSetWithUnknownValue()
     {
         $this->expectException(\OPNsense\Base\ValidationException::class);
-        $this->expectExceptionMessage("CsvListValidator");
+        $this->expectExceptionMessage("CallbackValidator");
         // init field
         $field = new AuthGroupField();
         $field->eventPostLoading();
@@ -100,7 +100,7 @@ class AuthGroupFieldTest extends Field_Framework_TestCase
     public function testSelectSetOnSingleValue()
     {
         $this->expectException(\OPNsense\Base\ValidationException::class);
-        $this->expectExceptionMessage("InclusionIn");
+        $this->expectExceptionMessage("CallbackValidator");
         // init field
         $field = new AuthGroupField();
         $field->eventPostLoading();

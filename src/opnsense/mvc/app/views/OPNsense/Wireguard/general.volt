@@ -41,12 +41,13 @@
                 del: '/api/wireguard/client/delClient/',
                 toggle: '/api/wireguard/client/toggleClient/',
                 options:{
-                requestHandler: function(request){
-                    if ( $('#server_filter').val().length > 0) {
-                        request['servers'] = $('#server_filter').val();
+                    initialSearchPhrase: getUrlHash('search'),
+                    requestHandler: function(request){
+                        if ( $('#server_filter').val().length > 0) {
+                            request['servers'] = $('#server_filter').val();
+                        }
+                        return request;
                     }
-                    return request;
-                }
             }
         });
         grid_peers.on("loaded.rs.jquery.bootgrid", function (e){
@@ -307,7 +308,7 @@
                 <tr>
                     <td colspan="6"></td>
                     <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
+                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-plus"></span></button>
                         <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
                     </td>
                 </tr>
@@ -339,7 +340,7 @@
                 <tr>
                     <td colspan="7"></td>
                     <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
+                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-plus"></span></button>
                         <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
                     </td>
                 </tr>

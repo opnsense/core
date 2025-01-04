@@ -364,16 +364,43 @@ abstract class BaseField
     }
 
     /**
+     * return field current value
+     * @return null|string field current value
+     */
+    public function getCurrentValue(): ?string
+    {
+        return (string)$this->internalValue;
+    }
+
+    /**
+     * check if field value is numeric
+     * @return bool
+     */
+    public function isNumeric(): bool
+    {
+        return is_numeric($this->getCurrentValue());
+    }
+
+    /**
+     * Try to convert to current value as float
+     * @return float
+     */
+    public function asFloat(): float
+    {
+        return floatval($this->getCurrentValue());
+    }
+
+    /**
      * default setter
-     * @param string $value set field value
+     * @param SimpleXMLElement|string $value set field value
      */
     public function setValue($value)
     {
         // if first set and not altered by the user, store initial value
         if ($this->internalFieldLoaded === false && $this->internalInitialValue === false) {
-            $this->internalInitialValue = $value;
+            $this->internalInitialValue = (string)$value;
         }
-        $this->internalValue = $value;
+        $this->internalValue = (string)$value;
         // apply filters, may be extended later.
         $filters = array('applyFilterChangeCase');
         foreach ($filters as $filter) {
@@ -470,9 +497,28 @@ abstract class BaseField
         if ($this->hasChild($name)) {
             return $this->internalChildnodes[$name];
         }
+        return null;
     }
 
-    public function isRequired()
+    /**
+     * check if current value is empty  (either boolean field as false or an empty field)
+     * @return bool
+     */
+    public function isEmpty(): bool
+    {
+        return empty($this->getCurrentValue());
+    }
+
+    /**
+     * check if current value is empty AND NOT zero (either boolean field as false or an empty field)
+     * @return bool
+     */
+    public function isEmptyString(): bool
+    {
+        return $this->getCurrentValue() !== "0" && $this->isEmpty();
+    }
+
+    public function isRequired(): bool
     {
         return $this->internalIsRequired;
     }
@@ -481,13 +527,9 @@ abstract class BaseField
      * check if this field is unused and required
      * @return bool
      */
-    public function isEmptyAndRequired()
+    public function isEmptyAndRequired(): bool
     {
-        if ($this->internalIsRequired && ($this->internalValue == "" || $this->internalValue == null)) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->internalIsRequired && ($this->internalValue == "" || $this->internalValue == null);
     }
 
     /**

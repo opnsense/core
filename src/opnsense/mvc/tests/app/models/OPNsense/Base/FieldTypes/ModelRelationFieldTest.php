@@ -86,7 +86,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         ));
         $field->eventPostLoading();
         $field->setValue("5ea2a35c-b02b-485a-912b-d077e639bf9f,60e1bc02-6817-4940-bbd3-61d0cf439a8a");
-        $this->assertEquals($this->validate($field), ['InclusionIn']);
+        $this->assertEquals($this->validate($field), ['CallbackValidator']);
     }
 
     /**
@@ -142,7 +142,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         ));
         $field->eventPostLoading();
         $field->setValue("'',5ea2a35c-b02b-485a-912b-d077e639bf9f");
-        $this->assertEquals($this->validate($field), ['CsvListValidator']);
+        $this->assertEquals($this->validate($field), ['CallbackValidator']);
     }
 
     /**
@@ -184,7 +184,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         ));
         $field->eventPostLoading();
         $field->setValue("Not an option");
-        $this->assertEquals($this->validate($field), ['CsvListValidator']);
+        $this->assertEquals($this->validate($field), ['CallbackValidator']);
     }
 
     /**
@@ -267,7 +267,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         ));
         $field->eventPostLoading();
         $field->setValue("XX5ea2a35c-b02b-485a-912b-d077e639bf9f");
-        $this->assertEquals($this->validate($field), ['InclusionIn']);
+        $this->assertEquals($this->validate($field), ['CallbackValidator']);
     }
 
     /**
@@ -305,7 +305,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         ));
         $field->eventPostLoading();
         $field->setValue("x4d0e2835-7a19-4a19-8c23-e12383827594,5ea2a35c-b02b-485a-912b-d077e639bf9f");
-        $this->assertEquals($this->validate($field), ['CsvListValidator']);
+        $this->assertEquals($this->validate($field), ['CallbackValidator']);
     }
 
     /**
@@ -324,7 +324,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         ));
         $field->eventPostLoading();
         $field->setValue("4d0e2835-7a19-4a19-8c23-e12383827594,5ea2a35c-b02b-485a-912b-d077e639bf9f");
-        $this->assertEquals($this->validate($field), ['InclusionIn']);
+        $this->assertEquals($this->validate($field), ['CallbackValidator']);
     }
 
     /**

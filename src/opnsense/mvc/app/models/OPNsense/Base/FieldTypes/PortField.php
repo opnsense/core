@@ -203,8 +203,7 @@ class PortField extends BaseListField
     }
 
     /**
-     * retrieve field validators for this field type
-     * @return array returns InclusionIn validator
+     * {@inheritdoc}
      */
     public function getValidators()
     {

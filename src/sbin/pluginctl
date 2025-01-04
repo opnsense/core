@@ -3,7 +3,7 @@
 
 /*
  * Copyright (C) 2019 Deciso B.V.
- * Copyright (C) 2019-2023 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2019-2024 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2017 Alexander Shursha <kekek2@ya.ru>
  * All rights reserved.
  *
@@ -148,8 +148,9 @@ $opts = getopt('46cDdfghIirSsXx', [], $optind);
 $args = array_slice($argv, $optind);
 
 if (isset($opts['h'])) {
-    echo "Usage: pluginctl [-4|-c|-D|-d|-f|-g|-h|-I|-i|-r|-S|-s|-X|-x] ...\n\n";
+    echo "Usage: pluginctl [-4|-6|-c|-D|-d|-f|-g|-h|-I|-i|-r|-S|-s|-X|-x] ...\n\n";
     echo "\t-4 IPv4 address mode, return primary address of interface\n";
+    echo "\t-6 IPv4 address mode, return primary address of interface\n";
     echo "\t-c configure mode (default), executes plugin [_configure] hook\n";
     echo "\t-D ifconfig mode, lists available devices\n";
     echo "\t-d device mode, lists registered devices\n";
@@ -163,20 +164,37 @@ if (isset($opts['h'])) {
     echo "\t-s service mode (e.g. myservice restart)\n";
     echo "\t-X XMLRPC sync metadata dump\n";
     echo "\t-x XMLRPC sync key/value list\n";
-} elseif (isset($opts['4'])) {
-    $int = $args[0] ?? '';
+} elseif (isset($opts['4']) || isset($opts['6'])) {
+    $ints = !empty($args[0]) ? [$args[0]] : array_keys($config['interfaces'] ?? []);
+    $ifconfig_details = legacy_interfaces_details();
     $ret = [];
-    if (!empty($config['interfaces'][$int])) {
-        $raw = interfaces_primary_address($int);
-        $ret = [
-            'address' => $raw[0],
-            'network' => $raw[1],
-            'bits' => $raw[2],
-            'device' => $raw[3],
-            'interface' => $int,
-        ];
+
+    foreach ($ints as $int) {
+        if (empty($config['interfaces'][$int])) {
+            continue;
+        }
+
+        $ret[$int] = [];
+
+        foreach (['inet' => '4', 'inet6' => '6'] as $family => $opt) {
+            if (!isset($opts[$opt])) {
+                continue;
+            }
+
+            $raw = $opt === '4' ? interfaces_primary_address($int, $ifconfig_details) :
+                interfaces_primary_address6($int, $ifconfig_details);
+
+            $ret[$int][] = [
+                'address' => $raw[0],
+                'network' => $raw[1],
+                'bits' => $raw[2],
+                'device' => $raw[3],
+                'interface' => $int,
+                'family' => $family,
+            ];
+        }
     }
-    echo json_encode($ret, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
+    echo json_encode(!empty($ret) ? $ret : new ArrayObject(), JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
 } elseif (isset($opts['D'])) {
     echo json_encode(legacy_interfaces_details($args[0] ?? null), JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
 } elseif (isset($opts['d'])) {

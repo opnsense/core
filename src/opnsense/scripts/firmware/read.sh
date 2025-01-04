@@ -24,7 +24,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-LOCKFILE="/tmp/pkg_upgrade.progress"
+. /usr/local/opnsense/scripts/firmware/config.sh
 
 if [ -f ${LOCKFILE} ]; then
 	cat ${LOCKFILE} | sed -E 's:/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}/:/${SUBSCRIPTION}/:gi'

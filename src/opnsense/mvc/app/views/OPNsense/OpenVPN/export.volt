@@ -196,7 +196,7 @@
                 </tr>
                 <tr>
                     <th>{{ lang._('Certificate')}}</th>
-                    <th>{{ lang._('Linked user(s)')}}</th>
+                    <th>{{ lang._('Linked user')}}</th>
                     <th></th>
                 </tr>
             </thead>

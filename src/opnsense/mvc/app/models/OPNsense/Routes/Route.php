@@ -45,39 +45,35 @@ class Route extends BaseModel
     {
         // perform standard validations
         $result = parent::performValidation($validateFullModel);
-        // add validation for gateway / network
-        foreach ($this->getFlatNodes() as $key => $node) {
-            if (($validateFullModel || $node->isFieldChanged())) {
-                // if either the gateway or network changes, we validate protocols.
-                // Use specified message from regular validators to report issues back to the user
-                if (in_array($node->getInternalXMLTagName(), array("gateway", "network"))) {
-                    $route = $node->getParentNode();
-                    $proto_net = strpos($route->network, ':') === false ? "inet" : "inet6";
-                    // Gateway addresses are stored in the result list received from configd.
-                    // Unfortunately we can't trust the config here, so we use the list results here.
-                    $gateways = $route->gateway->getNodeData();
-                    if (!isset($gateways[(string)$route->gateway])) {
-                        /* an invalid gateway ends up with another validation error so skip below */
-                        continue;
-                    }
-                    $gateway = $gateways[(string)$route->gateway];
-                    $tmp = explode("-", $gateway['value']);
-                    $gateway_ip = !empty($tmp) ? trim(end($tmp)) : "";
-                    $gateway_proto = strpos($gateway_ip, ":") !== false ? "inet6" : "inet";
-                    if (in_array($gateway_ip, ['inet', 'inet6'])) {
-                        $gateway_proto = $gateway_ip;
-                    } else {
-                        $gateway_proto = strpos($gateway_ip, ":") !== false ? "inet6" : "inet";
-                    }
-                    // When protocols don't match, add a message for this field to the validation result.
-                    if (empty($gateway_ip) || $gateway_proto != $proto_net) {
-                        $node_validators = $node->getValidators();
-                        $result->appendMessage(new Message(
-                            $node_validators[0]->getOption("message"),
-                            $key
-                        ));
-                    }
-                }
+        foreach ($this->route->iterateItems() as $route) {
+            if (!$validateFullModel && !$route->isFieldChanged()) {
+                continue;
+            }
+            $proto_net = strpos($route->network, ':') === false ? "inet" : "inet6";
+            // Gateway addresses are stored in the result list received from configd.
+            // Unfortunately we can't trust the config here, so we use the list results here.
+            $gateways = $route->gateway->getNodeData();
+            if (!isset($gateways[(string)$route->gateway])) {
+                /* an invalid gateway ends up with another validation error so skip below */
+                continue;
+            }
+            $gateway = $gateways[(string)$route->gateway];
+            $tmp = explode("-", $gateway['value']);
+            $gateway_ip = !empty($tmp) ? trim(end($tmp)) : "";
+            if (in_array($gateway_ip, ['inet', 'inet6'])) {
+                $gateway_proto = $gateway_ip;
+            } else {
+                $gateway_proto = strpos($gateway_ip, ":") !== false ? "inet6" : "inet";
+            }
+            if ($gateway_proto == 'inet6' && $proto_net == 'inet') {
+                /* allow rfc5549, sends ipv4 traffic to ipv6 next hop hardware addresss */
+                continue;
+            } elseif (empty($gateway_ip) || $gateway_proto != $proto_net) {
+                // When protocols don't match, add a message for this field to the validation result.
+                $result->appendMessage(new Message(
+                    gettext('Specify a valid gateway from the list matching the networks ip protocol.'),
+                    $route->gateway->__reference
+                ));
             }
         }
         return $result;

@@ -10,6 +10,24 @@
                     <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
+                <statetype type="OptionField">
+                    <Required>Y</Required>
+                    <Default>keep</Default>
+                    <OptionValues>
+                        <keep>keep state</keep>
+                        <sloppy>sloppy state</sloppy>
+                        <modulate>modulate state</modulate>
+                        <synproxy>synproxy state</synproxy>
+                        <none>no state</none>
+                    </OptionValues>
+                </statetype>
+                <state-policy type="OptionField">
+                    <BlankDesc>default</BlankDesc>
+                    <OptionValues>
+                        <if-bound>Bind states to interface</if-bound>
+                        <floating>Floating states</floating>
+                    </OptionValues>
+                </state-policy>
                 <sequence type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>99999</MaximumValue>
@@ -30,8 +48,15 @@
                     <Default>1</Default>
                     <Required>Y</Required>
                 </quick>
+                <interfacenot type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </interfacenot>
                 <interface type="InterfaceField">
                     <Multiple>Y</Multiple>
+                    <Filters>
+                        <if>/^(?!lo0$).*/</if>
+                    </Filters>
                     <AllowDynamic>Y</AllowDynamic>
                 </interface>
                 <direction type="OptionField">
@@ -48,16 +73,21 @@
                     <OptionValues>
                         <inet>IPv4</inet>
                         <inet6>IPv6</inet6>
+                        <inet46>IPv4+IPv6</inet46>
                     </OptionValues>
                 </ipprotocol>
                 <protocol type="ProtocolField">
                     <Required>Y</Required>
                     <Default>any</Default>
+                    <AddOptions>
+                        <opt1 value='TCP/UDP'>TCP/UDP</opt1>
+                    </AddOptions>
                 </protocol>
                 <!-- XXX: should map internally to  'source' => array('network' => $source_net, "not" => true|false) -->
                 <source_net type="NetworkAliasField">
                     <Default>any</Default>
                     <Required>Y</Required>
+                    <Multiple>Y</Multiple>
                 </source_net>
                 <source_not type="BooleanField">
                     <Default>0</Default>
@@ -73,6 +103,7 @@
                 <destination_net type="NetworkAliasField">
                     <Default>any</Default>
                     <Required>Y</Required>
+                    <Multiple>Y</Multiple>
                 </destination_net>
                 <destination_not type="BooleanField">
                     <Default>0</Default>
@@ -85,13 +116,145 @@
                     <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
                 </destination_port>
                 <gateway type="JsonKeyValueStoreField">
-                    <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
+                    <ConfigdPopulateAct>interface gateways list -g</ConfigdPopulateAct>
                     <ValidationMessage>Specify a valid gateway from the list matching the networks ip protocol.</ValidationMessage>
                 </gateway>
+                <replyto  type="JsonKeyValueStoreField">
+                    <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
+                    <ValidationMessage>Specify a valid gateway from the list matching the networks ip protocol.</ValidationMessage>
+                </replyto>
+                <disablereplyto type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </disablereplyto>
                 <log type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>
                 </log>
+                <allowopts type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </allowopts>
+                <nosync type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </nosync>
+                <nopfsync type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </nopfsync>
+                <statetimeout type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                </statetimeout>
+                <max-src-nodes type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                </max-src-nodes>
+                <max-src-states type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                </max-src-states>
+                <max-src-conn type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                </max-src-conn>
+                <max type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                </max>
+                <max-src-conn-rate type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                </max-src-conn-rate>
+                <max-src-conn-rates type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                </max-src-conn-rates>
+                <overload  type="ModelRelationField">
+                    <Model>
+                        <aliases>
+                            <source>OPNsense.Firewall.Alias</source>
+                            <items>aliases.alias</items>
+                            <display>name</display>
+                            <filters>
+                                <enabled>/^(?!0).*$/</enabled>
+                                <type>/^(?!(port)).*$/</type>
+                            </filters>
+                        </aliases>
+                    </Model>
+                    <ValidationMessage>Alias not found.</ValidationMessage>
+                </overload>
+                <adaptivestart type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                </adaptivestart>
+                <adaptiveend type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                </adaptiveend>
+                <prio type="OptionField">
+                    <BlankDesc>Any priority</BlankDesc>
+                    <OptionValues>
+                        <opt1 value="1">Background (1, lowest)</opt1>
+                        <opt0 value="0">Best Effort (0, default)</opt0>
+                        <opt2 value="2">Excellent Effort (2)</opt2>
+                        <opt3 value="3">Critical Applications (3)</opt3>
+                        <opt4 value="4">Video (4)</opt4>
+                        <opt5 value="5">Voice (5)</opt5>
+                        <opt6 value="6">Internetwork Control (6)</opt6>
+                        <opt7 value="7">Network Control (7, highest)</opt7>
+                    </OptionValues>
+                </prio>
+                <set-prio type="OptionField">
+                    <BlankDesc>Keep current priority</BlankDesc>
+                    <OptionValues>
+                        <opt1 value="1">Background (1, lowest)</opt1>
+                        <opt0 value="0">Best Effort (0, default)</opt0>
+                        <opt2 value="2">Excellent Effort (2)</opt2>
+                        <opt3 value="3">Critical Applications (3)</opt3>
+                        <opt4 value="4">Video (4)</opt4>
+                        <opt5 value="5">Voice (5)</opt5>
+                        <opt6 value="6">Internetwork Control (6)</opt6>
+                        <opt7 value="7">Network Control (7, highest)</opt7>
+                    </OptionValues>
+                </set-prio>
+                <set-prio-low type="OptionField">
+                    <BlankDesc>Keep current priority</BlankDesc>
+                    <OptionValues>
+                        <opt1 value="1">Background (1, lowest)</opt1>
+                        <opt0 value="0">Best Effort (0, default)</opt0>
+                        <opt2 value="2">Excellent Effort (2)</opt2>
+                        <opt3 value="3">Critical Applications (3)</opt3>
+                        <opt4 value="4">Video (4)</opt4>
+                        <opt5 value="5">Voice (5)</opt5>
+                        <opt6 value="6">Internetwork Control (6)</opt6>
+                        <opt7 value="7">Network Control (7, highest)</opt7>
+                    </OptionValues>
+                </set-prio-low>
+                <tag type="TextField">
+                    <Mask>/^([0-9a-zA-Z.,_\-]){0,512}$/u</Mask>
+                </tag>
+                <tagged type="TextField">
+                    <Mask>/^([0-9a-zA-Z.,_\-]){0,512}$/u</Mask>
+                </tagged>
+                <tcpflags1 type="OptionField">
+                    <Multiple>Y</Multiple>
+                    <OptionValues>
+                        <syn>syn</syn>
+                        <ack>ack</ack>
+                        <fin>fin</fin>
+                        <rst>rst</rst>
+                        <psh>psh</psh>
+                        <urg>urg</urg>
+                        <ece>ece</ece>
+                        <cwr>cwr</cwr>
+                    </OptionValues>
+                </tcpflags1>
+                <tcpflags2 type="OptionField">
+                    <Multiple>Y</Multiple>
+                    <OptionValues>
+                        <syn>syn</syn>
+                        <ack>ack</ack>
+                        <fin>fin</fin>
+                        <rst>rst</rst>
+                        <psh>psh</psh>
+                        <urg>urg</urg>
+                        <ece>ece</ece>
+                        <cwr>cwr</cwr>
+                    </OptionValues>
+                </tcpflags2>
                 <categories type="ModelRelationField">
                     <Model>
                         <rulesets>
@@ -103,6 +266,8 @@
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Related category not found.</ValidationMessage>
                 </categories>
+                <sched type=".\ScheduleField"/>
+                <tos type=".\TosField"/>
                 <description type="DescriptionField"/>
             </rule>
         </rules>
@@ -126,6 +291,9 @@
                 <interface type="InterfaceField">
                     <Required>Y</Required>
                     <Default>lan</Default>
+                    <Filters>
+                        <if>/^(?!lo0$).*/</if>
+                    </Filters>
                     <AllowDynamic>Y</AllowDynamic>
                 </interface>
                 <ipprotocol type="OptionField">
@@ -139,6 +307,9 @@
                 <protocol type="ProtocolField">
                     <Required>Y</Required>
                     <Default>any</Default>
+                    <AddOptions>
+                        <opt1 value='TCP/UDP'>TCP/UDP</opt1>
+                    </AddOptions>
                 </protocol>
                 <source_net type="NetworkAliasField">
                     <Default>any</Default>
@@ -214,6 +385,9 @@
                 <interface type="InterfaceField">
                     <Required>Y</Required>
                     <Default>lan</Default>
+                    <Filters>
+                        <if>/^(?!lo0$).*/</if>
+                    </Filters>
                     <AllowDynamic>Y</AllowDynamic>
                 </interface>
                 <source_net type="NetworkField">
@@ -263,6 +437,9 @@
                 <interface type="InterfaceField">
                     <Required>Y</Required>
                     <Default>wan</Default>
+                    <Filters>
+                        <if>/^(?!lo0$).*/</if>
+                    </Filters>
                     <AllowDynamic>Y</AllowDynamic>
                 </interface>
                 <type type="OptionField">

@@ -117,6 +117,7 @@
             <prv_payload type="TextField" volatile="true"/>
             <rfc3280_purpose type="TextField" volatile="true"/>
             <in_use type="BooleanField" volatile="true"/>
+            <is_user type="BooleanField" volatile="true"/>
 
             <name type="TextField" volatile="true"/>
             <valid_from type="TextField" volatile="true"/>

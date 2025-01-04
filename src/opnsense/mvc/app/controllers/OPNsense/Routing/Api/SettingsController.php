@@ -43,7 +43,6 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         $result = ["status" => "failed"];
         if ($this->request->isPost()) {
-            $this->sessionClose();
             (new Backend())->configdRun('interface routes configure');
             $result = ["status" => "ok"];
         }
@@ -265,7 +264,7 @@ class SettingsController extends ApiMutableModelControllerBase
                         /* invert "enabled" */
                         $disabled = $enabled == "0" ? "1" : "0";
                         $result['result'] = empty($disabled) ? "Enabled" : "Disabled";
-                        $result['changed'] = (string)$node->disabled === $disabled;
+                        $result['changed'] = (string)$node->disabled !== $disabled;
                         $node->disabled = $disabled;
                     } elseif ($enabled !== null) {
                         // failed

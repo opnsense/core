@@ -278,42 +278,20 @@ function print_info_box($msg)
     print_alert_box($msg, 'info');
 }
 
-function print_service_banner($service)
+function print_firewall_banner()
 {
     global $config;
 
-    switch ($service) {
-	case 'bootup':
-            if (!product::getInstance()->booting()) {
-                break;
-            }
-            print_alert_box(gettext('The system is currently booting. Not all services have been started yet.'));
-            break;
-        case 'firewall':
-            if (!isset($config['system']['disablefilter'])) {
-                break;
-            }
-            print_alert_box(sprintf(
-              gettext(
+    if (isset($config['system']['disablefilter'])) {
+        print_alert_box(sprintf(
+            gettext(
                 'The firewall has globally been disabled and configured rules are ' .
                 'currently not enforced. It can be enabled in the %sFirewall/NAT%s ' .
                 'settings.'
-              ),
-              '<a href="/system_advanced_firewall.php">',
-              '</a>'
-            ));
-            break;
-        case 'livecd':
-            if (!is_install_media()) {
-                break;
-            }
-            print_alert_box(
-                gettext('You are currently running in LiveCD mode. A reboot will reset the configuration.') . ' ' .
-                (!isset($config['system']['ssh']['noauto']) && is_process_running('sshd') ?
-                gettext('SSH remote login is enabled for the users "root" and "installer" using the same password.') : '')
-            );
-        default:
-            break;
+            ),
+            '<a href="/system_advanced_firewall.php">',
+            '</a>'
+        ));
     }
 }
 
@@ -324,7 +302,7 @@ function get_std_save_message($plain = false)
     /* we need this wrapped in gettext at least once */
     if (!empty($config['hasync']['synchronizetoip'])) {
         if (!$plain) {
-            $lnk_start = '<a href="status_habackup.php">';
+            $lnk_start = '<a href="/ui/core/hasync_status">';
             $lnk_end = '</a>';
         }
         return sprintf(
@@ -407,7 +385,7 @@ function gentitle($breadcrumbs, $navlevelsep = ': ')
     return join($navlevelsep, $output) . "$gentitle_suffix";
 }
 
-function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendport)
+function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendport, $merge_mask=false)
 {
     if (isset($adr['any'])) {
         $padr = "any";
@@ -423,6 +401,9 @@ function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendp
             } else {
                 $pmask = 32;
             }
+        }
+        if ($merge_mask && is_ipaddr($padr)) {
+            $padr = $padr . '/' . $pmask;
         }
     }
 

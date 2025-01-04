@@ -24,18 +24,19 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseTableWidget from "./BaseTableWidget.js";
-
 export default class Gateways extends BaseTableWidget {
-    constructor() {
-        super();
+    constructor(config) {
+        super(config);
+
+        this.configurable = true;
+        this.cachedGateways = []; // prevent fetch when loading options
     }
 
     getGridOptions() {
         return {
             // trigger overflow-y:scroll after 650px height
             sizeToContent: 650,
-        }
+        };
     }
 
     getMarkup() {
@@ -46,51 +47,90 @@ export default class Gateways extends BaseTableWidget {
         return $('<div></div>').append($gateway_table);
     }
 
-    async onWidgetTick() {
-        $('.gateways-status-icon').tooltip('hide');
-        const data = await this.ajaxCall('/api/routes/gateway/status');
-        if (data.items === undefined) {
-            return;
+    async _fetchGateways() {
+        const data = await this.ajaxCall('/api/routing/settings/searchGateway');
+        if (!data.rows || !data.rows.length) {
+            return false;
         }
 
-        if (!data.items.length) {
+        return data.rows;
+    }
+
+    async onWidgetOptionsChanged(options) {
+        await this._updateGateways();
+    }
+
+    async getWidgetOptions() {
+        const gateways = await this._fetchGateways();
+
+        return {
+            gateways: {
+                title: this.translations.title,
+                type: 'select_multiple',
+                options: gateways.map(({ name, uuid }) => {
+                    return {
+                        value: uuid,
+                        label: name,
+                    };
+                }),
+                default: gateways.map(({ uuid }) => uuid),
+            },
+        };
+    }
+
+    async onWidgetTick() {
+        await this._updateGateways();
+    }
+
+    async _updateGateways() {
+        $('.gateways-status-icon').tooltip('hide');
+
+        const gateways = await this._fetchGateways();
+        if (!gateways) {
             $('#gateway-table').html(`<a href="/ui/routing/configuration">${this.translations.unconfigured}</a>`);
             return;
         }
+        this.cachedGateways = gateways.map(({ name, uuid }) => ({ name, uuid }));
 
-        data.items.forEach(({name, address, status, loss, delay, stddev, status_translated}) => {
+        const config = await this.getWidgetConfig();
+
+        let data = [];
+        gateways.forEach(({ uuid, name, gateway: address, status, loss, delay, stddev }) => {
+            if (!config.gateways.includes(uuid)) {
+                return;
+            }
+
             let color = "text-success";
-            switch (status) {
-                case "force_down":
-                case "down":
-                    color = "text-danger";
-                    break;
-                case "loss":
-                case "delay":
-                case "delay+loss":
-                    color = "text-warning";
-                    break;
+
+            if (status.toLowerCase().includes("offline")) {
+                color = "text-danger";
+            } else if (status.toLowerCase() !== "online") {
+                color = "text-warning";
             }
 
             let gw = `<div>
                 <i class="fa fa-circle text-muted ${color} gateways-status-icon" style="font-size: 11px; cursor: pointer;"
-                    data-toggle="tooltip" title="${status_translated}">
+                    data-toggle="tooltip" title="${status}">
                 </i>
                 &nbsp;
-                <a href="/ui/routing/configuration">${name}</a>
+                <a href="/ui/routing/configuration#edit=${encodeURIComponent(uuid)}" target="_blank" rel="noopener noreferrer">
+                    ${name}
+                </a>
                 &nbsp;
                 <br/>
                 <div style="margin-top: 5px; margin-bottom: 5px; font-size: 15px;">${address}</div>
-            </div>`
+            </div>`;
 
             let stats = `<div>
                 ${delay === '~' ? '' : `<div><b>${this.translations.rtt}</b>: ${delay}</div>`}
-                ${delay === '~' ? '' : `<div><b>${this.translations.rttd}</b>: ${stddev}</div>`}
-                ${delay === '~' ? '' : `<div><b>${this.translations.loss}</b>: ${loss}</div>`}
-            </div>`
+                ${stddev === '~' ? '' : `<div><b>${this.translations.rttd}</b>: ${stddev}</div>`}
+                ${loss === '~' ? '' : `<div><b>${this.translations.loss}</b>: ${loss}</div>`}
+            </div>`;
 
-            this.updateTable('gateway-table', [[gw, stats]], `gw_${name}`);
+            data.push([gw, stats]);
         });
+
+        this.updateTable('gateway-table', data);
 
         $('.gateways-status-icon').tooltip({container: 'body'});
     }

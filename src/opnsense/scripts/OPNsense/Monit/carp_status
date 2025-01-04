@@ -27,9 +27,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("interfaces.inc");
+require_once 'interfaces.inc';
+require_once 'util.inc';
 
-$statuses = array();
+$statuses = [];
+
 foreach (legacy_interfaces_details() as $intf) {
     if (!empty($intf['carp'])) {
         foreach ($intf['carp'] as $carpitem) {

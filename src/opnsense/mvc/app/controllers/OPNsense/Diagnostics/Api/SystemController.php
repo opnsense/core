@@ -131,15 +131,22 @@ class SystemController extends ApiControllerBase
     public function systemTimeAction()
     {
         $config = Config::getInstance()->object();
-        $boottime = json_decode((new Backend())->configdRun('system sysctl values kern.boottime'), true);
+        $boottime = json_decode((new Backend())->configdRun('system sysctl values kern.boottime,vm.loadavg'), true);
         preg_match("/sec = (\d+)/", $boottime['kern.boottime'], $matches);
 
         $last_change = date("D M j G:i:s T Y", !empty($config->revision->time) ? intval($config->revision->time) : 0);
+        $loadavg = explode(' ', $boottime['vm.loadavg']);
+        if (count($loadavg) == 5 && $loadavg[0] == '{' && $loadavg[4] == '}') {
+            $loadavg = join(', ', [$loadavg[1], $loadavg[2], $loadavg[3]]);
+        } else {
+            $loadavg = gettext('N/A');
+        }
 
         $response = [
             'uptime' => $this->formatUptime(time() - $matches[1]),
             'datetime' => date("D M j G:i:s T Y"),
             'config' => $last_change,
+            'loadavg' => $loadavg,
         ];
 
         return $response;
@@ -219,19 +226,29 @@ class SystemController extends ApiControllerBase
 
     public function systemTemperatureAction()
     {
+        $backend = new Backend();
         $result = [];
 
-        foreach (explode("\n", (new Backend())->configdRun('system temp')) as $temp) {
-            $parts = explode('=', $temp);
-            if (count($parts) >= 2) {
-                $tempItem = array();
-                $tempItem['device'] = $parts[0];
-                $tempItem['device_seq'] = filter_var($tempItem['device'], FILTER_SANITIZE_NUMBER_INT);
-                $tempItem['temperature'] = trim(str_replace('C', '', $parts[1]));
-                $tempItem['type'] = strpos($tempItem['device'], 'hw.acpi') !== false ? "zone" : "core";
-                $tempItem['type_translated'] = $tempItem['type'] == "zone" ? gettext("Zone") : gettext("Core");
-                $result[] = $tempItem;
+        /* read temperatures individually from previously derived sensors */
+        $sensors = explode("\n", $backend->configdRun('system sensors'));
+        $temps = json_decode($backend->configdpRun('system sysctl values', join(',', $sensors)), true);
+
+        foreach ($temps as $name => $value) {
+            $tempItem = [];
+            $tempItem['device'] = $name;
+            $tempItem['device_seq'] = filter_var($tempItem['device'], FILTER_SANITIZE_NUMBER_INT); /* XXX too opportunistic */
+            $tempItem['temperature'] = trim(str_replace('C', '', $value));
+            $tempItem['type_translated'] = gettext('CPU');
+            $tempItem['type'] = 'cpu';
+            if (strpos($tempItem['device'], 'hw.acpi') !== false) {
+                $tempItem['type_translated'] = gettext('Zone');
+                $tempItem['type'] = 'zone';
+            /* XXX may or may not be a good idea */
+            } elseif (strpos($tempItem['device'], 'dev.amdtemp') !== false) {
+                $tempItem['type_translated'] = gettext('AMD');
+                $tempItem['type'] = 'amd';
             }
+            $result[] = $tempItem;
         }
 
         return $result;

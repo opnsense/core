@@ -78,7 +78,6 @@ class PacketCaptureController extends ApiMutableModelControllerBase
     {
         $result = ['status' => 'failed'];
         if ($this->request->isPost()) {
-            $this->sessionClose();
             $payload = json_decode((new Backend())->configdpRun('interface capture start', [$jobid]), true);
             if (!empty($payload)) {
                 $result = $payload;
@@ -94,7 +93,6 @@ class PacketCaptureController extends ApiMutableModelControllerBase
     {
         $result = ['status' => 'failed'];
         if ($this->request->isPost()) {
-            $this->sessionClose();
             $payload = json_decode((new Backend())->configdpRun('interface capture stop', [$jobid]), true);
             if (!empty($payload)) {
                 $result = $payload;
@@ -110,7 +108,6 @@ class PacketCaptureController extends ApiMutableModelControllerBase
     {
         $result = ['status' => 'failed'];
         if ($this->request->isPost()) {
-            $this->sessionClose();
             $payload = json_decode((new Backend())->configdpRun('interface capture remove', [$jobid]), true);
             if (!empty($payload)) {
                 $result = $payload;
@@ -125,7 +122,6 @@ class PacketCaptureController extends ApiMutableModelControllerBase
     public function viewAction($jobid, $detail = 'normal')
     {
         $result = ['status' => 'failed'];
-        $this->sessionClose();
         $payload = json_decode((new Backend())->configdpRun('interface capture view', [$jobid, $detail]), true);
         if (!empty($payload)) {
             $result = $payload;
@@ -151,7 +147,6 @@ class PacketCaptureController extends ApiMutableModelControllerBase
      */
     public function downloadAction($jobid)
     {
-        $this->sessionClose();
         $payload = json_decode((new Backend())->configdpRun('interface capture archive', [$jobid]), true);
         if (!empty($payload) && !empty($payload['filename'])) {
             $this->response->setContentType('application/octet-stream');
@@ -159,9 +154,7 @@ class PacketCaptureController extends ApiMutableModelControllerBase
             $this->response->setRawHeader("Content-length: " . filesize($payload['filename']));
             $this->response->setRawHeader("Pragma: no-cache");
             $this->response->setRawHeader("Expires: 0");
-            ob_clean();
-            flush();
-            readfile($payload['filename']);
+            $this->response->setContent(fopen($payload['filename'], 'r'));
         }
     }
 
@@ -171,7 +164,6 @@ class PacketCaptureController extends ApiMutableModelControllerBase
     public function macInfoAction($macaddr)
     {
         $result = ['status' => 'failed'];
-        $this->sessionClose();
         $payload = json_decode((new Backend())->configdpRun('interface capture macinfo', [$macaddr]), true);
         if (!empty($payload)) {
             return $payload;
@@ -184,7 +176,6 @@ class PacketCaptureController extends ApiMutableModelControllerBase
      */
     public function searchJobsAction()
     {
-        $this->sessionClose();
         $data = json_decode((new Backend())->configdRun('interface capture list'), true);
         $records = (!empty($data) && !empty($data['jobs'])) ? $data['jobs'] : [];
         return $this->searchRecordsetBase($records);

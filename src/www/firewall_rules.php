@@ -642,7 +642,7 @@ $( document ).ready(function() {
     <div id="category_block" style="z-index:-100;">
         <select class="selectpicker hidden-xs hidden-sm hidden-md" data-live-search="true" data-size="5"  multiple title="<?=gettext("Select category");?>" id="fw_category">
         </select>
-        <button id="btn_inspect" class="btn btn-default hidden-xs">
+        <button id="btn_inspect" class="btn btn-default">
           <i class="fa fa-eye" aria-hidden="true"></i>
           <?=gettext("Inspect");?>
         </button>
@@ -651,7 +651,7 @@ $( document ).ready(function() {
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
-        <?php print_service_banner('firewall'); ?>
+        <?php print_firewall_banner() ?>
         <div id="fw-alert-box" class="col-xs-12 <?=!is_subsystem_dirty('filter') && !isset($savemsg) ? "hidden":"";?>">
           <div class="alert alert-info" role="alert">
             <div id="fw-alert-changes" class="fw-alert-messages <?=!is_subsystem_dirty('filter') ? "hidden":"";?>">

@@ -24,8 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseTableWidget from "./BaseTableWidget.js";
-
 export default class Announcements extends BaseTableWidget {
     constructor() {
         super();
@@ -59,7 +57,10 @@ export default class Announcements extends BaseTableWidget {
             description = $('<div/>').html(description).text();
             rows.push(`
                     <div>
-                        <a href="${link}" target='_new'">${title}</a>
+                        <strong class="text-primary">${title}</strong>
+                    </div>
+                    <div>
+                        <small><em><a href="${link}" target="_new" class="text-muted">${pubDate}</a></em></small>
                     </div>
                     <div>
                         ${description}

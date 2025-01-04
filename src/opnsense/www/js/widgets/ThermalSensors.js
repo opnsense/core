@@ -24,8 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseWidget from "./BaseWidget.js";
-
 export default class ThermalSensors extends BaseWidget {
     constructor() {
         super();
@@ -213,20 +211,7 @@ export default class ThermalSensors extends BaseWidget {
             item.temperature_fahrenheit = toFahrenheit(parseFloat(item.temperature)).toFixed(1);
         });
 
-        // Find cores with differing temperatures
-        const coreTemperatures = data.filter(item => item.type === 'core').map(item => parseFloat(item.temperature));
-        const uniqueTemperatures = new Set(coreTemperatures);
-
-        let result = [];
-        if (uniqueTemperatures.size === 1) {
-            // If all temperatures are the same, include only the first core
-            result.push(data.find(item => item.type === 'core'));
-        } else {
-            // Include all cores with differing temperatures
-            result = data.filter(item => item.type !== 'core' || coreTemperatures.filter(temp => temp !== parseFloat(item.temperature)).length > 0);
-        }
-
-        return result;
+        return data;
     }
 
     onWidgetClose() {

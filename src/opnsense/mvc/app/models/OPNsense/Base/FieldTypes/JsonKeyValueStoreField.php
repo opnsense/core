@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2019 Deciso B.V.
+ * Copyright (C) 2015-2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,6 +67,11 @@ class JsonKeyValueStoreField extends BaseListField
      private $internalSortByValue = false;
 
     /**
+     * @var array cache configd responses for the lifetime of this object
+     */
+    protected static $internalStaticContent = [];
+
+    /**
      * @param string $value source field, pattern for source file
      */
     public function setSourceField($value)
@@ -118,20 +123,23 @@ class JsonKeyValueStoreField extends BaseListField
     protected function actionPostLoadingEvent()
     {
         $data = null;
-        if ($this->internalSourceFile != null) {
-            if ($this->internalSourceField != null) {
-                $sourcefile = sprintf($this->internalSourceFile, $this->internalSourceField);
-            } else {
-                $sourcefile = $this->internalSourceFile;
-            }
-            if (!empty($this->internalConfigdPopulateAct)) {
+        if (!empty($this->internalConfigdPopulateAct)) {
+            if (isset(static::$internalStaticContent[$this->internalConfigdPopulateAct])) {
+                /* cached for the lifetime of this session */
+                $data = static::$internalStaticContent[$this->internalConfigdPopulateAct];
+            } elseif ($this->internalSourceFile != null) {
+                /* use a file cache for the configd call*/
+                if ($this->internalSourceField != null) {
+                    $sourcefile = sprintf($this->internalSourceFile, $this->internalSourceField);
+                } else {
+                    $sourcefile = $this->internalSourceFile;
+                }
                 if (is_file($sourcefile)) {
                     $sourcehandle = fopen($sourcefile, "r+");
                 } else {
                     $sourcehandle = fopen($sourcefile, "w");
                 }
                 if (flock($sourcehandle, LOCK_EX)) {
-                    // execute configd action when provided
                     $stat = fstat($sourcehandle);
                     $muttime = $stat['size'] == 0 ? 0 : $stat['mtime'];
                     if (time() - $muttime > $this->internalConfigdPopulateTTL) {
@@ -148,17 +156,22 @@ class JsonKeyValueStoreField extends BaseListField
                 }
                 flock($sourcehandle, LOCK_UN);
                 fclose($sourcehandle);
+                if (is_file($sourcefile)) {
+                    $data = json_decode(file_get_contents($sourcefile), true);
+                }
+            } else {
+                /* initial configd call  */
+                $data = json_decode(
+                    (new Backend())->configdRun($this->internalConfigdPopulateAct, false, 20) ?? '',
+                    true
+                );
             }
-            if (is_file($sourcefile)) {
-                $data = json_decode(file_get_contents($sourcefile), true);
-            }
-        } elseif (!empty($this->internalConfigdPopulateAct)) {
-            $data = json_decode((new Backend())->configdRun($this->internalConfigdPopulateAct, false, 20) ?? '', true);
-        }
-        if ($data != null) {
-            $this->internalOptionList = $data;
-            if ($this->internalSelectAll && $this->internalValue == "") {
-                $this->internalValue = implode(',', array_keys($this->internalOptionList));
+            if ($data != null) {
+                static::$internalStaticContent[$this->internalConfigdPopulateAct] = $data;
+                $this->internalOptionList = $data;
+                if ($this->internalSelectAll && $this->internalValue == "") {
+                    $this->internalValue = implode(',', array_keys($this->internalOptionList));
+                }
             }
         }
     }

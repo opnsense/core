@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2019-2020 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2019-2024 Ad Schellevis <ad@opnsense.org>
     Copyright (c) 2024 Deciso B.V.
     All rights reserved.
 
@@ -33,6 +33,7 @@
 
 import os.path
 import ujson
+from dateutil.parser import isoparse
 from log_matcher import LogMatcher
 import argparse
 
@@ -46,7 +47,13 @@ if __name__ == '__main__':
     parser.add_argument('--filename', help='log file name (excluding .log extension)', default='')
     parser.add_argument('--module', help='module', default='core')
     parser.add_argument('--severity', help='comma separated list of severities', default='')
+    parser.add_argument('--valid_from', help='oldest data to search for (epoch)', default='')
     inputargs = parser.parse_args()
+
+    try:
+        valid_from = float(inputargs.valid_from)
+    except ValueError:
+        valid_from = 0
 
     result = {'filters': inputargs.filter, 'rows': [], 'total_rows': 0, 'origin': os.path.basename(inputargs.filename)}
     if inputargs.filename != "":
@@ -63,6 +70,12 @@ if __name__ == '__main__':
             if limit > 0 and result['total_rows'] > offset + limit:
                 # do not fetch data until end of file...
                 break
+            # exit when data found is older than provided valid_from
+            try:
+                if valid_from and record.get('timestamp') and isoparse(record['timestamp']).timestamp() < valid_from:
+                    break
+            except ValueError:
+                pass
 
     # output results (when json)
     if inputargs.output == 'json':

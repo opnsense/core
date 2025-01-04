@@ -391,7 +391,6 @@ class AliasController extends ApiMutableModelControllerBase
     public function importAction()
     {
         if ($this->request->isPost()) {
-            $this->sessionClose();
             $result = array("existing" => 0, "new" => 0, "status" => "failed");
             $data = $this->request->getPost("data");
             if (

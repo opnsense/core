@@ -1,0 +1,15 @@
+<model>
+    <mount>//sysctl</mount>
+    <migration_prefix>TUN</migration_prefix>
+    <version>1.0.0</version>
+    <description>System Tunables</description>
+    <items>
+        <item type=".\TunableField">
+            <tunable type="TextField"/>
+            <value type="TextField"/>
+            <descr type="TextField"/>
+            <default_value type="TextField" volatile="true"/>
+            <type type="TextField" volatile="true"/>
+        </item>
+    </items>
+</model>

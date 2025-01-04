@@ -67,7 +67,7 @@
                     size="{{size|default("50")}}"
                     id="{{ id }}"
                     {{ readonly|default(false) ? 'readonly="readonly"' : '' }}
-                    {% if hint|default(false) %}placeholder="{{hint}}"{% endif %}
+                    {% if hint is defined %}placeholder="{{hint}}"{% endif %}
             >
         {% elseif type == "hidden" %}
             <input type="hidden" id="{{ id }}" class="{{style|default('')}}" >
@@ -80,7 +80,8 @@
                     id="{{ id }}"
                     class="{{style|default('selectpicker')}}"
                     data-container="body"
-                    {% if hint|default(false) %}data-hint="{{hint}}"{% endif %}
+                    {% if hint is defined %}data-hint="{{hint}}"{% endif %}
+                    {% if hint is defined %}data-none-selected-text="{{hint}}"{% endif %}
                     data-width="{{width|default("346px")}}"
                     data-allownew="{{allownew|default("false")}}"
                     data-sortable="{{sortable|default("false")}}"

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+rm -rf /conf/backup
+mkdir -p /conf/backup
+rm /conf/event_config_changed.json
+chmod 750 /conf/backup

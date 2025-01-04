@@ -37,7 +37,7 @@ set -e
 # will tell us itself.  With this we shield the firmware shell run from
 # the complexity of GUI/API updates so that bugs are most likely avoided.
 
-LAUNCHER="/usr/local/opnsense/scripts/firmware/launcher.sh"
+LAUNCHER="/usr/local/opnsense/scripts/firmware/launcher.sh -S"
 RELEASE=$(opnsense-update -vR)
 PROMPT="y/N"
 CHANGELOG=
@@ -74,7 +74,7 @@ if [ -n "${RELEASE}" ]; then
 	echo
 
 	PROMPT="${RELEASE}/${PROMPT}"
-elif CHANGELOG=$(/usr/local/opnsense/scripts/firmware/reboot.sh); then
+elif CHANGELOG=$(${LAUNCHER} -u reboot); then
 	echo "This update requires a reboot."
 	echo
 fi

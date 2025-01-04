@@ -96,11 +96,14 @@ function do_auth($common_name, $serverid, $method, $auth_file)
     if ($a_server == null) {
         return "OpenVPN '$serverid' was not found. Denying authentication for user {$username}";
     } elseif (!empty($a_server['strictusercn']) && $username != $common_name) {
-        return sprintf(
-            "Username does not match certificate common name (%s != %s), access denied.",
-            $username,
-            $common_name
-        );
+        // only ignore case when explicitly set (strictusercn=2)
+        if (!($a_server['strictusercn'] == 2 && strtolower($username) == strtolower($common_name))) {
+            return sprintf(
+                "Username does not match certificate common name (%s != %s), access denied.",
+                $username,
+                $common_name
+            );
+        }
     } elseif (empty($a_server['authmode'])) {
         return 'No authentication server has been selected to authenticate against. ' .
         "Denying authentication for user {$username}";
@@ -125,12 +128,10 @@ function do_auth($common_name, $serverid, $method, $auth_file)
                     LOG_NOTICE,
                     "Locate overwrite for '{$common_name}' using server '{$serverid}' (vpnid: {$a_server['vpnid']})"
                 );
-                $cso = (new OPNsense\OpenVPN\OpenVPN())->getOverwrite($serverid, $common_name);
+                $cso = (new OPNsense\OpenVPN\OpenVPN())->getOverwrite($serverid, $common_name, parse_auth_properties($authenticator->getLastAuthProperties()));
                 if (empty($cso)) {
-                    $cso = array("common_name" => $common_name);
+                    return "authentication failed for user '{$username}'. No tunnel network provisioned, but required.";
                 }
-
-                $cso = array_merge($cso, parse_auth_properties($authenticator->getLastAuthProperties()));
                 $cso_filename = openvpn_csc_conf_write($cso, $a_server);
                 if (!empty($cso_filename)) {
                     $tmp = empty($a_server['cso_login_matching']) ? "CSO [CN]" : "CSO [USER]";
@@ -161,7 +162,6 @@ $response = do_auth($parms['common_name'], $parms['auth_server'], $parms['auth_m
 if (is_string($response)) {
     // send failure message to log
     syslog(LOG_WARNING, $response);
-    closelog();
 }
 
 if (!empty($parms['auth_defer'])) {

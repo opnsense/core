@@ -18,7 +18,7 @@ $gray:                   lighten(#000, 33.5%) !default; // #555
 $gray-light:             lighten(#000, 46.7%) !default; // #777
 $gray-lighter:           lighten(#000, 93.5%) !default; // #eee
 
-$brand-primary:         map-get($colors, orange) !default;
+$brand-primary:         map-get($colors, brand-primary) !default;
 $brand-success:         #9BD275 !default;
 $brand-info:            #B0CDDB !default;
 $brand-warning:         #f0ad4e !default;
@@ -32,7 +32,7 @@ $brand-danger:          #F05050 !default;
 //** Background color for `<body>`.
 $body-bg:               #fff !default;
 //** Global text color on `<body>`.
-$text-color:            map-get($colors, darkgrey) !default;
+$text-color:            map-get($colors, text-color) !default;
 
 //** Global textual link color.
 $link-color:            $brand-primary !default;
@@ -44,13 +44,12 @@ $link-hover-color:      darken($link-color, 15%) !default;
 //
 //## Font, line-height, and color for body text, headings, and more.
 
-$font-family-sans-serif:  "Helvetica Neue", Helvetica, Arial, sans-serif !default;
-$font-family-serif:       Georgia, "Times New Roman", Times, serif !default;
 //** Default monospace fonts for `<code>`, `<kbd>`, and `<pre>`.
 $font-family-monospace:   Menlo, Monaco, Consolas, "Courier New", monospace !default;
-$font-family-base:        $font-family-sans-serif !default;
+$font-family-base:        "SourceSansProRegular", "Helvetica Neue", Helvetica, Arial, sans-serif !default;;
 
-$font-size-base:          14px !default;
+$font-size-base:          15px !default;
+$font-weight-base:        400;
 $font-size-large:         ceil(($font-size-base * 1.25)) !default; // ~18px
 $font-size-small:         ceil(($font-size-base * 0.85)) !default; // ~12px
 
@@ -62,13 +61,13 @@ $font-size-h5:            $font-size-base !default;
 $font-size-h6:            ceil(($font-size-base * 0.85)) !default; // ~12px
 
 //** Unit-less `line-height` for use in components like buttons.
-$line-height-base:        1.428571429 !default; // 20/14
+$line-height-base:        1.2 !default; // 20/14
 //** Computed "line-height" (`font-size` * `line-height`) for use with `margin`, `padding`, etc.
 $line-height-computed:    floor(($font-size-base * $line-height-base)) !default; // ~20px
 
 //** By default, this inherits from the `<body>`.
 $headings-font-family:    "SourceSansProSemiBold" !default;
-$headings-font-weight:    100 !default;
+$headings-font-weight:    500 !default;
 $headings-line-height:    1.4 !default;
 $headings-color:          inherit !default;
 
@@ -134,7 +133,7 @@ $table-condensed-cell-padding:  5px !default;
 //** Default background color used for all tables.
 $table-bg:                      transparent !default;
 //** Background color used for `.table-striped`.
-$table-bg-accent:               map-get($colors, lightergrey) !default;
+$table-bg-accent:               map-get($colors, table-bg-accent) !default;
 //** Background color used for `.table-hover`.
 $table-bg-hover:                #f5f5f5 !default;
 $table-bg-active:               $table-bg-hover !default;
@@ -155,7 +154,7 @@ $btn-default-border:             #e5e5e5 !default;
 
 $btn-primary-color:              #fff !default;
 $btn-primary-bg:                 $brand-primary !default;
-$btn-primary-border:             #D95100 !default;
+$btn-primary-border:             map-get($colors, brand-primary) !default;
 
 $btn-success-color:              #fff !default;
 $btn-success-bg:                 $brand-success !default;
@@ -350,13 +349,13 @@ $navbar-padding-horizontal:        floor((calc($grid-gutter-width / 2))) !defaul
 $navbar-padding-vertical:          15px;
 $navbar-collapse-max-height:       340px !default;
 
-$navbar-default-color:             map-get($colors, lightgrey) !default;
-$navbar-default-bg:                map-get($colors, darkgrey) !default;
+$navbar-default-color:             map-get($colors, navbar-default-color) !default;
+$navbar-default-bg:                map-get($colors, navbar-default-bg) !default;
 $navbar-default-border:            darken($navbar-default-bg, 6.5%) !default;
 
 // Navbar links
-$navbar-default-link-color:                map-get($colors, lightgrey) !default;
-$navbar-default-link-hover-color:          map-get($colors, orange) !default;
+$navbar-default-link-color:                map-get($colors, navbar-default-color) !default;
+$navbar-default-link-hover-color:          map-get($colors, brand-primary) !default;
 $navbar-default-link-hover-bg:             transparent !default;
 $navbar-default-link-active-color:         #555 !default;
 $navbar-default-link-active-bg:            darken($navbar-default-bg, 6.5%) !default;
@@ -678,8 +677,8 @@ $list-group-disabled-bg:         $gray-lighter !default;
 //** Text color for content within disabled list items
 $list-group-disabled-text-color: $list-group-disabled-color !default;
 
-$list-group-link-color:         map-get($colors, darkgrey) !default;
-$list-group-link-hover-color:   map-get($colors, orange) !default;
+$list-group-link-color:         map-get($colors, list-group-link-color) !default;
+$list-group-link-hover-color:   map-get($colors, brand-primary) !default;
 $list-group-link-heading-color: #333 !default;
 
 

@@ -38,7 +38,6 @@ function auth_log($message, $prio = LOG_ERR)
 {
     openlog('audit', LOG_ODELAY, LOG_AUTH);
     log_msg($message, $prio);
-    closelog();
     reopenlog();
 }
 
@@ -173,18 +172,20 @@ function &getGroupEntry($name)
 
 function get_user_privileges(&$user)
 {
-    if (!isset($user['priv']) || !is_array($user['priv'])) {
-        $privs = array();
-    } else {
-        $privs = $user['priv'];
+    $privs = [];
+    /* legacy listtags() ensures 'priv' will be an array when offered, also when there's only one  */
+    foreach (!empty($user['priv']) ? (array)$user['priv'] : [] as $item) {
+        foreach (array_filter(explode(',', $item)) as $priv) {
+            $privs[] = $priv;
+        }
     }
 
-    $names = local_user_get_groups($user);
-
-    foreach ($names as $name) {
+    foreach (local_user_get_groups($user) as $name) {
         $group = getGroupEntry($name);
-        if (isset($group['priv']) && is_array($group['priv'])) {
-            $privs = array_merge($privs, $group['priv']);
+        foreach (!empty($group['priv']) ? (array)$group['priv'] : [] as $item) {
+            foreach (array_filter(explode(',', $item)) as $priv) {
+                $privs[] = $priv;
+            }
         }
     }
     return $privs;
@@ -215,31 +216,6 @@ function userIsAdmin($username)
     return userHasPrivilege($user, 'page-all');
 }
 
-function auth_get_shells($uid = 0)
-{
-    $shells = ['' => '/usr/sbin/nologin'];
-
-    if ($uid == 0) {
-        $shells = ['' => '/usr/local/sbin/opnsense-shell'];
-    }
-
-    $etc_shells = @file_get_contents('/etc/shells');
-    if (!empty($etc_shells)) {
-        $etc_shells = explode("\n", $etc_shells);
-        foreach ($etc_shells as $shell) {
-            $shell = trim($shell);
-            if (
-                !empty($shell) && strpos($shell, '#') !== 0 &&
-                strpos($shell, '/usr/local/sbin/opnsense-') !== 0
-            ) {
-                $shells[$shell] = $shell;
-            }
-        }
-    }
-
-    return $shells;
-}
-
 function local_sync_accounts()
 {
     global $config;
@@ -267,6 +243,10 @@ function local_sync_accounts()
         $config_map[$section] = [];
         if (is_array($config['system'][$section])) {
             foreach ($config['system'][$section] as $item) {
+                if ($section == 'user' && empty($item['shell'])) {
+                    /* no shell, no local user */
+                    continue;
+                }
                 $this_id = $section == 'user' ? $item['uid'] : $item['gid'];
                 $config_map[$section][(string)$this_id] = $item['name'];
             }
@@ -290,7 +270,7 @@ function local_sync_accounts()
         }
     }
 
-    /* sync all local users */
+    /* sync all local users with a shell account configured (filtered in local_user_set()) */
     if (is_array($config['system']['user'])) {
         foreach ($config['system']['user'] as $user) {
             $userattrs = !empty($current_data['user'][$user['uid']]) ? $current_data['user'][$user['uid']] : [];
@@ -313,11 +293,14 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     if (empty($user['password'])) {
         auth_log("Cannot set user {$user['name']}: password is missing");
         return;
+    } elseif (empty($user['shell'])) {
+        /* no shell, no local user */
+        return;
     }
 
     @mkdir('/home', 0755);
 
-    $user_pass = $user['password'];
+    $user_pass = '*'; /* integrated authentication stores passwords, set local to unreachable */
     $user_name = $user['name'];
     $user_uid = $user['uid'];
     $comment = str_replace(array(':', '!', '@'), ' ', $user['descr']);
@@ -327,7 +310,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     $is_expired = !empty($user['expires']) &&
         strtotime('-1 day') > strtotime(date('m/d/Y', strtotime($user['expires'])));
 
-    $is_disabled = isset($user['disabled']);
+    $is_disabled = !empty($user['disabled']);
 
     $is_unlocked = !$is_disabled && !$is_expired;
 
@@ -343,16 +326,15 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
          * authentication is off.
          */
         $lock_account = 'unlock';
-        $user_pass = '*';
     }
 
     if ($user_uid == 0) {
-        $user_shell = isset($user['shell']) ? $user['shell'] : '/usr/local/sbin/opnsense-shell';
+        $user_shell = !empty($user['shell']) ? $user['shell'] : '/usr/local/sbin/opnsense-shell';
         $user_group = 'wheel';
         $user_home = '/root';
     } else {
         $is_admin = userIsAdmin($user['name']);
-        $user_shell = $is_admin && isset($user['shell']) ? $user['shell'] : '/usr/sbin/nologin';
+        $user_shell = $is_admin && !empty($user['shell']) ? $user['shell'] : '/usr/sbin/nologin';
         $user_group = $is_admin ? 'wheel' : 'nobody';
         $user_home = "/home/{$user_name}";
     }
@@ -361,11 +343,6 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     $user_gid = $user_group == 'wheel' ? 0 : 65534;
 
     if (!$force_password) {
-        /* passwords only when integrated auth is disabled or forced */
-        if (empty($config['system']['disableintegratedauth'])) {
-            $user_pass = '*';
-        }
-
         /* read from pw db if not provided (batch mode) */
         if ($userattrs === null) {
             $fd = popen("/usr/sbin/pw usershow -n {$user_name}", 'r');
@@ -382,8 +359,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
         $user_op = 'useradd -m -k /usr/share/skel -o';
     } elseif (
         $userattrs[0] == $user_name &&
-        /* match only if disabled or enabled in order to detect a change */
-        ($userattrs[1] == '*' && $user_pass == '*' || $userattrs[1] != '*' && $user_pass != '*') &&
+        $userattrs[1] == '*' &&
         $userattrs[2] == $user_uid &&
         $userattrs[3] == $user_gid &&
         $userattrs[7] == $comment &&
@@ -411,7 +387,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     @chgrp($user_home, $user_group);
 
     /* write out ssh authorized key file */
-    if ($is_unlocked && isset($user['authorizedkeys'])) {
+    if ($is_unlocked && !empty($user['authorizedkeys'])) {
         @mkdir("{$user_home}/.ssh", 0700);
         @chown("{$user_home}/.ssh", $user_name);
         $keys = base64_decode($user['authorizedkeys']);
@@ -425,18 +401,6 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     }
 
     mwexecf('/usr/sbin/pw %s %s', array($lock_account, $user_name), true);
-}
-
-function local_user_del($user)
-{
-    /* remove all memberships */
-    local_user_set_groups($user);
-
-    /* delete from pw db */
-    mwexecf('/usr/sbin/pw userdel -n %s -r', $user['name']);
-
-    /* Delete user from groups needs a call to write_config() */
-    local_group_del_user($user);
 }
 
 function local_user_set_password(&$user, $password = null)
@@ -485,7 +449,7 @@ function local_user_get_groups($user)
 {
     global $config;
 
-    $groups = array();
+    $groups = [];
 
     if (!isset($config['system']['group'])) {
         return $groups;
@@ -493,8 +457,11 @@ function local_user_get_groups($user)
 
     foreach ($config['system']['group'] as $group) {
         if (isset($group['member'])) {
-            if (in_array($user['uid'], $group['member'])) {
-                $groups[] = $group['name'];
+            foreach ($group['member'] as $member) {
+                if (in_array($user['uid'], explode(',', $member))) {
+                    $groups[] = $group['name'];
+                    break;
+                }
             }
         }
     }
@@ -502,77 +469,6 @@ function local_user_get_groups($user)
     sort($groups);
 
     return $groups;
-}
-
-function local_user_set_groups($user, $new_groups = null)
-{
-    global $config, $groupindex;
-
-    if (!isset($config['system']['group'])) {
-        return;
-    }
-
-    $cur_groups = local_user_get_groups($user);
-    $mod_groups = array();
-
-    if (!is_array($new_groups)) {
-        $new_groups = array();
-    }
-
-    if (!is_array($cur_groups)) {
-        $cur_groups = array();
-    }
-
-    /* determine which memberships to add */
-    foreach ($new_groups as $groupname) {
-        if (in_array($groupname, $cur_groups) || !isset($groupindex[$groupname])) {
-            // continue if group is already in current list or the groupname is invalid
-            continue;
-        }
-        $group = &config_read_array('system', 'group', $groupindex[$groupname]);
-        $group['member'][] = $user['uid'];
-        $mod_groups[] = $group;
-    }
-
-    /* determine which memberships to remove */
-    foreach ($cur_groups as $groupname) {
-        if (in_array($groupname, $new_groups)) {
-            continue;
-        }
-        if (!isset($config['system']['group'][$groupindex[$groupname]])) {
-            continue;
-        }
-        $group = &config_read_array('system', 'group', $groupindex[$groupname]);
-        if (is_array($group['member'])) {
-            $index = array_search($user['uid'], $group['member']);
-            array_splice($group['member'], $index, 1);
-            $mod_groups[] = $group;
-        }
-    }
-
-    /* sync all modified groups */
-    foreach ($mod_groups as $group) {
-        local_group_set($group);
-    }
-}
-
-function local_group_del_user($user)
-{
-    global $config;
-
-    if (!isset($config['system']['group'])) {
-        return;
-    }
-
-    foreach ($config['system']['group'] as $group) {
-        if (isset($group['member'])) {
-            foreach ($group['member'] as $idx => $uid) {
-                if ($user['uid'] == $uid) {
-                    unset($config['system']['group']['member'][$idx]);
-                }
-            }
-        }
-    }
 }
 
 function local_group_set($group)
@@ -586,7 +482,11 @@ function local_group_set($group)
     $group_members = '';
 
     if (!empty($group['member']) && count($group['member']) > 0) {
-        $group_members = implode(',', $group['member']);
+        $members = [];
+        foreach ($group['member'] as $member) {
+            $members = array_merge($members, explode(',', $member));
+        }
+        $group_members = implode(',', $members);
     }
 
     $ret = mwexecf('/usr/sbin/pw groupshow %s', $group_name, true);
@@ -598,13 +498,6 @@ function local_group_set($group)
 
     mwexecf('/usr/sbin/pw %s %s -g %s -M %s', array($group_op, $group_name, $group_gid, $group_members));
 }
-
-function local_group_del($group)
-{
-    /* delete from group db */
-    mwexecf('/usr/sbin/pw groupdel %s', $group['name']);
-}
-
 
 /**
  * @param $name string name of the authentication system configured on the authentication server page or 'Local Database' for local authentication

@@ -34,6 +34,9 @@
             add:'/api/trust/ca/add/',
             set:'/api/trust/ca/set/',
             del:'/api/trust/ca/del/',
+            options: {
+                initialSearchPhrase: getUrlHash('search')
+            },
             commands: {
                 raw_dump: {
                     method: function(event){
@@ -82,7 +85,7 @@
                                         '/api/trust/ca/generate_file/'+uuid+'/'+$type.val(),
                                         params,
                                         function(data, status) {
-                                            download_content(data.payload, $type.val() + '.pem', 'application/octet-stream');
+                                            download_content(data.payload, data.descr + '_' + $type.val() + '.pem', 'application/octet-stream');
                                         }
                                     )
                                     dialogItself.close();

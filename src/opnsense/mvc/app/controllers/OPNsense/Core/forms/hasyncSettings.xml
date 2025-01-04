@@ -16,16 +16,10 @@
         <help>When this device is configured as CARP backup it will disconnect all PPP type interfaces and try to reconnect them when becoming master again.</help>
     </field>
     <field>
-        <id>hasync.pfsyncenabled</id>
-        <label>Synchronize States</label>
-        <type>checkbox</type>
-        <help>pfsync transfers state insertion, update, and deletion messages between firewalls.</help>
-    </field>
-    <field>
         <id>hasync.pfsyncinterface</id>
-        <label>Synchronize Interface</label>
+        <label>Synchronize all states via</label>
         <type>dropdown</type>
-        <help>If Synchronize States is enabled, it will utilize this interface for communication. Best choose a dedicated interface for this type of communication to prevent manipulation of states causing security issues.</help>
+        <help>This enables state insertion, update, and deletion messages between firewalls by utilizing the selected interface for communication. Best choose a dedicated interface for this type of communication to prevent manipulation of states causing security issues.</help>
     </field>
     <field>
         <id>hasync.pfsyncversion</id>
@@ -45,7 +39,7 @@
     </field>
     <field>
         <type>header</type>
-        <label><![CDATA[Configuration Synchronization Settings (XMLRPC Sync) <a href="/status_habackup.php">Perform synchronization </a>]]></label>
+        <label><![CDATA[Configuration Synchronization Settings (XMLRPC Sync) <a href="/ui/core/hasync_status">Perform synchronization </a>]]></label>
     </field>
     <field>
         <id>hasync.synchronizetoip</id>
@@ -53,8 +47,14 @@
         <type>text</type>
         <help>
             Enter the IP address of the firewall to which the selected configuration sections should be synchronized.
-            This should be empty on the backup machine, when only an address is offered, but webui configurions should be equal (port and protocol)
+            This should be empty on the backup machine. When an IP address is offered, both web GUI configurations should be equal (port and protocol).
         </help>
+    </field>
+    <field>
+        <id>hasync.verifypeer</id>
+        <label>Verify peer</label>
+        <type>checkbox</type>
+        <help>In most cases the target host will be a directly attached neighbor in which case TLS verification can be ignored.</help>
     </field>
     <field>
         <id>hasync.username</id>

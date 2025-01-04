@@ -63,6 +63,13 @@
                     "overflowformatter": function (column, row) {
                         return '<span class="overflow">' + row[column.id] + '</span><br/>'
                     },
+                    "macformatter": function (column, row) {
+                        let mac = '<span class="overflow">' + row.hwaddr + '</span>';
+                        if (row.mac_info != '') {
+                            mac = mac + '<br/>' + '<small class="overflow"><i>' + row.mac_info + '</i></small>';
+                        }
+                        return mac;
+                    },
                     "timestamp": function (column, row) {
                         return moment.unix(row[column.id]).local().format('YYYY-MM-DD HH:mm:ss');
                     },
@@ -91,16 +98,15 @@
         </select>
     </div>
     <table id="grid-leases" class="table table-condensed table-hover table-striped table-responsive">
-        <tr>
         <thead>
-        <tr>
-            <th data-column-id="if_descr" data-type="string">{{ lang._('Interface') }}</th>
-            <th data-column-id="address" data-identifier="true" data-type="string" data-formatter="overflowformatter">{{ lang._('IP Address') }}</th>
-            <th data-column-id="hwaddr" data-type="string" data-width="9em">{{ lang._('MAC Address') }}</th>
-            <th data-column-id="valid_lifetime" data-type="integer">{{ lang._('Lifetime') }}</th>
-            <th data-column-id="expire" data-type="string" data-formatter="timestamp">{{ lang._('Expire') }}</th>
-            <th data-column-id="hostname" data-type="string" data-formatter="overflowformatter">{{ lang._('Hostname') }}</th>
-        </tr>
+            <tr>
+                <th data-column-id="if_descr" data-type="string">{{ lang._('Interface') }}</th>
+                <th data-column-id="address" data-identifier="true" data-type="string" data-formatter="overflowformatter">{{ lang._('IP Address') }}</th>
+                <th data-column-id="hwaddr" data-type="string" data-formatter="macformatter" data-width="9em">{{ lang._('MAC Address') }}</th>
+                <th data-column-id="valid_lifetime" data-type="integer">{{ lang._('Lifetime') }}</th>
+                <th data-column-id="expire" data-type="string" data-formatter="timestamp">{{ lang._('Expire') }}</th>
+                <th data-column-id="hostname" data-type="string" data-formatter="overflowformatter">{{ lang._('Hostname') }}</th>
+            </tr>
         </thead>
         <tbody>
         </tbody>

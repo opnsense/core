@@ -13,6 +13,7 @@
         <filename>SystemInformation.js</filename>
         <endpoints>
             <endpoint>/api/diagnostics/system/systemInformation</endpoint>
+            <endpoint>/api/diagnostics/system/systemTime</endpoint>
         </endpoints>
         <translations>
             <title>System Information</title>
@@ -20,12 +21,14 @@
             <versions>Versions</versions>
             <updates>Updates</updates>
             <datetime>Current date/time</datetime>
+            <loadavg>Load average</loadavg>
             <uptime>Uptime</uptime>
             <config>Last configuration change</config>
         </translations>
     </systeminformation>
     <interfaces>
         <filename>Interfaces.js</filename>
+        <link>/ui/interfaces/overview</link>
         <endpoints>
             <endpoint>/api/interfaces/overview/interfacesInfo</endpoint>
         </endpoints>
@@ -42,8 +45,9 @@
             <title>CPU</title>
             <total>Total</total>
             <user>User</user>
-            <system>System</system>
-            <interrupt>Interrupt</interrupt>
+            <sys>System</sys>
+            <intr>Interrupt</intr>
+            <graphs>Graphs</graphs>
         </translations>
     </cpu>
     <interfacestatistics>
@@ -53,6 +57,7 @@
         </endpoints>
         <translations>
             <title>Interface Statistics</title>
+            <interface>Interface</interface>
             <bytesin>Bytes In</bytesin>
             <bytesout>Bytes Out</bytesout>
             <packetsin>Packets In</packetsin>
@@ -64,13 +69,16 @@
     </interfacestatistics>
     <traffic>
         <filename>Traffic.js</filename>
+        <link>/ui/diagnostics/traffic</link>
         <endpoints>
-            <endpoint>/api/diagnostics/traffic/*</endpoint>
+            <endpoint>/api/diagnostics/traffic/stream/*</endpoint>
+            <endpoint>/api/diagnostics/traffic/interface</endpoint>
         </endpoints>
         <translations>
             <title>Traffic Graph</title>
             <trafficin>Traffic In</trafficin>
             <trafficout>Traffic Out</trafficout>
+            <interfaces>Interfaces</interfaces>
         </translations>
     </traffic>
     <memory>
@@ -98,6 +106,7 @@
     </disk>
     <firewall>
         <filename>Firewall.js</filename>
+        <link>/ui/diagnostics/firewall/log</link>
         <endpoints>
             <endpoint>/api/diagnostics/firewall/streamLog</endpoint>
             <endpoint>/api/diagnostics/interface/getInterfaceNames</endpoint>
@@ -136,7 +145,7 @@
             <endpoint>/api/diagnostics/system/system_mbuf</endpoint>
         </endpoints>
         <translations>
-            <title>Mbuf Usage</title>
+            <title>Mbuf</title>
             <used>Used</used>
             <free>Free</free>
         </translations>
@@ -147,13 +156,14 @@
             <endpoint>/api/diagnostics/system/system_swap</endpoint>
         </endpoints>
         <translations>
-            <title>Swap Usage</title>
+            <title>Swap</title>
             <used>Used</used>
             <free>Free</free>
         </translations>
     </swap>
     <carp>
         <filename>Carp.js</filename>
+        <link>/ui/interfaces/vip</link>
         <endpoints>
             <endpoint>/api/diagnostics/interface/get_vip_status</endpoint>
         </endpoints>
@@ -166,8 +176,9 @@
     </carp>
     <gateways>
         <filename>Gateways.js</filename>
+        <link>/ui/routing/configuration</link>
         <endpoints>
-            <endpoint>/api/routes/gateway/status</endpoint>
+            <endpoint>/api/routing/settings/searchGateway</endpoint>
         </endpoints>
         <translations>
             <title>Gateways</title>
@@ -184,14 +195,15 @@
         </endpoints>
         <translations>
             <title>Thermal Sensors</title>
-            <help>CPU thermal sensors often measure the same temperature for each core. If this is the case, only the first core is shown.</help>
+            <help>CPU thermal sensors often measure the same temperature for each CPU.</help>
             <unconfigured>Thermal sensors not available or not configured.</unconfigured>
         </translations>
     </thermalsensors>
     <monit>
         <filename>Monit.js</filename>
+        <link>/ui/monit</link>
         <endpoints>
-            <endpoint>/api/monit/status/get/xml</endpoint>
+            <endpoint>/api/monit/status/get/*</endpoint>
         </endpoints>
         <translations>
             <title>Monit Status</title>
@@ -206,8 +218,6 @@
             <network>Network</network>
             <ok>OK</ok>
             <failed>Failed</failed>
-            <changed>Changed</changed>
-            <unchanged>Not changed</unchanged>
             <type>Type</type>
             <unconfigured>Monit is disabled or not configured.</unconfigured>
         </translations>
@@ -215,7 +225,7 @@
     <livelog>
         <filename>LiveLog.js</filename>
         <endpoints>
-            <endpoint>/api/diagnostics/log/core/*</endpoint>
+            <endpoint>/api/diagnostics/log/core/system/*</endpoint>
         </endpoints>
         <translations>
             <title>Live Log</title>
@@ -227,9 +237,10 @@
     </livelog>
     <ipsecleases>
         <filename>IpsecLeases.js</filename>
+        <link>/ui/ipsec/leases</link>
         <endpoints>
-            <endpoint>/api/ipsec/connections/*</endpoint>
-            <endpoint>/api/ipsec/leases/*</endpoint>
+            <endpoint>/api/ipsec/connections/isEnabled</endpoint>
+            <endpoint>/api/ipsec/leases/pools</endpoint>
         </endpoints>
         <translations>
             <title>IPsec Leases</title>
@@ -242,9 +253,12 @@
     </ipsecleases>
     <ipsectunnels>
         <filename>IpsecTunnels.js</filename>
+        <link>/ui/ipsec/sessions</link>
         <endpoints>
-            <endpoint>/api/ipsec/connections/*</endpoint>
-            <endpoint>/api/ipsec/sessions/*</endpoint>
+            <endpoint>/api/ipsec/connections/isEnabled</endpoint>
+            <endpoint>/api/ipsec/sessions/searchPhase1</endpoint>
+            <endpoint>/api/ipsec/sessions/connect/*</endpoint>
+            <endpoint>/api/ipsec/sessions/disconnect/*</endpoint>
         </endpoints>
         <translations>
             <title>IPsec Tunnels</title>
@@ -252,12 +266,17 @@
             <offline>Offline</offline>
             <total>Tunnels</total>
             <unconfigured>IPsec is currently disabled. Click to configure IPsec.</unconfigured>
-            <notunnels>There are currently no tunnels.</notunnels>
+            <notunnels>Phase1 not configured</notunnels>
             <notavailable>N/A</notavailable>
+            <installtime>Install Time</installtime>
+            <nophase2connected>Phase2 disconnected</nophase2connected>
+            <connect>Connect</connect>
+            <disconnect>Disconnect</disconnect>
         </translations>
     </ipsectunnels>
     <Wireguard>
         <filename>Wireguard.js</filename>
+        <link>/ui/wireguard/general</link>
         <endpoints>
             <endpoint>/api/wireguard/service/show</endpoint>
             <endpoint>/api/wireguard/general/get</endpoint>
@@ -265,13 +284,17 @@
         <translations>
             <title>Wireguard</title>
             <unconfigured>Wireguard is currently disabled. Click to configure Wireguard.</unconfigured>
-            <notunnels>There are currently no tunnels.</notunnels>
-            <rx>rx</rx>
-            <tx>tx</tx>
+            <notunnels>No tunnels connected</notunnels>
+            <online>Online</online>
+            <offline>Offline</offline>
+            <total>Tunnels</total>
+            <notavailable>N/A</notavailable>
+            <disconnected>Peer disconnected</disconnected>
         </translations>
     </Wireguard>
     <services>
         <filename>Services.js</filename>
+        <link>/ui/core/service</link>
         <endpoints>
             <endpoint>/api/core/service/*</endpoint>
         </endpoints>
@@ -287,6 +310,7 @@
     </services>
     <openvpnclients>
         <filename>OpenVPNClients.js</filename>
+        <link>/ui/openvpn/status</link>
         <endpoints>
             <endpoint>/api/openvpn/service/search_sessions</endpoint>
             <endpoint>/api/openvpn/service/kill_session</endpoint>
@@ -301,15 +325,45 @@
     </openvpnclients>
     <openvpnservers>
         <filename>OpenVPNServers.js</filename>
+        <link>/ui/openvpn/status</link>
         <endpoints>
             <endpoint>/api/openvpn/service/search_sessions</endpoint>
         </endpoints>
         <translations>
             <title>OpenVPN Server Connections</title>
-            <noserver>Not connected to any server</noserver>
+            <noservers>Not connected to any server</noservers>
             <server>Server</server>
             <client>Client</client>
             <stopped>Stopped</stopped>
         </translations>
     </openvpnservers>
+    <picture>
+        <filename>Picture.js</filename>
+        <link>/system_general.php</link>
+        <endpoints>
+            <endpoint>/api/core/dashboard/picture</endpoint>
+        </endpoints>
+        <translations>
+            <title>Picture</title>
+            <nopicture>No picture was supplied for this system.</nopicture>
+        </translations>
+    </picture>
+    <certificates>
+        <filename>Certificates.js</filename>
+        <link>/ui/trust/cert</link>
+        <endpoints>
+            <endpoint>/api/trust/ca/search</endpoint>
+            <endpoint>/api/trust/cert/search</endpoint>
+        </endpoints>
+        <translations>
+            <title>Certificates</title>
+            <noitems>No certificates to display.</noitems>
+            <expired>Expired</expired>
+            <valid>Valid</valid>
+            <expiresin>Expires in</expiresin>
+            <expiredon>Expired on</expiredon>
+            <days>days</days>
+            <hiddenitems>Hidden Certificates</hiddenitems>
+        </translations>
+    </certificates>
 </metadata>

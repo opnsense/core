@@ -24,8 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseTableWidget from "./BaseTableWidget.js";
-
 export default class Carp extends BaseTableWidget {
     constructor() {
         super();
@@ -69,7 +67,15 @@ export default class Carp extends BaseTableWidget {
         });
 
         Object.values(ifs).forEach(({ primary, aliases }) => {
-            let $intf = `<div><a href="/ui/interfaces/vip">${primary.interface} @ VHID ${primary.vhid}</a></div>`;
+            if (primary == null) {
+                return;
+            }
+
+            let $intf = `<div>
+                <a href="/ui/interfaces/vip#search=${encodeURIComponent(primary.interface)}" target="_blank" rel="noopener noreferrer">
+                    ${primary.interface} @ VHID ${primary.vhid}
+                </a>
+            </div>`;
             let vips = [
                 `<div>
                     <span class="badge badge-pill carp-status-icon"

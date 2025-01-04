@@ -291,9 +291,18 @@ function core_cron()
     $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d syslog archive', '1');
     $jobs[]['autocron'] = array('/usr/local/sbin/expiretable -v -t 3600 sshlockout', '2');
     $jobs[]['autocron'] = array('/usr/local/sbin/expiretable -v -t 3600 virusprot', '3');
-    $jobs[]['autocron'] = array('/usr/local/etc/rc.expireaccounts', '4');
     $jobs[]['autocron'] = array('/usr/local/sbin/ping_hosts.sh', '*/4');
     $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d firmware changelog cron', '0', '22');
+
+    /**
+     * rrd graph collector, only schedule execution when enabled
+     */
+    if (isset($config['rrd']['enable'])) {
+        $jobs[]['autocron'] = [
+            '/usr/local/bin/flock -n -E 0 -o /tmp/updaterrd.lock /usr/local/opnsense/scripts/health/updaterrd.php',
+            '*'
+        ];
+    }
 
     if (!empty($config['system']['rrdbackup']) && $config['system']['rrdbackup'] > 0) {
         $jobs[]['autocron'] = array(
@@ -334,6 +343,10 @@ function core_cron()
         }
     }
 
+    if (!empty((string)(new OPNsense\Trust\General())->fetch_crls)) {
+        $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d system trust download_crls', '1');
+    }
+
     return $jobs;
 }
 
@@ -363,12 +376,6 @@ function core_xmlrpc_sync()
 {
     $result = array();
 
-    $result[] = array(
-        'description' => gettext('Dashboard'),
-        'help' => gettext('Synchronize dashboard widgets.'),
-        'section' => 'widgets',
-        'id' => 'widgets',
-    );
     $result[] = array(
         'description' => gettext('Users and Groups'),
         'help' => gettext('Synchronize the users and groups over to the other HA host.'),
@@ -461,10 +468,11 @@ function core_configure()
         /* XXX these are all specialized and try to avoid extra script use */
         'dns_reload' => ['system_resolver_configure'],
         'firmware_reload' => ['system_firmware_configure'],
-        'route_reload' => ['core_routing_batch:2'],
+        'route_reload' => ['system_routing_configure:2'],
         'syslog_reset' => ['system_syslog_reset'],
         'trust_reload' => ['system_trust_configure'],
         'user_changed' => ['core_user_changed_groups:2'],
+        'crl' => ['core_trust_crl'],
     ];
 }
 
@@ -475,17 +483,6 @@ function core_run()
     ];
 }
 
-function core_routing_batch($verbose, $interfaces = [null])
-{
-    if (!is_array($interfaces)) {
-        $interfaces = [$interfaces];
-    }
-
-    foreach ($interfaces as $interface) {
-        system_routing_configure($verbose, $interface);
-    }
-}
-
 /**
  * user changed event, synchronize attached system groups for requested user
  */
@@ -494,14 +491,17 @@ function core_user_changed_groups($unused, $username)
     global $config;
     if (is_array($config['system']['user'])) {
         foreach ($config['system']['user'] as $user) {
-            if ($user['name'] == $username) {
+            if ($user['name'] == $username && !empty($user['shell'])) {
                 exec("/usr/bin/groups " . escapeshellarg($username) . ' 2>/dev/null', $out, $ret);
                 $current_groups = [];
                 if (!$ret) {
                     $current_groups = explode(" ", $out[0]);
                 }
                 foreach ($config['system']['group'] as $group) {
-                    $in_group = !empty($group['member']) && in_array($user['uid'], $group['member']);
+                    $in_group = false;
+                    foreach (!empty($group['member']) ? $group['member'] : [] as $grp) {
+                        $in_group = $in_group || in_array($user['uid'], explode(',', $grp));
+                    }
                     $to_remove = in_array($group['name'], $current_groups) && !$in_group;
                     $to_add = !in_array($group['name'], $current_groups) && $in_group;
                     if ($to_remove || $to_add) {
@@ -510,5 +510,18 @@ function core_user_changed_groups($unused, $username)
                 }
             }
         }
+    }
+}
+
+/**
+ * When CRL's are deployed locally, we need to flush them to disk.
+ * If at some point in time it turns out this event is too slow, we should split system_trust_configure() and possibly
+ * certctl.py to only process CRL's on demand.
+ */
+function core_trust_crl()
+{
+    $trust = new \OPNsense\Trust\General();
+    if (!empty((string)$trust->install_crls)) {
+        system_trust_configure();
     }
 }

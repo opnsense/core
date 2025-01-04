@@ -9,28 +9,22 @@
         </patterns>
     </page-diagnostics-backup-restore>
     <page-system-login-logout>
-        <name>Lobby: Login / Logout / Dashboard</name>
+        <name>Lobby: Dashboard</name>
         <patterns>
             <pattern>index.php*</pattern>
             <pattern>ui/core/dashboard</pattern>
             <pattern>api/core/dashboard/*</pattern>
+            <pattern>api/diagnostics/cpu_usage/*</pattern>
+            <pattern>api/diagnostics/firewall/pf_states</pattern>
+            <pattern>api/diagnostics/system/systemDisk</pattern>
             <pattern>api/diagnostics/system/systemInformation</pattern>
+            <pattern>api/diagnostics/system/systemResources</pattern>
+            <pattern>api/diagnostics/system/systemTemperature</pattern>
+            <pattern>api/diagnostics/system/systemTime</pattern>
+            <pattern>api/diagnostics/system/system_mbuf</pattern>
+            <pattern>api/diagnostics/system/system_swap</pattern>
         </patterns>
     </page-system-login-logout>
-    <page-getserviceproviders>
-        <name>AJAX: Get Service Providers</name>
-        <patterns>
-            <pattern>ui/core/license</pattern>
-            <pattern>getserviceproviders.php*</pattern>
-        </patterns>
-    </page-getserviceproviders>
-    <page-getstats>
-        <name>AJAX: Get Stats</name>
-        <patterns>
-            <pattern>ui/core/license</pattern>
-            <pattern>widgets/api/get.php*</pattern>
-        </patterns>
-    </page-getstats>
     <page-all>
         <name>All pages</name>
         <patterns>
@@ -50,102 +44,6 @@
             <pattern>api/core/system/dismissStatus</pattern>
         </patterns>
     </page-system-status>
-    <page-dashboard-all>
-        <name>Dashboard (all)</name>
-        <patterns>
-            <pattern>index.php*</pattern>
-            <pattern>ui/core/dashboard*</pattern>
-            <pattern>api/core/dashboard/*</pattern>
-            <pattern>api/diagnostics/interface/get_vip_status</pattern>
-            <pattern>api/diagnostics/cpu_usage/*</pattern>
-            <pattern>api/diagnostics/firewall/streamLog</pattern>
-            <pattern>api/diagnostics/interface/getInterfaceNames</pattern>
-            <pattern>api/diagnostics/firewall/pf_states</pattern>
-            <pattern>api/routes/gateway/status</pattern>
-            <pattern>api/interfaces/overview/interfacesInfo</pattern>
-            <pattern>api/diagnostics/traffic/*</pattern>
-            <pattern>api/diagnostics/system/systemDisk</pattern>
-            <pattern>api/diagnostics/system/system_mbuf</pattern>
-            <pattern>api/diagnostics/system/systemResources</pattern>
-            <pattern>api/diagnostics/system/system_swap</pattern>
-            <pattern>api/diagnostics/system/systemInformation</pattern>
-            <pattern>api/diagnostics/system/systemTemperature</pattern>
-            <pattern>api/monit/status/get/xml</pattern>
-            <pattern>api/diagnostics/log/core/*</pattern>
-            <pattern>api/ipsec/connections/*</pattern>
-            <pattern>api/ipsec/leases/*</pattern>
-            <pattern>api/ipsec/sessions/*</pattern>
-        </patterns>
-    </page-dashboard-all>
-    <!--
-    Below are some sidgets that don't fully belong to existing components, if anyone asks to grant access
-    to specific users for these, it might be better to debate what is really needed besides the existing
-    dashboard-all role (e.g. dasboard-informational as role to goup these might also work for example).
-
-     <page-dashboard-widget-system-information>
-        <name>Dashboard: System Information widget</name>
-        <patterns>
-            <pattern>ui/core/dashboard</pattern>
-            <pattern>api/core/dashboard/*</pattern>
-            <pattern>api/diagnostics/system/systemInformation</pattern>
-        </patterns>
-    </page-dashboard-widget-system-information>
-    <page-dashboard-widget-cpu>
-        <name>Dashboard: CPU Usage widget</name>
-        <patterns>
-            <pattern>ui/core/dashboard</pattern>
-            <pattern>api/core/dashboard/*</pattern>
-            <pattern>api/diagnostics/cpu_usage/*</pattern>
-        </patterns>
-    </page-dashboard-widget-cpu>
-    <page-dashboard-widget-disk>
-        <name>Dashboard: Disk Usage widget</name>
-        <patterns>
-            <pattern>ui/core/dashboard</pattern>
-            <pattern>api/core/dashboard/*</pattern>
-            <pattern>api/core/system/systemDisk</pattern>
-        </patterns>
-    </page-dashboard-widget-disk>
-    <page-dashboard-widget-firewallstates>
-        <name>Dashboard: Firewall States Usage widget</name>
-        <patterns>
-            <pattern>ui/core/dashboard</pattern>
-            <pattern>api/core/dashboard/*</pattern>
-            <pattern>api/diagnostics/firewall/pf_states</pattern>
-        </patterns>
-    </page-dashboard-widget-firewallstates>
-    <page-dashboard-widget-mbuf>
-        <name>Dashboard: Mbuf Usage widget</name>
-        <patterns>
-            <pattern>ui/core/dashboard</pattern>
-            <pattern>api/core/dashboard/*</pattern>
-            <pattern>api/core/system/system_mbuf</pattern>
-        </patterns>
-    </page-dashboard-widget-mbuf>
-    <page-dashboard-widget-memory>
-        <name>Dashboard: Memory Usage widget</name>
-        <patterns>
-            <pattern>ui/core/dashboard</pattern>
-            <pattern>api/core/dashboard/*</pattern>
-            <pattern>api/core/system/systemResources</pattern>
-        </patterns>
-    </page-dashboard-widget-memory>
-    <page-dashboard-widget-swap>
-        <name>Dashboard: Swap Usage widget</name>
-        <patterns>
-            <pattern>ui/core/dashboard</pattern>
-            <pattern>api/core/dashboard/*</pattern>
-            <pattern>api/core/system/system_swap</pattern>
-        </patterns>
-    </page-dashboard-widget-swap>
-    <page-dashboard-widget-thermal-sensors>
-        <name>Dashboard: Thermal Sensors widget</name>
-        <patterns>
-            <pattern>ui/core/dashboard</pattern>
-            <pattern>api/core/dashboard/*</pattern>
-            <pattern>api/core/system/systemTemperature</pattern>
-        </patterns>
-    </page-dashboard-widget-thermal-sensors> -->
     <page-diagnostics-authentication>
         <name>Diagnostics: Authentication</name>
         <patterns>
@@ -265,6 +163,13 @@
             <pattern>api/diagnostics/portprobe/*</pattern>
         </patterns>
     </page-diagnostics-testport>
+    <page-diagnostics-dns_diagnostics>
+        <name>Interfaces: Diagnostics: DNS Lookup</name>
+        <patterns>
+            <pattern>ui/diagnostics/dns_diagnostics</pattern>
+            <pattern>api/diagnostics/dns_diagnostics/*</pattern>
+        </patterns>
+    </page-diagnostics-dns_diagnostics>
     <page-diagnostics-traceroute>
         <name>Diagnostics: Traceroute</name>
         <patterns>
@@ -375,7 +280,7 @@
             <pattern>ui/diagnostics/firewall/log*</pattern>
             <pattern>api/diagnostics/firewall/streamLog</pattern>
             <pattern>api/diagnostics/firewall/log*</pattern>
-            <pattern>api/diagnostics/interface/getInterfaceNames*</pattern>
+            <pattern>api/diagnostics/interface/getInterfaceNames</pattern>
             <pattern>api/diagnostics/dns/reverse_lookup*</pattern>
             <pattern>api/diagnostics/lvtemplate/*</pattern>
         </patterns>
@@ -436,6 +341,7 @@
         <name>Interfaces: PPPs: Edit</name>
         <patterns>
             <pattern>interfaces_ppps_edit.php*</pattern>
+            <pattern>getserviceproviders.php*</pattern>
         </patterns>
     </page-interfaces-ppps-edit>
     <page-interfaces>
@@ -501,7 +407,8 @@
     <page-status-habackup>
         <name>Status: HA backup</name>
         <patterns>
-            <pattern>status_habackup.php</pattern>
+            <pattern>ui/core/hasync_status</pattern>
+            <pattern>api/core/hasync_status/*</pattern>
         </patterns>
     </page-status-habackup>
     <page-status-dhcpleases>
@@ -575,10 +482,10 @@
         </patterns>
     </page-status-systemlogs-wireless>
     <page-status-trafficgraph>
-        <name>Status: Traffic Graph</name>
+        <name>Reporting: Traffic</name>
         <patterns>
-            <pattern>ui/diagnostics/traffic*</pattern>
-            <pattern>api/diagnostics/traffic*</pattern>
+            <pattern>ui/diagnostics/traffic</pattern>
+            <pattern>api/diagnostics/traffic/*</pattern>
         </patterns>
     </page-status-trafficgraph>
     <page-status-dnsoverview>
@@ -621,7 +528,8 @@
     <page-system-advanced-sysctl>
         <name>System: Advanced: Tunables</name>
         <patterns>
-            <pattern>system_advanced_sysctl.php*</pattern>
+            <pattern>ui/core/tunables</pattern>
+            <pattern>api/core/tunables/*</pattern>
         </patterns>
     </page-system-advanced-sysctl>
     <page-system-authservers>
@@ -652,6 +560,13 @@
             <pattern>api/trust/crl/*</pattern>
         </patterns>
     </page-system-crlmanager>
+    <page-snapshots>
+        <name>System: Snapshots</name>
+        <patterns>
+            <pattern>ui/core/snapshots</pattern>
+            <pattern>api/core/snapshots/*</pattern>
+        </patterns>
+    </page-snapshots>
     <page-system-firmware-manualupdate>
         <name>System: Firmware</name>
         <patterns>
@@ -688,17 +603,12 @@
         </patterns>
     </page-system-generalsetup>
     <page-system-groupmanager>
-        <name>System: Group manager</name>
+        <name>System: Access: Groups</name>
         <patterns>
-            <pattern>system_groupmanager.php*</pattern>
+            <pattern>ui/auth/group</pattern>
+            <pattern>api/auth/group/*</pattern>
         </patterns>
     </page-system-groupmanager>
-    <page-system-groupmanager-addprivs>
-        <name>System: Group Manager: Add Privileges</name>
-        <patterns>
-            <pattern>system_usermanager_addprivs.php?group*</pattern>
-        </patterns>
-    </page-system-groupmanager-addprivs>
     <page-system-hasync>
         <name>System: High Availability</name>
         <patterns>
@@ -707,9 +617,9 @@
         </patterns>
     </page-system-hasync>
     <page-system-license>
-        <name>System: License</name>
+        <name>Lobby: License</name>
         <patterns>
-            <pattern>ui/core/license*</pattern>
+            <pattern>ui/core/license</pattern>
         </patterns>
     </page-system-license>
     <page-system-staticroutes>
@@ -720,20 +630,21 @@
         </patterns>
     </page-system-staticroutes>
     <page-system-usermanager>
-        <name>System: User Manager</name>
+        <name>System: Access: Users</name>
         <patterns>
-            <pattern>system_usermanager.php*</pattern>
-            <pattern>system_usermanager_import_ldap.php*</pattern>
+            <pattern>ui/auth/user</pattern>
+            <pattern>api/auth/user/*</pattern>
         </patterns>
     </page-system-usermanager>
     <page-system-usermanager-addprivs>
-        <name>System: User Manager: Add Privileges</name>
+        <name>System: Access: Privileges</name>
         <patterns>
-            <pattern>system_usermanager_addprivs.php?user*</pattern>
+            <pattern>ui/auth/priv</pattern>
+            <pattern>api/auth/priv/*</pattern>
         </patterns>
     </page-system-usermanager-addprivs>
     <page-system-usermanager-passwordmg>
-        <name>System: User Password Manager</name>
+        <name>Lobby: Password</name>
         <patterns>
             <pattern>system_usermanager_passwordmg.php*</pattern>
         </patterns>

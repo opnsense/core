@@ -24,9 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseWidget from "./BaseWidget.js";
-
-export default class InterfaceStatistics extends BaseWidget {
+export default class InterfaceStatistics extends BaseTableWidget {
     constructor() {
         super();
 
@@ -39,13 +37,31 @@ export default class InterfaceStatistics extends BaseWidget {
     }
 
     getMarkup() {
-        return $(`
-        <div class="interface-statistics-chart-container">
-            <div class="canvas-container">
-                <canvas id="intf-stats"></canvas>
-            </div>
-        </div>
-        `);
+        let $container = $('<div id="if-stats-container"></div>');
+        let $table = this.createTable('interface-statistics-table', {
+            headerPosition: 'top',
+            headers: [
+                this.translations.interface,
+                this.translations.bytesin,
+                this.translations.bytesout,
+                this.translations.packetsin,
+                this.translations.packetsout,
+                this.translations.errorsin,
+                this.translations.errorsout,
+                this.translations.collisions
+            ]
+        });
+        let $chartContainer = $(`
+            <div class="interface-statistics-chart-container">
+                <div class="canvas-container">
+                    <canvas id="intf-stats"></canvas>
+                </div>
+            </div>`
+        );
+
+        $container.append($table);
+        $container.append($chartContainer);
+        return $container;
     }
 
     _getIndexedData(data) {
@@ -65,6 +81,22 @@ export default class InterfaceStatistics extends BaseWidget {
 
     async onWidgetTick() {
         const data = await this.ajaxCall('/api/diagnostics/traffic/interface');
+
+        for (const [id, obj] of Object.entries(data.interfaces)) {
+            super.updateTable('interface-statistics-table', [
+                [
+                    $(`<a href="/interfaces.php?if=${id}">${obj.name}</a>`).prop('outerHTML'),
+                    this._formatBytes(parseInt(obj["bytes received"])) || "0",
+                    this._formatBytes(parseInt(obj["bytes transmitted"])) || "0",
+                    parseInt(obj["packets received"]).toLocaleString(),
+                    parseInt(obj["packets transmitted"]).toLocaleString(),
+                    parseInt(obj["input errors"]).toLocaleString(),
+                    parseInt(obj["output errors"]).toLocaleString(),
+                    parseInt(obj["collisions"]).toLocaleString()
+                ]
+            ], id);
+        }
+
         let sortedSet = {};
         let i = 0;
         let colors = Chart.colorschemes.tableau.Classic10;
@@ -179,6 +211,15 @@ export default class InterfaceStatistics extends BaseWidget {
                 this.chart.options.plugins.legend.display = false;
             }
         }
+
+        if (width < 700) {
+            $('#intf-stats').show();
+            $('#interface-statistics-table').hide();
+        } else {
+            $('#intf-stats').hide();
+            $('#interface-statistics-table').show();
+        }
+
         return true;
     }
 

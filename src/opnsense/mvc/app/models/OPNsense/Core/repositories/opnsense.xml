@@ -29,10 +29,6 @@
             <description>Cloudfence (HTTPS, Sao Paulo, Brazil)</description>
         </mirror>
         <mirror>
-            <url>https://fourdots.com/mirror/OPNSense</url>
-            <description>FourDots (HTTPS, Belgrade, RS)</description>
-        </mirror>
-        <mirror>
             <url>https://opnsense-mirror.hiho.ch</url>
             <description>HiHo (HTTPS, Zurich, CH)</description>
         </mirror>
@@ -77,20 +73,12 @@
             <description>TerraHost (HTTP, Sandefjord, Norway)</description>
         </mirror>
         <mirror>
-            <url>http://mirror.upb.edu.co/opnsense</url>
-            <description>Universidad Pontificia Bolivariana (HTTP, Medellin, CO)</description>
-        </mirror>
-        <mirror>
             <url>https://www.mirrorservice.org/sites/opnsense.org</url>
             <description>University of Kent (HTTPS, Kent, GB)</description>
         </mirror>
         <mirror>
             <url>http://mirror.venturasystems.tech/opnsense</url>
             <description>Ventura Systems (HTTP, Medellin, CO)</description>
-        </mirror>
-        <mirror>
-            <url>http://mirror.wjcomms.co.uk/opnsense</url>
-            <description>WJComms (HTTP, London, GB)</description>
         </mirror>
     </mirrors>
     <flavours allow_custom="true">

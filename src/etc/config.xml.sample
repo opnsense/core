@@ -325,8 +325,4 @@
   <ntpd>
     <prefer>0.opnsense.pool.ntp.org</prefer>
   </ntpd>
-  <widgets>
-    <sequence>system_information-container:00000000-col3:show,services_status-container:00000001-col4:show,gateways-container:00000002-col4:show,interface_list-container:00000003-col4:show</sequence>
-    <column_count>2</column_count>
-  </widgets>
 </opnsense>

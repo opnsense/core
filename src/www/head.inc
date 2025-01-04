@@ -75,7 +75,10 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename("/css/bootstrap-dialog.css")) ?>">
 
     <!-- Font awesome -->
-    <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/css/font-awesome.min.css") ?>">
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/assets/fontawesome/css/fontawesome.min.css") ?>">
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/assets/fontawesome/css/solid.min.css") ?>">
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/assets/fontawesome/css/brands.min.css") ?>">
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/assets/fontawesome/css/v4-shims.min.css") ?>">
 
     <!-- nvd3 -->
     <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename("/css/nv.d3.css")) ?>">
@@ -180,22 +183,9 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
           $('html,aside').scrollTop(($(this).offset().top - navbar_center));
       });
 
-      // Create status dialog instance
-      let dialog = new BootstrapDialog({
-          title: "<?= html_safe(gettext('System Status')) ?>",
-          buttons: [{
-              label: "<?= html_safe(gettext('Close')) ?>",
-              action: function(dialogRef) {
-                  dialogRef.close();
-              }
-          }],
-      });
-
+      // artifical delay for UX reasons
       setTimeout(function () {
-          updateSystemStatus().then((data) => {
-              let status = parseStatus(data);
-              registerStatusDelegate(dialog, status);
-          });
+          updateSystemStatus();
       }, 500);
 
       // hook in live menu search

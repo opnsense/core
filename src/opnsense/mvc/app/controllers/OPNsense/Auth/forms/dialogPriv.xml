@@ -1,0 +1,17 @@
+<form>
+    <field>
+        <id>priv.id</id>
+        <label>Id</label>
+        <type>info</type>
+    </field>
+    <field>
+        <id>priv.users</id>
+        <label>Users</label>
+        <type>select_multiple</type>
+    </field>
+    <field>
+        <id>priv.groups</id>
+        <label>Groups</label>
+        <type>select_multiple</type>
+    </field>
+</form>
