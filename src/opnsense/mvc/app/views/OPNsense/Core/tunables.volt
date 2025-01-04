@@ -27,11 +27,11 @@
 <script>
     $( document ).ready(function() {
         $("#grid").UIBootgrid(
-            {   search:'/api/core/tunables/search/',
-                get:'/api/core/tunables/get/',
-                set:'/api/core/tunables/set/',
-                add:'/api/core/tunables/add/',
-                del:'/api/core/tunables/del/',
+            {   search:'/api/core/tunables/search_item/',
+                get:'/api/core/tunables/get_item/',
+                set:'/api/core/tunables/set_item/',
+                add:'/api/core/tunables/add_item/',
+                del:'/api/core/tunables/del_item/',
                 options: {
                     formatters: {
                         "tunable_type": function (column, row) {
@@ -53,6 +53,32 @@
                 }
             }
         );
+        $("#reset_defaults").click(function(event){
+            event.preventDefault();
+            BootstrapDialog.show({
+                type:BootstrapDialog.TYPE_DANGER,
+                title: "{{ lang._('Tunable') }}",
+                message: "{{ lang._('Are you sure you want to reset all tunables back to factory defaults?')}}",
+                buttons: [
+                    {
+                        label: "{{ lang._('No') }}",
+                        action: function(dialogRef) {
+                            dialogRef.close();
+                        }
+                    },
+                    {
+                        label: "{{ lang._('Yes') }}",
+                        action: function(dialogRef) {
+                            ajaxCall('/api/core/tunables/reset', {}, function(){
+                                dialogRef.close();
+                                $('#grid').bootgrid('reload');
+                            });
+                        }
+                    }
+                ]
+            });
+        });
+
         $("#reconfigureAct").SimpleActionButton();
     });
 </script>
@@ -73,7 +99,11 @@
         </tbody>
         <tfoot>
             <tr>
-                <td></td>
+                <td>
+                    <button id="reset_defaults" class="btn btn-danger btn-xs" data-toggle="tooltip" title="{{ lang._('Default') }}">
+                        <i class="fa fa-trash-o fa-fw"></i>
+                    </button>
+                </td>
                 <td>
                     <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
                     <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>

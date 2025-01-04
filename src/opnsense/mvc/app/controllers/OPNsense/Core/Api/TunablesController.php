@@ -29,6 +29,7 @@ namespace OPNsense\Core\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Backend;
+use OPNsense\Core\Config;
 use OPNsense\Base\UserException;
 
 class TunablesController extends ApiMutableModelControllerBase
@@ -36,29 +37,69 @@ class TunablesController extends ApiMutableModelControllerBase
     protected static $internalModelName = 'sysctl';
     protected static $internalModelClass = 'OPNsense\Core\Tunables';
 
-    public function searchAction()
+    public function searchItemAction()
     {
         return $this->searchBase("item", null, "sysctl");
     }
 
-    public function setSubnetAction($uuid)
+    public function setItemAction($uuid)
     {
+        if ($this->request->isPost() && count(explode('-', $uuid)) != 5) {
+            /* generate new uuid when key is a tunable name (from system_sysctl_defaults) */
+            Config::getInstance()->lock();
+            $uuid = $this->getModel()->item->generateUUID();
+        }
         return $this->setBase("sysctl", "item", $uuid);
     }
 
-    public function addSubnetAction()
+    public function addItemAction()
     {
         return $this->addBase("sysctl", "item");
     }
 
-    public function getSubnetAction($uuid = null)
+    public function getItemAction($uuid = null)
     {
         return $this->getBase("sysctl", "item", $uuid);
     }
 
-    public function delSubnetAction($uuid)
+    public function delItemAction($uuid)
     {
         return $this->delBase("item", $uuid);
     }
 
+    public function resetAction()
+    {
+        if ($this->request->isPost()) {
+            if (file_exists('/usr/local/etc/config.xml')) {
+                Config::getInstance()->lock();
+                $factory_config = Config::getInstance()->toArrayFromFile('/usr/local/etc/config.xml', []);
+                $mdl = $this->getModel()->Default();
+                if (!empty($factory_config['sysctl']) && !empty($factory_config['sysctl']['item'])){
+                    foreach ($factory_config['sysctl']['item'] as $item) {
+                        $node = $mdl->item->Add();
+                        foreach ($item as $key => $val) {
+                            $node->$key = (string)$val;
+                        }
+                    }
+                }
+                $this->save();
+                return ['status' => 'ok'];
+            } else {
+                return ['status' => 'no_default'];
+            }
+        }
+        return ['status' => 'failed'];
+    }
+
+    public function reconfigureAction()
+    {
+        if ($this->request->isPost()) {
+            /* both sysctl and login use tunables, restart them both */
+            $tmp1 = strtolower(trim((new Backend())->configdpRun('service restart', ['login'])));
+            $tmp2 = strtolower(trim((new Backend())->configdpRun('service restart', ['sysctl'])));
+
+            return ['status' => $tmp1 == 'ok' && $tmp2 == 'ok' ? 'ok' : 'failed'];
+        }
+        return ['status' => 'failed'];
+    }
 }

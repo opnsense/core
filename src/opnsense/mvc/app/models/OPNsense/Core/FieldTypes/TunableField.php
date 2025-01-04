@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2020 Deciso B.V.
+ *    Copyright (C) 2025 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -50,7 +50,8 @@ class TunableField extends ArrayField
     {
         $result = [];
         foreach (self::$static_entries as $key => $item){
-            $result[] = [
+            /* md5($key) ensures static keys identifiable as static options  */
+            $result[md5($key)] = [
                 'tunable' => $key,
                 'value' => $item['value'] ?? '',
                 'default_value' => $item['default'],
@@ -62,6 +63,9 @@ class TunableField extends ArrayField
         return $result;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function actionPostLoadingEvent()
     {
         if (self::$default_values === null) {
@@ -78,6 +82,9 @@ class TunableField extends ArrayField
         foreach ($this->iterateItems() as $node) {
             if (isset(self::$static_entries[(string)$node->tunable])) {
                 unset(self::$static_entries[(string)$node->tunable]);
+            } elseif ($node->value == 'default') {
+                /* default is only a valid choice when defaults are offered */
+                $node->value = '';
             }
             if (isset(self::$default_values[(string)$node->tunable])) {
                 $node->default_value->setValue(self::$default_values[(string)$node->tunable]['value']);

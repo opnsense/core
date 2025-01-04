@@ -528,7 +528,8 @@
     <page-system-advanced-sysctl>
         <name>System: Advanced: Tunables</name>
         <patterns>
-            <pattern>system_advanced_sysctl.php*</pattern>
+            <pattern>ui/core/tunables</pattern>
+            <pattern>api/core/tunables/*</pattern>
         </patterns>
     </page-system-advanced-sysctl>
     <page-system-authservers>

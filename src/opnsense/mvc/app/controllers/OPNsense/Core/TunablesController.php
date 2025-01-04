@@ -34,6 +34,5 @@ class TunablesController extends \OPNsense\Base\IndexController
     {
         $this->view->pick('OPNsense/Core/tunables');
         $this->view->formDialogTunable = $this->getForm('tunable');
-
     }
 }

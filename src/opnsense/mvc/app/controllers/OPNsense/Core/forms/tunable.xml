@@ -1,16 +1,16 @@
 <form>
     <field>
-        <id>item.tunable</id>
+        <id>sysctl.tunable</id>
         <label>Tunable</label>
         <type>text</type>
     </field>
     <field>
-        <id>item.value</id>
+        <id>sysctl.value</id>
         <label>Value</label>
         <type>text</type>
     </field>
     <field>
-        <id>item.descr</id>
+        <id>sysctl.descr</id>
         <label>Description</label>
         <type>text</type>
     </field>
