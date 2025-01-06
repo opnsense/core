@@ -84,6 +84,7 @@
                                 {% if field['data-sortable'] == false %}data-sortable="false"{% endif %}
                                 {% if field['data-identifier'] == true %}data-identifier="true"{% endif %}
                                 {% if field['data-formatter'] %}data-formatter="{{ field['data-formatter'] }}"{% endif %}
+                                {% if field['data-width'] %}data-width="{{ field['data-width'] }}"{% endif %}
                             >{{ lang._(field['data-column-label']) }}</th>
                         {% endif %}
                     {% endif %}
