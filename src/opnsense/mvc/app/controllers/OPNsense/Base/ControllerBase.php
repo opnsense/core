@@ -39,7 +39,7 @@ class ControllerBase extends ControllerRoot
     /**
      * @var array Content-Security-Policy extensions, when set they will be merged with the defaults
      */
-    protected $content_security_policy = array();
+    protected $content_security_policy = [];
 
     /**
      *  @return array list of javascript files to be included in default.volt
@@ -103,15 +103,15 @@ class ControllerBase extends ControllerRoot
      */
     private function parseFormNode($xmlNode)
     {
-        $result = array();
+        $result = [];
         foreach ($xmlNode as $key => $node) {
             switch ($key) {
                 case "tab":
                     if (!array_key_exists("tabs", $result)) {
-                        $result['tabs'] = array();
+                        $result['tabs'] = [];
                     }
-                    $tab = array();
-                    $tab[] = $node->attributes()->id;
+                    $tab = [];
+                    $tab[] = (string)$node->attributes()->id;
                     $tab[] = gettext((string)$node->attributes()->description);
                     if (isset($node->subtab)) {
                         $tab["subtabs"] = $this->parseFormNode($node);
@@ -121,7 +121,7 @@ class ControllerBase extends ControllerRoot
                     $result['tabs'][] = $tab;
                     break;
                 case "subtab":
-                    $subtab = array();
+                    $subtab = [];
                     $subtab[] = $node->attributes()->id;
                     $subtab[] = gettext((string)$node->attributes()->description);
                     $subtab[] = $this->parseFormNode($node);
@@ -147,12 +147,10 @@ class ControllerBase extends ControllerRoot
     }
 
     /**
-     * parse an xml type form
-     * @param $formname
-     * @return array
-     * @throws \Exception
+     * fetch form xml
+     * @return SimpleXMLElement
      */
-    public function getForm($formname)
+    private function getFormXML($formname)
     {
         $class_info = new \ReflectionClass($this);
         $filename = dirname($class_info->getFileName()) . "/forms/" . $formname . ".xml";
@@ -163,8 +161,68 @@ class ControllerBase extends ControllerRoot
         if ($formXml === false) {
             throw new \Exception('form xml ' . $filename . ' not valid');
         }
+        return $formXml;
+    }
 
-        return $this->parseFormNode($formXml);
+    /**
+     * parse an xml type form
+     * @param $formname
+     * @return array
+     * @throws \Exception
+     */
+    public function getForm($formname)
+    {
+        return $this->parseFormNode($this->getFormXML($formname));
+    }
+
+    /**
+     * Extract grid fields from form definition
+     * @return array
+     */
+    public function getFormGrid($formname)
+    {
+        /* collect all fields, sort by sequence */
+        $all_data = [];
+        $idx = 0;
+        foreach ($this->getFormXML($formname) as $rootkey => $rootnode) {
+            if ($rootkey == 'field') {
+                $record = [
+                    'sequence' => '9999999',
+                    'visible' => 'false',
+                    'ignore' => 'false',
+                    'sortable' => 'false',
+                    'width' => '',
+                    'label' => '',
+                    'id' => '',
+                    'type' => 'string'
+                ];
+                foreach ($rootnode as $key => $item) {
+                    if (isset($record[$key])) {
+                        switch ($key) {
+                            case 'label':
+                                $record[$key] = gettext((string)$item);
+                                break;
+                            case 'type':
+                                /* XXX: convert to type + formatter */
+                                $record[$key] = 'string';
+                            default:
+                                $record[$key] = (string)$item;
+                                break;
+                        }
+                    }
+                }
+                /* iterate field->grid_view items */
+                foreach ($rootnode->grid_view->children() as $key => $item) {
+                    $record[$key] = (string)$item;
+                }
+                if (strtolower($record['ignore']) == 'false') {
+                    $record['fieldname'] = end(explode('.', $record['id']));
+                    $all_data[sprintf("%010d.%03d", $record['sequence'], $idx++)] = $record;
+                }
+            }
+        }
+        ksort($all_data);
+        return array_values($all_data);
     }
 
     /**
@@ -265,12 +323,12 @@ class ControllerBase extends ControllerRoot
         $this->view->system_domain = $cnf->object()->system->domain;
 
         if (isset($this->view->menuBreadcrumbs[0]['name'])) {
-            $output = array();
+            $output = [];
             foreach ($this->view->menuBreadcrumbs as $crumb) {
                 $output[] = gettext($crumb['name']);
             }
             $this->view->title = join(': ', $output);
-            $output = array();
+            $output = [];
             foreach (array_reverse($this->view->menuBreadcrumbs) as $crumb) {
                 $output[] = gettext($crumb['name']);
             }
