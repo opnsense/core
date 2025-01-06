@@ -1,5 +1,5 @@
 {#
-# Copyright (c) 2024 Cedrik Pischem
+# Copyright (c) 2024-2025 Cedrik Pischem
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification,
@@ -31,80 +31,71 @@
  # - table_id: (string) The ID of the table.
  # - edit_dialog: (string) The ID of the associated edit dialog.
  # - edit_alert: (string) The ID of the alert section displayed for configuration changes.
- # - fields: (array) A presorted list of field definitions with the following possible keys:
- #   - id: (string) The unique identifier for the field.
- #   - label: (string) The display name of the column.
- #   - type: (string) The type of the field (e.g., 'text', 'checkbox', 'header').
- #   - column_id: (string) The column identifier for rendering (optional; derived from 'id' if not provided).
- #   - data_visible: (string|boolean) Determines if the column is visible in the table ('true' or 'false').
- #   - column_visible: (string|boolean) Determines if the column is generated ('true' or 'false').
- #   - data_type: (string) The data type for the column (e.g., 'string', 'boolean').
- #   - formatter: (string) The formatter for the column (e.g., 'boolean', 'commands').
- #   - width: (string) The width of the column (e.g., '6em').
- #
- # Special Handling:
- # - 'uuid' is always included as a hidden, unique identifier column.
- # - Columns with id='enabled' are rendered with a 'rowtoggle' formatter and specific styling.
- # - 'commands' is a hardcoded column for row actions, rendered at the end of the table.
+ # - add_button_id: (string) The ID of the add button.
+ # - fields: (array) A presorted list of field definitions. The defaults are handled by the backend.
+ #   - data-column-id: (string) The column identifier for rendering (e.g. 'name').
+ #   - data-column-label: (string) The display name of the column (e.g. 'Name').
+ #   - data-column-visible: (boolean) Determines if the column is generated.
+ #   - data-visible: (boolean) Determines if the column is rendered but hidden per default.
+ #   - data-type: (string) The type of the field (e.g., 'text', 'checkbox').
+ #   - data-formatter: (string) The formatter for the column (e.g., 'boolean').
+ #   - data-width: (string) The width of the column (e.g., '6em').
+ #   - data-identifier: (boolean) XXX: Unknown what this does.
+ #   - data-sortable: (boolean) Weather data in this column is sortable.
  #
  # Example Usage:
  # {{ partial("layout_partials/bootgrid_table", {
  #     'table_id': 'exampleGrid',
  #     'edit_dialog': 'DialogExample',
  #     'edit_alert': 'ConfigurationChangeMessage',
- #     'fields': formDialogExample,
- #     'add_button_id': 'addExampleBtn'
+ #     'add_button_id': 'addExampleBtn',
+ #     'fields': formDialogExample
  # }) }}
  #}
+
 <div style="display: block;">
     <table id="{{ table_id }}" class="table table-condensed table-hover table-striped"
            data-editDialog="{{ edit_dialog }}" data-editAlert="{{ edit_alert }}">
         <thead>
             <tr>
-                <!-- Hardcoded 'uuid' column at the beginning -->
-                <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+                {# Hardcoded 'uuid' column at the beginning #}
+                <th
+                    data-column-id="uuid"
+                    data-type="string"
+                    data-identifier="true"
+                    data-visible="false"
+                >{{ lang._('ID') }}</th>
 
-                <!-- Dynamic columns based on presorted fields -->
+                {# Dynamic columns #}
                 {% for field in fields %}
-                    {% if field['type'] != 'header' %}
-                        {% set column_id = field['column_id'] %}
-                        {% set label = lang._(field['label']) %}
-                        {% set data_type = 'string' %}
-                        {% set formatter = '' %}
-
-                        {% if field['type'] == 'checkbox' %}
-                            {% set data_type = 'boolean' %}
-                            {% set formatter = 'boolean' %}
-                        {% endif %}
-
-                        {% set data_visible = field['data_visible']|default('true') %}
-                        {% set column_visible = field['column_visible']|default('true') %}
-
-                        {% if column_visible == 'true' %}
-                            {% if column_id == 'enabled' %}
-                                <!-- Special case for 'enabled' column -->
-                                <th
-                                    data-column-id="{{ column_id }}"
-                                    data-width="6em"
-                                    data-type="boolean"
-                                    data-formatter="rowtoggle"
-                                    {% if data_visible == 'false' %} data-visible="false"{% endif %}
-                                >{{ label }}</th>
-                            {% else %}
-                                <!-- General case for other columns -->
-                                <th
-                                    data-column-id="{{ column_id }}"
-                                    data-type="{{ data_type }}"
-                                    {% if data_visible == 'false' %} data-visible="false"{% endif %}
-                                    {% if formatter %} data-formatter="{{ formatter }}"{% endif %}
-                                >{{ label }}</th>
-                            {% endif %}
+                    {% if field['data-column-id'] and field['column_visible'] == true %}
+                        {% if field['data-column-id'] == 'enabled' %}
+                            <th
+                                data-column-id="{{ field['data-column-id'] }}"
+                                data-width="6em"
+                                data-type="boolean"
+                                data-formatter="rowtoggle"
+                            >{{ lang._(field['data-column-label']) }}</th>
+                        {% else %}
+                            <th
+                                data-column-id="{{ field['data-column-id'] }}"
+                                data-type="{{ field['data-type'] }}"
+                                {% if field['data-visible'] == false %}data-visible="false"{% endif %}
+                                {% if field['data-sortable'] == false %}data-sortable="false"{% endif %}
+                                {% if field['data-identifier'] == true %}data-identifier="true"{% endif %}
+                                {% if field['data-formatter'] %}data-formatter="{{ field['data-formatter'] }}"{% endif %}
+                            >{{ lang._(field['data-column-label']) }}</th>
                         {% endif %}
                     {% endif %}
                 {% endfor %}
 
-                <!-- Hardcoded 'commands' column at the end -->
-                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                {# Hardcoded 'commands' column at the end #}
+                <th
+                    data-column-id="commands"
+                    data-width="7em"
+                    data-formatter="commands"
+                    data-sortable="false"
+                >{{ lang._('Commands') }}</th>
             </tr>
         </thead>
         <tbody>
