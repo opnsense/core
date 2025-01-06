@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Kea/dhcp4</mount>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <description>Kea DHCPv4 configuration</description>
     <items>
         <general>
@@ -102,6 +102,10 @@
                         <Mask>/^([^\n"])*$/u</Mask>
                     </boot_file_name>
                 </option_data>
+                <match-client-id type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </match-client-id>
                 <pools type=".\KeaPoolsField">
                 </pools>
                 <description type="DescriptionField"/>

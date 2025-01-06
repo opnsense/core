@@ -142,6 +142,7 @@ class KeaDhcpv4 extends BaseModel
                 'id' => $subnet_id++,
                 'subnet' => (string)$subnet->subnet,
                 'next-server' => (string)$subnet->next_server,
+                'match-client-id'=> !empty((string)$subnet->{'match-client-id'}),
                 'option-data' => [],
                 'pools' => [],
                 'reservations' => []
