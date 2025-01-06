@@ -418,10 +418,18 @@ class Store
             // valid from/to and name of this cert
             $result['valid_from'] = $crt['validFrom_time_t'];
             $result['valid_to'] = $crt['validTo_time_t'];
-            $result['name'] = $crt['name'];
+            foreach (['name', 'serialNumber'] as $cpy) {
+                $result[$cpy] = $crt[$cpy] ?? null;
+            }
             foreach (self::$issuer_map as $key => $target) {
                 if (!empty($crt['subject'][$key])) {
                     $result[$target] = $crt['subject'][$key];
+                }
+                if (!empty($crt['issuer']) && !empty($crt['issuer'][$key])) {
+                    if (empty($result['issuer'])) {
+                        $result['issuer'] = [];
+                    }
+                    $result['issuer'][$target] = $crt['issuer'][$key];
                 }
             }
             // OCSP URI
