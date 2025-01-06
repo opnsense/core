@@ -579,7 +579,7 @@
                     BootstrapDialog.show({
                         type:BootstrapDialog.TYPE_INFO,
                         title: "{{ lang._('Third party software') }}",
-                        message: "{{ lang._('This software package is provided by an external vendor, for more information contact the author')}}" + " <strong>" + plugin_name + "</strong>",
+                        message: "{{ lang._('This software package is provided by an external vendor, for more information contact the author')}}" + " <strong>" + package_name + "</strong>",
                         buttons: [{
                             label: "{{ lang._('Install') }}",
                             action: function(dialogRef){
