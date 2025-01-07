@@ -234,7 +234,7 @@ class ControllerBase extends ControllerRoot
      * Extract grid fields from form definition
      * @return array
      */
-    public function getFormGrid($formname)
+    public function getFormGrid($formname, $grid_id=null, $edit_alert_id=null)
     {
         /* collect all fields, sort by sequence */
         $all_data = [];
@@ -242,42 +242,54 @@ class ControllerBase extends ControllerRoot
         foreach ($this->getFormXML($formname) as $rootkey => $rootnode) {
             if ($rootkey == 'field') {
                 $record = [
-                    'sequence' => '9999999',
-                    'visible' => 'false',
-                    'ignore' => 'false',
-                    'sortable' => 'false',
-                    'width' => '',
+                    'column-id' => '',
                     'label' => '',
-                    'id' => '',
-                    'type' => 'string'
+                    'visible' => 'true',
+                    'sortable' => 'true',
+                    'identifier' => 'false',
+                    'type' => 'string' /* XXX: convert to type + formatter using source type? */
                 ];
                 foreach ($rootnode as $key => $item) {
-                    if (isset($record[$key])) {
-                        switch ($key) {
-                            case 'label':
-                                $record[$key] = gettext((string)$item);
-                                break;
-                            case 'type':
-                                /* XXX: convert to type + formatter */
-                                $record[$key] = 'string';
-                            default:
-                                $record[$key] = (string)$item;
-                                break;
-                        }
+                    switch ($key) {
+                        case 'label':
+                            $record['label'] = gettext((string)$item);
+                            break;
+                        case 'id':
+                            $record['column-id'] = end(explode('.', (string)$item));
+                            break;
                     }
                 }
                 /* iterate field->grid_view items */
+                $this_sequence = '9999999';
                 foreach ($rootnode->grid_view->children() as $key => $item) {
-                    $record[$key] = (string)$item;
+                    if ($key == 'ignore' && $item != 'false') {
+                        /* ignore field as requested */
+                        continue 2;
+                    } elseif ($key == 'sequence') {
+                        $this_sequence = (string)$item;
+                    } else {
+                        $record[$key] = (string)$item;
+                    }
                 }
-                if (strtolower($record['ignore']) == 'false') {
-                    $record['fieldname'] = end(explode('.', $record['id']));
-                    $all_data[sprintf("%010d.%03d", $record['sequence'], $idx++)] = $record;
-                }
+                $all_data[sprintf("%010d.%03d", $this_sequence, $idx++)] = $record;
             }
         }
+        /* prepend identifier */
+        $all_data[sprintf("%010d.%03d", 0, 0)] = [
+            'column-id' => 'uuid',
+            'label' => gettext('ID'),
+            'type' => 'string',
+            'identifier' => 'true',
+            'visible' => 'false'
+        ];
         ksort($all_data);
-        return array_values($all_data);
+        $basename = $grid_id ?? $formname;
+        return [
+            'table_id' => $basename,
+            'edit_dialog_id' => 'dialog_' . $basename,
+            'edit_alert_id' => $edit_alert_id == null ? 'change_message_' . $basename : $edit_alert_id,
+            'fields' => array_values($all_data)
+        ];
     }
 
     /**
