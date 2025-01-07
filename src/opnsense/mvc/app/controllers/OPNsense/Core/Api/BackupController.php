@@ -173,7 +173,6 @@ class BackupController extends ApiControllerBase
             $bckfilename = basename($filename);
             if ($backup === $bckfilename) {
                 $cnf = Config::getInstance();
-                $cnf->backup();
                 $cnf->restoreBackup($filename);
                 $cnf->save();
                 return ['status' => 'reverted'];
