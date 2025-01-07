@@ -46,6 +46,5 @@ abstract class Controller
 
     public function afterExecuteRoute(Dispatcher $dispatcher)
     {
-
     }
 }

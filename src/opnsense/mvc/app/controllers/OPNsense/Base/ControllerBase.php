@@ -35,7 +35,6 @@ use OPNsense\Core\AppConfig;
 use OPNsense\Core\Config;
 use OPNsense\Mvc\Dispatcher;
 
-
 /**
  * Class ControllerBase implements core controller for OPNsense framework
  * @package OPNsense\Base
@@ -51,7 +50,7 @@ class ControllerBase extends ControllerRoot
 
     private array $volt_functions = [
         'theme_file_or_default' => 'view_fetch_themed_filename',
-        'file_exists' =>'view_file_exists',
+        'file_exists' => 'view_file_exists',
         'cache_safe' => 'view_cache_safe'
     ];
 
