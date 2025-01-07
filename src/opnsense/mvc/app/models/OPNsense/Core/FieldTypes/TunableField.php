@@ -55,7 +55,7 @@ class TunableField extends ArrayField
                 'tunable' => $key,
                 'value' => $item['value'] ?? '',
                 'default_value' => $item['default'],
-                'descr' => $item['description'] ?? '',
+                'descr' => $item['descr'] ?? '',
                 'type' => $item['type'] ?? '',
             ];
         }
