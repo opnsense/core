@@ -26,7 +26,7 @@
 
 <script>
     $( document ).ready(function() {
-        $("#grid").UIBootgrid(
+        $("#{{formGridTunable['table_id']}}").UIBootgrid(
             {   search:'/api/core/tunables/search_item/',
                 get:'/api/core/tunables/get_item/',
                 set:'/api/core/tunables/set_item/',
@@ -78,41 +78,21 @@
                 ]
             });
         });
+        $("#{{formGridTunable['table_id']}} > tfoot > tr > td:eq(0)").append($("#reset_defaults").detach());
 
         $("#reconfigureAct").SimpleActionButton();
     });
 </script>
+<div class="hidden">
+    <!-- moved into tfoot after load -->
+    <button id="reset_defaults" class="btn btn-danger btn-xs" data-toggle="tooltip" title="{{ lang._('Default') }}">
+        <i class="fa fa-trash-o fa-fw"></i>
+    </button>
+</div>
 <div class="tab-content content-box">
-    <table id="grid" class="table table-condensed table-hover table-striped" data-editDialog="DialogTunable" data-editAlert="ChangeMessage">
-        <thead>
-            <tr>
-                <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                <th data-column-id="tunable" data-type="string">{{ lang._('Tunable') }}</th>
-                <th data-column-id="type" data-type="string" data-formatter="tunable_type">{{ lang._('Type') }}</th>
-                <th data-column-id="value" data-type="string">{{ lang._('Value') }}</th>
-                <th data-column-id="default_value" data-type="string">{{ lang._('Default') }}</th>
-                <th data-column-id="descr" data-type="string">{{ lang._('Description') }}</th>
-                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td>
-                    <button id="reset_defaults" class="btn btn-danger btn-xs" data-toggle="tooltip" title="{{ lang._('Default') }}">
-                        <i class="fa fa-trash-o fa-fw"></i>
-                    </button>
-                </td>
-                <td>
-                    <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                    <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
-                </td>
-            </tr>
-        </tfoot>
-    </table>
+    {{ partial('layout_partials/base_bootgrid_table', formGridTunable)}}
     <div class="col-md-12">
-        <div id="ChangeMessage" class="alert alert-info" style="display: none" role="alert">
+        <div id="{{formGridTunable['edit_alert_id']}}" class="alert alert-info" style="display: none" role="alert">
             {{ lang._('After changing settings, please remember to apply them with the button below') }}
         </div>
         <hr/>
@@ -127,4 +107,4 @@
 </div>
 
 
-{{ partial("layout_partials/base_dialog",['fields':formDialogTunable,'id':'DialogTunable','label':lang._('Edit Tunable')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogTunable,'id':formGridTunable['edit_dialog_id'],'label':lang._('Edit Tunable')])}}

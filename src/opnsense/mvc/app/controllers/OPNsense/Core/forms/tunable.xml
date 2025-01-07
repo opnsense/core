@@ -3,11 +3,34 @@
         <id>sysctl.tunable</id>
         <label>Tunable</label>
         <type>text</type>
+        <grid_view>
+            <sequence>1</sequence>
+        </grid_view>
+    </field>
+    <field>
+        <id>sysctl.type</id>
+        <label>Type</label>
+        <type>info</type>
+        <grid_view>
+            <sequence>2</sequence>
+            <formatter>tunable_type</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>sysctl.default_value</id>
+        <label>Default value</label>
+        <type>info</type>
+        <grid_view>
+            <sequence>4</sequence>
+        </grid_view>
     </field>
     <field>
         <id>sysctl.value</id>
         <label>Value</label>
         <type>text</type>
+        <grid_view>
+            <sequence>3</sequence>
+        </grid_view>
     </field>
     <field>
         <id>sysctl.descr</id>
