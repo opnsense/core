@@ -49,7 +49,7 @@ class TunableField extends ArrayField
     protected static function getStaticChildren()
     {
         $result = [];
-        foreach (self::$static_entries as $key => $item){
+        foreach (self::$static_entries as $key => $item) {
             /* md5($key) ensures static keys identifiable as static options  */
             $result[md5($key)] = [
                 'tunable' => $key,
