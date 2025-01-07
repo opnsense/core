@@ -109,8 +109,7 @@ class ControllerBase extends ControllerRoot
     }
 
     /**
-     * Construct a view to render Volt templates, eventually this should be moved to its own controller
-     * implementation to avoid API calls constructing components it doesn't need.
+     * Construct a view to render Volt templates
      */
     public function __construct()
     {
