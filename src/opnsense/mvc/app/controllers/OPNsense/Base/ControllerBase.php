@@ -234,7 +234,7 @@ class ControllerBase extends ControllerRoot
      * Extract grid fields from form definition
      * @return array
      */
-    public function getFormGrid($formname, $grid_id=null, $edit_alert_id=null)
+    public function getFormGrid($formname, $grid_id = null, $edit_alert_id = null)
     {
         /* collect all fields, sort by sequence */
         $all_data = [];
