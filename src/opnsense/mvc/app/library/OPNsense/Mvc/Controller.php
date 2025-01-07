@@ -28,62 +28,24 @@
 
 namespace OPNsense\Mvc;
 
-use Phalcon\Di\FactoryDefault;
-use Phalcon\Mvc\View;
-use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
-use OPNsense\Core\AppConfig;
-
 abstract class Controller
 {
     public Session $session;
     public Request $request;
     public Response $response;
-    public View $view;
     public Security $security;
-
-    /**
-     * Construct a view to render Volt templates, eventually this should be moved to its own controller
-     * implementation to avoid API calls constructing components it doesn't need.
-     */
-    public function __construct()
-    {
-        $appcfg = new AppConfig();
-        $this->view = new View();
-        $viewDirs = [];
-        foreach ((array)$appcfg->application->viewsDir as $viewDir) {
-            $viewDirs[] = $viewDir;
-        }
-        $this->view->setViewsDir($viewDirs);
-        $this->view->setDI(new FactoryDefault());
-        $this->view->registerEngines([
-            '.volt' => function ($view) use ($appcfg) {
-                $volt = new VoltEngine($view);
-                $volt->setOptions([
-                    'path' => $appcfg->application->cacheDir,
-                    'separator' => '_'
-                ]);
-                $volt->getCompiler()->addFunction('theme_file_or_default', 'view_fetch_themed_filename');
-                $volt->getCompiler()->addFunction('file_exists', 'view_file_exists');
-                $volt->getCompiler()->addFunction('cache_safe', 'view_cache_safe');
-                $volt->getCompiler()->addFilter('safe', 'view_html_safe');
-                return $volt;
-            }]);
-    }
-
-    /**
-     * @param Dispatcher $dispatcher
-     * @return void
-     */
-    public function afterExecuteRoute(Dispatcher $dispatcher)
-    {
-        $this->view->start();
-        $this->view->processRender('', '');
-        $this->view->finish();
-
-        $this->response->setContent($this->view->getContent());
-    }
 
     public function initialize()
     {
+    }
+
+    public function beforeExecuteRoute(Dispatcher $dispatcher)
+    {
+        return false;
+    }
+
+    public function afterExecuteRoute(Dispatcher $dispatcher)
+    {
+
     }
 }

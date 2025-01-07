@@ -28,7 +28,13 @@
 
 namespace OPNsense\Base;
 
+use Phalcon\Di\FactoryDefault;
+use Phalcon\Mvc\View;
+use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Config;
+use OPNsense\Mvc\Dispatcher;
+
 
 /**
  * Class ControllerBase implements core controller for OPNsense framework
@@ -36,10 +42,18 @@ use OPNsense\Core\Config;
  */
 class ControllerBase extends ControllerRoot
 {
+    public View $view;
+
     /**
      * @var array Content-Security-Policy extensions, when set they will be merged with the defaults
      */
-    protected $content_security_policy = [];
+    protected array $content_security_policy = [];
+
+    private array $volt_functions = [
+        'theme_file_or_default' => 'view_fetch_themed_filename',
+        'file_exists' =>'view_file_exists',
+        'cache_safe' => 'view_cache_safe'
+    ];
 
     /**
      *  @return array list of javascript files to be included in default.volt
@@ -93,6 +107,49 @@ class ControllerBase extends ControllerRoot
             // Bootgrid (grid system from http://www.jquery-bootgrid.com/ )
             '/css/jquery.bootgrid.css'
         ];
+    }
+
+    /**
+     * Construct a view to render Volt templates, eventually this should be moved to its own controller
+     * implementation to avoid API calls constructing components it doesn't need.
+     */
+    public function __construct()
+    {
+        $volt_functions = $this->volt_functions;
+        $appcfg = new AppConfig();
+        $this->view = new View();
+        $viewDirs = [];
+        foreach ((array)$appcfg->application->viewsDir as $viewDir) {
+            $viewDirs[] = $viewDir;
+        }
+        $this->view->setViewsDir($viewDirs);
+        $this->view->setDI(new FactoryDefault());
+        $this->view->registerEngines([
+            '.volt' => function ($view) use ($appcfg, $volt_functions) {
+                $volt = new VoltEngine($view);
+                $volt->setOptions([
+                    'path' => $appcfg->application->cacheDir,
+                    'separator' => '_'
+                ]);
+                foreach ($volt_functions as $func_name => $function) {
+                    $volt->getCompiler()->addFunction($func_name, $function);
+                }
+                $volt->getCompiler()->addFilter('safe', 'view_html_safe');
+                return $volt;
+            }]);
+    }
+
+    /**
+     * @param Dispatcher $dispatcher
+     * @return void
+     */
+    public function afterExecuteRoute(Dispatcher $dispatcher)
+    {
+        $this->view->start();
+        $this->view->processRender('', '');
+        $this->view->finish();
+
+        $this->response->setContent($this->view->getContent());
     }
 
     /**
@@ -241,7 +298,7 @@ class ControllerBase extends ControllerRoot
      * @return bool
      * @throws \Exception
      */
-    public function beforeExecuteRoute($dispatcher)
+    public function beforeExecuteRoute(Dispatcher $dispatcher)
     {
         // only handle input validation on first request.
         if (!$dispatcher->wasForwarded()) {
