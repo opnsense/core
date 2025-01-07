@@ -255,20 +255,23 @@ class ControllerBase extends ControllerRoot
                             $record['label'] = gettext((string)$item);
                             break;
                         case 'id':
-                            $record['column-id'] = end(explode('.', (string)$item));
+                            $tmp = explode('.', (string)$item);
+                            $record['column-id'] = end($tmp);
                             break;
                     }
                 }
                 /* iterate field->grid_view items */
                 $this_sequence = '9999999';
-                foreach ($rootnode->grid_view->children() as $key => $item) {
-                    if ($key == 'ignore' && $item != 'false') {
-                        /* ignore field as requested */
-                        continue 2;
-                    } elseif ($key == 'sequence') {
-                        $this_sequence = (string)$item;
-                    } else {
-                        $record[$key] = (string)$item;
+                if (isset($rootnode->grid_view)) {
+                    foreach ($rootnode->grid_view->children() as $key => $item) {
+                        if ($key == 'ignore' && $item != 'false') {
+                            /* ignore field as requested */
+                            continue 2;
+                        } elseif ($key == 'sequence') {
+                            $this_sequence = (string)$item;
+                        } else {
+                            $record[$key] = (string)$item;
+                        }
                     }
                 }
                 $all_data[sprintf("%010d.%03d", $this_sequence, $idx++)] = $record;
