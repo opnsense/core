@@ -97,7 +97,7 @@
         <type>header</type>
         <label>Alternative Names</label>
         <collapse>true</collapse>
-        <style>action action_internal action_reissue action_internal action_sign_csr</style>
+        <style>action action_internal action_reissue action_external action_internal action_sign_csr</style>
     </field>
     <field>
         <id>cert.altnames_dns</id>

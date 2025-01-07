@@ -208,10 +208,15 @@ class Store
 
         $args = [
             'config' => $configFilename,
-            'x509_extensions' => $x509_extensions,
             'digest_alg' => $digest_alg,
             'encrypt_key' => false
         ];
+        if ($x509_extensions == 'v3_req') {
+            /* v3_req is a request template, feed into req_extensions */
+            $args['req_extensions'] = $x509_extensions;
+        } else {
+            $args['x509_extensions'] = $x509_extensions;
+        }
         if (is_numeric($keylen_curve)) {
             $args['private_key_type'] = OPENSSL_KEYTYPE_RSA;
             $args['private_key_bits'] = (int)$keylen_curve;
