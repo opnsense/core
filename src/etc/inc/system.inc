@@ -759,7 +759,7 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
             if (is_ipaddr($gatewayip)) {
                 mwexec('/sbin/route delete ' . join(' ', $cmd), true);
 
-                if (ipproto == 'inet' && is_ipaddrv6($gatewayip)) {
+                if ($ipproto == 'inet' && is_ipaddrv6($gatewayip)) {
                     $cmd[] = '-inet6'; /* RFC 5549: gateway protocol differs */
                 }
 
@@ -770,9 +770,7 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
                     $gatewayip .= "%{$interfacegw}";
                 }
 
-                $cmd = exec_safe('%s', $gatewayip);
-
-                mwexec('/sbin/route add ' . join(' ', $cmd), true);
+                $cmd[] = exec_safe('%s', $gatewayip);
             } elseif (!empty($interfacegw)) {
                 $cmd[] = '-interface';
                 $cmd[] = exec_safe('%s', $interfacegw);
