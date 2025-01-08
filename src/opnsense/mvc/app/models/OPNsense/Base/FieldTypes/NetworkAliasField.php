@@ -84,8 +84,7 @@ class NetworkAliasField extends BaseListField
                 }
             }
             // aliases
-            $aliasMdl = new Alias();
-            foreach ($aliasMdl->aliases->alias->iterateItems() as $alias) {
+            foreach ((new Alias(true))->aliases->alias->iterateItems() as $alias) {
                 if (strpos((string)$alias->type, "port") === false) {
                     self::$internalStaticOptionList[(string)$alias->name] = (string)$alias->name;
                 }

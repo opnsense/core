@@ -76,6 +76,10 @@ class AliasField extends ArrayField
     protected function actionPostLoadingEvent()
     {
         parent::actionPostLoadingEvent();
+        if ($this->getParentModel()->skipDynamicInfo()) {
+            /* skip dynamic content */
+            return;
+        }
         if (self::$current_stats === null) {
             self::$current_stats = [];
             $stats = json_decode((new Backend())->configdRun('filter diag table_size'), true);
