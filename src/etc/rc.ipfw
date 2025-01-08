@@ -39,6 +39,13 @@ ipfw -q /usr/local/etc/ipfw.rules
 if [ ! -f /tmp/ipfw.firstload ]; then
 	# we need to make sure ipfw is loaded as last
 	touch /tmp/ipfw.firstload
+
+	# Enable ipfw now, to ensure its hooks are loaded, before we fix the ipfw/pf order.
+	# Without this, ipfw stop/start will disable/re-enable ipfw, but the re-enable part
+	# is done by /etc/rc.d/ipfw after this, so the hooks will be in the wrong order.
+	sysctl net.inet.ip.fw.enable=1
+	sysctl net.inet6.ip6.fw.enable=1
+
 	pfctl -d
 	pfctl -e
 fi
