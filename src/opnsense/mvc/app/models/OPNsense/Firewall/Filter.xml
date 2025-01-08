@@ -268,6 +268,48 @@
                 </categories>
                 <sched type=".\ScheduleField"/>
                 <tos type=".\TosField"/>
+                <shaper1 type="ModelRelationField">
+                    <Model>
+                        <pipes>
+                            <source>OPNsense.TrafficShaper.TrafficShaper</source>
+                            <items>pipes.pipe</items>
+                            <display>description</display>
+                            <filters>
+                                <description>/(.){1,255}/</description>
+                            </filters>
+                        </pipes>
+                        <queues>
+                            <source>OPNsense.TrafficShaper.TrafficShaper</source>
+                            <items>queues.queue</items>
+                            <display>description</display>
+                            <filters>
+                                <description>/(.){1,255}/</description>
+                            </filters>
+                        </queues>
+                    </Model>
+                    <ValidationMessage>Related pipe or queue not found</ValidationMessage>
+                </shaper1>
+                <shaper2 type="ModelRelationField">
+                    <Model>
+                        <pipes>
+                            <source>OPNsense.TrafficShaper.TrafficShaper</source>
+                            <items>pipes.pipe</items>
+                            <display>description</display>
+                            <filters>
+                                <description>/(.){1,255}/</description>
+                            </filters>
+                        </pipes>
+                        <queues>
+                            <source>OPNsense.TrafficShaper.TrafficShaper</source>
+                            <items>queues.queue</items>
+                            <display>description</display>
+                            <filters>
+                                <description>/(.){1,255}/</description>
+                            </filters>
+                        </queues>
+                    </Model>
+                    <ValidationMessage>Related pipe or queue not found</ValidationMessage>
+                </shaper2>
                 <description type="DescriptionField"/>
             </rule>
         </rules>

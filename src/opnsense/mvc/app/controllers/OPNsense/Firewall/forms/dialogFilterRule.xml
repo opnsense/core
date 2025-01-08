@@ -258,6 +258,22 @@
     </field>
     <field>
         <type>header</type>
+        <label>Traffic shaping [experimental]</label>
+    </field>
+    <field>
+        <id>rule.shaper1</id>
+        <label>Traffic shaper</label>
+        <type>dropdown</type>
+        <help>Shape packets using the selected pipe or queue in the rule direction.</help>
+    </field>
+    <field>
+        <id>rule.shaper2</id>
+        <label>Traffic shaper [reverse]</label>
+        <type>dropdown</type>
+        <help>Shape packets using the selected pipe or queue in the reverse rule direction.</help>
+    </field>
+    <field>
+        <type>header</type>
         <label>Source routing</label>
     </field>
     <field>

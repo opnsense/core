@@ -32,6 +32,7 @@ use OPNsense\Core\Config;
 use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
 use OPNsense\Firewall\Util;
+use OPNsense\TrafficShaper\TrafficShaper;
 
 class Filter extends BaseModel
 {
@@ -40,6 +41,7 @@ class Filter extends BaseModel
      */
     public function performValidation($validateFullModel = false)
     {
+        $dntargets = (new TrafficShaper())->fetchAllTargets();
         $config = Config::getInstance()->object();
         $port_protos = ['TCP', 'UDP', 'TCP/UDP'];
         // standard model validations
@@ -206,6 +208,23 @@ class Filter extends BaseModel
                                 "requires a set priority for normal packets."),
                             $rule->{'set-prio-low'}->__reference
                         ));
+                    }
+                    if (!empty((string)$rule->shaper1) || !empty((string)$rule->shaper2)) {
+                        if (!empty((string)$rule->shaper2) && empty((string)$rule->shaper1)) {
+                            $messages->appendMessage(new Message(
+                                gettext("A shaper is required when configuring one in the reverse direction."),
+                                $rule->shaper2->__reference
+                            ));
+                        } elseif (!empty((string)$rule->shaper2)) {
+                            $tmp1 = $dntargets[(string)$rule->shaper1] ?? ['type' => '-'];
+                            $tmp2 = $dntargets[(string)$rule->shaper2] ?? ['type' => '-'];
+                            if ($tmp1['type'] != $tmp2['type']) {
+                                $messages->appendMessage(new Message(
+                                    gettext("Pipes and queues can not be combined."),
+                                    $rule->shaper2->__reference
+                                ));
+                            }
+                        }
                     }
                 }
             }

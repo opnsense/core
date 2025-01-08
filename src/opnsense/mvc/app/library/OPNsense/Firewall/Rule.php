@@ -334,6 +334,7 @@ abstract class Rule
         }
         if (!empty($this->ruleDebugInfo)) {
             $debugTxt = "#debug:" . implode("|", $this->ruleDebugInfo) . "\n";
+            $this->ruleDebugInfo = []; /* flush */
         } else {
             $debugTxt = "";
         }

@@ -34,7 +34,9 @@ namespace OPNsense\Firewall;
  */
 class FilterRule extends Rule
 {
-    private $gatewayMapping = array();
+    private $gatewayMapping = [];
+    /* dummynet [shaper] targets */
+    private static $dntargets = null;
 
     private $procorder = array(
         'disabled' => 'parseIsComment',
@@ -62,6 +64,7 @@ class FilterRule extends Rule
         'tag' => 'parsePlain, tag ',
         'tagged' => 'parsePlain, tagged ',
         'allowopts' => 'parseBool,allow-opts',
+        'dn' =>  'parsePlain',
         'label' => 'parsePlain,label ",",63',
         'descr' => 'parseComment'
     );
@@ -268,6 +271,27 @@ class FilterRule extends Rule
             ) {
                 $rule['set-prio'] = "({$rule['set-prio']}, {$rule['set-prio-low']})";
             }
+            // convert shaper properties when requested
+            if (!empty($rule['shaper1']) && empty($rule['disabled'])) {
+                if (static::$dntargets === null) {
+                    /* init cache pipe/queue list */
+                    static::$dntargets = (new \OPNsense\TrafficShaper\TrafficShaper())->fetchAllTargets();
+                }
+                $shaper1 = static::$dntargets[$rule['shaper1']] ?? ['type' => ''];
+                $shaper2 = static::$dntargets[$rule['shaper2'] ?? '-'] ?? ['type' => ''];
+                if (!empty($rule['shaper2']) && (empty($shaper2['type']) || $shaper2['type'] != $shaper1['type'] )) {
+                    $rule['disabled'] = true;
+                    $this->log(sprintf('shaper type mismatch [%s],[%s]', $shaper1['type'], $shaper2['type']));
+                } elseif (empty($shaper1)) {
+                    $rule['disabled'] = true;
+                    $this->log('shaper defined but not found');
+                } elseif (!empty($shaper2['type'])) {
+                    $rule['dn'] = sprintf('%s (%s, %s)', $shaper1['type'],  $shaper1['id'], $shaper2['id']);
+                } else {
+                    $rule['dn'] = sprintf('%s %s', $shaper1['type'],  $shaper1['id']);
+                }
+            }
+
             yield $rule;
         }
     }
