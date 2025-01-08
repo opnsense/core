@@ -271,8 +271,7 @@ function _interfaces_bridge_configure($bridge)
     if (isset($bridge['enablestp'])) {
         mwexecf('/sbin/ifconfig %s proto %s', [$bridge['bridgeif'], $bridge['proto']]);
         if (!empty($bridge['stp'])) {
-            $stpifs = explode(',', $bridge['stp']);
-            foreach ($stpifs as $stpif) {
+            foreach (explode(',', $bridge['stp']) as $stpif) {
                 mwexecf('/sbin/ifconfig %s stp %s', [$bridge['bridgeif'], get_real_interface($stpif)]);
             }
         }
@@ -285,46 +284,15 @@ function _interfaces_bridge_configure($bridge)
         if (!empty($bridge['hellotime'])) {
             mwexec("/sbin/ifconfig {$bridge['bridgeif']} hellotime " . escapeshellarg($bridge['hellotime']));
         }
-        if (!empty($bridge['priority'])) {
-            mwexec("/sbin/ifconfig {$bridge['bridgeif']} priority " . escapeshellarg($bridge['priority']));
-        }
         if (!empty($bridge['holdcnt'])) {
             mwexec("/sbin/ifconfig {$bridge['bridgeif']} holdcnt " . escapeshellarg($bridge['holdcnt']));
         }
-        if (!empty($bridge['ifpriority'])) {
-            $pconfig = explode(",", $bridge['ifpriority']);
-            $ifpriority = [];
-            foreach ($pconfig as $cfg) {
-                $embcfg = explode_assoc(":", $cfg);
-                foreach ($embcfg as $key => $value) {
-                    $ifpriority[$key] = $value;
-                }
-            }
-            foreach ($ifpriority as $key => $value) {
-                $realif = get_real_interface($key);
-                mwexec("/sbin/ifconfig {$bridgeif} ifpriority {$realif} " . escapeshellarg($value));
-            }
-        }
-        if (!empty($bridge['ifpathcost'])) {
-            $pconfig = explode(",", $bridge['ifpathcost']);
-            $ifpathcost = [];
-            foreach ($pconfig as $cfg) {
-                $embcfg = explode_assoc(":", $cfg);
-                foreach ($embcfg as $key => $value) {
-                    $ifpathcost[$key] = $value;
-                }
-            }
-            foreach ($ifpathcost as $key => $value) {
-                $realif = get_real_interface($key);
-                mwexec("/sbin/ifconfig {$bridgeif} ifpathcost {$realif} " . escapeshellarg($value));
-            }
-        }
     }
 
-    if ($bridge['maxaddr'] != '') {
+    if (!empty($bridge['maxaddr'])) {
         mwexec("/sbin/ifconfig {$bridge['bridgeif']} maxaddr " . escapeshellarg($bridge['maxaddr']));
     }
-    if ($bridge['timeout'] != '') {
+    if (!empty($bridge['timeout'])) {
         mwexec("/sbin/ifconfig {$bridge['bridgeif']} timeout " . escapeshellarg($bridge['timeout']));
     }
     if (!empty($bridge['span'])) {
@@ -332,43 +300,37 @@ function _interfaces_bridge_configure($bridge)
         mwexec("/sbin/ifconfig {$bridge['bridgeif']} span {$realif}");
     }
     if (!empty($bridge['edge'])) {
-        $edgeifs = explode(',', $bridge['edge']);
-        foreach ($edgeifs as $edgeif) {
+        foreach (explode(',', $bridge['edge']) as $edgeif) {
             $realif = get_real_interface($edgeif);
             mwexec("/sbin/ifconfig {$bridge['bridgeif']} edge {$realif}");
         }
     }
     if (!empty($bridge['autoedge'])) {
-        $edgeifs = explode(',', $bridge['autoedge']);
-        foreach ($edgeifs as $edgeif) {
+        foreach (explode(',', $bridge['autoedge']) as $edgeif) {
             $realif = get_real_interface($edgeif);
             mwexec("/sbin/ifconfig {$bridge['bridgeif']} -autoedge {$realif}");
         }
     }
     if (!empty($bridge['ptp'])) {
-        $ptpifs = explode(',', $bridge['ptp']);
-        foreach ($ptpifs as $ptpif) {
+        foreach (explode(',', $bridge['ptp']) as $ptpif) {
             $realif = get_real_interface($ptpif);
             mwexec("/sbin/ifconfig {$bridge['bridgeif']} ptp {$realif}");
         }
     }
     if (!empty($bridge['autoptp'])) {
-        $ptpifs = explode(',', $bridge['autoptp']);
-        foreach ($ptpifs as $ptpif) {
+        foreach (explode(',', $bridge['autoptp']) as $ptpif) {
             $realif = get_real_interface($ptpif);
             mwexec("/sbin/ifconfig {$bridge['bridgeif']} -autoptp {$realif}");
         }
     }
     if (!empty($bridge['static'])) {
-        $stickyifs = explode(',', $bridge['static']);
-        foreach ($stickyifs as $stickyif) {
+        foreach (explode(',', $bridge['static']) as $stickyif) {
             $realif = get_real_interface($stickyif);
             mwexec("/sbin/ifconfig {$bridge['bridgeif']} sticky {$realif}");
         }
     }
     if (!empty($bridge['private'])) {
-        $privateifs = explode(',', $bridge['private']);
-        foreach ($privateifs as $privateif) {
+        foreach (explode(',', $bridge['private']) as $privateif) {
             $realif = get_real_interface($privateif);
             mwexec("/sbin/ifconfig {$bridge['bridgeif']} private {$realif}");
         }

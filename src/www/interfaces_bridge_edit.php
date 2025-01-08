@@ -44,11 +44,11 @@ foreach (legacy_config_get_interfaces(['virtual' => false]) as $intf => $intfdat
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // read form data
-    if (!empty($a_bridges[$_GET['id']])) {
+    if (isset($_GET['id']) && !empty($a_bridges[$_GET['id']])) {
         $id = $_GET['id'];
     }
     // copy fields 1-on-1
-    $copy_fields = ['descr', 'bridgeif', 'maxaddr', 'timeout', 'maxage','fwdelay', 'hellotime', 'priority', 'proto', 'holdcnt', 'span'];
+    $copy_fields = ['descr', 'bridgeif', 'maxaddr', 'timeout', 'maxage','fwdelay', 'proto', 'holdcnt', 'span'];
     foreach ($copy_fields as $fieldname) {
         if (isset($a_bridges[$id][$fieldname])) {
             $pconfig[$fieldname] = $a_bridges[$id][$fieldname];
@@ -70,23 +70,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig[$fieldname] = [];
         }
     }
-
-    // array key/value sets
-    if (!empty($a_bridges[$id]['ifpriority'])) {
-        foreach (explode(",", $a_bridges[$id]['ifpriority']) as $cfg) {
-            list ($key, $value)  = explode(":", $cfg);
-            $pconfig['ifpriority_'.$key] = $value;
-        }
-    }
-    if (!empty($a_bridges[$id]['ifpathcost'])) {
-        foreach (explode(",", $a_bridges[$id]['ifpathcost']) as $cfg) {
-            list ($key, $value)  = explode(":", $cfg);
-            $pconfig['ifpathcost_'.$key] = $value;
-        }
-    }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // save / validate formdata
-    if (!empty($a_bridges[$_POST['id']])) {
+    if (isset($_POST['id']) && !empty($a_bridges[$_POST['id']])) {
         $id = $_POST['id'];
     }
 
@@ -109,22 +95,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($pconfig['fwdelay']) && $not_between_int($pconfig['fwdelay'], 4, 30)) {
         $input_errors[] = gettext("Forward Delay needs to be an integer between 4 and 30.");
     }
-    if (!empty($pconfig['hellotime']) && $not_between_int($pconfig['hellotime'], 1, 2)) {
-        $input_errors[] = gettext("Hello time for STP needs to be an integer between 1 and 2.");
-    }
-    if ($pconfig['priority'] != "" && $not_between_int($pconfig['priority'], 0, 61440)) {
-        $input_errors[] = gettext("Priority for STP needs to be an integer between 0 and 61440.");
-    }
     if (!empty($pconfig['holdcnt']) && $not_between_int($pconfig['holdcnt'], 1, 10)) {
         $input_errors[] = gettext("Transmit Hold Count for STP needs to be an integer between 1 and 10.");
-    }
-    foreach ($ifacelist as $ifn => $ifdescr) {
-        if ($pconfig['ifpriority_'.$ifn] != "" && $not_between_int($pconfig['ifpriority_'.$ifn], 0, 240)) {
-            $input_errors[] = sprintf(gettext("%s interface priority for STP needs to be an integer between 0 and 240."), $ifdescr);
-        }
-        if (!empty($pconfig['ifpathcost_'.$ifn]) && $not_between_int($pconfig['ifpathcost_'.$ifn], 1, 200000000)) {
-            $input_errors[] = sprintf(gettext("%s interface path cost for STP needs to be an integer between 1 and 200000000."), $ifdescr);
-        }
     }
 
     $members = !empty($pconfig['members']) ? $pconfig['members'] : [];
@@ -164,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         // 1 on 1 copy
-        $copy_fields = ['descr', 'maxaddr', 'timeout', 'bridgeif', 'maxage','fwdelay', 'hellotime', 'priority', 'proto', 'holdcnt'];
+        $copy_fields = ['descr', 'maxaddr', 'timeout', 'bridgeif', 'maxage','fwdelay', 'proto', 'holdcnt'];
         foreach ($copy_fields as $fieldname) {
             if (isset($pconfig[$fieldname]) && $pconfig[$fieldname] != '') {
                 $bridge[$fieldname] = $pconfig[$fieldname];
@@ -181,24 +153,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         foreach ($array_fields as $fieldname) {
             if(!empty($pconfig[$fieldname])) {
                 $bridge[$fieldname] = implode(',', $pconfig[$fieldname]);
-            }
-        }
-
-        // array key/value sets
-        $bridge['ifpriority'] = '';
-        $bridge['ifpathcost'] = '';
-        foreach ($ifacelist as $ifn => $ifdescr) {
-            if (isset($pconfig['ifpriority_'.$ifn]) && $pconfig['ifpriority_' . $ifn] != '') {
-                if (!empty($bridge['ifpriority'])) {
-                    $bridge['ifpriority'] .= ',';
-                }
-                $bridge['ifpriority'] .= $ifn . ':' . $pconfig['ifpriority_' . $ifn];
-            }
-            if (isset($pconfig['ifpathcost_' . $ifn]) && $pconfig['ifpathcost_' . $ifn] != '') {
-                if (!empty($bridge['ifpathcost'])) {
-                    $bridge['ifpathcost'] .= ',';
-                }
-                $bridge['ifpathcost'] .= $ifn . ':' . $pconfig['ifpathcost_' . $ifn];
             }
         }
 
@@ -393,26 +347,6 @@ $(document).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_hellotime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hello time"); ?> (<?=gettext("seconds"); ?>)</td>
-                      <td>
-                        <input name="hellotime" type="text" value="<?=$pconfig['hellotime'];?>" />
-                        <div class="hidden" data-for="help_for_hellotime">
-                         <?=gettext("Set the time between broadcasting of Spanning Tree Protocol configuration messages. The hello time may only be changed when " .
-                         "operating in legacy STP mode. The default is 2 seconds. The minimum is 1 second and the maximum is 2 seconds."); ?>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><a id="help_for_priority" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Priority"); ?></td>
-                      <td>
-                        <input name="priority" type="text" value="<?=$pconfig['priority'];?>" />
-                        <div class="hidden" data-for="help_for_priority">
-                         <?=gettext("Set the bridge priority for Spanning Tree. The default is 32768. " .
-                         "The minimum is 0 and the maximum is 61440."); ?>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
                       <td><a id="help_for_holdcnt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hold count"); ?></td>
                       <td>
                         <input name="holdcnt" type="text" value="<?=$pconfig['holdcnt'];?>" />
@@ -420,49 +354,6 @@ $(document).ready(function() {
                          <?=gettext("Set the transmit hold count for Spanning Tree. This is the number " .
                          "of packets transmitted before being rate limited. The " .
                          "default is 6. The minimum is 1 and the maximum is 10."); ?>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><a id="help_for_intf_priority" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Priority"); ?></td>
-                      <td>
-                        <table class="table table-striped table-condensed">
-<?php
-                        foreach ($ifacelist as $ifn => $ifdescr):?>
-                          <tr>
-                            <td><?=$ifdescr;?></td>
-                            <td>
-                                <input name="ifpriority_<?=$ifn;?>" type="text" value="<?=isset($pconfig['ifpriority_'.$ifn]) ? $pconfig['ifpriority_'.$ifn] : "";?>" />
-                            </td>
-                          </tr>
-<?php
-                        endforeach;?>
-                        </table>
-                        <div class="hidden" data-for="help_for_intf_priority">
-                         <?=gettext("Set the Spanning Tree priority of interface to value. " .
-                         "The default is 128. The minimum is 0 and the maximum is 240. Increments of 16."); ?>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><a id="help_for_intf_pathcost" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Path cost"); ?></td>
-                      <td>
-                        <table class="table table-striped table-condensed">
-<?php
-                        foreach ($ifacelist as $ifn => $ifdescr):?>
-                          <tr>
-                            <td><?=$ifdescr;?></td>
-                            <td>
-                                <input name="ifpathcost_<?=$ifn;?>" type="text" value="<?=isset($pconfig['ifpathcost_'.$ifn]) ? $pconfig['ifpathcost_'.$ifn] : "";?>" />
-                            </td>
-                          </tr>
-<?php
-                        endforeach;?>
-                        </table>
-                        <div class="hidden" data-for="help_for_intf_pathcost">
-                         <?=gettext("Set the Spanning Tree path cost of interface to value. The " .
-                         "default is calculated from the link speed. To change a previously selected path cost back to automatic, set the cost to 0. ".
-                         "The minimum is 1 and the maximum is 200000000."); ?>
                         </div>
                       </td>
                     </tr>
