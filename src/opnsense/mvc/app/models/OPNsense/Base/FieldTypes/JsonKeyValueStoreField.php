@@ -123,17 +123,18 @@ class JsonKeyValueStoreField extends BaseListField
     protected function actionPostLoadingEvent()
     {
         $data = null;
+        if ($this->internalSourceFile != null && $this->internalSourceField != null) {
+            $sourcefile = sprintf($this->internalSourceFile, $this->internalSourceField);
+        } else {
+            $sourcefile = $this->internalSourceFile;
+        }
+        $cachename = $sourcefile != null ? $sourcefile : $this->internalConfigdPopulateAct;
         if (!empty($this->internalConfigdPopulateAct)) {
-            if (isset(static::$internalStaticContent[$this->internalConfigdPopulateAct])) {
+            if (isset(static::$internalStaticContent[$cachename])) {
                 /* cached for the lifetime of this session */
-                $data = static::$internalStaticContent[$this->internalConfigdPopulateAct];
-            } elseif ($this->internalSourceFile != null) {
+                $data = static::$internalStaticContent[$cachename];
+            } elseif ($sourcefile != null) {
                 /* use a file cache for the configd call*/
-                if ($this->internalSourceField != null) {
-                    $sourcefile = sprintf($this->internalSourceFile, $this->internalSourceField);
-                } else {
-                    $sourcefile = $this->internalSourceFile;
-                }
                 if (is_file($sourcefile)) {
                     $sourcehandle = fopen($sourcefile, "r+");
                 } else {
@@ -166,12 +167,18 @@ class JsonKeyValueStoreField extends BaseListField
                     true
                 );
             }
-            if ($data != null) {
-                static::$internalStaticContent[$this->internalConfigdPopulateAct] = $data;
-                $this->internalOptionList = $data;
-                if ($this->internalSelectAll && $this->internalValue == "") {
-                    $this->internalValue = implode(',', array_keys($this->internalOptionList));
-                }
+        } elseif ($sourcefile != null && is_file($sourcefile)) {
+            if (isset(static::$internalStaticContent[$cachename])) {
+                $data = static::$internalStaticContent[$cachename];
+            } else {
+                $data = json_decode(file_get_contents($sourcefile), true) ?? [];
+            }
+        }
+        if ($data != null) {
+            static::$internalStaticContent[$cachename] = $data;
+            $this->internalOptionList = $data;
+            if ($this->internalSelectAll && $this->internalValue == "") {
+                $this->internalValue = implode(',', array_keys($this->internalOptionList));
             }
         }
     }

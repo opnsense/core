@@ -369,8 +369,8 @@ $navbar-default-brand-hover-bg:            transparent !default;
 
 // Navbar toggle
 $navbar-default-toggle-hover-bg:           #555 !default;
-$navbar-default-toggle-icon-bar-bg:        #FFF !default;
-$navbar-default-toggle-border-color:       #FFF !default;
+$navbar-default-toggle-icon-bar-bg:        map-get($colors, text-color) !default;
+$navbar-default-toggle-border-color:       map-get($colors, text-color) !default;
 
 
 // Inverted navbar

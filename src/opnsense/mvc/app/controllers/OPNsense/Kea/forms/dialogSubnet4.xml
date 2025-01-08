@@ -18,6 +18,13 @@
         <help>List of pools, one per line in range or subnet format (e.g. 192.168.0.100 - 192.168.0.200 , 192.0.2.64/26</help>
     </field>
     <field>
+        <id>subnet4.match-client-id</id>
+        <label>Match client-id</label>
+        <type>checkbox</type>
+        <help>By default KEA uses client-identifiers in stead of MAC addresses to locate clients, disabling this option
+        changes back to matching on MAC address which is used by most dhcp implementations.</help>
+    </field>
+    <field>
         <type>header</type>
         <label>DHCP option data</label>
     </field>

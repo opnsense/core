@@ -1583,7 +1583,7 @@ EOD;
 
     if (count($dhcpdv6ifs) > 0) {
         mwexec('/usr/local/sbin/dhcpd -6 -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpdv6.conf -pf /var/run/dhcpdv6.pid ' . join(' ', $dhcpdv6ifs));
-        mwexecf('/usr/sbin/daemon -f -p %s %s', ['/var/run/dhcpleases6.pid', '/usr/local/opnsense/scripts/dhcp/prefixes.sh']);
+        mwexecf('/usr/sbin/daemon -m0 -f -p %s %s', ['/var/run/dhcpleases6.pid', '/usr/local/opnsense/scripts/dhcp/prefixes.sh']);
     }
 
     service_log("done.\n", $verbose);

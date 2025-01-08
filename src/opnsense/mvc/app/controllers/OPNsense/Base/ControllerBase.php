@@ -28,7 +28,12 @@
 
 namespace OPNsense\Base;
 
+use Phalcon\Di\FactoryDefault;
+use Phalcon\Mvc\View;
+use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Config;
+use OPNsense\Mvc\Dispatcher;
 
 /**
  * Class ControllerBase implements core controller for OPNsense framework
@@ -36,10 +41,18 @@ use OPNsense\Core\Config;
  */
 class ControllerBase extends ControllerRoot
 {
+    public View $view;
+
     /**
      * @var array Content-Security-Policy extensions, when set they will be merged with the defaults
      */
-    protected $content_security_policy = array();
+    protected array $content_security_policy = [];
+
+    private array $volt_functions = [
+        'theme_file_or_default' => 'view_fetch_themed_filename',
+        'file_exists' => 'view_file_exists',
+        'cache_safe' => 'view_cache_safe'
+    ];
 
     /**
      *  @return array list of javascript files to be included in default.volt
@@ -96,6 +109,48 @@ class ControllerBase extends ControllerRoot
     }
 
     /**
+     * Construct a view to render Volt templates
+     */
+    public function __construct()
+    {
+        $volt_functions = $this->volt_functions;
+        $appcfg = new AppConfig();
+        $this->view = new View();
+        $viewDirs = [];
+        foreach ((array)$appcfg->application->viewsDir as $viewDir) {
+            $viewDirs[] = $viewDir;
+        }
+        $this->view->setViewsDir($viewDirs);
+        $this->view->setDI(new FactoryDefault());
+        $this->view->registerEngines([
+            '.volt' => function ($view) use ($appcfg, $volt_functions) {
+                $volt = new VoltEngine($view);
+                $volt->setOptions([
+                    'path' => $appcfg->application->cacheDir,
+                    'separator' => '_'
+                ]);
+                foreach ($volt_functions as $func_name => $function) {
+                    $volt->getCompiler()->addFunction($func_name, $function);
+                }
+                $volt->getCompiler()->addFilter('safe', 'view_html_safe');
+                return $volt;
+            }]);
+    }
+
+    /**
+     * @param Dispatcher $dispatcher
+     * @return void
+     */
+    public function afterExecuteRoute(Dispatcher $dispatcher)
+    {
+        $this->view->start();
+        $this->view->processRender('', '');
+        $this->view->finish();
+
+        $this->response->setContent($this->view->getContent());
+    }
+
+    /**
      * convert xml form definition to simple data structure to use in our Volt templates
      *
      * @param $xmlNode
@@ -103,15 +158,15 @@ class ControllerBase extends ControllerRoot
      */
     private function parseFormNode($xmlNode)
     {
-        $result = array();
+        $result = [];
         foreach ($xmlNode as $key => $node) {
             switch ($key) {
                 case "tab":
                     if (!array_key_exists("tabs", $result)) {
-                        $result['tabs'] = array();
+                        $result['tabs'] = [];
                     }
-                    $tab = array();
-                    $tab[] = $node->attributes()->id;
+                    $tab = [];
+                    $tab[] = (string)$node->attributes()->id;
                     $tab[] = gettext((string)$node->attributes()->description);
                     if (isset($node->subtab)) {
                         $tab["subtabs"] = $this->parseFormNode($node);
@@ -121,7 +176,7 @@ class ControllerBase extends ControllerRoot
                     $result['tabs'][] = $tab;
                     break;
                 case "subtab":
-                    $subtab = array();
+                    $subtab = [];
                     $subtab[] = $node->attributes()->id;
                     $subtab[] = gettext((string)$node->attributes()->description);
                     $subtab[] = $this->parseFormNode($node);
@@ -147,12 +202,10 @@ class ControllerBase extends ControllerRoot
     }
 
     /**
-     * parse an xml type form
-     * @param $formname
-     * @return array
-     * @throws \Exception
+     * fetch form xml
+     * @return SimpleXMLElement
      */
-    public function getForm($formname)
+    private function getFormXML($formname)
     {
         $class_info = new \ReflectionClass($this);
         $filename = dirname($class_info->getFileName()) . "/forms/" . $formname . ".xml";
@@ -163,8 +216,83 @@ class ControllerBase extends ControllerRoot
         if ($formXml === false) {
             throw new \Exception('form xml ' . $filename . ' not valid');
         }
+        return $formXml;
+    }
 
-        return $this->parseFormNode($formXml);
+    /**
+     * parse an xml type form
+     * @param $formname
+     * @return array
+     * @throws \Exception
+     */
+    public function getForm($formname)
+    {
+        return $this->parseFormNode($this->getFormXML($formname));
+    }
+
+    /**
+     * Extract grid fields from form definition
+     * @return array
+     */
+    public function getFormGrid($formname, $grid_id = null, $edit_alert_id = null)
+    {
+        /* collect all fields, sort by sequence */
+        $all_data = [];
+        $idx = 0;
+        foreach ($this->getFormXML($formname) as $rootkey => $rootnode) {
+            if ($rootkey == 'field' && !empty((string)$rootnode->id)) {
+                $record = [
+                    'column-id' => '',
+                    'label' => '',
+                    'visible' => 'true',
+                    'sortable' => 'true',
+                    'identifier' => 'false',
+                    'type' => 'string' /* XXX: convert to type + formatter using source type? */
+                ];
+                foreach ($rootnode as $key => $item) {
+                    switch ($key) {
+                        case 'label':
+                            $record['label'] = gettext((string)$item);
+                            break;
+                        case 'id':
+                            $tmp = explode('.', (string)$item);
+                            $record['column-id'] = end($tmp);
+                            break;
+                    }
+                }
+                /* iterate field->grid_view items */
+                $this_sequence = '9999999';
+                if (isset($rootnode->grid_view)) {
+                    foreach ($rootnode->grid_view->children() as $key => $item) {
+                        if ($key == 'ignore' && $item != 'false') {
+                            /* ignore field as requested */
+                            continue 2;
+                        } elseif ($key == 'sequence') {
+                            $this_sequence = (string)$item;
+                        } else {
+                            $record[$key] = (string)$item;
+                        }
+                    }
+                }
+                $all_data[sprintf("%010d.%03d", $this_sequence, $idx++)] = $record;
+            }
+        }
+        /* prepend identifier */
+        $all_data[sprintf("%010d.%03d", 0, 0)] = [
+            'column-id' => 'uuid',
+            'label' => gettext('ID'),
+            'type' => 'string',
+            'identifier' => 'true',
+            'visible' => 'false'
+        ];
+        ksort($all_data);
+        $basename = $grid_id ?? $formname;
+        return [
+            'table_id' => $basename,
+            'edit_dialog_id' => 'dialog_' . $basename,
+            'edit_alert_id' => $edit_alert_id == null ? 'change_message_' . $basename : $edit_alert_id,
+            'fields' => array_values($all_data)
+        ];
     }
 
     /**
@@ -183,7 +311,7 @@ class ControllerBase extends ControllerRoot
      * @return bool
      * @throws \Exception
      */
-    public function beforeExecuteRoute($dispatcher)
+    public function beforeExecuteRoute(Dispatcher $dispatcher)
     {
         // only handle input validation on first request.
         if (!$dispatcher->wasForwarded()) {
@@ -265,12 +393,12 @@ class ControllerBase extends ControllerRoot
         $this->view->system_domain = $cnf->object()->system->domain;
 
         if (isset($this->view->menuBreadcrumbs[0]['name'])) {
-            $output = array();
+            $output = [];
             foreach ($this->view->menuBreadcrumbs as $crumb) {
                 $output[] = gettext($crumb['name']);
             }
             $this->view->title = join(': ', $output);
-            $output = array();
+            $output = [];
             foreach (array_reverse($this->view->menuBreadcrumbs) as $crumb) {
                 $output[] = gettext($crumb['name']);
             }

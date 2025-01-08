@@ -4543,13 +4543,13 @@ tbody.collapse.in {
   background-color: transparent;
 }
 .navbar-default .navbar-toggle {
-  border-color: #FFF;
+  border-color: #373736;
 }
 .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
   background-color: #555;
 }
 .navbar-default .navbar-toggle .icon-bar {
-  background-color: #FFF;
+  background-color: #373736;
 }
 .navbar-default .navbar-collapse,
 .navbar-default .navbar-form {

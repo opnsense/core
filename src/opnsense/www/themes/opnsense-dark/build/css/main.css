@@ -4544,13 +4544,13 @@ tbody.collapse.in {
   background-color: transparent;
 }
 .navbar-default .navbar-toggle {
-  border-color: #101218;
+  border-color: #ECECEC;
 }
 .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
   background-color: #555;
 }
 .navbar-default .navbar-toggle .icon-bar {
-  background-color: #101218;
+  background-color: #ECECEC;
 }
 .navbar-default .navbar-collapse,
 .navbar-default .navbar-form {
@@ -7370,4 +7370,6 @@ ul.jqtree-tree .jqtree-title {
   color: #fff !important;
 }
 
-/*# sourceMappingURL=main.css.map */
+.diff_record_default {
+  color: #fff !important;
+}

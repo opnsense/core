@@ -114,16 +114,18 @@ class Filter extends BaseModel
                         )
                     ) {
                         $messages->appendMessage(new Message(
-                            gettext("Inverting interfaces is only allowed for ".
+                            gettext("Inverting interfaces is only allowed for " .
                                 "single targets to avoid mis-interpretations"),
                             $rule->interfacenot->__reference
                         ));
                     }
                     if ($rule->statetype == 'none') {
-                        foreach ([
+                        foreach (
+                            [
                             'statetimeout', 'max', 'max-src-states', 'max-src-nodes', 'adaptivestart', 'adaptiveend',
                             'max-src-conn'
-                        ] as $fieldname) {
+                            ] as $fieldname
+                        ) {
                             if (!empty((string)$rule->$fieldname)) {
                                 $messages->appendMessage(new Message(
                                     gettext("Invalid option when statetype is none."),
@@ -133,10 +135,12 @@ class Filter extends BaseModel
                         }
                     }
                     if (!in_array($rule->protocol, ['TCP', 'TCP/UDP'])) {
-                        foreach ([
+                        foreach (
+                            [
                             'statetimeout', 'max-src-conn', 'tcpflags1', 'tcpflags2',
                             'max-src-conn-rate', 'max-src-conn-rates', 'overload'
-                        ] as $fieldname) {
+                            ] as $fieldname
+                        ) {
                             if (!empty((string)$rule->$fieldname)) {
                                 $messages->appendMessage(new Message(
                                     gettext("Invalid option for other than TCP protocol choices."),
@@ -155,7 +159,7 @@ class Filter extends BaseModel
 
                     if (!empty((string)$rule->tcpflags1) && empty((string)$rule->tcpflags2)) {
                         $messages->appendMessage(new Message(
-                            gettext("If you specify TCP flags that should be set ".
+                            gettext("If you specify TCP flags that should be set " .
                                 "you should specify out of which flags as well."),
                             $rule->tcpflags2->__reference
                         ));
@@ -198,12 +202,11 @@ class Filter extends BaseModel
 
                     if ((string)$rule->{'set-prio'} == '' && (string)$rule->{'set-prio-low'} != '') {
                         $messages->appendMessage(new Message(
-                            gettext("Set priority for low latency and acknowledgements ".
+                            gettext("Set priority for low latency and acknowledgements " .
                                 "requires a set priority for normal packets."),
                             $rule->{'set-prio-low'}->__reference
                         ));
                     }
-
                 }
             }
         }

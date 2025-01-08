@@ -111,12 +111,18 @@
                         switch (data.items[i][0]) {
                             case '+':
                                 color = '#3bbb33';
+                                $td.addClass('diff_record_plus');
                                 break;
                             case '-':
                                 color = '#c13928';
+                                $td.addClass('diff_record_minus');
                                 break;
                             case '@':
                                 color = '#3bb9c3';
+                                $td.addClass('diff_record_at');
+                                break;
+                            default:
+                                $td.addClass('diff_record_default');
                                 break;
                         }
                         $td.css('color', color);

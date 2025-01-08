@@ -735,44 +735,52 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
                 continue;
             }
 
-            $interfacegw = $gateway['if'];
-            $gatewayip = $gateway['gateway'] ?? '';
-            $fargw = !empty($gateway['fargw']) && $gateway['ipprotocol'] != 'inet6';
-            $blackhole = '';
+            $cmd = [exec_safe('-%s', $ipproto)];
 
             switch ($rtent['gateway']) {
                 case 'Null4':
                 case 'Null6':
-                    $blackhole = '-blackhole';
+                    $cmd[] = '-blackhole';
                     break;
                 default:
                     break;
             }
 
-            /* XXX some day we might want to convert to safer mwexecf() */
-            $cmd = " -{$ipproto} {$blackhole} " . escapeshellarg($rtent['network']) . " ";
-            if (is_ipaddrv6($gatewayip) && $ipproto == 'inet') {
-                /* rfc5549: gateway protocol differs, so we need to define it as well */
-                $cmd .= ' -inet6 ';
-            }
+            $cmd[] = exec_safe('%s', $rtent['network']);
 
             if (!empty($rtent['disabled'])) {
-                mwexec("/sbin/route delete {$cmd}", true);
-            } else {
-                if (is_ipaddr($gatewayip)) {
-                    mwexec("/sbin/route delete {$cmd}", true);
-                    if ($fargw) {
-                        mwexecf('/sbin/route delete -%s %s -interface %s ', [$ipproto, $gatewayip, $interfacegw], true);
-                        mwexecf('/sbin/route add -%s %s -interface %s', [$ipproto, $gatewayip, $interfacegw]);
-                    } elseif (is_linklocal($gatewayip) && strpos($gatewayip, '%') === false) {
-                        $gatewayip .= "%{$interfacegw}";
-                    }
-                    mwexec("/sbin/route add" . $cmd . escapeshellarg($gatewayip));
-                } elseif (!empty($interfacegw)) {
-                    mwexec("/sbin/route delete" . $cmd . "-interface " . escapeshellarg($interfacegw), true);
-                    mwexec("/sbin/route add" . $cmd . "-interface " . escapeshellarg($interfacegw));
-                }
+                mwexec('/sbin/route delete ' . join(' ', $cmd), true);
+                continue;
             }
+
+            $gatewayip = $gateway['gateway'] ?? '';
+            $interfacegw = $gateway['if'];
+
+            if (is_ipaddr($gatewayip)) {
+                mwexec('/sbin/route delete ' . join(' ', $cmd), true);
+
+                if (ipproto == 'inet' && is_ipaddrv6($gatewayip)) {
+                    $cmd[] = '-inet6'; /* RFC 5549: gateway protocol differs */
+                }
+
+                if (!empty($gateway['fargw']) && $gateway['ipprotocol'] != 'inet6') {
+                    mwexecf('/sbin/route delete -%s %s -interface %s ', [$ipproto, $gatewayip, $interfacegw], true);
+                    mwexecf('/sbin/route add -%s %s -interface %s', [$ipproto, $gatewayip, $interfacegw], true);
+                } elseif (is_linklocal($gatewayip) && strpos($gatewayip, '%') === false) {
+                    $gatewayip .= "%{$interfacegw}";
+                }
+
+                $cmd = exec_safe('%s', $gatewayip);
+
+                mwexec('/sbin/route add ' . join(' ', $cmd), true);
+            } elseif (!empty($interfacegw)) {
+                $cmd[] = '-interface';
+                $cmd[] = exec_safe('%s', $interfacegw);
+
+                mwexec('/sbin/route delete ' . join(' ', $cmd), true);
+            }
+
+            mwexec('/sbin/route add ' . join(' ', $cmd), true);
         }
     }
 

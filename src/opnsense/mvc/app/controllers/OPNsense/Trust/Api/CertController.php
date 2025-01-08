@@ -90,7 +90,7 @@ class CertController extends ApiMutableModelControllerBase
                     $node->dn(),
                     (string)$node->digest,
                     false,
-                    (string)$node->cert_type,
+                    'v3_req',
                     $node->extns()
                 );
                 if (!empty($data['csr'])) {
