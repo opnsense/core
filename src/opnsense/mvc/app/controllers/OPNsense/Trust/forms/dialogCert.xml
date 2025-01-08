@@ -97,7 +97,7 @@
         <type>header</type>
         <label>Alternative Names</label>
         <collapse>true</collapse>
-        <style>action action_internal action_reissue action_external  action_sign_csr</style>
+        <style>action action_internal action_reissue action_external action_sign_csr</style>
     </field>
     <field>
         <id>cert.altnames_dns</id>
@@ -134,7 +134,7 @@
         <id>cert.prv_payload</id>
         <label>Private key data</label>
         <type>textbox</type>
-        <style>action  action_internal  action_external  action_import  action_import_csr  action_reissue  action_manual</style>
+        <style>action action_internal action_external action_import action_import_csr action_reissue action_manual</style>
     </field>
     <field>
         <id>cert.csr_payload</id>
