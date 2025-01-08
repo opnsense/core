@@ -12,7 +12,7 @@
     <field>
         <type>header</type>
         <label>Key</label>
-        <style>action action_internal action_reissue action_internal action_external action_sign_csr</style>
+        <style>action action_internal action_reissue action_external action_sign_csr</style>
     </field>
     <field>
         <id>cert.cert_type</id>
@@ -50,7 +50,7 @@
     <field>
         <type>header</type>
         <label>General</label>
-        <style>action action_internal action_reissue action_internal action_external</style>
+        <style>action action_internal action_reissue action_external</style>
     </field>
     <field>
         <id>cert.country</id>
@@ -97,7 +97,7 @@
         <type>header</type>
         <label>Alternative Names</label>
         <collapse>true</collapse>
-        <style>action action_internal action_reissue action_external action_internal action_sign_csr</style>
+        <style>action action_internal action_reissue action_external  action_sign_csr</style>
     </field>
     <field>
         <id>cert.altnames_dns</id>
