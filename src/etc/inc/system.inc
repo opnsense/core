@@ -753,26 +753,27 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
             $cmd = " -{$ipproto} {$blackhole} " . escapeshellarg($rtent['network']) . " ";
             if (!empty($rtent['disabled'])) {
                 mwexec("/sbin/route delete {$cmd}", true);
-            } else {
-                if (is_ipaddr($gatewayip)) {
-                    mwexec("/sbin/route delete {$cmd}", true);
+                continue;
+            }
 
-                    if (ipproto == 'inet' && is_ipaddrv6($gatewayip)) {
-                        /* RFC 5549: gateway protocol differs */
-                        $cmd .= ' -inet6 ';
-                    }
+            if (is_ipaddr($gatewayip)) {
+                mwexec("/sbin/route delete {$cmd}", true);
 
-                    if ($fargw) {
-                        mwexecf('/sbin/route delete -%s %s -interface %s ', [$ipproto, $gatewayip, $interfacegw], true);
-                        mwexecf('/sbin/route add -%s %s -interface %s', [$ipproto, $gatewayip, $interfacegw]);
-                    } elseif (is_linklocal($gatewayip) && strpos($gatewayip, '%') === false) {
-                        $gatewayip .= "%{$interfacegw}";
-                    }
-                    mwexec("/sbin/route add" . $cmd . escapeshellarg($gatewayip));
-                } elseif (!empty($interfacegw)) {
-                    mwexec("/sbin/route delete" . $cmd . "-interface " . escapeshellarg($interfacegw), true);
-                    mwexec("/sbin/route add" . $cmd . "-interface " . escapeshellarg($interfacegw));
+                if (ipproto == 'inet' && is_ipaddrv6($gatewayip)) {
+                    /* RFC 5549: gateway protocol differs */
+                    $cmd .= ' -inet6 ';
                 }
+
+                if ($fargw) {
+                    mwexecf('/sbin/route delete -%s %s -interface %s ', [$ipproto, $gatewayip, $interfacegw], true);
+                    mwexecf('/sbin/route add -%s %s -interface %s', [$ipproto, $gatewayip, $interfacegw]);
+                } elseif (is_linklocal($gatewayip) && strpos($gatewayip, '%') === false) {
+                    $gatewayip .= "%{$interfacegw}";
+                }
+                mwexec("/sbin/route add" . $cmd . escapeshellarg($gatewayip));
+            } elseif (!empty($interfacegw)) {
+                mwexec("/sbin/route delete" . $cmd . "-interface " . escapeshellarg($interfacegw), true);
+                mwexec("/sbin/route add" . $cmd . "-interface " . escapeshellarg($interfacegw));
             }
         }
     }
