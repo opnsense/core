@@ -240,7 +240,7 @@ class ControllerBase extends ControllerRoot
         $all_data = [];
         $idx = 0;
         foreach ($this->getFormXML($formname) as $rootkey => $rootnode) {
-            if ($rootkey == 'field') {
+            if ($rootkey == 'field' && !empty((string)$rootnode->id)) {
                 $record = [
                     'column-id' => '',
                     'label' => '',
