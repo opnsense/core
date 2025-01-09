@@ -1122,7 +1122,7 @@ function system_cron_configure($verbose = false)
 
     $autocron = [];
 
-    service_log('Configuring CRON...', $verbose);
+    service_log('Configuring cron...', $verbose);
 
     foreach (plugins_cron() as $cron_plugin) {
         /*
