@@ -274,6 +274,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $filterent = [];
             if (in_array($pconfig['associated-rule-id'], ['add-associated', 'add-unassociated'])) {
                 $filterent['associated-rule-id'] = $natent['associated-rule-id'];
+
+                if ($pconfig['associated-rule-id'] == 'add-unassociated') {
+                  $filterent['type'] = 'pass';
+                }
             } else {
                 $filterent['associated-rule-id'] = $natent['associated-rule-id'];
                 foreach ($config['filter']['rule'] as $key => &$item){
