@@ -1398,17 +1398,21 @@ function interfaces_vips_configure($interface, $family = null)
 
     $proxyarp = false;
     $pfsync = false;
+    $dad = false;
 
     foreach ($config['virtualip']['vip'] as $vip) {
         if ($vip['interface'] != $interface) {
             continue;
         }
 
-        if ($family === 4 && strpos($vip['subnet'], ':') !== false) {
-            continue;
-        } elseif ($family === 6 && strpos($vip['subnet'], ':') === false) {
+        $inet6 = strpos($vip['subnet'], ':') !== false;
+
+        if (($family === 4 && $inet6) || ($family === 6 && !$inet6)) {
             continue;
         }
+
+        /* XXX trigger DAD only through rc.newwanipv6 explicit call for now */
+        $dad = $dad || ($inet6 && $family === 6);
 
         switch ($vip['mode']) {
             case 'proxyarp':
@@ -1430,6 +1434,10 @@ function interfaces_vips_configure($interface, $family = null)
 
     if ($proxyarp) {
         interface_proxyarp_configure();
+    }
+
+    if ($dad) {
+        waitfordad();
     }
 }
 

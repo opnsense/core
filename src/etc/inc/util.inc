@@ -93,6 +93,14 @@ function waitforpid($pidfile, $timeout = -1)
     return trim(file_get_contents($pidfile));
 }
 
+function waitfordad($grace_period = 1)
+{
+    $dad_delay = (int)get_single_sysctl('net.inet6.ip6.dad_count');
+    if ($dad_delay) {
+        sleep($dad_delay + $grace_period);
+    }
+}
+
 function is_process_running($process)
 {
     exec('/bin/pgrep -anx ' . escapeshellarg($process), $output, $retval);
