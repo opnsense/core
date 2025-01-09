@@ -430,12 +430,10 @@ function ntpd_configure_do($verbose = false)
         $ntpaddrs = [];
 
         foreach (explode(',', $config['ntpd']['interface']) as $interface) {
-            if (!is_ipaddr($interface)) {
+            /* discard bad values here: literal addresses and _vip constructs */
+            if (!is_ipaddr($interface) && strstr($interface, '_vip') === false) {
                 $ntpifs[] = $interface;
-            } else {
-                $ntpaddrs[] = $interface;
             }
-            /* XXX _vip constructs have always been ignored */
         }
 
         foreach (interfaces_addresses($ntpifs) as $tmpaddr => $info) {
