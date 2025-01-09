@@ -286,9 +286,9 @@ class FilterRule extends Rule
                     $rule['disabled'] = true;
                     $this->log('shaper defined but not found');
                 } elseif (!empty($shaper2['type'])) {
-                    $rule['dn'] = sprintf('%s (%s, %s)', $shaper1['type'],  $shaper1['id'], $shaper2['id']);
+                    $rule['dn'] = sprintf('%s (%s, %s)', $shaper1['type'], $shaper1['id'], $shaper2['id']);
                 } else {
-                    $rule['dn'] = sprintf('%s %s', $shaper1['type'],  $shaper1['id']);
+                    $rule['dn'] = sprintf('%s %s', $shaper1['type'], $shaper1['id']);
                 }
             }
 

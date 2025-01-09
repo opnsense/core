@@ -60,7 +60,7 @@ class Alias extends BaseModel
      */
     private $aliasReferenceCache = [];
 
-    public function __construct($skip_dynamic_info=false)
+    public function __construct($skip_dynamic_info = false)
     {
         $this->skip_dynamic_info = $skip_dynamic_info;
         parent::__construct();
