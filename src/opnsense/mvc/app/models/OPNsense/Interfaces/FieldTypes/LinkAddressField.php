@@ -112,7 +112,7 @@ class LinkAddressField extends BaseField
      */
     public function getDescription()
     {
-        $value = $this->getCurrentValue() ?? '';
+        $value = $this->getCurrentValue();
 
         if (isset(self::$known_addresses[$value])) {
             return self::$known_addresses[$value];
@@ -124,7 +124,7 @@ class LinkAddressField extends BaseField
     /**
      * return either ipaddr or if field, only one should be used, addresses are preferred.
      */
-    public function getCurrentValue(): ?string
+    public function getCurrentValue(): string
     {
         $parent = $this->getParentNode();
 
@@ -134,7 +134,7 @@ class LinkAddressField extends BaseField
             }
         }
 
-        return null;
+        return '';
     }
 
     /**

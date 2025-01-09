@@ -360,14 +360,14 @@ abstract class BaseField
      */
     public function __toString()
     {
-        return $this->getCurrentValue() ?? '';
+        return $this->getCurrentValue();
     }
 
     /**
      * return field current value
      * @return null|string field current value
      */
-    public function getCurrentValue(): ?string
+    public function getCurrentValue(): string
     {
         return (string)$this->internalValue;
     }
