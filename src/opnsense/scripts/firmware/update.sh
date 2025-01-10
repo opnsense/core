@@ -48,10 +48,10 @@ ALWAYS_REBOOT=$(/usr/local/sbin/pluginctl -g system.firmware.reboot)
 PKGS_HASH=$(${PKG} query %n-%v 2> /dev/null | sha256)
 
 # upgrade all packages if possible
-(opnsense-update ${FORCE} -pt "opnsense${SUFFIX}" 2>&1) | ${TEE} ${LOCKFILE}
+output_cmd opnsense-update ${FORCE} -pt "opnsense${SUFFIX}"
 
 # restart the web server
-(/usr/local/etc/rc.restart_webgui 2>&1) | ${TEE} ${LOCKFILE}
+output_cmd /usr/local/etc/rc.restart_webgui
 
 # run plugin resolver if requested
 if [ "${CMD}" = "sync" ]; then
@@ -60,8 +60,7 @@ fi
 
 # if we can update base, we'll do that as well
 if opnsense-update ${FORCE} -bk -c; then
-	${TEE} ${LOCKFILE} < ${PIPEFILE} &
-	if opnsense-update ${FORCE} -bk > ${PIPEFILE} 2>&1; then
+	if output_cmd opnsense-update ${FORCE} -bk; then
 		output_reboot
 	fi
 fi

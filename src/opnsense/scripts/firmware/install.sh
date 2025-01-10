@@ -38,13 +38,13 @@ if [ "${PACKAGE#os-}" != "${PACKAGE}" ]; then
 
 	# plugins must pass a version check on up-to-date core package
 	if [ "$(${PKG} version -t ${COREVER} ${REPOVER})" = "<" ]; then
-		echo "Installation out of date. The update to ${COREPKG}-${REPOVER} is required." | ${TEE} ${LOCKFILE}
+		output_txt "Installation out of date. The update to ${COREPKG}-${REPOVER} is required."
 		output_done
 	fi
 fi
 
-(${PKG} install -y ${PACKAGE} 2>&1) | ${TEE} ${LOCKFILE}
-(/usr/local/opnsense/scripts/firmware/register.php install ${PACKAGE} 2>&1) | ${TEE} ${LOCKFILE}
-(${PKG} autoremove -y 2>&1) | ${TEE} ${LOCKFILE}
+output_cmd ${PKG} install -y "${PACKAGE}"
+output_cmd ${BASEDIR}/register.php install "${PACKAGE}"
+output_cmd ${PKG} autoremove -y
 
 output_done
