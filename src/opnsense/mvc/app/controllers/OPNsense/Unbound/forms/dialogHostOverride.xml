@@ -36,6 +36,12 @@
         <help>Host name of MX host, e.g. mail.example.com</help>
     </field>
     <field>
+        <id>host.ttl</id>
+        <label>TTL</label>
+        <type>text</type>
+        <help>TTL of the host, e.g. 3600</help>
+    </field>
+    <field>
         <id>host.server</id>
         <label>IP address</label>
         <type>text</type>
