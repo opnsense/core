@@ -95,10 +95,12 @@ export default class Gateways extends BaseTableWidget {
         const config = await this.getWidgetConfig();
 
         let data = [];
-        gateways.forEach(({ uuid, name, gateway: address, status, loss, delay, stddev }) => {
+        gateways.forEach(({ uuid, name, gateway: address, status, loss, delay, stddev, defaultgw }) => {
             if (!config.gateways.includes(uuid)) {
                 return;
             }
+
+            let active = defaultgw ? "(active)" : "";
 
             let color = "text-success";
 
@@ -116,6 +118,8 @@ export default class Gateways extends BaseTableWidget {
                 <a href="/ui/routing/configuration#edit=${encodeURIComponent(uuid)}" target="_blank" rel="noopener noreferrer">
                     ${name}
                 </a>
+                &nbsp;
+                ${active}
                 &nbsp;
                 <br/>
                 <div style="margin-top: 5px; margin-bottom: 5px; font-size: 15px;">${address}</div>
