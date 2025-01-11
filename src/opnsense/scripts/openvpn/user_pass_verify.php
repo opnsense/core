@@ -80,16 +80,15 @@ function do_auth($common_name, $serverid, $method, $auth_file)
     if (empty($username) || empty($password)) {
         return "username or password missing ({$method} - {$auth_file})";
     }
+    $pinpassword = false;
+    $pin = false;
     if (strpos($password, 'SCRV1:') === 0) {
         // static-challenge https://github.com/OpenVPN/openvpn/blob/v2.4.7/doc/management-notes.txt#L1146
-        // validate and concat password into our default pin+password
+        // validate and split password into pin and password (used below based on authenticato settings)
         $tmp = explode(':', $password);
         if (count($tmp) == 3) {
-            $pass = base64_decode($tmp[1]);
+            $pinpassword = base64_decode($tmp[1]);
             $pin = base64_decode($tmp[2]);
-            if ($pass !== false && $pin !== false) {
-                $password = $pin . $pass;
-            }
         }
     }
     $a_server = $serverid !== null ? (new OPNsense\OpenVPN\OpenVPN())->getInstanceById($serverid, 'server') : null;
@@ -121,7 +120,15 @@ function do_auth($common_name, $serverid, $method, $auth_file)
     foreach (explode(',', $a_server['authmode']) as $authName) {
         $authenticator = $authFactory->get($authName);
         if ($authenticator) {
-            if ($authenticator->authenticate($username, $password)) {
+            $checkpassword = $password;
+            if ($pin!=false) { 
+                if (property_exists($authenticator,'passwordFirst') && $authenticator->passwordFirst) {
+                    $checkpassword = $pinpassword . $pin;
+                } else {
+                    $checkpassword = $pin . $pinpassword;
+                }
+            }
+            if ($authenticator->authenticate($username, $checkpassword)) {
                 // fetch or create client specific override
                 $common_name = empty($a_server['cso_login_matching']) ? $common_name : $username;
                 syslog(

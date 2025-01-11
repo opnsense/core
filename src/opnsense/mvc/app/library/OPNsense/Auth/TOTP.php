@@ -54,7 +54,7 @@ trait TOTP
     /**
      * @var bool token after password
      */
-    private $passwordFirst = false;
+    public $passwordFirst = false;
 
     /**
      * use graceperiod and timeWindow to calculate which moments in time we should check
