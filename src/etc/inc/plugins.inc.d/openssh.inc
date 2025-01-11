@@ -250,6 +250,10 @@ function openssh_configure_do($verbose = false, $interface_map = null)
         }
     }
 
+    if (is_dir('/usr/local/etc/ssh/sshd_config.d')) {
+        $sshconf .= 'Include /usr/local/etc/ssh/sshd_config.d/*' . PHP_EOL;
+    }
+
     $fobj->truncate(0)->write($sshconf);
 
     service_log('Configuring OpenSSH...', $verbose);
