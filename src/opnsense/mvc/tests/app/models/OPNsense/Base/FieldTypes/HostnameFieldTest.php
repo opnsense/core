@@ -130,7 +130,7 @@ class HostnameFieldTest extends Field_Framework_TestCase
         }
     }
 
-    public function testIpAdress()
+    public function testIpAddress()
     {
         $field = new HostnameField();
         $field->setIpAllowed("N");

@@ -35,7 +35,7 @@ use OPNsense\Firewall\Util;
 /**
  * @package OPNsense\Base\FieldTypes
  */
-class IKEAdressField extends BaseField
+class IKEAddressField extends BaseField
 {
     /**
      * @var bool marks if this is a data node or a container
