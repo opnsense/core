@@ -186,6 +186,7 @@
             <rtt>RTT</rtt>
             <rttd>RTTd</rttd>
             <loss>Loss</loss>
+            <active>active</active>
         </translations>
     </gateways>
     <thermalsensors>
