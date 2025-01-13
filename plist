@@ -747,7 +747,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/FieldTypes/CharonLogLevelField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/FieldTypes/ConnnectionField.php
-/usr/local/opnsense/mvc/app/models/OPNsense/IPsec/FieldTypes/IKEAdressField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/IPsec/FieldTypes/IKEAddressField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/FieldTypes/IPsecProposalField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/FieldTypes/PoolsField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/FieldTypes/SPDField.php
