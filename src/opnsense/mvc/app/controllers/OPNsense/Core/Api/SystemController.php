@@ -84,9 +84,7 @@ class SystemController extends ApiControllerBase
             }
 
             /* Sort on the highest notification (non-persistent) error level after the ACL check */
-            $statusCodes = array_map(function ($v) {
-                return $v['persistent'] ? SystemStatusCode::OK : $v['statusCode'];
-            }, array_values($statuses));
+            $statusCodes = array_column($statuses, 'statusCode');
             sort($statusCodes);
 
             $response['metadata'] = [
