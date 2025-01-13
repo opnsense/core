@@ -100,8 +100,6 @@ export default class Gateways extends BaseTableWidget {
                 return;
             }
 
-            let active = defaultgw ? "(active)" : "";
-
             let color = "text-success";
 
             if (status.toLowerCase().includes("offline")) {
@@ -119,8 +117,7 @@ export default class Gateways extends BaseTableWidget {
                     ${name}
                 </a>
                 &nbsp;
-                ${active}
-                &nbsp;
+                ${defaultgw ? `(${this.translations.active})` : ''}
                 <br/>
                 <div style="margin-top: 5px; margin-bottom: 5px; font-size: 15px;">${address}</div>
             </div>`;
