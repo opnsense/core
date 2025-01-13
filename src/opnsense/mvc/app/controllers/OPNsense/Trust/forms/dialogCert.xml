@@ -106,7 +106,7 @@
     </field>
     <field>
         <id>cert.altnames_ip</id>
-        <label>IP adresses</label>
+        <label>IP addresses</label>
         <type>textbox</type>
     </field>
     <field>
