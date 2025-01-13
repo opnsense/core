@@ -55,7 +55,6 @@
   border-color: transparentize(map-get($colors, brand-primary), 0.85);
   border-width: 2px;
   background-color: map-get($colors, page-content-head-background);
-  border-radius: 0.5em 0.5em 0.5em 0.5em;
 }
 
 .widget-error {
@@ -338,6 +337,8 @@ div {
 }
 
 .grid-item {
+    overflow: hidden;
+    text-overflow: ellipsis;
     padding: 4px;
     text-align: center;
 }

@@ -82,6 +82,8 @@ export default class Firewall extends BaseTableWidget {
             super.closeEventSource();
         }
 
+        $('.ip-tooltip').tooltip('hide');
+
         let actIcons = {
             'pass': '<i class="fa fa-play text-success"></i>',
             'block': '<i class="fa fa-minus-circle text-danger"></i>',
@@ -123,11 +125,13 @@ export default class Firewall extends BaseTableWidget {
                 /* Format time based on client browser locale */
                 (new Intl.DateTimeFormat(undefined, {hour: 'numeric', minute: 'numeric'})).format(new Date(data.__timestamp__)),
                 this.ifMap[data.interface] ?? data.interface,
-                data.src,
-                data.dst,
+                `<span class="ip-tooltip" style="cursor: pointer; data-toggle="tooltip" title="${data.src}">${data.src}</span>`,
+                `<span class="ip-tooltip" style="cursor: pointer; data-toggle="tooltip" title="${data.dst}">${data.dst}</span>`,
                 data.dstport ?? ''
             ]
         ]);
+
+        $('.ip-tooltip').tooltip({container: 'body'});
 
         super.updateTable('fw-rule-table', [
             [
