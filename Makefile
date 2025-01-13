@@ -204,10 +204,9 @@ CORE_CONFLICTS+=	${CONFLICT}-devel
 CORE_CONFLICTS:=	${CORE_CONFLICTS:S/^/os-/g:O}
 
 WRKDIR?=${.CURDIR}/work
-MFCDIR?=${WRKDIR}/mfc
-PKGDIR?=${WRKDIR}/pkg
 WRKSRC?=${WRKDIR}/src
-TESTDIR?=${.CURDIR}/src/opnsense/mvc/tests
+PKGDIR?=${WRKDIR}/pkg
+MFCDIR?=${WRKDIR}/mfc
 
 debug:
 	@${VERSIONBIN} ${@} > /dev/null
@@ -561,10 +560,8 @@ test: debug
 		echo "Installed version does not match, expected ${CORE_PKGVERSION}"; \
 		exit 1; \
 	fi
-	@cd ${TESTDIR} && phpunit || true; rm -rf ${TESTDIR}/.phpunit.result.cache \
-	    ${TESTDIR}/app/models/OPNsense/ACL/AclConfig/backup; \
-	    git checkout -f ${TESTDIR}/app/models/OPNsense/ACL/AclConfig/config.xml
-
+	@cd ${.CURDIR}/src/opnsense/mvc/tests && phpunit || true; \
+	    rm -f .phpunit.result.cache
 
 checkout:
 	@${GIT} reset -q ${.CURDIR}/src && \
