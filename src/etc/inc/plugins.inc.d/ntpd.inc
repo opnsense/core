@@ -437,7 +437,7 @@ function ntpd_configure_do($verbose = false)
         }
 
         foreach (interfaces_addresses($ntpifs) as $tmpaddr => $info) {
-            if (!$info['bind']) {
+            if (!$info['bind'] || ($info['family'] == 'inet6' && $info['tentative'])) {
                 continue;
             }
 
