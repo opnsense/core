@@ -49,26 +49,65 @@ class DiskSpaceStatus extends AbstractStatus
 
         foreach ($output['storage-system-information']['filesystem'] as $filesystem) {
             if ($filesystem['mounted-on'] === '/') {
+                $used = $this->convertToGB($filesystem['used']);
+                $available = $this->convertToGB($filesystem['available']);
                 $usedPercent = intval($filesystem['used-percent']);
-                if ($usedPercent >= 90 && $usedPercent <= 95) {
+                $totalSpace = $used + $available;
+
+                $warningThresholdGB = min(10, 0.15 * $totalSpace);
+                $errorThresholdGB = min(5, 0.5 * $totalSpace);
+
+                if ($available <= $warningThresholdGB && $available > $errorThresholdGB) {
                     $this->internalStatus = SystemStatusCode::WARNING;
                     $this->internalMessage = sprintf(
                         gettext('Disk space on the root filesystem is nearly full (' .
-                                '%d%% used). Please consider cleaning up or expanding storage.'),
-                        $usedPercent
+                                '%.2fG or %d%% used, %.2fG available). Please consider cleaning up or expanding storage.'),
+                        $used,
+                        $usedPercent,
+                        $available
                     );
-                } elseif ($usedPercent > 95) {
+                } elseif ($available <= $errorThresholdGB) {
                     $this->internalPersistent = true;
                     $this->internalStatus = SystemStatusCode::ERROR;
                     $this->internalMessage = sprintf(
                         gettext('Disk space on the root filesystem is critically full (' .
-                                '%d%% used). Please consider cleaning up or expanding storage.'),
-                        $usedPercent
+                                '%.2fG or %d%% used, %.2fG available). Please consider cleaning up or expanding storage.'),
+                        $used,
+                        $usedPercent,
+                        $available
                     );
                 }
 
                 break;
             }
+        }
+    }
+
+    private function convertToGB($value)
+    {
+        preg_match('/([0-9.]+)([a-zA-Z]+)/', $value, $matches);
+        if (count($matches) < 3) {
+            return floatval($value);
+        }
+
+        $number = floatval($matches[1]);
+        $unit = strtoupper($matches[2]);
+
+        switch ($unit) {
+            case 'B':
+                return $number / 1024 / 1024 / 1024;
+            case 'K':
+                return $number / 1024 / 1024;
+            case 'M':
+                return $number / 1024;
+            case 'T':
+                return $number * 1024;
+            case 'P':
+                return $number * 1024 * 1024;
+            case 'E':
+                return $number * 1024 * 1024 * 1024;
+            default:
+                return $number; // Default GB
         }
     }
 
