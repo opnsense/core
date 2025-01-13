@@ -95,7 +95,7 @@ export default class Gateways extends BaseTableWidget {
         const config = await this.getWidgetConfig();
 
         let data = [];
-        gateways.forEach(({ uuid, name, gateway: address, status, loss, delay, stddev }) => {
+        gateways.forEach(({ uuid, name, gateway: address, status, loss, delay, stddev, defaultgw }) => {
             if (!config.gateways.includes(uuid)) {
                 return;
             }
@@ -117,6 +117,7 @@ export default class Gateways extends BaseTableWidget {
                     ${name}
                 </a>
                 &nbsp;
+                ${defaultgw ? `(${this.translations.active})` : ''}
                 <br/>
                 <div style="margin-top: 5px; margin-bottom: 5px; font-size: 15px;">${address}</div>
             </div>`;
