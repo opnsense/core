@@ -75,9 +75,10 @@ class SystemStatus
                 'title' => $obj->getTitle(),
                 'statusCode' => $obj->getStatus(),
                 'message' => $obj->getMessage(),
-                'logLocation' => $obj->getLogLocation(),
+                'location' => $obj->getLocation(),
                 'timestamp' => $obj->getTimestamp(),
                 'persistent' => $obj->getPersistent(),
+                'isBanner' => $obj->isBanner(),
                 'priority' => $obj->getPriority(),
             ];
         }
