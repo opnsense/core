@@ -41,7 +41,7 @@ class CrashReporterStatus extends AbstractStatus
 
         $this->internalPriority = 10;
         $this->internalTitle = gettext('Crash Reporter');
-        $this->internalLogLocation = '/crash_reporter.php';
+        $this->internalLocation = '/crash_reporter.php';
 
         $src_errors = count($src_logs) > 0;
         if ($src_errors) {

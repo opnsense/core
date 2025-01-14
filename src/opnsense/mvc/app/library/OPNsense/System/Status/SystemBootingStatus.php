@@ -37,6 +37,7 @@ class SystemBootingStatus extends AbstractStatus
     {
         $this->internalPriority = 1;
         $this->internalPersistent = true;
+        $this->internalIsBanner = true;
         $this->internalTitle = gettext('System Booting');
 
         /* XXX boot detection from final class product in config.inc */
