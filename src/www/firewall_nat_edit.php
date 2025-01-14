@@ -560,12 +560,11 @@ $( document ).ready(function() {
                   <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
                   <td>
                       <select name="interface[]" class="selectpicker" data-width="348px" data-live-search="true" multiple="multiple">
-<?php
-                        foreach (legacy_config_get_interfaces(["enable" => true], ['lo0']) as $iface => $ifdetail): ?>
+<?php foreach (legacy_config_get_interfaces(["enable" => true], ['lo0']) as $iface => $ifdetail): ?>
                         <option value="<?=$iface;?>" <?= in_array($iface, $pconfig['interface'] ?? []) ? "selected=\"selected\"" : ""; ?>>
                           <?=htmlspecialchars($ifdetail['descr']);?>
                         </option>
-                        <?php endforeach; ?>
+<?php endforeach ?>
                       </select>
                     <div class="hidden" data-for="help_for_interface">
                       <?=gettext("Choose which interface this rule applies to."); ?><br />
