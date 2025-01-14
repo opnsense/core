@@ -153,6 +153,7 @@
 /usr/local/etc/rc.syshook.d/upgrade/10-sanity.sh
 /usr/local/etc/rc.syshook.d/upgrade/20-unbound-duckdb.py
 /usr/local/etc/rc.syshook.d/upgrade/90-cleanup.sh
+/usr/local/etc/ssh/sshd_config.d/README
 /usr/local/etc/ssl/opnsense.cnf
 /usr/local/etc/strongswan.opnsense.d/README
 /usr/local/etc/unbound.opnsense.d/README
