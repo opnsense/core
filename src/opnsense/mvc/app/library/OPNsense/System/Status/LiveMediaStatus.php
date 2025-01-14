@@ -65,9 +65,4 @@ class LiveMediaStatus extends AbstractStatus
             }
         }
     }
-
-    public function dismissStatus()
-    {
-        /* XXX not applicable */
-    }
 }

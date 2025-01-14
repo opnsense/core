@@ -110,9 +110,4 @@ class DiskSpaceStatus extends AbstractStatus
                 return $number; // Default GB
         }
     }
-
-    public function dismissStatus()
-    {
-        /* XXX not applicable */
-    }
 }

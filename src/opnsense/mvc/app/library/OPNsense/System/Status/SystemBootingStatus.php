@@ -49,9 +49,4 @@ class SystemBootingStatus extends AbstractStatus
             fclose($fp);
         }
     }
-
-    public function dismissStatus()
-    {
-        /* XXX not applicable */
-    }
 }
