@@ -104,7 +104,8 @@ class SystemStatus
         }
     }
 
-    private function matchPath($input, $paths) {
+    private function matchPath($input, $paths)
+    {
         foreach ($paths as $path) {
             $pattern = preg_quote($path, '/');
             $pattern = str_replace('\*', '.*', $pattern);
