@@ -33,7 +33,7 @@ class Status {
 
     updateStatus() {
         const fetch = new Promise((resolve, reject) => {
-            ajaxGet('/api/core/system/status', {}, function (data) {
+            ajaxGet('/api/core/system/status', {path: window.location.pathname}, function (data) {
                 resolve(data);
             });
         });
@@ -141,7 +141,7 @@ class StatusDialog {
             );
 
             for (let [shortname, subject] of Object.entries(status.subsystems)) {
-                if (subject.status == "OK")
+                if (subject.status == "OK" || subject.isBanner)
                     continue;
 
                 $message.find('a').last().addClass('__mb');

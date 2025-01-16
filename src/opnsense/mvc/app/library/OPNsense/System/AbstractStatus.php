@@ -38,6 +38,7 @@ abstract class AbstractStatus
     protected $internalLocation = null;
     protected $internalStatus = SystemStatusCode::OK;
     protected $internalTimestamp = null;
+    protected $internalScope = [];
 
     public function getPriority()
     {
@@ -77,6 +78,14 @@ abstract class AbstractStatus
     public function getTimestamp()
     {
         return $this->internalTimestamp;
+    }
+
+    /**
+     * @return array list of paths to which this status applies, accepts wildcards
+     */
+    public function getScope()
+    {
+        return $this->internalScope;
     }
 
     public function dismissStatus()

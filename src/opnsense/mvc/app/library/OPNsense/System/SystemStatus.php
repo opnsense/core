@@ -35,18 +35,12 @@ namespace OPNsense\System;
  */
 class SystemStatus
 {
-    private $statuses;
     private $objectMap = [];
-
-    public function __construct()
-    {
-        $this->statuses = $this->collectStatus();
-    }
 
     /**
      * @throws \Exception
      */
-    private function collectStatus()
+    private function collectStatus($scope = null)
     {
         $result = [];
         $all = glob(__DIR__ . '/Status/*.php');
@@ -71,6 +65,15 @@ class SystemStatus
                 throw new \Exception("SystemStatus classname is reserved");
             }
 
+            if ($obj->getStatus() == SystemStatusCode::OK) {
+                continue;
+            }
+
+            $objScope = $obj->getScope();
+            if (!empty($objScope) && !$this->matchPath($scope, $objScope)) {
+                continue;
+            }
+
             $result[$shortName] = [
                 'title' => $obj->getTitle(),
                 'statusCode' => $obj->getStatus(),
@@ -89,9 +92,9 @@ class SystemStatus
     /**
      * @return array An array containing a parseable format of every status object
      */
-    public function getSystemStatus()
+    public function getSystemStatus($scope = null)
     {
-        return $this->statuses;
+        return $this->collectStatus($scope);
     }
 
     public function dismissStatus($subsystem)
@@ -99,5 +102,17 @@ class SystemStatus
         if (array_key_exists($subsystem, $this->objectMap)) {
             $this->objectMap[$subsystem]->dismissStatus();
         }
+    }
+
+    private function matchPath($input, $paths) {
+        foreach ($paths as $path) {
+            $pattern = preg_quote($path, '/');
+            $pattern = str_replace('\*', '.*', $pattern);
+
+            if (preg_match('/^' . $pattern . '$/', $input)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

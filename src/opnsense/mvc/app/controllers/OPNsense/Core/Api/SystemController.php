@@ -68,7 +68,7 @@ class SystemController extends ApiControllerBase
         $response = ["status" => "failed"];
 
         $backend = new Backend();
-        $statuses = json_decode(trim($backend->configdRun('system status')), true);
+        $statuses = json_decode(trim($backend->configdpRun('system status', [$this->request->get('path')])), true);
         if ($statuses) {
             $order = SystemStatusCode::toValueNameArray();
             $acl = new ACL();
