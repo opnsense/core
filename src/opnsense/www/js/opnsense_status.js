@@ -33,7 +33,10 @@ class Status {
 
     updateStatus() {
         const fetch = new Promise((resolve, reject) => {
-            ajaxGet('/api/core/system/status', {path: window.location.pathname}, function (data) {
+            ajaxGet('/api/core/system/status', {path: window.location.pathname}, function (data, status) {
+                if (status !== "success") {
+                    reject(status);
+                }
                 resolve(data);
             });
         });
@@ -43,6 +46,12 @@ class Status {
                 data.subsystems = { };
             }
             this.notify(data);
+        }, (reject) => {
+            // Either inaccessible or something went wrong on the backend.
+            $('#system_status').css({
+                'cursor': 'default',
+                'pointer-events': 'none'
+            });
         });
     }
 
