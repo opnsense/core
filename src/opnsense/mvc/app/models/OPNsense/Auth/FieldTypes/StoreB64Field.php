@@ -51,5 +51,7 @@ class StoreB64Field extends TextField
             /* store value as base64 */
             return parent::setValue(base64_encode($value));
         }
+
+        return parent::setValue('');
     }
 }
