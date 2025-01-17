@@ -82,12 +82,6 @@
         <type>select_multiple</type>
     </field>
     <field>
-        <id>user.certs</id>
-        <label>User Certificates</label>
-        <type>info</type>
-        <help>Client certificates matching this username by common name</help>
-    </field>
-    <field>
         <id>user.otp_seed</id>
         <label>OTP seed</label>
         <type>text</type>
