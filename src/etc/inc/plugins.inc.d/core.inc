@@ -489,9 +489,10 @@ function core_run()
 function core_user_changed_groups($unused, $username)
 {
     global $config;
+
     if (is_array($config['system']['user'])) {
         foreach ($config['system']['user'] as $user) {
-            if ($user['name'] == $username && !empty($user['shell'])) {
+            if ($user['name'] == $username && (!empty($user['shell']) || $user['uid'] == 0)) {
                 exec("/usr/bin/groups " . escapeshellarg($username) . ' 2>/dev/null', $out, $ret);
                 $current_groups = [];
                 if (!$ret) {

@@ -243,7 +243,7 @@ function local_sync_accounts()
         $config_map[$section] = [];
         if (is_array($config['system'][$section])) {
             foreach ($config['system'][$section] as $item) {
-                if ($section == 'user' && empty($item['shell'])) {
+                if ($section == 'user' && (empty($item['shell']) || $user['uid'] != 0)) {
                     /* no shell, no local user */
                     continue;
                 }
@@ -293,7 +293,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     if (empty($user['password'])) {
         auth_log("Cannot set user {$user['name']}: password is missing");
         return;
-    } elseif (empty($user['shell'])) {
+    } elseif (empty($user['shell']) || $user['uid'] != 0) {
         /* no shell, no local user */
         return;
     }
