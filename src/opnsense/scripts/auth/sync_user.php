@@ -61,7 +61,7 @@ if (isset($opts['h']) || empty($opts['u'])) {
     $update_user = null;
     $userdb = [];
     foreach ($a_user as $userent) {
-        if (!empty($userent['shell']) && $userent['uid'] != 0) {
+        if (!empty($userent['shell']) || $userent['uid'] == 0) {
             /* only users with a shell account are allowed to have a local entry */
             $userdb[] = $userent['name'];
         }
