@@ -96,10 +96,7 @@
                 initFormAdvancedUI();
                 addMultiSelectClearUI();
 
-                // artificial delay for UX reasons
-                setTimeout(function () {
-                    updateSystemStatus();
-                }, 500);
+                updateSystemStatus();
 
                 // Register collapsible table headers
                 $('.table').on('click', 'thead', function(event) {
