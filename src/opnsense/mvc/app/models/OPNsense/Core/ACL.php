@@ -91,11 +91,23 @@ class ACL
     {
         $pageMap = $this->loadPageMap();
 
+        // prioritized acl names that, if configured, will be used first for getLandingPage
+        $priorityPrivileges = ['page-system-login-logout'];
+
         // create privilege mappings
         $this->userDatabase = [];
         $this->allGroupPrivs = [];
 
         $groupmap = [];
+
+        $privilegeSort = function($a, $b) use ($priorityPrivileges) {
+            $posA = array_search($a, $priorityPrivileges);
+            $posB = array_search($b, $priorityPrivileges);
+            if ($posA === false && $posB !== false) return 1;
+            if ($posA !== false && $posB === false) return -1;
+            if ($posA === false && $posB === false) return 0;
+            return $posA <=> $posB;
+        };
 
         // gather user / group data from config.xml
         $config = Config::getInstance()->object();
@@ -115,7 +127,9 @@ class ACL
                         $this->userDatabase[$username]['landing_page'] = (string)$node->landing_page;
                     }
                     foreach ($node->priv as $priv) {
-                        foreach (array_filter(explode(',', $priv)) as $privname) {
+                        $privileges = array_filter(explode(',', $priv));
+                        usort($privileges, $privilegeSort);
+                        foreach ($privileges as $privname) {
                             if (array_key_exists($privname, $pageMap)) {
                                 $this->userDatabase[$username]['priv'][] = $pageMap[$privname];
                             }
@@ -144,7 +158,9 @@ class ACL
                         }
                     }
                 } elseif ($itemKey == "priv") {
-                    foreach (array_filter(explode(',', $node_data)) as $privname) {
+                    $privileges = array_filter(explode(',', $node_data));
+                    usort($privileges, $privilegeSort);
+                    foreach ($privileges as $privname) {
                         if (array_key_exists($privname, $pageMap)) {
                             $this->allGroupPrivs[$groupkey][] = $pageMap[$privname];
                         }
@@ -370,6 +386,10 @@ class ACL
         } elseif (!empty($this->userDatabase[$username])) {
             // default behaviour, find first accessible location from configured privileges
             foreach ($this->urlMasks($username) as $pattern) {
+                if (str_starts_with('api', $pattern)) {
+                    continue;
+                }
+
                 if ($pattern == "*") {
                     return "index.php";
                 } elseif (!empty($pattern)) {
