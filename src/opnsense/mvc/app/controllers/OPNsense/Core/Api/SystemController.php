@@ -65,7 +65,19 @@ class SystemController extends ApiControllerBase
 
     public function statusAction()
     {
-        $response = ["status" => "failed"];
+        $response['metadata'] = [
+            /* 'system' represents the status of the top notification after sorting */
+            'system' => [
+                'status' => SystemStatusCode::OK->value,
+                'message' => gettext('No pending messages'),
+                'title' => gettext('System'),
+            ],
+            'translations' => [
+                'dialogTitle' => gettext('System Status'),
+                'dialogCloseButton' => gettext('Close')
+            ],
+            'subsystems' => []
+        ];
 
         $backend = new Backend();
         $statuses = json_decode(trim($backend->configdpRun('system status', [$this->request->get('path')])), true);
@@ -74,6 +86,7 @@ class SystemController extends ApiControllerBase
             $acl = new ACL();
 
             foreach ($statuses as $subsystem => $status) {
+                unset($statuses[$subsystem]['scope']);
                 $statuses[$subsystem]['status'] = $order[$status['statusCode']];
                 if (!empty($status['location'])) {
                     if (!$acl->isPageAccessible($this->getUserName(), $status['location'])) {
@@ -83,22 +96,14 @@ class SystemController extends ApiControllerBase
                 }
             }
 
-            /* Sort on the highest notification (non-persistent) error level after the ACL check */
-            $statusCodes = array_column($statuses, 'statusCode');
+            /* Sort on the highest notification (not banner) error level after the ACL check */
+            $filteredStatuses = array_filter($statuses, function($item) {
+                return !$item['isBanner'];
+            });
+            $statusCodes = array_column($filteredStatuses, 'statusCode');
             sort($statusCodes);
 
-            $response['metadata'] = [
-                /* 'system' represents the status of the top notification after sorting */
-                'system' => [
-                    'status' => $order[$statusCodes[0] ?? 2],
-                    'message' => gettext('No pending messages'),
-                    'title' => gettext('System'),
-                ],
-                'translations' => [
-                    'dialogTitle' => gettext('System Status'),
-                    'dialogCloseButton' => gettext('Close')
-                ]
-            ];
+            $response['metadata']['system']['status'] = $order[$statusCodes[0] ?? 2];
 
             // sort on status code and priority where priority is the tie breaker
             uasort($statuses, function ($a, $b) {

@@ -36,11 +36,17 @@ namespace OPNsense\System;
 class SystemStatus
 {
     private $objectMap = [];
+    private $status = [];
+
+    public function __construct()
+    {
+        $this->status = $this->collectStatus();
+    }
 
     /**
      * @throws \Exception
      */
-    private function collectStatus($scope = null)
+    private function collectStatus()
     {
         $result = [];
         $all = glob(__DIR__ . '/Status/*.php');
@@ -69,11 +75,6 @@ class SystemStatus
                 continue;
             }
 
-            $objScope = $obj->getScope();
-            if (!empty($objScope) && !$this->matchPath($scope, $objScope)) {
-                continue;
-            }
-
             $result[$shortName] = [
                 'title' => $obj->getTitle(),
                 'statusCode' => $obj->getStatus(),
@@ -83,6 +84,7 @@ class SystemStatus
                 'persistent' => $obj->getPersistent(),
                 'isBanner' => $obj->isBanner(),
                 'priority' => $obj->getPriority(),
+                'scope' => $obj->getScope(),
             ];
         }
 
@@ -94,7 +96,15 @@ class SystemStatus
      */
     public function getSystemStatus($scope = null)
     {
-        return $this->collectStatus($scope);
+        if ($scope !== null) {
+            $filteredStatuses = array_filter($this->status, function ($item) use ($scope) {
+                return empty($item['scope']) || $this->matchPath($scope, $item['scope']);
+            });
+
+            return $filteredStatuses;
+        }
+
+        return $this->status;
     }
 
     public function dismissStatus($subsystem)

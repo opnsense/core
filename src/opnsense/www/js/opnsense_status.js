@@ -39,6 +39,9 @@ class Status {
         });
 
         fetch.then((data) => {
+            if (!data.subsystems || typeof data.subsystems !== 'object') {
+                data.subsystems = { };
+            }
             this.notify(data);
         });
     }
