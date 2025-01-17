@@ -40,7 +40,7 @@
     <page-system-status>
         <name>System: Status</name>
         <patterns>
-            <pattern>api/core/system/status</pattern>
+            <pattern>api/core/system/status*</pattern>
             <pattern>api/core/system/dismissStatus</pattern>
         </patterns>
     </page-system-status>
