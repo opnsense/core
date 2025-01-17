@@ -271,19 +271,6 @@ EOD;
 
     file_put_contents("/var/unbound/resolv.conf.root", $resolv_conf_root, LOCK_EX);
 
-    /* Unbound load tripping over this file is very strange so make it a very safe rewrite */
-    $root_hints_source = '/usr/local/opnsense/data/unbound/root.min.hints';
-    $root_hints_tmp = tempnam('/var/unbound', 'root.hints.');
-    $root_hints = '/var/unbound/root.hints';
-    $root_hints_mod = 0644;
-
-    if (file_exists($root_hints_source) && copy($root_hints_source, $root_hints_tmp)) {
-        chmod($root_hints_tmp, $root_hints_mod);
-        if (rename($root_hints_tmp, $root_hints)) {
-            chmod($root_hints, $root_hints_mod);
-        }
-    }
-
     $so_reuseport = empty(system_sysctl_get()['net.inet.rss.enabled']) ? 'yes' : 'no';
 
     $unboundconf = <<<EOD
@@ -356,6 +343,14 @@ remote-control:
 EOD;
 
     file_put_contents('/var/unbound/unbound.conf', $unboundconf);
+
+    /* Unbound load tripping over this file is very strange so make it a very safe rewrite */
+    $root_hints_tmp = tempnam('/var/unbound', 'root.hints.');
+    copy('/usr/local/opnsense/data/unbound/root.min.hints', $root_hints_tmp);
+    chmod($root_hints_tmp, 0644);
+    chown($root_hints_tmp, 'unbound');
+    chgrp($root_hints_tmp, 'unbound');
+    rename($root_hints_tmp, '/var/unbound/root.hints');
 
     configd_run('template reload OPNsense/Unbound/*');
 }
