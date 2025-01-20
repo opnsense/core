@@ -37,7 +37,7 @@ export default class ThermalSensors extends BaseWidget {
     getMarkup() {
         return $(`
             <div class="${this.id}-chart-container" style="margin-left: 10px; margin-right: 10px;">
-                <div class="canvas-container" style="position: relative;">
+                <div class="canvas-container-noaspectratio" style="position: relative;">
                     <canvas id="${this.id}-chart"></canvas>
                 </div>
             </div>
@@ -120,6 +120,7 @@ export default class ThermalSensors extends BaseWidget {
                 indexAxis: 'y',
                 maintainAspectRatio: false,
                 plugins: {
+                    colorschemes: false,
                     legend: {
                         display: false
                     },

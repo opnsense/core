@@ -1,14 +1,14 @@
 /*!
- * chartjs-plugin-streaming v2.0.0
- * https://nagix.github.io/chartjs-plugin-streaming
- * (c) 2017-2021 Akihiko Kusanagi
+ * chartjs-plugin-streaming v3.0.2
+ * https://github.com/Robloche/chartjs-plugin-streaming
+ * (c) 2017-2022 Akihiko Kusanagi
  * Released under the MIT license
  */
 (function (global, factory) {
 typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('chart.js'), require('chart.js/helpers')) :
 typeof define === 'function' && define.amd ? define(['chart.js', 'chart.js/helpers'], factory) :
 (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.ChartStreaming = factory(global.Chart, global.Chart.helpers));
-}(this, (function (chart_js, helpers) { 'use strict';
+})(this, (function (chart_js, helpers) { 'use strict';
 
 function clamp(value, lower, upper) {
   return Math.min(Math.max(value, lower), upper);
@@ -247,7 +247,7 @@ function update$1(...args) {
   const me = this;
   const element = me.getActiveElements()[0];
   if (element) {
-    const meta = me._chart.getDatasetMeta(element.datasetIndex);
+    const meta = me.chart.getDatasetMeta(element.datasetIndex);
     me.$streaming = getAxisMap(me, transitionKeys$1, meta);
   } else {
     me.$streaming = {};
@@ -772,7 +772,7 @@ chart_js.defaults.describe('scale.realtime', {
   _scriptable: name => name !== 'onRefresh'
 });
 
-var version = "2.0.0";
+var version = "3.0.2";
 
 chart_js.defaults.set('transitions', {
   quiet: {
@@ -912,7 +912,7 @@ var StreamingPlugin = {
       delete streaming.lastMouseEvent;
     }
   },
-  destroy(chart) {
+  afterDestroy(chart) {
     const {scales, $streaming: streaming, tooltip} = chart;
     const {canvas, mouseEventListener} = streaming;
     delete chart.update;
@@ -946,4 +946,4 @@ chart_js.Chart.register(registerables);
 
 return registerables;
 
-})));
+}));

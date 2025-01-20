@@ -36,13 +36,6 @@ export default class InterfaceStatistics extends BaseTableWidget {
         this.sortedData = [];
     }
 
-    getGridOptions() {
-        return {
-            // trigger overflow-y:scroll after 650px height
-            sizeToContent: 650,
-        };
-    }
-
     getMarkup() {
         let $container = $('<div id="if-stats-container"></div>');
         let $table = this.createTable('interface-statistics-table', {
@@ -61,7 +54,7 @@ export default class InterfaceStatistics extends BaseTableWidget {
         let $chartContainer = $(`
             <div class="interface-statistics-chart-container">
                 <div class="canvas-container">
-                    <canvas id="intf-stats"></canvas>
+                    <canvas id="intf-stats" style="display: inline-block"></canvas>
                 </div>
             </div>`
         );
@@ -172,6 +165,7 @@ export default class InterfaceStatistics extends BaseTableWidget {
                 normalized: true,
                 parsing: false,
                 plugins: {
+                    colorschemes: false,
                     legend: {
                         display: false,
                         position: 'left',
