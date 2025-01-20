@@ -415,12 +415,10 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     }
 
     /*
-     * If we are not using bogonsv6 then we can remove any
-     * bogonsv6 table from the running pf (if the table is
-     * not there, the kill is still fine).
+     * XXX: Flush table when not user, ideally this should be update_tables.py responsibility.
      */
     if (!is_bogonsv6_used()) {
-        mwexec('/sbin/pfctl -t bogonsv6 -T kill');
+        mwexec('/sbin/pfctl -t bogonsv6 -T flush');
     }
 
     service_log('.', $verbose);
@@ -581,16 +579,25 @@ function filter_generate_aliases()
                 $aliases .= "{$aliased['name']} = \"{ {$tmp_ports} }\"\n";
                 break;
             default:
-                $tblopt = (!empty($aliased['counters']) ? 'counters' : '') . " persist ";
-                $aliases .= "table <{$aliased['name']}> {$tblopt} \n";
+                /* XXX: should move to update_tables.py */
+                switch ($aliased['name']) {
+                    case 'bogons':
+                        $aliases .= "table <bogons> persist file \"/usr/local/etc/bogons\"\n";
+                        break;
+                    case 'bogonsv6':
+                        if (is_bogonsv6_used()) {
+                            $aliases .= "table <bogonsv6> persist file \"/usr/local/etc/bogonsv6\"\n";
+                        } else {
+                            $aliases .= "table <{$aliased['name']}>\n";
+                        }
+                        break;
+                    default:
+                        $tblopt = (!empty($aliased['counters']) ? 'counters' : '') . " persist ";
+                        $aliases .= "table <{$aliased['name']}> {$tblopt} \n";
+                }
                 $aliases .= "{$aliased['name']} = \"<{$aliased['name']}>\"\n";
                 break;
         }
-    }
-
-    $aliases .= "table <bogons> persist file \"/usr/local/etc/bogons\"\n";
-    if (is_bogonsv6_used()) {
-        $aliases .= "table <bogonsv6> persist file \"/usr/local/etc/bogonsv6\"\n";
     }
 
     return $aliases;
