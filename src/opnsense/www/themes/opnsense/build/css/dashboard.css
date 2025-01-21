@@ -53,7 +53,6 @@
   border-color: rgba(192, 62, 20, 0.15);
   border-width: 2px;
   background-color: #FBFBFB;
-  border-radius: 0.5em 0.5em 0.5em 0.5em;
 }
 
 .widget-error {
@@ -339,6 +338,8 @@ div {
 }
 
 .grid-item {
+  overflow: hidden;
+  text-overflow: ellipsis;
   padding: 4px;
   text-align: center;
 }
