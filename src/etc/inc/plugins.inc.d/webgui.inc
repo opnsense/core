@@ -235,7 +235,6 @@ url.rewrite-if-not-file = ( "^/ui/([^\?]+)(\?(.*))?" => "/ui/index.php?$3" ,
 
 EOD;
     $server_upload_dirs = "server.upload-dirs = ( \"/root/\", \"/tmp/\", \"/var/\" )\n";
-    $server_max_request_size = "server.max-request-size    = 2097152";
     $cgi_config = "cgi.assign                 = ( \".cgi\" => \"\" )";
 
     $lighty_port = $port;
@@ -489,7 +488,8 @@ deflate.cache-dir = "/tmp/lighttpdcompress/"
 
 {$server_upload_dirs}
 
-{$server_max_request_size}
+server.max-request-size    = 2097152
+server.max-request-field-size = 16384
 
 {$fastcgi_config}
 
