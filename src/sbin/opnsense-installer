@@ -29,16 +29,25 @@ if [ "$(id -u)" != "0" ]; then
 	exit 1
 fi
 
-if ! bsdinstall opnsense; then
-	clear
-	exit 0
-fi
+bsdinstall opnsense
+
+RET=${?}
 
 clear
 
+ACTION=Rebooting
+FINAL=reboot
+
+if [ ${RET} -eq 0 ]; then
+	exit 0
+elif [ ${RET} -eq 42 ]; then
+	ACTION=Halting
+	FINAL="halt -p"
+fi
+
 echo "The installation finished successfully."
 echo
-echo "After reboot, open a web browser and navigate to"
+echo "After booting, open a web browser and navigate to"
 echo "https://192.168.1.1 (or the LAN IP address).  The console"
 echo "can also be used to set a different LAN IP."
 echo
@@ -56,4 +65,4 @@ done
 
 echo
 
-reboot
+${FINAL}
