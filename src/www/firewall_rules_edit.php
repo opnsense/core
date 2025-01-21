@@ -41,6 +41,7 @@ if ($ostypes == null) {
     $ostypes = array();
 }
 $gateways = new \OPNsense\Routing\Gateways();
+$shaper_targets = (new \OPNsense\TrafficShaper\TrafficShaper())->fetchAllTargets();
 
 
 /**
@@ -93,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     // define form fields
-    $config_fields = array(
+    $config_fields = [
         'allowopts',
         'associated-rule-id',
         'category',
@@ -137,8 +138,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'tcpflags2',
         'tcpflags_any',
         'type',
-        'tos'
-    );
+        'tos',
+        'shaper1',
+        'shaper2'
+    ];
 
     $pconfig = array();
     $pconfig['type'] = "pass";
@@ -483,15 +486,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext('Max new connections overload table should be a valid alias.');
     }
 
+    if (!empty($pconfig['shaper1']) || !empty($pconfig['shaper2'])) {
+        if (!empty($pconfig['shaper1']) && !isset($shaper_targets[$pconfig['shaper1']])) {
+          $input_errors[] = gettext('Unknown traffic shaper selected.');
+        } elseif (!empty($pconfig['shaper2']) && !isset($shaper_targets[$pconfig['shaper2']])) {
+            $input_errors[] = gettext('Unknown traffic shaper selected.');
+        } elseif (empty($pconfig['shaper1']) && !empty($pconfig['shaper2'])) {
+            $input_errors[] = gettext('A shaper is required when configuring one in the reverse direction.');
+        } elseif (!empty($pconfig['shaper1']) && !empty($pconfig['shaper2']) && $shaper_targets[$pconfig['shaper1']]['type'] != $shaper_targets[$pconfig['shaper2']]['type']) {
+            $input_errors[] = gettext('Pipes and queues can not be combined.');
+        }
+    }
+
     if (count($input_errors) == 0) {
         $filterent = array();
         // 1-on-1 copy of form values
-        $copy_fields = array('type', 'interface', 'ipprotocol', 'tag', 'tagged', 'max', 'max-src-nodes'
-                            , 'max-src-conn', 'max-src-states', 'statetimeout', 'statetype', 'os', 'descr', 'gateway'
-                            , 'sched', 'associated-rule-id', 'direction', 'state-policy'
-                            , 'max-src-conn-rate', 'max-src-conn-rates', 'category') ;
-
-
+        $copy_fields = [
+          'type', 'interface', 'ipprotocol', 'tag', 'tagged', 'max', 'max-src-nodes',  'max-src-conn',
+          'max-src-states', 'statetimeout', 'statetype', 'os', 'descr', 'gateway', 'sched', 'associated-rule-id',
+          'direction', 'state-policy', 'max-src-conn-rate', 'max-src-conn-rates', 'category', 'shaper1', 'shaper2'
+        ] ;
 
         foreach ($copy_fields as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
@@ -1364,6 +1378,51 @@ include("head.inc");
                           <?=gettext("Leave as 'default' to use the system routing table. Or choose a gateway to utilize policy based routing.");?>
                         </div>
                     </td>
+                  </tr>
+
+                  <tr>
+                      <td><a id="help_for_shaper" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Traffic shaping [experimental]");?></td>
+                      <td>
+                        <table class="table table-condensed">
+                          <thead>
+                            <tr>
+                              <th><?=gettext("rule direction"); ?></th>
+                              <th><?=gettext("reverse direction"); ?></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>
+                                <select name='shaper1' class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                                  <option value="" ><?=gettext("None");?></option>
+<?php
+                                foreach($shaper_targets as $uuid => $shaper):?>
+                                  <option value="<?=$uuid;?>" <?=$uuid == $pconfig['shaper1'] ? " selected=\"selected\"" : "";?>>
+                                    <?=$shaper['description'];?>
+                                 </option>
+<?php
+                                endforeach;?>
+                                </select>
+                              </td>
+                              <td>
+                                <select name='shaper2' class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                                  <option value="" ><?=gettext("None");?></option>
+<?php
+                                foreach($shaper_targets as $uuid => $shaper):?>
+                                  <option value="<?=$uuid;?>" <?=$uuid == $pconfig['shaper2'] ? " selected=\"selected\"" : "";?>>
+                                    <?=$shaper['description'];?>
+                                 </option>
+<?php
+                                endforeach;?>
+                                </select>
+                              </td>
+                            </tr>
+                            </tbody>
+                          </table>
+                          <div class="hidden" data-for="help_for_shaper">
+                            <?=gettext("Shape packets using the selected pipe or queue.");?>
+                          </div>
+                      </td>
                   </tr>
                   <tr>
                     <th><?= gettext('Advanced features') ?></th>
