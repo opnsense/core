@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2023 Deciso B.V.
+ * Copyright (C) 2023-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,10 @@ class AclController extends IndexController
     public function indexAction()
     {
         $this->view->aclForm = $this->getForm('acl');
+
         $this->view->formDialogAcl = $this->getForm('dialogAcl');
+        $this->view->formGridAcl = $this->getFormGrid('dialogAcl', null, 'AclChangeMessage');
+
         $this->view->pick('OPNsense/Unbound/acl');
     }
 }
