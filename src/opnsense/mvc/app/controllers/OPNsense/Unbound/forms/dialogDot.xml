@@ -4,6 +4,11 @@
         <label>Enabled</label>
         <type>checkbox</type>
         <help>Enable or disable this server.</help>
+        <grid_view>
+            <width>6em</width>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+        </grid_view>
     </field>
     <field>
         <id>dot.domain</id>
@@ -36,6 +41,11 @@
             Please note this setting applies to the domain, so when multiple forwarders are defined for the same domain,
             all are assumed to use tcp only.
         </help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>dot.verify</id>
@@ -46,6 +56,9 @@
             DNS-over-TLS is susceptible to man-in-the-middle attacks unless certificates can be verified.
             Leave empty to accept self-signed yet also potentially fraudulent certificates.
         </help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>dot.description</id>
