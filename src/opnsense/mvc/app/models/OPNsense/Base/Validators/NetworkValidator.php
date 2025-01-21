@@ -96,14 +96,14 @@ class NetworkValidator extends BaseValidator
                     } else {
                         $mask = $parts[1];
                         $value = $parts[0];
-                        if (strpos($parts[0], ".")) {
-                            // most likely ipv4 address, mask must be between 0..32
-                            if ($mask < 0 || $mask > 32) {
+                        if (strpos($parts[0], ":") !== false) {
+                            // probably ipv6, mask must be between 0..128
+                            if ($mask < 0 || $mask > 128) {
                                 $result = false;
                             }
                         } else {
-                            // probably ipv6, mask must be between 0..128
-                            if ($mask < 0 || $mask > 128) {
+                            // most likely ipv4 address, mask must be between 0..32
+                            if ($mask < 0 || $mask > 32) {
                                 $result = false;
                             }
                         }
