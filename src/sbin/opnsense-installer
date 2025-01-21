@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2014-2021 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2025 Franco Fichtner <franco@opnsense.org>
 # Copyright (c) 2004-2009 Scott Ullrich <sullrich@gmail.com>
 #
 # Redistribution and use in source and binary forms, with or without
@@ -38,11 +38,11 @@ clear
 ACTION=Rebooting
 FINAL=reboot
 
-if [ ${RET} -eq 0 ]; then
-	exit 0
-elif [ ${RET} -eq 42 ]; then
+if [ ${RET} -eq 42 ]; then
 	ACTION=Halting
 	FINAL="halt -p"
+elif [ ${RET} -ne 0 ]; then
+	exit 0
 fi
 
 echo "The installation finished successfully."
