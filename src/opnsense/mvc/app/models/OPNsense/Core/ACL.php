@@ -360,18 +360,16 @@ class ACL
             // ACL lock, may only access password page
             return "system_usermanager_passwordmg.php";
         } elseif (!empty($this->userDatabase[$username]['landing_page'])) {
-            $page = $this->userDatabase[$username]['landing_page'];
-            if (strpos($page, '/') === 0) {
-                // remove leading slash, which would result in redirection to //page (without host) after login or auth failure.
-                return substr($page, 1);
-            } else {
-                return $page;
-            }
+            // remove leading slash, which would result in redirection to //page (without host) after login or auth failure.
+            $page = ltrim($this->userDatabase[$username]['landing_page'], '/');
         } elseif (!empty($this->userDatabase[$username])) {
-            // default behaviour, find first accessible location from configured privileges
+            // default behaviour, find first accessible location from configured privileges, but prefer /
+            if ($this->isPageAccessible($username, '/')) {
+                return "index.php";
+            }
             foreach ($this->urlMasks($username) as $pattern) {
-                if ($pattern == "*") {
-                    return "index.php";
+                if (str_starts_with('api', $pattern) || $pattern == "*") {
+                    continue;
                 } elseif (!empty($pattern)) {
                     /* remove wildcard and optional trailing slashes or query symbols */
                     return preg_replace('@[/&?]?\*$@', '', $pattern);
