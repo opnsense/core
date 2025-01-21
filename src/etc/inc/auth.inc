@@ -300,7 +300,8 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
 
     @mkdir('/home', 0755);
 
-    $user_pass = '*'; /* integrated authentication stores passwords, set local to unreachable */
+    /* integrated authentication handles passwords unless 'installer' user needs it locally */
+    $user_pass = $force_password ? $user['password'] : '*';
     $user_name = $user['name'];
     $user_uid = $user['uid'];
     $comment = str_replace(array(':', '!', '@'), ' ', $user['descr']);
@@ -314,16 +315,12 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
 
     $is_unlocked = !$is_disabled && !$is_expired;
 
-    if ($is_unlocked) {
-        $lock_account = 'unlock';
-    } elseif ($user_uid == 0) {
+    if ($is_unlocked || $user_uid == 0) {
         /*
-         * The root account should not be locked as this will have
-         * side-effects such as cron not working correctly.  Set
-         * password to unreachable "*" instead.  Our auth framework
-         * already checks for disabled elsewhere so we only need to
-         * prevent root login in the console when integrated
-         * authentication is off.
+         * The root account shall not be locked as this will have
+         * side-effects such as cron not working correctly.  Our
+         * auth framework will make sure not to allow login to a
+         * disabled root user at the same time.
          */
         $lock_account = 'unlock';
     }
