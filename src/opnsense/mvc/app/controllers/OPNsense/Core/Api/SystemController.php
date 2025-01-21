@@ -97,7 +97,7 @@ class SystemController extends ApiControllerBase
             }
 
             /* Sort on the highest notification (not banner) error level after the ACL check */
-            $filteredStatuses = array_filter($statuses, function($item) {
+            $filteredStatuses = array_filter($statuses, function ($item) {
                 return !$item['isBanner'];
             });
             $statusCodes = array_column($filteredStatuses, 'statusCode');
