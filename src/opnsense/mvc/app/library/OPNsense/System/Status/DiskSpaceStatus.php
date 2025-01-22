@@ -43,6 +43,23 @@ class DiskSpaceStatus extends AbstractStatus
 
     public function collectStatus()
     {
+        /**
+         * If live media, disk space status should be muted,
+         * use the same (inverted) logic as LiveMediaStatus
+         */
+
+        $file = '/.probe.for.readonly';
+
+        if (!file_exists($file)) {
+            return;
+        }
+
+        $fd = @fopen($file, 'w');
+        if (!$fd) {
+            return;
+        }
+        fclose($fd);
+
         $backend = new Backend();
         $output = json_decode($backend->configdRun('system diag disk'), true);
 
