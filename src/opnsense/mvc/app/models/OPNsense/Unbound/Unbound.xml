@@ -182,9 +182,6 @@
                 <Multiple>Y</Multiple>
                 <OptionValues>
                     <atf>Abuse.ch - ThreatFox IOC database</atf>
-                    <oisd0>OISD - Domain Blocklist Ads</oisd0>
-                    <oisd1>OISD - Domain Blocklist Big</oisd1>
-                    <oisd2>OISD - Domain Blocklist NSFW</oisd2>
                     <aa>AdAway List</aa>
                     <ag>AdGuard List</ag>
                     <bla0>Blocklist.site Abuse</bla0>
@@ -207,15 +204,31 @@
                     <bly>Blocklist.site Youtube</bly>
                     <el>EasyList</el>
                     <ep>EasyPrivacy</ep>
-                    <nc>NoCoin List</nc>
-                    <pa>All Porn List</pa>
-                    <pt>PornTop1M List</pt>
-                    <sa>Simple Ad List</sa>
-                    <st>Simple Tracker List</st>
+                    <hgz001>[hagezi] Multi LIGHT - Basic protection</hgz001>
+                    <hgz002>[hagezi] Multi NORMAL - All-round protection</hgz002>
+                    <hgz003>[hagezi] Multi PRO - Extended protection</hgz003>
+                    <hgz004>[hagezi] Multi PRO mini </hgz004>
+                    <hgz005>[hagezi] Multi PRO++ - Maximum protection</hgz005>
+                    <hgz006>[hagezi] Multi PRO++ mini</hgz006>
+                    <hgz007>[hagezi] Multi ULTIMATE - Aggressive protection</hgz007>
+                    <hgz008>[hagezi] Multi ULTIMATE mini</hgz008>
+                    <hgz009>[hagezi] Fake - scams / fakes</hgz009>
+                    <hgz010>[hagezi] Pop-Up Ads</hgz010>
+                    <hgz011>[hagezi] Threat Intelligence Feeds</hgz011>
+                    <hgz012>[hagezi] Threat Intelligence Feeds - Medium</hgz012>
+                    <hgz013>[hagezi] Threat Intelligence Feeds - Mini</hgz013>
+                    <hgz014>[hagezi] DoH/VPN/TOR/Proxy Bypass</hgz014>
+                    <hgz015>[hagezi] Safesearch not supported</hgz015>
+                    <hgz016>[hagezi] Dynamic DNS blocking</hgz016>
+                    <hgz017>[hagezi] Badware Hoster blocking</hgz017>
+                    <hgz018>[hagezi] Anti Piracy</hgz018>
+                    <hgz019>[hagezi] Gambling</hgz019>
+                    <hgz020>[hagezi] Gambling - Medium</hgz020>
+                    <hgz021>[hagezi] Gambling - Mini</hgz021>
+                    <oisd0>OISD - Domain Blocklist Ads</oisd0>
+                    <oisd1>OISD - Domain Blocklist Big</oisd1>
+                    <oisd2>OISD - Domain Blocklist NSFW</oisd2>
                     <sb>Steven Black List</sb>
-                    <ws>WindowsSpyBlocker (spy)</ws>
-                    <wsu>WindowsSpyBlocker (update)</wsu>
-                    <wse>WindowsSpyBlocker (extra)</wse>
                     <yy>YoYo List</yy>
                 </OptionValues>
             </type>
