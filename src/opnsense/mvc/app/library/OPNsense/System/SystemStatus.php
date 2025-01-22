@@ -35,20 +35,13 @@ namespace OPNsense\System;
  */
 class SystemStatus
 {
-    private $objectMap = [];
-    private $status = [];
-
-    public function __construct()
-    {
-        $this->status = $this->collectStatus();
-    }
 
     /**
      * @throws \Exception
      */
-    private function collectStatus()
+    private function collectClasses()
     {
-        $result = [];
+        $objectMap = [];
         $all = glob(__DIR__ . '/Status/*.php');
         $classes = array_map(function ($file) {
             if (strpos($file, 'Status') !== false) {
@@ -64,12 +57,30 @@ class SystemStatus
             $obj = new $statusClass();
             $reflect = new \ReflectionClass($obj);
             $shortName = strtolower(str_replace('Status', '', $reflect->getShortName()));
-            $this->objectMap[$shortName] = $obj;
 
             if ($shortName == 'System') {
                 /* reserved for front-end usage */
                 throw new \Exception("SystemStatus classname is reserved");
             }
+
+            $objectMap[$shortName] = $obj;
+        }
+
+        return $objectMap;
+    }
+
+    public function collectStatus($scope = null)
+    {
+        $result = [];
+        $objectMap = $this->collectClasses();
+        foreach ($objectMap as $shortName => $obj) {
+            $objScope = $obj->getScope();
+            if (!empty($objScope) && !$this->matchPath($scope, $objScope)) {
+                /* don't probe if unnecessary */
+                continue;
+            }
+
+            $obj->collectStatus();
 
             if ($obj->getStatus() == SystemStatusCode::OK) {
                 continue;
@@ -91,26 +102,11 @@ class SystemStatus
         return $result;
     }
 
-    /**
-     * @return array An array containing a parseable format of every status object
-     */
-    public function getSystemStatus($scope = null)
-    {
-        if ($scope !== null) {
-            $filteredStatuses = array_filter($this->status, function ($item) use ($scope) {
-                return empty($item['scope']) || $this->matchPath($scope, $item['scope']);
-            });
-
-            return $filteredStatuses;
-        }
-
-        return $this->status;
-    }
-
     public function dismissStatus($subsystem)
     {
-        if (array_key_exists($subsystem, $this->objectMap)) {
-            $this->objectMap[$subsystem]->dismissStatus();
+        $objectMap = $this->collectClasses();
+        if (array_key_exists($subsystem, $objectMap) && !$objectMap[$subsystem]->getPersistent()) {
+            $objectMap[$subsystem]->dismissStatus();
         }
     }
 

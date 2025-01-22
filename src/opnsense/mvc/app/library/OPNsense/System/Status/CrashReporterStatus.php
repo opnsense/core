@@ -36,12 +36,15 @@ class CrashReporterStatus extends AbstractStatus
 {
     public function __construct()
     {
-        $src_logs = array_merge(glob('/var/crash/textdump*'), glob('/var/crash/vmcore*'));
-        $php_log = '/tmp/PHP_errors.log';
-
         $this->internalPriority = 10;
         $this->internalTitle = gettext('Crash Reporter');
         $this->internalLocation = '/crash_reporter.php';
+    }
+
+    public function collectStatus()
+    {
+        $src_logs = array_merge(glob('/var/crash/textdump*'), glob('/var/crash/vmcore*'));
+        $php_log = '/tmp/PHP_errors.log';
 
         $src_errors = count($src_logs) > 0;
         if ($src_errors) {

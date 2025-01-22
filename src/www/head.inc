@@ -183,10 +183,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
           $('html,aside').scrollTop(($(this).offset().top - navbar_center));
       });
 
-      // artifical delay for UX reasons
-      setTimeout(function () {
-          updateSystemStatus();
-      }, 500);
+      updateSystemStatus();
 
       // hook in live menu search
       $.ajax("/api/core/menu/search/", {
