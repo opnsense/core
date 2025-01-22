@@ -192,11 +192,12 @@ class RuleCache(object):
                                 for mdtag in list(csv.reader([value], delimiter=","))[0]:
                                     parts = mdtag.split(maxsplit=1)
                                     if parts:
-                                        if parts[0] in record['metadata'] and record['metadata'][parts[0]] is not None:
-                                            new_content = "%s\n%s" % (record['metadata'][parts[0]], parts[1])
+                                        fname = parts[0].translate(str.maketrans('','','()'))
+                                        if fname in record['metadata'] and record['metadata'][fname] is not None:
+                                            new_content = "%s\n%s" % (record['metadata'][fname], parts[1])
                                         else:
                                             new_content = parts[1] if len(parts) > 1 else ""
-                                        record['metadata'][parts[0]] = new_content
+                                        record['metadata'][fname] = new_content
                             else:
                                 record[prop] = value
                     rule_info_record['metadata'] = record
