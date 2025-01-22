@@ -141,8 +141,15 @@ td {
     margin: 5px;
 }
 
+.canvas-container-noaspectratio {
+    position: relative;
+}
+
 .canvas-container {
     position: relative;
+    /* ChartJS v4 workaround: https://github.com/chartjs/Chart.js/issues/11005 */
+    aspect-ratio: 2;
+    overflow: hidden;
 }
 
 .cpu-canvas-container {

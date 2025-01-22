@@ -199,11 +199,11 @@ export default class Traffic extends BaseWidget {
         return $(`
             <div class="traffic-charts-container">
                 <h3>${this.translations.trafficin}</h3>
-                <div class="canvas-container">
+                <div class="canvas-container-noaspectratio">
                     <canvas id="traffic-in"></canvas>
                 </div>
                 <h3>${this.translations.trafficout}</h3>
-                <div class="canvas-container">
+                <div class="canvas-container-noaspectratio">
                     <canvas id="traffic-out"></canvas>
                 </div>
             </div>

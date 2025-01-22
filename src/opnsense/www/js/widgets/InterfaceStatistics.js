@@ -36,13 +36,6 @@ export default class InterfaceStatistics extends BaseTableWidget {
         this.sortedData = [];
     }
 
-    getGridOptions() {
-        return {
-            // trigger overflow-y:scroll after 650px height
-            sizeToContent: 650,
-        };
-    }
-
     getMarkup() {
         let $container = $('<div id="if-stats-container"></div>');
         let $table = this.createTable('interface-statistics-table', {
