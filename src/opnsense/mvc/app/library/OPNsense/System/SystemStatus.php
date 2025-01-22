@@ -35,7 +35,6 @@ namespace OPNsense\System;
  */
 class SystemStatus
 {
-
     /**
      * @throws \Exception
      */
