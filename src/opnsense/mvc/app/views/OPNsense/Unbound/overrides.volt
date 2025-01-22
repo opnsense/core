@@ -26,7 +26,7 @@
 
 <script>
 $( document ).ready(function() {
-    let grid_hosts = $("#grid-hosts").UIBootgrid({
+    let grid_hosts = $("#{{formGridHostOverride['table_id']}}").UIBootgrid({
         search:'/api/unbound/settings/searchHostOverride/',
         get:'/api/unbound/settings/getHostOverride/',
         set:'/api/unbound/settings/setHostOverride/',
@@ -61,22 +61,22 @@ $( document ).ready(function() {
             },
         }
     }).on("selected.rs.jquery.bootgrid", function (e, rows) {
-        $("#grid-aliases").bootgrid('reload');
+        $("#{{formGridHostAlias['table_id']}}").bootgrid('reload');
     }).on("deselected.rs.jquery.bootgrid", function (e, rows) {
         // de-select not allowed, make sure always one items is selected. (sticky selected)
-        if ($("#grid-hosts").bootgrid("getSelectedRows").length == 0) {
-            $("#grid-hosts").bootgrid('select', [rows[0].uuid]);
+        if ($("#{{formGridHostOverride['table_id']}}").bootgrid("getSelectedRows").length == 0) {
+            $("#{{formGridHostOverride['table_id']}}").bootgrid('select', [rows[0].uuid]);
         }
-        $("#grid-aliases").bootgrid('reload');
+        $("#{{formGridHostAlias['table_id']}}").bootgrid('reload');
     }).on("loaded.rs.jquery.bootgrid", function (e) {
-        let ids = $("#grid-hosts").bootgrid("getCurrentRows");
+        let ids = $("#{{formGridHostOverride['table_id']}}").bootgrid("getCurrentRows");
         if (ids.length > 0) {
-            $("#grid-hosts").bootgrid('select', [ids[0].uuid]);
+            $("#{{formGridHostOverride['table_id']}}").bootgrid('select', [ids[0].uuid]);
         }
-        $("#grid-aliases").bootgrid('reload');
+        $("#{{formGridHostAlias['table_id']}}").bootgrid('reload');
     });
 
-    let grid_aliases = $("#grid-aliases").UIBootgrid({
+    let grid_aliases = $("#{{formGridHostAlias['table_id']}}").UIBootgrid({
         search:'/api/unbound/settings/searchHostAlias/',
         get:'/api/unbound/settings/getHostAlias/',
         set:'/api/unbound/settings/setHostAlias/',
@@ -92,7 +92,7 @@ $( document ).ready(function() {
             rowSelect: true,
             useRequestHandlerOnGet: true,
             requestHandler: function(request) {
-                let uuids = $("#grid-hosts").bootgrid("getSelectedRows");
+                let uuids = $("#{{formGridHostOverride['table_id']}}").bootgrid("getSelectedRows");
                 request['host'] = uuids.length > 0 ? uuids[0] : "__not_found__";
                 let selected = $(".host_selected");
                 uuids.length > 0 ? selected.show() : selected.hide();
@@ -107,7 +107,7 @@ $( document ).ready(function() {
     });
 
     $("div.actionBar").each(function(){
-        if ($(this).closest(".bootgrid-header").attr("id").includes("alias")) {
+        if ($(this).closest(".bootgrid-header").attr("id").includes("Alias")) {
             $(this).parent().prepend($('<td id="heading-wrapper" class="col-sm-2 theading-text">{{ lang._('Aliases') }}</div>'));
         } else {
             $(this).parent().prepend($('<td id="heading-wrapper" class="col-sm-2 theading-text">{{ lang._('Hosts') }}</div>'));
@@ -148,30 +148,7 @@ $( document ).ready(function() {
 
 <!-- host overrides -->
 <div class="content-box __mb">
-    <table id="grid-hosts" class="table table-condensed table-hover table-striped" data-editDialog="DialogHostOverride" data-editAlert="OverrideChangeMessage">
-        <thead>
-        <tr>
-            <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-            <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-            <th data-column-id="hostname" data-type="string">{{ lang._('Host') }}</th>
-            <th data-column-id="domain" data-type="string">{{ lang._('Domain') }}</th>
-            <th data-column-id="rr" data-type="string">{{ lang._('Type') }}</th>
-            <th data-column-id="server" data-type="string" data-formatter="mxformatter">{{ lang._('Value') }}</th>
-            <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
-            <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Edit') }} | {{ lang._('Delete') }}</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-        <tfoot>
-        <tr>
-            <td></td>
-            <td>
-                <button id="test" data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-            </td>
-        </tr>
-        </tfoot>
-    </table>
+    {{ partial('layout_partials/base_bootgrid_table', formGridHostOverride)}}
     <div id="infosection" class="tab-content col-xs-12 __mb">
         {{ lang._('Entries in this section override individual results from the forwarders.') }}
         {{ lang._('Use these for changing DNS results or for adding custom DNS records.') }}
@@ -180,35 +157,10 @@ $( document ).ready(function() {
 </div>
 <!-- aliases for host overrides -->
 <div class="content-box __mb">
-    <table id="grid-aliases" class="table table-condensed table-hover table-striped" data-editDialog="DialogHostAlias" data-editAlert="OverrideChangeMessage">
-        <thead>
-        <tr>
-            <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">{{ lang._('ID') }}</th>
-            <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-            <th data-column-id="hostname" data-type="string">{{ lang._('Host') }}</th>
-            <th data-column-id="domain" data-type="string">{{ lang._('Domain') }}</th>
-            <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
-            <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-        <tfoot class="host_selected">
-        <tr>
-            <td></td>
-            <td>
-                <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
-            </td>
-        </tr>
-        </tfoot>
-    </table>
+    {{ partial('layout_partials/base_bootgrid_table', formGridHostAlias)}}
 </div>
 <!-- reconfigure -->
 <div class="content-box">
-    <div id="OverrideChangeMessage" class="alert alert-info" style="display: none" role="alert">
-        {{ lang._('After changing settings, please remember to apply them with the button below') }}
-    </div>
     <table class="table table-condensed">
         <tbody>
         <tr>
@@ -224,7 +176,10 @@ $( document ).ready(function() {
         </tr>
         </tbody>
     </table>
+    <div id="HostOverrideChangeMessage" class="alert alert-info" style="display: none" role="alert">
+        {{ lang._('After changing settings, please remember to apply them.') }}
+    </div>
 </div>
 
-{{ partial("layout_partials/base_dialog",['fields':formDialogHostOverride,'id':'DialogHostOverride','label':lang._('Edit Host Override')])}}
-{{ partial("layout_partials/base_dialog",['fields':formDialogHostAlias,'id':'DialogHostAlias','label':lang._('Edit Host Override Alias')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogHostOverride,'id':formGridHostOverride['edit_dialog_id'],'label':lang._('Edit Host Override')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogHostAlias,'id':formGridHostAlias['edit_dialog_id'],'label':lang._('Edit Host Override Alias')])}}

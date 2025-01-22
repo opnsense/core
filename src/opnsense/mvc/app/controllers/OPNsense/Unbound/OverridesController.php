@@ -35,7 +35,11 @@ class OverridesController extends IndexController
     public function indexAction()
     {
         $this->view->pick('OPNsense/Unbound/overrides');
+
         $this->view->formDialogHostOverride = $this->getForm("dialogHostOverride");
+        $this->view->formGridHostOverride = $this->getFormGrid('dialogHostOverride', null, 'HostOverrideChangeMessage');
+
         $this->view->formDialogHostAlias = $this->getForm("dialogHostAlias");
+        $this->view->formGridHostAlias = $this->getFormGrid('dialogHostAlias', null, 'HostOverrideChangeMessage');
     }
 }
