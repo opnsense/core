@@ -40,7 +40,10 @@ class LiveMediaStatus extends AbstractStatus
         $this->internalPersistent = true;
         $this->internalIsBanner = true;
         $this->internalTitle = gettext('Live Media');
+    }
 
+    public function collectStatus()
+    {
         /*
          * Despite unionfs underneath, / is still not writeable,
          * making the following the perfect test for install media.

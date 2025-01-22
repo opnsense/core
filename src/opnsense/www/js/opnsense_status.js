@@ -164,7 +164,7 @@ class StatusDialog {
                 }
 
                 let ref = subject.location != null ? `href="${subject.location}"` : '';
-                let hoverStyle = subject.location == null ? 'cursor: default; pointer-events: none;' : '';
+                let hoverStyle = (subject.location == null && subject.persistent) ? 'cursor: default; pointer-events: none;' : '';
 
                 let $closeBtn = `
                     <button id="dismiss-${shortname}" class="close">

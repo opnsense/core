@@ -40,7 +40,10 @@ class OpensshOverrideStatus extends AbstractStatus
         $this->internalTitle = gettext('OpenSSH config override');
         $this->internalIsBanner = true;
         $this->internalScope[] = '/system_advanced_admin.php';
+    }
 
+    public function collectStatus()
+    {
         if (count(glob('/usr/local/etc/ssh/sshd_config.d/*.conf'))) {
             $this->internalMessage = gettext('The OpenSSH GUI configuration may be overridden by currently provided files on the disk.');
             $this->internalStatus = SystemStatusCode::NOTICE;

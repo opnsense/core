@@ -37,9 +37,12 @@ class DiskSpaceStatus extends AbstractStatus
     public function __construct()
     {
         $this->internalPriority = 5;
-        $this->internalPersistent = false;
+        $this->internalPersistent = true;
         $this->internalTitle = gettext('Disk Space');
+    }
 
+    public function collectStatus()
+    {
         $backend = new Backend();
         $output = json_decode($backend->configdRun('system diag disk'), true);
 
@@ -54,8 +57,8 @@ class DiskSpaceStatus extends AbstractStatus
                 $usedPercent = intval($filesystem['used-percent']);
                 $totalSpace = $used + $available;
 
-                $warningThresholdGB = min(10, 0.15 * $totalSpace);
-                $errorThresholdGB = min(5, 0.5 * $totalSpace);
+                $warningThresholdGB = min(10, 0.2 * $totalSpace);
+                $errorThresholdGB = min(5, 0.1 * $totalSpace);
 
                 if ($available <= $warningThresholdGB && $available > $errorThresholdGB) {
                     $this->internalStatus = SystemStatusCode::WARNING;
@@ -67,7 +70,6 @@ class DiskSpaceStatus extends AbstractStatus
                         $available
                     );
                 } elseif ($available <= $errorThresholdGB) {
-                    $this->internalPersistent = true;
                     $this->internalStatus = SystemStatusCode::ERROR;
                     $this->internalMessage = sprintf(
                         gettext('Disk space on the root filesystem is critically full (' .

@@ -88,6 +88,11 @@ abstract class AbstractStatus
         return $this->internalScope;
     }
 
+    public function collectStatus()
+    {
+        /* To be overridden by the child status classes */
+    }
+
     public function dismissStatus()
     {
         /* To be overridden by the child status classes */
