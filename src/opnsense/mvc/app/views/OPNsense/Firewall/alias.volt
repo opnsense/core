@@ -915,9 +915,9 @@
                                         <input type="password" placeholder="{{lang._('API Token')}}" class="form-control" size="50" id="alias.token">
                                         <input type="text" placeholder="{{lang._('Username')}}" class="form-control" size="50" id="alias.username">
                                         <input type="password" placeholder="{{lang._('Password')}}" class="form-control" size="50" id="alias.password">
-                                        <div class="hidden" data-for="help_for_alias.authorization">
+                                        <div class="hidden" data-for="help_for_alias.authtype">
                                             <small>
-                                                {{lang._('If the remote server enforces authorization, you can specify the authorization type and token here. Basic authorization expects username:password.')}}
+                                                {{lang._('If the remote server enforces authorization, you can specify the authorization type here.')}}
                                             </small>
                                         </div>
                                     </td>
