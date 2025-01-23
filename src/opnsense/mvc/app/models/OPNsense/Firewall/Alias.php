@@ -78,11 +78,10 @@ class Alias extends BaseModel
 
             $ref = $alias->__reference;
 
-            $authtype = (string)$alias->authtype;
             $username = (string)$alias->username;
             $token = (string)$alias->token;
 
-            switch ($authtype) {
+            switch ((string)$alias->authtype) {
                 case 'Basic':
                     if (empty($username) || empty($token)) {
                         $messages->appendMessage(new Message(gettext('Please provide a username and password when Basic auth is selected'), $ref . '.authtype'));

@@ -61,7 +61,7 @@ class Alias(object):
             'timeout': timeout,
             'interface': None,
             'proto': 'IPv4,IPv6',
-            'token': None,
+            'password': None,
             'authtype': None,
         }
         self._ttl = ttl
@@ -94,8 +94,8 @@ class Alias(object):
                 self._items = set(sorted(subelem.text.split()))
             elif subelem.tag == 'authtype':
                 self._properties['authtype'] = subelem.text
-            elif subelem.tag == 'token':
-                self._properties['token'] = subelem.text
+            elif subelem.tag == 'password':
+                self._properties['password'] = subelem.text
             elif subelem.tag == 'username':
                 self._properties['username'] = subelem.text
 

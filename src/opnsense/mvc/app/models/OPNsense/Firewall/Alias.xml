@@ -67,7 +67,7 @@
                     <ValidationMessage>Days and hours should be numeric values or left empty.</ValidationMessage>
                 </updatefreq>
                 <content type=".\AliasContentField"/>
-                <token type="TextField"/>
+                <password type="TextField"/>
                 <username type="TextField"/>
                 <authtype type="OptionField">
                     <OptionValues>

@@ -364,18 +364,15 @@
                     $("#row_alias\\.authtype").show();
 
                     $("#alias\\.authtype").change(function() {
+                        $("#alias\\.username").hide();
+                        $("#alias\\.password").hide();
                         switch ($(this).val()) {
                             case 'Basic':
                                 $("#alias\\.username").show();
-                                $("#alias\\.token").show().attr('placeholder', '{{lang._('Password')}}');
+                                $("#alias\\.password").show().attr('placeholder', '{{lang._('Password')}}');
                                 break;
                             case 'Bearer':
-                                $("#alias\\.username").hide();
-                                $("#alias\\.token").show().attr('placeholder', '{{lang._('API token')}}');
-                                break;
-                            default:
-                                $("#alias\\.token").hide();
-                                $("#alias\\.username").hide();
+                                $("#alias\\.password").show().attr('placeholder', '{{lang._('API token')}}');
                                 break;
                         }
                     });
@@ -908,9 +905,9 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <select id="alias.authtype" title="{{lang._('Authorization type')}}" data-container="body" style="margin-bottom: 3px;"></select>
+                                        <select id="alias.authtype"  data-container="body" class="selectpicker" style="margin-bottom: 3px;"></select>
                                         <input type="text" placeholder="{{lang._('Username')}}" class="form-control" size="50" id="alias.username"/>
-                                        <input type="password" class="form-control" size="50" id="alias.token"/>
+                                        <input type="password" class="form-control" size="50" id="alias.password"/>
                                         <div class="hidden" data-for="help_for_alias.authtype">
                                             <small>
                                                 {{lang._('If the remote server enforces authorization, you can specify the authorization type here.')}}
