@@ -217,11 +217,11 @@ class StatusBanner {
             if (subject.status == "OK")
                 continue;
 
-            if (subject.isBanner && !this.bannerActive) {
+            if (subject.isBanner) {
                 if (!this.bannerActive) {
                     $('.page-content-main > .container-fluid > .row').prepend($(`
                         <div class="container-fluid">
-                            <div id="notification-banner" class="alert alert-info ${this.parseStatusBanner(subject.status)}"
+                            <div id="notification-banner" class="alert ${this.parseStatusBanner(subject.status)}"
                                 style="padding: 10px; text-align: center;">
                                 ${subject.message}
                             </div>
@@ -231,7 +231,7 @@ class StatusBanner {
                     break;
                 } else {
                     $('#notification-banner').text(subject.message);
-                    $('#notification-banner').removeClass().addClass(`alert alert-info ${this.parseStatusBanner(subject.status)}`);
+                    $('#notification-banner').removeClass().addClass(`alert ${this.parseStatusBanner(subject.status)}`);
                 }
             }
         }
