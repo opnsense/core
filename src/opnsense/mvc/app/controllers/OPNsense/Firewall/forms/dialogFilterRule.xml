@@ -165,7 +165,7 @@
     </field>
     <field>
         <id>rule.state-policy</id>
-        <label>State type</label>
+        <label>State policy</label>
         <type>dropdown</type>
         <help>
             Choose how states created by this rule are treated, default (as defined in advanced),
