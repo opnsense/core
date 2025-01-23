@@ -999,12 +999,7 @@ $( document ).ready(function() {
                       <button id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("Move selected rules before this rule")) ?>" class="act_move btn btn-default btn-xs" aria-label="<?= html_safe(gettext("Move selected rules before this rule")) ?>">
                         <i class="fa fa-arrow-left fa-fw"></i>
                       </button>
-<?php if (isset($filterent['type'])): ?>
-<?php
-                      // not very nice.... associated NAT rules don't have a type...
-                      // if for some reason (broken config) a rule is in there which doesn't have a related nat rule
-                      // make sure we are able to delete it.
-?>
+<?php if (empty($filterent['associated-rule-id'])): ?>
                       <a href="firewall_rules_edit.php?if=<?=$selected_if;?>&id=<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" aria-label="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs">
                         <i class="fa fa-pencil fa-fw"></i>
                       </a>

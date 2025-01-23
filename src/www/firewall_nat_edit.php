@@ -271,7 +271,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // Updating a rule with a filter rule associated
         if (!empty($natent['associated-rule-id']) || in_array($pconfig['associated-rule-id'], ['add-associated', 'add-unassociated'])) {
             /* auto-generate a matching firewall rule */
-            $filterent = [];
+            $filterent = ['type' => 'pass'];
             if (in_array($pconfig['associated-rule-id'], ['add-associated', 'add-unassociated'])) {
                 $filterent['associated-rule-id'] = $natent['associated-rule-id'];
             } else {
