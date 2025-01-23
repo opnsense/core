@@ -443,14 +443,8 @@ function display_login_form($Login_Error)
           <input id="passwordfld" type="password" name="passwordfld" class="form-control pwd" tabindex="2" />
         </div>
 <?php
-    // Check configuration for authmode and authserver type
-    $authMode = $config['system']['webgui']['authmode'] ?? 'Local Database';
-    $authServer = array_filter($config['system']['authserver'] ?? [], function($server) use ($authMode) {
-        return $server['name'] === $authMode && $server['type'] === 'totp';
-    });
-
     // Determine if we need to display the MFA code field
-    $showMFAField = !empty($authServer);
+    $showMFAField = isMFARequired($config);
 
     if ($showMFAField): ?>
         <div class="form-group">
@@ -483,3 +477,4 @@ function display_login_form($Login_Error)
     </body>
   </html>
 <?php }
+
