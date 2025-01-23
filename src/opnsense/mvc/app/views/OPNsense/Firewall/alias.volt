@@ -379,6 +379,7 @@
                                 $("#alias\\.token").hide();
                                 $("#alias\\.username").hide();
                                 $("#alias\\.password").hide();
+                                break;
                         }
                     });
                     /* FALLTHROUGH */
