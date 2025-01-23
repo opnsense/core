@@ -327,6 +327,7 @@
         $("#alias\\.type").change(function(){
             $(".alias_type").hide();
             $("#row_alias\\.updatefreq").hide();
+            $("#row_alias\\.authtype").hide();
             $("#row_alias\\.interface").hide();
             $("#copy-paste").hide();
             switch ($(this).val()) {
@@ -358,6 +359,28 @@
                     break;
                 case 'urltable':
                     $("#row_alias\\.updatefreq").show();
+                    /* FALLTHROUGH */
+                case 'url':
+                    $("#row_alias\\.authtype").show();
+
+                    $("#alias\\.authtype").change(function() {
+                        switch ($(this).val()) {
+                            case 'Basic':
+                                $("#alias\\.token").hide();
+                                $("#alias\\.username").show();
+                                $("#alias\\.password").show();
+                                break;
+                            case 'Bearer':
+                                $("#alias\\.username").hide();
+                                $("#alias\\.password").hide();
+                                $("#alias\\.token").show();
+                                break;
+                            default:
+                                $("#alias\\.token").hide();
+                                $("#alias\\.username").hide();
+                                $("#alias\\.password").hide();
+                        }
+                    });
                     /* FALLTHROUGH */
                 default:
                     $("#alias_type_default").show();
@@ -877,6 +900,28 @@
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.content"></span>
+                                    </td>
+                                </tr>
+                                <tr id="row_alias.authtype">
+                                    <td>
+                                        <div class="control-label" id="control_label_alias.authtype">
+                                            <a id="help_for_alias.authtype" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                                            <b>{{lang._('Authorization')}}</b>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <select id="alias.authtype" title="{{lang._('Authorization type')}}" data-container="body" style="margin-bottom: 3px;"></select>
+                                        <input type="password" placeholder="{{lang._('API Token')}}" class="form-control" size="50" id="alias.token">
+                                        <input type="text" placeholder="{{lang._('Username')}}" class="form-control" size="50" id="alias.username">
+                                        <input type="password" placeholder="{{lang._('Password')}}" class="form-control" size="50" id="alias.password">
+                                        <div class="hidden" data-for="help_for_alias.authorization">
+                                            <small>
+                                                {{lang._('If the remote server enforces authorization, you can specify the authorization type and token here. Basic authorization expects username:password.')}}
+                                            </small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="help-block" id="help_block_alias.authtype"></span>
                                     </td>
                                 </tr>
                                 <tr id="row_alias.interface">

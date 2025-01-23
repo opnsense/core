@@ -33,6 +33,7 @@ namespace OPNsense\Firewall;
 use OPNsense\Base\BaseModel;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
+use OPNsense\Base\Messages\Message;
 
 /**
  * Class Alias
@@ -64,6 +65,42 @@ class Alias extends BaseModel
     {
         $this->skip_dynamic_info = $skip_dynamic_info;
         parent::__construct();
+    }
+
+    public function performValidation($validateFullModel = false)
+    {
+        $messages = parent::performValidation($validateFullModel);
+
+        foreach ($this->aliases->alias->iterateItems() as $alias) {
+            if (!$validateFullModel && !$alias->isFieldChanged()) {
+                continue;
+            }
+
+            $ref = $alias->__reference;
+
+            $authtype = (string)$alias->authtype;
+            $username = (string)$alias->username;
+            $password = (string)$alias->password;
+            $token = (string)$alias->token;
+
+            if ($authtype == 'Basic') {
+                if (empty($username) || empty($password)) {
+                    $messages->appendMessage(new Message(gettext('Please provide a username and password when Basic auth is selected'), $ref . '.authtype'));
+                }
+            } elseif ($authtype == 'Bearer') {
+                if (empty($token)) {
+                    $messages->appendMessage(new Message(gettext('Please provide an API token when Bearer auth is selected'), $ref . '.authtype'));
+                } elseif (strlen($token) > 512) {
+                    $messages->appendMessage(new Message(gettext('Invalid token length'), $ref . '.authtype'));
+                } elseif (!preg_match('/^[A-Za-z0-9-_.]+$/', $token)) {
+                    $messages->appendMessage(new Message(gettext('Illegal characters in token'), $ref . '.authtype'));
+                }
+            } else if (!empty($authtype)) {
+                $messages->appendMessage(new Message(gettext('Unsupported auth type'), $ref . '.authtype'));
+            }
+        }
+
+        return $messages;
     }
 
     /**
