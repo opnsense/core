@@ -66,7 +66,7 @@ POSSIBILITY OF SUCH DAMAGE.
               if (this_section != prev_section) {
                   target_select = $("<select id='policy_content_" +
                       this_section +
-                      "' data-live-search='true' data-size='5' multiple='multiple' class='policy_select'/>"
+                      "' data-live-search='true' data-size='5' multiple='multiple' class='policy_select' data-container='body'/>"
                   );
                   policy_content_container.append($("<label class='policy_label' for='policy_content_"+this_section+"'/>").text(this_section));
                   policy_content_container.append(target_select);
