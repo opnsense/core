@@ -80,23 +80,23 @@ class Alias extends BaseModel
 
             $authtype = (string)$alias->authtype;
             $username = (string)$alias->username;
-            $password = (string)$alias->password;
             $token = (string)$alias->token;
 
-            if ($authtype == 'Basic') {
-                if (empty($username) || empty($password)) {
-                    $messages->appendMessage(new Message(gettext('Please provide a username and password when Basic auth is selected'), $ref . '.authtype'));
-                }
-            } elseif ($authtype == 'Bearer') {
-                if (empty($token)) {
-                    $messages->appendMessage(new Message(gettext('Please provide an API token when Bearer auth is selected'), $ref . '.authtype'));
-                } elseif (strlen($token) > 512) {
-                    $messages->appendMessage(new Message(gettext('Invalid token length'), $ref . '.authtype'));
-                } elseif (!preg_match('/^[A-Za-z0-9-_.]+$/', $token)) {
-                    $messages->appendMessage(new Message(gettext('Illegal characters in token'), $ref . '.authtype'));
-                }
-            } else if (!empty($authtype)) {
-                $messages->appendMessage(new Message(gettext('Unsupported auth type'), $ref . '.authtype'));
+            switch ($authtype) {
+                case 'Basic':
+                    if (empty($username) || empty($token)) {
+                        $messages->appendMessage(new Message(gettext('Please provide a username and password when Basic auth is selected'), $ref . '.authtype'));
+                    }
+                    break;
+                case 'Bearer':
+                    if (empty($token)) {
+                        $messages->appendMessage(new Message(gettext('Please provide an API token when Bearer auth is selected'), $ref . '.authtype'));
+                    } elseif (strlen($token) > 512) {
+                        $messages->appendMessage(new Message(gettext('Invalid token length'), $ref . '.authtype'));
+                    } elseif (!preg_match('/^[A-Za-z0-9-_.]+$/', $token)) {
+                        $messages->appendMessage(new Message(gettext('Illegal characters in token'), $ref . '.authtype'));
+                    }
+                    break;
             }
         }
 

@@ -69,7 +69,6 @@
                 <content type=".\AliasContentField"/>
                 <token type="TextField"/>
                 <username type="TextField"/>
-                <password type="TextField"/>
                 <authtype type="OptionField">
                     <OptionValues>
                         <Basic>Basic</Basic>

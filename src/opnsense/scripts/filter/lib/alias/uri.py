@@ -34,14 +34,13 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class UriParser(BaseContentParser):
 
-    def __init__(self, timeout=120, ssl_no_verify=False, authtype=None, token=None, username=None, password=None, **kwargs):
+    def __init__(self, timeout=120, ssl_no_verify=False, authtype=None, token=None, username=None, **kwargs):
         super().__init__(**kwargs)
         self._timeout = timeout
         self._ssl_no_verify = ssl_no_verify
         self._authtype = authtype
         self._token = token
         self._username = username
-        self._password = password
 
     def iter_addresses(self, url):
         """ return unparsed (raw) alias entries without dependencies
@@ -56,10 +55,10 @@ class UriParser(BaseContentParser):
         if self._ssl_no_verify:
             req_opts['verify'] = False
 
-        if self._authtype is not None:
-            if self._authtype == 'Basic' and self._username is not None and self._password is not None:
-                req_opts['auth'] = requests.auth.HTTPBasicAuth(self._username, self._password)
-            elif self._authtype == 'Bearer' and self._token is not None:
+        if self._authtype is not None and self._token is not None:
+            if self._authtype == 'Basic' and self._username is not None:
+                req_opts['auth'] = requests.auth.HTTPBasicAuth(self._username, self._token)
+            elif self._authtype == 'Bearer':
                 req_opts['headers'] = {'Authorization': f'Bearer {self._token}'}
 
         # fetch data

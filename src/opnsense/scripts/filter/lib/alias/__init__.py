@@ -98,8 +98,6 @@ class Alias(object):
                 self._properties['token'] = subelem.text
             elif subelem.tag == 'username':
                 self._properties['username'] = subelem.text
-            elif subelem.tag == 'password':
-                self._properties['password'] = subelem.text
 
         # we'll save the calculated hash for the unparsed alias content
         self._filename_alias_hash = '/var/db/aliastables/%s.md5.txt' % self._name
