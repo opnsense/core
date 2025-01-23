@@ -128,6 +128,15 @@ function check_security_http_referer_enforcement()
     return false;
 }
 
+function isMFARequired($config) {
+    global $config;
+    $authMode = $config['system']['webgui']['authmode'] ?? 'Local Database';
+    $authServer = array_filter($config['system']['authserver'] ?? [], function($server) use ($authMode) {
+        return $server['name'] === $authMode && $server['type'] === 'totp';
+    });
+    return !empty($authServer);
+}
+
 function session_auth()
 {
     global $config;
@@ -145,6 +154,8 @@ function session_auth()
         session_set_cookie_params(["SameSite" => "Lax"]);
         session_start();
     }
+
+    $showMFAField = isMFARequired($config);
 
     // Detect protocol change
     if (!isset($_POST['login']) && !empty($_SESSION['Username']) && $_SESSION['protocol'] != $config['system']['webgui']['protocol']) {
@@ -167,6 +178,28 @@ function session_auth()
 
     /* Validate incoming login request */
     if (isset($_POST['login']) && !empty($_POST['usernamefld']) && !empty($_POST['passwordfld'])) {
+
+        // Concatenate 2FA token with password if MFA is enabled
+        if ($showMFAField) {
+            if (empty($_POST['mfacode'])) {
+	        display_login_form(!empty($_POST['usernamefld']) ? gettext('MFA code is required.') : null);
+                exit;
+            }
+            // Sanitize MFA code input
+            $_POST['mfacode'] = preg_replace('/[^0-9]/', '', $_POST['mfacode']);
+            
+    // Check for passwordFirst logic
+    $passwordFirst = isset($authServer[0]['passwordFirst']) && $authServer[0]['passwordFirst'] === '1';
+
+    if ($passwordFirst) {
+        // Concatenate password first, then token
+        $_POST['passwordfld'] = $_POST['passwordfld'] . $_POST['mfacode'];
+    } else {
+        // Default: Concatenate token first, then password
+        $_POST['passwordfld'] = $_POST['mfacode'] . $_POST['passwordfld'];
+    }
+        }
+
         $authFactory = new \OPNsense\Auth\AuthenticationFactory();
         $is_authenticated = $authFactory->authenticate("WebGui", $_POST['usernamefld'], $_POST['passwordfld']);
 
@@ -409,6 +442,22 @@ function display_login_form($Login_Error)
           <label for="passwordfld"><?=gettext("Password:"); ?></label>
           <input id="passwordfld" type="password" name="passwordfld" class="form-control pwd" tabindex="2" />
         </div>
+<?php
+    // Check configuration for authmode and authserver type
+    $authMode = $config['system']['webgui']['authmode'] ?? 'Local Database';
+    $authServer = array_filter($config['system']['authserver'] ?? [], function($server) use ($authMode) {
+        return $server['name'] === $authMode && $server['type'] === 'totp';
+    });
+
+    // Determine if we need to display the MFA code field
+    $showMFAField = !empty($authServer);
+
+    if ($showMFAField): ?>
+        <div class="form-group">
+            <label for="mfacode"><?= gettext("MFA Code:"); ?></label>
+            <input type="text" class="form-control" name="mfacode" id="mfacode" value="" />
+        </div>
+    <?php endif; ?>
 
         <button type="submit" name="login" value="1" class="btn btn-primary pull-right"><?=gettext("Login"); ?></button>
 
