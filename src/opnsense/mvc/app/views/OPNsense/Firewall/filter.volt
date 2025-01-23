@@ -174,6 +174,7 @@
                         data-width="{{fieldlist['width']|default('')}}"
                         data-type="{{fieldlist['type']|default('string')}}"
                         data-formatter="{{fieldlist['formatter']|default('')}}"
+                        data-visible="{{fieldlist['visible']|default('')}}"
                     >{{fieldlist['heading']|default('')}}</th>
 {% endfor %}
                     <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
