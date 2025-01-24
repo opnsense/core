@@ -3234,7 +3234,7 @@ function interface_dhcp_configure($interface = 'wan')
         return;
     }
 
-    if ($wancfg['dhcphostname']) {
+    if (!empty($wancfg['dhcphostname'])) {
         $dhclientconf_hostname = "send dhcp-client-identifier \"{$wancfg['dhcphostname']}\";\n";
         $dhclientconf_hostname .= "\tsend host-name \"{$wancfg['dhcphostname']}\";\n";
     } else {
@@ -3267,11 +3267,11 @@ EOD;
     $dhclientconf .= "}\n";
 
     // DHCP Config File Advanced
-    if ($wancfg['adv_dhcp_config_advanced']) {
+    if (!empty($wancfg['adv_dhcp_config_advanced'])) {
         $dhclientconf = DHCP_Config_File_Advanced($interface, $wancfg, $wanif);
     }
 
-    if (is_ipaddr($wancfg['alias-address'])) {
+    if (!empty($wancfg['alias-address']) && is_ipaddr($wancfg['alias-address'])) {
         $subnetmask = gen_subnet_mask($wancfg['alias-subnet']);
         $dhclientconf .= <<<EOD
 alias {
