@@ -79,20 +79,20 @@ class Alias extends BaseModel
             $ref = $alias->__reference;
 
             $username = (string)$alias->username;
-            $token = (string)$alias->token;
+            $password = (string)$alias->password;
 
             switch ((string)$alias->authtype) {
                 case 'Basic':
-                    if (empty($username) || empty($token)) {
+                    if (empty($username) || empty($password)) {
                         $messages->appendMessage(new Message(gettext('Please provide a username and password when Basic auth is selected'), $ref . '.authtype'));
                     }
                     break;
                 case 'Bearer':
-                    if (empty($token)) {
+                    if (empty($password)) {
                         $messages->appendMessage(new Message(gettext('Please provide an API token when Bearer auth is selected'), $ref . '.authtype'));
-                    } elseif (strlen($token) > 512) {
+                    } elseif (strlen($password) > 512) {
                         $messages->appendMessage(new Message(gettext('Invalid token length'), $ref . '.authtype'));
-                    } elseif (!preg_match('/^[A-Za-z0-9-_.]+$/', $token)) {
+                    } elseif (!preg_match('/^[A-Za-z0-9-_.]+$/', $password)) {
                         $messages->appendMessage(new Message(gettext('Illegal characters in token'), $ref . '.authtype'));
                     }
                     break;
