@@ -429,14 +429,16 @@ function filter_core_rules_system($fw, $defaults)
                         $defaults['pass']
                     );
                     if (!empty($config['dhcpd'][$intf]['failover_peerip'])) {
-                        $fw->registerFilterRule(
-                            1,
-                            ['protocol' => 'tcp/udp', 'direction' => 'in', 'to' => '(self)', 'to_port' => '519,520',
-                                '#ref' => "services_dhcp.php?if=" . $intf . "#failover_peerip",
-                                'from' => $config['dhcpd'][$intf]['failover_peerip'],
-                                'interface' => $intf, 'descr' => 'allow access to DHCP failover'],
-                            $defaults['pass']
-                        );
+                        foreach (['519' ,'520'] as $to_port) {
+                            $fw->registerFilterRule(
+                                1,
+                                ['protocol' => 'tcp/udp', 'direction' => 'in', 'to' => '(self)', 'to_port' => $to_port,
+                                    '#ref' => "services_dhcp.php?if=" . $intf . "#failover_peerip",
+                                    'from' => $config['dhcpd'][$intf]['failover_peerip'],
+                                    'interface' => $intf, 'descr' => 'allow access to DHCP failover'],
+                                $defaults['pass']
+                            );
+                        }
                     }
                 }
                 break;
@@ -542,20 +544,22 @@ function filter_core_rules_system($fw, $defaults)
     }
 
     foreach (filter_core_get_antilockout() as $lockoutif => $lockoutprts) {
-        $fw->registerFilterRule(
-            5,
-            [
-                'direction' => 'in',
-                'interface' => $lockoutif,
-                'statetype' => 'keep',
-                'protocol' => 'tcp',
-                'to' => '(self)',
-                'to_port' => implode(' ', $lockoutprts),
-                'descr' => 'anti-lockout rule',
-                '#ref' => 'system_advanced_firewall.php#noantilockout'
-            ],
-            $defaults['pass']
-        );
+        foreach ($lockoutprts as $to_port) {
+            $fw->registerFilterRule(
+                5,
+                [
+                    'direction' => 'in',
+                    'interface' => $lockoutif,
+                    'statetype' => 'keep',
+                    'protocol' => 'tcp',
+                    'to' => '(self)',
+                    'to_port' => $to_port,
+                    'descr' => 'anti-lockout rule',
+                    '#ref' => 'system_advanced_firewall.php#noantilockout'
+                ],
+                $defaults['pass']
+            );
+        }
     }
 
     // [out from this Firewall, using the selected gateway].
