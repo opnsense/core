@@ -34,10 +34,13 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class UriParser(BaseContentParser):
 
-    def __init__(self, timeout=120, ssl_no_verify=False, **kwargs):
+    def __init__(self, timeout=120, ssl_no_verify=False, authtype=None, username=None, password=None, **kwargs):
         super().__init__(**kwargs)
         self._timeout = timeout
         self._ssl_no_verify = ssl_no_verify
+        self._authtype = authtype
+        self._username = username
+        self._password = password
 
     def iter_addresses(self, url):
         """ return unparsed (raw) alias entries without dependencies
@@ -51,6 +54,12 @@ class UriParser(BaseContentParser):
         req_opts['timeout'] = self._timeout
         if self._ssl_no_verify:
             req_opts['verify'] = False
+
+        if self._authtype is not None and self._password is not None:
+            if self._authtype == 'Basic' and self._username is not None:
+                req_opts['auth'] = requests.auth.HTTPBasicAuth(self._username, self._password)
+            elif self._authtype == 'Bearer':
+                req_opts['headers'] = {'Authorization': f'Bearer {self._password}'}
 
         # fetch data
         try:
