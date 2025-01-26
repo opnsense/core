@@ -329,6 +329,7 @@
             $("#row_alias\\.updatefreq").hide();
             $("#row_alias\\.authtype").hide();
             $("#row_alias\\.interface").hide();
+            $("#row_alias\\.path_expression").hide();
             $("#copy-paste").hide();
             switch ($(this).val()) {
                 case 'authgroup':
@@ -357,6 +358,9 @@
                     $("#alias\\.proto").selectpicker('hide');
                     $("#alias_type_default").show();
                     break;
+                case 'urljson':
+                    $("#row_alias\\.path_expression").show();
+                    /* FALLTHROUGH */
                 case 'urltable':
                     $("#row_alias\\.updatefreq").show();
                     /* FALLTHROUGH */
@@ -895,6 +899,25 @@
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.content"></span>
+                                    </td>
+                                </tr>
+                                <tr id="row_alias.path_expression">
+                                    <td>
+                                        <div class="control-label" id="control_label_alias.path_expression">
+                                            <a id="help_for_alias.path_expression" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                                            <b>{{lang._('Path expression')}}</b>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" size="50" id="alias.path_expression"/>
+                                        <div class="hidden" data-for="help_for_alias.path_expression">
+                                            <small>
+                                                {{lang._('Simplified expression to select a field inside a container, a dot [.] is used as field separator (e.g. container.fieldname).')}}
+                                            </small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="help-block" id="help_block_alias.authtype"></span>
                                     </td>
                                 </tr>
                                 <tr id="row_alias.authtype">
