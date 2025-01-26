@@ -28,6 +28,7 @@ import re
 import syslog
 import requests
 import urllib3
+import ujson
 from .base import BaseContentParser
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -41,17 +42,45 @@ class UriParser(BaseContentParser):
         self._authtype = authtype
         self._username = username
         self._password = password
+        self._type = kwargs.get('type', None)
+        # optional path expresion
+        if kwargs.get('path_expression', None):
+            self._path_expression = kwargs['path_expression'].split('.')
+        else:
+            self._path_expression = []
+
+    def _parse_line(self, line):
+        """ return unparsed (raw) alias entries without dependencies
+            :param line: string item to parse
+            :return: iterator
+        """
+        if self._type == 'urljson':
+            try:
+                record = ujson.loads(line)
+            except ValueError:
+                record = {}
+            for field in self._path_expression:
+                if type(record) is dict and field in record:
+                    record = record[field]
+                else:
+                    return
+            if type(record) is str:
+                yield record
+            elif type(record) is list:
+                for item in record:
+                    yield item
+        else:
+            raw_address = re.split(r'[\s,;|#]+', line)[0]
+            if raw_address and not raw_address.startswith('//'):
+                yield raw_address
 
     def iter_addresses(self, url):
-        """ return unparsed (raw) alias entries without dependencies
+        """ parse addresses, yield only valid addresses and networks
             :param url: url
             :return: iterator
         """
         # set request parameters
-        req_opts = dict()
-        req_opts['url'] = url
-        req_opts['stream'] = True
-        req_opts['timeout'] = self._timeout
+        req_opts = {'url': url, 'stream': True, 'timeout': self._timeout}
         if self._ssl_no_verify:
             req_opts['verify'] = False
 
@@ -70,8 +99,7 @@ class UriParser(BaseContentParser):
                 lines = req.raw.read().decode().splitlines()
                 syslog.syslog(syslog.LOG_NOTICE, 'fetch alias url %s (lines: %s)' % (url, len(lines)))
                 for line in lines:
-                    raw_address = re.split(r'[\s,;|#]+', line)[0]
-                    if raw_address and not raw_address.startswith('//'):
+                    for raw_address in self._parse_line(line):
                         for address in super().iter_addresses(raw_address):
                             yield address
             else:
