@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (c) 2021-2024 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2021-2025 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,9 +35,11 @@ list ($series, $version) = explode(' ', shell_safe('opnsense-version -Vv'));
 $version = explode('_', $version)[0];
 
 if (empty($argv[1]) && ($ret = json_decode(@file_get_contents($changelogfile), true)) != null) {
+    # version_compare() has no single letter abbreviation for "RC"
+    $version_cmp = preg_replace('/\.r/', '.RC', $version);
     foreach ($ret as $entry) {
         if ($entry['series'] == $series) {
-            if (version_compare($entry['version'], $version, '>')) {
+            if (version_compare(preg_replace('/\.r/', 'RC', $entry['version']), $version_cmp, '>')) {
                 $version = $entry['version'];
             }
         }
