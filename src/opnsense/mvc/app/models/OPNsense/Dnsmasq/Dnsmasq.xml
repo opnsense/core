@@ -1,0 +1,38 @@
+<model>
+    <mount>/dnsmasq</mount>
+    <version>1.0.0</version>
+    <items>
+        <enable type="BooleanField"/>
+        <regdhcp type="BooleanField"/>
+        <regdhcpstatic type="BooleanField"/>
+        <dhcpfirst type="BooleanField"/>
+        <strict_order type="BooleanField"/>
+        <domain_needed type="BooleanField"/>
+        <no_private_reverse type="BooleanField"/>
+        <log_queries type="BooleanField"/>
+        <no_hosts type="BooleanField"/>
+        <strictbind type="BooleanField"/>
+        <dnssec type="BooleanField"/>
+        <regdhcpdomain type="TextField"/>
+        <interface type="InterfaceField">
+            <Multiple>Y</Multiple>
+        </interface>
+        <port type="PortField"/>
+        <dns_forward_max type="IntegerField">
+            <MinimumValue>0</MinimumValue>
+        </dns_forward_max>
+        <cache_size type="IntegerField">
+            <MinimumValue>0</MinimumValue>
+        </cache_size>
+        <local_ttl type="IntegerField">
+            <MinimumValue>0</MinimumValue>
+        </local_ttl>
+        <hosts type="ArrayField">
+            <host type="TextField"/>
+            <domain type="TextField"/>
+            <ip type="TextField"/>
+            <descr type="TextField"/>
+            <comment type="TextField"/>
+        </hosts>
+    </items>
+</model>
