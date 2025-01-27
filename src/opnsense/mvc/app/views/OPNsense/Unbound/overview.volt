@@ -25,11 +25,11 @@
  #}
 
 {% set theme_name = ui_theme|default('opnsense') %}
-<script src="{{ cache_safe('/ui/js/chart.min.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/chartjs-plugin-streaming.min.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/chartjs-plugin-colorschemes.js') }}"></script>
+<script src="{{ cache_safe('/ui/js/chart.umd.js') }}"></script>
+<script src="{{ cache_safe('/ui/js/chartjs-plugin-colorschemes.min.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/moment-with-locales.min.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/chartjs-adapter-moment.js') }}"></script>
+<script src="{{ cache_safe('/ui/js/chartjs-adapter-moment.min.js') }}"></script>
+<script src="{{ cache_safe('/ui/js/chartjs-plugin-streaming.js') }}"></script>
 <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/chart.css', theme_name)) }}" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/dns-overview.css', theme_name)) }}" rel="stylesheet"/>
 
