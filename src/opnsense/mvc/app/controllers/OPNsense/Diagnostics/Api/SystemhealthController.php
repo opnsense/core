@@ -141,7 +141,7 @@ class SystemhealthController extends ApiControllerBase
                 }
             }
             for ($i = 0; $i < count($response['sets']); $i++) {
-                unset($response['sets'][$detail]['ds']);
+                unset($response['sets'][$i]['ds']);
             }
             if (!empty($rrd_details["title"])) {
                 $response['title'] = $rrd_details["title"] . " | " . ucfirst($rrd_details['itemName']);

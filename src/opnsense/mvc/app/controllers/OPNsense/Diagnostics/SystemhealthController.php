@@ -2,6 +2,7 @@
 
 /*
  * Copyright (C) 2015 Jos Schellevis <jos@opnsense.org>
+ * Copyright (C) 2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
