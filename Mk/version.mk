@@ -23,12 +23,12 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-CORE_ABI?=	24.7
+CORE_ABI?=	25.1
 CORE_ADDITIONS?=#empty
-CORE_MESSAGE?=	TBA
+CORE_MESSAGE?=	What are you looking at?
 CORE_NAME?=	opnsense
 # adjust src/root/boot/lua/logo-hourglass.lua.in accordingly:
-CORE_NICKNAME?=	Not Yet
+CORE_NICKNAME?=	Ultimate Unicorn
 CORE_TYPE?=	community
 # plugins that were migrated to core are here
 CORE_CONFLICTS?=firewall wireguard wireguard-go
