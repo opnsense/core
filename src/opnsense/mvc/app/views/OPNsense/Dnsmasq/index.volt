@@ -33,7 +33,7 @@
             updateServiceControlUI('dnsmasq');
         });
 
-        $("#grid-hosts").UIBootgrid({
+        $("#{{formGridHostOverride['table_id']}}").UIBootgrid({
             'search':'/api/dnsmasq/settings/search_host',
             'get':'/api/dnsmasq/settings/get_host/',
             'set':'/api/dnsmasq/settings/set_host/',
@@ -68,25 +68,7 @@
     </div>
     <!-- Tab: Hosts -->
     <div id="hosts" class="tab-pane fade in">
-        <table id="grid-hosts" class="table table-responsive" data-editDialog="DialogEditSTATICRoute">
-        <thead>
-            <tr>
-                <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                <th data-column-id="commands" data-formatter="commands">{{ lang._('Commands') }}</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-        <tfoot>
-            <tr>
-            <td></td>
-            <td>
-                <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
-                <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
-            </td>
-            </tr>
-        </tfoot>
-        </table>
+        {{ partial('layout_partials/base_bootgrid_table', formGridHostOverride)}}
     </div>
 </div>
 
@@ -104,3 +86,6 @@
         </div>
     </div>
 </section>
+
+
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditHostOverride,'id':formGridHostOverride['edit_dialog_id'],'label':lang._('Edit Host Override')])}}

@@ -26,15 +26,35 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Dnsmasq;
+namespace OPNsense\Dnsmasq\FieldTypes;
 
-class IndexController extends \OPNsense\Base\IndexController
+use OPNsense\Base\FieldTypes\BaseField;
+
+class AliasesField extends BaseField
 {
-    public function indexAction()
+    protected $internalIsContainer = false;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setValue($value)
     {
-        $this->view->generalForm = $this->getForm("general");
-        $this->view->formDialogEditHostOverride = $this->getForm("dialogHostOverride");
-        $this->view->formGridHostOverride = $this->getFormGrid("dialogHostOverride");
-        $this->view->pick('OPNsense/Dnsmasq/index');
+        if (is_a($value, 'SimpleXMLElement') && isset($value->item)) {
+            /* auto convert to simple text blob */
+            $tmp = [];
+            $comments = [];
+            foreach ($value->item as $child) {
+                $fqdn = sprintf("%s.%s", $child->host, $child->domain);
+                $tmp[] = $fqdn;
+                if (!empty((string)$child->description)) {
+                    $comments[] = sprintf("[%s] %s", $fqdn, $child->description);
+                }
+            }
+            $this->getParentNode()->comments = implode("\n", $comments);
+            return parent::setValue(implode(",", $tmp));
+        } elseif (!empty($value)) {
+            /* update only */
+            return parent::setValue($value);
+        }
     }
 }

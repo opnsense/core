@@ -32,7 +32,8 @@
             <domain type="TextField"/>
             <ip type="TextField"/>
             <descr type="TextField"/>
-            <comment type="TextField"/>
+            <comments type="TextField"/>
+            <aliases type=".\AliasesField"/>
         </hosts>
     </items>
 </model>
