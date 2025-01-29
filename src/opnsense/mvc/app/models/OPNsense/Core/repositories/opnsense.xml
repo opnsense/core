@@ -69,10 +69,6 @@
             <description>OPNsense (HTTPS, Amsterdam, NL)</description>
         </mirror>
         <mirror>
-            <url>http://mirror.terrahost.no/opnsense</url>
-            <description>TerraHost (HTTP, Sandefjord, Norway)</description>
-        </mirror>
-        <mirror>
             <url>https://www.mirrorservice.org/sites/opnsense.org</url>
             <description>University of Kent (HTTPS, Kent, GB)</description>
         </mirror>
