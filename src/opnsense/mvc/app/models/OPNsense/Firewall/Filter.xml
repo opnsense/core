@@ -532,5 +532,214 @@
                 <description type="DescriptionField"/>
             </rule>
         </onetoone>
+        <portforward>
+            <rule type=".\SourceNatRuleField"> 
+                <enabled type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </enabled>
+                <sequence type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>99999</MaximumValue>
+                    <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
+                    <Required>Y</Required>
+                    <Default>1</Default>
+                </sequence>
+                <nordr type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </nordr>
+                <interface type="InterfaceField">
+                    <Required>Y</Required>
+                    <Default>wan</Default>
+                    <Multiple>Y</Multiple>
+                    <AllowDynamic>Y</AllowDynamic>
+                </interface>
+                <ipprotocol type="OptionField">
+                    <Required>Y</Required>
+                    <Default>inet</Default>
+                    <OptionValues>
+                        <inet>IPv4</inet>
+                        <inet6>IPv6</inet6>
+                        <inet46>IPv4+IPv6</inet46>
+                    </OptionValues>
+                </ipprotocol>
+                <protocol type="ProtocolField">
+                    <Required>Y</Required>
+                    <Default>TCP</Default>
+                </protocol>              
+                <source_not type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </source_not>
+                <source_net type="NetworkAliasField">
+                    <Required>Y</Required>
+                    <Default>any</Default>
+                </source_net>
+                <source_port type="PortField">
+                    <Default>any</Default>
+                    <EnableWellKnown>Y</EnableWellKnown>
+                    <EnableRanges>Y</EnableRanges>
+                    <EnableAlias>Y</EnableAlias>
+                    <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
+                </source_port>
+                <destination_not type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </destination_not>
+                <destination_net type="NetworkAliasField">
+                    <Required>Y</Required>
+                </destination_net>
+                <destination_port type="PortField">
+                    <EnableWellKnown>Y</EnableWellKnown>
+                    <EnableRanges>Y</EnableRanges>
+                    <EnableAlias>Y</EnableAlias>
+                    <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
+                </destination_port>
+                <target type="NetworkAliasField"/>
+                <target_port type="PortField">
+                    <EnableWellKnown>Y</EnableWellKnown>
+                    <EnableRanges>Y</EnableRanges>
+                </target_port>
+                <pool_options type="OptionField">
+                    <BlankDesc>Default</BlankDesc>
+                    <OptionValues>
+                        <round_robin>Round Robin</round_robin>
+                        <rr_sticky_addr>Round Robin with Sticky Address</rr_sticky_addr>
+                        <random>Random</random>
+                        <ra_sticky_addr>Random with Sticky Address</ra_sticky_addr>
+                        <source_hash>Source Hash</source_hash>
+                        <bitmask>Bitmask</bitmask>
+                    </OptionValues>
+                </pool_options>
+                <log type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </log>
+                <categories type="ModelRelationField">
+                    <Model>
+                        <rulesets>
+                            <source>OPNsense.Firewall.Category</source>
+                            <items>categories.category</items>
+                            <display>name</display>
+                        </rulesets>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                    <ValidationMessage>Related category not found.</ValidationMessage>
+                </categories>
+                <description type="DescriptionField"/>
+                <set_tag type="TextField"/>
+                <match_tag type="TextField"/>
+                <no_xmlrpc_sync type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </no_xmlrpc_sync>
+                <nat_reflection type="OptionField">
+                    <OptionValues>
+                        <default value="">Use System Default</default>
+                        <enable>Enable</enable>
+                        <disable>Disable</disable>
+                    </OptionValues>
+                </nat_reflection>
+                <filter_rule type="OptionField">
+                    <OptionValues>
+                        <none value="">None</none>
+                        <add_associated>Add associated filter rule</add_associated>
+                        <add_unassociated>Add unassociated filter rule</add_unassociated>
+                        <pass>Pass</pass>
+                    </OptionValues>
+                    <Default>add_associated</Default>
+                </filter_rule>
+            </rule>
+        </portforward>
+        <firewallrules>
+            <rule type=".\SourceNatRuleField">
+                <enabled type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </enabled>
+                <sequence type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>99999</MaximumValue>
+                    <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
+                    <Required>Y</Required>
+                    <Default>1</Default>
+                </sequence>
+                <nordr type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </nordr>
+                <interface type="InterfaceField">
+                    <Required>Y</Required>
+                    <Default>wan</Default>
+                    <Multiple>Y</Multiple>
+                    <AllowDynamic>Y</AllowDynamic>
+                </interface>
+                <ipprotocol type="OptionField">
+                    <Required>Y</Required>
+                    <Default>inet</Default>
+                    <OptionValues>
+                        <inet>IPv4</inet>
+                        <inet6>IPv6</inet6>
+                        <inet46>IPv4+IPv6</inet46>
+                    </OptionValues>
+                </ipprotocol>
+                <protocol type="ProtocolField">
+                    <Required>Y</Required>
+                    <Default>TCP</Default>
+                </protocol>              
+                <source_not type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </source_not>
+                <source_net type="NetworkAliasField">
+                    <Required>Y</Required>
+                    <Default>any</Default>
+                </source_net>
+                <source_port type="PortField">
+                    <Default>any</Default>
+                    <EnableWellKnown>Y</EnableWellKnown>
+                    <EnableRanges>Y</EnableRanges>
+                    <EnableAlias>Y</EnableAlias>
+                    <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
+                </source_port>
+                <destination_net type="NetworkAliasField">
+                    <Required>Y</Required>
+                </destination_net>
+                <destination_port type="PortField">
+                    <EnableWellKnown>Y</EnableWellKnown>
+                    <EnableRanges>Y</EnableRanges>
+                    <EnableAlias>Y</EnableAlias>
+                    <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
+                </destination_port>
+                <log type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </log>
+                <categories type="ModelRelationField">
+                    <Model>
+                        <rulesets>
+                            <source>OPNsense.Firewall.Category</source>
+                            <items>categories.category</items>
+                            <display>name</display>
+                        </rulesets>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                    <ValidationMessage>Related category not found.</ValidationMessage>
+                </categories>
+                <description type="DescriptionField"/>
+                <filter_rule type="TextField"/>
+                <state_type type="OptionField">
+                    <OptionValues>
+                        <none>None</none>
+                        <keep_state>Keep State</keep_state>
+                        <sloppy_state>Sloppy State</sloppy_state>
+                        <modulate_state>Modulate State</modulate_state>
+                        <synproxy_state>Synproxy State</synproxy_state>
+                    </OptionValues>
+                    <Default>keep_state</Default>
+                </state_type>
+            </rule>
+        </firewallrules>
     </items>
 </model>

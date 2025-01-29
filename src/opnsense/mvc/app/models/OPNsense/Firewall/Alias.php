@@ -139,6 +139,16 @@ class Alias extends BaseModel
         $sources[] = [['OPNsense', 'Firewall', 'Filter', 'snatrules', 'rule'], ['source_port']];
         $sources[] = [['OPNsense', 'Firewall', 'Filter', 'snatrules', 'rule'], ['destination_net']];
         $sources[] = [['OPNsense', 'Firewall', 'Filter', 'snatrules', 'rule'], ['destination_port']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'portforward', 'rule'], ['source_net']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'portforward', 'rule'], ['source_port']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'portforward', 'rule'], ['destination_net']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'portforward', 'rule'], ['destination_port']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'portforward', 'rule'], ['target']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'portforward', 'rule'], ['target_port']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'firewallrules', 'rule'], ['source_net']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'firewallrules', 'rule'], ['source_port']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'firewallrules', 'rule'], ['destination_net']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'firewallrules', 'rule'], ['destination_port']];
 
         return $sources;
     }

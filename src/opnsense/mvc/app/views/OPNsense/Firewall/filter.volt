@@ -147,6 +147,100 @@
                 reply_to_tr.show();
             }
         });
+
+        if(window.location.pathname.split('/')[3]=='port_forward') {
+            var target = '';
+            var targetInput = '';
+            var target_port = '';
+            var pool_options = '';
+            var filter_rule = '';
+            grid.on('loaded.rs.jquery.bootgrid', function() {     
+                $("button.command-edit, button.command-copy, button.command-add").on('click', function() {
+                    target = ''; targetInput = ''; target_port = ''; pool_options = ''; filter_rule = '';
+                    var row_id = $(this).data('row-id');
+                    if (!$("#rule\\.nordr").prop('checked') && row_id && row_id!=='') {
+                        ajaxGet('/api/firewall/{{ruleController}}/get_rule/' + row_id, [], function(data, status) {
+                                if (data.rule.target) {
+                                    target = data.rule.target;
+                                    if (target.indexOf(".") !== -1 || target.indexOf(":") !== -1) {
+                                        targetInput = target;
+                                        target = '';
+                                    }
+                                    target_port = data.rule.target_port;
+                                    pool_options = data.rule.pool_options;
+                                    var selectedOption = null;
+                                    for (var key in pool_options) {
+                                        if (pool_options.hasOwnProperty(key)) {
+                                            if (pool_options[key].selected === 1) {
+                                                selectedOption = key;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    pool_options = selectedOption;
+                                    filter_rule = data.rule.filter_rule;
+                                    var selectedRule = null;
+                                    for (var key in filter_rule) {
+                                        if (filter_rule.hasOwnProperty(key)) {
+                                            if (filter_rule[key].selected === 1) {
+                                                selectedRule = key;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    filter_rule = selectedRule;
+                                }
+                                $("#rule\\.nordr").trigger('change');
+                        });
+                    } else {
+                        target = '';
+                        targetInput = '';
+                        target_port = '';
+                        pool_options = '';
+                        filter_rule = '';
+                    }
+                });
+                if ($("#grid-rules thead tr").length === 1) {
+                    $("#grid-rules thead").prepend('<tr><th style="width:2em;"></th><th colspan="4" style="width:20em;"></th><th colspan="2" style="width:10em;">Source</th><th colspan="2" style="width:10em;">Destination</th><th colspan="2" style="width:10em;">NAT</th><th colspan="2" style="width:12em;"></th></tr>');
+                } else if ($("#grid-rules thead tr").length === 2) {
+                    var firstRow = $("#grid-rules thead tr").first().children('th').length;
+                    var newCount = $("#grid-rules tfoot tr td").first().attr("colspan");
+                    $("#grid-rules tfoot tr td").first().attr("colspan", newCount - firstRow);
+                }
+            });
+
+            $("#rule\\.nordr").change(function(){
+                if ($("#rule\\.nordr").prop('checked')) {
+                    $("#row_rule\\.target").addClass("hidden");
+                    $("#row_rule\\.target :input").val('').prop("disabled", true);
+                    $("#row_rule\\.target_port").addClass("hidden");
+                    $("#row_rule\\.target_port :input").val('').prop("disabled", true);
+                    $("#row_rule\\.pool_options").addClass("hidden");
+                    $("#row_rule\\.pool_options :input").val('').prop("disabled", true);    
+                    $("#row_rule\\.filter_rule").addClass("hidden");
+                    $("#row_rule\\.filter_rule :input").val('').prop("disabled", true);
+                } else {
+                    $("#row_rule\\.target").removeClass("hidden");
+                    $('#select_rule\\.target select').val(target).prop('disabled', false);
+                    $('#select_rule\\.target button').prop('disabled', false);
+                    $('#select_rule\\.target input').val(targetInput).prop('disabled', false);
+                    $("#row_rule\\.target_port").removeClass("hidden");
+                    $("#row_rule\\.target_port :input").val(target_port).prop('disabled', false);
+                    $("#row_rule\\.pool_options").removeClass("hidden");
+                    $("#row_rule\\.pool_options :input").val(pool_options).prop('disabled', false);
+                    $("#row_rule\\.filter_rule").removeClass("hidden");
+                    $("#row_rule\\.filter_rule :input").val(filter_rule).prop('disabled', false);
+                    $('.dropdown-toggle').removeClass('disabled');
+                }
+                $('#select_rule\\.target select').trigger('change');
+                $('#select_rule\\.pool_options select').trigger('change');
+                $('#select_rule\\.filter_rule select').trigger('change');
+            });
+
+            $(".dropdown-item-checkbox").change(function() {
+                $("#grid-rules thead tr:first").remove();
+            });
+        }
     });
 </script>
 

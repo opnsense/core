@@ -1,0 +1,152 @@
+<form>
+    <field>
+        <id>rule.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>Enable this rule</help>
+    </field>
+    <field>
+        <id>rule.sequence</id>
+        <label>Sequence</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>rule.nordr</id>
+        <label>No RDR (NOT)</label>
+        <type>checkbox</type>
+        <help>Enabling this option will disable redirection for traffic matching this rule.
+Hint: this option is rarely needed, don't use this unless you know what you're doing.</help>
+    </field>
+    <field>
+        <id>rule.interface</id>
+        <label>Interface</label>
+        <type>select_multiple</type>
+        <help>Choose which interface this rule applies to.
+Hint: in most cases, you'll want to use WAN here.</help>
+    </field>
+    <field>
+        <id>rule.ipprotocol</id>
+        <label>TCP/IP Version</label>
+        <type>dropdown</type>
+        <help>Select the Internet Protocol version this rule applies to</help>
+    </field>
+    <field>
+        <id>rule.protocol</id>
+        <label>Protocol</label>
+        <type>dropdown</type>
+        <help>Choose which IP protocol this rule should match.
+Hint: in most cases, you should specify TCP  here.</help>
+    </field>
+    <field>
+        <id>rule.source_not</id>
+        <label>Source / Invert</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Use this option to invert the sense of the match.</help>
+    </field>
+    <field>
+        <id>rule.source_net</id>
+        <label>Source</label>
+        <type>dropdown</type>
+        <style>net_selector</style>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>rule.source_port</id>
+        <label>Source Port</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Source port number or well known name (imap, imaps, http, https, ...), for ranges use a dash. When using the TCP or UDP protocols, specify the source port or port range for this rule. This is usually random and almost never equal to the destination port range (and should usually be 'any').</help>
+    </field>
+    <field>
+        <id>rule.destination_not</id>
+        <label>Destination / Invert</label>
+        <type>checkbox</type>
+        <help>Use this option to invert the sense of the match.</help>
+    </field>
+    <field>
+        <id>rule.destination_net</id>
+        <label>Destination</label>
+        <type>dropdown</type>
+        <style>net_selector</style>
+    </field>
+    <field>
+        <id>rule.destination_port</id>
+        <label>Destination Port</label>
+        <type>text</type>
+        <help>Destination port number or well known name (imap, imaps, http, https, ...), for ranges use a dash. When using the TCP or UDP protocols, specify the port or port range for the destination of the packet for this mapping.</help>
+    </field>
+    <field>
+        <id>rule.target</id>
+        <label>Redirect Target IP</label>
+        <type>dropdown</type>
+        <style>net_selector</style>
+        <help>Enter the internal IP address of the server on which you want to map the ports.
+e.g. 192.168.1.12</help>
+    </field>
+    <field>
+        <id>rule.target_port</id>
+        <label>Redirect Target Port</label>
+        <type>text</type>
+        <help>Destination port number or well known name (imap, imaps, http, https, ...). Specify the port on the machine with the IP address entered above. In case of a port range, specify the beginning port of the range (the end port will be calculated automatically).</help>
+    </field>
+    <field>
+        <id>rule.pool_options</id>
+        <label>Pool Options:</label>
+        <type>dropdown</type>
+        <help><![CDATA[Only Round Robin types work with Host Aliases. Any type can be used with a Subnet.<br />
+* Round Robin: Loops through the translation addresses.<br />
+* Random: Selects an address from the translation address pool at random.<br />
+* Source Hash: Uses a hash of the source address to determine the translation address, ensuring that the redirection address is always the same for a given source.<br />
+* Bitmask: Applies the subnet mask and keeps the last portion identical; 10.0.1.50 -> x.x.x.50.<br />
+* Sticky Address: The Sticky Address option can be used with the Random and Round Robin pool types to ensure that a particular source address is always mapped to the same translation address.]]></help>
+    </field>
+    <field>
+        <id>rule.log</id>
+        <label>Log</label>
+        <type>checkbox</type>
+        <help>Log packets that are handled by this rule</help>
+    </field>
+    <field>
+        <id>rule.categories</id>
+        <label>Categories</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <help>You may enter or select a category here to group firewall rules (not parsed).</help>
+    </field>
+    <field>
+        <id>rule.description</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>You may enter a description here for your reference (not parsed).</help>
+    </field>
+    <field>
+        <id>rule.set_tag</id>
+        <label>Set Local Tag</label>
+        <type>text</type>
+        <help>You can mark a packet matching this rule and use this mark to match on other NAT/filter rules.</help>
+    </field>
+    <field>
+        <id>rule.match_tag</id>
+        <label>Match Local Tag</label>
+        <type>text</type>
+        <help>You can match packet on a mark placed before on another rule.</help>
+    </field>
+    <field>
+        <id>rule.no_xmlrpc_sync</id>
+        <label>No XMLRPC Sync</label>
+        <type>checkbox</type>
+        <help>Hint: This prevents the rule on Master from automatically syncing to other CARP members. This does NOT prevent the rule from being overwritten on Slave.</help>
+    </field>
+    <field>
+        <id>rule.nat_reflection</id>
+        <label>NAT Reflection</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>rule.filter_rule</id>
+        <label>Filter Rule Association</label>
+        <type>dropdown</type>
+        <help>NOTE: The "pass" selection does not work properly with Multi-WAN. It will only work on an interface containing the default gateway.</help>
+    </field>
+</form>

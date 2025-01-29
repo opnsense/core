@@ -9,6 +9,9 @@
             </SourceNat>
         </Automation>
         <NAT>
+            <PortForward order="100" VisibleName="Port Forward" url="/ui/firewall/port_forward/">
+                <FilterRef url="/ui/firewall/port_forward#*" visibility="hidden"/>
+            </PortForward>
             <OneToOne order="200" VisibleName="One-to-One" url="/ui/firewall/one_to_one/">
                 <FilterRef url="/ui/firewall/one_to_one#*" visibility="hidden"/>
             </OneToOne>

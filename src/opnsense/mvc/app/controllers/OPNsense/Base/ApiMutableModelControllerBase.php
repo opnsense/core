@@ -543,11 +543,15 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 }
             }
             if ($node != null) {
+                $validate = true;
                 $node->setNodes($this->request->getPost($post_field));
                 if (is_array($overlay)) {
                     $node->setNodes($overlay);
                 }
-                $result = $this->validate($node, $post_field, true);
+                if (strpos($node->filter_rule, "nat_") !== FALSE) {
+                    $validate = false;
+                }
+                $result = $this->validate($node, $post_field, $validate);
                 if (empty($result['validations'])) {
                     $this->setBaseHook($node);
                     // save config if validated correctly

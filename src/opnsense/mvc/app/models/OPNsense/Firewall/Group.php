@@ -49,6 +49,7 @@ class Group extends BaseModel
         $sources[] = ['OPNsense', 'Firewall', 'Filter', 'rules', 'rule'];
         $sources[] = ['OPNsense', 'Firewall', 'Filter', 'snatrules', 'rule'];
         $sources[] = ['OPNsense', 'Firewall', 'Filter', 'npt', 'rule'];
+        $sources[] = ['OPNsense', 'Firewall', 'Filter', 'portforward', 'rule'];
 
         foreach ($sources as $aliasref) {
             $cfgsection = Config::getInstance()->object();

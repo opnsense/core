@@ -46,7 +46,7 @@ class Filter extends BaseModel
         $port_protos = ['TCP', 'UDP', 'TCP/UDP'];
         // standard model validations
         $messages = parent::performValidation($validateFullModel);
-        foreach ([$this->rules->rule, $this->snatrules->rule] as $rules) {
+        foreach ([$this->rules->rule, $this->snatrules->rule, $this->portforward->rule] as $rules) {
             foreach ($rules->iterateItems() as $rule) {
                 if ($validateFullModel || $rule->isFieldChanged()) {
                     // port / protocol validation
@@ -300,6 +300,30 @@ class Filter extends BaseModel
                             gettext("External subnet should match internal subnet."),
                             $rule->external->__reference
                         ));
+                    }
+                }
+            }
+        }
+        /* port forward */
+        foreach ($this->portforward->rule->iterateItems() as $rule) {
+            if ($validateFullModel || $rule->isFieldChanged()) {
+                if ((string)$rule->nordr==1 && (!empty((string)$rule->target) || !empty((string)$rule->target_port))) {
+                    $messages->appendMessage(new Message(
+                        gettext("Redirection of Target IP / Port is not possible."),
+                        $rule->nordr->__reference
+                    ));
+                }
+                if ((string)$rule->nordr==0 && empty((string)$rule->target)) {
+                    $messages->appendMessage(new Message(
+                        gettext("A value is required."),
+                        $rule->target->__reference
+                    ));                    
+                }
+                if (!empty((string)$rule->filter_rule)) {
+                    if ($rule->filter_rule == 'add_associated') {
+                        $rule->filter_rule = uniqid("nat_", true);
+                    } elseif ($rule->filter_rule == 'add_unassociated') {
+                        $rule->filter_rule = '';
                     }
                 }
             }

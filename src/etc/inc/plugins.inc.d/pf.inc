@@ -192,6 +192,10 @@ function pf_firewall($fw)
         $fw->registerDNatRule(500, $rule->serialize());
     }
 
+    foreach ($mdlFilter->portforward->rule->sortedBy(['sequence']) as $key => $rule) {
+        $fw->registerForwardRule(600, $rule->serialize());
+    }
+
     foreach ($mdlFilter->npt->rule->sortedBy(['sequence']) as $key => $rule) {
         $fw->registerNptRule(50, $rule->serialize());
     }

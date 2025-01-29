@@ -27,4 +27,11 @@
             <pattern>api/firewall/one_to_one/*</pattern>
         </patterns>
     </page-firewall-nat-1-1-edit>
+    <page-firewall-nat-portforward>
+        <name>Firewall: NAT: Port Forward</name>
+        <patterns>
+            <pattern>ui/firewall/port_forward/*</pattern>
+            <pattern>api/firewall/port_forward/*</pattern>
+        </patterns>
+    </page-firewall-nat-portforward>
 </acl>
