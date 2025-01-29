@@ -83,7 +83,7 @@
         /**
          * Reservations csv download and upload
          */
-         const $tfoot = grid_reservations.find("tfoot td:last");
+        const $tfoot = grid_reservations.find("tfoot td:last");
         $tfoot.append(`
             <button
                 id="upload_reservations"
