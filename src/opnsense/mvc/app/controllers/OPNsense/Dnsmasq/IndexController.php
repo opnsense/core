@@ -35,6 +35,8 @@ class IndexController extends \OPNsense\Base\IndexController
         $this->view->generalForm = $this->getForm("general");
         $this->view->formDialogEditHostOverride = $this->getForm("dialogHostOverride");
         $this->view->formGridHostOverride = $this->getFormGrid("dialogHostOverride");
+        $this->view->formDialogEditDomainOverride = $this->getForm("dialogDomainOverride");
+        $this->view->formGridDomainOverride = $this->getFormGrid("dialogDomainOverride");
         $this->view->pick('OPNsense/Dnsmasq/index');
     }
 }

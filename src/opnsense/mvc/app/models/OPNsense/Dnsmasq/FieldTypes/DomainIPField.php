@@ -28,35 +28,32 @@
 
 namespace OPNsense\Dnsmasq\FieldTypes;
 
-use OPNsense\Base\FieldTypes\HostnameField;
+use OPNsense\Base\FieldTypes\NetworkField;
 
-class AliasesField extends HostnameField
+class DomainIPField extends NetworkField
 {
     /**
      * {@inheritdoc}
      */
     public function setValue($value)
     {
-        if (is_a($value, 'SimpleXMLElement') && isset($value->item)) {
-            /* auto convert to simple text blob */
-            $tmp = [];
-            $comments = [];
-            foreach ($value->item as $child) {
-                if (empty((string)$child->domain)) {
-                    continue;
+        if (is_a($value, 'SimpleXMLElement')) {
+            if (strpos((string)$value, '#') > 1 || strpos((string)$value, '@') > 1) {
+                /* convert legacy input */
+                $parts = explode("@", (string)$value);
+                if (count($parts) > 1) {
+                    $this->getParentNode()->srcip = $parts[1];
                 }
-                if (!empty((string)$child->host)) {
-                    $fqdn = sprintf("%s.%s", $child->host, $child->domain);
-                } else {
-                    $fqdn = (string)$child->domain;
+                $parts = explode("#", $parts[0]);
+                if (count($parts) > 1) {
+                    $this->getParentNode()->port = $parts[1];
                 }
-                $tmp[] = $fqdn;
-                if (!empty((string)$child->description)) {
-                    $comments[] = sprintf("[%s] %s", $fqdn, $child->description);
-                }
+                return parent::setValue($parts[0]);
+            } else {
+                return parent::setValue($value);
             }
-            $this->getParentNode()->comments = implode("\n", $comments);
-            return parent::setValue(implode(",", $tmp));
+        } elseif ($value == '!') {
+            return parent::setValue('');
         } elseif (!empty($value)) {
             /* update only */
             return parent::setValue($value);

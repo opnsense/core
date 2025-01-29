@@ -37,7 +37,7 @@ use OPNsense\Base\ApiMutableServiceControllerBase;
 class ServiceController extends ApiMutableServiceControllerBase
 {
     protected static $internalServiceClass = '\OPNsense\Dnsmasq\Dnsmasq';
-    protected static $internalServiceTemplate = 'OPNsense/Dnsmasq';
+    //protected static $internalServiceTemplate = 'OPNsense/Dnsmasq';
     protected static $internalServiceEnabled = 'enable';
     protected static $internalServiceName = 'dnsmasq';
 }

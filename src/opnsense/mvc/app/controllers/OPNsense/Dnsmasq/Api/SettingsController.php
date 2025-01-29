@@ -60,8 +60,28 @@ class SettingsController extends ApiMutableModelControllerBase
         return $this->delBase('hosts', $uuid);
     }
 
-    public function toggleHostAction($uuid)
+    public function searchDomainAction()
     {
-        return $this->toggleBase('hosts', $uuid);
+        return $this->searchBase('domainoverrides');
+    }
+
+    public function getDomainAction($uuid = null)
+    {
+        return $this->getBase('domainoverride', 'domainoverrides', $uuid);
+    }
+
+    public function setDomainAction($uuid)
+    {
+        return $this->setBase('domainoverride', 'domainoverrides', $uuid);
+    }
+
+    public function addDomainAction()
+    {
+        return $this->addBase('domainoverride', 'domainoverrides');
+    }
+
+    public function delDomainAction($uuid)
+    {
+        return $this->delBase('domainoverride', $uuid);
     }
 }

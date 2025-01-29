@@ -20,8 +20,12 @@
     <field>
         <id>host.aliases</id>
         <label>Aliases</label>
-        <type>text</type>
+        <type>select_multiple</type>
+        <style>tokenize</style>
         <help>list of aliases (fqdn)</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>host.descr</id>

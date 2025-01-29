@@ -38,9 +38,17 @@
             'get':'/api/dnsmasq/settings/get_host/',
             'set':'/api/dnsmasq/settings/set_host/',
             'add':'/api/dnsmasq/settings/add_host/',
-            'del':'/api/dnsmasq/settings/del_host/',
-            'toggle':'/api/dnsmasq/settings/toggle_host/'
+            'del':'/api/dnsmasq/settings/del_host/'
         });
+
+        $("#{{formGridDomainOverride['table_id']}}").UIBootgrid({
+            'search':'/api/dnsmasq/settings/search_domain',
+            'get':'/api/dnsmasq/settings/get_domain/',
+            'set':'/api/dnsmasq/settings/set_domain/',
+            'add':'/api/dnsmasq/settings/add_domain/',
+            'del':'/api/dnsmasq/settings/del_domain/'
+        });
+
 
         $("#reconfigureAct").SimpleActionButton({
             onPreAction: function() {
@@ -59,6 +67,7 @@
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" href="#general">{{ lang._('General') }}</a></li>
     <li><a data-toggle="tab" href="#hosts">{{ lang._('Hosts') }}</a></li>
+    <li><a data-toggle="tab" href="#domains">{{ lang._('Domains') }}</a></li>
 </ul>
 
 <div class="tab-content content-box">
@@ -69,6 +78,10 @@
     <!-- Tab: Hosts -->
     <div id="hosts" class="tab-pane fade in">
         {{ partial('layout_partials/base_bootgrid_table', formGridHostOverride)}}
+    </div>
+    <!-- Tab: Domains -->
+    <div id="domains" class="tab-pane fade in">
+        {{ partial('layout_partials/base_bootgrid_table', formGridDomainOverride)}}
     </div>
 </div>
 
@@ -89,3 +102,4 @@
 
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditHostOverride,'id':formGridHostOverride['edit_dialog_id'],'label':lang._('Edit Host Override')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditDomainOverride,'id':formGridDomainOverride['edit_dialog_id'],'label':lang._('Edit Domain Override')])}}
