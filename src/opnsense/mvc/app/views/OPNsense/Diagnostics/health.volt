@@ -42,9 +42,6 @@ POSSIBILITY OF SUCH DAMAGE.
 		$('#spinner').show();
 		healthGraph.initialize().then(async () => {
 			const rrdOptions = healthGraph.getRRDList();
-			// present options
-			console.log(rrdOptions);
-
 			for (const [category, item] of Object.entries(rrdOptions.data)) {
 				let $select = $(`
 					<select id="health-type-${category}"
