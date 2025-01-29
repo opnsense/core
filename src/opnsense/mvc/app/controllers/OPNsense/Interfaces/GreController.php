@@ -33,6 +33,8 @@ class GreController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->pick('OPNsense/Interface/gre');
+
         $this->view->formDialogGre = $this->getForm("dialogGre");
+        $this->view->formGridGre = $this->getFormGrid("dialogGre", null, "greChangeMessage");
     }
 }
