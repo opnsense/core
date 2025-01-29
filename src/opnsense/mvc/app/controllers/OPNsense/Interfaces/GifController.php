@@ -33,6 +33,8 @@ class GifController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->pick('OPNsense/Interface/gif');
+
         $this->view->formDialogGif = $this->getForm("dialogGif");
+        $this->view->formGridGif = $this->getFormGrid("dialogGif", null, "gifChangeMessage");
     }
 }
