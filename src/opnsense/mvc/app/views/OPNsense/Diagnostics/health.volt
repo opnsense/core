@@ -98,10 +98,16 @@ POSSIBILITY OF SUCH DAMAGE.
 
 			$('#detail-select').change(async function() {
 				$('#spinner').show();
-				var selectedValue = $(this).val();
-				await healthGraph.update(null, selectedValue);
+				await healthGraph.update(null, $(this).val());
 				$('#spinner').hide();
 			});
+
+            $("#stacked-select").change(async function() {
+				$('#spinner').show();
+				await healthGraph.update(null, null, $(this).is(':checked'));
+				$('#spinner').hide();
+			});
+
 		}).catch((err) => {
 			$('#info-disabled').show();
 			$('#main').hide();
@@ -160,7 +166,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <select id="health-subcategory-select" class="selectpicker" data-width="200px" data-live-search="true" data-container="body"></select>
         </div>
 
-        <div class="label-select-pair ">
+        <div class="label-select-pair">
             <label for="detail-select"><b>{{ lang._('Granularity') }}</b></label>
             <select id="detail-select" class="selectpicker" data-width="200px">
                 <option value="0">{{ lang._('Default (%d minute)') | format('1') }}</option>
@@ -168,6 +174,11 @@ POSSIBILITY OF SUCH DAMAGE.
                 <option value="2">{{ lang._('%d hour') | format('1') }}</option>
                 <option value="3">{{ lang._('%d hours') | format('24') }}</option>
             </select>
+        </div>
+
+        <div class="label-select-pair" style="height: 55px">
+            <label for="stacked-select"><b>{{ lang._('Stacked') }}</b></label>
+            <input id="stacked-select" type="checkbox"/>
         </div>
 
         <button id="export" class="btn btn-default" data-toggle="tooltip" data-original-title="{{ lang._('Export current selection as CSV')}}" style="align-self: flex-end;">

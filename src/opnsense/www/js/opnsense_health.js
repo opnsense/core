@@ -35,6 +35,7 @@ class HealthGraph {
 
         this.currentSystem = null;
         this.currentDetailLevel = 0;
+        this.currentStacked = false;
     }
 
     async initialize() {
@@ -54,17 +55,22 @@ class HealthGraph {
         return this.rrdList;
     }
 
-    async update(system = null, detailLevel = null) {
-        if (system === null)
+    async update(system = null, detailLevel = null, stacked = null) {
+        if (system === null) {
             system = this.currentSystem;
-        else
+        } else {
             this.currentSystem = system;
-
-
-        if (detailLevel === null)
+        }
+        if (detailLevel === null) {
             detailLevel = this.currentDetailLevel;
-        else
+        } else {
             this.currentDetailLevel = detailLevel;
+        }
+        if (stacked === null) {
+            stacked = this.currentStacked;
+        } else {
+            this.currentStacked = stacked;
+        }
 
         const data = await this._fetchData();
         const formatted = this._formatData(data.set);
@@ -73,6 +79,7 @@ class HealthGraph {
 
         this.chart.data.datasets = formatted;
         this.chart.options.scales.y.title.text = data['y-axis_label'];
+        this.chart.options.scales.y.stacked = stacked;
         this.chart.options.plugins.title.text = data['title'];
         this.chart.options.plugins.zoom.limits.x.minRange = this._getMinRange(stepSize * 1000);
         this.chart.update();
