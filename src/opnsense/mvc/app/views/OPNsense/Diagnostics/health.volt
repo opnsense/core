@@ -170,7 +170,7 @@ POSSIBILITY OF SUCH DAMAGE.
             </select>
         </div>
 
-        <button id="export" class="btn btn-default" data-toggle="tooltip" data-original-title="{{ lang._('Export as CSV')}}" style="align-self: flex-end;">
+        <button id="export" class="btn btn-default" data-toggle="tooltip" data-original-title="{{ lang._('Export current selection as CSV')}}" style="align-self: flex-end;">
             <span class="fa fa-cloud-download"></span>
         </button>
     </div>
