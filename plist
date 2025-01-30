@@ -2054,6 +2054,8 @@
 /usr/local/opnsense/www/js/chartjs-plugin-colorschemes.min.js
 /usr/local/opnsense/www/js/chartjs-plugin-matrix.min.js
 /usr/local/opnsense/www/js/chartjs-plugin-streaming.js
+/usr/local/opnsense/www/js/chartjs-plugin-zoom.min.js
+/usr/local/opnsense/www/js/chartjs-scale-timestack.min.js
 /usr/local/opnsense/www/js/d3.min.js
 /usr/local/opnsense/www/js/d3.min.js.LICENSE
 /usr/local/opnsense/www/js/gridstack-all.min.js
@@ -2063,12 +2065,14 @@
 /usr/local/opnsense/www/js/jquery.bootgrid.js
 /usr/local/opnsense/www/js/jquery.qrcode.js
 /usr/local/opnsense/www/js/jquery.qrcode.js.LICENSE
+/usr/local/opnsense/www/js/luxon.min.js
 /usr/local/opnsense/www/js/moment-with-locales.min.js
 /usr/local/opnsense/www/js/nv.d3.min.js
 /usr/local/opnsense/www/js/nv.d3.min.js.LICENSE.md
 /usr/local/opnsense/www/js/opnsense-treeview.js
 /usr/local/opnsense/www/js/opnsense.js
 /usr/local/opnsense/www/js/opnsense_bootgrid_plugin.js
+/usr/local/opnsense/www/js/opnsense_health.js
 /usr/local/opnsense/www/js/opnsense_status.js
 /usr/local/opnsense/www/js/opnsense_theme.js
 /usr/local/opnsense/www/js/opnsense_ui.js
