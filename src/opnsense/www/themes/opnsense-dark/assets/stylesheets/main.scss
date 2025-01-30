@@ -308,8 +308,6 @@ main.page-content.col-lg-12 {
   width: 70px;
   overflow: hidden;
   background-color: transparent !important;
-  border: none !important;
-  border-right: 1px solid lighten(map-get($colors, content-background), 10%) !important;
   > div {
     &.row {
       height: 100% !important;
