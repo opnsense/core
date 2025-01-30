@@ -114,12 +114,15 @@ class SystemhealthController extends ApiControllerBase
 
     /**
      * retrieve SystemHealth Data (previously called RRD Graphs)
+     *
+     * XXX: $inverse to be removed for 25.7
+     *
      * @param string $rrd
      * @param bool $inverse
      * @param int $detail
      * @return array
      */
-    public function getSystemHealthAction($rrd = "", $detail = -1)
+    public function getSystemHealthAction($rrd = "", $inverse = 0, $detail = -1)
     {
         $rrd_details = $this->getRRDdetails($rrd)["data"];
         $response = (new Backend())->configdpRun('health fetch', [$rrd_details['filename']]);
@@ -134,9 +137,7 @@ class SystemhealthController extends ApiControllerBase
                     $response['set']['data'][] = $record;
                 }
             }
-            for ($i = 0; $i < count($response['sets']); $i++) {
-                unset($response['sets'][$i]['ds']);
-            }
+            unset($response['sets']);
             if (!empty($rrd_details["title"])) {
                 $response['title'] = $rrd_details["title"] . " | " . ucfirst($rrd_details['itemName']);
             } else {
@@ -145,7 +146,7 @@ class SystemhealthController extends ApiControllerBase
             $response['y-axis_label'] = $rrd_details["y-axis_label"];
             return $response;
         } else {
-            return ["sets" => [], "set" => [], "title" => "error", "y-axis_label" => ""];
+            return ["set" => [], "title" => "error", "y-axis_label" => ""];
         }
     }
 
@@ -168,7 +169,7 @@ class SystemhealthController extends ApiControllerBase
 
     public function exportAsCSVAction($rrd = "", $detail = -1)
     {
-        $data = $this->getSystemHealthAction($rrd, $detail);
+        $data = $this->getSystemHealthAction($rrd, 0, $detail);
         if (empty($data['set']['data'])) {
             return;
         }
@@ -180,8 +181,7 @@ class SystemhealthController extends ApiControllerBase
         for ($i = 0; $i < $length; $i++) {
             $timestamp = $data['set']['data'][0]['values'][$i][0] / 1000;
             $part = [
-                "timestamp" => $timestamp,
-                "date_time" => date('D M d Y H:i:s O', $timestamp) . ' ' . date_default_timezone_get()
+                "iso_time" => date("c", $timestamp)
             ];
             $values = [];
             for ($j = 0; $j < $numKeys; $j++) {

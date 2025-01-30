@@ -163,10 +163,10 @@ POSSIBILITY OF SUCH DAMAGE.
         <div class="label-select-pair ">
             <label for="detail-select"><b>{{ lang._('Granularity') }}</b></label>
             <select id="detail-select" class="selectpicker" data-width="200px">
-                <option value="0">Default (1 minute)</option>
-                <option value="1">5 minutes</option>
-                <option value="2">1 hour</option>
-                <option value="3">24 hours</option>
+                <option value="0">{{ lang._('Default (%d minute)') | format('1') }}</option>
+                <option value="1">{{ lang._('%d minutes') | format('5') }}</option>
+                <option value="2">{{ lang._('%d hour') | format('1') }}</option>
+                <option value="3">{{ lang._('%d hours') | format('24') }}</option>
             </select>
         </div>
 

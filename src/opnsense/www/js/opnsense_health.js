@@ -93,7 +93,7 @@ class HealthGraph {
     }
 
     async _fetchData() {
-        const data = await fetch(`/api/diagnostics/systemhealth/getSystemHealth/${this.currentSystem}/${this.currentDetailLevel}`)
+        const data = await fetch(`/api/diagnostics/systemhealth/getSystemHealth/${this.currentSystem}/0/${this.currentDetailLevel}`)
             .then(response => response.json());
         return data;
     }
