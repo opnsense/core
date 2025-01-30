@@ -42,53 +42,59 @@ POSSIBILITY OF SUCH DAMAGE.
 		$('#spinner').show();
 		healthGraph.initialize().then(async () => {
 			const rrdOptions = healthGraph.getRRDList();
-			for (const [category, item] of Object.entries(rrdOptions.data)) {
-				let $select = $(`
-					<select id="health-type-${category}"
-							data-category-id="${category}"
-							data-title="${category[0].toUpperCase()}${category.slice(1)}"
-							class="selectpicker"
-							data-width="200px"
-							data-live-search="true"
-							data-container="body">
-					</select>
-				`);
+			for (const [category, subitems] of Object.entries(rrdOptions.data)) {
 
-				rrdOptions.data[category].forEach((sub) => {
-					let optionText = sub;
-					if (sub in rrdOptions.interfaces) {
-						optionText = rrdOptions.interfaces[sub].descr;
-					}
-
-					let $option = $('<option>').text(optionText).val(sub);
-					$select.append($option);
-				})
-
-
-				$select.on('changed.bs.select', async function() {
-					$('#spinner').show();
-					let categoryId = $(this).data('category-id');
-					$(this).data('title', `${categoryId[0].toUpperCase()}${categoryId.slice(1)}`);
-					let subValue = $(this).val();
-					let system = `${subValue}-${categoryId}`;
-					$('.selectpicker').selectpicker('refresh');
-					await healthGraph.update(system);
-					$('#spinner').hide();
-				});
-
-				$('#health-header').append($select);
+                let $select = $('#health-category-select');
+                let $option = $('<option>', {
+                    value: category,
+                    text: category[0].toUpperCase() + category.slice(1)
+                });
+                $option.appendTo($select);
 			}
+
+            $('#health-category-select').on('changed.bs.select', async function() {
+                $subselect = $('#health-subcategory-select');
+                $subselect.empty();
+                const selectedCategory = $(this).val();
+
+                rrdOptions.data[selectedCategory].forEach((sub) => {
+                    let optionText = sub;
+                    if (sub in rrdOptions.interfaces) {
+                        optionText = rrdOptions.interfaces[sub].descr;
+                    }
+                    let $option = $('<option>', {
+                        value: sub,
+                        text: optionText,
+                    }).appendTo($subselect);
+                });
+
+                $('#health-subcategory-select').selectpicker('refresh');
+                // trigger first selection
+                $('#health-subcategory-select').val(rrdOptions.data[selectedCategory][0]).trigger('changed.bs.select');
+            });
+
+
+            $('#health-subcategory-select').on('changed.bs.select', async function() {
+                $('#spinner').show();
+                let sub = $(this).val();
+                let category = $('#health-category-select').val();
+                let system = `${sub}-${category}`;
+                await healthGraph.update(system);
+                $('#spinner').hide();
+            });
 
 			$('.selectpicker').selectpicker('refresh');
 
-			// initial graph render
-			await healthGraph.update();
-			$('#spinner').hide();
-
+            // trigger event for first category
+            $('#health-category-select').val(Object.keys(rrdOptions.data)[0]).trigger('changed.bs.select');
 
 			$("#reset-zoom").click(function() {
 				healthGraph.resetZoom();
 			});
+
+            $("#export").click(function() {
+                healthGraph.exportData();
+            })
 
 			$('#detail-select').change(async function() {
 				$('#spinner').show();
@@ -106,12 +112,32 @@ POSSIBILITY OF SUCH DAMAGE.
 </script>
 
 <style>
+.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.label-select-pair {
+    margin: 0 15px;
+    text-align: center;
+}
+
+.label-select-pair label {
+    display: block;
+    margin-bottom: 5px;
+}
+
 .spinner-overlay {
 	position: absolute;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	font-size: 32px; /* Adjust size */
+	font-size: 32px;
+}
+
+.mb-2 {
+    margin-bottom: 0.5rem;
 }
 </style>
 
@@ -122,8 +148,32 @@ POSSIBILITY OF SUCH DAMAGE.
 		<a href="/reporting_settings.php">{{ lang._('Go to the Reporting configuration') }}</a>
 	</div>
 
-	<div id="health-header" class="panel-heading">
-	</div>
+	<div id="health-header" class="panel-heading centered">
+        <button id="reset-zoom" class="btn btn-primary" style="align-self: flex-end;">Reset zoom</button>
+
+        <div class="label-select-pair">
+            <label for="health-category-select"><b>{{ lang._('Category') }}</b></label>
+            <select id="health-category-select" class="selectpicker" data-width="200px" data-container="body"></select>
+        </div>
+        <div class="label-select-pair">
+            <label for="health-subcategory-select"><b>{{ lang._('Subject') }}</b></label>
+            <select id="health-subcategory-select" class="selectpicker" data-width="200px" data-live-search="true" data-container="body"></select>
+        </div>
+
+        <div class="label-select-pair ">
+            <label for="detail-select"><b>{{ lang._('Granularity') }}</b></label>
+            <select id="detail-select" class="selectpicker" data-width="200px">
+                <option value="0">Default (1 minute)</option>
+                <option value="1">5 minutes</option>
+                <option value="2">1 hour</option>
+                <option value="3">24 hours</option>
+            </select>
+        </div>
+
+        <button id="export" class="btn btn-default" data-toggle="tooltip" data-original-title="{{ lang._('Export as CSV')}}" style="align-self: flex-end;">
+            <span class="fa fa-cloud-download"></span>
+        </button>
+    </div>
 
 	<div id="main" class="panel-body">
 		<div class="chart-container" style="position: relative; height: 60vh;">
@@ -133,12 +183,5 @@ POSSIBILITY OF SUCH DAMAGE.
 	</div>
 
 	<div class="panel-footer">
-		<button type="button" id="reset-zoom">Reset zoom</button>
-		<select id="detail-select" class="form-control">
-            <option value="0">Default (1 minute)</option>
-            <option value="1">5 minutes</option>
-            <option value="2">1 hour</option>
-            <option value="3">24 hours</option>
-        </select>
 	</div>
 </div>

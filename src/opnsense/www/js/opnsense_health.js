@@ -83,13 +83,17 @@ class HealthGraph {
         this.chart.resetZoom();
     }
 
+    exportData() {
+        window.open(`/api/diagnostics/systemhealth/exportAsCSV/${this.currentSystem}/${this.currentDetailLevel}`);
+    }
+
     async _fetchRRDList() {
         const list = await fetch(`/api/diagnostics/systemhealth/getRRDlist`).then(response => response.json());
         return list;
     }
 
     async _fetchData() {
-        const data = await fetch(`/api/diagnostics/systemhealth/getSystemHealth/${this.currentSystem}/0/${this.currentDetailLevel}`)
+        const data = await fetch(`/api/diagnostics/systemhealth/getSystemHealth/${this.currentSystem}/${this.currentDetailLevel}`)
             .then(response => response.json());
         return data;
     }
