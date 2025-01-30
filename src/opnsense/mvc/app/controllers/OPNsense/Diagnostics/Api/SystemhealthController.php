@@ -115,14 +115,14 @@ class SystemhealthController extends ApiControllerBase
     /**
      * retrieve SystemHealth Data (previously called RRD Graphs)
      *
-     * XXX: $inverse to be removed for 25.7
+     * XXX: $unused (previously $inverse) to be removed for 25.7
      *
      * @param string $rrd
      * @param bool $inverse
      * @param int $detail
      * @return array
      */
-    public function getSystemHealthAction($rrd = "", $inverse = 0, $detail = -1)
+    public function getSystemHealthAction($rrd = "", $unused = 0, $detail = -1)
     {
         $rrd_details = $this->getRRDdetails($rrd)["data"];
         $response = (new Backend())->configdpRun('health fetch', [$rrd_details['filename']]);
