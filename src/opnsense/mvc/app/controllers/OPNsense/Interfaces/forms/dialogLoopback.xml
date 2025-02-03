@@ -1,7 +1,7 @@
 <form>
     <field>
         <id>loopback.deviceId</id>
-        <label>deviceId</label>
+        <label>Device ID</label>
         <type>info</type>
     </field>
     <field>
