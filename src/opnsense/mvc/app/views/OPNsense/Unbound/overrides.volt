@@ -115,8 +115,8 @@ $( document ).ready(function() {
     });
 
     /**
-    * Reconfigure unbound - activate changes
-    */
+     * Reconfigure unbound - activate changes
+     */
     $("#reconfigureAct").SimpleActionButton();
     updateServiceControlUI('unbound');
 });
