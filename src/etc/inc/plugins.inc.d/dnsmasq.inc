@@ -33,7 +33,7 @@ function dnsmasq_enabled()
 {
     global $config;
 
-    return isset($config['dnsmasq']['enable']);
+    return !empty($config['dnsmasq']['enable']);
 }
 
 function dnsmasq_configure()
@@ -51,7 +51,7 @@ function dnsmasq_services()
 
     $services = [];
 
-    if (!dnsmasq_enabled()) {
+    if (!dnsmasq_enabled() && !isvalidpid('/var/run/dnsmasq.pid')) {
         return $services;
     }
 
@@ -117,91 +117,76 @@ function dnsmasq_configure_do($verbose = false)
     }
 
     if (!empty($config['dnsmasq']['interface'])) {
-        $interfaces = explode(',', $config['dnsmasq']['interface']);
-        array_unshift($interfaces, 'lo0');
-
-        $addresses = [];
-
-        foreach (interfaces_addresses($interfaces) as $tmpaddr => $info) {
-            if ($info['name'] == 'lo0' && $info['family'] == 'inet' && $tmpaddr != '127.0.0.1') {
-                /* allow other DNS services to bind to loopback aliases */
-                continue;
+        $ifs = [];
+        foreach (explode(',', $config['dnsmasq']['interface']) as $ifname) {
+            if (!empty($config['interfaces'][$ifname]) && !empty($config['interfaces'][$ifname]['if'])) {
+                $ifs[] = $config['interfaces'][$ifname]['if'];
             }
-
-            if ($info['scope']) {
-                /* link-local does not seem to be supported */
-                continue;
-            }
-
-            if (!$info['bind']) {
-                continue;
-            }
-
-            $addresses[] = $tmpaddr;
         }
+        $args .= " --interface=" . implode(',', $ifs) . " ";
 
-        foreach ($addresses as $address) {
-            $args .= " --listen-address={$address} ";
-        }
-
-        if (!empty($addresses) && isset($config['dnsmasq']['strictbind'])) {
+        if (!empty($addresses) && !empty($config['dnsmasq']['strictbind'])) {
             $args .= ' --bind-interfaces ';
         }
     }
 
-    if (isset($config['dnsmasq']['no_private_reverse'])) {
+    if (!empty($config['dnsmasq']['no_private_reverse'])) {
         $args .= ' --bogus-priv ';
     }
 
     foreach (config_read_array('dnsmasq', 'domainoverrides') as $override) {
-        if ($override['ip'] == '!') {
-            $override['ip'] = '';
+        $ip = $override['ip'];
+        if (!empty($ip) && !empty($override['port'])) {
+            $ip .= '#' . $override['port'];
+        }
+        if (!empty($ip) && !empty($override['srcip'])) {
+            $ip .= '@' . $override['srcip'];
         }
 
-        $args .= ' --server=' . escapeshellarg('/' . $override['domain'] . '/' . $override['ip']);
+        $args .= ' --server=' . escapeshellarg('/' . $override['domain'] . '/' . $ip);
 
         if (!isset($config['system']['webgui']['nodnsrebindcheck'])) {
             $args .= ' --rebind-domain-ok=' . escapeshellarg('/' . $override['domain'] . '/') . ' ';
         }
     }
 
-    if (isset($config['dnsmasq']['strict_order'])) {
+    if (!empty($config['dnsmasq']['strict_order'])) {
         $args .= ' --strict-order ';
     } else {
         $args .= ' --all-servers ';
     }
 
-    if (isset($config['dnsmasq']['domain_needed'])) {
+    if (!empty($config['dnsmasq']['domain_needed'])) {
         $args .= ' --domain-needed ';
     }
 
-    if (isset($config['dnsmasq']['dnssec'])) {
+    if (!empty($config['dnsmasq']['dnssec'])) {
         $args .= ' --dnssec ';
         $args .= ' --trust-anchor=.,20326,8,2,E06D44B80B8F1D39A95C0B0D7C65D08458E880409BBC683457104237C7F8EC8D ';
         $args .= ' --trust-anchor=.,38696,8,2,683D2D0ACB8C9B712A1948B27F741219298D0A450D612C483AF444A4C0FB2B16 ';
     }
 
-    if (isset($config['dnsmasq']['log_queries'])) {
+    if (!empty($config['dnsmasq']['log_queries'])) {
         $args .= ' --log-queries=extra ';
     }
 
-    if (isset($config['dnsmasq']['no_hosts'])) {
+    if (!empty($config['dnsmasq']['no_hosts'])) {
         $args .= ' --no-hosts ';
     }
 
-    if (isset($config['dnsmasq']['dns_forward_max'])) {
+    if (!empty($config['dnsmasq']['dns_forward_max'])) {
         $args .= " --dns-forward-max={$config['dnsmasq']['dns_forward_max']} ";
     } else {
         $args .= ' --dns-forward-max=5000 ';
     }
 
-    if (isset($config['dnsmasq']['cache_size'])) {
+    if (!empty($config['dnsmasq']['cache_size'])) {
         $args .= " --cache-size={$config['dnsmasq']['cache_size']} ";
     } else {
         $args .= ' --cache-size=10000 ';
     }
 
-    if (isset($config['dnsmasq']['local_ttl'])) {
+    if (!empty($config['dnsmasq']['local_ttl'])) {
         $args .= " --local-ttl={$config['dnsmasq']['local_ttl']} ";
     } else {
         $args .= ' --local-ttl=1 ';
@@ -213,9 +198,9 @@ function dnsmasq_configure_do($verbose = false)
 
     mwexec("/usr/local/sbin/dnsmasq {$args}");
 
-    if (isset($config['dnsmasq']['regdhcp'])) {
+    if (!empty($config['dnsmasq']['regdhcp'])) {
         $domain = $config['system']['domain'];
-        if (isset($config['dnsmasq']['regdhcpdomain'])) {
+        if (!empty($config['dnsmasq']['regdhcpdomain'])) {
             $domain = $config['dnsmasq']['regdhcpdomain'];
         }
         mwexecf('/usr/local/opnsense/scripts/dhcp/dnsmasq_watcher.py --domain %s', $domain);
@@ -237,24 +222,24 @@ function _dnsmasq_add_host_entries()
     }
 
     foreach ($dnsmasqcfg['hosts'] as $host) {
-        if ($host['host']) {
+        if (!empty($host['host'])) {
+            /* XXX: The question is if we do want "host" as a global alias */
             $lhosts .= "{$host['ip']}\t{$host['host']}.{$host['domain']} {$host['host']}\n";
         } else {
             $lhosts .= "{$host['ip']}\t{$host['domain']}\n";
         }
-        if (!isset($host['aliases']) || !is_array($host['aliases']) || !is_array($host['aliases']['item'])) {
-            continue;
-        }
-        foreach ($host['aliases']['item'] as $alias) {
-            if ($alias['host']) {
-                $lhosts .= "{$host['ip']}\t{$alias['host']}.{$alias['domain']} {$alias['host']}\n";
-            } else {
-                $lhosts .= "{$host['ip']}\t{$alias['domain']}\n";
+        if (!empty($host['aliases'])) {
+            foreach (explode(",", $host['aliases']) as $alias) {
+                /**
+                 * XXX: pre migration all hosts where added here as alias, when we combine host.domain we
+                 *      miss some information, which is likely not a very good idea anyway.
+                 */
+                $lhosts .= "{$host['ip']}\t{$alias}\n";
             }
         }
     }
 
-    if (isset($dnsmasqcfg['regdhcpstatic'])) {
+    if (!empty($dnsmasqcfg['regdhcpstatic'])) {
         foreach (plugins_run('static_mapping', [null, true, legacy_interfaces_details()]) as $map) {
             foreach ($map as $host) {
                 if (empty($host['hostname'])) {
@@ -264,7 +249,7 @@ function _dnsmasq_add_host_entries()
                 if (empty($host['domain'])) {
                     $host['domain'] = $config['system']['domain'];
                 }
-                if (isset($host['ipaddr'])) {
+                if (!empty($host['ipaddr'])) {
                     $dhosts .= "{$host['ipaddr']}\t{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
                 } else {
                     $dhosts .= "{$host['ipaddrv6']}\t{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
@@ -273,7 +258,7 @@ function _dnsmasq_add_host_entries()
         }
     }
 
-    if (isset($dnsmasqcfg['dhcpfirst'])) {
+    if (!empty($dnsmasqcfg['dhcpfirst'])) {
         file_put_contents('/var/etc/dnsmasq-hosts', $dhosts . $lhosts);
     } else {
         file_put_contents('/var/etc/dnsmasq-hosts', $lhosts . $dhosts);
