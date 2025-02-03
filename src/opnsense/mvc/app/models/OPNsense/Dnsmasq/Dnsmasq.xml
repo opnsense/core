@@ -1,0 +1,74 @@
+<model>
+    <mount>/dnsmasq</mount>
+    <version>1.0.0</version>
+    <items>
+        <enable type="BooleanField"/>
+        <regdhcp type="BooleanField"/>
+        <regdhcpstatic type="BooleanField"/>
+        <dhcpfirst type="BooleanField"/>
+        <strict_order type="BooleanField"/>
+        <domain_needed type="BooleanField"/>
+        <no_private_reverse type="BooleanField"/>
+        <log_queries type="BooleanField"/>
+        <no_hosts type="BooleanField"/>
+        <strictbind type="BooleanField"/>
+        <dnssec type="BooleanField"/>
+        <regdhcpdomain type="HostnameField">
+            <IsDNSName>Y</IsDNSName>
+        </regdhcpdomain>
+        <interface type="InterfaceField">
+            <Multiple>Y</Multiple>
+        </interface>
+        <port type="PortField"/>
+        <dns_forward_max type="IntegerField">
+            <MinimumValue>0</MinimumValue>
+        </dns_forward_max>
+        <cache_size type="IntegerField">
+            <MinimumValue>0</MinimumValue>
+        </cache_size>
+        <local_ttl type="IntegerField">
+            <MinimumValue>0</MinimumValue>
+        </local_ttl>
+        <hosts type="ArrayField">
+            <host type="HostnameField">
+                <IsDNSName>Y</IsDNSName>
+                <IpAllowed>N</IpAllowed>
+                <Required>Y</Required>
+            </host>
+            <domain type="TextField">
+                <Required>Y</Required>
+                <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
+                <ValidationMessage>A valid domain must be specified.</ValidationMessage>
+            </domain>
+            <ip type="NetworkField">
+                <Required>Y</Required>
+                <NetMaskAllowed>N</NetMaskAllowed>
+            </ip>
+            <descr type="TextField"/>
+            <comments type="TextField"/>
+            <!-- Intentionally last, AliasesField back references other fields (which should already be there) -->
+            <aliases type=".\AliasesField">
+                <AsList>Y</AsList>
+                <FieldSeparator>,</FieldSeparator>
+                <IsDNSName>Y</IsDNSName>
+                <IpAllowed>N</IpAllowed>
+            </aliases>
+        </hosts>
+        <domainoverrides type="ArrayField">
+            <domain type="HostnameField">
+                <IsDNSName>Y</IsDNSName>
+                <IpAllowed>N</IpAllowed>
+                <Required>Y</Required>
+            </domain>
+            <srcip type="NetworkField">
+                <NetMaskAllowed>N</NetMaskAllowed>
+            </srcip>
+            <port type="PortField"/>
+            <!-- Intentionally last, DomainIPField back references other fields (which should already be there) -->
+            <ip type=".\DomainIPField">
+                <NetMaskAllowed>N</NetMaskAllowed>
+            </ip>
+            <descr type="TextField"/>
+        </domainoverrides>
+    </items>
+</model>
