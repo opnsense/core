@@ -38,6 +38,8 @@ class LaggController extends IndexController
     public function indexAction($selected = null)
     {
         $this->view->formDialogEdit = $this->getForm("dialogLagg");
+
         $this->view->pick('OPNsense/Interface/lagg');
+        $this->view->formGridLagg = $this->getFormGrid("dialogLagg", null, "laggChangeMessage");
     }
 }
