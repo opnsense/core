@@ -33,6 +33,8 @@ class NeighborController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->pick('OPNsense/Interface/neighbor');
+
         $this->view->formDialogEdit = $this->getForm("dialogNeighbor");
+        $this->view->formGridNeighbor = $this->getFormGrid("dialogNeighbor", null, "neighborChangeMessage");
     }
 }
