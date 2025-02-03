@@ -4,6 +4,11 @@
         <label>Enabled</label>
         <type>checkbox</type>
         <help>Enable or disable this ACL.</help>
+        <grid_view>
+            <width>6em</width>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+        </grid_view>
     </field>
     <field>
         <id>acl.name</id>
@@ -42,6 +47,9 @@
         <help>
             List of networks in CIDR notation to apply this ACL on. For example: 192.168.1.0/24.
         </help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>acl.description</id>
