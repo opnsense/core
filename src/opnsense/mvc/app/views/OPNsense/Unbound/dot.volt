@@ -106,39 +106,43 @@
 <style>
     .theading-text {
         font-weight: 800;
-        font-style: bold;
+        font-style: italic;
+    }
+
+    #infosection {
+        margin: 1em;
     }
 </style>
 
-<div class="tab-content content-box col-xs-12 __mb">
+<div class="content-box __mb">
     {# include base forwarding form #}
     {{ partial("layout_partials/base_form",['fields':forwardingForm,'id':'frm_ForwardingSettings'])}}
 </div>
-<ul class="nav nav-tabs" data-tabs="tabs" id="maintabs"></ul>
-<div class="tab-content content-box col-xs-12 __mb">
-    <div id="dot" class="tab-pane fade in active">
-        {{ partial('layout_partials/base_bootgrid_table', formGridDot)}}
-    </div>
+<div class="content-box __mb">
+    {{ partial('layout_partials/base_bootgrid_table', formGridDot)}}
     <div id="infosection" class="tab-content col-xs-12 __mb">
         {{ lang._('Please note that entries without a specific domain (and thus all domains) specified in both Query Forwarding and DNS over TLS
         are considered duplicates, DNS over TLS will be preferred. If "Use System Nameservers" is checked, Unbound will use the DNS servers entered
         in System->Settings->General or those obtained via DHCP or PPP on WAN if the "Allow DNS server list to be overridden by DHCP/PPP on WAN" is checked.') }}
     </div>
-    <div class="col-md-12">
-        <hr/>
-        <button class="btn btn-primary" id="reconfigureAct"
-                data-endpoint='/api/unbound/service/reconfigure'
-                data-label="{{ lang._('Apply') }}"
-                data-service-widget="unbound"
-                data-error-title="{{ lang._('Error reconfiguring unbound') }}"
-                type="button"
-        ></button>
-        <br/><br/>
+</div>
+<section class="page-content-main">
+    <div class="content-box">
+        <div class="col-md-12">
+            <br/>
+            <div id="DotChangeMessage" class="alert alert-info" style="display: none" role="alert">
+                {{ lang._('After changing settings, please remember to apply them.') }}
+            </div>
+            <button class="btn btn-primary" id="reconfigureAct"
+                    data-endpoint='/api/unbound/service/reconfigure'
+                    data-label="{{ lang._('Apply') }}"
+                    data-service-widget="unbound"
+                    data-error-title="{{ lang._('Error reconfiguring unbound') }}"
+                    type="button"
+            ></button>
+            <br/><br/>
+        </div>
     </div>
-</div>
-<div id="DotChangeMessage" class="alert alert-info" style="display: none" role="alert">
-    {{ lang._('After changing settings, please remember to apply them.') }}
-</div>
+</section>
 
-{# include dialog #}
 {{ partial("layout_partials/base_dialog",['fields':formDialogEdit,'id':formGridDot['edit_dialog_id'],'label':lang._('Edit server')])}}

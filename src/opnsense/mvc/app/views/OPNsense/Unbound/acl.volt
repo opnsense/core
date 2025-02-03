@@ -51,16 +51,19 @@ $( document ).ready(function() {
         toggle:'/api/unbound/settings/toggleAcl/'
     });
 
-    $("div.actionBar").parent().prepend($('<td id="heading-wrapper" class="col-sm-2" style="font-weight: 800; font-style: bold;">{{ lang._('Access Control Lists') }}</div>'));
+    $("div.actionBar").parent().prepend($('<td id="heading-wrapper" class="col-sm-2 theading-text">{{ lang._('Access Control Lists') }}</div>'));
 
-
-    /**
-     * Reconfigure unbound - activate changes
-     */
     $("#reconfigureAct").SimpleActionButton();
     updateServiceControlUI('unbound');
 });
 </script>
+
+<style>
+    .theading-text {
+        font-weight: 800;
+        font-style: italic;
+    }
+</style>
 
 <div class="content-box __mb">
     {{ partial("layout_partials/base_form",['fields':aclForm,'id':'frm_AclSettings'])}}
@@ -69,25 +72,23 @@ $( document ).ready(function() {
     {{ partial('layout_partials/base_bootgrid_table', formGridAcl)}}
 </div>
 <!-- reconfigure -->
-<div class="content-box">
-    <table class="table table-condensed">
-        <tbody>
-        <tr>
-            <td>
-                <button class="btn btn-primary" id="reconfigureAct"
-                        data-endpoint='/api/unbound/service/reconfigure'
-                        data-label="{{ lang._('Apply') }}"
-                        data-service-widget="unbound"
-                        data-error-title="{{ lang._('Error reconfiguring unbound') }}"
-                        type="button"
-                ></button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <div id="AclChangeMessage" class="alert alert-info" style="display: none" role="alert">
-        {{ lang._('After changing settings, please remember to apply them.') }}
+<section class="page-content-main">
+    <div class="content-box">
+        <div class="col-md-12">
+            <br/>
+            <div id="AclChangeMessage" class="alert alert-info" style="display: none" role="alert">
+                {{ lang._('After changing settings, please remember to apply them.') }}
+            </div>
+            <button class="btn btn-primary" id="reconfigureAct"
+                    data-endpoint='/api/unbound/service/reconfigure'
+                    data-label="{{ lang._('Apply') }}"
+                    data-service-widget="unbound"
+                    data-error-title="{{ lang._('Error reconfiguring unbound') }}"
+                    type="button"
+            ></button>
+            <br/><br/>
+        </div>
     </div>
-</div>
+</section>
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogAcl,'id':formGridAcl['edit_dialog_id'],'label':lang._('Edit ACL')])}}

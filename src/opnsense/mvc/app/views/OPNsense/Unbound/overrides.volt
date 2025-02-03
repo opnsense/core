@@ -160,26 +160,24 @@ $( document ).ready(function() {
     {{ partial('layout_partials/base_bootgrid_table', formGridHostAlias)}}
 </div>
 <!-- reconfigure -->
-<div class="content-box">
-    <table class="table table-condensed">
-        <tbody>
-        <tr>
-            <td>
-                <button class="btn btn-primary" id="reconfigureAct"
-                        data-endpoint='/api/unbound/service/reconfigure'
-                        data-label="{{ lang._('Apply') }}"
-                        data-service-widget="unbound"
-                        data-error-title="{{ lang._('Error reconfiguring unbound') }}"
-                        type="button"
-                ></button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <div id="HostOverrideChangeMessage" class="alert alert-info" style="display: none" role="alert">
-        {{ lang._('After changing settings, please remember to apply them.') }}
+<section class="page-content-main">
+    <div class="content-box">
+        <div class="col-md-12">
+            <br/>
+            <div id="HostOverrideChangeMessage" class="alert alert-info" style="display: none" role="alert">
+                {{ lang._('After changing settings, please remember to apply them.') }}
+            </div>
+            <button class="btn btn-primary" id="reconfigureAct"
+                    data-endpoint='/api/unbound/service/reconfigure'
+                    data-label="{{ lang._('Apply') }}"
+                    data-service-widget="unbound"
+                    data-error-title="{{ lang._('Error reconfiguring unbound') }}"
+                    type="button"
+            ></button>
+            <br/><br/>
+        </div>
     </div>
-</div>
+</section>
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogHostOverride,'id':formGridHostOverride['edit_dialog_id'],'label':lang._('Edit Host Override')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogHostAlias,'id':formGridHostAlias['edit_dialog_id'],'label':lang._('Edit Host Override Alias')])}}
