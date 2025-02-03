@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2014-2022 Deciso B.V.
+ # Copyright (c) 2014-2025 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -44,19 +44,6 @@ $( document ).ready(function() {
                         row.server = row.mx + ' (prio ' + row.mxprio + ')';
                     }
                     return row.server;
-                },
-                /* commands and rowtoggles added here since adding a custom formatter removes these by default for some reason */
-                "commands": function (column, row) {
-                    return '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-pencil"></span></button> ' +
-                        '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-clone"></span></button>' +
-                        '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-trash-o"></span></button>';
-                },
-                "rowtoggle": function (column, row) {
-                    if (parseInt(row[column.id], 2) === 1) {
-                        return '<span style="cursor: pointer;" class="fa fa-fw fa-check-square-o command-toggle bootgrid-tooltip" data-value="1" data-row-id="' + row.uuid + '"></span>';
-                    } else {
-                        return '<span style="cursor: pointer;" class="fa fa-fw fa-square-o command-toggle bootgrid-tooltip" data-value="0" data-row-id="' + row.uuid + '"></span>';
-                    }
                 },
             },
         }
