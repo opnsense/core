@@ -1,5 +1,9 @@
 <form>
     <field>
+        <type>header</type>
+        <label>DNS</label>
+    </field>
+    <field>
         <id>host.host</id>
         <label>Host</label>
         <type>text</type>
@@ -26,6 +30,26 @@
         <grid_view>
             <visible>false</visible>
         </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>DHCP</label>
+    </field>
+    <field>
+        <id>host.hwaddr</id>
+        <label>Hardware address</label>
+        <type>text</type>
+        <help>When offered and the client requests an address via dhcp, assign the address provided here</help>
+    </field>
+    <field>
+        <id>host.set_tag</id>
+        <label>Tag [set]</label>
+        <type>dropdown</type>
+        <help>Optional tag to set for requests matching this range which can be used to selectively match dhcp options</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Informational</label>
     </field>
     <field>
         <id>host.descr</id>

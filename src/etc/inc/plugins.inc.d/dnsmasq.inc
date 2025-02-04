@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2025 Deciso B.V.
  * Copyright (C) 2014-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
@@ -40,8 +41,7 @@ function dnsmasq_configure()
 {
     return [
         'dns' => ['dnsmasq_configure_do'],
-        'local' => ['dnsmasq_configure_do'],
-        'newwanip' => ['dnsmasq_configure_do'],
+        'local' => ['dnsmasq_configure_do']
     ];
 }
 
@@ -90,6 +90,48 @@ function dnsmasq_xmlrpc_sync()
     return $result;
 }
 
+/**
+ *  Register automatic firewall rules
+ */
+function dnsmasq_firewall(\OPNsense\Firewall\Plugin $fw)
+{
+    global $config;
+
+    $mdl = new \OPNsense\Dnsmasq\Dnsmasq();
+    if (!$mdl->enable->isEmpty() && !$mdl->dhcp_default_fw_rules->isEmpty()) {
+        $dhcp_ifs = $mdl->getDhcpInterfaces();
+        if (empty($dhcp_ifs)) {
+            return;
+        }
+        foreach ($fw->getInterfaceMapping() as $intf => $intfinfo) {
+            if (in_array($intf, $dhcp_ifs)) {
+                $baserule = [
+                    'interface' => $intf,
+                    'protocol' => 'udp',
+                    'log' => !isset($config['syslog']['nologdefaultpass']),
+                    '#ref' => "ui/dnsmasq/settings#general",
+                    'descr' => 'allow access to DHCP server'
+                ];
+                $fw->registerFilterRule(
+                    1,
+                    ['direction' => 'in', 'from_port' => 68, 'to' => '255.255.255.255', 'to_port' => 67],
+                    $baserule
+                );
+                $fw->registerFilterRule(
+                    1,
+                    ['direction' => 'in', 'from_port' => 68, 'to' => '(self)', 'to_port' => 67],
+                    $baserule
+                );
+                $fw->registerFilterRule(
+                    1,
+                    ['direction' => 'out', 'from_port' => 67, 'from' => '(self)', 'to_port' => 68],
+                    $baserule
+                );
+            }
+        }
+    }
+}
+
 function dnsmasq_configure_do($verbose = false)
 {
     global $config;
@@ -103,102 +145,12 @@ function dnsmasq_configure_do($verbose = false)
 
     service_log('Starting Dnsmasq DNS...', $verbose);
 
-    $args = '';
-    if (!isset($config['system']['webgui']['nodnsrebindcheck'])) {
-        $args .= '--rebind-localhost-ok --stop-dns-rebind';
-    }
-
-    $args .= ' -H /var/etc/dnsmasq-hosts ';
-    $args .= ' -H /var/etc/dnsmasq-leases ';
-
-    /* Setup listen port, if non-default */
-    if (isset($config['dnsmasq']['port']) && is_port($config['dnsmasq']['port'])) {
-        $args .= " --port={$config['dnsmasq']['port']} ";
-    }
-
-    if (!empty($config['dnsmasq']['interface'])) {
-        $ifs = [];
-        foreach (explode(',', $config['dnsmasq']['interface']) as $ifname) {
-            if (!empty($config['interfaces'][$ifname]) && !empty($config['interfaces'][$ifname]['if'])) {
-                $ifs[] = $config['interfaces'][$ifname]['if'];
-            }
-        }
-        $args .= " --interface=" . implode(',', $ifs) . " ";
-
-        if (!empty($addresses) && !empty($config['dnsmasq']['strictbind'])) {
-            $args .= ' --bind-interfaces ';
-        }
-    }
-
-    if (!empty($config['dnsmasq']['no_private_reverse'])) {
-        $args .= ' --bogus-priv ';
-    }
-
-    foreach (config_read_array('dnsmasq', 'domainoverrides') as $override) {
-        $ip = $override['ip'];
-        if (!empty($ip) && !empty($override['port'])) {
-            $ip .= '#' . $override['port'];
-        }
-        if (!empty($ip) && !empty($override['srcip'])) {
-            $ip .= '@' . $override['srcip'];
-        }
-
-        $args .= ' --server=' . escapeshellarg('/' . $override['domain'] . '/' . $ip);
-
-        if (!isset($config['system']['webgui']['nodnsrebindcheck'])) {
-            $args .= ' --rebind-domain-ok=' . escapeshellarg('/' . $override['domain'] . '/') . ' ';
-        }
-    }
-
-    if (!empty($config['dnsmasq']['strict_order'])) {
-        $args .= ' --strict-order ';
-    } else {
-        $args .= ' --all-servers ';
-    }
-
-    if (!empty($config['dnsmasq']['domain_needed'])) {
-        $args .= ' --domain-needed ';
-    }
-
-    if (!empty($config['dnsmasq']['dnssec'])) {
-        $args .= ' --dnssec ';
-        $args .= ' --trust-anchor=.,20326,8,2,E06D44B80B8F1D39A95C0B0D7C65D08458E880409BBC683457104237C7F8EC8D ';
-        $args .= ' --trust-anchor=.,38696,8,2,683D2D0ACB8C9B712A1948B27F741219298D0A450D612C483AF444A4C0FB2B16 ';
-    }
-
-    if (!empty($config['dnsmasq']['log_queries'])) {
-        $args .= ' --log-queries=extra ';
-    }
-
-    if (!empty($config['dnsmasq']['no_hosts'])) {
-        $args .= ' --no-hosts ';
-    }
-
-    if (!empty($config['dnsmasq']['dns_forward_max'])) {
-        $args .= " --dns-forward-max={$config['dnsmasq']['dns_forward_max']} ";
-    } else {
-        $args .= ' --dns-forward-max=5000 ';
-    }
-
-    if (!empty($config['dnsmasq']['cache_size'])) {
-        $args .= " --cache-size={$config['dnsmasq']['cache_size']} ";
-    } else {
-        $args .= ' --cache-size=10000 ';
-    }
-
-    if (!empty($config['dnsmasq']['local_ttl'])) {
-        $args .= " --local-ttl={$config['dnsmasq']['local_ttl']} ";
-    } else {
-        $args .= ' --local-ttl=1 ';
-    }
-
-    $args .= ' --conf-dir=/usr/local/etc/dnsmasq.conf.d,\*.conf ';
-
     _dnsmasq_add_host_entries();
 
-    mwexec("/usr/local/sbin/dnsmasq {$args}");
+    mwexec("/usr/local/sbin/dnsmasq");
 
     if (!empty($config['dnsmasq']['regdhcp'])) {
+        /* XXX: deprecate when moving ISC to plugins ? */
         $domain = $config['system']['domain'];
         if (!empty($config['dnsmasq']['regdhcpdomain'])) {
             $domain = $config['dnsmasq']['regdhcpdomain'];
@@ -222,11 +174,11 @@ function _dnsmasq_add_host_entries()
     }
 
     foreach ($dnsmasqcfg['hosts'] as $host) {
-        if (!empty($host['host'])) {
+        if (!empty($host['host']) && empty($host['domain'])) {
+            $lhosts .= "{$host['ip']}\t{$host['host']}\n";
+        } elseif (!empty($host['host'])) {
             /* XXX: The question is if we do want "host" as a global alias */
             $lhosts .= "{$host['ip']}\t{$host['host']}.{$host['domain']} {$host['host']}\n";
-        } else {
-            $lhosts .= "{$host['ip']}\t{$host['domain']}\n";
         }
         if (!empty($host['aliases'])) {
             foreach (explode(",", $host['aliases']) as $alias) {
@@ -240,6 +192,7 @@ function _dnsmasq_add_host_entries()
     }
 
     if (!empty($dnsmasqcfg['regdhcpstatic'])) {
+        /* XXX: deprecate when ISC is moved to plugins? It doesn't make much sense to offer these registrations for KEA*/
         foreach (plugins_run('static_mapping', [null, true, legacy_interfaces_details()]) as $map) {
             foreach ($map as $host) {
                 if (empty($host['hostname'])) {
