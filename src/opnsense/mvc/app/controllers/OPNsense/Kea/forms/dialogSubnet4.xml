@@ -145,7 +145,7 @@
             <visible>false</visible>
         </grid_view>
     </field>
-        <field>
+    <field>
         <id>subnet4.option_data.v6_only_preferred</id>
         <label>IPv6-only Preferred</label>
         <type>text</type>
