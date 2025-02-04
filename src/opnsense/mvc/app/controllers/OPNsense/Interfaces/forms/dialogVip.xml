@@ -22,6 +22,9 @@
         <type>text</type>
         <help>For some interface types a gateway is required to configure an IP Alias (ppp/pppoe/tun), leave this field empty for all other interface types.</help>
         <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>vip.peer</id>
@@ -33,6 +36,9 @@
             Destination address to use when announcing, defaults to multicast,
             but can be configured as unicast address when multicast can not be used (for example with cloud providers)
         </help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>vip.peer6</id>
@@ -44,6 +50,9 @@
             Destination address to use when announcing, defaults to multicast,
             but can be configured as unicast address when multicast can not be used (for example with cloud providers)
         </help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
       <id>vip.noexpand</id>
@@ -51,6 +60,11 @@
       <type>checkbox</type>
       <help>Disable expansion of this entry into IPs on NAT lists (e.g. 192.168.1.0/24 expands to 256 entries.</help>
       <style>mode mode_proxyarp</style>
+      <grid_view>
+        <type>boolean</type>
+        <formatter>boolean</formatter>
+        <visible>false</visible>
+      </grid_view>
     </field>
     <field>
       <id>vip.nobind</id>
@@ -58,6 +72,11 @@
       <type>checkbox</type>
       <help>Assigning services to the virtual IP's interface will automatically include this address. Check to prevent binding to this address instead.</help>
       <style>mode mode_carp mode_ipalias</style>
+      <grid_view>
+        <type>boolean</type>
+        <formatter>boolean</formatter>
+        <visible>false</visible>
+      </grid_view>
     </field>
     <field>
         <id>vip.password</id>
@@ -65,6 +84,9 @@
         <type>password</type>
         <style>mode mode_carp</style>
         <help>Enter the VHID group password.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>vip.vhid</id>
@@ -79,6 +101,9 @@
         <type>text</type>
         <style>mode mode_carp</style>
         <help>Specifies the base of the advertisement interval in seconds. The acceptable values are 1 to 255.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>vip.advskew</id>
@@ -89,6 +114,9 @@
           Specifies the skew to add to the base advertisement interval to make one host advertise slower than another host.
           It is specified in 1/256 of seconds.  The acceptable values are 0 to 254.
         </help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>vip.descr</id>

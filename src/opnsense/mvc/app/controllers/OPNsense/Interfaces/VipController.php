@@ -33,6 +33,8 @@ class VipController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->pick('OPNsense/Interface/vip');
+
         $this->view->formDialogVip = $this->getForm("dialogVip");
+        $this->view->formGridVip = $this->getFormGrid("dialogVip", null, "VipChangeMessage");
     }
 }
