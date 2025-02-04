@@ -28,15 +28,26 @@
 
 namespace OPNsense\Dnsmasq;
 
-class IndexController extends \OPNsense\Base\IndexController
+class SettingsController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
         $this->view->generalForm = $this->getForm("general");
         $this->view->formDialogEditHostOverride = $this->getForm("dialogHostOverride");
-        $this->view->formGridHostOverride = $this->getFormGrid("dialogHostOverride");
+        $this->view->formGridHostOverride = $this->getFormGrid("dialogHostOverride", "host");
         $this->view->formDialogEditDomainOverride = $this->getForm("dialogDomainOverride");
-        $this->view->formGridDomainOverride = $this->getFormGrid("dialogDomainOverride");
-        $this->view->pick('OPNsense/Dnsmasq/index');
+        $this->view->formGridDomainOverride = $this->getFormGrid("dialogDomainOverride", "domain");
+        $this->view->formDialogEditDHCPtag = $this->getForm("dialogDHCPtag");
+        $this->view->formGridDHCPtag = $this->getFormGrid("dialogDHCPtag", "tag");
+        $this->view->formDialogEditDHCPrange = $this->getForm("dialogDHCPrange");
+        $this->view->formGridDHCPrange = $this->getFormGrid("dialogDHCPrange", "range");
+        $this->view->formDialogEditDHCPoption = $this->getForm("dialogDHCPoption");
+        $this->view->formGridDHCPoption = $this->getFormGrid("dialogDHCPoption", "option");
+        $this->view->formDialogEditDHCPmatch = $this->getForm("dialogDHCPmatch");
+        $this->view->formGridDHCPmatch = $this->getFormGrid("dialogDHCPmatch", "match");
+        $this->view->formDialogEditDHCPboot = $this->getForm("dialogDHCPboot");
+        $this->view->formGridDHCPboot = $this->getFormGrid("dialogDHCPboot", "boot");
+
+        $this->view->pick('OPNsense/Dnsmasq/settings');
     }
 }

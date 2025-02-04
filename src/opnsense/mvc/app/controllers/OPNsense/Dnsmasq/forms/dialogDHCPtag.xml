@@ -1,0 +1,8 @@
+<form>
+    <field>
+        <id>tag.tag</id>
+        <label>Tag</label>
+        <type>text</type>
+        <help>An alphanumeric label which marks a network so that DHCP options may be specified on a per-network basis.</help>
+    </field>
+</form>

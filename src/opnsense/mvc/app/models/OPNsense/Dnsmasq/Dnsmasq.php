@@ -29,6 +29,7 @@
 namespace OPNsense\Dnsmasq;
 
 use OPNsense\Base\BaseModel;
+use OPNsense\Base\Messages\Message;
 
 /**
  * Class Dnsmasq
@@ -36,4 +37,42 @@ use OPNsense\Base\BaseModel;
  */
 class Dnsmasq extends BaseModel
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function performValidation($validateFullModel = false)
+    {
+        $messages = parent::performValidation($validateFullModel);
+        foreach ($this->hosts->iterateItems() as $host) {
+            if (!$validateFullModel && !$host->isFieldChanged()) {
+                continue;
+            }
+            $key = $host->__reference;
+            if (!$host->hwaddr->isEmpty() && strpos($host->ip->getCurrentValue(), ':') !== false) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("Only IPv4 reservations are currently supported"),
+                        $key . ".ip"
+                    )
+                );
+            }
+        }
+
+        foreach ($this->dhcp_ranges->iterateItems() as $range) {
+            if (!$validateFullModel && !$range->isFieldChanged()) {
+                continue;
+            }
+            $key = $range->__reference;
+            if (!$range->domain->isEmpty() && $range->end_addr->isEmpty()) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("Can only configure a domain when a full range (including end) is specified."),
+                        $key . ".domain"
+                    )
+                );
+            }
+        }
+
+        return $messages;
+    }
 }

@@ -1,47 +1,43 @@
 <form>
     <field>
+        <type>header</type>
+        <label>Default</label>
+    </field>
+    <field>
         <id>dnsmasq.enable</id>
         <label>Enable</label>
         <type>checkbox</type>
         <help>Enable Dnsmasq.</help>
     </field>
     <field>
-        <id>dnsmasq.port</id>
-        <label>Listen Port</label>
-        <type>text</type>
-        <help>The port used for responding to DNS queries. It should normally be left blank unless another service needs to bind to TCP/UDP port 53.</help>
-    </field>
-    <field>
         <id>dnsmasq.interface</id>
         <label>Interface</label>
         <type>select_multiple</type>
-        <hint>All (recommended)</hint>
+        <hint>All</hint>
         <help>
-            Interface IPs used by Dnsmasq for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.
+            Interface IPs used to responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.
         </help>
     </field>
     <field>
         <id>dnsmasq.strictbind</id>
         <label>Strict Interface Binding</label>
         <type>checkbox</type>
-        <help>If this option is set, Dnsmasq will only bind to the interfaces containing the IP addresses selected above, rather than binding to all interfaces and discarding queries to other addresses. This option does not work with IPv6. If set, Dnsmasq will not bind to IPv6 addresses.</help>
+        <help>By default we bind the wildcard address, even when listening on some interfaces. Requests that shouldn't be handled are discarded, this has the advantage of working even when interfaces come and go and change address. This option forces binding to only the interfaces we are listening on, which is less stable in non static environments.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>DNS</label>
+    </field>
+    <field>
+        <id>dnsmasq.port</id>
+        <label>Listen Port</label>
+        <type>text</type>
+        <help>The port used for responding to DNS queries. It should normally be left blank unless another service needs to bind to TCP/UDP port 53. Setting this to zero (0) completely disables DNS function</help>
     </field>
     <field>
         <id>dnsmasq.dnssec</id>
         <label>DNSSEC</label>
         <type>checkbox</type>
-    </field>
-    <field>
-        <id>dnsmasq.regdhcpstatic</id>
-        <label>Register DHCP Static Mappings</label>
-        <type>checkbox</type>
-        <help>If this option is set, then DHCP static mappings will be registered in Dnsmasq, so that their name can be resolved.</help>
-    </field>
-    <field>
-        <id>dnsmasq.dhcpfirst</id>
-        <label>Prefer DHCP</label>
-        <type>checkbox</type>
-        <help>If this option is set, then DHCP mappings will be resolved before the manual list of names below. This only affects the name given for a reverse lookup (PTR).</help>
     </field>
     <field>
         <id>dnsmasq.no_hosts</id>
@@ -83,34 +79,64 @@
         <id>dnsmasq.strict_order</id>
         <label>Query DNS servers sequentially</label>
         <type>checkbox</type>
-        <help>If this option is set, Dnsmasq will query the DNS servers sequentially in the order specified (System: General Setup: DNS Servers), rather than all at once in parallel.</help>
+        <help>If this option is set, we will query the DNS servers sequentially in the order specified (System: General Setup: DNS Servers), rather than all at once in parallel.</help>
     </field>
     <field>
         <id>dnsmasq.domain_needed</id>
         <label>Require domain</label>
         <type>checkbox</type>
-        <help>If this option is set, Dnsmasq will not forward A or AAAA queries for plain names, without dots or domain parts, to upstream name servers. If the name is not known from /etc/hosts or DHCP then a "not found" answer is returned.</help>
+        <help>If this option is set, we will not forward A or AAAA queries for plain names, without dots or domain parts, to upstream name servers. If the name is not known from /etc/hosts or DHCP then a "not found" answer is returned.</help>
     </field>
     <field>
         <id>dnsmasq.no_private_reverse</id>
         <label>Do not forward private reverse lookups</label>
         <type>checkbox</type>
-        <help>If this option is set, Dnsmasq will not forward reverse DNS lookups (PTR) for private addresses (RFC 1918) to upstream name servers. Any entries in the Domain Overrides section forwarding private "n.n.n.in-addr.arpa" names to a specific server are still forwarded. If the IP to name is not known from /etc/hosts, DHCP or a specific domain override then a "not found" answer is immediately returned.</help>
+        <help>If this option is set, we will not forward reverse DNS lookups (PTR) for private addresses (RFC 1918) to upstream name servers. Any entries in the Domain Overrides section forwarding private "n.n.n.in-addr.arpa" names to a specific server are still forwarded. If the IP to name is not known from /etc/hosts, DHCP or a specific domain override then a "not found" answer is immediately returned.</help>
     </field>
     <field>
         <type>header</type>
-        <label>ISC DHCP</label>
+        <label>DHCP</label>
+    </field>
+    <field>
+        <id>dnsmasq.no_dhcp_interface</id>
+        <label>Interface [no dhcp]</label>
+        <type>select_multiple</type>
+        <help>
+            Do not provide DHCP, TFTP or router advertisement on the specified interfaces, but do provide DNS service.
+        </help>
+    </field>
+    <field>
+        <id>dnsmasq.dhcp_fqdn</id>
+        <label>DHCP fqdn</label>
+        <type>checkbox</type>
+        <help>In the default mode, we insert the unqualified names of DHCP clients into the DNS, in which case they have to be unique. Using this option the unqualified name is no longer put in the DNS, only the qualified name. </help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>ISC / KEA DHCP</label>
     </field>
     <field>
         <id>dnsmasq.regdhcp</id>
         <label>Register ISC DHCP4 Leases</label>
         <type>checkbox</type>
-        <help>If this option is set, then machines that specify their hostname when requesting a DHCP lease will be registered in Dnsmasq, so that their name can be resolved.</help>
+        <help>If this option is set, then machines that specify their hostname when requesting a DHCP lease will be registered, so that their name can be resolved.</help>
     </field>
     <field>
         <id>dnsmasq.regdhcpdomain</id>
         <label>DHCP Domain Override</label>
         <type>text</type>
         <help>The domain name to use for DHCP hostname registration. If empty, the default system domain is used. Note that all DHCP leases will be assigned to the same domain. If this is undesired, static DHCP lease registration is able to provide coherent mappings.</help>
+    </field>
+    <field>
+        <id>dnsmasq.regdhcpstatic</id>
+        <label>Register DHCP Static Mappings</label>
+        <type>checkbox</type>
+        <help>If this option is set, then DHCP static mappings will be registered, so that their name can be resolved.</help>
+    </field>
+    <field>
+        <id>dnsmasq.dhcpfirst</id>
+        <label>Prefer DHCP</label>
+        <type>checkbox</type>
+        <help>If this option is set, then DHCP mappings will be resolved before the manual list of names below. This only affects the name given for a reverse lookup (PTR).</help>
     </field>
 </form>

@@ -1,0 +1,57 @@
+<form>
+    <field>
+        <id>range.interface</id>
+        <label>Interface</label>
+        <type>dropdown</type>
+        <help>Interface to serve this range</help>
+    </field>
+    <field>
+        <id>range.set_tag</id>
+        <label>Tag [set]</label>
+        <type>dropdown</type>
+        <help>Optional tag to set for requests matching this range which can be used to selectively match dhcp options</help>
+    </field>
+    <field>
+        <id>range.start_addr</id>
+        <label>Start address</label>
+        <type>text</type>
+        <help>Start of the range.</help>
+    </field>
+    <field>
+        <id>range.end_addr</id>
+        <label>End address</label>
+        <type>text</type>
+        <help>End of the range.</help>
+    </field>
+    <field>
+        <id>range.static</id>
+        <label>Static</label>
+        <type>checkbox</type>
+        <help>Enable DHCP for the network specified, but do not to dynamically allocate IP addresses: only hosts which have static addresses will receive one</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>range.lease_time</id>
+        <label>Lease time</label>
+        <type>text</type>
+        <help>Defines how long the addresses (leases) given out by the server are valid (in seconds)</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>range.domain</id>
+        <label>Domain</label>
+        <type>text</type>
+        <help>Offer the specified domain to machines in this range.</help>
+    </field>
+    <field>
+        <id>range.description</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>You may enter a description here for your reference (not parsed).</help>
+    </field>
+</form>

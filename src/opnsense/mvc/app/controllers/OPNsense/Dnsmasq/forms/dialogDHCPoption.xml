@@ -1,0 +1,36 @@
+<form>
+    <field>
+        <id>option.option</id>
+        <label>Option</label>
+        <type>dropdown</type>
+        <help>Option to offer to the client.</help>
+    </field>
+    <field>
+        <id>option.tag</id>
+        <label>Tag</label>
+        <type>select_multiple</type>
+        <help>If the optional tags are given then this option is only sent when all the tags are matched.</help>
+    </field>
+    <field>
+        <id>option.value</id>
+        <label>Value</label>
+        <type>text</type>
+        <help>Value (or values) to send to the client. The special address 0.0.0.0 is taken to mean "the address of the machine running dnsmasq"</help>
+    </field>
+    <field>
+        <id>option.force</id>
+        <label>Force</label>
+        <type>checkbox</type>
+        <help>Always send the option, also when the client does not ask for it in the parameter request list.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>option.description</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>You may enter a description here for your reference (not parsed).</help>
+    </field>
+</form>

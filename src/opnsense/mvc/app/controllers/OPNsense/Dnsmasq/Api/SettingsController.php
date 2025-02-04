@@ -35,6 +35,7 @@ class SettingsController extends ApiMutableModelControllerBase
     protected static $internalModelName = 'dnsmasq';
     protected static $internalModelClass = '\OPNsense\Dnsmasq\Dnsmasq';
 
+    /* hosts */
     public function searchHostAction()
     {
         return $this->searchBase('hosts');
@@ -60,6 +61,41 @@ class SettingsController extends ApiMutableModelControllerBase
         return $this->delBase('hosts', $uuid);
     }
 
+    public function downloadHostsAction()
+    {
+        if ($this->request->isGet()) {
+            $this->exportCsv($this->getModel()->hosts->asRecordSet(false, ['comments']));
+        }
+    }
+
+    public function uploadHostsAction()
+    {
+        if ($this->request->isPost() && $this->request->hasPost('payload')) {
+            /* fields used by kea */
+            $map = [
+                'ip_address' => 'ip',
+                'hw_address' => 'hwaddr',
+                'hostname' => 'host',
+                'description' => 'descr',
+            ];
+            return $this->importCsv(
+                'hosts',
+                $this->request->getPost('payload'),
+                ['host', 'domain', 'ip'],
+                function (&$record) use ($map) {
+                    foreach ($map as $from => $to) {
+                        if (isset($record[$from])) {
+                            $record[$to] = $record[$from];
+                        }
+                    }
+                }
+            );
+        } else {
+            return ['status' => 'failed'];
+        }
+    }
+
+    /* domains */
     public function searchDomainAction()
     {
         return $this->searchBase('domainoverrides');
@@ -83,5 +119,135 @@ class SettingsController extends ApiMutableModelControllerBase
     public function delDomainAction($uuid)
     {
         return $this->delBase('domainoverrides', $uuid);
+    }
+
+    /* dhcp tags */
+    public function searchTagAction()
+    {
+        return $this->searchBase('dhcp_tags');
+    }
+
+    public function getTagAction($uuid = null)
+    {
+        return $this->getBase('tag', 'dhcp_tags', $uuid);
+    }
+
+    public function setTagAction($uuid)
+    {
+        return $this->setBase('tag', 'dhcp_tags', $uuid);
+    }
+
+    public function addTagAction()
+    {
+        return $this->addBase('tag', 'dhcp_tags');
+    }
+
+    public function delTagAction($uuid)
+    {
+        return $this->delBase('dhcp_tags', $uuid);
+    }
+
+    /* dhcp ranges */
+    public function searchRangeAction()
+    {
+        return $this->searchBase('dhcp_ranges');
+    }
+
+    public function getRangeAction($uuid = null)
+    {
+        return $this->getBase('range', 'dhcp_ranges', $uuid);
+    }
+
+    public function setRangeAction($uuid)
+    {
+        return $this->setBase('range', 'dhcp_ranges', $uuid);
+    }
+
+    public function addRangeAction()
+    {
+        return $this->addBase('range', 'dhcp_ranges');
+    }
+
+    public function delRangeAction($uuid)
+    {
+        return $this->delBase('dhcp_ranges', $uuid);
+    }
+
+    /* dhcp options */
+    public function searchOptionAction()
+    {
+        return $this->searchBase('dhcp_options');
+    }
+
+    public function getOptionAction($uuid = null)
+    {
+        return $this->getBase('option', 'dhcp_options', $uuid);
+    }
+
+    public function setOptionAction($uuid)
+    {
+        return $this->setBase('option', 'dhcp_options', $uuid);
+    }
+
+    public function addOptionAction()
+    {
+        return $this->addBase('option', 'dhcp_options');
+    }
+
+    public function delOptionAction($uuid)
+    {
+        return $this->delBase('dhcp_options', $uuid);
+    }
+
+    /* dhcp match options */
+    public function searchMatchAction()
+    {
+        return $this->searchBase('dhcp_options_match');
+    }
+
+    public function getMatchAction($uuid = null)
+    {
+        return $this->getBase('match', 'dhcp_options_match', $uuid);
+    }
+
+    public function setMatchAction($uuid)
+    {
+        return $this->setBase('match', 'dhcp_options_match', $uuid);
+    }
+
+    public function addMatchAction()
+    {
+        return $this->addBase('match', 'dhcp_options_match');
+    }
+
+    public function delMatchAction($uuid)
+    {
+        return $this->delBase('dhcp_options_match', $uuid);
+    }
+
+    /* dhcp boot options */
+    public function searchBootAction()
+    {
+        return $this->searchBase('dhcp_boot');
+    }
+
+    public function getBootAction($uuid = null)
+    {
+        return $this->getBase('boot', 'dhcp_boot', $uuid);
+    }
+
+    public function setBootAction($uuid)
+    {
+        return $this->setBase('boot', 'dhcp_boot', $uuid);
+    }
+
+    public function addBootAction()
+    {
+        return $this->addBase('boot', 'dhcp_boot');
+    }
+
+    public function delBootAction($uuid)
+    {
+        return $this->delBase('dhcp_boot', $uuid);
     }
 }

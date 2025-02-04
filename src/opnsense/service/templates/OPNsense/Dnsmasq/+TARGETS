@@ -1,0 +1,2 @@
+dnsmasq.conf:/usr/local/etc/dnsmasq.conf
+trust-anchors.conf:/usr/local/share/dnsmasq/trust-anchors.conf
