@@ -18,6 +18,9 @@
     <div class="content-box">
         <div class="col-md-12">
             <br/>
+            <div id="loopbackChangeMessage" class="alert alert-info" style="display: none" role="alert">
+                {{ lang._('After changing settings, please remember to apply them.') }}
+            </div>
             <button class="btn btn-primary" id="reconfigureAct"
                     data-endpoint='/api/interfaces/loopback_settings/reconfigure'
                     data-label="{{ lang._('Apply') }}"
@@ -26,9 +29,6 @@
             ></button>
             <br/><br/>
         </div>
-    </div>
-    <div id="loopbackChangeMessage" class="alert alert-info" style="display: none" role="alert">
-        {{ lang._('After changing settings, please remember to apply them.') }}
     </div>
 </section>
 
