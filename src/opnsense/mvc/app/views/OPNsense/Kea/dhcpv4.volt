@@ -26,7 +26,7 @@
 
 <script>
     $( document ).ready(function() {
-        let data_get_map = {'frm_generalsettings':"/api/kea/dhcpv4/get"};
+        const data_get_map = {'frm_generalsettings':"/api/kea/dhcpv4/get"};
         mapDataToFormUI(data_get_map).done(function(data){
             try {
                 $("#dhcpv4\\.ha\\.this_server_name").attr(
@@ -42,7 +42,7 @@
         });
 
 
-        $("#grid-subnets").UIBootgrid(
+        $("#{{formGridSubnet['table_id']}}").UIBootgrid(
             {   search:'/api/kea/dhcpv4/search_subnet',
                 get:'/api/kea/dhcpv4/get_subnet/',
                 set:'/api/kea/dhcpv4/set_subnet/',
@@ -51,7 +51,7 @@
             }
         );
 
-        let grid_reservations = $("#grid-reservations").UIBootgrid(
+        const grid_reservations = $("#{{formGridReservation['table_id']}}").UIBootgrid(
             {   search:'/api/kea/dhcpv4/search_reservation',
                 get:'/api/kea/dhcpv4/get_reservation/',
                 set:'/api/kea/dhcpv4/set_reservation/',
@@ -60,7 +60,7 @@
             }
         );
 
-        $("#grid-ha-peers").UIBootgrid(
+        $("#{{formGridPeer['table_id']}}").UIBootgrid(
             {   search:'/api/kea/dhcpv4/search_peer',
                 get:'/api/kea/dhcpv4/get_peer/',
                 set:'/api/kea/dhcpv4/set_peer/',
@@ -83,6 +83,32 @@
         /**
          * Reservations csv download and upload
          */
+        const $tfoot = grid_reservations.find("tfoot td:last");
+        $tfoot.append(`
+            <button
+                id="upload_reservations"
+                type="button"
+                data-title="{{ lang._('Import reservations') }}"
+                data-endpoint='/api/kea/dhcpv4/upload_reservations'
+                title="{{ lang._('Import csv') }}"
+                data-toggle="tooltip"
+                class="btn btn-xs"
+            >
+                <span class="fa fa-fw fa-upload"></span>
+            </button>
+        `);
+        $tfoot.append(`
+            <button
+                id="download_reservations"
+                type="button"
+                title="{{ lang._('Export as csv') }}"
+                data-toggle="tooltip"
+                class="btn btn-xs"
+            >
+                <span class="fa fa-fw fa-table"></span>
+            </button>
+        `);
+
         $("#download_reservations").click(function(e){
             e.preventDefault();
             window.open("/api/kea/dhcpv4/download_reservations");
@@ -120,85 +146,15 @@
     </div>
     <!-- subnets / pools  -->
     <div id="subnets" class="tab-pane fade in">
-        <table id="grid-subnets" class="table table-condensed table-hover table-striped" data-editDialog="DialogSubnet" data-editAlert="keaChangeMessage">
-            <thead>
-                <tr>
-                  <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                  <th data-column-id="subnet" data-type="string">{{ lang._('Subnet') }}</th>
-                  <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
-                  <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td></td>
-                    <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
+        {{ partial('layout_partials/base_bootgrid_table', formGridSubnet)}}
     </div>
     <!-- reservations -->
     <div id="reservations" class="tab-pane fade in">
-        <table id="grid-reservations" class="table table-condensed table-hover table-striped" data-editDialog="DialogReservation" data-editAlert="keaChangeMessage">
-            <thead>
-                <tr>
-                  <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                  <th data-column-id="subnet" data-type="string">{{ lang._('Subnet') }}</th>
-                  <th data-column-id="ip_address" data-type="string">{{ lang._('IP Address') }}</th>
-                  <th data-column-id="hw_address" data-type="string">{{ lang._('MAC') }}</th>
-                  <th data-column-id="hostname" data-type="string">{{ lang._('Hostname') }}</th>
-                  <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
-                  <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td></td>
-                    <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                        <button
-                            id="upload_reservations"
-                            type="button"
-                            data-title="{{ lang._('Import reservations') }}"
-                            data-endpoint='/api/kea/dhcpv4/upload_reservations'
-                            title="{{ lang._('Import csv') }}"
-                            data-toggle="tooltip"
-                            class="btn btn-xs"
-                        ><span class="fa fa-fw fa-upload"></span></button>
-                        <button id="download_reservations" type="button" title="{{ lang._('Export as csv') }}" data-toggle="tooltip"  class="btn btn-xs"><span class="fa fa-fw fa-table"></span></button>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
+        {{ partial('layout_partials/base_bootgrid_table', formGridReservation)}}
     </div>
     <!-- HA - peers -->
     <div id="ha-peers" class="tab-pane fade in">
-        <table id="grid-ha-peers" class="table table-condensed table-hover table-striped" data-editDialog="DialogPeer" data-editAlert="keaChangeMessage">
-            <thead>
-                <tr>
-                  <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                  <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
-                  <th data-column-id="role" data-type="string">{{ lang._('Role') }}</th>
-                  <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td></td>
-                    <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
+       {{ partial('layout_partials/base_bootgrid_table', formGridPeer)}}
     </div>
 </div>
 
@@ -207,7 +163,7 @@
         <div class="col-md-12">
             <br/>
             <div id="keaChangeMessage" class="alert alert-info" style="display: none" role="alert">
-                {{ lang._('After changing settings, please remember to apply them') }}
+                {{ lang._('After changing settings, please remember to apply them.') }}
             </div>
             <button class="btn btn-primary" id="reconfigureAct"
                     data-endpoint='/api/kea/service/reconfigure'
@@ -220,6 +176,6 @@
     </div>
 </section>
 
-{{ partial("layout_partials/base_dialog",['fields':formDialogSubnet,'id':'DialogSubnet','label':lang._('Edit Subnet')])}}
-{{ partial("layout_partials/base_dialog",['fields':formDialogReservation,'id':'DialogReservation','label':lang._('Edit Reservation')])}}
-{{ partial("layout_partials/base_dialog",['fields':formDialogPeer,'id':'DialogPeer','label':lang._('Edit Peer')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogSubnet,'id':formGridSubnet['edit_dialog_id'],'label':lang._('Edit Subnet')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogReservation,'id':formGridReservation['edit_dialog_id'],'label':lang._('Edit Reservation')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogPeer,'id':formGridPeer['edit_dialog_id'],'label':lang._('Edit Peer')])}}
