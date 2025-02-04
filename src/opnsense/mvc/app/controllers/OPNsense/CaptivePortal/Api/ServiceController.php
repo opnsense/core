@@ -33,6 +33,7 @@ use OPNsense\Base\UIModelGrid;
 use OPNsense\CaptivePortal\CaptivePortal;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Core\SanitizeFilter;
 
 /**
  * Class ServiceController
