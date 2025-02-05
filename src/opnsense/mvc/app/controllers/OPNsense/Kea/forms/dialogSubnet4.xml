@@ -147,11 +147,12 @@
     </field>
     <field>
         <id>subnet4.option_data.v6_only_preferred</id>
-        <label>IPv6-only Preferred</label>
+        <label>IPv6-only Preferred (Option 108)</label>
         <type>text</type>
-        <help>The number of seconds for which the client should disable DHCPv4</help>
+        <help>The number of seconds for which the client should disable DHCPv4. The minimum value is 300 seconds.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
+        <advanced>true</advanced>
     </field>
 </form>
