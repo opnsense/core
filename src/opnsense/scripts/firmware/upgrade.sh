@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2021 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2025 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -31,7 +31,11 @@ REQUEST="UPGRADE"
 
 if output_cmd opnsense-update -u; then
 	if output_cmd /usr/local/etc/rc.syshook upgrade; then
-		if output_cmd opnsense-update -K; then
+		# no pending kernels but still need a reboot
+		if ! output_cmd opnsense-update -K -c; then
+			output_reboot
+		# pending kernel applies before reboot
+		elif output_cmd opnsense-update -K; then
 			output_reboot
 		fi
 	fi
