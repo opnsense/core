@@ -40,7 +40,7 @@ if output_cmd opnsense-update -u; then
 		fi
 	fi
 
-	# abort pending upgrades
+	output_txt "The upgrade was aborted due to an error."
 	output_cmd opnsense-update -es
 fi
 
