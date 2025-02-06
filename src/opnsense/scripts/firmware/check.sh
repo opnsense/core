@@ -37,6 +37,14 @@
 # downgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
 # upgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
 
+# Fail the script when any command fails
+# There are gotchas https://mywiki.wooledge.org/BashFAQ/105
+# But for the current script it does work as intended :
+# - When updating the package list fails it fails the script (first use case that prompted this addition)
+# - When other unintended thing happens to fail it fails the script
+# - When everything works as intended it works
+set -e
+
 # clear the file before we may wait for other init glue below
 JSONFILE="/tmp/pkg_upgrade.json"
 rm -f ${JSONFILE}
