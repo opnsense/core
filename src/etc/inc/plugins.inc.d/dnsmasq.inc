@@ -117,32 +117,13 @@ function dnsmasq_configure_do($verbose = false)
     }
 
     if (!empty($config['dnsmasq']['interface'])) {
-        $interfaces = explode(',', $config['dnsmasq']['interface']);
-        array_unshift($interfaces, 'lo0');
-
-        $addresses = [];
-
-        foreach (interfaces_addresses($interfaces) as $tmpaddr => $info) {
-            if ($info['name'] == 'lo0' && $info['family'] == 'inet' && $tmpaddr != '127.0.0.1') {
-                /* allow other DNS services to bind to loopback aliases */
-                continue;
+        $ifs = [];
+        foreach (explode(',', $config['dnsmasq']['interface']) as $ifname) {
+            if (!empty($config['interfaces'][$ifname]) && !empty($config['interfaces'][$ifname]['if'])) {
+                $ifs[] = $config['interfaces'][$ifname]['if'];
             }
-
-            if ($info['scope']) {
-                /* link-local does not seem to be supported */
-                continue;
-            }
-
-            if (!$info['bind']) {
-                continue;
-            }
-
-            $addresses[] = $tmpaddr;
         }
-
-        foreach ($addresses as $address) {
-            $args .= " --listen-address={$address} ";
-        }
+        $args .= " --interface=" . implode(',', $ifs) . " ";
 
         if (!empty($addresses) && !empty($config['dnsmasq']['strictbind'])) {
             $args .= ' --bind-interfaces ';
