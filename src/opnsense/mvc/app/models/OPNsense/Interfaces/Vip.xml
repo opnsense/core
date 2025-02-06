@@ -1,6 +1,6 @@
 <model>
     <mount>/virtualip</mount>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>Virtual IP configuration</description>
     <items>
         <vip type=".\VipField">
@@ -62,6 +62,10 @@
                 <NetMaskAllowed>N</NetMaskAllowed>
                 <AddressFamily>ipv6</AddressFamily>
             </peer6>
+            <nosync type="BooleanField">
+                <Required>Y</Required>
+                <Default>0</Default>
+            </nosync>
             <descr type="DescriptionField"/>
         </vip>
     </items>
