@@ -27,6 +27,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* disperse rrd updates with 61 second interval to not always be at the top of every minute  (hh:mm:00) */
+$minute = date('i');
+if ($minute == 59) return; # skip minute 59 (62 seconds between hh:58:58 & hh:00:00)
+sleep($minute);
+
 /* loader : add library path in this directory to our normal path */
 require_once('/usr/local/opnsense/mvc/app/library/OPNsense/Autoload/Loader.php');
 $phalcon_config = include('/usr/local/opnsense/mvc/app/config/config.php');
