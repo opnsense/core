@@ -281,9 +281,6 @@ function _interfaces_bridge_configure($bridge)
         if (!empty($bridge['fwdelay'])) {
             mwexec("/sbin/ifconfig {$bridge['bridgeif']} fwddelay " . escapeshellarg($bridge['fwdelay']));
         }
-        if (!empty($bridge['hellotime'])) {
-            mwexec("/sbin/ifconfig {$bridge['bridgeif']} hellotime " . escapeshellarg($bridge['hellotime']));
-        }
         if (!empty($bridge['holdcnt'])) {
             mwexec("/sbin/ifconfig {$bridge['bridgeif']} holdcnt " . escapeshellarg($bridge['holdcnt']));
         }
