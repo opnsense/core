@@ -974,6 +974,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/stats.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Wireguard/diagnostics.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Wireguard/general.volt
+/usr/local/opnsense/mvc/app/views/layout_partials/base_apply_button.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_bootgrid_table.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_dialog.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_dialog_processing.volt
