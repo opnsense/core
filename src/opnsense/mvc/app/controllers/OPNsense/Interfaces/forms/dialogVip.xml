@@ -94,7 +94,7 @@
         <id>vip.nosync</id>
         <label>No XMLRPC Sync</label>
         <type>checkbox</type>
-        <help>Exclude this item from the HA syncronization process. An already existing item on the synchronization target will not be altered or deleted as long as this is active.</help>
+        <help>Exclude this item from the HA synchronization process. An already existing item with the same UUID on the synchronization target will not be altered or deleted as long as this is active. This option can be helpful when using Unicast CARP. After the initial synchronization, enable this option and adjust the Unicast IPs on the backup firewall. Additional IP aliases in the same VHID group can now be synced without overwriting their parent CARP VIP.</help>
         <style>mode mode_carp mode_ipalias</style>
         <grid_view>
             <type>boolean</type>

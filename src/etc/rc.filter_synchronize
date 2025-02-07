@@ -106,10 +106,8 @@ function remove_nosync(&$cnf_structure)
     } else {
         foreach ($cnf_structure as $cnf_key => &$cnf_data) {
             // nosync is boolean in mvc code, and either unset or 1 in legacy code.
-            if (is_array($cnf_data) && isset($cnf_data['nosync'])) {
-                if (!empty($cnf_data['nosync'])) {
-                    unset($cnf_structure[$cnf_key]);
-                }
+            if (is_array($cnf_data) && !empty($cnf_data['nosync'])) {
+                unset($cnf_structure[$cnf_key]);
             } else {
                 remove_nosync($cnf_data);
             }
