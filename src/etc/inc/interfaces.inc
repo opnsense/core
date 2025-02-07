@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2024 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2025 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2008 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2008-2009 Ermal Luçi
  * Copyright (C) 2005 Espen Johansen
@@ -3563,44 +3563,27 @@ function get_real_interface($interface = 'wan', $family = 'all')
 {
     global $config;
 
-    $realif = $interface;
+    if (empty($config['interfaces'][$interface])) {
+        /* assume the interface exists to force an error elsewhere */
+        return $interface;
+    }
 
-    switch ($interface) {
-        /* XXX legacy cruft starts here */
-        case 'enc0':
-        case 'openvpn':
-        case 'ppp':
-            break;
-        case 'ipsec':
-            $realif = 'enc0';
-            break;
-        /* XXX legacy cruft ends here */
-        default:
-            if (empty($config['interfaces'][$interface])) {
-                /* assume the interface exists to force an error elsewhere */
+    $realif = $config['interfaces'][$interface]['if'];
+
+    /* XXX this is either impossibe to reach nowadays or requires an interface migration */
+    if (isset($config['interfaces'][$interface]['wireless']) && !strstr($realif, '_wlan')) {
+        $realif .= '_wlan0';
+    }
+
+    if ($family == 'inet6') {
+        switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
+            case '6rd':
+            case '6to4':
+                $realif = "{$interface}_stf";
                 break;
-            }
-
-            $cfg = &config_read_array('interfaces', $interface);
-
-            /* set default for IPv4 and IPv6 lookups */
-            $realif = $cfg['if'];
-
-            if (isset($cfg['wireless']) && !strstr($realif, '_wlan')) {
-                $realif .= '_wlan0';
-            }
-
-            if ($family == 'inet6') {
-                switch ($cfg['ipaddrv6'] ?? 'none') {
-                    case '6rd':
-                    case '6to4':
-                        $realif = "{$interface}_stf";
-                        break;
-                    default:
-                        break;
-                }
-            }
-            break;
+            default:
+                break;
+        }
     }
 
     return $realif;
