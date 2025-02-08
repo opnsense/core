@@ -82,6 +82,6 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function delDomainAction($uuid)
     {
-        return $this->delBase('domainoverride', $uuid);
+        return $this->delBase('domainoverrides', $uuid);
     }
 }
