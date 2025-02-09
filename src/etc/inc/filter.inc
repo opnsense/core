@@ -791,3 +791,28 @@ function get_tos_values($blank_label = '')
 
     return $ret;
 }
+
+/**
+ * check if advanced options are set in firewall_rules_edit.php or firewall_rules.php
+ */
+function FormSetAdvancedOptions(&$item) {
+    foreach (array("max", "max-src-nodes", "max-src-conn", "max-src-states","nopfsync", "statetimeout", "adaptivestart"
+                  , "adaptiveend", "max-src-conn-rate","max-src-conn-rates", "tag", "tagged", "allowopts", "reply-to","tcpflags1"
+                  ,"tcpflags2", "tos", "state-policy") as $fieldname) {
+
+        if (strlen($item[$fieldname]) > 0) {
+            return true;
+        }
+    }
+    // check these fields for anything being set except a blank string
+    foreach (array('set-prio', 'set-prio-low', 'prio') as $fieldname) {
+        if (isset($item[$fieldname]) && $item[$fieldname] !== '') {
+            return true;
+        }
+    }
+
+    if (!empty($item["statetype"]) && $item["statetype"] != 'keep state') {
+        return true;
+    }
+    return false;
+}

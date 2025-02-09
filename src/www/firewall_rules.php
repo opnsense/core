@@ -178,6 +178,19 @@ function firewall_rule_item_icons($filterent)
       );
     }
 
+    // Advanced Features Icon
+    if (FormSetAdvancedOptions($filterent)) {
+      $result .= sprintf(
+          "<i class=\"fa fa-cogs fa-fw text-warning\" data-toggle=\"tooltip\" title=\"%s\"></i>",
+          gettext('advanced features enabled')
+      );
+    } else {
+      $result .= sprintf(
+          "<i class=\"fa fa-cogs fa-fw text-muted\" data-toggle=\"tooltip\" title=\"%s\"></i>",
+          gettext('advanced features disabled')
+      );
+    }
+
     return $result;
 }
 

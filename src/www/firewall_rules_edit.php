@@ -43,33 +43,6 @@ if ($ostypes == null) {
 $gateways = new \OPNsense\Routing\Gateways();
 $shaper_targets = (new \OPNsense\TrafficShaper\TrafficShaper())->fetchAllTargets();
 
-
-/**
- * check if advanced options are set on selected element
- */
-function FormSetAdvancedOptions(&$item) {
-    foreach (array("max", "max-src-nodes", "max-src-conn", "max-src-states","nopfsync", "statetimeout", "adaptivestart"
-                  , "adaptiveend", "max-src-conn-rate","max-src-conn-rates", "tag", "tagged", "allowopts", "reply-to","tcpflags1"
-                  ,"tcpflags2", "tos", "state-policy") as $fieldname) {
-
-        if (strlen($item[$fieldname]) > 0) {
-            return true;
-        }
-    }
-    // check these fields for anything being set except a blank string
-    foreach (array('set-prio', 'set-prio-low', 'prio') as $fieldname) {
-        if (isset($item[$fieldname]) && $item[$fieldname] !== '') {
-            return true;
-        }
-    }
-
-    if (!empty($item["statetype"]) && $item["statetype"] != 'keep state') {
-        return true;
-    }
-    return false;
-}
-
-
 function is_posnumericint($arg) {
     // Note that to be safe we do not allow any leading zero - "01", "007"
     return (is_numericint($arg) && $arg[0] != '0' && $arg > 0);
