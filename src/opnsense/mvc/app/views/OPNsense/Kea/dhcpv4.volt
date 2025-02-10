@@ -158,10 +158,7 @@
     </div>
 </div>
 
-{{ partial('layout_partials/base_apply_button', {
-    'data_endpoint': '/api/kea/service/reconfigure',
-    'edit_alert_ids': [formGridSubnet['edit_alert_id'], formGridReservation['edit_alert_id'], formGridPeer['edit_alert_id']]
-}) }}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/kea/service/reconfigure'}) }}
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogSubnet,'id':formGridSubnet['edit_dialog_id'],'label':lang._('Edit Subnet')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogReservation,'id':formGridReservation['edit_dialog_id'],'label':lang._('Edit Reservation')])}}

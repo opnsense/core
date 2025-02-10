@@ -2,22 +2,19 @@
     <div class="content-box">
         <div class="col-md-12">
             <br/>
-{% if edit_alert_ids %}
-{%     for id in edit_alert_ids %}
-            <div id="{{ id }}" class="alert alert-info" style="display: none" role="alert">
+            <div id="{{ message_id|default('change_message_base_form') }}" class="alert alert-info" style="display: none" role="alert">
                 {{ lang._('After changing settings, please remember to apply them.') }}
             </div>
-{%     endfor %}
-{% endif %}
-            <button class="btn btn-primary" id="reconfigureAct"
-{% if data_endpoint %}
+            <button class="btn btn-primary" id="{{ button_id|default('reconfigureAct') }}"
                     data-endpoint="{{ data_endpoint }}"
-{% endif %}
                     data-label="{{ lang._(data_label|default('Apply')) }}"
+                    data-error-title="{{ lang._(data_error_title|default('Error reconfiguring service.')) }}"
 {% if data_service_widget %}
                     data-service-widget="{{ data_service_widget }}"
 {% endif %}
-                    data-error-title="{{ lang._(data_error_title|default('Error reconfiguring service.')) }}"
+{% if data_grid_reload %}
+                    data-grid-reload="{{ data_grid_reload }}"
+{% endif %}
                     type="button">
             </button>
             <br/><br/>
