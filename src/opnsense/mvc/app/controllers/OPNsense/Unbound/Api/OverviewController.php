@@ -75,7 +75,7 @@ class OverviewController extends ApiControllerBase
             }
         }
 
-        $parsed['whitelisted_domains'] = array_keys($nodes['dnsbl']['whitelists']);
+        $parsed['allowlisted_domains'] = array_keys($nodes['dnsbl']['allowlists']);
         $parsed['blocklisted_domains'] = array_keys($nodes['dnsbl']['blocklists']);
 
         return $parsed;
@@ -124,7 +124,7 @@ class OverviewController extends ApiControllerBase
         }
 
         $response = $this->searchRecordsetBase($parsed);
-        $response['whitelisted_domains'] = array_keys($nodes['dnsbl']['whitelists']);
+        $response['allowlisted_domains'] = array_keys($nodes['dnsbl']['allowlists']);
         $response['blocklisted_domains'] = array_keys($nodes['dnsbl']['blocklists']);
 
         return $response;
