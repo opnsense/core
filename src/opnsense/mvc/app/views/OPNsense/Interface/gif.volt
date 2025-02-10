@@ -46,23 +46,5 @@
 <div class="tab-content content-box">
     {{ partial('layout_partials/base_bootgrid_table', formGridGif)}}
 </div>
-<section class="page-content-main">
-    <div class="content-box">
-        <div class="col-md-12">
-            <br/>
-            <div id="gifChangeMessage" class="alert alert-info" style="display: none" role="alert">
-                {{ lang._('After changing settings, please remember to apply them.') }}
-            </div>
-            <button class="btn btn-primary" id="reconfigureAct"
-                    data-endpoint='/api/interfaces/gif_settings/reconfigure'
-                    data-label="{{ lang._('Apply') }}"
-                    data-error-title="{{ lang._('Error reconfiguring GIF') }}"
-                    type="button"
-            ></button>
-            <br/><br/>
-        </div>
-    </div>
-</section>
-
-
-{{ partial("layout_partials/base_dialog",['fields':formDialogGif,'id':formGridGif['edit_dialog_id'],'label':lang._('Edit Gif')])}}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/interfaces/gif_settings/reconfigure'}) }}
+{{ partial('layout_partials/base_dialog',['fields':formDialogGif,'id':formGridGif['edit_dialog_id'],'label':lang._('Edit Gif')])}}

@@ -33,8 +33,7 @@ class VxLanController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->pick('OPNsense/Interface/vxlan');
-
         $this->view->formDialogVxlan = $this->getForm("dialogVxlan");
-        $this->view->formGridVxlan = $this->getFormGrid("dialogVxlan", null, "VxlanChangeMessage");
+        $this->view->formGridVxlan = $this->getFormGrid("dialogVxlan");
     }
 }

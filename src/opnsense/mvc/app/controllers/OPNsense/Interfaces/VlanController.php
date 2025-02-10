@@ -33,8 +33,7 @@ class VlanController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->pick('OPNsense/Interface/vlan');
-
         $this->view->formDialogVlan = $this->getForm("dialogVlan");
-        $this->view->formGridVlan = $this->getFormGrid("dialogVlan", null, "VlanChangeMessage");
+        $this->view->formGridVlan = $this->getFormGrid("dialogVlan");
     }
 }

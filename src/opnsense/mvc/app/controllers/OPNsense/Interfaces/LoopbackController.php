@@ -33,8 +33,7 @@ class LoopbackController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->pick('OPNsense/Interface/loopback');
-
         $this->view->formDialogLoopback = $this->getForm("dialogLoopback");
-        $this->view->formGridLoopback = $this->getFormGrid("dialogLoopback", null, "loopbackChangeMessage");
+        $this->view->formGridLoopback = $this->getFormGrid("dialogLoopback");
     }
 }

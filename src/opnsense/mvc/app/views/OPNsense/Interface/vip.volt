@@ -89,23 +89,5 @@
   </div>
   {{ partial('layout_partials/base_bootgrid_table', formGridVip)}}
 </div>
-<section class="page-content-main">
-    <div class="content-box">
-        <div class="col-md-12">
-            <br/>
-            <div id="VipChangeMessage" class="alert alert-info" style="display: none" role="alert">
-                {{ lang._('After changing settings, please remember to apply them.') }}
-            </div>
-            <button class="btn btn-primary" id="reconfigureAct"
-                    data-endpoint='/api/interfaces/vip_settings/reconfigure'
-                    data-label="{{ lang._('Apply') }}"
-                    data-error-title="{{ lang._('Error reconfiguring virtual IPs') }}"
-                    type="button"
-            ></button>
-            <br/><br/>
-        </div>
-    </div>
-</section>
-
-
-{{ partial("layout_partials/base_dialog",['fields':formDialogVip,'id':formGridVip['edit_dialog_id'],'label':lang._('Edit Virtual IP')])}}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/interfaces/vip_settings/reconfigure'}) }}
+{{ partial('layout_partials/base_dialog',['fields':formDialogVip,'id':formGridVip['edit_dialog_id'],'label':lang._('Edit Virtual IP')])}}
