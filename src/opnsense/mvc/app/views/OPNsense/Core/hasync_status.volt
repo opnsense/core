@@ -87,7 +87,7 @@
                                 $(this).tooltip({title: "{{ lang._('Start') | safe}}"});
                                 break;
                             case 'restart':
-                                $(this).tooltip({title: "{{ lang._('Restart') | safe}}"});
+                                $(this).tooltip({title: "{{ lang._('Synchronize and Restart') | safe}}"});
                                 break;
                             case 'stop':
                                 $(this).tooltip({title: "{{ lang._('Stop') | safe}}"});
@@ -181,7 +181,7 @@
                                     <tr>
                                         <td><span style="padding-left: 30px;"> {{ lang._('Synchronize and reconfigure all') }} </span></td>
                                         <td>
-                                            <span id="act_restart_all" class="btn btn-xs btn-default" data-toggle="tooltip" title="{{ lang._('Restart all services') }}">
+                                            <span id="act_restart_all" class="btn btn-xs btn-default" data-toggle="tooltip" title="{{ lang._('Synchronize and restart all services') }}">
                                                 <i class="fa fa-repeat fa-fw"></i>
                                             </span>
                                         </td>
