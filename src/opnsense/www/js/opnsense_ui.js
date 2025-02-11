@@ -578,31 +578,43 @@ stdDialogRemoveItem.defaults = {
 $.fn.SimpleActionButton = function (params) {
     let this_button = this;
     this.construct = function () {
-        let label_content = '<b>' + this_button.data('label') + '</b> <i class="reload_progress">';
+        const label_content = '<b>' + this_button.data('label') + '</b> <i class="reload_progress" style="display:inline-block;"></i>';
         this_button.html(label_content);
         this_button.on('click', function () {
-            this_button.find('.reload_progress').addClass("fa fa-spinner fa-pulse");
+            const icon = this_button.find('.reload_progress');
+            icon.css("width", "1em").addClass("fa fa-spinner fa-pulse");
+
             let pre_action = function () {
                 return (new $.Deferred()).resolve();
             }
             if (params && params.onPreAction) {
                 pre_action = params.onPreAction;
             }
+
             pre_action().done(function () {
                 ajaxCall(this_button.data('endpoint'), {}, function (data, status) {
-                    let data_status = typeof data == 'object' && 'status' in data ? data['status'] : '';
+                    const data_status = typeof data == 'object' && 'status' in data ? data['status'] : '';
+                    const success = (status == "success" && data_status.toLowerCase().trim() == 'ok');
+
                     if (params && params.onAction) {
                         params.onAction(data, status);
                     }
-                    if ((status != "success" || (data_status.toLowerCase().trim() != 'ok')) && data_status !== '') {
-                          BootstrapDialog.show({
-                              type: BootstrapDialog.TYPE_WARNING,
-                              title: this_button.data('error-title'),
-                              message: data['status_msg'] ? data['status_msg'] : data['status'],
-                              draggable: true
-                          });
+
+                    if (!success) {
+                        BootstrapDialog.show({
+                            type: BootstrapDialog.TYPE_WARNING,
+                            title: this_button.data('error-title'),
+                            message: data.status_msg ? data.status_msg : data.status,
+                            draggable: true
+                        });
+                        icon.removeClass("fa-spinner fa-pulse").css("width", "");
+                    } else {
+                        icon.removeClass("fa-spinner fa-pulse").addClass("fa fa-check");
+                        setTimeout(function () {
+                            icon.removeClass("fa fa-check").css("width", "");
+                        }, 1000);
                     }
-                    this_button.find('.reload_progress').removeClass("fa fa-spinner fa-pulse");
+
                     if (this_button.data('service-widget')) {
                         updateServiceControlUI(this_button.data('service-widget'));
                     }
@@ -611,7 +623,7 @@ $.fn.SimpleActionButton = function (params) {
                     }
                 });
             }).fail(function () {
-                this_button.find('.reload_progress').removeClass("fa fa-spinner fa-pulse");
+                icon.removeClass("fa fa-spinner fa-pulse").css("width", "");
             });
         });
     }
