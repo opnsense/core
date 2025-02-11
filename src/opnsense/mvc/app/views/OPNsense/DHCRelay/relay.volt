@@ -51,33 +51,12 @@ $( document ).ready(function() {
     $("#reconfigureAct").SimpleActionButton();
 });
 </script>
-
 <div class="content-box __mb">
     {{ partial('layout_partials/base_bootgrid_table', formGridDest)}}
 </div>
-
 <div class="content-box __mb">
     {{ partial('layout_partials/base_bootgrid_table', formGridRelay)}}
 </div>
-
-<section class="page-content-main">
-    <div class="content-box">
-        <div class="col-md-12">
-            <br/>
-            <button class="btn btn-primary" id="reconfigureAct"
-                    data-endpoint='/api/dhcrelay/service/reconfigure'
-                    data-label="{{ lang._('Apply') }}"
-                    data-grid-reload="grid-relay"
-                    data-error-title="{{ lang._('Error reconfiguring dhcrelay') }}"
-                    type="button">
-            </button>
-            <br/><br/>
-        </div>
-    </div>
-    <div id="relayChangeMessage" class="alert alert-info" style="display: none" role="alert">
-        {{ lang._('After changing settings, please remember to apply them.') }}
-    </div>
-</section>
-
-{{ partial("layout_partials/base_dialog",['fields':formDialogRelay,'id':formGridRelay['edit_dialog_id'],'label':lang._('Edit DHCP relay')])}}
-{{ partial("layout_partials/base_dialog",['fields':formDialogDest,'id':formGridDest['edit_dialog_id'],'label':lang._('Edit DHCP destination')])}}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/dhcrelay/service/reconfigure', 'data_grid_reload': formGridRelay['table_id']}) }}
+{{ partial('layout_partials/base_dialog',['fields':formDialogRelay,'id':formGridRelay['edit_dialog_id'],'label':lang._('Edit DHCP relay')])}}
+{{ partial('layout_partials/base_dialog',['fields':formDialogDest,'id':formGridDest['edit_dialog_id'],'label':lang._('Edit DHCP destination')])}}
