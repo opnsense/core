@@ -37,7 +37,6 @@
 /usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkdown
 /usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkup
 /usr/local/etc/inc/plugins.inc.d/openvpn/tunnel_endpoint.php
-/usr/local/etc/inc/plugins.inc.d/openvpn/wizard.inc
 /usr/local/etc/inc/plugins.inc.d/pf.inc
 /usr/local/etc/inc/plugins.inc.d/suricata.inc
 /usr/local/etc/inc/plugins.inc.d/unbound.inc
@@ -2387,7 +2386,6 @@
 /usr/local/share/man/man8/opnsense-log.8.gz
 /usr/local/share/man/man8/opnsense-shell.8.gz
 /usr/local/share/man/man8/opnsense-version.8.gz
-/usr/local/wizard/openvpn.xml
 /usr/local/wizard/system.xml
 /usr/local/www/authgui.inc
 /usr/local/www/crash_reporter.php

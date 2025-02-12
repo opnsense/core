@@ -139,7 +139,6 @@
             <Instances url="/ui/openvpn/instances"/>
             <Servers VisibleName="Servers [legacy]" order="10" url="/vpn_openvpn_server.php">
                 <Edit url="/vpn_openvpn_server.php?*" visibility="hidden"/>
-                <Step url="/wizard.php?xml=openvpn*" visibility="hidden"/>
             </Servers>
             <Clients VisibleName="Clients [legacy]" order="20" url="/vpn_openvpn_client.php">
                 <Edit url="/vpn_openvpn_client.php?*" visibility="hidden"/>
