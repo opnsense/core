@@ -110,7 +110,10 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             }
         }
         foreach ((new Alias())->aliases->alias->iterateItems() as $alias) {
-            if (strpos((string)$alias->type, "port") === false) {
+            if ($alias->type == 'internal') {
+                /* currently only used for legacy bindings, align with legacy_list_aliases() usage */
+                continue;
+            } elseif (strpos((string)$alias->type, "port") === false) {
                 $result['aliases']['items'][(string)$alias->name] = (string)$alias->name;
             }
         }
