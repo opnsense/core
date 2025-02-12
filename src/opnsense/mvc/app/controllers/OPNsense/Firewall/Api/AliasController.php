@@ -376,10 +376,27 @@ class AliasController extends ApiMutableModelControllerBase
      */
     public function exportAction()
     {
-        if ($this->request->isGet()) {
+        if ($this->request->isGet() || $this->request->isPost()) {
+            if (!empty($this->request->get('ids'))) {
+                /* partial select */
+                if (is_array($this->request->get('ids'))) {
+                    $items = $this->request->get('ids');
+                } else {
+                    $items = explode(',', (string)$this->request->get('ids'));
+                }
+                $payload = ['aliases' => ['alias' => []]];
+                foreach ($this->getModel()->aliases->alias->iterateItems() as $key => $node) {
+                    if (in_array($key, $items)) {
+                        $payload['aliases']['alias'][$key] = $this->getRawNodes($node);
+                    }
+                }
+            } else {
+                /* full dump */
+                $payload = $this->getRawNodes($this->getModel());
+            }
             // return raw, unescaped since this content is intended for direct download
             $this->response->setContentType('application/json', 'UTF-8');
-            $this->response->setContent(json_encode($this->getRawNodes($this->getModel())));
+            $this->response->setContent(json_encode($payload, JSON_PRETTY_PRINT));
         } else {
             throw new UserException("Unsupported request type");
         }

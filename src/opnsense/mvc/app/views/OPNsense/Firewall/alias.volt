@@ -446,7 +446,12 @@
          * export all configured aliases to json
          */
         $("#exportbtn").click(function(){
-            ajaxGet("/api/firewall/alias/export", {}, function(data, status){
+            let selected_rows = $("#grid-aliases").bootgrid("getSelectedRows");
+            let params = {};
+            if (selected_rows.length > 0) {
+                params['ids'] = selected_rows;
+            }
+            ajaxCall("/api/firewall/alias/export", params, function(data, status){
                 if (data.aliases) {
                   let output_data = JSON.stringify(data, null, 2);
                   let a_tag = $('<a></a>').attr('href','data:application/json;charset=utf8,' + encodeURIComponent(output_data))
