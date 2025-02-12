@@ -4002,30 +4002,6 @@ function interfaces_neighbors_configure($device = null, $ifconfig_details = null
     }
 }
 
-function convert_seconds_to_hms($sec)
-{
-    $min = $hrs = 0;
-    if ($sec != 0) {
-        $min = floor($sec / 60);
-        $sec %= 60;
-    }
-    if ($min != 0) {
-        $hrs = floor($min / 60);
-        $min %= 60;
-    }
-    if ($sec < 10) {
-        $sec = "0" . $sec;
-    }
-    if ($min < 10) {
-        $min = "0" . $min;
-    }
-    if ($hrs < 10) {
-        $hrs = "0" . $hrs;
-    }
-    $result = $hrs . ":" . $min . ":" . $sec;
-    return $result;
-}
-
 /****f* legacy/is_ipaddr_configured
  * NAME
  *   is_ipaddr_configured
