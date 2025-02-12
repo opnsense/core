@@ -89,22 +89,8 @@
         <i class="fa fa-trash-o fa-fw"></i>
     </button>
 </div>
-<div class="tab-content content-box">
+<div class="content-box __mb">
     {{ partial('layout_partials/base_bootgrid_table', formGridTunable)}}
-    <div class="col-md-12">
-        <div id="{{formGridTunable['edit_alert_id']}}" class="alert alert-info" style="display: none" role="alert">
-            {{ lang._('After changing settings, please remember to apply them with the button below') }}
-        </div>
-        <hr/>
-        <button class="btn btn-primary" id="reconfigureAct"
-                data-endpoint='/api/core/tunables/reconfigure'
-                data-label="{{ lang._('Apply') }}"
-                data-error-title="{{ lang._('Error reconfiguring Tunables') }}"
-                type="button"
-        ></button>
-        <br/><br/>
-    </div>
 </div>
-
-
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/core/tunables/reconfigure'}) }}
 {{ partial("layout_partials/base_dialog",['fields':formDialogTunable,'id':formGridTunable['edit_dialog_id'],'label':lang._('Edit Tunable')])}}
