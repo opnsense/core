@@ -334,9 +334,11 @@ function ntpd_configure_do($verbose = false)
     $ntpcfg .= "\n\n# Upstream Servers\n";
     /* foreach through ntp servers and write out to ntpd.conf */
     foreach (explode(' ', $config['system']['timeservers']) as $ts) {
+        $is_pool = false;
         /* Determine if Network Time Server is from the NTP Pool or not */
         if (preg_match("/\.pool\.ntp\.org$/", $ts)) {
             $ntpcfg .= "pool {$ts}";
+            $is_pool = true;
         } else {
             $ntpcfg .= "server {$ts}";
         }
@@ -347,7 +349,8 @@ function ntpd_configure_do($verbose = false)
         if (in_array($ts, $prefer)) {
             $ntpcfg .= ' prefer';
         }
-        if (in_array($ts, $noselect)) {
+        /* "noselect" option is not valid with pools */
+        if ((in_array($ts, $noselect)) && ($is_pool === false)) {
             $ntpcfg .= ' noselect';
         }
         $ntpcfg .= "\n";
@@ -402,10 +405,11 @@ function ntpd_configure_do($verbose = false)
     if (empty($config['ntpd']['notrap'])) { /*note: this one works backwards */
         $ntpaccess .= ' notrap';
     }
+    $ntpcfg .= "\nrestrict source {$ntpaccess}";
+    /* Keep "noserve" and "nopeer" out of the restrict source template, they make no sense there */
     if (!empty($config['ntpd']['noserve'])) {
         $ntpaccess .= ' noserve';
     }
-    $ntpcfg .= "\nrestrict source {$ntpaccess}";
     if (empty($config['ntpd']['nopeer'])) { /*note: this one works backwards */
         $ntpaccess .= ' nopeer';
     }
