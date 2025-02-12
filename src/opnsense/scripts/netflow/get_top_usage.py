@@ -37,7 +37,7 @@ from lib import load_config
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', '--config', help='configuration yaml', default=None)
+    parser.add_argument('--config', '--config', help='configuration yaml', default="/usr/local/etc/flowd_aggregate.yaml")
     parser.add_argument('--provider', default='FlowInterfaceTotals')
     parser.add_argument('--start_time', type=int, required=True)
     parser.add_argument('--end_time', type=int, required=True)
@@ -54,7 +54,7 @@ if __name__ == '__main__':
             # provider may specify multiple resolutions, we need to find the one most likely to serve the
             # beginning of our timeframe
             resolutions = sorted(agg_class.resolutions())
-            history_per_resolution = agg_class.history_per_resolution()
+            history_per_resolution = configuration.history[agg_class.__name__]
 
             selected_resolution = resolutions[-1]
             for resolution in resolutions:
