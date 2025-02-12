@@ -63,7 +63,7 @@
                 if (status == "success") {
                     $('#voucher-groups').html("");
                     $.each(data, function(key, value) {
-                        $('#voucher-groups').append($("<option></option>").attr("value", value).text(value));
+                        $('#voucher-groups').append($("<option></option>").attr("value", encodeURIComponent(value)).text(value));
                     });
                     $('.selectpicker').selectpicker('refresh');
                     // link on change event
