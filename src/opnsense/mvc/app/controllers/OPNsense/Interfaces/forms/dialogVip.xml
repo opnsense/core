@@ -4,17 +4,26 @@
         <label>Mode</label>
         <type>dropdown</type>
         <help>Proxy ARP and other type Virtual IPs cannot be bound to by anything running on the firewall, such as IPsec, OpenVPN, etc. Use a CARP or IP Alias type address for these cases.</help>
+        <grid_view>
+            <sequence>6</sequence>
+        </grid_view>
     </field>
     <field>
         <id>vip.interface</id>
         <label>Interface</label>
         <type>dropdown</type>
+        <grid_view>
+            <sequence>5</sequence>
+        </grid_view>
     </field>
     <field>
         <id>vip.network</id>
         <label>Network / Address</label>
         <type>text</type>
         <help>Provide an address and subnet to use. (e.g 192.168.0.1/24)</help>
+        <grid_view>
+            <sequence>1</sequence>
+        </grid_view>
     </field>
     <field>
         <id>vip.gateway</id>
@@ -24,6 +33,7 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
+            <sequence>7</sequence>
         </grid_view>
     </field>
     <field>
@@ -38,6 +48,7 @@
         </help>
         <grid_view>
             <visible>false</visible>
+            <sequence>8</sequence>
         </grid_view>
     </field>
     <field>
@@ -52,6 +63,7 @@
         </help>
         <grid_view>
             <visible>false</visible>
+            <sequence>9</sequence>
         </grid_view>
     </field>
     <field>
@@ -64,6 +76,7 @@
         <type>boolean</type>
         <formatter>boolean</formatter>
         <visible>false</visible>
+        <sequence>10</sequence>
       </grid_view>
     </field>
     <field>
@@ -76,6 +89,7 @@
         <type>boolean</type>
         <formatter>boolean</formatter>
         <visible>false</visible>
+        <sequence>11</sequence>
       </grid_view>
     </field>
     <field>
@@ -94,6 +108,10 @@
         <type>text</type>
         <style>mode mode_carp mode_ipalias</style>
         <help>Enter the VHID group that the machines will share.</help>
+        <grid_view>
+            <sequence>2</sequence>
+            <width>8em</width>
+        </grid_view>
     </field>
     <field>
         <id>vip.advbase</id>
@@ -102,7 +120,8 @@
         <style>mode mode_carp</style>
         <help>Specifies the base of the advertisement interval in seconds. The acceptable values are 1 to 255.</help>
         <grid_view>
-            <visible>false</visible>
+            <sequence>3</sequence>
+            <width>6em</width>
         </grid_view>
     </field>
     <field>
@@ -115,7 +134,8 @@
           It is specified in 1/256 of seconds.  The acceptable values are 0 to 254.
         </help>
         <grid_view>
-            <visible>false</visible>
+            <sequence>4</sequence>
+            <width>6em</width>
         </grid_view>
     </field>
     <field>
@@ -123,5 +143,6 @@
         <label>Description</label>
         <type>text</type>
         <help>You may enter a description here for your reference (not parsed).</help>
+        <sequence>12</sequence>
     </field>
 </form>
