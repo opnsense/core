@@ -247,7 +247,7 @@ class SystemController extends ApiControllerBase
                 $tempItem['type_translated'] = gettext('AMD');
                 $tempItem['type'] = 'amd';
             } else if (str_starts_with($tempItem['device'], 'dev.pchtherm.')) {
-                $tempItem['type'] = 'pch';
+                $tempItem['type'] = 'platform';
                 $tempItem['type_translated'] = gettext('Platform');
             }
             $result[] = $tempItem;
