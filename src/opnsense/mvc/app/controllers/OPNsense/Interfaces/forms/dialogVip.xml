@@ -85,7 +85,7 @@
         <style>mode mode_carp</style>
         <help>Enter the VHID group password.</help>
         <grid_view>
-            <visible>false</visible>
+            <ignore>true</ignore>
         </grid_view>
     </field>
     <field>
