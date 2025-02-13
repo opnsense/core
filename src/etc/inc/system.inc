@@ -108,6 +108,7 @@ function system_sysctl_defaults()
         'net.inet6.ip6.accept_rtadv' => [ 'default' => isset($config['system']['ipv6allow']) ? '1' : '0', 'required' => true ],
         'net.inet6.ip6.forwarding' => [ 'default' => '1', 'required' => true ],
         'net.inet6.ip6.intr_queue_maxlen' => [ 'default' => '1000', 'required' => true ],
+        'net.inet6.ip6.log_cannot_forward' => [ 'default' => '0', 'required' => true ],
         'net.inet6.ip6.prefer_tempaddr' => [ 'default' => '0' ],
         'net.inet6.ip6.redirect' => [ 'default' => '0', 'required' => true ],
         'net.inet6.ip6.rfc6204w3' => [ 'default' => isset($config['system']['ipv6allow']) ? '1' : '0', 'required' => true ],
