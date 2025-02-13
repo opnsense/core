@@ -243,7 +243,6 @@ class SystemController extends ApiControllerBase
             if (str_starts_with($tempItem['device'], 'hw.acpi.')) {
                 $tempItem['type_translated'] = gettext('Zone');
                 $tempItem['type'] = 'zone';
-            /* XXX may or may not be a good idea */
             } elseif (str_starts_with($tempItem['device'], 'dev.amdtemp') !== false) {
                 $tempItem['type_translated'] = gettext('AMD');
                 $tempItem['type'] = 'amd';
