@@ -25,13 +25,16 @@
  */
 
 export default class ThermalSensors extends BaseWidget {
-    constructor() {
-        super();
+    constructor(config) {
+        super(config);
 
         this.chart = null;
         this.width = null;
         this.height = null;
         this.colors = [];
+
+        this.configurable = true;
+        this.cachedSensors = []; // prevent fetch when loading options
     }
 
     getMarkup() {
@@ -176,26 +179,57 @@ export default class ThermalSensors extends BaseWidget {
         $('.thermalsensors-info-icon').tooltip({container: 'body'});
     }
 
+    async onWidgetOptionsChanged(options) {
+        await this._updateSensors();
+    }
+
+    async getWidgetOptions() {
+        const data = await this._fetchSensors();
+
+        return {
+            sensors: {
+                title: this.translations.title,
+                type: 'select_multiple',
+                options: data.map(({ device, device_seq, type_translated }) => {
+                    return {
+                        value: device,
+                        label: `${type_translated} ${device_seq}`,
+                    };
+                }),
+                default:data.map(({ device }) => device),
+            },
+        };
+    }
+
     async onWidgetTick() {
+        const data = await this._fetchSensors();
+        this.cachedSensors = this._parseSensors(data);
+        this._updateSensors();
+    }
+
+    async _fetchSensors() {
         const data = await this.ajaxCall('/api/diagnostics/system/systemTemperature');
-        if (!data || !data.length) {
+        return data;
+    }
+
+    async _updateSensors() {
+        const data = this.cachedSensors;
+
+        if (!this.chart || data.length === 0) {
             $(`.${this.id}-chart-container`).html(`
                 <a href="/system_advanced_misc.php">${this.translations.unconfigured}</a>
             `).css('margin', '2em auto')
             return;
         }
-        let parsed = this._parseSensors(data);
-        this._update(parsed);
-    }
 
-    _update(data = []) {
-        if (!this.chart || data.length === 0) {
-            return;
-        }
+        const config = await this.getWidgetConfig();
 
         this.colors = new Array(data.length).fill(0);
 
         data.forEach((value, index) => {
+            if (!config.sensors.includes(value.device)) {
+                return;
+            }
             this.chart.data.labels[index] = `${value.type_translated} ${value.device_seq}`;
             this.chart.data.datasets[0].data[index] = Math.max(1, Math.min(100, value.temperature));
             this.chart.data.datasets[0].metadata[index] = value;
