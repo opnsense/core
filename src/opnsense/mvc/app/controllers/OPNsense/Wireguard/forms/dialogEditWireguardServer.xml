@@ -21,6 +21,9 @@
         <label>Instance</label>
         <type>info</type>
         <help>This is the instance number to give the WireGuard device a unique name (wgX).</help>
+        <grid_view>
+            <formatter>wgformatter</formatter>
+        </grid_view>
     </field>
     <field>
         <id>server.pubkey</id>

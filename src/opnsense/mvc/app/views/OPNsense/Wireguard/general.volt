@@ -71,9 +71,15 @@
             set: '/api/wireguard/server/setServer/',
             add: '/api/wireguard/server/addServer/',
             del: '/api/wireguard/server/delServer/',
-            toggle: '/api/wireguard/server/toggleServer/'
+            toggle: '/api/wireguard/server/toggleServer/',
+            options: {
+                formatters: {
+                    "wgformatter": function (column, row) {
+                        return "wg" + row[column.id];
+                    }
+                }
+            }
         });
-
 
         $("#reconfigureAct").SimpleActionButton({
             onPreAction: function() {
@@ -311,8 +317,6 @@
         </span>
         {{ partial("layout_partials/base_form",['fields':formDialogConfigBuilder,'id':'frm_config_builder'])}}
     </div>
-</div>
-<div class="content-box __mb">
     {{ partial("layout_partials/base_form",['fields':generalForm,'id':'frm_general_settings'])}}
 </div>
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/wireguard/service/reconfigure'}) }}
