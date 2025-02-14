@@ -28,7 +28,7 @@
     'use strict';
 
     $( document ).ready(function () {
-        let grid_cso = $("#grid-cso").UIBootgrid({
+        const grid_cso = $("#{{formGridCSO['table_id']}}").UIBootgrid({
             search:'/api/openvpn/client_overwrites/search/',
             get:'/api/openvpn/client_overwrites/get/',
             add:'/api/openvpn/client_overwrites/add/',
@@ -62,29 +62,8 @@
 </ul>
 <div class="tab-content content-box">
     <div id="cso" class="tab-pane fade in active">
-        <table id="grid-cso" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogCSO">
-            <thead>
-                <tr>
-                    <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                    <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-                    <th data-column-id="common_name" data-type="string">{{ lang._('Common name') }}</th>
-                    <th data-column-id="tunnel_network" data-type="string" data-formatter="tunnel">{{ lang._('Tunnel Network') }}</th>
-                    <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
-                    <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td></td>
-                    <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                        <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
-                    </td>
-                </tr>
-            </tfoot>
-          </table>
+        {{ partial('layout_partials/base_bootgrid_table', formGridCSO)}}
+    </div>
 </div>
 
-{{ partial("layout_partials/base_dialog",['fields':formDialogCSO,'id':'DialogCSO','label':lang._('Edit CSO')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogCSO,'id':formGridCSO['edit_dialog_id'],'label':lang._('Edit CSO')])}}
