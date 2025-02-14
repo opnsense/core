@@ -40,7 +40,7 @@ export default class ThermalSensors extends BaseWidget {
     getMarkup() {
         return $(`
             <div class="${this.id}-chart-container" style="margin-left: 10px; margin-right: 10px;">
-                <div class="canvas-container-noaspectratio" style="position: relative;">
+                <div class="canvas-container-noaspectratio">
                     <canvas id="${this.id}-chart"></canvas>
                 </div>
             </div>
@@ -73,20 +73,20 @@ export default class ThermalSensors extends BaseWidget {
                         }
                         return this.colors;
                     },
+                    categoryPercentage: 1.0,
                     barPercentage: 0.8,
                     borderWidth: 1,
                     borderSkipped: false,
                     borderRadius: 20,
-                    barThickness: 20
                 },
                 {
+                    categoryPercentage: 1.0,
                     data: [],
                     backgroundColor: ['#E5E5E5'],
                     borderRadius: 20,
                     barPercentage: 0.5,
                     borderWidth: 1,
                     borderSkipped: true,
-                    barThickness: 10,
                     pointHitRadius: 0
                 }
             ]
@@ -101,15 +101,19 @@ export default class ThermalSensors extends BaseWidget {
                 }
                 let count = data.datasets[0].data.length;
                 ctx.save();
+
+                const margin = 10;
                 for (let i = 0; i < count; i++) {
                     const meta = chart.getDatasetMeta(0);
                     const xPos = meta.data[i].x;
                     const yPos = meta.data[i].y;
                     const barHeight = meta.data[i].height;
 
+                    const textX = Math.max(chartArea.left + margin, xPos - 50);
+
                     ctx.font = 'semibold 12px sans-serif';
                     ctx.fillStyle = '#ffffff';
-                    ctx.fillText(`${data.datasets[0].data[i]}°C`, xPos - 50, yPos + barHeight / 4);
+                    ctx.fillText(`${data.datasets[0].data[i]}°C`, textX, yPos + barHeight / 4);
                 }
                 ctx.restore();
             }
@@ -180,11 +184,12 @@ export default class ThermalSensors extends BaseWidget {
     }
 
     async onWidgetOptionsChanged(options) {
-        await this._updateSensors();
+        // Intentionally not awaited to avoid blocking dialog close
+        this._updateSensors();
     }
 
     async getWidgetOptions() {
-        const data = await this._fetchSensors();
+        const data = this.cachedSensors.length > 0 ? this.cachedSensors : await this._fetchSensors();
 
         return {
             sensors: {
@@ -226,17 +231,26 @@ export default class ThermalSensors extends BaseWidget {
 
         this.colors = new Array(data.length).fill(0);
 
-        data.forEach((value, index) => {
+        this.chart.data.labels = [];
+        this.chart.data.datasets[0].data = [];
+        this.chart.data.datasets[0].metadata = [];
+        this.chart.data.datasets[1].data = [];
+
+        data.forEach((value) => {
             if (!config.sensors.includes(value.device)) {
                 return;
             }
-            this.chart.data.labels[index] = `${value.type_translated} ${value.device_seq}`;
-            this.chart.data.datasets[0].data[index] = Math.max(1, Math.min(100, value.temperature));
-            this.chart.data.datasets[0].metadata[index] = value;
-            this.chart.data.datasets[1].data[index] = 100 - value.temperature;
+            this.chart.data.labels.push(`${value.type_translated} ${value.device_seq}`);
+            this.chart.data.datasets[0].data.push(Math.max(1, Math.min(100, value.temperature)));
+            this.chart.data.datasets[0].metadata.push(value);
+            this.chart.data.datasets[1].data.push(100 - value.temperature);
         });
         this.chart.canvas.parentNode.style.height = `${30 + (data.length * 30)}px`;
         this.chart.update();
+
+        // Since we are modifying the chart height based on the data length,
+        // make sure we force the manager to recalculate the widget size.
+        this.config.callbacks.updateGrid();
     }
 
     _parseSensors(data) {
