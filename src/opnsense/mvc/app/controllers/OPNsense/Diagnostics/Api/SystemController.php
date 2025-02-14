@@ -236,7 +236,7 @@ class SystemController extends ApiControllerBase
         foreach ($temps as $name => $value) {
             $tempItem = [];
             $tempItem['device'] = $name;
-            $tempItem['device_seq'] = 1 + (int)filter_var($tempItem['device'], FILTER_SANITIZE_NUMBER_INT);
+            $tempItem['device_seq'] = (int)filter_var($tempItem['device'], FILTER_SANITIZE_NUMBER_INT);
             $tempItem['temperature'] = trim(str_replace('C', '', $value));
             $tempItem['type_translated'] = gettext('Other');
             $tempItem['type'] = 'other';
