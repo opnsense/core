@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (c) 2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2024 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,26 +31,14 @@ require_once 'config.inc';
 require_once 'util.inc';
 require_once 'system.inc';
 require_once 'interfaces.inc';
-require_once 'filter.inc';
 
-exit_on_bootup();
+$gwnames = [];
 
-/* when called with an argument we are in gateway switch mode */
-$monitor_hook = !empty($argv[1]);
-
-/* drop deleted routes */
-foreach (glob("/tmp/delete_route_*.todo") as $filename) {
-    $network = trim(file_get_contents($filename));
-    $inet = (is_subnetv6($network) ? "-inet6" : "-inet");
-    mwexec("/sbin/route delete {$inet} " . escapeshellarg($network), true);
-    unlink($filename);
+foreach (return_gateways_status() as $status) {
+    if ($status['status'] == 'down') {
+        /* try to recover monitors stuck in down state ignoring "force_down" */
+        $gwnames[] = $status['name'];
+    }
 }
 
-/* routing is not allowed to restart monitors when extended hook is requested */
-system_routing_configure(true, null, !$monitor_hook);
-
-if ($monitor_hook) {
-    passthru('/usr/local/etc/rc.syshook monitor');
-}
-
-filter_configure_sync(true, false);
+plugins_configure('monitor', true, [$gwnames]);

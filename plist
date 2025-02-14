@@ -137,7 +137,7 @@
 /usr/local/etc/rc.syshook.d/early/20-backup
 /usr/local/etc/rc.syshook.d/early/90-carp
 /usr/local/etc/rc.syshook.d/import/20-importer
-/usr/local/etc/rc.syshook.d/monitor/10-dpinger
+/usr/local/etc/rc.syshook.d/monitor/20-recover
 /usr/local/etc/rc.syshook.d/start/10-newwanip
 /usr/local/etc/rc.syshook.d/start/20-freebsd
 /usr/local/etc/rc.syshook.d/start/25-syslog

@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2023 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2023-2025 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -77,8 +77,6 @@ while (1) {
 
     /* run main watcher pass */
     foreach ($status as $report) {
-        $ralarm = false;
-
         if ($report['loss'] == '~') {
             /* wait for valid data before triggering an alarm */
             continue;
@@ -98,7 +96,7 @@ while (1) {
         if (isset($config['system']['gw_switch_default'])) {
             /* only consider down state transition in this case */
             if (!empty($mode[$report['name']]) && $mode[$report['name']] != $report['status'] && ($mode[$report['name']] == 'down' || $report['status'] == 'down')) {
-                $ralarm = true;
+                $alarm = true;
             }
         }
 
@@ -109,31 +107,17 @@ while (1) {
                     /* consider all state transitions as they depend on individual trigger setting */
                     if (!empty($mode[$report['name']]) && $mode[$report['name']] != $report['status']) {
                         /* XXX consider trigger conditions later on */
-                        $ralarm = true;
+                        $alarm = true;
                         break;
                     }
                 }
             }
         }
 
-        if ($ralarm) {
-            /* raise an alarm via the rc.syshook monitor facility */
-            shell_safe("/usr/local/etc/rc.syshook monitor %s %s %s %s %s %s", [
-                $report['name'],
-                $report['monitor'],
-                $mode[$report['name']] . ' -> ' . $report['status'],
-                $report['delay'],
-                $report['stddev'],
-                $report['loss']
-            ]);
-
-            $alarm = true;
-        }
-
         if ($mode[$report['name']] != $report['status']) {
             syslog(LOG_NOTICE, sprintf(
                 "%s: %s (Addr: %s Alarm: %s RTT: %s RTTd: %s Loss: %s)",
-                $ralarm ? 'ALERT' : 'MONITOR',
+                $alarm ? 'ALERT' : 'MONITOR',
                 $report['name'],
                 $report['monitor'],
                 $mode[$report['name']] . ' -> ' . $report['status'],
