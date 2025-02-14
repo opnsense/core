@@ -35,7 +35,7 @@ class BaseGaugeWidget extends BaseWidget {
         return $(`
             <div class="${this.id}-chart-container">
                 <div class="canvas-container">
-                    <canvas id="${this.id}-chart"></canvas>
+                    <canvas id="${this.id}-chart" style="display: inline-block"></canvas>
                 </div>
             </div>
         `);

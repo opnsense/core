@@ -69,7 +69,7 @@ export default class Firewall extends BaseTableWidget {
         $container.append($(`
             <div class="fw-chart-container">
                 <div class="canvas-container">
-                    <canvas id="fw-chart"></canvas>
+                    <canvas id="fw-chart" style="display: inline-block"></canvas>
                 </div>
             </div>
         `));
