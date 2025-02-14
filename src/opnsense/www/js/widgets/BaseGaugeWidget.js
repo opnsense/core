@@ -74,7 +74,6 @@ class BaseGaugeWidget extends BaseWidget {
                         hoverBackgroundColor: _options.colorMap.map((color) => this._setAlpha(color, 0.5)),
                         hoverOffset: 10,
                         fill: true
-
                     }
                 ]
             },
@@ -86,6 +85,7 @@ class BaseGaugeWidget extends BaseWidget {
                 rotation: 270,
                 circumference: 180,
                 plugins: {
+                    colorschemes: false,
                     legend: {
                         display: false
                     },

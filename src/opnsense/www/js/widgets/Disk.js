@@ -130,6 +130,7 @@ export default class Disk extends BaseGaugeWidget {
                 },
                 indexAxis: 'y',
                 plugins: {
+                    colorschemes: false,
                     legend: {
                         display: false
                     },

@@ -120,6 +120,7 @@ export default class ThermalSensors extends BaseWidget {
                 indexAxis: 'y',
                 maintainAspectRatio: false,
                 plugins: {
+                    colorschemes: false,
                     legend: {
                         display: false
                     },

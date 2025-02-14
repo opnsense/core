@@ -208,6 +208,9 @@ export default class Firewall extends BaseTableWidget {
                     event.native.target.style.cursor = elements[0] ? 'pointer' : 'grab';
                 },
                 plugins: {
+                    colorschemes: {
+                        scheme: 'tableau.Classic10'
+                    },
                     legend: {
                         display: true,
                         position: 'left',

@@ -165,6 +165,7 @@ export default class InterfaceStatistics extends BaseTableWidget {
                 normalized: true,
                 parsing: false,
                 plugins: {
+                    colorschemes: false,
                     legend: {
                         display: false,
                         position: 'left',
