@@ -4,36 +4,6 @@
   <theme>opnsense</theme>
   <sysctl>
     <item>
-      <descr><![CDATA[Generate SYN cookies for outbound SYN-ACK packets]]></descr>
-      <tunable>net.inet.tcp.syncookies</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Maximum incoming/outgoing TCP datagram size (receive)]]></descr>
-      <tunable>net.inet.tcp.recvspace</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Maximum incoming/outgoing TCP datagram size (send)]]></descr>
-      <tunable>net.inet.tcp.sendspace</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Do not delay ACK to try and piggyback it onto a data packet]]></descr>
-      <tunable>net.inet.tcp.delayed_ack</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Enable TCP extended debugging]]></descr>
-      <tunable>net.inet.tcp.log_debug</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[TCP Offload Engine]]></descr>
-      <tunable>net.inet.tcp.tso</tunable>
-      <value>default</value>
-    </item>
-    <item>
       <descr><![CDATA[Page Table Isolation (Meltdown mitigation, requires reboot.)]]></descr>
       <tunable>vm.pmap.pti</tunable>
       <value>default</value>
