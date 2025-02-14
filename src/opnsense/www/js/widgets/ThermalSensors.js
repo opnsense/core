@@ -103,6 +103,7 @@ export default class ThermalSensors extends BaseWidget {
                 ctx.save();
 
                 const margin = 10;
+                ctx.textBaseline = 'middle';
                 for (let i = 0; i < count; i++) {
                     const meta = chart.getDatasetMeta(0);
                     const xPos = meta.data[i].x;
@@ -113,7 +114,7 @@ export default class ThermalSensors extends BaseWidget {
 
                     ctx.font = 'semibold 12px sans-serif';
                     ctx.fillStyle = '#ffffff';
-                    ctx.fillText(`${data.datasets[0].data[i]}°C`, textX, yPos + barHeight / 4);
+                    ctx.fillText(`${data.datasets[0].data[i]}°C`, textX, yPos);
                 }
                 ctx.restore();
             }
