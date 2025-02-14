@@ -4,11 +4,6 @@
   <theme>opnsense</theme>
   <sysctl>
     <item>
-      <descr><![CDATA[Drop SYN-FIN packets (breaks RFC1379, but nobody uses it anyway)]]></descr>
-      <tunable>net.inet.tcp.drop_synfin</tunable>
-      <value>default</value>
-    </item>
-    <item>
       <descr><![CDATA[Generate SYN cookies for outbound SYN-ACK packets]]></descr>
       <tunable>net.inet.tcp.syncookies</tunable>
       <value>default</value>
@@ -29,63 +24,13 @@
       <value>default</value>
     </item>
     <item>
-      <descr><![CDATA[Handling of non-IP packets which are not passed to pfil (see if_bridge(4))]]></descr>
-      <tunable>net.link.bridge.pfil_onlyip</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Set to 1 to additionally filter on the physical interface for locally destined packets]]></descr>
-      <tunable>net.link.bridge.pfil_local_phys</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Set to 0 to disable filtering on the incoming and outgoing member interfaces.]]></descr>
-      <tunable>net.link.bridge.pfil_member</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Set to 1 to enable filtering on the bridge interface]]></descr>
-      <tunable>net.link.bridge.pfil_bridge</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Allow unprivileged access to tap(4) device nodes]]></descr>
-      <tunable>net.link.tap.user_open</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Randomize PID's (see src/sys/kern/kern_fork.c: sysctl_kern_randompid())]]></descr>
-      <tunable>kern.randompid</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Disable CTRL+ALT+Delete reboot from keyboard.]]></descr>
-      <tunable>hw.syscons.kbd_reboot</tunable>
-      <value>default</value>
-    </item>
-    <item>
       <descr><![CDATA[Enable TCP extended debugging]]></descr>
       <tunable>net.inet.tcp.log_debug</tunable>
       <value>default</value>
     </item>
     <item>
-      <descr><![CDATA[Set ICMP Limits]]></descr>
-      <tunable>net.inet.icmp.icmplim</tunable>
-      <value>default</value>
-    </item>
-    <item>
       <descr><![CDATA[TCP Offload Engine]]></descr>
       <tunable>net.inet.tcp.tso</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[UDP Checksums]]></descr>
-      <tunable>net.inet.udp.checksum</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Maximum socket buffer size]]></descr>
-      <tunable>kern.ipc.maxsockbuf</tunable>
       <value>default</value>
     </item>
     <item>
