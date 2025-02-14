@@ -5,7 +5,14 @@
                 get:'/api/interfaces/loopback_settings/getItem/',
                 set:'/api/interfaces/loopback_settings/setItem/',
                 add:'/api/interfaces/loopback_settings/addItem/',
-                del:'/api/interfaces/loopback_settings/delItem/'
+                del:'/api/interfaces/loopback_settings/delItem/',
+                options: {
+                    formatters: {
+                        "loFormatter": function (column, row) {
+                            return "lo" + row[column.id];
+                        }
+                    }
+                },
             }
         );
         $("#reconfigureAct").SimpleActionButton();
