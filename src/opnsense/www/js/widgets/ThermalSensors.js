@@ -247,7 +247,7 @@ export default class ThermalSensors extends BaseWidget {
             this.chart.data.datasets[0].metadata.push(value);
             this.chart.data.datasets[1].data.push(100 - value.temperature);
         });
-        this.chart.canvas.parentNode.style.height = `${30 + (data.length * 30)}px`;
+        this.chart.canvas.parentNode.style.height = `${30 + (this.chart.data.datasets[0].data.length * 30)}px`;
         this.chart.update();
 
         // Since we are modifying the chart height based on the data length,
