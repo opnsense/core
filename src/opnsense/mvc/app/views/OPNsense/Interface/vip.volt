@@ -15,10 +15,10 @@
                         return request;
                     },
                     formatters: {
-                        vhid: function (column, row) {
-                            return row.vhid_txt;
+                        networkFormatter: function(column, row) {
+                            return row.subnet + (row.subnet_bits ? '/' + row.subnet_bits : '');
                         }
-                    }
+                    },
                 }
             }
         );

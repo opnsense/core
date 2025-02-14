@@ -22,6 +22,7 @@
         <type>text</type>
         <help>Provide an address and subnet to use. (e.g 192.168.0.1/24)</help>
         <grid_view>
+            <formatter>networkFormatter</formatter>
             <sequence>1</sequence>
         </grid_view>
     </field>
@@ -135,7 +136,6 @@
         </help>
         <grid_view>
             <sequence>4</sequence>
-            <width>6em</width>
         </grid_view>
     </field>
     <field>
