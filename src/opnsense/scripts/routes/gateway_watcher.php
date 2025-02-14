@@ -64,6 +64,8 @@ while (1) {
         continue;
     }
 
+    $alarm = false;
+
     /* clear known gateways in first step to flush unknown in second step */
     $cleanup = $mode;
     foreach ($status as $report) {
@@ -75,8 +77,6 @@ while (1) {
 
     /* run main watcher pass */
     foreach ($status as $report) {
-        $alarm = false;
-
         if ($report['loss'] == '~') {
             /* wait for valid data before triggering an alarm */
             continue;
