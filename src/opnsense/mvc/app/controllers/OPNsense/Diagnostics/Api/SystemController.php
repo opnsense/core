@@ -248,10 +248,10 @@ class SystemController extends ApiControllerBase
             } elseif (str_starts_with($tempItem['device'], 'dev.amdtemp.')) {
                 $tempItem['type_translated'] = gettext('AMD');
                 $tempItem['type'] = 'amd';
-            } else if (str_starts_with($tempItem['device'], 'dev.pchtherm.')) {
+            } elseif (str_starts_with($tempItem['device'], 'dev.pchtherm.')) {
                 $tempItem['type_translated'] = gettext('Platform');
                 $tempItem['type'] = 'platform';
-            } else if (str_starts_with($tempItem['device'], 'dev.cpu.')) {
+            } elseif (str_starts_with($tempItem['device'], 'dev.cpu.')) {
                 $tempItem['type_translated'] = gettext('CPU');
                 $tempItem['type'] = 'cpu';
             }

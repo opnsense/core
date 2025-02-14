@@ -118,7 +118,8 @@ function do_auth($common_name, $serverid, $method, $auth_file)
                     $pass = base64_decode($tmp[1]);
                     $pin = base64_decode($tmp[2]);
                     if ($pass !== false && $pin !== false) {
-                        if (isset(class_uses($authenticator)[OPNsense\Auth\TOTP::class]) &&
+                        if (
+                            isset(class_uses($authenticator)[OPNsense\Auth\TOTP::class]) &&
                             $authenticator->isPasswordFirst()
                         ) {
                             $password = $pass . $pin;
