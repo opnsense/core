@@ -82,11 +82,6 @@
       <value>default</value>
     </item>
     <item>
-      <descr><![CDATA[Maximum outgoing UDP datagram size]]></descr>
-      <tunable>net.inet.udp.maxdgram</tunable>
-      <value>default</value>
-    </item>
-    <item>
       <descr><![CDATA[Handling of non-IP packets which are not passed to pfil (see if_bridge(4))]]></descr>
       <tunable>net.link.bridge.pfil_onlyip</tunable>
       <value>default</value>
@@ -154,21 +149,6 @@
     <item>
       <descr><![CDATA[Disable Indirect Branch Restricted Speculation (Spectre V2 mitigation)]]></descr>
       <tunable>hw.ibrs_disable</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Hide processes running as other groups]]></descr>
-      <tunable>security.bsd.see_other_gids</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Hide processes running as other users]]></descr>
-      <tunable>security.bsd.see_other_uids</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Maximum outgoing UDP datagram size]]></descr>
-      <tunable>net.local.dgram.maxdgram</tunable>
       <value>default</value>
     </item>
   </sysctl>
