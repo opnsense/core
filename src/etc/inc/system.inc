@@ -74,7 +74,7 @@ function system_sysctl_defaults()
         'hw.ibrs_disable' => [ 'default' => '0', 'optional' => true ],
         'hw.ixl.enable_head_writeback' => [ 'default' => '0' ],
         'hw.syscons.kbd_reboot' => [ 'default' => '0' ],
-        'hw.uart.console' => [ 'default' => 'io:0x3f8,br:' . system_console_speed(), 'type' => 't', 'optional' => true ], /* XXX support comconsole_port if needed */
+        'hw.uart.console' => [ 'default' => 'io:0x3f8,br:' . system_console_speed(), 'type' => 't', 'optional' => true ], /* XXX remove in a future release */
         'hw.vtnet.csum_disable' => [ 'default' => '1' ],
         'kern.coredump' => [ 'default' => '0' ],
         'kern.ipc.maxsockbuf' => [ 'default' => '4262144' ],
