@@ -2062,7 +2062,7 @@
 /usr/local/opnsense/www/js/bootstrap.min.js
 /usr/local/opnsense/www/js/bootstrap3-typeahead.js
 /usr/local/opnsense/www/js/bootstrap3-typeahead.min.js
-/usr/local/opnsense/www/js/chart.umd.js
+/usr/local/opnsense/www/js/chart.umd.min.js
 /usr/local/opnsense/www/js/chartjs-adapter-moment.min.js
 /usr/local/opnsense/www/js/chartjs-plugin-colorschemes.min.js
 /usr/local/opnsense/www/js/chartjs-plugin-matrix.min.js
