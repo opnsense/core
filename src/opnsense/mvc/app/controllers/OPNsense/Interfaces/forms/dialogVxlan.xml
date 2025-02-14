@@ -1,10 +1,10 @@
 <form>
     <field>
         <id>vxlan.deviceId</id>
-        <label>deviceId</label>
+        <label>Device ID</label>
         <type>info</type>
         <grid_view>
-            <visible>false</visible>
+            <formatter>vxlanFormatter</formatter>
         </grid_view>
     </field>
     <field>
