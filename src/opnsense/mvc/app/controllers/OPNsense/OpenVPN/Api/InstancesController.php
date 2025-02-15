@@ -42,10 +42,7 @@ class InstancesController extends ApiMutableModelControllerBase
 
     public function searchAction()
     {
-        return $this->searchBase(
-            'Instances.Instance',
-            ['description', 'role', 'dev_type', 'enabled']
-        );
+        return $this->searchBase('Instances.Instance');
     }
     public function getAction($uuid = null)
     {

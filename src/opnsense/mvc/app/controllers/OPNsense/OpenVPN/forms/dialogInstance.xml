@@ -9,35 +9,58 @@
         <!-- hide id, but push to server-->
         <style>role</style>
         <type>text</type>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
     </field>
     <field>
         <id>instance.role</id>
         <label>Role</label>
         <type>dropdown</type>
         <help>Define the role of this instance.</help>
+        <grid_view>
+            <sequence>3</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.description</id>
         <label>Description</label>
         <type>text</type>
         <help>You may enter a description here for your reference (not parsed).</help>
+        <grid_view>
+            <sequence>2</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.enabled</id>
         <label>Enabled</label>
         <type>checkbox</type>
+        <grid_view>
+            <width>6em</width>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+            <sequence>1</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.proto</id>
         <label>Protocol</label>
         <type>dropdown</type>
         <help>Use protocol for communicating with remote host.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>10</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.port</id>
         <label>Port number</label>
         <type>text</type>
         <help>Port number to use. Defaults to 1194 when in server role or when client mode specifies a bind address, or nobind when client does not have a specific bind address.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>14</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.local</id>
@@ -47,6 +70,10 @@
             Optional IP address for bind. If specified, OpenVPN will bind to this address only.
             If unspecified, OpenVPN will bind to all interfaces.
         </help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>12</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.dev_type</id>
@@ -57,6 +84,9 @@
             [tap] offers Ethernet 802.3 (OSI Layer 2) connectivity between hosts and is usually combined with a bridge.
             DCO is a faster Layer 3 implementation, but has some additional constraints.
         </help>
+        <grid_view>
+            <sequence>4</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.verb</id>
@@ -64,6 +94,10 @@
         <type>dropdown</type>
         <advanced>true</advanced>
         <help>Output verbosity level (0..9)</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>16</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.maxclients</id>
@@ -72,6 +106,10 @@
         <style>role role_server</style>
         <type>text</type>
         <help>Specify the maximum number of clients allowed to concurrently connect to this server.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>18</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.keepalive_interval</id>
@@ -79,6 +117,10 @@
         <advanced>true</advanced>
         <type>text</type>
         <help>Ping interval in seconds. 0 to disable keep alive</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>20</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.keepalive_timeout</id>
@@ -86,6 +128,10 @@
         <advanced>true</advanced>
         <type>text</type>
         <help>Causes OpenVPN to restart after n seconds pass without reception of a ping or other packet from remote.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>22</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.server</id>
@@ -96,6 +142,10 @@
             This directive will set up an OpenVPN server which will allocate addresses to clients out of the given network/netmask.
             The server itself will take the .1 address of the given network for use as the server-side endpoint of the local TUN/TAP interface
         </help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>24</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.server_ipv6</id>
@@ -106,6 +156,10 @@
             This directive will set up an OpenVPN server which will allocate addresses to clients out of the given network/netmask.
             The server itself will take the next base address (+1) of the given network for use as the server-side endpoint of the local TUN/TAP interface
         </help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>26</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.bridge_gateway</id>
@@ -115,6 +169,10 @@
         <help>
             This directive will set up an OpenVPN server which will allocate addresses to clients out of the given network pool.
         </help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>28</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.bridge_pool</id>
@@ -122,6 +180,10 @@
         <type>text</type>
         <style>role role_server_tap</style>
         <help>Specify an ip range which should be used to offer IPv4 addresses to the client.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>30</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.topology</id>
@@ -132,6 +194,10 @@
             Configure virtual addressing topology when running in --dev tun mode.
             This directive has no meaning in --dev tap mode, which always uses a subnet topology.
         </help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>32</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.remote</id>
@@ -140,6 +206,10 @@
         <allownew>true</allownew>
         <style>tokenize role role_client</style>
         <help>Remote host name or IP address with optional port, examples: my.remote.local dead:beaf:: my.remote.local:1494 [dead:beaf::]:1494 192.168.1.1:1494</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>34</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.carp_depend_on</id>
@@ -147,6 +217,10 @@
         <type>dropdown</type>
         <style>role role_client selectpicker</style>
         <help>The CARP VHID to depend on. When this virtual address is not in master state, then the instance will be shutdown.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>36</sequence>
+        </grid_view>
     </field>
     <field>
         <type>header</type>
@@ -157,6 +231,10 @@
         <label>Certificate</label>
         <type>dropdown</type>
         <help>Select a certificate to use for this service.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>38</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.remote_cert_tls</id>
@@ -168,6 +246,10 @@
             and for servers, to prevent man-in-the-middle attacks where an authorized client attempts to connect to another client by impersonating
             the server.
         </help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>40</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.ca</id>
@@ -175,6 +257,10 @@
         <type>dropdown</type>
         <advanced>true</advanced>
         <help>Select a certificate authority when it differs from the attached certificate.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>42</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.crl</id>
@@ -182,6 +268,10 @@
         <type>dropdown</type>
         <style>selectpicker role role_server</style>
         <help>Select a certificate revocation list to use for this service.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>44</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.verify_client_cert</id>
@@ -189,6 +279,10 @@
         <type>dropdown</type>
         <style>selectpicker role role_server</style>
         <help>Specify if the client is required to offer a certificate.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>46</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.use_ocsp</id>
@@ -196,6 +290,12 @@
         <style>role role_server</style>
         <type>checkbox</type>
         <help>When the CA used supplies an authorityInfoAccess OCSP URI extension, it will be used to validate the client certificate.</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <sequence>48</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.cert_depth</id>
@@ -203,6 +303,10 @@
         <type>dropdown</type>
         <style>selectpicker role role_server</style>
         <help>When a certificate-based client logs in, do not accept certificates below this depth. Useful for denying certificates made with intermediate CAs generated from the same CA as the server.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>50</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.tls_key</id>
@@ -212,6 +316,10 @@
             Add an additional layer of HMAC authentication on top of the TLS control channel to mitigate DoS attacks and attacks on the TLS stack.
             The prefixed mode determines if this measurement is only used for authentication (--tls-auth) or includes encryption (--tls-crypt).
         </help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>52</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.auth</id>
@@ -221,6 +329,10 @@
         <help>
             Authenticate data channel packets and (if enabled) tls-auth control channel packets with HMAC using message digest algorithm alg.
         </help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>54</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.data-ciphers</id>
@@ -229,6 +341,10 @@
         <advanced>true</advanced>
         <style>selectpicker role role_server</style>
         <help>Restrict the allowed ciphers to be negotiated to the ciphers in this list.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>56</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.data-ciphers-fallback</id>
@@ -241,6 +357,10 @@
             This option should only be needed to connect to peers that are running OpenVPN 2.3 or older versions,
             and have been configured with --enable-small (typically used on routers or other embedded devices).
         </help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>58</sequence>
+        </grid_view>
     </field>
     <field>
         <type>header</type>
@@ -252,6 +372,10 @@
         <type>select_multiple</type>
         <style>selectpicker role role_server</style>
         <help>Select authentication methods to use, leave empty if no challenge response authentication is needed.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>60</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.local_group</id>
@@ -259,6 +383,10 @@
         <type>dropdown</type>
         <style>selectpicker role role_server</style>
         <help>Restrict access to users in the selected local group. Please be aware that other authentication backends will refuse to authenticate when using this option.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>62</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.username_as_common_name</id>
@@ -267,6 +395,12 @@
         <advanced>true</advanced>
         <style>role role_server</style>
         <help>Use the authenticated username as the common-name, rather than the common-name from the client certificate.</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <sequence>64</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.strictusercn</id>
@@ -274,6 +408,10 @@
         <type>dropdown</type>
         <style>selectpicker role role_server</style>
         <help>When authenticating users, enforce a match between the Common Name of the client certificate and the username given at login.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>66</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.username</id>
@@ -281,6 +419,10 @@
         <type>text</type>
         <style>role role_client</style>
         <help>(optional) Username to send to the server for authentication when required.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>68</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.password</id>
@@ -288,6 +430,9 @@
         <type>password</type>
         <style>role role_client</style>
         <help>Password belonging to the user specified above</help>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
     </field>
     <field>
         <id>instance.reneg-sec</id>
@@ -297,6 +442,10 @@
 When using a one time password, be advised that your connection will automatically drop because your password is not valid anymore.
 Set to 0 to disable, remember to change your client as well.
         </help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>70</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.auth-gen-token</id>
@@ -310,6 +459,10 @@ Set to 0 to disable, remember to change your client as well.
         NOT do any additional authentications against configured external user/password authentication mechanisms.
         When set to 0, the token will never expire, any other value specifies the lifetime in seconds.
         </help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>72</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.provision_exclusive</id>
@@ -321,6 +474,12 @@ Set to 0 to disable, remember to change your client as well.
         Require, as a condition for authentication, that a tunnel address will be provisioned either from a local defined client-specific override or offered by an authenticator (such as RADIUS) .
         This is similar to OpenVPN's 'ccd-exclusive' option, but stricter as we expect the client to receive a tunnel address for the protocol used.
         </help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <sequence>74</sequence>
+        </grid_view>
     </field>
     <field>
         <type>header</type>
@@ -333,6 +492,10 @@ Set to 0 to disable, remember to change your client as well.
         <style>tokenize</style>
         <allownew>true</allownew>
         <help>These are the networks accessible on this host, these are pushed via route{-ipv6} clauses in OpenVPN to the client.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>76</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.route</id>
@@ -341,6 +504,10 @@ Set to 0 to disable, remember to change your client as well.
         <style>tokenize</style>
         <allownew>true</allownew>
         <help>Remote networks for the server, add route to routing table after connection is established</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>78</sequence>
+        </grid_view>
     </field>
     <field>
         <type>header</type>
@@ -351,6 +518,10 @@ Set to 0 to disable, remember to change your client as well.
         <label>Options</label>
         <type>select_multiple</type>
         <help>Various less frequently used yes/no options which can be set for this instance.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>80</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.various_push_flags</id>
@@ -358,6 +529,10 @@ Set to 0 to disable, remember to change your client as well.
         <style>selectpicker role role_server</style>
         <type>select_multiple</type>
         <help>Various less frequently used yes/no options which can be pushed to the client for this instance.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>82</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.redirect_gateway</id>
@@ -365,6 +540,10 @@ Set to 0 to disable, remember to change your client as well.
         <type>select_multiple</type>
         <style>selectpicker role role_server</style>
         <help>Automatically execute routing commands to cause all outgoing IP traffic to be redirected over the VPN.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>84</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.route_metric</id>
@@ -373,6 +552,10 @@ Set to 0 to disable, remember to change your client as well.
         <type>text</type>
         <advanced>true</advanced>
         <help>Specify a default metric m for use with --route on the connecting client (push option).</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>86</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.register_dns</id>
@@ -380,6 +563,12 @@ Set to 0 to disable, remember to change your client as well.
         <type>checkbox</type>
         <style>role role_server</style>
         <help>Run ipconfig /flushdns and ipconfig /registerdns on connection initiation. This is known to kick Windows into recognizing pushed DNS servers.</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <sequence>88</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.dns_domain</id>
@@ -387,6 +576,10 @@ Set to 0 to disable, remember to change your client as well.
         <type>text</type>
         <style>role role_server</style>
         <help>Set Connection-specific DNS Suffix.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>90</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.dns_domain_search</id>
@@ -397,6 +590,10 @@ Set to 0 to disable, remember to change your client as well.
         <help>
             Add name to the domain search list. Repeat this option to add more entries. Up to 10 domains are supported
         </help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>92</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.dns_servers</id>
@@ -407,6 +604,10 @@ Set to 0 to disable, remember to change your client as well.
         <help>
             Set primary domain name server IPv4 or IPv6 address. Repeat this option to set secondary DNS server addresses.
         </help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>94</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.ntp_servers</id>
@@ -417,6 +618,10 @@ Set to 0 to disable, remember to change your client as well.
         <help>
             Set primary NTP server address (Network Time Protocol). Repeat this option to set secondary NTP server addresses.
         </help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>96</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.tun_mtu</id>
@@ -424,6 +629,10 @@ Set to 0 to disable, remember to change your client as well.
         <type>text</type>
         <advanced>true</advanced>
         <help>Take the TUN device MTU to be tun-mtu and derive the link MTU from it.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>98</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.fragment</id>
@@ -431,6 +640,10 @@ Set to 0 to disable, remember to change your client as well.
         <type>text</type>
         <advanced>true</advanced>
         <help>Enable internal datagram fragmentation so that no UDP datagrams are sent which are larger than the specified byte size.</help>
+        <grid_view>
+            <visible>false</visible>
+            <sequence>100</sequence>
+        </grid_view>
     </field>
     <field>
         <id>instance.mssfix</id>
@@ -438,5 +651,11 @@ Set to 0 to disable, remember to change your client as well.
         <type>checkbox</type>
         <advanced>true</advanced>
         <help>Announce to TCP sessions running over the tunnel that they should limit their send packet sizes such that after OpenVPN has encapsulated them, the resulting UDP packet size that OpenVPN sends to its peer will not exceed the recommended size.</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <sequence>102</sequence>
+        </grid_view>
     </field>
 </fields>

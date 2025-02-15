@@ -44,5 +44,6 @@ class ClientOverwritesController extends BaseIndexController
     {
         $this->view->pick('OPNsense/OpenVPN/cso');
         $this->view->formDialogCSO = $this->getForm('dialogCSO');
+        $this->view->formGridCSO = $this->getFormGrid('dialogCSO');
     }
 }

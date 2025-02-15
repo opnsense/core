@@ -43,7 +43,11 @@ class InstancesController extends BaseIndexController
     public function indexAction()
     {
         $this->view->pick('OPNsense/OpenVPN/instances');
+
         $this->view->formDialogInstance = $this->getForm('dialogInstance');
+        $this->view->formGridInstance = $this->getFormGrid('dialogInstance');
+
         $this->view->formDialogStaticKey = $this->getForm('dialogStaticKey');
+        $this->view->formGridStaticKey = $this->getFormGrid('dialogStaticKey');
     }
 }

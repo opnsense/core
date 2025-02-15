@@ -17,5 +17,8 @@
         <label>Static Key</label>
         <type>textbox</type>
         <help>Paste an OpenVPN Static key. Or generate one with the button.</help>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
     </field>
 </fields>
