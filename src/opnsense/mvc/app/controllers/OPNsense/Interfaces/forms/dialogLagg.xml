@@ -4,18 +4,27 @@
         <label>Device</label>
         <type>info</type>
         <help></help>
+        <grid_view>
+            <width>5em</width>
+        </grid_view>
     </field>
     <field>
         <id>lagg.members</id>
         <label>Parent</label>
         <type>select_multiple</type>
         <help>Choose the members that will be used for the link aggregation</help>
+        <grid_view>
+            <width>12em</width>
+        </grid_view>
     </field>
     <field>
         <id>lagg.proto</id>
         <label>Proto</label>
         <type>dropdown</type>
         <help>The protocol to use, please refer to the documentation for a detailed explanation of the various types available</help>
+        <grid_view>
+            <width>10em</width>
+        </grid_view>
     </field>
     <field>
         <id>lagg.primary_member</id>
@@ -23,6 +32,9 @@
         <type>dropdown</type>
         <style>selectpicker proto proto_failover</style>
         <help>This interface will be added first in the lagg making it the primary one.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>lagg.lacp_fast_timeout</id>
@@ -30,6 +42,11 @@
         <type>checkbox</type>
         <style>proto proto_lacp</style>
         <help>Enable lacp fast-timeout on the interface.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>lagg.use_flowid</id>
@@ -37,6 +54,9 @@
         <type>dropdown</type>
         <style>selectpicker proto proto_lacp proto_loadbalance</style>
         <help>Use the RSS hash from the network card if available, otherwise a hash is locally calculated. The default depends on the system tunable in net.link.lagg.default_use_flowid.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>lagg.lagghash</id>
@@ -44,6 +64,9 @@
         <type>select_multiple</type>
         <style>selectpicker proto proto_lacp proto_loadbalance</style>
         <help>Set the packet layers to hash for aggregation protocols which load balance.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>lagg.lacp_strict</id>
@@ -51,12 +74,18 @@
         <type>dropdown</type>
         <style>selectpicker proto proto_lacp</style>
         <help>Enable lacp strict compliance on the interface. The default depends on the system tunable in net.link.lagg.lacp.default_strict_mode.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>lagg.mtu</id>
         <label>MTU</label>
         <type>text</type>
         <help>If you leave this field blank, the smallest mtu of this laggs children will be used.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>lagg.descr</id>

@@ -34,5 +34,6 @@ class NeighborController extends \OPNsense\Base\IndexController
     {
         $this->view->pick('OPNsense/Interface/neighbor');
         $this->view->formDialogEdit = $this->getForm("dialogNeighbor");
+        $this->view->formGridNeighbor = $this->getFormGrid("dialogNeighbor");
     }
 }

@@ -38,7 +38,7 @@ class NeighborSettingsController extends ApiMutableModelControllerBase
 
     public function searchItemAction()
     {
-        return $this->searchBase("neighbor", ['etheraddr', 'ipaddress', 'descr', 'origin'], "vxlanid");
+        return $this->searchBase("neighbor", null, "vxlanid");
     }
 
     public function setItemAction($uuid)

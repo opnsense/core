@@ -59,7 +59,7 @@ class LaggSettingsController extends ApiMutableModelControllerBase
      */
     public function searchItemAction()
     {
-        return $this->searchBase("lagg", ['laggif', 'descr', 'members', 'proto'], "descr");
+        return $this->searchBase("lagg", null, "descr");
     }
 
     /**

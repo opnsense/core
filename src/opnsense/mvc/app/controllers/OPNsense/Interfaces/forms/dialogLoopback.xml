@@ -1,8 +1,11 @@
 <form>
     <field>
         <id>loopback.deviceId</id>
-        <label>deviceId</label>
+        <label>Device ID</label>
         <type>info</type>
+        <grid_view>
+            <formatter>loFormatter</formatter>
+        </grid_view>
     </field>
     <field>
         <id>loopback.description</id>
