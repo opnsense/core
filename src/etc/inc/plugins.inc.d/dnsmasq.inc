@@ -33,7 +33,7 @@ function dnsmasq_enabled()
 {
     global $config;
 
-    return isset($config['dnsmasq']['enable']);
+    return !empty($config['dnsmasq']['enable']);
 }
 
 function dnsmasq_configure()
