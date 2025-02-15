@@ -35,7 +35,7 @@
            init_state = $('.safesearch').is(':checked');
        });
 
-       $("#saveAct").SimpleActionButton({
+       $("#reconfigureAct").SimpleActionButton({
           onPreAction: function() {
               const dfObj = new $.Deferred();
               let safesearch_changed = !($('.safesearch').is(':checked') == init_state);
@@ -58,14 +58,7 @@
    });
 </script>
 
-<div class="content-box" style="padding-bottom: 1.5em;">
+<div class="content-box __mb">
     {{ partial("layout_partials/base_form",['fields':dnsblForm,'id':'frm_dnsbl_settings'])}}
-    <div class="col-md-12 __mt">
-        <button class="btn btn-primary" id="saveAct"
-                data-endpoint='/api/unbound/service/dnsbl'
-                data-label="{{ lang._('Apply') }}"
-                data-error-title="{{ lang._('Error updating blocklists') }}"
-                type="button">
-        </button>
-    </div>
 </div>
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/unbound/service/dnsbl'}) }}

@@ -37,7 +37,7 @@ class AclController extends IndexController
         $this->view->aclForm = $this->getForm('acl');
 
         $this->view->formDialogAcl = $this->getForm('dialogAcl');
-        $this->view->formGridAcl = $this->getFormGrid('dialogAcl', null, 'AclChangeMessage');
+        $this->view->formGridAcl = $this->getFormGrid('dialogAcl');
 
         $this->view->pick('OPNsense/Unbound/acl');
     }

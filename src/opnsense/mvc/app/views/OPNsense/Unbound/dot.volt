@@ -126,23 +126,5 @@
         in System->Settings->General or those obtained via DHCP or PPP on WAN if the "Allow DNS server list to be overridden by DHCP/PPP on WAN" is checked.') }}
     </div>
 </div>
-<section class="page-content-main">
-    <div class="content-box">
-        <div class="col-md-12">
-            <br/>
-            <div id="DotChangeMessage" class="alert alert-info" style="display: none" role="alert">
-                {{ lang._('After changing settings, please remember to apply them.') }}
-            </div>
-            <button class="btn btn-primary" id="reconfigureAct"
-                    data-endpoint='/api/unbound/service/reconfigure'
-                    data-label="{{ lang._('Apply') }}"
-                    data-service-widget="unbound"
-                    data-error-title="{{ lang._('Error reconfiguring unbound') }}"
-                    type="button"
-            ></button>
-            <br/><br/>
-        </div>
-    </div>
-</section>
-
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/unbound/service/reconfigure', 'data_service_widget': 'unbound'}) }}
 {{ partial("layout_partials/base_dialog",['fields':formDialogEdit,'id':formGridDot['edit_dialog_id'],'label':lang._('Edit server')])}}
