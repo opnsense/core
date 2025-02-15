@@ -51,7 +51,7 @@ function dnsmasq_services()
 
     $services = [];
 
-    if (!dnsmasq_enabled()) {
+    if (!dnsmasq_enabled() && !isvalidpid('/var/run/dnsmasq.pid')) {
         return $services;
     }
 
