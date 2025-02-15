@@ -4,6 +4,11 @@
         <label>Enabled</label>
         <type>checkbox</type>
         <help>This will enable or disable the instance.</help>
+        <grid_view>
+            <width>6em</width>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+        </grid_view>
     </field>
     <field>
         <id>server.name</id>
@@ -16,18 +21,27 @@
         <label>Instance</label>
         <type>info</type>
         <help>This is the instance number to give the WireGuard device a unique name (wgX).</help>
+        <grid_view>
+            <formatter>wgformatter</formatter>
+        </grid_view>
     </field>
     <field>
         <id>server.pubkey</id>
         <label>Public key</label>
         <type>text</type>
         <help>Public key of this instance. You can specify your own one, or a key will be generated after saving.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>server.privkey</id>
         <label>Private key</label>
         <type>text</type>
         <help>Private key of this instance. You can specify your own one, or a key will be generated after saving. Please keep this key safe.</help>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
     </field>
     <field>
         <id>server.port</id>
@@ -41,6 +55,9 @@
         <type>text</type>
         <advanced>true</advanced>
         <help>Set a specific device MTU for this instance.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>server.dns</id>
@@ -50,6 +67,9 @@
         <allownew>true</allownew>
         <advanced>true</advanced>
         <help>Set specific DNS servers for this instance. Use with care.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>server.tunneladdress</id>
@@ -64,6 +84,9 @@
         <label>Depend on (CARP)</label>
         <type>dropdown</type>
         <help>The CARP VHID to depend on. When this virtual address is not in master state, then the instance will be shutdown.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>server.peers</id>
@@ -76,6 +99,11 @@
         <label>Disable routes</label>
         <type>checkbox</type>
         <help>This will prevent installing routes. Usually you only enable this to do own routing decisions via a local gateway and gateway rules.</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
     </field>
     <field>
         <id>server.gateway</id>
@@ -83,5 +111,8 @@
         <type>text</type>
         <advanced>true</advanced>
         <help>Set the gateway IP here when using "Disable routes" feature. You also have to add this as a system gateway.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
 </form>

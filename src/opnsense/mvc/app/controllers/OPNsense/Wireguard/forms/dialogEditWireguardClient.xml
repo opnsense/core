@@ -4,6 +4,11 @@
         <label>Enabled</label>
         <type>checkbox</type>
         <help>This will enable or disable the peer.</help>
+        <grid_view>
+            <width>6em</width>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+        </grid_view>
     </field>
     <field>
         <id>client.name</id>
@@ -16,12 +21,18 @@
         <label>Public key</label>
         <type>text</type>
         <help>Public key of this peer. You can generate the key using the private key piped to "wg pubkey".</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>client.psk</id>
         <label>Pre-shared key</label>
         <type>text</type>
         <help>Shared secret (PSK) for this peer. You can generate a key using "wg genpsk".</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>client.tunneladdress</id>
@@ -54,5 +65,8 @@
         <label>Keepalive interval</label>
         <type>text</type>
         <help>Set persistent keepalive interval in seconds.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
 </form>
