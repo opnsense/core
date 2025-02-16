@@ -387,6 +387,11 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
             $radvdconf .= "\t};\n";
         }
 
+        if (!empty($dhcpv6ifconf['nat64prefix'])) {
+            $radvdconf .= "\tnat64prefix {$dhcpv6ifconf['nat64prefix']} {\n";
+            $radvdconf .= "\t};\n";
+        }
+
         $radvdconf .= "};\n";
     }
 
