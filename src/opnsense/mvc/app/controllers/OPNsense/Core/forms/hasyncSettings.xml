@@ -8,6 +8,7 @@
         <label>Disable preempt</label>
         <type>checkbox</type>
         <help>When this device is configured as CARP master it will try to switch to master when powering up, this option will keep this one slave if there already is a master on the network. A reboot is required to take effect.</help>
+        <advanced>true</advanced>
     </field>
     <field>
         <id>hasync.disconnectppps</id>
