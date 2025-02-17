@@ -140,7 +140,7 @@ function get_all_services($name = '', $id = '')
         /* fetch status so the caller does not have to */
         $service['status'] = service_message($service);
 
-        /* collect all matches contrary to what service_by_name() is doing */
+        /* collect all matches */
         $services[] = $service;
     }
 
