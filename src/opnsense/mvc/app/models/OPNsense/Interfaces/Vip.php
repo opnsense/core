@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2022 Deciso B.V.
+ * Copyright (C) 2022-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,6 +35,24 @@ use OPNsense\Firewall\Util;
 
 class Vip extends BaseModel
 {
+    private function getInterfaceDeviceType(string $interface)
+    {
+        $type = 'mismatch';
+
+        $configHandle = Config::getInstance()->object();
+        if (!empty($configHandle->interfaces)) {
+            foreach ($configHandle->interfaces->children() as $ifname => $ifnode) {
+                if ($ifname != $interface) {
+                    continue;
+                }
+                /* select device names enforcing "l2tp" as well */
+                $type = preg_replace('/(?<=..)[0-9].*$/', '', $ifnode->if);
+                break;
+            }
+        }
+        return $type;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -42,6 +60,7 @@ class Vip extends BaseModel
     {
         $messages = parent::performValidation($validateFullModel);
 
+        $virtual_types = ['lo', 'ipsec', 'l2tp', 'ppp', 'pppoe', 'pptp'];
         $unique_addrs = [];
         $carp_vhids = [];
         $vips = [];
@@ -102,21 +121,6 @@ class Vip extends BaseModel
                         );
                     }
                 }
-
-                $configHandle = Config::getInstance()->object();
-                if (!empty($configHandle->interfaces) && !empty((string)$node->vhid)) {
-                    foreach ($configHandle->interfaces->children() as $ifname => $ifnode) {
-                        if ($ifname === (string)$node->interface && substr($ifnode->if, 0, 2) === 'lo') {
-                            $messages->appendMessage(
-                                new Message(
-                                    gettext('For this type of VIP loopback is not allowed.'),
-                                    $key . ".interface"
-                                )
-                            );
-                            break;
-                        }
-                    }
-                }
             } elseif ((string)$node->mode == 'proxyarp') {
                 $net = $subnet . "/" . $subnet_bits;
                 if (Util::isSubnet($net) && !Util::isSubnetStrict($net)) {
@@ -128,9 +132,21 @@ class Vip extends BaseModel
                         )
                     );
                 }
+                if (in_array($this->getInterfaceDeviceType($node->interface), $virtual_types)) {
+                    $messages->appendMessage(new Message(
+                        gettext('The current interface type does not support this mode.'),
+                        $key . '.mode'
+                    ));
+                }
             }
             $vhid_key = sprintf("%s_%s", $node->interface, $node->vhid);
             if ((string)$node->mode == 'carp') {
+                if (in_array($this->getInterfaceDeviceType($node->interface), $virtual_types)) {
+                    $messages->appendMessage(new Message(
+                        gettext('The current interface type does not support this mode.'),
+                        $key . '.mode'
+                    ));
+                }
                 if (empty((string)$node->password)) {
                     $messages->appendMessage(
                         new Message(
@@ -177,20 +193,24 @@ class Vip extends BaseModel
                         )
                     );
                 }
-            } elseif (
-                (string)$node->mode == 'ipalias' &&
-                !empty((string)$node->vhid) && (
-                  !isset($carp_vhids[$vhid_key]) ||
-                  (string)$carp_vhids[$vhid_key]->interface != (string)$node->interface
-                )
-            ) {
-                $errmsg = gettext("VHID %s must be defined on interface %s as a CARP VIP first.");
-                $messages->appendMessage(
-                    new Message(
-                        sprintf($errmsg, (string)$node->vhid, (string)$node->interface),
-                        $key . ".vhid"
-                    )
-                );
+            } elseif ((string)$node->mode == 'ipalias') {
+                if (in_array($this->getInterfaceDeviceType($node->interface), $virtual_types) && !empty((string)$node->vhid)) {
+                    $messages->appendMessage(new Message(
+                        gettext('The current interface type does not support this mode.'),
+                        $key . '.vhid'
+                    ));
+                } elseif (
+                    !empty((string)$node->vhid) && (!isset($carp_vhids[$vhid_key]) ||
+                    (string)$carp_vhids[$vhid_key]->interface != (string)$node->interface)
+                ) {
+                    $errmsg = gettext("VHID %s must be defined on interface %s as a CARP VIP first.");
+                    $messages->appendMessage(
+                        new Message(
+                            sprintf($errmsg, (string)$node->vhid, (string)$node->interface),
+                            $key . ".vhid"
+                        )
+                    );
+                }
             }
 
             /* ensure address is unique; for link-local we test with scope attached */
