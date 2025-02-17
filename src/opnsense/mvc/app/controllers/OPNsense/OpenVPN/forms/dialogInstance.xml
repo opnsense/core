@@ -49,7 +49,6 @@
         <help>Use protocol for communicating with remote host.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>10</sequence>
         </grid_view>
     </field>
     <field>
@@ -59,7 +58,6 @@
         <help>Port number to use. Defaults to 1194 when in server role or when client mode specifies a bind address, or nobind when client does not have a specific bind address.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>14</sequence>
         </grid_view>
     </field>
     <field>
@@ -72,7 +70,6 @@
         </help>
         <grid_view>
             <visible>false</visible>
-            <sequence>12</sequence>
         </grid_view>
     </field>
     <field>
@@ -96,7 +93,6 @@
         <help>Output verbosity level (0..9)</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>16</sequence>
         </grid_view>
     </field>
     <field>
@@ -108,7 +104,6 @@
         <help>Specify the maximum number of clients allowed to concurrently connect to this server.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>18</sequence>
         </grid_view>
     </field>
     <field>
@@ -119,7 +114,6 @@
         <help>Ping interval in seconds. 0 to disable keep alive</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>20</sequence>
         </grid_view>
     </field>
     <field>
@@ -130,7 +124,6 @@
         <help>Causes OpenVPN to restart after n seconds pass without reception of a ping or other packet from remote.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>22</sequence>
         </grid_view>
     </field>
     <field>
@@ -144,7 +137,6 @@
         </help>
         <grid_view>
             <visible>false</visible>
-            <sequence>24</sequence>
         </grid_view>
     </field>
     <field>
@@ -158,7 +150,6 @@
         </help>
         <grid_view>
             <visible>false</visible>
-            <sequence>26</sequence>
         </grid_view>
     </field>
     <field>
@@ -171,7 +162,6 @@
         </help>
         <grid_view>
             <visible>false</visible>
-            <sequence>28</sequence>
         </grid_view>
     </field>
     <field>
@@ -182,7 +172,6 @@
         <help>Specify an ip range which should be used to offer IPv4 addresses to the client.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>30</sequence>
         </grid_view>
     </field>
     <field>
@@ -196,7 +185,6 @@
         </help>
         <grid_view>
             <visible>false</visible>
-            <sequence>32</sequence>
         </grid_view>
     </field>
     <field>
@@ -208,7 +196,6 @@
         <help>Remote host name or IP address with optional port, examples: my.remote.local dead:beaf:: my.remote.local:1494 [dead:beaf::]:1494 192.168.1.1:1494</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>34</sequence>
         </grid_view>
     </field>
     <field>
@@ -219,7 +206,6 @@
         <help>The CARP VHID to depend on. When this virtual address is not in master state, then the instance will be shutdown.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>36</sequence>
         </grid_view>
     </field>
     <field>
@@ -233,7 +219,6 @@
         <help>Select a certificate to use for this service.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>38</sequence>
         </grid_view>
     </field>
     <field>
@@ -248,7 +233,6 @@
         </help>
         <grid_view>
             <visible>false</visible>
-            <sequence>40</sequence>
         </grid_view>
     </field>
     <field>
@@ -259,7 +243,6 @@
         <help>Select a certificate authority when it differs from the attached certificate.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>42</sequence>
         </grid_view>
     </field>
     <field>
@@ -270,7 +253,6 @@
         <help>Select a certificate revocation list to use for this service.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>44</sequence>
         </grid_view>
     </field>
     <field>
@@ -281,7 +263,6 @@
         <help>Specify if the client is required to offer a certificate.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>46</sequence>
         </grid_view>
     </field>
     <field>
@@ -294,7 +275,6 @@
             <visible>false</visible>
             <type>boolean</type>
             <formatter>boolean</formatter>
-            <sequence>48</sequence>
         </grid_view>
     </field>
     <field>
@@ -305,7 +285,6 @@
         <help>When a certificate-based client logs in, do not accept certificates below this depth. Useful for denying certificates made with intermediate CAs generated from the same CA as the server.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>50</sequence>
         </grid_view>
     </field>
     <field>
@@ -318,7 +297,6 @@
         </help>
         <grid_view>
             <visible>false</visible>
-            <sequence>52</sequence>
         </grid_view>
     </field>
     <field>
@@ -331,7 +309,6 @@
         </help>
         <grid_view>
             <visible>false</visible>
-            <sequence>54</sequence>
         </grid_view>
     </field>
     <field>
@@ -343,7 +320,6 @@
         <help>Restrict the allowed ciphers to be negotiated to the ciphers in this list.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>56</sequence>
         </grid_view>
     </field>
     <field>
@@ -359,7 +335,6 @@
         </help>
         <grid_view>
             <visible>false</visible>
-            <sequence>58</sequence>
         </grid_view>
     </field>
     <field>
@@ -374,7 +349,6 @@
         <help>Select authentication methods to use, leave empty if no challenge response authentication is needed.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>60</sequence>
         </grid_view>
     </field>
     <field>
@@ -385,7 +359,6 @@
         <help>Restrict access to users in the selected local group. Please be aware that other authentication backends will refuse to authenticate when using this option.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>62</sequence>
         </grid_view>
     </field>
     <field>
@@ -399,7 +372,6 @@
             <visible>false</visible>
             <type>boolean</type>
             <formatter>boolean</formatter>
-            <sequence>64</sequence>
         </grid_view>
     </field>
     <field>
@@ -410,7 +382,6 @@
         <help>When authenticating users, enforce a match between the Common Name of the client certificate and the username given at login.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>66</sequence>
         </grid_view>
     </field>
     <field>
@@ -421,7 +392,6 @@
         <help>(optional) Username to send to the server for authentication when required.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>68</sequence>
         </grid_view>
     </field>
     <field>
@@ -444,7 +414,6 @@ Set to 0 to disable, remember to change your client as well.
         </help>
         <grid_view>
             <visible>false</visible>
-            <sequence>70</sequence>
         </grid_view>
     </field>
     <field>
@@ -461,7 +430,6 @@ Set to 0 to disable, remember to change your client as well.
         </help>
         <grid_view>
             <visible>false</visible>
-            <sequence>72</sequence>
         </grid_view>
     </field>
     <field>
@@ -478,7 +446,6 @@ Set to 0 to disable, remember to change your client as well.
             <visible>false</visible>
             <type>boolean</type>
             <formatter>boolean</formatter>
-            <sequence>74</sequence>
         </grid_view>
     </field>
     <field>
@@ -494,7 +461,6 @@ Set to 0 to disable, remember to change your client as well.
         <help>These are the networks accessible on this host, these are pushed via route{-ipv6} clauses in OpenVPN to the client.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>76</sequence>
         </grid_view>
     </field>
     <field>
@@ -506,7 +472,6 @@ Set to 0 to disable, remember to change your client as well.
         <help>Remote networks for the server, add route to routing table after connection is established</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>78</sequence>
         </grid_view>
     </field>
     <field>
@@ -520,7 +485,6 @@ Set to 0 to disable, remember to change your client as well.
         <help>Various less frequently used yes/no options which can be set for this instance.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>80</sequence>
         </grid_view>
     </field>
     <field>
@@ -531,7 +495,6 @@ Set to 0 to disable, remember to change your client as well.
         <help>Various less frequently used yes/no options which can be pushed to the client for this instance.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>82</sequence>
         </grid_view>
     </field>
     <field>
@@ -542,7 +505,6 @@ Set to 0 to disable, remember to change your client as well.
         <help>Automatically execute routing commands to cause all outgoing IP traffic to be redirected over the VPN.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>84</sequence>
         </grid_view>
     </field>
     <field>
@@ -554,7 +516,6 @@ Set to 0 to disable, remember to change your client as well.
         <help>Specify a default metric m for use with --route on the connecting client (push option).</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>86</sequence>
         </grid_view>
     </field>
     <field>
@@ -567,7 +528,6 @@ Set to 0 to disable, remember to change your client as well.
             <visible>false</visible>
             <type>boolean</type>
             <formatter>boolean</formatter>
-            <sequence>88</sequence>
         </grid_view>
     </field>
     <field>
@@ -578,7 +538,6 @@ Set to 0 to disable, remember to change your client as well.
         <help>Set Connection-specific DNS Suffix.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>90</sequence>
         </grid_view>
     </field>
     <field>
@@ -592,7 +551,6 @@ Set to 0 to disable, remember to change your client as well.
         </help>
         <grid_view>
             <visible>false</visible>
-            <sequence>92</sequence>
         </grid_view>
     </field>
     <field>
@@ -606,7 +564,6 @@ Set to 0 to disable, remember to change your client as well.
         </help>
         <grid_view>
             <visible>false</visible>
-            <sequence>94</sequence>
         </grid_view>
     </field>
     <field>
@@ -620,7 +577,6 @@ Set to 0 to disable, remember to change your client as well.
         </help>
         <grid_view>
             <visible>false</visible>
-            <sequence>96</sequence>
         </grid_view>
     </field>
     <field>
@@ -631,7 +587,6 @@ Set to 0 to disable, remember to change your client as well.
         <help>Take the TUN device MTU to be tun-mtu and derive the link MTU from it.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>98</sequence>
         </grid_view>
     </field>
     <field>
@@ -642,7 +597,6 @@ Set to 0 to disable, remember to change your client as well.
         <help>Enable internal datagram fragmentation so that no UDP datagrams are sent which are larger than the specified byte size.</help>
         <grid_view>
             <visible>false</visible>
-            <sequence>100</sequence>
         </grid_view>
     </field>
     <field>
@@ -655,7 +609,6 @@ Set to 0 to disable, remember to change your client as well.
             <visible>false</visible>
             <type>boolean</type>
             <formatter>boolean</formatter>
-            <sequence>102</sequence>
         </grid_view>
     </field>
 </fields>
