@@ -77,17 +77,43 @@ export default class Wireguard extends BaseTableWidget {
     processTunnels(newTunnels) {
         $('.wireguard-interface').tooltip('hide');
 
-        let now = moment().unix(); // Current time in seconds
-        let tunnels = newTunnels.filter(row => row.type == 'peer').map(row => ({
-            ifname: row.ifname ? row.if + ' (' + row.ifname + ') ' : row.if,
+        let tunnels = newTunnels
+        .filter(row => row.type == 'peer')
+        .map(row => ({
+            ifname: row.ifname
+                ? row.if + ' (' + row.ifname + ') '
+                : row.if,
+
             name: row.name,
             allowed_ips: row['allowed-ips'] || this.translations.notavailable,
-            rx: row['transfer-rx'] ? this._formatBytes(row['transfer-rx']) : this.translations.notavailable,
-            tx: row['transfer-tx'] ? this._formatBytes(row['transfer-tx']) : this.translations.notavailable,
-            latest_handshake: row['latest-handshake'], // No fallback since we handle if 0
-            latest_handshake_fmt: row['latest-handshake'] ? moment.unix(row['latest-handshake']).local().format('YYYY-MM-DD HH:mm:ss') : null,
-            connected: row['latest-handshake'] && (now - row['latest-handshake']) <= 180, // Considered online if last handshake was within 3 minutes
-            statusIcon: row['latest-handshake'] && (now - row['latest-handshake']) <= 180 ? 'fa-exchange text-success' : 'fa-exchange text-danger',
+
+            rx: row['transfer-rx']
+                ? this._formatBytes(row['transfer-rx'])
+                : this.translations.notavailable,
+
+            tx: row['transfer-tx']
+                ? this._formatBytes(row['transfer-tx'])
+                : this.translations.notavailable,
+
+            // No fallback since we handle if 0
+            latest_handshake: row['latest-handshake'],
+
+            latest_handshake_fmt: row['latest-handshake']
+                ? moment.unix(row['latest-handshake']).local().format('YYYY-MM-DD HH:mm:ss')
+                : null,
+
+            /**
+             *  Considered online if handshake was within 180s, wg does a handshake approx every 120s.
+             *  latest-handshake-age can be a valid 0 when it just happened.
+             */
+            connected: row['latest-handshake-age'] !== null
+            && row['latest-handshake-age'] <= 180,
+
+            statusIcon: row['latest-handshake-age'] !== null
+                && row['latest-handshake-age'] <= 180
+                    ? 'fa-exchange text-success'
+                    : 'fa-exchange text-danger',
+
             publicKey: row['public-key'],
             uniqueId: row.if + row['public-key']
         }));

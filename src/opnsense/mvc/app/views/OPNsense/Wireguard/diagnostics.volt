@@ -47,7 +47,14 @@
                                 return '';
                             }
 
-                        }
+                        },
+                        seconds: function(column, row) {
+                            if (row[column.id] !== null) {
+                                return row[column.id] + "s";
+                            } else {
+                                return '';
+                            }
+                        },
                     },
                     requestHandler: function(request){
                         if ( $('#type_filter').val().length > 0) {
@@ -87,6 +94,7 @@
                  <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
                  <th data-column-id="endpoint" data-type="string">{{ lang._('Port / Endpoint') }}</th>
                  <th data-column-id="latest-handshake"  data-formatter="epoch" data-type="numeric">{{ lang._('Handshake') }}</th>
+                 <th data-column-id="latest-handshake-age" data-formatter="seconds" data-type="numeric">{{ lang._('Handshake Age') }}</th>
                  <th data-column-id="transfer-tx" data-formatter="bytes" data-type="numeric">{{ lang._('Send') }}</th>
                  <th data-column-id="transfer-rx" data-formatter="bytes" data-type="numeric">{{ lang._('Received') }}</th>
              </tr>

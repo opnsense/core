@@ -95,6 +95,12 @@ class ServiceController extends ApiMutableServiceControllerBase
                     $record['name'] = $key_descriptions[$key];
                 }
             }
+            // Calculate handshake age for wireguard widget
+            if (!empty($record['latest-handshake'])) {
+                $record['latest-handshake-age'] = time() - (int)$record['latest-handshake'];
+            } else {
+                $record['latest-handshake-age'] = null;
+            }
             $record['ifname'] = $ifnames[$record['if']];
         }
         $filter_funct = null;
