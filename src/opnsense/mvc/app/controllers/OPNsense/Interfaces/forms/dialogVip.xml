@@ -3,7 +3,7 @@
         <id>vip.mode</id>
         <label>Mode</label>
         <type>dropdown</type>
-        <help>Proxy ARP and other type Virtual IPs cannot be bound to by anything running on the firewall, such as IPsec, OpenVPN, etc. Use a CARP or IP Alias type address for these cases.</help>
+        <help>Proxy ARP cannot be bound to by anything running on the firewall, such as IPsec, OpenVPN, etc. In most cases an IP alias should be used.</help>
     </field>
     <field>
         <id>vip.interface</id>

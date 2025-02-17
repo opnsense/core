@@ -83,7 +83,6 @@
               <option value="ipalias">{{ lang._('IP Alias') }}</option>
               <option value="carp">{{ lang._('CARP') }}</option>
               <option value="proxyarp">{{ lang._('Proxy ARP') }}</option>
-              <option value="other">{{ lang._('Other') }}</option>
           </select>
       </div>
   </div>
