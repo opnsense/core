@@ -1,6 +1,6 @@
 <script>
     $( document ).ready(function() {
-        $("#grid-vips").UIBootgrid(
+        $("#{{formGridVip['table_id']}}").UIBootgrid(
             {   search:'/api/interfaces/vip_settings/searchItem/',
                 get:'/api/interfaces/vip_settings/getItem/',
                 set:'/api/interfaces/vip_settings/setItem/',
@@ -15,15 +15,15 @@
                         return request;
                     },
                     formatters: {
-                        vhid: function (column, row) {
-                            return row.vhid_txt;
+                        networkFormatter: function(column, row) {
+                            return row.subnet + (row.subnet_bits ? '/' + row.subnet_bits : '');
                         }
-                    }
+                    },
                 }
             }
         );
         $("#mode_filter").change(function(){
-            $('#grid-vips').bootgrid('reload');
+            $('#{{formGridVip['table_id']}}').bootgrid('reload');
         });
 
         $("#vip\\.mode").change(function(){
@@ -60,7 +60,7 @@
             )
         );
 
-        $("#mode_filter_container").detach().prependTo('#grid-vips-header > .row > .actionBar > .actions');
+        $("#mode_filter_container").detach().prependTo('#{{formGridVip["table_id"]}}-header > .row > .actionBar > .actions');
         /**
          * select an unassigned carp vhid
          */
@@ -86,44 +86,7 @@
           </select>
       </div>
   </div>
-  <table id="grid-vips" class="table table-condensed table-hover table-striped" data-editDialog="DialogVip" data-editAlert="VipChangeMessage">
-      <thead>
-          <tr>
-              <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-              <th data-column-id="address" data-type="string">{{ lang._('Address') }}</th>
-              <th data-column-id="vhid" data-type="string" data-formatter="vhid" >{{ lang._('VHID') }}</th>
-              <th data-column-id="interface" data-type="string">{{ lang._('Interface') }}</th>
-              <th data-column-id="mode" data-type="string">{{ lang._('Type') }}</th>
-              <th data-column-id="descr" data-type="string">{{ lang._('Description') }}</th>
-              <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-          </tr>
-      </thead>
-      <tbody>
-      </tbody>
-      <tfoot>
-          <tr>
-              <td></td>
-              <td>
-                  <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                  <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
-              </td>
-          </tr>
-      </tfoot>
-  </table>
-  <div class="col-md-12">
-      <div id="VipChangeMessage" class="alert alert-info" style="display: none" role="alert">
-          {{ lang._('After changing settings, please remember to apply them with the button below') }}
-      </div>
-      <hr/>
-      <button class="btn btn-primary" id="reconfigureAct"
-              data-endpoint='/api/interfaces/vip_settings/reconfigure'
-              data-label="{{ lang._('Apply') }}"
-              data-error-title="{{ lang._('Error reconfiguring virtual IPs') }}"
-              type="button"
-      ></button>
-      <br/><br/>
-  </div>
+  {{ partial('layout_partials/base_bootgrid_table', formGridVip)}}
 </div>
-
-
-{{ partial("layout_partials/base_dialog",['fields':formDialogVip,'id':'DialogVip','label':lang._('Edit Virtual IP')])}}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/interfaces/vip_settings/reconfigure'}) }}
+{{ partial('layout_partials/base_dialog',['fields':formDialogVip,'id':formGridVip['edit_dialog_id'],'label':lang._('Edit Virtual IP')])}}
