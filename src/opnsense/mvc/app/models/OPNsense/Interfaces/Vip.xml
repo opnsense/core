@@ -15,8 +15,6 @@
                     <ipalias>IP Alias</ipalias>
                     <carp>CARP</carp>
                     <proxyarp>Proxy ARP</proxyarp>
-                    <!-- madness without function -->
-                    <other>Other</other>
                 </OptionValues>
             </mode>
             <subnet type=".\VipNetworkField">
