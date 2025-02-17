@@ -87,7 +87,7 @@
                  <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
                  <th data-column-id="endpoint" data-type="string">{{ lang._('Port / Endpoint') }}</th>
                  <th data-column-id="latest-handshake"  data-formatter="epoch" data-type="numeric">{{ lang._('Handshake') }}</th>
-                 <th data-column-id="transfer-tx" data-formatter="bytes" data-type="numeric">{{ lang._('Send') }}</th>
+                 <th data-column-id="transfer-tx" data-formatter="bytes" data-type="numeric">{{ lang._('Sent') }}</th>
                  <th data-column-id="transfer-rx" data-formatter="bytes" data-type="numeric">{{ lang._('Received') }}</th>
              </tr>
            </thead>
