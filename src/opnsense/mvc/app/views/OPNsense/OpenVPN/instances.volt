@@ -94,6 +94,15 @@
 
 </script>
 
+<style>
+    /* The instances grid column dropdown has many items */
+    .actions .dropdown-menu.pull-right {
+        max-height: 400px;
+        min-width: max-content;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+</style>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" href="#instances">{{ lang._('Instances') }}</a></li>
