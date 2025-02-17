@@ -131,6 +131,7 @@ function service_by_name($name, $filter = [])
                 isset($service[$key]) && ($service[$key] == $value ||
                 (is_array($service[$key]) && in_array($value, $service[$key])))
             ) {
+                /* only returns a single match */
                 return $service;
             }
         }
