@@ -241,7 +241,11 @@ function filter_rule_address($adr) {
             $result[] = $item;
           }
       }
-      $padr = implode(',', $result);
+      $tmp = array_slice($result, 0, 5);
+      if (count($result) > 5) {
+        $tmp[] = '[...]';
+      }
+      $padr = implode(' , ', $tmp);
   }
 
 
