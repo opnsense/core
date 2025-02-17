@@ -3,6 +3,9 @@
         <id>vxlan.deviceId</id>
         <label>Device ID</label>
         <type>info</type>
+        <grid_view>
+            <formatter>vxlanFormatter</formatter>
+        </grid_view>
     </field>
     <field>
         <id>vxlan.vxlanid</id>
@@ -27,6 +30,9 @@
         <help>Define the port to be used.</help>
         <hint>4789</hint>
         <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>vxlan.vxlanremote</id>
@@ -44,6 +50,9 @@
         <help>Define the port to be used.</help>
         <hint>4789</hint>
         <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>vxlan.vxlangroup</id>
@@ -53,11 +62,17 @@
           The interface can be configured in a multicast mode to create a virtual network of hosts.
           This is the IP multicast group address the interface will join.
         </help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>vxlan.vxlandev</id>
         <label>Device</label>
         <type>dropdown</type>
         <help>When the interface is configured in multicast mode, the dev interface is used to transmit IP multicast packets.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
 </form>
