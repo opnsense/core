@@ -1649,9 +1649,6 @@ $( document ).ready(function() {
                     <a href="vpn_openvpn_server.php?act=new" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
                       <i class="fa fa-plus fa-fw"></i>
                     </a>
-                    <a href="wizard.php?xml=openvpn" class="btn btn-defaultu btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Use a wizard to setup a new server')) ?>">
-                      <i class="fa fa-magic fa-fw"></i>
-                    </a>
                   </td>
                 </tr>
                 </thead>

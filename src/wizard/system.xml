@@ -155,9 +155,7 @@ if (!empty($_POST['secondarydnsserver']) && !is_ipaddrv4($_POST['secondarydnsser
 if (!empty($input_errors)) {
     $stepid--;
 } else {
-    if (isset($config['dnsmasq']['enable'])) {
-        unset($config['dnsmasq']['enable']);
-    }
+    $config['dnsmasq']['enable'] = '0';
 }
     ]]></stepsubmitphpaction>
     </step>

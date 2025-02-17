@@ -70,26 +70,26 @@ function system_sysctl_defaults()
     global $config;
 
     return [
-        'debug.kassert.warn_only' => [ 'default' => '1', 'required' => true, 'description' => 'KASSERT triggers a panic (0) or just a warning (1)', 'type' => 'w' ],
-        'hw.ibrs_disable' => [ 'default' => '0' ],
-        'hw.ixl.enable_head_writeback' => [ 'default' => '0', 'required' => true ],
+        'debug.kassert.warn_only' => [ 'default' => '1', 'description' => 'KASSERT triggers a panic (0) or just a warning (1)', 'type' => 'w' ],
+        'hw.ibrs_disable' => [ 'default' => '0', 'optional' => true ],
+        'hw.ixl.enable_head_writeback' => [ 'default' => '0' ],
         'hw.syscons.kbd_reboot' => [ 'default' => '0' ],
-        'hw.uart.console' => [ 'default' => 'io:0x3f8,br:' . system_console_speed(), 'type' => 't' ], /* XXX support comconsole_port if needed */
-        'hw.vtnet.csum_disable' => [ 'default' => '1', 'required' => true ],
-        'kern.coredump' => [ 'default' => '0', 'required' => true ],
+        'hw.uart.console' => [ 'default' => 'io:0x3f8,br:' . system_console_speed(), 'type' => 't', 'optional' => true ], /* XXX remove in a future release */
+        'hw.vtnet.csum_disable' => [ 'default' => '1' ],
+        'kern.coredump' => [ 'default' => '0' ],
         'kern.ipc.maxsockbuf' => [ 'default' => '4262144' ],
         'kern.randompid' => [ 'default' => '1' ],
-        'net.enc.in.ipsec_bpf_mask' => [ 'default' => '2', 'required' => true ], /* after processing */
-        'net.enc.in.ipsec_filter_mask' => [ 'default' => '2', 'required' => true ], /* after processing */
-        'net.enc.out.ipsec_bpf_mask' => [ 'default' => '1', 'required' => true ], /* before processing */
-        'net.enc.out.ipsec_filter_mask' => [ 'default' => '1', 'required' => true ], /* before processing */
-        'net.inet.icmp.drop_redirect' => [ 'default' => '1', 'required' => true ],
+        'net.enc.in.ipsec_bpf_mask' => [ 'default' => '2' ], /* after processing */
+        'net.enc.in.ipsec_filter_mask' => [ 'default' => '2' ], /* after processing */
+        'net.enc.out.ipsec_bpf_mask' => [ 'default' => '1' ], /* before processing */
+        'net.enc.out.ipsec_filter_mask' => [ 'default' => '1' ], /* before processing */
+        'net.inet.icmp.drop_redirect' => [ 'default' => '1' ],
         'net.inet.icmp.icmplim' => [ 'default' => '0' ],
         'net.inet.icmp.log_redirect' => [ 'default' => '0' ],
-        'net.inet.icmp.reply_from_interface' => [ 'default' => '1', 'required' => true ],
+        'net.inet.icmp.reply_from_interface' => [ 'default' => '1' ],
         'net.inet.ip.accept_sourceroute' => [ 'default' => '0' ],
-        'net.inet.ip.forwarding' => [ 'default' => '1', 'required' => true ],
-        'net.inet.ip.intr_queue_maxlen' => [ 'default' => '1000', 'required' => true ],
+        'net.inet.ip.forwarding' => [ 'default' => '1' ],
+        'net.inet.ip.intr_queue_maxlen' => [ 'default' => '1000' ],
         'net.inet.ip.portrange.first' => [ 'default' => '1024' ],
         'net.inet.ip.random_id' => [ 'default' => '1' ],
         'net.inet.ip.redirect' => [ 'default' => '0' ],
@@ -105,32 +105,33 @@ function system_sysctl_defaults()
         'net.inet.udp.blackhole' => [ 'default' => '1' ],
         'net.inet.udp.checksum' => [ 'default' => 1 ],
         'net.inet.udp.maxdgram' => [ 'default' => '57344' ],
-        'net.inet6.ip6.accept_rtadv' => [ 'default' => isset($config['system']['ipv6allow']) ? '1' : '0', 'required' => true ],
-        'net.inet6.ip6.forwarding' => [ 'default' => '1', 'required' => true ],
-        'net.inet6.ip6.intr_queue_maxlen' => [ 'default' => '1000', 'required' => true ],
+        'net.inet6.ip6.accept_rtadv' => [ 'default' => isset($config['system']['ipv6allow']) ? '1' : '0' ],
+        'net.inet6.ip6.forwarding' => [ 'default' => '1' ],
+        'net.inet6.ip6.intr_queue_maxlen' => [ 'default' => '1000' ],
+        'net.inet6.ip6.log_cannot_forward' => [ 'default' => '0' ],
         'net.inet6.ip6.prefer_tempaddr' => [ 'default' => '0' ],
         'net.inet6.ip6.redirect' => [ 'default' => '0' ],
-        'net.inet6.ip6.rfc6204w3' => [ 'default' => isset($config['system']['ipv6allow']) ? '1' : '0', 'required' => true ],
+        'net.inet6.ip6.rfc6204w3' => [ 'default' => isset($config['system']['ipv6allow']) ? '1' : '0' ],
         'net.inet6.ip6.use_tempaddr' => [ 'default' => '0' ],
         'net.link.bridge.pfil_bridge' => [ 'default' => '0' ],
         'net.link.bridge.pfil_local_phys' => [ 'default' => '0' ],
         'net.link.bridge.pfil_member' => [ 'default' => '1' ],
         'net.link.bridge.pfil_onlyip' => [ 'default' => '0' ],
-        'net.link.ether.inet.log_arp_movements' => [ 'default' => isset($config['system']['sharednet']) ? '0' : '1', 'required' => true ],
-        'net.link.ether.inet.log_arp_wrong_iface' => [ 'default' => isset($config['system']['sharednet']) ? '0' : '1', 'required' => true ],
+        'net.link.ether.inet.log_arp_movements' => [ 'default' => isset($config['system']['sharednet']) ? '0' : '1' ],
+        'net.link.ether.inet.log_arp_wrong_iface' => [ 'default' => isset($config['system']['sharednet']) ? '0' : '1' ],
         'net.link.tap.user_open' => [ 'default' => '1' ],
-        'net.link.vlan.mtag_pcp' => [ 'default' => '1', 'required' => true ],
-        'net.local.dgram.maxdgram' => [ 'default' => '8192', 'required' => true ],
-        'net.pf.share_forward' => [ 'default' => !empty($config['system']['pf_share_forward']) ? '1' : '0', 'required' => true ],
-        'net.pf.share_forward6' => [ 'default' => !empty($config['system']['pf_share_forward']) ? '1' : '0', 'required' => true ],
-        'net.route.multipath' => [ 'default' => '0', 'required' => true ],
+        'net.link.vlan.mtag_pcp' => [ 'default' => '1' ],
+        'net.local.dgram.maxdgram' => [ 'default' => '8192' ],
+        'net.pf.share_forward' => [ 'default' => !empty($config['system']['pf_share_forward']) ? '1' : '0' ],
+        'net.pf.share_forward6' => [ 'default' => !empty($config['system']['pf_share_forward']) ? '1' : '0' ],
+        'net.route.multipath' => [ 'default' => '0' ],
         'security.bsd.see_other_gids' => [ 'default' => '0' ],
         'security.bsd.see_other_uids' => [ 'default' => '0' ],
         'vfs.read_max' => [ 'default' => '32' ],
-        'vfs.zfs.dirty_data_sync_percent' => [ 'default' => '5', 'required' => true ],
-        'vfs.zfs.txg.timeout' => [ 'default' => '90', 'required' => true ],
-        'vm.numa.disabled' => [ 'default' => '1', 'required' => true ],
-        'vm.pmap.pti' => [ 'default' => '1' ],
+        'vfs.zfs.dirty_data_sync_percent' => [ 'default' => '5' ],
+        'vfs.zfs.txg.timeout' => [ 'default' => '90' ],
+        'vm.numa.disabled' => [ 'default' => '1' ],
+        'vm.pmap.pti' => [ 'default' => '1', 'optional' => true ],
     ];
 }
 
@@ -141,7 +142,7 @@ function system_sysctl_get()
 
     foreach ($defaults as $name => $info) {
         /* compile list of required sysctls not necessarily present in config */
-        if (!empty($info['required'])) {
+        if (empty($info['optional'])) {
             $sysctls[$name] = 'default';
         }
     }

@@ -236,18 +236,26 @@ class SystemController extends ApiControllerBase
         foreach ($temps as $name => $value) {
             $tempItem = [];
             $tempItem['device'] = $name;
-            $tempItem['device_seq'] = filter_var($tempItem['device'], FILTER_SANITIZE_NUMBER_INT); /* XXX too opportunistic */
+            $tempItem['device_seq'] = (int)filter_var($tempItem['device'], FILTER_SANITIZE_NUMBER_INT);
             $tempItem['temperature'] = trim(str_replace('C', '', $value));
-            $tempItem['type_translated'] = gettext('CPU');
-            $tempItem['type'] = 'cpu';
-            if (strpos($tempItem['device'], 'hw.acpi') !== false) {
+            $tempItem['type_translated'] = gettext('Other');
+            $tempItem['type'] = 'other';
+
+            /* try to categorize a few of the readings just for labels */
+            if (str_starts_with($tempItem['device'], 'hw.acpi.')) {
                 $tempItem['type_translated'] = gettext('Zone');
                 $tempItem['type'] = 'zone';
-            /* XXX may or may not be a good idea */
-            } elseif (strpos($tempItem['device'], 'dev.amdtemp') !== false) {
+            } elseif (str_starts_with($tempItem['device'], 'dev.amdtemp.')) {
                 $tempItem['type_translated'] = gettext('AMD');
                 $tempItem['type'] = 'amd';
+            } elseif (str_starts_with($tempItem['device'], 'dev.pchtherm.')) {
+                $tempItem['type_translated'] = gettext('Platform');
+                $tempItem['type'] = 'platform';
+            } elseif (str_starts_with($tempItem['device'], 'dev.cpu.')) {
+                $tempItem['type_translated'] = gettext('CPU');
+                $tempItem['type'] = 'cpu';
             }
+
             $result[] = $tempItem;
         }
 

@@ -329,7 +329,7 @@ class ArrayField extends BaseField
             }
             $keydata = [];
             foreach ($keyfields as $keyfield) {
-                $keydata[] = (string)$record[$keyfield] ?? '';
+                $keydata[] = (string)($record[$keyfield] ?? '');
             }
             $key = implode("\n", $keydata);
             $node = null;
@@ -349,7 +349,9 @@ class ArrayField extends BaseField
             }
             $results['uuids'][$node->getAttributes()['uuid']] = $idx;
             foreach ($record as $fieldname => $content) {
-                $node->$fieldname = (string)$content;
+                if (isset($node->$fieldname)) {
+                    $node->$fieldname = (string)$content;
+                }
             }
         }
         return $results;

@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2014-2024 Deciso B.V.
+ # Copyright (c) 2014-2025 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -70,12 +70,7 @@
             }
         }
 
-
-        /*************************************************************************************************************
-         * link grid actions
-         *************************************************************************************************************/
-
-        $("#grid-dot").UIBootgrid(
+        $("#{{formGridDot['table_id']}}").UIBootgrid(
                 {   'search':'/api/unbound/settings/search'+this_page+'/',
                     'get':'/api/unbound/settings/get'+this_page+'/',
                     'set':'/api/unbound/settings/set'+this_page+'/',
@@ -95,12 +90,8 @@
             $('tr[id="row_dot.verify"]').removeClass('hidden');
             $('tr[id="row_dot.forward_tcp_upstream"]').addClass('hidden');
             /* remove advanced option toggle (currently no advanced options for DNS over TLS) */
-            $("#show_advanced_formDialogDialogEdit").closest('td').html('');
+            $("#show_advanced_formDialog{{ formGridDot['edit_dialog_id'] }}").closest('td').html('');
         }
-
-        /*************************************************************************************************************
-         * Commands
-         *************************************************************************************************************/
 
         /**
          * Reconfigure unbound - activate changes
@@ -115,64 +106,43 @@
 <style>
     .theading-text {
         font-weight: 800;
-        font-style: bold;
+        font-style: italic;
+    }
+
+    #infosection {
+        margin: 1em;
     }
 </style>
 
-<div class="tab-content content-box col-xs-12 __mb">
+<div class="content-box __mb">
     {# include base forwarding form #}
     {{ partial("layout_partials/base_form",['fields':forwardingForm,'id':'frm_ForwardingSettings'])}}
 </div>
-<ul class="nav nav-tabs" data-tabs="tabs" id="maintabs"></ul>
-<div class="tab-content content-box col-xs-12 __mb">
-    <div id="dot" class="tab-pane fade in active">
-        <table id="grid-dot" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEdit">
-            <tr>
-            <thead>
-            <tr>
-                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-                <th data-column-id="domain" data-type="string">{{ lang._('Domain') }}</th>
-                <th data-column-id="server" data-type="string">{{ lang._('Address') }}</th>
-                <th data-column-id="port" data-type="int">{{ lang._('Port') }}</th>
-                {% if (selected_forward|default("") == "") %}
-                <th data-column-id="verify" data-type="int">{{ lang._('Hostname') }}</th>
-                {% endif %}
-                <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
-                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Edit') }} | {{ lang._('Delete') }}</th>
-                <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td></td>
-                <td>
-                    <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                    <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
-                </td>
-            </tr>
-            </tfoot>
-            </tr>
-        </table>
-    </div>
+<div class="content-box __mb">
+    {{ partial('layout_partials/base_bootgrid_table', formGridDot)}}
     <div id="infosection" class="tab-content col-xs-12 __mb">
         {{ lang._('Please note that entries without a specific domain (and thus all domains) specified in both Query Forwarding and DNS over TLS
         are considered duplicates, DNS over TLS will be preferred. If "Use System Nameservers" is checked, Unbound will use the DNS servers entered
         in System->Settings->General or those obtained via DHCP or PPP on WAN if the "Allow DNS server list to be overridden by DHCP/PPP on WAN" is checked.') }}
     </div>
-    <div class="col-md-12">
-        <hr/>
-        <button class="btn btn-primary" id="reconfigureAct"
-                data-endpoint='/api/unbound/service/reconfigure'
-                data-label="{{ lang._('Apply') }}"
-                data-service-widget="unbound"
-                data-error-title="{{ lang._('Error reconfiguring unbound') }}"
-                type="button"
-        ></button>
-        <br/><br/>
-    </div>
 </div>
+<section class="page-content-main">
+    <div class="content-box">
+        <div class="col-md-12">
+            <br/>
+            <div id="DotChangeMessage" class="alert alert-info" style="display: none" role="alert">
+                {{ lang._('After changing settings, please remember to apply them.') }}
+            </div>
+            <button class="btn btn-primary" id="reconfigureAct"
+                    data-endpoint='/api/unbound/service/reconfigure'
+                    data-label="{{ lang._('Apply') }}"
+                    data-service-widget="unbound"
+                    data-error-title="{{ lang._('Error reconfiguring unbound') }}"
+                    type="button"
+            ></button>
+            <br/><br/>
+        </div>
+    </div>
+</section>
 
-{# include dialog #}
-{{ partial("layout_partials/base_dialog",['fields':formDialogEdit,'id':'DialogEdit','label':lang._('Edit server')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEdit,'id':formGridDot['edit_dialog_id'],'label':lang._('Edit server')])}}

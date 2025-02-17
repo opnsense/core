@@ -110,7 +110,7 @@ if (!empty($config['virtualip']['vip'])) {
             if ($vipent['mode'] == 'proxyarp') {
                 $proxyarp = true;
             }
-            if (in_array($vipent['mode'], ['proxyarp', 'other'])) {
+            if ($vipent['mode'] == 'proxyarp') {
                 if (isset($addresses[$subnet])) {
                     legacy_interface_deladdress($addresses[$subnet]['if'], $subnet, is_ipaddrv6($subnet) ? 6 : 4);
                 }

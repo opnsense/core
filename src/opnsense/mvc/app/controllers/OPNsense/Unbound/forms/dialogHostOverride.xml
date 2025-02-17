@@ -4,6 +4,11 @@
         <label>Enabled</label>
         <type>checkbox</type>
         <help>Enable the override for this host</help>
+        <grid_view>
+            <width>6em</width>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+        </grid_view>
     </field>
     <field>
         <id>host.hostname</id>
@@ -28,18 +33,27 @@
         <label>MX Priority</label>
         <type>text</type>
         <help>Priority of MX record, e.g. 10</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>host.mx</id>
         <label>MX Host</label>
         <type>text</type>
         <help>Host name of MX host, e.g. mail.example.com</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>host.server</id>
         <label>IP address</label>
         <type>text</type>
         <help>IP address of the host, e.g. 192.168.100.100 or fd00:abcd::1</help>
+        <grid_view>
+            <formatter>mxformatter</formatter>
+        </grid_view>
     </field>
     <field>
         <id>host.description</id>

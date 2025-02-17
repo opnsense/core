@@ -680,7 +680,6 @@
         <name>VPN: OpenVPN: Server</name>
         <patterns>
             <pattern>vpn_openvpn_server.php*</pattern>
-            <pattern>wizard.php?xml=openvpn&amp;*</pattern>
         </patterns>
     </page-openvpn-server>
     <page-xmlrpclibrary>

@@ -48,7 +48,7 @@ class IPsecOverrideStatus extends AbstractStatus
     {
         if (
             count(glob('/usr/local/etc/swanctl/conf.d/*.conf')) ||
-            count(glob('/usr/local/etc/strongswan.opnsense.d/'))
+            count(glob('/usr/local/etc/strongswan.opnsense.d/*.conf'))
         ) {
             $this->internalMessage = gettext(
                 'The configuration contains manual overwrites, these may interfere with the settings configured here.'

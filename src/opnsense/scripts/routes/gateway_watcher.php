@@ -117,16 +117,6 @@ while (1) {
         }
 
         if ($ralarm) {
-            /* raise an alarm via the rc.syshook monitor facility */
-            shell_safe("/usr/local/etc/rc.syshook monitor %s %s %s %s %s %s", [
-                $report['name'],
-                $report['monitor'],
-                $mode[$report['name']] . ' -> ' . $report['status'],
-                $report['delay'],
-                $report['stddev'],
-                $report['loss']
-            ]);
-
             $alarm = true;
         }
 

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# run the config importer during early startup
+/usr/local/sbin/opnsense-importer -b
