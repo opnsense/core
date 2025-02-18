@@ -69,7 +69,7 @@ export default class Wireguard extends BaseTableWidget {
     }
 
     displayError(message) {
-        $('#wgTunnelTable'). empty().append(
+        $('#wgTunnelTable').empty().append(
             $(`<div class="error-message"><a href="/ui/wireguard/general">${message}</a></div>`)
         );
     }
@@ -77,45 +77,63 @@ export default class Wireguard extends BaseTableWidget {
     processTunnels(newTunnels) {
         $('.wireguard-interface').tooltip('hide');
 
-    let tunnels = newTunnels
-        .filter(row => row.type == 'peer')
-        .map(row => ({
-            ifname: row.ifname
-                ? row.if + ' (' + row.ifname + ')'
-                : row.if,
+        let tunnels = newTunnels
+            .filter(row => row.type == 'peer')
+            .map(row => ({
+                ifname: row.ifname
+                    ? row.if + ' (' + row.ifname + ')'
+                    : row.if,
 
-            name: row.name,
-            allowed_ips: row['allowed-ips'] || this.translations.notavailable,
+                name: row.name,
+                allowed_ips: row['allowed-ips'] || this.translations.notavailable,
 
-            rx: row['transfer-rx']
-                ? this._formatBytes(row['transfer-rx'])
-                : this.translations.notavailable,
+                rx: row['transfer-rx']
+                    ? this._formatBytes(row['transfer-rx'])
+                    : this.translations.notavailable,
 
-            tx: row['transfer-tx']
-                ? this._formatBytes(row['transfer-tx'])
-                : this.translations.notavailable,
+                tx: row['transfer-tx']
+                    ? this._formatBytes(row['transfer-tx'])
+                    : this.translations.notavailable,
 
-            // No fallback since we handle if null
-            latest_handshake_epoch: row['latest-handshake-epoch'],
+                // No fallback since we handle if null
+                latest_handshake_epoch: row['latest-handshake-epoch'],
 
-            connected: row['peer-connected'] == true,
+                peerStatus: row['peer-status'],
 
-            statusIcon: row['peer-connected'] == true
-                    ? 'fa-exchange text-success'
-                    : 'fa-exchange text-danger',
+                statusIcon: row['peer-status'] === 'online'
+                    ? 'fa-check-circle fa-fw text-success'
+                    : row['peer-status'] === 'stale'
+                        ? 'fa-question-circle fa-fw'
+                        : 'fa-times-circle fa-fw text-danger',
 
-            publicKey: row['public-key'],
-            uniqueId: row.if + row['public-key']
-        }));
+                statusTooltip: row['peer-status'] === 'online'
+                    ? this.translations.online
+                    : row['peer-status'] === 'stale'
+                        ? this.translations.stale
+                        : this.translations.offline,
 
-        tunnels.sort((a, b) => a.connected === b.connected ? 0 : a.connected ? -1 : 1);
+                publicKey: row['public-key'],
+                uniqueId: row.if + row['public-key']
+            }));
 
-        let onlineCount = tunnels.filter(tunnel => tunnel.connected).length;
-        let offlineCount = tunnels.length - onlineCount;
+        tunnels.sort((a, b) => {
+            if (a.peerStatus === b.peerStatus) return 0;
+            if (a.peerStatus === 'online') return -1;
+            if (a.peerStatus === 'stale' && b.peerStatus !== 'online') return -1;
+            return 1;
+        });
+
+        let onlineCount = tunnels.filter(tunnel => tunnel.peerStatus === 'online').length;
+        let staleCount = tunnels.filter(tunnel => tunnel.peerStatus === 'stale').length;
+        let offlineCount = tunnels.length - onlineCount - staleCount;
 
         let summaryRow = `
             <div>
-                <span>${this.translations.total}: ${tunnels.length} | ${this.translations.online}: ${onlineCount} | ${this.translations.offline}: ${offlineCount}</span>
+                <span>
+                    ${this.translations.online}: ${onlineCount} |
+                    ${this.translations.stale}: ${staleCount} |
+                    ${this.translations.offline}: ${offlineCount}
+                </span>
             </div>`;
 
         super.updateTable('wgTunnelTable', [[summaryRow, '']], 'wg-summary');
@@ -126,7 +144,7 @@ export default class Wireguard extends BaseTableWidget {
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div style="display: flex; align-items: center;">
                         <i class="fa ${tunnel.statusIcon} wireguard-interface" style="cursor: pointer;"
-                            data-toggle="tooltip" title="${tunnel.connected ? this.translations.online : this.translations.offline}">
+                            data-toggle="tooltip" title="${tunnel.statusTooltip}">
                         </i>
                         &nbsp;
                         <span><b>${tunnel.ifname}</b></span>

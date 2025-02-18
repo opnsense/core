@@ -104,13 +104,15 @@ class ServiceController extends ApiMutableServiceControllerBase
                 $record['latest-handshake-epoch'] = null;
             }
 
-            // Peer is considered online if handshake was within 240s, wg handshakes approx every 120s.
-            if ($record['type'] === 'peer' &&
-                !is_null($record['latest-handshake-age']) &&
-                $record['latest-handshake-age'] <= 240) {
-                $record['peer-connected'] = true;
+            // Peer is considered online if handshake was within 300s, wg handshakes approx every 120s.
+            if ($record['type'] === 'peer' && !is_null($record['latest-handshake-age'])) {
+                if ($record['latest-handshake-age'] <= 300) {
+                    $record['peer-status'] = 'online';
+                } elseif ($record['latest-handshake-age'] > 300) {
+                    $record['peer-status'] = 'stale';
+                }
             } else {
-                $record['peer-connected'] = false;
+                $record['peer-status'] = 'offline';
             }
 
             $record['ifname'] = $ifnames[$record['if']];

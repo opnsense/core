@@ -55,13 +55,21 @@
                             }
                         },
                         status: function(column, row) {
-                            if ((row.type === 'interface' && row.status === 'up') ||
-                                (row.type === 'peer' && row['peer-connected'] === true)) {
-                                return '<span class="fa fa-play fa-fw text-success" data-toggle="tooltip" title="{{ lang._('Connected') }}"></span>';
-                            } else {
-                                return '<span class="fa fa-remove fa-fw text-danger" data-toggle="tooltip" title="{{ lang._('Disconnected') }}"></span>';
+                            if (row.type === 'peer' && row['peer-status'] === 'stale') {
+                                return '<span class="fa fa-question-circle fa-fw" data-toggle="tooltip" title="{{ lang._('Stale') }}"></span>';
                             }
+
+                            if (
+                                (row.type === 'interface' && row.status === 'up') ||
+                                (row.type === 'peer' && row['peer-status'] === 'online')
+                            ) {
+                                return '<span class="fa fa-check-circle fa-fw text-success" data-toggle="tooltip" title="{{ lang._('Online') }}"></span>';
+                            }
+
+                            return '<span class="fa fa-times-circle fa-fw text-danger" data-toggle="tooltip" title="{{ lang._('Offline') }}"></span>';
                         },
+
+
 
                     },
                     requestHandler: function(request){
