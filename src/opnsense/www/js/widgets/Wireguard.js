@@ -168,7 +168,7 @@ export default class Wireguard extends BaseTableWidget {
                                <i class="fa fa-arrow-up" style="font-size: 13px;"></i>
                                ${tunnel.tx}
                            </div>`
-                        : `<span>${this.translations.disconnected}</span>`}
+                        : ''}
                 </div>`;
 
             // Update the HTML table with the sorted rows
