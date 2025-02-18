@@ -77,11 +77,11 @@ export default class Wireguard extends BaseTableWidget {
     processTunnels(newTunnels) {
         $('.wireguard-interface').tooltip('hide');
 
-        let tunnels = newTunnels
+    let tunnels = newTunnels
         .filter(row => row.type == 'peer')
         .map(row => ({
             ifname: row.ifname
-                ? row.if + ' (' + row.ifname + ') '
+                ? row.if + ' (' + row.ifname + ')'
                 : row.if,
 
             name: row.name,
@@ -102,15 +102,9 @@ export default class Wireguard extends BaseTableWidget {
                 ? moment.unix(row['latest-handshake']).local().format('YYYY-MM-DD HH:mm:ss')
                 : null,
 
-            /**
-             *  Considered online if handshake was within 180s, wg does a handshake approx every 120s.
-             *  latest-handshake-age can be a valid 0 when it just happened.
-             */
-            connected: row['latest-handshake-age'] !== null
-            && row['latest-handshake-age'] <= 180,
+            connected: row['peer-connected'] == true,
 
-            statusIcon: row['latest-handshake-age'] !== null
-                && row['latest-handshake-age'] <= 180
+            statusIcon: row['peer-connected'] == true
                     ? 'fa-exchange text-success'
                     : 'fa-exchange text-danger',
 

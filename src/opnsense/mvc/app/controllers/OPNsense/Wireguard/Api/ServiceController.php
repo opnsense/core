@@ -95,12 +95,22 @@ class ServiceController extends ApiMutableServiceControllerBase
                     $record['name'] = $key_descriptions[$key];
                 }
             }
-            // Calculate handshake age for wireguard widget
+
             if (!empty($record['latest-handshake'])) {
                 $record['latest-handshake-age'] = time() - (int)$record['latest-handshake'];
             } else {
                 $record['latest-handshake-age'] = null;
             }
+
+            // Peer is considered online if handshake was within 240s, wg handshakes approx every 120s.
+            if ($record['type'] === 'peer' &&
+                !is_null($record['latest-handshake-age']) &&
+                $record['latest-handshake-age'] <= 240) {
+                $record['peer-connected'] = true;
+            } else {
+                $record['peer-connected'] = false;
+            }
+
             $record['ifname'] = $ifnames[$record['if']];
         }
         $filter_funct = null;

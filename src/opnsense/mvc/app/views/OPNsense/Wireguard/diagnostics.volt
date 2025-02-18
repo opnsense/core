@@ -55,6 +55,15 @@
                                 return '';
                             }
                         },
+                        status: function(column, row) {
+                            if ((row.type === 'interface' && row.status === 'up') ||
+                                (row.type === 'peer' && row['peer-connected'] === true)) {
+                                return '<span class="fa fa-play fa-fw text-success" data-toggle="tooltip" title="{{ lang._('Connected') }}"></span>';
+                            } else {
+                                return '<span class="fa fa-remove fa-fw text-danger" data-toggle="tooltip" title="{{ lang._('Disconnected') }}"></span>';
+                            }
+                        },
+
                     },
                     requestHandler: function(request){
                         if ( $('#type_filter').val().length > 0) {
@@ -67,6 +76,10 @@
 
             $("#type_filter").change(function(){
                 $('#grid-sessions').bootgrid('reload');
+            });
+
+            $("#grid-sessions").on('loaded.rs.jquery.bootgrid', function() {
+                $('[data-toggle="tooltip"]').tooltip();
             });
 
             $("#type_filter_container").detach().prependTo('#grid-sessions-header > .row > .actionBar > .actions');
@@ -87,15 +100,15 @@
        <table id="grid-sessions" class="table table-condensed table-hover table-striped table-responsive">
            <thead>
              <tr>
-                 <th data-column-id="if" data-type="string" data-width="8em">{{ lang._('Device') }}</th>
-                 <th data-column-id="type" data-type="string" data-width="8em" data-visible="false">{{ lang._('Type') }}</th>
-                 <th data-column-id="status" data-type="string" data-width="8em" >{{ lang._('Status') }}</th>
-                 <th data-column-id="public-key" data-type="string" data-identifier="true">{{ lang._('Public key') }}</th>
+                 <th data-column-id="status" data-formatter="status" data-type="string" data-width="6em" >{{ lang._('Status') }}</th>
+                 <th data-column-id="if" data-type="string" data-width="6em">{{ lang._('Device') }}</th>
+                 <th data-column-id="type" data-type="string" data-width="6em">{{ lang._('Type') }}</th>
+                 <th data-column-id="public-key" data-type="string" data-width="26em" data-identifier="true" data-visible="false">{{ lang._('Public key') }}</th>
                  <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
                  <th data-column-id="endpoint" data-type="string">{{ lang._('Port / Endpoint') }}</th>
-                 <th data-column-id="latest-handshake"  data-formatter="epoch" data-type="numeric">{{ lang._('Handshake') }}</th>
+                 <th data-column-id="latest-handshake" data-formatter="epoch" data-type="numeric" data-visible="false">{{ lang._('Handshake') }}</th>
                  <th data-column-id="latest-handshake-age" data-formatter="seconds" data-type="numeric">{{ lang._('Handshake Age') }}</th>
-                 <th data-column-id="transfer-tx" data-formatter="bytes" data-type="numeric">{{ lang._('Send') }}</th>
+                 <th data-column-id="transfer-tx" data-formatter="bytes" data-type="numeric">{{ lang._('Sent') }}</th>
                  <th data-column-id="transfer-rx" data-formatter="bytes" data-type="numeric">{{ lang._('Received') }}</th>
              </tr>
            </thead>
