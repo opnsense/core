@@ -110,7 +110,8 @@ if (!empty($config['virtualip']['vip'])) {
 
             switch ($vipent['mode']) {
                 case 'ipalias':
-                    if (!isset($addresses[$subnet]) ||
+                    if (
+                        !isset($addresses[$subnet]) ||
                         $addresses[$subnet]['subnetbits'] != $subnet_bits ||
                         $addresses[$subnet]['if'] != $if ||
                         $addresses[$subnet]['vhid'] != $vhid
@@ -119,7 +120,8 @@ if (!empty($config['virtualip']['vip'])) {
                     }
                     break;
                 case 'carp':
-                    if (!isset($addresses[$subnet]) ||
+                    if (
+                        !isset($addresses[$subnet]) ||
                         $addresses[$subnet]['subnetbits'] != $subnet_bits ||
                         $addresses[$subnet]['if'] != $if ||
                         $addresses[$subnet]['vhid'] != $vhid ||
