@@ -38,9 +38,7 @@ class VxlanSettingsController extends ApiMutableModelControllerBase
 
     public function searchItemAction()
     {
-        return $this->searchBase("vxlan", array(
-          'enabled', 'deviceId', 'vxlanid', 'vxlanlocal', 'vxlanremote', 'vxlangroup', 'vxlandev'
-        ), "vxlanid");
+        return $this->searchBase("vxlan", null, "vxlanid");
     }
 
     public function setItemAction($uuid)

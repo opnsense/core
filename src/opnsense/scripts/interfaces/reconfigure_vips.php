@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2022-2024 Deciso B.V.
+ * Copyright (C) 2022-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -107,43 +107,38 @@ if (!empty($config['virtualip']['vip'])) {
             $advskew = !empty($vipent['vhid']) ? $vipent['advskew'] : '';
             $peer = !empty($vipent['peer']) ? $vipent['peer'] : '224.0.0.18';
             $peer6 = !empty($vipent['peer6']) ? $vipent['peer6'] : 'ff02::12';
-            if ($vipent['mode'] == 'proxyarp') {
-                $proxyarp = true;
-            }
-            if (in_array($vipent['mode'], ['proxyarp', 'other'])) {
-                if (isset($addresses[$subnet])) {
-                    legacy_interface_deladdress($addresses[$subnet]['if'], $subnet, is_ipaddrv6($subnet) ? 6 : 4);
-                }
-                continue;
-            } elseif (
-                $vipent['mode'] == 'ipalias' &&
-                isset($addresses[$subnet]) &&
-                $addresses[$subnet]['subnetbits'] == $subnet_bits &&
-                $addresses[$subnet]['if'] == $if &&
-                $addresses[$subnet]['vhid'] == $vhid
-            ) {
-                // configured and found equal
-                continue;
-            } elseif (
-                isset($addresses[$subnet]) &&
-                $addresses[$subnet]['subnetbits'] == $subnet_bits &&
-                $addresses[$subnet]['if'] == $if &&
-                $addresses[$subnet]['vhid'] == $vhid &&
-                $addresses[$subnet]['advbase'] == $advbase &&
-                $addresses[$subnet]['advskew'] == $advskew &&
-                $addresses[$subnet]['peer'] == $peer &&
-                $addresses[$subnet]['peer6'] == $peer6
-            ) {
-                // configured and found equal
-                continue;
-            }
-            // default configure action depending on type
+
             switch ($vipent['mode']) {
                 case 'ipalias':
-                    interface_ipalias_configure($vipent);
+                    if (!isset($addresses[$subnet]) ||
+                        $addresses[$subnet]['subnetbits'] != $subnet_bits ||
+                        $addresses[$subnet]['if'] != $if ||
+                        $addresses[$subnet]['vhid'] != $vhid
+                    ) {
+                        interface_ipalias_configure($vipent);
+                    }
                     break;
                 case 'carp':
-                    interface_carp_configure($vipent);
+                    if (!isset($addresses[$subnet]) ||
+                        $addresses[$subnet]['subnetbits'] != $subnet_bits ||
+                        $addresses[$subnet]['if'] != $if ||
+                        $addresses[$subnet]['vhid'] != $vhid ||
+                        $addresses[$subnet]['advbase'] != $advbase ||
+                        $addresses[$subnet]['advskew'] != $advskew ||
+                        $addresses[$subnet]['peer'] != $peer ||
+                        $addresses[$subnet]['peer6'] != $peer6
+                    ) {
+                        interface_carp_configure($vipent);
+                    }
+                    break;
+                case 'proxyarp':
+                    if (isset($addresses[$subnet])) {
+                        legacy_interface_deladdress($addresses[$subnet]['if'], $subnet, is_ipaddrv6($subnet) ? 6 : 4);
+                    }
+                    $proxyarp = true;
+                    break;
+                default:
+                    // obsolete modes are caught here
                     break;
             }
         }

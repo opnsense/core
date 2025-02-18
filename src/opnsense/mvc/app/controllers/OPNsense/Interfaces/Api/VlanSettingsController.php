@@ -89,7 +89,7 @@ class VlanSettingsController extends ApiMutableModelControllerBase
                 $ifnames[(string)$node->if] = !empty((string)$node->descr) ? (string)$node->descr : strtoupper($ifname);
             }
         }
-        $results = $this->searchBase('vlan', ['vlanif', 'if', 'tag', 'pcp', 'descr'], 'vlanif');
+        $results = $this->searchBase('vlan', null, 'vlanif');
         foreach ($results['rows'] as &$record) {
             if (isset($ifnames[$record['vlanif']])) {
                 $record['vlanif'] = sprintf("%s [%s]", $record['vlanif'], $ifnames[$record['vlanif']]);

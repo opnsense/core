@@ -346,8 +346,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     public function setAction()
     {
-        $result = array("result" => "failed");
+        $result = ['result' => 'failed'];
         if ($this->request->isPost()) {
+            Config::getInstance()->lock();
             // load model and update with provided data
             $mdl = $this->getModel();
             $mdl->setNodes($this->request->getPost(static::$internalModelName));
@@ -450,8 +451,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     public function addBase($post_field, $path, $overlay = null)
     {
-        $result = array("result" => "failed");
+        $result = ['result' => 'failed'];
         if ($this->request->isPost() && $this->request->hasPost($post_field)) {
+            Config::getInstance()->lock();
             $mdl = $this->getModel();
             $tmp = $mdl;
             foreach (explode('.', $path) as $step) {
@@ -490,7 +492,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     public function delBase($path, $uuid)
     {
-        $result = array("result" => "failed");
+        $result = ['result' => 'failed'];
 
         if ($this->request->isPost()) {
             Config::getInstance()->lock();
@@ -526,6 +528,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     public function setBase($post_field, $path, $uuid, $overlay = null)
     {
         if ($this->request->isPost() && $this->request->hasPost($post_field) && $uuid != null) {
+            Config::getInstance()->lock();
             $mdl = $this->getModel();
             $node = $mdl->getNodeByReference($path . '.' . $uuid);
             if ($node == null) {
@@ -574,8 +577,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     public function toggleBase($path, $uuid, $enabled = null)
     {
-        $result = array("result" => "failed");
+        $result = ['result' => 'failed'];
         if ($this->request->isPost()) {
+            Config::getInstance()->lock();
             $mdl = $this->getModel();
             if ($uuid != null) {
                 $node = $mdl->getNodeByReference($path . '.' . $uuid);

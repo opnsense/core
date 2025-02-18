@@ -9,10 +9,10 @@
                     data-endpoint="{{ data_endpoint }}"
                     data-label="{{ lang._(data_label|default('Apply')) }}"
                     data-error-title="{{ lang._(data_error_title|default('Error reconfiguring service.')) }}"
-{% if data_service_widget %}
+{% if data_service_widget is defined %}
                     data-service-widget="{{ data_service_widget }}"
 {% endif %}
-{% if data_grid_reload %}
+{% if data_grid_reload is defined %}
                     data-grid-reload="{{ data_grid_reload }}"
 {% endif %}
                     type="button">

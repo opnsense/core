@@ -4,13 +4,13 @@
   <theme>opnsense</theme>
   <sysctl>
     <item>
-      <descr><![CDATA[Page Table Isolation (Meltdown mitigation, requires reboot.)]]></descr>
-      <tunable>vm.pmap.pti</tunable>
+      <descr><![CDATA[Disable Indirect Branch Restricted Speculation (Spectre V2 mitigation)]]></descr>
+      <tunable>hw.ibrs_disable</tunable>
       <value>default</value>
     </item>
     <item>
-      <descr><![CDATA[Disable Indirect Branch Restricted Speculation (Spectre V2 mitigation)]]></descr>
-      <tunable>hw.ibrs_disable</tunable>
+      <descr><![CDATA[Page Table Isolation (Meltdown mitigation, requires reboot.)]]></descr>
+      <tunable>vm.pmap.pti</tunable>
       <value>default</value>
     </item>
   </sysctl>
