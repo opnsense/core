@@ -95,12 +95,8 @@ export default class Wireguard extends BaseTableWidget {
                 ? this._formatBytes(row['transfer-tx'])
                 : this.translations.notavailable,
 
-            // No fallback since we handle if 0
-            latest_handshake: row['latest-handshake'],
-
-            latest_handshake_fmt: row['latest-handshake']
-                ? moment.unix(row['latest-handshake']).local().format('YYYY-MM-DD HH:mm:ss')
-                : null,
+            // No fallback since we handle if null
+            latest_handshake_epoch: row['latest-handshake-epoch'],
 
             connected: row['peer-connected'] == true,
 
@@ -145,8 +141,8 @@ export default class Wireguard extends BaseTableWidget {
                     </span>
                 </div>
                 <div>
-                    ${tunnel.latest_handshake_fmt
-                        ? `<span>${tunnel.latest_handshake_fmt}</span>
+                    ${tunnel.latest_handshake_epoch
+                        ? `<span>${tunnel.latest_handshake_epoch}</span>
                            <div style="padding-bottom: 10px;">
                                <i class="fa fa-arrow-down" style="font-size: 13px;"></i>
                                ${tunnel.rx}

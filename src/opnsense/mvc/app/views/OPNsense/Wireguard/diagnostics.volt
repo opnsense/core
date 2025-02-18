@@ -41,12 +41,11 @@
                             return row[column.id];
                         },
                         epoch: function(column, row) {
-                            if (row[column.id]) {
-                                return moment.unix(row[column.id]).local().format('YYYY-MM-DD HH:mm:ss');
+                            if (row[column.id] !== null) {
+                                return row[column.id]
                             } else {
                                 return '';
                             }
-
                         },
                         seconds: function(column, row) {
                             if (row[column.id] !== null) {
@@ -106,7 +105,7 @@
                  <th data-column-id="public-key" data-type="string" data-width="26em" data-identifier="true" data-visible="false">{{ lang._('Public key') }}</th>
                  <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
                  <th data-column-id="endpoint" data-type="string">{{ lang._('Port / Endpoint') }}</th>
-                 <th data-column-id="latest-handshake" data-formatter="epoch" data-type="numeric" data-visible="false">{{ lang._('Handshake') }}</th>
+                 <th data-column-id="latest-handshake-epoch" data-formatter="epoch" data-type="numeric" data-visible="false">{{ lang._('Handshake') }}</th>
                  <th data-column-id="latest-handshake-age" data-formatter="seconds" data-type="numeric">{{ lang._('Handshake Age') }}</th>
                  <th data-column-id="transfer-tx" data-formatter="bytes" data-type="numeric">{{ lang._('Sent') }}</th>
                  <th data-column-id="transfer-rx" data-formatter="bytes" data-type="numeric">{{ lang._('Received') }}</th>
