@@ -818,17 +818,12 @@ function system_syslog_start($verbose = false)
     if (isvalidpid('/var/run/syslog-ng.pid') && $last_version == $this_version) {
         mwexecf('/usr/local/sbin/syslog-ng-ctl reload');
     } else {
-        mwexecf('/usr/sbin/service syslog-ng restart');
+        mwexecf('/usr/local/etc/rc.d/syslog-ng restart');
     }
 
     file_put_contents('/var/run/syslog-ng.version', $this_version);
 
     service_log("done.\n", $verbose);
-}
-
-function system_syslog_stop()
-{
-    mwexecf('/usr/sbin/service syslog-ng stop');
 }
 
 function system_syslog_reset($verbose = false)
