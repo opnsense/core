@@ -67,6 +67,12 @@ class BaseBlocklistHandler:
         """
         pass
 
+    def get_excludelist(self):
+        """
+        Overridden by derived classes to produce a formatted exludelist. Returns a set of domains
+        """
+        return set()
+
     def _blocklist_reader(self, uri):
         """
         Used by a derived class to define a caching and/or download routine.
@@ -196,10 +202,13 @@ class BlocklistParser:
     def update_blocklist(self):
         blocklists = {}
         merged = {}
+        excludelist = set()
         for handler in self.handlers:
             blocklists[handler.priority] = handler.get_blocklist()
+            excludelist.update(handler.get_excludelist())
 
         merged['data'] = self._merge_results(blocklists)
+        merged['whitelist'] = list(excludelist)
         merged['config'] = self._get_config()
 
         # check if there are wildcards in the dataset

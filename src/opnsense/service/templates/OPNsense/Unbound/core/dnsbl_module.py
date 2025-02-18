@@ -327,6 +327,9 @@ class DNSBL:
         sub = domain
         match = None
         while match is None:
+            if "whitelist" in self.dnsbl:
+                if sub in self.dnsbl['whitelist']:
+                    break
             if sub in self.dnsbl['data']:
                 policy = self.dnsbl['data'][sub]
                 is_full_domain = sub == domain

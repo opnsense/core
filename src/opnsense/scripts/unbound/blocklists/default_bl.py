@@ -37,7 +37,7 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
     def __init__(self):
         super().__init__('/usr/local/etc/unbound/unbound-blocklists.conf')
         self.priority = 100
-        self._whitelist_pattern = self._get_excludes()
+        self._whitelist_pattern, self._exclude_list = self._get_excludes()
 
     def get_config(self):
         cfg = {}
@@ -92,6 +92,12 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
 
         return result
 
+    def get_excludelist(self):
+        """
+        Overridden by derived classes to produce a formatted exludelist. Returns a set of domains
+        """
+        return self._exclude_list
+
     def _blocklists_in_config(self):
         """
         Generator for derived classes to iterate over configured blocklists.
@@ -143,8 +149,8 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
 
     def _get_excludes(self):
         whitelist_pattern = re.compile('$^') # match nothing
+        exclude_list = set()
         if self.cnf.has_section('exclude'):
-            exclude_list = set()
             for exclude_item in self.cnf['exclude']:
                 pattern = self.cnf['exclude'][exclude_item]
                 try:
@@ -163,4 +169,4 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
             whitelist_pattern = re.compile(wp, re.IGNORECASE)
             syslog.syslog(syslog.LOG_NOTICE, 'blocklist download : exclude domains matching %s' % wp)
 
-        return whitelist_pattern
+        return whitelist_pattern, exclude_list
