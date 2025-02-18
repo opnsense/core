@@ -173,7 +173,13 @@ abstract class BaseListField extends BaseField
     {
         $values = [];
 
-        foreach ($this->getNodeData() as $key => $node) {
+        $data = $this->getNodeData();
+        if (!is_array($data)) {
+            /* XXX e.g. PortField returning a string; do not normalize */
+            return;
+        }
+
+        foreach ($data as $key => $node) {
             if ($node['selected']) {
                 $values[] = $key;
             }
