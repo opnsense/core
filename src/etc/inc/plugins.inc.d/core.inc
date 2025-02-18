@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2018-2022 Deciso B.V.
+ * Copyright (C) 2018-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -108,16 +108,18 @@ function core_services()
         'name' => 'cron',
     );
 
-    $services[] = array(
+    $services[] = [
         'description' => gettext('Syslog-ng Daemon'),
-        'php' => array(
-            'stop' => array('system_syslog_stop'),
-            'start' => array('system_syslog_start'),
-            'restart' => array('system_syslog_start')
-        ),
+        'php' => [
+            'start' => ['system_syslog_start'],
+            'restart' => ['system_syslog_start'],
+        ],
+        'configd' => [
+            'stop' => ['syslog stop'],
+        ],
         'pidfile' => '/var/run/syslog-ng.pid',
         'name' => 'syslog-ng',
-    );
+    ];
 
     return $services;
 }
