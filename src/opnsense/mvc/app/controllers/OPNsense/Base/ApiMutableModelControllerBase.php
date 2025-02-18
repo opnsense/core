@@ -615,10 +615,12 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @param string $payload csv data to import
      * @param array $keyfields fieldnames to use as key
      * @param function $data_callback inline data modification, used to match parsed csv data
+     * @param function $node_callback to be called when the array node has been setup
      * @return array exceptions
      */
-    protected function importCsv($path, $payload, $keyfields = [], $data_callback = null)
+    protected function importCsv($path, $payload, $keyfields = [], $data_callback = null,  $node_callback = null)
     {
+        Config::getInstance()->lock();
         /* parse csv data to array structure */
         $data = [];
         $stream = fopen('php://temp', 'rw+');
@@ -652,7 +654,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 is_a($node, "OPNsense\\Base\\FieldTypes\\ArrayField") ||
                 is_subclass_of($node, "OPNsense\\Base\\FieldTypes\\ArrayField")
             ) {
-                $result = $node->importRecordSet($data, $keyfields, $data_callback);
+                $result = $node->importRecordSet($data, $keyfields, $data_callback, $node_callback);
                 $valmsgfields = [];
                 foreach ($this->getModel()->performValidation() as $msg) {
                     if (str_starts_with($msg->getField(), $path) && !in_array($msg->getField(), $valmsgfields)) {
