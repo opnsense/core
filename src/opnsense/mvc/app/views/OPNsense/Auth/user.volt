@@ -158,6 +158,16 @@
             }
         });
 
+        $("#download_users").click(function(e){
+            e.preventDefault();
+            window.open("/api/auth/user/download");
+        });
+        $("#upload_users").SimpleFileUploadDlg({
+            onAction: function(){
+                grid_user.bootgrid('reload');
+            }
+        });
+
         $('.datepicker').datepicker({format: 'mm/dd/yyyy'});
         /* format  authorizedkeys */
         $("#user\\.authorizedkeys").css('max-width', 'inherit').prop('wrap', 'off');
@@ -207,6 +217,16 @@
                     <td>
                         <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
                         <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
+                        <button
+                            id="upload_users"
+                            type="button"
+                            data-title="{{ lang._('Import Users') }}"
+                            data-endpoint='/api/auth/user/upload'
+                            title="{{ lang._('Import csv') }}"
+                            data-toggle="tooltip"
+                            class="btn btn-xs"
+                        ><span class="fa fa-fw fa-upload"></span></button>
+                        <button id="download_users" type="button" title="{{ lang._('Export as csv') }}" data-toggle="tooltip"  class="btn btn-xs"><span class="fa fa-fw fa-table"></span></button>
                     </td>
                 </tr>
             </tfoot>
