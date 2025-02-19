@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2018 Deciso B.V.
+ *    Copyright (C) 2018-2025 Deciso B.V.
  *
  *    All rights reserved.
  *

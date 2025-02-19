@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2020 Deciso B.V.
+ *    Copyright (C) 2020-2025 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -30,11 +30,11 @@
 
 namespace OPNsense\Firewall\FieldTypes;
 
+use ReflectionClass;
+use ReflectionException;
 use OPNsense\Base\FieldTypes\ArrayField;
-use OPNsense\Base\FieldTypes\TextField;
-use OPNsense\Base\FieldTypes\IntegerField;
 use OPNsense\Core\Backend;
-use OPNsense\Core\Config;
+
 
 class AliasField extends ArrayField
 {
@@ -51,28 +51,33 @@ class AliasField extends ArrayField
     protected static function getStaticChildren()
     {
         $result = [];
-        foreach (glob(__DIR__ . "/../static_aliases/*.json") as $filename) {
-            $payload = json_decode(file_get_contents($filename), true);
-            if (is_array($payload)) {
-                foreach ($payload as $aliasname => $content) {
-                    $result[$aliasname] = $content;
+        foreach (glob(__DIR__ . "/../DynamicAliases/*.php") as $filename) {
+            $origin = explode('.', basename($filename))[0];
+            $classname = 'OPNsense\\Firewall\\DynamicAliases\\' . $origin;
+            try {
+                $obj = (new ReflectionClass($classname))->newInstance();
+                $payload = $obj->collect();
+                if (is_array($payload)) {
+                    foreach ($payload as $aliasname => $content) {
+                        /* XXX: will overwrite when exists */
+                        $result[$aliasname] = $content;
+                    }
                 }
+            } catch (\Error | \Exception | ReflectionException $e) {
+                syslog(LOG_ERR, sprintf(
+                    "Invalid DynamicAliases object %s in %s (%s)",
+                    $classname,
+                    realpath($filename),
+                    $e->getMessage()
+                ));
             }
-        }
-        foreach (Config::getInstance()->object()->interfaces->children() as $k => $n) {
-            $table_name = sprintf("__%s_network", $k);
-            $table_desc = !empty((string)$n->descr) ? (string)$n->descr : $k;
-            $result[$table_name] = [
-                "enabled" => "1",
-                "name" => $table_name,
-                "type" => "internal",
-                "description" => sprintf("%s %s", $table_desc, gettext("net")),
-                "content" => ""
-            ];
         }
         return $result;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function actionPostLoadingEvent()
     {
         parent::actionPostLoadingEvent();
