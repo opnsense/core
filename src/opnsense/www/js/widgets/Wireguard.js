@@ -80,9 +80,7 @@ export default class Wireguard extends BaseTableWidget {
         let tunnels = newTunnels
             .filter(row => row.type == 'peer')
             .map(row => ({
-                ifname: row.ifname
-                    ? row.if + ' (' + row.ifname + ')'
-                    : row.if,
+                if: row.if,
 
                 name: row.name,
                 allowed_ips: row['allowed-ips'] || this.translations.notavailable,
@@ -147,15 +145,15 @@ export default class Wireguard extends BaseTableWidget {
                             data-toggle="tooltip" title="${tunnel.statusTooltip}">
                         </i>
                         &nbsp;
-                        <span><b>${tunnel.ifname}</b></span>
+                        <a href="/ui/wireguard/general#peers&search=${encodeURIComponent(tunnel.name)}" target="_blank" rel="noopener noreferrer">
+                            ${tunnel.if} | ${tunnel.name}
+                        </a>
                     </div>
                 </div>`;
             let row = `
                 <div>
                     <span>
-                        <a href="/ui/wireguard/general#peers&search=${encodeURIComponent(tunnel.name)}" target="_blank" rel="noopener noreferrer">
-                            ${tunnel.name}
-                        </a> | ${tunnel.allowed_ips}
+                        ${tunnel.allowed_ips}
                     </span>
                 </div>
                 <div>
