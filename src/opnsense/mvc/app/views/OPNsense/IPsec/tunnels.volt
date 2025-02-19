@@ -228,6 +228,14 @@
 </style>
 
 
+<div class="alert alert-warning" role="alert">
+    <strong>
+        <?php $eol_this_month = explode('.', shell_exec('opnsense-version -nv') ?? '')[1] ?? '1';?>
+        <?=sprintf(
+            gettext("This component is reaching the end of the line, official maintenance will end as of version %s"),
+            in_array($eol_this_month, ['1', '7']) ? '26.1' : '26.4');?>
+    </strong>
+</div>
 <div class="alert alert-info alert-dismissible hidden" role="alert" id="responseMsg"></div>
 <div class="alert alert-info hidden" role="alert" id="dirtySubsystemMsg">
     <button class="btn btn-primary pull-right" type="button" id="applyLegacyConfig">
