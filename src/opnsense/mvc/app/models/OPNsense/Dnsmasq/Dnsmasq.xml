@@ -1,6 +1,6 @@
 <model>
     <mount>/dnsmasq</mount>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <items>
         <enable type="BooleanField"/>
         <regdhcp type="BooleanField"/>
@@ -19,7 +19,10 @@
         <interface type="InterfaceField">
             <Multiple>Y</Multiple>
         </interface>
-        <port type="PortField"/>
+        <port type="IntegerField">
+            <MinimumValue>0</MinimumValue>
+            <MaximumValue>65535</MaximumValue>
+        </port>
         <dns_forward_max type="IntegerField">
             <MinimumValue>0</MinimumValue>
         </dns_forward_max>
@@ -29,14 +32,28 @@
         <local_ttl type="IntegerField">
             <MinimumValue>0</MinimumValue>
         </local_ttl>
+        <no_dhcp_interface type="InterfaceField">
+            <Multiple>Y</Multiple>
+        </no_dhcp_interface>
+        <dhcp_fqdn type="BooleanField"/>
+        <dhcp_lease_max type="IntegerField">
+            <MinimumValue>0</MinimumValue>
+        </dhcp_lease_max>
+        <dhcp_authoritative type="BooleanField"/>
+        <dhcp_default_fw_rules type="BooleanField">
+            <Required>Y</Required>
+            <Default>1</Default>
+        </dhcp_default_fw_rules>
+        <no_ident type="BooleanField">
+            <Required>Y</Required>
+            <Default>1</Default>
+        </no_ident>
         <hosts type="ArrayField">
             <host type="HostnameField">
                 <IsDNSName>Y</IsDNSName>
                 <IpAllowed>N</IpAllowed>
-                <Required>Y</Required>
             </host>
             <domain type="TextField">
-                <Required>Y</Required>
                 <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
                 <ValidationMessage>A valid domain must be specified.</ValidationMessage>
             </domain>
@@ -44,6 +61,16 @@
                 <Required>Y</Required>
                 <NetMaskAllowed>N</NetMaskAllowed>
             </ip>
+            <hwaddr type="MacAddressField"/>
+            <set_tag type="ModelRelationField">
+                <Model>
+                    <tag>
+                        <source>OPNsense.Dnsmasq.Dnsmasq</source>
+                        <items>dhcp_tags</items>
+                        <display>tag</display>
+                    </tag>
+                </Model>
+            </set_tag>
             <descr type="TextField"/>
             <comments type="TextField"/>
             <!-- Intentionally last, AliasesField back references other fields (which should already be there) -->
@@ -70,5 +97,105 @@
             </ip>
             <descr type="TextField"/>
         </domainoverrides>
+        <dhcp_tags type="ArrayField">
+            <tag type="TextField">
+                <Mask>/^([0-9a-zA-Z$]){1,1024}$/u</Mask>
+                <Constraints>
+                    <check001>
+                        <type>UniqueConstraint</type>
+                        <ValidationMessage>Tag names should be unique.</ValidationMessage>
+                    </check001>
+                </Constraints>
+                <Required>Y</Required>
+            </tag>
+        </dhcp_tags>
+        <dhcp_ranges type="ArrayField">
+            <interface type="InterfaceField">
+                <BlankDesc>Any</BlankDesc>
+                <Filters>
+                    <if>/^(?!lo0$).*/</if>
+                </Filters>
+                <AllowDynamic>Y</AllowDynamic>
+            </interface>
+            <set_tag type="ModelRelationField">
+                <Model>
+                    <tag>
+                        <source>OPNsense.Dnsmasq.Dnsmasq</source>
+                        <items>dhcp_tags</items>
+                        <display>tag</display>
+                    </tag>
+                </Model>
+            </set_tag>
+            <start_addr type="NetworkField">
+                <NetMaskAllowed>N</NetMaskAllowed>
+                <AddressFamily>ipv4</AddressFamily>
+                <Required>Y</Required>
+            </start_addr>
+            <end_addr type="NetworkField">
+                <NetMaskAllowed>N</NetMaskAllowed>
+                <AddressFamily>ipv4</AddressFamily>
+            </end_addr>
+            <static type="BooleanField"/>
+            <lease_time type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+            </lease_time>
+            <domain type="HostnameField">
+                <IsDNSName>Y</IsDNSName>
+                <IpAllowed>N</IpAllowed>
+            </domain>
+            <description type="DescriptionField"/>
+        </dhcp_ranges>
+        <dhcp_options type="ArrayField">
+            <option type="JsonKeyValueStoreField">
+                <ConfigdPopulateAct>dnsmasq list dhcp_options</ConfigdPopulateAct>
+                <Required>Y</Required>
+            </option>
+            <tag type="ModelRelationField">
+                <Model>
+                    <tag>
+                        <source>OPNsense.Dnsmasq.Dnsmasq</source>
+                        <items>dhcp_tags</items>
+                        <display>tag</display>
+                    </tag>
+                </Model>
+                <Multiple>Y</Multiple>
+            </tag>
+            <value type="TextField"/>
+            <force type="BooleanField"/>
+            <description type="DescriptionField"/>
+        </dhcp_options>
+        <dhcp_options_match type="ArrayField">
+            <option type="JsonKeyValueStoreField">
+                <ConfigdPopulateAct>dnsmasq list dhcp_options</ConfigdPopulateAct>
+                <Required>Y</Required>
+            </option>
+            <set_tag type="ModelRelationField">
+                <Model>
+                    <tag>
+                        <source>OPNsense.Dnsmasq.Dnsmasq</source>
+                        <items>dhcp_tags</items>
+                        <display>tag</display>
+                    </tag>
+                </Model>
+                <Required>Y</Required>
+            </set_tag>
+            <value type="TextField"/>
+            <description type="DescriptionField"/>
+        </dhcp_options_match>
+        <dhcp_boot type="ArrayField">
+            <tag type="ModelRelationField">
+                <Model>
+                    <tag>
+                        <source>OPNsense.Dnsmasq.Dnsmasq</source>
+                        <items>dhcp_tags</items>
+                        <display>tag</display>
+                    </tag>
+                </Model>
+            </tag>
+            <filename type="TextField"/>
+            <servername type="TextField"/>
+            <address type="TextField"/>
+            <description type="DescriptionField"/>
+        </dhcp_boot>
     </items>
 </model>

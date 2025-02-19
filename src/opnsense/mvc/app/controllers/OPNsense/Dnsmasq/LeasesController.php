@@ -26,18 +26,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Dnsmasq\Api;
+namespace OPNsense\Dnsmasq;
 
-use OPNsense\Base\ApiMutableServiceControllerBase;
-
-/**
- * Class ServiceController
- * @package OPNsense\Dnsmasq
- */
-class ServiceController extends ApiMutableServiceControllerBase
+class LeasesController extends \OPNsense\Base\IndexController
 {
-    protected static $internalServiceClass = '\OPNsense\Dnsmasq\Dnsmasq';
-    protected static $internalServiceTemplate = 'OPNsense/Dnsmasq';
-    protected static $internalServiceEnabled = 'enable';
-    protected static $internalServiceName = 'dnsmasq';
+    /**
+     * {@inheritdoc}
+     */
+    protected function templateJSIncludes()
+    {
+        return array_merge(parent::templateJSIncludes(), [
+            '/ui/js/moment-with-locales.min.js'
+        ]);
+    }
+
+    public function indexAction()
+    {
+        $this->view->pick('OPNsense/Dnsmasq/leases');
+    }
 }
