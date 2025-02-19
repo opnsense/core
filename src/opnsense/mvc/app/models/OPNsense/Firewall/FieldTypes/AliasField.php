@@ -35,7 +35,6 @@ use ReflectionException;
 use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Core\Backend;
 
-
 class AliasField extends ArrayField
 {
     private static $current_stats = null;

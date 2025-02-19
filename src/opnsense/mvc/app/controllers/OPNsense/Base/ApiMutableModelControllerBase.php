@@ -618,7 +618,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @param function $node_callback to be called when the array node has been setup
      * @return array exceptions
      */
-    protected function importCsv($path, $payload, $keyfields = [], $data_callback = null,  $node_callback = null)
+    protected function importCsv($path, $payload, $keyfields = [], $data_callback = null, $node_callback = null)
     {
         Config::getInstance()->lock();
         /* parse csv data to array structure */

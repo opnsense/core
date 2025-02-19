@@ -304,7 +304,7 @@ class ArrayField extends BaseField
      * @param function $node_callback inline action to call after array node has been setup
      * @return array exceptions
      */
-    public function importRecordSet($records, $keyfields = [], $data_callback = null,  $node_callback = null)
+    public function importRecordSet($records, $keyfields = [], $data_callback = null, $node_callback = null)
     {
         $results = ['validations' => [], 'inserted' => 0, 'updated' => 0, 'uuids' => []];
         $records = is_array($records) ? $records : [];

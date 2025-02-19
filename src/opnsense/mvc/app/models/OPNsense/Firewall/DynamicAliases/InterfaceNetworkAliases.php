@@ -32,7 +32,6 @@ namespace OPNsense\Firewall\DynamicAliases;
 
 use OPNsense\Core\Config;
 
-
 class InterfaceNetworkAliases
 {
     public function collect()
