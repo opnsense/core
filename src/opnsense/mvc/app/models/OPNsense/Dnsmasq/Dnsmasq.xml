@@ -20,6 +20,7 @@
             <Multiple>Y</Multiple>
         </interface>
         <port type="PortField"/>
+        <dns_port type="IntegerField" volatile="true"/>
         <dns_forward_max type="IntegerField">
             <MinimumValue>0</MinimumValue>
         </dns_forward_max>
