@@ -33,6 +33,7 @@
         <id>dnsmasq.port</id>
         <label>Listen Port</label>
         <type>text</type>
+        <hint>53</hint>
         <help>The port used for responding to DNS queries. It should normally be left blank unless another service needs to bind to TCP/UDP port 53. Setting this to zero (0) completely disables DNS function</help>
     </field>
     <field>
