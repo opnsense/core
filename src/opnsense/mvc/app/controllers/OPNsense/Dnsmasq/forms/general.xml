@@ -6,13 +6,6 @@
         <help>Enable Dnsmasq.</help>
     </field>
     <field>
-        <id>dnsmasq.port</id>
-        <label>Listen Port</label>
-        <type>text</type>
-        <hint>53</hint>
-        <help>The port used for responding to DNS queries. It should normally be left blank unless another service needs to bind to TCP/UDP port 53.</help>
-    </field>
-    <field>
         <id>dnsmasq.interface</id>
         <label>Interface</label>
         <type>select_multiple</type>
@@ -26,6 +19,13 @@
         <label>Strict Interface Binding</label>
         <type>checkbox</type>
         <help>If this option is set, Dnsmasq will only bind to the interfaces containing the IP addresses selected above, rather than binding to all interfaces and discarding queries to other addresses. This option does not work with IPv6. If set, Dnsmasq will not bind to IPv6 addresses.</help>
+    </field>
+    <field>
+        <id>dnsmasq.port</id>
+        <label>Listen Port</label>
+        <type>text</type>
+        <hint>53</hint>
+        <help>The port used for responding to DNS queries. It should normally be left blank unless another service needs to bind to TCP/UDP port 53.</help>
     </field>
     <field>
         <id>dnsmasq.dnssec</id>
