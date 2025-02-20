@@ -33,7 +33,7 @@ import sys
 import ujson
 from lib.db import DB
 from lib.arp import ARP
-from lib.ipfw import IPFW
+from lib.pf import PF
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-username', help='username', type=str, required=True)
@@ -50,6 +50,6 @@ response = DB().add_client(
     ip_address=args.ip_address,
     mac_address=arp_entry['mac'] if arp_entry is not None else None
 )
-IPFW().add_to_table(table_number=args.zoneid, address=args.ip_address)
+PF.add_to_table(zoneid=args.zoneid, address=args.ip_address)
 response['clientState'] = 'AUTHORIZED'
 print(ujson.dumps(response))
