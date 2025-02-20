@@ -37,11 +37,21 @@ use OPNsense\Base\Messages\Message;
  */
 class Dnsmasq extends BaseModel
 {
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function init()
+    {
+        $this->dns_port = !empty((string)$this->port) ? (string)$this->port : '53'; /* port defaults */
+    }
+
     /**
      * {@inheritdoc}
      */
     public function performValidation($validateFullModel = false)
     {
+        $this->dns_port = !empty((string)$this->port) ? (string)$this->port : '53'; /* port defaults */
         $messages = parent::performValidation($validateFullModel);
         foreach ($this->hosts->iterateItems() as $host) {
             if (!$validateFullModel && !$host->isFieldChanged()) {

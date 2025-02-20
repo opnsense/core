@@ -23,6 +23,7 @@
             <MinimumValue>0</MinimumValue>
             <MaximumValue>65535</MaximumValue>
         </port>
+        <dns_port type="IntegerField" volatile="true"/>
         <dns_forward_max type="IntegerField">
             <MinimumValue>0</MinimumValue>
         </dns_forward_max>
