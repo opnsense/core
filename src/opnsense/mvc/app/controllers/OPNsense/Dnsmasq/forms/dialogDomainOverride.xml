@@ -19,7 +19,7 @@
     </field>
     <field>
         <id>domainoverride.srcip</id>
-        <label>Domain</label>
+        <label>Source IP</label>
         <type>text</type>
         <help>Source IP address for queries to the DNS server for the override domain. Best to leave empty</help>
     </field>
