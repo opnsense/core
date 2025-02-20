@@ -47,17 +47,19 @@ function dnsmasq_configure()
 
 function dnsmasq_services()
 {
-    global $config;
-
     $services = [];
 
     if (!dnsmasq_enabled() && !isvalidpid('/var/run/dnsmasq.pid')) {
         return $services;
     }
 
+    $mdl = new \OPNsense\Dnsmasq\Dnsmasq();
+
     $pconfig = [];
     $pconfig['name'] = 'dnsmasq';
-    $pconfig['dns_ports'] = [$config['dnsmasq']['port'] ?? '53'];
+    if (!empty((string)$mdl->dns_port)) {
+        $pconfig['dns_ports'] = [ (string)$mdl->dns_port ];
+    }
     $pconfig['description'] = gettext('Dnsmasq DNS');
     $pconfig['php']['restart'] = ['dnsmasq_configure_do'];
     $pconfig['php']['start'] = ['dnsmasq_configure_do'];

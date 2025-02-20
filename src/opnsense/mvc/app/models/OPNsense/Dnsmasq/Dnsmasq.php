@@ -30,6 +30,7 @@ namespace OPNsense\Dnsmasq;
 
 use OPNsense\Base\BaseModel;
 use OPNsense\Base\Messages\Message;
+use OPNsense\Core\Backend;
 
 /**
  * Class Dnsmasq
@@ -37,13 +38,12 @@ use OPNsense\Base\Messages\Message;
  */
 class Dnsmasq extends BaseModel
 {
-
     /**
      * {@inheritdoc}
      */
     protected function init()
     {
-        $this->dns_port = !empty((string)$this->port) ? (string)$this->port : '53'; /* port defaults */
+        $this->dns_port = strlen($this->port) ? (string)$this->port : '53'; /* port defaults */
     }
 
     /**
@@ -51,8 +51,10 @@ class Dnsmasq extends BaseModel
      */
     public function performValidation($validateFullModel = false)
     {
-        $this->dns_port = !empty((string)$this->port) ? (string)$this->port : '53'; /* port defaults */
+        $this->dns_port = strlen($this->port) ? (string)$this->port : '53'; /* port defaults */
+
         $messages = parent::performValidation($validateFullModel);
+
         foreach ($this->hosts->iterateItems() as $host) {
             if (!$validateFullModel && !$host->isFieldChanged()) {
                 continue;
@@ -92,6 +94,28 @@ class Dnsmasq extends BaseModel
             }
         }
 
+        if (
+            ($validateFullModel || $this->enable->isFieldChanged() || $this->port->isFieldChanged()) &&
+            !empty((string)$this->enable)
+        ) {
+            foreach (json_decode((new Backend())->configdpRun('service list'), true) as $service) {
+                if (empty($service['dns_ports'])) {
+                    continue;
+                }
+                if (!is_array($service['dns_ports'])) {
+                    syslog(LOG_ERR, sprintf('Service %s (%s) reported a faulty "dns_ports" entry.', $service['description'], $service['name']));
+                    continue;
+                }
+                if ($service['name'] != 'dnsmasq' && in_array((string)$this->dns_port, $service['dns_ports'])) {
+                    $messages->appendMessage(new Message(
+                        sprintf(gettext('%s is currently using this port.'), $service['description']),
+                        $this->port->getInternalXMLTagName()
+                    ));
+                    break;
+                }
+            }
+        }
+
         return $messages;
     }
 
@@ -104,7 +128,7 @@ class Dnsmasq extends BaseModel
                 $exclude[] = $item;
             }
             foreach (explode(',', $this->interface) as $item) {
-                if (!empty($item) && !in_array($item, $exclude)){
+                if (!empty($item) && !in_array($item, $exclude)) {
                     $result[] = $item;
                 }
             }
