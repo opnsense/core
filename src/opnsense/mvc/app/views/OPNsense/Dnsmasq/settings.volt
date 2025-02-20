@@ -182,22 +182,7 @@
     </div>
 </div>
 
-<section class="page-content-main">
-    <div class="content-box">
-        <div class="col-md-12">
-            <br/>
-            <button class="btn btn-primary" id="reconfigureAct"
-                    data-endpoint='/api/dnsmasq/service/reconfigure'
-                    data-label="{{ lang._('Apply') }}"
-                    data-error-title="{{ lang._('Error reconfiguring Dnsmasq') }}"
-                    type="button"
-            ></button>
-            <br/><br/>
-        </div>
-    </div>
-</section>
-
-
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/dnsmasq/service/reconfigure'}) }}
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditHostOverride,'id':formGridHostOverride['edit_dialog_id'],'label':lang._('Edit Host Override')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditDomainOverride,'id':formGridDomainOverride['edit_dialog_id'],'label':lang._('Edit Domain Override')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditDHCPtag,'id':formGridDHCPtag['edit_dialog_id'],'label':lang._('Edit DHCP tag')])}}
