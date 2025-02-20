@@ -217,8 +217,26 @@ class Plugin
     public function registerAnchor($name, $type = "fw", $priority = 0, $placement = "tail", $quick = false)
     {
         $anchorKey = sprintf("%s.%s.%08d.%08d", $type, $placement, $priority, count($this->anchors));
-        $this->anchors[$anchorKey] = array('name' => $name, 'quick' => $quick);
+        $this->anchors[$anchorKey] = ['name' => $name, 'quick' => $quick];
         ksort($this->anchors);
+    }
+
+    /**
+     * register nested anchor
+     * @param string $parentName parent anchor name
+     * @param string $name sub-anchor name
+     * @param bool $quick
+     * @return null
+     */
+    public function registerNestedAnchor($parentName, $name, $quick = false)
+    {
+        foreach ($this->anchors as &$anchor) {
+            if ($anchor['name'] == $parentName) {
+                $anchor['subanchors'][] = ['name' => $name, 'quick' => $quick];
+                ksort($anchor['subanchors']);
+                break;
+            }
+        }
     }
 
     /**
@@ -238,7 +256,19 @@ class Plugin
                     if ($anchor['quick']) {
                         $result .= " quick";
                     }
-                    $result .= "\n";
+                    if (!empty($anchor['subanchors'])) {
+                        $result .= " {\n";
+                        foreach ($anchor['subanchors'] as $subanchor) {
+                            $result .= "    anchor \"{$subanchor['name']}\"";
+                            if ($subanchor['quick']) {
+                                $result .= " quick";
+                            }
+                            $result .= "\n";
+                        }
+                        $result .= "}\n";
+                    } else {
+                        $result .= "\n";
+                    }
                 }
             }
         }

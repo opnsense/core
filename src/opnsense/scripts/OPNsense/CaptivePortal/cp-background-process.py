@@ -34,11 +34,12 @@ import syslog
 import traceback
 import subprocess
 import sqlite3
+import hashlib
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from lib import Config
 from lib.db import DB
 from lib.arp import ARP
-from lib.ipfw import IPFW
+from lib.pf import PF
 from lib.daemonize import Daemonize
 from sqlite3_helper import check_and_repair
 
@@ -50,17 +51,56 @@ class CPBackgroundProcess(object):
         # open syslog and notice startup
         syslog.openlog('captiveportal', facility=syslog.LOG_LOCAL4)
         syslog.syslog(syslog.LOG_NOTICE, 'starting captiveportal background process')
-        # handles to ipfw, arp the config and the internal administration
-        self.ipfw = IPFW()
+        # handles to pf, arp, the config and the internal administration
         self.arp = ARP()
         self.cnf = Config()
         self.db = DB()
         self._conf_zone_info = self.cnf.get_zones()
+        self._accounting = dict()
+
 
     def list_zone_ids(self):
         """ return zone numbers
         """
         return self._conf_zone_info.keys()
+
+    def get_accounting(self):
+        for zoneid in self.list_zone_ids():
+            pf_stats = PF.list_accounting_info(zoneid)
+            current_clients = self.db.list_clients(zoneid)
+            for client in current_clients:
+                ip = client['ipAddress']
+                if ip not in pf_stats:
+                    if ip in self._accounting:
+                        # client removed from table, delete accounting as well
+                        del self._accounting[ip]
+                    continue
+
+                values = " ".join(map(str, [pf_stats[ip]['in_pkts'], pf_stats[ip]['in_bytes'],
+                                pf_stats[ip]['out_pkts'], pf_stats[ip]['out_bytes']]))
+                cur_hash = hashlib.md5(values.encode()).hexdigest()
+
+                if ip not in self._accounting:
+                    # initial accounting update if client is not known in memory
+                    self._accounting[ip] = {
+                        'last_accessed': client['last_accessed'],
+                        'last_accessed_hash': cur_hash,
+                        'in_pkts': 0,
+                        'in_bytes': 0,
+                        'out_pkts': 0,
+                        'out_bytes': 0
+                    }
+
+                    # merge counters as they are known in pf, last_accessed is
+                    # determined on next update to save us the work of querying the db stats
+                else:
+                    if cur_hash != self._accounting[ip]['last_accessed_hash']:
+                        self._accounting[ip]['last_accessed_hash'] = cur_hash
+                        self._accounting[ip]['last_accessed'] = time.time()
+
+                self._accounting[ip] |= pf_stats[ip]
+
+        return self._accounting
 
     def initialize_fixed(self):
         """ initialize fixed ip / hosts per zone
@@ -94,12 +134,12 @@ class CPBackgroundProcess(object):
             for dbclient in self.db.list_clients(zoneid):
                 if dbclient['authenticated_via'] == '---ip---' \
                         and dbclient['ipAddress'] not in cpzones[zoneid]['allowedaddresses']:
-                        self.ipfw.delete(zoneid, dbclient['ipAddress'])
+                        PF.remove_from_table(zoneid, dbclient['ipAddress'])
                         self.db.del_client(zoneid, dbclient['sessionId'])
                 elif dbclient['authenticated_via'] == '---mac---' \
                         and dbclient['macAddress'] not in cpzones[zoneid]['allowedmacaddresses']:
                         if dbclient['ipAddress'] != '':
-                            self.ipfw.delete(zoneid, dbclient['ipAddress'])
+                            PF.remove_from_table(zoneid, dbclient['ipAddress'])
                         self.db.del_client(zoneid, dbclient['sessionId'])
 
     def sync_zone(self, zoneid):
@@ -109,8 +149,7 @@ class CPBackgroundProcess(object):
         if zoneid in self._conf_zone_info:
             # fetch data for this zone
             cpzone_info = self._conf_zone_info[zoneid]
-            registered_addresses = self.ipfw.list_table(zoneid)
-            registered_addr_accounting = self.ipfw.list_accounting_info()
+            registered_addresses = PF.list_table(zoneid)
             expected_clients = self.db.list_clients(zoneid)
             concurrent_users = self.db.find_concurrent_user_sessions(zoneid)
 
@@ -160,23 +199,23 @@ class CPBackgroundProcess(object):
                     if current_ip is not None and db_client['ipAddress'] != current_ip:
                         if db_client['ipAddress'] != '':
                             # remove old ip
-                            self.ipfw.delete(zoneid, db_client['ipAddress'])
+                            PF.remove_from_table(zoneid, db_client['ipAddress'])
                         self.db.update_client_ip(zoneid, db_client['sessionId'], current_ip)
-                        self.ipfw.add_to_table(zoneid, current_ip)
+                        PF.add_to_table(zoneid, current_ip)
 
                 # check session, if it should be active, validate its properties
                 if drop_session_reason is None:
-                    # registered client, but not active or missing accounting according to ipfw (after reboot)
-                    if cpnet not in registered_addresses or cpnet not in registered_addr_accounting:
-                        self.ipfw.add_to_table(zoneid, cpnet)
+                    # registered client, but not active or missing accounting according to pf (after reboot)
+                    if cpnet not in registered_addresses: #or cpnet not in registered_addr_accounting:
+                        PF.add_to_table(zoneid, cpnet)
                 else:
                     # remove session
                     syslog.syslog(syslog.LOG_NOTICE, drop_session_reason)
-                    self.ipfw.delete(zoneid, cpnet)
+                    PF.remove_from_table(zoneid, cpnet)
                     self.db.del_client(zoneid, db_client['sessionId'])
 
-            # if there are addresses/networks in the underlying ipfw table which are not in our administration,
-            # remove them from ipfw.
+            # if there are addresses/networks in the underlying pf table which are not in our administration,
+            # remove them from pf.
             for registered_address in registered_addresses:
                 address_active = False
                 for db_client in expected_clients:
@@ -184,12 +223,12 @@ class CPBackgroundProcess(object):
                         address_active = True
                         break
                 if not address_active:
-                    self.ipfw.delete(zoneid, registered_address)
+                    PF.remove_from_table(zoneid, registered_address)
 
 
 def main():
     """ Background process loop, runs as backend daemon for all zones. only one should be active at all times.
-        The main job of this procedure is to sync the administration with the actual situation in the ipfw firewall.
+        The main job of this procedure is to sync the administration with the actual situation in pf.
     """
     # perform integrity check and repair database if needed
     check_and_repair('/var/captiveportal/captiveportal.sqlite')
@@ -212,7 +251,7 @@ def main():
             bgprocess.arp.reload()
 
             # update accounting info, for all zones
-            bgprocess.db.update_accounting_info(bgprocess.ipfw.list_accounting_info())
+            bgprocess.db.update_accounting_info(bgprocess.get_accounting())
 
             # process sessions per zone
             for zoneid in bgprocess.list_zone_ids():
