@@ -1,0 +1,40 @@
+<model>
+    <mount>:memory:</mount>
+    <version>1.0.0</version>
+    <description>Initial setup wizard</description>
+    <items>
+        <hostname type="HostnameField">
+            <IsDNSName>N</IsDNSName>
+            <IpAllowed>N</IpAllowed>
+            <Required>Y</Required>
+        </hostname>
+        <domain type="HostnameField">
+            <IsDNSName>N</IsDNSName>
+            <IpAllowed>N</IpAllowed>
+            <Required>Y</Required>
+        </domain>
+        <language type="JsonKeyValueStoreField">
+            <ConfigdPopulateAct>system list locales</ConfigdPopulateAct>
+            <Required>Y</Required>
+        </language>
+        <dns_servers type="NetworkField">
+            <NetMaskAllowed>N</NetMaskAllowed>
+            <FieldSeparator>,</FieldSeparator>
+            <asList>Y</asList>
+        </dns_servers>
+        <dnsallowoverride type="BooleanField">
+            <Required>Y</Required>
+        </dnsallowoverride>
+        <unbound>
+            <enabled type="BooleanField">
+                <Required>Y</Required>
+            </enabled>
+            <dnssec type="BooleanField">
+                <Required>Y</Required>
+            </dnssec>
+            <dnssecstripped type="BooleanField">
+                <Required>Y</Required>
+            </dnssecstripped>
+        </unbound>
+    </items>
+</model>
