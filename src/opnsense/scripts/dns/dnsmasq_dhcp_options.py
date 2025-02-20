@@ -37,4 +37,3 @@ for line in sp.stdout.split("\n"):
         result[parts[0]] = "%s [%s]" % (parts[1], parts[0])
 
 print(json.dumps(result))
-
