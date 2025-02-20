@@ -41,10 +41,7 @@ class ClientOverwritesController extends ApiMutableModelControllerBase
 
     public function searchAction()
     {
-        return $this->searchBase(
-            'Overwrites.Overwrite',
-            ['description', 'common_name', 'enabled', 'tunnel_network', 'tunnel_networkv6']
-        );
+        return $this->searchBase('Overwrites.Overwrite');
     }
     public function getAction($uuid = null)
     {
