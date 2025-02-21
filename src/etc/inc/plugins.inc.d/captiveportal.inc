@@ -129,7 +129,7 @@ function captiveportal_firewall($fw)
                         'type' => 'block',
                         'interface' => $intf,
                         'direction' => 'in',
-                        'source' => ['not' => true, 'address' => "__captiveportal_zone_{$zoneid}"],
+                        'source' => ['not' => true, 'address' => "<__captiveportal_zone_{$zoneid}>"],
                         'to' => 'any',
                         'descr' => "Default Captive Portal block rule (zone {$zoneid})",
                         'log' => !isset($config['syslog']['nologdefaultblock']),
