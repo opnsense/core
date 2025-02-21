@@ -118,11 +118,11 @@
 
 {# Ensure all fields stay the same width relative to each other inside the modal #}
 <style>
-@media (max-width: 760px) {
-    .bootstrap-select:not(.bs-container),
-    .tokenize ul.tokens-container {
-         width: 100% !important;
-         min-width: 0 !important;
+  @media (max-width: 760px) {
+    .form-inline .bootstrap-select:not(.bs-container),
+    .form-inline .tokenize ul.tokens-container {
+      width: 100% !important;
+      min-width: 0 !important;
     }
-}
+  }
 </style>

@@ -146,8 +146,8 @@
 
 {# Ensure all fields stay the same width relative to each other inside the modal #}
 <style>
-  .bootstrap-select:not(.bs-container),
-  .tokenize ul.tokens-container {
-      width: 100% !important;
-  }
+    .modal-dialog .bootstrap-select:not(.bs-container),
+    .modal-dialog .tokenize ul.tokens-container {
+        width: 100% !important;
+    }
 </style>
