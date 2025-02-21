@@ -26,6 +26,11 @@
 
 <script>
     $(document).ready(function() {
+        // Add column for firewall rule icons
+        const $iconsColumn = $('<th data-column-id="icons" data-type="string"></th>');
+        $('#{{formGridFilterRule['table_id']}} thead tr th[data-column-id="sequence"]').after($iconsColumn);
+
+
         const grid = $("#{{formGridFilterRule['table_id']}}").UIBootgrid({
             search:'/api/firewall/filter/search_rule/',
             get:'/api/firewall/filter/get_rule/',
@@ -41,8 +46,32 @@
                         request['category'] = $('#category_filter').val();
                     }
                     return request;
-                }
+                },
+                formatters:{
+                    interfacenot: function(column, row) {
+                        if (row.interfacenot == true) {
+                            return "! " + row.interface;
+                        } else {
+                            return row.interface;
+                        }
+                    },
+                    source_not: function(column, row) {
+                        if (row.source_not == true) {
+                            return "! " + row.source_net;
+                        } else {
+                            return row.source_net;
+                        }
+                    },
+                    destination_not: function(column, row) {
+                        if (row.destination_not == true) {
+                            return "! " + row.destination_net;
+                        } else {
+                            return row.destination_net;
+                        }
+                    },
+                },
             }
+
         });
 
         // Reload categories before grid load

@@ -92,6 +92,7 @@
         <label>Interface / Invert</label>
         <type>checkbox</type>
         <help>Use all but selected interfaces</help>
+        <advanced>true</advanced>
         <grid_view>
             <ignore>true</ignore>
         </grid_view>
@@ -101,6 +102,7 @@
         <label>Interface</label>
         <type>select_multiple</type>
         <grid_view>
+            <formatter>interfacenot</formatter>
             <sequence>9</sequence>
         </grid_view>
     </field>
@@ -139,6 +141,7 @@
         <type>text</type>
         <style>net_selector net_selector_multi</style>
         <grid_view>
+            <formatter>source_not</formatter>
             <sequence>5</sequence>
         </grid_view>
     </field>
@@ -167,6 +170,7 @@
         <type>text</type>
         <style>net_selector net_selector_multi</style>
         <grid_view>
+            <formatter>destination_not</formatter>
             <sequence>7</sequence>
         </grid_view>
     </field>
