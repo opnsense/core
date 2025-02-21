@@ -18,6 +18,7 @@
 /usr/local/etc/inc/interfaces.lib.inc
 /usr/local/etc/inc/legacy_bindings.inc
 /usr/local/etc/inc/plugins.inc
+/usr/local/etc/inc/plugins.inc.d/captiveportal.inc
 /usr/local/etc/inc/plugins.inc.d/core.inc
 /usr/local/etc/inc/plugins.inc.d/dhcpd.inc
 /usr/local/etc/inc/plugins.inc.d/dhcrelay.inc
@@ -738,6 +739,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Alias.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Category.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Category.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/DynamicAliases/CaptivePortalAliases.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/DynamicAliases/InterfaceNetworkAliases.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/DynamicAliases/README.md
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/DynamicAliases/StaticAliases.php
@@ -1053,7 +1055,7 @@
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/htdocs_default/fonts/glyphicons-halflings-regular.ttf
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/htdocs_default/fonts/glyphicons-halflings-regular.woff
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/htdocs_default/fonts/glyphicons-halflings-regular.woff2
-/usr/local/opnsense/scripts/OPNsense/CaptivePortal/htdocs_default/images/default-logo.png
+/usr/local/opnsense/scripts/OPNsense/CaptivePortal/htdocs_default/images/default-logo.svg
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/htdocs_default/images/favicon.png
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/htdocs_default/index.html
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/htdocs_default/js/bootstrap.min.js
@@ -1062,7 +1064,7 @@
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/lib/arp.py
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/lib/daemonize.py
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/lib/db.py
-/usr/local/opnsense/scripts/OPNsense/CaptivePortal/lib/ipfw.py
+/usr/local/opnsense/scripts/OPNsense/CaptivePortal/lib/pf.py
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/listClients.py
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/overlay_template.py
 /usr/local/opnsense/scripts/OPNsense/CaptivePortal/process_accounting_messages.php

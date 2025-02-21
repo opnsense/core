@@ -266,8 +266,8 @@ class DB(object):
         return result
 
     def update_accounting_info(self, details):
-        """ update internal accounting database with given ipfw info (not per zone)
-        :param details: ipfw accounting details
+        """ update internal accounting database with given pf info (not per zone)
+        :param details: pf accounting details
         """
         if type(details) == dict:
             # query registered data
@@ -322,7 +322,7 @@ class DB(object):
                         record['last_accessed'] = details[record['ip_address']]['last_accessed']
                         if record['prev_packets_in'] <= details[record['ip_address']]['in_pkts'] and \
                            record['prev_packets_out'] <= details[record['ip_address']]['out_pkts']:
-                            # ipfw data is still valid, add difference to use
+                            # pf data is still valid, add difference to use
                             record['packets_in'] = (
                                 details[record['ip_address']]['in_pkts'] - record['prev_packets_in'])
                             record['packets_out'] = (
