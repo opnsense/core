@@ -28,12 +28,18 @@
                         <floating>Floating states</floating>
                     </OptionValues>
                 </state-policy>
-                <sequence type="IntegerField">
+                <sequence type="AutoNumberField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>99999</MaximumValue>
                     <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
                     <Required>Y</Required>
                     <Default>1</Default>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Sequence must be unique.</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                        </check001>
+                    </Constraints>
                 </sequence>
                 <action type="OptionField">
                     <Required>Y</Required>

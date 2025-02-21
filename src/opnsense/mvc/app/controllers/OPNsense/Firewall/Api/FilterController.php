@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2020 Deciso B.V.
+ * Copyright (C) 2020-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ class FilterController extends FilterBaseController
         $filter_funct = function ($record) use ($category) {
             return empty($category) || array_intersect(explode(',', $record->categories), $category);
         };
-        return $this->searchBase("rules.rule", ['enabled', 'sequence', 'action', 'description'], "sequence", $filter_funct);
+        return $this->searchBase("rules.rule", null, "sequence", $filter_funct);
     }
 
     public function setRuleAction($uuid)
