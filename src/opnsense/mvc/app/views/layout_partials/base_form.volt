@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2014-2015 Deciso B.V.
+ # Copyright (c) 2014-2025 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -52,11 +52,11 @@
 {% endfor %}
 <form id="{{base_form_id}}" class="form-inline" data-title="{{data_title|default('')}}">
   <div class="table-responsive">
-    <table class="table table-striped table-condensed">
+    <table class="table table-striped table-condensed" style="table-layout: fixed; width: 100%;">
         <colgroup>
-            <col class="col-md-3"/>
-            <col class="col-md-4"/>
-            <col class="col-md-5"/>
+            <col style="width: 25%;" />
+            <col style="width: 40%;" />
+            <col style="width: 35%;" />
         </colgroup>
         <tbody>
 {% if advanced|default(false) or help|default(false) %}
@@ -77,11 +77,11 @@
     </table>
   </div>
   <div class="table-responsive {{field['style']|default('')}}">
-    <table class="table table-striped table-condensed table-responsive">
+    <table class="table table-striped table-condensed" style="table-layout: fixed; width: 100%;">
         <colgroup>
-            <col class="col-md-3"/>
-            <col class="col-md-4"/>
-            <col class="col-md-5"/>
+            <col style="width: 25%;" />
+            <col style="width: 40%;" />
+            <col style="width: 35%;" />
         </colgroup>
         <thead style="cursor: pointer;" class="{{field['style']|default('')}}">
           <tr {% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
@@ -115,3 +115,14 @@
     </table>
   </div>
 </form>
+
+{# Ensure all fields stay the same width relative to each other inside the modal #}
+<style>
+  @media (max-width: 760px) {
+    .form-inline .bootstrap-select:not(.bs-container),
+    .form-inline .tokenize ul.tokens-container {
+      width: 100% !important;
+      min-width: 0 !important;
+    }
+  }
+</style>
