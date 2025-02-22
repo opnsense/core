@@ -9,6 +9,7 @@
             <type>boolean</type>
             <formatter>rowtoggle</formatter>
             <sequence>1</sequence>
+            <align>center</align>
             <sortable>false</sortable>
         </grid_view>
     </field>
@@ -18,9 +19,12 @@
         <type>text</type>
         <help>The order in which rules are being processed.</help>
         <grid_view>
-            <width>6em</width>
+            <width>4em</width>
             <sequence>2</sequence>
             <visible>false</visible>
+            <!-- The sequence order of firewall rules is absolute, no other field shall be sorted -->
+            <order>asc</order>
+            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -145,6 +149,15 @@
         </grid_view>
     </field>
     <field>
+        <id>rule.source_not</id>
+        <label>Source / Invert</label>
+        <type>checkbox</type>
+        <help>Use this option to invert the sense of the match.</help>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
         <id>rule.source_net</id>
         <label>Source</label>
         <type>text</type>
@@ -167,8 +180,8 @@
         </grid_view>
     </field>
     <field>
-        <id>rule.source_not</id>
-        <label>Source / Invert</label>
+        <id>rule.destination_not</id>
+        <label>Destination / Invert</label>
         <type>checkbox</type>
         <help>Use this option to invert the sense of the match.</help>
         <grid_view>
@@ -184,15 +197,6 @@
             <formatter>destination_not</formatter>
             <sequence>7</sequence>
             <sortable>false</sortable>
-        </grid_view>
-    </field>
-    <field>
-        <id>rule.destination_not</id>
-        <label>Destination / Invert</label>
-        <type>checkbox</type>
-        <help>Use this option to invert the sense of the match.</help>
-        <grid_view>
-            <ignore>true</ignore>
         </grid_view>
     </field>
     <field>

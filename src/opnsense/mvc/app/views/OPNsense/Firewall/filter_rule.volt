@@ -27,7 +27,7 @@
 <script>
     $(document).ready(function() {
         // Add column for firewall rule icons
-        $('#{{formGridFilterRule['table_id']}} thead tr th[data-column-id="enabled"]')
+        $('#{{formGridFilterRule['table_id']}} thead tr th[data-column-id="sequence"]')
         .after(
             '<th ' +
                 'data-column-id="icons" ' +
@@ -39,6 +39,21 @@
             '</th>'
         );
 
+        // Show errors in modal
+        function showDialogAlert(type, title, message) {
+            BootstrapDialog.show({
+                type: type,
+                title: title,
+                message: message,
+                buttons: [{
+                    label: '{{ lang._('Close') }}',
+                    action: function(dialogRef) {
+                        dialogRef.close();
+                    }
+                }]
+            });
+        }
+
         const grid = $("#{{formGridFilterRule['table_id']}}").UIBootgrid({
             search:'/api/firewall/filter/search_rule/',
             get:'/api/firewall/filter/get_rule/',
@@ -46,7 +61,7 @@
             add:'/api/firewall/filter/add_rule/',
             del:'/api/firewall/filter/del_rule/',
             toggle:'/api/firewall/filter/toggle_rule/',
-            options:{
+            options: {
                 triggerEditFor: getUrlHash('edit'),
                 initialSearchPhrase: getUrlHash('search'),
                 requestHandler: function(request){
@@ -128,12 +143,74 @@
                     },
 
                 },
-            }
+            },
+            commands: {
+                // Swap the sequence number of exactly two rules with one another
+                swap_sequence: {
+                    method: function(event) {
+                        // We want exactly one selected row
+                        const selected = $("#{{ formGridFilterRule['table_id'] }}").bootgrid("getSelectedRows");
+                        if (selected.length !== 1) {
+                            showDialogAlert(
+                                BootstrapDialog.TYPE_WARNING,
+                                "{{ lang._('Selection Error') }}",
+                                "{{ lang._('Please select exactly one other rule first.') }}"
+                            );
+                            return;
+                        }
 
+                        const currentUuid = $(this).data("row-id");
+                        const otherUuid = selected[0];
+
+                        // Make sure they are not the same rule
+                        if (currentUuid === otherUuid) {
+                            showDialogAlert(
+                                BootstrapDialog.TYPE_WARNING,
+                                "{{ lang._('Swap Error') }}",
+                                "{{ lang._('Cannot swap a rule with itself.') }}"
+                            );
+                            return;
+                        }
+
+                        ajaxCall(
+                            "/api/firewall/filter/swap_sequence/" + otherUuid + "/" + currentUuid,
+                            {},
+                            function(data, status) {
+                                if (data.status === "ok") {
+                                    std_bootgrid_reload("{{ formGridFilterRule['table_id'] }}");
+                                    // XXX: Success is implied by not emitting an error
+                                } else {
+                                    let msg = data.message || "{{ lang._('Error swapping sequence.') }}";
+                                    showDialogAlert(
+                                        BootstrapDialog.TYPE_WARNING,
+                                        "{{ lang._('Swap Error') }}",
+                                        msg
+                                    );
+                                }
+                            },
+                            function(xhr, textStatus, errorThrown) {
+                                showDialogAlert(
+                                    BootstrapDialog.TYPE_DANGER,
+                                    "{{ lang._('Request Failed') }}",
+                                    errorThrown
+                                );
+                            },
+                            'POST'
+                        );
+                    },
+                    classname: 'fa fa-fw fa-exchange',
+                    title: "{{ lang._('Swap Rule Sequence') }}",
+                    sequence: 10
+                }
+            }
         });
 
         $("#{{formGridFilterRule['table_id']}}").on('loaded.rs.jquery.bootgrid', function() {
                 $('[data-toggle="tooltip"]').tooltip();
+                // XXX: Replace these labels to save some space in the grid
+                $(this).find('th[data-column-id="sequence"] .text').text("{{ lang._('Seq') }}");
+                $(this).find('th[data-column-id="source_port"] .text').text("{{ lang._('Port') }}");
+                $(this).find('th[data-column-id="destination_port"] .text').text("{{ lang._('Port') }}");
         });
 
         // Reload categories before grid load
@@ -302,7 +379,7 @@
             </div>
         </div>
         <!-- tab page "rules" -->
-        {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule)}}
+        {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '10em'}) }}
     </div>
 </div>
 

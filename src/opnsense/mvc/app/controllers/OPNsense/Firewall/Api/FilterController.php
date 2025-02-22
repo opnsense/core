@@ -64,4 +64,35 @@ class FilterController extends FilterBaseController
     {
         return $this->toggleBase("rules.rule", $uuid, $enabled);
     }
+
+    /**
+     * Swap the sequence numbers of two firewall filter rules.
+     *
+     * @param string $uuid       First rule UUID
+     * @param string $other_uuid Second rule UUID
+     * @return array             Status
+     */
+    public function swapSequenceAction($uuid, $other_uuid)
+    {
+        if ($this->request->isPost()) {
+            $mdl = $this->getModel();
+            $ruleA = $mdl->getNodeByReference("rules.rule." . $uuid);
+            $ruleB = $mdl->getNodeByReference("rules.rule." . $other_uuid);
+
+            if ($ruleA === null || $ruleB === null) {
+                return ["status" => "error"];
+            }
+
+            $seqA = (string)$ruleA->sequence;
+            $seqB = (string)$ruleB->sequence;
+            $ruleA->sequence = $seqB;
+            $ruleB->sequence = $seqA;
+
+            $mdl->serializeToConfig();
+            \OPNsense\Core\Config::getInstance()->save();
+
+            return ["status" => "ok"];
+        }
+        return ["status" => "error"];
+    }
 }
