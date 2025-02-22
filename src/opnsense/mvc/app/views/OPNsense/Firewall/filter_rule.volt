@@ -27,9 +27,17 @@
 <script>
     $(document).ready(function() {
         // Add column for firewall rule icons
-        const $iconsColumn = $('<th data-column-id="icons" data-type="string"></th>');
-        $('#{{formGridFilterRule['table_id']}} thead tr th[data-column-id="sequence"]').after($iconsColumn);
-
+        $('#{{formGridFilterRule['table_id']}} thead tr th[data-column-id="enabled"]')
+        .after(
+            '<th ' +
+                'data-column-id="icons" ' +
+                'data-type="string" ' +
+                'data-sortable="false" ' +
+                'data-width="8em" ' +
+                'data-formatter="ruleIcons">' +
+                "{{ lang._('Icons') }}" +
+            '</th>'
+        );
 
         const grid = $("#{{formGridFilterRule['table_id']}}").UIBootgrid({
             search:'/api/firewall/filter/search_rule/',
@@ -48,6 +56,7 @@
                     return request;
                 },
                 formatters:{
+                    // Show rule inverse status
                     interfacenot: function(column, row) {
                         if (row.interfacenot == true) {
                             return "! " + row.interface;
@@ -69,9 +78,62 @@
                             return row.destination_net;
                         }
                     },
+                    // Icons
+                    ruleIcons: function(column, row) {
+                        let result = "";
+                        const iconStyle = (row.enabled == 0)
+                            ? 'style="opacity: 0.4; pointer-events: none;"'
+                            : '';
+
+                        // Action
+                        if (row.action.toLowerCase() === "pass") {
+                            result += '<i class="fa fa-play fa-fw text-success" ' + iconStyle +
+                                    ' data-toggle="tooltip" title="{{ lang._("Pass") }}"></i> ';
+                        } else if (row.action.toLowerCase() === "block") {
+                            result += '<i class="fa fa-times fa-fw text-danger" ' + iconStyle +
+                                    ' data-toggle="tooltip" title="{{ lang._("Block") }}"></i> ';
+                        } else if (row.action.toLowerCase() === "reject") {
+                            result += '<i class="fa fa-times-circle fa-fw text-danger" ' + iconStyle +
+                                    ' data-toggle="tooltip" title="{{ lang._("Reject") }}"></i> ';
+                        }
+
+                        // Direction
+                        if (row.direction.toLowerCase() === "in") {
+                            result += '<i class="fa fa-long-arrow-right fa-fw text-info" ' + iconStyle +
+                                    ' data-toggle="tooltip" title="{{ lang._("In") }}"></i> ';
+                        } else if (row.direction.toLowerCase() === "out") {
+                            result += '<i class="fa fa-long-arrow-left fa-fw" ' + iconStyle +
+                                    ' data-toggle="tooltip" title="{{ lang._("Out") }}"></i> ';
+                        }
+
+                        // Quick match
+                        if (row.quick == 1) {
+                            result += '<i class="fa fa-flash fa-fw text-warning" ' + iconStyle +
+                                    ' data-toggle="tooltip" title="{{ lang._("First match") }}"></i> ';
+                        } else if (row.quick == 0) {
+                            result += '<i class="fa fa-flash fa-fw text-muted" ' + iconStyle +
+                                    ' data-toggle="tooltip" title="{{ lang._("Last match") }}"></i> ';
+                        }
+
+                        // Logging
+                        if (row.log == 1) {
+                            result += '<i class="fa fa-exclamation-circle fa-fw text-info" ' + iconStyle +
+                                    ' data-toggle="tooltip" title="{{ lang._("Logging enabled") }}"></i> ';
+                        } else if (row.log == 0) {
+                            result += '<i class="fa fa-exclamation-circle fa-fw text-muted" ' + iconStyle +
+                                    ' data-toggle="tooltip" title="{{ lang._("Logging disabled") }}"></i> ';
+                        }
+
+                        return result;
+                    },
+
                 },
             }
 
+        });
+
+        $("#{{formGridFilterRule['table_id']}}").on('loaded.rs.jquery.bootgrid', function() {
+                $('[data-toggle="tooltip"]').tooltip();
         });
 
         // Reload categories before grid load
