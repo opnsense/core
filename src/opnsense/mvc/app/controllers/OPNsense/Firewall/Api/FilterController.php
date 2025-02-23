@@ -27,6 +27,8 @@
  */
 namespace OPNsense\Firewall\Api;
 
+use OPNsense\Core\Config;
+
 class FilterController extends FilterBaseController
 {
     protected static $categorysource = "rules.rule";
@@ -65,34 +67,71 @@ class FilterController extends FilterBaseController
         return $this->toggleBase("rules.rule", $uuid, $enabled);
     }
 
-    /**
-     * Swap the sequence numbers of two firewall filter rules.
-     *
-     * @param string $uuid       First rule UUID
-     * @param string $other_uuid Second rule UUID
-     * @return array             Status
-     */
-    public function swapSequenceAction($uuid, $other_uuid)
+    public function moveUpAction($uuid)
     {
-        if ($this->request->isPost()) {
-            $mdl = $this->getModel();
-            $ruleA = $mdl->getNodeByReference("rules.rule." . $uuid);
-            $ruleB = $mdl->getNodeByReference("rules.rule." . $other_uuid);
+        return $this->moveRule($uuid, -1);
+    }
 
-            if ($ruleA === null || $ruleB === null) {
-                return ["status" => "error"];
-            }
+    public function moveDownAction($uuid)
+    {
+        return $this->moveRule($uuid, +1);
+    }
 
-            $seqA = (string)$ruleA->sequence;
-            $seqB = (string)$ruleB->sequence;
-            $ruleA->sequence = $seqB;
-            $ruleB->sequence = $seqA;
-
-            $mdl->serializeToConfig();
-            \OPNsense\Core\Config::getInstance()->save();
-
-            return ["status" => "ok"];
+    /**
+     * Move a firewall rule either up (-1) or down (+1) in the sequence list.
+     * This is done by swapping sequence numbers between two rules.
+     *
+     * @param string $uuid   The UUID of the rule to move
+     * @param int    $offset -1 to move up, +1 to move down
+     * @return array         ["status" => "ok"] on success, "error" otherwise
+     */
+    private function moveRule($uuid, int $offset)
+    {
+        if (!$this->request->isPost()) {
+            return ["status" => "error"];
         }
-        return ["status" => "error"];
+
+        $mdl = $this->getModel();
+        $ruleToMove = $mdl->getNodeByReference("rules.rule." . $uuid);
+        if ($ruleToMove === null) {
+            return ["status" => "error"];
+        }
+
+        // Gather all rules sorted by sequence
+        $allRules = [];
+        foreach ($mdl->rules->rule->iterateItems() as $key => $rule) {
+            $allRules[] = [
+                'uuid'     => $key,
+                'sequence' => (int)(string)$rule->sequence
+            ];
+        }
+
+        usort($allRules, fn($a, $b) => $a['sequence'] <=> $b['sequence']);
+
+        // Find current rule in sorted list
+        $currentIndex = array_search($uuid, array_column($allRules, 'uuid'));
+        if ($currentIndex === false) {
+            return ["status" => "error"];
+        }
+
+        // Calculate new index
+        $newIndex = $currentIndex + $offset;
+        if ($newIndex < 0 || $newIndex >= count($allRules)) {
+            return ["status" => "error"];
+        }
+
+        // Get UUID of the target rule
+        $targetUuid = $allRules[$newIndex]['uuid'];
+
+        // Swap sequences
+        $ruleA = $mdl->getNodeByReference("rules.rule." . $uuid);
+        $ruleB = $mdl->getNodeByReference("rules.rule." . $targetUuid);
+        [$ruleA->sequence, $ruleB->sequence] = [(string)$ruleB->sequence, (string)$ruleA->sequence];
+
+        // Save changes
+        $mdl->serializeToConfig();
+        Config::getInstance()->save();
+
+        return ["status" => "ok"];
     }
 }

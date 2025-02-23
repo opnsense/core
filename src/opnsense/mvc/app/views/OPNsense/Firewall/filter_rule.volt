@@ -54,6 +54,15 @@
             });
         }
 
+        // Trigger change message, e.g., when using move_up or move_down
+        function showChangeMessage() {
+            $("#change_message_base_form").slideDown(1000, function() {
+                setTimeout(function() {
+                    $("#change_message_base_form").slideUp(2000);
+                }, 2000);
+            });
+        }
+
         const grid = $("#{{formGridFilterRule['table_id']}}").UIBootgrid({
             search:'/api/firewall/filter/search_rule/',
             get:'/api/firewall/filter/get_rule/',
@@ -145,72 +154,98 @@
                 },
             },
             commands: {
-                // Swap the sequence number of exactly two rules with one another
-                swap_sequence: {
+                // Move filter rule sequence up or down in the grid
+                move_up: {
                     method: function(event) {
-                        // We want exactly one selected row
-                        const selected = $("#{{ formGridFilterRule['table_id'] }}").bootgrid("getSelectedRows");
-                        if (selected.length !== 1) {
-                            showDialogAlert(
-                                BootstrapDialog.TYPE_WARNING,
-                                "{{ lang._('Selection Error') }}",
-                                "{{ lang._('Please select exactly one other rule first.') }}"
-                            );
-                            return;
-                        }
-
                         const currentUuid = $(this).data("row-id");
-                        const otherUuid = selected[0];
-
-                        // Make sure they are not the same rule
-                        if (currentUuid === otherUuid) {
-                            showDialogAlert(
-                                BootstrapDialog.TYPE_WARNING,
-                                "{{ lang._('Swap Error') }}",
-                                "{{ lang._('Cannot swap a rule with itself.') }}"
-                            );
-                            return;
-                        }
-
                         ajaxCall(
-                            "/api/firewall/filter/swap_sequence/" + otherUuid + "/" + currentUuid,
+                            "/api/firewall/filter/move_up/" + currentUuid,
                             {},
                             function(data, status) {
                                 if (data.status === "ok") {
+                                    // Animate move_up and move_down commands
+                                    sessionStorage.setItem("highlightRuleUuid", currentUuid);
                                     std_bootgrid_reload("{{ formGridFilterRule['table_id'] }}");
-                                    // XXX: Success is implied by not emitting an error
+                                    showChangeMessage();
                                 } else {
-                                    let msg = data.message || "{{ lang._('Error swapping sequence.') }}";
                                     showDialogAlert(
                                         BootstrapDialog.TYPE_WARNING,
-                                        "{{ lang._('Swap Error') }}",
-                                        msg
+                                        "{{ lang._('Move Up Error') }}",
+                                        "{{ lang._('This rule cannot be moved up.') }}"
                                     );
                                 }
                             },
-                            function(xhr, textStatus, errorThrown) {
+                            function() {
                                 showDialogAlert(
                                     BootstrapDialog.TYPE_DANGER,
                                     "{{ lang._('Request Failed') }}",
-                                    errorThrown
+                                    "{{ lang._('Failed to move the rule.') }}"
                                 );
                             },
                             'POST'
                         );
                     },
-                    classname: 'fa fa-fw fa-exchange',
-                    title: "{{ lang._('Swap Rule Sequence') }}",
+                    classname: "fa fa-fw fa-arrow-up",
+                    title: "{{ lang._('Move Rule Up') }}",
                     sequence: 10
-                }
-            }
+                },
+                move_down: {
+                    method: function(event) {
+                        const currentUuid = $(this).data("row-id");
+                        ajaxCall(
+                            "/api/firewall/filter/move_down/" + currentUuid,
+                            {},
+                            function(data, status) {
+                                if (data.status === "ok") {
+                                    sessionStorage.setItem("highlightRuleUuid", currentUuid);
+                                    std_bootgrid_reload("{{ formGridFilterRule['table_id'] }}");
+                                    showChangeMessage();
+                                } else {
+                                    showDialogAlert(
+                                        BootstrapDialog.TYPE_WARNING,
+                                        "{{ lang._('Move Down Error') }}",
+                                        "{{ lang._('This rule cannot be moved down.') }}"
+                                    );
+                                }
+                            },
+                            function() {
+                                showDialogAlert(
+                                    BootstrapDialog.TYPE_DANGER,
+                                    "{{ lang._('Request Failed') }}",
+                                    "{{ lang._('Failed to move the rule.') }}"
+                                );
+                            },
+                            'POST'
+                        );
+                    },
+                    classname: "fa fa-fw fa-arrow-down",
+                    title: "{{ lang._('Move Rule Down') }}",
+                    sequence: 20
+                },
+            },
+
         });
 
         $("#{{formGridFilterRule['table_id']}}").on('loaded.rs.jquery.bootgrid', function() {
-                $('[data-toggle="tooltip"]').tooltip();
-                // XXX: Replace these labels to save some space in the grid
-                $(this).find('th[data-column-id="sequence"] .text').text("{{ lang._('Seq') }}");
-                $(this).find('th[data-column-id="source_port"] .text').text("{{ lang._('Port') }}");
-                $(this).find('th[data-column-id="destination_port"] .text').text("{{ lang._('Port') }}");
+            // Initialize tooltips
+            $('[data-toggle="tooltip"]').tooltip();
+
+            // XXX: Replace these labels to save some space in the grid
+            $(this).find('th[data-column-id="sequence"] .text').text("{{ lang._('Seq') }}");
+            $(this).find('th[data-column-id="source_port"] .text').text("{{ lang._('Port') }}");
+            $(this).find('th[data-column-id="destination_port"] .text').text("{{ lang._('Port') }}");
+
+            // Animate move_up and move_down commands
+            const highlightUuid = sessionStorage.getItem("highlightRuleUuid");
+            if (highlightUuid) {
+                const $row = $("[data-row-id='" + highlightUuid + "']", this);
+
+                if ($row.length) {
+                    $row.addClass("highlight-animate");
+                }
+
+                sessionStorage.removeItem("highlightRuleUuid");
+            }
         });
 
         // Reload categories before grid load
@@ -363,6 +398,14 @@
         min-width: max-content;
         overflow-y: auto;
         overflow-x: hidden;
+    }
+    /* Animate move_up and move_down commands */
+    @keyframes fadeHighlight {
+        0%   { opacity: 0.2; }
+        100% { opacity: 1; }
+    }
+    .highlight-animate {
+        animation: fadeHighlight 1s ease-in-out;
     }
 </style>
 
