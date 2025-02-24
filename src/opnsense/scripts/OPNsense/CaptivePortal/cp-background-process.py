@@ -232,7 +232,7 @@ class CPBackgroundProcess(object):
     def sync_accounting(self):
         for zoneid in self.list_zone_ids():
             if self._sync_accounting.get(zoneid, False):
-                syslog.syslog(syslog.LOG_NOTICE, 'sync accounting')
+                syslog.syslog(syslog.LOG_NOTICE, f'sync accounting for zone {zoneid}')
                 PF.sync_accounting(zoneid)
                 self._sync_accounting[zoneid] = False
 
