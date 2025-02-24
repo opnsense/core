@@ -588,7 +588,7 @@ function filter_generate_aliases()
                         if (is_bogonsv6_used()) {
                             $aliases .= "table <bogonsv6> persist file \"/usr/local/etc/bogonsv6\"\n";
                         } else {
-                            $aliases .= "table <{$aliased['name']}>\n";
+                            $aliases .= "table <bogonsv6> persist\n";
                         }
                         break;
                     default:
