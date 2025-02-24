@@ -417,6 +417,36 @@
             }
         });
 
+        /**
+         * Select the last unassigned filter sequence number
+         * When rules are cloned it will also clone the sequence number
+         * This button helps the user to always find an available last sequence number.
+         */
+         const filterSequenceBtn = $("<button type='button' class='btn filter_btn btn-default btn-group' " +
+            "data-toggle='tooltip' " +
+            "title='{{ lang._('Generate last free sequence') }}'>")
+            .html("<i class='fa fa-cog'></i>");
+
+        $("#rule\\.sequence").closest("td").prepend(
+            $("<div class='btn-group'>").append(
+                $("#rule\\.sequence").detach(),
+                filterSequenceBtn
+            )
+        );
+
+        filterSequenceBtn.click(function(){
+            ajaxGet("/api/firewall/filter/get_next_sequence", {}, function(data){
+                if (data.sequence !== undefined) {
+                    $("#rule\\.sequence").val(data.sequence);
+                    filterSequenceBtn.tooltip('hide')
+                }
+            });
+        });
+
+        filterSequenceBtn.mouseleave(function(){
+            filterSequenceBtn.tooltip('hide')
+        });
+
     });
 </script>
 

@@ -134,4 +134,29 @@ class FilterController extends FilterBaseController
 
         return ["status" => "ok"];
     }
+
+    /**
+     * Retrieve the next available filter sequence number.
+     * It returns the highest number + 10.
+     * This is matches how the logic of the FilterSequenceField would increment the sequence number.
+     */
+    public function getNextSequenceAction()
+    {
+        $sequences = [];
+        $mdl = $this->getModel();
+
+        foreach ($mdl->rules->rule->iterateItems() as $rule) {
+            $value = (int)((string)$rule->sequence);
+            if ($value > 0) {
+                $sequences[] = $value;
+            }
+        }
+
+        // If no sequences are found, start with base value
+        $max = empty($sequences) ? 1 : max($sequences);
+        $nextSequence = $max + 10;
+
+        return ['status' => 'ok', 'sequence' => $nextSequence];
+    }
+
 }
