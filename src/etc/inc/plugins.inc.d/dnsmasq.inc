@@ -49,7 +49,7 @@ function dnsmasq_services()
 {
     $services = [];
 
-    if (!dnsmasq_enabled() && !isvalidpid('/var/run/dnsmasq.pid')) {
+    if (!dnsmasq_enabled()) {
         return $services;
     }
 
@@ -63,6 +63,7 @@ function dnsmasq_services()
     $pconfig['description'] = gettext('Dnsmasq DNS');
     $pconfig['php']['restart'] = ['dnsmasq_configure_do'];
     $pconfig['php']['start'] = ['dnsmasq_configure_do'];
+    $pconfig['configd']['stop'] = ['dnsmasq stop'];
     $pconfig['pidfile'] = '/var/run/dnsmasq.pid';
     $services[] = $pconfig;
 
@@ -139,7 +140,7 @@ function dnsmasq_configure_do($verbose = false)
     global $config;
 
     killbypid('/var/run/dnsmasq_dhcpd.pid');
-    killbypid('/var/run/dnsmasq.pid');
+    mwexec('/usr/local/etc/rc.d/dnsmasq stop');
 
     if (!dnsmasq_enabled()) {
         return;
@@ -149,7 +150,7 @@ function dnsmasq_configure_do($verbose = false)
 
     _dnsmasq_add_host_entries();
 
-    mwexec("/usr/local/sbin/dnsmasq");
+    mwexec('/usr/local/etc/rc.d/dnsmasq start');
 
     if (!empty($config['dnsmasq']['regdhcp'])) {
         /* XXX: deprecate when moving ISC to plugins ? */
