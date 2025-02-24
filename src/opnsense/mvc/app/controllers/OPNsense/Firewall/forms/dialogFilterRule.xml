@@ -171,11 +171,12 @@
         <id>rule.source_port</id>
         <label>Source Port</label>
         <type>text</type>
-        <advanced>true</advanced>
         <help>Source port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
+        <hint>any</hint>
         <grid_view>
             <sequence>6</sequence>
             <sortable>false</sortable>
+            <formatter>any</formatter>
         </grid_view>
     </field>
     <field>
@@ -203,9 +204,11 @@
         <label>Destination Port</label>
         <type>text</type>
         <help>Destination port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
+        <hint>any</hint>
         <grid_view>
             <sequence>8</sequence>
             <sortable>false</sortable>
+            <formatter>any</formatter>
         </grid_view>
     </field>
     <field>

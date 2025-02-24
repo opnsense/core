@@ -114,6 +114,13 @@
                             return '{{ lang._("default") }}';
                         }
                     },
+                    any: function(column, row) {
+                        if (row[column.id] !== '') {
+                            return row[column.id];
+                        } else {
+                            return '{{ lang._("any") }}';
+                        }
+                    },
                     // Icons
                     ruleIcons: function(column, row) {
                         let result = "";
