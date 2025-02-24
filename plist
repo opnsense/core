@@ -752,6 +752,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasNameField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/FilterRuleField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/FilterSequenceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/GroupField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/GroupNameField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/InterfaceField.php

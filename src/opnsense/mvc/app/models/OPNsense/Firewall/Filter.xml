@@ -28,10 +28,10 @@
                         <floating>Floating states</floating>
                     </OptionValues>
                 </state-policy>
-                <sequence type="AutoNumberField">
+                <sequence type=".\FilterSequenceField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>99999</MaximumValue>
-                    <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
+                    <ValidationMessage>Sequence shall be between 1 and 99999.</ValidationMessage>
                     <Required>Y</Required>
                     <Default>1</Default>
                     <Constraints>
