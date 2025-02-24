@@ -63,6 +63,11 @@
             });
         }
 
+        // Check if category filter is active
+        function isCategoryFilterActive() {
+            return $("#category_filter").val().length > 0;
+        }
+
         const grid = $("#{{formGridFilterRule['table_id']}}").UIBootgrid({
             search:'/api/firewall/filter/search_rule/',
             get:'/api/firewall/filter/get_rule/',
@@ -96,6 +101,13 @@
                         }
                     },
                     destination_not: function(column, row) {
+                        if (row.destination_not == true) {
+                            return "! " + row.destination_net;
+                        } else {
+                            return row.destination_net;
+                        }
+                    },
+                    default: function(column, row) {
                         if (row.destination_not == true) {
                             return "! " + row.destination_net;
                         } else {
@@ -157,6 +169,15 @@
                 // Move filter rule sequence up or down in the grid
                 move_up: {
                     method: function(event) {
+                        // Return early when a category filter is active
+                        if (isCategoryFilterActive()) {
+                            showDialogAlert(
+                                BootstrapDialog.TYPE_WARNING,
+                                "{{ lang._('Warning') }}",
+                                "{{ lang._('Cannot move rule while category filter is active.') }}"
+                            );
+                            return;
+                        }
                         const currentUuid = $(this).data("row-id");
                         ajaxCall(
                             "/api/firewall/filter/move_up/" + currentUuid,
@@ -170,7 +191,7 @@
                                 } else {
                                     showDialogAlert(
                                         BootstrapDialog.TYPE_WARNING,
-                                        "{{ lang._('Move Up Error') }}",
+                                        "{{ lang._('Warning') }}",
                                         "{{ lang._('This rule cannot be moved up.') }}"
                                     );
                                 }
@@ -178,7 +199,7 @@
                             function() {
                                 showDialogAlert(
                                     BootstrapDialog.TYPE_DANGER,
-                                    "{{ lang._('Request Failed') }}",
+                                    "{{ lang._('Error') }}",
                                     "{{ lang._('Failed to move the rule.') }}"
                                 );
                             },
@@ -191,6 +212,14 @@
                 },
                 move_down: {
                     method: function(event) {
+                        if (isCategoryFilterActive()) {
+                            showDialogAlert(
+                                BootstrapDialog.TYPE_WARNING,
+                                "{{ lang._('Warning') }}",
+                                "{{ lang._('Cannot move rule while category filter is active.') }}"
+                            );
+                            return;
+                        }
                         const currentUuid = $(this).data("row-id");
                         ajaxCall(
                             "/api/firewall/filter/move_down/" + currentUuid,
@@ -203,7 +232,7 @@
                                 } else {
                                     showDialogAlert(
                                         BootstrapDialog.TYPE_WARNING,
-                                        "{{ lang._('Move Down Error') }}",
+                                        "{{ lang._('Warning') }}",
                                         "{{ lang._('This rule cannot be moved down.') }}"
                                     );
                                 }
@@ -211,7 +240,7 @@
                             function() {
                                 showDialogAlert(
                                     BootstrapDialog.TYPE_DANGER,
-                                    "{{ lang._('Request Failed') }}",
+                                    "{{ lang._('Error') }}",
                                     "{{ lang._('Failed to move the rule.') }}"
                                 );
                             },
