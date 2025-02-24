@@ -5,7 +5,7 @@
         <type>checkbox</type>
         <help>Enable this rule</help>
         <grid_view>
-            <width>6em</width>
+            <width>2em</width>
             <type>boolean</type>
             <formatter>rowtoggle</formatter>
             <sequence>1</sequence>
@@ -21,7 +21,6 @@
         <grid_view>
             <width>4em</width>
             <sequence>2</sequence>
-            <visible>false</visible>
             <!-- The sequence order of firewall rules is absolute, no other field shall be sorted -->
             <order>asc</order>
             <sortable>false</sortable>

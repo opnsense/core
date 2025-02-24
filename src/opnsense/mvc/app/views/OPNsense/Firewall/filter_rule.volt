@@ -260,6 +260,7 @@
             $('[data-toggle="tooltip"]').tooltip();
 
             // XXX: Replace these labels to save some space in the grid
+            $(this).find('th[data-column-id="enabled"] .text').text("");
             $(this).find('th[data-column-id="sequence"] .text').text("{{ lang._('Seq') }}");
             $(this).find('th[data-column-id="source_port"] .text').text("{{ lang._('Port') }}");
             $(this).find('th[data-column-id="destination_port"] .text').text("{{ lang._('Port') }}");
