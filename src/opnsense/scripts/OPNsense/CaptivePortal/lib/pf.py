@@ -41,18 +41,22 @@ class PF(object):
                 yield tmp
 
     @staticmethod
-    def _update_rules(zoneid, address, delete=False):
-        current = PF.list_table(zoneid)
-        rules = ""
-        for entry in current:
-            if delete and entry == address:
-                continue
+    def add_to_table(zoneid, address):
+        subprocess.run(['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'add', address])
+
+    @staticmethod
+    def remove_from_table(zoneid, address):
+        subprocess.run(['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'del', address])
+        # kill associated states
+        subprocess.run(['/sbin/pfctl', '-k', f'{address}'])
+
+    @staticmethod
+    def sync_accounting(zoneid):
+        # O(n) operation, therefore not executed on table
+        rules = ''
+        for entry in PF.list_table(zoneid):
             rules += f'match from {entry} to any label "{entry}-in"\n'
             rules += f'match from any to {entry} label "{entry}-out"\n'
-
-        if not delete:
-            rules += f'match from {address} to any label "{address}-in"\n'
-            rules += f'match from any to {address} label "{address}-out"\n'
 
         with tempfile.NamedTemporaryFile(mode="w", delete=True) as tmp_file:
             tmp_file.write(rules)
@@ -63,18 +67,6 @@ class PF(object):
                 text=True,
                 capture_output=True
             )
-
-    @staticmethod
-    def add_to_table(zoneid, address):
-        subprocess.run(['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'add', address])
-        PF._update_rules(zoneid, address, delete=False)
-
-    @staticmethod
-    def remove_from_table(zoneid, address):
-        subprocess.run(['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'del', address])
-        # kill associated states
-        subprocess.run(['/sbin/pfctl', '-k', f'{address}'])
-        PF._update_rules(zoneid, address, delete=True)
 
     @staticmethod
     def list_accounting_info(zoneid):

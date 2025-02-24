@@ -57,6 +57,7 @@ class CPBackgroundProcess(object):
         self.db = DB()
         self._conf_zone_info = self.cnf.get_zones()
         self._accounting = dict()
+        self._sync_accounting = dict()
 
 
     def list_zone_ids(self):
@@ -68,37 +69,41 @@ class CPBackgroundProcess(object):
         for zoneid in self.list_zone_ids():
             pf_stats = PF.list_accounting_info(zoneid)
             current_clients = self.db.list_clients(zoneid)
+
+            pf_ips = set(pf_stats.keys())
+            db_ips = {entry['ipAddress'] for entry in current_clients}
+
+            missing_ips = pf_ips - db_ips
+            for ip in missing_ips:
+                # client was removed from db
+                self._sync_accounting[zoneid] = True
+                if ip in self._accounting:
+                    del self._accounting[ip]
+
             for client in current_clients:
                 ip = client['ipAddress']
-                if ip not in pf_stats:
-                    if ip in self._accounting:
-                        # client removed from table, delete accounting as well
-                        del self._accounting[ip]
-                    continue
-
-                values = " ".join(map(str, [pf_stats[ip]['in_pkts'], pf_stats[ip]['in_bytes'],
-                                pf_stats[ip]['out_pkts'], pf_stats[ip]['out_bytes']]))
-                cur_hash = hashlib.md5(values.encode()).hexdigest()
-
                 if ip not in self._accounting:
-                    # initial accounting update if client is not known in memory
+                    if ip not in pf_stats:
+                        # client was added to db
+                        self._sync_accounting[zoneid] = True
+
+                    # client not known in memory yet
                     self._accounting[ip] = {
                         'last_accessed': client['last_accessed'],
-                        'last_accessed_hash': cur_hash,
+                        'last_accessed_hash': '',
                         'in_pkts': 0,
                         'in_bytes': 0,
                         'out_pkts': 0,
                         'out_bytes': 0
                     }
-
-                    # merge counters as they are known in pf, last_accessed is
-                    # determined on next update to save us the work of querying the db stats
                 else:
+                    values = "".join(map(str, [pf_stats[ip]['in_pkts'], pf_stats[ip]['in_bytes'],
+                                pf_stats[ip]['out_pkts'], pf_stats[ip]['out_bytes']]))
+                    cur_hash = hashlib.md5(values.encode()).hexdigest()
                     if cur_hash != self._accounting[ip]['last_accessed_hash']:
                         self._accounting[ip]['last_accessed_hash'] = cur_hash
                         self._accounting[ip]['last_accessed'] = time.time()
-
-                self._accounting[ip] |= pf_stats[ip]
+                    self._accounting[ip] |= pf_stats[ip]
 
         return self._accounting
 
@@ -206,11 +211,10 @@ class CPBackgroundProcess(object):
                 # check session, if it should be active, validate its properties
                 if drop_session_reason is None:
                     # registered client, but not active or missing accounting according to pf (after reboot)
-                    if cpnet not in registered_addresses: #or cpnet not in registered_addr_accounting:
+                    if cpnet not in registered_addresses:
                         PF.add_to_table(zoneid, cpnet)
                 else:
                     # remove session
-                    syslog.syslog(syslog.LOG_NOTICE, drop_session_reason)
                     PF.remove_from_table(zoneid, cpnet)
                     self.db.del_client(zoneid, db_client['sessionId'])
 
@@ -225,6 +229,12 @@ class CPBackgroundProcess(object):
                 if not address_active:
                     PF.remove_from_table(zoneid, registered_address)
 
+    def sync_accounting(self):
+        for zoneid in self.list_zone_ids():
+            if self._sync_accounting.get(zoneid, False):
+                syslog.syslog(syslog.LOG_NOTICE, 'sync accounting')
+                PF.sync_accounting(zoneid)
+                self._sync_accounting[zoneid] = False
 
 def main():
     """ Background process loop, runs as backend daemon for all zones. only one should be active at all times.
@@ -250,12 +260,15 @@ def main():
             # reload cached arp table contents
             bgprocess.arp.reload()
 
-            # update accounting info, for all zones
-            bgprocess.db.update_accounting_info(bgprocess.get_accounting())
-
             # process sessions per zone
             for zoneid in bgprocess.list_zone_ids():
                 bgprocess.sync_zone(zoneid)
+
+            # update accounting info, for all zones
+            bgprocess.db.update_accounting_info(bgprocess.get_accounting())
+
+            # sync accounting after db update, resets zone counters if sync is needed
+            bgprocess.sync_accounting()
 
             # close the database handle while waiting for the next poll
             bgprocess.db.close()
