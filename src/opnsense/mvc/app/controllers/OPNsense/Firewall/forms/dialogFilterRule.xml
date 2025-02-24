@@ -451,6 +451,7 @@
         <grid_view>
             <sequence>10</sequence>
             <sortable>false</sortable>
+            <formatter>default</formatter>
         </grid_view>
     </field>
     <field>
@@ -478,6 +479,7 @@
         <grid_view>
             <visible>false</visible>
             <sortable>false</sortable>
+            <formatter>default</formatter>
         </grid_view>
     </field>
     <field>

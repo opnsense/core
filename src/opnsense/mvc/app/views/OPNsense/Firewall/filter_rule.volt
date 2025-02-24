@@ -108,10 +108,10 @@
                         }
                     },
                     default: function(column, row) {
-                        if (row.destination_not == true) {
-                            return "! " + row.destination_net;
+                        if (row[column.id].toLowerCase() !== 'none') {
+                            return row[column.id];
                         } else {
-                            return row.destination_net;
+                            return '{{ lang._("default") }}';
                         }
                     },
                     // Icons
