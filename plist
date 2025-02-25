@@ -1107,6 +1107,7 @@
 /usr/local/opnsense/scripts/filter/delete_table.py
 /usr/local/opnsense/scripts/filter/download_geoip.py
 /usr/local/opnsense/scripts/filter/find_table_references.py
+/usr/local/opnsense/scripts/filter/get_internal_rules.php
 /usr/local/opnsense/scripts/filter/kill_states.py
 /usr/local/opnsense/scripts/filter/kill_table.py
 /usr/local/opnsense/scripts/filter/lib/__init__.py
