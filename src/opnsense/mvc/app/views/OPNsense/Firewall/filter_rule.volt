@@ -63,11 +63,6 @@
             });
         }
 
-        // Check if category filter is active
-        function isCategoryFilterActive() {
-            return $("#category_filter").val().length > 0;
-        }
-
         // Get all advanced fields, used for advanced mode tooltips
         const advancedFieldIds = [
             {% for field in advancedFieldIds %}
@@ -234,14 +229,7 @@
                 move_up: {
                     method: function(event) {
                         // Return early when a category filter is active
-                        if (isCategoryFilterActive()) {
-                            showDialogAlert(
-                                BootstrapDialog.TYPE_WARNING,
-                                "{{ lang._('Warning') }}",
-                                "{{ lang._('Cannot move rule while category filter is active.') }}"
-                            );
-                            return;
-                        }
+
                         const currentUuid = $(this).data("row-id");
                         ajaxCall(
                             "/api/firewall/filter/move_up/" + currentUuid,
@@ -276,14 +264,6 @@
                 },
                 move_down: {
                     method: function(event) {
-                        if (isCategoryFilterActive()) {
-                            showDialogAlert(
-                                BootstrapDialog.TYPE_WARNING,
-                                "{{ lang._('Warning') }}",
-                                "{{ lang._('Cannot move rule while category filter is active.') }}"
-                            );
-                            return;
-                        }
                         const currentUuid = $(this).data("row-id");
                         ajaxCall(
                             "/api/firewall/filter/move_down/" + currentUuid,
