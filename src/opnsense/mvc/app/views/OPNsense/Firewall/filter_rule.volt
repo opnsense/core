@@ -228,8 +228,6 @@
                 // Move filter rule sequence up or down in the grid
                 move_up: {
                     method: function(event) {
-                        // Return early when a category filter is active
-
                         const currentUuid = $(this).data("row-id");
                         ajaxCall(
                             "/api/firewall/filter/move_up/" + currentUuid,
