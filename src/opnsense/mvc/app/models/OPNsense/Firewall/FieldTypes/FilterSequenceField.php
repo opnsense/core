@@ -32,37 +32,42 @@ use OPNsense\Base\FieldTypes\AutoNumberField;
 
 /**
  * Class FilterSequenceField
- * Extends the built-in AutoNumberField but increments by 10 instead of 1.
+ * Extends the built-in AutoNumberField but increments by 100 instead of 1.
  * The next number will not be in an available gap, but always at the end of the sequence.
  * This ensures there is always space between firewall rules, so that rules can be moved inbetween
  * without reordering the whole ruleset. New rules will always be added at the end of of the ruleset.
  */
 class FilterSequenceField extends AutoNumberField
 {
-    /**
-     * Apply default value as "next available" integer stepping by 10.
-     */
+    public function __construct($ref = null, $tagname = null)
+    {
+        parent::__construct($ref, $tagname);
+        $this->setMinimumValue(100);
+    }
+
     public function applyDefault()
     {
-        // Initialize max with the minimum value minus step to handle cases when no numbers exist.
-        $step = 10;
-        $maxNumber = $this->minimum_value - $step;
-    
+        $step = 100;
+
+        // Start from the minimum value if no entries exist
+        $maxNumber = $this->minimum_value;
+
         if (isset($this->internalParentNode->internalParentNode)) {
             foreach ($this->internalParentNode->internalParentNode->iterateItems() as $node) {
                 $currentNumber = (int)((string)$node->{$this->internalXMLTagName});
                 // Update maxNumber if this value is greater
-                if ($currentNumber > $maxNumber) {
+                if ($currentNumber >= $maxNumber) {
                     $maxNumber = $currentNumber;
                 }
             }
         }
-    
+
         /**
          * Set the new value to be max found + step
          * If its higher than the allowed max value
          * the default validation of the AutoNumberField will trigger
          */
         $this->internalValue = (string)($maxNumber + $step);
-    }    
+
+    }
 }

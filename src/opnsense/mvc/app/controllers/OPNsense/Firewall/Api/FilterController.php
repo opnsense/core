@@ -137,7 +137,7 @@ class FilterController extends FilterBaseController
 
     /**
      * Retrieve the next available filter sequence number.
-     * It returns the highest number + 10.
+     * It returns the highest number + 100.
      * This is matches how the logic of the FilterSequenceField would increment the sequence number.
      */
     public function getNextSequenceAction()
@@ -153,8 +153,8 @@ class FilterController extends FilterBaseController
         }
 
         // If no sequences are found, start with base value
-        $max = empty($sequences) ? 1 : max($sequences);
-        $nextSequence = $max + 10;
+        $max = empty($sequences) ? 0 : max($sequences);
+        $nextSequence = $max + 100;
 
         return ['status' => 'ok', 'sequence' => $nextSequence];
     }

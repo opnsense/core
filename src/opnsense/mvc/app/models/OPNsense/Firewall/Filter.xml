@@ -30,8 +30,8 @@
                 </state-policy>
                 <sequence type=".\FilterSequenceField">
                     <MinimumValue>1</MinimumValue>
-                    <MaximumValue>99999</MaximumValue>
-                    <ValidationMessage>Sequence shall be between 1 and 99999.</ValidationMessage>
+                    <MaximumValue>999999</MaximumValue>
+                    <ValidationMessage>Sequence shall be between 1 and 999999.</ValidationMessage>
                     <Required>Y</Required>
                     <Default>1</Default>
                     <Constraints>
