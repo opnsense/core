@@ -480,6 +480,7 @@
         <help>
             Determines how packets route back in the opposite direction (replies), when set to default, packets on WAN type interfaces reply to their connected gateway on the interface (unless globally disabled). A specific gateway may be chosen as well here. This setting is only relevant in the context of a state, for stateless rules there is no defined opposite direction.
         </help>
+        <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
             <sortable>false</sortable>
