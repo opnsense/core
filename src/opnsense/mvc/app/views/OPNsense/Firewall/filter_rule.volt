@@ -207,10 +207,10 @@
                         let tooltip;
                         if (usedAdvancedFields.length > 0) {
                             iconClass = "text-warning";
-                            tooltip = `{{ lang._("Advanced settings") }}:<br>${usedAdvancedFields.join("<br>")}`;
+                            tooltip = `{{ lang._("Advanced mode enabled") }}<br>${usedAdvancedFields.join("<br>")}`;
                         } else {
                             iconClass = "text-muted";
-                            tooltip = "{{ lang._('No advanced settings') }}";
+                            tooltip = "{{ lang._('Advanced mode disabled') }}";
                         }
 
                         result += `<i class="fa fa-cog fa-fw ${iconClass}" ${iconStyle}
@@ -506,6 +506,11 @@
     }
     .highlight-animate {
         animation: fadeHighlight 1s ease-in-out;
+    }
+    /* Advanced mode tooltip */
+    .tooltip-inner {
+        max-width: 300px;
+        text-align: left;
     }
 </style>
 
