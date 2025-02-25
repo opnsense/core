@@ -179,17 +179,7 @@
                         }
 
                         // XXX: Advanced fields all have different default values, so it cannot be generalized completely
-                        const advancedDefaultValues = [
-                            "0",
-                            "",
-                            "None",
-                            "Any",
-                            "default",
-                            "Keep current priority",
-                            "keep state",
-                            "any",
-                            "Any priority"
-                        ];
+                        const advancedDefaultPrefixes = ["0", "none", "any", "default", "keep"];
 
                         const usedAdvancedFields = [];
 
@@ -198,10 +188,18 @@
                             const shortName = advId.split('.').pop();
                             const value = row[shortName];
 
-                            if (value !== undefined && !advancedDefaultValues.includes(value)) {
-                                // Use label if available, otherwise fallback to field ID
-                                const label = columnLabels[shortName] || shortName;
-                                usedAdvancedFields.push(`${label}: ${value}`);
+                            if (value !== undefined) {
+                                const lowerValue = value.toString().toLowerCase().trim();
+                                // Check: if the value is empty OR starts with any default prefix, consider it default
+                                const isDefault = (lowerValue === "") || advancedDefaultPrefixes.some(function(prefix) {
+                                    return lowerValue.startsWith(prefix);
+                                });
+
+                                if (!isDefault) {
+                                    // Use label if available, otherwise fallback to field ID
+                                    const label = columnLabels[shortName] || shortName;
+                                    usedAdvancedFields.push(`${label}: ${value}`);
+                                }
                             }
                         });
 
