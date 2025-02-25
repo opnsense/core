@@ -34,5 +34,28 @@ class FilterController extends \OPNsense\Base\IndexController
         $this->view->pick('OPNsense/Firewall/filter_rule');
         $this->view->formDialogFilterRule = $this->getForm("dialogFilterRule");
         $this->view->formGridFilterRule = $this->getFormGrid('dialogFilterRule');
+        $this->view->advancedFieldIds = $this->getAdvancedIds($this->view->formDialogFilterRule);
     }
+
+    /**
+     * Get an array of field IDs that have the advanced flag set to "true".
+     *
+     * @param array $form An array of field definitions
+     * @return array List of field IDs
+     */
+    protected function getAdvancedIds($form)
+    {
+        $advancedFieldIds = [];
+
+        foreach ($form as $field) {
+            if (!empty($field['advanced']) && $field['advanced'] === "true") {
+                if (!empty($field['id'])) {
+                    $advancedFieldIds[] = $field['id'];
+                }
+            }
+        }
+
+        return $advancedFieldIds;
+    }
+
 }

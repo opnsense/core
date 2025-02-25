@@ -68,6 +68,22 @@
             return $("#category_filter").val().length > 0;
         }
 
+        // Get all advanced fields, used for advanced mode tooltips
+        const advancedFieldIds = [
+            {% for field in advancedFieldIds %}
+                "{{ field }}"{% if not loop.last %}, {% endif %}
+            {% endfor %}
+        ];
+
+        // Get all column labels, used for advanced mode tooltips
+        const columnLabels = {};
+        $('#{{formGridFilterRule["table_id"]}} thead th').each(function () {
+            const columnId = $(this).attr('data-column-id');
+            if (columnId) {
+                columnLabels[columnId] = $(this).text().trim();
+            }
+        });
+
         const grid = $("#{{formGridFilterRule['table_id']}}").UIBootgrid({
             search:'/api/firewall/filter/search_rule/',
             get:'/api/firewall/filter/get_rule/',
@@ -167,6 +183,47 @@
                                     ' data-toggle="tooltip" title="{{ lang._("Logging disabled") }}"></i> ';
                         }
 
+                        // XXX: Advanced fields all have different default values, so it cannot be generalized completely
+                        const advancedDefaultValues = [
+                            "0",
+                            "",
+                            "None",
+                            "Any",
+                            "default",
+                            "Keep current priority",
+                            "keep state",
+                            "any",
+                            "Any priority"
+                        ];
+
+                        const usedAdvancedFields = [];
+
+                        advancedFieldIds.forEach(function (advId) {
+                            // Convert "rule.id" to "id"
+                            const shortName = advId.split('.').pop();
+                            const value = row[shortName];
+
+                            if (value !== undefined && !advancedDefaultValues.includes(value)) {
+                                // Use label if available, otherwise fallback to field ID
+                                const label = columnLabels[shortName] || shortName;
+                                usedAdvancedFields.push(`${label}: ${value}`);
+                            }
+                        });
+
+                        let iconClass;
+                        let tooltip;
+                        if (usedAdvancedFields.length > 0) {
+                            iconClass = "text-warning";
+                            tooltip = `{{ lang._("Advanced settings") }}:<br>${usedAdvancedFields.join("<br>")}`;
+                        } else {
+                            iconClass = "text-muted";
+                            tooltip = "{{ lang._('No advanced settings') }}";
+                        }
+
+                        result += `<i class="fa fa-cog fa-fw ${iconClass}" ${iconStyle}
+                                    data-toggle="tooltip" data-html="true" title="${tooltip}"></i>`;
+
+                        // Return all icons
                         return result;
                     },
 
