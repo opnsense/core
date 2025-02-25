@@ -8,7 +8,7 @@
             <width>2em</width>
             <type>boolean</type>
             <formatter>rowtoggle</formatter>
-            <sequence>1</sequence>
+            <sequence>10</sequence>
             <align>center</align>
             <sortable>false</sortable>
         </grid_view>
@@ -20,7 +20,7 @@
         <help>The order in which rules are being processed.</help>
         <grid_view>
             <width>4em</width>
-            <sequence>2</sequence>
+            <sequence>20</sequence>
             <!-- The sequence order of firewall rules is absolute, no other field shall be sorted -->
             <order>asc</order>
             <sortable>false</sortable>
@@ -54,7 +54,7 @@
         <type>text</type>
         <help>You may enter a description here for your reference (not parsed).</help>
         <grid_view>
-            <sequence>11</sequence>
+            <sequence>110</sequence>
             <sortable>false</sortable>
         </grid_view>
     </field>
@@ -63,23 +63,23 @@
         <label>Filter</label>
     </field>
     <field>
-        <id>rule.action</id>
-        <label>Action</label>
-        <type>dropdown</type>
-        <help>Choose what to do with packets that match the criteria specified below.
-            Hint: the difference between block and reject is that with reject, a packet (TCP RST or ICMP port unreachable for UDP) is returned to the sender, whereas with block the packet is dropped silently. In either case, the original packet is discarded.
-        </help>
-        <grid_view>
-            <ignore>true</ignore>
-        </grid_view>
-    </field>
-    <field>
         <id>rule.quick</id>
         <label>Quick</label>
         <type>checkbox</type>
         <help>
             If a packet matches a rule specifying quick, then that rule is considered the last matching rule and the specified action is taken.
             When a rule does not have quick enabled, the last matching rule wins.
+        </help>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.action</id>
+        <label>Action</label>
+        <type>dropdown</type>
+        <help>Choose what to do with packets that match the criteria specified below.
+            Hint: the difference between block and reject is that with reject, a packet (TCP RST or ICMP port unreachable for UDP) is returned to the sender, whereas with block the packet is dropped silently. In either case, the original packet is discarded.
         </help>
         <grid_view>
             <ignore>true</ignore>
@@ -98,10 +98,9 @@
     </field>
     <field>
         <id>rule.interfacenot</id>
-        <label>Interface / Invert</label>
+        <label>Invert Interface</label>
         <type>checkbox</type>
         <help>Use all but selected interfaces</help>
-        <advanced>true</advanced>
         <grid_view>
             <ignore>true</ignore>
         </grid_view>
@@ -110,10 +109,12 @@
         <id>rule.interface</id>
         <label>Interface</label>
         <type>select_multiple</type>
+        <hint>any</hint>
         <grid_view>
             <formatter>interfacenot</formatter>
-            <sequence>9</sequence>
+            <sequence>45</sequence>
             <sortable>false</sortable>
+            <formatter>any</formatter>
         </grid_view>
     </field>
     <field>
@@ -133,7 +134,7 @@
         <type>dropdown</type>
         <grid_view>
             <width>6em</width>
-            <sequence>3</sequence>
+            <sequence>30</sequence>
             <sortable>false</sortable>
         </grid_view>
     </field>
@@ -143,13 +144,13 @@
         <type>dropdown</type>
         <grid_view>
             <width>6em</width>
-            <sequence>4</sequence>
+            <sequence>40</sequence>
             <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
         <id>rule.source_not</id>
-        <label>Source / Invert</label>
+        <label>Invert Source</label>
         <type>checkbox</type>
         <help>Use this option to invert the sense of the match.</help>
         <grid_view>
@@ -163,7 +164,7 @@
         <style>net_selector net_selector_multi</style>
         <grid_view>
             <formatter>source_not</formatter>
-            <sequence>5</sequence>
+            <sequence>50</sequence>
             <sortable>false</sortable>
         </grid_view>
     </field>
@@ -174,14 +175,14 @@
         <help>Source port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
         <hint>any</hint>
         <grid_view>
-            <sequence>6</sequence>
+            <sequence>60</sequence>
             <sortable>false</sortable>
             <formatter>any</formatter>
         </grid_view>
     </field>
     <field>
         <id>rule.destination_not</id>
-        <label>Destination / Invert</label>
+        <label>Invert Destination</label>
         <type>checkbox</type>
         <help>Use this option to invert the sense of the match.</help>
         <grid_view>
@@ -195,7 +196,7 @@
         <style>net_selector net_selector_multi</style>
         <grid_view>
             <formatter>destination_not</formatter>
-            <sequence>7</sequence>
+            <sequence>70</sequence>
             <sortable>false</sortable>
         </grid_view>
     </field>
@@ -206,7 +207,7 @@
         <help>Destination port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
         <hint>any</hint>
         <grid_view>
-            <sequence>8</sequence>
+            <sequence>80</sequence>
             <sortable>false</sortable>
             <formatter>any</formatter>
         </grid_view>
@@ -452,7 +453,7 @@
             Leave as 'default' to use the system routing table. Or choose a gateway to utilize policy based routing.
         </help>
         <grid_view>
-            <sequence>10</sequence>
+            <sequence>100</sequence>
             <sortable>false</sortable>
             <formatter>default</formatter>
         </grid_view>
