@@ -786,6 +786,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Migrations/M1_0_1.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Migrations/M1_0_3.php
+/usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Migrations/M1_0_4.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Swanctl.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Swanctl.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/ACL/ACL.xml
