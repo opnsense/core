@@ -198,6 +198,9 @@ function dnsmasq_configure_do($verbose = false)
 
     _dnsmasq_add_host_entries();
 
+    /* XXX: cleanup, should have been run, but interface changes during boot or wizard are messing things up */
+    configd_run('template reload OPNsense/Dnsmasq');
+
     mwexec("/usr/local/sbin/dnsmasq {$args}");
 
     if (!empty($config['dnsmasq']['regdhcp'])) {
