@@ -76,7 +76,7 @@ class AliasField extends ArrayField
     protected function actionPostLoadingEvent()
     {
         parent::actionPostLoadingEvent();
-        if ($this->getParentModel()->skipDynamicInfo()) {
+        if ($this->getParentModel()->isLazyLoaded()) {
             /* skip dynamic content */
             return;
         }
