@@ -97,12 +97,26 @@ abstract class BaseModel
     private int $internalValidationSequence = 0;
 
     /**
+     * skip dynamic operations, not required for the model itself, when requested.
+     *
+     */
+    private $internalForceLazyLoading = false;
+
+    /**
      * If the model needs a custom initializer, override this init() method
      * Default behaviour is to do nothing in this init.
      */
     protected function init()
     {
         return;
+    }
+
+    /**
+     * @return bool if lazy loaded so our model may skip some user facing data collection
+     */
+    public function isLazyLoaded()
+    {
+        return $this->internalForceLazyLoading;
     }
 
     /**
@@ -338,8 +352,9 @@ abstract class BaseModel
      * @throws ModelException if the model xml is not found or invalid
      * @throws ReflectionException
      */
-    public function __construct()
+    public function __construct($lazyload=false)
     {
+        $this->internalForceLazyLoading = $lazyload;
         // setup config handle to singleton config singleton
         $internalConfigHandle = Config::getInstance();
 

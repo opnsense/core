@@ -49,7 +49,7 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($model_dir
             $mdl_class_info = new \ReflectionClass($classname);
             $parent = $mdl_class_info->getParentClass();
             if ($parent && $parent->name == 'OPNsense\Base\BaseModel') {
-                $mdl = $mdl_class_info->newInstance();
+                $mdl = $mdl_class_info->newInstance(true); /* lazy loading */
                 $version_pre = $mdl->getVersion();
                 $mig_performed = $mdl->runMigrations();
                 $version_post = $mdl->getVersion();

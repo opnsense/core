@@ -68,7 +68,7 @@ class TunableField extends ArrayField
      */
     protected function actionPostLoadingEvent()
     {
-        if (self::$default_values === null) {
+        if (self::$default_values === null && !$this->getParentModel()->isLazyLoaded()) {
             self::$default_values = json_decode((new Backend())->configdRun('system sysctl gather'), true) ?? [];
             self::$static_entries = json_decode((new Backend())->configdRun('system sysctl defaults'), true) ?? [];
             foreach (self::$static_entries as $key => $item) {
@@ -78,6 +78,8 @@ class TunableField extends ArrayField
                     self::$static_entries[$key]['descr'] = self::$default_values[$key]['description'];
                 }
             }
+        } elseif (self::$default_values === null) {
+            self::$default_values = [];
         }
         foreach ($this->iterateItems() as $node) {
             if (isset(self::$static_entries[(string)$node->tunable])) {

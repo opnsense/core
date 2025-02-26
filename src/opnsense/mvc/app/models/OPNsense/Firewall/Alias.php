@@ -44,26 +44,10 @@ class Alias extends BaseModel
      */
     private $aliasIteratorCache = [];
 
-    private $skip_dynamic_info = false;
-
-    /**
-     * return if we're lazy loaded
-     */
-    public function skipDynamicInfo()
-    {
-        return $this->skip_dynamic_info;
-    }
-
     /**
      * alias name cache
      */
     private $aliasReferenceCache = [];
-
-    public function __construct($skip_dynamic_info = false)
-    {
-        $this->skip_dynamic_info = $skip_dynamic_info;
-        parent::__construct();
-    }
 
     public function performValidation($validateFullModel = false)
     {
