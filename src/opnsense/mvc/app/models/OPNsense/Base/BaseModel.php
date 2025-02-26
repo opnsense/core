@@ -352,7 +352,7 @@ abstract class BaseModel
      * @throws ModelException if the model xml is not found or invalid
      * @throws ReflectionException
      */
-    public function __construct($lazyload=false)
+    public function __construct($lazyload = false)
     {
         $this->internalForceLazyLoading = $lazyload;
         // setup config handle to singleton config singleton
