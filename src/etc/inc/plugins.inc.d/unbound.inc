@@ -350,6 +350,7 @@ EOD;
     chmod($root_hints_tmp, 0644);
     rename($root_hints_tmp, '/var/unbound/root.hints');
 
+    /* XXX: cleanup, should have been run, but interface changes during boot or wizard are messing things up */
     configd_run('template reload OPNsense/Unbound/*');
 }
 
