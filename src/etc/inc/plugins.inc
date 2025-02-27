@@ -408,7 +408,7 @@ function plugins_argument_map(&$arg)
     if (is_array($arg)) {
         /* no need to deal with this now */
     } elseif (is_string($arg)) {
-        /* backwards compat with single string arguments or transform to null if empty*/
+        /* backwards compat with single string arguments or transform to null if empty */
         $tmp = strlen($arg) ? explode(',', $arg) : null;
     } elseif (!is_null($arg)) {
         log_msg(sprintf('%s: plugin argument map type "%s" not supported', $caller, gettype($arg)), LOG_WARNING);
