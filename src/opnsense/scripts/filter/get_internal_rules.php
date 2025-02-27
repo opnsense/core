@@ -38,6 +38,14 @@ foreach ($fw->iterateFilterRules() as $rule) {
     }
 }
 
+// Convert friendly interface names to real names.
+foreach ($rules as &$rule) {
+    if (!empty($rule['interface'])) {
+        $rule['interface'] = get_real_interface($rule['interface']);
+    }
+}
+unset($rule); // break reference
+
 // XXX: I want it pretty print cause this is a test script
 echo json_encode($rules, JSON_PRETTY_PRINT);
 exit(0);
