@@ -89,7 +89,6 @@ function captiveportal_firewall($fw)
             // register anchor, to be filled with ether rules for accounting
             $fw->registerAnchor("captiveportal_zone_{$zoneid}", "ether", 0, "head", false, (string)$zone->interfaces);
 
-
             foreach (explode(',', $zone->interfaces) as $intf) {
                 // allow DNS
                 $fw->registerFilterRule(

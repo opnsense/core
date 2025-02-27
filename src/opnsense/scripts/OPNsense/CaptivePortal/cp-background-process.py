@@ -77,8 +77,9 @@ class CPBackgroundProcess(object):
                 result[zoneid] = self._accounting_info[zoneid]['cur']
             else:
                 # counters still valid, calculate difference
-                result[zoneid] = self._accounting_info[zoneid]['cur']
+                result[zoneid] = {}
                 for ip in self._accounting_info[zoneid]['cur']:
+                    result[zoneid][ip] = {'last_accessed': self._accounting_info[zoneid]['cur'][ip]['last_accessed']}
                     for key in ['in_pkts', 'in_bytes', 'out_pkts', 'out_bytes']:
                         if ip not in self._accounting_info[zoneid]['prev']:
                             result[zoneid][ip][key] = self._accounting_info[zoneid]['cur'][ip][key]
@@ -87,8 +88,7 @@ class CPBackgroundProcess(object):
                                 - self._accounting_info[zoneid]['prev'][ip][key]
 
         # map to flat dict of IPs
-        merged = {k: v for subdict in result.values() for k, v in subdict.items()}
-        return merged
+        return {k: v for subdict in result.values() for k, v in subdict.items()}
 
     def initialize_fixed(self):
         """ initialize fixed ip / hosts per zone
