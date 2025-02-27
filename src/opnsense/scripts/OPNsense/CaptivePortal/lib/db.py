@@ -272,8 +272,7 @@ class DB(object):
         if type(details) == dict:
             # query registered data
             sql = """ select    cc.ip_address, cc.zoneid, cc.sessionid
-                      ,         si.rowid si_rowid, si.prev_packets_in, si.prev_bytes_in
-                      ,         si.prev_packets_out, si.prev_bytes_out, si.last_accessed
+                      ,         si.rowid si_rowid, si.last_accessed
                       from      cp_clients cc
                       left join session_info si on si.zoneid = cc.zoneid and si.sessionid = cc.sessionid
                       order by  cc.ip_address, cc.deleted
@@ -291,12 +290,10 @@ class DB(object):
                 if prev_record['ip_address'] != record['ip_address'] and record['ip_address'] in details:
                     if record['si_rowid'] is None:
                         # new session, add info object
-                        sql_new = """ insert into session_info(zoneid, sessionid, prev_packets_in, prev_bytes_in,
-                                                               prev_packets_out, prev_bytes_out,
-                                                               packets_in, packets_out, bytes_in, bytes_out,
-                                                               last_accessed)
-                                      values (:zoneid, :sessionid, :packets_in, :bytes_in, :packets_out, :bytes_out,
-                                              :packets_in, :packets_out, :bytes_in, :bytes_out, :last_accessed)
+                        sql_new = """ insert into session_info(zoneid, sessionid, packets_in,
+                                                               packets_out, bytes_in, bytes_out, last_accessed)
+                                      values (:zoneid, :sessionid, :packets_in,
+                                              :packets_out, :bytes_in, :bytes_out, :last_accessed)
                         """
                         record['packets_in'] = details[record['ip_address']]['in_pkts']
                         record['bytes_in'] = details[record['ip_address']]['in_bytes']
@@ -308,10 +305,6 @@ class DB(object):
                         # update session
                         sql_update = """ update session_info
                                          set    last_accessed = :last_accessed
-                                         ,      prev_packets_in = :prev_packets_in
-                                         ,      prev_packets_out = :prev_packets_out
-                                         ,      prev_bytes_in = :prev_bytes_in
-                                         ,      prev_bytes_out = :prev_bytes_out
                                          ,      packets_in = packets_in + :packets_in
                                          ,      packets_out = packets_out + :packets_out
                                          ,      bytes_in = bytes_in + :bytes_in
