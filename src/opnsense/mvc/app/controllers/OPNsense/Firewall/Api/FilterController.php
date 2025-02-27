@@ -87,11 +87,15 @@ class FilterController extends FilterBaseController
         // 3. Disable pagination: force 'rowCount = -1' and 'current = 1'
         $dummyRequest = new class($this->request) {
             private $origReq;
-            public function __construct($req) { $this->origReq = $req; }
+            public function __construct($req) {
+                $this->origReq = $req;
+            }
             public function get($key, $default = null) {
                 if ($key === 'rowCount') { return -1; }
                 if ($key === 'current')  { return 1; }
-                return $this->origReq->get($key, $default);
+                $value = $this->origReq->get($key, $default);
+                // Ensure that we never return null as UIModelGrid cannot handle it
+                return $value === null ? '' : $value;
             }
             public function __call($name, $args) {
                 return call_user_func_array([$this->origReq, $name], $args);
