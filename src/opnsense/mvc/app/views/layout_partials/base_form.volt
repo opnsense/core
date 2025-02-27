@@ -68,7 +68,8 @@
         </tr>
 {% endif %}
         {% for field in fields|default({})%}
-            {% if field['type'] == 'header' %}
+            {% if field['type'] == 'ignore' %}
+            {% elseif field['type'] == 'header' %}
               {# close table and start new one with header #}
 
 {#- macro base_dialog_header(field) #}
