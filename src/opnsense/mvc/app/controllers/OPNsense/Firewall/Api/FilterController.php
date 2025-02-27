@@ -30,6 +30,7 @@ namespace OPNsense\Firewall\Api;
 use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
 use OPNsense\Base\FieldTypes\ArrayField;
+use OPNsense\Base\UIModelGrid;
 
 class FilterController extends FilterBaseController
 {
@@ -118,7 +119,7 @@ class FilterController extends FilterBaseController
                 break;
             }
         }
-        $grid = new \OPNsense\Base\UIModelGrid($element);
+        $grid = new UIModelGrid($element);
         $modelData = $grid->fetchBindRequest($dummyRequest, $fields, "sequence", $modelFilter);
         $modelRules = $modelData['rows'] ?? [];
 
@@ -306,6 +307,12 @@ class FilterController extends FilterBaseController
             }
             if (empty($newRule['sequence'])) {
                 $newRule['sequence'] = $defaultSequence;
+            }
+
+            // Skip the internal rule if it is not disabled. This skips a ton of disabled bogon interface rules
+            // These are generated for any interface but kept disabled until enabled.
+            if ($newRule['enabled'] !== '1') {
+                continue;
             }
 
             $normalizedRules[] = $newRule;
