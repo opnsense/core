@@ -110,15 +110,19 @@
 
                         // If UUID is invalid, its an internal rule, use the #ref field to show a lookup button.
                         if (!rowId || !uuidRegex.test(rowId)) {
-                            let ref = row["#ref"];
-                            let url = `/${ref}`;
-                            return `
-                                <a href="${url}"
-                                class="btn btn-xs btn-default bootgrid-tooltip"
-                                title="{{ lang._('Lookup Rule') }}">
-                                    <span class="fa fa-fw fa-search"></span>
-                                </a>
-                            `;
+                            let ref = row["#ref"] || "";
+                            if (ref.trim().length > 0) {
+                                let url = `/${ref}`;
+                                return `
+                                    <a href="${url}"
+                                    class="btn btn-xs btn-default bootgrid-tooltip"
+                                    title="{{ lang._('Lookup Rule') }}">
+                                        <span class="fa fa-fw fa-search"></span>
+                                    </a>
+                                `;
+                            }
+                            // If ref is empty
+                            return "";
                         }
 
                         return `
