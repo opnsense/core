@@ -26,6 +26,53 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+function captiveportal_services()
+{
+    $services = [];
+
+    $cp = new \OPNsense\CaptivePortal\CaptivePortal();
+    if ($cp->isEnabled()) {
+        $services[] = array(
+            'pidfile' => '/var/run/lighttpd-api-dispatcher.pid',
+            'description' => gettext('Captive Portal'),
+            'configd' => array(
+                'restart' => array('captiveportal restart'),
+                'start' => array('captiveportal start'),
+                'stop' => array('captiveportal stop'),
+            ),
+            'name' => 'captiveportal',
+        );
+    }
+
+    return $services;
+}
+
+function captiveportal_cron()
+{
+    global $config;
+
+    $jobs = [];
+
+    if (!empty($config['system']['captiveportalbackup']) && $config['system']['captiveportalbackup'] > 0) {
+        $jobs[]['autocron'] = array(
+            '/usr/local/etc/rc.syshook.d/backup/20-captiveportal',
+            '0',
+            '*/' . $config['system']['captiveportalbackup']
+        );
+    }
+
+    return $jobs;
+}
+
+function captiveportal_syslog()
+{
+    $logfacilities = [];
+
+    $logfacilities['portalauth'] = ['facility' => ['captiveportal']];
+
+    return $logfacilities;
+}
+
 function captiveportal_firewall($fw)
 {
     global $config;
