@@ -26,14 +26,14 @@
 
 <script>
 $( document ).ready(function() {
-    $("#{{formGridDest['table_id']}}").UIBootgrid({
+    $("#grid-dest").UIBootgrid({
         search:'/api/dhcrelay/settings/searchDest',
         get:'/api/dhcrelay/settings/getDest/',
         set:'/api/dhcrelay/settings/setDest/',
         add:'/api/dhcrelay/settings/addDest/',
         del:'/api/dhcrelay/settings/delDest/',
     });
-    $("#{{formGridRelay['table_id']}}").UIBootgrid({
+    $("#grid-relay").UIBootgrid({
         search:'/api/dhcrelay/settings/searchRelay',
         get:'/api/dhcrelay/settings/getRelay/',
         set:'/api/dhcrelay/settings/setRelay/',
@@ -41,22 +41,78 @@ $( document ).ready(function() {
         del:'/api/dhcrelay/settings/delRelay/',
         toggle:'/api/dhcrelay/settings/toggleRelay/'
     });
-    $("div.actionBar").each(function(){
-        if ($(this).closest(".bootgrid-header").attr("id").includes("Dest")) {
-            $(this).parent().prepend($('<td id="heading-wrapper" class="col-sm-2 theading-text">{{ lang._('Destinations') }}</div>'));
-        } else {
-            $(this).parent().prepend($('<td id="heading-wrapper" class="col-sm-2 theading-text">{{ lang._('Relays') }}</div>'));
-        }
-    });
     $("#reconfigureAct").SimpleActionButton();
 });
 </script>
+
 <div class="content-box __mb">
-    {{ partial('layout_partials/base_bootgrid_table', formGridDest)}}
+    <table class="table table-striped page-header" style="margin-top: 0">
+        <tbody><tr><th>Destinations</th><tr></tbody>
+    </table>
+    <table id="grid-dest" class="table table-condensed table-hover table-striped" data-editDialog="DialogDest">
+        <thead>
+        <tr>
+            <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+            <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
+            <th data-column-id="server" data-type="string">{{ lang._('Server') }}</th>
+            <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Edit') }} | {{ lang._('Delete') }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td></td>
+            <td>
+                <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
+                <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
 </div>
+
 <div class="content-box __mb">
-    {{ partial('layout_partials/base_bootgrid_table', formGridRelay)}}
+    <table class="table table-striped page-header" style="margin-top: 0">
+        <tbody><tr><th>Relays</th><tr></tbody>
+    </table>
+    <table id="grid-relay" class="table table-condensed table-hover table-striped" data-editDialog="DialogRelay">
+        <thead>
+        <tr>
+            <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+            <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+            <th data-column-id="status" data-width="6em" data-type="string" data-formatter="statusled">{{ lang._('Status') }}</th>
+            <th data-column-id="interface" data-type="string">{{ lang._('Interface') }}</th>
+            <th data-column-id="destination" data-type="string">{{ lang._('Destination') }}</th>
+            <th data-column-id="agent_info" data-type="string" data-visible="false">{{ lang._('Agent Info') }}</th>
+            <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Edit') }} | {{ lang._('Delete') }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td></td>
+            <td>
+                <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
+                <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
 </div>
-{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/dhcrelay/service/reconfigure', 'data_grid_reload': formGridRelay['table_id']}) }}
-{{ partial('layout_partials/base_dialog',['fields':formDialogRelay,'id':formGridRelay['edit_dialog_id'],'label':lang._('Edit DHCP relay')])}}
-{{ partial('layout_partials/base_dialog',['fields':formDialogDest,'id':formGridDest['edit_dialog_id'],'label':lang._('Edit DHCP destination')])}}
+
+<div class="content-box">
+    <div class="col-md-12 __mt __mb">
+        <button class="btn btn-primary" id="reconfigureAct"
+                data-endpoint='/api/dhcrelay/service/reconfigure'
+                data-label="{{ lang._('Apply') }}"
+                data-grid-reload="grid-relay"
+                data-error-title="{{ lang._('Error reconfiguring dhcrelay') }}"
+                type="button">
+        </button>
+    </div>
+</div>
+
+{{ partial("layout_partials/base_dialog",['fields':formDialogRelay,'id':'DialogRelay','label':lang._('Edit DHCP relay')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogDest,'id':'DialogDest','label':lang._('Edit DHCP destination')])}}

@@ -35,11 +35,7 @@ class RelayController extends IndexController
     public function indexAction()
     {
         $this->view->formDialogRelay = $this->getForm('dialogRelay');
-        $this->view->formGridRelay = $this->getFormGrid('dialogRelay');
-
         $this->view->formDialogDest = $this->getForm('dialogDest');
-        $this->view->formGridDest = $this->getFormGrid('dialogDest');
-
         $this->view->pick('OPNsense/DHCRelay/relay');
     }
 }
