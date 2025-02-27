@@ -251,12 +251,13 @@ class Plugin
         foreach (explode(',', $types) as $type) {
             foreach ($this->anchors as $anchorKey => $anchor) {
                 if (strpos($anchorKey, "{$type}.{$placement}") === 0) {
-                    $result .= $type == "fw" ? "" : "{$type}-";
-                    $result .= "anchor \"{$anchor['name']}\"";
+                    $result .= ($type == "fw" || $type == "ether") ? "" : "{$type}-";
+                    $prefix = $type == "ether" ? "ether " : "";
+                    $result .= "{$prefix}anchor \"{$anchor['name']}\"";
                     if ($anchor['quick']) {
                         $result .= " quick";
                     }
-                    if (!empty($anchor['subanchors'])) {
+                    if (!empty($anchor['subanchors']) && $type !== "ether") {
                         $result .= " {\n";
                         foreach ($anchor['subanchors'] as $subanchor) {
                             $result .= "    anchor \"{$subanchor['name']}\"";

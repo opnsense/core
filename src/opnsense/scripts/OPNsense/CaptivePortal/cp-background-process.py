@@ -56,9 +56,7 @@ class CPBackgroundProcess(object):
         self.cnf = Config()
         self.db = DB()
         self._conf_zone_info = self.cnf.get_zones()
-        self._accounting = dict()
-        self._sync_accounting = dict()
-
+        self._accounting_info = dict()
 
     def list_zone_ids(self):
         """ return zone numbers
@@ -66,46 +64,13 @@ class CPBackgroundProcess(object):
         return self._conf_zone_info.keys()
 
     def get_accounting(self):
+        self._accounting_info.clear()
         for zoneid in self.list_zone_ids():
-            pf_stats = PF.list_accounting_info(zoneid)
-            current_clients = self.db.list_clients(zoneid)
+            self._accounting_info[zoneid] = PF.list_accounting_info(zoneid)
 
-            pf_ips = set(pf_stats.keys())
-            db_ips = {entry['ipAddress'] for entry in current_clients}
-
-            missing_ips = pf_ips - db_ips
-            for ip in missing_ips:
-                # client was removed from db
-                self._sync_accounting[zoneid] = True
-                if ip in self._accounting:
-                    del self._accounting[ip]
-
-            for client in current_clients:
-                ip = client['ipAddress']
-                if ip not in self._accounting:
-                    if ip not in pf_stats:
-                        # client was added to db
-                        self._sync_accounting[zoneid] = True
-
-                    # client not known in memory yet
-                    self._accounting[ip] = {
-                        'last_accessed': client['last_accessed'],
-                        'last_accessed_hash': '',
-                        'in_pkts': 0,
-                        'in_bytes': 0,
-                        'out_pkts': 0,
-                        'out_bytes': 0
-                    }
-                else:
-                    values = "".join(map(str, [pf_stats[ip]['in_pkts'], pf_stats[ip]['in_bytes'],
-                                pf_stats[ip]['out_pkts'], pf_stats[ip]['out_bytes']]))
-                    cur_hash = hashlib.md5(values.encode()).hexdigest()
-                    if cur_hash != self._accounting[ip]['last_accessed_hash']:
-                        self._accounting[ip]['last_accessed_hash'] = cur_hash
-                        self._accounting[ip]['last_accessed'] = time.time()
-                    self._accounting[ip] |= pf_stats[ip]
-
-        return self._accounting
+        # map to flat dict of IPs
+        merged = {k: v for subdict in self._accounting_info.values() for k, v in subdict.items()}
+        return merged
 
     def initialize_fixed(self):
         """ initialize fixed ip / hosts per zone
@@ -231,10 +196,14 @@ class CPBackgroundProcess(object):
 
     def sync_accounting(self):
         for zoneid in self.list_zone_ids():
-            if self._sync_accounting.get(zoneid, False):
-                syslog.syslog(syslog.LOG_NOTICE, f'sync accounting for zone {zoneid}')
+            pf_stats = self._accounting_info[zoneid]
+            current_clients = self.db.list_clients(zoneid)
+
+            pf_ips = set(pf_stats.keys())
+            db_ips = {entry['ipAddress'] for entry in current_clients}
+
+            if pf_ips != db_ips:
                 PF.sync_accounting(zoneid)
-                self._sync_accounting[zoneid] = False
 
 def main():
     """ Background process loop, runs as backend daemon for all zones. only one should be active at all times.

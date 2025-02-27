@@ -32,9 +32,6 @@ function captiveportal_firewall($fw)
 
     $cp = new \OPNsense\CaptivePortal\CaptivePortal();
     if ($cp->isEnabled()) {
-        // register anchor, to be filled with match rules for accounting
-        $fw->registerAnchor("captiveportal", "fw", 0, "head");
-
         foreach ($cp->zones->zone->iterateItems() as $zone) {
             if (empty((string)$zone->enabled)) {
                 continue;
@@ -42,7 +39,9 @@ function captiveportal_firewall($fw)
 
             $zoneid = (string)$zone->zoneid;
             $uuid = $zone->getAttribute('uuid');
-            $fw->registerNestedAnchor("captiveportal", "zone_{$zoneid}");
+            // register anchor, to be filled with ether rules for accounting
+            $fw->registerAnchor("captiveportal_zone_{$zoneid}", "ether", 0, "head");
+
 
             foreach (explode(',', $zone->interfaces) as $intf) {
                 // allow DNS
