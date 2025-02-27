@@ -26,6 +26,10 @@
 
 <script>
 $( document ).ready(function() {
+    // Add the status column since it is not part of dialogRelay.xml
+    const $statusColumn = $('<th data-column-id="status" data-width="6em" data-type="string" data-formatter="statusled">{{ lang._('Status') }}</th>');
+    $('#{{formGridRelay['table_id']}} thead tr th[data-column-id="enabled"]').after($statusColumn);
+
     $("#{{formGridDest['table_id']}}").UIBootgrid({
         search:'/api/dhcrelay/settings/searchDest',
         get:'/api/dhcrelay/settings/getDest/',
