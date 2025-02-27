@@ -214,29 +214,11 @@ class Plugin
      * @param bool $quick
      * @return null
      */
-    public function registerAnchor($name, $type = "fw", $priority = 0, $placement = "tail", $quick = false)
+    public function registerAnchor($name, $type = "fw", $priority = 0, $placement = "tail", $quick = false, $ifs = null)
     {
         $anchorKey = sprintf("%s.%s.%08d.%08d", $type, $placement, $priority, count($this->anchors));
-        $this->anchors[$anchorKey] = ['name' => $name, 'quick' => $quick];
+        $this->anchors[$anchorKey] = ['name' => $name, 'quick' => $quick, 'ifs' => $ifs];
         ksort($this->anchors);
-    }
-
-    /**
-     * register nested anchor
-     * @param string $parentName parent anchor name
-     * @param string $name sub-anchor name
-     * @param bool $quick
-     * @return null
-     */
-    public function registerNestedAnchor($parentName, $name, $quick = false)
-    {
-        foreach ($this->anchors as &$anchor) {
-            if ($anchor['name'] == $parentName) {
-                $anchor['subanchors'][] = ['name' => $name, 'quick' => $quick];
-                ksort($anchor['subanchors']);
-                break;
-            }
-        }
     }
 
     /**
@@ -257,23 +239,20 @@ class Plugin
                     if ($anchor['quick']) {
                         $result .= " quick";
                     }
-                    if (!empty($anchor['subanchors']) && $type !== "ether") {
-                        $result .= " {\n";
-                        foreach ($anchor['subanchors'] as $subanchor) {
-                            $result .= "    anchor \"{$subanchor['name']}\"";
-                            if ($subanchor['quick']) {
-                                $result .= " quick";
-                            }
-                            $result .= "\n";
+                    if (!empty($anchor['ifs'])) {
+                        $ifs = array_filter(array_map(function($if) {
+                            return $this->interfaceMapping[$if]['if'] ?? null;
+                        }, explode(',', $anchor['ifs'])));
+
+                        if (!empty($ifs)) {
+                            $result .= " on {" . implode(', ', $ifs) . "}";
                         }
-                        $result .= "}\n";
-                    } else {
-                        $result .= "\n";
                     }
+                    $result .= "\n";
                 }
             }
         }
-        return $result;
+        return $result . "\n";
     }
 
     /**
