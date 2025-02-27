@@ -93,6 +93,11 @@
                     if ( $('#category_filter').val().length > 0) {
                         request['category'] = $('#category_filter').val();
                     }
+                    let internalTypes = $('#include_internal_select').val();
+                    if (internalTypes && internalTypes.length > 0) {
+                        // Send as a comma separated string
+                        request['include_internal'] = internalTypes.join(',');
+                    }
                     return request;
                 },
                 formatters:{
@@ -158,6 +163,9 @@
                         } else if (row.direction.toLowerCase() === "out") {
                             result += '<i class="fa fa-long-arrow-left fa-fw" ' + iconStyle +
                                     ' data-toggle="tooltip" title="{{ lang._("Out") }}"></i> ';
+                        } else {
+                            result += '<i class="fa fa-exchange fa-fw" ' + iconStyle +
+                                    ' data-toggle="tooltip" title="{{ lang._("Any") }}"></i> ';
                         }
 
                         // Quick match
@@ -305,6 +313,14 @@
             $(this).find('th[data-column-id="source_port"] .text').text("{{ lang._('Port') }}");
             $(this).find('th[data-column-id="destination_port"] .text').text("{{ lang._('Port') }}");
 
+            $("[data-row-id]").each(function(){
+                const uuid = $(this).data("row-id");
+                if (uuid && uuid.indexOf("internal") !== -1) {
+                    // Assuming the enabled checkbox is rendered within a cell with data-column-id="enabled"
+                    $(this).find("td[data-column-id='enabled']").hide();
+                }
+            });
+
             // Animate move_up and move_down commands
             const highlightUuid = sessionStorage.getItem("highlightRuleUuid");
             if (highlightUuid) {
@@ -410,6 +426,11 @@
         // move filter into action header
         $("#type_filter_container").detach().prependTo('#{{formGridFilterRule['table_id']}}-header > .row > .actionBar > .actions');
         $("#category_filter").change(function(){
+            $('#{{formGridFilterRule['table_id']}}').bootgrid('reload');
+        });
+
+        $("#internal_rule_selector").insertBefore("#type_filter_container");
+        $('#include_internal_select').change(function(){
             $('#{{formGridFilterRule['table_id']}}').bootgrid('reload');
         });
 
@@ -524,6 +545,17 @@
             <div id="type_filter_container" class="btn-group">
                 <select id="category_filter" data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="5" multiple data-width="200px">
                 </select>
+            </div>
+            <div id="internal_rule_selector" class="btn-group" style="width: 200px; margin-left: 10px;">
+                <div class="dropdown bootstrap-select show-tick bs3" style="width: 200px;">
+                    <select id="include_internal_select" data-title="{{ lang._('Show internal rules') }}" class="selectpicker" data-live-search="false" multiple data-width="200px">
+                        <option value="internal">{{ lang._('Internal (Start of Ruleset)') }}</option>
+                        <option value="internal2">{{ lang._('Internal (End of Ruleset)') }}</option>
+                        <option value="floating">{{ lang._('Floating') }}</option>
+                        <option value="group">{{ lang._('Group') }}</option>
+                    </select>
+                    <!-- selectpicker will generate the button markup -->
+                </div>
             </div>
         </div>
         <!-- tab page "rules" -->

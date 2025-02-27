@@ -19,7 +19,7 @@
         <type>text</type>
         <help>The order in which rules are being processed.</help>
         <grid_view>
-            <width>4em</width>
+            <width>5em</width>
             <sequence>20</sequence>
             <!-- The sequence order of firewall rules is absolute, no other field shall be sorted -->
             <order>asc</order>
