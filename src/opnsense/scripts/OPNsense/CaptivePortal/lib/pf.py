@@ -99,6 +99,3 @@ class PF(object):
                     stats.update({'last_accessed': int(time.mktime(time.strptime(date_str, "%a %b %d %H:%M:%S %Y")))})
 
         return results
-
-
-print(PF.list_accounting_info(0))
