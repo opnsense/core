@@ -158,7 +158,7 @@ class FilterController extends FilterBaseController
      * Fetches rules from legacy filter with "filter get_internal_rules %s"
      * It normalizes the rule data, ensuring that required fields are populated with defaults when missing.
      *
-     * @param string|null $ruleType Optional rule type to fetch (e.g., 'internal', 'internal2').
+     * @param string|null $ruleType Optional rule type to fetch (e.g., 'internal', 'internal2', 'floating').
      *                              If not provided, it is determined from the request or defaults to 'internal'.
      *
      * @return array An associative array containing:
@@ -176,27 +176,24 @@ class FilterController extends FilterBaseController
             $ruleType = 'internal';
         }
 
-        // Set default sequence based on rule type. "internal2" rules are at end of ruleset
-        if ($ruleType === 'internal2') {
-            $defaultSequence = 1000000;
-        } else {
-            $defaultSequence = 0;
-        }
+        // Set default sequence based on rule type. "internal2" rules are at end of ruleset.
+        $defaultSequence = ($ruleType === 'internal2') ? 1000000 : 0;
 
-        $backend = new \OPNsense\Core\Backend();
+        $backend = new Backend();
         $rawOutput = trim($backend->configdRun("filter get_internal_rules " . escapeshellarg($ruleType)));
         $data = json_decode($rawOutput, true);
 
         if ($data === null) {
             return [
-                "status" => "error",
+                "status"  => "error",
                 "message" => "Failed to decode firewall rules output."
             ];
         }
 
+        // Template for expected keys and their default values.
         $template = [
             'uuid'              => '',
-            'enabled'           => '1',
+            'enabled'           => '1', // default assumes rule is enabled unless marked disabled
             'disablereplyto'    => '0',
             'label'             => '',
             'statetype'         => '',
@@ -253,6 +250,7 @@ class FilterController extends FilterBaseController
         foreach ($data as $rule) {
             $newRule = [];
             foreach ($template as $key => $default) {
+                // Determine the source key based on legacy mappings.
                 $sourceKey = $key;
                 if ($key === 'replyto' && !isset($rule[$key]) && isset($rule['reply-to'])) {
                     $sourceKey = 'reply-to';
@@ -260,14 +258,56 @@ class FilterController extends FilterBaseController
                 if ($key === 'description' && !isset($rule[$key]) && isset($rule['descr'])) {
                     $sourceKey = 'descr';
                 }
-                $newRule[$key] = array_key_exists($sourceKey, $rule) ? $rule[$sourceKey] : $default;
+                if ($key === 'source_net' && !isset($rule[$key]) && isset($rule['from'])) {
+                    $sourceKey = 'from';
+                }
+                if ($key === 'source_port' && !isset($rule[$key]) && isset($rule['from_port'])) {
+                    $sourceKey = 'from_port';
+                }
+                if ($key === 'destination_net' && !isset($rule[$key]) && isset($rule['to'])) {
+                    $sourceKey = 'to';
+                }
+                if ($key === 'destination_port' && !isset($rule[$key]) && isset($rule['to_port'])) {
+                    $sourceKey = 'to_port';
+                }
+
+                // Initialize the value from the source or default.
+                $value = array_key_exists($sourceKey, $rule) ? $rule[$sourceKey] : $default;
+
+                // Remap "enabled" using "disabled" if available.
+                if ($key === 'enabled' && isset($rule['disabled'])) {
+                    $value = $rule['disabled'] ? '0' : '1';
+                }
+
+                // Rewrite ipprotocol values inline and wrap with lang() for user-exposed text.
+                if ($key === 'ipprotocol') {
+                    switch ($value) {
+                        case 'inet':
+                            $value = gettext('IPv4');
+                            break;
+                        case 'inet6':
+                            $value = gettext('IPv6');
+                            break;
+                        case 'inet46':
+                            $value = gettext('IPv4+IPv6');
+                            break;
+                        case '':
+                            $value = gettext('IPv4');
+                            break;
+                    }
+                }
+
+                $newRule[$key] = $value;
             }
+
+            // Set the UUID based on the rule type if not already provided.
             if (empty($newRule['uuid'])) {
-                $newRule['uuid'] = 'internal';
+                $newRule['uuid'] = $ruleType;
             }
             if (empty($newRule['sequence'])) {
                 $newRule['sequence'] = $defaultSequence;
             }
+
             $normalizedRules[] = $newRule;
         }
 
