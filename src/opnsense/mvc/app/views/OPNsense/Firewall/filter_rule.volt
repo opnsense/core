@@ -144,29 +144,37 @@
                             </button>
                         `;
                     },
-                    // Only show rowtoggle for rules that have a uuid, internal rules will have no interaction
+                    // Show rowtoggle for all rules, but disable interaction for internal rules with no valid UUID
                     rowtoggle: function (column, row) {
                         let rowId = row.uuid;
+                        let isEnabled = parseInt(row[column.id], 2) === 1;
 
+                        let iconClass = isEnabled
+                            ? "fa-check-square-o"
+                            : "fa-square-o text-muted";
+
+                        let tooltipText = isEnabled
+                            ? "{{ lang._('Enabled') }}"
+                            : "{{ lang._('Disabled') }}";
+
+                        // For valid UUIDs, make it interactive
                         if (rowId && uuidRegex.test(rowId)) {
-                            // Valid UUID: use the rowtoggle style with tooltips.
-                            return parseInt(row[column.id], 2) === 1
-                                ? `<span style="cursor: pointer;" class="fa fa-fw fa-check-square-o
-                                    command-toggle bootgrid-tooltip" data-value="1"
-                                    data-row-id="${rowId}"
-                                    title="{{ lang._('Enabled') }}"></span>`
-                                : `<span style="cursor: pointer;" class="fa fa-fw fa-square-o
-                                    command-toggle bootgrid-tooltip" data-value="0"
-                                    data-row-id="${rowId}"
-                                    title="{{ lang._('Disabled') }}"></span>`;
+                            return `
+                                <span style="cursor: pointer;" class="fa fa-fw ${iconClass}
+                                    command-toggle bootgrid-tooltip" data-value="${isEnabled ? 1 : 0}"
+                                    data-row-id="${rowId}" title="${tooltipText}">
+                                </span>
+                            `;
                         }
 
-                        // Invalid UUID: fall back to boolean style with tooltip.
-                        return parseInt(row[column.id], 2) === 1
-                            ? `<span class="fa fa-fw fa-check" data-toggle="tooltip" data-value="1"
-                                data-row-id="${rowId}" title="{{ lang._('Enabled') }}"></span>`
-                            : `<span class="fa fa-fw fa-times" data-toggle="tooltip" data-value="0"
-                                data-row-id="${rowId}" title="{{ lang._('Disabled') }}"></span>`;
+                        // For internal rules, show a non-interactive toggle
+                        return `
+                            <span style="opacity: 0.5"
+                                class="fa fa-fw ${iconClass} bootgrid-tooltip"
+                                data-value="${isEnabled ? 1 : 0}"
+                                data-row-id="${rowId}" title="${tooltipText}">
+                            </span>
+                        `;
                     },
                     // Show rule inverse status
                     interfacenot: function(column, row) {
