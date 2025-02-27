@@ -79,6 +79,9 @@
             }
         });
 
+        // Test if the UUID is valid, used to determine if automation model or internal rule
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
         const grid = $("#{{formGridFilterRule['table_id']}}").UIBootgrid({
             search:'/api/firewall/filter/search_rule/',
             get:'/api/firewall/filter/get_rule/',
@@ -101,6 +104,70 @@
                     return request;
                 },
                 formatters:{
+                    // Only show command buttons for rules that have a uuid, internal rules will not have one
+                    commands: function (column, row) {
+                        let rowId = row.uuid;
+
+                        if (!rowId || !uuidRegex.test(rowId)) {
+                            return "";
+                        }
+
+                        return `
+                            <button type="button" class="btn btn-xs btn-default command-move_up
+                                bootgrid-tooltip" data-row-id="${rowId}"
+                                title="{{ lang._('Move Rule Up') }}">
+                                <span class="fa fa-fw fa-arrow-up"></span>
+                            </button>
+
+                            <button type="button" class="btn btn-xs btn-default command-move_down
+                                bootgrid-tooltip" data-row-id="${rowId}"
+                                title="{{ lang._('Move Rule Down') }}">
+                                <span class="fa fa-fw fa-arrow-down"></span>
+                            </button>
+
+                            <button type="button" class="btn btn-xs btn-default command-edit
+                                bootgrid-tooltip" data-row-id="${rowId}"
+                                title="{{ lang._('Edit') }}">
+                                <span class="fa fa-fw fa-pencil"></span>
+                            </button>
+
+                            <button type="button" class="btn btn-xs btn-default command-copy
+                                bootgrid-tooltip" data-row-id="${rowId}"
+                                title="{{ lang._('Clone') }}">
+                                <span class="fa fa-fw fa-clone"></span>
+                            </button>
+
+                            <button type="button" class="btn btn-xs btn-default command-delete
+                                bootgrid-tooltip" data-row-id="${rowId}"
+                                title="{{ lang._('Delete') }}">
+                                <span class="fa fa-fw fa-trash-o"></span>
+                            </button>
+                        `;
+                    },
+                    // Only show rowtoggle for rules that have a uuid, internal rules will have no interaction
+                    rowtoggle: function (column, row) {
+                        let rowId = row.uuid;
+
+                        if (rowId && uuidRegex.test(rowId)) {
+                            // Valid UUID: use the rowtoggle style with tooltips.
+                            return parseInt(row[column.id], 2) === 1
+                                ? `<span style="cursor: pointer;" class="fa fa-fw fa-check-square-o
+                                    command-toggle bootgrid-tooltip" data-value="1"
+                                    data-row-id="${rowId}"
+                                    title="{{ lang._('Enabled') }}"></span>`
+                                : `<span style="cursor: pointer;" class="fa fa-fw fa-square-o
+                                    command-toggle bootgrid-tooltip" data-value="0"
+                                    data-row-id="${rowId}"
+                                    title="{{ lang._('Disabled') }}"></span>`;
+                        }
+
+                        // Invalid UUID: fall back to boolean style with tooltip.
+                        return parseInt(row[column.id], 2) === 1
+                            ? `<span class="fa fa-fw fa-check" data-toggle="tooltip" data-value="1"
+                                data-row-id="${rowId}" title="{{ lang._('Enabled') }}"></span>`
+                            : `<span class="fa fa-fw fa-times" data-toggle="tooltip" data-value="0"
+                                data-row-id="${rowId}" title="{{ lang._('Disabled') }}"></span>`;
+                    },
                     // Show rule inverse status
                     interfacenot: function(column, row) {
                         if (row.interfacenot == true) {
@@ -332,6 +399,7 @@
 
                 sessionStorage.removeItem("highlightRuleUuid");
             }
+
         });
 
         // Reload categories before grid load
@@ -530,7 +598,7 @@
     }
     /* Advanced mode tooltip */
     .tooltip-inner {
-        max-width: 300px;
+        max-width: 600px;
         text-align: left;
     }
 </style>
