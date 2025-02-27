@@ -29,6 +29,7 @@ namespace OPNsense\Firewall\Api;
 
 use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
+use OPNsense\Base\FieldTypes\ArrayField;
 
 class FilterController extends FilterBaseController
 {
@@ -103,10 +104,8 @@ class FilterController extends FilterBaseController
             $element = $element->{$step};
         }
         $fields = null;
-        if ((is_a($element, "OPNsense\\Base\\FieldTypes\\ArrayField")
-            || is_subclass_of($element, "OPNsense\\Base\\FieldTypes\\ArrayField"))
-            && empty($fields)
-        ) {
+        if ((is_a($element, ArrayField::class) || is_subclass_of($element, ArrayField::class))
+            && empty($fields)) {
             $fields = [];
             foreach ($element->iterateItems() as $node) {
                 foreach ($node->iterateItems() as $key => $val) {
