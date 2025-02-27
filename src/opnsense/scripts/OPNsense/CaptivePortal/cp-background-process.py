@@ -196,7 +196,7 @@ class CPBackgroundProcess(object):
 
     def sync_accounting(self):
         for zoneid in self.list_zone_ids():
-            pf_stats = self._accounting_info[zoneid]
+            pf_stats = self._accounting_info.get(zoneid, {})
             current_clients = self.db.list_clients(zoneid)
 
             pf_ips = set(pf_stats.keys())
