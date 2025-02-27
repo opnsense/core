@@ -75,9 +75,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename("/css/bootstrap-dialog.css")) ?>">
 
     <!-- Font awesome -->
-    <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/assets/fontawesome/css/fontawesome.min.css") ?>">
-    <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/assets/fontawesome/css/solid.min.css") ?>">
-    <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/assets/fontawesome/css/brands.min.css") ?>">
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/assets/fontawesome/css/all.min.css") ?>">
     <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/assets/fontawesome/css/v4-shims.min.css") ?>">
 
     <!-- nvd3 -->
