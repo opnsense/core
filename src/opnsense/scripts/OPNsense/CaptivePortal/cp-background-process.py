@@ -56,7 +56,8 @@ class CPBackgroundProcess(object):
         self.cnf = Config()
         self.db = DB()
         self._conf_zone_info = self.cnf.get_zones()
-        self._accounting_info = dict()
+
+        self._accounting_info = {k: {'cur': {}, 'prev': {}, 'reset': False} for k in self.list_zone_ids()}
 
     def list_zone_ids(self):
         """ return zone numbers
@@ -64,12 +65,29 @@ class CPBackgroundProcess(object):
         return self._conf_zone_info.keys()
 
     def get_accounting(self):
-        self._accounting_info.clear()
+        """ returns only how much the accounting should add in total
+        """
+        result = {}
         for zoneid in self.list_zone_ids():
-            self._accounting_info[zoneid] = PF.list_accounting_info(zoneid)
+            self._accounting_info[zoneid]['prev'] = self._accounting_info[zoneid]['cur']
+            self._accounting_info[zoneid]['cur'] = PF.list_accounting_info(zoneid)
+
+            if self._accounting_info[zoneid]['reset']:
+                # counters were reset to 0, simply add
+                result[zoneid] = self._accounting_info[zoneid]['cur']
+            else:
+                # counters still valid, calculate difference
+                result[zoneid] = self._accounting_info[zoneid]['cur']
+                for ip in self._accounting_info[zoneid]['cur']:
+                    for key in ['in_pkts', 'in_bytes', 'out_pkts', 'out_bytes']:
+                        if ip not in self._accounting_info[zoneid]['prev']:
+                            result[zoneid][ip][key] = self._accounting_info[zoneid]['cur'][ip][key]
+                        else:
+                            result[zoneid][ip][key] = self._accounting_info[zoneid]['cur'][ip][key] \
+                                - self._accounting_info[zoneid]['prev'][ip][key]
 
         # map to flat dict of IPs
-        merged = {k: v for subdict in self._accounting_info.values() for k, v in subdict.items()}
+        merged = {k: v for subdict in result.values() for k, v in subdict.items()}
         return merged
 
     def initialize_fixed(self):
@@ -196,13 +214,15 @@ class CPBackgroundProcess(object):
 
     def sync_accounting(self):
         for zoneid in self.list_zone_ids():
-            pf_stats = self._accounting_info.get(zoneid, {})
+            pf_stats = self._accounting_info[zoneid]['cur']
             current_clients = self.db.list_clients(zoneid)
 
             pf_ips = set(pf_stats.keys())
             db_ips = {entry['ipAddress'] for entry in current_clients}
 
+            self._accounting_info[zoneid]['reset'] = False
             if pf_ips != db_ips:
+                self._accounting_info[zoneid]['reset'] = True
                 PF.sync_accounting(zoneid)
 
 def main():

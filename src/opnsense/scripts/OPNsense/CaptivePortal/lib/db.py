@@ -320,27 +320,10 @@ class DB(object):
                         """
                         # add usage to session
                         record['last_accessed'] = details[record['ip_address']]['last_accessed']
-                        if record['prev_packets_in'] <= details[record['ip_address']]['in_pkts'] and \
-                           record['prev_packets_out'] <= details[record['ip_address']]['out_pkts']:
-                            # pf data is still valid, add difference to use
-                            record['packets_in'] = (
-                                details[record['ip_address']]['in_pkts'] - record['prev_packets_in'])
-                            record['packets_out'] = (
-                                details[record['ip_address']]['out_pkts'] - record['prev_packets_out'])
-                            record['bytes_in'] = (details[record['ip_address']]['in_bytes'] - record['prev_bytes_in'])
-                            record['bytes_out'] = (
-                                details[record['ip_address']]['out_bytes'] - record['prev_bytes_out'])
-                        else:
-                            # the data has been reset (reloading rules), add current packet count
-                            record['packets_in'] = details[record['ip_address']]['in_pkts']
-                            record['packets_out'] = details[record['ip_address']]['out_pkts']
-                            record['bytes_in'] = details[record['ip_address']]['in_bytes']
-                            record['bytes_out'] = details[record['ip_address']]['out_bytes']
-
-                        record['prev_packets_in'] = details[record['ip_address']]['in_pkts']
-                        record['prev_packets_out'] = details[record['ip_address']]['out_pkts']
-                        record['prev_bytes_in'] = details[record['ip_address']]['in_bytes']
-                        record['prev_bytes_out'] = details[record['ip_address']]['out_bytes']
+                        record['packets_in'] = details[record['ip_address']]['in_pkts']
+                        record['packets_out'] = details[record['ip_address']]['out_pkts']
+                        record['bytes_in'] = details[record['ip_address']]['in_bytes']
+                        record['bytes_out'] = details[record['ip_address']]['out_bytes']
                         cur2.execute(sql_update, record)
 
                 prev_record = record
