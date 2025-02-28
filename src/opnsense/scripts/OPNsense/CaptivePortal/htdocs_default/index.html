@@ -18,9 +18,6 @@
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/signin.css" rel="stylesheet">
 
-        <!-- static zone info -->
-        <script src="js/zone.js"></script>
-
         <script src="js/jquery-1.11.2.min.js"></script>
         <script>
             function getURLparams()
@@ -47,7 +44,7 @@
                     // try to login
                     $.ajax({
                         type: "POST",
-                        url: "/api/captiveportal/access/logon/" + zoneid + "/",
+                        url: "/api/captiveportal/access/logon/",
                         dataType:"json",
                         data:{ user: $("#inputUsername").val(), password: $("#inputPassword").val() }
                     }).done(function(data) {
@@ -81,7 +78,7 @@
                     // try to login
                     $.ajax({
                         type: "POST",
-                        url: "/api/captiveportal/access/logon/" + zoneid + "/",
+                        url: "/api/captiveportal/access/logon/",
                         dataType:"json",
                         data:{ user: '', password: '' }
                     }).done(function(data) {
@@ -114,7 +111,7 @@
                     // try to login
                     $.ajax({
                         type: "POST",
-                        url: "/api/captiveportal/access/logoff/" + zoneid + "/",
+                        url: "/api/captiveportal/access/logoff/",
                         dataType:"json",
                         data:{ user: '', password: '' }
                     }).done(function(data) {
@@ -138,7 +135,7 @@
                  */
                  $.ajax({
                      type: "POST",
-                     url: "/api/captiveportal/access/status/" + zoneid + "/",
+                     url: "/api/captiveportal/access/status/",
                      dataType:"json",
                      data:{ user: $("#inputUsername").val(), password: $("#inputPassword").val() }
                  }).done(function(data) {
