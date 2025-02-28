@@ -205,15 +205,12 @@
                             return row.destination_net;
                         }
                     },
-                    default: function(column, row) {
-                        if (row[column.id].toLowerCase() !== 'none') {
-                            return row[column.id];
-                        } else {
-                            return '{{ lang._("default") }}';
-                        }
-                    },
                     any: function(column, row) {
-                        if (row[column.id] !== '' && row[column.id] !== 'any') {
+                        if (
+                            row[column.id] !== '' &&
+                            row[column.id] !== 'any' &&
+                            row[column.id] !== 'None'
+                        ) {
                             return row[column.id];
                         } else {
                             return '{{ lang._("*") }}';
@@ -382,8 +379,10 @@
             // XXX: Replace these labels to save some space in the grid
             $(this).find('th[data-column-id="enabled"] .text').text("");
             $(this).find('th[data-column-id="sequence"] .text').text("{{ lang._('Seq') }}");
+            $(this).find('th[data-column-id="protocol"] .text').text("{{ lang._('Proto') }}");
             $(this).find('th[data-column-id="source_port"] .text').text("{{ lang._('Port') }}");
             $(this).find('th[data-column-id="destination_port"] .text').text("{{ lang._('Port') }}");
+            $(this).find('th[data-column-id="interface"] .text').html('<i class="fa-solid fa-network-wired"></i>');
 
             $("[data-row-id]").each(function(){
                 const uuid = $(this).data("row-id");

@@ -57,7 +57,7 @@
         <grid_view>
             <sequence>110</sequence>
             <sortable>false</sortable>
-            <width>16em</width>
+            <width>12em</width>
         </grid_view>
     </field>
     <field>
@@ -115,9 +115,9 @@
         <grid_view>
             <formatter>interfacenot</formatter>
             <formatter>any</formatter>
-            <sequence>45</sequence>
+            <sequence>25</sequence>
             <sortable>false</sortable>
-            <width>6em</width>
+            <width>4em</width>
         </grid_view>
     </field>
     <field>
@@ -466,7 +466,6 @@
             <formatter>any</formatter>
             <sequence>100</sequence>
             <sortable>false</sortable>
-            <formatter>default</formatter>
             <width>6em</width>
         </grid_view>
     </field>
