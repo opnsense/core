@@ -349,77 +349,76 @@ class FilterController extends FilterBaseController
         return $this->toggleBase("rules.rule", $uuid, $enabled);
     }
 
-    public function moveUpAction($uuid)
-    {
-        return $this->moveRule($uuid, -1);
-    }
-
-    public function moveDownAction($uuid)
-    {
-        return $this->moveRule($uuid, +1);
-    }
-
     /**
-     * Move a firewall rule either up (-1) or down (+1) in the sequence list.
-     * This is done by swapping sequence numbers between two rules.
+     * Moves the selected rule so that it appears immediately before the target rule.
      *
-     * @param string $uuid   The UUID of the rule to move
-     * @param int    $offset -1 to move up, +1 to move down
-     * @return array         ["status" => "ok"] on success, "error" otherwise
+     * Rcalculates the sequence numbers for all rules using a fixed increment.
+     * If the new maximum sequence would exceed, the operation fails.
+     *
+     * @param string $selected_uuid The UUID of the rule to be moved.
+     * @param string $target_uuid   The UUID of the target rule (the rule before which the selected rule is to be placed).
+     * @return array Returns ["status" => "ok"] on success, or an error message otherwise.
      */
-    private function moveRule($uuid, int $offset)
+    public function moveRuleBeforeAction($selected_uuid, $target_uuid)
     {
         if (!$this->request->isPost()) {
-            return ["status" => "error"];
+            return ["status" => "error", "message" => gettext("Invalid request method")];
         }
 
         $mdl = $this->getModel();
-        $ruleToMove = $mdl->getNodeByReference("rules.rule." . $uuid);
-        if ($ruleToMove === null) {
-            return ["status" => "error"];
+        $selectedRule = $mdl->getNodeByReference("rules.rule." . $selected_uuid);
+        $targetRule = $mdl->getNodeByReference("rules.rule." . $target_uuid);
+
+        if ($selectedRule === null || $targetRule === null) {
+            return ["status" => "error", "message" => gettext("Rule not found")];
         }
 
-        // Gather all rules sorted by sequence
-        $allRules = [];
-        foreach ($mdl->rules->rule->iterateItems() as $key => $rule) {
-            $allRules[] = [
-                'uuid'     => $key,
-                'sequence' => (int)(string)$rule->sequence
-            ];
+        // Build an array of rule UUIDs sorted by their current sequence (ascending order)
+        $rules = [];
+        foreach ($mdl->rules->rule->iterateItems() as $uuid => $rule) {
+            $rules[$uuid] = (int)(string)$rule->sequence;
+        }
+        asort($rules);
+        $sortedUUIDs = array_keys($rules);
+
+        // Remove the selected rule from the sorted list.
+        $sortedUUIDs = array_values(array_filter($sortedUUIDs, function($uuid) use ($selected_uuid) {
+            return $uuid !== $selected_uuid;
+        }));
+
+        // Find the index of the target rule.
+        $targetIndex = array_search($target_uuid, $sortedUUIDs);
+        if ($targetIndex === false) {
+            return ["status" => "error", "message" => gettext("Target rule not found in list")];
         }
 
-        usort($allRules, fn($a, $b) => $a['sequence'] <=> $b['sequence']);
+        // Insert the selected rule before the target rule.
+        array_splice($sortedUUIDs, $targetIndex, 0, [$selected_uuid]);
 
-        // Find current rule in sorted list
-        $currentIndex = array_search($uuid, array_column($allRules, 'uuid'));
-        if ($currentIndex === false) {
-            return ["status" => "error"];
+        // Use a fixed increment and check maximum sequence.
+        $increment = 1;
+        $totalRules = count($sortedUUIDs);
+        $maxSeq = $increment * $totalRules;
+        if ($maxSeq > 999999) {
+            return ["status" => "error", "message" => gettext("Cannot renumber rules without exceeding the maximum sequence limit")];
         }
 
-        // Calculate new index
-        $newIndex = $currentIndex + $offset;
-        if ($newIndex < 0 || $newIndex >= count($allRules)) {
-            return ["status" => "error"];
+        // Renumber all rules with the new order.
+        foreach ($sortedUUIDs as $index => $uuid) {
+            $mdl->rules->rule->$uuid->sequence = (string)(($index + 1) * $increment);
         }
 
-        // Get UUID of the target rule
-        $targetUuid = $allRules[$newIndex]['uuid'];
-
-        // Swap sequences
-        $ruleA = $mdl->getNodeByReference("rules.rule." . $uuid);
-        $ruleB = $mdl->getNodeByReference("rules.rule." . $targetUuid);
-        [$ruleA->sequence, $ruleB->sequence] = [(string)$ruleB->sequence, (string)$ruleA->sequence];
-
-        // Save changes
+        // Save changes.
         $mdl->serializeToConfig();
-        Config::getInstance()->save();
+        \OPNsense\Core\Config::getInstance()->save();
 
         return ["status" => "ok"];
     }
 
+
     /**
      * Retrieve the next available filter sequence number.
-     * It returns the highest number + 100.
+     * It returns the highest number + 1.
      * This is matches how the logic of the FilterSequenceField would increment the sequence number.
      */
     public function getNextSequenceAction()
@@ -436,7 +435,7 @@ class FilterController extends FilterBaseController
 
         // If no sequences are found, start with base value
         $max = empty($sequences) ? 0 : max($sequences);
-        $nextSequence = $max + 100;
+        $nextSequence = $max + 1;
 
         return ['status' => 'ok', 'sequence' => $nextSequence];
     }

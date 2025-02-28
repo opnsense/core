@@ -126,16 +126,10 @@
                         }
 
                         return `
-                            <button type="button" class="btn btn-xs btn-default command-move_up
+                            <button type="button" class="btn btn-xs btn-default command-move_before
                                 bootgrid-tooltip" data-row-id="${rowId}"
-                                title="{{ lang._('Move Rule Up') }}">
-                                <span class="fa fa-fw fa-arrow-up"></span>
-                            </button>
-
-                            <button type="button" class="btn btn-xs btn-default command-move_down
-                                bootgrid-tooltip" data-row-id="${rowId}"
-                                title="{{ lang._('Move Rule Down') }}">
-                                <span class="fa fa-fw fa-arrow-down"></span>
+                                title="{{ lang._('Move selected rule before this rule') }}">
+                                <span class="fa fa-fw fa-arrow-left"></span>
                             </button>
 
                             <button type="button" class="btn btn-xs btn-default command-edit
@@ -319,73 +313,63 @@
                 },
             },
             commands: {
-                // Move filter rule sequence up or down in the grid
-                move_up: {
+                move_before: {
                     method: function(event) {
-                        const currentUuid = $(this).data("row-id");
+                        // Ensure exactly one rule is selected to be moved
+                        const selected = $("#{{ formGridFilterRule['table_id'] }}").bootgrid("getSelectedRows");
+                        if (selected.length !== 1) {
+                            showDialogAlert(
+                                BootstrapDialog.TYPE_WARNING,
+                                "{{ lang._('Selection Error') }}",
+                                "{{ lang._('Please select exactly one rule to move.') }}"
+                            );
+                            return;
+                        }
+
+                        // The rule the user selected
+                        const selectedUuid = selected[0];
+                        // The rule the button was pressed on
+                        const targetUuid = $(this).data("row-id");
+
+                        // Prevent moving a rule before itself
+                        if (selectedUuid === targetUuid) {
+                            showDialogAlert(
+                                BootstrapDialog.TYPE_WARNING,
+                                "{{ lang._('Move Error') }}",
+                                "{{ lang._('Cannot move a rule before itself.') }}"
+                            );
+                            return;
+                        }
+
                         ajaxCall(
-                            "/api/firewall/filter/move_up/" + currentUuid,
+                            "/api/firewall/filter/move_rule_before/" + selectedUuid + "/" + targetUuid,
                             {},
                             function(data, status) {
                                 if (data.status === "ok") {
-                                    // Animate move_up and move_down commands
-                                    sessionStorage.setItem("highlightRuleUuid", currentUuid);
                                     std_bootgrid_reload("{{ formGridFilterRule['table_id'] }}");
                                     showChangeMessage();
                                 } else {
+                                    let msg = data.message || "{{ lang._('Error moving rule.') }}";
                                     showDialogAlert(
                                         BootstrapDialog.TYPE_WARNING,
-                                        "{{ lang._('Warning') }}",
-                                        "{{ lang._('This rule cannot be moved up.') }}"
+                                        "{{ lang._('Move Error') }}",
+                                        msg
                                     );
                                 }
                             },
-                            function() {
+                            function(xhr, textStatus, errorThrown) {
                                 showDialogAlert(
                                     BootstrapDialog.TYPE_DANGER,
-                                    "{{ lang._('Error') }}",
-                                    "{{ lang._('Failed to move the rule.') }}"
+                                    "{{ lang._('Request Failed') }}",
+                                    errorThrown
                                 );
                             },
                             'POST'
                         );
                     },
-                    classname: "fa fa-fw fa-arrow-up",
-                    title: "{{ lang._('Move Rule Up') }}",
+                    classname: 'fa fa-fw fa-arrow-left',
+                    title: "{{ lang._('Move selected rule before this rule') }}",
                     sequence: 10
-                },
-                move_down: {
-                    method: function(event) {
-                        const currentUuid = $(this).data("row-id");
-                        ajaxCall(
-                            "/api/firewall/filter/move_down/" + currentUuid,
-                            {},
-                            function(data, status) {
-                                if (data.status === "ok") {
-                                    sessionStorage.setItem("highlightRuleUuid", currentUuid);
-                                    std_bootgrid_reload("{{ formGridFilterRule['table_id'] }}");
-                                    showChangeMessage();
-                                } else {
-                                    showDialogAlert(
-                                        BootstrapDialog.TYPE_WARNING,
-                                        "{{ lang._('Warning') }}",
-                                        "{{ lang._('This rule cannot be moved down.') }}"
-                                    );
-                                }
-                            },
-                            function() {
-                                showDialogAlert(
-                                    BootstrapDialog.TYPE_DANGER,
-                                    "{{ lang._('Error') }}",
-                                    "{{ lang._('Failed to move the rule.') }}"
-                                );
-                            },
-                            'POST'
-                        );
-                    },
-                    classname: "fa fa-fw fa-arrow-down",
-                    title: "{{ lang._('Move Rule Down') }}",
-                    sequence: 20
                 },
             },
 
@@ -559,15 +543,6 @@
             }
         });
 
-        $(".disable_replyto").change(function(){
-            const reply_to_tr = $(".enable_replyto").closest('tr');
-            if ($(this).is(':checked')) {
-                reply_to_tr.hide();
-            } else {
-                reply_to_tr.show();
-            }
-        });
-
         /**
          * Select the last unassigned filter sequence number
          * When rules are cloned it will also clone the sequence number
@@ -609,14 +584,6 @@
         overflow-y: auto;
         overflow-x: hidden;
     }
-    /* Animate move_up and move_down commands */
-    @keyframes fadeHighlight {
-        0%   { opacity: 0.2; }
-        100% { opacity: 1; }
-    }
-    .highlight-animate {
-        animation: fadeHighlight 1s ease-in-out;
-    }
     /* Advanced mode tooltip */
     .tooltip-inner {
         max-width: 600px;
@@ -648,7 +615,7 @@
             </div>
         </div>
         <!-- tab page "rules" -->
-        {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '10em'}) }}
+        {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '6em'}) }}
     </div>
 </div>
 

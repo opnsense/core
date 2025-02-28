@@ -32,22 +32,14 @@ use OPNsense\Base\FieldTypes\AutoNumberField;
 
 /**
  * Class FilterSequenceField
- * Extends the built-in AutoNumberField but increments by 100 instead of 1.
+ * Extends the built-in AutoNumberField
  * The next number will not be in an available gap, but always at the end of the sequence.
- * This ensures there is always space between firewall rules, so that rules can be moved inbetween
- * without reordering the whole ruleset. New rules will always be added at the end of of the ruleset.
  */
 class FilterSequenceField extends AutoNumberField
 {
-    public function __construct($ref = null, $tagname = null)
-    {
-        parent::__construct($ref, $tagname);
-        $this->setMinimumValue(100);
-    }
-
     public function applyDefault()
     {
-        $step = 100;
+        $step = 1;
 
         // Start from the minimum value if no entries exist
         $maxNumber = $this->minimum_value;

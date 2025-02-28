@@ -17,10 +17,11 @@
         <id>rule.sequence</id>
         <label>Sequence</label>
         <type>text</type>
-        <help>The order in which rules are being processed.</help>
+        <help>The order in which rules are being processed. Please note that this is not a unique identifier, the system will automatically recalculate the ruleset when rule positions are changed with the available "Move rule before this rule" button.</help>
         <grid_view>
             <width>5em</width>
             <sequence>20</sequence>
+            <visible>false</visible>
             <!-- The sequence order of firewall rules is absolute, no other field shall be sorted -->
             <order>asc</order>
             <sortable>false</sortable>
@@ -462,6 +463,7 @@
             Leave as 'default' to use the system routing table. Or choose a gateway to utilize policy based routing.
         </help>
         <grid_view>
+            <formatter>any</formatter>
             <sequence>100</sequence>
             <sortable>false</sortable>
             <formatter>default</formatter>
