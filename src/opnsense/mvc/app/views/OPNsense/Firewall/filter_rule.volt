@@ -54,7 +54,7 @@
             });
         }
 
-        // Trigger change message, e.g., when using move_up or move_down
+        // Trigger change message, e.g., when using move_before
         function showChangeMessage() {
             $("#change_message_base_form").slideDown(1000, function() {
                 setTimeout(function() {
@@ -615,7 +615,7 @@
             </div>
         </div>
         <!-- tab page "rules" -->
-        {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '6em'}) }}
+        {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '9em'}) }}
     </div>
 </div>
 
