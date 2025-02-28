@@ -95,7 +95,13 @@ class FilterController extends FilterBaseController
                     }
                 }
                 // If no matching key is found or it doesn't match the rule's interface, filter out this record.
-                if ($resolvedKey === null || ((string)$record->interface !== $resolvedKey)) {
+                if ($resolvedKey === null) {
+                    return false;
+                }
+                // Split the rule’s interface field into an array to support multiple interfaces.
+                $ruleInterfaces = array_map('trim', explode(',', (string)$record->interface));
+                // Check if the resolved key is in the array of interfaces.
+                if (!in_array($resolvedKey, $ruleInterfaces)) {
                     return false;
                 }
             }
