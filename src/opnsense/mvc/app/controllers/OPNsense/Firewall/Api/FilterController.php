@@ -184,7 +184,31 @@ class FilterController extends FilterBaseController
         $merged = array_merge($modelRules, $internalRules);
         $result = $this->searchRecordsetBase($merged, $fields, "sequence");
 
-        return $result;
+        /**
+         * 7. Post process only internal rules
+         * Replace raw interface names with descriptions
+         * This must be done after filtering, or the filter will not match as it compares the original interface name
+         */
+        $ifMap = (new InterfaceController())->getInterfaceNamesAction();
+
+        // Only model rules will have a valid UUID
+        function isValidUUID($uuid) {
+            return (bool)preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', trim($uuid));
+        }
+
+        if (!empty($result['rows'])) {
+            foreach ($result['rows'] as &$row) {
+                if (!isValidUUID($row['uuid'])) {
+                    $rawIf = $row['interface'];
+                    if (isset($ifMap[$rawIf])) {
+                        $row['interface'] = $ifMap[$rawIf];
+                    }
+                }
+            }
+            unset($row);
+        }
+
+    return $result;
     }
 
     /**
