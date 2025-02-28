@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2014-2015 Deciso B.V.
+ # Copyright (c) 2014-2025 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -66,11 +66,17 @@
             <div class="modal-body">
                 <form id="frm_{{base_dialog_id}}">
                   <div class="table-responsive">
-                    <table class="table table-striped table-condensed">
+                    <table class="table table-striped table-condensed" style="table-layout: fixed; width: 100%;">
                         <colgroup>
+                        {% if msgzone_width is defined %}
                             <col class="col-md-3"/>
-                            <col class="col-md-{{ 12-3-msgzone_width|default(5) }}"/>
-                            <col class="col-md-{{ msgzone_width|default(5) }}"/>
+                            <col class="col-md-{{ 12 - 3 - msgzone_width }}"/>
+                            <col class="col-md-{{ msgzone_width }}"/>
+                        {% else %}
+                            <col style="width: 25%;" />
+                            <col style="width: 40%;" />
+                            <col style="width: 35%;" />
+                        {% endif %}
                         </colgroup>
                         <tbody>
                         {%  if base_dialog_advanced|default(false) or base_dialog_help|default(false) %}
@@ -100,11 +106,17 @@
     </table>
   </div>
   <div class="table-responsive {{field['style']|default('')}}">
-    <table class="table table-striped table-condensed">
+    <table class="table table-striped table-condensed" style="table-layout: fixed; width: 100%;">
         <colgroup>
+        {% if msgzone_width is defined %}
             <col class="col-md-3"/>
-            <col class="col-md-{{ 12-3-msgzone_width|default(5) }}"/>
-            <col class="col-md-{{ msgzone_width|default(5) }}"/>
+            <col class="col-md-{{ 12 - 3 - msgzone_width }}"/>
+            <col class="col-md-{{ msgzone_width }}"/>
+        {% else %}
+            <col style="width: 25%;" />
+            <col style="width: 40%;" />
+            <col style="width: 35%;" />
+        {% endif %}
         </colgroup>
         <thead style="cursor: pointer;">
           <tr{% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
@@ -144,3 +156,11 @@
         </div>
     </div>
 </div>
+
+{# Ensure all fields stay the same width relative to each other inside the modal #}
+<style>
+    .modal-dialog .bootstrap-select:not(.bs-container),
+    .modal-dialog .tokenize ul.tokens-container {
+        width: 100% !important;
+    }
+</style>
