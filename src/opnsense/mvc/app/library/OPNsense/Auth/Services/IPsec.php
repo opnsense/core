@@ -56,10 +56,10 @@ class IPsec implements IService
      */
     public function supportedAuthenticators()
     {
-        $result = array();
-        $configObj = Config::getInstance()->object();
-        if (!empty((string)$configObj->ipsec->client->user_source)) {
-            $result = explode(',', (string)$configObj->ipsec->client->user_source);
+        $result = [];
+        $mdl = new \OPNsense\IPsec\IPsec();
+        if (!empty((string)$mdl->general->user_source)) {
+            $result = explode(',', (string)$mdl->general->user_source);
         } else {
             $result[] = 'Local Database';
         }
@@ -87,11 +87,11 @@ class IPsec implements IService
       */
     public function checkConstraints()
     {
-        $configObj = Config::getInstance()->object();
-        if (!empty((string)$configObj->ipsec->client->local_group)) {
+        $mdl = new \OPNsense\IPsec\IPsec();
+        if (!empty((string)$mdl->general->local_group)) {
             // Enforce group constraint when set
-            $local_group = (string)$configObj->ipsec->client->local_group;
-            return (new ACL())->inGroup($this->getUserName(), $local_group);
+            $local_group = (string)$mdl->general->local_group;
+            return (new ACL())->inGroup($this->getUserName(), $local_group, false);
         } else {
             // no constraints
             return true;

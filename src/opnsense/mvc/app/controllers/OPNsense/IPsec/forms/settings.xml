@@ -28,6 +28,59 @@
                 When sending all traffic to the remote location, you probably want to add your lan network(s) here.
             </help>
         </field>
+        <field>
+            <id>ipsec.general.user_source</id>
+            <label>Authentication (Xauth)</label>
+            <type>select_multiple</type>
+            <style>selectpicker</style>
+            <help>Select authentication methods to use, leave empty if no challenge response authentication is needed.</help>
+        </field>
+        <field>
+            <id>ipsec.general.local_group</id>
+            <label>Enforce local group (Xauth)</label>
+            <type>dropdown</type>
+            <style>selectpicker</style>
+            <help>Restrict access to users in the selected local group. Please be aware that other authentication backends will refuse to authenticate when using this option.</help>
+        </field>
+    </tab>
+    <tab id="ipsec-eap-radius" description="eap-radius">
+        <field>
+            <id>ipsec.charon.plugins.eap-radius.servers</id>
+            <label>Servers</label>
+            <type>select_multiple</type>
+            <help>RADIUS servers to configure</help>
+        </field>
+        <field>
+            <id>ipsec.charon.plugins.eap-radius.accounting</id>
+            <label>Accounting</label>
+            <type>checkbox</type>
+            <help>Enable RADIUS accounting</help>
+        </field>
+        <field>
+            <id>ipsec.charon.plugins.eap-radius.class_group</id>
+            <label>Group selection (class_group)</label>
+            <type>checkbox</type>
+        </field>
+    </tab>
+    <tab id="ipsec-xauth-pam" description="xauth-pam">
+        <field>
+            <id>ipsec.charon.plugins.xauth-pam.pam_service</id>
+            <label>Pam_service</label>
+            <type>text</type>
+            <help>PAM service to use for authentication.</help>
+        </field>
+        <field>
+            <id>ipsec.charon.plugins.xauth-pam.session</id>
+            <label>Session</label>
+            <type>checkbox</type>
+            <help>Open/close a PAM session for each active IKE_SA</help>
+        </field>
+        <field>
+            <id>ipsec.charon.plugins.xauth-pam.trim_email</id>
+            <label>Trim_email</label>
+            <type>checkbox</type>
+            <help>If an email address is received as an XAuth username, trim it to just the username part</help>
+        </field>
     </tab>
     <tab id="ipsec-charon" description="Charon">
         <field>
@@ -83,6 +136,18 @@
             <label>Make Before Break</label>
             <type>checkbox</type>
             <help>Initiate IKEv2 reauthentication with a make-before-break instead of a break-before-make scheme. Make-before-break uses overlapping IKE and CHILD SA during reauthentication by first recreating all new SAs before deleting the old ones. This behavior can be beneficial to avoid connectivity gaps during reauthentication, but requires support for overlapping SAs by the peer.</help>
+        </field>
+        <field>
+            <id>ipsec.charon.install_routes</id>
+            <label>Install routes</label>
+            <type>checkbox</type>
+            <help>Install routes into a separate routing table for established IPsec tunnels. If disabled a more efficient lookup for source and next-hop addresses is used.</help>
+        </field>
+        <field>
+            <id>ipsec.charon.cisco_unity</id>
+            <label>Cisco Unity</label>
+            <type>checkbox</type>
+            <help>Send Cisco Unity vendor ID payload (IKEv1 only).</help>
         </field>
         <field>
             <type>header</type>
@@ -228,6 +293,73 @@
         <field>
             <id>ipsec.charon.syslog.daemon.tnc</id>
             <label>Trusted Network Connect</label>
+            <type>dropdown</type>
+        </field>
+    </tab>
+    <tab id="ipsec-attr" description="Attr">
+        <field>
+            <id>ipsec.charon.plugins.attr.subnet</id>
+            <label>Subnet</label>
+            <type>select_multiple</type>
+            <style>tokenize</style>
+            <allownew>true</allownew>
+            <help>The protected sub-networks that this edge-device protects (in CIDR notation). Usually ignored in deference to local_ts, though macOS clients will use this for routes</help>
+        </field>
+        <field>
+            <id>ipsec.charon.plugins.attr.dns</id>
+            <label>DNS</label>
+            <type>select_multiple</type>
+            <style>tokenize</style>
+            <allownew>true</allownew>
+            <help>DNS server</help>
+        </field>
+        <field>
+            <id>ipsec.charon.plugins.attr.nbns</id>
+            <label>NBNS</label>
+            <type>select_multiple</type>
+            <style>tokenize</style>
+            <allownew>true</allownew>
+            <help>WINS server</help>
+        </field>
+        <field>
+            <type>header</type>
+            <label>Cisco Unity</label>
+        </field>
+        <field>
+            <id>ipsec.charon.plugins.attr.split-include</id>
+            <label>Split-include</label>
+            <type>select_multiple</type>
+            <style>tokenize</style>
+            <allownew>true</allownew>
+            <help>Comma-separated list of subnets to tunnel. The unity plugin provides a connection specific approach to assign this attribute.</help>
+        </field>
+        <field>
+            <id>ipsec.charon.plugins.attr.x_28674</id>
+            <label>Default search</label>
+            <type>text</type>
+            <help>Default search domain used when resolving host names via the assigned DNS servers</help>
+        </field>
+        <field>
+            <id>ipsec.charon.plugins.attr.x_28675</id>
+            <label>Split DNS name</label>
+            <type>text</type>
+            <help>If split tunneling is used clients might not install the assigned DNS servers globally. This space-separated list of domain names allows clients, such as macOS, to selectively query the assigned DNS servers. Seems Mac OS X uses only the first item in the list</help>
+        </field>
+        <field>
+            <id>ipsec.charon.plugins.attr.x_28672</id>
+            <label>Login banner</label>
+            <type>textbox</type>
+            <help>Message displayed on certain clients after login</help>
+        </field>
+        <field>
+            <id>ipsec.charon.plugins.attr.x_28673</id>
+            <label>Save password</label>
+            <type>checkbox</type>
+            <help>Allow client to save Xauth password in local storage</help>
+        </field>
+        <field>
+            <id>ipsec.charon.plugins.attr.x_28679</id>
+            <label>PFS group</label>
             <type>dropdown</type>
         </field>
     </tab>
