@@ -31,6 +31,7 @@ use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
 use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\UIModelGrid;
+use OPNsense\Diagnostics\Api\InterfaceController;
 
 class FilterController extends FilterBaseController
 {
@@ -415,7 +416,6 @@ class FilterController extends FilterBaseController
         return ["status" => "ok"];
     }
 
-
     /**
      * Retrieve the next available filter sequence number.
      * It returns the highest number + 1.
@@ -438,6 +438,25 @@ class FilterController extends FilterBaseController
         $nextSequence = $max + 1;
 
         return ['status' => 'ok', 'sequence' => $nextSequence];
+    }
+
+    /**
+     * Retrieve the list of available network interfaces and format them for use in a selectpicker.
+     *
+     * @return array An array of interfaces, where each entry contains:
+     *               - 'value' => raw interface name (e.g., "em0", "igb1")
+     *               - 'label' => interface description (e.g., "LAN", "WAN")
+     */
+    public function getInterfaceListAction()
+    {
+        $interfaces = (new InterfaceController())->getInterfaceNamesAction();
+
+        $selectpicker = [];
+        foreach ($interfaces as $if => $descr) {
+            $selectpicker[] = ['value' => $if, 'label' => $descr];
+        }
+
+        return $selectpicker;
     }
 
 }

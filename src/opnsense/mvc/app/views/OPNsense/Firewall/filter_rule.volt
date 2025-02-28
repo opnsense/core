@@ -434,6 +434,28 @@
 
                 $categoryFilter.val(currentSelection).selectpicker('refresh');
             });
+
+            ajaxCall(
+            '/api/firewall/filter/get_interface_list',
+                {},
+                function(data, status) {
+                    const $select = $('#interface_select');
+                    if (Array.isArray(data)) {
+                        data.forEach(function(iface) {
+                            $select.append(
+                                $('<option>', {
+                                    value: iface.value,
+                                    text: iface.label
+                                })
+                            );
+                        });
+                        $select.selectpicker('refresh');
+                    }
+                },
+                function(xhr, textStatus, errorThrown) {
+                    console.error("Failed to load interface list:", textStatus, errorThrown);
+                },
+            );
         });
 
         // Define the savepoint buttons HTML
@@ -498,6 +520,7 @@
         });
 
         // move filter into action header
+        $("#interface_select_container").detach().insertBefore('#{{formGridFilterRule["table_id"]}}-header > .row > .actionBar > .search');
         $("#type_filter_container").detach().prependTo('#{{formGridFilterRule['table_id']}}-header > .row > .actionBar > .actions');
         $("#category_filter").change(function(){
             $('#{{formGridFilterRule['table_id']}}').bootgrid('reload');
@@ -590,6 +613,10 @@
         max-width: 600px;
         text-align: left;
     }
+    /* Align interface selectpicker */
+    #interface_select_container {
+        float: left;
+    }
 </style>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
@@ -603,7 +630,7 @@
                 <select id="category_filter" data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="5" multiple data-width="200px">
                 </select>
             </div>
-            <div id="internal_rule_selector" class="btn-group" style="width: 200px; margin-left: 10px;">
+            <div id="internal_rule_selector" class="btn-group" style="width: 200px; margin-right: 20px;">
                 <div class="dropdown bootstrap-select show-tick bs3" style="width: 200px;">
                     <select id="include_internal_select" data-title="{{ lang._('Show internal rules') }}" class="selectpicker" data-live-search="false" multiple data-width="200px">
                         <option value="internal">{{ lang._('Internal (Start of Ruleset)') }}</option>
@@ -611,8 +638,11 @@
                         <option value="floating">{{ lang._('Floating') }}</option>
                         <option value="group">{{ lang._('Group') }}</option>
                     </select>
-                    <!-- selectpicker will generate the button markup -->
                 </div>
+            </div>
+            <div id="interface_select_container" class="btn-group">
+                <select id="interface_select" class="selectpicker" data-live-search="true" data-size="10" data-width="200px" title="{{ lang._('Select an interface') }}">
+                </select>
             </div>
         </div>
         <!-- tab page "rules" -->
