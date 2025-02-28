@@ -102,7 +102,8 @@ class M1_0_4 extends BaseModelMigration
         } else {
             if (isset($cnf->ipsec->phase1)) {
                 foreach ($cnf->ipsec->phase1 as $phase1) {
-                    if (!isset($phase1->disabled) && isset($phase1->mobile) &&
+                    if (
+                        !isset($phase1->disabled) && isset($phase1->mobile) &&
                         $phase1->authentication_method == 'eap-radius'
                     ) {
                         $model->charon->plugins->{'eap-radius'}->servers = (string)$phase1->authservers;

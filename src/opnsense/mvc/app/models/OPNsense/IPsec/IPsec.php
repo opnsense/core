@@ -33,7 +33,6 @@ use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
 use OPNsense\Core\Config;
 
-
 /**
  * Class IPsec
  * @package OPNsense\IPsec
@@ -201,7 +200,7 @@ class IPsec extends BaseModel
                 $result[$target_key] = !empty((string)$item) ? 'yes' : 'no';
             } elseif (is_a($item, "OPNsense\\Base\\FieldTypes\\AuthenticationServerField")) {
                 $servers = [];
-                foreach(explode(',', (string)$item) as $item) {
+                foreach (explode(',', (string)$item) as $item) {
                     $idx = 'server' . (string)(count($servers) + 1);
                     $mapping = [];
                     if (isset($cnf->authserver)) {
@@ -218,7 +217,6 @@ class IPsec extends BaseModel
                             }
                         }
                     }
-
                 }
                 $result[$target_key] = $servers;
             } elseif ((string)$item != '') {
