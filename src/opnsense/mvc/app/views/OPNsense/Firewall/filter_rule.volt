@@ -629,35 +629,30 @@
     }
 </style>
 
-<ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-    <li class="active"><a data-toggle="tab" href="#rules">{{ lang._('Rules') }}</a></li>
-</ul>
 <div class="tab-content content-box">
-    <div id="rules" class="tab-pane fade in active">
-        <div class="hidden">
-            <!-- filter per type container -->
-            <div id="type_filter_container" class="btn-group">
-                <select id="category_filter" data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="5" multiple data-width="200px">
-                </select>
-            </div>
-            <div id="internal_rule_selector" class="btn-group" style="width: 200px; margin-right: 20px;">
-                <div class="dropdown bootstrap-select show-tick bs3" style="width: 200px;">
-                    <select id="include_internal_select" data-title="{{ lang._('Show internal rules') }}" class="selectpicker" data-live-search="false" multiple data-width="200px">
-                        <option value="internal">{{ lang._('Internal (Start of Ruleset)') }}</option>
-                        <option value="internal2">{{ lang._('Internal (End of Ruleset)') }}</option>
-                        <option value="floating">{{ lang._('Floating') }}</option>
-                        <option value="group">{{ lang._('Group') }}</option>
-                    </select>
-                </div>
-            </div>
-            <div id="interface_select_container" class="btn-group">
-                <select id="interface_select" class="selectpicker" data-live-search="true" data-size="10" data-width="200px" title="{{ lang._('Select an interface') }}">
+    <!-- filters -->
+    <div class="hidden">
+        <div id="type_filter_container" class="btn-group">
+            <select id="category_filter" data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="5" multiple data-width="200px">
+            </select>
+        </div>
+        <div id="internal_rule_selector" class="btn-group" style="width: 200px; margin-right: 20px;">
+            <div class="dropdown bootstrap-select show-tick bs3" style="width: 200px;">
+                <select id="include_internal_select" data-title="{{ lang._('Show internal rules') }}" class="selectpicker" data-live-search="false" multiple data-width="200px">
+                    <option value="internal">{{ lang._('Internal (Start of Ruleset)') }}</option>
+                    <option value="internal2">{{ lang._('Internal (End of Ruleset)') }}</option>
+                    <option value="floating">{{ lang._('Floating') }}</option>
+                    <option value="group">{{ lang._('Group') }}</option>
                 </select>
             </div>
         </div>
-        <!-- tab page "rules" -->
-        {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '9em'}) }}
+        <div id="interface_select_container" class="btn-group">
+            <select id="interface_select" class="selectpicker" data-live-search="true" data-size="10" data-width="200px" title="{{ lang._('Select an interface') }}">
+            </select>
+        </div>
     </div>
+    <!-- grid -->
+    {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '9em'}) }}
 </div>
 
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/filter/apply'}) }}
