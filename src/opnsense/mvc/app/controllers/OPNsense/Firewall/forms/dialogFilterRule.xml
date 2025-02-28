@@ -56,6 +56,7 @@
         <grid_view>
             <sequence>110</sequence>
             <sortable>false</sortable>
+            <width>16em</width>
         </grid_view>
     </field>
     <field>
@@ -112,9 +113,9 @@
         <hint>any</hint>
         <grid_view>
             <formatter>interfacenot</formatter>
+            <formatter>any</formatter>
             <sequence>45</sequence>
             <sortable>false</sortable>
-            <formatter>any</formatter>
             <width>6em</width>
         </grid_view>
     </field>
@@ -134,7 +135,7 @@
         <label>Version</label>
         <type>dropdown</type>
         <grid_view>
-            <width>6em</width>
+            <width>5em</width>
             <sequence>30</sequence>
             <sortable>false</sortable>
         </grid_view>
@@ -144,7 +145,8 @@
         <label>Protocol</label>
         <type>dropdown</type>
         <grid_view>
-            <width>6em</width>
+            <formatter>any</formatter>
+            <width>5em</width>
             <sequence>40</sequence>
             <sortable>false</sortable>
         </grid_view>
@@ -165,6 +167,7 @@
         <style>net_selector net_selector_multi</style>
         <grid_view>
             <formatter>source_not</formatter>
+            <formatter>any</formatter>
             <sequence>50</sequence>
             <sortable>false</sortable>
             <width>12em</width>
@@ -199,6 +202,7 @@
         <style>net_selector net_selector_multi</style>
         <grid_view>
             <formatter>destination_not</formatter>
+            <formatter>any</formatter>
             <sequence>70</sequence>
             <sortable>false</sortable>
             <width>12em</width>

@@ -219,10 +219,10 @@
                         }
                     },
                     any: function(column, row) {
-                        if (row[column.id] !== '') {
+                        if (row[column.id] !== '' && row[column.id] !== 'any') {
                             return row[column.id];
                         } else {
-                            return '{{ lang._("any") }}';
+                            return '{{ lang._("*") }}';
                         }
                     },
                     // Icons
