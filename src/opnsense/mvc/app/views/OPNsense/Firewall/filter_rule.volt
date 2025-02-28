@@ -92,6 +92,7 @@
             options: {
                 triggerEditFor: getUrlHash('edit'),
                 initialSearchPhrase: getUrlHash('search'),
+                rowCount: [14,20,50,100,200,500,1000,2000,5000,-1],
                 requestHandler: function(request){
                     // Add category selectpicker
                     if ( $('#category_filter').val().length > 0) {
