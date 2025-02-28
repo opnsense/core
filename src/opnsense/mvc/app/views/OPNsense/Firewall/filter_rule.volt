@@ -441,29 +441,28 @@
 
                 $categoryFilter.val(currentSelection).selectpicker('refresh');
             });
-
-            ajaxCall(
-            '/api/firewall/filter/get_interface_list',
-                {},
-                function(data, status) {
-                    const $select = $('#interface_select');
-                    if (Array.isArray(data)) {
-                        data.forEach(function(iface) {
-                            $select.append(
-                                $('<option>', {
-                                    value: iface.value,
-                                    text: iface.label
-                                })
-                            );
-                        });
-                        $select.selectpicker('refresh');
-                    }
-                },
-                function(xhr, textStatus, errorThrown) {
-                    console.error("Failed to load interface list:", textStatus, errorThrown);
-                },
-            );
         });
+
+        // Populate interface selectpicker
+        ajaxCall('/api/firewall/filter/get_interface_list', {},
+            function(data, status) {
+                const $select = $('#interface_select');
+                if (Array.isArray(data)) {
+                    data.forEach(function(iface) {
+                        $select.append(
+                            $('<option>', {
+                                value: iface.value,
+                                text: iface.label
+                            })
+                        );
+                    });
+                    $select.selectpicker('refresh');
+                }
+            },
+            function(xhr, textStatus, errorThrown) {
+                console.error("Failed to load interface list:", textStatus, errorThrown);
+            }
+        );
 
         // Define the savepoint buttons HTML
         const savepointButtons = `
