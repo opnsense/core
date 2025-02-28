@@ -34,12 +34,6 @@
                     <ValidationMessage>Sequence shall be between 1 and 999999.</ValidationMessage>
                     <Required>Y</Required>
                     <Default>1</Default>
-                    <Constraints>
-                        <check001>
-                            <ValidationMessage>Sequence must be unique.</ValidationMessage>
-                            <type>UniqueConstraint</type>
-                        </check001>
-                    </Constraints>
                 </sequence>
                 <action type="OptionField">
                     <Required>Y</Required>
