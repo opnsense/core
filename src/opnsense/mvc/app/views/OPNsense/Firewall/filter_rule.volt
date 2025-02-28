@@ -377,7 +377,9 @@
             $('[data-toggle="tooltip"]').tooltip();
 
             // XXX: Replace these labels to save some space in the grid
+            // This is a workaround, to change labels in the grid, but NOT in the grid selection dropdown
             $(this).find('th[data-column-id="enabled"] .text').text("");
+            $(this).find('th[data-column-id="icons"] .text').text("");
             $(this).find('th[data-column-id="sequence"] .text').text("{{ lang._('Seq') }}");
             $(this).find('th[data-column-id="protocol"] .text').text("{{ lang._('Proto') }}");
             $(this).find('th[data-column-id="source_port"] .text').text("{{ lang._('Port') }}");
