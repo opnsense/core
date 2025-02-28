@@ -77,13 +77,36 @@ class FilterController extends FilterBaseController
             $category = array_map('trim', explode(',', $category));
         }
 
-        // 2. Define filter for model rules
-        $modelFilter = function ($record) use ($category) {
-            if (empty($category)) {
-                return true;
+        // Read the selected interface filter from the request
+        $selectedInterface = $this->request->get('interface');
+
+        // 2. Define filter for model rules including interface filter
+        $modelFilter = function ($record) use ($category, $selectedInterface) {
+            if (!empty($selectedInterface)) {
+                // Retrieve the configuration object.
+                $config = Config::getInstance()->object();
+                $resolvedKey = null;
+                // Iterate over configured interfaces.
+                foreach ($config->interfaces->children() as $key => $node) {
+                    // Compare the physical interface name stored in <if>
+                    if ((string)$node->if === $selectedInterface) {
+                        $resolvedKey = (string)$key;
+                        break;
+                    }
+                }
+                // If no matching key is found or it doesn't match the rule's interface, filter out this record.
+                if ($resolvedKey === null || ((string)$record->interface !== $resolvedKey)) {
+                    return false;
+                }
             }
-            $cats = array_map('trim', explode(',', (string)$record->categories));
-            return (bool) array_intersect($cats, $category);
+            // Apply category filter if specified.
+            if (!empty($category)) {
+                $cats = array_map('trim', explode(',', (string)$record->categories));
+                if (!(bool) array_intersect($cats, $category)) {
+                    return false;
+                }
+            }
+            return true;
         };
 
         // 3. Disable pagination: force 'rowCount = -1' and 'current = 1'
@@ -96,7 +119,6 @@ class FilterController extends FilterBaseController
                 if ($key === 'rowCount') { return -1; }
                 if ($key === 'current')  { return 1; }
                 $value = $this->origReq->get($key, $default);
-                // Ensure that we never return null as UIModelGrid cannot handle it
                 return $value === null ? '' : $value;
             }
             public function __call($name, $args) {
@@ -128,7 +150,6 @@ class FilterController extends FilterBaseController
         $includeInternalStr = $this->request->get('include_internal', 'string');
         $internalRules = [];
         if (!empty($includeInternalStr)) {
-            // Convert the comma-separated string into an array
             $includeInternal = array_map('trim', explode(',', $includeInternalStr));
 
             foreach ($includeInternal as $ruleType) {
@@ -143,6 +164,12 @@ class FilterController extends FilterBaseController
                 $internalRules = array_filter($internalRules, function ($rule) use ($category) {
                     $cats = array_map('trim', explode(',', (string)$rule['categories']));
                     return (bool) array_intersect($cats, $category);
+                });
+            }
+            // Apply interface filter to internal rules if provided.
+            if (!empty($selectedInterface)) {
+                $internalRules = array_filter($internalRules, function ($rule) use ($selectedInterface) {
+                    return ((string)$rule['interface'] === $selectedInterface);
                 });
             }
         }
@@ -451,7 +478,10 @@ class FilterController extends FilterBaseController
     {
         $interfaces = (new InterfaceController())->getInterfaceNamesAction();
 
-        $selectpicker = [];
+        $selectpicker = [
+            ['value' => '', 'label' => 'Any']
+        ];
+
         foreach ($interfaces as $if => $descr) {
             $selectpicker[] = ['value' => $if, 'label' => $descr];
         }

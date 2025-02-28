@@ -93,9 +93,16 @@
                 triggerEditFor: getUrlHash('edit'),
                 initialSearchPhrase: getUrlHash('search'),
                 requestHandler: function(request){
+                    // Add category selectpicker
                     if ( $('#category_filter').val().length > 0) {
                         request['category'] = $('#category_filter').val();
                     }
+                    // Add interface selectpicker
+                    let selectedInterface = $('#interface_select').val();
+                    if (selectedInterface && selectedInterface.length > 0) {
+                        request['interface'] = selectedInterface;
+                    }
+                    // Add internal rule selectpicker
                     let internalTypes = $('#include_internal_select').val();
                     if (internalTypes && internalTypes.length > 0) {
                         // Send as a comma separated string
@@ -519,8 +526,12 @@
             });
         });
 
-        // move filter into action header
+        // move selectpickers into action bar
         $("#interface_select_container").detach().insertBefore('#{{formGridFilterRule["table_id"]}}-header > .row > .actionBar > .search');
+        $('#interface_select').change(function(){
+            $('#{{formGridFilterRule['table_id']}}').bootgrid('reload');
+        });
+
         $("#type_filter_container").detach().prependTo('#{{formGridFilterRule['table_id']}}-header > .row > .actionBar > .actions');
         $("#category_filter").change(function(){
             $('#{{formGridFilterRule['table_id']}}').bootgrid('reload');
