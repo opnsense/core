@@ -1,9 +1,9 @@
 <menu>
     <Firewall>
+        <Filter VisibleName="Rules [new]" order="50" url="/ui/firewall/filter/" cssClass="fa fa-circle-check fa-fw">
+            <FilterRef url="/ui/firewall/filter#*" visibility="hidden"/>
+        </Filter>
         <Automation cssClass="fa fa-gear">
-            <Filter order="50" url="/ui/firewall/filter/">
-                <FilterRef url="/ui/firewall/filter#*" visibility="hidden"/>
-            </Filter>
             <SourceNat order="100" VisibleName="Source NAT" url="/ui/firewall/source_nat/">
                 <FilterRef url="/ui/firewall/source_nat#*" visibility="hidden"/>
             </SourceNat>
