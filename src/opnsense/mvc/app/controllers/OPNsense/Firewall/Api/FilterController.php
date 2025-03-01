@@ -227,16 +227,13 @@ class FilterController extends FilterBaseController
      */
     public function getInternalRulesAction($ruleType = null)
     {
-        // Use the provided type or the one from the request.
+        // 1) Determine which type of internal rules to fetch
         if ($ruleType === null) {
             $ruleType = $this->request->get('type');
         }
         if (empty($ruleType)) {
             $ruleType = 'internal';
         }
-
-        // Set default sequence based on rule type. "internal2" rules are at end of ruleset.
-        $defaultSequence = ($ruleType === 'internal2') ? 1000000 : 0;
 
         $backend = new Backend();
         $rawOutput = trim($backend->configdRun("filter get_internal_rules " . escapeshellarg($ruleType)));
@@ -249,96 +246,78 @@ class FilterController extends FilterBaseController
             ];
         }
 
-        // Template for expected keys and their default values.
-        $template = [
-            'uuid'              => '',
-            'enabled'           => '1', // default assumes rule is enabled unless marked disabled
-            'disablereplyto'    => '0',
-            'label'             => '',
-            'statetype'         => '',
-            'state-policy'      => '',
-            'quick'             => '0',
-            'interfacenot'      => '0',
-            'interface'         => '',
-            'direction'         => '',
-            'ipprotocol'        => '',
-            'action'            => 'Pass',
-            'protocol'          => 'any',
-            'source_net'        => 'any',
-            'source_not'        => '0',
-            'source_port'       => '',
-            'destination_net'   => 'any',
-            'destination_not'   => '0',
-            'destination_port'  => '',
-            'gateway'           => 'None',
-            'replyto'           => 'None',
-            'log'               => '0',
-            'allowopts'         => '0',
-            'nosync'            => '0',
-            'nopfsync'          => '0',
-            'statetimeout'      => '',
-            'max-src-nodes'     => '',
-            'max-src-states'    => '',
-            'max-src-conn'      => '',
-            'max'               => '',
-            'max-src-conn-rate' => '',
-            'max-src-conn-rates'=> '',
-            'overload'          => '',
-            'adaptivestart'     => '',
-            'adaptiveend'       => '',
-            'prio'              => 'Any priority',
-            'set-prio'          => 'Keep current priority',
-            'set-prio-low'      => 'Keep current priority',
-            'tag'               => '',
-            'tagged'            => '',
-            'tcpflags1'         => '',
-            'tcpflags2'         => '',
-            'categories'        => '',
-            'sched'             => 'None',
-            'tos'               => 'Any',
-            'shaper1'           => '',
-            'shaper2'           => '',
-            'description'       => '',
-            'type'              => '',
-            '#ref'              => '',
-            '#priority'         => '',
-            'sequence'          => $defaultSequence
-        ];
+        // 2) Build a dynamic template from our model
+        $template = [];
+        $model = $this->getModel();
+        $ruleElement = $model->getNodeByReference("rules.rule");
 
+        if (
+            $ruleElement &&
+            (is_a($ruleElement, ArrayField::class) || is_subclass_of($ruleElement, ArrayField::class))
+        ) {
+            foreach ($ruleElement->iterateItems() as $ruleItem) {
+                foreach ($ruleItem->iterateItems() as $key => $field) {
+                    $template[$key] = method_exists($field, 'getDefault') ? $field->getDefault() : '';
+                }
+                // Use only the first array item
+                break;
+            }
+        }
+
+        // The #ref key is not part of our model, so we need to add it
+        if (!array_key_exists('#ref', $template)) {
+            $template['#ref'] = '';
+        }
+
+        // 3) Normalize / transform each rule
         $normalizedRules = [];
+
+        // Set default sequence based on rule type. "internal2" rules are at end of ruleset.
+        $defaultSequence = ($ruleType === 'internal2') ? 1000000 : 0;
+
         foreach ($data as $rule) {
             $newRule = [];
+
             foreach ($template as $key => $default) {
-                // Determine the source key based on legacy mappings.
+                // Map known legacy keys that are different from model keys
                 $sourceKey = $key;
-                if ($key === 'replyto' && !isset($rule[$key]) && isset($rule['reply-to'])) {
-                    $sourceKey = 'reply-to';
-                }
-                if ($key === 'description' && !isset($rule[$key]) && isset($rule['descr'])) {
-                    $sourceKey = 'descr';
-                }
-                if ($key === 'source_net' && !isset($rule[$key]) && isset($rule['from'])) {
-                    $sourceKey = 'from';
-                }
-                if ($key === 'source_port' && !isset($rule[$key]) && isset($rule['from_port'])) {
-                    $sourceKey = 'from_port';
-                }
-                if ($key === 'destination_net' && !isset($rule[$key]) && isset($rule['to'])) {
-                    $sourceKey = 'to';
-                }
-                if ($key === 'destination_port' && !isset($rule[$key]) && isset($rule['to_port'])) {
-                    $sourceKey = 'to_port';
+                $mapping = [
+                    'action' => 'type',
+                    'replyto' => 'reply-to',
+                    'description' => 'descr',
+                    'source_net' => 'from',
+                    'source_port' => 'from_port',
+                    'destination_net' => 'to',
+                    'destination_port' => 'to_port',
+                ];
+
+                if (!isset($rule[$key]) && isset($mapping[$key]) && isset($rule[$mapping[$key]])) {
+                    $sourceKey = $mapping[$key];
                 }
 
-                // Initialize the value from the source or default.
+                // Use rule's value or the template default
                 $value = array_key_exists($sourceKey, $rule) ? $rule[$sourceKey] : $default;
 
-                // Remap "enabled" using "disabled" if available.
-                if ($key === 'enabled' && isset($rule['disabled'])) {
-                    $value = $rule['disabled'] ? '0' : '1';
+                // If 'disabled' is false or not set at all, treat as enabled
+                if ($key === 'enabled') {
+                    if (isset($rule['disabled']) && $rule['disabled'] === true) {
+                        $value = '0';
+                    } else {
+                        $value = '1';
+                    }
                 }
 
-                // Rewrite ipprotocol values inline and wrap with lang() for user-exposed text.
+                // If the value is "pass" or "block", capitalize it.
+                if ($key === 'action') {
+                    $lower = strtolower(trim($value));
+                    if ($lower === 'pass') {
+                        $value = 'Pass';
+                    } elseif ($lower === 'block') {
+                        $value = 'Block';
+                    }
+                }
+
+                // Rewrite ipprotocol for display
                 if ($key === 'ipprotocol') {
                     switch ($value) {
                         case 'inet':
@@ -363,19 +342,21 @@ class FilterController extends FilterBaseController
             if (empty($newRule['uuid'])) {
                 $newRule['uuid'] = $ruleType;
             }
+
+            // Ensure "sequence" for internal rules
             if (empty($newRule['sequence'])) {
                 $newRule['sequence'] = $defaultSequence;
             }
 
-            // Skip the internal rule if it is not disabled. This skips a ton of disabled bogon interface rules
-            // These are generated for any interface but kept disabled until enabled.
-            if ($newRule['enabled'] !== '1') {
+            // Skip disabled internal rules. This skips a ton of disabled bogon interface rules.
+            if ($newRule['enabled'] === '0') {
                 continue;
             }
 
             $normalizedRules[] = $newRule;
         }
 
+        // 4) Return
         return [
             "status" => "ok",
             "rules"  => $normalizedRules
@@ -468,7 +449,7 @@ class FilterController extends FilterBaseController
 
         // Save changes.
         $mdl->serializeToConfig();
-        \OPNsense\Core\Config::getInstance()->save();
+        Config::getInstance()->save();
 
         return ["status" => "ok"];
     }
