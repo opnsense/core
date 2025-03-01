@@ -383,10 +383,10 @@
             ajaxGet('/api/unbound/overview/isBlockListEnabled', {}, function(bl_enabled, status) {
                 /* reverse_domains refers to the domains for which the opposite action should take place,
                  * e.g. if a domain is presented that has been blocked N amount of times, but has been
-                 * whitelisted at a later point in time, the action should be to block it, not whitelist it.
+                 * allowlisted at a later point in time, the action should be to block it, not allowlist it.
                  */
                 for (let i = 0; i < 10; i++) {
-                    let class_type = type == "pass" ? "block-domain" : "whitelist-domain";
+                    let class_type = type == "pass" ? "block-domain" : "allowlist-domain";
                     let icon_type = type == "pass" ? "fa fa-ban text-danger" : "fa fa-pencil text-info";
                     let domain = Object.keys(data)[i];
                     let statObj = Object.values(data)[i];
@@ -403,7 +403,7 @@
                     let stripped = domain.replace(/\.$/, "");
                     if (reverse_domains.has(stripped)) {
                         icon_type = type == "pass" ? "fa fa-pencil text-info" : "fa fa-ban text-danger";
-                        class_type = type == "pass" ? "whitelist-domain" : "block-domain";
+                        class_type = type == "pass" ? "allowlist-domain" : "block-domain";
                     }
 
                     let icon = '<button type="button" class="'+ class_type + '" data-value="'+ domain +'" ' +
@@ -436,7 +436,7 @@
                 $('#resolvedCounter').html(data.resolved.total + " (" + data.resolved.pcnt + "%)");
 
                 createTopList('top', data.top, 'pass', new Set(data.blocklisted_domains));
-                createTopList('top-blocked', data.top_blocked, 'block', new Set(data.whitelisted_domains));
+                createTopList('top-blocked', data.top_blocked, 'block', new Set(data.allowlisted_domains));
 
                 $('#top li:nth-child(even)').addClass('odd-bg');
                 $('#top-blocked li:nth-child(even)').addClass('odd-bg');
@@ -447,7 +447,7 @@
 
         function reset_tooltips() {
             $(".block-domain").attr('title', "{{ lang._('Block Domain') }}").tooltip({container: 'body', trigger: 'hover'});
-            $(".whitelist-domain").attr('title', "{{ lang._('Whitelist Domain') }}").tooltip({container: 'body', trigger: 'hover'});
+            $(".allowlist-domain").attr('title', "{{ lang._('Allowlist Domain') }}").tooltip({container: 'body', trigger: 'hover'});
         }
 
         g_queryChart = null;
@@ -532,19 +532,19 @@
                 'domain': $(this).data('value'),
                 'type': 'blocklists'
             }, function(data, status) {
-                btn.addClass('whitelist-domain').removeClass('block-domain').remove("i").html('<i class="fa fa-pencil text-info"></i>');
+                btn.addClass('allowlist-domain').removeClass('block-domain').remove("i").html('<i class="fa fa-pencil text-info"></i>');
 
-                btn.off('click').on('click', whitelist_cb);
+                btn.off('click').on('click', allowlist_cb);
 
                 // find all possible other elements containing this domain and update their classes
                 let elements = $("button[data-value='" + btn.data('value') + "']");
                 $.each(elements, function (key, value) {
                     let elem = $(value);
                     if(elem.hasClass("block-domain")) {
-                        elem.addClass('whitelist-domain').removeClass('block-domain').remove("i").html('<i class="fa fa-pencil text-info"></i>');
+                        elem.addClass('allowlist-domain').removeClass('block-domain').remove("i").html('<i class="fa fa-pencil text-info"></i>');
 
-                        // remove event binding and bind the whitelist_cb
-                        elem.off('click').on('click', whitelist_cb);
+                        // remove event binding and bind the allowlist_cb
+                        elem.off('click').on('click', allowlist_cb);
                     }
                 });
 
@@ -552,14 +552,14 @@
             });
         };
 
-        let whitelist_cb = function() {
+        let allowlist_cb = function() {
             $(this).remove("i").html('<i class="fa fa-spinner fa-spin"></i>');
             let btn = $(this);
             ajaxCall('/api/unbound/settings/updateBlocklist', {
                 'domain': $(this).data('value'),
-                'type': 'whitelists'
+                'type': 'allowlists'
             }, function(data, status) {
-                btn.addClass('block-domain').removeClass('whitelist-domain').remove("i").html('<i class="fa fa-ban text-danger"></i>');
+                btn.addClass('block-domain').removeClass('allowlist-domain').remove("i").html('<i class="fa fa-ban text-danger"></i>');
 
                 btn.off('click').on('click', blocklist_cb);
 
@@ -567,8 +567,8 @@
                 let elements = $("button[data-value='" + btn.data('value') + "']");
                 $.each(elements, function (key, value) {
                     let elem = $(value);
-                    if(elem.hasClass("whitelist-domain")) {
-                        elem.addClass('block-domain').removeClass('whitelist-domain').remove("i").html('<i class="fa fa-ban text-danger"></i>');
+                    if(elem.hasClass("allowlist-domain")) {
+                        elem.addClass('block-domain').removeClass('allowlist-domain').remove("i").html('<i class="fa fa-ban text-danger"></i>');
 
                         // remove event binding and bind the blocklist_cb
                         elem.off('click').on('click', blocklist_cb);
@@ -582,7 +582,7 @@
         }
 
         $(document).on('click', '.block-domain', blocklist_cb);
-        $(document).on('click', '.whitelist-domain', whitelist_cb);
+        $(document).on('click', '.allowlist-domain', allowlist_cb);
 
         do_startup().done(function() {
             $('.wrapper').show();
@@ -595,10 +595,10 @@
             if (e.target.id == 'query_details_tab') {
                 $("#grid-queries").bootgrid('destroy');
                 ajaxGet('/api/unbound/overview/isBlockListEnabled', {}, function(bl_enabled, status) {
-                    /* Map the command type (block/whitelist) to the current state of the assigned action as determined by the controller,
-                     * except for cases where they are manually overridden in the Blocklist page (Block/Whitelist Domains).
+                    /* Map the command type (block/allowlist) to the current state of the assigned action as determined by the controller,
+                     * except for cases where they are manually overridden in the Blocklist page (Block/Allowlist Domains).
                      */
-                    let whitelisted_domains = null;
+                    let allowlisted_domains = null;
                     let blocklisted_domains = null;
                     let grid_queries = $("#grid-queries").UIBootgrid({
                         search:'/api/unbound/overview/searchQueries/',
@@ -620,7 +620,7 @@
                                 return request;
                             },
                             responseHandler: function (response) {
-                                whitelisted_domains = new Set(response.whitelisted_domains);
+                                allowlisted_domains = new Set(response.allowlisted_domains);
                                 blocklisted_domains = new Set(response.blocklisted_domains);
                                 return response;
                             },
@@ -642,7 +642,7 @@
                                     let domain = row.domain.replace(/\.$/, "");
                                     let btn = '';
                                     let block = '<button type="button" class="btn-secondary block-domain" data-value=' + row.domain + ' data-toggle="tooltip"><i class="fa fa-ban text-danger"></i></button> ';
-                                    let pass = '<button type="button" class="btn-secondary whitelist-domain" data-value=' + row.domain + ' data-toggle="tooltip"><i class="fa fa-pencil text-info"></i></button>';
+                                    let pass = '<button type="button" class="btn-secondary allowlist-domain" data-value=' + row.domain + ' data-toggle="tooltip"><i class="fa fa-pencil text-info"></i></button>';
 
                                     if (row.action == 'Pass') {
                                         btn = block;
@@ -650,7 +650,7 @@
                                         btn = pass;
                                     }
 
-                                    if (whitelisted_domains.has(domain)) {
+                                    if (allowlisted_domains.has(domain)) {
                                         btn = block;
                                     }
 
@@ -701,7 +701,7 @@
 
                         grid_queries.find(".block-domain").on('click', blocklist_cb);
 
-                        grid_queries.find(".whitelist-domain").on('click', whitelist_cb);
+                        grid_queries.find(".allowlist-domain").on('click', allowlist_cb);
                     });
                 })
 
