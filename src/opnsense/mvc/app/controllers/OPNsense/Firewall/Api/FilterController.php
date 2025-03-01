@@ -32,10 +32,89 @@ use OPNsense\Core\Backend;
 use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\UIModelGrid;
 use OPNsense\Diagnostics\Api\InterfaceController;
+use OPNsense\Firewall\FilterLegacyMapper;
 
 class FilterController extends FilterBaseController
 {
     protected static $categorysource = "rules.rule";
+
+    /**
+     * Builds a rule template from the firewall model.
+     *
+     * @return array The template containing model keys and default values.
+     */
+    private function buildRuleTemplate()
+    {
+        $template = [];
+        $model = $this->getModel();
+        $ruleElement = $model->getNodeByReference("rules.rule");
+
+        if (
+            $ruleElement &&
+            (is_a($ruleElement, ArrayField::class) || is_subclass_of($ruleElement, ArrayField::class))
+        ) {
+            foreach ($ruleElement->iterateItems() as $ruleItem) {
+                foreach ($ruleItem->iterateItems() as $key => $field) {
+                    $template[$key] = method_exists($field, 'getDefault') ? $field->getDefault() : '';
+                }
+                break; // Use only the first array item
+            }
+        }
+
+        // Ensure #ref is included in the template
+        $template['#ref'] = $template['#ref'] ?? '';
+
+        return $template;
+    }
+
+    /**
+     * Retrieves internal firewall rules based on the specified rule type.
+     *
+     * Fetches rules from legacy filter with "filter get_internal_rules %s"
+     * and passes them to the FilterLegacyMapper for normalization.
+     *
+     * @param string|null $ruleType Optional rule type to fetch (e.g., 'internal', 'internal2', 'floating').
+     *                              If not provided, it is determined from the request or defaults to 'internal'.
+     *
+     * @return array An associative array containing:
+     *               - "status": A string indicating success ("ok") or failure ("error").
+     *               - "rules": An array of normalized firewall rules (on success).
+     *               - "message": An error message if decoding the rules fails.
+     */
+    public function getInternalRulesAction($ruleType = null)
+    {
+        // 1) Determine which type of internal rules to fetch
+        if ($ruleType === null) {
+            $ruleType = $this->request->get('type');
+        }
+        if (empty($ruleType)) {
+            $ruleType = 'internal';
+        }
+
+        // 2) Fetch raw internal rules
+        $backend = new Backend();
+        $rawOutput = trim($backend->configdRun("filter get_internal_rules " . escapeshellarg($ruleType)));
+        $data = json_decode($rawOutput, true);
+
+        if ($data === null) {
+            return [
+                "status"  => "error",
+                "message" => "Failed to decode firewall rules output."
+            ];
+        }
+
+        // 3) Build a dynamic template from our model
+        $template = $this->buildRuleTemplate();
+
+        // 4) Normalize rules using the FilterLegacyMapper
+        $mapper = new FilterLegacyMapper();
+        $normalizedRules = $mapper->normalizeRules($data, $template, $ruleType);
+
+        return [
+            "status" => "ok",
+            "rules"  => $normalizedRules
+        ];
+    }
 
     /**
      * This function retrieves and merges firewall rules from two sources:
@@ -67,26 +146,22 @@ class FilterController extends FilterBaseController
      *   Once the data is merged, we call searchRecordsetBase() to reapply the original pagination, sorting,
      *   and searching parameters to the combined rule set.
      *
+     * @param array|null  $category          The category filter.
+     * @param string|null $selectedInterface The selected interface filter.
+     * @param string|null $includeInternalStr Comma-separated string of internal rule types to include.
+     *
      * @return array The final paginated, merged result.
      */
-    public function searchRuleAction()
+    private function fetchMergedRules($category, $selectedInterface, $includeInternalStr)
     {
-        // 1. Read and normalize the category filter
-        $category = $this->request->get('category');
-        if (!empty($category) && !is_array($category)) {
-            $category = array_map('trim', explode(',', $category));
-        }
-
-        // Read the selected interface filter from the request
-        $selectedInterface = $this->request->get('interface');
-
-        // 2. Define filter for model rules including interface filter
+        // 1. Define the model filter function
         $modelFilter = function ($record) use ($category, $selectedInterface) {
             if (!empty($selectedInterface)) {
                 // Retrieve the configuration object.
                 $config = Config::getInstance()->object();
                 $resolvedKey = null;
                 // Iterate over configured interfaces.
+
                 foreach ($config->interfaces->children() as $key => $node) {
                     // Compare the physical interface name stored in <if>
                     if ((string)$node->if === $selectedInterface) {
@@ -95,10 +170,12 @@ class FilterController extends FilterBaseController
                     }
                 }
                 // If no matching key is found or it doesn't match the rule's interface, filter out this record.
+
                 if ($resolvedKey === null) {
                     return false;
                 }
                 // Split the rule’s interface field into an array to support multiple interfaces.
+
                 $ruleInterfaces = array_map('trim', explode(',', (string)$record->interface));
                 // Check if the resolved key is in the array of interfaces.
                 if (!in_array($resolvedKey, $ruleInterfaces)) {
@@ -106,54 +183,47 @@ class FilterController extends FilterBaseController
                 }
             }
             // Apply category filter if specified.
+
             if (!empty($category)) {
                 $cats = array_map('trim', explode(',', (string)$record->categories));
                 if (!(bool) array_intersect($cats, $category)) {
                     return false;
                 }
             }
+
             return true;
         };
 
-        // 3. Disable pagination: force 'rowCount = -1' and 'current = 1'
+        // 2. Disable pagination during fetch
         $dummyRequest = new class($this->request) {
             private $origReq;
             public function __construct($req) {
                 $this->origReq = $req;
             }
             public function get($key, $default = null) {
-                if ($key === 'rowCount') { return -1; }
-                if ($key === 'current')  { return 1; }
-                $value = $this->origReq->get($key, $default);
-                return $value === null ? '' : $value;
+                return $key === 'rowCount' ? -1 : ($key === 'current' ? 1 : $this->origReq->get($key, $default) ?? '');
             }
             public function __call($name, $args) {
                 return call_user_func_array([$this->origReq, $name], $args);
             }
         };
 
-        // 4. Fetch all model rules via UIModelGrid
-        $element = $this->getModel();
-        foreach (explode('.', 'rules.rule') as $step) {
-            $element = $element->{$step};
-        }
-        $fields = null;
-        if ((is_a($element, ArrayField::class) || is_subclass_of($element, ArrayField::class))
-            && empty($fields)) {
-            $fields = [];
+        // 3. Fetch model rules
+        $element = $this->getModel()->getNodeByReference("rules.rule");
+        $fields = [];
+        if ($element && (is_a($element, ArrayField::class) || is_subclass_of($element, ArrayField::class))) {
             foreach ($element->iterateItems() as $node) {
                 foreach ($node->iterateItems() as $key => $val) {
                     $fields[] = $key;
                 }
-                break;
+                break; // Only process the first rule for field extraction
             }
         }
         $grid = new UIModelGrid($element);
         $modelData = $grid->fetchBindRequest($dummyRequest, $fields, "sequence", $modelFilter);
         $modelRules = $modelData['rows'] ?? [];
 
-        // 5. Check if internal rules should be included in result, we get them from a selectpicker and request handler
-        $includeInternalStr = $this->request->get('include_internal', 'string');
+        // 4. Fetch internal rules if requested
         $internalRules = [];
         if (!empty($includeInternalStr)) {
             $includeInternal = array_map('trim', explode(',', $includeInternalStr));
@@ -172,6 +242,7 @@ class FilterController extends FilterBaseController
                     return (bool) array_intersect($cats, $category);
                 });
             }
+
             // Apply interface filter to internal rules if provided.
             if (!empty($selectedInterface)) {
                 $internalRules = array_filter($internalRules, function ($rule) use ($selectedInterface) {
@@ -180,15 +251,12 @@ class FilterController extends FilterBaseController
             }
         }
 
-        // 6. Merge model rules + (optionally) internal rules, then apply pagination
+        // 5. Merge model and internal rules, then apply pagination
         $merged = array_merge($modelRules, $internalRules);
         $result = $this->searchRecordsetBase($merged, $fields, "sequence");
 
-        /**
-         * 7. Post process only internal rules
-         * Replace raw interface names with descriptions
-         * This must be done after filtering, or the filter will not match as it compares the original interface name
-         */
+        // 6. Post process only internal rules (replace raw interface names with descriptions)
+        // This must be done after filtering, or the filter will not match as it compares the original interface name
         $ifMap = (new InterfaceController())->getInterfaceNamesAction();
 
         // Only model rules will have a valid UUID
@@ -208,159 +276,25 @@ class FilterController extends FilterBaseController
             unset($row);
         }
 
-    return $result;
+        return $result;
     }
 
     /**
-     * Retrieves internal firewall rules based on the specified rule type.
+     * Retrieves and merges firewall rules from model and internal sources, then paginates them.
      *
-     * Fetches rules from legacy filter with "filter get_internal_rules %s"
-     * It normalizes the rule data, ensuring that required fields are populated with defaults when missing.
-     *
-     * @param string|null $ruleType Optional rule type to fetch (e.g., 'internal', 'internal2', 'floating').
-     *                              If not provided, it is determined from the request or defaults to 'internal'.
-     *
-     * @return array An associative array containing:
-     *               - "status": A string indicating success ("ok") or failure ("error").
-     *               - "rules": An array of normalized firewall rules (on success).
-     *               - "message": An error message if decoding the rules fails.
+     * @return array The final paginated, merged result.
      */
-    public function getInternalRulesAction($ruleType = null)
+    public function searchRuleAction()
     {
-        // 1) Determine which type of internal rules to fetch
-        if ($ruleType === null) {
-            $ruleType = $this->request->get('type');
-        }
-        if (empty($ruleType)) {
-            $ruleType = 'internal';
+        $category = $this->request->get('category');
+        if (!empty($category) && !is_array($category)) {
+            $category = array_map('trim', explode(',', $category));
         }
 
-        $backend = new Backend();
-        $rawOutput = trim($backend->configdRun("filter get_internal_rules " . escapeshellarg($ruleType)));
-        $data = json_decode($rawOutput, true);
+        $selectedInterface = $this->request->get('interface');
+        $includeInternalStr = $this->request->get('include_internal', 'string');
 
-        if ($data === null) {
-            return [
-                "status"  => "error",
-                "message" => "Failed to decode firewall rules output."
-            ];
-        }
-
-        // 2) Build a dynamic template from our model
-        $template = [];
-        $model = $this->getModel();
-        $ruleElement = $model->getNodeByReference("rules.rule");
-
-        if (
-            $ruleElement &&
-            (is_a($ruleElement, ArrayField::class) || is_subclass_of($ruleElement, ArrayField::class))
-        ) {
-            foreach ($ruleElement->iterateItems() as $ruleItem) {
-                foreach ($ruleItem->iterateItems() as $key => $field) {
-                    $template[$key] = method_exists($field, 'getDefault') ? $field->getDefault() : '';
-                }
-                // Use only the first array item
-                break;
-            }
-        }
-
-        // The #ref key is not part of our model, so we need to add it
-        if (!array_key_exists('#ref', $template)) {
-            $template['#ref'] = '';
-        }
-
-        // 3) Normalize / transform each rule
-        $normalizedRules = [];
-
-        // Set default sequence based on rule type. "internal2" rules are at end of ruleset.
-        $defaultSequence = ($ruleType === 'internal2') ? 1000000 : 0;
-
-        foreach ($data as $rule) {
-            $newRule = [];
-
-            foreach ($template as $key => $default) {
-                // Map known legacy keys that are different from model keys
-                $sourceKey = $key;
-                $mapping = [
-                    'action' => 'type',
-                    'replyto' => 'reply-to',
-                    'description' => 'descr',
-                    'source_net' => 'from',
-                    'source_port' => 'from_port',
-                    'destination_net' => 'to',
-                    'destination_port' => 'to_port',
-                ];
-
-                if (!isset($rule[$key]) && isset($mapping[$key]) && isset($rule[$mapping[$key]])) {
-                    $sourceKey = $mapping[$key];
-                }
-
-                // Use rule's value or the template default
-                $value = array_key_exists($sourceKey, $rule) ? $rule[$sourceKey] : $default;
-
-                // If 'disabled' is false or not set at all, treat as enabled
-                if ($key === 'enabled') {
-                    if (isset($rule['disabled']) && $rule['disabled'] === true) {
-                        $value = '0';
-                    } else {
-                        $value = '1';
-                    }
-                }
-
-                // If the value is "pass" or "block", capitalize it.
-                if ($key === 'action') {
-                    $lower = strtolower(trim($value));
-                    if ($lower === 'pass') {
-                        $value = 'Pass';
-                    } elseif ($lower === 'block') {
-                        $value = 'Block';
-                    }
-                }
-
-                // Rewrite ipprotocol for display
-                if ($key === 'ipprotocol') {
-                    switch ($value) {
-                        case 'inet':
-                            $value = gettext('IPv4');
-                            break;
-                        case 'inet6':
-                            $value = gettext('IPv6');
-                            break;
-                        case 'inet46':
-                            $value = gettext('IPv4+IPv6');
-                            break;
-                        case '':
-                            $value = gettext('IPv4');
-                            break;
-                    }
-                }
-
-                $newRule[$key] = $value;
-            }
-
-            // Set the UUID based on the rule type if not already provided.
-            if (empty($newRule['uuid'])) {
-                $newRule['uuid'] = $ruleType;
-            }
-
-            // Ensure "sequence" for internal rules
-            if (empty($newRule['sequence'])) {
-                $newRule['sequence'] = $defaultSequence;
-            }
-
-            // Skip disabled internal rules. This skips a ton of disabled bogon interface rules.
-            if ($newRule['enabled'] === '0') {
-                continue;
-            }
-
-            $normalizedRules[] = $newRule;
-        }
-
-        // 4) Return
-        return [
-            "status" => "ok",
-            "rules"  => $normalizedRules
-        ];
+        return $this->fetchMergedRules($category, $selectedInterface, $includeInternalStr);
     }
 
     public function setRuleAction($uuid)
