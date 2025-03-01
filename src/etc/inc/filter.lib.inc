@@ -310,13 +310,13 @@ function filter_core_rules_system($fw, $defaults)
             ['from' => "<bogons>", 'direction' => 'in', 'interface' => $intf, 'ipprotocol' => 'inet',
             'descr' => "Block bogon IPv4 networks from " . $intfinfo['descr'],
             '#ref' => "interfaces.php?if=" . $intf . "#blockbogons",
-            'disabled' => !isset($intfinfo['blockbogons'])],
+            'disabled' => empty($intfinfo['blockbogons'])],
             $bogontmpl
         );
         $fw->registerFilterRule(
             5,
             ['from' => "<bogonsv6>", 'direction' => 'in', 'interface' => $intf, 'ipprotocol' => 'inet6',
-            'disabled' => $ipv6_disabled || !isset($intfinfo['blockbogons']),
+            'disabled' => $ipv6_disabled || empty($intfinfo['blockbogons']),
             '#ref' => "interfaces.php?if=" . $intf . "#blockbogons",
             'descr' => "Block bogon IPv6 networks from " . $intfinfo['descr']],
             $bogontmpl
@@ -326,7 +326,7 @@ function filter_core_rules_system($fw, $defaults)
             ['direction' => 'in', 'interface' => $intf, 'ipprotocol' => 'inet',
             '#ref' => "interfaces.php?if=" . $intf . "#blockpriv",
             'descr' => "Block private networks from " . $intfinfo['descr'],
-            'disabled' => !isset($intfinfo['blockpriv'])],
+            'disabled' => empty($intfinfo['blockpriv'])],
             $privtmpl
         );
         $fw->registerFilterRule(
@@ -334,7 +334,7 @@ function filter_core_rules_system($fw, $defaults)
             ['direction' => 'in', 'interface' => $intf, 'ipprotocol' => 'inet6',
             '#ref' => "interfaces.php?if=" . $intf . "#blockpriv",
             'descr' => "Block private networks from " . $intfinfo['descr'], 'from' => 'fc00::/7',
-            'disabled' => $ipv6_disabled || !isset($intfinfo['blockpriv'])],
+            'disabled' => $ipv6_disabled || empty($intfinfo['blockpriv'])],
             $privtmpl
         );
     }

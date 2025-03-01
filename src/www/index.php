@@ -93,7 +93,7 @@ if (isset($config['trigger_initial_wizard']) || isset($_GET['wizard_done'])):
     </section>
   <?php
         if (isset($config['trigger_initial_wizard'])): ?>
-    <meta http-equiv="refresh" content="5;url=/wizard.php?xml=system">
+    <meta http-equiv="refresh" content="5;url=/ui/core/initial_setup">
   <?php endif ;
 include("foot.inc"); endif;
 else:

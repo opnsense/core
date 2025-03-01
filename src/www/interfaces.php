@@ -431,8 +431,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     $pconfig['enable'] = isset($a_interfaces[$if]['enable']);
     $pconfig['lock'] = isset($a_interfaces[$if]['lock']);
-    $pconfig['blockpriv'] = isset($a_interfaces[$if]['blockpriv']);
-    $pconfig['blockbogons'] = isset($a_interfaces[$if]['blockbogons']);
+    $pconfig['blockpriv'] = !empty($a_interfaces[$if]['blockpriv']);
+    $pconfig['blockbogons'] = !empty($a_interfaces[$if]['blockbogons']);
     $pconfig['gateway_interface'] = isset($a_interfaces[$if]['gateway_interface']);
     $pconfig['promisc'] = isset($a_interfaces[$if]['promisc']);
     $pconfig['dhcpoverridemtu'] = empty($a_interfaces[$if]['dhcphonourmtu']) ? true : null;
