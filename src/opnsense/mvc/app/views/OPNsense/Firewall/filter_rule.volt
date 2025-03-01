@@ -628,6 +628,15 @@
     #interface_select_container {
         float: left;
     }
+    /* Prevent grid to break out of content box, introduce scrolling on small viewports */
+    .content-box {
+        min-width: 100%;
+        overflow-x: auto;
+    }
+    /* Prevent action bar getting squashed and break out of content box */
+    .bootgrid-header {
+        min-width: 1030px;
+    }
 </style>
 
 <div class="tab-content content-box">
