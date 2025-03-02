@@ -55,10 +55,5 @@ if len(sys.argv) > 1:
                     with open(target_filename, 'wb') as f_out:
                         f_out.write(zf_in.read(zf_info.filename))
                     os.chmod(target_filename, 0o444)
-    # write zone settings
-    filename = '%sjs/zone.js' % target_directory
-    with open(filename, 'wb') as f_out:
-        f_out.write(('var zoneid = %s' % zoneid).encode())
-    os.chmod(filename, 0o444)
 
 sys.exit(0)

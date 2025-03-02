@@ -37,7 +37,10 @@
                 set:'/api/captiveportal/settings/setZone/',
                 add:'/api/captiveportal/settings/addZone/',
                 del:'/api/captiveportal/settings/delZone/',
-                toggle:'/api/captiveportal/settings/toggleZone/'
+                toggle:'/api/captiveportal/settings/toggleZone/',
+                options: {
+                    triggerEditFor: getUrlHash('edit')
+                }
             }
         );
 
