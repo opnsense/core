@@ -372,7 +372,7 @@ function get_nameservers($interface = null, $with_gateway = false)
         if (!empty($list)) {
             $dns_lists[] = $list;
         }
-    } elseif (isset($syscfg['dnsallowoverride'])) {
+    } elseif (!empty($syscfg['dnsallowoverride'])) {
         /* return dynamic servers as required by configuration */
         $list = shell_safe('/usr/local/sbin/ifctl -nl');
         if (!empty($list)) {
