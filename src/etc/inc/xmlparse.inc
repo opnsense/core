@@ -51,6 +51,7 @@ function listtags()
       'user',
       'vip', 'virtual_server', 'vlan',
       'winsserver', 'wolentry', 'widget',
+      'dhcp_ranges'
     );
 
     return array_flip($ret);
