@@ -174,7 +174,7 @@ function restore_config_section_xmlrpc($new_config)
     $oldvips = [];
     if (isset($new_config['virtualip']['vip']) && isset($config['virtualip']['vip'])) {
         foreach ($config['virtualip']['vip'] as $vipindex => $vip) {
-            if (!empty($vip['vhid'])) {
+            if (!empty($vip['vhid']) && empty($vip['nosync'])) {
                 // rc.filter_synchronize only sends CARP VIPs and IP Aliases with a VHID. Keep the rest like it was.
                 $vipKey = get_unique_vip_key($vip);
                 $oldvips[$vipKey] = $vip;
