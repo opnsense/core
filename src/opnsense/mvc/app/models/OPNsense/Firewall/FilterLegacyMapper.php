@@ -32,9 +32,9 @@ class FilterLegacyMapper
 {
     /**
      * Mapping of model keys to legacy keys.
-    *
-    * @var array
-    */
+     *
+     * @var array
+     */
     protected $mapping = [
         'action'           => 'type',
         'replyto'          => 'reply-to',
@@ -43,6 +43,7 @@ class FilterLegacyMapper
         'source_port'      => 'from_port',
         'destination_net'  => 'to',
         'destination_port' => 'to_port',
+        'ref'              => '#ref',
     ];
 
     /**

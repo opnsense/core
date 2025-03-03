@@ -61,9 +61,6 @@ class FilterController extends FilterBaseController
             }
         }
 
-        // Ensure #ref is included in the template
-        $template['#ref'] = $template['#ref'] ?? '';
-
         return $template;
     }
 

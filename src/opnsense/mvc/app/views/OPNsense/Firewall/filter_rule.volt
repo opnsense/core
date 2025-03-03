@@ -118,7 +118,7 @@
 
                         // If UUID is invalid, its an internal rule, use the #ref field to show a lookup button.
                         if (!rowId || !uuidRegex.test(rowId)) {
-                            let ref = row["#ref"] || "";
+                            let ref = row["ref"] || "";
                             if (ref.trim().length > 0) {
                                 let url = `/${ref}`;
                                 return `
