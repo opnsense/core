@@ -34,7 +34,6 @@ import syslog
 import traceback
 import subprocess
 import sqlite3
-import hashlib
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from lib import Config
 from lib.db import DB

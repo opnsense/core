@@ -30,8 +30,7 @@ function captiveportal_services()
 {
     $services = [];
 
-    $cp = new \OPNsense\CaptivePortal\CaptivePortal();
-    if ($cp->isEnabled()) {
+    if ((new \OPNsense\CaptivePortal\CaptivePortal())->isEnabled()) {
         $services[] = array(
             'pidfile' => '/var/run/lighttpd-api-dispatcher.pid',
             'description' => gettext('Captive Portal'),
@@ -80,7 +79,7 @@ function captiveportal_firewall($fw)
     $cp = new \OPNsense\CaptivePortal\CaptivePortal();
     if ($cp->isEnabled()) {
         foreach ($cp->zones->zone->iterateItems() as $zone) {
-            if (empty((string)$zone->enabled)) {
+            if ($zone->enabled->isEmpty()) {
                 continue;
             }
 
@@ -110,25 +109,6 @@ function captiveportal_firewall($fw)
                 foreach (['80', '443'] as $to_port) {
                     $rdr_port = $to_port === '443' ? (8000 + (int)$zoneid) : (9000 + (int)$zoneid);
 
-                    // XXX the forwarding rules can be merged if
-                    // source inversion is supported by registerForwardRule
-                    // for now, skip rdr on the relevant table
-
-                    // disable rdr for authenticated clients, jump to filter pass rule
-                    $fw->registerForwardRule(
-                        1,
-                        [
-                            'interface' => $intf,
-                            'nordr' => true,
-                            'protocol' => 'tcp',
-                            'from' => "__captiveportal_zone_{$zoneid}",
-                            'to' => 'any',
-                            'to_port' => $to_port,
-                            'descr' => "Skip redirection for Captive Portal authenticated clients (zone {$zoneid})",
-                            '#ref' => "ui/captiveportal#edit={$uuid}"
-                        ]
-                    );
-
                     // forward to localhost if not authenticated
                     $fw->registerForwardRule(
                         2,
@@ -138,7 +118,7 @@ function captiveportal_firewall($fw)
                             'nordr' => false,
                             'ipprotocol' => 'inet',
                             'protocol' => 'tcp',
-                            'from' => "any",
+                            'source' => ['not' => true, 'address' => "<__captiveportal_zone_{$zoneid}>"],
                             'to' => 'any',
                             'to_port' => $to_port,
                             'target' => '127.0.0.1',

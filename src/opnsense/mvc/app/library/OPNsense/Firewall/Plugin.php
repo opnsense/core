@@ -252,7 +252,7 @@ class Plugin
                 }
             }
         }
-        return $result . "\n";
+        return $result;
     }
 
     /**

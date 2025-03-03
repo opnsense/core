@@ -307,8 +307,7 @@ class AccessController extends ApiControllerBase
             $captive = $clientSession["clientState"] != "AUTHORIZED";
             $host = $this->request->getHeader('X-Forwarded-Host');
 
-            $cp = new \OPNsense\CaptivePortal\CaptivePortal();
-            $zone = $cp->getByZoneId($zoneId);
+            $zone = (new \OPNsense\CaptivePortal\CaptivePortal())->getByZoneId($zoneId);
 
             if ($zone != null && !empty((string)$zone->hardtimeout) && !empty($clientSession['startTime'])) {
                 if ((time() - (int)$clientSession['startTime']) < (string)$zone->hardtimeout * 60) {
@@ -320,7 +319,7 @@ class AccessController extends ApiControllerBase
             $this->response->setContentType("application/captive+json");
 
             $result["captive"] = $captive;
-            $result["user-portal-url"] = "https://{$host}/index.html"; // XXX
+            $result["user-portal-url"] = "https://{$host}/index.html";
 
             $this->response->setContent($result);
 
