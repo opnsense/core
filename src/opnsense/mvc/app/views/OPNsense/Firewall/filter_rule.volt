@@ -429,6 +429,7 @@
             $(this).find('th[data-column-id="source_port"] .text').text("{{ lang._('Port') }}");
             $(this).find('th[data-column-id="destination_port"] .text').text("{{ lang._('Port') }}");
             $(this).find('th[data-column-id="interface"] .text').html('<i class="fa-solid fa-network-wired"></i>');
+            $(this).find('th[data-column-id="evaluations"] .text').html('<i class="fa-solid fa-bullseye"></i>');
 
             $("[data-row-id]").each(function(){
                 const uuid = $(this).data("row-id");

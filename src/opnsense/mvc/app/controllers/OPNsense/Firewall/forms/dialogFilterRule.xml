@@ -592,14 +592,16 @@
             <sortable>false</sortable>
         </grid_view>
     </field>
-    <!-- Fields for diagnostics, not exposed in dialog -->
+    <!-- Fields for diagnostics, not exposed in dialog, only for grid -->
     <field>
         <id>rule.evaluations</id>
         <label>Evaluations</label>
         <type>ignore</type>
         <grid_view>
-            <visible>false</visible>
             <sortable>false</sortable>
+            <label>Stats - Evaluations</label>
+            <sequence>105</sequence>
+            <width>4em</width>
         </grid_view>
     </field>
     <field>
@@ -609,6 +611,7 @@
         <grid_view>
             <visible>false</visible>
             <sortable>false</sortable>
+            <label>Stats - States</label>
         </grid_view>
     </field>
     <field>
@@ -618,6 +621,7 @@
         <grid_view>
             <visible>false</visible>
             <sortable>false</sortable>
+            <label>Stats - Packets</label>
         </grid_view>
     </field>
     <field>
@@ -627,6 +631,7 @@
         <grid_view>
             <visible>false</visible>
             <sortable>false</sortable>
+            <label>Stats - Bytes</label>
         </grid_view>
     </field>
 </form>
