@@ -29,7 +29,11 @@
 import json
 import subprocess
 
-result = {}
+# not yet registered by name, but pratical to have
+# https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml
+result = {
+    '114' : 'dhcp captive-portal [114]'
+}
 sp = subprocess.run(['/usr/local/sbin/dnsmasq', '--help','dhcp'], capture_output=True, text=True)
 for line in sp.stdout.split("\n"):
     parts = line.split(maxsplit=1)
