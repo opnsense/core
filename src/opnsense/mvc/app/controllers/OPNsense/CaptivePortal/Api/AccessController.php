@@ -299,8 +299,10 @@ class AccessController extends ApiControllerBase
      */
     public function apiAction()
     {
-        if ($this->request->isGet() &&
-            $this->request->getHeader("accept") == "application/captive+json") {
+        if (
+            $this->request->isGet() &&
+            $this->request->getHeader("accept") == "application/captive+json"
+        ) {
             $result = [];
             $zoneId = $this->request->getHeader("zoneid");
             $clientSession = $this->clientSession($zoneId);

@@ -130,7 +130,7 @@ function captiveportal_firewall($fw)
                     );
 
                     // Allow access to the captive portal
-                    $proto = $to_port === '443' ? 'https': 'http';
+                    $proto = $to_port === '443' ? 'https' : 'http';
                     $fw->registerFilterRule(
                         2,
                         [

@@ -240,7 +240,7 @@ class Plugin
                         $result .= " quick";
                     }
                     if (!empty($anchor['ifs'])) {
-                        $ifs = array_filter(array_map(function($if) {
+                        $ifs = array_filter(array_map(function ($if) {
                             return $this->interfaceMapping[$if]['if'] ?? null;
                         }, explode(',', $anchor['ifs'])));
 
