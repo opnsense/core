@@ -36,22 +36,20 @@ use OPNsense\Firewall\Util;
 use OPNsense\Dnsmasq\Dnsmasq;
 use OPNsense\Routing\Gateways;
 
-
 /**
  * wrapper model class to update various configuration parts in a controlled way for the setup wizard
  */
 class InitialSetup extends BaseModel
 {
-
     /**
      * @param string $path dot seperated path to collect
      * @param bool $isBoolean return as boolean value 0/1
      * @return string
      */
-    private function getConfigItem(string $path, bool $isBoolean=false)
+    private function getConfigItem(string $path, bool $isBoolean = false)
     {
         $node = Config::getInstance()->object();
-        foreach(explode('.', $path) as $item) {
+        foreach (explode('.', $path) as $item) {
             if (isset($node->$item)) {
                 $node = $node->$item;
             } else {
@@ -165,7 +163,8 @@ class InitialSetup extends BaseModel
                 );
             }
         } elseif ($this->interfaces->wan->ipv4_type == 'static') {
-            if (!empty($this->interfaces->wan->gateway) &&
+            if (
+                !empty($this->interfaces->wan->gateway) &&
                 !Util::isIPInCIDR($this->interfaces->wan->gateway, $this->interfaces->wan->ipaddr)
             ) {
                 $messages->appendMessage(
@@ -203,7 +202,7 @@ class InitialSetup extends BaseModel
         $target->system->timeservers = str_replace(',', ' ', (string)$this->timeservers);
         $target->system->timezone = (string)$this->timezone;
         unset($target->system->dnsserver);
-        foreach ( explode(',', (string)$this->dns_servers) as $dnsserver) {
+        foreach (explode(',', (string)$this->dns_servers) as $dnsserver) {
             $target->system->addChild('dnsserver', $dnsserver);
         }
         $target->system->dnsallowoverride = (string)$this->dnsallowoverride;
@@ -239,7 +238,7 @@ class InitialSetup extends BaseModel
             }
             $pppoe_idx = -1;
             $max_ptpid = 0;
-            for ($idx = 0 ; $idx < count($target->ppps->ppp); ++$idx) {
+            for ($idx = 0; $idx < count($target->ppps->ppp); ++$idx) {
                 if ($target->ppps->ppp[$idx]->if == $wanif) {
                     $pppoe_idx = $idx;
                 }
@@ -259,7 +258,6 @@ class InitialSetup extends BaseModel
             $node->type = 'pppoe';
             $node->username = (string)$this->interfaces->wan->pppoe_username;
             $node->password = base64_encode((string)$this->interfaces->wan->pppoe_password);
-
         }
         unset($target->interfaces->wan->dhcphostname);
         if (in_array($this->interfaces->wan->ipv4_type, ['pppoe', 'dhcp'])) {
@@ -326,7 +324,7 @@ class InitialSetup extends BaseModel
                 $dhcprange = $dnsmasq->dhcp_ranges->Add();
                 $dhcprange->interface = 'lan';
                 $dhcprange->start_addr = $avail_addrs[40];
-                $dhcprange->end_addr = $avail_addrs[count($avail_addrs)-10];
+                $dhcprange->end_addr = $avail_addrs[count($avail_addrs) - 10];
             }
         }
         $dnsmasq->serializeToConfig(false, true);
@@ -336,7 +334,6 @@ class InitialSetup extends BaseModel
                 unset($node->enable);
             }
         }
-
     }
 
     /**

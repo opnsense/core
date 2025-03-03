@@ -31,6 +31,6 @@ require_once 'system.inc';
 
 $result = [];
 foreach (get_zoneinfo() as $tz) {
-    $result[$tz]= $tz;
+    $result[$tz] = $tz;
 }
 echo json_encode($result);

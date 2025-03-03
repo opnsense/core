@@ -38,7 +38,7 @@ class InitialSetupController extends \OPNsense\Base\IndexController
             'step_0' => [
                 'title' => gettext('Welcome'),
                 'message' => gettext(
-                    'This wizard will guide you through the initial system configuration. '.
+                    'This wizard will guide you through the initial system configuration. ' .
                     'The wizard may be stopped at any time by clicking the logo image at the top of the screen.'
                 )
             ],
