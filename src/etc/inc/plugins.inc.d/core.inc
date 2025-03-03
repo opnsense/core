@@ -32,33 +32,6 @@ function core_services()
 
     $services = array();
 
-    if (isset($config['OPNsense']['captiveportal']['zones']['zone'])) {
-        $enabled = false;
-        if (!empty($config['OPNsense']['captiveportal']['zones']['zone']['enabled'])) {
-            // single zone and enabled
-            $enabled = true;
-        } else {
-            // possible more zones, traverse items
-            foreach ($config['OPNsense']['captiveportal']['zones']['zone'] as $zone) {
-                if (!empty($zone['enabled'])) {
-                    $enabled = true;
-                }
-            }
-        }
-        if ($enabled) {
-            $services[] = array(
-                'pidfile' => '/var/run/lighttpd-api-dispatcher.pid',
-                'description' => gettext('Captive Portal'),
-                'configd' => array(
-                    'restart' => array('captiveportal restart'),
-                    'start' => array('captiveportal start'),
-                    'stop' => array('captiveportal stop'),
-                ),
-                'name' => 'captiveportal',
-            );
-        }
-    }
-
     $services[] = array(
         'description' => gettext('System Configuration Daemon'),
         'pidfile' => '/var/run/configd.pid',
@@ -330,14 +303,6 @@ function core_cron()
         );
     }
 
-    if (!empty($config['system']['captiveportalbackup']) && $config['system']['captiveportalbackup'] > 0) {
-        $jobs[]['autocron'] = array(
-            '/usr/local/etc/rc.syshook.d/backup/20-captiveportal',
-            '0',
-            '*/' . $config['system']['captiveportalbackup']
-        );
-    }
-
     foreach ((new OPNsense\Backup\BackupFactory())->listProviders() as $classname => $provider) {
         if ($provider['handle']->isEnabled()) {
             $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d system remote backup 3600', 0, 1);
@@ -361,7 +326,6 @@ function core_syslog()
     $logfacilities['dhcpd'] = ['facility' => ['dhcpd']];
     $logfacilities['lighttpd'] = ['facility' => ['lighttpd']];
     $logfacilities['pkg'] = ['facility' => ['pkg', 'pkg-static']];
-    $logfacilities['portalauth'] = ['facility' => ['captiveportal']];
     $logfacilities['ppps'] = ['facility' => ['ppp']];
     $logfacilities['resolver'] = ['facility' => ['unbound']];
     $logfacilities['routing'] = ['facility' => ['routed', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd']];

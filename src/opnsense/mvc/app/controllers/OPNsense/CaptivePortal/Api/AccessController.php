@@ -117,7 +117,7 @@ class AccessController extends ApiControllerBase
 
     /**
      * logon client to zone, must use post type of request
-     * @param int|string $zoneid zone id number
+     * @param int|string $zoneid zone id number, provided for backwards compatibility
      * @return array
      * @throws \OPNsense\Base\ModelException
      */
@@ -131,6 +131,7 @@ class AccessController extends ApiControllerBase
             // init variables for authserver object and name
             $authServer = null;
             $authServerName = "";
+            $zoneid = $this->request->getHeader("zoneid");
 
             // get username from post
             $userName = $this->request->getPost("user", "striptags", null);
@@ -223,9 +224,10 @@ class AccessController extends ApiControllerBase
 
     /**
      * logoff client
-     * @param int|string $zoneid zone id number
+     * @param int|string $zoneid zone id number, provided for backwards compatibility
      * @return array
      * @throws \OPNsense\Base\ModelException
+     *
      */
     public function logoffAction($zoneid = 0)
     {
@@ -233,6 +235,7 @@ class AccessController extends ApiControllerBase
             // return empty result on CORS preflight
             return [];
         } else {
+            $zoneid = $this->request->getHeader("zoneid");
             $clientSession = $this->clientSession((string)$zoneid);
             if (
                 $clientSession['clientState'] == 'AUTHORIZED' &&
@@ -256,9 +259,10 @@ class AccessController extends ApiControllerBase
 
     /**
      * retrieve session info
-     * @param int|string $zoneid zone id number
+     * @param int|string $zoneid zone id number, provided for backwards compatibility
      * @return array
      * @throws \OPNsense\Base\ModelException
+     *
      */
     public function statusAction($zoneid = 0)
     {
@@ -266,8 +270,64 @@ class AccessController extends ApiControllerBase
             // return empty result on CORS preflight
             return [];
         } elseif ($this->request->isPost() || $this->request->isGet()) {
-            $clientSession = $this->clientSession((string)$zoneid);
+            $clientSession = $this->clientSession($this->request->getHeader("zoneid"));
             return $clientSession;
         }
+    }
+
+    /**
+     * RFC 8908: Captive Portal API status object
+     *
+     * The URI for this endpoint can be provisioned to the client
+     * as defined by RFC 7710.
+     *
+     * Request and response must set media type as "application/captive+json".
+     *
+     * Response contains the following fields:
+     * - captive: boolean: client is currently in a state of captivity.
+     * - user-portal-url: string: URL to login web portal (must be HTTPS).
+     * - seconds-remaining: number: seconds until session expires,
+     *   only relevant if hardtimeout set.
+     *
+     * Fields not implemented here but possible in the future:
+     * - venue-info-url: string: Information page (must be HTTPS)
+     * - can-extend-session: boolean: hint that client system can access
+     *   user-portal-url to extend session.
+     * - bytes-remaining: number: no. of bytes after which session expires.
+     *
+     * Response must set Cache-Control to 'private' or 'no-store'
+     */
+    public function apiAction()
+    {
+        if ($this->request->isGet() &&
+            $this->request->getHeader("accept") == "application/captive+json") {
+            $result = [];
+            $zoneId = $this->request->getHeader("zoneid");
+            $clientSession = $this->clientSession($zoneId);
+            $captive = $clientSession["clientState"] != "AUTHORIZED";
+            $host = $this->request->getHeader('X-Forwarded-Host');
+
+            $zone = (new \OPNsense\CaptivePortal\CaptivePortal())->getByZoneId($zoneId);
+
+            if ($zone != null && !empty((string)$zone->hardtimeout) && !empty($clientSession['startTime'])) {
+                if ((time() - (int)$clientSession['startTime']) < (string)$zone->hardtimeout * 60) {
+                    $result['seconds-remaining'] = (string)$zone->hardtimeout * 60 - ((time() - (int)$clientSession['startTime']));
+                }
+            }
+
+            $this->response->setRawHeader("Cache-Control: private");
+            $this->response->setContentType("application/captive+json");
+
+            $result["captive"] = $captive;
+            $result["user-portal-url"] = "https://{$host}/index.html";
+
+            $this->response->setContent($result);
+
+            return;
+        }
+
+        $this->response->setStatusCode(400);
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setContent(['status'  => 400, 'message' => 'Bad request']);
     }
 }

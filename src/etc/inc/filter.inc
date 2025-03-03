@@ -355,6 +355,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     $rules .= "set skip on lo0\n";
     $rules .= "set skip on pfsync0\n";
     $rules .= "\n";
+    $rules .= $fw->anchorToText('ether', 'head');
     $rules .= filter_generate_scrubbing($cnfint);
     $rules .= "\n";
     $rules .= $fw->anchorToText('nat,binat,rdr', 'head');
