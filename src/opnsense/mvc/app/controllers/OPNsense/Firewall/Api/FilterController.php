@@ -107,9 +107,14 @@ class FilterController extends FilterBaseController
         $mapper = new FilterLegacyMapper();
         $normalizedRules = $mapper->normalizeRules($data, $template, $ruleType);
 
+        // 5) Filter out disabled rules
+        $filteredRules = array_filter($normalizedRules, function ($rule) {
+            return $rule['enabled'] !== '0';
+        });
+
         return [
             "status" => "ok",
-            "rules"  => $normalizedRules
+            "rules"  => $filteredRules
         ];
     }
 

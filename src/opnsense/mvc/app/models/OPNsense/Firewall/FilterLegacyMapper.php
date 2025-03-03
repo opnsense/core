@@ -63,9 +63,7 @@ class FilterLegacyMapper
 
         foreach ($rules as $rule) {
             $newRule = $this->normalizeRule($rule, $template, $ruleType, $defaultSequence);
-            if ($newRule['enabled'] === '0') {
-                continue; // Skip disabled rules
-            }
+
             $normalizedRules[] = $newRule;
         }
 
