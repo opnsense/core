@@ -33,6 +33,7 @@ use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\UIModelGrid;
 use OPNsense\Diagnostics\Api\InterfaceController;
 use OPNsense\Firewall\FilterLegacyMapper;
+use OPNsense\Firewall\Util;
 
 class FilterController extends FilterBaseController
 {
@@ -277,6 +278,22 @@ class FilterController extends FilterBaseController
             }
             unset($row);
         }
+
+        // 7. Determine if a rule has aliases for the alias formatter
+        $aliasFields = ['source_net', 'source_port', 'destination_net', 'destination_port'];
+
+        // For each rule, split the comma-separated field values and generate an alias flag array
+        foreach ($result['rows'] as &$row) {
+            foreach ($aliasFields as $field) {
+                if (!empty($row[$field])) {
+                    $values = array_map('trim', explode(',', $row[$field]));
+                    $row["is_alias_{$field}"] = array_map(function ($value) {
+                        return Util::isAlias($value);
+                    }, $values);
+                }
+            }
+        }
+        unset($row);
 
         return $result;
     }

@@ -314,6 +314,60 @@
                         // Return all icons
                         return result;
                     },
+                    alias: function(column, row) {
+                        let value = row[column.id];
+                        if (value === undefined || value === null) {
+                            return '';
+                        }
+                        // Ensure it’s a string, or internal rules will not load anymore
+                        if (typeof value !== 'string') {
+                            value = String(value);
+                        }
+
+                        const aliasFlagName = "is_alias_" + column.id;
+                        if (!row.hasOwnProperty(aliasFlagName)) {
+                            return value;
+                        }
+
+                        // If the alias flag is an array, handle multiple comma-separated aliases
+                        if (Array.isArray(row[aliasFlagName])) {
+                            const values = value.split(',').map(s => s.trim());
+                            const aliasFlags = row[aliasFlagName];
+
+                            const formattedValues = values.map((val, index) => {
+                                const isAlias = aliasFlags[index] || false;
+                                if (isAlias) {
+                                    return `
+                                        <span data-toggle="tooltip" title="${val}">
+                                            ${val}&nbsp;
+                                        </span>
+                                        <a href="/ui/firewall/alias/index/${val}" data-toggle="tooltip" title="Edit alias">
+                                            <i class="fa fa-list"></i>
+                                        </a>
+                                    `;
+                                }
+
+                                return val;
+                            });
+
+                            return formattedValues.join(', ');
+
+                        } else {
+                            // If alias flag is not an array, assume it's a boolean and a single alias
+                            if (row[aliasFlagName]) {
+                                return `
+                                    <span data-toggle="tooltip" title="${value}">
+                                        ${value}&nbsp;
+                                    </span>
+                                    <a href="/ui/firewall/alias/index/${value}" data-toggle="tooltip" title="Edit alias">
+                                        <i class="fa fa-list"></i>
+                                    </a>
+                                `;
+                            }
+
+                            return value;
+                        }
+                    },
 
                 },
             },
