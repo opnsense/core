@@ -114,7 +114,7 @@
         <hint>any</hint>
         <grid_view>
             <formatter>interfacenot</formatter>
-            <formatter>any</formatter>
+            <formatter>interfaces</formatter>
             <sequence>25</sequence>
             <sortable>false</sortable>
             <width>4em</width>

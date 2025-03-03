@@ -211,6 +211,24 @@
                             return '{{ lang._("*") }}';
                         }
                     },
+                    interfaces: function(column, row) {
+                        const interfaces = row[column.id];
+
+                        if (!interfaces || interfaces.trim() === "") {
+                            return "*";
+                        }
+
+                        const interfaceList = interfaces.split(",").map(iface => iface.trim());
+
+                        if (interfaceList.length === 1) {
+                            return interfaceList[0];
+                        }
+
+                        const tooltipText = interfaceList.join("<br>");
+                        return `<span data-toggle="tooltip" data-html="true" title="${tooltipText}">
+                                    ${interfaceList.length} <a><i class="fa fa-list"></i></a>
+                                </span>`;
+                    },
                     // Icons
                     ruleIcons: function(column, row) {
                         let result = "";
