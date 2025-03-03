@@ -215,9 +215,14 @@
                         }
 
                         const tooltipText = interfaceList.join("<br>");
-                        return `${isNegated}<span data-toggle="tooltip" data-html="true" title="${tooltipText}">
-                                    ${interfaceList.length} <a><i class="fa fa-list"></i></a>
-                                </span>`;
+
+                        return `
+                            ${isNegated}
+                            <span data-toggle="tooltip" data-html="true" title="${tooltipText}" style="white-space: nowrap;">
+                                <span class="interface-count">${interfaceList.length}</span>
+                                <i class="fa-solid fa-fw fa-ethernet"></i>
+                            </span>
+                        `;
                     },
                     // Icons
                     ruleIcons: function(column, row) {
@@ -341,7 +346,7 @@
                                 ${val}&nbsp;
                             </span>
                             <a href="/ui/firewall/alias/index/${val}" data-toggle="tooltip" title="{{ lang._('Edit alias') }}">
-                                <i class="fa fa-list"></i>
+                                <i class="fa fa-fw fa-list"></i>
                             </a>
                         `;
 
@@ -434,8 +439,8 @@
             $(this).find('th[data-column-id="protocol"] .text').text("{{ lang._('Proto') }}");
             $(this).find('th[data-column-id="source_port"] .text').text("{{ lang._('Port') }}");
             $(this).find('th[data-column-id="destination_port"] .text').text("{{ lang._('Port') }}");
-            $(this).find('th[data-column-id="interface"] .text').html('<i class="fa-solid fa-network-wired"></i>');
-            $(this).find('th[data-column-id="evaluations"] .text').html('<i class="fa-solid fa-bullseye"></i>');
+            $(this).find('th[data-column-id="interface"] .text').html('<i class="fa-solid fa-fw fa-network-wired"></i>');
+            $(this).find('th[data-column-id="evaluations"] .text').html('<i class="fa-solid fa-fw fa-bullseye"></i>');
 
             $("[data-row-id]").each(function(){
                 const uuid = $(this).data("row-id");
