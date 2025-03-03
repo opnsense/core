@@ -140,6 +140,12 @@
         <help>Should be set when dnsmasq is definitely the only DHCP server on a network. For DHCPv4, it changes the behaviour from strict RFC compliance so that DHCP requests on unknown leases from unknown hosts are not ignored.</help>
     </field>
     <field>
+        <id>dnsmasq.dhcp_reply_delay</id>
+        <label>DHCP Reply delay</label>
+        <type>text</type>
+        <help>Delays sending DHCPOFFER and PROXYDHCP replies for at least the specified number of seconds. This can be practical for split dhcp solutions, to make sure the secondary server answers slower than the primary.</help>
+    </field>
+    <field>
         <id>dnsmasq.dhcp_default_fw_rules</id>
         <label>DHCP register firewall rules</label>
         <type>checkbox</type>

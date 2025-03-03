@@ -45,6 +45,10 @@
             <Required>Y</Required>
             <Default>1</Default>
         </dhcp_default_fw_rules>
+        <dhcp_reply_delay type="IntegerField">
+            <MinimumValue>0</MinimumValue>
+            <MaximumValue>60</MaximumValue>
+        </dhcp_reply_delay>
         <no_ident type="BooleanField">
             <Required>Y</Required>
             <Default>1</Default>
