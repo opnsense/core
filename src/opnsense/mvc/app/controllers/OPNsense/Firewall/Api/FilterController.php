@@ -172,11 +172,10 @@ class FilterController extends FilterBaseController
         // 1. Define the model filter function
         $modelFilter = function ($record) use ($category, $selectedInterface) {
             if (!empty($selectedInterface)) {
-                // Retrieve the configuration object.
                 $config = Config::getInstance()->object();
                 $resolvedKey = null;
-                // Iterate over configured interfaces.
 
+                // Iterate over configured interfaces.
                 foreach ($config->interfaces->children() as $key => $node) {
                     // Compare the physical interface name stored in <if>
                     if ((string)$node->if === $selectedInterface) {
@@ -184,21 +183,22 @@ class FilterController extends FilterBaseController
                         break;
                     }
                 }
-                // If no matching key is found or it doesn't match the rule's interface, filter out this record.
 
+                // If no matching key is found or it doesn't match the rule's interface, filter out this record.
                 if ($resolvedKey === null) {
                     return false;
                 }
-                // Split the rule’s interface field into an array to support multiple interfaces.
 
+                // Split the rule’s interface field into an array to support multiple interfaces.
                 $ruleInterfaces = array_map('trim', explode(',', (string)$record->interface));
+
                 // Check if the resolved key is in the array of interfaces.
                 if (!in_array($resolvedKey, $ruleInterfaces)) {
                     return false;
                 }
             }
-            // Apply category filter if specified.
 
+            // Apply category filter if specified.
             if (!empty($category)) {
                 $cats = array_map('trim', explode(',', (string)$record->categories));
                 if (!(bool) array_intersect($cats, $category)) {
