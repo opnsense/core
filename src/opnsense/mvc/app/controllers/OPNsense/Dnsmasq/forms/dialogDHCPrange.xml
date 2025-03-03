@@ -24,14 +24,10 @@
         <help>End of the range.</help>
     </field>
     <field>
-        <id>range.static</id>
-        <label>Static</label>
-        <type>checkbox</type>
-        <help>Enable DHCP for the network specified, but do not to dynamically allocate IP addresses: only hosts which have static addresses will receive one</help>
-        <grid_view>
-            <type>boolean</type>
-            <formatter>boolean</formatter>
-        </grid_view>
+        <id>range.mode</id>
+        <label>Mode</label>
+        <type>select_multiple</type>
+        <help>Mode flags to set for this range, 'static' means no addresses will be automatically assigned. </help>
     </field>
     <field>
         <id>range.lease_time</id>

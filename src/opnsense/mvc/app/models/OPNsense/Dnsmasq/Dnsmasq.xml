@@ -136,7 +136,12 @@
                 <NetMaskAllowed>N</NetMaskAllowed>
                 <AddressFamily>ipv4</AddressFamily>
             </end_addr>
-            <static type="BooleanField"/>
+            <mode type="OptionField">
+                <OptionValues>
+                    <static>static</static>
+                </OptionValues>
+                <Multiple>Y</Multiple>
+            </mode>
             <lease_time type="IntegerField">
                 <MinimumValue>1</MinimumValue>
             </lease_time>
