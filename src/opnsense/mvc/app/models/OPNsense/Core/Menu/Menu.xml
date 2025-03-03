@@ -99,7 +99,7 @@
                 <Edit url="/firewall_nat_out_edit.php*" visibility="hidden"/>
             </Outbound>
         </NAT>
-        <Rules VisibleName="Rules [legacy]" order="100" cssClass="fa fa-check fa-fw" />
+        <Rules cssClass="fa fa-check fa-fw" />
         <Settings order="200" cssClass="fa fa-cogs fa-fw">
             <Schedules url="/firewall_schedule.php">
                 <SchedulesEdit url="/firewall_schedule_edit.php*" visibility="hidden"/>
