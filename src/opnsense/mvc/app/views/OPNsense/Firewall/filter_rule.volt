@@ -683,7 +683,7 @@
     }
     /* Prevent action bar getting squashed and break out of content box */
     .bootgrid-header {
-        min-width: 1030px;
+        min-width: 1020px;
     }
 </style>
 
