@@ -363,7 +363,7 @@
         </patterns>
     </page-interfaces-wireless>
     <page-wizard-system>
-        <name>System Setup Wizard</name>
+        <name>System: Configuration: Wizard</name>
         <patterns>
             <pattern>ui/core/initial_setup</pattern>
             <pattern>api/core/initial_setup/*</pattern>

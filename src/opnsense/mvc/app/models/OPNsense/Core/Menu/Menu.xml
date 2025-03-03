@@ -30,6 +30,7 @@
             <Backups url="/diag_backup.php"/>
             <Defaults url="/diag_defaults.php"/>
             <History url="/ui/core/backup/history/this"/>
+            <Wizard url="/ui/core/initial_setup"/>
         </Configuration>
         <Firmware cssClass="fa fa-building-o fa-fw">
             <Status order="10" url="/ui/core/firmware#status"/>
@@ -72,7 +73,6 @@
             <Revocation url="/ui/trust/crl"/>
             <Settings url="/ui/trust/settings"/>
         </Trust>
-        <Wizard url="/ui/core/initial_setup" cssClass="fa fa-magic fa-fw"/>
         <LogFiles order="150" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
             <Audit url="/ui/diagnostics/log/core/audit"/>
             <Backend url="/ui/diagnostics/log/core/configd"/>
