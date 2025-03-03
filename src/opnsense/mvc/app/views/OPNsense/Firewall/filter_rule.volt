@@ -314,6 +314,7 @@
                         // Return all icons
                         return result;
                     },
+                    // Show Edit alias icon
                     alias: function(column, row) {
                         let value = row[column.id];
                         if (value === undefined || value === null) {
@@ -329,44 +330,25 @@
                             return value;
                         }
 
+                        const generateAliasMarkup = (val) => `
+                            <span data-toggle="tooltip" title="${val}">
+                                ${val}&nbsp;
+                            </span>
+                            <a href="/ui/firewall/alias/index/${val}" data-toggle="tooltip" title="{{ lang._('Edit alias') }}">
+                                <i class="fa fa-list"></i>
+                            </a>
+                        `;
+
                         // If the alias flag is an array, handle multiple comma-separated aliases
                         if (Array.isArray(row[aliasFlagName])) {
                             const values = value.split(',').map(s => s.trim());
                             const aliasFlags = row[aliasFlagName];
 
-                            const formattedValues = values.map((val, index) => {
-                                const isAlias = aliasFlags[index] || false;
-                                if (isAlias) {
-                                    return `
-                                        <span data-toggle="tooltip" title="${val}">
-                                            ${val}&nbsp;
-                                        </span>
-                                        <a href="/ui/firewall/alias/index/${val}" data-toggle="tooltip" title="Edit alias">
-                                            <i class="fa fa-list"></i>
-                                        </a>
-                                    `;
-                                }
-
-                                return val;
-                            });
-
-                            return formattedValues.join(', ');
-
-                        } else {
-                            // If alias flag is not an array, assume it's a boolean and a single alias
-                            if (row[aliasFlagName]) {
-                                return `
-                                    <span data-toggle="tooltip" title="${value}">
-                                        ${value}&nbsp;
-                                    </span>
-                                    <a href="/ui/firewall/alias/index/${value}" data-toggle="tooltip" title="Edit alias">
-                                        <i class="fa fa-list"></i>
-                                    </a>
-                                `;
-                            }
-
-                            return value;
+                            return values.map((val, index) => aliasFlags[index] ? generateAliasMarkup(val) : val).join(', ');
                         }
+
+                        // If alias flag is not an array, assume it's a boolean and a single alias
+                        return row[aliasFlagName] ? generateAliasMarkup(value) : value;
                     },
 
                 },
