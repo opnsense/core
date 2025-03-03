@@ -113,7 +113,6 @@
         <type>select_multiple</type>
         <hint>any</hint>
         <grid_view>
-            <formatter>interfacenot</formatter>
             <formatter>interfaces</formatter>
             <sequence>25</sequence>
             <sortable>false</sortable>
@@ -167,8 +166,6 @@
         <type>text</type>
         <style>net_selector net_selector_multi</style>
         <grid_view>
-            <formatter>source_not</formatter>
-            <formatter>any</formatter>
             <formatter>alias</formatter>
             <sequence>50</sequence>
             <sortable>false</sortable>
@@ -184,7 +181,6 @@
         <grid_view>
             <sequence>60</sequence>
             <sortable>false</sortable>
-            <formatter>any</formatter>
             <formatter>alias</formatter>
             <width>6em</width>
         </grid_view>
@@ -204,8 +200,6 @@
         <type>text</type>
         <style>net_selector net_selector_multi</style>
         <grid_view>
-            <formatter>destination_not</formatter>
-            <formatter>any</formatter>
             <formatter>alias</formatter>
             <sequence>70</sequence>
             <sortable>false</sortable>
@@ -221,7 +215,6 @@
         <grid_view>
             <sequence>80</sequence>
             <sortable>false</sortable>
-            <formatter>any</formatter>
             <formatter>alias</formatter>
             <width>6em</width>
         </grid_view>
@@ -602,6 +595,7 @@
             <label>Stats - Evaluations</label>
             <sequence>105</sequence>
             <width>4em</width>
+            <formatter>notavailable</formatter>
         </grid_view>
     </field>
     <field>
@@ -612,6 +606,7 @@
             <visible>false</visible>
             <sortable>false</sortable>
             <label>Stats - States</label>
+            <formatter>notavailable</formatter>
         </grid_view>
     </field>
     <field>
@@ -622,6 +617,7 @@
             <visible>false</visible>
             <sortable>false</sortable>
             <label>Stats - Packets</label>
+            <formatter>notavailable</formatter>
         </grid_view>
     </field>
     <field>
@@ -632,6 +628,7 @@
             <visible>false</visible>
             <sortable>false</sortable>
             <label>Stats - Bytes</label>
+            <formatter>notavailable</formatter>
         </grid_view>
     </field>
     <field>

@@ -178,28 +178,6 @@
                             </span>
                         `;
                     },
-                    // Show rule inverse status
-                    interfacenot: function(column, row) {
-                        if (row.interfacenot == true) {
-                            return "! " + row.interface;
-                        } else {
-                            return row.interface;
-                        }
-                    },
-                    source_not: function(column, row) {
-                        if (row.source_not == true) {
-                            return "! " + row.source_net;
-                        } else {
-                            return row.source_net;
-                        }
-                    },
-                    destination_not: function(column, row) {
-                        if (row.destination_not == true) {
-                            return "! " + row.destination_net;
-                        } else {
-                            return row.destination_net;
-                        }
-                    },
                     any: function(column, row) {
                         if (
                             row[column.id] !== '' &&
@@ -211,21 +189,33 @@
                             return '{{ lang._("*") }}';
                         }
                     },
+                    notavailable: function(column, row) {
+                        if (
+                            row[column.id] !== ''
+                        ) {
+                            return row[column.id];
+                        } else {
+                            return '{{ lang._("n/a") }}';
+                        }
+                    },
                     interfaces: function(column, row) {
-                        const interfaces = row[column.id];
+                        const interfaces = row[column.id] != null ? String(row[column.id]) : "";
+
+                        // Apply negation
+                        const isNegated = row.interfacenot == 1 ? "! " : "";
 
                         if (!interfaces || interfaces.trim() === "") {
-                            return "*";
+                            return isNegated + '{{ lang._("*") }}';
                         }
 
                         const interfaceList = interfaces.split(",").map(iface => iface.trim());
 
                         if (interfaceList.length === 1) {
-                            return interfaceList[0];
+                            return isNegated + interfaceList[0];
                         }
 
                         const tooltipText = interfaceList.join("<br>");
-                        return `<span data-toggle="tooltip" data-html="true" title="${tooltipText}">
+                        return `${isNegated}<span data-toggle="tooltip" data-html="true" title="${tooltipText}">
                                     ${interfaceList.length} <a><i class="fa fa-list"></i></a>
                                 </span>`;
                     },
@@ -319,20 +309,31 @@
                         // Return all icons
                         return result;
                     },
-                    // Show Edit alias icon
+                    // Show Edit alias icon and integrate "not" functionality
                     alias: function(column, row) {
-                        let value = row[column.id];
-                        if (value === undefined || value === null) {
-                            return '';
+                        const value = row[column.id] != null ? String(row[column.id]) : "";
+
+                        // Explicitly map fields that support negation
+                        const notFieldMap = {
+                            "source_net": "source_not",
+                            "destination_net": "destination_not"
+                        };
+
+                        const notField = notFieldMap[column.id];
+
+                        // Apply negation
+                        const isNegated = notField && row.hasOwnProperty(notField) && row[notField] == 1 ? "! " : "";
+
+                        if (!value || value.trim() === "" || value === "any" || value === "None") {
+                            return isNegated + '{{ lang._("*") }}';
                         }
-                        // Ensure it’s a string, or internal rules will not load anymore
-                        if (typeof value !== 'string') {
-                            value = String(value);
-                        }
+
+                        // Ensure it's a string, or internal rules will not load anymore
+                        const stringValue = typeof value === "string" ? value : String(value);
 
                         const aliasFlagName = "is_alias_" + column.id;
                         if (!row.hasOwnProperty(aliasFlagName)) {
-                            return value;
+                            return isNegated + stringValue;
                         }
 
                         const generateAliasMarkup = (val) => `
@@ -346,14 +347,14 @@
 
                         // If the alias flag is an array, handle multiple comma-separated aliases
                         if (Array.isArray(row[aliasFlagName])) {
-                            const values = value.split(',').map(s => s.trim());
+                            const values = stringValue.split(',').map(s => s.trim());
                             const aliasFlags = row[aliasFlagName];
 
-                            return values.map((val, index) => aliasFlags[index] ? generateAliasMarkup(val) : val).join(', ');
+                            return isNegated + values.map((val, index) => aliasFlags[index] ? generateAliasMarkup(val) : val).join(', ');
                         }
 
                         // If alias flag is not an array, assume it's a boolean and a single alias
-                        return row[aliasFlagName] ? generateAliasMarkup(value) : value;
+                        return isNegated + (row[aliasFlagName] ? generateAliasMarkup(stringValue) : stringValue);
                     },
 
                 },
