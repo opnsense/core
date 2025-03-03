@@ -26,19 +26,6 @@
 
 <script>
     $(document).ready(function() {
-        // Add column for firewall rule icons
-        $('#{{formGridFilterRule['table_id']}} thead tr th[data-column-id="sequence"]')
-        .after(
-            '<th ' +
-                'data-column-id="icons" ' +
-                'data-type="string" ' +
-                'data-sortable="false" ' +
-                'data-width="8em" ' +
-                'data-formatter="ruleIcons">' +
-                "{{ lang._('Icons') }}" +
-            '</th>'
-        );
-
         // Show errors in modal
         function showDialogAlert(type, title, message) {
             BootstrapDialog.show({

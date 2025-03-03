@@ -592,7 +592,7 @@
             <sortable>false</sortable>
         </grid_view>
     </field>
-    <!-- Fields for diagnostics, not exposed in dialog, only for grid -->
+    <!-- Not exposed in dialog, do not exist in model, only for grid -->
     <field>
         <id>rule.evaluations</id>
         <label>Evaluations</label>
@@ -632,6 +632,17 @@
             <visible>false</visible>
             <sortable>false</sortable>
             <label>Stats - Bytes</label>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.icons</id>
+        <label>Icons</label>
+        <type>ignore</type>
+        <grid_view>
+            <sortable>false</sortable>
+            <formatter>ruleIcons</formatter>
+            <width>8em</width>
+            <sequence>15</sequence>
         </grid_view>
     </field>
 </form>
