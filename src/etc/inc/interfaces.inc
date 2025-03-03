@@ -1104,7 +1104,7 @@ EOD;
             $mpdconf .= "  set ipcp no vjcomp\n";
         }
 
-        if (isset($config['system']['dnsallowoverride'])) {
+        if (!empty($config['system']['dnsallowoverride'])) {
             $mpdconf .= "  set ipcp enable req-pri-dns\n";
             $mpdconf .= "  set ipcp enable req-sec-dns\n";
         }

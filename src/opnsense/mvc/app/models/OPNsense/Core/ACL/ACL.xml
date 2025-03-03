@@ -365,7 +365,8 @@
     <page-wizard-system>
         <name>System Setup Wizard</name>
         <patterns>
-            <pattern>wizard.php?xml=system</pattern>
+            <pattern>ui/core/initial_setup</pattern>
+            <pattern>api/core/initial_setup/*</pattern>
         </patterns>
     </page-wizard-system>
     <page-services-dhcpserver-editstaticmapping>

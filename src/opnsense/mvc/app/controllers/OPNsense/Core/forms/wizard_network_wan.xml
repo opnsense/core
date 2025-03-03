@@ -1,0 +1,83 @@
+<form>
+    <field>
+        <id>wizard.interfaces.wan.ipv4_type</id>
+        <label>Type</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>wizard.interfaces.wan.spoofmac</id>
+        <label>MAC (spoofed)</label>
+        <type>text</type>
+        <help>Usually this option is left empty, unless your provider requires you to connect using a specific mac address.</help>
+    </field>
+    <field>
+        <id>wizard.interfaces.wan.mtu</id>
+        <label>MTU</label>
+        <type>text</type>
+        <help>Set the MTU of the WAN interface. If you leave this field blank, an MTU of 1492 bytes for PPPoE and 1500 bytes for all other connection types will be assumed.</help>
+    </field>
+    <field>
+        <id>wizard.interfaces.wan.mss</id>
+        <label>MSS</label>
+        <type>text</type>
+        <help>If you enter a value in this field, then MSS clamping for TCP connections to the value entered above minus 40 (TCP/IP header size) will be in effect. If you leave this field blank, an MSS of 1492 bytes for PPPoE and 1500 bytes for all other connection types will be assumed. This should match the above MTU value in most all cases.</help>
+    </field>
+    <field>
+        <id>wizard.interfaces.wan.ipaddr</id>
+        <label>IP Address</label>
+        <type>text</type>
+        <style>wan_options wan_options_static</style>
+        <help>Ip address and cidr to configure on this interface, e.g. 192.168.1.1/24.</help>
+    </field>
+    <field>
+        <id>wizard.interfaces.wan.gateway</id>
+        <label>Gateway</label>
+        <type>text</type>
+        <style>wan_options wan_options_static</style>
+        <help>Gateway address to use, e.g. 192.168.1.254.</help>
+    </field>
+    <field>
+        <id>wizard.interfaces.wan.dhcphostname</id>
+        <label>DHCP hostname</label>
+        <type>text</type>
+        <style>wan_options wan_options_dhcp</style>
+        <help>The value in this field is sent as the DHCP client identifier and hostname when requesting a DHCP lease. Some ISPs may require this (for client identification).</help>
+    </field>
+    <field>
+        <id>wizard.interfaces.wan.pppoe_username</id>
+        <label>PPPoE Username</label>
+        <type>text</type>
+        <style>wan_options wan_options_pppoe</style>
+        <help></help>
+    </field>
+    <field>
+        <id>wizard.interfaces.wan.pppoe_password</id>
+        <label>PPPoE Password</label>
+        <type>password</type>
+        <style>wan_options wan_options_pppoe</style>
+        <help></help>
+    </field>
+    <field>
+        <id>wizard.interfaces.wan.pppoe_provider</id>
+        <label>PPPoE Service name</label>
+        <type>text</type>
+        <style>wan_options wan_options_pppoe</style>
+        <help></help>
+    </field>
+    <field>
+        <type>header</type>
+        <label><![CDATA[Default policies]]></label>
+    </field>
+    <field>
+        <id>wizard.interfaces.wan.blockpriv</id>
+        <label>Block RFC1918 Private Networks</label>
+        <type>checkbox</type>
+        <help>When set, this option blocks traffic from IP addresses that are reserved for private networks as per RFC 1918 (10/8, 172.16/12, 192.168/16) as well as loopback addresses (127/8) and Carrier-grade NAT addresses (100.64/10). This option should only be set for WAN interfaces that use the public IP address space.</help>
+    </field>
+    <field>
+        <id>wizard.interfaces.wan.blockbogons</id>
+        <label>Block bogon networks</label>
+        <type>checkbox</type>
+        <help>When set, this option blocks traffic from IP addresses that are reserved (but not RFC 1918) or not yet assigned by IANA.</help>
+    </field>
+</form>

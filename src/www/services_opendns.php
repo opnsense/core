@@ -89,8 +89,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $config['system']['dnsserver'][] = $v4_server[0];
                 $config['system']['dnsserver'][] = $v4_server[1];
             }
-            if (isset($config['system']['dnsallowoverride'])) {
-                unset($config['system']['dnsallowoverride']);
+            if (!empty($config['system']['dnsallowoverride'])) {
+                $config['system']['dnsallowoverride'] = false;
             }
         } else {
             $config['system']['dnsserver'] = array();

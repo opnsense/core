@@ -93,18 +93,19 @@
       <track6-prefix-id>0</track6-prefix-id>
     </lan>
   </interfaces>
-  <dhcpd>
-    <lan>
-      <enable/>
-      <range>
-        <from>192.168.1.100</from>
-        <to>192.168.1.199</to>
-      </range>
-    </lan>
-  </dhcpd>
   <unbound>
     <enable>1</enable>
   </unbound>
+  <dnsmasq>
+      <enable>1</enable>
+      <port>0</port>
+      <interface>lan</interface>
+      <dhcp_ranges>
+          <interface>lan</interface>
+          <start_addr>192.168.1.100</start_addr>
+          <end_addr>192.168.1.199</end_addr>
+      </dhcp_ranges>
+  </dnsmasq>
   <snmpd>
     <syslocation/>
     <syscontact/>

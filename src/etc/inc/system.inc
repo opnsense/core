@@ -328,7 +328,7 @@ function get_searchdomains()
         $master_list[] = $syscfg['dnssearchdomain'];
     }
 
-    if (isset($syscfg['dnsallowoverride'])) {
+    if (!empty($syscfg['dnsallowoverride'])) {
         /* return domains as required by configuration */
         $list = shell_safe('/usr/local/sbin/ifctl -sl');
         if (!empty($list)) {
@@ -372,7 +372,7 @@ function get_nameservers($interface = null, $with_gateway = false)
         if (!empty($list)) {
             $dns_lists[] = $list;
         }
-    } elseif (isset($syscfg['dnsallowoverride'])) {
+    } elseif (!empty($syscfg['dnsallowoverride'])) {
         /* return dynamic servers as required by configuration */
         $list = shell_safe('/usr/local/sbin/ifctl -nl');
         if (!empty($list)) {
