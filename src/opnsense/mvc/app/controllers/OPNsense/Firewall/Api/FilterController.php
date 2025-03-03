@@ -314,10 +314,10 @@ class FilterController extends FilterBaseController
             $ruleKey = !empty($rule['uuid']) ? $rule['uuid'] : ($rule['label'] ?? '');
             $stats = $ruleStats[$ruleKey] ?? [];
 
-            $rule['evaluations'] = $stats['evaluations'] ?? 0;
-            $rule['states']      = $stats['states'] ?? 0;
-            $rule['packets']     = $stats['packets'] ?? 0;
-            $rule['bytes']       = $stats['bytes'] ?? 0;
+            $rule['evaluations'] = $stats['evaluations'] ?? '';
+            $rule['states']      = $stats['states'] ?? '';
+            $rule['packets']     = $stats['packets'] ?? '';
+            $rule['bytes']       = $stats['bytes'] ?? '';
         }
         unset($rule);
 
