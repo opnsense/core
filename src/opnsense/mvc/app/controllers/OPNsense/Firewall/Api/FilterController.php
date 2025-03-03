@@ -34,6 +34,7 @@ use OPNsense\Base\UIModelGrid;
 use OPNsense\Diagnostics\Api\InterfaceController;
 use OPNsense\Firewall\FilterLegacyMapper;
 use OPNsense\Firewall\Util;
+use OPNsense\Firewall\Group;
 
 class FilterController extends FilterBaseController
 {
@@ -129,6 +130,39 @@ class FilterController extends FilterBaseController
         $output = $backend->configdRun("filter rule stats");
         $stats = json_decode($output, true);
         return is_array($stats) ? $stats : [];
+    }
+
+    /**
+     * Retrieves interface groups and their member interfaces
+     *
+     * @return array An associative array where keys are group names and values are arrays of interface members.
+     */
+    private function getInterfaceGroups()
+    {
+        $result = [];
+
+        // Load the firewall group model
+        $model = new Group();
+
+        // Ensure the ifgroupentry node exists
+        if (!$model->ifgroupentry) {
+            return $result;
+        }
+
+        // Iterate over each group entry
+        foreach ($model->ifgroupentry->iterateItems() as $groupItem) {
+            $groupName = (string)$groupItem->ifname;
+            $members = [];
+
+            if (!empty((string)$groupItem->members)) {
+                $membersString = (string)$groupItem->members;
+                $members = array_map('trim', explode(',', $membersString));
+            }
+
+            $result[$groupName] = $members;
+        }
+
+        return $result;
     }
 
     /**
