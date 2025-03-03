@@ -33,7 +33,7 @@ function listtags()
       'acls', 'alias', 'aliasurl', 'allowedip', 'allowedhostname', 'authserver',
       'bridged', 'build_port_path',
       'ca', 'cacert', 'cert', 'crl', 'clone', 'config', 'container', 'columnitem',
-      'disk', 'dnsserver', 'dnsupdate', 'domainoverrides',
+      'dhcp_ranges', 'disk', 'dnsserver', 'dnsupdate', 'domainoverrides',
       'element', 'encryption-algorithm-option',
       'field', 'fieldname',
       'gateway_item', 'gateway_group', 'gif', 'gre', 'group',
@@ -50,8 +50,7 @@ function listtags()
       'tab', 'timerange', 'tunnel',
       'user',
       'vip', 'virtual_server', 'vlan',
-      'winsserver', 'wolentry', 'widget',
-      'dhcp_ranges'
+      'winsserver', 'wolentry', 'widget'
     );
 
     return array_flip($ret);

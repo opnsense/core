@@ -199,10 +199,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['dnsallowoverride'])) {
             $config['system']['dnsallowoverride'] = true;
             $config['system']['dnsallowoverride_exclude'] = implode(',', $pconfig['dnsallowoverride_exclude']);
-        } elseif (isset($config['system']['dnsallowoverride'])) {
-            if (isset($config['system']['dnsallowoverride_exclude'])) {
-                unset($config['system']['dnsallowoverride_exclude']);
-            }
+        } elseif (isset($config['system']['dnsallowoverride_exclude'])) {
+            unset($config['system']['dnsallowoverride_exclude']);
         }
 
         if ($pconfig['dnslocalhost'] == 'yes') {
