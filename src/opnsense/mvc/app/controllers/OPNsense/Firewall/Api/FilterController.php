@@ -120,6 +120,18 @@ class FilterController extends FilterBaseController
     }
 
     /**
+     * return rule statistics
+     * @return array statistics
+     */
+    private function getRuleStatistics()
+    {
+        $backend = new Backend();
+        $output = $backend->configdRun("filter rule stats");
+        $stats = json_decode($output, true);
+        return is_array($stats) ? $stats : [];
+    }
+
+    /**
      * This function retrieves and merges firewall rules from two sources:
      *   1. The persistent model rules (defined in the filter.xml model for "rules.rule").
      *   2. Legacy internal rules (obtained via the getInternalRulesAction() method for various types).
@@ -294,6 +306,20 @@ class FilterController extends FilterBaseController
             }
         }
         unset($row);
+
+        // 8. Add the evaluation, states, packets, and bytes fields to each rule
+        $ruleStats = $this->getRuleStatistics();
+
+        foreach ($result['rows'] as &$rule) {
+            $ruleKey = !empty($rule['uuid']) ? $rule['uuid'] : ($rule['label'] ?? '');
+            $stats = $ruleStats[$ruleKey] ?? [];
+
+            $rule['evaluations'] = $stats['evaluations'] ?? 0;
+            $rule['states']      = $stats['states'] ?? 0;
+            $rule['packets']     = $stats['packets'] ?? 0;
+            $rule['bytes']       = $stats['bytes'] ?? 0;
+        }
+        unset($rule);
 
         return $result;
     }

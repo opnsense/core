@@ -592,4 +592,41 @@
             <sortable>false</sortable>
         </grid_view>
     </field>
+    <!-- Fields for diagnostics, not exposed in dialog -->
+    <field>
+        <id>rule.evaluations</id>
+        <label>Evaluations</label>
+        <type>ignore</type>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.states</id>
+        <label>States</label>
+        <type>ignore</type>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.packets</id>
+        <label>Packets</label>
+        <type>ignore</type>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.bytes</id>
+        <label>Bytes</label>
+        <type>ignore</type>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
+    </field>
 </form>
