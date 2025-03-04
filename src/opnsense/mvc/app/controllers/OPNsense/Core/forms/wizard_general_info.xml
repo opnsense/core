@@ -15,6 +15,11 @@
         <type>dropdown</type>
     </field>
     <field>
+        <id>wizard.timezone</id>
+        <label>Timezone</label>
+        <type>dropdown</type>
+    </field>
+    <field>
         <id>wizard.dns_servers</id>
         <label>DNS Servers</label>
         <type>select_multiple</type>
@@ -47,22 +52,5 @@
         <label>Harden DNSSEC data</label>
         <type>checkbox</type>
         <help>DNSSEC data is required for trust-anchored zones. If such data is absent, the zone becomes bogus. If this is disabled and no DNSSEC data is received, then the zone is made insecure.</help>
-    </field>
-    <field>
-        <type>header</type>
-        <label><![CDATA[Time & Timezone]]></label>
-    </field>
-    <field>
-        <id>wizard.timeservers</id>
-        <label>Time Servers</label>
-        <type>select_multiple</type>
-        <style>tokenize</style>
-        <allownew>true</allownew>
-        <help>Hostnames of the timeservers to use to acquire time for this firewall.</help>
-    </field>
-    <field>
-        <id>wizard.timezone</id>
-        <label>Timezone</label>
-        <type>dropdown</type>
     </field>
 </form>
