@@ -262,10 +262,6 @@ class Gateways extends BaseModel
         $ifcfg = $definedIntf[$ifname];
         $realif = $ifcfg['if'];
 
-        if (isset($ifcfg['wireless']) && !strstr($realif, '_wlan')) {
-            $realif .= '_wlan0';
-        }
-
         if ($ipproto == 'inet6') {
             switch ($ifcfg['ipaddrv6'] ?? 'none') {
                 case '6rd':
