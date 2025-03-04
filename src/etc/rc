@@ -185,8 +185,8 @@ fi
 # set keyboard map if needed
 /etc/rc.d/syscons onestart
 
-# run the config importer during early startup
-/usr/local/sbin/opnsense-importer -b
+# Execute the import syshook / plugin commands
+/usr/local/etc/rc.syshook import
 
 # all sorts of maintenance tasks for /var
 /usr/local/etc/rc.subr.d/var

@@ -31,8 +31,23 @@ class PF:
 
     @staticmethod
     def list_tables():
-        for line in subprocess.run(['/sbin/pfctl', '-sT'], capture_output=True, text=True).stdout.strip().split('\n'):
-            yield line.strip()
+        current_table = None
+        current_info = {}
+        for line in subprocess.run(['/sbin/pfctl', '-vvsT'], capture_output=True, text=True).stdout.strip().split('\n'):
+            parts = line.strip().split()
+            if len(parts) < 2:
+                continue
+            elif line.startswith("\t"):
+                if parts[0] == 'Addresses:' and parts[1].isdigit():
+                    current_info['addresses'] = int(parts[1])
+            else:
+                if current_table is not None:
+                    yield current_table, current_info
+                current_table  = parts[1]
+                current_info = {}
+
+        if current_table is not None:
+            yield current_table, current_info
 
     @staticmethod
     def list_table(table_name):

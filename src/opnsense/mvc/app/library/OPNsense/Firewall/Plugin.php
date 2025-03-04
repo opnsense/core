@@ -214,10 +214,10 @@ class Plugin
      * @param bool $quick
      * @return null
      */
-    public function registerAnchor($name, $type = "fw", $priority = 0, $placement = "tail", $quick = false)
+    public function registerAnchor($name, $type = "fw", $priority = 0, $placement = "tail", $quick = false, $ifs = null)
     {
         $anchorKey = sprintf("%s.%s.%08d.%08d", $type, $placement, $priority, count($this->anchors));
-        $this->anchors[$anchorKey] = array('name' => $name, 'quick' => $quick);
+        $this->anchors[$anchorKey] = ['name' => $name, 'quick' => $quick, 'ifs' => $ifs];
         ksort($this->anchors);
     }
 
@@ -233,10 +233,20 @@ class Plugin
         foreach (explode(',', $types) as $type) {
             foreach ($this->anchors as $anchorKey => $anchor) {
                 if (strpos($anchorKey, "{$type}.{$placement}") === 0) {
-                    $result .= $type == "fw" ? "" : "{$type}-";
-                    $result .= "anchor \"{$anchor['name']}\"";
+                    $result .= ($type == "fw" || $type == "ether") ? "" : "{$type}-";
+                    $prefix = $type == "ether" ? "ether " : "";
+                    $result .= "{$prefix}anchor \"{$anchor['name']}\"";
                     if ($anchor['quick']) {
                         $result .= " quick";
+                    }
+                    if (!empty($anchor['ifs'])) {
+                        $ifs = array_filter(array_map(function ($if) {
+                            return $this->interfaceMapping[$if]['if'] ?? null;
+                        }, explode(',', $anchor['ifs'])));
+
+                        if (!empty($ifs)) {
+                            $result .= " on {" . implode(', ', $ifs) . "}";
+                        }
                     }
                     $result .= "\n";
                 }

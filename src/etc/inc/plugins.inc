@@ -206,7 +206,7 @@ function plugins_interfaces()
                         unset($stale_interfaces[$intf_ref]);
                     }
                     if (isset($config['interfaces'][$intf_ref][0])) {
-                        // undo stupid listags() turning our item into a new array, see src/etc/inc/xmlparse.inc
+                        // undo stupid listtags() turning our item into a new array
                         $intf_config = &config_read_array('interfaces', $intf_ref, 0);
                     } else {
                         $intf_config = &config_read_array('interfaces', $intf_ref);
@@ -408,9 +408,8 @@ function plugins_argument_map(&$arg)
     if (is_array($arg)) {
         /* no need to deal with this now */
     } elseif (is_string($arg)) {
-        /* backwards compat with single string arguments */
-        $tmp = explode(',', $arg);
-        $ret = !!strlen($arg);
+        /* backwards compat with single string arguments or transform to null if empty */
+        $tmp = strlen($arg) ? explode(',', $arg) : null;
     } elseif (!is_null($arg)) {
         log_msg(sprintf('%s: plugin argument map type "%s" not supported', $caller, gettype($arg)), LOG_WARNING);
         $ret = false;

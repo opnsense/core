@@ -350,9 +350,10 @@
         </patterns>
     </page-interfaces-wireless>
     <page-wizard-system>
-        <name>System Setup Wizard</name>
+        <name>System: Configuration: Wizard</name>
         <patterns>
-            <pattern>wizard.php?xml=system</pattern>
+            <pattern>ui/core/initial_setup</pattern>
+            <pattern>api/core/initial_setup/*</pattern>
         </patterns>
     </page-wizard-system>
     <page-services-dhcpserver-editstaticmapping>
@@ -667,7 +668,6 @@
         <name>VPN: OpenVPN: Server</name>
         <patterns>
             <pattern>vpn_openvpn_server.php*</pattern>
-            <pattern>wizard.php?xml=openvpn&amp;*</pattern>
         </patterns>
     </page-openvpn-server>
     <page-xmlrpclibrary>

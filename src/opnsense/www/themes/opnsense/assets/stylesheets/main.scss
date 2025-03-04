@@ -97,8 +97,8 @@ body{
 }
 
 .page-content{
-  height: calc(100% - 52px);
-  padding-top: 52px;
+  height: calc(100% - 62px);
+  padding-top: 62px;
   position: relative;
   z-index: 1;
 
@@ -133,10 +133,10 @@ body{
   background: #FFF;
   border-right: 1px solid rgba(0,0,0,.15);
   height: 100% !important;
-  height: calc(100% - 52px) !important;
+  height: calc(100% - 62px) !important;
   left: 0;
   overflow: auto;
-  margin-top: 52px;
+  margin-top: 62px;
   position: fixed;
   top: 0;
   z-index: 3;
@@ -254,7 +254,7 @@ body{
         height: 75px !important;
         padding: 0 20px;
         .navbar-brand {
-          padding: 10px 0px !important;
+          padding: 7px 0px !important;
           img {
             height: 60px ;
           }
@@ -424,7 +424,7 @@ button.toggle-sidebar {
   background-color: transparent;
   font-size: 14px;
   border: none;
-  margin-top: 18px;
+  margin-top: 23px;
   float: left;
   outline: none;
 }
@@ -643,7 +643,7 @@ hr {
 }
 
 .navbar-brand {
-    padding: 1px 11px;
+    padding: 6px 11px;
 
     img.brand-logo {
       height: 48px;

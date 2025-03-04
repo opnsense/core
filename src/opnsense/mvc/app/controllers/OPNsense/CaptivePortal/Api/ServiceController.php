@@ -33,6 +33,7 @@ use OPNsense\Base\UIModelGrid;
 use OPNsense\CaptivePortal\CaptivePortal;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Core\SanitizeFilter;
 
 /**
  * Class ServiceController
@@ -47,9 +48,7 @@ class ServiceController extends ApiControllerBase
     {
         if ($this->request->isPost()) {
             $backend = new Backend();
-            // the ipfw rules need to know about all the zones, so we need to reload ipfw for the portal to work
-            $backend->configdRun('template reload OPNsense/IPFW');
-            $bckresult = trim($backend->configdRun("ipfw reload"));
+            $bckresult = trim($backend->configdRun("filter reload"));
             if ($bckresult == "OK") {
                 // generate captive portal config
                 $bckresult = trim($backend->configdRun('template reload OPNsense/Captiveportal'));

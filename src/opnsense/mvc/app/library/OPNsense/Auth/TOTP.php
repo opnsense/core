@@ -135,6 +135,14 @@ trait TOTP
     }
 
     /**
+     * @return bool token after password
+     */
+    public function isPasswordFirst()
+    {
+        return $this->passwordFirst;
+    }
+
+    /**
      * authenticate user against otp key stored in local database
      * @param string $username username to authenticate
      * @param string $password user password

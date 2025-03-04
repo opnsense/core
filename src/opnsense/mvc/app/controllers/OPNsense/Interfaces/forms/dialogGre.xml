@@ -21,18 +21,27 @@
         <label>Tunnel local address</label>
         <type>text</type>
         <help>Local gre tunnel endpoint</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>gre.tunnel-remote-addr</id>
         <label>Tunnel remote address</label>
         <type>text</type>
         <help>Remote gre tunnel endpoint</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>gre.tunnel-remote-net</id>
         <label>Tunnel netmask / prefix</label>
         <type>text</type>
         <help>Netmask [ipv4] or prefix [ipv6] to use for this tunnel</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>gre.descr</id>

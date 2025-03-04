@@ -91,7 +91,7 @@ class Security
         if (empty($key)) {
             return false;
         }
-        $value = $tokenValue ?? $_POST[$tokenKey];
+        $value = $tokenValue ?? ($_POST[$tokenKey] ?? '');
         return !empty($value) && $value === $this->getToken();
     }
 }

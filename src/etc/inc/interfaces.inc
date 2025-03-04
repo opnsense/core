@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2024 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2025 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2008 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2008-2009 Ermal Luçi
  * Copyright (C) 2005 Espen Johansen
@@ -31,21 +31,6 @@
  */
 
 require_once("interfaces.lib.inc");
-
-/*
- * converts a string like "a,b,c,d"
- * into an array like array("a" => "b", "c" => "d")
- */
-function explode_assoc($delimiter, $string)
-{
-    $array = explode($delimiter, $string);
-    $result = array();
-    $numkeys = floor(count($array) / 2);
-    for ($i = 0; $i < $numkeys; $i += 1) {
-        $result[$array[$i * 2]] = $array[$i * 2 + 1];
-    }
-    return $result;
-}
 
 function return_hex_ipv4($ipv4)
 {
@@ -280,9 +265,6 @@ function _interfaces_bridge_configure($bridge)
         }
         if (!empty($bridge['fwdelay'])) {
             mwexec("/sbin/ifconfig {$bridge['bridgeif']} fwddelay " . escapeshellarg($bridge['fwdelay']));
-        }
-        if (!empty($bridge['hellotime'])) {
-            mwexec("/sbin/ifconfig {$bridge['bridgeif']} hellotime " . escapeshellarg($bridge['hellotime']));
         }
         if (!empty($bridge['holdcnt'])) {
             mwexec("/sbin/ifconfig {$bridge['bridgeif']} holdcnt " . escapeshellarg($bridge['holdcnt']));
@@ -1122,7 +1104,7 @@ EOD;
             $mpdconf .= "  set ipcp no vjcomp\n";
         }
 
-        if (isset($config['system']['dnsallowoverride'])) {
+        if (!empty($config['system']['dnsallowoverride'])) {
             $mpdconf .= "  set ipcp enable req-pri-dns\n";
             $mpdconf .= "  set ipcp enable req-sec-dns\n";
         }
@@ -3563,89 +3545,30 @@ function get_real_interface($interface = 'wan', $family = 'all')
 {
     global $config;
 
-    $realif = $interface;
+    if (empty($config['interfaces'][$interface])) {
+        /* assume the interface exists to force an error elsewhere */
+        return $interface;
+    }
 
-    switch ($interface) {
-        /* XXX legacy cruft starts here */
-        case 'enc0':
-        case 'openvpn':
-        case 'ppp':
-            break;
-        case 'ipsec':
-            $realif = 'enc0';
-            break;
-        /* XXX legacy cruft ends here */
-        default:
-            if (empty($config['interfaces'][$interface])) {
-                /* assume the interface exists to force an error elsewhere */
+    $realif = $config['interfaces'][$interface]['if'];
+
+    /* XXX this is either impossibe to reach nowadays or requires an interface migration */
+    if (isset($config['interfaces'][$interface]['wireless']) && !strstr($realif, '_wlan')) {
+        $realif .= '_wlan0';
+    }
+
+    if ($family == 'inet6') {
+        switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
+            case '6rd':
+            case '6to4':
+                $realif = "{$interface}_stf";
                 break;
-            }
-
-            $cfg = &config_read_array('interfaces', $interface);
-
-            /* set default for IPv4 and IPv6 lookups */
-            $realif = $cfg['if'];
-
-            if (isset($cfg['wireless']) && !strstr($realif, '_wlan')) {
-                $realif .= '_wlan0';
-            }
-
-            if ($family == 'inet6') {
-                switch ($cfg['ipaddrv6'] ?? 'none') {
-                    case '6rd':
-                    case '6to4':
-                        $realif = "{$interface}_stf";
-                        break;
-                    default:
-                        break;
-                }
-            }
-            break;
-    }
-
-    return $realif;
-}
-
-function guess_interface_from_ip($ipaddress)
-{
-    if (is_ipaddrv4($ipaddress)) {
-        $family = "inet";
-    } elseif (is_ipaddrv6($ipaddress)) {
-        $family = "inet6";
-    } else {
-        return false;
-    }
-
-    /* create a route table we can search */
-    exec("/usr/bin/netstat -rnWf " . $family, $output, $ret);
-
-    /* search for the route with the largest subnet mask */
-    $largest_mask = 0;
-    $best_if = null;
-
-    foreach ($output as $line) {
-        $fields = preg_split("/\s+/", $line);
-        if (is_subnet($fields[0])) {
-            if (ip_in_subnet($ipaddress, $fields[0])) {
-                list($ip, $mask) = explode('/', $fields[0]);
-                if ($mask > $largest_mask) {
-                    $best_if = $fields[5];
-                    $largest_mask = $mask;
-                }
-            }
+            default:
+                break;
         }
     }
 
-    if (!empty($best_if)) {
-        return $best_if;
-    }
-
-    $ret = shell_safe('/sbin/route -n get %s | /usr/bin/awk \'/interface/ { print $2; };\'', $ipaddress);
-    if (empty($ret)) {
-        return false;
-    }
-
-    return $ret;
+    return $realif;
 }
 
 function get_interface_number_track6($wanif, $targetif)
@@ -4018,30 +3941,6 @@ function interfaces_neighbors_configure($device = null, $ifconfig_details = null
             }
         }
     }
-}
-
-function convert_seconds_to_hms($sec)
-{
-    $min = $hrs = 0;
-    if ($sec != 0) {
-        $min = floor($sec / 60);
-        $sec %= 60;
-    }
-    if ($min != 0) {
-        $hrs = floor($min / 60);
-        $min %= 60;
-    }
-    if ($sec < 10) {
-        $sec = "0" . $sec;
-    }
-    if ($min < 10) {
-        $min = "0" . $min;
-    }
-    if ($hrs < 10) {
-        $hrs = "0" . $hrs;
-    }
-    $result = $hrs . ":" . $min . ":" . $sec;
-    return $result;
 }
 
 /****f* legacy/is_ipaddr_configured

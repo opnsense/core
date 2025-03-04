@@ -274,8 +274,8 @@ if __name__ == '__main__':
     d_parser = subparsers.add_parser('details', help='get detailed query information')
     d_parser.add_argument('--limit', help='limit results', type=int, default=500)
     d_parser.add_argument('--client', help='limit result to client')
-    d_parser.add_argument('--start', help='start unix epoch')
-    d_parser.add_argument('--end', help='end unix epoch')
+    d_parser.add_argument('--start', type=int, help='start unix epoch')
+    d_parser.add_argument('--end', type=int, help='end unix epoch')
     d_parser.set_defaults(func=handle_details)
 
     if len(sys.argv)==1:

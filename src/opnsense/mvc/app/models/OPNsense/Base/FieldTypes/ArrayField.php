@@ -301,9 +301,10 @@ class ArrayField extends BaseField
      * @param array $records payload to merge
      * @param array $keyfields search criteria
      * @param function $data_callback inline data modification
+     * @param function $node_callback inline action to call after array node has been setup
      * @return array exceptions
      */
-    public function importRecordSet($records, $keyfields = [], $data_callback = null)
+    public function importRecordSet($records, $keyfields = [], $data_callback = null, $node_callback = null)
     {
         $results = ['validations' => [], 'inserted' => 0, 'updated' => 0, 'uuids' => []];
         $records = is_array($records) ? $records : [];
@@ -329,7 +330,7 @@ class ArrayField extends BaseField
             }
             $keydata = [];
             foreach ($keyfields as $keyfield) {
-                $keydata[] = (string)$record[$keyfield] ?? '';
+                $keydata[] = (string)($record[$keyfield] ?? '');
             }
             $key = implode("\n", $keydata);
             $node = null;
@@ -349,7 +350,12 @@ class ArrayField extends BaseField
             }
             $results['uuids'][$node->getAttributes()['uuid']] = $idx;
             foreach ($record as $fieldname => $content) {
-                $node->$fieldname = (string)$content;
+                if (isset($node->$fieldname)) {
+                    $node->$fieldname = (string)$content;
+                }
+            }
+            if (is_callable($node_callback)) {
+                $node_callback($node);
             }
         }
         return $results;

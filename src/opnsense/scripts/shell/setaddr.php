@@ -34,7 +34,6 @@ require_once("util.inc");
 require_once("filter.inc");
 require_once("util.inc");
 require_once("system.inc");
-require_once("xmlparse.inc");
 
 function console_prompt_for_yn($prompt_text, $default = '')
 {
@@ -112,8 +111,8 @@ function get_interface_config_description($iface)
     $if = $c['if'];
     $result = $if;
     $result2 = array();
-    $ipaddr = $c['ipaddr'];
-    $ipaddrv6 = $c['ipaddrv6'];
+    $ipaddr = $c['ipaddr'] ?? '';
+    $ipaddrv6 = $c['ipaddrv6'] ?? '';
     if (is_ipaddr($ipaddr)) {
         $result2[] = 'static';
     } elseif (!empty($ipaddr)) {
@@ -301,6 +300,11 @@ function console_configure_ip_address($version)
 {
     global $config, $interface, $restart_dhcpd, $ifaceassigned, $fp;
 
+    $isintdhcp = false;
+    $restart_dhcpd = false;
+    $gwname = null;
+    $nameserver = null;
+    $intbits = '';
     $label_IPvX = ($version === 6) ? 'IPv6' : 'IPv4';
     $maxbits = ($version === 6) ? 128 : 32;
     $label_DHCP = ($version === 6) ? 'DHCP6' : 'DHCP';
@@ -329,7 +333,6 @@ function console_configure_ip_address($version)
             $ifaceassigned = $ifppp;
         }
         $intip = ($version === 6) ? 'dhcp6' : 'dhcp';
-        $intbits = '';
         $isintdhcp = true;
         $restart_dhcpd = true;
         echo "\n";
@@ -475,6 +478,15 @@ function console_configure_dhcpd($version = 4)
     $label_IPvX = ($version === 6) ? "IPv6"    : "IPv4";
     $dhcpd      = ($version === 6) ? "dhcpdv6" : "dhcpd";
 
+    if ($version === 4) {
+        config_read_array('dnsmasq', 'dhcp_ranges');
+        foreach ($config['dnsmasq']['dhcp_ranges'] as $idx => $range) {
+            if ($range['interface'] == $interface) {
+                unset($config['dnsmasq']['dhcp_ranges'][$idx]);
+            }
+        }
+    }
+
     if (prompt_for_enable_dhcp_server($version)) {
         $subnet_start = ($version === 6) ? gen_subnetv6($intip6, $intbits6) : gen_subnet($intip, $intbits);
         $subnet_end = ($version === 6) ? gen_subnetv6_max($intip6, $intbits6) : gen_subnet_max($intip, $intbits);
@@ -512,13 +524,25 @@ function console_configure_dhcpd($version = 4)
             } while (!$is_ipaddr || !$is_inrange);
         } while ($not_inorder);
         $restart_dhcpd = true;
-        $config[$dhcpd][$interface]['enable'] = true;
-        $config[$dhcpd][$interface]['range']['from'] = $dhcpstartip;
-        $config[$dhcpd][$interface]['range']['to'] = $dhcpendip;
+        if ($version === 4) {
+            $config['dnsmasq']['enable'] = '1';
+            $config['dnsmasq']['dhcp_ranges'][] = [
+                'interface' => $interface,
+                'start_addr' => $dhcpstartip,
+                'end_addr' => $dhcpendip
+            ];
+        } else {
+            $config['dhcpdv6'][$interface]['enable'] = true;
+            $config['dhcpdv6'][$interface]['range']['from'] = $dhcpstartip;
+            $config['dhcpdv6'][$interface]['range']['to'] = $dhcpendip;
+        }
         echo "\n";
     } else {
-        if (isset($config[$dhcpd][$interface]['enable'])) {
-            unset($config[$dhcpd][$interface]['enable']);
+        if ($version === 6 && isset($config['dhcpdv6'][$interface]['enable'])) {
+            unset($config['dhcpdv6'][$interface]['enable']);
+            $restart_dhcpd = true;
+        } elseif ($version === 4) {
+            /* XXX: not disabling dnsmasq as there might be other consumers */
             $restart_dhcpd = true;
         }
     }
@@ -552,14 +576,14 @@ if (console_prompt_for_yn('Restore web GUI access defaults?', 'n')) {
     }
 }
 
-if ($config['interfaces']['lan']) {
-    if ($config['dhcpd']) {
-        if ($config['dhcpd']['wan']) {
+if (!empty($config['interfaces']['lan'])) {
+    if (isset($config['dhcpd'])) {
+        if (isset($config['dhcpd']['wan'])) {
             unset($config['dhcpd']['wan']);
         }
     }
-    if ($config['dhcpdv6']) {
-        if ($config['dhcpdv6']['wan']) {
+    if (isset($config['dhcpdv6'])) {
+        if (isset($config['dhcpdv6']['wan'])) {
             unset($config['dhcpdv6']['wan']);
         }
     }
@@ -590,6 +614,7 @@ filter_configure_sync(true);
 
 if ($restart_dhcpd) {
     plugins_configure('dhcp', true);
+    plugins_configure('dns', true); /* dnsmasq dhcp */
 }
 
 if ($restart_webgui) {

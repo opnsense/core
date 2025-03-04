@@ -224,6 +224,39 @@ function filter_rule_item_alias_tooltip($alias_name)
     $result .= "</a>";
     return $result;
 }
+
+function filter_rule_address($adr) {
+  $specialnets = get_specialnets();
+  if (isset($adr['any'])) {
+      $padr = "*";
+  } else {
+      $result = [];
+      $items = isset($adr['network']) ? $adr['network'] : ($adr['address'] ?? '');
+      foreach (explode(',', $items) as $item) {
+          if (isset($specialnets[$item])) {
+            $result[] = $specialnets[$item];
+          } elseif (is_alias($item)) {
+            $result[] = filter_rule_item_alias_tooltip($item);
+          } else {
+            $result[] = $item;
+          }
+      }
+      $tmp = array_slice($result, 0, 5);
+      if (count($result) > 5) {
+        $tmp[] = '[...]';
+      }
+      $padr = implode(' , ', $tmp);
+  }
+
+
+  if (isset($adr['not'])) {
+      $padr = "! " . $padr;
+  }
+
+  return $padr;
+}
+
+
 /***********************************************************************************************************
  *
  ***********************************************************************************************************/
@@ -892,12 +925,7 @@ $( document ).ready(function() {
                         <?=firewall_rule_item_proto($filterent);?>
                     </td>
                     <td class="view-info">
-<?php                 if (isset($filterent['source']['address']) && is_alias($filterent['source']['address'])): ?>
-                        <?=!empty($filterent['source']['not']) ? '!' : '';?>
-                        <?=filter_rule_item_alias_tooltip($filterent['source']['address']);?>
-<?php                 else: ?>
-                        <?=htmlspecialchars(pprint_address($filterent['source']));?>
-<?php                 endif; ?>
+                      <?=filter_rule_address($filterent['source']);?>
                     </td>
 
                     <td class="view-info hidden-xs hidden-sm">
@@ -909,12 +937,7 @@ $( document ).ready(function() {
                     </td>
 
                     <td class="view-info hidden-xs hidden-sm">
-<?php                 if (isset($filterent['destination']['address']) && is_alias($filterent['destination']['address'])): ?>
-                        <?=!empty($filterent['destination']['not']) ? '!' : '';?>
-                        <?=filter_rule_item_alias_tooltip($filterent['destination']['address']);?>
-<?php                 else: ?>
-                        <?=htmlspecialchars(pprint_address($filterent['destination'])); ?>
-<?php                 endif; ?>
+                      <?=filter_rule_address($filterent['destination']);?>
                     </td>
 
                     <td class="view-info hidden-xs hidden-sm">

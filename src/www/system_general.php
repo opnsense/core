@@ -54,12 +54,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $savemsg = htmlspecialchars(gettext($_GET['savemsg']));
     }
 
-    $pconfig['dnsallowoverride'] = isset($config['system']['dnsallowoverride']);
-    if (!empty($config['system']['dnsallowoverride_exclude'])) {
-        $pconfig['dnsallowoverride_exclude'] = explode(',', $config['system']['dnsallowoverride_exclude']);
-    } else {
-        $pconfig['dnsallowoverride_exclude'] = [];
-    }
+    $pconfig['dnsallowoverride'] = !empty($config['system']['dnsallowoverride']);
+    $pconfig['dnsallowoverride_exclude'] = !empty($config['system']['dnsallowoverride_exclude']) ?
+        explode(',', $config['system']['dnsallowoverride_exclude']) : [];
+
     $pconfig['dnslocalhost'] = isset($config['system']['dnslocalhost']);
     $pconfig['dnssearchdomain'] = $config['system']['dnssearchdomain'] ?? null;
     $pconfig['domain'] = $config['system']['domain'];
@@ -196,15 +194,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['prefer_ipv4']);
         }
 
-        if (!empty($pconfig['dnsallowoverride'])) {
-            $config['system']['dnsallowoverride'] = true;
-            $config['system']['dnsallowoverride_exclude'] = implode(',', $pconfig['dnsallowoverride_exclude']);
-        } elseif (isset($config['system']['dnsallowoverride'])) {
-            unset($config['system']['dnsallowoverride']);
-            if (isset($config['system']['dnsallowoverride_exclude'])) {
-                unset($config['system']['dnsallowoverride_exclude']);
-            }
-        }
+        $config['system']['dnsallowoverride'] = !empty($pconfig['dnsallowoverride']) ? '1' : '0';
+        $config['system']['dnsallowoverride_exclude'] = implode(',', $pconfig['dnsallowoverride_exclude']);
 
         if ($pconfig['dnslocalhost'] == 'yes') {
             $config['system']['dnslocalhost'] = true;

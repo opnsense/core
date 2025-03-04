@@ -31,8 +31,7 @@
 import argparse
 import ujson
 from lib.db import DB
-from lib.ipfw import IPFW
-
+from lib.pf import PF
 
 parser = argparse.ArgumentParser()
 parser.add_argument('session', help='session id to delete', type=str)
@@ -43,7 +42,7 @@ response = {'terminateCause': 'UNKNOWN'}
 client_session_info = DB().del_client(int(args.z) if str(args.z).isdigit() else None, args.session)
 if client_session_info is not None:
     if client_session_info['ip_address']:
-        IPFW().delete(client_session_info['zoneid'], client_session_info['ip_address'])
+        PF.remove_from_table(client_session_info['zoneid'], client_session_info['ip_address'])
     client_session_info['terminateCause'] = 'User-Request'
     response = client_session_info
 

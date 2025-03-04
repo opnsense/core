@@ -26,7 +26,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #}
 {% set theme_name = ui_theme|default('opnsense') %}
-<script src="{{ cache_safe('/ui/js/chart.umd.js') }}"></script>
+<script src="{{ cache_safe('/ui/js/chart.umd.min.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/chartjs-plugin-colorschemes.min.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/moment-with-locales.min.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/chartjs-adapter-moment.min.js') }}"></script>

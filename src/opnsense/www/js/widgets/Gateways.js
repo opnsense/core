@@ -57,11 +57,12 @@ export default class Gateways extends BaseTableWidget {
     }
 
     async onWidgetOptionsChanged(options) {
-        await this._updateGateways();
+        // Intentionally not awaited to avoid blocking dialog close
+        this._updateGateways();
     }
 
     async getWidgetOptions() {
-        const gateways = await this._fetchGateways();
+        const gateways = this.cachedGateways.length > 0 ? this.cachedGateways : await this._fetchGateways();
 
         return {
             gateways: {
@@ -90,7 +91,8 @@ export default class Gateways extends BaseTableWidget {
             $('#gateway-table').html(`<a href="/ui/routing/configuration">${this.translations.unconfigured}</a>`);
             return;
         }
-        this.cachedGateways = gateways.map(({ name, uuid }) => ({ name, uuid }));
+
+        this.cachedGateways = gateways;
 
         const config = await this.getWidgetConfig();
 
