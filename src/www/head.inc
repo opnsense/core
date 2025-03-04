@@ -199,8 +199,8 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
               $.each(data,function(idx, menu_item){
                   if (menu_item.Url != "") {
                       menusearch_items.push({
-                        id:$('<div/>').html(menu_item.Url).text(),
-                        name: $("<div/>").html(menu_item.breadcrumb).text()
+                          id:$('<div/>').html(menu_item.Url).text(),
+                          name: $("<div/>").html(menu_item.breadcrumb).text()
                       });
                   }
               });
