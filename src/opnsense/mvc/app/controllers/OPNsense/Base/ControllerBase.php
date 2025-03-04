@@ -97,9 +97,7 @@ class ControllerBase extends ControllerRoot
             // bootstrap dialog
             '/css/bootstrap-dialog.css',
             // Font awesome
-            '/ui/assets/fontawesome/css/fontawesome.min.css',
-            '/ui/assets/fontawesome/css/solid.min.css',
-            '/ui/assets/fontawesome/css/brands.min.css',
+            '/ui/assets/fontawesome/css/all.min.css',
             '/ui/assets/fontawesome/css/v4-shims.min.css',
             // JQuery Tokenize2 (https://zellerda.github.io/Tokenize2/)
             '/css/tokenize2.css',
@@ -290,7 +288,7 @@ class ControllerBase extends ControllerRoot
         return [
             'table_id' => $basename,
             'edit_dialog_id' => 'dialog_' . $basename,
-            'edit_alert_id' => $edit_alert_id == null ? 'change_message_' . $basename : $edit_alert_id,
+            'edit_alert_id' => $edit_alert_id == null ? 'change_message_base_form' : $edit_alert_id,
             'fields' => array_values($all_data)
         ];
     }

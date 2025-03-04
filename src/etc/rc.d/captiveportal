@@ -25,7 +25,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 # PROVIDE: captiveportal
-# REQUIRE: ipfw
+# REQUIRE: pf
 # KEYWORD: shutdown
 
 . /etc/rc.subr

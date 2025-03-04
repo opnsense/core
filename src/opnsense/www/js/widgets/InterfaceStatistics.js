@@ -54,7 +54,7 @@ export default class InterfaceStatistics extends BaseTableWidget {
         let $chartContainer = $(`
             <div class="interface-statistics-chart-container">
                 <div class="canvas-container">
-                    <canvas id="intf-stats"></canvas>
+                    <canvas id="intf-stats" style="display: inline-block"></canvas>
                 </div>
             </div>`
         );
@@ -165,6 +165,7 @@ export default class InterfaceStatistics extends BaseTableWidget {
                 normalized: true,
                 parsing: false,
                 plugins: {
+                    colorschemes: false,
                     legend: {
                         display: false,
                         position: 'left',

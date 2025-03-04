@@ -36,7 +36,10 @@ class ForwardController extends IndexController
     {
         $this->view->selected_forward = "forward";
         $this->view->forwardingForm = $this->getForm('forwarding');
+
         $this->view->formDialogEdit = $this->getForm('dialogDot');
+        $this->view->formGridDot = $this->getFormGrid('dialogDot');
+
         $this->view->pick('OPNsense/Unbound/dot');
     }
 }

@@ -53,6 +53,7 @@ class Alias(object):
             :return: None
         """
         self._known_aliases = known_aliases
+        self._pf_addresses = 0
         self._is_changed = None
         self._has_expired = None
         # general alias properties, excluding content
@@ -94,6 +95,12 @@ class Alias(object):
         self._filename_alias_hash = '/var/db/aliastables/%s.md5.txt' % self._name
         # the generated alias contents, without dependencies
         self._filename_alias_content = '/var/db/aliastables/%s.self.txt' % self._name
+
+    def get_pf_addr_count(self):
+        return self._pf_addresses
+
+    def set_pf_addr_count(self, cnt):
+        self._pf_addresses = cnt
 
     def items(self):
         """ return unparsed (raw) alias entries without dependencies
@@ -214,6 +221,7 @@ class Alias(object):
                         os.utime(self._filename_alias_hash, None)
             else:
                 self._resolve_content = set(open(self._filename_alias_content).read().split())
+
         # return the addresses and networks of this alias
         return list(self._resolve_content)
 
@@ -287,8 +295,10 @@ class AliasParser(object):
         self._aliases = dict()
         external_aliases = list()
         alias_parameters = dict()
+        alias_pf_stats = dict()
         alias_parameters['known_aliases'] = [x.text for x in self._source_tree.iterfind('table/name')]
-        for alias_name in PF.list_tables():
+        for alias_name, alias_info in PF.list_tables():
+            alias_pf_stats[alias_name] = alias_info
             if alias_name not in alias_parameters['known_aliases']:
                 alias_parameters['known_aliases'].append(alias_name)
                 external_aliases.append(alias_name)
@@ -302,6 +312,8 @@ class AliasParser(object):
         # loop through user defined aliases
         for elem in self._source_tree.iterfind('table'):
             alias = Alias(elem, **alias_parameters)
+            if alias.get_name() in alias_pf_stats:
+                alias.set_pf_addr_count(alias_pf_stats[alias.get_name()].get('addresses', 0))
             self._aliases[alias.get_name()] = alias
 
         # attach external aliases which aren't defined via the gui

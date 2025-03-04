@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>1.0.11</version>
+    <version>1.0.12</version>
     <items>
         <general>
             <enabled type="BooleanField">
@@ -277,6 +277,10 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </forward_tcp_upstream>
+                <forward_first type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </forward_first>
                 <description type="DescriptionField"/>
             </dot>
         </dots>

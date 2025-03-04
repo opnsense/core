@@ -346,6 +346,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     $rules .= "set skip on lo0\n";
     $rules .= "set skip on pfsync0\n";
     $rules .= "\n";
+    $rules .= $fw->anchorToText('ether', 'head');
     $rules .= filter_generate_scrubbing($cnfint);
     $rules .= "\n";
     $rules .= $fw->anchorToText('nat,binat,rdr', 'head');
@@ -579,7 +580,7 @@ function filter_generate_aliases()
                         if (is_bogonsv6_used()) {
                             $aliases .= "table <bogonsv6> persist file \"/usr/local/etc/bogonsv6\"\n";
                         } else {
-                            $aliases .= "table <{$aliased['name']}>\n";
+                            $aliases .= "table <bogonsv6> persist\n";
                         }
                         break;
                     default:

@@ -175,10 +175,10 @@ $aclObj = new \OPNsense\Core\ACL();
             <form method="post">
               <?php
               if (isset($service_hook)) {
-                $ssvc = service_by_name($service_hook);
-                if (!empty($ssvc)) {
-                  echo service_control_icon($ssvc);
-                  echo service_control_links($ssvc);
+                $ssvc = json_decode(configdp_run('service list', [$service_hook]), true);
+                if (!empty($ssvc[0])) {
+                  echo service_control_icon($ssvc[0]);
+                  echo service_control_links($ssvc[0]);
                 }
               } ?>
 

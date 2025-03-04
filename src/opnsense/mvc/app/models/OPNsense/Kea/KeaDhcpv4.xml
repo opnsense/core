@@ -101,6 +101,9 @@
                     <boot_file_name type="TextField">
                         <Mask>/^([^\n"])*$/u</Mask>
                     </boot_file_name>
+                    <v6_only_preferred type="IntegerField">
+                        <MinimumValue>300</MinimumValue>
+                    </v6_only_preferred>
                 </option_data>
                 <match-client-id type="BooleanField">
                     <Default>1</Default>

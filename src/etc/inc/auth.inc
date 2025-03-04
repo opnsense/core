@@ -173,6 +173,7 @@ function &getGroupEntry($name)
 function get_user_privileges(&$user)
 {
     $privs = [];
+
     /* legacy listtags() ensures 'priv' will be an array when offered, also when there's only one  */
     foreach (!empty($user['priv']) ? (array)$user['priv'] : [] as $item) {
         foreach (array_filter(explode(',', $item)) as $priv) {

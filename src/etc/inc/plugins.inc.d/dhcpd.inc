@@ -158,6 +158,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
     /* handle manually configured DHCP6 server settings first */
     foreach (config_read_array('dhcpdv6') as $dhcpv6if => $dhcpv6ifconf) {
         if (isset($config['interfaces'][$dhcpv6if]['track6-interface']) && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
+            /* handled by automatic case */
             continue;
         } elseif (!isset($config['interfaces'][$dhcpv6if]['enable'])) {
             $radvdconf .= "# Skipping disabled interface {$dhcpv6if}\n";
@@ -392,7 +393,8 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
 
     /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
     foreach (array_keys(get_configured_interface_with_descr()) as $if) {
-        if (!isset($config['interfaces'][$if]['track6-interface'])) {
+        if (!isset($config['interfaces'][$if]['track6-interface']) || isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
+            /* handled by manual case */
             continue;
         } elseif (empty($config['interfaces'][$config['interfaces'][$if]['track6-interface']])) {
             $radvdconf .= "# Skipping defunct interface {$if}\n";

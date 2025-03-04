@@ -146,9 +146,12 @@ td {
 
 .canvas-container {
   position: relative;
+}
+
+.canvas-container > canvas {
   /* ChartJS v4 workaround: https://github.com/chartjs/Chart.js/issues/11005 */
-  aspect-ratio: 2;
-  overflow: hidden;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .cpu-canvas-container {

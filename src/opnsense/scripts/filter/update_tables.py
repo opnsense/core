@@ -101,13 +101,14 @@ if __name__ == '__main__':
                     # read before write, only save when the contents have changed
                     open(alias_filename, 'w').write(alias_content_str)
 
-            # list current alias content when not trying to update a targetted list
-            alias_pf_content = list(PF.list_table(alias_name)) if to_update is None else alias_content
+            # use  current alias content when not trying to update a targetted list
+            cnt_alias_content = len(alias_content)
+            cnt_alias_pf_content = alias.get_pf_addr_count() if to_update is None else cnt_alias_content
 
-            if (len(alias_content) != len(alias_pf_content) or alias_changed_or_expired):
+            if (cnt_alias_content != cnt_alias_pf_content or alias_changed_or_expired):
                 # if the alias is changed, expired or the one in memory has a different number of items, load table
-                if len(alias_content) == 0:
-                    if len(alias_pf_content) > 0:
+                if cnt_alias_content == 0:
+                    if cnt_alias_pf_content > 0:
                         # flush when target is empty
                         PF.flush(alias_name)
                 else:
@@ -117,8 +118,8 @@ if __name__ == '__main__':
                         error_message = "Error loading alias [%s]: %s {current_size: %d, new_size: %d}" % (
                             alias_name,
                             error_output.replace('pfctl: ', ''),
-                            len(alias_pf_content),
-                            len(alias_content),
+                            cnt_alias_pf_content,
+                            cnt_alias_content,
                         )
                         result['status'] = 'error'
                         if 'messages' not in result:

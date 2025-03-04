@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2022 Deciso B.V.
+ * Copyright (C) 2022-2025 Deciso B.V.
  * Copyright (C) 2019 Pascal Mathis <mail@pascalmathis.com>
  * All rights reserved.
  *
@@ -31,6 +31,7 @@ namespace OPNsense\IPsec;
 
 use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
+use OPNsense\Core\Config;
 
 /**
  * Class IPsec
@@ -187,13 +188,44 @@ class IPsec extends BaseModel
     private function traverseItems($node)
     {
         $result = [];
+        $cnf = Config::getInstance()->object();
         foreach ($node->iterateItems() as $key => $item) {
+            $is_numeric = str_starts_with($key, 'x_');
+            /* numeric keys, need to rename for valid xml */
+            $target_key = $is_numeric ? substr($key, 2) : $key;
+
             if ($item->isContainer()) {
-                $result[$key] = $this->traverseItems($item);
+                $result[$target_key] = $this->traverseItems($item);
             } elseif (is_a($item, "OPNsense\\Base\\FieldTypes\\BooleanField")) {
-                $result[$key] = !empty((string)$item) ? 'yes' : 'no';
+                $result[$target_key] = !empty((string)$item) ? 'yes' : 'no';
+            } elseif (is_a($item, "OPNsense\\Base\\FieldTypes\\AuthenticationServerField")) {
+                $servers = [];
+                foreach (explode(',', (string)$item) as $item) {
+                    $idx = 'server' . (string)(count($servers) + 1);
+                    $mapping = [];
+                    if (isset($cnf->authserver)) {
+                        foreach ($cnf->authserver as $authserver) {
+                            if ($authserver->name == $item) {
+                                $servers[$idx] = [
+                                    'address' => (string)$authserver->host,
+                                    'secret' => '"' . (string)$authserver->radius_secret . '"',
+                                    'auth_port' => (string)$authserver->radius_auth_port,
+                                ];
+                                if (!empty((string)$authserver->radius_acct_port)) {
+                                    $servers[$idx]['acct_port'] = (string)$authserver->radius_acct_port;
+                                }
+                            }
+                        }
+                    }
+                }
+                $result[$target_key] = $servers;
             } elseif ((string)$item != '') {
-                $result[$key] = (string)$item;
+                if ($target_key == '28672') {
+                    /* Unity login banner, needs to be wrapped? */
+                    $result[$target_key] = '"' . str_replace(['\\', '"'], '', (string)$item) . '"';
+                } else {
+                    $result[$target_key] = (string)$item;
+                }
             }
         }
         return $result;

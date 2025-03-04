@@ -30,8 +30,8 @@
 namespace OPNsense\Unbound;
 
 use OPNsense\Base\BaseModel;
-use OPNsense\Core\Backend;
 use OPNsense\Base\Messages\Message;
+use OPNsense\Core\Backend;
 
 class Unbound extends BaseModel
 {

@@ -4,191 +4,13 @@
   <theme>opnsense</theme>
   <sysctl>
     <item>
-      <descr><![CDATA[Increase UFS read-ahead speeds to match the state of hard drives and NCQ.]]></descr>
-      <tunable>vfs.read_max</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Set the ephemeral port range to be lower.]]></descr>
-      <tunable>net.inet.ip.portrange.first</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Drop packets to closed TCP ports without returning a RST]]></descr>
-      <tunable>net.inet.tcp.blackhole</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Do not send ICMP port unreachable messages for closed UDP ports]]></descr>
-      <tunable>net.inet.udp.blackhole</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Randomize the ID field in IP packets]]></descr>
-      <tunable>net.inet.ip.random_id</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[
-        Source routing is another way for an attacker to try to reach non-routable addresses behind your box.
-        It can also be used to probe for information about your internal networks. These functions come enabled
-        as part of the standard FreeBSD core system.
-      ]]></descr>
-      <tunable>net.inet.ip.sourceroute</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[
-        Source routing is another way for an attacker to try to reach non-routable addresses behind your box.
-        It can also be used to probe for information about your internal networks. These functions come enabled
-        as part of the standard FreeBSD core system.
-      ]]></descr>
-      <tunable>net.inet.ip.accept_sourceroute</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[
-        This option turns off the logging of redirect packets because there is no limit and this could fill
-        up your logs consuming your whole hard drive.
-      ]]></descr>
-      <tunable>net.inet.icmp.log_redirect</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Drop SYN-FIN packets (breaks RFC1379, but nobody uses it anyway)]]></descr>
-      <tunable>net.inet.tcp.drop_synfin</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Enable sending IPv6 redirects]]></descr>
-      <tunable>net.inet6.ip6.redirect</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Enable privacy settings for IPv6 (RFC 4941)]]></descr>
-      <tunable>net.inet6.ip6.use_tempaddr</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Prefer privacy addresses and use them over the normal addresses]]></descr>
-      <tunable>net.inet6.ip6.prefer_tempaddr</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Generate SYN cookies for outbound SYN-ACK packets]]></descr>
-      <tunable>net.inet.tcp.syncookies</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Maximum incoming/outgoing TCP datagram size (receive)]]></descr>
-      <tunable>net.inet.tcp.recvspace</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Maximum incoming/outgoing TCP datagram size (send)]]></descr>
-      <tunable>net.inet.tcp.sendspace</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Do not delay ACK to try and piggyback it onto a data packet]]></descr>
-      <tunable>net.inet.tcp.delayed_ack</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Maximum outgoing UDP datagram size]]></descr>
-      <tunable>net.inet.udp.maxdgram</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Handling of non-IP packets which are not passed to pfil (see if_bridge(4))]]></descr>
-      <tunable>net.link.bridge.pfil_onlyip</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Set to 1 to additionally filter on the physical interface for locally destined packets]]></descr>
-      <tunable>net.link.bridge.pfil_local_phys</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Set to 0 to disable filtering on the incoming and outgoing member interfaces.]]></descr>
-      <tunable>net.link.bridge.pfil_member</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Set to 1 to enable filtering on the bridge interface]]></descr>
-      <tunable>net.link.bridge.pfil_bridge</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Allow unprivileged access to tap(4) device nodes]]></descr>
-      <tunable>net.link.tap.user_open</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Randomize PID's (see src/sys/kern/kern_fork.c: sysctl_kern_randompid())]]></descr>
-      <tunable>kern.randompid</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Disable CTRL+ALT+Delete reboot from keyboard.]]></descr>
-      <tunable>hw.syscons.kbd_reboot</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Enable TCP extended debugging]]></descr>
-      <tunable>net.inet.tcp.log_debug</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Set ICMP Limits]]></descr>
-      <tunable>net.inet.icmp.icmplim</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[TCP Offload Engine]]></descr>
-      <tunable>net.inet.tcp.tso</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[UDP Checksums]]></descr>
-      <tunable>net.inet.udp.checksum</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Maximum socket buffer size]]></descr>
-      <tunable>kern.ipc.maxsockbuf</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Page Table Isolation (Meltdown mitigation, requires reboot.)]]></descr>
-      <tunable>vm.pmap.pti</tunable>
-      <value>default</value>
-    </item>
-    <item>
       <descr><![CDATA[Disable Indirect Branch Restricted Speculation (Spectre V2 mitigation)]]></descr>
       <tunable>hw.ibrs_disable</tunable>
       <value>default</value>
     </item>
     <item>
-      <descr><![CDATA[Hide processes running as other groups]]></descr>
-      <tunable>security.bsd.see_other_gids</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Hide processes running as other users]]></descr>
-      <tunable>security.bsd.see_other_uids</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Enable/disable sending of ICMP redirects in response to IP packets for which a better,
-        and for the sender directly reachable, route and next hop is known.]]>
-      </descr>
-      <tunable>net.inet.ip.redirect</tunable>
-      <value>default</value>
-    </item>
-    <item>
-      <descr><![CDATA[Maximum outgoing UDP datagram size]]></descr>
-      <tunable>net.local.dgram.maxdgram</tunable>
+      <descr><![CDATA[Page Table Isolation (Meltdown mitigation, requires reboot.)]]></descr>
+      <tunable>vm.pmap.pti</tunable>
       <value>default</value>
     </item>
   </sysctl>
@@ -197,6 +19,7 @@
     <hostname>OPNsense</hostname>
     <domain>localdomain</domain>
     <dnsallowoverride>1</dnsallowoverride>
+    <dnsallowoverride_exclude/>
     <group>
       <name>admins</name>
       <description><![CDATA[System Administrators]]></description>
@@ -271,18 +94,19 @@
       <track6-prefix-id>0</track6-prefix-id>
     </lan>
   </interfaces>
-  <dhcpd>
-    <lan>
-      <enable/>
-      <range>
-        <from>192.168.1.100</from>
-        <to>192.168.1.199</to>
-      </range>
-    </lan>
-  </dhcpd>
   <unbound>
     <enable>1</enable>
   </unbound>
+  <dnsmasq>
+      <enable>1</enable>
+      <port>0</port>
+      <interface>lan</interface>
+      <dhcp_ranges>
+          <interface>lan</interface>
+          <start_addr>192.168.1.100</start_addr>
+          <end_addr>192.168.1.199</end_addr>
+      </dhcp_ranges>
+  </dnsmasq>
   <snmpd>
     <syslocation/>
     <syscontact/>

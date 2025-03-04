@@ -1,11 +1,15 @@
 <menu>
     <Services>
-        <Dnsmasq VisibleName="Dnsmasq DNS" cssClass="fa fa-tags fa-fw">
-          <Settings order="10" url="/services_dnsmasq.php">
-            <Hosts url="/services_dnsmasq_edit.php*" visibility="hidden"/>
-            <Domains url="/services_dnsmasq_domainoverride_edit.php*" visibility="hidden"/>
-          </Settings>
-          <LogFile VisibleName="Log File" order="50" url="/ui/diagnostics/log/core/dnsmasq"/>
+        <Dnsmasq VisibleName="Dnsmasq DNS &amp; DHCP" cssClass="fa fa-tags fa-fw">
+          <General order="10" url="/ui/dnsmasq/settings#general"/>
+          <Hosts order="20" url="/ui/dnsmasq/settings#hosts"/>
+          <Domains order="30" url="/ui/dnsmasq/settings#domains"/>
+          <Dhcptags VisibleName="DHCP tags" order="40" url="/ui/dnsmasq/settings#dhcptags"/>
+          <Dhcpranges VisibleName="DHCP ranges" order="50" url="/ui/dnsmasq/settings#dhcpranges"/>
+          <Dhcpoptions VisibleName="DHCP options" order="60" url="/ui/dnsmasq/settings#dhcpoptions"/>
+          <Dhcpmatches VisibleName="DHCP matches" order="70" url="/ui/dnsmasq/settings#dhcpmatches"/>
+          <Leases order="80" url="/ui/dnsmasq/leases"/>
+          <LogFile VisibleName="Log File" order="90" url="/ui/diagnostics/log/core/dnsmasq"/>
         </Dnsmasq>
     </Services>
 </menu>

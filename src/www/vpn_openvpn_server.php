@@ -1637,6 +1637,14 @@ $( document ).ready(function() {
 <?php
               else :?>
           <section class="col-xs-12">
+            <div class="alert alert-warning" role="alert">
+                <strong>
+                  <?php $eol_this_month = explode('.', product::getInstance()->version())[1] ?? '1';?>
+                    <?=sprintf(
+                        gettext("This component is reaching the end of the line, official maintenance will end as of version %s"),
+                        in_array($eol_this_month, ['1', '7']) ? '26.1' : '26.4');?>
+                </strong>
+            </div>
             <div class="tab-content content-box col-xs-12">
               <table class="table table-striped">
                 <thead>
@@ -1648,9 +1656,6 @@ $( document ).ready(function() {
                   <td class="text-nowrap">
                     <a href="vpn_openvpn_server.php?act=new" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
                       <i class="fa fa-plus fa-fw"></i>
-                    </a>
-                    <a href="wizard.php?xml=openvpn" class="btn btn-defaultu btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Use a wizard to setup a new server')) ?>">
-                      <i class="fa fa-magic fa-fw"></i>
                     </a>
                   </td>
                 </tr>

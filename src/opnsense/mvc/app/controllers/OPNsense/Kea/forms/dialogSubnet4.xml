@@ -23,6 +23,11 @@
         <type>checkbox</type>
         <help>By default KEA uses client-identifiers in stead of MAC addresses to locate clients, disabling this option
         changes back to matching on MAC address which is used by most dhcp implementations.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <type>header</type>
@@ -33,6 +38,11 @@
         <label>Auto collect option data</label>
         <type>checkbox</type>
         <help>Automatically update option data for relevant attributes as routers, dns servers and ntp servers when applying settings from the gui.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>subnet4.option_data.routers</id>
@@ -41,12 +51,18 @@
         <style>tokenize option_data_autocollect</style>
         <allownew>true</allownew>
         <help>Default gateways to offer to the clients</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>subnet4.option_data.static_routes</id>
         <label>Static routes</label>
         <type>text</type>
         <help>Static routes that the client should install in its routing cache, defined as dest-ip1,router-ip1;dest-ip2,router-ip2</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>subnet4.option_data.domain_name_servers</id>
@@ -55,12 +71,18 @@
         <style>tokenize option_data_autocollect</style>
         <allownew>true</allownew>
         <help>DNS servers to offer to the clients</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>subnet4.option_data.domain_name</id>
         <label>Domain name</label>
         <type>text</type>
         <help>The domain name to offer to the client, set to this firewall's domain name when left empty</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>subnet4.option_data.domain_search</id>
@@ -70,6 +92,9 @@
         <allownew>true</allownew>
         <separator>,</separator>
         <help>Specifies a ´search list´ of Domain Names to be used by the client to locate not-fully-qualified domain names.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>subnet4.option_data.ntp_servers</id>
@@ -78,6 +103,9 @@
         <style>tokenize option_data_autocollect</style>
         <allownew>true</allownew>
         <help>Specifies a list of IP addresses indicating NTP (RFC 5905) servers available to the client.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>subnet4.option_data.time_servers</id>
@@ -86,23 +114,45 @@
         <style>tokenize</style>
         <allownew>true</allownew>
         <help>Specifies a list of RFC 868 time servers available to the client.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>subnet4.next_server</id>
         <label>Next server</label>
         <type>text</type>
         <help>Next server IP address</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>subnet4.option_data.tftp_server_name</id>
         <label>TFTP server</label>
         <type>text</type>
         <help>TFTP server address or fqdn</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>subnet4.option_data.boot_file_name</id>
         <label>TFTP bootfile name</label>
         <type>text</type>
         <help>Boot filename to request</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>subnet4.option_data.v6_only_preferred</id>
+        <label>IPv6-only Preferred (Option 108)</label>
+        <type>text</type>
+        <help>The number of seconds for which the client should disable DHCPv4. The minimum value is 300 seconds.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+        <advanced>true</advanced>
     </field>
 </form>
