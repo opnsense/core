@@ -101,7 +101,7 @@ function dnsmasq_firewall(\OPNsense\Firewall\Plugin $fw)
     global $config;
 
     $mdl = new \OPNsense\Dnsmasq\Dnsmasq();
-    if (!$mdl->enable->isEmpty() && !$mdl->dhcp_default_fw_rules->isEmpty()) {
+    if (!$mdl->enable->isEmpty() && !$mdl->dhcp->default_fw_rules->isEmpty()) {
         $dhcp_ifs = $mdl->getDhcpInterfaces();
         if (empty($dhcp_ifs)) {
             return;

@@ -111,7 +111,7 @@
         <label>DHCP</label>
     </field>
     <field>
-        <id>dnsmasq.no_dhcp_interface</id>
+        <id>dnsmasq.dhcp.no_interface</id>
         <label>Interface [no dhcp]</label>
         <type>select_multiple</type>
         <advanced>true</advanced>
@@ -120,13 +120,13 @@
         </help>
     </field>
     <field>
-        <id>dnsmasq.dhcp_fqdn</id>
+        <id>dnsmasq.dhcp.fqdn</id>
         <label>DHCP fqdn</label>
         <type>checkbox</type>
         <help>In the default mode, we insert the unqualified names of DHCP clients into the DNS, in which case they have to be unique. Using this option the unqualified name is no longer put in the DNS, only the qualified name.</help>
     </field>
     <field>
-        <id>dnsmasq.dhcp_lease_max</id>
+        <id>dnsmasq.dhcp.lease_max</id>
         <label>DHCP max leases</label>
         <type>text</type>
         <hint>1000</hint>
@@ -134,22 +134,28 @@
         <help>Limits dnsmasq to the specified maximum number of DHCP leases. This limit is to prevent DoS attacks from hosts which create thousands of leases and use lots of memory in the dnsmasq process.</help>
     </field>
     <field>
-        <id>dnsmasq.dhcp_authoritative</id>
+        <id>dnsmasq.dhcp.authoritative</id>
         <label>DHCP authoritative</label>
         <type>checkbox</type>
         <help>Should be set when dnsmasq is definitely the only DHCP server on a network. For DHCPv4, it changes the behaviour from strict RFC compliance so that DHCP requests on unknown leases from unknown hosts are not ignored.</help>
     </field>
     <field>
-        <id>dnsmasq.dhcp_reply_delay</id>
+        <id>dnsmasq.dhcp.reply_delay</id>
         <label>DHCP Reply delay</label>
         <type>text</type>
         <help>Delays sending DHCPOFFER and PROXYDHCP replies for at least the specified number of seconds. This can be practical for split dhcp solutions, to make sure the secondary server answers slower than the primary.</help>
     </field>
     <field>
-        <id>dnsmasq.dhcp_default_fw_rules</id>
+        <id>dnsmasq.dhcp.default_fw_rules</id>
         <label>DHCP register firewall rules</label>
         <type>checkbox</type>
         <help>Automatically register firewall rules to allow dhcp traffic for all explicitly selected interfaces, can be disabled for more fine grained control if needed. Changes are only effective after a firewall service restart (see system diagnostics).</help>
+    </field>
+    <field>
+        <id>dnsmasq.dhcp.nosync</id>
+        <label>Disable HA sync</label>
+        <type>checkbox</type>
+        <help>Ignore the dhcp general settings from being updated using ha sync.</help>
     </field>
     <field>
         <type>header</type>

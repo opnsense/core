@@ -1,6 +1,6 @@
 <model>
     <mount>/dnsmasq</mount>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <items>
         <enable type="BooleanField"/>
         <regdhcp type="BooleanField"/>
@@ -33,22 +33,25 @@
         <local_ttl type="IntegerField">
             <MinimumValue>0</MinimumValue>
         </local_ttl>
-        <no_dhcp_interface type="InterfaceField">
-            <Multiple>Y</Multiple>
-        </no_dhcp_interface>
-        <dhcp_fqdn type="BooleanField"/>
-        <dhcp_lease_max type="IntegerField">
-            <MinimumValue>0</MinimumValue>
-        </dhcp_lease_max>
-        <dhcp_authoritative type="BooleanField"/>
-        <dhcp_default_fw_rules type="BooleanField">
-            <Required>Y</Required>
-            <Default>1</Default>
-        </dhcp_default_fw_rules>
-        <dhcp_reply_delay type="IntegerField">
-            <MinimumValue>0</MinimumValue>
-            <MaximumValue>60</MaximumValue>
-        </dhcp_reply_delay>
+        <dhcp>
+            <no_interface type="InterfaceField">
+                <Multiple>Y</Multiple>
+            </no_interface>
+            <fqdn type="BooleanField"/>
+            <lease_max type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </lease_max>
+            <authoritative type="BooleanField"/>
+            <default_fw_rules type="BooleanField">
+                <Required>Y</Required>
+                <Default>1</Default>
+            </default_fw_rules>
+            <reply_delay type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>60</MaximumValue>
+            </reply_delay>
+            <nosync type="BooleanField"/>
+        </dhcp>
         <no_ident type="BooleanField">
             <Required>Y</Required>
             <Default>1</Default>
@@ -153,6 +156,7 @@
                 <IsDNSName>Y</IsDNSName>
                 <IpAllowed>N</IpAllowed>
             </domain>
+            <nosync type="BooleanField"/>
             <description type="DescriptionField"/>
         </dhcp_ranges>
         <dhcp_options type="ArrayField">

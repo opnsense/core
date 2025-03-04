@@ -45,6 +45,12 @@
         <help>Offer the specified domain to machines in this range.</help>
     </field>
     <field>
+        <id>range.nosync</id>
+        <label>Disable HA sync</label>
+        <type>checkbox</type>
+        <help>Ignore this range from being transfered or updated by ha sync.</help>
+    </field>
+    <field>
         <id>range.description</id>
         <label>Description</label>
         <type>text</type>
