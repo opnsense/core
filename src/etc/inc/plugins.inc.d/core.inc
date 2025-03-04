@@ -426,12 +426,6 @@ function core_xmlrpc_sync()
         'services' => ["routing", "dpinger"],
     );
     $result[] = array(
-        'description' => gettext('Network Time'),
-        'section' => 'ntpd,system.timeservers',
-        'id' => 'ntpd',
-        'services' => ["ntpd"],
-    );
-    $result[] = array(
         'description' => gettext('Syslog'),
         'section' => 'syslog,OPNsense.Syslog',
         'id' => 'syslog',
