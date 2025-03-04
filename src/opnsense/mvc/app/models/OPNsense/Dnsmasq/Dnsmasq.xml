@@ -134,21 +134,24 @@
                     </tag>
                 </Model>
             </set_tag>
-            <start_addr type="NetworkField">
+            <start_addr type=".\RangeAddressField">
                 <NetMaskAllowed>N</NetMaskAllowed>
-                <AddressFamily>ipv4</AddressFamily>
                 <Required>Y</Required>
             </start_addr>
-            <end_addr type="NetworkField">
+            <end_addr type=".\RangeAddressField">
                 <NetMaskAllowed>N</NetMaskAllowed>
-                <AddressFamily>ipv4</AddressFamily>
             </end_addr>
+            <constructor type="InterfaceField"/>
             <mode type="OptionField">
                 <OptionValues>
                     <static>static</static>
                 </OptionValues>
                 <Multiple>Y</Multiple>
             </mode>
+            <prefix_len type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>64</MaximumValue>
+            </prefix_len>
             <lease_time type="IntegerField">
                 <MinimumValue>1</MinimumValue>
             </lease_time>

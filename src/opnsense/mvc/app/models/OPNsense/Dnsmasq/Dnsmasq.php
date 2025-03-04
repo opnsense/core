@@ -83,12 +83,79 @@ class Dnsmasq extends BaseModel
             if (!$validateFullModel && !$range->isFieldChanged()) {
                 continue;
             }
+            $start_inet = strpos($range->start_addr, ':') !== false ? 'inet6' : 'inet';
+            $end_inet = strpos($range->end_addr, ':') !== false ? 'inet6' : 'inet';
             $key = $range->__reference;
             if (!$range->domain->isEmpty() && $range->end_addr->isEmpty()) {
                 $messages->appendMessage(
                     new Message(
                         gettext("Can only configure a domain when a full range (including end) is specified."),
                         $key . ".domain"
+                    )
+                );
+            }
+
+            if ($start_inet != $end_inet && !$range->end_addr->isEmpty()) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("Protocol family doesn't match."),
+                        $key . ".end_addr"
+                    )
+                );
+            }
+
+            if (!$range->constructor->isEmpty()) {
+                if ($start_inet == 'inet') {
+                    $messages->appendMessage(
+                        new Message(
+                            gettext("A constructor can only be configured for ipv6."),
+                            $key . ".constructor"
+                        )
+                    );
+                }
+                if (!str_starts_with($range->start_addr, '::')) {
+                    $messages->appendMessage(
+                        new Message(
+                            gettext("A constructor expects a partial address (e.g. ::1)."),
+                            $key . ".start_addr"
+                        )
+                    );
+                }
+                if (!$range->end_addr->isEmpty() && !str_starts_with($range->end_addr, '::')) {
+                    $messages->appendMessage(
+                        new Message(
+                            gettext("A constructor expects a partial address (e.g. ::1)."),
+                            $key . ".end_addr"
+                        )
+                    );
+                }
+            }
+
+            if ($range->constructor->isEmpty() &&
+                (str_starts_with($range->start_addr, '::') || str_starts_with($range->end_addr, '::'))
+            ) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("Partial addresses can only be used with a constructor."),
+                        $key . ".start_addr"
+                    )
+                );
+            }
+
+            if (!$range->prefix_len->isEmpty() && $start_inet != 'inet6') {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("Prefix length can only be used for IPv6."),
+                        $key . ".prefix_len"
+                    )
+                );
+            }
+
+            if (in_array('static', explode(',', $range->mode)) && $start_inet == 'inet6') {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("Static is only available IPv4."),
+                        $key . ".mode"
                     )
                 );
             }

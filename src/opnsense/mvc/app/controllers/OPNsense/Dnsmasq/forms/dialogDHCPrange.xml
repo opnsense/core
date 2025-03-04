@@ -15,13 +15,26 @@
         <id>range.start_addr</id>
         <label>Start address</label>
         <type>text</type>
-        <help>Start of the range.</help>
+        <help>Start of the range, e.g. 192.168.1.100, 2000::1 or when constructor is used a partial like ::1.</help>
     </field>
     <field>
         <id>range.end_addr</id>
         <label>End address</label>
         <type>text</type>
         <help>End of the range.</help>
+    </field>
+    <field>
+        <id>range.constructor</id>
+        <label>Constructor</label>
+        <type>dropdown</type>
+        <help>Interface to use to calculate the proper range, when selected, a range maybe specified as partial (e.g. ::1, ::400)</help>
+    </field>
+    <field>
+        <id>range.prefix_len</id>
+        <label>Prefix length (ipv6)</label>
+        <type>text</type>
+        <hint>64</hint>
+        <help>Prefix lenght offered to the client.</help>
     </field>
     <field>
         <id>range.mode</id>
