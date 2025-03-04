@@ -83,19 +83,34 @@ function does_vip_exist($vip)
  * @param array $cnf_source source data
  * @param array $cnf_dest target
  */
-function merge_config_attributes(&$cnf_source, &$cnf_dest)
+function merge_config_attributes(&$cnf_source, &$cnf_dest, $path='')
 {
     foreach ($cnf_source as $cnf_key => &$cnf_value) {
         if (is_array($cnf_value)) {
+            $path = empty($path) ? $cnf_key : sprintf('%s.%s', $path, $cnf_key);
+            $no_sync_items = [];
             if (
                 !isset($cnf_dest[$cnf_key]) || !is_array($cnf_dest[$cnf_key]) || // new
                 (count($cnf_dest[$cnf_key]) > 0 && isset($cnf_dest[$cnf_key][0])) || // sequenced item
                 (count($cnf_dest[$cnf_key]) > 0 && isset($cnf_dest[$cnf_key]['@attributes']['uuid'])) // mvc array
             ) {
+                /* gather items with nosync set, exclude records with implicit order (legacy) */
+                $exclude_nosync = in_array($path, ['filter.rule', 'nat.rule', 'nat.outbound.rule']);
+                if (!$exclude_nosync && isset($cnf_dest[$cnf_key]) && is_array($cnf_dest[$cnf_key])) {
+                    foreach ($cnf_dest[$cnf_key] as $record) {
+                        if (!empty($record['nosync'])) {
+                            $no_sync_items[] = $record;
+                        }
+                    }
+                }
                 // (re)set destination array when new or containing a sequenced list of items
                 $cnf_dest[$cnf_key] = [];
             }
-            merge_config_attributes($cnf_value, $cnf_dest[$cnf_key]);
+            merge_config_attributes($cnf_value, $cnf_dest[$cnf_key], $path);
+            if (!empty($no_sync_items)) {
+                /* append nosync items, local ones on-top */
+                $cnf_dest[$cnf_key] = array_merge($no_sync_items, $cnf_dest[$cnf_key]);
+            }
         } else {
             $cnf_dest[$cnf_key] = $cnf_value;
         }
