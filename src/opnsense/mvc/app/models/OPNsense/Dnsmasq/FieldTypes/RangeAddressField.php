@@ -36,7 +36,7 @@ class RangeAddressField extends NetworkField
     {
         if (str_starts_with($input, '::')) {
             /* special case, if we prefix a partial range with a network, we should end up with a valid address */
-            return filter_var('2000'.$input, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
+            return filter_var('2000' . $input, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
         } else {
             return parent::isValidInput($input);
         }

@@ -131,7 +131,8 @@ class Dnsmasq extends BaseModel
                 }
             }
 
-            if ($range->constructor->isEmpty() &&
+            if (
+                $range->constructor->isEmpty() &&
                 (str_starts_with($range->start_addr, '::') || str_starts_with($range->end_addr, '::'))
             ) {
                 $messages->appendMessage(
