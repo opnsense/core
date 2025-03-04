@@ -233,15 +233,6 @@ function carp_sync_xml($url, $username, $password, $sections, $debug)
         }
     }
 
-    // when syncing users, send last used uid/gid over
-    if (in_array('system.user', $sections)) {
-        if (!isset($transport_data['system'])) {
-            $transport_data['system'] = array();
-        }
-        $transport_data['system']['nextuid'] = $config['system']['nextuid'];
-        $transport_data['system']['nextgid'] = $config['system']['nextgid'];
-    }
-
     $client = new SimpleXMLRPC_Client($url,240);
     $client->debug = $debug;
     $client->setCredentials($username, $password);
