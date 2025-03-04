@@ -105,7 +105,7 @@ e.g. 192.168.1.12</help>
         <id>rule.log</id>
         <label>Log</label>
         <type>checkbox</type>
-        <help>Log packets that are handled by this rule</help>
+        <help><![CDATA[Log packets that are handled by this rule. Hint: The firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a <a href="/ui/syslog/" target="_blank">remote syslog server</a>.]]></help>
     </field>
     <field>
         <id>rule.categories</id>

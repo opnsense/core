@@ -50,7 +50,17 @@ class PortForwardController extends FilterBaseController
             $node = $this->getModel()->getNodeByReference('portforward.rule.' . $uuid);
             $destination_net = isset($this->request->get('rule')['target']) ? $this->request->get('rule')['target'] : $node->target;
             $destination_port = isset($this->request->get('rule')['target_port']) ? $this->request->get('rule')['target_port'] : $node->target_port;
-            $overlay = ['filter_rule' => (string)$node->filter_rule, 'destination_net' => $destination_net, 'destination_port' => $destination_port];
+            $floating = $quick = 0;
+            if(count(explode(",", $this->request->get('rule')['interface'])) > 1) {
+                $floating = $quick = 1;
+            }
+            $overlay = [
+                'filter_rule' => (string)$node->filter_rule,
+                'destination_net' => $destination_net,
+                'destination_port' => $destination_port,
+                'floating' => $floating,
+                'quick' => $quick
+            ];
             if (strpos($filter_rule, 'nat_') !== FALSE) {
                 $exist = 0;
                 foreach ($this->getModel()->firewallrules->rule->iterateItems() as $items) {
@@ -86,7 +96,17 @@ class PortForwardController extends FilterBaseController
                 $node = $this->getModel()->getNodeByReference('portforward.rule.' . $result['uuid']);
                 $destination_net = $this->request->get('rule')['target'];
                 $destination_port = $this->request->get('rule')['target_port'];
-                $overlay = ['filter_rule' => (string)$node->filter_rule, 'destination_net' => $destination_net, 'destination_port' => $destination_port];
+                $floating = $quick = 0;
+                if(count(explode(",", $this->request->get('rule')['interface'])) > 1) {
+                    $floating = $quick = 1;
+                }
+                $overlay = [
+                    'filter_rule' => (string)$node->filter_rule,
+                    'destination_net' => $destination_net,
+                    'destination_port' => $destination_port,
+                    'floating' => $floating,
+                    'quick' => $quick
+                ];
                 $this->addBase("rule", "firewallrules.rule", $overlay);
             }
             return $result;

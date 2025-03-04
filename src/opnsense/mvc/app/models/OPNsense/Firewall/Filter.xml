@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Firewall/Filter</mount>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <migration_prefix>MFP</migration_prefix>
     <description>OPNsense firewall filter rules</description>
     <items>
@@ -591,6 +591,7 @@
                     <Required>Y</Required>
                 </destination_net>
                 <destination_port type="PortField">
+                    <Default>http</Default>
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
                     <EnableAlias>Y</EnableAlias>
@@ -598,8 +599,11 @@
                 </destination_port>
                 <target type="NetworkAliasField"/>
                 <target_port type="PortField">
+                    <Default>http</Default>
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
+                    <EnableAlias>Y</EnableAlias>
+                    <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
                 </target_port>
                 <pool_options type="OptionField">
                     <BlankDesc>Default</BlankDesc>
@@ -665,10 +669,22 @@
                     <Required>Y</Required>
                     <Default>1</Default>
                 </sequence>
-                <nordr type="BooleanField">
-                    <Default>0</Default>
+                <action type="OptionField">
                     <Required>Y</Required>
-                </nordr>
+                    <Default>pass</Default>
+                    <OptionValues>
+                        <pass>Pass</pass>
+                        <block>Block</block>
+                        <reject>Reject</reject>
+                    </OptionValues>
+                </action>
+                <quick type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </quick>
+                <floating type="BooleanField">
+                    <Default>0</Default>
+                </floating>
                 <interface type="InterfaceField">
                     <Required>Y</Required>
                     <Default>wan</Default>
