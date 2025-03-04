@@ -88,7 +88,11 @@ class ModelRelationField extends BaseListField
                     $modelObj = $this->getParentModel();
                     $this->internalOptionsFromThisModel = true;
                 } else {
-                    $modelObj = new $className($this->getParentModel()->isLazyLoaded());
+                    if ($this->getParentModel() !== null) {
+                        $modelObj = new $className($this->getParentModel()->isLazyLoaded());
+                    } else {
+                        $modelObj = new $className();
+                    }
                 }
 
                 $groupKey = isset($modelData['group']) ? $modelData['group'] : null;
