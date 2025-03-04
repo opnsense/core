@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2016 Deciso B.V.
+ * Copyright (C) 2015-2025 Deciso B.V.
  * Copyright (C) 2004-2010 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2005 Colin Smith <ethethlay@gmail.com>
  * All rights reserved.
@@ -150,19 +150,6 @@ function restore_config_section_xmlrpc($new_config)
     // save old config
     $old_config = $config;
 
-    // Some sections should just be copied and not merged, namely if there's a risk of attributes being removed
-    // without being seen by the remote (backup) side.
-    // (ipsec, openvpn, nat can probably moved out later by specifying a better path to the attribute)
-    $sync_full = ['ipsec', 'wol', 'dnsmasq', 'openvpn', 'nat', 'dhcpd', 'dhcpv6'];
-    $sync_full_done = [];
-    foreach ($sync_full as $syncfull) {
-        if (isset($new_config[$syncfull])) {
-            $config[$syncfull] = $new_config[$syncfull];
-            unset($new_config[$syncfull]);
-            $sync_full_done[] = $syncfull;
-        }
-    }
-
     $vhidVipsInNewConfig = [];
     if (isset($new_config['virtualip']['vip'])) {
         foreach ($new_config['virtualip']['vip'] as $vip) {
@@ -199,7 +186,7 @@ function restore_config_section_xmlrpc($new_config)
     }
 
     /* Log what happened */
-    $mergedkeys = implode(",", array_merge(array_keys($new_config), $sync_full_done));
+    $mergedkeys = implode(",", array_merge(array_keys($new_config)));
     write_config(sprintf('Merged %s config sections from XMLRPC client.', $mergedkeys));
 
     /*
