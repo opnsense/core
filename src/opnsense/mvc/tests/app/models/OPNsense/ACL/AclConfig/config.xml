@@ -65,8 +65,6 @@
       <descr><![CDATA[test4]]></descr>
       <uid>2003</uid>
     </user>
-    <nextuid>2004</nextuid>
-    <nextgid>2004</nextgid>
     <timezone>Etc/UTC</timezone>
     <timeservers>0.opnsense.pool.ntp.org 1.opnsense.pool.ntp.org 2.opnsense.pool.ntp.org 3.opnsense.pool.ntp.org</timeservers>
     <webgui>
