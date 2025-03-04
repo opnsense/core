@@ -280,6 +280,7 @@
                         <remote-random>remote-random</remote-random>
                         <route-noexec>route-noexec</route-noexec>
                         <route-nopull>route-nopull</route-nopull>
+                        <explicit-exit-notify>explicit-exit-notify</explicit-exit-notify>
                     </OptionValues>
                 </various_flags>
                 <various_push_flags type="OptionField">
@@ -287,8 +288,10 @@
                     <OptionValues>
                         <block-outside-dns>push block-outside-dns</block-outside-dns>
                         <register-dns>push register-dns</register-dns>
+                        <explicit-exit-notify>explicit-exit-notify</explicit-exit-notify>
                     </OptionValues>
                 </various_push_flags>
+                <push_inactive type="IntegerField"/>
                 <username_as_common_name type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>
@@ -319,6 +322,10 @@
                 <auth-gen-token type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                 </auth-gen-token>
+                <auth-gen-token-renewal type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                </auth-gen-token-renewal>
+                <auth-gen-token-secret type="TextField"/>
                 <provision_exclusive type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>
@@ -373,6 +380,8 @@
                     <key>mvc</key>
                 </carp_depend_on>
                 <description type="DescriptionField"/>
+                <compress_migrate type="BooleanField"/>
+                <ifconfig-pool-persist type="BooleanField"/>
             </Instance>
         </Instances>
         <StaticKeys>

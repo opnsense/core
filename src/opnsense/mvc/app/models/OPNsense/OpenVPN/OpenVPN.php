@@ -144,6 +144,20 @@ class OpenVPN extends BaseModel
                         $key . ".auth-gen-token"
                     ));
                 }
+
+                if (!empty((string)$instance->{'auth-gen-token-renewal'}) && (string)$instance->{'auth-gen-token'} === '') {
+                    $messages->appendMessage(new Message(
+                        gettext('A token renewal requires a token lifetime.'),
+                        $key . ".auth-gen-token-renewal"
+                    ));
+                }
+
+                if (!empty((string)$instance->{'auth-gen-token-secret'}) && (string)$instance->{'auth-gen-token'} === '') {
+                    $messages->appendMessage(new Message(
+                        gettext('A token secret requires a token lifetime.'),
+                        $key . ".auth-gen-token-secret"
+                    ));
+                }
             }
             if (!empty((string)$instance->cert)) {
                 $tmp = Store::getCertificate((string)$instance->cert);
@@ -643,10 +657,28 @@ class OpenVPN extends BaseModel
                             $options['push'][] = "\"dhcp-option NTP {$opt}\"";
                         }
                     }
-                    foreach (['auth-gen-token'] as $opt) {
-                        if ((string)$node->$opt != '') {
-                            $options[$opt] = str_replace(',', ':', (string)$node->$opt);
+                    if (!empty((string)$node->push_inactive)) {
+                        $options['push'][] = "\"inactive {$node->push_inactive}\"";
+                    }
+
+                    if ((string)$node->{'auth-gen-token'} !== '') {
+                        $options['auth-gen-token'] = $node->{'auth-gen-token'};
+
+                        if ((string)$node->{'auth-gen-token-renewal'} !== '') {
+                            $options['auth-gen-token'] .= ' ' . $node->{'auth-gen-token-renewal'};
                         }
+                    }
+
+                    if (!empty((string)$node->{'auth-gen-token-secret'})) {
+                        $options['<auth-gen-token-secret>'] = $node->{'auth-gen-token-secret'};
+                    }
+
+                    if (!empty((string)$node->compress_migrate)) {
+                        $options['compress'] = 'migrate';
+                    }
+
+                    if (!empty((string)$node->{'ifconfig-pool-persist'})) {
+                        $options['ifconfig-pool-persist'] = "/var/etc/openvpn/instance-{$node_uuid}.pool";
                     }
                 }
                 $options['persist-tun'] = null;
