@@ -255,7 +255,7 @@ class NetworkField extends BaseField
                 return false;
             }
         }
-        return true;;
+        return true;
     }
 
     /**
