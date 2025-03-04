@@ -83,7 +83,7 @@ function does_vip_exist($vip)
  * @param array $cnf_source source data
  * @param array $cnf_dest target
  */
-function merge_config_attributes(&$cnf_source, &$cnf_dest, $path='')
+function merge_config_attributes(&$cnf_source, &$cnf_dest, $path = '')
 {
     foreach ($cnf_source as $cnf_key => &$cnf_value) {
         if (is_array($cnf_value)) {
