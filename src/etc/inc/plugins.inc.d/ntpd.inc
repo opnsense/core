@@ -469,3 +469,13 @@ function ntpd_configure_do($verbose = false)
 
     service_log("done.\n", $verbose);
 }
+
+function ntpd_xmlrpc_sync()
+{
+    return [[
+        'description' => gettext('Network Time'),
+        'section' => 'ntpd,system.timeservers',
+        'services' => ['ntpd'],
+        'id' => 'ntpd',
+    ]];
+}
