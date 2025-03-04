@@ -34,7 +34,6 @@ require_once("util.inc");
 require_once("filter.inc");
 require_once("util.inc");
 require_once("system.inc");
-require_once("xmlparse.inc");
 
 function console_prompt_for_yn($prompt_text, $default = '')
 {

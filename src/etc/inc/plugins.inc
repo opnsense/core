@@ -206,7 +206,7 @@ function plugins_interfaces()
                         unset($stale_interfaces[$intf_ref]);
                     }
                     if (isset($config['interfaces'][$intf_ref][0])) {
-                        // undo stupid listags() turning our item into a new array, see src/etc/inc/xmlparse.inc
+                        // undo stupid listtags() turning our item into a new array
                         $intf_config = &config_read_array('interfaces', $intf_ref, 0);
                     } else {
                         $intf_config = &config_read_array('interfaces', $intf_ref);

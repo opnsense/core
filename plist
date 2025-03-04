@@ -47,7 +47,6 @@
 /usr/local/etc/inc/rrd.inc
 /usr/local/etc/inc/system.inc
 /usr/local/etc/inc/util.inc
-/usr/local/etc/inc/xmlparse.inc
 /usr/local/etc/inc/xmlrpc.inc
 /usr/local/etc/inc/xmlrpc/legacy.inc
 /usr/local/etc/inc/xmlrpc/service.inc
