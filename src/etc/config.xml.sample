@@ -19,6 +19,7 @@
     <hostname>OPNsense</hostname>
     <domain>localdomain</domain>
     <dnsallowoverride>1</dnsallowoverride>
+    <dnsallowoverride_exclude/>
     <group>
       <name>admins</name>
       <description><![CDATA[System Administrators]]></description>

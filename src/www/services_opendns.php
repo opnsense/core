@@ -89,13 +89,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $config['system']['dnsserver'][] = $v4_server[0];
                 $config['system']['dnsserver'][] = $v4_server[1];
             }
-            if (!empty($config['system']['dnsallowoverride'])) {
-                $config['system']['dnsallowoverride'] = false;
-            }
+            $config['system']['dnsallowoverride'] = '0';
         } else {
-            $config['system']['dnsserver'] = array();
+            $config['system']['dnsserver'] = [];
             $config['system']['dnsserver'][] = '';
-            $config['system']['dnsallowoverride'] = true;
+            $config['system']['dnsallowoverride'] = '1';
         }
         write_config('OpenDNS filter configuration change');
         system_resolver_configure();

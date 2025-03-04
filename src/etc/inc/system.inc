@@ -380,7 +380,7 @@ function get_nameservers($interface = null, $with_gateway = false)
         }
     }
 
-    if (isset($syscfg['dnsallowoverride_exclude'])) {
+    if (!empty($syscfg['dnsallowoverride_exclude'])) {
         /* by design this only works on dynamic servers, not static ones */
         foreach (explode(',', $syscfg['dnsallowoverride_exclude']) as $intf) {
             if (isset($config['interfaces'][$intf])) {
