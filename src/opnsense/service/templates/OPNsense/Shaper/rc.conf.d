@@ -9,3 +9,4 @@
 dummynet_enable="YES"
 dnctl_enable="{%if isEnabled %}YES{% else %}NO{% endif %}"
 dnctl_rules="/usr/local/etc/dnctl.conf"
+dnctl_setup="/usr/local/opnsense/scripts/shaper/setup.sh"
