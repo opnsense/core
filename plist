@@ -90,7 +90,6 @@
 /usr/local/etc/rc.d/configd
 /usr/local/etc/rc.d/flowd_aggregate
 /usr/local/etc/rc.d/netflow
-/usr/local/etc/rc.dnctl
 /usr/local/etc/rc.filter_configure
 /usr/local/etc/rc.filter_synchronize
 /usr/local/etc/rc.firmware
@@ -1274,6 +1273,7 @@
 /usr/local/opnsense/scripts/routes/show_routes.py
 /usr/local/opnsense/scripts/shaper/dummynet_stats.py
 /usr/local/opnsense/scripts/shaper/lib/__init__.py
+/usr/local/opnsense/scripts/shaper/setup.sh
 /usr/local/opnsense/scripts/shaper/update_tables
 /usr/local/opnsense/scripts/shell/banner.php
 /usr/local/opnsense/scripts/shell/defaults.php
