@@ -96,7 +96,7 @@ class InstancesController extends ApiMutableModelControllerBase
         return $this->delBase('StaticKeys.StaticKey', $uuid);
     }
 
-    public function genKeyAction($type='secret')
+    public function genKeyAction($type = 'secret')
     {
         if (in_array($type, ['secret', 'auth-token'])) {
             $key = (new Backend())->configdpRun("openvpn genkey", [$type]);
