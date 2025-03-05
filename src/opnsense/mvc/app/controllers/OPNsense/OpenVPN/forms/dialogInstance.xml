@@ -649,6 +649,7 @@ Set to 0 to disable, remember to change your client as well.
         <label>Compression migrate</label>
         <type>checkbox</type>
         <advanced>true</advanced>
+        <style>role role_server</style>
         <help>Conditionally use stub compression for clients configured with compression. This functionality is deprecated in OpenVPN.</help>
         <grid_view>
             <visible>false</visible>
@@ -661,6 +662,7 @@ Set to 0 to disable, remember to change your client as well.
         <label>Persist address pool</label>
         <type>checkbox</type>
         <advanced>true</advanced>
+        <style>role role_server</style>
         <help>Save ip address pool to disk</help>
         <grid_view>
             <visible>false</visible>
