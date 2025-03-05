@@ -73,7 +73,7 @@
                 }
             });
         });
-        $("#show_advanced_formDialogDialogInstance").click(function(){
+        $("#show_advanced_formDialogdialog_dialogInstance").click(function(){
             $("#instance\\.role").change();
         });
 
