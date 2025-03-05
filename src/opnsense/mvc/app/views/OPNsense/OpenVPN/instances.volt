@@ -61,12 +61,11 @@
         });
 
         $("#instance\\.role, #instance\\.dev_type").change(function(){
-            const show_advanced = $("#show_advanced_formDialogDialogInstance").hasClass("fa-toggle-on");
+            const show_advanced = $("#show_advanced_formDialogdialog_dialogInstance").hasClass("fa-toggle-on");
             const this_role = $("#instance\\.role").val();
             const this_dev_type = $("#instance\\.dev_type").val();
             $(".role").each(function(){
                 const tr = $(this).closest("tr").hide();
-
                 if ((tr.data('advanced') === true && show_advanced) || !tr.data('advanced')) {
                     if ($(this).hasClass('role_' + this_role) || $(this).hasClass('role_' + this_role + '_' + this_dev_type)) {
                         tr.show();
@@ -79,15 +78,25 @@
         });
 
         // move "generate key" inside form dialog
-
         $("#row_statickey\\.mode > td:eq(1) > div:last").before($("#keygen_div").detach().show());
+        $("#control_label_instance\\.auth-gen-token-secret").before($("#keygen_auth_token_div").detach().show());
+
         $("#keygen").click(function(){
-            ajaxGet("/api/openvpn/instances/gen_key", {}, function(data, status){
+            ajaxGet("/api/openvpn/instances/gen_key/secret", {}, function(data, status){
                 if (data.result && data.result === 'ok') {
                     $("#statickey\\.key").val(data.key);
                 }
             });
-        })
+        });
+
+        $("#keygen_auth_token").click(function(){
+            ajaxGet("/api/openvpn/instances/gen_key/auth-token", {}, function(data, status){
+                if (data.result && data.result === 'ok') {
+                    $("#instance\\.auth-gen-token-secret").val(data.key);
+                }
+            });
+        });
+
 
         $("#reconfigureAct").SimpleActionButton();
     });
@@ -110,6 +119,11 @@
 </ul>
 <div class="tab-content content-box">
     <div id="instances" class="tab-pane fade in active">
+        <span id="keygen_auth_token_div" style="display:none" class="pull-right">
+            <button id="keygen_auth_token" type="button" class="btn btn-secondary" title="{{ lang._('Generate new auth-token.') }}" data-toggle="tooltip">
+              <i class="fa fa-fw fa-gear"></i>
+            </button>
+        </span>
         {{ partial('layout_partials/base_bootgrid_table', formGridInstance)}}
     </div>
     <div id="statickeys" class="tab-pane fade in">
