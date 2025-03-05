@@ -50,24 +50,20 @@ class ServiceController extends ApiControllerBase
             $backend->configdRun('template reload OPNsense/Shaper');
             $backend->configdRun('template reload OPNsense/IPFW');
 
-            $bckresult = trim($backend->configdRun("shaper reload"));
-            if ($bckresult == "OK") {
-                $status = "ok";
-            } else {
-                $status = "error reloading shaper (" . $bckresult . ")";
+            $result = trim($backend->configdRun("shaper reload"));
+            if ($result != "OK") {
+                return ["status" => "error reloading shaper (" . $result . ")"];
             }
 
-            $bckresult = trim($backend->configdRun("ipfw reload"));
-            if ($bckresult == "OK") {
-                $status = "ok";
-            } else {
-                $status = "error reloading shaper (" . $bckresult . ")";
+            $result = trim($backend->configdRun("ipfw reload"));
+            if ($result != "OK") {
+                return ["status" => "error reloading ipfw (" . $result . ")"];
             }
 
-            return array("status" => $status);
-        } else {
-            return array("status" => "failed");
+            return ["status" => "ok"];
         }
+
+        return ["status" => "failed"];
     }
 
     /**
@@ -80,9 +76,9 @@ class ServiceController extends ApiControllerBase
             $status = trim($backend->configdRun("ipfw flush"));
             $status = trim($backend->configdRun("shaper reload"));
             $status = trim($backend->configdRun("ipfw reload"));
-            return array("status" => $status);
+            return ["status" => $status];
         } else {
-            return array("status" => "failed");
+            return ["status" => "failed"];
         }
     }
 
@@ -91,14 +87,14 @@ class ServiceController extends ApiControllerBase
      */
     public function statisticsAction()
     {
-        $result = array("status" => "failed");
+        $result = ["status" => "failed"];
         if ($this->request->isGet()) {
             $ipfwstats = json_decode((new Backend())->configdRun("shaper stats"), true);
             if ($ipfwstats != null) {
                 // reformat into something easier to handle from the UI and attach model data.
                 $result['status'] = "ok";
-                $result['items'] = array();
-                $pipenrs = array();
+                $result['items'] = [];
+                $pipenrs = [];
                 if (!empty($ipfwstats['pipes'])) {
                     $shaperModel = new TrafficShaper();
 
