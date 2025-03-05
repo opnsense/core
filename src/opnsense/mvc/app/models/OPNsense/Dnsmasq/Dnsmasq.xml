@@ -38,6 +38,10 @@
                 <Multiple>Y</Multiple>
             </no_interface>
             <fqdn type="BooleanField"/>
+            <domain type="HostnameField">
+                <IsDNSName>Y</IsDNSName>
+                <IpAllowed>N</IpAllowed>
+            </domain>
             <lease_max type="IntegerField">
                 <MinimumValue>0</MinimumValue>
             </lease_max>
