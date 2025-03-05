@@ -152,7 +152,7 @@ function system_sysctl_get()
     }
 
     foreach ($sysctls as $key => &$value) {
-        if ($value != 'default') {
+        if ($value != 'default' && $value != '') {
             continue;
         }
 
