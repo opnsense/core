@@ -670,4 +670,14 @@ Set to 0 to disable, remember to change your client as well.
             <formatter>boolean</formatter>
         </grid_view>
     </field>
+    <field>
+        <id>instance.http-proxy</id>
+        <label>HTTP Proxy</label>
+        <type>text</type>
+        <style>role role_client</style>
+        <help>Use a http proxy to connect to the selected server, define as host:port.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
 </fields>

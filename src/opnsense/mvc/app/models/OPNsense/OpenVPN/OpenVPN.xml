@@ -382,6 +382,9 @@
                 <description type="DescriptionField"/>
                 <compress_migrate type="BooleanField"/>
                 <ifconfig-pool-persist type="BooleanField"/>
+                <http-proxy type="IPPortField">
+                    <HostnameAllowed>Y</HostnameAllowed>
+                </http-proxy>
             </Instance>
         </Instances>
         <StaticKeys>

@@ -548,6 +548,11 @@ class OpenVPN extends BaseModel
                     if (!empty((string)$node->remote_cert_tls)) {
                         $options['remote-cert-tls'] = 'server';
                     }
+                    if (strrpos($node->{'http-proxy'}, ':') > 0) {
+                        $tmp = substr_replace($node->{'http-proxy'}, ' ', strrpos($node->{'http-proxy'}, ':'), 1);
+                        $options['http-proxy'] = $tmp;
+                    }
+
                     // XXX: In some cases it might be practical to drop privileges, for server mode this will be
                     //      more difficult due to the associated script actions (and their requirements).
                     //$options['user'] = 'openvpn';
