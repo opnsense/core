@@ -41,13 +41,22 @@ use OPNsense\TrafficShaper\TrafficShaper;
 class ServiceController extends ApiControllerBase
 {
     /**
-     * reconfigure ipfw, generate config and reload
+     * reconfigure shaper/ipfw, generate config and reload
      */
     public function reconfigureAction()
     {
         if ($this->request->isPost()) {
             $backend = new Backend();
+            $backend->configdRun('template reload OPNsense/Shaper');
             $backend->configdRun('template reload OPNsense/IPFW');
+
+            $bckresult = trim($backend->configdRun("shaper reload"));
+            if ($bckresult == "OK") {
+                $status = "ok";
+            } else {
+                $status = "error reloading shaper (" . $bckresult . ")";
+            }
+
             $bckresult = trim($backend->configdRun("ipfw reload"));
             if ($bckresult == "OK") {
                 $status = "ok";
@@ -69,6 +78,7 @@ class ServiceController extends ApiControllerBase
         if ($this->request->isPost()) {
             $backend = new Backend();
             $status = trim($backend->configdRun("ipfw flush"));
+            $status = trim($backend->configdRun("shaper reload"));
             $status = trim($backend->configdRun("ipfw reload"));
             return array("status" => $status);
         } else {
@@ -83,10 +93,9 @@ class ServiceController extends ApiControllerBase
     {
         $result = array("status" => "failed");
         if ($this->request->isGet()) {
-            $ipfwstats = json_decode((new Backend())->configdRun("ipfw stats"), true);
+            $ipfwstats = json_decode((new Backend())->configdRun("shaper stats"), true);
             if ($ipfwstats != null) {
-                // ipfw stats are structured as they would be using the various ipfw commands, let's reformat
-                // into something easier to handle from the UI and attach model data.
+                // reformat into something easier to handle from the UI and attach model data.
                 $result['status'] = "ok";
                 $result['items'] = array();
                 $pipenrs = array();
