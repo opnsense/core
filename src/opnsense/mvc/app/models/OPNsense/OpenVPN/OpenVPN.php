@@ -167,6 +167,12 @@ class OpenVPN extends BaseModel
                     $key . ".proto"
                 ));
             }
+            if ($instance->dev_type == 'ovpn' && !$instance->fragment->isEmpty()) {
+                $messages->appendMessage(new Message(
+                    gettext('DCO type instances do not support fragment size.'),
+                    $key . ".fragment"
+                ));
+            }
         }
         return $messages;
     }
