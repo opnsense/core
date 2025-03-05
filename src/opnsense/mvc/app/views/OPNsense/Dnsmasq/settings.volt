@@ -28,6 +28,14 @@
     $( document ).ready(function() {
         let data_get_map = {'frm_settings':"/api/dnsmasq/settings/get"};
         mapDataToFormUI(data_get_map).done(function(data){
+            try {
+                $("#dnsmasq\\.dhcp\\.domain").attr(
+                    "placeholder",
+                    data.frm_settings.dhcp.domain
+                );
+            } catch (e) {
+                null;
+            }
             formatTokenizersUI();
             $('.selectpicker').selectpicker('refresh');
             updateServiceControlUI('dnsmasq');
