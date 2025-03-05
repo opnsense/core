@@ -433,6 +433,28 @@ Set to 0 to disable, remember to change your client as well.
         </grid_view>
     </field>
     <field>
+        <id>instance.auth-gen-token-renewal</id>
+        <label>Auth Token Renewal</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <style>role role_server</style>
+        <help>How often the auth token will be renewed, token expire after 2 * renewal time.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>instance.auth-gen-token-secret</id>
+        <label>Auth Token secret</label>
+        <type>textbox</type>
+        <advanced>true</advanced>
+        <style>role role_server</style>
+        <help>Optional secret for use with auth-gen-token. This is useful to allow failover between multiple servers without user interaction.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>instance.provision_exclusive</id>
         <label>Require Client Provisioning</label>
         <type>checkbox</type>
@@ -493,6 +515,17 @@ Set to 0 to disable, remember to change your client as well.
         <style>selectpicker role role_server</style>
         <type>select_multiple</type>
         <help>Various less frequently used yes/no options which can be pushed to the client for this instance.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>instance.push_inactive</id>
+        <label>Push inactivity timeout</label>
+        <style>role role_server</style>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Push an inactivity timeout to client connecting. Number of seconds with inactivity before the client should exit.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
@@ -605,6 +638,30 @@ Set to 0 to disable, remember to change your client as well.
         <type>checkbox</type>
         <advanced>true</advanced>
         <help>Announce to TCP sessions running over the tunnel that they should limit their send packet sizes such that after OpenVPN has encapsulated them, the resulting UDP packet size that OpenVPN sends to its peer will not exceed the recommended size.</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>instance.compress_migrate</id>
+        <label>Compression migrate</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Conditionally use stub compression for clients configured with compression. This functionality is deprecated in OpenVPN.</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>instance.ifconfig-pool-persist</id>
+        <label>Persist address pool</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Save ip address pool to disk</help>
         <grid_view>
             <visible>false</visible>
             <type>boolean</type>
