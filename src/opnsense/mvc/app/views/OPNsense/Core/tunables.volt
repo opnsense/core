@@ -34,9 +34,9 @@
                 del:'/api/core/tunables/del_item/',
                 options: {
                     formatters: {
-                        "tunable_type": function (column, row) {
+                        tunable_type: function (column, row) {
                             let retval = "{{ lang._('environment')}}";
-                            switch (row[column.id]) {
+                            switch (row.type) {
                                 case 'w':
                                     retval = "{{ lang._('runtime')}}";
                                     break;
@@ -48,6 +48,19 @@
                                     break;
                             }
                             return retval;
+                        },
+                        tunable_value: function (column, row) {
+                            return row.value.length ? row.value : row.default_value;
+                        },
+                        commands: function (column, row) {
+                            if (row.uuid.includes('-') === true) {
+                                /* real config items can be edited or removed */
+                                return '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-pencil"></span></button> ' +
+                                    '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-trash-o"></span></button>';
+                            } else {
+                                /* allow edit, renders the value on save */
+                                return '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-pencil"></span></button>';
+                            }
                         }
                     }
                 }
