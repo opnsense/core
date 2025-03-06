@@ -167,7 +167,7 @@
         <div class="label-select-pair">
             <label for="detail-select"><b>{{ lang._('Granularity') }}</b></label>
             <select id="detail-select" class="selectpicker" data-width="200px">
-                <option value="0">{{ lang._('Default (%d minute)') | format('1') }}</option>
+                <option value="0">{{ lang._('%d minute (Default)') | format('1') }}</option>
                 <option value="1">{{ lang._('%d minutes') | format('5') }}</option>
                 <option value="2">{{ lang._('%d hour') | format('1') }}</option>
                 <option value="3">{{ lang._('%d hours') | format('24') }}</option>
