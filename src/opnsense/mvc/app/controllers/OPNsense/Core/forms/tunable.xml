@@ -11,6 +11,7 @@
         <id>sysctl.type</id>
         <label>Type</label>
         <type>info</type>
+        <advanced>true</advanced>
         <grid_view>
             <sequence>2</sequence>
             <formatter>tunable_type</formatter>
@@ -18,8 +19,9 @@
     </field>
     <field>
         <id>sysctl.default_value</id>
-        <label>Default value</label>
+        <label>Default</label>
         <type>info</type>
+        <advanced>true</advanced>
         <grid_view>
             <sequence>4</sequence>
         </grid_view>
@@ -30,6 +32,7 @@
         <type>text</type>
         <grid_view>
             <sequence>3</sequence>
+            <formatter>tunable_value</formatter>
         </grid_view>
     </field>
     <field>
