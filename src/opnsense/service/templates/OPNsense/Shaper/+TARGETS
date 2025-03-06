@@ -1,0 +1,2 @@
+rc.conf.d:/etc/rc.conf.d/dnctl
+dnctl.conf:/usr/local/etc/dnctl.conf

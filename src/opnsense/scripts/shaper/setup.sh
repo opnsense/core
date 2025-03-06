@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2015 Deciso B.V.
+# Copyright (c) 2025 Deciso B.V.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -24,17 +24,6 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-# script to glue standard ipfw rc scripting to OPNsense ruleset
-# see auto generated file /etc/rc.conf.d/ipfw for details
-
-# reload ipfw rules
-ipfw -q /usr/local/etc/ipfw.rules
-# load tables
-/usr/local/opnsense/scripts/shaper/update_tables
-
-if [ ! -f /tmp/ipfw.firstload ]; then
-	# we need to make sure ipfw is loaded as last
-	touch /tmp/ipfw.firstload
-	pfctl -d
-	pfctl -e
-fi
+# sysctl settings
+sysctl net.inet.ip.dummynet.io_fast=1 > /dev/null
+sysctl net.inet.ip.dummynet.hash_size=256 > /dev/null
