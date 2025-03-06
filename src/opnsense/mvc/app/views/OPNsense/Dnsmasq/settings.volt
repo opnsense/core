@@ -31,7 +31,7 @@
             try {
                 $("#dnsmasq\\.dhcp\\.domain").attr(
                     "placeholder",
-                    data.frm_settings.dhcp.domain
+                    data.frm_settings.dnsmasq.dhcp.this_domain
                 );
             } catch (e) {
                 null;
