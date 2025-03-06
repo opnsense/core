@@ -1273,6 +1273,7 @@
 /usr/local/opnsense/scripts/routes/show_routes.py
 /usr/local/opnsense/scripts/shaper/dummynet_stats.py
 /usr/local/opnsense/scripts/shaper/lib/__init__.py
+/usr/local/opnsense/scripts/shaper/setup.sh
 /usr/local/opnsense/scripts/shaper/update_tables
 /usr/local/opnsense/scripts/shell/banner.php
 /usr/local/opnsense/scripts/shell/defaults.php
@@ -1364,6 +1365,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_netflow.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openssh.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openvpn.conf
+/usr/local/opnsense/service/conf/actions.d/actions_shaper.conf
 /usr/local/opnsense/service/conf/actions.d/actions_syslog.conf
 /usr/local/opnsense/service/conf/actions.d/actions_system.conf
 /usr/local/opnsense/service/conf/actions.d/actions_template.conf
@@ -1452,6 +1454,9 @@
 /usr/local/opnsense/service/templates/OPNsense/Sample/sub1/example_sub1.txt
 /usr/local/opnsense/service/templates/OPNsense/Sample/sub2/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Sample/sub2/example_sub2.txt
+/usr/local/opnsense/service/templates/OPNsense/Shaper/+TARGETS
+/usr/local/opnsense/service/templates/OPNsense/Shaper/dnctl.conf
+/usr/local/opnsense/service/templates/OPNsense/Shaper/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/Syslog/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/README
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/audit.conf

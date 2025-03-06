@@ -81,7 +81,7 @@ def trim_dict(payload):
 
 def parse_ipfw_pipes():
     result = dict()
-    pipetxt = subprocess.run(['/sbin/ipfw', 'pipe', 'show'], capture_output=True, text=True).stdout.strip()
+    pipetxt = subprocess.run(['/sbin/dnctl', 'pipe', 'show'], capture_output=True, text=True).stdout.strip()
     current_pipe = None
     current_pipe_header = False
     for line in ("%s\n000000X" % pipetxt).split('\n'):
@@ -125,7 +125,7 @@ def parse_ipfw_pipes():
 
 def parse_ipfw_queues():
     result = dict()
-    queuetxt = subprocess.run(['/sbin/ipfw', 'queue', 'show'], capture_output=True, text=True).stdout.strip()
+    queuetxt = subprocess.run(['/sbin/dnctl', 'queue', 'show'], capture_output=True, text=True).stdout.strip()
     current_queue = None
     current_queue_header = False
     for line in ("%s\nq000000X" % queuetxt).split('\n'):
@@ -149,7 +149,7 @@ def parse_ipfw_queues():
 
 def parse_ipfw_scheds():
     result = dict()
-    schedtxt = subprocess.run(['/sbin/ipfw', 'sched', 'show'], capture_output=True, text=True).stdout.strip()
+    schedtxt = subprocess.run(['/sbin/dnctl', 'sched', 'show'], capture_output=True, text=True).stdout.strip()
     current_sched = None
     for line in ("%s\n000000X" % schedtxt).split('\n'):
         if len(line) == 0:
