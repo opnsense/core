@@ -197,9 +197,10 @@ class UserController extends ApiMutableModelControllerBase
 
     public function addAction()
     {
+        $data = $this->request->getPost(static::$internalModelName);
+        $this->setSaveAuditMessage(sprintf('user \"%s\" created"', $data['name']));
         $result = $this->addBase('user', 'user');
         if ($result['result'] != 'failed') {
-            $data = $this->request->getPost(static::$internalModelName);
             if (!empty($data['name'])) {
                 (new Backend())->configdpRun('auth sync user', [$data['name']]);
             }
@@ -209,9 +210,10 @@ class UserController extends ApiMutableModelControllerBase
 
     public function setAction($uuid = null)
     {
+        $data = $this->request->getPost(static::$internalModelName);
+        $this->setSaveAuditMessage(sprintf('user \"%s\" changed"', $data['name']));
         $result = $this->setBase('user', 'user', $uuid);
         if ($result['result'] != 'failed') {
-            $data = $this->request->getPost(static::$internalModelName);
             if (!empty($data['name'])) {
                 (new Backend())->configdpRun('auth sync user', [$data['name']]);
             }
@@ -240,6 +242,7 @@ class UserController extends ApiMutableModelControllerBase
                 $username = (string)$node->name;
             }
         }
+        $this->setSaveAuditMessage(sprintf('The user "%s" was successfully removed.', $username));
         $result = $this->delBase('user', $uuid);
         if ($username != null) {
             (new Backend())->configdpRun('auth sync user', [$username]);
