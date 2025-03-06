@@ -90,6 +90,11 @@
             </aliases>
         </hosts>
         <domainoverrides type="ArrayField">
+            <sequence type="AutoNumberField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>99999</MaximumValue>
+                <ValidationMessage>Please enter a value between 1 and 99999 or leave empty.</ValidationMessage>
+            </sequence>
             <domain type="HostnameField">
                 <IsDNSName>Y</IsDNSName>
                 <IpAllowed>N</IpAllowed>
