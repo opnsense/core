@@ -59,9 +59,23 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     protected static $internalModelUseSafeDelete = false;
 
     /**
+     * Message to append to configuration change event
+     */
+    protected $internalAuditMessage = null;
+
+
+    /**
      * @var null|BaseModel model object to work on
      */
     private $modelHandle = null;
+
+    /**
+     * Message to use on save of this model
+     */
+    protected function setSaveAuditMessage($msg)
+    {
+        $this->internalAuditMessage = $msg;
+    }
 
     /**
      * Validate on initialization
@@ -304,7 +318,12 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     {
         if (!(new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
             if ($this->getModel()->serializeToConfig($validateFullModel, $disable_validation)) {
-                Config::getInstance()->save();
+                if ($this->internalAuditMessage) {
+                    Config::getInstance()->save(['description' => $this->internalAuditMessage]);
+                } else {
+                    /* default "endpoint made changes" message */
+                    Config::getInstance()->save();
+                }
             }
             return array("result" => "saved");
         } else {
