@@ -36,11 +36,6 @@
                 <Required>Y</Required>
             </dnssecstripped>
         </unbound>
-         <timeservers type="HostnameField">
-            <AsList>Y</AsList>
-            <FieldSeparator>,</FieldSeparator>
-            <IsDNSName>Y</IsDNSName>
-        </timeservers>
         <timezone type="JsonKeyValueStoreField">
             <ConfigdPopulateAct>system list timezones</ConfigdPopulateAct>
             <Required>Y</Required>

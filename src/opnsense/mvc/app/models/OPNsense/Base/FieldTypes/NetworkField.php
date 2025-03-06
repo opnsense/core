@@ -28,7 +28,8 @@
 
 namespace OPNsense\Base\FieldTypes;
 
-use OPNsense\Base\Validators\NetworkValidator;
+use OPNsense\Firewall\Util;
+use OPNsense\Base\Validators\CallbackValidator;
 
 /**
  * @package OPNsense\Base\FieldTypes
@@ -191,23 +192,89 @@ class NetworkField extends BaseField
     }
 
     /**
+     * @param string $input data to test
+     * @return bool if valid network address or segment (using this objects settings)
+     */
+    protected function isValidInput($input)
+    {
+        $result = true;
+        if ($this->internalFieldSeparator == null) {
+            $values = [$input];
+        } else {
+            $values = explode($this->internalFieldSeparator, $input);
+        }
+        foreach ($values as $value) {
+            // parse filter options
+            $filterOpt = 0;
+            switch (strtolower($this->internalAddressFamily ?? '')) {
+                case "ipv4":
+                    $filterOpt |= FILTER_FLAG_IPV4;
+                    break;
+                case "ipv6":
+                    $filterOpt |= FILTER_FLAG_IPV6;
+                    break;
+                default:
+                    $filterOpt |= FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6;
+            }
+
+            // split network
+            if (strpos($value, "/") !== false) {
+                if ($this->internalNetMaskAllowed === false) {
+                    return false;
+                } else {
+                    $cidr = $value;
+                    $parts = explode("/", $value);
+                    if (count($parts) > 2 || !ctype_digit($parts[1])) {
+                        // more parts then expected or second part is not numeric
+                        return false;
+                    } else {
+                        $mask = $parts[1];
+                        $value = $parts[0];
+                        if (strpos($parts[0], ":") !== false) {
+                            // probably ipv6, mask must be between 0..128
+                            if ($mask < 0 || $mask > 128) {
+                                return false;
+                            }
+                        } else {
+                            // most likely ipv4 address, mask must be between 0..32
+                            if ($mask < 0 || $mask > 32) {
+                                return false;
+                            }
+                        }
+                    }
+
+                    if ($this->internalStrict === true && !Util::isSubnetStrict($cidr)) {
+                        return false;
+                    }
+                }
+            } elseif ($this->internalNetMaskRequired === true) {
+                return false;
+            }
+
+            if (filter_var($value, FILTER_VALIDATE_IP, $filterOpt) === false) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * retrieve field validators for this field type
-     * @return array returns Text/regex validator
+     * @return array returns validators
      */
     public function getValidators()
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
             if ($this->internalValue != "any" || $this->internalWildcardEnabled == false) {
-                // accept any as target
-                $validators[] = new NetworkValidator([
-                    'message' => $this->getValidationMessage(),
-                    'split' => $this->internalFieldSeparator,
-                    'netMaskRequired' => $this->internalNetMaskRequired,
-                    'netMaskAllowed' => $this->internalNetMaskAllowed,
-                    'version' => $this->internalAddressFamily,
-                    'strict' => $this->internalStrict
-                ]);
+                $that = $this;
+                $validators[] = new CallbackValidator(["callback" => function ($data) use ($that) {
+                    $messages = [];
+                    if (!$that->isValidInput($data)) {
+                        $messages[] =  $this->getValidationMessage();
+                    }
+                    return $messages;
+                }]);
             }
         }
         return $validators;

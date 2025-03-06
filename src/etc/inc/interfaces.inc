@@ -3552,11 +3552,6 @@ function get_real_interface($interface = 'wan', $family = 'all')
 
     $realif = $config['interfaces'][$interface]['if'];
 
-    /* XXX this is either impossibe to reach nowadays or requires an interface migration */
-    if (isset($config['interfaces'][$interface]['wireless']) && !strstr($realif, '_wlan')) {
-        $realif .= '_wlan0';
-    }
-
     if ($family == 'inet6') {
         switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
             case '6rd':

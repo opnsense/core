@@ -676,7 +676,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/Email.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/IntegerValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/MinMaxValidator.php
-/usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/NetworkValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/Numericality.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/PresenceOf.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/Regex.php
@@ -742,6 +741,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/Dnsmasq.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/FieldTypes/AliasesField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/FieldTypes/DomainIPField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/FieldTypes/RangeAddressField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/ACL/ACL.xml
@@ -1046,6 +1046,7 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/ModelRelationFieldTest/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/NetworkAliasFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/NetworkAliasFieldTest/config.xml
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/NetworkFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/OptionFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/PortFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/ProtocolFieldTest.php

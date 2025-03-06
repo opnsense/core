@@ -144,6 +144,20 @@ class OpenVPN extends BaseModel
                         $key . ".auth-gen-token"
                     ));
                 }
+
+                if (!empty((string)$instance->{'auth-gen-token-renewal'}) && (string)$instance->{'auth-gen-token'} === '') {
+                    $messages->appendMessage(new Message(
+                        gettext('A token renewal requires a token lifetime.'),
+                        $key . ".auth-gen-token-renewal"
+                    ));
+                }
+
+                if (!empty((string)$instance->{'auth-gen-token-secret'}) && (string)$instance->{'auth-gen-token'} === '') {
+                    $messages->appendMessage(new Message(
+                        gettext('A token secret requires a token lifetime.'),
+                        $key . ".auth-gen-token-secret"
+                    ));
+                }
             }
             if (!empty((string)$instance->cert)) {
                 $tmp = Store::getCertificate((string)$instance->cert);
@@ -165,6 +179,12 @@ class OpenVPN extends BaseModel
                 $messages->appendMessage(new Message(
                     gettext('DCO type instances only support UDP mode.'),
                     $key . ".proto"
+                ));
+            }
+            if ($instance->dev_type == 'ovpn' && !$instance->fragment->isEmpty()) {
+                $messages->appendMessage(new Message(
+                    gettext('DCO type instances do not support fragment size.'),
+                    $key . ".fragment"
                 ));
             }
         }
@@ -528,6 +548,11 @@ class OpenVPN extends BaseModel
                     if (!empty((string)$node->remote_cert_tls)) {
                         $options['remote-cert-tls'] = 'server';
                     }
+                    if (strrpos($node->{'http-proxy'}, ':') > 0) {
+                        $tmp = substr_replace($node->{'http-proxy'}, ' ', strrpos($node->{'http-proxy'}, ':'), 1);
+                        $options['http-proxy'] = $tmp;
+                    }
+
                     // XXX: In some cases it might be practical to drop privileges, for server mode this will be
                     //      more difficult due to the associated script actions (and their requirements).
                     //$options['user'] = 'openvpn';
@@ -643,10 +668,28 @@ class OpenVPN extends BaseModel
                             $options['push'][] = "\"dhcp-option NTP {$opt}\"";
                         }
                     }
-                    foreach (['auth-gen-token'] as $opt) {
-                        if ((string)$node->$opt != '') {
-                            $options[$opt] = str_replace(',', ':', (string)$node->$opt);
+                    if (!empty((string)$node->push_inactive)) {
+                        $options['push'][] = "\"inactive {$node->push_inactive}\"";
+                    }
+
+                    if ((string)$node->{'auth-gen-token'} !== '') {
+                        $options['auth-gen-token'] = $node->{'auth-gen-token'};
+
+                        if ((string)$node->{'auth-gen-token-renewal'} !== '') {
+                            $options['auth-gen-token'] .= ' ' . $node->{'auth-gen-token-renewal'};
                         }
+                    }
+
+                    if (!empty((string)$node->{'auth-gen-token-secret'})) {
+                        $options['<auth-gen-token-secret>'] = $node->{'auth-gen-token-secret'};
+                    }
+
+                    if (!empty((string)$node->compress_migrate)) {
+                        $options['compress'] = 'migrate';
+                    }
+
+                    if (!empty((string)$node->{'ifconfig-pool-persist'})) {
+                        $options['ifconfig-pool-persist'] = "/var/etc/openvpn/instance-{$node_uuid}.pool";
                     }
                 }
                 $options['persist-tun'] = null;

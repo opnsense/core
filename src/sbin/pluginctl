@@ -282,14 +282,19 @@ if (isset($opts['h'])) {
             echo "$key\n";
         }
     }
-} elseif (isset($opts['X'])) {
-    echo json_encode(plugins_xmlrpc_sync(), $jflags) . PHP_EOL;
-} elseif (isset($opts['x'])) {
+} elseif (isset($opts['X']) || isset($opts['x'])) {
     $payload = [];
     foreach (plugins_xmlrpc_sync() as $key => $data) {
-        $payload[$key] = $data['description'] ?? '';
+        if (!empty($args[0]) && strcasecmp($key, $args[0])) {
+            continue;
+        }
+        $payload[$key] = isset($opts['x']) ? ($data['description'] ?? '') : $data;
     }
-    natcasesort($payload);
+    if (!empty($payload)) {
+        natcasesort($payload);
+    } else {
+        $payload = new ArrayObject();
+    }
     echo json_encode($payload, $jflags) . PHP_EOL;
 } elseif (empty($args[0])) {
     // no arguments, list plugins of selected type
