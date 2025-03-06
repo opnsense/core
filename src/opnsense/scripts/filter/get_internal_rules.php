@@ -8,44 +8,55 @@ require_once('interfaces.inc');
 require_once('plugins.inc');
 require_once('filter.inc');
 
-// Get the rule origin filter(s) from the command line.
-// Usage examples:
-//   get_internal_rules.php all
-//   get_internal_rules.php internal,floating,group,internal2,automation
-$originParam = 'internal';
-if (isset($argv[1]) && !empty($argv[1])) {
-    $originParam = trim($argv[1]);
-}
-
-$origins = [];
-if (strtolower($originParam) === 'all') {
-    $filterAll = true;
-} else {
-    $filterAll = false;
-    $origins = array_map('trim', explode(',', $originParam));
-}
 
 $fw = filter_core_get_initialized_plugin_system();
 filter_core_bootstrap($fw);
 plugins_firewall($fw);
 filter_core_rules_user($fw);
 
-// Iterate over all firewall rules and filter based on origin.
+$mapping = [
+    'type' => 'action',
+    'reply-to' => 'replyto',
+    'descr' => 'description',
+    'from' => 'source_net',
+    'from_port' => 'source_port',
+    'to' => 'destination_net',
+    'to_port' => 'destination_port',
+    '#ref' => 'ref',
+    'label' => 'uuid'
+];
+
 $rules = [];
-foreach ($fw->iterateFilterRules() as $rule) {
-    if ($filterAll || in_array($rule->ruleOrigin(), $origins)) {
-        $rules[] = $rule->getRawRule();
+foreach ($fw->iterateFilterRules() as $item) {
+    $rule = $item->getRawRule();
+    if (empty($rule['disabled'])) {
+        $rule['enabled'] = '1';
+        $rule['direction'] = $rule['direction'] ?? 'in';
+        foreach ($mapping as $src => $dst) {
+            $rule[$dst] = $rule[$src] ?? '';
+            if (isset($rule[$src])) {
+                unset($rule[$src]);
+            }
+        }
+        if (empty($rule['action'])) {
+            $rule['action'] = ucfirst(strtolower(trim($rule['action'] ?? 'pass')));
+        } else {
+            $rule['action'] = 'Pass';
+        }
+        switch ($rule['ipprotocol'] ?? '') {
+            case 'inet':
+                $rule['ipprotocol'] = gettext('IPv4');
+                break;
+            case 'inet6':
+                $rule['ipprotocol'] = gettext('IPv6');
+                break;
+            case 'inet46':
+                $rule['ipprotocol'] = gettext('IPv4+IPv6');
+                break;
+            default:
+                $rule['ipprotocol'] = gettext('IPv4'); // Default
+        }
+        $rules[] = $rule;
     }
 }
-
-// Convert friendly interface names to real names.
-foreach ($rules as &$rule) {
-    if (!empty($rule['interface'])) {
-        $rule['interface'] = get_real_interface($rule['interface']);
-    }
-}
-unset($rule); // break reference
-
-// XXX: I want it pretty print cause this is a test script
 echo json_encode($rules, JSON_PRETTY_PRINT);
-exit(0);

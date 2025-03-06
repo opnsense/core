@@ -37,21 +37,21 @@ use OPNsense\Core\Config;
 class Plugin
 {
     private $gateways = null;
-    private $anchors = array();
-    private $filterRules = array();
-    private $natRules = array();
-    private $interfaceMapping = array();
-    private $gatewayMapping = array();
-    private $systemDefaults = array();
-    private $tables = array();
-    private $ifconfigDetails = array();
+    private $anchors = [];
+    private $filterRules = [];
+    private $natRules = [];
+    private $interfaceMapping = [];
+    private $gatewayMapping = [];
+    private $systemDefaults = [];
+    private $tables = [];
+    private $ifconfigDetails = [];
 
     /**
      * init firewall plugin component
      */
     public function __construct()
     {
-        $this->systemDefaults = array("filter" => array(), "forward" => array(), "nat" => array());
+        $this->systemDefaults = array("filter" => [], "forward" => [], "nat" => []);
         if (!empty(Config::getInstance()->object()->system->disablereplyto)) {
             $this->systemDefaults['filter']['disablereplyto'] = true;
         }
@@ -82,7 +82,7 @@ class Plugin
             if (!empty($intf['ipaddrv6']) && ($intf['ipaddrv6'] == '6rd' || $intf['ipaddrv6'] == '6to4')) {
                 $realif = "{$key}_stf";
                 // create new interface
-                $this->interfaceMapping[$realif] = array();
+                $this->interfaceMapping[$realif] = [];
                 $this->interfaceMapping[$realif]['ifconfig']['ipv6'] = $intf['ifconfig']['ipv6'];
                 $this->interfaceMapping[$realif]['gatewayv6'] = $intf['gatewayv6'];
                 $this->interfaceMapping[$realif]['is_IPv6_override'] = true;
@@ -134,7 +134,7 @@ class Plugin
     {
         if (is_array($groups)) {
             foreach ($groups as $key => $gwgr) {
-                $routeto = array();
+                $routeto = [];
                 $proto = 'inet';
                 foreach ($gwgr as $gw) {
                     if (Util::isIpAddress($gw['gwip']) && !empty($gw['int'])) {
@@ -277,7 +277,7 @@ class Plugin
         $conf['#priority'] = $prio;
         $rule = new FilterRule($this->interfaceMapping, $this->gatewayMapping, $conf);
         if (empty($this->filterRules[$prio])) {
-            $this->filterRules[$prio] = array();
+            $this->filterRules[$prio] = [];
         }
         $this->filterRules[$prio][] = $rule;
     }
@@ -294,7 +294,7 @@ class Plugin
         }
         $rule = new ForwardRule($this->interfaceMapping, $conf);
         if (empty($this->natRules[$prio])) {
-            $this->natRules[$prio] = array();
+            $this->natRules[$prio] = [];
         }
         $this->natRules[$prio][] = $rule;
     }
@@ -311,7 +311,7 @@ class Plugin
         }
         $rule = new DNatRule($this->interfaceMapping, $conf);
         if (empty($this->natRules[$prio])) {
-            $this->natRules[$prio] = array();
+            $this->natRules[$prio] = [];
         }
         $this->natRules[$prio][] = $rule;
     }
@@ -325,7 +325,7 @@ class Plugin
     {
         $rule = new SNatRule($this->interfaceMapping, $conf);
         if (empty($this->natRules[$prio])) {
-            $this->natRules[$prio] = array();
+            $this->natRules[$prio] = [];
         }
         $this->natRules[$prio][] = $rule;
     }
@@ -339,7 +339,7 @@ class Plugin
     {
         $rule = new NptRule($this->interfaceMapping, $conf);
         if (empty($this->natRules[$prio])) {
-            $this->natRules[$prio] = array();
+            $this->natRules[$prio] = [];
         }
         $this->natRules[$prio][] = $rule;
     }

@@ -31,8 +31,6 @@ use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
 use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\UIModelGrid;
-use OPNsense\Diagnostics\Api\InterfaceController;
-use OPNsense\Firewall\FilterLegacyMapper;
 use OPNsense\Firewall\Util;
 use OPNsense\Firewall\Group;
 
@@ -80,43 +78,43 @@ class FilterController extends FilterBaseController
      *               - "rules": An array of normalized firewall rules (on success).
      *               - "message": An error message if decoding the rules fails.
      */
-    public function getInternalRulesAction($ruleType = null)
+    public function getInternalRulesAction()
     {
         // 1) Determine which type of internal rules to fetch
-        if ($ruleType === null) {
-            $ruleType = $this->request->get('type');
-        }
-        if (empty($ruleType)) {
-            $ruleType = 'internal';
-        }
+        // if ($ruleType === null) {
+        //     $ruleType = $this->request->get('type');
+        // }
+        // if (empty($ruleType)) {
+        //     $ruleType = 'internal';
+        // }
 
         // 2) Fetch raw internal rules
         $backend = new Backend();
-        $rawOutput = trim($backend->configdRun("filter get_internal_rules " . escapeshellarg($ruleType)));
+        $rawOutput = trim($backend->configdRun("filter get_internal_rules"));
         $data = json_decode($rawOutput, true);
 
-        if ($data === null) {
-            return [
-                "status"  => "error",
-                "message" => "Failed to decode firewall rules output."
-            ];
-        }
+        // if ($data === null) {
+        //     return [
+        //         "status"  => "error",
+        //         "message" => "Failed to decode firewall rules output."
+        //     ];
+        // }
 
-        // 3) Build a dynamic template from our model
-        $template = $this->buildRuleTemplate();
+        // // 3) Build a dynamic template from our model
+        // $template = $this->buildRuleTemplate();
 
-        // 4) Normalize rules using the FilterLegacyMapper
-        $mapper = new FilterLegacyMapper();
-        $normalizedRules = $mapper->normalizeRules($data, $template, $ruleType);
+        // // 4) Normalize rules using the FilterLegacyMapper
+        // $mapper = new FilterLegacyMapper();
+        // $normalizedRules = $mapper->normalizeRules($data, $template, $ruleType);
 
-        // 5) Filter out disabled rules
-        $filteredRules = array_filter($normalizedRules, function ($rule) {
-            return $rule['enabled'] !== '0';
-        });
+        // // 5) Filter out disabled rules
+        // $filteredRules = array_filter($normalizedRules, function ($rule) {
+        //     return $rule['enabled'] !== '0';
+        // });
 
         return [
             "status" => "ok",
-            "rules"  => $filteredRules
+            "rules"  => $data
         ];
     }
 
@@ -166,199 +164,6 @@ class FilterController extends FilterBaseController
     }
 
     /**
-     * This function retrieves and merges firewall rules from two sources:
-     *   1. The persistent model rules (defined in the filter.xml model for "rules.rule").
-     *   2. Legacy internal rules (obtained via the getInternalRulesAction() method for various types).
-     *
-     * The merged result is then paginated and returned to the client.
-     *
-     * Key challenges and workarounds:
-     *
-     * - **Pagination Conflict:**
-     *   The built-in searchBase() method automatically applies pagination based on request
-     *   parameters, which causes issues when merging with additional rule sets (internal rules).
-     *   To work around this, we wrap the original request in a dummy object that forces the
-     *   rowCount to -1 and current page to 1, thereby disabling pagination while fetching
-     *   the full set of persistent model rules.
-     *
-     * - **Field Auto-Detection:**
-     *   UIModelGrid expects an array of fields (i.e. columns) to work with. If no explicit field list
-     *   is provided, we attempt to auto-detect the fields by iterating over the first node in the
-     *   ArrayField. This ensures that the grid has the necessary metadata to render the rules.
-     *
-     * - **Merging Data Sources:**
-     *   After retrieving the persistent model rules and internal rules (which can be filtered by category),
-     *   the arrays are merged. Optionally, if the request parameter 'include_internal' is set, the internal
-     *   rules are filtered further by the same category filter before merging.
-     *
-     * - **Reapplying Pagination:**
-     *   Once the data is merged, we call searchRecordsetBase() to reapply the original pagination, sorting,
-     *   and searching parameters to the combined rule set.
-     *
-     * @param array|null  $category          The category filter.
-     * @param string|null $selectedInterface The selected interface filter.
-     * @param string|null $includeInternalStr Comma-separated string of internal rule types to include.
-     *
-     * @return array The final paginated, merged result.
-     */
-    private function fetchMergedRules($category, $selectedInterface, $includeInternalStr)
-    {
-        // 1. Define the model filter function
-        $modelFilter = function ($record) use ($category, $selectedInterface) {
-            if (!empty($selectedInterface)) {
-                $config = Config::getInstance()->object();
-                $resolvedKey = null;
-
-                // Iterate over configured interfaces.
-                foreach ($config->interfaces->children() as $key => $node) {
-                    // Compare the physical interface name stored in <if>
-                    if ((string)$node->if === $selectedInterface) {
-                        $resolvedKey = (string)$key;
-                        break;
-                    }
-                }
-
-                // If no matching key is found or it doesn't match the rule's interface, filter out this record.
-                if ($resolvedKey === null) {
-                    return false;
-                }
-
-                // Split the rule’s interface field into an array to support multiple interfaces.
-                $ruleInterfaces = array_map('trim', explode(',', (string)$record->interface));
-
-                // Check if the resolved key is in the array of interfaces.
-                if (!in_array($resolvedKey, $ruleInterfaces)) {
-                    return false;
-                }
-            }
-
-            // Apply category filter if specified.
-            if (!empty($category)) {
-                $cats = array_map('trim', explode(',', (string)$record->categories));
-                if (!(bool) array_intersect($cats, $category)) {
-                    return false;
-                }
-            }
-
-            return true;
-        };
-
-        // 2. Disable pagination during fetch
-        $dummyRequest = new class($this->request) {
-            private $origReq;
-            public function __construct($req) {
-                $this->origReq = $req;
-            }
-            public function get($key, $default = null) {
-                return $key === 'rowCount' ? -1 : ($key === 'current' ? 1 : $this->origReq->get($key, $default) ?? '');
-            }
-            public function __call($name, $args) {
-                return call_user_func_array([$this->origReq, $name], $args);
-            }
-        };
-
-        // 3. Fetch model rules
-        $element = $this->getModel()->getNodeByReference("rules.rule");
-        $fields = [];
-        if ($element && (is_a($element, ArrayField::class) || is_subclass_of($element, ArrayField::class))) {
-            foreach ($element->iterateItems() as $node) {
-                foreach ($node->iterateItems() as $key => $val) {
-                    $fields[] = $key;
-                }
-                break; // Only process the first rule for field extraction
-            }
-        }
-        $grid = new UIModelGrid($element);
-        $modelData = $grid->fetchBindRequest($dummyRequest, $fields, "sequence", $modelFilter);
-        $modelRules = $modelData['rows'] ?? [];
-
-        // 4. Fetch internal rules if requested
-        $internalRules = [];
-        if (!empty($includeInternalStr)) {
-            $includeInternal = array_map('trim', explode(',', $includeInternalStr));
-
-            foreach ($includeInternal as $ruleType) {
-                $internalData = $this->getInternalRulesAction($ruleType);
-                if ($internalData['status'] === "ok") {
-                    $internalRules = array_merge($internalRules, $internalData['rules'] ?? []);
-                }
-            }
-
-            // Apply category filter to internal rules if applicable
-            if (!empty($category)) {
-                $internalRules = array_filter($internalRules, function ($rule) use ($category) {
-                    $cats = array_map('trim', explode(',', (string)$rule['categories']));
-                    return (bool) array_intersect($cats, $category);
-                });
-            }
-
-            // Apply interface filter to internal rules if provided.
-            if (!empty($selectedInterface)) {
-                $internalRules = array_filter($internalRules, function ($rule) use ($selectedInterface) {
-                    return ((string)$rule['interface'] === $selectedInterface);
-                });
-            }
-        }
-
-        // 5. Merge model and internal rules, then apply pagination
-        $merged = array_merge($modelRules, $internalRules);
-        $result = $this->searchRecordsetBase($merged, $fields, "sequence");
-
-        // 6. Post process only internal rules (replace raw interface names with descriptions)
-        // This must be done after filtering, or the filter will not match as it compares the original interface name
-        $ifMap = (new InterfaceController())->getInterfaceNamesAction();
-
-        // Only model rules will have a valid UUID
-        function isValidUUID($uuid) {
-            return (bool)preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', trim($uuid));
-        }
-
-        if (!empty($result['rows'])) {
-            foreach ($result['rows'] as &$row) {
-                if (!isValidUUID($row['uuid'])) {
-                    $rawIf = $row['interface'];
-                    if (isset($ifMap[$rawIf])) {
-                        $row['interface'] = $ifMap[$rawIf];
-                    }
-                }
-            }
-            unset($row);
-        }
-
-        // 7. Determine if a rule has aliases for the alias formatter
-        $aliasFields = ['source_net', 'source_port', 'destination_net', 'destination_port'];
-
-        // For each rule, split the comma-separated field values and generate an alias flag array
-        foreach ($result['rows'] as &$row) {
-            foreach ($aliasFields as $field) {
-                if (!empty($row[$field])) {
-                    $values = array_map('trim', explode(',', $row[$field]));
-                    $row["is_alias_{$field}"] = array_map(function ($value) {
-                        return Util::isAlias($value);
-                    }, $values);
-                }
-            }
-        }
-        unset($row);
-
-        // 8. Add the evaluation, states, packets, and bytes fields to each rule
-        $ruleStats = $this->getRuleStatistics();
-
-        foreach ($result['rows'] as &$rule) {
-            $ruleKey = !empty($rule['uuid']) ? $rule['uuid'] : ($rule['label'] ?? '');
-            $stats = $ruleStats[$ruleKey] ?? [];
-
-            $rule['evaluations'] = $stats['evaluations'] ?? '';
-            $rule['states']      = $stats['states'] ?? '';
-            $rule['packets']     = $stats['packets'] ?? '';
-            $rule['bytes']       = $stats['bytes'] ?? '';
-        }
-        unset($rule);
-
-        return $result;
-    }
-
-    /**
      * Retrieves and merges firewall rules from model and internal sources, then paginates them.
      *
      * @return array The final paginated, merged result.
@@ -366,14 +171,27 @@ class FilterController extends FilterBaseController
     public function searchRuleAction()
     {
         $category = $this->request->get('category');
-        if (!empty($category) && !is_array($category)) {
-            $category = array_map('trim', explode(',', $category));
-        }
+        $interface = $this->request->get('interface');
 
-        $selectedInterface = $this->request->get('interface');
-        $includeInternalStr = $this->request->get('include_internal', 'string');
+        $filter_funct = function ($record) use ($category, $interface) {
+            if (is_array($record)) {
+                $this_cat = $record['categories'] ?? [];
+                $this_if = $record['interface'] ?? '';
+            } else {
+                $this_cat = $record->categories;
+                $this_if = $record->interface;
+            }
 
-        return $this->fetchMergedRules($category, $selectedInterface, $includeInternalStr);
+            $is_cat = empty($category) || array_intersect(explode(',', $this_cat), $category);
+            /* XXX: needs work as an explicit interface also needs to include groups */
+            $is_if =  empty($interface) || array_intersect(explode(',', $this_if), [$interface]);
+            return $is_cat && $is_if;
+        };
+        $filterset = $this->searchBase("rules.rule", null, "sequence", $filter_funct)['rows'];
+        /* XXX: make optional, internal and legacy rules */
+        $otherrules = json_decode((new Backend())->configdRun("filter get_internal_rules") ?? [], true);
+
+        return $this->searchRecordsetBase(array_merge($otherrules, $filterset), null, "sequence", $filter_funct);
     }
 
     public function setRuleAction($uuid)
@@ -491,26 +309,15 @@ class FilterController extends FilterBaseController
         return ['status' => 'ok', 'sequence' => $nextSequence];
     }
 
-    /**
-     * Retrieve the list of available network interfaces and format them for use in a selectpicker.
-     *
-     * @return array An array of interfaces, where each entry contains:
-     *               - 'value' => raw interface name (e.g., "em0", "igb1")
-     *               - 'label' => interface description (e.g., "LAN", "WAN")
-     */
     public function getInterfaceListAction()
     {
-        $interfaces = (new InterfaceController())->getInterfaceNamesAction();
-
-        $selectpicker = [
+        $result = [
             ['value' => '', 'label' => 'Any']
         ];
-
-        foreach ($interfaces as $if => $descr) {
-            $selectpicker[] = ['value' => $if, 'label' => $descr];
+        foreach (Config::getInstance()->object()->interfaces->children() as $key => $intf) {
+            $result[] = ['value' => $key, 'label' => empty($intf->descr) ? $key : (string)$intf->descr];
         }
-
-        return $selectpicker;
+        return $result;
     }
 
 }

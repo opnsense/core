@@ -231,6 +231,8 @@
                             ? 'style="opacity: 0.4; pointer-events: none;"'
                             : '';
 
+/* XXX: fix below, action and direction are translated */
+
                         // Action
                         if (row.action.toLowerCase() === "pass") {
                             result += '<i class="fa fa-play fa-fw text-success" ' + iconStyle +
@@ -471,18 +473,18 @@
 
                 const $categoryFilter = $("#category_filter");
                 const currentSelection = $categoryFilter.val();
-                
+
                 $categoryFilter.empty().append(
                     data.rows.map(row => {
                         const optVal = $('<div/>').text(row.name).html();
                         const bgColor = row.color || '31708f';
-                        
+
                         return $("<option/>", {
                             value: row.uuid,
                             html: row.name,
                             id: row.used > 0 ? row.uuid : undefined,
-                            "data-content": row.used > 0 
-                                ? `<span>${optVal}</span><span style='background:#${bgColor};' class='badge pull-right'>${row.used}</span>` 
+                            "data-content": row.used > 0
+                                ? `<span>${optVal}</span><span style='background:#${bgColor};' class='badge pull-right'>${row.used}</span>`
                                 : undefined
                         });
                     })

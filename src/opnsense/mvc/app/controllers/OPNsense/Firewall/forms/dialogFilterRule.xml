@@ -1,4 +1,9 @@
+
 <form>
+    <field>
+        <type>header</type>
+        <label>Organisation</label>
+    </field>
     <field>
         <id>rule.enabled</id>
         <label>Enabled</label>
