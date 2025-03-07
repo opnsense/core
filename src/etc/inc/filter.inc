@@ -160,6 +160,9 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     /* Use filter lock to not allow concurrent filter reloads during this run. */
     $fobj = new \OPNsense\Core\FileObject('/tmp/rules.debug', 'a+', 0600, LOCK_EX);
 
+    /* kickstart dnctl regardless of shaping configuration */
+    mwexec('/etc/rc.d/dnctl start', true);
+
     ifgroup_setup();
 
     service_log('.', $verbose);
@@ -372,8 +375,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     mwexecf('ifconfig > %s', '/tmp/ifconfig.debug');
 
     $fobj->truncate(0)->write($rules);
-
-    configd_run('shaper reload');
 
     @file_put_contents('/tmp/rules.limits', $limitrules);
     mwexec('/sbin/pfctl -Of /tmp/rules.limits');
