@@ -126,6 +126,12 @@
         <help>In the default mode, we insert the unqualified names of DHCP clients into the DNS, in which case they have to be unique. Using this option the unqualified name is no longer put in the DNS, only the qualified name.</help>
     </field>
     <field>
+        <id>dnsmasq.dhcp.domain</id>
+        <label>DHCP default domain</label>
+        <type>text</type>
+        <help>To ensure that all names have a domain part, there must be a default domain specified when dhcp-fqdn is set. Leave empty to use the system domain.</help>
+    </field>
+    <field>
         <id>dnsmasq.dhcp.lease_max</id>
         <label>DHCP max leases</label>
         <type>text</type>
