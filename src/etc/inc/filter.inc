@@ -373,6 +373,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     $fobj->truncate(0)->write($rules);
 
+    configd_run('shaper reload');
+
     @file_put_contents('/tmp/rules.limits', $limitrules);
     mwexec('/sbin/pfctl -Of /tmp/rules.limits');
     exec('/sbin/pfctl -f /tmp/rules.debug 2>&1', $rules_error, $rules_loading);
