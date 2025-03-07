@@ -46,6 +46,7 @@
         <id>range.lease_time</id>
         <label>Lease time</label>
         <type>text</type>
+        <hint>86400</hint>
         <help>Defines how long the addresses (leases) given out by the server are valid (in seconds)</help>
         <grid_view>
             <visible>false</visible>
