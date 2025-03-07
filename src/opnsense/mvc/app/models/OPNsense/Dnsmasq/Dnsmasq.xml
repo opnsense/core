@@ -171,6 +171,13 @@
                 <ConfigdPopulateAct>dnsmasq list dhcp_options</ConfigdPopulateAct>
                 <Required>Y</Required>
             </option>
+            <interface type="InterfaceField">
+                <BlankDesc>Any</BlankDesc>
+                <Filters>
+                    <if>/^(?!lo0$).*/</if>
+                </Filters>
+                <AllowDynamic>Y</AllowDynamic>
+            </interface>
             <tag type="ModelRelationField">
                 <Model>
                     <tag>
