@@ -37,7 +37,6 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
     def __init__(self):
         super().__init__('/usr/local/etc/unbound/unbound-blocklists.conf')
         self.priority = 100
-        self._whitelist_pattern = self._get_excludes()
 
     def get_config(self):
         cfg = {}
@@ -53,25 +52,22 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
         for blocklist, bl_shortcode in self._blocklists_in_config():
             per_file_stats = {'uri': blocklist, 'skip': 0, 'blocklist': 0, 'wildcard': 0}
             for domain in self._domains_in_blocklist(blocklist):
-                if self._whitelist_pattern.match(domain):
-                    per_file_stats['skip'] += 1
-                else:
-                    if self.domain_pattern.match(domain):
-                        per_file_stats['blocklist'] += 1
-                        if domain in result:
-                            # duplicate domain, signify in dataset for debugging purposes
-                            if 'duplicates' in result[domain]:
-                                result[domain]['duplicates'] += ',%s' % bl_shortcode
-                            else:
-                                result[domain]['duplicates'] = '%s' % bl_shortcode
+                if self.domain_pattern.match(domain):
+                    per_file_stats['blocklist'] += 1
+                    if domain in result:
+                        # duplicate domain, signify in dataset for debugging purposes
+                        if 'duplicates' in result[domain]:
+                            result[domain]['duplicates'] += ',%s' % bl_shortcode
                         else:
-                            if domain.startswith('*.'):
-                                result[domain[2:]] = {'bl': bl_shortcode, 'wildcard': True}
-                                per_file_stats['wildcard'] += 1
-                            else:
-                                result[domain] = {'bl': bl_shortcode, 'wildcard': False}
+                            result[domain]['duplicates'] = '%s' % bl_shortcode
                     else:
-                        per_file_stats['skip'] += 1
+                        if domain.startswith('*.'):
+                            result[domain[2:]] = {'bl': bl_shortcode, 'wildcard': True}
+                            per_file_stats['wildcard'] += 1
+                        else:
+                            result[domain] = {'bl': bl_shortcode, 'wildcard': False}
+                else:
+                    per_file_stats['skip'] += 1
             syslog.syslog(
                 syslog.LOG_NOTICE,
                 'blocklist: %(uri)s (exclude: %(skip)d block: %(blocklist)d wildcard: %(wildcard)d)' % per_file_stats
@@ -81,9 +77,8 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
             for key, value in self.cnf['include'].items():
                 if key.startswith('custom'):
                     entry = value.rstrip().lower()
-                    if not self._whitelist_pattern.match(entry):
-                        if self.domain_pattern.match(entry):
-                            result[entry] = {'bl': 'Manual', 'wildcard': False}
+                    if self.domain_pattern.match(entry):
+                        result[entry] = {'bl': 'Manual', 'wildcard': False}
                 elif key.startswith('wildcard'):
                     entry = value.rstrip().lower()
                     if self.domain_pattern.match(entry):
@@ -140,27 +135,7 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
         else:
             syslog.syslog(syslog.LOG_ERR, 'unable to download blocklist from %s and no cache available' % uri)
 
-
-    def _get_excludes(self):
-        whitelist_pattern = re.compile('$^') # match nothing
+    def get_passlist_patterns(self):
         if self.cnf.has_section('exclude'):
-            exclude_list = set()
-            for exclude_item in self.cnf['exclude']:
-                pattern = self.cnf['exclude'][exclude_item]
-                try:
-                    re.compile(pattern, re.IGNORECASE)
-                    exclude_list.add(pattern)
-                except re.error:
-                    syslog.syslog(syslog.LOG_ERR,
-                        'blocklist download : skip invalid whitelist exclude pattern "%s" (%s)' % (
-                            exclude_item, pattern
-                        )
-                    )
-            if not exclude_list:
-                exclude_list.add('$^')
-
-            wp = '|'.join(exclude_list)
-            whitelist_pattern = re.compile(wp, re.IGNORECASE)
-            syslog.syslog(syslog.LOG_NOTICE, 'blocklist download : exclude domains matching %s' % wp)
-
-        return whitelist_pattern
+            return list(self.cnf['exclude'].values())
+        return []

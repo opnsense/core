@@ -67,6 +67,12 @@ class BaseBlocklistHandler:
         """
         pass
 
+    def get_passlist_patterns(self):
+        """
+        Implement in derived class to return a list of regex expressions to exclude from blocklist matching
+        """
+        return []
+
     def _blocklist_reader(self, uri):
         """
         Used by a derived class to define a caching and/or download routine.
@@ -195,12 +201,26 @@ class BlocklistParser:
 
     def update_blocklist(self):
         blocklists = {}
+        global_passlist = set()
         merged = {}
         for handler in self.handlers:
+            for pattern in handler.get_passlist_patterns():
+                try:
+                    re.compile(pattern, re.IGNORECASE)
+                    global_passlist.add(pattern)
+                except re.error:
+                    syslog.syslog(syslog.LOG_ERR,
+                        'blocklist download : skip invalid whitelist exclude pattern "%s" (%s)' % (
+                            pattern, handler.__class__.__name__
+                        )
+                    )
             blocklists[handler.priority] = handler.get_blocklist()
 
         merged['data'] = self._merge_results(blocklists)
         merged['config'] = self._get_config()
+        wp = '|'.join(global_passlist)
+        merged['config']['global_passlist_regex'] = wp
+        syslog.syslog(syslog.LOG_NOTICE, 'blocklist processed : exclude domains matching %s' % wp)
 
         # check if there are wildcards in the dataset
         has_wildcards = False
