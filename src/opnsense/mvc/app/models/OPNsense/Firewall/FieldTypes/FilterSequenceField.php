@@ -39,11 +39,8 @@ class FilterSequenceField extends AutoNumberField
 {
     public function applyDefault()
     {
-        $step = 1;
-
         // Start from the minimum value if no entries exist
-        $maxNumber = $this->minimum_value;
-
+        $maxNumber = (int)$this->minimum_value;
         if (isset($this->internalParentNode->internalParentNode)) {
             foreach ($this->internalParentNode->internalParentNode->iterateItems() as $node) {
                 $currentNumber = (int)((string)$node->{$this->internalXMLTagName});
@@ -53,13 +50,6 @@ class FilterSequenceField extends AutoNumberField
                 }
             }
         }
-
-        /**
-         * Set the new value to be max found + step
-         * If its higher than the allowed max value
-         * the default validation of the AutoNumberField will trigger
-         */
-        $this->internalValue = (string)($maxNumber + $step);
-
+        $this->internalValue = (string)($maxNumber + 1);
     }
 }

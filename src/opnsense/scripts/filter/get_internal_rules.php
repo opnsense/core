@@ -11,7 +11,18 @@ require_once('filter.inc');
 
 $fw = filter_core_get_initialized_plugin_system();
 filter_core_bootstrap($fw);
-plugins_firewall($fw);
+/* fetch all firewall plugins, except pf_firewall as this registers our mvc rules */
+foreach (plugins_scan() as $name => $path) {
+    try {
+        include_once $path;
+    } catch (\Error $e) {
+        error_log($e);
+    }
+    $func = sprintf('%s_firewall', $name);
+    if ($func != 'pf_firewall' && function_exists($func)) {
+        $func($fw);
+    }
+}
 filter_core_rules_user($fw);
 
 $mapping = [
@@ -27,7 +38,8 @@ $mapping = [
 ];
 
 $rules = [];
-foreach ($fw->iterateFilterRules() as $item) {
+$sequence = 1;
+foreach ($fw->iterateFilterRules() as $prio => $item) {
     $rule = $item->getRawRule();
     if (empty($rule['disabled'])) {
         $rule['enabled'] = '1';
@@ -56,6 +68,12 @@ foreach ($fw->iterateFilterRules() as $item) {
             default:
                 $rule['ipprotocol'] = gettext('IPv4'); // Default
         }
+        /**
+         * Evaluation order consists of a priority group and a sequence within the set,
+         * prefixed with 1 as these are located after mvc rules.
+         **/
+        $rule['sort_order'] = sprintf("%06d.1%06d", $prio, $sequence++);
+        $rule['legacy'] = true;
         $rules[] = $rule;
     }
 }

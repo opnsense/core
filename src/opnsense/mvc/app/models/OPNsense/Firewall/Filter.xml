@@ -35,6 +35,7 @@
                     <Required>Y</Required>
                     <Default>1</Default>
                 </sequence>
+                <sort_order type="TextField" volatile="true"/>
                 <action type="OptionField">
                     <Required>Y</Required>
                     <Default>pass</Default>

@@ -39,86 +39,6 @@ class FilterController extends FilterBaseController
     protected static $categorysource = "rules.rule";
 
     /**
-     * Builds a rule template from the firewall model.
-     *
-     * @return array The template containing model keys and default values.
-     */
-    private function buildRuleTemplate()
-    {
-        $template = [];
-        $model = $this->getModel();
-        $ruleElement = $model->getNodeByReference("rules.rule");
-
-        if (
-            $ruleElement &&
-            (is_a($ruleElement, ArrayField::class) || is_subclass_of($ruleElement, ArrayField::class))
-        ) {
-            foreach ($ruleElement->iterateItems() as $ruleItem) {
-                foreach ($ruleItem->iterateItems() as $key => $field) {
-                    $template[$key] = method_exists($field, 'getDefault') ? $field->getDefault() : '';
-                }
-                break; // Use only the first array item
-            }
-        }
-
-        return $template;
-    }
-
-    /**
-     * Retrieves internal firewall rules based on the specified rule type.
-     *
-     * Fetches rules from legacy filter with "filter get_internal_rules %s"
-     * and passes them to the FilterLegacyMapper for normalization.
-     *
-     * @param string|null $ruleType Optional rule type to fetch (e.g., 'internal', 'internal2', 'floating').
-     *                              If not provided, it is determined from the request or defaults to 'internal'.
-     *
-     * @return array An associative array containing:
-     *               - "status": A string indicating success ("ok") or failure ("error").
-     *               - "rules": An array of normalized firewall rules (on success).
-     *               - "message": An error message if decoding the rules fails.
-     */
-    public function getInternalRulesAction()
-    {
-        // 1) Determine which type of internal rules to fetch
-        // if ($ruleType === null) {
-        //     $ruleType = $this->request->get('type');
-        // }
-        // if (empty($ruleType)) {
-        //     $ruleType = 'internal';
-        // }
-
-        // 2) Fetch raw internal rules
-        $backend = new Backend();
-        $rawOutput = trim($backend->configdRun("filter get_internal_rules"));
-        $data = json_decode($rawOutput, true);
-
-        // if ($data === null) {
-        //     return [
-        //         "status"  => "error",
-        //         "message" => "Failed to decode firewall rules output."
-        //     ];
-        // }
-
-        // // 3) Build a dynamic template from our model
-        // $template = $this->buildRuleTemplate();
-
-        // // 4) Normalize rules using the FilterLegacyMapper
-        // $mapper = new FilterLegacyMapper();
-        // $normalizedRules = $mapper->normalizeRules($data, $template, $ruleType);
-
-        // // 5) Filter out disabled rules
-        // $filteredRules = array_filter($normalizedRules, function ($rule) {
-        //     return $rule['enabled'] !== '0';
-        // });
-
-        return [
-            "status" => "ok",
-            "rules"  => $data
-        ];
-    }
-
-    /**
      * return rule statistics
      * @return array statistics
      */
@@ -175,6 +95,10 @@ class FilterController extends FilterBaseController
 
         $filter_funct = function ($record) use ($category, $interface) {
             if (is_array($record)) {
+                if (empty($record['legacy'])) {
+                    /* mvc already filtered */
+                    return true;
+                }
                 $this_cat = $record['categories'] ?? [];
                 $this_if = $record['interface'] ?? '';
             } else {
@@ -187,11 +111,15 @@ class FilterController extends FilterBaseController
             $is_if =  empty($interface) || array_intersect(explode(',', $this_if), [$interface]);
             return $is_cat && $is_if;
         };
-        $filterset = $this->searchBase("rules.rule", null, "sequence", $filter_funct)['rows'];
-        /* XXX: make optional, internal and legacy rules */
-        $otherrules = json_decode((new Backend())->configdRun("filter get_internal_rules") ?? [], true);
+        $filterset = $this->searchBase("rules.rule", null, "sort_order", $filter_funct)['rows'];
+        /* only fetch internal and legacy rules when 'include_internal' is set */
+        if ($this->request->get('include_internal')) {
+            $otherrules = json_decode((new Backend())->configdRun("filter get_internal_rules") ?? [], true);
+        } else {
+            $otherrules = [];
+        }
 
-        return $this->searchRecordsetBase(array_merge($otherrules, $filterset), null, "sequence", $filter_funct);
+        return $this->searchRecordsetBase(array_merge($otherrules, $filterset), null, "sort_order", $filter_funct);
     }
 
     public function setRuleAction($uuid)

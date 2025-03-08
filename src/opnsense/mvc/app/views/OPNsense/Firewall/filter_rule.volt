@@ -90,11 +90,9 @@
                     if (selectedInterface && selectedInterface.length > 0) {
                         request['interface'] = selectedInterface;
                     }
-                    // Add internal rule selectpicker
-                    let internalTypes = $('#include_internal_select').val();
-                    if (internalTypes && internalTypes.length > 0) {
+                    if ($('#all_rules_checkbox').is(':checked')) {
                         // Send as a comma separated string
-                        request['include_internal'] = internalTypes.join(',');
+                        request['include_internal'] = true;
                     }
                     return request;
                 },
@@ -588,7 +586,7 @@
         });
 
         $("#internal_rule_selector").insertBefore("#type_filter_container");
-        $('#include_internal_select').change(function(){
+        $('#all_rules_checkbox').change(function(){
             $('#{{formGridFilterRule['table_id']}}').bootgrid('reload');
         });
 
@@ -697,14 +695,16 @@
             </select>
         </div>
         <div id="internal_rule_selector" class="btn-group" style="width: 200px; margin-right: 20px;">
-            <div class="dropdown bootstrap-select show-tick bs3" style="width: 200px;">
+                <label for="all_rules_checkbox"><b>{{ lang._('Show all rules') }}</b></label>
+                <input id="all_rules_checkbox" type="checkbox">
+                <!-- <div class="dropdown bootstrap-select show-tick bs3" style="width: 200px;">
                 <select id="include_internal_select" data-title="{{ lang._('Show internal rules') }}" class="selectpicker" data-live-search="false" multiple data-width="200px">
                     <option value="internal">{{ lang._('Internal (Start of Ruleset)') }}</option>
                     <option value="internal2">{{ lang._('Internal (End of Ruleset)') }}</option>
                     <option value="floating">{{ lang._('Floating') }}</option>
                     <option value="group">{{ lang._('Group') }}</option>
                 </select>
-            </div>
+            </div> -->
         </div>
         <div id="interface_select_container" class="btn-group">
             <select id="interface_select" class="selectpicker" data-live-search="true" data-size="10" data-width="200px" title="{{ lang._('Select an interface') }}">

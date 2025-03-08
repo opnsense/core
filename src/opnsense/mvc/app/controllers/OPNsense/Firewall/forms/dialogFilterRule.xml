@@ -19,6 +19,20 @@
         </grid_view>
     </field>
     <field>
+        <id>rule.sort_order</id>
+        <label>Sort order</label>
+        <type>text</type>
+        <help>The order in which rules are being processed.</help>
+        <grid_view>
+            <width>5em</width>
+            <sequence>20</sequence>
+            <visible>false</visible>
+            <!-- The sequence order of firewall rules is absolute, no other field shall be sorted -->
+            <order>asc</order>
+            <sortable>false</sortable>
+        </grid_view>
+    </field>
+    <field>
         <id>rule.sequence</id>
         <label>Sequence</label>
         <type>text</type>
@@ -27,8 +41,6 @@
             <width>5em</width>
             <sequence>20</sequence>
             <visible>false</visible>
-            <!-- The sequence order of firewall rules is absolute, no other field shall be sorted -->
-            <order>asc</order>
             <sortable>false</sortable>
         </grid_view>
     </field>
