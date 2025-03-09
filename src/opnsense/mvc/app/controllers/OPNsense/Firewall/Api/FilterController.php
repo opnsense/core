@@ -44,7 +44,7 @@ class FilterController extends FilterBaseController
             $result['category'][$key] = (string)$category->name;
         }
         foreach ((Config::getInstance()->object())->interfaces->children() as $key => $ifdetail) {
-            $descr = htmlspecialchars(!empty($ifdetail->descr) ? $ifdetail->descr : strtoupper($ifname));
+            $descr = !empty($ifdetail->descr) ? $ifdetail->descr : strtoupper($key);
             $result['interface'][$key] = $descr;
         }
         $result['action'] = [
@@ -145,7 +145,7 @@ class FilterController extends FilterBaseController
 
         /* only fetch internal and legacy rules when 'show_all' is set */
         if ($show_all) {
-            $otherrules = json_decode((new Backend())->configdRun("filter list non_mvc_rules") ?? [], true);
+            $otherrules = json_decode((new Backend())->configdRun("filter list non_mvc_rules") ?? '', true) ?? [];
         } else {
             $otherrules = [];
         }
