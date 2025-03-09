@@ -29,56 +29,35 @@ namespace OPNsense\Firewall\Api;
 
 use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
-use OPNsense\Base\FieldTypes\ArrayField;
-use OPNsense\Base\UIModelGrid;
-use OPNsense\Firewall\Util;
+use OPNsense\Firewall\Category;
 use OPNsense\Firewall\Group;
+
 
 class FilterController extends FilterBaseController
 {
     protected static $categorysource = "rules.rule";
 
-    /**
-     * return rule statistics
-     * @return array statistics
-     */
-    private function getRuleStatistics()
+    private function getFieldMap()
     {
-        $backend = new Backend();
-        $output = $backend->configdRun("filter rule stats");
-        $stats = json_decode($output, true);
-        return is_array($stats) ? $stats : [];
-    }
-
-    /**
-     * Retrieves interface groups and their member interfaces
-     *
-     * @return array An associative array where keys are group names and values are arrays of interface members.
-     */
-    private function getInterfaceGroups()
-    {
-        $result = [];
-
-        // Load the firewall group model
-        $model = new Group();
-
-        // Ensure the ifgroupentry node exists
-        if (!$model->ifgroupentry) {
-            return $result;
+        $result = ['category' => [], 'interface' => []];
+        foreach ((new Category())->categories->category->iterateItems() as $key => $category) {
+            $result['category'][$key] = (string)$category->name;
         }
-
-        // Iterate over each group entry
-        foreach ($model->ifgroupentry->iterateItems() as $groupItem) {
-            $groupName = (string)$groupItem->ifname;
-            $members = [];
-
-            if (!empty((string)$groupItem->members)) {
-                $membersString = (string)$groupItem->members;
-                $members = array_map('trim', explode(',', $membersString));
-            }
-
-            $result[$groupName] = $members;
+        foreach ((Config::getInstance()->object())->interfaces->children() as $key => $ifdetail) {
+            $descr = htmlspecialchars(!empty($ifdetail->descr) ? $ifdetail->descr : strtoupper($ifname));
+            $result['interface'][$key] = $descr;
         }
+        $result['action'] = [
+            'pass' => 'Pass',
+            'block' => 'Block',
+            'reject' => 'Reject'
+        ];
+
+        $result['ipprotocol'] = [
+            'inet' => gettext('IPv4'),
+            'inet6' => gettext('IPv6'),
+            'inet46' => gettext('IPv4+IPv6')
+        ];
 
         return $result;
     }
@@ -90,36 +69,89 @@ class FilterController extends FilterBaseController
      */
     public function searchRuleAction()
     {
-        $category = $this->request->get('category');
-        $interface = $this->request->get('interface');
-
-        $filter_funct = function ($record) use ($category, $interface) {
-            if (is_array($record)) {
-                if (empty($record['legacy'])) {
-                    /* mvc already filtered */
-                    return true;
+        $categories = $this->request->get('category');
+        if (!empty($this->request->get('interface'))) {
+            $interface = $this->request->get('interface');
+            $interfaces = [$interface];
+            /* add groups which contain the selected interface */
+            foreach ((new Group())->ifgroupentry->iterateItems() as $groupItem) {
+                if (in_array($interface, explode(',', (string)$groupItem->members))) {
+                    $interfaces[] = (string)$groupItem->ifname;
                 }
-                $this_cat = $record['categories'] ?? [];
-                $this_if = $record['interface'] ?? '';
-            } else {
-                $this_cat = $record->categories;
-                $this_if = $record->interface;
             }
+        } else {
+            $interfaces = null;
+        }
+        $show_all = !empty($this->request->get('show_all'));
 
-            $is_cat = empty($category) || array_intersect(explode(',', $this_cat), $category);
-            /* XXX: needs work as an explicit interface also needs to include groups */
-            $is_if =  empty($interface) || array_intersect(explode(',', $this_if), [$interface]);
+        /* filter logic for mvc rules */
+        $filter_funct_mvc = function ($record) use ($categories, $interfaces, $show_all) {
+            $is_cat = empty($categories) || array_intersect(explode(',', $record->categories), $categories);
+            $is_if =  empty($interfaces) || array_intersect(explode(',', $record->interface), $interfaces);
+            $is_if = $is_if || $show_all && $record->interface->isEmpty();
             return $is_cat && $is_if;
         };
-        $filterset = $this->searchBase("rules.rule", null, "sort_order", $filter_funct)['rows'];
-        /* only fetch internal and legacy rules when 'include_internal' is set */
-        if ($this->request->get('include_internal')) {
-            $otherrules = json_decode((new Backend())->configdRun("filter get_internal_rules") ?? [], true);
+
+        /* filter logic for legacy and internal rules */
+        $fieldmap = $this->getFieldMap();
+        if ($show_all) {
+            /* only query stats when fill info is requested */
+            $rule_stats = json_decode((new Backend())->configdRun("filter rule stats") ?? '', true) ?? [];
+        } else {
+            $rule_stats = [];
+        }
+
+        $filter_funct_rs  = function (&$record) use ($categories, $interfaces, $show_all, $fieldmap, $rule_stats) {
+            /* always merge stats when found */
+            if (!empty($record['uuid']) && !empty($rule_stats[$record['uuid']])) {
+                foreach ($rule_stats[$record['uuid']] as $key => $value) {
+                    $record[$key] = $value;
+                }
+            }
+
+            if (empty($record['legacy'])) {
+                /* mvc already filtered */
+                return true;
+            }
+            $is_cat = empty($categories) || array_intersect(explode(',', $record['category'] ?? ''), $categories);
+            $is_if =  empty($interfaces) || array_intersect(explode(',', $record['interface'] ?? ''), $interfaces);
+            $is_if = $is_if || $show_all && empty($record['interface']);
+            if ($is_cat && $is_if) {
+                /* translate/convert legacy fields before returning, similar to mvc handling */
+                foreach ($fieldmap as $topic => $data) {
+                    if (!empty($record[$topic])) {
+                        $tmp = [];
+                        foreach (explode(',', $record[$topic]) as $item) {
+                            $tmp[] = $data[$item] ?? $item;
+                        }
+                        $record[$topic] = implode(',', $tmp);
+                    }
+                }
+                return true;
+            } else {
+                return false;
+            }
+        };
+
+        /**
+         * XXX: fetch mvc results first, we need to collect all to ensure proper pagination
+         *      as pagination is passed using the request, we need to reset it temporary here as we don't know
+         *      which page we need (yet) and don't want to duplicate large portions of code.
+         **/
+        $ORG_REQ = $_REQUEST;
+        unset($_REQUEST['rowCount']);
+        unset($_REQUEST['current']);
+        $filterset = $this->searchBase("rules.rule", null, "sort_order", $filter_funct_mvc)['rows'];
+
+        /* only fetch internal and legacy rules when 'show_all' is set */
+        if ($show_all) {
+            $otherrules = json_decode((new Backend())->configdRun("filter list non_mvc_rules") ?? [], true);
         } else {
             $otherrules = [];
         }
 
-        return $this->searchRecordsetBase(array_merge($otherrules, $filterset), null, "sort_order", $filter_funct);
+        $_REQUEST = $ORG_REQ; /* XXX:  fix me ?*/
+        return $this->searchRecordsetBase(array_merge($otherrules, $filterset), null, "sort_order", $filter_funct_rs);
     }
 
     public function setRuleAction($uuid)

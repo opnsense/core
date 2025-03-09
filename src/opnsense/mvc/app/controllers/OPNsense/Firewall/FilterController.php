@@ -41,21 +41,22 @@ class FilterController extends \OPNsense\Base\IndexController
      * Get an array of field IDs that have the advanced flag set to "true".
      *
      * @param array $form An array of field definitions
-     * @return array List of field IDs
+     * @return string list of fieldnames, comma separated for easy template usage
      */
     protected function getAdvancedIds($form)
     {
         $advancedFieldIds = [];
 
         foreach ($form as $field) {
-            if (!empty($field['advanced']) && $field['advanced'] === "true") {
+            if (!empty($field['advanced']) && $field['advanced'] == "true") {
                 if (!empty($field['id'])) {
-                    $advancedFieldIds[] = $field['id'];
+                    $tmp = explode('.', $field['id']);
+                    $advancedFieldIds[] = $tmp[count($tmp)-1];
                 }
             }
         }
 
-        return $advancedFieldIds;
+        return implode(',', $advancedFieldIds);
     }
 
 }

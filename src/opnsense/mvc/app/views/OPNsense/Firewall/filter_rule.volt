@@ -51,11 +51,7 @@
         }
 
         // Get all advanced fields, used for advanced mode tooltips
-        const advancedFieldIds = [
-            {% for field in advancedFieldIds %}
-                "{{ field }}"{% if not loop.last %}, {% endif %}
-            {% endfor %}
-        ];
+        const advancedFieldIds = "{{ advancedFieldIds }}".split(',');
 
         // Get all column labels, used for advanced mode tooltips
         const columnLabels = {};
@@ -92,7 +88,7 @@
                     }
                     if ($('#all_rules_checkbox').is(':checked')) {
                         // Send as a comma separated string
-                        request['include_internal'] = true;
+                        request['show_all'] = true;
                     }
                     return request;
                 },
@@ -184,13 +180,11 @@
                         ) {
                             return row[column.id];
                         } else {
-                            return '{{ lang._("*") }}';
+                            return '*';
                         }
                     },
                     notavailable: function(column, row) {
-                        if (
-                            row[column.id] !== ''
-                        ) {
+                        if (row[column.id] !== '') {
                             return row[column.id];
                         } else {
                             return '{{ lang._("n/a") }}';
@@ -203,7 +197,7 @@
                         const isNegated = row.interfacenot == 1 ? "! " : "";
 
                         if (!interfaces || interfaces.trim() === "") {
-                            return isNegated + '{{ lang._("*") }}';
+                            return isNegated + '*';
                         }
 
                         const interfaceList = interfaces.split(",").map(iface => iface.trim());
@@ -228,8 +222,6 @@
                         const iconStyle = (row.enabled == 0)
                             ? 'style="opacity: 0.4; pointer-events: none;"'
                             : '';
-
-/* XXX: fix below, action and direction are translated */
 
                         // Action
                         if (row.action.toLowerCase() === "pass") {
@@ -278,10 +270,8 @@
 
                         const usedAdvancedFields = [];
 
-                        advancedFieldIds.forEach(function (advId) {
-                            // Convert "rule.id" to "id"
-                            const shortName = advId.split('.').pop();
-                            const value = row[shortName];
+                        advancedFieldIds.forEach(function (fieldId) {
+                            const value = row[fieldId];
 
                             if (value !== undefined) {
                                 const lowerValue = value.toString().toLowerCase().trim();
@@ -292,7 +282,7 @@
 
                                 if (!isDefault) {
                                     // Use label if available, otherwise fallback to field ID
-                                    const label = columnLabels[shortName] || shortName;
+                                    const label = columnLabels[fieldId] || fieldId;
                                     usedAdvancedFields.push(`${label}: ${value}`);
                                 }
                             }
@@ -330,7 +320,7 @@
                         const isNegated = notField && row.hasOwnProperty(notField) && row[notField] == 1 ? "! " : "";
 
                         if (!value || value.trim() === "" || value === "any" || value === "None") {
-                            return isNegated + '{{ lang._("*") }}';
+                            return isNegated + '*';
                         }
 
                         // Ensure it's a string, or internal rules will not load anymore
@@ -361,7 +351,6 @@
                         // If alias flag is not an array, assume it's a boolean and a single alias
                         return isNegated + (row[aliasFlagName] ? generateAliasMarkup(stringValue) : stringValue);
                     },
-
                 },
             },
             commands: {
@@ -427,7 +416,7 @@
 
         });
 
-        $("#{{formGridFilterRule['table_id']}}").on('loaded.rs.jquery.bootgrid', function() {
+        grid.on("loaded.rs.jquery.bootgrid", function () {
             // Initialize tooltips
             $('[data-toggle="tooltip"]').tooltip();
 
@@ -442,14 +431,6 @@
             $(this).find('th[data-column-id="interface"] .text').html('<i class="fa-solid fa-fw fa-network-wired"></i>');
             $(this).find('th[data-column-id="evaluations"] .text').html('<i class="fa-solid fa-fw fa-bullseye"></i>');
 
-            $("[data-row-id]").each(function(){
-                const uuid = $(this).data("row-id");
-                if (uuid && uuid.indexOf("internal") !== -1) {
-                    // Assuming the enabled checkbox is rendered within a cell with data-column-id="enabled"
-                    $(this).find("td[data-column-id='enabled']").hide();
-                }
-            });
-
             // Animate move_up and move_down commands
             const highlightUuid = sessionStorage.getItem("highlightRuleUuid");
             if (highlightUuid) {
@@ -462,10 +443,7 @@
                 sessionStorage.removeItem("highlightRuleUuid");
             }
 
-        });
-
-        // Reload categories before grid load
-        grid.on("loaded.rs.jquery.bootgrid", function () {
+            // Reload categories before grid load
             ajaxCall('/api/firewall/filter/list_categories', {}, function (data) {
                 if (!data.rows) return;
 
@@ -513,81 +491,22 @@
             }
         );
 
-        // Define the savepoint buttons HTML
-        const savepointButtons = `
-            <div class="pull-right btn-group">
-                <button class="btn" id="savepointAct"
-                        data-endpoint="/api/firewall/filter/savepoint"
-                        data-label="{{ lang._('Savepoint') }}"
-                        data-error-title="{{ lang._('snapshot error') }}"
-                        type="button">
-                    {{ lang._('Savepoint') }}
-                </button>
-                <button class="btn" id="revertAction">
-                    {{ lang._('Revert') }}
-                </button>
-            </div>
-        `;
-
         $("#reconfigureAct").SimpleActionButton();
-        $("#reconfigureAct").after(savepointButtons);
-
-        $("#savepointAct").SimpleActionButton({
-            onAction: function(data, status){
-                stdDialogInform(
-                    "{{ lang._('Savepoint created') }}",
-                    data['revision'],
-                    "{{ lang._('Close') }}"
-                );
-            }
-        });
-
-        $("#revertAction").on('click', function(){
-            BootstrapDialog.show({
-                type: BootstrapDialog.TYPE_DEFAULT,
-                title: "{{ lang._('Revert to savepoint') }}",
-                message: "<p>{{ lang._('Enter a savepoint to rollback to.') }}</p>" +
-                    '<div class="form-group" style="display: block;">' +
-                    '<input id="revertToTime" type="text" class="form-control"/>' +
-                    '<span class="error text-danger" id="revertToTimeError"></span>'+
-                    '</div>',
-                buttons: [{
-                    label: "{{ lang._('Revert') }}",
-                    cssClass: 'btn-primary',
-                    action: function(dialogRef) {
-                        ajaxCall("/api/firewall/filter/revert/" + $("#revertToTime").val(), {}, function (data, status) {
-                            if (data.status !== "ok") {
-                                $("#revertToTime").parent().addClass("has-error");
-                                $("#revertToTimeError").html(data.status);
-                            } else {
-                                std_bootgrid_reload("{{formGridFilterRule['table_id']}}");
-                                dialogRef.close();
-                            }
-                        });
-                    }
-                }],
-                onshown: function(dialogRef) {
-                    $("#revertToTime").parent().removeClass("has-error");
-                    $("#revertToTimeError").html("");
-                    $("#revertToTime").val("");
-                }
-            });
-        });
 
         // move selectpickers into action bar
         $("#interface_select_container").detach().insertBefore('#{{formGridFilterRule["table_id"]}}-header > .row > .actionBar > .search');
         $('#interface_select').change(function(){
-            $('#{{formGridFilterRule['table_id']}}').bootgrid('reload');
+            grid.bootgrid('reload');
         });
 
         $("#type_filter_container").detach().prependTo('#{{formGridFilterRule['table_id']}}-header > .row > .actionBar > .actions');
         $("#category_filter").change(function(){
-            $('#{{formGridFilterRule['table_id']}}').bootgrid('reload');
+            grid.bootgrid('reload');
         });
 
         $("#internal_rule_selector").insertBefore("#type_filter_container");
         $('#all_rules_checkbox').change(function(){
-            $('#{{formGridFilterRule['table_id']}}').bootgrid('reload');
+            grid.bootgrid('reload');
         });
 
         // replace all "net" selectors with details retrieved from "list_network_select_options" endpoint
@@ -695,16 +614,9 @@
             </select>
         </div>
         <div id="internal_rule_selector" class="btn-group" style="width: 200px; margin-right: 20px;">
-                <label for="all_rules_checkbox"><b>{{ lang._('Show all rules') }}</b></label>
-                <input id="all_rules_checkbox" type="checkbox">
-                <!-- <div class="dropdown bootstrap-select show-tick bs3" style="width: 200px;">
-                <select id="include_internal_select" data-title="{{ lang._('Show internal rules') }}" class="selectpicker" data-live-search="false" multiple data-width="200px">
-                    <option value="internal">{{ lang._('Internal (Start of Ruleset)') }}</option>
-                    <option value="internal2">{{ lang._('Internal (End of Ruleset)') }}</option>
-                    <option value="floating">{{ lang._('Floating') }}</option>
-                    <option value="group">{{ lang._('Group') }}</option>
-                </select>
-            </div> -->
+            <!-- XXX: needs better label, function should show full rule impact (for the selected inferface) -->
+            <label for="all_rules_checkbox"><b>{{ lang._('Show all rules') }}</b></label>
+            <input id="all_rules_checkbox" type="checkbox">
         </div>
         <div id="interface_select_container" class="btn-group">
             <select id="interface_select" class="selectpicker" data-live-search="true" data-size="10" data-width="200px" title="{{ lang._('Select an interface') }}">
