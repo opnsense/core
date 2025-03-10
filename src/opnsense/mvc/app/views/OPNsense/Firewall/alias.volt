@@ -655,6 +655,7 @@
                                 <option value="port">{{ lang._('Port(s)') }}</option>
                                 <option value="url">{{ lang._('URL (IPs)') }}</option>
                                 <option value="urltable">{{ lang._('URL Table (IPs)') }}</option>
+                                <option value="urljson">{{ lang._('URL Table in JSON format (IPs)') }}</option>
                                 <option value="geoip">{{ lang._('GeoIP') }}</option>
                                 <option value="networkgroup">{{ lang._('Network group') }}</option>
                                 <option value="mac">{{ lang._('MAC address') }}</option>
