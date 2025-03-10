@@ -505,7 +505,7 @@ diff: ensure-stable
 feed: ensure-stable
 	@git log --stat -p --reverse ${CORE_STABLE}...${feed_ARGS:[1]}~1
 
-mfc: ensure-stable clean-mfcdir
+mfc: ensure-stable clean
 .for MFC in ${mfc_ARGS}
 .if exists(${MFC})
 	@cp -r ${MFC} ${MFCDIR}
