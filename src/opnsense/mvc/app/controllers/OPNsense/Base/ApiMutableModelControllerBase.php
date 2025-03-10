@@ -63,7 +63,6 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     protected $internalAuditMessage = null;
 
-
     /**
      * @var null|BaseModel model object to work on
      */
