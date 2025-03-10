@@ -209,7 +209,7 @@
             $("#select_all > i").toggleClass("fa-check-square-o fa-square-o");
             $(".interface_select").selectpicker('refresh');
         });
-        $(".interface_select").closest("td").append(btn_toggle_all);
+        $(".interface_select").parent().append(btn_toggle_all);
 
     });
 </script>
