@@ -575,6 +575,8 @@
             filterSequenceBtn.tooltip('hide')
         });
 
+        $("#{{ formGridFilterRule['table_id'] }}").wrap('<div class="grid-box"></div>');
+
     });
 </script>
 
@@ -595,14 +597,12 @@
     #interface_select_container {
         float: left;
     }
-    /* Prevent grid to break out of content box, introduce scrolling on small viewports */
-    .content-box {
-        min-width: 100%;
+    /* Prevent grid to break out of content box */
+    .grid-box {
+        width: 100%;
         overflow-x: auto;
-    }
-    /* Prevent action bar getting squashed and break out of content box */
-    .bootgrid-header {
-        min-width: 1020px;
+        background: none;
+        border: none;
     }
 </style>
 
