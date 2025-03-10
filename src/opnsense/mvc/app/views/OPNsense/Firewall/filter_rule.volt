@@ -499,14 +499,22 @@
             grid.bootgrid('reload');
         });
 
-        $("#type_filter_container").detach().prependTo('#{{formGridFilterRule['table_id']}}-header > .row > .actionBar > .actions');
+        $("#type_filter_container").detach().insertAfter("#interface_select_container");
         $("#category_filter").change(function(){
             grid.bootgrid('reload');
         });
 
-        $("#internal_rule_selector").insertBefore("#type_filter_container");
+        $("#internal_rule_selector").detach().insertAfter("#type_filter_container");
         $('#all_rules_checkbox').change(function(){
             grid.bootgrid('reload');
+        });
+
+        $('#all_rules_button').click(function(){
+            let $checkbox = $('#all_rules_checkbox');
+
+            $checkbox.prop("checked", !$checkbox.prop("checked"));
+            $(this).toggleClass('active btn-primary');
+            $checkbox.trigger("change");
         });
 
         // replace all "net" selectors with details retrieved from "list_network_select_options" endpoint
@@ -593,9 +601,17 @@
         max-width: 600px;
         text-align: left;
     }
-    /* Align interface selectpicker */
+    /* Align selectpickers */
     #interface_select_container {
         float: left;
+    }
+    #type_filter_container {
+        float: left;
+        margin-left: 5px;
+    }
+    #internal_rule_selector {
+        float: left;
+        margin-left: 5px;
     }
     /* Prevent grid to break out of content box */
     .grid-box {
@@ -613,13 +629,15 @@
             <select id="category_filter" data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="5" multiple data-width="200px">
             </select>
         </div>
-        <div id="internal_rule_selector" class="btn-group" style="width: 200px; margin-right: 20px;">
-            <!-- XXX: needs better label, function should show full rule impact (for the selected inferface) -->
-            <label for="all_rules_checkbox"><b>{{ lang._('Show all rules') }}</b></label>
-            <input id="all_rules_checkbox" type="checkbox">
+        <div id="internal_rule_selector" class="btn-group">
+            <!-- XXX: function should show full rule impact (for the selected inferface) -->
+            <button id="all_rules_button" type="button" class="btn btn-default selectpicker-toggle">
+                {{ lang._('Show hidden rules') }}
+            </button>
+            <input id="all_rules_checkbox" type="checkbox" style="display: none;">
         </div>
         <div id="interface_select_container" class="btn-group">
-            <select id="interface_select" class="selectpicker" data-live-search="true" data-size="10" data-width="200px" title="{{ lang._('Select an interface') }}">
+            <select id="interface_select" class="selectpicker" data-live-search="true" data-size="10" data-width="200px" title="{{ lang._('Interface') }}">
             </select>
         </div>
     </div>
