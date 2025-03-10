@@ -47,6 +47,7 @@ $advanced_options = [
     'AdvLinkMTU',
     'AdvDeprecatePrefix',
     'AdvRemoveRoute',
+    'nat64prefix',
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
