@@ -1,6 +1,6 @@
 <model>
     <mount>/dnsmasq</mount>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <items>
         <enable type="BooleanField"/>
         <regdhcp type="BooleanField"/>
@@ -38,6 +38,10 @@
                 <Multiple>Y</Multiple>
             </no_interface>
             <fqdn type="BooleanField"/>
+            <domain type="HostnameField">
+                <IsDNSName>Y</IsDNSName>
+                <IpAllowed>N</IpAllowed>
+            </domain>
             <lease_max type="IntegerField">
                 <MinimumValue>0</MinimumValue>
             </lease_max>
@@ -90,6 +94,13 @@
             </aliases>
         </hosts>
         <domainoverrides type="ArrayField">
+            <sequence type="AutoNumberField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>99999</MaximumValue>
+                <Default>1</Default>
+                <Required>Y</Required>
+                <ValidationMessage>Please enter a value between 1 and 99999.</ValidationMessage>
+            </sequence>
             <domain type="HostnameField">
                 <IsDNSName>Y</IsDNSName>
                 <IpAllowed>N</IpAllowed>
@@ -167,6 +178,13 @@
                 <ConfigdPopulateAct>dnsmasq list dhcp_options</ConfigdPopulateAct>
                 <Required>Y</Required>
             </option>
+            <interface type="InterfaceField">
+                <BlankDesc>Any</BlankDesc>
+                <Filters>
+                    <if>/^(?!lo0$).*/</if>
+                </Filters>
+                <AllowDynamic>Y</AllowDynamic>
+            </interface>
             <tag type="ModelRelationField">
                 <Model>
                     <tag>

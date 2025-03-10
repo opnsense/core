@@ -192,7 +192,7 @@ class Dnsmasq extends BaseModel
         $result = [];
         if (!empty($this->dhcp_ranges->iterateItems()->current())) {
             $exclude = [];
-            foreach (explode(',', $this->no_dhcp_interface) as $item) {
+            foreach (explode(',', $this->dhcp->no_interface) as $item) {
                 $exclude[] = $item;
             }
             foreach (explode(',', $this->interface) as $item) {

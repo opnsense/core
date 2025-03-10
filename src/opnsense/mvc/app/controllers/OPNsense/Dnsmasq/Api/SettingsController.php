@@ -29,11 +29,23 @@
 namespace OPNsense\Dnsmasq\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Core\Config;
 
 class SettingsController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'dnsmasq';
     protected static $internalModelClass = '\OPNsense\Dnsmasq\Dnsmasq';
+
+    /**
+     * @inheritdoc
+     */
+    public function getAction()
+    {
+        $data = parent::getAction();
+        $data[self::$internalModelName]['dhcp']['this_domain'] = (string)Config::getInstance()->object()->system->domain;
+
+        return $data;
+    }
 
     /* hosts */
     public function searchHostAction()

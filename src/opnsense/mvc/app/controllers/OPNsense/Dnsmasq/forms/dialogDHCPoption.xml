@@ -6,10 +6,16 @@
         <help>Option to offer to the client.</help>
     </field>
     <field>
+        <id>option.interface</id>
+        <label>Interface</label>
+        <type>dropdown</type>
+        <help>This adds a single interface as tag so this DHCP option can match the interface of a DHCP range.</help>
+    </field>
+    <field>
         <id>option.tag</id>
         <label>Tag</label>
         <type>select_multiple</type>
-        <help>If the optional tags are given then this option is only sent when all the tags are matched.</help>
+        <help>If the optional tags are given then this option is only sent when all the tags are matched. Can be optionally combined with an interface tag.</help>
     </field>
     <field>
         <id>option.value</id>

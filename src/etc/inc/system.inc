@@ -152,7 +152,7 @@ function system_sysctl_get()
     }
 
     foreach ($sysctls as $key => &$value) {
-        /* keeping the now depcreated 'default' as a keyword for selecting defaults */
+        /* keeping the now deprecated 'default' as a keyword for selecting defaults */
         if ($value != 'default' && $value != '') {
             continue;
         }

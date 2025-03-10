@@ -515,6 +515,8 @@ class Config extends Singleton
         /* If revision info is not provided, create one. $revision is used for recursion */
         if (!is_array($revision)) {
             $revision = $this->getRevisionContext();
+        } else {
+            $revision = array_merge($this->getRevisionContext(), $revision);
         }
         if ($node == null) {
             if (!isset($this->simplexml->revision)) {

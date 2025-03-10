@@ -160,6 +160,9 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     /* Use filter lock to not allow concurrent filter reloads during this run. */
     $fobj = new \OPNsense\Core\FileObject('/tmp/rules.debug', 'a+', 0600, LOCK_EX);
 
+    /* kickstart dnctl regardless of shaping configuration */
+    mwexec('/etc/rc.d/dnctl start', true);
+
     ifgroup_setup();
 
     service_log('.', $verbose);
