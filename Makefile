@@ -545,6 +545,11 @@ reset:
 log: ensure-stable
 	@git log --stat -p ${CORE_STABLE}
 
+pull:
+	@git checkout ${CORE_STABLE}
+	@git pull
+	@git checkout ${CORE_MAIN}
+
 push:
 	@git checkout ${CORE_STABLE}
 	@git push
