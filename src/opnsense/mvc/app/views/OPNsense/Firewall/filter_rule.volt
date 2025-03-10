@@ -515,7 +515,13 @@
 
             $checkbox.prop("checked", !$checkbox.prop("checked"));
             $(this).toggleClass('active btn-primary');
+
             $checkbox.trigger("change");
+            $(this).tooltip('hide');
+        });
+
+        $('#all_rules_button').mouseleave(function(){
+            $('#all_rules_button').tooltip('hide')
         });
 
         // replace all "net" selectors with details retrieved from "list_network_select_options" endpoint
@@ -621,6 +627,9 @@
         background: none;
         border: none;
     }
+    #all_rules_button i {
+        margin-right: 5px;
+    }
 </style>
 
 <div class="tab-content content-box">
@@ -630,16 +639,22 @@
             <select id="category_filter" data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="5" multiple data-width="200px">
             </select>
         </div>
-        <div id="internal_rule_selector" class="btn-group">
-            <!-- XXX: function should show full rule impact (for the selected inferface) -->
-            <button id="all_rules_button" type="button" class="btn btn-default selectpicker-toggle">
-                {{ lang._('Show hidden rules') }}
-            </button>
-            <input id="all_rules_checkbox" type="checkbox" style="display: none;">
-        </div>
         <div id="interface_select_container" class="btn-group">
             <select id="interface_select" class="selectpicker" data-live-search="true" data-size="10" data-width="200px" title="{{ lang._('Interface') }}">
             </select>
+        </div>
+        <div id="internal_rule_selector" class="btn-group">
+            <button id="all_rules_button"
+                    type="button"
+                    class="btn btn-default"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    data-delay='{"show": 1000}'
+                    title="{{ lang._('Show automatically generated rules and statistics') }}">
+                <i class="fa fa-eye" aria-hidden="true"></i>
+                {{ lang._('Inspect') }}
+            </button>
+            <input id="all_rules_checkbox" type="checkbox" style="display: none;">
         </div>
     </div>
     <!-- grid -->
