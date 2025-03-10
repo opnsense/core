@@ -224,15 +224,15 @@
                             : '';
 
                         // Action
-                        if (row.action.toLowerCase() === "pass") {
-                            result += '<i class="fa fa-play fa-fw text-success" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Pass") }}"></i> ';
-                        } else if (row.action.toLowerCase() === "block") {
+                        if (row.action.toLowerCase() === "block") {
                             result += '<i class="fa fa-times fa-fw text-danger" ' + iconStyle +
                                     ' data-toggle="tooltip" title="{{ lang._("Block") }}"></i> ';
                         } else if (row.action.toLowerCase() === "reject") {
                             result += '<i class="fa fa-times-circle fa-fw text-danger" ' + iconStyle +
                                     ' data-toggle="tooltip" title="{{ lang._("Reject") }}"></i> ';
+                        } else {
+                            result += '<i class="fa fa-play fa-fw text-success" ' + iconStyle +
+                                    ' data-toggle="tooltip" title="{{ lang._("Pass") }}"></i> ';
                         }
 
                         // Direction
@@ -248,21 +248,22 @@
                         }
 
                         // Quick match
-                        if (row.quick == 1) {
-                            result += '<i class="fa fa-flash fa-fw text-warning" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("First match") }}"></i> ';
-                        } else if (row.quick == 0) {
+                        if (row.quick == 0) {
                             result += '<i class="fa fa-flash fa-fw text-muted" ' + iconStyle +
                                     ' data-toggle="tooltip" title="{{ lang._("Last match") }}"></i> ';
+                        } else {
+                            // Default to "First match"
+                            result += '<i class="fa fa-flash fa-fw text-warning" ' + iconStyle +
+                                    ' data-toggle="tooltip" title="{{ lang._("First match") }}"></i> ';
                         }
 
                         // Logging
-                        if (row.log == 1) {
-                            result += '<i class="fa fa-exclamation-circle fa-fw text-info" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Logging enabled") }}"></i> ';
-                        } else if (row.log == 0) {
+                        if (row.log == 0) {
                             result += '<i class="fa fa-exclamation-circle fa-fw text-muted" ' + iconStyle +
                                     ' data-toggle="tooltip" title="{{ lang._("Logging disabled") }}"></i> ';
+                        } else {
+                            result += '<i class="fa fa-exclamation-circle fa-fw text-info" ' + iconStyle +
+                                    ' data-toggle="tooltip" title="{{ lang._("Logging enabled") }}"></i> ';
                         }
 
                         // XXX: Advanced fields all have different default values, so it cannot be generalized completely
