@@ -5,6 +5,7 @@
        <style>interface_select selectpicker</style>
        <type>select_multiple</type>
        <help>Interfaces to capture.</help>
+       <width>294px</width>
     </field>
     <field>
       <id>packetcapture.settings.promiscuous</id>
