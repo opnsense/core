@@ -141,10 +141,8 @@ function load_config_from_file($filename)
 function parse_config()
 {
     $cnf = OPNsense\Core\Config::getInstance();
-
-    // return config data as array, use old "listtags" construction to mark certain elements as array (even if they're not recurring)
+    /* make sure to write back global variable */
     $config = $cnf->toArray(listtags());
-
     return $config;
 }
 
