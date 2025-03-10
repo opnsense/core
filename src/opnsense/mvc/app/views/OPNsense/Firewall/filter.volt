@@ -202,6 +202,7 @@
                 });
                 if ($("#grid-rules thead tr").length === 1) {
                     $("#grid-rules thead").prepend('<tr><th style="width:2em;"></th><th colspan="4" style="width:20em;"></th><th colspan="2" style="width:10em;">Source</th><th colspan="2" style="width:10em;">Destination</th><th colspan="2" style="width:10em;">NAT</th><th colspan="2" style="width:12em;"></th></tr>');
+                    $(".dropdown-item-checkbox").first().trigger('change');
                 } else if ($("#grid-rules thead tr").length === 2) {
                     var firstRow = $("#grid-rules thead tr").first().children('th').length;
                     var newCount = $("#grid-rules tfoot tr td").first().attr("colspan");
@@ -238,7 +239,28 @@
             });
 
             $(".dropdown-item-checkbox").change(function() {
+                var colspan1 = colspan2 = colspan3 = colspan4 = colspan5 = 0;
                 $("#grid-rules thead tr:first").remove();
+                $(".dropdown-item-checkbox").each(function(index, element) {
+                    if (index<5 && element.checked==true) {
+                        colspan1++;
+                    } else if (index<7 && element.checked==true) {
+                        colspan2++;
+                    } else if (index<9 && element.checked==true) {
+                        colspan3++;
+                    } else if (index<11 && element.checked==true) {
+                        colspan4++;
+                    } else if (index<13 && element.checked==true) {
+                        colspan5++;
+                    }
+                });
+                $("#grid-rules thead").prepend('<tr><th style="width:2em;"></th>' +         
+                    (colspan1 != 0 ? '<th colspan="' + colspan1 + '" style="width:20em;"></th>' : '') +
+                    (colspan2 != 0 ? '<th colspan="' + colspan2 + '" style="width:10em;">Source</th>' : '') +
+                    (colspan3 != 0 ? '<th colspan="' + colspan3 + '" style="width:10em;">Destination</th>' : '') +
+                    (colspan4 != 0 ? '<th colspan="' + colspan4 + '" style="width:10em;">NAT</th>' : '') +
+                    '<th colspan="' + colspan5 + '" style="width:12em;"></th></tr>'
+                );
             });
         }
     });
