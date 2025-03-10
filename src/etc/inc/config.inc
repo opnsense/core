@@ -113,7 +113,7 @@ function parse_config()
 {
     $cnf = OPNsense\Core\Config::getInstance();
 
-    // return config data as array, use old "listags" construction to mark certain elements as array (even if they're not recurring)
+    // return config data as array, use old "listtags" construction to mark certain elements as array (even if they're not recurring)
     $config = $cnf->toArray(listtags());
 
     return $config;
@@ -301,8 +301,8 @@ function legacy_config_get_interfaces($filters = [], $exclude_ifs = [])
         if (in_array($ifname, $exclude_ifs)) {
             continue;
         }
-        // undo stupid listags() turning our item into a new array, preventing certain names to be used as interface.
-        // see src/etc/inc/xmlparse.inc
+
+        // undo stupid listtags() turning our item into a new array, preventing certain names to be used as interface
         if (isset($iface[0])) {
             $iface = $iface[0];
         }
