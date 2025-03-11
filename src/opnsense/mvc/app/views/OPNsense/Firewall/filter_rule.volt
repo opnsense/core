@@ -50,6 +50,15 @@
             });
         }
 
+        // Shared function to fetch and set the next available sequence number
+        function incrementSequence() {
+            ajaxGet("/api/firewall/filter/get_next_sequence", {}, function (data) {
+                if (data.sequence !== undefined) {
+                    $("#rule\\.sequence").val(data.sequence);
+                }
+            });
+        }
+
         // Get all advanced fields, used for advanced mode tooltips
         const advancedFieldIds = "{{ advancedFieldIds }}".split(',');
 
@@ -622,18 +631,21 @@
             )
         );
 
-        filterSequenceBtn.click(function(){
-            ajaxGet("/api/firewall/filter/get_next_sequence", {}, function(data){
-                if (data.sequence !== undefined) {
-                    $("#rule\\.sequence").val(data.sequence);
-                    filterSequenceBtn.tooltip('hide')
-                }
-            });
+        // Hook into the event triggered when the clone dialog is shown and increment sequence
+        $('#{{formGridFilterRule["edit_dialog_id"]}}').on('opnsense_bootgrid_mapped', function(e, actionType) {
+            if (actionType === 'copy') {
+                incrementSequence();
+            }
+        });
+
+        filterSequenceBtn.click(function () {
+            incrementSequence();
         });
 
         filterSequenceBtn.mouseleave(function(){
             filterSequenceBtn.tooltip('hide')
         });
+
 
         // Wrap buttons and grid into divs to target them with css for responsiveness
         $("#{{ formGridFilterRule['table_id'] }}").wrap('<div class="grid-box"></div>');
