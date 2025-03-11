@@ -590,7 +590,14 @@
             filterSequenceBtn.tooltip('hide')
         });
 
+        // Wrap buttons and grid into divs to target them with css for responsiveness
         $("#{{ formGridFilterRule['table_id'] }}").wrap('<div class="grid-box"></div>');
+
+        $("#interface_select_container, #type_filter_container, #internal_rule_selector")
+            .wrapAll('<div class="first-row"></div>');
+
+        $(".search.form-group, .actions.btn-group")
+            .wrapAll('<div class="second-row"></div>');
 
     });
 </script>
@@ -629,6 +636,38 @@
     }
     #all_rules_button i {
         margin-right: 5px;
+    }
+    /* Format the action bar for mobile devices */
+    @media (max-width: 1200px) {
+        .actionBar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-start;
+        }
+
+        .first-row, .second-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .search.form-group {
+            width: 200px;
+            margin-right: 5px
+        }
+    }
+    @media (max-width: 620px) {
+        #interface_select_container,
+        #type_filter_container,
+        #internal_rule_selector,
+        .search.form-group,
+        .actions.btn-group,
+        #all_rules_button {
+            margin: 0;
+            width: 200px;
+            gap: 10px;
+        }
     }
 </style>
 
