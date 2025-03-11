@@ -94,7 +94,7 @@ if len(sys.argv) > 1:
                                 if ds_count >= vidx:
                                     record['ds'][vidx]['values'].append([
                                         this_ts * 1000,
-                                        float(v) if v not in ['NaN', 'inf'] else 0
+                                        float(v) if v not in ['NaN', 'inf'] else v
                                     ])
 
                     result['sets'].append(record)
