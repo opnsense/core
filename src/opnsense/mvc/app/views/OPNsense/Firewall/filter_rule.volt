@@ -65,6 +65,15 @@
         // Test if the UUID is valid, used to determine if automation model or internal rule
         const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
+        // XXX: Clear any stored column visibility settings for the firewall filter page
+        // Synergizes with the Inspect Button since it unhides certain columns that should be hidden on page load
+        // Prevents messed up views, we always control the intentional default of the page
+        Object.keys(localStorage).forEach(function(key) {
+            if (key.indexOf("visibleColumns[/ui/firewall/filter/") === 0) {
+                localStorage.removeItem(key);
+            }
+        });
+
         const grid = $("#{{formGridFilterRule['table_id']}}").UIBootgrid({
             search:'/api/firewall/filter/search_rule/',
             get:'/api/firewall/filter/get_rule/',
@@ -181,13 +190,6 @@
                             return row[column.id];
                         } else {
                             return '*';
-                        }
-                    },
-                    notavailable: function(column, row) {
-                        if (row[column.id] !== '') {
-                            return row[column.id];
-                        } else {
-                            return '{{ lang._("n/a") }}';
                         }
                     },
                     interfaces: function(column, row) {
@@ -418,9 +420,6 @@
         });
 
         grid.on("loaded.rs.jquery.bootgrid", function () {
-            // Initialize tooltips
-            $('[data-toggle="tooltip"]').tooltip();
-
             // XXX: Replace these labels to save some space in the grid
             // This is a workaround, to change labels in the grid, but NOT in the grid selection dropdown
             $(this).find('th[data-column-id="enabled"] .text').text("");
@@ -429,8 +428,24 @@
             $(this).find('th[data-column-id="protocol"] .text').text("{{ lang._('Proto') }}");
             $(this).find('th[data-column-id="source_port"] .text').text("{{ lang._('Port') }}");
             $(this).find('th[data-column-id="destination_port"] .text').text("{{ lang._('Port') }}");
-            $(this).find('th[data-column-id="interface"] .text').html('<i class="fa-solid fa-fw fa-network-wired"></i>');
-            $(this).find('th[data-column-id="evaluations"] .text').html('<i class="fa-solid fa-fw fa-bullseye"></i>');
+            $(this).find('th[data-column-id="interface"] .text').html(`
+                <i class="fa-solid fa-fw fa-network-wired" data-toggle="tooltip" data-placement="right" title="{{ lang._('Network Interface') }}"></i>
+            `);
+            $(this).find('th[data-column-id="evaluations"] .text').html(`
+                <i class="fa-solid fa-fw fa-bullseye" data-toggle="tooltip" data-placement="right" title="{{ lang._('Number of rule evaluations') }}"></i>
+            `);
+            $(this).find('th[data-column-id="states"] .text').html(`
+                <i class="fa-solid fa-fw fa-chart-line" data-toggle="tooltip" data-placement="right" title="{{ lang._('Current active states for this rule') }}"></i>
+            `);
+            $(this).find('th[data-column-id="packets"] .text').html(`
+                <i class="fa-solid fa-fw fa-box" data-toggle="tooltip" data-placement="right" title="{{ lang._('Total packets matched by this rule') }}"></i>
+            `);
+            $(this).find('th[data-column-id="bytes"] .text').html(`
+                <i class="fa-solid fa-fw fa-database" data-toggle="tooltip" data-placement="right" title="{{ lang._('Total bytes matched by this rule') }}"></i>
+            `);
+
+            // Initialize tooltips
+            $('[data-toggle="tooltip"]').tooltip();
 
             // Animate move_up and move_down commands
             const highlightUuid = sessionStorage.getItem("highlightRuleUuid");
@@ -507,7 +522,21 @@
 
         $("#internal_rule_selector").detach().insertAfter("#type_filter_container");
         $('#all_rules_checkbox').change(function(){
+            const isChecked = $(this).prop('checked');
+
+            // Reload the grid
             grid.bootgrid('reload');
+
+            // Once the grid has reloaded, update the specified checkboxes
+            grid.one("loaded.rs.jquery.bootgrid", function () {
+                const checkboxes = ['evaluations', 'states', 'packets', 'bytes'];
+                checkboxes.forEach(name => {
+                    const $checkbox = $('input[name="' + name + '"].dropdown-item-checkbox');
+                    if ($checkbox.length && $checkbox.prop('checked') !== isChecked) {
+                        $checkbox.click();
+                    }
+                });
+            });
         });
 
         $('#all_rules_button').click(function(){

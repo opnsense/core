@@ -608,11 +608,11 @@
         <label>Evaluations</label>
         <type>ignore</type>
         <grid_view>
+            <visible>false</visible>
             <sortable>false</sortable>
             <label>Stats - Evaluations</label>
             <sequence>105</sequence>
             <width>4em</width>
-            <formatter>notavailable</formatter>
         </grid_view>
     </field>
     <field>
@@ -623,7 +623,8 @@
             <visible>false</visible>
             <sortable>false</sortable>
             <label>Stats - States</label>
-            <formatter>notavailable</formatter>
+            <sequence>106</sequence>
+            <width>4em</width>
         </grid_view>
     </field>
     <field>
@@ -634,7 +635,8 @@
             <visible>false</visible>
             <sortable>false</sortable>
             <label>Stats - Packets</label>
-            <formatter>notavailable</formatter>
+            <sequence>107</sequence>
+            <width>4em</width>
         </grid_view>
     </field>
     <field>
@@ -645,7 +647,8 @@
             <visible>false</visible>
             <sortable>false</sortable>
             <label>Stats - Bytes</label>
-            <formatter>notavailable</formatter>
+            <sequence>108</sequence>
+            <width>4em</width>
         </grid_view>
     </field>
     <field>
