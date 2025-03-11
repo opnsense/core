@@ -761,7 +761,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/TosField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Filter.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Filter.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FilterLegacyMapper.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Group.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Group.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Menu/Menu.xml
@@ -1108,7 +1107,6 @@
 /usr/local/opnsense/scripts/filter/delete_table.py
 /usr/local/opnsense/scripts/filter/download_geoip.py
 /usr/local/opnsense/scripts/filter/find_table_references.py
-/usr/local/opnsense/scripts/filter/get_internal_rules.php
 /usr/local/opnsense/scripts/filter/kill_states.py
 /usr/local/opnsense/scripts/filter/kill_table.py
 /usr/local/opnsense/scripts/filter/lib/__init__.py
@@ -1122,6 +1120,7 @@
 /usr/local/opnsense/scripts/filter/lib/alias/pf.py
 /usr/local/opnsense/scripts/filter/lib/alias/uri.py
 /usr/local/opnsense/scripts/filter/lib/states.py
+/usr/local/opnsense/scripts/filter/list_non_mvc_rules.php
 /usr/local/opnsense/scripts/filter/list_osfp.py
 /usr/local/opnsense/scripts/filter/list_pfsync.py
 /usr/local/opnsense/scripts/filter/list_rule_ids.py
