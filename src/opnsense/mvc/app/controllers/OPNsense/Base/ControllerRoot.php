@@ -146,7 +146,11 @@ class ControllerRoot extends Controller
         $redirect_uri = "/?url=" . $_SERVER['REQUEST_URI'];
         if ($this->session->has("Username") == false) {
             // user unknown
-            $this->getLogger()->error("no active session, user not found");
+            $this->getLogger('audit')->error(sprintf(
+                "no active session, user not found (called \"%s\" @ %s)",
+                $_SERVER['REQUEST_URI'],
+                $_SERVER['REMOTE_ADDR']
+            ));
             $this->response->redirect($redirect_uri, true);
             $this->setLang();
             return false;
@@ -155,7 +159,9 @@ class ControllerRoot extends Controller
             && $this->session->get("last_access") < (time() - $session_timeout)
         ) {
             // session expired / cleanup session data
-            $this->getLogger()->error("session expired");
+            $this->getLogger('audit')->notice(sprintf(
+                "session expired (%s @ %s)", $this->session->get("Username"), $_SERVER['REMOTE_ADDR']
+            ));
             $this->session->remove("Username");
             $this->session->remove("last_access");
             $this->response->redirect($redirect_uri, true);
@@ -170,7 +176,7 @@ class ControllerRoot extends Controller
         // Authorization using legacy acl structure
         $acl = new ACL();
         if (!$acl->isPageAccessible($this->session->get("Username"), $_SERVER['REQUEST_URI'])) {
-            $this->getLogger()->error("uri " . $_SERVER['REQUEST_URI'] .
+            $this->getLogger('audit')->error("uri " . $_SERVER['REQUEST_URI'] .
                 " not accessible for user " . $this->session->get("Username"));
             $this->response->redirect("/", true);
             return false;
