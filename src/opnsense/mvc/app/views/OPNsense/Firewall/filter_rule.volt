@@ -637,6 +637,11 @@
     #all_rules_button i {
         margin-right: 5px;
     }
+    /* Allow grid to wrap text to use more diagonal space */
+    .bootgrid-table tbody td {
+        white-space: normal;
+        word-wrap: break-word;
+    }
     /* Format the action bar for mobile devices */
     @media (max-width: 1200px) {
         .actionBar {

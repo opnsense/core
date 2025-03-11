@@ -74,7 +74,7 @@
         <grid_view>
             <sequence>110</sequence>
             <sortable>false</sortable>
-            <width>12em</width>
+            <width>8em</width>
         </grid_view>
     </field>
     <field>
@@ -186,7 +186,7 @@
             <formatter>alias</formatter>
             <sequence>50</sequence>
             <sortable>false</sortable>
-            <width>12em</width>
+            <width>8em</width>
         </grid_view>
     </field>
     <field>
@@ -199,7 +199,7 @@
             <sequence>60</sequence>
             <sortable>false</sortable>
             <formatter>alias</formatter>
-            <width>6em</width>
+            <width>4em</width>
         </grid_view>
     </field>
     <field>
@@ -220,7 +220,7 @@
             <formatter>alias</formatter>
             <sequence>70</sequence>
             <sortable>false</sortable>
-            <width>12em</width>
+            <width>8em</width>
         </grid_view>
     </field>
     <field>
@@ -233,7 +233,7 @@
             <sequence>80</sequence>
             <sortable>false</sortable>
             <formatter>alias</formatter>
-            <width>6em</width>
+            <width>4em</width>
         </grid_view>
     </field>
     <field>
