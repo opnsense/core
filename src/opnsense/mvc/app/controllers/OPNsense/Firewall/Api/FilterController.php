@@ -84,6 +84,37 @@ class FilterController extends FilterBaseController
     }
 
     /**
+     * Adds color mappings to firewall rule categories.
+     *
+     * @param array &$rows The rules array to process, colors are injected under 'category_colors'.
+     */
+    private function addCategoryColors(array &$rows)
+    {
+        $categoryColors = [];
+        $categoryModel = new Category();
+
+        foreach ($categoryModel->categories->category->iterateItems() as $category) {
+            $name = trim((string)$category->name);
+            $color = trim((string)$category->color);
+
+            // Assign default color if empty
+            $categoryColors[$name] = empty($color) ? "#C03E14" : "#{$color}";
+        }
+
+        // Append category colors as an array to each rule row
+        foreach ($rows as &$row) {
+            if (!empty($row['categories'])) {
+                $catNames = array_map('trim', explode(',', $row['categories']));
+                $colors = array_map(fn($name) => $categoryColors[$name], $catNames);
+
+                $row['category_colors'] = $colors;
+            } else {
+                $row['category_colors'] = [];
+            }
+        }
+    }
+
+    /**
      * Retrieves and merges firewall rules from model and internal sources, then paginates them.
      *
      * @return array The final paginated, merged result.
@@ -166,8 +197,6 @@ class FilterController extends FilterBaseController
 
         /* only fetch internal and legacy rules when 'show_all' is set */
         if ($show_all) {
-            $rawOutput = (new Backend())->configdRun("filter list non_mvc_rules") ?? '';
-            error_log("Raw output from configdRun: " . $rawOutput);
             $otherrules = json_decode((new Backend())->configdRun("filter list non_mvc_rules") ?? '', true) ?? [];
         } else {
             $otherrules = [];
@@ -178,6 +207,8 @@ class FilterController extends FilterBaseController
 
         /* frontend can format aliases with an alias icon */
         $this->addAliasFlags($result['rows']);
+        /* frontend can format categories with colors */
+        $this->addCategoryColors($result['rows']);
 
         return $result;
     }

@@ -211,6 +211,21 @@
 
                         return ipProtocol ? `${ipProtocol} ${targetValue}` : targetValue;
                     },
+                    category: function (column, row) {
+                        if (!row.categories || !row.category_colors) {
+                            return '';
+                        }
+
+                        const categories = row.categories.split(',').map(cat => cat.trim());
+                        const colors = Array.isArray(row.category_colors) ? row.category_colors : row.category_colors.split(',');
+
+                        return categories.map((cat, index) => {
+                            const color = colors[index]
+                            return `<span class="category-icon" data-toggle="tooltip" title="${cat}">
+                                        <i class="fas fa-circle" style="color: ${color};"></i>
+                                    </span>`;
+                        }).join(' ');
+                    },
                     interfaces: function(column, row) {
                         const interfaces = row[column.id] != null ? String(row[column.id]) : "";
 
@@ -668,6 +683,9 @@
 </script>
 
 <style>
+    .category-icon {
+        cursor: pointer;
+    }
     /* The filter rules column dropdown has many items */
     .actions .dropdown-menu.pull-right {
         max-height: 400px;

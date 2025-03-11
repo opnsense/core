@@ -52,8 +52,9 @@
         <help>For grouping purposes you may select multiple groups here to organize items.</help>
         <grid_view>
             <width>6em</width>
-            <visible>false</visible>
             <sortable>false</sortable>
+            <formatter>category</formatter>
+            <sequence>108</sequence>
         </grid_view>
     </field>
     <field>
