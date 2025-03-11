@@ -151,9 +151,9 @@
     <li><a data-toggle="tab" href="#general">{{ lang._('General') }}</a></li>
     <li><a data-toggle="tab" href="#hosts">{{ lang._('Hosts') }}</a></li>
     <li><a data-toggle="tab" href="#domains">{{ lang._('Domains') }}</a></li>
-    <li><a data-toggle="tab" href="#dhcptags">{{ lang._('DHCP tags') }}</a></li>
     <li><a data-toggle="tab" href="#dhcpranges">{{ lang._('DHCP ranges') }}</a></li>
     <li><a data-toggle="tab" href="#dhcpoptions">{{ lang._('DHCP options') }}</a></li>
+    <li><a data-toggle="tab" href="#dhcptags">{{ lang._('DHCP tags') }}</a></li>
     <li><a data-toggle="tab" href="#dhcpmatches">{{ lang._('DHCP options / match') }}</a></li>
 </ul>
 
@@ -170,10 +170,6 @@
     <div id="domains" class="tab-pane fade in">
         {{ partial('layout_partials/base_bootgrid_table', formGridDomainOverride)}}
     </div>
-    <!-- Tab: DHCP Tags -->
-    <div id="dhcptags" class="tab-pane fade in">
-        {{ partial('layout_partials/base_bootgrid_table', formGridDHCPtag)}}
-    </div>
     <!-- Tab: DHCP Ranges -->
     <div id="dhcpranges" class="tab-pane fade in">
         {{ partial('layout_partials/base_bootgrid_table', formGridDHCPrange)}}
@@ -183,6 +179,10 @@
         {{ partial('layout_partials/base_bootgrid_table', formGridDHCPoption)}}
         <hr/>
         {{ partial('layout_partials/base_bootgrid_table', formGridDHCPboot)}}
+    </div>
+    <!-- Tab: DHCP Tags -->
+    <div id="dhcptags" class="tab-pane fade in">
+        {{ partial('layout_partials/base_bootgrid_table', formGridDHCPtag)}}
     </div>
     <!-- Tab: DHCP Options / Match -->
     <div id="dhcpmatches" class="tab-pane fade in">
