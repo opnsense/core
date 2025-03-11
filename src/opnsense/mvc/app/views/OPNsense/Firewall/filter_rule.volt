@@ -201,6 +201,16 @@
                             return '*';
                         }
                     },
+                    protocol: function(column, row) {
+                        const ipProtocol = row.ipprotocol ? row.ipprotocol : '';
+                        let targetValue = row[column.id] ? row[column.id] : '';
+
+                        if (!targetValue || targetValue === '' || targetValue === 'any' || targetValue === 'None') {
+                            targetValue = '*';
+                        }
+
+                        return ipProtocol ? `${ipProtocol} ${targetValue}` : targetValue;
+                    },
                     interfaces: function(column, row) {
                         const interfaces = row[column.id] != null ? String(row[column.id]) : "";
 
@@ -433,8 +443,6 @@
             // This is a workaround, to change labels in the grid, but NOT in the grid selection dropdown
             $(this).find('th[data-column-id="enabled"] .text').text("");
             $(this).find('th[data-column-id="icons"] .text').text("");
-            $(this).find('th[data-column-id="sequence"] .text').text("{{ lang._('Seq') }}");
-            $(this).find('th[data-column-id="protocol"] .text').text("{{ lang._('Proto') }}");
             $(this).find('th[data-column-id="source_port"] .text').text("{{ lang._('Port') }}");
             $(this).find('th[data-column-id="destination_port"] .text').text("{{ lang._('Port') }}");
             $(this).find('th[data-column-id="interface"] .text').html(`
