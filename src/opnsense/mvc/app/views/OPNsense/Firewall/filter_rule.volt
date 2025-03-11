@@ -490,15 +490,30 @@
         ajaxCall('/api/firewall/filter/get_interface_list', {},
             function(data, status) {
                 const $select = $('#interface_select');
+                $select.empty();
+
                 if (Array.isArray(data)) {
                     data.forEach(function(iface) {
-                        $select.append(
-                            $('<option>', {
-                                value: iface.value,
-                                text: iface.label
-                            })
-                        );
+                        if (iface.value.startsWith('__header_')) {
+                            // Add a divider and a non-selectable bold header
+                            $select.append('<option data-divider="true"></option>');
+                            $select.append(
+                                $('<option>', {
+                                    "data-content": `<strong>${iface.label}</strong>`,
+                                    "disabled": true
+                                })
+                            );
+                        } else {
+                            // Regular selectable interface
+                            $select.append(
+                                $('<option>', {
+                                    value: iface.value,
+                                    text: iface.label
+                                })
+                            );
+                        }
                     });
+
                     $select.selectpicker('refresh');
                 }
             },
@@ -714,7 +729,7 @@
             </select>
         </div>
         <div id="interface_select_container" class="btn-group">
-            <select id="interface_select" class="selectpicker" data-live-search="true" data-size="10" data-width="200px" title="{{ lang._('Interface') }}">
+            <select id="interface_select" class="selectpicker" data-live-search="true" data-size="15" data-width="200px" title="{{ lang._('Interface') }}">
             </select>
         </div>
         <div id="internal_rule_selector" class="btn-group">

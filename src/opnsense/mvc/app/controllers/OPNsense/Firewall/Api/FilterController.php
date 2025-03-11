@@ -371,13 +371,45 @@ class FilterController extends FilterBaseController
 
     public function getInterfaceListAction()
     {
-        $result = [
+        $floating = [
+            ['value' => '__header_floating', 'label' => '--- Floating ---'],
             ['value' => '', 'label' => 'Any']
         ];
+
+        $interfaces = [];
+        $groups = [];
+
         foreach (Config::getInstance()->object()->interfaces->children() as $key => $intf) {
-            $result[] = ['value' => $key, 'label' => empty($intf->descr) ? $key : (string)$intf->descr];
+            $label = empty($intf->descr) ? strtoupper($key) : (string)$intf->descr;
+            $interfaces[$key] = ['value' => $key, 'label' => $label];
         }
-        return $result;
+
+        $groupModel = new Group();
+        foreach ($groupModel->ifgroupentry->iterateItems() as $groupItem) {
+            $groupName = (string)$groupItem->ifname;
+            if (isset($interfaces[$groupName])) {
+                $groups[$groupName] = $interfaces[$groupName];
+                unset($interfaces[$groupName]);
+            }
+        }
+
+        // XXX: This here is the only exception since the label cannot be matched
+        if (isset($interfaces['wireguard'])) {
+            $groups['wireguard'] = $interfaces['wireguard'];
+            unset($interfaces['wireguard']);
+        }
+
+        usort($interfaces, fn($a, $b) => strcasecmp($a['label'], $b['label']));
+        usort($groups, fn($a, $b) => strcasecmp($a['label'], $b['label']));
+
+        if (!empty($groups)) {
+            array_unshift($groups, ['value' => '__header_group', 'label' => '--- Group ---']);
+        }
+        if (!empty($interfaces)) {
+            array_unshift($interfaces, ['value' => '__header_interface', 'label' => '--- Interface ---']);
+        }
+
+        return array_merge($floating, $groups, $interfaces);
     }
 
 }
