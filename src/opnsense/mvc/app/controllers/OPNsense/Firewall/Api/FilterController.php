@@ -210,8 +210,11 @@ class FilterController extends FilterBaseController
     /**
      * Moves the selected rule so that it appears immediately before the target rule.
      *
-     * Rcalculates the sequence numbers for all rules using a fixed increment.
-     * If the new maximum sequence would exceed, the operation fails.
+     * Uses integer gap numbering to update the sequence for only the moved rule.
+     * If no gap exists between the target and its previous rule, all rules are reordered
+     * by an increment of 100 starting from 100.
+     *
+     * Floating, Group, and Interface rules cannot be moved before another.
      *
      * @param string $selected_uuid The UUID of the rule to be moved.
      * @param string $target_uuid   The UUID of the target rule (the rule before which the selected rule is to be placed).
@@ -224,49 +227,118 @@ class FilterController extends FilterBaseController
         }
 
         $mdl = $this->getModel();
-        $selectedRule = $mdl->getNodeByReference("rules.rule." . $selected_uuid);
-        $targetRule = $mdl->getNodeByReference("rules.rule." . $target_uuid);
+        $selectedRule = $mdl->getNodeByReference("rules.rule.$selected_uuid");
+        $targetRule   = $mdl->getNodeByReference("rules.rule.$target_uuid");
 
-        if ($selectedRule === null || $targetRule === null) {
+        if (!$selectedRule || !$targetRule) {
             return ["status" => "error", "message" => gettext("Rule not found")];
         }
 
-        // Build an array of rule UUIDs sorted by their current sequence (ascending order)
+        // Check if the first digit of sort_order is the same
+        $selectedSortOrder = (string)$selectedRule->sort_order;
+        $targetSortOrder   = (string)$targetRule->sort_order;
+        $selectedTypeDigit = substr($selectedSortOrder, 0, 1);
+        $targetTypeDigit   = substr($targetSortOrder, 0, 1);
+
+        if ($selectedTypeDigit !== $targetTypeDigit) {
+            $typeNames = [
+                '2' => gettext("Floating"),
+                '3' => gettext("Group"),
+                '4' => gettext("Interface")
+            ];
+            $selectedType = $typeNames[$selectedTypeDigit] ?? gettext("Unknown");
+            $targetType   = $typeNames[$targetTypeDigit] ?? gettext("Unknown");
+            return [
+                "status"  => "error",
+                "message" => sprintf(
+                    gettext("Cannot move '%s Rule' before '%s Rule'."),
+                    $selectedType,
+                    $targetType
+                )
+            ];
+        }
+
+        // Build an array of rules with their sequence values.
         $rules = [];
         foreach ($mdl->rules->rule->iterateItems() as $uuid => $rule) {
-            $rules[$uuid] = (int)(string)$rule->sequence;
+            $seq = $rule->sequence;
+            if (is_object($seq)) {
+                if (method_exists($seq, '__toString')) {
+                    $seq = (string)$seq;
+                } elseif (property_exists($seq, 'value')) {
+                    $seq = $seq->value;
+                } else {
+                    $seq = 0;
+                }
+            }
+            $rules[$uuid] = is_numeric($seq) ? (int)$seq : 0;
         }
+
         asort($rules);
-        $sortedUUIDs = array_keys($rules);
+        $sortedUUIDs     = array_keys($rules);
+        $sortedSequences = array_values($rules);
 
-        // Remove the selected rule from the sorted list.
-        $sortedUUIDs = array_values(array_filter($sortedUUIDs, function($uuid) use ($selected_uuid) {
-            return $uuid !== $selected_uuid;
-        }));
+        // Remove the selected rule from the sorted arrays.
+        if (($key = array_search($selected_uuid, $sortedUUIDs)) !== false) {
+            unset($sortedUUIDs[$key], $sortedSequences[$key]);
+            $sortedUUIDs     = array_values($sortedUUIDs);
+            $sortedSequences = array_values($sortedSequences);
+        }
 
-        // Find the index of the target rule.
-        $targetIndex = array_search($target_uuid, $sortedUUIDs);
-        if ($targetIndex === false) {
+        if (($targetIndex = array_search($target_uuid, $sortedUUIDs)) === false) {
             return ["status" => "error", "message" => gettext("Target rule not found in list")];
         }
 
-        // Insert the selected rule before the target rule.
-        array_splice($sortedUUIDs, $targetIndex, 0, [$selected_uuid]);
-
-        // Use a fixed increment and check maximum sequence.
-        $increment = 1;
-        $totalRules = count($sortedUUIDs);
-        $maxSeq = $increment * $totalRules;
-        if ($maxSeq > 999999) {
-            return ["status" => "error", "message" => gettext("Cannot renumber rules without exceeding the maximum sequence limit")];
+        // Determine the new integer sequence for the moved rule.
+        $newSequence = null;
+        if ($targetIndex === 0) {
+            $targetSequence = $sortedSequences[0];
+            if ($targetSequence > 1) {
+                $newSequence = $targetSequence - 1;
+            }
+        } else {
+            $prevSequence   = $sortedSequences[$targetIndex - 1];
+            $targetSequence = $sortedSequences[$targetIndex];
+            if (($targetSequence - $prevSequence) > 1) {
+                $newSequence = $prevSequence + (int)floor(($targetSequence - $prevSequence) / 2);
+                if ($newSequence <= $prevSequence) {
+                    $newSequence = $prevSequence + 1;
+                }
+            }
         }
 
-        // Renumber all rules with the new order.
-        foreach ($sortedUUIDs as $index => $uuid) {
-            $mdl->rules->rule->$uuid->sequence = (string)(($index + 1) * $increment);
+        // If no space is left, reorder all rules with an increment of 100, starting from 100.
+        if ($newSequence === null || $newSequence >= $targetSequence) {
+            $increment = 100;
+            array_splice($sortedUUIDs, $targetIndex, 0, [$selected_uuid]);
+            $newSequence = 100;
+            foreach ($sortedUUIDs as $uuid) {
+                $mdl->rules->rule->$uuid->sequence = (string)$newSequence;
+                $newSequence += $increment;
+                if ($newSequence > 999999) {
+                    return [
+                        "status"  => "error",
+                        "message" => gettext("Cannot renumber rules without exceeding the maximum sequence limit")
+                    ];
+                }
+            }
+            $mdl->serializeToConfig();
+            Config::getInstance()->save();
+            return [
+                "status"  => "ok",
+                "message" => gettext("Rules reordered due to lack of gaps.")
+            ];
         }
 
-        // Save changes.
+        if ($newSequence > 999999) {
+            return [
+                "status"  => "error",
+                "message" => gettext("Cannot move the rule as it would exceed the sequence limit of 999999.")
+            ];
+        }
+
+        // Set the new sequence for the selected rule and save changes.
+        $mdl->rules->rule->$selected_uuid->sequence = (string)$newSequence;
         $mdl->serializeToConfig();
         Config::getInstance()->save();
 
@@ -275,7 +347,7 @@ class FilterController extends FilterBaseController
 
     /**
      * Retrieve the next available filter sequence number.
-     * It returns the highest number + 1.
+     * It returns the highest number + 100.
      * This is matches how the logic of the FilterSequenceField would increment the sequence number.
      */
     public function getNextSequenceAction()
@@ -292,7 +364,7 @@ class FilterController extends FilterBaseController
 
         // If no sequences are found, start with base value
         $max = empty($sequences) ? 0 : max($sequences);
-        $nextSequence = $max + 1;
+        $nextSequence = $max + 100;
 
         return ['status' => 'ok', 'sequence' => $nextSequence];
     }

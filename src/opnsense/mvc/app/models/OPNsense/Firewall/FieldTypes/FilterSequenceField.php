@@ -33,7 +33,7 @@ use OPNsense\Base\FieldTypes\AutoNumberField;
 /**
  * Class FilterSequenceField
  * Extends the built-in AutoNumberField
- * The next number will not be in an available gap, but always at the end of the sequence.
+ * The next number will not be in an available gap, but always at the end of the sequence and +100.
  */
 class FilterSequenceField extends AutoNumberField
 {
@@ -50,6 +50,6 @@ class FilterSequenceField extends AutoNumberField
                 }
             }
         }
-        $this->internalValue = (string)($maxNumber + 1);
+        $this->internalValue = (string)($maxNumber + 100);
     }
 }

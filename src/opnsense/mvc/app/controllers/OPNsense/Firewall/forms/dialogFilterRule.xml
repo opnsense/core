@@ -21,7 +21,7 @@
     <field>
         <id>rule.sort_order</id>
         <label>Sort order</label>
-        <type>text</type>
+        <type>info</type>
         <help>The order in which rules are being processed.</help>
         <grid_view>
             <width>5em</width>

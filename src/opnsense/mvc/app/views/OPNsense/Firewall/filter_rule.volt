@@ -596,6 +596,7 @@
          */
          const filterSequenceBtn = $("<button type='button' class='btn filter_btn btn-default btn-group' " +
             "data-toggle='tooltip' " +
+            "data-placement='right' " +
             "title='{{ lang._('Generate last free sequence') }}'>")
             .html("<i class='fa fa-cog'></i>");
 
