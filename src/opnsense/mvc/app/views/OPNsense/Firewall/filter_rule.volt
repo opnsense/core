@@ -464,16 +464,19 @@
                 <i class="fa-solid fa-fw fa-network-wired" data-toggle="tooltip" data-placement="right" title="{{ lang._('Network Interface') }}"></i>
             `);
             $(this).find('th[data-column-id="evaluations"] .text').html(`
-                <i class="fa-solid fa-fw fa-bullseye" data-toggle="tooltip" data-placement="right" title="{{ lang._('Number of rule evaluations') }}"></i>
+                <i class="fa-solid fa-fw fa-bullseye" data-toggle="tooltip" data-placement="left" title="{{ lang._('Number of rule evaluations') }}"></i>
             `);
             $(this).find('th[data-column-id="states"] .text').html(`
-                <i class="fa-solid fa-fw fa-chart-line" data-toggle="tooltip" data-placement="right" title="{{ lang._('Current active states for this rule') }}"></i>
+                <i class="fa-solid fa-fw fa-chart-line" data-toggle="tooltip" data-placement="left" title="{{ lang._('Current active states for this rule') }}"></i>
             `);
             $(this).find('th[data-column-id="packets"] .text').html(`
-                <i class="fa-solid fa-fw fa-box" data-toggle="tooltip" data-placement="right" title="{{ lang._('Total packets matched by this rule') }}"></i>
+                <i class="fa-solid fa-fw fa-box" data-toggle="tooltip" data-placement="left" title="{{ lang._('Total packets matched by this rule') }}"></i>
             `);
             $(this).find('th[data-column-id="bytes"] .text').html(`
-                <i class="fa-solid fa-fw fa-database" data-toggle="tooltip" data-placement="right" title="{{ lang._('Total bytes matched by this rule') }}"></i>
+                <i class="fa-solid fa-fw fa-database" data-toggle="tooltip" data-placement="left" title="{{ lang._('Total bytes matched by this rule') }}"></i>
+            `);
+            $(this).find('th[data-column-id="categories"] .text').html(`
+                <i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" data-placement="left" title="{{ lang._('Categories') }}"></i>
             `);
 
             // Initialize tooltips
@@ -678,6 +681,11 @@
 
         $(".search.form-group, .actions.btn-group")
             .wrapAll('<div class="second-row"></div>');
+
+
+        // Dynamically add fa icons to selectpickers
+        $('#category_filter').parent().find('.dropdown-toggle').prepend('<i class="fa fa-tag" style="margin-right: 6px;"></i>');
+        $('#interface_select').parent().find('.dropdown-toggle').prepend('<i class="fa fa-network-wired" style="margin-right: 6px;"></i>');
 
     });
 </script>
