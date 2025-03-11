@@ -160,7 +160,9 @@ class ControllerRoot extends Controller
         ) {
             // session expired / cleanup session data
             $this->getLogger('audit')->notice(sprintf(
-                "session expired (%s @ %s)", $this->session->get("Username"), $_SERVER['REMOTE_ADDR']
+                "session expired (%s @ %s)",
+                $this->session->get("Username"),
+                $_SERVER['REMOTE_ADDR']
             ));
             $this->session->remove("Username");
             $this->session->remove("last_access");
