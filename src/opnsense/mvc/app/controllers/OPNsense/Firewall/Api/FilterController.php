@@ -31,6 +31,7 @@ use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
 use OPNsense\Firewall\Category;
 use OPNsense\Firewall\Group;
+use OPNsense\Firewall\Util;
 
 
 class FilterController extends FilterBaseController
@@ -60,6 +61,26 @@ class FilterController extends FilterBaseController
         ];
 
         return $result;
+    }
+
+    /**
+     * Iterates through rules and appends alias flag arrays.
+     *
+     * @param array &$rows The rules array to process.
+     */
+    private function addAliasFlags(array &$rows)
+    {
+        $aliasFields = ['source_net', 'source_port', 'destination_net', 'destination_port'];
+        foreach ($rows as &$row) {
+            foreach ($aliasFields as $field) {
+                if (!empty($row[$field])) {
+                    $values = array_map('trim', explode(',', $row[$field]));
+                    $row["is_alias_{$field}"] = array_map(function ($value) {
+                        return Util::isAlias($value);
+                    }, $values);
+                }
+            }
+        }
     }
 
     /**
@@ -145,13 +166,20 @@ class FilterController extends FilterBaseController
 
         /* only fetch internal and legacy rules when 'show_all' is set */
         if ($show_all) {
+            $rawOutput = (new Backend())->configdRun("filter list non_mvc_rules") ?? '';
+            error_log("Raw output from configdRun: " . $rawOutput);
             $otherrules = json_decode((new Backend())->configdRun("filter list non_mvc_rules") ?? '', true) ?? [];
         } else {
             $otherrules = [];
         }
 
         $_REQUEST = $ORG_REQ; /* XXX:  fix me ?*/
-        return $this->searchRecordsetBase(array_merge($otherrules, $filterset), null, "sort_order", $filter_funct_rs);
+        $result = $this->searchRecordsetBase(array_merge($otherrules, $filterset), null, "sort_order", $filter_funct_rs);
+
+        /* frontend can format aliases with an alias icon */
+        $this->addAliasFlags($result['rows']);
+
+        return $result;
     }
 
     public function setRuleAction($uuid)
