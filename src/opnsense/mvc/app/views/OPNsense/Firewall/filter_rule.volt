@@ -526,6 +526,7 @@
 
                 $categoryFilter.val(currentSelection).selectpicker('refresh');
             });
+
         });
 
         // Populate interface selectpicker
@@ -777,12 +778,20 @@
         float: left;
         margin-left: 5px;
     }
-    /* Prevent grid to break out of content box */
+    /* Prevent grid to break out of content box
+     * The additional grid-box wraps the grid so it can behave differently from the action-bar
+     */
+    .content-box {
+        overflow-x: auto;
+    }
     .grid-box {
         width: 100%;
         overflow-x: auto;
         background: none;
         border: none;
+        max-width: 100%;
+        /* This is the magic number that prevents the grid from collapsing all dynamic columns completely */
+        min-width: 1400px;
     }
     #all_rules_button i {
         margin-right: 5px;

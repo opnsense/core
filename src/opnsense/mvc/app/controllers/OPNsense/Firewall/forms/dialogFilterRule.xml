@@ -24,7 +24,6 @@
         <type>info</type>
         <help>The order in which rules are being processed.</help>
         <grid_view>
-            <width>5em</width>
             <sequence>20</sequence>
             <visible>false</visible>
             <!-- The sequence order of firewall rules is absolute, no other field shall be sorted -->
@@ -38,7 +37,6 @@
         <type>text</type>
         <help>The order in which rules are being processed. Please note that this is not a unique identifier, the system will automatically recalculate the ruleset when rule positions are changed with the available "Move rule before this rule" button.</help>
         <grid_view>
-            <width>5em</width>
             <sequence>20</sequence>
             <visible>false</visible>
             <sortable>false</sortable>
@@ -54,7 +52,7 @@
             <width>3em</width>
             <sortable>false</sortable>
             <formatter>category</formatter>
-            <sequence>109</sequence>
+            <sequence>112</sequence>
         </grid_view>
     </field>
     <field>
@@ -64,7 +62,6 @@
         <help>Exclude this item from the HA synchronization process. An already existing item with the same UUID on the synchronization target will not be altered or deleted as long as this is active.</help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -75,7 +72,6 @@
         <type>text</type>
         <help>You may enter a description here for your reference (not parsed).</help>
         <grid_view>
-            <width>8em</width>
             <sequence>110</sequence>
             <sortable>false</sortable>
         </grid_view>
@@ -139,7 +135,6 @@
         <help>This allows packets with IP options to pass. Otherwise they are blocked by default.</help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -192,7 +187,6 @@
             <formatter>alias</formatter>
             <sequence>50</sequence>
             <sortable>false</sortable>
-            <width>8em</width>
         </grid_view>
     </field>
     <field>
@@ -205,7 +199,6 @@
             <sequence>60</sequence>
             <sortable>false</sortable>
             <formatter>alias</formatter>
-            <width>4em</width>
         </grid_view>
     </field>
     <field>
@@ -226,7 +219,6 @@
             <formatter>alias</formatter>
             <sequence>70</sequence>
             <sortable>false</sortable>
-            <width>8em</width>
         </grid_view>
     </field>
     <field>
@@ -239,7 +231,6 @@
             <sequence>80</sequence>
             <sortable>false</sortable>
             <formatter>alias</formatter>
-            <width>4em</width>
         </grid_view>
     </field>
     <field>
@@ -258,7 +249,6 @@
         <help>Use this to choose TCP flags that must be set this rule to match.</help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -270,7 +260,6 @@
         <help>Use this to choose TCP flags that must be cleared for this rule to match.</help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -281,7 +270,6 @@
         <type>dropdown</type>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -298,7 +286,6 @@
         <help>State tracking mechanism to use, default is full stateful tracking, sloppy ignores sequence numbers, use none for stateless rules.</help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -314,7 +301,6 @@
         </help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -326,7 +312,6 @@
         <help>State Timeout in seconds (TCP only)</help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -338,7 +323,6 @@
         <help>When the number of state entries exceeds this value, adaptive scaling begins. All timeout values are scaled linearly with factor (adaptive.end - number of states) / (adaptive.end - adaptive.start).</help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -350,7 +334,6 @@
         <help>When reaching this number of state entries, all timeout values become zero, effectively purging all state entries immediately. This value is used to define the scale factor, it should not actually be reached (set a lower state limit).</help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -365,7 +348,6 @@
         </help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -377,7 +359,6 @@
         <help>Limits the maximum number of source addresses which can simultaneously have state table entries.</help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -389,7 +370,6 @@
         <help>Limits the maximum number of simultaneous state entries that a single source address can create with this rule.</help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -401,7 +381,6 @@
         <help>Limit the maximum number of simultaneous TCP connections which have completed the 3-way handshake that a single host can make.</help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -413,7 +392,6 @@
         <help>Maximum new connections per host, measured over time.</help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -425,7 +403,6 @@
         <help>Time interval (seconds) to measure the number of connections</help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -441,7 +418,6 @@
         </help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -453,7 +429,6 @@
         <help>This prevents states created by this rule to be synced with pfsync.</help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <type>boolean</type>
             <formatter>boolean</formatter>
             <visible>false</visible>
@@ -472,7 +447,6 @@
         <help>Shape packets using the selected pipe or queue in the rule direction.</help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -484,7 +458,6 @@
         <help>Shape packets using the selected pipe or queue in the reverse rule direction.</help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -504,7 +477,6 @@
             <formatter>any</formatter>
             <sequence>100</sequence>
             <sortable>false</sortable>
-            <width>6em</width>
         </grid_view>
     </field>
     <field>
@@ -515,7 +487,6 @@
         <help>Explicit disable reply-to for this rule</help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <type>boolean</type>
             <formatter>boolean</formatter>
             <visible>false</visible>
@@ -532,7 +503,6 @@
         </help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
             <formatter>default</formatter>
@@ -550,7 +520,6 @@
         <help>Only match packets which have the given queueing priority assigned.</help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -567,7 +536,6 @@
         </help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -582,7 +550,6 @@
         </help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -593,7 +560,6 @@
         <type>dropdown</type>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -617,7 +583,6 @@
         </help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -629,7 +594,6 @@
         <help>Used to specify that packets must already be tagged with the given tag in order to match the rule.</help>
         <advanced>true</advanced>
         <grid_view>
-            <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -643,8 +607,8 @@
             <visible>false</visible>
             <sortable>false</sortable>
             <label>Stats - Evaluations</label>
-            <sequence>105</sequence>
             <width>4em</width>
+            <sequence>115</sequence>
         </grid_view>
     </field>
     <field>
@@ -655,8 +619,8 @@
             <visible>false</visible>
             <sortable>false</sortable>
             <label>Stats - States</label>
-            <sequence>106</sequence>
             <width>4em</width>
+            <sequence>116</sequence>
         </grid_view>
     </field>
     <field>
@@ -667,8 +631,8 @@
             <visible>false</visible>
             <sortable>false</sortable>
             <label>Stats - Packets</label>
-            <sequence>107</sequence>
             <width>4em</width>
+            <sequence>117</sequence>
         </grid_view>
     </field>
     <field>
@@ -679,8 +643,8 @@
             <visible>false</visible>
             <sortable>false</sortable>
             <label>Stats - Bytes</label>
-            <sequence>108</sequence>
             <width>4em</width>
+            <sequence>118</sequence>
         </grid_view>
     </field>
     <field>
