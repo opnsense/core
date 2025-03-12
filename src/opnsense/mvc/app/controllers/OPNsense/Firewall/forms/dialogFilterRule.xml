@@ -686,7 +686,7 @@
         <grid_view>
             <sortable>false</sortable>
             <formatter>ruleIcons</formatter>
-            <width>8em</width>
+            <width>10em</width>
             <sequence>15</sequence>
         </grid_view>
     </field>
