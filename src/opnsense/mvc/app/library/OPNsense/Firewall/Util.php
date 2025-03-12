@@ -541,4 +541,62 @@ class Util
             }
         }
     }
+
+    /**
+     * @param string $ip subnet address
+     * @param int $bits subnet bit count
+     * @return string the subnet address given a host address and a subnet bit count
+     */
+    public static function genSubnet($ip, $bits)
+    {
+        if (!self::isIpAddress($ip) || !is_numeric($bits)) {
+            return false;
+        }
+        return long2ip(ip2long($ip) & self::genSubnetMaskLong($bits));
+    }
+
+    /**
+     * @param string $ip subnet address
+     * @param int $bits subnet bit count
+     * @return string returns the highest (broadcast) address in the subnet given a host address and a subnet bit count
+     */
+    public static function genSubnetMax($ip, $bits)
+    {
+        if (!self::isIpAddress($ip) || !is_numeric($bits)) {
+            return false;
+        }
+        return self::long2ip32(ip2long($ip) | ~self::genSubnetMaskLong($bits));
+    }
+
+    /**
+     * @param int $bits subnet bit count
+     * @return int returns a subnet mask (long given a bit count)
+     */
+    private static function genSubnetMaskLong($bits)
+    {
+        $sm = 0;
+        for ($i = 0; $i < $bits; $i++) {
+            $sm >>= 1;
+            $sm |= 0x80000000;
+        }
+        return $sm;
+    }
+
+    /**
+     * @param string $ip IP address
+     * @return int Convert IP address to long int, truncated to 32-bits to avoid sign extension on 64-bit platforms.
+     */
+    public static function ip2long32($ip)
+    {
+        return ( ip2long($ip) & 0xFFFFFFFF );
+    }
+
+    /**
+     * @param int $ip long integer representation of an IP address
+     * @return string Convert long int to IP address, truncating to 32-bits.
+     */
+    public static function long2ip32($ip)
+    {
+        return long2ip($ip & 0xFFFFFFFF);
+    }
 }

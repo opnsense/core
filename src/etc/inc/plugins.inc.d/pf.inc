@@ -196,6 +196,15 @@ function pf_firewall($fw)
         $fw->registerForwardRule(600, $rule->serialize());
     }
 
+    if (
+        !empty($mdlFilter->outbound->mode) &&
+          in_array($mdlFilter->outbound->mode, array("advanced", "hybrid"))
+    ) {
+        foreach ($mdlFilter->outbound->rule->sortedBy(['sequence']) as $key => $rule) {
+            $fw->registerSNatRule(100, $rule->serialize());
+        }
+    }
+
     foreach ($mdlFilter->npt->rule->sortedBy(['sequence']) as $key => $rule) {
         $fw->registerNptRule(50, $rule->serialize());
     }

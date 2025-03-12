@@ -43,10 +43,14 @@ class Filter extends BaseModel
     {
         $dntargets = (new TrafficShaper())->fetchAllTargets();
         $config = Config::getInstance()->object();
-        $port_protos = ['TCP', 'UDP', 'TCP/UDP'];
+        if ($this->outbound->rule) {
+            $port_protos = ['any', 'TCP', 'UDP', 'TCP/UDP'];
+        } else {
+            $port_protos = ['TCP', 'UDP', 'TCP/UDP'];
+        }
         // standard model validations
         $messages = parent::performValidation($validateFullModel);
-        foreach ([$this->rules->rule, $this->snatrules->rule, $this->portforward->rule] as $rules) {
+        foreach ([$this->rules->rule, $this->snatrules->rule, $this->portforward->rule, $this->outbound->rule] as $rules) {
             foreach ($rules->iterateItems() as $rule) {
                 if ($validateFullModel || $rule->isFieldChanged()) {
                     // port / protocol validation
@@ -324,6 +328,55 @@ class Filter extends BaseModel
                         $rule->filter_rule = uniqid("nat_", true);
                     } elseif ($rule->filter_rule == 'add_unassociated') {
                         $rule->filter_rule = '';
+                    }
+                }
+            }
+        }
+        /* outbound */
+        foreach ($this->outbound->rule->iterateItems() as $rule) {
+            if ($validateFullModel || $rule->isFieldChanged()) {
+                if (!empty((string)$rule->nonat)) {
+                    foreach (["target"=>$rule->target, "target port"=>$rule->target_port, "static port"=>$rule->static_port] as $key => $value) {
+                        if(!empty((string)$value)) {
+                            $messages->appendMessage(new Message(
+                                sprintf(gettext("The %s should be left blank for NO NAT."), $key),
+                                $value->__reference
+                            ));
+                        }
+                    }
+                }
+                if ($rule->source_net == 'any' && !empty((string)$rule->source_not)) {
+                    $messages->appendMessage(new Message(
+                        gettext("Negating source address of \"any\" is invalid."),
+                        $rule->source_net->__reference
+                    ));
+                }
+                if ($rule->destination_net == 'any' && !empty((string)$rule->destination_not)) {
+                    $messages->appendMessage(new Message(
+                        gettext("Negating destination address of \"any\" is invalid."),
+                        $rule->destination_net->__reference
+                    ));
+                }
+                /* Verify Pool Options */
+                if (!empty((string)$rule->target) && Util::isAlias((string)$rule->target) && !empty((string)$rule->pool_options) && $rule->pool_options != 'round_robin' && $rule->pool_options != 'rr_sticky_addr') {
+                    $messages->appendMessage(new Message(
+                        gettext("Only Round Robin pool options may be chosen when selecting an alias."),
+                        $rule->pool_options->__reference
+                    ));
+                }
+                /* Verify Source Hash Key if provided */
+                if (!empty((string)$rule->source_hash_key)){
+                    if (empty((string)$rule->pool_options) || $rule->pool_options != 'source_hash') {
+                        $messages->appendMessage(new Message(
+                            gettext("Source Hash Key is only valid for Source Hash type."),
+                            $rule->pool_options->__reference
+                        ));
+                    }
+                    if (substr($rule->source_hash_key, 0, 2) != "0x" || !ctype_xdigit(substr($rule->source_hash_key, 2, 32))) {
+                        $messages->appendMessage(new Message(
+                            gettext("Source Hash Key must be 0x followed by 32 hexadecimal digits."),
+                            $rule->source_hash_key->__reference
+                        ));
                     }
                 }
             }

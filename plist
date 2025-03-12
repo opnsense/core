@@ -349,6 +349,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/GroupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/NptController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/OneToOneController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/OutboundController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/PortForwardController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/SourceNatController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/CategoryController.php
@@ -356,12 +357,14 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/GroupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/NptController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/OneToOneController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/OutboundController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/PortForwardController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/SourceNatController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/categoryEdit.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogFilterRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogNptRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogOneToOneRule.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogOutboundRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogPortForwardRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogSNatRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/geoIPSettings.xml
@@ -659,6 +662,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/PortField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/ProtocolField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/TextField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/TranslationField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UniqueIdField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UpdateOnlyTextField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UrlField.php
@@ -771,6 +775,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_3.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_4.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_5.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_6.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/static_aliases/core.json
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/FieldTypes/PolicyContentField.php
@@ -951,6 +956,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/category.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/filter.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/group.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Firewall/outbound.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/policy.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/connections.volt

@@ -41,9 +41,7 @@ class Group extends BaseModel
     {
         $sources = [
             ['filter', 'rule'],
-            ['nat', 'rule'],
             ['nat', 'onetoone'],
-            ['nat', 'outbound', 'rule'],
         ];
         // os-firewall plugin paths
         $sources[] = ['OPNsense', 'Firewall', 'Filter', 'rules', 'rule'];
@@ -51,6 +49,7 @@ class Group extends BaseModel
         $sources[] = ['OPNsense', 'Firewall', 'Filter', 'npt', 'rule'];
         $sources[] = ['OPNsense', 'Firewall', 'Filter', 'portforward', 'rule'];
         $sources[] = ['OPNsense', 'Firewall', 'Filter', 'firewallrules', 'rule'];
+        $sources[] = ['OPNsense', 'Firewall', 'Filter', 'outbound', 'rule'];
 
         foreach ($sources as $aliasref) {
             $cfgsection = Config::getInstance()->object();

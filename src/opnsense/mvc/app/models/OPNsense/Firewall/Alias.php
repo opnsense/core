@@ -99,18 +99,7 @@ class Alias extends BaseModel
         $sources[] = [['filter', 'scrub', 'rule'], ['src']];
         $sources[] = [['filter', 'scrub', 'rule'], ['dstport']];
         $sources[] = [['filter', 'scrub', 'rule'], ['srcport']];
-        $sources[] = [['nat', 'rule'], ['source', 'address']];
-        $sources[] = [['nat', 'rule'], ['source', 'port']];
-        $sources[] = [['nat', 'rule'], ['destination', 'address']];
-        $sources[] = [['nat', 'rule'], ['destination', 'port']];
-        $sources[] = [['nat', 'rule'], ['target']];
-        $sources[] = [['nat', 'rule'], ['local-port']];
         $sources[] = [['nat', 'onetoone'], ['destination', 'address']];
-        $sources[] = [['nat', 'outbound', 'rule'], ['source', 'network']];
-        $sources[] = [['nat', 'outbound', 'rule'], ['sourceport']];
-        $sources[] = [['nat', 'outbound', 'rule'], ['destination', 'network']];
-        $sources[] = [['nat', 'outbound', 'rule'], ['dstport']];
-        $sources[] = [['nat', 'outbound', 'rule'], ['target']];
         $sources[] = [['staticroutes', 'route'], ['network']];
         // os-firewall plugin paths
         $sources[] = [['OPNsense', 'Firewall', 'Filter', 'rules', 'rule'], ['source_net']];
@@ -131,6 +120,11 @@ class Alias extends BaseModel
         $sources[] = [['OPNsense', 'Firewall', 'Filter', 'firewallrules', 'rule'], ['source_port']];
         $sources[] = [['OPNsense', 'Firewall', 'Filter', 'firewallrules', 'rule'], ['destination_net']];
         $sources[] = [['OPNsense', 'Firewall', 'Filter', 'firewallrules', 'rule'], ['destination_port']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'outbound', 'rule'], ['source_net']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'outbound', 'rule'], ['source_port']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'outbound', 'rule'], ['destination_net']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'outbound', 'rule'], ['destination_port']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'outbound', 'rule'], ['target']];
 
         return $sources;
     }

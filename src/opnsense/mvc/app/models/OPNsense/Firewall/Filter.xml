@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Firewall/Filter</mount>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <migration_prefix>MFP</migration_prefix>
     <description>OPNsense firewall filter rules</description>
     <items>
@@ -757,5 +757,115 @@
                 </state_type>
             </rule>
         </firewallrules>
+        <outbound>
+            <mode type="TextField"/>
+            <rule type=".\SourceNatRuleField">
+                <enabled type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </enabled>
+                <sequence type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>99999</MaximumValue>
+                    <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
+                    <Required>Y</Required>
+                    <Default>1</Default>
+                </sequence>
+                <nonat type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </nonat>
+                <interface type="InterfaceField">
+                    <Required>Y</Required>
+                    <Default>wan</Default>
+                    <AllowDynamic>Y</AllowDynamic>
+                </interface>
+                <ipprotocol type="OptionField">
+                    <Required>Y</Required>
+                    <Default>inet</Default>
+                    <OptionValues>
+                        <inet>IPv4</inet>
+                        <inet6>IPv6</inet6>
+                    </OptionValues>
+                </ipprotocol>
+                <protocol type="ProtocolField">
+                    <Required>Y</Required>
+                    <Default>any</Default>
+                    <AddOptions>
+                        <opt1 value='TCP/UDP'>TCP/UDP</opt1>
+                    </AddOptions>
+                </protocol>
+                <source_not type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </source_not>
+                <source_net type="NetworkAliasField">
+                    <Required>Y</Required>
+                    <Default>any</Default>
+                </source_net>
+                <source_port type="PortField">
+                    <EnableWellKnown>Y</EnableWellKnown>
+                    <EnableRanges>Y</EnableRanges>
+                    <EnableAlias>Y</EnableAlias>
+                    <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
+                </source_port>
+                <destination_not type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </destination_not>
+                <destination_net type="NetworkAliasField">
+                    <Required>Y</Required>
+                    <Default>any</Default>
+                </destination_net>
+                <destination_port type="PortField">
+                    <EnableWellKnown>Y</EnableWellKnown>
+                    <EnableRanges>Y</EnableRanges>
+                    <EnableAlias>Y</EnableAlias>
+                    <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
+                </destination_port>
+                <target type="TranslationField"/>
+                <target_port type="PortField">
+                    <EnableWellKnown>Y</EnableWellKnown>
+                    <EnableRanges>Y</EnableRanges>
+                </target_port>
+                <static_port type="BooleanField">
+                    <Default>0</Default>
+                </static_port>
+                <log type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </log>
+                <pool_options type="OptionField">
+                    <BlankDesc>Default</BlankDesc>
+                    <OptionValues>
+                        <round_robin>Round Robin</round_robin>
+                        <rr_sticky_addr>Round Robin with Sticky Address</rr_sticky_addr>
+                        <random>Random</random>
+                        <ra_sticky_addr>Random with Sticky Address</ra_sticky_addr>
+                        <source_hash>Source Hash</source_hash>
+                        <bitmask>Bitmask</bitmask>
+                    </OptionValues>
+                </pool_options>
+                <source_hash_key type="TextField"/>
+                <set_tag type="TextField"/>
+                <match_tag type="TextField"/>
+                <no_xmlrpc_sync type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </no_xmlrpc_sync>
+                <categories type="ModelRelationField">
+                    <Model>
+                        <rulesets>
+                            <source>OPNsense.Firewall.Category</source>
+                            <items>categories.category</items>
+                            <display>name</display>
+                        </rulesets>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                    <ValidationMessage>Related category not found.</ValidationMessage>
+                </categories>
+                <description type="DescriptionField"/>
+            </rule>
+        </outbound>
     </items>
 </model>

@@ -175,23 +175,10 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     // register user rules, returns kill states for schedules
     $sched_kill_states = filter_core_rules_user($fw);
 
-    // manual outbound nat rules
+    // automatic outbound rules
     if (
-        !empty($config['nat']['outbound']['mode']) &&
-          in_array($config['nat']['outbound']['mode'], array("advanced", "hybrid"))
-    ) {
-        if (!empty($config['nat']['outbound']['rule'])) {
-            foreach ($config['nat']['outbound']['rule'] as $rule) {
-                if (is_array($rule)) {
-                    $fw->registerSNatRule(100, $rule);
-                }
-            }
-        }
-    }
-
-    if (
-        empty($config['nat']['outbound']['mode']) ||
-          in_array($config['nat']['outbound']['mode'], array("automatic", "hybrid"))
+        empty($config['OPNsense']['Firewall']['Filter']['outbound']['mode']) ||
+          in_array($config['OPNsense']['Firewall']['Filter']['outbound']['mode'], array("automatic", "hybrid"))
     ) {
         // generate standard outbound rules when mode is automatic or hybrid
         $intfv4 = array();

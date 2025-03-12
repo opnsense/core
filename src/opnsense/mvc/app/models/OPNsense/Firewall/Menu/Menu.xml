@@ -15,6 +15,9 @@
             <OneToOne order="200" VisibleName="One-to-One" url="/ui/firewall/one_to_one/">
                 <FilterRef url="/ui/firewall/one_to_one#*" visibility="hidden"/>
             </OneToOne>
+            <Outbound order="300" VisibleName="Outbound" url="/ui/firewall/outbound/">
+                <Edit url="/ui/firewall/outbound#*" visibility="hidden"/>
+            </Outbound>
             <NPTv6 order="400" url="/ui/firewall/npt/">
                 <FilterRef url="/ui/firewall/npt#*" visibility="hidden"/>
             </NPTv6>

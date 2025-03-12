@@ -34,4 +34,11 @@
             <pattern>api/firewall/port_forward/*</pattern>
         </patterns>
     </page-firewall-nat-portforward>
+    <page-firewall-nat-outbound>
+        <name>Firewall: NAT: Outbound</name>
+        <patterns>
+            <pattern>ui/firewall/outbound/*</pattern>
+            <pattern>api/firewall/outbound/*</pattern>
+        </patterns>
+    </page-firewall-nat-outbound>
 </acl>
