@@ -248,7 +248,7 @@
                             ${isNegated}
                             <span data-toggle="tooltip" data-html="true" title="${tooltipText}" style="white-space: nowrap;">
                                 <span class="interface-count">${interfaceList.length}</span>
-                                <i class="fa-solid fa-fw fa-ethernet"></i>
+                                <i class="fa-solid fa-fw fa-network-wired"></i>
                             </span>
                         `;
                     },
@@ -258,6 +258,24 @@
                         const iconStyle = (row.enabled == 0)
                             ? 'style="opacity: 0.4; pointer-events: none;"'
                             : '';
+
+                        // Rule Type Icons (Determined by first digit of sort_order)
+                        const ruleTypeIcons = {
+                            '0': { icon: "fa-magic", tooltip: "{{ lang._('Automatic Rule') }}", color: "text-secondary" },
+                            '2': { icon: "fa-layer-group", tooltip: "{{ lang._('Floating Rule') }}", color: "text-primary" },
+                            '3': { icon: "fa-sitemap", tooltip: "{{ lang._('Group Rule') }}", color: "text-warning" },
+                            '4': { icon: "fa-ethernet", tooltip: "{{ lang._('Interface Rule') }}", color: "text-info" },
+                            '5': { icon: "fa-magic", tooltip: "{{ lang._('Automatic Rule') }}", color: "text-secondary" },
+                        };
+
+                        const sortOrder = row.sort_order ? row.sort_order.toString() : "";
+                        if (sortOrder.length > 0) {
+                            const typeDigit = sortOrder.charAt(0);
+                            if (ruleTypeIcons[typeDigit]) {
+                                result += `<i class="fa ${ruleTypeIcons[typeDigit].icon} fa-fw ${ruleTypeIcons[typeDigit].color}"
+                                            data-toggle="tooltip" title="${ruleTypeIcons[typeDigit].tooltip}"></i> `;
+                            }
+                        }
 
                         // Action
                         if (row.action.toLowerCase() === "block") {
@@ -686,6 +704,26 @@
         // Dynamically add fa icons to selectpickers
         $('#category_filter').parent().find('.dropdown-toggle').prepend('<i class="fa fa-tag" style="margin-right: 6px;"></i>');
         $('#interface_select').parent().find('.dropdown-toggle').prepend('<i class="fa fa-network-wired" style="margin-right: 6px;"></i>');
+
+        $('#interface_select').on('shown.bs.select', function () {
+            const icons = {
+                'Floating': { icon: "fa-layer-group", tooltip: "{{ lang._('Floating Rule') }}", color: "text-primary" },
+                'Groups': { icon: "fa-sitemap", tooltip: "{{ lang._('Group Rule') }}", color: "text-warning" },
+                'Interfaces': { icon: "fa-ethernet", tooltip: "{{ lang._('Interface Rule') }}", color: "text-info" }
+            };
+
+            $('.bootstrap-select .dropdown-menu li.disabled a .text strong').each(function () {
+                const text = $(this).text().trim();
+
+                if (icons[text] && !$(this).closest('a').find('i').length) {
+                    $(this)
+                        .closest('a')
+                        .prepend(
+                            `<i class="fa ${icons[text].icon} ${icons[text].color}" title="${icons[text].tooltip}" style="margin-right: 6px;"></i> `
+                        );
+                }
+            });
+        });
 
     });
 </script>
