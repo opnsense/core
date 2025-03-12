@@ -714,6 +714,18 @@
             });
         });
 
+        // Hook into add event and choose same interface in new rule as selected in #interface_select
+        $('#{{formGridFilterRule["edit_dialog_id"]}}').on('opnsense_bootgrid_mapped', function(e, actionType) {
+            if (actionType === 'add') {
+                const selectedInterface = $('#interface_select').val();
+                if (selectedInterface) {
+                    // For multi-select, pass the value as an array.
+                    $('#rule\\.interface').selectpicker('val', [selectedInterface]);
+                    $('#rule\\.interface').selectpicker('refresh');
+                }
+            }
+        });
+
     });
 </script>
 

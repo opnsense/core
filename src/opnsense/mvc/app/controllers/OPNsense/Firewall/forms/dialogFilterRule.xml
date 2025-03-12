@@ -82,6 +82,31 @@
     </field>
     <field>
         <type>header</type>
+        <label>Interface</label>
+    </field>
+    <field>
+        <id>rule.interfacenot</id>
+        <label>Invert Interface</label>
+        <type>checkbox</type>
+        <help>Use all but selected interfaces</help>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.interface</id>
+        <label>Interface</label>
+        <type>select_multiple</type>
+        <hint>any</hint>
+        <grid_view>
+            <formatter>interfaces</formatter>
+            <sequence>25</sequence>
+            <sortable>false</sortable>
+            <width>4em</width>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
         <label>Filter</label>
     </field>
     <field>
@@ -117,27 +142,6 @@
             <width>6em</width>
             <visible>false</visible>
             <sortable>false</sortable>
-        </grid_view>
-    </field>
-    <field>
-        <id>rule.interfacenot</id>
-        <label>Invert Interface</label>
-        <type>checkbox</type>
-        <help>Use all but selected interfaces</help>
-        <grid_view>
-            <ignore>true</ignore>
-        </grid_view>
-    </field>
-    <field>
-        <id>rule.interface</id>
-        <label>Interface</label>
-        <type>select_multiple</type>
-        <hint>any</hint>
-        <grid_view>
-            <formatter>interfaces</formatter>
-            <sequence>25</sequence>
-            <sortable>false</sortable>
-            <width>4em</width>
         </grid_view>
     </field>
     <field>
