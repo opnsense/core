@@ -403,7 +403,7 @@ class FilterController extends FilterBaseController
     public function getInterfaceListAction()
     {
         $floating = [
-            ['value' => '__header_floating', 'label' => '--- Floating ---'],
+            ['value' => '__header_floating', 'label' => 'Floating'],
             ['value' => '', 'label' => 'Any']
         ];
 
@@ -434,10 +434,10 @@ class FilterController extends FilterBaseController
         usort($groups, fn($a, $b) => strcasecmp($a['label'], $b['label']));
 
         if (!empty($groups)) {
-            array_unshift($groups, ['value' => '__header_group', 'label' => '--- Group ---']);
+            array_unshift($groups, ['value' => '__header_group', 'label' => 'Groups']);
         }
         if (!empty($interfaces)) {
-            array_unshift($interfaces, ['value' => '__header_interface', 'label' => '--- Interface ---']);
+            array_unshift($interfaces, ['value' => '__header_interface', 'label' => 'Interfaces']);
         }
 
         return array_merge($floating, $groups, $interfaces);
