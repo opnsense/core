@@ -726,6 +726,26 @@
             }
         });
 
+        // Do the same as above with category selection (supports multiple)
+        $('#{{formGridFilterRule["edit_dialog_id"]}}').on('opnsense_bootgrid_mapped', function(e, actionType) {
+            if (actionType === 'add') {
+                const selectedCategories = $('#category_filter').val();
+
+                if (selectedCategories && selectedCategories.length > 0) {
+                    let categorySelect = $('#rule\\.categories');
+
+                    // Clear existing tokens
+                    categorySelect.tokenize2().trigger('tokenize:clear');
+
+                    // Loop through selected categories and add them
+                    selectedCategories.forEach(function(categoryUUID) {
+                        let categoryLabel = $('#rule\\.categories option[value="' + categoryUUID + '"]').text();
+                        categorySelect.tokenize2().trigger('tokenize:tokens:add', [categoryUUID, categoryLabel]);
+                    });
+                }
+            }
+        });
+
     });
 </script>
 
