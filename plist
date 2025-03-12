@@ -529,7 +529,6 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Wireguard/forms/dialogEditWireguardClient.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Wireguard/forms/dialogEditWireguardServer.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Wireguard/forms/general.xml
-/usr/local/opnsense/mvc/app/library/Google/API/Drive.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/API.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/AuthenticationFactory.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Base.php
@@ -548,7 +547,6 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Autoload/Loader.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/BackupFactory.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/Base.php
-/usr/local/opnsense/mvc/app/library/OPNsense/Backup/GDrive.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/IBackupProvider.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/Local.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Base/UIModelGrid.php

@@ -34,7 +34,7 @@
         <label>Prefix length (ipv6)</label>
         <type>text</type>
         <hint>64</hint>
-        <help>Prefix lenght offered to the client.</help>
+        <help>Prefix length offered to the client.</help>
     </field>
     <field>
         <id>range.mode</id>
