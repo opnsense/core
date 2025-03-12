@@ -501,18 +501,6 @@
             // Initialize tooltips
             $('[data-toggle="tooltip"]').tooltip();
 
-            // Animate move_up and move_down commands
-            const highlightUuid = sessionStorage.getItem("highlightRuleUuid");
-            if (highlightUuid) {
-                const $row = $("[data-row-id='" + highlightUuid + "']", this);
-
-                if ($row.length) {
-                    $row.addClass("highlight-animate");
-                }
-
-                sessionStorage.removeItem("highlightRuleUuid");
-            }
-
             // Reload categories before grid load
             ajaxCall('/api/firewall/filter/list_categories', {}, function (data) {
                 if (!data.rows) return;
