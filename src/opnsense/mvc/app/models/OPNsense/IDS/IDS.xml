@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/IDS</mount>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <description>OPNsense IDS</description>
     <items>
         <rules>
@@ -174,22 +174,6 @@
                 </Model>
                 <ValidationMessage>Related cron not found.</ValidationMessage>
             </UpdateCron>
-            <AlertLogrotate type="OptionField">
-              <Required>Y</Required>
-              <Default>W0D23</Default>
-              <OptionValues>
-                  <W0D23>Weekly</W0D23>
-                  <D0>Daily</D0>
-              </OptionValues>
-              <ValidationMessage>Please select a valid rotation</ValidationMessage>
-            </AlertLogrotate>
-            <AlertSaveLogs type="IntegerField">
-                <Required>Y</Required>
-                <Default>4</Default>
-                <MinimumValue>1</MinimumValue>
-                <MaximumValue>1000</MaximumValue>
-                <ValidationMessage>Enter a valid number of logs to save</ValidationMessage>
-            </AlertSaveLogs>
             <MPMAlgo type="OptionField">
               <BlankDesc>Default</BlankDesc>
               <OptionValues>
@@ -230,10 +214,6 @@
                 <Default>0</Default>
                 <Required>Y</Required>
             </syslog_eve>
-            <LogPayload type="BooleanField">
-                <Default>0</Default>
-                <Required>Y</Required>
-            </LogPayload>
             <verbosity type="OptionField">
                 <BlankDesc>DEFAULT (0)</BlankDesc>
                 <OptionValues>
@@ -244,15 +224,79 @@
                 </OptionValues>
             </verbosity>
             <eveLog>
+                <rotate>
+                    <frequency type="OptionField">
+                        <Required>Y</Required>
+                        <Default>W0D0</Default>
+                        <OptionValues>
+                            <W0D0>Weekly</W0D0>
+                            <D0>Daily</D0>
+                        </OptionValues>
+                        <ValidationMessage>Please select a valid rotation frequency</ValidationMessage>
+                    </frequency>
+                    <size type="IntegerField">
+                        <Required>Y</Required>
+                        <Default>500000</Default>
+                        <MinimumValue>1</MinimumValue>
+                        <ValidationMessage>Enter a valid number of kilobytes</ValidationMessage>
+                    </size>
+                    <count type="IntegerField">
+                        <Required>Y</Required>
+                        <Default>4</Default>
+                        <MinimumValue>1</MinimumValue>
+                        <ValidationMessage>Enter a valid number of logs to save</ValidationMessage>
+                    </count>
+                </rotate>
+                <types type="OptionField">
+                    <Default>alert</Default>
+                    <OptionValues>
+                        <alert>Alerts</alert>
+                        <anomaly>Anomalies</anomaly>
+                        <http>HTTP</http>
+                        <dns>DNS</dns>
+                        <tls>TLS</tls>
+                        <files>Files</files>
+                        <smtp>SMTP</smtp>
+                        <dnp3>DNP3</dnp3>
+                        <ftp>FTP</ftp>
+                        <rdp>RDP</rdp>
+                        <nfs>NFS</nfs>
+                        <smb>SMB</smb>
+                        <tftp>TFTP</tftp>
+                        <ike>IKE</ike>
+                        <dcerpc>DCE/RPC</dcerpc>
+                        <krb5>Kerberos</krb5>
+                        <bittorrentDht>BitTorrent DHT</bittorrentDht>
+                        <snmp>SNMP</snmp>
+                        <rfb>RFB/VNC</rfb>
+                        <sip>SIP</sip>
+                        <quic>QUIC</quic>
+                        <dhcp>DHCP</dhcp>
+                        <ssh>SSH</ssh>
+                        <mqtt>MQTT</mqtt>
+                        <http2>HTTP2</http2>
+                        <pgsql>PGSQL</pgsql>
+                        <stats>Statistics</stats>
+                        <flow>Bi-Directional Flows</flow>
+                        <netflow>Uni-Directional Netflows</netflow>
+                    </OptionValues>
+                    <Multiple>Y</Multiple>
+                </types>
+                <extend type="OptionField">
+                    <Default>alert</Default>
+                    <OptionValues>
+                        <alert>Alerts</alert>
+                        <http>HTTP</http>
+                        <tls>TLS</tls>
+                        <files>Files</files>
+                        <smtp>SMTP</smtp>
+                        <dhcp>DHCP</dhcp>
+                        <mqtt>MQTT</mqtt>
+                        <pgsql>PGSQL</pgsql>
+                    </OptionValues>
+                    <Multiple>Y</Multiple>
+                </extend>
                 <http>
-                    <enable type="BooleanField">
-                        <Default>0</Default>
-                        <Required>Y</Required>
-                    </enable>
-                    <extended type="BooleanField">
-                        <Default>0</Default>
-                        <Required>Y</Required>
-                    </extended>
                     <dumpAllHeaders type="OptionField">
                         <OptionValues>
                             <request>Request</request>
@@ -262,16 +306,8 @@
                     </dumpAllHeaders>
                 </http>
                 <tls>
-                    <enable type="BooleanField">
-                        <Default>0</Default>
-                        <Required>Y</Required>
-                    </enable>
-                    <extended type="BooleanField">
-                        <Default>0</Default>
-                        <Required>Y</Required>
-                    </extended>
                     <sessionResumption type="BooleanField">
-                        <Default>0</Default>
+                        <Default>1</Default>
                         <Required>Y</Required>
                     </sessionResumption>
                     <custom type="OptionField">
@@ -289,11 +325,70 @@
                             <chain>chain</chain>
                             <ja3>ja3</ja3>
                             <ja3s>ja3s</ja3s>
+                            <ja4>ja4</ja4>
                         </OptionValues>
                         <Multiple>Y</Multiple>
                     </custom>
                 </tls>
+                <files>
+                    <forceHash type="OptionField">
+                        <OptionValues>
+                            <md5>md5</md5>
+                            <sha1>sha1</sha1>
+                            <sha256>sha256</sha256>
+                        </OptionValues>
+                        <Multiple>Y</Multiple>
+                    </forceHash>
+                </files>
+                <smtp>
+                    <custom type="OptionField">
+                        <OptionValues>
+                            <reply-to>reply-to</reply-to>
+                            <bcc>bcc</bcc>
+                            <message-id>message-id</message-id>
+                            <subject>subject</subject>
+                            <x-mailer>x-mailer</x-mailer>
+                            <user-agent>user-agent</user-agent>
+                            <received>received</received>
+                            <x-originating-ip>x-originating-ip</x-originating-ip>
+                            <in-reply-to>in-reply-to</in-reply-to>
+                            <references>references</references>
+                            <importance>importance</importance>
+                            <priority>priority</priority>
+                            <sensitivity>sensitivity</sensitivity>
+                            <organization>organization</organization>
+                            <content-md5>content-md5</content-md5>
+                            <date>date</date>
+                        </OptionValues>
+                        <Multiple>Y</Multiple>
+                    </custom>
+                </smtp>
+                <metadata>
+                    <enable type="BooleanField">
+                        <Default>0</Default>
+                        <Required>Y</Required>
+                    </enable>
+                </metadata>
             </eveLog>
+            <pcapLog>
+                <enable type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </enable>
+                <limit type="IntegerField">
+                    <ValidationMessage>Limit should be a number.</ValidationMessage>
+                    <Required>Y</Required>
+                    <Default>1000</Default>
+                    <MinimumValue>1</MinimumValue>
+                </limit>
+                <maxFiles type="IntegerField">
+                    <ValidationMessage>Maximum files should be a number.</ValidationMessage>
+                    <Required>Y</Required>
+                    <Default>2000</Default>
+                    <MinimumValue>1</MinimumValue>
+                </maxFiles>
+            </pcapLog>
+            <bpfFilter type="TextField"/>
         </general>
     </items>
 </model>
