@@ -72,6 +72,20 @@ abstract class Base
     }
 
     /**
+     * run simple shell command
+     * @param string $cmd command to execute
+     * @return array output lines when returnvalue equals 0
+     */
+    protected function shellCmd(string $cmd)
+    {
+        exec($cmd . '  2>&1', $payload, $returncode);
+        if ($returncode == 0 && !empty($payload[0])) {
+            return $payload;
+        }
+        return [];
+    }
+
+    /**
      * @param string $filename filename to link to this collection
      */
     public function __construct(string $filename)

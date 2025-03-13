@@ -27,17 +27,70 @@
  */
 
 namespace OPNsense\RRD\Stats;
+use SimpleXMLElement;
 
 class Temperature extends Base
 {
     public function run()
     {
         $data = $this->shellCmd(
-            '/sbin/sysctl -ni dev.cpu.0.temperature hw.acpi.thermal.tz0.temperature hw.temperature.CPU'
+            '/sbin/sysctl -ni ' . $this->SENSORS()
         );
         if (!empty($data)) {
-            return [preg_replace('/[^0-9,.]/', '', $data[0])];
+            foreach ($data as $tmp) {
+                $data_tmp[] = preg_replace('/[^0-9,.]/', '', $tmp);
+            }
+            return $data_tmp;
         }
         return [];
+    }
+
+    private function SENSORS()
+    {
+        $topology_spec = $this->shellCmd('/sbin/sysctl -niq kern.sched.topology_spec');
+        $xml = new SimpleXMLElement(implode('', $topology_spec));
+
+        $cpus = $xml->xpath('//children/group[not(children/group)]');
+
+        /* get temperature sensor of each CPU core */
+        foreach ($cpus as $core) {
+
+            $cpu_ids = explode(', ', $core->cpu);
+            $THREAD_group = ($core->flags->xpath('flag[@name = \'THREAD\']'))[0] == 'THREAD group' ? true : false;
+
+            foreach ($cpu_ids as $cpu_id) {
+                $temperature_sensors[] = 'dev.cpu.'.$cpu_id.'.temperature';
+                if ($THREAD_group) { # get only the first one
+                   break;
+                }
+            }
+        }
+
+        /* no cores identified, get all CPU temperature sensors */
+        if (empty($temperature_sensors)) {
+            $objects = $this->shellCmd('/sbin/sysctl -Niq dev.cpu');
+
+            $pattern = '/dev\.cpu\.[0-9]+\.temperature/';
+            foreach ($objects as $object) {
+                if (preg_match($pattern, $object, $cpu_sensor)) {
+                    $temperature_sensors[] = $cpu_sensor[0];
+                }
+            }
+
+            /* no CPUs identified, get acpi zone 0 temperature sensor */
+            if (empty($temperature_sensors)) {
+                $temperature_sensors[] = 'hw.acpi.thermal.tz0.temperature';
+            }
+
+            /* no acpi zone 0 temperature sensor found, using default temperature sensor */
+            if (empty($temperature_sensors)) {
+                $temperature_sensors[] = 'hw.temperature.CPU';
+            }
+        }
+
+        sort($temperature_sensors);
+        $temperature_sensors = implode(' ', $temperature_sensors);
+
+        return $temperature_sensors;
     }
 }

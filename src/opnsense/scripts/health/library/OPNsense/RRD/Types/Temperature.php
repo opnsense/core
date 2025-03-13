@@ -44,7 +44,7 @@ class Temperature extends Base
     public function __construct(string $filename)
     {
         parent::__construct($filename);
-        $this->addDatasets(['cpu0temp'], 'GAUGE');
+        $this->addDatasets($this->DATASETS(), 'GAUGE');
         $this->setRRA([
             ['MIN', 0.5, 1, 1200],
             ['MIN', 0.5, 5, 720],
@@ -63,5 +63,30 @@ class Temperature extends Base
             ['LAST', 0.5, 60, 1860],
             ['LAST', 0.5, 1440, 2284],
         ]);
+    }
+
+    /**
+     * return data sets array of Cores/CPUs
+     */
+    private function DATASETS()
+    {
+        $count = $this->shellCmd('/sbin/sysctl -niq kern.smp.cores');
+        if ($count[0] >= 1) { # Cores
+            $type = 'core';
+        } else {
+            $count = $this->shellCmd('/sbin/sysctl -niq hw.ncpu');
+            if ($count[0] >= 1) { # CPUs
+                $type = 'cpu';
+            } else { # CPU (fail safe)
+                $type = 'cpu';
+                $count[0] = 1;
+            }
+        }
+
+        for ($i=1; $i<=$count[0]; $i++) {
+            $DSet[] = $type.$i;
+        }
+
+        return $DSet;
     }
 }
