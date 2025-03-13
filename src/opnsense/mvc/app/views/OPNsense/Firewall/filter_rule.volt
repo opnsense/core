@@ -680,16 +680,8 @@
             filterSequenceBtn.tooltip('hide')
         });
 
-
         // Wrap buttons and grid into divs to target them with css for responsiveness
-        $("#{{ formGridFilterRule['table_id'] }}").wrap('<div class="grid-box"></div>');
-
-        $("#interface_select_container, #type_filter_container, #internal_rule_selector")
-            .wrapAll('<div class="first-row"></div>');
-
-        $(".search.form-group, .actions.btn-group")
-            .wrapAll('<div class="second-row"></div>');
-
+        $("#{{ formGridFilterRule['table_id'] }}").wrap('<div class="bootgrid-box"></div>');
 
         // Dynamically add fa icons to selectpickers
         $('#category_filter').parent().find('.dropdown-toggle').prepend('<i class="fa fa-tag" style="margin-right: 6px;"></i>');
@@ -756,7 +748,7 @@
     }
     /* The filter rules column dropdown has many items */
     .actions .dropdown-menu.pull-right {
-        max-height: 400px;
+        max-height: 200px;
         min-width: max-content;
         overflow-y: auto;
         overflow-x: hidden;
@@ -778,20 +770,23 @@
         float: left;
         margin-left: 5px;
     }
-    /* Prevent grid to break out of content box
-     * The additional grid-box wraps the grid so it can behave differently from the action-bar
-     */
+    /* Prevent bootgrid to break out of content box*/
     .content-box {
         overflow-x: auto;
     }
-    .grid-box {
+    .bootgrid-header,
+    .bootgrid-box,
+    .bootgrid-footer {
         width: 100%;
-        overflow-x: auto;
         background: none;
         border: none;
         max-width: 100%;
-        /* This is the magic number that prevents the grid from collapsing all dynamic columns completely */
+        /* Prevents the grid from collapsing all dynamic columns completely */
         min-width: 1400px;
+    }
+    /* Not all dropdowns support data-container="body", ensure minimal vertical space for them */
+    .bootgrid-box {
+        min-height: 150px;
     }
     #all_rules_button i {
         margin-right: 5px;
@@ -801,49 +796,17 @@
         white-space: normal;
         word-wrap: break-word;
     }
-    /* Format the action bar for mobile devices */
-    @media (max-width: 1200px) {
-        .actionBar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: flex-start;
-        }
-
-        .first-row, .second-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .search.form-group {
-            width: 200px;
-            margin-right: 5px
-        }
-    }
-    @media (max-width: 620px) {
-        #interface_select_container,
-        #type_filter_container,
-        #internal_rule_selector,
-        .search.form-group,
-        .actions.btn-group,
-        #all_rules_button {
-            margin: 0;
-            width: 200px;
-            gap: 10px;
-        }
-    }
 </style>
 
 <div class="tab-content content-box">
     <!-- filters -->
     <div class="hidden">
         <div id="type_filter_container" class="btn-group">
-            <select id="category_filter" data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="5" multiple data-width="200px">
+            <select id="category_filter" data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="5" multiple data-width="200px" data-container="body">
             </select>
         </div>
         <div id="interface_select_container" class="btn-group">
-            <select id="interface_select" class="selectpicker" data-live-search="true" data-size="15" data-width="200px" title="{{ lang._('Interface') }}">
+            <select id="interface_select" class="selectpicker" data-live-search="true" data-size="15" data-width="200px" data-container="body" title="{{ lang._('Interface') }}">
             </select>
         </div>
         <div id="internal_rule_selector" class="btn-group">
