@@ -161,7 +161,6 @@ CORE_DEPENDS?=		ca_root_nss \
 			php${CORE_PHP}-dom \
 			php${CORE_PHP}-filter \
 			php${CORE_PHP}-gettext \
-			php${CORE_PHP}-google-api-php-client \
 			php${CORE_PHP}-ldap \
 			php${CORE_PHP}-pcntl \
 			php${CORE_PHP}-pdo \
@@ -178,6 +177,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			pkg \
 			py${CORE_PYTHON}-Jinja2 \
 			py${CORE_PYTHON}-dnspython \
+			py${CORE_PYTHON}-jq \
 			py${CORE_PYTHON}-ldap3 \
 			py${CORE_PYTHON}-netaddr \
 			py${CORE_PYTHON}-requests \
