@@ -93,6 +93,15 @@
 
         $("#reconfigureAct").SimpleActionButton();
 
+        /* hide monitor fields when disabled */
+        $("#gateway_item\\.monitor_disable").change(function(){
+            if ($(this).is(':checked')) {
+                $(".monitor_opt").closest('tr').hide();
+            } else {
+                $(".monitor_opt").closest('tr').show();
+            }
+        });
+
     });
 </script>
 
