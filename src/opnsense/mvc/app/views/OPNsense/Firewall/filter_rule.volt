@@ -782,7 +782,7 @@
         border: none;
         max-width: 100%;
         /* Prevents the grid from collapsing all dynamic columns completely */
-        min-width: 1400px;
+        min-width: 1200px;
     }
     /* Not all dropdowns support data-container="body", ensure minimal vertical space for them */
     .bootgrid-box {
