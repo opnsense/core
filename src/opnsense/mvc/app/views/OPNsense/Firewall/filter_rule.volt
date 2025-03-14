@@ -695,6 +695,13 @@
             }
         });
 
+        // Wrap buttons and grid into divs to target them with css for responsiveness
+        $("#{{ formGridFilterRule['table_id'] }}").wrap('<div class="bootgrid-box"></div>');
+
+        // Dynamically add fa icons to selectpickers
+        $('#category_filter').parent().find('.dropdown-toggle').prepend('<i class="fa fa-tag" style="margin-right: 6px;"></i>');
+        $('#interface_select').parent().find('.dropdown-toggle').prepend('<i class="fa fa-network-wired" style="margin-right: 6px;"></i>');
+
         $("#reconfigureAct").SimpleActionButton();
 
     });
