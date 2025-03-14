@@ -69,4 +69,4 @@ fi
 			/usr/local/bin/beep -p "${NOTE}" "${DURATION}"
 		done
 	fi
-) 9 < ${BEEPDIR}/start
+) 9< ${BEEPDIR}/start
