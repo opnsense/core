@@ -26,7 +26,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 BEEPDIR="/usr/local/etc/opnsense-beep.d"
-LOCK="${BEEPDIR}/low"
+LOCK="${BEEPDIR}/start"
 COMMAND=${1}
 
 if [ -z "${COMMAND}" ]; then
