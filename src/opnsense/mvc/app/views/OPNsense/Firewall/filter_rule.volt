@@ -77,12 +77,11 @@
         // XXX: Clear any stored column visibility settings for the firewall filter page
         // Synergizes with the Inspect Button since it unhides certain columns that should be hidden on page load
         // Prevents messed up views, we always control the intentional default of the page
-        Object.keys(localStorage).forEach(function(key) {
-            if (key.indexOf("visibleColumns[/ui/firewall/filter/") === 0) {
-                localStorage.removeItem(key);
-            }
-        });
+        Object.keys(localStorage)
+            .filter(key => key.startsWith("visibleColumns[/ui/firewall/filter/"))
+            .forEach(key => localStorage.removeItem(key));
 
+        // Initialize grid
         const grid = $("#{{formGridFilterRule['table_id']}}").UIBootgrid({
             search:'/api/firewall/filter/search_rule/',
             get:'/api/firewall/filter/get_rule/',
@@ -93,7 +92,7 @@
             options: {
                 triggerEditFor: getUrlHash('edit'),
                 initialSearchPhrase: getUrlHash('search'),
-                rowCount: [14,20,50,100,200,500,1000,2000,5000,-1],
+                rowCount: [20,50,100,200,500,1000],
                 requestHandler: function(request){
                     // Add category selectpicker
                     if ( $('#category_filter').val().length > 0) {
@@ -565,8 +564,6 @@
             }
         );
 
-        $("#reconfigureAct").SimpleActionButton();
-
         // move selectpickers into action bar
         $("#interface_select_container").detach().insertBefore('#{{formGridFilterRule["table_id"]}}-header > .row > .actionBar > .search');
         $('#interface_select').change(function(){
@@ -647,45 +644,12 @@
             }
         });
 
-        /**
-         * Select the last unassigned filter sequence number
-         * When rules are cloned it will also clone the sequence number
-         * This button helps the user to always find an available last sequence number.
-         */
-         const filterSequenceBtn = $("<button type='button' class='btn filter_btn btn-default btn-group' " +
-            "data-toggle='tooltip' " +
-            "data-placement='right' " +
-            "title='{{ lang._('Generate last free sequence') }}'>")
-            .html("<i class='fa fa-cog'></i>");
-
-        $("#rule\\.sequence").closest("td").prepend(
-            $("<div class='btn-group'>").append(
-                $("#rule\\.sequence").detach(),
-                filterSequenceBtn
-            )
-        );
-
         // Hook into the event triggered when the clone dialog is shown and increment sequence
         $('#{{formGridFilterRule["edit_dialog_id"]}}').on('opnsense_bootgrid_mapped', function(e, actionType) {
             if (actionType === 'copy') {
                 incrementSequence();
             }
         });
-
-        filterSequenceBtn.click(function () {
-            incrementSequence();
-        });
-
-        filterSequenceBtn.mouseleave(function(){
-            filterSequenceBtn.tooltip('hide')
-        });
-
-        // Wrap buttons and grid into divs to target them with css for responsiveness
-        $("#{{ formGridFilterRule['table_id'] }}").wrap('<div class="bootgrid-box"></div>');
-
-        // Dynamically add fa icons to selectpickers
-        $('#category_filter').parent().find('.dropdown-toggle').prepend('<i class="fa fa-tag" style="margin-right: 6px;"></i>');
-        $('#interface_select').parent().find('.dropdown-toggle').prepend('<i class="fa fa-network-wired" style="margin-right: 6px;"></i>');
 
         $('#interface_select').on('shown.bs.select', function () {
             const icons = {
@@ -707,30 +671,22 @@
             });
         });
 
-        // Hook into add event and choose same interface in new rule as selected in #interface_select
+        // Hook into add event
         $('#{{formGridFilterRule["edit_dialog_id"]}}').on('opnsense_bootgrid_mapped', function(e, actionType) {
             if (actionType === 'add') {
+                // and choose same interface in new rule as selected in #interface_select
                 const selectedInterface = $('#interface_select').val();
                 if (selectedInterface) {
-                    // For multi-select, pass the value as an array.
                     $('#rule\\.interface').selectpicker('val', [selectedInterface]);
                     $('#rule\\.interface').selectpicker('refresh');
                 }
-            }
-        });
-
-        // Do the same as above with category selection (supports multiple)
-        $('#{{formGridFilterRule["edit_dialog_id"]}}').on('opnsense_bootgrid_mapped', function(e, actionType) {
-            if (actionType === 'add') {
+                // and do the same with category selection (supports multiple)
                 const selectedCategories = $('#category_filter').val();
-
                 if (selectedCategories && selectedCategories.length > 0) {
                     let categorySelect = $('#rule\\.categories');
 
-                    // Clear existing tokens
                     categorySelect.tokenize2().trigger('tokenize:clear');
 
-                    // Loop through selected categories and add them
                     selectedCategories.forEach(function(categoryUUID) {
                         let categoryLabel = $('#rule\\.categories option[value="' + categoryUUID + '"]').text();
                         categorySelect.tokenize2().trigger('tokenize:tokens:add', [categoryUUID, categoryLabel]);
@@ -739,13 +695,12 @@
             }
         });
 
+        $("#reconfigureAct").SimpleActionButton();
+
     });
 </script>
 
 <style>
-    .category-icon {
-        cursor: pointer;
-    }
     /* The filter rules column dropdown has many items */
     .actions .dropdown-menu.pull-right {
         max-height: 200px;
