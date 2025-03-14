@@ -63,9 +63,10 @@ if [ ! -f "${BEEPFILE}" ]; then
 	exit 1
 fi
 
-exec 9<"$LOCK" || exit 1
-/usr/local/bin/flock --exclusive 9 || exit 1
-
-cat "${BEEPFILE}" | while read NOTE DURATION; do
-	/usr/local/bin/beep -p "${NOTE}" "${DURATION}"
-done
+(
+	if /usr/local/bin/flock 9; then
+		cat "${BEEPFILE}" | while read NOTE DURATION; do
+			/usr/local/bin/beep -p "${NOTE}" "${DURATION}"
+		done
+	fi
+) 9 < ${BEEPDIR}/start
