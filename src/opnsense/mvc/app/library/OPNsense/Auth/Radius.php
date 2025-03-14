@@ -501,7 +501,7 @@ class Radius extends Base implements IAuthConnector
             syslog(LOG_ERR, 'RadiusError: ' . $error);
         } else {
             $request = radius_send_request($radius);
-            if (!$radius) {
+            if (!$request) {
                 syslog(LOG_ERR, 'RadiusError: ' . radius_strerror($radius));
             } else {
                 switch ($request) {
