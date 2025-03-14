@@ -192,6 +192,30 @@ include("head.inc");
         $("#show_advanced_ntpd").click();
     }
 
+    // disable the "noselect" checkbox for pool.ntp.org pools
+    $('#timeservers_table > tbody > tr').each(function() {
+        var timeserver = $(this).find('input[name="timeservers_host[]"]').val();
+        var noselectCheckbox = $(this).find('input[name="timeservers_noselect[]"]');
+        if (timeserver.includes('pool.ntp.org')) {
+            noselectCheckbox.prop('checked', false);
+            noselectCheckbox.prop('disabled', true);
+        } else {
+            noselectCheckbox.prop('disabled', false);
+        }
+    });
+    // also check for pools on input change for each row
+    $('#timeservers_table > tbody > tr').on('input', 'input[name="timeservers_host[]"]', function() {
+        var row = $(this).closest('tr');
+        var timeserver = row.find('input[name="timeservers_host[]"]').val();
+        var noselectCheckbox = row.find('input[name="timeservers_noselect[]"]');
+        if (timeserver.includes('pool.ntp.org')) {
+            noselectCheckbox.prop('checked', false);
+            noselectCheckbox.prop('disabled', true);
+        } else {
+            noselectCheckbox.prop('disabled', false);
+        }
+    });
+
     /**
      *  Aliases
      */
@@ -307,7 +331,7 @@ include("head.inc");
                         <br />
                         <?= gettext('The "iburst" option enables faster clock synchronisation on startup at the expense of the peer.') ?>
                         <br />
-                        <?= gettext('The "do not use" option indicates that NTP should not use this server for time, but stats for this server will be collected and displayed.') ?>
+                        <?= gettext('The "do not use" option indicates that NTP should not use this server for time, but stats for this server will be collected and displayed. Note: pool.ntp.org and its subdomains are always treated as pool. This option is not available for pools.') ?>
                       </div>
                     </td>
                   </tr>
