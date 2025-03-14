@@ -132,6 +132,10 @@ while (1) {
                 $report['loss']
             ));
 
+            if ($report['status'] == 'down' && !empty($report['monitor_killstates'])) {
+                configdp_run('filter kill gateway_states', [$report['gateway']], true);
+            }
+
             /* update cached state now */
             $mode[$report['name']] = $report['status'];
         }
