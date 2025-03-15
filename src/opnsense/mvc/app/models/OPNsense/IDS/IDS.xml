@@ -294,6 +294,9 @@
                     </custom>
                 </tls>
             </eveLog>
+            <capture>
+                <bpf_filter type="TextField" />
+            </capture>
         </general>
     </items>
 </model>

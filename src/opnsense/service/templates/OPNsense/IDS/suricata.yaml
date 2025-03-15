@@ -723,6 +723,9 @@ af-packet:
     #threads: auto
     #use-mmap: no
     #tpacket-v3: yes
+{%  if not helpers.empty('OPNsense.IDS.general.capture.bpf_filter') %}
+    bpf-filter: {{ OPNsense.IDS.general.capture.bpf_filter }}
+{%  endif %}
 
 # Linux high speed af-xdp capture support
 af-xdp:
@@ -843,7 +846,9 @@ pcap:
     # as total memory used by the ring. So set this to something bigger
     # than 1% of your bandwidth.
     #buffer-size: 16777216
-    #bpf-filter: "tcp and port 25"
+{%  if not helpers.empty('OPNsense.IDS.general.capture.bpf_filter') %}
+    bpf-filter: {{ OPNsense.IDS.general.capture.bpf_filter }}
+{%  endif %}
     # Choose checksum verification mode for the interface. At the moment
     # of the capture, some packets may have an invalid checksum due to
     # the checksum computation being offloaded to the network card.
@@ -2006,7 +2011,9 @@ netmap:
    # Warning: 'checksum-validation' must be set to yes to have any validation
    checksum-checks: auto
    # BPF filter to apply to this interface. The pcap filter syntax apply here.
-   #bpf-filter: port 80 or udp
+{% if not helpers.empty('OPNsense.IDS.general.capture.bpf_filter') %}
+   bpf-filter: {{ OPNsense.IDS.general.capture.bpf_filter }}
+{% endif %}
 
   {% if helpers.exists('OPNsense.IDS.general.interfaces') %}
     {% for intfName in OPNsense.IDS.general.interfaces.split(',') %}

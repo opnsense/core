@@ -28,6 +28,13 @@
         <help>Select interface(s) to use. When enabling IPS, make sure the (virtual) driver supports this feature.</help>
     </field>
     <field>
+        <id>ids.general.capture.bpf_filter</id>
+        <label>BPF Filter</label>
+        <type>text</type>
+        <help>BPF filter to apply on the interfaces (the pcap filter syntax applies here). A BPF filter should be used when logs are exported to avoid self-caused noise and amplifications.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
         <type>header</type>
         <label>Detection</label>
     </field>
