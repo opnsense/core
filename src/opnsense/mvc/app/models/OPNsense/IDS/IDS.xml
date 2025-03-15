@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/IDS</mount>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <description>OPNsense IDS</description>
     <items>
         <rules>
@@ -271,7 +271,7 @@
                         <Required>Y</Required>
                     </extended>
                     <sessionResumption type="BooleanField">
-                        <Default>0</Default>
+                        <Default>1</Default>
                         <Required>Y</Required>
                     </sessionResumption>
                     <custom type="OptionField">
@@ -289,11 +289,110 @@
                             <chain>chain</chain>
                             <ja3>ja3</ja3>
                             <ja3s>ja3s</ja3s>
+                            <ja4>ja4</ja4>
                         </OptionValues>
                         <Multiple>Y</Multiple>
                     </custom>
                 </tls>
+                <types type="OptionField">
+                    <OptionValues>
+                        <dns>DNS</dns>
+                        <files>Files</files>
+                        <smtp>SMTP</smtp>
+                        <dnp3>DNP3</dnp3>
+                        <ftp>FTP</ftp>
+                        <rdp>RDP</rdp>
+                        <nfs>NFS</nfs>
+                        <smb>SMB</smb>
+                        <tftp>TFTP</tftp>
+                        <ike>IKE</ike>
+                        <dcerpc>DCE/RPC</dcerpc>
+                        <krb5>Kerberos</krb5>
+                        <bittorrentDht>BitTorrent DHT</bittorrentDht>
+                        <snmp>SNMP</snmp>
+                        <rfb>RFB/VNC</rfb>
+                        <sip>SIP</sip>
+                        <quic>QUIC</quic>
+                        <dhcp>DHCP</dhcp>
+                        <mqtt>MQTT</mqtt>
+                        <http2>HTTP2</http2>
+                        <pgsql>PGSQL</pgsql>
+                        <stats>Statistics</stats>
+                        <flow>Bi-Directional Flows</flow>
+                        <netflow>Uni-Directional Netflows</netflow>
+                    </OptionValues>
+                    <Multiple>Y</Multiple>
+                </types>
+                <extend type="OptionField">
+                    <Default>alert</Default>
+                    <OptionValues>
+                        <files>Files</files>
+                        <smtp>SMTP</smtp>
+                        <dhcp>DHCP</dhcp>
+                        <mqtt>MQTT</mqtt>
+                        <pgsql>PGSQL</pgsql>
+                    </OptionValues>
+                    <Multiple>Y</Multiple>
+                </extend>
+                <files>
+                    <forceHash type="OptionField">
+                        <OptionValues>
+                            <md5>md5</md5>
+                            <sha1>sha1</sha1>
+                            <sha256>sha256</sha256>
+                        </OptionValues>
+                        <Multiple>Y</Multiple>
+                    </forceHash>
+                </files>
+                <smtp>
+                    <custom type="OptionField">
+                        <OptionValues>
+                            <reply-to>reply-to</reply-to>
+                            <bcc>bcc</bcc>
+                            <message-id>message-id</message-id>
+                            <subject>subject</subject>
+                            <x-mailer>x-mailer</x-mailer>
+                            <user-agent>user-agent</user-agent>
+                            <received>received</received>
+                            <x-originating-ip>x-originating-ip</x-originating-ip>
+                            <in-reply-to>in-reply-to</in-reply-to>
+                            <references>references</references>
+                            <importance>importance</importance>
+                            <priority>priority</priority>
+                            <sensitivity>sensitivity</sensitivity>
+                            <organization>organization</organization>
+                            <content-md5>content-md5</content-md5>
+                            <date>date</date>
+                        </OptionValues>
+                        <Multiple>Y</Multiple>
+                    </custom>
+                </smtp>
+                <metadata>
+                    <enable type="BooleanField">
+                        <Default>0</Default>
+                        <Required>Y</Required>
+                    </enable>
+                </metadata>
             </eveLog>
+            <pcapLog>
+                <enable type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </enable>
+                <limit type="IntegerField">
+                    <ValidationMessage>Limit should be a number.</ValidationMessage>
+                    <Required>Y</Required>
+                    <Default>1000</Default>
+                    <MinimumValue>1</MinimumValue>
+                </limit>
+                <maxFiles type="IntegerField">
+                    <ValidationMessage>Maximum files should be a number.</ValidationMessage>
+                    <Required>Y</Required>
+                    <Default>2000</Default>
+                    <MinimumValue>1</MinimumValue>
+                </maxFiles>
+            </pcapLog>
+            <bpfFilter type="TextField"/>
         </general>
     </items>
 </model>

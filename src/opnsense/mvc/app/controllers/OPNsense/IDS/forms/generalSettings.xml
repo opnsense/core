@@ -171,4 +171,66 @@
         <help>Custom TLS fields to include in eve-log for TLS. (Overrides extended if non-empty).</help>
         <advanced>true</advanced>
     </field>
+    <field>
+        <id>ids.general.eveLog.types</id>
+        <label>EVE log types</label>
+        <type>select_multiple</type>
+        <help>The type of events to include in the EVE log.</help>
+    </field>
+    <field>
+        <id>ids.general.eveLog.extend</id>
+        <label>EVE log extended types</label>
+        <type>select_multiple</type>
+        <help>The type of events which, if enabled in the EVE log, will contain extended information.</help>
+    </field>
+
+    <field>
+        <id>ids.general.eveLog.files.forceHash</id>
+        <label>Force EVE's file hash logging</label>
+        <type>select_multiple</type>
+        <help>Forcefully extend file events in EVE log with the file's hash(es).</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.eveLog.smtp.custom</id>
+        <label>Customize EVE's SMTP logging</label>
+        <type>select_multiple</type>
+        <help>Extend SMTP events in EVE log with custom fields, overriding the default extended SMTP logging.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.eveLog.metadata.enable</id>
+        <label>Enable EVE's metadata logging</label>
+        <type>checkbox</type>
+        <help>Log verbose metadata event to EVE log (i.e., triggers whenever a pktvar is saved).</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.pcapLog.enable</id>
+        <label>Enable pcap logging</label>
+        <type>checkbox</type>
+        <help>Enable the logging of packets in pcap format.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.pcapLog.limit</id>
+        <label>Pcap file size limit</label>
+        <type>text</type>
+        <help>Limit the pcap file to a size in megabytes.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.pcapLog.maxFiles</id>
+        <label>Pcap file count limit</label>
+        <type>text</type>
+        <help>Limit the amount of pcap files to retain.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.bpfFilter</id>
+        <label>BPF Filter</label>
+        <type>text</type>
+        <help>BPF filter to apply on the interfaces (the pcap filter syntax applies here). A BPF filter should be used when logs are exported (especially pcap files) to avoid self-caused noise and amplifications.</help>
+        <advanced>true</advanced>
+    </field>
 </form>
