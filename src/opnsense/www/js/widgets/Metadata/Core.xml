@@ -196,7 +196,9 @@
         </endpoints>
         <translations>
             <title>Thermal Sensors</title>
-            <help>CPU thermal sensors often measure the same temperature for each CPU.</help>
+            <cpu>CPU</cpu>
+            <core>Core</core>
+            <help>CPU thermal sensor measurement is often duplicated by thread siblings.</help>
             <unconfigured>Thermal sensors not available or not configured.</unconfigured>
         </translations>
     </thermalsensors>

@@ -181,8 +181,8 @@ export default class ThermalSensors extends BaseWidget {
 
         this.chart = new Chart(context, config);
 
-        $(`#${this.id}-title`).append(`&nbsp;<i class="fa fa-question-circle thermalsensors-info-icon" data-toggle="tooltip" title="${this.translations.help}"></i>`);
         $('.thermalsensors-info-icon').tooltip({container: 'body'});
+        this.chart.canvas.parentNode.style.height = `${30}px`;
     }
 
     async onWidgetOptionsChanged(options) {
@@ -257,11 +257,46 @@ export default class ThermalSensors extends BaseWidget {
 
     _parseSensors(data) {
         const toFahrenheit = (celsius) => (celsius * 9 / 5) + 32;
-        data.forEach(item => {
+        const threads_per_core = data.filter(item => item.type === 'threads_per_core').map(item => item.threads_per_core);
+
+        if (threads_per_core >= 1) {
+            var type = ['core', this.translations['core']];
+            var threads_per = threads_per_core;
+        } else {
+            var type = ['cpu', this.translations['cpu']];
+            var threads_per = 1; // TODO: Set according to the CPU's Hyper-Threading (threads_per_cpu)
+
+            if (!$(`#${this.id}-title`).html().includes(this.translations.help)) {
+                $(`#${this.id}-title`).append(`&nbsp;<i class="fa fa-question-circle thermalsensors-info-icon" data-toggle="tooltip" title="${this.translations.help}"></i>`);
+            }
+        }
+
+        data.forEach((item, index) => {
             item.temperature_fahrenheit = toFahrenheit(parseFloat(item.temperature)).toFixed(1);
+
+            if (item.type == 'cpu') {
+                item.type = type[0];
+                item.type_translated = type[1];
+            }
+
+            switch (item.type) {
+              case 'core':    // Only cores received
+                item.device_seq = index + 1;
+                break;
+              case 'cpu':     // Every nth
+                if (item.device_seq % threads_per == 0) {
+                    item.device_seq = (item.device_seq / threads_per) + 1;
+                } else {
+                    delete data[index];
+                }
+                break;
+              case 'threads_per_core':
+                delete data[index];
+                break;
+            }
         });
 
-        return data;
+        return data.filter(val => val);
     }
 
     onWidgetClose() {

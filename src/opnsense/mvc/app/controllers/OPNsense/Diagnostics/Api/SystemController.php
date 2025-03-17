@@ -231,9 +231,19 @@ class SystemController extends ApiControllerBase
 
         /* read temperatures individually from previously derived sensors */
         $sensors = explode("\n", $backend->configdRun('system sensors'));
+        $sensors[] = 'kern.smp.threads_per_core';
         $temps = json_decode($backend->configdpRun('system sysctl values', join(',', $sensors)), true);
 
         foreach ($temps as $name => $value) {
+            /* Return only one "cpu" (thread) temperature per core if hyper-thread enabled. */
+            /* i.e. multiple threads per core. */
+            if ($temps['kern.smp.threads_per_core'] >= 2 && str_contains($name, 'dev')) {
+                preg_match_all("/.*\.([0-9]+)\.temperature.*/", $name, $thread);
+                if ($thread[1][0] % $temps['kern.smp.threads_per_core'] != 0) {
+                    continue;
+                }
+            }
+
             $tempItem = [];
             $tempItem['device'] = $name;
             $tempItem['device_seq'] = (int)filter_var($tempItem['device'], FILTER_SANITIZE_NUMBER_INT);
@@ -254,6 +264,13 @@ class SystemController extends ApiControllerBase
             } elseif (str_starts_with($tempItem['device'], 'dev.cpu.')) {
                 $tempItem['type_translated'] = gettext('CPU');
                 $tempItem['type'] = 'cpu';
+            }
+
+            if (str_contains($name, 'threads_per_core')) {
+                $tempItem['threads_per_core'] = trim($value);
+                $tempItem['type'] = 'threads_per_core';
+                $tempItem['temperature'] = '';
+                $tempItem['type_translated'] = '';
             }
 
             $result[] = $tempItem;
