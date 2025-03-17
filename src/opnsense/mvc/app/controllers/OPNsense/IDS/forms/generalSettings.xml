@@ -171,4 +171,32 @@
         <help>Custom TLS fields to include in eve-log for TLS. (Overrides extended if non-empty).</help>
         <advanced>true</advanced>
     </field>
+    <field>
+        <label>PCAP Log</label>
+        <type>header</type>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <label>Enabled</label>
+        <id>ids.general.pcapLog.enabled</id>
+        <type>checkbox</type>
+        <help>Enable PCAP logging to record all monitored traffic.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <label>PCAP Size</label>
+        <id>ids.general.pcapLog.limit</id>
+        <type>text</type>
+        <help>Rotate PCAPs at the given size limit; Can be specified in kb, mb, gb. Just a number is parsed as bytes.</help>
+        <advanced>true</advanced>
+        <hint>1000mb</hint>
+    </field>
+    <field>
+        <label>PCAP Count</label>
+        <id>ids.general.pcapLog.files</id>
+        <type>text</type>
+        <help>Number of PCAPs to retain.</help>
+        <advanced>true</advanced>
+        <hint>5</hint>
+    </field>
 </form>
