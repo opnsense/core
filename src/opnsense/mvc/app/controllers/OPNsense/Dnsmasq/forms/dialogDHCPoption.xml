@@ -6,6 +6,12 @@
         <help>Option to offer to the client.</help>
     </field>
     <field>
+        <id>option.protocol</id>
+        <label>Protocol</label>
+        <type>dropdown</type>
+        <help>The protocol to use for this option. Options used for DHCPv6 require IPv6 to match.</help>
+    </field>
+    <field>
         <id>option.interface</id>
         <label>Interface</label>
         <type>dropdown</type>
