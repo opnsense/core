@@ -277,7 +277,12 @@ class ACL
     {
         if (!empty($_SESSION['user_shouldChangePassword'])) {
             // when a password change is enforced, lock all other endpoints
-            return $this->urlMatch($url, 'system_usermanager_passwordmg.php*');
+            foreach (['system_usermanager_passwordmg.php*', 'ui/user_portal', 'api/user_portal/user/*'] as $pattern) {
+                if ($this->urlMatch($url, $pattern)) {
+                    return true;
+                }
+            }
+            return false;
         }
         foreach ($this->urlMasks($username) as $urlmask) {
             if ($this->urlMatch($url, $urlmask)) {
@@ -358,7 +363,7 @@ class ACL
     {
         if (!empty($_SESSION['user_shouldChangePassword'])) {
             // ACL lock, may only access password page
-            return "system_usermanager_passwordmg.php";
+            return "ui/user_portal";
         } elseif (!empty($this->userDatabase[$username]['landing_page'])) {
             // remove leading slash, which would result in redirection to //page (without host) after login or auth failure.
             $page = ltrim($this->userDatabase[$username]['landing_page'], '/');
