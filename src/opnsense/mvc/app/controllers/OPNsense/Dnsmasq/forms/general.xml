@@ -107,6 +107,27 @@
         <help>If this option is set, we will not forward reverse DNS lookups (PTR) for private addresses (RFC 1918) to upstream name servers. Any entries in the Domain Overrides section forwarding private "n.n.n.in-addr.arpa" names to a specific server are still forwarded. If the IP to name is not known from /etc/hosts, DHCP or a specific domain override then a "not found" answer is immediately returned.</help>
     </field>
     <field>
+        <id>dnsmasq.add_mac</id>
+        <label>Add MAC</label>
+        <type>dropdown</type>
+        <help>Add the MAC address of the requestor to DNS queries which are forwarded upstream. The MAC address will only be added if the upstream DNS Server is in the same subnet as the requestor. Since this is not standardized, it should be considered experiemental. This is useful for selective DNS filtering on the upstream DNS server.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>dnsmasq.add_subnet</id>
+        <label>Add subnet</label>
+        <type>checkbox</type>
+        <help>Add the real client IPv4 and IPv6 addresses (add-subnet=32,128) to DNS queries which are forwarded upstream. Be careful setting this option as it can undermine privacy. This is useful for selective DNS filtering on the upstream DNS server.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>dnsmasq.strip_subnet</id>
+        <label>Strip subnet</label>
+        <type>checkbox</type>
+        <help>Strip the subnet received by a downstream DNS server. If add_subnet is used and the downstream DNS server already added a subnet, DNSMasq will not replace it without setting strip_subnet.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
         <type>header</type>
         <label>DHCP</label>
     </field>
