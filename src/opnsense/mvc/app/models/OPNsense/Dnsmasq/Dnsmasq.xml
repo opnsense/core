@@ -33,6 +33,15 @@
         <local_ttl type="IntegerField">
             <MinimumValue>0</MinimumValue>
         </local_ttl>
+        <add_mac type="OptionField">
+            <OptionValues>
+                <default>default</default>
+                <base64>base64</base64>
+                <text>text</text>
+            </OptionValues>
+        </add_mac>
+        <add_subnet type="BooleanField"/>
+        <strip_subnet type="BooleanField"/>
         <dhcp>
             <no_interface type="InterfaceField">
                 <Multiple>Y</Multiple>
