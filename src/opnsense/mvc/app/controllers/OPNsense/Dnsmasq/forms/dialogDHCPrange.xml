@@ -37,6 +37,48 @@
         <help>Prefix length offered to the client.</help>
     </field>
     <field>
+        <id>range.ra_mode</id>
+        <label>RA Mode</label>
+        <type>select_multiple</type>
+        <hint>Off</hint>
+        <help>Control how IPv6 clients receive their addresses. Off means no RA messages are sent for this range.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>range.ra_priority</id>
+        <label>RA Priority</label>
+        <type>dropdown</type>
+        <help>Priority of the RA announcements.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>range.ra_min_interval</id>
+        <label>RA Min Interval</label>
+        <type>text</type>
+        <hint>60</hint>
+        <help>Minimum time (seconds) between Router Advertisements.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>range.ra_max_interval</id>
+        <label>RA Max Interval</label>
+        <type>text</type>
+        <hint>180</hint>
+        <help>Maximum time (seconds) between Router Advertisements.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>range.mode</id>
         <label>Mode</label>
         <type>select_multiple</type>

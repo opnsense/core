@@ -180,6 +180,32 @@
                 <IpAllowed>N</IpAllowed>
             </domain>
             <nosync type="BooleanField"/>
+            <ra_mode type="OptionField">
+                <OptionValues>
+                    <ra-only>ra-only</ra-only>
+                    <slaac>slaac</slaac>
+                    <ra-names>ra-names</ra-names>
+                    <ra-stateless>ra-stateless</ra-stateless>
+                    <ra-advrouter>ra-advrouter</ra-advrouter>
+                    <off-link>off-link</off-link>
+                </OptionValues>
+                <Multiple>Y</Multiple>
+            </ra_mode>
+            <ra_priority type="OptionField">
+                <BlankDesc>Normal</BlankDesc>
+                <OptionValues>
+                    <high>High</high>
+                    <low>Low</low>
+                </OptionValues>
+            </ra_priority>
+            <ra_min_interval type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <ValidationMessage>Please enter a value greater or equal to 1 or leave empty for default.</ValidationMessage>
+            </ra_min_interval>
+            <ra_max_interval type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <ValidationMessage>Please enter a value greater or equal to 1 or leave empty for default.</ValidationMessage>
+            </ra_max_interval>
             <description type="DescriptionField"/>
         </dhcp_ranges>
         <dhcp_options type="ArrayField">
