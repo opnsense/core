@@ -178,6 +178,12 @@
                 <ConfigdPopulateAct>dnsmasq list dhcp_options</ConfigdPopulateAct>
                 <Required>Y</Required>
             </option>
+            <protocol type="OptionField">
+                <BlankDesc>IPv4</BlankDesc>
+                <OptionValues>
+                    <option6>IPv6</option6>
+                </OptionValues>
+            </protocol>
             <interface type="InterfaceField">
                 <BlankDesc>Any</BlankDesc>
                 <Filters>
