@@ -51,12 +51,11 @@ class FilterController extends \OPNsense\Base\IndexController
             if (!empty($field['advanced']) && $field['advanced'] == "true") {
                 if (!empty($field['id'])) {
                     $tmp = explode('.', $field['id']);
-                    $advancedFieldIds[] = $tmp[count($tmp)-1];
+                    $advancedFieldIds[] = $tmp[count($tmp) - 1];
                 }
             }
         }
 
         return implode(',', $advancedFieldIds);
     }
-
 }

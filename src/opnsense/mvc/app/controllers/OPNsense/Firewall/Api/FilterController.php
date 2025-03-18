@@ -34,7 +34,6 @@ use OPNsense\Firewall\Category;
 use OPNsense\Firewall\Group;
 use OPNsense\Firewall\Util;
 
-
 class FilterController extends FilterBaseController
 {
     protected static $categorysource = "rules.rule";
@@ -139,7 +138,7 @@ class FilterController extends FilterBaseController
             /* frontend can format categories with colors */
             if (!empty($record['categories'])) {
                 $catnames = array_map('trim', explode(',', $record['categories']));
-                $record['category_colors'] = array_map(fn($name) => $catcolors[$name], $catnames);;
+                $record['category_colors'] = array_map(fn($name) => $catcolors[$name], $catnames);
             } else {
                 $record['category_colors'] = [];
             }
@@ -154,7 +153,7 @@ class FilterController extends FilterBaseController
             if (empty($interfaces)) {
                 $is_if = count(explode(',', $record['interface'])) > 1 || empty($record['interface']);
             } else {
-                $is_if = array_intersect(explode(',', $record['interface'] ?? ''), $interfaces) ;
+                $is_if = array_intersect(explode(',', $record['interface'] ?? ''), $interfaces);
                 $is_if = $is_if || empty($record['interface']);
             }
             if ($is_cat && $is_if) {
@@ -261,7 +260,7 @@ class FilterController extends FilterBaseController
                 $prev_sequence = $prev_record->sequence->asFloat();
                 /* distance will be averaged, which is why the minimum should be at least 2 (half is 1) */
                 $distance = max($record->sequence->asFloat() - $prev_record->sequence->asFloat(), 2);
-            } elseif ($selected_node !== null && $target_node !== null){
+            } elseif ($selected_node !== null && $target_node !== null) {
                 /* group processed */
                 break;
             } else {
@@ -281,7 +280,7 @@ class FilterController extends FilterBaseController
             } elseif ($uuid == $selected_uuid) {
                 $selected_node = $record;
             } elseif ($selected_id !== null && $prev_sequence >= $record->sequence->asFloat()) {
-                $record->sequence = (string)($prev_sequence + $distance/2);
+                $record->sequence = (string)($prev_sequence + $distance / 2);
             } elseif ($target_node !== null && $selected_node !== null) {
                 /* both nodes found and the next one is in sequence, stop moving data */
                 break;
