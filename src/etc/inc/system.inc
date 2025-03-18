@@ -71,7 +71,7 @@ function system_sysctl_defaults()
 
     /* notes:
      *  - set 'optional' => true for values that should no longer be enforced by default
-    /*  - 'decription' and 'type' can be used to indicate persistence of these values
+    /*  - 'description' and 'type' can be used to indicate persistence of these values
      *    when in reality these are not available due to kernel modules unloaded or
      *    compile time options unset (like debugging)
      *  - always set 'default' so the backend can use it and the user can see it
