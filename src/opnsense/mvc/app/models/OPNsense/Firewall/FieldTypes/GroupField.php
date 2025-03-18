@@ -52,6 +52,11 @@ class GroupField extends ArrayField
                 'sequence' => 10,
                 'ifname' => 'enc0',
                 'descr' => gettext('IPsec')
+            ],
+            'wireguard' => [
+                'sequence' => 10,
+                'ifname' => 'wireguard',
+                'descr' => gettext('Wireguard')
             ]
         ];
     }
