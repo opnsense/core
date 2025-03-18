@@ -692,6 +692,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasNameField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/FilterRuleField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/FilterSequenceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/GroupField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/GroupNameField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/InterfaceField.php
@@ -883,6 +884,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias_util.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/category.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/filter.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Firewall/filter_rule.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/group.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/policy.volt
@@ -1053,6 +1055,7 @@
 /usr/local/opnsense/scripts/filter/lib/alias/pf.py
 /usr/local/opnsense/scripts/filter/lib/alias/uri.py
 /usr/local/opnsense/scripts/filter/lib/states.py
+/usr/local/opnsense/scripts/filter/list_non_mvc_rules.php
 /usr/local/opnsense/scripts/filter/list_osfp.py
 /usr/local/opnsense/scripts/filter/list_pfsync.py
 /usr/local/opnsense/scripts/filter/list_rule_ids.py
