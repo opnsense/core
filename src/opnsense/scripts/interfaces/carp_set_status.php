@@ -38,7 +38,7 @@ if ($action == 'maintenance') {
     if (isset($config["virtualip_carp_maintenancemode"])) {
         unset($config["virtualip_carp_maintenancemode"]);
         $carp_demotion_default = '0';
-        foreach ($config['sysctl']['item'] as $tunable) {
+        foreach (config_read_array('sysctl', 'item') as $tunable) {
             if ($tunable['tunable'] == 'net.inet.carp.demotion' && ctype_digit($tunable['value'])) {
                 $carp_demotion_default = $tunable['value'];
             }

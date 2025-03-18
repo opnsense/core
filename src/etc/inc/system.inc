@@ -69,12 +69,18 @@ function system_sysctl_defaults()
 {
     global $config;
 
+    /* notes:
+     *  - set 'optional' => true for values that should no longer be enforced by default
+    /*  - 'decription' and 'type' can be used to indicate persistence of these values
+     *    when in reality these are not available due to kernel modules unloaded or
+     *    compile time options unset (like debugging)
+     *  - always set 'default' so the backend can use it and the user can see it
+     */
+
     return [
         'debug.kassert.warn_only' => [ 'default' => '1', 'description' => 'KASSERT triggers a panic (0) or just a warning (1)', 'type' => 'w' ],
-        'hw.ibrs_disable' => [ 'default' => '0', 'optional' => true ],
         'hw.ixl.enable_head_writeback' => [ 'default' => '0' ],
         'hw.syscons.kbd_reboot' => [ 'default' => '0' ],
-        'hw.uart.console' => [ 'default' => 'io:0x3f8,br:' . system_console_speed(), 'type' => 't', 'optional' => true ], /* XXX remove in a future release */
         'hw.vtnet.csum_disable' => [ 'default' => '1' ],
         'kern.coredump' => [ 'default' => '0' ],
         'kern.ipc.maxsockbuf' => [ 'default' => '4262144' ],
@@ -131,7 +137,6 @@ function system_sysctl_defaults()
         'vfs.zfs.dirty_data_sync_percent' => [ 'default' => '5' ],
         'vfs.zfs.txg.timeout' => [ 'default' => '90' ],
         'vm.numa.disabled' => [ 'default' => '1' ],
-        'vm.pmap.pti' => [ 'default' => '1', 'optional' => true ],
     ];
 }
 
@@ -143,7 +148,7 @@ function system_sysctl_get()
     foreach ($defaults as $name => $info) {
         /* compile list of required sysctls not necessarily present in config */
         if (empty($info['optional'])) {
-            $sysctls[$name] = 'default';
+            $sysctls[$name] = '';
         }
     }
 

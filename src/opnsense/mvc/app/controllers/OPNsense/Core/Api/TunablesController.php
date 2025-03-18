@@ -74,7 +74,7 @@ class TunablesController extends ApiMutableModelControllerBase
                 Config::getInstance()->lock();
                 $factory_config = Config::getInstance()->toArrayFromFile('/usr/local/etc/config.xml', []);
                 $mdl = $this->getModel()->Default();
-                if (!empty($factory_config['sysctl']) && !empty($factory_config['sysctl']['item'])) {
+                if (!empty($factory_config['sysctl']['item'])) {
                     foreach ($factory_config['sysctl']['item'] as $item) {
                         $node = $mdl->item->Add();
                         foreach ($item as $key => $val) {
