@@ -12,6 +12,15 @@
         <help>Optional tag to set for requests matching this range which can be used to selectively match dhcp options</help>
     </field>
     <field>
+        <id>range.protocol</id>
+        <label>Protocol</label>
+        <type>dropdown</type>
+        <help>Choose IPv4 for DHCPv4 or IPv6 for DHCPv6 with optional Router Advertisements. Both kinds of ranges can exist for the same interface.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>range.start_addr</id>
         <label>Start address</label>
         <type>text</type>
@@ -27,6 +36,7 @@
         <id>range.constructor</id>
         <label>Constructor</label>
         <type>dropdown</type>
+        <style>style_ipv6</style>
         <help>Interface to use to calculate the proper range, when selected, a range maybe specified as partial (e.g. ::1, ::400)</help>
     </field>
     <field>
@@ -34,13 +44,18 @@
         <label>Prefix length (ipv6)</label>
         <type>text</type>
         <hint>64</hint>
+        <style>style_ipv6</style>
         <help>Prefix length offered to the client.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>range.ra_mode</id>
         <label>RA Mode</label>
         <type>select_multiple</type>
         <hint>Off</hint>
+        <style>selectpicker style_ipv6</style>
         <help>Control how IPv6 clients receive their addresses. Off means no RA messages are sent for this range.</help>
         <grid_view>
             <visible>false</visible>
@@ -51,7 +66,7 @@
         <label>RA Priority</label>
         <type>dropdown</type>
         <help>Priority of the RA announcements.</help>
-        <advanced>true</advanced>
+        <style>style_ipv6</style>
         <grid_view>
             <visible>false</visible>
         </grid_view>
@@ -61,8 +76,8 @@
         <label>RA Min Interval</label>
         <type>text</type>
         <hint>60</hint>
+        <style>style_ipv6</style>
         <help>Minimum time (seconds) between Router Advertisements.</help>
-        <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
         </grid_view>
@@ -72,8 +87,8 @@
         <label>RA Max Interval</label>
         <type>text</type>
         <hint>180</hint>
+        <style>style_ipv6</style>
         <help>Maximum time (seconds) between Router Advertisements.</help>
-        <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
         </grid_view>
@@ -82,6 +97,7 @@
         <id>range.mode</id>
         <label>Mode</label>
         <type>select_multiple</type>
+        <style>selectpicker style_ipv4</style>
         <help>Mode flags to set for this range, 'static' means no addresses will be automatically assigned. </help>
     </field>
     <field>

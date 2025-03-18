@@ -124,6 +124,17 @@
         });
         let selected_tab = window.location.hash != "" ? window.location.hash : "#general";
         $('a[href="' +selected_tab + '"]').click();
+
+        $("#range\\.protocol").change(function() {
+            if ($(this).val() === "ipv4") {
+                $(".style_ipv6").closest('tr').hide();
+                $(".style_ipv4").closest('tr').show();
+            } else {
+                $(".style_ipv6").closest('tr').show();
+                $(".style_ipv4").closest('tr').hide();
+            }
+        });
+
     });
 </script>
 
