@@ -38,7 +38,7 @@ class TunableField extends ArrayField
 {
     protected static $internalStaticChildren = [];
 
-    private static $default_values = null;
+    private static $current_values = null;
     private static $static_entries = [];
 
     /**
@@ -48,12 +48,16 @@ class TunableField extends ArrayField
     {
         $result = [];
         foreach (self::$static_entries as $key => $item) {
+            if (!empty($item['optional'])) {
+                continue;
+            }
+
             /* md5($key) ensures static keys identifiable as static options  */
             $result[md5($key)] = [
                 'tunable' => $key,
                 'value' => $item['value'] ?? '',
-                'default_value' => $item['default'],
-                'descr' => $item['descr'] ?? '',
+                'default_value' => $item['default'] ?? '',
+                'descr' => $item['description'] ?? '',
                 'type' => $item['type'] ?? '',
             ];
         }
@@ -66,33 +70,47 @@ class TunableField extends ArrayField
      */
     protected function actionPostLoadingEvent()
     {
-        if (self::$default_values === null && !$this->getParentModel()->isLazyLoaded()) {
-            self::$default_values = json_decode((new Backend())->configdRun('system sysctl gather'), true) ?? [];
+        if (self::$current_values === null && !$this->getParentModel()->isLazyLoaded()) {
+            self::$current_values = json_decode((new Backend())->configdRun('system sysctl gather'), true) ?? [];
             self::$static_entries = json_decode((new Backend())->configdRun('system sysctl defaults'), true) ?? [];
             foreach (self::$static_entries as $key => $item) {
-                if (!empty(self::$default_values[$key])) {
-                    self::$static_entries[$key]['type'] = self::$default_values[$key]['type'];
-                    self::$static_entries[$key]['value'] = self::$default_values[$key]['value'];
-                    self::$static_entries[$key]['descr'] = self::$default_values[$key]['description'];
+                if (!empty(self::$current_values[$key])) {
+                    foreach (['type', 'value', 'description'] as $value) {
+                        /* fill these when currently found but not preset in static */
+                        if (!isset(self::$static_entries[$key][$value])) {
+                            self::$static_entries[$key][$value] = self::$current_values[$key][$value];
+                        }
+                    }
                 }
             }
-        } elseif (self::$default_values === null) {
-            self::$default_values = [];
+        } elseif (self::$current_values === null) {
+            self::$current_values = [];
         }
         foreach ($this->iterateItems() as $node) {
-            if (isset(self::$static_entries[(string)$node->tunable])) {
-                unset(self::$static_entries[(string)$node->tunable]);
-            }
-            /* deprecate 'default', the model uses empty value to signal this */
             if ($node->value == 'default') {
+                /* deprecate 'default', the model uses empty value to signal this */
                 $node->value = '';
             }
-            if (isset(self::$default_values[(string)$node->tunable])) {
-                $node->default_value->setValue(self::$default_values[(string)$node->tunable]['value']);
-                $node->type->setValue(self::$default_values[(string)$node->tunable]['type']);
-                if (empty((string)$node->descr)) {
-                    $node->descr->setValue(self::$default_values[(string)$node->tunable]['description']);
+            if (isset(self::$current_values[(string)$node->tunable])) {
+                /* fill current information from the system */
+                if (empty((string)$node->type)) {
+                    $node->type->setValue(self::$current_values[(string)$node->tunable]['type'] ?? '');
                 }
+                if (empty((string)$node->descr)) {
+                    $node->descr->setValue(self::$current_values[(string)$node->tunable]['description'] ?? '');
+                }
+            }
+            if (isset(self::$static_entries[(string)$node->tunable])) {
+                /* fill static information if set explicitly */
+                $node->default_value->setValue(self::$static_entries[(string)$node->tunable]['default'] ?? '');
+                if (empty((string)$node->type)) {
+                    $node->type->setValue(self::$static_entries[(string)$node->tunable]['type'] ?? '');
+                }
+                if (empty((string)$node->descr)) {
+                    $node->descr->setValue(self::$static_entries[(string)$node->tunable]['description'] ?? '');
+                }
+                /* set static entry to invisible */
+                self::$static_entries[(string)$node->tunable]['optional'] = true;
             }
         }
         parent::actionPostLoadingEvent();
