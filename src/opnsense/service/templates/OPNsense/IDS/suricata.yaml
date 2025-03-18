@@ -220,7 +220,7 @@ outputs:
             dump-all-headers: {{OPNsense.IDS.general.eveLog.http.dumpAllHeaders}}
 {%          endif %}
 {%       endif %}
-#        - dns:
+        - dns:
             # This configuration uses the new DNS logging format,
             # the old configuration is still available:
             # https://docs.suricata.io/en/latest/output/eve/eve-json-output.html#dns-v1-format
@@ -230,7 +230,7 @@ outputs:
             #version: 2
 
             # Enable/disable this logger. Default: enabled.
-            #enabled: yes
+            enabled: {{ 'yes' if 'dns' in OPNsense.IDS.general.eveLog.types.enabled else 'no' }}
 
             # Control logging of requests and responses:
             # - requests: enable logging of DNS queries
@@ -262,19 +262,22 @@ outputs:
             custom: [{{ OPNsense.IDS.general.eveLog.tls.custom }}]
 {%          endif %}
 {%      endif %}
-        #- files:
-            force-magic: no   # force logging magic on all logged files
+{%      if 'files' in OPNsense.IDS.general.eveLog.types.enabled %}
+        - files:
+            force-magic: {{ 'yes' if 'files' in OPNsense.IDS.general.eveLog.types.extended else 'no' }}   # force logging magic on all logged files
             # force logging of checksums, available hash functions are md5,
             # sha1 and sha256
             #force-hash: [md5]
+{%      endif %}
 
         - drop:
             alerts: yes      # log alerts that caused drops
             flows: start     # start or all: 'start' logs only a single drop
                              # per flow direction. All logs each dropped pkt.
 
-        #- smtp:
-            #extended: yes # enable this for extended logging information
+{%      if 'smtp' in OPNsense.IDS.general.eveLog.types.enabled %}
+        - smtp:
+            extended: {{ 'yes' if 'smtp' in OPNsense.IDS.general.eveLog.types.extended else 'no' }} # enable this for extended logging information
             # this includes: bcc, message-id, subject, x_mailer, user-agent
             # custom fields logging from the list:
             #  reply-to, bcc, message-id, subject, x-mailer, user-agent, received,
@@ -285,43 +288,48 @@ outputs:
             # for the body you need to set app-layer.protocols.smtp.mime.body-md5
             # to yes
             #md5: [body, subject]
+{%      endif %}
 
-        #- dnp3
-        #- ftp
-        #- rdp
-        #- nfs
-        #- smb
-        #- tftp
-        #- ike
-        #- dcerpc
-        #- krb5
-        #- bittorrent-dht
-        #- snmp
-        #- rfb
-        #- sip
-        #- quic
-        #- dhcp:
-            #enabled: yes
+        {{ '#' if 'dnp3' not in OPNsense.IDS.general.eveLog.types.enabled else '' }}- dnp3
+        {{ '#' if 'ftp' not in OPNsense.IDS.general.eveLog.types.enabled else '' }}- ftp
+        {{ '#' if 'rdp' not in OPNsense.IDS.general.eveLog.types.enabled else '' }}- rdp
+        {{ '#' if 'nfs' not in OPNsense.IDS.general.eveLog.types.enabled else '' }}- nfs
+        {{ '#' if 'smb' not in OPNsense.IDS.general.eveLog.types.enabled else '' }}- smb
+        {{ '#' if 'tftp' not in OPNsense.IDS.general.eveLog.types.enabled else '' }}- tftp
+        {{ '#' if 'ike' not in OPNsense.IDS.general.eveLog.types.enabled else '' }}- ike
+        {{ '#' if 'dcerpc' not in OPNsense.IDS.general.eveLog.types.enabled else '' }}- dcerpc
+        {{ '#' if 'krb5' not in OPNsense.IDS.general.eveLog.types.enabled else '' }}- krb5
+        {{ '#' if 'bittorrent-dht' not in OPNsense.IDS.general.eveLog.types.enabled else '' }}- bittorrent-dht
+        {{ '#' if 'snmp' not in OPNsense.IDS.general.eveLog.types.enabled else '' }}- snmp
+        {{ '#' if 'rfb' not in OPNsense.IDS.general.eveLog.types.enabled else '' }}- rfb
+        {{ '#' if 'sip' not in OPNsense.IDS.general.eveLog.types.enabled else '' }}- sip
+        {{ '#' if 'quic' not in OPNsense.IDS.general.eveLog.types.enabled else '' }}- quic
+        - dhcp:
+            enabled: {{ 'yes' if 'dhcp' in OPNsense.IDS.general.eveLog.types.enabled else 'no' }}
             # When extended mode is on, all DHCP messages are logged
             # with full detail. When extended mode is off (the
             # default), just enough information to map a MAC address
             # to an IP address is logged.
-            #extended: no
+            extended: {{ 'yes' if 'dhcp' in OPNsense.IDS.general.eveLog.types.extended else 'no' }}
         - ssh
-        #- mqtt:
-            # passwords: yes           # enable output of passwords
-        #- http2
-        #- pgsql:
-            #enabled: no
-            # passwords: yes           # enable output of passwords. Disabled by default
-        #- stats:
+{%      if 'mqtt' in OPNsense.IDS.general.eveLog.types.enabled %}
+        - mqtt:
+            passwords: {{ 'yes' if 'mqtt' in OPNsense.IDS.general.eveLog.types.extended else 'no' }}           # enable output of passwords
+{%      endif %}
+        {{ '#' if 'http2' not in OPNsense.IDS.general.eveLog.types.enabled else '' }}- http2
+        - pgsql:
+            enabled: {{ 'yes' if 'pgsql' in OPNsense.IDS.general.eveLog.types.enabled else 'no' }}
+            passwords: {{ 'yes' if 'pgsql' in OPNsense.IDS.general.eveLog.types.extended else 'no' }}           # enable output of passwords. Disabled by default
+{%      if 'stats' in OPNsense.IDS.general.eveLog.types.enabled %}
+        - stats:
             #totals: yes       # stats for all threads merged together
             #threads: no       # per thread stats
             #deltas: no        # include delta values
+{%      endif %}
         # bi-directional flows
-        #- flow
+        {{ '#' if 'flow' not in OPNsense.IDS.general.eveLog.types.enabled else '' }}- flow
         # uni-directional flows
-        #- netflow
+        {{ '#' if 'netflow' not in OPNsense.IDS.general.eveLog.types.enabled else '' }}- netflow
 
         # Metadata event type. Triggered whenever a pktvar is saved
         # and will include the pktvars, flowvars, flowbits and
@@ -946,7 +954,7 @@ app-layer:
       #encryption-handling: default
 
     pgsql:
-      enabled: no
+      enabled: {{ 'yes' if 'pgsql' in OPNsense.IDS.general.eveLog.types.enabled else 'no' }}
       # Stream reassembly size for PostgreSQL. By default, track it completely.
       stream-depth: 0
       # Maximum number of live PostgreSQL transactions per flow
@@ -1002,14 +1010,14 @@ app-layer:
         #log-url-scheme: yes
         # Set to yes to compute the md5 of the mail body. You will then
         # be able to journalize it.
-        body-md5: no
+        body-md5: {{ 'yes' if 'smtp' in OPNsense.IDS.general.eveLog.types.extended else 'no' }}
       # Configure inspected-tracker for file_data keyword
       inspected-tracker:
         content-limit: 100000
         content-inspect-min-size: 32768
         content-inspect-window: 4096
     imap:
-      enabled: detection-only
+      enabled: {{ 'yes' if 'imap' in OPNsense.IDS.general.eveLog.types.enabled else 'detection-only' }}
     smb:
       enabled: yes
       detection-ports:
@@ -1175,7 +1183,7 @@ app-layer:
 
     # DNP3
     dnp3:
-      enabled: no
+      enabled: {{ 'yes' if 'dnp3' in OPNsense.IDS.general.eveLog.types.enabled else 'no' }}
       detection-ports:
         dp: 20000
 
@@ -1196,7 +1204,7 @@ app-layer:
       enabled: yes
 
     sip:
-      #enabled: yes
+      enabled: {{ 'yes' if 'sip' in OPNsense.IDS.general.eveLog.types.enabled else 'no' }}
 
 # Limit for the maximum number of asn1 frames to decode (default 256)
 asn1-max-frames: 256
