@@ -162,6 +162,7 @@ class FilterRuleField extends ArrayField
              * prefixed with 0 as these precede legacy rules
              **/
             $node->sort_order = sprintf("%d.0%06d", $node->getPriority(), (string)$node->sequence);
+            $node->prio_group = (string)$node->getPriority();
         }
         return parent::actionPostLoadingEvent();
     }

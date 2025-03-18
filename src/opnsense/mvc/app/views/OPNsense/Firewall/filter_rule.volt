@@ -41,23 +41,6 @@
             });
         }
 
-        // Trigger change message, e.g., when using move_before
-        function showChangeMessage() {
-            $("#change_message_base_form").slideDown(1000, function() {
-                setTimeout(function() {
-                    $("#change_message_base_form").slideUp(2000);
-                }, 2000);
-            });
-        }
-
-        // Shared function to fetch and set the next available sequence number
-        function incrementSequence() {
-            ajaxGet("/api/firewall/filter/get_next_sequence", {}, function (data) {
-                if (data.sequence !== undefined) {
-                    $("#rule\\.sequence").val(data.sequence);
-                }
-            });
-        }
 
         // Get all advanced fields, used for advanced mode tooltips
         const advancedFieldIds = "{{ advancedFieldIds }}".split(',');
@@ -443,14 +426,12 @@
                             function(data, status) {
                                 if (data.status === "ok") {
                                     std_bootgrid_reload("{{ formGridFilterRule['table_id'] }}");
-                                    showChangeMessage();
-                                } else {
-                                    let msg = data.message || "{{ lang._('Error moving rule.') }}";
-                                    showDialogAlert(
-                                        BootstrapDialog.TYPE_WARNING,
-                                        "{{ lang._('Move Error') }}",
-                                        msg
-                                    );
+                                    // Trigger change message, e.g., when using move_before
+                                    $("#change_message_base_form").slideDown(1000, function() {
+                                        setTimeout(function() {
+                                            $("#change_message_base_form").slideUp(2000);
+                                        }, 2000);
+                                    });
                                 }
                             },
                             function(xhr, textStatus, errorThrown) {
@@ -500,64 +481,62 @@
             // Initialize tooltips
             $('[data-toggle="tooltip"]').tooltip();
 
-            // Reload categories before grid load
-            ajaxCall('/api/firewall/filter/list_categories', {}, function (data) {
-                if (!data.rows) return;
+        });
 
-                const $categoryFilter = $("#category_filter");
-                const currentSelection = $categoryFilter.val();
+        /* for performance reasons, only load catagories on page load */
+        ajaxCall('/api/firewall/filter/list_categories', {}, function (data) {
+            if (!data.rows) return;
 
-                $categoryFilter.empty().append(
-                    data.rows.map(row => {
-                        const optVal = $('<div/>').text(row.name).html();
-                        const bgColor = row.color || '31708f';
+            const $categoryFilter = $("#category_filter");
+            const currentSelection = $categoryFilter.val();
 
-                        return $("<option/>", {
-                            value: row.uuid,
-                            html: row.name,
-                            id: row.used > 0 ? row.uuid : undefined,
-                            "data-content": row.used > 0
-                                ? `<span>${optVal}</span><span style='background:#${bgColor};' class='badge pull-right'>${row.used}</span>`
-                                : undefined
-                        });
-                    })
-                );
+            $categoryFilter.empty().append(
+                data.rows.map(row => {
+                    const optVal = $('<div/>').text(row.name).html();
+                    const bgColor = row.color || '31708f';
 
-                $categoryFilter.val(currentSelection).selectpicker('refresh');
-            });
+                    return $("<option/>", {
+                        value: row.uuid,
+                        html: row.name,
+                        id: row.used > 0 ? row.uuid : undefined,
+                        "data-content": row.used > 0
+                            ? `<span>${optVal}</span><span style='background:#${bgColor};' class='badge pull-right'>${row.used}</span>`
+                            : undefined
+                    });
+                })
+            );
 
+            $categoryFilter.val(currentSelection).selectpicker('refresh');
         });
 
         // Populate interface selectpicker
+        $("#interface_select_container").show();
         ajaxCall('/api/firewall/filter/get_interface_list', {},
             function(data, status) {
                 const $select = $('#interface_select');
                 $select.empty();
-
-                if (Array.isArray(data)) {
-                    data.forEach(function(iface) {
-                        if (iface.value.startsWith('__header_')) {
-                            // Add a divider and a non-selectable bold header
-                            $select.append('<option data-divider="true"></option>');
-                            $select.append(
-                                $('<option>', {
-                                    "data-content": `<strong>${iface.label}</strong>`,
-                                    "disabled": true
-                                })
-                            );
-                        } else {
-                            // Regular selectable interface
-                            $select.append(
-                                $('<option>', {
-                                    value: iface.value,
-                                    text: iface.label
-                                })
-                            );
-                        }
-                    });
-
-                    $select.selectpicker('refresh');
+                for (const [groupkey, group] of Object.entries(data)) {
+                    if (group.items.length > 0) {
+                        let $optgroup = $('<optgroup>', {
+                                "label": `${group.label}`,
+                                "data-icon": `${group.icon}`
+                        });
+                        group.items.forEach(function(iface) {
+                            let optprops = {
+                                value: iface.value,
+                                'data-subtext': group.label,
+                                text: iface.label
+                            };
+                            if (iface.value === '') {
+                                /* floating selected by default */
+                                optprops['selected'] = 'selected';
+                            }
+                            $optgroup.append($('<option>', optprops));
+                        });
+                        $select.append($optgroup);
+                    }
                 }
+                $select.selectpicker('refresh');
             },
             function(xhr, textStatus, errorThrown) {
                 console.error("Failed to load interface list:", textStatus, errorThrown);
@@ -577,22 +556,22 @@
 
         $("#internal_rule_selector").detach().insertAfter("#type_filter_container");
         $('#all_rules_checkbox').change(function(){
-            const isChecked = $(this).prop('checked');
-
-            // Reload the grid
             grid.bootgrid('reload');
-
-            // Once the grid has reloaded, update the specified checkboxes
-            grid.one("loaded.rs.jquery.bootgrid", function () {
-                const checkboxes = ['evaluations', 'states', 'packets', 'bytes'];
-                checkboxes.forEach(name => {
-                    const $checkbox = $('input[name="' + name + '"].dropdown-item-checkbox');
-                    if ($checkbox.length && $checkbox.prop('checked') !== isChecked) {
-                        $checkbox.click();
-                    }
-                });
-            });
         });
+
+        /* XXX: needs fix if we want to show the inspect columns on button press */
+        // Once the grid has reloaded, update the specified checkboxes
+        // grid.on("loaded.rs.jquery.bootgrid", function () {
+        //     const isChecked = $('#all_rules_checkbox').is(':checked');
+        //     const checkboxes = ['evaluations', 'states', 'packets', 'bytes'];
+        //     checkboxes.forEach(name => {
+        //         const $checkbox = $('input[name="' + name + '"].dropdown-item-checkbox');
+        //         if ($checkbox.length && $checkbox.prop('checked') !== isChecked) {
+        //             $checkbox.click();
+        //         }
+        //     });
+        // });
+
 
         $('#all_rules_button').click(function(){
             let $checkbox = $('#all_rules_checkbox');
@@ -644,32 +623,7 @@
             }
         });
 
-        // Hook into the event triggered when the clone dialog is shown and increment sequence
-        $('#{{formGridFilterRule["edit_dialog_id"]}}').on('opnsense_bootgrid_mapped', function(e, actionType) {
-            if (actionType === 'copy') {
-                incrementSequence();
-            }
-        });
 
-        $('#interface_select').on('shown.bs.select', function () {
-            const icons = {
-                'Floating': { icon: "fa-layer-group", tooltip: "{{ lang._('Floating Rule') }}", color: "text-primary" },
-                'Groups': { icon: "fa-sitemap", tooltip: "{{ lang._('Group Rule') }}", color: "text-warning" },
-                'Interfaces': { icon: "fa-ethernet", tooltip: "{{ lang._('Interface Rule') }}", color: "text-info" }
-            };
-
-            $('.bootstrap-select .dropdown-menu li.disabled a .text strong').each(function () {
-                const text = $(this).text().trim();
-
-                if (icons[text] && !$(this).closest('a').find('i').length) {
-                    $(this)
-                        .closest('a')
-                        .prepend(
-                            `<i class="fa ${icons[text].icon} ${icons[text].color}" title="${icons[text].tooltip}" style="margin-right: 6px;"></i> `
-                        );
-                }
-            });
-        });
 
         // Hook into add event
         $('#{{formGridFilterRule["edit_dialog_id"]}}').on('opnsense_bootgrid_mapped', function(e, actionType) {
@@ -700,7 +654,6 @@
 
         // Dynamically add fa icons to selectpickers
         $('#category_filter').parent().find('.dropdown-toggle').prepend('<i class="fa fa-tag" style="margin-right: 6px;"></i>');
-        $('#interface_select').parent().find('.dropdown-toggle').prepend('<i class="fa fa-network-wired" style="margin-right: 6px;"></i>');
 
         $("#reconfigureAct").SimpleActionButton();
 
@@ -768,7 +721,7 @@
             </select>
         </div>
         <div id="interface_select_container" class="btn-group">
-            <select id="interface_select" class="selectpicker" data-live-search="true" data-size="15" data-width="200px" data-container="body" title="{{ lang._('Interface') }}">
+            <select id="interface_select" class="selectpicker" data-live-search="true" data-show-subtext="true" data-size="15" data-width="200px" data-container="body">
             </select>
         </div>
         <div id="internal_rule_selector" class="btn-group">
