@@ -28,7 +28,7 @@
 
         $("#vip\\.mode").change(function(){
             $(".mode").closest("tr").hide();
-            let show_advanced = $("#show_advanced_formDialogDialogVip").hasClass("fa-toggle-on");
+            let show_advanced = $("#show_advanced_formDialogdialog_dialogVip").hasClass("fa-toggle-on");
 
             $(".mode_"+$(this).val()).each(function(){
                 if (($(this).hasClass("advanced") && show_advanced) || !$(this).hasClass("advanced")) {
@@ -47,7 +47,7 @@
         });
 
         // hook mode change to "show advanced" toggle to show dependant advanced fields
-        $("#show_advanced_formDialogDialogVip").click(function(e){
+        $("#show_advanced_formDialogdialog_dialogVip").click(function(e){
             $("#vip\\.mode").change();
         });
 
