@@ -30,6 +30,8 @@
             </shell>
             <password type="UpdateOnlyTextField"/>
             <scrambled_password type="BooleanField"  volatile="true"/>
+            <!-- password policy constraints store last pwd change timestamp -->
+            <pwd_changed_at type="TextField"/>
             <landing_page type="TextField"/>
             <comment type="TextField"/>
             <email type="TextField"/>
