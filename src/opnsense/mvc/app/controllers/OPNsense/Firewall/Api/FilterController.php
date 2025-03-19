@@ -151,7 +151,7 @@ class FilterController extends FilterBaseController
             $is_cat = empty($categories) || array_intersect(explode(',', $record['category'] ?? ''), $categories);
 
             if (empty($interfaces)) {
-                $is_if = count(explode(',', $record['interface'])) > 1 || empty($record['interface']);
+                $is_if = empty($record['interface']) || count(explode(',', $record['interface'])) > 1;
             } else {
                 $is_if = array_intersect(explode(',', $record['interface'] ?? ''), $interfaces);
                 $is_if = $is_if || empty($record['interface']);
