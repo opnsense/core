@@ -106,6 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['radius_acct_port'] = $a_server[$id]['radius_acct_port'] ?? '';
             $pconfig['radius_secret'] = $a_server[$id]['radius_secret'] ?? '';
             $pconfig['radius_timeout'] = $a_server[$id]['radius_timeout'] ?? '';
+            $pconfig['radius_stationid'] = $a_server[$id]['radius_stationid'] ?? '';
 
             if (!empty($pconfig['radius_auth_port']) &&
                 !empty($pconfig['radius_acct_port'])) {
@@ -278,6 +279,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                   $server['radius_timeout'] = 5;
               }
 
+              if (!empty($pconfig['radius_stationid'])) {
+                  $server['radius_stationid'] = $pconfig['radius_stationid'];
+              } else {
+                  unset($server['radius_stationid']);
+              }
+
               if ($pconfig['radius_srvcs'] == "both") {
                   $server['radius_auth_port'] = $pconfig['radius_auth_port'];
                   $server['radius_acct_port'] = $pconfig['radius_acct_port'];
@@ -362,6 +369,7 @@ $all_authfields = [
     'radius_secret',
     'radius_srvcs',
     'radius_timeout',
+    'radius_stationid',
     'sync_create_local_users',
     'sync_memberof',
     'sync_memberof_constraint',
@@ -851,6 +859,17 @@ endif; ?>
                       <br /><?= gettext("This value controls how long, in seconds, that the RADIUS server may take to respond to an authentication request.") ?>
                       <br /><?= gettext("If left blank, the default value is 5 seconds.") ?>
                       <br /><br /><?= gettext("NOTE: If you are using an interactive two-factor authentication system, increase this timeout to account for how long it will take the user to receive and enter a token.") ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="auth_radius auth_options hidden">
+                  <td><a id="help_for_radius_stationid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Called Station ID");?></td>
+                  <td>
+                    <input name="radius_stationid" type="text" id="radius_stationid" size="20" value="<?=$pconfig['radius_stationid'];?>"/>
+                    <div class="hidden" data-for="help_for_radius_stationid">
+                      <br /><?= gettext("This value serves as a unique identifier for this NAS. This value typically contains a MAC address, optionally appended with a known SSID or FQDN, separated by a \":\".") ?>
+                      <br /><?= gettext("The MAC address can be any uniquely associated with this machine, but typically the MAC address facing the RADIUS server is used.") ?>
+                      <br /><?= gettext("For example: 00:1A:2B:3C:4F:5E:opnsense.localdomain") ?>
                     </div>
                   </td>
                 </tr>

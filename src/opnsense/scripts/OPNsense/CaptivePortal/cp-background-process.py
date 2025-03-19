@@ -108,7 +108,7 @@ class CPBackgroundProcess(object):
                     for session in sessions:
                         if session['authenticated_via'] not in ('---ip---', '---mac---'):
                             sessions_deleted += 1
-                            self.db.del_client(zoneid, session['sessionId'])
+                            self.db.del_client(zoneid, session['sessionId'], 'NAS-Request')
                     if sessions_deleted == len(sessions) or len(sessions) == 0:
                         # when there's no session active, add a new one
                         # (only administrative, the sync process will add it if necessary)
@@ -122,12 +122,12 @@ class CPBackgroundProcess(object):
                 if dbclient['authenticated_via'] == '---ip---' \
                         and dbclient['ipAddress'] not in cpzones[zoneid]['allowedaddresses']:
                         PF.remove_from_table(zoneid, dbclient['ipAddress'])
-                        self.db.del_client(zoneid, dbclient['sessionId'])
+                        self.db.del_client(zoneid, dbclient['sessionId'], 'NAS-Request')
                 elif dbclient['authenticated_via'] == '---mac---' \
                         and dbclient['macAddress'] not in cpzones[zoneid]['allowedmacaddresses']:
                         if dbclient['ipAddress'] != '':
                             PF.remove_from_table(zoneid, dbclient['ipAddress'])
-                        self.db.del_client(zoneid, dbclient['sessionId'])
+                        self.db.del_client(zoneid, dbclient['sessionId'], 'NAS-Request')
 
     def sync_zone(self, zoneid):
         """ Synchronize captiveportal zone.
@@ -148,6 +148,7 @@ class CPBackgroundProcess(object):
                 # there are different reasons why a session should be removed, check for all reasons and
                 # use the same method for the actual removal
                 drop_session_reason = None
+                delete_reason = None
 
                 # session cleanups, only for users not for static hosts/ranges.
                 if db_client['authenticated_via'] not in ('---ip---', '---mac---'):
@@ -157,6 +158,7 @@ class CPBackgroundProcess(object):
                         if int(cpzone_info['hardtimeout']) > 0 and float(db_client['startTime']) > 0:
                             if (time.time() - float(db_client['startTime'])) / 60 > int(cpzone_info['hardtimeout']):
                                 drop_session_reason = "session %s hit hardtimeout" % db_client['sessionId']
+                                delete_reason = "Session-Timeout"
 
                     # check if idletimeout is set and overrun for this session
                     if 'idletimeout' in cpzone_info and str(cpzone_info['idletimeout']).isdigit():
@@ -164,22 +166,26 @@ class CPBackgroundProcess(object):
                         if int(cpzone_info['idletimeout']) > 0 and float(db_client['last_accessed']) > 0:
                             if (time.time() - float(db_client['last_accessed'])) / 60 > int(cpzone_info['idletimeout']):
                                 drop_session_reason = "session %s hit idletimeout" % db_client['sessionId']
+                                delete_reason = "Idle-Timeout"
 
                     # cleanup concurrent users
                     if 'concurrentlogins' in cpzone_info and int(cpzone_info['concurrentlogins']) == 0:
                         if db_client['sessionId'] in concurrent_users:
                             drop_session_reason = "remove concurrent session %s" % db_client['sessionId']
+                            delete_reason = "User-Request"
 
                     # if mac address changes, drop session. it's not the same client
                     current_arp = self.arp.get_by_ipaddress(cpnet)
                     if current_arp is not None and current_arp['mac'] != db_client['macAddress']:
                         drop_session_reason = "mac address changed for session %s" % db_client['sessionId']
+                        delete_reason = "Admin-Reset"
 
                     # session accounting
                     if db_client['acc_session_timeout'] is not None \
                             and type(db_client['acc_session_timeout']) in (int, float) \
                             and time.time() - float(db_client['startTime']) > db_client['acc_session_timeout']:
                             drop_session_reason = "accounting limit reached for session %s" % db_client['sessionId']
+                            delete_reason = "Session-Timeout"
                 elif db_client['authenticated_via'] == '---mac---':
                     # detect mac changes
                     current_ip = self.arp.get_address_by_mac(db_client['macAddress'])
@@ -198,7 +204,7 @@ class CPBackgroundProcess(object):
                 else:
                     # remove session
                     PF.remove_from_table(zoneid, cpnet)
-                    self.db.del_client(zoneid, db_client['sessionId'])
+                    self.db.del_client(zoneid, db_client['sessionId'], delete_reason)
 
             # if there are addresses/networks in the underlying pf table which are not in our administration,
             # remove them from pf.

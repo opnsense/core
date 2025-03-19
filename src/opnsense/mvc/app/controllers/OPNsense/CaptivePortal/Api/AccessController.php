@@ -39,6 +39,8 @@ use OPNsense\CaptivePortal\CaptivePortal;
  */
 class AccessController extends ApiControllerBase
 {
+    private static $arp = [];
+
     /**
      * request client session data
      * @param string $zoneid captive portal zone
@@ -66,13 +68,9 @@ class AccessController extends ApiControllerBase
         $mdlCP = new CaptivePortal();
         $cpZone = $mdlCP->getByZoneID($zoneid);
         if ($cpZone != null && (string)$cpZone->extendedPreAuthData == '1') {
-            $arps = json_decode($backend->configdRun("interface list arp json"), true);
-            if ($arps != null) {
-                foreach ($arps as $arp) {
-                    if (!empty($arp['ip'] && $arp['ip'] == $result['ipAddress'])) {
-                        $result['macAddress'] = $arp['mac'];
-                    }
-                }
+            $mac = $this->getClientMac($result['ipAddress']);
+            if (!empty($mac)) {
+                $result['macAddress'] = $mac;
             }
         }
         if ($cpZone != null && trim((string)$cpZone->authservers) == "") {
@@ -99,6 +97,21 @@ class AccessController extends ApiControllerBase
         } else {
             // client accesses the Api directly
             return $this->request->getClientAddress();
+        }
+    }
+
+    private function getClientMac($ip)
+    {
+        if (empty(self::$arp)) {
+            self::$arp = json_decode((new Backend())->configdRun("interface list arp json"), true);
+        }
+
+        if (self::$arp != null) {
+            foreach (self::$arp as $arp) {
+                if (!empty($arp['ip'] && $arp['ip'] == $ip)) {
+                    return $arp['mac'];
+                }
+            }
         }
     }
 
@@ -148,7 +161,9 @@ class AccessController extends ApiControllerBase
                         $authServer = $authFactory->get(trim($authServerName));
                         if ($authServer != null) {
                             // try this auth method
-                            $isAuthenticated = $authServer->authenticate(
+                            $isAuthenticated = $authServer->preauth([
+                                'calling_station_id' => $this->getClientMac($this->getClientIp())
+                            ])->authenticate(
                                 $userName,
                                 $this->request->getPost("password")
                             );
@@ -244,7 +259,7 @@ class AccessController extends ApiControllerBase
             ) {
                 // you can only disconnect a connected client
                 $backend = new Backend();
-                $statusRAW = $backend->configdpRun("captiveportal disconnect", [$clientSession['sessionId']]);
+                $statusRAW = $backend->configdpRun("captiveportal disconnect", [$clientSession['sessionId'], "User-Request"]);
                 $status = json_decode($statusRAW, true);
                 if ($status != null) {
                     $this->getLogger("captiveportal")->info(
