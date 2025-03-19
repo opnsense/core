@@ -28,19 +28,20 @@
 """
 import json
 import subprocess
-import sys
+import argparse
 
-valid_modes = {"dhcp", "dhcp6"}
-mode = sys.argv[1] if len(sys.argv) > 1 and sys.argv[1] in valid_modes else "dhcp"
+parser = argparse.ArgumentParser()
+parser.add_argument("mode", nargs="?", default="dhcp", choices=["dhcp", "dhcp6"])
+args = parser.parse_args()
 
 result = {}
 
 # not yet registered by name, but pratical to have
 # https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml
-if mode == "dhcp":
+if args.mode == "dhcp":
     result['114'] = 'dhcp captive-portal [114]'
 
-sp = subprocess.run(['/usr/local/sbin/dnsmasq', '--help', mode], capture_output=True, text=True)
+sp = subprocess.run(['/usr/local/sbin/dnsmasq', '--help', args.mode], capture_output=True, text=True)
 for line in sp.stdout.split("\n"):
     parts = line.split(maxsplit=1)
     if len(parts) == 2 and parts[0].isdigit():
