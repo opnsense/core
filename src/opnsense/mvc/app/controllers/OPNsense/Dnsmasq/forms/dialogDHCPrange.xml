@@ -48,9 +48,9 @@
         <id>range.ra_mode</id>
         <label>RA Mode</label>
         <type>select_multiple</type>
-        <hint>Off</hint>
+        <hint>Default</hint>
         <style>selectpicker style_dhcpv6</style>
-        <help>Control how IPv6 clients receive their addresses. Off means no RA messages are sent for this range.</help>
+        <help>Control how IPv6 clients receive their addresses. Enabling Router Advertisements in general settings will enable it for all configured DHCPv6 ranges with the managed address bits set, and the use SLAAC bit reset. To change this default, select a combination of the possible options here. "slaac", "ra-stateless" and "ra-names" can be freely combined, all other options shall remain single selections.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
