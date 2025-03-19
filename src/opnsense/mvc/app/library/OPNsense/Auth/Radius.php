@@ -495,7 +495,7 @@ class Radius extends Base implements IAuthConnector
             )
         ) {
             $error = radius_strerror($radius);
-        } elseif (!radius_create_request($radius, RADIUS_ACCESS_REQUEST)) { /* XXX message auth */
+        } elseif (!radius_create_request($radius, RADIUS_ACCESS_REQUEST, true)) {
             $error = radius_strerror($radius);
         } elseif (!radius_put_string($radius, RADIUS_USER_NAME, $username)) {
             $error = radius_strerror($radius);
