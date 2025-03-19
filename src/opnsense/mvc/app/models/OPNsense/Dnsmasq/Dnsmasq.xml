@@ -63,6 +63,7 @@
                 <MinimumValue>0</MinimumValue>
                 <MaximumValue>60</MaximumValue>
             </reply_delay>
+            <enable_ra type="BooleanField"/>
             <nosync type="BooleanField"/>
         </dhcp>
         <no_ident type="BooleanField">
