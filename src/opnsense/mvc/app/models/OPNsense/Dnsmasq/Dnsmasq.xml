@@ -138,14 +138,6 @@
             </tag>
         </dhcp_tags>
         <dhcp_ranges type="ArrayField">
-            <protocol type="OptionField">
-                <OptionValues>
-                    <ipv4>IPv4</ipv4>
-                    <ipv6>IPv6</ipv6>
-                </OptionValues>
-                <Required>Y</Required>
-                <Default>ipv4</Default>
-            </protocol>
             <interface type="InterfaceField">
                 <BlankDesc>Any</BlankDesc>
                 <Filters>
@@ -206,14 +198,8 @@
                     <low>Low</low>
                 </OptionValues>
             </ra_priority>
-            <ra_min_interval type="IntegerField">
-                <MinimumValue>1</MinimumValue>
-                <ValidationMessage>Please enter a value greater or equal to 1 or leave empty for default.</ValidationMessage>
-            </ra_min_interval>
-            <ra_max_interval type="IntegerField">
-                <MinimumValue>1</MinimumValue>
-                <ValidationMessage>Please enter a value greater or equal to 1 or leave empty for default.</ValidationMessage>
-            </ra_max_interval>
+            <ra_min_interval type="IntegerField"/>
+            <ra_max_interval type="IntegerField"/>
             <description type="DescriptionField"/>
         </dhcp_ranges>
         <dhcp_options type="ArrayField">
@@ -221,12 +207,6 @@
                 <ConfigdPopulateAct>dnsmasq list dhcp_options</ConfigdPopulateAct>
                 <Required>Y</Required>
             </option>
-            <protocol type="OptionField">
-                <BlankDesc>IPv4</BlankDesc>
-                <OptionValues>
-                    <option6>IPv6</option6>
-                </OptionValues>
-            </protocol>
             <interface type="InterfaceField">
                 <BlankDesc>Any</BlankDesc>
                 <Filters>

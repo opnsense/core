@@ -125,13 +125,14 @@
         let selected_tab = window.location.hash != "" ? window.location.hash : "#general";
         $('a[href="' +selected_tab + '"]').click();
 
-        $("#range\\.protocol").change(function() {
-            if ($(this).val() === "ipv4") {
-                $(".style_ipv6").closest('tr').hide();
-                $(".style_ipv4").closest('tr').show();
+        $("#range\\.start_addr").on("keyup change", function() {
+            let value = $(this).val() || "";
+            if (value.includes(":")) {
+                $(".style_dhcpv6").closest('tr').show();
+                $(".style_dhcpv4").closest('tr').hide();
             } else {
-                $(".style_ipv6").closest('tr').show();
-                $(".style_ipv4").closest('tr').hide();
+                $(".style_dhcpv6").closest('tr').hide();
+                $(".style_dhcpv4").closest('tr').show();
             }
         });
 
