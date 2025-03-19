@@ -213,8 +213,10 @@
         <dhcp_options_match type="ArrayField">
             <option type="JsonKeyValueStoreField">
                 <ConfigdPopulateAct>dnsmasq list dhcp_options</ConfigdPopulateAct>
-                <Required>Y</Required>
             </option>
+            <option6 type="JsonKeyValueStoreField">
+                <ConfigdPopulateAct>dnsmasq list dhcp_options6</ConfigdPopulateAct>
+            </option6>
             <set_tag type="ModelRelationField">
                 <Model>
                     <tag>
