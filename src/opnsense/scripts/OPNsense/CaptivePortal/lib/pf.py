@@ -47,7 +47,6 @@ class PF(object):
 
     @staticmethod
     def remove_from_table(zoneid, address):
-        # XXX: capture output should be true
         subprocess.run(['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'del', address], capture_output=True)
         # kill associated states to and from this host
         subprocess.run(['/sbin/pfctl', '-k', f'{address}'], capture_output=True)
