@@ -27,7 +27,7 @@
         <id>range.constructor</id>
         <label>Constructor</label>
         <type>dropdown</type>
-        <style>style_dhcpv6</style>
+        <style>selectpicker style_dhcpv6</style>
         <help>Interface to use to calculate the proper range, when selected, a range maybe specified as partial (e.g. ::1, ::400)</help>
         <grid_view>
             <visible>false</visible>
@@ -60,7 +60,7 @@
         <label>RA Priority</label>
         <type>dropdown</type>
         <help>Priority of the RA announcements.</help>
-        <style>style_dhcpv6</style>
+        <style>selectpicker style_dhcpv6</style>
         <grid_view>
             <visible>false</visible>
         </grid_view>
