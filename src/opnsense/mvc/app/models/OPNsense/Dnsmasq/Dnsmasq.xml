@@ -199,8 +199,9 @@
                     <low>Low</low>
                 </OptionValues>
             </ra_priority>
-            <ra_min_interval type="IntegerField"/>
-            <ra_max_interval type="IntegerField"/>
+            <ra_mtu type="IntegerField"/>
+            <ra_interval type="IntegerField"/>
+            <ra_router_lifetime type="IntegerField"/>
             <description type="DescriptionField"/>
         </dhcp_ranges>
         <dhcp_options type="ArrayField">

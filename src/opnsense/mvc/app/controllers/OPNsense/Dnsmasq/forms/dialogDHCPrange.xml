@@ -66,23 +66,33 @@
         </grid_view>
     </field>
     <field>
-        <id>range.ra_min_interval</id>
-        <label>RA Min Interval</label>
+        <id>range.ra_mtu</id>
+        <label>RA MTU</label>
         <type>text</type>
-        <hint>60</hint>
         <style>style_dhcpv6</style>
-        <help>Minimum time (seconds) between Router Advertisements.</help>
+        <help>Optional MTU to send to clients via Router Advertisements. If unsure leave empty.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
     </field>
     <field>
-        <id>range.ra_max_interval</id>
-        <label>RA Max Interval</label>
+        <id>range.ra_interval</id>
+        <label>RA Interval</label>
         <type>text</type>
-        <hint>180</hint>
+        <hint>60</hint>
         <style>style_dhcpv6</style>
-        <help>Maximum time (seconds) between Router Advertisements.</help>
+        <help>Time (seconds) between Router Advertisements.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>range.ra_router_lifetime</id>
+        <label>RA Router Lifetime</label>
+        <type>text</type>
+        <hint>1200</hint>
+        <style>style_dhcpv6</style>
+        <help>The lifetime of the route may be changed or set to zero, which allows a router to advertise prefixes but not a route via itself. When using HA, setting a short timespan here is adviced for faster IPv6 failover. A good combination could be 10 seconds RA interval and 30 seconds RA router lifetime. Going lower than that can pose issues in busy networks.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
