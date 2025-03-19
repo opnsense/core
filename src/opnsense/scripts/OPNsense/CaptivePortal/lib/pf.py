@@ -43,14 +43,15 @@ class PF(object):
 
     @staticmethod
     def add_to_table(zoneid, address):
-        subprocess.run(['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'add', address])
+        subprocess.run(['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'add', address], capture_output=True)
 
     @staticmethod
     def remove_from_table(zoneid, address):
-        subprocess.run(['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'del', address])
+        # XXX: capture output should be true
+        subprocess.run(['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'del', address], capture_output=True)
         # kill associated states to and from this host
-        subprocess.run(['/sbin/pfctl', '-k', f'{address}'])
-        subprocess.run(['/sbin/pfctl', '-k', '0.0.0.0/0', '-k', f'{address}'])
+        subprocess.run(['/sbin/pfctl', '-k', f'{address}'], capture_output=True)
+        subprocess.run(['/sbin/pfctl', '-k', '0.0.0.0/0', '-k', f'{address}'], capture_output=True)
 
     @staticmethod
     def sync_accounting(zoneid):
