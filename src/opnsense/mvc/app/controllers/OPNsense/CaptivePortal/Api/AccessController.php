@@ -102,8 +102,6 @@ class AccessController extends ApiControllerBase
 
     private function getClientMac($ip)
     {
-        $mac = null;
-
         if (empty(self::$arp)) {
             self::$arp = json_decode((new Backend())->configdRun("interface list arp json"), true);
         }
@@ -111,12 +109,10 @@ class AccessController extends ApiControllerBase
         if (self::$arp != null) {
             foreach (self::$arp as $arp) {
                 if (!empty($arp['ip'] && $arp['ip'] == $ip)) {
-                    $mac = $arp['mac'];
+                    return $arp['mac'];
                 }
             }
         }
-
-        return $mac;
     }
 
     /**
