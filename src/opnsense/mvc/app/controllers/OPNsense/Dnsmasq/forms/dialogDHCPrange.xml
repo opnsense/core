@@ -39,7 +39,7 @@
         <type>text</type>
         <hint>64</hint>
         <style>style_dhcpv6</style>
-        <help>Prefix length offered to the client.</help>
+        <help>Prefix length offered to the client. Custom values in this field will be ignored if Router Advertisements are enabled, as SLAAC will only work with a prefix length of 64.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
