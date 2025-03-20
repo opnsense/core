@@ -28,8 +28,9 @@
  */
 
 require_once('config.inc');
+require_once('interfaces.inc');
+require_once('system.inc');
 require_once('util.inc');
-require_once("interfaces.inc");
 
 $action = strtolower($argv[1] ?? '');
 $a_vip = &config_read_array('virtualip', 'vip');
@@ -38,9 +39,10 @@ if ($action == 'maintenance') {
     if (isset($config["virtualip_carp_maintenancemode"])) {
         unset($config["virtualip_carp_maintenancemode"]);
         $carp_demotion_default = '0';
-        foreach (config_read_array('sysctl', 'item') as $tunable) {
-            if ($tunable['tunable'] == 'net.inet.carp.demotion' && ctype_digit($tunable['value'])) {
-                $carp_demotion_default = $tunable['value'];
+        foreach (system_sysctl_get() as $tunable => $value) {
+            /* expect value between 1-255 to manually offset the end result */
+            if ($tunable == 'net.inet.carp.demotion' && ctype_digit($value)) {
+                $carp_demotion_default = $value;
             }
         }
         $carp_diff = $carp_demotion_default - get_single_sysctl('net.inet.carp.demotion');
