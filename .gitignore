@@ -15,4 +15,5 @@
 /src/opnsense/version/*
 !/src/opnsense/version/core.in
 .idea/
+.vscode/
 /src/opnsense/www/.htrouter.php
