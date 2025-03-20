@@ -57,13 +57,6 @@
         // Test if the UUID is valid, used to determine if automation model or internal rule
         const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
-        // XXX: Clear any stored column visibility settings for the firewall filter page
-        // Synergizes with the Inspect Button since it unhides certain columns that should be hidden on page load
-        // Prevents messed up views, we always control the intentional default of the page
-        Object.keys(localStorage)
-            .filter(key => key.startsWith("visibleColumns[/ui/firewall/filter/"))
-            .forEach(key => localStorage.removeItem(key));
-
         // Initialize grid
         const grid = $("#{{formGridFilterRule['table_id']}}").UIBootgrid({
             search:'/api/firewall/filter/search_rule/',
