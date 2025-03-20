@@ -312,6 +312,7 @@
         infos: "{{ lang._('Showing %s to %s of %s entries') | format('{{ctx.start}}','{{ctx.end}}','{{ctx.total}}') }}",
         noResults: "{{ lang._('No results found!') }}",
         refresh: "{{ lang._('Refresh') }}",
+        reset: "{{ lang._('Reset to defaults') }}",
         search: "{{ lang._('Search') }}"
     });
     $.extend(jQuery.fn.selectpicker.Constructor.DEFAULTS, {

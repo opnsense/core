@@ -400,6 +400,25 @@ function renderActions()
             // Column selection
             renderColumnSelection.call(this, actions);
 
+            // Reset button
+            if (this.options.resetButton) {
+                var resetIcon = tpl.icon.resolve(getParams.call(this, { iconCss: css.iconReset }))
+                var reset = $(tpl.actionButton.resolve(getParams.call(this, {
+                    content: resetIcon, text: this.options.labels.reset
+                }))).on("click" + namespace, function (e) {
+                    e.stopPropagation();
+                    Object.keys(localStorage)
+                        .filter(key =>
+                            key.startsWith(`visibleColumns[${that.uid}`) ||
+                            key.startsWith(`rowCount[${that.uid}`) ||
+                            key.startsWith(`sortColumns[${that.uid}`)
+                        )
+                        .forEach(key => localStorage.removeItem(key));
+                        location.reload();
+                })
+                actions.append(reset);
+            }
+
             replacePlaceHolder.call(this, actionItems, actions);
         }
     }
@@ -1039,7 +1058,7 @@ var Grid = function(element, options)
     this.sortDictionary = {};
     this.total = 0;
     this.totalPages = 0;
-    this.columnSelectForceReload  = this.options.columnSelectForceReload || false;
+    this.columnSelectForceReload  = this.options.columnSelectForceReload;
     this.cachedResponse = {
         rows: [],
         total: 0
@@ -1074,6 +1093,7 @@ Grid.defaults = {
     navigation: 3, // it's a flag: 0 = none, 1 = top, 2 = bottom, 3 = both (top and bottom)
     padding: 2, // page padding (pagination)
     columnSelection: true,
+    columnSelectForceReload: false, // force data fetch on column select
     rowCount: [10, 25, 50, -1], // rows per page int or array of int (-1 represents "All")
 
     /**
@@ -1124,6 +1144,7 @@ Grid.defaults = {
     highlightRows: false, // highlights new rows (find the page of the first new row)
     sorting: true,
     multiSort: false,
+    resetButton: true,
 
     /**
      * General search settings to configure the search field behaviour.
@@ -1345,6 +1366,7 @@ Grid.defaults = {
         iconColumns: "fa-list",
         iconDown: "fa-chevron-down",
         iconRefresh: "fa-arrows-rotate",
+        iconReset: "fa-share-square",
         iconSearch: "fa-magnifying-glass",
         iconUp: "fa-chevron-up",
         infos: "infos", // must be a unique class name or constellation of class names within the header and footer,
@@ -1416,6 +1438,7 @@ Grid.defaults = {
         loading: '<i class="fa fa-spinner fa-spin"></i>',
         noResults: "No results found!",
         refresh: "Refresh",
+        reset: "Reset",
         search: "Search"
     },
 
@@ -1973,7 +1996,7 @@ Grid.prototype.getTotalPageCount = function()
 Grid.prototype.getTotalRowCount = function()
 {
     return this.total;
-    };
+};
 
 // GRID COMMON TYPE EXTENSIONS
 // ============
