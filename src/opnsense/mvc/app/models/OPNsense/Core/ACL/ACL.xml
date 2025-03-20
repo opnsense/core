@@ -647,9 +647,9 @@
     <page-system-usermanager-passwordmg>
         <name>Lobby: Password</name>
         <patterns>
-            <pattern>system_usermanager_passwordmg.php*</pattern>
             <pattern>ui/user_portal</pattern>
             <pattern>api/user_portal/user/*</pattern>
+            <pattern>system_usermanager_passwordmg.php*</pattern>
         </patterns>
     </page-system-usermanager-passwordmg>
     <page-openvpn-client-export>
