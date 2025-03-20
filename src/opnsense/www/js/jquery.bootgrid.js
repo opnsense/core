@@ -124,6 +124,9 @@ function loadColumns()
                 headerAlign: data.headerAlign || "left",
                 cssClass: data.cssClass || "",
                 headerCssClass: data.headerCssClass || "",
+                headerFormatter: that.options.headerFormatters[data.headerformatter] || /* explicitly defined through data-headerFormatter */
+                                 that.options.headerFormatters[data.columnId] || /* implicitly defined through data-columnId */
+                                 null, /* no header formatter present */
                 formatter: that.options.formatters[data.formatter] || null,
                 order: !sorted ?
                     (sortingStorage === null ? (data.order === "asc" || data.order === "desc" ? data.order : null) :
@@ -133,6 +136,8 @@ function loadColumns()
                 sortable: !(data.sortable === false), // default: true
                 visible: visibilityStorage === null ? !(data.visible === false) : (visibilityStorage === 'true'), // default: true
                 visibleInSelection: !(data.visibleInSelection === false), // default: true
+                setStaged: false,
+                unsetStaged: false,
                 width: ($.isNumeric(data.width)) ? data.width + "px" :
                     (typeof(data.width) === "string") ? data.width : null
             };
@@ -168,7 +173,44 @@ response = {
 }
 */
 
-function loadData()
+function update(rows, total)
+{
+    var that = this;
+
+    that.currentRows = rows;
+    setTotals.call(that, total);
+
+    if (!that.options.keepSelection)
+    {
+        that.selectedRows = [];
+    }
+
+    var shouldRenderHeader = false;
+    that.columns.forEach(col => {
+        if (col.setStaged) {
+            col.visible = shouldRenderHeader = true;
+            col.setStaged = false;
+        }
+
+        if (col.unsetStaged) {
+            col.visible = col.unsetStaged = false;
+            shouldRenderHeader = true;
+        }
+    });
+
+    if (shouldRenderHeader) {
+        /* multiple columns have been set/unset prior to this reload */
+        renderTableHeader.call(that);
+    }
+
+    renderRows.call(that, rows);
+    renderInfos.call(that);
+    renderPagination.call(that);
+
+    that.element._bgBusyAria(false).trigger("loaded" + namespace);
+}
+
+function loadData(soft=false)
 {
     var that = this;
 
@@ -193,24 +235,7 @@ function loadData()
         return false;
     }
 
-    function update(rows, total)
-    {
-        that.currentRows = rows;
-        setTotals.call(that, total);
-
-        if (!that.options.keepSelection)
-        {
-            that.selectedRows = [];
-        }
-
-        renderRows.call(that, rows);
-        renderInfos.call(that);
-        renderPagination.call(that);
-
-        that.element._bgBusyAria(false).trigger("loaded" + namespace);
-    }
-
-    if (this.options.ajax)
+    if (this.options.ajax && !soft)
     {
         var request = getRequest.call(this),
             url = getUrl.call(this);
@@ -241,7 +266,8 @@ function loadData()
                 response = that.options.responseHandler(response);
 
                 that.current = response.current;
-                update(response.rows, response.total);
+                that.cachedResponse = response;
+                update.call(that, response.rows, response.total);
             },
             error: function (jqXHR, textStatus, errorThrown)
             {
@@ -269,7 +295,7 @@ function loadData()
 
         // todo: improve the following comment
         // setTimeout decouples the initialization so that adding event handlers happens before
-        window.setTimeout(function () { update(rows, total); }, 10);
+        window.setTimeout(function () { update.call(that, rows, total); }, 10);
     }
 }
 
@@ -319,6 +345,11 @@ function prepareTable()
     {
         this.element.append(tpl.body);
     }
+
+    // on initial load, make sure the loading template has room, so insert an empty row here
+    this.element.children("tbody").first().append(
+        tpl.emptyBody.resolve(getParams.call(this, {columns: this.columns.where(isVisible).length}))
+    )
 
     if (this.options.navigation & 1)
     {
@@ -409,7 +440,8 @@ function renderColumnSelection(actions)
 
                                 that.element.find("tbody").empty(); // Fixes an column visualization bug
                                 renderTableHeader.call(that);
-                                loadData.call(that);
+                                that.columnSelectForceReload ? loadData.call(that)
+                                                             : update.call(that, that.cachedResponse.rows, that.cachedResponse.total);
                             }
                         });
                 dropDown.find(getCssSelector(css.dropDownMenuItems)).append(item);
@@ -797,6 +829,9 @@ function renderTableHeader()
                 icon = tpl.icon.resolve(getParams.call(that, { iconCss: iconCss })),
                 align = column.headerAlign,
                 cssClass = (column.headerCssClass.length > 0) ? " " + column.headerCssClass : "";
+            column.headerText = ($.isFunction(column.headerFormatter)) ?
+                          column.headerFormatter.call(that, column) :
+                          column.text;
             html += tpl.headerCell.resolve(getParams.call(that, {
                 column: column, icon: icon, sortable: sorting && column.sortable && css.sortable || "",
                 css: ((align === "right") ? css.right : (align === "center") ?
@@ -925,11 +960,7 @@ function showLoading()
             {
                 count = count + 1;
             }
-            tbody.html(tpl.loading.resolve(getParams.call(that, { columns: count })));
-            if (that.rowCount !== -1 && padding > 0)
-            {
-                tbody.find("tr > td").css("padding", "20px 0 " + padding + "px");
-            }
+            tbody.append(tpl.loading.resolve(getParams.call(that, { columns: count })));
         }
     }, 250);
 }
@@ -1008,6 +1039,11 @@ var Grid = function(element, options)
     this.sortDictionary = {};
     this.total = 0;
     this.totalPages = 0;
+    this.columnSelectForceReload  = this.options.columnSelectForceReload || false;
+    this.cachedResponse = {
+        rows: [],
+        total: 0
+    };
     this.cachedParams = {
         lbl: this.options.labels,
         css: this.options.css,
@@ -1349,6 +1385,15 @@ Grid.defaults = {
     },
 
     /**
+     * A dictionary of formatters for the column headers.
+     *
+     * @property formatters
+     * @type Object
+     * @for defaults
+     **/
+    headerFormatters: {},
+
+    /**
      * A dictionary of formatters.
      *
      * @property formatters
@@ -1368,7 +1413,7 @@ Grid.defaults = {
     labels: {
         all: "All",
         infos: "Showing {{ctx.start}} to {{ctx.end}} of {{ctx.total}} entries",
-        loading: "Loading...",
+        loading: '<i class="fa fa-spinner fa-spin"></i>',
         noResults: "No results found!",
         refresh: "Refresh",
         search: "Search"
@@ -1437,10 +1482,11 @@ Grid.defaults = {
         cell: "<td class=\"{{ctx.css}}\" style=\"{{ctx.style}}\">{{ctx.content}}</td>",
         footer: "<div id=\"{{ctx.id}}\" class=\"{{css.footer}}\"><div class=\"row\"><div class=\"col-sm-6\"><p class=\"{{css.pagination}}\"></p></div><div class=\"col-sm-6 infoBar\"><p class=\"{{css.infos}}\"></p></div></div></div>",
         header: "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><p class=\"{{css.search}}\"></p><p class=\"{{css.actions}}\"></p></div></div></div>",
-        headerCell: "<th data-column-id=\"{{ctx.column.id}}\" class=\"{{ctx.css}}\" style=\"{{ctx.style}}\"><a href=\"javascript:void(0);\" class=\"{{css.columnHeaderAnchor}} {{ctx.sortable}}\"><span class=\"{{css.columnHeaderText}}\">{{ctx.column.text}}</span>{{ctx.icon}}</a></th>",
+        headerCell: "<th data-column-id=\"{{ctx.column.id}}\" class=\"{{ctx.css}}\" style=\"{{ctx.style}}\"><a href=\"javascript:void(0);\" class=\"{{css.columnHeaderAnchor}} {{ctx.sortable}}\"><span class=\"{{css.columnHeaderText}}\">{{ctx.column.headerText}}</span>{{ctx.icon}}</a></th>",
         icon: "<span class=\"{{css.icon}} {{ctx.iconCss}}\"></span>",
         infos: "<div class=\"{{css.infos}}\">{{lbl.infos}}</div>",
-        loading: "<tr><td colspan=\"{{ctx.columns}}\" class=\"loading\">{{lbl.loading}}</td></tr>",
+        loading: "<div class=\"overlay\">{{lbl.loading}}</div>",
+        emptyBody: "<tr><td colspan=\"{{ctx.columns}}\">&nbsp;</td></tr>",
         noResults: "<tr><td colspan=\"{{ctx.columns}}\" class=\"no-results\">{{lbl.noResults}}</td></tr>",
         pagination: "<ul class=\"{{css.pagination}}\"></ul>",
         paginationItem: "<li class=\"{{ctx.css}}\"><a data-page=\"{{ctx.page}}\" class=\"{{css.paginationButton}}\">{{ctx.text}}</a></li>",
@@ -1546,6 +1592,14 @@ Grid.prototype.reload = function()
 {
     this.current = 1; // reset
     loadData.call(this);
+
+    return this;
+};
+
+Grid.prototype.softreload = function()
+{
+    // modifies table structure without data refresh
+    loadData.call(this, true);
 
     return this;
 };
@@ -1779,6 +1833,34 @@ Grid.prototype.sort = function(dictionary)
 Grid.prototype.getColumnSettings = function()
 {
     return $.merge([], this.columns);
+};
+
+/**
+ * Sets a list of the column settings.
+ * This method applies only to the first grid instance.
+ *
+ * @method setColumnSettings
+ * @param {Array} An array of columns identifiers
+ * @chainable
+ **/
+Grid.prototype.setColumns = function(cols)
+{
+    this.columns.forEach(col => {
+        if (cols.includes(col.id)) {
+            col.setStaged = true;
+        }
+    })
+    return this;
+};
+
+Grid.prototype.unsetColumns = function(cols)
+{
+    this.columns.forEach(col => {
+        if (cols.includes(col.id)) {
+            col.unsetStaged = true;
+        }
+    })
+    return this;
 };
 
 /**
