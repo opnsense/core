@@ -39,6 +39,7 @@
 /usr/local/etc/inc/plugins.inc.d/openvpn/tunnel_endpoint.php
 /usr/local/etc/inc/plugins.inc.d/openvpn/wizard.inc
 /usr/local/etc/inc/plugins.inc.d/pf.inc
+/usr/local/etc/inc/plugins.inc.d/radvd.inc
 /usr/local/etc/inc/plugins.inc.d/suricata.inc
 /usr/local/etc/inc/plugins.inc.d/unbound.inc
 /usr/local/etc/inc/plugins.inc.d/vxlan.inc
