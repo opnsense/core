@@ -125,7 +125,8 @@ function loadColumns()
                 cssClass: data.cssClass || "",
                 headerCssClass: data.headerCssClass || "",
                 headerFormatter: that.options.headerFormatters[data.headerformatter] || /* explicitly defined through data-headerFormatter */
-                                 that.options.headerFormatters[data.columnId] || /* implicitly defined through data-columnId */
+                                 !(Object.getOwnPropertyNames(Object.prototype).includes(data.columnId)) ? /* reserved keywords */
+                                 that.options.headerFormatters[data.columnId] : /* implicitly defined through data-columnId */
                                  null, /* no header formatter present */
                 formatter: that.options.formatters[data.formatter] || null,
                 order: !sorted ?
