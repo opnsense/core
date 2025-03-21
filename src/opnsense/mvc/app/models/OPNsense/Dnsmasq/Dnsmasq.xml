@@ -143,6 +143,7 @@
                 <BlankDesc>Any</BlankDesc>
                 <Filters>
                     <if>/^(?!lo0$).*/</if>
+                    <type>/(?s)^((?!group).)*$/</type>
                 </Filters>
                 <AllowDynamic>Y</AllowDynamic>
             </interface>
@@ -215,6 +216,7 @@
                 <BlankDesc>Any</BlankDesc>
                 <Filters>
                     <if>/^(?!lo0$).*/</if>
+                    <type>/(?s)^((?!group).)*$/</type>
                 </Filters>
                 <AllowDynamic>Y</AllowDynamic>
             </interface>
