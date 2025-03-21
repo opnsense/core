@@ -28,7 +28,7 @@
         <label>Constructor</label>
         <type>dropdown</type>
         <style>selectpicker style_dhcpv6</style>
-        <help>Interface to use to calculate the proper range, when selected, a range maybe specified as partial (e.g. ::1, ::400)</help>
+        <help>Interface to use to calculate the proper range, when selected, a range may be specified as a suffix (e.g. ::1, ::400)</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
