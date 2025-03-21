@@ -41,17 +41,6 @@
             updateServiceControlUI('dnsmasq');
         });
 
-        function insertTagSelect(grid_id) {
-            if (!['domain', 'boot'].includes(grid_id)) {
-                let header = $("#" + grid_id + "-header");
-                let $actionBar = header.find('.actionBar');
-                if ($actionBar.length) {
-                    $("#tag_select_container").detach().insertBefore($actionBar.find('.search'));
-                    $("#tag_select_container").show();
-                }
-            }
-        }
-
         let all_grids = {};
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             let grid_ids = null;
@@ -110,10 +99,18 @@
                         } else if (grid_id == 'host') {
                             all_grids[grid_id].find("tfoot td:last").append($("#hosts_tfoot_append > button").detach());
                         }
-                        insertTagSelect(grid_id);
                     } else {
                         all_grids[grid_id].bootgrid('reload');
-                        insertTagSelect(grid_id);
+
+                    }
+                    // insert tag selectpicker in all grids that use tags or interfaces, boot excluded cause two grids in same tab
+                    if (!['domain', 'boot'].includes(grid_id)) {
+                        let header = $("#" + grid_id + "-header");
+                        let $actionBar = header.find('.actionBar');
+                        if ($actionBar.length) {
+                            $("#tag_select_container").detach().insertBefore($actionBar.find('.search'));
+                            $("#tag_select_container").show();
+                        }
                     }
                 });
             }
@@ -192,6 +189,7 @@
 
         $('#tag_select').on('changed.bs.select', function () {
             Object.keys(all_grids).forEach(function (grid_id) {
+                // boot is not excluded here, as it reloads in same tab as options
                 if (!['domain'].includes(grid_id)) {
                     all_grids[grid_id].bootgrid('reload');
                 }
@@ -224,7 +222,7 @@
 </div>
 
 <div id="tag_select_container" class="btn-group" style="display: none;">
-    <select id="tag_select" class="selectpicker" multiple data-title="Interfaces / Tags" data-live-search="true" data-size="10" data-width="200px" data-container="body">
+    <select id="tag_select" class="selectpicker" multiple data-title="{{ lang._('Tags / Interfaces') }}" data-live-search="true" data-size="10" data-width="200px" data-container="body">
     </select>
 </div>
 

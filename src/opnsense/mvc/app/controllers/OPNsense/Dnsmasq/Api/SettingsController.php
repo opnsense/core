@@ -408,15 +408,15 @@ class SettingsController extends ApiMutableModelControllerBase
 
         // Assemble result
         return [
-            'interfaces' => [
-                'label' => gettext('Interfaces'),
-                'icon'  => 'fa fa-ethernet text-info',
-                'items' => $interfaces
-            ],
             'tags' => [
                 'label' => gettext('Tags'),
                 'icon'  => 'fa fa-tag text-primary',
                 'items' => $tags
+            ],
+            'interfaces' => [
+                'label' => gettext('Interfaces'),
+                'icon'  => 'fa fa-ethernet text-info',
+                'items' => $interfaces
             ]
         ];
     }
