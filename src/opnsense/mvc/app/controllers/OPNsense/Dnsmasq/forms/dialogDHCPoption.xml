@@ -3,13 +3,13 @@
         <id>option.option</id>
         <label>Option</label>
         <type>dropdown</type>
-        <help>Option to offer to the client.</help>
+        <help>DHCPv4 option to offer to the client.</help>
     </field>
     <field>
-        <id>option.protocol</id>
-        <label>Protocol</label>
+        <id>option.option6</id>
+        <label>Option6</label>
         <type>dropdown</type>
-        <help>The protocol to use for this option. Options used for DHCPv6 require IPv6 to match.</help>
+        <help>DHCPv6 option to offer to the client.</help>
     </field>
     <field>
         <id>option.interface</id>

@@ -185,14 +185,10 @@
         <dhcp_options type="ArrayField">
             <option type="JsonKeyValueStoreField">
                 <ConfigdPopulateAct>dnsmasq list dhcp_options</ConfigdPopulateAct>
-                <Required>Y</Required>
             </option>
-            <protocol type="OptionField">
-                <BlankDesc>IPv4</BlankDesc>
-                <OptionValues>
-                    <option6>IPv6</option6>
-                </OptionValues>
-            </protocol>
+            <option6 type="JsonKeyValueStoreField">
+                <ConfigdPopulateAct>dnsmasq list dhcp_options6</ConfigdPopulateAct>
+            </option6>
             <interface type="InterfaceField">
                 <BlankDesc>Any</BlankDesc>
                 <Filters>
@@ -217,8 +213,10 @@
         <dhcp_options_match type="ArrayField">
             <option type="JsonKeyValueStoreField">
                 <ConfigdPopulateAct>dnsmasq list dhcp_options</ConfigdPopulateAct>
-                <Required>Y</Required>
             </option>
+            <option6 type="JsonKeyValueStoreField">
+                <ConfigdPopulateAct>dnsmasq list dhcp_options6</ConfigdPopulateAct>
+            </option6>
             <set_tag type="ModelRelationField">
                 <Model>
                     <tag>

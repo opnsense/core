@@ -28,13 +28,20 @@
 """
 import json
 import subprocess
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("mode", nargs="?", default="dhcp", choices=["dhcp", "dhcp6"])
+args = parser.parse_args()
+
+result = {}
 
 # not yet registered by name, but pratical to have
 # https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml
-result = {
-    '114' : 'dhcp captive-portal [114]'
-}
-sp = subprocess.run(['/usr/local/sbin/dnsmasq', '--help','dhcp'], capture_output=True, text=True)
+if args.mode == "dhcp":
+    result['114'] = 'dhcp captive-portal [114]'
+
+sp = subprocess.run(['/usr/local/sbin/dnsmasq', '--help', args.mode], capture_output=True, text=True)
 for line in sp.stdout.split("\n"):
     parts = line.split(maxsplit=1)
     if len(parts) == 2 and parts[0].isdigit():
