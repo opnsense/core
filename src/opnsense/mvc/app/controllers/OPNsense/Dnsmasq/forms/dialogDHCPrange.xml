@@ -15,7 +15,7 @@
         <id>range.start_addr</id>
         <label>Start address</label>
         <type>text</type>
-        <help>Start of the range, e.g. 192.168.1.100 for DHCPv4, 2000::1 for DHCPv6 or when a constructor is used a partial like ::1. To reveal IPv6 related options, enter a IPv6 address. When using router advertisements, it is possible to use a constructor with :: as the start address and no end address.</help>
+        <help>Start of the range, e.g. 192.168.1.100 for DHCPv4, 2000::1 for DHCPv6 or when a constructor is using a suffix like ::1. To reveal IPv6 related options, enter a IPv6 address. When using router advertisements, it is possible to use a constructor with :: as the start address and no end address.</help>
     </field>
     <field>
         <id>range.end_addr</id>
