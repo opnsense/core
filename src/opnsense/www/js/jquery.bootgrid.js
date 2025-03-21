@@ -186,14 +186,17 @@ function update(rows, total)
     }
 
     var shouldRenderHeader = false;
-    that.columns.forEach(col => {
-        if (col.setStaged) {
-            col.visible = shouldRenderHeader = true;
-            col.setStaged = false;
+    $.each(that.columns, function (i, column) {
+        var checkbox = $('#' + that.element.attr('id') + '_' + column.id);
+        if (column.setStaged) {
+            column.visible = shouldRenderHeader = true;
+            checkbox.prop('checked', true);
+            column.setStaged = false;
         }
 
-        if (col.unsetStaged) {
-            col.visible = col.unsetStaged = false;
+        if (column.unsetStaged) {
+            column.visible = column.unsetStaged = false;
+            checkbox.prop('checked', false);
             shouldRenderHeader = true;
         }
     });
@@ -442,7 +445,7 @@ function renderColumnSelection(actions)
             if (column.visibleInSelection)
             {
                 var item = $(tpl.actionDropDownCheckboxItem.resolve(getParams.call(that,
-                    { name: column.id, label: column.text, checked: column.visible })))
+                    { name: column.id, label: column.text, checked: column.visible, id: that.element.attr('id') + '_' + column.id })))
                         .on("click" + namespace, selector, function (e)
                         {
                             e.stopPropagation();
@@ -1499,7 +1502,7 @@ Grid.defaults = {
         actionButton: "<button class=\"btn btn-default\" type=\"button\" title=\"{{ctx.text}}\">{{ctx.content}}</button>",
         actionDropDown: "<div class=\"{{css.dropDownMenu}}\"><button class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\"><span class=\"{{css.dropDownMenuText}}\">{{ctx.content}}</span> <span class=\"caret\"></span></button><ul class=\"{{css.dropDownMenuItems}}\" role=\"menu\"></ul></div>",
         actionDropDownItem: "<li><a data-action=\"{{ctx.action}}\" class=\"{{css.dropDownItem}} {{css.dropDownItemButton}}\">{{ctx.text}}</a></li>",
-        actionDropDownCheckboxItem: "<li><label class=\"{{css.dropDownItem}}\"><input name=\"{{ctx.name}}\" type=\"checkbox\" value=\"1\" class=\"{{css.dropDownItemCheckbox}}\" {{ctx.checked}} /> {{ctx.label}}</label></li>",
+        actionDropDownCheckboxItem: "<li><label class=\"{{css.dropDownItem}}\"><input id=\"{{ctx.id}}\" name=\"{{ctx.name}}\" type=\"checkbox\" value=\"1\" class=\"{{css.dropDownItemCheckbox}}\" {{ctx.checked}} /> {{ctx.label}}</label></li>",
         actions: "<div class=\"{{css.actions}}\"></div>",
         body: "<tbody></tbody>",
         cell: "<td class=\"{{ctx.css}}\" style=\"{{ctx.style}}\">{{ctx.content}}</td>",
