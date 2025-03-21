@@ -37,6 +37,24 @@ class SettingsController extends ApiMutableModelControllerBase
     protected static $internalModelClass = '\OPNsense\Dnsmasq\Dnsmasq';
 
     /**
+     * Create a lookup map of tag UUIDs to tag names
+     *
+     * @return array uuid => name
+     */
+    private function getTagUuidMap(): array
+    {
+        $map = [];
+        foreach ($this->getModel()->dhcp_tags->iterateItems() as $tag) {
+            $uuid = $tag->getAttributes()['uuid'] ?? null;
+            $name = (string)$tag->tag;
+            if (!empty($uuid) && !empty($name)) {
+                $map[$uuid] = $name;
+            }
+        }
+        return $map;
+    }
+
+    /**
      * @inheritdoc
      */
     public function getAction()
@@ -50,7 +68,21 @@ class SettingsController extends ApiMutableModelControllerBase
     /* hosts */
     public function searchHostAction()
     {
-        return $this->searchBase('hosts');
+        $filters = $this->request->get('tags');
+        $tagMap = $this->getTagUuidMap();
+
+        $filter_funct = function ($record) use ($filters, $tagMap) {
+            if (empty($filters)) {
+                return true;
+            }
+
+            $tag_uuid = (string)$record->set_tag;
+            $tag_name = $tagMap[$tag_uuid] ?? null;
+
+            return in_array($tag_name, $filters);
+        };
+
+        return $this->searchBase('hosts', null, null, $filter_funct);
     }
 
     public function getHostAction($uuid = null)
@@ -136,7 +168,18 @@ class SettingsController extends ApiMutableModelControllerBase
     /* dhcp tags */
     public function searchTagAction()
     {
-        return $this->searchBase('dhcp_tags');
+        $filters = $this->request->get('tags');
+
+        $filter_funct = function ($record) use ($filters) {
+            if (empty($filters)) {
+                return true;
+            }
+
+            $tag_name = (string)$record->tag;
+            return in_array($tag_name, $filters);
+        };
+
+        return $this->searchBase('dhcp_tags', null, null, $filter_funct);
     }
 
     public function getTagAction($uuid = null)
@@ -162,7 +205,22 @@ class SettingsController extends ApiMutableModelControllerBase
     /* dhcp ranges */
     public function searchRangeAction()
     {
-        return $this->searchBase('dhcp_ranges');
+        $filters = $this->request->get('tags');
+        $tagMap = $this->getTagUuidMap();
+
+        $filter_funct = function ($record) use ($filters, $tagMap) {
+            if (empty($filters)) {
+                return true;
+            }
+
+            $interface = trim((string)$record->interface);
+            $set_tag_uuid = trim((string)$record->set_tag);
+            $set_tag_name = $tagMap[$set_tag_uuid] ?? null;
+
+            return in_array($interface, $filters) || in_array($set_tag_name, $filters);
+        };
+
+        return $this->searchBase('dhcp_ranges', null, null, $filter_funct);
     }
 
     public function getRangeAction($uuid = null)
@@ -188,7 +246,30 @@ class SettingsController extends ApiMutableModelControllerBase
     /* dhcp options */
     public function searchOptionAction()
     {
-        return $this->searchBase('dhcp_options');
+        $filters = $this->request->get('tags');
+        $tagMap = $this->getTagUuidMap();
+
+        $filter_funct = function ($record) use ($filters, $tagMap) {
+            if (empty($filters)) {
+                return true;
+            }
+
+            $interface = trim((string)$record->interface);
+            $matchedTagNames = [];
+
+            if (!empty($record->tag)) {
+                foreach (explode(',', (string)$record->tag) as $uuid) {
+                    $uuid = trim($uuid);
+                    if (!empty($uuid) && isset($tagMap[$uuid])) {
+                        $matchedTagNames[] = $tagMap[$uuid];
+                    }
+                }
+            }
+
+            return in_array($interface, $filters) || array_intersect($filters, $matchedTagNames);
+        };
+
+        return $this->searchBase('dhcp_options', null, null, $filter_funct);
     }
 
     public function getOptionAction($uuid = null)
@@ -214,7 +295,21 @@ class SettingsController extends ApiMutableModelControllerBase
     /* dhcp match options */
     public function searchMatchAction()
     {
-        return $this->searchBase('dhcp_options_match');
+        $filters = $this->request->get('tags');
+        $tagMap = $this->getTagUuidMap();
+
+        $filter_funct = function ($record) use ($filters, $tagMap) {
+            if (empty($filters)) {
+                return true;
+            }
+
+            $tag_uuid = (string)$record->set_tag;
+            $tag_name = $tagMap[$tag_uuid] ?? null;
+
+            return in_array($tag_name, $filters);
+        };
+
+        return $this->searchBase('dhcp_options_match', null, null, $filter_funct);
     }
 
     public function getMatchAction($uuid = null)
@@ -240,7 +335,21 @@ class SettingsController extends ApiMutableModelControllerBase
     /* dhcp boot options */
     public function searchBootAction()
     {
-        return $this->searchBase('dhcp_boot');
+        $filters = $this->request->get('tags');
+        $tagMap = $this->getTagUuidMap();
+
+        $filter_funct = function ($record) use ($filters, $tagMap) {
+            if (empty($filters)) {
+                return true;
+            }
+
+            $tag_uuid = (string)$record->tag;
+            $tag_name = $tagMap[$tag_uuid] ?? null;
+
+            return in_array($tag_name, $filters);
+        };
+
+        return $this->searchBase('dhcp_boot', null, null, $filter_funct);
     }
 
     public function getBootAction($uuid = null)
@@ -262,4 +371,54 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         return $this->delBase('dhcp_boot', $uuid);
     }
+
+    /**
+     * Return selectpicker options for interfaces and tags
+     */
+    public function getTagListAction()
+    {
+        $result = [];
+
+        // Interfaces
+        $interfaces = [];
+        foreach (Config::getInstance()->object()->interfaces->children() as $key => $intf) {
+            if ((string)$intf->type === 'group') {
+                continue;
+            }
+
+            $interfaces[] = [
+                'value' => $key,
+                'label' => empty($intf->descr) ? strtoupper($key) : (string)$intf->descr
+            ];
+        }
+        usort($interfaces, fn($a, $b) => strcasecmp($a['label'], $b['label']));
+
+        // Tags
+        $tags = [];
+        foreach ($this->getModel()->dhcp_tags->iterateItems() as $tag) {
+            $name = trim((string)$tag->tag);
+            if (!empty($name)) {
+                $tags[] = [
+                    'value' => $name,
+                    'label' => $name
+                ];
+            }
+        }
+        usort($tags, fn($a, $b) => strcasecmp($a['label'], $b['label']));
+
+        // Assemble result
+        return [
+            'interfaces' => [
+                'label' => gettext('Interfaces'),
+                'icon'  => 'fa fa-ethernet text-info',
+                'items' => $interfaces
+            ],
+            'tags' => [
+                'label' => gettext('Tags'),
+                'icon'  => 'fa fa-tag text-primary',
+                'items' => $tags
+            ]
+        ];
+    }
+
 }

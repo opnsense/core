@@ -41,6 +41,17 @@
             updateServiceControlUI('dnsmasq');
         });
 
+        function insertTagSelect(grid_id) {
+            if (!['domain', 'boot'].includes(grid_id)) {
+                let header = $("#" + grid_id + "-header");
+                let $actionBar = header.find('.actionBar');
+                if ($actionBar.length) {
+                    $("#tag_select_container").detach().insertBefore($actionBar.find('.search'));
+                    $("#tag_select_container").show();
+                }
+            }
+        }
+
         let all_grids = {};
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             let grid_ids = null;
@@ -73,7 +84,18 @@
                             'get':'/api/dnsmasq/settings/get_' + grid_id + '/',
                             'set':'/api/dnsmasq/settings/set_' + grid_id + '/',
                             'add':'/api/dnsmasq/settings/add_' + grid_id + '/',
-                            'del':'/api/dnsmasq/settings/del_' + grid_id + '/'
+                            'del':'/api/dnsmasq/settings/del_' + grid_id + '/',
+                            options: {
+                                triggerEditFor: getUrlHash('edit'),
+                                initialSearchPhrase: getUrlHash('search'),
+                                requestHandler: function(request) {
+                                    const selectedTags = $('#tag_select').val();
+                                    if (selectedTags && selectedTags.length > 0) {
+                                        request['tags'] = selectedTags;
+                                    }
+                                    return request;
+                                }
+                            }
                         });
                         /* insert headers when multiple grids exist on a single tab */
                         let header = $("#" + grid_id + "-header");
@@ -88,8 +110,10 @@
                         } else if (grid_id == 'host') {
                             all_grids[grid_id].find("tfoot td:last").append($("#hosts_tfoot_append > button").detach());
                         }
+                        insertTagSelect(grid_id);
                     } else {
                         all_grids[grid_id].bootgrid('reload');
+                        insertTagSelect(grid_id);
                     }
                 });
             }
@@ -136,12 +160,53 @@
             }
         });
 
+        // Populate tag selectpicker
+        ajaxCall('/api/dnsmasq/settings/getTagList', {}, function (data) {
+            const $select = $('#tag_select');
+            $select.empty();
+
+            for (const groupKey in data) {
+                const group = data[groupKey];
+
+                if (group.items.length > 0) {
+                    const $optgroup = $('<optgroup>', {
+                        label: group.label,
+                        'data-icon': group.icon
+                    });
+
+                    for (const item of group.items) {
+                        $optgroup.append(
+                            $('<option>', {
+                                value: item.value,
+                                text: item.label
+                            })
+                        );
+                    }
+
+                    $select.append($optgroup);
+                }
+            }
+
+            $select.selectpicker('refresh');
+        });
+
+        $('#tag_select').on('changed.bs.select', function () {
+            Object.keys(all_grids).forEach(function (grid_id) {
+                if (!['domain'].includes(grid_id)) {
+                    all_grids[grid_id].bootgrid('reload');
+                }
+            });
+        });
+
     });
 </script>
 
 <style>
     tbody.collapsible > tr > td:first-child {
         padding-left: 30px;
+    }
+    #tag_select_container {
+        margin-right: 20px;
     }
 </style>
 
@@ -156,6 +221,11 @@
         class="btn btn-xs"
     ><span class="fa fa-fw fa-upload"></span></button>
     <button id="download_hosts" type="button" title="{{ lang._('Export as csv') }}" data-toggle="tooltip"  class="btn btn-xs"><span class="fa fa-fw fa-table"></span></button>
+</div>
+
+<div id="tag_select_container" class="btn-group" style="display: none;">
+    <select id="tag_select" class="selectpicker" multiple data-title="Interfaces / Tags" data-live-search="true" data-size="10" data-width="200px" data-container="body">
+    </select>
 </div>
 
 <!-- Navigation bar -->
