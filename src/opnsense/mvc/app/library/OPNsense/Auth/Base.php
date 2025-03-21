@@ -269,6 +269,11 @@ abstract class Base
         return false;
     }
 
+    public function preauth($config)
+    {
+        return $this;
+    }
+
     /**
      * authenticate user, when failed, make sure we always spend the same time for the sequence.
      * This also adds a penalty for failed attempts.

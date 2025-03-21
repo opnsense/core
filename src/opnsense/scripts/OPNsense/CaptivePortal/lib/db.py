@@ -75,6 +75,13 @@ class DB(object):
             # empty database, initialize database
             init_script_filename = '%s/../sql/init.sql' % os.path.dirname(os.path.abspath(__file__))
             cur.executescript(open(init_script_filename, 'r').read())
+
+        # migration: add "delete_reason" column to cp_clients
+        cur.execute("PRAGMA table_info(cp_clients)")
+        if not any([row[1] == 'delete_reason' for row in cur.fetchall()]):
+            cur.execute("ALTER TABLE cp_clients ADD COLUMN delete_reason VARCHAR")
+            self._connection.commit()
+
         cur.close()
 
     def sessions_per_address(self, zoneid, ip_address=None, mac_address=None):
@@ -155,7 +162,7 @@ class DB(object):
                     """, {'zoneid': zoneid, 'sessionid': sessionid, 'ip_address': ip_address})
         self._connection.commit()
 
-    def del_client(self, zoneid, sessionid):
+    def del_client(self, zoneid, sessionid, reason=None):
         """ mark (administrative) client for removal
         :param zoneid: zone id
         :param sessionid: session id
@@ -177,8 +184,8 @@ class DB(object):
                 session_info[fields[0]] = data[0][len(session_info)]
             # remove client
             cur.execute(
-                "update cp_clients set deleted = 1 where sessionid = :sessionid",
-                {'zoneid': zoneid, 'sessionid': sessionid}
+                "update cp_clients set deleted = 1, delete_reason = :delete_reason where sessionid = :sessionid",
+                {'delete_reason': reason, 'sessionid': sessionid}
             )
             self._connection.commit()
 

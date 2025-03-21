@@ -195,6 +195,56 @@ class Dnsmasq extends BaseModel
 
         }
 
+        foreach ($this->dhcp_options->iterateItems() as $option) {
+            if (!$validateFullModel && !$option->isFieldChanged()) {
+                continue;
+            }
+            $key = $option->__reference;
+
+            if (!$option->option->isEmpty() && !$option->option6->isEmpty()) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("'Option' and 'Option6' cannot be selected at the same time."),
+                        $key . ".option"
+                    )
+                );
+            }
+
+            if ($option->option->isEmpty() && $option->option6->isEmpty()) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("Either 'Option' or 'Option6' is required."),
+                        $key . ".option"
+                    )
+                );
+            }
+        }
+
+        foreach ($this->dhcp_options_match->iterateItems() as $match) {
+            if (!$validateFullModel && !$match->isFieldChanged()) {
+                continue;
+            }
+            $key = $match->__reference;
+
+            if (!$match->option->isEmpty() && !$match->option6->isEmpty()) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("'Option' and 'Option6' cannot be selected at the same time."),
+                        $key . ".option"
+                    )
+                );
+            }
+
+            if ($match->option->isEmpty() && $match->option6->isEmpty()) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("Either 'Option' or 'Option6' is required."),
+                        $key . ".option"
+                    )
+                );
+            }
+        }
+
         if (
             ($validateFullModel || $this->enable->isFieldChanged() || $this->port->isFieldChanged()) &&
             !empty((string)$this->enable)

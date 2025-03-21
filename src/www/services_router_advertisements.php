@@ -31,7 +31,7 @@
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
-require_once("plugins.inc.d/dhcpd.inc");
+require_once("plugins.inc.d/radvd.inc");
 
 function val_int_in_range($value, $min, $max) {
     return (((string)(int)$value) == $value) && $value >= $min && $value <= $max;
@@ -205,7 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         write_config();
-        dhcpd_radvd_configure();
+        radvd_configure_do();
         $savemsg = get_std_save_message();
     }
 }
