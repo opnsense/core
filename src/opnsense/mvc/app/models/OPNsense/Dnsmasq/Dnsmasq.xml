@@ -1,6 +1,6 @@
 <model>
     <mount>/dnsmasq</mount>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <items>
         <enable type="BooleanField"/>
         <regdhcp type="BooleanField"/>
@@ -63,6 +63,7 @@
                 <MinimumValue>0</MinimumValue>
                 <MaximumValue>60</MaximumValue>
             </reply_delay>
+            <enable_ra type="BooleanField"/>
             <nosync type="BooleanField"/>
         </dhcp>
         <no_ident type="BooleanField">
@@ -180,6 +181,27 @@
                 <IpAllowed>N</IpAllowed>
             </domain>
             <nosync type="BooleanField"/>
+            <ra_mode type="OptionField">
+                <OptionValues>
+                    <ra-only>ra-only</ra-only>
+                    <slaac>slaac</slaac>
+                    <ra-names>ra-names</ra-names>
+                    <ra-stateless>ra-stateless</ra-stateless>
+                    <ra-advrouter>ra-advrouter</ra-advrouter>
+                    <off-link>off-link</off-link>
+                </OptionValues>
+                <Multiple>Y</Multiple>
+            </ra_mode>
+            <ra_priority type="OptionField">
+                <BlankDesc>Normal</BlankDesc>
+                <OptionValues>
+                    <high>High</high>
+                    <low>Low</low>
+                </OptionValues>
+            </ra_priority>
+            <ra_mtu type="IntegerField"/>
+            <ra_interval type="IntegerField"/>
+            <ra_router_lifetime type="IntegerField"/>
             <description type="DescriptionField"/>
         </dhcp_ranges>
         <dhcp_options type="ArrayField">

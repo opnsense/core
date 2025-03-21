@@ -15,7 +15,7 @@
         <id>range.start_addr</id>
         <label>Start address</label>
         <type>text</type>
-        <help>Start of the range, e.g. 192.168.1.100, 2000::1 or when constructor is used a partial like ::1.</help>
+        <help>Start of the range, e.g. 192.168.1.100 for DHCPv4, 2000::1 for DHCPv6 or when a constructor is using a suffix like ::1. To reveal IPv6 related options, enter a IPv6 address. When using router advertisements, it is possible to use a constructor with :: as the start address and no end address.</help>
     </field>
     <field>
         <id>range.end_addr</id>
@@ -27,19 +27,81 @@
         <id>range.constructor</id>
         <label>Constructor</label>
         <type>dropdown</type>
-        <help>Interface to use to calculate the proper range, when selected, a range maybe specified as partial (e.g. ::1, ::400)</help>
+        <style>selectpicker style_dhcpv6</style>
+        <help>Interface to use to calculate the proper range, when selected, a range may be specified as a suffix (e.g. ::1, ::400)</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>range.prefix_len</id>
         <label>Prefix length (ipv6)</label>
         <type>text</type>
         <hint>64</hint>
-        <help>Prefix length offered to the client.</help>
+        <style>style_dhcpv6</style>
+        <help>Prefix length offered to the client. Custom values in this field will be ignored if Router Advertisements are enabled, as SLAAC will only work with a prefix length of 64.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>range.ra_mode</id>
+        <label>RA Mode</label>
+        <type>select_multiple</type>
+        <hint>Default</hint>
+        <style>selectpicker style_dhcpv6</style>
+        <help>Control how IPv6 clients receive their addresses. Enabling Router Advertisements in general settings will enable it for all configured DHCPv6 ranges with the managed address bits set, and the use SLAAC bit reset. To change this default, select a combination of the possible options here. "slaac", "ra-stateless" and "ra-names" can be freely combined, all other options shall remain single selections.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>range.ra_priority</id>
+        <label>RA Priority</label>
+        <type>dropdown</type>
+        <help>Priority of the RA announcements.</help>
+        <style>selectpicker style_dhcpv6</style>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>range.ra_mtu</id>
+        <label>RA MTU</label>
+        <type>text</type>
+        <style>style_dhcpv6</style>
+        <help>Optional MTU to send to clients via Router Advertisements. If unsure leave empty.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>range.ra_interval</id>
+        <label>RA Interval</label>
+        <type>text</type>
+        <hint>60</hint>
+        <style>style_dhcpv6</style>
+        <help>Time (seconds) between Router Advertisements.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>range.ra_router_lifetime</id>
+        <label>RA Router Lifetime</label>
+        <type>text</type>
+        <hint>1200</hint>
+        <style>style_dhcpv6</style>
+        <help>The lifetime of the route may be changed or set to zero, which allows a router to advertise prefixes but not a route via itself. When using HA, setting a short timespan here is adviced for faster IPv6 failover. A good combination could be 10 seconds RA interval and 30 seconds RA router lifetime. Going lower than that can pose issues in busy networks.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>range.mode</id>
         <label>Mode</label>
         <type>select_multiple</type>
+        <style>selectpicker style_dhcpv4</style>
         <help>Mode flags to set for this range, 'static' means no addresses will be automatically assigned. </help>
     </field>
     <field>

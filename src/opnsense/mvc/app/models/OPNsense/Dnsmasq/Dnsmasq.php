@@ -160,6 +160,39 @@ class Dnsmasq extends BaseModel
                     )
                 );
             }
+
+            // Validate RA mode combinations
+            $valid_ra_mode_combinations = [
+                ['ra-names', 'slaac'],
+                ['ra-names', 'ra-stateless'],
+                ['slaac', 'ra-stateless'],
+                ['ra-names', 'slaac', 'ra-stateless']
+            ];
+
+            $selected_ra_modes = explode(',', $range->ra_mode);
+
+            // If only one mode is selected, it is always valid
+            if (count($selected_ra_modes) > 1) {
+                $is_ra_mode_valid = false;
+                foreach ($valid_ra_mode_combinations as $ra_mode_combination) {
+                    // Ensure order independant comparing
+                    if (empty(array_diff($selected_ra_modes, $ra_mode_combination)) &&
+                        empty(array_diff($ra_mode_combination, $selected_ra_modes))) {
+                        $is_ra_mode_valid = true;
+                        break;
+                    }
+                }
+
+                if (!$is_ra_mode_valid) {
+                    $messages->appendMessage(
+                        new Message(
+                            gettext("Invalid RA mode combination."),
+                            $key . ".ra_mode"
+                        )
+                    );
+                }
+            }
+
         }
 
         foreach ($this->dhcp_options->iterateItems() as $option) {

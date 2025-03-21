@@ -179,6 +179,12 @@
         <help>Automatically register firewall rules to allow dhcp traffic for all explicitly selected interfaces, can be disabled for more fine grained control if needed. Changes are only effective after a firewall service restart (see system diagnostics).</help>
     </field>
     <field>
+        <id>dnsmasq.dhcp.enable_ra</id>
+        <label>Router Advertisements</label>
+        <type>checkbox</type>
+        <help>Setting this will enable Router Advertisements for all configured DHCPv6 ranges with the managed address bits set, and the use SLAAC bit reset. To change this default, select a combination of the possible options in the individual DHCPv6 ranges. Keep in mind that this is a global option; if there are configured DHCPv6 ranges, RAs will be sent unconditionally and cannot be deactivated selectively. Setting Router Advertisement modes in DHCPv6 ranges will have no effect without this global option enabled.</help>
+    </field>
+    <field>
         <id>dnsmasq.dhcp.nosync</id>
         <label>Disable HA sync</label>
         <type>checkbox</type>
