@@ -37,8 +37,8 @@ class SettingsController extends ApiMutableModelControllerBase
     protected static $internalModelClass = '\OPNsense\Dnsmasq\Dnsmasq';
 
     /**
-     * Tags and interface filter function. Interfaces are tags too
-     * in the sense of dnsmasq.
+     * Tags and interface filter function.
+     * Interfaces are tags too, in the sense of dnsmasq.
      *
      * @param array $filterValues List of values to filter against (e.g. UUIDs, interface names).
      * @param array $fieldNames   List of field names to extract values from in each record.

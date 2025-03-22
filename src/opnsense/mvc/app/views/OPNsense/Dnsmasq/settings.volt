@@ -108,8 +108,8 @@
                         let header = $("#" + grid_id + "-header");
                         let $actionBar = header.find('.actionBar');
                         if ($actionBar.length) {
-                            $("#tag_select_container").detach().insertBefore($actionBar.find('.search'));
-                            $("#tag_select_container").show();
+                            $('#tag_select_container').detach().insertBefore($actionBar.find('.search'));
+                            $('#tag_select_container').show();
                         }
                     }
                 });
@@ -175,7 +175,9 @@
                         $optgroup.append(
                             $('<option>', {
                                 value: item.value,
-                                text: item.label
+                                text: item.label,
+                                'data-icon': group.icon,
+                                'data-subtext': group.label
                             })
                         );
                     }
@@ -222,7 +224,7 @@
 </div>
 
 <div id="tag_select_container" class="btn-group" style="display: none;">
-    <select id="tag_select" class="selectpicker" multiple data-title="{{ lang._('Tags / Interfaces') }}" data-live-search="true" data-size="10" data-width="200px" data-container="body">
+    <select id="tag_select" class="selectpicker" multiple data-title="{{ lang._('Tags & Interfaces') }}" data-show-subtext="true" data-live-search="true" data-size="15" data-width="200px" data-container="body">
     </select>
 </div>
 
