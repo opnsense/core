@@ -114,9 +114,27 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.bootgrid-table td.loading,
 .bootgrid-table td.no-results {
   text-align: center;
+}
+.bootgrid-table tbody {
+    position: relative;
+}
+.bootgrid-table tbody > .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+.overlay > i {
+    font-size: 20px;
+    color: white;
 }
 .bootgrid-table th.select-cell,
 .bootgrid-table td.select-cell {
