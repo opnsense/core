@@ -400,8 +400,8 @@ outputs:
       enabled: no
       #certs-log-dir: certs # directory to store the certificates files
 
-  # Packet log... log packets in pcap format. 2 modes of operation: "normal"
-  # and "multi".
+  # Packet log... log packets in pcap format. 3 modes of operation: "normal"
+  # "multi" and "sguil".
   #
   # In normal mode a pcap file "filename" is created in the default-log-dir,
   # or as specified by "dir".
@@ -421,24 +421,30 @@ outputs:
   # So the size limit when using 8 threads with 1000mb files and 2000 files
   # is: 8*1000*2000 ~ 16TiB.
   #
+  # In Sguil mode "dir" indicates the base directory. In this base dir the
+  # pcaps are created in the directory structure Sguil expects:
+  #
+  # $sguil-base-dir/YYYY-MM-DD/$filename.<timestamp>
+  #
   # By default all packets are logged except:
   # - TCP streams beyond stream.reassembly.depth
   # - encrypted streams after the key exchange
   #
   - pcap-log:
-      enabled: no
+      enabled: {{ 'yes' if not helpers.empty('OPNsense.IDS.general.pcapLog.enabled') else 'no' }}
       filename: log.pcap
 
       # File size limit.  Can be specified in kb, mb, gb.  Just a number
       # is parsed as bytes.
-      limit: 1000mb
+      limit: {{ OPNsense.IDS.general.pcapLog.limit|default('1000mb') }}
 
       # If set to a value, ring buffer mode is enabled. Will keep maximum of
       # "max-files" of size "limit"
-      max-files: 2000
+      max-files: {{ OPNsense.IDS.general.pcapLog.files|default('5') }}
 
       # Compression algorithm for pcap files. Possible values: none, lz4.
-      # Note also that on Windows, enabling compression will *increase* disk I/O.
+      # Enabling compression is incompatible with the sguil mode. Note also
+      # that on Windows, enabling compression will *increase* disk I/O.
       compression: none
 
       # Further options for lz4 compression. The compression level can be set
@@ -447,10 +453,10 @@ outputs:
       #lz4-checksum: no
       #lz4-level: 0
 
-      mode: normal # normal or multi
+      mode: normal # normal, multi or sguil.
 
       # Directory to place pcap files. If not provided the default log
-      # directory will be used.
+      # directory will be used. Required for "sguil" mode.
       #dir: /nsm_data/
 
       #ts-format: usec # sec or usec second format (default) is filename.sec usec is filename.sec.usec
