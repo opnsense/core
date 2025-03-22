@@ -35,6 +35,7 @@ class SettingsController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'dnsmasq';
     protected static $internalModelClass = '\OPNsense\Dnsmasq\Dnsmasq';
+    protected static $internalModelUseSafeDelete = true;
 
     /**
      * @inheritdoc
