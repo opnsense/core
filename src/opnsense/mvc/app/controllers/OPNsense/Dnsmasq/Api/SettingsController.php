@@ -37,21 +37,40 @@ class SettingsController extends ApiMutableModelControllerBase
     protected static $internalModelClass = '\OPNsense\Dnsmasq\Dnsmasq';
 
     /**
-     * Create a lookup map of tag UUIDs to tag names
+     * Tags and interface filter function. Interfaces are tags too
+     * in the sense of dnsmasq.
      *
-     * @return array uuid => name
+     * @param array $filterValues List of values to filter against (e.g. UUIDs, interface names).
+     * @param array $fieldNames   List of field names to extract values from in each record.
+     *
+     * @return callable|null
      */
-    private function getTagUuidMap(): array
+    private function buildFilterFunction(array $filterValues, array $fieldNames): ?callable
     {
-        $map = [];
-        foreach ($this->getModel()->dhcp_tags->iterateItems() as $tag) {
-            $uuid = $tag->getAttributes()['uuid'] ?? null;
-            $name = (string)$tag->tag;
-            if (!empty($uuid) && !empty($name)) {
-                $map[$uuid] = $name;
-            }
+        if (empty($filterValues)) {
+            return null;
         }
-        return $map;
+
+        return function ($record) use ($filterValues, $fieldNames) {
+            foreach ($fieldNames as $fieldName) {
+                // Skip this field if not present in current record
+                if (!isset($record->{$fieldName})) {
+                    continue;
+                }
+
+                // Some fields allow multi selection
+                $fieldValues = array_map('trim', explode(',', (string)$record->{$fieldName}));
+
+                // Match field values against filter list
+                foreach ($fieldValues as $value) {
+                    if (in_array($value, $filterValues, true)) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        };
     }
 
     /**
@@ -68,20 +87,8 @@ class SettingsController extends ApiMutableModelControllerBase
     /* hosts */
     public function searchHostAction()
     {
-        $filters = $this->request->get('tags');
-        $tagMap = $this->getTagUuidMap();
-
-        $filter_funct = function ($record) use ($filters, $tagMap) {
-            if (empty($filters)) {
-                return true;
-            }
-
-            $tag_uuid = (string)$record->set_tag;
-            $tag_name = $tagMap[$tag_uuid] ?? null;
-
-            return in_array($tag_name, $filters);
-        };
-
+        $filters = $this->request->get('tags') ?? [];
+        $filter_funct = $this->buildFilterFunction($filters, ['set_tag']);
         return $this->searchBase('hosts', null, null, $filter_funct);
     }
 
@@ -168,16 +175,16 @@ class SettingsController extends ApiMutableModelControllerBase
     /* dhcp tags */
     public function searchTagAction()
     {
-        $filters = $this->request->get('tags');
+        $filters = $this->request->get('tags') ?? [];
 
-        $filter_funct = function ($record) use ($filters) {
-            if (empty($filters)) {
-                return true;
-            }
-
-            $tag_name = (string)$record->tag;
-            return in_array($tag_name, $filters);
-        };
+        $filter_funct = null;
+        if (!empty($filters)) {
+            $filter_funct = function ($record) use ($filters) {
+                $attributes = $record->getAttributes();
+                $uuid = $attributes['uuid'] ?? null;
+                return in_array($uuid, $filters, true);
+            };
+        }
 
         return $this->searchBase('dhcp_tags', null, null, $filter_funct);
     }
@@ -205,21 +212,8 @@ class SettingsController extends ApiMutableModelControllerBase
     /* dhcp ranges */
     public function searchRangeAction()
     {
-        $filters = $this->request->get('tags');
-        $tagMap = $this->getTagUuidMap();
-
-        $filter_funct = function ($record) use ($filters, $tagMap) {
-            if (empty($filters)) {
-                return true;
-            }
-
-            $interface = trim((string)$record->interface);
-            $set_tag_uuid = trim((string)$record->set_tag);
-            $set_tag_name = $tagMap[$set_tag_uuid] ?? null;
-
-            return in_array($interface, $filters) || in_array($set_tag_name, $filters);
-        };
-
+        $filters = $this->request->get('tags') ?? [];
+        $filter_funct = $this->buildFilterFunction($filters, ['interface', 'set_tag']);
         return $this->searchBase('dhcp_ranges', null, null, $filter_funct);
     }
 
@@ -246,29 +240,8 @@ class SettingsController extends ApiMutableModelControllerBase
     /* dhcp options */
     public function searchOptionAction()
     {
-        $filters = $this->request->get('tags');
-        $tagMap = $this->getTagUuidMap();
-
-        $filter_funct = function ($record) use ($filters, $tagMap) {
-            if (empty($filters)) {
-                return true;
-            }
-
-            $interface = trim((string)$record->interface);
-            $matchedTagNames = [];
-
-            if (!empty($record->tag)) {
-                foreach (explode(',', (string)$record->tag) as $uuid) {
-                    $uuid = trim($uuid);
-                    if (!empty($uuid) && isset($tagMap[$uuid])) {
-                        $matchedTagNames[] = $tagMap[$uuid];
-                    }
-                }
-            }
-
-            return in_array($interface, $filters) || array_intersect($filters, $matchedTagNames);
-        };
-
+        $filters = $this->request->get('tags') ?? [];
+        $filter_funct = $this->buildFilterFunction($filters, ['interface', 'tag']);
         return $this->searchBase('dhcp_options', null, null, $filter_funct);
     }
 
@@ -295,20 +268,8 @@ class SettingsController extends ApiMutableModelControllerBase
     /* dhcp match options */
     public function searchMatchAction()
     {
-        $filters = $this->request->get('tags');
-        $tagMap = $this->getTagUuidMap();
-
-        $filter_funct = function ($record) use ($filters, $tagMap) {
-            if (empty($filters)) {
-                return true;
-            }
-
-            $tag_uuid = (string)$record->set_tag;
-            $tag_name = $tagMap[$tag_uuid] ?? null;
-
-            return in_array($tag_name, $filters);
-        };
-
+        $filters = $this->request->get('tags') ?? [];
+        $filter_funct = $this->buildFilterFunction($filters, ['set_tag']);
         return $this->searchBase('dhcp_options_match', null, null, $filter_funct);
     }
 
@@ -335,20 +296,8 @@ class SettingsController extends ApiMutableModelControllerBase
     /* dhcp boot options */
     public function searchBootAction()
     {
-        $filters = $this->request->get('tags');
-        $tagMap = $this->getTagUuidMap();
-
-        $filter_funct = function ($record) use ($filters, $tagMap) {
-            if (empty($filters)) {
-                return true;
-            }
-
-            $tag_uuid = (string)$record->tag;
-            $tag_name = $tagMap[$tag_uuid] ?? null;
-
-            return in_array($tag_name, $filters);
-        };
-
+        $filters = $this->request->get('tags') ?? [];
+        $filter_funct = $this->buildFilterFunction($filters, ['tag']);
         return $this->searchBase('dhcp_boot', null, null, $filter_funct);
     }
 
@@ -396,10 +345,11 @@ class SettingsController extends ApiMutableModelControllerBase
         // Tags
         $tags = [];
         foreach ($this->getModel()->dhcp_tags->iterateItems() as $tag) {
+            $uuid = $tag->getAttributes()['uuid'] ?? null;
             $name = trim((string)$tag->tag);
-            if (!empty($name)) {
+            if (!empty($uuid) && !empty($name)) {
                 $tags[] = [
-                    'value' => $name,
+                    'value' => $uuid,
                     'label' => $name
                 ];
             }
