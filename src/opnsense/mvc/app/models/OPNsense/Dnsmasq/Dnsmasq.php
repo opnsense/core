@@ -176,8 +176,10 @@ class Dnsmasq extends BaseModel
                 $is_ra_mode_valid = false;
                 foreach ($valid_ra_mode_combinations as $ra_mode_combination) {
                     // Ensure order independant comparing
-                    if (empty(array_diff($selected_ra_modes, $ra_mode_combination)) &&
-                        empty(array_diff($ra_mode_combination, $selected_ra_modes))) {
+                    if (
+                        empty(array_diff($selected_ra_modes, $ra_mode_combination)) &&
+                        empty(array_diff($ra_mode_combination, $selected_ra_modes))
+                    ) {
                         $is_ra_mode_valid = true;
                         break;
                     }
@@ -192,7 +194,6 @@ class Dnsmasq extends BaseModel
                     );
                 }
             }
-
         }
 
         foreach ($this->dhcp_options->iterateItems() as $option) {
