@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3
 """
-    Copyright (c) 2016-2018 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -192,15 +192,12 @@ class Main(object):
 if __name__ == '__main__':
     # parse arguments and load config
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', help='configuration yaml', default=None)
     parser.add_argument('--console', dest='console', help='run in console', action='store_true')
     parser.add_argument('--profile', dest='profile', help='enable profiler', action='store_true')
     parser.add_argument('--repair', dest='repair', help='init repair', action='store_true')
     cmd_args = parser.parse_args()
 
-    Main.set_config(
-        load_config(cmd_args.config)
-    )
+    Main.set_config(load_config())
     from sqlite3_helper import check_and_repair
 
     if cmd_args.console:

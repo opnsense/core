@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2018 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2018-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -26,17 +26,11 @@
 import sys
 
 
-def load_config(config_yaml=None):
+def load_config():
     """ setup configuration object
-    :param config_yaml:
-    :return:
+    :return: dict
     """
-    if config_yaml:
-        import yaml
-        cnf_input = yaml.load(open(config_yaml, 'r'))
-    else:
-        cnf_input = dict()
-
+    cnf_input = dict()
     result = Config(**cnf_input)
     sys.path.insert(0, result.library_path)
 
