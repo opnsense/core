@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2016 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -28,46 +28,34 @@
     --------------------------------------------------------------------------------------
     fetch detailed data from provider for specified timeserie
 """
+import argparse
 import time
 import datetime
 import pytz
-import os
 import sys
-sys.path.insert(0, "/usr/local/opnsense/site-python")
 import lib.aggregates
-import params
 
 
-app_params = {'start_time': '0',
-              'end_time': '1461251783',
-              'resolution': '300',
-              'provider': 'FlowSourceAddrTotals'
-              }
-params.update_params(app_params)
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--provider', default='FlowInterfaceTotals')
+    parser.add_argument('--resolution', type=int, required=True)
+    parser.add_argument('--start_time', type=int, required=True)
+    parser.add_argument('--end_time', type=int, required=True)
+    cmd_args = parser.parse_args()
 
-# handle input parameters
-valid_params = False
-if app_params['start_time'].isdigit():
-    start_time = int(app_params['start_time'])
-    if app_params['end_time'].isdigit():
-        end_time = int(app_params['end_time'])
-        if app_params['resolution'].isdigit():
-            resolution = int(app_params['resolution'])
-            valid_params = True
-
-if valid_params:
     # calculate time offset between localtime and utc
     now_timestamp = time.time()
     time_offset = datetime.datetime.fromtimestamp(now_timestamp) - datetime.datetime.utcfromtimestamp(now_timestamp)
 
     for agg_class in lib.aggregates.get_aggregators():
-        if app_params['provider'] == agg_class.__name__:
-            if resolution in agg_class.resolutions():
+        if cmd_args.provider == agg_class.__name__:
+            if cmd_args.resolution in agg_class.resolutions():
                 # found provider and resolution, start spooling data
-                obj = agg_class(resolution)
+                obj = agg_class(cmd_args.resolution)
                 rownum=0
                 column_names = dict()
-                for record in obj.get_data(start_time, end_time):
+                for record in obj.get_data(cmd_args.start_time, cmd_args.end_time):
                     if rownum == 0:
                         column_names = list(record.keys())
                         # dump heading
@@ -88,14 +76,3 @@ if valid_params:
                             line.append(record[item])
                     print (','.join(line))
                     rownum += 1
-else:
-    print ('missing parameters :')
-    tmp = list()
-    for key in app_params:
-        tmp.append('/%s %s' % (key, app_params[key]))
-    print ('  %s %s'%(sys.argv[0], ' '.join(tmp)))
-    print ('')
-    print ('  resolution : sample rate in seconds')
-    print ('  start_time : start time (seconds since epoch)')
-    print ('  end_time : end timestamp (seconds since epoch)')
-    print ('  provider : data provider classname')

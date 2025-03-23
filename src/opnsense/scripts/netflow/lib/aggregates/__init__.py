@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2016-2018 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -308,10 +308,10 @@ class BaseFlowAggregator(object):
             query_params['end_time'] = self._parse_timestamp(end_time)
             if data_filters:
                 for data_filter in data_filters.split(','):
-                    tmp = data_filter.split('=')[0].strip()
+                    tmp = data_filter.split('=', 1)[0].strip()
                     if tmp in self.agg_fields and data_filter.find('=') > -1:
                         filter_fields.append(tmp)
-                        query_params[tmp] = '='.join(data_filter.split('=')[1:])
+                        query_params[tmp] = data_filter.split('=', 1)[1]
 
             if len(select_fields) > 0:
                 # construct sql query to filter and select data
