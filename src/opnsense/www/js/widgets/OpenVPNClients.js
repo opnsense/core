@@ -107,12 +107,14 @@ export default class OpenVPNClients extends BaseTableWidget {
                         }
                     }
 
+                    // show all ip addresses
                     let ip_list = [
                         client.real_address,
                         client.virtual_address,
                         client.virtual_ipv6_address
                     ];
 
+                    // filter out empty values
                     let ip_list_view = ip_list.filter((value) => value).join(" | ");
 
                     $clients.append($(`
