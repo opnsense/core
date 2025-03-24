@@ -547,7 +547,7 @@
         $("#internal_rule_selector").detach().insertAfter("#type_filter_container");
         $('#all_rules_checkbox').change(function(){
             const isChecked = $('#all_rules_checkbox').is(':checked');
-            grid.bootgrid(isChecked ? "setColumns" : "unsetColumns", ['evaluations', 'states', 'packets', 'bytes'])
+            grid.bootgrid(isChecked ? "setColumns" : "unsetColumns", ['evaluations', 'states', 'packets', 'bytes']);
             grid.bootgrid("reload");
         });
 
