@@ -25,112 +25,89 @@
  */
 
 export default class OpenVPNClients extends BaseTableWidget {
-  constructor(config) {
-    super(config);
+    constructor(config) {
+        super(config);
 
-    this.locked = false;
-  }
+        this.locked = false;
+    }
 
-  getGridOptions() {
-    return {
-      sizeToContent: 650,
-    };
-  }
+    getGridOptions() {
+        return {
+            sizeToContent: 650
+        };
+    }
 
-  getMarkup() {
-    let $container = $('<div id="ovpn-client-table-container"></div>');
-    let $clientTable = this.createTable("ovpn-client-table", {
-      headerPosition: "left",
-    });
+    getMarkup() {
+        let $container = $('<div id="ovpn-client-table-container"></div>');
+        let $clientTable = this.createTable('ovpn-client-table', {
+            headerPosition: 'left'
+        });
 
-    $container.append($clientTable);
-    return $container;
-  }
+        $container.append($clientTable);
+        return $container;
+    }
 
-  async _killClient(id, commonName) {
-    let split = id.split("_");
-    let params = { server_id: split[0], session_id: split[1] };
-    await this.ajaxCall(
-      "/api/openvpn/service/kill_session",
-      JSON.stringify(params),
-      "POST"
-    ).then(async (data) => {
-      if (data && data.status === "not_found") {
-        // kill by common name
-        params.session_id = commonName;
-        await this.ajaxCall(
-          "/api/openvpn/service/kill_session",
-          JSON.stringify(params),
-          "POST"
-        );
-      }
-    });
-  }
+    async _killClient(id, commonName) {
+        let split = id.split('_');
+        let params = {server_id: split[0], session_id: split[1]};
+        await this.ajaxCall('/api/openvpn/service/kill_session', JSON.stringify(params), 'POST').then(async (data) => {
+            if (data && data.status === 'not_found') {
+                // kill by common name
+                params.session_id = commonName;
+                await this.ajaxCall('/api/openvpn/service/kill_session', JSON.stringify(params), 'POST');
+            }
+        });
+    }
 
-  async updateClients() {
-    const sessions = await this.ajaxCall(
-      "/api/openvpn/service/search_sessions",
-      JSON.stringify({ type: ["server"] }),
-      "POST"
-    );
+    async updateClients() {
+        const sessions = await this.ajaxCall('/api/openvpn/service/search_sessions', JSON.stringify({'type': ['server']}), 'POST');
 
-    if (!sessions || !sessions.rows || sessions.rows.length === 0) {
-      $("#ovpn-client-table-container").html(`
+        if (!sessions || !sessions.rows || sessions.rows.length === 0) {
+            $('#ovpn-client-table-container').html(`
                 <div class="error-message">
                     <a href="/ui/openvpn/instances">${this.translations.noclients}</a>
                 </div>
             `);
-      return;
-    }
+            return;
+        }
 
-    let servers = {};
-    sessions.rows.forEach((session) => {
-      let id = session.id.toString().split("_")[0];
-      if (!servers[id]) {
-        servers[id] = {
-          description: session.description || "",
-          clients: [],
-        };
-      }
-
-      if (!session.is_client) {
-        servers[id] = session;
-        servers[id].clients = null;
-      } else {
-        servers[id].clients.push(session);
-      }
-    });
-
-    for (const [server_id, server] of Object.entries(servers)) {
-      let $clients = $("<div></div>");
-
-      if (server.clients) {
-        // sort the sessions per server
-        server.clients.sort(
-          (a, b) =>
-            b.bytes_received + b.bytes_sent - (a.bytes_received + a.bytes_sent)
-        );
-        server.clients.forEach((client) => {
-          let color = "text-muted";
-          // disabled servers are not included in the list. Stopped servers have no "status" property
-          if (client.status) {
-            if (client.status === "failed") {
-              color = "text-danger";
-            } else {
-              color = "text-success";
+        let servers = {};
+        sessions.rows.forEach((session) => {
+            let id = session.id.toString().split("_")[0];
+            if (!servers[id]) {
+                servers[id] = {
+                    description: session.description || '',
+                    clients: []
+                };
             }
-          }
 
-          let ip_list = [
-            client.real_address,
-            client.virtual_address,
-            client.virtual_ipv6_address,
-          ];
+            if (!session.is_client) {
+                servers[id] = session;
+                servers[id].clients = null;
+            } else {
 
-          let ip_list_view = ip_list.filter((value) => value).join(" | ");
+                servers[id].clients.push(session);
+            }
+        });
 
-          $clients.append(
-            $(`
+        for (const [server_id, server] of Object.entries(servers)) {
+            let $clients = $('<div></div>');
+
+            if (server.clients) {
+                // sort the sessions per server
+                server.clients.sort((a, b) => (b.bytes_received + b.bytes_sent) - (a.bytes_received + a.bytes_sent));
+                server.clients.forEach((client) => {
+                    let color = "text-muted";
+                    // disabled servers are not included in the list. Stopped servers have no "status" property
+                    if (client.status) {
+                        if (client.status === 'failed') {
+                            color = "text-danger";
+                        } else {
+                            color = "text-success";
+                        }
+                    }
+
+                    $clients.append($(`
                         <div class="ovpn-client-container">
                             <div class="ovpn-common-name">
                                 <i class="ovpn-client-status fa fa-circle ${color}"
@@ -139,9 +116,7 @@ export default class OpenVPNClients extends BaseTableWidget {
                                    title="${client.status}">
                                 </i>
                                 &nbsp;
-                                <a href="/ui/openvpn/status#search=${encodeURIComponent(
-                                  client.common_name
-                                )}" target="_blank" rel="noopener noreferrer">
+                                <a href="/ui/openvpn/status#search=${encodeURIComponent(client.common_name)}" target="_blank" rel="noopener noreferrer">
                                     ${client.common_name}
                                 </a>
 
@@ -155,7 +130,7 @@ export default class OpenVPNClients extends BaseTableWidget {
                                 </span>
                             </div>
                             <div>
-                                ${ip_list_view}
+                                ${client.real_address} | ${client.virtual_address}${client.virtual_ipv6_address ? ` | ${client.virtual_ipv6_address}` : ""}
                             </div>
                             <div>
                                 ${client.connected_since}
@@ -168,63 +143,55 @@ export default class OpenVPNClients extends BaseTableWidget {
                                 ${this._formatBytes(client.bytes_sent, 0)}
                             </div>
                         </div>
-                    `)
-          );
-        });
-      } else {
-        $clients = $(`<a href="/ui/openvpn/status#search=${encodeURIComponent(
-          server.description
-        )}" target="_blank" rel="noopener noreferrer">
+                    `));
+                });
+            } else {
+                $clients = $(`<a href="/ui/openvpn/status#search=${encodeURIComponent(server.description)}" target="_blank" rel="noopener noreferrer">
                     ${this.translations.noclients}
                 </a>`);
-      }
+            }
 
-      let clientInfo = server.clients
-        ? `
+            let clientInfo = server.clients ? `
                 <br/>
                 <div style="padding-bottom: 5px; padding-top: 5px; font-size: 12px;">
                     ${this.translations.clients}: ${server.clients.length}
-                </div>`
-        : "";
+                </div>` : '';
 
-      let $serverHeader = $(`
+            let $serverHeader = $(`
                 <div>
                     ${this.translations.server} ${server.description}
                     ${clientInfo}
                 </div>
             `);
 
-      this.updateTable(
-        "ovpn-client-table",
-        [[$serverHeader.prop("outerHTML"), $clients.prop("outerHTML")]],
-        `server_${server_id}`
-      );
+            this.updateTable('ovpn-client-table', [[$serverHeader.prop('outerHTML'), $clients.prop('outerHTML')]], `server_${server_id}`);
 
-      $(".ovpn-command-kill").on("click", async (event) => {
-        this.locked = true;
+            $('.ovpn-command-kill').on('click', async (event) => {
+                this.locked = true;
 
-        let $target = $(event.currentTarget);
-        let rowId = $target.data("row-id");
-        let commonName = $target.data("common-name");
+                let $target = $(event.currentTarget);
+                let rowId = $target.data('row-id');
+                let commonName = $target.data('common-name');
 
-        this.startCommandTransition(rowId, $target);
-        await this._killClient(rowId, commonName);
-        await this.endCommandTransition(rowId, $target, true, true);
-        await this.updateClients();
-        this.config.callbacks.updateGrid();
-        this.locked = false;
-      });
-    }
-  }
+                this.startCommandTransition(rowId, $target);
+                await this._killClient(rowId, commonName);
+                await this.endCommandTransition(rowId, $target, true, true);
+                await this.updateClients();
+                this.config.callbacks.updateGrid();
+                this.locked = false;
+            });
 
-  async onWidgetTick() {
-    if (!this.locked) {
-      $(".ovpn-client-command").tooltip("hide");
-      $(".ovpn-client-status").tooltip("hide");
-      await this.updateClients();
+        };
     }
 
-    $(".ovpn-client-command").tooltip({ container: "body" });
-    $(".ovpn-client-status").tooltip({ container: "body" });
-  }
+    async onWidgetTick() {
+        if (!this.locked) {
+            $('.ovpn-client-command').tooltip('hide');
+            $('.ovpn-client-status').tooltip('hide');
+            await this.updateClients();
+        }
+
+        $('.ovpn-client-command').tooltip({container: 'body'});
+        $('.ovpn-client-status').tooltip({container: 'body'});
+    }
 }
