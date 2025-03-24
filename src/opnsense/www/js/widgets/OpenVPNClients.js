@@ -130,7 +130,7 @@ export default class OpenVPNClients extends BaseTableWidget {
                                 </span>
                             </div>
                             <div>
-                                ${client.real_address} | ${client.virtual_address}
+                                ${client.real_address} | ${client.virtual_address} | ${client.virtual_ipv6_address}
                             </div>
                             <div>
                                 ${client.connected_since}
