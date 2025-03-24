@@ -272,6 +272,7 @@ function loadData(soft=false)
                 that.current = response.current;
                 that.cachedResponse = response;
                 update.call(that, response.rows, response.total);
+                this.noResultsRendered = false;
             },
             error: function (jqXHR, textStatus, errorThrown)
             {
@@ -506,6 +507,7 @@ function renderNoResultsRow()
         count = count + 1;
     }
     tbody.html(tpl.noResults.resolve(getParams.call(this, { columns: count })));
+    this.noResultsRendered = true;
 }
 
 function renderPagination()
@@ -708,6 +710,8 @@ function renderRows(rows)
             .prop("checked", allRowsSelected);
 
         tbody.html(html);
+
+        this.noResultsRendered = false;
 
         registerRowEvents.call(this, tbody);
     }
@@ -976,13 +980,19 @@ function showLoading()
                 thead = that.element.children("thead").first(),
                 tbody = that.element.children("tbody").first(),
                 firstCell = tbody.find("tr > td").first(),
-                padding = (that.element.height() - thead.height()) - (firstCell.height() + 20),
                 count = that.columns.where(isVisible).length;
 
             if (that.selection)
             {
                 count = count + 1;
             }
+
+            if (that.noResultsRendered) {
+                tbody.html(
+                    tpl.emptyBody.resolve(getParams.call(that, {columns: that.columns.where(isVisible).length}))
+                )
+            }
+
             tbody.append(tpl.loading.resolve(getParams.call(that, { columns: count })));
         }
     }, 250);
@@ -1072,6 +1082,7 @@ var Grid = function(element, options)
         css: this.options.css,
         ctx: {}
     };
+    this.noResultsRendered = false;
     this.header = null;
     this.footer = null;
     this.xqr = null;
