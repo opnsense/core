@@ -46,7 +46,7 @@ class GroupField extends ArrayField
             'openvpn' => [
                 'sequence' => 10,
                 'ifname' => 'openvpn',
-                'descr' => gettext('all OpenVPN interfaces')
+                'descr' => gettext('All OpenVPN interfaces')
             ],
             'enc0' => [
                 'sequence' => 10,
@@ -56,7 +56,7 @@ class GroupField extends ArrayField
             'wireguard' => [
                 'sequence' => 10,
                 'ifname' => 'wireguard',
-                'descr' => gettext('Wireguard')
+                'descr' => gettext('WireGuard')
             ]
         ];
     }
