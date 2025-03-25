@@ -28,7 +28,7 @@
         <label>Constructor</label>
         <type>dropdown</type>
         <style>selectpicker</style>
-        <help>Interface to use to calculate a DHCPv6 and/or RA range. Start address can then be specified as a suffix (e.g. ::, ::1 or ::400).</help>
+        <help>Interface to use to calculate a DHCPv6 or RA range. Start address can then be specified as a suffix (e.g. ::, ::1 or ::400).</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
