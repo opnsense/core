@@ -171,8 +171,6 @@
         $('.datepicker').datepicker({format: 'mm/dd/yyyy'});
         /* format  authorizedkeys */
         $("#user\\.authorizedkeys").css('max-width', 'inherit').prop('wrap', 'off');
-        $("#frm_DialogUser > div > table > colgroup > col:eq(1)").removeClass('col-md-4').addClass('col-md-6')
-        $("#frm_DialogUser > div > table > colgroup > col:eq(2)").removeClass('col-md-5').addClass('col-md-3')
     });
 
 </script>
@@ -184,10 +182,6 @@
     .tooltip-inner {
         max-width: 1000px !important;
     }
-    .modal-dialog.modal-lg {
-        width:70% !important;
-    }
-
 </style>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
