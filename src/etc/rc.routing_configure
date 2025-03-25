@@ -37,6 +37,7 @@ exit_on_bootup();
 
 /* when called with an argument we are in gateway switch mode */
 $monitor_hook = !empty($argv[1]);
+$monitor_gws = $argv[2] ?? '';
 
 /* drop deleted routes */
 foreach (glob("/tmp/delete_route_*.todo") as $filename) {
@@ -50,11 +51,7 @@ foreach (glob("/tmp/delete_route_*.todo") as $filename) {
 system_routing_configure(true, null, !$monitor_hook);
 
 if ($monitor_hook) {
-    $cmd = ['/usr/local/etc/rc.syshook monitor'];
-    for ($i = 2; $i < count($argv); $i++) {
-        $cmd[] = escapeshellcmd($argv[$i]);
-    }
-    passthru(implode(' ', $cmd));
+    passthru(exec_safe('/usr/local/etc/rc.syshook monitor %s', $monitor_gws));
 }
 
 filter_configure_sync(true, false);
