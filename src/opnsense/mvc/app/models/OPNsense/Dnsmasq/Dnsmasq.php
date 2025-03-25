@@ -161,6 +161,15 @@ class Dnsmasq extends BaseModel
                 );
             }
 
+            if ($range->interface->isEmpty() && !$range->ra_mode->isEmpty()) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("Selecting an RA Mode requires an interface."),
+                        $key . ".interface"
+                    )
+                );
+            }
+
             // Validate RA mode combinations
             $valid_ra_mode_combinations = [
                 ['ra-names', 'slaac'],
