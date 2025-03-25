@@ -27,8 +27,8 @@
         <id>range.constructor</id>
         <label>Constructor</label>
         <type>dropdown</type>
-        <style>selectpicker style_dhcpv6</style>
-        <help>Interface to use to calculate the proper range, when selected, a range may be specified as a suffix (e.g. ::1, ::400)</help>
+        <style>selectpicker</style>
+        <help>Interface to use to calculate a DHCPv6 and/or RA range. Start address can then be specified as a suffix (e.g. ::, ::1 or ::400).</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
@@ -60,7 +60,7 @@
         <label>RA Priority</label>
         <type>dropdown</type>
         <help>Priority of the RA announcements.</help>
-        <style>selectpicker style_dhcpv6</style>
+        <style>selectpicker style_ra</style>
         <grid_view>
             <visible>false</visible>
         </grid_view>
@@ -69,7 +69,7 @@
         <id>range.ra_mtu</id>
         <label>RA MTU</label>
         <type>text</type>
-        <style>style_dhcpv6</style>
+        <style>style_ra</style>
         <help>Optional MTU to send to clients via Router Advertisements. If unsure leave empty.</help>
         <grid_view>
             <visible>false</visible>
@@ -80,7 +80,7 @@
         <label>RA Interval</label>
         <type>text</type>
         <hint>60</hint>
-        <style>style_dhcpv6</style>
+        <style>style_ra</style>
         <help>Time (seconds) between Router Advertisements.</help>
         <grid_view>
             <visible>false</visible>
@@ -91,7 +91,7 @@
         <label>RA Router Lifetime</label>
         <type>text</type>
         <hint>1200</hint>
-        <style>style_dhcpv6</style>
+        <style>style_ra</style>
         <help>The lifetime of the route may be changed or set to zero, which allows a router to advertise prefixes but not a route via itself. When using HA, setting a short timespan here is adviced for faster IPv6 failover. A good combination could be 10 seconds RA interval and 30 seconds RA router lifetime. Going lower than that can pose issues in busy networks.</help>
         <grid_view>
             <visible>false</visible>
