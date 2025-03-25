@@ -90,7 +90,6 @@
                         }
                     } else {
                         all_grids[grid_id].bootgrid('reload');
-
                     }
                 });
             }
