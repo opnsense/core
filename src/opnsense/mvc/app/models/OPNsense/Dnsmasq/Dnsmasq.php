@@ -203,7 +203,6 @@ class Dnsmasq extends BaseModel
                     );
                 }
             }
-
         }
 
         foreach ($this->dhcp_options->iterateItems() as $option) {
