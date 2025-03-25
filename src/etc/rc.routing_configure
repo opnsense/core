@@ -50,7 +50,11 @@ foreach (glob("/tmp/delete_route_*.todo") as $filename) {
 system_routing_configure(true, null, !$monitor_hook);
 
 if ($monitor_hook) {
-    passthru('/usr/local/etc/rc.syshook monitor');
+    $cmd = ['/usr/local/etc/rc.syshook monitor'];
+    for ($i = 2; $i < count($argv); $i++) {
+        $cmd[] = escapeshellcmd($argv[$i]);
+    }
+    passthru(implode(' ', $cmd));
 }
 
 filter_configure_sync(true, false);

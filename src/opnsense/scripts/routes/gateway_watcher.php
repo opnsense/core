@@ -76,6 +76,7 @@ while (1) {
     }
 
     /* run main watcher pass */
+    $alarm_gateways = [];
     foreach ($status as $report) {
         $ralarm = false;
 
@@ -131,10 +132,7 @@ while (1) {
                 $report['stddev'],
                 $report['loss']
             ));
-
-            if ($report['status'] == 'down' && !empty($report['monitor_killstates'])) {
-                configdp_run('filter kill gateway_states', [$report['gateway']], true);
-            }
+            $alarm_gateways[] = $report['name'];
 
             /* update cached state now */
             $mode[$report['name']] = $report['status'];
@@ -142,7 +140,7 @@ while (1) {
     }
 
     if ($alarm && $action != null) {
-        configd_run($action);
+        configdp_run($action, [implode(',', $alarm_gateways)]);
     }
 
     sleep($alarm ? $wait : $poll);
