@@ -40,13 +40,12 @@ class SettingsController extends ApiMutableModelControllerBase
      * Tags and interface filter function.
      * Interfaces are tags too, in the sense of dnsmasq.
      *
-     * @param array $filterValues List of values to filter against (e.g. UUIDs, interface names).
-     * @param array $fieldNames   List of field names to extract values from in each record.
-     *
      * @return callable|null
      */
-    private function buildFilterFunction(array $filterValues, array $fieldNames): ?callable
+    private function buildFilterFunction(): ?callable
     {
+        $filterValues = $this->request->get('tags') ?? [];
+        $fieldNames = ['interface', 'set_tag', 'tag'];
         if (empty($filterValues)) {
             return null;
         }
@@ -58,11 +57,8 @@ class SettingsController extends ApiMutableModelControllerBase
                     continue;
                 }
 
-                // Some fields allow multi selection
-                $fieldValues = array_map('trim', explode(',', (string)$record->{$fieldName}));
-
                 // Match field values against filter list
-                foreach ($fieldValues as $value) {
+                foreach (array_map('trim', explode(',', (string)$record->{$fieldName})) as $value) {
                     if (in_array($value, $filterValues, true)) {
                         return true;
                     }
@@ -87,9 +83,7 @@ class SettingsController extends ApiMutableModelControllerBase
     /* hosts */
     public function searchHostAction()
     {
-        $filters = $this->request->get('tags') ?? [];
-        $filter_funct = $this->buildFilterFunction($filters, ['set_tag']);
-        return $this->searchBase('hosts', null, null, $filter_funct);
+        return $this->searchBase('hosts', null, null, $this->buildFilterFunction());
     }
 
     public function getHostAction($uuid = null)
@@ -212,9 +206,7 @@ class SettingsController extends ApiMutableModelControllerBase
     /* dhcp ranges */
     public function searchRangeAction()
     {
-        $filters = $this->request->get('tags') ?? [];
-        $filter_funct = $this->buildFilterFunction($filters, ['interface', 'set_tag']);
-        return $this->searchBase('dhcp_ranges', null, null, $filter_funct);
+        return $this->searchBase('dhcp_ranges', null, null, $this->buildFilterFunction());
     }
 
     public function getRangeAction($uuid = null)
@@ -240,9 +232,7 @@ class SettingsController extends ApiMutableModelControllerBase
     /* dhcp options */
     public function searchOptionAction()
     {
-        $filters = $this->request->get('tags') ?? [];
-        $filter_funct = $this->buildFilterFunction($filters, ['interface', 'tag']);
-        return $this->searchBase('dhcp_options', null, null, $filter_funct);
+        return $this->searchBase('dhcp_options', null, null, $this->buildFilterFunction());
     }
 
     public function getOptionAction($uuid = null)
@@ -268,9 +258,7 @@ class SettingsController extends ApiMutableModelControllerBase
     /* dhcp match options */
     public function searchMatchAction()
     {
-        $filters = $this->request->get('tags') ?? [];
-        $filter_funct = $this->buildFilterFunction($filters, ['set_tag']);
-        return $this->searchBase('dhcp_options_match', null, null, $filter_funct);
+        return $this->searchBase('dhcp_options_match', null, null, $this->buildFilterFunction());
     }
 
     public function getMatchAction($uuid = null)
@@ -296,9 +284,7 @@ class SettingsController extends ApiMutableModelControllerBase
     /* dhcp boot options */
     public function searchBootAction()
     {
-        $filters = $this->request->get('tags') ?? [];
-        $filter_funct = $this->buildFilterFunction($filters, ['tag']);
-        return $this->searchBase('dhcp_boot', null, null, $filter_funct);
+        return $this->searchBase('dhcp_boot', null, null, $this->buildFilterFunction());
     }
 
     public function getBootAction($uuid = null)
@@ -326,49 +312,45 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function getTagListAction()
     {
-        $result = [];
+        $result = [
+            'tags' => [
+                'label' => gettext('Tags'),
+                'icon'  => 'fa fa-tag text-primary',
+                'items' => []
+            ],
+            'interfaces' => [
+                'label' => gettext('Interfaces'),
+                'icon'  => 'fa fa-ethernet text-info',
+                'items' => []
+            ]
+        ];
 
         // Interfaces
-        $interfaces = [];
         foreach (Config::getInstance()->object()->interfaces->children() as $key => $intf) {
             if ((string)$intf->type === 'group') {
                 continue;
             }
 
-            $interfaces[] = [
+            $result['interfaces']['items'][] = [
                 'value' => $key,
                 'label' => empty($intf->descr) ? strtoupper($key) : (string)$intf->descr
             ];
         }
-        usort($interfaces, fn($a, $b) => strcasecmp($a['label'], $b['label']));
 
         // Tags
-        $tags = [];
-        foreach ($this->getModel()->dhcp_tags->iterateItems() as $tag) {
-            $uuid = $tag->getAttributes()['uuid'] ?? null;
-            $name = trim((string)$tag->tag);
-            if (!empty($uuid) && !empty($name)) {
-                $tags[] = [
-                    'value' => $uuid,
-                    'label' => $name
-                ];
-            }
+        foreach ($this->getModel()->dhcp_tags->iterateItems() as $uuid => $tag) {
+            $result['tags']['items'][] = [
+                'value' => $uuid,
+                'label' => (string)$tag->tag
+            ];
         }
-        usort($tags, fn($a, $b) => strcasecmp($a['label'], $b['label']));
+
+        foreach (array_keys($result) as $key) {
+            usort($result[$key]['items'], fn($a, $b) => strcasecmp($a['label'], $b['label']));
+        }
 
         // Assemble result
-        return [
-            'tags' => [
-                'label' => gettext('Tags'),
-                'icon'  => 'fa fa-tag text-primary',
-                'items' => $tags
-            ],
-            'interfaces' => [
-                'label' => gettext('Interfaces'),
-                'icon'  => 'fa fa-ethernet text-info',
-                'items' => $interfaces
-            ]
-        ];
+        return $result;
     }
 
 }

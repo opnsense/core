@@ -158,38 +158,9 @@
         });
 
         // Populate tag selectpicker
-        ajaxCall('/api/dnsmasq/settings/getTagList', {}, function (data) {
-            const $select = $('#tag_select');
-            $select.empty();
+        $('#tag_select').fetch_options('/api/dnsmasq/settings/get_tag_list');
 
-            for (const groupKey in data) {
-                const group = data[groupKey];
-
-                if (group.items.length > 0) {
-                    const $optgroup = $('<optgroup>', {
-                        label: group.label,
-                        'data-icon': group.icon
-                    });
-
-                    for (const item of group.items) {
-                        $optgroup.append(
-                            $('<option>', {
-                                value: item.value,
-                                text: item.label,
-                                'data-icon': group.icon,
-                                'data-subtext': group.label
-                            })
-                        );
-                    }
-
-                    $select.append($optgroup);
-                }
-            }
-
-            $select.selectpicker('refresh');
-        });
-
-        $('#tag_select').on('changed.bs.select', function () {
+        $('#tag_select').change(function () {
             Object.keys(all_grids).forEach(function (grid_id) {
                 // boot is not excluded here, as it reloads in same tab as options
                 if (!['domain'].includes(grid_id)) {
