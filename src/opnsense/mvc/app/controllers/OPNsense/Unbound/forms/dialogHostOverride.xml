@@ -47,6 +47,12 @@
         </grid_view>
     </field>
     <field>
+        <id>host.ttl</id>
+        <label>TTL (seconds)</label>
+        <type>text</type>
+        <help>TTL of the host, e.g. 3600</help>
+    </field>
+    <field>
         <id>host.server</id>
         <label>IP address</label>
         <type>text</type>

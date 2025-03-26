@@ -380,6 +380,7 @@
                                 break;
                         }
                     });
+                    $("#alias\\.authtype").change();
                     /* FALLTHROUGH */
                 default:
                     $("#alias_type_default").show();
@@ -918,7 +919,7 @@
                                         <input type="text" class="form-control" size="50" id="alias.path_expression"/>
                                         <div class="hidden" data-for="help_for_alias.path_expression">
                                             <small>
-                                                {{lang._('Simplified expression to select a field inside a container, a dot [.] is used as field separator (e.g. container.fieldname).')}}
+                                                {{lang._('Simplified expression to select a field inside a container, a dot [.] is used as field separator (e.g. container.fieldname). Expressions using the jq language are also supported.')}}
                                             </small>
                                         </div>
                                     </td>

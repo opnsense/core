@@ -27,8 +27,9 @@
 import re
 import syslog
 import requests
+import time
 import urllib3
-import ujson
+import jq
 from .base import BaseContentParser
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -44,35 +45,16 @@ class UriParser(BaseContentParser):
         self._password = password
         self._type = kwargs.get('type', None)
         # optional path expresion
-        if kwargs.get('path_expression', None):
-            self._path_expression = kwargs['path_expression'].split('.')
-        else:
-            self._path_expression = []
+        self._path_expression = kwargs.get('path_expression', '')
 
     def _parse_line(self, line):
         """ return unparsed (raw) alias entries without dependencies
             :param line: string item to parse
             :return: iterator
         """
-        if self._type == 'urljson':
-            try:
-                record = ujson.loads(line)
-            except ValueError:
-                record = {}
-            for field in self._path_expression:
-                if type(record) is dict and field in record:
-                    record = record[field]
-                else:
-                    return
-            if type(record) is str:
-                yield record
-            elif type(record) is list:
-                for item in record:
-                    yield item
-        else:
-            raw_address = re.split(r'[\s,;|#]+', line)[0]
-            if raw_address and not raw_address.startswith('//'):
-                yield raw_address
+        raw_address = re.split(r'[\s,;|#]+', line)[0]
+        if raw_address and not raw_address.startswith('//'):
+            yield raw_address
 
     def iter_addresses(self, url):
         """ parse addresses, yield only valid addresses and networks
@@ -96,15 +78,39 @@ class UriParser(BaseContentParser):
             if req.status_code == 200:
                 # only handle content if response is correct
                 req.raw.decode_content = True
-                lines = req.raw.read().decode().splitlines()
-                syslog.syslog(syslog.LOG_NOTICE, 'fetch alias url %s (lines: %s)' % (url, len(lines)))
-                for line in lines:
-                    for raw_address in self._parse_line(line):
-                        for address in super().iter_addresses(raw_address):
-                            yield address
+                stime = time.time()
+                if self._type == 'urljson':
+                    data = req.raw.read().decode()
+                    syslog.syslog(syslog.LOG_NOTICE, 'fetch alias url %s (bytes: %s)' % (url, len(data)))
+                    # also support existing a.b format by prefixing [.], only raise exceptions on original input
+                    jqc = None
+                    jqc_exception = None
+                    for expr in [self._path_expression, ".%s" % self._path_expression]:
+                        try:
+                            jqc = jq.compile(expr)
+                        except Exception as e:
+                            if jqc_exception is None:
+                                jqc_exception = e
+
+                    if jqc is None:
+                        raise jqc_exception
+
+                    for raw_address in iter(jqc.input_text(data)):
+                        if raw_address:
+                            for address in super().iter_addresses(raw_address):
+                                yield address
+                else:
+                    lines = req.raw.read().decode().splitlines()
+                    syslog.syslog(syslog.LOG_NOTICE, 'fetch alias url %s (lines: %s)' % (url, len(lines)))
+                    for line in lines:
+                        for raw_address in self._parse_line(line):
+                            for address in super().iter_addresses(raw_address):
+                                yield address
+
+                syslog.syslog(syslog.LOG_NOTICE, 'processing alias url %s took %0.2fs' % (url, time.time() - stime))
             else:
                 syslog.syslog(syslog.LOG_ERR, 'error fetching alias url %s [http_code:%s]' % (url, req.status_code))
                 raise IOError('error fetching alias url %s' % (url))
-        except:
-            syslog.syslog(syslog.LOG_ERR, 'error fetching alias url %s' % (url))
+        except Exception as e:
+            syslog.syslog(syslog.LOG_ERR, 'error fetching alias url %s (%s)' % (url, str(e).replace("\n", ' ')))
             raise IOError('error fetching alias url %s' % (url))

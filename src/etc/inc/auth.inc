@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2023 Deciso B.V.
+ * Copyright (C) 2014-2025 Deciso B.V.
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2007-2008 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2005-2006 Bill Marquette <bill.marquette@gmail.com>
@@ -50,6 +50,7 @@ $userindex = index_users();
 function isAuthLocalIP($http_host)
 {
     global $config;
+
     if (isset($config['virtualip']['vip'])) {
         foreach ($config['virtualip']['vip'] as $vip) {
             if ($vip['subnet'] == $http_host) {
@@ -57,6 +58,7 @@ function isAuthLocalIP($http_host)
             }
         }
     }
+
     $address_in_list = function ($interface_list_ips, $http_host) {
         foreach ($interface_list_ips as $ilips => $ifname) {
             // remove scope from link-local IPv6 addresses
@@ -66,11 +68,13 @@ function isAuthLocalIP($http_host)
             }
         }
     };
+
     // try using cached addresses
     $interface_list_ips = get_cached_json_content("/tmp/isAuthLocalIP.cache.json");
     if (!empty($interface_list_ips) && $address_in_list($interface_list_ips, $http_host)) {
         return true;
     }
+
     // fetch addresses and store in cache
     $interface_list_ips = get_configured_ip_addresses();
     file_put_contents("/tmp/isAuthLocalIP.cache.json", json_encode($interface_list_ips));
@@ -82,9 +86,11 @@ function index_groups()
 {
     global $config, $groupindex;
 
-    $groupindex = array();
+    $groupindex = [];
+
     if (isset($config['system']['group'])) {
         $i = 0;
+
         foreach ($config['system']['group'] as $groupent) {
             if (isset($groupent['name'])) {
                 $groupindex[$groupent['name']] = $i;
@@ -93,7 +99,7 @@ function index_groups()
         }
     }
 
-    return ($groupindex);
+    return $groupindex;
 }
 
 function index_users()
@@ -104,10 +110,12 @@ function index_users()
 
     if (!empty($config['system']['user'])) {
         $i = 0;
+
         foreach ($config['system']['user'] as $userent) {
             if (!empty($userent) && !empty($userent['name'])) {
                 $userindex[$userent['name']] = $i;
             }
+
             $i++;
         }
     }
@@ -118,7 +126,9 @@ function index_users()
 function getUserGroups($username)
 {
     global $config;
-    $member_groups = array();
+
+    $member_groups = [];
+
     $user = getUserEntry($username);
     if ($user !== false) {
         $allowed_groups = local_user_get_groups($user);
@@ -130,18 +140,20 @@ function getUserGroups($username)
             }
         }
     }
+
     return $member_groups;
 }
 
 function &getUserEntry($name)
 {
     global $config, $userindex;
-    $false = false;
+
     if (isset($userindex[$name])) {
         return $config['system']['user'][$userindex[$name]];
-    } else {
-        return $false;
     }
+
+    $ret = false; /* XXX "fixes" return by reference */
+    return $ret;
 }
 
 function &getUserEntryByUID($uid)
@@ -156,7 +168,8 @@ function &getUserEntryByUID($uid)
         }
     }
 
-    return false;
+    $ret = false; /* XXX "fixes" return by reference */
+    return $ret;
 }
 
 function &getGroupEntry($name)
@@ -167,7 +180,8 @@ function &getGroupEntry($name)
         return $config['system']['group'][$groupindex[$name]];
     }
 
-    return array();
+    $ret = []; /* XXX "fixes" return by reference */
+    return $ret;
 }
 
 function get_user_privileges(&$user)
@@ -189,6 +203,7 @@ function get_user_privileges(&$user)
             }
         }
     }
+
     return $privs;
 }
 
@@ -212,9 +227,7 @@ function userHasPrivilege($userent, $privid = false)
 
 function userIsAdmin($username)
 {
-    $user = getUserEntry($username);
-
-    return userHasPrivilege($user, 'page-all');
+    return userHasPrivilege(getUserEntry($username), 'page-all');
 }
 
 function local_sync_accounts()
@@ -289,8 +302,6 @@ function local_sync_accounts()
 
 function local_user_set(&$user, $force_password = false, $userattrs = null)
 {
-    global $config;
-
     if (empty($user['password'])) {
         auth_log("Cannot set user {$user['name']}: password is missing");
         return;
@@ -305,7 +316,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     $user_pass = $force_password ? $user['password'] : '*';
     $user_name = $user['name'];
     $user_uid = $user['uid'];
-    $comment = str_replace(array(':', '!', '@'), ' ', $user['descr']);
+    $comment = str_replace([':', '!', '@'], ' ', $user['descr']);
 
     $lock_account = 'lock';
 
@@ -398,7 +409,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
         @unlink("{$user_home}/.ssh/authorized_keys");
     }
 
-    mwexecf('/usr/sbin/pw %s %s', array($lock_account, $user_name), true);
+    mwexecf('/usr/sbin/pw %s %s', [$lock_account, $user_name], true);
 }
 
 function local_user_set_password(&$user, $password = null)
@@ -494,7 +505,16 @@ function local_group_set($group)
         $group_op = 'groupmod';
     }
 
-    mwexecf('/usr/sbin/pw %s %s -g %s -M %s', array($group_op, $group_name, $group_gid, $group_members));
+    mwexecf('/usr/sbin/pw %s %s -g %s -M %s', [$group_op, $group_name, $group_gid, $group_members]);
+}
+
+function auth_get_authserver_local()
+{
+    return [
+      'host' => $config['system']['hostname'],
+      'name' => gettext('Local Database'),
+      'type' => 'local',
+    ];
 }
 
 /**
@@ -505,12 +525,8 @@ function auth_get_authserver($name)
 {
     global $config;
 
-    if ($name == "Local Database") {
-        return array(
-          "name" => gettext("Local Database"),
-          "type" => "local",
-          "host" => $config['system']['hostname']
-        );
+    if ($name == 'Local Database') {
+        return auth_get_authserver_local();
     }
 
     if (!empty($config['system']['authserver'])) {
@@ -537,7 +553,7 @@ function auth_get_authserver_list()
 {
     global $config;
 
-    $list = array();
+    $list = [];
 
     if (!empty($config['system']['authserver'])) {
         foreach ($config['system']['authserver'] as $authcfg) {
@@ -546,7 +562,8 @@ function auth_get_authserver_list()
         }
     }
 
-    $list["Local Database"] = array( "name" => gettext("Local Database"), "type" => "local", "host" => $config['system']['hostname']);
+    $list['Local Database'] = auth_get_authserver_local();
+
     return $list;
 }
 

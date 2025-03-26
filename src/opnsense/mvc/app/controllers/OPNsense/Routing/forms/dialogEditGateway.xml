@@ -53,12 +53,21 @@
         <id>gateway_item.monitor_noroute</id>
         <label>Disable Host Route</label>
         <type>checkbox</type>
+        <style>monitor_opt</style>
         <help>Do not create a dedicated host route for this monitor.</help>
+    </field>
+    <field>
+        <id>gateway_item.monitor_killstates</id>
+        <label>Kill states when down</label>
+        <type>checkbox</type>
+        <style>monitor_opt</style>
+        <help>When a monitor down event is triggered, kill all states to this gateway.</help>
     </field>
     <field>
         <id>gateway_item.monitor</id>
         <label>Monitor IP</label>
         <type>text</type>
+        <style>monitor_opt</style>
         <help>
             Enter an alternative address here to be used to monitor the link.
             This is used for the quality RRD graphs as well as the load balancer entries.

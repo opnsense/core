@@ -33,11 +33,15 @@ require_once 'system.inc';
 require_once 'interfaces.inc';
 
 $gwnames = [];
+$affected_gateways = !empty($argv[1]) ? explode(',', $argv[1]) : [];
 
 foreach (return_gateways_status() as $status) {
     if ($status['status'] == 'down') {
         /* try to recover monitors stuck in down state ignoring "force_down" */
         $gwnames[] = $status['name'];
+        if (!empty($status['monitor_killstates']) && in_array($status['name'], $affected_gateways)) {
+            configdp_run('filter kill gateway_states', [$status['gateway']], true);
+        }
     }
 }
 

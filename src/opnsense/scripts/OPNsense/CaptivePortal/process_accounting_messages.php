@@ -44,6 +44,7 @@ $result = $db->query('
     ,           c.ip_address
     ,           c.authenticated_via
     ,           c.deleted
+    ,           c.delete_reason
     ,           c.created
     ,           si.bytes_in
     ,           si.bytes_out
@@ -82,14 +83,14 @@ if ($result !== false) {
                 $stmt->bindParam(':sessionid', $row['sessionid']);
                 $stmt->execute();
                 if (method_exists($authenticator, 'stopAccounting')) {
-                    $time_spend = time() - $row['created'];
-                    $authenticator->stopAccounting($row['username'], $row['sessionid'], $time_spend, $row['bytes_in'], $row['bytes_out'], $row['ip_address']);
+                    $time_spend = time() - intval($row['created']);
+                    $authenticator->stopAccounting($row['username'], $row['sessionid'], $time_spend, $row['bytes_in'], $row['bytes_out'], $row['ip_address'], $row['delete_reason']);
                 }
             } elseif ($row['state'] != 'STOPPED') {
                 // send interim updates (if applicable)
                 if (method_exists($authenticator, 'updateAccounting')) {
                     // send interim update event
-                    $time_spend = time() - $row['created'];
+                    $time_spend = time() - intval($row['created']);
                     $authenticator->updateAccounting($row['username'], $row['sessionid'], $time_spend, $row['bytes_in'], $row['bytes_out'], $row['ip_address']);
                 }
             }

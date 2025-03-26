@@ -4,9 +4,9 @@
           <General order="10" url="/ui/dnsmasq/settings#general"/>
           <Hosts order="20" url="/ui/dnsmasq/settings#hosts"/>
           <Domains order="30" url="/ui/dnsmasq/settings#domains"/>
-          <Dhcptags VisibleName="DHCP tags" order="40" url="/ui/dnsmasq/settings#dhcptags"/>
           <Dhcpranges VisibleName="DHCP ranges" order="50" url="/ui/dnsmasq/settings#dhcpranges"/>
           <Dhcpoptions VisibleName="DHCP options" order="60" url="/ui/dnsmasq/settings#dhcpoptions"/>
+          <Dhcptags VisibleName="DHCP tags" order="65" url="/ui/dnsmasq/settings#dhcptags"/>
           <Dhcpmatches VisibleName="DHCP matches" order="70" url="/ui/dnsmasq/settings#dhcpmatches"/>
           <Leases order="80" url="/ui/dnsmasq/leases"/>
           <LogFile VisibleName="Log File" order="90" url="/ui/diagnostics/log/core/dnsmasq"/>

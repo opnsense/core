@@ -160,6 +160,99 @@ class Dnsmasq extends BaseModel
                     )
                 );
             }
+
+            if ($range->interface->isEmpty() && !$range->ra_mode->isEmpty()) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("Selecting an RA Mode requires an interface."),
+                        $key . ".interface"
+                    )
+                );
+            }
+
+            // Validate RA mode combinations
+            $valid_ra_mode_combinations = [
+                ['ra-names', 'slaac'],
+                ['ra-names', 'ra-stateless'],
+                ['slaac', 'ra-stateless'],
+                ['ra-names', 'slaac', 'ra-stateless']
+            ];
+
+            $selected_ra_modes = explode(',', $range->ra_mode);
+
+            // If only one mode is selected, it is always valid
+            if (count($selected_ra_modes) > 1) {
+                $is_ra_mode_valid = false;
+                foreach ($valid_ra_mode_combinations as $ra_mode_combination) {
+                    // Ensure order independant comparing
+                    if (
+                        empty(array_diff($selected_ra_modes, $ra_mode_combination)) &&
+                        empty(array_diff($ra_mode_combination, $selected_ra_modes))
+                    ) {
+                        $is_ra_mode_valid = true;
+                        break;
+                    }
+                }
+
+                if (!$is_ra_mode_valid) {
+                    $messages->appendMessage(
+                        new Message(
+                            gettext("Invalid RA mode combination."),
+                            $key . ".ra_mode"
+                        )
+                    );
+                }
+            }
+        }
+
+        foreach ($this->dhcp_options->iterateItems() as $option) {
+            if (!$validateFullModel && !$option->isFieldChanged()) {
+                continue;
+            }
+            $key = $option->__reference;
+
+            if (!$option->option->isEmpty() && !$option->option6->isEmpty()) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("'Option' and 'Option6' cannot be selected at the same time."),
+                        $key . ".option"
+                    )
+                );
+            }
+
+            if ($option->option->isEmpty() && $option->option6->isEmpty()) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("Either 'Option' or 'Option6' is required."),
+                        $key . ".option"
+                    )
+                );
+            }
+        }
+
+        foreach ($this->dhcp_options_match->iterateItems() as $match) {
+            if (!$validateFullModel && !$match->isFieldChanged()) {
+                continue;
+            }
+            $key = $match->__reference;
+
+            if (!$match->option->isEmpty() && !$match->option6->isEmpty()) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("'Option' and 'Option6' cannot be selected at the same time."),
+                        $key . ".option"
+                    )
+                );
+            }
+
+            if ($match->option->isEmpty() && $match->option6->isEmpty()) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("Either 'Option' or 'Option6' is required."),
+                        $key . ".option"
+                    )
+                );
+            }
         }
 
         if (

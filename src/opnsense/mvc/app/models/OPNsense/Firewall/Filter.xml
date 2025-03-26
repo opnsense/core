@@ -28,13 +28,15 @@
                         <floating>Floating states</floating>
                     </OptionValues>
                 </state-policy>
-                <sequence type="IntegerField">
+                <sequence type=".\FilterSequenceField">
                     <MinimumValue>1</MinimumValue>
-                    <MaximumValue>99999</MaximumValue>
-                    <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
+                    <MaximumValue>999999</MaximumValue>
+                    <ValidationMessage>Sequence shall be between 1 and 999999.</ValidationMessage>
                     <Required>Y</Required>
                     <Default>1</Default>
                 </sequence>
+                <sort_order type="TextField" volatile="true"/>
+                <prio_group type="TextField" volatile="true"/>
                 <action type="OptionField">
                     <Required>Y</Required>
                     <Default>pass</Default>

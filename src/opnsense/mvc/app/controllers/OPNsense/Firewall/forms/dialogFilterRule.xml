@@ -4,10 +4,42 @@
         <label>Organisation</label>
     </field>
     <field>
+        <id>rule.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>Enable this rule</help>
+        <grid_view>
+            <width>2em</width>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+            <sequence>10</sequence>
+            <align>center</align>
+            <sortable>false</sortable>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.sort_order</id>
+        <label>Sort order</label>
+        <type>info</type>
+        <help>The order in which rules are being processed.</help>
+        <grid_view>
+            <sequence>20</sequence>
+            <visible>false</visible>
+            <!-- The sequence order of firewall rules is absolute, no other field shall be sorted -->
+            <order>asc</order>
+            <sortable>false</sortable>
+        </grid_view>
+    </field>
+    <field>
         <id>rule.sequence</id>
         <label>Sequence</label>
         <type>text</type>
-        <help>The order in which rules are being considered.</help>
+        <help>The order in which rules are being processed. Please note that this is not a unique identifier, the system will automatically recalculate the ruleset when rule positions are changed with the available "Move rule before this rule" button.</help>
+        <grid_view>
+            <sequence>20</sequence>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.categories</id>
@@ -15,36 +47,62 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <help>For grouping purposes you may select multiple groups here to organize items.</help>
+        <grid_view>
+            <width>3em</width>
+            <sortable>false</sortable>
+            <formatter>category</formatter>
+            <sequence>112</sequence>
+        </grid_view>
     </field>
     <field>
         <id>rule.nosync</id>
         <label>No XMLRPC Sync</label>
         <type>checkbox</type>
-        <help>Hint: This prevents the rule on Master from automatically syncing to other CARP members. This does NOT prevent the rule from being overwritten on Slave.</help>
+        <help>Exclude this item from the HA synchronization process. An already existing item with the same UUID on the synchronization target will not be altered or deleted as long as this is active.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.description</id>
         <label>Description</label>
         <type>text</type>
         <help>You may enter a description here for your reference (not parsed).</help>
+        <grid_view>
+            <sequence>110</sequence>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <type>header</type>
-        <label>General Settings</label>
+        <label>Interface</label>
     </field>
     <field>
-        <id>rule.enabled</id>
-        <label>enabled</label>
+        <id>rule.interfacenot</id>
+        <label>Invert Interface</label>
         <type>checkbox</type>
-        <help>Enable this rule</help>
+        <help>Use all but selected interfaces</help>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
     </field>
     <field>
-        <id>rule.action</id>
-        <label>Action</label>
-        <type>dropdown</type>
-        <help>Choose what to do with packets that match the criteria specified below.
-            Hint: the difference between block and reject is that with reject, a packet (TCP RST or ICMP port unreachable for UDP) is returned to the sender, whereas with block the packet is dropped silently. In either case, the original packet is discarded.
-        </help>
+        <id>rule.interface</id>
+        <label>Interface</label>
+        <type>select_multiple</type>
+        <hint>any</hint>
+        <grid_view>
+            <formatter>interfaces</formatter>
+            <sequence>25</sequence>
+            <sortable>false</sortable>
+            <width>4em</width>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Filter</label>
     </field>
     <field>
         <id>rule.quick</id>
@@ -54,6 +112,20 @@
             If a packet matches a rule specifying quick, then that rule is considered the last matching rule and the specified action is taken.
             When a rule does not have quick enabled, the last matching rule wins.
         </help>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.action</id>
+        <label>Action</label>
+        <type>dropdown</type>
+        <help>Choose what to do with packets that match the criteria specified below.
+            Hint: the difference between block and reject is that with reject, a packet (TCP RST or ICMP port unreachable for UDP) is returned to the sender, whereas with block the packet is dropped silently. In either case, the original packet is discarded.
+        </help>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
     </field>
     <field>
         <id>rule.allowopts</id>
@@ -61,17 +133,10 @@
         <type>checkbox</type>
         <help>This allows packets with IP options to pass. Otherwise they are blocked by default.</help>
         <advanced>true</advanced>
-    </field>
-    <field>
-        <id>rule.interfacenot</id>
-        <label>Interface / Invert</label>
-        <type>checkbox</type>
-        <help>Use all but selected interfaces</help>
-    </field>
-    <field>
-        <id>rule.interface</id>
-        <label>Interface</label>
-        <type>select_multiple</type>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.direction</id>
@@ -80,59 +145,101 @@
         <help>
             Direction of the traffic. The default policy is to filter inbound traffic, which sets the policy to the interface originally receiving the traffic.
         </help>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
     </field>
     <field>
         <id>rule.ipprotocol</id>
-        <label>TCP/IP Version</label>
+        <label>Version</label>
         <type>dropdown</type>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
     </field>
     <field>
         <id>rule.protocol</id>
         <label>Protocol</label>
         <type>dropdown</type>
+        <grid_view>
+            <formatter>protocol</formatter>
+            <width>6em</width>
+            <sequence>40</sequence>
+            <sortable>false</sortable>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.source_not</id>
+        <label>Invert Source</label>
+        <type>checkbox</type>
+        <help>Use this option to invert the sense of the match.</help>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
     </field>
     <field>
         <id>rule.source_net</id>
         <label>Source</label>
         <type>text</type>
         <style>net_selector net_selector_multi</style>
+        <grid_view>
+            <formatter>alias</formatter>
+            <sequence>50</sequence>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.source_port</id>
-        <label>Source port</label>
+        <label>Source Port</label>
         <type>text</type>
-        <advanced>true</advanced>
         <help>Source port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
+        <hint>any</hint>
+        <grid_view>
+            <sequence>60</sequence>
+            <sortable>false</sortable>
+            <formatter>alias</formatter>
+        </grid_view>
     </field>
     <field>
-        <id>rule.source_not</id>
-        <label>Source / Invert</label>
+        <id>rule.destination_not</id>
+        <label>Invert Destination</label>
         <type>checkbox</type>
         <help>Use this option to invert the sense of the match.</help>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
     </field>
     <field>
         <id>rule.destination_net</id>
         <label>Destination</label>
         <type>text</type>
         <style>net_selector net_selector_multi</style>
-    </field>
-    <field>
-        <id>rule.destination_not</id>
-        <label>Destination / Invert</label>
-        <type>checkbox</type>
-        <help>Use this option to invert the sense of the match.</help>
+        <grid_view>
+            <formatter>alias</formatter>
+            <sequence>70</sequence>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.destination_port</id>
-        <label>Destination port</label>
+        <label>Destination Port</label>
         <type>text</type>
         <help>Destination port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
+        <hint>any</hint>
+        <grid_view>
+            <sequence>80</sequence>
+            <sortable>false</sortable>
+            <formatter>alias</formatter>
+        </grid_view>
     </field>
     <field>
         <id>rule.log</id>
         <label>Log</label>
         <type>checkbox</type>
         <help>Log packets that are handled by this rule</help>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
     </field>
     <field>
         <id>rule.tcpflags1</id>
@@ -140,6 +247,10 @@
         <type>select_multiple</type>
         <help>Use this to choose TCP flags that must be set this rule to match.</help>
         <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.tcpflags2</id>
@@ -147,21 +258,36 @@
         <type>select_multiple</type>
         <help>Use this to choose TCP flags that must be cleared for this rule to match.</help>
         <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.sched</id>
         <label>Schedule</label>
         <type>dropdown</type>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <type>header</type>
         <label>Stateful firewall</label>
+        <advanced>true</advanced>
     </field>
     <field>
         <id>rule.statetype</id>
         <label>State type</label>
         <type>dropdown</type>
         <help>State tracking mechanism to use, default is full stateful tracking, sloppy ignores sequence numbers, use none for stateless rules.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.state-policy</id>
@@ -172,6 +298,11 @@
             floating in which case states are valid on all interfaces or interface bound.
             Interface bound states are more secure, floating more flexible
         </help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.statetimeout</id>
@@ -179,6 +310,10 @@
         <type>text</type>
         <help>State Timeout in seconds (TCP only)</help>
         <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.adaptivestart</id>
@@ -186,6 +321,10 @@
         <type>text</type>
         <help>When the number of state entries exceeds this value, adaptive scaling begins. All timeout values are scaled linearly with factor (adaptive.end - number of states) / (adaptive.end - adaptive.start).</help>
         <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.adaptiveend</id>
@@ -193,6 +332,10 @@
         <type>text</type>
         <help>When reaching this number of state entries, all timeout values become zero, effectively purging all state entries immediately. This value is used to define the scale factor, it should not actually be reached (set a lower state limit).</help>
         <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.max</id>
@@ -203,6 +346,10 @@
             When this limit is reached, further packets that would create state are dropped until existing states time out.
         </help>
         <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.max-src-nodes</id>
@@ -210,6 +357,10 @@
         <type>text</type>
         <help>Limits the maximum number of source addresses which can simultaneously have state table entries.</help>
         <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.max-src-states</id>
@@ -217,6 +368,10 @@
         <type>text</type>
         <help>Limits the maximum number of simultaneous state entries that a single source address can create with this rule.</help>
         <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.max-src-conn</id>
@@ -224,6 +379,10 @@
         <type>text</type>
         <help>Limit the maximum number of simultaneous TCP connections which have completed the 3-way handshake that a single host can make.</help>
         <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.max-src-conn-rate</id>
@@ -231,6 +390,10 @@
         <type>text</type>
         <help>Maximum new connections per host, measured over time.</help>
         <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.max-src-conn-rates</id>
@@ -238,43 +401,69 @@
         <type>text</type>
         <help>Time interval (seconds) to measure the number of connections</help>
         <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.overload</id>
         <label>Overload table</label>
         <type>dropdown</type>
-        <advanced>true</advanced>
         <help>
             Overload table used when max new connections per time interval has been reached.
             The default virusprot table comes with a default block rule in floating rules,
             alternatively specify your own table here
         </help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.nopfsync</id>
         <label>NO pfsync</label>
         <type>checkbox</type>
-        <help>Hint: This prevents states created by this rule to be sync'ed over pfsync.</help>
+        <help>This prevents states created by this rule to be synced with pfsync.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <type>header</type>
         <label>Traffic shaping [experimental]</label>
+        <advanced>true</advanced>
     </field>
     <field>
         <id>rule.shaper1</id>
         <label>Traffic shaper</label>
         <type>dropdown</type>
         <help>Shape packets using the selected pipe or queue in the rule direction.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.shaper2</id>
         <label>Traffic shaper [reverse]</label>
         <type>dropdown</type>
         <help>Shape packets using the selected pipe or queue in the reverse rule direction.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <type>header</type>
-        <label>Source routing</label>
+        <label>Source Routing</label>
     </field>
     <field>
         <id>rule.gateway</id>
@@ -283,6 +472,11 @@
         <help>
             Leave as 'default' to use the system routing table. Or choose a gateway to utilize policy based routing.
         </help>
+        <grid_view>
+            <formatter>any</formatter>
+            <sequence>100</sequence>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.disablereplyto</id>
@@ -290,6 +484,13 @@
         <type>checkbox</type>
         <style>disable_replyto</style>
         <help>Explicit disable reply-to for this rule</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.replyto</id>
@@ -299,17 +500,28 @@
         <help>
             Determines how packets route back in the opposite direction (replies), when set to default, packets on WAN type interfaces reply to their connected gateway on the interface (unless globally disabled). A specific gateway may be chosen as well here. This setting is only relevant in the context of a state, for stateless rules there is no defined opposite direction.
         </help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+            <formatter>default</formatter>
+        </grid_view>
     </field>
     <field>
         <type>header</type>
         <label>Priority</label>
-        <collapse>true</collapse>
+        <advanced>true</advanced>
     </field>
     <field>
         <id>rule.prio</id>
         <label>Match priority</label>
         <type>dropdown</type>
         <help>Only match packets which have the given queueing priority assigned.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.set-prio</id>
@@ -321,6 +533,11 @@
             will be written as the priority code point in the 802.1Q VLAN
             header
         </help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.set-prio-low</id>
@@ -330,16 +547,26 @@
             Used in combination with set priority, packets which have a TOS of lowdelay and TCP ACKs with no
             data payload will be assigned this priority when offered.
         </help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.tos</id>
         <label>Match TOS / DSCP</label>
         <type>dropdown</type>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <type>header</type>
         <label>Internal tagging</label>
-        <collapse>true</collapse>
+        <advanced>true</advanced>
     </field>
     <field>
         <id>rule.tag</id>
@@ -353,11 +580,81 @@
             if the rule is not the last matching rule.  Further matching rules can replace the tag with a
             new one but will not remove a previously applied tag.  A packet is only ever assigned one tag at a time.
         </help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
     </field>
     <field>
         <id>rule.tagged</id>
         <label>Match local tag</label>
         <type>text</type>
         <help>Used to specify that packets must already be tagged with the given tag in order to match the rule.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
+    </field>
+    <!-- Not exposed in dialog, do not exist in model, only for grid -->
+    <field>
+        <id>rule.evaluations</id>
+        <label>Evaluations</label>
+        <type>ignore</type>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+            <label>Stats - Evaluations</label>
+            <width>4em</width>
+            <sequence>115</sequence>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.states</id>
+        <label>States</label>
+        <type>ignore</type>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+            <label>Stats - States</label>
+            <width>4em</width>
+            <sequence>116</sequence>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.packets</id>
+        <label>Packets</label>
+        <type>ignore</type>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+            <label>Stats - Packets</label>
+            <width>4em</width>
+            <sequence>117</sequence>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.bytes</id>
+        <label>Bytes</label>
+        <type>ignore</type>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+            <label>Stats - Bytes</label>
+            <width>4em</width>
+            <sequence>118</sequence>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.icons</id>
+        <label>Icons</label>
+        <type>ignore</type>
+        <grid_view>
+            <sortable>false</sortable>
+            <formatter>ruleIcons</formatter>
+            <width>10em</width>
+            <sequence>15</sequence>
+        </grid_view>
     </field>
 </form>

@@ -98,7 +98,7 @@ class SessionController extends ApiControllerBase
         if ($this->request->isPost() && $this->request->hasPost('sessionId')) {
             $statusRAW = (new Backend())->configdpRun(
                 "captiveportal disconnect",
-                [$this->request->getPost('sessionId')]
+                [$this->request->getPost('sessionId'), "Admin-Reset"]
             );
             $status = json_decode($statusRAW ?? '', true);
             if ($status != null) {

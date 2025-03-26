@@ -3,7 +3,13 @@
         <id>option.option</id>
         <label>Option</label>
         <type>dropdown</type>
-        <help>Option to offer to the client.</help>
+        <help>DHCPv4 option to offer to the client.</help>
+    </field>
+    <field>
+        <id>option.option6</id>
+        <label>Option6</label>
+        <type>dropdown</type>
+        <help>DHCPv6 option to offer to the client.</help>
     </field>
     <field>
         <id>option.interface</id>

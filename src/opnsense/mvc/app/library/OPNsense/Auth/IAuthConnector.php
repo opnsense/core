@@ -55,6 +55,13 @@ interface IAuthConnector
     public function getLastAuthErrors();
 
     /**
+     * set session-specific pre-authentication metadata for the authenticator
+     * @param array $config set configuration for this connector to use
+     * @return IAuthConnector
+     */
+    public function preauth($config);
+
+    /**
      * authenticate user
      * @param string $username username to authenticate
      * @param string $password user password

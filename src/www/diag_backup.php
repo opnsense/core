@@ -399,7 +399,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
 
                 if (count($filesInBackup) == 0) {
-                    $input_errors[] = gettext('Saved settings, but remote backup failed.');
+                    $input_messages = gettext('Saved settings, but remote backup returned no files.');
                 } else {
                     $input_messages = gettext("Backup successful, current file list:") . "<br>";
                     foreach ($filesInBackup as $filename) {
