@@ -107,7 +107,7 @@ export default class OpenVPNClients extends BaseTableWidget {
                         }
                     }
 
-                    //store all ip addresses
+                    // store all ip addresses
                     let ip_list = [
                         client.real_address,
                         client.virtual_address,
