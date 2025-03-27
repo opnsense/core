@@ -237,7 +237,7 @@ $( document ).ready(function() {
                         <option value="down" <?=$pconfig['trigger'] == "down" ? "selected=\"selected\"" :"";?> ><?=gettext("Member Down");?></option>
                         <option value="downloss" <?=$pconfig['trigger'] == "downloss" ? "selected=\"selected\"" :"";?> ><?=gettext("Packet Loss");?></option>
                         <option value="downlatency" <?=$pconfig['trigger'] == "downlatency" ? "selected=\"selected\"" :"";?> ><?=gettext("High Latency");?></option>
-                        <option value="downlosslatency" <?=$pconfig['trigger'] == "downlosslatency" ? "selected=\"selected\"" :"";?> ><?=gettext("Packet Loss or High Latency");?></option>
+                        <option value="downlosslatency" <?=$pconfig['trigger'] == "downlosslatency" ? "selected=\"selected\"" :"";?> ><?=gettext("Packet Loss and High Latency");?></option>
                       </select>
                       <div data-for="help_for_triggerlvl" class="hidden">
                         <?=gettext("When to trigger exclusion of a member"); ?>
