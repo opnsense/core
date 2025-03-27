@@ -1173,12 +1173,13 @@ function onMouseDown(event) {
     let leftCol = this.columnMap.get($leftCol.data('column-id'));
     let $rightCol = this.$tableHeaders.eq(idx + 1).not('[data-noresize]');
     let rightCol = this.columnMap.get($rightCol.data('column-id'));
-    let leftColWidth = leftCol.calculatedWidth;
-    let rightColWidth = rightCol.calculatedWidth;
 
-    if ($currentHandle.is('[data-noresize]')) {
+    if ($currentHandle.is('[data-noresize]') || !leftCol || !rightCol) {
         return;
     }
+
+    let leftColWidth = leftCol.calculatedWidth;
+    let rightColWidth = rightCol.calculatedWidth;
 
     if (this.resizeOp) {
         onMouseUp.call(this, event);
