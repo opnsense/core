@@ -1,6 +1,6 @@
 {#
 
-OPNsense® is Copyright © 2016 by Deciso B.V.
+OPNsense® is Copyright © 2016-2025 by Deciso B.V.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -27,7 +27,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #}
 
 <style type="text/css">
-.panel-heading-sm{
+.panel-heading-sm {
     height: 28px;
     padding: 4px 10px;
 }
@@ -55,15 +55,8 @@ POSSIBILITY OF SUCH DAMAGE.
       // collect all chars for resize update
       var pageCharts = {};
 
-      // form metadata definitions
-      var interface_names = [];
-      var service_names = [];
-      var protocol_names = [];
 
-      /**
-       * load shared metadata (interfaces, protocols, )
-       */
-      function get_metadata()
+      function do_startup()
       {
           var dfObj = new $.Deferred();
           ajaxGet('/api/diagnostics/netflow/isEnabled', {}, function(is_enabled, status){
@@ -73,33 +66,30 @@ POSSIBILITY OF SUCH DAMAGE.
               }
               // fetch interface names
               ajaxGet('/api/diagnostics/networkinsight/getInterfaces',{}, function(intf_names, status){
-                  interface_names = intf_names;
-                  // fetch protocol names
-                  ajaxGet('/api/diagnostics/networkinsight/getProtocols',{}, function(protocols, status) {
-                      protocol_names = protocols;
-                      // fetch service names
-                      ajaxGet('/api/diagnostics/networkinsight/getServices',{}, function(services, status) {
-                          service_names = services;
-                          // return promise, no need to wait for getMetadata
-                          dfObj.resolve();
-                          // fetch aggregators
-                          ajaxGet('/api/diagnostics/networkinsight/getMetadata',{}, function(metadata, status) {
-                            Object.keys(metadata['aggregators']).forEach(function (agg_name) {
-                              var res = metadata['aggregators'][agg_name]['resolutions'].join(',');
-                              $("#export_collection").append($("<option data-resolutions='"+res+"'/>").val(agg_name).text(agg_name));
-                            });
-                            $("#export_collection").change(function(){
-                                $("#export_resolution").html("");
-                                var resolutions = String($(this).find('option:selected').data('resolutions'));
-                                resolutions.split(',').map(function(item) {
-                                    $("#export_resolution").append($("<option/>").val(item).text(item));
-                                });
-                                $("#export_resolution").selectpicker('refresh');
-                            });
-                            $("#export_collection").change();
-                            $("#export_collection").selectpicker('refresh');
-                          });
+                  for (var key in intf_names) {
+                      $('#interface_select').append($("<option></option>").attr("value",key).text(intf_names[key]));
+                      $('#interface_select_detail').append($("<option></option>").attr("value",key).text(intf_names[key]));
+                  }
+                  $('#interface_select').selectpicker('refresh');
+                  $('#interface_select_detail').selectpicker('refresh');
+                  // return promise, no need to wait for getMetadata
+                  dfObj.resolve();
+                  // fetch aggregators
+                  ajaxGet('/api/diagnostics/networkinsight/getMetadata',{}, function(metadata, status) {
+                      Object.keys(metadata['aggregators']).forEach(function (agg_name) {
+                          var res = metadata['aggregators'][agg_name]['resolutions'].join(',');
+                          $("#export_collection").append($("<option data-resolutions='"+res+"'/>").val(agg_name).text(agg_name));
                       });
+                      $("#export_collection").change(function(){
+                          $("#export_resolution").html("");
+                          var resolutions = String($(this).find('option:selected').data('resolutions'));
+                          resolutions.split(',').map(function(item) {
+                              $("#export_resolution").append($("<option/>").val(item).text(item));
+                          });
+                          $("#export_resolution").selectpicker('refresh');
+                      });
+                      $("#export_collection").change();
+                      $("#export_collection").selectpicker('refresh');
                   });
               });
           });
@@ -123,51 +113,9 @@ POSSIBILITY OF SUCH DAMAGE.
       function get_time_select()
       {
           // current time stamp
-          var timestamp_now = Math.round((new Date()).getTime() / 1000);
-          var duration = 0;
-          var resolution = 0;
-          switch ($("#total_time_select").val()) {
-              case "2h":
-                duration = 60*60*2;
-                resolution = 30;
-                break;
-              case "8h":
-                duration = 60*60*8;
-                resolution = 300;
-                break;
-              case "24h":
-                duration = 60*60*24;
-                resolution = 300;
-                break;
-              case "7d":
-                duration = 60*60*24*7;
-                resolution = 3600;
-                break;
-              case "14d":
-                duration = 60*60*24*14;
-                resolution = 3600;
-                break;
-              case "30d":
-                duration = 60*60*24*30;
-                resolution = 86400;
-                break;
-              case "60d":
-                duration = 60*60*24*60;
-                resolution = 86400;
-                break;
-              case "90d":
-                duration = 60*60*24*90;
-                resolution = 86400;
-                break;
-              case "182d":
-                duration = 60*60*24*182;
-                resolution = 86400;
-                break;
-              case "1y":
-                duration = 60*60*24*365;
-                resolution = 86400;
-                break;
-          }
+          let timestamp_now = Math.round((new Date()).getTime() / 1000);
+          let duration = parseInt($("#total_time_select > option:selected").data('duration'));
+          let resolution = parseInt($("#total_time_select > option:selected").data('resolution'));
           // always round from timestamp to nearest hour
           const from_timestamp =  Math.floor((timestamp_now -duration) / 3600 ) * 3600;
           return {resolution: resolution, from: from_timestamp, to: timestamp_now};
@@ -217,17 +165,9 @@ POSSIBILITY OF SUCH DAMAGE.
 
                   let chart_data = [];
                   data.map(function(item){
-                      let item_dir = item.key.split(',').pop();
-                      let item_intf = item.key.split(',')[0];
-                      if (item_intf != '0' && item_intf != 'lo0' ) {
-                          if (direction == item_dir) {
-                              if (interface_names[item_intf] != undefined) {
-                                  item.key = interface_names[item_intf];
-                              } else {
-                                  item.key = item_intf;
-                              }
-                              chart_data.push(item);
-                          }
+                      if (direction == item.direction) {
+                          item.key = item.interface ?? '-';
+                          chart_data.push(item);
                       }
                   });
 
@@ -273,19 +213,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
                 let chart_data = [];
                 data.map(function(item){
-                    var label = "(other)";
-                    var proto = "";
-                    if (item.protocol != "") {
-                        if (item.protocol in protocol_names) {
-                            proto = ' (' + protocol_names[item.protocol] + ')';
-                        }
-                        if (item.dst_port in service_names) {
-                            label = service_names[item.dst_port];
-                        } else {
-                            label = item.dst_port
-                        }
-                    }
-                    chart_data.push({'label': label + proto, 'value': item.total});
+                    chart_data.push({'label': item.label, 'value': item.total});
                 });
 
                 var diag = d3.select("#chart_top_ports svg")
@@ -486,51 +414,24 @@ POSSIBILITY OF SUCH DAMAGE.
                 });
                 // dump  rows
                 data.map(function(item){
-                  let proto = '';
-                  if (item.protocol in protocol_names) {
-                      proto = ' (' + protocol_names[item.protocol] + ')';
-                  }
-                  let service_port;
-                  if (item.service_port in service_names) {
-                      service_port = service_names[item.service_port];
-                  } else {
-                      service_port = item.service_port
-                  }
-                  let tr_str = '<tr>';
-                  if (service_port != "") {
-                      tr_str += '<td> <span data-toggle="tooltip" title="'+proto+'/'+item.service_port+'">'+service_port+' </span> '+proto+'</td>';
-                  } else {
-                      tr_str += "<td>{{ lang._('(other)') }}</td>";
-                  }
-                  tr_str += '<td>' + item['src_addr'] + '</td>';
-                  tr_str += '<td>' + item['dst_addr'] + '</td>';
-                  tr_str += '<td>' + byteFormat(item['total']) + ' ' + '</td>';
-                  if (item['last_seen'] != "") {
-                      tr_str += '<td>' + d3.time.format('%b %e %H:%M:%S')(new Date(item['last_seen']*1000)) + '</td>';
-                  } else {
-                      tr_str += '<td></td>'
-                  }
-
-
-                  let percentage = parseInt((item['total'] /grand_total) * 100);
-                  let perc_text = ((item['total'] /grand_total) * 100).toFixed(2);
-                  tr_str += '<td>';
-                  tr_str += '<div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" ';
-                  tr_str += 'aria-valuenow="'+percentage+'" aria-valuemin="0" aria-valuemax="100" style="color: black; min-width: 2em; width:' ;
-                  tr_str += percentage+'%;">'+perc_text+'&nbsp;%</div>';
-                  tr_str += '</td>';
-                  tr_str += '</tr>';
-                  html.push(tr_str);
+                  let percentage = parseInt((item.total /grand_total) * 100);
+                  let perc_text = ((item.total /grand_total) * 100).toFixed(2);
+                  html.push($("<tr/>").append([
+                     $("<td/>").text(item.label),
+                     $("<td/>").text(item.src_addr),
+                     $("<td/>").text(item.dst_addr),
+                     $("<td/>").text(byteFormat(item.total)),
+                     $("<td/>").text(item.last_seen_str),
+                     $("<td>").html(
+                        '<div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" aria-valuenow="'+
+                        percentage+
+                        '" aria-valuemin="0" aria-valuemax="100" style="color: black; min-width: 2em; width:'+
+                        percentage+'%;">'+perc_text+'&nbsp;%'
+                     )
+                  ]));
                 });
-                $("#netflow_details > tbody").html(html.join(''));
-                if (grand_total > 0) {
-                    $("#netflow_details_total").html(byteFormat(grand_total));
-                } else {
-                    $("#netflow_details_total").html("");
-                }
-
-                // link tooltips
-                $('[data-toggle="tooltip"]').tooltip();
+                $("#netflow_details > tbody").empty().append(html);
+                $("#netflow_details_total").html(byteFormat(grand_total));
             }
         });
       }
@@ -596,15 +497,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 
       // trigger initial tab load
-      get_metadata().done(function(){
-          // known interfaces
-          for (var key in interface_names) {
-              $('#interface_select').append($("<option></option>").attr("value",key).text(interface_names[key]));
-              $('#interface_select_detail').append($("<option></option>").attr("value",key).text(interface_names[key]));
-          }
-          $('#interface_select').selectpicker('refresh');
-          $('#interface_select_detail').selectpicker('refresh');
-
+      do_startup().done(function(){
           // generate date selection (utc start, end times)
           var now = new Date;
           var date_begin = Date.UTC(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0);
@@ -670,16 +563,16 @@ POSSIBILITY OF SUCH DAMAGE.
     <div id="totals" class="tab-pane fade in active">
       <div class="pull-right">
         <select class="selectpicker" id="total_time_select">
-          <option value="2h">{{ lang._('Last 2 hours, 30 second average') }}</option>
-          <option value="8h">{{ lang._('Last 8 hours, 5 minute average') }}</option>
-          <option value="24h">{{ lang._('Last 24 hours, 5 minute average') }}</option>
-          <option value="7d">{{ lang._('7 days, 1 hour average') }}</option>
-          <option value="14d">{{ lang._('14 days, 1 hour average') }}</option>
-          <option value="30d">{{ lang._('30 days, 24 hour average') }}</option>
-          <option value="60d">{{ lang._('60 days, 24 hour average') }}</option>
-          <option value="90d">{{ lang._('90 days, 24 hour average') }}</option>
-          <option value="182d">{{ lang._('182 days, 24 hour average') }}</option>
-          <option value="1y">{{ lang._('Last year, 24 hour average') }}</option>
+          <option data-duration="7200" data-resolution="30" value="2h">{{ lang._('Last 2 hours, 30 second average') }}</option>
+          <option data-duration="28800" data-resolution="300" value="8h">{{ lang._('Last 8 hours, 5 minute average') }}</option>
+          <option data-duration="86400" data-resolution="300" value="24h">{{ lang._('Last 24 hours, 5 minute average') }}</option>
+          <option data-duration="604800" data-resolution="3600" value="7d">{{ lang._('7 days, 1 hour average') }}</option>
+          <option data-duration="1209600" data-resolution="3600" value="14d">{{ lang._('14 days, 1 hour average') }}</option>
+          <option data-duration="2592000" data-resolution="86400" value="30d">{{ lang._('30 days, 24 hour average') }}</option>
+          <option data-duration="5184000" data-resolution="86400" value="60d">{{ lang._('60 days, 24 hour average') }}</option>
+          <option data-duration="7776000" data-resolution="86400" value="90d">{{ lang._('90 days, 24 hour average') }}</option>
+          <option data-duration="15724800" data-resolution="86400" value="182d">{{ lang._('182 days, 24 hour average') }}</option>
+          <option data-duration="31536000" data-resolution="86400" value="1y">{{ lang._('Last year, 24 hour average') }}</option>
         </select>
       </div>
       <br/>
