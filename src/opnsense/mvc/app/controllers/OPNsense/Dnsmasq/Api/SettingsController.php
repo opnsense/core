@@ -38,6 +38,39 @@ class SettingsController extends ApiMutableModelControllerBase
     protected static $internalModelUseSafeDelete = true;
 
     /**
+     * Tags and interface filter function.
+     * Interfaces are tags too, in the sense of dnsmasq.
+     *
+     * @return callable|null
+     */
+    private function buildFilterFunction(): ?callable
+    {
+        $filterValues = $this->request->get('tags') ?? [];
+        $fieldNames = ['interface', 'set_tag', 'tag'];
+        if (empty($filterValues)) {
+            return null;
+        }
+
+        return function ($record) use ($filterValues, $fieldNames) {
+            foreach ($fieldNames as $fieldName) {
+                // Skip this field if not present in current record
+                if (!isset($record->{$fieldName})) {
+                    continue;
+                }
+
+                // Match field values against filter list
+                foreach (array_map('trim', explode(',', (string)$record->{$fieldName})) as $value) {
+                    if (in_array($value, $filterValues, true)) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        };
+    }
+
+    /**
      * @inheritdoc
      */
     public function getAction()
@@ -51,7 +84,7 @@ class SettingsController extends ApiMutableModelControllerBase
     /* hosts */
     public function searchHostAction()
     {
-        return $this->searchBase('hosts');
+        return $this->searchBase('hosts', null, null, $this->buildFilterFunction());
     }
 
     public function getHostAction($uuid = null)
@@ -137,7 +170,18 @@ class SettingsController extends ApiMutableModelControllerBase
     /* dhcp tags */
     public function searchTagAction()
     {
-        return $this->searchBase('dhcp_tags');
+        $filters = $this->request->get('tags') ?? [];
+
+        $filter_funct = null;
+        if (!empty($filters)) {
+            $filter_funct = function ($record) use ($filters) {
+                $attributes = $record->getAttributes();
+                $uuid = $attributes['uuid'] ?? null;
+                return in_array($uuid, $filters, true);
+            };
+        }
+
+        return $this->searchBase('dhcp_tags', null, null, $filter_funct);
     }
 
     public function getTagAction($uuid = null)
@@ -163,7 +207,7 @@ class SettingsController extends ApiMutableModelControllerBase
     /* dhcp ranges */
     public function searchRangeAction()
     {
-        return $this->searchBase('dhcp_ranges');
+        return $this->searchBase('dhcp_ranges', null, null, $this->buildFilterFunction());
     }
 
     public function getRangeAction($uuid = null)
@@ -189,7 +233,7 @@ class SettingsController extends ApiMutableModelControllerBase
     /* dhcp options */
     public function searchOptionAction()
     {
-        return $this->searchBase('dhcp_options');
+        return $this->searchBase('dhcp_options', null, null, $this->buildFilterFunction());
     }
 
     public function getOptionAction($uuid = null)
@@ -215,7 +259,7 @@ class SettingsController extends ApiMutableModelControllerBase
     /* dhcp match options */
     public function searchMatchAction()
     {
-        return $this->searchBase('dhcp_options_match');
+        return $this->searchBase('dhcp_options_match', null, null, $this->buildFilterFunction());
     }
 
     public function getMatchAction($uuid = null)
@@ -241,7 +285,7 @@ class SettingsController extends ApiMutableModelControllerBase
     /* dhcp boot options */
     public function searchBootAction()
     {
-        return $this->searchBase('dhcp_boot');
+        return $this->searchBase('dhcp_boot', null, null, $this->buildFilterFunction());
     }
 
     public function getBootAction($uuid = null)
@@ -263,4 +307,51 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         return $this->delBase('dhcp_boot', $uuid);
     }
+
+    /**
+     * Return selectpicker options for interfaces and tags
+     */
+    public function getTagListAction()
+    {
+        $result = [
+            'tags' => [
+                'label' => gettext('Tags'),
+                'icon'  => 'fa fa-tag text-primary',
+                'items' => []
+            ],
+            'interfaces' => [
+                'label' => gettext('Interfaces'),
+                'icon'  => 'fa fa-ethernet text-info',
+                'items' => []
+            ]
+        ];
+
+        // Interfaces
+        foreach (Config::getInstance()->object()->interfaces->children() as $key => $intf) {
+            if ((string)$intf->type === 'group') {
+                continue;
+            }
+
+            $result['interfaces']['items'][] = [
+                'value' => $key,
+                'label' => empty($intf->descr) ? strtoupper($key) : (string)$intf->descr
+            ];
+        }
+
+        // Tags
+        foreach ($this->getModel()->dhcp_tags->iterateItems() as $uuid => $tag) {
+            $result['tags']['items'][] = [
+                'value' => $uuid,
+                'label' => (string)$tag->tag
+            ];
+        }
+
+        foreach (array_keys($result) as $key) {
+            usort($result[$key]['items'], fn($a, $b) => strcasecmp($a['label'], $b['label']));
+        }
+
+        // Assemble result
+        return $result;
+    }
+
 }

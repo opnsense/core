@@ -73,7 +73,18 @@
                             'get':'/api/dnsmasq/settings/get_' + grid_id + '/',
                             'set':'/api/dnsmasq/settings/set_' + grid_id + '/',
                             'add':'/api/dnsmasq/settings/add_' + grid_id + '/',
-                            'del':'/api/dnsmasq/settings/del_' + grid_id + '/'
+                            'del':'/api/dnsmasq/settings/del_' + grid_id + '/',
+                            options: {
+                                triggerEditFor: getUrlHash('edit'),
+                                initialSearchPhrase: getUrlHash('search'),
+                                requestHandler: function(request) {
+                                    const selectedTags = $('#tag_select').val();
+                                    if (selectedTags && selectedTags.length > 0) {
+                                        request['tags'] = selectedTags;
+                                    }
+                                    return request;
+                                }
+                            }
                         });
                         /* insert headers when multiple grids exist on a single tab */
                         let header = $("#" + grid_id + "-header");
@@ -90,6 +101,16 @@
                         }
                     } else {
                         all_grids[grid_id].bootgrid('reload');
+
+                    }
+                    // insert tag selectpicker in all grids that use tags or interfaces, boot excluded cause two grids in same tab
+                    if (!['domain', 'boot'].includes(grid_id)) {
+                        let header = $("#" + grid_id + "-header");
+                        let $actionBar = header.find('.actionBar');
+                        if ($actionBar.length) {
+                            $('#tag_select_container').detach().insertBefore($actionBar.find('.search'));
+                            $('#tag_select_container').show();
+                        }
                     }
                 });
             }
@@ -150,12 +171,27 @@
             });
         });
 
+        // Populate tag selectpicker
+        $('#tag_select').fetch_options('/api/dnsmasq/settings/get_tag_list');
+
+        $('#tag_select').change(function () {
+            Object.keys(all_grids).forEach(function (grid_id) {
+                // boot is not excluded here, as it reloads in same tab as options
+                if (!['domain'].includes(grid_id)) {
+                    all_grids[grid_id].bootgrid('reload');
+                }
+            });
+        });
+
     });
 </script>
 
 <style>
     tbody.collapsible > tr > td:first-child {
         padding-left: 30px;
+    }
+    #tag_select_container {
+        margin-right: 20px;
     }
 </style>
 
@@ -170,6 +206,11 @@
         class="btn btn-xs"
     ><span class="fa fa-fw fa-upload"></span></button>
     <button id="download_hosts" type="button" title="{{ lang._('Export as csv') }}" data-toggle="tooltip"  class="btn btn-xs"><span class="fa fa-fw fa-table"></span></button>
+</div>
+
+<div id="tag_select_container" class="btn-group" style="display: none;">
+    <select id="tag_select" class="selectpicker" multiple data-title="{{ lang._('Tags & Interfaces') }}" data-show-subtext="true" data-live-search="true" data-size="15" data-width="200px" data-container="body">
+    </select>
 </div>
 
 <!-- Navigation bar -->
