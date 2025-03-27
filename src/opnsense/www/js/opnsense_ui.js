@@ -672,7 +672,8 @@ $.fn.fetch_options = function(url, params, data_callback, store_data) {
                             $('<option>', {
                                 value: item.value,
                                 text: item.label,
-                                'data-subtext': group.label
+                                'data-subtext': group.label,
+                                selected: item.selected ? 'selected' : undefined
                             })
                         );
                     }

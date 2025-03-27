@@ -500,38 +500,8 @@
         });
 
         // Populate interface selectpicker
+        $('#interface_select').fetch_options('/api/firewall/filter/get_interface_list');
         $("#interface_select_container").show();
-        ajaxCall('/api/firewall/filter/get_interface_list', {},
-            function(data, status) {
-                const $select = $('#interface_select');
-                $select.empty();
-                for (const [groupkey, group] of Object.entries(data)) {
-                    if (group.items.length > 0) {
-                        let $optgroup = $('<optgroup>', {
-                                "label": `${group.label}`,
-                                "data-icon": `${group.icon}`
-                        });
-                        group.items.forEach(function(iface) {
-                            let optprops = {
-                                value: iface.value,
-                                'data-subtext': group.label,
-                                text: iface.label
-                            };
-                            if (iface.value === '') {
-                                /* floating selected by default */
-                                optprops['selected'] = 'selected';
-                            }
-                            $optgroup.append($('<option>', optprops));
-                        });
-                        $select.append($optgroup);
-                    }
-                }
-                $select.selectpicker('refresh');
-            },
-            function(xhr, textStatus, errorThrown) {
-                console.error("Failed to load interface list:", textStatus, errorThrown);
-            }
-        );
 
         // move selectpickers into action bar
         $("#interface_select_container").detach().insertBefore('#{{formGridFilterRule["table_id"]}}-header > .row > .actionBar > .search');
