@@ -66,6 +66,7 @@
             del:'/api/firewall/filter/del_rule/',
             toggle:'/api/firewall/filter/toggle_rule/',
             options: {
+                resizableColumns: true,
                 triggerEditFor: getUrlHash('edit'),
                 initialSearchPhrase: getUrlHash('search'),
                 rowCount: [20,50,100,200,500,1000],

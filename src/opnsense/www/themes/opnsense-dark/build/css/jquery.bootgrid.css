@@ -73,7 +73,8 @@
   cursor: not-allowed;
 }
 .bootgrid-table {
-  table-layout: fixed;
+  table-layout: auto;
+  border-collapse: separate;
 }
 .bootgrid-table a {
   outline: 0;
@@ -162,4 +163,34 @@
   -o-text-overflow: inherit !important;
   text-overflow: inherit !important;
   white-space: inherit !important;
+}
+.bootgrid-rc-container {
+    position: relative;
+    overflow: none;
+}
+.bootgrid-rc-handle {
+    position: absolute;
+    width: 7px;
+    cursor: ew-resize;
+    margin-left: -3px;
+    z-index: 2;
+}
+table.bootgrid-rc-resizing {
+    cursor: ew-resize;
+}
+.bootgrid-rc-handle::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    transform: translateX(-50%);
+}
+.highlight,
+.highlight-move {
+    border-right: 1px solid rgba(128, 128, 128, 1);
+}
+.no-hover * {
+    pointer-events: none;
 }
