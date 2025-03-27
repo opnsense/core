@@ -353,5 +353,4 @@ class SettingsController extends ApiMutableModelControllerBase
         // Assemble result
         return $result;
     }
-
 }
