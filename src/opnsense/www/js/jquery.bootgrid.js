@@ -1053,17 +1053,15 @@ function sortRows()
 // ====================
 
 function initializeResizableColumns() {
-    let that = this;
-
     if (!this.options.resizableColumns) {
         return;
     }
 
-    resetHandleOverlay.call(that);
+    resetHandleOverlay.call(this);
 
-    syncHandlePositions.call(that);
+    syncHandlePositions.call(this);
 
-    bindEvents($(window), ['resize'], null, syncHandlePositions.bind(that));
+    bindEvents($(window), ['resize'], null, syncHandlePositions.bind(this));
 }
 
 function resetHandleOverlay() {
