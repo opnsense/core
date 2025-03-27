@@ -343,7 +343,7 @@ class FilterController extends FilterBaseController
                     [
                         'value' => '',
                         'label' => gettext('Any'),
-                        'selected' => true
+                        'selected' => true,
                     ]
                 ]
             ],
