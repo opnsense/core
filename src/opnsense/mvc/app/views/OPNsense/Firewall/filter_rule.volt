@@ -474,7 +474,6 @@
             $('[data-toggle="tooltip"]').tooltip();
         });
 
-
         /* for performance reasons, only load catagories on page load */
         ajaxCall('/api/firewall/filter/list_categories', {}, function (data) {
             if (!data.rows) return;
