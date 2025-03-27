@@ -82,8 +82,18 @@
             <ip type="NetworkField">
                 <Required>Y</Required>
                 <NetMaskAllowed>N</NetMaskAllowed>
+                <FieldSeparator>,</FieldSeparator>
+                <AsList>Y</AsList>
             </ip>
-            <hwaddr type="MacAddressField"/>
+            <client_id type="TextField"/>
+            <hwaddr type="MacAddressField">
+                <FieldSeparator>,</FieldSeparator>
+                <AsList>Y</AsList>
+            </hwaddr>
+            <lease_time type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+            </lease_time>
+            <ignore type="BooleanField"/>
             <set_tag type="ModelRelationField">
                 <Model>
                     <tag>

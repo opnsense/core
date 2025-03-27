@@ -60,14 +60,6 @@ class Dnsmasq extends BaseModel
                 continue;
             }
             $key = $host->__reference;
-            if (!$host->hwaddr->isEmpty() && strpos($host->ip->getCurrentValue(), ':') !== false) {
-                $messages->appendMessage(
-                    new Message(
-                        gettext("Only IPv4 reservations are currently supported"),
-                        $key . ".ip"
-                    )
-                );
-            }
 
             if ($host->host->isEmpty() && $host->hwaddr->isEmpty()) {
                 $messages->appendMessage(
