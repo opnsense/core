@@ -84,6 +84,7 @@ function init()
     renderTableHeader.call(this);
     renderSearchField.call(this);
     renderActions.call(this);
+    initializeResizableColumns.call(this);
     loadData.call(this);
 
     this.element.trigger("initialized" + namespace);
@@ -140,9 +141,11 @@ function loadColumns()
                 setStaged: false,
                 unsetStaged: false,
                 width: ($.isNumeric(data.width)) ? data.width + "px" :
-                    (typeof(data.width) === "string") ? data.width : null
+                    (typeof(data.width) === "string") ? data.width : null,
+                calculatedWidth: null
             };
         that.columns.push(column);
+        that.columnMap.set(column.id, column);
         if (column.order != null)
         {
             that.sortDictionary[column.id] = column.order;
@@ -205,9 +208,15 @@ function update(rows, total)
     if (shouldRenderHeader) {
         /* multiple columns have been set/unset prior to this reload */
         renderTableHeader.call(that);
+        resetHandleOverlay.call(that);
     }
 
     renderRows.call(that, rows);
+
+    window.setTimeout(function () {
+        syncHandlePositions.call(that);
+    }, 10);
+
     renderInfos.call(that);
     renderPagination.call(that);
 
@@ -272,7 +281,6 @@ function loadData(soft=false)
                 that.current = response.current;
                 that.cachedResponse = response;
                 update.call(that, response.rows, response.total);
-                this.noResultsRendered = false;
             },
             error: function (jqXHR, textStatus, errorThrown)
             {
@@ -414,6 +422,7 @@ function renderActions()
                     e.stopPropagation();
                     Object.keys(localStorage)
                         .filter(key =>
+                            key.startsWith(`columnSizes[${that.uid}`) ||
                             key.startsWith(`visibleColumns[${that.uid}`) ||
                             key.startsWith(`rowCount[${that.uid}`) ||
                             key.startsWith(`sortColumns[${that.uid}`)
@@ -458,12 +467,12 @@ function renderColumnSelection(actions)
                             if (!checkbox.prop("disabled"))
                             {
                                 column.visible = localStorage.getItem('visibleColumns[' + that.uid + '][' + column.id + ']') === 'true';
+                                column.visible ? column.setStaged = true : column.unsetStaged = true;
                                 var enable = that.columns.where(isVisible).length > 1;
                                 $this.parents(itemsSelector).find(selector + ":has(" + checkboxSelector + ":checked)")
                                     ._bgEnableAria(enable).find(checkboxSelector)._bgEnableField(enable);
 
                                 that.element.find("tbody").empty(); // Fixes an column visualization bug
-                                renderTableHeader.call(that);
                                 that.columnSelectForceReload ? loadData.call(that)
                                                              : update.call(that, that.cachedResponse.rows, that.cachedResponse.total);
                             }
@@ -1038,7 +1047,304 @@ function sortRows()
             this.rows.sort(sort);
         }
     }
+}
+
+// RESIZABLE COLUMN INTERNAL FUNCTIONS
+// ====================
+
+function initializeResizableColumns() {
+    let that = this;
+
+    if (!this.options.resizableColumns) {
+        return;
     }
+
+    resetHandleOverlay.call(that);
+
+    syncHandlePositions.call(that);
+
+    bindEvents($(window), ['resize'], null, syncHandlePositions.bind(that));
+}
+
+function resetHandleOverlay() {
+    let that = this;
+
+    if (!this.options.resizableColumns) {
+        return;
+    }
+
+    if (!this.columns.length) {
+        return;
+    }
+
+    this.$tableHeaders = this.element.find(`tr:first > th:visible${this.options.rowSelect ? ':gt(0)' : ''}`);
+
+    // annotate initial column width
+    this.$tableHeaders.each(function (i, el) {
+        let $el = $(el);
+        let col = that.columnMap.get($el.data('column-id'));
+        let pxWidth = 0;
+
+        if (!col || col.width == null) {
+            pxWidth = $el.outerWidth();
+        } else {
+            pxWidth = toPixels(col.width);
+            $el.data('minWidth', pxWidth);
+        }
+
+        if (col) {
+            let stored = localStorage.getItem(`columnSizes[${that.uid}][${col.id}]`);
+            if (stored != null) {
+                setWidth.call(that, el, parseFloat(stored));
+            } else if (col.calculatedWidth != null) {
+                setWidth.call(that, el, col.calculatedWidth);
+            } else {
+                setWidth.call(that, el, pxWidth);
+            }
+        }
+    });
+
+    // setup handle container overlay
+    if (this.$resizableHandleContainer != null) {
+        this.$resizableHandleContainer.remove();
+    }
+
+    this.$resizableHandleContainer = $(`<div class="bootgrid-rc-container"/>`);
+    this.element.before(this.$resizableHandleContainer);
+
+    this.$tableHeaders.each(function (i, el) {
+        let $current = that.$tableHeaders.eq(i);
+        let $next = that.$tableHeaders.eq(i + 1);
+
+        if ($next.length === 0 || $current.is('[data-noresize]') || $next.is('[data-noresize]')) {
+            return;
+        }
+
+        $(`<div class="bootgrid-rc-handle"/>`).data('th', $(el)).data('id', $(el).data('column-id'))
+            .hover(
+                function() {
+                    $(el).addClass('highlight');
+                    that.element.find('tr').map(function() {
+                        $(this).find('td').eq($(el).index()).addClass('highlight');
+                    });
+                },
+                function() {
+                    $(el).removeClass('highlight');
+                    that.element.find('tr').map(function() {
+                        $(this).find('td').eq($(el).index()).removeClass('highlight');
+                    });
+                }
+            )
+            .appendTo(that.$resizableHandleContainer);
+    });
+
+    bindEvents(
+        this.$resizableHandleContainer,
+        ['mousedown', 'touchstart'],
+        '.bootgrid-rc-handle',
+        onMouseDown.bind(this)
+    );
+}
+
+function syncHandlePositions() {
+    let that = this;
+
+    if (!this.options.resizableColumns) {
+        return;
+    }
+
+    // sync handle container to table width
+    this.$resizableHandleContainer.width(this.element.width());
+
+    // sync individual handles
+    this.$resizableHandleContainer.find('.bootgrid-rc-handle').each(function (i, el) {
+        let $el = $(el);
+        let $originalHeader = $el.data('th');
+
+        var left = $originalHeader.outerWidth() + ($originalHeader.offset().left - that.$resizableHandleContainer.offset().left);
+        $el.css({ left: left, height: that.element.find('thead').height() })
+    });
+}
+
+function onMouseDown(event) {
+    let $currentHandle = $(event.currentTarget);
+    let idx = $currentHandle.index();
+    let $leftCol = this.$tableHeaders.eq(idx).not('[data-noresize]');
+    let leftCol = this.columnMap.get($leftCol.data('column-id'));
+    let $rightCol = this.$tableHeaders.eq(idx + 1).not('[data-noresize]');
+    let rightCol = this.columnMap.get($rightCol.data('column-id'));
+    let leftColWidth = leftCol.calculatedWidth;
+    let rightColWidth = rightCol.calculatedWidth;
+
+    if ($currentHandle.is('[data-noresize]')) {
+        return;
+    }
+
+    if (this.resizeOp) {
+        onMouseUp.call(this, event);
+    }
+
+    // start operation
+    this.resizeOp = {
+        $leftCol: $leftCol,
+        $rightCol: $rightCol,
+        $currentHandle, $currentHandle,
+
+        startX: getPointerX(event),
+
+        widths: {
+            left: leftColWidth,
+            right: rightColWidth
+        },
+        newWidths: {
+            left: leftColWidth,
+            right: rightColWidth
+        }
+    }
+
+    bindEvents(
+        $(this.element[0].ownerDocument),
+        ['mousemove', 'touchmove'],
+        null,
+        onMouseMove.bind(this)
+    );
+
+    bindEvents(
+        $(this.element[0].ownerDocument),
+        ['mouseup', 'touchend'],
+        null,
+        onMouseUp.bind(this)
+    );
+
+    this.$resizableHandleContainer.add(this.element).addClass('bootgrid-rc-resizing');
+    $leftCol.add($rightCol).addClass('bootgrid-rc-resizing');
+
+    $leftCol.addClass('highlight-move');
+    this.element.find('tr').map(function() {
+        let i = $currentHandle.data('th').index();
+        $(this).find('td').eq(i).addClass('highlight-move');
+    });
+
+    // prevent global hover effects when resizing
+    $('body').addClass('no-hover');
+    event.preventDefault();
+}
+
+function onMouseMove(event) {
+    let op = this.resizeOp
+    if (!this.resizeOp) {
+        return;
+    }
+
+    let diff = (getPointerX(event) - op.startX)
+    if (diff === 0) {
+        return;
+    }
+
+    let leftCol = op.$leftCol[0];
+    let rightCol = op.$rightCol[0];
+    let widthLeft = undefined;
+    let widthRight = undefined;
+
+    if (diff > 0) {
+        widthLeft = constrainWidth.call(this, op.widths.left + (op.widths.right - op.newWidths.right), op.$leftCol);
+        widthRight = constrainWidth.call(this, op.widths.right - diff, op.$rightCol);
+    } else if (diff < 0) {
+        widthLeft = constrainWidth.call(this, op.widths.left + diff, op.$leftCol);
+        widthRight = constrainWidth.call(this, op.widths.right + (op.widths.left - op.newWidths.left), op.$rightCol);
+    }
+
+    if (leftCol && widthRight >= 0) {
+        setWidth.call(this, leftCol, widthLeft);
+    }
+    if (rightCol && widthLeft >= 0) {
+        setWidth.call(this, rightCol, widthRight);
+    }
+
+    op.newWidths.left = widthLeft;
+    op.newWidths.right = widthRight;
+}
+
+function onMouseUp(event) {
+    let that = this;
+    let idx = this.resizeOp.$currentHandle.index();
+
+    if (!this.resizeOp) {
+        return;
+    }
+
+    unbindEvents($(this.element[0].ownerDocument), ['mouseup', 'touchend', 'mousemove', 'touchmove']);
+
+    this.$resizableHandleContainer.add(this.element).removeClass('bootgrid-rc-resizing');
+
+    this.resizeOp.$leftCol.add(this.resizeOp.$rightCol).add(this.resizeOp.$currentHandle).removeClass('bootgrid-rc-resizing');
+
+    this.resizeOp.$leftCol.removeClass('highlight-move');
+    this.element.find('tr').map(function() {
+        let i = that.resizeOp.$currentHandle.data('th').index();
+        $(this).find('td').eq(i).removeClass('highlight-move');
+    });
+    $('body').removeClass('no-hover');
+
+    this.columns.where(isVisible).forEach(function(col) {
+        localStorage.setItem(`columnSizes[${that.uid}][${col.id}]`, col.calculatedWidth);
+    })
+
+    syncHandlePositions.call(this);
+
+    this.resizeOp = null;
+}
+
+function bindEvents($target, events, data, callback) {
+    events = events.join(namespace + ' ') + namespace;
+    $target.on(events, data, callback);
+}
+
+function unbindEvents($target, events) {
+    events = events.join(namespace + ' ') + namespace;
+    $target.off(events);
+}
+
+function getPointerX(event) {
+    if (event.type.indexOf('touch') === 0) {
+        return (event.originalEvent.touches[0] || event.originalEvent.changedTouches[0]).pageX;
+    }
+    return event.pageX;
+}
+
+function constrainWidth(width, $el) {
+    let options = this.options.resizableColumnSettings;
+    let min = $el.data('minWidth');
+
+    if (options.minWidth != undefined) {
+        width = Math.max(options.minWidth, width);
+    }
+
+    if (min != undefined) {
+        width = Math.max(min, width);
+    }
+
+    if (options.maxWidth != undefined) {
+        width = Math.min(options.maxWidth, width);
+    }
+    return width;
+}
+
+function setWidth(element, width) {
+    let col = this.columnMap.get($(element).data('column-id'));
+    width = width > 0 ? width : 0;
+    element.style.width = width + 'px';
+    col.calculatedWidth = width;
+}
+
+function toPixels(value) {
+    const tempElement = document.createElement("div");
+    tempElement.style.width = value;
+    document.body.appendChild(tempElement);
+    const pixels = window.getComputedStyle(tempElement).width;
+    document.body.removeChild(tempElement);
+    return parseFloat(pixels);
+}
 
 // GRID PUBLIC CLASS DEFINITION
 // ====================
@@ -1060,6 +1366,7 @@ var Grid = function(element, options)
     // overrides rowCount explicitly because deep copy ($.extend) leads to strange behaviour
     var rowCount = this.options.rowCount = this.element.data().rowCount || options.rowCount || this.options.rowCount;
     this.columns = [];
+    this.columnMap = new Map();
     this.current = 1;
     this.currentRows = [];
     this.identifier = null; // The first column ID that is marked as identifier
@@ -1087,6 +1394,10 @@ var Grid = function(element, options)
     this.footer = null;
     this.xqr = null;
     this.uid = window.location.pathname + "#" + this.element.attr('id');
+
+    this.$tableHeaders = [];
+    this.$resizableHandleContainer = null;
+    this.resizeOp = null;
 
     // todo: implement cache
 };
@@ -1223,6 +1534,13 @@ Grid.defaults = {
          * @for ajaxSettings
          **/
         method: "POST"
+    },
+
+    resizableColumns: false,
+
+    resizableColumnSettings: {
+        minWidth: 50,
+        maxWidth: null
     },
 
     /**
@@ -1517,7 +1835,7 @@ Grid.defaults = {
         actionDropDownCheckboxItem: "<li><label class=\"{{css.dropDownItem}}\"><input id=\"{{ctx.id}}\" name=\"{{ctx.name}}\" type=\"checkbox\" value=\"1\" class=\"{{css.dropDownItemCheckbox}}\" {{ctx.checked}} /> {{ctx.label}}</label></li>",
         actions: "<div class=\"{{css.actions}}\"></div>",
         body: "<tbody></tbody>",
-        cell: "<td class=\"{{ctx.css}}\" style=\"{{ctx.style}}\">{{ctx.content}}</td>",
+        cell: "<td class=\"bootgrid-rc-column {{ctx.css}}\" style=\"{{ctx.style}}\">{{ctx.content}}</td>",
         footer: "<div id=\"{{ctx.id}}\" class=\"{{css.footer}}\"><div class=\"row\"><div class=\"col-sm-6\"><p class=\"{{css.pagination}}\"></p></div><div class=\"col-sm-6 infoBar\"><p class=\"{{css.infos}}\"></p></div></div></div>",
         header: "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><p class=\"{{css.search}}\"></p><p class=\"{{css.actions}}\"></p></div></div></div>",
         headerCell: "<th data-column-id=\"{{ctx.column.id}}\" class=\"{{ctx.css}}\" style=\"{{ctx.style}}\"><a href=\"javascript:void(0);\" class=\"{{css.columnHeaderAnchor}} {{ctx.sortable}}\"><span class=\"{{css.columnHeaderText}}\">{{ctx.column.headerText}}</span>{{ctx.icon}}</a></th>",

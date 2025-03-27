@@ -66,6 +66,7 @@
             del:'/api/firewall/filter/del_rule/',
             toggle:'/api/firewall/filter/toggle_rule/',
             options: {
+                resizableColumns: true,
                 triggerEditFor: getUrlHash('edit'),
                 initialSearchPhrase: getUrlHash('search'),
                 rowCount: [20,50,100,200,500,1000],
@@ -472,6 +473,7 @@
         grid.on("loaded.rs.jquery.bootgrid", function() {
             $('[data-toggle="tooltip"]').tooltip();
         });
+
 
         /* for performance reasons, only load catagories on page load */
         ajaxCall('/api/firewall/filter/list_categories', {}, function (data) {
