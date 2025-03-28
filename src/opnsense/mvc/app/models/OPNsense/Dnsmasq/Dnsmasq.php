@@ -61,14 +61,22 @@ class Dnsmasq extends BaseModel
             }
             $key = $host->__reference;
 
-            if ($host->host->isEmpty() && $host->hwaddr->isEmpty()) {
+            if (
+                $host->host->isEmpty() &&
+                $host->hwaddr->isEmpty() &&
+                $host->client_id->isEmpty()
+            ) {
                 $messages->appendMessage(
                     new Message(
-                        gettext("Hostnames my only be omitted when a hardware address is offered."),
+                        gettext(
+                            "Hostnames may only be omitted when either a hardware address " .
+                            "or a client identifier is provided."
+                        ),
                         $key . ".host"
                     )
                 );
             }
+
         }
 
         foreach ($this->dhcp_ranges->iterateItems() as $range) {
