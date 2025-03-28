@@ -181,9 +181,7 @@ function _dnsmasq_add_host_entries()
 
     foreach ($dnsmasqcfg['hosts'] as $host) {
         /* The host.ip field supports multiple IPv4 and IPv6 addresses */
-        $ipList = explode(',', $host['ip']);
-        foreach ($ipList as $ip) {
-            $ip = trim($ip);
+        foreach (explode(',', $host['ip']) as $ip) {
             if (!empty($host['host']) && empty($host['domain'])) {
                 $lhosts .= "{$ip}\t{$host['host']}\n";
             } elseif (!empty($host['host'])) {
