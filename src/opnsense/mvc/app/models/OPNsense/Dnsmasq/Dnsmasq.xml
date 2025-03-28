@@ -82,8 +82,21 @@
             <ip type="NetworkField">
                 <Required>Y</Required>
                 <NetMaskAllowed>N</NetMaskAllowed>
+                <FieldSeparator>,</FieldSeparator>
+                <AsList>Y</AsList>
             </ip>
-            <hwaddr type="MacAddressField"/>
+            <client_id type="TextField">
+                <Mask>/^(?:\*|(?:[0-9A-Fa-f]{2}(?::[0-9A-Fa-f]{2})+))$/</Mask>
+                <ValidationMessage>Value must be a colon-separated hexadecimal sequence (e.g., 01:02:f3) or "*".</ValidationMessage>
+            </client_id>
+            <hwaddr type="MacAddressField">
+                <FieldSeparator>,</FieldSeparator>
+                <AsList>Y</AsList>
+            </hwaddr>
+            <lease_time type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+            </lease_time>
+            <ignore type="BooleanField"/>
             <set_tag type="ModelRelationField">
                 <Model>
                     <tag>

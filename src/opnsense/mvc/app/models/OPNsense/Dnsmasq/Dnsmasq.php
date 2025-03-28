@@ -55,24 +55,46 @@ class Dnsmasq extends BaseModel
 
         $messages = parent::performValidation($validateFullModel);
 
+        $usedDhcpIpAddresses = [];
+        foreach ($this->hosts->iterateItems() as $host) {
+            if (!$host->hwaddr->isEmpty() || !$host->client_id->isEmpty()) {
+                foreach (explode(',', (string)$host->ip) as $ip) {
+                    $usedDhcpIpAddresses[$ip] = isset($usedDhcpIpAddresses[$ip]) ? $usedDhcpIpAddresses[$ip] + 1 : 1;
+                }
+            }
+        }
+
         foreach ($this->hosts->iterateItems() as $host) {
             if (!$validateFullModel && !$host->isFieldChanged()) {
                 continue;
             }
             $key = $host->__reference;
-            if (!$host->hwaddr->isEmpty() && strpos($host->ip->getCurrentValue(), ':') !== false) {
-                $messages->appendMessage(
-                    new Message(
-                        gettext("Only IPv4 reservations are currently supported"),
-                        $key . ".ip"
-                    )
-                );
+
+            // all dhcp-host IP addresses must be unique, host overrides can have duplicate IP addresses
+            if (!$host->hwaddr->isEmpty() || !$host->client_id->isEmpty()) {
+                foreach (explode(',', (string)$host->ip) as $ip) {
+                    if ($usedDhcpIpAddresses[$ip] > 1) {
+                        $messages->appendMessage(
+                            new Message(
+                                sprintf(gettext("'%s' is already used in another DHCP host entry."), $ip),
+                                $key . ".ip"
+                            )
+                        );
+                    }
+                }
             }
 
-            if ($host->host->isEmpty() && $host->hwaddr->isEmpty()) {
+            if (
+                $host->host->isEmpty() &&
+                $host->hwaddr->isEmpty() &&
+                $host->client_id->isEmpty()
+            ) {
                 $messages->appendMessage(
                     new Message(
-                        gettext("Hostnames my only be omitted when a hardware address is offered."),
+                        gettext(
+                            "Hostnames may only be omitted when either a hardware address " .
+                            "or a client identifier is provided."
+                        ),
                         $key . ".host"
                     )
                 );
