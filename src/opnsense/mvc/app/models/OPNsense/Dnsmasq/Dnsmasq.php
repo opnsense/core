@@ -55,11 +55,30 @@ class Dnsmasq extends BaseModel
 
         $messages = parent::performValidation($validateFullModel);
 
+        $usedDhcpIpAddresses = [];
+
         foreach ($this->hosts->iterateItems() as $host) {
+            $key = $host->__reference;
+
+            // all dhcp-host IP addresses must be unique, host overrides can have duplicate IP addresses
+            if (!$host->hwaddr->isEmpty() || !$host->client_id->isEmpty()) {
+                foreach (explode(',', (string)$host->ip) as $ip) {
+                    if (isset($usedDhcpIpAddresses[$ip])) {
+                        $messages->appendMessage(
+                            new Message(
+                                sprintf(gettext("'%s' is already used in another DHCP host entry."), $ip),
+                                $key . ".ip"
+                            )
+                        );
+                    } else {
+                        $usedDhcpIpAddresses[$ip] = true;
+                    }
+                }
+            }
+
             if (!$validateFullModel && !$host->isFieldChanged()) {
                 continue;
             }
-            $key = $host->__reference;
 
             if (
                 $host->host->isEmpty() &&
