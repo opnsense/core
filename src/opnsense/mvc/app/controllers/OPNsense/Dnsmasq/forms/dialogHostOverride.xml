@@ -49,7 +49,7 @@
     </field>
     <field>
         <id>host.hwaddr</id>
-        <label>Hardware address</label>
+        <label>Hardware addresses</label>
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
