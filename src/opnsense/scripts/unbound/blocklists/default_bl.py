@@ -50,7 +50,7 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
     def get_blocklist(self):
         result = {}
         for blocklist, bl_shortcode in self._blocklists_in_config():
-            per_file_stats = {'uri': blocklist, 'skip': 0, 'blocklist': 0, 'wildcard': 0}
+            per_file_stats = {'uri': blocklist, 'blocklist': 0, 'wildcard': 0}
             for domain in self._domains_in_blocklist(blocklist):
                 if self.domain_pattern.match(domain):
                     per_file_stats['blocklist'] += 1
@@ -66,11 +66,9 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
                             per_file_stats['wildcard'] += 1
                         else:
                             result[domain] = {'bl': bl_shortcode, 'wildcard': False}
-                else:
-                    per_file_stats['skip'] += 1
             syslog.syslog(
                 syslog.LOG_NOTICE,
-                'blocklist: %(uri)s (exclude: %(skip)d block: %(blocklist)d wildcard: %(wildcard)d)' % per_file_stats
+                'blocklist: %(uri)s (block: %(blocklist)d wildcard: %(wildcard)d)' % per_file_stats
             )
 
         if self.cnf and self.cnf.has_section('include'):
