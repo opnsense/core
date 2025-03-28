@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2023 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2025 Franco Fichtner <franco@opnsense.org>
  * Copyright (c) 2015-2018 Deciso B.V.
  * All rights reserved.
  *
@@ -493,23 +493,43 @@ class FirmwareController extends ApiMutableModelControllerBase
     }
 
     /**
+     * run an audit in the backend
+     * @return array status
+     * @throws \Exception
+     */
+    private function auditHelper(string $audit): array
+    {
+        $backend = new Backend();
+        $response = [];
+
+        if ($this->request->isPost()) {
+            $response['status'] = 'ok';
+            $response['msg_uuid'] = trim($backend->configdRun("firmware $audit", true));
+        } else {
+            $response['status'] = 'failure';
+        }
+
+        return $response;
+    }
+
+    /**
+     * run a cleanup task
+     * @return array status
+     * @throws \Exception
+     */
+    public function cleanupAction()
+    {
+        return $this->auditHelper('cleanup');
+    }
+
+    /**
      * run a connection check
      * @return array status
      * @throws \Exception
      */
     public function connectionAction()
     {
-        $backend = new Backend();
-        $response = array();
-
-        if ($this->request->isPost()) {
-            $response['status'] = 'ok';
-            $response['msg_uuid'] = trim($backend->configdRun("firmware connection", true));
-        } else {
-            $response['status'] = 'failure';
-        }
-
-        return $response;
+        return $this->auditHelper('connection');
     }
 
     /**
@@ -519,17 +539,7 @@ class FirmwareController extends ApiMutableModelControllerBase
      */
     public function healthAction()
     {
-        $backend = new Backend();
-        $response = array();
-
-        if ($this->request->isPost()) {
-            $response['status'] = 'ok';
-            $response['msg_uuid'] = trim($backend->configdRun("firmware health", true));
-        } else {
-            $response['status'] = 'failure';
-        }
-
-        return $response;
+        return $this->auditHelper('health');
     }
 
     /*
@@ -539,18 +549,11 @@ class FirmwareController extends ApiMutableModelControllerBase
      */
     public function auditAction()
     {
-        $backend = new Backend();
-        $response = array();
-
         if ($this->request->isPost()) {
             $this->getLogger('audit')->notice(sprintf("[Firmware] User %s executed a security audit", $this->getUserName()));
-            $response['status'] = 'ok';
-            $response['msg_uuid'] = trim($backend->configdRun("firmware audit", true));
-        } else {
-            $response['status'] = 'failure';
         }
 
-        return $response;
+        return $this->auditHelper('audit');
     }
 
     /**

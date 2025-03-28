@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2015-2023 Franco Fichtner <franco@opnsense.org>
+ # Copyright (c) 2015-2025 Franco Fichtner <franco@opnsense.org>
  # Copyright (c) 2015-2018 Deciso B.V.
  # All rights reserved.
  #
@@ -619,9 +619,10 @@
         $("#plugin_see").click(function () { $('#plugintab > a').tab('show'); });
         $("#plugin_get").click(function () { backend('syncPlugins'); });
         $("#plugin_set").click(function () { backend('resyncPlugins'); });
-        $('#audit_security').click(function () { backend('audit'); });
+        $('#audit_cleanup').click(function () { backend('cleanup'); });
         $('#audit_connection').click(function () { backend('connection'); });
         $('#audit_health').click(function () { backend('health'); });
+        $('#audit_security').click(function () { backend('audit'); });
         $('#audit_upgrade').click(function () {
             ajaxCall('/api/core/firmware/log/0', {}, function (data, status) {
                 if (data['log'] != undefined) {
@@ -904,6 +905,7 @@
                                             <i class="fa fa-lock"></i> {{ lang._('Run an audit') }} <i class="caret"></i>
                                         </button>
                                         <ul class="dropdown-menu" role="menu">
+                                            <li><a id="audit_cleanup" href="#">{{ lang._('Cleanup') }}</a></li>
                                             <li><a id="audit_connection" href="#">{{ lang._('Connectivity') }}</a></li>
                                             <li><a id="audit_health" href="#">{{ lang._('Health') }}</a></li>
                                             <li><a id="audit_security" href="#">{{ lang._('Security') }}</a></li>
