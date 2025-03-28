@@ -85,7 +85,10 @@
                 <FieldSeparator>,</FieldSeparator>
                 <AsList>Y</AsList>
             </ip>
-            <client_id type="TextField"/>
+            <client_id type="TextField">
+                <Mask>/^(?:\*|(?:[0-9A-Fa-f]{2}(?::[0-9A-Fa-f]{2})+))$/</Mask>
+                <ValidationMessage>Value must be a colon-separated hexadecimal sequence (e.g., 01:02:f3) or "*".</ValidationMessage>
+            </client_id>
             <hwaddr type="MacAddressField">
                 <FieldSeparator>,</FieldSeparator>
                 <AsList>Y</AsList>
