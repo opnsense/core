@@ -95,7 +95,6 @@ class Dnsmasq extends BaseModel
                     )
                 );
             }
-
         }
 
         foreach ($this->dhcp_ranges->iterateItems() as $range) {
