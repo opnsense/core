@@ -35,7 +35,7 @@
         </local_ttl>
         <add_mac type="OptionField">
             <OptionValues>
-                <default>default</default>
+                <standard>standard</standard>
                 <base64>base64</base64>
                 <text>text</text>
             </OptionValues>
