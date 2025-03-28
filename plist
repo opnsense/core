@@ -1095,6 +1095,7 @@
 /usr/local/opnsense/scripts/firmware/bogons.sh
 /usr/local/opnsense/scripts/firmware/changelog.sh
 /usr/local/opnsense/scripts/firmware/check.sh
+/usr/local/opnsense/scripts/firmware/cleanup.sh
 /usr/local/opnsense/scripts/firmware/config.sh
 /usr/local/opnsense/scripts/firmware/connection.sh
 /usr/local/opnsense/scripts/firmware/details.sh
