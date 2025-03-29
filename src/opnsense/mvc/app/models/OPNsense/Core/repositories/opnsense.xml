@@ -17,10 +17,6 @@
             <description>Deciso (HTTPS, NL, Commercial)</description>
         </mirror>
         <mirror>
-            <url>https://mirror.dns-root.de/opnsense</url>
-            <description>dns-root.de (HTTPS, Cloudflare CDN)</description>
-        </mirror>
-        <mirror>
             <url>https://opnsense.c0urier.net</url>
             <description>c0urier.net (HTTPS, Horsens, DK)</description>
         </mirror>
