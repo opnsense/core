@@ -148,7 +148,7 @@ if __name__ == '__main__':
                 elif len(line) > 1 and line[0] == '}' and len(cur_lease) > 0:
                     cur_lease.append(line)
                     parsed_lease = parse_lease(cur_lease)
-                    last_leases[parsed_lease['iaid_duid']] = parsed_lease
+                    last_leases[parsed_lease['lease_type'], parsed_lease['iaid_duid']] = parsed_lease
                     cur_lease = []
                 elif len(cur_lease) > 0:
                     cur_lease.append(line)
