@@ -43,7 +43,7 @@
                         let refid = $(this).data("row-id") !== undefined ? $(this).data("row-id") : '';
                         ajaxGet('/api/auth/user/get/' + refid, {}, function(data){
                             if (data.user) {
-                                window.location ='/ui/trust/cert/#user=' + data.user.name ;
+                                window.location ='/ui/trust/cert#user=' + data.user.name ;
                             }
                         });
                     },
