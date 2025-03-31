@@ -48,7 +48,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
      */
     public function supportedOptions()
     {
-        return array("plain_config", "random_local_port", "auth_nocache", "cryptoapi");
+        return ["plain_config", "random_local_port", "auth_nocache", "cryptoapi", "static_challenge"];
     }
 
     /**
@@ -141,6 +141,10 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
             if (!empty($this->config['auth_nocache'])) {
                 $conf[] = "auth-nocache";
             }
+        }
+
+        if (!empty($this->config['static_challenge'])) {
+            $conf[] = sprintf('static-challenge "%s" 1', addslashes(gettext('Enter OTP token:')));
         }
 
         if (!empty($this->config['compression'])) {
