@@ -130,7 +130,7 @@
      * perform backend action and install poller to update status
      */
     function backend(type) {
-        $.upgrade_check = type == 'check'
+        $.upgrade_check = type == 'check';
 
         $('#update_status').html('');
         $('#updatelist').hide();
@@ -647,7 +647,13 @@
                 backend('audit');
             } else if (window.location.hash == '#checkupdate') {
                 // dashboard link: run check automatically after delay
-                setTimeout(function () { backend('check'); }, 2000);
+                setTimeout(function () {
+                    ajaxGet('/api/core/firmware/running', {}, function(data, status) {
+                        if (data['status'] != 'busy') {
+                            backend('check');
+                        }
+                    });
+                }, 2000);
             }
         });
 
