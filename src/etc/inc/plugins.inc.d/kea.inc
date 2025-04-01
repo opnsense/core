@@ -115,7 +115,10 @@ function kea_configure_do($verbose = false)
     $keaDhcpv4 = new \OPNsense\Kea\KeaDhcpv4();
     if ($keaDhcpv4->isEnabled()) {
         service_log('Sync KEA DHCP config...', $verbose);
-        $keaDhcpv4->generateConfig();
+        if ($keaDhcpv4->general->manual_config->isEmpty()) {
+            /* skip kea-dhcp4.conf when configured manually */
+            $keaDhcpv4->generateConfig();
+        }
         (new \OPNsense\Kea\KeaCtrlAgent())->generateConfig();
         service_log("done.\n", $verbose);
     }
