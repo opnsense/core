@@ -31,6 +31,7 @@ namespace OPNsense\Dnsmasq;
 use OPNsense\Base\BaseModel;
 use OPNsense\Base\Messages\Message;
 use OPNsense\Core\Backend;
+use OPNsense\Firewall\Util;
 
 /**
  * Class Dnsmasq
@@ -44,6 +45,38 @@ class Dnsmasq extends BaseModel
     protected function init()
     {
         $this->dns_port = strlen($this->port) ? (string)$this->port : '53'; /* port defaults */
+    }
+
+    /**
+     * Validates that one or multiple IPv6 addresses are wrapped with square brackets.
+     *
+     * @param object $object An object containing the properties "value" and "option6".
+     * @param MessageContainer $messages
+     * @param string $key
+     */
+    private function validateIPv6Wrapping($object, $messages, $key)
+    {
+        if (
+            !$object->value->isEmpty() &&
+            !$object->option6->isEmpty()
+        ) {
+            $values = array_map('trim', explode(',', (string)$object->value));
+            foreach ($values as $value) {
+                $address = trim($value, '[]');
+
+                if (
+                    Util::isIpv6Address($address) &&
+                    !(strpos($value, '[') === 0 && substr($value, -1) === ']')
+                ) {
+                    $messages->appendMessage(
+                        new Message(
+                            gettext("Each IPv6 address must be wrapped inside square brackets '[fe80::]'."),
+                            $key . ".value"
+                        )
+                    );
+                }
+            }
+        }
     }
 
     /**
@@ -251,21 +284,7 @@ class Dnsmasq extends BaseModel
                 );
             }
 
-            if (
-                !$option->value->isEmpty() &&
-                !$option->option6->isEmpty() &&
-                preg_match(
-                    '/::|([A-F0-9]{1,4}:){2,}/i',
-                    (string)$option->value
-                )
-            ) {
-                $messages->appendMessage(
-                    new Message(
-                        gettext("An IPv6 address must be wrapped inside square brackets '[fe80::1]'."),
-                        $key . ".value"
-                    )
-                );
-            }
+            $this->validateIPv6Wrapping($option, $messages, $key);
         }
 
         foreach ($this->dhcp_options_match->iterateItems() as $match) {
@@ -292,21 +311,7 @@ class Dnsmasq extends BaseModel
                 );
             }
 
-            if (
-                !$match->value->isEmpty() &&
-                !$match->option6->isEmpty() &&
-                preg_match(
-                    '/::|([A-F0-9]{1,4}:){2,}/i',
-                    (string)$match->value
-                )
-            ) {
-                $messages->appendMessage(
-                    new Message(
-                        gettext("An IPv6 address must be wrapped inside square brackets '[fe80::1]'."),
-                        $key . ".value"
-                    )
-                );
-            }
+            $this->validateIPv6Wrapping($match, $messages, $key);
         }
 
         if (
