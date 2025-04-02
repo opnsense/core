@@ -60,9 +60,6 @@
                 case '#dhcpoptions':
                     grid_ids = ["{{formGridDHCPoption['table_id']}}", "{{formGridDHCPboot['table_id']}}"];
                     break;
-                case '#dhcpmatches':
-                    grid_ids = ["{{formGridDHCPmatch['table_id']}}"];
-                    break;
             }
             /* grid action selected, load or refresh target grid */
             if (grid_ids !== null) {
@@ -146,9 +143,10 @@
         let selected_tab = window.location.hash != "" ? window.location.hash : "#general";
         $('a[href="' +selected_tab + '"]').click();
 
-        $("#range\\.start_addr, #range\\.ra_mode").on("keyup change", function () {
+        $("#range\\.start_addr, #range\\.ra_mode, #option\\.type").on("keyup change", function () {
             const addr = $("#range\\.start_addr").val() || "";
             const ra_mode = String($("#range\\.ra_mode").val() || "").trim();
+            const option_type = String($("#option\\.type").val() || "")
 
             const styleVisibility = [
                 {
@@ -162,12 +160,21 @@
                 {
                     class: "style_ra",
                     visible: ra_mode !== ""
-                }
+                },
+                {
+                    class: "style_set",
+                    visible: option_type == "set"
+                },
+                {
+                    class: "style_match",
+                    visible: option_type == "match"
+                },
             ];
 
             styleVisibility.forEach(style => {
                 const elements = $("." + style.class).closest("tr");
                 style.visible ? elements.show() : elements.hide();
+                console.log("option_type =", option_type);
             });
         });
 
@@ -221,7 +228,6 @@
     <li><a data-toggle="tab" href="#dhcpranges">{{ lang._('DHCP ranges') }}</a></li>
     <li><a data-toggle="tab" href="#dhcpoptions">{{ lang._('DHCP options') }}</a></li>
     <li><a data-toggle="tab" href="#dhcptags">{{ lang._('DHCP tags') }}</a></li>
-    <li><a data-toggle="tab" href="#dhcpmatches">{{ lang._('DHCP options / match') }}</a></li>
 </ul>
 
 <div class="tab-content content-box">
@@ -251,10 +257,6 @@
     <div id="dhcptags" class="tab-pane fade in">
         {{ partial('layout_partials/base_bootgrid_table', formGridDHCPtag)}}
     </div>
-    <!-- Tab: DHCP Options / Match -->
-    <div id="dhcpmatches" class="tab-pane fade in">
-        {{ partial('layout_partials/base_bootgrid_table', formGridDHCPmatch)}}
-    </div>
 </div>
 
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/dnsmasq/service/reconfigure'}) }}
@@ -264,4 +266,3 @@
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditDHCPrange,'id':formGridDHCPrange['edit_dialog_id'],'label':lang._('Edit DHCP range')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditDHCPoption,'id':formGridDHCPoption['edit_dialog_id'],'label':lang._('Edit DHCP option')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditDHCPboot,'id':formGridDHCPboot['edit_dialog_id'],'label':lang._('Edit DHCP boot')])}}
-{{ partial("layout_partials/base_dialog",['fields':formDialogEditDHCPmatch,'id':formGridDHCPmatch['edit_dialog_id'],'label':lang._('Edit DHCP match / option')])}}

@@ -256,32 +256,6 @@ class SettingsController extends ApiMutableModelControllerBase
         return $this->delBase('dhcp_options', $uuid);
     }
 
-    /* dhcp match options */
-    public function searchMatchAction()
-    {
-        return $this->searchBase('dhcp_options_match', null, null, $this->buildFilterFunction());
-    }
-
-    public function getMatchAction($uuid = null)
-    {
-        return $this->getBase('match', 'dhcp_options_match', $uuid);
-    }
-
-    public function setMatchAction($uuid)
-    {
-        return $this->setBase('match', 'dhcp_options_match', $uuid);
-    }
-
-    public function addMatchAction()
-    {
-        return $this->addBase('match', 'dhcp_options_match');
-    }
-
-    public function delMatchAction($uuid)
-    {
-        return $this->delBase('dhcp_options_match', $uuid);
-    }
-
     /* dhcp boot options */
     public function searchBootAction()
     {

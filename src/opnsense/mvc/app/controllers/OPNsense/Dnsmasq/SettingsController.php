@@ -43,8 +43,6 @@ class SettingsController extends \OPNsense\Base\IndexController
         $this->view->formGridDHCPrange = $this->getFormGrid("dialogDHCPrange", "range");
         $this->view->formDialogEditDHCPoption = $this->getForm("dialogDHCPoption");
         $this->view->formGridDHCPoption = $this->getFormGrid("dialogDHCPoption", "option");
-        $this->view->formDialogEditDHCPmatch = $this->getForm("dialogDHCPmatch");
-        $this->view->formGridDHCPmatch = $this->getFormGrid("dialogDHCPmatch", "match");
         $this->view->formDialogEditDHCPboot = $this->getForm("dialogDHCPboot");
         $this->view->formGridDHCPboot = $this->getFormGrid("dialogDHCPboot", "boot");
 

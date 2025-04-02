@@ -1,6 +1,6 @@
 <model>
     <mount>/dnsmasq</mount>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <items>
         <enable type="BooleanField"/>
         <regdhcp type="BooleanField"/>
@@ -219,6 +219,14 @@
             <description type="DescriptionField"/>
         </dhcp_ranges>
         <dhcp_options type="ArrayField">
+            <type type="OptionField">
+                <OptionValues>
+                    <set>Set</set>
+                    <match>Match</match>
+                </OptionValues>
+                <Default>set</Default>
+                <Required>Y</Required>
+            </type>
             <option type="JsonKeyValueStoreField">
                 <ConfigdPopulateAct>dnsmasq list dhcp_options</ConfigdPopulateAct>
             </option>
@@ -243,17 +251,6 @@
                 </Model>
                 <Multiple>Y</Multiple>
             </tag>
-            <value type="TextField"/>
-            <force type="BooleanField"/>
-            <description type="DescriptionField"/>
-        </dhcp_options>
-        <dhcp_options_match type="ArrayField">
-            <option type="JsonKeyValueStoreField">
-                <ConfigdPopulateAct>dnsmasq list dhcp_options</ConfigdPopulateAct>
-            </option>
-            <option6 type="JsonKeyValueStoreField">
-                <ConfigdPopulateAct>dnsmasq list dhcp_options6</ConfigdPopulateAct>
-            </option6>
             <set_tag type="ModelRelationField">
                 <Model>
                     <tag>
@@ -262,11 +259,11 @@
                         <display>tag</display>
                     </tag>
                 </Model>
-                <Required>Y</Required>
             </set_tag>
             <value type="TextField"/>
+            <force type="BooleanField"/>
             <description type="DescriptionField"/>
-        </dhcp_options_match>
+        </dhcp_options>
         <dhcp_boot type="ArrayField">
             <tag type="ModelRelationField">
                 <Model>
