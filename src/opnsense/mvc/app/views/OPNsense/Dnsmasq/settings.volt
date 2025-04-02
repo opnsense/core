@@ -174,7 +174,6 @@
             styleVisibility.forEach(style => {
                 const elements = $("." + style.class).closest("tr");
                 style.visible ? elements.show() : elements.hide();
-                console.log("option_type =", option_type);
             });
         });
 
