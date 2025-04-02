@@ -88,6 +88,7 @@ class UriParser(BaseContentParser):
                     for expr in [self._path_expression, ".%s" % self._path_expression]:
                         try:
                             jqc = jq.compile(expr)
+                            break
                         except Exception as e:
                             if jqc_exception is None:
                                 jqc_exception = e
