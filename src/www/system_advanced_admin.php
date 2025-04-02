@@ -53,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['webguiinterfaces'] = !empty($config['system']['webgui']['interfaces']) ? explode(',', $config['system']['webgui']['interfaces']) : [];
     $pconfig['authmode'] = !empty($config['system']['webgui']['authmode']) ? explode(',', $config['system']['webgui']['authmode']) : [];
     $pconfig['session_timeout'] = !empty($config['system']['webgui']['session_timeout']) ? $config['system']['webgui']['session_timeout'] : null;
+    $pconfig['session_name'] = !empty($config['system']['webgui']['session_name']) ? $config['system']['webgui']['session_name'] : 'opnsense';
     $pconfig['webguiproto'] = $config['system']['webgui']['protocol'];
     $pconfig['webguiport'] = $config['system']['webgui']['port'];
     $pconfig['ssl-certref'] = $config['system']['webgui']['ssl-certref'];
@@ -122,6 +123,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext('Session timeout must be an integer value.');
     }
 
+    if (!empty($pconfig['session_name'])) {
+        if (!ctype_alnum($pconfig['session_name'])) {
+            $input_errors[] = gettext('Session name must be alphanumeric only.');
+        }
+    }
+
     if (!empty($pconfig['autologout']) && (!is_numeric($pconfig['autologout']) || $pconfig['autologout'] <= 0)) {
         $input_errors[] = gettext('Inactivity timeout must be an integer value.');
     }
@@ -168,6 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         $restart_webgui = $config['system']['webgui']['protocol'] != $pconfig['webguiproto'] ||
             ($config['system']['webgui']['session_timeout'] ?? '') != $pconfig['session_timeout'] ||
+            $config['system']['webgui']['session_name'] ?? '') != $pconfig['session_name'] ||
             $config['system']['webgui']['port'] != $pconfig['webguiport'] ||
             $config['system']['webgui']['ssl-certref'] != $pconfig['ssl-certref'] ||
             $config['system']['webgui']['compression'] != $pconfig['compression'] ||
@@ -208,6 +216,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['session_timeout'] = $pconfig['session_timeout'];
         } elseif (isset($config['system']['webgui']['session_timeout'])) {
             unset($config['system']['webgui']['session_timeout']);
+        }
+
+        if (!empty($pconfig['session_name'])) {
+            $config['system']['webgui']['session_name'] = $pconfig['session_name'];
+        } elseif (isset($config['system']['webgui']['session_name'])) {
+            unset($config['system']['webgui']['session_name']);
         }
 
         if (!empty($pconfig['disablehttpredirect'])) {
@@ -649,6 +663,15 @@ $(document).ready(function() {
                   <input class="form-control" name="session_timeout" id="session_timeout" type="text" placeholder="240" value="<?=$pconfig['session_timeout'];?>" />
                   <div class="hidden" data-for="help_for_session_timeout">
                     <?= gettext('Time in minutes to expire idle management sessions. The default is 4 hours (240 minutes).') ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_session_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Session Name') ?></td>
+                <td>
+                  <input class="form-control" name="session_name" id="session_name" type="text" placeholder="opnsense" value="<?=$pconfig['session_name'];?>" />
+                  <div class="hidden" data-for="help_for_session_name">
+                    <?= gettext('Alphanumeric management session cookie name. If you have multiple OPNsense web GUIs on the same hostname or IP, you should set this to a unique value for each OPNsense web GUI. The default is "opnsense".') ?>
                   </div>
                 </td>
               </tr>
