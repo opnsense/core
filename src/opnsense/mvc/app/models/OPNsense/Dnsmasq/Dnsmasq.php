@@ -250,6 +250,22 @@ class Dnsmasq extends BaseModel
                     )
                 );
             }
+
+            if (
+                !$option->value->isEmpty() &&
+                !$option->option6->isEmpty() &&
+                preg_match(
+                    '/::|([A-F0-9]{1,4}:){2,}/i',
+                    (string)$option->value
+                )
+            ) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("An IPv6 address must be wrapped inside square brackets '[fe80::1]'."),
+                        $key . ".value"
+                    )
+                );
+            }
         }
 
         foreach ($this->dhcp_options_match->iterateItems() as $match) {
@@ -272,6 +288,22 @@ class Dnsmasq extends BaseModel
                     new Message(
                         gettext("Either 'Option' or 'Option6' is required."),
                         $key . ".option"
+                    )
+                );
+            }
+
+            if (
+                !$match->value->isEmpty() &&
+                !$match->option6->isEmpty() &&
+                preg_match(
+                    '/::|([A-F0-9]{1,4}:){2,}/i',
+                    (string)$match->value
+                )
+            ) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("An IPv6 address must be wrapped inside square brackets '[fe80::1]'."),
+                        $key . ".value"
                     )
                 );
             }
