@@ -348,9 +348,10 @@ include("head.inc");
                         $carplist[$ifname] = convert_friendly_interface_to_friendly_descr($ifname);
                       }
                     }
-                    foreach (get_configured_ip_aliases_list() as $vip => $ifname) {
-                      if ($ifname == $if && (is_linklocal($vip)))
-                        $aliaslist[$vip] = get_vip_descr($vip) . ' (' . $vip . ')';
+                    foreach (config_read_array('virtualip', 'vip') as $vip) {
+                      if ($vip['mode'] == 'ipalias' && $if == $vip['interface'] && is_linklocal($vip['subnet'])) {
+                        $aliaslist[$vip['subnet']] = get_vip_descr($vip['subnet']) . ' (' . $vip['subnet'] . ')';
+                      }
                     } ?>
                   <tr>
                     <td><a id="help_for_rainterface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Source Address') ?></td>
