@@ -124,8 +124,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (!empty($pconfig['session_name'])) {
-        if (!ctype_alnum($pconfig['session_name'])) {
-            $input_errors[] = gettext('Session name must be alphanumeric only.');
+        $session_name_len = strlen($pconfig['session_name']);
+        if (!ctype_alnum($pconfig['session_name']) || $session_name_len < 3 || $session_name_len > 32) {
+            $input_errors[] = gettext('Session name must be between 3 and 32 alphanumeric characters only.');
         }
     }
 
