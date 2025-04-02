@@ -349,7 +349,7 @@ include("head.inc");
                       }
                     }
                     foreach (config_read_array('virtualip', 'vip') as $vip) {
-                      if ($vip['mode'] == 'ipalias' && $if == $vip['interface'] && (is_linklocal($vip['subnet']))) {
+                      if ($vip['mode'] == 'ipalias' && $if == $vip['interface'] && is_linklocal($vip['subnet'])) {
                         $aliaslist[$vip['subnet']] = get_vip_descr($vip['subnet']) . ' (' . $vip['subnet'] . ')';
                       }
                     } ?>
