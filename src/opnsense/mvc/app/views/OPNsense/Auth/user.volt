@@ -196,7 +196,7 @@
                     <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                     <th data-column-id="name" data-type="string" data-formatter="username">{{ lang._('Name') }}</th>
                     <th data-column-id="email" data-type="string" data-visible="false">{{ lang._('Email') }}</th>
-                    <th data-column-id="comments" data-type="string" data-visible="false">{{ lang._('Comments') }}</th>
+                    <th data-column-id="comment" data-type="string" data-visible="false">{{ lang._('Comments') }}</th>
                     <th data-column-id="language" data-type="string" data-visible="false">{{ lang._('Language') }}</th>
                     <th data-column-id="group_memberships" data-type="string">{{ lang._('Groups') }}</th>
                     <th data-column-id="descr" data-type="string">{{ lang._('Description') }}</th>

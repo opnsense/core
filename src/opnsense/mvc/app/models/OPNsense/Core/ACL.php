@@ -366,7 +366,7 @@ class ACL
             return "ui/user_portal";
         } elseif (!empty($this->userDatabase[$username]['landing_page'])) {
             // remove leading slash, which would result in redirection to //page (without host) after login or auth failure.
-            $page = ltrim($this->userDatabase[$username]['landing_page'], '/');
+            return ltrim($this->userDatabase[$username]['landing_page'], '/');
         } elseif (!empty($this->userDatabase[$username])) {
             // default behaviour, find first accessible location from configured privileges, but prefer /
             if ($this->isPageAccessible($username, '/')) {
