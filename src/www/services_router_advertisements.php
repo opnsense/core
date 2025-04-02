@@ -343,13 +343,13 @@ include("head.inc");
 <?php
                     $carplist = [];
                     $aliaslist = [];
-                    foreach (get_configured_carp_interface_list() as $ifname => $vip) {
-                      if ((preg_match("/^{$if}_/", $ifname)) && (is_linklocal($vip))) {
-                        $carplist[$ifname] = convert_friendly_interface_to_friendly_descr($ifname);
-                      }
-                    }
                     foreach (config_read_array('virtualip', 'vip') as $vip) {
-                      if ($vip['mode'] == 'ipalias' && $if == $vip['interface'] && is_linklocal($vip['subnet'])) {
+                      if ($if != $vip['interface'] || !is_linklocal($vip['subnet'])) {
+                          continue;
+                      } elseif ($vip['mode'] == 'carp') {
+                        $ifname = "{$vip['interface']}_vip{$vip['vhid']}"; /* XXX this code shouldn't know how to construct this */
+                        $carplist[$ifname] = convert_friendly_interface_to_friendly_descr($ifname);
+                      } elseif ($vip['mode'] == 'ipalias') {
                         $aliaslist[$vip['subnet']] = ($vip['descr'] ?? '') . ' (' . $vip['subnet'] . ')';
                       }
                     } ?>
