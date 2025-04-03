@@ -326,13 +326,17 @@ function get_searchdomains()
     }
 
     if (!empty($syscfg['dnssearchdomain'])) {
-        if ($syscfg['dnssearchdomain'] == '.') {
-            /* pass root only */
-            return [$syscfg['dnssearchdomain']];
-        }
+        $dnssds = array_unique(explode(',', $syscfg['dnssearchdomain']));
 
-        /* add custom search entries after default domain before potential provider entries */
-        $master_list[] = $syscfg['dnssearchdomain'];
+        foreach ($dnssds as $dnssd) {
+            if ($dnssd == '.') {
+                /* pass root only but including other manually set domains as is */
+                return $dnssds;
+            }
+
+            /* add custom search entries after default domain before potential provider entries */
+            $master_list[] = $dnssd;
+        }
     }
 
     if (!empty($syscfg['dnsallowoverride'])) {

@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         explode(',', $config['system']['dnsallowoverride_exclude']) : [];
 
     $pconfig['dnslocalhost'] = isset($config['system']['dnslocalhost']);
-    $pconfig['dnssearchdomain'] = $config['system']['dnssearchdomain'] ?? null;
+    $pconfig['dnssearchdomain'] = !empty($config['system']['dnssearchdomain']) ? explode(',', $config['system']['dnssearchdomain']) : [];
     $pconfig['domain'] = $config['system']['domain'];
     $pconfig['hostname'] = $config['system']['hostname'];
     $pconfig['language'] = $config['system']['language'];
@@ -123,8 +123,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($pconfig['domain']) && !is_domain($pconfig['domain'])) {
         $input_errors[] = gettext("The domain may only contain the characters a-z, 0-9, '-' and '.'.");
     }
-    if (!empty($pconfig['dnssearchdomain']) && !is_domain($pconfig['dnssearchdomain'], true)) {
-        $input_errors[] = gettext("A search domain may only contain the characters a-z, 0-9, '-' and '.'.");
+    if (!empty($pconfig['dnssearchdomain'])) {
+        foreach ($pconfig['dnssearchdomain'] as $dnssearchdomain) {
+            if (!is_domain($dnssearchdomain, true)) {
+                $input_errors[] = gettext("A search domain may only contain the characters a-z, 0-9, '-' and '.'.");
+            }
+        }
     }
 
     /* collect direct attached networks and static routes */
@@ -204,7 +208,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (!empty($pconfig['dnssearchdomain'])) {
-            $config['system']['dnssearchdomain'] = $pconfig['dnssearchdomain'];
+            $config['system']['dnssearchdomain'] = implode(',', $pconfig['dnssearchdomain']);
         } elseif (isset($config['system']['dnssearchdomain'])) {
             unset($config['system']['dnssearchdomain']);
         }
@@ -273,9 +277,14 @@ include("head.inc");
 <body>
     <?php include("fbegin.inc"); ?>
 
+<script src="<?= cache_safe('/ui/js/tokenize2.js') ?>"></script>
+<link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename('/css/tokenize2.css')) ?>">
+<script src="<?= cache_safe('/ui/js/opnsense_ui.js') ?>"></script>
 <script>
 //<![CDATA[
 $( document ).ready(function() {
+    formatTokenizersUI();
+
     // unhide advanced
     $("#dnsallowoverride").change(function(event){
         event.preventDefault();
@@ -483,9 +492,13 @@ $( document ).ready(function() {
             <tr>
               <td><a id="help_for_dnssearchdomain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('DNS search domain') ?></td>
               <td>
-                <input name="dnssearchdomain" type="text" value="<?= $pconfig['dnssearchdomain'] ?>" />
+                <select name="dnssearchdomain[]" multiple="multiple" class="tokenize" data-allownew="true" data-width="348px">
+<?php foreach ($pconfig['dnssearchdomain'] as $searchdomain): ?>
+                      <option value="<?= html_safe($searchdomain) ?>" selected="selected"><?= $searchdomain ?></option>
+<?php endforeach ?>
+                </select>
                 <div class="hidden" data-for="help_for_dnssearchdomain">
-                  <?= gettext('Enter an additional domain to add to the local list of search domains. Use "." to disable passing any search domain for resolving.') ?>
+                  <?= gettext('Enter additional domains to add to the local list of search domains. Use "." to disable passing any other automatic search domain for resolving.') ?>
                 </div>
               </td>
             </tr>
@@ -493,7 +506,7 @@ $( document ).ready(function() {
             <tr>
               <td><a id="help_for_dnsservers_opt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS server options"); ?></td>
               <td>
-                <input name="dnsallowoverride" id="dnsallowoverride" type="checkbox" value="yes" <?= $pconfig['dnsallowoverride'] ? 'checked="checked"' : '' ?>/>
+                <input name="dnsallowoverride" id="dnsallowoverride" type="checkbox" value="yes" <?= ($pconfig['dnsallowoverride'] ?? '') ? 'checked="checked"' : '' ?>/>
                 <?=gettext("Allow DNS server list to be overridden by DHCP/PPP on WAN"); ?>
                 <div class="hidden" data-for="help_for_dnsservers_opt">
                   <?= gettext("If this option is set, DNS servers " .
