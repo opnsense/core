@@ -48,7 +48,9 @@
                 },
                 formatters: {
                     in_use: function (column, row) {
-                        if (row.in_use === '1') {
+                        if (!row.uuid.includes('-')) {
+                            return "<span class=\"fa fa-fw fa-sign-out\" data-value=\"1\" data-row-id=\"" + row.uuid + "\"></span>";
+                        } else if (row.in_use === '1') {
                             return "<span class=\"fa fa-fw fa-check\" data-value=\"1\" data-row-id=\"" + row.uuid + "\"></span>";
                         } else if (row.is_user === '1') {
                             return "<span class=\"fa fa-fw fa-user-o\" data-value=\"1\" data-row-id=\"" + row.uuid + "\"></span>";
@@ -148,7 +150,17 @@
             }
         });
         grid_cert.on("loaded.rs.jquery.bootgrid", function (e){
-            // reload categories before grid load
+            /* should probably live in the "commands" section to optionally render items */
+            grid_cert.find('tr').each(function(){
+                let tr = $(this);
+                if (tr.data('row-id') !== undefined && !tr.data('row-id').includes('-')) {
+                    tr.find('button.command-edit').hide();
+                    tr.find('button.command-copy').hide();
+                    tr.find('button.command-delete').hide();
+                }
+            });
+
+            // reload categories after grid load
             if ($("#ca_filter > option").length == 0) {
                 ajaxGet('/api/trust/cert/ca_list', {}, function(data, status){
                     if (data.rows !== undefined) {

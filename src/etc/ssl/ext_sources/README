@@ -1,0 +1,14 @@
+OPNsense certificates used by external applications and registered in the gui for viewing purposes only.
+
+In this directory you can create files with a .conf extension (e.g. myapp.conf) with the following (sample) config:
+
+[location]
+base=/usr/local/md/domains
+pattern=pubcert.pem
+description=OPNWAF
+
+
+"base" is the directory to recursively iterate, "pattern" is a regex matcher and each item returned will have a description
+attached to it for the frontend.
+
+Files found can be identified by their id, which is an md5 hash of the contents.
