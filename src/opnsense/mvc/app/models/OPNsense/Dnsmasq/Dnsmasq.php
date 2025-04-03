@@ -250,28 +250,12 @@ class Dnsmasq extends BaseModel
                     )
                 );
             }
-        }
 
-        foreach ($this->dhcp_options_match->iterateItems() as $match) {
-            if (!$validateFullModel && !$match->isFieldChanged()) {
-                continue;
-            }
-            $key = $match->__reference;
-
-            if (!$match->option->isEmpty() && !$match->option6->isEmpty()) {
+            if ($option->type == 'match' && $option->set_tag->isEmpty()) {
                 $messages->appendMessage(
                     new Message(
-                        gettext("'Option' and 'Option6' cannot be selected at the same time."),
-                        $key . ".option"
-                    )
-                );
-            }
-
-            if ($match->option->isEmpty() && $match->option6->isEmpty()) {
-                $messages->appendMessage(
-                    new Message(
-                        gettext("Either 'Option' or 'Option6' is required."),
-                        $key . ".option"
+                        gettext("When type is 'Match', a tag must be set."),
+                        $key . ".set_tag"
                     )
                 );
             }

@@ -285,7 +285,6 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Dnsmasq/LeasesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Dnsmasq/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Dnsmasq/forms/dialogDHCPboot.xml
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Dnsmasq/forms/dialogDHCPmatch.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Dnsmasq/forms/dialogDHCPoption.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Dnsmasq/forms/dialogDHCPrange.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Dnsmasq/forms/dialogDHCPtag.xml
