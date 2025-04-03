@@ -4,6 +4,11 @@
         <label>Enabled</label>
         <type>checkbox</type>
         <help>enable this rule</help>
+        <grid_view>
+            <width>6em</width>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+        </grid_view>
     </field>
     <field>
         <id>rule.sequence</id>
@@ -22,6 +27,9 @@
         <type>dropdown</type>
         <advanced>true</advanced>
         <help>secondary interface, matches packets traveling to/from interface (1) to/from interface (2). can be combined with direction.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>rule.proto</id>
@@ -35,6 +43,9 @@
         <advanced>true</advanced>
         <type>text</type>
         <help>Specifies the maximum size of packets to match in bytes</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>rule.source</id>
@@ -49,12 +60,18 @@
         <label>Invert source</label>
         <type>checkbox</type>
         <help>invert source (not)</help>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
     </field>
     <field>
         <id>rule.src_port</id>
         <label>Src-port</label>
         <type>text</type>
         <help>Source port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>rule.destination</id>
@@ -69,12 +86,18 @@
         <label>Invert destination</label>
         <type>checkbox</type>
         <help>invert destination (not)</help>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
     </field>
     <field>
         <id>rule.dst_port</id>
         <label>Dst-port</label>
         <type>text</type>
         <help>Destination port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>rule.dscp</id>
@@ -82,6 +105,9 @@
         <type>select_multiple</type>
         <advanced>true</advanced>
         <help>Match against one or multiple DSCP values.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>rule.direction</id>
@@ -89,6 +115,9 @@
         <type>dropdown</type>
         <advanced>true</advanced>
         <help>matches incoming or outgoing packets or both (default)</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>rule.target</id>
