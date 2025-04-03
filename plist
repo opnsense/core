@@ -155,6 +155,7 @@
 /usr/local/etc/rc.syshook.d/upgrade/20-unbound-duckdb.py
 /usr/local/etc/rc.syshook.d/upgrade/90-cleanup.sh
 /usr/local/etc/ssh/sshd_config.d/README
+/usr/local/etc/ssl/ext_sources/README
 /usr/local/etc/ssl/opnsense.cnf
 /usr/local/etc/strongswan.opnsense.d/README
 /usr/local/etc/unbound.opnsense.d/README
@@ -1269,6 +1270,7 @@
 /usr/local/opnsense/scripts/syslog/streamLog.py
 /usr/local/opnsense/scripts/system/activity.py
 /usr/local/opnsense/scripts/system/bectl.py
+/usr/local/opnsense/scripts/system/cert_fetch_local.py
 /usr/local/opnsense/scripts/system/certctl.py
 /usr/local/opnsense/scripts/system/cpu.py
 /usr/local/opnsense/scripts/system/crl_fetch.py
