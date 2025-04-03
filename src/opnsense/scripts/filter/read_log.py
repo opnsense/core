@@ -28,6 +28,7 @@
     --------------------------------------------------------------------------------------
     read filter log, limit by number of records or last received digest (md5 hash of row)
 """
+import argparse
 import os
 import sys
 import re
@@ -40,7 +41,6 @@ import time
 import select
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from log_helper import reverse_log_reader
-from params import update_params
 
 
 # define log layouts, every endpoint contains all options
@@ -160,18 +160,20 @@ def parse_record(record, running_conf_descr):
 
 
 if __name__ == '__main__':
-    # read parameters
-    parameters = {'limit': '0', 'digest': '', 'stream': False, 'nlines': '5'}
-    update_params(parameters)
-    parameters['limit'] = int(parameters['limit'])
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--limit', help='limit results', type=int, default=5)
+    parser.add_argument('--digest', help='row digest', default='')
+    parser.add_argument('--stream', help='stream mode', action='store_true')
+    parser.add_argument('--nlines', help='stream lines', type=int, default=5)
+    cmd_args = parser.parse_args()
 
     # parse current running config
     running_conf_descr = fetch_rule_details()
 
-    if parameters['stream'] != False:
+    if cmd_args.stream:
         # tail symlink to latest log, use -F to follow file rotation
         f = subprocess.Popen(
-            ['tail', '-n' + parameters['nlines'], '-F', '/var/log/filter/latest.log'],
+            ['tail', '-n %d' % cmd_args.nlines, '-F', '/var/log/filter/latest.log'],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             bufsize=0,
@@ -230,9 +232,9 @@ if __name__ == '__main__':
                     if (rule != None):
                         result.append(rule)
                     # handle exit criteria, row limit or last digest
-                    if parameters['limit'] != 0 and len(result) >= parameters['limit']:
+                    if cmd_args.limit != 0 and len(result) >= cmd_args.limit:
                         do_exit = True
-                    elif parameters['digest'].strip() != '' and parameters['digest'] == rule['__digest__']:
+                    elif cmd_args.digest.strip() != '' and cmd_args.digest == rule['__digest__']:
                         do_exit = True
                     if do_exit:
                         break
