@@ -48,38 +48,6 @@ class Dnsmasq extends BaseModel
     }
 
     /**
-     * Validates that one or multiple IPv6 addresses are wrapped with square brackets.
-     *
-     * @param object $object An object containing the properties "value" and "option6".
-     * @param MessageContainer $messages
-     * @param string $key
-     */
-    private function validateIPv6Wrapping($object, $messages, $key)
-    {
-        if (
-            !$object->value->isEmpty() &&
-            !$object->option6->isEmpty()
-        ) {
-            $values = array_map('trim', explode(',', (string)$object->value));
-            foreach ($values as $value) {
-                $address = trim($value, '[]');
-
-                if (
-                    Util::isIpv6Address($address) &&
-                    !(strpos($value, '[') === 0 && substr($value, -1) === ']')
-                ) {
-                    $messages->appendMessage(
-                        new Message(
-                            gettext("Each IPv6 address must be wrapped inside square brackets '[fe80::]'."),
-                            $key . ".value"
-                        )
-                    );
-                }
-            }
-        }
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function performValidation($validateFullModel = false)
@@ -284,7 +252,36 @@ class Dnsmasq extends BaseModel
                 );
             }
 
-            $this->validateIPv6Wrapping($option, $messages, $key);
+            if ($option->type == 'match' && $option->set_tag->isEmpty()) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("When type is 'Match', a tag must be set."),
+                        $key . ".set_tag"
+                    )
+                );
+            }
+
+            if (
+                !$option->value->isEmpty() &&
+                !$option->option6->isEmpty()
+            ) {
+                $values = array_map('trim', explode(',', (string)$option->value));
+                foreach ($values as $value) {
+                    $address = trim($value, '[]');
+
+                    if (
+                        Util::isIpv6Address($address) &&
+                        !(strpos($value, '[') === 0 && substr($value, -1) === ']')
+                    ) {
+                        $messages->appendMessage(
+                            new Message(
+                                gettext("Each IPv6 address must be wrapped inside square brackets '[fe80::]'."),
+                                $key . ".value"
+                            )
+                        );
+                    }
+                }
+            }
         }
 
         if (
