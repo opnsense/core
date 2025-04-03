@@ -270,7 +270,7 @@ class Dnsmasq extends BaseModel
                     $address = trim($value, '[]');
 
                     if (
-                        Util::isIpv6Address($address) &&
+                        Util::isIpv6Address(trim($value, '[]')) &&
                         !(str_starts_with($value, '[') && str_ends_with($value, ']'))
                     ) {
                         $messages->appendMessage(
