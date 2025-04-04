@@ -31,6 +31,7 @@ namespace OPNsense\Dnsmasq;
 use OPNsense\Base\BaseModel;
 use OPNsense\Base\Messages\Message;
 use OPNsense\Core\Backend;
+use OPNsense\Firewall\Util;
 
 /**
  * Class Dnsmasq
@@ -258,6 +259,26 @@ class Dnsmasq extends BaseModel
                         $key . ".set_tag"
                     )
                 );
+            }
+
+            if (
+                !$option->value->isEmpty() &&
+                !$option->option6->isEmpty()
+            ) {
+                $values = array_map('trim', explode(',', (string)$option->value));
+                foreach ($values as $value) {
+                    if (
+                        Util::isIpv6Address(trim($value, '[]')) &&
+                        !(str_starts_with($value, '[') && str_ends_with($value, ']'))
+                    ) {
+                        $messages->appendMessage(
+                            new Message(
+                                gettext("Each IPv6 address must be wrapped inside square brackets '[fe80::]'."),
+                                $key . ".value"
+                            )
+                        );
+                    }
+                }
             }
         }
 
