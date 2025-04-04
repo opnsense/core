@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Cedrik Pischem
+ * Copyright (C) 2024-2025 Cedrik Pischem
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -92,8 +92,12 @@ export default class Certificates extends BaseTableWidget {
                     : `${this.translations.expiresin} ${remainingDays} ${this.translations.days}, ${validTo.toLocaleString()}`;
 
                 const descrContent = (type === 'cert' || type === 'ca')
-                    ? `<a href="/ui/trust/${type === 'cert' ? 'cert' : 'ca'}#edit=${encodeURIComponent(item.uuid)}"
-                        class="${type}-link" target="_blank" rel="noopener noreferrer">${item.descr}</a>`
+                    // XXX: Certs polled via /usr/local/etc/ssl/ext_sources/*.conf cannot be edited, only search them
+                    ? (!item.uuid.includes('-')
+                        ? `<a href="/ui/trust/${type === 'cert' ? 'cert' : 'ca'}#search=${encodeURIComponent(item.uuid)}"
+                            class="${type}-link" target="_blank" rel="noopener noreferrer">${item.descr}</a>`
+                        : `<a href="/ui/trust/${type === 'cert' ? 'cert' : 'ca'}#edit=${encodeURIComponent(item.uuid)}"
+                            class="${type}-link" target="_blank" rel="noopener noreferrer">${item.descr}</a>`)
                     : `<b>${item.descr}</b>`;
 
                 const row = `
