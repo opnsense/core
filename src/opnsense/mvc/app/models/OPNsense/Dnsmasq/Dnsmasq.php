@@ -267,8 +267,6 @@ class Dnsmasq extends BaseModel
             ) {
                 $values = array_map('trim', explode(',', (string)$option->value));
                 foreach ($values as $value) {
-                    $address = trim($value, '[]');
-
                     if (
                         Util::isIpv6Address(trim($value, '[]')) &&
                         !(str_starts_with($value, '[') && str_ends_with($value, ']'))
