@@ -104,8 +104,8 @@ export default class Certificates extends BaseTableWidget {
                     : `<b>${item.descr}</b>`;
 
                 const commonNameText = item.commonname
-                ? `<div style="margin-top: 5px;">${item.commonname}</div>`
-                : '';
+                    ? `<div style="margin-top: 5px;">${item.commonname}</div>`
+                    : '';
 
                 const row = `
                     <div>
