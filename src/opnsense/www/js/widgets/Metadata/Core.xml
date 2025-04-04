@@ -1,4 +1,27 @@
 <metadata>
+ <leases>
+        <filename>Leases.js</filename>
+        <endpoints>
+            <endpoint>/api/dhcpv4/leases/searchLease</endpoint>
+            <endpoint>/api/dhcpv6/leases/searchLease</endpoint>
+        </endpoints>
+        <translations>
+            <title>Leases</title>
+            <noitems>No leases to display.</noitems>
+            <mac>MAC</mac>
+            <address>Address</address>
+            <hostname>Hostname</hostname>
+            <type>Type</type>
+            <state>State</state>
+            <status>Status</status>
+            <active>Active</active>
+            <inactive>Inactive</inactive>
+            <online>Online</online>
+            <offline>Offline</offline>
+            <static>Static</static>
+            <dynamic>Dynamic</dynamic>
+        </translations>
+    </leases>
     <announcements>
         <filename>Announcements.js</filename>
         <endpoints>
