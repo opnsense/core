@@ -636,41 +636,6 @@ function is_uniquelocal($ipaddr)
     return !!preg_match('/^fd[0-9a-f][0-9a-f]:/i', $ipaddr ?? '');
 }
 
-/* returns true if $ipaddr is a valid literal IPv6 address */
-function is_literalipaddrv6($ipaddr)
-{
-    if (preg_match('/\[([0-9a-f:]+)\]/i', $ipaddr, $match)) {
-        $ipaddr = $match[1];
-    } else {
-        return false;
-    }
-    return is_ipaddrv6($ipaddr);
-}
-
-function is_ipaddrwithport($ipport)
-{
-    $parts = explode(":", $ipport);
-    $port = array_pop($parts);
-    if (count($parts) == 1) {
-        return is_ipaddrv4($parts[0]) && is_port($port);
-    } elseif (count($parts) > 1) {
-        return is_literalipaddrv6(implode(":", $parts)) && is_port($port);
-    } else {
-        return false;
-    }
-}
-
-function is_hostnamewithport($hostport)
-{
-    $parts = explode(":", $hostport);
-    $port = array_pop($parts);
-    if (count($parts) == 1) {
-        return is_hostname($parts[0]) && is_port($port);
-    } else {
-        return false;
-    }
-}
-
 /* returns true if $ipaddr is a valid dotted IPv4 address or an alias thereof */
 function is_ipaddroralias($ipaddr)
 {
