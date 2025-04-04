@@ -87,9 +87,12 @@ export default class Certificates extends BaseTableWidget {
                 const statusText = remainingDays === 0 ? this.translations.expired : this.translations.valid;
                 const iconClass = remainingDays === 0 ? 'fa fa-unlock' : 'fa fa-lock';
 
+                // XXX: Format the date without time and timezone as the frontend does not know the timezone of the backend
+                const expirationDateString = validTo.toLocaleDateString(undefined);
+
                 const expirationText = remainingDays === 0
-                    ? `${this.translations.expiredon} ${validTo.toLocaleString()}`
-                    : `${this.translations.expiresin} ${remainingDays} ${this.translations.days}, ${validTo.toLocaleString()}`;
+                    ? `${this.translations.expiredon} ${expirationDateString}`
+                    : `${this.translations.expiresin} ${remainingDays} ${this.translations.days}, ${expirationDateString}`;
 
                 const descrContent = (type === 'cert' || type === 'ca')
                     // XXX: Certs polled via /usr/local/etc/ssl/ext_sources/*.conf cannot be edited, only search them
