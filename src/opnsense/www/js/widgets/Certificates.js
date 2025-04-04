@@ -103,6 +103,10 @@ export default class Certificates extends BaseTableWidget {
                             class="${type}-link" target="_blank" rel="noopener noreferrer">${item.descr}</a>`)
                     : `<b>${item.descr}</b>`;
 
+                const commonNameText = item.commonname
+                ? `<div style="margin-top: 5px;">${item.commonname}</div>`
+                : '';
+
                 const row = `
                     <div>
                         <i class="${iconClass} ${colorClass} certificate-tooltip" style="cursor: pointer;"
@@ -111,6 +115,7 @@ export default class Certificates extends BaseTableWidget {
                         &nbsp;
                         <span>${descrContent}</span>
                         <br/>
+                        ${commonNameText}
                         <div style="margin-top: 5px; margin-bottom: 5px;">
                             ${expirationText}
                         </div>
