@@ -2885,7 +2885,7 @@ EOF;
     @file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript);
     @chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
 
-    $dhcp6ccommand = exec_safe('/usr/local/sbin/dhcp6c -c %s -p %s', [
+    $dhcp6ccommand = exec_safe('flock -nF /var/run/dhcp6c.lock /usr/local/sbin/dhcp6c -c %s -p %s', [
             '/var/etc/dhcp6c.conf',
             '/var/run/dhcp6c.pid',
     ]);
@@ -2943,7 +2943,7 @@ if [ -f /var/run/dhcp6c.pid ]; then
     /bin/pkill -HUP -F /var/run/dhcp6c.pid
 else
     /usr/bin/logger -t dhcp6c "RTSOLD script - Starting dhcp6c daemon"
-    {$dhcp6ccommand}
+    {$dhcp6ccommand} || /usr/bin/logger -t dhcp6c "RTSOLD script - Failed to start dhcp6c daemon"
 fi
 
 EOD;
