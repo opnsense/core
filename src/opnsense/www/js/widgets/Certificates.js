@@ -173,13 +173,13 @@ export default class Certificates extends BaseTableWidget {
 
         if (caResponse.rows) {
             caResponse.rows.forEach(ca => {
-                hiddenItemOptions.push({ value: `${ca.uuid}`, label: ca.descr });
+                hiddenItemOptions.push({ value: ca.uuid, label: ca.descr });
             });
         }
 
         if (certResponse.rows) {
             certResponse.rows.forEach(cert => {
-                hiddenItemOptions.push({ value: `${cert.uuid}`, label: cert.commonname || cert.descr });
+                hiddenItemOptions.push({ value: cert.uuid, label: cert.commonname || cert.descr });
             });
         }
 
