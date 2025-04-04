@@ -73,7 +73,7 @@ export default class Certificates extends BaseTableWidget {
 
     processItems(items, type, hiddenItems, rows) {
         items.forEach(item => {
-            if (!hiddenItems.includes(item.descr)) {
+            if (!hiddenItems.includes(item.uuid)) {
                 const validTo = new Date(parseInt(item.valid_to) * 1000);
                 const now = new Date();
                 const remainingDays = Math.max(0, Math.floor((validTo - now) / (1000 * 60 * 60 * 24)));
@@ -173,13 +173,13 @@ export default class Certificates extends BaseTableWidget {
 
         if (caResponse.rows) {
             caResponse.rows.forEach(ca => {
-                hiddenItemOptions.push({ value: `${ca.descr}`, label: ca.descr });
+                hiddenItemOptions.push({ value: `${ca.uuid}`, label: ca.descr });
             });
         }
 
         if (certResponse.rows) {
             certResponse.rows.forEach(cert => {
-                hiddenItemOptions.push({ value: `${cert.descr}`, label: cert.descr });
+                hiddenItemOptions.push({ value: `${cert.uuid}`, label: cert.commonname || cert.descr });
             });
         }
 
