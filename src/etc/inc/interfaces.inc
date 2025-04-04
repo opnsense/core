@@ -3679,39 +3679,34 @@ function link_interface_to_bridge($interface, $attach_device = null, $ifconfig_d
 
 function link_interface_to_gre($interface, $update = false, $family = null)
 {
-    global $config;
-
-    $aliaslist = get_configured_ip_aliases_list();
     $result = [];
 
-    if (isset($config['gres']['gre'])) {
-        foreach ($config['gres']['gre'] as $gre) {
-            $parent = explode('_vip', $gre['if'])[0];
-            if (is_ipaddr($parent)) {
-                foreach ($aliaslist as $ip => $int) {
-                    if ($ip == $parent) {
-                        $parent = $int;
-                        break;
-                    }
+    foreach (config_read_array('gres', 'gre') as $gre) {
+        $parent = explode('_vip', $gre['if'])[0];
+        if (is_ipaddr($parent)) {
+            foreach (config_read_array('virtualip', 'vip') as $vip) {
+                if ($vip['mode'] == 'ipalias' && $vip['subnet'] == $parent) {
+                    $parent = $vip['interface'];
+                    break;
                 }
             }
-
-            if ($parent != $interface) {
-                continue;
-            } elseif ($family == 4 && !is_ipaddrv4($gre['remote-addr'])) {
-                continue;
-            } elseif ($family == 6 && !is_ipaddrv6($gre['remote-addr'])) {
-                continue;
-            }
-
-            if ($update && empty(_interfaces_gre_configure($gre))) {
-                /* only return the ones that did configure correctly */
-                continue;
-            }
-
-            /* callers are only concerned with the resulting device names */
-            $result[] = $gre['greif'];
         }
+
+        if ($parent != $interface) {
+            continue;
+        } elseif ($family == 4 && !is_ipaddrv4($gre['remote-addr'])) {
+            continue;
+        } elseif ($family == 6 && !is_ipaddrv6($gre['remote-addr'])) {
+            continue;
+        }
+
+        if ($update && empty(_interfaces_gre_configure($gre))) {
+            /* only return the ones that did configure correctly */
+            continue;
+        }
+
+        /* callers are only concerned with the resulting device names */
+        $result[] = $gre['greif'];
     }
 
     return $result;
@@ -3719,28 +3714,24 @@ function link_interface_to_gre($interface, $update = false, $family = null)
 
 function link_interface_to_gif($interface, $update = false, $family = null)
 {
-    global $config;
-
     $result = [];
 
-    if (isset($config['gifs']['gif'])) {
-        foreach ($config['gifs']['gif'] as $gif) {
-            if (explode('_vip', $gif['if'])[0] != $interface) {
-                continue;
-            } elseif ($family == 4 && !is_ipaddrv4($gif['remote-addr'])) {
-                continue;
-            } elseif ($family == 6 && !is_ipaddrv6($gif['remote-addr'])) {
-                continue;
-            }
-
-            if ($update && empty(_interfaces_gif_configure($gif))) {
-                /* only return the ones that did configure correctly */
-                continue;
-            }
-
-            /* callers are only concerned with the resulting device names */
-            $result[] = $gif['gifif'];
+    foreach (config_read_array('gifs', 'gif') as $gif) {
+        if (explode('_vip', $gif['if'])[0] != $interface) {
+            continue;
+        } elseif ($family == 4 && !is_ipaddrv4($gif['remote-addr'])) {
+            continue;
+        } elseif ($family == 6 && !is_ipaddrv6($gif['remote-addr'])) {
+            continue;
         }
+
+        if ($update && empty(_interfaces_gif_configure($gif))) {
+            /* only return the ones that did configure correctly */
+            continue;
+        }
+
+        /* callers are only concerned with the resulting device names */
+        $result[] = $gif['gifif'];
     }
 
     return $result;
@@ -3836,19 +3827,6 @@ function get_interface_mac($interface, $ifconfig_details = null)
     }
 
     return $intf_details['macaddr'];
-}
-
-function get_vip_descr($ipaddress)
-{
-    global $config;
-
-    foreach ($config['virtualip']['vip'] as $vip) {
-        if ($vip['subnet'] == $ipaddress) {
-            return ($vip['descr'] ?? '');
-        }
-    }
-
-    return '';
 }
 
 function interfaces_staticarp_configure($if, $ifconfig_details = null)

@@ -6,7 +6,7 @@
                 <Phase1 url="/vpn_ipsec_phase1.php*" visibility="hidden"/>
                 <Phase2 url="/vpn_ipsec_phase2.php*" visibility="hidden"/>
             </Tunnels>
-            <Mobile order="20" VisibleName="Mobile Clients (legacy)" url="/vpn_ipsec_mobile.php">
+            <Mobile order="20" VisibleName="Mobile Clients [legacy]" url="/vpn_ipsec_mobile.php">
                 <Act url="/vpn_ipsec_mobile.php*" visibility="hidden"/>
             </Mobile>
             <Keys order="30" VisibleName="Pre-Shared Keys" url="/ui/ipsec/pre_shared_keys"/>

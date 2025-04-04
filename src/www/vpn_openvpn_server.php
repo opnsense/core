@@ -805,11 +805,16 @@ $( document ).ready(function() {
                         <select name="interface" class="selectpicker" data-size="5" data-live-search="true">
 <?php
                         $interfaces = get_configured_interface_with_descr();
-                        foreach (get_configured_carp_interface_list() as $cif => $carpip) {
-                            $interfaces[$cif.'|'.$carpip] = $carpip." (".get_vip_descr($carpip).")";
-                        }
-                        foreach (get_configured_ip_aliases_list() as $aliasip => $aliasif) {
-                            $interfaces[$aliasif.'|'.$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
+                        foreach (config_read_array('virtualip', 'vip') as $vip) {
+                            $label = $vip['subnet'] . (empty($vip['descr']) ? '' : " (${vip['descr']})");
+                            if ($vip['mode'] == 'carp') {
+                                $value = "{$vip['interface']}_vip{$vip['vhid']}";
+                            } elseif ($vip['mode'] == 'ipalias') {
+                                $value = $vip['interface'];
+                            } else {
+                                continue;
+                            }
+                            $interfaces["{$value}|{$vip['subnet']}"] = $label;
                         }
                         $interfaces['lo0'] = "Localhost";
                         $interfaces['any'] = "any";
@@ -1140,11 +1145,16 @@ $( document ).ready(function() {
 <?php
                         $serverbridge_interface['none'] = "none";
                         $serverbridge_interface = array_merge($serverbridge_interface, get_configured_interface_with_descr());
-                        foreach (get_configured_carp_interface_list() as $cif => $carpip) {
-                            $serverbridge_interface[$cif.'|'.$carpip] = $carpip." (".get_vip_descr($carpip).")";
-                        }
-                        foreach (get_configured_ip_aliases_list() as $aliasip => $aliasif) {
-                            $serverbridge_interface[$aliasif.'|'.$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
+                        foreach (config_read_array('virtualip', 'vip') as $vip) {
+                            $label = $vip['subnet'] . (empty($vip['descr']) ? '' : " (${vip['descr']})");
+                            if ($vip['mode'] == 'carp') {
+                                $value = "{$vip['interface']}_vip{$vip['vhid']}";
+                            } elseif ($vip['mode'] == 'ipalias') {
+                                $value = $vip['interface'];
+                            } else {
+                                continue;
+                            }
+                            $serverbridge_interface["{$value}|{$vip['subnet']}"] = $label;
                         }
                         foreach ($serverbridge_interface as $iface => $ifacename) :
                           $selected = "";
