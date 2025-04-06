@@ -19,4 +19,5 @@
 {% endif %}
 firewall_enable="{% if cp_zones or rules %}YES{% else %}NO{% endif %}"
 firewall_script="/usr/local/etc/rc.ipfw"
+firewall_coscripts="/usr/local/etc/rc.ipfw_stop"
 ipfw_defer="YES"
