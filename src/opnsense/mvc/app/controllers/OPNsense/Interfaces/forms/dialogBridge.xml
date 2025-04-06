@@ -1,0 +1,194 @@
+<form>
+    <field>
+        <id>bridge.bridgeif</id>
+        <label>Device</label>
+        <type>info</type>
+        <grid_view>
+            <width>12em</width>
+        </grid_view>
+    </field>
+    <field>
+        <id>bridge.members</id>
+        <label>Member interfaces</label>
+        <type>select_multiple</type>
+        <help>Interfaces participating in the bridge.</help>
+    </field>
+    <field>
+        <id>bridge.descr</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>You may enter a description here for your reference (not parsed).</help>
+    </field>
+    <field>
+        <id>bridge.linklocal</id>
+        <label>Enable link-local address</label>
+        <type>checkbox</type>
+        <help>By default, link-local addresses for bridges are disabled. You can enable them manually using this option. However, when a bridge interface has IPv6 addresses, IPv6 addresses on a member interface will be automatically removed before the interface is added.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Spanning Tree Protocol (RSTP/STP)</label>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>bridge.enablestp</id>
+        <label>Enable</label>
+        <type>checkbox</type>
+        <help>Enable spanning tree options for this bridge.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>bridge.proto</id>
+        <label>Protocol</label>
+        <type>dropdown</type>
+        <help>Protocol used for spanning tree.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>bridge.stp</id>
+        <label>STP interfaces</label>
+        <type>select_multiple</type>
+        <help>Enable Spanning Tree Protocol on interface. The if_bridge(4) driver has support for the IEEE 802.1D Spanning Tree Protocol (STP). STP is used to detect and remove loops in a network topology.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>bridge.maxage</id>
+        <label>Valid time</label>
+        <type>text</type>
+        <help>Set the time that a Spanning Tree Protocol configuration is valid. The default is 20 seconds. The minimum is 6 seconds and the maximum is 40 seconds.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>bridge.fwdelay</id>
+        <label>Forward time</label>
+        <type>text</type>
+        <help>Set the time that must pass before an interface begins forwarding packets when Spanning Tree is enabled. The default is 15 seconds. The minimum is 4 seconds and the maximum is 30 seconds.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>bridge.holdcnt</id>
+        <label>Hold count</label>
+        <type>text</type>
+        <help>Set the transmit hold count for Spanning Tree. This is the number of packets transmitted before being rate limited. The default is 6. The minimum is 1 and the maximum is 10.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Advanced</label>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>bridge.maxaddr</id>
+        <label>Cache size</label>
+        <type>text</type>
+        <help>Set the size of the bridge address cache to size. The default is 2000 entries.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>bridge.timeout</id>
+        <label>Cache entry expire time (s)</label>
+        <type>text</type>
+        <help>Set the timeout of address cache entries to this number of seconds. If seconds is zero, then address cache entries will not be expired. The default is 1200 seconds.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>bridge.span</id>
+        <label>Span port</label>
+        <type>dropdown</type>
+        <help>Add the interface named by interface as a span port on the bridge. Span ports transmit a copy of every frame received by the bridge. This is most useful for snooping a bridged network passively on another host connected to one of the span ports of the bridge.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>bridge.edge</id>
+        <label>Edge ports</label>
+        <type>select_multiple</type>
+        <help>Set interface as an edge port. An edge port connects directly to end stations and cannot create bridging loops in the network; this allows it to transition straight to forwarding.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>bridge.autoedge</id>
+        <label>Auto Edge ports</label>
+        <type>select_multiple</type>
+        <help>Allow interface to automatically detect edge status. This is the default for all interfaces added to a bridge. (This will disable the autoedge status of interfaces.)</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>bridge.ptp</id>
+        <label>PTP ports</label>
+        <type>select_multiple</type>
+        <help>Set the interface as a point-to-point link. This is required for straight transitions to forwarding and should be enabled on a direct link to another RSTP-capable switch.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>bridge.autoptp</id>
+        <label>Auto PTP ports</label>
+        <type>select_multiple</type>
+        <help>Automatically detect the point-to-point status on interface by checking the full duplex link status. This is the default for interfaces added to the bridge. (The interfaces selected here will be removed from default autoedge status.)</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>bridge.static</id>
+        <label>Sticky ports</label>
+        <type>select_multiple</type>
+        <help>Mark an interface as a "sticky" interface. Dynamically learned address entries are treated as static once entered into the cache. Sticky entries are never aged out of the cache or replaced, even if the address is seen on a different interface.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>bridge.private</id>
+        <label>Private ports</label>
+        <type>select_multiple</type>
+        <help>Mark an interface as a "private" interface. A private interface does not forward any traffic to any other port that is also a private interface.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+</form>
