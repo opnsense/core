@@ -107,6 +107,9 @@ function ca_chain_array(&$cert)
                 $crt = false;
             }
             if ($crt) {
+                if (in_array($crt, $chain)) {
+                    break; /* exit endless loop */
+                }
                 $chain[] = $crt;
             }
         }

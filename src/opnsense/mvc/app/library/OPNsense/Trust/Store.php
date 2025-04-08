@@ -596,7 +596,11 @@ class Store
     {
         $chain = [];
         while (($item = self::getCA(!isset($item) ? $caref : $item->caref)) != null) {
-            $chain[] = base64_decode((string)$item->crt);
+            $data = base64_decode((string)$item->crt);
+            if (in_array($data, $chain)) {
+                break; /* exit endless loop */
+            }
+            $chain[] = $data;
         }
         return implode("\n", $chain);
     }
