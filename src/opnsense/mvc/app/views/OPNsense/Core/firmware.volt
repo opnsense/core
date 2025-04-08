@@ -667,7 +667,7 @@
                     $("#firmware_mirror").find('option').remove();
                     $("#firmware_type").find('option').remove();
                     $("#firmware_flavour").find('option').remove();
-                    $("#firmware_reboot").prop('checked', firmwareconfig['reboot'] !== '');
+                    $("#firmware_reboot").prop('checked', firmwareconfig['reboot'] == '1');
 
                     $.each(firmwareoptions.mirrors, function(key, value) {
                         var selected = false;
@@ -764,7 +764,7 @@
             confopt.mirror = $("#firmware_mirror_value").val();
             confopt.flavour = $("#firmware_flavour_value").val();
             confopt.type = $("#firmware_type").val();
-            confopt.reboot = $("#firmware_reboot").is(":checked");
+            confopt.reboot = $("#firmware_reboot").is(":checked") ? '1' : '0';
             confopt.subscription = $("#firmware_subscription").val();
             ajaxCall('/api/core/firmware/set', { 'firmware': confopt }, function (data, status) {
                 $("#settingstab_progress").removeClass("fa fa-spinner fa-pulse");
