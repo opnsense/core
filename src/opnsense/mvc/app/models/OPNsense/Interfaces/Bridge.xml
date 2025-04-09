@@ -12,7 +12,7 @@
                         <type>UniqueConstraint</type>
                     </check001>
                 </Constraints>
-                <Mask>/^bridge(\d)*$/</Mask>
+                <Mask>/^bridge[\d]+$/</Mask>
             </bridgeif>
             <members type=".\BridgeMemberField">
                 <Required>Y</Required>
