@@ -1,0 +1,74 @@
+<model>
+    <mount>/bridges</mount>
+    <version>1.0.0</version>
+    <description>Bridge interfaces</description>
+    <items>
+        <bridged type="ArrayField">
+            <bridgeif type="TextField">
+                <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>Bridge already exists!</ValidationMessage>
+                        <type>UniqueConstraint</type>
+                    </check001>
+                </Constraints>
+                <Mask>/^bridge[\d]+$/</Mask>
+            </bridgeif>
+            <members type=".\BridgeMemberField">
+                <Required>Y</Required>
+                <Multiple>Y</Multiple>
+            </members>
+            <linklocal type="BooleanField"/>
+            <enablestp type="BooleanField"/>
+            <proto type="OptionField">
+                <Required>Y</Required>
+                <Default>rstp</Default>
+                <OptionValues>
+                    <rstp>RSTP</rstp>
+                    <stp>STP</stp>
+                </OptionValues>
+            </proto>
+            <stp type=".\BridgeMemberField">
+                <Multiple>Y</Multiple>
+            </stp>
+            <maxage type="IntegerField">
+                <MinimumValue>6</MinimumValue>
+                <MaximumValue>40</MaximumValue>
+            </maxage>
+            <fwdelay type="IntegerField">
+                <MinimumValue>4</MinimumValue>
+                <MaximumValue>30</MaximumValue>
+            </fwdelay>
+            <holdcnt type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>10</MaximumValue>
+            </holdcnt>
+            <maxaddr type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+            </maxaddr>
+            <timeout  type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </timeout>
+            <span type=".\BridgeMemberField"/>
+            <edge type=".\BridgeMemberField">
+                <Multiple>Y</Multiple>
+            </edge>
+            <autoedge type=".\BridgeMemberField">
+                <Multiple>Y</Multiple>
+            </autoedge>
+            <ptp type=".\BridgeMemberField">
+                <Multiple>Y</Multiple>
+            </ptp>
+            <autoptp type=".\BridgeMemberField">
+                <Multiple>Y</Multiple>
+            </autoptp>
+            <static type=".\BridgeMemberField">
+                <Multiple>Y</Multiple>
+            </static>
+            <private type=".\BridgeMemberField">
+                <Multiple>Y</Multiple>
+            </private>
+            <descr type="DescriptionField"/>
+        </bridged>
+    </items>
+</model>

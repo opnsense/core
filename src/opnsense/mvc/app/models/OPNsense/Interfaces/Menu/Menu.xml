@@ -2,9 +2,7 @@
     <Interfaces>
         <Assignments order="200" url="/interfaces_assign.php" cssClass="fa fa-pencil fa-fw"/>
         <Devices order="210" cssClass="fa fa-archive fa-fw">
-            <Bridge url="/interfaces_bridge.php">
-                <Edit url="/interfaces_bridge_edit.php*" visibility="hidden"/>
-            </Bridge>
+            <Bridge url="/ui/interfaces/bridge"/>
             <GIF url="/ui/interfaces/gif"/>
             <GRE url="/ui/interfaces/gre"/>
             <LAGG url="/ui/interfaces/lagg"/>
