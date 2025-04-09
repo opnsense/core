@@ -508,15 +508,15 @@ function legacy_interfaces_details($intf = null)
             $result[$current_interface]["members"][$matches[1]] = [
                 "flags" => explode(",", strtolower($matches[2]))
             ];
-        } elseif  (preg_match("/\tnd6 options=\w+<(.*)>/", $line, $matches)) {
+        } elseif (preg_match("/\tnd6 options=\w+<(.*)>/", $line, $matches)) {
             $result[$current_interface]["nd6"] = [
                 "flags" => explode(",", strtolower($matches[1]))
             ];
-        } elseif  (preg_match("/\tid ([\w\:]+) priority (\d+) hellotime (\d+) fwddelay (\d+).*/", $line, $matches)) {
+        } elseif (preg_match("/\tid ([\w\:]+) priority (\d+) hellotime (\d+) fwddelay (\d+).*/", $line, $matches)) {
             $result[$current_interface]["priority"] = $matches[2];
             $result[$current_interface]["hellotime"] = $matches[3];
             $result[$current_interface]["fwddelay"] = $matches[4];
-        } elseif  (preg_match("/\tmaxage (\d+) holdcnt (\d+) proto (\w+) maxaddr (\d+) timeout (\d+).*/", $line, $matches)) {
+        } elseif (preg_match("/\tmaxage (\d+) holdcnt (\d+) proto (\w+) maxaddr (\d+) timeout (\d+).*/", $line, $matches)) {
             $result[$current_interface]["maxage"] = $matches[1];
             $result[$current_interface]["holdcnt"] = $matches[2];
             $result[$current_interface]["proto"] = $matches[3];

@@ -50,4 +50,3 @@ foreach (array_keys($ifconfig_details) as $ifname) {
 foreach ($current_bridgeifs as $bridge) {
     _interfaces_bridge_configure($bridge, $ifconfig_details);
 }
-

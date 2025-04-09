@@ -258,21 +258,25 @@ function _interfaces_bridge_configure($bridge, $ifconfig_details = null)
         $section_members = explode(',', $bridge[$section] ?? '');
         foreach ($members as $member => $device) {
             $flag = $section == 'static' ? 'sticky' : $section;
-            if (str_starts_with($section, 'auto') && (
+            if (
+                str_starts_with($section, 'auto') && (
                 !isset($current_members[$device]) ||
                 in_array($flag, $current_members[$device]['flags']) == in_array($member, $section_members)
-            )) {
+                )
+            ) {
                 /* in list equals off for tags starting with "auto" */
                 mwexecf(sprintf(
                     "/sbin/ifconfig %s %s %s",
                     $bridgeif,
-                    (in_array($member, $section_members) ? '-' : ''). $flag,
+                    (in_array($member, $section_members) ? '-' : '') . $flag,
                     $device
                 ));
-            } elseif (!str_starts_with($section, 'auto') && (
+            } elseif (
+                !str_starts_with($section, 'auto') && (
                 !isset($current_members[$device]) ||
                 in_array($flag, $current_members[$device]['flags']) != in_array($member, $section_members)
-            )) {
+                )
+            ) {
                 mwexecf(sprintf(
                     "/sbin/ifconfig %s %s %s",
                     $bridgeif,
