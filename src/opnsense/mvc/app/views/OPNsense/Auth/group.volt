@@ -28,7 +28,7 @@
     'use strict';
 
     $( document ).ready(function () {
-        let grid_group = $("#grid-group").UIBootgrid({
+        let grid_group = $("#{{formGridGroup['table_id']}}").UIBootgrid({
             search:'/api/auth/group/search/',
             get:'/api/auth/group/get/',
             add:'/api/auth/group/add/',
@@ -56,32 +56,8 @@
 
 </script>
 
-
 <div class="tab-content content-box">
-    <div id="group" class="tab-pane fade in active">
-        <table id="grid-group" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogGroup">
-            <thead>
-                <tr>
-                    <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                    <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
-                    <th data-column-id="member" data-type="string" data-formatter="member_count">{{ lang._('Member Count') }}</th>
-                    <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
-                    <th data-column-id="commands" data-width="10em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td></td>
-                    <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                        <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
+    {{ partial('layout_partials/base_bootgrid_table', formGridGroup + {'command_width': '10em'})}}
 </div>
 
-{{ partial("layout_partials/base_dialog",['fields':formDialogEditGroup,'id':'DialogGroup','label':lang._('Edit Group')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditGroup,'id':formGridGroup['edit_dialog_id'],'label':lang._('Edit Group')])}}

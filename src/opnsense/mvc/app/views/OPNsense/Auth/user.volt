@@ -28,7 +28,7 @@
     'use strict';
 
     $( document ).ready(function () {
-        let grid_user = $("#grid-user").UIBootgrid({
+        let grid_user = $("#{{formGridUser['table_id']}}").UIBootgrid({
             search:'/api/auth/user/search/',
             get:'/api/auth/user/get/',
             add:'/api/auth/user/add/',
@@ -171,6 +171,8 @@
         $('.datepicker').datepicker({format: 'mm/dd/yyyy'});
         /* format  authorizedkeys */
         $("#user\\.authorizedkeys").css('max-width', 'inherit').prop('wrap', 'off');
+
+        $("#grid-user-buttons").children().insertAfter($("#{{ formGridUser['table_id'] }} tfoot [data-action='deleteSelected']"));
     });
 
 </script>
@@ -182,49 +184,32 @@
     .tooltip-inner {
         max-width: 1000px !important;
     }
+    .btn-user-action {
+        margin-left: 3px;
+    }
 </style>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" href="#user">{{ lang._('Users') }}</a></li>
     <li><a data-toggle="tab" href="#apikeys" id="tab_apikeys"> {{ lang._('ApiKeys') }} </a></li>
 </ul>
+
+<div id="grid-user-buttons" style="display: none;">
+    <button
+        id="upload_users"
+        type="button"
+        data-title="{{ lang._('Import Users') }}"
+        data-endpoint='/api/auth/user/upload'
+        title="{{ lang._('Import csv') }}"
+        data-toggle="tooltip"
+        class="btn btn-xs btn-user-action"
+    ><span class="fa fa-fw fa-upload"></span></button>&nbsp;
+    <button id="download_users" type="button" title="{{ lang._('Export as csv') }}" data-toggle="tooltip"  class="btn btn-xs btn-user-action"><span class="fa fa-fw fa-table"></span></button>
+</div>
+
 <div class="tab-content content-box">
     <div id="user" class="tab-pane fade in active">
-        <table id="grid-user" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogUser">
-            <thead>
-                <tr>
-                    <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                    <th data-column-id="name" data-type="string" data-formatter="username">{{ lang._('Name') }}</th>
-                    <th data-column-id="email" data-type="string" data-visible="false">{{ lang._('Email') }}</th>
-                    <th data-column-id="comment" data-type="string" data-visible="false">{{ lang._('Comments') }}</th>
-                    <th data-column-id="language" data-type="string" data-visible="false">{{ lang._('Language') }}</th>
-                    <th data-column-id="group_memberships" data-type="string">{{ lang._('Groups') }}</th>
-                    <th data-column-id="descr" data-type="string">{{ lang._('Description') }}</th>
-                    <th data-column-id="commands" data-width="10em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td></td>
-                    <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                        <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
-                        <button
-                            id="upload_users"
-                            type="button"
-                            data-title="{{ lang._('Import Users') }}"
-                            data-endpoint='/api/auth/user/upload'
-                            title="{{ lang._('Import csv') }}"
-                            data-toggle="tooltip"
-                            class="btn btn-xs"
-                        ><span class="fa fa-fw fa-upload"></span></button>
-                        <button id="download_users" type="button" title="{{ lang._('Export as csv') }}" data-toggle="tooltip"  class="btn btn-xs"><span class="fa fa-fw fa-table"></span></button>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
+        {{ partial('layout_partials/base_bootgrid_table', formGridUser + {'command_width': '9em'})}}
     </div>
     <div id="apikeys" class="tab-pane fade in">
         <table id="grid-apikey" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogUser">
@@ -250,4 +235,4 @@
     </div>
 </div>
 
-{{ partial("layout_partials/base_dialog",['fields':formDialogEditUser,'id':'DialogUser','label':lang._('Edit User')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditUser,'id':formGridUser['edit_dialog_id'],'label':lang._('Edit User')])}}
