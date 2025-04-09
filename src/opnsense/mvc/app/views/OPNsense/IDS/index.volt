@@ -234,49 +234,43 @@ POSSIBILITY OF SUCH DAMAGE.
         /**
          * load content on tab changes
          */
+        let gridRuleFilesInitialized = false;
+        let gridInstalledRulesInitialized = false;
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             loadGeneralSettings();
             if (e.target.id == 'download_settings_tab') {
                 /**
                  * grid for installable rule files
                  */
-                $('#grid-rule-files').bootgrid('destroy'); // always destroy previous grid, so data is always fresh
-                $("#grid-rule-files").UIBootgrid({
-                    search:'/api/ids/settings/listRulesets',
-                    get:'/api/ids/settings/getRuleset/',
-                    set:'/api/ids/settings/setRuleset/',
-                    toggle:'/api/ids/settings/toggleRuleset/',
-                    options:{
-                        navigation:0,
-                        formatters:{
-                            editor: function (column, row) {
-                                return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit bootgrid-tooltip\" data-row-id=\"" + row.filename + "\"><span class=\"fa fa-pencil fa-fw\"></span></button>";
-                            },
-                            boolean: function (column, row) {
-                                if (parseInt(row[column.id], 2) == 1) {
-                                    return "<span class=\"fa fa-check fa-fw command-boolean\" data-value=\"1\" data-row-id=\"" + row.filename + "\"></span>";
-                                } else {
-                                    return "<span class=\"fa fa-times fa-fw command-boolean\" data-value=\"0\" data-row-id=\"" + row.filename + "\"></span>";
-                                }
-                            }
-                        },
-                        converters: {
-                            // show "not installed" for rules without timestamp (not on disc)
-                            rulets: {
-                                from: function (value) {
-                                    return value;
+                if (!gridRuleFilesInitialized) {
+                    $("#grid-rule-files").UIBootgrid({
+                        search:'/api/ids/settings/listRulesets',
+                        get:'/api/ids/settings/getRuleset/',
+                        set:'/api/ids/settings/setRuleset/',
+                        toggle:'/api/ids/settings/toggleRuleset/',
+                        options:{
+                            navigation:0,
+                            formatters:{
+                                editor: function (column, row) {
+                                    return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit bootgrid-tooltip\" data-row-id=\"" + row.filename + "\"><span class=\"fa fa-pencil fa-fw\"></span></button>";
                                 },
-                                to: function (value) {
-                                    if ( value == null ) {
-                                        return "{{ lang._('not installed') }}";
+                                boolean: function (column, row) {
+                                    if (parseInt(row[column.id], 2) == 1) {
+                                        return "<span class=\"fa fa-check fa-fw command-boolean\" data-value=\"1\" data-row-id=\"" + row.filename + "\"></span>";
                                     } else {
-                                        return value;
+                                        return "<span class=\"fa fa-times fa-fw command-boolean\" data-value=\"0\" data-row-id=\"" + row.filename + "\"></span>";
                                     }
+                                },
+                                rulets: function (column, row) {
+                                    return row[column.id] == null ? "{{ lang._('not installed') }}" : row[column.id];
                                 }
                             }
                         }
-                    }
-                });
+                    });
+                    gridRuleFilesInitialized = true;
+                } else {
+                    $('#grid-rule-files').bootgrid('reload');
+                }
                 // display file settings (if available)
                 ajaxGet("/api/ids/settings/getRulesetproperties", {}, function(data, status) {
                     if (status == "success") {
@@ -316,8 +310,8 @@ POSSIBILITY OF SUCH DAMAGE.
                 /**
                  * grid installed rules
                  */
-                $('#grid-installedrules').bootgrid('destroy'); // always destroy previous grid, so data is always fresh
-                $("#grid-installedrules").UIBootgrid(
+                if (!gridInstalledRulesInitialized) {
+                    $("#grid-installedrules").UIBootgrid(
                         {   search:'/api/ids/settings/searchinstalledrules',
                             get:'/api/ids/settings/get_rule_info/',
                             set:'/api/ids/settings/set_rule/',
@@ -367,7 +361,12 @@ POSSIBILITY OF SUCH DAMAGE.
                             },
                             toggle:'/api/ids/settings/toggleRule/'
                         }
-                );
+                    );
+                    gridInstalledRulesInitialized = true;
+                } else {
+                    $('#grid-installedrules').bootgrid('reload');
+                }
+                
                 /**
                  * disable/enable [+action] selected rules
                  */
@@ -763,13 +762,13 @@ POSSIBILITY OF SUCH DAMAGE.
                       </td>
                     </tr>
                   </table>
-                  <div style="max-height: 400px; width: 100%; margin: 0; overflow-y: auto;" id="grid-rule-files-container">
+                  <div style="width: 100%; margin: 0; overflow-y: auto;" id="grid-rule-files-container">
                     <table id="grid-rule-files" class="table table-condensed table-hover table-striped table-responsive" data-editAlert="rulesetChangeMessage" data-editDialog="DialogRuleset">
                         <thead>
                         <tr>
                             <th data-column-id="filename" data-type="string" data-visible="false" data-identifier="true">{{ lang._('Filename') }}</th>
                             <th data-column-id="description" data-type="string" data-sortable="false" data-visible="true">{{ lang._('Description') }}</th>
-                            <th data-column-id="modified_local" data-type="rulets" data-sortable="false" data-visible="true">{{ lang._('Last updated') }}</th>
+                            <th data-column-id="modified_local" data-formatter="rulets" data-sortable="false" data-visible="true">{{ lang._('Last updated') }}</th>
                             <th data-column-id="enabled" data-formatter="boolean" data-sortable="false" data-width="10em">{{ lang._('Enabled') }}</th>
                             <th data-column-id="edit" data-formatter="editor" data-sortable="false" data-width="10em">{{ lang._('Edit') }}</th>
                         </tr>
