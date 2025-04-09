@@ -205,122 +205,101 @@ function interfaces_bridge_configure($device)
     return null;
 }
 
-function _interfaces_bridge_configure($bridge)
+function _interfaces_bridge_configure($bridge, $ifconfig_details = null)
 {
-    $ret = $bridge['bridgeif'];
+    $bridgeif = $bridge['bridgeif'];
 
-    /* XXX avoid destroy/create */
-    legacy_interface_destroy($bridge['bridgeif']);
-    legacy_interface_create($bridge['bridgeif']);
+    if (empty($ifconfig_details)) {
+        $ifconfig_details = legacy_interfaces_details();
+    }
+    $this_if = !empty($ifconfig_details[$bridgeif]) ? $ifconfig_details[$bridgeif] : [];
 
-    $checklist = get_configured_interface_with_descr();
-    $members = [];
+    if (empty($ifconfig_details[$bridgeif]) && empty(legacy_interface_create($bridgeif))) {
+        return; /* not found, unable to create. errors are logged inside legacy_interface_create() */
+    }
 
     /* find all required members */
+    $members = [];
     foreach (explode(',', $bridge['members'] ?? '') as $member) {
-        if (empty($checklist[$member])) {
-            /* ignores disabled ones */
-            continue;
-        }
-
         $device = get_real_interface($member);
-        if (!does_interface_exist($device)) {
-            log_msg("Device {$bridge['bridgeif']} cannot attach non-existent member {$device}, skipping now.");
-            /* continue but mark this as failed for caller so they could retry */
-            $ret = null;
+        if (empty($ifconfig_details[$device])) {
+            log_msg("Device {$bridgeif} cannot attach non-existent member {$device}, skipping now.");
             continue;
         }
-
         $members[$member] = $device;
     }
 
-    /* calculate smaller mtu and enforce it */
-    $mtu = null;
-    foreach ($members as $member => $device) {
-        $opts = legacy_interface_stats($device);
-        if (!empty($opts['mtu']) && ($mtu == null || $opts['mtu'] < $mtu)) {
-            $mtu = $opts['mtu'];
-        }
+    if (
+        empty($this_if) || empty($this_if['nd6']) ||
+        in_array('AUTO_LINKLOCAL', $this_if['nd6']['flags']) != !empty($bridge['linklocal'])
+    ) {
+        mwexecf('/sbin/ifconfig %s inet6 %sauto_linklocal', [$bridgeif, !empty($bridge['linklocal']) ? '' : '-']);
     }
-
-    mwexecf('/sbin/ifconfig %s inet6 %sauto_linklocal', [$bridge['bridgeif'], isset($bridge['linklocal']) ? '' : '-']);
 
     /* add member interfaces to bridge */
+    $current_members = !empty($this_if['members']) ? $this_if['members'] : [];
     foreach ($members as $member => $device) {
-        configure_interface_hardware($device);
-        legacy_interface_mtu($device, $mtu);
-        legacy_interface_flags($device, 'up');
-        legacy_bridge_member($bridge['bridgeif'], $device);
+        if (empty($current_members[$device])) {
+            configure_interface_hardware($device, $ifconfig_details);
+            legacy_interface_flags($device, 'up');
+            legacy_bridge_member($bridgeif, $device);
+        }
     }
 
-    if (isset($bridge['enablestp'])) {
-        mwexecf('/sbin/ifconfig %s proto %s', [$bridge['bridgeif'], $bridge['proto']]);
-        if (!empty($bridge['stp'])) {
-            foreach (explode(',', $bridge['stp']) as $stpif) {
-                mwexecf('/sbin/ifconfig %s stp %s', [$bridge['bridgeif'], get_real_interface($stpif)]);
+    /* remove unassigned members */
+    foreach (array_keys($current_members) as $device) {
+        if (!in_array($device, $members)) {
+            mwexecf('/sbin/ifconfig %s deletem %s', [$bridgeif, $device]);
+        }
+    }
+
+    /* compare and apply requested flags */
+    foreach (['stp', 'edge', 'autoedge', 'ptp', 'autoptp', 'static', 'private', 'span'] as $section) {
+        $section_members = explode(',', $bridge[$section] ?? '');
+        foreach ($members as $member => $device) {
+            $flag = $section == 'static' ? 'sticky' : $section;
+            if (str_starts_with($section, 'auto') && (
+                !isset($current_members[$device]) ||
+                in_array($flag, $current_members[$device]['flags']) == in_array($member, $section_members)
+            )) {
+                /* in list equals off for tags starting with "auto" */
+                mwexecf(sprintf(
+                    "/sbin/ifconfig %s %s %s",
+                    $bridgeif,
+                    (in_array($member, $section_members) ? '-' : ''). $flag,
+                    $device
+                ));
+            } elseif (!str_starts_with($section, 'auto') && (
+                !isset($current_members[$device]) ||
+                in_array($flag, $current_members[$device]['flags']) != in_array($member, $section_members)
+            )) {
+                mwexecf(sprintf(
+                    "/sbin/ifconfig %s %s %s",
+                    $bridgeif,
+                    (!in_array($member, $section_members) ? '-' : '') . $flag,
+                    $device
+                ));
             }
         }
-        if (!empty($bridge['maxage'])) {
-            mwexec("/sbin/ifconfig {$bridge['bridgeif']} maxage " . escapeshellarg($bridge['maxage']));
-        }
-        if (!empty($bridge['fwdelay'])) {
-            mwexec("/sbin/ifconfig {$bridge['bridgeif']} fwddelay " . escapeshellarg($bridge['fwdelay']));
-        }
-        if (!empty($bridge['holdcnt'])) {
-            mwexec("/sbin/ifconfig {$bridge['bridgeif']} holdcnt " . escapeshellarg($bridge['holdcnt']));
+    }
+
+    /* update changed bridge properties */
+    foreach (['maxage', 'fwddelay', 'holdcnt', 'maxaddr', 'timeout', 'proto'] as $prop) {
+        if (!empty($bridge[$prop]) && (empty($this_if[$prop]) ||  $this_if[$prop] != $bridge[$prop])) {
+            mwexecf(sprintf(
+                "/sbin/ifconfig %s %s %s",
+                $bridgeif,
+                $prop,
+                $bridge[$prop]
+            ));
         }
     }
 
-    if (!empty($bridge['maxaddr'])) {
-        mwexec("/sbin/ifconfig {$bridge['bridgeif']} maxaddr " . escapeshellarg($bridge['maxaddr']));
-    }
-    if (!empty($bridge['timeout'])) {
-        mwexec("/sbin/ifconfig {$bridge['bridgeif']} timeout " . escapeshellarg($bridge['timeout']));
-    }
-    if (!empty($bridge['span'])) {
-        $realif = get_real_interface($bridge['span']);
-        mwexec("/sbin/ifconfig {$bridge['bridgeif']} span {$realif}");
-    }
-    if (!empty($bridge['edge'])) {
-        foreach (explode(',', $bridge['edge']) as $edgeif) {
-            $realif = get_real_interface($edgeif);
-            mwexec("/sbin/ifconfig {$bridge['bridgeif']} edge {$realif}");
-        }
-    }
-    if (!empty($bridge['autoedge'])) {
-        foreach (explode(',', $bridge['autoedge']) as $edgeif) {
-            $realif = get_real_interface($edgeif);
-            mwexec("/sbin/ifconfig {$bridge['bridgeif']} -autoedge {$realif}");
-        }
-    }
-    if (!empty($bridge['ptp'])) {
-        foreach (explode(',', $bridge['ptp']) as $ptpif) {
-            $realif = get_real_interface($ptpif);
-            mwexec("/sbin/ifconfig {$bridge['bridgeif']} ptp {$realif}");
-        }
-    }
-    if (!empty($bridge['autoptp'])) {
-        foreach (explode(',', $bridge['autoptp']) as $ptpif) {
-            $realif = get_real_interface($ptpif);
-            mwexec("/sbin/ifconfig {$bridge['bridgeif']} -autoptp {$realif}");
-        }
-    }
-    if (!empty($bridge['static'])) {
-        foreach (explode(',', $bridge['static']) as $stickyif) {
-            $realif = get_real_interface($stickyif);
-            mwexec("/sbin/ifconfig {$bridge['bridgeif']} sticky {$realif}");
-        }
-    }
-    if (!empty($bridge['private'])) {
-        foreach (explode(',', $bridge['private']) as $privateif) {
-            $realif = get_real_interface($privateif);
-            mwexec("/sbin/ifconfig {$bridge['bridgeif']} private {$realif}");
-        }
+    if (empty($this_if['flags']) || !in_array('up', $this_if['flags'])) {
+        legacy_interface_flags($bridgeif, 'up');
     }
 
-    legacy_interface_flags($bridge['bridgeif'], 'up');
-
-    return $ret;
+    return $bridgeif;
 }
 
 function interfaces_lagg_configure($verbose = false)
