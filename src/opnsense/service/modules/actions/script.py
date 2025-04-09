@@ -37,18 +37,10 @@ class Action(BaseAction):
         except TypeError as e:
             return str(e)
 
-        try:
-            exit_status = subprocess.call(script_command, env=self.config_environment, shell=True)
-            # send response
-            if exit_status == 0:
-                return 'OK'
-            else:
-                syslog_error('[%s] returned exit status %d' % (message_uuid, exit_status))
-                return 'Error (%d)' % exit_status
-        except Exception as script_exception:
-            syslog_error('[%s] Script action failed with %s at %s' % (
-                message_uuid,
-                script_exception,
-                traceback.format_exc()
-            ))
-            return 'Execute error'
+        proc = subprocess.run(script_command, env=self.config_environment, shell=True)
+        # send response
+        if proc.returncode == 0 or self.disable_errors:
+            return 'OK'
+        else:
+            syslog_error('[%s] returned exit status %d' % (message_uuid, proc.returncode))
+            return 'Error (%d)' % proc.returncode
