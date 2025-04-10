@@ -60,7 +60,7 @@ if [ -n "${LQUERY}" -a -n "${RQUERY}" ]; then
 fi
 
 ALWAYS_REBOOT=$(/usr/local/sbin/pluginctl -g system.firmware.reboot)
-if [ -n "${ALWAYS_REBOOT}" ]; then
+if [ "${ALWAYS_REBOOT}" = "1" ]; then
 	WANT_REBOOT=0
 fi
 
