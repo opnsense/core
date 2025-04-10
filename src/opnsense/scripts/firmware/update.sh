@@ -65,7 +65,7 @@ if opnsense-update ${FORCE} -bk -c; then
 	fi
 fi
 
-if [ -n "${ALWAYS_REBOOT}" ]; then
+if [ "${ALWAYS_REBOOT}" = "1" ]; then
 	if [ "${PKGS_HASH}" != "$(${PKG} query %n-%v 2> /dev/null | sha256)" ]; then
 		output_reboot
 	fi
