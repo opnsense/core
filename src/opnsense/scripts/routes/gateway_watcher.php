@@ -142,5 +142,5 @@ while (1) {
         configdp_run($action, [implode(',', $alarm_gateways)]);
     }
 
-    sleep($alarm ? $wait : $poll);
+    sleep(count($alarm_gateways) ? $wait : $poll);
 }
