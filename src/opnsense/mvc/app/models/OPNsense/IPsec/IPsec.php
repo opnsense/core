@@ -203,8 +203,8 @@ class IPsec extends BaseModel
                 foreach (explode(',', (string)$item) as $item) {
                     $idx = 'server' . (string)(count($servers) + 1);
                     $mapping = [];
-                    if (isset($cnf->authserver)) {
-                        foreach ($cnf->authserver as $authserver) {
+                    if (isset($cnf->system->authserver)) {
+                        foreach ($cnf->system->authserver as $authserver) {
                             if ($authserver->name == $item) {
                                 $servers[$idx] = [
                                     'address' => (string)$authserver->host,
