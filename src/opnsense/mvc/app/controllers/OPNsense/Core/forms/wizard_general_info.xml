@@ -8,6 +8,7 @@
         <id>wizard.domain</id>
         <label>Domain</label>
         <type>text</type>
+        <help><![CDATA[Do not use 'local' as your internal domain name. It is reserved for and will interfere with mDNS (avahi, bonjour, etc.). Use the special-purpose internal or home.arpa domain instead.<br>e.g. <code>internal</code>, <code>name.internal</code>, <code>example.net</code>, <code>branch.example.com</code>, etc.]]</help>
     </field>
     <field>
         <id>wizard.language</id>
