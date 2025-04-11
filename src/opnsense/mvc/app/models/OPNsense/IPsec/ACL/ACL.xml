@@ -6,11 +6,11 @@
         <patterns>
             <pattern>ui/ipsec/key_pairs/*</pattern>
             <pattern>api/ipsec/key_pairs/*</pattern>
-            <pattern>api/ipsec/legacy_subsystem/*</pattern>
+            <pattern>api/ipsec/service/*</pattern>
         </patterns>
     </page-vpn-ipsec-keypairs>
     <page-vpn-ipsec>
-        <name>VPN: IPsec: Tunnels Settings [legacy]</name>
+        <name>VPN: IPsec: Tunnels [legacy]</name>
         <patterns>
             <pattern>ui/ipsec/tunnels</pattern>
             <pattern>api/ipsec/tunnel/*</pattern>
@@ -21,11 +21,12 @@
         <name>VPN: IPsec: Connections</name>
         <patterns>
             <pattern>ui/ipsec/connections</pattern>
+            <pattern>ui/ipsec/connections/settings</pattern>
             <pattern>ui/ipsec/vti</pattern>
             <pattern>api/ipsec/connections/*</pattern>
             <pattern>api/ipsec/pools/*</pattern>
+            <pattern>api/ipsec/service/*</pattern>
             <pattern>api/ipsec/vti/*</pattern>
-            <pattern>api/ipsec/legacy_subsystem/*</pattern>
         </patterns>
     </page-vpn-ipsec-connections>
 
@@ -47,10 +48,11 @@
         <patterns>
             <pattern>ui/ipsec/pre_shared_keys</pattern>
             <pattern>api/ipsec/pre_shared_keys/*</pattern>
+            <pattern>api/ipsec/service/*</pattern>
         </patterns>
     </page-vpn-ipsec-editkeys>
     <page-vpn-ipsec-mobile>
-        <name>VPN: IPsec: Mobile</name>
+        <name>VPN: IPsec: Mobile [legacy]</name>
         <patterns>
             <pattern>vpn_ipsec_mobile.php*</pattern>
         </patterns>
@@ -82,6 +84,7 @@
             <pattern>ui/ipsec/spd</pattern>
             <pattern>api/ipsec/spd/*</pattern>
             <pattern>api/ipsec/manual_spd/*</pattern>
+            <pattern>api/ipsec/service/*</pattern>
         </patterns>
     </page-status-ipsec-spd>
     <page-status-systemlogs-ipsecvpn>
