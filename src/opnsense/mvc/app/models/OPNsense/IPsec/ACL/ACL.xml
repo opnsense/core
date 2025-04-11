@@ -21,6 +21,7 @@
         <name>VPN: IPsec: Connections</name>
         <patterns>
             <pattern>ui/ipsec/connections</pattern>
+            <pattern>ui/ipsec/connections/settings</pattern>
             <pattern>ui/ipsec/vti</pattern>
             <pattern>api/ipsec/connections/*</pattern>
             <pattern>api/ipsec/pools/*</pattern>
