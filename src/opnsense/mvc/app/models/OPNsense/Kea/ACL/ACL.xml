@@ -10,6 +10,17 @@
             <pattern>api/kea/service/*</pattern>
         </patterns>
     </page-dhcp-kea-v4>
+    <page-dhcp-kea-v6>
+        <name>Services: DHCP: Kea(v6)</name>
+        <description>Allow access to the KEA dhcp6 server</description>
+        <patterns>
+            <pattern>ui/kea/dhcp/v6</pattern>
+            <pattern>ui/kea/dhcp/leases6</pattern>
+            <pattern>api/kea/dhcpv6/*</pattern>
+            <pattern>api/kea/leases6/*</pattern>
+            <pattern>api/kea/service/*</pattern>
+        </patterns>
+    </page-dhcp-kea-v6>
     <page-dhcp-kea-ctrl-agent>
         <name>Services: DHCP: Kea Ctrl Agent</name>
         <description>Allow access to the KEA Ctrl Agent</description>
