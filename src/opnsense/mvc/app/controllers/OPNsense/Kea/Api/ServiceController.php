@@ -30,6 +30,8 @@ namespace OPNsense\Kea\Api;
 
 use OPNsense\Base\ApiMutableServiceControllerBase;
 use OPNsense\Core\Backend;
+use OPNsense\Kea\KeaDhcpv4;
+use OPNsense\Kea\KeaDhcpv6;
 
 class ServiceController extends ApiMutableServiceControllerBase
 {
@@ -38,8 +40,8 @@ class ServiceController extends ApiMutableServiceControllerBase
     protected static $internalServiceEnabled = 'general.enabled';
     protected static $internalServiceName = 'kea';
 
-    /**
-     * TODO: overwrite when implementing KeaDhcpv6 as well. Both services share the same rc script
-     * protected function serviceEnabled() {}
-     */
+    protected function serviceEnabled()
+    {
+        return  (new KeaDhcpv4())->general->enabled == '1' || (new KeaDhcpv6())->general->enabled == '1';
+    }
 }

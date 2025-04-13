@@ -1,0 +1,69 @@
+<form>
+    <field>
+        <type>header</type>
+        <label>Service</label>
+    </field>
+    <field>
+        <id>dhcpv6.general.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>Enable DHCPv6 server.</help>
+    </field>
+    <field>
+        <id>dhcpv6.general.manual_config</id>
+        <label>Manual config</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Disable configuration file generation and manage the file (/usr/local/etc/kea/kea-dhcp4.conf) manually.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>General settings</label>
+    </field>
+    <field>
+        <id>dhcpv6.general.interfaces</id>
+        <label>Interfaces</label>
+        <type>select_multiple</type>
+        <help>Select interfaces to listen on.</help>
+    </field>
+    <field>
+        <id>dhcpv6.general.valid_lifetime</id>
+        <label>Valid lifetime</label>
+        <type>text</type>
+        <help>Defines how long the addresses (leases) given out by the server are valid (in seconds)</help>
+    </field>
+    <field>
+        <id>dhcpv6.general.fwrules</id>
+        <label>Firewall rules</label>
+        <type>checkbox</type>
+        <help>Automatically add a basic set of firewall rules to allow dhcp traffic, more fine grained controls can be offered manually when disabling this option.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>High Availability</label>
+    </field>
+    <field>
+        <id>dhcpv6.ha.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>Enable High availability hook, requires the Control Agent to be enabled as well.</help>
+    </field>
+    <field>
+        <id>dhcpv6.ha.this_server_name</id>
+        <label>This server name</label>
+        <type>text</type>
+        <help>The name of this server, should match with one of the entries in the HA peers.
+        Leave empty to use this machines hostname
+        </help>
+    </field>
+    <field>
+        <id>dhcpv6.ha.max_unacked_clients</id>
+        <label>Max Unacked clients</label>
+        <type>text</type>
+        <help>
+        This specifies the number of clients which send messages to the partner but appear to not receive any response.
+        A higher value needs a busier environment in order to consider a member down, when set to 0,
+        any network disruption will cause a failover to happen.
+        </help>
+    </field>
+</form>

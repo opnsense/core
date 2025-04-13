@@ -42,6 +42,18 @@ function kea_services()
             'name' => 'kea-dhcpv4',
         ];
     }
+    if (!empty((string)(new \OPNsense\Kea\KeaDhcpv6())->general->enabled)) {
+        $services[] = [
+            'description' => gettext('KEA DHCPv6 server'),
+            'pidfile' => '/var/run/kea/kea-dhcp6.kea-dhcp6.pid',
+            'configd' => [
+                'restart' => ['kea restart'],
+                'start' => ['kea start'],
+                'stop' => ['kea stop'],
+            ],
+            'name' => 'kea-dhcpv4',
+        ];
+    }
     return $services;
 }
 
@@ -113,11 +125,16 @@ function kea_configure()
 function kea_configure_do($verbose = false)
 {
     $keaDhcpv4 = new \OPNsense\Kea\KeaDhcpv4();
-    if ($keaDhcpv4->isEnabled()) {
+    $keaDhcpv6 = new \OPNsense\Kea\KeaDhcpv6();
+    if ($keaDhcpv4->isEnabled() || $keaDhcpv6->isEnabled()) {
         service_log('Sync KEA DHCP config...', $verbose);
-        if ($keaDhcpv4->general->manual_config->isEmpty()) {
+        if ($keaDhcpv4->isEnabled() && $keaDhcpv4->general->manual_config->isEmpty()) {
             /* skip kea-dhcp4.conf when configured manually */
             $keaDhcpv4->generateConfig();
+        }
+        if ($keaDhcpv6->isEnabled() && $keaDhcpv6->general->manual_config->isEmpty()) {
+            /* skip kea-dhcp6.conf when configured manually */
+            $keaDhcpv6->generateConfig();
         }
         (new \OPNsense\Kea\KeaCtrlAgent())->generateConfig();
         service_log("done.\n", $verbose);
