@@ -32,6 +32,41 @@ POSSIBILITY OF SUCH DAMAGE.
        * update service status
        */
       updateServiceControlUI('ids');
+      // Add Select All Options button to DialogPolicy modal when it's shown
+      $(document).on('shown.bs.modal', '#DialogPolicy', function() {
+          // Check if button already exists to avoid duplicates
+          if ($('#selectAllOptions').length === 0) {
+              // Add button at the top of the form
+              $('#DialogPolicy .modal-body').prepend('<button type="button" class="btn btn-primary" id="selectAllOptions" style="margin-bottom: 10px;">Select All Options</button>');
+              
+              // Add click event handler
+              $('#selectAllOptions').on('click', function() {
+                  // Check and enable all checkboxes
+                  $('input[type="checkbox"]').each(function() {
+                      $(this).prop('disabled', false);
+                      $(this).prop('checked', true);
+                      $(this).trigger('change');
+                  });
+                  
+                  // Handle all select elements enhanced by Bootstrap Select
+                  $('select').each(function() {
+                      $(this).prop('disabled', false);
+                      
+                      var isMultiple = $(this).prop('multiple');
+                      var allValues = [];
+                      $(this).find('option').each(function() {
+                          allValues.push($(this).val());
+                      });
+                      
+                      // Use jQuery and Bootstrap Select to set the value correctly
+                      $(this).selectpicker('val', isMultiple ? allValues : allValues[0]);
+                      $(this).selectpicker('refresh');
+                  });
+                  
+                  console.log("All checkboxes and select options activated!");
+              });
+          }
+      });
       $("#grid-policy").UIBootgrid({
               search:'/api/ids/settings/searchPolicy',
               get:'/api/ids/settings/getPolicy/',
