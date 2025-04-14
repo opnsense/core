@@ -178,7 +178,7 @@ class MenuSystem
     {
         $config = Config::getInstance()->object();
         if (isset($config->dhcpd) && isset($config->dhcpd->$if) && !empty((string)$config->dhcpd->$if->enable)) {
-            /* still configured on intreface */
+            /* still configured on interface */
             return true;
         } elseif (isset($config->dnsmasq) && empty((string)$config->dnsmasq->enable)) {
             /* dnsmasq not configured at all */
