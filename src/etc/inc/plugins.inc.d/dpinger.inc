@@ -311,6 +311,8 @@ function dpinger_status()
             'monitor' => !empty($gwitem['monitor']) ? $gwitem['monitor'] : '~',
             'gateway' => $gwitem['gateway'] ?? '',
             'monitor_killstates' => $gwitem['monitor_killstates'] ?? '0',
+            'monitor_killstates_priority' => $gwitem['monitor_killstates_priority'] ?? '0',
+            'priority' => $gwitem['priority'] ?? '255',
             'name' => $gwname,
             'stddev' => '~',
             'delay' => '~',
