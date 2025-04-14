@@ -45,6 +45,11 @@ class Bridge extends BaseModel
                 continue;
             }
             $key = $bridge->__reference;
+
+            if (!isset($bridge->members)) {
+                continue;
+            }
+
             $members = explode(',', $bridge->members->getCurrentValue());
             if (!$bridge->span->isEmpty() && in_array($bridge->span->getCurrentValue(), $members)) {
                 $messages->appendMessage(
