@@ -36,10 +36,10 @@ from lib.arp import ARP
 from lib.pf import PF
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-username', help='username', type=str, required=True)
-parser.add_argument('-zoneid', help='zone number to allow this user in', type=str, required=True)
-parser.add_argument('-authenticated_via', help='authentication source', type=str)
-parser.add_argument('-ip_address', help='source ip address', type=str)
+parser.add_argument('--username', help='username', type=str, required=True)
+parser.add_argument('--zoneid', help='zone number to allow this user in', type=str, required=True)
+parser.add_argument('--authenticated_via', help='authentication source', type=str)
+parser.add_argument('--ip_address', help='source ip address', type=str)
 args = parser.parse_args()
 
 arp_entry = ARP().get_by_ipaddress(args.ip_address)
