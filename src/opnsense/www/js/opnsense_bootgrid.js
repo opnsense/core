@@ -427,7 +427,7 @@ class UIBootgrid {
                     visible: field.visible,
                     formatter: this.options.formatters['commands'] ?? null,
                     title: field.label,
-                    resizable: false,
+                    resizable: true,
                     sequence: field.sequence ?? null,
                     frozen: true,
                     headerSort: false,
@@ -1641,24 +1641,24 @@ class UIBootgrid {
     }
 
     /**
-     * 
      * jQuery.bootgrid backwards compatibility functions
      */
+
     append(rows) {
         this.table.addData(rows);
     }
 
-    clear(...args) {
+    clear() {
         if (this.tableInitialized) {
             this.table.clearData();
         }
     }
 
-    reload(...args) {
+    reload() {
         this._reload();
     }
 
-    getRowCount(...args) {
+    getRowCount() {
         return this.curRowCount;
     }
 
@@ -1666,7 +1666,7 @@ class UIBootgrid {
         return this.table.getSelectedData().map(row => row[this.options.datakey]);
     }
 
-    getCurrentRows(...args) {
+    getCurrentRows() {
         return this.table.getData();
     }
 
@@ -1674,11 +1674,11 @@ class UIBootgrid {
         return this.table.getDataCount();
     }
 
-    getCurrentPage(...args) {
+    getCurrentPage() {
         return this.table.getPage();
     }
 
-    destroy(...args) {
+    destroy() {
         this._destroyTable();
     }
 
