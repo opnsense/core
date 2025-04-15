@@ -2943,7 +2943,7 @@ if [ -f /var/run/dhcp6c.pid ]; then
     /bin/pkill -HUP -F /var/run/dhcp6c.pid
 else
     /usr/bin/logger -t dhcp6c "RTSOLD script - Starting dhcp6c daemon"
-    {$dhcp6ccommand} || /usr/bin/logger -t dhcp6c "RTSOLD script - Failed to start dhcp6c daemon"
+    {$dhcp6ccommand}
 fi
 
 EOD;
