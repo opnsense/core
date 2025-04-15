@@ -112,10 +112,8 @@ class VipSettingsController extends ApiMutableModelControllerBase
                 return in_array($record->mode, $mode);
             };
         }
-
         return $this->searchBase('vip', null, 'descr', $filter_funct);
     }
-
 
     public function setItemAction($uuid)
     {
