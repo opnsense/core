@@ -68,29 +68,6 @@ $.fn.UIBootgrid = function(params) {
     return $replacement;
 }
 
-// tabulator module extensions
-Tabulator.extendModule("page", "pageCounters", {
-    rowpage: function (pageSize, currentRow, currentPage, totalRows, totalPages) {
-        // handle pagination for known and unknown total rows
-        if (this.table.curRowCount) {
-            pageSize = this.table.curRowCount === true ? -1 : this.table.curRowCount;
-        }
-        let end = (currentPage * pageSize);
-        if (this.table.paginationTotal != undefined) {
-            totalRows = this.table.paginationTotal;
-            end = (totalRows === 0 || end === -1 || end > totalRows) ? totalRows : end;
-        }
-
-        let start = (totalRows === 0) ? 0 : ((currentPage - 1) * pageSize) + 1;
-        if (this.table.paginationTotal == undefined && this.table.options.paginationMode === 'remote') {
-            // XXX pass in translations here
-            return `Showing ${start} to ${end}`;
-        } else {
-            return `Showing ${start} to ${end} of ${totalRows} entries`;
-        }
-    }
-});
-
 class UIBootgrid {
     constructor(id, options = {}, crud = {}, tabulatorOptions = {}, translations = {}) {
         // wrapper-specific state variables
@@ -1032,7 +1009,24 @@ class UIBootgrid {
             paginationOutOfRange: function(curPage, maxPage) {
                 return 'first';
             },
-            paginationCounter: "rowpage",
+            paginationCounter: (pageSize, currentRow, currentPage, totalRows, totalPages) => {
+                let end, start;
+
+                if (this.options.ajax) {
+                    pageSize = this.table.curRowCount === true ? this.table.paginationTotal : this.table.curRowCount;
+                    totalRows = this.table.paginationTotal;
+                }
+
+                end = currentPage * pageSize;
+                start = (totalRows === 0) ? 0 : ((currentPage - 1) * pageSize) + 1;
+                end = (totalRows === 0 || end === -1 || end > totalRows) ? totalRows : end;
+
+                if (this.table.totalKnown || !this.options.ajax) {
+                    return `Showing ${start} to ${end} of ${totalRows} entries`
+                } else {
+                    return `Showing ${start} to ${end}`;
+                }
+            },
             paginationMode: "remote",
             dataSendParams: { // map tabulator keywords to our backend
                 'page': 'current',
@@ -1048,17 +1042,20 @@ class UIBootgrid {
                 if (response.total_rows != undefined) {
                     // we don't know the 'last_page'
                     // XXX we may consider removing the "go to first" and "go to last" buttons here
-                    if (response.rowCount === params.rowCount) {
+                    if (response.rowCount == params.rowCount) {
                         response['last_page'] = response.current + 1;
                     } else {
                         // we've stumbled on the last page
                         response['last_page'] = response.current;
                     }
+                    this.table.paginationTotal = response.total_rows;
+                    this.table.totalKnown = false;
                 } else {
                     // total is known
                     let last_page = params.rowCount < 0 ? 1 : Math.ceil(response.total / params.rowCount);
                     response['last_page'] = last_page;
                     this.table.paginationTotal = response.total;
+                    this.table.totalKnown = true;
                 }
                 this.table.curRowCount = this.curRowCount;
 
@@ -1648,7 +1645,6 @@ class UIBootgrid {
      * jQuery.bootgrid backwards compatibility functions
      */
     append(rows) {
-        console.log(rows);
         this.table.addData(rows);
     }
 
