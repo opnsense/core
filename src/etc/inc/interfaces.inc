@@ -2868,7 +2868,8 @@ EOF;
     @file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript);
     @chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
 
-    $dhcp6ccommand = exec_safe('flock -nF /var/run/dhcp6c.lock /usr/local/sbin/dhcp6c -c %s -p %s', [
+    $dhcp6ccommand = exec_safe('/usr/local/bin/flock -n -E 0 -o %s /usr/local/sbin/dhcp6c -c %s -p %s', [
+            '/var/etc/dhcp6c.conf',
             '/var/etc/dhcp6c.conf',
             '/var/run/dhcp6c.pid',
     ]);
