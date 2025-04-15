@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
     # filter one specific log line
     if 'filepos' in data_filters and data_filters['filepos'].isdigit():
-        log_start_pos = int(data_filters['filepos'])
+        log_start_pos = int(data_filters['filepos']) + 5000
     else:
         log_start_pos = None
 
@@ -122,9 +122,9 @@ if __name__ == '__main__':
                         # do not fetch data until end of file...
                         break
 
-            # only try to fetch one line when filepos is given
-            if log_start_pos is not None:
-                break
+                # only try to fetch one line when filepos is given
+                if log_start_pos is not None:
+                    break
 
     # output results
     print(ujson.dumps(result))
