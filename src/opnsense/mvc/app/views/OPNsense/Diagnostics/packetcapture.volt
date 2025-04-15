@@ -198,6 +198,7 @@
          */
         $("#btn_start_new > b").text("{{ lang._('Start') }}");
         // (de)select all interfaces
+        $(".interface_select").closest("td").css("white-space", "nowrap");
         $(".interface_select").closest("td").find('a').remove();
         $(".interface_select").closest("td").find('br').remove();
         let btn_toggle_all = $('<button id="select_all" type="button" class="btn btn-default">');
@@ -209,7 +210,7 @@
             $("#select_all > i").toggleClass("fa-check-square-o fa-square-o");
             $(".interface_select").selectpicker('refresh');
         });
-        $(".interface_select").parent().append(btn_toggle_all);
+        $(".interface_select").first().parent().append(btn_toggle_all);
 
     });
 </script>
