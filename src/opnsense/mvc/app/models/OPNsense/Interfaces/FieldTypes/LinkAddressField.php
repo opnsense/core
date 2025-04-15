@@ -53,7 +53,7 @@ class LinkAddressField extends BaseField
             self::$option_groups['ipalias'] = ['items' => [], 'title' => gettext('IP Alias')];
             foreach ($cfg->interfaces->children() as $ifname => $node) {
                 $descr = !empty((string)$node->descr) ? (string)$node->descr : strtoupper($ifname);
-                if (!empty((string)$node->virtual) || empty((string)$node->enable)) {
+                if (!empty((string)$node->virtual)) {
                     continue;
                 }
                 self::$known_addresses[$ifname] = $descr;
