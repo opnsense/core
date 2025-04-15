@@ -130,14 +130,36 @@
             }
         });
 
+        /* Manual configuration, hide all config elements except the service section*/
+        $("#dhcpv4\\.general\\.manual_config").change(function(){
+            let manual_config = $(this).is(':checked');
+            if (manual_config) {
+                if (!$("#show_advanced_frm_generalsettings").hasClass('fa-toggle-on')) {
+                    /* enforce advanced mode so the user notices the checkbox */
+                    $("#show_advanced_frm_generalsettings").click();
+                }
+                $(".is_managed").hide();
+            } else {
+                $(".is_managed").show();
+            }
+            $("#settings").find('table').each(function(){
+                if (manual_config && $(this).find('#dhcpv4\\.general\\.manual_config').length == 0) {
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                }
+            });
+        });
+
+
     });
 </script>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" href="#settings" id="tab_settings">{{ lang._('Settings') }}</a></li>
-    <li><a data-toggle="tab" href="#subnets" id="tab_pools"> {{ lang._('Subnets') }} </a></li>
-    <li><a data-toggle="tab" href="#reservations" id="tab_reservations"> {{ lang._('Reservations') }} </a></li>
-    <li><a data-toggle="tab" href="#ha-peers" id="tab_ha-peers"> {{ lang._('HA Peers') }} </a></li>
+    <li><a data-toggle="tab" href="#subnets" id="tab_pools" class="is_managed"> {{ lang._('Subnets') }} </a></li>
+    <li><a data-toggle="tab" href="#reservations" id="tab_reservations" class="is_managed"> {{ lang._('Reservations') }} </a></li>
+    <li><a data-toggle="tab" href="#ha-peers" id="tab_ha-peers" class="is_managed"> {{ lang._('HA Peers') }} </a></li>
 </ul>
 <div class="tab-content content-box">
     <!-- general settings  -->

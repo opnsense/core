@@ -43,7 +43,7 @@
                         let refid = $(this).data("row-id") !== undefined ? $(this).data("row-id") : '';
                         ajaxGet('/api/auth/user/get/' + refid, {}, function(data){
                             if (data.user) {
-                                window.location ='/ui/trust/cert/#user=' + data.user.name ;
+                                window.location ='/ui/trust/cert#user=' + data.user.name ;
                             }
                         });
                     },
@@ -171,8 +171,6 @@
         $('.datepicker').datepicker({format: 'mm/dd/yyyy'});
         /* format  authorizedkeys */
         $("#user\\.authorizedkeys").css('max-width', 'inherit').prop('wrap', 'off');
-        $("#frm_DialogUser > div > table > colgroup > col:eq(1)").removeClass('col-md-4').addClass('col-md-6')
-        $("#frm_DialogUser > div > table > colgroup > col:eq(2)").removeClass('col-md-5').addClass('col-md-3')
     });
 
 </script>
@@ -184,10 +182,6 @@
     .tooltip-inner {
         max-width: 1000px !important;
     }
-    .modal-dialog.modal-lg {
-        width:70% !important;
-    }
-
 </style>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
@@ -202,7 +196,7 @@
                     <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                     <th data-column-id="name" data-type="string" data-formatter="username">{{ lang._('Name') }}</th>
                     <th data-column-id="email" data-type="string" data-visible="false">{{ lang._('Email') }}</th>
-                    <th data-column-id="comments" data-type="string" data-visible="false">{{ lang._('Comments') }}</th>
+                    <th data-column-id="comment" data-type="string" data-visible="false">{{ lang._('Comments') }}</th>
                     <th data-column-id="language" data-type="string" data-visible="false">{{ lang._('Language') }}</th>
                     <th data-column-id="group_memberships" data-type="string">{{ lang._('Groups') }}</th>
                     <th data-column-id="descr" data-type="string">{{ lang._('Description') }}</th>

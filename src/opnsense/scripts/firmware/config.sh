@@ -41,6 +41,7 @@ COMMANDS="
 bogons
 changelog
 check
+cleanup
 connection
 details
 health

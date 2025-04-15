@@ -28,6 +28,7 @@
 
 namespace OPNsense\Trust\FieldTypes;
 
+use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\FieldTypes\ContainerField;
@@ -103,6 +104,26 @@ class CertificatesField extends ArrayField
         $pmodel = $this->getParentModel();
         $container_node->setParentModel($pmodel);
         return $container_node;
+    }
+
+    /**
+     * @return array of externally managed certificates
+     */
+    protected static function getStaticChildren()
+    {
+        $result = [];
+        $ext_data = json_decode((new Backend())->configdRun('system trust ext_sources') ?? '', true);
+        if (is_array($ext_data)) {
+            foreach ($ext_data as $data) {
+                $payload = \OPNsense\Trust\Store::parseX509($data['cert'] ?? '');
+                if ($payload !== false && !empty($data['id'])) {
+                    $payload['crt_payload'] = $data['cert'];
+                    $payload['descr'] = $data['descr'] ?? '';
+                    $result[$data['id']] = $payload;
+                }
+            }
+        }
+        return $result;
     }
 
     protected function actionPostLoadingEvent()

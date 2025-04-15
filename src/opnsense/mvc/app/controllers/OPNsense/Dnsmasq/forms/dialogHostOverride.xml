@@ -17,15 +17,18 @@
     </field>
     <field>
         <id>host.ip</id>
-        <label>IP address</label>
-        <type>text</type>
-        <help>IP address of the host, e.g. 192.168.100.100 or fd00:abcd::1</help>
+        <label>IP addresses</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>IP addresses of the host, e.g. 192.168.100.100 or fd00:abcd::1. Can be multiple IPv4 and IPv6 addresses for dual stack configurations. Setting multiple addresses will automatically assign the best match based on the subnet of the interface receiving the DHCP Discover.</help>
     </field>
     <field>
         <id>host.aliases</id>
         <label>Aliases</label>
         <type>select_multiple</type>
         <style>tokenize</style>
+        <allownew>true</allownew>
         <help>list of aliases (fqdn)</help>
         <grid_view>
             <visible>false</visible>
@@ -36,16 +39,48 @@
         <label>DHCP</label>
     </field>
     <field>
-        <id>host.hwaddr</id>
-        <label>Hardware address</label>
+        <id>host.client_id</id>
+        <label>Client identifier</label>
         <type>text</type>
-        <help>When offered and the client requests an address via dhcp, assign the address provided here</help>
+        <help>Match the identifier of the client, e.g., DUID for DHCPv6. Setting the special character "*" will ignore the client identifier for DHCPv4 leases if a client offers both as choice.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>host.hwaddr</id>
+        <label>Hardware addresses</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>Match the hardware address of the client. Can be multiple addresses, e.g., if the client has multiple network cards. Though keep in mind that DNSmasq cannot assume which address is the correct one when multiple send DHCP Discover at the same time.</help>
+    </field>
+    <field>
+        <id>host.lease_time</id>
+        <label>Lease time</label>
+        <type>text</type>
+        <hint>86400</hint>
+        <help>Defines how long the addresses (leases) given out by the server are valid (in seconds)</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>host.set_tag</id>
         <label>Tag [set]</label>
         <type>dropdown</type>
-        <help>Optional tag to set for requests matching this range which can be used to selectively match dhcp options</help>
+        <help>Optional tag to set for requests matching this range which can be used to selectively match dhcp options. Can be left empty if options with an interface tag exist, since the client automatically receives this tag based on the interface receiving the DHCP Discover.</help>
+    </field>
+    <field>
+        <id>host.ignore</id>
+        <label>Ignore</label>
+        <type>checkbox</type>
+        <help>Ignore any DHCP packets of this host. Useful if it should get served by a different DHCP server.</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
     </field>
     <field>
         <type>header</type>

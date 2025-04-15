@@ -48,7 +48,7 @@ class ArchiveOpenVPN extends PlainOpenVPN
      */
     public function supportedOptions()
     {
-        return array("plain_config", "p12_password", "random_local_port", "auth_nocache", "cryptoapi");
+        return ["plain_config", "p12_password", "random_local_port", "auth_nocache", "cryptoapi", "static_challenge"];
     }
 
     /**

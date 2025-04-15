@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2024 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2025 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2006 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -91,8 +91,17 @@ log_msg("IP renewal starting (address: {$ip}, interface: {$interface}, device: {
 
 interfaces_vips_configure($interface, 6);
 
-$greifs = link_interface_to_gre($interface, true, 6);
-$gififs = link_interface_to_gif($interface, true, 6);
+$auxdevs = [];
+
+/* find and reconfigure all linked devices which includes looking up tracked interfaces */
+foreach (array_merge([$interface], array_keys(link_interface_to_track6($interface))) as $allif) {
+    foreach (link_interface_to_gre($allif, true, 6) as $linked) {
+        $auxdevs[] = $linked;
+    }
+    foreach (link_interface_to_gif($allif, true, 6) as $linked) {
+        $auxdevs[] = $linked;
+    }
+}
 
 switch (isset($config['system']['ipv6allow']) ? ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') : 'none') {
     case 'slaac':
@@ -111,7 +120,8 @@ switch (isset($config['system']['ipv6allow']) ? ($config['interfaces'][$interfac
         break;
 }
 
-interfaces_restart_by_device(false, array_merge($greifs, $gififs));
+/* linked devices that are assigned need to be reconfigured now */
+interfaces_restart_by_device(false, $auxdevs);
 
 $interfaces = array_keys(link_interface_to_track6($interface, true));
 array_unshift($interfaces, $interface);

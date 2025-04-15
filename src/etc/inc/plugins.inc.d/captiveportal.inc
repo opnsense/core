@@ -124,6 +124,7 @@ function captiveportal_firewall($fw)
                             'to_port' => $to_port,
                             'target' => '127.0.0.1',
                             'localport' => $rdr_port,
+                            'natreflection' => 'disable',
                             'descr' => "Redirect to Captive Portal (zone {$zoneid})",
                             '#ref' => "ui/captiveportal#edit={$uuid}"
                         ]

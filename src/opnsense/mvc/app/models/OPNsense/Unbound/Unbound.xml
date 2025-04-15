@@ -343,6 +343,11 @@
                         </check001>
                     </Constraints>
                 </mx>
+                <ttl type="IntegerField">
+                    <!-- https://datatracker.ietf.org/doc/html/rfc2181 -->
+                    <MaximumValue>2147483647</MaximumValue>
+                    <MinimumValue>0</MinimumValue>
+                </ttl>
                 <server type="NetworkField">
                     <Constraints>
                         <check001>

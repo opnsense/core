@@ -4,6 +4,11 @@
         <label>Enabled</label>
         <type>checkbox</type>
         <help>Enable this queue and its related rules</help>
+        <grid_view>
+            <width>6em</width>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+        </grid_view>
     </field>
     <field>
         <id>queue.pipe</id>
@@ -26,6 +31,9 @@
         <li>Choose source to evenly share every IP in the source field of rules the specified bandwidth. Normally this is used for upload queues.</li>
         <li>Leave this value empty if you want to specify multiple queues with different weights.</li>
         ]]></help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>queue.buckets</id>
@@ -33,12 +41,20 @@
         <type>text</type>
         <help>Specifies the size of the hash table used for storing the various dynamic queues configured with the mask setting</help>
         <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>queue.codel_enable</id>
         <label>Enable CoDel</label>
         <type>checkbox</type>
         <help>Enable CoDel active queue management</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
     </field>
     <field>
         <id>queue.codel_target</id>
@@ -46,6 +62,9 @@
         <type>text</type>
         <advanced>true</advanced>
         <help>Minimum acceptable persistent queue delay (in ms), leave empty for default</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>queue.codel_interval</id>
@@ -53,6 +72,9 @@
         <type>text</type>
         <advanced>true</advanced>
         <help>Interval before dropping packets (in ms), leave empty for default</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>queue.codel_ecn_enable</id>
@@ -60,12 +82,22 @@
         <type>checkbox</type>
         <advanced>true</advanced>
         <help>Explicit Congestion Notification</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
     </field>
         <field>
         <id>queue.pie_enable</id>
         <label>Enable PIE</label>
         <type>checkbox</type>
         <help>Enable PIE active queue management</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
     </field>
     <field>
         <id>queue.description</id>

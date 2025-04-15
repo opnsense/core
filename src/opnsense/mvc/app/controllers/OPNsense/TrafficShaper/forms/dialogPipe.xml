@@ -4,6 +4,11 @@
         <label>Enabled</label>
         <type>checkbox</type>
         <help>Enable this pipe and its related queues and rules</help>
+        <grid_view>
+            <width>6em</width>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+        </grid_view>
     </field>
     <field>
         <id>pipe.bandwidth</id>
@@ -22,6 +27,9 @@
         <type>text</type>
         <help>number of dynamic queues, leave empty for default</help>
         <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>pipe.mask</id>
@@ -39,6 +47,9 @@
         <type>text</type>
         <help>Specifies the size of the hash table used for storing the various dynamic pipes configured with the mask setting</help>
         <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>pipe.scheduler</id>
@@ -46,12 +57,20 @@
         <type>dropdown</type>
         <advanced>true</advanced>
         <help>Specify the scheduling algorithm to use</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>pipe.codel_enable</id>
         <label>Enable CoDel</label>
         <type>checkbox</type>
         <help>Enable CoDel active queue management</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
     </field>
     <field>
         <id>pipe.codel_target</id>
@@ -59,6 +78,9 @@
         <type>text</type>
         <advanced>true</advanced>
         <help>Minimum acceptable persistent queue delay (in ms), leave empty for default</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>pipe.codel_interval</id>
@@ -66,6 +88,9 @@
         <type>text</type>
         <advanced>true</advanced>
         <help>Interval before dropping packets (in ms), leave empty for default</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>pipe.codel_ecn_enable</id>
@@ -73,6 +98,11 @@
         <type>checkbox</type>
         <advanced>true</advanced>
         <help>Explicit Congestion Notification</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
     </field>
     <field>
         <id>pipe.fqcodel_quantum</id>
@@ -80,6 +110,9 @@
         <type>text</type>
         <advanced>true</advanced>
         <help>The number of bytes a queue can serve before being moved to the tail of old queues list (bytes), leave empty for defaults</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>pipe.fqcodel_limit</id>
@@ -87,6 +120,9 @@
         <type>text</type>
         <advanced>true</advanced>
         <help>The hard size limit of all queues managed by this instance, leave empty for defaults</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>pipe.fqcodel_flows</id>
@@ -94,12 +130,20 @@
         <type>text</type>
         <advanced>true</advanced>
         <help>The number of flow queues that are created and managed, leave empty for defaults</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>pipe.pie_enable</id>
         <label>Enable PIE</label>
         <type>checkbox</type>
         <help>Enable PIE active queue management</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
     </field>
     <field>
         <id>pipe.delay</id>
@@ -107,6 +151,9 @@
         <type>text</type>
         <advanced>true</advanced>
         <help>Add delay in ms to this pipe.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>pipe.description</id>

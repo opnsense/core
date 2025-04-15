@@ -40,9 +40,8 @@ def reverse_log_reader(filename, block_size=81920, start_pos=None):
 
     if start_pos is None:
         input_stream.seek(0, os.SEEK_END)
-        file_byte_start = input_stream.tell()
-    else:
-        file_byte_start = start_pos
+        start_pos = input_stream.tell()
+    file_byte_start = start_pos
 
     data = ''
     while file_byte_start > 0:
@@ -64,7 +63,8 @@ def reverse_log_reader(filename, block_size=81920, start_pos=None):
             line = data[bol:eol]
             eol = bol
             bol = data.rfind('\n', 0, eol)
-            yield {'line': line.strip().strip('\u0000'), 'pos': line_end}
+            if line_end != start_pos:
+                yield {'line': line.strip().strip('\u0000'), 'pos': line_end}
 
         data = data[:eol] if bol == -1 else ''
 

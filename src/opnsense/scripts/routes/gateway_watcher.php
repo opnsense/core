@@ -64,7 +64,7 @@ while (1) {
         continue;
     }
 
-    $alarm = false;
+    $alarm_gateways = [];
 
     /* clear known gateways in first step to flush unknown in second step */
     $cleanup = $mode;
@@ -117,9 +117,10 @@ while (1) {
         }
 
         if ($ralarm) {
-            $alarm = true;
+            $alarm_gateways[] = $report['name'];
         }
 
+        /* diagnostics block as we may have no $ralarm but still want to log the transition */
         if ($mode[$report['name']] != $report['status']) {
             syslog(LOG_NOTICE, sprintf(
                 "%s: %s (Addr: %s Alarm: %s RTT: %s RTTd: %s Loss: %s)",
@@ -132,18 +133,14 @@ while (1) {
                 $report['loss']
             ));
 
-            if ($report['status'] == 'down' && !empty($report['monitor_killstates'])) {
-                configdp_run('filter kill gateway_states', [$report['gateway']], true);
-            }
-
             /* update cached state now */
             $mode[$report['name']] = $report['status'];
         }
     }
 
-    if ($alarm && $action != null) {
-        configd_run($action);
+    if (count($alarm_gateways) && $action != null) {
+        configdp_run($action, [implode(',', $alarm_gateways)]);
     }
 
-    sleep($alarm ? $wait : $poll);
+    sleep(count($alarm_gateways) ? $wait : $poll);
 }

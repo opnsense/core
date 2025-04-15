@@ -32,7 +32,6 @@
 
 require_once 'IPv6.inc';
 
-/* XXX only two callers left, better remove this unreliable function */
 function killbyname($procname, $sig = 'TERM', $waitforit = true)
 {
     /* pgrep -n only kills the newest matching process */
@@ -636,41 +635,6 @@ function is_uniquelocal($ipaddr)
     return !!preg_match('/^fd[0-9a-f][0-9a-f]:/i', $ipaddr ?? '');
 }
 
-/* returns true if $ipaddr is a valid literal IPv6 address */
-function is_literalipaddrv6($ipaddr)
-{
-    if (preg_match('/\[([0-9a-f:]+)\]/i', $ipaddr, $match)) {
-        $ipaddr = $match[1];
-    } else {
-        return false;
-    }
-    return is_ipaddrv6($ipaddr);
-}
-
-function is_ipaddrwithport($ipport)
-{
-    $parts = explode(":", $ipport);
-    $port = array_pop($parts);
-    if (count($parts) == 1) {
-        return is_ipaddrv4($parts[0]) && is_port($port);
-    } elseif (count($parts) > 1) {
-        return is_literalipaddrv6(implode(":", $parts)) && is_port($port);
-    } else {
-        return false;
-    }
-}
-
-function is_hostnamewithport($hostport)
-{
-    $parts = explode(":", $hostport);
-    $port = array_pop($parts);
-    if (count($parts) == 1) {
-        return is_hostname($parts[0]) && is_port($port);
-    } else {
-        return false;
-    }
-}
-
 /* returns true if $ipaddr is a valid dotted IPv4 address or an alias thereof */
 function is_ipaddroralias($ipaddr)
 {
@@ -800,32 +764,6 @@ function is_inrange_v6($test, $start, $end)
 function is_inrange($test, $start, $end)
 {
     return is_ipaddrv6($test) ? is_inrange_v6($test, $start, $end) : is_inrange_v4($test, $start, $end);
-}
-
-function get_configured_carp_interface_list()
-{
-    $carp_list = [];
-
-    foreach (config_read_array('virtualip', 'vip') as $vip) {
-        if ($vip['mode'] == 'carp') {
-            $carp_list["{$vip['interface']}_vip{$vip['vhid']}"] = $vip['subnet'];
-        }
-    }
-
-    return $carp_list;
-}
-
-function get_configured_ip_aliases_list()
-{
-    $alias_list = [];
-
-    foreach (config_read_array('virtualip', 'vip') as $vip) {
-        if ($vip['mode'] == 'ipalias') {
-            $alias_list[$vip['subnet']] = $vip['interface'];
-        }
-    }
-
-    return $alias_list;
 }
 
 function get_configured_interface_with_descr()

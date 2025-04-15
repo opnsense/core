@@ -319,8 +319,8 @@ POSSIBILITY OF SUCH DAMAGE.
                 $('#grid-installedrules').bootgrid('destroy'); // always destroy previous grid, so data is always fresh
                 $("#grid-installedrules").UIBootgrid(
                         {   search:'/api/ids/settings/searchinstalledrules',
-                            get:'/api/ids/settings/getRuleInfo/',
-                            set:'/api/ids/settings/setRule/',
+                            get:'/api/ids/settings/get_rule_info/',
+                            set:'/api/ids/settings/set_rule/',
                             options:{
                                 requestHandler:addRuleFilters,
                                 rowCount:[10, 25, 50,100,500,1000] ,
@@ -404,8 +404,8 @@ POSSIBILITY OF SUCH DAMAGE.
                  */
                 if (!$("#grid-alerts").hasClass('bootgrid-table')) {
                     var grid_alerts = $("#grid-alerts").UIBootgrid({
-                        search:'/api/ids/service/queryAlerts',
-                        get:'/api/ids/service/getAlertInfo/',
+                        search:'/api/ids/service/query_alerts',
+                        get:'/api/ids/service/get_alert_info/',
                         options:{
                             multiSelect:false,
                             selection:false,
@@ -452,10 +452,10 @@ POSSIBILITY OF SUCH DAMAGE.
                     // hook in alert details on alertinfo command
                     grid_alerts.on("loaded.rs.jquery.bootgrid", function(){
                         grid_alerts.find(".command-alertinfo").on("click", function(e) {
-                            var uuid=$(this).data("row-id");
-                            ajaxGet('/api/ids/service/getAlertInfo/' + uuid, {}, function(data, status) {
+                            let uuid = $(this).data("row-id");
+                            ajaxGet('/api/ids/service/get_alert_info/' + uuid, {}, function(data, status) {
                                     if (status == 'success') {
-                                        ajaxGet("/api/ids/settings/getRuleInfo/"+data['alert_sid'], {}, function(rule_data, rule_status) {
+                                        ajaxGet("/api/ids/settings/get_rule_info/"+data['alert_sid'], {}, function(rule_data, rule_status) {
                                             var tbl = $('<table class="table table-condensed table-hover ids-alert-info"/>');
                                             var tbl_tbody = $("<tbody/>");
                                             var alert_fields = {};

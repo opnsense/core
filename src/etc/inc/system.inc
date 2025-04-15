@@ -71,7 +71,7 @@ function system_sysctl_defaults()
 
     /* notes:
      *  - set 'optional' => true for values that should no longer be enforced by default
-    /*  - 'description' and 'type' can be used to indicate persistence of these values
+     *  - 'description' and 'type' can be used to indicate persistence of these values
      *    when in reality these are not available due to kernel modules unloaded or
      *    compile time options unset (like debugging)
      *  - always set 'default' so the backend can use it and the user can see it
@@ -89,6 +89,7 @@ function system_sysctl_defaults()
         'net.enc.in.ipsec_filter_mask' => [ 'default' => '2' ], /* after processing */
         'net.enc.out.ipsec_bpf_mask' => [ 'default' => '1' ], /* before processing */
         'net.enc.out.ipsec_filter_mask' => [ 'default' => '1' ], /* before processing */
+        'net.inet.carp.senderr_demotion_factor' => [ 'default' => '0' ],
         'net.inet.icmp.drop_redirect' => [ 'default' => '1' ],
         'net.inet.icmp.icmplim' => [ 'default' => '0' ],
         'net.inet.icmp.log_redirect' => [ 'default' => '0' ],
@@ -325,13 +326,17 @@ function get_searchdomains()
     }
 
     if (!empty($syscfg['dnssearchdomain'])) {
-        if ($syscfg['dnssearchdomain'] == '.') {
-            /* pass root only */
-            return [$syscfg['dnssearchdomain']];
-        }
+        $dnssds = array_unique(explode(',', $syscfg['dnssearchdomain']));
 
-        /* add custom search entries after default domain before potential provider entries */
-        $master_list[] = $syscfg['dnssearchdomain'];
+        foreach ($dnssds as $dnssd) {
+            if ($dnssd == '.') {
+                /* pass root only but including other manually set domains as is */
+                return $dnssds;
+            }
+
+            /* add custom search entries after default domain before potential provider entries */
+            $master_list[] = $dnssd;
+        }
     }
 
     if (!empty($syscfg['dnsallowoverride'])) {

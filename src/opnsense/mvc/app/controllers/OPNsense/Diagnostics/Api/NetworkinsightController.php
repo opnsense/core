@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2016 Deciso B.V.
+ *    Copyright (C) 2016-2025 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -70,6 +70,7 @@ class NetworkinsightController extends ApiControllerBase
         $to_date = $filter->sanitize($to_date, "int");
         $resolution = $filter->sanitize($resolution, "int");
         $field = $filter->sanitize($field, "string");
+        $interfaces = $this->getInterfacesAction();
 
         $result = array();
         if ($this->request->isGet()) {
@@ -78,11 +79,6 @@ class NetworkinsightController extends ApiControllerBase
             $response = $backend->configdRun(
                 "netflow aggregate fetch {$provider} {$from_date} {$to_date} {$resolution} {$field}"
             );
-            // for test, request random data
-            //$response = $backend->configdRun(
-            //    "netflow aggregate fetch {$provider} {$from_date} {$to_date} {$resolution} {$field} " .
-            //    "em0,in~em0,out~em1,in~em1,out~em2,in~em2,out~em3,in~em3,out"
-            //);
             $graph_data = json_decode($response, true);
             if ($graph_data != null) {
                 ksort($graph_data);
@@ -124,7 +120,19 @@ class NetworkinsightController extends ApiControllerBase
                     }
                 }
                 foreach ($timeseries as $timeserie_key => $data) {
-                    $result[] = array("key" => $timeserie_key, "values" => $data);
+                    $record = [
+                        "key" => $timeserie_key,
+                        "values" => $data
+                    ];
+                    if (in_array($provider, ['FlowInterfaceTotals'])) {
+                        $tmp = explode(',', $timeserie_key);
+                        if (!empty($interfaces[$tmp[0]])) {
+                            $record['interface'] = $interfaces[$tmp[0]];
+                        }
+                        $record['direction'] = $tmp[1] ?? '';
+                    }
+
+                    $result[] = $record;
                 }
             }
         }
@@ -159,6 +167,8 @@ class NetworkinsightController extends ApiControllerBase
         $max_hits = $filter->sanitize($max_hits, "int");
 
         if ($this->request->isGet()) {
+            $protocols = $this->getProtocolsAction();
+            $services = $this->getServicesAction();
             if ($this->request->get("filter_field") != null && $this->request->get("filter_value") != null) {
                 $filter_fields = explode(',', $this->request->get("filter_field"));
                 $filter_values = explode(',', $this->request->get("filter_value"));
@@ -181,7 +191,26 @@ class NetworkinsightController extends ApiControllerBase
             $configd_cmd .= " {$measure} {$data_filter} {$max_hits}";
             $response = $backend->configdRun($configd_cmd);
             $graph_data = json_decode($response, true);
-            if ($graph_data != null) {
+            if (is_array($graph_data)) {
+                foreach ($graph_data as &$record) {
+                    if (isset($record['dst_port']) || isset($record['service_port'])) {
+                        $portnum = $record['dst_port'] ?? $record['service_port'];
+                        $label = $portnum;
+                        $protocol = '';
+                        if (isset($record['protocol']) && isset($protocols[$record['protocol']])) {
+                            $protocol = sprintf(" (%s)", $protocols[$record['protocol']]);
+                        }
+                        if (isset($services[$portnum])) {
+                            $label = $services[$portnum];
+                        }
+                        $record['last_seen_str'] = '';
+                        if (!empty($record['last_seen'])) {
+                            $record['last_seen_str'] = date('Y-m-d H:i:s', $record['last_seen']);
+                        }
+
+                        $record['label'] = $label . $protocol;
+                    }
+                }
                 return $graph_data;
             }
         }

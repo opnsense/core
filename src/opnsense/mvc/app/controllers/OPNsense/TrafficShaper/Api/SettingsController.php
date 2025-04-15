@@ -114,11 +114,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function searchPipesAction()
     {
-        return $this->searchBase(
-            "pipes.pipe",
-            array("enabled","number", "bandwidth","bandwidthMetric","description","mask","origin"),
-            "number"
-        );
+        return $this->searchBase("pipes.pipe", null, "number");
     }
 
 
@@ -129,11 +125,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function searchQueuesAction()
     {
-        return $this->searchBase(
-            "queues.queue",
-            array("enabled","number", "pipe","weight","description","mask","origin"),
-            "number"
-        );
+        return $this->searchBase("queues.queue", null, "number");
     }
 
     /**
@@ -204,12 +196,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function searchRulesAction()
     {
-        return $this->searchBase(
-            "rules.rule",
-            array("enabled", "interface", "proto", "source_not","source", "destination_not",
-                  "destination", "description", "origin", "sequence", "target"),
-            "sequence"
-        );
+        return $this->searchBase("rules.rule", null, "sequence");
     }
 
     /**

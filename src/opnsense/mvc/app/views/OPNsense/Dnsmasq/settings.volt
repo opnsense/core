@@ -60,9 +60,6 @@
                 case '#dhcpoptions':
                     grid_ids = ["{{formGridDHCPoption['table_id']}}", "{{formGridDHCPboot['table_id']}}"];
                     break;
-                case '#dhcpmatches':
-                    grid_ids = ["{{formGridDHCPmatch['table_id']}}"];
-                    break;
             }
             /* grid action selected, load or refresh target grid */
             if (grid_ids !== null) {
@@ -73,7 +70,18 @@
                             'get':'/api/dnsmasq/settings/get_' + grid_id + '/',
                             'set':'/api/dnsmasq/settings/set_' + grid_id + '/',
                             'add':'/api/dnsmasq/settings/add_' + grid_id + '/',
-                            'del':'/api/dnsmasq/settings/del_' + grid_id + '/'
+                            'del':'/api/dnsmasq/settings/del_' + grid_id + '/',
+                            options: {
+                                triggerEditFor: getUrlHash('edit'),
+                                initialSearchPhrase: getUrlHash('search'),
+                                requestHandler: function(request) {
+                                    const selectedTags = $('#tag_select').val();
+                                    if (selectedTags && selectedTags.length > 0) {
+                                        request['tags'] = selectedTags;
+                                    }
+                                    return request;
+                                }
+                            }
                         });
                         /* insert headers when multiple grids exist on a single tab */
                         let header = $("#" + grid_id + "-header");
@@ -90,6 +98,16 @@
                         }
                     } else {
                         all_grids[grid_id].bootgrid('reload');
+
+                    }
+                    // insert tag selectpicker in all grids that use tags or interfaces, boot excluded cause two grids in same tab
+                    if (!['domain', 'boot'].includes(grid_id)) {
+                        let header = $("#" + grid_id + "-header");
+                        let $actionBar = header.find('.actionBar');
+                        if ($actionBar.length) {
+                            $('#tag_select_container').detach().insertBefore($actionBar.find('.search'));
+                            $('#tag_select_container').show();
+                        }
                     }
                 });
             }
@@ -125,15 +143,50 @@
         let selected_tab = window.location.hash != "" ? window.location.hash : "#general";
         $('a[href="' +selected_tab + '"]').click();
 
-        $("#range\\.start_addr").on("keyup change", function() {
-            let value = $(this).val() || "";
-            if (value.includes(":")) {
-                $(".style_dhcpv6").closest('tr').show();
-                $(".style_dhcpv4").closest('tr').hide();
-            } else {
-                $(".style_dhcpv6").closest('tr').hide();
-                $(".style_dhcpv4").closest('tr').show();
-            }
+        $("#range\\.start_addr, #range\\.ra_mode, #option\\.type").on("keyup change", function () {
+            const addr = $("#range\\.start_addr").val() || "";
+            const ra_mode = String($("#range\\.ra_mode").val() || "").trim();
+            const option_type = String($("#option\\.type").val() || "")
+
+            const styleVisibility = [
+                {
+                    class: "style_dhcpv4",
+                    visible: !addr.includes(":")
+                },
+                {
+                    class: "style_dhcpv6",
+                    visible: addr.includes(":")
+                },
+                {
+                    class: "style_ra",
+                    visible: ra_mode !== ""
+                },
+                {
+                    class: "style_set",
+                    visible: option_type == "set"
+                },
+                {
+                    class: "style_match",
+                    visible: option_type == "match"
+                },
+            ];
+
+            styleVisibility.forEach(style => {
+                const elements = $("." + style.class).closest("tr");
+                style.visible ? elements.show() : elements.hide();
+            });
+        });
+
+        // Populate tag selectpicker
+        $('#tag_select').fetch_options('/api/dnsmasq/settings/get_tag_list');
+
+        $('#tag_select').change(function () {
+            Object.keys(all_grids).forEach(function (grid_id) {
+                // boot is not excluded here, as it reloads in same tab as options
+                if (!['domain'].includes(grid_id)) {
+                    all_grids[grid_id].bootgrid('reload');
+                }
+            });
         });
 
     });
@@ -142,6 +195,9 @@
 <style>
     tbody.collapsible > tr > td:first-child {
         padding-left: 30px;
+    }
+    #tag_select_container {
+        margin-right: 20px;
     }
 </style>
 
@@ -158,6 +214,11 @@
     <button id="download_hosts" type="button" title="{{ lang._('Export as csv') }}" data-toggle="tooltip"  class="btn btn-xs"><span class="fa fa-fw fa-table"></span></button>
 </div>
 
+<div id="tag_select_container" class="btn-group" style="display: none;">
+    <select id="tag_select" class="selectpicker" multiple data-title="{{ lang._('Tags & Interfaces') }}" data-show-subtext="true" data-live-search="true" data-size="15" data-width="200px" data-container="body">
+    </select>
+</div>
+
 <!-- Navigation bar -->
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li><a data-toggle="tab" href="#general">{{ lang._('General') }}</a></li>
@@ -166,7 +227,6 @@
     <li><a data-toggle="tab" href="#dhcpranges">{{ lang._('DHCP ranges') }}</a></li>
     <li><a data-toggle="tab" href="#dhcpoptions">{{ lang._('DHCP options') }}</a></li>
     <li><a data-toggle="tab" href="#dhcptags">{{ lang._('DHCP tags') }}</a></li>
-    <li><a data-toggle="tab" href="#dhcpmatches">{{ lang._('DHCP options / match') }}</a></li>
 </ul>
 
 <div class="tab-content content-box">
@@ -196,10 +256,6 @@
     <div id="dhcptags" class="tab-pane fade in">
         {{ partial('layout_partials/base_bootgrid_table', formGridDHCPtag)}}
     </div>
-    <!-- Tab: DHCP Options / Match -->
-    <div id="dhcpmatches" class="tab-pane fade in">
-        {{ partial('layout_partials/base_bootgrid_table', formGridDHCPmatch)}}
-    </div>
 </div>
 
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/dnsmasq/service/reconfigure'}) }}
@@ -209,4 +265,3 @@
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditDHCPrange,'id':formGridDHCPrange['edit_dialog_id'],'label':lang._('Edit DHCP range')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditDHCPoption,'id':formGridDHCPoption['edit_dialog_id'],'label':lang._('Edit DHCP option')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditDHCPboot,'id':formGridDHCPboot['edit_dialog_id'],'label':lang._('Edit DHCP boot')])}}
-{{ partial("layout_partials/base_dialog",['fields':formDialogEditDHCPmatch,'id':formGridDHCPmatch['edit_dialog_id'],'label':lang._('Edit DHCP match / option')])}}

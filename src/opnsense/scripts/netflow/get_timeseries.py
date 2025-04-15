@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2016-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,6 @@ import lib.aggregates
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', '--config', help='configuration yaml', default=None)
     parser.add_argument('--provider', default='FlowInterfaceTotals')
     parser.add_argument('--resolution', type=int, required=True)
     parser.add_argument('--start_time', type=int, required=True)
@@ -47,7 +46,7 @@ if __name__ == '__main__':
     parser.add_argument('--key_fields', required=True)
     parser.add_argument('--sample', default='')
     cmd_args = parser.parse_args()
-    configuration = load_config(cmd_args.config)
+    configuration = load_config()
 
     timeseries = dict()
     if cmd_args.sample == '':
