@@ -50,7 +50,7 @@ foreach (return_gateways_status() as $status) {
             $metered_gws[$status['ipprotocol']][] = $status;
         } elseif (in_array($status['name'], $affected_gateways)) {
             /* only trigger on "up" events to calculate highest prio */
-            $metered_found_prios[$status['ipprotocol']] = min($status['priority'], $metered_found_prio);
+            $metered_found_prios[$status['ipprotocol']] = min($status['priority'], $metered_found_prios[$status['ipprotocol']]);
         }
     }
 }
