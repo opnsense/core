@@ -187,6 +187,18 @@
                     all_grids[grid_id].bootgrid('reload');
                 }
             });
+
+            $('#tag_select_icon')
+                .toggleClass('text-success fa-filter-circle-xmark', ($(this).val() || []).length > 0)
+                .toggleClass('fa-filter', !($(this).val() || []).length);
+
+        });
+
+        // Clear tag selectpicker
+        $('#tag_select_clear').on('click', function () {
+            $('#tag_select').selectpicker('val', []);
+            $('#tag_select').selectpicker('refresh');
+            $('#tag_select').trigger('change');
         });
 
     });
@@ -196,8 +208,15 @@
     tbody.collapsible > tr > td:first-child {
         padding-left: 30px;
     }
+    #tag_select_clear {
+        border-right: none;
+    }
     #tag_select_container {
         margin-right: 20px;
+    }
+    #tag_select_container .bootstrap-select > .dropdown-toggle {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
     }
 </style>
 
@@ -215,6 +234,9 @@
 </div>
 
 <div id="tag_select_container" class="btn-group" style="display: none;">
+    <button type="button" id="tag_select_clear" class="btn btn-default" title="Clear Selection">
+        <i id="tag_select_icon" class="fa fa-fw fa-filter"></i>
+    </button>
     <select id="tag_select" class="selectpicker" multiple data-title="{{ lang._('Tags & Interfaces') }}" data-show-subtext="true" data-live-search="true" data-size="15" data-width="200px" data-container="body">
     </select>
 </div>
