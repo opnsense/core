@@ -41,6 +41,10 @@ POSSIBILITY OF SUCH DAMAGE.
             $('#grid-arp').bootgrid('reload');
         });
 
+        $("#refresh").click(function() {
+            $("#grid-arp").bootgrid("reload");
+        });
+
         $("#flushModal").click(function(event){
           BootstrapDialog.show({
             type:BootstrapDialog.TYPE_DANGER,
