@@ -81,16 +81,17 @@
                         }
                     }
                 }).on('loaded.rs.jquery.bootgrid', function(){
+
                     $(".xmlrpc_srv_status_act").each(function(){
                         switch($(this).data('service_action')) {
                             case 'start':
-                                $(this).tooltip({title: "{{ lang._('Start') | safe}}"});
+                                $(this).tooltip({title: "{{ lang._('Start') | safe}}", container: "body", trigger: "hover"});
                                 break;
                             case 'restart':
-                                $(this).tooltip({title: "{{ lang._('Synchronize and Restart') | safe}}"});
+                                $(this).tooltip({title: "{{ lang._('Synchronize and Restart') | safe}}", container: "body", trigger: "hover"});
                                 break;
                             case 'stop':
-                                $(this).tooltip({title: "{{ lang._('Stop') | safe}}"});
+                                $(this).tooltip({title: "{{ lang._('Stop') | safe}}", container: "body", trigger: "hover"});
                                 break;
                         }
                         $(this).click(function(){
@@ -110,17 +111,25 @@
                 $("#status_error").show();
             }
             $("#status_query").hide();
-        });
-        $("#act_restart_all").click(function(){
-            let icon = $(this).find('i');
-            if (icon.hasClass('spinner')) {
-                return;
-            }
-            icon.removeClass('fa-repeat').addClass('fa-spinner fa-pulse');
-            ajaxCall('/api/core/hasync_status/restart_all', {}, function(data){
-                icon.removeClass('fa-spinner fa-pulse').addClass('fa-repeat');
-                $('#grid_services').bootgrid('reload');
-            });
+
+            $("#grid_services-header > .row > .actionBar").prepend($(`
+                <div class="pull-left" style="position: absolute; top: 50%; transform:translateY(-50%);">
+                    <span> {{ lang._('Synchronize and reconfigure all') }} </span>
+                    <span id="act_restart_all" class="btn btn-xs btn-default" data-toggle="tooltip" title="{{ lang._('Synchronize and restart all services') }}">
+                        <i class="fa fa-repeat fa-fw"></i>
+                    </span>
+                </div>
+            `).click(function() {
+                let icon = $(this).find('i');
+                if (icon.hasClass('spinner')) {
+                    return;
+                }
+                icon.removeClass('fa-repeat').addClass('fa-spinner fa-pulse');
+                ajaxCall('/api/core/hasync_status/restart_all', {}, function(data){
+                    icon.removeClass('fa-spinner fa-pulse').addClass('fa-repeat');
+                    $('#grid_services').bootgrid('reload');
+                });
+            }));
         });
     });
 </script>
@@ -177,7 +186,7 @@
                                 </thead>
                                 <tbody>
                                 </tbody>
-                                <tfoot>
+                                <!-- <tfoot>
                                     <tr>
                                         <td><span style="padding-left: 30px;"> {{ lang._('Synchronize and reconfigure all') }} </span></td>
                                         <td>
@@ -186,7 +195,7 @@
                                             </span>
                                         </td>
                                     </tr>
-                                </tfoot>
+                                </tfoot> -->
                             </table>
                         </div>
                     </div>
