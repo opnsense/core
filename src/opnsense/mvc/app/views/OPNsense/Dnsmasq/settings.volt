@@ -257,7 +257,7 @@
 </div>
 
 <div id="tag_select_container" class="btn-group" style="display: none;">
-    <button type="button" id="tag_select_clear" class="btn btn-default" title="Clear Selection">
+    <button type="button" id="tag_select_clear" class="btn btn-default" title="{{ lang._('Clear Selection') }}">
         <i id="tag_select_icon" class="fa fa-fw fa-filter"></i>
     </button>
     <select id="tag_select" class="selectpicker" multiple data-title="{{ lang._('Tags & Interfaces') }}" data-show-subtext="true" data-live-search="true" data-size="15" data-width="200px" data-container="body">
