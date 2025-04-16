@@ -201,6 +201,29 @@
             $('#tag_select').trigger('change');
         });
 
+        // Autofill interface/tag when add dialog is opened
+        $(
+            '#{{ formGridHostOverride["edit_dialog_id"] }}, ' +
+            '#{{ formGridDHCPrange["edit_dialog_id"] }}, ' +
+            '#{{ formGridDHCPoption["edit_dialog_id"] }}, ' +
+            '#{{ formGridDHCPboot["edit_dialog_id"] }}'
+        ).on('opnsense_bootgrid_mapped', function(e, actionType) {
+            if (actionType === 'add') {
+                const selectedTags = $('#tag_select').val();
+
+                if (selectedTags && selectedTags.length > 0) {
+                    $(
+                        '#host\\.set_tag, ' +
+                        '#range\\.interface, #range\\.set_tag, ' +
+                        '#option\\.interface, #option\\.tag, ' +
+                        '#boot\\.tag'
+                    )
+                    .selectpicker('val', selectedTags)
+                    .selectpicker('refresh');
+                }
+            }
+        });
+
     });
 </script>
 
