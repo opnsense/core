@@ -35,11 +35,30 @@ require_once 'interfaces.inc';
 $gwnames = [];
 $affected_gateways = !empty($argv[1]) ? explode(',', $argv[1]) : [];
 
+$metered_found_prios = ['inet' => 256, 'inet6' => 256];
+$metered_gws = ['inet' => [], 'inet6' => []];
 foreach (return_gateways_status() as $status) {
     if ($status['status'] == 'down') {
         /* try to recover monitors stuck in down state ignoring "force_down" */
         $gwnames[] = $status['name'];
         if (!empty($status['monitor_killstates']) && in_array($status['name'], $affected_gateways)) {
+            configdp_run('filter kill gateway_states', [$status['gateway']], true);
+        }
+    } elseif ($status['status'] != 'force_down') {
+        /* collect "metered" gateways which should be killed depending priority */
+        if (!empty($status['monitor_killstates_priority'])) {
+            $metered_gws[$status['ipprotocol']][] = $status;
+        } elseif (in_array($status['name'], $affected_gateways)) {
+            /* only trigger on "up" events to calculate highest prio */
+            $metered_found_prios[$status['ipprotocol']] = min($status['priority'], $metered_found_prios[$status['ipprotocol']]);
+        }
+    }
+}
+
+foreach ($metered_found_prios as $ipproto => $metered_found_prio) {
+    /* kill states for "metered" gateways */
+    foreach ($metered_gws[$ipproto] as $status) {
+        if ($status['priority'] > $metered_found_prio) {
             configdp_run('filter kill gateway_states', [$status['gateway']], true);
         }
     }

@@ -64,6 +64,13 @@
         <help>When a monitor down event is triggered, kill all states to this gateway.</help>
     </field>
     <field>
+        <id>gateway_item.monitor_killstates_priority</id>
+        <label>Kill states metered</label>
+        <type>checkbox</type>
+        <style>monitor_opt</style>
+        <help>When a monitor up event is triggered for a gateway with a higher priority (lower value) than this, kill all states to this gateway. Most common use for this switch are metered connections like LTE.</help>
+    </field>
+    <field>
         <id>gateway_item.monitor</id>
         <label>Monitor IP</label>
         <type>text</type>
