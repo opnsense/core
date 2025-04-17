@@ -99,6 +99,18 @@
     color: #fff;
 }
 
+.tabulator .tabulator-header {
+    border-top: 1px solid #999;
+}
+
+/* move border from footer to last row */
+.tabulator .tabulator-footer {
+    border-top: none;
+}
+.tabulator .tabulator-row:last-child {
+    border-bottom: 1px solid #999;
+}
+
 .tabulator .tabulator-footer .tabulator-paginator .tabulator-page:first-child {
     border-bottom-left-radius: 3px;
     border-top-left-radius: 3px;
@@ -120,6 +132,11 @@
     border-color: #C03E14;
     color: #fff;
     cursor: default;
+}
+
+/* header border */
+.tabulator-header {
+    border-top: 1px solid #eee;
 }
 
 /* Zebra striping, border line corrections and hover/selection behavior */

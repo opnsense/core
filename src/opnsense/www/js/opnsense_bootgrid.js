@@ -430,7 +430,7 @@ class UIBootgrid {
                     visible: field.visible,
                     formatter: this.options.formatters['commands'] ?? null,
                     title: field.label,
-                    resizable: true,
+                    resizable: false,
                     sequence: field.sequence ?? null,
                     frozen: true,
                     headerSort: false,
@@ -608,7 +608,7 @@ class UIBootgrid {
 
     _renderFooter() {
         if (!this.options.navigation) {
-            $('.tabulator-footer').remove();
+            $(`#${this.id} > .tabulator-footer`).remove();
             return;
         }
 
