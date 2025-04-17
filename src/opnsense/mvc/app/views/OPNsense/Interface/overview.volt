@@ -138,12 +138,12 @@
                         },
                         "status": function (column, row) {
                             let connected = row.status == 'up' ? 'text-success' : 'text-danger';
-
+                            let status = row.status;
                             if (!row.enabled) {
-                                row.status += ' (disabled)';
+                                status += ' (disabled)';
                             }
 
-                            return '<i class="fa fa-plug ' + connected + '" title="' + row.status + '" data-toggle="tooltip"></i>';
+                            return '<i class="fa fa-plug ' + connected + '" title="' + status + '" data-toggle="tooltip"></i>';
                         },
                         "ipv4": function (column, row) {
                             if (row.ipv4) {

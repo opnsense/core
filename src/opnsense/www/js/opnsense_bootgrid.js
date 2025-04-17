@@ -68,7 +68,7 @@ $.fn.UIBootgrid = function(params) {
         if (data.width !== undefined) {
             // intentionally ignore data.visible here so there is a value to go to
             $col.css({width: data.width});
-            width = parseFloat($col.outerWidth());
+            width = parseFloat($col.outerWidth()) + 5.0;
         }
 
         cols[data.columnId] = {
