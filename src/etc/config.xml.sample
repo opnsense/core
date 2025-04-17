@@ -6,7 +6,7 @@
   <system>
     <optimization>normal</optimization>
     <hostname>OPNsense</hostname>
-    <domain>localdomain</domain>
+    <domain>internal</domain>
     <dnsallowoverride>1</dnsallowoverride>
     <dnsallowoverride_exclude/>
     <group>

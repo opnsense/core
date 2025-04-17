@@ -341,9 +341,9 @@ $( document ).ready(function() {
               <td>
                 <input name="domain" type="text" value="<?=$pconfig['domain'];?>" />
                 <div class="hidden" data-for="help_for_domain">
-                  <?=gettext("Do not use 'local' as your internal domain name. It is reserved for and will interfere with mDNS (avahi, bonjour, etc.). Use the special-purpose home.arpa domain instead."); ?>
+                  <?=gettext("Do not use 'local' as your internal domain name. It is reserved for and will interfere with mDNS (avahi, bonjour, etc.). Instead, use the special-use domain internal or home.arpa, also to avoid DNSSEC validation issues."); ?>
                   <br />
-                  <?=sprintf(gettext("e.g. %sexample.net, branch.example.com, home.arpa, etc.%s"),'<em>','</em>') ?>
+                  <?=sprintf(gettext("e.g. %sinternal, name.internal%s"),'<em>','</em>') ?>
                 </div>
               </td>
             </tr>
