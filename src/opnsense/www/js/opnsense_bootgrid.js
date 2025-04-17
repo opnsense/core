@@ -49,18 +49,40 @@ $.fn.bootgrid = function(option, ...args) {
 $.fn.UIBootgrid = function(params) {
     let id = this.attr('id');
     const $original = this;
-    // while we have the element, figure out if we're in a responsive container before removing it
-    // this determines whether rows should break to a newline or overflow (ellipsis)
-    let responsive = this.parents('.table-responsive').length > 0;
+    // while we have the element, figure out:
+    // - if we're in a responsive container before removing it
+    //   this determines whether rows should break to a newline or overflow (ellipsis)
+    let responsive = $original.parents('.table-responsive').length > 0;
     if (params?.options?.responsive ?? false) {
         responsive = params.options.responsive;
     }
     (params.options ??= {}).responsive = responsive;
+
+    // - parse the columns
+    let cols = {};
+    let firstHeadRow = $original.find("thead > tr").first();
+    firstHeadRow.children().each((i, col) => {
+        let $col = $(col);
+        let data = $col.data();
+        let width = null;
+        if (data.width !== undefined) {
+            // intentionally ignore data.visible here so there is a value to go to
+            $col.css({width: data.width});
+            width = parseFloat($col.outerWidth());
+        }
+
+        cols[data.columnId] = {
+            data: data,
+            label: $col.text(),
+            width: width
+        }
+    })
+
     const $clone = $original.clone(true, true);
     const $replacement = $('<div>').attr('id', id);
     $original.replaceWith($replacement);
 
-    let bg = new UIBootgrid(id).translateCompatOptions(params, $clone).initialize();
+    let bg = new UIBootgrid(id).translateCompatOptions(params, $clone, cols).initialize();
 
     // store the instance so calls to $.bootgrid(...) are wired to the new implementation
     $replacement.data('UIBootgrid', bg);
@@ -129,6 +151,7 @@ class UIBootgrid {
         // compatibility options mapped to tabulator options through translateCompatOptions()
         this.compatOptions = {};
         this.$compatElement = null;
+        this.compatColumns = null;
 
         // passed directly to tabulator
         this.tabulatorOptions = tabulatorOptions;
@@ -173,9 +196,9 @@ class UIBootgrid {
     * This function modifies this.compatOptions if options can be directly included in Tabulator.
     * Otherwise, this.options is modified for wrapper-specific implementations (i.e. rowCount, requestHandler).
     */
-    translateCompatOptions(compatOptions, $table) {
+    translateCompatOptions(compatOptions, $table, columns) {
+        this.compatColumns = columns;
         this.$compatElement = $table;
-
         let bootGridOptions = compatOptions.options;
 
         if (!(bootGridOptions?.ajax ?? true)) {
@@ -359,43 +382,21 @@ class UIBootgrid {
         if (this.options.remoteGridView) {
             throw new Error('fetching remote grid view not yet implemented');
         } else {
-            if (!this.$compatElement) {
-                throw new Error('unable to parse table headers, no table element provided');
+            if (!this.$compatElement || !this.compatColumns) {
+                throw new Error('unable to parse table headers, no table element or column structure provided');
             }
 
-            let firstHeadRow = this.$compatElement.find("thead > tr").first();
-
-            // insert the old table structure offscreen so the "em" values can be extracted
-            // Tabulator does not support using em units, so convert them to pixel values
-            // XXX move this step to the UIBootgrid jQuery initializer
-            this.$compatElement.css({position: 'absolute',visibility: 'hidden'}).appendTo('.content-box-main .col-sm-12');
-
-            firstHeadRow.children().each((i, row) => {
-                let $row = $(row);
-                let data = $row.data();
-
-                if (data.visible == false) {
-                    $row.hide();
-                }
-
-                let parseEmWidth = (value) => {
-                    if (typeof value !== "string" || !value.endsWith('em')) {
-                        return null;
-                    }
-
-                    $row.width(value);
-                    // XXX this isn't entirely accurate, but it's close enough to the old situation
-                    return parseFloat($row.outerWidth());
-                };
+            for (const [colId, val] of Object.entries(this.compatColumns)) {
+                let data = val.data;
 
                 if (data.type && this.options.ajax && data.type in this.options.formatters) {
                     // use formatters instead of converters
                     data.formatter = data.type;
                 }
 
-                result[data.columnId] = {
-                    id: data.columnId,
-                    label: $row.text(),
+                result[colId] = {
+                    id: colId,
+                    label: val.label,
                     style: data.cssClass ?? '',
                     type: data.type ?? 'text',
                     formatter: data.formatter ?? null,
@@ -405,12 +406,10 @@ class UIBootgrid {
                                     data.columnId : null,
                     visible: data.visible ?? true,
                     sequence: data.sequence ?? null,
-                    width: isNaN(data.width) ? parseEmWidth(data.width) : data.width,
+                    width: val.width,
                     editable: false,
                 }
-            })
-
-            this.$compatElement.remove();
+            }
         }
 
         this.gridView = result;
@@ -1616,7 +1615,6 @@ class UIBootgrid {
     command_toggle(event) {
         event.stopPropagation();
         const uuid = $(event.currentTarget).data('row-id');
-        console.log(uuid);
         $(event.currentTarget).removeClass('fa-check-square-o fa-square-o').addClass("fa-spinner fa-pulse");
         ajaxCall(this.crud['toggle'] + uuid, {}, (data, status) => {
             // reload grid after delete
