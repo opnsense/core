@@ -96,6 +96,11 @@ class CertificateContainerField extends ContainerField
 class CertificatesField extends ArrayField
 {
     /**
+     * {@inheritdoc}
+     */
+    protected static $internalStaticChildren = [];
+
+    /**
      * @inheritDoc
      */
     public function newContainerField($ref, $tagname)
