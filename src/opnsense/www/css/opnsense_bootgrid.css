@@ -122,7 +122,10 @@
     cursor: default;
 }
 
-/* Zebra striping and hover/selection behavior */
+/* Zebra striping, border line corrections and hover/selection behavior */
+.tabulator-row:first-child >  .tabulator-cell {
+    border-top: none;
+}
 .tabulator-row.tabulator-row-odd {
     background-color: #FBFBFB;
 }
@@ -186,4 +189,17 @@
 }
 .highlight-bg {
     animation: highlight 2s;
+}
+
+/* Tabulator "loading" and "error" overrides */
+.tabulator .tabulator-alert .tabulator-alert-msg.tabulator-alert-state-msg {
+    border: none;
+}
+.tabulator .tabulator-alert .tabulator-alert-msg {
+    background: initial;
+    font-size: 18px;
+}
+
+.tabulator .tabulator-alert .tabulator-alert-msg.tabulator-alert-state-error {
+    border: none;
 }

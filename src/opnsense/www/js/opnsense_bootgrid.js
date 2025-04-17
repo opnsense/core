@@ -335,7 +335,8 @@ class UIBootgrid {
         // those pages can set 'virtualDOM: true' to force this (i.e. log pages).
         // These pages must implement any event handlers for cells
         // in the formatter, not on the "loaded" event. If such elements include the 'bootgrid-tooltip' class,
-        // tooltips will automatically be activated when dynamically inserted into the DOM.
+        // tooltips will automatically be activated when dynamically inserted into the DOM. If such elements
+        // include any of the 'command-*' classes, these elements will be linked to the default commands
         this.options.virtualDOM = bootGridOptions?.virtualDOM ?? false;
         if (this.options.virtualDOM) {
             this.compatOptions['renderVertical'] = 'virtual';
@@ -502,7 +503,7 @@ class UIBootgrid {
 
         this.table.on('tableBuilt', () => {
             if (this.options.virtualDOM) {
-                // Start watching for dynamically inserted DOM elements and trigger their tooltips.
+                // Start watching for dynamically inserted DOM elements and trigger their tooltips and commands.
                 // XXX This has a slight performance penalty on virtual DOM scrolling for large datasets.
                 let targetNode = $(`#${this.id} .tabulator-table`)[0];
                 var observer = new MutationObserver((mutationsList, observer) => {
@@ -512,6 +513,18 @@ class UIBootgrid {
                             let commands = $(node).find('.bootgrid-tooltip');
                             if (commands.length > 0) {
                                 this._tooltips();
+                            }
+
+                            let actions = $(node).find('[class*="command-"]');
+                            if (actions.length > 0) {
+                                actions.each((i, el) => {
+                                    let classes = $(el).attr('class').split(/\s+/);
+                                    let commandClass = classes.find(c => c.startsWith('command-'));
+                                    if (commandClass) {
+                                        let command = commandClass.replace('command-', '');
+                                        this._wireCommands($(el), command);
+                                    }
+                                })
                             }
                         }
                     }); 
@@ -631,20 +644,7 @@ class UIBootgrid {
         }
         
         // DOM layout changed, rewire commands
-        const commands = this._getCommands();
-        Object.keys(commands).map((k) => {
-            let has_option = true;
-            for (let i = 0; i < commands[k]['requires'].length; i++) {
-                if (!(commands[k]['requires'][i] in this.crud)) {
-                    has_option = false;
-                }
-            }
-            if (has_option) {
-                this.$element.find(".command-" + k).unbind('click').on("click", commands[k].method);
-            } else if ($(".command-" + k).length > 0) {
-                console.log("not all requirements met to link " + k);
-            }
-        });
+        this._wireCommands();
 
         // backwards compat
         this.$element.trigger("loaded.rs.jquery.bootgrid");
@@ -725,6 +725,27 @@ class UIBootgrid {
                 $(el).attr('title', 'Error: no tooltip match');
             }
             $(el).tooltip({container: 'body', trigger: 'hover'});
+        });
+    }
+
+    _wireCommands($selector=null, command=null) {
+        const commands = this._getCommands();
+        Object.keys(commands).map((k) => {
+            let has_option = true;
+            for (let i = 0; i < commands[k]['requires'].length; i++) {
+                if (!(commands[k]['requires'][i] in this.crud)) {
+                    has_option = false;
+                }
+            }
+            if (has_option) {
+                if ($selector && command && command === k) {
+                    $selector.unbind('click').on("click", commands[k].method);
+                } else {
+                    this.$element.find(".command-" + k).unbind('click').on("click", commands[k].method);
+                }
+            } else if ($(".command-" + k).length > 0) {
+                console.log("not all requirements met to link " + k);
+            }
         });
     }
 

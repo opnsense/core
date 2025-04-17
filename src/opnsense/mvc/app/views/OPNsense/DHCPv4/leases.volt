@@ -54,6 +54,7 @@
             search:'/api/dhcpv4/leases/searchLease/',
             del:'/api/dhcpv4/leases/delLease/',
             options: {
+                virtualDOM: true,
                 selection: false,
                 multiSelect: false,
                 useRequestHandlerOnGet: true,
@@ -118,7 +119,7 @@
 
                         /* The delete action can be hooked up to the default bootgrid behaviour */
                         let deleteip = '<button type="button" class="btn btn-xs btn-default bootgrid-tooltip command-delete"' +
-                                'data-row-id="' + row.address + '" data-action="deleteSelected">' +
+                                'data-row-id="' + row.address + '">' +
                                 '<i class="fa fa-trash fa-fw"></i>' +
                                 '</a>';
 
