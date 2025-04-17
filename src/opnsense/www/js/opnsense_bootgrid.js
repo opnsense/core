@@ -1431,7 +1431,7 @@ class UIBootgrid {
             let saveDlg = this.init_save_btn();
             this.show_edit_dialog(event, this.crud.get).then(() => {
                 $('#' + editDlg).trigger('opnsense_bootgrid_mapped', ['add']);
-                saveDlg.click(function () {
+                saveDlg.click(() => {
                     if (saveDlg.find('i').hasClass('fa-spinner')) {
                         return;
                     }
@@ -1528,7 +1528,6 @@ class UIBootgrid {
         event.stopPropagation();
         stdDialogRemoveItem(this.translations.removeWarning, () => {
             let rows = this.table.getSelectedData();
-            console.log(rows);
             if (rows.length > 0) {
                 const deferreds = [];
                 rows.forEach((row) => {
