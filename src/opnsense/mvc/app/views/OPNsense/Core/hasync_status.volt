@@ -81,7 +81,6 @@
                         }
                     }
                 }).on('loaded.rs.jquery.bootgrid', function(){
-
                     $(".xmlrpc_srv_status_act").each(function(){
                         switch($(this).data('service_action')) {
                             case 'start':

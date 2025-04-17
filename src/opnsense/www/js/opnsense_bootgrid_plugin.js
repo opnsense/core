@@ -566,7 +566,6 @@ $.fn.UIBootgrid = function (params) {
             grid.on("loaded.rs.jquery.bootgrid", function(){
                 // toggle all automated tooltips
                 $(this).find(".bootgrid-tooltip").each(function (index) {
-                    console.log($(this))
                     if ($(this).attr('title') !== undefined) {
                         // keep this tooltip
                     } else if ($(this).hasClass('command-add')) {
