@@ -432,7 +432,7 @@ class UIBootgrid {
                     frozen: true,
                     headerSort: false,
                     headerHozAlign: "center",
-                    hozAlign:  'center',
+                    // hozAlign:  'center',
                 }
             } else {
                 col = { 
@@ -545,8 +545,6 @@ class UIBootgrid {
 
             intersectObserver.observe(this.$element[0]);
 
-            this._handleColumnResizing();
-
             this.tableInitialized = true;
         });
 
@@ -586,27 +584,6 @@ class UIBootgrid {
                 this.table.selectRow(deselected[0].getData()[this.options.datakey]);
             }
         }));
-    }
-
-    _handleColumnResizing() {
-        // custom resize guide for column resizing
-        const $resizeGuide = $('<span class="tabulator-col-resize-guide" style="display: none;"></span>');
-        this.$element.append($resizeGuide);
-        const elementOffset = this.$element.offset().left;
-
-        this.$element.on('mouseenter', '.tabulator-col-resize-handle', (e) => {
-            const handleOffset = $(e.currentTarget)[0].getBoundingClientRect().left;
-            const left = handleOffset - elementOffset;
-
-            $resizeGuide.css({
-                display: 'block',
-                left: left + 'px',
-            });
-        });
-
-        this.$element.on('mouseleave', '.tabulator-col-resize-handle', (e) => {
-            $resizeGuide.hide();
-        });
     }
 
     _renderFooter() {

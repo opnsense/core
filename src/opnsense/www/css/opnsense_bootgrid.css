@@ -145,6 +145,9 @@
 }
 
 /* Command column styles */
+.tabulator-col.tabulator-frozen.tabulator-frozen-right {
+    background-color: #eee;
+}
 .tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-right {
     background-color: #eee;
 }
@@ -156,6 +159,12 @@
 .tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-left {
     border-right: 1px solid #aaa;
     border-top: 1px solid #eee;
+}
+.tabulator-col.tabulator-row-header.tabulator-frozen.tabulator-frozen-left {
+    background-color: #eee;
+}
+.tabulator-cell.tabulator-row-header.tabulator-frozen.tabulator-frozen-left {
+    background-color: #eee;
 }
 .tabulator-row:last-child >
 .tabulator-cell.tabulator-row-header.tabulator-frozen.tabulator-frozen-left:first-child {
