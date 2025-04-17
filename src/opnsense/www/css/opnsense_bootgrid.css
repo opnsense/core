@@ -209,6 +209,9 @@
 }
 
 /* Tabulator "loading" and "error" overrides */
+.tabulator .tabulator-alert {
+    background: none;
+}
 .tabulator .tabulator-alert .tabulator-alert-msg.tabulator-alert-state-msg {
     border: none;
 }
