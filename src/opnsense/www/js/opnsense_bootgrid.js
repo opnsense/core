@@ -389,7 +389,7 @@ class UIBootgrid {
             for (const [colId, val] of Object.entries(this.compatColumns)) {
                 let data = val.data;
 
-                if (data.type && this.options.ajax && data.type in this.options.formatters) {
+                if (data.type && this.options.ajax && data.type in this.options.formatters && data.type !== 'boolean') {
                     // use formatters instead of converters
                     data.formatter = data.type;
                 }
