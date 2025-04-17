@@ -309,7 +309,7 @@ class UIBootgrid {
                     id: def.field,
                     visible: def.visible
                 };
-                return formatterFn(column, cell.getData());
+                return formatterFn(column, cell.getData(), onRendered);
             }
         }
 
