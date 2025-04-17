@@ -81,6 +81,8 @@ class UIBootgrid {
         this.originalTableHeight = null;
         this.tableInitialized = false;
         this.isResizing = false;
+        this.totalKnown = false;
+        this.paginationTotal = undefined;
 
         // wrapper-specific options
         this.options = {
@@ -563,6 +565,11 @@ class UIBootgrid {
 
         this.table.on('dataProcessed', () =>  {
             this._onDataProcessed();
+
+            // Check if the total amount of rows is known, if not, remove the "last page"
+            if (!this.totalKnown && this.options.ajax) {
+                $(`#${this.id} .tabulator-paginator button[data-page=last]`).remove();
+            }
         });
 
         this.table.on('dataChanged', this._debounce(() => {
@@ -1011,15 +1018,15 @@ class UIBootgrid {
                 let end, start;
 
                 if (this.options.ajax) {
-                    pageSize = this.table.curRowCount === true ? this.table.paginationTotal : this.table.curRowCount;
-                    totalRows = this.table.paginationTotal;
+                    pageSize = this.curRowCount === true ? this.paginationTotal : this.curRowCount;
+                    totalRows = this.paginationTotal;
                 }
 
                 end = currentPage * pageSize;
                 start = (totalRows === 0) ? 0 : ((currentPage - 1) * pageSize) + 1;
                 end = (totalRows === 0 || end === -1 || end > totalRows) ? totalRows : end;
 
-                if (this.table.totalKnown || !this.options.ajax) {
+                if (this.totalKnown || !this.options.ajax) {
                     return `Showing ${start} to ${end} of ${totalRows} entries`
                 } else {
                     return `Showing ${start} to ${end}`;
@@ -1046,16 +1053,15 @@ class UIBootgrid {
                         // we've stumbled on the last page
                         response['last_page'] = response.current;
                     }
-                    this.table.paginationTotal = response.total_rows;
-                    this.table.totalKnown = false;
+                    this.paginationTotal = response.total_rows;
+                    this.totalKnown = false;
                 } else {
                     // total is known
                     let last_page = params.rowCount < 0 ? 1 : Math.ceil(response.total / params.rowCount);
                     response['last_page'] = last_page;
-                    this.table.paginationTotal = response.total;
-                    this.table.totalKnown = true;
+                    this.paginationTotal = response.total;
+                    this.totalKnown = true;
                 }
-                this.table.curRowCount = this.curRowCount;
 
                 return response;
             },
