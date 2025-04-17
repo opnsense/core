@@ -1000,7 +1000,7 @@ class UIBootgrid {
             columns: this._parseColumns(),
 
             /* SERVER-SIDE OPTIONS */
-            dataLoaderLoading: '<i class="fa fa-spinner fa-spin"></i>', // TODO improve loader screen via css
+            dataLoaderLoading: '<i class="fa fa-spinner fa-spin"></i>',
 
             /* pagination */
             pagination: true,
@@ -1487,7 +1487,6 @@ class UIBootgrid {
                             $("#" + editDlg).change();
                         }
                         this._reload(true);
-                        //std_bootgrid_reload(this.$compatElement.attr('id'));
                         this.showSaveAlert(event);
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
                     }, true, () => {
