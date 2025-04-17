@@ -1254,7 +1254,7 @@ class UIBootgrid {
                     return (a.sequence > b.sequence) ? 1 : ((b.sequence > a.sequence) ? -1 : 0);
                 }
                 );
-                let rowid = this.options.datakey !== undefined ? this.options.datakey : 'uuid';
+                let rowid = this.options.datakey;
                 commandlist.map((command) => {
                     let has_option = command.classname !== undefined;
                     let option_title_str = command.title !== undefined ? " title=\"" + command.title + "\"" : "";
@@ -1274,33 +1274,33 @@ class UIBootgrid {
                 });
                 return html.join('\n');
             },
-            commandsWithInfo: function (cell, formatterParams, onRendered) {
+            commandsWithInfo: (cell, formatterParams, onRendered) => {
                 return '<button type="button" class="btn btn-xs btn-default command-info bootgrid-tooltip" data-row-id="' + cell.getData()[this.options.datakey] + '"><span class="fa fa-fw fa-info-circle"></span></button> ' +
                     '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + cell.getData()[this.options.datakey] + '"><span class="fa fa-fw fa-pencil"></span></button>' +
                     '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + cell.getData()[this.options.datakey] + '"><span class="fa fa-fw fa-clone"></span></button>' +
                     '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + cell.getData()[this.options.datakey] + '"><span class="fa fa-fw fa-trash-o"></span></button>';
             },
-            rowtoggle: function (cell, formatterParams, onRendered) {
+            rowtoggle: (cell, formatterParams, onRendered) => {
                 if (parseInt(cell.getValue(), 2) === 1) {
                     return '<span style="cursor: pointer;" class="fa fa-fw fa-check-square-o command-toggle bootgrid-tooltip" data-value="1" data-row-id="' + cell.getData()[this.options.datakey] + '"></span>';
                 } else {
                     return '<span style="cursor: pointer;" class="fa fa-fw fa-square-o command-toggle bootgrid-tooltip" data-value="0" data-row-id="' + cell.getData()[this.options.datakey] + '"></span>';
                 }
             },
-            boolean: function (cell, formatterParams) {
+            boolean: (cell, formatterParams) => {
                 if (parseInt(cell.getValue(), 2) === 1) {
                     return "<span class=\"fa fa-fw fa-check\" data-value=\"1\" data-row-id=\"" + cell.getData()[this.options.datakey] + "\"></span>";
                 } else {
                     return "<span class=\"fa fa-fw fa-times\" data-value=\"0\" data-row-id=\"" + cell.getData()[this.options.datakey] + "\"></span>";
                 }
             },
-            bytes: function (cell, formatterParams) {
+            bytes: (cell, formatterParams) => {
                 if (cell.getValue() && cell.getValue() > 0) {
                     return byteFormat(cell.getValue(), 2);
                 }
                 return '';
             },
-            statusled: function (cell, formatterParams) {
+            statusled: (cell, formatterParams) => {
                 if (cell.getValue() && cell.getValue() == 'red') {
                     return "<span class=\"fa fa-fw fa-square text-danger\"></span>";
                 } else if (cell.getValue() && cell.getValue() == 'green') {
@@ -1309,7 +1309,7 @@ class UIBootgrid {
                     return "<span class=\"fa fa-fw fa-square text-muted\"></span>";
                 }
             },
-            datetime: function(cell, formatterParams, onRendered) {
+            datetime: (cell, formatterParams, onRendered) => {
                 return cell.getValue() ? moment(parseInt(cell.getValue())*1000).format("lll") : "";
             },
         }
