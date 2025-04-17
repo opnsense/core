@@ -1,5 +1,5 @@
 .tabulator {
-    font-size: 15px; /* XXX: from body */
+    font-size: 15px;
     border: none;
     background-color: #fff;
     margin-bottom: 15px;
@@ -24,9 +24,7 @@
 }
 
 .tabulator .tabulator-header .tabulator-col {
-
     padding: 5px;
-    border-right: none;
 }
 
 .tabulator .tabulator-headers > :first-child {
@@ -34,6 +32,7 @@
 }
 
 .tabulator .tabulator-header .tabulator-col {
+    border-right: 1px solid #e0e0e0;
     background-color: #fff;
 }
 
@@ -46,12 +45,12 @@
 }
 
 .tabulator-row .tabulator-cell {
-    border-right: none;
     text-overflow: ellipsis;
     white-space: nowrap;
     line-height: 1.2;
     vertical-align: top;
-    border-top: 1px solid #eee
+    border-top: 1px solid #e0e0e0;
+    border-right: 1px solid #e0e0e0;
 }
 
 .opnsense-bootgrid-ellipsis {
@@ -70,7 +69,7 @@
 }
 
 .tabulator-tableholder {
-    background-color: #fff; /* XXX theme, inherits from content-box */
+    background-color: #fff;
 }
 
 .tabulator-page-counter {
@@ -84,9 +83,6 @@
 
 .tabulator .tabulator-footer {
     background-color: #fff;
-    border-top: none;
-    /* margin: 15px 0; */
-    
 }
 
 .tabulator .tabulator-footer .tabulator-page {
@@ -104,7 +100,6 @@
 }
 
 .tabulator .tabulator-footer .tabulator-paginator .tabulator-page:first-child {
-    /* margin-left: 0px; */
     border-bottom-left-radius: 3px;
     border-top-left-radius: 3px;
 }
@@ -143,13 +138,24 @@
     background-color: #9abcea;
 }
 
+/* Command column styles */
+.tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-right {
+    background-color: #eee;
+}
+
+/* Checkbox column styles */
 .tabulator .tabulator-header .tabulator-frozen.tabulator-frozen-left {
-    border: none;
+    border-right: 1px solid #aaa;
 }
 
 .tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-left {
-    border: none;
+    border-right: 1px solid #aaa;
     border-top: 1px solid #eee;
+}
+
+.tabulator-row:last-child >
+.tabulator-cell.tabulator-row-header.tabulator-frozen.tabulator-frozen-left:first-child {
+    border-bottom: none;
 }
 
 .tabulator .tabulator-header .tabulator-col.tabulator-sortable .tabulator-col-title {
