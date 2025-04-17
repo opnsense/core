@@ -33,6 +33,7 @@ class PrivController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->formDialogEditPriv = $this->getForm("dialogPriv");
+        $this->view->formGridPriv = $this->getFormGrid("dialogPriv");
         $this->view->pick('OPNsense/Auth/priv');
     }
 }

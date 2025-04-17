@@ -28,7 +28,7 @@
     'use strict';
 
     $( document ).ready(function () {
-        let grid_group = $("#grid-group").UIBootgrid({
+        let grid_priv = $("#{{formGridPriv['table_id']}}").UIBootgrid({
             search:'/api/auth/priv/search/',
             get:'/api/auth/priv/get_item/',
             set:'/api/auth/priv/set_item/',
@@ -58,27 +58,15 @@
             }
         });
 
+        $('button[data-action="add"]').hide();
+        $('button[data-action="deleteSelected"]').hide();
+
     });
 
 </script>
 
 <div class="tab-content content-box">
-    <div id="group" class="tab-pane fade in active">
-        <table id="grid-group" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogPriv">
-            <thead>
-                <tr>
-                    <th data-column-id="id" data-type="string" data-identifier="true">{{ lang._('ID') }}</th>
-                    <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
-                    <th data-column-id="match" data-type="string" data-formatter="lines">{{ lang._('Match') }}</th>
-                    <th data-column-id="users" data-type="string" data-formatter="count" data-sortable="false">{{ lang._('Users') }}</th>
-                    <th data-column-id="groups" data-type="string" data-formatter="count" data-sortable="false">{{ lang._('Groups') }}</th>
-                    <th data-column-id="commands" data-width="10em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
+    {{ partial('layout_partials/base_bootgrid_table', formGridPriv)}}
 </div>
 
-{{ partial("layout_partials/base_dialog",['fields':formDialogEditPriv,'id':'DialogPriv','label':lang._('Edit Privilege')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditPriv,'id':formGridPriv['edit_dialog_id'],'label':lang._('Edit Privilege')])}}

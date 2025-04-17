@@ -3,33 +3,51 @@
         <id>group.scope</id>
         <label>Defined By</label>
         <type>info</type>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>group.gid</id>
         <label>gid</label>
         <type>info</type>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>group.name</id>
         <label>Group name</label>
         <type>text</type>
+        <grid_view>
+            <sequence>10</sequence>
+        </grid_view>
     </field>
     <field>
         <id>group.description</id>
         <label>Description</label>
         <type>text</type>
         <help>You may enter a description here for your reference (not parsed).</help>
+        <grid_view>
+            <sequence>40</sequence>
+        </grid_view>
     </field>
     <field>
         <id>group.priv</id>
         <label>Privileges</label>
         <type>select_multiple</type>
+        <grid_view>
+            <sequence>20</sequence>
+        </grid_view>
     </field>
     <field>
         <id>group.member</id>
         <label>Members</label>
         <type>select_multiple</type>
         <help>List of users that are a member of this group</help>
+        <grid_view>
+            <sequence>30</sequence>
+        </grid_view>
     </field>
     <field>
         <id>group.source_networks</id>
