@@ -686,7 +686,7 @@ function ipsec_find_id(&$ph1ent, $side = 'local')
         $thisid_data = $id_data;
     }
 
-    return trim($thisid_data);
+    return is_string($thisid_data) ? trim($thisid_data) : $thisid_data;
 }
 
 /* include all configuration functions */
