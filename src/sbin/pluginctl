@@ -148,11 +148,11 @@ function get_all_services($name = '', $id = '')
 }
 
 $jflags = JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_INVALID_UTF8_IGNORE;
-$opts = getopt('46cDdfghIirSsXx', [], $optind);
+$opts = getopt('46cDdfghIiPrSsXx', [], $optind);
 $args = array_slice($argv, $optind);
 
 if (isset($opts['h'])) {
-    echo "Usage: pluginctl [-4|-6|-c|-D|-d|-f|-g|-h|-I|-i|-r|-S|-s|-X|-x] ...\n\n";
+    echo "Usage: pluginctl [-4|-6|-c|-D|-d|-f|-g|-h|-I|-i|-P|-r|-S|-s|-X|-x] ...\n\n";
     echo "\t-4 IPv4 address mode, return primary address of interface\n";
     echo "\t-6 IPv4 address mode, return primary address of interface\n";
     echo "\t-c configure mode (default), executes plugin [_configure] hook\n";
@@ -163,6 +163,7 @@ if (isset($opts['h'])) {
     echo "\t-h show this help text and exit\n";
     echo "\t-I information mode, lists registered device statistics\n";
     echo "\t-i invoke dynamic interface registration\n";
+    echo "\t-P initialize firewall plugin system with interfaces and gateways\n";
     echo "\t-r run mode (e.g. command)\n";
     echo "\t-S service metadata dump\n";
     echo "\t-s service mode (e.g. myservice restart)\n";
@@ -234,6 +235,44 @@ if (isset($opts['h'])) {
     }
 } elseif (isset($opts['I'])) {
     echo json_encode(legacy_interface_stats($args[0] ?? null), $jflags) . PHP_EOL;
+} elseif (isset($opts['P'])) {
+    $fw = filter_core_get_initialized_plugin_system();
+    $intfv4 = array();
+    $intfnatv4 = array();
+    foreach ($fw->getInterfaceMapping() as $intf => $intfcf) {
+        if (!empty($intfcf['ifconfig']['ipv4']) && empty($intfcf['gateway'])) {
+            $intfv4[] = sprintf(gettext('%s networks'), $intfcf['descr']);
+        } elseif (substr($intfcf['if'], 0, 4) != 'ovpn' && !empty($intfcf['gateway'])) {
+            $intfnatv4[] = $intfcf;
+        }
+    }
+    $intfv4 = array_merge($intfv4, filter_core_get_default_nat_outbound_networks());
+    $auto_rules = [];
+    foreach ($intfnatv4 as $natintf) {
+        $auto_rules[] = [
+            'interface' => $natintf['descr'],
+            'source_net' => implode(', ', $intfv4),
+            'source_port' => '*',
+            'destination_net' => '*',
+            'destination_port' => 500,
+            'target' => $natintf['descr'],
+            'target_port' => '*',
+            'static_port' => 'YES',
+            'description' => 'Auto created rule for ISAKMP'
+        ];
+        $auto_rules[] = [
+            'interface' => $natintf['descr'],
+            'source_net' => implode(', ', $intfv4),
+            'source_port' => '*',
+            'destination_net' => '*',
+            'destination_port' => '*',
+            'target' => $natintf['descr'],
+            'target_port' => '*',
+            'static_port' => 'NO',
+            'description' => 'Auto created rule'
+        ];
+    }
+    echo json_encode($auto_rules, $jflags) . PHP_EOL;
 } elseif (isset($opts['r'])) {
    $cmd = array_shift($args);
    $result = plugins_run($cmd, $args);
