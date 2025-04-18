@@ -17,7 +17,10 @@
     align-items: center;
 }
 
-
+.tabulator .tabulator-headers {
+    height: 100% !important; /* make sure the below border appears */
+    border-bottom: 1px solid #999;
+}
 .tabulator .tabulator-header {
     background-color: #fff;
 }
@@ -98,6 +101,7 @@
     border-top: 1px solid #eee;
     border-left: 1px solid #eee;
     border-right: 1px solid #eee;
+    border-bottom: none;
 }
 
 /* move border from footer to last row */
