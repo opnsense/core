@@ -986,7 +986,6 @@ class UIBootgrid {
                 }
             },
             height: '60vh',
-            // maxHeight: '100%',
             resizable: "header",
             placeholder: this.translations.noresultsfound, // XXX: improve styling, can return a function returning HTML or a DOM node
             layout: 'fitColumns',
