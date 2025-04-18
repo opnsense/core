@@ -511,13 +511,14 @@ class UIBootgrid {
             const resizeObserver = new ResizeObserver(entries => {
                 for (let entry of entries) {
                     const height = entry.contentRect.height;
+                    const scollbarGutterOffset = 15;
                     let curTotalTableHeight = $(`#${this.id}`)[0].offsetHeight;
                     const holderHeight = $(`#${this.id} .tabulator-tableholder`)[0].offsetHeight;
 
                     if (holderHeight > height) {
                         // dead space, shrink
                         const diff = holderHeight - height;
-                        this.table.setHeight((curTotalTableHeight - diff));
+                        this.table.setHeight((curTotalTableHeight - diff) + scollbarGutterOffset);
                         return;
                     }
 
@@ -527,13 +528,13 @@ class UIBootgrid {
                         curTotalTableHeight = curTotalTableHeight + diff;
                         if (!equal && curTotalTableHeight >= this.originalTableHeight) {
                             // max height reached, set it explicitly in case we're coming from a smaller size
-                            this.table.setHeight(this.originalTableHeight);
+                            this.table.setHeight(this.originalTableHeight + scollbarGutterOffset);
                             return;
                         }
 
                         if (curTotalTableHeight < this.originalTableHeight) {
                             // we can grow
-                            this.table.setHeight(curTotalTableHeight);
+                            this.table.setHeight(curTotalTableHeight + scollbarGutterOffset);
                             return;
                         }
                     }

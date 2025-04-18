@@ -236,6 +236,7 @@ POSSIBILITY OF SUCH DAMAGE.
          */
         let gridRuleFilesInitialized = false;
         let gridInstalledRulesInitialized = false;
+        let gridUserRulesInitialized = false;
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             loadGeneralSettings();
             if (e.target.id == 'download_settings_tab') {
@@ -562,16 +563,19 @@ POSSIBILITY OF SUCH DAMAGE.
                   });
                 }
             } else if (e.target.id == 'userrules_tab') {
-                $('#grid-userrules').bootgrid('destroy'); // always destroy previous grid, so data is always fresh
-                $("#grid-userrules").UIBootgrid({
+                if (!gridUserRulesInitialized) {
+                    $("#grid-userrules").UIBootgrid({
                         search:'/api/ids/settings/searchUserRule',
                         get:'/api/ids/settings/getUserRule/',
                         set:'/api/ids/settings/setUserRule/',
                         add:'/api/ids/settings/addUserRule/',
                         del:'/api/ids/settings/delUserRule/',
                         toggle:'/api/ids/settings/toggleUserRule/'
-                    }
-                );
+                    });
+                    gridUserRulesInitialized = true;
+                } else {
+                    $("#grid-userrules").bootgrid('reload');
+                }
             }
         });
 
