@@ -5,7 +5,7 @@
             {% for field in fields %}
             <th {% for k,v in field %} data-{{k}}="{{v}}"{% endfor %} >{{field['label']}}</th>
             {% endfor %}
-            <th data-column-id="commands" data-width="{{command_width|default('7em')}}" data-formatter="commands" data-sortable="false">
+            <th data-column-id="commands" data-width="{{command_width|default('100')}}" data-formatter="commands" data-sortable="false">
                 {{ lang._('Commands') }}
             </th>
         </tr>

@@ -32,7 +32,6 @@
             search:'/api/core/service/search',
             options:{
                 multiSelect: false,
-                rowSelect: true,
                 selection: false,
                 formatters:{
                     commands: function (column, row) {
@@ -47,20 +46,16 @@
                     },
                     status: function (column, row) {
                         if (row['running']) {
-                            return '<span class="label label-opnsense label-opnsense-xs label-success pull-right" data-toggle="tooltip" title="{{ lang._('Running') }}"><i class="fa fa-play fa-fw"></i></span>';
+                            return '<span class="label label-opnsense label-opnsense-xs label-success" data-toggle="tooltip" title="{{ lang._('Running') }}"><i class="fa fa-play fa-fw"></i></span>';
                         } else {
-                            return '<span class="label label-opnsense label-opnsense-xs label-danger pull-right" data-toggle="tooltip" title="{{ lang._('Stopped') }}"><i class="fa fa-stop fa-fw"></i></span>';
+                            return '<span class="label label-opnsense label-opnsense-xs label-danger" data-toggle="tooltip" title="{{ lang._('Stopped') }}"><i class="fa fa-stop fa-fw"></i></span>';
                         }
                     }
                 }
             }
         });
         grid_service.on('loaded.rs.jquery.bootgrid', function () {
-            $('[data-toggle="tooltip"]').tooltip();
-            let ids = $("#grid-service").bootgrid("getCurrentRows");
-            if (ids.length > 0) {
-                $("#grid-service").bootgrid('select', [ids[0].name]);
-            }
+            $('[data-toggle="tooltip"]').tooltip({container: 'body', trigger: 'hover'});
             $('.command-stop').click(function () {
                 $(this).toggleClass('disabled');
                 $(this).children().toggleClass('fa-stop fa-spinner fa-pulse');
@@ -92,12 +87,11 @@
         <thead>
           <tr>
             <th data-column-id="id" data-type="string" data-sortable="false" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-            <th data-column-id="pad" data-type="string" data-sortable="false" data-width="1em"></th>
+            <th data-column-id="running" data-type="string" data-width="100" data-formatter="status" data-sortable="false"></th>
             <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
             <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
             <th data-column-id="locked" data-type="string" data-sortable="false" data-visible="false"></th>
-            <th data-column-id="running" data-type="string" data-width="3em" data-formatter="status" data-sortable="false"></th>
-            <th data-column-id="commands" data-width="5em" data-formatter="commands" data-sortable="false"></th>
+            <th data-column-id="commands" data-width="100" data-formatter="commands" data-sortable="false"></th>
           </tr>
         </thead>
         <tbody>

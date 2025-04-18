@@ -44,16 +44,6 @@
       }
 
       /**
-       * chain std_bootgrid_reload from opnsense_bootgrid_plugin.js
-       * to get the isSubsystemDirty state on "UIBootgrid" changes
-       */
-      var opn_std_bootgrid_reload = std_bootgrid_reload;
-      std_bootgrid_reload = function(gridId) {
-         opn_std_bootgrid_reload(gridId);
-         isSubsystemDirty();
-      };
-
-      /**
        * apply changes and reload monit
        */
       $('#btnApplyConfig').SimpleActionButton({onAction: function(data, status){

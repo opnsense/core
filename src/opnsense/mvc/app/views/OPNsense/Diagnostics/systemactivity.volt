@@ -36,39 +36,28 @@ POSSIBILITY OF SUCH DAMAGE.
          */
         function updateTop() {
             var gridopt = {
-                ajax: false,
-                selection: true,
+                ajax: false, // handle pagination and sorting locally
+                selection: false,
                 multiSelect: true,
+                virtualDOM: true,
+                responseHandler: function(response) {
+                    return response.details;
+                }
             };
             if ($("#grid-top").hasClass('bootgrid-table')) {
                 $("#grid-top").bootgrid('clear');
             } else {
                 $("#grid-top")
-                    .bootgrid(gridopt)
+                    .UIBootgrid({
+                        search: "/api/diagnostics/activity/getActivity",
+                        options: gridopt
+                    })
                     .on("loaded.rs.jquery.bootgrid", function (e) {
                         if ($('#grid-top tbody tr').length == 1 && $("#grid-top").bootgrid("getSearchPhrase") == '') {
                             $("#grid-top td").text("{{ lang._('Waiting for data...') }}");
                         }
                     });
             }
-            ajaxGet("/api/diagnostics/activity/getActivity", {}, function (data, status) {
-                        if (status == "success") {
-                            let table = [];
-                            $("#grid-top > tbody").html('');
-                            $.each(data['details'], function (key, record) {
-                                table.push(record);
-                            });
-                            $("#grid-top").bootgrid('append', table);
-                            var header_txt = "";
-                            $.each(data['headers'], function (key, value) {
-                                header_txt += value;
-                                header_txt += "<br/>";
-                            });
-                            $("#header_data").html(header_txt);
-                            $('#header_data_show').show();
-                        }
-                    }
-            );
         }
 
 
