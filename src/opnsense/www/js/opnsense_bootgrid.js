@@ -265,8 +265,8 @@ class UIBootgrid {
             }
         }
 
-        if (bootGridOptions?.datakey) {
-            this.options.datakey = bootGridOptions.datakey;
+        if (compatOptions?.datakey) {
+            this.options.datakey = compatOptions.datakey;
         }
 
         if (bootGridOptions?.onBeforeRenderDialog) {

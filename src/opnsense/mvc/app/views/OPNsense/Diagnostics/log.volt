@@ -48,6 +48,7 @@
       switch_mode(s_filter_val);
 
       let grid_log = $("#grid-log").UIBootgrid({
+          datakey: 'rnum',
           options:{
               initialSearchPhrase: getUrlHash('search'),
               sorting:false,
@@ -55,7 +56,6 @@
               selection: false,
               rowCount:[20,50,100,200,500,1000,5000],
               virtualDOM: true,
-              datakey: 'rnum',
               labels: {
                   infos: "{{ lang._('Showing %s to %s') | format('{{ctx.start}}','{{ctx.end}}') }}"
               },
