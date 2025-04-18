@@ -374,7 +374,6 @@ class UIBootgrid {
         this.table.getRows().forEach(row => {
             row.normalizeHeight();
         });
-        this._syncTableHeight();
     }
 
     _parseGridView() {
@@ -503,6 +502,46 @@ class UIBootgrid {
         });
 
         this.table.on('tableBuilt', () => {
+            // Dynamically adjust table height to prevent dead space
+            // (workaround for https://github.com/olifolkerd/tabulator/issues/4419: maxHeight does not work without a fixed height)
+            if (!this.originalTableHeight) {
+                this.originalTableHeight = parseInt(this.table.options.height) * window.innerHeight / 100;
+            }
+
+            const resizeObserver = new ResizeObserver(entries => {
+                for (let entry of entries) {
+                    const height = entry.contentRect.height;
+                    let curTotalTableHeight = $(`#${this.id}`)[0].offsetHeight;
+                    const holderHeight = $(`#${this.id} .tabulator-tableholder`)[0].offsetHeight;
+
+                    if (holderHeight > height) {
+                        // dead space, shrink
+                        const diff = holderHeight - height;
+                        this.table.setHeight((curTotalTableHeight - diff));
+                        return;
+                    }
+
+                    if (height > holderHeight) {
+                        const diff = height - holderHeight;
+                        const equal = curTotalTableHeight === this.originalTableHeight;
+                        curTotalTableHeight = curTotalTableHeight + diff;
+                        if (!equal && curTotalTableHeight >= this.originalTableHeight) {
+                            // max height reached, set it explicitly in case we're coming from a smaller size
+                            this.table.setHeight(this.originalTableHeight);
+                            return;
+                        }
+
+                        if (curTotalTableHeight < this.originalTableHeight) {
+                            // we can grow
+                            this.table.setHeight(curTotalTableHeight);
+                            return;
+                        }
+                    }
+                }
+            });
+
+            resizeObserver.observe($(`#${this.id} .tabulator-table`)[0]);
+
             if (this.options.virtualDOM) {
                 // Start watching for dynamically inserted DOM elements and trigger their tooltips and commands.
                 // XXX This has a slight performance penalty on virtual DOM scrolling for large datasets.
@@ -635,8 +674,6 @@ class UIBootgrid {
     }
 
     _onDataProcessed() {
-        this._syncTableHeight();
-
         // refresh tooltips
         if (!this.options.virtualDOM) {
             this._tooltips();
@@ -654,55 +691,6 @@ class UIBootgrid {
 
         // backwards compat
         this.$element.trigger("loaded.rs.jquery.bootgrid");
-    }
-
-    /**
-     * Adjust table height based on current rowCount selection or rowheight changes to prevent dead space
-     * (workaround for https://github.com/olifolkerd/tabulator/issues/4419: maxHeight does not work without a fixed height)
-     */
-    _syncTableHeight() {
-        const tabulator = this.table;
-        const table = tabulator.element;
-        const rowsContainer = table.querySelector( '.tabulator-tableholder' );
-
-        if (!rowsContainer) {
-            return;
-        }
-
-        const rowsContainerHeight = parseFloat(getComputedStyle(rowsContainer).height);
-        const rowsHeight = parseFloat(getComputedStyle(table.querySelector('.tabulator-table')).height);
-        const diff = Math.ceil(rowsContainerHeight - rowsHeight);
-        const curTotalTableHeight = parseInt(getComputedStyle(table).height);
-
-        let overflow = rowsContainer.scrollHeight > rowsContainer.clientHeight;
-
-
-        if (!this.originalTableHeight) {
-            this.originalTableHeight = parseInt(this.table.options.height) * window.innerHeight / 100;
-
-            if (diff > 0 && !overflow) {
-                tabulator.setHeight(curTotalTableHeight - diff);
-                this.table.redraw(true);
-            }
-        }
-
-
-        if (diff > 0 && !overflow && !(this.lastchange === Math.abs(diff))) {
-            // dead space on page load, adjust it.
-            table.style.height = (curTotalTableHeight - diff) + 'px';
-            this.table.redraw(true);
-        } else if ((diff < 0) && overflow) {
-            // scrollbar
-
-            if ((curTotalTableHeight + Math.abs(diff)) < this.originalTableHeight) {
-                // not yet max height so prevent scrollbar and grow
-                table.style.height = (curTotalTableHeight + Math.abs(diff) + 'px');
-                this.lastchange = Math.abs(diff);
-            } else {
-                table.style.height = this.originalTableHeight + 'px';
-                this.table.redraw(true);
-            }
-        }
     }
 
     _tooltips() {
@@ -781,12 +769,10 @@ class UIBootgrid {
                                 val => typeof val === 'string' && val.toLowerCase().includes(this.searchPhrase.toLowerCase())
                             )
                         });
-                        this._syncTableHeight();
                     }
                 }
             } else if (searchVal === "" && !this.options.ajax) {
                 this.table.clearFilter();
-                this._syncTableHeight();
             }
         });
 
@@ -828,7 +814,6 @@ class UIBootgrid {
                     localStorage.setItem(`tabulator-${this.table.options.persistenceID}-rowCount`, this.curRowCount);
                     this.table.setPageSize(newRowCount);
 
-                    this._syncTableHeight();
                     $(`#${this.id}-rowcount-text`).text(newRowCount === true ? this.translations.all : newRowCount);
 
                     $.each($(`#${this.id}-rowcount-items li`), (i, value) => {
@@ -965,6 +950,7 @@ class UIBootgrid {
 
     tabulatorDefaults() {
         return {
+            autoResize: false,
             index: this.options.datakey,
             renderVertical:"basic", // "virtual"
             persistence:{
@@ -1000,6 +986,7 @@ class UIBootgrid {
                 }
             },
             height: '60vh',
+            // maxHeight: '100%',
             resizable: "header",
             placeholder: this.translations.noresultsfound, // XXX: improve styling, can return a function returning HTML or a DOM node
             layout: 'fitColumns',
@@ -1165,8 +1152,6 @@ class UIBootgrid {
         } else {
             this.table.replaceData();
         }
-
-        this._syncTableHeight();
     }
 
     /**

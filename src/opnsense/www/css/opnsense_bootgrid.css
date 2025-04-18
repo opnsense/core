@@ -2,7 +2,6 @@
     font-size: 15px;
     border: none;
     background-color: #fff;
-    margin-bottom: 15px;
 }
 
 .tabulator-paginator {
@@ -107,7 +106,7 @@
 .tabulator .tabulator-footer {
     border-top: none;
 }
-.tabulator .tabulator-row:last-child {
+.tabulator .tabulator-tableholder {
     border-bottom: 1px solid #999;
 }
 
