@@ -30,7 +30,10 @@
 require_once("guiconfig.inc");
 require_once("system.inc");
 
-$serviceproviders_xml = "/usr/local/opnsense/contrib/mobile-broadband-provider-info/serviceproviders.xml";
+use OPNsense\Core\AppConfig;
+
+$contribDir = (new AppConfig())->application->contribDir;
+$serviceproviders_xml = $contribDir . "/mobile-broadband-provider-info/serviceproviders.xml";
 $serviceproviders_contents = file_get_contents($serviceproviders_xml);
 $serviceproviders = simplexml_load_string($serviceproviders_contents);
 
