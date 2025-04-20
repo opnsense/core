@@ -175,7 +175,16 @@ class Dnsmasq extends BaseModel
                 );
             }
 
-            if (in_array('static', explode(',', $range->mode)) && $start_inet == 'inet6') {
+            $is_static = in_array('static', explode(',', $range->mode));
+            if (!$range->end_addr->isEmpty() && $is_static) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("Static only accepts a starting address."),
+                        $key . ".end_addr"
+                    )
+                );
+            }
+            if ($is_static && $start_inet == 'inet6') {
                 $messages->appendMessage(
                     new Message(
                         gettext("Static is only available IPv4."),
