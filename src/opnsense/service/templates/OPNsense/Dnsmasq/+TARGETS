@@ -1,0 +1,2 @@
+dnsmasq.conf:/usr/local/etc/dnsmasq.conf
+rc.conf.d:/etc/rc.conf.d/dnsmasq

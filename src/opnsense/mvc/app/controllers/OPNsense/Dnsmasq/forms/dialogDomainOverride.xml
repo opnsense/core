@@ -1,5 +1,15 @@
 <form>
     <field>
+        <id>domainoverride.sequence</id>
+        <label>Sequence</label>
+        <type>text</type>
+        <help>Sort with a sequence number, e.g., for strict processing order when using the "strict-order" option.</help>
+        <grid_view>
+            <width>6em</width>
+            <order>asc</order>
+        </grid_view>
+    </field>
+    <field>
         <id>domainoverride.domain</id>
         <label>Domain</label>
         <type>text</type>

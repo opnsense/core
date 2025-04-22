@@ -28,15 +28,20 @@
 
 namespace OPNsense\Dnsmasq;
 
-class IndexController extends \OPNsense\Base\IndexController
+class LeasesController extends \OPNsense\Base\IndexController
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected function templateJSIncludes()
+    {
+        return array_merge(parent::templateJSIncludes(), [
+            '/ui/js/moment-with-locales.min.js'
+        ]);
+    }
+
     public function indexAction()
     {
-        $this->view->generalForm = $this->getForm("general");
-        $this->view->formDialogEditHostOverride = $this->getForm("dialogHostOverride");
-        $this->view->formGridHostOverride = $this->getFormGrid("dialogHostOverride");
-        $this->view->formDialogEditDomainOverride = $this->getForm("dialogDomainOverride");
-        $this->view->formGridDomainOverride = $this->getFormGrid("dialogDomainOverride");
-        $this->view->pick('OPNsense/Dnsmasq/index');
+        $this->view->pick('OPNsense/Dnsmasq/leases');
     }
 }

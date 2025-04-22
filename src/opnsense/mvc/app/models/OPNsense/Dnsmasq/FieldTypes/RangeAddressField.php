@@ -26,18 +26,19 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Dnsmasq\Api;
+namespace OPNsense\Dnsmasq\FieldTypes;
 
-use OPNsense\Base\ApiMutableServiceControllerBase;
+use OPNsense\Base\FieldTypes\NetworkField;
 
-/**
- * Class ServiceController
- * @package OPNsense\Dnsmasq
- */
-class ServiceController extends ApiMutableServiceControllerBase
+class RangeAddressField extends NetworkField
 {
-    protected static $internalServiceClass = '\OPNsense\Dnsmasq\Dnsmasq';
-    protected static $internalServiceTemplate = 'OPNsense/Dnsmasq';
-    protected static $internalServiceEnabled = 'enable';
-    protected static $internalServiceName = 'dnsmasq';
+    protected function isValidInput($input)
+    {
+        if (str_starts_with($input, '::')) {
+            /* special case, if we prefix a partial range with a network, we should end up with a valid address */
+            return filter_var('2000' . $input, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
+        } else {
+            return parent::isValidInput($input);
+        }
+    }
 }

@@ -1,5 +1,9 @@
 <form>
     <field>
+        <type>header</type>
+        <label>Default</label>
+    </field>
+    <field>
         <id>dnsmasq.enable</id>
         <label>Enable</label>
         <type>checkbox</type>
@@ -9,40 +13,33 @@
         <id>dnsmasq.interface</id>
         <label>Interface</label>
         <type>select_multiple</type>
-        <hint>All (recommended)</hint>
+        <hint>All</hint>
         <help>
-            Interface IPs used by Dnsmasq for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.
+            Interface IPs used to responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.
         </help>
     </field>
     <field>
         <id>dnsmasq.strictbind</id>
         <label>Strict Interface Binding</label>
         <type>checkbox</type>
-        <help>If this option is set, Dnsmasq will only bind to the interfaces containing the IP addresses selected above, rather than binding to all interfaces and discarding queries to other addresses. This option does not work with IPv6. If set, Dnsmasq will not bind to IPv6 addresses.</help>
+        <advanced>true</advanced>
+        <help>By default we bind the wildcard address, even when listening on some interfaces. Requests that shouldn't be handled are discarded, this has the advantage of working even when interfaces come and go and change address. This option forces binding to only the interfaces we are listening on, which is less stable in non static environments.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>DNS</label>
     </field>
     <field>
         <id>dnsmasq.port</id>
         <label>Listen Port</label>
         <type>text</type>
         <hint>53</hint>
-        <help>The port used for responding to DNS queries. It should normally be left blank unless another service needs to bind to TCP/UDP port 53.</help>
+        <help>The port used for responding to DNS queries. It should normally be left blank unless another service needs to bind to TCP/UDP port 53. Setting this to zero (0) completely disables DNS function</help>
     </field>
     <field>
         <id>dnsmasq.dnssec</id>
         <label>DNSSEC</label>
         <type>checkbox</type>
-    </field>
-    <field>
-        <id>dnsmasq.regdhcpstatic</id>
-        <label>Register DHCP Static Mappings</label>
-        <type>checkbox</type>
-        <help>If this option is set, then DHCP static mappings will be registered in Dnsmasq, so that their name can be resolved.</help>
-    </field>
-    <field>
-        <id>dnsmasq.dhcpfirst</id>
-        <label>Prefer DHCP</label>
-        <type>checkbox</type>
-        <help>If this option is set, then DHCP mappings will be resolved before the manual list of names below. This only affects the name given for a reverse lookup (PTR).</help>
     </field>
     <field>
         <id>dnsmasq.no_hosts</id>
@@ -53,6 +50,7 @@
     <field>
         <id>dnsmasq.log_queries</id>
         <label>Log the results of DNS queries</label>
+        <advanced>true</advanced>
         <type>checkbox</type>
     </field>
     <field>
@@ -60,6 +58,7 @@
         <label>Maximum concurrent queries</label>
         <type>text</type>
         <hint>5000</hint>
+        <advanced>true</advanced>
         <help>Set the maximum number of concurrent DNS queries. On configurations with tight resources, this value may need to be reduced.</help>
     </field>
     <field>
@@ -67,6 +66,7 @@
         <label>Cache size</label>
         <type>text</type>
         <hint>10000</hint>
+        <advanced>true</advanced>
         <help>Set the size of the cache. Setting the cache size to zero disables caching. Please note that huge cache size impacts performance.</help>
     </field>
     <field>
@@ -74,7 +74,15 @@
         <label>Local DNS entry TTL</label>
         <type>text</type>
         <hint>1</hint>
+        <advanced>true</advanced>
         <help>This option allows a time-to-live (in seconds) to be given for local DNS entries, i.e. /etc/hosts or DHCP leases. This will reduce the load on the server at the expense of clients using stale data under some circumstances. A value of zero will disable client-side caching.</help>
+    </field>
+    <field>
+        <id>dnsmasq.no_ident</id>
+        <label>No ident</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Do not respond to class CHAOS and type TXT in domain bind queries. Without this option being set, the cache statistics are also available in the DNS as answers to queries of class CHAOS and type TXT in domain bind.</help>
     </field>
     <field>
         <type>header</type>
@@ -84,34 +92,130 @@
         <id>dnsmasq.strict_order</id>
         <label>Query DNS servers sequentially</label>
         <type>checkbox</type>
-        <help>If this option is set, Dnsmasq will query the DNS servers sequentially in the order specified (System: General Setup: DNS Servers), rather than all at once in parallel.</help>
+        <help>If this option is set, we will query the DNS servers sequentially in the order specified (System: General Setup: DNS Servers), rather than all at once in parallel.</help>
     </field>
     <field>
         <id>dnsmasq.domain_needed</id>
         <label>Require domain</label>
         <type>checkbox</type>
-        <help>If this option is set, Dnsmasq will not forward A or AAAA queries for plain names, without dots or domain parts, to upstream name servers. If the name is not known from /etc/hosts or DHCP then a "not found" answer is returned.</help>
+        <help>If this option is set, we will not forward A or AAAA queries for plain names, without dots or domain parts, to upstream name servers. If the name is not known from /etc/hosts or DHCP then a "not found" answer is returned.</help>
     </field>
     <field>
         <id>dnsmasq.no_private_reverse</id>
         <label>Do not forward private reverse lookups</label>
         <type>checkbox</type>
-        <help>If this option is set, Dnsmasq will not forward reverse DNS lookups (PTR) for private addresses (RFC 1918) to upstream name servers. Any entries in the Domain Overrides section forwarding private "n.n.n.in-addr.arpa" names to a specific server are still forwarded. If the IP to name is not known from /etc/hosts, DHCP or a specific domain override then a "not found" answer is immediately returned.</help>
+        <help>If this option is set, we will not forward reverse DNS lookups (PTR) for private addresses (RFC 1918) to upstream name servers. Any entries in the Domain Overrides section forwarding private "n.n.n.in-addr.arpa" names to a specific server are still forwarded. If the IP to name is not known from /etc/hosts, DHCP or a specific domain override then a "not found" answer is immediately returned.</help>
+    </field>
+    <field>
+        <id>dnsmasq.add_mac</id>
+        <label>Add MAC</label>
+        <type>dropdown</type>
+        <help>Add the MAC address of the requestor to DNS queries which are forwarded upstream. The MAC address will only be added if the upstream DNS Server is in the same subnet as the requestor. Since this is not standardized, it should be considered experiemental. This is useful for selective DNS filtering on the upstream DNS server.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>dnsmasq.add_subnet</id>
+        <label>Add subnet</label>
+        <type>checkbox</type>
+        <help>Add the real client IPv4 and IPv6 addresses (add-subnet=32,128) to DNS queries which are forwarded upstream. Be careful setting this option as it can undermine privacy. This is useful for selective DNS filtering on the upstream DNS server.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>dnsmasq.strip_subnet</id>
+        <label>Strip subnet</label>
+        <type>checkbox</type>
+        <help>Strip the subnet received by a downstream DNS server. If add_subnet is used and the downstream DNS server already added a subnet, DNSMasq will not replace it without setting strip_subnet.</help>
+        <advanced>true</advanced>
     </field>
     <field>
         <type>header</type>
-        <label>ISC DHCP</label>
+        <label>DHCP</label>
+    </field>
+    <field>
+        <id>dnsmasq.dhcp.no_interface</id>
+        <label>Interface [no dhcp]</label>
+        <type>select_multiple</type>
+        <advanced>true</advanced>
+        <help>
+            Do not provide DHCP, TFTP or router advertisement on the specified interfaces, but do provide DNS service.
+        </help>
+    </field>
+    <field>
+        <id>dnsmasq.dhcp.fqdn</id>
+        <label>DHCP fqdn</label>
+        <type>checkbox</type>
+        <help>In the default mode, we insert the unqualified names of DHCP clients into the DNS, in which case they have to be unique. Using this option the unqualified name is no longer put in the DNS, only the qualified name.</help>
+    </field>
+    <field>
+        <id>dnsmasq.dhcp.domain</id>
+        <label>DHCP default domain</label>
+        <type>text</type>
+        <help>To ensure that all names have a domain part, there must be a default domain specified when dhcp-fqdn is set. Leave empty to use the system domain.</help>
+    </field>
+    <field>
+        <id>dnsmasq.dhcp.lease_max</id>
+        <label>DHCP max leases</label>
+        <type>text</type>
+        <hint>1000</hint>
+        <advanced>true</advanced>
+        <help>Limits dnsmasq to the specified maximum number of DHCP leases. This limit is to prevent DoS attacks from hosts which create thousands of leases and use lots of memory in the dnsmasq process.</help>
+    </field>
+    <field>
+        <id>dnsmasq.dhcp.authoritative</id>
+        <label>DHCP authoritative</label>
+        <type>checkbox</type>
+        <help>Should be set when dnsmasq is definitely the only DHCP server on a network. For DHCPv4, it changes the behaviour from strict RFC compliance so that DHCP requests on unknown leases from unknown hosts are not ignored.</help>
+    </field>
+    <field>
+        <id>dnsmasq.dhcp.reply_delay</id>
+        <label>DHCP Reply delay</label>
+        <type>text</type>
+        <help>Delays sending DHCPOFFER and PROXYDHCP replies for at least the specified number of seconds. This can be practical for split dhcp solutions, to make sure the secondary server answers slower than the primary.</help>
+    </field>
+    <field>
+        <id>dnsmasq.dhcp.default_fw_rules</id>
+        <label>DHCP register firewall rules</label>
+        <type>checkbox</type>
+        <help>Automatically register firewall rules to allow dhcp traffic for all explicitly selected interfaces, can be disabled for more fine grained control if needed. Changes are only effective after a firewall service restart (see system diagnostics).</help>
+    </field>
+    <field>
+        <id>dnsmasq.dhcp.enable_ra</id>
+        <label>Router Advertisements</label>
+        <type>checkbox</type>
+        <help>Setting this will enable Router Advertisements for all configured DHCPv6 ranges with the managed address bits set, and the use SLAAC bit reset. To change this default, select a combination of the possible options in the individual DHCPv6 ranges. Keep in mind that this is a global option; if there are configured DHCPv6 ranges, RAs will be sent unconditionally and cannot be deactivated selectively. Setting Router Advertisement modes in DHCPv6 ranges will have no effect without this global option enabled.</help>
+    </field>
+    <field>
+        <id>dnsmasq.dhcp.nosync</id>
+        <label>Disable HA sync</label>
+        <type>checkbox</type>
+        <help>Ignore the dhcp general settings from being updated using ha sync.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>ISC / KEA DHCP (legacy)</label>
     </field>
     <field>
         <id>dnsmasq.regdhcp</id>
         <label>Register ISC DHCP4 Leases</label>
         <type>checkbox</type>
-        <help>If this option is set, then machines that specify their hostname when requesting a DHCP lease will be registered in Dnsmasq, so that their name can be resolved.</help>
+        <help>If this option is set, then machines that specify their hostname when requesting a DHCP lease will be registered, so that their name can be resolved.</help>
     </field>
     <field>
         <id>dnsmasq.regdhcpdomain</id>
         <label>DHCP Domain Override</label>
         <type>text</type>
         <help>The domain name to use for DHCP hostname registration. If empty, the default system domain is used. Note that all DHCP leases will be assigned to the same domain. If this is undesired, static DHCP lease registration is able to provide coherent mappings.</help>
+    </field>
+    <field>
+        <id>dnsmasq.regdhcpstatic</id>
+        <label>Register DHCP Static Mappings</label>
+        <type>checkbox</type>
+        <help>If this option is set, then DHCP static mappings will be registered, so that their name can be resolved.</help>
+    </field>
+    <field>
+        <id>dnsmasq.dhcpfirst</id>
+        <label>Prefer DHCP</label>
+        <type>checkbox</type>
+        <help>If this option is set, then DHCP mappings will be resolved before the manual list of names below. This only affects the name given for a reverse lookup (PTR).</help>
     </field>
 </form>
