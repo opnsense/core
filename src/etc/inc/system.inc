@@ -69,6 +69,14 @@ function system_sysctl_defaults()
 {
     global $config;
 
+    /* notes:
+     *  - set 'optional' => true for values that should no longer be enforced by default
+     *  - 'description' and 'type' can be used to indicate persistence of these values
+     *    when in reality these are not available due to kernel modules unloaded or
+     *    compile time options unset (like debugging)
+     *  - always set 'default' so the backend can use it and the user can see it
+     */
+
     return [
         'debug.kassert.warn_only' => [ 'default' => '1', 'description' => 'KASSERT triggers a panic (0) or just a warning (1)', 'type' => 'w' ],
         'hw.ibrs_disable' => [ 'default' => '0', 'optional' => true ],
@@ -144,7 +152,7 @@ function system_sysctl_get()
     foreach ($defaults as $name => $info) {
         /* compile list of required sysctls not necessarily present in config */
         if (empty($info['optional'])) {
-            $sysctls[$name] = 'default';
+            $sysctls[$name] = '';
         }
     }
 
