@@ -92,6 +92,19 @@ class Filter extends BaseModel
                         }
                     }
 
+                    if (strpos($rule->source_net, ',') !== false && $rule->source_not == '1') {
+                        $messages->appendMessage(new Message(
+                            gettext("Inverting sources is only allowed for single targets to avoid mis-interpretations"),
+                            $rule->source_not->__reference
+                        ));
+                    }
+                    if (strpos($rule->destination_net, ',') !== false && $rule->destination_not == '1') {
+                        $messages->appendMessage(new Message(
+                            gettext("Inverting destinations is only allowed for single targets to avoid mis-interpretations"),
+                            $rule->destination_net->__reference
+                        ));
+                    }
+
                     // Additional source nat validations
                     if ($rule->target !== null) {
                         $target_is_addr = Util::isSubnet($rule->target) || Util::isIpAddress($rule->target);

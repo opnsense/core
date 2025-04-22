@@ -316,6 +316,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
     if (strpos($pconfig['src'], ',') > 0) {
+        if (!empty($pconfig['srcnot'])) {
+            $input_errors[] = gettext("Inverting sources is only allowed for single targets to avoid mis-interpretations");
+        }
         foreach (explode(',', $pconfig['src']) as $tmp) {
             if (!is_specialnet($tmp) && !is_alias($tmp)) {
                $input_errors[] = sprintf(gettext("%s is not a valid source alias."), $tmp);
@@ -325,6 +328,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = sprintf(gettext("%s is not a valid source IP address or alias."),$pconfig['src']);
     }
     if (strpos($pconfig['dst'], ',') > 0) {
+      if (!empty($pconfig['dstnot'])) {
+          $input_errors[] = gettext("Inverting destinations is only allowed for single targets to avoid mis-interpretations");
+      }
       foreach (explode(',', $pconfig['dst']) as $tmp) {
           if (!is_specialnet($tmp) && !is_alias($tmp)) {
              $input_errors[] = sprintf(gettext("%s is not a valid destination alias."), $tmp);
