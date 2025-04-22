@@ -32,7 +32,6 @@
 
 require_once 'IPv6.inc';
 
-/* XXX only two callers left, better remove this unreliable function */
 function killbyname($procname, $sig = 'TERM', $waitforit = true)
 {
     /* pgrep -n only kills the newest matching process */
