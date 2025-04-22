@@ -30,16 +30,19 @@ function kea_services()
 {
 
     $services = [];
-    if (!empty((string)(new \OPNsense\Kea\KeaDhcpv4())->general->enabled)) {
+    if (
+        !empty((string)(new \OPNsense\Kea\KeaDhcpv4())->general->enabled) ||
+        !empty((string)(new \OPNsense\Kea\KeaDhcpv6())->general->enabled)
+    ) {
         $services[] = [
-            'description' => gettext('KEA DHCPv4 server'),
-            'pidfile' => '/var/run/kea/kea-dhcp4.kea-dhcp4.pid',
+            'description' => gettext('KEA DHCP server'),
+            'pidfile' => '/var/run/kea/kea-ctrl-agent.kea-ctrl-agent.pid',
             'configd' => [
                 'restart' => ['kea restart'],
                 'start' => ['kea start'],
                 'stop' => ['kea stop'],
             ],
-            'name' => 'kea-dhcpv4',
+            'name' => 'kea-dhcp',
         ];
     }
     return $services;
@@ -55,14 +58,18 @@ function kea_run()
 function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details = null)
 {
     $staticmap = [];
-    $keav4 = new \OPNsense\Kea\KeaDhcpv4();
+    if ($proto == 6) {
+        $keamdl = new \OPNsense\Kea\KeaDhcpv6();
+    } else {
+        $keamdl = new \OPNsense\Kea\KeaDhcpv4();
+    }
 
-    if ($proto == 6 || empty((string)$keav4->general->enabled)) {
-        /* unsupported protocol or not enabled */
+    if (empty((string)$keamdl->general->enabled)) {
+        /* not enabled */
         return $staticmap;
     }
 
-    foreach ($keav4->reservations->reservation->iterateItems() as $reservation) {
+    foreach ($keamdl->reservations->reservation->iterateItems() as $reservation) {
         $hostname = !empty((string)$reservation->hostname) ? (string)$reservation->hostname : null;
         $ip_address = (string)$reservation->ip_address;
         if ($valid_addresses) {
@@ -81,11 +88,13 @@ function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details
 
         $description = !empty((string)$reservation->description) ? (string)$reservation->description : null;
 
-        $subnet_node = $keav4->getNodeByReference("subnets.subnet4.{$reservation->subnet}");
         $domain = null;
-        if ($subnet_node) {
-            if (!empty((string)$subnet_node->option_data->domain_name)) {
-                $domain = (string)$subnet_node->option_data->domain_name;
+        if ($proto == 4) {
+            $subnet_node = $keamdl->getNodeByReference("subnets.subnet4.{$reservation->subnet}");
+            if ($subnet_node) {
+                if (!empty((string)$subnet_node->option_data->domain_name)) {
+                    $domain = (string)$subnet_node->option_data->domain_name;
+                }
             }
         }
 
@@ -113,11 +122,16 @@ function kea_configure()
 function kea_configure_do($verbose = false)
 {
     $keaDhcpv4 = new \OPNsense\Kea\KeaDhcpv4();
-    if ($keaDhcpv4->isEnabled()) {
+    $keaDhcpv6 = new \OPNsense\Kea\KeaDhcpv6();
+    if ($keaDhcpv4->isEnabled() || $keaDhcpv6->isEnabled()) {
         service_log('Sync KEA DHCP config...', $verbose);
-        if ($keaDhcpv4->general->manual_config->isEmpty()) {
+        if ($keaDhcpv4->isEnabled() && $keaDhcpv4->general->manual_config->isEmpty()) {
             /* skip kea-dhcp4.conf when configured manually */
             $keaDhcpv4->generateConfig();
+        }
+        if ($keaDhcpv6->isEnabled() && $keaDhcpv6->general->manual_config->isEmpty()) {
+            /* skip kea-dhcp6.conf when configured manually */
+            $keaDhcpv6->generateConfig();
         }
         (new \OPNsense\Kea\KeaCtrlAgent())->generateConfig();
         service_log("done.\n", $verbose);
@@ -136,6 +150,7 @@ function kea_firewall($fw)
 {
     global $config;
     $keav4 = new \OPNsense\Kea\KeaDhcpv4();
+    $keav6 = new \OPNsense\Kea\KeaDhcpv6();
     if ($keav4->fwrulesEnabled()) {
         // automatic (IPv4) rules enabled
         foreach (explode(',', $keav4->general->interfaces) as $intf) {
@@ -169,6 +184,65 @@ function kea_firewall($fw)
             );
         }
     }
+
+    if ($keav6->fwrulesEnabled()) {
+        foreach (explode(',', $keav6->general->interfaces) as $intf) {
+            $default_opts = [
+                'protocol' => 'udp',
+                'ipprotocol' => 'inet6',
+                'interface' => $intf,
+                '#ref' => 'ui/kea/dhcp/v6',
+                'descr' => 'allow access to DHCPv6 server',
+                'log' => !isset($config['syslog']['nologdefaultpass'])
+            ];
+            $fw->registerFilterRule(
+                1,
+                [
+                    'from' => 'fe80::/10',
+                    'to' => 'fe80::/10,ff02::/16',
+                    'to_port' => 546
+                ],
+                $default_opts
+            );
+            $fw->registerFilterRule(
+                1,
+                [
+                    'from' => 'fe80::/10',
+                    'to' => 'ff02::/16',
+                    'to_port' => 547
+                ],
+                $default_opts
+            );
+            $fw->registerFilterRule(
+                1,
+                [
+                    'from' => 'ff02::/16',
+                    'to' => 'fe80::/10',
+                    'to_port' => 547
+                ],
+                $default_opts
+            );
+            $fw->registerFilterRule(
+                1,
+                [
+                    'from' => 'fe80::/10',
+                    'to' => '(self)',
+                    'to_port' => 546
+                ],
+                $default_opts
+            );
+            $fw->registerFilterRule(
+                1,
+                [
+                    'from' => '(self)',
+                    'to' => 'fe80::/10',
+                    'from_port' => 547,
+                    'direction' => 'out'
+                ],
+                $default_opts
+            );
+        }
+    }
 }
 
 function kea_xmlrpc_sync()
@@ -179,7 +253,7 @@ function kea_xmlrpc_sync()
         'description' => gettext('Kea DHCP'),
         'section' => 'OPNsense.Kea',
         'id' => 'kea',
-        'services' => ["kea-dhcpv4"],
+        'services' => ["kea-dhcpv4", "kea-dhcpv6"],
     ];
 
     return $result;

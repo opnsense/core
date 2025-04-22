@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2023 Deciso B.V.
+ * Copyright (C) 2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,20 +28,11 @@
 
 namespace OPNsense\Kea\Api;
 
-use OPNsense\Base\ApiMutableServiceControllerBase;
+use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
-use OPNsense\Kea\KeaDhcpv4;
-use OPNsense\Kea\KeaDhcpv6;
+use OPNsense\Core\Config;
 
-class ServiceController extends ApiMutableServiceControllerBase
+class Leases6Controller extends LeasesController
 {
-    protected static $internalServiceClass = '\OPNsense\Kea\KeaDhcpv4';
-    protected static $internalServiceTemplate = 'OPNsense/Kea';
-    protected static $internalServiceEnabled = 'general.enabled';
-    protected static $internalServiceName = 'kea';
-
-    protected function serviceEnabled()
-    {
-        return  (new KeaDhcpv4())->general->enabled == '1' || (new KeaDhcpv6())->general->enabled == '1';
-    }
+    protected $configd_fetch_leases = 'kea list leases6';
 }

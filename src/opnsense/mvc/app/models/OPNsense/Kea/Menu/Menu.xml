@@ -3,7 +3,9 @@
         <KeaDHCP VisibleName="Kea DHCP" cssClass="fa fa-bullseye fa-fw">
             <ControlAgent order="5" VisibleName="Control Agent" url="/ui/kea/dhcp/ctrl_agent"/>
             <Keav4 order="10" VisibleName="Kea DHCPv4" url="/ui/kea/dhcp/v4"/>
+            <Keav6 order="20" VisibleName="Kea DHCPv6" url="/ui/kea/dhcp/v6"/>
             <Leases4 order="50" VisibleName="Leases DHCPv4" url="/ui/kea/dhcp/leases4"/>
+            <Leases4 order="60" VisibleName="Leases DHCPv6" url="/ui/kea/dhcp/leases6"/>
             <LogFile order="100" VisibleName="Log File" url="/ui/diagnostics/log/core/kea"/>
         </KeaDHCP>
     </Services>
