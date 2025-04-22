@@ -92,6 +92,13 @@ class Filter extends BaseModel
                         }
                     }
 
+                    if (!$rule->icmptype->isEmpty() && !in_array($rule->protocol, ['ICMP'])) {
+                        $messages->appendMessage(new Message(
+                            gettext("Option only applies to ICMP packets"),
+                            $rule->icmptype->__reference
+                        ));
+                    }
+
                     if (strpos($rule->source_net, ',') !== false && $rule->source_not == '1') {
                         $messages->appendMessage(new Message(
                             gettext("Inverting sources is only allowed for single targets to avoid mis-interpretations"),
