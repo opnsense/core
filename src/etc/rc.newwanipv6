@@ -123,6 +123,12 @@ switch (isset($config['system']['ipv6allow']) ? ($config['interfaces'][$interfac
 /* linked devices that are assigned need to be reconfigured now */
 interfaces_restart_by_device(false, $auxdevs);
 
+/*
+ * Interface reconfigure finished here so sync
+ * firewall groups in case of destroy/create use.
+ */
+ifgroup_setup();
+
 $interfaces = array_keys(link_interface_to_track6($interface, true));
 array_unshift($interfaces, $interface);
 
