@@ -101,10 +101,12 @@ class UIBootgrid {
         this.curRowCount = null;
         this.navigationRendered = false;
         this.originalTableHeight = null;
+        // this.tableWidth = null;
         this.tableInitialized = false;
         this.isResizing = false;
         this.totalKnown = false;
         this.paginationTotal = undefined;
+        this.persistenceID = `${window.location.pathname}#${this.id}`;
 
         // wrapper-specific options
         this.options = {
@@ -177,6 +179,13 @@ class UIBootgrid {
     }
 
     initialize() {
+        if (!localStorage.getItem(`tabulator-${this.persistenceID}-persistence`)) {
+            // If the user didn't change anything on the table, assume we start blank
+            Object.keys(localStorage)
+                .filter(key => key.startsWith(`tabulator-${this.persistenceID}`))
+                .forEach(key => localStorage.removeItem(key));
+        }
+
         if (this.options.triggerEditFor) {
             this.command_edit(null, this.options.triggerEditFor);
         }
@@ -492,6 +501,14 @@ class UIBootgrid {
         this.table.destroy();
     }
 
+    _setPersistence(value) {
+        if (value) {
+            localStorage.setItem(`tabulator-${this.persistenceID}-persistence`, value);
+        } else {
+            localStorage.removeItem(`tabulator-${this.persistenceID}-persistence`);
+        }
+    }
+
     _registerEvents() {
         this.table.on('dataLoading', () => {
             if (!this.navigationRendered) {
@@ -499,18 +516,21 @@ class UIBootgrid {
                 this._populateColumnSelection();
                 this.navigationRendered = true;
             }
+
+            // this.table.setHeight(100);
         });
 
         this.table.on('tableBuilt', () => {
             // Dynamically adjust table height to prevent dead space
             // (workaround for https://github.com/olifolkerd/tabulator/issues/4419: maxHeight does not work without a fixed height)
             if (!this.originalTableHeight) {
-                this.originalTableHeight = parseInt(this.table.options.height) * window.innerHeight / 100;
+                this.originalTableHeight = parseInt(parseInt(this.table.options.height) * window.innerHeight / 100);
             }
 
-            const resizeObserver = new ResizeObserver(entries => {
+            const resizeObserver = new ResizeObserver(this._debounce((entries) => {
                 for (let entry of entries) {
-                    const height = entry.contentRect.height;
+                    const height = entry.contentRect.height;//entry.target.scrollHeight;//entry.contentRect.height;
+                    const width = entry.contentRect.width;
                     const scollbarGutterOffset = 15;
                     let curTotalTableHeight = $(`#${this.id}`)[0].offsetHeight;
                     const holderHeight = $(`#${this.id} .tabulator-tableholder`)[0].offsetHeight;
@@ -525,23 +545,32 @@ class UIBootgrid {
                     if (height > holderHeight) {
                         const diff = height - holderHeight;
                         const equal = curTotalTableHeight === this.originalTableHeight;
+                        const was = curTotalTableHeight;
                         curTotalTableHeight = curTotalTableHeight + diff;
-                        if (!equal && curTotalTableHeight >= this.originalTableHeight) {
+                        if (was < this.originalTableHeight && curTotalTableHeight > this.originalTableHeight) {
                             // max height reached, set it explicitly in case we're coming from a smaller size
                             this.table.setHeight(this.originalTableHeight + scollbarGutterOffset);
+                            this.table.redraw();
                             return;
                         }
 
                         if (curTotalTableHeight < this.originalTableHeight) {
                             // we can grow
                             this.table.setHeight(curTotalTableHeight + scollbarGutterOffset);
+                            this.table.redraw();
                             return;
                         }
                     }
                 }
-            });
+            }));
 
             resizeObserver.observe($(`#${this.id} .tabulator-table`)[0]);
+
+            window.onresize = (() => {
+                // this is mainly intended for scaling the width of the table if
+                // the width of the window changes.
+                this.table.redraw();
+            });
 
             if (this.options.virtualDOM) {
                 // Start watching for dynamically inserted DOM elements and trigger their tooltips and commands.
@@ -643,6 +672,19 @@ class UIBootgrid {
                 this.table.selectRow(deselected[0].getData()[this.options.datakey]);
             }
         }));
+
+
+        // Triggers to activate persistence
+        this.table.on('columnResized', (column) => {
+            this._setPersistence(true);
+        })
+        this.table.on('dataSorted', (column) => {
+            this._setPersistence(true);
+        })
+        this.table.on('columnVisibilityChanged', (column) => {
+            this._setPersistence(true);
+        })
+
     }
 
     _renderFooter() {
@@ -788,7 +830,7 @@ class UIBootgrid {
         }
 
         // Rowcount
-        this.curRowCount = localStorage.getItem(`tabulator-${this.table.options.persistenceID}-rowCount`) || this.options.rowCount[0];
+        this.curRowCount = localStorage.getItem(`tabulator-${this.persistenceID}-rowCount`) || this.options.rowCount[0];
         if (this.curRowCount === 'true') {
             this.curRowCount = true;
         }
@@ -812,7 +854,7 @@ class UIBootgrid {
                     if (!this.options.ajax) {
                         this.table.curRowCount = this.curRowCount;
                     }
-                    localStorage.setItem(`tabulator-${this.table.options.persistenceID}-rowCount`, this.curRowCount);
+                    localStorage.setItem(`tabulator-${this.persistenceID}-rowCount`, this.curRowCount);
                     this.table.setPageSize(newRowCount);
 
                     $(`#${this.id}-rowcount-text`).text(newRowCount === true ? this.translations.all : newRowCount);
@@ -841,8 +883,9 @@ class UIBootgrid {
             `).on('click', (e) => {
                 e.stopPropagation();
                 Object.keys(localStorage)
-                    .filter(key => key.startsWith(`tabulator-${this.table.options.persistenceID}`))
+                    .filter(key => key.startsWith(`tabulator-${this.persistenceID}`))
                     .forEach(key => localStorage.removeItem(key));
+                this._setPersistence(false);
                 location.reload();
             });
 
@@ -953,19 +996,17 @@ class UIBootgrid {
         return {
             autoResize: false,
             index: this.options.datakey,
-            renderVertical:"basic", // "virtual"
-            persistence:{
-                sort: true, //persist column sorting
-                filter: false, //persist filters
-                headerFilter: true, //persist header filters
-                group: true, //persist row grouping
-                page: false, //persist page
-                // persist columns, except for width, as this will prevent columns from scaling properly
-                // after initial page load
-                columns: ['visible', 'frozen']
+            renderVertical:"basic",
+            persistence: {
+                sort: true,
+                filter: false,
+                headerFilter: true,
+                group: true,
+                page: false,
+                columns: true,
             },
             movableColumns: true,
-            persistenceID:`${window.location.pathname}#${this.id}`,
+            persistenceID:this.persistenceID,
             selectableRows: true,
             selectableRowsPersistence: false,
             rowHeader: { // implements row selection checkbox
@@ -1032,7 +1073,6 @@ class UIBootgrid {
                 // the counter text (showing x of y) is handled in a module extension called "rowpage"
                 if (response.total_rows != undefined) {
                     // we don't know the 'last_page'
-                    // XXX we may consider removing the "go to first" and "go to last" buttons here
                     if (response.rowCount == params.rowCount) {
                         response['last_page'] = response.current + 1;
                     } else {

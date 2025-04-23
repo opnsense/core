@@ -31,6 +31,7 @@
                 ajax: false,
                 selection: false,
                 multiSelect: false,
+                virtualDOM: true,
                 formatters: {
                     "commands": function (column, row) {
                         return '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" title="{{ lang._('Delete') }}" \
