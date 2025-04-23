@@ -285,22 +285,6 @@ function get_locale_list()
     return $locales;
 }
 
-function get_country_codes()
-{
-    $dn_cc = array();
-
-    $iso3166_tab = '/usr/local/opnsense/contrib/tzdata/iso3166.tab';
-    if (file_exists($iso3166_tab)) {
-        $dn_cc_file = file($iso3166_tab);
-        foreach ($dn_cc_file as $line) {
-            if (preg_match('/^([A-Z][A-Z])\t(.*)$/', $line, $matches)) {
-                $dn_cc[$matches[1]] = trim($matches[2]);
-            }
-        }
-    }
-    return $dn_cc;
-}
-
 function get_zoneinfo()
 {
     $zones = timezone_identifiers_list(DateTimeZone::ALL ^ DateTimeZone::UTC);
