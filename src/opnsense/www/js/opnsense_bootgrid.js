@@ -516,8 +516,6 @@ class UIBootgrid {
                 this._populateColumnSelection();
                 this.navigationRendered = true;
             }
-
-            // this.table.setHeight(100);
         });
 
         this.table.on('tableBuilt', () => {
