@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2024 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2025 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2006 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -38,6 +38,8 @@ require_once("interfaces.inc");
 
 $argument = isset($argv[1]) ? trim($argv[1]) : '';
 $force = !empty($argv[2]) ? 'yes' : 'no';
+$family = 'inet';
+$family_int = 4;
 
 exit_on_bootup(function ($argument) {
     log_msg("IP renewal deferred during boot on '{$argument}'");
@@ -66,7 +68,7 @@ if (!is_ipaddr($ip)) {
     return;
 }
 
-$gw = OPNsense\Interface\Autoconf::getRouter($device, 'inet');
+$gw = OPNsense\Interface\Autoconf::getRouter($device, $family);
 
 $cacheip_file = "/tmp/{$device}_oldip";
 $cacheip = trim(@file_get_contents($cacheip_file));
@@ -81,10 +83,17 @@ if ($force == 'no' && $ip == $cacheip) {
 
 log_msg("IP renewal starting (new: {$ip}, old: {$cacheip}, interface: {$interface}, device: {$device}, force: {$force})");
 
-interfaces_vips_configure($interface, 4);
+interfaces_vips_configure($interface, $family_int);
 
-$greifs = link_interface_to_gre($interface, true, 4);
-$gififs = link_interface_to_gif($interface, true, 4);
+$auxdevs = [];
+
+/* find and reconfigure all linked devices  */
+foreach (link_interface_to_gre($interface, true, $family_int) as $linked) {
+    $auxdevs[] = $linked;
+}
+foreach (link_interface_to_gif($interface, true, $family_int) as $linked) {
+    $auxdevs[] = $linked;
+}
 
 switch (isset($config['system']['ipv6allow']) ? ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') : 'none') {
     case '6to4':
@@ -99,7 +108,8 @@ switch (isset($config['system']['ipv6allow']) ? ($config['interfaces'][$interfac
         break;
 }
 
-interfaces_restart_by_device(false, array_merge($greifs, $gififs));
+/* linked devices that are assigned need to be reconfigured now */
+interfaces_restart_by_device(false, $auxdevs);
 
 /*
  * Interface reconfigure finished here so sync
@@ -107,7 +117,10 @@ interfaces_restart_by_device(false, array_merge($greifs, $gififs));
  */
 ifgroup_setup();
 
-system_routing_configure(false, $interface, true, 'inet');
+$interfaces = [/* empty for v6 compat */];
+array_unshift($interfaces, $interface);
+
+system_routing_configure(false, $interfaces, true, $family);
 
 filter_configure_sync();
 
@@ -126,5 +139,5 @@ if (is_ipaddr($cachegw) && is_ipaddr($gw) && $gw != $cachegw) {
 
 @file_put_contents($cachegw_file, $gw . PHP_EOL);
 
-plugins_configure('vpn', false, [[$interface], 'inet']);
-plugins_configure('newwanip', false, [[$interface], 'inet']);
+plugins_configure('vpn', false, [$interfaces, $family]);
+plugins_configure('newwanip', false, [$interfaces, $family]);
