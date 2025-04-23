@@ -31,8 +31,8 @@ namespace OPNsense\Firewall\FieldTypes;
 use OPNsense\Base\FieldTypes\BaseField;
 use OPNsense\Base\Messages\Message;
 use OPNsense\Base\Validators\CallbackValidator;
-use OPNsense\Core\Config;
 use OPNsense\Core\AppConfig;
+use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
 
 /**
