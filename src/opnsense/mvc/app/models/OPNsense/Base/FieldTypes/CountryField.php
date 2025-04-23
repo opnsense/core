@@ -28,6 +28,8 @@
 
 namespace OPNsense\Base\FieldTypes;
 
+use OPNsense\Core\AppConfig;
+
 /**
  * Class CountryField field type to select iso3166 countries
  * @package OPNsense\Base\FieldTypes
@@ -62,7 +64,8 @@ class CountryField extends BaseListField
             self::$internalCacheOptionList[$setid] = [];
         }
         if (empty(self::$internalCacheOptionList[$setid])) {
-            $filename = '/usr/local/opnsense/contrib/tzdata/iso3166.tab';
+            $contribDir = (new AppConfig())->application->contribDir;
+            $filename = $contribDir . '/tzdata/iso3166.tab';
             $data = file_get_contents($filename);
             foreach (explode("\n", $data) as $line) {
                 $line = trim($line);

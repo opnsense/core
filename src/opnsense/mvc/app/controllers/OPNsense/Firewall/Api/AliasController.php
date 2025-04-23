@@ -32,6 +32,7 @@ namespace OPNsense\Firewall\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\UserException;
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Category;
@@ -256,7 +257,8 @@ class AliasController extends ApiMutableModelControllerBase
             ]
         ];
 
-        foreach (explode("\n", file_get_contents('/usr/local/opnsense/contrib/tzdata/iso3166.tab')) as $line) {
+        $contribDir = (new AppConfig())->application->contribDir;
+        foreach (explode("\n", file_get_contents($contribDir . '/tzdata/iso3166.tab')) as $line) {
             $line = trim($line);
             if (strlen($line) > 3 && substr($line, 0, 1) != '#') {
                 $result[substr($line, 0, 2)] = array(
@@ -265,7 +267,7 @@ class AliasController extends ApiMutableModelControllerBase
                 );
             }
         }
-        foreach (explode("\n", file_get_contents('/usr/local/opnsense/contrib/tzdata/zone.tab')) as $line) {
+        foreach (explode("\n", file_get_contents($contribDir . '/tzdata/zone.tab')) as $line) {
             if (strlen($line) > 0 && substr($line, 0, 1) == '#') {
                 continue;
             }
