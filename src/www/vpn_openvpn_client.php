@@ -639,13 +639,16 @@ $( document ).ready(function() {
               <select name="interface" class="form-control">
 <?php
               $interfaces = get_configured_interface_with_descr();
-              $carplist = get_configured_carp_interface_list();
-              foreach ($carplist as $cif => $carpip) {
-                  $interfaces[$cif.'|'.$carpip] = $carpip." (".get_vip_descr($carpip).")";
-              }
-              $aliaslist = get_configured_ip_aliases_list();
-              foreach ($aliaslist as $aliasip => $aliasif) {
-                  $interfaces[$aliasif.'|'.$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
+              foreach (config_read_array('virtualip', 'vip') as $vip) {
+                  $label = $vip['subnet'] . (empty($vip['descr']) ? '' : " (${vip['descr']})");
+                  if ($vip['mode'] == 'carp') {
+                      $value = "{$vip['interface']}_vip{$vip['vhid']}";
+                  } elseif ($vip['mode'] == 'ipalias') {
+                      $value = $vip['interface'];
+                  } else {
+                      continue;
+                  }
+                  $interfaces["{$value}|{$vip['subnet']}"] = $label;
               }
               $interfaces['lo0'] = "Localhost";
               $interfaces['any'] = "any";
