@@ -675,14 +675,18 @@ class UIBootgrid {
         // Triggers to activate persistence
         this.table.on('columnResized', (column) => {
             this._setPersistence(true);
-        })
-        this.table.on('dataSorted', (column) => {
+        });
+        this.table.on('headerClick', (e, column) => {
+            if (this.options.sorting) {
+                this._setPersistence(true);
+            }
+        });
+        this.table.on('columnVisibilityChanged', (column, visible) => {
             this._setPersistence(true);
-        })
-        this.table.on('columnVisibilityChanged', (column) => {
+        });
+        this.table.on('columnMoved', (column, columns) => {
             this._setPersistence(true);
-        })
-
+        });
     }
 
     _renderFooter() {
