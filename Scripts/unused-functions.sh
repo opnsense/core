@@ -47,7 +47,6 @@ grep -Eor '^function &?[^( ]+' ${TESTDIR} | tr ':' ' ' | tr -d '&' | while read 
 	MODULE=$(basename ${FILE})
 	MODULE=${MODULE%.inc}
 
-
 	# exclude indirect plugin calls not otherwise referenced
 	if [ "${BASEDIR}" = "plugins.inc.d" ]; then
 		for PLUGIN in ${PLUGINS}; do
@@ -57,8 +56,22 @@ grep -Eor '^function &?[^( ]+' ${TESTDIR} | tr ':' ' ' | tr -d '&' | while read 
 		done
 	fi
 
-	# either by direct call xxx( or wrapped in single quotes
-	USED=$(grep -Fr -e "${FUNC}(" -e "'${FUNC}'" -e "'${FUNC}:' ${DIRS} | wc -l | awk '{ print $1 }')
+	# exclude xmlrpc magic
+	if [ "${BASEDIR}" = "xmlrpc" ]; then
+		if [ "${FUNC}" = "xmlrpc_publishable_${MODULE}" ]; then
+			continue 2
+		fi
+	fi
+
+	# exclude obvious and non-obvious ways to call a function
+	USED=$(grep -Fr "${FUNC}" ${DIRS} | grep -F \
+	    -e "${FUNC}(" \
+	    -e "'${FUNC}'" \
+	    -e "'${FUNC}:" \
+	    -e "${FUNC}.bind" \
+	    -e "${FUNC}.call" \
+	    -e "= ${FUNC};" \
+	    | wc -l | awk '{ print $1 }')
 	if [ ${USED} -le 1 ]; then
 		echo "${FUNC}() appears unused" ${NOTE}
 	elif [ ${USED} -eq 2 ]; then
