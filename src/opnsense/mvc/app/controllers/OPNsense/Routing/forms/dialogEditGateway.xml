@@ -68,7 +68,7 @@
         <label>Failback States</label>
         <type>checkbox</type>
         <style>monitor_opt</style>
-        <help>Move clients to a working gateway with a higher priority (lower value) than this gateway regardless of its monitor status. It requires default gatway switching or an assigned gateway group to trigger. Most common use for this otion are metered connections over LTE that should only be used when no other working gateway is available.</help>
+        <help>Move clients to a working gateway with a higher priority (lower value) than this gateway regardless of its monitor status. It requires default gateway switching or an assigned gateway group to trigger. Most common use for this otion are metered connections over LTE that should only be used when no other working gateway is available.</help>
     </field>
     <field>
         <id>gateway_item.monitor</id>
