@@ -32,13 +32,17 @@ require_once("guiconfig.inc");
 $a_clones = &config_read_array('wireless', 'clone');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $input_errors = array();
+    $input_errors = [];
     if (!empty($_POST['action']) && $_POST['action'] == "del" && !empty($a_clones[$_POST['id']])) {
-        if (is_interface_assigned($a_clones[$_POST['id']]['cloneif'])) {
-            /* check if still in use */
-            $input_errors[] = gettext("This wireless clone cannot be deleted because it is assigned as an interface.");
-        } else {
-            mwexec("/sbin/ifconfig " . escapeshellarg($a_clones[$_POST['id']]['cloneif']) . " destroy");
+        /* check if still in use */
+        foreach (legacy_config_get_interfaces() as $ifid => $ifcfg) {
+            if ($ifcfg['if'] == $a_clones[$_POST['id']]['cloneif']) {
+                $input_errors[] = sprintf(gettext('This wireless clone cannot be deleted because it is assigned to interface \'%s\'.'), $ifid);
+                break;
+            }
+        }
+        if (!count($input_errors)) {
+            legacy_interface_destroy($a_clones[$_POST['id']]['cloneif']);
             unset($a_clones[$_POST['id']]);
             write_config();
 
