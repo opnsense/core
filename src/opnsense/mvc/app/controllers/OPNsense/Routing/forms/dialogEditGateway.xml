@@ -61,7 +61,7 @@
         <label>Failover States</label>
         <type>checkbox</type>
         <style>monitor_opt</style>
-        <help>Move clients to another available working gateway when this gateway is down. This requires default gatway switching or an assigned gateway group to trigger.</help>
+        <help>Move clients to another available working gateway when this gateway is down. This requires default gateway switching or an assigned gateway group to trigger.</help>
     </field>
     <field>
         <id>gateway_item.monitor_killstates_priority</id>
