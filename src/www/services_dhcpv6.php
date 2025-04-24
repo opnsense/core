@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2022 Deciso B.V.
+ * Copyright (C) 2014-2025 Deciso B.V.
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
  * All rights reserved.
@@ -58,7 +58,7 @@ function show_track6_form($if)
       $range['to'] = Net_IPv6::compress(implode(':', $ifcfgipv6arr));
   }
 
-  if (!empty($config['dhcpdv6']) && !empty($config['dhcpdv6']['lan']) && isset ($config['dhcpdv6']['lan']['enable']) && $config['dhcpdv6']['lan']['enable'] == '-1') {
+  if (!empty($config['dhcpdv6']) && !empty($config['dhcpdv6'][$if]) && isset($config['dhcpdv6'][$if]['enable']) && $config['dhcpdv6'][$if]['enable'] == '-1') {
       /* disabled */
       $enable_input = '';
   }

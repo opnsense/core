@@ -40,16 +40,21 @@ function radvd_configure()
 function radvd_enabled()
 {
     global $config;
+    $explicit_off = [];
 
     /* handle manually configured DHCP6 server settings first */
     foreach (config_read_array('dhcpdv6') as $dhcpv6if => $dhcpv6ifconf) {
         if (isset($config['interfaces'][$dhcpv6if]['enable']) && isset($dhcpv6ifconf['ramode']) && $dhcpv6ifconf['ramode'] != 'disabled') {
             return true;
+        } elseif (isset($dhcpv6ifconf['ramode']) && $dhcpv6ifconf['ramode'] == 'disabled') {
+            $explicit_off[] = $dhcpv6if;
         }
     }
-
     /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
-    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifcfg) {
+    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifnm => $ifcfg) {
+        if (in_array($ifnm, $explicit_off)) {
+            continue;
+        }
         if (isset($ifcfg['enable']) && !empty($ifcfg['track6-interface']) && !isset($ifcfg['dhcpd6track6allowoverride'])) {
             return true;
         }
@@ -348,6 +353,9 @@ function radvd_configure_do($verbose = false, $blacklist = [])
             continue;
         } elseif (isset($blacklist[$if])) {
             $radvdconf .= "# Skipping blacklisted interface {$if}\n";
+            continue;
+        } elseif (!empty($config['dhcpdv6'][$if]) && !empty($config['dhcpdv6'][$if]['ramode']) && $config['dhcpdv6'][$if]['ramode'] == 'disabled') {
+            $radvdconf .= "# Skipping explicit disabled interface {$if}\n";
             continue;
         }
 
