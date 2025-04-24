@@ -583,52 +583,6 @@ function ipsec_idinfo_to_cidr(&$idinfo, $addrbits = false, $mode = '')
     }
 }
 
-/*
- * Return phase1 association for phase2
- */
-function ipsec_lookup_phase1(&$ph2ent, &$ph1ent)
-{
-    global $config;
-
-    if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
-        return false;
-    }
-    if (!is_array($config['ipsec']['phase1'])) {
-        return false;
-    }
-    if (empty($config['ipsec']['phase1'])) {
-        return false;
-    }
-
-    foreach ($config['ipsec']['phase1'] as $ph1tmp) {
-        if ($ph1tmp['ikeid'] == $ph2ent['ikeid']) {
-            $ph1ent = $ph1tmp;
-            return $ph1ent;
-        }
-    }
-
-    return false;
-}
-
-/*
- * Check phase1 communications status
- */
-function ipsec_phase1_status($ipsec_status, $ikeid)
-{
-    foreach ($ipsec_status as $ike) {
-        if ($ike['id'] != $ikeid) {
-            continue;
-        }
-        if ($ike['status'] == 'established') {
-            return true;
-        }
-        break;
-    }
-
-    return false;
-}
-
-
 function ipsec_resolve($hostname, $ipproto = 'inet')
 {
     if (!is_ipaddr($hostname)) {
