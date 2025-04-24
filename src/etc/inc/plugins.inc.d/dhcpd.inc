@@ -47,16 +47,23 @@ function dhcpd_run()
 function dhcpd_dhcpv6_enabled()
 {
     global $config;
+    $explicit_off = [];
 
     /* handle manually configured DHCP6 server settings first */
     foreach (config_read_array('dhcpdv6') as $dhcpv6if => $dhcpv6ifconf) {
         if (isset($config['interfaces'][$dhcpv6if]['enable']) && isset($dhcpv6ifconf['enable'])) {
-            return true;
+            if ($dhcpv6ifconf['enable'] == '-1') {
+                $explicit_off[] = $dhcpv6if;
+            } else {
+                return true;
+            }
         }
     }
-
     /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
-    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifcfg) {
+    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifnm => $ifcfg) {
+        if (in_array($ifnm, $explicit_off)) {
+            continue;
+        }
         if (isset($ifcfg['enable']) && !empty($ifcfg['track6-interface']) && !isset($ifcfg['dhcpd6track6allowoverride'])) {
             return true;
         }
@@ -864,8 +871,12 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = [])
 
             if (!isset($config['interfaces'][$ifname]['dhcpd6track6allowoverride'])) {
                 /* mock a real server */
-                $dhcpdv6cfg[$ifname] = array();
-                $dhcpdv6cfg[$ifname]['enable'] = true;
+                if (!empty($dhcpdv6cfg[$ifname]) && $dhcpdv6cfg[$ifname]['enable'] == '-1') {
+                    /* tracking, but dhcpv6 disabled */
+                    $dhcpdv6cfg[$ifname] = [];
+                } else {
+                    $dhcpdv6cfg[$ifname] = ['enable' => true];
+                }
 
                 /* fixed range */
                 $ifcfgipv6arr[7] = '1000';
