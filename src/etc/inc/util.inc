@@ -975,28 +975,6 @@ function is_alias($name)
     return \OPNsense\Firewall\Util::isAlias($name);
 }
 
-/* find out whether two subnets overlap */
-function check_subnets_overlap($subnet1, $bits1, $subnet2, $bits2)
-{
-    if (!is_numeric($bits1)) {
-        $bits1 = 32;
-    }
-    if (!is_numeric($bits2)) {
-        $bits2 = 32;
-    }
-
-    if ($bits1 < $bits2) {
-        $relbits = $bits1;
-    } else {
-        $relbits = $bits2;
-    }
-
-    $sn1 = gen_subnet_mask_long($relbits) & ip2long($subnet1);
-    $sn2 = gen_subnet_mask_long($relbits) & ip2long($subnet2);
-
-    return ($sn1 == $sn2);
-}
-
 /* compare two IP addresses */
 function ipcmp($a, $b)
 {
