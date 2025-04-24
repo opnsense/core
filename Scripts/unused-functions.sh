@@ -58,7 +58,7 @@ grep -Eor '^function &?[^( ]+' ${TESTDIR} | tr ':' ' ' | tr -d '&' | while read 
 	fi
 
 	# either by direct call xxx( or wrapped in single quotes
-	USED=$(grep -Fr -e "${FUNC}(" -e "'${FUNC}'" ${DIRS} | wc -l | awk '{ print $1 }')
+	USED=$(grep -Fr -e "${FUNC}(" -e "'${FUNC}'" -e "'${FUNC}:' ${DIRS} | wc -l | awk '{ print $1 }')
 	if [ ${USED} -le 1 ]; then
 		echo "${FUNC}() appears unused" ${NOTE}
 	elif [ ${USED} -eq 2 ]; then
