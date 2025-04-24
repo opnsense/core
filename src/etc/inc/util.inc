@@ -1025,23 +1025,6 @@ function is_private_ip($iptocheck)
     return false;
 }
 
-function format_bytes($bytes)
-{
-    if ($bytes >= 1024 ** 5) {
-        return sprintf("%.2f PB", $bytes / (1024 ** 5));
-    } elseif ($bytes >= 1024 ** 4) {
-        return sprintf("%.2f TB", $bytes / (1024 ** 4));
-    } elseif ($bytes >= 1024 ** 3) {
-        return sprintf("%.2f GB", $bytes / (1024 ** 3));
-    } elseif ($bytes >= 1024 ** 2) {
-        return sprintf("%.2f MB", $bytes / (1024 ** 2));
-    } elseif ($bytes >= 1024) {
-        return sprintf("%.0f KB", $bytes / 1024);
-    } else {
-        return sprintf("%d bytes", $bytes);
-    }
-}
-
 /*
  * get_sysctl($names)
  * Get values of sysctl OID's listed in $names (accepts an array or a single
