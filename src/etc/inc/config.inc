@@ -256,25 +256,6 @@ function write_config($desc = '', $backup = true)
     return $config;
 }
 
-function config_restore($conffile)
-{
-    global $config;
-
-    if (!file_exists($conffile)) {
-        return 1;
-    }
-
-    $cnf = OPNsense\Core\Config::getInstance();
-    $cnf->backup();
-    $cnf->restoreBackup($conffile);
-
-    $config = parse_config();
-
-    write_config(sprintf('Reverted to %s', array_pop(explode('/', $conffile))), false);
-
-    return 0;
-}
-
 function &config_read_array()
 {
     global $config;
