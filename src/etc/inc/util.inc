@@ -949,19 +949,6 @@ function is_alias($name)
     return \OPNsense\Firewall\Util::isAlias($name);
 }
 
-function subnet_size($subnet)
-{
-    if (is_subnetv4($subnet)) {
-        list ($ip, $bits) = explode("/", $subnet);
-        return round(exp(log(2) * (32 - $bits)));
-    } elseif (is_subnetv6($subnet)) {
-        list ($ip, $bits) = explode("/", $subnet);
-        return round(exp(log(2) * (128 - $bits)));
-    } else {
-        return 0;
-    }
-}
-
 /* find out whether two subnets overlap */
 function check_subnets_overlap($subnet1, $bits1, $subnet2, $bits2)
 {
