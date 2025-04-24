@@ -133,14 +133,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if ($act == "del") {
-        // action delete
-        $vpn_id = !empty($a_server[$id]) ? $a_server[$id]['vpnid'] : null;
-        if ($vpn_id !== null && is_interface_assigned("ovpns{$vpn_id}")) {
-            $response = [
-                "status" => "failed",
-                "message" => gettext("This tunnel cannot be deleted because it is still being used as an interface.")
-            ];
-        } elseif ($vpn_id !== null) {
+        $response = ["status" => "failed", "message" => gettext("not found")];
+        if (isset($id) && !empty($a_client[$id])) {
             openvpn_delete('server', $a_server[$id]);
             unset($a_server[$id]);
             write_config();
