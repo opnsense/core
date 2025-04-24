@@ -70,6 +70,7 @@ grep -Eor '^function &?[^( ]+' ${TESTDIR} | tr ':' ' ' | tr -d '&' | while read 
 	    -e "'${FUNC}:" \
 	    -e "${FUNC}.bind" \
 	    -e "${FUNC}.call" \
+	    -e ".keyup(${FUNC})" \
 	    -e "= ${FUNC};" \
 	    | wc -l | awk '{ print $1 }')
 	if [ ${USED} -le 1 ]; then
