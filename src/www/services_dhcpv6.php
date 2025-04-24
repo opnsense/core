@@ -174,7 +174,7 @@ if ($if === null) {
     } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
         process_track6_form($if);
     }
-    die;
+    exit;
 }
 /* default form processing */
 
