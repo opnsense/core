@@ -187,9 +187,9 @@ function parse_xml_config_raw_attr($cffile, $rootobj, &$parsed_attributes, $isst
 
     $xml_parser = xml_parser_create();
 
-    xml_set_element_handler($xml_parser, "startElement_attr", "endElement_attr");
-    xml_set_character_data_handler($xml_parser, "cData_attr");
-    xml_parser_set_option($xml_parser,XML_OPTION_SKIP_WHITE, 1);
+    xml_set_element_handler($xml_parser, 'startElement_attr', 'endElement_attr');
+    xml_set_character_data_handler($xml_parser, 'cData_attr');
+    xml_parser_set_option($xml_parser, XML_OPTION_SKIP_WHITE, 1);
 
     if (!($fp = fopen($cffile, "r"))) {
         log_msg('Error: could not open XML input', LOG_ERR);
