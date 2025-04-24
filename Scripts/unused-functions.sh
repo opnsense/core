@@ -63,7 +63,8 @@ grep -Eor '^function &?[^( ]+' ${TESTDIR} | tr ':' ' ' | tr -d '&' | while read 
 		echo "${FUNC}() appears unused" ${NOTE}
 	elif [ ${USED} -eq 2 ]; then
 		# XXX if a match happens in the same file it's probably already considered ;)
-		echo "${FUNC}() only used once, consider refactor"
+		#echo "${FUNC}() only used once, consider refactor"
+		:
 	else
 		USED=$((USED - 1))
 		#echo "${FUNC}() used ${USED} times"
