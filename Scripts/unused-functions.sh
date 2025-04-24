@@ -25,7 +25,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-PLUGINS="configure cron devices firewall interfaces run services syslog xmlprc_sync"
+PLUGINS="configure cron devices firewall interfaces run services syslog xmlrpc_sync"
 
 if [ -n "${1}" ]; then
 	cd "${1}"
