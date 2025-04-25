@@ -122,6 +122,7 @@ class IPsecProposalField extends BaseListField
                 'aes128-sha1-modp2048' => 'aes128-sha1-modp2048 [DH14]',
                 'aes256-sha1-modp4096' => 'aes256-sha1-modp4096 [DH16]',
                 'aes256-sha1-ecp521' => 'aes256-sha1-ecp521 [DH21, NIST EC]',
+                'aes256-sha256-modp1024' => 'aes256-sha256-modp1024 [DH2]',
                 'aes256-sha512-modp1024' => 'aes256-sha512-modp1024 [DH2]',
                 'aes256-sha256' => 'aes256-sha256',
                 'null' => gettext('null (testing only, no encryption and no integrity checking!)')
