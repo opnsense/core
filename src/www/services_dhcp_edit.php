@@ -114,6 +114,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("A valid hostname is specified, but the domain name part should be omitted");
         }
     }
+
+    if (!empty($pconfig['domain'])) {
+        if (strpos($pconfig['domain'], '.') === 0) {
+            $input_errors[] = gettext("The domain name cannot start with a dot.");
+        } elseif (!is_domain($pconfig['domain'])) {
+            $input_errors[] = gettext("A valid domain name must be specified.");
+        }
+    }
+
     if (!empty($pconfig['ipaddr']) && !is_ipaddr($_POST['ipaddr'])) {
         $input_errors[] = gettext("A valid IP address must be specified.");
     }
