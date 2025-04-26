@@ -302,7 +302,7 @@ function filter_core_rules_system($fw, $defaults)
     // block bogons and private nets
     $bogontmpl = ['type' => 'block', 'log' => !isset($config['syslog']['nologbogons']), 'disablereplyto' => 1];
     $privtmpl = ['type' => 'block', 'log' => !isset($config['syslog']['nologprivatenets']),
-      'from' => '10.0.0.0/8,127.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16',
+      'from' => '10.0.0.0/8,127.0.0.0/8,100.64.0.0/10,172.16.0.0/12,169.254.0.0/16,192.168.0.0/16',
       'disablereplyto' => 1];
     foreach ($fw->getInterfaceMapping() as $intf => $intfinfo) {
         $fw->registerFilterRule(
@@ -333,7 +333,7 @@ function filter_core_rules_system($fw, $defaults)
             5,
             ['direction' => 'in', 'interface' => $intf, 'ipprotocol' => 'inet6',
             '#ref' => "interfaces.php?if=" . $intf . "#blockpriv",
-            'descr' => "Block private networks from " . $intfinfo['descr'], 'from' => 'fc00::/7',
+            'descr' => "Block private networks from " . $intfinfo['descr'], 'from' => 'fd00::/8,fe80::/64',
             'disabled' => $ipv6_disabled || empty($intfinfo['blockpriv'])],
             $privtmpl
         );

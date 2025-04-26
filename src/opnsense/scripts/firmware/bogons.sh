@@ -58,7 +58,7 @@ LINES_V4=`wc -l ${WORKDIR}/fullbogons-ipv4.txt | awk '{ print $1 }'`
 if [ $ENTRIES_MAX -gt $((2*ENTRIES_TOT-${ENTRIES_V4:-0}+LINES_V4)) ]; then
     # private and pseudo-private networks will be excluded
     # as they are being operated by a separate GUI option
-    egrep -v "^100.64.0.0/10|^192.168.0.0/16|^172.16.0.0/12|^10.0.0.0/8" ${WORKDIR}/fullbogons-ipv4.txt > ${DESTDIR}/bogons
+    egrep -v "^169.254.0.0/16|^100.64.0.0/10|^192.168.0.0/16|^172.16.0.0/12|^10.0.0.0/8" ${WORKDIR}/fullbogons-ipv4.txt > ${DESTDIR}/bogons
     RESULT=`/sbin/pfctl -t bogons -T replace -f ${DESTDIR}/bogons 2>&1`
     echo "$RESULT" | awk '{ print "Bogons V4 file updated: " $0 }' | logger
 else
@@ -73,7 +73,11 @@ LINES_V6=`wc -l ${WORKDIR}/fullbogons-ipv6.txt | awk '{ print $1 }'`
 if [ $BOGONS_V6_TABLE_COUNT -gt 0 ]; then
     ENTRIES_V6=`pfctl -vvsTables | awk '/-\tbogonsv6$/ {getline; print $2}'`
     if [ $ENTRIES_MAX -gt $((2*ENTRIES_TOT-${ENTRIES_V6:-0}+LINES_V6)) ]; then
-        egrep -iv "^fc00::/7" ${WORKDIR}/fullbogons-ipv6.txt > ${DESTDIR}/bogonsv6
+        # private and pseudo-private networks will be excluded
+        # as they are being operated by a separate GUI option
+        cat ${WORKDIR}/fullbogons-ipv6.txt > ${DESTDIR}/bogonsv6
+        echo "!fd00::/8" >> ${DESTDIR}/bogonsv6
+        echo "!fe80::/64" >> ${DESTDIR}/bogonsv6
         RESULT=`/sbin/pfctl -t bogonsv6 -T replace -f ${DESTDIR}/bogonsv6 2>&1`
         echo "$RESULT" | awk '{ print "Bogons V6 file updated: " $0 }' | logger
     else
@@ -81,7 +85,11 @@ if [ $BOGONS_V6_TABLE_COUNT -gt 0 ]; then
     fi
 else
     if [ $ENTRIES_MAX -gt $((2*ENTRIES_TOT+LINES_V6)) ]; then
-        egrep -iv "^fc00::/7" ${WORKDIR}/fullbogons-ipv6.txt > ${DESTDIR}/bogonsv6
+        # private and pseudo-private networks will be excluded
+        # as they are being operated by a separate GUI option
+        cat ${WORKDIR}/fullbogons-ipv6.txt > ${DESTDIR}/bogonsv6
+        echo "!fd00::/8" >> ${DESTDIR}/bogonsv6
+        echo "!fe80::/64" >> ${DESTDIR}/bogonsv6
         echo "Not updating IPv6 bogons table because IPv6 Allow is off" | logger
     else
         echo "Not saving IPv6 bogons table (IPv6 Allow is off and table-entries limit is potentially too low)" | logger
