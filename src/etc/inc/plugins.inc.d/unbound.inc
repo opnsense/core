@@ -604,6 +604,22 @@ function unbound_add_host_entries($ifconfig_details)
                     /* cannot register without a hostname */
                     continue;
                 }
+
+                if (isset($host['domain'])) {
+                    $original_domain = $host['domain'];
+                    if (!empty($original_domain) && is_string($original_domain) && strpos($original_domain, '.') === 0) {
+                        // Strip all leading dots
+                        $sanitized_domain = ltrim($original_domain, '.');
+                        syslog(LOG_WARNING, sprintf(
+                            "Unbound: Sanitized invalid domain '%s' to '%s' for ISC DHCPv4 static map host '%s'",
+                            $original_domain,
+                            $sanitized_domain,
+                            $host['hostname']
+                        ));
+                        $host['domain'] = $sanitized_domain;
+                    }
+                }
+
                 if (empty($host['domain'])) {
                     $host['domain'] = $config['system']['domain'];
                 }
