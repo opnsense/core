@@ -29,6 +29,10 @@ import datetime
 import glob
 import collections
 import ipaddress
+import subprocess
+import shlex
+import json
+import syslog
 
 class SortKeyHelper:
     """ generate item key for sort function
@@ -200,3 +204,83 @@ class Helpers(object):
                 result.append(sfilename[len(template_path):].lstrip('/'))
 
         return result
+
+    def resolve_shaper_address(self, address_string):
+        """
+        Resolves a potentially comma-separated string of IPs, CIDRs, or Aliases
+        into a list of network/CIDR strings using the backend PHP resolver via configctl.
+        Returns a list of strings, or None if any part fails resolution causing rule skip.
+        """
+        final_addresses = set()
+        # Tolerate various separators commonly used
+        parts = [p.strip() for p in address_string.replace(';', ',').replace(' ', ',').split(',') if p.strip()]
+        had_fatal_error = False
+
+        if not parts:
+             return [] # Empty input is valid empty output
+
+        for item in parts:
+            if item == 'any':
+                final_addresses.add('any')
+                continue
+
+            # --- Call PHP via configctl ---
+            resolved_part = None
+            try:
+                safe_item = shlex.quote(str(item))
+                # Increased timeout for potentially slow external resolutions (URL/GeoIP)
+                command = f"/usr/local/sbin/configctl alias resolve_networks {safe_item}"
+                result = subprocess.run(
+                    command, shell=True, capture_output=True, text=True, check=True, timeout=30
+                )
+                output_data = json.loads(result.stdout)
+
+                if isinstance(output_data, dict) and 'error' in output_data:
+                    syslog.syslog(syslog.LOG_WARNING, f"helper resolve_shaper_address failed for item '{item}': {output_data['error']}")
+                    had_fatal_error = True
+                    break
+                elif isinstance(output_data, list):
+                    # Basic sanity check on results
+                    valid_entries = [addr for addr in output_data if isinstance(addr, str) and len(addr) > 0]
+                    resolved_part = valid_entries
+                else:
+                    syslog.syslog(syslog.LOG_WARNING, f"helper resolve_shaper_address for '{item}' received unexpected JSON type: {type(output_data)}")
+                    had_fatal_error = True
+                    break
+
+            except subprocess.CalledProcessError as e:
+                # PHP script exited non-zero, error assumed logged by PHP
+                syslog.syslog(syslog.LOG_ERR, f"configctl alias resolve_networks failed for '{item}' (Code: {e.returncode}). Stderr: {e.stderr.strip()}")
+                had_fatal_error = True
+                break
+            except subprocess.TimeoutExpired:
+                syslog.syslog(syslog.LOG_ERR, f"Timeout resolving '{item}' via configctl alias resolve_networks.")
+                had_fatal_error = True
+                break
+            except json.JSONDecodeError:
+                stdout_content = result.stdout.strip() if 'result' in locals() and hasattr(result, 'stdout') else "(stdout unavailable)"
+                syslog.syslog(syslog.LOG_ERR, f"Invalid JSON resolving '{item}' via configctl alias resolve_networks: {stdout_content}")
+                had_fatal_error = True
+                break
+            except FileNotFoundError:
+                syslog.syslog(syslog.LOG_ERR, f"configctl command not found resolving '{item}'.")
+                had_fatal_error = True
+                break
+            except Exception as e:
+                syslog.syslog(syslog.LOG_ERR, f"Unexpected exception resolving '{item}': {e}")
+                had_fatal_error = True
+                break
+
+            if resolved_part is not None:
+                final_addresses.update(resolved_part)
+
+        # --- Final Return ---
+        if had_fatal_error:
+            return None # Signal rule skip
+        else:
+            # Handle 'any' overriding specifics
+            if 'any' in final_addresses and len(final_addresses) > 1:
+                 return ['any']
+            else:
+                 # Sort for deterministic output, easier testing
+                 return sorted(list(final_addresses))

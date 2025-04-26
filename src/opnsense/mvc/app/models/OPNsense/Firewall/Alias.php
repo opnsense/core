@@ -266,4 +266,129 @@ class Alias extends BaseModel
             return null;
         }
     }
+
+    /**
+     * Resolves an alias name (recursively) into a list of network entities (IPs/CIDRs).
+     * Filters out non-network types. Enforces recursion depth and entry limits.
+     *
+     * @param string $name The alias name to resolve.
+     * @param int $limit Maximum number of entries to return. Default 1000.
+     * @param array $aliases Aliases already parsed (recursion guard).
+     * @param int $recursion_depth Current depth (recursion guard). Max depth e.g., 10.
+     * @return array|false List of unique IP/CIDR strings on success, false on error/limit/recursion.
+     */
+    public static function resolveAliasToNetworks($name, $limit = 1000, $aliases = [], $recursion_depth = 0)
+    {
+        // --- Guards ---
+        if ($recursion_depth > 10) {
+            syslog(LOG_WARNING, 'OPNsense\Firewall\Alias::resolveAliasToNetworks: Max recursion depth reached resolving \'' . $name . '\'.');
+            return false;
+        }
+        if (in_array($name, $aliases)) {
+            syslog(LOG_WARNING, 'OPNsense\Firewall\Alias::resolveAliasToNetworks: Circular reference detected for alias \'' . $name . '\'.');
+            return false; // Prevent infinite loop
+        }
+        $aliases[] = $name;
+
+        // --- Get Alias Node ---
+        try {
+            // Create an instance to use non-static methods
+            $aliasModel = new self();
+            // Flush the cache once at the beginning of the resolver
+            if ($recursion_depth == 0) {
+                $aliasModel->flushCache();
+            }
+            $aliasNode = $aliasModel->getByName($name);
+        } catch (\Exception $e) {
+            syslog(LOG_ERR, 'OPNsense\Firewall\Alias::resolveAliasToNetworks: Exception fetching alias \'' . $name . '\': ' . $e->getMessage());
+            return false;
+        }
+
+        if ($aliasNode == null) {
+            syslog(LOG_WARNING, 'OPNsense\Firewall\Alias::resolveAliasToNetworks: Alias \'' . $name . '\' not found.');
+            return false;
+        }
+
+        // --- Type Check ---
+        // Define types that are expected to resolve to IPs/Networks for shaper usage
+        $allowed_types = ['host', 'network', 'urltable', 'geoip', 'external'];
+        $current_type = (string)$aliasNode->type;
+        if (!in_array($current_type, $allowed_types)) {
+            // syslog(LOG_DEBUG, "Alias '{$name}' of type '{$current_type}' skipped (not a network type).");
+            return []; // Not an error for the caller, just not relevant
+        }
+
+        // --- Resolve Content ---
+        $resolved_content_map = []; // Use map keys for uniqueness
+        try {
+            // Get alias content based on type
+            $raw_items = [];
+
+            if (in_array($current_type, ['host', 'network'])) {
+                // Simple case: get content from node
+                if ((string)$aliasNode->content == "") {
+                    $raw_items = [];
+                } else {
+                    $raw_items = explode("\n", (string)$aliasNode->content);
+                }
+            } elseif ($current_type == 'urltable') {
+                // For URL tables, we would need to fetch and parse the content
+                // TODO: Implement proper URL table resolution in a future PR
+                syslog(LOG_WARNING, 'OPNsense\Firewall\Alias::resolveAliasToNetworks: URLTable resolution for \'' . $name . '\' not fully implemented yet. Skipping.');
+                $raw_items = [];
+            } elseif ($current_type == 'geoip') {
+                // For GeoIP, we would need to lookup the database
+                // TODO: Implement proper GeoIP resolution in a future PR
+                syslog(LOG_WARNING, 'OPNsense\Firewall\Alias::resolveAliasToNetworks: GeoIP resolution for \'' . $name . '\' not fully implemented yet. Skipping.');
+                $raw_items = [];
+            } elseif ($current_type == 'external') {
+                // External type handling
+                // TODO: Implement proper external alias resolution in a future PR
+                syslog(LOG_WARNING, 'OPNsense\Firewall\Alias::resolveAliasToNetworks: External resolution for \'' . $name . '\' not fully implemented yet. Skipping.');
+                $raw_items = [];
+            }
+
+            foreach ($raw_items as $item) {
+                $item = trim($item);
+                if (empty($item) || strpos($item, '#') === 0) continue; // Skip empty lines and comments
+
+                // Remove potential comments after address (common in URL tables)
+                $item = trim(explode('#', $item)[0]);
+
+                if (Util::isIpAddress($item) || Util::isSubnet($item)) {
+                    $resolved_content_map[$item] = 1;
+                } elseif (Util::isAlias($item)) { // Nested alias
+                    // Pass the current limit minus already found items
+                    $current_limit = $limit - count($resolved_content_map);
+                    if ($current_limit <= 0) {
+                        syslog(LOG_WARNING, 'OPNsense\Firewall\Alias::resolveAliasToNetworks: Alias \'' . $name . '\' expansion limit reached before resolving nested alias \'' . $item . '\'.');
+                        return false; // Exceeded limit
+                    }
+                    $nested_result = self::resolveAliasToNetworks($item, $current_limit, $aliases, $recursion_depth + 1);
+                    if ($nested_result === false) return false; // Propagate error
+                    foreach ($nested_result as $nested_item) {
+                        $resolved_content_map[$nested_item] = 1;
+                    }
+                }
+                // Else: Ignore items that are not IPs, Subnets, or resolvable Aliases
+
+                // --- Limit Check ---
+                if (count($resolved_content_map) > $limit) {
+                    syslog(LOG_WARNING, 'OPNsense\Firewall\Alias::resolveAliasToNetworks: Alias \'' . $name . '\' expansion exceeded limit of ' . $limit . '.');
+                    return false;
+                }
+            }
+        } catch (\Exception $e) {
+            syslog(LOG_ERR, 'OPNsense\Firewall\Alias::resolveAliasToNetworks: Exception processing content for alias \'' . $name . '\': ' . $e->getMessage());
+            return false;
+        }
+
+        if (empty($resolved_content_map) && in_array($current_type, ['host', 'network'])) {
+            // Log potentially unexpected empty result for static types
+            syslog(LOG_NOTICE, 'OPNsense\Firewall\Alias::resolveAliasToNetworks: Alias \'' . $name . '\' of type \'' . $current_type . '\' resolved to an empty list.');
+        }
+
+        // --- Return ---
+        return array_keys($resolved_content_map);
+    }
 }
