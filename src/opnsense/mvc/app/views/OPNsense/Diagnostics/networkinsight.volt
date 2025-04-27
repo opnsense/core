@@ -34,12 +34,6 @@
 <!-- nvd3 -->
 <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/nv.d3.css', ui_theme|default('opnsense'))) }}" />
 
-<!-- d3 -->
-<script src="{{ cache_safe('/ui/js/d3.min.js') }}"></script>
-
-<!-- nvd3 -->
-<script src="{{ cache_safe('/ui/js/nv.d3.min.js') }}"></script>
-
 <script>
     $( document ).ready(function() {
       var resizeEnd ;
@@ -52,7 +46,15 @@
 
       // collect all chars for resize update
       var pageCharts = {};
+      let chartjsCharts = {};
 
+      function number_format(value)
+      {
+          const kb = 1000;
+          const ndx = value === 0 ? 0 : Math.floor(Math.log(value) / Math.log(kb));
+          const fileSizeTypes = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
+          return (value / Math.pow(kb, ndx)).toFixed(0) + ' ' + fileSizeTypes[ndx];
+      }
 
       function do_startup()
       {
@@ -123,61 +125,89 @@
        * draw interface totals
        */
       function chart_interface_totals() {
-        var selected_time = get_time_select();
-        const fetch_params = selected_time.from + '/' + selected_time.to + '/' + selected_time.resolution + '/if,direction' ;
-        ajaxGet('/api/diagnostics/networkinsight/timeserie/FlowInterfaceTotals/bps/' + fetch_params,{},function(data,status){
-            $.each(['chart_intf_in', 'chart_intf_out'], function(idx, target) {
-                let direction = '';
-                if (target == 'chart_intf_in') {
-                    direction = 'in';
-                } else {
-                    direction = 'out';
-                }
-                nv.addGraph(function() {
-                  let chart = nv.models.stackedAreaChart()
-                      .x(function(d) { return d[0] })
-                      .y(function(d) { return d[1] })
-                      .useInteractiveGuideline(true)
-                      .interactive(true)
-                      .showControls(true)
-                      .clipEdge(true);
-
-                  if (selected_time.resolution <= 300) {
-                      chart.xAxis.tickSize(8).tickFormat(function(d) {
-                        return d3.time.format('%H:%M:%S')(new Date(d));
-                      });
-                  } else if (selected_time.resolution < 3600) {
-                      chart.xAxis.tickSize(8).tickFormat(function(d) {
-                        return d3.time.format('%b %e %H:%M')(new Date(d));
-                      });
-                  } else if (selected_time.resolution < 86400) {
-                      chart.xAxis.tickSize(8).tickFormat(function(d) {
-                        return d3.time.format('%b %e %H h')(new Date(d));
-                      });
-                  } else {
-                      chart.xAxis.tickFormat(function(d) {
-                        return d3.time.format('%b %e')(new Date(d));
-                      });
-                  }
-                  chart.yAxis.tickFormat(d3.format(',.2s'));
-
-                  let chart_data = [];
+          var selected_time = get_time_select();
+          const fetch_params = selected_time.from + '/' + selected_time.to + '/' + selected_time.resolution + '/if,direction' ;
+          ajaxGet('/api/diagnostics/networkinsight/timeserie/FlowInterfaceTotals/bps/' + fetch_params,{},function(data,status){
+              $.each(['chart_intf_in', 'chart_intf_out'], function(idx, target) {
+                  let direction = target == 'chart_intf_in' ? 'in' : 'out';
+                  let datasets = [];
                   data.map(function(item){
                       if (direction == item.direction) {
-                          item.key = item.interface ?? '-';
-                          chart_data.push(item);
+                          let dataset = {
+                              spanGaps: true,
+                              pointRadius: 0,
+                              pointHoverRadius: 7,
+                              fill: 'origin',
+                              borderWidth: 1,
+                              stepped: true,
+                              label: item.interface ?? '-',
+                              data: []
+                          };
+                          for (const [x, y] of item.values) {
+                              dataset.data.push({ x: x, y: Math.trunc(y) });
+                          }
+                          datasets.push(dataset);
                       }
                   });
 
-                  chart_data.sort(function(a, b) {
-                      return a.key > b.key;
-                  });
-
-                  d3.select("#" + target + " svg").datum(chart_data).call(chart);
-
-                  pageCharts[target] = chart;
-                  return chart;
-                });
+                  if (chartjsCharts[target] !== undefined) {
+                      chartjsCharts[target].data.datasets = datasets;
+                      chartjsCharts[target].update();
+                  } else {
+                      let target_svg = $("#" + target + " canvas");
+                      let ctx = target_svg[0].getContext('2d');
+                      let config = {
+                          type: 'line',
+                          data: {
+                              datasets: datasets
+                          },
+                          options: {
+                              normalized: true,
+                              responsive: true,
+                              maintainAspectRatio: false,
+                              parsing: false,
+                              animation: {
+                                  duration: 500,
+                              },
+                              scales: {
+                                  x: {
+                                      type: 'timestack'
+                                  },
+                                  y: {
+                                      type: 'linear',
+                                      position: 'left',
+                                      title: {
+                                          display: true,
+                                          padding: 8
+                                      },
+                                      ticks: {
+                                          callback: function(value, index, ticks) {
+                                              return number_format(value);
+                                          }
+                                      }
+                                  },
+                              },
+                              plugins: {
+                                  tooltip: {
+                                      enabled: true,
+                                      intersect: false,
+                                      caretPadding: 15,
+                                      callbacks: {
+                                        label: function(context) {
+                                            if (context.parsed.y !== null) {
+                                                return number_format(context.parsed.y);
+                                            } else {
+                                                return '';
+                                            }
+                                        }
+                                      }
+                                  },
+                              }
+                          }
+                      };
+                      chartjsCharts[target] = new Chart(ctx, config);
+                  }
+                  return chartjsCharts[target];
               });
           });
       }
@@ -580,13 +610,13 @@
           {{ lang._('Interface totals (bits/sec)') }}
         </div>
         <div class="panel-body">
-          <div id="chart_intf_in">
+          <div id="chart_intf_in"  style="height:150px;">
             <small>{{ lang._('IN') }}</small>
-            <svg style="height:150px;"></svg>
+            <canvas></canvas>
           </div>
-          <div id="chart_intf_out">
+          <div id="chart_intf_out" style="height:150px;">
             <small>{{ lang._('OUT') }}</small>
-            <svg style="height:150px;"></svg>
+            <canvas></canvas>
           </div>
         </div>
       </div>
