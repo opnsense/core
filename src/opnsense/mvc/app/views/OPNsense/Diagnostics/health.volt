@@ -24,15 +24,6 @@
  # POSSIBILITY OF SUCH DAMAGE.
  #}
 
-<script src="{{ cache_safe('/ui/js/chart.umd.min.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/chartjs-plugin-colorschemes.min.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/moment-with-locales.min.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/chartjs-adapter-moment.min.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/chartjs-plugin-zoom.min.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/luxon.min.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/chartjs-scale-timestack.min.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/opnsense_health.js') }}"></script>
-
 <script>
 
 	$(document).ready(function() {
