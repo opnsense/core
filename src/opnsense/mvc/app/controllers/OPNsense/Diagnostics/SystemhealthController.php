@@ -36,6 +36,20 @@ use OPNsense\Base\IndexController;
  */
 class SystemhealthController extends IndexController
 {
+    protected function templateJSIncludes()
+    {
+        return array_merge(parent::templateJSIncludes(), [
+            '/ui/js/chart.umd.min.js',
+            '/ui/js/chartjs-plugin-colorschemes.min.js',
+            '/ui/js/moment-with-locales.min.js',
+            '/ui/js/chartjs-adapter-moment.min.js',
+            '/ui/js/chartjs-plugin-zoom.min.js',
+            '/ui/js/luxon.min.js',
+            '/ui/js/chartjs-scale-timestack.min.js',
+            '/ui/js/opnsense_health.js'
+        ]);
+    }
+
     public function indexAction()
     {
         $this->view->pick('OPNsense/Diagnostics/health');

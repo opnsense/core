@@ -186,6 +186,18 @@ class HealthGraph {
                         title: {
                             display: true,
                             padding: 8
+                        },
+                        ticks: {
+                            callback: function(value, index, ticks) {
+                                const kb = 1000;
+                                const ndx = value === 0 ? 0 : Math.floor(Math.log(Math.abs(value)) / Math.log(kb));
+                                const fileSizeTypes = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
+                                if (Math.abs(value) > 1000 && fileSizeTypes[ndx]) {
+                                    return (value / Math.pow(kb, ndx)).toFixed(0) + ' ' + fileSizeTypes[ndx];
+                                } else {
+                                    return value;
+                                }
+                            }
                         }
                     },
                 },
@@ -245,6 +257,7 @@ class HealthGraph {
             spanGaps: true,
             pointRadius: 0,
             pointHoverRadius: 7,
+            borderWidth: 1,
             stepped: true,
             pointHoverBackgroundColor: (ctx) => ctx.element.options.borderColor,
         }
