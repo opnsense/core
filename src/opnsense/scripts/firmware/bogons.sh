@@ -87,9 +87,11 @@ else
     if [ $ENTRIES_MAX -gt $((2*ENTRIES_TOT+LINES_V6)) ]; then
         # private and pseudo-private networks will be excluded
         # as they are being operated by a separate GUI option
-        cat ${WORKDIR}/fullbogons-ipv6.txt > ${DESTDIR}/bogonsv6
-        echo "!fd00::/8" >> ${DESTDIR}/bogonsv6
-        echo "!fe80::/64" >> ${DESTDIR}/bogonsv6
+        : > ${WORKDIR}/bogonsv6
+        echo "!fd00::/8" >> ${WORKDIR}/bogonsv6
+        echo "!fe80::/10" >> ${WIRKDIR}/bogonsv6
+        cat ${WORKDIR}/fullbogons-ipv6.txt >> ${WORKDIR}/bogonsv6
+        mv ${WORKDIR}/bogonsv6 ${DESTDIR}/bogonsv6
         echo "Not updating IPv6 bogons table because IPv6 Allow is off" | logger
     else
         echo "Not saving IPv6 bogons table (IPv6 Allow is off and table-entries limit is potentially too low)" | logger
