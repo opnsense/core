@@ -77,7 +77,7 @@ if [ $BOGONS_V6_TABLE_COUNT -gt 0 ]; then
         # as they are being operated by a separate GUI option
         : > ${WORKDIR}/bogonsv6
         echo "!fd00::/8" >> ${WORKDIR}/bogonsv6
-        echo "!fe80::/10" >> ${WIRKDIR}/bogonsv6
+        echo "!fe80::/10" >> ${WORKDIR}/bogonsv6
         cat ${WORKDIR}/fullbogons-ipv6.txt >> ${WORKDIR}/bogonsv6
         mv ${WORKDIR}/bogonsv6 ${DESTDIR}/bogonsv6
         RESULT=`/sbin/pfctl -t bogonsv6 -T replace -f ${DESTDIR}/bogonsv6 2>&1`
@@ -91,7 +91,7 @@ else
         # as they are being operated by a separate GUI option
         : > ${WORKDIR}/bogonsv6
         echo "!fd00::/8" >> ${WORKDIR}/bogonsv6
-        echo "!fe80::/10" >> ${WIRKDIR}/bogonsv6
+        echo "!fe80::/10" >> ${WORKDIR}/bogonsv6
         cat ${WORKDIR}/fullbogons-ipv6.txt >> ${WORKDIR}/bogonsv6
         mv ${WORKDIR}/bogonsv6 ${DESTDIR}/bogonsv6
         echo "Not updating IPv6 bogons table because IPv6 Allow is off" | logger
