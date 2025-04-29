@@ -342,7 +342,7 @@ function filter_core_rules_system($fw, $defaults)
     // interface configuration per type
     foreach ($fw->getInterfaceMapping() as $intf => $intfinfo) {
         // allow DHCPv6 client out, before adding bogons (sequence 1, bogons @ 5)
-        if (!$ipv6_disabled && in_array($intfinfo['ipaddrv6'], ["slaac","dhcp6"])) {
+        if (!$ipv6_disabled && in_array($intfinfo['ipaddrv6'], ['dhcp6', 'slaac'])) {
             $fw->registerFilterRule(1, [
                 'descr' => 'allow dhcpv6 client in ' . $intfinfo['descr'],
                 '#ref' => 'system_advanced_network.php#ipv6allow',

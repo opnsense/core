@@ -374,6 +374,11 @@ function radvd_configure_do($verbose = false, $blacklist = [])
             $autotype = $config['interfaces'][$trackif]['ipaddrv6'];
         }
 
+        if ($autotype != 'dhcp6') {
+            $radvdconf .= "# Skipping unsupported {$autotype} interface {$if}\n";
+            continue;
+        }
+
         $realtrackif = get_real_interface($trackif, 'inet6');
 
         $mtu = legacy_interface_stats($realif)['mtu'];
@@ -387,11 +392,6 @@ function radvd_configure_do($verbose = false, $blacklist = [])
         $dnslist = [];
 
         list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($if, $ifconfig_details);
-
-        if ($autotype == 'slaac') {
-            /* XXX this may be incorrect and needs an override or revisit */
-            $networkv6 = '2000::/64';
-        }
 
         if (!empty(service_by_filter(['dns_ports' => '53']))) {
             if (is_ipaddrv6($ifcfgipv6)) {
@@ -421,10 +421,6 @@ function radvd_configure_do($verbose = false, $blacklist = [])
 
         if (!empty($networkv6)) {
             $radvdconf .= "\tprefix {$networkv6} {\n";
-            if ($autotype == 'slaac') {
-                /* XXX also of interest in the future, see hardcoded prefix above */
-                $radvdconf .= "\t\tBase6Interface $realtrackif;\n";
-            }
             $radvdconf .= "\t\tDeprecatePrefix on;\n";
             $radvdconf .= "\t\tAdvOnLink on;\n";
             $radvdconf .= "\t\tAdvAutonomous on;\n";

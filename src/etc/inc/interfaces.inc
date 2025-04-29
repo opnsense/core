@@ -2453,9 +2453,6 @@ function interface_track6_configure($interface, $lancfg, $reload = false)
         case '6rd':
             interface_track6_6rd_configure($interface, $lancfg);
             break;
-        case 'slaac':
-            mwexecf('/sbin/ifconfig %s inet6 accept_rtadv', [$realifv6]);
-            /* FALLTHROUGH */
         case 'dhcp6':
             if ($reload || !isset($lancfg['enable'])) {
                 interface_dhcpv6_prepare($lancfg['track6-interface'], $trackcfg);

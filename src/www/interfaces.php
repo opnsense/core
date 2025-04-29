@@ -2523,7 +2523,6 @@ include("head.inc");
                                 case '6rd':
                                 case '6to4':
                                 case 'dhcp6':
-                                case 'slaac':
                                     break;
                                 default:
                                     continue 2;
