@@ -65,7 +65,7 @@ $.fn.UIBootgrid = function(params) {
         let $col = $(col);
         let data = $col.data();
         let width = null;
-        if (data.width !== undefined) {
+        if (data.width !== undefined && data.width !== '') {
             // intentionally ignore data.visible here so there is a value to go to
             $col.css({width: data.width});
             width = parseFloat($col.outerWidth()) + 5.0;
@@ -397,6 +397,10 @@ class UIBootgrid {
             for (const [colId, val] of Object.entries(this.compatColumns)) {
                 let data = val.data;
 
+                for (const [option, value] of Object.entries(data)) {
+                    data[option] = value === '' ? null : value;
+                }
+
                 if (data.type && this.options.ajax && data.type in this.options.formatters && data.type !== 'boolean') {
                     // use formatters instead of converters
                     data.formatter = data.type;
@@ -518,18 +522,21 @@ class UIBootgrid {
             }
         });
 
-        this.table.on('tableBuilt', () => {
+        this.table.on('dataLoading', () => {
             // Dynamically adjust table height to prevent dead space
             // (workaround for https://github.com/olifolkerd/tabulator/issues/4419: maxHeight does not work without a fixed height)
             if (!this.originalTableHeight) {
-                this.originalTableHeight = parseInt(parseInt(this.table.options.height) * window.innerHeight / 100);
+                // this.originalTableHeight = parseInt(parseInt(this.table.options.height) * window.innerHeight / 100);
+                // allow content to grow to 60vh
+                // XXX needs option
+                this.originalTableHeight = parseInt(parseInt(60) * window.innerHeight / 100);
             }
 
             const resizeObserver = new ResizeObserver(this._debounce((entries) => {
                 for (let entry of entries) {
-                    const height = entry.contentRect.height;//entry.target.scrollHeight;//entry.contentRect.height;
+                    const height = entry.contentRect.height;
                     const width = entry.contentRect.width;
-                    const scollbarGutterOffset = 15;
+                    const scollbarGutterOffset = 0;
                     let curTotalTableHeight = $(`#${this.id}`)[0].offsetHeight;
                     const holderHeight = $(`#${this.id} .tabulator-tableholder`)[0].offsetHeight;
 
@@ -564,7 +571,7 @@ class UIBootgrid {
 
             resizeObserver.observe($(`#${this.id} .tabulator-table`)[0]);
 
-            window.onresize = (() => {
+            window.onresize = this._debounce(() => {
                 // this is mainly intended for scaling the width of the table if
                 // the width of the window changes.
                 this.table.redraw();
@@ -777,10 +784,18 @@ class UIBootgrid {
                 }
             }
             if (has_option) {
+                // in both cases, make sure to stop the event from bubbling up
+                // to the parent so no handlers on parent containers are executed
                 if ($selector && command && command === k) {
-                    $selector.unbind('click').on("click", commands[k].method);
+                    $selector.unbind('click').on("click", function (event) {
+                        event.stopPropagation();
+                        commands[k].method.bind(this)(event);
+                    });
                 } else {
-                    this.$element.find(".command-" + k).unbind('click').on("click", commands[k].method);
+                    this.$element.find(".command-" + k).unbind('click').on("click", function (event) {
+                        event.stopPropagation();
+                        commands[k].method.bind(this)(event);
+                    });
                 }
             } else if ($(".command-" + k).length > 0) {
                 console.log("not all requirements met to link " + k);
@@ -832,7 +847,7 @@ class UIBootgrid {
         }
 
         // Rowcount
-        this.curRowCount = localStorage.getItem(`tabulator-${this.persistenceID}-rowCount`) || this.options.rowCount[0];
+        this.curRowCount = localStorage.getItem(`${this.persistenceID}-rowCount`) || this.options.rowCount[0];
         if (this.curRowCount === 'true') {
             this.curRowCount = true;
         }
@@ -856,7 +871,7 @@ class UIBootgrid {
                     if (!this.options.ajax) {
                         this.table.curRowCount = this.curRowCount;
                     }
-                    localStorage.setItem(`tabulator-${this.persistenceID}-rowCount`, this.curRowCount);
+                    localStorage.setItem(`${this.persistenceID}-rowCount`, this.curRowCount);
                     this.table.setPageSize(newRowCount);
 
                     $(`#${this.id}-rowcount-text`).text(newRowCount === true ? this.translations.all : newRowCount);
@@ -885,7 +900,7 @@ class UIBootgrid {
             `).on('click', (e) => {
                 e.stopPropagation();
                 Object.keys(localStorage)
-                    .filter(key => key.startsWith(`tabulator-${this.persistenceID}`))
+                    .filter(key => key.startsWith(`tabulator-${this.persistenceID}`) || key.startsWith(this.persistenceID))
                     .forEach(key => localStorage.removeItem(key));
                 this._setPersistence(false);
                 location.reload();
@@ -1029,7 +1044,7 @@ class UIBootgrid {
                     $(row.getElement()).addClass('text-muted');
                 }
             },
-            height: '60vh',
+            height: '20vh',
             resizable: "header",
             placeholder: this.translations.noresultsfound, // XXX: improve styling, can return a function returning HTML or a DOM node
             layout: 'fitColumns',
