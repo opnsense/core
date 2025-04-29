@@ -21,11 +21,7 @@
         <id>zone.disableRules</id>
         <type>checkbox</type>
         <label>Disable firewall rules</label>
-        <help>
-            <![CDATA[If this option is set, no automatic firewall rules for portal redirection and traffic
-            blocking will be generated. This option allows you to override the default portal behavior for advanced use cases,
-            such as redirections for DNS. See the documentation to see which rules you should implement in this scenario.]]>
-        </help>
+        <help>If this option is set, no automatic firewall rules for portal redirection and traffic blocking will be generated. This option allows you to override the default portal behavior for advanced use cases, such as redirections for DNS. See the documentation to see which rules you should implement in this scenario.</help>
         <advanced>true</advanced>
     </field>
     <field>
