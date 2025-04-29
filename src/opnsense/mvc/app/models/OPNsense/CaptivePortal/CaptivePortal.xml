@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/captiveportal</mount>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <description>Captive portal application model</description>
     <items>
         <zones>
@@ -25,6 +25,10 @@
                     </filters>
                     <ValidationMessage>At least one interface must be selected</ValidationMessage>
                 </interfaces>
+                <disableRules type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </disableRules>
                 <authservers type="AuthenticationServerField">
                     <Multiple>Y</Multiple>
                 </authservers>
