@@ -51,6 +51,24 @@ elif ! tar -C ${WORKDIR} -xJf ${WORKDIR}/bogons.txz; then
     exit 1
 fi
 
+update_bogons()
+{
+    SRC=${1}
+    DST=${2}
+    shift; shift
+
+    : > ${WORKDIR}/${DST}
+
+    # private and pseudo-private networks will be excluded
+    # as they are being operated by a separate GUI option
+    for NET in ${@}; do
+        echo "!${NET}" >> ${WORKDIR}/${DST}
+    done
+
+    cat ${WORKDIR}/${SRC} >> ${WORKDIR}/${DST}
+    mv ${WORKDIR}/${DST} ${DESTDIR}/${DST}
+}
+
 ENTRIES_MAX=`pfctl -s memory | awk '/table-entries/ { print $4 }'`
 ENTRIES_TOT=`pfctl -vvsTables | awk '/Addresses/ {s+=$2}; END {print s}'`
 ENTRIES_V4=`pfctl -vvsTables | awk '/-\tbogons$/ {getline; print $2}'`
@@ -70,33 +88,32 @@ ENTRIES_TOT=`pfctl -vvsTables | awk '/Addresses/ {s+=$2}; END {print s}'`
 BOGONS_V6_TABLE_COUNT=`pfctl -sTables | grep ^bogonsv6$ | wc -l | awk '{ print $1 }'`
 ENTRIES_TOT=`pfctl -vvsTables | awk '/Addresses/ {s+=$2}; END {print s}'`
 LINES_V6=`wc -l ${WORKDIR}/fullbogons-ipv6.txt | awk '{ print $1 }'`
+
+ACTION=
+
 if [ $BOGONS_V6_TABLE_COUNT -gt 0 ]; then
     ENTRIES_V6=`pfctl -vvsTables | awk '/-\tbogonsv6$/ {getline; print $2}'`
     if [ $ENTRIES_MAX -gt $((2*ENTRIES_TOT-${ENTRIES_V6:-0}+LINES_V6)) ]; then
-        # private and pseudo-private networks will be excluded
-        # as they are being operated by a separate GUI option
-        : > ${WORKDIR}/bogonsv6
-        echo "!fd00::/8" >> ${WORKDIR}/bogonsv6
-        echo "!fe80::/10" >> ${WORKDIR}/bogonsv6
-        cat ${WORKDIR}/fullbogons-ipv6.txt >> ${WORKDIR}/bogonsv6
-        mv ${WORKDIR}/bogonsv6 ${DESTDIR}/bogonsv6
-        RESULT=`/sbin/pfctl -t bogonsv6 -T replace -f ${DESTDIR}/bogonsv6 2>&1`
-        echo "$RESULT" | awk '{ print "Bogons V6 file updated: " $0 }' | logger
+        ACTION=apply
     else
         echo "Not saving or updating IPv6 bogons (increase table-entries limit)" | logger
     fi
 else
     if [ $ENTRIES_MAX -gt $((2*ENTRIES_TOT+LINES_V6)) ]; then
-        # private and pseudo-private networks will be excluded
-        # as they are being operated by a separate GUI option
-        : > ${WORKDIR}/bogonsv6
-        echo "!fd00::/8" >> ${WORKDIR}/bogonsv6
-        echo "!fe80::/10" >> ${WORKDIR}/bogonsv6
-        cat ${WORKDIR}/fullbogons-ipv6.txt >> ${WORKDIR}/bogonsv6
-        mv ${WORKDIR}/bogonsv6 ${DESTDIR}/bogonsv6
-        echo "Not updating IPv6 bogons table because IPv6 Allow is off" | logger
+        ACTION=save
     else
         echo "Not saving IPv6 bogons table (IPv6 Allow is off and table-entries limit is potentially too low)" | logger
+    fi
+fi
+
+if [ -n "${ACTION}" ]; then
+    update_bogons fullbogons-ipv6.txt bogonsv6 fd00::/8 fe80::/10
+
+    if [ "${ACTION}" = "apply" ]; then
+        RESULT=`/sbin/pfctl -t bogonsv6 -T replace -f ${DESTDIR}/bogonsv6 2>&1`
+        echo "$RESULT" | awk '{ print "Bogons V6 file updated: " $0 }' | logger
+    else
+        echo "Not updating IPv6 bogons table because IPv6 Allow is off" | logger
     fi
 fi
 
