@@ -147,7 +147,7 @@ class Alias extends BaseModel
                     foreach ($aliasref[1] as $cfgName) {
                         $node = $node->$cfgName;
                     }
-                    if ((string)$node == $name) {
+                    if (in_array($name, explode(',', (string)$node))) {
                         $ref = implode('.', $aliasref[0]) . "." . $nodeidx . "/" . implode('.', $aliasref[1]);
                         yield array($ref, &$inode, &$node);
                     }
@@ -204,7 +204,9 @@ class Alias extends BaseModel
         Util::attachAliasObject($this);
         // replace in legacy config
         foreach ($this->searchConfig($oldname) as $item) {
-            $item[2][0] = $newname;
+            $tmp = array_unique(explode(',', $item[2][0]));
+            $tmp[array_search($oldname, $tmp)] = $newname;
+            $item[2][0] = implode(',', $tmp);
         }
         // find all used in this model (alias nesting)
         foreach ($this->aliases->alias->iterateItems() as $alias) {
