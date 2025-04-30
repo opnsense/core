@@ -38,7 +38,7 @@ $affected_gateways = !empty($argv[1]) ? explode(',', $argv[1]) : [];
 $metered_found_prios = ['inet' => 256, 'inet6' => 256];
 $metered_gws = ['inet' => [], 'inet6' => []];
 
-foreach (return_gateways_status() as $status) {
+foreach (return_gateways_status(false) as $status) {
     if ($status['status'] == 'down') {
         /* recover monitors stuck in down state ignoring "force_down" */
         $gwnames[] = $status['name'];

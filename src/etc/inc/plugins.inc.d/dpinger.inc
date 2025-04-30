@@ -292,6 +292,7 @@ function dpinger_run()
     return [
         'host_routes' => 'dpinger_host_routes',
         'return_gateways_status' => 'dpinger_status',
+        'return_gateways_watcher' => 'dpinger_watcher',
     ];
 }
 
@@ -367,6 +368,17 @@ function dpinger_status()
     }
 
     return $status;
+}
+
+function dpinger_watcher()
+{
+    $cache_file = '/tmp/gateways.status';
+
+    if (file_exists($cache_file) && isvalidpid('/var/run/gateway_watcher.pid')) {
+        return unserialize(file_get_contents($cache_file));
+    }
+
+    return [];
 }
 
 function dpinger_processes()

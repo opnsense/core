@@ -167,23 +167,32 @@ function get_alias_description($name)
 }
 
 /* XXX deprecated */
-function return_gateways_status()
+function return_gateways_status($cached = true)
 {
     $result = plugins_run('return_gateways_status');
-
-    if (!empty($result['dpinger'])) {
-        return $result['dpinger'];
+    if (empty($result['dpinger'])) {
+        return [];
     }
 
-    return [];
+    if ($cached) {
+        /* allow the data to be enriched by the cached watcher status */
+        $cache = plugins_run('return_gateways_watcher');
+        foreach ($result['dpinger'] as $gwname => $stat) {
+            if ($stat['loss'] == '~' && isset($cache['dpinger'][$gwname])) {
+                $stat['status'] = $cache['dpinger'][$gwname];
+            }
+        }
+    }
+
+    return $result['dpinger'];
 }
 
 /* XXX deprecated */
-function return_down_gateways()
+function return_down_gateways($cached = true)
 {
     $result = [];
 
-    foreach (return_gateways_status() as $gwname => $stat) {
+    foreach (return_gateways_status($cached) as $gwname => $stat) {
         /* for clarity: this also matches 'force_down' */
         if (strpos($stat['status'], 'down') !== false) {
             $result[] = $gwname;

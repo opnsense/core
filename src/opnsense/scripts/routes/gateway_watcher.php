@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2023 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2023-2025 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,6 +49,10 @@ $action = !empty($argv[1]) ? $argv[1] : null;
 
 $poll = 1; /* live poll interval */
 $wait = 10; /* startup and alarm delay */
+$cache_file = '/tmp/gateways.status';
+
+/* clear stale file before continuing */
+@unlink($cache_file);
 
 $mode = [];
 
@@ -136,6 +140,18 @@ while (1) {
             /* update cached state now */
             $mode[$report['name']] = $report['status'];
         }
+    }
+
+    $cache_data = serialize($mode);
+    $cache_rewrite = true;
+
+    if (file_exists($cache_file)) {
+         $cache_rewrite = file_get_contents($cache_file) !== $cache_data;
+    }
+
+    if ($cache_rewrite) {
+        file_put_contents($cache_file . '.next', $cache_data);
+        rename($cache_file . '.next', $cache_file);
     }
 
     if (count($alarm_gateways) && $action != null) {
