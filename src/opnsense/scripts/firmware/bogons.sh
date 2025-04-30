@@ -107,7 +107,7 @@ else
 fi
 
 if [ -n "${ACTION}" ]; then
-    update_bogons fullbogons-ipv6.txt bogonsv6 fd00::/8 fe80::/10
+    update_bogons fullbogons-ipv6.txt bogonsv6 fd00::/8 fe80::/10 ::/128
 
     if [ "${ACTION}" = "apply" ]; then
         RESULT=`/sbin/pfctl -t bogonsv6 -T replace -f ${DESTDIR}/bogonsv6 2>&1`
