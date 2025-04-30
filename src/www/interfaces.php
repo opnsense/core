@@ -1656,9 +1656,8 @@ include("head.inc");
                           <td style="width:78%">
                             <input name="blockpriv" type="checkbox" id="blockpriv" value="yes" <?=!empty($pconfig['blockpriv']) ? "checked=\"checked\"" : ""; ?> />
                             <div class="hidden" data-for="help_for_blockpriv">
-                              <?=gettext("When set, this option blocks traffic from IP addresses that are reserved " .
-                                "for private networks as per RFC 1918 (10/8, 172.16/12, 192.168/16) as well as loopback " .
-                                "addresses (127/8) and Carrier-grade NAT addresses (100.64/10). This option should only " .
+                              <?=gettext("When set, this option blocks traffic from IP addresses that are reserved for private networks " .
+                                "as per RFC 1918 as well as loopback, link-local and Carrier-grade NAT addresses. This option should only " .
                                 "be set for WAN interfaces that use the public IP address space.") ?>
                             </div>
                           </td>
