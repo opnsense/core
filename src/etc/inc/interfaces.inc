@@ -2530,7 +2530,7 @@ function interface_track6_6to4_configure($interface, $lancfg)
 
     $ip4address = get_interface_ip($lancfg['track6-interface']);
 
-    if (!is_ipaddrv4($ip4address) || is_private_ip($ip4address)) {
+    if (!is_ipaddrv4($ip4address) || is_private_ipv4($ip4address)) {
         log_msg("The interface IPv4 address '{$ip4address}' on interface '{$lancfg['track6-interface']}' is not public, not configuring 6to4 tracking", LOG_ERR);
         return;
     }
@@ -2641,7 +2641,7 @@ function interface_6to4_configure($interface, $wancfg, $update = false)
 
     $ip4address = get_interface_ip($interface);
 
-    if (!is_ipaddrv4($ip4address) || is_private_ip($ip4address)) {
+    if (!is_ipaddrv4($ip4address) || is_private_ipv4($ip4address)) {
         log_msg("The interface IPv4 address '{$ip4address}' on interface '{$interface}' is not public, not configuring 6to4 tunnel", LOG_ERR);
         return;
     }
