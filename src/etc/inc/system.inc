@@ -646,6 +646,7 @@ function system_default_route($gw, $routes)
     mwexecf('/sbin/route add -%s default %s', [$family, $gateway]);
 }
 
+
 function system_routing_configure($verbose = false, $interface_map = null, $monitor = true, $family = null)
 {
     global $config;
@@ -660,8 +661,8 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
 
     $ifdetails = legacy_interfaces_details();
     $gateways = new \OPNsense\Routing\Gateways();
-    $down_gateways = isset($config['system']['gw_switch_default']) && $monitor !== 'ignore' ? return_down_gateways() : [];
     $routes = json_decode(configd_run('interface routes list -n json'), true) ?? [];
+    $down_gateways = [];
 
     foreach ($gateways->gatewaysIndexedByName() as $gateway) {
         /* check if we need to add a required interface route to the gateway (IPv4 only) */
@@ -679,7 +680,16 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
         system_interface_route($gateway, $routes);
     }
 
-    if (!empty($down_gateways)) {
+    if (isset($config['system']['gw_switch_default']) && $monitor !== 'ignore') {
+        foreach (return_gateways_status() as $gwname => $gwstatus) {
+            /* for clarity: this also matches 'force_down' */
+            if (strpos($gwstatus['status'], 'down') !== false) {
+                $down_gateways[] = $gwname;
+            }
+        }
+    }
+
+    if (count($down_gateways)) {
         log_msg(sprintf('ROUTING: ignoring down gateways: %s', implode(', ', $down_gateways)), LOG_DEBUG);
     }
 

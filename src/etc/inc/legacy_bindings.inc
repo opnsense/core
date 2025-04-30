@@ -186,18 +186,3 @@ function return_gateways_status($cached = true)
 
     return $result['dpinger'];
 }
-
-/* XXX deprecated */
-function return_down_gateways($cached = true)
-{
-    $result = [];
-
-    foreach (return_gateways_status($cached) as $gwname => $stat) {
-        /* for clarity: this also matches 'force_down' */
-        if (strpos($stat['status'], 'down') !== false) {
-            $result[] = $gwname;
-        }
-    }
-
-    return $result;
-}
