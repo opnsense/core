@@ -604,7 +604,6 @@ function unbound_add_host_entries($ifconfig_details)
                     /* cannot register without a hostname */
                     continue;
                 }
-
                 if (empty($host['domain'])) {
                     $host['domain'] = $config['system']['domain'];
                 }
