@@ -305,6 +305,10 @@ function filter_core_rules_system($fw, $defaults)
       'from' => '10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,127.0.0.0/8,100.64.0.0/10,169.254.0.0/16',
       'disablereplyto' => 1];
     foreach ($fw->getInterfaceMapping() as $intf => $intfinfo) {
+        // only render disabled rules for actual interfaces that can have a bogon option set
+        if (!empty($intfinfo['virtual'])) {
+            continue;
+        }
         $fw->registerFilterRule(
             5,
             ['from' => "<bogons>", 'direction' => 'in', 'interface' => $intf, 'ipprotocol' => 'inet',
