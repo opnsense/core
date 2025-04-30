@@ -169,26 +169,19 @@ function get_alias_description($name)
 /* XXX deprecated */
 function return_gateways_status()
 {
+    /* get the process state of all monitor instances */
     $result = plugins_run('return_gateways_status');
-
-    if (!empty($result['dpinger'])) {
-        return $result['dpinger'];
+    if (empty($result['dpinger'])) {
+        return [];
     }
 
-    return [];
-}
-
-/* XXX deprecated */
-function return_down_gateways()
-{
-    $result = [];
-
-    foreach (return_gateways_status() as $gwname => $stat) {
-        /* for clarity: this also matches 'force_down' */
-        if (strpos($stat['status'], 'down') !== false) {
-            $result[] = $gwname;
+    /* enrich current process state with cached watcher status */
+    $cache = plugins_run('return_gateways_watcher');
+    foreach ($result['dpinger'] as $gwname => &$gwstatus) {
+        if ($gwstatus['loss'] == '~' && isset($cache['dpinger'][$gwname])) {
+            $gwstatus['status'] = $cache['dpinger'][$gwname];
         }
     }
 
-    return $result;
+    return $result['dpinger'];
 }

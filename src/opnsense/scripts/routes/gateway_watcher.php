@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2023 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2023-2025 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,6 +49,10 @@ $action = !empty($argv[1]) ? $argv[1] : null;
 
 $poll = 1; /* live poll interval */
 $wait = 10; /* startup and alarm delay */
+$cache_file = '/tmp/gateways.status';
+
+/* clear stale file before continuing */
+@unlink($cache_file);
 
 $mode = [];
 
@@ -90,14 +94,13 @@ while (1) {
             continue;
         }
 
-        if ($report['status'] == 'force_down') {
-            /* the outcome is the same so simplify the status */
-            $report['status'] = 'down';
-        }
+        /* the outcome for both is the same so simplify the status for our checks */
+        $rprev = $mode[$report['name']] != 'force_down' ? $mode[$report['name']] : 'down';
+        $rcurr = $report['status'] != 'force_down' ? $report['status'] : 'down';
 
         if (isset($config['system']['gw_switch_default'])) {
             /* only consider down state transition in this case */
-            if (!empty($mode[$report['name']]) && $mode[$report['name']] != $report['status'] && ($mode[$report['name']] == 'down' || $report['status'] == 'down')) {
+            if (!empty($rprev) && $rprev != $rcurr && ($rprev == 'down' || $rcurr == 'down')) {
                 $ralarm = true;
             }
         }
@@ -107,7 +110,7 @@ while (1) {
                 $itemsplit = explode('|', $item);
                 if ($itemsplit[0] == $report['name']) {
                     /* consider all state transitions as they depend on individual trigger setting */
-                    if (!empty($mode[$report['name']]) && $mode[$report['name']] != $report['status']) {
+                    if (!empty($rprev) && $rprev != $rcurr) {
                         /* XXX consider trigger conditions later on */
                         $ralarm = true;
                         break;
@@ -133,9 +136,21 @@ while (1) {
                 $report['loss']
             ));
 
-            /* update cached state now */
+            /* update cached state now based on the original state, not our simplified one */
             $mode[$report['name']] = $report['status'];
         }
+    }
+
+    $cache_data = serialize($mode);
+    $cache_rewrite = true;
+
+    if (file_exists($cache_file)) {
+         $cache_rewrite = file_get_contents($cache_file) !== $cache_data;
+    }
+
+    if ($cache_rewrite) {
+        file_put_contents($cache_file . '.next', $cache_data);
+        rename($cache_file . '.next', $cache_file);
     }
 
     if (count($alarm_gateways) && $action != null) {
