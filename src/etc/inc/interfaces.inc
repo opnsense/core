@@ -3827,19 +3827,6 @@ function get_interface_mac($interface, $ifconfig_details = null)
     return $intf_details['macaddr'];
 }
 
-function get_vip_descr($ipaddress)
-{
-    global $config;
-
-    foreach ($config['virtualip']['vip'] as $vip) {
-        if ($vip['subnet'] == $ipaddress) {
-            return ($vip['descr'] ?? '');
-        }
-    }
-
-    return '';
-}
-
 function interfaces_staticarp_configure($if, $ifconfig_details = null)
 {
     global $config;
