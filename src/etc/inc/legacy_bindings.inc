@@ -177,9 +177,9 @@ function return_gateways_status($cached = true)
     if ($cached) {
         /* allow the data to be enriched by the cached watcher status */
         $cache = plugins_run('return_gateways_watcher');
-        foreach ($result['dpinger'] as $gwname => $stat) {
-            if ($stat['loss'] == '~' && isset($cache['dpinger'][$gwname])) {
-                $stat['status'] = $cache['dpinger'][$gwname];
+        foreach ($result['dpinger'] as $gwname => &$gwstatus) {
+            if ($gwstatus['loss'] == '~' && isset($cache['dpinger'][$gwname])) {
+                $gwstatus['status'] = $cache['dpinger'][$gwname];
             }
         }
     }
