@@ -76,6 +76,7 @@ LINES_V4=`wc -l ${WORKDIR}/fullbogons-ipv4.txt | awk '{ print $1 }'`
 
 if [ $ENTRIES_MAX -gt $((2*ENTRIES_TOT-${ENTRIES_V4:-0}+LINES_V4)) ]; then
     update_bogons fullbogons-ipv4.txt bogons 100.64.0.0/10 169.254.0.0/16 192.168.0.0/16 172.16.0.0/12 10.0.0.0/8
+
     RESULT=`/sbin/pfctl -t bogons -T replace -f ${DESTDIR}/bogons 2>&1`
     echo "$RESULT" | awk '{ print "Bogons V4 file updated: " $0 }' | logger
 else
