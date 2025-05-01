@@ -6,6 +6,12 @@
         <help>Subnet to use, should be large enough to hold the specified pools and reservations</help>
     </field>
     <field>
+        <id>subnet6.interface</id>
+        <label>Interface</label>
+        <type>dropdown</type>
+        <help>Select which interface this subnet belongs too.</help>
+    </field>
+    <field>
         <id>subnet6.description</id>
         <label>Description</label>
         <type>text</type>

@@ -58,6 +58,19 @@ class KeaDhcpv6 extends BaseModel
                 $messages->appendMessage(new Message(gettext("Address not in specified subnet"), $key . ".ip_address"));
             }
         }
+        // validate changed subnets
+        $this_interfaces = explode(',', $this->general->interfaces->getCurrentValue());
+        foreach ($this->subnets->subnet6->iterateItems() as $subnet) {
+            if (!$validateFullModel && !$subnet->isFieldChanged()) {
+                continue;
+            }
+            $key = $subnet->__reference;
+            if (!in_array((string)$subnet->interface, $this_interfaces)) {
+                $messages->appendMessage(
+                    new Message(gettext("Interface not configured in general settings"), $key . ".interface")
+                );
+            }
+        }
 
         return $messages;
     }
@@ -104,6 +117,7 @@ class KeaDhcpv6 extends BaseModel
 
     private function getConfigSubnets()
     {
+        $cfg = Config::getInstance()->object();
         $result = [];
         $subnet_id = 1;
         foreach ($this->subnets->subnet6->iterateItems() as $subnet_uuid => $subnet) {
@@ -115,6 +129,10 @@ class KeaDhcpv6 extends BaseModel
                 'pd-pools' => [],
                 'reservations' => []
             ];
+            $if = (string)$subnet->interface;
+            if (isset($cfg->interfaces->$if) && !empty($cfg->interfaces->$if->if)) {
+                $record['interface'] = (string)$cfg->interfaces->$if->if;
+            }
             /* standard option-data elements */
             foreach ($subnet->option_data->iterateItems() as $key => $value) {
                 $target_fieldname = str_replace('_', '-', $key);

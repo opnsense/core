@@ -59,6 +59,9 @@
                 </option_data>
                 <pools type=".\KeaPoolsField">
                 </pools>
+                <interface type="InterfaceField">
+                    <Required>Y</Required>
+                </interface>
                 <description type="DescriptionField"/>
             </subnet6>
         </subnets>
