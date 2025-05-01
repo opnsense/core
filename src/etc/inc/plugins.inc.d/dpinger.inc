@@ -375,7 +375,14 @@ function dpinger_watcher()
     $cache_file = '/tmp/gateways.status';
 
     if (file_exists($cache_file) && isvalidpid('/var/run/gateway_watcher.pid')) {
-        return unserialize(file_get_contents($cache_file));
+        try {
+            $result = @unserialize(file_get_contents($cache_file));
+            if ($result !== false) {
+                return $result;
+            }
+        } catch (Throwable $e) {
+            /* empty result */
+        }
     }
 
     return [];
