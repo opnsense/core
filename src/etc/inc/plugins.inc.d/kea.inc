@@ -30,33 +30,19 @@ function kea_services()
 {
 
     $services = [];
-    if (!empty((string)(new \OPNsense\Kea\KeaDhcpv4())->general->enabled)) {
+    if (
+        !empty((string)(new \OPNsense\Kea\KeaDhcpv4())->general->enabled) ||
+        !empty((string)(new \OPNsense\Kea\KeaDhcpv6())->general->enabled)
+    ) {
         $services[] = [
-            'description' => gettext('KEA DHCPv4 server'),
-            'pidfile' => '/var/run/kea/kea-dhcp4.kea-dhcp4.pid',
+            'description' => gettext('KEA DHCP server'),
+            'pidfile' => '/var/run/kea/kea-ctrl-agent.kea-ctrl-agent.pid',
             'configd' => [
                 'restart' => ['kea restart'],
                 'start' => ['kea start'],
                 'stop' => ['kea stop'],
             ],
-            'name' => 'kea-dhcpv4',
-        ];
-    }
-    if (!empty((string)(new \OPNsense\Kea\KeaDhcpv6())->general->enabled)) {
-        /**
-         * Although kea's backend operation is a single package, various services do offer their own pid files.
-         * Ideally we should have a list of pids to check for the services and only return a single item,
-         * but showing both with the same action below is the second best we can achieve.
-         */
-        $services[] = [
-            'description' => gettext('KEA DHCPv6 server'),
-            'pidfile' => '/var/run/kea/kea-dhcp6.kea-dhcp6.pid',
-            'configd' => [
-                'restart' => ['kea restart'],
-                'start' => ['kea start'],
-                'stop' => ['kea stop'],
-            ],
-            'name' => 'kea-dhcpv6',
+            'name' => 'kea-dhcp',
         ];
     }
     return $services;
