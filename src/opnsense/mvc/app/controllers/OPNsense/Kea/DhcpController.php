@@ -83,4 +83,9 @@ class DhcpController extends \OPNsense\Base\IndexController
     {
         $this->view->pick('OPNsense/Kea/leases4');
     }
+
+    public function leases6Action()
+    {
+        $this->view->pick('OPNsense/Kea/leases6');
+    }
 }

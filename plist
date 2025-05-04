@@ -393,6 +393,8 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/Dhcpv4Controller.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/Dhcpv6Controller.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/Leases4Controller.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/Leases6Controller.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/LeasesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/DhcpController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/agentSettings.xml
@@ -943,6 +945,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Kea/dhcpv4.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Kea/dhcpv6.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Kea/leases4.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Kea/leases6.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Monit/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Monit/status.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/cso.volt

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2023 Deciso B.V.
+ * Copyright (C) 2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,8 +28,11 @@
 
 namespace OPNsense\Kea\Api;
 
+use OPNsense\Base\ApiControllerBase;
+use OPNsense\Core\Backend;
+use OPNsense\Core\Config;
 
-class Leases4Controller extends LeasesController
+class Leases6Controller extends LeasesController
 {
-    protected $configd_fetch_leases = 'kea list leases4';
+    protected $configd_fetch_leases = 'kea list leases6';
 }
