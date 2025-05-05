@@ -28,7 +28,6 @@
 
 namespace OPNsense\Kea\Api;
 
-
 class Leases4Controller extends LeasesController
 {
     protected $configd_fetch_leases = 'kea list leases4';

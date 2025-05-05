@@ -38,7 +38,7 @@ abstract class LeasesController extends ApiControllerBase
 
     public function searchAction()
     {
-        if (empty($this->configd_fetch_leases)){
+        if (empty($this->configd_fetch_leases)) {
             return [];
         }
 
