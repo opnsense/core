@@ -640,7 +640,7 @@ $( document ).ready(function() {
 <?php
               $interfaces = get_configured_interface_with_descr();
               foreach (config_read_array('virtualip', 'vip') as $vip) {
-                  $label = $vip['subnet'] . (empty($vip['descr']) ? '' : " (${vip['descr']})");
+                  $label = $vip['subnet'] . (empty($vip['descr']) ? '' : " ({$vip['descr']})");
                   if ($vip['mode'] == 'carp') {
                       $value = "{$vip['interface']}_vip{$vip['vhid']}";
                   } elseif ($vip['mode'] == 'ipalias') {
