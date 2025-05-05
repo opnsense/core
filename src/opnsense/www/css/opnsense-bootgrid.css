@@ -7,8 +7,6 @@
     background-color: transparent;
 }
 
-/* #eee becomes table-bg-accent. #999 becomes (white?)  */
-
 /* theme: header */
 .tabulator .tabulator-header {
     background-color: transparent;
@@ -29,7 +27,7 @@
 }
 .tabulator .tabulator-headers {
     height: 100% !important; /* make sure the below border appears */
-    border-bottom: 1px solid #aaa; /* separates header from table rows XXX needs new theme color (was #999) */
+    border-bottom: 1px solid #aaa; /* separates header from table rows */
 }
 /*------------*/
 

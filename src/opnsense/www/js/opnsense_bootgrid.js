@@ -448,6 +448,10 @@ class UIBootgrid {
                     headerHozAlign: "center",
                     // hozAlign:  'center',
                 }
+
+                if (!field.width) {
+                    field.width = '100';
+                }
             } else {
                 col = { 
                     visible: field.visible,
@@ -536,7 +540,7 @@ class UIBootgrid {
                 for (let entry of entries) {
                     const height = entry.contentRect.height;
                     const width = entry.contentRect.width;
-                    const scollbarGutterOffset = 0;
+                    const scollbarGutterOffset = 16;
                     let curTotalTableHeight = $(`#${this.id}`)[0].offsetHeight;
                     const holderHeight = $(`#${this.id} .tabulator-tableholder`)[0].offsetHeight;
 
@@ -1044,7 +1048,7 @@ class UIBootgrid {
                     $(row.getElement()).addClass('text-muted');
                 }
             },
-            height: '20vh',
+            height: '20vh', /* represents the "no results found" view */
             resizable: "header",
             placeholder: this.translations.noresultsfound, // XXX: improve styling, can return a function returning HTML or a DOM node
             layout: 'fitColumns',

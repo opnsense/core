@@ -4,19 +4,17 @@
 .tabulator {
   font-size: 15px;
   background-color: transparent;
+  border: 1px solid #E5E5E5;
 }
 
 /* theme: header */
 .tabulator .tabulator-header {
   background-color: transparent;
-  border-top: 1px solid #373736;
-  border-left: 1px solid #373736;
-  border-right: 1px solid #373736;
   border-bottom: none;
 }
 
 .tabulator .tabulator-header .tabulator-col {
-  border-right: 1px solid #373736;
+  border-right: 1px solid #E5E5E5;
   background-color: transparent;
   background: transparent;
   color: #ECECEC;
@@ -28,7 +26,7 @@
 
 .tabulator .tabulator-headers {
   height: 100% !important; /* make sure the border below appears */
-  border-bottom: 1px solid #AAA;
+  border-bottom: 1px solid #E5E5E5;
 }
 
 /*------------*/
@@ -39,15 +37,15 @@
 
 .tabulator-row {
   background-color: transparent;
-  color: #ECECEC; /* $text-color */
+  color: #ECECEC;
 }
 
 .tabulator-row.tabulator-row-odd {
-  background-color: #373736; /* was (#FBFBFB) */
+  background-color: #373736;
 }
 
 .tabulator-row.tabulator-row-odd.tabulator-selectable:hover:not(.tabulator-selected) {
-  background-color: #373736; /* was (#FBFBFB) */
+  background-color: #373736;
 }
 
 .tabulator-row.tabulator-row-even {
@@ -60,18 +58,16 @@
 
 .tabulator .tabulator-tableholder {
   background-color: transparent;
-  border-left: 1px solid #373736; /* was (#eee) */
-  border-right: 1px solid #373736; /* was (#eee) */
-  scrollbar-gutter: stable;
+  border-right: 1px solid #373736;
 }
 
 .tabulator-row.tabulator-selected {
-  background-color: #9abcea; /* XXX needs new theme? */
+  background-color: #9abcea;
 }
 
 .tabulator-row.tabulator-selected:hover {
   cursor: pointer;
-  background-color: #9abcea; /* XXX needs new theme? */
+  background-color: #9abcea;
 }
 
 .tabulator .tabulator-alert .tabulator-alert-msg.tabulator-alert-state-msg {
@@ -80,31 +76,32 @@
 
 /* Command column styles */
 .tabulator-col.tabulator-frozen.tabulator-frozen-right {
-    background-color: #101218;
+  background-color: #101218;
 }
+
 .tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-right {
-    background-color: #101218;
+  background-color: #101218;
 }
 
 /* Checkbox column styles */
 .tabulator .tabulator-header .tabulator-frozen.tabulator-frozen-left {
-  border-right: 1px solid #AAA; /* separates checkbox column from table rows, needs same theme as .tabulator .tabulator-headers  */
-  border-left: 1px solid #373736; /* $table-bg-accent, was #eee*/
+  border-right: 1px solid #E5E5E5; /* separates checkbox column from table rows */
+  border-left: 1px solid #373736;
 }
 
 .tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-left {
-  border-right: 1px solid #AAA; /* XXX needs new theme style */
-  border-top: 1px solid #373736; /* $table-bg-accent, was #eee*/
-  border-bottom: 1px solid #AAA; /* XXX needs new theme style */
-  border-left: 1px solid #373736; /* $table-bg-accent, was #eee*/
+  border-right: 1px solid #E5E5E5;
+  border-top: 1px solid #373736;
+  border-bottom: 1px solid #E5E5E5;
+  border-left: 1px solid #373736;
 }
 
 .tabulator-col.tabulator-row-header.tabulator-frozen.tabulator-frozen-left {
-  background-color: #101218; /* $body-background was #eee, probably needs new style */
+  background-color: #101218;
 }
-  
+
 .tabulator-cell.tabulator-row-header.tabulator-frozen.tabulator-frozen-left {
-  background-color: #101218; /* $body-background was #eee, probably needs new style */
+  background-color: #101218;
 }
 
 /*------------*/
@@ -114,13 +111,14 @@
   white-space: nowrap;
   line-height: 1.2;
   vertical-align: top;
-  border-bottom: 1px solid #373736; /* $table-bg-accent (was #eee) should probably be something lighter */
-  border-right: 1px solid #373736; /* $table-bg-accent (was #eee) should probably be something lighter */
+  border-bottom: 1px solid rgba(229, 229, 229, 0.5);
+  border-right: 1px solid rgba(229, 229, 229, 0.5);
 }
 
 /*-------------*/
 /* theme: footer */
 .tabulator .tabulator-footer {
+  border-top: 1px solid #E5E5E5;
   background-color: transparent;
 }
 
@@ -137,8 +135,8 @@
 }
 
 .tabulator .tabulator-footer .tabulator-page:not(disabled):hover {
-  color: #7b280d; /* XXX where does this color come from? same in light mode as in dark mode */
-  background-color: #242937; /* XXX where does this color come from? light mode: #eeeeee dark mode: #242937 */
+  color: #7b280d;
+  background-color: #242937;
   border-color: #ddd;
 }
 
@@ -217,11 +215,6 @@
 .bootgrid-footer-commands {
   width: 90px;
   padding-left: 8px;
-}
-
-/* move border from footer to last row */
-.tabulator .tabulator-footer {
-  border-top: none;
 }
 
 .tabulator-tableholder::after {
