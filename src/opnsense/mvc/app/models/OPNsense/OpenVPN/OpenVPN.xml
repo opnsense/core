@@ -385,6 +385,9 @@
                 <http-proxy type="IPPortField">
                     <HostnameAllowed>Y</HostnameAllowed>
                 </http-proxy>
+                <verify-x509-name type="TextField"/>
+                <sndbuf type="IntegerField"/>
+                <rcvbuf type="IntegerField"/>
             </Instance>
         </Instances>
         <StaticKeys>
