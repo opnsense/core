@@ -202,7 +202,7 @@ class UIBootgrid {
     /**
     * convert old-style UIBootgrid (and jQuery bootgrid) options.
     * The original defaults are already mapped to defaults in tabulatorDefaults()
-    * 
+    *
     * This function modifies this.compatOptions if options can be directly included in Tabulator.
     * Otherwise, this.options is modified for wrapper-specific implementations (i.e. rowCount, requestHandler).
     */
@@ -357,7 +357,7 @@ class UIBootgrid {
         // - white-space : inherit !important
         //
         // which allows for newlines in the table (such as log files)
-        // 
+        //
         // otherwise:
         // - text-overflow: ellipsis;
         // - white-space: nowrap
@@ -413,7 +413,7 @@ class UIBootgrid {
                     style: data.cssClass ?? '',
                     type: data.type ?? 'text',
                     formatter: data.formatter ?? null,
-                    headerFormatter: data.headerFormatter || 
+                    headerFormatter: data.headerFormatter ||
                                     !(Object.getOwnPropertyNames(Object.prototype).includes(data.columnId)) &&
                                     data.columnId in this.options.headerFormatters ?
                                     data.columnId : null,
@@ -439,7 +439,7 @@ class UIBootgrid {
     }
 
     /**
-     * 
+     *
      * @returns array of column objects in tabulator-format based on this.gridView and this.options
      */
     _parseColumns() {
@@ -464,7 +464,7 @@ class UIBootgrid {
                     field.width = '100';
                 }
             } else {
-                col = { 
+                col = {
                     visible: field.visible,
                     editable: field.editable,
                     // XXX passes unsanitized HTML, which may be of concern if the cell is editable in the future
@@ -617,10 +617,10 @@ class UIBootgrid {
                                 })
                             }
                         }
-                    }); 
+                    });
                     });
                 });
-                
+
                 observer.observe(targetNode, {
                     childList: true,
                     subtree: false
@@ -752,7 +752,7 @@ class UIBootgrid {
             // redraw here to prevent pagination switches from breaking the virtualdom rendering process
             this.table.redraw();
         }
-        
+
         // DOM layout changed, rewire commands
         this._wireCommands();
 
@@ -776,7 +776,7 @@ class UIBootgrid {
                 } else {
                     $(el).attr('title', this._translate('enable'));
                 }
-            } else if ($(el).hasClass('command-delete')) { 
+            } else if ($(el).hasClass('command-delete')) {
                 $(el).attr('title', this._translate('delete'));
             } else if ($(el).hasClass('command-info')) {
                 $(el).attr('title', this._translate('info'));
@@ -965,7 +965,7 @@ class UIBootgrid {
                 <li>
                     <label class="dropdown-item">
                         <input class="dropdown-item-checkbox" id="${this.id}-columnselect-input" name="${definition.field}" type="checkbox" value="1" ${column.isVisible() ? 'checked="checked"' : ''}/>
-                        ${definition.title || definition.field || "&nbsp;"}  
+                        ${definition.title || definition.field || "&nbsp;"}
                     </label>
                 </li>
             `).on('change', (e) => {
@@ -1015,11 +1015,11 @@ class UIBootgrid {
                                     <span class="dropdown-text"><span class="icon fa-solid fa-list"></span></span>
                                     <span class="caret"></span>
                                 </button>
-                                <ul id="${this.id}-columnselect-items" class="dropdown-menu pull-right" role="menu"></ul>                                 
+                                <ul id="${this.id}-columnselect-items" class="dropdown-menu pull-right" role="menu"></ul>
                             </div>
                         </div>
                     </div>
-                </div>    
+                </div>
             </div>
         `
     }
@@ -1213,7 +1213,7 @@ class UIBootgrid {
     }
 
     /**
-     * @param {boolean} inplace keep current page selection 
+     * @param {boolean} inplace keep current page selection
      */
     _reload(inplace=false) {
         let page = this.table.getPage();
@@ -1377,7 +1377,7 @@ class UIBootgrid {
             let editDlg = this.$compatElement.attr('data-editDialog');
             let urlMap = {};
             let server_params = this.options.requestHandler({});
-    
+
             urlMap['frm_' + editDlg] = endpoint;
             mapDataToFormUI(urlMap, server_params).done((payload) => {
                 // update selectors
@@ -1421,7 +1421,7 @@ class UIBootgrid {
                     // when edit dialog isn't a modal, fire click event
                     target.click();
                 }
-    
+
                 if (this.options.onBeforeRenderDialog) {
                     this.options.onBeforeRenderDialog(payload).done(function () {
                         resolve();
@@ -1440,12 +1440,12 @@ class UIBootgrid {
 
                 function parseMemValue(value) {
                     if (typeof value !== 'string') return 0;
-            
+
                     value = value.trim();
-            
+
                     let num = parseFloat(value);
                     let modifier = value.slice(-1).toUpperCase();
-            
+
                     // Check if the last char is actually a unit
                     if (isNaN(modifier)) {
                         for (let exponent = modifiers.length - 1; exponent >= 0; exponent--) {
@@ -1454,14 +1454,14 @@ class UIBootgrid {
                             }
                         }
                     }
-            
+
                     // No modifier match (or modifier is part of number), just return number
                     return num;
                 }
-            
+
                 const aVal = parseMemValue(a);
                 const bVal = parseMemValue(b);
-            
+
                 return aVal - bVal;
             }
         };

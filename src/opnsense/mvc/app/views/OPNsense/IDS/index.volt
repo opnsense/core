@@ -367,7 +367,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 } else {
                     $('#grid-installedrules').bootgrid('reload');
                 }
-                
+
                 /**
                  * disable/enable [+action] selected rules
                  */
