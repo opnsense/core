@@ -433,6 +433,7 @@ class UIBootgrid {
         let template = this.translations[key];
         if (!template) {
             console.error('No translation found for key ' + key);
+            return;
         }
         return template.replace(/{{ctx\.(\w+)}}/g, (_, key) => key in ctx ? ctx[key] : '');
     }
