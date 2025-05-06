@@ -34,6 +34,22 @@ $serviceproviders_xml = "/usr/local/opnsense/contrib/mobile-broadband-provider-i
 $serviceproviders_contents = file_get_contents($serviceproviders_xml);
 $serviceproviders = simplexml_load_string($serviceproviders_contents);
 
+function get_country_codes()
+{
+    $dn_cc = array();
+
+    $iso3166_tab = '/usr/local/opnsense/contrib/tzdata/iso3166.tab';
+    if (file_exists($iso3166_tab)) {
+        $dn_cc_file = file($iso3166_tab);
+        foreach ($dn_cc_file as $line) {
+            if (preg_match('/^([A-Z][A-Z])\t(.*)$/', $line, $matches)) {
+                $dn_cc[$matches[1]] = trim($matches[2]);
+            }
+        }
+    }
+    return $dn_cc;
+}
+
 function get_country_providers($country)
 {
     global $serviceproviders;
