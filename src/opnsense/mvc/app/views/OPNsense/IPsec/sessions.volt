@@ -30,11 +30,13 @@
     $( document ).ready(function() {
         let grid_phase1 = $("#grid-phase1").UIBootgrid({
             search:'/api/ipsec/sessions/search_phase1',
+            datakey: 'name',
             options:{
                 initialSearchPhrase: getUrlHash('search'),
                 multiSelect: false,
-                rowSelect: true,
+                rowSelect: false,
                 selection: true,
+                stickySelect: true,
                 formatters:{
                     commands: function (column, row) {
                         let connect = "{{ lang._('Connect') }}";
@@ -67,7 +69,7 @@
             }
         });
         grid_phase1.on('loaded.rs.jquery.bootgrid', function() {
-            $('[data-toggle="tooltip"]').tooltip();
+            $('[data-toggle="tooltip"]').tooltip({container: 'body', trigger: 'hover'});
             let ids = $("#grid-phase1").bootgrid("getCurrentRows");
             if (ids.length > 0) {
                 $("#grid-phase1").bootgrid('select', [ids[0].name]);
