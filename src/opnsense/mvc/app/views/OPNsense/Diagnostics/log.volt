@@ -48,20 +48,37 @@
       switch_mode(s_filter_val);
 
       let grid_log = $("#grid-log").UIBootgrid({
+          datakey: 'rnum',
           options:{
               initialSearchPhrase: getUrlHash('search'),
               sorting:false,
               rowSelect: false,
               selection: false,
               rowCount:[20,50,100,200,500,1000,5000],
+              virtualDOM: true,
               labels: {
                   infos: "{{ lang._('Showing %s to %s') | format('{{ctx.start}}','{{ctx.end}}') }}"
               },
               formatters:{
                   page: function (column, row) {
-                      if ($("input.search-field").val() !== "" || $('#severity_filter').val().length > 0) {
-                          return '<button type="button" class="btn btn-xs btn-default action-page bootgrid-tooltip" data-row-id="' +
-                                row.rnum + '" title="{{ lang._('Go to page') }}"><span class="fa fa-arrow-right fa-fw"></span></button>';
+                      let severity = $('#severity_filter').val();
+                      let debug = (Array.isArray(severity) && severity.includes('Debug')) || severity === "Debug";
+                      if ($("input.search-field").val() !== "" || !debug) {
+                          let btn = $(`
+                            <button type="button" class="btn btn-xs btn-default action-page bootgrid-tooltip" data-row-id="${row.rnum}"
+                                    title="{{ lang._('Go to page') }}">
+                                <span class="fa fa-arrow-right fa-fw"></span>
+                            </button>
+                          `).on('click', function(event) {
+                                if ($("#exact_severity").hasClass("fa-toggle-on")) {
+                                    $("#severity_filter").selectpicker('deselectAll');
+                                } else {
+                                    $("#severity_filter").val("Debug");
+                                }
+                                $('#grid-log').bootgrid('setPageByRowId', parseInt($(this).data('row-id')));
+                          });
+
+                          return btn[0];
                       } else {
                           return "";
                       }
@@ -87,31 +104,13 @@
           },
           search:'/api/diagnostics/log/{{module}}/{{scope}}'
       });
-      $(".filter_act").change(function(){
+      $(".filter_act").change(function(event){
+          event.stopPropagation();
           if (window.localStorage) {
               localStorage.setItem('log_severity_{{module}}_{{scope}}', $("#severity_filter").val());
               localStorage.setItem('log_validFrom_filter_{{module}}_{{scope}}', $("#validFrom_filter").val());
           }
           $('#grid-log').bootgrid('reload');
-      });
-
-      grid_log.on("loaded.rs.jquery.bootgrid", function(){
-          if (page > 0) {
-              $("ul.pagination > li:last > a").data('page', page).click();
-              page = 0;
-          }
-
-          $(".action-page").click(function(event){
-              event.preventDefault();
-              $("#grid-log").bootgrid("search",  "");
-              page = parseInt((parseInt($(this).data('row-id')) / $("#grid-log").bootgrid("getRowCount")))+1;
-              $("input.search-field").val("");
-              if ($("#exact_severity").hasClass("fa-toggle-on")) {
-                  $("#severity_filter").selectpicker('deselectAll');
-              } else {
-                  $("#severity_filter").val("Debug").change();
-              }
-          });
       });
 
       $("#flushlog").on('click', function(event){
@@ -158,6 +157,9 @@
       // move filter into action header
       $("#filter_container").detach().prependTo('#grid-log-header > .row > .actionBar > .actions');
       $(".filter_act").tooltip();
+
+      $("#export-wrapper").detach().appendTo('#grid-log-header > .row > .actionBar > .btn-group');
+      $("#exportbtn").tooltip();
 
       function switch_mode(value) {
           let select = $("#severity_filter");
@@ -229,6 +231,11 @@
                         </select>
                     </div>
                 </div>
+                <div id="export-wrapper" class="btn-group">
+                    <button id="exportbtn" class="btn btn-default" data-toggle="tooltip" title="" type="button" data-original-title="{{ lang._('Download selection')}}">
+                        <span class="fa fa-cloud-download"></span>
+                    </button>
+                </div>
                 <table id="grid-log" class="table table-condensed table-hover table-striped table-responsive">
                     <thead>
                     <tr>
@@ -245,14 +252,6 @@
                     </tbody>
                     <tfoot>
                       <td></td>
-                      <td>
-                        <button id="exportbtn"
-                            data-toggle="tooltip" title="" type="button"
-                            class="btn btn-xs btn-default pull-right"
-                            data-original-title="{{ lang._('download selection')}}">
-                            <span class="fa fa-cloud-download"></span>
-                        </button>
-                      </td>
                     </tfoot>
                 </table>
                 <table class="table">

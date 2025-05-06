@@ -141,7 +141,127 @@
                 });
                 $("#network_content").selectpicker('refresh');
             });
-            $(".category-item").tooltip();
+            $(".category-item").tooltip({container: 'body'});
+
+            /**
+             * export all configured aliases to json
+             */
+             $("#exportbtn").unbind('click').click(function(){
+                let selected_rows = $("#grid-aliases").bootgrid("getSelectedRows");
+                let params = {};
+                if (selected_rows.length > 0) {
+                    params['ids'] = selected_rows;
+                }
+                ajaxCall("/api/firewall/alias/export", params, function(data, status){
+                    if (data.aliases) {
+                    let output_data = JSON.stringify(data, null, 2);
+                    let a_tag = $('<a></a>').attr('href','data:application/json;charset=utf8,' + encodeURIComponent(output_data))
+                        .attr('download','aliases.json').appendTo('body');
+
+                    a_tag.ready(function() {
+                        if ( window.navigator.msSaveOrOpenBlob && window.Blob ) {
+                            var blob = new Blob( [ output_data ], { type: "text/csv" } );
+                            navigator.msSaveOrOpenBlob( blob, 'aliases.json' );
+                        } else {
+                            a_tag.get(0).click();
+                        }
+                    });
+                    }
+                });
+            });
+
+            /**
+             * import aliases from json file
+             */
+            $("#importbtn").unbind('click').click(function(){
+                let $msg = $("<div/>");
+                let $imp_file = $("<input type='file' id='import_filename' />");
+                let $table = $("<table class='table table-condensed'/>");
+                let $tbody = $("<tbody/>");
+                $table.append(
+                $("<thead/>").append(
+                    $("<tr>").append(
+                    $("<th/>").text("{{ lang._('source')}}")
+                    ).append(
+                    $("<th/>").text("{{ lang._('message')}}")
+                    )
+                )
+                );
+                $table.append($tbody);
+                $table.append(
+                $("<tfoot/>").append(
+                    $("<tr/>").append($("<td colspan='2'/>").text(
+                    "{{ lang._('Please note that none of the aliases provided are imported due to the errors above')}}"
+                    ))
+                )
+                );
+
+                $imp_file.click(function(){
+                    // make sure upload resets when new file is provided (bug in some browsers)
+                    this.value = null;
+                });
+                $msg.append($imp_file);
+                $msg.append($("<hr/>"));
+                $msg.append($table);
+                $table.hide();
+
+
+                BootstrapDialog.show({
+                title: "{{ lang._('Import aliases') }}",
+                message: $msg,
+                type: BootstrapDialog.TYPE_INFO,
+                draggable: true,
+                buttons: [{
+                    label: '<i class="fa fa-cloud-upload" aria-hidden="true"></i>',
+                    action: function(sender){
+                        $table.hide();
+                        $tbody.empty();
+                        if ($imp_file[0].files[0] !== undefined) {
+                            const reader = new FileReader();
+                            reader.readAsBinaryString($imp_file[0].files[0]);
+                            reader.onload = function(readerEvt) {
+                                let import_data = null;
+                                try {
+                                    import_data = JSON.parse(readerEvt.target.result);
+                                } catch (error) {
+                                    $tbody.append(
+                                        $("<tr/>").append(
+                                        $("<td>").text("*")
+                                        ).append(
+                                        $("<td>").text(error)
+                                        )
+                                    );
+                                    $table.show();
+                                }
+                                if (import_data !== null) {
+                                    ajaxCall("/api/firewall/alias/import", {'data': import_data}, function(data,status) {
+                                        if (data.validations !== undefined) {
+                                            Object.keys(data.validations).forEach(function(key) {
+                                                $tbody.append(
+                                                    $("<tr/>").append(
+                                                    $("<td>").text(key)
+                                                    ).append(
+                                                    $("<td>").text(data.validations[key])
+                                                    )
+                                                );
+                                            });
+                                            $table.show();
+                                        } else {
+                                            sender.close();
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }
+                },{
+                    label:  "{{ lang._('Close') }}",
+                    action: function(sender){
+                        sender.close();
+                    }
+                }]
+                });
+            });
         }).on("load.rs.jquery.bootgrid", function (e){
             // reload categories before grid load
             ajaxCall('/api/firewall/alias/list_categories', {}, function(data, status){
@@ -441,126 +561,6 @@
             } else {
                 $("#alias\\.updatefreq").val("");
             }
-        });
-
-        /**
-         * export all configured aliases to json
-         */
-        $("#exportbtn").click(function(){
-            let selected_rows = $("#grid-aliases").bootgrid("getSelectedRows");
-            let params = {};
-            if (selected_rows.length > 0) {
-                params['ids'] = selected_rows;
-            }
-            ajaxCall("/api/firewall/alias/export", params, function(data, status){
-                if (data.aliases) {
-                  let output_data = JSON.stringify(data, null, 2);
-                  let a_tag = $('<a></a>').attr('href','data:application/json;charset=utf8,' + encodeURIComponent(output_data))
-                      .attr('download','aliases.json').appendTo('body');
-
-                  a_tag.ready(function() {
-                      if ( window.navigator.msSaveOrOpenBlob && window.Blob ) {
-                          var blob = new Blob( [ output_data ], { type: "text/csv" } );
-                          navigator.msSaveOrOpenBlob( blob, 'aliases.json' );
-                      } else {
-                          a_tag.get(0).click();
-                      }
-                  });
-                }
-            });
-        });
-
-        /**
-         * import aliases from json file
-         */
-        $("#importbtn").click(function(){
-            let $msg = $("<div/>");
-            let $imp_file = $("<input type='file' id='import_filename' />");
-            let $table = $("<table class='table table-condensed'/>");
-            let $tbody = $("<tbody/>");
-            $table.append(
-              $("<thead/>").append(
-                $("<tr>").append(
-                  $("<th/>").text("{{ lang._('source')}}")
-                ).append(
-                  $("<th/>").text("{{ lang._('message')}}")
-                )
-              )
-            );
-            $table.append($tbody);
-            $table.append(
-              $("<tfoot/>").append(
-                $("<tr/>").append($("<td colspan='2'/>").text(
-                  "{{ lang._('Please note that none of the aliases provided are imported due to the errors above')}}"
-                ))
-              )
-            );
-
-            $imp_file.click(function(){
-                // make sure upload resets when new file is provided (bug in some browsers)
-                this.value = null;
-            });
-            $msg.append($imp_file);
-            $msg.append($("<hr/>"));
-            $msg.append($table);
-            $table.hide();
-
-
-            BootstrapDialog.show({
-              title: "{{ lang._('Import aliases') }}",
-              message: $msg,
-              type: BootstrapDialog.TYPE_INFO,
-              draggable: true,
-              buttons: [{
-                  label: '<i class="fa fa-cloud-upload" aria-hidden="true"></i>',
-                  action: function(sender){
-                      $table.hide();
-                      $tbody.empty();
-                      if ($imp_file[0].files[0] !== undefined) {
-                          const reader = new FileReader();
-                          reader.readAsBinaryString($imp_file[0].files[0]);
-                          reader.onload = function(readerEvt) {
-                              let import_data = null;
-                              try {
-                                  import_data = JSON.parse(readerEvt.target.result);
-                              } catch (error) {
-                                  $tbody.append(
-                                    $("<tr/>").append(
-                                      $("<td>").text("*")
-                                    ).append(
-                                      $("<td>").text(error)
-                                    )
-                                  );
-                                  $table.show();
-                              }
-                              if (import_data !== null) {
-                                  ajaxCall("/api/firewall/alias/import", {'data': import_data}, function(data,status) {
-                                      if (data.validations !== undefined) {
-                                          Object.keys(data.validations).forEach(function(key) {
-                                              $tbody.append(
-                                                $("<tr/>").append(
-                                                  $("<td>").text(key)
-                                                ).append(
-                                                  $("<td>").text(data.validations[key])
-                                                )
-                                              );
-                                          });
-                                          $table.show();
-                                      } else {
-                                          sender.close();
-                                      }
-                                  });
-                              }
-                          }
-                      }
-                  }
-              },{
-                 label:  "{{ lang._('Close') }}",
-                 action: function(sender){
-                    sender.close();
-                 }
-               }]
-            });
         });
 
         function loadSettings() {

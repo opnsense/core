@@ -26,16 +26,19 @@
 
 <script>
     $( document ).ready(function() {
-        let grid = $("#grid-routes").bootgrid({
-            ajax: false,
-            selection: false,
-            multiSelect: false,
-            formatters: {
-                "commands": function (column, row) {
-                    return '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" title="{{ lang._('Delete') }}" \
-                                    data-row-id="' + row.destination + ',' + row.gateway +'"><span class="fa fa-trash-o fa-fw"></span></button>';
+        let grid = $("#grid-routes").UIBootgrid({
+            options: {
+                ajax: false,
+                selection: false,
+                multiSelect: false,
+                virtualDOM: true,
+                formatters: {
+                    "commands": function (column, row) {
+                        return '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" title="{{ lang._('Delete') }}" \
+                                        data-row-id="' + row.destination + ',' + row.gateway +'"><span class="fa fa-trash-o fa-fw"></span></button>';
+                    }
                 }
-            }
+            },
         }).on("loaded.rs.jquery.bootgrid", function(){
           grid.find(".command-delete").on("click", function(e){
               let route=$(this).data("row-id").split(',');

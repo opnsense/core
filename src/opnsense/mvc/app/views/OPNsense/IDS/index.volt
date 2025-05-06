@@ -192,20 +192,17 @@ POSSIBILITY OF SUCH DAMAGE.
                 var base = $.when({});
                 var keyset = [];
                 $.each(rows, function(key, uuid){
-                    // only perform action in visible items
-                    if ($("#"+gridId).find("tr[data-row-id='"+uuid+"']").is(':visible')) {
-                        keyset.push(uuid);
-                        if ( combine === undefined || keyset.length > combine || rows[rows.length - 1] === uuid) {
-                            var call_url = url + keyset.join(',') +'/'+url_suffix;
-                            base = base.then(function() {
-                                var defer = $.Deferred();
-                                ajaxCall(call_url, {}, function(){
-                                    defer.resolve();
-                                });
-                                return defer.promise();
+                    keyset.push(uuid);
+                    if ( combine === undefined || keyset.length > combine || rows[rows.length - 1] === uuid) {
+                        var call_url = url + keyset.join(',') +'/'+url_suffix;
+                        base = base.then(function() {
+                            var defer = $.Deferred();
+                            ajaxCall(call_url, {}, function(){
+                                defer.resolve();
                             });
-                            keyset = [];
-                        }
+                            return defer.promise();
+                        });
+                        keyset = [];
                     }
                 });
                 // last action in the list, reload grid and release this promise
@@ -234,49 +231,56 @@ POSSIBILITY OF SUCH DAMAGE.
         /**
          * load content on tab changes
          */
+        let gridRuleFilesInitialized = false;
+        let gridInstalledRulesInitialized = false;
+        let gridUserRulesInitialized = false;
+        let gridAlertsInitialized = false;
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             loadGeneralSettings();
             if (e.target.id == 'download_settings_tab') {
                 /**
                  * grid for installable rule files
                  */
-                $('#grid-rule-files').bootgrid('destroy'); // always destroy previous grid, so data is always fresh
-                $("#grid-rule-files").UIBootgrid({
-                    search:'/api/ids/settings/listRulesets',
-                    get:'/api/ids/settings/getRuleset/',
-                    set:'/api/ids/settings/setRuleset/',
-                    toggle:'/api/ids/settings/toggleRuleset/',
-                    options:{
-                        navigation:0,
-                        formatters:{
-                            editor: function (column, row) {
-                                return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit bootgrid-tooltip\" data-row-id=\"" + row.filename + "\"><span class=\"fa fa-pencil fa-fw\"></span></button>";
-                            },
-                            boolean: function (column, row) {
-                                if (parseInt(row[column.id], 2) == 1) {
-                                    return "<span class=\"fa fa-check fa-fw command-boolean\" data-value=\"1\" data-row-id=\"" + row.filename + "\"></span>";
-                                } else {
-                                    return "<span class=\"fa fa-times fa-fw command-boolean\" data-value=\"0\" data-row-id=\"" + row.filename + "\"></span>";
-                                }
-                            }
-                        },
-                        converters: {
-                            // show "not installed" for rules without timestamp (not on disc)
-                            rulets: {
-                                from: function (value) {
-                                    return value;
+                if (!gridRuleFilesInitialized) {
+                    $("#grid-rule-files").UIBootgrid({
+                        search:'/api/ids/settings/listRulesets',
+                        get:'/api/ids/settings/getRuleset/',
+                        set:'/api/ids/settings/setRuleset/',
+                        toggle:'/api/ids/settings/toggleRuleset/',
+                        options:{
+                            navigation:0,
+                            static: true,
+                            formatters:{
+                                editor: function (column, row) {
+                                    return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit bootgrid-tooltip\" data-row-id=\"" + row.filename + "\"><span class=\"fa fa-pencil fa-fw\"></span></button>";
                                 },
-                                to: function (value) {
-                                    if ( value == null ) {
-                                        return "{{ lang._('not installed') }}";
+                                boolean: function (column, row) {
+                                    if (parseInt(row[column.id], 2) == 1) {
+                                        return "<span class=\"fa fa-check fa-fw command-boolean\" data-value=\"1\" data-row-id=\"" + row.filename + "\"></span>";
                                     } else {
-                                        return value;
+                                        return "<span class=\"fa fa-times fa-fw command-boolean\" data-value=\"0\" data-row-id=\"" + row.filename + "\"></span>";
                                     }
+                                },
+                                rulets: function (column, row) {
+                                    return row[column.id] == null ? "{{ lang._('not installed') }}" : row[column.id];
                                 }
                             }
                         }
-                    }
-                });
+                    }).on('loaded.rs.jquery.bootgrid', function(e) {
+                        /**
+                         * disable/enable selected rulesets
+                         */
+                        $("#disableSelectedRuleSets").unbind('click').click(function(){
+                            actionToggleSelected('grid-rule-files', '/api/ids/settings/toggleRuleset/', 0, 20);
+                        });
+                        $("#enableSelectedRuleSets").unbind('click').click(function(){
+                            actionToggleSelected('grid-rule-files', '/api/ids/settings/toggleRuleset/', 1, 20);
+                        });
+                    });
+                    gridRuleFilesInitialized = true;
+                } else {
+                    $('#grid-rule-files').bootgrid('reload');
+                }
                 // display file settings (if available)
                 ajaxGet("/api/ids/settings/getRulesetproperties", {}, function(data, status) {
                     if (status == "success") {
@@ -296,15 +300,6 @@ POSSIBILITY OF SUCH DAMAGE.
                         }
                     }
                 });
-                /**
-                 * disable/enable selected rulesets
-                 */
-                $("#disableSelectedRuleSets").unbind('click').click(function(){
-                    actionToggleSelected('grid-rule-files', '/api/ids/settings/toggleRuleset/', 0, 20);
-                });
-                $("#enableSelectedRuleSets").unbind('click').click(function(){
-                    actionToggleSelected('grid-rule-files', '/api/ids/settings/toggleRuleset/', 1, 20);
-                });
             } else if (e.target.id == 'rule_tab'){
                 //
                 // activate rule tab page
@@ -316,8 +311,8 @@ POSSIBILITY OF SUCH DAMAGE.
                 /**
                  * grid installed rules
                  */
-                $('#grid-installedrules').bootgrid('destroy'); // always destroy previous grid, so data is always fresh
-                $("#grid-installedrules").UIBootgrid(
+                if (!gridInstalledRulesInitialized) {
+                    $("#grid-installedrules").UIBootgrid(
                         {   search:'/api/ids/settings/searchinstalledrules',
                             get:'/api/ids/settings/get_rule_info/',
                             set:'/api/ids/settings/set_rule/',
@@ -367,42 +362,47 @@ POSSIBILITY OF SUCH DAMAGE.
                             },
                             toggle:'/api/ids/settings/toggleRule/'
                         }
-                );
-                /**
-                 * disable/enable [+action] selected rules
-                 */
-                $("#disableSelectedRules").unbind('click').click(function(event){
-                    event.preventDefault();
-                    $("#disableSelectedRules > span").removeClass("fa-square-o").addClass("fa-spinner fa-pulse");
-                    actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', 0, 100).done(function(){
-                        $("#disableSelectedRules > span").removeClass("fa-spinner fa-pulse");
-                        $("#disableSelectedRules > span").addClass("fa-square-o");
+                    ).on('loaded.rs.jquery.bootgrid', function() {
+                        /**
+                         * disable/enable [+action] selected rules
+                         */
+                        $("#disableSelectedRules").unbind('click').click(function(event){
+                            event.preventDefault();
+                            $("#disableSelectedRules > span").removeClass("fa-square-o").addClass("fa-spinner fa-pulse");
+                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', 0, 100).done(function(){
+                                $("#disableSelectedRules > span").removeClass("fa-spinner fa-pulse");
+                                $("#disableSelectedRules > span").addClass("fa-square-o");
+                            });
+                        });
+                        $("#enableSelectedRules").unbind('click').click(function(){
+                            $("#enableSelectedRules > span").removeClass("fa-check-square-o").addClass("fa-spinner fa-pulse");
+                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', 1, 100).done(function(){
+                                $("#enableSelectedRules > span").removeClass("fa-spinner fa-pulse").addClass("fa-check-square-o");
+                            });
+                        });
+                        $("#alertSelectedRules").unbind('click').click(function(){
+                            $("#alertSelectedRules > span").addClass("fa-spinner fa-pulse");
+                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', "alert", 100).done(function(){
+                                $("#alertSelectedRules > span").removeClass("fa-spinner fa-pulse");
+                            });
+                        });
+                        $("#dropSelectedRules").unbind('click').click(function(){
+                            $("#dropSelectedRules > span").addClass("fa-spinner fa-pulse");
+                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', "drop", 100).done(function(){
+                                $("#dropSelectedRules > span").removeClass("fa-spinner fa-pulse");
+                            });
+                        });
                     });
-                });
-                $("#enableSelectedRules").unbind('click').click(function(){
-                    $("#enableSelectedRules > span").removeClass("fa-check-square-o").addClass("fa-spinner fa-pulse");
-                    actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', 1, 100).done(function(){
-                        $("#enableSelectedRules > span").removeClass("fa-spinner fa-pulse").addClass("fa-check-square-o");
-                    });
-                });
-                $("#alertSelectedRules").unbind('click').click(function(){
-                    $("#alertSelectedRules > span").addClass("fa-spinner fa-pulse");
-                    actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', "alert", 100).done(function(){
-                        $("#alertSelectedRules > span").removeClass("fa-spinner fa-pulse");
-                    });
-                });
-                $("#dropSelectedRules").unbind('click').click(function(){
-                    $("#dropSelectedRules > span").addClass("fa-spinner fa-pulse");
-                    actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', "drop", 100).done(function(){
-                        $("#dropSelectedRules > span").removeClass("fa-spinner fa-pulse");
-                    });
-                });
+                    gridInstalledRulesInitialized = true;
+                } else {
+                    $('#grid-installedrules').bootgrid('reload');
+                }
             } else if (e.target.id == 'alert_tab') {
                 updateAlertLogs();
                 /**
                  * grid query alerts
                  */
-                if (!$("#grid-alerts").hasClass('bootgrid-table')) {
+                if (!gridAlertsInitialized) {
                     var grid_alerts = $("#grid-alerts").UIBootgrid({
                         search:'/api/ids/service/query_alerts',
                         get:'/api/ids/service/get_alert_info/',
@@ -561,18 +561,24 @@ POSSIBILITY OF SUCH DAMAGE.
                                 });
                         }).end();
                   });
+                  gridAlertsInitialized = true;
+                } else {
+                    $("#grid-alerts").bootgrid('reload');
                 }
             } else if (e.target.id == 'userrules_tab') {
-                $('#grid-userrules').bootgrid('destroy'); // always destroy previous grid, so data is always fresh
-                $("#grid-userrules").UIBootgrid({
+                if (!gridUserRulesInitialized) {
+                    $("#grid-userrules").UIBootgrid({
                         search:'/api/ids/settings/searchUserRule',
                         get:'/api/ids/settings/getUserRule/',
                         set:'/api/ids/settings/setUserRule/',
                         add:'/api/ids/settings/addUserRule/',
                         del:'/api/ids/settings/delUserRule/',
                         toggle:'/api/ids/settings/toggleUserRule/'
-                    }
-                );
+                    });
+                    gridUserRulesInitialized = true;
+                } else {
+                    $("#grid-userrules").bootgrid('reload');
+                }
             }
         });
 
@@ -763,13 +769,13 @@ POSSIBILITY OF SUCH DAMAGE.
                       </td>
                     </tr>
                   </table>
-                  <div style="max-height: 400px; width: 100%; margin: 0; overflow-y: auto;" id="grid-rule-files-container">
+                  <div style="width: 100%; margin: 0; overflow-y: auto;" id="grid-rule-files-container">
                     <table id="grid-rule-files" class="table table-condensed table-hover table-striped table-responsive" data-editAlert="rulesetChangeMessage" data-editDialog="DialogRuleset">
                         <thead>
                         <tr>
                             <th data-column-id="filename" data-type="string" data-visible="false" data-identifier="true">{{ lang._('Filename') }}</th>
                             <th data-column-id="description" data-type="string" data-sortable="false" data-visible="true">{{ lang._('Description') }}</th>
-                            <th data-column-id="modified_local" data-type="rulets" data-sortable="false" data-visible="true">{{ lang._('Last updated') }}</th>
+                            <th data-column-id="modified_local" data-formatter="rulets" data-sortable="false" data-visible="true">{{ lang._('Last updated') }}</th>
                             <th data-column-id="enabled" data-formatter="boolean" data-sortable="false" data-width="10em">{{ lang._('Enabled') }}</th>
                             <th data-column-id="edit" data-formatter="editor" data-sortable="false" data-width="10em">{{ lang._('Edit') }}</th>
                         </tr>

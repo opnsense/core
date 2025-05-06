@@ -2046,7 +2046,9 @@
 /usr/local/opnsense/www/css/jqtree.css
 /usr/local/opnsense/www/css/jquery.bootgrid.css
 /usr/local/opnsense/www/css/nv.d3.css
+/usr/local/opnsense/www/css/opnsense-bootgrid.css
 /usr/local/opnsense/www/css/pick-a-color-1.2.3.min.css
+/usr/local/opnsense/www/css/tabulator.min.css
 /usr/local/opnsense/www/css/tokenize2.css
 /usr/local/opnsense/www/fonts/FontAwesome.otf
 /usr/local/opnsense/www/fonts/glyphicons-halflings-regular.eot
@@ -2087,6 +2089,7 @@
 /usr/local/opnsense/www/js/nv.d3.min.js.LICENSE.md
 /usr/local/opnsense/www/js/opnsense-treeview.js
 /usr/local/opnsense/www/js/opnsense.js
+/usr/local/opnsense/www/js/opnsense_bootgrid.js
 /usr/local/opnsense/www/js/opnsense_bootgrid_plugin.js
 /usr/local/opnsense/www/js/opnsense_health.js
 /usr/local/opnsense/www/js/opnsense_status.js
@@ -2099,6 +2102,8 @@
 /usr/local/opnsense/www/js/polyfills.js
 /usr/local/opnsense/www/js/qrcode.js
 /usr/local/opnsense/www/js/smoothie.js
+/usr/local/opnsense/www/js/tabulator.min.js
+/usr/local/opnsense/www/js/tabulator.min.js.map
 /usr/local/opnsense/www/js/theme.js
 /usr/local/opnsense/www/js/tinycolor-1.4.1.min.js
 /usr/local/opnsense/www/js/tokenize2.js
@@ -2223,6 +2228,7 @@
 /usr/local/opnsense/www/themes/opnsense-dark/assets/stylesheets/dashboard.scss
 /usr/local/opnsense/www/themes/opnsense-dark/assets/stylesheets/dns-overview.scss
 /usr/local/opnsense/www/themes/opnsense-dark/assets/stylesheets/main.scss
+/usr/local/opnsense/www/themes/opnsense-dark/assets/stylesheets/opnsense-bootgrid.scss
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/bootstrap-dialog.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/bootstrap-select.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/dashboard.css
@@ -2230,6 +2236,7 @@
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/jquery.bootgrid.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/main.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/nv.d3.css
+/usr/local/opnsense/www/themes/opnsense-dark/build/css/opnsense-bootgrid.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/tokenize2.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/fonts/LICENSE.SourceSansPro.txt
 /usr/local/opnsense/www/themes/opnsense-dark/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.eot
@@ -2344,9 +2351,11 @@
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/config/colors.scss
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/dashboard.scss
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/main.scss
+/usr/local/opnsense/www/themes/opnsense/assets/stylesheets/opnsense-bootgrid.scss
 /usr/local/opnsense/www/themes/opnsense/build/css/bootstrap-dialog.css
 /usr/local/opnsense/www/themes/opnsense/build/css/dashboard.css
 /usr/local/opnsense/www/themes/opnsense/build/css/main.css
+/usr/local/opnsense/www/themes/opnsense/build/css/opnsense-bootgrid.css
 /usr/local/opnsense/www/themes/opnsense/build/fonts/LICENSE.SourceSansPro.txt
 /usr/local/opnsense/www/themes/opnsense/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.eot
 /usr/local/opnsense/www/themes/opnsense/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.otf

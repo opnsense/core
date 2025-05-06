@@ -1,0 +1,258 @@
+
+/**
+* Main theming elements
+*/
+.tabulator {
+    font-size: 15px;
+    background-color: transparent;
+}
+
+.tabulator .tabulator-header {
+    background-color: transparent;
+    border-top: 1px solid #373736;
+    border-left: 1px solid #373736;
+    border-right: 1px solid #373736;
+    border-bottom: none;
+}
+.tabulator .tabulator-header .tabulator-col {
+    border-right: 1px solid #373736;
+    background-color: transparent;
+    background: transparent;
+    color: #ECECEC;
+}
+.tabulator .tabulator-header .tabulator-col.tabulator-sortable.tabulator-col-sorter-element:hover {
+    background-color: #373736;
+}
+.tabulator .tabulator-headers {
+    height: 100% !important; /* make sure the below border appears */
+    border-bottom: 1px solid #aaa; /* separates header from table rows */
+}
+/*------------*/
+
+/* theme: body */
+.tabulator .tabulator-tableholder .tabulator-table {
+    background-color: transparent;
+}
+.tabulator-row {
+    background-color: transparent;
+    color: #ECECEC;
+}
+
+.tabulator-row.tabulator-row-odd {
+    background-color: #373736;
+}
+.tabulator-row.tabulator-row-odd.tabulator-selectable:hover:not(.tabulator-selected) {
+    background-color: #373736;
+}
+
+.tabulator-row.tabulator-row-even {
+    background-color: transparent;
+}
+.tabulator-row.tabulator-row-even.tabulator-selectable:hover:not(.tabulator-selected) {
+    background-color: transparent;
+}
+.tabulator .tabulator-tableholder {
+    background-color: transparent;
+}
+.tabulator-row.tabulator-selected {
+    background-color: #9abcea;
+}
+.tabulator-row.tabulator-selected:hover {
+    cursor: pointer;
+    background-color: #9abcea;
+}
+.tabulator .tabulator-alert .tabulator-alert-msg.tabulator-alert-state-msg {
+    color: #ECECEC; /* spinner icon */
+}
+
+/* Command column styles */
+.tabulator-col.tabulator-frozen.tabulator-frozen-right {
+}
+.tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-right {
+}
+
+/* Checkbox column styles */
+.tabulator .tabulator-header .tabulator-frozen.tabulator-frozen-left {
+    border-right: 1px solid #aaa; /* separates checkbox column from table rows */
+    border-left: 1px solid #373736;
+
+}
+.tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-left {
+    border-right: 1px solid #aaa;
+    border-top: 1px solid #373736;
+    border-bottom: 1px solid #aaa;
+    border-left: 1px solid #373736;
+}
+.tabulator-col.tabulator-row-header.tabulator-frozen.tabulator-frozen-left {
+}
+.tabulator-cell.tabulator-row-header.tabulator-frozen.tabulator-frozen-left {
+}
+.tabulator-row:last-child >
+.tabulator-cell.tabulator-row-header.tabulator-frozen.tabulator-frozen-left:first-child {
+}
+/*------------*/
+
+/* theme: cells */
+.tabulator-row .tabulator-cell {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.2;
+    vertical-align: top;
+    border-bottom: 1px solid #373736;
+    border-right: 1px solid #373736;
+}
+/*-------------*/
+
+/* theme: footer */
+.tabulator .tabulator-footer {
+    background-color: transparent;
+}
+.tabulator .tabulator-footer .tabulator-page {
+    background-color: #101218;
+    color: #C03E14;
+}
+.tabulator .tabulator-footer .tabulator-page.active {
+    background-color: #C03E14;
+    border-color: #C03E14;
+    cursor: default;
+    color: #101218;
+}
+.tabulator .tabulator-footer .tabulator-page:not(disabled):hover {
+    color: #7b280d;
+    background-color: #242937;
+    border-color: #ddd;
+}
+.tabulator .tabulator-footer .tabulator-page:not(disabled).active:hover {
+    background-color: #C03E14;
+    border-color: #C03E14;
+    color: #101218;
+    cursor: default;
+}
+.tabulator-page-counter {
+    color: #ECECEC;
+}
+.tabulator .tabulator-footer .tabulator-paginator {
+    color: #ECECEC;
+}
+.tabulator .tabulator-footer .tabulator-page {
+    border-radius: 0px;
+    margin: 0px;
+    padding: 6px 12px;
+    border: 1px solid #E5E5E5;
+}
+/*----------*/
+
+/* end of main theming elements */
+
+.tabulator-paginator {
+    flex: 0 !important;
+}
+.tabulator-page-counter {
+    flex: 1;
+    text-align: right;
+}
+.tabulator-col-sorter i {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tabulator .tabulator-header .tabulator-col {
+    padding: 5px;
+}
+
+.tabulator .tabulator-headers > :first-child {
+    padding-left: 10px;
+}
+
+
+.opnsense-bootgrid-responsive {
+    white-space: wrap !important;
+    text-overflow: inherit !important;
+    overflow: visible !important;
+    word-break: break-word !important;
+}
+
+.opnsense-bootgrid-ellipsis {
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+}
+
+
+.tabulator-row > :first-child {
+    padding-left: 10px;
+}
+
+.tabulator .tabulator-header .tabulator-col .tabulator-col-content {
+    padding: 0px;
+}
+
+.tabulator-page-counter {
+    padding-right: 20px;
+}
+
+.bootgrid-footer-commands {
+    width: 90px;
+    padding-left: 8px;
+}
+
+/* move border from footer to last row */
+.tabulator .tabulator-footer {
+    border-top: none;
+}
+
+.tabulator-tableholder::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 1px;
+    min-width: 100%;
+}
+
+.tabulator .tabulator-footer .tabulator-paginator .tabulator-page:first-child {
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+}
+
+.tabulator .tabulator-footer .tabulator-paginator .tabulator-page:last-child {
+    border-bottom-right-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+/* border line corrections and hover/selection behavior */
+.tabulator-row:first-child >  .tabulator-cell {
+    border-top: none;
+}
+
+.tabulator .tabulator-header .tabulator-col.tabulator-sortable .tabulator-col-title {
+    padding: 0px;
+}
+
+/* Row highlight behavior */
+@keyframes highlight {
+    0% {
+        background: #ffff99;
+    }
+    100% {
+        background: none;
+    }
+}
+.highlight-bg {
+    animation: highlight 2s;
+}
+
+/* Tabulator "loading" and "error" overrides */
+.tabulator .tabulator-alert {
+    background: none;
+}
+.tabulator .tabulator-alert .tabulator-alert-msg.tabulator-alert-state-msg {
+    border: none;
+}
+.tabulator .tabulator-alert .tabulator-alert-msg {
+    background: initial;
+    font-size: 18px;
+}
+.tabulator .tabulator-alert .tabulator-alert-msg.tabulator-alert-state-error {
+    border: none;
+}

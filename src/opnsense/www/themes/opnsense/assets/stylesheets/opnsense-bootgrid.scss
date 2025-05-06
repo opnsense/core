@@ -1,0 +1,263 @@
+@import "config/colors";
+
+/**
+* Main theming elements
+*/
+.tabulator {
+    font-size: 15px;
+    background-color: transparent;
+    border: none;
+    border-top: 1px solid map-get($colors, border-default);
+}
+
+/* theme: header */
+.tabulator .tabulator-header {
+    background-color: transparent;
+    border-bottom: none;
+    border-left: 1px solid map-get($colors, border-default);
+}
+.tabulator .tabulator-header .tabulator-col {
+    border-right: 1px solid map-get($colors, border-default);
+    background-color: map-get($colors, body-background);
+    color: map-get($colors, text-color);
+}
+.tabulator .tabulator-header .tabulator-col.tabulator-sortable.tabulator-col-sorter-element:hover {
+    background-color: map-get($colors, table-bg-accent);
+}
+.tabulator .tabulator-headers {
+    height: 100% !important; /* make sure the border below appears */
+    border-bottom: 1px solid map-get($colors, border-default);
+}
+/*------------*/
+
+/* theme: body */
+.tabulator .tabulator-tableholder .tabulator-table {
+    background-color: transparent;
+    border-left: 1px solid map-get($colors, border-default);
+}
+.tabulator-row {
+    background-color: transparent;
+    color: map-get($colors, text-color);
+}
+
+.tabulator-row.tabulator-row-odd {
+    background-color: map-get($colors, table-bg-accent);
+}
+.tabulator-row.tabulator-row-odd.tabulator-selectable:hover:not(.tabulator-selected) {
+    background-color: #f0f3f9;
+}
+
+.tabulator-row.tabulator-row-even {
+    background-color: map-get($colors, body-background);
+}
+.tabulator-row.tabulator-row-even.tabulator-selectable:hover:not(.tabulator-selected) {
+    background-color: #f0f3f9;
+}
+.tabulator .tabulator-tableholder {
+    background-color: transparent;
+}
+.tabulator-row.tabulator-selected {
+    background-color: #e3e8f0;
+}
+.tabulator-row.tabulator-selected:hover {
+    cursor: pointer;
+    background-color: #e3e8f0;
+}
+.tabulator .tabulator-alert .tabulator-alert-msg.tabulator-alert-state-msg {
+    color: map-get($colors, text-color); /* spinner icon */
+}
+
+/* Command column styles */
+.tabulator-col.tabulator-frozen.tabulator-frozen-right {
+}
+.tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-right {
+}
+
+/* Checkbox column styles */
+.tabulator .tabulator-header .tabulator-frozen.tabulator-frozen-left {
+    border-right: 1px solid map-get($colors, border-default); /* separates checkbox column from table rows */
+    border-left: 1px solid map-get($colors, table-bg-accent);
+
+}
+.tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-left {
+    border-right: 1px solid map-get($colors, border-default);
+    border-top: 1px solid map-get($colors, table-bg-accent);
+    border-bottom: 1px solid map-get($colors, border-default);
+    border-left: 1px solid map-get($colors, table-bg-accent);
+}
+.tabulator-col.tabulator-row-header.tabulator-frozen.tabulator-frozen-left {
+}
+.tabulator-cell.tabulator-row-header.tabulator-frozen.tabulator-frozen-left {
+}
+.tabulator-row:last-child >
+.tabulator-cell.tabulator-row-header.tabulator-frozen.tabulator-frozen-left:first-child {
+}
+/*------------*/
+
+/* theme: cells */
+.tabulator-row .tabulator-cell {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.2;
+    vertical-align: top;
+    border-bottom: 1px solid rgba(map-get($colors, border-default), 0.5);
+    border-right: 1px solid rgba(map-get($colors, border-default), 0.5);
+}
+/*-------------*/
+
+/* theme: footer */
+.tabulator .tabulator-footer {
+    border-top: none;
+    background-color: transparent;
+}
+.tabulator .tabulator-footer .tabulator-page {
+    background-color: map-get($colors, body-background);
+    color: map-get($colors, brand-primary);
+}
+.tabulator .tabulator-footer .tabulator-page.active {
+    background-color: map-get($colors, brand-primary);
+    border-color: map-get($colors, brand-primary);
+    cursor: default;
+    color: map-get($colors, body-background);
+}
+.tabulator .tabulator-footer .tabulator-page:not(disabled):hover {
+    color: #7b280d;
+    background-color: #eeeeee;
+    border-color: #ddd;
+}
+.tabulator .tabulator-footer .tabulator-page:not(disabled).active:hover {
+    background-color: map-get($colors, brand-primary);
+    border-color: map-get($colors, brand-primary);
+    color: map-get($colors, body-background);
+    cursor: default;
+}
+.tabulator-page-counter {
+    color: map-get($colors,text-color);
+}
+.tabulator .tabulator-footer .tabulator-paginator {
+    color: map-get($colors, text-color);
+}
+.tabulator .tabulator-footer .tabulator-page {
+    border-radius: 0px;
+    margin: 0px;
+    padding: 6px 12px;
+    border: 1px solid map-get($colors, border-default);
+}
+/*----------*/
+
+/* end of main theming elements */
+
+.tabulator-paginator {
+    flex: 0 !important;
+}
+.tabulator-page-counter {
+    flex: 1;
+    text-align: right;
+}
+.tabulator-col-sorter i {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tabulator .tabulator-header .tabulator-col {
+    padding: 5px;
+}
+
+.tabulator .tabulator-headers > :first-child {
+    padding-left: 10px;
+}
+
+
+.opnsense-bootgrid-responsive {
+    white-space: wrap !important;
+    text-overflow: inherit !important;
+    overflow: visible !important;
+    word-break: break-word !important;
+}
+
+.opnsense-bootgrid-ellipsis {
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+}
+
+
+.tabulator-row > :first-child {
+    padding-left: 10px;
+}
+
+.tabulator .tabulator-header .tabulator-col .tabulator-col-content {
+    padding: 0px;
+}
+
+.tabulator-page-counter {
+    padding-right: 20px;
+}
+
+.bootgrid-footer-commands {
+    width: 90px;
+    padding-left: 8px;
+}
+
+.tabulator-tableholder::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 1px;
+    min-width: 100%;
+}
+
+.tabulator .tabulator-footer .tabulator-paginator .tabulator-page:first-child {
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+}
+
+.tabulator .tabulator-footer .tabulator-paginator .tabulator-page:last-child {
+    border-bottom-right-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+/* border line corrections and hover/selection behavior */
+.tabulator-row:first-child >  .tabulator-cell {
+    border-top: none;
+}
+
+.tabulator .tabulator-header .tabulator-col.tabulator-sortable .tabulator-col-title {
+    padding: 0px;
+}
+
+/* Row highlight behavior */
+@keyframes highlight {
+    0% {
+        background: #ffff99;
+    }
+    100% {
+        background: none;
+    }
+}
+.highlight-bg {
+    animation: highlight 2s;
+}
+
+/* Tabulator "loading" and "error" overrides */
+.tabulator .tabulator-alert {
+    background: none;
+}
+.tabulator .tabulator-alert .tabulator-alert-msg.tabulator-alert-state-msg {
+    border: none;
+}
+.tabulator .tabulator-alert .tabulator-alert-msg {
+    background: initial;
+    font-size: 18px;
+}
+.tabulator .tabulator-alert .tabulator-alert-msg.tabulator-alert-state-error {
+    border: none;
+}
+
+.bootgrid-placeholder {
+    font-size: 15px;
+    text-align: center;
+    white-space: normal;
+    font-weight: 400;
+}
