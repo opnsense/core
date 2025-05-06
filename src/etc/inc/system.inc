@@ -645,7 +645,6 @@ function system_default_route($gw, $routes)
     mwexecf('/sbin/route add -%s default %s', [$family, $gateway]);
 }
 
-
 function system_routing_configure($verbose = false, $interface_map = null, $monitor = true, $family = null)
 {
     global $config;
