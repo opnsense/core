@@ -421,8 +421,6 @@ lint-php:
 lint: plist-check lint-shell lint-xml lint-model lint-acl lint-exec lint-php
 
 sweep:
-	find ${.CURDIR}/src -type f -name "*.map" -print0 | \
-	    xargs -0 -n1 rm
 	find ${.CURDIR}/src ! -name "*.min.*" ! -name "*.svg" \
 	    ! -name "*.ser" -type f -print0 | \
 	    xargs -0 -n1 ${.CURDIR}/Scripts/cleanfile
