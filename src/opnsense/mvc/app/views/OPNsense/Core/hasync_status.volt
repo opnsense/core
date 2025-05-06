@@ -185,16 +185,6 @@
                                 </thead>
                                 <tbody>
                                 </tbody>
-                                <!-- <tfoot>
-                                    <tr>
-                                        <td><span style="padding-left: 30px;"> {{ lang._('Synchronize and reconfigure all') }} </span></td>
-                                        <td>
-                                            <span id="act_restart_all" class="btn btn-xs btn-default" data-toggle="tooltip" title="{{ lang._('Synchronize and restart all services') }}">
-                                                <i class="fa fa-repeat fa-fw"></i>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                </tfoot> -->
                             </table>
                         </div>
                     </div>

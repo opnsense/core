@@ -69,14 +69,12 @@ class ControllerBase extends ControllerRoot
           // Bootgrid (grid system from http://www.jquery-bootgrid.com/ )
           '/ui/js/tabulator.min.js',
           '/ui/js/opnsense_bootgrid.js',
-        //   '/ui/js/jquery.bootgrid.js',
           // Bootstrap type ahead
           '/ui/js/bootstrap3-typeahead.min.js',
           // OPNsense standard toolkit
           '/ui/js/opnsense.js',
           '/ui/js/opnsense_theme.js',
           '/ui/js/opnsense_ui.js',
-        //   '/ui/js/opnsense_bootgrid_plugin.js',
           '/ui/js/opnsense_status.js',
           // bootstrap script
           '/ui/js/bootstrap.min.js',

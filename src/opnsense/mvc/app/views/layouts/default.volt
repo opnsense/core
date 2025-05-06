@@ -306,37 +306,23 @@
     </div>
 
     <script>
-    // /* hook translations  when all JS modules are loaded*/
-    // $.extend(jQuery.fn.bootgrid.prototype.constructor.Constructor.defaults.labels, {
-    //     all: "{{ lang._('All') }}",
-    //     infos: "{{ lang._('Showing %s to %s of %s entries') | format('{{ctx.start}}','{{ctx.end}}','{{ctx.total}}') }}",
-    //     noResults: "{{ lang._('No results found!') }}",
-    //     refresh: "{{ lang._('Refresh') }}",
-    //     reset: "{{ lang._('Reset to defaults') }}",
-    //     search: "{{ lang._('Search') }}"
-    // });
-    // $.extend(jQuery.fn.selectpicker.Constructor.DEFAULTS, {
-    //     noneSelectedText: "{{ lang._('Nothing selected') }}",
-    //     noneResultsText: "{{ lang._('No results matched {0}') }}",
-    //     selectAllText: "{{ lang._('Select All') }}",
-    //     deselectAllText: "{{ lang._('Deselect All') }}"
-    // });
-    // $.extend(jQuery.fn.UIBootgrid.defaults, {
-    //     removeWarningText: "{{ lang._('Remove selected item(s)?') }}",
-    //     editText: "{{ lang._('Edit') }}",
-    //     cloneText: "{{ lang._('Clone') }}",
-    //     deleteText: "{{ lang._('Delete') }}",
-    //     addText: "{{ lang._('Add') }}",
-    //     infoText: "{{ lang._('Info') }}",
-    //     enableText: "{{ lang._('Enable') }}",
-    //     disableText: "{{ lang._('Disable') }}",
-    //     deleteSelectedText: "{{ lang._('Delete selected') }}"
-    // });
-    // $.extend(stdDialogRemoveItem.defaults, {
-    //     title: "{{ lang._('Remove') }}",
-    //     accept: "{{ lang._('Yes') }}",
-    //     decline: "{{ lang._('Cancel') }}"
-    // });
+        $.extend(jQuery.fn.UIBootgrid.translations, {
+            add: "{{ lang._('Add') }}",
+            deleteSelected: "{{ lang._('Delete selected') }}",
+            edit: "{{ lang._('Edit') }}",
+            disable: "{{ lang._('Disable') }}",
+            enable: "{{ lang._('Enable') }}",
+            delete: "{{ lang._('Delete') }}",
+            info: "{{ lang._('Info') }}",
+            clone: "{{ lang._('Clone') }}",
+            all: "{{ lang._('All') }}",
+            search: "{{ lang._('Search') }}",
+            removeWarning: "{{ lang._('Remove selected item(s)?') }}",
+            noresultsfound: "{{ lang._('No results found') }}",
+            refresh: "{{ lang._('Refresh') }}",
+            infosTotal: "{{ lang._('Showing %s to %s of %s entries') | format('{{ctx.start}}','{{ctx.end}}','{{ctx.totalRows}}') }}",
+            infos: "{{ lang._('Showing %s to %s') | format('{{ctx.start}}','{{ctx.end}}') }}",
+        });
     </script>
 
   </body>

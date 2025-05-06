@@ -90,8 +90,10 @@ $.fn.UIBootgrid = function(params) {
     return $replacement;
 }
 
+$.fn.UIBootgrid.translations = {};
+
 class UIBootgrid {
-    constructor(id, options = {}, crud = {}, tabulatorOptions = {}, translations = {}) {
+    constructor(id, options = {}, crud = {}, tabulatorOptions = {}) {
         // wrapper-specific state variables
         this.id = id;
         this.$element = $(`#${id}`);
@@ -101,7 +103,6 @@ class UIBootgrid {
         this.curRowCount = null;
         this.navigationRendered = false;
         this.originalTableHeight = null;
-        // this.tableWidth = null;
         this.tableInitialized = false;
         this.isResizing = false;
         this.totalKnown = false;
@@ -157,7 +158,6 @@ class UIBootgrid {
 
         // passed directly to tabulator
         this.tabulatorOptions = tabulatorOptions;
-
         this.translations = {
             add: 'Add',
             deleteSelected: 'Delete selected',
@@ -171,7 +171,8 @@ class UIBootgrid {
             search: 'Search',
             removeWarning: 'Remove selected item(s)?',
             noresultsfound: 'No results found!',
-            ...translations
+            refresh: 'Refresh',
+            ...$.fn.UIBootgrid.translations
         };
 
         // wrapper-specific single version of truth of table layout
@@ -425,6 +426,15 @@ class UIBootgrid {
         }
 
         this.gridView = result;
+    }
+
+    _translate(key, ctx = {}) {
+        // resolve (formatted) translations
+        let template = this.translations[key];
+        if (!template) {
+            console.error('No translation found for key ' + key);
+        }
+        return template.replace(/{{ctx\.(\w+)}}/g, (_, key) => key in ctx ? ctx[key] : '');
     }
 
     /**
@@ -754,23 +764,23 @@ class UIBootgrid {
             if ($(el).attr('title') !== undefined) {
                 // keep this tooltip
             } else if ($(el).hasClass('command-add')) {
-                $(el).attr('title', this.translations.add);
+                $(el).attr('title', this._translate('add'));
             } else if ($(el).hasClass('command-delete-selected')) {
-                $(el).attr('title', this.translations.deleteSelected);
+                $(el).attr('title', this._translate('deleteSelected'));
             } else if ($(el).hasClass('command-edit')) {
-                $(el).attr('title', this.translations.edit);
+                $(el).attr('title', this._translate('edit'));
             } else if ($(el).hasClass('command-toggle')) {
                 if ($(el).data('value') === 1) {
-                    $(el).attr('title', this.translations.disable);
+                    $(el).attr('title', this._translate('disable'));
                 } else {
-                    $(el).attr('title', this.translations.enable);
+                    $(el).attr('title', this._translate('enable'));
                 }
             } else if ($(el).hasClass('command-delete')) { 
-                $(el).attr('title', this.translations.delete);
+                $(el).attr('title', this._translate('delete'));
             } else if ($(el).hasClass('command-info')) {
-                $(el).attr('title', this.translations.info);
+                $(el).attr('title', this._translate('info'));
             } else if ($(el).hasClass('command-copy')) {
-                $(el).attr('title', this.translations.clone);
+                $(el).attr('title', this._translate('clone'));
             } else {
                 $(el).attr('title', 'Error: no tooltip match');
             }
@@ -855,14 +865,14 @@ class UIBootgrid {
         if (this.curRowCount === 'true') {
             this.curRowCount = true;
         }
-        $(`#${this.id}-rowcount-text`).text(this.curRowCount === true ? this.translations.all : this.curRowCount);
+        $(`#${this.id}-rowcount-text`).text(this.curRowCount === true ? this._translate('all') : this.curRowCount);
 
         this.options.rowCount.forEach((count) => {
             let item = $(`
                 <li data-action="${count}"
                     class="${count.toString() === this.curRowCount.toString() ? 'active' : ''}"
                     aria-selected="${count.toString() === this.curRowCount.toString() ? 'true' : 'false'}">
-                    <a>${count === true ? this.translations.all : count}</a>
+                    <a>${count === true ? this._translate('all') : count}</a>
                 </li>
             `).on('click', (e) => {
                 e.preventDefault();
@@ -878,7 +888,7 @@ class UIBootgrid {
                     localStorage.setItem(`${this.persistenceID}-rowCount`, this.curRowCount);
                     this.table.setPageSize(newRowCount);
 
-                    $(`#${this.id}-rowcount-text`).text(newRowCount === true ? this.translations.all : newRowCount);
+                    $(`#${this.id}-rowcount-text`).text(newRowCount === true ? this._translate('all') : newRowCount);
 
                     $.each($(`#${this.id}-rowcount-items li`), (i, value) => {
                         let $li = $(value);
@@ -985,11 +995,11 @@ class UIBootgrid {
                         <div class="search form-group">
                             <div class="input-group">
                                 <span class="icon fa-solid input-group-addon fa-magnifying-glass"></span>
-                                <input id="${this.id}-search-field" type="text" class="search-field form-control" placeholder="${this.translations.search}">
+                                <input id="${this.id}-search-field" type="text" class="search-field form-control" placeholder="${this._translate('search')}">
                             </div>
                         </div>
                         <div id="${this.id}-actions-group" class="actions btn-group">
-                            <button id="${this.id}-refresh-button" class="btn btn-default" type="button" title="Refresh">
+                            <button id="${this.id}-refresh-button" class="btn btn-default" type="button" title="${this._translate('refresh')}">
                                 <span class="icon fa-solid fa-arrows-rotate"></span>
                             </button>
                             <div id="${this.id}-rowcount-container" class="dropdown btn-group">
@@ -1050,7 +1060,7 @@ class UIBootgrid {
             },
             height: '20vh', /* represents the "no results found" view */
             resizable: "header",
-            placeholder: this.translations.noresultsfound, // XXX: improve styling, can return a function returning HTML or a DOM node
+            placeholder: this._translate('noresultsfound'), // XXX: improve styling, can return a function returning HTML or a DOM node
             layout: 'fitColumns',
             columns: this._parseColumns(),
 
@@ -1075,9 +1085,9 @@ class UIBootgrid {
                 end = (totalRows === 0 || end === -1 || end > totalRows) ? totalRows : end;
 
                 if (this.totalKnown || !this.options.ajax) {
-                    return `Showing ${start} to ${end} of ${totalRows} entries`
+                    return this._translate('infosTotal', {start: start, end: end, totalRows: totalRows});
                 } else {
-                    return `Showing ${start} to ${end}`;
+                    return this._translate('infos', {start: start, end: end});
                 }
             },
             paginationMode: "remote",
@@ -1557,7 +1567,7 @@ class UIBootgrid {
     command_delete(event) {
         event.stopPropagation();
         let uuid = $(event.currentTarget).data('row-id');
-        stdDialogRemoveItem(this.translations.removeWarning, () => {
+        stdDialogRemoveItem(this._translate('removeWarning'), () => {
             ajaxCall(this.crud.del + uuid, {}, (data, status) => {
                 // reload grid after delete
                 this._reload(true);
@@ -1571,7 +1581,7 @@ class UIBootgrid {
     */
     command_delete_selected(event) {
         event.stopPropagation();
-        stdDialogRemoveItem(this.translations.removeWarning, () => {
+        stdDialogRemoveItem(this._translate('removeWarning'), () => {
             let rows = this.table.getSelectedData();
             if (rows.length > 0) {
                 const deferreds = [];
