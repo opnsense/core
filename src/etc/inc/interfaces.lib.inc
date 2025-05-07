@@ -108,6 +108,9 @@ function legacy_interface_create($ifs, $name = null)
 
         /* return new name here anyway to force proper device not found errors later */
         $new = $name;
+    } elseif (empty($new)) {
+        /* we are here but have no name which means it was passed via $ifs instead */
+        $new = $ifs;
     }
 
     return ($new);
