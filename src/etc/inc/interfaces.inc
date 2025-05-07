@@ -232,7 +232,7 @@ function _interfaces_bridge_configure($bridge, $ifconfig_details = null)
 
     if (
         empty($this_if) || empty($this_if['nd6']) ||
-        in_array('AUTO_LINKLOCAL', $this_if['nd6']['flags']) != !empty($bridge['linklocal'])
+        in_array('auto_linklocal', $this_if['nd6']['flags']) != !empty($bridge['linklocal'])
     ) {
         mwexecf('/sbin/ifconfig %s inet6 %sauto_linklocal', [$bridgeif, !empty($bridge['linklocal']) ? '' : '-']);
     }
