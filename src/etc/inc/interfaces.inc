@@ -2362,7 +2362,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      *    already does that so at this point try to be more consistent.
      */
     $interface_descr = sprintf('%s (%s)', !empty($wancfg['descr']) ? $wancfg['descr'] : strtoupper($interface), $interface);
-    /* we do not set "ifdisabled" to avoid clobbering assigned tunnel devices */
+    /* XXX we should maybe set "ifdisabled" but it could be dangerous for assigned tunnel devices */
     mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv -no_dad description %s up', [$realif, $interface_descr]);
 
     switch (isset($config['system']['ipv6allow']) ? ($wancfg['ipaddrv6'] ?? 'none') : 'none') {
