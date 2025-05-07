@@ -695,14 +695,6 @@ class OpenVPN extends BaseModel
                     if (!empty((string)$node->verify-x509-name)) {
                         $options['verify-x509-name'] = (string)$node->verify-x509-name;
                     }
-
-                    if (!empty((int)$node->sndbuf)) {
-                        $options['sndbuf'] = (int)$node->sndbuf;
-                    }
-
-                    if (!empty((int)$node->rcvbuf)) {
-                        $options['rcvbuf'] = (int)$node->rcvbuf;
-                    }
                 }
                 $options['persist-tun'] = null;
                 $options['persist-key'] = null;

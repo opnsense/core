@@ -690,24 +690,4 @@ Set to 0 to disable, remember to change your client as well.
             <visible>false</visible>
         </grid_view>
     </field>
-    <field>
-        <id>instance.sndbuf</id>
-        <label>Send Buffer</label>
-        <type>text</type>
-        <advanced>true</advanced>
-        <help>Set the TCP/UDP socket send buffer size.</help>
-        <grid_view>
-            <visible>false</visible>
-        </grid_view>
-    </field>
-    <field>
-        <id>instance.rcvbuf</id>
-        <label>Receive Buffer</label>
-        <type>text</type>
-        <advanced>true</advanced>
-        <help>Set the TCP/UDP socket receive buffer size.</help>
-        <grid_view>
-            <visible>false</visible>
-        </grid_view>
-    </field>
 </fields>
