@@ -167,20 +167,19 @@ function get_alias_description($name)
 }
 
 /* XXX deprecated */
-function return_gateways_status($cached = true)
+function return_gateways_status()
 {
+    /* get the process state of all monitor instances */
     $result = plugins_run('return_gateways_status');
     if (empty($result['dpinger'])) {
         return [];
     }
 
-    if ($cached) {
-        /* allow the data to be enriched by the cached watcher status */
-        $cache = plugins_run('return_gateways_watcher');
-        foreach ($result['dpinger'] as $gwname => &$gwstatus) {
-            if ($gwstatus['loss'] == '~' && isset($cache['dpinger'][$gwname])) {
-                $gwstatus['status'] = $cache['dpinger'][$gwname];
-            }
+    /* enrich current process state with cached watcher status */
+    $cache = plugins_run('return_gateways_watcher');
+    foreach ($result['dpinger'] as $gwname => &$gwstatus) {
+        if ($gwstatus['loss'] == '~' && isset($cache['dpinger'][$gwname])) {
+            $gwstatus['status'] = $cache['dpinger'][$gwname];
         }
     }
 

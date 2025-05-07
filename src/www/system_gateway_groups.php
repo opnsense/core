@@ -32,7 +32,7 @@ require_once("interfaces.inc");
 require_once("system.inc");
 
 $a_gateway_groups = &config_read_array('gateways', 'gateway_group');
-$gateways_status = return_gateways_status(false);
+$gateways_status = return_gateways_status();
 $a_gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
