@@ -225,7 +225,7 @@ class IPsec extends BaseModel
                     $result[$target_key] = '"' . str_replace(['\\', '"'], '', (string)$item) . '"';
                 } elseif ($target_key == '28675') {
                     /* 28675 (splitdns name) is equal/similar to 25 (INTERNAL_DNS_DOMAIN) */
-                    $result['25'] = (string)$item;
+                    $result['25'] = str_replace(' ', ',', (string)$item);
                     $result[$target_key] = (string)$item;
                 } else {
                     $result[$target_key] = (string)$item;
