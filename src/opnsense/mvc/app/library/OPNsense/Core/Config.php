@@ -348,6 +348,7 @@ class Config extends Singleton
             // in case there are no backups, restore defaults.
             $logger->error(gettext('No valid config.xml found, attempting to restore factory config.'));
             $this->restoreBackup('/usr/local/etc/config.xml');
+            chown('/conf/config.xml', 'wwwonly');   /* frontend owns file */
         }
     }
 

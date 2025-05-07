@@ -68,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['user_allow_gen_token'] = isset($config['system']['user_allow_gen_token']) ? explode(",", $config['system']['user_allow_gen_token']) : [];
     $pconfig['nodnsrebindcheck'] = isset($config['system']['webgui']['nodnsrebindcheck']);
     $pconfig['nohttpreferercheck'] = isset($config['system']['webgui']['nohttpreferercheck']);
+    $pconfig['noroot'] = isset($config['system']['webgui']['noroot']);
     $pconfig['althostnames'] = $config['system']['webgui']['althostnames'] ?? null;
     $pconfig['serialspeed'] = $config['system']['serialspeed'];
     $pconfig['serialusb'] = !empty($config['system']['serialusb']);
@@ -171,6 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['compression'] != $pconfig['compression'] ||
             $config['system']['webgui']['ssl-ciphers'] != $newciphers ||
             $config['system']['webgui']['interfaces'] != $newinterfaces ||
+            empty($config['system']['webgui']['noroot']) != empty($pconfig['noroot']) ||
             empty($pconfig['httpaccesslog']) != empty($config['system']['webgui']['httpaccesslog']) ||
             empty($pconfig['ssl-hsts']) != empty($config['system']['webgui']['ssl-hsts']) ||
             !empty($pconfig['disablehttpredirect']) != !empty($config['system']['webgui']['disablehttpredirect']) ||
@@ -278,6 +280,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['nohttpreferercheck'] = true;
         } elseif (isset($config['system']['webgui']['nohttpreferercheck'])) {
             unset($config['system']['webgui']['nohttpreferercheck']);
+        }
+
+        if (!empty($pconfig['noroot'])) {
+            $config['system']['webgui']['noroot'] = true;
+        } elseif (isset($config['system']['webgui']['noroot'])) {
+            unset($config['system']['webgui']['noroot']);
         }
 
         if (!empty($pconfig['althostnames'])) {
@@ -1076,6 +1084,16 @@ $(document).ready(function() {
                   </select>
                   <div class="hidden" data-for="help_for_deployment">
                     <?=gettext("Set the deployment type of this OPNsense instance.");?></br>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_noroot" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Strict security"); ?></td>
+                <td>
+                  <input name="noroot" type="checkbox" value="yes" <?= empty($pconfig['noroot']) ? '' : 'checked="checked"' ?> />
+                  <?=gettext("(Experimental)"); ?>
+                  <div class="hidden" data-for="help_for_noroot">
+                    <?=gettext("Stricten security by running the webserver as non root user, not all components may be compatible with this feature.") ?>
                   </div>
                 </td>
               </tr>
