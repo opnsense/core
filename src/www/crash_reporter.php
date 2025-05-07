@@ -33,10 +33,10 @@ require_once 'guiconfig.inc';
 function has_crash_report()
 {
     $skip_files = ['.', '..', 'minfree', 'bounds', ''];
-    $PHP_errors_log = '/tmp/PHP_errors.log';
+    $PHP_errors_log = '/var/lib/php/tmp/PHP_errors.log';
     $count = 0;
 
-    if (file_exists($PHP_errors_log) && !is_link('/tmp/PHP_errors.log')) {
+    if (file_exists($PHP_errors_log) && !is_link($PHP_errors_log)) {
         if (intval(shell_safe('/bin/cat %s | /usr/bin/wc -l | /usr/bin/awk \'{ print $1 }\'', $PHP_errors_log))) {
             $count++;
         }
@@ -150,10 +150,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             file_put_contents('/var/crash/crashreport_header.txt', $crash_report_header);
-            if (file_exists('/tmp/PHP_errors.log')) {
+            if (file_exists('/var/lib/php/tmp/PHP_errors.log')) {
                 // limit PHP_errors to send to 1MB
-                exec('/usr/bin/tail -c 1048576 /tmp/PHP_errors.log > /var/crash/PHP_errors.log');
-                @unlink('/tmp/PHP_errors.log');
+                exec('/usr/bin/tail -c 1048576 /var/lib/php/tmp/PHP_errors.log > /var/crash/PHP_errors.log');
+                @unlink('/var/lib/php/tmp/PHP_errors.log');
             }
             @copy('/var/run/dmesg.boot', '/var/crash/dmesg.boot');
             exec('/usr/bin/gzip /var/crash/*');
@@ -171,7 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         foreach ($files_to_upload as $file_to_upload) {
             @unlink($file_to_upload);
         }
-        @unlink('/tmp/PHP_errors.log');
+        @unlink('/var/lib/php/tmp/PHP_errors.log');
     } elseif ($pconfig['Submit'] == 'new') {
           /* force a crash report generation */
           $has_crashed = true;
@@ -184,21 +184,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if ($has_crashed) {
     $crash_files = glob("/var/crash/*");
     $crash_reports['System Information'] = trim($crash_report_header);
-    if (file_exists('/tmp/PHP_errors.log') && !is_link('/tmp/PHP_errors.log')) {
-        $php_errors_size = @filesize('/tmp/PHP_errors.log');
+    if (file_exists('/var/lib/php/tmp/PHP_errors.log') && !is_link('/var/lib/php/tmp/PHP_errors.log')) {
+        $php_errors_size = @filesize('/var/lib/php/tmp/PHP_errors.log');
         $max_php_errors_size = 1 * 1024 * 1024;
         // limit reporting for PHP_errors.log to $max_php_errors_size characters
         if ($php_errors_size > $max_php_errors_size) {
             // if file is to large, only display last $max_php_errors_size characters
             $php_errors .= @file_get_contents(
-                          '/tmp/PHP_errors.log',
+                          '/var/lib/php/tmp/PHP_errors.log',
                           NULL,
                           NULL,
                           ($php_errors_size - $max_php_errors_size),
                           $max_php_errors_size
             );
         } else {
-            $php_errors = @file_get_contents('/tmp/PHP_errors.log');
+            $php_errors = @file_get_contents('/var/lib/php/tmp/PHP_errors.log');
         }
         if (!empty($php_errors)) {
             $crash_reports['PHP Errors'] = trim($php_errors);

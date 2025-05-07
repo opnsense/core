@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2024 Deciso B.V.
+ * Copyright (C) 2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,23 +26,32 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once 'AppConfig.php';
+namespace OPNsense\System\Status;
 
-return new OPNsense\Core\AppConfig([
-    'application' => [
-        'controllersDir' => __DIR__ . '/../../app/controllers/',
-        'modelsDir'      => __DIR__ . '/../../app/models/',
-        'viewsDir'       => __DIR__ . '/../../app/views/',
-        'pluginsDir'     => __DIR__ . '/../../app/plugins/',
-        'libraryDir'     => __DIR__ . '/../../app/library/',
-        'cacheDir'       => '/var/lib/php/cache/',
-        'contribDir'     => __DIR__ . '/../../../contrib/',
-        'baseUri'        => '/opnsense_gui/',
-    ],
-    'globals' => [
-        'config_path'    => '/conf/',
-        'temp_path'      => '/tmp/',
-        'debug'          => false,
-        'simulate_mode'  => false,
-    ],
-]);
+use OPNsense\System\AbstractStatus;
+use OPNsense\System\SystemStatusCode;
+use OPNsense\Core\Config;
+
+class RootLockStatus extends AbstractStatus
+{
+    public function __construct()
+    {
+        $this->internalPriority = 2;
+        $this->internalPersistent = true;
+        $this->internalIsBanner = true;
+        $this->internalTitle = gettext('Root lock');
+    }
+
+    public function collectStatus()
+    {
+        $file = '/var/run/www_non_root';
+        if (!(file_exists($file) && empty(Config::getInstance()->object()->system->webgui->noroot))) {
+            return;
+        }
+        $this->internalStatus = SystemStatusCode::ERROR;
+        $this->internalMessage = sprintf(gettext(
+            'Strict security mode disabled, but requires "%s" to be removed manually from disk. ' .
+            'Refusing to run as root in the meantime.'
+        ), $file);
+    }
+}
