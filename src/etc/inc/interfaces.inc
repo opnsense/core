@@ -214,7 +214,7 @@ function _interfaces_bridge_configure($bridge, $ifconfig_details = null)
     }
     $this_if = !empty($ifconfig_details[$bridgeif]) ? $ifconfig_details[$bridgeif] : [];
 
-    if (empty($ifconfig_details[$bridgeif]) && empty(legacy_interface_create($bridgeif))) {
+    if (empty($ifconfig_details[$bridgeif]) && empty(legacy_interface_create('bridge', $bridgeif))) {
         /* not found, unable to create. errors are logged inside legacy_interface_create() */
         return null;
     }
