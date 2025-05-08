@@ -34,7 +34,6 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("plugins.inc.d/dhcpd.inc");
 
-
 function show_track6_form($if)
 {
   global $config;
