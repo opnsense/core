@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2023 Deciso B.V.
+ * Copyright (C) 2023-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,23 +28,40 @@
 
 function kea_services()
 {
-
     $services = [];
-    if (
-        !empty((string)(new \OPNsense\Kea\KeaDhcpv4())->general->enabled) ||
-        !empty((string)(new \OPNsense\Kea\KeaDhcpv6())->general->enabled)
-    ) {
-        $services[] = [
-            'description' => gettext('KEA DHCP server'),
-            'pidfile' => '/var/run/kea/kea-ctrl-agent.kea-ctrl-agent.pid',
-            'configd' => [
-                'restart' => ['kea restart'],
-                'start' => ['kea start'],
-                'stop' => ['kea stop'],
-            ],
-            'name' => 'kea-dhcp',
-        ];
+    $template = [
+        'configd' => [
+            'restart' => ['kea restart'],
+            'start' => ['kea start'],
+            'stop' => ['kea stop'],
+        ],
+        'name' => 'kea-dhcp',
+    ];
+
+    if (!(new \OPNsense\Kea\KeaDhcpv4())->general->enabled->isEmpty()) {
+        $service = $template;
+        $service['description'] = gettext('KEA DHCPv4 server');
+        $service['pidfile'] = '/var/run/kea/kea-dhcp4.kea-dhcp4.pid';
+        $service['id'] = 'v4';
+        $services[] = $service;
     }
+
+    if (!(new \OPNsense\Kea\KeaDhcpv6())->general->enabled->isEmpty()) {
+        $service = $template;
+        $service['description'] = gettext('KEA DHCPv6 server');
+        $service['pidfile'] = '/var/run/kea/kea-dhcp6.kea-dhcp6.pid';
+        $service['id'] = 'v6';
+        $services[] = $service;
+    }
+
+    if (!(new \OPNsense\Kea\KeaCtrlAgent())->general->enabled->isEmpty()) {
+        $service = $template;
+        $service['pidfile'] = '/var/run/kea/kea-ctrl-agent.kea-ctrl-agent.pid';
+        $service['description'] = gettext('KEA control agent');
+        $service['id'] = 'ca';
+        $services[] = $service;
+    }
+
     return $services;
 }
 
