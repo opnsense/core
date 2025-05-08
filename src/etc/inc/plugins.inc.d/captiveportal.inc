@@ -135,21 +135,25 @@ function captiveportal_firewall($fw)
                         ]
                     );
 
-                    // Allow access to the captive portal
-                    $proto = $to_port === '443' ? 'https' : 'http';
-                    $fw->registerFilterRule(
+                    // Duplicate the above rule, but for direct access to the captive portal zone
+                    $fw->registerForwardRule(
                         2,
                         [
-                            'type' => 'pass',
                             'interface' => $intf,
+                            'pass' => true,
+                            'nordr' => false,
+                            'ipprotocol' => 'inet',
                             'protocol' => 'tcp',
-                            'direction' => 'in',
-                            'from' => 'any',
-                            'to' => '(self)',
+                            'from' => "<__captiveportal_zone_{$zoneid}>",
+                            'from_not' => true,
+                            'to' => "<__captiveportal_zone_{$zoneid}>",
+                            'to_not' => true,
                             'to_port' => $rdr_port,
-                            'descr' => "Allow access to Captive Portal ({$proto}, zone {$zoneid})",
-                            'log' => !isset($config['syslog']['nologdefaultpass']),
-                            '#ref' => "ui/captiveportal#edit={$uuid}",
+                            'target' => '127.0.0.1',
+                            'localport' => $rdr_port,
+                            'natreflection' => 'disable',
+                            'descr' => "Redirect to Captive Portal (zone {$zoneid})",
+                            '#ref' => "ui/captiveportal#edit={$uuid}"
                         ]
                     );
                 }
