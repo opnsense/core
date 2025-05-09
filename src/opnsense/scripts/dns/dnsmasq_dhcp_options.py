@@ -38,8 +38,11 @@ result = {}
 
 # not yet registered by name, but pratical to have
 # https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml
+# https://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xhtml
 if args.mode == "dhcp":
     result['114'] = 'dhcp captive-portal [114]'
+elif args.mode == "dhcp6":
+    result['103'] = 'dhcp captive-portal [103]'
 
 sp = subprocess.run(['/usr/local/sbin/dnsmasq', '--help', args.mode], capture_output=True, text=True)
 for line in sp.stdout.split("\n"):
