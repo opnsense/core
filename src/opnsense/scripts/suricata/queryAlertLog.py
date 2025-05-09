@@ -122,9 +122,5 @@ if __name__ == '__main__':
                         # do not fetch data until end of file...
                         break
 
-                # only try to fetch one line when filepos is given
-                if log_start_pos is not None:
-                    break
-
     # output results
     print(ujson.dumps(result))
