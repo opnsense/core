@@ -584,11 +584,8 @@ class OpenVPN extends BaseModel
                             $masklong = ip2long($mask);
                             $ip1 = long2ip32((ip2long32($parts[0]) & $masklong) + ($masklong == 0xfffffffe ? 0 : 1));
                             $ip2 = long2ip32((ip2long32($parts[0]) & $masklong) + ($masklong == 0xfffffffe ? 1 : 2));
-                            $ip3 = long2ip32((ip2long32($parts[0]) & $masklong) + ($masklong == 0xfffffffe ? 2 : 3));
-                            $options['mode'] = 'server';
                             $options['tls-server'] = null;
                             $options['ifconfig'] = "{$ip1} {$ip2}";
-                            $options['ifconfig-pool'] = "{$ip2} {$ip3}";
                         } else {
                             $options['server'] = $parts[0] . " " . $mask;
                         }
@@ -611,16 +608,20 @@ class OpenVPN extends BaseModel
                     if (!empty((string)$node->username_as_common_name)) {
                         $options['username-as-common-name'] = null;
                     }
-                    $options['client-config-dir'] = "/var/etc/openvpn-csc/{$node->vpnid}";
+                    if (!(string)$node->topology == 'p2p') {
+                        $options['client-config-dir'] = "/var/etc/openvpn-csc/{$node->vpnid}";
+                    }
                     // hook event handlers
                     if (!empty((string)$node->authmode)) {
                         $options['auth-user-pass-verify'] = "\"{$event_script} --defer '{$node_uuid}'\" via-env";
                         $options['learn-address'] =  "\"{$event_script} '{$node->vpnid}'\"";
-                    } else {
+                    } else if (!(string)$node->topology == 'p2p') {
                         // client specific profiles are being deployed using the connect event when no auth is used
                         $options['client-connect'] = "\"{$event_script} '{$node_uuid}'\"";
                     }
-                    $options['client-disconnect'] = "\"{$event_script} '{$node_uuid}'\"";
+                    if (!(string)$node->topology == 'p2p') {
+                        $options['client-disconnect'] = "\"{$event_script} '{$node_uuid}'\"";
+                    }
                     $options['tls-verify'] = "\"{$event_script} '{$node_uuid}'\"";
 
                     if (!empty((string)$node->maxclients)) {
