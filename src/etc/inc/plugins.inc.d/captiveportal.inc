@@ -135,7 +135,29 @@ function captiveportal_firewall($fw)
                         ]
                     );
 
-                    // Allow access to the captive portal
+                    // now do the same for ipv6
+                    $fw->registerForwardRule(
+                        2,
+                        [
+                            'interface' => $intf,
+                            'pass' => true,
+                            'nordr' => false,
+                            'ipprotocol' => 'inet6',
+                            'protocol' => 'tcp',
+                            'from' => "<__captiveportal_zone_{$zoneid}>",
+                            'from_not' => true,
+                            'to' => "<__captiveportal_zone_{$zoneid}>",
+                            'to_not' => true,
+                            'to_port' => $to_port,
+                            'target' => '::1',
+                            'localport' => $rdr_port,
+                            'natreflection' => 'disable',
+                            'descr' => "Redirect to Captive Portal (zone {$zoneid})",
+                            '#ref' => "ui/captiveportal#edit={$uuid}"
+                        ]
+                    );
+
+                    // Allow access to the captive portal (ipv4 + ipv6)
                     $proto = $to_port === '443' ? 'https' : 'http';
                     $fw->registerFilterRule(
                         2,
