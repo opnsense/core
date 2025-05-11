@@ -164,6 +164,8 @@
 /usr/local/libexec/opnsense-auth
 /usr/local/opnsense/contrib/IXR/IXR_Library.php
 /usr/local/opnsense/contrib/base32/Base32.php
+/usr/local/opnsense/contrib/iana/dhcpv4-options.csv
+/usr/local/opnsense/contrib/iana/dhcpv6-parameters-2.csv
 /usr/local/opnsense/contrib/iana/tzdata-iso3166.tab
 /usr/local/opnsense/contrib/iana/tzdata-zone.tab
 /usr/local/opnsense/contrib/mobile-broadband-provider-info/serviceproviders.xml
