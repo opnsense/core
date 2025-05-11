@@ -196,7 +196,7 @@ class IPsec extends BaseModel
 
             if ($item->isContainer()) {
                 $result[$target_key] = $this->traverseItems($item);
-            } elseif (is_a($item, "OPNsense\\Base\\FieldTypes\\BooleanField")) {
+            } elseif (is_a($item, "OPNsense\\Base\\FieldTypes\\BooleanField") && !$is_numeric) {
                 $result[$target_key] = !empty((string)$item) ? 'yes' : 'no';
             } elseif (is_a($item, "OPNsense\\Base\\FieldTypes\\AuthenticationServerField")) {
                 $servers = [];
