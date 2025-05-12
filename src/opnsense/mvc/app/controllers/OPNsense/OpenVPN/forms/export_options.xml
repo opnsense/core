@@ -58,6 +58,13 @@
         <help>Sets auth-nocache in the exported configuration when password authentication is used. This prevents OpenVPN from caching passwords in memory.</help>
     </field>
     <field>
+        <id>openvpn_export.static_challenge</id>
+        <label>Enable static challenge (OTP)</label>
+        <type>checkbox</type>
+        <style>export_option</style>
+        <help>Ask the user for its one time password token separately (instead of as part the password).</help>
+    </field>
+    <field>
         <id>openvpn_export.plain_config</id>
         <label>Custom config</label>
         <style>export_option</style>

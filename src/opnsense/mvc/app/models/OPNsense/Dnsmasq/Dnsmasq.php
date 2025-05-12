@@ -31,6 +31,7 @@ namespace OPNsense\Dnsmasq;
 use OPNsense\Base\BaseModel;
 use OPNsense\Base\Messages\Message;
 use OPNsense\Core\Backend;
+use OPNsense\Firewall\Util;
 
 /**
  * Class Dnsmasq
@@ -55,24 +56,46 @@ class Dnsmasq extends BaseModel
 
         $messages = parent::performValidation($validateFullModel);
 
+        $usedDhcpIpAddresses = [];
+        foreach ($this->hosts->iterateItems() as $host) {
+            if (!$host->hwaddr->isEmpty() || !$host->client_id->isEmpty()) {
+                foreach (explode(',', (string)$host->ip) as $ip) {
+                    $usedDhcpIpAddresses[$ip] = isset($usedDhcpIpAddresses[$ip]) ? $usedDhcpIpAddresses[$ip] + 1 : 1;
+                }
+            }
+        }
+
         foreach ($this->hosts->iterateItems() as $host) {
             if (!$validateFullModel && !$host->isFieldChanged()) {
                 continue;
             }
             $key = $host->__reference;
-            if (!$host->hwaddr->isEmpty() && strpos($host->ip->getCurrentValue(), ':') !== false) {
-                $messages->appendMessage(
-                    new Message(
-                        gettext("Only IPv4 reservations are currently supported"),
-                        $key . ".ip"
-                    )
-                );
+
+            // all dhcp-host IP addresses must be unique, host overrides can have duplicate IP addresses
+            if (!$host->hwaddr->isEmpty() || !$host->client_id->isEmpty()) {
+                foreach (explode(',', (string)$host->ip) as $ip) {
+                    if ($usedDhcpIpAddresses[$ip] > 1) {
+                        $messages->appendMessage(
+                            new Message(
+                                sprintf(gettext("'%s' is already used in another DHCP host entry."), $ip),
+                                $key . ".ip"
+                            )
+                        );
+                    }
+                }
             }
 
-            if ($host->host->isEmpty() && $host->hwaddr->isEmpty()) {
+            if (
+                $host->host->isEmpty() &&
+                $host->hwaddr->isEmpty() &&
+                $host->client_id->isEmpty()
+            ) {
                 $messages->appendMessage(
                     new Message(
-                        gettext("Hostnames my only be omitted when a hardware address is offered."),
+                        gettext(
+                            "Hostnames may only be omitted when either a hardware address " .
+                            "or a client identifier is provided."
+                        ),
                         $key . ".host"
                     )
                 );
@@ -152,7 +175,16 @@ class Dnsmasq extends BaseModel
                 );
             }
 
-            if (in_array('static', explode(',', $range->mode)) && $start_inet == 'inet6') {
+            $is_static = in_array('static', explode(',', $range->mode));
+            if (!$range->end_addr->isEmpty() && $is_static) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("Static only accepts a starting address."),
+                        $key . ".end_addr"
+                    )
+                );
+            }
+            if ($is_static && $start_inet == 'inet6') {
                 $messages->appendMessage(
                     new Message(
                         gettext("Static is only available IPv4."),
@@ -228,30 +260,34 @@ class Dnsmasq extends BaseModel
                     )
                 );
             }
-        }
 
-        foreach ($this->dhcp_options_match->iterateItems() as $match) {
-            if (!$validateFullModel && !$match->isFieldChanged()) {
-                continue;
-            }
-            $key = $match->__reference;
-
-            if (!$match->option->isEmpty() && !$match->option6->isEmpty()) {
+            if ($option->type == 'match' && $option->set_tag->isEmpty()) {
                 $messages->appendMessage(
                     new Message(
-                        gettext("'Option' and 'Option6' cannot be selected at the same time."),
-                        $key . ".option"
+                        gettext("When type is 'Match', a tag must be set."),
+                        $key . ".set_tag"
                     )
                 );
             }
 
-            if ($match->option->isEmpty() && $match->option6->isEmpty()) {
-                $messages->appendMessage(
-                    new Message(
-                        gettext("Either 'Option' or 'Option6' is required."),
-                        $key . ".option"
-                    )
-                );
+            if (
+                !$option->value->isEmpty() &&
+                !$option->option6->isEmpty()
+            ) {
+                $values = array_map('trim', explode(',', (string)$option->value));
+                foreach ($values as $value) {
+                    if (
+                        Util::isIpv6Address(trim($value, '[]')) &&
+                        !(str_starts_with($value, '[') && str_ends_with($value, ']'))
+                    ) {
+                        $messages->appendMessage(
+                            new Message(
+                                gettext("Each IPv6 address must be wrapped inside square brackets '[fe80::]'."),
+                                $key . ".value"
+                            )
+                        );
+                    }
+                }
             }
         }
 

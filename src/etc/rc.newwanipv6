@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2024 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2025 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2006 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -38,6 +38,8 @@ require_once("interfaces.inc");
 
 $argument = isset($argv[1]) ? trim($argv[1]) : '';
 $force = !empty($argv[2]) ? 'yes' : 'no';
+$family = 'inet6';
+$family_int = 6;
 
 exit_on_bootup(function ($argument) {
     log_msg("IP renewal deferred during boot on '{$argument}'");
@@ -46,7 +48,7 @@ exit_on_bootup(function ($argument) {
 
 if (empty($argument)) {
     $interface = 'wan';
-    $device = get_real_interface($interface, 'inet6');
+    $device = get_real_interface($interface, $family);
 } else {
     $interface = convert_real_interface_to_friendly_interface_name($argument);
     $device = $argument;
@@ -89,36 +91,35 @@ if (!is_ipaddr($ip)) {
 
 log_msg("IP renewal starting (address: {$ip}, interface: {$interface}, device: {$device})");
 
-interfaces_vips_configure($interface, 6);
+interfaces_vips_configure($interface, $family_int);
 
-$greifs = link_interface_to_gre($interface, true, 6);
-$gififs = link_interface_to_gif($interface, true, 6);
+$auxdevs = [];
 
-switch (isset($config['system']['ipv6allow']) ? ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') : 'none') {
-    case 'slaac':
-        /* require immediate reconfiguration before reconfiguring clients */
-        plugins_configure('dhcp', false, ['inet6']);
-        break;
-    default:
-        /*
-         * XXX We would like to discourage SLAAC addressing here but
-         * in reality this is highly ISP dependent and the kernel is
-         * not forthcoming in the quest as it likes to prefer this because
-         * it came first breaking some setups but making others work at
-         * the same time making it impractical to infer which setup we
-         * currently require.
-         */
-        break;
+/* find and reconfigure all linked devices which includes looking up tracked interfaces */
+foreach (array_merge([$interface], array_keys(link_interface_to_track6($interface))) as $allif) {
+    foreach (link_interface_to_gre($allif, true, $family_int) as $linked) {
+        $auxdevs[] = $linked;
+    }
+    foreach (link_interface_to_gif($allif, true, $family_int) as $linked) {
+        $auxdevs[] = $linked;
+    }
 }
 
-interfaces_restart_by_device(false, array_merge($greifs, $gififs));
+/* linked devices that are assigned need to be reconfigured now */
+interfaces_restart_by_device(false, $auxdevs);
+
+/*
+ * Interface reconfigure finished here so sync
+ * firewall groups in case of destroy/create use.
+ */
+ifgroup_setup();
 
 $interfaces = array_keys(link_interface_to_track6($interface, true));
 array_unshift($interfaces, $interface);
 
-system_routing_configure(false, $interfaces, true, 'inet6');
+system_routing_configure(false, $interfaces, true, $family);
 
 filter_configure_sync();
 
-plugins_configure('vpn', false, [$interfaces, 'inet6']);
-plugins_configure('newwanip', false, [$interfaces, 'inet6']);
+plugins_configure('vpn', false, [$interfaces, $family]);
+plugins_configure('newwanip', false, [$interfaces, $family]);

@@ -169,6 +169,16 @@
         </grid_view>
     </field>
     <field>
+        <id>rule.icmptype</id>
+        <label>ICMP type</label>
+        <type>select_multiple</type>
+        <hint>Any</hint>
+        <advanced>true</advanced>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
         <id>rule.source_not</id>
         <label>Invert Source</label>
         <type>checkbox</type>

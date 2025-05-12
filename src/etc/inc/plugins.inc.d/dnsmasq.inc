@@ -180,19 +180,22 @@ function _dnsmasq_add_host_entries()
     }
 
     foreach ($dnsmasqcfg['hosts'] as $host) {
-        if (!empty($host['host']) && empty($host['domain'])) {
-            $lhosts .= "{$host['ip']}\t{$host['host']}\n";
-        } elseif (!empty($host['host'])) {
-            /* XXX: The question is if we do want "host" as a global alias */
-            $lhosts .= "{$host['ip']}\t{$host['host']}.{$host['domain']} {$host['host']}\n";
-        }
-        if (!empty($host['aliases'])) {
-            foreach (explode(",", $host['aliases']) as $alias) {
-                /**
-                 * XXX: pre migration all hosts where added here as alias, when we combine host.domain we
-                 *      miss some information, which is likely not a very good idea anyway.
-                 */
-                $lhosts .= "{$host['ip']}\t{$alias}\n";
+        /* The host.ip field supports multiple IPv4 and IPv6 addresses */
+        foreach (explode(',', $host['ip']) as $ip) {
+            if (!empty($host['host']) && empty($host['domain'])) {
+                $lhosts .= "{$ip}\t{$host['host']}\n";
+            } elseif (!empty($host['host'])) {
+                /* XXX: The question is if we do want "host" as a global alias */
+                $lhosts .= "{$ip}\t{$host['host']}.{$host['domain']} {$host['host']}\n";
+            }
+            if (!empty($host['aliases'])) {
+                foreach (explode(",", $host['aliases']) as $alias) {
+                    /**
+                    * XXX: pre migration all hosts where added here as alias, when we combine host.domain we
+                    *      miss some information, which is likely not a very good idea anyway.
+                    */
+                    $lhosts .= "{$ip}\t{$alias}\n";
+                }
             }
         }
     }

@@ -196,15 +196,15 @@ class IPsec extends BaseModel
 
             if ($item->isContainer()) {
                 $result[$target_key] = $this->traverseItems($item);
-            } elseif (is_a($item, "OPNsense\\Base\\FieldTypes\\BooleanField")) {
+            } elseif (is_a($item, "OPNsense\\Base\\FieldTypes\\BooleanField") && !$is_numeric) {
                 $result[$target_key] = !empty((string)$item) ? 'yes' : 'no';
             } elseif (is_a($item, "OPNsense\\Base\\FieldTypes\\AuthenticationServerField")) {
                 $servers = [];
                 foreach (explode(',', (string)$item) as $item) {
                     $idx = 'server' . (string)(count($servers) + 1);
                     $mapping = [];
-                    if (isset($cnf->authserver)) {
-                        foreach ($cnf->authserver as $authserver) {
+                    if (isset($cnf->system->authserver)) {
+                        foreach ($cnf->system->authserver as $authserver) {
                             if ($authserver->name == $item) {
                                 $servers[$idx] = [
                                     'address' => (string)$authserver->host,
@@ -223,6 +223,10 @@ class IPsec extends BaseModel
                 if ($target_key == '28672') {
                     /* Unity login banner, needs to be wrapped? */
                     $result[$target_key] = '"' . str_replace(['\\', '"'], '', (string)$item) . '"';
+                } elseif ($target_key == '28675') {
+                    /* 28675 (splitdns name) is equal/similar to 25 (INTERNAL_DNS_DOMAIN) */
+                    $result['25'] = str_replace(' ', ',', (string)$item);
+                    $result[$target_key] = (string)$item;
                 } else {
                     $result[$target_key] = (string)$item;
                 }

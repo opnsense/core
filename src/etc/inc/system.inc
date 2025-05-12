@@ -112,7 +112,6 @@ function system_sysctl_defaults()
         'net.inet.udp.blackhole' => [ 'default' => '1' ],
         'net.inet.udp.checksum' => [ 'default' => 1 ],
         'net.inet.udp.maxdgram' => [ 'default' => '57344' ],
-        'net.inet6.ip6.accept_rtadv' => [ 'default' => isset($config['system']['ipv6allow']) ? '1' : '0' ],
         'net.inet6.ip6.forwarding' => [ 'default' => '1' ],
         'net.inet6.ip6.intr_queue_maxlen' => [ 'default' => '1000' ],
         'net.inet6.ip6.log_cannot_forward' => [ 'default' => '0' ],
@@ -285,22 +284,6 @@ function get_locale_list()
     return $locales;
 }
 
-function get_country_codes()
-{
-    $dn_cc = array();
-
-    $iso3166_tab = '/usr/local/opnsense/contrib/tzdata/iso3166.tab';
-    if (file_exists($iso3166_tab)) {
-        $dn_cc_file = file($iso3166_tab);
-        foreach ($dn_cc_file as $line) {
-            if (preg_match('/^([A-Z][A-Z])\t(.*)$/', $line, $matches)) {
-                $dn_cc[$matches[1]] = trim($matches[2]);
-            }
-        }
-    }
-    return $dn_cc;
-}
-
 function get_zoneinfo()
 {
     $zones = timezone_identifiers_list(DateTimeZone::ALL ^ DateTimeZone::UTC);
@@ -326,13 +309,17 @@ function get_searchdomains()
     }
 
     if (!empty($syscfg['dnssearchdomain'])) {
-        if ($syscfg['dnssearchdomain'] == '.') {
-            /* pass root only */
-            return [$syscfg['dnssearchdomain']];
-        }
+        $dnssds = array_unique(explode(',', $syscfg['dnssearchdomain']));
 
-        /* add custom search entries after default domain before potential provider entries */
-        $master_list[] = $syscfg['dnssearchdomain'];
+        foreach ($dnssds as $dnssd) {
+            if ($dnssd == '.') {
+                /* pass root only but including other manually set domains as is */
+                return $dnssds;
+            }
+
+            /* add custom search entries after default domain before potential provider entries */
+            $master_list[] = $dnssd;
+        }
     }
 
     if (!empty($syscfg['dnsallowoverride'])) {
@@ -672,8 +659,8 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
 
     $ifdetails = legacy_interfaces_details();
     $gateways = new \OPNsense\Routing\Gateways();
-    $down_gateways = isset($config['system']['gw_switch_default']) && $monitor !== 'ignore' ? return_down_gateways() : [];
     $routes = json_decode(configd_run('interface routes list -n json'), true) ?? [];
+    $down_gateways = [];
 
     foreach ($gateways->gatewaysIndexedByName() as $gateway) {
         /* check if we need to add a required interface route to the gateway (IPv4 only) */
@@ -691,7 +678,16 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
         system_interface_route($gateway, $routes);
     }
 
-    if (!empty($down_gateways)) {
+    if (isset($config['system']['gw_switch_default']) && $monitor !== 'ignore') {
+        foreach (return_gateways_status() as $gwname => $gwstatus) {
+            /* for clarity: this also matches 'force_down' */
+            if (strpos($gwstatus['status'], 'down') !== false) {
+                $down_gateways[] = $gwname;
+            }
+        }
+    }
+
+    if (count($down_gateways)) {
         log_msg(sprintf('ROUTING: ignoring down gateways: %s', implode(', ', $down_gateways)), LOG_DEBUG);
     }
 

@@ -108,6 +108,9 @@ function legacy_interface_create($ifs, $name = null)
 
         /* return new name here anyway to force proper device not found errors later */
         $new = $name;
+    } elseif (empty($new)) {
+        /* we are here but have no name which means it was passed via $ifs instead */
+        $new = $ifs;
     }
 
     return ($new);
@@ -501,6 +504,27 @@ function legacy_interfaces_details($intf = null)
                 $result[$current_interface]['vxlan']['group'] = null;
                 $result[$current_interface]["vxlan"]["remote"] = $line_parts[6];
             }
+        } elseif (preg_match("/member: (.*)\Wflags=\w+<(.*)>.*/", $line, $matches)) {
+            if (empty($result[$current_interface]["members"])) {
+                $result[$current_interface]["members"] = [];
+            }
+            $result[$current_interface]["members"][$matches[1]] = [
+                "flags" => explode(",", strtolower($matches[2]))
+            ];
+        } elseif (preg_match("/\tnd6 options=\w+<(.*)>/", $line, $matches)) {
+            $result[$current_interface]["nd6"] = [
+                "flags" => explode(",", strtolower($matches[1]))
+            ];
+        } elseif (preg_match("/\tid ([\w\:]+) priority (\d+) hellotime (\d+) fwddelay (\d+).*/", $line, $matches)) {
+            $result[$current_interface]["priority"] = $matches[2];
+            $result[$current_interface]["hellotime"] = $matches[3];
+            $result[$current_interface]["fwddelay"] = $matches[4];
+        } elseif (preg_match("/\tmaxage (\d+) holdcnt (\d+) proto (\w+) maxaddr (\d+) timeout (\d+).*/", $line, $matches)) {
+            $result[$current_interface]["maxage"] = $matches[1];
+            $result[$current_interface]["holdcnt"] = $matches[2];
+            $result[$current_interface]["proto"] = $matches[3];
+            $result[$current_interface]["maxaddr"] = $matches[4];
+            $result[$current_interface]["timeout"] = $matches[5];
         }
     }
 

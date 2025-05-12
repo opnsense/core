@@ -155,6 +155,7 @@
 /usr/local/etc/rc.syshook.d/upgrade/20-unbound-duckdb.py
 /usr/local/etc/rc.syshook.d/upgrade/90-cleanup.sh
 /usr/local/etc/ssh/sshd_config.d/README
+/usr/local/etc/ssl/ext_sources/README
 /usr/local/etc/ssl/opnsense.cnf
 /usr/local/etc/strongswan.opnsense.d/README
 /usr/local/etc/unbound.opnsense.d/README
@@ -285,7 +286,6 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Dnsmasq/LeasesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Dnsmasq/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Dnsmasq/forms/dialogDHCPboot.xml
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Dnsmasq/forms/dialogDHCPmatch.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Dnsmasq/forms/dialogDHCPoption.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Dnsmasq/forms/dialogDHCPrange.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Dnsmasq/forms/dialogDHCPtag.xml
@@ -366,6 +366,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogSPD.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogVTI.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/settings.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/BridgeSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/GifSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/GreSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/LaggSettingsController.php
@@ -375,6 +376,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VipSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VlanSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VxlanSettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/BridgeController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/GifController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/GreController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/LaggController.php
@@ -384,6 +386,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VipController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VlanController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VxlanController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogBridge.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogGif.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogGre.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogLagg.xml
@@ -394,14 +397,22 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVxlan.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/CtrlAgentController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/Dhcpv4Controller.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/Dhcpv6Controller.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/Leases4Controller.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/Leases6Controller.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/LeasesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/DhcpController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/agentSettings.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogPDPool6.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogPeer4.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogPeer6.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogReservation4.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogReservation6.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogSubnet4.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogSubnet6.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/generalSettings4.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/generalSettings6.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/Api/StatusController.php
@@ -761,6 +772,9 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Swanctl.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Swanctl.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Bridge.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Bridge.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/BridgeMemberField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/LaggInterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/LinkAddressField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/NeighborField.php
@@ -792,6 +806,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaCtrlAgent.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDhcpv4.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDhcpv4.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDhcpv6.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDhcpv6.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Menu/Menu.xml
@@ -925,6 +941,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/spd.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/tunnels.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/vti.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Interface/bridge.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/gif.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/gre.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/lagg.volt
@@ -936,7 +953,9 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vxlan.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Kea/ctrl_agent.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Kea/dhcpv4.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Kea/dhcpv6.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Kea/leases4.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Kea/leases6.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Monit/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Monit/status.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/cso.volt
@@ -1067,6 +1086,8 @@
 /usr/local/opnsense/scripts/dhcp/prefixes.sh
 /usr/local/opnsense/scripts/dhcp/unbound_watcher.py
 /usr/local/opnsense/scripts/dns/dnsmasq_dhcp_options.py
+/usr/local/opnsense/scripts/dns/iana-dhcpv4-options.csv
+/usr/local/opnsense/scripts/dns/iana-dhcpv6-parameters-2.csv
 /usr/local/opnsense/scripts/dns/query_dns.py
 /usr/local/opnsense/scripts/filter/delete_table.py
 /usr/local/opnsense/scripts/filter/download_geoip.py
@@ -1105,6 +1126,7 @@
 /usr/local/opnsense/scripts/firmware/bogons.sh
 /usr/local/opnsense/scripts/firmware/changelog.sh
 /usr/local/opnsense/scripts/firmware/check.sh
+/usr/local/opnsense/scripts/firmware/cleanup.sh
 /usr/local/opnsense/scripts/firmware/config.sh
 /usr/local/opnsense/scripts/firmware/connection.sh
 /usr/local/opnsense/scripts/firmware/details.sh
@@ -1184,6 +1206,7 @@
 /usr/local/opnsense/scripts/interfaces/ppp-linkup.sh
 /usr/local/opnsense/scripts/interfaces/ppp-rename.sh
 /usr/local/opnsense/scripts/interfaces/ppp-uptime.sh
+/usr/local/opnsense/scripts/interfaces/reconfigure_bridges.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_gifs.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_gres.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_laggs.php
@@ -1279,6 +1302,7 @@
 /usr/local/opnsense/scripts/syslog/streamLog.py
 /usr/local/opnsense/scripts/system/activity.py
 /usr/local/opnsense/scripts/system/bectl.py
+/usr/local/opnsense/scripts/system/cert_fetch_local.py
 /usr/local/opnsense/scripts/system/certctl.py
 /usr/local/opnsense/scripts/system/cpu.py
 /usr/local/opnsense/scripts/system/crl_fetch.py
@@ -2044,7 +2068,9 @@
 /usr/local/opnsense/www/css/jqtree.css
 /usr/local/opnsense/www/css/jquery.bootgrid.css
 /usr/local/opnsense/www/css/nv.d3.css
+/usr/local/opnsense/www/css/opnsense-bootgrid.css
 /usr/local/opnsense/www/css/pick-a-color-1.2.3.min.css
+/usr/local/opnsense/www/css/tabulator.min.css
 /usr/local/opnsense/www/css/tokenize2.css
 /usr/local/opnsense/www/fonts/FontAwesome.otf
 /usr/local/opnsense/www/fonts/glyphicons-halflings-regular.eot
@@ -2085,6 +2111,7 @@
 /usr/local/opnsense/www/js/nv.d3.min.js.LICENSE.md
 /usr/local/opnsense/www/js/opnsense-treeview.js
 /usr/local/opnsense/www/js/opnsense.js
+/usr/local/opnsense/www/js/opnsense_bootgrid.js
 /usr/local/opnsense/www/js/opnsense_bootgrid_plugin.js
 /usr/local/opnsense/www/js/opnsense_health.js
 /usr/local/opnsense/www/js/opnsense_status.js
@@ -2097,6 +2124,8 @@
 /usr/local/opnsense/www/js/polyfills.js
 /usr/local/opnsense/www/js/qrcode.js
 /usr/local/opnsense/www/js/smoothie.js
+/usr/local/opnsense/www/js/tabulator.min.js
+/usr/local/opnsense/www/js/tabulator.min.js.map
 /usr/local/opnsense/www/js/theme.js
 /usr/local/opnsense/www/js/tinycolor-1.4.1.min.js
 /usr/local/opnsense/www/js/tokenize2.js
@@ -2221,6 +2250,7 @@
 /usr/local/opnsense/www/themes/opnsense-dark/assets/stylesheets/dashboard.scss
 /usr/local/opnsense/www/themes/opnsense-dark/assets/stylesheets/dns-overview.scss
 /usr/local/opnsense/www/themes/opnsense-dark/assets/stylesheets/main.scss
+/usr/local/opnsense/www/themes/opnsense-dark/assets/stylesheets/opnsense-bootgrid.scss
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/bootstrap-dialog.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/bootstrap-select.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/dashboard.css
@@ -2228,6 +2258,7 @@
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/jquery.bootgrid.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/main.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/nv.d3.css
+/usr/local/opnsense/www/themes/opnsense-dark/build/css/opnsense-bootgrid.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/css/tokenize2.css
 /usr/local/opnsense/www/themes/opnsense-dark/build/fonts/LICENSE.SourceSansPro.txt
 /usr/local/opnsense/www/themes/opnsense-dark/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.eot
@@ -2342,9 +2373,11 @@
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/config/colors.scss
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/dashboard.scss
 /usr/local/opnsense/www/themes/opnsense/assets/stylesheets/main.scss
+/usr/local/opnsense/www/themes/opnsense/assets/stylesheets/opnsense-bootgrid.scss
 /usr/local/opnsense/www/themes/opnsense/build/css/bootstrap-dialog.css
 /usr/local/opnsense/www/themes/opnsense/build/css/dashboard.css
 /usr/local/opnsense/www/themes/opnsense/build/css/main.css
+/usr/local/opnsense/www/themes/opnsense/build/css/opnsense-bootgrid.css
 /usr/local/opnsense/www/themes/opnsense/build/fonts/LICENSE.SourceSansPro.txt
 /usr/local/opnsense/www/themes/opnsense/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.eot
 /usr/local/opnsense/www/themes/opnsense/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.otf
@@ -2412,8 +2445,6 @@
 /usr/local/www/index.php
 /usr/local/www/interfaces.php
 /usr/local/www/interfaces_assign.php
-/usr/local/www/interfaces_bridge.php
-/usr/local/www/interfaces_bridge_edit.php
 /usr/local/www/interfaces_ppps.php
 /usr/local/www/interfaces_ppps_edit.php
 /usr/local/www/interfaces_wireless.php

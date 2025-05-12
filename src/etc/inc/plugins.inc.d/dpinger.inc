@@ -292,6 +292,7 @@ function dpinger_run()
     return [
         'host_routes' => 'dpinger_host_routes',
         'return_gateways_status' => 'dpinger_status',
+        'return_gateways_watcher' => 'dpinger_watcher',
     ];
 }
 
@@ -311,6 +312,9 @@ function dpinger_status()
             'monitor' => !empty($gwitem['monitor']) ? $gwitem['monitor'] : '~',
             'gateway' => $gwitem['gateway'] ?? '',
             'monitor_killstates' => $gwitem['monitor_killstates'] ?? '0',
+            'monitor_killstates_priority' => $gwitem['monitor_killstates_priority'] ?? '0',
+            'priority' => $gwitem['priority'] ?? '255',
+            'ipprotocol' => $gwitem['ipprotocol'],
             'name' => $gwname,
             'stddev' => '~',
             'delay' => '~',
@@ -364,6 +368,24 @@ function dpinger_status()
     }
 
     return $status;
+}
+
+function dpinger_watcher()
+{
+    $cache_file = '/tmp/gateways.status';
+
+    if (file_exists($cache_file) && isvalidpid('/var/run/gateway_watcher.pid')) {
+        try {
+            $result = @unserialize(file_get_contents($cache_file));
+            if ($result !== false) {
+                return $result;
+            }
+        } catch (Throwable $e) {
+            /* empty result */
+        }
+    }
+
+    return [];
 }
 
 function dpinger_processes()

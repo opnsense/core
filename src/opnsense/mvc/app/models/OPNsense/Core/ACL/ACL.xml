@@ -273,17 +273,12 @@
         </patterns>
     </page-interfaces-assignnetworkports>
     <page-interfaces-bridge-edit>
-        <name>Interfaces: Bridge edit</name>
-        <patterns>
-            <pattern>interfaces_bridge_edit.php*</pattern>
-        </patterns>
-    </page-interfaces-bridge-edit>
-    <page-interfaces-bridge>
         <name>Interfaces: Bridge</name>
         <patterns>
-            <pattern>interfaces_bridge.php*</pattern>
+            <pattern>ui/interfaces/bridge</pattern>
+            <pattern>api/interfaces/bridge_settings/*</pattern>
         </patterns>
-    </page-interfaces-bridge>
+    </page-interfaces-bridge-edit>
     <page-interfaces-gif-edit>
         <name>Interfaces: GIF</name>
         <patterns>

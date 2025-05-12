@@ -26,20 +26,30 @@
     POSSIBILITY OF SUCH DAMAGE.
 
 """
+import csv
 import json
+import os
 import subprocess
 import argparse
+
+option_src = {
+    'dhcp': 'iana-dhcpv4-options.csv',  # https://www.iana.org/assignments/bootp-dhcp-parameters/
+    'dhcp6': 'iana-dhcpv6-parameters-2.csv' # https://www.iana.org/assignments/dhcpv6-parameters/
+}
 
 parser = argparse.ArgumentParser()
 parser.add_argument("mode", nargs="?", default="dhcp", choices=["dhcp", "dhcp6"])
 args = parser.parse_args()
 
 result = {}
-
-# not yet registered by name, but pratical to have
-# https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml
-if args.mode == "dhcp":
-    result['114'] = 'dhcp captive-portal [114]'
+# load iana specified per proto family, names will be overlayed when dnsmasq specifies them
+with open(os.path.dirname(__file__) + '/' + option_src[args.mode], 'r') as csvfile:
+    for r in csv.reader(csvfile, delimiter=',', quotechar='"'):
+        r_range = [int(x) for x in r[0].split('-') if x.isdigit()]
+        if len(r) > 2 and len(r_range) > 0 and r[1].lower() not in ['unassigned', 'removed/unassigned', 'pad', 'end']:
+            for code in range(r_range[0], (r_range[1] if len(r_range) >1 else r_range[0]) + 1):
+                if str(code) not in result:
+                    result[str(code)] =  "%s [%d]" % (r[1].replace("\n", ' ').lower(), code)
 
 sp = subprocess.run(['/usr/local/sbin/dnsmasq', '--help', args.mode], capture_output=True, text=True)
 for line in sp.stdout.split("\n"):

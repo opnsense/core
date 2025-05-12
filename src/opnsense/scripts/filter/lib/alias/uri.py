@@ -62,7 +62,7 @@ class UriParser(BaseContentParser):
             :return: iterator
         """
         # set request parameters
-        req_opts = {'url': url, 'stream': True, 'timeout': self._timeout}
+        req_opts = {'url': url, 'stream': True, 'timeout': self._timeout, 'headers': {'User-Agent': 'OPNsense'}}
         if self._ssl_no_verify:
             req_opts['verify'] = False
 
@@ -70,7 +70,7 @@ class UriParser(BaseContentParser):
             if self._authtype == 'Basic' and self._username is not None:
                 req_opts['auth'] = requests.auth.HTTPBasicAuth(self._username, self._password)
             elif self._authtype == 'Bearer':
-                req_opts['headers'] = {'Authorization': f'Bearer {self._password}'}
+                req_opts['headers']['Authorization'] = f'Bearer {self._password}'
 
         # fetch data
         try:
@@ -88,6 +88,7 @@ class UriParser(BaseContentParser):
                     for expr in [self._path_expression, ".%s" % self._path_expression]:
                         try:
                             jqc = jq.compile(expr)
+                            break
                         except Exception as e:
                             if jqc_exception is None:
                                 jqc_exception = e

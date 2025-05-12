@@ -85,6 +85,27 @@
                         <opt1 value='TCP/UDP'>TCP/UDP</opt1>
                     </AddOptions>
                 </protocol>
+                <icmptype type="OptionField">
+                    <Multiple>Y</Multiple>
+                    <OptionValues>
+                        <echoreq>Echo Request</echoreq>
+                        <echorep>Echo Reply</echorep>
+                        <unreach>Destination Unreachable</unreach>
+                        <squench>Source Quench (Deprecated)</squench>
+                        <redir>Redirect</redir>
+                        <althost>Alternate Host Address (Deprecated)</althost>
+                        <routeradv>Router Advertisement</routeradv>
+                        <routersol>Router Solicitation</routersol>
+                        <timex>Time Exceeded</timex>
+                        <paramprob>Parameter Problem</paramprob>
+                        <timereq>Timestamp</timereq>
+                        <timerep>Timestamp Reply</timerep>
+                        <inforeq>Information Request (Deprecated)</inforeq>
+                        <inforep>Information Reply (Deprecated)</inforep>
+                        <maskreq>Address Mask Request (Deprecated)</maskreq>
+                        <maskrep>Address Mask Reply (Deprecated)</maskrep>
+                    </OptionValues>
+                </icmptype>
                 <!-- XXX: should map internally to  'source' => array('network' => $source_net, "not" => true|false) -->
                 <source_net type="NetworkAliasField">
                     <Default>any</Default>

@@ -31,9 +31,9 @@ import ujson
 from lib.db import DB
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-zoneid', help='zone number to allow this user in', type=str, required=True)
-parser.add_argument('-sessionid', help='session id', type=str, required=True)
-parser.add_argument('-session_timeout', help='authentication source', type=str)
+parser.add_argument('--zoneid', help='zone number to allow this user in', type=str, required=True)
+parser.add_argument('--sessionid', help='session id', type=str, required=True)
+parser.add_argument('--session_timeout', help='authentication source', type=str)
 args = parser.parse_args()
 
 

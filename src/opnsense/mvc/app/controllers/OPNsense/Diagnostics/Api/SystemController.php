@@ -145,6 +145,7 @@ class SystemController extends ApiControllerBase
         $response = [
             'uptime' => $this->formatUptime(time() - $matches[1]),
             'datetime' => date("D M j G:i:s T Y"),
+            'boottime' => date("D M j G:i:s T Y", $matches[1]),
             'config' => $last_change,
             'loadavg' => $loadavg,
         ];

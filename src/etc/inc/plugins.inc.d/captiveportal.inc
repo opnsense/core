@@ -88,6 +88,10 @@ function captiveportal_firewall($fw)
             // register anchor, to be filled with ether rules for accounting
             $fw->registerAnchor("captiveportal_zone_{$zoneid}", "ether", 0, "head", false, (string)$zone->interfaces);
 
+            if (!$zone->disableRules->isEmpty()) {
+                continue;
+            }
+
             foreach (explode(',', $zone->interfaces) as $intf) {
                 // allow DNS
                 $fw->registerFilterRule(
@@ -120,10 +124,12 @@ function captiveportal_firewall($fw)
                             'protocol' => 'tcp',
                             'from' => "<__captiveportal_zone_{$zoneid}>",
                             'from_not' => true,
-                            'to' => 'any',
+                            'to' => "<__captiveportal_zone_{$zoneid}>",
+                            'to_not' => true,
                             'to_port' => $to_port,
                             'target' => '127.0.0.1',
                             'localport' => $rdr_port,
+                            'natreflection' => 'disable',
                             'descr' => "Redirect to Captive Portal (zone {$zoneid})",
                             '#ref' => "ui/captiveportal#edit={$uuid}"
                         ]
@@ -157,7 +163,8 @@ function captiveportal_firewall($fw)
                         'direction' => 'in',
                         'from' => "<__captiveportal_zone_{$zoneid}>",
                         'from_not' => true,
-                        'to' => 'any',
+                        'to' => "<__captiveportal_zone_{$zoneid}>",
+                        'to_not' => true,
                         'descr' => "Default Captive Portal block rule (zone {$zoneid})",
                         'log' => !isset($config['syslog']['nologdefaultblock']),
                         '#ref' => "ui/captiveportal#edit={$uuid}",

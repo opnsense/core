@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2023 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2023-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -36,10 +36,12 @@ import ujson
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--proto', help='protocol to fetch (inet, inet6)', default='inet', choices=['inet'])
+    parser.add_argument('--proto', help='protocol to fetch (inet, inet6)', default='inet', choices=['inet', 'inet6'])
     inputargs = parser.parse_args()
     if inputargs.proto == 'inet':
         filename = '/var/db/kea/kea-leases4.csv'
+    else:
+        filename = '/var/db/kea/kea-leases6.csv'
 
     ranges = {}
     this_interface = None

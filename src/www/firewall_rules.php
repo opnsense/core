@@ -233,10 +233,10 @@ function filter_rule_address($adr) {
       $result = [];
       $items = isset($adr['network']) ? $adr['network'] : ($adr['address'] ?? '');
       foreach (explode(',', $items) as $item) {
-          if (isset($specialnets[$item])) {
-            $result[] = $specialnets[$item];
-          } elseif (is_alias($item)) {
+          if (is_alias($item)) {
             $result[] = filter_rule_item_alias_tooltip($item);
+          } elseif(isset($specialnets[$item])) {
+            $result[] = $specialnets[$item];
           } else {
             $result[] = $item;
           }

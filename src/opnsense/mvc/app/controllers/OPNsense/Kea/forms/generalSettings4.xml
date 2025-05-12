@@ -1,13 +1,24 @@
 <form>
     <field>
         <type>header</type>
-        <label>General settings</label>
+        <label>Service</label>
     </field>
     <field>
         <id>dhcpv4.general.enabled</id>
         <label>Enabled</label>
         <type>checkbox</type>
         <help>Enable DHCPv4 server.</help>
+    </field>
+    <field>
+        <id>dhcpv4.general.manual_config</id>
+        <label>Manual config</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Disable configuration file generation and manage the file (/usr/local/etc/kea/kea-dhcp4.conf) manually.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>General settings</label>
     </field>
     <field>
         <id>dhcpv4.general.interfaces</id>

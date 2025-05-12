@@ -31,6 +31,7 @@ POSSIBILITY OF SUCH DAMAGE.
         $("#grid-arp").UIBootgrid({
           search:'/api/diagnostics/interface/search_arp/',
           options:{
+            virtualDOM: true,
             requestHandler: function(request){
                 request['resolve'] = $("#resolve").prop("checked") ? 'yes': 'no';
                 return request;
@@ -39,6 +40,10 @@ POSSIBILITY OF SUCH DAMAGE.
         });
         $("#resolve").change(function(){
             $('#grid-arp').bootgrid('reload');
+        });
+
+        $("#refresh").click(function() {
+            $("#grid-arp").bootgrid("reload");
         });
 
         $("#flushModal").click(function(event){

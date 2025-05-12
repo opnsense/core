@@ -75,8 +75,8 @@ class Action(BaseAction):
                             'filename': output_stream.name,
                             'expire': time.time() + self.cache_ttl
                         }
-                    subprocess.check_call(script_command, env=self.config_environment, shell=True,
-                                          stdout=output_stream, stderr=error_stream)
+                    subprocess.run(script_command, env=self.config_environment, shell=True,
+                                   check=not self.disable_errors, stdout=output_stream, stderr=error_stream)
                     output_stream.seek(0)
                     error_stream.seek(0)
                     script_output = output_stream.read()

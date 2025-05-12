@@ -124,21 +124,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if ($act == "del") {
-        // remove client
         $response = ["status" => "failed", "message" => gettext("not found")];
-        if (isset($id)) {
-            $vpn_id = !empty($a_client[$id]) ? $a_client[$id]['vpnid'] : null;
-            if ($vpn_id !== null && is_interface_assigned("ovpnc{$vpn_id}")) {
-                $response = [
-                    "status" => "failed",
-                    "message" => gettext("This tunnel cannot be deleted because it is still being used as an interface.")
-                ];
-            } elseif ($vpn_id !== null) {
-                openvpn_delete('client', $a_client[$id]);
-                unset($a_client[$id]);
-                write_config();
-                $response = ["status" => "ok"];
-            }
+        if (isset($id) && !empty($a_client[$id])) {
+            openvpn_delete('client', $a_client[$id]);
+            unset($a_client[$id]);
+            write_config();
+            $response = ["status" => "ok"];
         }
         echo json_encode($response);
         exit;
@@ -146,8 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['rule']) && is_array($pconfig['rule'])) {
             foreach ($pconfig['rule'] as $rulei) {
                 $vpn_id = !empty($a_client[$rulei]) ? $a_client[$rulei]['vpnid'] : null;
-                // XXX: silently ignore entries that can't be removed, no clean option to pass messages in form result
-                if ($vpn_id !== null && !is_interface_assigned("ovpnc{$vpn_id}")) {
+                if (!empty($a_client[$rulei])) {
                     openvpn_delete('client', $a_client[$rulei]);
                     unset($a_client[$rulei]);
                 }
@@ -639,13 +629,16 @@ $( document ).ready(function() {
               <select name="interface" class="form-control">
 <?php
               $interfaces = get_configured_interface_with_descr();
-              $carplist = get_configured_carp_interface_list();
-              foreach ($carplist as $cif => $carpip) {
-                  $interfaces[$cif.'|'.$carpip] = $carpip." (".get_vip_descr($carpip).")";
-              }
-              $aliaslist = get_configured_ip_aliases_list();
-              foreach ($aliaslist as $aliasip => $aliasif) {
-                  $interfaces[$aliasif.'|'.$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
+              foreach (config_read_array('virtualip', 'vip') as $vip) {
+                  $label = $vip['subnet'] . (empty($vip['descr']) ? '' : " ({$vip['descr']})");
+                  if ($vip['mode'] == 'carp') {
+                      $value = "{$vip['interface']}_vip{$vip['vhid']}";
+                  } elseif ($vip['mode'] == 'ipalias') {
+                      $value = $vip['interface'];
+                  } else {
+                      continue;
+                  }
+                  $interfaces["{$value}|{$vip['subnet']}"] = $label;
               }
               $interfaces['lo0'] = "Localhost";
               $interfaces['any'] = "any";

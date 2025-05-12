@@ -30,25 +30,51 @@
 require_once("guiconfig.inc");
 require_once("system.inc");
 
-$serviceproviders_xml = "/usr/local/opnsense/contrib/mobile-broadband-provider-info/serviceproviders.xml";
+use OPNsense\Core\AppConfig;
+
+$contribDir = (new AppConfig())->application->contribDir;
+$serviceproviders_xml = $contribDir . '/mobile-broadband-provider-info/serviceproviders.xml';
 $serviceproviders_contents = file_get_contents($serviceproviders_xml);
 $serviceproviders = simplexml_load_string($serviceproviders_contents);
+
+function get_country_codes()
+{
+    global $contribDir;
+
+    $dn_cc = [];
+
+    $iso3166_tab = $contribDir . '/tzdata/iso3166.tab';
+    if (file_exists($iso3166_tab)) {
+        $dn_cc_file = file($iso3166_tab);
+        foreach ($dn_cc_file as $line) {
+            if (preg_match('/^([A-Z][A-Z])\t(.*)$/', $line, $matches)) {
+                $dn_cc[$matches[1]] = trim($matches[2]);
+            }
+        }
+    }
+
+    return $dn_cc;
+}
 
 function get_country_providers($country)
 {
     global $serviceproviders;
+
     foreach($serviceproviders as $sp) {
         if ($sp->attributes()['code'] == strtolower($country)) {
             return $sp;
         }
     }
-    return array();
+
+    return [];
 }
 
 function country_list()
 {
     global $serviceproviders;
+
     $country_list = get_country_codes();
+
     foreach ($serviceproviders as $sp) {
         foreach($country_list as $code => $country) {
             if ($sp->attributes()['code'] == strtolower($code)) {
@@ -61,12 +87,14 @@ function country_list()
 function providers_list($country)
 {
     $serviceproviders = get_country_providers($country);
+
     foreach($serviceproviders as $sp) {
         echo (string)$sp->name . "\n";
     }
 }
 
-function provider_plan_data($country,$provider,$connection) {
+function provider_plan_data($country, $provider, $connection)
+{
     header("Content-type: application/xml;");
     echo "<?xml version=\"1.0\" ?>\n";
     echo "<connection>\n";
@@ -97,7 +125,8 @@ function provider_plan_data($country,$provider,$connection) {
     echo "</connection>";
 }
 
-function provider_plans_list($country,$provider) {
+function provider_plans_list($country, $provider)
+{
     $serviceproviders = get_country_providers($country);
     foreach($serviceproviders as $sp) {
         if (strtolower((string)$sp->name) == strtolower($provider)) {

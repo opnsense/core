@@ -60,9 +60,6 @@
                 case '#dhcpoptions':
                     grid_ids = ["{{formGridDHCPoption['table_id']}}", "{{formGridDHCPboot['table_id']}}"];
                     break;
-                case '#dhcpmatches':
-                    grid_ids = ["{{formGridDHCPmatch['table_id']}}"];
-                    break;
             }
             /* grid action selected, load or refresh target grid */
             if (grid_ids !== null) {
@@ -146,9 +143,10 @@
         let selected_tab = window.location.hash != "" ? window.location.hash : "#general";
         $('a[href="' +selected_tab + '"]').click();
 
-        $("#range\\.start_addr, #range\\.ra_mode").on("keyup change", function () {
+        $("#range\\.start_addr, #range\\.ra_mode, #option\\.type").on("keyup change", function () {
             const addr = $("#range\\.start_addr").val() || "";
             const ra_mode = String($("#range\\.ra_mode").val() || "").trim();
+            const option_type = String($("#option\\.type").val() || "")
 
             const styleVisibility = [
                 {
@@ -162,7 +160,15 @@
                 {
                     class: "style_ra",
                     visible: ra_mode !== ""
-                }
+                },
+                {
+                    class: "style_set",
+                    visible: option_type == "set"
+                },
+                {
+                    class: "style_match",
+                    visible: option_type == "match"
+                },
             ];
 
             styleVisibility.forEach(style => {
@@ -181,6 +187,41 @@
                     all_grids[grid_id].bootgrid('reload');
                 }
             });
+
+            $('#tag_select_icon')
+                .toggleClass('text-success fa-filter-circle-xmark', ($(this).val() || []).length > 0)
+                .toggleClass('fa-filter', !($(this).val() || []).length);
+
+        });
+
+        // Clear tag selectpicker
+        $('#tag_select_clear').on('click', function () {
+            $('#tag_select').selectpicker('val', []);
+            $('#tag_select').selectpicker('refresh');
+            $('#tag_select').trigger('change');
+        });
+
+        // Autofill interface/tag when add dialog is opened
+        $(
+            '#{{ formGridHostOverride["edit_dialog_id"] }}, ' +
+            '#{{ formGridDHCPrange["edit_dialog_id"] }}, ' +
+            '#{{ formGridDHCPoption["edit_dialog_id"] }}, ' +
+            '#{{ formGridDHCPboot["edit_dialog_id"] }}'
+        ).on('opnsense_bootgrid_mapped', function(e, actionType) {
+            if (actionType === 'add') {
+                const selectedTags = $('#tag_select').val();
+
+                if (selectedTags && selectedTags.length > 0) {
+                    $(
+                        '#host\\.set_tag, ' +
+                        '#range\\.interface, #range\\.set_tag, ' +
+                        '#option\\.interface, #option\\.tag, ' +
+                        '#boot\\.tag'
+                    )
+                    .selectpicker('val', selectedTags)
+                    .selectpicker('refresh');
+                }
+            }
         });
 
     });
@@ -190,8 +231,15 @@
     tbody.collapsible > tr > td:first-child {
         padding-left: 30px;
     }
+    #tag_select_clear {
+        border-right: none;
+    }
     #tag_select_container {
         margin-right: 20px;
+    }
+    #tag_select_container .bootstrap-select > .dropdown-toggle {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
     }
 </style>
 
@@ -209,6 +257,9 @@
 </div>
 
 <div id="tag_select_container" class="btn-group" style="display: none;">
+    <button type="button" id="tag_select_clear" class="btn btn-default" title="{{ lang._('Clear Selection') }}">
+        <i id="tag_select_icon" class="fa fa-fw fa-filter"></i>
+    </button>
     <select id="tag_select" class="selectpicker" multiple data-title="{{ lang._('Tags & Interfaces') }}" data-show-subtext="true" data-live-search="true" data-size="15" data-width="200px" data-container="body">
     </select>
 </div>
@@ -221,7 +272,6 @@
     <li><a data-toggle="tab" href="#dhcpranges">{{ lang._('DHCP ranges') }}</a></li>
     <li><a data-toggle="tab" href="#dhcpoptions">{{ lang._('DHCP options') }}</a></li>
     <li><a data-toggle="tab" href="#dhcptags">{{ lang._('DHCP tags') }}</a></li>
-    <li><a data-toggle="tab" href="#dhcpmatches">{{ lang._('DHCP options / match') }}</a></li>
 </ul>
 
 <div class="tab-content content-box">
@@ -251,10 +301,6 @@
     <div id="dhcptags" class="tab-pane fade in">
         {{ partial('layout_partials/base_bootgrid_table', formGridDHCPtag)}}
     </div>
-    <!-- Tab: DHCP Options / Match -->
-    <div id="dhcpmatches" class="tab-pane fade in">
-        {{ partial('layout_partials/base_bootgrid_table', formGridDHCPmatch)}}
-    </div>
 </div>
 
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/dnsmasq/service/reconfigure'}) }}
@@ -264,4 +310,3 @@
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditDHCPrange,'id':formGridDHCPrange['edit_dialog_id'],'label':lang._('Edit DHCP range')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditDHCPoption,'id':formGridDHCPoption['edit_dialog_id'],'label':lang._('Edit DHCP option')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditDHCPboot,'id':formGridDHCPboot['edit_dialog_id'],'label':lang._('Edit DHCP boot')])}}
-{{ partial("layout_partials/base_dialog",['fields':formDialogEditDHCPmatch,'id':formGridDHCPmatch['edit_dialog_id'],'label':lang._('Edit DHCP match / option')])}}

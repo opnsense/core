@@ -76,6 +76,14 @@ foreach ($fw->iterateFilterRules() as $prio => $item) {
         }
         $rule['action'] = $rule['action'] ?? 'pass';
         $rule['ipprotocol'] = $rule['ipprotocol'] ?? 'inet';
+        if (!empty($rule['from_not'])) {
+            unset($rule['from_not']);
+            $rule['source_not'] = true;
+        }
+        if (!empty($rule['to_not'])) {
+            unset($rule['destination_not']);
+            $rule['destination_not'] = true;
+        }
 
         /**
          * Evaluation order consists of a priority group and a sequence within the set,

@@ -187,9 +187,9 @@ function parse_xml_config_raw_attr($cffile, $rootobj, &$parsed_attributes, $isst
 
     $xml_parser = xml_parser_create();
 
-    xml_set_element_handler($xml_parser, "startElement_attr", "endElement_attr");
-    xml_set_character_data_handler($xml_parser, "cData_attr");
-    xml_parser_set_option($xml_parser,XML_OPTION_SKIP_WHITE, 1);
+    xml_set_element_handler($xml_parser, 'startElement_attr', 'endElement_attr');
+    xml_set_character_data_handler($xml_parser, 'cData_attr');
+    xml_parser_set_option($xml_parser, XML_OPTION_SKIP_WHITE, 1);
 
     if (!($fp = fopen($cffile, "r"))) {
         log_msg('Error: could not open XML input', LOG_ERR);
@@ -1656,9 +1656,8 @@ include("head.inc");
                           <td style="width:78%">
                             <input name="blockpriv" type="checkbox" id="blockpriv" value="yes" <?=!empty($pconfig['blockpriv']) ? "checked=\"checked\"" : ""; ?> />
                             <div class="hidden" data-for="help_for_blockpriv">
-                              <?=gettext("When set, this option blocks traffic from IP addresses that are reserved " .
-                                "for private networks as per RFC 1918 (10/8, 172.16/12, 192.168/16) as well as loopback " .
-                                "addresses (127/8) and Carrier-grade NAT addresses (100.64/10). This option should only " .
+                              <?=gettext("When set, this option blocks traffic from IP addresses that are reserved for private networks " .
+                                "as per RFC 1918 as well as loopback, link-local and Carrier-grade NAT addresses. This option should only " .
                                 "be set for WAN interfaces that use the public IP address space.") ?>
                             </div>
                           </td>
@@ -2523,7 +2522,6 @@ include("head.inc");
                                 case '6rd':
                                 case '6to4':
                                 case 'dhcp6':
-                                case 'slaac':
                                     break;
                                 default:
                                     continue 2;

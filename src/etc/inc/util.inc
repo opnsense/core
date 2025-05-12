@@ -32,7 +32,6 @@
 
 require_once 'IPv6.inc';
 
-/* XXX only two callers left, better remove this unreliable function */
 function killbyname($procname, $sig = 'TERM', $waitforit = true)
 {
     /* pgrep -n only kills the newest matching process */
@@ -636,41 +635,6 @@ function is_uniquelocal($ipaddr)
     return !!preg_match('/^fd[0-9a-f][0-9a-f]:/i', $ipaddr ?? '');
 }
 
-/* returns true if $ipaddr is a valid literal IPv6 address */
-function is_literalipaddrv6($ipaddr)
-{
-    if (preg_match('/\[([0-9a-f:]+)\]/i', $ipaddr, $match)) {
-        $ipaddr = $match[1];
-    } else {
-        return false;
-    }
-    return is_ipaddrv6($ipaddr);
-}
-
-function is_ipaddrwithport($ipport)
-{
-    $parts = explode(":", $ipport);
-    $port = array_pop($parts);
-    if (count($parts) == 1) {
-        return is_ipaddrv4($parts[0]) && is_port($port);
-    } elseif (count($parts) > 1) {
-        return is_literalipaddrv6(implode(":", $parts)) && is_port($port);
-    } else {
-        return false;
-    }
-}
-
-function is_hostnamewithport($hostport)
-{
-    $parts = explode(":", $hostport);
-    $port = array_pop($parts);
-    if (count($parts) == 1) {
-        return is_hostname($parts[0]) && is_port($port);
-    } else {
-        return false;
-    }
-}
-
 /* returns true if $ipaddr is a valid dotted IPv4 address or an alias thereof */
 function is_ipaddroralias($ipaddr)
 {
@@ -800,32 +764,6 @@ function is_inrange_v6($test, $start, $end)
 function is_inrange($test, $start, $end)
 {
     return is_ipaddrv6($test) ? is_inrange_v6($test, $start, $end) : is_inrange_v4($test, $start, $end);
-}
-
-function get_configured_carp_interface_list()
-{
-    $carp_list = [];
-
-    foreach (config_read_array('virtualip', 'vip') as $vip) {
-        if ($vip['mode'] == 'carp') {
-            $carp_list["{$vip['interface']}_vip{$vip['vhid']}"] = $vip['subnet'];
-        }
-    }
-
-    return $carp_list;
-}
-
-function get_configured_ip_aliases_list()
-{
-    $alias_list = [];
-
-    foreach (config_read_array('virtualip', 'vip') as $vip) {
-        if ($vip['mode'] == 'ipalias') {
-            $alias_list[$vip['subnet']] = $vip['interface'];
-        }
-    }
-
-    return $alias_list;
 }
 
 function get_configured_interface_with_descr()
@@ -1011,41 +949,6 @@ function is_alias($name)
     return \OPNsense\Firewall\Util::isAlias($name);
 }
 
-function subnet_size($subnet)
-{
-    if (is_subnetv4($subnet)) {
-        list ($ip, $bits) = explode("/", $subnet);
-        return round(exp(log(2) * (32 - $bits)));
-    } elseif (is_subnetv6($subnet)) {
-        list ($ip, $bits) = explode("/", $subnet);
-        return round(exp(log(2) * (128 - $bits)));
-    } else {
-        return 0;
-    }
-}
-
-/* find out whether two subnets overlap */
-function check_subnets_overlap($subnet1, $bits1, $subnet2, $bits2)
-{
-    if (!is_numeric($bits1)) {
-        $bits1 = 32;
-    }
-    if (!is_numeric($bits2)) {
-        $bits2 = 32;
-    }
-
-    if ($bits1 < $bits2) {
-        $relbits = $bits1;
-    } else {
-        $relbits = $bits2;
-    }
-
-    $sn1 = gen_subnet_mask_long($relbits) & ip2long($subnet1);
-    $sn2 = gen_subnet_mask_long($relbits) & ip2long($subnet2);
-
-    return ($sn1 == $sn2);
-}
-
 /* compare two IP addresses */
 function ipcmp($a, $b)
 {
@@ -1077,31 +980,14 @@ function ip_in_subnet($addr, $subnet)
     return false;
 }
 
-function is_private_ip($iptocheck)
+function is_private_ipv4($iptocheck)
 {
-    foreach (['10.0.0.0/8', '100.64.0.0/10', '172.16.0.0/12', '192.168.0.0/16'] as $private) {
+    foreach (['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16', '127.0.0.0/8', '100.64.0.0/10', '169.254.0.0/16'] as $private) {
         if (ip_in_subnet($iptocheck, $private) == true) {
             return true;
         }
     }
     return false;
-}
-
-function format_bytes($bytes)
-{
-    if ($bytes >= 1024 ** 5) {
-        return sprintf("%.2f PB", $bytes / (1024 ** 5));
-    } elseif ($bytes >= 1024 ** 4) {
-        return sprintf("%.2f TB", $bytes / (1024 ** 4));
-    } elseif ($bytes >= 1024 ** 3) {
-        return sprintf("%.2f GB", $bytes / (1024 ** 3));
-    } elseif ($bytes >= 1024 ** 2) {
-        return sprintf("%.2f MB", $bytes / (1024 ** 2));
-    } elseif ($bytes >= 1024) {
-        return sprintf("%.0f KB", $bytes / 1024);
-    } else {
-        return sprintf("%d bytes", $bytes);
-    }
 }
 
 /*
@@ -1328,28 +1214,4 @@ function dhcp6c_duid_clear()
     @unlink('/var/db/dhcp6c_duid');
     /* clear the backup so that it will not be restored: */
     @unlink('/conf/dhcp6c_duid');
-}
-
-/**
- * check if interface is assigned
- * @param $interface technical interface name
- * @return string interface name (lan, wan, optX)
- */
-function is_interface_assigned($interface)
-{
-    global $config;
-
-    foreach (legacy_config_get_interfaces() as $if => $intf) {
-        if (isset($intf['if']) && $intf['if'] == $interface) {
-            return true;
-        }
-    }
-    if (isset($config['vlans']['vlan'])) {
-        foreach ($config['vlans']['vlan'] as $vlan) {
-            if ($vlan['if'] == $interface) {
-                return true;
-            }
-        }
-    }
-    return false;
 }

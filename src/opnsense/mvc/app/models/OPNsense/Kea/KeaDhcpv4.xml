@@ -8,6 +8,7 @@
                 <Default>0</Default>
                 <Required>Y</Required>
             </enabled>
+            <manual_config type="BooleanField"/>
             <interfaces type="InterfaceField">
                 <Multiple>Y</Multiple>
             </interfaces>

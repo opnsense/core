@@ -49,13 +49,9 @@ $userindex = index_users();
  */
 function isAuthLocalIP($http_host)
 {
-    global $config;
-
-    if (isset($config['virtualip']['vip'])) {
-        foreach ($config['virtualip']['vip'] as $vip) {
-            if ($vip['subnet'] == $http_host) {
-                return true;
-            }
+    foreach (config_read_array('virtualip', 'vip') as $vip) {
+        if ($vip['subnet'] == $http_host) {
+            return true;
         }
     }
 
@@ -294,8 +290,9 @@ function local_sync_accounts()
 
     /* sync all local groups */
     if (is_array($config['system']['group'])) {
+        $uids = local_user_list_uids();
         foreach ($config['system']['group'] as $group) {
-            local_group_set($group);
+            local_group_set($group, $uids);
         }
     }
 }
@@ -454,6 +451,19 @@ function local_user_set_password(&$user, $password = null)
     }
 }
 
+/* collect a list of know uids */
+function local_user_list_uids()
+{
+    $uids = [];
+    foreach (explode("\n", shell_safe('/usr/sbin/pw usershow -a')) as $line) {
+        $parts = explode(":", $line);
+        if (count($parts) > 2) {
+            $uids[] = $parts[2];
+        }
+    }
+    return $uids;
+}
+
 function local_user_get_groups($user)
 {
     global $config;
@@ -480,10 +490,13 @@ function local_user_get_groups($user)
     return $groups;
 }
 
-function local_group_set($group)
+function local_group_set($group, $uids = null)
 {
     if (!isset($group['name']) || !isset($group['gid'])) {
         return;
+    }
+    if (empty($uids)) {
+        $uids = local_user_list_uids();
     }
 
     $group_name = $group['name'];
@@ -493,6 +506,9 @@ function local_group_set($group)
     if (!empty($group['member']) && count($group['member']) > 0) {
         $members = [];
         foreach ($group['member'] as $member) {
+            if (!in_array($member, $uids)) {
+                continue;
+            }
             $members = array_merge($members, explode(',', $member));
         }
         $group_members = implode(',', $members);

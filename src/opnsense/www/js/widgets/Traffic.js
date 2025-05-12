@@ -179,7 +179,7 @@ export default class Traffic extends BaseWidget {
                             dataset.hidden = !config.interfaces.includes(intf);
                         }
                         dataset.data.push({
-                            x: new Date(data.time * 1000.0),
+                            x: Date.now(),
                             y: Math.round(((data.interfaces[intf][dataset.src_field]) / elapsed_time) * 8, 0)
                         });
                         dataset.last_time = data.time;

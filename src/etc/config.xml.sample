@@ -81,9 +81,6 @@
       <track6-prefix-id>0</track6-prefix-id>
     </lan>
   </interfaces>
-  <unbound>
-    <enable>1</enable>
-  </unbound>
   <dnsmasq>
       <enable>1</enable>
       <port>0</port>
@@ -94,6 +91,9 @@
           <end_addr>192.168.1.199</end_addr>
       </dhcp_ranges>
   </dnsmasq>
+  <unbound>
+    <enable>1</enable>
+  </unbound>
   <snmpd>
     <syslocation/>
     <syscontact/>
