@@ -73,6 +73,17 @@
         </grid_view>
     </field>
     <field>
+        <id>instance.port-share</id>
+        <label>Port share</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <style>role role_server</style>
+        <help>Share OpenVPN TCP with another service. If OpenVPN senses a connection to its port which is using a non-OpenVPN protocol, it will proxy the connection to the server at host:port. Currently only designed to work with HTTP/HTTPS. Specified as address:port</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>instance.dev_type</id>
         <label>Type</label>
         <type>dropdown</type>

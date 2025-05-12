@@ -158,6 +158,12 @@ class OpenVPN extends BaseModel
                         $key . ".auth-gen-token-secret"
                     ));
                 }
+                if (!$instance->{'port-share'}->isEmpty() && strpos($instance->proto, 'tcp') === false) {
+                    $messages->appendMessage(new Message(
+                        gettext('Port sharing is only supported when using tcp.'),
+                        $key . ".port-share"
+                    ));
+                }
             }
             if (!empty((string)$instance->cert)) {
                 $tmp = Store::getCertificate((string)$instance->cert);
@@ -720,6 +726,11 @@ class OpenVPN extends BaseModel
                     if ((string)$node->$opt != '') {
                         $options[$opt] = str_replace(',', ':', (string)$node->$opt);
                     }
+                }
+                if (!$node->{'port-share'}->isEmpty()) {
+                    $parts = explode(':', $node->{'port-share'});
+                    $port = array_pop($parts);
+                    $options['port-share'] = sprintf('%s %s', implode(':', $parts), $port);
                 }
 
                 if (!empty((string)$node->various_flags)) {

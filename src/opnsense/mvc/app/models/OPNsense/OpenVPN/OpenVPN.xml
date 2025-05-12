@@ -130,8 +130,8 @@
                         <tcp6>TCP (IPv6)</tcp6>
                     </OptionValues>
                 </proto>
-                <port type="PortField">
-                </port>
+                <port type="PortField"/>
+                <port-share type="IPPortField"/>
                 <local type="NetworkField">
                     <WildcardEnabled>N</WildcardEnabled>
                     <NetMaskAllowed>N</NetMaskAllowed>
