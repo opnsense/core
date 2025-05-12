@@ -75,55 +75,57 @@ function kea_run()
 function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details = null)
 {
     $staticmap = [];
-    if ($proto == 6) {
-        $keamdl = new \OPNsense\Kea\KeaDhcpv6();
-    } else {
-        $keamdl = new \OPNsense\Kea\KeaDhcpv4();
-    }
-
-    if (empty((string)$keamdl->general->enabled)) {
-        /* not enabled */
-        return $staticmap;
-    }
-
-    foreach ($keamdl->reservations->reservation->iterateItems() as $reservation) {
-        $hostname = !empty((string)$reservation->hostname) ? (string)$reservation->hostname : null;
-        $ip_address = (string)$reservation->ip_address;
-        if ($valid_addresses) {
-            if (empty($ip_address) || empty($hostname)) {
-                continue;
-            } elseif (
-                filter_var((string)$reservation->hostname, FILTER_VALIDATE_DOMAIN) === false
-            ) {
-                syslog(
-                    LOG_WARNING,
-                    sprintf("KEA: refusing to register non standard hostname [%s]", $reservation->hostname)
-                );
-                continue;
-            }
+    foreach (empty($proto) ? [4,6] : [$proto] as $proto) {
+        if ($proto == 6) {
+            $keamdl = new \OPNsense\Kea\KeaDhcpv6();
+        } else {
+            $keamdl = new \OPNsense\Kea\KeaDhcpv4();
         }
 
-        $description = !empty((string)$reservation->description) ? (string)$reservation->description : null;
+        if (empty((string)$keamdl->general->enabled)) {
+            /* not enabled */
+            return $staticmap;
+        }
 
-        $domain = null;
-        if ($proto == 4) {
-            $subnet_node = $keamdl->getNodeByReference("subnets.subnet4.{$reservation->subnet}");
-            if ($subnet_node) {
-                if (!empty((string)$subnet_node->option_data->domain_name)) {
-                    $domain = (string)$subnet_node->option_data->domain_name;
+        foreach ($keamdl->reservations->reservation->iterateItems() as $reservation) {
+            $hostname = !empty((string)$reservation->hostname) ? (string)$reservation->hostname : null;
+            $ip_address = (string)$reservation->ip_address;
+            if ($valid_addresses) {
+                if (empty($ip_address) || empty($hostname)) {
+                    continue;
+                } elseif (
+                    filter_var((string)$reservation->hostname, FILTER_VALIDATE_DOMAIN) === false
+                ) {
+                    syslog(
+                        LOG_WARNING,
+                        sprintf("KEA: refusing to register non standard hostname [%s]", $reservation->hostname)
+                    );
+                    continue;
                 }
             }
+
+            $description = !empty((string)$reservation->description) ? (string)$reservation->description : null;
+
+            $domain = null;
+            if ($proto == 4) {
+                $subnet_node = $keamdl->getNodeByReference("subnets.subnet4.{$reservation->subnet}");
+                if ($subnet_node) {
+                    if (!empty((string)$subnet_node->option_data->domain_name)) {
+                        $domain = (string)$subnet_node->option_data->domain_name;
+                    }
+                }
+            }
+
+            $entry = [
+                'descr' => $description,
+                'domain' => $domain,
+                'hostname' => $hostname,
+                'interface' => null, /* XXX reservations are bound to "floating" subnets */
+                'ipaddr' => $ip_address,
+            ];
+
+            $staticmap[] = $entry;
         }
-
-        $entry = [
-            'descr' => $description,
-            'domain' => $domain,
-            'hostname' => $hostname,
-            'interface' => null, /* XXX reservations are bound to "floating" subnets */
-            'ipaddr' => $ip_address,
-        ];
-
-        $staticmap[] = $entry;
     }
 
     return $staticmap;
