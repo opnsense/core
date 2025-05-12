@@ -81,7 +81,7 @@ class OpenVPN extends BaseModel
                             new Message(gettext('At least one IPv4 or IPv6 tunnel network is required.'), $key . '.server_ipv6')
                         );
                     }
-                    if (!empty((string)$instance->server) && strpos((string)$instance->server, '/') !== false) {
+                    if (!$instance->server->isEmpty() && strpos((string)$instance->server, '/') !== false) {
                         if (
                             explode('/', (string)$instance->server)[1] > 29 && !(
                             (string)$instance->dev_type == 'tun' && (string)$instance->topology == 'p2p'
@@ -100,7 +100,7 @@ class OpenVPN extends BaseModel
                             gettext('When specifying a bridge gateway, a pool should also be provided.'),
                             $key . ".bridge_gateway"
                         ));
-                    } elseif (!empty((string)$instance->bridge_pool)) {
+                    } elseif (!$instance->bridge_pool->isEmpty()) {
                         $parts = array_map('trim', explode('-', (string)$instance->bridge_pool));
                         if (count($parts) != 2 || !Util::isIpv4Address($parts[0]) || !Util::isIpv4Address($parts[1])) {
                             $messages->appendMessage(new Message(
@@ -133,7 +133,7 @@ class OpenVPN extends BaseModel
                         $key . ".verify_client_cert"
                     ));
                 }
-                if (!empty((string)$instance->{'auth-gen-token'}) && (string)$instance->{'reneg-sec'} == '0') {
+                if (!$instance->{'auth-gen-token'}->isEmpty() && (string)$instance->{'reneg-sec'} == '0') {
                     $messages->appendMessage(new Message(
                         gettext('A token lifetime requires a non zero Renegotiate time.'),
                         $key . ".auth-gen-token"
@@ -145,14 +145,14 @@ class OpenVPN extends BaseModel
                     ));
                 }
 
-                if (!empty((string)$instance->{'auth-gen-token-renewal'}) && (string)$instance->{'auth-gen-token'} === '') {
+                if (!$instance->{'auth-gen-token-renewal'}->isEmpty() && (string)$instance->{'auth-gen-token'} === '') {
                     $messages->appendMessage(new Message(
                         gettext('A token renewal requires a token lifetime.'),
                         $key . ".auth-gen-token-renewal"
                     ));
                 }
 
-                if (!empty((string)$instance->{'auth-gen-token-secret'}) && (string)$instance->{'auth-gen-token'} === '') {
+                if (!$instance->{'auth-gen-token-secret'}->isEmpty() && (string)$instance->{'auth-gen-token'} === '') {
                     $messages->appendMessage(new Message(
                         gettext('A token secret requires a token lifetime.'),
                         $key . ".auth-gen-token-secret"
@@ -165,7 +165,7 @@ class OpenVPN extends BaseModel
                     ));
                 }
             }
-            if (!empty((string)$instance->cert)) {
+            if (!$instance->cert->isEmpty()) {
                 $tmp = Store::getCertificate((string)$instance->cert);
                 if (empty((string)$instance->ca) && (empty($tmp) || !isset($tmp['ca']))) {
                     $messages->appendMessage(new Message(
@@ -211,7 +211,7 @@ class OpenVPN extends BaseModel
             if (empty((string)$cso->enabled)) {
                 continue;
             }
-            $servers = !empty((string)$cso->servers) ? explode(',', (string)$cso->servers) : [];
+            $servers = !$cso->servers->isEmpty() ? explode(',', (string)$cso->servers) : [];
             if (!empty($servers) && !in_array($server_id, $servers)) {
                 continue;
             }
@@ -251,14 +251,14 @@ class OpenVPN extends BaseModel
                     }
                 }
             }
-            if (!empty((string)$cso->push_reset)) {
+            if (!$cso->push_reset->isEmpty()) {
                 $result['push_reset'] = '1';
             }
-            if (!empty((string)$cso->block)) {
+            if (!$cso->block->isEmpty()) {
                 $result['block'] = '1';
             }
             foreach (['dns_server', 'ntp_server', 'wins_server'] as $fieldname) {
-                if (!empty((string)$cso->$fieldname . 's')) {
+                if (!$cso->{$fieldname . 's'}->isEmpty()) {
                     foreach (explode(',', (string)$cso->{$fieldname . 's'}) as $idx => $item) {
                         $result[$fieldname . (string)($idx + 1)] = $item;
                     }
@@ -276,14 +276,14 @@ class OpenVPN extends BaseModel
         // check if provisioning by authentication backend is mandatory
         foreach ($this->Instances->Instance->iterateItems() as $node_uuid => $node) {
             if (
-                !empty((string)$node->enabled) &&
+                !$node->enabled->isEmpty() &&
                 $server_id == $node_uuid &&
                 (string)$node->role == 'server' &&
-                !empty((string)$node->provision_exclusive)
+                !$node->provision_exclusive->isEmpty()
             ) {
-                if (!empty((string)$node->server) && empty($result['tunnel_network'])) {
+                if (!$node->server->isEmpty() && empty($result['tunnel_network'])) {
                     return [];
-                } elseif (!empty((string)$node->server_ipv6) && empty($result['tunnel_networkv6'])) {
+                } elseif (!$node->server_ipv6->isEmpty() && empty($result['tunnel_networkv6'])) {
                     return [];
                 }
             }
@@ -333,7 +333,7 @@ class OpenVPN extends BaseModel
             }
         }
         foreach ($this->Instances->Instance->iterateItems() as $node_uuid => $node) {
-            if (!empty((string)$node->enabled)) {
+            if (!$node->enabled->isEmpty()) {
                 return true;
             }
         }
@@ -347,7 +347,7 @@ class OpenVPN extends BaseModel
     {
         $result = [];
         foreach ($this->Instances->Instance->iterateItems() as $node_uuid => $node) {
-            if (!empty((string)$node->enabled) && (string)$node->role == 'server') {
+            if (!$node->enabled->isEmpty() && (string)$node->role == 'server') {
                 $result[(string)$node->__devname] = [
                     'descr' => (string)$node->description ?? '',
                     'sockFilename' => (string)$node->sockFilename
@@ -380,14 +380,14 @@ class OpenVPN extends BaseModel
         // travers model first, two key types are valid, the id used in the device (numeric) or the uuid
         foreach ($this->Instances->Instance->iterateItems() as $node_uuid => $node) {
             if (
-                !empty((string)$node->enabled) &&
+                !$node->enabled->isEmpty() &&
                 ((string)$node->vpnid == $server_id || $server_id == $node_uuid) &&
                 ($role == null || $role == (string)$node->role)
             ) {
                 // find static key
                 $this_tls = null;
                 $this_mode = null;
-                if (!empty((string)$node->tls_key)) {
+                if (!$node->tls_key->isEmpty()) {
                     $tlsnode = $this->getNodeByReference("StaticKeys.StaticKey.{$node->tls_key}");
                     if (!empty($node->tls_key)) {
                         $this_mode = (string)$tlsnode->mode;
@@ -396,7 +396,7 @@ class OpenVPN extends BaseModel
                 }
                 // find caref
                 $this_caref = null;
-                if (!empty((string)$node->ca)) {
+                if (!$node->ca->isEmpty()) {
                     $this_caref = (string)$node->ca;
                 } elseif (isset(Config::getInstance()->object()->cert)) {
                     foreach (Config::getInstance()->object()->cert as $cert) {
@@ -407,7 +407,7 @@ class OpenVPN extends BaseModel
                 }
                 // legacy uses group names, convert key (gid) to current name
                 $local_group = null;
-                if (!empty((string)$node->local_group)) {
+                if (!$node->local_group->isEmpty()) {
                     $local_group = $node->local_group->getNodeData()[(string)$node->local_group]['value'];
                 }
                 return [
@@ -421,7 +421,7 @@ class OpenVPN extends BaseModel
                     'topology_subnet' => $node->topology == 'subnet' ? '1' : '0',
                     'local_port' =>  (string)$node->port,
                     'protocol' => (string)$node->proto,
-                    'mode' => !empty((string)$node->authmode) ? 'server_tls_user' : '',
+                    'mode' => !$node->authmode->isEmpty() ? 'server_tls_user' : '',
                     'reneg-sec' => (string)$node->{'reneg-sec'},
                     'tls' => $this_tls,
                     'tlsmode' => $this_mode,
@@ -430,7 +430,7 @@ class OpenVPN extends BaseModel
                     'cert_depth' => (string)$node->cert_depth,
                     'digest' => (string)$node->auth,
                     'description' => (string)$node->description,
-                    'use_ocsp' => !empty((string)$node->use_ocsp),
+                    'use_ocsp' => !$node->use_ocsp->isEmpty(),
                     // legacy only (backwards compatibility)
                     'crypto' => (string)$node->{'data-ciphers-fallback'},
                 ];
@@ -524,7 +524,7 @@ class OpenVPN extends BaseModel
     public function generateInstanceConfig($uuid = null)
     {
         foreach ($this->Instances->Instance->iterateItems() as $node_uuid => $node) {
-            if (!empty((string)$node->enabled) && ($uuid == null || $node_uuid == $uuid)) {
+            if (!$node->enabled->isEmpty() && ($uuid == null || $node_uuid == $uuid)) {
                 $options = [];
                 // mode specific settings
                 if ($node->role == 'client') {
@@ -545,13 +545,13 @@ class OpenVPN extends BaseModel
                     if (empty((string)$node->port) && empty((string)$node->local)) {
                         $options['nobind'] = null;
                     }
-                    if (!empty((string)$node->username) && !empty((string)$node->password)) {
+                    if (!$node->username->isEmpty() && !$node->password->isEmpty()) {
                         $options['auth-user-pass'] = [
                             "filename" => "/var/etc/openvpn/instance-{$node_uuid}.up",
                             "content" => "{$node->username}\n{$node->password}\n"
                         ];
                     }
-                    if (!empty((string)$node->remote_cert_tls)) {
+                    if (!$node->remote_cert_tls->isEmpty()) {
                         $options['remote-cert-tls'] = 'server';
                     }
                     if (strrpos($node->{'http-proxy'}, ':') > 0) {
@@ -570,15 +570,15 @@ class OpenVPN extends BaseModel
                     $options['ping-timer-rem'] = null;
                     $options['topology'] = (string)$node->topology;
                     $options['dh'] = '/usr/local/etc/inc/plugins.inc.d/openvpn/dh.rfc7919';
-                    if (!empty((string)$node->crl) && !empty((string)$node->cert)) {
+                    if (!$node->crl->isEmpty() && !$node->cert->isEmpty()) {
                         // updated via plugins_configure('crl');
                         $options['crl-verify'] = "/var/etc/openvpn/server-{$node_uuid}.crl-verify";
                     }
                     $options['verify-client-cert'] = (string)$node->verify_client_cert;
-                    if (!empty((string)$node->remote_cert_tls)) {
+                    if (!$node->remote_cert_tls->isEmpty()) {
                         $options['remote-cert-tls'] = 'client';
                     }
-                    if (in_array($node->dev_type, ['tun', 'ovpn']) && !empty((string)$node->server)) {
+                    if (in_array($node->dev_type, ['tun', 'ovpn']) && !$node->server->isEmpty()) {
                         $parts = explode('/', (string)$node->server);
                         $mask = Util::CIDRToMask($parts[1]);
                         if ((string)$node->topology == 'p2p' && $parts[1] > 29) {
@@ -599,7 +599,7 @@ class OpenVPN extends BaseModel
                             $options['server'] = $parts[0] . " " . $mask;
                         }
                     } elseif ((string)$node->dev_type == 'tap') {
-                        if (!empty((string)$node->bridge_gateway)) {
+                        if (!$node->bridge_gateway->isEmpty()) {
                             $parts = explode('/', (string)$node->bridge_gateway);
                             $options['server-bridge'] = sprintf(
                                 "%s %s %s",
@@ -611,15 +611,15 @@ class OpenVPN extends BaseModel
                             $options['server-bridge'] = '';
                         }
                     }
-                    if (!empty((string)$node->server_ipv6)) {
+                    if (!$node->server_ipv6->isEmpty()) {
                         $options['server-ipv6'] = (string)$node->server_ipv6;
                     }
-                    if (!empty((string)$node->username_as_common_name)) {
+                    if (!$node->username_as_common_name->isEmpty()) {
                         $options['username-as-common-name'] = null;
                     }
                     $options['client-config-dir'] = "/var/etc/openvpn-csc/{$node->vpnid}";
                     // hook event handlers
-                    if (!empty((string)$node->authmode)) {
+                    if (!$node->authmode->isEmpty()) {
                         $options['auth-user-pass-verify'] = "\"{$event_script} --defer '{$node_uuid}'\" via-env";
                         $options['learn-address'] =  "\"{$event_script} '{$node->vpnid}'\"";
                     } else {
@@ -629,7 +629,7 @@ class OpenVPN extends BaseModel
                     $options['client-disconnect'] = "\"{$event_script} '{$node_uuid}'\"";
                     $options['tls-verify'] = "\"{$event_script} '{$node_uuid}'\"";
 
-                    if (!empty((string)$node->maxclients)) {
+                    if (!$node->maxclients->isEmpty()) {
                         $options['max-clients'] = (string)$node->maxclients;
                     }
                     if (empty((string)$node->local) && str_starts_with((string)$node->proto, 'udp')) {
@@ -645,36 +645,36 @@ class OpenVPN extends BaseModel
                         /* "manual" server directive, we should tell the client which topology we are using */
                         $options['push'][] = "\"topology {$node->topology}\"";
                     }
-                    if (!empty((string)$node->redirect_gateway)) {
+                    if (!$node->redirect_gateway->isEmpty()) {
                         $redirect_gateway = str_replace(',', ' ', (string)$node->redirect_gateway);
                         $options['push'][] = "\"redirect-gateway {$redirect_gateway}\"";
                     }
 
-                    if (!empty((string)$node->route_metric)) {
+                    if (!$node->route_metric->isEmpty()) {
                         $options['push'][] = "\"route-metric {$node->route_metric}\"";
                     }
-                    if (!empty((string)$node->register_dns)) {
+                    if (!$node->register_dns->isEmpty()) {
                         $options['push'][] = "\"register-dns\"";
                     }
-                    if (!empty((string)$node->dns_domain)) {
+                    if (!$node->dns_domain->isEmpty()) {
                         $options['push'][] = "\"dhcp-option DOMAIN {$node->dns_domain}\"";
                     }
-                    if (!empty((string)$node->dns_domain_search)) {
+                    if (!$node->dns_domain_search->isEmpty()) {
                         foreach (explode(',', (string)$node->dns_domain_search) as $opt) {
                             $options['push'][] = "\"dhcp-option DOMAIN-SEARCH {$opt}\"";
                         }
                     }
-                    if (!empty((string)$node->dns_servers)) {
+                    if (!$node->dns_servers->isEmpty()) {
                         foreach (explode(',', (string)$node->dns_servers) as $opt) {
                             $options['push'][] = "\"dhcp-option DNS {$opt}\"";
                         }
                     }
-                    if (!empty((string)$node->ntp_servers)) {
+                    if (!$node->ntp_servers->isEmpty()) {
                         foreach (explode(',', (string)$node->ntp_servers) as $opt) {
                             $options['push'][] = "\"dhcp-option NTP {$opt}\"";
                         }
                     }
-                    if (!empty((string)$node->push_inactive)) {
+                    if (!$node->push_inactive->isEmpty()) {
                         $options['push'][] = "\"inactive {$node->push_inactive}\"";
                     }
 
@@ -686,21 +686,21 @@ class OpenVPN extends BaseModel
                         }
                     }
 
-                    if (!empty((string)$node->{'auth-gen-token-secret'})) {
+                    if (!$node->{'auth-gen-token-secret'}->isEmpty()) {
                         $options['<auth-gen-token-secret>'] = $node->{'auth-gen-token-secret'};
                     }
 
-                    if (!empty((string)$node->compress_migrate)) {
+                    if (!$node->compress_migrate->isEmpty()) {
                         $options['compress'] = 'migrate';
                     }
 
-                    if (!empty((string)$node->{'ifconfig-pool-persist'})) {
+                    if (!$node->{'ifconfig-pool-persist'}->isEmpty()) {
                         $options['ifconfig-pool-persist'] = "/var/etc/openvpn/instance-{$node_uuid}.pool";
                     }
                 }
                 $options['persist-tun'] = null;
                 $options['persist-key'] = null;
-                if (!empty((string)$node->keepalive_interval) && !empty((string)$node->keepalive_timeout)) {
+                if (!$node->keepalive_interval->isEmpty() && !$node->keepalive_timeout->isEmpty()) {
                     $options['keepalive'] = "{$node->keepalive_interval} {$node->keepalive_timeout}";
                 }
 
@@ -733,19 +733,19 @@ class OpenVPN extends BaseModel
                     $options['port-share'] = sprintf('%s %s', implode(':', $parts), $port);
                 }
 
-                if (!empty((string)$node->various_flags)) {
+                if (!$node->various_flags->isEmpty()) {
                     foreach (explode(',', (string)$node->various_flags) as $opt) {
                         $options[$opt] = null;
                     }
                 }
 
-                if (!empty((string)$node->various_push_flags)) {
+                if (!$node->various_push_flags->isEmpty()) {
                     foreach (explode(',', (string)$node->various_push_flags) as $opt) {
                         $options['push'][] = "\"{$opt}\"";
                     }
                 }
 
-                if (!empty((string)$node->tun_mtu)) {
+                if (!$node->tun_mtu->isEmpty()) {
                     $options['tun-mtu'] = (string)$node->tun_mtu;
                 }
 
@@ -753,7 +753,7 @@ class OpenVPN extends BaseModel
                     $options['fragment'] = (string)$node->fragment;
                 }
 
-                if (!empty((string)$node->mssfix)) {
+                if (!$node->mssfix->isEmpty()) {
                     $options['mssfix'] = null;
                 }
 
@@ -777,7 +777,7 @@ class OpenVPN extends BaseModel
                     }
                 }
 
-                if (!empty((string)$node->tls_key)) {
+                if (!$node->tls_key->isEmpty()) {
                     $tlsnode = $this->getNodeByReference("StaticKeys.StaticKey.{$node->tls_key}");
                     if ($tlsnode) {
                         $options["<tls-{$tlsnode->mode}>"] = (string)$tlsnode->key;
@@ -786,10 +786,10 @@ class OpenVPN extends BaseModel
                         }
                     }
                 }
-                if (!empty((string)$node->ca)) {
+                if (!$node->ca->isEmpty()) {
                     $options['<ca>'] = Store::getCaChain((string)$node->ca);
                 }
-                if (!empty((string)$node->cert)) {
+                if (!$node->cert->isEmpty()) {
                     $tmp = Store::getCertificate((string)$node->cert);
                     if ($tmp && isset($tmp['prv'])) {
                         $options['<key>'] = $tmp['prv'];
@@ -799,7 +799,7 @@ class OpenVPN extends BaseModel
                         }
                     }
                 }
-                if (!empty((string)$node->use_ocsp) && !empty($options['<ca>'])) {
+                if (!$node->use_ocsp->isEmpty() && !empty($options['<ca>'])) {
                     $options['ca-file'] = [
                         "filename" => "/var/etc/openvpn/instance-{$node_uuid}.ca",
                         "content" => $options['<ca>']
