@@ -42,7 +42,6 @@
             }
         );
 
-
         let gridStatsInitialized = false;
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             if (e.target.id === 'statistics') {
