@@ -184,14 +184,6 @@ class Dnsmasq extends BaseModel
                     )
                 );
             }
-            if ($is_static && $start_inet == 'inet6') {
-                $messages->appendMessage(
-                    new Message(
-                        gettext("Static is only available IPv4."),
-                        $key . ".mode"
-                    )
-                );
-            }
 
             if ($range->interface->isEmpty() && !$range->ra_mode->isEmpty()) {
                 $messages->appendMessage(

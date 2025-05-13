@@ -101,7 +101,7 @@
         <id>range.mode</id>
         <label>Mode</label>
         <type>select_multiple</type>
-        <style>selectpicker style_dhcpv4</style>
+        <style>selectpicker</style>
         <help>Mode flags to set for this range, 'static' means no addresses will be automatically assigned. </help>
     </field>
     <field>
