@@ -146,7 +146,7 @@ function dnsmasq_configure_do($verbose = false)
         return;
     }
 
-    service_log('Starting Dnsmasq DNS/DHCP...', $verbose);
+    service_log('Starting Dnsmasq...', $verbose);
 
     _dnsmasq_add_host_entries();
 
