@@ -203,6 +203,7 @@ class CPBackgroundProcess(object):
                         PF.add_to_table(zoneid, cpnet)
                 else:
                     # remove session
+                    syslog.syslog(syslog.LOG_NOTICE, drop_session_reason)
                     PF.remove_from_table(zoneid, cpnet)
                     self.db.del_client(zoneid, db_client['sessionId'], delete_reason)
 
