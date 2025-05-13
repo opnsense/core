@@ -217,7 +217,7 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
     $action = $args[0];
 
     $server_devs = [];
-    if (!empty((string)(new OPNsense\Wireguard\General())->enabled)) {
+    if (!(new OPNsense\Wireguard\General())->enabled->isEmpty) {
         $vhids = get_vhid_status();
         foreach ((new OPNsense\Wireguard\Server())->servers->server->iterateItems() as $key => $node) {
             $carp_depend_on = (string)$node->carp_depend_on;

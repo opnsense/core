@@ -310,7 +310,7 @@ function core_cron()
         }
     }
 
-    if (!empty((string)(new OPNsense\Trust\General())->fetch_crls)) {
+    if (!(new OPNsense\Trust\General())->fetch_crls->isEmpty()) {
         $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d system trust download_crls', '1');
     }
 

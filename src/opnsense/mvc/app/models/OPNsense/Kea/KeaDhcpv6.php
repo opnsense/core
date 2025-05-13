@@ -224,7 +224,7 @@ class KeaDhcpv6 extends BaseModel
                 'subnet6' => $this->getConfigSubnets(),
             ]
         ];
-        if (!empty((string)(new KeaCtrlAgent())->general->enabled)) {
+        if (!(new KeaCtrlAgent())->general->enabled->isEmpty()) {
             $cnf['Dhcp6']['hooks-libraries'] = [];
             $cnf['Dhcp6']['hooks-libraries'][] = [
                 'library' => '/usr/local/lib/kea/hooks/libdhcp_lease_cmds.so'
