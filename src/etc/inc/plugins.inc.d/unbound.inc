@@ -32,8 +32,7 @@
 
 function unbound_enabled()
 {
-    $mdl = new \OPNsense\Unbound\Unbound();
-    return !empty((string)$mdl->general->enabled);
+    return !(new \OPNsense\Unbound\Unbound())->general->enabled->isEmpty();
 }
 
 function unbound_configure()
