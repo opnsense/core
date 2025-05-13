@@ -60,7 +60,7 @@ function dnsmasq_services()
     if (!empty((string)$mdl->dns_port)) {
         $pconfig['dns_ports'] = [ (string)$mdl->dns_port ];
     }
-    $pconfig['description'] = gettext('Dnsmasq DNS');
+    $pconfig['description'] = gettext('Dnsmasq DNS/DHCP');
     $pconfig['php']['restart'] = ['dnsmasq_configure_do'];
     $pconfig['php']['start'] = ['dnsmasq_configure_do'];
     $pconfig['configd']['stop'] = ['dnsmasq stop'];
@@ -84,7 +84,7 @@ function dnsmasq_xmlrpc_sync()
     $result = [];
 
     $result[] = [
-        'description' => gettext('Dnsmasq DNS'),
+        'description' => gettext('Dnsmasq DNS/DHCP'),
         'section' => 'dnsmasq',
         'id' => 'dnsforwarder',
         'services' => ['dnsmasq'],
@@ -146,7 +146,7 @@ function dnsmasq_configure_do($verbose = false)
         return;
     }
 
-    service_log('Starting Dnsmasq DNS...', $verbose);
+    service_log('Starting Dnsmasq...', $verbose);
 
     _dnsmasq_add_host_entries();
 
