@@ -162,9 +162,9 @@
 /usr/local/libexec/opnsense-auth
 /usr/local/opnsense/contrib/IXR/IXR_Library.php
 /usr/local/opnsense/contrib/base32/Base32.php
+/usr/local/opnsense/contrib/iana/tzdata-iso3166.tab
+/usr/local/opnsense/contrib/iana/tzdata-zone.tab
 /usr/local/opnsense/contrib/mobile-broadband-provider-info/serviceproviders.xml
-/usr/local/opnsense/contrib/tzdata/iso3166.tab
-/usr/local/opnsense/contrib/tzdata/zone.tab
 /usr/local/opnsense/data/firmware/upgrade.html
 /usr/local/opnsense/data/unbound/root.min.hints
 /usr/local/opnsense/mvc/app/cache/README
