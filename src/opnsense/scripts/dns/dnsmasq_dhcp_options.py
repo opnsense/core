@@ -33,8 +33,8 @@ import subprocess
 import argparse
 
 option_src = {
-    'dhcp': 'iana-dhcpv4-options.csv',  # https://www.iana.org/assignments/bootp-dhcp-parameters/
-    'dhcp6': 'iana-dhcpv6-parameters-2.csv' # https://www.iana.org/assignments/dhcpv6-parameters/
+    'dhcp': 'iana/dhcpv4-options.csv',  # https://www.iana.org/assignments/bootp-dhcp-parameters/
+    'dhcp6': 'iana/dhcpv6-parameters-2.csv' # https://www.iana.org/assignments/dhcpv6-parameters/
 }
 
 parser = argparse.ArgumentParser()
@@ -43,7 +43,7 @@ args = parser.parse_args()
 
 result = {}
 # load iana specified per proto family, names will be overlayed when dnsmasq specifies them
-with open(os.path.dirname(__file__) + '/' + option_src[args.mode], 'r') as csvfile:
+with open('/usr/local/opnsense/contrib/' + option_src[args.mode], 'r') as csvfile:
     for r in csv.reader(csvfile, delimiter=',', quotechar='"'):
         r_range = [int(x) for x in r[0].split('-') if x.isdigit()]
         if len(r) > 2 and len(r_range) > 0 and r[1].lower() not in ['unassigned', 'removed/unassigned', 'pad', 'end']:
