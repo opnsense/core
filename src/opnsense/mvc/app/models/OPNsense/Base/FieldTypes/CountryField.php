@@ -65,7 +65,7 @@ class CountryField extends BaseListField
         }
         if (empty(self::$internalCacheOptionList[$setid])) {
             $contribDir = (new AppConfig())->application->contribDir;
-            $filename = $contribDir . '/tzdata/iso3166.tab';
+            $filename = $contribDir . '/iana/tzdata-iso3166.tab';
             $data = file_get_contents($filename);
             foreach (explode("\n", $data) as $line) {
                 $line = trim($line);
