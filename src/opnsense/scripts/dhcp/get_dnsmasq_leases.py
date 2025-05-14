@@ -51,11 +51,19 @@ if __name__ == '__main__':
                 if len(parts) > 4 and parts[0].isdigit():
                     lease = {
                         'expire': int(parts[0]),
-                        'hwaddr': parts[1],
+                        'hwaddr': '',
+                        'iaid': '',
                         'address': parts[2],
                         'hostname': parts[3],
                         'client_id': parts[4]
                     }
+
+                    # MAC (IPv4) and IAID (IPv6) share the same spot
+                    if ':' in parts[1]:
+                        lease['hwaddr'] = parts[1]
+                    else:
+                        lease['iaid'] = parts[1]
+
                     for net in ranges:
                         if net.overlaps(ipaddress.ip_network(lease['address'])):
                             lease['if'] = ranges[net]
