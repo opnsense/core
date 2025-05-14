@@ -85,17 +85,16 @@ class PF(object):
                         ip, out_flag = lbl.split('"')[1].split('-')
                         out = (out_flag == 'out')
                         stats_key = ('out' if out else 'in')
-                        results.setdefault(ip, {'in_pkts': 0, 'in_bytes': 0, 'out_pkts': 0, 'out_bytes': 0, 'last_accessed': None})
+                        results.setdefault(ip, {'in_pkts': 0, 'in_bytes': 0, 'out_pkts': 0, 'out_bytes': 0, 'in_last_accessed': 0, 'out_last_accessed': 0})
                         results[ip][f'{stats_key}_pkts'] += stats.get('packets', 0)
                         results[ip][f'{stats_key}_bytes'] += stats.get('bytes', 0)
-                        results[ip]['last_accessed'] = stats.get('last_accessed', 0)
+                        results[ip][f'{stats_key}_last_accessed'] = stats.get('last_accessed', 0)
                 prev_line = line
             elif line[0] == '['  and line.find('Evaluations') > 0:
                 parts = line.strip('[ ]').replace(':', ' ').split()
                 stats.update({parts[i].lower(): int(parts[i+1]) for i in range(0, len(parts)-1, 2) if parts[i+1].isdigit()})
             elif line[0] == '[' and line.find('Last Active Time') > 0:
                 date_str = line.strip('[ ]').split('Time:')[1].strip()
-                if date_str != 'N/A':
-                    stats.update({'last_accessed': int(time.mktime(time.strptime(date_str, "%a %b %d %H:%M:%S %Y")))})
+                stats.update({'last_accessed': 0 if date_str == 'N/A' else int(time.mktime(time.strptime(date_str, "%a %b %d %H:%M:%S %Y")))})
 
         return results
