@@ -180,6 +180,10 @@ function _dnsmasq_add_host_entries()
     }
 
     foreach ($dnsmasqcfg['hosts'] as $host) {
+        // Do not create entries in dnsmasq-hosts file for dhcp-host entries
+        if (!empty($host['client_id']) || !empty($host['hwaddr'])) {
+            continue;
+        }
         /* The host.ip field supports multiple IPv4 and IPv6 addresses */
         foreach (explode(',', $host['ip']) as $ip) {
             if (!empty($host['host']) && empty($host['domain'])) {
