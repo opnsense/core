@@ -180,7 +180,7 @@ function _dnsmasq_add_host_entries()
     }
 
     foreach ($dnsmasqcfg['hosts'] as $host) {
-        // Do not create entries in dnsmasq-hosts file for dhcp-host entries
+        /* do not create entries for dhcp-host types */
         if (!empty($host['client_id']) || !empty($host['hwaddr'])) {
             continue;
         }
