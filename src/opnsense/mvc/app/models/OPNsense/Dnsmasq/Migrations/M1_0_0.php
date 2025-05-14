@@ -40,6 +40,17 @@ class M1_0_0 extends BaseModelMigration
     {
         /* make sure stale interfaces do not cause a validation issue */
         $model->interface->normalizeValue();
+
+        /* hostnames were not required but domains were used as hostname */
+        if (!empty($model->hosts)) {
+            foreach ($model->hosts->iterateItems() as $host) {
+                if (empty($host->host)) {
+                    $host->host = $host->domain;
+                    $host->domain = '';
+                }
+            }
+        }
+
         parent::run($model);
     }
 }
