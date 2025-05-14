@@ -8,6 +8,7 @@
         <id>wizard.domain</id>
         <label>Domain</label>
         <type>text</type>
+        <help>Do not use 'local' as your internal domain name. It is reserved for and will interfere with mDNS (avahi, bonjour, etc.). Instead, use the special-use domain internal or home.arpa, also to avoid DNSSEC validation issues. E.g. internal, name.internal.</help>
     </field>
     <field>
         <id>wizard.language</id>
