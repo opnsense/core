@@ -50,8 +50,16 @@ grow_partition()
 	local IDX=${1##"${DEV}p"}
 
 	if [ "${IDX}" = "${1}" ]; then
-		# assume schema ada0a used by nano images
-		IDX=1
+		# try MBR slices too
+		IDX=${1##"${DEV}s"}
+
+		if [ "${IDX}" = "${1}" ]; then
+			# assume schema ada0a used by nano images
+			IDX=1a
+		fi
+
+		# remove trailing "a" if needed
+		IDX=${IDX%%a}
 	fi
 
 	if [ -n "${DEV}" -a "${DEV}" != "${1}" -a \
