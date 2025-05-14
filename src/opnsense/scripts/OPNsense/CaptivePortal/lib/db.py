@@ -278,7 +278,7 @@ class DB(object):
         """
         if type(details) == dict:
             # query registered data
-            sql = """ select    cc.ip_address, cc.zoneid, cc.sessionid
+            sql = """ select    cc.ip_address, cc.zoneid, cc.sessionid, cc.created
                       ,         si.rowid si_rowid, si.last_accessed
                       from      cp_clients cc
                       left join session_info si on si.zoneid = cc.zoneid and si.sessionid = cc.sessionid
@@ -306,7 +306,7 @@ class DB(object):
                         record['bytes_in'] = details[record['ip_address']]['in_bytes']
                         record['packets_out'] = details[record['ip_address']]['out_pkts']
                         record['bytes_out'] = details[record['ip_address']]['out_bytes']
-                        record['last_accessed'] = details[record['ip_address']]['last_accessed']
+                        record['last_accessed'] = record['created']
                         cur2.execute(sql_new, record)
                     else:
                         # update session
@@ -319,7 +319,8 @@ class DB(object):
                                          where  rowid = :si_rowid
                         """
                         # add usage to session
-                        record['last_accessed'] = details[record['ip_address']]['last_accessed']
+                        if details[record['ip_address']]['last_accessed'] != 0:
+                            record['last_accessed'] = details[record['ip_address']]['last_accessed']
                         record['packets_in'] = details[record['ip_address']]['in_pkts']
                         record['packets_out'] = details[record['ip_address']]['out_pkts']
                         record['bytes_in'] = details[record['ip_address']]['in_bytes']

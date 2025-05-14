@@ -28,6 +28,7 @@
     --------------------------------------------------------------------------------------
     update captive portal statistics
 """
+import copy
 import sys
 import time
 import syslog
@@ -70,23 +71,24 @@ class CPBackgroundProcess(object):
         for zoneid in self.list_zone_ids():
             self._accounting_info[zoneid]['prev'] = self._accounting_info[zoneid]['cur']
             self._accounting_info[zoneid]['cur'] = PF.list_accounting_info(zoneid)
+            cur = copy.deepcopy(self._accounting_info[zoneid]['cur'] )
 
-            if self._accounting_info[zoneid]['reset']:
-                # counters were reset to 0, simply add
-                result[zoneid] = self._accounting_info[zoneid]['cur']
-            else:
-                # counters still valid, calculate difference
-                result[zoneid] = {}
-                for ip in self._accounting_info[zoneid]['cur']:
-                    result[zoneid][ip] = {'last_accessed': self._accounting_info[zoneid]['cur'][ip]['last_accessed']}
-                    for key in ['in_pkts', 'in_bytes', 'out_pkts', 'out_bytes']:
-                        if ip not in self._accounting_info[zoneid]['prev']:
-                            result[zoneid][ip][key] = self._accounting_info[zoneid]['cur'][ip][key]
-                        else:
-                            result[zoneid][ip][key] = self._accounting_info[zoneid]['cur'][ip][key] \
-                                - self._accounting_info[zoneid]['prev'][ip][key]
+            for ip in cur:
+                # take in/out bytes active time as last access time
+                cur[ip]['last_accessed'] = max(cur[ip]['in_last_accessed'], cur[ip]['out_last_accessed'])
 
-        # map to flat dict of IPs
+                if self._accounting_info[zoneid]['reset']:
+                    # anchor has just been synced, we'll add the whole thing outside of this loop
+                    continue
+
+                # pf anchor hasn't yet reset, calculate difference
+                for key in ['in_pkts', 'in_bytes', 'out_pkts', 'out_bytes']:
+                    if ip in self._accounting_info[zoneid]['prev']:
+                        cur[ip][key] = self._accounting_info[zoneid]['cur'][ip][key] \
+                            - self._accounting_info[zoneid]['prev'][ip][key]
+
+            result[zoneid] = cur
+
         return {k: v for subdict in result.values() for k, v in subdict.items()}
 
     def initialize_fixed(self):
