@@ -50,7 +50,7 @@ class AliasUtilController extends ApiControllerBase
     private function getModel()
     {
         if ($this->modelHandle == null) {
-            $this->modelHandle = new Alias();
+            $this->modelHandle = new Alias(true);
         }
         return $this->modelHandle;
     }

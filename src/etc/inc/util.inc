@@ -638,16 +638,9 @@ function is_uniquelocal($ipaddr)
 /* returns true if $ipaddr is a valid dotted IPv4 address or an alias thereof */
 function is_ipaddroralias($ipaddr)
 {
-    if (is_alias($ipaddr)) {
-        foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias) {
-            if ($alias['name'] == $ipaddr && !preg_match("/port/i", $alias['type'])) {
-                return true;
-            }
-        }
-
-        return false;
+    if (\OPNsense\Firewall\Util::isAlias($ipaddr, true)) {
+        return true;
     }
-
     return is_ipaddr($ipaddr);
 }
 
@@ -728,15 +721,9 @@ function is_portrange($portrange)
 /* returns true if $port is a valid port number or an alias thereof */
 function is_portoralias($port)
 {
-    if (is_alias($port)) {
-        foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias) {
-            if ($alias['name'] == $port && preg_match("/port/i", $alias['type'])) {
-                return true;
-            }
-        }
-        return false;
+    if (\OPNsense\Firewall\Util::isPortAlias($port)) {
+        return true;
     }
-
     return is_port($port);
 }
 

@@ -178,6 +178,24 @@ class Util
     }
 
     /**
+     * fetch alias by name from model
+     * @param string $name name
+     * @return Alias|null
+     */
+    private static function getAliasByName($name)
+    {
+        if (self::$aliasObject == null) {
+            // Cache the alias object to avoid object creation overhead.
+            self::$aliasObject = new Alias(true);
+            self::$aliasObject->flushCache();
+        }
+        if (!empty($name)) {
+            return self::$aliasObject->getByName($name);
+        }
+        return null;
+    }
+
+    /**
      * check if name exists in alias config section
      * @param string $name name
      * @param boolean $valid check if the alias can safely be used
@@ -186,20 +204,29 @@ class Util
      */
     public static function isAlias($name, $valid = false)
     {
-        if (self::$aliasObject == null) {
-            // Cache the alias object to avoid object creation overhead.
-            self::$aliasObject = new Alias();
-            self::$aliasObject->flushCache();
-        }
-        if (!empty($name)) {
-            $alias = self::$aliasObject->getByName($name);
-            if ($alias != null) {
-                if ($valid) {
-                    // check validity for port type aliases
-                    if (preg_match("/port/i", (string)$alias->type) && empty((string)$alias->content)) {
-                        return false;
-                    }
+        $alias = self::getAliasByName($name);
+        if ($alias != null) {
+            if ($valid) {
+                // check validity for port type aliases
+                if (preg_match("/port/i", (string)$alias->type) && empty((string)$alias->content)) {
+                    return false;
                 }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @return boolean true when alias exists and is a port type
+     */
+    public static function isPortAlias($name)
+    {
+
+        $alias = self::getAliasByName($name);
+        if ($alias != null) {
+            // check validity for port type aliases
+            if (preg_match("/port/i", (string)$alias->type) && empty((string)$alias->content)) {
                 return true;
             }
         }
@@ -215,7 +242,7 @@ class Util
     {
         if (empty(self::$aliasDescriptions)) {
             // read all aliases at once, and cache descriptions.
-            foreach ((new Alias())->aliasIterator() as $alias) {
+            foreach ((new Alias(true))->aliasIterator() as $alias) {
                 if (empty(self::$aliasDescriptions[$alias['name']])) {
                     if (!empty($alias['description'])) {
                         self::$aliasDescriptions[$alias['name']] = '<strong>' . $alias['description'] . '</strong><br/>';
@@ -253,7 +280,7 @@ class Util
     {
         if (self::$aliasObject == null) {
             // Cache the alias object to avoid object creation overhead.
-            self::$aliasObject = new Alias();
+            self::$aliasObject = new Alias(true);
         }
         $result = array();
         foreach (self::$aliasObject->aliasIterator() as $node) {

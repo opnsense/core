@@ -555,7 +555,7 @@ function filter_generate_scrubbing(&$FilterIflist)
 function filter_generate_aliases()
 {
     $aliases = "# User Aliases\n";
-    $aliasObject = new \OPNsense\Firewall\Alias();
+    $aliasObject = new \OPNsense\Firewall\Alias(true);
     // list of registered aliases for faster is_alias() lookup
     $all_aliases = [];
     foreach ($aliasObject->aliasIterator() as $aliased) {

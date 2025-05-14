@@ -92,7 +92,7 @@ function legacy_list_aliases($type)
 {
     $result = [];
 
-    foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias) {
+    foreach ((new \OPNsense\Firewall\Alias(true))->aliasIterator() as $alias) {
         if ($alias['type'] == 'internal') {
             // XXX: skip internal aliases while still defined as "networks" in the rules pages
             continue;

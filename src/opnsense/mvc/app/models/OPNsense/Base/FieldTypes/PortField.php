@@ -122,7 +122,7 @@ class PortField extends BaseListField
                 }
             }
             if ($this->enableAlias) {
-                foreach ((new Alias())->aliases->alias->iterateItems() as $alias) {
+                foreach ((new Alias(true))->aliases->alias->iterateItems() as $alias) {
                     if (strpos((string)$alias->type, "port") !== false) {
                         self::$internalCacheOptionList[$setid][(string)$alias->name] = (string)$alias->name;
                     }
