@@ -601,6 +601,8 @@ $.fn.SimpleActionButton = function (params) {
                               message: data['status_msg'] ? data['status_msg'] : data['status'],
                               draggable: true
                           });
+                    } else if (data_status.toLowerCase().trim() === 'ok') {
+                        $("#change_message_success").fadeIn(100).delay(10000).fadeOut(1000);
                     }
                     this_button.find('.reload_progress').removeClass("fa fa-spinner fa-pulse");
                     if (this_button.data('service-widget')) {
