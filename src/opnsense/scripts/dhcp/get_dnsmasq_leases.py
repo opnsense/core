@@ -65,7 +65,7 @@ if __name__ == '__main__':
                         lease['hwaddr'] = parts[1]
 
                     # DUID-LL and DUID-LLT (IPv6) contain the hwaddr, extract it
-                    if lease['hwaddr'] == '' and lease['client_id'] != '*':
+                    if lease['hwaddr'] == '' and ':' in lease['client_id']:
                         parts_client_id = lease['client_id'].lower().split(":")
                         if len(parts_client_id) >= 10:
                             duid_type = parts_client_id[0:2]
