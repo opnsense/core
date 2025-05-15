@@ -103,6 +103,8 @@
                 <th data-column-id="if_descr" data-type="string">{{ lang._('Interface') }}</th>
                 <th data-column-id="address" data-identifier="true" data-type="string" data-formatter="overflowformatter">{{ lang._('IP Address') }}</th>
                 <th data-column-id="hwaddr" data-type="string" data-formatter="macformatter" data-width="9em">{{ lang._('MAC Address') }}</th>
+                <th data-column-id="iaid" data-type="string" data-width="9em">{{ lang._('IAID') }}</th>
+                <th data-column-id="client_id" data-type="string" data-formatter="overflowformatter">{{ lang._('DUID') }}</th>
                 <th data-column-id="expire" data-type="string" data-formatter="timestamp">{{ lang._('Expire') }}</th>
                 <th data-column-id="hostname" data-type="string" data-formatter="overflowformatter">{{ lang._('Hostname') }}</th>
             </tr>

@@ -51,11 +51,27 @@ if __name__ == '__main__':
                 if len(parts) > 4 and parts[0].isdigit():
                     lease = {
                         'expire': int(parts[0]),
-                        'hwaddr': parts[1],
+                        'hwaddr': '',
+                        'iaid': '',
                         'address': parts[2],
                         'hostname': parts[3],
                         'client_id': parts[4]
                     }
+
+                    # MAC (IPv4) and IAID (IPv6) share the same spot
+                    if ':' in parts[2]:
+                        lease['iaid'] = parts[1]
+                    else:
+                        lease['hwaddr'] = parts[1]
+
+                    # DUID-LL and DUID-LLT (IPv6) contain the hwaddr, extract it
+                    if lease['hwaddr'] == '' and ':' in lease['client_id']:
+                        parts_client_id = lease['client_id'].lower().split(":")
+                        if len(parts_client_id) >= 10:
+                            duid_type = parts_client_id[0:2]
+                            if duid_type in [['00', '01'], ['00', '03']]:
+                                lease['hwaddr'] = ":".join(parts_client_id[-6:])
+
                     for net in ranges:
                         if net.overlaps(ipaddress.ip_network(lease['address'])):
                             lease['if'] = ranges[net]
