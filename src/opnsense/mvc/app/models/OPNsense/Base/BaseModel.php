@@ -258,7 +258,7 @@ abstract class BaseModel
         // iterate model children
         foreach ($xml->children() as $xmlNode) {
             $tagName = $xmlNode->getName();
-            $thisModelPath = empty($model_path) ? $tagName : $model_path . '.' . $tagName;
+            $thisModelPath = empty($model_path) ? get_class($this) . "." . $tagName : $model_path . '.' . $tagName;
             // generate full object name ( section.section.field syntax ) and create new Field
             $new_ref = $internal_data->__reference == "" ? $tagName : $internal_data->__reference . "." . $tagName;
             $fieldObject = $this->getFieldObject($xmlNode, $thisModelPath, $new_ref);
