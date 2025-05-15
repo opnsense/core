@@ -362,6 +362,31 @@ abstract class BaseModel
     }
 
     /**
+     * use model xml to find persisted_at for this model in the active configuration
+     * @return float last persisted at timestamp
+     */
+    public static function persistedAt()
+    {
+        $class_info = new ReflectionClass(get_called_class());
+        $model_filename = substr($class_info->getFileName(), 0, strlen($class_info->getFileName()) - 3) . "xml";
+        $model_xml = @simplexml_load_file($model_filename);
+        if ($model_xml != null && !empty($model_xml->mount)) {
+            if (strpos($model_xml->mount, "//") === 0) {
+                $src_mountpoint = $model_xml->mount;
+            } else {
+                $src_mountpoint = "/opnsense{$model_xml->mount}";
+            }
+            $tmp_config_data = Config::getInstance()->xpath($src_mountpoint);
+            if ($tmp_config_data->length > 0) {
+                $config_array = simplexml_import_dom($tmp_config_data->item(0));
+                return floatval((string)$config_array->attributes()['persisted_at']);
+            }
+
+        }
+        return 0.0;
+    }
+
+    /**
      * Construct new model type, using its own xml template
      * @throws ModelException if the model xml is not found or invalid
      * @throws ReflectionException
@@ -608,7 +633,10 @@ abstract class BaseModel
             $this->internalData->addToXMLNode($xml->xpath($this->internal_mountpoint)[0]);
             // add this model's version to the newly created xml structure
             if (!empty($this->internal_current_model_version)) {
-                $xml->xpath($this->internal_mountpoint)[0]->addAttribute('version', $this->internal_current_model_version);
+                $rootnode = $xml->xpath($this->internal_mountpoint)[0];
+                $rootnode->addAttribute('version', $this->internal_current_model_version);
+                /* when versioned, also mark node with a timestamp */
+                $rootnode->addAttribute('persisted_at', sprintf("%0.2f", microtime(true)));
             }
         }
 
