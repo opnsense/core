@@ -246,7 +246,7 @@ abstract class BaseModel
      * @throws ModelException parse error
      * @throws ReflectionException
      */
-    private function parseXml(&$xml, &$config_data, &$internal_data, $model_path='')
+    private function parseXml(&$xml, &$config_data, &$internal_data, $model_path = '')
     {
         // copy xml tag attributes to Field
         if ($config_data != null) {
@@ -303,7 +303,7 @@ abstract class BaseModel
                                 $fieldObject->__reference . "." . $tagUUID,
                                 $tagName
                             );
-                            if ($new_uuid){
+                            if ($new_uuid) {
                                 // if the node misses a uuid, copy it to this nodes attributes
                                 $child_node->setAttributeValue('uuid', $tagUUID);
                             }
@@ -381,7 +381,6 @@ abstract class BaseModel
                 $config_array = simplexml_import_dom($tmp_config_data->item(0));
                 return floatval((string)$config_array->attributes()['persisted_at']);
             }
-
         }
         return 0.0;
     }
