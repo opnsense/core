@@ -59,10 +59,10 @@ if __name__ == '__main__':
                     }
 
                     # MAC (IPv4) and IAID (IPv6) share the same spot
-                    if ':' in parts[1]:
-                        lease['hwaddr'] = parts[1]
-                    else:
+                    if ':' in parts[2]:
                         lease['iaid'] = parts[1]
+                    else:
+                        lease['hwaddr'] = parts[1]
 
                     for net in ranges:
                         if net.overlaps(ipaddress.ip_network(lease['address'])):
