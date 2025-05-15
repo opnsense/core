@@ -134,6 +134,7 @@ if [ -f ${GROWFS_MARKER} ]; then
 	# hammertime!
 	if [ -n "${ROOT_IS_UFS}" ]; then
 		grow_partition ${ROOT_IS_UFS}
+		gpart commit ${ROOT_IS_UFS}
 		growfs -y "/"
 	elif [ -n "${ROOT_IS_ZFS}" ]; then
 		zpool list -Hv ${ROOT_IS_ZFS} | while read NAME MORE; do
