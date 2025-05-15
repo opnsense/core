@@ -143,6 +143,8 @@ class FilterRuleContainerField extends ContainerField
  */
 class FilterRuleField extends ArrayField
 {
+    protected static $internalStaticChildren = [];
+
     /**
      * @inheritDoc
      */
