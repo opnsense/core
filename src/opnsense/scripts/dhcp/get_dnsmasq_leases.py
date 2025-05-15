@@ -64,6 +64,14 @@ if __name__ == '__main__':
                     else:
                         lease['hwaddr'] = parts[1]
 
+                    # DUID-LL and DUID-LLT (IPv6) contain the hwaddr, extract it
+                    if lease['hwaddr'] == '' and lease['client_id'] != '*':
+                        parts_client_id = lease['client_id'].lower().split(":")
+                        if len(parts_client_id) >= 10:
+                            duid_type = parts_client_id[0:2]
+                            if duid_type in [['00', '01'], ['00', '03']]:
+                                lease['hwaddr'] = ":".join(parts_client_id[-6:])
+
                     for net in ranges:
                         if net.overlaps(ipaddress.ip_network(lease['address'])):
                             lease['if'] = ranges[net]
