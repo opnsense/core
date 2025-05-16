@@ -26,17 +26,19 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
- namespace OPNsense\Dnsmasq\Api;
+namespace OPNsense\Dnsmasq\Api;
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Firewall\Util;
 
 class LeasesController extends ApiControllerBase
 {
     public function searchAction()
     {
         $selected_interfaces = $this->request->get('selected_interfaces');
+        $selected_protocol = $this->request->getPost('selected_protocol') ?? '';
         $backend = new Backend();
         $interfaces = [];
 
@@ -69,9 +71,26 @@ class LeasesController extends ApiControllerBase
             $records = [];
         }
 
-        $response = $this->searchRecordsetBase($records, null, 'address', function ($key) use ($selected_interfaces) {
-            return empty($selected_interfaces) || in_array($key['if_name'], $selected_interfaces);
-        });
+        $response = $this->searchRecordsetBase(
+            $records,
+            null,
+            'address',
+            function ($record) use ($selected_interfaces, $selected_protocol) {
+                $interfaceMatch = empty($selected_interfaces)
+                    || in_array($record['if_name'], $selected_interfaces, true);
+
+                $protocolMatch = true;
+                if (!empty($selected_protocol)) {
+                    if ($selected_protocol === 'ipv4') {
+                        $protocolMatch = Util::isIpv4Address($record['address']);
+                    } else {
+                        $protocolMatch = Util::isIpv6Address($record['address']);
+                    }
+                }
+
+                return $interfaceMatch && $protocolMatch;
+            }
+        );
 
         $response['interfaces'] = $interfaces;
         return $response;
