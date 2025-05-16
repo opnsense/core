@@ -102,14 +102,14 @@
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs"></ul>
 <div class="tab-content content-box col-xs-12 __mb">
     <div class="btn-group" id="interface-selection-wrapper">
-        <select class="selectpicker" multiple="multiple" data-live-search="true" id="interface-selection" data-width="auto" title="All Interfaces">
+        <select class="selectpicker" multiple="multiple" data-live-search="true" id="interface-selection" data-width="auto" title="{{ lang._('All Interfaces') }}">
         </select>
     </div>
     <div class="btn-group" id="protocol-selection-wrapper">
-        <select class="selectpicker" id="protocol-selection" data-width="auto" title="IPv4/IPv6">
-            <option value="">IPv4/IPv6</option>
-            <option value="ipv4">IPv4</option>
-            <option value="ipv6">IPv6</option>
+        <select class="selectpicker" id="protocol-selection" data-width="auto" title="{{ lang._('IPv4/IPv6') }}">
+            <option value="">{{ lang._('IPv4/IPv6') }}</option>
+            <option value="ipv4">{{ lang._('IPv4') }}</option>
+            <option value="ipv6">{{ lang._('IPv6') }}</option>
         </select>
     </div>
     <table id="grid-leases" class="table table-condensed table-hover table-striped table-responsive">
