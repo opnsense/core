@@ -17,6 +17,11 @@
                 }
             }
         });
+
+        $("#grid-autorules").UIBootgrid({
+            search:'/api/firewall/{{ruleController}}/search_auto_rule/'
+        });
+
         grid.on("loaded.rs.jquery.bootgrid", function (e){
             // reload categories before grid load
             ajaxCall('/api/firewall/{{ruleController}}/list_categories', {}, function(data, status){
@@ -139,136 +144,201 @@
             }
         });
 
-        $(".disable_replyto").change(function(){
-            let reply_to_tr = $(".enable_replyto").closest('tr');
-            if ($(this).is(':checked')) {
-                reply_to_tr.hide();
-            } else {
-                reply_to_tr.show();
+        ajaxGet('/api/firewall/{{ruleController}}/list_translation_network', [], function(data, status) {
+            if (data.single) {
+                let attr_id = $(".translation_net").attr('id');
+                $(".translation_net").replaceInputWithSelector(data);
+                $("select[for='" + attr_id + "']").change(function() {
+                    var selectedValue = $("select[for='" + attr_id + "']").next().attr('title');
+                    var nextRow = $("select[for='" + attr_id + "']").closest('tr').next('tr').find('input[type="text"]').first().closest('tr');
+                    if (selectedValue === "Interface address") {
+                        nextRow.find('input[type="text"]').val('');
+                        nextRow.find('input[type="text"]').off('change');
+                        nextRow.hide();
+                    } else {
+                        nextRow.show();
+                        if (selectedValue === 'Single host or Network') {
+                            nextRow.find('input[type="text"]').off('change').on('change', function() {
+                                $("select[for='" + attr_id + "']").prop('selectedIndex', 1);
+                            });
+                        }
+                    }
+                });
             }
         });
 
-        if(window.location.pathname.split('/')[3]=='port_forward') {
-            var target = '';
-            var targetInput = '';
-            var target_port = '';
-            var pool_options = '';
-            var filter_rule = '';
-            grid.on('loaded.rs.jquery.bootgrid', function() {     
-                $("button.command-edit, button.command-copy, button.command-add").on('click', function() {
-                    target = ''; targetInput = ''; target_port = ''; pool_options = ''; filter_rule = '';
+        grid.on('loaded.rs.jquery.bootgrid', function() {
+            var currentRows = grid.bootgrid('getCurrentRows');
+            $("button.command-edit, button.command-copy, button.command-add").on('click', function() {
+                if ($(this).hasClass('command-add')) {
+                    $("#select_rule\\.target select").prop('selectedIndex', 0);
+                }
+                if ($(this).hasClass('command-edit') || $(this).hasClass('command-copy')) {
                     var row_id = $(this).data('row-id');
-                    if (!$("#rule\\.nordr").prop('checked') && row_id && row_id!=='') {
-                        ajaxGet('/api/firewall/{{ruleController}}/get_rule/' + row_id, [], function(data, status) {
-                                if (data.rule.target) {
-                                    target = data.rule.target;
-                                    if (target.indexOf(".") !== -1 || target.indexOf(":") !== -1) {
-                                        targetInput = target;
-                                        target = '';
-                                    }
-                                    target_port = data.rule.target_port;
-                                    pool_options = data.rule.pool_options;
-                                    var selectedOption = null;
-                                    for (var key in pool_options) {
-                                        if (pool_options.hasOwnProperty(key)) {
-                                            if (pool_options[key].selected === 1) {
-                                                selectedOption = key;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    pool_options = selectedOption;
-                                    filter_rule = data.rule.filter_rule;
-                                    var selectedRule = null;
-                                    for (var key in filter_rule) {
-                                        if (filter_rule.hasOwnProperty(key)) {
-                                            if (filter_rule[key].selected === 1) {
-                                                selectedRule = key;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    filter_rule = selectedRule;
-                                }
-                                $("#rule\\.nordr").trigger('change');
-                        });
+                    var target = '';
+                    $.each(currentRows, function(index, row) {
+                        if (row.uuid === row_id) {
+                            target = row.target;
+                            return false;
+                        }
+                    });
+                    if (target=='Interface address' || target=='NO NAT') {
+                        $("#select_rule\\.target select").prop('selectedIndex', 0);
                     } else {
-                        target = '';
-                        targetInput = '';
-                        target_port = '';
-                        pool_options = '';
-                        filter_rule = '';
+                        var selected = false;
+                        $("#select_rule\\.target select option").each(function() {
+                            if ($(this).text() === target) {
+                                selected = true;
+                                $(this).prop("selected", true);
+                            }
+                        });
+                        var targetValue = $("#select_rule\\.target select").val();        
+                        if (!selected && target) {
+                            $("#select_rule\\.target select").prop('selectedIndex', 1);
+                        }
+                        $("#rule\\.target").val(targetValue);
+                    }
+                }
+                $("#select_rule\\.target select").trigger('change');
+            });
+        });
+        
+        ajaxGet('/api/firewall/{{ruleController}}/search_mode', [], function(data, status) {
+            if (data.mode == '' || $.isEmptyObject(data.mode)) {
+                $("#mode_automatic").prop("checked", true);
+                showAutomaticRulesTab();
+            } else {
+                $("#mode_"+data.mode).prop("checked", true);
+                if (data.mode=='advanced') {
+                    showManualRulesTab();
+                } else if (data.mode=='automatic') {
+                    showAutomaticRulesTab();
+                } else if (data.mode=='hybrid') {
+                    $('#maindiv').removeClass('hidden');
+                }
+            }
+        });
+
+        $("#saveModeAction").on("click", function() {
+            var selectedMode = $("input[name='mode']:checked").val();
+            if (selectedMode) {
+                $.ajax({
+                    url: '/api/firewall/{{ruleController}}/save_mode',
+                    type: 'POST',
+                    data: {
+                        mode: selectedMode
+                    },
+                    success: function(response) {
+                        if (response.result === "saved") {
+                            location.reload();
+                        } else {
+                            alert("Failed to save mode.");
+                        }
+                    },
+                    error: function() {
+                        alert("Error occurred while saving the mode.");
                     }
                 });
-                if ($("#grid-rules thead tr").length === 1) {
-                    $("#grid-rules thead").prepend('<tr><th style="width:2em;"></th><th colspan="4" style="width:20em;"></th><th colspan="2" style="width:10em;">Source</th><th colspan="2" style="width:10em;">Destination</th><th colspan="2" style="width:10em;">NAT</th><th colspan="2" style="width:12em;"></th></tr>');
-                    $(".dropdown-item-checkbox").first().trigger('change');
-                } else if ($("#grid-rules thead tr").length === 2) {
-                    var firstRow = $("#grid-rules thead tr").first().children('th').length;
-                    var newCount = $("#grid-rules tfoot tr td").first().attr("colspan");
-                    $("#grid-rules tfoot tr td").first().attr("colspan", newCount - firstRow);
-                }
-            });
+            } else {
+                alert("Please select a mode.");
+            }
+        });
 
-            $("#rule\\.nordr").change(function(){
-                if ($("#rule\\.nordr").prop('checked')) {
-                    $("#row_rule\\.target").addClass("hidden");
-                    $("#row_rule\\.target :input").val('').prop("disabled", true);
-                    $("#row_rule\\.target_port").addClass("hidden");
-                    $("#row_rule\\.target_port :input").val('').prop("disabled", true);
-                    $("#row_rule\\.pool_options").addClass("hidden");
-                    $("#row_rule\\.pool_options :input").val('').prop("disabled", true);    
-                    $("#row_rule\\.filter_rule").addClass("hidden");
-                    $("#row_rule\\.filter_rule :input").val('').prop("disabled", true);
-                } else {
-                    $("#row_rule\\.target").removeClass("hidden");
-                    $('#select_rule\\.target select').val(target).prop('disabled', false);
-                    $('#select_rule\\.target button').prop('disabled', false);
-                    $('#select_rule\\.target input').val(targetInput).prop('disabled', false);
-                    $("#row_rule\\.target_port").removeClass("hidden");
-                    $("#row_rule\\.target_port :input").val(target_port).prop('disabled', false);
-                    $("#row_rule\\.pool_options").removeClass("hidden");
-                    $("#row_rule\\.pool_options :input").val(pool_options).prop('disabled', false);
-                    $("#row_rule\\.filter_rule").removeClass("hidden");
-                    $("#row_rule\\.filter_rule :input").val(filter_rule).prop('disabled', false);
-                    $('.dropdown-toggle').removeClass('disabled');
-                }
-                $('#select_rule\\.target select').trigger('change');
-                $('#select_rule\\.pool_options select').trigger('change');
-                $('#select_rule\\.filter_rule select').trigger('change');
-            });
-
-            $(".dropdown-item-checkbox").change(function() {
-                var colspan1 = colspan2 = colspan3 = colspan4 = colspan5 = 0;
-                $("#grid-rules thead tr:first").remove();
-                $(".dropdown-item-checkbox").each(function(index, element) {
-                    if (index<5 && element.checked==true) {
-                        colspan1++;
-                    } else if (index<7 && element.checked==true) {
-                        colspan2++;
-                    } else if (index<9 && element.checked==true) {
-                        colspan3++;
-                    } else if (index<11 && element.checked==true) {
-                        colspan4++;
-                    } else if (index<13 && element.checked==true) {
-                        colspan5++;
-                    }
-                });
-                $("#grid-rules thead").prepend('<tr><th style="width:2em;"></th>' +         
-                    (colspan1 != 0 ? '<th colspan="' + colspan1 + '" style="width:20em;"></th>' : '') +
-                    (colspan2 != 0 ? '<th colspan="' + colspan2 + '" style="width:10em;">Source</th>' : '') +
-                    (colspan3 != 0 ? '<th colspan="' + colspan3 + '" style="width:10em;">Destination</th>' : '') +
-                    (colspan4 != 0 ? '<th colspan="' + colspan4 + '" style="width:10em;">NAT</th>' : '') +
-                    '<th colspan="' + colspan5 + '" style="width:12em;"></th></tr>'
-                );
-            });
+        function showAutomaticRulesTab() {
+            $("#manual").hide();
+            $("#rules").hide();
+            $("#autorules").show();
+            $('#maintabs a[href="#autorules"]').tab('show');
+            $('#maindiv').removeClass('hidden');
         }
+
+        function showManualRulesTab() {           
+            $("#automatic").hide();
+            $("#autorules").hide();
+            $("#rules").show();
+            $('#maintabs a[href="#rules"]').tab('show');
+            $('#maindiv').removeClass('hidden');
+        }
+
+        $(".pool_options").change(function() {
+            let source_hash_key = $(".source_hash_key").closest('tr');
+            source_hash_key.hide();
+            if ($(".pool_options").val()=='source_hash') {
+                source_hash_key.show();
+            }
+        });
     });
 </script>
 
 
+<div class="content-box">
+    <table class="table table-striped table-condensed">
+        <thead>
+            <tr>
+                <th colspan="4">{{ lang._('Mode') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <input name="mode" type="radio" id="mode_automatic" value="automatic" />
+                </td>
+                <td>
+                    <label for="mode_automatic">
+                    <strong>
+                        {{ lang._('Automatic outbound NAT rule generation') }}<br />
+                        {{ lang._('(no manual rules can be used)') }}
+                    </strong>
+                    </label>
+                </td>
+                <td>
+                    <input name="mode" type="radio" id="mode_hybrid" value="hybrid" />
+                </td>
+                <td>
+                    <label for="mode_hybrid">
+                    <strong>
+                        {{ lang._('Hybrid outbound NAT rule generation') }}<br />
+                        {{ lang._('(automatically generated rules are applied after manual rules)') }}
+                    </strong>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input name="mode" type="radio" id="mode_advanced" value="advanced" />
+                </td>
+                <td>
+                    <label for="mode_advanced">
+                    <strong>
+                        {{ lang._('Manual outbound NAT rule generation') }}<br />
+                        {{ lang._('(no automatic rules are being generated)') }}
+                    </strong>
+                    </label>
+                </td>
+                <td>
+                    <input name="mode" type="radio" id="mode_disabled" value="disabled" />
+                </td>
+                <td>
+                    <label for="mode_disabled">
+                    <strong>
+                        {{ lang._('Disable outbound NAT rule generation') }}<br />
+                        {{ lang._('(outbound NAT is disabled)') }}
+                    </strong>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <button id="saveModeAction" name="save" type="submit" class="btn btn-primary" value="Save">{{ lang._('Save') }}</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div><br /><br />
+<div id="maindiv" class="hidden">
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-    <li class="active"><a data-toggle="tab" href="#rules">{{ lang._('Rules') }}</a></li>
+    <li class="active" id="manual"><a data-toggle="tab" href="#rules">{{ lang._('Manual Rules') }}</a></li>
+    <li id="automatic"><a data-toggle="tab" href="#autorules">{{ lang._('Automatic Rules') }}</a></li>
 </ul>
 <div class="tab-content content-box">
     <div id="rules" class="tab-pane fade in active">
@@ -279,8 +349,8 @@
                 </select>
             </div>
         </div>
-        <!-- tab page "rules" -->
-        <table id="grid-rules" class="table table-condensed table-hover table-striped" data-editDialog="DialogFilterRule" data-editAlert="FilterRuleChangeMessage">
+        <!-- tab page "manual rules" -->
+        <table id="grid-rules" class="table table-condensed table-hover table-striped" data-editDialog="DialogOutboundRule" data-editAlert="FilterRuleChangeMessage">
             <thead>
                 <tr>
                     <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">{{ lang._('ID') }}</th>
@@ -335,6 +405,27 @@
         <br/><br/>
     </div>
     </div>
+    <div id="autorules" class="tab-pane fade in">
+        <!-- tab page "automatic rules" -->
+        <table id="grid-autorules" class="table table-condensed table-hover table-striped" data-editDialog="DialogOutboundRule" data-editAlert="FilterRuleChangeMessage">
+            <thead>
+                <tr>
+{% for fieldlist in gridFields|slice(2, gridFields|length) %}
+                    <th
+                        data-column-id="{{fieldlist['id']}}"
+                        data-width="{{fieldlist['width']|default('')}}"
+                        data-type="{{fieldlist['type']|default('string')}}"
+                        data-formatter="{{fieldlist['formatter']|default('')}}"
+                        data-visible="{{fieldlist['visible']|default('')}}"
+                    >{{fieldlist['heading']|default('')}}</th>
+{% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
 </div>
 
-{{ partial("layout_partials/base_dialog",['fields':formDialogFilterRule,'id':'DialogFilterRule','label':lang._('Edit rule')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogOutboundRule,'id':'DialogOutboundRule','label':lang._('Edit rule')])}}
