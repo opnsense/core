@@ -106,7 +106,7 @@
         </select>
     </div>
     <div class="btn-group" id="protocol-selection-wrapper">
-        <select class="selectpicker" id="protocol-selection" data-width="auto" title="{{ lang._('IPv4/IPv6') }}">
+        <select class="selectpicker" id="protocol-selection" data-width="auto">
             <option value="">{{ lang._('IPv4/IPv6') }}</option>
             <option value="ipv4">{{ lang._('IPv4') }}</option>
             <option value="ipv6">{{ lang._('IPv6') }}</option>
