@@ -32,6 +32,12 @@
             $("#grid-leases").bootgrid('reload');
         })
 
+        let selected_protocol = "";
+        $('#protocol-selection').change(function () {
+            selected_protocol = $(this).val();
+            $('#grid-leases').bootgrid('reload');
+        });
+
         $("#grid-leases").UIBootgrid({
             search:'/api/dnsmasq/leases/search/',
             options: {
@@ -40,6 +46,7 @@
                 useRequestHandlerOnGet: true,
                 requestHandler: function(request) {
                     request['selected_interfaces'] = selected_interfaces;
+                    request['selected_protocol'] = selected_protocol;
                     return request;
                 },
                 responseHandler: function (response) {
@@ -78,6 +85,7 @@
         });
 
         $("#interface-selection-wrapper").detach().prependTo('#grid-leases-header > .row > .actionBar > .actions');
+        $("#protocol-selection-wrapper").detach().insertBefore("#interface-selection-wrapper");
 
         updateServiceControlUI('dnsmasq');
     });
@@ -95,6 +103,13 @@
 <div class="tab-content content-box col-xs-12 __mb">
     <div class="btn-group" id="interface-selection-wrapper">
         <select class="selectpicker" multiple="multiple" data-live-search="true" id="interface-selection" data-width="auto" title="All Interfaces">
+        </select>
+    </div>
+    <div class="btn-group" id="protocol-selection-wrapper">
+        <select class="selectpicker" id="protocol-selection" data-width="auto" title="IPv4/IPv6">
+            <option value="">IPv4/IPv6</option>
+            <option value="ipv4">IPv4</option>
+            <option value="ipv6">IPv6</option>
         </select>
     </div>
     <table id="grid-leases" class="table table-condensed table-hover table-striped table-responsive">
