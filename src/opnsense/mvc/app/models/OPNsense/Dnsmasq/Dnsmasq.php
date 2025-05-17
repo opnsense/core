@@ -194,6 +194,15 @@ class Dnsmasq extends BaseModel
                 );
             }
 
+            if (!$range->ra_mode->isEmpty() && (!$range->prefix_len->isEmpty() && $range->prefix_len->asFloat() < 64)) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("Prefix length must be at least 64 when router advertisements are used."),
+                        $key . ".prefix_len"
+                    )
+                );
+            }
+
             // Validate RA mode combinations
             $valid_ra_mode_combinations = [
                 ['ra-names', 'slaac'],
