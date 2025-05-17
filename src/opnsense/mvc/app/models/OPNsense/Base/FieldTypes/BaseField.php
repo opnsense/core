@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2024 Deciso B.V.
+ * Copyright (C) 2015-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -672,17 +672,26 @@ abstract class BaseField
      */
     public function getNodes()
     {
-        $result = array ();
+        $result = [];
         foreach ($this->iterateItems() as $key => $node) {
-            if ($node->isContainer()) {
-                $result[$key] = $node->getNodes();
-            } else {
-                $result[$key] = $node->getNodeData();
-            }
+            $result[$key] = $node->isContainer() ? $node->getNodes() : $node->getNodeData();
         }
-
         return $result;
     }
+
+    /**
+     * get nodes as array structure using getDescription() as leaves
+     * @return array
+     */
+    public function getNodeDescriptions()
+    {
+        $result = [];
+        foreach ($this->iterateItems() as $key => $node) {
+            $result[$key] = $node->isContainer() ? $node->getNodeDescriptions() :  $node->getDescription();
+        }
+        return $result;
+    }
+
 
     /**
      * companion for getNodes, displays node content. may be overwritten for alternative presentation.

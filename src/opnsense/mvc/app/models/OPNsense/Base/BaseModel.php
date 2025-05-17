@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2023 Deciso B.V.
+ * Copyright (C) 2015-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -385,6 +385,40 @@ abstract class BaseModel
         return 0.0;
     }
 
+
+    /**
+     * Return the cached data of this object, excluding any dynamic data which lazy loading would exclude.
+     * Values returned are collected via getDescription() on the nodes as this is the data the user is normally
+     * presented.
+     * @return array
+     */
+    public static function getCachedData()
+    {
+        $class_info = new ReflectionClass(get_called_class());
+        $cache_filename = sprintf(
+            "%smdl_cache_%s.json",
+            sys_get_temp_dir(),
+            str_replace("\\", "_", $class_info->getName())
+        );
+        $fobj = new \OPNsense\Core\FileObject($cache_filename, 'a+', 0600, LOCK_EX);
+        $cache_payload = $fobj->readJson() ?? [];
+        if (!isset($cache_payload['persisted_at']) || $cache_payload['persisted_at'] !=  self::persistedAt()) {
+            /**
+             * cache invalid or expired, calculate new content
+             * We assume we don't need dynamic content as the cost might be high and is certainly not cacheable
+             * using the same logic.
+             **/
+            $mdl = $class_info->newInstance(true);
+            $cache_payload = [
+                'persisted_at' => self::persistedAt(),
+                'content' => $mdl->getNodeDescriptions()
+            ];
+            $fobj->truncate(0)->writeJson($cache_payload);
+            unset($fobj);
+        }
+        return $cache_payload['content'];
+    }
+
     /**
      * Construct new model type, using its own xml template
      * @throws ModelException if the model xml is not found or invalid
@@ -487,6 +521,15 @@ abstract class BaseModel
     public function getNodes()
     {
         return $this->internalData->getNodes();
+    }
+
+    /**
+     * get nodes as array structure using getDescription() as leaves
+     * @return array
+     */
+    public function getNodeDescriptions()
+    {
+        return $this->internalData->getNodeDescriptions();
     }
 
     /**
