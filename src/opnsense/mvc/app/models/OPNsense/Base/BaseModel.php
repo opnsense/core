@@ -363,7 +363,7 @@ abstract class BaseModel
 
     /**
      * use model xml to find persisted_at for this model in the active configuration
-     * @return float last persisted at timestamp
+     * @return float last persisted at timestamp, -1 when uncacheable (isLegacyMapper)
      */
     public static function persistedAt()
     {
@@ -373,11 +373,14 @@ abstract class BaseModel
         if ($model_xml != null && !empty($model_xml->mount)) {
             if (strpos($model_xml->mount, "//") === 0) {
                 $src_mountpoint = $model_xml->mount;
+            } elseif (str_ends_with($model_xml->mount, '+') && strpos($model_xml->mount, "//") !== 0) {
+                return -1;
             } else {
                 $src_mountpoint = "/opnsense{$model_xml->mount}";
             }
+
             $tmp_config_data = Config::getInstance()->xpath($src_mountpoint);
-            if ($tmp_config_data->length > 0) {
+            if ($tmp_config_data !== false && $tmp_config_data->length > 0) {
                 $config_array = simplexml_import_dom($tmp_config_data->item(0));
                 return floatval((string)$config_array->attributes()['persisted_at']);
             }
@@ -406,10 +409,14 @@ abstract class BaseModel
     public static function getCachedData()
     {
         $class_info = new ReflectionClass(get_called_class());
+        $persisted_at = self::persistedAt();
+        if ($persisted_at == -1) {
+            return $class_info->newInstance(true)->getNodeDescriptions();
+        }
         $cache_filename = self::getCacheFileName();
         $fobj = new \OPNsense\Core\FileObject($cache_filename, 'a+', 0600, LOCK_EX);
         $cache_payload = $fobj->readJson() ?? [];
-        if (!isset($cache_payload['persisted_at']) || $cache_payload['persisted_at'] != self::persistedAt()) {
+        if (!isset($cache_payload['persisted_at']) || $cache_payload['persisted_at'] != $persisted_at) {
             /**
              * cache invalid or expired, calculate new content
              * We assume we don't need dynamic content as the cost might be high and is certainly not cacheable
