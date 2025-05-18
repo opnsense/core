@@ -27,17 +27,18 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once 'config.inc';
-require_once 'util.inc';
-require_once 'interfaces.inc';
+require_once("script/load_phalcon.php");
 
-$mdl = (new \OPNsense\Routing\Gateways());
+use \OPNsense\Firewall\Util;
+use \OPNsense\Routing\Gateways;
+
+$mdl = (new Gateways());
 $gateways = $mdl->gatewaysIndexedByName(true, true, true);
 
 $ret = [];
 
 foreach ($gateways as $gateway) {
-    if (is_ipaddr($gateway['gateway'] ?? '')) {
+    if (Util::isIpAddress($gateway['gateway'] ?? '')) {
         $ret[$gateway['name']] = "{$gateway['name']} - {$gateway['gateway']}";
     } else {
         $ret[$gateway['name']] = "{$gateway['name']} - {$gateway['ipprotocol']}";
