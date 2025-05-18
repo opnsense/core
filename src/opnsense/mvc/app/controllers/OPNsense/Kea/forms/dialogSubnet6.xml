@@ -12,6 +12,20 @@
         <help>Select which interface this subnet belongs too.</help>
     </field>
     <field>
+        <id>subnet6.allocator</id>
+        <label>Allocator</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>Select allocator method to use when offering leases to clients.</help>
+    </field>
+    <field>
+        <id>subnet6.pd-allocator</id>
+        <label>PD Allocator</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>Select allocator method to use when offering prefix delegations to clients</help>
+    </field>
+    <field>
         <id>subnet6.description</id>
         <label>Description</label>
         <type>text</type>
