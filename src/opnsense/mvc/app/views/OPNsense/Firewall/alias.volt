@@ -378,6 +378,10 @@
                             case 'Bearer':
                                 $("#alias\\.password").show().attr('placeholder', '{{lang._('API token')}}');
                                 break;
+                            case 'Header':
+                                $("#alias\\.username").show().attr('placeholder', '{{lang._('HTTP Header')}}');
+                                $("#alias\\.password").show().attr('placeholder', '{{lang._('API token')}}');
+                                break;
                         }
                     });
                     $("#alias\\.authtype").change();
