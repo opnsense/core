@@ -385,6 +385,17 @@ abstract class BaseModel
         return 0.0;
     }
 
+    /**
+     * @return model cache filename
+     */
+    private static function getCacheFileName()
+    {
+        return sprintf(
+            "%smdl_cache_%s.json",
+            sys_get_temp_dir(),
+            str_replace("\\", "_", (new ReflectionClass(get_called_class()))->getName())
+        );
+    }
 
     /**
      * Return the cached data of this object, excluding any dynamic data which lazy loading would exclude.
@@ -395,14 +406,10 @@ abstract class BaseModel
     public static function getCachedData()
     {
         $class_info = new ReflectionClass(get_called_class());
-        $cache_filename = sprintf(
-            "%smdl_cache_%s.json",
-            sys_get_temp_dir(),
-            str_replace("\\", "_", $class_info->getName())
-        );
+        $cache_filename = self::getCacheFileName();
         $fobj = new \OPNsense\Core\FileObject($cache_filename, 'a+', 0600, LOCK_EX);
         $cache_payload = $fobj->readJson() ?? [];
-        if (!isset($cache_payload['persisted_at']) || $cache_payload['persisted_at'] !=  self::persistedAt()) {
+        if (!isset($cache_payload['persisted_at']) || $cache_payload['persisted_at'] != self::persistedAt()) {
             /**
              * cache invalid or expired, calculate new content
              * We assume we don't need dynamic content as the cost might be high and is certainly not cacheable
@@ -417,6 +424,18 @@ abstract class BaseModel
             unset($fobj);
         }
         return $cache_payload['content'];
+    }
+
+    /**
+     * Remove cache file.
+     *
+     * When cached data is used, we can only determine the validity of the stored data by looking at the configuration,
+     * in case the object also gathers dynamic data, the components responsible for pushing that data should invalidate
+     * the case in order to appear in the set.
+     */
+    public static function flushCacheData()
+    {
+        @unlink(self::getCacheFileName());
     }
 
     /**
