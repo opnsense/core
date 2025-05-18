@@ -93,9 +93,7 @@
                 <FieldSeparator>,</FieldSeparator>
                 <AsList>Y</AsList>
             </hwaddr>
-            <lease_time type="IntegerField">
-                <MinimumValue>1</MinimumValue>
-            </lease_time>
+            <lease_time type="IntegerField"/>
             <ignore type="BooleanField"/>
             <set_tag type="ModelRelationField">
                 <Model>
@@ -187,9 +185,7 @@
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>64</MaximumValue>
             </prefix_len>
-            <lease_time type="IntegerField">
-                <MinimumValue>1</MinimumValue>
-            </lease_time>
+            <lease_time type="IntegerField"/>
             <domain type="HostnameField">
                 <IsDNSName>Y</IsDNSName>
                 <IpAllowed>N</IpAllowed>
