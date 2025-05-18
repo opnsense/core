@@ -130,6 +130,23 @@ abstract class BaseField
      */
     private $internalParentModel = null;
 
+
+    /**
+     * @param array $node input array to traverse
+     * @param string $path reference to information to be fetched (e.g. my.data)
+     * @return array
+     */
+    protected static function getArrayReference(array $node, string $path)
+    {
+        foreach (explode('.', $path) as $ref) {
+            if (!isset($node[$ref]) || !is_array($node[$ref])) {
+                return []; /* not found or not valid */
+            }
+            $node = $node[$ref];
+        }
+        return $node;
+    }
+
     /**
      * @return bool
      */

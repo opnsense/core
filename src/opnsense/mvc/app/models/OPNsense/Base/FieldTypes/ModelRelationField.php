@@ -73,23 +73,7 @@ class ModelRelationField extends BaseListField
         }
         $class_info = new ReflectionClass($classname);
         $inst =  $class_info->newInstanceWithoutConstructor();
-        return $this->getArrayReference($inst->getCachedData(), $path);
-    }
-
-    /**
-     * @param array $node input array to traverse
-     * @param string $path reference to information to be fetched (e.g. my.data)
-     * @return array
-     */
-    private function getArrayReference($node, $path)
-    {
-        foreach (explode('.', $path) as $ref) {
-            if (!isset($node[$ref]) || !is_array($node[$ref])) {
-                return []; /* not found or not valid */
-            }
-            $node = $node[$ref];
-        }
-        return $node;
+        return self::getArrayReference($inst->getCachedData(), $path);
     }
 
     /**
@@ -116,7 +100,7 @@ class ModelRelationField extends BaseListField
                 $pmodel = $this->getParentModel();
                 if ($pmodel !== null && strcasecmp(get_class($pmodel), $className) === 0) {
                     // model options from the same model, use this model instead of creating something new
-                    $searchItems = $this->getArrayReference($pmodel->getNodeDescriptions(), $modelData['items']);
+                    $searchItems = self::getArrayReference($pmodel->getNodeDescriptions(), $modelData['items']);
                     $this->internalOptionsFromThisModel = true;
                 } else {
                     $searchItems = $this->getCachedData($className, $modelData['items']);
