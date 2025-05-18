@@ -261,6 +261,14 @@
             <description type="DescriptionField"/>
         </dhcp_options>
         <dhcp_boot type="ArrayField">
+            <interface type="InterfaceField">
+                <BlankDesc>Any</BlankDesc>
+                <Filters>
+                    <if>/^(?!lo0$).*/</if>
+                    <type>/(?s)^((?!group).)*$/</type>
+                </Filters>
+                <AllowDynamic>Y</AllowDynamic>
+            </interface>
             <tag type="ModelRelationField">
                 <Model>
                     <tag>

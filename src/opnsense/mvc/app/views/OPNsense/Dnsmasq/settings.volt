@@ -216,7 +216,7 @@
                         '#host\\.set_tag, ' +
                         '#range\\.interface, #range\\.set_tag, ' +
                         '#option\\.interface, #option\\.tag, ' +
-                        '#boot\\.tag'
+                        '#boot\\.interface, #boot\\.tag'
                     )
                     .selectpicker('val', selectedTags)
                     .selectpicker('refresh');
