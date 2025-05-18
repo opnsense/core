@@ -172,11 +172,15 @@ class KeaDhcpv4 extends BaseModel
                     continue;
                 }
                 $res = [];
-                foreach (['hw_address', 'ip_address', 'hostname'] as $key) {
+                foreach (['ip_address', 'hostname'] as $key) {
                     if (!empty((string)$reservation->$key)) {
                         $res[str_replace('_', '-', $key)] = (string)$reservation->$key;
                     }
                 }
+                if (!$reservation->hw_address->isEmpty()) {
+                    $res['hw-address'] = str_replace('-', ':', $reservation->hw_address);
+                }
+
                 $record['reservations'][] = $res;
             }
             $result[] = $record;
