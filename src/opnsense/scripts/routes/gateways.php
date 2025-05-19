@@ -29,8 +29,8 @@
 
 require_once("script/load_phalcon.php");
 
-use \OPNsense\Firewall\Util;
-use \OPNsense\Routing\Gateways;
+use OPNsense\Firewall\Util;
+use OPNsense\Routing\Gateways;
 
 $mdl = (new Gateways());
 $gateways = $mdl->gatewaysIndexedByName(true, true, true);
