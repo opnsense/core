@@ -389,13 +389,14 @@ abstract class BaseModel
     }
 
     /**
+     * @param string $tmpdir tempdir location, when empty, sys_get_temp_dir() is used (this users temp)
      * @return model cache filename
      */
-    private static function getCacheFileName()
+    private static function getCacheFileName($tmpdir=null)
     {
         return sprintf(
             "%smdl_cache_%s.json",
-            sys_get_temp_dir(),
+            empty($tmpdir) ? sys_get_temp_dir() : $tmpdir,
             str_replace("\\", "_", (new ReflectionClass(get_called_class()))->getName())
         );
     }
@@ -442,7 +443,10 @@ abstract class BaseModel
      */
     public static function flushCacheData()
     {
-        @unlink(self::getCacheFileName());
+        /* wwwonly will use a different tempdir as root, when root calls a flush, both should be removed */
+        foreach (['/var/lib/php/tmp', '/tmp'] as $tmpdir) {
+            @unlink(self::getCacheFileName($tmpdir));
+        }
     }
 
     /**
