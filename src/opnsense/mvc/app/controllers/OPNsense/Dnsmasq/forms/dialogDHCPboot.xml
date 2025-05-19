@@ -8,7 +8,7 @@
     <field>
         <id>boot.tag</id>
         <label>Tag</label>
-        <type>dropdown</type>
+        <type>select_multiple</type>
         <help>Only offer this boot image to the clients matched by the given tag. Can be optionally combined with an interface tag.</help>
     </field>
     <field>

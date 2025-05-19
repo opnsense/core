@@ -277,6 +277,7 @@
                         <display>tag</display>
                     </tag>
                 </Model>
+                <Multiple>Y</Multiple>
             </tag>
             <filename type="TextField"/>
             <servername type="TextField"/>
