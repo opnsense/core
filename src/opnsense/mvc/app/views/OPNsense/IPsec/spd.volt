@@ -117,7 +117,7 @@
             <thead>
             <tr>
                 <th data-column-id="id" data-type="string" data-sortable="false" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                <th data-column-id="direction" data-type="string" data-width="4em" data-formatter="direction">{{ lang._('Dir') }}</th>
+                <th data-column-id="dir" data-type="string" data-width="4em" data-formatter="direction">{{ lang._('Dir') }}</th>
                 <th data-column-id="src" data-type="string" data-formatter="address">{{ lang._('Source') }}</th>
                 <th data-column-id="dst" data-type="string" data-formatter="address">{{ lang._('Destination') }}</th>
                 <th data-column-id="upperspec" data-type="string" data-visible="false">{{ lang._('Upperspec') }}</th>
