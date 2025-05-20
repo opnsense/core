@@ -392,7 +392,7 @@ abstract class BaseModel
      * @param string $tmpdir tempdir location, when empty, sys_get_temp_dir() is used (this users temp)
      * @return model cache filename
      */
-    private static function getCacheFileName($tmpdir=null)
+    private static function getCacheFileName($tmpdir = null)
     {
         return sprintf(
             "%smdl_cache_%s.json",
