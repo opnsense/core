@@ -186,10 +186,11 @@ function _dnsmasq_add_host_entries()
             if (str_starts_with($ip, '::')) {
                 continue;
             }
-            if (!empty($host['host']) && empty($host['domain'])) {
+            if (empty($host['host'])) {
+                /* do not render partial DHCP lease entries */
+            } elseif (empty($host['domain'])) {
                 $lhosts .= "{$ip}\t{$host['host']}\n";
-            } elseif (!empty($host['host'])) {
-                /* XXX: The question is if we do want "host" as a global alias */
+            } else {
                 $lhosts .= "{$ip}\t{$host['host']}.{$host['domain']} {$host['host']}\n";
             }
             if (!empty($host['aliases'])) {
