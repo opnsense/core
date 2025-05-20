@@ -326,9 +326,27 @@ class AccessController extends ApiControllerBase
 
             $zone = (new \OPNsense\CaptivePortal\CaptivePortal())->getByZoneId($zoneId);
 
-            if ($zone != null && !empty((string)$zone->hardtimeout) && !empty($clientSession['startTime'])) {
-                if ((time() - (int)$clientSession['startTime']) < (string)$zone->hardtimeout * 60) {
-                    $result['seconds-remaining'] = (string)$zone->hardtimeout * 60 - ((time() - (int)$clientSession['startTime']));
+            if ($zone != null && !empty($clientSession['startTime'])) {
+                $startTime = (int)$clientSession['startTime'];
+                $secondsPassed = time() - $startTime;
+                $remainingTimes = [];
+
+                if (!empty((string)$zone->hardtimeout)) {
+                    $timeout = (int)$zone->hardtimeout * 60;
+                    if ($secondsPassed < $timeout) {
+                        $remainingTimes[] = $timeout - $secondsPassed;
+                    }
+                }
+
+                if (!empty($clientSession['acc_session_timeout'])) {
+                    $timeout = (int)$clientSession['acc_session_timeout'];
+                    if ($secondsPassed < $timeout) {
+                        $remainingTimes[] = $timeout - $secondsPassed;
+                    }
+                }
+
+                if (!empty($remainingTimes)) {
+                    $result['seconds-remaining'] = min($remainingTimes);
                 }
             }
 
