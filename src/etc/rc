@@ -70,7 +70,7 @@ grow_partition()
 		gpart resize -i ${IDX} ${DEV}
 
 		if [ -n "${CMT}" ]; then
-			gpart commit ${DEV}
+			gpart commit -i ${IDX} ${DEV}
 		fi
 	fi
 }
