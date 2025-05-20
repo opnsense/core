@@ -179,12 +179,6 @@ function _dnsmasq_add_host_entries()
         $dnsmasqcfg['hosts'] = [];
     }
 
-    /**
-    * XXX: We want to create these entries for dhcp-host as well.
-    *      Hostnames must be resolvable regardless of their DHCP lease status.
-    *      This overrides the dhcp-host behavior, as hostnames of leases will not be registered if they appear in this file.
-    *      One edge case are partial IPv6 addresses (::1) as they must be constructed by dnsmasq internally.
-    */
     foreach ($dnsmasqcfg['hosts'] as $host) {
         /* The host.ip field supports multiple IPv4 and IPv6 addresses */
         foreach (explode(',', $host['ip']) as $ip) {
