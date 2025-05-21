@@ -226,7 +226,7 @@ class Util
         $alias = self::getAliasByName($name);
         if ($alias != null) {
             // check validity for port type aliases
-            if (preg_match("/port/i", (string)$alias->type) && empty((string)$alias->content)) {
+            if (preg_match("/port/i", (string)$alias->type) && !empty((string)$alias->content)) {
                 return true;
             }
         }
