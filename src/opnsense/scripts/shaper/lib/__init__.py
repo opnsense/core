@@ -34,6 +34,8 @@ import datetime
 
 def parse_flow(flow_line):
     tmp = flow_line.split()
+    if tmp[0] == 'mask:':
+        return None
     if flow_line.find(':') > 0 and len(tmp) > 8:
         # IPv6 layout
         return {
