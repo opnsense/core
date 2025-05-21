@@ -1077,7 +1077,7 @@ include("head.inc");
                       );
 
                       foreach ($icmptypes as $icmptype => $descr): ?>
-                        <option value="<?=$icmptype;?>" <?= in_array($icmptype, $pconfig['icmptype']) ? "selected=\"selected\"" : ""; ?>>
+                        <option value="<?=$icmptype;?>" <?= in_array($icmptype, $pconfig['icmptype'] ?? []) ? "selected=\"selected\"" : ""; ?>>
                           <?=$descr;?>
                         </option>
 <?php
