@@ -101,6 +101,12 @@
         <help>If this option is set, we will not forward A or AAAA queries for plain names, without dots or domain parts, to upstream name servers. If the name is not known from /etc/hosts or DHCP then a "not found" answer is returned.</help>
     </field>
     <field>
+        <id>dnsmasq.no_resolv</id>
+        <label>Do not forward to system defined DNS servers</label>
+        <type>checkbox</type>
+        <help>If this option is set, do not use System: General Setup: DNS Servers. Get upstream servers only from the dnsmasq configuration. This is needed when forwarding queries from Unbound to Dnsmasq to prevent long lookup times.</help>
+    </field>
+    <field>
         <id>dnsmasq.no_private_reverse</id>
         <label>Do not forward private reverse lookups</label>
         <type>checkbox</type>
