@@ -52,7 +52,7 @@ if __name__ == '__main__':
     # init spd's on up-host[-v6], up-client[-v6]
     if cmd_args.action and cmd_args.action.startswith('up'):
         syslog.openlog('charon', facility=syslog.LOG_LOCAL4)
-        syslog.syslog(syslog.LOG_NOTICE, '[UPDOWN] received %s event for reqid %s' % (cmd_args.action, cmd_args.reqid))
+        syslog.syslog(syslog.LOG_NOTICE, '[UPDOWN] <%s> received %s event for reqid %s' % (cmd_args.connection_child, cmd_args.action, cmd_args.reqid))
         if os.path.exists(events_filename):
             cnf = ConfigParser()
             cnf.read(events_filename)
@@ -94,11 +94,18 @@ if __name__ == '__main__':
             set_key = []
             for spd in cur_spds:
                 policy_found = False
+                reqid_match = spd['reqid'] == cmd_args.reqid
                 for mspd in spds:
                     if mspd['source'] == spd['src'] and mspd['destination'] == spd['dst']:
                         policy_found = True
-                if policy_found or spd['reqid'] == cmd_args.reqid:
-                    set_key.append('spddelete -n %(src)s %(dst)s any -P %(direction)s;' % spd)
+                if policy_found or reqid_match:
+                    spd_del_cmd = 'spddelete -n %(src)s %(dst)s any -P %(direction)s;'
+                    set_key.append(spd_del_cmd % spd)
+                    reason = 'policy found' if policy_found else 'reqid match'
+                    syslog.syslog(
+                        syslog.LOG_NOTICE,
+                        '[UPDOWN] <%s> delete policy: %s (reason: %s)' % (cmd_args.connection_child, (spd_del_cmd % spd)[10:], reason)
+                    )
 
             for spd in spds:
                 if None in spd.values():
@@ -107,12 +114,18 @@ if __name__ == '__main__':
                 spd['ipproto'] = '4' if spd.get('source', '').find(':') == -1 else '6'
                 syslog.syslog(
                     syslog.LOG_NOTICE,
-                    '[UPDOWN] add manual policy : %s' % (spd_add_cmd % spd)[7:]
+                    '[UPDOWN] <%s> add manual policy: %s' % (cmd_args.connection_child, (spd_add_cmd % spd)[7:])
                 )
                 set_key.append(spd_add_cmd % spd)
             if len(set_key) > 0:
                 f = tempfile.NamedTemporaryFile(mode='wt', delete=False)
                 f.write('\n'.join(set_key))
                 f.close()
-                subprocess.run(['/sbin/setkey', '-f', f.name], capture_output=True, text=True)
+                try:
+                    subprocess.run(['/sbin/setkey', '-f', f.name], capture_output=True, text=True, check=True)
+                except subprocess.CalledProcessError as e:
+                    syslog.syslog(
+                        syslog.LOG_ERR,
+                        '[UPDOWN] <%s> setkey failed: stdout: (%s) stderr: (%s)' % (e.stdout, e.stderr)
+                    )
                 os.unlink(f.name)
