@@ -104,7 +104,7 @@
         <id>dnsmasq.no_resolv</id>
         <label>Do not forward to system defined DNS servers</label>
         <type>checkbox</type>
-        <help>If this option is set, DNS forwarding to system nameservers (defined in System: General Setup: DNS Servers) will be disabled. Upstream servers defined in Services: Dnsmasq DNS & DHCP: Domains will still be used. This option is recommended when Unbound forwards local domain queries to Dnsmasq, so that all queries terminate without further lookups if they are unknown.</help>
+        <help><![CDATA[If this option is set, DNS forwarding to system nameservers (defined in System: General Setup: DNS Servers) will be disabled. Upstream servers defined in Services: Dnsmasq DNS & DHCP: Domains will still be used. This option is recommended when Unbound forwards local domain queries to Dnsmasq, so that all queries terminate without further lookups if they are unknown.]]></help>
     </field>
     <field>
         <id>dnsmasq.no_private_reverse</id>
