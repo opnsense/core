@@ -187,6 +187,13 @@ class Dnsmasq extends BaseModel
                         $key . ".end_addr"
                     )
                 );
+            } elseif ($range->end_addr->isEmpty() && !$is_static && $start_inet == 'inet') {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("End address may only be left empty for static ipv4 ranges."),
+                        $key . ".end_addr"
+                    )
+                );
             }
 
             if ($range->interface->isEmpty() && !$range->ra_mode->isEmpty()) {
