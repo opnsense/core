@@ -150,7 +150,7 @@
         <id>dnsmasq.dhcp.fqdn</id>
         <label>DHCP fqdn</label>
         <type>checkbox</type>
-        <help>In the default mode, we insert the unqualified names of DHCP clients into the DNS, in which case they have to be unique. Using this option the unqualified name is no longer put in the DNS, only the qualified name.</help>
+        <help>If disabled, registers the unqualified names of DHCP clients into the DNS (e.g. 'smartphone'), in which case they should be unique. If enabled, the qualified name (e.g. 'smartphone.lan.internal') is registered. This option must be enabled if you are forwarding from Unbound to Dnsmasq for specific local domains.</help>
     </field>
     <field>
         <id>dnsmasq.dhcp.domain</id>
