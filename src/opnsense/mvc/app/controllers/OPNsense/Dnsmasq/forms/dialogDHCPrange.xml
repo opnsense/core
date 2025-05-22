@@ -102,7 +102,11 @@
         <label>Mode</label>
         <type>select_multiple</type>
         <style>selectpicker</style>
-        <help>Mode flags to set for this range, 'static' means no addresses will be automatically assigned. </help>
+        <advanced>true</advanced>
+        <help>Mode flags to set for this range, 'static' means no addresses will be automatically assigned.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>range.lease_time</id>
