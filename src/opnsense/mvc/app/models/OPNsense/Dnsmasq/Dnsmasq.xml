@@ -1,6 +1,6 @@
 <model>
     <mount>/dnsmasq</mount>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <items>
         <enable type="BooleanField"/>
         <regdhcp type="BooleanField"/>
@@ -47,7 +47,10 @@
             <no_interface type="InterfaceField">
                 <Multiple>Y</Multiple>
             </no_interface>
-            <fqdn type="BooleanField"/>
+            <fqdn type="BooleanField">
+                <Required>Y</Required>
+                <Default>1</Default>
+            </fqdn>
             <domain type="HostnameField">
                 <IsDNSName>Y</IsDNSName>
                 <IpAllowed>N</IpAllowed>
