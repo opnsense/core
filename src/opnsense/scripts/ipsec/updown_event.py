@@ -126,6 +126,6 @@ if __name__ == '__main__':
                 except subprocess.CalledProcessError as e:
                     syslog.syslog(
                         syslog.LOG_ERR,
-                        '[UPDOWN] <%s> setkey failed: stdout: (%s) stderr: (%s)' % (e.stdout, e.stderr)
+                        '[UPDOWN] <%s> setkey failed: stdout: (%s) stderr: (%s)' % (cmd_args.connection_child, e.stdout, e.stderr)
                     )
                 os.unlink(f.name)
