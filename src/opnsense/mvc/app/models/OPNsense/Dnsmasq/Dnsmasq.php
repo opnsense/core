@@ -70,10 +70,13 @@ class Dnsmasq extends BaseModel
                 continue;
             }
             $key = $host->__reference;
+            $is_dhcp = !$host->hwaddr->isEmpty() || !$host->client_id->isEmpty();
 
             // all dhcp-host IP addresses must be unique, host overrides can have duplicate IP addresses
-            if (!$host->hwaddr->isEmpty() || !$host->client_id->isEmpty()) {
+            if ($is_dhcp) {
+                $tmp_ipv4_cnt = 0;
                 foreach (explode(',', (string)$host->ip) as $ip) {
+                    $tmp_ipv4_cnt += (strpos($ip, ':') === false) ? 1 : 0;
                     if ($usedDhcpIpAddresses[$ip] > 1) {
                         $messages->appendMessage(
                             new Message(
@@ -83,13 +86,14 @@ class Dnsmasq extends BaseModel
                         );
                     }
                 }
+                if ($tmp_ipv4_cnt > 1) {
+                    $messages->appendMessage(
+                        new Message(gettext("For IPv4 dhcp reservations, only a single address is allowed."), $key . ".ip")
+                    );
+                }
             }
 
-            if (
-                $host->host->isEmpty() &&
-                $host->hwaddr->isEmpty() &&
-                $host->client_id->isEmpty()
-            ) {
+            if ($host->host->isEmpty() && !$is_dhcp) {
                 $messages->appendMessage(
                     new Message(
                         gettext(
