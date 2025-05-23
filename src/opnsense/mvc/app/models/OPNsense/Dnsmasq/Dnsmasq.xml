@@ -84,7 +84,6 @@
                 <ValidationMessage>A valid domain must be specified.</ValidationMessage>
             </domain>
             <ip type="NetworkField">
-                <Required>Y</Required>
                 <NetMaskAllowed>N</NetMaskAllowed>
                 <FieldSeparator>,</FieldSeparator>
                 <AsList>Y</AsList>
