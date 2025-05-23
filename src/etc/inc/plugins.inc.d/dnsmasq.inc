@@ -182,12 +182,8 @@ function _dnsmasq_add_host_entries()
     foreach ($dnsmasqcfg['hosts'] as $host) {
         /* The host.ip field supports multiple IPv4 and IPv6 addresses */
         foreach (explode(',', $host['ip']) as $ip) {
-            /* we allow empty IPs for dhcp-host entries */
-            if (empty($ip)) {
-                continue;
-            }
-            /* skip partial IPv6 addresses */
-            if (str_starts_with($ip, '::')) {
+            /* skip empty IPs and partial IPv6 addresses */
+            if (empty($ip) || str_starts_with($ip, '::')) {
                 continue;
             }
             if (empty($host['host'])) {

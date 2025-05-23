@@ -100,39 +100,18 @@ class Dnsmasq extends BaseModel
                 }
 
                 if ($host->host->isEmpty() && $host->ip->isEmpty()) {
-                    $messageText = gettext("Either a hostname or IP address must be provided for DHCP reservations.");
-
-                    $messages->appendMessage(
-                        new Message($messageText, $key . ".host")
-                    );
-                    $messages->appendMessage(
-                        new Message($messageText, $key . ".ip")
-                    );
+                    $messageText = gettext("At least a hostname or IP address must be provided for DHCP reservations.");
+                    $messages->appendMessage(new Message($messageText, $key . ".host"));
+                    $messages->appendMessage(new Message($messageText, $key . ".ip"));
                 }
 
             }
 
             if (!$is_dhcp) {
-                if ($host->host->isEmpty()) {
-                    $messages->appendMessage(
-                        new Message(
-                            gettext(
-                                "Hostname is required for host overrides."
-                            ),
-                            $key . ".host"
-                        )
-                    );
-                }
-
-                if ($host->ip->isEmpty()) {
-                    $messages->appendMessage(
-                        new Message(
-                            gettext(
-                                "IP address is required for host overrides."
-                            ),
-                            $key . ".ip"
-                        )
-                    );
+                if ($host->host->isEmpty() || $host->ip->isEmpty()) {
+                    $messageText = gettext("Both hostname and IP address are required for host overrides.");
+                    $messages->appendMessage(new Message($messageText, $key . ".host"));
+                    $messages->appendMessage(new Message($messageText, $key . ".ip"));
                 }
             }
 
