@@ -26,6 +26,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+function dhcrelay_carp_enabled()
+{
+    $model = new \OPNsense\DHCRelay\DHCRelay();
+    return (string)$model->general->enablecarp == '1';
+}
+
 function dhcrelay_configure()
 {
     return [

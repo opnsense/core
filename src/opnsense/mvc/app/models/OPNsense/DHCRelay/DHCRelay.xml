@@ -3,6 +3,12 @@
     <version>1.0.1</version>
     <description>DHCRelay configuration</description>
     <items>
+        <general>
+            <enablecarp type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </enablecarp>
+        </general>
         <relays type="ArrayField">
             <enabled type="BooleanField">
                 <Required>Y</Required>
