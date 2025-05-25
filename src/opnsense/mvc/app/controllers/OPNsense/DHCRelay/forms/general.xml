@@ -1,0 +1,8 @@
+<form>
+    <field>
+        <id>dhcrelay.general.enablecarp</id>
+        <label>Enable CARP Support</label>
+        <type>checkbox</type>
+        <help>Only starts the service on carp-interfaces with state MASTER and on interfaces where no carp-vips are configured.</help>
+    </field>
+</form>
