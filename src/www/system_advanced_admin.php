@@ -91,8 +91,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     /* XXX not really a syslog setting */
     $pconfig['loglighttpd'] = empty($config['syslog']['nologlighttpd']);
 
-    /* XXX listtag "fun" */
-    $pconfig['sshlogingroup'] = !empty($config['system']['ssh']['group'][0]) ? $config['system']['ssh']['group'][0] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = [];
     $pconfig = $_POST;
@@ -319,12 +317,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['ssh']['enabled'] = 'enabled';
         } elseif (isset($config['system']['ssh']['enabled'])) {
             unset($config['system']['ssh']['enabled']);
-        }
-
-        if (!empty($pconfig['sshlogingroup'])) {
-            $config['system']['ssh']['group'] = $pconfig['sshlogingroup'];
-        } elseif (isset($config['system']['ssh']['group'])) {
-            unset($config['system']['ssh']['group']);
         }
 
         if (!empty($pconfig['sudo_allow_group'])) {
@@ -758,20 +750,6 @@ $(document).ready(function() {
                 <td>
                   <input name="enablesshd" type="checkbox" value="yes" <?= empty($pconfig['enablesshd']) ? '' : 'checked="checked"' ?> />
                   <?=gettext("Enable Secure Shell"); ?>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_sshlogingroup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Login Group') ?></td>
-                <td>
-                  <select name="sshlogingroup" class="selectpicker">
-                      <option value=""><!-- do not translate: -->wheel</option>
-<?php foreach ($a_group as $group): ?>
-                      <option value="<?= html_safe($group['name']) ?>" <?= $pconfig['sshlogingroup'] == $group['name'] ? 'selected="selected"' : '' ?>><!-- do not translate: -->wheel, <?= html_safe($group['name']) ?></option>
-<?php endforeach ?>
-                  </select>
-                  <div class="hidden" data-for="help_for_sshlogingroup">
-                    <?= gettext('Select the allowed groups for remote login. The "wheel" group is always set for recovery purposes and an additional local group can be selected at will. Do not yield remote access to non-administrators as every user can access system files using SSH or SFTP.') ?>
-                  </div>
                 </td>
               </tr>
               <tr>
