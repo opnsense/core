@@ -60,9 +60,6 @@ class Dnsmasq extends BaseModel
         foreach ($this->hosts->iterateItems() as $host) {
             if (!$host->hwaddr->isEmpty() || !$host->client_id->isEmpty()) {
                 foreach (array_filter(explode(',', (string)$host->ip)) as $ip) {
-                    if (empty($ip)) {
-                        continue;
-                    }
                     $usedDhcpIpAddresses[$ip] = isset($usedDhcpIpAddresses[$ip]) ? $usedDhcpIpAddresses[$ip] + 1 : 1;
                 }
             }
@@ -79,10 +76,6 @@ class Dnsmasq extends BaseModel
             if ($is_dhcp) {
                 $tmp_ipv4_cnt = 0;
                 foreach (array_filter(explode(',', (string)$host->ip)) as $ip) {
-                    // We allow empty IPs for dhcp-host entries
-                    if (empty($ip)) {
-                        continue;
-                    }
                     $tmp_ipv4_cnt += (strpos($ip, ':') === false) ? 1 : 0;
                     if ($usedDhcpIpAddresses[$ip] > 1) {
                         $messages->appendMessage(
@@ -105,9 +98,7 @@ class Dnsmasq extends BaseModel
                     $messages->appendMessage(new Message($messageText, $key . ".ip"));
                 }
 
-            }
-
-            if (!$is_dhcp) {
+            } else {
                 if ($host->host->isEmpty() || $host->ip->isEmpty()) {
                     $messageText = gettext("Both hostname and IP address are required for host overrides.");
                     $messages->appendMessage(new Message($messageText, $key . ".host"));
