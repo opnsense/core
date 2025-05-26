@@ -88,7 +88,7 @@ class LeasesController extends ApiControllerBase
         foreach ($records as &$record) {
             $hwaddrMatch = isset($reservedKeys['hwaddr'][$record['hwaddr'] ?? '']);
             $clientIdMatch = isset($reservedKeys['client_id'][$record['client_id'] ?? '']);
-            $record['is_reserved'] = $hwaddrMatch || $clientIdMatch;
+            $record['is_reserved'] = ($hwaddrMatch || $clientIdMatch) ? '1' : '0';
         }
         unset($record);
 
