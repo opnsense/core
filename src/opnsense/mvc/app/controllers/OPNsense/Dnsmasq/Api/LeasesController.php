@@ -71,18 +71,24 @@ class LeasesController extends ApiControllerBase
         } else {
             $records = [];
         }
-        // Mark records with IPs that are already reserved by DHCP host overrides
-        $reservedIps = [];
+
+        // Mark records as reserved based on hwaddr or client_id match
+        $reservedKeys = [];
+
         foreach ((new Dnsmasq())->hosts->iterateItems() as $host) {
-            if (!empty((string)$host->hwaddr) || !empty((string)$host->client_id)) {
-                foreach (array_filter(explode(',', (string)$host->ip)) as $ip) {
-                    $reservedIps[$ip] = true;
+            foreach (explode(',', (string)$host->hwaddr) as $hwaddr) {
+                if (!empty($hwaddr)) {
+                    $reservedKeys['hwaddr'][$hwaddr] = true;
                 }
             }
+            if (!empty((string)$host->client_id)) {
+                $reservedKeys['client_id'][(string)$host->client_id] = true;
+            }
         }
-
         foreach ($records as &$record) {
-            $record['is_reserved'] = isset($reservedIps[$record['address']]);
+            $hwaddrMatch = isset($reservedKeys['hwaddr'][$record['hwaddr'] ?? '']);
+            $clientIdMatch = isset($reservedKeys['client_id'][$record['client_id'] ?? '']);
+            $record['is_reserved'] = $hwaddrMatch || $clientIdMatch;
         }
         unset($record);
 
