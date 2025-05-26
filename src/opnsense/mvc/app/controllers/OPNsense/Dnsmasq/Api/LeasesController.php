@@ -35,14 +35,14 @@ use OPNsense\Firewall\Util;
 
 class LeasesController extends ApiControllerBase
 {
-    public function searchAction()
+    public function searchAction($ip = "all")
     {
         $selected_interfaces = $this->request->get('selected_interfaces');
         $selected_protocol = $this->request->getPost('selected_protocol') ?? '';
         $backend = new Backend();
         $interfaces = [];
 
-        $leases = json_decode($backend->configdpRun('dnsmasq list leases all'), true) ?? [];
+        $leases = json_decode($backend->configdpRun('dnsmasq list leases ' . escapeshellarg($ip)), true) ?? [];
         $ifconfig = json_decode($backend->configdRun('interface list ifconfig'), true);
         $mac_db = json_decode($backend->configdRun('interface list macdb'), true) ?? [];
 
@@ -94,14 +94,6 @@ class LeasesController extends ApiControllerBase
 
         $response['interfaces'] = $interfaces;
         return $response;
-    }
-
-    public function searchLeaseAction($ip = "all")
-    {
-        $result = (new Backend())->configdpRun("dnsmasq list leases " . escapeshellarg($ip));
-        $leases = json_decode($result, true);
-
-        return ['status' => 'ok', 'records' => $leases['records'] ?? []];
     }
 
     public function deleteLeaseAction($ip = null)
