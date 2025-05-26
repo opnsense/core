@@ -30,10 +30,12 @@ import ipaddress
 import subprocess
 import os
 import ujson
+import argparse
+
+LEASES_FILE = '/var/db/dnsmasq.leases'
 
 
-if __name__ == '__main__':
-    filename = '/var/db/dnsmasq.leases'
+def get_leases(ip=None):
     ranges = {}
     leases = []
     this_interface = None
@@ -44,8 +46,8 @@ if __name__ == '__main__':
         elif this_interface is not None and line.startswith("\tinet") and line.find('-->') == -1:
             ranges[ipaddress.ip_network(line.split()[1], strict=False)] = this_interface
 
-    if os.path.isfile(filename):
-        with open(filename, 'r') as leasefile:
+    if os.path.isfile(LEASES_FILE):
+        with open(LEASES_FILE, 'r') as leasefile:
             for line in leasefile:
                 parts = line.split()
                 if len(parts) > 4 and parts[0].isdigit():
@@ -76,6 +78,50 @@ if __name__ == '__main__':
                         if net.overlaps(ipaddress.ip_network(lease['address'])):
                             lease['if'] = ranges[net]
                             break
-                    leases.append(lease)
+                    if ip is None or ip == "all" or lease['address'] == ip:
+                        leases.append(lease)
 
-    print (ujson.dumps({'records': leases}))
+    print(ujson.dumps({'records': leases}))
+
+
+def delete_lease(ip):
+    if not os.path.isfile(LEASES_FILE):
+        return
+
+    if ip == "all":
+        # Truncate the lease file (delete all)
+        with open(LEASES_FILE, 'w') as f:
+            pass
+    else:
+        with open(LEASES_FILE, 'r') as f:
+            lines = f.readlines()
+        with open(LEASES_FILE, 'w') as f:
+            for line in lines:
+                if f' {ip} ' not in line:
+                    f.write(line)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='dnsmasq lease tool')
+    parser.add_argument(
+        'command',
+        nargs='?',
+        default='get',
+        choices=['get', 'delete'],
+        help='Command to run: get (default) or delete'
+    )
+    parser.add_argument(
+        'ip',
+        nargs='?',
+        help='IP to get or delete, or "all"'
+    )
+
+    args = parser.parse_args()
+
+    if args.command == 'get':
+        get_leases(args.ip)
+    elif args.command == 'delete':
+        if not args.ip:
+            parser.error("delete requires an IP or 'all'")
+        delete_lease(args.ip)
+
