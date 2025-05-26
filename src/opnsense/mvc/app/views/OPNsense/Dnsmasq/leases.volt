@@ -81,6 +81,10 @@
                         return moment.unix(row[column.id]).local().format('YYYY-MM-DD HH:mm:ss');
                     },
                     "commands": function (column, row) {
+                        if (row.is_reserved === true) {
+                            return '';
+                        }
+
                         const query = new URLSearchParams({
                             host: row.hostname || '',
                             ip: row.address || '',
@@ -90,9 +94,10 @@
 
                         const url = `/ui/dnsmasq/settings#hosts?${query}`;
 
+                        // Do not open in new tab so the button vanished when going back to leases tab
                         return `
                             <button type="button" class="btn btn-xs"
-                                onclick="window.open('${url}', '_blank', 'noopener,noreferrer')"
+                                onclick="window.location.href = '${url}'"
                                 title="{{ lang._('Add Reservation') }}">
                                 <i class="fa fa-fw fa-plus"></i>
                             </button>

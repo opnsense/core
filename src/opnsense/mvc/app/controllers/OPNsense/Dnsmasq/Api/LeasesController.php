@@ -31,6 +31,7 @@ namespace OPNsense\Dnsmasq\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Dnsmasq\Dnsmasq;
 use OPNsense\Firewall\Util;
 
 class LeasesController extends ApiControllerBase
@@ -70,6 +71,20 @@ class LeasesController extends ApiControllerBase
         } else {
             $records = [];
         }
+        // Mark records with IPs that are already reserved by DHCP host overrides
+        $reservedIps = [];
+        foreach ((new Dnsmasq())->hosts->iterateItems() as $host) {
+            if (!empty((string)$host->hwaddr) || !empty((string)$host->client_id)) {
+                foreach (array_filter(explode(',', (string)$host->ip)) as $ip) {
+                    $reservedIps[$ip] = true;
+                }
+            }
+        }
+
+        foreach ($records as &$record) {
+            $record['is_reserved'] = isset($reservedIps[$record['address']]);
+        }
+        unset($record);
 
         $response = $this->searchRecordsetBase(
             $records,
