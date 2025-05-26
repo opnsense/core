@@ -78,7 +78,7 @@ class Dnsmasq extends BaseModel
             // all dhcp-host IP addresses must be unique, host overrides can have duplicate IP addresses
             if ($is_dhcp) {
                 $tmp_ipv4_cnt = 0;
-                foreach (explode(',', (string)$host->ip) as $ip) {
+                foreach (array_filter(explode(',', (string)$host->ip)) as $ip) {
                     // We allow empty IPs for dhcp-host entries
                     if (empty($ip)) {
                         continue;
