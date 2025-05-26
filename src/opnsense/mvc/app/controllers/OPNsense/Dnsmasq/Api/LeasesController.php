@@ -76,6 +76,10 @@ class LeasesController extends ApiControllerBase
         $reservedKeys = [];
 
         foreach ((new Dnsmasq())->hosts->iterateItems() as $host) {
+            if (empty($host->hwaddr) && empty($host->client_id)) {
+                continue;
+            }
+
             $ips = array_filter(explode(',', (string)$host->ip));
 
             $hasIPv4 = false;
