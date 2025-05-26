@@ -574,8 +574,13 @@ function filter_core_rules_system($fw, $defaults)
             if (!isset($ifcfg['internal_dynamic']) && $ifcfg['if'] != 'lo0') {
                 $protos_found = [];
                 $address_check = ['inet' => 'is_subnetv4', 'inet6' => 'is_subnetv6'];
-                foreach (array_keys(interfaces_addresses($ifcfg['if'], true, $fw->getIfconfigDetails())) as $addr) {
+                $ifdetails = $fw->getIfconfigDetails();
+                foreach (array_keys(interfaces_addresses($ifcfg['if'], true, $ifdetails)) as $addr) {
                     foreach ($ipv6_disabled ? ['inet'] : ['inet', 'inet6'] as $inet) {
+                        if ($inet == 'inet6' && !empty($ifdetails[$ifcfg['if']]['ipv6'][0]['link-local'])) {
+                            /* skip inet6 without a GUA as there is no public address to "stick" we should exclude these */
+                            continue;
+                        }
                         if (!in_array($inet, $protos_found) && $address_check[$inet]($addr)) {
                             $gwname = $fw->getGateways()->getInterfaceGateway($ifdescr, $inet, true, 'name');
                             if (!empty($gwname)) {
