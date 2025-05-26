@@ -42,7 +42,7 @@ class LeasesController extends ApiControllerBase
         $backend = new Backend();
         $interfaces = [];
 
-        $leases = json_decode($backend->configdpRun('dnsmasq list leases'), true) ?? [];
+        $leases = json_decode($backend->configdpRun('dnsmasq list leases all'), true) ?? [];
         $ifconfig = json_decode($backend->configdRun('interface list ifconfig'), true);
         $mac_db = json_decode($backend->configdRun('interface list macdb'), true) ?? [];
 
