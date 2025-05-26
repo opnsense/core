@@ -81,18 +81,20 @@
                         return moment.unix(row[column.id]).local().format('YYYY-MM-DD HH:mm:ss');
                     },
                     "commands": function (column, row) {
-                        if (row.is_reserved == "1") {
-                            return '';
-                        }
+                        if (row.is_reserved === '1') return "";
 
-                        const query = new URLSearchParams({
-                            host: row.hostname || '',
+                        const isIPv6 = row.address.includes(':');
+                        const queryParams = {
                             ip: row.address || '',
-                            hwaddr: row.hwaddr || '',
-                            client_id: row.client_id || ''
-                        }).toString();
+                            ...(isIPv6 ? { client_id: row.client_id || '' } : { hwaddr: row.hwaddr || '' }),
+                            ...(
+                                row.hostname && !row.hostname.includes('*')
+                                    ? { host: row.hostname }
+                                    : {}
+                            )
+                        };
 
-                        const url = `/ui/dnsmasq/settings#hosts?${query}`;
+                        const url = `/ui/dnsmasq/settings#hosts?${new URLSearchParams(queryParams)}`;
 
                         // Do not open in new tab so the button vanished when going back to leases tab
                         return `
@@ -103,6 +105,7 @@
                             </button>
                         `;
                     }
+
                 }
             }
         });

@@ -72,23 +72,45 @@ class LeasesController extends ApiControllerBase
             $records = [];
         }
 
-        // Mark records as reserved based on hwaddr or client_id match
+        // Mark records as reserved based on hwaddr (IPv4) or client_id (IPv6) match
         $reservedKeys = [];
 
         foreach ((new Dnsmasq())->hosts->iterateItems() as $host) {
-            foreach (explode(',', (string)$host->hwaddr) as $hwaddr) {
-                if (!empty($hwaddr)) {
-                    $reservedKeys['hwaddr'][$hwaddr] = true;
+            $ips = array_filter(explode(',', (string)$host->ip));
+
+            $hasIPv4 = false;
+            $hasIPv6 = false;
+
+            foreach ($ips as $ip) {
+                if (!$hasIPv6 && Util::isIpv6Address($ip)) {
+                    $hasIPv6 = true;
+                } else {
+                    $hasIPv4 = true;
+                }
+                if ($hasIPv4 && $hasIPv6) {
+                    break;
                 }
             }
-            if (!empty((string)$host->client_id)) {
-                $reservedKeys['client_id'][(string)$host->client_id] = true;
+
+            if ($hasIPv4 && !empty($host->hwaddr)) {
+                foreach (explode(',', (string)$host->hwaddr) as $hwaddr) {
+                    if (!empty($hwaddr)) {
+                        $reservedKeys['ipv4'][$hwaddr] = true;
+                    }
+                }
+            }
+
+            if ($hasIPv6 && !empty($host->client_id)) {
+                $reservedKeys['ipv6'][(string)$host->client_id] = true;
             }
         }
+
         foreach ($records as &$record) {
-            $hwaddrMatch = isset($reservedKeys['hwaddr'][$record['hwaddr'] ?? '']);
-            $clientIdMatch = isset($reservedKeys['client_id'][$record['client_id'] ?? '']);
-            $record['is_reserved'] = ($hwaddrMatch || $clientIdMatch) ? '1' : '0';
+            if (Util::isIpv6Address($record['address'] ?? '')) {
+                $record['is_reserved'] = isset($reservedKeys['ipv6'][$record['client_id'] ?? '']) ? '1' : '0';
+            } else {
+                $record['is_reserved'] = isset($reservedKeys['ipv4'][$record['hwaddr'] ?? '']) ? '1' : '0';
+            }
         }
         unset($record);
 
