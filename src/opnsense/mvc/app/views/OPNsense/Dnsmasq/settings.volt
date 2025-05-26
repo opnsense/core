@@ -224,6 +224,28 @@
             }
         });
 
+        // Autofill dhcp reservation with URL hash
+        if (window.location.hash.startsWith('#hosts?')) {
+            const params = new URLSearchParams(window.location.hash.split('?')[1]);
+
+            // Switch to hosts tab
+            $('a[href="#hosts"]').one('shown.bs.tab', () => {
+                // Wait for grid to be ready
+                $('#{{ formGridHostOverride["table_id"] }}').one('loaded.rs.jquery.bootgrid', function () {
+                    // Wait for dialog to be ready
+                    $('#{{ formGridHostOverride["edit_dialog_id"] }}').one('opnsense_bootgrid_mapped', () => {
+                        if (params.has('host')) $('#host\\.host').val(params.get('host'));
+                        if (params.has('ip')) $('#host\\.ip').trigger('tokenize:tokens:add', [params.get('ip'), params.get('ip')]);
+                        if (params.has('client_id')) $('#host\\.client_id').val(params.get('client_id'));
+                        if (params.has('hwaddr')) $('#host\\.hwaddr').trigger('tokenize:tokens:add', [params.get('hwaddr'), params.get('hwaddr')]);
+                        history.replaceState(null, null, window.location.pathname + '#hosts');
+                    });
+
+                    $(this).find('.command-add').trigger('click');
+                });
+            }).tab('show');
+        }
+
     });
 </script>
 
