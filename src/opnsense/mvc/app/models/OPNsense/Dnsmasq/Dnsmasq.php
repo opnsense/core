@@ -59,7 +59,7 @@ class Dnsmasq extends BaseModel
         $usedDhcpIpAddresses = [];
         foreach ($this->hosts->iterateItems() as $host) {
             if (!$host->hwaddr->isEmpty() || !$host->client_id->isEmpty()) {
-                foreach (explode(',', (string)$host->ip) as $ip) {
+                foreach (array_filter(explode(',', (string)$host->ip)) as $ip) {
                     if (empty($ip)) {
                         continue;
                     }
