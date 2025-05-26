@@ -95,4 +95,28 @@ class LeasesController extends ApiControllerBase
         $response['interfaces'] = $interfaces;
         return $response;
     }
+
+    public function searchLeaseAction($ip = "all")
+    {
+        $result = (new Backend())->configdpRun("dnsmasq list leases " . escapeshellarg($ip));
+        $leases = json_decode($result, true);
+
+        return ['status' => 'ok', 'records' => $leases['records'] ?? []];
+    }
+
+    public function deleteLeaseAction($ip = null)
+    {
+        if (!$this->request->isPost()) {
+            return ['status' => 'error', 'message' => gettext('Invalid request method')];
+        }
+
+        if (empty($ip)) {
+            return ['status' => 'error', 'message' => gettext('Missing lease IP or "all"')];
+        }
+
+        $result = (new Backend())->configdpRun("dnsmasq delete leases " . escapeshellarg($ip));
+
+        return ['status' => 'ok', 'result' => $result];
+    }
+
 }
