@@ -80,6 +80,24 @@
                     "timestamp": function (column, row) {
                         return moment.unix(row[column.id]).local().format('YYYY-MM-DD HH:mm:ss');
                     },
+                    "commands": function (column, row) {
+                        const query = new URLSearchParams({
+                            host: row.hostname || '',
+                            ip: row.address || '',
+                            hwaddr: row.hwaddr || '',
+                            client_id: row.client_id || ''
+                        }).toString();
+
+                        const url = `/ui/dnsmasq/settings#hosts?${query}`;
+
+                        return `
+                            <button type="button" class="btn btn-xs"
+                                onclick="window.open('${url}', '_blank', 'noopener,noreferrer')"
+                                title="{{ lang._('Add Reservation') }}">
+                                <i class="fa fa-fw fa-plus"></i>
+                            </button>
+                        `;
+                    }
                 }
             }
         });
@@ -122,6 +140,7 @@
                 <th data-column-id="client_id" data-type="string" data-formatter="overflowformatter">{{ lang._('DUID') }}</th>
                 <th data-column-id="expire" data-type="string" data-formatter="timestamp">{{ lang._('Expire') }}</th>
                 <th data-column-id="hostname" data-type="string" data-formatter="overflowformatter">{{ lang._('Hostname') }}</th>
+                <th data-column-id="commands" data-formatter="commands" data-sortable="false" data-width="6em">{{ lang._('Commands') }}</th>
             </tr>
         </thead>
         <tbody>
