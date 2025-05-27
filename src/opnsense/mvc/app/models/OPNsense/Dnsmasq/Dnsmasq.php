@@ -59,7 +59,7 @@ class Dnsmasq extends BaseModel
         $usedDhcpIpAddresses = [];
         foreach ($this->hosts->iterateItems() as $host) {
             if (!$host->hwaddr->isEmpty() || !$host->client_id->isEmpty()) {
-                foreach (explode(',', (string)$host->ip) as $ip) {
+                foreach (array_filter(explode(',', (string)$host->ip)) as $ip) {
                     $usedDhcpIpAddresses[$ip] = isset($usedDhcpIpAddresses[$ip]) ? $usedDhcpIpAddresses[$ip] + 1 : 1;
                 }
             }
@@ -75,7 +75,7 @@ class Dnsmasq extends BaseModel
             // all dhcp-host IP addresses must be unique, host overrides can have duplicate IP addresses
             if ($is_dhcp) {
                 $tmp_ipv4_cnt = 0;
-                foreach (explode(',', (string)$host->ip) as $ip) {
+                foreach (array_filter(explode(',', (string)$host->ip)) as $ip) {
                     $tmp_ipv4_cnt += (strpos($ip, ':') === false) ? 1 : 0;
                     if ($usedDhcpIpAddresses[$ip] > 1) {
                         $messages->appendMessage(
@@ -91,19 +91,21 @@ class Dnsmasq extends BaseModel
                         new Message(gettext("For IPv4 dhcp reservations, only a single address is allowed."), $key . ".ip")
                     );
                 }
+
+                if ($host->host->isEmpty() && $host->ip->isEmpty()) {
+                    $messageText = gettext("At least a hostname or IP address must be provided for DHCP reservations.");
+                    $messages->appendMessage(new Message($messageText, $key . ".host"));
+                    $messages->appendMessage(new Message($messageText, $key . ".ip"));
+                }
+
+            } else {
+                if ($host->host->isEmpty() || $host->ip->isEmpty()) {
+                    $messageText = gettext("Both hostname and IP address are required for host overrides.");
+                    $messages->appendMessage(new Message($messageText, $key . ".host"));
+                    $messages->appendMessage(new Message($messageText, $key . ".ip"));
+                }
             }
 
-            if ($host->host->isEmpty() && !$is_dhcp) {
-                $messages->appendMessage(
-                    new Message(
-                        gettext(
-                            "Hostnames may only be omitted when either a hardware address " .
-                            "or a client identifier is provided."
-                        ),
-                        $key . ".host"
-                    )
-                );
-            }
         }
 
         foreach ($this->dhcp_ranges->iterateItems() as $range) {

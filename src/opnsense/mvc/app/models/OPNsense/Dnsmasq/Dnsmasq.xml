@@ -85,7 +85,6 @@
             </domain>
             <local type="BooleanField"/>
             <ip type="NetworkField">
-                <Required>Y</Required>
                 <NetMaskAllowed>N</NetMaskAllowed>
                 <FieldSeparator>,</FieldSeparator>
                 <AsList>Y</AsList>
