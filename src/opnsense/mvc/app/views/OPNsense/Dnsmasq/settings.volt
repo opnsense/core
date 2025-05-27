@@ -137,11 +137,14 @@
         $('.nav-tabs a').on('shown.bs.tab', function (e) {
             history.pushState(null, null, e.target.hash);
         });
-        $(window).on('hashchange', function(e) {
-            $('a[href="' + window.location.hash + '"]').click()
+
+        // We use two kinds of url hashes appended to the tab hash: & to search a host and ? to create a host
+        $(window).on('hashchange', function() {
+            const tabId = window.location.hash.split(/[?&]/)[0] || '#general';
+            $('a[href="' + tabId + '"]').click();
         });
-        let selected_tab = window.location.hash != "" ? window.location.hash : "#general";
-        $('a[href="' +selected_tab + '"]').click();
+
+        $('a[href="' + (window.location.hash.split(/[?&]/)[0] || '#general') + '"]').click();
 
         $("#range\\.start_addr, #range\\.ra_mode, #option\\.type").on("keyup change", function () {
             const addr = $("#range\\.start_addr").val() || "";

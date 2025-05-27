@@ -86,10 +86,14 @@
                             : "{{ lang._('dynamic') }}";
                     },
                     "commands": function (column, row) {
-                        if (row.is_reserved === '1') return "";
-
                         const isIPv6 = row.address.includes(':');
                         const queryParams = {
+                            ...(isIPv6 ? { client_id: row.client_id || '' } : { hwaddr: row.hwaddr || '' }),
+                        };
+
+                        const baseUrl = `/ui/dnsmasq/settings#hosts`;
+                        const searchUrl = `${baseUrl}&search=${encodeURIComponent(isIPv6 ? row.client_id : row.hwaddr)}`;
+                        const addUrlParams = {
                             ip: row.address || '',
                             ...(isIPv6 ? { client_id: row.client_id || '' } : { hwaddr: row.hwaddr || '' }),
                             ...(
@@ -98,17 +102,25 @@
                                     : {}
                             )
                         };
+                        const addUrl = `${baseUrl}?${new URLSearchParams(addUrlParams)}`;
 
-                        const url = `/ui/dnsmasq/settings#hosts?${new URLSearchParams(queryParams)}`;
-
-                        // Do not open in new tab so the button vanished when going back to leases tab
-                        return `
-                            <button type="button" class="btn btn-xs"
-                                onclick="window.location.href = '${url}'"
-                                title="{{ lang._('Add Reservation') }}">
-                                <i class="fa fa-fw fa-plus"></i>
-                            </button>
-                        `;
+                        if (row.is_reserved === '1') {
+                            return `
+                                <button type="button" class="btn btn-xs"
+                                    onclick="window.location.href = '${searchUrl}'"
+                                    title="{{ lang._('Find Reservation') }}">
+                                    <i class="fa fa-fw fa-search"></i>
+                                </button>
+                            `;
+                        } else {
+                            return `
+                                <button type="button" class="btn btn-xs"
+                                    onclick="window.location.href = '${addUrl}'"
+                                    title="{{ lang._('Add Reservation') }}">
+                                    <i class="fa fa-fw fa-plus"></i>
+                                </button>
+                            `;
+                        }
                     }
 
                 }
