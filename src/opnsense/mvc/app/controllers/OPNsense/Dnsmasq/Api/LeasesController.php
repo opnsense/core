@@ -76,45 +76,32 @@ class LeasesController extends ApiControllerBase
         $reservedKeys = [];
 
         foreach ((new Dnsmasq())->hosts->iterateItems() as $host) {
-            if (empty($host->hwaddr) && empty($host->client_id)) {
-                continue;
-            }
-
-            $ips = array_filter(explode(',', (string)$host->ip));
-
-            $hasIPv4 = false;
             $hasIPv6 = false;
 
-            foreach ($ips as $ip) {
-                if (!$hasIPv6 && Util::isIpv6Address($ip)) {
+            foreach (explode(',', (string)$host->ip) as $ip) {
+                if (!empty($ip) && Util::isIpv6Address($ip)) {
                     $hasIPv6 = true;
-                } else {
-                    $hasIPv4 = true;
-                }
-                if ($hasIPv4 && $hasIPv6) {
                     break;
                 }
             }
 
-            if ($hasIPv4 && !empty($host->hwaddr)) {
-                foreach (explode(',', (string)$host->hwaddr) as $hwaddr) {
-                    if (!empty($hwaddr)) {
-                        $reservedKeys['ipv4'][$hwaddr] = true;
-                    }
-                }
+            if ($hasIPv6 && !empty($host->client_id)) {
+                $reservedKeys[] = (string)$host->client_id;
             }
 
-            if ($hasIPv6 && !empty($host->client_id)) {
-                $reservedKeys['ipv6'][(string)$host->client_id] = true;
+            if (!empty($host->hwaddr)) {
+                foreach (explode(',', (string)$host->hwaddr) as $hwaddr) {
+                    if (!empty($hwaddr)) {
+                        $reservedKeys[] = $hwaddr;
+                    }
+                }
             }
         }
 
         foreach ($records as &$record) {
-            if (Util::isIpv6Address($record['address'] ?? '')) {
-                $record['is_reserved'] = isset($reservedKeys['ipv6'][$record['client_id'] ?? '']) ? '1' : '0';
-            } else {
-                $record['is_reserved'] = isset($reservedKeys['ipv4'][$record['hwaddr'] ?? '']) ? '1' : '0';
-            }
+            $is_ipv6 = Util::isIpv6Address($record['address'] ?? '');
+            $key = $is_ipv6 ? ($record['client_id'] ?? '') : ($record['hwaddr'] ?? '');
+            $record['is_reserved'] = in_array($key, $reservedKeys, true) ? '1' : '0';
         }
         unset($record);
 
