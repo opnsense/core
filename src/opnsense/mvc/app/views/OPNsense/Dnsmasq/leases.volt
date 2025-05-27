@@ -80,6 +80,11 @@
                     "timestamp": function (column, row) {
                         return moment.unix(row[column.id]).local().format('YYYY-MM-DD HH:mm:ss');
                     },
+                    "reservation": function (column, row) {
+                        return row.is_reserved === '1'
+                            ? "{{ lang._('static') }}"
+                            : "{{ lang._('dynamic') }}";
+                    },
                     "commands": function (column, row) {
                         if (row.is_reserved === '1') return "";
 
@@ -148,7 +153,7 @@
                 <th data-column-id="client_id" data-type="string" data-formatter="overflowformatter">{{ lang._('DUID') }}</th>
                 <th data-column-id="expire" data-type="string" data-formatter="timestamp">{{ lang._('Expire') }}</th>
                 <th data-column-id="hostname" data-type="string" data-formatter="overflowformatter">{{ lang._('Hostname') }}</th>
-                <th data-column-id="is_reserved" data-type="boolean" data-formatter="boolean" data-width="6em">{{ lang._('Reserved') }}</th>
+                <th data-column-id="is_reserved" data-type="string" data-formatter="reservation" data-width="6em">{{ lang._('Lease Type') }}</th>
                 <th data-column-id="commands" data-formatter="commands" data-sortable="false" data-width="6em">{{ lang._('Commands') }}</th>
             </tr>
         </thead>
