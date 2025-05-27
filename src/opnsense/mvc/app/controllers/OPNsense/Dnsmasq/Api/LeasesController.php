@@ -103,7 +103,6 @@ class LeasesController extends ApiControllerBase
             $key = $is_ipv6 ? ($record['client_id'] ?? '') : ($record['hwaddr'] ?? '');
             $record['is_reserved'] = in_array($key, $reservedKeys, true) ? '1' : '0';
         }
-        unset($record);
 
         $response = $this->searchRecordsetBase(
             $records,
