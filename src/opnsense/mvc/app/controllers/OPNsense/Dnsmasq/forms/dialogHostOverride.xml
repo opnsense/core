@@ -16,6 +16,16 @@
         <help>Domain of the host, e.g. example.com</help>
     </field>
     <field>
+        <id>host.local</id>
+        <label>Local</label>
+        <type>checkbox</type>
+        <help>Set the above domain as local. This will configure this DNS server as authoritative; it will not forward queries to any upstream servers for this domain.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
+    </field>
+    <field>
         <id>host.ip</id>
         <label>IP addresses</label>
         <type>select_multiple</type>
