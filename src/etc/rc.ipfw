@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2015 Deciso B.V.
+# Copyright (c) 2015-2025 Deciso B.V.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -31,10 +31,5 @@
 ipfw -q /usr/local/etc/ipfw.rules
 # load tables
 /usr/local/opnsense/scripts/shaper/update_tables
-
-if [ ! -f /tmp/ipfw.firstload ]; then
-	# we need to make sure ipfw is loaded as last
-	touch /tmp/ipfw.firstload
-	pfctl -d
-	pfctl -e
-fi
+# synchronize ipfw/pf load order
+/usr/local/opnsense/scripts/shaper/sync_fw_hooks.py
