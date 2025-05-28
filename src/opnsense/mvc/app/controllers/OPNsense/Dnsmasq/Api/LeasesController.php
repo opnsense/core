@@ -76,16 +76,7 @@ class LeasesController extends ApiControllerBase
         $reservedKeys = [];
 
         foreach ((new Dnsmasq())->hosts->iterateItems() as $host) {
-            $hasIPv6 = false;
-
-            foreach (explode(',', (string)$host->ip) as $ip) {
-                if (!empty($ip) && Util::isIpv6Address($ip)) {
-                    $hasIPv6 = true;
-                    break;
-                }
-            }
-
-            if ($hasIPv6 && !empty($host->client_id)) {
+            if (!empty($host->client_id)) {
                 $reservedKeys[] = (string)$host->client_id;
             }
 
