@@ -395,7 +395,7 @@ abstract class BaseModel
     private static function getCacheFileName($tmpdir = null)
     {
         return sprintf(
-            "%smdl_cache_%s.json",
+            "%s/mdl_cache_%s.json",
             empty($tmpdir) ? sys_get_temp_dir() : $tmpdir,
             str_replace("\\", "_", (new ReflectionClass(get_called_class()))->getName())
         );
