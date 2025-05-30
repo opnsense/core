@@ -49,12 +49,10 @@ class KeaRoutesField extends BaseField
                     $parts = array_map('trim', explode(',', $entry));
                     if (empty($entry)) {
                         continue;
-                    } elseif (count($parts) == 2 && Util::isIpAddress($parts[0]) && Util::
-isIpAddress($parts[1])) {
+                    } elseif (count($parts) == 2 && Util::isIpAddress($parts[0]) && Util::isIpAddress($parts[1])) {
                         continue;
                     }
-                    $messages[] = sprintf(gettext('Entry "%s" is not a valid dest-ip,route
-r-ip pair.'), $entry);
+                    $messages[] = sprintf(gettext('Entry "%s" is not a valid dest-ip,router-ip pair.'), $entry);
                 }
                 return $messages;
             }
