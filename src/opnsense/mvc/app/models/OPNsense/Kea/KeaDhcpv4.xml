@@ -80,7 +80,7 @@
                     </routers>
                     <static_routes type="TextField">
                         <Mask>/^(((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\,(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))(\,(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\,(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))*)?$/</Mask>
-                        <ValidationMessage>Enter a list of dest-ip,router-ip routes, e.g. 172.16.0.0,12.34.56.78,10.0.0.0,192.168.7.7</ValidationMessage>>
+                        <ValidationMessage>Enter a list of dest-ip,router-ip routes, e.g. 172.16.0.0,12.34.56.78,10.0.0.0,192.168.7.7</ValidationMessage>
                     </static_routes>
                     <domain_name type="HostnameField">
                         <IpAllowed>N</IpAllowed>
