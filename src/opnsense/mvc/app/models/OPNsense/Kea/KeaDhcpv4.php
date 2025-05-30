@@ -150,6 +150,14 @@ class KeaDhcpv4 extends BaseModel
             /* standard option-data elements */
             foreach ($subnet->option_data->iterateItems() as $key => $value) {
                 $target_fieldname = str_replace('_', '-', $key);
+                /* add static routes */
+                if ($key == 'static_routes') {
+                    $routes = '';
+                    foreach (array_filter(explode("\n", (string)$value)) as $route) {
+                       $routes .= ',' . $route;
+                    }
+                    $value = substr($routes, 1);
+                }
                 if ((string)$value != '') {
                     $record['option-data'][] = [
                         'name' => $target_fieldname,
