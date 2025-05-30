@@ -98,7 +98,7 @@ class Dnsmasq extends BaseModel
                     $messages->appendMessage(new Message($messageText, $key . ".ip"));
                 }
 
-                if (!$host->host->isEmpty() && (string)$host->host == '*')  {
+                if ($host->host == '*')  {
                     $messages->appendMessage(
                         new Message(gettext("Wildcard entries are not allowed for DHCP reservations."), $key . ".host")
                     );
