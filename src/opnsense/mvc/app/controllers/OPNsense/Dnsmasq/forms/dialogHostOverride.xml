@@ -69,7 +69,7 @@
         <id>host.lease_time</id>
         <label>Lease time</label>
         <type>text</type>
-        <hint>86400</hint>
+        <hint>default</hint>
         <help>Defines how long the addresses (leases) given out by the server are valid (in seconds). Set 0 for infinite.</help>
         <grid_view>
             <visible>false</visible>
