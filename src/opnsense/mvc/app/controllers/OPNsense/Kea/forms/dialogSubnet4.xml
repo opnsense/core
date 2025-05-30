@@ -59,7 +59,7 @@
         <id>subnet4.option_data.static_routes</id>
         <label>Static routes</label>
         <type>text</type>
-        <help>Static routes that the client should install in its routing cache, defined as dest-ip1,router-ip1,dest-ip2,router-ip2</help>
+        <help>Static routes that the client should install in its routing cache, defined as dest-ip,router-ip, one per line</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
