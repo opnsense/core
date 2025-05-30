@@ -76,6 +76,7 @@
         </no_ident>
         <hosts type="ArrayField">
             <host type="HostnameField">
+                <HostWildcardAllowed>Y</HostWildcardAllowed>
                 <IsDNSName>Y</IsDNSName>
                 <IpAllowed>N</IpAllowed>
             </host>

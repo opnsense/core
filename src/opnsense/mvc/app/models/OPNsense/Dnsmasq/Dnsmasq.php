@@ -98,6 +98,12 @@ class Dnsmasq extends BaseModel
                     $messages->appendMessage(new Message($messageText, $key . ".ip"));
                 }
 
+                if ($host->host == '*')  {
+                    $messages->appendMessage(
+                        new Message(gettext("Wildcard entries are not allowed for DHCP reservations."), $key . ".host")
+                    );
+                }
+
             } else {
                 if ($host->host->isEmpty() || $host->ip->isEmpty()) {
                     $messageText = gettext("Both hostname and IP address are required for host overrides.");
