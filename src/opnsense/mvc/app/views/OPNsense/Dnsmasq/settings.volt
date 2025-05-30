@@ -140,8 +140,7 @@
 
         // We use two kinds of url hashes appended to the tab hash: & to search a host and ? to create a host
         $(window).on('hashchange', function() {
-            const tabId = window.location.hash.split(/[?&]/)[0] || '#general';
-            $('a[href="' + tabId + '"]').click();
+            $('a[href="' + (window.location.hash.split(/[?&]/)[0] || '') + '"]').click();
         });
 
         $('a[href="' + (window.location.hash.split(/[?&]/)[0] || '#general') + '"]').click();
