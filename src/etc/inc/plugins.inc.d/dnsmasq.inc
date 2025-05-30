@@ -188,6 +188,8 @@ function _dnsmasq_add_host_entries()
             }
             if (empty($host['host'])) {
                 /* do not render partial DHCP lease entries */
+            } elseif ($host['host'] === '*') {
+                /* do not render wildcard hosts as they are handled directly by dnsmasq.conf */
             } elseif (empty($host['domain'])) {
                 $lhosts .= "{$ip}\t{$host['host']}\n";
             } else {
