@@ -31,6 +31,7 @@ namespace OPNsense\Dnsmasq\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Dnsmasq\Dnsmasq;
 use OPNsense\Firewall\Util;
 
 class LeasesController extends ApiControllerBase
@@ -69,6 +70,29 @@ class LeasesController extends ApiControllerBase
             }
         } else {
             $records = [];
+        }
+
+        // Mark records as reserved based on hwaddr (IPv4) or client_id (IPv6) match
+        $reservedKeys = [];
+
+        foreach ((new Dnsmasq())->hosts->iterateItems() as $host) {
+            if (!empty($host->client_id)) {
+                $reservedKeys[] = (string)$host->client_id;
+            }
+
+            if (!empty($host->hwaddr)) {
+                foreach (explode(',', (string)$host->hwaddr) as $hwaddr) {
+                    if (!empty($hwaddr)) {
+                        $reservedKeys[] = $hwaddr;
+                    }
+                }
+            }
+        }
+
+        foreach ($records as &$record) {
+            $is_ipv6 = Util::isIpv6Address($record['address'] ?? '');
+            $key = $is_ipv6 ? ($record['client_id'] ?? '') : ($record['hwaddr'] ?? '');
+            $record['is_reserved'] = in_array($key, $reservedKeys, true) ? '1' : '0';
         }
 
         $response = $this->searchRecordsetBase(

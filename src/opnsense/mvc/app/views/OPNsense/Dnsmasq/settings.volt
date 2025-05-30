@@ -137,11 +137,13 @@
         $('.nav-tabs a').on('shown.bs.tab', function (e) {
             history.pushState(null, null, e.target.hash);
         });
-        $(window).on('hashchange', function(e) {
-            $('a[href="' + window.location.hash + '"]').click()
+
+        // We use two kinds of url hashes appended to the tab hash: & to search a host and ? to create a host
+        $(window).on('hashchange', function() {
+            $('a[href="' + (window.location.hash.split(/[?&]/)[0] || '') + '"]').click();
         });
-        let selected_tab = window.location.hash != "" ? window.location.hash : "#general";
-        $('a[href="' +selected_tab + '"]').click();
+
+        $('a[href="' + (window.location.hash.split(/[?&]/)[0] || '#general') + '"]').click();
 
         $("#range\\.start_addr, #range\\.ra_mode, #option\\.type").on("keyup change", function () {
             const addr = $("#range\\.start_addr").val() || "";
@@ -223,6 +225,28 @@
                 }
             }
         });
+
+        // Autofill dhcp reservation with URL hash
+        if (window.location.hash.startsWith('#hosts?')) {
+            const params = new URLSearchParams(window.location.hash.split('?')[1]);
+
+            // Switch to hosts tab
+            $('a[href="#hosts"]').one('shown.bs.tab', () => {
+                // Wait for grid to be ready
+                $('#{{ formGridHostOverride["table_id"] }}').one('loaded.rs.jquery.bootgrid', function () {
+                    // Wait for dialog to be ready
+                    $('#{{ formGridHostOverride["edit_dialog_id"] }}').one('opnsense_bootgrid_mapped', () => {
+                        if (params.has('host')) $('#host\\.host').val(params.get('host'));
+                        if (params.has('ip')) $('#host\\.ip').trigger('tokenize:tokens:add', [params.get('ip'), params.get('ip')]);
+                        if (params.has('client_id')) $('#host\\.client_id').val(params.get('client_id'));
+                        if (params.has('hwaddr')) $('#host\\.hwaddr').trigger('tokenize:tokens:add', [params.get('hwaddr'), params.get('hwaddr')]);
+                        history.replaceState(null, null, window.location.pathname + '#hosts');
+                    });
+
+                    $(this).find('.command-add').trigger('click');
+                });
+            }).tab('show');
+        }
 
     });
 </script>

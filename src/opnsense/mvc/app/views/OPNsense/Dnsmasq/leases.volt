@@ -80,6 +80,49 @@
                     "timestamp": function (column, row) {
                         return moment.unix(row[column.id]).local().format('YYYY-MM-DD HH:mm:ss');
                     },
+                    "reservation": function (column, row) {
+                        return row.is_reserved === '1'
+                            ? "{{ lang._('static') }}"
+                            : "{{ lang._('dynamic') }}";
+                    },
+                    "commands": function (column, row) {
+                        const isIPv6 = row.address.includes(':');
+                        const queryParams = {
+                            ...(isIPv6 ? { client_id: row.client_id || '' } : { hwaddr: row.hwaddr || '' }),
+                        };
+
+                        const baseUrl = `/ui/dnsmasq/settings#hosts`;
+                        const searchUrl = `${baseUrl}&search=${encodeURIComponent(isIPv6 ? row.client_id : row.hwaddr)}`;
+                        const addUrlParams = {
+                            ip: row.address || '',
+                            ...(isIPv6 ? { client_id: row.client_id || '' } : { hwaddr: row.hwaddr || '' }),
+                            ...(
+                                row.hostname && !row.hostname.includes('*')
+                                    ? { host: row.hostname }
+                                    : {}
+                            )
+                        };
+                        const addUrl = `${baseUrl}?${new URLSearchParams(addUrlParams)}`;
+
+                        if (row.is_reserved === '1') {
+                            return `
+                                <button type="button" class="btn btn-xs"
+                                    onclick="window.location.href = '${searchUrl}'"
+                                    title="{{ lang._('Find Reservation') }}">
+                                    <i class="fa fa-fw fa-search"></i>
+                                </button>
+                            `;
+                        } else {
+                            return `
+                                <button type="button" class="btn btn-xs"
+                                    onclick="window.location.href = '${addUrl}'"
+                                    title="{{ lang._('Add Reservation') }}">
+                                    <i class="fa fa-fw fa-plus"></i>
+                                </button>
+                            `;
+                        }
+                    }
+
                 }
             }
         });
@@ -122,6 +165,8 @@
                 <th data-column-id="client_id" data-type="string" data-formatter="overflowformatter">{{ lang._('DUID') }}</th>
                 <th data-column-id="expire" data-type="string" data-formatter="timestamp">{{ lang._('Expire') }}</th>
                 <th data-column-id="hostname" data-type="string" data-formatter="overflowformatter">{{ lang._('Hostname') }}</th>
+                <th data-column-id="is_reserved" data-type="string" data-formatter="reservation" data-width="6em">{{ lang._('Lease Type') }}</th>
+                <th data-column-id="commands" data-formatter="commands" data-sortable="false" data-width="6em">{{ lang._('Commands') }}</th>
             </tr>
         </thead>
         <tbody>
