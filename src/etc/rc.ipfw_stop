@@ -1,6 +1,0 @@
-#!/bin/sh
-
-if [ "$1" = quietstop ]; then
-	# Force first load behaviour on next ipfw start, to fix ipfw/pf ordering.
-	rm -f /tmp/ipfw.firstload
-fi
