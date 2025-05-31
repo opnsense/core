@@ -106,8 +106,9 @@ class CertController extends ApiMutableModelControllerBase
                 } else {
                     $node->crt = base64_encode((string)$node->crt_payload);
                     if (
-                        !empty(trim((string)$node->prv_payload)) &&
-                        openssl_pkey_get_private((string)$node->prv_payload) === false
+                        !empty(trim((string)$node->prv_payload)) && (
+                        openssl_pkey_get_private((string)$node->prv_payload) === false ||
+                        openssl_x509_check_private_key((string)$node->crt_payload, (string)$node->prv_payload) === false)
                     ) {
                         $error = gettext('Invalid private key provided');
                     }
