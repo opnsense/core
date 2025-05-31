@@ -394,10 +394,22 @@ EOD;
                 $config['interfaces']['lan']['subnetv6'] = '64';
             }
 
-            config_read_array('dhcpd', 'lan', 'range');
-            $config['dhcpd']['lan']['enable'] = true;
-            $config['dhcpd']['lan']['range']['from'] = '192.168.1.100';
-            $config['dhcpd']['lan']['range']['to'] = '192.168.1.199';
+            if (isset($config['dhcpd']['lan'])) {
+                unset($config['dhcpd']['lan']);
+            }
+
+            config_read_array('dnsmasq', 'dhcp_ranges');
+            foreach ($config['dnsmasq']['dhcp_ranges'] as $idx => $range) {
+                if ($range['interface'] == 'lan') {
+                    unset($config['dnsmasq']['dhcp_ranges'][$idx]);
+                }
+            }
+            $config['dnsmasq']['enable'] = '1';
+            $config['dnsmasq']['dhcp_ranges'][] = [
+                'interface' => 'lan',
+                'start_addr' => '192.168.1.100',
+                'end_addr' => '192.168.1.200'
+            ];
 
             config_read_array('nat', 'outbound');
             $config['nat']['outbound']['mode'] = 'automatic';

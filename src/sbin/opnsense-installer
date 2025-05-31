@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2014-2021 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2025 Franco Fichtner <franco@opnsense.org>
 # Copyright (c) 2004-2009 Scott Ullrich <sullrich@gmail.com>
 #
 # Redistribution and use in source and binary forms, with or without
@@ -29,25 +29,38 @@ if [ "$(id -u)" != "0" ]; then
 	exit 1
 fi
 
-if ! bsdinstall opnsense; then
-	clear
-	exit 0
-fi
+bsdinstall opnsense
+
+RET=${?}
 
 clear
 
+ACTION=Rebooting
+FINAL=reboot
+
+if [ ${RET} -eq 42 ]; then
+	ACTION="Powering down"
+	FINAL="halt -p"
+elif [ ${RET} -ne 0 ]; then
+	exit 0
+fi
+
 echo "The installation finished successfully."
 echo
-echo "After reboot, open a web browser and navigate to"
-echo "https://192.168.1.1 (or the LAN IP address).  The console"
-echo "can also be used to set a different LAN IP."
-echo
-echo "Your browser may report the HTTPS certificate as untrusted"
-echo "and ask you to accept it.  This is normal, as the default"
-echo "certificate will be self-signed and cannot be validated by"
-echo "an external root authority."
-echo
-echo -n "Rebooting in 5 seconds.  CTRL-C to abort"
+
+if [ ${RET} -ne 42 ]; then
+	echo "After booting, open a web browser and navigate to"
+	echo "https://192.168.1.1 (or the LAN IP address).  The console"
+	echo "can also be used to set a different LAN IP."
+	echo
+	echo "Your browser may report the HTTPS certificate as untrusted"
+	echo "and ask you to accept it.  This is normal, as the default"
+	echo "certificate will be self-signed and cannot be validated by"
+	echo "an external root authority."
+	echo
+fi
+
+echo -n "${ACTION} in 5 seconds.  CTRL-C to abort"
 
 for n in 5 4 3 2 1; do
     echo -n "."
@@ -56,4 +69,4 @@ done
 
 echo
 
-reboot
+${FINAL}

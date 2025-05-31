@@ -1,37 +1,36 @@
 <?php
 
-/**
- *    Copyright (C) 2018 Deciso B.V.
+/*
+ * Copyright (C) 2018 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 namespace OPNsense\Firewall\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\UserException;
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Category;
@@ -138,18 +137,16 @@ class AliasController extends ApiMutableModelControllerBase
      */
     public function setItemAction($uuid)
     {
-        $node = $this->getModel()->getNodeByReference('aliases.alias.' . $uuid);
-        $old_name = $node != null ? (string)$node->name : null;
-        if (
-            $old_name !== null &&
-            $this->request->isPost() &&
-            $this->request->hasPost("alias") &&
-            !empty($this->request->getPost("alias")['name'])
-        ) {
-            $new_name = $this->request->getPost("alias")['name'];
-            if ($new_name != $old_name) {
-                // replace aliases, setBase() will synchronise the changes to disk
-                $this->getModel()->refactor($old_name, $new_name);
+        if ($this->request->isPost() && $this->request->hasPost("alias")) {
+            Config::getInstance()->lock();
+            $node = $this->getModel()->getNodeByReference('aliases.alias.' . $uuid);
+            $old_name = $node != null ? (string)$node->name : null;
+            if ($old_name !== null && !empty($this->request->getPost("alias")['name'])) {
+                $new_name = $this->request->getPost("alias")['name'];
+                if ($new_name != $old_name) {
+                    // replace aliases, setBase() will synchronise the changes to disk
+                    $this->getModel()->refactor($old_name, $new_name);
+                }
             }
         }
         return $this->setBase("alias", "aliases.alias", $uuid);
@@ -258,7 +255,8 @@ class AliasController extends ApiMutableModelControllerBase
             ]
         ];
 
-        foreach (explode("\n", file_get_contents('/usr/local/opnsense/contrib/tzdata/iso3166.tab')) as $line) {
+        $contribDir = (new AppConfig())->application->contribDir;
+        foreach (explode("\n", file_get_contents($contribDir . '/iana/tzdata-iso3166.tab')) as $line) {
             $line = trim($line);
             if (strlen($line) > 3 && substr($line, 0, 1) != '#') {
                 $result[substr($line, 0, 2)] = array(
@@ -267,7 +265,7 @@ class AliasController extends ApiMutableModelControllerBase
                 );
             }
         }
-        foreach (explode("\n", file_get_contents('/usr/local/opnsense/contrib/tzdata/zone.tab')) as $line) {
+        foreach (explode("\n", file_get_contents($contribDir . '/iana/tzdata-zone.tab')) as $line) {
             if (strlen($line) > 0 && substr($line, 0, 1) == '#') {
                 continue;
             }
@@ -376,10 +374,27 @@ class AliasController extends ApiMutableModelControllerBase
      */
     public function exportAction()
     {
-        if ($this->request->isGet()) {
+        if ($this->request->isGet() || $this->request->isPost()) {
+            if (!empty($this->request->get('ids'))) {
+                /* partial select */
+                if (is_array($this->request->get('ids'))) {
+                    $items = $this->request->get('ids');
+                } else {
+                    $items = explode(',', (string)$this->request->get('ids'));
+                }
+                $payload = ['aliases' => ['alias' => []]];
+                foreach ($this->getModel()->aliases->alias->iterateItems() as $key => $node) {
+                    if (in_array($key, $items)) {
+                        $payload['aliases']['alias'][$key] = $this->getRawNodes($node);
+                    }
+                }
+            } else {
+                /* full dump */
+                $payload = $this->getRawNodes($this->getModel());
+            }
             // return raw, unescaped since this content is intended for direct download
             $this->response->setContentType('application/json', 'UTF-8');
-            $this->response->setContent(json_encode($this->getRawNodes($this->getModel())));
+            $this->response->setContent(json_encode($payload, JSON_PRETTY_PRINT));
         } else {
             throw new UserException("Unsupported request type");
         }

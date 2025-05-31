@@ -64,11 +64,17 @@ for RUNDIR in /var/run /var/dhcpd/var/run /var/unbound/var/run; do
 	fi
 done
 
-# setup output directory for php sessions
-mkdir -p /var/lib/php/sessions
-chown root:wheel /var/lib/php/sessions
-chmod 750 /var/lib/php/sessions
-rm -f /var/lib/php/sessions/sess_*
+# setup output directory for various php ui components
+for PHPDIR in /var/lib/php/sessions /var/lib/php/tmp /var/lib/php/cache; do
+	mkdir -p ${PHPDIR}
+	chown wwwonly:wheel ${PHPDIR}
+	chmod 750 ${PHPDIR}
+	rm -f ${PHPDIR}/*
+done
+
+# tmp needs sticky
+chmod +t /var/lib/php/tmp
+
 
 if [ ${USE_MFS_VAR} -ne 0 ]; then
 	MAX_MFS_VAR=$(grep 'max_mfs_var' /conf/config.xml | sed 's/[^>]*>\([^<]*\)<.*/\1/')

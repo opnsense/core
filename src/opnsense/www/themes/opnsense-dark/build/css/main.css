@@ -5885,7 +5885,7 @@ button.close {
   bottom: 0;
   left: 0;
   z-index: 1040;
-  background-color: #ECECEC;
+  background-color: #000;
 }
 .modal-backdrop.fade {
   opacity: 0;
@@ -6889,8 +6889,6 @@ main.page-content.col-lg-12 {
   width: 70px;
   overflow: hidden;
   background-color: transparent !important;
-  border: none !important;
-  border-right: 1px solid #2f3446 !important;
 }
 #navigation.col-sidebar-left > div.row {
   height: 100% !important;

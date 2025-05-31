@@ -161,7 +161,7 @@ require_once("interfaces.inc");
         }
     }
 
-if (isset($config['ntpd']['gps']['type']) && ($config['ntpd']['gps']['type'] == 'SureGPS') && (isset($gps_ok))) {
+if (isset($config['ntpd']['gps']['type']) && ($config['ntpd']['gps']['type'] == 'SureGPS') && isset($gps_ok)) {
     //GSV message is only enabled by init commands in services_ntpd_gps.php for SureGPS board
     $gpsport = fopen("/dev/gps0", "r+");
     while ($gpsport) {
@@ -237,7 +237,7 @@ include("head.inc");
               </tbody>
             </table>
 <?php
-            if ($gps_ok):
+            if (isset($gps_ok)):
             $gps_goo_lnk = 2; ?>
             <table class="table table-striped">
               <thead>

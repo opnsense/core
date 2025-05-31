@@ -37,6 +37,7 @@
 import os
 import json
 import time
+import re
 import errno
 import uuid
 import ipaddress
@@ -324,6 +325,9 @@ class DNSBL:
             return False
 
         domain = query.domain.rstrip('.').lower()
+        if mod_env['context'].global_pass_regex and mod_env['context'].global_pass_regex.match(domain):
+            return False
+
         sub = domain
         match = None
         while match is None:
@@ -360,6 +364,7 @@ class ModuleContext:
         self.env = env
         self.dst_addr = '0.0.0.0'
         self.rcode = RCODE_NOERROR
+        self.global_pass_regex = None
         if self.env:
             self.dnssec_enabled = 'validator' in self.env.cfg.module_conf
 
@@ -370,6 +375,15 @@ class ModuleContext:
         self.config = config
         self.dst_addr = self.config.get('dst_addr', '0.0.0.0')
         self.rcode = RCODE_NXDOMAIN if self.config.get('rcode') == 'NXDOMAIN' else RCODE_NOERROR
+        passlist =  self.config.get('global_passlist_regex', None)
+        if passlist:
+            # when a pass/white list is offered, we need to be absolutely sure we can use the regex.
+            # compile and skip when invalid.
+            try:
+                self.global_pass_regex = re.compile(passlist, re.IGNORECASE)
+            except re.error:
+                log_err("dnsbl_module: unable to compile regex in global_passlist_regex")
+                self.global_pass_regex = None
 
 def time_diff_ms(start):
     return round((time.time() - start) * 1000)

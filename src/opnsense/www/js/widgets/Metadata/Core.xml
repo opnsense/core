@@ -186,6 +186,7 @@
             <rtt>RTT</rtt>
             <rttd>RTTd</rttd>
             <loss>Loss</loss>
+            <active>active</active>
         </translations>
     </gateways>
     <thermalsensors>
@@ -287,9 +288,8 @@
             <notunnels>No tunnels connected</notunnels>
             <online>Online</online>
             <offline>Offline</offline>
-            <total>Tunnels</total>
+            <stale>Stale</stale>
             <notavailable>N/A</notavailable>
-            <disconnected>Peer disconnected</disconnected>
         </translations>
     </Wireguard>
     <services>

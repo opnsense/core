@@ -68,8 +68,14 @@ try {
             'action' => 'indexAction',
         ]);
     } catch (\OPNsense\Mvc\Exceptions\DispatchException) {
-        // unroutable (page not found), present page not found controller
-        $response = $router->routeRequest('/ui/core/index/index');
+        if ($_SERVER['REQUEST_URI'] === '/ui/user_portal') {
+            /* legacy user password manager requested, non BE install */
+            header('Location: /system_usermanager_passwordmg.php');
+            exit(0);
+        } else {
+            // unroutable (page not found), present page not found controller
+            $response = $router->routeRequest('/ui/core/index/index');
+        }
     }
 
     if (!$response->isSent()) {

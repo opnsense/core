@@ -1,0 +1,199 @@
+<model>
+    <mount>//OPNsense/Kea/dhcp6</mount>
+    <version>1.0.0</version>
+    <description>Kea DHCPv6 configuration</description>
+    <items>
+        <general>
+            <enabled type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </enabled>
+            <manual_config type="BooleanField"/>
+            <interfaces type="InterfaceField">
+                <Multiple>Y</Multiple>
+            </interfaces>
+            <valid_lifetime type="IntegerField">
+                <Default>4000</Default>
+                <Required>Y</Required>
+            </valid_lifetime>
+            <fwrules type="BooleanField">
+                <Required>Y</Required>
+                <Default>1</Default>
+            </fwrules>
+        </general>
+        <ha>
+            <enabled type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </enabled>
+            <this_server_name type="TextField">
+                <Mask>/^([0-9a-zA-Z.\:\-,_]){0,1024}$/u</Mask>
+            </this_server_name>
+            <max_unacked_clients type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>65535</MaximumValue>
+                <Default>2</Default>
+                <Required>Y</Required>
+            </max_unacked_clients>
+        </ha>
+        <subnets>
+            <subnet6 type="ArrayField">
+                <subnet type="NetworkField">
+                    <NetMaskRequired>Y</NetMaskRequired>
+                    <AddressFamily>ipv6</AddressFamily>
+                    <Required>Y</Required>
+                </subnet>
+                <allocator type="OptionField">
+                    <BlankDesc>Default</BlankDesc>
+                    <OptionValues>
+                        <iterative>iterative</iterative>
+                        <random>random</random>
+                    </OptionValues>
+                </allocator>
+                <pd-allocator type="OptionField">
+                    <BlankDesc>Default</BlankDesc>
+                    <OptionValues>
+                        <iterative>iterative</iterative>
+                        <random>random</random>
+                        <flq>Free Lease Queue Allocator</flq>
+                    </OptionValues>
+                </pd-allocator>
+                <option_data>
+                    <dns_servers type="NetworkField">
+                        <NetMaskAllowed>N</NetMaskAllowed>
+                        <AddressFamily>ipv6</AddressFamily>
+                        <AsList>Y</AsList>
+                        <FieldSeparator>,</FieldSeparator>
+                    </dns_servers>
+                    <domain_search type="HostnameField">
+                        <IpAllowed>N</IpAllowed>
+                        <FieldSeparator>,</FieldSeparator>
+                        <AsList>Y</AsList>
+                        <ValidationMessage>Please specify a valid list of domains</ValidationMessage>
+                    </domain_search>
+                </option_data>
+                <pools type=".\KeaPoolsField">
+                </pools>
+                <interface type="InterfaceField">
+                    <Required>Y</Required>
+                </interface>
+                <description type="DescriptionField"/>
+            </subnet6>
+        </subnets>
+        <reservations>
+            <reservation type="ArrayField">
+                <subnet type="ModelRelationField">
+                    <Model>
+                        <subnets>
+                            <source>OPNsense.Kea.KeaDhcpv6</source>
+                            <items>subnets.subnet6</items>
+                            <display>subnet</display>
+                        </subnets>
+                    </Model>
+                    <ValidationMessage>Related subnet not found</ValidationMessage>
+                    <Constraints>
+                        <check001>
+                            <reference>duid.check001</reference>
+                        </check001>
+                    </Constraints>
+                    <Required>Y</Required>
+                </subnet>
+                <ip_address type="NetworkField">
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <AddressFamily>ipv6</AddressFamily>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                        </check001>
+                    </Constraints>
+                </ip_address>
+                <duid type="TextField">
+                    <Required>Y</Required>
+                    <Mask>/^(?:[0-9A-Fa-f]{2}(?::[0-9A-Fa-f]{2})+)$/</Mask>
+                    <ValidationMessage>Value must be a colon-separated hexadecimal sequence (e.g., 01:02:f3).</ValidationMessage>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                            <addFields>
+                                <field1>subnet</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </duid>
+                <hostname type="HostnameField">
+                    <IsDNSName>Y</IsDNSName>
+                </hostname>
+                <domain_search type="HostnameField">
+                    <IpAllowed>N</IpAllowed>
+                    <FieldSeparator>,</FieldSeparator>
+                    <AsList>Y</AsList>
+                    <ValidationMessage>Please specify a valid list of domains</ValidationMessage>
+                </domain_search>
+                <description type="DescriptionField"/>
+            </reservation>
+        </reservations>
+        <pd_pools>
+            <pd_pool type="ArrayField">
+                <subnet type="ModelRelationField">
+                    <Model>
+                        <subnets>
+                            <source>OPNsense.Kea.KeaDhcpv6</source>
+                            <items>subnets.subnet6</items>
+                            <display>subnet</display>
+                        </subnets>
+                    </Model>
+                    <ValidationMessage>Related subnet not found</ValidationMessage>
+                    <Required>Y</Required>
+                </subnet>
+                <prefix type="NetworkField">
+                    <AddressFamily>ipv6</AddressFamily>
+                </prefix>
+                <prefix_len type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>128</MaximumValue>
+                    <Default>56</Default>
+                    <Required>Y</Required>
+                </prefix_len>
+                <delegated_len type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>128</MaximumValue>
+                    <Required>Y</Required>
+                    <Default>64</Default>
+                </delegated_len>
+                <description type="DescriptionField"/>
+            </pd_pool>
+        </pd_pools>
+        <ha_peers>
+            <peer type="ArrayField">
+                <name type="TextField">
+                    <Required>Y</Required>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                        </check001>
+                    </Constraints>
+                </name>
+                <role type="OptionField">
+                    <Default>primary</Default>
+                    <Required>Y</Required>
+                    <OptionValues>
+                        <primary>primary</primary>
+                        <standby>standby</standby>
+                    </OptionValues>
+                </role>
+                <url type="UrlField">
+                    <Required>Y</Required>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                        </check001>
+                    </Constraints>
+                </url>
+            </peer>
+        </ha_peers>
+    </items>
+</model>

@@ -42,14 +42,14 @@
                     <Default>1</Default>
                     <Required>Y</Required>
                 </mobike>
-                <local_addrs type=".\IKEAdressField"/>
+                <local_addrs type=".\IKEAddressField"/>
                 <local_port type="OptionField">
                     <OptionValues>
                         <port500 value="">500 (default)</port500>
                         <port4500 value="4500">4500 (NAT-T)</port4500>
                     </OptionValues>
                 </local_port>
-                <remote_addrs type=".\IKEAdressField"/>
+                <remote_addrs type=".\IKEAddressField"/>
                 <remote_port type="OptionField">
                     <OptionValues>
                         <port500 value="">500 (default)</port500>

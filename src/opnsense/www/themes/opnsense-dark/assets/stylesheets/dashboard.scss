@@ -55,7 +55,6 @@
   border-color: transparentize(map-get($colors, brand-primary), 0.85);
   border-width: 2px;
   background-color: map-get($colors, page-content-head-background);
-  border-radius: 0.5em 0.5em 0.5em 0.5em;
 }
 
 .widget-error {
@@ -143,8 +142,18 @@ td {
     margin: 5px;
 }
 
+.canvas-container-noaspectratio {
+    position: relative;
+}
+
 .canvas-container {
     position: relative;
+}
+
+.canvas-container > canvas {
+    /* ChartJS v4 workaround: https://github.com/chartjs/Chart.js/issues/11005 */
+    width: 100% !important;
+    height: 100% !important;
 }
 
 .cpu-canvas-container {
@@ -338,6 +347,8 @@ div {
 }
 
 .grid-item {
+    overflow: hidden;
+    text-overflow: ellipsis;
     padding: 4px;
     text-align: center;
 }

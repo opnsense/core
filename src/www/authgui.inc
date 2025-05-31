@@ -197,7 +197,7 @@ function session_auth()
                     header(url_safe("Location: {$redir_uri}"));
                 }
             } elseif (!empty($_SESSION['user_shouldChangePassword'])) {
-                header("Location: system_usermanager_passwordmg.php");
+                header("Location: /ui/user_portal");
             } else {
                 if ($_SERVER['REQUEST_URI'] == "/") {
                     // default landing page

@@ -37,8 +37,12 @@ class SystemBootingStatus extends AbstractStatus
     {
         $this->internalPriority = 1;
         $this->internalPersistent = true;
+        $this->internalIsBanner = true;
         $this->internalTitle = gettext('System Booting');
+    }
 
+    public function collectStatus()
+    {
         /* XXX boot detection from final class product in config.inc */
         $fp = fopen('/var/run/booting', 'a+e');
         if ($fp) {
@@ -48,10 +52,5 @@ class SystemBootingStatus extends AbstractStatus
             }
             fclose($fp);
         }
-    }
-
-    public function dismissStatus()
-    {
-        /* XXX not applicable */
     }
 }

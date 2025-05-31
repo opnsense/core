@@ -30,6 +30,7 @@
                         <port>Port(s)</port>
                         <url>URL (IPs)</url>
                         <urltable>URL Table (IPs)</urltable>
+                        <urljson>URL Table in JSON format (IPs)</urljson>
                         <geoip>GeoIP</geoip>
                         <networkgroup>Network group</networkgroup>
                         <mac>MAC address</mac>
@@ -45,6 +46,7 @@
                         </check001>
                     </Constraints>
                 </type>
+                <path_expression type="TextField"/>
                 <proto type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>
@@ -67,6 +69,14 @@
                     <ValidationMessage>Days and hours should be numeric values or left empty.</ValidationMessage>
                 </updatefreq>
                 <content type=".\AliasContentField"/>
+                <password type="TextField"/>
+                <username type="TextField"/>
+                <authtype type="OptionField">
+                    <OptionValues>
+                        <Basic>Basic</Basic>
+                        <Bearer>Bearer</Bearer>
+                    </OptionValues>
+                </authtype>
                 <categories type="ModelRelationField">
                     <Model>
                         <rulesets>

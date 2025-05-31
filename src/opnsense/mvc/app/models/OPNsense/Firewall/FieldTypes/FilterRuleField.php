@@ -143,6 +143,8 @@ class FilterRuleContainerField extends ContainerField
  */
 class FilterRuleField extends ArrayField
 {
+    protected static $internalStaticChildren = [];
+
     /**
      * @inheritDoc
      */
@@ -152,5 +154,18 @@ class FilterRuleField extends ArrayField
         $parentmodel = $this->getParentModel();
         $container_node->setParentModel($parentmodel);
         return $container_node;
+    }
+
+    protected function actionPostLoadingEvent()
+    {
+        foreach ($this->internalChildnodes as $node) {
+            /**
+             * Evaluation order consists of a priority group and a sequence within the set,
+             * prefixed with 0 as these precede legacy rules
+             **/
+            $node->sort_order = sprintf("%d.0%06d", $node->getPriority(), (string)$node->sequence);
+            $node->prio_group = (string)$node->getPriority();
+        }
+        return parent::actionPostLoadingEvent();
     }
 }

@@ -45,6 +45,10 @@ class UserController extends ApiMutableModelControllerBase
     protected static $internalModelName = 'user';
     protected static $internalModelClass = 'OPNsense\Auth\User';
 
+    private $export_ignore = [
+        'uid', 'comments', 'password', 'authorizedkeys', 'otp_seed', 'scope', 'scrambled_password', 'dashboard'
+    ];
+
     private function getHostname()
     {
         $config = Config::getInstance()->object();
@@ -53,52 +57,54 @@ class UserController extends ApiMutableModelControllerBase
 
     protected function setBaseHook($node)
     {
-        if (!empty($this->request->getPost(static::$internalModelName)) && $this->request->isPost()) {
-            $data = $this->request->getPost(static::$internalModelName);
-            $this_uid = (string)$node->uid;
-            $this_gids = !empty($data['group_memberships']) ? explode(',', $data['group_memberships']) : [];
-            $groupmdl = new Group();
-            foreach ($groupmdl->group->iterateItems() as $uuid => $group) {
-                $members = explode(',', $group->member->getCurrentValue());
-                if (in_array($this_uid, $members) && !in_array($group->gid, $this_gids)) {
-                    unset($members[array_search($this_uid, $members)]);
-                } elseif (!in_array($this_uid, $members) && in_array($group->gid, $this_gids)) {
-                    $members[] = $this_uid;
-                } else {
-                    continue;
-                }
-                $group->member = implode(',', $members);
+        $this_uid = (string)$node->uid;
+        $group_memberships = (string)$node->group_memberships;
+        $this_gids = !empty($group_memberships) ? explode(',', $group_memberships) : [];
+        $groupmdl = new Group();
+        foreach ($groupmdl->group->iterateItems() as $uuid => $group) {
+            $members = explode(',', $group->member->getCurrentValue());
+            if (in_array($this_uid, $members) && !in_array($group->gid, $this_gids)) {
+                unset($members[array_search($this_uid, $members)]);
+            } elseif (!in_array($this_uid, $members) && in_array($group->gid, $this_gids)) {
+                $members[] = $this_uid;
+            } else {
+                continue;
             }
-            /* will be persisted by regular save */
-            $groupmdl->serializeToConfig(false, true);
+            $group->member = implode(',', $members);
+        }
+        /* will be persisted by regular save */
+        $groupmdl->serializeToConfig(false, true);
 
-            if (!(new ACL())->isPageAccessible($this->getUserName(), '/api/auth/user')) {
-                throw new UserException(
-                    sprintf(gettext("User %s can not lock itself out"), $this->getUserName()),
-                    gettext("Usermanager")
-                );
+        if (!(new ACL())->isPageAccessible($this->getUserName(), '/api/auth/user')) {
+            throw new UserException(
+                sprintf(gettext("User %s can not lock itself out"), $this->getUserName()),
+                gettext("Usermanager")
+            );
+        }
+
+        /* Password handling */
+        if (
+            !empty((string)$node->scrambled_password) || (
+            $node->password->isFieldChanged() && !empty($node->password->getCurrentValue())
+            )
+        ) {
+            if (!empty((string)$node->scrambled_password)) {
+                /* generate a random password */
+                $password = random_bytes(50);
+                /* XXX since PHP 8.2.18 we need to avoid NUL char */
+                while (($i = strpos($password, "\0")) !== false) {
+                    $password[$i] = random_bytes(1);
+                }
+            } else {
+                $password = $node->password->getCurrentValue();
             }
-
-            /* Password handling */
-            if (!empty($data['scrambled_password']) || !empty($data['password'])) {
-                if (!empty($data['scrambled_password'])) {
-                    /* generate a random password */
-                    $password = random_bytes(50);
-                    /* XXX since PHP 8.2.18 we need to avoid NUL char */
-                    while (($i = strpos($password, "\0")) !== false) {
-                        $password[$i] = random_bytes(1);
-                    }
-                } else {
-                    $password = $data['password'];
-                }
-                $hash = $this->getModel()->generatePasswordHash($password);
-                if ($hash !== false && strpos($hash, '$') === 0) {
-                    $node->password = $hash;
-                } else {
-                    /* log and throw exception, not being able to hash the password should be fatal. */
-                    $this->getLogger('audit')->error(sprintf("Failed to hash password for user %s", $data['name']));
-                    throw new UserException(sprintf(gettext("Failed to hash password for user %s"), $data['name']));
-                }
+            $hash = $this->getModel()->generatePasswordHash($password);
+            if ($hash !== false && strpos($hash, '$') === 0) {
+                $node->password = $hash;
+            } else {
+                /* log and throw exception, not being able to hash the password should be fatal. */
+                $this->getLogger('audit')->error(sprintf("Failed to hash password for user %s", $node->name));
+                throw new UserException(sprintf(gettext("Failed to hash password for user %s"), $node->name));
             }
         }
     }
@@ -135,6 +141,46 @@ class UserController extends ApiMutableModelControllerBase
         return $result;
     }
 
+    public function downloadAction()
+    {
+        if ($this->request->isGet()) {
+            $data = $this->getModel()->user->asRecordSet(
+                false,
+                $this->export_ignore
+            );
+            $this->exportCsv($data);
+        }
+    }
+
+    public function uploadAction()
+    {
+        if ($this->request->isPost() && $this->request->hasPost('payload')) {
+            /* list of fields not part of our import */
+            $that = $this;
+            return $this->importCsv(
+                'user',
+                $this->request->getPost('payload'),
+                ['name'],
+                function (&$record) use ($that) {
+                    foreach ($that->export_ignore as $fieldname) {
+                        if (isset($record[$fieldname])) {
+                            unset($record[$fieldname]);
+                        }
+                    }
+                },
+                function ($node) use ($that) {
+                    /* new user without password, scramble one */
+                    if ($node->password->isFieldChanged() && empty($node->password->getCurrentValue())) {
+                        $node->scrambled_password = '1';
+                    }
+                    $that->setBaseHook($node);
+                }
+            );
+        } else {
+            return ['status' => 'failed'];
+        }
+    }
+
     public function newOtpSeedAction()
     {
         $seed = \Base32\Base32::encode(random_bytes(20));
@@ -151,11 +197,12 @@ class UserController extends ApiMutableModelControllerBase
 
     public function addAction()
     {
+        $data = $this->request->getPost(static::$internalModelName);
+        $this->setSaveAuditMessage(sprintf('user \"%s\" created"', $data['name']));
         $result = $this->addBase('user', 'user');
         if ($result['result'] != 'failed') {
-            $data = $this->request->getPost(static::$internalModelName);
             if (!empty($data['name'])) {
-                (new Backend())->configdRun('auth sync user', [$data['name']]);
+                (new Backend())->configdpRun('auth sync user', [$data['name']]);
             }
         }
         return $result;
@@ -163,11 +210,12 @@ class UserController extends ApiMutableModelControllerBase
 
     public function setAction($uuid = null)
     {
+        $data = $this->request->getPost(static::$internalModelName);
+        $this->setSaveAuditMessage(sprintf('user \"%s\" changed"', $data['name']));
         $result = $this->setBase('user', 'user', $uuid);
         if ($result['result'] != 'failed') {
-            $data = $this->request->getPost(static::$internalModelName);
             if (!empty($data['name'])) {
-                (new Backend())->configdRun('auth sync user', [$data['name']]);
+                (new Backend())->configdpRun('auth sync user', [$data['name']]);
             }
         }
         return $result;
@@ -194,9 +242,10 @@ class UserController extends ApiMutableModelControllerBase
                 $username = (string)$node->name;
             }
         }
+        $this->setSaveAuditMessage(sprintf('The user "%s" was successfully removed.', $username));
         $result = $this->delBase('user', $uuid);
         if ($username != null) {
-            (new Backend())->configdRun('auth sync user', [$username]);
+            (new Backend())->configdpRun('auth sync user', [$username]);
         }
         return $result;
     }

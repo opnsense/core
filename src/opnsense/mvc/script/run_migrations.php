@@ -49,7 +49,7 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($model_dir
             $mdl_class_info = new \ReflectionClass($classname);
             $parent = $mdl_class_info->getParentClass();
             if ($parent && $parent->name == 'OPNsense\Base\BaseModel') {
-                $mdl = $mdl_class_info->newInstance();
+                $mdl = $mdl_class_info->newInstance(true); /* lazy loading */
                 $version_pre = $mdl->getVersion();
                 $mig_performed = $mdl->runMigrations();
                 $version_post = $mdl->getVersion();
@@ -60,7 +60,7 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($model_dir
                             " to " . $version_post . "\n";
                         $executed_migration = true;
                     } else {
-                        echo "*** " .  $mdl_class_info->getName() . " Migration failed, check log for details\n";
+                        echo "*** {$mdl_class_info->getName()} migration failed from {$version_pre} to {$version_post}, check log for details\n";
                     }
                 } elseif (!empty($version_post)) {
                     if ($mig_performed) {

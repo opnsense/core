@@ -327,7 +327,9 @@
         $("#alias\\.type").change(function(){
             $(".alias_type").hide();
             $("#row_alias\\.updatefreq").hide();
+            $("#row_alias\\.authtype").hide();
             $("#row_alias\\.interface").hide();
+            $("#row_alias\\.path_expression").hide();
             $("#copy-paste").hide();
             switch ($(this).val()) {
                 case 'authgroup':
@@ -356,8 +358,29 @@
                     $("#alias\\.proto").selectpicker('hide');
                     $("#alias_type_default").show();
                     break;
+                case 'urljson':
+                    $("#row_alias\\.path_expression").show();
+                    /* FALLTHROUGH */
                 case 'urltable':
                     $("#row_alias\\.updatefreq").show();
+                    /* FALLTHROUGH */
+                case 'url':
+                    $("#row_alias\\.authtype").show();
+
+                    $("#alias\\.authtype").change(function() {
+                        $("#alias\\.username").hide();
+                        $("#alias\\.password").hide();
+                        switch ($(this).val()) {
+                            case 'Basic':
+                                $("#alias\\.username").show();
+                                $("#alias\\.password").show().attr('placeholder', '{{lang._('Password')}}');
+                                break;
+                            case 'Bearer':
+                                $("#alias\\.password").show().attr('placeholder', '{{lang._('API token')}}');
+                                break;
+                        }
+                    });
+                    $("#alias\\.authtype").change();
                     /* FALLTHROUGH */
                 default:
                     $("#alias_type_default").show();
@@ -424,7 +447,12 @@
          * export all configured aliases to json
          */
         $("#exportbtn").click(function(){
-            ajaxGet("/api/firewall/alias/export", {}, function(data, status){
+            let selected_rows = $("#grid-aliases").bootgrid("getSelectedRows");
+            let params = {};
+            if (selected_rows.length > 0) {
+                params['ids'] = selected_rows;
+            }
+            ajaxCall("/api/firewall/alias/export", params, function(data, status){
                 if (data.aliases) {
                   let output_data = JSON.stringify(data, null, 2);
                   let a_tag = $('<a></a>').attr('href','data:application/json;charset=utf8,' + encodeURIComponent(output_data))
@@ -627,6 +655,7 @@
                                 <option value="port">{{ lang._('Port(s)') }}</option>
                                 <option value="url">{{ lang._('URL (IPs)') }}</option>
                                 <option value="urltable">{{ lang._('URL Table (IPs)') }}</option>
+                                <option value="urljson">{{ lang._('URL Table in JSON format (IPs)') }}</option>
                                 <option value="geoip">{{ lang._('GeoIP') }}</option>
                                 <option value="networkgroup">{{ lang._('Network group') }}</option>
                                 <option value="mac">{{ lang._('MAC address') }}</option>
@@ -877,6 +906,46 @@
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.content"></span>
+                                    </td>
+                                </tr>
+                                <tr id="row_alias.path_expression">
+                                    <td>
+                                        <div class="control-label" id="control_label_alias.path_expression">
+                                            <a id="help_for_alias.path_expression" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                                            <b>{{lang._('Path expression')}}</b>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" size="50" id="alias.path_expression"/>
+                                        <div class="hidden" data-for="help_for_alias.path_expression">
+                                            <small>
+                                                {{lang._('Simplified expression to select a field inside a container, a dot [.] is used as field separator (e.g. container.fieldname). Expressions using the jq language are also supported.')}}
+                                            </small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="help-block" id="help_block_alias.authtype"></span>
+                                    </td>
+                                </tr>
+                                <tr id="row_alias.authtype">
+                                    <td>
+                                        <div class="control-label" id="control_label_alias.authtype">
+                                            <a id="help_for_alias.authtype" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                                            <b>{{lang._('Authorization')}}</b>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <select id="alias.authtype"  data-container="body" class="selectpicker" style="margin-bottom: 3px;"></select>
+                                        <input type="text" placeholder="{{lang._('Username')}}" class="form-control" size="50" id="alias.username"/>
+                                        <input type="password" class="form-control" size="50" id="alias.password"/>
+                                        <div class="hidden" data-for="help_for_alias.authtype">
+                                            <small>
+                                                {{lang._('If the remote server enforces authorization, you can specify the authorization type here.')}}
+                                            </small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="help-block" id="help_block_alias.authtype"></span>
                                     </td>
                                 </tr>
                                 <tr id="row_alias.interface">

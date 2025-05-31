@@ -101,6 +101,7 @@ function webgui_configure_do($verbose = false, $interface_map = null)
     }
 
     chdir('/usr/local/www');
+    chown('/var/run/booting', 'wwwonly'); /* booting flag should be owned by wwwonly user*/
 
     /* defaults */
     $portarg = '80';
@@ -148,8 +149,14 @@ function webgui_configure_do($verbose = false, $interface_map = null)
     /* regenerate the php.ini files in case the setup has changed */
     configd_run('template reload OPNsense/WebGui');
 
+    /* arrange configuration ownership, migh need to arrange this elsewhere eventually */
+    $todo = array_merge(glob('/conf/backup/*.xml'), ['/conf', '/conf/config.xml', '/conf/backup']);
+    foreach ($todo as $item) {
+        chown($item, 'wwwonly');
+    }
+
     /* flush Phalcon volt templates */
-    foreach (glob('/usr/local/opnsense/mvc/app/cache/*.php') as $filename) {
+    foreach (glob('/var/lib/php/cache/*.php') as $filename) {
         unlink($filename);
     }
 
@@ -235,7 +242,6 @@ url.rewrite-if-not-file = ( "^/ui/([^\?]+)(\?(.*))?" => "/ui/index.php?$3" ,
 
 EOD;
     $server_upload_dirs = "server.upload-dirs = ( \"/root/\", \"/tmp/\", \"/var/\" )\n";
-    $server_max_request_size = "server.max-request-size    = 2097152";
     $cgi_config = "cgi.assign                 = ( \".cgi\" => \"\" )";
 
     $lighty_port = $port;
@@ -252,8 +258,12 @@ EOD;
     if (!empty($config['system']['webgui']['httpaccesslog'])) {
         $lighty_use_syslog .= 'accesslog.use-syslog="enable"' . "\n";
     }
-
-    $fast_cgi_path = "/tmp/php-fastcgi.socket";
+    $change_user = '';
+    if (!empty($config['system']['webgui']['noroot']) || file_exists('/var/run/www_non_root')) {
+        $change_user .= "server.username = \"wwwonly\"\n";
+        $change_user .= "server.groupname = \"www\"\n";
+        touch('/var/run/www_non_root'); /* create file as root, lock going back to root */
+    }
 
     $fastcgi_config = <<<EOD
 #### fastcgi module
@@ -261,11 +271,12 @@ EOD;
 fastcgi.server = ( ".php" =>
   ( "localhost" =>
     (
-      "socket" => "{$fast_cgi_path}",
-      "max-procs" => 2,
+      "socket" => "/var/lib/php/tmp/php-fastcgi.socket",
+      "max-procs" => 8,
       "bin-environment" => (
-        "PHP_FCGI_CHILDREN" => "20",
-        "PHP_FCGI_MAX_REQUESTS" => "100"
+        "PHP_FCGI_CHILDREN" => "5",
+        "PHP_FCGI_MAX_REQUESTS" => "100",
+        "TMPDIR" => "/var/lib/php/tmp"
       ),
       "bin-path" => "/usr/local/bin/php-cgi"
     )
@@ -295,6 +306,8 @@ include "{$confdir}/conf.d/*.conf"
 
 server.max-keep-alive-requests = 15
 server.max-keep-alive-idle = 30
+
+{$change_user}
 
 ## a static document-root, for virtual-hosting take look at the
 ## server.virtual-* options
@@ -489,7 +502,8 @@ deflate.cache-dir = "/tmp/lighttpdcompress/"
 
 {$server_upload_dirs}
 
-{$server_max_request_size}
+server.max-request-size    = 2097152
+server.max-request-field-size = 16384
 
 {$fastcgi_config}
 

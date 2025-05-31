@@ -168,13 +168,7 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function searchHostOverrideAction()
     {
-        return $this->searchBase(
-            'hosts.host',
-            ['enabled', 'hostname', 'domain', 'rr', 'mxprio', 'mx', 'server', 'description'],
-            'hostname',
-            null,
-            SORT_NATURAL | SORT_FLAG_CASE
-        );
+        return $this->searchBase('hosts.host', null);
     }
 
     public function getHostOverrideAction($uuid = null)
@@ -221,13 +215,7 @@ class SettingsController extends ApiMutableModelControllerBase
                 return $record->host == $host;
             };
         }
-        return $this->searchBase(
-            'aliases.alias',
-            ['enabled', 'host', 'hostname', 'domain', 'description'],
-            "hostname",
-            $filter_func,
-            SORT_NATURAL | SORT_FLAG_CASE
-        );
+        return $this->searchBase('aliases.alias', null, null, $filter_func);
     }
 
     public function getHostAliasAction($uuid = null)
@@ -270,13 +258,7 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function searchAclAction()
     {
-        return $this->searchBase(
-            'acls.acl',
-            ['enabled', 'name', 'action', 'description'],
-            'acl.action',
-            null,
-            SORT_NATURAL | SORT_FLAG_CASE
-        );
+        return $this->searchBase('acls.acl', null);
     }
 
     public function getAclAction($uuid = null)

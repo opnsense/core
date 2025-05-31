@@ -262,10 +262,6 @@ class Gateways extends BaseModel
         $ifcfg = $definedIntf[$ifname];
         $realif = $ifcfg['if'];
 
-        if (isset($ifcfg['wireless']) && !strstr($realif, '_wlan')) {
-            $realif .= '_wlan0';
-        }
-
         if ($ipproto == 'inet6') {
             switch ($ifcfg['ipaddrv6'] ?? 'none') {
                 case '6rd':
@@ -451,7 +447,7 @@ class Gateways extends BaseModel
                         $this->cached_gateways[$gwkey] = $thisconf;
                     } elseif (
                         $ipproto == 'inet6'
-                            && in_array($ifcfg['ipaddrv6'] ?? 'none', ['slaac', 'dhcp6', '6to4', '6rd'])
+                            && in_array($ifcfg['ipaddrv6'] ?? 'none', ['6rd', '6to4', 'dhcp6', 'slaac'])
                     ) {
                         // Dynamic IPv6 interface, but no router solicit response received using rtsold.
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));

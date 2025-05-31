@@ -622,6 +622,75 @@ $.fn.SimpleActionButton = function (params) {
     });
 }
 
+/**
+ * fetch option list for remote url, when a list is returned, expects either a list of items formatted like
+ * [
+ *    {'label': 'my_label', value: 'my_value'}
+ * ]
+ * or an option group like:
+ * {
+ *      group_value: {
+ *          label: 'my_group_label',
+ *          icon: 'fa fa-tag text-primary',
+ *          items: [{'label': 'my_label', value: 'my_value'}]
+ *      }
+ * }
+ *
+ * When data is formatted differently, the data_callback can be used to re-format.
+ *
+ * @param url
+ * @param params
+ * @param data_callback callout to cleanse data before usage
+ * @param store_data store data in data attribute (in its original form)
+ */
+$.fn.fetch_options = function(url, params, data_callback, store_data) {
+    var deferred = $.Deferred();
+    var $obj = $(this);
+    $obj.empty();
+
+    ajaxGet(url, params ?? {}, function(data){
+        if (store_data === true) {
+            $obj.data("store", data);
+        }
+        if (typeof data_callback === "function") {
+            data = data_callback(data);
+        }
+        if (Array.isArray(data)) {
+            data.map(function (item) {
+                $obj.append($("<option/>").attr({"value": item.value}).text(item.label));
+            });
+        } else {
+            for (const groupKey in data) {
+                const group = data[groupKey];
+                if (group.items.length > 0) {
+                    const $optgroup = $('<optgroup>', {
+                        label: group.label,
+                        'data-icon': group.icon
+                    });
+                    for (const item of group.items) {
+                        $optgroup.append(
+                            $('<option>', {
+                                value: item.value,
+                                text: item.label,
+                                'data-subtext': group.label,
+                                selected: item.selected ? 'selected' : undefined
+                            })
+                        );
+                    }
+                    $obj.append($optgroup);
+                }
+            }
+        }
+        if ($obj.hasClass('selectpicker')) {
+            $obj.selectpicker('refresh');
+        }
+        $obj.change();
+        deferred.resolve();
+    });
+
+    return deferred.promise();
+};
+
 
 /**
  *  File upload dialog, constructs a modal, asks for a file to upload and sets {'payload': ..,, 'filename': ...}

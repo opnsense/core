@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2015-2023 Franco Fichtner <franco@opnsense.org>
+ # Copyright (c) 2015-2025 Franco Fichtner <franco@opnsense.org>
  # Copyright (c) 2015-2018 Deciso B.V.
  # All rights reserved.
  #
@@ -130,7 +130,7 @@
      * perform backend action and install poller to update status
      */
     function backend(type) {
-        $.upgrade_check = type == 'check'
+        $.upgrade_check = type == 'check';
 
         $('#update_status').html('');
         $('#updatelist').hide();
@@ -619,9 +619,10 @@
         $("#plugin_see").click(function () { $('#plugintab > a').tab('show'); });
         $("#plugin_get").click(function () { backend('syncPlugins'); });
         $("#plugin_set").click(function () { backend('resyncPlugins'); });
-        $('#audit_security').click(function () { backend('audit'); });
+        $('#audit_cleanup').click(function () { backend('cleanup'); });
         $('#audit_connection').click(function () { backend('connection'); });
         $('#audit_health').click(function () { backend('health'); });
+        $('#audit_security').click(function () { backend('audit'); });
         $('#audit_upgrade').click(function () {
             ajaxCall('/api/core/firmware/log/0', {}, function (data, status) {
                 if (data['log'] != undefined) {
@@ -646,7 +647,13 @@
                 backend('audit');
             } else if (window.location.hash == '#checkupdate') {
                 // dashboard link: run check automatically after delay
-                setTimeout(function () { backend('check'); }, 2000);
+                setTimeout(function () {
+                    ajaxGet('/api/core/firmware/running', {}, function(data, status) {
+                        if (data['status'] != 'busy') {
+                            backend('check');
+                        }
+                    });
+                }, 2000);
             }
         });
 
@@ -660,7 +667,7 @@
                     $("#firmware_mirror").find('option').remove();
                     $("#firmware_type").find('option').remove();
                     $("#firmware_flavour").find('option').remove();
-                    $("#firmware_reboot").prop('checked', firmwareconfig['reboot'] !== '');
+                    $("#firmware_reboot").prop('checked', firmwareconfig['reboot'] == '1');
 
                     $.each(firmwareoptions.mirrors, function(key, value) {
                         var selected = false;
@@ -757,7 +764,7 @@
             confopt.mirror = $("#firmware_mirror_value").val();
             confopt.flavour = $("#firmware_flavour_value").val();
             confopt.type = $("#firmware_type").val();
-            confopt.reboot = $("#firmware_reboot").is(":checked");
+            confopt.reboot = $("#firmware_reboot").is(":checked") ? '1' : '0';
             confopt.subscription = $("#firmware_subscription").val();
             ajaxCall('/api/core/firmware/set', { 'firmware': confopt }, function (data, status) {
                 $("#settingstab_progress").removeClass("fa fa-spinner fa-pulse");
@@ -904,6 +911,7 @@
                                             <i class="fa fa-lock"></i> {{ lang._('Run an audit') }} <i class="caret"></i>
                                         </button>
                                         <ul class="dropdown-menu" role="menu">
+                                            <li><a id="audit_cleanup" href="#">{{ lang._('Cleanup') }}</a></li>
                                             <li><a id="audit_connection" href="#">{{ lang._('Connectivity') }}</a></li>
                                             <li><a id="audit_health" href="#">{{ lang._('Health') }}</a></li>
                                             <li><a id="audit_security" href="#">{{ lang._('Security') }}</a></li>

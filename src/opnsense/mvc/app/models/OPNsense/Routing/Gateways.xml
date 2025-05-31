@@ -55,6 +55,8 @@
                 <Required>Y</Required>
             </monitor_disable>
             <monitor_noroute type="BooleanField"/>
+            <monitor_killstates type="BooleanField"/>
+            <monitor_killstates_priority type="BooleanField"/>
             <monitor type="TextField">
                 <Constraints>
                     <check001>

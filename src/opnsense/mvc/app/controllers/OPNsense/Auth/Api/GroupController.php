@@ -66,20 +66,24 @@ class GroupController extends ApiMutableModelControllerBase
 
     public function addAction()
     {
+        $data = $this->request->getPost(static::$internalModelName);
+        $this->setSaveAuditMessage(sprintf('group \"%s\" created"', $data['name']));
         $result = $this->addBase('group', 'group');
         if ($result['result'] != 'failed') {
-            $data = $this->request->getPost(static::$internalModelName);
-            (new Backend())->configdRun('auth sync group ' . $data['name']);
+            (new Backend())->configdpRun('auth sync group', [$data['name']]);
         }
         return $result;
     }
 
     public function setAction($uuid = null)
     {
+        $data = $this->request->getPost(static::$internalModelName);
+        $this->setSaveAuditMessage(sprintf('group \"%s\" changed"', $data['name']));
         $result = $this->setBase('group', 'group', $uuid);
         if ($result['result'] != 'failed') {
-            $data = $this->request->getPost(static::$internalModelName);
-            (new Backend())->configdRun('auth sync group ' . $data['name']);
+            if (!empty($data['name'])) {
+                (new Backend())->configdpRun('auth sync group', [$data['name']]);
+            }
         }
         return $result;
     }
@@ -97,9 +101,10 @@ class GroupController extends ApiMutableModelControllerBase
                 $groupname = (string)$node->name;
             }
         }
+        $this->setSaveAuditMessage(sprintf('The group "%s" was successfully removed.', $groupname));
         $result = $this->delBase('group', $uuid);
         if ($groupname != null) {
-            (new Backend())->configdRun('auth sync group ' . $groupname);
+            (new Backend())->configdpRun('auth sync group', [$groupname]);
         }
         return $result;
     }

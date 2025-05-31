@@ -2,7 +2,7 @@
 
 /*
  * Copyright (C) 2016-2022 Franco Fichtner <franco@opnsense.org>
- * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2014-2025 Deciso B.V.
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
  * All rights reserved.
@@ -31,11 +31,113 @@
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
-require_once("plugins.inc.d/dhcpd.inc");
+require_once("plugins.inc.d/radvd.inc");
 
 function val_int_in_range($value, $min, $max) {
     return (((string)(int)$value) == $value) && $value >= $min && $value <= $max;
 }
+
+function show_track6_form($if)
+{
+    global $config;
+    $service_hook = 'radvd';
+    include("head.inc");
+    include("fbegin.inc");
+
+    $ra_label = gettext('Router Advertisements');
+    $save_btn_text = html_safe(gettext('Save'));
+
+    if (!empty($config['dhcpdv6']) && !empty($config['dhcpdv6'][$if]) && isset($config['dhcpdv6'][$if]['ramode']) && $config['dhcpdv6'][$if]['ramode'] == 'disabled') {
+        /* disabled */
+        $options = "<option value=''>" . gettext('Assisted') . "</option>\n";
+        $options .= "<option value='disabled' selected='selected'>" . gettext('Disabled') . "</option>";
+    } else {
+        $options = "<option value='' selected='selected'>" . gettext('Assisted') . "</option>\n";
+        $options .= "<option value='disabled'>" . gettext('Disabled') . "</option>";
+    }
+
+    echo <<<EOD
+      <section class="page-content-main">
+        <div class="container-fluid">
+          <div class="row">
+            <section class="col-xs-12">
+              <div class="tab-content content-box col-xs-12">
+                <form method="post" name="iform" id="iform">
+                  <div class="table-responsive">
+                    <table class="table table-striped opnsense_standard_table_form">
+                      <tr>
+                        <td style="width:22%"></td>
+                        <td style="width:78%; text-align:right">
+                          <div style='height: 15px;'></div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><i class="fa fa-info-circle text-muted"></i> $ra_label</td>
+                        <td>
+                          <select name='ramode' class='selectpicker'>$options</select>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>&nbsp;</td>
+                        <td>
+                          <input name="if" type="hidden" value="$if" />
+                          <input name="submit" type="submit" class="formbtn btn btn-primary" value="$save_btn_text"/>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </form>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+    EOD;
+
+    include("foot.inc");
+}
+
+function process_track6_form($if)
+{
+    $dhcpdv6cfg = &config_read_array('dhcpdv6');
+    $this_server = [];
+    if (isset($dhcpdv6cfg[$if]) && isset($dhcpdv6cfg[$if]['enable'])) {
+        /* keep enable for dhcpv6 so we can use this field to disable the service when in tracking mode */
+        $this_server['enable'] = $dhcpdv6cfg[$if]['enable'];
+    }
+    if (!empty($_POST['ramode'])) {
+        $this_server['ramode'] = 'disabled';
+    }
+    $dhcpdv6cfg[$if] = $this_server;
+    write_config();
+    radvd_configure_do();
+    header(url_safe('Location: /services_router_advertisements.php?if=%s', array($if)));
+}
+
+$if = null;
+if (!empty($_REQUEST['if']) && !empty($config['interfaces'][$_REQUEST['if']])) {
+    $if = $_REQUEST['if'];
+} else {
+    /* if no interface is provided this invoke is invalid */
+    header(url_safe('Location: /index.php'));
+    exit;
+}
+
+/**
+ * XXX: In case of tracking, show different form and only handle on/off options.
+ *      this code injection is intended to keep changes as minimal as possible and avoid regressions on existing isc-dhcp6 installs,
+ *      while showing current state for tracking interfaces.
+ **/
+if (!empty($config['interfaces'][$if]) && !empty($config['interfaces'][$if]['track6-interface']) && !isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
+  if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+      show_track6_form($if);
+  } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      process_track6_form($if);
+  }
+  exit;
+}
+/* default form processing */
+
 
 $advanced_options = [
     'AdvDefaultLifetime',
@@ -50,14 +152,6 @@ $advanced_options = [
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    if (!empty($_GET['if']) && !empty($config['interfaces'][$_GET['if']])) {
-        $if = $_GET['if'];
-    } else {
-        /* if no interface is provided this invoke is invalid */
-        header(url_safe('Location: /index.php'));
-        exit;
-    }
-
     $pconfig = array();
     $config_copy_fieldsnames = array('ramode', 'rapriority', 'rainterface', 'ramininterval', 'ramaxinterval', 'radomainsearchlist');
     $config_copy_fieldsnames = array_merge($advanced_options, $config_copy_fieldsnames);
@@ -93,10 +187,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['raroutes'] = array();
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!empty($_POST['if']) && !empty($config['interfaces'][$_POST['if']])) {
-        $if = $_POST['if'];
-    }
-
     /* input validation */
     $input_errors = array();
     $pconfig = $_POST;
@@ -205,7 +295,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         write_config();
-        dhcpd_radvd_configure();
+        radvd_configure_do();
         $savemsg = get_std_save_message();
     }
 }
@@ -343,14 +433,15 @@ include("head.inc");
 <?php
                     $carplist = [];
                     $aliaslist = [];
-                    foreach (get_configured_carp_interface_list() as $ifname => $vip) {
-                      if ((preg_match("/^{$if}_/", $ifname)) && (is_linklocal($vip))) {
+                    foreach (config_read_array('virtualip', 'vip') as $vip) {
+                      if ($if != $vip['interface'] || !is_linklocal($vip['subnet'])) {
+                          continue;
+                      } elseif ($vip['mode'] == 'carp') {
+                        $ifname = "{$vip['interface']}_vip{$vip['vhid']}"; /* XXX this code shouldn't know how to construct this */
                         $carplist[$ifname] = convert_friendly_interface_to_friendly_descr($ifname);
+                      } elseif ($vip['mode'] == 'ipalias') {
+                        $aliaslist[$vip['subnet']] = ($vip['descr'] ?? '') . ' (' . $vip['subnet'] . ')';
                       }
-                    }
-                    foreach (get_configured_ip_aliases_list() as $vip => $ifname) {
-                      if ($ifname == $if && (is_linklocal($vip)))
-                        $aliaslist[$vip] = get_vip_descr($vip) . ' (' . $vip . ')';
                     } ?>
                   <tr>
                     <td><a id="help_for_rainterface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Source Address') ?></td>

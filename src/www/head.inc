@@ -75,9 +75,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename("/css/bootstrap-dialog.css")) ?>">
 
     <!-- Font awesome -->
-    <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/assets/fontawesome/css/fontawesome.min.css") ?>">
-    <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/assets/fontawesome/css/solid.min.css") ?>">
-    <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/assets/fontawesome/css/brands.min.css") ?>">
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/assets/fontawesome/css/all.min.css") ?>">
     <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/assets/fontawesome/css/v4-shims.min.css") ?>">
 
     <!-- nvd3 -->
@@ -183,10 +181,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
           $('html,aside').scrollTop(($(this).offset().top - navbar_center));
       });
 
-      // artifical delay for UX reasons
-      setTimeout(function () {
-          updateSystemStatus();
-      }, 500);
+      updateSystemStatus();
 
       // hook in live menu search
       $.ajax("/api/core/menu/search/", {
@@ -201,7 +196,10 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
               var menusearch_items = [];
               $.each(data,function(idx, menu_item){
                   if (menu_item.Url != "") {
-                      menusearch_items.push({id:$('<div/>').html(menu_item.Url).text(), name:menu_item.breadcrumb});
+                      menusearch_items.push({
+                          id:$('<div/>').html(menu_item.Url).text(),
+                          name: $("<div/>").html(menu_item.breadcrumb).text()
+                      });
                   }
               });
               $("#menu_search_box").typeahead({

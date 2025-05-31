@@ -93,14 +93,16 @@ class M1_0_1 extends BaseModelMigration
 
         if (!empty($config->unbound->domainoverrides)) {
             foreach ($config->unbound->domainoverrides as $old_domain) {
-                $new_domain = $model->domains->domain->add();
-                $domain_data = [
-                    'enabled' => 1,
-                    'domain' => $old_domain->domain,
-                    'server' => $old_domain->ip,
-                    'description' => !empty($old_domain->descr) ? substr($old_domain->descr, 0, 255) : null
-                ];
-                $new_domain->setNodes($domain_data);
+                $new_item = $model->dots->dot->add();
+                $new_item->enabled = '1';
+                $new_item->type = 'forward';
+                $new_item->domain = (string)$domain->domain;
+                $parts = explode('@', (string)$old_domain->ip);
+                $new_item->server = $parts[0];
+                if (isset($parts[1])) {
+                    $new_item->port = $parts[1];
+                }
+                $new_item->description = !empty($old_domain->descr) ? substr($old_domain->descr, 0, 255) : '';
             }
         }
     }

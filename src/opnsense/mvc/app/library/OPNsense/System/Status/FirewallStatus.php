@@ -39,8 +39,11 @@ class FirewallStatus extends AbstractStatus
     {
         $this->internalPriority = 20;
         $this->internalTitle = gettext('Firewall');
-        $this->internalLogLocation = '/ui/diagnostics/log/core/firewall';
+        $this->internalLocation = '/ui/diagnostics/log/core/firewall';
+    }
 
+    public function collectStatus()
+    {
         if (file_exists($this->rules_error)) {
             $this->internalMessage = file_get_contents($this->rules_error); /* XXX */
             $this->internalStatus = SystemStatusCode::ERROR;

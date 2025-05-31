@@ -69,7 +69,7 @@ export default class Firewall extends BaseTableWidget {
         $container.append($(`
             <div class="fw-chart-container">
                 <div class="canvas-container">
-                    <canvas id="fw-chart"></canvas>
+                    <canvas id="fw-chart" style="display: inline-block"></canvas>
                 </div>
             </div>
         `));
@@ -81,6 +81,8 @@ export default class Firewall extends BaseTableWidget {
         if (!event) {
             super.closeEventSource();
         }
+
+        $('.ip-tooltip').tooltip('hide');
 
         let actIcons = {
             'pass': '<i class="fa fa-play text-success"></i>',
@@ -123,11 +125,13 @@ export default class Firewall extends BaseTableWidget {
                 /* Format time based on client browser locale */
                 (new Intl.DateTimeFormat(undefined, {hour: 'numeric', minute: 'numeric'})).format(new Date(data.__timestamp__)),
                 this.ifMap[data.interface] ?? data.interface,
-                data.src,
-                data.dst,
+                `<span class="ip-tooltip" style="cursor: pointer; data-toggle="tooltip" title="${data.src}">${data.src}</span>`,
+                `<span class="ip-tooltip" style="cursor: pointer; data-toggle="tooltip" title="${data.dst}">${data.dst}</span>`,
                 data.dstport ?? ''
             ]
         ]);
+
+        $('.ip-tooltip').tooltip({container: 'body'});
 
         super.updateTable('fw-rule-table', [
             [
@@ -204,6 +208,9 @@ export default class Firewall extends BaseTableWidget {
                     event.native.target.style.cursor = elements[0] ? 'pointer' : 'grab';
                 },
                 plugins: {
+                    colorschemes: {
+                        scheme: 'tableau.Classic10'
+                    },
                     legend: {
                         display: true,
                         position: 'left',

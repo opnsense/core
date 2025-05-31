@@ -96,10 +96,7 @@
                 initFormAdvancedUI();
                 addMultiSelectClearUI();
 
-                // artificial delay for UX reasons
-                setTimeout(function () {
-                    updateSystemStatus();
-                }, 500);
+                updateSystemStatus();
 
                 // Register collapsible table headers
                 $('.table').on('click', 'thead', function(event) {
@@ -131,7 +128,10 @@
                         var menusearch_items = [];
                         $.each(data,function(idx, menu_item){
                             if (menu_item.Url != "") {
-                                menusearch_items.push({id:$('<div />').html(menu_item.Url).text(), name:menu_item.breadcrumb});
+                                menusearch_items.push({
+                                    id:$('<div/>').html(menu_item.Url).text(),
+                                    name: $("<div/>").html(menu_item.breadcrumb).text()
+                                });
                             }
                         });
                         $("#menu_search_box").typeahead({
@@ -306,37 +306,23 @@
     </div>
 
     <script>
-    /* hook translations  when all JS modules are loaded*/
-    $.extend(jQuery.fn.bootgrid.prototype.constructor.Constructor.defaults.labels, {
-        all: "{{ lang._('All') }}",
-        infos: "{{ lang._('Showing %s to %s of %s entries') | format('{{ctx.start}}','{{ctx.end}}','{{ctx.total}}') }}",
-        loading: "{{ lang._('Loading...') }}",
-        noResults: "{{ lang._('No results found!') }}",
-        refresh: "{{ lang._('Refresh') }}",
-        search: "{{ lang._('Search') }}"
-    });
-    $.extend(jQuery.fn.selectpicker.Constructor.DEFAULTS, {
-        noneSelectedText: "{{ lang._('Nothing selected') }}",
-        noneResultsText: "{{ lang._('No results matched {0}') }}",
-        selectAllText: "{{ lang._('Select All') }}",
-        deselectAllText: "{{ lang._('Deselect All') }}"
-    });
-    $.extend(jQuery.fn.UIBootgrid.defaults, {
-        removeWarningText: "{{ lang._('Remove selected item(s)?') }}",
-        editText: "{{ lang._('Edit') }}",
-        cloneText: "{{ lang._('Clone') }}",
-        deleteText: "{{ lang._('Delete') }}",
-        addText: "{{ lang._('Add') }}",
-        infoText: "{{ lang._('Info') }}",
-        enableText: "{{ lang._('Enable') }}",
-        disableText: "{{ lang._('Disable') }}",
-        deleteSelectedText: "{{ lang._('Delete selected') }}"
-    });
-    $.extend(stdDialogRemoveItem.defaults, {
-        title: "{{ lang._('Remove') }}",
-        accept: "{{ lang._('Yes') }}",
-        decline: "{{ lang._('Cancel') }}"
-    });
+        $.extend(jQuery.fn.UIBootgrid.translations, {
+            add: "{{ lang._('Add') }}",
+            deleteSelected: "{{ lang._('Delete selected') }}",
+            edit: "{{ lang._('Edit') }}",
+            disable: "{{ lang._('Disable') }}",
+            enable: "{{ lang._('Enable') }}",
+            delete: "{{ lang._('Delete') }}",
+            info: "{{ lang._('Info') }}",
+            clone: "{{ lang._('Clone') }}",
+            all: "{{ lang._('All') }}",
+            search: "{{ lang._('Search') }}",
+            removeWarning: "{{ lang._('Remove selected item(s)?') }}",
+            noresultsfound: "{{ lang._('No results found') }}",
+            refresh: "{{ lang._('Refresh') }}",
+            infosTotal: "{{ lang._('Showing %s to %s of %s entries') | format('{{ctx.start}}','{{ctx.end}}','{{ctx.totalRows}}') }}",
+            infos: "{{ lang._('Showing %s to %s') | format('{{ctx.start}}','{{ctx.end}}') }}",
+        });
     </script>
 
   </body>

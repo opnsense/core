@@ -35,20 +35,12 @@ namespace OPNsense\System;
  */
 class SystemStatus
 {
-    private $statuses;
-    private $objectMap = [];
-
-    public function __construct()
-    {
-        $this->statuses = $this->collectStatus();
-    }
-
     /**
      * @throws \Exception
      */
-    private function collectStatus()
+    private function collectClasses()
     {
-        $result = [];
+        $objectMap = [];
         $all = glob(__DIR__ . '/Status/*.php');
         $classes = array_map(function ($file) {
             if (strpos($file, 'Status') !== false) {
@@ -64,39 +56,69 @@ class SystemStatus
             $obj = new $statusClass();
             $reflect = new \ReflectionClass($obj);
             $shortName = strtolower(str_replace('Status', '', $reflect->getShortName()));
-            $this->objectMap[$shortName] = $obj;
 
             if ($shortName == 'System') {
                 /* reserved for front-end usage */
                 throw new \Exception("SystemStatus classname is reserved");
             }
 
+            $objectMap[$shortName] = $obj;
+        }
+
+        return $objectMap;
+    }
+
+    public function collectStatus($scope = null)
+    {
+        $result = [];
+        $objectMap = $this->collectClasses();
+        foreach ($objectMap as $shortName => $obj) {
+            $objScope = $obj->getScope();
+            if (!empty($objScope) && !$this->matchPath($scope, $objScope)) {
+                /* don't probe if unnecessary */
+                continue;
+            }
+
+            $obj->collectStatus();
+
+            if ($obj->getStatus() == SystemStatusCode::OK) {
+                continue;
+            }
+
             $result[$shortName] = [
                 'title' => $obj->getTitle(),
                 'statusCode' => $obj->getStatus(),
                 'message' => $obj->getMessage(),
-                'logLocation' => $obj->getLogLocation(),
+                'location' => $obj->getLocation(),
                 'timestamp' => $obj->getTimestamp(),
                 'persistent' => $obj->getPersistent(),
+                'isBanner' => $obj->isBanner(),
                 'priority' => $obj->getPriority(),
+                'scope' => $obj->getScope(),
             ];
         }
 
         return $result;
     }
 
-    /**
-     * @return array An array containing a parseable format of every status object
-     */
-    public function getSystemStatus()
-    {
-        return $this->statuses;
-    }
-
     public function dismissStatus($subsystem)
     {
-        if (array_key_exists($subsystem, $this->objectMap)) {
-            $this->objectMap[$subsystem]->dismissStatus();
+        $objectMap = $this->collectClasses();
+        if (array_key_exists($subsystem, $objectMap) && !$objectMap[$subsystem]->getPersistent()) {
+            $objectMap[$subsystem]->dismissStatus();
         }
+    }
+
+    private function matchPath($input, $paths)
+    {
+        foreach ($paths as $path) {
+            $pattern = preg_quote($path, '/');
+            $pattern = str_replace('\*', '.*', $pattern);
+
+            if (preg_match('/^' . $pattern . '$/', $input)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

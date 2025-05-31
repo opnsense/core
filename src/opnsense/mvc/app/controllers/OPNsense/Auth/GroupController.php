@@ -33,6 +33,7 @@ class GroupController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->formDialogEditGroup = $this->getForm("dialogGroup");
+        $this->view->formGridGroup = $this->getFormGrid("dialogGroup");
         $this->view->pick('OPNsense/Auth/group');
     }
 }

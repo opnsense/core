@@ -67,14 +67,14 @@ class ControllerBase extends ControllerRoot
           // JQuery Tokenize2 (https://zellerda.github.io/Tokenize2/)
           '/ui/js/tokenize2.js',
           // Bootgrid (grid system from http://www.jquery-bootgrid.com/ )
-          '/ui/js/jquery.bootgrid.js',
+          '/ui/js/tabulator.min.js',
+          '/ui/js/opnsense_bootgrid.js',
           // Bootstrap type ahead
           '/ui/js/bootstrap3-typeahead.min.js',
           // OPNsense standard toolkit
           '/ui/js/opnsense.js',
           '/ui/js/opnsense_theme.js',
           '/ui/js/opnsense_ui.js',
-          '/ui/js/opnsense_bootgrid_plugin.js',
           '/ui/js/opnsense_status.js',
           // bootstrap script
           '/ui/js/bootstrap.min.js',
@@ -96,10 +96,10 @@ class ControllerBase extends ControllerRoot
             '/css/bootstrap-select.css',
             // bootstrap dialog
             '/css/bootstrap-dialog.css',
+            '/css/tabulator.min.css',
+            '/css/opnsense-bootgrid.css',
             // Font awesome
-            '/ui/assets/fontawesome/css/fontawesome.min.css',
-            '/ui/assets/fontawesome/css/solid.min.css',
-            '/ui/assets/fontawesome/css/brands.min.css',
+            '/ui/assets/fontawesome/css/all.min.css',
             '/ui/assets/fontawesome/css/v4-shims.min.css',
             // JQuery Tokenize2 (https://zellerda.github.io/Tokenize2/)
             '/css/tokenize2.css',
@@ -290,7 +290,7 @@ class ControllerBase extends ControllerRoot
         return [
             'table_id' => $basename,
             'edit_dialog_id' => 'dialog_' . $basename,
-            'edit_alert_id' => $edit_alert_id == null ? 'change_message_' . $basename : $edit_alert_id,
+            'edit_alert_id' => $edit_alert_id == null ? 'change_message_base_form' : $edit_alert_id,
             'fields' => array_values($all_data)
         ];
     }

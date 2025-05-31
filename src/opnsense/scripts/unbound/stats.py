@@ -239,7 +239,7 @@ def handle_details(args):
     if not details.empty:
         # use a resolved hostname if possible
         details['client'] = np.where(details['hostname'].isnull(), details['client'], details['hostname'])
-        details['blocklist'].replace(np.nan, None, inplace=True)
+        details['blocklist'] = details['blocklist'].replace(np.nan, None)
         details = details.drop(['hostname', 'ipaddr'], axis=1)
         # map the integer types to a sensible description
         details['action'] = details['action'].map({0: 'Pass', 1: 'Block', 2: 'Drop'})
@@ -274,8 +274,8 @@ if __name__ == '__main__':
     d_parser = subparsers.add_parser('details', help='get detailed query information')
     d_parser.add_argument('--limit', help='limit results', type=int, default=500)
     d_parser.add_argument('--client', help='limit result to client')
-    d_parser.add_argument('--start', help='start unix epoch')
-    d_parser.add_argument('--end', help='end unix epoch')
+    d_parser.add_argument('--start', type=int, help='start unix epoch')
+    d_parser.add_argument('--end', type=int, help='end unix epoch')
     d_parser.set_defaults(func=handle_details)
 
     if len(sys.argv)==1:

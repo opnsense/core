@@ -38,8 +38,12 @@ class LiveMediaStatus extends AbstractStatus
     {
         $this->internalPriority = 2;
         $this->internalPersistent = true;
+        $this->internalIsBanner = true;
         $this->internalTitle = gettext('Live Media');
+    }
 
+    public function collectStatus()
+    {
         /*
          * Despite unionfs underneath, / is still not writeable,
          * making the following the perfect test for install media.
@@ -64,10 +68,5 @@ class LiveMediaStatus extends AbstractStatus
                 $this->internalMessage .= ' ' . gettext('SSH remote login is enabled for the users "root" and "installer" using the same password.');
             }
         }
-    }
-
-    public function dismissStatus()
-    {
-        /* XXX not applicable */
     }
 }

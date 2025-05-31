@@ -42,10 +42,7 @@ class InstancesController extends ApiMutableModelControllerBase
 
     public function searchAction()
     {
-        return $this->searchBase(
-            'Instances.Instance',
-            ['description', 'role', 'dev_type', 'enabled']
-        );
+        return $this->searchBase('Instances.Instance');
     }
     public function getAction($uuid = null)
     {
@@ -99,14 +96,16 @@ class InstancesController extends ApiMutableModelControllerBase
         return $this->delBase('StaticKeys.StaticKey', $uuid);
     }
 
-    public function genKeyAction()
+    public function genKeyAction($type = 'secret')
     {
-        $key = (new Backend())->configdRun("openvpn genkey");
-        if (strpos($key, '-----BEGIN') > 0) {
-            return [
-                'result' => 'ok',
-                'key' => trim($key)
-            ];
+        if (in_array($type, ['secret', 'auth-token'])) {
+            $key = (new Backend())->configdpRun("openvpn genkey", [$type]);
+            if (strpos($key, '-----BEGIN') !== false) {
+                return [
+                    'result' => 'ok',
+                    'key' => trim($key)
+                ];
+            }
         }
         return ['result' => 'failed'];
     }

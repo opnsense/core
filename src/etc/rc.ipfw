@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2015 Deciso B.V.
+# Copyright (c) 2015-2025 Deciso B.V.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,25 +27,16 @@
 # script to glue standard ipfw rc scripting to OPNsense ruleset
 # see auto generated file /etc/rc.conf.d/ipfw for details
 
-# sysctl settings
-sysctl net.inet.ip.dummynet.io_fast=1 > /dev/null
-sysctl net.inet.ip.dummynet.hash_size=256 > /dev/null
-
 # reload ipfw rules
 ipfw -q /usr/local/etc/ipfw.rules
 # load tables
 /usr/local/opnsense/scripts/shaper/update_tables
 
-if [ ! -f /tmp/ipfw.firstload ]; then
-	# we need to make sure ipfw is loaded as last
-	touch /tmp/ipfw.firstload
+# Enable ipfw now, to ensure its hooks are loaded, before we fix the ipfw/pf order.
+# Without this, ipfw stop/start will disable/re-enable ipfw, but the re-enable part
+# is done by /etc/rc.d/ipfw after this, so the hooks will be in the wrong order.
+sysctl net.inet.ip.fw.enable=1
+sysctl net.inet6.ip6.fw.enable=1
 
-	# Enable ipfw now, to ensure its hooks are loaded, before we fix the ipfw/pf order.
-	# Without this, ipfw stop/start will disable/re-enable ipfw, but the re-enable part
-	# is done by /etc/rc.d/ipfw after this, so the hooks will be in the wrong order.
-	sysctl net.inet.ip.fw.enable=1
-	sysctl net.inet6.ip6.fw.enable=1
-
-	pfctl -d
-	pfctl -e
-fi
+# synchronize ipfw/pf load order
+/usr/local/opnsense/scripts/shaper/sync_fw_hooks.py

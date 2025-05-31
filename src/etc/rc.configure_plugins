@@ -43,6 +43,11 @@ $script = !empty($argv[1]) ? $argv[1] : 'POST_INSTALL';
 /* flush user-facing caches */
 (new OPNsense\Core\ACL())->invalidateCache();
 (new OPNsense\Base\Menu\MenuSystem())->invalidateCache();
+foreach (['/var/lib/php/tmp', '/tmp'] as $tmpdir) {
+    foreach (glob(sprintf("%s/mdl_cache_*.json", $tmpdir)) as $filename) {
+        @unlink($filename);
+    }
+}
 
 /* reload subsystem that may have changed */
 if ($script == 'POST_INSTALL') {

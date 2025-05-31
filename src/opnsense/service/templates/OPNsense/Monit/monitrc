@@ -147,7 +147,7 @@ check {{ service.type }} {{ service.name }} {{ path }}
 {%       if test.condition is defined and test.action is defined %}
 {%        set epath = '' %}
 {%        if test.action == 'exec' and test.path|default('') != '' %}
-{%         set epath = "\"" ~ test.path ~ "\"" %}
+{%         set epath = test.path %}
 {%        endif %}
    if {{ test.condition }} then {{ test.action }} {{ epath }}
 {%       endif %}

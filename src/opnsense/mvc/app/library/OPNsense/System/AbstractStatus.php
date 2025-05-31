@@ -32,11 +32,13 @@ abstract class AbstractStatus
 {
     protected $internalPriority = 100;
     protected $internalPersistent = false;
+    protected $internalIsBanner = false;
     protected $internalTitle = null;
     protected $internalMessage = null;
-    protected $internalLogLocation = null;
+    protected $internalLocation = null;
     protected $internalStatus = SystemStatusCode::OK;
     protected $internalTimestamp = null;
+    protected $internalScope = [];
 
     public function getPriority()
     {
@@ -46,6 +48,11 @@ abstract class AbstractStatus
     public function getPersistent()
     {
         return $this->internalPersistent;
+    }
+
+    public function isBanner()
+    {
+        return $this->internalIsBanner;
     }
 
     public function getTitle()
@@ -63,14 +70,27 @@ abstract class AbstractStatus
         return $this->internalMessage ?? gettext('No problems were detected.');
     }
 
-    public function getLogLocation()
+    public function getLocation()
     {
-        return $this->internalLogLocation;
+        return $this->internalLocation;
     }
 
     public function getTimestamp()
     {
         return $this->internalTimestamp;
+    }
+
+    /**
+     * @return array list of paths to which this status applies, accepts wildcards
+     */
+    public function getScope()
+    {
+        return $this->internalScope;
+    }
+
+    public function collectStatus()
+    {
+        /* To be overridden by the child status classes */
     }
 
     public function dismissStatus()

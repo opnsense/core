@@ -18,13 +18,11 @@
         <help><![CDATA[Select interface(s) to enable for captive portal.]]></help>
     </field>
     <field>
-        <id>zone.interfaces_inbound</id>
-        <label>Allow inbound</label>
-        <type>select_multiple</type>
-        <help><![CDATA[
-            Select interfaces from which to allow inbound (stateful) traffic. This can be convenient if the zone in question
-            contains machines/servers which should be accessible from other networks attached to this firewall.
-        ]]></help>
+        <id>zone.disableRules</id>
+        <type>checkbox</type>
+        <label>Disable firewall rules</label>
+        <help>If this option is set, no automatic firewall rules for portal redirection and traffic blocking will be generated. This option allows you to override the default portal behavior for advanced use cases, such as redirections for DNS. See the documentation to see which rules you should implement in this scenario.</help>
+        <advanced>true</advanced>
     </field>
     <field>
         <id>zone.authservers</id>

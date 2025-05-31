@@ -385,7 +385,7 @@ function gentitle($breadcrumbs, $navlevelsep = ': ')
     return join($navlevelsep, $output) . "$gentitle_suffix";
 }
 
-function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendport, $merge_mask=false)
+function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendport, $merge_mask = false)
 {
     if (isset($adr['any'])) {
         $padr = "any";

@@ -54,7 +54,7 @@ export default class InterfaceStatistics extends BaseTableWidget {
         let $chartContainer = $(`
             <div class="interface-statistics-chart-container">
                 <div class="canvas-container">
-                    <canvas id="intf-stats"></canvas>
+                    <canvas id="intf-stats" style="display: inline-block"></canvas>
                 </div>
             </div>`
         );
@@ -82,10 +82,14 @@ export default class InterfaceStatistics extends BaseTableWidget {
     async onWidgetTick() {
         const data = await this.ajaxCall('/api/diagnostics/traffic/interface');
 
+        $('.if-tooltip').tooltip('hide');
+
         for (const [id, obj] of Object.entries(data.interfaces)) {
             super.updateTable('interface-statistics-table', [
                 [
-                    $(`<a href="/interfaces.php?if=${id}">${obj.name}</a>`).prop('outerHTML'),
+                    `<span class="if-tooltip" style="cursor: pointer" data-toggle="tooltip" title="${obj.name}">
+                        <a href="/interfaces.php?if=${id}">${obj.name}</a>
+                    </span>`,
                     this._formatBytes(parseInt(obj["bytes received"])) || "0",
                     this._formatBytes(parseInt(obj["bytes transmitted"])) || "0",
                     parseInt(obj["packets received"]).toLocaleString(),
@@ -96,6 +100,8 @@ export default class InterfaceStatistics extends BaseTableWidget {
                 ]
             ], id);
         }
+
+        $('.if-tooltip').tooltip({container: 'body'});
 
         let sortedSet = {};
         let i = 0;
@@ -159,6 +165,7 @@ export default class InterfaceStatistics extends BaseTableWidget {
                 normalized: true,
                 parsing: false,
                 plugins: {
+                    colorschemes: false,
                     legend: {
                         display: false,
                         position: 'left',

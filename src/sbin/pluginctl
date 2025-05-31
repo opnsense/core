@@ -3,7 +3,7 @@
 
 /*
  * Copyright (C) 2019 Deciso B.V.
- * Copyright (C) 2019-2024 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2019-2025 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2017 Alexander Shursha <kekek2@ya.ru>
  * All rights reserved.
  *
@@ -43,11 +43,14 @@ function strip_config_path($path)
    $path = preg_replace('/^\./', '', $path);
    return preg_replace('/\.*$/', '', $path);
 }
+
 /* return simple type or json for config property */
 function read_config_prop($content)
 {
+    global $jflags;
+
     if (is_array($content)) {
-        return json_encode($content, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
+        return json_encode($content, $jflags) . PHP_EOL;
     } elseif ($content != '') {
         return $content . PHP_EOL;
     }
@@ -137,13 +140,14 @@ function get_all_services($name = '', $id = '')
         /* fetch status so the caller does not have to */
         $service['status'] = service_message($service);
 
-        /* collect all matches contrary to what service_by_name() is doing */
+        /* collect all matches */
         $services[] = $service;
     }
 
     return $services;
 }
 
+$jflags = JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_INVALID_UTF8_IGNORE;
 $opts = getopt('46cDdfghIirSsXx', [], $optind);
 $args = array_slice($argv, $optind);
 
@@ -194,9 +198,9 @@ if (isset($opts['h'])) {
             ];
         }
     }
-    echo json_encode(!empty($ret) ? $ret : new ArrayObject(), JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
+    echo json_encode(!empty($ret) ? $ret : new ArrayObject(), $jflags) . PHP_EOL;
 } elseif (isset($opts['D'])) {
-    echo json_encode(legacy_interfaces_details($args[0] ?? null), JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
+    echo json_encode(legacy_interfaces_details($args[0] ?? null), $jflags) . PHP_EOL;
 } elseif (isset($opts['d'])) {
     foreach (plugins_devices() as $device) {
         if (empty($device['type'])) {
@@ -229,16 +233,16 @@ if (isset($opts['h'])) {
         write_config('Updated plugin interface configuration');
     }
 } elseif (isset($opts['I'])) {
-    echo json_encode(legacy_interface_stats($args[0] ?? null), JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
+    echo json_encode(legacy_interface_stats($args[0] ?? null), $jflags) . PHP_EOL;
 } elseif (isset($opts['r'])) {
    $cmd = array_shift($args);
    $result = plugins_run($cmd, $args);
    if (!empty($result)) {
-      echo json_encode($result, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
+      echo json_encode($result, $jflags) . PHP_EOL;
    }
 } elseif (isset($opts['S'])) {
     $services = get_all_services(isset($args[0]) ? $args[0] : '', isset($args[1]) ? $args[1] : '');
-    echo json_encode($services, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
+    echo json_encode($services, $jflags) . PHP_EOL;
 } elseif (isset($opts['s'])) {
     $results = [];
     $services = get_all_services(isset($args[0]) ? $args[0] : '', isset($args[2]) ? $args[2] : '');
@@ -278,15 +282,20 @@ if (isset($opts['h'])) {
             echo "$key\n";
         }
     }
-} elseif (isset($opts['X'])) {
-    echo json_encode(plugins_xmlrpc_sync(), JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
-} elseif (isset($opts['x'])) {
+} elseif (isset($opts['X']) || isset($opts['x'])) {
     $payload = [];
     foreach (plugins_xmlrpc_sync() as $key => $data) {
-        $payload[$key] = $data['description'] ?? '';
+        if (!empty($args[0]) && strcasecmp($key, $args[0])) {
+            continue;
+        }
+        $payload[$key] = isset($opts['x']) ? ($data['description'] ?? '') : $data;
     }
-    natcasesort($payload);
-    echo json_encode($payload, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
+    if (!empty($payload)) {
+        natcasesort($payload);
+    } else {
+        $payload = new ArrayObject();
+    }
+    echo json_encode($payload, $jflags) . PHP_EOL;
 } elseif (empty($args[0])) {
     // no arguments, list plugins of selected type
     $results = [];

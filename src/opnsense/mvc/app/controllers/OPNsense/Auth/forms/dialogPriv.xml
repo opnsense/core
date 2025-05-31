@@ -5,13 +5,32 @@
         <type>info</type>
     </field>
     <field>
+        <id>priv.name</id>
+        <label>Name</label>
+        <type>ignore</type>
+        <grid_view>
+            <formatter>lines</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>priv.match</id>
+        <label>Match</label>
+        <type>ignore</type>
+    </field>
+    <field>
         <id>priv.users</id>
         <label>Users</label>
         <type>select_multiple</type>
+        <grid_view>
+            <formatter>count</formatter>
+        </grid_view>
     </field>
     <field>
         <id>priv.groups</id>
         <label>Groups</label>
         <type>select_multiple</type>
+        <grid_view>
+            <formatter>count</formatter>
+        </grid_view>
     </field>
 </form>

@@ -77,6 +77,36 @@ final class product
     }
 }
 
+function listtags()
+{
+    /* The following items will be treated as arrays in config.xml */
+    $ret = [
+      'acls', 'alias', 'aliasurl', 'allowedip', 'allowedhostname', 'authserver',
+      'bridged', 'build_port_path',
+      'ca', 'cacert', 'cert', 'crl', 'clone', 'config', 'container', 'columnitem',
+      'dhcp_ranges', 'disk', 'dnsserver', 'dnsupdate', 'domainoverrides',
+      'element', 'encryption-algorithm-option',
+      'field', 'fieldname',
+      'gateway_item', 'gateway_group', 'gif', 'gre', 'group',
+      'hash-algorithm-option', 'hosts',
+      'ifgroupentry', 'igmpentry', 'interface_array', 'item',
+      'key',
+      'lagg', 'lbpool',
+      'member', 'menu', 'mobilekey', 'monitor_type', 'mount',
+      'npt', 'ntpserver',
+      'onetoone', 'openvpn-server', 'openvpn-client', 'openvpn-csc', 'option',
+      'package', 'passthrumac', 'phase1', 'phase2', 'ppp', 'pppoe', 'priv', 'proxyarpnet', 'pool', 'pages', 'pipe',
+      'radnsserver', 'roll', 'route', 'row', 'rrddatafile', 'rule',
+      'schedule', 'service', 'servernat', 'servers', 'serversdisabled', 'staticmap', 'subqueue',
+      'tab', 'timerange', 'tunnel',
+      'user',
+      'vip', 'virtual_server', 'vlan',
+      'winsserver', 'wolentry', 'widget',
+    ];
+
+    return array_flip($ret);
+}
+
 function reopenlog()
 {
     openlog(product::getInstance()->id(), LOG_ODELAY, LOG_USER);
@@ -84,7 +114,6 @@ function reopenlog()
 
 reopenlog();
 
-require_once("xmlparse.inc");
 require_once("legacy_bindings.inc");
 require_once("certs.inc");
 
@@ -112,10 +141,8 @@ function load_config_from_file($filename)
 function parse_config()
 {
     $cnf = OPNsense\Core\Config::getInstance();
-
-    // return config data as array, use old "listags" construction to mark certain elements as array (even if they're not recurring)
+    /* make sure to write back global variable */
     $config = $cnf->toArray(listtags());
-
     return $config;
 }
 
@@ -229,25 +256,6 @@ function write_config($desc = '', $backup = true)
     return $config;
 }
 
-function config_restore($conffile)
-{
-    global $config;
-
-    if (!file_exists($conffile)) {
-        return 1;
-    }
-
-    $cnf = OPNsense\Core\Config::getInstance();
-    $cnf->backup();
-    $cnf->restoreBackup($conffile);
-
-    $config = parse_config();
-
-    write_config(sprintf('Reverted to %s', array_pop(explode('/', $conffile))), false);
-
-    return 0;
-}
-
 function &config_read_array()
 {
     global $config;
@@ -301,8 +309,8 @@ function legacy_config_get_interfaces($filters = [], $exclude_ifs = [])
         if (in_array($ifname, $exclude_ifs)) {
             continue;
         }
-        // undo stupid listags() turning our item into a new array, preventing certain names to be used as interface.
-        // see src/etc/inc/xmlparse.inc
+
+        // undo stupid listtags() turning our item into a new array, preventing certain names to be used as interface
         if (isset($iface[0])) {
             $iface = $iface[0];
         }

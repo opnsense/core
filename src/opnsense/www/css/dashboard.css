@@ -53,7 +53,6 @@
   border-color: rgba(217, 79, 0, 0.15);
   border-width: 2px;
   background-color: #fbfbfb;
-  border-radius: 0.5em 0.5em 0.5em 0.5em;
 }
 
 .widget-error {
@@ -142,8 +141,18 @@ td {
     margin: 5px;
 }
 
+.canvas-container-noaspectratio {
+    position: relative;
+}
+
 .canvas-container {
     position: relative;
+}
+
+.canvas-container > canvas {
+    /* ChartJS v4 workaround: https://github.com/chartjs/Chart.js/issues/11005 */
+    width: 100% !important;
+    height: 100% !important;
 }
 
 .cpu-canvas-container {
@@ -337,6 +346,8 @@ div {
 }
 
 .grid-item {
+    overflow: hidden;
+    text-overflow: ellipsis;
     border: 1 px solid #ccc;
     padding: 4px;
     text-align: center;

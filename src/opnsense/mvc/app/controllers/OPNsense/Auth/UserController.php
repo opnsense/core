@@ -51,6 +51,7 @@ class UserController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->formDialogEditUser = $this->getForm("dialogUser");
+        $this->view->formGridUser = $this->getFormGrid("dialogUser");
         $this->view->pick('OPNsense/Auth/user');
     }
 }

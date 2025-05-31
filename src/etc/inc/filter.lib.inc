@@ -148,7 +148,7 @@ function filter_core_get_port_alias($aliasname, $aliases = [], $aliasObject = nu
 {
     $response = [];
     $aliases[] = $aliasname;
-    $aliasObject = $aliasObject == null ? (new \OPNsense\Firewall\Alias()) : $aliasObject;
+    $aliasObject = $aliasObject == null ? (new \OPNsense\Firewall\Alias(true)) : $aliasObject;
     foreach ($aliasObject->aliasIterator() as $aliased) {
         if ($aliasname == $aliased['name'] && $aliased['type'] == 'port' && !empty($aliased['enabled'])) {
             foreach ($aliased['content'] as $address) {
@@ -301,22 +301,24 @@ function filter_core_rules_system($fw, $defaults)
 
     // block bogons and private nets
     $bogontmpl = ['type' => 'block', 'log' => !isset($config['syslog']['nologbogons']), 'disablereplyto' => 1];
-    $privtmpl = ['type' => 'block', 'log' => !isset($config['syslog']['nologprivatenets']),
-      'from' => '10.0.0.0/8,127.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16',
-      'disablereplyto' => 1];
+    $privtmpl = ['type' => 'block', 'log' => !isset($config['syslog']['nologprivatenets']), 'disablereplyto' => 1];
     foreach ($fw->getInterfaceMapping() as $intf => $intfinfo) {
+        // only render disabled rules for actual interfaces that can have a bogon option set
+        if (!empty($intfinfo['virtual'])) {
+            continue;
+        }
         $fw->registerFilterRule(
             5,
             ['from' => "<bogons>", 'direction' => 'in', 'interface' => $intf, 'ipprotocol' => 'inet',
             'descr' => "Block bogon IPv4 networks from " . $intfinfo['descr'],
             '#ref' => "interfaces.php?if=" . $intf . "#blockbogons",
-            'disabled' => !isset($intfinfo['blockbogons'])],
+            'disabled' => empty($intfinfo['blockbogons'])],
             $bogontmpl
         );
         $fw->registerFilterRule(
             5,
             ['from' => "<bogonsv6>", 'direction' => 'in', 'interface' => $intf, 'ipprotocol' => 'inet6',
-            'disabled' => $ipv6_disabled || !isset($intfinfo['blockbogons']),
+            'disabled' => $ipv6_disabled || empty($intfinfo['blockbogons']),
             '#ref' => "interfaces.php?if=" . $intf . "#blockbogons",
             'descr' => "Block bogon IPv6 networks from " . $intfinfo['descr']],
             $bogontmpl
@@ -326,15 +328,17 @@ function filter_core_rules_system($fw, $defaults)
             ['direction' => 'in', 'interface' => $intf, 'ipprotocol' => 'inet',
             '#ref' => "interfaces.php?if=" . $intf . "#blockpriv",
             'descr' => "Block private networks from " . $intfinfo['descr'],
-            'disabled' => !isset($intfinfo['blockpriv'])],
+            'from' => '10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,127.0.0.0/8,100.64.0.0/10,169.254.0.0/16',
+            'disabled' => empty($intfinfo['blockpriv'])],
             $privtmpl
         );
         $fw->registerFilterRule(
             5,
             ['direction' => 'in', 'interface' => $intf, 'ipprotocol' => 'inet6',
             '#ref' => "interfaces.php?if=" . $intf . "#blockpriv",
-            'descr' => "Block private networks from " . $intfinfo['descr'], 'from' => 'fc00::/7',
-            'disabled' => $ipv6_disabled || !isset($intfinfo['blockpriv'])],
+            'descr' => "Block private networks from " . $intfinfo['descr'],
+            'from' => 'fd00::/8,fe80::/10,::/128',
+            'disabled' => $ipv6_disabled || empty($intfinfo['blockpriv'])],
             $privtmpl
         );
     }
@@ -342,7 +346,7 @@ function filter_core_rules_system($fw, $defaults)
     // interface configuration per type
     foreach ($fw->getInterfaceMapping() as $intf => $intfinfo) {
         // allow DHCPv6 client out, before adding bogons (sequence 1, bogons @ 5)
-        if (!$ipv6_disabled && in_array($intfinfo['ipaddrv6'], ["slaac","dhcp6"])) {
+        if (!$ipv6_disabled && in_array($intfinfo['ipaddrv6'], ['dhcp6', 'slaac'])) {
             $fw->registerFilterRule(1, [
                 'descr' => 'allow dhcpv6 client in ' . $intfinfo['descr'],
                 '#ref' => 'system_advanced_network.php#ipv6allow',
@@ -429,14 +433,16 @@ function filter_core_rules_system($fw, $defaults)
                         $defaults['pass']
                     );
                     if (!empty($config['dhcpd'][$intf]['failover_peerip'])) {
-                        $fw->registerFilterRule(
-                            1,
-                            ['protocol' => 'tcp/udp', 'direction' => 'in', 'to' => '(self)', 'to_port' => '519,520',
-                                '#ref' => "services_dhcp.php?if=" . $intf . "#failover_peerip",
-                                'from' => $config['dhcpd'][$intf]['failover_peerip'],
-                                'interface' => $intf, 'descr' => 'allow access to DHCP failover'],
-                            $defaults['pass']
-                        );
+                        foreach (['519' ,'520'] as $to_port) {
+                            $fw->registerFilterRule(
+                                1,
+                                ['protocol' => 'tcp/udp', 'direction' => 'in', 'to' => '(self)', 'to_port' => $to_port,
+                                    '#ref' => "services_dhcp.php?if=" . $intf . "#failover_peerip",
+                                    'from' => $config['dhcpd'][$intf]['failover_peerip'],
+                                    'interface' => $intf, 'descr' => 'allow access to DHCP failover'],
+                                $defaults['pass']
+                            );
+                        }
                     }
                 }
                 break;
@@ -542,20 +548,22 @@ function filter_core_rules_system($fw, $defaults)
     }
 
     foreach (filter_core_get_antilockout() as $lockoutif => $lockoutprts) {
-        $fw->registerFilterRule(
-            5,
-            [
-                'direction' => 'in',
-                'interface' => $lockoutif,
-                'statetype' => 'keep',
-                'protocol' => 'tcp',
-                'to' => '(self)',
-                'to_port' => implode(' ', $lockoutprts),
-                'descr' => 'anti-lockout rule',
-                '#ref' => 'system_advanced_firewall.php#noantilockout'
-            ],
-            $defaults['pass']
-        );
+        foreach ($lockoutprts as $to_port) {
+            $fw->registerFilterRule(
+                5,
+                [
+                    'direction' => 'in',
+                    'interface' => $lockoutif,
+                    'statetype' => 'keep',
+                    'protocol' => 'tcp',
+                    'to' => '(self)',
+                    'to_port' => $to_port,
+                    'descr' => 'anti-lockout rule',
+                    '#ref' => 'system_advanced_firewall.php#noantilockout'
+                ],
+                $defaults['pass']
+            );
+        }
     }
 
     // [out from this Firewall, using the selected gateway].
@@ -566,8 +574,13 @@ function filter_core_rules_system($fw, $defaults)
             if (!isset($ifcfg['internal_dynamic']) && $ifcfg['if'] != 'lo0') {
                 $protos_found = [];
                 $address_check = ['inet' => 'is_subnetv4', 'inet6' => 'is_subnetv6'];
-                foreach (array_keys(interfaces_addresses($ifcfg['if'], true, $fw->getIfconfigDetails())) as $addr) {
+                $ifdetails = $fw->getIfconfigDetails();
+                foreach (array_keys(interfaces_addresses($ifcfg['if'], true, $ifdetails)) as $addr) {
                     foreach ($ipv6_disabled ? ['inet'] : ['inet', 'inet6'] as $inet) {
+                        if ($inet == 'inet6' && !empty($ifdetails[$ifcfg['if']]['ipv6'][0]['link-local'])) {
+                            /* skip inet6 without a GUA as there is no public address to "stick" we should exclude these */
+                            continue;
+                        }
                         if (!in_array($inet, $protos_found) && $address_check[$inet]($addr)) {
                             $gwname = $fw->getGateways()->getInterfaceGateway($ifdescr, $inet, true, 'name');
                             if (!empty($gwname)) {

@@ -271,7 +271,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // Updating a rule with a filter rule associated
         if (!empty($natent['associated-rule-id']) || in_array($pconfig['associated-rule-id'], ['add-associated', 'add-unassociated'])) {
             /* auto-generate a matching firewall rule */
-            $filterent = [];
+            $filterent = ['type' => 'pass'];
             if (in_array($pconfig['associated-rule-id'], ['add-associated', 'add-unassociated'])) {
                 $filterent['associated-rule-id'] = $natent['associated-rule-id'];
             } else {
@@ -560,12 +560,11 @@ $( document ).ready(function() {
                   <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
                   <td>
                       <select name="interface[]" class="selectpicker" data-width="348px" data-live-search="true" multiple="multiple">
-<?php
-                        foreach (legacy_config_get_interfaces(["enable" => true], ['lo0']) as $iface => $ifdetail): ?>
+<?php foreach (legacy_config_get_interfaces(["enable" => true], ['lo0']) as $iface => $ifdetail): ?>
                         <option value="<?=$iface;?>" <?= in_array($iface, $pconfig['interface'] ?? []) ? "selected=\"selected\"" : ""; ?>>
                           <?=htmlspecialchars($ifdetail['descr']);?>
                         </option>
-                        <?php endforeach; ?>
+<?php endforeach ?>
                       </select>
                     <div class="hidden" data-for="help_for_interface">
                       <?=gettext("Choose which interface this rule applies to."); ?><br />

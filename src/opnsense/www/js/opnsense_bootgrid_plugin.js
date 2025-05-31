@@ -538,7 +538,7 @@ $.fn.UIBootgrid = function (params) {
     this.command_toggle = function(event) {
         event.stopPropagation();
         const uuid = $(this).data("row-id");
-        $(this).addClass("fa-spinner fa-pulse");
+        $(this).removeClass('fa-check-square-o fa-square-o').addClass("fa-spinner fa-pulse");
         ajaxCall(params['toggle'] + uuid, {},function(data,status){
             // reload grid after delete
             std_bootgrid_reload(this_grid.attr('id'));

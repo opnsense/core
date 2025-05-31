@@ -321,33 +321,15 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_interfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Interfaces') ?></td>
                     <td>
-<?php
-                    $interfaces = get_configured_interface_with_descr();
-                    $carplist = get_configured_carp_interface_list();
-                    foreach ($carplist as $cif => $carpip) {
-                        $interfaces[$cif] = $carpip." (".get_vip_descr($carpip).")";
-                    }
-                    $aliaslist = get_configured_ip_aliases_list();
-                    foreach ($aliaslist as $aliasip => $aliasif) {
-                        $interfaces[$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
-                    }?>
                       <select id="interface" name="interface[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
-<?php
-                      foreach ($interfaces as $iface => $ifacename):
-                          if (!is_ipaddr(get_interface_ip($iface)) && !is_ipaddr($iface)) {
-                              continue;
-                          }?>
-                          <option value="<?=$iface;?>" <?= !empty($pconfig['interface']) && in_array($iface, $pconfig['interface']) ? 'selected="selected"' : '' ?>>
-                              <?=htmlspecialchars($ifacename);?>
+<?php foreach (get_configured_interface_with_descr() as $iface => $ifacename): ?>
+                          <option value="<?= html_safe($iface) ?>" <?= !empty($pconfig['interface']) && in_array($iface, $pconfig['interface']) ? 'selected="selected"' : '' ?>>
+                              <?= html_safe($ifacename) ?>
                           </option>
-<?php
-                      endforeach;?>
+<?php endforeach ?>
                       </select>
                       <div class="hidden" data-for="help_for_interfaces">
                         <?=gettext("Interfaces to listen on and send outgoing queries."); ?>
-                        <br /><?=gettext("Selecting no interfaces will listen on all interfaces with a wildcard."); ?>
-                        <br /><?=gettext("Selecting all interfaces will explicitly listen on only the interfaces/IPs specified."); ?>
-                        <br /><?=gettext("Interfaces without an IP address will not be shown."); ?>
                       </div>
                     </td>
                   </tr>

@@ -530,16 +530,16 @@ include("head.inc");
                 <td>
                   <select onchange="update_description(this.selectedIndex);" name="pfdebug" id="pfdebug" class="selectpicker" data-style="btn-default">
                     <option value="none"<?=$pconfig['pfdebug']=="none" ? " selected=\"selected\"" : ""; ?>>
-                      <?=gettext("Don't generate debug messages");?>
+                      <?=gettext("Do not generate debug messages (none)");?>
                     </option>
                     <option value="urgent"<?=$pconfig['pfdebug']=="urgent" ? " selected=\"selected\"" : ""; ?>>
-                      <?=gettext("Generate debug messages only for serious errors.");?>
+                      <?=gettext("Generate debug messages only for serious errors (urgent)");?>
                     </option>
                     <option value="misc"<?=$pconfig['pfdebug']=="misc" ? " selected=\"selected\"" : ""; ?>>
-                      <?=gettext("Generate debug messages for various errors.");?>
+                      <?=gettext("Generate debug messages for various errors (misc)");?>
                     </option>
                     <option value="loud"<?=$pconfig['pfdebug']=="loud" ? " selected=\"selected\"" : ""; ?>>
-                      <?=gettext("Generate debug messages for common conditions.");?>
+                      <?=gettext("Generate debug messages for common conditions (loud)");?>
                     </option>
                   </select>
                   <div class="hidden" data-for="help_for_pfdebug">

@@ -29,6 +29,7 @@
                 </validate_server_cn>
                 <cryptoapi type="BooleanField"/>
                 <auth_nocache type="BooleanField"/>
+                <static_challenge type="BooleanField"/>
                 <plain_config type="TextField"/>
             </server>
         </servers>

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2024 Deciso B.V.
+ * Copyright (C) 2015-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -129,6 +129,23 @@ abstract class BaseField
      * @var BaseModel|null keep record of the model which originally created this field
      */
     private $internalParentModel = null;
+
+
+    /**
+     * @param array $node input array to traverse
+     * @param string $path reference to information to be fetched (e.g. my.data)
+     * @return array
+     */
+    protected static function getArrayReference(array $node, string $path)
+    {
+        foreach (explode('.', $path) as $ref) {
+            if (!isset($node[$ref]) || !is_array($node[$ref])) {
+                return []; /* not found or not valid */
+            }
+            $node = $node[$ref];
+        }
+        return $node;
+    }
 
     /**
      * @return bool
@@ -356,18 +373,18 @@ abstract class BaseField
 
     /**
      * return string interpretation of this field
-     * @return null|string string interpretation of this field
+     * @return string string interpretation of this field
      */
     public function __toString()
     {
-        return (string)$this->internalValue;
+        return $this->getCurrentValue();
     }
 
     /**
      * return field current value
      * @return null|string field current value
      */
-    public function getCurrentValue(): ?string
+    public function getCurrentValue(): string
     {
         return (string)$this->internalValue;
     }
@@ -672,17 +689,26 @@ abstract class BaseField
      */
     public function getNodes()
     {
-        $result = array ();
+        $result = [];
         foreach ($this->iterateItems() as $key => $node) {
-            if ($node->isContainer()) {
-                $result[$key] = $node->getNodes();
-            } else {
-                $result[$key] = $node->getNodeData();
-            }
+            $result[$key] = $node->isContainer() ? $node->getNodes() : $node->getNodeData();
         }
-
         return $result;
     }
+
+    /**
+     * get nodes as array structure using getDescription() as leaves
+     * @return array
+     */
+    public function getNodeDescriptions()
+    {
+        $result = [];
+        foreach ($this->iterateItems() as $key => $node) {
+            $result[$key] = $node->isContainer() ? $node->getNodeDescriptions() :  $node->getDescription();
+        }
+        return $result;
+    }
+
 
     /**
      * companion for getNodes, displays node content. may be overwritten for alternative presentation.

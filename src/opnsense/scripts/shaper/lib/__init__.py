@@ -34,7 +34,7 @@ import datetime
 
 def parse_flow(flow_line):
     tmp = flow_line.split()
-    if flow_line.find(':') > 0 and len(tmp) > 8:
+    if flow_line.find(':') > 0 and len(tmp) > 8 and tmp[0].isdigit():
         # IPv6 layout
         return {
             'BKT':tmp[0],
@@ -47,7 +47,7 @@ def parse_flow(flow_line):
             'drop_pkt':int(tmp[7]) if tmp[7].isdigit() else 0,
             'drop_bytes':int(tmp[8]) if tmp[8].isdigit() else 0,
         }
-    elif len(tmp) > 7:
+    elif len(tmp) > 7 and tmp[0].isdigit():
         return {
             'BKT':tmp[0],
             'Prot':tmp[1],
@@ -81,7 +81,7 @@ def trim_dict(payload):
 
 def parse_ipfw_pipes():
     result = dict()
-    pipetxt = subprocess.run(['/sbin/ipfw', 'pipe', 'show'], capture_output=True, text=True).stdout.strip()
+    pipetxt = subprocess.run(['/sbin/dnctl', 'pipe', 'show'], capture_output=True, text=True).stdout.strip()
     current_pipe = None
     current_pipe_header = False
     for line in ("%s\n000000X" % pipetxt).split('\n'):
@@ -125,7 +125,7 @@ def parse_ipfw_pipes():
 
 def parse_ipfw_queues():
     result = dict()
-    queuetxt = subprocess.run(['/sbin/ipfw', 'queue', 'show'], capture_output=True, text=True).stdout.strip()
+    queuetxt = subprocess.run(['/sbin/dnctl', 'queue', 'show'], capture_output=True, text=True).stdout.strip()
     current_queue = None
     current_queue_header = False
     for line in ("%s\nq000000X" % queuetxt).split('\n'):
@@ -149,7 +149,7 @@ def parse_ipfw_queues():
 
 def parse_ipfw_scheds():
     result = dict()
-    schedtxt = subprocess.run(['/sbin/ipfw', 'sched', 'show'], capture_output=True, text=True).stdout.strip()
+    schedtxt = subprocess.run(['/sbin/dnctl', 'sched', 'show'], capture_output=True, text=True).stdout.strip()
     current_sched = None
     for line in ("%s\n000000X" % schedtxt).split('\n'):
         if len(line) == 0:

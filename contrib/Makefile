@@ -1,5 +1,4 @@
 ROOT=	/usr/local/opnsense/contrib
-TREES=	base32 IXR mobile-broadband-provider-info \
-	simplepie tzdata
+TREES=	base32 iana IXR mobile-broadband-provider-info
 
 .include "../Mk/core.mk"

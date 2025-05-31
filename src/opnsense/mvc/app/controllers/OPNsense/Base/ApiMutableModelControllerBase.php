@@ -59,9 +59,22 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     protected static $internalModelUseSafeDelete = false;
 
     /**
+     * Message to append to configuration change event
+     */
+    protected $internalAuditMessage = null;
+
+    /**
      * @var null|BaseModel model object to work on
      */
     private $modelHandle = null;
+
+    /**
+     * Message to use on save of this model
+     */
+    protected function setSaveAuditMessage($msg)
+    {
+        $this->internalAuditMessage = $msg;
+    }
 
     /**
      * Validate on initialization
@@ -304,7 +317,12 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     {
         if (!(new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
             if ($this->getModel()->serializeToConfig($validateFullModel, $disable_validation)) {
-                Config::getInstance()->save();
+                if ($this->internalAuditMessage) {
+                    Config::getInstance()->save(['description' => $this->internalAuditMessage]);
+                } else {
+                    /* default "endpoint made changes" message */
+                    Config::getInstance()->save();
+                }
             }
             return array("result" => "saved");
         } else {
@@ -346,8 +364,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     public function setAction()
     {
-        $result = array("result" => "failed");
+        $result = ['result' => 'failed'];
         if ($this->request->isPost()) {
+            Config::getInstance()->lock();
             // load model and update with provided data
             $mdl = $this->getModel();
             $mdl->setNodes($this->request->getPost(static::$internalModelName));
@@ -450,8 +469,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     public function addBase($post_field, $path, $overlay = null)
     {
-        $result = array("result" => "failed");
+        $result = ['result' => 'failed'];
         if ($this->request->isPost() && $this->request->hasPost($post_field)) {
+            Config::getInstance()->lock();
             $mdl = $this->getModel();
             $tmp = $mdl;
             foreach (explode('.', $path) as $step) {
@@ -490,7 +510,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     public function delBase($path, $uuid)
     {
-        $result = array("result" => "failed");
+        $result = ['result' => 'failed'];
 
         if ($this->request->isPost()) {
             Config::getInstance()->lock();
@@ -526,6 +546,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     public function setBase($post_field, $path, $uuid, $overlay = null)
     {
         if ($this->request->isPost() && $this->request->hasPost($post_field) && $uuid != null) {
+            Config::getInstance()->lock();
             $mdl = $this->getModel();
             $node = $mdl->getNodeByReference($path . '.' . $uuid);
             if ($node == null) {
@@ -574,8 +595,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     public function toggleBase($path, $uuid, $enabled = null)
     {
-        $result = array("result" => "failed");
+        $result = ['result' => 'failed'];
         if ($this->request->isPost()) {
+            Config::getInstance()->lock();
             $mdl = $this->getModel();
             if ($uuid != null) {
                 $node = $mdl->getNodeByReference($path . '.' . $uuid);
@@ -611,10 +633,12 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @param string $payload csv data to import
      * @param array $keyfields fieldnames to use as key
      * @param function $data_callback inline data modification, used to match parsed csv data
+     * @param function $node_callback to be called when the array node has been setup
      * @return array exceptions
      */
-    protected function importCsv($path, $payload, $keyfields = [], $data_callback = null)
+    protected function importCsv($path, $payload, $keyfields = [], $data_callback = null, $node_callback = null)
     {
+        Config::getInstance()->lock();
         /* parse csv data to array structure */
         $data = [];
         $stream = fopen('php://temp', 'rw+');
@@ -648,7 +672,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 is_a($node, "OPNsense\\Base\\FieldTypes\\ArrayField") ||
                 is_subclass_of($node, "OPNsense\\Base\\FieldTypes\\ArrayField")
             ) {
-                $result = $node->importRecordSet($data, $keyfields, $data_callback);
+                $result = $node->importRecordSet($data, $keyfields, $data_callback, $node_callback);
                 $valmsgfields = [];
                 foreach ($this->getModel()->performValidation() as $msg) {
                     if (str_starts_with($msg->getField(), $path) && !in_array($msg->getField(), $valmsgfields)) {

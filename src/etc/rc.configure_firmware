@@ -50,6 +50,11 @@ convert_config(true);
 /* flush user-facing caches */
 (new OPNsense\Core\ACL())->invalidateCache();
 (new OPNsense\Base\Menu\MenuSystem())->invalidateCache();
+foreach (['/var/lib/php/tmp', '/tmp'] as $tmpdir) {
+    foreach (glob(sprintf("%s/mdl_cache_*.json", $tmpdir)) as $filename) {
+        @unlink($filename);
+    }
+}
 
 /* reload subsystem that may have changed */
 system_firmware_configure(true);

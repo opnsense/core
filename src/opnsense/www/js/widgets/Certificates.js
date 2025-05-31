@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Cedrik Pischem
+ * Copyright (C) 2024-2025 Cedrik Pischem
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -73,7 +73,7 @@ export default class Certificates extends BaseTableWidget {
 
     processItems(items, type, hiddenItems, rows) {
         items.forEach(item => {
-            if (!hiddenItems.includes(item.descr)) {
+            if (!hiddenItems.includes(item.uuid)) {
                 const validTo = new Date(parseInt(item.valid_to) * 1000);
                 const now = new Date();
                 const remainingDays = Math.max(0, Math.floor((validTo - now) / (1000 * 60 * 60 * 24)));
@@ -87,14 +87,25 @@ export default class Certificates extends BaseTableWidget {
                 const statusText = remainingDays === 0 ? this.translations.expired : this.translations.valid;
                 const iconClass = remainingDays === 0 ? 'fa fa-unlock' : 'fa fa-lock';
 
+                // XXX: Format the date without time and timezone as the frontend does not know the timezone of the backend
+                const expirationDateString = validTo.toLocaleDateString(undefined);
+
                 const expirationText = remainingDays === 0
-                    ? `${this.translations.expiredon} ${validTo.toLocaleString()}`
-                    : `${this.translations.expiresin} ${remainingDays} ${this.translations.days}, ${validTo.toLocaleString()}`;
+                    ? `${this.translations.expiredon} ${expirationDateString}`
+                    : `${this.translations.expiresin} ${remainingDays} ${this.translations.days}, ${expirationDateString}`;
 
                 const descrContent = (type === 'cert' || type === 'ca')
-                    ? `<a href="/ui/trust/${type === 'cert' ? 'cert' : 'ca'}#edit=${encodeURIComponent(item.uuid)}"
-                        class="${type}-link" target="_blank" rel="noopener noreferrer">${item.descr}</a>`
+                    // XXX: Certs polled via /usr/local/etc/ssl/ext_sources/*.conf cannot be edited, only search them
+                    ? (!item.uuid.includes('-')
+                        ? `<a href="/ui/trust/${type === 'cert' ? 'cert' : 'ca'}#search=${encodeURIComponent(item.uuid)}"
+                            class="${type}-link" target="_blank" rel="noopener noreferrer">${item.descr}</a>`
+                        : `<a href="/ui/trust/${type === 'cert' ? 'cert' : 'ca'}#edit=${encodeURIComponent(item.uuid)}"
+                            class="${type}-link" target="_blank" rel="noopener noreferrer">${item.descr}</a>`)
                     : `<b>${item.descr}</b>`;
+
+                const commonNameText = item.commonname
+                    ? `<div style="margin-top: 5px;">${item.commonname}</div>`
+                    : '';
 
                 const row = `
                     <div>
@@ -104,6 +115,7 @@ export default class Certificates extends BaseTableWidget {
                         &nbsp;
                         <span>${descrContent}</span>
                         <br/>
+                        ${commonNameText}
                         <div style="margin-top: 5px; margin-bottom: 5px;">
                             ${expirationText}
                         </div>
@@ -161,13 +173,13 @@ export default class Certificates extends BaseTableWidget {
 
         if (caResponse.rows) {
             caResponse.rows.forEach(ca => {
-                hiddenItemOptions.push({ value: `${ca.descr}`, label: ca.descr });
+                hiddenItemOptions.push({ value: ca.uuid, label: ca.descr });
             });
         }
 
         if (certResponse.rows) {
             certResponse.rows.forEach(cert => {
-                hiddenItemOptions.push({ value: `${cert.descr}`, label: cert.descr });
+                hiddenItemOptions.push({ value: cert.uuid, label: cert.commonname || cert.descr });
             });
         }
 

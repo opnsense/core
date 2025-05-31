@@ -75,6 +75,13 @@ class DB(object):
             # empty database, initialize database
             init_script_filename = '%s/../sql/init.sql' % os.path.dirname(os.path.abspath(__file__))
             cur.executescript(open(init_script_filename, 'r').read())
+
+        # migration: add "delete_reason" column to cp_clients
+        cur.execute("PRAGMA table_info(cp_clients)")
+        if not any([row[1] == 'delete_reason' for row in cur.fetchall()]):
+            cur.execute("ALTER TABLE cp_clients ADD COLUMN delete_reason VARCHAR")
+            self._connection.commit()
+
         cur.close()
 
     def sessions_per_address(self, zoneid, ip_address=None, mac_address=None):
@@ -155,7 +162,7 @@ class DB(object):
                     """, {'zoneid': zoneid, 'sessionid': sessionid, 'ip_address': ip_address})
         self._connection.commit()
 
-    def del_client(self, zoneid, sessionid):
+    def del_client(self, zoneid, sessionid, reason=None):
         """ mark (administrative) client for removal
         :param zoneid: zone id
         :param sessionid: session id
@@ -177,8 +184,8 @@ class DB(object):
                 session_info[fields[0]] = data[0][len(session_info)]
             # remove client
             cur.execute(
-                "update cp_clients set deleted = 1 where sessionid = :sessionid",
-                {'zoneid': zoneid, 'sessionid': sessionid}
+                "update cp_clients set deleted = 1, delete_reason = :delete_reason where sessionid = :sessionid",
+                {'delete_reason': reason, 'sessionid': sessionid}
             )
             self._connection.commit()
 
@@ -266,14 +273,13 @@ class DB(object):
         return result
 
     def update_accounting_info(self, details):
-        """ update internal accounting database with given ipfw info (not per zone)
-        :param details: ipfw accounting details
+        """ update internal accounting database with given pf info (not per zone)
+        :param details: pf accounting details
         """
         if type(details) == dict:
             # query registered data
-            sql = """ select    cc.ip_address, cc.zoneid, cc.sessionid
-                      ,         si.rowid si_rowid, si.prev_packets_in, si.prev_bytes_in
-                      ,         si.prev_packets_out, si.prev_bytes_out, si.last_accessed
+            sql = """ select    cc.ip_address, cc.zoneid, cc.sessionid, cc.created
+                      ,         si.rowid si_rowid, si.last_accessed
                       from      cp_clients cc
                       left join session_info si on si.zoneid = cc.zoneid and si.sessionid = cc.sessionid
                       order by  cc.ip_address, cc.deleted
@@ -291,27 +297,21 @@ class DB(object):
                 if prev_record['ip_address'] != record['ip_address'] and record['ip_address'] in details:
                     if record['si_rowid'] is None:
                         # new session, add info object
-                        sql_new = """ insert into session_info(zoneid, sessionid, prev_packets_in, prev_bytes_in,
-                                                               prev_packets_out, prev_bytes_out,
-                                                               packets_in, packets_out, bytes_in, bytes_out,
-                                                               last_accessed)
-                                      values (:zoneid, :sessionid, :packets_in, :bytes_in, :packets_out, :bytes_out,
-                                              :packets_in, :packets_out, :bytes_in, :bytes_out, :last_accessed)
+                        sql_new = """ insert into session_info(zoneid, sessionid, packets_in,
+                                                               packets_out, bytes_in, bytes_out, last_accessed)
+                                      values (:zoneid, :sessionid, :packets_in,
+                                              :packets_out, :bytes_in, :bytes_out, :last_accessed)
                         """
                         record['packets_in'] = details[record['ip_address']]['in_pkts']
                         record['bytes_in'] = details[record['ip_address']]['in_bytes']
                         record['packets_out'] = details[record['ip_address']]['out_pkts']
                         record['bytes_out'] = details[record['ip_address']]['out_bytes']
-                        record['last_accessed'] = details[record['ip_address']]['last_accessed']
+                        record['last_accessed'] = record['created']
                         cur2.execute(sql_new, record)
                     else:
                         # update session
                         sql_update = """ update session_info
                                          set    last_accessed = :last_accessed
-                                         ,      prev_packets_in = :prev_packets_in
-                                         ,      prev_packets_out = :prev_packets_out
-                                         ,      prev_bytes_in = :prev_bytes_in
-                                         ,      prev_bytes_out = :prev_bytes_out
                                          ,      packets_in = packets_in + :packets_in
                                          ,      packets_out = packets_out + :packets_out
                                          ,      bytes_in = bytes_in + :bytes_in
@@ -319,28 +319,12 @@ class DB(object):
                                          where  rowid = :si_rowid
                         """
                         # add usage to session
-                        record['last_accessed'] = details[record['ip_address']]['last_accessed']
-                        if record['prev_packets_in'] <= details[record['ip_address']]['in_pkts'] and \
-                           record['prev_packets_out'] <= details[record['ip_address']]['out_pkts']:
-                            # ipfw data is still valid, add difference to use
-                            record['packets_in'] = (
-                                details[record['ip_address']]['in_pkts'] - record['prev_packets_in'])
-                            record['packets_out'] = (
-                                details[record['ip_address']]['out_pkts'] - record['prev_packets_out'])
-                            record['bytes_in'] = (details[record['ip_address']]['in_bytes'] - record['prev_bytes_in'])
-                            record['bytes_out'] = (
-                                details[record['ip_address']]['out_bytes'] - record['prev_bytes_out'])
-                        else:
-                            # the data has been reset (reloading rules), add current packet count
-                            record['packets_in'] = details[record['ip_address']]['in_pkts']
-                            record['packets_out'] = details[record['ip_address']]['out_pkts']
-                            record['bytes_in'] = details[record['ip_address']]['in_bytes']
-                            record['bytes_out'] = details[record['ip_address']]['out_bytes']
-
-                        record['prev_packets_in'] = details[record['ip_address']]['in_pkts']
-                        record['prev_packets_out'] = details[record['ip_address']]['out_pkts']
-                        record['prev_bytes_in'] = details[record['ip_address']]['in_bytes']
-                        record['prev_bytes_out'] = details[record['ip_address']]['out_bytes']
+                        if details[record['ip_address']]['last_accessed'] != 0:
+                            record['last_accessed'] = details[record['ip_address']]['last_accessed']
+                        record['packets_in'] = details[record['ip_address']]['in_pkts']
+                        record['packets_out'] = details[record['ip_address']]['out_pkts']
+                        record['bytes_in'] = details[record['ip_address']]['in_bytes']
+                        record['bytes_out'] = details[record['ip_address']]['out_bytes']
                         cur2.execute(sql_update, record)
 
                 prev_record = record

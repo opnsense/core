@@ -27,9 +27,7 @@
     parse flowd log files
 """
 import glob
-import tempfile
 import subprocess
-import os
 import re
 from lib.flowparser import FlowParser
 

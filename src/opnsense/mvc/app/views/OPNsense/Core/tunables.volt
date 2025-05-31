@@ -34,9 +34,9 @@
                 del:'/api/core/tunables/del_item/',
                 options: {
                     formatters: {
-                        "tunable_type": function (column, row) {
+                        tunable_type: function (column, row) {
                             let retval = "{{ lang._('environment')}}";
-                            switch (row[column.id]) {
+                            switch (row.type) {
                                 case 'w':
                                     retval = "{{ lang._('runtime')}}";
                                     break;
@@ -48,6 +48,19 @@
                                     break;
                             }
                             return retval;
+                        },
+                        tunable_value: function (column, row) {
+                            return row.value.length ? row.value : row.default_value;
+                        },
+                        commands: function (column, row) {
+                            if (row.uuid.includes('-') === true) {
+                                /* real config items can be edited or removed */
+                                return '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-pencil"></span></button> ' +
+                                    '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-trash-o"></span></button>';
+                            } else {
+                                /* allow edit, renders the value on save */
+                                return '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-pencil"></span></button>';
+                            }
                         }
                     }
                 }
@@ -89,22 +102,8 @@
         <i class="fa fa-trash-o fa-fw"></i>
     </button>
 </div>
-<div class="tab-content content-box">
+<div class="content-box __mb">
     {{ partial('layout_partials/base_bootgrid_table', formGridTunable)}}
-    <div class="col-md-12">
-        <div id="{{formGridTunable['edit_alert_id']}}" class="alert alert-info" style="display: none" role="alert">
-            {{ lang._('After changing settings, please remember to apply them with the button below') }}
-        </div>
-        <hr/>
-        <button class="btn btn-primary" id="reconfigureAct"
-                data-endpoint='/api/core/tunables/reconfigure'
-                data-label="{{ lang._('Apply') }}"
-                data-error-title="{{ lang._('Error reconfiguring Tunables') }}"
-                type="button"
-        ></button>
-        <br/><br/>
-    </div>
 </div>
-
-
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/core/tunables/reconfigure'}) }}
 {{ partial("layout_partials/base_dialog",['fields':formDialogTunable,'id':formGridTunable['edit_dialog_id'],'label':lang._('Edit Tunable')])}}

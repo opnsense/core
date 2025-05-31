@@ -65,42 +65,45 @@ class SystemController extends ApiControllerBase
 
     public function statusAction()
     {
-        $response = ["status" => "failed"];
+        $response['metadata'] = [
+            /* 'system' represents the status of the top notification after sorting */
+            'system' => [
+                'status' => SystemStatusCode::OK->value,
+                'message' => gettext('No pending messages'),
+                'title' => gettext('System'),
+            ],
+            'translations' => [
+                'dialogTitle' => gettext('System Status'),
+                'dialogCloseButton' => gettext('Close')
+            ],
+            'subsystems' => []
+        ];
 
         $backend = new Backend();
-        $statuses = json_decode(trim($backend->configdRun('system status')), true);
+        $statuses = json_decode(trim($backend->configdpRun('system status', [$this->request->get('path')])), true);
         if ($statuses) {
             $order = SystemStatusCode::toValueNameArray();
             $acl = new ACL();
 
             foreach ($statuses as $subsystem => $status) {
+                unset($statuses[$subsystem]['scope']);
                 $statuses[$subsystem]['status'] = $order[$status['statusCode']];
-                if (!empty($status['logLocation'])) {
-                    if (!$acl->isPageAccessible($this->getUserName(), $status['logLocation'])) {
+                if (!empty($status['location'])) {
+                    if (!$acl->isPageAccessible($this->getUserName(), $status['location'])) {
                         unset($statuses[$subsystem]);
                         continue;
                     }
                 }
             }
 
-            /* Sort on the highest notification (non-persistent) error level after the ACL check */
-            $statusCodes = array_map(function ($v) {
-                return $v['persistent'] ? SystemStatusCode::OK : $v['statusCode'];
-            }, array_values($statuses));
+            /* Sort on the highest notification (not banner) error level after the ACL check */
+            $filteredStatuses = array_filter($statuses, function ($item) {
+                return !$item['isBanner'];
+            });
+            $statusCodes = array_column($filteredStatuses, 'statusCode');
             sort($statusCodes);
 
-            $response['metadata'] = [
-                /* 'system' represents the status of the top notification after sorting */
-                'system' => [
-                    'status' => $order[$statusCodes[0] ?? 2],
-                    'message' => gettext('No pending messages'),
-                    'title' => gettext('System'),
-                ],
-                'translations' => [
-                    'dialogTitle' => gettext('System Status'),
-                    'dialogCloseButton' => gettext('Close')
-                ]
-            ];
+            $response['metadata']['system']['status'] = $order[$statusCodes[0] ?? 2];
 
             // sort on status code and priority where priority is the tie breaker
             uasort($statuses, function ($a, $b) {
@@ -183,8 +186,8 @@ class SystemController extends ApiControllerBase
             $subsystem = $this->request->getPost("subject");
             $system = json_decode(trim($backend->configdRun('system status')), true);
             if (array_key_exists($subsystem, $system)) {
-                if (!empty($system[$subsystem]['logLocation'])) {
-                    $aclCheck = $system[$subsystem]['logLocation'];
+                if (!empty($system[$subsystem]['location'])) {
+                    $aclCheck = $system[$subsystem]['location'];
                     if (
                         $acl->isPageAccessible($this->getUserName(), $aclCheck) ||
                         !$acl->hasPrivilege($this->getUserName(), 'user-config-readonly')

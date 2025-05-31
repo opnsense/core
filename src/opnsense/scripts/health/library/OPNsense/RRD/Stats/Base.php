@@ -78,10 +78,6 @@ abstract class Base
                         'name' => !empty((string)$node->descr) ? (string)$node->descr : $ifname,
                         'if' => (string)$node->if
                     ];
-                    /* relevant parts from get_real_interface() using in old rrd.inc  */
-                    if (isset($node->wireless) && !strstr((string)$node->if, '_wlan')) {
-                        self::$metadata['interfaces'][$ifname]['if'] .= '_wlan0';
-                    }
                 }
             }
             foreach ((new \OPNsense\OpenVPN\OpenVPN())->serverDevices() as $ifname => $data) {

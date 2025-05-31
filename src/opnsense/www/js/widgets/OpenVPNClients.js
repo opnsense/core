@@ -107,6 +107,16 @@ export default class OpenVPNClients extends BaseTableWidget {
                         }
                     }
 
+                    // store all ip addresses
+                    let ip_list = [
+                        client.real_address,
+                        client.virtual_address,
+                        client.virtual_ipv6_address
+                    ];
+
+                    // filter out empty values
+                    let ip_list_view = ip_list.filter((value) => value).join(" | ");
+
                     $clients.append($(`
                         <div class="ovpn-client-container">
                             <div class="ovpn-common-name">
@@ -130,7 +140,7 @@ export default class OpenVPNClients extends BaseTableWidget {
                                 </span>
                             </div>
                             <div>
-                                ${client.real_address} | ${client.virtual_address}
+                                ${ip_list_view}
                             </div>
                             <div>
                                 ${client.connected_since}

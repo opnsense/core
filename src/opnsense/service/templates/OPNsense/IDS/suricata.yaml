@@ -254,6 +254,9 @@ outputs:
             # output TLS transaction where the session is resumed using a
             # session id
             session-resumption: {{ 'no' if helpers.empty('OPNsense.IDS.general.eveLog.tls.sessionResumption') else 'yes' }}
+            # ja4 hashes in tls records will never be logged unless
+            # the following is set to on. (Default off)
+            ja4: {{ 'on' if not helpers.empty('OPNsense.IDS.general.eveLog.tls.extended') or 'ja4' in OPNsense.IDS.general.eveLog.tls.custom.split(',') else 'off' }}
             # custom controls which TLS fields that are included in eve-log
 {%          if not helpers.empty('OPNsense.IDS.general.eveLog.tls.custom') %}
             custom: [{{ OPNsense.IDS.general.eveLog.tls.custom }}]
@@ -923,9 +926,10 @@ app-layer:
       detection-ports:
         dp: 443
 
-      # Generate JA3 fingerprint from client hello. If not specified it
+      # Generate JA3/JA4 fingerprints from client hello. If not specified it
       # will be disabled by default, but enabled if rules require it.
       ja3-fingerprints: yes
+      ja4-fingerprints: yes
 
       # What to do when the encrypted communications start:
       # - default: keep tracking TLS session, check for protocol anomalies,

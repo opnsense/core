@@ -60,6 +60,16 @@ class Radius extends Base implements IAuthConnector
     private $protocol = 'PAP';
 
     /**
+     * @var string called station id to use, read from config
+     */
+    private $calledStationId = null;
+
+    /**
+     * @var string calling station id to use, read from preauth config
+     */
+    private $callingStationId = null;
+
+    /**
      * @var int timeout to use
      */
     private $timeout = 10;
@@ -78,7 +88,6 @@ class Radius extends Base implements IAuthConnector
      * @var array internal list of authentication properties (returned by radius auth)
      */
     private $lastAuthProperties = [];
-
 
     /**
      * @var boolean when set, synchronize groups defined in memberOf attribute to local database
@@ -99,6 +108,30 @@ class Radius extends Base implements IAuthConnector
      * @var array list of groups to add by default
      */
     private $syncDefaultGroups = [];
+
+    private function mapTerminateCause($cause)
+    {
+        switch ($cause) {
+            case 'Idle-Timeout':
+                return RADIUS_TERM_IDLE_TIMEOUT;
+            case 'Session-Timeout':
+                return RADIUS_TERM_SESSION_TIMEOUT;
+            case 'Admin-Reset':
+                return RADIUS_TERM_ADMIN_RESET;
+            case 'NAS-Request':
+                return RADIUS_TERM_NAS_REQUEST;
+            default:
+                return RADIUS_TERM_USER_REQUEST;
+        }
+    }
+
+    private function splitBytes($bytes)
+    {
+        $limit = 2 ** 32;
+        $wraps = intdiv($bytes, $limit);
+        $lower32 = $bytes % $limit;
+        return [$wraps, $lower32];
+    }
 
     /**
      * type name in configuration
@@ -131,6 +164,7 @@ class Radius extends Base implements IAuthConnector
             'radius_auth_port' => 'authPort',
             'radius_acct_port' => 'acctPort',
             'radius_protocol' => 'protocol',
+            'radius_stationid' => 'calledStationId',
             'refid' => 'nasIdentifier'
         );
 
@@ -260,12 +294,16 @@ class Radius extends Base implements IAuthConnector
      * @param $bytes_in
      * @param $bytes_out
      * @param $ip_address
+     * @param $cause see mapTerminateCause for possible values
      */
-    public function stopAccounting($username, $sessionid, $session_time, $bytes_in, $bytes_out, $ip_address)
+    public function stopAccounting($username, $sessionid, $session_time, $bytes_in, $bytes_out, $ip_address, $cause = null)
     {
         // only send messages if target port specified
         if ($this->acctPort != null) {
             $radius = radius_auth_open();
+
+            [$wraps_in, $bytes_in] = $this->splitBytes($bytes_in);
+            [$wraps_out, $bytes_out] = $this->splitBytes($bytes_out);
 
             $error = null;
             if (
@@ -305,9 +343,13 @@ class Radius extends Base implements IAuthConnector
                 $error = radius_strerror($radius);
             } elseif (!radius_put_int($radius, RADIUS_ACCT_OUTPUT_OCTETS, $bytes_out)) {
                 $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, 52, $wraps_in)) { /* Acct-Input-Gigawords */
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, 53, $wraps_out)) { /* Acct-Output-Gigawords */
+                $error = radius_strerror($radius);
             } elseif (!radius_put_addr($radius, RADIUS_FRAMED_IP_ADDRESS, $ip_address)) {
                 $error = radius_strerror($radius);
-            } elseif (!radius_put_int($radius, RADIUS_ACCT_TERMINATE_CAUSE, RADIUS_TERM_USER_REQUEST)) {
+            } elseif (!radius_put_int($radius, RADIUS_ACCT_TERMINATE_CAUSE, $this->mapTerminateCause($cause))) {
                 $error = radius_strerror($radius);
             }
 
@@ -348,6 +390,9 @@ class Radius extends Base implements IAuthConnector
                 define('RADIUS_UPDATE', 3);
             }
 
+            [$wraps_in, $bytes_in] = $this->splitBytes($bytes_in);
+            [$wraps_out, $bytes_out] = $this->splitBytes($bytes_out);
+
             $error = null;
             if (
                 !radius_add_server(
@@ -386,6 +431,10 @@ class Radius extends Base implements IAuthConnector
                 $error = radius_strerror($radius);
             } elseif (!radius_put_int($radius, RADIUS_ACCT_OUTPUT_OCTETS, $bytes_out)) {
                 $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, 52, $wraps_in)) { /* Acct-Input-Gigawords */
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, 53, $wraps_out)) { /* Acct-Output-Gigawords */
+                $error = radius_strerror($radius);
             } elseif (!radius_put_addr($radius, RADIUS_FRAMED_IP_ADDRESS, $ip_address)) {
                 $error = radius_strerror($radius);
             }
@@ -407,6 +456,20 @@ class Radius extends Base implements IAuthConnector
                 radius_close($radius);
             }
         }
+    }
+
+    /**
+     * set known per-session radius access request attributes
+     * @param array $config
+     * @return IAuthConnector
+     */
+    public function preauth($config)
+    {
+        if (!empty($config['calling_station_id'])) {
+            $this->callingStationId = $config['calling_station_id'];
+        }
+
+        return parent::preauth($config);
     }
 
     /**
@@ -432,7 +495,7 @@ class Radius extends Base implements IAuthConnector
             )
         ) {
             $error = radius_strerror($radius);
-        } elseif (!radius_create_request($radius, RADIUS_ACCESS_REQUEST)) {
+        } elseif (!radius_create_request($radius, RADIUS_ACCESS_REQUEST, true)) {
             $error = radius_strerror($radius);
         } elseif (!radius_put_string($radius, RADIUS_USER_NAME, $username)) {
             $error = radius_strerror($radius);
@@ -445,6 +508,10 @@ class Radius extends Base implements IAuthConnector
         } elseif (!radius_put_int($radius, RADIUS_NAS_PORT, 0)) {
             $error = radius_strerror($radius);
         } elseif (!radius_put_int($radius, RADIUS_NAS_PORT_TYPE, RADIUS_ETHERNET)) {
+            $error = radius_strerror($radius);
+        } elseif (!empty($this->calledStationId) && !radius_put_string($radius, RADIUS_CALLED_STATION_ID, $this->calledStationId)) {
+            $error = radius_strerror($radius);
+        } elseif (!empty($this->callingStationId) && !radius_put_string($radius, RADIUS_CALLING_STATION_ID, $this->callingStationId)) {
             $error = radius_strerror($radius);
         } else {
             // Implement extra protocols in this section.
@@ -496,12 +563,15 @@ class Radius extends Base implements IAuthConnector
             }
         }
 
+        // reset preauth attributes
+        $this->callingStationId = null;
+
         // log errors and perform actual authentication request
         if ($error != null) {
             syslog(LOG_ERR, 'RadiusError: ' . $error);
         } else {
             $request = radius_send_request($radius);
-            if (!$radius) {
+            if (!$request) {
                 syslog(LOG_ERR, 'RadiusError: ' . radius_strerror($radius));
             } else {
                 switch ($request) {

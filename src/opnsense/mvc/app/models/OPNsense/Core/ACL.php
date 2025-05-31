@@ -277,7 +277,12 @@ class ACL
     {
         if (!empty($_SESSION['user_shouldChangePassword'])) {
             // when a password change is enforced, lock all other endpoints
-            return $this->urlMatch($url, 'system_usermanager_passwordmg.php*');
+            foreach (['system_usermanager_passwordmg.php*', 'ui/user_portal', 'api/user_portal/user/*'] as $pattern) {
+                if ($this->urlMatch($url, $pattern)) {
+                    return true;
+                }
+            }
+            return false;
         }
         foreach ($this->urlMasks($username) as $urlmask) {
             if ($this->urlMatch($url, $urlmask)) {
@@ -358,20 +363,18 @@ class ACL
     {
         if (!empty($_SESSION['user_shouldChangePassword'])) {
             // ACL lock, may only access password page
-            return "system_usermanager_passwordmg.php";
+            return "ui/user_portal";
         } elseif (!empty($this->userDatabase[$username]['landing_page'])) {
-            $page = $this->userDatabase[$username]['landing_page'];
-            if (strpos($page, '/') === 0) {
-                // remove leading slash, which would result in redirection to //page (without host) after login or auth failure.
-                return substr($page, 1);
-            } else {
-                return $page;
-            }
+            // remove leading slash, which would result in redirection to //page (without host) after login or auth failure.
+            return ltrim($this->userDatabase[$username]['landing_page'], '/');
         } elseif (!empty($this->userDatabase[$username])) {
-            // default behaviour, find first accessible location from configured privileges
+            // default behaviour, find first accessible location from configured privileges, but prefer /
+            if ($this->isPageAccessible($username, '/')) {
+                return "index.php";
+            }
             foreach ($this->urlMasks($username) as $pattern) {
-                if ($pattern == "*") {
-                    return "index.php";
+                if (str_starts_with('api', $pattern) || $pattern == "*") {
+                    continue;
                 } elseif (!empty($pattern)) {
                     /* remove wildcard and optional trailing slashes or query symbols */
                     return preg_replace('@[/&?]?\*$@', '', $pattern);

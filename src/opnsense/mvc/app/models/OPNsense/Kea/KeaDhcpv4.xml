@@ -8,6 +8,7 @@
                 <Default>0</Default>
                 <Required>Y</Required>
             </enabled>
+            <manual_config type="BooleanField"/>
             <interfaces type="InterfaceField">
                 <Multiple>Y</Multiple>
             </interfaces>
@@ -77,9 +78,7 @@
                         <AsList>Y</AsList>
                         <FieldSeparator>,</FieldSeparator>
                     </routers>
-                    <static_routes type="TextField">
-                        <!-- Needs a custom validator to validate ip pairs-->
-                    </static_routes>
+                    <static_routes type=".\KeaStaticRoutesField"/>
                     <domain_name type="HostnameField">
                         <IpAllowed>N</IpAllowed>
                     </domain_name>
@@ -101,6 +100,9 @@
                     <boot_file_name type="TextField">
                         <Mask>/^([^\n"])*$/u</Mask>
                     </boot_file_name>
+                    <v6_only_preferred type="IntegerField">
+                        <MinimumValue>300</MinimumValue>
+                    </v6_only_preferred>
                 </option_data>
                 <match-client-id type="BooleanField">
                     <Default>1</Default>

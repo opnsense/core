@@ -39,6 +39,8 @@ use OPNsense\CaptivePortal\CaptivePortal;
  */
 class AccessController extends ApiControllerBase
 {
+    private static $arp = [];
+
     /**
      * request client session data
      * @param string $zoneid captive portal zone
@@ -66,13 +68,9 @@ class AccessController extends ApiControllerBase
         $mdlCP = new CaptivePortal();
         $cpZone = $mdlCP->getByZoneID($zoneid);
         if ($cpZone != null && (string)$cpZone->extendedPreAuthData == '1') {
-            $arps = json_decode($backend->configdRun("interface list arp json"), true);
-            if ($arps != null) {
-                foreach ($arps as $arp) {
-                    if (!empty($arp['ip'] && $arp['ip'] == $result['ipAddress'])) {
-                        $result['macAddress'] = $arp['mac'];
-                    }
-                }
+            $mac = $this->getClientMac($result['ipAddress']);
+            if (!empty($mac)) {
+                $result['macAddress'] = $mac;
             }
         }
         if ($cpZone != null && trim((string)$cpZone->authservers) == "") {
@@ -102,6 +100,21 @@ class AccessController extends ApiControllerBase
         }
     }
 
+    private function getClientMac($ip)
+    {
+        if (empty(self::$arp)) {
+            self::$arp = json_decode((new Backend())->configdRun("interface list arp json"), true);
+        }
+
+        if (self::$arp != null) {
+            foreach (self::$arp as $arp) {
+                if (!empty($arp['ip'] && $arp['ip'] == $ip)) {
+                    return $arp['mac'];
+                }
+            }
+        }
+    }
+
     /**
      * before routing event
      * @param Dispatcher $dispatcher
@@ -117,7 +130,7 @@ class AccessController extends ApiControllerBase
 
     /**
      * logon client to zone, must use post type of request
-     * @param int|string $zoneid zone id number
+     * @param int|string $zoneid zone id number, provided for backwards compatibility
      * @return array
      * @throws \OPNsense\Base\ModelException
      */
@@ -131,6 +144,7 @@ class AccessController extends ApiControllerBase
             // init variables for authserver object and name
             $authServer = null;
             $authServerName = "";
+            $zoneid = $this->request->getHeader("zoneid");
 
             // get username from post
             $userName = $this->request->getPost("user", "striptags", null);
@@ -147,7 +161,9 @@ class AccessController extends ApiControllerBase
                         $authServer = $authFactory->get(trim($authServerName));
                         if ($authServer != null) {
                             // try this auth method
-                            $isAuthenticated = $authServer->authenticate(
+                            $isAuthenticated = $authServer->preauth([
+                                'calling_station_id' => $this->getClientMac($this->getClientIp())
+                            ])->authenticate(
                                 $userName,
                                 $this->request->getPost("password")
                             );
@@ -223,9 +239,10 @@ class AccessController extends ApiControllerBase
 
     /**
      * logoff client
-     * @param int|string $zoneid zone id number
+     * @param int|string $zoneid zone id number, provided for backwards compatibility
      * @return array
      * @throws \OPNsense\Base\ModelException
+     *
      */
     public function logoffAction($zoneid = 0)
     {
@@ -233,6 +250,7 @@ class AccessController extends ApiControllerBase
             // return empty result on CORS preflight
             return [];
         } else {
+            $zoneid = $this->request->getHeader("zoneid");
             $clientSession = $this->clientSession((string)$zoneid);
             if (
                 $clientSession['clientState'] == 'AUTHORIZED' &&
@@ -241,7 +259,7 @@ class AccessController extends ApiControllerBase
             ) {
                 // you can only disconnect a connected client
                 $backend = new Backend();
-                $statusRAW = $backend->configdpRun("captiveportal disconnect", [$clientSession['sessionId']]);
+                $statusRAW = $backend->configdpRun("captiveportal disconnect", [$clientSession['sessionId'], "User-Request"]);
                 $status = json_decode($statusRAW, true);
                 if ($status != null) {
                     $this->getLogger("captiveportal")->info(
@@ -256,9 +274,10 @@ class AccessController extends ApiControllerBase
 
     /**
      * retrieve session info
-     * @param int|string $zoneid zone id number
+     * @param int|string $zoneid zone id number, provided for backwards compatibility
      * @return array
      * @throws \OPNsense\Base\ModelException
+     *
      */
     public function statusAction($zoneid = 0)
     {
@@ -266,8 +285,84 @@ class AccessController extends ApiControllerBase
             // return empty result on CORS preflight
             return [];
         } elseif ($this->request->isPost() || $this->request->isGet()) {
-            $clientSession = $this->clientSession((string)$zoneid);
+            $clientSession = $this->clientSession($this->request->getHeader("zoneid"));
             return $clientSession;
         }
+    }
+
+    /**
+     * RFC 8908: Captive Portal API status object
+     *
+     * The URI for this endpoint can be provisioned to the client
+     * as defined by RFC 7710.
+     *
+     * Request and response must set media type as "application/captive+json".
+     *
+     * Response contains the following fields:
+     * - captive: boolean: client is currently in a state of captivity.
+     * - user-portal-url: string: URL to login web portal (must be HTTPS).
+     * - seconds-remaining: number: seconds until session expires,
+     *   only relevant if hardtimeout set.
+     *
+     * Fields not implemented here but possible in the future:
+     * - venue-info-url: string: Information page (must be HTTPS)
+     * - can-extend-session: boolean: hint that client system can access
+     *   user-portal-url to extend session.
+     * - bytes-remaining: number: no. of bytes after which session expires.
+     *
+     * Response must set Cache-Control to 'private' or 'no-store'
+     */
+    public function apiAction()
+    {
+        if (
+            $this->request->isGet() &&
+            $this->request->getHeader("accept") == "application/captive+json"
+        ) {
+            $result = [];
+            $zoneId = $this->request->getHeader("zoneid");
+            $clientSession = $this->clientSession($zoneId);
+            $captive = $clientSession["clientState"] != "AUTHORIZED";
+            $host = $this->request->getHeader('X-Forwarded-Host');
+
+            $zone = (new \OPNsense\CaptivePortal\CaptivePortal())->getByZoneId($zoneId);
+
+            if ($zone != null && !empty($clientSession['startTime'])) {
+                $startTime = (int)$clientSession['startTime'];
+                $secondsPassed = time() - $startTime;
+                $remainingTimes = [];
+
+                if (!empty((string)$zone->hardtimeout)) {
+                    $timeout = (int)$zone->hardtimeout * 60;
+                    if ($secondsPassed < $timeout) {
+                        $remainingTimes[] = $timeout - $secondsPassed;
+                    }
+                }
+
+                if (!empty($clientSession['acc_session_timeout'])) {
+                    $timeout = (int)$clientSession['acc_session_timeout'];
+                    if ($secondsPassed < $timeout) {
+                        $remainingTimes[] = $timeout - $secondsPassed;
+                    }
+                }
+
+                if (!empty($remainingTimes)) {
+                    $result['seconds-remaining'] = min($remainingTimes);
+                }
+            }
+
+            $this->response->setRawHeader("Cache-Control: private");
+            $this->response->setContentType("application/captive+json");
+
+            $result["captive"] = $captive;
+            $result["user-portal-url"] = "https://{$host}/index.html";
+
+            $this->response->setContent($result);
+
+            return;
+        }
+
+        $this->response->setStatusCode(400);
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setContent(['status'  => 400, 'message' => 'Bad request']);
     }
 }

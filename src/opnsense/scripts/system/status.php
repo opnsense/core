@@ -31,9 +31,8 @@ require_once('script/load_phalcon.php');
 
 $status = new \OPNsense\System\SystemStatus();
 
-if (isset($argv[1])) {
-    /* dismiss action */
-    $status->dismissStatus($argv[1]);
+if (isset($argv[1]) && $argv[1] == 'dismiss' && isset($argv[2])) {
+    $status->dismissStatus($argv[2]);
 } else {
-    echo json_encode($status->getSystemStatus()) . PHP_EOL;
+    echo json_encode($status->collectStatus($argv[1] ?? null)) . PHP_EOL;
 }

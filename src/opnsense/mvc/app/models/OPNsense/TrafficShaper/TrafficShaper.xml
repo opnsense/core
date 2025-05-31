@@ -43,6 +43,8 @@
                         <none>(none)</none>
                         <src-ip>source</src-ip>
                         <dst-ip>destination</dst-ip>
+                        <src-ip6>source (ip6)</src-ip6>
+                        <dst-ip6>destination (ip6)</dst-ip6>
                     </OptionValues>
                 </mask>
                 <buckets type="IntegerField">
@@ -157,6 +159,8 @@
                         <none>(none)</none>
                         <src-ip>source</src-ip>
                         <dst-ip>destination</dst-ip>
+                        <src-ip6>source (ip6)</src-ip6>
+                        <dst-ip6>destination (ip6)</dst-ip6>
                     </OptionValues>
                 </mask>
                 <buckets type="IntegerField">

@@ -161,7 +161,6 @@ CORE_DEPENDS?=		ca_root_nss \
 			php${CORE_PHP}-dom \
 			php${CORE_PHP}-filter \
 			php${CORE_PHP}-gettext \
-			php${CORE_PHP}-google-api-php-client \
 			php${CORE_PHP}-ldap \
 			php${CORE_PHP}-pcntl \
 			php${CORE_PHP}-pdo \
@@ -178,6 +177,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			pkg \
 			py${CORE_PYTHON}-Jinja2 \
 			py${CORE_PYTHON}-dnspython \
+			py${CORE_PYTHON}-jq \
 			py${CORE_PYTHON}-ldap3 \
 			py${CORE_PYTHON}-netaddr \
 			py${CORE_PYTHON}-requests \
@@ -204,9 +204,10 @@ CORE_CONFLICTS+=	${CONFLICT}-devel
 CORE_CONFLICTS:=	${CORE_CONFLICTS:S/^/os-/g:O}
 
 WRKDIR?=${.CURDIR}/work
-WRKSRC?=${WRKDIR}/src
-PKGDIR?=${WRKDIR}/pkg
 MFCDIR?=${WRKDIR}/mfc
+PKGDIR?=${WRKDIR}/pkg
+WRKSRC?=${WRKDIR}/src
+TESTDIR?=${.CURDIR}/src/opnsense/mvc/tests
 
 debug:
 	@${VERSIONBIN} ${@} > /dev/null
@@ -420,8 +421,6 @@ lint-php:
 lint: plist-check lint-shell lint-xml lint-model lint-acl lint-exec lint-php
 
 sweep:
-	find ${.CURDIR}/src -type f -name "*.map" -print0 | \
-	    xargs -0 -n1 rm
 	find ${.CURDIR}/src ! -name "*.min.*" ! -name "*.svg" \
 	    ! -name "*.ser" -type f -print0 | \
 	    xargs -0 -n1 ${.CURDIR}/Scripts/cleanfile
@@ -504,7 +503,7 @@ diff: ensure-stable
 feed: ensure-stable
 	@git log --stat -p --reverse ${CORE_STABLE}...${feed_ARGS:[1]}~1
 
-mfc: ensure-stable clean-mfcdir
+mfc: ensure-stable clean
 .for MFC in ${mfc_ARGS}
 .if exists(${MFC})
 	@cp -r ${MFC} ${MFCDIR}
@@ -544,6 +543,11 @@ reset:
 log: ensure-stable
 	@git log --stat -p ${CORE_STABLE}
 
+pull:
+	@git checkout ${CORE_STABLE}
+	@git pull
+	@git checkout ${CORE_MAIN}
+
 push:
 	@git checkout ${CORE_STABLE}
 	@git push
@@ -560,8 +564,10 @@ test: debug
 		echo "Installed version does not match, expected ${CORE_PKGVERSION}"; \
 		exit 1; \
 	fi
-	@cd ${.CURDIR}/src/opnsense/mvc/tests && phpunit || true; \
-	    rm -f .phpunit.result.cache
+	@cd ${TESTDIR} && phpunit || true; rm -rf ${TESTDIR}/.phpunit.result.cache \
+	    ${TESTDIR}/app/models/OPNsense/ACL/AclConfig/backup; \
+	    git checkout -f ${TESTDIR}/app/models/OPNsense/ACL/AclConfig/config.xml
+
 
 checkout:
 	@${GIT} reset -q ${.CURDIR}/src && \

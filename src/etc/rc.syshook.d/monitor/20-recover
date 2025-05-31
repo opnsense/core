@@ -1,0 +1,73 @@
+#!/usr/local/bin/php
+<?php
+
+/*
+ * Copyright (c) 2024-2025 Franco Fichtner <franco@opnsense.org>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+require_once 'config.inc';
+require_once 'util.inc';
+require_once 'system.inc';
+require_once 'interfaces.inc';
+
+$gwnames = [];
+$affected_gateways = !empty($argv[1]) ? explode(',', $argv[1]) : [];
+
+$metered_found_prios = ['inet' => 256, 'inet6' => 256];
+$metered_gws = ['inet' => [], 'inet6' => []];
+
+foreach (return_gateways_status() as $status) {
+    if (strpos($status['status'], 'down') !== false) {
+        /* recover monitors stuck in down state ignoring "force_down" */
+        if ($status['status'] == 'down') {
+            $gwnames[] = $status['name'];
+        }
+        /* kill states for all down transitions including "force_down" */
+        if (!empty($status['monitor_killstates']) && in_array($status['name'], $affected_gateways)) {
+            $uuid = trim(configdp_run('filter kill gateway_states', [$status['gateway']], true));
+            log_msg("ROUTING: killing states for unreachable gateway {$status['name']} [$uuid]", LOG_NOTICE);
+        }
+    } else {
+        /* collect "metered" gateways for all non-down status reports */
+        if (!empty($status['monitor_killstates_priority'])) {
+            $metered_gws[$status['ipprotocol']][] = $status;
+	/* only consider currently affected gateways as priority candidates */
+        } elseif (in_array($status['name'], $affected_gateways)) {
+            $metered_found_prios[$status['ipprotocol']] = min($status['priority'], $metered_found_prios[$status['ipprotocol']]);
+        }
+    }
+}
+
+foreach ($metered_found_prios as $ipproto => $metered_found_prio) {
+    /* kill states for "metered" gateways */
+    foreach ($metered_gws[$ipproto] as $status) {
+        if ($status['priority'] > $metered_found_prio) {
+            $uuid = trim(configdp_run('filter kill gateway_states', [$status['gateway']], true));
+            log_msg("ROUTING: killing states for deferred gateway {$status['name']} [$uuid]", LOG_NOTICE);
+        }
+    }
+}
+
+plugins_configure('monitor', true, [$gwnames]);

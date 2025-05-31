@@ -61,7 +61,7 @@ if (isset($opts['h']) || empty($opts['u'])) {
     $update_user = null;
     $userdb = [];
     foreach ($a_user as $userent) {
-        if (!empty($userent['shell'])) {
+        if (!empty($userent['shell']) || $userent['uid'] == 0) {
             /* only users with a shell account are allowed to have a local entry */
             $userdb[] = $userent['name'];
         }
@@ -76,6 +76,7 @@ if (isset($opts['h']) || empty($opts['u'])) {
             mwexecf('/usr/sbin/pw userdel -n %s', [$item[0]]);
         }
     }
+
     /* add or update when found */
     if ($update_user) {
         /* without a shell configured, local_user_set() will just return */

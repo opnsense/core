@@ -220,32 +220,6 @@ var month_array = <?= json_encode($monthArray) ?>;
 var day_array = <?= json_encode($dayArray) ?>;
 var schCounter = 0;
 
-function repeatExistingDays(){
-  var tempstr, tempstrdaypos, week, daypos, dayposdone = "";
-
-  var dayarray = daysSelected.split(",");
-  for (let i=0; i<=dayarray.length; i++){
-    tempstr = dayarray[i];
-    tempstrdaypos = tempstr.search("p");
-    week = tempstr.substring(1,tempstrdaypos);
-    week = parseInt(week);
-    const dashpos = tempstr.search("-");
-    daypos = tempstr.substring(tempstrdaypos+1, dashpos);
-    daypos = parseInt(daypos);
-
-    const daydone = dayposdone.search(daypos);
-    tempstr = 'w' + week + 'p' + daypos;
-    const daycell = document.getElementById(tempstr);
-    if (daydone == "-1"){
-      if (daycell.dataset['state'] == "lightcoral")
-        daytogglerepeating(week,daypos,true);
-      else
-        daytogglerepeating(week,daypos,false);
-      dayposdone += daypos + ",";
-    }
-  }
-}
-
 function daytogglerepeating(week,daypos,bExists){
   var tempstr, daycell, dayoriginal = "";
   for (let j=1; j<=53; j++)

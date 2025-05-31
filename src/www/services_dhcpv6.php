@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2022 Deciso B.V.
+ * Copyright (C) 2014-2025 Deciso B.V.
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
  * All rights reserved.
@@ -34,6 +34,103 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("plugins.inc.d/dhcpd.inc");
 
+function show_track6_form($if)
+{
+  global $config;
+  $service_hook = 'dhcpd6';
+  include("head.inc");
+  include("fbegin.inc");
+  $enable_label = gettext("Enable");
+  $range_label = gettext("Range");
+  $enable_descr = sprintf(gettext("Enable DHCPv6 server on " . "%s " ."interface"),!empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));
+  $enable_input = 'checked="checked"';
+  $save_btn_text = html_safe(gettext('Save'));
+  /* calculated "fixed" range */
+  list ($ifcfgipv6) = interfaces_primary_address6($if, legacy_interfaces_details());
+  $range = ['from' => '?', 'to' => '?'];
+  if (is_ipaddrv6($ifcfgipv6)) {
+      $ifcfgipv6 = Net_IPv6::getNetmask($ifcfgipv6, 64);
+      $ifcfgipv6arr = explode(':', $ifcfgipv6);
+      $ifcfgipv6arr[7] = '1000';
+      $range['from'] = Net_IPv6::compress(implode(':', $ifcfgipv6arr));
+      $ifcfgipv6arr[7] = '2000';
+      $range['to'] = Net_IPv6::compress(implode(':', $ifcfgipv6arr));
+  }
+
+  if (!empty($config['dhcpdv6']) && !empty($config['dhcpdv6'][$if]) && isset($config['dhcpdv6'][$if]['enable']) && $config['dhcpdv6'][$if]['enable'] == '-1') {
+      /* disabled */
+      $enable_input = '';
+  }
+
+  $range_tr = <<<EOD
+    <tr>
+      <td><i class="fa fa-info-circle text-muted"></i> $range_label</td>
+      <td>{$range['from']} - {$range['to']}</td>
+    </tr>
+  EOD;
+
+
+  echo <<<EOD
+    <section class="page-content-main">
+      <div class="container-fluid">
+        <div class="row">
+          <section class="col-xs-12">
+            <div class="tab-content content-box col-xs-12">
+              <form method="post" name="iform" id="iform">
+                <div class="table-responsive">
+                  <table class="table table-striped opnsense_standard_table_form">
+                    <tr>
+                      <td style="width:22%"></td>
+                      <td style="width:78%; text-align:right">
+                        <div style='height: 15px;'></div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><i class="fa fa-info-circle text-muted"></i> $enable_label</td>
+                      <td>
+                        <input name="enable" type="checkbox" value="yes" $enable_input/>
+                        <strong>$enable_descr</strong>
+                      </td>
+                      $range_tr
+                    </tr>
+                    <tr>
+                      <td>&nbsp;</td>
+                      <td>
+                        <input name="if" type="hidden" value="$if" />
+                        <input name="submit" type="submit" class="formbtn btn btn-primary" value="$save_btn_text"/>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </form>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+  EOD;
+  include("foot.inc");
+}
+
+function process_track6_form($if)
+{
+    $dhcpdv6cfg = &config_read_array('dhcpdv6');
+    $this_server = [];
+    if (isset($dhcpdv6cfg[$if]) && isset($dhcpdv6cfg[$if]['ramode'])) {
+        /* keep ramode for router advertisements so we can use this field to disable the service when in tracking mode */
+        $this_server['ramode'] = $dhcpdv6cfg[$if]['ramode'];
+    }
+    if (empty($_POST['enable'])) {
+        $this_server['enable'] = '-1';
+    }
+    $dhcpdv6cfg[$if] = $this_server;
+    write_config();
+    reconfigure_dhcpd();
+    filter_configure();
+    header(url_safe('Location: /services_dhcpv6.php?if=%s', array($if)));
+}
+
+
 function reconfigure_dhcpd()
 {
     system_resolver_configure();
@@ -41,17 +138,15 @@ function reconfigure_dhcpd()
     clear_subsystem_dirty('staticmapsv6');
 }
 
+$if = null;
+$act = null;
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // handle identifiers and action
     if (!empty($_GET['if']) && !empty($config['interfaces'][$_GET['if']]) &&
         isset($config['interfaces'][$_GET['if']]['enable']) &&
         (is_ipaddr($config['interfaces'][$_GET['if']]['ipaddrv6']) ||
-        !empty($config['interfaces'][$_GET['if']]['dhcpd6track6allowoverride']))) {
+        !empty($config['interfaces'][$_GET['if']]['track6-interface']))) {
         $if = $_GET['if'];
-    } else {
-        /* if no interface is provided this invoke is invalid */
-        header(url_safe('Location: /index.php'));
-        exit;
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // handle identifiers and actions
@@ -60,10 +155,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     if (!empty($_POST['act'])) {
         $act = $_POST['act'];
-    } else {
-        $act = null;
     }
 }
+
+/**
+ * XXX: In case of tracking, show different form and only handle on/off options.
+ *      this code injection is intended to keep changes as minimal as possible and avoid regressions on existing isc-dhcp6 installs,
+ *      while showing current state for tracking interfaces.
+ **/
+if ($if === null) {
+    /* if no interface is provided this invoke is invalid */
+    header(url_safe('Location: /index.php'));
+    exit;
+} elseif (!empty($config['interfaces'][$if]['track6-interface']) && !isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        show_track6_form($if);
+    } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        process_track6_form($if);
+    }
+    exit;
+}
+/* default form processing */
 
 $ifcfgip = $config['interfaces'][$if]['ipaddrv6'];
 $ifcfgsn = $config['interfaces'][$if]['subnetv6'];

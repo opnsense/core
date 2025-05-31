@@ -68,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['user_allow_gen_token'] = isset($config['system']['user_allow_gen_token']) ? explode(",", $config['system']['user_allow_gen_token']) : [];
     $pconfig['nodnsrebindcheck'] = isset($config['system']['webgui']['nodnsrebindcheck']);
     $pconfig['nohttpreferercheck'] = isset($config['system']['webgui']['nohttpreferercheck']);
+    $pconfig['noroot'] = isset($config['system']['webgui']['noroot']);
     $pconfig['althostnames'] = $config['system']['webgui']['althostnames'] ?? null;
     $pconfig['serialspeed'] = $config['system']['serialspeed'];
     $pconfig['serialusb'] = !empty($config['system']['serialusb']);
@@ -91,8 +92,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     /* XXX not really a syslog setting */
     $pconfig['loglighttpd'] = empty($config['syslog']['nologlighttpd']);
 
-    /* XXX listtag "fun" */
-    $pconfig['sshlogingroup'] = !empty($config['system']['ssh']['group'][0]) ? $config['system']['ssh']['group'][0] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = [];
     $pconfig = $_POST;
@@ -173,6 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['compression'] != $pconfig['compression'] ||
             $config['system']['webgui']['ssl-ciphers'] != $newciphers ||
             $config['system']['webgui']['interfaces'] != $newinterfaces ||
+            empty($config['system']['webgui']['noroot']) != empty($pconfig['noroot']) ||
             empty($pconfig['httpaccesslog']) != empty($config['system']['webgui']['httpaccesslog']) ||
             empty($pconfig['ssl-hsts']) != empty($config['system']['webgui']['ssl-hsts']) ||
             !empty($pconfig['disablehttpredirect']) != !empty($config['system']['webgui']['disablehttpredirect']) ||
@@ -282,6 +282,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['webgui']['nohttpreferercheck']);
         }
 
+        if (!empty($pconfig['noroot'])) {
+            $config['system']['webgui']['noroot'] = true;
+        } elseif (isset($config['system']['webgui']['noroot'])) {
+            unset($config['system']['webgui']['noroot']);
+        }
+
         if (!empty($pconfig['althostnames'])) {
             $config['system']['webgui']['althostnames'] = $pconfig['althostnames'];
         } elseif (isset($config['system']['webgui']['althostnames'])) {
@@ -319,12 +325,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['ssh']['enabled'] = 'enabled';
         } elseif (isset($config['system']['ssh']['enabled'])) {
             unset($config['system']['ssh']['enabled']);
-        }
-
-        if (!empty($pconfig['sshlogingroup'])) {
-            $config['system']['ssh']['group'] = $pconfig['sshlogingroup'];
-        } elseif (isset($config['system']['ssh']['group'])) {
-            unset($config['system']['ssh']['group']);
         }
 
         if (!empty($pconfig['sudo_allow_group'])) {
@@ -761,20 +761,6 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_sshlogingroup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Login Group') ?></td>
-                <td>
-                  <select name="sshlogingroup" class="selectpicker">
-                      <option value=""><!-- do not translate: -->wheel</option>
-<?php foreach ($a_group as $group): ?>
-                      <option value="<?= html_safe($group['name']) ?>" <?= $pconfig['sshlogingroup'] == $group['name'] ? 'selected="selected"' : '' ?>><!-- do not translate: -->wheel, <?= html_safe($group['name']) ?></option>
-<?php endforeach ?>
-                  </select>
-                  <div class="hidden" data-for="help_for_sshlogingroup">
-                    <?= gettext('Select the allowed groups for remote login. The "wheel" group is always set for recovery purposes and an additional local group can be selected at will. Do not yield remote access to non-administrators as every user can access system files using SSH or SFTP.') ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
                 <td><a id="help_for_sshdpermitrootlogin" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Root Login") ?></td>
                 <td>
                   <input name="sshdpermitrootlogin" type="checkbox" value="yes" <?= empty($pconfig['sshdpermitrootlogin']) ? '' : 'checked="checked"' ?> />
@@ -1098,6 +1084,16 @@ $(document).ready(function() {
                   </select>
                   <div class="hidden" data-for="help_for_deployment">
                     <?=gettext("Set the deployment type of this OPNsense instance.");?></br>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_noroot" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Strict security"); ?></td>
+                <td>
+                  <input name="noroot" type="checkbox" value="yes" <?= empty($pconfig['noroot']) ? '' : 'checked="checked"' ?> />
+                  <?=gettext("(Experimental)"); ?>
+                  <div class="hidden" data-for="help_for_noroot">
+                    <?=gettext("Stricten security by running the webserver as non root user, not all components may be compatible with this feature.") ?>
                   </div>
                 </td>
               </tr>

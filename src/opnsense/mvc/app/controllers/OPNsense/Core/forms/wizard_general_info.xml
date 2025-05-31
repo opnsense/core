@@ -1,0 +1,57 @@
+<form>
+    <field>
+        <id>wizard.hostname</id>
+        <label>Hostname</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>wizard.domain</id>
+        <label>Domain</label>
+        <type>text</type>
+        <help>Do not use 'local' as your internal domain name. It is reserved for and will interfere with mDNS (avahi, bonjour, etc.). Instead, use the special-use domain internal or home.arpa, also to avoid DNSSEC validation issues. E.g. internal, name.internal.</help>
+    </field>
+    <field>
+        <id>wizard.language</id>
+        <label>Language</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>wizard.timezone</id>
+        <label>Timezone</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>wizard.dns_servers</id>
+        <label>DNS Servers</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>Set primary domain name server IPv4 or IPv6 address. Repeat this option to set secondary DNS server addresses.</help>
+    </field>
+    <field>
+        <id>wizard.dnsallowoverride</id>
+        <label>Override DNS</label>
+        <type>checkbox</type>
+        <help>Allow DNS servers to be overridden by DHCP/PPP on WAN</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>DNS [Unbound]</label>
+    </field>
+    <field>
+        <id>wizard.unbound.enabled</id>
+        <label>Enable Resolver</label>
+        <type>checkbox</type>
+    </field>
+    <field>
+        <id>wizard.unbound.dnssec</id>
+        <label>Enable DNSSEC Support</label>
+        <type>checkbox</type>
+    </field>
+    <field>
+        <id>wizard.unbound.dnssecstripped</id>
+        <label>Harden DNSSEC data</label>
+        <type>checkbox</type>
+        <help>DNSSEC data is required for trust-anchored zones. If such data is absent, the zone becomes bogus. If this is disabled and no DNSSEC data is received, then the zone is made insecure.</help>
+    </field>
+</form>

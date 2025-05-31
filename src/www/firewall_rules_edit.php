@@ -41,6 +41,7 @@ if ($ostypes == null) {
     $ostypes = array();
 }
 $gateways = new \OPNsense\Routing\Gateways();
+$shaper_targets = (new \OPNsense\TrafficShaper\TrafficShaper())->fetchAllTargets();
 
 
 /**
@@ -93,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     // define form fields
-    $config_fields = array(
+    $config_fields = [
         'allowopts',
         'associated-rule-id',
         'category',
@@ -137,8 +138,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'tcpflags2',
         'tcpflags_any',
         'type',
-        'tos'
-    );
+        'tos',
+        'shaper1',
+        'shaper2'
+    ];
 
     $pconfig = array();
     $pconfig['type'] = "pass";
@@ -151,6 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
         $pconfig['category'] = !empty($pconfig['category']) ? explode(",", $pconfig['category']) : [];
+        $pconfig['icmptype'] = !empty($pconfig['icmptype']) ? explode(",", $pconfig['icmptype']) : [];
 
         // process fields with some kind of logic
         address_to_pconfig(
@@ -189,6 +193,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         $pconfig['src'] = "any";
         $pconfig['dst'] = "any";
+        $pconfig['icmptype'] = [];
     }
 
     // initialize empty fields
@@ -313,6 +318,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
     if (strpos($pconfig['src'], ',') > 0) {
+        if (!empty($pconfig['srcnot'])) {
+            $input_errors[] = gettext("Inverting sources is only allowed for single targets to avoid mis-interpretations");
+        }
         foreach (explode(',', $pconfig['src']) as $tmp) {
             if (!is_specialnet($tmp) && !is_alias($tmp)) {
                $input_errors[] = sprintf(gettext("%s is not a valid source alias."), $tmp);
@@ -322,6 +330,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = sprintf(gettext("%s is not a valid source IP address or alias."),$pconfig['src']);
     }
     if (strpos($pconfig['dst'], ',') > 0) {
+      if (!empty($pconfig['dstnot'])) {
+          $input_errors[] = gettext("Inverting destinations is only allowed for single targets to avoid mis-interpretations");
+      }
       foreach (explode(',', $pconfig['dst']) as $tmp) {
           if (!is_specialnet($tmp) && !is_alias($tmp)) {
              $input_errors[] = sprintf(gettext("%s is not a valid destination alias."), $tmp);
@@ -483,15 +494,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext('Max new connections overload table should be a valid alias.');
     }
 
+    if (!empty($pconfig['shaper1']) || !empty($pconfig['shaper2'])) {
+        if (!empty($pconfig['shaper1']) && !isset($shaper_targets[$pconfig['shaper1']])) {
+          $input_errors[] = gettext('Unknown traffic shaper selected.');
+        } elseif (!empty($pconfig['shaper2']) && !isset($shaper_targets[$pconfig['shaper2']])) {
+            $input_errors[] = gettext('Unknown traffic shaper selected.');
+        } elseif (empty($pconfig['shaper1']) && !empty($pconfig['shaper2'])) {
+            $input_errors[] = gettext('A shaper is required when configuring one in the reverse direction.');
+        } elseif (!empty($pconfig['shaper1']) && !empty($pconfig['shaper2']) && $shaper_targets[$pconfig['shaper1']]['type'] != $shaper_targets[$pconfig['shaper2']]['type']) {
+            $input_errors[] = gettext('Pipes and queues can not be combined.');
+        }
+    }
+
     if (count($input_errors) == 0) {
         $filterent = array();
         // 1-on-1 copy of form values
-        $copy_fields = array('type', 'interface', 'ipprotocol', 'tag', 'tagged', 'max', 'max-src-nodes'
-                            , 'max-src-conn', 'max-src-states', 'statetimeout', 'statetype', 'os', 'descr', 'gateway'
-                            , 'sched', 'associated-rule-id', 'direction', 'state-policy'
-                            , 'max-src-conn-rate', 'max-src-conn-rates', 'category') ;
-
-
+        $copy_fields = [
+          'type', 'interface', 'ipprotocol', 'tag', 'tagged', 'max', 'max-src-nodes',  'max-src-conn',
+          'max-src-states', 'statetimeout', 'statetype', 'os', 'descr', 'gateway', 'sched', 'associated-rule-id',
+          'direction', 'state-policy', 'max-src-conn-rate', 'max-src-conn-rates', 'category', 'shaper1', 'shaper2'
+        ] ;
 
         foreach ($copy_fields as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
@@ -588,7 +610,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if ($pconfig['protocol'] == "icmp" && !empty($pconfig['icmptype'])) {
-            $filterent['icmptype'] = $pconfig['icmptype'];
+            $filterent['icmptype'] = implode(',', $pconfig['icmptype']);
         } elseif ($pconfig['protocol'] == 'ipv6-icmp' && !empty($pconfig['icmp6-type'])) {
             $filterent['icmp6-type'] = $pconfig['icmp6-type'];
         }
@@ -1033,10 +1055,9 @@ include("head.inc");
                   <tr id="icmpbox">
                     <td><a id="help_for_icmptype" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ICMP type");?></td>
                     <td>
-                      <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="icmptype" class="selectpicker" data-live-search="true" data-size="5" >
+                      <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="icmptype[]" class="selectpicker" title="<?=gettext("Any");?>" data-live-search="true" data-size="5" multiple="multiple">
 <?php
                       $icmptypes = array(
-                      "" => gettext("any"),
                       "echoreq" => gettext("Echo Request"),
                       "echorep" => gettext("Echo Reply"),
                       "unreach" => gettext("Destination Unreachable"),
@@ -1056,7 +1077,7 @@ include("head.inc");
                       );
 
                       foreach ($icmptypes as $icmptype => $descr): ?>
-                        <option value="<?=$icmptype;?>" <?= $icmptype == $pconfig['icmptype'] ? "selected=\"selected\"" : ""; ?>>
+                        <option value="<?=$icmptype;?>" <?= in_array($icmptype, $pconfig['icmptype'] ?? []) ? "selected=\"selected\"" : ""; ?>>
                           <?=$descr;?>
                         </option>
 <?php
@@ -1364,6 +1385,51 @@ include("head.inc");
                           <?=gettext("Leave as 'default' to use the system routing table. Or choose a gateway to utilize policy based routing.");?>
                         </div>
                     </td>
+                  </tr>
+
+                  <tr>
+                      <td><a id="help_for_shaper" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Traffic shaping [experimental]");?></td>
+                      <td>
+                        <table class="table table-condensed">
+                          <thead>
+                            <tr>
+                              <th><?=gettext("rule direction"); ?></th>
+                              <th><?=gettext("reverse direction"); ?></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>
+                                <select name='shaper1' class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                                  <option value="" ><?=gettext("None");?></option>
+<?php
+                                foreach($shaper_targets as $uuid => $shaper):?>
+                                  <option value="<?=$uuid;?>" <?=$uuid == $pconfig['shaper1'] ? " selected=\"selected\"" : "";?>>
+                                    <?=$shaper['description'];?>
+                                 </option>
+<?php
+                                endforeach;?>
+                                </select>
+                              </td>
+                              <td>
+                                <select name='shaper2' class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                                  <option value="" ><?=gettext("None");?></option>
+<?php
+                                foreach($shaper_targets as $uuid => $shaper):?>
+                                  <option value="<?=$uuid;?>" <?=$uuid == $pconfig['shaper2'] ? " selected=\"selected\"" : "";?>>
+                                    <?=$shaper['description'];?>
+                                 </option>
+<?php
+                                endforeach;?>
+                                </select>
+                              </td>
+                            </tr>
+                            </tbody>
+                          </table>
+                          <div class="hidden" data-for="help_for_shaper">
+                            <?=gettext("Shape packets using the selected pipe or queue.");?>
+                          </div>
+                      </td>
                   </tr>
                   <tr>
                     <th><?= gettext('Advanced features') ?></th>

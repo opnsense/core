@@ -53,7 +53,7 @@ class LinkAddressField extends BaseField
             self::$option_groups['ipalias'] = ['items' => [], 'title' => gettext('IP Alias')];
             foreach ($cfg->interfaces->children() as $ifname => $node) {
                 $descr = !empty((string)$node->descr) ? (string)$node->descr : strtoupper($ifname);
-                if (!empty((string)$node->virtual) || empty((string)$node->enable)) {
+                if (!empty((string)$node->virtual)) {
                     continue;
                 }
                 self::$known_addresses[$ifname] = $descr;
@@ -93,17 +93,16 @@ class LinkAddressField extends BaseField
     public function getValidators()
     {
         $validators = parent::getValidators();
-        if ($this->internalValue != null) {
-            $validators[] = new CallbackValidator(["callback" => function ($data) {
-                $messages = [];
-                if (isset(self::$known_addresses[$data])) {
-                    return $messages;
-                } elseif (!Util::isIpAddress($data)) {
-                    $messages[] = gettext('A valid network address is required.');
-                }
+
+        $validators[] = new CallbackValidator(["callback" => function ($data) {
+            $messages = [];
+            if (isset(self::$known_addresses[$data])) {
                 return $messages;
-            }]);
-        }
+            } elseif (!Util::isIpAddress($data)) {
+                $messages[] = gettext('A valid network address is required.');
+            }
+            return $messages;
+        }]);
 
         return $validators;
     }
@@ -113,24 +112,29 @@ class LinkAddressField extends BaseField
      */
     public function getDescription()
     {
-        if (isset(self::$known_addresses[$this->internalValue])) {
-            return self::$known_addresses[$this->internalValue];
+        $value = $this->getCurrentValue();
+
+        if (isset(self::$known_addresses[$value])) {
+            return self::$known_addresses[$value];
         }
-        return $this->internalValue;
+
+        return $value;
     }
 
     /**
      * return either ipaddr or if field, only one should be used, addresses are preferred.
      */
-    public function __toString()
+    public function getCurrentValue(): string
     {
         $parent = $this->getParentNode();
+
         foreach (['ipaddr', 'if'] as $fieldname) {
             if (!empty((string)$parent->$fieldname)) {
                 return (string)$parent->$fieldname;
             }
         }
-        return (string)$this->internalValue;
+
+        return '';
     }
 
     /**

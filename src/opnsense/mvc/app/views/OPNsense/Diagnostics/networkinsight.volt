@@ -1,33 +1,31 @@
 {#
-
-OPNsense® is Copyright © 2016 by Deciso B.V.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-1.  Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
-
-2.  Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-
-#}
+ # Copyright (c) 2016-2025 Deciso B.V.
+ # All rights reserved.
+ #
+ # Redistribution and use in source and binary forms, with or without modification,
+ # are permitted provided that the following conditions are met:
+ #
+ # 1. Redistributions of source code must retain the above copyright notice,
+ #    this list of conditions and the following disclaimer.
+ #
+ # 2. Redistributions in binary form must reproduce the above copyright notice,
+ #    this list of conditions and the following disclaimer in the documentation
+ #    and/or other materials provided with the distribution.
+ #
+ # THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ # AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ # AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ # OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ # POSSIBILITY OF SUCH DAMAGE.
+ #}
 
 <style type="text/css">
-.panel-heading-sm{
+.panel-heading-sm {
     height: 28px;
     padding: 4px 10px;
 }
@@ -35,12 +33,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 <!-- nvd3 -->
 <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/nv.d3.css', ui_theme|default('opnsense'))) }}" />
-
-<!-- d3 -->
-<script src="{{ cache_safe('/ui/js/d3.min.js') }}"></script>
-
-<!-- nvd3 -->
-<script src="{{ cache_safe('/ui/js/nv.d3.min.js') }}"></script>
 
 <script>
     $( document ).ready(function() {
@@ -54,16 +46,17 @@ POSSIBILITY OF SUCH DAMAGE.
 
       // collect all chars for resize update
       var pageCharts = {};
+      let chartjsCharts = {};
 
-      // form metadata definitions
-      var interface_names = [];
-      var service_names = [];
-      var protocol_names = [];
+      function number_format(value)
+      {
+          const kb = 1000;
+          const ndx = value === 0 ? 0 : Math.floor(Math.log(value) / Math.log(kb));
+          const fileSizeTypes = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
+          return (value / Math.pow(kb, ndx)).toFixed(0) + ' ' + fileSizeTypes[ndx];
+      }
 
-      /**
-       * load shared metadata (interfaces, protocols, )
-       */
-      function get_metadata()
+      function do_startup()
       {
           var dfObj = new $.Deferred();
           ajaxGet('/api/diagnostics/netflow/isEnabled', {}, function(is_enabled, status){
@@ -73,33 +66,30 @@ POSSIBILITY OF SUCH DAMAGE.
               }
               // fetch interface names
               ajaxGet('/api/diagnostics/networkinsight/getInterfaces',{}, function(intf_names, status){
-                  interface_names = intf_names;
-                  // fetch protocol names
-                  ajaxGet('/api/diagnostics/networkinsight/getProtocols',{}, function(protocols, status) {
-                      protocol_names = protocols;
-                      // fetch service names
-                      ajaxGet('/api/diagnostics/networkinsight/getServices',{}, function(services, status) {
-                          service_names = services;
-                          // return promise, no need to wait for getMetadata
-                          dfObj.resolve();
-                          // fetch aggregators
-                          ajaxGet('/api/diagnostics/networkinsight/getMetadata',{}, function(metadata, status) {
-                            Object.keys(metadata['aggregators']).forEach(function (agg_name) {
-                              var res = metadata['aggregators'][agg_name]['resolutions'].join(',');
-                              $("#export_collection").append($("<option data-resolutions='"+res+"'/>").val(agg_name).text(agg_name));
-                            });
-                            $("#export_collection").change(function(){
-                                $("#export_resolution").html("");
-                                var resolutions = String($(this).find('option:selected').data('resolutions'));
-                                resolutions.split(',').map(function(item) {
-                                    $("#export_resolution").append($("<option/>").val(item).text(item));
-                                });
-                                $("#export_resolution").selectpicker('refresh');
-                            });
-                            $("#export_collection").change();
-                            $("#export_collection").selectpicker('refresh');
-                          });
+                  for (var key in intf_names) {
+                      $('#interface_select').append($("<option></option>").attr("value",key).text(intf_names[key]));
+                      $('#interface_select_detail').append($("<option></option>").attr("value",key).text(intf_names[key]));
+                  }
+                  $('#interface_select').selectpicker('refresh');
+                  $('#interface_select_detail').selectpicker('refresh');
+                  // return promise, no need to wait for getMetadata
+                  dfObj.resolve();
+                  // fetch aggregators
+                  ajaxGet('/api/diagnostics/networkinsight/getMetadata',{}, function(metadata, status) {
+                      Object.keys(metadata['aggregators']).forEach(function (agg_name) {
+                          var res = metadata['aggregators'][agg_name]['resolutions'].join(',');
+                          $("#export_collection").append($("<option data-resolutions='"+res+"'/>").val(agg_name).text(agg_name));
                       });
+                      $("#export_collection").change(function(){
+                          $("#export_resolution").html("");
+                          var resolutions = String($(this).find('option:selected').data('resolutions'));
+                          resolutions.split(',').map(function(item) {
+                              $("#export_resolution").append($("<option/>").val(item).text(item));
+                          });
+                          $("#export_resolution").selectpicker('refresh');
+                      });
+                      $("#export_collection").change();
+                      $("#export_collection").selectpicker('refresh');
                   });
               });
           });
@@ -123,51 +113,9 @@ POSSIBILITY OF SUCH DAMAGE.
       function get_time_select()
       {
           // current time stamp
-          var timestamp_now = Math.round((new Date()).getTime() / 1000);
-          var duration = 0;
-          var resolution = 0;
-          switch ($("#total_time_select").val()) {
-              case "2h":
-                duration = 60*60*2;
-                resolution = 30;
-                break;
-              case "8h":
-                duration = 60*60*8;
-                resolution = 300;
-                break;
-              case "24h":
-                duration = 60*60*24;
-                resolution = 300;
-                break;
-              case "7d":
-                duration = 60*60*24*7;
-                resolution = 3600;
-                break;
-              case "14d":
-                duration = 60*60*24*14;
-                resolution = 3600;
-                break;
-              case "30d":
-                duration = 60*60*24*30;
-                resolution = 86400;
-                break;
-              case "60d":
-                duration = 60*60*24*60;
-                resolution = 86400;
-                break;
-              case "90d":
-                duration = 60*60*24*90;
-                resolution = 86400;
-                break;
-              case "182d":
-                duration = 60*60*24*182;
-                resolution = 86400;
-                break;
-              case "1y":
-                duration = 60*60*24*365;
-                resolution = 86400;
-                break;
-          }
+          let timestamp_now = Math.round((new Date()).getTime() / 1000);
+          let duration = parseInt($("#total_time_select > option:selected").data('duration'));
+          let resolution = parseInt($("#total_time_select > option:selected").data('resolution'));
           // always round from timestamp to nearest hour
           const from_timestamp =  Math.floor((timestamp_now -duration) / 3600 ) * 3600;
           return {resolution: resolution, from: from_timestamp, to: timestamp_now};
@@ -177,69 +125,89 @@ POSSIBILITY OF SUCH DAMAGE.
        * draw interface totals
        */
       function chart_interface_totals() {
-        var selected_time = get_time_select();
-        const fetch_params = selected_time.from + '/' + selected_time.to + '/' + selected_time.resolution + '/if,direction' ;
-        ajaxGet('/api/diagnostics/networkinsight/timeserie/FlowInterfaceTotals/bps/' + fetch_params,{},function(data,status){
-            $.each(['chart_intf_in', 'chart_intf_out'], function(idx, target) {
-                let direction = '';
-                if (target == 'chart_intf_in') {
-                    direction = 'in';
-                } else {
-                    direction = 'out';
-                }
-                nv.addGraph(function() {
-                  let chart = nv.models.stackedAreaChart()
-                      .x(function(d) { return d[0] })
-                      .y(function(d) { return d[1] })
-                      .useInteractiveGuideline(true)
-                      .interactive(true)
-                      .showControls(true)
-                      .clipEdge(true);
-
-                  if (selected_time.resolution <= 300) {
-                      chart.xAxis.tickSize(8).tickFormat(function(d) {
-                        return d3.time.format('%H:%M:%S')(new Date(d));
-                      });
-                  } else if (selected_time.resolution < 3600) {
-                      chart.xAxis.tickSize(8).tickFormat(function(d) {
-                        return d3.time.format('%b %e %H:%M')(new Date(d));
-                      });
-                  } else if (selected_time.resolution < 86400) {
-                      chart.xAxis.tickSize(8).tickFormat(function(d) {
-                        return d3.time.format('%b %e %H h')(new Date(d));
-                      });
-                  } else {
-                      chart.xAxis.tickFormat(function(d) {
-                        return d3.time.format('%b %e')(new Date(d));
-                      });
-                  }
-                  chart.yAxis.tickFormat(d3.format(',.2s'));
-
-                  let chart_data = [];
+          var selected_time = get_time_select();
+          const fetch_params = selected_time.from + '/' + selected_time.to + '/' + selected_time.resolution + '/if,direction' ;
+          ajaxGet('/api/diagnostics/networkinsight/timeserie/FlowInterfaceTotals/bps/' + fetch_params,{},function(data,status){
+              $.each(['chart_intf_in', 'chart_intf_out'], function(idx, target) {
+                  let direction = target == 'chart_intf_in' ? 'in' : 'out';
+                  let datasets = [];
                   data.map(function(item){
-                      let item_dir = item.key.split(',').pop();
-                      let item_intf = item.key.split(',')[0];
-                      if (item_intf != '0' && item_intf != 'lo0' ) {
-                          if (direction == item_dir) {
-                              if (interface_names[item_intf] != undefined) {
-                                  item.key = interface_names[item_intf];
-                              } else {
-                                  item.key = item_intf;
-                              }
-                              chart_data.push(item);
+                      if (direction == item.direction) {
+                          let dataset = {
+                              spanGaps: true,
+                              pointRadius: 0,
+                              pointHoverRadius: 7,
+                              fill: 'origin',
+                              borderWidth: 1,
+                              stepped: true,
+                              label: item.interface ?? '-',
+                              data: []
+                          };
+                          for (const [x, y] of item.values) {
+                              dataset.data.push({ x: x, y: Math.trunc(y) });
                           }
+                          datasets.push(dataset);
                       }
                   });
 
-                  chart_data.sort(function(a, b) {
-                      return a.key > b.key;
-                  });
-
-                  d3.select("#" + target + " svg").datum(chart_data).call(chart);
-
-                  pageCharts[target] = chart;
-                  return chart;
-                });
+                  if (chartjsCharts[target] !== undefined) {
+                      chartjsCharts[target].data.datasets = datasets;
+                      chartjsCharts[target].update();
+                  } else {
+                      let target_svg = $("#" + target + " canvas");
+                      let ctx = target_svg[0].getContext('2d');
+                      let config = {
+                          type: 'line',
+                          data: {
+                              datasets: datasets
+                          },
+                          options: {
+                              normalized: true,
+                              responsive: true,
+                              maintainAspectRatio: false,
+                              parsing: false,
+                              animation: {
+                                  duration: 500,
+                              },
+                              scales: {
+                                  x: {
+                                      type: 'timestack'
+                                  },
+                                  y: {
+                                      type: 'linear',
+                                      position: 'left',
+                                      title: {
+                                          display: true,
+                                          padding: 8
+                                      },
+                                      ticks: {
+                                          callback: function(value, index, ticks) {
+                                              return number_format(value);
+                                          }
+                                      }
+                                  },
+                              },
+                              plugins: {
+                                  tooltip: {
+                                      enabled: true,
+                                      intersect: false,
+                                      caretPadding: 15,
+                                      callbacks: {
+                                        label: function(context) {
+                                            if (context.parsed.y !== null) {
+                                                return number_format(context.parsed.y);
+                                            } else {
+                                                return '';
+                                            }
+                                        }
+                                      }
+                                  },
+                              }
+                          }
+                      };
+                      chartjsCharts[target] = new Chart(ctx, config);
+                  }
+                  return chartjsCharts[target];
               });
           });
       }
@@ -273,19 +241,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
                 let chart_data = [];
                 data.map(function(item){
-                    var label = "(other)";
-                    var proto = "";
-                    if (item.protocol != "") {
-                        if (item.protocol in protocol_names) {
-                            proto = ' (' + protocol_names[item.protocol] + ')';
-                        }
-                        if (item.dst_port in service_names) {
-                            label = service_names[item.dst_port];
-                        } else {
-                            label = item.dst_port
-                        }
-                    }
-                    chart_data.push({'label': label + proto, 'value': item.total});
+                    chart_data.push({'label': item.label, 'value': item.total});
                 });
 
                 var diag = d3.select("#chart_top_ports svg")
@@ -486,51 +442,24 @@ POSSIBILITY OF SUCH DAMAGE.
                 });
                 // dump  rows
                 data.map(function(item){
-                  let proto = '';
-                  if (item.protocol in protocol_names) {
-                      proto = ' (' + protocol_names[item.protocol] + ')';
-                  }
-                  let service_port;
-                  if (item.service_port in service_names) {
-                      service_port = service_names[item.service_port];
-                  } else {
-                      service_port = item.service_port
-                  }
-                  let tr_str = '<tr>';
-                  if (service_port != "") {
-                      tr_str += '<td> <span data-toggle="tooltip" title="'+proto+'/'+item.service_port+'">'+service_port+' </span> '+proto+'</td>';
-                  } else {
-                      tr_str += "<td>{{ lang._('(other)') }}</td>";
-                  }
-                  tr_str += '<td>' + item['src_addr'] + '</td>';
-                  tr_str += '<td>' + item['dst_addr'] + '</td>';
-                  tr_str += '<td>' + byteFormat(item['total']) + ' ' + '</td>';
-                  if (item['last_seen'] != "") {
-                      tr_str += '<td>' + d3.time.format('%b %e %H:%M:%S')(new Date(item['last_seen']*1000)) + '</td>';
-                  } else {
-                      tr_str += '<td></td>'
-                  }
-
-
-                  let percentage = parseInt((item['total'] /grand_total) * 100);
-                  let perc_text = ((item['total'] /grand_total) * 100).toFixed(2);
-                  tr_str += '<td>';
-                  tr_str += '<div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" ';
-                  tr_str += 'aria-valuenow="'+percentage+'" aria-valuemin="0" aria-valuemax="100" style="color: black; min-width: 2em; width:' ;
-                  tr_str += percentage+'%;">'+perc_text+'&nbsp;%</div>';
-                  tr_str += '</td>';
-                  tr_str += '</tr>';
-                  html.push(tr_str);
+                  let percentage = parseInt((item.total /grand_total) * 100);
+                  let perc_text = ((item.total /grand_total) * 100).toFixed(2);
+                  html.push($("<tr/>").append([
+                     $("<td/>").text(item.label),
+                     $("<td/>").text(item.src_addr),
+                     $("<td/>").text(item.dst_addr),
+                     $("<td/>").text(byteFormat(item.total)),
+                     $("<td/>").text(item.last_seen_str),
+                     $("<td>").html(
+                        '<div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" aria-valuenow="'+
+                        percentage+
+                        '" aria-valuemin="0" aria-valuemax="100" style="color: black; min-width: 2em; width:'+
+                        percentage+'%;">'+perc_text+'&nbsp;%'
+                     )
+                  ]));
                 });
-                $("#netflow_details > tbody").html(html.join(''));
-                if (grand_total > 0) {
-                    $("#netflow_details_total").html(byteFormat(grand_total));
-                } else {
-                    $("#netflow_details_total").html("");
-                }
-
-                // link tooltips
-                $('[data-toggle="tooltip"]').tooltip();
+                $("#netflow_details > tbody").empty().append(html);
+                $("#netflow_details_total").html(byteFormat(grand_total));
             }
         });
       }
@@ -596,15 +525,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 
       // trigger initial tab load
-      get_metadata().done(function(){
-          // known interfaces
-          for (var key in interface_names) {
-              $('#interface_select').append($("<option></option>").attr("value",key).text(interface_names[key]));
-              $('#interface_select_detail').append($("<option></option>").attr("value",key).text(interface_names[key]));
-          }
-          $('#interface_select').selectpicker('refresh');
-          $('#interface_select_detail').selectpicker('refresh');
-
+      do_startup().done(function(){
           // generate date selection (utc start, end times)
           var now = new Date;
           var date_begin = Date.UTC(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0);
@@ -670,16 +591,16 @@ POSSIBILITY OF SUCH DAMAGE.
     <div id="totals" class="tab-pane fade in active">
       <div class="pull-right">
         <select class="selectpicker" id="total_time_select">
-          <option value="2h">{{ lang._('Last 2 hours, 30 second average') }}</option>
-          <option value="8h">{{ lang._('Last 8 hours, 5 minute average') }}</option>
-          <option value="24h">{{ lang._('Last 24 hours, 5 minute average') }}</option>
-          <option value="7d">{{ lang._('7 days, 1 hour average') }}</option>
-          <option value="14d">{{ lang._('14 days, 1 hour average') }}</option>
-          <option value="30d">{{ lang._('30 days, 24 hour average') }}</option>
-          <option value="60d">{{ lang._('60 days, 24 hour average') }}</option>
-          <option value="90d">{{ lang._('90 days, 24 hour average') }}</option>
-          <option value="182d">{{ lang._('182 days, 24 hour average') }}</option>
-          <option value="1y">{{ lang._('Last year, 24 hour average') }}</option>
+          <option data-duration="7200" data-resolution="30" value="2h">{{ lang._('Last 2 hours, 30 second average') }}</option>
+          <option data-duration="28800" data-resolution="300" value="8h">{{ lang._('Last 8 hours, 5 minute average') }}</option>
+          <option data-duration="86400" data-resolution="300" value="24h">{{ lang._('Last 24 hours, 5 minute average') }}</option>
+          <option data-duration="604800" data-resolution="3600" value="7d">{{ lang._('7 days, 1 hour average') }}</option>
+          <option data-duration="1209600" data-resolution="3600" value="14d">{{ lang._('14 days, 1 hour average') }}</option>
+          <option data-duration="2592000" data-resolution="86400" value="30d">{{ lang._('30 days, 24 hour average') }}</option>
+          <option data-duration="5184000" data-resolution="86400" value="60d">{{ lang._('60 days, 24 hour average') }}</option>
+          <option data-duration="7776000" data-resolution="86400" value="90d">{{ lang._('90 days, 24 hour average') }}</option>
+          <option data-duration="15724800" data-resolution="86400" value="182d">{{ lang._('182 days, 24 hour average') }}</option>
+          <option data-duration="31536000" data-resolution="86400" value="1y">{{ lang._('Last year, 24 hour average') }}</option>
         </select>
       </div>
       <br/>
@@ -689,13 +610,13 @@ POSSIBILITY OF SUCH DAMAGE.
           {{ lang._('Interface totals (bits/sec)') }}
         </div>
         <div class="panel-body">
-          <div id="chart_intf_in">
+          <div id="chart_intf_in"  style="height:150px;">
             <small>{{ lang._('IN') }}</small>
-            <svg style="height:150px;"></svg>
+            <canvas></canvas>
           </div>
-          <div id="chart_intf_out">
+          <div id="chart_intf_out" style="height:150px;">
             <small>{{ lang._('OUT') }}</small>
-            <svg style="height:150px;"></svg>
+            <canvas></canvas>
           </div>
         </div>
       </div>

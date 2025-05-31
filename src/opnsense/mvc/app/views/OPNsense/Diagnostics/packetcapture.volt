@@ -198,18 +198,17 @@
          */
         $("#btn_start_new > b").text("{{ lang._('Start') }}");
         // (de)select all interfaces
-        $(".interface_select").closest("td").find('a').remove();
-        $(".interface_select").closest("td").find('br').remove();
+        $("select.interface_select").closest("td").css("white-space", "nowrap").find('a,br').remove();;
         let btn_toggle_all = $('<button id="select_all" type="button" class="btn btn-default">');
         btn_toggle_all.append($('<i class="fa fa-check-square-o fa-fw" aria-hidden="true"></i>'));
         btn_toggle_all.tooltip({"title": "{{ lang._('(de)select all') }}"});
         btn_toggle_all.click(function(e){
             e.preventDefault();
-            $(".interface_select  option").prop("selected", $("#select_all > i").hasClass("fa-check-square-o"));
+            $("select.interface_select  option").prop("selected", $("#select_all > i").hasClass("fa-check-square-o"));
             $("#select_all > i").toggleClass("fa-check-square-o fa-square-o");
-            $(".interface_select").selectpicker('refresh');
+            $("select.interface_select").selectpicker('refresh');
         });
-        $(".interface_select").closest("td").append(btn_toggle_all);
+        $("select.interface_select").parent().append(btn_toggle_all);
 
     });
 </script>

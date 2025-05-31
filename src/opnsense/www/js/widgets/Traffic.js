@@ -179,7 +179,7 @@ export default class Traffic extends BaseWidget {
                             dataset.hidden = !config.interfaces.includes(intf);
                         }
                         dataset.data.push({
-                            x: new Date(data.time * 1000.0),
+                            x: Date.now(),
                             y: Math.round(((data.interfaces[intf][dataset.src_field]) / elapsed_time) * 8, 0)
                         });
                         dataset.last_time = data.time;
@@ -199,11 +199,11 @@ export default class Traffic extends BaseWidget {
         return $(`
             <div class="traffic-charts-container">
                 <h3>${this.translations.trafficin}</h3>
-                <div class="canvas-container">
+                <div class="canvas-container-noaspectratio">
                     <canvas id="traffic-in"></canvas>
                 </div>
                 <h3>${this.translations.trafficout}</h3>
-                <div class="canvas-container">
+                <div class="canvas-container-noaspectratio">
                     <canvas id="traffic-out"></canvas>
                 </div>
             </div>

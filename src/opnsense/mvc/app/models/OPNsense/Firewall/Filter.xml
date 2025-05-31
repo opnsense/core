@@ -28,13 +28,15 @@
                         <floating>Floating states</floating>
                     </OptionValues>
                 </state-policy>
-                <sequence type="IntegerField">
+                <sequence type=".\FilterSequenceField">
                     <MinimumValue>1</MinimumValue>
-                    <MaximumValue>99999</MaximumValue>
-                    <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
+                    <MaximumValue>999999</MaximumValue>
+                    <ValidationMessage>Sequence shall be between 1 and 999999.</ValidationMessage>
                     <Required>Y</Required>
                     <Default>1</Default>
                 </sequence>
+                <sort_order type="TextField" volatile="true"/>
+                <prio_group type="TextField" volatile="true"/>
                 <action type="OptionField">
                     <Required>Y</Required>
                     <Default>pass</Default>
@@ -83,6 +85,27 @@
                         <opt1 value='TCP/UDP'>TCP/UDP</opt1>
                     </AddOptions>
                 </protocol>
+                <icmptype type="OptionField">
+                    <Multiple>Y</Multiple>
+                    <OptionValues>
+                        <echoreq>Echo Request</echoreq>
+                        <echorep>Echo Reply</echorep>
+                        <unreach>Destination Unreachable</unreach>
+                        <squench>Source Quench (Deprecated)</squench>
+                        <redir>Redirect</redir>
+                        <althost>Alternate Host Address (Deprecated)</althost>
+                        <routeradv>Router Advertisement</routeradv>
+                        <routersol>Router Solicitation</routersol>
+                        <timex>Time Exceeded</timex>
+                        <paramprob>Parameter Problem</paramprob>
+                        <timereq>Timestamp</timereq>
+                        <timerep>Timestamp Reply</timerep>
+                        <inforeq>Information Request (Deprecated)</inforeq>
+                        <inforep>Information Reply (Deprecated)</inforep>
+                        <maskreq>Address Mask Request (Deprecated)</maskreq>
+                        <maskrep>Address Mask Reply (Deprecated)</maskrep>
+                    </OptionValues>
+                </icmptype>
                 <!-- XXX: should map internally to  'source' => array('network' => $source_net, "not" => true|false) -->
                 <source_net type="NetworkAliasField">
                     <Default>any</Default>
@@ -268,6 +291,48 @@
                 </categories>
                 <sched type=".\ScheduleField"/>
                 <tos type=".\TosField"/>
+                <shaper1 type="ModelRelationField">
+                    <Model>
+                        <pipes>
+                            <source>OPNsense.TrafficShaper.TrafficShaper</source>
+                            <items>pipes.pipe</items>
+                            <display>description</display>
+                            <filters>
+                                <description>/(.){1,255}/</description>
+                            </filters>
+                        </pipes>
+                        <queues>
+                            <source>OPNsense.TrafficShaper.TrafficShaper</source>
+                            <items>queues.queue</items>
+                            <display>description</display>
+                            <filters>
+                                <description>/(.){1,255}/</description>
+                            </filters>
+                        </queues>
+                    </Model>
+                    <ValidationMessage>Related pipe or queue not found</ValidationMessage>
+                </shaper1>
+                <shaper2 type="ModelRelationField">
+                    <Model>
+                        <pipes>
+                            <source>OPNsense.TrafficShaper.TrafficShaper</source>
+                            <items>pipes.pipe</items>
+                            <display>description</display>
+                            <filters>
+                                <description>/(.){1,255}/</description>
+                            </filters>
+                        </pipes>
+                        <queues>
+                            <source>OPNsense.TrafficShaper.TrafficShaper</source>
+                            <items>queues.queue</items>
+                            <display>description</display>
+                            <filters>
+                                <description>/(.){1,255}/</description>
+                            </filters>
+                        </queues>
+                    </Model>
+                    <ValidationMessage>Related pipe or queue not found</ValidationMessage>
+                </shaper2>
                 <description type="DescriptionField"/>
             </rule>
         </rules>

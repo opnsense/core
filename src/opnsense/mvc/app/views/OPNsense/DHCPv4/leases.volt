@@ -54,6 +54,7 @@
             search:'/api/dhcpv4/leases/searchLease/',
             del:'/api/dhcpv4/leases/delLease/',
             options: {
+                virtualDOM: true,
                 selection: false,
                 multiSelect: false,
                 useRequestHandlerOnGet: true,
@@ -94,8 +95,11 @@
                     "tooltipformatter": function (column, row) {
                         return '<span class="overflow">' + row[column.id] + '</span><br/>'
                     },
-                    "statusformatter": function (column, row) {
+                    "statusformatter": function (column, row, onRendered) {
                         let connected = row.status == 'online' ? 'text-success' : 'text-danger';
+                        onRendered(() => {
+                            $('[data-toggle="tooltip"]').tooltip({container: 'body', trigger: 'hover'});
+                        })
                         return '<i class="fa fa-plug ' + connected +'" title="' + row.status + '" data-toggle="tooltip"></i>'
                     },
                     "commands": function (column, row) {
@@ -118,7 +122,7 @@
 
                         /* The delete action can be hooked up to the default bootgrid behaviour */
                         let deleteip = '<button type="button" class="btn btn-xs btn-default bootgrid-tooltip command-delete"' +
-                                'data-row-id="' + row.address + '" data-action="deleteSelected">' +
+                                'data-row-id="' + row.address + '">' +
                                 '<i class="fa fa-trash fa-fw"></i>' +
                                 '</a>';
 

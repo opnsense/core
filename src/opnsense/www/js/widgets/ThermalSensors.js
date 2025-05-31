@@ -25,19 +25,22 @@
  */
 
 export default class ThermalSensors extends BaseWidget {
-    constructor() {
-        super();
+    constructor(config) {
+        super(config);
 
         this.chart = null;
         this.width = null;
         this.height = null;
         this.colors = [];
+
+        this.configurable = true;
+        this.cachedSensors = []; // prevent fetch when loading options
     }
 
     getMarkup() {
         return $(`
             <div class="${this.id}-chart-container" style="margin-left: 10px; margin-right: 10px;">
-                <div class="canvas-container" style="position: relative;">
+                <div class="canvas-container-noaspectratio">
                     <canvas id="${this.id}-chart"></canvas>
                 </div>
             </div>
@@ -70,20 +73,20 @@ export default class ThermalSensors extends BaseWidget {
                         }
                         return this.colors;
                     },
+                    categoryPercentage: 1.0,
                     barPercentage: 0.8,
                     borderWidth: 1,
                     borderSkipped: false,
                     borderRadius: 20,
-                    barThickness: 20
                 },
                 {
+                    categoryPercentage: 1.0,
                     data: [],
                     backgroundColor: ['#E5E5E5'],
                     borderRadius: 20,
                     barPercentage: 0.5,
                     borderWidth: 1,
                     borderSkipped: true,
-                    barThickness: 10,
                     pointHitRadius: 0
                 }
             ]
@@ -98,15 +101,20 @@ export default class ThermalSensors extends BaseWidget {
                 }
                 let count = data.datasets[0].data.length;
                 ctx.save();
+
+                const margin = 10;
+                ctx.textBaseline = 'middle';
                 for (let i = 0; i < count; i++) {
                     const meta = chart.getDatasetMeta(0);
                     const xPos = meta.data[i].x;
                     const yPos = meta.data[i].y;
                     const barHeight = meta.data[i].height;
 
+                    const textX = Math.max(chartArea.left + margin, xPos - 50);
+
                     ctx.font = 'semibold 12px sans-serif';
                     ctx.fillStyle = '#ffffff';
-                    ctx.fillText(`${data.datasets[0].data[i]}°C`, xPos - 50, yPos + barHeight / 4);
+                    ctx.fillText(`${data.datasets[0].data[i]}°C`, textX, yPos);
                 }
                 ctx.restore();
             }
@@ -120,6 +128,7 @@ export default class ThermalSensors extends BaseWidget {
                 indexAxis: 'y',
                 maintainAspectRatio: false,
                 plugins: {
+                    colorschemes: false,
                     legend: {
                         display: false
                     },
@@ -176,33 +185,74 @@ export default class ThermalSensors extends BaseWidget {
         $('.thermalsensors-info-icon').tooltip({container: 'body'});
     }
 
+    async onWidgetOptionsChanged(options) {
+        // Intentionally not awaited to avoid blocking dialog close
+        this._updateSensors();
+    }
+
+    async getWidgetOptions() {
+        const data = this.cachedSensors.length > 0 ? this.cachedSensors : await this._fetchSensors();
+
+        return {
+            sensors: {
+                title: this.translations.title,
+                type: 'select_multiple',
+                options: data.map(({ device, device_seq, type_translated }) => {
+                    return {
+                        value: device,
+                        label: `${type_translated} ${device_seq}`,
+                    };
+                }),
+                default:data.map(({ device }) => device),
+            },
+        };
+    }
+
     async onWidgetTick() {
+        const data = await this._fetchSensors();
+        this.cachedSensors = this._parseSensors(data);
+        this._updateSensors();
+    }
+
+    async _fetchSensors() {
         const data = await this.ajaxCall('/api/diagnostics/system/systemTemperature');
-        if (!data || !data.length) {
+        return data;
+    }
+
+    async _updateSensors() {
+        const data = this.cachedSensors;
+
+        if (!this.chart || data.length === 0) {
             $(`.${this.id}-chart-container`).html(`
                 <a href="/system_advanced_misc.php">${this.translations.unconfigured}</a>
             `).css('margin', '2em auto')
             return;
         }
-        let parsed = this._parseSensors(data);
-        this._update(parsed);
-    }
 
-    _update(data = []) {
-        if (!this.chart || data.length === 0) {
-            return;
-        }
+        const config = await this.getWidgetConfig();
 
         this.colors = new Array(data.length).fill(0);
 
-        data.forEach((value, index) => {
-            this.chart.data.labels[index] = `${value.type_translated} ${value.device_seq}`;
-            this.chart.data.datasets[0].data[index] = Math.max(1, Math.min(100, value.temperature));
-            this.chart.data.datasets[0].metadata[index] = value;
-            this.chart.data.datasets[1].data[index] = 100 - value.temperature;
+        this.chart.data.labels = [];
+        this.chart.data.datasets[0].data = [];
+        this.chart.data.datasets[0].metadata = [];
+        this.chart.data.datasets[1].data = [];
+
+        data.forEach((value) => {
+            if (!config.sensors.includes(value.device)) {
+                return;
+            }
+            this.chart.data.labels.push(`${value.type_translated} ${value.device_seq}`);
+            this.chart.data.datasets[0].data.push(Math.max(1, Math.min(100, value.temperature)));
+            this.chart.data.datasets[0].metadata.push(value);
+            this.chart.data.datasets[1].data.push(100 - value.temperature);
         });
-        this.chart.canvas.parentNode.style.height = `${30 + (data.length * 30)}px`;
+        this.chart.canvas.parentNode.style.height = `${30 + (this.chart.data.datasets[0].data.length * 30)}px`;
         this.chart.update();
+
+        // Since we are modifying the chart height based on the data length,
+        // make sure we force the manager to recalculate the widget size.
+        this.config.callbacks.updateGrid();
     }
 
     _parseSensors(data) {

@@ -107,6 +107,9 @@ function ca_chain_array(&$cert)
                 $crt = false;
             }
             if ($crt) {
+                if (in_array($crt, $chain)) {
+                    break; /* exit endless loop */
+                }
                 $chain[] = $crt;
             }
         }
@@ -190,25 +193,6 @@ function cert_get_subject($str_crt, $decode = true)
     $components = $inf_crt['subject'];
 
     return certs_build_name($components);
-}
-
-function cert_get_subject_array($crt)
-{
-    $str_crt = base64_decode($crt);
-    $inf_crt = openssl_x509_parse($str_crt);
-    $components = $inf_crt['subject'];
-
-    if (!is_array($components)) {
-        return;
-    }
-
-    $subject_array = array();
-
-    foreach ($components as $a => $v) {
-        $subject_array[] = array('a' => $a, 'v' => $v);
-    }
-
-    return $subject_array;
 }
 
 function cert_get_issuer($str_crt, $decode = true)

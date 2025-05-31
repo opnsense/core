@@ -7,18 +7,17 @@
 {%      endfor %}
 {% endif %}
 {# collect enabled #}
-{% set shapers = [] %}
+{% set rules = [] %}
 {% if helpers.exists('OPNsense.TrafficShaper') %}
-{%     if helpers.exists('OPNsense.TrafficShaper.pipes.pipe') %}
-{%         for pipe in helpers.toList('OPNsense.TrafficShaper.pipes.pipe') %}
-{%             if pipe.enabled|default('0') == '1' %}
-{%                 do shapers.append(cp_key) %}
-{%             endif%}
+{%     if helpers.exists('OPNsense.TrafficShaper.rules.rule') %}
+{%         for rule in helpers.toList('OPNsense.TrafficShaper.rules.rule') %}
+{%           if rule.enabled|default("0") == '1' %}
+{%             do rules.append(rule) %}
+{%           endif %}
 {%         endfor%}
 {%     endif %}
 {% endif %}
-dummynet_enable="YES"
-firewall_enable="{% if shapers or cp_zones %}YES{% else %}NO{% endif %}"
+firewall_enable="{% if cp_zones or rules %}YES{% else %}NO{% endif %}"
 firewall_script="/usr/local/etc/rc.ipfw"
 firewall_coscripts="/usr/local/etc/rc.ipfw_stop"
 ipfw_defer="YES"

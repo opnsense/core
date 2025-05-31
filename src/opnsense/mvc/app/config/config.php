@@ -35,7 +35,8 @@ return new OPNsense\Core\AppConfig([
         'viewsDir'       => __DIR__ . '/../../app/views/',
         'pluginsDir'     => __DIR__ . '/../../app/plugins/',
         'libraryDir'     => __DIR__ . '/../../app/library/',
-        'cacheDir'       => __DIR__ . '/../../app/cache/',
+        'cacheDir'       => '/var/lib/php/cache/',
+        'contribDir'     => __DIR__ . '/../../../contrib/',
         'baseUri'        => '/opnsense_gui/',
     ],
     'globals' => [
