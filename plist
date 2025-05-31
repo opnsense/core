@@ -785,6 +785,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/VxLan.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/FieldTypes/KeaPoolsField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Kea/FieldTypes/KeaStaticRoutesField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaCtrlAgent.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaCtrlAgent.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDhcpv4.php
