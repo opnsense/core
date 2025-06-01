@@ -284,7 +284,9 @@
                 </Model>
                 <Multiple>Y</Multiple>
             </tag>
-            <filename type="TextField"/>
+            <filename type="TextField">
+                <Required>Y</Required>
+            </filename>
             <servername type="TextField"/>
             <address type="TextField"/>
             <description type="DescriptionField"/>
