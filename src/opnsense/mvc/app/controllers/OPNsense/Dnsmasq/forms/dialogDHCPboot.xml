@@ -9,7 +9,7 @@
         <id>boot.tag</id>
         <label>Tag</label>
         <type>select_multiple</type>
-        <help>Only offer this boot image to the clients matched by the given tag. Can be optionally combined with an interface tag.</help>
+        <help>If the optional tags are given then this option is only sent when all the tags are matched. Can be optionally combined with an interface tag.</help>
     </field>
     <field>
         <id>boot.filename</id>
