@@ -462,7 +462,7 @@
                 },
                 toggle_log: {
                     method: function(event) {
-                        ajaxCall("/api/firewall/filter/toggleRuleLog", {
+                        ajaxCall("/api/firewall/filter/toggle_rule_log", {
                             uuid: $(this).data("row-id"),
                             log: String(+$(this).data("value") ^ 1)
                         }, function(data) {
