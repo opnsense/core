@@ -26,6 +26,10 @@
             <member type=".\MemberField">
                 <Multiple>Y</Multiple>
             </member>
+            <source_networks type="NetworkField">
+                <FieldSeparator>,</FieldSeparator>
+                <asList>Y</asList>
+            </source_networks>
         </group>
     </items>
 </model>
