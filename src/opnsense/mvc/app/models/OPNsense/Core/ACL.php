@@ -129,7 +129,7 @@ class ACL
 
         // interpret group privilege data and update user data with group information.
         foreach ($groupmap as $groupkey => $groupNode) {
-            $allGroupPrivs[$groupkey] = [];
+            $this->allGroupPrivs[$groupkey] = [];
             foreach ($groupNode->children() as $itemKey => $node) {
                 $node_data = (string)$node;
                 if ($itemKey == "member" && $node_data != "") {
