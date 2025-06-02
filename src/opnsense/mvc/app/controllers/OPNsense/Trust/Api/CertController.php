@@ -105,11 +105,12 @@ class CertController extends ApiMutableModelControllerBase
                     $error = gettext('Invalid X509 certificate provided');
                 } else {
                     $node->crt = base64_encode((string)$node->crt_payload);
-                    if (
-                        !empty(trim((string)$node->prv_payload)) &&
-                        openssl_pkey_get_private((string)$node->prv_payload) === false
-                    ) {
-                        $error = gettext('Invalid private key provided');
+                    if (!empty(trim((string)$node->prv_payload))) {
+                        if (openssl_pkey_get_private((string)$node->prv_payload) === false) {
+                            $error = gettext('Invalid private key provided: cannot parse private key data');
+                        } elseif (openssl_x509_check_private_key((string)$node->crt_payload,(string)$node->prv_payload) === false) {
+                            $error = gettext('Invalid private key provided: private key does not match certificate data');
+                        }
                     }
                 }
                 $this->getModel()->linkCaRefs($node->refid);
