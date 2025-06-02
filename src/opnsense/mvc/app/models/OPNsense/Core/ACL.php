@@ -30,6 +30,8 @@
 
 namespace OPNsense\Core;
 
+use OPNsense\Firewall\Util;
+
 /**
  * Class ACL, access control list management
  * @package OPNsense\Core
@@ -129,7 +131,10 @@ class ACL
 
         // interpret group privilege data and update user data with group information.
         foreach ($groupmap as $groupkey => $groupNode) {
-            $allGroupPrivs[$groupkey] = [];
+            $this->allGroupPrivs[$groupkey] = [
+                'priv' => [],
+                'source_networks' => array_filter(explode(',', (string)$groupNode->source_networks))
+            ];
             foreach ($groupNode->children() as $itemKey => $node) {
                 $node_data = (string)$node;
                 if ($itemKey == "member" && $node_data != "") {
@@ -146,7 +151,7 @@ class ACL
                 } elseif ($itemKey == "priv") {
                     foreach (array_filter(explode(',', $node_data)) as $privname) {
                         if (array_key_exists($privname, $pageMap)) {
-                            $this->allGroupPrivs[$groupkey][] = $pageMap[$privname];
+                            $this->allGroupPrivs[$groupkey]['priv'][] = $pageMap[$privname];
                         }
                     }
                 }
@@ -234,11 +239,53 @@ class ACL
     }
 
     /**
-     * iterator to collect all assigned access patterns for this user
+     * @param string $group groupname to check
+     * @param string $remote_addr users remote address
+     */
+    private function isAddressAllowed($group, $remote_addr)
+    {
+        $nets = $this->allGroupPrivs[$group]['source_networks'];
+        if (empty($nets)) {
+            return true;
+        }
+        foreach ($nets as $net) {
+            if (Util::isIPInCIDR($remote_addr, $net)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * return a list of locations for a user combined with source networks
+     * @param string $username user name
+     */
+    public function userUrlMasks($username)
+    {
+        foreach ($this->userDatabase[$username]["priv"] as $privset) {
+            foreach ($privset as $urlmask) {
+                yield [$urlmask, []];
+            }
+        }
+        foreach ($this->userDatabase[$username]["groups"] as $itemkey => $group) {
+            if (array_key_exists($group, $this->allGroupPrivs)) {
+                foreach ($this->allGroupPrivs[$group]['priv'] as $privset) {
+                    foreach ($privset as $urlmask) {
+                        yield [$urlmask, $this->allGroupPrivs[$group]['source_networks']];
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * iterator to collect all assigned access patterns for this user (optionally combined with location)
      * @param string $username user name
      */
     private function urlMasks($username)
     {
+        /* address of the connecting client */
+        $remote_addr = !empty($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
         if (array_key_exists($username, $this->userDatabase)) {
             // fetch masks from user privs
             foreach ($this->userDatabase[$username]["priv"] as $privset) {
@@ -249,7 +296,10 @@ class ACL
             // fetch masks from assigned groups
             foreach ($this->userDatabase[$username]["groups"] as $itemkey => $group) {
                 if (array_key_exists($group, $this->allGroupPrivs)) {
-                    foreach ($this->allGroupPrivs[$group] as $privset) {
+                    if (!$this->isAddressAllowed($group, $remote_addr)) {
+                        continue; /* skip not allowed */
+                    }
+                    foreach ($this->allGroupPrivs[$group]['priv'] as $privset) {
                         foreach ($privset as $urlmask) {
                             yield $urlmask;
                         }

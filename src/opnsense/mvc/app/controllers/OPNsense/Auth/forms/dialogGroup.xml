@@ -31,4 +31,12 @@
         <type>select_multiple</type>
         <help>List of users that are a member of this group</help>
     </field>
+    <field>
+        <id>group.source_networks</id>
+        <label>Source Networks</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>List of networks which constraint the membership of this group to their location (e.g. prevent a non admin user from logging in via internet) </help>
+    </field>
 </form>
