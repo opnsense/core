@@ -230,6 +230,35 @@ class FilterController extends FilterBaseController
         return $this->toggleBase("rules.rule", $uuid, $enabled);
     }
 
+    public function toggleRuleLogAction($uuid = null, $log = null)
+    {
+        if (!$this->request->isPost()) {
+            return ['status' => 'error', 'message' => gettext('Invalid request method')];
+        }
+
+        $uuid = $uuid ?? $this->request->getPost('uuid');
+        $log  = $log ?? $this->request->getPost('log');
+
+        if (empty($uuid) || !in_array($log, ['0', '1'], true)) {
+            return ['status' => 'error', 'message' => gettext('Missing or invalid parameters')];
+        }
+
+        $mdl = $this->getModel();
+        $node = null;
+        foreach ($mdl->rules->rule->iterateItems() as $item) {
+            if ((string)$item->getAttribute('uuid') === $uuid) {
+                $node = $item;
+                break;
+            }
+        }
+
+        $node->log = $log;
+        $mdl->serializeToConfig();
+        Config::getInstance()->save();
+
+        return ['status' => 'ok'];
+    }
+
     /**
      * Moves the selected rule so that it appears immediately before the target rule.
      *
