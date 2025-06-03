@@ -139,6 +139,14 @@
                                 <span class="fa fa-fw fa-arrow-left"></span>
                             </button>
 
+                            <button type="button" class="btn btn-xs btn-default command-toggle_log bootgrid-tooltip"
+                                data-row-id="${row.uuid}" data-value="${row.log}"
+                                title="${row.log == '1'
+                                    ? '{{ lang._("Disable Logging") }}'
+                                    : '{{ lang._("Enable Logging") }}'}">
+                                <i class="fa fa-exclamation-circle fa-fw ${row.log == '1' ? 'text-info' : 'text-muted'}"></i>
+                            </button>
+
                             <button type="button" class="btn btn-xs btn-default command-edit
                                 bootgrid-tooltip" data-row-id="${rowId}"
                                 title="{{ lang._('Edit') }}">
@@ -312,15 +320,6 @@
                                     ' data-toggle="tooltip" title="{{ lang._("First match") }}"></i> ';
                         }
 
-                        // Logging
-                        if (row.log == 0) {
-                            result += '<i class="fa fa-exclamation-circle fa-fw text-muted" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Logging disabled") }}"></i> ';
-                        } else {
-                            result += '<i class="fa fa-exclamation-circle fa-fw text-info" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Logging enabled") }}"></i> ';
-                        }
-
                         // XXX: Advanced fields all have different default values, so it cannot be generalized completely
                         const advancedDefaultPrefixes = ["0", "none", "any", "default", "keep"];
 
@@ -443,13 +442,8 @@
                             {},
                             function(data, status) {
                                 if (data.status === "ok") {
-                                    std_bootgrid_reload("{{ formGridFilterRule['table_id'] }}");
-                                    // Trigger change message, e.g., when using move_before
-                                    $("#change_message_base_form").slideDown(1000, function() {
-                                        setTimeout(function() {
-                                            $("#change_message_base_form").slideUp(2000);
-                                        }, 2000);
-                                    });
+                                    $("#{{ formGridFilterRule['table_id'] }}").bootgrid("reload");
+                                    $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
                                 }
                             },
                             function(xhr, textStatus, errorThrown) {
@@ -466,12 +460,44 @@
                     title: "{{ lang._('Move selected rule before this rule') }}",
                     sequence: 10
                 },
+                toggle_log: {
+                    method: function(event) {
+                        const uuid = $(this).data("row-id");
+                        const log = String(+$(this).data("value") ^ 1);
+                        ajaxCall(
+                            `/api/firewall/filter/toggle_rule_log/${uuid}/${log}`,
+                            {},
+                            function(data) {
+                                if (data.status === "ok") {
+                                    $("#{{ formGridFilterRule['table_id'] }}").bootgrid("reload");
+                                    $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
+                                }
+                            },
+                            function(xhr, textStatus, errorThrown) {
+                                showDialogAlert(
+                                    BootstrapDialog.TYPE_DANGER,
+                                    "{{ lang._('Request Failed') }}",
+                                    errorThrown
+                                );
+                            },
+                            'POST'
+                        );
+                    },
+                    classname: 'fa fa-fw fa-exclamation-circle',
+                    title: "{{ lang._('Toggle Logging') }}",
+                    sequence: 20
+                }
             },
 
         });
 
-        grid.on("loaded.rs.jquery.bootgrid", function() {
-            $('[data-toggle="tooltip"]').tooltip();
+        grid.off('loaded.rs.jquery.bootgrid').on('loaded.rs.jquery.bootgrid', function () {
+            // Clean up any previous tooltips
+            $('[data-toggle="tooltip"]').tooltip('destroy');
+            $('body > .tooltip').remove();
+
+            // Re-initialize tooltips
+            $('[data-toggle="tooltip"]').tooltip({ container: 'body' });
         });
 
         /* for performance reasons, only load catagories on page load */
