@@ -233,20 +233,7 @@ class SettingsController extends ApiMutableModelControllerBase
     /* dhcp options */
     public function searchOptionAction()
     {
-        $result = $this->searchBase('dhcp_options', null, null, $this->buildFilterFunction());
-
-        /* The 'type' field is already translated, we use the raw value to conditionally hide tag fields */
-        foreach ($result['rows'] as &$row) {
-            $row['type_raw'] = (string)$this->getModel()->dhcp_options->{$row['uuid']}->type;
-
-            if ($row['type_raw'] === 'set') {
-                $row['set_tag'] = '';
-            } elseif ($row['type_raw'] === 'match') {
-                $row['tag'] = '';
-            }
-        }
-
-        return $result;
+        return $this->searchBase('dhcp_options', null, null, $this->buildFilterFunction());
     }
 
     public function getOptionAction($uuid = null)
@@ -254,13 +241,33 @@ class SettingsController extends ApiMutableModelControllerBase
         return $this->getBase('option', 'dhcp_options', $uuid);
     }
 
+    private function sanitizeOptionPost(): array
+    {
+        $post = $this->request->getPost();
+        $option = $post['option'];
+
+        $type = $option['type'];
+        if ($type === 'set') {
+            $option['set_tag'] = '';
+        } elseif ($type === 'match') {
+            $option['tag'] = '';
+            $option['interface'] = '';
+            $option['force'] = '';
+        }
+
+        $post['option'] = $option;
+        return $post;
+    }
+
     public function setOptionAction($uuid)
     {
+        $_POST = $this->sanitizeOptionPost();
         return $this->setBase('option', 'dhcp_options', $uuid);
     }
 
     public function addOptionAction()
     {
+        $_POST = $this->sanitizeOptionPost();
         return $this->addBase('option', 'dhcp_options');
     }
 
