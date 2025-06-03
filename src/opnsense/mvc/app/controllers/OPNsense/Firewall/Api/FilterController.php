@@ -230,17 +230,10 @@ class FilterController extends FilterBaseController
         return $this->toggleBase("rules.rule", $uuid, $enabled);
     }
 
-    public function toggleRuleLogAction($uuid = null, $log = null)
+    public function toggleRuleLogAction($uuid, $log)
     {
         if (!$this->request->isPost()) {
             return ['status' => 'error', 'message' => gettext('Invalid request method')];
-        }
-
-        $uuid = $uuid ?? $this->request->getPost('uuid');
-        $log  = $log ?? $this->request->getPost('log');
-
-        if (empty($uuid) || !in_array($log, ['0', '1'], true)) {
-            return ['status' => 'error', 'message' => gettext('Missing or invalid parameters')];
         }
 
         $mdl = $this->getModel();
@@ -250,6 +243,13 @@ class FilterController extends FilterBaseController
                 $node = $item;
                 break;
             }
+        }
+
+        if ($node === null) {
+            throw new UserException(
+                gettext("This rule is not managed with this component"),
+                gettext("Filter")
+            );
         }
 
         $node->log = $log;

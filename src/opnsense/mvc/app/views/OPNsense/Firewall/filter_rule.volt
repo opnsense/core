@@ -462,27 +462,26 @@
                 },
                 toggle_log: {
                     method: function(event) {
-                        ajaxCall("/api/firewall/filter/toggle_rule_log", {
-                            uuid: $(this).data("row-id"),
-                            log: String(+$(this).data("value") ^ 1)
-                        }, function(data) {
-                            if (data.status === "ok") {
-                                $("#{{ formGridFilterRule['table_id'] }}").bootgrid("reload");
-                                $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
-                            } else {
+                        const uuid = $(this).data("row-id");
+                        const log = String(+$(this).data("value") ^ 1);
+                        ajaxCall(
+                            `/api/firewall/filter/toggle_rule_log/${uuid}/${log}`,
+                            {},
+                            function(data) {
+                                if (data.status === "ok") {
+                                    $("#{{ formGridFilterRule['table_id'] }}").bootgrid("reload");
+                                    $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
+                                }
+                            },
+                            function(xhr, textStatus, errorThrown) {
                                 showDialogAlert(
                                     BootstrapDialog.TYPE_DANGER,
-                                    "{{ lang._('Toggle Log Failed') }}",
-                                    data.message || "{{ lang._('Unknown error occurred.') }}"
+                                    "{{ lang._('Request Failed') }}",
+                                    errorThrown
                                 );
-                            }
-                        }, function(xhr, textStatus, errorThrown) {
-                            showDialogAlert(
-                                BootstrapDialog.TYPE_DANGER,
-                                "{{ lang._('Request Failed') }}",
-                                errorThrown
-                            );
-                        }, 'POST');
+                            },
+                            'POST'
+                        );
                     },
                     classname: 'fa fa-fw fa-exclamation-circle',
                     title: "{{ lang._('Toggle Logging') }}",
