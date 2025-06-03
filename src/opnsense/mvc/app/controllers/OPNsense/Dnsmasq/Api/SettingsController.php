@@ -233,7 +233,20 @@ class SettingsController extends ApiMutableModelControllerBase
     /* dhcp options */
     public function searchOptionAction()
     {
-        return $this->searchBase('dhcp_options', null, null, $this->buildFilterFunction());
+        $result = $this->searchBase('dhcp_options', null, null, $this->buildFilterFunction());
+
+        /* The 'type' field is already translated, we use the raw value to conditionally hide tag fields */
+        foreach ($result['rows'] as &$row) {
+            $row['type_raw'] = (string)$this->getModel()->dhcp_options->{$row['uuid']}->type;
+
+            if ($row['type_raw'] === 'set') {
+                $row['set_tag'] = '';
+            } elseif ($row['type_raw'] === 'match') {
+                $row['tag'] = '';
+            }
+        }
+
+        return $result;
     }
 
     public function getOptionAction($uuid = null)
