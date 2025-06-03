@@ -247,7 +247,7 @@ class FilterController extends FilterBaseController
 
         if ($node === null) {
             throw new UserException(
-                gettext("This rule is not managed with this component"),
+                gettext("Rule not found"),
                 gettext("Filter")
             );
         }
