@@ -56,8 +56,8 @@ class PF(object):
     def sync_accounting(zoneid):
         rules = ''
         for entry in PF.list_table(zoneid):
-            rules += f'ether pass in quick proto {{ 0x0800 }} l3 from {entry} to any label "{entry}-in"\n'
-            rules += f'ether pass out quick proto {{ 0x0800 }} l3 from any to {entry} label "{entry}-out"\n'
+            rules += f'ether pass in quick proto {{ 0x0800, 0x86DD }} l3 from {entry} to any label "{entry}-in"\n'
+            rules += f'ether pass out quick proto {{ 0x0800, 0x86DD }} l3 from any to {entry} label "{entry}-out"\n'
 
         with tempfile.NamedTemporaryFile(mode="w", delete=True) as tmp_file:
             tmp_file.write(rules)
