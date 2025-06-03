@@ -137,6 +137,9 @@ export default class ThermalSensors extends BaseWidget {
                         filter: function(tooltipItem) {
                             return tooltipItem.datasetIndex === 0;
                         },
+                        bodyFont: {
+                           size: 9
+                        },
                         callbacks: {
                             label: (tooltipItem) => {
                                 let idx = tooltipItem.dataIndex;
