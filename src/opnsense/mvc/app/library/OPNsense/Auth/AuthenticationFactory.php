@@ -47,7 +47,7 @@ class AuthenticationFactory
      */
     private function listConnectors()
     {
-        $connectors = array();
+        $connectors = [];
         foreach (glob(__DIR__ . "/*.php") as $filename) {
             $pathParts = explode('/', $filename);
             $vendor = $pathParts[count($pathParts) - 3];
@@ -57,7 +57,7 @@ class AuthenticationFactory
             if ($reflClass->implementsInterface('OPNsense\\Auth\\IAuthConnector')) {
                 if ($reflClass->hasMethod('getType')) {
                     $connectorType = $reflClass->getMethod('getType')->invoke(null);
-                    $connector = array();
+                    $connector = [];
                     $connector['class'] = "{$vendor}\\{$module}\\{$classname}";
                     $connector['classHandle'] = $reflClass;
                     $connector['type'] = $connectorType;
@@ -75,12 +75,12 @@ class AuthenticationFactory
      */
     public function listServers()
     {
-        $servers = array();
+        $servers = [];
         $servers['Local Database'] = array("name" => "Local Database", "type" => "local");
         $configObj = Config::getInstance()->object();
         foreach ($configObj->system->children() as $key => $value) {
             if ($key == 'authserver' && !empty($value->type) && !empty($value->name)) {
-                $authServerSettings = array();
+                $authServerSettings = [];
                 foreach ($value as $itemKey => $itemValue) {
                     $authServerSettings[$itemKey] = (string)$itemValue;
                 }
@@ -123,7 +123,7 @@ class AuthenticationFactory
      */
     public function getService($service_name)
     {
-        $aliases = array();
+        $aliases = [];
         // cleanse service name
         $srv_name = strtolower(str_replace(array('-', '_'), '', $service_name));
         foreach (glob(__DIR__ . "/Services/*.php") as $filename) {
@@ -215,7 +215,7 @@ class AuthenticationFactory
      */
     public function listConfigOptions()
     {
-        $result = array();
+        $result = [];
         foreach ($this->listConnectors() as $connector) {
             if ($connector['classHandle']->hasMethod('getDescription')) {
                 $obj = $connector['classHandle']->newInstance();
@@ -224,7 +224,7 @@ class AuthenticationFactory
                 if ($connector['classHandle']->hasMethod('getConfigurationOptions')) {
                     $authItem['additionalFields'] = $obj->getConfigurationOptions();
                 } else {
-                    $authItem['additionalFields'] = array();
+                    $authItem['additionalFields'] = [];
                 }
                 $result[$obj->getType()] = $authItem;
             }
