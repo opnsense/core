@@ -524,14 +524,6 @@ function local_group_set($group, $uids = null)
     mwexecf('/usr/sbin/pw %s %s -g %s -M %s', [$group_op, $group_name, $group_gid, $group_members]);
 }
 
-function auth_get_authserver_local()
-{
-    return [
-      'host' => $config['system']['hostname'],
-      'name' => gettext('Local Database'),
-      'type' => 'local',
-    ];
-}
 
 /**
  * @param $name string name of the authentication system configured on the authentication server page or 'Local Database' for local authentication
@@ -539,67 +531,15 @@ function auth_get_authserver_local()
  */
 function auth_get_authserver($name)
 {
-    global $config;
-
-    if ($name == 'Local Database') {
-        return auth_get_authserver_local();
+    $servers = auth_get_authserver_list();
+    if (isset($servers[$name])) {
+        return $servers[$name];
     }
-
-    if (!empty($config['system']['authserver'])) {
-        foreach ($config['system']['authserver'] as $authcfg) {
-            if ($authcfg['name'] == $name) {
-                if ($authcfg['type'] == 'ldap' || $authcfg['type'] == 'ldap-totp') {
-                    // make sure a user and password entry exists and are null for anonymous usage
-                    if (empty($authcfg['ldap_binddn'])) {
-                        $authcfg['ldap_binddn'] = null;
-                    }
-                    if (empty($authcfg['ldap_bindpw'])) {
-                        $authcfg['ldap_bindpw'] = null;
-                    }
-                }
-                return $authcfg;
-            }
-        }
-    }
-
     return false;
 }
 
 function auth_get_authserver_list()
 {
-    global $config;
-
-    $list = [];
-
-    if (!empty($config['system']['authserver'])) {
-        foreach ($config['system']['authserver'] as $authcfg) {
-            /* Add support for disabled entries? */
-            $list[$authcfg['name']] = $authcfg;
-        }
-    }
-
-    $list['Local Database'] = auth_get_authserver_local();
-
-    return $list;
+    return (new \OPNsense\Auth\AuthenticationFactory())->listServers();
 }
 
-/**
- * return authenticator object
- * @param array|null $authcfg configuration
- * @return Auth\Base type object
- */
-function get_authenticator($authcfg = null)
-{
-    if (empty($authcfg)) {
-        $authName = 'Local Database';
-    } else {
-        $authName = $authcfg['name'];
-        if ($authcfg['type'] == 'local') {
-            // avoid gettext type issues on Local Database, authenticator should always be named "Local Database"
-            $authName = 'Local Database';
-        }
-    }
-
-    $authFactory = new OPNsense\Auth\AuthenticationFactory();
-    return $authFactory->get($authName);
-}
