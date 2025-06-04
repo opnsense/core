@@ -241,14 +241,30 @@ class SettingsController extends ApiMutableModelControllerBase
         return $this->getBase('option', 'dhcp_options', $uuid);
     }
 
+    private function getOptionOverlay(): array
+    {
+        $option = $this->request->getPost()['option'];
+        $overlay = [];
+
+        if ($option['type'] === 'set') {
+            $overlay['set_tag'] = '';
+        } elseif ($option['type'] === 'match') {
+            $overlay['tag'] = '';
+            $overlay['interface'] = '';
+            $overlay['force'] = '';
+        }
+
+        return $overlay;
+    }
+
     public function setOptionAction($uuid)
     {
-        return $this->setBase('option', 'dhcp_options', $uuid);
+        return $this->setBase('option', 'dhcp_options', $uuid, $this->getOptionOverlay());
     }
 
     public function addOptionAction()
     {
-        return $this->addBase('option', 'dhcp_options');
+        return $this->addBase('option', 'dhcp_options', $this->getOptionOverlay());
     }
 
     public function delOptionAction($uuid)
