@@ -67,8 +67,14 @@ $.fn.UIBootgrid = function(params) {
         let width = null;
         if (data.width !== undefined && data.width !== '') {
             // intentionally ignore data.visible here so there is a value to go to
-            $col.css({width: data.width});
-            width = parseFloat($col.outerWidth()) + 5.0;
+            let isNumber = /^-?\d+(\.\d+)?$/.test(data.width);
+            if (!isNumber) {
+                // assume the value is a proper CSS unit, but add a margin to be safe
+                $col.css({width: data.width});
+                width = parseFloat($col.outerWidth()) + 5.0;
+            } else {
+                width = parseFloat(data.width);
+            }
         }
 
         cols[data.columnId] = {
@@ -96,6 +102,7 @@ class UIBootgrid {
     constructor(id, options = {}, crud = {}, tabulatorOptions = {}) {
         // wrapper-specific state variables
         this.id = id;
+        this.dataIdentifier = null;
         this.$element = $(`#${id}`);
         this.table = null;
         this.searchPhrase = "";
@@ -107,7 +114,10 @@ class UIBootgrid {
         this.isResizing = false;
         this.totalKnown = false;
         this.paginationTotal = undefined;
+        this.persistence = false;
         this.persistenceID = `${window.location.pathname}#${this.id}`;
+        this.dataAvailable = false;
+        this.customCommands = null;
 
         // wrapper-specific options
         this.options = {
@@ -124,7 +134,7 @@ class UIBootgrid {
             },
             requestHandler: (request) => request,
             responseHandler: (response) => response,
-            datakey: 'uuid',
+            datakey: 'uuid', // Only used for command button identification
             resetButton: true,
             searchSettings: {
                 delay: 1000
@@ -146,6 +156,7 @@ class UIBootgrid {
             virtualDOM: false,
             stickySelect: false,
             triggerEditFor: null,
+            static: false, // no persistent storage, no resizable columns
             ...options
         };
 
@@ -172,19 +183,20 @@ class UIBootgrid {
             removeWarning: 'Remove selected item(s)?',
             noresultsfound: 'No results found!',
             refresh: 'Refresh',
-            ...$.fn.UIBootgrid.translations
+            ...$.fn.UIBootgrid.translations /* Passed in from default.volt */
         };
+
+        this.placeholder = $(`<span id="${this.id}-placeholder" class="bootgrid-placeholder"></span>`);
 
         // wrapper-specific single version of truth of table layout
         this.gridView = null;
     }
 
     initialize() {
-        if (!localStorage.getItem(`tabulator-${this.persistenceID}-persistence`)) {
+        this.persistence = localStorage.getItem(`tabulator-${this.persistenceID}-persistence`);
+        if (!this.persistence || this.options.static) {
             // If the user didn't change anything on the table, assume we start blank
-            Object.keys(localStorage)
-                .filter(key => key.startsWith(`tabulator-${this.persistenceID}`))
-                .forEach(key => localStorage.removeItem(key));
+            this._setPersistence(false);
         }
 
         if (this.options.triggerEditFor) {
@@ -287,6 +299,12 @@ class UIBootgrid {
             this.options.sorting = false;
         }
 
+        if (bootGridOptions?.static ?? false) {
+            this.options.static = true;
+            this.compatOptions['resizable'] = false;
+            this.compatOptions['persistence'] = false;
+        }
+
         if (compatOptions.get) this.crud.get = compatOptions.get;
         if (compatOptions.set) this.crud.set = compatOptions.set;
         if (compatOptions.add) this.crud.add = compatOptions.add;
@@ -310,6 +328,9 @@ class UIBootgrid {
         if (del.length > 0) {
             this.options.deleteSelectedButton = true;
         }
+
+        // in the same context: check if there are other buttons defined
+        this.customCommands = this.$compatElement.find('tfoot td').children().not('[data-action]');
 
         // convert old-style formatters
         for (const [key, formatterFn] of Object.entries(bootGridOptions?.formatters ?? {})) {
@@ -398,6 +419,11 @@ class UIBootgrid {
             for (const [colId, val] of Object.entries(this.compatColumns)) {
                 let data = val.data;
 
+                // pick the first column marked as identifier to be used as ID (values returned by getSelectedRows etc.)
+                if (this.dataIdentifier === null && data.identifier !== undefined && data.identifier) {
+                    this.dataIdentifier = colId;
+                }
+
                 for (const [option, value] of Object.entries(data)) {
                     data[option] = value === '' ? null : value;
                 }
@@ -472,7 +498,7 @@ class UIBootgrid {
                     title: field.label,
                     titleFormatter: this.options.headerFormatters[field?.headerFormatter] ?? null,
                     field: field.id,
-                    resizable: true,
+                    resizable: !this.options.static,
                     sequence: field.sequence ?? null,
                     headerSort: this.options.sorting,
                     cssClass: this.options.responsive ? 'opnsense-bootgrid-responsive' : '',
@@ -521,15 +547,29 @@ class UIBootgrid {
     }
 
     _setPersistence(value) {
-        if (value) {
+        if (value && !this.options.static) {
             localStorage.setItem(`tabulator-${this.persistenceID}-persistence`, value);
+            this.persistence = true;
+
+            if (this.options.resetButton) {
+                $(`#${this.id}-reset`).removeClass('fa-fw').addClass('fa-share-square').attr('title', this.translations.resetGrid);
+            }
         } else {
             localStorage.removeItem(`tabulator-${this.persistenceID}-persistence`);
+            Object.keys(localStorage)
+                .filter(key => key.startsWith(`tabulator-${this.persistenceID}`))
+                .forEach(key => localStorage.removeItem(key));
+            this.persistence = false;
+
+            if (this.options.resetButton) {
+                $(`#${this.id}-reset`).removeClass('fa-share-square').addClass('fa-fw');
+            }
         }
     }
 
     _registerEvents() {
         this.table.on('dataLoading', () => {
+            this._getPlaceholder().html('');
             if (!this.navigationRendered) {
                 this._renderFooter();
                 this._populateColumnSelection();
@@ -541,7 +581,6 @@ class UIBootgrid {
             // Dynamically adjust table height to prevent dead space
             // (workaround for https://github.com/olifolkerd/tabulator/issues/4419: maxHeight does not work without a fixed height)
             if (!this.originalTableHeight) {
-                // this.originalTableHeight = parseInt(parseInt(this.table.options.height) * window.innerHeight / 100);
                 // allow content to grow to 60vh
                 // XXX needs option
                 this.originalTableHeight = parseInt(parseInt(60) * window.innerHeight / 100);
@@ -556,9 +595,13 @@ class UIBootgrid {
                     const holderHeight = $(`#${this.id} .tabulator-tableholder`)[0].offsetHeight;
 
                     if (holderHeight > height) {
-                        // dead space, shrink
-                        const diff = holderHeight - height;
-                        this.table.setHeight((curTotalTableHeight - diff) + scollbarGutterOffset);
+                        if (!this.dataAvailable) {
+                            this.table.setHeight(120); // default tabulator height
+                        } else {
+                            // dead space, shrink
+                            const diff = holderHeight - height;
+                            this.table.setHeight((curTotalTableHeight - diff) + scollbarGutterOffset);
+                        }
                         return;
                     }
 
@@ -586,11 +629,11 @@ class UIBootgrid {
 
             resizeObserver.observe($(`#${this.id} .tabulator-table`)[0]);
 
-            window.onresize = this._debounce(() => {
+            window.addEventListener('resize', this._debounce(() => {
                 // this is mainly intended for scaling the width of the table if
                 // the width of the window changes.
                 this.table.redraw();
-            });
+            }));
 
             if (this.options.virtualDOM) {
                 // Start watching for dynamically inserted DOM elements and trigger their tooltips and commands.
@@ -651,13 +694,10 @@ class UIBootgrid {
             this.tableInitialized = true;
         });
 
+
+
         this.table.on('dataProcessed', () =>  {
             this._onDataProcessed();
-
-            // Check if the total amount of rows is known, if not, remove the "last page"
-            if (!this.totalKnown && this.options.ajax) {
-                $(`#${this.id} .tabulator-paginator button[data-page=last]`).remove();
-            }
         });
 
         this.table.on('dataChanged', this._debounce(() => {
@@ -667,14 +707,21 @@ class UIBootgrid {
             this._onDataProcessed();
         }));
 
-        this.table.on('cellMouseEnter', (e, cell) => {
+        const onMouseEnter = (e, cell) => {
             // tooltip when ellipsis is used (overflow on text elements without children)
             let el = cell.getElement();
             let $el = $(el);
-            if (el.offsetWidth < el.scrollWidth && !$el.attr('title') && $el.children().length == 0){
+            if ($el.hasClass('tabulator-col')) {
+                // column header is structured a little different, get the right element first
+                $el = $el.find('> .tabulator-col-content > .tabulator-col-title-holder > .tabulator-col-title');
+            }
+            if ($el[0].offsetWidth < $el[0].scrollWidth && !$el.attr('title') && $el.children().length == 0){
                 $el.attr('title', $el.text()).tooltip({container: 'body', trigger: 'hover'}).tooltip('show');
             }
-        });
+        }
+
+        this.table.on('headerMouseEnter', onMouseEnter)
+        this.table.on('cellMouseEnter', onMouseEnter);
 
         this.table.on('rowSelected', (row) => {
             this.$element.trigger("selected.rs.jquery.bootgrid", [this.table.getSelectedData()]);
@@ -689,7 +736,7 @@ class UIBootgrid {
             // for both the selection & deselection, while we only want to know
             // the last known action.
             if (this.options.stickySelect && data.length == 0) {
-                this.table.selectRow(deselected[0].getData()[this.options.datakey]);
+                this.table.selectRow(deselected[0].getData()[this.dataIdentifier]);
             }
         }));
 
@@ -712,12 +759,18 @@ class UIBootgrid {
     }
 
     _renderFooter() {
-        if (!this.options.navigation) {
-            $(`#${this.id} > .tabulator-footer`).remove();
-            return;
+        this._renderFooterCommands();
+
+        // if there are custom commands defined, inject them here
+        if (this.customCommands !== null) {
+            $(`#${this.id} > .tabulator-footer > .tabulator-footer-contents`).append(this.customCommands);
         }
 
-        this._renderFooterCommands();
+        if (!this.options.navigation) {
+            $(`#${this.id} > .tabulator-footer > .tabulator-footer-contents`).children().not('.bootgrid-footer-commands').empty().text('');
+            return;
+        }
+        
 
         // swap page counter and paginator around (old look & feel).
         // we hook in before tableBuilt, but after dataLoading
@@ -725,7 +778,6 @@ class UIBootgrid {
         // but we don't want to wait on the data before swapping
         // the UI elements around.
 
-        // XXX this doesn't work on the captive portal page. why?
         let a = $(`#${this.id} .tabulator-page-counter`)[0];
         let b = $(`#${this.id} .tabulator-paginator`)[0];
         var aparent = a.parentNode;
@@ -756,11 +808,26 @@ class UIBootgrid {
         // DOM layout changed, rewire commands
         this._wireCommands();
 
+        if (this.table.getData().length == 0) {
+            this.dataAvailable = false;
+            this._getPlaceholder().html(this.translations.noresultsfound);
+        } else {
+            this.dataAvailable = true;
+        }
+
+        // Check if the total amount of rows is known, if not, remove the "last page"
+        if (!this.totalKnown && this.options.ajax) {
+            $(`#${this.id} .tabulator-paginator button[data-page=last]`).remove();
+        }
+
         // backwards compat
         this.$element.trigger("loaded.rs.jquery.bootgrid");
     }
 
     _tooltips() {
+        /* first hide everything that may already be active, XXX this may be too agressive */
+        $('.tooltip:visible').hide();
+
         this.$element.find(".bootgrid-tooltip").each((index, el) => {
             if ($(el).attr('title') !== undefined) {
                 // keep this tooltip
@@ -909,11 +976,15 @@ class UIBootgrid {
         // Reset button
         if (this.options.resetButton) {
             let $resetBtn = $(`
-                <button id="${this.id}-reset" class="btn btn-default" type="button" title="Reset to defaults">
-                    <span class="icon fa-solid fa-share-square"></span>
+                <button id="${this.id}-reset" class="btn btn-default" type="button"
+                        title="${this.persistence ? this.translations.resetGrid : ''}">
+                    <span class="icon fa-solid ${this.persistence ? 'fa-share-square' : 'fa-fw'}"></span>
                 </button>
             `).on('click', (e) => {
                 e.stopPropagation();
+                if (!this.persistence) {
+                    return;
+                }
                 Object.keys(localStorage)
                     .filter(key => key.startsWith(`tabulator-${this.persistenceID}`) || key.startsWith(this.persistenceID))
                     .forEach(key => localStorage.removeItem(key));
@@ -926,10 +997,6 @@ class UIBootgrid {
     }
 
     _renderFooterCommands() {
-        if (!this.options.navigation) {
-            return;
-        }
-
         let $footer = $(`#${this.id} > .tabulator-footer > .tabulator-footer-contents > .tabulator-paginator`);
         let $commandContainer = $('<div class="text-left bootgrid-footer-commands">');
         if (this.options.addButton) {
@@ -1027,7 +1094,7 @@ class UIBootgrid {
     tabulatorDefaults() {
         return {
             autoResize: false,
-            index: this.options.datakey,
+            index: this.dataIdentifier,
             renderVertical:"basic",
             persistence: {
                 sort: true,
@@ -1059,9 +1126,9 @@ class UIBootgrid {
                     $(row.getElement()).addClass('text-muted');
                 }
             },
-            height: '20vh', /* represents the "no results found" view */
+            height: 120, /* represents the "no results found" view */
             resizable: "header",
-            placeholder: this._translate('noresultsfound'), // XXX: improve styling, can return a function returning HTML or a DOM node
+            placeholder: this.placeholder[0],
             layout: 'fitColumns',
             columns: this._parseColumns(),
 
@@ -1085,6 +1152,9 @@ class UIBootgrid {
                 start = (totalRows === 0) ? 0 : ((currentPage - 1) * pageSize) + 1;
                 end = (totalRows === 0 || end === -1 || end > totalRows) ? totalRows : end;
 
+                if (!this.options.navigation) {
+                    return '';
+                }
                 if (this.totalKnown || !this.options.ajax) {
                     return this._translate('infosTotal', {start: start, end: end, totalRows: totalRows});
                 } else {
@@ -1102,7 +1172,7 @@ class UIBootgrid {
             },
             ajaxResponse: (url, params, response) => {
                 // handle pagination response, set last_page as appropriate
-                // the counter text (showing x of y) is handled in a module extension called "rowpage"
+                // the counter text (showing x of y) is handled in the 'paginationCounter' 
                 if (response.total_rows != undefined) {
                     // we don't know the 'last_page'
                     if (response.rowCount == params.rowCount) {
@@ -1196,7 +1266,7 @@ class UIBootgrid {
 
     /**
      * set current page and scroll to row
-     * @param {*} id datakey option value
+     * @param {*} id dataIdentifier option value
      */
     setPageByRowId(id) {
         let page = parseInt((id / this.curRowCount) + 1);
@@ -1224,6 +1294,10 @@ class UIBootgrid {
         } else {
             this.table.replaceData();
         }
+    }
+
+    _getPlaceholder() {
+        return $(`#${this.id}-placeholder`);
     }
 
     /**
@@ -1720,7 +1794,7 @@ class UIBootgrid {
     }
 
     getSelectedRows() {
-        return this.table.getSelectedData().map(row => row[this.options.datakey]);
+        return this.table.getSelectedData().map(row => row[this.dataIdentifier]);
     }
 
     getCurrentRows() {

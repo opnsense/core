@@ -322,6 +322,7 @@
             refresh: "{{ lang._('Refresh') }}",
             infosTotal: "{{ lang._('Showing %s to %s of %s entries') | format('{{ctx.start}}','{{ctx.end}}','{{ctx.totalRows}}') }}",
             infos: "{{ lang._('Showing %s to %s') | format('{{ctx.start}}','{{ctx.end}}') }}",
+            resetGrid: "{{ lang._('Reset grid layout') }}"
         });
     </script>
 
