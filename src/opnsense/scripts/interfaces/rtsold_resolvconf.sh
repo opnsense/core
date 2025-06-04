@@ -65,6 +65,19 @@ if [ "${1}" = "-a" ]; then
 		fi
 	done
 
+	# compare to the existing configuration and drop redundant updates
+	for value in $(/usr/local/sbin/ifctl -i ${ifname} -6n); do
+		cur_nameservers="${cur_nameservers} -a ${value}"
+	done
+	for value in $(/usr/local/sbin/ifctl -i ${ifname} -6s); do
+		cur_searchlist="${cur_searchlist} -a ${value}"
+	done
+	cur_rasrca="$(/usr/local/sbin/ifctl -i ${ifname} -6r)"
+	if [ "${nameservers}" = "${cur_nameservers}" -a "${searchlist}" = "${cur_searchlist}" -a "${rasrca}" = "${cur_rasrca}" ]; then
+		echo "Redundant update ignored."
+		exit 0
+	fi
+
 	/usr/local/sbin/ifctl -i ${ifname} -6nd ${nameservers}
 	/usr/local/sbin/ifctl -i ${ifname} -6sd ${searchlist}
 	/usr/local/sbin/ifctl -i ${ifname} -6rd -a ${rasrca}
