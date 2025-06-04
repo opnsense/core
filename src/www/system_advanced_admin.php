@@ -2,7 +2,7 @@
 
 /*
  * Copyright (C) 2017-2019 Franco Fichtner <franco@opnsense.org>
- * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2014-2025 Deciso B.V.
  * Copyright (C) 2005-2010 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
  * Copyright (C) 2007 Bill Marquette <bill.marquette@gmail.com>
@@ -36,7 +36,8 @@ require_once("filter.inc");
 require_once("system.inc");
 
 $a_group = &config_read_array('system', 'group');
-$a_authmode = auth_get_authserver_list();
+/* XXX: both webgui and console(ssh) use the same config reference, but may not support the same options */
+$a_authmode = auth_get_authserver_list('WebGui');
 $ssh_rekeylimit_choices = [
   '' => gettext('System defaults'),
   'default 60s' => gettext('60 seconds'),
