@@ -244,13 +244,11 @@ class SettingsController extends ApiMutableModelControllerBase
     private function getOptionOverlay(): array
     {
         $option = $this->request->getPost()['option'];
-        $type = $option['type'];
-
         $overlay = [];
 
-        if ($type === 'set') {
+        if ($option['type'] === 'set') {
             $overlay['set_tag'] = '';
-        } elseif ($type === 'match') {
+        } elseif ($option['type'] === 'match') {
             $overlay['tag'] = '';
             $overlay['interface'] = '';
             $overlay['force'] = '';
