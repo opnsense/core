@@ -26,6 +26,12 @@
 
 <script>
 $( document ).ready(function() {
+    const data_get_map = {'frm_GeneralSettings':"/api/dhcrelay/settings/get"};
+    mapDataToFormUI(data_get_map).done(function(data){
+        formatTokenizersUI();
+        $('.selectpicker').selectpicker('refresh');
+    });
+
     // Add the status column since it is not part of dialogRelay.xml
     const $statusColumn = $('<th data-column-id="status" data-width="6em" data-type="string" data-formatter="statusled">{{ lang._('Status') }}</th>');
     $('#{{formGridRelay['table_id']}} thead tr th[data-column-id="enabled"]').after($statusColumn);
@@ -52,9 +58,18 @@ $( document ).ready(function() {
             $(this).parent().prepend($('<td id="heading-wrapper" class="col-sm-2 theading-text">{{ lang._('Relays') }}</div>'));
         }
     });
-    $("#reconfigureAct").SimpleActionButton();
+    $("#reconfigureAct").SimpleActionButton({
+            onPreAction: function () {
+              const dfObj = new $.Deferred();
+              saveFormToEndpoint("/api/dhcrelay/settings/set", 'frm_GeneralSettings', function () { dfObj.resolve(); }, true, function () { dfObj.reject(); });
+              return dfObj;
+            }
+        });
 });
 </script>
+<div class="content-box __mb">
+    {{ partial("layout_partials/base_form",['fields':formGeneralSettings,'id':'frm_GeneralSettings'])}}
+</div>
 <div class="content-box __mb">
     {{ partial('layout_partials/base_bootgrid_table', formGridDest)}}
 </div>
