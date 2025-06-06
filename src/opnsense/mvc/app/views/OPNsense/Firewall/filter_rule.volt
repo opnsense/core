@@ -598,8 +598,6 @@
             }
         });
 
-
-
         // Hook into add event
         $('#{{formGridFilterRule["edit_dialog_id"]}}').on('opnsense_bootgrid_mapped', function(e, actionType) {
             if (actionType === 'add') {
@@ -623,9 +621,6 @@
                 }
             }
         });
-
-        // Wrap buttons and grid into divs to target them with css for responsiveness
-        $("#{{ formGridFilterRule['table_id'] }}").wrap('<div class="bootgrid-box"></div>');
 
         // Dynamically add fa icons to selectpickers
         $('#category_filter').parent().find('.dropdown-toggle').prepend('<i class="fa fa-tag" style="margin-right: 6px;"></i>');
@@ -659,32 +654,6 @@
     #internal_rule_selector {
         float: left;
         margin-left: 5px;
-    }
-    /* Prevent bootgrid to break out of content box*/
-    .content-box {
-        overflow-x: auto;
-    }
-    .bootgrid-header,
-    .bootgrid-box,
-    .bootgrid-footer {
-        width: 100%;
-        background: none;
-        border: none;
-        max-width: 100%;
-        /* Prevents the grid from collapsing all dynamic columns completely */
-        min-width: 1200px;
-    }
-    /* Not all dropdowns support data-container="body", ensure minimal vertical space for them */
-    .bootgrid-box {
-        min-height: 150px;
-    }
-    #all_rules_button i {
-        margin-right: 5px;
-    }
-    /* Allow grid to wrap text to use more diagonal space */
-    .bootgrid-table tbody td {
-        white-space: normal;
-        word-wrap: break-word;
     }
 </style>
 
