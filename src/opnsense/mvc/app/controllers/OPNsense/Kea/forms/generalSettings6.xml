@@ -14,7 +14,7 @@
         <label>Manual config</label>
         <type>checkbox</type>
         <advanced>true</advanced>
-        <help>Disable configuration file generation and manage the file (/usr/local/etc/kea/kea-dhcp4.conf) manually.</help>
+        <help>Disable configuration file generation and manage the file (/usr/local/etc/kea/kea-dhcp6.conf) manually.</help>
     </field>
     <field>
         <type>header</type>
