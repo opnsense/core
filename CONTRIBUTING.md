@@ -9,7 +9,7 @@ Issue reports
 
 Issue reports can be bug reports or feature requests.  Make sure to
 search the open and closed issues before adding a new one.  It is
-often better to join an ongoing discussions on similar open issues
+often better to join ongoing discussions on similar open issues
 than creating a new one as there may be workarounds or ideas available.
 
 When creating bug reports, please make sure you provide the following:
