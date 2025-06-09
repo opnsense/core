@@ -325,12 +325,15 @@
          * Type selector, show correct type input.
          */
         $("#alias\\.type").change(function(){
+            if ($("#to-select_alias\\.content").is(':visible')) {
+                /* leave text-edit mode before switching view */
+                $("#to-select_alias\\.content").click();
+            }
             $(".alias_type").hide();
             $("#row_alias\\.updatefreq").hide();
             $("#row_alias\\.authtype").hide();
             $("#row_alias\\.interface").hide();
             $("#row_alias\\.path_expression").hide();
-            $("#copy-paste").hide();
             switch ($(this).val()) {
                 case 'authgroup':
                     $("#alias_type_authgroup").show();
@@ -343,9 +346,8 @@
                     $("#row_alias\\.type > td > .dropdown:last > .dropdown-menu > .inner").addClass('dropdown-fixup');
                     break;
                 case 'asn':
-                    $("#alias_type_default").show();
+                    $("#select_alias\\.content").show();
                     $("#alias\\.proto").selectpicker('show');
-                    $("#copy-paste").show();
                     break;
                 case 'external':
                     break;
@@ -356,7 +358,7 @@
                 case 'dynipv6host':
                     $("#row_alias\\.interface").show();
                     $("#alias\\.proto").selectpicker('hide');
-                    $("#alias_type_default").show();
+                    $("#select_alias\\.content").show();
                     break;
                 case 'urljson':
                     $("#row_alias\\.path_expression").show();
@@ -383,9 +385,8 @@
                     $("#alias\\.authtype").change();
                     /* FALLTHROUGH */
                 default:
-                    $("#alias_type_default").show();
+                    $("#select_alias\\.content").show();
                     $("#alias\\.proto").selectpicker('hide');
-                    $("#copy-paste").show();
                     break;
             }
             if ($(this).val() === 'port') {
@@ -866,7 +867,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="alias_type" id="alias_type_default">
+                                        <div class="alias_type" id="select_alias.content">
                                             <select multiple="multiple"
                                                     id="alias.content"
                                                     class="tokenize"
@@ -877,10 +878,27 @@
                                                     data-container="body"
                                                     data-separator="#10">
                                             </select>
+                                            <a href="#" class="text-danger" id="clear-options_alias.content"><i class="fa fa-times-circle"></i>
+                                            <small>{{lang._('Clear All')}}</small></a>
+                                            &nbsp;&nbsp;<a href="#" class="text-danger" id="copy-options_alias.content"><i class="fa fa-copy"></i>
+                                            <small>{{ lang._('Copy') }}</small></a>
+                                            &nbsp;&nbsp;<a href="#" class="text-danger" id="paste-options_alias.content" style="display:none"><i class="fa fa-paste"></i>
+                                            <small>{{ lang._('Paste') }}</small></a>
+                                            &nbsp;&nbsp;<a href="#" class="text-danger" id="to-text_alias.content" ><i class="fa fa-file-text-o"></i> <small>{{ lang._('Text') }}</small> </a>
+
+                                        </div>
+                                        <div id="textarea_alias.content" style="display: none;">
+                                            <textarea>
+
+                                            </textarea>
+                                            <a href="#" class="text-danger" id="to-select_alias.content" ><i class="fa fa-th-list"></i> <small>{{ lang._('Back') }}</small> </a>
                                         </div>
                                         <div class="alias_type" id="alias_type_networkgroup">
                                             <select multiple="multiple" class="selectpicker" id="network_content" data-container="body" data-size="10" data-live-search="true">
                                             </select>
+                                            <br/>
+                                            <a href="#" class="text-danger" id="clear-options_alias.content"><i class="fa fa-times-circle"></i>
+                                            <small>{{lang._('Clear All')}}</small></a>
                                         </div>
                                         <table class="table table-condensed alias_table alias_type" id="alias_type_geoip" style="display: none;">
                                             <thead>
@@ -891,18 +909,22 @@
                                             </thead>
                                             <tbody>
                                             </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="2">
+                                                        <a href="#" class="text-danger" id="clear-options_alias.content"><i class="fa fa-times-circle"></i>
+                                                        <small>{{lang._('Clear All')}}</small></a>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
                                         </table>
                                         <div class="alias_type" id="alias_type_authgroup" style="display: none;">
                                             <select multiple="multiple" class="selectpicker" id="authgroup_content" data-container="body" data-size="10" data-live-search="true">
                                             </select>
+                                            <br/>
+                                            <a href="#" class="text-danger" id="clear-options_alias.content"><i class="fa fa-times-circle"></i>
+                                            <small>{{lang._('Clear All')}}</small></a>
                                         </div>
-
-                                        <a href="#" class="text-danger" id="clear-options_alias.content"><i class="fa fa-times-circle"></i>
-                                        <small>{{lang._('Clear All')}}</small></a><span id="copy-paste">
-                                        &nbsp;&nbsp;<a href="#" class="text-danger" id="copy-options_alias.content"><i class="fa fa-copy"></i>
-                                        <small>{{ lang._('Copy') }}</small></a>
-                                        &nbsp;&nbsp;<a href="#" class="text-danger" id="paste-options_alias.content" style="display:none"><i class="fa fa-paste"></i>
-                                        <small>{{ lang._('Paste') }}</small></a></span>
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.content"></span>
