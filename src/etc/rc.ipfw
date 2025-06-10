@@ -29,7 +29,9 @@
 
 # reload ipfw rules
 ipfw -q /usr/local/etc/ipfw.rules
+
 # load tables
 /usr/local/opnsense/scripts/shaper/update_tables
+
 # synchronize ipfw/pf load order
 /usr/local/opnsense/scripts/shaper/sync_fw_hooks.py
