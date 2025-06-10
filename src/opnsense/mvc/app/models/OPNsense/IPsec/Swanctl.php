@@ -146,10 +146,9 @@ class Swanctl extends BaseModel
             $key = $node->__reference;
             if (!$node->cacerts->isEmpty() && !$node->certs->isEmpty()) {
                  $messages->appendMessage(
-                    new Message(gettext("Either match on a certificate or an autority, but not both."), $key . ".certs")
-                );
+                     new Message(gettext("Either match on a certificate or an autority, but not both."), $key . ".certs")
+                 );
             }
-
         }
 
         return $messages;
