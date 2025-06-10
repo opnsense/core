@@ -729,7 +729,7 @@ function get_interface_list($only_active = false, $include_dmesg = false)
           'up' => in_array($ifname, $ifnames_up),
           'ipaddr' => !empty($ifdata['ipv4'][0]['ipaddr']) ? $ifdata['ipv4'][0]['ipaddr'] : null,
           'mac' => !empty($ifdata['macaddr']) ? $ifdata['macaddr'] : null,
-          'dmesg' => '',
+          'descr' => '',
         ];
 
         foreach ($all_interfaces as $name => $int) {
@@ -740,9 +740,9 @@ function get_interface_list($only_active = false, $include_dmesg = false)
         }
 
         foreach ($dmesg_arr as $dmesg_line) {
-            $dmesg = [];
-            if (preg_match("/^{$ifname}: <(.*?)>/i", $dmesg_line, $dmesg) == 1) {
-                $toput['dmesg'] = $dmesg[1];
+            $descr = [];
+            if (preg_match("/^{$ifname}: <(.*?)>/i", $dmesg_line, $descr) == 1) {
+                $toput['descr'] = $descr[1];
                 break;
             }
         }
