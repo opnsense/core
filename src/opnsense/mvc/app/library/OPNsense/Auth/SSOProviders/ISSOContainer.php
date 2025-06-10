@@ -37,7 +37,6 @@ namespace OPNsense\Auth\SSOProviders;
  */
 interface ISSOContainer
 {
-
     /**
      * yield provider objects (servers) offered by this container
      */

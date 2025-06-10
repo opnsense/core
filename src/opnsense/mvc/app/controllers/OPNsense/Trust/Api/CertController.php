@@ -108,7 +108,7 @@ class CertController extends ApiMutableModelControllerBase
                     if (!empty(trim((string)$node->prv_payload))) {
                         if (openssl_pkey_get_private((string)$node->prv_payload) === false) {
                             $error = gettext('Invalid private key provided: cannot parse private key data');
-                        } elseif (openssl_x509_check_private_key((string)$node->crt_payload,(string)$node->prv_payload) === false) {
+                        } elseif (openssl_x509_check_private_key((string)$node->crt_payload, (string)$node->prv_payload) === false) {
                             $error = gettext('Invalid private key provided: private key does not match certificate data');
                         }
                     }

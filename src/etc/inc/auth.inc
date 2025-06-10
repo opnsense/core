@@ -538,8 +538,7 @@ function auth_get_authserver($name)
     return false;
 }
 
-function auth_get_authserver_list($service='')
+function auth_get_authserver_list($service = '')
 {
     return (new \OPNsense\Auth\AuthenticationFactory())->listServers($service);
 }
-

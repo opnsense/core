@@ -68,7 +68,7 @@ class AuthenticationFactory
      * @param string $service filter on service when offered
      * @return array list of SSO providers
      */
-    public function listSSOproviders(string $service=''): array
+    public function listSSOproviders(string $service = ''): array
     {
         $result = [];
         $interface = 'OPNsense\Auth\SSOProviders\\ISSOContainer';
@@ -92,7 +92,7 @@ class AuthenticationFactory
      * @param string $service name of the service we request our authenticators for
      * @return array list of configured servers
      */
-    public function listServers(string $service='')
+    public function listServers(string $service = '')
     {
         $servers = [];
         $servers['Local Database'] = array("name" => "Local Database", "type" => "local");

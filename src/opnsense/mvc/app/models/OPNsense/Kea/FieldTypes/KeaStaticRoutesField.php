@@ -43,12 +43,12 @@ class KeaStaticRoutesField extends BaseField
             $validators[] = new CallbackValidator(["callback" => function ($data) {
                 $messages = [];
                 $entries = array_map('trim', explode(',', $data));
-                for ($i=0; $i < count($entries) ; $i+=2) {
-                    if (!Util::isIpAddress($entries[$i] ?? '') || !Util::isIpAddress($entries[$i+1] ?? '')) {
+                for ($i = 0; $i < count($entries); $i += 2) {
+                    if (!Util::isIpAddress($entries[$i] ?? '') || !Util::isIpAddress($entries[$i + 1] ?? '')) {
                         $messages[] = sprintf(
                             gettext('Entry "%s,%s" is not a valid dest-ip,router-ip pair.'),
                             $entries[$i] ?? '',
-                            $entries[$i+1] ?? ''
+                            $entries[$i + 1] ?? ''
                         );
                     }
                 }
