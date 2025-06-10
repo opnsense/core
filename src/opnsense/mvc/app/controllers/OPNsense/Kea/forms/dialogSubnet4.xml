@@ -21,8 +21,7 @@
         <id>subnet4.match-client-id</id>
         <label>Match client-id</label>
         <type>checkbox</type>
-        <help>By default, KEA uses client-identifiers instead of MAC addresses to locate clients, disabling this option
-        changes back to matching on MAC address which is used by most dhcp implementations.</help>
+        <help>By default, KEA uses client-identifiers instead of MAC addresses to locate clients, disabling this option changes back to matching on MAC address which is used by most dhcp implementations.</help>
         <grid_view>
             <type>boolean</type>
             <formatter>boolean</formatter>
