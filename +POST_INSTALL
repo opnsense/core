@@ -1,14 +1,24 @@
-USER=wwwonly
-UID=789
-
 PW=/usr/sbin/pw
+USER=wwwonly
+GROUP=${USER}
+UID=789
+GID=${UID}
+
+PW_ARG=add
+if ${PW} groupshow ${GROUP} >/dev/null 2>&1; then
+    PW_ARG=mod
+fi
+-
+echo "Creating group '${GROUP}' with gid '${GID}'"
+${PW} group${PW_ARG} ${GROUP} -g ${GID}
+
 PW_ARG=add
 if ${PW} usershow ${USER} >/dev/null 2>&1; then
     PW_ARG=mod
 fi
 
 echo "Creating user '${USER}' with uid '${UID}'"
-${PW} user${PW_ARG} ${USER} -u ${UID} -g 80 -c "World Wide Web Only" -d /nonexistent -s /usr/sbin/nologin
+${PW} user${PW_ARG} ${USER} -u ${UID} -g ${GID} -c "World Wide Web Only" -d /nonexistent -s /usr/sbin/nologin
 
 echo "Updating /etc/shells"
 cp /etc/shells /etc/shells.bak
