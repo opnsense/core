@@ -8,7 +8,7 @@ PW_ARG=add
 if ${PW} groupshow ${GROUP} >/dev/null 2>&1; then
     PW_ARG=mod
 fi
--
+
 echo "Creating group '${GROUP}' with gid '${GID}'"
 ${PW} group${PW_ARG} ${GROUP} -g ${GID}
 
