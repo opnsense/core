@@ -391,19 +391,20 @@ class FilterController extends FilterBaseController
         }
 
         // Helper to build item with label and count
-        $makeItem = fn($value, $label, $count) => [
+        $makeItem = fn($value, $label, $count, $type) => [
             'value' => $value,
             'label' => $label,
-            'count' => $count
+            'count' => $count,
+            'type' => $type
         ];
 
         // Floating
-        $result['floating']['items'][] = $makeItem('', gettext('Any'), $ruleCounts[''] ?? 0);
+        $result['floating']['items'][] = $makeItem('', gettext('Any'), $ruleCounts[''] ?? 0, 'floating');
 
         // Groups
         foreach ((new \OPNsense\Firewall\Group())->ifgroupentry->iterateItems() as $groupItem) {
             $name = (string)$groupItem->ifname;
-            $result['groups']['items'][] = $makeItem($name, $name, $ruleCounts[$name] ?? 0);
+            $result['groups']['items'][] = $makeItem($name, $name, $ruleCounts[$name] ?? 0, 'group');
         }
 
         // Interfaces
@@ -411,7 +412,7 @@ class FilterController extends FilterBaseController
         foreach (\OPNsense\Core\Config::getInstance()->object()->interfaces->children() as $key => $intf) {
             if (!in_array($key, $groupKeys)) {
                 $descr = !empty($intf->descr) ? (string)$intf->descr : strtoupper($key);
-                $result['interfaces']['items'][] = $makeItem($key, $descr, $ruleCounts[$key] ?? 0);
+                $result['interfaces']['items'][] = $makeItem($key, $descr, $ruleCounts[$key] ?? 0, 'interface');
             }
         }
 

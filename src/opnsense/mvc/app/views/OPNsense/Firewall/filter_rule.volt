@@ -507,6 +507,18 @@
             const $categoryFilter = $("#category_filter");
             const currentSelection = $categoryFilter.val();
 
+            // Sort used categories first, then alphabetically
+            data.rows.sort((a, b) => {
+                const aUsed = a.used > 0 ? 0 : 1;
+                const bUsed = b.used > 0 ? 0 : 1;
+
+                if (aUsed !== bUsed) {
+                    return aUsed - bUsed;
+                }
+
+                return a.name.localeCompare(b.name);
+            });
+
             $categoryFilter.empty().append(
                 data.rows.map(row => {
                     const optVal = $('<div/>').text(row.name).html();
@@ -517,7 +529,7 @@
                         html: row.name,
                         id: row.used > 0 ? row.uuid : undefined,
                         "data-content": row.used > 0
-                            ? `<span>${optVal}</span><span style='background:#${bgColor};' class='badge pull-right'>${row.used}</span>`
+                            ? `<span><span class="badge badge-sm" style="background:#${bgColor};">${row.used}</span> ${optVal}</span>`
                             : undefined
                     });
                 })
@@ -535,15 +547,22 @@
                     const group = data[groupKey];
                     group.items = group.items.map(item => {
                         const count = item.count ?? 0;
-                        const label = (item.label || '').replace(/^\(\d+\)\s*/, '');
+                        const label = (item.label || '');
                         const subtext = group.label;
+
+                        const bgClassMap = {
+                            floating: 'bg-primary',
+                            group: 'bg-warning',
+                            interface: 'bg-info'
+                        };
+                        const badgeClass = bgClassMap[item.type] || 'bg-info';
 
                         return {
                             value: item.value,
                             label: label,
                             'data-content': `
                                 <span>
-                                    ${count > 0 ? `<span class="badge bg-info me-2">${count}</span>` : ''}
+                                    ${count > 0 ? `<span class="badge badge-sm ${badgeClass}">${count}</span>` : ''}
                                     ${label}
                                     <small class="text-muted ms-2"><em>${subtext}</em></small>
                                 </span>
@@ -683,6 +702,24 @@
     #internal_rule_selector {
         float: left;
         margin-left: 5px;
+    }
+    /*
+     * XXX: Since badge class uses its own default background-color, we must to override it explicitely.
+     *      Essentially we would like to use the main style sheet for this.
+     *      bg-info is slightly different than text-info, so we use the text-info color for consistency.
+     */
+    .badge.bg-primary {
+        background-color: #C03E14 !important;
+    }
+    .badge.bg-warning {
+        background-color: #f0ad4e !important;
+    }
+    .badge.bg-info {
+        background-color: #31708f !important;
+    }
+    .badge-sm {
+        font-size: 12px;
+        padding: 2px 5px;
     }
 </style>
 
