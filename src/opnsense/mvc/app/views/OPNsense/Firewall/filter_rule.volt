@@ -527,7 +527,36 @@
         });
 
         // Populate interface selectpicker
-        $('#interface_select').fetch_options('/api/firewall/filter/get_interface_list');
+        $('#interface_select').fetch_options(
+            '/api/firewall/filter/get_interface_list',
+            {},
+            function (data) {
+                for (const groupKey in data) {
+                    const group = data[groupKey];
+                    group.items = group.items.map(item => {
+                        const count = item.count ?? 0;
+                        const label = (item.label || '').replace(/^\(\d+\)\s*/, '');
+                        const subtext = group.label;
+
+                        return {
+                            value: item.value,
+                            label: label,
+                            'data-content': `
+                                <span>
+                                    ${count > 0 ? `<span class="badge bg-info me-2">${count}</span>` : ''}
+                                    ${label}
+                                    <small class="text-muted ms-2"><em>${subtext}</em></small>
+                                </span>
+                            `.trim()
+                        };
+                    });
+                }
+                return data;
+            },
+            false,
+            true  // render_html to show counts as badges
+        );
+
         $("#interface_select_container").show();
 
         // move selectpickers into action bar
@@ -665,7 +694,7 @@
             </select>
         </div>
         <div id="interface_select_container" class="btn-group">
-            <select id="interface_select" class="selectpicker" data-live-search="true" data-show-subtext="true" data-size="15" data-width="200px" data-container="body">
+            <select id="interface_select" class="selectpicker" data-live-search="true" data-size="15" data-width="200px" data-container="body">
             </select>
         </div>
         <div id="internal_rule_selector" class="btn-group">

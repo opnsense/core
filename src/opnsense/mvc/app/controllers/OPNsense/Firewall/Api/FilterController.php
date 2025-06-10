@@ -393,7 +393,7 @@ class FilterController extends FilterBaseController
         // Helper to build item with label and count
         $makeItem = fn($value, $label, $count) => [
             'value' => $value,
-            'label' => $count > 0 ? sprintf("(%d) %s", $count, $label) : $label,
+            'label' => $label,
             'count' => $count
         ];
 

@@ -642,8 +642,9 @@ $.fn.SimpleActionButton = function (params) {
  * @param params
  * @param data_callback callout to cleanse data before usage
  * @param store_data store data in data attribute (in its original form)
+ * @param render_html if true, assumes HTML as `data-content`
  */
-$.fn.fetch_options = function(url, params, data_callback, store_data) {
+$.fn.fetch_options = function(url, params, data_callback, store_data, render_html = false) {
     var deferred = $.Deferred();
     var $obj = $(this);
     $obj.empty();
@@ -655,9 +656,18 @@ $.fn.fetch_options = function(url, params, data_callback, store_data) {
         if (typeof data_callback === "function") {
             data = data_callback(data);
         }
+
         if (Array.isArray(data)) {
             data.map(function (item) {
-                $obj.append($("<option/>").attr({"value": item.value}).text(item.label));
+                const $option = $('<option>', { value: item.value });
+
+                if (render_html && item['data-content']) {
+                    $option.attr('data-content', item['data-content']);
+                } else {
+                    $option.text(item.label);
+                }
+
+                $obj.append($option);
             });
         } else {
             for (const groupKey in data) {
@@ -667,20 +677,28 @@ $.fn.fetch_options = function(url, params, data_callback, store_data) {
                         label: group.label,
                         'data-icon': group.icon
                     });
+
                     for (const item of group.items) {
-                        $optgroup.append(
-                            $('<option>', {
-                                value: item.value,
-                                text: item.label,
-                                'data-subtext': group.label,
-                                selected: item.selected ? 'selected' : undefined
-                            })
-                        );
+                        const $option = $('<option>', {
+                            value: item.value,
+                            'data-subtext': group.label,
+                            selected: item.selected ? 'selected' : undefined
+                        });
+
+                        if (render_html && item['data-content']) {
+                            $option.attr('data-content', item['data-content']);
+                        } else {
+                            $option.text(item.label);
+                        }
+
+                        $optgroup.append($option);
                     }
+
                     $obj.append($optgroup);
                 }
             }
         }
+
         if ($obj.hasClass('selectpicker')) {
             $obj.selectpicker('refresh');
         }
@@ -690,7 +708,6 @@ $.fn.fetch_options = function(url, params, data_callback, store_data) {
 
     return deferred.promise();
 };
-
 
 /**
  *  File upload dialog, constructs a modal, asks for a file to upload and sets {'payload': ..,, 'filename': ...}
