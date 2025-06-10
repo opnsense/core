@@ -75,7 +75,6 @@ done
 # tmp needs sticky
 chmod +t /var/lib/php/tmp
 
-
 if [ ${USE_MFS_VAR} -ne 0 ]; then
 	MAX_MFS_VAR=$(grep 'max_mfs_var' /conf/config.xml | sed 's/[^>]*>\([^<]*\)<.*/\1/')
 	MAX_MEM_SYS=$(sysctl -n hw.physmem)
