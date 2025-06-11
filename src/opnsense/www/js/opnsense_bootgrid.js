@@ -544,6 +544,8 @@ class UIBootgrid {
 
     _destroyTable() {
         this.table.destroy();
+        $(`#${this.id}-header`).remove();
+        $(`#${this.id}`).replaceWith(this.$compatElement);
     }
 
     _setPersistence(value) {
@@ -770,7 +772,6 @@ class UIBootgrid {
             $(`#${this.id} > .tabulator-footer > .tabulator-footer-contents`).children().not('.bootgrid-footer-commands').empty().text('');
             return;
         }
-        
 
         // swap page counter and paginator around (old look & feel).
         // we hook in before tableBuilt, but after dataLoading
@@ -1172,7 +1173,7 @@ class UIBootgrid {
             },
             ajaxResponse: (url, params, response) => {
                 // handle pagination response, set last_page as appropriate
-                // the counter text (showing x of y) is handled in the 'paginationCounter' 
+                // the counter text (showing x of y) is handled in the 'paginationCounter'
                 if (response.total_rows != undefined) {
                     // we don't know the 'last_page'
                     if (response.rowCount == params.rowCount) {

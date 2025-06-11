@@ -84,7 +84,7 @@
                                 $("#revertToTime").parent().addClass("has-error");
                                 $("#revertToTimeError").html(data.status);
                             } else {
-                                std_bootgrid_reload("grid-rules");
+                                $('#grid-rules').bootgrid('reload');
                                 dialogRef.close();
                             }
                         });

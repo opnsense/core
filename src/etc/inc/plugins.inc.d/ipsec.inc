@@ -941,7 +941,7 @@ function ipsec_write_cas()
             $linkname = "{$capath}/{$ca['refid']}.crt";
             array_push($cafiles, $fname, $linkname);
             file_put_contents($fname, $cert);
-            symlink(basename($fname), $linkname); /* add link with our internal reference */
+            @symlink(basename($fname), $linkname); /* add link with our internal reference */
         } else {
             log_msg(sprintf('Error: Invalid certificate hash info for %s', $ca['descr']), LOG_ERR);
         }
