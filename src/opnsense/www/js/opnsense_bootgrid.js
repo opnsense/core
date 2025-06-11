@@ -544,6 +544,8 @@ class UIBootgrid {
 
     _destroyTable() {
         this.table.destroy();
+        $(`#${this.id}-header`).remove();
+        $(`#${this.id}`).replaceWith(this.$compatElement);
     }
 
     _setPersistence(value) {
