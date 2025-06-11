@@ -490,7 +490,11 @@
 
         grid.off('loaded.rs.jquery.bootgrid').on('loaded.rs.jquery.bootgrid', function () {
             // Clean up any previous tooltips
-            $('[data-toggle="tooltip"]').tooltip('destroy');
+            $('[data-toggle="tooltip"]').each(function () {
+                if ($(this).data('bs.tooltip')) {
+                    $(this).tooltip('destroy');
+                }
+            });
             $('body > .tooltip').remove();
 
             // Re-initialize tooltips
