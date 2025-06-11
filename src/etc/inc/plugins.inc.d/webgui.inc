@@ -252,15 +252,13 @@ EOD;
         $lighty_use_syslog .= 'accesslog.use-syslog="enable"' . "\n";
     }
 
-    $fast_cgi_path = "/tmp/php-fastcgi.socket";
-
     $fastcgi_config = <<<EOD
 #### fastcgi module
 ## read fastcgi.txt for more info
 fastcgi.server = ( ".php" =>
   ( "localhost" =>
     (
-      "socket" => "{$fast_cgi_path}",
+      "socket" => "/var/lib/php/tmp/php-fastcgi.socket",
       "max-procs" => 8,
       "bin-environment" => (
         "PHP_FCGI_CHILDREN" => "5",
