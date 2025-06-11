@@ -390,8 +390,14 @@ class FilterController extends FilterBaseController
         // Count rules per interface
         $ruleCounts = [];
         foreach ((new \OPNsense\Firewall\Filter())->rules->rule->iterateItems() as $rule) {
-            foreach (explode(',', (string)$rule->interface) as $intf) {
-                $ruleCounts[$intf] = ($ruleCounts[$intf] ?? 0) + 1;
+            $interfaces = array_filter(explode(',', (string)$rule->interface));
+
+            if (count($interfaces) !== 1) {
+                // floating: empty or multiple interfaces
+                $ruleCounts[''] = ($ruleCounts[''] ?? 0) + 1;
+            } else {
+                // single interface
+                $ruleCounts[$interfaces[0]] = ($ruleCounts[$interfaces[0]] ?? 0) + 1;
             }
         }
 
