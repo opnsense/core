@@ -6,7 +6,8 @@
 .tabulator {
     font-size: 15px;
     background-color: transparent;
-    border: 1px solid map-get($colors, border-default);
+    border: none;
+    border-top: 1px solid map-get($colors, border-default);
 }
 
 /* theme: header */
@@ -16,8 +17,7 @@
 }
 .tabulator .tabulator-header .tabulator-col {
     border-right: 1px solid map-get($colors, border-default);
-    background-color: transparent;
-    background: transparent;
+    background-color: map-get($colors, body-background);
     color: map-get($colors, text-color);
 }
 .tabulator .tabulator-header .tabulator-col.tabulator-sortable.tabulator-col-sorter-element:hover {
@@ -42,25 +42,24 @@
     background-color: map-get($colors, table-bg-accent);
 }
 .tabulator-row.tabulator-row-odd.tabulator-selectable:hover:not(.tabulator-selected) {
-    background-color: map-get($colors, table-bg-accent);
+    background-color: #353a50;
 }
 
 .tabulator-row.tabulator-row-even {
-    background-color: transparent;
+    background-color: map-get($colors, body-background);
 }
 .tabulator-row.tabulator-row-even.tabulator-selectable:hover:not(.tabulator-selected) {
-    background-color: transparent;
+    background-color: #353a50;
 }
 .tabulator .tabulator-tableholder {
     background-color: transparent;
-    border-right: 1px solid map-get($colors, table-bg-accent);
 }
 .tabulator-row.tabulator-selected {
-    background-color: #9abcea;
+    background-color: #2a2f45;
 }
 .tabulator-row.tabulator-selected:hover {
     cursor: pointer;
-    background-color: #9abcea;
+    background-color: #2a2f45;
 }
 .tabulator .tabulator-alert .tabulator-alert-msg.tabulator-alert-state-msg {
     color: map-get($colors, text-color); /* spinner icon */
@@ -68,10 +67,8 @@
 
 /* Command column styles */
 .tabulator-col.tabulator-frozen.tabulator-frozen-right {
-    background-color: #101218;
 }
 .tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-right {
-    background-color: #101218;
 }
 
 /* Checkbox column styles */
@@ -87,10 +84,8 @@
     border-left: 1px solid map-get($colors, table-bg-accent);
 }
 .tabulator-col.tabulator-row-header.tabulator-frozen.tabulator-frozen-left {
-    background-color: #101218;
 }
 .tabulator-cell.tabulator-row-header.tabulator-frozen.tabulator-frozen-left {
-    background-color: #101218;
 }
 .tabulator-row:last-child >
 .tabulator-cell.tabulator-row-header.tabulator-frozen.tabulator-frozen-left:first-child {
@@ -110,7 +105,7 @@
 
 /* theme: footer */
 .tabulator .tabulator-footer {
-    border-top: 1px solid map-get($colors, border-default);
+    border-top: none;
     background-color: transparent;
 }
 .tabulator .tabulator-footer .tabulator-page {
@@ -256,4 +251,11 @@
 }
 .tabulator .tabulator-alert .tabulator-alert-msg.tabulator-alert-state-error {
     border: none;
+}
+
+.bootgrid-placeholder {
+    font-size: 15px;
+    text-align: center;
+    white-space: normal;
+    font-weight: 400;
 }

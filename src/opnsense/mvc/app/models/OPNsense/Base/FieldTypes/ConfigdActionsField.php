@@ -60,7 +60,7 @@ class ConfigdActionsField extends BaseListField
             self::$internalStaticOptionList[$this->internalCacheKey] = array();
 
             $backend = new Backend();
-            $service_tempfile = "/tmp/configdmodelfield.data";
+            $service_tempfile = sys_get_temp_dir() . "/configdmodelfield.data";
 
             // check configd daemon for list of available actions, cache results as long as configd is not restarted
             if (!file_exists($service_tempfile) || filemtime($service_tempfile) < $backend->getLastRestart()) {

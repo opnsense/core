@@ -67,7 +67,7 @@
                     });
                     $('.selectpicker').selectpicker('refresh');
                     // link on change event
-                    $('#voucher-groups').on('change', function(){
+                    $('#voucher-groups').off().on('change', function(){
                         updateVoucherList();
                     });
                     // initial load voucher list
@@ -79,47 +79,35 @@
         /**
          * list vouchers in grid
          */
+        let voucherGridLoaded = false;
         function updateVoucherList() {
             var voucher_provider = $('#voucher-providers').find("option:selected").val();
             var voucher_group = $('#voucher-groups').find("option:selected").val();
-            var gridopt = {
-                ajax: false,
-                selection: true,
-                multiSelect: true,
-                converters: {
-                    // convert datetime type fields from unix timestamp to readable format
-                    datetime: {
-                        from: function (value) {
-                            return moment(parseInt(value) * 1000);
-                        },
-                        to: function (value) {
-                            return value == 0 ? "" :  value.format("lll");
+
+            const list_vouchers = function() {
+                ajaxGet("/api/captiveportal/voucher/listVouchers/" + voucher_provider + "/" + voucher_group + "/", {},
+                    function (data, status) {
+                        if (status == "success") {
+                            $("#grid-vouchers").bootgrid('append', data);
                         }
                     }
-                }
-            };
-            $("#grid-vouchers").bootgrid('destroy');
-            ajaxGet("/api/captiveportal/voucher/listVouchers/" + voucher_provider + "/" + voucher_group + "/", {},
-                function (data, status) {
-                    if (status == "success") {
-                        $("#grid-vouchers > tbody > tr").remove();
-                        $.each(data, function (key, value) {
-                            var fields = ["username", "starttime", "endtime", "expirytime", "state"];
-                            let tr_str = '<tr>';
-                            for (var i = 0; i < fields.length; i++) {
-                                if (value[fields[i]] != null) {
-                                    tr_str += '<td>' + value[fields[i]] + '</td>';
-                                } else {
-                                    tr_str += '<td></td>';
-                                }
-                            }
-                            tr_str += '</tr>';
-                            $("#grid-vouchers > tbody").append(tr_str);
-                        });
+                );
+            }
+
+            if (!voucherGridLoaded) {
+                voucherGridLoaded = true;
+                let grid = $("#grid-vouchers").UIBootgrid({
+                    options: {
+                        ajax: false,
+                        selection: true,
+                        multiSelect: true,
                     }
-                    $("#grid-vouchers").bootgrid(gridopt);
-                }
-            );
+                });
+            } else {
+                $("#grid-vouchers").bootgrid('clear');
+            }
+
+            list_vouchers();
         }
 
         /**
@@ -350,23 +338,21 @@
                     <hr/>
                 </div>
             </div>
-            <div  class="col-sm-12">
-                <table id="grid-vouchers" class="table table-condensed table-hover table-striped table-responsive">
-                    <thead>
-                    <tr>
-                        <th data-column-id="username" data-type="string" data-identifier="true">{{ lang._('Voucher') }}</th>
-                        <th data-column-id="starttime" data-type="datetime">{{ lang._('Valid from') }}</th>
-                        <th data-column-id="endtime" data-type="datetime">{{ lang._('Valid to') }}</th>
-                        <th data-column-id="expirytime" data-type="datetime">{{ lang._('Expires at') }}</th>
-                        <th data-column-id="state" data-type="string">{{ lang._('State') }}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                    <tfoot>
-                    </tfoot>
-                </table>
-            </div>
+            <table id="grid-vouchers" class="table table-condensed table-hover table-striped table-responsive">
+                <thead>
+                <tr>
+                    <th data-column-id="username" data-type="string" data-identifier="true">{{ lang._('Voucher') }}</th>
+                    <th data-column-id="starttime" data-formatter="datetime">{{ lang._('Valid from') }}</th>
+                    <th data-column-id="endtime" data-formatter="datetime">{{ lang._('Valid to') }}</th>
+                    <th data-column-id="expirytime" data-formatter="datetime">{{ lang._('Expires at') }}</th>
+                    <th data-column-id="state" data-type="string">{{ lang._('State') }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                </tfoot>
+            </table>
             <div  class="col-sm-12">
                 <div class="row">
                     <div class="col-sm-12">

@@ -503,6 +503,8 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Local.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/LocalTOTP.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Radius.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Auth/SSOProviders/ISSOContainer.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Auth/SSOProviders/Provider.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Services/IPsec.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Services/System.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Services/WebGui.php

@@ -192,20 +192,17 @@ POSSIBILITY OF SUCH DAMAGE.
                 var base = $.when({});
                 var keyset = [];
                 $.each(rows, function(key, uuid){
-                    // only perform action in visible items
-                    if ($("#"+gridId).find("tr[data-row-id='"+uuid+"']").is(':visible')) {
-                        keyset.push(uuid);
-                        if ( combine === undefined || keyset.length > combine || rows[rows.length - 1] === uuid) {
-                            var call_url = url + keyset.join(',') +'/'+url_suffix;
-                            base = base.then(function() {
-                                var defer = $.Deferred();
-                                ajaxCall(call_url, {}, function(){
-                                    defer.resolve();
-                                });
-                                return defer.promise();
+                    keyset.push(uuid);
+                    if ( combine === undefined || keyset.length > combine || rows[rows.length - 1] === uuid) {
+                        var call_url = url + keyset.join(',') +'/'+url_suffix;
+                        base = base.then(function() {
+                            var defer = $.Deferred();
+                            ajaxCall(call_url, {}, function(){
+                                defer.resolve();
                             });
-                            keyset = [];
-                        }
+                            return defer.promise();
+                        });
+                        keyset = [];
                     }
                 });
                 // last action in the list, reload grid and release this promise
@@ -237,6 +234,7 @@ POSSIBILITY OF SUCH DAMAGE.
         let gridRuleFilesInitialized = false;
         let gridInstalledRulesInitialized = false;
         let gridUserRulesInitialized = false;
+        let gridAlertsInitialized = false;
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             loadGeneralSettings();
             if (e.target.id == 'download_settings_tab') {
@@ -251,6 +249,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         toggle:'/api/ids/settings/toggleRuleset/',
                         options:{
                             navigation:0,
+                            static: true,
                             formatters:{
                                 editor: function (column, row) {
                                     return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit bootgrid-tooltip\" data-row-id=\"" + row.filename + "\"><span class=\"fa fa-pencil fa-fw\"></span></button>";
@@ -267,6 +266,16 @@ POSSIBILITY OF SUCH DAMAGE.
                                 }
                             }
                         }
+                    }).on('loaded.rs.jquery.bootgrid', function(e) {
+                        /**
+                         * disable/enable selected rulesets
+                         */
+                        $("#disableSelectedRuleSets").unbind('click').click(function(){
+                            actionToggleSelected('grid-rule-files', '/api/ids/settings/toggleRuleset/', 0, 20);
+                        });
+                        $("#enableSelectedRuleSets").unbind('click').click(function(){
+                            actionToggleSelected('grid-rule-files', '/api/ids/settings/toggleRuleset/', 1, 20);
+                        });
                     });
                     gridRuleFilesInitialized = true;
                 } else {
@@ -290,15 +299,6 @@ POSSIBILITY OF SUCH DAMAGE.
                             $("#updateSettings").show();
                         }
                     }
-                });
-                /**
-                 * disable/enable selected rulesets
-                 */
-                $("#disableSelectedRuleSets").unbind('click').click(function(){
-                    actionToggleSelected('grid-rule-files', '/api/ids/settings/toggleRuleset/', 0, 20);
-                });
-                $("#enableSelectedRuleSets").unbind('click').click(function(){
-                    actionToggleSelected('grid-rule-files', '/api/ids/settings/toggleRuleset/', 1, 20);
                 });
             } else if (e.target.id == 'rule_tab'){
                 //
@@ -362,47 +362,47 @@ POSSIBILITY OF SUCH DAMAGE.
                             },
                             toggle:'/api/ids/settings/toggleRule/'
                         }
-                    );
+                    ).on('loaded.rs.jquery.bootgrid', function() {
+                        /**
+                         * disable/enable [+action] selected rules
+                         */
+                        $("#disableSelectedRules").unbind('click').click(function(event){
+                            event.preventDefault();
+                            $("#disableSelectedRules > span").removeClass("fa-square-o").addClass("fa-spinner fa-pulse");
+                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', 0, 100).done(function(){
+                                $("#disableSelectedRules > span").removeClass("fa-spinner fa-pulse");
+                                $("#disableSelectedRules > span").addClass("fa-square-o");
+                            });
+                        });
+                        $("#enableSelectedRules").unbind('click').click(function(){
+                            $("#enableSelectedRules > span").removeClass("fa-check-square-o").addClass("fa-spinner fa-pulse");
+                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', 1, 100).done(function(){
+                                $("#enableSelectedRules > span").removeClass("fa-spinner fa-pulse").addClass("fa-check-square-o");
+                            });
+                        });
+                        $("#alertSelectedRules").unbind('click').click(function(){
+                            $("#alertSelectedRules > span").addClass("fa-spinner fa-pulse");
+                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', "alert", 100).done(function(){
+                                $("#alertSelectedRules > span").removeClass("fa-spinner fa-pulse");
+                            });
+                        });
+                        $("#dropSelectedRules").unbind('click').click(function(){
+                            $("#dropSelectedRules > span").addClass("fa-spinner fa-pulse");
+                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', "drop", 100).done(function(){
+                                $("#dropSelectedRules > span").removeClass("fa-spinner fa-pulse");
+                            });
+                        });
+                    });
                     gridInstalledRulesInitialized = true;
                 } else {
                     $('#grid-installedrules').bootgrid('reload');
                 }
-
-                /**
-                 * disable/enable [+action] selected rules
-                 */
-                $("#disableSelectedRules").unbind('click').click(function(event){
-                    event.preventDefault();
-                    $("#disableSelectedRules > span").removeClass("fa-square-o").addClass("fa-spinner fa-pulse");
-                    actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', 0, 100).done(function(){
-                        $("#disableSelectedRules > span").removeClass("fa-spinner fa-pulse");
-                        $("#disableSelectedRules > span").addClass("fa-square-o");
-                    });
-                });
-                $("#enableSelectedRules").unbind('click').click(function(){
-                    $("#enableSelectedRules > span").removeClass("fa-check-square-o").addClass("fa-spinner fa-pulse");
-                    actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', 1, 100).done(function(){
-                        $("#enableSelectedRules > span").removeClass("fa-spinner fa-pulse").addClass("fa-check-square-o");
-                    });
-                });
-                $("#alertSelectedRules").unbind('click').click(function(){
-                    $("#alertSelectedRules > span").addClass("fa-spinner fa-pulse");
-                    actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', "alert", 100).done(function(){
-                        $("#alertSelectedRules > span").removeClass("fa-spinner fa-pulse");
-                    });
-                });
-                $("#dropSelectedRules").unbind('click').click(function(){
-                    $("#dropSelectedRules > span").addClass("fa-spinner fa-pulse");
-                    actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', "drop", 100).done(function(){
-                        $("#dropSelectedRules > span").removeClass("fa-spinner fa-pulse");
-                    });
-                });
             } else if (e.target.id == 'alert_tab') {
                 updateAlertLogs();
                 /**
                  * grid query alerts
                  */
-                if (!$("#grid-alerts").hasClass('bootgrid-table')) {
+                if (!gridAlertsInitialized) {
                     var grid_alerts = $("#grid-alerts").UIBootgrid({
                         search:'/api/ids/service/query_alerts',
                         get:'/api/ids/service/get_alert_info/',
@@ -561,6 +561,9 @@ POSSIBILITY OF SUCH DAMAGE.
                                 });
                         }).end();
                   });
+                  gridAlertsInitialized = true;
+                } else {
+                    $("#grid-alerts").bootgrid('reload');
                 }
             } else if (e.target.id == 'userrules_tab') {
                 if (!gridUserRulesInitialized) {

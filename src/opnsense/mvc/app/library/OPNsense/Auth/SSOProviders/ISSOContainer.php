@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2015 Deciso B.V.
+ *    Copyright (C) 2025 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -28,49 +28,17 @@
  *
  */
 
-namespace OPNsense\Auth;
+namespace OPNsense\Auth\SSOProviders;
 
 /**
- * Interface IAuthConnector for authenticator connectors
- * @package OPNsense\Auth
+ * Interface ISSOContainer defines required methods to support SSO types, a container may yield multiple providers
+ * which are usually defined in models.
+ * @package OPNsense\Auth\SSOProviders
  */
-interface IAuthConnector
+interface ISSOContainer
 {
     /**
-     * @return string type of this authenticator
+     * yield provider objects (servers) offered by this container
      */
-    public static function getType();
-
-    /**
-     * set connector properties
-     * @param array $config set configuration for this connector to use
-     */
-    public function setProperties($config);
-
-    /**
-     * after authentication, you can call this method to retrieve optional return data from the authenticator
-     * @return mixed named list of authentication properties, may be returned by the authenticator
-     */
-    public function getLastAuthProperties();
-
-    /**
-     * after authentication, you can call this method to retrieve optional authentication errors
-     * @return array of auth errors
-     */
-    public function getLastAuthErrors();
-
-    /**
-     * set session-specific pre-authentication metadata for the authenticator
-     * @param array $config set configuration for this connector to use
-     * @return IAuthConnector
-     */
-    public function preauth($config);
-
-    /**
-     * authenticate user
-     * @param string $username username to authenticate
-     * @param string $password user password
-     * @return bool
-     */
-    public function authenticate($username, $password);
+    public function listProviders(): \Generator;
 }

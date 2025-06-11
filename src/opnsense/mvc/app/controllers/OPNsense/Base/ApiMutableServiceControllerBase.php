@@ -165,7 +165,6 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
         return false;
     }
 
-
     /**
      * check if service is enabled according to model
      */

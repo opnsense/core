@@ -58,6 +58,7 @@
             del:'/api/ipsec/connections/del_' + obj_type + '/',
             toggle:'/api/ipsec/connections/toggle_' + obj_type + '/',
             options:{
+                static: true,
                 navigation: obj_type === 'child' ? 3 : 0,
                 selection: obj_type === 'child' ? true : false,
                 useRequestHandlerOnGet: true,

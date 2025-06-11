@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2025 Deciso B.V.
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
  * Copyright (C) 2007-2008 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2005-2006 Bill Marquette <bill.marquette@gmail.com>
@@ -413,6 +414,13 @@ function display_login_form($Login_Error)
         <button type="submit" name="login" value="1" class="btn btn-primary pull-right"><?=gettext("Login"); ?></button>
 
       </form>
+
+
+<?php    foreach ((new \OPNsense\Auth\AuthenticationFactory())->listSSOproviders('WebGui') as $provider):?>
+<div class="login-sso-link-container">
+    <?=$provider->renderLink();?>
+</div>
+<?php    endforeach;?>
 
       <?php if (!$have_cookies && isset($_POST['login'])) : ?>
         <br /><br />

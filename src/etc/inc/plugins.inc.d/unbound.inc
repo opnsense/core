@@ -102,7 +102,7 @@ function unbound_optimization()
     return $optimization;
 }
 
-function _unbound_service_mount_sync($umount=false)
+function _unbound_service_mount_sync($umount = false)
 {
     $mountpoints = [
         '/var/unbound/dev' => [
@@ -124,7 +124,7 @@ function _unbound_service_mount_sync($umount=false)
     if (!$ret_mnt && !empty($out_mnt[0])) {
         $tmp = json_decode($out_mnt[0], true) ?? [];
         if (!empty($tmp['mount']) && !empty($tmp['mount']['mounted'])) {
-            foreach($tmp['mount']['mounted'] as $dev) {
+            foreach ($tmp['mount']['mounted'] as $dev) {
                 if (!empty($dev['node'])) {
                     $mounted[$dev['node']] = $dev;
                 }
@@ -146,7 +146,6 @@ function _unbound_service_mount_sync($umount=false)
             mwexecf($mntcmd, $mntargs);
         }
     }
-
 }
 
 function _unbound_service_stop()
