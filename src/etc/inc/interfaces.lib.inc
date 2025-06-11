@@ -733,7 +733,7 @@ function get_interface_list($only_active = false, $include_dmesg = false)
 
         foreach ($dmesg_arr as $dmesg_line) {
             $descr = [];
-            if (preg_match("/^{$ifname}: <(.*?)>/i", $dmesg_line, $descr) == 1) {
+            if (preg_match("/\b{$ifname}: <(.*?)>/i", $dmesg_line, $descr) == 1) {
                 $toput['descr'] = $descr[1];
                 break;
             }
