@@ -88,11 +88,16 @@ class FilterController extends FilterBaseController
         /* filter logic for mvc rules */
         $filter_funct_mvc = function ($record) use ($categories, $interfaces, $show_all) {
             $is_cat = empty($categories) || array_intersect(explode(',', $record->categories), $categories);
+            $rule_interfaces = explode(',', (string)$record->interface);
+
             if (empty($interfaces)) {
-                $is_if = count(explode(',', $record->interface)) > 1 || $record->interface->isEmpty();
+                $is_if = count($rule_interfaces) > 1 || $record->interface->isEmpty();
+            } elseif ($show_all) {
+                $is_if = array_intersect($interfaces, $rule_interfaces) || $record->interface->isEmpty();
             } else {
-                $is_if = array_intersect(explode(',', $record->interface), $interfaces) || $record->interface->isEmpty();
+                $is_if = count($rule_interfaces) === 1 && $rule_interfaces[0] === $interfaces[0];
             }
+
             return $is_cat && $is_if;
         };
 
