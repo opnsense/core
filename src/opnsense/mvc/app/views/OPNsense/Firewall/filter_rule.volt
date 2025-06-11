@@ -41,7 +41,6 @@
             });
         }
 
-
         // Get all advanced fields, used for advanced mode tooltips
         const advancedFieldIds = "{{ advancedFieldIds }}".split(',');
 
@@ -67,8 +66,6 @@
             toggle:'/api/firewall/filter/toggle_rule/',
             options: {
                 responsive: true,
-                triggerEditFor: getUrlHash('edit'),
-                initialSearchPhrase: getUrlHash('search'),
                 rowCount: [20,50,100,200,500,1000],
                 requestHandler: function(request){
                     // Add category selectpicker
@@ -538,6 +535,9 @@
             $categoryFilter.val(currentSelection).selectpicker('refresh');
         });
 
+        // Track if user has actually changed the interface dropdown, or it was the controller
+        let interfaceInitialized = false;
+
         // Populate interface selectpicker
         $('#interface_select').fetch_options(
             '/api/firewall/filter/get_interface_list',
@@ -570,6 +570,20 @@
                         };
                     });
                 }
+                // Apply url hash if present, defer after layout and style recalculations
+                requestAnimationFrame(() => {
+                    const match = window.location.hash.match(/^#interface=([^&]+)/);
+                    if (match) {
+                        const ifaceFromHash = decodeURIComponent(match[1]);
+
+                        const allOptions = Object.values(data).flatMap(group => group.items.map(i => i.value));
+                        if (allOptions.includes(ifaceFromHash)) {
+                            $('#interface_select').val(ifaceFromHash).selectpicker('refresh');
+                            grid.bootgrid('reload');
+                        }
+                    }
+                    interfaceInitialized = true;
+                });
                 return data;
             },
             false,
@@ -580,7 +594,13 @@
 
         // move selectpickers into action bar
         $("#interface_select_container").detach().insertBefore('#{{formGridFilterRule["table_id"]}}-header > .row > .actionBar > .search');
-        $('#interface_select').change(function(){
+        $('#interface_select').on('changed.bs.select', function () {
+            // Only update url hash when user has changed the dropdown
+            if (!interfaceInitialized) return;
+
+            const hashVal = encodeURIComponent($(this).val() ?? '');
+            history.replaceState(null, null, `#interface=${hashVal}`);
+
             grid.bootgrid('reload');
         });
 
@@ -741,7 +761,7 @@
                     data-toggle="tooltip"
                     data-placement="bottom"
                     data-delay='{"show": 1000}'
-                    title="{{ lang._('Show automatically generated rules and statistics') }}">
+                    title="{{ lang._('Show all rules and statistics') }}">
                 <i class="fa fa-eye" aria-hidden="true"></i>
                 {{ lang._('Inspect') }}
             </button>
