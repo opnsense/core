@@ -1205,6 +1205,7 @@ function system_cache_flush()
 
     (new OPNsense\Base\Menu\MenuSystem())->invalidateCache();
 
+    /* clears ALL model caches, not just model specific ones via flushCacheData() */
     foreach (['/var/lib/php/tmp', '/tmp'] as $tmpdir) {
         foreach (glob(sprintf("%s/mdl_cache_*.json", $tmpdir)) as $filename) {
             @unlink($filename);
