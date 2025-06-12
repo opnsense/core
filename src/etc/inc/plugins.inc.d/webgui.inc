@@ -258,6 +258,7 @@ EOD;
     if (!empty($config['system']['webgui']['httpaccesslog'])) {
         $lighty_use_syslog .= 'accesslog.use-syslog="enable"' . "\n";
     }
+
     $change_user = '';
     if (!empty($config['system']['webgui']['noroot']) || file_exists('/var/run/www_non_root')) {
         $change_user .= "server.username = \"wwwonly\"\n";
@@ -276,7 +277,7 @@ fastcgi.server = ( ".php" =>
       "bin-environment" => (
         "PHP_FCGI_CHILDREN" => "5",
         "PHP_FCGI_MAX_REQUESTS" => "100",
-        "TMPDIR" => "/var/lib/php/tmp"
+        "TMPDIR" => "/var/lib/php/tmp",
       ),
       "bin-path" => "/usr/local/bin/php-cgi"
     )
