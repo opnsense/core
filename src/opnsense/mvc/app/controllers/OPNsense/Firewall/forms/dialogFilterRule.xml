@@ -654,7 +654,7 @@
         <label>Icons</label>
         <type>ignore</type>
         <grid_view>
-            <width>150</width>
+            <width>120</width>
             <sortable>false</sortable>
             <formatter>ruleIcons</formatter>
             <sequence>15</sequence>

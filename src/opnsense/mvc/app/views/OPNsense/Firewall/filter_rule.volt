@@ -85,7 +85,6 @@
                 },
                 headerFormatters: {
                     enabled: function (column) { return "" },
-                    icons: function (column) { return "" },
                     source_port: function (column) { return "{{ lang._('Port') }}" },
                     destination_port: function (column) { return "{{ lang._('Port') }}" },
                     interface: function (column) {
