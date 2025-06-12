@@ -234,6 +234,8 @@ function recover_ports()
     $tempfile = fopen($tempname, 'w');
     $luacount = 0;
 
+    putenv('CORE_USER_GROUP_ONLY=yes');
+
     foreach ($pkgs as $pkg) {
         $raw = exec('/usr/local/sbin/pkg-static info --raw --raw-format json-compact ' . $pkg);
         $info = json_decode($raw, true);

@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2024 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2025 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -116,6 +116,8 @@ CORE_PACKAGESITE?=	https://pkg.opnsense.org
 CORE_PRODUCT?=		OPNsense
 CORE_REPOSITORY?=	${CORE_ABI}/latest
 CORE_WWW?=		https://opnsense.org/
+CORE_USER?=		wwwonly
+CORE_GROUP?=		${CORE_USER}
 
 CORE_COPYRIGHT_HOLDER?=	Deciso B.V.
 CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
@@ -239,6 +241,8 @@ manifest:
 	@echo "comment: \"${CORE_COMMENT}\""
 	@echo "desc: \"${CORE_HASH}\""
 	@echo "maintainer: \"${CORE_MAINTAINER}\""
+	@echo "users: [ \"${CORE_USER}\" ]"
+	@echo "groups: [ \"${CORE_GROUP}\" ]"
 	@echo "www: \"${CORE_WWW}\""
 	@echo "message: \"${CORE_MESSAGE}\""
 	@echo "categories: [ \"sysutils\", \"www\" ]"
