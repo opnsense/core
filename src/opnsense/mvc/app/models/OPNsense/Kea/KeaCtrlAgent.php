@@ -42,15 +42,15 @@ class KeaCtrlAgent extends BaseModel
                 'control-sockets' => [
                     'dhcp4' => [
                         'socket-type' => 'unix',
-                        'socket-name' => '/var/run/kea4-ctrl-socket',
+                        'socket-name' => '/var/run/kea/kea4-ctrl-socket',
                     ],
                     'dhcp6' => [
                         'socket-type' => 'unix',
-                        'socket-name' => '/var/run/kea6-ctrl-socket',
+                        'socket-name' => '/var/run/kea/kea6-ctrl-socket',
                     ],
                     'd2' => [
                         'socket-type' => 'unix',
-                        'socket-name' => '/var/run/kea-ddns-ctrl-socket',
+                        'socket-name' => '/var/run/kea/kea-ddns-ctrl-socket',
                     ]
                 ],
                 'loggers' => [

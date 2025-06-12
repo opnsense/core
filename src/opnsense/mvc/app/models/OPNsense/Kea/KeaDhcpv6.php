@@ -208,7 +208,7 @@ class KeaDhcpv6 extends BaseModel
                 ],
                 'control-socket' => [
                     'socket-type' => 'unix',
-                    'socket-name' => '/var/run/kea6-ctrl-socket'
+                    'socket-name' => '/var/run/kea/kea6-ctrl-socket'
                 ],
                 'loggers' => [
                     [
