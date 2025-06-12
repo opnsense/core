@@ -258,7 +258,7 @@ EOD;
 fastcgi.server = ( ".php" =>
   ( "localhost" =>
     (
-      "socket" => "/var/lib/php/tmp/php-fastcgi.socket",
+      "socket" => "/tmp/php-fastcgi.socket",
       "max-procs" => 8,
       "bin-environment" => (
         "PHP_FCGI_CHILDREN" => "5",
