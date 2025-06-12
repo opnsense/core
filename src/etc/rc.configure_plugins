@@ -41,8 +41,7 @@ require_once 'util.inc';
 $script = !empty($argv[1]) ? $argv[1] : 'POST_INSTALL';
 
 /* flush user-facing caches */
-(new OPNsense\Core\ACL())->invalidateCache();
-(new OPNsense\Base\Menu\MenuSystem())->invalidateCache();
+system_cache_flush();
 
 /* reload subsystem that may have changed */
 if ($script == 'POST_INSTALL') {
