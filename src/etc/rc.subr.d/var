@@ -67,6 +67,7 @@ done
 # setup output directory for various php ui components
 for PHPDIR in /var/lib/php/sessions /var/lib/php/tmp /var/lib/php/cache; do
 	mkdir -p ${PHPDIR}
+	chown root:wheel ${PHPDIR}
 	chmod 750 ${PHPDIR}
 	rm -f ${PHPDIR}/*
 done
