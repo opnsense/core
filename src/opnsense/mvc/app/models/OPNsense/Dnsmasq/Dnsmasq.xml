@@ -132,6 +132,9 @@
                 <IpAllowed>N</IpAllowed>
                 <Required>Y</Required>
             </domain>
+            <ipset type="JsonKeyValueStoreField">
+                <ConfigdPopulateAct>dnsmasq list ipset_alias</ConfigdPopulateAct>
+            </ipset>
             <srcip type="NetworkField">
                 <NetMaskAllowed>N</NetMaskAllowed>
             </srcip>
