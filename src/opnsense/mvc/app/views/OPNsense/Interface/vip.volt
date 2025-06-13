@@ -17,7 +17,7 @@
                     formatters: {
                         networkFormatter: function(column, row) {
                             return row.subnet + (row.subnet_bits ? '/' + row.subnet_bits : '');
-                        }
+                        },
                     },
                 }
             }

@@ -66,6 +66,7 @@
             del:'/api/firewall/filter/del_rule/',
             toggle:'/api/firewall/filter/toggle_rule/',
             options: {
+                responsive: true,
                 triggerEditFor: getUrlHash('edit'),
                 initialSearchPhrase: getUrlHash('search'),
                 rowCount: [20,50,100,200,500,1000],
@@ -713,7 +714,7 @@
         </div>
     </div>
     <!-- grid -->
-    {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '9em'}) }}
+    {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '150'}) }}
 </div>
 
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/filter/apply'}) }}

@@ -31,6 +31,7 @@ POSSIBILITY OF SUCH DAMAGE.
         $("#grid-arp").UIBootgrid({
           search:'/api/diagnostics/interface/search_arp/',
           options:{
+            virtualDOM: true,
             requestHandler: function(request){
                 request['resolve'] = $("#resolve").prop("checked") ? 'yes': 'no';
                 return request;

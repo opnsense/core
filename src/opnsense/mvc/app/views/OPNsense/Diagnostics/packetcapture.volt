@@ -46,6 +46,7 @@
         let grid_jobs = $("#grid-jobs").UIBootgrid({
             search:'/api/diagnostics/packet_capture/search_jobs',
             options:{
+                selection: false,
                 formatters: {
                     "commands": function (column, row) {
                         let btns = [];

@@ -37,6 +37,7 @@ $( document ).ready(function() {
             selection: true,
             multiSelect: false,
             rowSelect: true,
+            stickySelect: true,
             formatters: {
                 "mxformatter": function (column, row) {
                     /* Format the "Value" column so it shows either an MX host ("MX" type) or a raw IP address ("A" type) */
@@ -51,7 +52,9 @@ $( document ).ready(function() {
         $("#{{formGridHostAlias['table_id']}}").bootgrid('reload');
     }).on("deselected.rs.jquery.bootgrid", function (e, rows) {
         // de-select not allowed, make sure always one items is selected. (sticky selected)
-        if ($("#{{formGridHostOverride['table_id']}}").bootgrid("getSelectedRows").length == 0) {
+        if ($("table#{{formGridHostOverride['table_id']}}").length > 0 &&
+            $("#{{formGridHostOverride['table_id']}}").bootgrid("getSelectedRows").length == 0) {
+            // XXX remove for 25.7
             $("#{{formGridHostOverride['table_id']}}").bootgrid('select', [rows[0].uuid]);
         }
         $("#{{formGridHostAlias['table_id']}}").bootgrid('reload');

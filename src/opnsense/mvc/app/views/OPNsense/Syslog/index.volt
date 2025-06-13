@@ -41,11 +41,19 @@
                 toggle:'/api/syslog/settings/toggleDestination/'
             }
         );
+
+
+        let gridStatsInitialized = false;
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             if (e.target.id === 'statistics') {
-                $("#grid-statistics").UIBootgrid({
-                    search: '/api/syslog/service/stats/'
-                });
+                if (!gridStatsInitialized) {
+                    $("#grid-statistics").UIBootgrid({
+                        search: '/api/syslog/service/stats/'
+                    });
+                    let gridStatsInitialized = true;
+                } else {
+                    $("#grid-statistics").bootgrid('reload');
+                }
             }
         });
 

@@ -24,11 +24,12 @@
                     });
                     grid.on('loaded.rs.jquery.bootgrid', function () {
                         grid.find('.delete-ip').on('click', function (e) {
+                            e.stopPropagation();
                             ajaxCall(
                                 '/api/firewall/alias_util/delete/' + $('#tablename').val(),
                                 {'address': $(this).data('row-id')},
                                 function () {
-                                    std_bootgrid_reload('alias_content')
+                                    $('#alias_content').bootgrid('reload');
                                 });
                         });
                         // header labels

@@ -603,6 +603,7 @@
                     let grid_queries = $("#grid-queries").UIBootgrid({
                         search:'/api/unbound/overview/searchQueries/',
                         options: {
+                            virtualDOM: true,
                             rowSelect: false,
                             multiSelect: false,
                             selection: false,
