@@ -86,7 +86,7 @@
           </select>
       </div>
   </div>
-  {{ partial('layout_partials/base_bootgrid_table', formGridVip + {'command_width': '90'})}}
+  {{ partial('layout_partials/base_bootgrid_table', formGridVip)}}
 </div>
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/interfaces/vip_settings/reconfigure'}) }}
 {{ partial('layout_partials/base_dialog',['fields':formDialogVip,'id':formGridVip['edit_dialog_id'],'label':lang._('Edit Virtual IP')])}}
