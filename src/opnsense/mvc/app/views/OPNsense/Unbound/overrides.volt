@@ -51,6 +51,12 @@ $( document ).ready(function() {
     }).on("selected.rs.jquery.bootgrid", function (e, rows) {
         $("#{{formGridHostAlias['table_id']}}").bootgrid('reload');
     }).on("deselected.rs.jquery.bootgrid", function (e, rows) {
+        // de-select not allowed, make sure always one items is selected. (sticky selected)
+        if ($("table#{{formGridHostOverride['table_id']}}").length > 0 &&
+            $("#{{formGridHostOverride['table_id']}}").bootgrid("getSelectedRows").length == 0) {
+            // XXX remove for 25.7
+            $("#{{formGridHostOverride['table_id']}}").bootgrid('select', [rows[0].uuid]);
+        }
         $("#{{formGridHostAlias['table_id']}}").bootgrid('reload');
     }).on("loaded.rs.jquery.bootgrid", function (e) {
         let ids = $("#{{formGridHostOverride['table_id']}}").bootgrid("getCurrentRows");

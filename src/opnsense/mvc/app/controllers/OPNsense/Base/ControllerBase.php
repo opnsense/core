@@ -66,9 +66,10 @@ class ControllerBase extends ControllerRoot
           '/ui/js/jquery-3.5.1.min.js',
           // JQuery Tokenize2 (https://zellerda.github.io/Tokenize2/)
           '/ui/js/tokenize2.js',
-          // Bootgrid (grid system from http://www.jquery-bootgrid.com/ )
+
           '/ui/js/tabulator.min.js',
           '/ui/js/opnsense_bootgrid.js',
+
           // Bootstrap type ahead
           '/ui/js/bootstrap3-typeahead.min.js',
           // OPNsense standard toolkit
@@ -103,6 +104,7 @@ class ControllerBase extends ControllerRoot
             '/ui/assets/fontawesome/css/v4-shims.min.css',
             // JQuery Tokenize2 (https://zellerda.github.io/Tokenize2/)
             '/css/tokenize2.css',
+            /* XXX provided for backwards compatibility */
             // Bootgrid (grid system from http://www.jquery-bootgrid.com/ )
             '/css/jquery.bootgrid.css'
         ];

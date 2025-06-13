@@ -155,6 +155,7 @@ class UIBootgrid {
             commands: {}, //additional registered commands
             virtualDOM: false,
             stickySelect: false,
+            rowSelect: false,
             triggerEditFor: null,
             static: false, // no persistent storage, no resizable columns
             ...options
@@ -229,13 +230,21 @@ class UIBootgrid {
             this.compatOptions['sortMode'] = 'local';
             this.compatOptions['paginationMode'] = 'local';
             this.compatOptions['filterMode'] = 'local';
+        } else {
+            this.compatOptions['ajaxURL'] = compatOptions.search;
         }
 
-        if (!(bootGridOptions?.selection ?? true)) {
-            this.compatOptions['selectableRows'] = false;
-            this.compatOptions['rowHeader'] = null;
-        } else if (!(bootGridOptions?.multiSelect ?? true)) {
+        if (bootGridOptions?.selection ?? false) {
             this.compatOptions['selectableRows'] = 1;
+            if (bootGridOptions?.multiSelect ?? false) {
+                this.compatOptions['selectableRows'] = true;
+            }
+            // TODO rowSelect toggle (currently not support by tabulator)
+
+            this.options.rowSelect = bootGridOptions?.rowSelect ?? false;
+        } else {
+             // remove checkbox select column
+            this.compatOptions['rowHeader'] = null;
         }
 
         if (bootGridOptions?.stickySelect ?? false) {
@@ -255,9 +264,6 @@ class UIBootgrid {
             // -1 signified "all" previously. rowCount and paginationSize are handled in this wrapper
             this.options.rowCount = bootGridOptions.rowCount.map(item => item === -1 ? true : item);
         }
-
-        // we assume a url is unconditional
-        this.compatOptions['ajaxURL'] = compatOptions?.search;
 
         if (bootGridOptions?.initialSearchPhrase ?? false) {
             this.searchPhrase = bootGridOptions.initialSearchPhrase;
@@ -287,8 +293,8 @@ class UIBootgrid {
             }
         }
 
-        if (compatOptions?.datakey) {
-            this.options.datakey = compatOptions.datakey;
+        if (bootGridOptions?.datakey) {
+            this.options.datakey = bootGridOptions.datakey;
         }
 
         if (bootGridOptions?.onBeforeRenderDialog) {
@@ -313,8 +319,8 @@ class UIBootgrid {
         if (compatOptions.toggle) this.crud.toggle = compatOptions.toggle;
 
         // any additional commands?
-        if ('commands' in compatOptions) {
-            this.options.commands = compatOptions.commands;
+        if ('commands' in bootGridOptions) {
+            this.options.commands = bootGridOptions.commands;
         }
 
         // check if add / delete buttons are present
@@ -340,6 +346,11 @@ class UIBootgrid {
                     id: def.field,
                     visible: def.visible
                 };
+
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                })
+
                 return formatterFn(column, cell.getData(), onRendered);
             }
         }
@@ -352,6 +363,11 @@ class UIBootgrid {
                     id: def.field,
                     visible: def.visible
                 };
+
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                })
+
                 return formatterFn(column);
             }
         }
@@ -428,7 +444,7 @@ class UIBootgrid {
                     data[option] = value === '' ? null : value;
                 }
 
-                if (data.type && this.options.ajax && data.type in this.options.formatters && data.type !== 'boolean') {
+                if (data.type && data.type in this.options.formatters && data.type !== 'boolean') {
                     // use formatters instead of converters
                     data.formatter = data.type;
                 }
@@ -637,41 +653,6 @@ class UIBootgrid {
                 this.table.redraw();
             }));
 
-            if (this.options.virtualDOM) {
-                // Start watching for dynamically inserted DOM elements and trigger their tooltips and commands.
-                // XXX This has a slight performance penalty on virtual DOM scrolling for large datasets.
-                let targetNode = $(`#${this.id} .tabulator-table`)[0];
-                var observer = new MutationObserver((mutationsList, observer) => {
-                    mutationsList.forEach((mutation) => {
-                    mutation.addedNodes.forEach((node) => {
-                        if (node.nodeType === 1 && $(node).hasClass('tabulator-row')) {
-                            let commands = $(node).find('.bootgrid-tooltip');
-                            if (commands.length > 0) {
-                                this._tooltips();
-                            }
-
-                            let actions = $(node).find('[class*="command-"]');
-                            if (actions.length > 0) {
-                                actions.each((i, el) => {
-                                    let classes = $(el).attr('class').split(/\s+/);
-                                    let commandClass = classes.find(c => c.startsWith('command-'));
-                                    if (commandClass) {
-                                        let command = commandClass.replace('command-', '');
-                                        this._wireCommands($(el), command);
-                                    }
-                                })
-                            }
-                        }
-                    });
-                    });
-                });
-
-                observer.observe(targetNode, {
-                    childList: true,
-                    subtree: false
-                });
-            }
-
             if (!this.options.ajax) {
                 this.table.setPageSize(this.curRowCount);
 
@@ -726,7 +707,7 @@ class UIBootgrid {
         this.table.on('cellMouseEnter', onMouseEnter);
 
         this.table.on('rowSelected', (row) => {
-            this.$element.trigger("selected.rs.jquery.bootgrid", [this.table.getSelectedData()]);
+            this.$element.trigger("selected.rs.jquery.bootgrid", [[row.getData()]]);
         });
 
         this.table.on('rowDeselected', (row) => {
@@ -823,6 +804,32 @@ class UIBootgrid {
 
         // backwards compat
         this.$element.trigger("loaded.rs.jquery.bootgrid");
+    }
+
+    _onCellRendered(cell, formatterParams) {
+        if (!this.options.virtualDOM) {
+            // if the DOM isn't virtual, all tooltips will have been rendered
+            return;
+        }
+
+        const $el = $(cell.getElement())
+        let elements = $el.find('.bootgrid-tooltip');
+
+        if (elements.length > 0) {
+            this._tooltips();
+        }
+
+        let actions = $el.find('[class*="command-"]');
+        if (actions.length > 0) {
+            actions.each((i, el) => {
+                let classes = $(el).attr('class').split(/\s+/);
+                let commandClass = classes.find(c => c.startsWith('command-'));
+                if (commandClass) {
+                    let command = commandClass.replace('command-', '');
+                    this._wireCommands($(el), command);
+                }
+            })
+        }
     }
 
     _tooltips() {
@@ -1107,7 +1114,7 @@ class UIBootgrid {
             },
             movableColumns: true,
             persistenceID:this.persistenceID,
-            selectableRows: true,
+            selectableRows: false,
             selectableRowsPersistence: false,
             rowHeader: { // implements row selection checkbox
                 formatter:"rowSelection",
@@ -1370,6 +1377,10 @@ class UIBootgrid {
                  * default formatter: called for every cell where no formatter is explicitly defined.
                  * No sanitization is performed
                  */
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                });
+
                 return cell.getValue();
             },
             commands: (cell, formatterParams, onRendered) => {
@@ -1404,35 +1415,60 @@ class UIBootgrid {
                         );
                     }
                 });
+
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                });
+
                 return html.join('\n');
             },
             commandsWithInfo: (cell, formatterParams, onRendered) => {
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                });
+
                 return '<button type="button" class="btn btn-xs btn-default command-info bootgrid-tooltip" data-row-id="' + cell.getData()[this.options.datakey] + '"><span class="fa fa-fw fa-info-circle"></span></button> ' +
                     '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + cell.getData()[this.options.datakey] + '"><span class="fa fa-fw fa-pencil"></span></button>' +
                     '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + cell.getData()[this.options.datakey] + '"><span class="fa fa-fw fa-clone"></span></button>' +
                     '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + cell.getData()[this.options.datakey] + '"><span class="fa fa-fw fa-trash-o"></span></button>';
             },
             rowtoggle: (cell, formatterParams, onRendered) => {
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                });
+
                 if (parseInt(cell.getValue(), 2) === 1) {
                     return '<span style="cursor: pointer;" class="fa fa-fw fa-check-square-o command-toggle bootgrid-tooltip" data-value="1" data-row-id="' + cell.getData()[this.options.datakey] + '"></span>';
                 } else {
                     return '<span style="cursor: pointer;" class="fa fa-fw fa-square-o command-toggle bootgrid-tooltip" data-value="0" data-row-id="' + cell.getData()[this.options.datakey] + '"></span>';
                 }
             },
-            boolean: (cell, formatterParams) => {
+            boolean: (cell, formatterParams, onRendered) => {
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                });
+
                 if (parseInt(cell.getValue(), 2) === 1) {
                     return "<span class=\"fa fa-fw fa-check\" data-value=\"1\" data-row-id=\"" + cell.getData()[this.options.datakey] + "\"></span>";
                 } else {
                     return "<span class=\"fa fa-fw fa-times\" data-value=\"0\" data-row-id=\"" + cell.getData()[this.options.datakey] + "\"></span>";
                 }
             },
-            bytes: (cell, formatterParams) => {
+            bytes: (cell, formatterParams, onRendered) => {
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                });
+
                 if (cell.getValue() && cell.getValue() > 0) {
                     return byteFormat(cell.getValue(), 2);
                 }
                 return '';
             },
-            statusled: (cell, formatterParams) => {
+            statusled: (cell, formatterParams, onRendered) => {
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                });
+
                 if (cell.getValue() && cell.getValue() == 'red') {
                     return "<span class=\"fa fa-fw fa-square text-danger\"></span>";
                 } else if (cell.getValue() && cell.getValue() == 'green') {
@@ -1442,6 +1478,10 @@ class UIBootgrid {
                 }
             },
             datetime: (cell, formatterParams, onRendered) => {
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                });
+
                 return cell.getValue() ? moment(parseInt(cell.getValue())*1000).format("lll") : "";
             },
         }
@@ -1832,9 +1872,9 @@ class UIBootgrid {
         })
     }
 
-    select(datakeys) {
-        datakeys.forEach((datakey) => {
-            this.table.selectRow(datakey);
+    select(ids) {
+        ids.forEach((id) => {
+            this.table.selectRow(id);
         })
     }
 
