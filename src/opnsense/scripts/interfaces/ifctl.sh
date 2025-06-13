@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2022-2024 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2022-2025 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -61,10 +61,24 @@ flush_slaac()
 	done
 }
 
+delete_or_update()
+{
+	TEMP=${1}
+	FILE=${2}
+
+	flush_routes
+
+	if [ -s ${TEMP} ]; then
+		mv ${TEMP} ${FILE}
+	else
+		rm -f ${FILE}
+	fi
+}
+
 # default to IPv4 with nameserver mode
 set -- -4 -n ${@}
 
-while getopts 46a:cdfi:lnOprsV OPT; do
+while getopts 46a:cdfi:lnOprsuV OPT; do
 	case ${OPT} in
 	4)
 		AF=inet
@@ -107,6 +121,9 @@ while getopts 46a:cdfi:lnOprsV OPT; do
 		;;
 	s)
 		MD="searchdomain"
+		;;
+	u)
+		DO_COMMAND="-u"
 		;;
 	V)
 		DO_VERBOSE="-V"
@@ -239,13 +256,34 @@ if [ -z "${IF}" ]; then
 	exit 0
 fi
 
-if [ "${DO_COMMAND}" = "-d" ]; then
-	flush_routes
-	rm -f ${FILE}
-fi
+TEMP=$(mktemp ${FILE}.XXXXXX)
+EXIT=0
+
+: > ${TEMP}
 
 for CONTENT in ${DO_CONTENTS}; do
-	echo "${CONTENT}" >> ${FILE}
+	echo "${CONTENT}" >> ${TEMP}
+done
+
+if [ "${DO_COMMAND}" = "-d" ]; then
+	delete_or_update ${TEMP} ${FILE}
+elif [ "${DO_COMMAND}" = "-u" ]; then
+	DIFF=${FILE}
+	if [ ! -f ${FILE} ]; then
+		DIFF=/dev/null
+	fi
+	if ! cmp -s ${TEMP} ${DIFF}; then
+		delete_or_update ${TEMP} ${FILE}
+	else
+		EXIT=1
+	fi
+else
+	cat ${TEMP} >> ${FILE}
+fi
+
+rm -f ${TEMP}
+
+for CONTENT in ${DO_CONTENTS}; do
 	# null route handling for delegated prefix
 	if [ ${MD} = "prefix" -a "${CONTENT##*/}" != "64" ]; then
 		route add -${AF} -blackhole ${CONTENT} ::1
@@ -253,7 +291,7 @@ for CONTENT in ${DO_CONTENTS}; do
 done
 
 if [ -n "${DO_COMMAND}${DO_CONTENTS}" ]; then
-	exit 0
+	exit ${EXIT}
 fi
 
 if [ ! -f ${FILE} ]; then
