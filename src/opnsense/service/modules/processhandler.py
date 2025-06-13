@@ -51,7 +51,7 @@ class Handler(object):
 
         processflow:
             Handler ( waits for client )
-                -> new client is send to HandlerClient
+                -> new client is sent to HandlerClient
                     -> execute ActionHandler command using BaseAction type objects (delivered via ActionFactory)
                     <- send back result string
     """
