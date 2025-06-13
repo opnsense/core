@@ -60,6 +60,9 @@ class AliasesField extends HostnameField
         } elseif (!empty($value)) {
             /* update only */
             return parent::setValue($value);
+        } else {
+            /* clear if empty */
+            return parent::setValue('');
         }
     }
 }
