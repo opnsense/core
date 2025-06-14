@@ -45,6 +45,8 @@ if grep -q "^interface ${ifname%%:slaac} " /var/etc/radvd.conf; then
 	exit 0
 fi
 
+need_update=1
+
 # ${1} indicates whether DNS information should be added or deleted.
 
 if [ "${1}" = "-a" ]; then
@@ -65,14 +67,17 @@ if [ "${1}" = "-a" ]; then
 		fi
 	done
 
-	/usr/local/sbin/ifctl -i ${ifname} -6nd ${nameservers}
-	/usr/local/sbin/ifctl -i ${ifname} -6sd ${searchlist}
-	/usr/local/sbin/ifctl -i ${ifname} -6rd -a ${rasrca}
+	need_update=""
+	/usr/local/sbin/ifctl -i ${ifname} -6nu ${nameservers} && need_update=1
+	/usr/local/sbin/ifctl -i ${ifname} -6su ${searchlist} && need_update=1
+	/usr/local/sbin/ifctl -i ${ifname} -6ru -a ${rasrca} && need_update=1
 elif [ "${1}" = "-d" ]; then
 	/usr/local/sbin/ifctl -i ${ifname} -6nd
 	/usr/local/sbin/ifctl -i ${ifname} -6sd
 	/usr/local/sbin/ifctl -i ${ifname} -6rd
 fi
 
-# remove slaac suffix here to reload correct interface
-/usr/local/sbin/configctl -d interface newipv6 ${ifname%%:slaac}
+if [ -n "${need_update}" ]; then
+	# remove slaac suffix here to reload correct interface
+	/usr/local/sbin/configctl -d interface newipv6 ${ifname%%:slaac}
+fi
