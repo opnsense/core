@@ -58,6 +58,7 @@ def exec_config_cmd(exec_command):
         syslog_error('unable to connect to configd socket (@%s)'%configd_socket_name)
         print('unable to connect to configd socket (@%s)'%configd_socket_name, file=sys.stderr)
         yield None
+        return
 
     try:
         sock.send(exec_command.encode())
@@ -145,12 +146,12 @@ else:
     for exec_command in exec_commands:
         if args.d:
             exec_command = '&' + exec_command
-        endmarker = (chr(0), chr(0), chr(0))
+        endmarker = chr(0) * 3
         for block in exec_config_cmd(exec_command=exec_command):
             if block is None:
                 sys.exit(-1)
             elif not args.q:
                 if block.endswith(endmarker):
-                    print(block[:-3].rstrip())
+                    print(block[:-len(endmarker)].rstrip())
                 else:
                     print(block, end="")
