@@ -402,7 +402,7 @@ class Gateways extends BaseModel
                     // default configuration, when not set in gateway_item
                     $thisconf = [
                         "interface" => $ifname,
-                        "weight" => 1,
+                        "weight" => '1',
                         "ipprotocol" => $ipproto,
                         "name" => strtoupper("{$descr}_{$ctype}"),
                         "descr" => "Interface " . strtoupper("{$descr}_{$ctype}") . " Gateway",
@@ -671,7 +671,7 @@ class Gateways extends BaseModel
                                     'int' => $gateway['if'],
                                     'gwip' => $gateway['gateway'],
                                     'poolopts' => isset($gw_group->poolopts) ? (string)$gw_group->poolopts : null,
-                                    'weight' => !empty($gateway['weight']) ? $gateway['weight'] : 1
+                                    'weight' => !empty($gateway['weight']) ? $gateway['weight'] : '1',
                                 ];
                                 $all_tiers[$tieridx][] = $gateway_item;
                                 if ($is_up) {
