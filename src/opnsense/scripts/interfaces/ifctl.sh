@@ -68,9 +68,10 @@ delete_or_update()
 
 	flush_routes
 
-	rm -f ${FILE}
 	if [ -s ${TEMP} ]; then
 		mv ${TEMP} ${FILE}
+	else
+		rm -f ${FILE}
 	fi
 }
 
