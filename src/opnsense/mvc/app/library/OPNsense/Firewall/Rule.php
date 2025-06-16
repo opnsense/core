@@ -58,7 +58,7 @@ abstract class Rule
                 }
             }
             foreach ((new Alias())->aliases->alias->iterateItems() as $alias) {
-                if (preg_match("/port/i", (string)$alias->type)) {
+                if ((string)$alias->type == 'port') {
                     continue;
                 }
                 static::$aliasMap[(string)$alias->name] = sprintf('$%s', $alias->name);
