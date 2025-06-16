@@ -271,7 +271,7 @@ elif [ "${DO_COMMAND}" = "-u" ]; then
 	if [ ! -f ${FILE} ]; then
 		DIFF=/dev/null
 	fi
-	if ! diff -q ${TEMP} ${DIFF} > /dev/null; then
+	if ! cmp -s ${TEMP} ${DIFF}; then
 		delete_or_update ${TEMP} ${FILE}
 	else
 		EXIT=1
