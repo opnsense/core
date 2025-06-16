@@ -108,9 +108,9 @@ function legacy_list_aliases($type)
         if ($alias['type'] == 'internal') {
             // XXX: skip internal aliases while still defined as "networks" in the rules pages
             continue;
-        } elseif ($type == "port" && preg_match("/port/i", $alias['type'])) {
+        } elseif ($type == 'port' && $alias['type'] == 'port') {
             $result[] = ['name' => $alias['name'], 'type' => $alias['type']];
-        } elseif ($type != "port" && !preg_match("/port/i", $alias['type'])) {
+        } elseif ($type != 'port' && $alias['type'] != 'port') {
             $result[] = ['name' => $alias['name'], 'type' => $alias['type']];
         }
     }
