@@ -348,7 +348,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
     foreach (array('src', 'dst') as $fam) {
-        if (is_ipaddr($pconfig[$fam])) {
+        if (is_ipaddr($pconfig[$fam]) || is_subnet($pconfig[$fam])) {
             if ((is_ipaddrv6($pconfig[$fam]) || is_subnetv6($pconfig[$fam])) && $pconfig['ipprotocol'] == "inet") {
                 $input_errors[] = gettext("You can not use IPv6 addresses in IPv4 rules.");
             } elseif ((is_ipaddrv4($pconfig[$fam]) || is_subnetv4($pconfig[$fam])) && $pconfig['ipprotocol'] == "inet6") {
