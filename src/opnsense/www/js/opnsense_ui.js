@@ -607,7 +607,7 @@ $.fn.SimpleActionButton = function (params) {
                         updateServiceControlUI(this_button.data('service-widget'));
                     }
                     if (this_button.data('grid-reload')) {
-                        std_bootgrid_reload(this_button.data('grid-reload'));
+                        $(this_button.data('grid-reload')).bootgrid('reload');
                     }
                 });
             }).fail(function () {

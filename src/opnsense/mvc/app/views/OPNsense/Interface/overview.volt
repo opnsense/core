@@ -138,12 +138,12 @@
                         },
                         "status": function (column, row) {
                             let connected = row.status == 'up' ? 'text-success' : 'text-danger';
-
+                            let status = row.status;
                             if (!row.enabled) {
-                                row.status += ' (disabled)';
+                                status += ' (disabled)';
                             }
 
-                            return '<i class="fa fa-plug ' + connected + '" title="' + row.status + '" data-toggle="tooltip"></i>';
+                            return '<i class="fa fa-plug ' + connected + '" title="' + status + '" data-toggle="tooltip"></i>';
                         },
                         "ipv4": function (column, row) {
                             if (row.ipv4) {
@@ -211,7 +211,7 @@
                 }
             }
         ).on("loaded.rs.jquery.bootgrid", function (e) {
-            $('[data-toggle="tooltip"]').tooltip({html:true});
+            $('[data-toggle="tooltip"]').tooltip({container: 'body', html:true});
 
             /* attach event handler to reload buttons */
             $('.interface-reload').each(function () {
@@ -279,7 +279,7 @@
                         }
 
                         $table.append($table_body);
-                        $('[data-toggle="tooltip"]').tooltip({html:true});
+                        $('[data-toggle="tooltip"]').tooltip({container: 'body', html:true});
                         BootstrapDialog.show({
                             title: data['description']['value'],
                             message: $table.prop('outerHTML'),
@@ -306,7 +306,7 @@
                     $expand.show();
                 }
 
-                $expand.click(function () {
+                $expand.click(function (even) {
                     let $collapsed = $route_container.children('.route-content').filter(function() {
                         return $(this).css('display').toLowerCase().indexOf('none') > -1;
                     });
@@ -318,6 +318,9 @@
                         $collapse.hide();
                         $expand.html('Expand');
                     }
+
+                    /* XXX this throws an error until 25.7, but no functional impact */
+                    $("#grid-overview").bootgrid("normalizeRowHeight");
                 });
             });
         });
@@ -385,7 +388,7 @@
             <span class="fa fa-cloud-download"></span>
         </button>
     </div>
-    <table id="grid-overview" class="table table-bordered table-condensed table-hover table-striped">
+    <table id="grid-overview" class="table table-bordered table-condensed table-hover table-striped table-responsive">
         <thead>
             <tr>
                 <th data-column-id="status" data-width="5em" data-formatter="status" data-type="string">{{ lang._('Status') }}</th>
