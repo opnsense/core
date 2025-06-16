@@ -71,7 +71,6 @@ class ControllerBase extends ControllerRoot
           '/ui/js/opnsense_bootgrid_plugin.js',
 
           '/ui/js/tabulator.min.js',
-        //   '/ui/js/opnsense_bootgrid.js', /* include for 25.7 */
 
           // Bootstrap type ahead
           '/ui/js/bootstrap3-typeahead.min.js',
