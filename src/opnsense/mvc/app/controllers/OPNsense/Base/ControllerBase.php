@@ -66,6 +66,7 @@ class ControllerBase extends ControllerRoot
           '/ui/js/jquery-3.5.1.min.js',
           // JQuery Tokenize2 (https://zellerda.github.io/Tokenize2/)
           '/ui/js/tokenize2.js',
+          // Tabulator and related grid integration (https://tabulator.info/)
           '/ui/js/tabulator.min.js',
           '/ui/js/opnsense_bootgrid.js',
           // Bootstrap type ahead
