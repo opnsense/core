@@ -303,8 +303,9 @@ class FilterController extends FilterBaseController
                  * found our target, which will be the sources new place,
                  * reserve the full distance to facilitate for a swap.
                  **/
-                $selected_id = (int)$record->sequence->asFloat();
-                $record->sequence = (string)($prev_sequence + $distance);
+                $selected_id = ($distance >= 2)
+                    ? $prev_sequence + intdiv($distance, 2)
+                    : $record->sequence->asFloat();
                 $target_node = $record;
             } elseif ($uuid == $selected_uuid) {
                 $selected_node = $record;
