@@ -305,7 +305,7 @@ class FilterController extends FilterBaseController
                  **/
                 $selected_id = ($distance >= 2)
                     ? $prev_sequence + intdiv($distance, 2)
-                    : $record->sequence->asFloat();
+                    : (int)$record->sequence->asFloat();
                 $target_node = $record;
             } elseif ($uuid == $selected_uuid) {
                 $selected_node = $record;
