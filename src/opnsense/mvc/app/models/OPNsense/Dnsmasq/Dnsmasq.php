@@ -77,6 +77,10 @@ class Dnsmasq extends BaseModel
                 $tmp_ipv4_cnt = 0;
                 foreach (array_filter(explode(',', (string)$host->ip)) as $ip) {
                     $tmp_ipv4_cnt += (strpos($ip, ':') === false) ? 1 : 0;
+                    /* Partial IPv6 addresses can be duplicate */
+                    if (str_starts_with($ip, '::')) {
+                        continue;
+                    }
                     if ($usedDhcpIpAddresses[$ip] > 1) {
                         $messages->appendMessage(
                             new Message(
