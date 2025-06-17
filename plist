@@ -1297,6 +1297,7 @@
 /usr/local/opnsense/scripts/system/crl_fetch.py
 /usr/local/opnsense/scripts/system/flush_config_history
 /usr/local/opnsense/scripts/system/get_locales.php
+/usr/local/opnsense/scripts/system/get_timezones.php
 /usr/local/opnsense/scripts/system/ha_xmlrpc_exec.php
 /usr/local/opnsense/scripts/system/list_shells.py
 /usr/local/opnsense/scripts/system/nameservers.php
