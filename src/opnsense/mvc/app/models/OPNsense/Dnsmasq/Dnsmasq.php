@@ -75,12 +75,12 @@ class Dnsmasq extends BaseModel
             // all dhcp-host IP addresses must be unique, host overrides can have duplicate IP addresses
             if ($is_dhcp) {
                 $tmp_ipv4_cnt = 0;
-                /* Partial IPv6 addresses can be duplicate */
-                if (str_starts_with($ip, '::')) {
-                    continue;
-                }
                 foreach (array_filter(explode(',', (string)$host->ip)) as $ip) {
                     $tmp_ipv4_cnt += (strpos($ip, ':') === false) ? 1 : 0;
+                    /* Partial IPv6 addresses can be duplicate */
+                    if (str_starts_with($ip, '::')) {
+                        continue;
+                    }
                     if ($usedDhcpIpAddresses[$ip] > 1) {
                         $messages->appendMessage(
                             new Message(
