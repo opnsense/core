@@ -1,6 +1,6 @@
 <model>
     <mount>/dnsmasq</mount>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <items>
         <enable type="BooleanField"/>
         <regdhcp type="BooleanField"/>
@@ -192,6 +192,14 @@
                 <MaximumValue>64</MaximumValue>
             </prefix_len>
             <lease_time type="IntegerField"/>
+            <domain_type type="OptionField">
+                <OptionValues>
+                    <interface>Interface</interface>
+                    <range>Range</range>
+                </OptionValues>
+                <Default>range</Default>
+                <Required>Y</Required>
+            </domain_type>
             <domain type="HostnameField">
                 <IsDNSName>Y</IsDNSName>
                 <IpAllowed>N</IpAllowed>

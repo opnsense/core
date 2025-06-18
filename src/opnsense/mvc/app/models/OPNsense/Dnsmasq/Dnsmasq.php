@@ -65,6 +65,14 @@ class Dnsmasq extends BaseModel
             }
         }
 
+        $usedDhcpDomains = [];
+        foreach ($this->dhcp_ranges->iterateItems() as $range) {
+            if ($range->domain->isEmpty()) {
+                continue;
+            }
+            $usedDhcpDomains[(string)$range->domain][] = (string)$range->domain_type;
+        }
+
         foreach ($this->hosts->iterateItems() as $host) {
             if (!$validateFullModel && !$host->isFieldChanged()) {
                 continue;
@@ -119,13 +127,40 @@ class Dnsmasq extends BaseModel
             $start_inet = strpos($range->start_addr, ':') !== false ? 'inet6' : 'inet';
             $end_inet = strpos($range->end_addr, ':') !== false ? 'inet6' : 'inet';
             $key = $range->__reference;
-            if (!$range->domain->isEmpty() && $range->end_addr->isEmpty()) {
-                $messages->appendMessage(
-                    new Message(
-                        gettext("Can only configure a domain when a full range (including end) is specified."),
-                        $key . ".domain"
-                    )
-                );
+            if (!$range->domain->isEmpty()) {
+                if ((string)$range->domain_type === 'range' && $range->end_addr->isEmpty()) {
+                    $messages->appendMessage(
+                        new Message(
+                            gettext("Can only configure a domain of type 'Range' when a full range (including end) is specified."),
+                            $key . ".end_addr"
+                        )
+                    );
+                }
+
+                if ((string)$range->domain_type === 'interface' && $range->interface->isEmpty()) {
+                    $messages->appendMessage(
+                        new Message(
+                            gettext("A domain of type 'Interface' requires an interface to be selected."),
+                            $key . ".interface"
+                        )
+                    );
+                }
+            }
+
+            if (!$range->domain->isEmpty() && isset($usedDhcpDomains[(string)$range->domain])) {
+                $typesUsed = array_unique($usedDhcpDomains[(string)$range->domain]);
+
+                if (in_array('interface', $typesUsed) && in_array('range', $typesUsed)) {
+                    $messages->appendMessage(
+                        new Message(
+                            sprintf(
+                                gettext("The domain '%s' cannot be used with both types 'Interface' and 'Range'."),
+                                (string)$range->domain
+                            ),
+                            $key . ".domain"
+                        )
+                    );
+                }
             }
 
             if ($start_inet != $end_inet && !$range->end_addr->isEmpty()) {
