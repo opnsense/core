@@ -157,8 +157,10 @@ class Dnsmasq extends BaseModel
                 if (in_array('interface', $typesUsed) && in_array('range', $typesUsed)) {
                     $messages->appendMessage(
                         new Message(
-                            sprintf(gettext("The domain '%s' cannot be used with both types 'Interface' and 'Range'."),
-                            (string)$range->domain),
+                            sprintf(
+                                gettext("The domain '%s' cannot be used with both types 'Interface' and 'Range'."),
+                                (string)$range->domain
+                            ),
                             $key . ".domain"
                         )
                     );
