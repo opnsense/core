@@ -124,7 +124,7 @@
         <type>dropdown</type>
         <style>selectpicker</style>
         <advanced>true</advanced>
-        <help>Choose if the domain will only match clients in this range, or all clients in any subnets on the selected interface. If you create both IPv4 and IPv6 ranges, setting this to interface on both ranges is recommended.</help>
+        <help>Choose if the domain will only match clients in this range, or all clients in any subnets on the selected interface. If you create both IPv4 and IPv6 ranges, setting this to "Interface" on both ranges is recommended.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
