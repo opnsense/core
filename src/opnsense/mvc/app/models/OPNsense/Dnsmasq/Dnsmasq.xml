@@ -197,7 +197,7 @@
                     <interface>Interface</interface>
                     <range>Range</range>
                 </OptionValues>
-                <Default>interface</Default>
+                <Default>range</Default>
                 <Required>Y</Required>
             </domain_type>
             <domain type="HostnameField">
