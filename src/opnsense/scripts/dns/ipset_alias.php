@@ -34,8 +34,7 @@ use OPNsense\Firewall\Alias;
 $result = [];
 $exclude = ['bogons', 'bogonsv6', 'virusprot', 'sshlockout'];
 
-$model = new Alias();
-foreach ($model->aliases->alias->iterateItems() as $alias) {
+foreach ((new Alias())->aliases->alias->iterateItems() as $alias) {
     $name = (string)$alias->name;
     if ((string)$alias->type === "external" && !in_array($name, $exclude, true)) {
         $result[$name] = $name;
