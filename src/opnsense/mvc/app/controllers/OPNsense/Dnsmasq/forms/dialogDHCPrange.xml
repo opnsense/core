@@ -133,7 +133,7 @@
         <id>range.domain</id>
         <label>Domain</label>
         <type>text</type>
-        <help>Offer this domain to dhcp clients.</help>
+        <help>Offer this domain to DHCP clients.</help>
     </field>
     <field>
         <id>range.nosync</id>
