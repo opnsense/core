@@ -536,14 +536,9 @@ abstract class BaseField
     }
 
     /**
-     * check if current value is empty AND NOT zero (either boolean field as false or an empty field)
+     * check if this field is required
      * @return bool
      */
-    public function isEmptyString(): bool
-    {
-        return $this->getCurrentValue() === '';
-    }
-
     public function isRequired(): bool
     {
         return $this->internalIsRequired;
@@ -555,7 +550,7 @@ abstract class BaseField
      */
     public function isEmptyAndRequired(): bool
     {
-        return $this->internalIsRequired && $this->isEmptyString();
+        return $this->internalIsRequired && $this->getCurrentValue() === '';
     }
 
     /**
