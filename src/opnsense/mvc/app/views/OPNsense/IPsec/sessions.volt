@@ -30,11 +30,10 @@
     $( document ).ready(function() {
         let grid_phase1 = $("#grid-phase1").UIBootgrid({
             search:'/api/ipsec/sessions/search_phase1',
-            datakey: 'name',
             options:{
                 initialSearchPhrase: getUrlHash('search'),
                 multiSelect: false,
-                rowSelect: false,
+                rowSelect: true,
                 selection: true,
                 stickySelect: true,
                 formatters:{

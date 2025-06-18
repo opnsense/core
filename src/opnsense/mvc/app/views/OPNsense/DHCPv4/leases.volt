@@ -97,9 +97,6 @@
                     },
                     "statusformatter": function (column, row, onRendered) {
                         let connected = row.status == 'online' ? 'text-success' : 'text-danger';
-                        onRendered(() => {
-                            $('[data-toggle="tooltip"]').tooltip({container: 'body', trigger: 'hover'});
-                        })
                         return '<i class="fa fa-plug ' + connected +'" title="' + row.status + '" data-toggle="tooltip"></i>'
                     },
                     "commands": function (column, row) {
