@@ -43,27 +43,31 @@ function openvpn_configure()
 
 function openvpn_syslog()
 {
-    $logfacilities = array();
-    $logfacilities['openvpn'] = array('facility' => array('openvpn'));
-    return $logfacilities;
+    return ['openvpn' => ['facility' => ['openvpn']]];
+}
+
+function openvpn_legacy()
+{
+    /* latch on to this legacy file for detection */
+    return file_exists('/usr/local/www/vpn_openvpn_server.php');
 }
 
 function openvpn_services()
 {
     global $config;
 
-    $services = array();
+    $services = [];
 
-    foreach (array('server', 'client') as $mode) {
-        if (isset($config['openvpn']["openvpn-{$mode}"])) {
+    foreach (['server', 'client'] as $mode) {
+        if (openvpn_legacy() && isset($config['openvpn']["openvpn-{$mode}"])) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as $setting) {
                 if (empty($setting['disable'])) {
                     $pconfig = array();
                     $pconfig['description'] = "OpenVPN {$mode}: " . htmlspecialchars($setting['description'] ?? '');
                     $pconfig['pidfile'] = "/var/run/openvpn_{$mode}{$setting['vpnid']}.pid";
-                    $pconfig['php']['restart'] = array('openvpn_configure_single');
-                    $pconfig['php']['start'] = array('openvpn_configure_single');
-                    $pconfig['php']['args'] = array('id');
+                    $pconfig['php']['restart'] = ['openvpn_configure_single'];
+                    $pconfig['php']['start'] = ['openvpn_configure_single'];
+                    $pconfig['php']['args'] = ['id'];
                     $pconfig['id'] = $setting['vpnid'];
                     $pconfig['name'] = 'openvpn';
                     $services[] = $pconfig;
@@ -114,7 +118,7 @@ function openvpn_devices()
     $names = [];
 
     foreach (['server', 'client'] as $mode) {
-        if (!empty($config['openvpn']["openvpn-{$mode}"])) {
+        if (openvpn_legacy() && !empty($config['openvpn']["openvpn-{$mode}"])) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as $settings) {
                 $names["ovpn{$mode[0]}{$settings['vpnid']}"] = [
                     'descr' => sprintf('ovpn%s%s (OpenVPN %s %s)', $mode[0], $settings['vpnid'], $mode == 'server' ? gettext('Server') : gettext('Client'), $settings['description'] ?? ''),
@@ -147,21 +151,17 @@ function openvpn_devices()
 
 function openvpn_xmlrpc_sync()
 {
-    $result = array();
-
-    $result[] = array(
+    return [[
         'description' => gettext('OpenVPN'),
         'section' => 'openvpn,OPNsense.OpenVPN',
+        'services' => ['openvpn'],
         'id' => 'openvpn',
-        'services' => ["openvpn"],
-    );
-
-    return $result;
+    ]];
 }
 
 function openvpn_verbosity_level()
 {
-    return array(
+    return [
        0 => gettext('0 (none)'),
        1 => gettext('1 (default)'),
        2 => gettext('2'),
@@ -174,12 +174,12 @@ function openvpn_verbosity_level()
        9 => gettext('9'),
        10 => gettext('10'),
        11 => gettext('11'),
-    );
+    ];
 }
 
 function openvpn_compression_modes()
 {
-    return array(
+    return [
         '' => gettext('No Preference'),
         'pfc' => sprintf(gettext('Partial - Packet framing for compression (%s)'), '--compress'),
         'lz4' => sprintf(gettext('Enabled - LZ4 algorithm (%s)'), '--compress lz4'),
@@ -190,12 +190,12 @@ function openvpn_compression_modes()
         'no' => sprintf(gettext('Legacy - Disabled LZO algorithm (%s)'), '--comp-lzo no'),
         'adaptive' => sprintf(gettext('Legacy - Enabled LZO algorithm with adaptive compression (%s)'), '--comp-lzo adaptive'),
         'yes' => sprintf(gettext('Legacy - Enabled LZO algorithm without adaptive compression (%s)'), '--comp-lzo yes'),
-    );
+    ];
 }
 
 function openvpn_get_protocols()
 {
-    return array('UDP', 'UDP4', 'UDP6', 'TCP', 'TCP4', 'TCP6');
+    return ['UDP', 'UDP4', 'UDP6', 'TCP', 'TCP4', 'TCP6'];
 }
 
 function openvpn_create_key()
@@ -1072,8 +1072,8 @@ function openvpn_configure_single($id)
 {
     global $config;
 
-    foreach (array('server', 'client') as $mode) {
-        if (isset($config['openvpn']["openvpn-{$mode}"])) {
+    foreach (['server', 'client'] as $mode) {
+        if (openvpn_legacy() && isset($config['openvpn']["openvpn-{$mode}"])) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as $settings) {
                 if ($id != $settings['vpnid']) {
                     continue;
@@ -1105,8 +1105,8 @@ function openvpn_configure_do($verbose = false, $interface_map = null, $carp_eve
 
     $reconfigured = false;
 
-    foreach (array('server', 'client') as $mode) {
-        if (isset($config['openvpn']["openvpn-{$mode}"])) {
+    foreach (['server', 'client'] as $mode) {
+        if (openvpn_legacy() && isset($config['openvpn']["openvpn-{$mode}"])) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as $settings) {
                 if (empty($interface_map) || in_array($settings['interface'], $interface_map)) {
                     openvpn_reconfigure($mode, $settings, $carp_event);
@@ -1245,9 +1245,9 @@ function openvpn_get_remote_access_servers()
 {
     global $config;
 
-    $result = array();
+    $result = [];
 
-    if (!empty($config['openvpn']['openvpn-server'])) {
+    if (openvpn_legacy() && !empty($config['openvpn']['openvpn-server'])) {
         foreach ($config['openvpn']['openvpn-server'] as $server) {
             if (in_array($server['mode'], array('server_tls', 'server_user', 'server_tls_user', 'p2p_tls'))) {
                 $result[$server['vpnid']] = $server;
@@ -1264,7 +1264,7 @@ function openvpn_refresh_crls()
 
     openvpn_create_dirs();
 
-    if (!empty($config['openvpn']['openvpn-server'])) {
+    if (openvpn_legacy() && !empty($config['openvpn']['openvpn-server'])) {
         foreach ($config['openvpn']['openvpn-server'] as $settings) {
             if (empty($settings) || isset($settings['disable'])) {
                 continue;
@@ -1285,6 +1285,7 @@ function openvpn_refresh_crls()
             }
         }
     }
+
     foreach ((new OPNsense\OpenVPN\OpenVPN())->Instances->Instance->iterateItems() as $key => $node) {
         if (!empty((string)$node->enabled) && !empty((string)$node->crl)) {
             $fpath = "/var/etc/openvpn/server-{$key}.crl-verify";

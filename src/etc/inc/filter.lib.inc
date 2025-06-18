@@ -176,10 +176,14 @@ function filter_core_get_port_alias($aliasname, $aliases = [], $aliasObject = nu
 function filter_core_get_default_nat_outbound_networks()
 {
     global $config;
-    $result = ["127.0.0.0/8"];
+
+    $result = ['127.0.0.0/8'];
+
+    require_once 'plugins.inc.d/openvpn.inc'; /* XXX for openvpn_legacy() */
+
     // Add openvpn networks
     foreach (['openvpn-server', 'openvpn-client'] as $section) {
-        if (!empty($config['openvpn'][$section])) {
+        if (openvpn_legacy() && !empty($config['openvpn'][$section])) {
             foreach ($config['openvpn'][$section] as $ovpn) {
                 if (!isset($ovpn['disable']) && !empty($ovpn['tunnel_network'])) {
                     $result[] = $ovpn['tunnel_network'];
