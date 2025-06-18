@@ -234,9 +234,9 @@ class UIBootgrid {
             this.compatOptions['ajaxURL'] = compatOptions.search;
         }
 
-        if (bootGridOptions?.selection ?? false) {
+        if (bootGridOptions?.selection ?? true) {
             this.compatOptions['selectableRows'] = 1;
-            if (bootGridOptions?.multiSelect ?? false) {
+            if (bootGridOptions?.multiSelect ?? true) {
                 this.compatOptions['selectableRows'] = true;
             }
             // TODO rowSelect toggle (currently not support by tabulator)
@@ -500,12 +500,22 @@ class UIBootgrid {
                     headerSort: false,
                     headerHozAlign: "center",
                     // hozAlign:  'center',
-                }
+                };
 
                 if (!field.width) {
                     field.width = '100';
                 }
             } else {
+                if (Object.getOwnPropertyNames(Object.prototype).includes(field.id)) {
+                    // internally, tabulator reassigns the column IDs to a regular object,
+                    // since a regular object contains some reserved keywords, account for these
+                    // by providing a header formatter
+                    field.headerFormatter = field.id;
+                    this.options.headerFormatters[field.headerFormatter] = (column) => {
+                        return column.getColumn().getDefinition().title;
+                    }
+                }
+
                 col = {
                     visible: field.visible,
                     editable: field.editable,
@@ -520,7 +530,7 @@ class UIBootgrid {
                     cssClass: this.options.responsive ? 'opnsense-bootgrid-responsive' : '',
                     variableHeight: true,
                     sorter: this.options.sorters[field.type] ?? null,
-                }
+                };
             }
 
             if (field.width && !col.resizable) {
