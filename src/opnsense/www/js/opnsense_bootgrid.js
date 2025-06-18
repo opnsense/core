@@ -118,6 +118,7 @@ class UIBootgrid {
         this.persistenceID = `${window.location.pathname}#${this.id}`;
         this.dataAvailable = false;
         this.customCommands = null;
+        this.loading = false;
 
         // wrapper-specific options
         this.options = {
@@ -800,7 +801,7 @@ class UIBootgrid {
         // DOM layout changed, rewire commands
         this._wireCommands();
 
-        if (this.table.getData().length == 0) {
+        if (this.table.getData().length == 0 && !this.loading) {
             this.dataAvailable = false;
             this._getPlaceholder().html(this.translations.noresultsfound);
         } else {
@@ -1152,7 +1153,7 @@ class UIBootgrid {
             columns: this._parseColumns(),
 
             /* SERVER-SIDE OPTIONS */
-            dataLoaderLoading: '<i class="fa fa-spinner fa-spin"></i>',
+            dataLoaderLoading: '<span style="height: 33px;"></span>',
 
             /* pagination */
             pagination: true,
@@ -1190,6 +1191,9 @@ class UIBootgrid {
                 'data': 'rows'
             },
             ajaxResponse: (url, params, response) => {
+                this.loading = false;
+                $(`#${this.id} > .tabulator-tableholder > .bootgrid-overlay`).remove();
+
                 // handle pagination response, set last_page as appropriate
                 // the counter text (showing x of y) is handled in the 'paginationCounter'
                 if (response.total_rows != undefined) {
@@ -1216,6 +1220,10 @@ class UIBootgrid {
             /* server-side filtering/search logic */
             filterMode: "remote",
             ajaxRequestFunc: (url, config, params) => {
+                this.loading = true;
+                $(`#${this.id} > .tabulator-tableholder`)
+                    .prepend($('<span class="bootgrid-overlay"><i class="fa fa-spinner fa-spin"></i></span>'));
+
                 // params.filter is an array of filter objects:
                 // [
                 //     {field:"age", type:">", value:52}, //filter by age greater than 52
