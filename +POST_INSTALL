@@ -20,6 +20,10 @@ fi
 echo "Creating user '${USER}' with uid '${UID}'"
 ${PW} user${PW_ARG} ${USER} -u ${UID} -g ${GID} -c "World Wide Web Only" -d /nonexistent -s /usr/sbin/nologin
 
+if [ -n "${CORE_USER_GROUP_ONLY}" ]; then
+	exit 0
+fi
+
 echo "Updating /etc/shells"
 cp /etc/shells /etc/shells.bak
 (grep -v /usr/local/sbin/opnsense-shell /etc/shells.bak; \

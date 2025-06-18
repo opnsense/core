@@ -258,6 +258,7 @@ EOD;
     if (!empty($config['system']['webgui']['httpaccesslog'])) {
         $lighty_use_syslog .= 'accesslog.use-syslog="enable"' . "\n";
     }
+
     $change_user = '';
     if (!empty($config['system']['webgui']['noroot']) || file_exists('/var/run/www_non_root')) {
         $change_user .= "server.username = \"wwwonly\"\n";

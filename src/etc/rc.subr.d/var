@@ -67,13 +67,10 @@ done
 # setup output directory for various php ui components
 for PHPDIR in /var/lib/php/sessions /var/lib/php/tmp /var/lib/php/cache; do
 	mkdir -p ${PHPDIR}
-	chown wwwonly:wheel ${PHPDIR}
+	chown wwwonly:wheel ${PHPDIR} # XXX move to webgui.inc
 	chmod 750 ${PHPDIR}
 	rm -f ${PHPDIR}/*
 done
-
-# tmp needs sticky
-chmod +t /var/lib/php/tmp
 
 if [ ${USE_MFS_VAR} -ne 0 ]; then
 	MAX_MFS_VAR=$(grep 'max_mfs_var' /conf/config.xml | sed 's/[^>]*>\([^<]*\)<.*/\1/')

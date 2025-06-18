@@ -92,7 +92,7 @@ class Filter extends BaseModel
                         }
                     }
 
-                    if (!$rule->icmptype->isEmpty() && !in_array($rule->protocol, ['ICMP'])) {
+                    if ($rule->icmptype && !$rule->icmptype->isEmpty() && !in_array($rule->protocol, ['ICMP'])) {
                         $messages->appendMessage(new Message(
                             gettext("Option only applies to ICMP packets"),
                             $rule->icmptype->__reference

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2024 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2025 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -1197,6 +1197,20 @@ function system_console_speed()
     }
 
     return $speed;
+}
+
+function system_cache_flush()
+{
+    (new OPNsense\Core\ACL())->invalidateCache();
+
+    (new OPNsense\Base\Menu\MenuSystem())->invalidateCache();
+
+    /* clears ALL model caches, not just model specific ones via flushCacheData() */
+    foreach (['/var/lib/php/tmp', '/tmp'] as $tmpdir) {
+        foreach (glob(sprintf("%s/mdl_cache_*.json", $tmpdir)) as $filename) {
+            @unlink($filename);
+        }
+    }
 }
 
 function system_login_configure($verbose = false)

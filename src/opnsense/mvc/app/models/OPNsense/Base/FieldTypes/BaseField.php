@@ -399,6 +399,15 @@ abstract class BaseField
     }
 
     /**
+     * check if field value is equal to given string
+     * @return bool
+     */
+    public function isEqual(string $test): bool
+    {
+        return $this->getCurrentValue() === $test;
+    }
+
+    /**
      * Try to convert to current value as float
      * @return float
      */
@@ -527,14 +536,9 @@ abstract class BaseField
     }
 
     /**
-     * check if current value is empty AND NOT zero (either boolean field as false or an empty field)
+     * check if this field is required
      * @return bool
      */
-    public function isEmptyString(): bool
-    {
-        return $this->getCurrentValue() !== "0" && $this->isEmpty();
-    }
-
     public function isRequired(): bool
     {
         return $this->internalIsRequired;
@@ -546,7 +550,7 @@ abstract class BaseField
      */
     public function isEmptyAndRequired(): bool
     {
-        return $this->internalIsRequired && ($this->internalValue == "" || $this->internalValue == null);
+        return $this->internalIsRequired && $this->getCurrentValue() === '';
     }
 
     /**

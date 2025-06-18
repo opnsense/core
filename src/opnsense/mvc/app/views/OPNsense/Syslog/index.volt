@@ -46,6 +46,12 @@
             search: '/api/syslog/service/stats/'
         });
 
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            if (e.target.id === 'statistics') {
+                $("#grid-statistics").bootgrid('reload');
+            }
+        });
+
         $("#reconfigureAct").SimpleActionButton({
             onPreAction: function () {
               const dfObj = new $.Deferred();

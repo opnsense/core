@@ -133,7 +133,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     public function testCanDeleteSpecificItem()
     {
         foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
-            if ((string)$node->number == 5) {
+            if ($node->number->isEqual(5)) {
                 BaseModelTest::$model->arraytypes->item->Del($nodeid);
             }
         }

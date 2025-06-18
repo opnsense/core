@@ -319,6 +319,7 @@
                         $expand.html('Expand');
                     }
 
+                    /* XXX this throws an error until 25.7, but no functional impact */
                     $("#grid-overview").bootgrid("normalizeRowHeight");
                 });
             });
