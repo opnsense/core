@@ -399,6 +399,15 @@ abstract class BaseField
     }
 
     /**
+     * check if field value is equal to given string
+     * @return bool
+     */
+    public function isEqual(string $test): bool
+    {
+        return $this->getCurrentValue() === $test;
+    }
+
+    /**
      * Try to convert to current value as float
      * @return float
      */
