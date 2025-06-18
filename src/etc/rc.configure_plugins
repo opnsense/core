@@ -41,7 +41,7 @@ require_once 'util.inc';
 $script = !empty($argv[1]) ? $argv[1] : 'POST_INSTALL';
 
 /* flush user-facing caches */
-system_cache_flush();
+system_cache_flush(true);
 
 /* reload subsystem that may have changed */
 if ($script == 'POST_INSTALL') {

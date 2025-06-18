@@ -1199,8 +1199,10 @@ function system_console_speed()
     return $speed;
 }
 
-function system_cache_flush()
+function system_cache_flush($verbose = false)
 {
+    service_log('Flushing all caches...', $verbose);
+
     (new OPNsense\Core\ACL())->invalidateCache();
 
     (new OPNsense\Base\Menu\MenuSystem())->invalidateCache();
@@ -1211,6 +1213,8 @@ function system_cache_flush()
             @unlink($filename);
         }
     }
+
+    service_log("done.\n", $verbose);
 }
 
 function system_login_configure($verbose = false)
