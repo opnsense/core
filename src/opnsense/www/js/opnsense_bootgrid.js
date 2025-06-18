@@ -1063,7 +1063,8 @@ class UIBootgrid {
                 column.toggle();
 
                 // make sure to redraw the table so new column widths are calculated
-                 this.table.redraw(true);
+                this.table.redraw(true);
+                this._onDataProcessed();
             })
 
             $(`#${this.id}-columnselect-items`).append(item);
