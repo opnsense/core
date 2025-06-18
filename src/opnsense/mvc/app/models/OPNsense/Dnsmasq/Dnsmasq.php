@@ -151,19 +151,17 @@ class Dnsmasq extends BaseModel
                 }
             }
 
-            if (!$range->domain->isEmpty() && !$range->domain_type->isEmpty()) {
-                if (isset($usedDhcpDomains[(string)$range->domain])) {
-                    $typesUsed = array_unique($usedDhcpDomains[(string)$range->domain]);
+            if (!$range->domain->isEmpty() && isset($usedDhcpDomains[(string)$range->domain])) {
+                $typesUsed = array_unique($usedDhcpDomains[(string)$range->domain]);
 
-                    if (in_array('interface', $typesUsed) && in_array('range', $typesUsed)) {
-                        $messages->appendMessage(
-                            new Message(
-                                sprintf(gettext("The domain '%s' cannot be used with both types 'Interface' and 'Range'."),
-                                (string)$range->domain),
-                                $key . ".domain"
-                            )
-                        );
-                    }
+                if (in_array('interface', $typesUsed) && in_array('range', $typesUsed)) {
+                    $messages->appendMessage(
+                        new Message(
+                            sprintf(gettext("The domain '%s' cannot be used with both types 'Interface' and 'Range'."),
+                            (string)$range->domain),
+                            $key . ".domain"
+                        )
+                    );
                 }
             }
 
