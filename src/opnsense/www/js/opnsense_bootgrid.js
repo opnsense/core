@@ -321,8 +321,8 @@ class UIBootgrid {
         if (compatOptions.toggle) this.crud.toggle = compatOptions.toggle;
 
         // any additional commands?
-        if ('commands' in bootGridOptions) {
-            this.options.commands = bootGridOptions.commands;
+        if (compatOptions.commands) {
+            this.options.commands = compatOptions.commands;
         }
 
         // check if add / delete buttons are present
