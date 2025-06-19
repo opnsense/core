@@ -293,8 +293,9 @@ class UIBootgrid {
             }
         }
 
-        if (bootGridOptions?.datakey) {
-            this.options.datakey = bootGridOptions.datakey;
+        if (compatOptions?.datakey) {
+            // note: this does not come from the 'options' object
+            this.options.datakey = compatOptions?.datakey;
         }
 
         if (bootGridOptions?.onBeforeRenderDialog) {
@@ -319,8 +320,8 @@ class UIBootgrid {
         if (compatOptions.toggle) this.crud.toggle = compatOptions.toggle;
 
         // any additional commands?
-        if ('commands' in bootGridOptions) {
-            this.options.commands = bootGridOptions.commands;
+        if (compatOptions.commands) {
+            this.options.commands = compatOptions.commands;
         }
 
         // check if add / delete buttons are present
@@ -798,8 +799,11 @@ class UIBootgrid {
         }
 
         // Check if the total amount of rows is known, if not, remove the "last page"
+        let $last_btn = $(`#${this.id} .tabulator-paginator button[data-page=last]`);
         if (!this.totalKnown && this.options.ajax) {
-            $(`#${this.id} .tabulator-paginator button[data-page=last]`).remove();
+            $last_btn.hide();
+        } else {
+            $last_btn.show();
         }
 
         // backwards compat
