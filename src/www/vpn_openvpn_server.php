@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if ($act == "del") {
         $response = ["status" => "failed", "message" => gettext("not found")];
-        if (isset($id) && !empty($a_client[$id])) {
+        if (isset($id) && !empty($a_server[$id])) {
             openvpn_delete('server', $a_server[$id]);
             unset($a_server[$id]);
             write_config();
