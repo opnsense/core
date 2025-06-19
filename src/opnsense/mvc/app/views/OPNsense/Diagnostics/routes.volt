@@ -27,8 +27,8 @@
 <script>
     $( document ).ready(function() {
         let grid = $("#grid-routes").UIBootgrid({
+            datakey: 'id',
             options: {
-                datakey: 'id',
                 ajax: false,
                 selection: false,
                 multiSelect: false,
