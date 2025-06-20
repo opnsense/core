@@ -391,7 +391,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     }
 
     /*
-     * check for a error while loading the rules file.  if an error has occurred
+    * check for an error while loading the rules file.  if an error has occurred
      * then output the contents of the error to the caller
      */
     if ($rules_loading) {
