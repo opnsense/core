@@ -35,7 +35,7 @@
     </field>
     <field>
         <id>domainoverride.ipset</id>
-        <label>Ipset</label>
+        <label>Ipset Alias</label>
         <type>dropdown</type>
         <help>Choose an "external (advanced)" type alias from "Firewall - Aliases". Whenever a client successfully resolves the domain, the resolved IP addresses will be automatically added to the chosen alias. Adding a domain will also add all IP addresses of resolved subdomains. Please note that DNS record TTL is not evaluated; once an IP address is added, it will stay permanently, or until manually flushed in "Firewall - Diagnostics - Aliases", or until removed automatically when setting an expiration on the alias.</help>
     </field>
