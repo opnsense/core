@@ -734,9 +734,9 @@
         margin-left: 5px;
     }
     /*
-     * XXX: Since badge class uses its own default background-color, we must to override it explicitely.
+     * XXX: Since the badge class uses its own default background-color, we must override it explicitly.
      *      Essentially we would like to use the main style sheet for this.
-     *      bg-info is slightly different than text-info, so we use the text-info color for consistency.
+     *      bg-info is slightly different from text-info, so we use the text-info color for consistency.
      */
     .badge.bg-primary {
         background-color: #C03E14 !important;
