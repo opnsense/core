@@ -654,12 +654,6 @@
             <pattern>api/openvpn/export/*</pattern>
         </patterns>
     </page-openvpn-client-export>
-    <page-openvpn-client>
-        <name>VPN: OpenVPN: Client</name>
-        <patterns>
-            <pattern>vpn_openvpn_client.php*</pattern>
-        </patterns>
-    </page-openvpn-client>
     <page-openvpn-csc>
         <name>VPN: OpenVPN: Client Specific Override</name>
         <patterns>
@@ -674,12 +668,6 @@
             <pattern>api/openvpn/instances/*</pattern>
         </patterns>
     </page-openvpn-instances>
-    <page-openvpn-server>
-        <name>VPN: OpenVPN: Server</name>
-        <patterns>
-            <pattern>vpn_openvpn_server.php*</pattern>
-        </patterns>
-    </page-openvpn-server>
     <page-xmlrpclibrary>
         <name>XMLRPC Library</name>
         <patterns>
