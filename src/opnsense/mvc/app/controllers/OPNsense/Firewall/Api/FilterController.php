@@ -91,7 +91,7 @@ class FilterController extends FilterBaseController
             $rule_interfaces = array_filter(explode(',', (string)$record->interface));
 
             if (empty($interfaces)) {
-                $is_if = count($rule_interfaces) > 1 || empty($rule_interfaces);
+                $is_if = count($rule_interfaces) != 1;
             } elseif ($show_all) {
                 $is_if = array_intersect($interfaces, $rule_interfaces) || empty($rule_interfaces);
             } else {
