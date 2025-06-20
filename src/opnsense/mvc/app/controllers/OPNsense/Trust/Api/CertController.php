@@ -307,7 +307,7 @@ class CertController extends ApiMutableModelControllerBase
             $node = $this->getModel()->getNodeByReference('cert.' . $uuid);
             $result['descr'] = $node !== null ? (string)$node->descr : '';
             if ($node === null || (empty((string)$node->crt_payload)) && empty((string)$node->csr_payload))) {
-                $result['error'] = gettext('Misssing certificate');
+                $result['error'] = gettext('Missing certificate');
             } elseif ($type == 'csr') {
                 $result['status'] = 'ok';
                 $result['payload'] = (string)$node->csr_payload;
