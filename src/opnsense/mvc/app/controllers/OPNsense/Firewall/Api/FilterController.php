@@ -88,12 +88,12 @@ class FilterController extends FilterBaseController
         /* filter logic for mvc rules */
         $filter_funct_mvc = function ($record) use ($categories, $interfaces, $show_all) {
             $is_cat = empty($categories) || array_intersect(explode(',', $record->categories), $categories);
-            $rule_interfaces = explode(',', (string)$record->interface);
+            $rule_interfaces = array_filter(explode(',', (string)$record->interface));
 
             if (empty($interfaces)) {
-                $is_if = count($rule_interfaces) > 1 || $record->interface->isEmpty();
+                $is_if = count($rule_interfaces) > 1 || empty($rule_interfaces);
             } elseif ($show_all) {
-                $is_if = array_intersect($interfaces, $rule_interfaces) || $record->interface->isEmpty();
+                $is_if = array_intersect($interfaces, $rule_interfaces) || empty($rule_interfaces);
             } else {
                 $is_if = count($rule_interfaces) === 1 && $rule_interfaces[0] === $interfaces[0];
             }
@@ -438,5 +438,4 @@ class FilterController extends FilterBaseController
 
         return $result;
     }
-
 }
