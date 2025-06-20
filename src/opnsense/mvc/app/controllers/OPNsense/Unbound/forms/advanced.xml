@@ -396,4 +396,28 @@
             Number of hosts for which information is cached.
         </help>
     </field>
+    <field>
+        <type>header</type>
+        <label>Ipset Settings</label>
+    </field>
+    <field>
+        <id>unbound.advanced.ipset_alias_v4</id>
+        <label>Ipset Alias IPv4</label>
+        <type>dropdown</type>
+        <help>Choose an "external (advanced)" type alias from "Firewall - Aliases". Whenever a client successfully resolves the domain, the resolved IP addresses will be automatically added to the chosen alias. Adding a domain will also add all IP addresses of resolved subdomains. Please note that DNS record TTL is not evaluated; once an IP address is added, it will stay permanently, or until manually flushed in "Firewall - Diagnostics - Aliases", or until removed automatically when setting an expiration on the alias.</help>
+    </field>
+    <field>
+        <id>unbound.advanced.ipset_alias_v6</id>
+        <label>Ipset Alias IPv6</label>
+        <type>dropdown</type>
+        <help>Choose an "external (advanced)" type alias from "Firewall - Aliases". Whenever a client successfully resolves the domain, the resolved IP addresses will be automatically added to the chosen alias. Adding a domain will also add all IP addresses of resolved subdomains. Please note that DNS record TTL is not evaluated; once an IP address is added, it will stay permanently, or until manually flushed in "Firewall - Diagnostics - Aliases", or until removed automatically when setting an expiration on the alias.</help>
+    </field>
+    <field>
+        <id>unbound.advanced.ipset_domains</id>
+        <label>Ipset Domains</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>Enter one or multiple domains to add to the above aliases.</help>
+    </field>
 </form>

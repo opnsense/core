@@ -128,6 +128,17 @@
             <infrakeepprobing type="BooleanField"/>
             <infracachenumhosts type="NumericField"/>
             <unwantedreplythreshold type="NumericField"/>
+            <ipset_alias_v4 type="JsonKeyValueStoreField">
+                <ConfigdPopulateAct>unbound list ipset_alias</ConfigdPopulateAct>
+            </ipset_alias_v4>
+            <ipset_alias_v6 type="JsonKeyValueStoreField">
+                <ConfigdPopulateAct>unbound list ipset_alias</ConfigdPopulateAct>
+            </ipset_alias_v6>
+            <ipset_domains type="HostnameField">
+                <AsList>Y</AsList>
+                <FieldSeparator>,</FieldSeparator>
+                <IsDNSName>Y</IsDNSName>
+            </ipset_domains>
         </advanced>
         <acls>
             <default_action type="OptionField">
