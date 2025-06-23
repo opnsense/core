@@ -67,11 +67,11 @@
     $( document ).ready(function() {
         $("#grid-aliases").UIBootgrid({
             search:'/api/firewall/alias/searchItem',
-            get:'/api/firewall/alias/getItem/',
-            set:'/api/firewall/alias/setItem/',
-            add:'/api/firewall/alias/addItem/',
-            del:'/api/firewall/alias/delItem/',
-            toggle:'/api/firewall/alias/toggleItem/',
+            get:'/api/firewall/alias/get_item/',
+            set:'/api/firewall/alias/set_item/',
+            add:'/api/firewall/alias/add_item/',
+            del:'/api/firewall/alias/del_item/',
+            toggle:'/api/firewall/alias/toggle_item/',
             options:{
                 requestHandler: function(request){
                     if ( $('#type_filter').val().length > 0) {
@@ -298,7 +298,7 @@
         if ("{{selected_alias}}" !== "") {
             // UIBootgrid doesn't return a promise, wait for some time before opening the requested item
             setTimeout(function(){
-                ajaxGet("/api/firewall/alias/getAliasUUID/{{selected_alias}}", {}, function(data, status){
+                ajaxGet("/api/firewall/alias/get_alias_uuid/{{selected_alias}}", {}, function(data, status){
                     if (data.uuid !== undefined) {
                         var edit_item = $(".command-edit:eq(0)").clone(true);
                         edit_item.data('row-id', data.uuid).click();

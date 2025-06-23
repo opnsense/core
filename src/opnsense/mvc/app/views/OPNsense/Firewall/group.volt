@@ -2,10 +2,10 @@
     $( document ).ready(function() {
         $("#grid-groups").UIBootgrid(
             {   search:'/api/firewall/group/searchItem',
-                get:'/api/firewall/group/getItem/',
-                set:'/api/firewall/group/setItem/',
-                add:'/api/firewall/group/addItem/',
-                del:'/api/firewall/group/delItem/',
+                get:'/api/firewall/group/get_item/',
+                set:'/api/firewall/group/set_item/',
+                add:'/api/firewall/group/add_item/',
+                del:'/api/firewall/group/del_item/',
                 options:{
                         formatters:{
                             commands: function (column, row) {

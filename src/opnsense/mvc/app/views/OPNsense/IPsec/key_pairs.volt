@@ -28,10 +28,10 @@
   $( document ).ready(function() {
     $('#grid-key-pairs').UIBootgrid({
       search: '/api/ipsec/key_pairs/searchItem',
-      get: '/api/ipsec/key_pairs/getItem/',
-      set: '/api/ipsec/key_pairs/setItem/',
-      add: '/api/ipsec/key_pairs/addItem/',
-      del: '/api/ipsec/key_pairs/delItem/',
+      get: '/api/ipsec/key_pairs/get_item/',
+      set: '/api/ipsec/key_pairs/set_item/',
+      add: '/api/ipsec/key_pairs/add_item/',
+      del: '/api/ipsec/key_pairs/del_item/',
     });
 
     // move "generate key" inside form dialog

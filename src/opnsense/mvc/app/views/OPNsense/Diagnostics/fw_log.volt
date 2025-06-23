@@ -123,7 +123,7 @@
          * @param t_data template's parameters
          */
         function addTemplate(t_data) {
-            ajaxCall('/api/diagnostics/lvtemplate/addItem/', t_data, function(data, status) {
+            ajaxCall('/api/diagnostics/lvtemplate/add_item/', t_data, function(data, status) {
                 if (data.result == "saved") {
                     fetchTemplates(data.uuid);
                 } else {
@@ -149,7 +149,7 @@
          * @param t_data template's parameters
          */
         function editTemplate(t_id, t_data) {
-            ajaxCall('/api/diagnostics/lvtemplate/setItem/' + t_id, t_data, function(data, status) {
+            ajaxCall('/api/diagnostics/lvtemplate/set_item/' + t_id, t_data, function(data, status) {
                 if (data.result == "saved") {
                     fetchTemplates(t_id);
                 } else {
@@ -174,7 +174,7 @@
          * @param t_id template uuid
          */
         function delTemplate(t_id) {
-            ajaxCall('/api/diagnostics/lvtemplate/delItem/' + t_id, {}, function(data, status) {
+            ajaxCall('/api/diagnostics/lvtemplate/del_item/' + t_id, {}, function(data, status) {
                 if (data.result == "deleted") {
                     //don't reset current filters so template can be restored right after delete
                     $("#templates option[value=" + t_id + "]").remove();
@@ -210,7 +210,7 @@
             $('#templates').selectpicker('refresh');
             $('.templates').show();
             $('.templ_save').hide();
-            ajaxGet('/api/diagnostics/lvtemplate/searchItem/', {}, function(data, status) {
+            ajaxGet('/api/diagnostics/lvtemplate/search_item/', {}, function(data, status) {
                 let templates = data.rows;
                 $.each(templates, function(i, template) {
                     $('#templates').append(template.uuid == opt ? $('<option/>', {value:template.uuid, text:template.name, selected: "selected" }).data('template', template) : $('<option/>', {value:template.uuid, text:template.name }).data('template', template));

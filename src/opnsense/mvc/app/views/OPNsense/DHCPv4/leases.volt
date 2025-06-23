@@ -51,8 +51,8 @@
         })
 
         $("#grid-leases").UIBootgrid({
-            search:'/api/dhcpv4/leases/searchLease/',
-            del:'/api/dhcpv4/leases/delLease/',
+            search:'/api/dhcpv4/leases/search_lease/',
+            del:'/api/dhcpv4/leases/del_lease/',
             options: {
                 virtualDOM: true,
                 selection: false,
