@@ -395,7 +395,7 @@ class FilterController extends FilterBaseController
 
             if (count($interfaces) !== 1) {
                 // floating: empty or multiple interfaces
-                $ruleCounts[''] = ($ruleCounts[''] ?? 0) + 1;
+                $ruleCounts['floating'] = ($ruleCounts['floating'] ?? 0) + 1;
             } else {
                 // single interface
                 $ruleCounts[$interfaces[0]] = ($ruleCounts[$interfaces[0]] ?? 0) + 1;
@@ -411,7 +411,7 @@ class FilterController extends FilterBaseController
         ];
 
         // Floating
-        $result['floating']['items'][] = $makeItem('', gettext('Any'), $ruleCounts[''] ?? 0, 'floating');
+        $result['floating']['items'][] = $makeItem('', gettext('Any'), $ruleCounts['floating'] ?? 0, 'floating');
 
         // Groups
         foreach ((new \OPNsense\Firewall\Group())->ifgroupentry->iterateItems() as $groupItem) {
