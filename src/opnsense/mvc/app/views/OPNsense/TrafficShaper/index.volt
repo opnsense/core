@@ -40,7 +40,7 @@
          *************************************************************************************************************/
 
         $("#{{formGridPipe['table_id']}}").UIBootgrid(
-            {   search:'/api/trafficshaper/settings/searchPipes',
+            {   search:'/api/trafficshaper/settings/search_pipes',
                 get:'/api/trafficshaper/settings/get_pipe/',
                 set:'/api/trafficshaper/settings/set_pipe/',
                 add:'/api/trafficshaper/settings/add_pipe/',
@@ -50,7 +50,7 @@
         );
 
         $("#{{formGridQueue['table_id']}}").UIBootgrid(
-                {   search:'/api/trafficshaper/settings/searchQueues',
+                {   search:'/api/trafficshaper/settings/search_queues',
                     get:'/api/trafficshaper/settings/get_queue/',
                     set:'/api/trafficshaper/settings/set_queue/',
                     add:'/api/trafficshaper/settings/add_queue/',
@@ -60,7 +60,7 @@
         );
 
         $("#{{formGridRule['table_id']}}").UIBootgrid(
-                {   search:'/api/trafficshaper/settings/searchRules',
+                {   search:'/api/trafficshaper/settings/search_rules',
                     get:'/api/trafficshaper/settings/get_rule/',
                     set:'/api/trafficshaper/settings/set_rule/',
                     add:'/api/trafficshaper/settings/add_rule/',

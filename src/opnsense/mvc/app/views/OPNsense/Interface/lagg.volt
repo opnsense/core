@@ -1,7 +1,7 @@
 <script>
     $( document ).ready(function() {
         $("#{{formGridLagg['table_id']}}").UIBootgrid(
-            {   search:'/api/interfaces/lagg_settings/searchItem',
+            {   search:'/api/interfaces/lagg_settings/search_item',
                 get:'/api/interfaces/lagg_settings/get_item/',
                 set:'/api/interfaces/lagg_settings/set_item/',
                 add:'/api/interfaces/lagg_settings/add_item/',

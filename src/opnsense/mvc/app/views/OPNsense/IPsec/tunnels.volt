@@ -88,7 +88,7 @@
           $applyLegacyConfig.prop('disabled', true);
           $applyLegacyConfigProgress.addClass('fa fa-spinner fa-pulse');
 
-          ajaxCall('/api/ipsec/legacy_subsystem/applyConfig', {}, function (data, status) {
+          ajaxCall('/api/ipsec/legacy_subsystem/apply_config', {}, function (data, status) {
               // Preliminarily hide the "pending changes" alert and display the response message if available
               if (data['message']) {
                 $dirtySubsystemMsg.addClass('hidden');

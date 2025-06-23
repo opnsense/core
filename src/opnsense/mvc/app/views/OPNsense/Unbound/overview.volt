@@ -380,7 +380,7 @@
         }
 
         function createTopList(id, data, type, reverse_domains) {
-            ajaxGet('/api/unbound/overview/isBlockListEnabled', {}, function(bl_enabled, status) {
+            ajaxGet('/api/unbound/overview/is_block_list_enabled', {}, function(bl_enabled, status) {
                 /* reverse_domains refers to the domains for which the opposite action should take place,
                  * e.g. if a domain is presented that has been blocked N amount of times, but has been
                  * whitelisted at a later point in time, the action should be to block it, not whitelist it.
@@ -459,7 +459,7 @@
         /* Initial page load */
         function do_startup() {
             let def = new $.Deferred();
-            ajaxGet('/api/unbound/overview/isEnabled', {}, function(is_enabled, status) {
+            ajaxGet('/api/unbound/overview/is_enabled', {}, function(is_enabled, status) {
                 if (is_enabled.enabled == 0) {
                     def.reject();
                     return;
@@ -528,7 +528,7 @@
         let blocklist_cb = function() {
             $(this).remove("i").html('<i class="fa fa-spinner fa-spin"></i>');
             let btn = $(this);
-            ajaxCall('/api/unbound/settings/updateBlocklist', {
+            ajaxCall('/api/unbound/settings/update_blocklist', {
                 'domain': $(this).data('value'),
                 'type': 'blocklists'
             }, function(data, status) {
@@ -555,7 +555,7 @@
         let whitelist_cb = function() {
             $(this).remove("i").html('<i class="fa fa-spinner fa-spin"></i>');
             let btn = $(this);
-            ajaxCall('/api/unbound/settings/updateBlocklist', {
+            ajaxCall('/api/unbound/settings/update_blocklist', {
                 'domain': $(this).data('value'),
                 'type': 'whitelists'
             }, function(data, status) {
@@ -594,7 +594,7 @@
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             if (e.target.id == 'query_details_tab') {
                 $("#grid-queries").bootgrid('destroy');
-                ajaxGet('/api/unbound/overview/isBlockListEnabled', {}, function(bl_enabled, status) {
+                ajaxGet('/api/unbound/overview/is_block_list_enabled', {}, function(bl_enabled, status) {
                     /* Map the command type (block/whitelist) to the current state of the assigned action as determined by the controller,
                      * except for cases where they are manually overridden in the Blocklist page (Block/Whitelist Domains).
                      */
