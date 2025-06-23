@@ -36,7 +36,7 @@
          * link grid actions
          *************************************************************************************************************/
         $("#grid-categories").UIBootgrid(
-                {   search:'/api/firewall/category/searchItem',
+                {   search:'/api/firewall/category/search_item',
                     get:'/api/firewall/category/get_item/',
                     set:'/api/firewall/category/set_item/',
                     add:'/api/firewall/category/add_item/',

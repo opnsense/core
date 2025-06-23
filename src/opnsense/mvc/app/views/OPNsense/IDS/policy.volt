@@ -33,7 +33,7 @@ POSSIBILITY OF SUCH DAMAGE.
        */
       updateServiceControlUI('ids');
       $("#grid-policy").UIBootgrid({
-              search:'/api/ids/settings/searchPolicy',
+              search:'/api/ids/settings/search_policy',
               get:'/api/ids/settings/get_policy/',
               set:'/api/ids/settings/set_policy/',
               add:'/api/ids/settings/add_policy/',
@@ -42,7 +42,7 @@ POSSIBILITY OF SUCH DAMAGE.
           }
       );
       $("#grid-policy-rule").UIBootgrid({
-              search:'/api/ids/settings/searchPolicyRule',
+              search:'/api/ids/settings/search_policy_rule',
               get:'/api/ids/settings/get_policy_rule/',
               set:'/api/ids/settings/set_policy_rule/',
               add:'/api/ids/settings/add_policy_rule/',
