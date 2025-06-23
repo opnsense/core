@@ -88,11 +88,16 @@ class FilterController extends FilterBaseController
         /* filter logic for mvc rules */
         $filter_funct_mvc = function ($record) use ($categories, $interfaces, $show_all) {
             $is_cat = empty($categories) || array_intersect(explode(',', $record->categories), $categories);
+            $rule_interfaces = array_filter(explode(',', (string)$record->interface));
+
             if (empty($interfaces)) {
-                $is_if = count(explode(',', $record->interface)) > 1 || $record->interface->isEmpty();
+                $is_if = count($rule_interfaces) != 1;
+            } elseif ($show_all) {
+                $is_if = array_intersect($interfaces, $rule_interfaces) || empty($rule_interfaces);
             } else {
-                $is_if = array_intersect(explode(',', $record->interface), $interfaces) || $record->interface->isEmpty();
+                $is_if = count($rule_interfaces) === 1 && $rule_interfaces[0] === $interfaces[0];
             }
+
             return $is_cat && $is_if;
         };
 
@@ -369,13 +374,7 @@ class FilterController extends FilterBaseController
             'floating' => [
                 'label' => gettext('Floating'),
                 'icon' => 'fa fa-layer-group text-primary',
-                'items' => [
-                    [
-                        'value' => '',
-                        'label' => gettext('Any'),
-                        'selected' => true,
-                    ]
-                ]
+                'items' => []
             ],
             'groups' => [
                 'label' => gettext('Groups'),
@@ -389,21 +388,52 @@ class FilterController extends FilterBaseController
             ]
         ];
 
-        foreach ((new Group())->ifgroupentry->iterateItems() as $groupItem) {
-            $groupName = (string)$groupItem->ifname;
-            $result['groups']['items'][$groupName] = ['value' => $groupName, 'label' => $groupName];
-        }
-        foreach (Config::getInstance()->object()->interfaces->children() as $key => $intf) {
-            if (!isset($result['groups']['items'][$key])) {
-                $result['interfaces']['items'][$key] = [
-                    'value' => $key,
-                    'label' => empty($intf->descr) ? strtoupper($key) : (string)$intf->descr
-                ];
+        // Count rules per interface
+        $ruleCounts = [];
+        foreach ((new \OPNsense\Firewall\Filter())->rules->rule->iterateItems() as $rule) {
+            $interfaces = array_filter(explode(',', (string)$rule->interface));
+
+            if (count($interfaces) !== 1) {
+                // floating: empty or multiple interfaces
+                $ruleCounts['floating'] = ($ruleCounts['floating'] ?? 0) + 1;
+            } else {
+                // single interface
+                $ruleCounts[$interfaces[0]] = ($ruleCounts[$interfaces[0]] ?? 0) + 1;
             }
         }
 
-        foreach (array_keys($result) as $key) {
-            usort($result[$key]['items'], fn($a, $b) => strcasecmp($a['label'], $b['label']));
+        // Helper to build item with label and count
+        $makeItem = fn($value, $label, $count, $type) => [
+            'value' => $value,
+            'label' => $label,
+            'count' => $count,
+            'type' => $type
+        ];
+
+        // Floating
+        $result['floating']['items'][] = $makeItem('', gettext('Any'), $ruleCounts['floating'] ?? 0, 'floating');
+
+        // Groups
+        foreach ((new \OPNsense\Firewall\Group())->ifgroupentry->iterateItems() as $groupItem) {
+            $name = (string)$groupItem->ifname;
+            $result['groups']['items'][] = $makeItem($name, $name, $ruleCounts[$name] ?? 0, 'group');
+        }
+
+        // Interfaces
+        $groupKeys = array_column($result['groups']['items'], 'value');
+        foreach (\OPNsense\Core\Config::getInstance()->object()->interfaces->children() as $key => $intf) {
+            if (!in_array($key, $groupKeys)) {
+                $descr = !empty($intf->descr) ? (string)$intf->descr : strtoupper($key);
+                $result['interfaces']['items'][] = $makeItem($key, $descr, $ruleCounts[$key] ?? 0, 'interface');
+            }
+        }
+
+        // Sort items by count and alphabetically
+        foreach ($result as &$section) {
+            usort($section['items'], fn($a, $b) =>
+                ($b['count'] ?? 0) <=> ($a['count'] ?? 0)
+                    ?: strcasecmp($a['label'], $b['label'])
+            );
         }
 
         return $result;
