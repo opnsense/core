@@ -643,8 +643,9 @@ $.fn.SimpleActionButton = function (params) {
  * @param data_callback callout to cleanse data before usage
  * @param store_data store data in data attribute (in its original form)
  * @param render_html if true, assumes HTML as `data-content`
+ * @param post_callback invoked after options are rendered and selectpicker is refreshed
  */
-$.fn.fetch_options = function(url, params, data_callback, store_data, render_html = false) {
+$.fn.fetch_options = function(url, params, data_callback, store_data, render_html = false, post_callback) {
     var deferred = $.Deferred();
     var $obj = $(this);
     $obj.empty();
@@ -703,6 +704,11 @@ $.fn.fetch_options = function(url, params, data_callback, store_data, render_htm
             $obj.selectpicker('refresh');
         }
         $obj.change();
+
+        if (typeof post_callback === "function") {
+            post_callback(data);
+        }
+
         deferred.resolve();
     });
 

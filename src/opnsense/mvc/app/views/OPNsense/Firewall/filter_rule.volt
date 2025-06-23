@@ -580,24 +580,23 @@
                         };
                     });
                 }
-                // Apply url hash if present, defer after layout and style recalculations
-                requestAnimationFrame(() => {
-                    const match = window.location.hash.match(/^#interface=([^&]+)/);
-                    if (match) {
-                        const ifaceFromHash = decodeURIComponent(match[1]);
-
-                        const allOptions = Object.values(data).flatMap(group => group.items.map(i => i.value));
-                        if (allOptions.includes(ifaceFromHash)) {
-                            $('#interface_select').val(ifaceFromHash).selectpicker('refresh');
-                            grid.bootgrid('reload');
-                        }
-                    }
-                    interfaceInitialized = true;
-                });
                 return data;
             },
             false,
-            true  // render_html to show counts as badges
+            true,  // render_html to show counts as badges
+            function (data) {  // post_callback, apply the URL hash logic
+                const match = window.location.hash.match(/^#interface=([^&]+)/);
+                if (match) {
+                    const ifaceFromHash = decodeURIComponent(match[1]);
+
+                    const allOptions = Object.values(data).flatMap(group => group.items.map(i => i.value));
+                    if (allOptions.includes(ifaceFromHash)) {
+                        $('#interface_select').val(ifaceFromHash).selectpicker('refresh');
+                        grid.bootgrid('reload');
+                    }
+                }
+                interfaceInitialized = true;
+            }
         );
 
         $("#interface_select_container").show();
