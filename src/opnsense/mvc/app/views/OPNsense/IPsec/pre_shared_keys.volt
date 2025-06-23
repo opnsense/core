@@ -1,11 +1,11 @@
 <script>
     $( document ).ready(function() {
         $("#grid-pre-shared-keys").UIBootgrid(
-            {   search:'/api/ipsec/pre_shared_keys/searchItem/',
-                get:'/api/ipsec/pre_shared_keys/getItem/',
-                set:'/api/ipsec/pre_shared_keys/setItem/',
-                add:'/api/ipsec/pre_shared_keys/addItem/',
-                del:'/api/ipsec/pre_shared_keys/delItem/'
+            {   search:'/api/ipsec/pre_shared_keys/search_item/',
+                get:'/api/ipsec/pre_shared_keys/get_item/',
+                set:'/api/ipsec/pre_shared_keys/set_item/',
+                add:'/api/ipsec/pre_shared_keys/add_item/',
+                del:'/api/ipsec/pre_shared_keys/del_item/'
             }
         );
         updateServiceControlUI('ipsec');

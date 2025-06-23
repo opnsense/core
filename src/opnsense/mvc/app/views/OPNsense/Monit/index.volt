@@ -54,7 +54,7 @@
       /**
        * general settings
        */
-      mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/getGeneral/"}).done(function(){
+      mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/get_general/"}).done(function(){
          formatTokenizersUI();
          $('.selectpicker').selectpicker('refresh');
          isSubsystemDirty();
@@ -94,12 +94,12 @@
        * alert settings
        */
       $("#grid-alerts").UIBootgrid({
-         'search':'/api/monit/settings/searchAlert/',
-         'get':'/api/monit/settings/getAlert/',
-         'set':'/api/monit/settings/setAlert/',
-         'add':'/api/monit/settings/addAlert/',
-         'del':'/api/monit/settings/delAlert/',
-         'toggle':'/api/monit/settings/toggleAlert/'
+         'search':'/api/monit/settings/search_alert/',
+         'get':'/api/monit/settings/get_alert/',
+         'set':'/api/monit/settings/set_alert/',
+         'add':'/api/monit/settings/add_alert/',
+         'del':'/api/monit/settings/del_alert/',
+         'toggle':'/api/monit/settings/toggle_alert/'
       });
 
       /**
@@ -170,12 +170,12 @@
       $('#service\\.interface').on('changed.bs.select', function(e) {ShowHideFields();});
 
       $("#grid-services").UIBootgrid({
-         'search':'/api/monit/settings/searchService/',
-         'get':'/api/monit/settings/getService/',
-         'set':'/api/monit/settings/setService/',
-         'add':'/api/monit/settings/addService/',
-         'del':'/api/monit/settings/delService/',
-         'toggle':'/api/monit/settings/toggleService/'
+         'search':'/api/monit/settings/search_service/',
+         'get':'/api/monit/settings/get_service/',
+         'set':'/api/monit/settings/set_service/',
+         'add':'/api/monit/settings/add_service/',
+         'del':'/api/monit/settings/del_service/',
+         'toggle':'/api/monit/settings/toggle_service/'
       });
 
 
@@ -196,11 +196,11 @@
 
 
       $("#grid-tests").UIBootgrid({
-         'search':'/api/monit/settings/searchTest/',
-         'get':'/api/monit/settings/getTest/',
-         'set':'/api/monit/settings/setTest/',
-         'add':'/api/monit/settings/addTest/',
-         'del':'/api/monit/settings/delTest/'
+         'search':'/api/monit/settings/search_test/',
+         'get':'/api/monit/settings/get_test/',
+         'set':'/api/monit/settings/set_test/',
+         'add':'/api/monit/settings/add_test/',
+         'del':'/api/monit/settings/del_test/'
       });
 
    });

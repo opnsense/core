@@ -34,11 +34,11 @@
 
         $("#grid-destinations").UIBootgrid(
             {   search:'/api/syslog/settings/searchDestinations',
-                get:'/api/syslog/settings/getDestination/',
-                set:'/api/syslog/settings/setDestination/',
-                add:'/api/syslog/settings/addDestination/',
-                del:'/api/syslog/settings/delDestination/',
-                toggle:'/api/syslog/settings/toggleDestination/'
+                get:'/api/syslog/settings/get_destination/',
+                set:'/api/syslog/settings/set_destination/',
+                add:'/api/syslog/settings/add_destination/',
+                del:'/api/syslog/settings/del_destination/',
+                toggle:'/api/syslog/settings/toggle_destination/'
             }
         );
 

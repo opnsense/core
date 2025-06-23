@@ -44,7 +44,7 @@
                                         '{{ lang._('Yes') }}',
                                         '{{ lang._('No') }}',
                                         function() {
-                            ajaxCall('/api/diagnostics/interface/delRoute/', {'destination': route[0], 'gateway': route[1]},function(data,status){
+                            ajaxCall('/api/diagnostics/interface/del_route/', {'destination': route[0], 'gateway': route[1]},function(data,status){
                                 // reload grid after delete
                                 $("#update").click();
                             });
@@ -64,7 +64,7 @@
             if ($("#resolve").prop("checked")) {
                 resolve = "yes";
             }
-            ajaxGet("/api/diagnostics/interface/getRoutes/", {resolve:resolve}, function (data, status) {
+            ajaxGet("/api/diagnostics/interface/get_routes/", {resolve:resolve}, function (data, status) {
                 if (status == "success") {
                     $("#grid-routes").bootgrid('append', data).on("loaded.rs.jquery.bootgrid", function () {
                         $('.bootgrid-tooltip').tooltip();

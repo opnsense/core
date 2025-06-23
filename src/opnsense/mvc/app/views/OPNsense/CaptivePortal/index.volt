@@ -33,11 +33,11 @@
 
         $("#grid-zones").UIBootgrid(
             {   search:'/api/captiveportal/settings/searchZones',
-                get:'/api/captiveportal/settings/getZone/',
-                set:'/api/captiveportal/settings/setZone/',
-                add:'/api/captiveportal/settings/addZone/',
-                del:'/api/captiveportal/settings/delZone/',
-                toggle:'/api/captiveportal/settings/toggleZone/',
+                get:'/api/captiveportal/settings/get_zone/',
+                set:'/api/captiveportal/settings/set_zone/',
+                add:'/api/captiveportal/settings/add_zone/',
+                del:'/api/captiveportal/settings/del_zone/',
+                toggle:'/api/captiveportal/settings/toggle_zone/',
                 options: {
                     triggerEditFor: getUrlHash('edit')
                 }
@@ -68,14 +68,14 @@
                 stdDialogConfirm('{{ lang._('Confirm removal') }}',
                     '{{ lang._('Do you want to remove the selected item?') }}',
                     '{{ lang._('Yes') }}', '{{ lang._('Cancel') }}', function () {
-                    ajaxCall("/api/captiveportal/service/delTemplate/" + uuid, {},function(data,status){
+                    ajaxCall("/api/captiveportal/service/del_template/" + uuid, {},function(data,status){
                         // reload grid after delete
                         $("#grid-templates").bootgrid("reload");
                     });
                 });
             });
             grid_templates.find(".command-download").on("click", function(e) {
-                window.open('/api/captiveportal/service/getTemplate/'+$(this).data("row-id")+'/','downloadTemplate');
+                window.open('/api/captiveportal/service/get_template/'+$(this).data("row-id")+'/','downloadTemplate');
             });
         });
 
@@ -94,7 +94,7 @@
          * download default template
          */
         $("#downloadTemplateAct").click(function(){
-            window.open('/api/captiveportal/service/getTemplate/','downloadTemplate');
+            window.open('/api/captiveportal/service/get_template/','downloadTemplate');
         });
 
 

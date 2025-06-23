@@ -37,10 +37,10 @@
          *************************************************************************************************************/
         $("#grid-categories").UIBootgrid(
                 {   search:'/api/firewall/category/searchItem',
-                    get:'/api/firewall/category/getItem/',
-                    set:'/api/firewall/category/setItem/',
-                    add:'/api/firewall/category/addItem/',
-                    del:'/api/firewall/category/delItem/',
+                    get:'/api/firewall/category/get_item/',
+                    set:'/api/firewall/category/set_item/',
+                    add:'/api/firewall/category/add_item/',
+                    del:'/api/firewall/category/del_item/',
                     options:{
                         formatters:{
                             color: function (column, row) {

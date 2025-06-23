@@ -28,12 +28,12 @@
     $( document ).ready(function() {
 
         $("#grid-gateways").UIBootgrid({
-            search:'/api/routing/settings/searchGateway/',
-            get:'/api/routing/settings/getGateway/',
-            set:'/api/routing/settings/setGateway/',
-            add:'/api/routing/settings/addGateway/',
-            del:'/api/routing/settings/delGateway/',
-            toggle:'/api/routing/settings/toggleGateway/',
+            search:'/api/routing/settings/search_gateway/',
+            get:'/api/routing/settings/get_gateway/',
+            set:'/api/routing/settings/set_gateway/',
+            add:'/api/routing/settings/add_gateway/',
+            del:'/api/routing/settings/del_gateway/',
+            toggle:'/api/routing/settings/toggle_gateway/',
             options: {
                 triggerEditFor: getUrlHash('edit'),
                 initialSearchPhrase: getUrlHash('search'),

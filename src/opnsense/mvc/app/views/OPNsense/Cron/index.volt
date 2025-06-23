@@ -32,8 +32,8 @@
          */
         function openDialog(uuid) {
             var editDlg = "DialogEdit";
-            var setUrl = "/api/cron/settings/setJob/";
-            var getUrl = "/api/cron/settings/getJob/";
+            var setUrl = "/api/cron/settings/set_job/";
+            var getUrl = "/api/cron/settings/get_job/";
             var urlMap = {};
             urlMap['frm_' + editDlg] = getUrl + uuid;
             mapDataToFormUI(urlMap).done(function () {
@@ -67,11 +67,11 @@
 
         $("#grid-jobs").UIBootgrid(
                 {   'search':'/api/cron/settings/searchJobs',
-                    'get':'/api/cron/settings/getJob/',
-                    'set':'/api/cron/settings/setJob/',
-                    'add':'/api/cron/settings/addJob/',
-                    'del':'/api/cron/settings/delJob/',
-                    'toggle':'/api/cron/settings/toggleJob/'
+                    'get':'/api/cron/settings/get_job/',
+                    'set':'/api/cron/settings/set_job/',
+                    'add':'/api/cron/settings/add_job/',
+                    'del':'/api/cron/settings/del_job/',
+                    'toggle':'/api/cron/settings/toggle_job/'
                 }
         );
 

@@ -34,20 +34,20 @@ POSSIBILITY OF SUCH DAMAGE.
       updateServiceControlUI('ids');
       $("#grid-policy").UIBootgrid({
               search:'/api/ids/settings/searchPolicy',
-              get:'/api/ids/settings/getPolicy/',
-              set:'/api/ids/settings/setPolicy/',
-              add:'/api/ids/settings/addPolicy/',
-              del:'/api/ids/settings/delPolicy/',
-              toggle:'/api/ids/settings/togglePolicy/'
+              get:'/api/ids/settings/get_policy/',
+              set:'/api/ids/settings/set_policy/',
+              add:'/api/ids/settings/add_policy/',
+              del:'/api/ids/settings/del_policy/',
+              toggle:'/api/ids/settings/toggle_policy/'
           }
       );
       $("#grid-policy-rule").UIBootgrid({
               search:'/api/ids/settings/searchPolicyRule',
-              get:'/api/ids/settings/getPolicyRule/',
-              set:'/api/ids/settings/setPolicyRule/',
-              add:'/api/ids/settings/addPolicyRule/',
-              del:'/api/ids/settings/delPolicyRule/',
-              toggle:'/api/ids/settings/togglePolicyRule/'
+              get:'/api/ids/settings/get_policy_rule/',
+              set:'/api/ids/settings/set_policy_rule/',
+              add:'/api/ids/settings/add_policy_rule/',
+              del:'/api/ids/settings/del_policy_rule/',
+              toggle:'/api/ids/settings/toggle_policy_rule/'
           }
       );
       // policy content handling

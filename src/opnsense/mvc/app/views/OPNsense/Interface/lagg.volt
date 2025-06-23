@@ -2,10 +2,10 @@
     $( document ).ready(function() {
         $("#{{formGridLagg['table_id']}}").UIBootgrid(
             {   search:'/api/interfaces/lagg_settings/searchItem',
-                get:'/api/interfaces/lagg_settings/getItem/',
-                set:'/api/interfaces/lagg_settings/setItem/',
-                add:'/api/interfaces/lagg_settings/addItem/',
-                del:'/api/interfaces/lagg_settings/delItem/',
+                get:'/api/interfaces/lagg_settings/get_item/',
+                set:'/api/interfaces/lagg_settings/set_item/',
+                add:'/api/interfaces/lagg_settings/add_item/',
+                del:'/api/interfaces/lagg_settings/del_item/',
                 options: {
                     formatters: {
                         members: function (column, row) {

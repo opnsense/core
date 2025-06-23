@@ -601,7 +601,7 @@
                     let whitelisted_domains = null;
                     let blocklisted_domains = null;
                     let grid_queries = $("#grid-queries").UIBootgrid({
-                        search:'/api/unbound/overview/searchQueries/',
+                        search:'/api/unbound/overview/search_queries/',
                         options: {
                             virtualDOM: true,
                             rowSelect: false,

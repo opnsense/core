@@ -244,9 +244,9 @@ POSSIBILITY OF SUCH DAMAGE.
                 if (!gridRuleFilesInitialized) {
                     $("#grid-rule-files").UIBootgrid({
                         search:'/api/ids/settings/listRulesets',
-                        get:'/api/ids/settings/getRuleset/',
-                        set:'/api/ids/settings/setRuleset/',
-                        toggle:'/api/ids/settings/toggleRuleset/',
+                        get:'/api/ids/settings/get_ruleset/',
+                        set:'/api/ids/settings/set_ruleset/',
+                        toggle:'/api/ids/settings/toggle_ruleset/',
                         options:{
                             navigation:0,
                             static: true,
@@ -271,10 +271,10 @@ POSSIBILITY OF SUCH DAMAGE.
                          * disable/enable selected rulesets
                          */
                         $("#disableSelectedRuleSets").unbind('click').click(function(){
-                            actionToggleSelected('grid-rule-files', '/api/ids/settings/toggleRuleset/', 0, 20);
+                            actionToggleSelected('grid-rule-files', '/api/ids/settings/toggle_ruleset/', 0, 20);
                         });
                         $("#enableSelectedRuleSets").unbind('click').click(function(){
-                            actionToggleSelected('grid-rule-files', '/api/ids/settings/toggleRuleset/', 1, 20);
+                            actionToggleSelected('grid-rule-files', '/api/ids/settings/toggle_ruleset/', 1, 20);
                         });
                     });
                     gridRuleFilesInitialized = true;
@@ -360,7 +360,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                     return (new $.Deferred()).resolve();
                                 }
                             },
-                            toggle:'/api/ids/settings/toggleRule/'
+                            toggle:'/api/ids/settings/toggle_rule/'
                         }
                     ).on('loaded.rs.jquery.bootgrid', function() {
                         /**
@@ -369,26 +369,26 @@ POSSIBILITY OF SUCH DAMAGE.
                         $("#disableSelectedRules").unbind('click').click(function(event){
                             event.preventDefault();
                             $("#disableSelectedRules > span").removeClass("fa-square-o").addClass("fa-spinner fa-pulse");
-                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', 0, 100).done(function(){
+                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggle_rule/', 0, 100).done(function(){
                                 $("#disableSelectedRules > span").removeClass("fa-spinner fa-pulse");
                                 $("#disableSelectedRules > span").addClass("fa-square-o");
                             });
                         });
                         $("#enableSelectedRules").unbind('click').click(function(){
                             $("#enableSelectedRules > span").removeClass("fa-check-square-o").addClass("fa-spinner fa-pulse");
-                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', 1, 100).done(function(){
+                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggle_rule/', 1, 100).done(function(){
                                 $("#enableSelectedRules > span").removeClass("fa-spinner fa-pulse").addClass("fa-check-square-o");
                             });
                         });
                         $("#alertSelectedRules").unbind('click').click(function(){
                             $("#alertSelectedRules > span").addClass("fa-spinner fa-pulse");
-                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', "alert", 100).done(function(){
+                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggle_rule/', "alert", 100).done(function(){
                                 $("#alertSelectedRules > span").removeClass("fa-spinner fa-pulse");
                             });
                         });
                         $("#dropSelectedRules").unbind('click').click(function(){
                             $("#dropSelectedRules > span").addClass("fa-spinner fa-pulse");
-                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', "drop", 100).done(function(){
+                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggle_rule/', "drop", 100).done(function(){
                                 $("#dropSelectedRules > span").removeClass("fa-spinner fa-pulse");
                             });
                         });
@@ -530,7 +530,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                                     } else {
                                                         rule_params['enabled'] = 0;
                                                     }
-                                                    ajaxCall("/api/ids/settings/setRule/"+data['alert_sid'], rule_params, function() {
+                                                    ajaxCall("/api/ids/settings/set_rule/"+data['alert_sid'], rule_params, function() {
                                                         $("#alert_sid_action > small").remove();
                                                         $("#alert_sid_action").append($('<small/>').html("{{ lang._('Changes will be active after apply (rules tab)') }}"));
                                                     });
@@ -569,11 +569,11 @@ POSSIBILITY OF SUCH DAMAGE.
                 if (!gridUserRulesInitialized) {
                     $("#grid-userrules").UIBootgrid({
                         search:'/api/ids/settings/searchUserRule',
-                        get:'/api/ids/settings/getUserRule/',
-                        set:'/api/ids/settings/setUserRule/',
-                        add:'/api/ids/settings/addUserRule/',
-                        del:'/api/ids/settings/delUserRule/',
-                        toggle:'/api/ids/settings/toggleUserRule/'
+                        get:'/api/ids/settings/get_user_rule/',
+                        set:'/api/ids/settings/set_user_rule/',
+                        add:'/api/ids/settings/add_user_rule/',
+                        del:'/api/ids/settings/del_user_rule/',
+                        toggle:'/api/ids/settings/toggle_user_rule/'
                     });
                     gridUserRulesInitialized = true;
                 } else {
@@ -691,7 +691,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     label: '{{ lang._('Yes') }}',
                     cssClass: 'btn-primary',
                     action: function(dlg){
-                        ajaxCall("/api/ids/service/dropAlertLog/", {filename: selected_log.data('filename')}, function(data,status){
+                        ajaxCall("/api/ids/service/drop_alert_log/", {filename: selected_log.data('filename')}, function(data,status){
                             $('#alert-logfile option').prop('selected', false);
                             updateAlertLogs();
                             $('#grid-alerts').bootgrid('reload');
