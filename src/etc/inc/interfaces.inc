@@ -294,9 +294,9 @@ function _interfaces_bridge_configure($bridge, $ifconfig_details = null)
          $span_device = get_real_interface($bridge['span']);
          $span_port = $bridge['span'];
 
-         if (!isset($current_members[$span_device]) || !in_array('span', $current_members[$span_device]['flags'])) {
+        if (!isset($current_members[$span_device]) || !in_array('span', $current_members[$span_device]['flags'])) {
             mwexecf('/sbin/ifconfig %s span %s', [$bridgeif, $span_device]);
-         }
+        }
     }
     foreach ($current_members as $device => $info) {
         /* remove span port not configured: GUI only supports one but FreeBSD allows multiple */

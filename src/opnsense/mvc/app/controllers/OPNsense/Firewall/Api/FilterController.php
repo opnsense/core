@@ -432,8 +432,7 @@ class FilterController extends FilterBaseController
         foreach ($result as &$section) {
             usort($section['items'], fn($a, $b) =>
                 ($b['count'] ?? 0) <=> ($a['count'] ?? 0)
-                    ?: strcasecmp($a['label'], $b['label'])
-            );
+                    ?: strcasecmp($a['label'], $b['label']));
         }
 
         return $result;
