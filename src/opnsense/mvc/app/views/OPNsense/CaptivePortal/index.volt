@@ -77,26 +77,24 @@
             grid_templates.find(".command-download").on("click", function(e) {
                 window.open('/api/captiveportal/service/get_template/'+$(this).data("row-id")+'/','downloadTemplate');
             });
-        });
 
-        /**
-         * Open dialog to add new template
-         */
-        $("#addTemplateAct").click(function(){
-            // clear dialog and open
-            $("#templateUUID").val("");
-            $("#templateName").val("");
-            $("#base64text_upload").val("");
-            $('#DialogTemplate').modal({backdrop: 'static', keyboard: false});
-        });
+            /**
+             * Open dialog to add new template
+             */
+            $("#addTemplateAct").off("click").on("click", function() {
+                $("#templateUUID").val("");
+                $("#templateName").val("");
+                $("#base64text_upload").val("");
+                $('#DialogTemplate').modal({backdrop: 'static', keyboard: false});
+            });
 
-        /**
-         * download default template
-         */
-        $("#downloadTemplateAct").click(function(){
-            window.open('/api/captiveportal/service/get_template/','downloadTemplate');
+            /**
+             * download default template
+             */
+            $("#downloadTemplateAct").off("click").on("click", function() {
+                window.open('/api/captiveportal/service/get_template/', 'downloadTemplate');
+            });
         });
-
 
         /*************************************************************************************************************
          * Commands
