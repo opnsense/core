@@ -179,7 +179,7 @@
             </table>
         </div>
     </div>
-    {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/captiveportal/service/reconfigure', 'data_service_widget': 'quagga'}) }}
+    {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/captiveportal/service/reconfigure'}) }}
 </div>
 
 {# include dialogs #}
