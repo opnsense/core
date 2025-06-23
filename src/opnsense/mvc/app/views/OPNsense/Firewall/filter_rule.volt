@@ -583,7 +583,6 @@
                 return data;
             },
             false,
-            true,  // render_html to show counts as badges
             function (data) {  // post_callback, apply the URL hash logic
                 const match = window.location.hash.match(/^#interface=([^&]+)/);
                 if (match) {
@@ -596,7 +595,8 @@
                     }
                 }
                 interfaceInitialized = true;
-            }
+            },
+            true  // render_html to show counts as badges
         );
 
         $("#interface_select_container").show();

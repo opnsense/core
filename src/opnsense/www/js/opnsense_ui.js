@@ -642,10 +642,10 @@ $.fn.SimpleActionButton = function (params) {
  * @param params
  * @param data_callback callout to cleanse data before usage
  * @param store_data store data in data attribute (in its original form)
- * @param render_html if true, assumes HTML as `data-content`
  * @param post_callback invoked after options are rendered and selectpicker is refreshed
+ * @param render_html if true, assumes HTML as `data-content`
  */
-$.fn.fetch_options = function(url, params, data_callback, store_data, render_html = false, post_callback) {
+$.fn.fetch_options = function(url, params, data_callback, store_data, post_callback, render_html = false) {
     var deferred = $.Deferred();
     var $obj = $(this);
     $obj.empty();
