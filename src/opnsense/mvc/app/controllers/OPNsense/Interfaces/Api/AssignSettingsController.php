@@ -9,6 +9,9 @@ use OPNsense\Core\Config;
 
 class AssignSettingsController extends ApiControllerBase
 {
+    // set version number
+    private $version = '1.0';
+    
     /**
      * add the interface configuration
      *
@@ -90,7 +93,7 @@ class AssignSettingsController extends ApiControllerBase
         return $result;
     }
 
-    /** Erledigt / Getestet - todos: check for groups, bridge, gre, gif
+    /** todos: check for groups, bridge, gre, gif
      * Updates the configuration of an interface.
      * 
      * required POST-Request:
@@ -163,7 +166,7 @@ class AssignSettingsController extends ApiControllerBase
         return $result;
     }
 
-    /** Erledigt / Getestet
+    /**
      * Removes the assignment of an interface.
      *
      * Expects a POST request with the following parameter: uuid (name of the interface)
@@ -256,7 +259,7 @@ class AssignSettingsController extends ApiControllerBase
         return $result;
     }
 
-    /** Erledigt / Getestet
+    /**
      * Returns the configuration of an interface.
      *
      * Expects a GET request with the following parameter: uuid (name of the interface)
@@ -279,7 +282,7 @@ class AssignSettingsController extends ApiControllerBase
         return $result;
     }
 
-    /** Erledigt / Getestet
+    /**
      * Reconfigure an interface.
      *
      * Expects a POST request with the following parameter: ifname (name of the interface)
@@ -296,6 +299,14 @@ class AssignSettingsController extends ApiControllerBase
         }
 
         return $result;*/
+    }
+
+    public function versionAction() {
+        $result = array("status" => "ok");
+
+        $result['version'] = $this->version;
+
+        return $result;
     }
 
 }
