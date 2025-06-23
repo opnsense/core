@@ -266,24 +266,22 @@ function _interfaces_bridge_configure($bridge, $ifconfig_details = null)
                 )
             ) {
                 /* in list equals off for tags starting with "auto" */
-                mwexecf(sprintf(
-                    "/sbin/ifconfig %s %s %s",
+                mwexecf('/sbin/ifconfig %s %s %s', [
                     $bridgeif,
                     (in_array($member, $section_members) ? '-' : '') . $flag,
                     $device
-                ));
+                ]);
             } elseif (
                 !str_starts_with($section, 'auto') && (
                 !isset($current_members[$device]) ||
                 in_array($flag, $current_members[$device]['flags']) != in_array($member, $section_members)
                 )
             ) {
-                mwexecf(sprintf(
-                    "/sbin/ifconfig %s %s %s",
+                mwexecf('/sbin/ifconfig %s %s %s', [
                     $bridgeif,
                     (!in_array($member, $section_members) ? '-' : '') . $flag,
                     $device
-                ));
+                ]);
             }
         }
     }
@@ -291,12 +289,7 @@ function _interfaces_bridge_configure($bridge, $ifconfig_details = null)
     /* update changed bridge properties */
     foreach (['maxage', 'fwddelay', 'holdcnt', 'maxaddr', 'timeout', 'proto'] as $prop) {
         if (!empty($bridge[$prop]) && (empty($this_if[$prop]) ||  $this_if[$prop] != $bridge[$prop])) {
-            mwexecf(sprintf(
-                "/sbin/ifconfig %s %s %s",
-                $bridgeif,
-                $prop,
-                $bridge[$prop]
-            ));
+            mwexecf('/sbin/ifconfig %s %s %s', [$bridgeif, $prop, $bridge[$prop]]);
         }
     }
 
