@@ -60,6 +60,24 @@ class CategoryController extends ApiMutableModelControllerBase
         return $result;
     }
 
+    /* The model validates the color for without # */
+    private function getCategoryOverlay(): array
+    {
+        $overlay = [];
+
+        if (
+            $this->request->isPost() &&
+            $this->request->hasPost("category")
+        ) {
+            $color = $this->request->getPost("category")['color'] ?? '';
+            if (str_starts_with($color, '#')) {
+                $overlay['color'] = substr($color, 1);
+            }
+        }
+
+        return $overlay;
+    }
+
     /**
      * Update category with given properties
      * @param string $uuid internal id
@@ -78,7 +96,7 @@ class CategoryController extends ApiMutableModelControllerBase
                 $this->getModel()->refactor($old_name, $new_name);
             }
         }
-        return $this->setBase("category", "categories.category", $uuid);
+        return $this->setBase("category", "categories.category", $uuid, $this->getCategoryOverlay());
     }
 
     /**
@@ -90,7 +108,7 @@ class CategoryController extends ApiMutableModelControllerBase
      */
     public function addItemAction()
     {
-        return $this->addBase("category", "categories.category");
+        return $this->addBase("category", "categories.category", $this->getCategoryOverlay());
     }
 
     /**
@@ -101,7 +119,13 @@ class CategoryController extends ApiMutableModelControllerBase
      */
     public function getItemAction($uuid = null)
     {
-        return $this->getBase("category", "categories.category", $uuid);
+        $result = $this->getBase("category", "categories.category", $uuid);
+
+        if (!empty($result['category']['color'])) {
+            $result['category']['color'] = '#' . ltrim($result['category']['color'], '#');
+        }
+
+        return $result;
     }
 
     /**

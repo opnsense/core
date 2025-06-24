@@ -2,9 +2,9 @@
     <field>
         <id>category.color</id>
         <label>Color</label>
-        <type>text</type>
-        <style>pick-a-color</style>
-        <help>pick a color to use.</help>
+        <type>color</type>
+        <style>color-picker</style>
+        <help>Pick a color to use</help>
         <grid_view>
             <formatter>color</formatter>
             <width>100</width>
