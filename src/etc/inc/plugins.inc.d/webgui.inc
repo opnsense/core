@@ -276,8 +276,7 @@ fastcgi.server = ( ".php" =>
       "max-procs" => 8,
       "bin-environment" => (
         "PHP_FCGI_CHILDREN" => "5",
-        "PHP_FCGI_MAX_REQUESTS" => "100",
-        "TMPDIR" => "/var/lib/php/tmp"
+        "PHP_FCGI_MAX_REQUESTS" => "100"
       ),
       "bin-path" => "/usr/local/bin/php-cgi"
     )
