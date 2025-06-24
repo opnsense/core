@@ -4,6 +4,10 @@
         <label>enabled</label>
         <type>checkbox</type>
         <help>Select if job is enabled or not</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+        </grid_view>
     </field>
     <field>
         <id>job.minutes</id>
