@@ -35,7 +35,7 @@
         /*************************************************************************************************************
          * link grid actions
          *************************************************************************************************************/
-        $("#grid-categories").UIBootgrid(
+        $("#{{formGridCategory['table_id']}}").UIBootgrid(
                 {   search:'/api/firewall/category/search_item',
                     get:'/api/firewall/category/get_item/',
                     set:'/api/firewall/category/set_item/',
@@ -46,18 +46,6 @@
                             color: function (column, row) {
                                 if (row.color != "") {
                                     return "<i style='color:#"+row.color+";' class='fa fa-circle'></i>";
-                                }
-                            },
-                            commands: function (column, row) {
-                                return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit bootgrid-tooltip\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-pencil fa-fw\"></span></button> " +
-                                    "<button type=\"button\" class=\"btn btn-xs btn-default command-copy bootgrid-tooltip\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-clone fa-fw\"></span></button>" +
-                                    "<button type=\"button\" class=\"btn btn-xs btn-default command-delete bootgrid-tooltip\" data-row-id=\"" + row.uuid + "\"><span class=\"fa fa-trash-o fa-fw\"></span></button>";
-                            },
-                            boolean: function (column, row) {
-                                if (parseInt(row[column.id], 2) === 1) {
-                                    return "<span class=\"fa fa-check\" data-value=\"1\" data-row-id=\"" + row.uuid + "\"></span>";
-                                } else {
-                                    return "<span class=\"fa fa-times\" data-value=\"0\" data-row-id=\"" + row.uuid + "\"></span>";
                                 }
                             },
                         }
@@ -96,30 +84,9 @@
 </ul>
 <div class="tab-content content-box">
     <div id="categories" class="tab-pane fade in active">
-        <table id="grid-categories" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEdit">
-            <thead>
-            <tr>
-                <th data-column-id="color" data-width="2em" data-type="string" data-formatter="color"></th>
-                <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
-                <th data-column-id="auto" data-width="6em" data-type="string" data-formatter="boolean">{{ lang._('Auto') }}</th>
-                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-                <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td></td>
-                <td>
-                    <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-plus fa-fw"></span></button>
-                    <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o fa-fw"></span></button>
-                </td>
-            </tr>
-            </tfoot>
-        </table>
+        {{ partial('layout_partials/base_bootgrid_table', formGridCategory)}}
     </div>
 </div>
 
 {# include dialog #}
-{{ partial("layout_partials/base_dialog",['fields':formDialogEdit,'id':'DialogEdit','label':lang._('Edit category')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEdit,'id':formGridCategory['edit_dialog_id'],'label':lang._('Edit category')])}}
