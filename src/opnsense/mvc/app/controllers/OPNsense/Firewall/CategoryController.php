@@ -38,6 +38,7 @@ class CategoryController extends IndexController
     public function indexAction($selected = null)
     {
         $this->view->formDialogEdit = $this->getForm("categoryEdit");
+        $this->view->formGridCategory = $this->getFormGrid('categoryEdit');
         $this->view->pick('OPNsense/Firewall/category');
     }
 }
