@@ -99,7 +99,7 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         return $this->searchBase(
             "zones.zone",
-            array("enabled", "description", "zoneid"),
+            null,
             "description"
         );
     }

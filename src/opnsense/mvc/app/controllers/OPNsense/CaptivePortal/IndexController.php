@@ -38,9 +38,8 @@ class IndexController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
-        // link rule dialog
         $this->view->formDialogZone = $this->getForm("dialogZone");
-        // choose template
+        $this->view->formGridZone = $this->getFormGrid('dialogZone');
         $this->view->pick('OPNsense/CaptivePortal/index');
     }
 }

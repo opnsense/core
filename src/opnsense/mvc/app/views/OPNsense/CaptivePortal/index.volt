@@ -31,7 +31,7 @@
          * link grid actions
          *************************************************************************************************************/
 
-        $("#grid-zones").UIBootgrid(
+        $("#{{formGridZone['table_id']}}").UIBootgrid(
             {   search:'/api/captiveportal/settings/search_zones',
                 get:'/api/captiveportal/settings/get_zone/',
                 set:'/api/captiveportal/settings/set_zone/',
@@ -77,26 +77,24 @@
             grid_templates.find(".command-download").on("click", function(e) {
                 window.open('/api/captiveportal/service/get_template/'+$(this).data("row-id")+'/','downloadTemplate');
             });
-        });
 
-        /**
-         * Open dialog to add new template
-         */
-        $("#addTemplateAct").click(function(){
-            // clear dialog and open
-            $("#templateUUID").val("");
-            $("#templateName").val("");
-            $("#base64text_upload").val("");
-            $('#DialogTemplate').modal({backdrop: 'static', keyboard: false});
-        });
+            /**
+             * Open dialog to add new template
+             */
+            $("#addTemplateAct").off("click").on("click", function() {
+                $("#templateUUID").val("");
+                $("#templateName").val("");
+                $("#base64text_upload").val("");
+                $('#DialogTemplate').modal({backdrop: 'static', keyboard: false});
+            });
 
-        /**
-         * download default template
-         */
-        $("#downloadTemplateAct").click(function(){
-            window.open('/api/captiveportal/service/get_template/','downloadTemplate');
+            /**
+             * download default template
+             */
+            $("#downloadTemplateAct").off("click").on("click", function() {
+                window.open('/api/captiveportal/service/get_template/', 'downloadTemplate');
+            });
         });
-
 
         /*************************************************************************************************************
          * Commands
@@ -154,29 +152,7 @@
 </ul>
 <div class="tab-content content-box">
     <div id="zones" class="tab-pane fade in active">
-        <!-- tab page "zones" -->
-        <table id="grid-zones" class="table table-condensed table-hover table-striped table-responsive" data-editAlert="changeMessage" data-editDialog="DialogZone">
-            <thead>
-            <tr>
-                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-                <th data-column-id="zoneid" data-type="number" data-visible="false">{{ lang._('Zoneid') }}</th>
-                <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
-                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-                <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td></td>
-                <td>
-                    <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                    <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
-                </td>
-            </tr>
-            </tfoot>
-        </table>
+        {{ partial('layout_partials/base_bootgrid_table', formGridZone)}}
     </div>
     <div id="template" class="tab-pane fade in">
         <div class="col-md-12">
@@ -203,23 +179,12 @@
             </table>
         </div>
     </div>
-    <div class="col-md-12">
-        <div id="changeMessage" class="alert alert-info" style="display: none" role="alert">
-            {{ lang._('After changing settings, please remember to apply them with the button below') }}
-        </div>
-        <hr/>
-        <button class="btn btn-primary" id="reconfigureAct"
-                data-endpoint='/api/captiveportal/service/reconfigure'
-                data-label="{{ lang._('Apply') }}"
-                data-error-title="{{ lang._('Error reconfiguring captiveportal') }}"
-                type="button"
-        ></button>
-        <br/><br/>
-    </div>
 </div>
 
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/captiveportal/service/reconfigure'}) }}
+
 {# include dialogs #}
-{{ partial("layout_partials/base_dialog",['fields':formDialogZone,'id':'DialogZone','label':lang._('Edit zone')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogZone,'id':formGridZone['edit_dialog_id'],'label':lang._('Edit zone')])}}
 
 <!-- upload (new) template content dialog -->
 <div class="modal fade" id="DialogTemplate" tabindex="-1" role="dialog" aria-labelledby="formDialogTemplateLabel" aria-hidden="true">
