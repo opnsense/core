@@ -179,8 +179,9 @@
             </table>
         </div>
     </div>
-    {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/captiveportal/service/reconfigure'}) }}
 </div>
+
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/captiveportal/service/reconfigure'}) }}
 
 {# include dialogs #}
 {{ partial("layout_partials/base_dialog",['fields':formDialogZone,'id':formGridZone['edit_dialog_id'],'label':lang._('Edit zone')])}}
