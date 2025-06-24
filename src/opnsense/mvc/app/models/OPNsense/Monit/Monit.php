@@ -318,7 +318,7 @@ class Monit extends BaseModel
     /* return the dirty marker file location */
     private function dirtyFile()
     {
-	return (new AppConfig())->application->tempDir . '/monit.dirty';
+        return (new AppConfig())->application->tempDir . '/monit.dirty';
     }
 
     /**
