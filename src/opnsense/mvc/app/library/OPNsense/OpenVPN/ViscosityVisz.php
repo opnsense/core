@@ -28,6 +28,8 @@
 
 namespace OPNsense\OpenVPN;
 
+use OPNsense\Core\AppConfig;
+
 class ViscosityVisz extends PlainOpenVPN
 {
     /**
@@ -101,7 +103,7 @@ class ViscosityVisz extends PlainOpenVPN
     public function getContent()
     {
         $conf = $this->openvpnConfParts();
-        $tempdir = tempnam(sys_get_temp_dir(), '_ovpn');
+        $tempdir = tempnam((new AppConfig())->application->tempDir, '_ovpn');
         $content_dir = $tempdir . "/Viscosity.visc";
         if (file_exists($tempdir)) {
             unlink($tempdir);

@@ -28,6 +28,8 @@
 
 namespace OPNsense\OpenVPN;
 
+use OPNsense\Core\AppConfig;
+
 class ArchiveOpenVPN extends PlainOpenVPN
 {
     /**
@@ -67,7 +69,7 @@ class ArchiveOpenVPN extends PlainOpenVPN
     {
         $conf = $this->openvpnConfParts();
         $base_filename = $this->getBaseFilename();
-        $tempdir = tempnam(sys_get_temp_dir(), '_ovpn');
+        $tempdir = tempnam((new AppConfig())->application->tempDir, '_ovpn');
         $content_dir = $tempdir . "/" . $base_filename;
         if (file_exists($tempdir)) {
             unlink($tempdir);
