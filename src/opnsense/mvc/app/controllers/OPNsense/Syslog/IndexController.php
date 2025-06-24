@@ -47,6 +47,7 @@ class IndexController extends \OPNsense\Base\IndexController
 
         // link destination dialog
         $this->view->formDialogDestination = $this->getForm("dialogDestination");
+        $this->view->formGridDestination = $this->getFormGrid('dialogDestination');
 
         // choose template
         $this->view->pick('OPNsense/Syslog/index');
