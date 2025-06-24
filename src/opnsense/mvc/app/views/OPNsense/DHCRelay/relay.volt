@@ -31,14 +31,14 @@ $( document ).ready(function() {
     $('#{{formGridRelay['table_id']}} thead tr th[data-column-id="enabled"]').after($statusColumn);
 
     $("#{{formGridDest['table_id']}}").UIBootgrid({
-        search:'/api/dhcrelay/settings/searchDest',
+        search:'/api/dhcrelay/settings/search_dest',
         get:'/api/dhcrelay/settings/get_dest/',
         set:'/api/dhcrelay/settings/set_dest/',
         add:'/api/dhcrelay/settings/add_dest/',
         del:'/api/dhcrelay/settings/del_dest/',
     });
     $("#{{formGridRelay['table_id']}}").UIBootgrid({
-        search:'/api/dhcrelay/settings/searchRelay',
+        search:'/api/dhcrelay/settings/search_relay',
         get:'/api/dhcrelay/settings/get_relay/',
         set:'/api/dhcrelay/settings/set_relay/',
         add:'/api/dhcrelay/settings/add_relay/',

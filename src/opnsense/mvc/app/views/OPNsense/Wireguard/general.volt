@@ -34,7 +34,7 @@
         });
 
         const grid_peers = $("#{{formGridWireguardClient['table_id']}}").UIBootgrid({
-                search: '/api/wireguard/client/searchClient',
+                search: '/api/wireguard/client/search_client',
                 get: '/api/wireguard/client/get_client/',
                 set: '/api/wireguard/client/set_client/',
                 add: '/api/wireguard/client/add_client/',
@@ -66,7 +66,7 @@
         });
 
         $("#{{formGridWireguardServer['table_id']}}").UIBootgrid({
-            search: '/api/wireguard/server/searchServer',
+            search: '/api/wireguard/server/search_server',
             get: '/api/wireguard/server/get_server/',
             set: '/api/wireguard/server/set_server/',
             add: '/api/wireguard/server/add_server/',
@@ -177,7 +177,7 @@
                     endpoint: endpoint.val()
                 }
             };
-            ajaxCall('/api/wireguard/client/addClientBuilder', peer, function(data, status) {
+            ajaxCall('/api/wireguard/client/add_client_builder', peer, function(data, status) {
                 if (data.validations) {
                     if (data.validations['configbuilder.tunneladdress']) {
                         /*

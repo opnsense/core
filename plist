@@ -169,7 +169,6 @@
 /usr/local/opnsense/contrib/mobile-broadband-provider-info/serviceproviders.xml
 /usr/local/opnsense/data/firmware/upgrade.html
 /usr/local/opnsense/data/unbound/root.min.hints
-/usr/local/opnsense/mvc/app/cache/README
 /usr/local/opnsense/mvc/app/config/AppConfig.php
 /usr/local/opnsense/mvc/app/config/config.php
 /usr/local/opnsense/mvc/app/config/loader.php

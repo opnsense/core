@@ -43,7 +43,7 @@ $( document ).ready(function() {
     });
 
     $("#{{formGridAcl['table_id']}}").UIBootgrid({
-        search:'/api/unbound/settings/searchAcl',
+        search:'/api/unbound/settings/search_acl',
         get:'/api/unbound/settings/get_acl/',
         set:'/api/unbound/settings/set_acl/',
         add:'/api/unbound/settings/add_acl/',

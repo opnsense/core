@@ -66,7 +66,7 @@
          *************************************************************************************************************/
 
         $("#grid-jobs").UIBootgrid(
-                {   'search':'/api/cron/settings/searchJobs',
+                {   'search':'/api/cron/settings/search_jobs',
                     'get':'/api/cron/settings/get_job/',
                     'set':'/api/cron/settings/set_job/',
                     'add':'/api/cron/settings/add_job/',

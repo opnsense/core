@@ -32,7 +32,7 @@
          *************************************************************************************************************/
 
         $("#{{formGridZone['table_id']}}").UIBootgrid(
-            {   search:'/api/captiveportal/settings/searchZones',
+            {   search:'/api/captiveportal/settings/search_zones',
                 get:'/api/captiveportal/settings/get_zone/',
                 set:'/api/captiveportal/settings/set_zone/',
                 add:'/api/captiveportal/settings/add_zone/',
@@ -45,7 +45,7 @@
         );
 
         var grid_templates  = $("#grid-templates").UIBootgrid({
-            search: '/api/captiveportal/service/searchTemplates',
+            search: '/api/captiveportal/service/search_templates',
             options: {
                 formatters: {
                     "commands": function (column, row) {
@@ -125,7 +125,7 @@
                 requestData['uuid'] = $("#templateUUID").val();
             }
             // save file content to server
-            ajaxCall("/api/captiveportal/service/saveTemplate", requestData, function(data,status) {
+            ajaxCall("/api/captiveportal/service/save_template", requestData, function(data,status) {
                 if (data['error'] == undefined) {
                     // saved, flush form data and hide modal
                     $("#grid-templates").bootgrid("reload");

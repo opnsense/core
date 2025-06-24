@@ -63,7 +63,7 @@ POSSIBILITY OF SUCH DAMAGE.
          * list all known classtypes and add to selection box
          */
         function updateRuleMetadata() {
-            ajaxGet("/api/ids/settings/listRuleMetadata", {}, function(data, status) {
+            ajaxGet("/api/ids/settings/list_rule_metadata", {}, function(data, status) {
                 if (status == "success") {
                     $('#rulemetadata').empty();
                     $.each(Object.assign({}, {'action': ['drop', 'alert'], 'status': ['enabled', 'disabled']}, data), function(key, values) {
@@ -92,7 +92,7 @@ POSSIBILITY OF SUCH DAMAGE.
          * update list of available alert logs
          */
         function updateAlertLogs() {
-            ajaxGet("/api/ids/service/getAlertLogs", {}, function(data, status) {
+            ajaxGet("/api/ids/service/get_alert_logs", {}, function(data, status) {
                 if (status == "success") {
                     $('#alert-logfile').html("");
                     $.each(data, function(key, value) {
@@ -243,7 +243,7 @@ POSSIBILITY OF SUCH DAMAGE.
                  */
                 if (!gridRuleFilesInitialized) {
                     $("#grid-rule-files").UIBootgrid({
-                        search:'/api/ids/settings/listRulesets',
+                        search:'/api/ids/settings/list_rulesets',
                         get:'/api/ids/settings/get_ruleset/',
                         set:'/api/ids/settings/set_ruleset/',
                         toggle:'/api/ids/settings/toggle_ruleset/',
@@ -282,7 +282,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     $('#grid-rule-files').bootgrid('reload');
                 }
                 // display file settings (if available)
-                ajaxGet("/api/ids/settings/getRulesetproperties", {}, function(data, status) {
+                ajaxGet("/api/ids/settings/get_rulesetproperties", {}, function(data, status) {
                     if (status == "success") {
                         var rows = [];
                         // generate rows with field references
@@ -568,7 +568,7 @@ POSSIBILITY OF SUCH DAMAGE.
             } else if (e.target.id == 'userrules_tab') {
                 if (!gridUserRulesInitialized) {
                     $("#grid-userrules").UIBootgrid({
-                        search:'/api/ids/settings/searchUserRule',
+                        search:'/api/ids/settings/search_user_rule',
                         get:'/api/ids/settings/get_user_rule/',
                         set:'/api/ids/settings/set_user_rule/',
                         add:'/api/ids/settings/add_user_rule/',
@@ -604,7 +604,7 @@ POSSIBILITY OF SUCH DAMAGE.
             $(".rulesetprop").each(function(){
                 settings[$(this).data('id')] = $(this).val();
             });
-            ajaxCall("/api/ids/settings/setRulesetproperties", {'properties': settings}, function(data,status) {
+            ajaxCall("/api/ids/settings/set_rulesetproperties", {'properties': settings}, function(data,status) {
                 $("#updateSettings_progress").removeClass("fa fa-spinner fa-pulse");
                 $("#rulesetChangeMessage").slideDown(1000, function(){
                     setTimeout(function(){
@@ -656,7 +656,7 @@ POSSIBILITY OF SUCH DAMAGE.
          * Initialize
          */
         // fetch interface mappings on load
-        ajaxGet('/api/diagnostics/interface/getInterfaceNames', {}, function(data, status) {
+        ajaxGet('/api/diagnostics/interface/get_interface_names', {}, function(data, status) {
             interface_descriptions = data;
         });
 
@@ -673,7 +673,7 @@ POSSIBILITY OF SUCH DAMAGE.
             history.pushState(null, null, e.target.hash);
         });
 
-        ajaxGet('/api/ids/settings/checkPolicyRule', {}, function(data, status) {
+        ajaxGet('/api/ids/settings/check_policy_rule', {}, function(data, status) {
             if (data.status === 'warning') {
                 $("#policyRuleMessage").html(data.message);
                 $("#policyRuleMessage").show();
@@ -809,7 +809,7 @@ POSSIBILITY OF SUCH DAMAGE.
           <button class="btn btn-primary" style="display:none" id="updateSettings" type="button"><b>{{ lang._('Save') }}</b> <i id="updateSettings_progress" class=""></i></button>
 
           <button class="btn btn-primary" id="updateRulesAct"
-                  data-endpoint='/api/ids/service/updateRules'
+                  data-endpoint='/api/ids/service/update_rules'
                   data-label="{{ lang._('Download & Update Rules') }}"
                   data-error-title="{{ lang._('Error reconfiguring IDS') }}"
                   data-service-widget="ids"
@@ -860,7 +860,7 @@ POSSIBILITY OF SUCH DAMAGE.
             </div>
             <hr/>
             <button class="btn btn-primary act_update"
-                    data-endpoint='/api/ids/service/reloadRules'
+                    data-endpoint='/api/ids/service/reload_rules'
                     data-label="{{ lang._('Apply') }}"
                     data-error-title="{{ lang._('Error reconfiguring IDS') }}"
                     type="button"
@@ -899,7 +899,7 @@ POSSIBILITY OF SUCH DAMAGE.
             </div>
             <hr/>
             <button class="btn btn-primary act_update"
-                    data-endpoint='/api/ids/service/reloadRules'
+                    data-endpoint='/api/ids/service/reload_rules'
                     data-label="{{ lang._('Apply') }}"
                     data-error-title="{{ lang._('Error reconfiguring IDS') }}"
                     type="button"

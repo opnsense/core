@@ -622,7 +622,7 @@
         });
 
         // fetch interface mappings on load
-        ajaxGet('/api/diagnostics/interface/getInterfaceNames', {}, function(data, status) {
+        ajaxGet('/api/diagnostics/interface/get_interface_names', {}, function(data, status) {
             interface_descriptions = data;
             /**
              * fetch log "static" dropdown filters and add logic

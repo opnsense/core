@@ -1,7 +1,7 @@
 <script>
     $( document ).ready(function() {
         $("#grid-groups").UIBootgrid(
-            {   search:'/api/firewall/group/searchItem',
+            {   search:'/api/firewall/group/search_item',
                 get:'/api/firewall/group/get_item/',
                 set:'/api/firewall/group/set_item/',
                 add:'/api/firewall/group/add_item/',

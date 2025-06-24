@@ -66,7 +66,7 @@
 <script>
     $( document ).ready(function() {
         $("#grid-aliases").UIBootgrid({
-            search:'/api/firewall/alias/searchItem',
+            search:'/api/firewall/alias/search_item',
             get:'/api/firewall/alias/get_item/',
             set:'/api/firewall/alias/set_item/',
             add:'/api/firewall/alias/add_item/',
@@ -340,7 +340,7 @@
         /**
          * fetch regions and countries for geoip selection
          */
-        ajaxGet("/api/firewall/alias/listCountries", {}, function(data){
+        ajaxGet("/api/firewall/alias/list_countries", {}, function(data){
             var regions = [];
             $.each(data, function(country, item) {
                 if (!regions.includes(item.region) && item.region != null) {
@@ -565,7 +565,7 @@
         });
 
         function loadSettings() {
-            let data_get_map = {'frm_GeopIPSettings':"/api/firewall/alias/getGeoIP"};
+            let data_get_map = {'frm_GeopIPSettings':"/api/firewall/alias/get_geo_ip"};
             mapDataToFormUI(data_get_map).done(function(data){
                 if (data.frm_GeopIPSettings.alias.geoip.usages) {
                     if (!data.frm_GeopIPSettings.alias.geoip.subscription && !data.frm_GeopIPSettings.alias.geoip.address_count) {

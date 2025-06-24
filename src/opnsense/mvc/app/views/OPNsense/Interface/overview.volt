@@ -92,7 +92,7 @@
 
         $("#grid-overview").UIBootgrid(
             {
-                search: '/api/interfaces/overview/interfacesInfo',
+                search: '/api/interfaces/overview/interfaces_info',
                 options: {
                     selection: false,
                     formatters: {
