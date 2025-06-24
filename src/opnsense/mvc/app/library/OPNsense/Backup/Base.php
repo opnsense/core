@@ -29,12 +29,23 @@
 
 namespace OPNsense\Backup;
 
+use OPNsense\Core\AppConfig;
+
 /**
  * Backup stub file, contains shared logic for all backup strategies
  * @package OPNsense\Backup
  */
 abstract class Base
 {
+    /**
+     * get a temporary unique file on the disk
+     * @return string file name
+     */
+    private function tempFile()
+    {
+        return tempnam((new AppConfig())->application->tempDir, 'php-encrypt-');
+    }
+
     /**
      * encrypt+encode base64
      * @param string $data to encrypt
@@ -44,7 +55,7 @@ abstract class Base
      */
     public function encrypt($data, $pass, $tag = 'config.xml')
     {
-        $file = tempnam(sys_get_temp_dir(), 'php-encrypt');
+        $file = $this->tempFile();
         @unlink("{$file}.enc");
 
         /* current encryption defaults, change as needed */
@@ -97,7 +108,7 @@ abstract class Base
      */
     public function decrypt($data, $pass, $tag = 'config.xml')
     {
-        $file = tempnam(sys_get_temp_dir(), 'php-encrypt');
+        $file = $this->tempFile();
         @unlink("{$file}.dec");
 
         $data = explode("\n", $data);
