@@ -31,6 +31,7 @@ namespace OPNsense\CaptivePortal\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Base\UIModelGrid;
 use OPNsense\CaptivePortal\CaptivePortal;
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Core\SanitizeFilter;
