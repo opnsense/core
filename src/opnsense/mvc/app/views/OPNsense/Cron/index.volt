@@ -65,7 +65,7 @@
          * link grid actions
          *************************************************************************************************************/
 
-        $("#grid-jobs").UIBootgrid(
+        $("#{{formGridJobs['table_id']}}").UIBootgrid(
                 {   'search':'/api/cron/settings/search_jobs',
                     'get':'/api/cron/settings/get_job/',
                     'set':'/api/cron/settings/set_job/',
@@ -98,50 +98,11 @@
 <div class="tab-content content-box">
     <div id="jobs" class="tab-pane fade in active">
         <!-- tab page "cron items" -->
-        <table id="grid-jobs" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEdit"
-                 {% if (selected_uuid|default("") == "") %} data-editAlert="cronChangeMessage" {% endif %} >
-            <thead>
-            <tr>
-                <th data-column-id="origin" data-type="string" data-visible="false">{{ lang._('Origin') }}</th>
-                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-                <th data-column-id="minutes" data-type="string">{{ lang._('Minutes') }}</th>
-                <th data-column-id="hours" data-type="string">{{ lang._('Hours') }}</th>
-                <th data-column-id="days" data-type="string">{{ lang._('Days') }}</th>
-                <th data-column-id="months" data-type="string">{{ lang._('Months') }}</th>
-                <th data-column-id="weekdays" data-type="string">{{ lang._('Weekdays') }}</th>
-                <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
-                <th data-column-id="command" data-type="string">{{ lang._('Command') }}</th>
-                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Edit') }} | {{ lang._('Delete') }}</th>
-                <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td></td>
-                <td>
-                    <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                    <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
-                </td>
-            </tr>
-            </tfoot>
-        </table>
-    </div>
-    <div class="col-md-12">
-        <div id="cronChangeMessage" class="alert alert-info" style="display: none" role="alert">
-            {{ lang._('After changing settings, please remember to apply them with the button below') }}
-        </div>
-        <hr/>
-        <button class="btn btn-primary" id="reconfigureAct"
-                data-endpoint='/api/cron/service/reconfigure'
-                data-label="{{ lang._('Apply') }}"
-                data-error-title="{{ lang._('Error reconfiguring cron') }}"
-                type="button"
-        ></button>
-        <br/><br/>
+        {{ partial('layout_partials/base_bootgrid_table', formGridJobs)}}
     </div>
 </div>
 
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/cron/service/reconfigure'}) }}
+
 {# include dialog #}
-{{ partial("layout_partials/base_dialog",['fields':formDialogEdit,'id':'DialogEdit','label':lang._('Edit job')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEdit,'id':formGridJobs['edit_dialog_id'],'label':lang._('Edit job')])}}
