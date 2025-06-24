@@ -50,7 +50,7 @@ class GroupController extends ApiMutableModelControllerBase
      */
     public function searchItemAction()
     {
-        return $this->searchBase("ifgroupentry", ['ifname', 'descr', 'members', 'sequence'], "ifname");
+        return $this->searchBase("ifgroupentry", null, "ifname");
     }
 
     /**

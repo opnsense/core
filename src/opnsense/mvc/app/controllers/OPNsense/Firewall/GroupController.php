@@ -38,6 +38,7 @@ class GroupController extends IndexController
     public function indexAction($selected = null)
     {
         $this->view->formDialogEdit = $this->getForm("groupEdit");
+        $this->view->formGridGroup = $this->getFormGrid('groupEdit');
         $this->view->pick('OPNsense/Firewall/group');
     }
 }
