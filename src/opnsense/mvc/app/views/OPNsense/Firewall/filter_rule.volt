@@ -491,7 +491,7 @@
 
         });
 
-        grid.off('loaded.rs.jquery.bootgrid').on('loaded.rs.jquery.bootgrid', function () {
+        grid.on('loaded.rs.jquery.bootgrid', function () {
             // Clean up any previous tooltips
             $('[data-toggle="tooltip"]').tooltip('destroy');
             $('body > .tooltip').remove();
