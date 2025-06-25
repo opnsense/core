@@ -15,6 +15,9 @@
         <id>preSharedKey.Key</id>
         <label>Pre-Shared Key</label>
         <type>text</type>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>preSharedKey.keyType</id>
