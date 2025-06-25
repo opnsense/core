@@ -117,6 +117,7 @@
 /usr/local/etc/rc.sshd
 /usr/local/etc/rc.subr.d/crashdump
 /usr/local/etc/rc.subr.d/livemode
+/usr/local/etc/rc.subr.d/php
 /usr/local/etc/rc.subr.d/recover
 /usr/local/etc/rc.subr.d/swapon
 /usr/local/etc/rc.subr.d/tmp

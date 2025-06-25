@@ -101,7 +101,6 @@ function webgui_configure_do($verbose = false, $interface_map = null)
     }
 
     chdir('/usr/local/www');
-    chown('/var/run/booting', 'wwwonly'); /* booting flag should be owned by wwwonly user*/
 
     /* defaults */
     $portarg = '80';
@@ -149,16 +148,8 @@ function webgui_configure_do($verbose = false, $interface_map = null)
     /* regenerate the php.ini files in case the setup has changed */
     configd_run('template reload OPNsense/WebGui');
 
-    /* arrange configuration ownership, migh need to arrange this elsewhere eventually */
-    $todo = array_merge(glob('/conf/backup/*.xml'), ['/conf', '/conf/config.xml', '/conf/backup']);
-    foreach ($todo as $item) {
-        chown($item, 'wwwonly');
-    }
-
-    /* flush Phalcon volt templates */
-    foreach (glob('/var/lib/php/cache/*.php') as $filename) {
-        unlink($filename);
-    }
+    /* arrange configuration directories and ownership */
+    passthru('/usr/local/etc/rc.subr.d/php');
 
     /* we need a marker file for development mode to ensure quick action */
     if (empty($config['system']['deployment'])) {
@@ -262,7 +253,7 @@ EOD;
     $change_user = '';
     if (!empty($config['system']['webgui']['noroot']) || file_exists('/var/run/www_non_root')) {
         $change_user .= "server.username = \"wwwonly\"\n";
-        $change_user .= "server.groupname = \"www\"\n";
+        $change_user .= "server.groupname = \"wwwonly\"\n";
         touch('/var/run/www_non_root'); /* create file as root, lock going back to root */
     }
 
