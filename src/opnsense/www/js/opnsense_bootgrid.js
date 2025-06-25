@@ -605,6 +605,8 @@ class UIBootgrid {
                 this._populateColumnSelection();
                 this.navigationRendered = true;
             }
+
+            this.$element.trigger("load.rs.jquery.bootgrid", []);
         });
 
         this.table.on('dataLoading', () => {
