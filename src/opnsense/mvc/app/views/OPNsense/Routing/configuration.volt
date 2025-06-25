@@ -27,7 +27,7 @@
 <script>
     $( document ).ready(function() {
 
-        $("#grid-gateways").UIBootgrid({
+        $("#{{formGridGateway['table_id']}}").UIBootgrid({
             search:'/api/routing/settings/search_gateway/',
             get:'/api/routing/settings/get_gateway/',
             set:'/api/routing/settings/set_gateway/',
@@ -113,59 +113,9 @@
 }
 </style>
 
-<div class="tab-content content-box col-xs-12 __mb">
-    <table id="grid-gateways" class="table table-condensed table-hover table-striped table-responsive" data-editAlert="GatewayChangeMessage" data-editDialog="DialogGateway">
-        <tr>
-        <thead>
-        <tr>
-            <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-            <th data-column-id="disabled" data-width="2em" data-type="string" data-formatter="rowtoggle"></th>
-            <th data-column-id="name" data-width="fit" data-type="string" data-formatter="nameformatter">{{ lang._('Name') }}</th>
-            <th data-column-id="interface" data-type="string" data-formatter="interfaceformatter">{{ lang._('Interface') }}</th>
-            <th data-column-id="ipprotocol" data-type="string" data-formatter="protocolformatter">{{ lang._('Protocol') }}</th>
-            <th data-column-id="priority" data-type="string" data-formatter="priorityformatter">{{ lang._('Priority') }}</th>
-            <th data-column-id="gateway" data-type="string">{{ lang._('Gateway') }}</th>
-            <th data-column-id="monitor" data-type="string">{{ lang._('Monitor IP') }}</th>
-            <th data-column-id="delay" data-type="string">{{ lang._('RTT') }}</th>
-            <th data-column-id="stddev" data-type="string">{{ lang._('RTTd') }}</th>
-            <th data-column-id="loss" data-type="string">{{ lang._('Loss') }}</th>
-            <th data-column-id="status" data-type="string" data-formatter="statusformatter">{{ lang._('Status') }}</th>
-            <th data-column-id="descr" data-type="string" data-formatter="descriptionFormatter">{{ lang._('Description') }}</th>
-            <th data-column-id="commands" data-formatter="commands", data-sortable="false"></th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-        <tfoot>
-        <tr>
-            <td></td>
-            <td>
-                <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-            </td>
-        </tr>
-        </tfoot>
-        </tr>
-    </table>
-</div>
-<!-- reconfigure -->
-<div class="tab-content content-box col-xs-12 __mb">
-    <div id="GatewayChangeMessage" class="alert alert-info" style="display: none" role="alert">
-        {{ lang._('After changing settings, please remember to apply them with the button below') }}
-    </div>
-    <table class="table table-condensed">
-        <tbody>
-        <tr>
-            <td>
-                <button class="btn btn-primary" id="reconfigureAct"
-                        data-endpoint='/api/routing/settings/reconfigure'
-                        data-label="{{ lang._('Apply') }}"
-                        data-error-title="{{ lang._('Error reconfiguring gateways') }}"
-                        type="button"
-                ></button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+<div class="tab-content content-box">
+    {{ partial('layout_partials/base_bootgrid_table', formGridGateway)}}
 </div>
 
-{{ partial("layout_partials/base_dialog",['fields':formDialogEditGateway,'id':'DialogGateway','label':lang._('Edit Gateway')])}}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/routing/settings/reconfigure'}) }}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditGateway,'id':formGridGateway['edit_dialog_id'],'label':lang._('Edit Gateway')])}}
