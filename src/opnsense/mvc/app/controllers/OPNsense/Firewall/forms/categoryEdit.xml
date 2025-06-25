@@ -4,7 +4,7 @@
         <label>Color</label>
         <type>color</type>
         <style>color-picker</style>
-        <help>Pick a color to use</help>
+        <help>pick a color to use.</help>
         <grid_view>
             <formatter>color</formatter>
             <width>100</width>
