@@ -161,7 +161,7 @@
                         'class': 'btn btn-xs',
                         'icon_class': 'fa fa-fw fa-table',
                         'data': {
-                            'tooltip': 'toggle'
+                            'toggle': 'tooltip'
                         }
                     }
                 }

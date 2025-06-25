@@ -113,7 +113,7 @@
                     grid_user.bootgrid('reload');
                 }
             });
-        })
+        });
 
         let grid_apikey = $("#grid-apikey").UIBootgrid({
             search:'/api/auth/user/search_api_key/',
