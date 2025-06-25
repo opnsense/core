@@ -1,8 +1,8 @@
 PW=/usr/sbin/pw
-USER=wwwonly
-GROUP=${USER}
-UID=789
-GID=${UID}
+USER=%%CORE_USER%%
+GROUP=%%CORE_GROUP%%
+UID=%%CORE_UID%%
+GID=%%CORE_GID%%
 
 PW_ARG=add
 if ${PW} groupshow ${GROUP} >/dev/null 2>&1; then
