@@ -98,7 +98,8 @@ function getFormData(parent) {
                     node[keypart] = sourceNode.data('data');
                 } else if (sourceNode.prop("type") === "color") {
                     // strip leading '#' for backend compatibility
-                    node[keypart] = sourceNode.val().startsWith("#") ? sourceNode.val().substring(1) : sourceNode.val();
+                    const val = sourceNode.val();
+                    node[keypart] = val.startsWith("#") ? val.substring(1) : val;
                 } else {
                     node[keypart] = sourceNode.val();
                 }
@@ -201,8 +202,9 @@ function setFormData(parent,data) {
                         targetNode.data('data', node[keypart]);
                     } else if (targetNode.prop("type") === "color") {
                         // color inputs get '#' prefix
-                        if (typeof node[keypart] === "string" && !node[keypart].startsWith("#")) {
-                            node[keypart] = "#" + node[keypart];
+                        let val = node[keypart];
+                        if (typeof val === "string" && !val.startsWith("#")) {
+                            val = "#" + val;
                         }
                         targetNode.val(val);
                     } else if (targetNode.attr('type') !== 'file') {
