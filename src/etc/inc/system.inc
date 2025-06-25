@@ -267,6 +267,7 @@ function get_locale_list()
     $locales['cs_CZ'] = gettext('Czech');
     $locales['fr_FR'] = gettext('French');
     $locales['de_DE'] = gettext('German');
+    $locales['el_GR'] = gettext('Greek');
     $locales['it_IT'] = gettext('Italian');
     $locales['ja_JP'] = gettext('Japanese');
     $locales['ko_KR'] = gettext('Korean');
@@ -281,6 +282,7 @@ function get_locale_list()
 
     if (!product::getInstance()->development()) {
         /* below 30% progress or currently unvetted */
+        unset($locales['el_GR']);
         unset($locales['vi_VN']);
     }
 
