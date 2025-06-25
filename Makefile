@@ -117,7 +117,9 @@ CORE_PRODUCT?=		OPNsense
 CORE_REPOSITORY?=	${CORE_ABI}/latest
 CORE_WWW?=		https://opnsense.org/
 CORE_USER?=		wwwonly
+CORE_UID?=		789
 CORE_GROUP?=		${CORE_USER}
+CORE_GID?=		${CORE_UID}
 
 CORE_COPYRIGHT_HOLDER?=	Deciso B.V.
 CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
@@ -276,7 +278,8 @@ PKG_SCRIPTS=	+PRE_INSTALL +POST_INSTALL \
 scripts:
 .for PKG_SCRIPT in ${PKG_SCRIPTS}
 	@if [ -f ${.CURDIR}/${PKG_SCRIPT} ]; then \
-		cp -- ${.CURDIR}/${PKG_SCRIPT} ${DESTDIR}/; \
+		sed ${SED_REPLACE} -- ${.CURDIR}/${PKG_SCRIPT} > \
+		    ${DESTDIR}/${PKG_SCRIPT}; \
 	fi
 .endfor
 
