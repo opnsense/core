@@ -24,8 +24,6 @@
  # POSSIBILITY OF SUCH DAMAGE.
  #}
 
-{% set theme_name = ui_theme|default('opnsense') %}
-
 <script>
 
     $( document ).ready(function() {
