@@ -3,6 +3,18 @@
         <id>vti.enabled</id>
         <label>enabled</label>
         <type>checkbox</type>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>vti.origin</id>
+        <label>Origin</label>
+        <type>ignore</type>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>vti.reqid</id>
@@ -36,12 +48,18 @@
           Inner tunnel remote address to be used for routing purposes.
           The size of the subnet containing local and remote will be calculated automatically
         </help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>vti.tunnel_local2</id>
         <label>Tunnel secondary local address</label>
         <type>text</type>
         <help>Inner tunnel local address to be used for routing purposes.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>vti.tunnel_remote2</id>
@@ -51,6 +69,9 @@
           Inner tunnel remote address to be used for routing purposes.
           The size of the subnet containing local and remote will be calculated automatically
         </help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>vti.description</id>
