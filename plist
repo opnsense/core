@@ -1256,6 +1256,7 @@
 /usr/local/opnsense/scripts/shaper/dummynet_stats.py
 /usr/local/opnsense/scripts/shaper/lib/__init__.py
 /usr/local/opnsense/scripts/shaper/setup.sh
+/usr/local/opnsense/scripts/shaper/start.sh
 /usr/local/opnsense/scripts/shaper/sync_fw_hooks.py
 /usr/local/opnsense/scripts/shaper/update_tables
 /usr/local/opnsense/scripts/shell/banner.php
