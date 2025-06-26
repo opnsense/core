@@ -15,12 +15,16 @@
         <tr>
             <td/>
             <td>
-                <button data-action="add" type="button" class="btn btn-xs btn-primary">
-                    <span class="fa fa-plus fa-fw"></span>
-                </button>
-                <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default">
-                    <span class="fa fa-trash-o fa-fw"></span>
-                </button>
+                {% if hide_add is not defined %}
+                    <button data-action="add" type="button" class="btn btn-xs btn-primary">
+                        <span class="fa fa-plus fa-fw"></span>
+                    </button>
+                {% endif %}
+                {% if hide_delete is not defined %}
+                    <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default">
+                        <span class="fa fa-trash-o fa-fw"></span>
+                    </button>
+                {% endif %}
                 {% for id, cmd in grid_commands|default({}) %}
                     <button id="{{id}}" type="button" class="{{cmd['class']|default('')}}" title="{{cmd['title']|default('')}}"
                         {% for key, data in cmd['data']|default({}) %}
