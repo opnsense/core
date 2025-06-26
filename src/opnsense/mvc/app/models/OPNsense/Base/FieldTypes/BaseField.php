@@ -382,11 +382,21 @@ abstract class BaseField
 
     /**
      * return field current value
-     * @return null|string field current value
+     * @return string field current value
      */
     public function getCurrentValue(): string
     {
         return (string)$this->internalValue;
+    }
+
+    /**
+     * return field current value(s) as array (empty strings are omitted)
+     * @return array field current values
+     */
+    public function getValues()
+    {
+        $value = $this->getCurrentValue();
+        return strlen($value) ? [$value] : [];
     }
 
     /**
@@ -527,7 +537,7 @@ abstract class BaseField
     }
 
     /**
-     * check if current value is empty  (either boolean field as false or an empty field)
+     * check if current value is empty (either boolean field as false or an empty field)
      * @return bool
      */
     public function isEmpty(): bool
