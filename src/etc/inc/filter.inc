@@ -167,8 +167,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     $fobj = new \OPNsense\Core\FileObject('/tmp/rules.debug', 'a+', 0600, LOCK_EX);
 
     /* kickstart dnctl regardless of shaping configuration */
-    mwexec('/etc/rc.d/dnctl start', true);
-    configd_run('ipfw reload');
+    mwexec('/usr/local/opnsense/scripts/shaper/start.sh', true);
 
     ifgroup_setup();
 
