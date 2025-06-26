@@ -393,7 +393,7 @@ abstract class BaseField
      * return field current value(s) as array (empty strings are omitted)
      * @return array field current values
      */
-    public function getValues()
+    public function getValues(): array
     {
         $value = $this->getCurrentValue();
         return strlen($value) ? [$value] : [];

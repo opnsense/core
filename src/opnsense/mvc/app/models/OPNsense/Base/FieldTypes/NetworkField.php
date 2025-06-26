@@ -283,7 +283,7 @@ class NetworkField extends BaseField
     /**
      * {@inheritdoc}
      */
-    public function getValues()
+    public function getValues(): array
     {
         return array_values(array_filter(explode($this->internalFieldSeparator, $this->internalValue), function ($k) {
             return !!strlen($k);
