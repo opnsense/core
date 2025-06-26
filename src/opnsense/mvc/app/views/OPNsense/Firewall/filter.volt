@@ -56,47 +56,7 @@
         }
 
         $("#reconfigureAct").SimpleActionButton();
-        $("#savepointAct").SimpleActionButton({
-            onAction: function(data, status){
-                stdDialogInform(
-                    "{{ lang._('Savepoint created') }}",
-                    data['revision'],
-                    "{{ lang._('Close') }}"
-                );
-            }
-        });
 
-        $("#revertAction").on('click', function(){
-            BootstrapDialog.show({
-                type: BootstrapDialog.TYPE_DEFAULT,
-                title: "{{ lang._('Revert to savepoint') }}",
-                message: "<p>{{ lang._('Enter a savepoint to rollback to.') }}</p>" +
-                    '<div class="form-group" style="display: block;">' +
-                    '<input id="revertToTime" type="text" class="form-control"/>' +
-                    '<span class="error text-danger" id="revertToTimeError"></span>'+
-                    '</div>',
-                buttons: [{
-                    label: "{{ lang._('Revert') }}",
-                    cssClass: 'btn-primary',
-                    action: function(dialogRef) {
-                        ajaxCall("/api/firewall/{{ruleController}}/revert/" + $("#revertToTime").val(), {}, function (data, status) {
-                            if (data.status !== "ok") {
-                                $("#revertToTime").parent().addClass("has-error");
-                                $("#revertToTimeError").html(data.status);
-                            } else {
-                                $('#grid-rules').bootgrid('reload');
-                                dialogRef.close();
-                            }
-                        });
-                    }
-                }],
-                onshown: function(dialogRef) {
-                    $("#revertToTime").parent().removeClass("has-error");
-                    $("#revertToTimeError").html("");
-                    $("#revertToTime").val("");
-                }
-            });
-        });
         // move filter into action header
         $("#type_filter_container").detach().prependTo('#grid-rules-header > .row > .actionBar > .actions');
         $("#category_filter").change(function(){
@@ -164,7 +124,7 @@
             </div>
         </div>
         <!-- tab page "rules" -->
-        <table id="grid-rules" class="table table-condensed table-hover table-striped" data-editDialog="DialogFilterRule" data-editAlert="FilterRuleChangeMessage">
+        <table id="grid-rules" class="table table-condensed table-hover table-striped" data-editDialog="DialogFilterRule" data-editAlert="change_message_base_form">
             <thead>
                 <tr>
                     <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">{{ lang._('ID') }}</th>
@@ -192,33 +152,8 @@
                 </tr>
             </tfoot>
         </table>
-        <div class="col-md-12">
-        <div id="FilterRuleChangeMessage" class="alert alert-info" style="display: none" role="alert">
-            {{ lang._('After changing settings, please remember to apply them with the button below') }}
-        </div>
-        <hr/>
-        <button class="btn btn-primary" id="reconfigureAct"
-                data-endpoint='/api/firewall/{{ruleController}}/apply'
-                data-label="{{ lang._('Apply') }}"
-                data-error-title="{{ lang._('Filter load error') }}"
-                type="button"
-        ></button>
-{% if SavePointBtns is defined %}
-        <div class="pull-right">
-            <button class="btn" id="savepointAct"
-                    data-endpoint='/api/firewall/{{ruleController}}/savepoint'
-                    data-label="{{ lang._('Savepoint') }}"
-                    data-error-title="{{ lang._('snapshot error') }}"
-                    type="button"
-            ></button>
-            <button  class="btn" id="revertAction">
-                {{ lang._('Revert') }}
-            </button>
-        </div>
-{% endif %}
-        <br/><br/>
-    </div>
     </div>
 </div>
 
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/' ~ ruleController ~ '/apply'}) }}
 {{ partial("layout_partials/base_dialog",['fields':formDialogFilterRule,'id':'DialogFilterRule','label':lang._('Edit rule')])}}
