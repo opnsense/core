@@ -109,6 +109,22 @@
                             $('#tag_select_container').show();
                         }
                     }
+
+                    // host grid needs custom commands (upload/download)
+                    if (['host'].includes(grid_id)) {
+                        $("#{{formGridHostOverride['table_id']}}").on('click', '#download_hosts', function(e){
+                            e.preventDefault();
+                            window.open("/api/dnsmasq/settings/download_hosts");
+                        });
+
+                        all_grids[grid_id].on('load.rs.jquery.bootgrid', function() {
+                            $("#upload_hosts").SimpleFileUploadDlg({
+                                onAction: function(){
+                                    $("#{{formGridHostOverride['table_id']}}").bootgrid('reload');
+                                }
+                            });
+                        })
+                    }
                 });
             }
         });
@@ -121,16 +137,6 @@
             },
             onAction: function(data, status) {
                 updateServiceControlUI('dnsmasq');
-            }
-        });
-
-        $("#download_hosts").click(function(e){
-            e.preventDefault();
-            window.open("/api/dnsmasq/settings/download_hosts");
-        });
-        $("#upload_hosts").SimpleFileUploadDlg({
-            onAction: function(){
-                $("#{{formGridHostOverride['table_id']}}").bootgrid('reload');
             }
         });
 
@@ -267,19 +273,6 @@
     }
 </style>
 
-<div style="display: none;" id="hosts_tfoot_append">
-    <button
-        id="upload_hosts"
-        type="button"
-        data-title="{{ lang._('Import hosts') }}"
-        data-endpoint='/api/dnsmasq/settings/upload_hosts'
-        title="{{ lang._('Import csv') }}"
-        data-toggle="tooltip"
-        class="btn btn-xs"
-    ><span class="fa fa-fw fa-upload"></span></button>
-    <button id="download_hosts" type="button" title="{{ lang._('Export as csv') }}" data-toggle="tooltip"  class="btn btn-xs"><span class="fa fa-fw fa-table"></span></button>
-</div>
-
 <div id="tag_select_container" class="btn-group" style="display: none;">
     <button type="button" id="tag_select_clear" class="btn btn-default" title="{{ lang._('Clear Selection') }}">
         <i id="tag_select_icon" class="fa fa-fw fa-filter"></i>
@@ -305,7 +298,31 @@
     </div>
     <!-- Tab: Hosts -->
     <div id="hosts" class="tab-pane fade in">
-        {{ partial('layout_partials/base_bootgrid_table', formGridHostOverride + {'command_width': '8em'} )}}
+        {{
+            partial('layout_partials/base_bootgrid_table', formGridHostOverride + {
+                'command_width': '8em',
+                'grid_commands': {
+                    'upload_hosts': {
+                        'title': lang._('Import csv'),
+                        'class': 'btn btn-xs',
+                        'icon_class': 'fa fa-fw fa-upload',
+                        'data': {
+                            'title': lang._('Import hosts'),
+                            'endpoint': '/api/dnsmasq/settings/upload_hosts',
+                            'toggle': 'tooltip'
+                        }
+                    },
+                    'download_hosts': {
+                        'title': lang._('Export as csv'),
+                        'class': 'btn btn-xs',
+                        'icon_class': 'fa fa-fw fa-table',
+                        'data': {
+                            'toggle': 'tooltip'
+                        }
+                    }
+                }
+            })
+        }}
     </div>
     <!-- Tab: Domains -->
     <div id="domains" class="tab-pane fade in">

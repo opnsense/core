@@ -107,6 +107,12 @@
                     }
                 }
             }
+        }).on('load.rs.jquery.bootgrid', function() {
+            $("#upload_users").SimpleFileUploadDlg({
+                onAction: function(){
+                    grid_user.bootgrid('reload');
+                }
+            });
         });
 
         let grid_apikey = $("#grid-apikey").UIBootgrid({
@@ -158,21 +164,14 @@
             }
         });
 
-        $("#download_users").click(function(e){
-            e.preventDefault();
-            window.open("/api/auth/user/download");
-        });
-        $("#upload_users").SimpleFileUploadDlg({
-            onAction: function(){
-                grid_user.bootgrid('reload');
-            }
-        });
-
         $('.datepicker').datepicker({format: 'mm/dd/yyyy'});
         /* format  authorizedkeys */
         $("#user\\.authorizedkeys").css('max-width', 'inherit').prop('wrap', 'off');
 
-        $("#grid-user-buttons").children().insertAfter($("#{{ formGridUser['table_id'] }} tfoot [data-action='deleteSelected']"));
+        $("#{{formGridUser['table_id']}}").on('click', '#download_users', function(e) {
+            e.preventDefault();
+            window.open("/api/auth/user/download");
+        });
     });
 
 </script>
@@ -194,22 +193,33 @@
     <li><a data-toggle="tab" href="#apikeys" id="tab_apikeys"> {{ lang._('ApiKeys') }} </a></li>
 </ul>
 
-<div id="grid-user-buttons" style="display: none;">
-    <button
-        id="upload_users"
-        type="button"
-        data-title="{{ lang._('Import Users') }}"
-        data-endpoint='/api/auth/user/upload'
-        title="{{ lang._('Import csv') }}"
-        data-toggle="tooltip"
-        class="btn btn-xs btn-user-action"
-    ><span class="fa fa-fw fa-upload"></span></button>&nbsp;
-    <button id="download_users" type="button" title="{{ lang._('Export as csv') }}" data-toggle="tooltip"  class="btn btn-xs btn-user-action"><span class="fa fa-fw fa-table"></span></button>
-</div>
-
 <div class="tab-content content-box">
     <div id="user" class="tab-pane fade in active">
-        {{ partial('layout_partials/base_bootgrid_table', formGridUser + {'command_width': '9em'})}}
+        {{
+            partial('layout_partials/base_bootgrid_table', formGridUser + {
+                'command_width': '9em',
+                'grid_commands': {
+                    'upload_users': {
+                        'class': 'btn btn-xs btn-user-action',
+                        'icon_class': 'fa fa-fw fa-upload',
+                        'title': lang._('Import csv'),
+                        'data': {
+                            'title': lang._('Import Users'),
+                            'endpoint': '/api/auth/user/upload',
+                            'toggle': 'tooltip'
+                        }
+                    },
+                    'download_users': {
+                        'class': 'btn btn-xs btn-user-action',
+                        'icon_class': 'fa fa-fw fa-table',
+                        'title': lang._('Export as csv'),
+                        'data': {
+                            'toggle': 'tooltip'
+                        }
+                    }
+                }
+            })
+        }}
     </div>
     <div id="apikeys" class="tab-pane fade in">
         <table id="grid-apikey" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogUser">
