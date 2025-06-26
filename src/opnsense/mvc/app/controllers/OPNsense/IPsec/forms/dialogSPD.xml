@@ -3,6 +3,18 @@
         <id>spd.enabled</id>
         <label>enabled</label>
         <type>checkbox</type>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>spd.origin</id>
+        <label>Origin</label>
+        <type>ignore</type>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>spd.reqid</id>
