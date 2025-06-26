@@ -26,15 +26,12 @@
 
 SERVICE=${1}
 DNCTL="/etc/rc.d/dnctl start"
-IPFW="/etc/rc.d/ipfw enabled && /etc/rc.d/ipfw start || ( /etc/rc.d/ipfw onestop || true ); /usr/local/etc/rc.ipfw.post || true"
+IPFW="/etc/rc.d/ipfw enabled && /etc/rc.d/ipfw start || ( /etc/rc.d/ipfw onestop ); /usr/local/etc/rc.ipfw.post"
 
-if [ $# -eq 0 ]; then
+if [ -z "${SERVICE}" -o "${SERVICE}" = "dnctl" ]; then
     ${DNCTL}
+fi
+
+if [ -z "${SERVICE}" -o "${SERVICE}" = "ipfw" ]; then
     ${IPFW}
-elif [ ${SERVICE} = "dnctl" ]; then
-    ${DNCTL}
-elif [ ${SERVICE} = "ipfw" ]; then
-    ${IPFW}
-else
-    exit 1
 fi
