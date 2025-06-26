@@ -110,7 +110,7 @@
                         }
                     }
 
-                    // host grid needs custom commands
+                    // host grid needs custom commands (upload/download)
                     if (['host'].includes(grid_id)) {
                         $("#{{formGridHostOverride['table_id']}}").on('click', '#download_hosts', function(e){
                             e.preventDefault();
