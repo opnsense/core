@@ -603,6 +603,7 @@ class UIBootgrid {
             if (!this.navigationRendered) {
                 this._renderFooter();
                 this._populateColumnSelection();
+                this.$element.trigger("load.rs.jquery.bootgrid", []);
                 this.navigationRendered = true;
             }
         });

@@ -58,7 +58,13 @@
                 add:'/api/kea/dhcpv4/add_reservation/',
                 del:'/api/kea/dhcpv4/del_reservation/'
             }
-        );
+        ).on('load.rs.jquery.bootgrid', function() {
+            $("#upload_reservations").SimpleFileUploadDlg({
+                onAction: function(){
+                    grid_reservations.bootgrid('reload');
+                }
+            });
+        })
 
         $("#{{formGridPeer['table_id']}}").UIBootgrid(
             {   search:'/api/kea/dhcpv4/search_peer',
@@ -80,43 +86,9 @@
             }
         });
 
-        /**
-         * Reservations csv download and upload
-         */
-        const $tfoot = grid_reservations.find("tfoot td:last");
-        $tfoot.append(`
-            <button
-                id="upload_reservations"
-                type="button"
-                data-title="{{ lang._('Import reservations') }}"
-                data-endpoint='/api/kea/dhcpv4/upload_reservations'
-                title="{{ lang._('Import csv') }}"
-                data-toggle="tooltip"
-                class="btn btn-xs"
-            >
-                <span class="fa fa-fw fa-upload"></span>
-            </button>
-        `);
-        $tfoot.append(`
-            <button
-                id="download_reservations"
-                type="button"
-                title="{{ lang._('Export as csv') }}"
-                data-toggle="tooltip"
-                class="btn btn-xs"
-            >
-                <span class="fa fa-fw fa-table"></span>
-            </button>
-        `);
-
-        $("#download_reservations").click(function(e){
+        $("#{{formGridReservation['table_id']}}").on('click', '#download_reservations', function(e){
             e.preventDefault();
             window.open("/api/kea/dhcpv4/download_reservations");
-        });
-        $("#upload_reservations").SimpleFileUploadDlg({
-            onAction: function(){
-                grid_reservations.bootgrid('reload');
-            }
         });
 
         /**
@@ -150,8 +122,6 @@
                 }
             });
         });
-
-
     });
 </script>
 
@@ -172,7 +142,31 @@
     </div>
     <!-- reservations -->
     <div id="reservations" class="tab-pane fade in">
-        {{ partial('layout_partials/base_bootgrid_table', formGridReservation + {'command_width': '8em'} )}}
+        {{
+            partial('layout_partials/base_bootgrid_table', formGridReservation + {
+                'command_width': '8em',
+                'grid_commands': {
+                    'upload_reservations': {
+                        'title': lang._('Import csv'),
+                        'class': 'btn btn-xs',
+                        'icon_class': 'fa fa-fw fa-upload',
+                        'data': {
+                            'title': lang._('Import Reservations'),
+                            'endpoint': '/api/kea/dhcpv4/upload_reservations',
+                            'toggle': 'tooltip'
+                        }
+                    },
+                    'download_reservations': {
+                        'title': lang._('Export as csv'),
+                        'class': 'btn btn-xs',
+                        'icon_class': 'fa fa-fw fa-table',
+                        'data': {
+                            'toggle': 'tooltip'
+                        }
+                    }
+                }
+            })
+        }}
     </div>
     <!-- HA - peers -->
     <div id="ha-peers" class="tab-pane fade in">
