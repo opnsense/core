@@ -25,13 +25,19 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 SERVICE=${1}
-DNCTL="/etc/rc.d/dnctl start"
-IPFW="/etc/rc.d/ipfw enabled && /etc/rc.d/ipfw start || ( /etc/rc.d/ipfw onestop ); /usr/local/etc/rc.ipfw.post"
 
 if [ -z "${SERVICE}" -o "${SERVICE}" = "dnctl" ]; then
-    ${DNCTL}
+    /etc/rc.d/dnctl start
 fi
 
 if [ -z "${SERVICE}" -o "${SERVICE}" = "ipfw" ]; then
-    ${IPFW}
+    if /etc/rc.d/ipfw enabled; then
+        /etc/rc.d/ipfw start
+    else
+        /etc/rc.d/ipfw onestop
+    fi
+
+    /usr/local/etc/rc.ipfw.post
 fi
+
+exit 0
