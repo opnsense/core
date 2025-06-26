@@ -670,7 +670,7 @@
                             </select>
                         </div>
                     </div>
-                    <table id="grid-aliases" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogAlias" data-editAlert="aliasChangeMessage">
+                    <table id="grid-aliases" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogAlias" data-editAlert="change_message_base_form">
                         <thead>
                         <tr>
                             <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
@@ -711,23 +711,7 @@
       {{ partial("layout_partials/base_form",['fields':formGeoIPSettings,'id':'frm_GeopIPSettings'])}}
     </div>
 </div>
-<section class="page-content-main">
-  <div class="content-box">
-    <div class="col-md-12">
-        <br/>
-        <div id="aliasChangeMessage" class="alert alert-info" style="display: none" role="alert">
-            {{ lang._('After changing settings, please remember to apply them with the button below') }}
-        </div>
-        <button class="btn btn-primary" id="reconfigureAct"
-                data-endpoint='/api/firewall/alias/reconfigure'
-                data-label="{{ lang._('Apply') }}"
-                data-error-title="{{ lang._('Error reconfiguring aliases') }}"
-                type="button"
-        ></button>
-        <br/><br/>
-    </div>
-  </div>
-</section>
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/alias/reconfigure'}) }}
 
 {# Edit dialog #}
 <div class="modal fade" id="DialogAlias" tabindex="-1" role="dialog" aria-labelledby="DialogAliasLabel">
