@@ -168,6 +168,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     /* kickstart dnctl regardless of shaping configuration */
     mwexec('/etc/rc.d/dnctl start', true);
+    configd_run('ipfw reload');
 
     ifgroup_setup();
 
