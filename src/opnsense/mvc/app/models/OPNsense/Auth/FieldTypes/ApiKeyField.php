@@ -68,7 +68,7 @@ class ApiKeyField extends BaseField
      */
     public function get(string $key)
     {
-        foreach (array_filter(explode("\n", $this->getCurrentValue())) as $line) {
+        foreach (array_filter(explode("\n", $this->internalValue)) as $line) {
             $parts = explode("|", $line);
             if (count($parts) == 2 && $parts[0] == $key) {
                 return [
@@ -86,7 +86,7 @@ class ApiKeyField extends BaseField
     public function all()
     {
         $result = [];
-        foreach (array_filter(explode("\n", $this->getCurrentValue())) as $line) {
+        foreach (array_filter(explode("\n", $this->internalValue)) as $line) {
             $parts = explode("|", $line);
             if (count($parts) == 2) {
                 $result[] = ['key' => $parts[0], 'id' => base64_encode($parts[0])];
@@ -105,7 +105,7 @@ class ApiKeyField extends BaseField
         $found = false;
         $tmp = '';
         $searchkey = sprintf("%s|", $key);
-        foreach (array_filter(explode("\n", $this->getCurrentValue())) as $line) {
+        foreach (array_filter(explode("\n", $this->internalValue)) as $line) {
             if (strpos($line, $searchkey) === 0) {
                 $found = true;
             } else {
@@ -127,7 +127,7 @@ class ApiKeyField extends BaseField
             'secret' => base64_encode(random_bytes(60))
         ];
         $new_items = array_merge(
-            array_filter(explode("\n", $this->getCurrentValue())),
+            array_filter(explode("\n", $this->internalValue)),
             [sprintf("%s|%s", $result['key'], crypt($result['secret'], '$6$'))]
         );
 

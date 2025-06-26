@@ -85,7 +85,7 @@ class UserController extends ApiMutableModelControllerBase
         /* Password handling */
         if (
             !empty((string)$node->scrambled_password) || (
-            $node->password->isFieldChanged() && !empty($node->password->getCurrentValue())
+            $node->password->isFieldChanged() && !$node->password->isEmpty()
             )
         ) {
             if (!empty((string)$node->scrambled_password)) {
@@ -170,7 +170,7 @@ class UserController extends ApiMutableModelControllerBase
                 },
                 function ($node) use ($that) {
                     /* new user without password, scramble one */
-                    if ($node->password->isFieldChanged() && empty($node->password->getCurrentValue())) {
+                    if ($node->password->isFieldChanged() && $node->password->isEmpty()) {
                         $node->scrambled_password = '1';
                     }
                     $that->setBaseHook($node);
