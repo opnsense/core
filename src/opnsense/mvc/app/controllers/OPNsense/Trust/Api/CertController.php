@@ -184,15 +184,7 @@ class CertController extends ApiMutableModelControllerBase
             $match_user = empty($user) || (in_array($record->commonname, $user));
             return $match_ca && $match_user;
         };
-        return $this->searchBase(
-            'cert',
-            [
-                'uuid', 'refid', 'descr', 'caref', 'rfc3280_purpose', 'name',
-                'valid_from', 'valid_to' , 'in_use', 'is_user', 'commonname'
-            ],
-            null,
-            $filter_funct
-        );
+        return $this->searchBase('cert', null, null, $filter_funct);
     }
 
     public function getAction($uuid = null)
