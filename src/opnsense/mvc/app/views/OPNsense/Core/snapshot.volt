@@ -27,7 +27,7 @@
                         },
                     },
                     options: {
-                        selection: true,
+                        selection: false,
                         multiSelect: false,
                         rowSelect: false,
                         formatters: {
@@ -47,7 +47,7 @@
 </script>
 
 <div id="supported_block" class="content-box" style="display: none;">
-    {{ partial('layout_partials/base_bootgrid_table', formGridSnapshot + {'command_width': '10em'})}}
+    {{ partial('layout_partials/base_bootgrid_table', formGridSnapshot + {'command_width': '10em', 'hide_delete': true}) }}
 </div>
 
 <div id="unsupported_block" style="padding: 10px; display: none;">
