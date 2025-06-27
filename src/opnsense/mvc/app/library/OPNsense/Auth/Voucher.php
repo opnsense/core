@@ -66,7 +66,7 @@ class Voucher extends Base implements IAuthConnector
     /**
      * @var array internal list of authentication properties (returned by radius auth)
      */
-    private $lastAuthProperties = array();
+    private $lastAuthProperties = [];
 
     /**
      * type name in configuration
@@ -95,7 +95,7 @@ class Voucher extends Base implements IAuthConnector
         $this->dbHandle = new \SQLite3($db_path);
         $this->dbHandle->busyTimeout(30000);
         $results = $this->dbHandle->query("PRAGMA table_info('vouchers')");
-        $known_fields = array();
+        $known_fields = [];
         while ($row = $results->fetchArray(SQLITE3_ASSOC)) {
             $known_fields[] = $row['name'];
         }
@@ -191,7 +191,7 @@ class Voucher extends Base implements IAuthConnector
      */
     public function generateVouchers($vouchergroup, $count, $validity, $expirytime, $starttime = null)
     {
-        $response = array();
+        $response = [];
         if ($this->dbHandle != null) {
             $characterMap = '!#$%()*+,-./0123456789:;=?@ABCDEFGHIJKLMNPQRSTUVWXYZ[\]_abcdefghijkmnopqrstuvwxyz';
             if ($this->simplePasswords) {
@@ -265,7 +265,7 @@ class Voucher extends Base implements IAuthConnector
      */
     public function listVoucherGroups()
     {
-        $response = array();
+        $response = [];
         $stmt = $this->dbHandle->prepare('select distinct vouchergroup from vouchers');
         $result = $stmt->execute();
         while ($row = $result->fetchArray()) {
@@ -281,7 +281,7 @@ class Voucher extends Base implements IAuthConnector
      */
     public function listVouchers($vouchergroup)
     {
-        $response = array();
+        $response = [];
         $stmt = $this->dbHandle->prepare('
                   select username, validity, expirytime, starttime, vouchergroup
                   from vouchers
@@ -289,7 +289,7 @@ class Voucher extends Base implements IAuthConnector
         $stmt->bindParam(':vouchergroup', $vouchergroup);
         $result = $stmt->execute();
         while ($row = $result->fetchArray()) {
-            $record = array();
+            $record = [];
             $record['username'] = $row['username'];
             $record['validity'] = $row['validity'];
             $record['expirytime'] = $row['expirytime'];
@@ -411,15 +411,15 @@ class Voucher extends Base implements IAuthConnector
      */
     public function getConfigurationOptions()
     {
-        $fields = array();
-        $fields["simplePasswords"] = array();
+        $fields = [];
+        $fields["simplePasswords"] = [];
         $fields["simplePasswords"]["name"] = gettext("Use simple passwords (less secure)");
         $fields["simplePasswords"]["type"] = "checkbox";
         $fields["simplePasswords"]["help"] = gettext("Use simple (less secure) passwords, which are easier to read");
         $fields["simplePasswords"]["validate"] = function ($value) {
-            return array();
+            return [];
         };
-        $fields["usernameLength"] = array();
+        $fields["usernameLength"] = [];
         $fields["usernameLength"]["name"] = gettext("Username length");
         $fields["usernameLength"]["type"] = "text";
         $fields["usernameLength"]["default"] = null;
@@ -428,10 +428,10 @@ class Voucher extends Base implements IAuthConnector
             if ($value != '' && (filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value || $value < 1)) {
                 return array(gettext("Username length must be a number or empty for default."));
             } else {
-                return array();
+                return [];
             }
         };
-        $fields["passwordLength"] = array();
+        $fields["passwordLength"] = [];
         $fields["passwordLength"]["name"] = gettext("Password length");
         $fields["passwordLength"]["type"] = "text";
         $fields["passwordLength"]["default"] = null;
@@ -440,7 +440,7 @@ class Voucher extends Base implements IAuthConnector
             if ($value != '' && (filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value || $value < 0)) {
                 return array(gettext("Password length must be a number or empty for default."));
             } else {
-                return array();
+                return [];
             }
         };
 

@@ -78,8 +78,10 @@ function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details
     foreach (empty($proto) ? [4,6] : [$proto] as $proto) {
         if ($proto == 6) {
             $keamdl = new \OPNsense\Kea\KeaDhcpv6();
+            $ipaddr = 'ipaddrv6';
         } else {
             $keamdl = new \OPNsense\Kea\KeaDhcpv4();
+            $ipaddr = 'ipaddr';
         }
 
         if (empty((string)$keamdl->general->enabled)) {
@@ -121,7 +123,7 @@ function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details
                 'domain' => $domain,
                 'hostname' => $hostname,
                 'interface' => null, /* XXX reservations are bound to "floating" subnets */
-                'ipaddr' => $ip_address,
+                $ipaddr => $ip_address,
             ];
 
             $staticmap[] = $entry;

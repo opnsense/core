@@ -158,6 +158,14 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     }
 
     /**
+     * invoke firewall reload check, return true to invoke configd action
+     */
+    protected function invokeFirewallReload()
+    {
+        return false;
+    }
+
+    /**
      * check if service is enabled according to model
      */
     protected function serviceEnabled()
@@ -188,6 +196,10 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
 
             if ($this->invokeInterfaceRegistration()) {
                 $backend->configdRun('interface invoke registration');
+            }
+
+            if ($this->invokeFirewallReload()) {
+                $backend->configdRun('filter reload skip_alias');
             }
 
             if (!empty(static::$internalServiceTemplate)) {

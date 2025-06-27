@@ -140,10 +140,7 @@ class CaController extends ApiMutableModelControllerBase
 
     public function searchAction()
     {
-        return $this->searchBase(
-            'ca',
-            ['uuid', 'refid', 'descr', 'caref', 'name', 'refcount', 'valid_from', 'valid_to'],
-        );
+        return $this->searchBase('ca');
     }
 
     public function getAction($uuid = null)

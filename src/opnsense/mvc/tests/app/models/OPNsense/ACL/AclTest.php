@@ -42,7 +42,7 @@ class AclTest extends \PHPUnit\Framework\TestCase
     public function testCanBeCreated()
     {
         // switch config to test set for this type
-        (new AppConfig())->update('globals.config_path', __DIR__ . '/AclConfig/');
+        (new AppConfig())->update('application.configDir', __DIR__ . '/AclConfig');
         Config::getInstance()->forceReload();
         /* init after config reload */
         AclTest::$acl = new ACL();

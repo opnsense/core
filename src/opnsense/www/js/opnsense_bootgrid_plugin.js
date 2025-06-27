@@ -555,7 +555,7 @@ $.fn.UIBootgrid = function (params) {
         $(this).find("*[data-action=add]").addClass('command-add bootgrid-tooltip');
         $(this).find("*[data-action=deleteSelected]").addClass('command-delete-selected bootgrid-tooltip');
 
-        if (params !== undefined && params['search'] !== undefined) {
+        if (params !== undefined && (params['search'] !== undefined || !params?.options?.ajax)) {
             // create new bootgrid component and link source
             const grid = this_grid.construct();
 

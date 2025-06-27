@@ -7,23 +7,21 @@
     background-color: transparent;
 }
 
-/* theme: header */
 .tabulator .tabulator-header {
     background-color: transparent;
-    border-top: 1px solid #373736; /* $table-bg-accent, was #eee */
-    border-left: 1px solid #373736; /* $table-bg-accent, was #eee */
-    border-right: 1px solid #373736; /* $table-bg-accent, was #eee */
+    border-top: 1px solid #373736;
+    border-left: 1px solid #373736;
+    border-right: 1px solid #373736;
     border-bottom: none;
 }
 .tabulator .tabulator-header .tabulator-col {
-    border-right: 1px solid #373736; /* $table-bg-accent,  was #e0e0e0 */
+    border-right: 1px solid #373736;
     background-color: transparent;
     background: transparent;
-    /* XXX need theme text color */
-    color: #ECECEC; /* $text-color */
+    color: #ECECEC;
 }
 .tabulator .tabulator-header .tabulator-col.tabulator-sortable.tabulator-col-sorter-element:hover {
-    background-color: #373736; /* $table-bg-accent  */
+    background-color: #373736;
 }
 .tabulator .tabulator-headers {
     height: 100% !important; /* make sure the below border appears */
@@ -37,14 +35,14 @@
 }
 .tabulator-row {
     background-color: transparent;
-    color: #ECECEC; /* $text-color */
+    color: #ECECEC;
 }
 
 .tabulator-row.tabulator-row-odd {
-    background-color: #373736; /* $table-bg-accent, was (#FBFBFB) */
+    background-color: #373736;
 }
 .tabulator-row.tabulator-row-odd.tabulator-selectable:hover:not(.tabulator-selected) {
-    background-color: #373736; /* $table-bg-accent was (#FBFBFB) */
+    background-color: #373736;
 }
 
 .tabulator-row.tabulator-row-even {
@@ -55,47 +53,39 @@
 }
 .tabulator .tabulator-tableholder {
     background-color: transparent;
-    border-left: 1px solid #373736; /* $table-bg-accent, was (#eee) */
-    border-right: 1px solid #373736; /* $table-bg-accent, was (#eee) */
-    /* overflow: scroll; */
-    scrollbar-gutter: stable;
 }
 .tabulator-row.tabulator-selected {
-    background-color: #9abcea; /* XXX needs new theme */
+    background-color: #9abcea;
 }
 .tabulator-row.tabulator-selected:hover {
     cursor: pointer;
-    background-color: #9abcea; /* XXX needs new theme */
+    background-color: #9abcea;
 }
 .tabulator .tabulator-alert .tabulator-alert-msg.tabulator-alert-state-msg {
-    color: #ECECEC; /* spinner icon, $text-color */
+    color: #ECECEC; /* spinner icon */
 }
 
 /* Command column styles */
 .tabulator-col.tabulator-frozen.tabulator-frozen-right {
-    background-color: #101218; /* $body-background was #eee, probably needs new style */
 }
 .tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-right {
-    background-color: #101218; /* $body-background was #eee, probably needs new style */
 }
 
 /* Checkbox column styles */
 .tabulator .tabulator-header .tabulator-frozen.tabulator-frozen-left {
-    border-right: 1px solid #aaa; /* separates checkbox column from table rows, needs same theme as .tabulator .tabulator-headers  */
-    border-left: 1px solid #373736; /* $table-bg-accent, was #eee*/
+    border-right: 1px solid #aaa; /* separates checkbox column from table rows */
+    border-left: 1px solid #373736;
 
 }
 .tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-left {
-    border-right: 1px solid #aaa; /* XXX needs new theme style */
-    border-top: 1px solid #373736; /* $table-bg-accent, was #eee*/
-    border-bottom: 1px solid #aaa; /* XXX needs new theme style */
-    border-left: 1px solid #373736; /* $table-bg-accent, was #eee*/
+    border-right: 1px solid #aaa;
+    border-top: 1px solid #373736;
+    border-bottom: 1px solid #aaa;
+    border-left: 1px solid #373736;
 }
 .tabulator-col.tabulator-row-header.tabulator-frozen.tabulator-frozen-left {
-    background-color: #101218; /* $body-background was #eee, probably needs new style */
 }
 .tabulator-cell.tabulator-row-header.tabulator-frozen.tabulator-frozen-left {
-    background-color: #101218; /* $body-background was #eee, probably needs new style */
 }
 .tabulator-row:last-child >
 .tabulator-cell.tabulator-row-header.tabulator-frozen.tabulator-frozen-left:first-child {
@@ -108,8 +98,8 @@
     white-space: nowrap;
     line-height: 1.2;
     vertical-align: top;
-    border-bottom: 1px solid #373736; /* $table-bg-accent (was #eee) should probably be something lighter */
-    border-right: 1px solid #373736; /* $table-bg-accent (was #eee) should probably be something lighter */
+    border-bottom: 1px solid #373736;
+    border-right: 1px solid #373736;
 }
 /*-------------*/
 
@@ -118,37 +108,37 @@
     background-color: transparent;
 }
 .tabulator .tabulator-footer .tabulator-page {
-    background-color: #101218; /* $body-background */
-    color: #C03E14; /* $brand-primary */
+    background-color: #101218;
+    color: #C03E14;
 }
 .tabulator .tabulator-footer .tabulator-page.active {
-    background-color: #C03E14; /* $brand-primary */
-    border-color: #C03E14; /* $brand-primary */
+    background-color: #C03E14;
+    border-color: #C03E14;
     cursor: default;
-    color: #101218; /* $body-background */
+    color: #101218;
 }
 .tabulator .tabulator-footer .tabulator-page:not(disabled):hover {
-    color: #7b280d; /* XXX where does this color come from? same in light mode as in dark mode */
-    background-color: #242937; /* XXX where does this color come from? light mode: #eeeeee dark mode: #242937 */
+    color: #7b280d;
+    background-color: #242937;
     border-color: #ddd;
 }
 .tabulator .tabulator-footer .tabulator-page:not(disabled).active:hover {
-    background-color: #C03E14; /* $brand-primary */
-    border-color: #C03E14; /* $brand-primary */
-    color: #101218; /* $body-background */
+    background-color: #C03E14;
+    border-color: #C03E14;
+    color: #101218;
     cursor: default;
 }
 .tabulator-page-counter {
-    color: #ECECEC; /* $text-color */
+    color: #ECECEC;
 }
 .tabulator .tabulator-footer .tabulator-paginator {
-    color: #ECECEC; /* $text-color */
+    color: #ECECEC;
 }
 .tabulator .tabulator-footer .tabulator-page {
     border-radius: 0px;
     margin: 0px;
     padding: 6px 12px;
-    border: 1px solid #E5E5E5; /* $border-default (was #ddd) */
+    border: 1px solid #E5E5E5;
 }
 /*----------*/
 

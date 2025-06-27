@@ -75,7 +75,7 @@
             $('[data-toggle="tooltip"]').tooltip();
         });
 
-        $("#grid-manual-spd").UIBootgrid({
+        $("#{{formGridSPD['table_id']}}").UIBootgrid({
           search:'/api/ipsec/manual_spd/search',
           get:'/api/ipsec/manual_spd/get/',
           set:'/api/ipsec/manual_spd/set/',
@@ -117,7 +117,7 @@
             <thead>
             <tr>
                 <th data-column-id="id" data-type="string" data-sortable="false" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                <th data-column-id="direction" data-type="string" data-width="4em" data-formatter="direction">{{ lang._('Dir') }}</th>
+                <th data-column-id="dir" data-type="string" data-width="4em" data-formatter="direction">{{ lang._('Dir') }}</th>
                 <th data-column-id="src" data-type="string" data-formatter="address">{{ lang._('Source') }}</th>
                 <th data-column-id="dst" data-type="string" data-formatter="address">{{ lang._('Destination') }}</th>
                 <th data-column-id="upperspec" data-type="string" data-visible="false">{{ lang._('Upperspec') }}</th>
@@ -151,48 +151,9 @@
         </table>
     </div>
     <div id="manual" class="tab-pane">
-        <table id="grid-manual-spd" class="table table-condensed table-hover table-striped" data-editDialog="DialogSPD" data-editAlert="SPDChangeMessage">
-            <thead>
-                <tr>
-                  <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                  <th data-column-id="origin" data-type="string"  data-visible="false">{{ lang._('Origin') }}</th>
-                  <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-                  <th data-column-id="reqid" data-type="string">{{ lang._('Reqid') }}</th>
-                  <th data-column-id="connection_child" data-type="string">{{ lang._('Child') }}</th>
-                  <th data-column-id="source" data-type="string">{{ lang._('Source') }}</th>
-                  <th data-column-id="destination" data-type="string">{{ lang._('Destination') }}</th>
-                  <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
-                  <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td></td>
-                    <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                        <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-        <div class="col-md-12">
-            <div id="SPDChangeMessage" class="alert alert-info" style="display: none" role="alert">
-                {{ lang._('After changing settings, please remember to apply them with the button below.') }}
-            </div>
-            <hr/>
-        </div>
-        <div class="col-md-12">
-            <button class="btn btn-primary" id="reconfigureAct"
-                    data-endpoint='/api/ipsec/service/reconfigure'
-                    data-label="{{ lang._('Apply') }}"
-                    data-error-title="{{ lang._('Error reconfiguring IPsec') }}"
-                    type="button"
-            ></button>
-            <br/><br/>
-        </div>
+        {{ partial('layout_partials/base_bootgrid_table', formGridSPD)}}
+        {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/ipsec/service/reconfigure'}) }}
     </div>
 </div>
 
-{{ partial("layout_partials/base_dialog",['fields':formDialogSPD,'id':'DialogSPD','label':lang._('Edit Manual SPD')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogSPD,'id':formGridSPD['edit_dialog_id'],'label':lang._('Edit Manual SPD')])}}

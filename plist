@@ -99,7 +99,7 @@
 /usr/local/etc/rc.halt
 /usr/local/etc/rc.ipfw
 /usr/local/etc/rc.ipfw.flush_all
-/usr/local/etc/rc.ipfw.postload
+/usr/local/etc/rc.ipfw.post
 /usr/local/etc/rc.linkup
 /usr/local/etc/rc.loader
 /usr/local/etc/rc.loader.d/00-banner
@@ -117,6 +117,7 @@
 /usr/local/etc/rc.sshd
 /usr/local/etc/rc.subr.d/crashdump
 /usr/local/etc/rc.subr.d/livemode
+/usr/local/etc/rc.subr.d/php
 /usr/local/etc/rc.subr.d/recover
 /usr/local/etc/rc.subr.d/swapon
 /usr/local/etc/rc.subr.d/tmp
@@ -169,7 +170,6 @@
 /usr/local/opnsense/contrib/mobile-broadband-provider-info/serviceproviders.xml
 /usr/local/opnsense/data/firmware/upgrade.html
 /usr/local/opnsense/data/unbound/root.min.hints
-/usr/local/opnsense/mvc/app/cache/README
 /usr/local/opnsense/mvc/app/config/AppConfig.php
 /usr/local/opnsense/mvc/app/config/config.php
 /usr/local/opnsense/mvc/app/config/loader.php
@@ -503,6 +503,8 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Local.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/LocalTOTP.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Radius.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Auth/SSOProviders/ISSOContainer.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Auth/SSOProviders/Provider.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Services/IPsec.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Services/System.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Services/WebGui.php
@@ -563,6 +565,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/LiveMediaStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/MonitOverrideStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/OpensshOverrideStatus.php
+/usr/local/opnsense/mvc/app/library/OPNsense/System/Status/RootLockStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/SystemBootingStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/UnboundOverrideStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/SystemStatus.php
@@ -795,6 +798,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/VxLan.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/FieldTypes/KeaPoolsField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Kea/FieldTypes/KeaStaticRoutesField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaCtrlAgent.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaCtrlAgent.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDhcpv4.php
@@ -1252,6 +1256,8 @@
 /usr/local/opnsense/scripts/shaper/dummynet_stats.py
 /usr/local/opnsense/scripts/shaper/lib/__init__.py
 /usr/local/opnsense/scripts/shaper/setup.sh
+/usr/local/opnsense/scripts/shaper/start.sh
+/usr/local/opnsense/scripts/shaper/sync_fw_hooks.py
 /usr/local/opnsense/scripts/shaper/update_tables
 /usr/local/opnsense/scripts/shell/banner.php
 /usr/local/opnsense/scripts/shell/defaults.php
@@ -2465,8 +2471,6 @@
 /usr/local/www/vpn_ipsec_mobile.php
 /usr/local/www/vpn_ipsec_phase1.php
 /usr/local/www/vpn_ipsec_phase2.php
-/usr/local/www/vpn_openvpn_client.php
-/usr/local/www/vpn_openvpn_server.php
 /usr/local/www/xmlrpc.php
 @sample /usr/local/etc/bogons.sample
 @sample /usr/local/etc/bogonsv6.sample

@@ -157,11 +157,22 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     service_log('Configuring firewall.', $verbose);
 
+    /*
+     * Flush alias cache so consumers can find dynamically generated
+     * items on their next cycle.  This ensures items like captive
+     * portal zones are available after applying them.
+     */
+    \OPNsense\Firewall\Alias::flushCacheData();
+
     /* Use filter lock to not allow concurrent filter reloads during this run. */
     $fobj = new \OPNsense\Core\FileObject('/tmp/rules.debug', 'a+', 0600, LOCK_EX);
 
-    /* kickstart dnctl regardless of shaping configuration */
-    mwexec('/etc/rc.d/dnctl start', true);
+    /*
+     * Kickstart dnctl and ipfw (no-op if shaper not configured)
+     * to ensure consistent pipe/queue config for pf and service
+     * start during bootup.
+     */
+    mwexec('/usr/local/opnsense/scripts/shaper/start.sh', true);
 
     ifgroup_setup();
 
@@ -555,7 +566,7 @@ function filter_generate_scrubbing(&$FilterIflist)
 function filter_generate_aliases()
 {
     $aliases = "# User Aliases\n";
-    $aliasObject = new \OPNsense\Firewall\Alias();
+    $aliasObject = new \OPNsense\Firewall\Alias(true);
     // list of registered aliases for faster is_alias() lookup
     $all_aliases = [];
     foreach ($aliasObject->aliasIterator() as $aliased) {

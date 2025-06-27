@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2024 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2025 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -264,6 +264,7 @@ function get_locale_list()
     $locales['cs_CZ'] = gettext('Czech');
     $locales['fr_FR'] = gettext('French');
     $locales['de_DE'] = gettext('German');
+    $locales['el_GR'] = gettext('Greek');
     $locales['it_IT'] = gettext('Italian');
     $locales['ja_JP'] = gettext('Japanese');
     $locales['ko_KR'] = gettext('Korean');
@@ -278,6 +279,7 @@ function get_locale_list()
 
     if (!product::getInstance()->development()) {
         /* below 30% progress or currently unvetted */
+        unset($locales['el_GR']);
         unset($locales['vi_VN']);
     }
 
@@ -1197,6 +1199,22 @@ function system_console_speed()
     }
 
     return $speed;
+}
+
+function system_cache_flush($verbose = false)
+{
+    service_log('Flushing all caches...', $verbose);
+
+    (new OPNsense\Core\ACL())->invalidateCache();
+
+    (new OPNsense\Base\Menu\MenuSystem())->invalidateCache();
+
+    /* clears ALL model caches, not just model specific ones via flushCacheData() */
+    foreach (glob('/var/lib/php/tmp/mdl_cache_*.json') as $filename) {
+        @unlink($filename);
+    }
+
+    service_log("done.\n", $verbose);
 }
 
 function system_login_configure($verbose = false)

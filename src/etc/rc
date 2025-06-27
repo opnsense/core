@@ -48,10 +48,12 @@ grow_partition()
 {
 	local DEV=$(echo "${1}" | awk 'match($0, /^[a-z]+[0-9]+/) { print substr( $0, RSTART, RLENGTH )}')
 	local IDX=${1##"${DEV}p"}
+	local CMT=
 
 	if [ "${IDX}" = "${1}" ]; then
 		# try MBR slices too
 		IDX=${1##"${DEV}s"}
+		CMT=yes
 
 		if [ "${IDX}" = "${1}" ]; then
 			# assume schema ada0a used by nano images
@@ -66,6 +68,10 @@ grow_partition()
 	    -n "${IDX}" -a "${IDX}" != "${1}" ]; then
 		gpart recover ${DEV}
 		gpart resize -i ${IDX} ${DEV}
+
+		if [ -n "${CMT}" ]; then
+			gpart commit -i ${IDX} ${DEV}
+		fi
 	fi
 }
 
@@ -228,6 +234,8 @@ echo "done."
 
 # Recreate capabilities DB
 /usr/bin/cap_mkdb /etc/login.conf
+
+/usr/local/etc/rc.subr.d/php
 
 # Execute the early syshook / plugin commands
 /usr/local/etc/rc.syshook early

@@ -9,7 +9,7 @@
         <type>checkbox</type>
         <help>Enable this rule</help>
         <grid_view>
-            <width>2em</width>
+            <width>50</width>
             <type>boolean</type>
             <formatter>rowtoggle</formatter>
             <sequence>10</sequence>
@@ -48,7 +48,6 @@
         <style>tokenize</style>
         <help>For grouping purposes you may select multiple groups here to organize items.</help>
         <grid_view>
-            <width>3em</width>
             <sortable>false</sortable>
             <formatter>category</formatter>
             <sequence>112</sequence>
@@ -97,7 +96,6 @@
             <formatter>interfaces</formatter>
             <sequence>25</sequence>
             <sortable>false</sortable>
-            <width>4em</width>
         </grid_view>
     </field>
     <field>
@@ -163,7 +161,6 @@
         <type>dropdown</type>
         <grid_view>
             <formatter>protocol</formatter>
-            <width>6em</width>
             <sequence>40</sequence>
             <sortable>false</sortable>
         </grid_view>
@@ -616,7 +613,6 @@
             <visible>false</visible>
             <sortable>false</sortable>
             <label>Stats - Evaluations</label>
-            <width>4em</width>
             <sequence>115</sequence>
         </grid_view>
     </field>
@@ -628,7 +624,6 @@
             <visible>false</visible>
             <sortable>false</sortable>
             <label>Stats - States</label>
-            <width>4em</width>
             <sequence>116</sequence>
         </grid_view>
     </field>
@@ -640,7 +635,6 @@
             <visible>false</visible>
             <sortable>false</sortable>
             <label>Stats - Packets</label>
-            <width>4em</width>
             <sequence>117</sequence>
         </grid_view>
     </field>
@@ -652,7 +646,6 @@
             <visible>false</visible>
             <sortable>false</sortable>
             <label>Stats - Bytes</label>
-            <width>4em</width>
             <sequence>118</sequence>
         </grid_view>
     </field>
@@ -661,9 +654,9 @@
         <label>Icons</label>
         <type>ignore</type>
         <grid_view>
+            <width>120</width>
             <sortable>false</sortable>
             <formatter>ruleIcons</formatter>
-            <width>10em</width>
             <sequence>15</sequence>
         </grid_view>
     </field>

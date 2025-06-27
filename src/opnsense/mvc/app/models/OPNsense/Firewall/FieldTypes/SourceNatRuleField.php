@@ -103,6 +103,8 @@ class SourceNatRuleContainerField extends ContainerField
  */
 class SourceNatRuleField extends ArrayField
 {
+    protected static $internalStaticChildren = [];
+
     /**
      * @inheritDoc
      */

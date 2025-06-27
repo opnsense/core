@@ -91,8 +91,11 @@ function legacy_html_escape_form_data(&$settings)
 function legacy_list_aliases($type)
 {
     $result = [];
-
-    foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias) {
+    $cached = \OPNsense\Firewall\Alias::getCachedData();
+    if (!isset($cached['aliases']) || empty($cached['aliases']['alias'])) {
+        return $result;
+    }
+    foreach ($cached['aliases']['alias'] as $alias) {
         if ($alias['type'] == 'internal') {
             // XXX: skip internal aliases while still defined as "networks" in the rules pages
             continue;

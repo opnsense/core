@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,8 @@
  */
 
 namespace OPNsense\Base\FieldTypes;
+
+use ReflectionClass;
 
 /**
  * Class ModelRelationField defines a relation to another entity within the model, acts like a select item.
@@ -60,6 +62,21 @@ class ModelRelationField extends BaseListField
     private static $internalCacheOptionList = [];
 
     /**
+     * @param string $classname model classname to resolve
+     * @param string $path reference to information to be fetched (e.g. my.data)
+     * @return array
+     */
+    public function getCachedData($classname, $path)
+    {
+        if (!class_exists($classname)) {
+            return []; /* not found */
+        }
+        $class_info = new ReflectionClass($classname);
+        $inst =  $class_info->newInstanceWithoutConstructor();
+        return self::getArrayReference($inst->getCachedData(), $path);
+    }
+
+    /**
      * load model option list
      * @param boolean $force force option load if we already seen this model before
      */
@@ -75,70 +92,45 @@ class ModelRelationField extends BaseListField
                     continue;
                 }
 
-                // handle optional/missing classes, i.e. from plugins
                 $className = str_replace('.', '\\', $modelData['source']);
-                if (!class_exists($className)) {
-                    continue;
-                }
-                if (
-                    $this->getParentModel() !== null &&
-                        strcasecmp(get_class($this->getParentModel()), $className) === 0
-                ) {
-                    // model options from the same model, use this model in stead of creating something new
-                    $modelObj = $this->getParentModel();
-                    $this->internalOptionsFromThisModel = true;
-                } else {
-                    if ($this->getParentModel() !== null) {
-                        $modelObj = new $className($this->getParentModel()->isLazyLoaded());
-                    } else {
-                        $modelObj = new $className();
-                    }
-                }
-
                 $groupKey = isset($modelData['group']) ? $modelData['group'] : null;
                 $displayKeys = explode(',', $modelData['display']);
                 $displayFormat = !empty($modelData['display_format']) ? $modelData['display_format'] : "%s";
-                $groups = array();
 
-                $searchItems = $modelObj->getNodeByReference($modelData['items']);
-                if (!empty($searchItems)) {
-                    foreach ($modelObj->getNodeByReference($modelData['items'])->iterateItems() as $node) {
-                        $descriptions = [];
-                        foreach ($displayKeys as $displayKey) {
-                            $descriptions[] = $node->$displayKey != null ? $node->$displayKey->getDescription() : '';
+                $pmodel = $this->getParentModel();
+                if ($pmodel !== null && strcasecmp(get_class($pmodel), $className) === 0) {
+                    // model options from the same model, use this model instead of creating something new
+                    $searchItems = self::getArrayReference($pmodel->getNodeDescriptions(), $modelData['items']);
+                    $this->internalOptionsFromThisModel = true;
+                } else {
+                    $searchItems = $this->getCachedData($className, $modelData['items']);
+                }
+
+                $groups = [];
+                foreach ($searchItems as $uuid => $node) {
+                    $descriptions = [];
+                    foreach ($displayKeys as $displayKey) {
+                        $descriptions[] = $node[$displayKey] ?? '';
+                    }
+                    if (isset($modelData['filters'])) {
+                        foreach ($modelData['filters'] as $filterKey => $filterValue) {
+                            $fieldData = $node[$filterKey] ?? null;
+                            if (!preg_match($filterValue, $fieldData) && $fieldData != null) {
+                                continue 2;
+                            }
                         }
-                        if (!isset($node->getAttributes()['uuid'])) {
+                    }
+                    if (!empty($groupKey)) {
+                        if (!isset($node[$groupKey]) || isset($groups[$node[$groupKey]])) {
                             continue;
                         }
-
-                        if (isset($modelData['filters'])) {
-                            foreach ($modelData['filters'] as $filterKey => $filterValue) {
-                                $fieldData = $node->$filterKey;
-                                if (!preg_match($filterValue, $fieldData) && $fieldData != null) {
-                                    continue 2;
-                                }
-                            }
-                        }
-
-                        if (!empty($groupKey)) {
-                            if ($node->$groupKey == null) {
-                                continue;
-                            }
-                            $group = (string)$node->$groupKey;
-                            if (isset($groups[$group])) {
-                                continue;
-                            }
-                            $groups[$group] = 1;
-                        }
-
-                        $uuid = $node->getAttributes()['uuid'];
-                        self::$internalCacheOptionList[$this->internalCacheKey][$uuid] = vsprintf(
-                            $displayFormat,
-                            $descriptions
-                        );
+                        $groups[$node[$groupKey]] = 1;
                     }
+                    self::$internalCacheOptionList[$this->internalCacheKey][$uuid] = vsprintf(
+                        $displayFormat,
+                        $descriptions
+                    );
                 }
-                unset($modelObj);
             }
 
             if (!$this->internalIsSorted) {

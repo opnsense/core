@@ -66,12 +66,12 @@
 <script>
     $( document ).ready(function() {
         $("#grid-aliases").UIBootgrid({
-            search:'/api/firewall/alias/searchItem',
-            get:'/api/firewall/alias/getItem/',
-            set:'/api/firewall/alias/setItem/',
-            add:'/api/firewall/alias/addItem/',
-            del:'/api/firewall/alias/delItem/',
-            toggle:'/api/firewall/alias/toggleItem/',
+            search:'/api/firewall/alias/search_item',
+            get:'/api/firewall/alias/get_item/',
+            set:'/api/firewall/alias/set_item/',
+            add:'/api/firewall/alias/add_item/',
+            del:'/api/firewall/alias/del_item/',
+            toggle:'/api/firewall/alias/toggle_item/',
             options:{
                 requestHandler: function(request){
                     if ( $('#type_filter').val().length > 0) {
@@ -141,7 +141,127 @@
                 });
                 $("#network_content").selectpicker('refresh');
             });
-            $(".category-item").tooltip();
+            $(".category-item").tooltip({container: 'body'});
+
+            /**
+             * export all configured aliases to json
+             */
+             $("#exportbtn").unbind('click').click(function(){
+                let selected_rows = $("#grid-aliases").bootgrid("getSelectedRows");
+                let params = {};
+                if (selected_rows.length > 0) {
+                    params['ids'] = selected_rows;
+                }
+                ajaxCall("/api/firewall/alias/export", params, function(data, status){
+                    if (data.aliases) {
+                    let output_data = JSON.stringify(data, null, 2);
+                    let a_tag = $('<a></a>').attr('href','data:application/json;charset=utf8,' + encodeURIComponent(output_data))
+                        .attr('download','aliases.json').appendTo('body');
+
+                    a_tag.ready(function() {
+                        if ( window.navigator.msSaveOrOpenBlob && window.Blob ) {
+                            var blob = new Blob( [ output_data ], { type: "text/csv" } );
+                            navigator.msSaveOrOpenBlob( blob, 'aliases.json' );
+                        } else {
+                            a_tag.get(0).click();
+                        }
+                    });
+                    }
+                });
+            });
+
+            /**
+             * import aliases from json file
+             */
+            $("#importbtn").unbind('click').click(function(){
+                let $msg = $("<div/>");
+                let $imp_file = $("<input type='file' id='import_filename' />");
+                let $table = $("<table class='table table-condensed'/>");
+                let $tbody = $("<tbody/>");
+                $table.append(
+                $("<thead/>").append(
+                    $("<tr>").append(
+                    $("<th/>").text("{{ lang._('source')}}")
+                    ).append(
+                    $("<th/>").text("{{ lang._('message')}}")
+                    )
+                )
+                );
+                $table.append($tbody);
+                $table.append(
+                $("<tfoot/>").append(
+                    $("<tr/>").append($("<td colspan='2'/>").text(
+                    "{{ lang._('Please note that none of the aliases provided are imported due to the errors above')}}"
+                    ))
+                )
+                );
+
+                $imp_file.click(function(){
+                    // make sure upload resets when new file is provided (bug in some browsers)
+                    this.value = null;
+                });
+                $msg.append($imp_file);
+                $msg.append($("<hr/>"));
+                $msg.append($table);
+                $table.hide();
+
+
+                BootstrapDialog.show({
+                title: "{{ lang._('Import aliases') }}",
+                message: $msg,
+                type: BootstrapDialog.TYPE_INFO,
+                draggable: true,
+                buttons: [{
+                    label: '<i class="fa fa-cloud-upload" aria-hidden="true"></i>',
+                    action: function(sender){
+                        $table.hide();
+                        $tbody.empty();
+                        if ($imp_file[0].files[0] !== undefined) {
+                            const reader = new FileReader();
+                            reader.readAsBinaryString($imp_file[0].files[0]);
+                            reader.onload = function(readerEvt) {
+                                let import_data = null;
+                                try {
+                                    import_data = JSON.parse(readerEvt.target.result);
+                                } catch (error) {
+                                    $tbody.append(
+                                        $("<tr/>").append(
+                                        $("<td>").text("*")
+                                        ).append(
+                                        $("<td>").text(error)
+                                        )
+                                    );
+                                    $table.show();
+                                }
+                                if (import_data !== null) {
+                                    ajaxCall("/api/firewall/alias/import", {'data': import_data}, function(data,status) {
+                                        if (data.validations !== undefined) {
+                                            Object.keys(data.validations).forEach(function(key) {
+                                                $tbody.append(
+                                                    $("<tr/>").append(
+                                                    $("<td>").text(key)
+                                                    ).append(
+                                                    $("<td>").text(data.validations[key])
+                                                    )
+                                                );
+                                            });
+                                            $table.show();
+                                        } else {
+                                            sender.close();
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }
+                },{
+                    label:  "{{ lang._('Close') }}",
+                    action: function(sender){
+                        sender.close();
+                    }
+                }]
+                });
+            });
         }).on("load.rs.jquery.bootgrid", function (e){
             // reload categories before grid load
             ajaxCall('/api/firewall/alias/list_categories', {}, function(data, status){
@@ -178,7 +298,7 @@
         if ("{{selected_alias}}" !== "") {
             // UIBootgrid doesn't return a promise, wait for some time before opening the requested item
             setTimeout(function(){
-                ajaxGet("/api/firewall/alias/getAliasUUID/{{selected_alias}}", {}, function(data, status){
+                ajaxGet("/api/firewall/alias/get_alias_uuid/{{selected_alias}}", {}, function(data, status){
                     if (data.uuid !== undefined) {
                         var edit_item = $(".command-edit:eq(0)").clone(true);
                         edit_item.data('row-id', data.uuid).click();
@@ -220,7 +340,7 @@
         /**
          * fetch regions and countries for geoip selection
          */
-        ajaxGet("/api/firewall/alias/listCountries", {}, function(data){
+        ajaxGet("/api/firewall/alias/list_countries", {}, function(data){
             var regions = [];
             $.each(data, function(country, item) {
                 if (!regions.includes(item.region) && item.region != null) {
@@ -325,12 +445,15 @@
          * Type selector, show correct type input.
          */
         $("#alias\\.type").change(function(){
+            if ($("#to-select_alias\\.content").is(':visible')) {
+                /* leave text-edit mode before switching view */
+                $("#to-select_alias\\.content").click();
+            }
             $(".alias_type").hide();
             $("#row_alias\\.updatefreq").hide();
             $("#row_alias\\.authtype").hide();
             $("#row_alias\\.interface").hide();
             $("#row_alias\\.path_expression").hide();
-            $("#copy-paste").hide();
             switch ($(this).val()) {
                 case 'authgroup':
                     $("#alias_type_authgroup").show();
@@ -343,9 +466,8 @@
                     $("#row_alias\\.type > td > .dropdown:last > .dropdown-menu > .inner").addClass('dropdown-fixup');
                     break;
                 case 'asn':
-                    $("#alias_type_default").show();
+                    $("#select_alias\\.content").show();
                     $("#alias\\.proto").selectpicker('show');
-                    $("#copy-paste").show();
                     break;
                 case 'external':
                     break;
@@ -356,7 +478,7 @@
                 case 'dynipv6host':
                     $("#row_alias\\.interface").show();
                     $("#alias\\.proto").selectpicker('hide');
-                    $("#alias_type_default").show();
+                    $("#select_alias\\.content").show();
                     break;
                 case 'urljson':
                     $("#row_alias\\.path_expression").show();
@@ -383,9 +505,8 @@
                     $("#alias\\.authtype").change();
                     /* FALLTHROUGH */
                 default:
-                    $("#alias_type_default").show();
+                    $("#select_alias\\.content").show();
                     $("#alias\\.proto").selectpicker('hide');
-                    $("#copy-paste").show();
                     break;
             }
             if ($(this).val() === 'port') {
@@ -443,128 +564,8 @@
             }
         });
 
-        /**
-         * export all configured aliases to json
-         */
-        $("#exportbtn").click(function(){
-            let selected_rows = $("#grid-aliases").bootgrid("getSelectedRows");
-            let params = {};
-            if (selected_rows.length > 0) {
-                params['ids'] = selected_rows;
-            }
-            ajaxCall("/api/firewall/alias/export", params, function(data, status){
-                if (data.aliases) {
-                  let output_data = JSON.stringify(data, null, 2);
-                  let a_tag = $('<a></a>').attr('href','data:application/json;charset=utf8,' + encodeURIComponent(output_data))
-                      .attr('download','aliases.json').appendTo('body');
-
-                  a_tag.ready(function() {
-                      if ( window.navigator.msSaveOrOpenBlob && window.Blob ) {
-                          var blob = new Blob( [ output_data ], { type: "text/csv" } );
-                          navigator.msSaveOrOpenBlob( blob, 'aliases.json' );
-                      } else {
-                          a_tag.get(0).click();
-                      }
-                  });
-                }
-            });
-        });
-
-        /**
-         * import aliases from json file
-         */
-        $("#importbtn").click(function(){
-            let $msg = $("<div/>");
-            let $imp_file = $("<input type='file' id='import_filename' />");
-            let $table = $("<table class='table table-condensed'/>");
-            let $tbody = $("<tbody/>");
-            $table.append(
-              $("<thead/>").append(
-                $("<tr>").append(
-                  $("<th/>").text("{{ lang._('source')}}")
-                ).append(
-                  $("<th/>").text("{{ lang._('message')}}")
-                )
-              )
-            );
-            $table.append($tbody);
-            $table.append(
-              $("<tfoot/>").append(
-                $("<tr/>").append($("<td colspan='2'/>").text(
-                  "{{ lang._('Please note that none of the aliases provided are imported due to the errors above')}}"
-                ))
-              )
-            );
-
-            $imp_file.click(function(){
-                // make sure upload resets when new file is provided (bug in some browsers)
-                this.value = null;
-            });
-            $msg.append($imp_file);
-            $msg.append($("<hr/>"));
-            $msg.append($table);
-            $table.hide();
-
-
-            BootstrapDialog.show({
-              title: "{{ lang._('Import aliases') }}",
-              message: $msg,
-              type: BootstrapDialog.TYPE_INFO,
-              draggable: true,
-              buttons: [{
-                  label: '<i class="fa fa-cloud-upload" aria-hidden="true"></i>',
-                  action: function(sender){
-                      $table.hide();
-                      $tbody.empty();
-                      if ($imp_file[0].files[0] !== undefined) {
-                          const reader = new FileReader();
-                          reader.readAsBinaryString($imp_file[0].files[0]);
-                          reader.onload = function(readerEvt) {
-                              let import_data = null;
-                              try {
-                                  import_data = JSON.parse(readerEvt.target.result);
-                              } catch (error) {
-                                  $tbody.append(
-                                    $("<tr/>").append(
-                                      $("<td>").text("*")
-                                    ).append(
-                                      $("<td>").text(error)
-                                    )
-                                  );
-                                  $table.show();
-                              }
-                              if (import_data !== null) {
-                                  ajaxCall("/api/firewall/alias/import", {'data': import_data}, function(data,status) {
-                                      if (data.validations !== undefined) {
-                                          Object.keys(data.validations).forEach(function(key) {
-                                              $tbody.append(
-                                                $("<tr/>").append(
-                                                  $("<td>").text(key)
-                                                ).append(
-                                                  $("<td>").text(data.validations[key])
-                                                )
-                                              );
-                                          });
-                                          $table.show();
-                                      } else {
-                                          sender.close();
-                                      }
-                                  });
-                              }
-                          }
-                      }
-                  }
-              },{
-                 label:  "{{ lang._('Close') }}",
-                 action: function(sender){
-                    sender.close();
-                 }
-               }]
-            });
-        });
-
         function loadSettings() {
-            let data_get_map = {'frm_GeopIPSettings':"/api/firewall/alias/getGeoIP"};
+            let data_get_map = {'frm_GeopIPSettings':"/api/firewall/alias/get_geo_ip"};
             mapDataToFormUI(data_get_map).done(function(data){
                 if (data.frm_GeopIPSettings.alias.geoip.usages) {
                     if (!data.frm_GeopIPSettings.alias.geoip.subscription && !data.frm_GeopIPSettings.alias.geoip.address_count) {
@@ -669,7 +670,7 @@
                             </select>
                         </div>
                     </div>
-                    <table id="grid-aliases" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogAlias" data-editAlert="aliasChangeMessage">
+                    <table id="grid-aliases" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogAlias" data-editAlert="change_message_base_form">
                         <thead>
                         <tr>
                             <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
@@ -710,23 +711,7 @@
       {{ partial("layout_partials/base_form",['fields':formGeoIPSettings,'id':'frm_GeopIPSettings'])}}
     </div>
 </div>
-<section class="page-content-main">
-  <div class="content-box">
-    <div class="col-md-12">
-        <br/>
-        <div id="aliasChangeMessage" class="alert alert-info" style="display: none" role="alert">
-            {{ lang._('After changing settings, please remember to apply them with the button below') }}
-        </div>
-        <button class="btn btn-primary" id="reconfigureAct"
-                data-endpoint='/api/firewall/alias/reconfigure'
-                data-label="{{ lang._('Apply') }}"
-                data-error-title="{{ lang._('Error reconfiguring aliases') }}"
-                type="button"
-        ></button>
-        <br/><br/>
-    </div>
-  </div>
-</section>
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/alias/reconfigure'}) }}
 
 {# Edit dialog #}
 <div class="modal fade" id="DialogAlias" tabindex="-1" role="dialog" aria-labelledby="DialogAliasLabel">
@@ -866,7 +851,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="alias_type" id="alias_type_default">
+                                        <div class="alias_type" id="select_alias.content">
                                             <select multiple="multiple"
                                                     id="alias.content"
                                                     class="tokenize"
@@ -877,10 +862,27 @@
                                                     data-container="body"
                                                     data-separator="#10">
                                             </select>
+                                            <a href="#" class="text-danger" id="clear-options_alias.content"><i class="fa fa-times-circle"></i>
+                                            <small>{{lang._('Clear All')}}</small></a>
+                                            &nbsp;&nbsp;<a href="#" class="text-danger" id="copy-options_alias.content"><i class="fa fa-copy"></i>
+                                            <small>{{ lang._('Copy') }}</small></a>
+                                            &nbsp;&nbsp;<a href="#" class="text-danger" id="paste-options_alias.content" style="display:none"><i class="fa fa-paste"></i>
+                                            <small>{{ lang._('Paste') }}</small></a>
+                                            &nbsp;&nbsp;<a href="#" class="text-danger" id="to-text_alias.content" ><i class="fa fa-file-text-o"></i> <small>{{ lang._('Text') }}</small> </a>
+
+                                        </div>
+                                        <div id="textarea_alias.content" style="display: none;">
+                                            <textarea>
+
+                                            </textarea>
+                                            <a href="#" class="text-danger" id="to-select_alias.content" ><i class="fa fa-th-list"></i> <small>{{ lang._('Back') }}</small> </a>
                                         </div>
                                         <div class="alias_type" id="alias_type_networkgroup">
                                             <select multiple="multiple" class="selectpicker" id="network_content" data-container="body" data-size="10" data-live-search="true">
                                             </select>
+                                            <br/>
+                                            <a href="#" class="text-danger" id="clear-options_alias.content"><i class="fa fa-times-circle"></i>
+                                            <small>{{lang._('Clear All')}}</small></a>
                                         </div>
                                         <table class="table table-condensed alias_table alias_type" id="alias_type_geoip" style="display: none;">
                                             <thead>
@@ -891,18 +893,22 @@
                                             </thead>
                                             <tbody>
                                             </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="2">
+                                                        <a href="#" class="text-danger" id="clear-options_alias.content"><i class="fa fa-times-circle"></i>
+                                                        <small>{{lang._('Clear All')}}</small></a>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
                                         </table>
                                         <div class="alias_type" id="alias_type_authgroup" style="display: none;">
                                             <select multiple="multiple" class="selectpicker" id="authgroup_content" data-container="body" data-size="10" data-live-search="true">
                                             </select>
+                                            <br/>
+                                            <a href="#" class="text-danger" id="clear-options_alias.content"><i class="fa fa-times-circle"></i>
+                                            <small>{{lang._('Clear All')}}</small></a>
                                         </div>
-
-                                        <a href="#" class="text-danger" id="clear-options_alias.content"><i class="fa fa-times-circle"></i>
-                                        <small>{{lang._('Clear All')}}</small></a><span id="copy-paste">
-                                        &nbsp;&nbsp;<a href="#" class="text-danger" id="copy-options_alias.content"><i class="fa fa-copy"></i>
-                                        <small>{{ lang._('Copy') }}</small></a>
-                                        &nbsp;&nbsp;<a href="#" class="text-danger" id="paste-options_alias.content" style="display:none"><i class="fa fa-paste"></i>
-                                        <small>{{ lang._('Paste') }}</small></a></span>
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.content"></span>

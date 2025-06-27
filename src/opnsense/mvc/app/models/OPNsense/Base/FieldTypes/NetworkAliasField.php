@@ -67,10 +67,10 @@ class NetworkAliasField extends BaseListField
     protected function actionPostLoadingEvent()
     {
         if (!isset(self::$internalStaticOptionList)) {
-            self::$internalStaticOptionList = array();
+            self::$internalStaticOptionList = [];
         }
         if (empty(self::$internalStaticOptionList)) {
-            self::$internalStaticOptionList = array();
+            self::$internalStaticOptionList = [];
             // static nets
             self::$internalStaticOptionList['any'] = gettext('any');
             self::$internalStaticOptionList['(self)'] = gettext("This Firewall");
@@ -84,9 +84,9 @@ class NetworkAliasField extends BaseListField
                 }
             }
             // aliases
-            foreach ((new Alias(true))->aliases->alias->iterateItems() as $alias) {
-                if (strpos((string)$alias->type, "port") === false) {
-                    self::$internalStaticOptionList[(string)$alias->name] = (string)$alias->name;
+            foreach (self::getArrayReference(Alias::getCachedData(), 'aliases.alias') as $uuid => $alias) {
+                if (strpos($alias['type'], 'port') === false) {
+                    self::$internalStaticOptionList[$alias['name']] = $alias['name'];
                 }
             }
         }

@@ -50,7 +50,7 @@ class GroupController extends ApiMutableModelControllerBase
      */
     public function searchItemAction()
     {
-        return $this->searchBase("ifgroupentry", ['ifname', 'descr', 'members', 'sequence'], "ifname");
+        return $this->searchBase("ifgroupentry", null, "ifname");
     }
 
     /**
@@ -63,6 +63,7 @@ class GroupController extends ApiMutableModelControllerBase
     public function setItemAction($uuid)
     {
         $refactored = false;
+        Config::getInstance()->lock();
         $node = $this->getModel()->getNodeByReference('ifgroupentry.' . $uuid);
         $old_name = $node != null ? (string)$node->ifname : null;
         if ($old_name !== null && $this->request->isPost() && $this->request->hasPost("group")) {

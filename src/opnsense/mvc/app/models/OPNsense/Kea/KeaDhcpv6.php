@@ -133,6 +133,12 @@ class KeaDhcpv6 extends BaseModel
             if (isset($cfg->interfaces->$if) && !empty($cfg->interfaces->$if->if)) {
                 $record['interface'] = (string)$cfg->interfaces->$if->if;
             }
+            if (!$subnet->{'pd-allocator'}->isEmpty()) {
+                $record['pd-allocator'] = (string)$subnet->{'pd-allocator'};
+            }
+            if (!$subnet->allocator->isEmpty()) {
+                $record['allocator'] = (string)$subnet->allocator;
+            }
             /* standard option-data elements */
             foreach ($subnet->option_data->iterateItems() as $key => $value) {
                 $target_fieldname = str_replace('_', '-', $key);
@@ -202,7 +208,7 @@ class KeaDhcpv6 extends BaseModel
                 ],
                 'control-socket' => [
                     'socket-type' => 'unix',
-                    'socket-name' => '/var/run/kea6-ctrl-socket'
+                    'socket-name' => '/var/run/kea/kea6-ctrl-socket'
                 ],
                 'loggers' => [
                     [

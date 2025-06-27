@@ -324,7 +324,7 @@ class Config extends Singleton
     protected function init()
     {
         $this->statusIsLocked = false;
-        $this->config_file = (new AppConfig())->globals->config_path . "config.xml";
+        $this->config_file = (new AppConfig())->application->configDir . '/config.xml';
         try {
             $this->load();
         } catch (\Exception $e) {
@@ -348,6 +348,8 @@ class Config extends Singleton
             // in case there are no backups, restore defaults.
             $logger->error(gettext('No valid config.xml found, attempting to restore factory config.'));
             $this->restoreBackup('/usr/local/etc/config.xml');
+            chown('/conf/config.xml', 'wwwonly');   /* frontend owns file */
+            chgrp('/conf/config.xml', 'wheel');   /* backend can work with it */
         }
     }
 

@@ -180,16 +180,19 @@ function _dnsmasq_add_host_entries()
     }
 
     foreach ($dnsmasqcfg['hosts'] as $host) {
-        /* do not create entries for dhcp-host types */
-        if (!empty($host['client_id']) || !empty($host['hwaddr'])) {
-            continue;
-        }
         /* The host.ip field supports multiple IPv4 and IPv6 addresses */
-        foreach (explode(',', $host['ip']) as $ip) {
-            if (!empty($host['host']) && empty($host['domain'])) {
+        foreach (array_filter(explode(',', $host['ip'])) as $ip) {
+            /* skip partial IPv6 addresses */
+            if (str_starts_with($ip, '::')) {
+                continue;
+            }
+            if (empty($host['host'])) {
+                /* do not render partial DHCP lease entries */
+            } elseif ($host['host'] === '*') {
+                /* do not render wildcard hosts as they are handled directly by dnsmasq.conf */
+            } elseif (empty($host['domain'])) {
                 $lhosts .= "{$ip}\t{$host['host']}\n";
-            } elseif (!empty($host['host'])) {
-                /* XXX: The question is if we do want "host" as a global alias */
+            } else {
                 $lhosts .= "{$ip}\t{$host['host']}.{$host['domain']} {$host['host']}\n";
             }
             if (!empty($host['aliases'])) {

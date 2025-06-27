@@ -150,6 +150,8 @@ class CPBackgroundProcess(object):
                 # there are different reasons why a session should be removed, check for all reasons and
                 # use the same method for the actual removal
                 drop_session_reason = None
+                # XXX delete_reason is currently mapped to RADIUS keywords, as is this
+                # is the only authenticator handling accounting
                 delete_reason = None
 
                 # session cleanups, only for users not for static hosts/ranges.

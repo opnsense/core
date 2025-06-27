@@ -27,12 +27,12 @@
 <script>
 $( document ).ready(function() {
     let grid_hosts = $("#{{formGridHostOverride['table_id']}}").UIBootgrid({
-        search:'/api/unbound/settings/searchHostOverride/',
-        get:'/api/unbound/settings/getHostOverride/',
-        set:'/api/unbound/settings/setHostOverride/',
-        add:'/api/unbound/settings/addHostOverride/',
-        del:'/api/unbound/settings/delHostOverride/',
-        toggle:'/api/unbound/settings/toggleHostOverride/',
+        search:'/api/unbound/settings/search_host_override/',
+        get:'/api/unbound/settings/get_host_override/',
+        set:'/api/unbound/settings/set_host_override/',
+        add:'/api/unbound/settings/add_host_override/',
+        del:'/api/unbound/settings/del_host_override/',
+        toggle:'/api/unbound/settings/toggle_host_override/',
         options: {
             selection: true,
             multiSelect: false,
@@ -51,6 +51,12 @@ $( document ).ready(function() {
     }).on("selected.rs.jquery.bootgrid", function (e, rows) {
         $("#{{formGridHostAlias['table_id']}}").bootgrid('reload');
     }).on("deselected.rs.jquery.bootgrid", function (e, rows) {
+        // de-select not allowed, make sure always one items is selected. (sticky selected)
+        if ($("table#{{formGridHostOverride['table_id']}}").length > 0 &&
+            $("#{{formGridHostOverride['table_id']}}").bootgrid("getSelectedRows").length == 0) {
+            // XXX remove for 25.7
+            $("#{{formGridHostOverride['table_id']}}").bootgrid('select', [rows[0].uuid]);
+        }
         $("#{{formGridHostAlias['table_id']}}").bootgrid('reload');
     }).on("loaded.rs.jquery.bootgrid", function (e) {
         let ids = $("#{{formGridHostOverride['table_id']}}").bootgrid("getCurrentRows");
@@ -61,12 +67,12 @@ $( document ).ready(function() {
     });
 
     let grid_aliases = $("#{{formGridHostAlias['table_id']}}").UIBootgrid({
-        search:'/api/unbound/settings/searchHostAlias/',
-        get:'/api/unbound/settings/getHostAlias/',
-        set:'/api/unbound/settings/setHostAlias/',
-        add:'/api/unbound/settings/addHostAlias/',
-        del:'/api/unbound/settings/delHostAlias/',
-        toggle:'/api/unbound/settings/toggleHostAlias/',
+        search:'/api/unbound/settings/search_host_alias/',
+        get:'/api/unbound/settings/get_host_alias/',
+        set:'/api/unbound/settings/set_host_alias/',
+        add:'/api/unbound/settings/add_host_alias/',
+        del:'/api/unbound/settings/del_host_alias/',
+        toggle:'/api/unbound/settings/toggle_host_alias/',
         options: {
             labels: {
                 noResults: "{{ lang._('No results found for selected host or none selected') }}"

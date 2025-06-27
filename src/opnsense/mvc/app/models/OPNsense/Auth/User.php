@@ -141,7 +141,7 @@ class User extends BaseModel
                 continue;
             }
             $key = $node->__reference;
-            if (empty((string)$node->password->getCurrentValue()) && empty((string)$node->scrambled_password)) {
+            if ($node->password->isEmpty() && $node->scrambled_password->isEmpty()) {
                 $messages->appendMessage(new Message(gettext("A password is required"), $key . ".password"));
             }
             /* XXX: validate reserved users? (/etc/passwd)*/

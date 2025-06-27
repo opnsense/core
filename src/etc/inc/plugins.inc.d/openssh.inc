@@ -168,9 +168,6 @@ function openssh_configure_do($verbose = false, $interface_map = null)
     $sshconf .= "PubkeyAuthentication yes\n";
     $sshconf .= "Subsystem sftp internal-sftp\n";
     $sshconf .= "AllowGroups wheel";
-    if (!empty($sshcfg['group'][0])) {
-        $sshconf .= " {$sshcfg['group'][0]}";
-    }
     $sshconf .= "\n";
     if (isset($sshcfg['permitrootlogin'])) {
         $sshconf .= "PermitRootLogin yes\n";

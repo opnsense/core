@@ -43,6 +43,21 @@
                     <AddressFamily>ipv6</AddressFamily>
                     <Required>Y</Required>
                 </subnet>
+                <allocator type="OptionField">
+                    <BlankDesc>Default</BlankDesc>
+                    <OptionValues>
+                        <iterative>iterative</iterative>
+                        <random>random</random>
+                    </OptionValues>
+                </allocator>
+                <pd-allocator type="OptionField">
+                    <BlankDesc>Default</BlankDesc>
+                    <OptionValues>
+                        <iterative>iterative</iterative>
+                        <random>random</random>
+                        <flq>Free Lease Queue Allocator</flq>
+                    </OptionValues>
+                </pd-allocator>
                 <option_data>
                     <dns_servers type="NetworkField">
                         <NetMaskAllowed>N</NetMaskAllowed>

@@ -27,32 +27,34 @@
 <script>
     $( document ).ready(function() {
         let grid = $("#grid-routes").UIBootgrid({
+            datakey: 'id',
             options: {
                 ajax: false,
                 selection: false,
                 multiSelect: false,
                 virtualDOM: true,
-                formatters: {
-                    "commands": function (column, row) {
-                        return '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" title="{{ lang._('Delete') }}" \
-                                        data-row-id="' + row.destination + ',' + row.gateway +'"><span class="fa fa-trash-o fa-fw"></span></button>';
-                    }
-                }
             },
-        }).on("loaded.rs.jquery.bootgrid", function(){
-          grid.find(".command-delete").on("click", function(e){
-              let route=$(this).data("row-id").split(',');
-              stdDialogConfirm('{{ lang._('Remove static route') }}' + ' ('+$(this).data("row-id")+')',
-                               '{{ lang._('Are you sure you want to remove this route? Caution, this could potentially lead to loss of connectivity') }}',
-                               '{{ lang._('Yes') }}',
-                               '{{ lang._('No') }}',
-                               function() {
-                  ajaxCall('/api/diagnostics/interface/delRoute/', {'destination': route[0], 'gateway': route[1]},function(data,status){
-                      // reload grid after delete
-                      $("#update").click();
-                  });
-              });
-          });
+            commands: {
+                delete: {
+                    title: "{{ lang._('Delete') }}",
+                    method: function() {
+                        let route=$(this).data("row-id").split(',');
+                        stdDialogConfirm('{{ lang._('Remove static route') }}' + ' ('+$(this).data("row-id")+')',
+                                        '{{ lang._('Are you sure you want to remove this route? Caution, this could potentially lead to loss of connectivity') }}',
+                                        '{{ lang._('Yes') }}',
+                                        '{{ lang._('No') }}',
+                                        function() {
+                            ajaxCall('/api/diagnostics/interface/del_route/', {'destination': route[0], 'gateway': route[1]},function(data,status){
+                                // reload grid after delete
+                                $("#update").click();
+                            });
+                        });
+                    },
+                    classname: 'fa fa-trash-o fa-fw',
+                    sequence: 1,
+                    requires: []
+                }
+            }
         });
         // update routes
         $("#update").click(function() {
@@ -62,7 +64,7 @@
             if ($("#resolve").prop("checked")) {
                 resolve = "yes";
             }
-            ajaxGet("/api/diagnostics/interface/getRoutes/", {resolve:resolve}, function (data, status) {
+            ajaxGet("/api/diagnostics/interface/get_routes/", {resolve:resolve}, function (data, status) {
                 if (status == "success") {
                     $("#grid-routes").bootgrid('append', data).on("loaded.rs.jquery.bootgrid", function () {
                         $('.bootgrid-tooltip').tooltip();
@@ -85,6 +87,7 @@
                     <table id="grid-routes" class="table table-condensed table-hover table-striped table-responsive">
                         <thead>
                         <tr>
+                            <th data-column-id="id" data-type="string" data-visible="false">{{ lang._('ID') }}</th>
                             <th data-column-id="proto" data-type="string" >{{ lang._('Proto') }}</th>
                             <th data-column-id="destination" data-type="string">{{ lang._('Destination') }}</th>
                             <th data-column-id="gateway" data-type="string">{{ lang._('Gateway') }}</th>

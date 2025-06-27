@@ -57,9 +57,8 @@ class AliasesField extends HostnameField
             }
             $this->getParentNode()->comments = implode("\n", $comments);
             return parent::setValue(implode(",", $tmp));
-        } elseif (!empty($value)) {
-            /* update only */
-            return parent::setValue($value);
         }
+
+        return parent::setValue($value);
     }
 }

@@ -28,6 +28,7 @@
 
 namespace OPNsense\Trust;
 
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Config;
 
 /**
@@ -43,7 +44,7 @@ class Store
         'OU' => 'organizationalunit',
         'C' => 'country',
         'emailAddress' => 'email',
-        'CN' => 'commonname'
+        'CN' => 'commonname',
     ];
 
     /**
@@ -196,7 +197,7 @@ class Store
     private static function _createSSLOptions($keylen_curve, $digest_alg, $x509_extensions = 'usr_cert', $extns = [])
     {
         // define temp filename to use for openssl.cnf and add extensions values to it
-        $configFilename = tempnam(sys_get_temp_dir(), 'ssl');
+        $configFilename = tempnam((new AppConfig())->application->tempDir, 'ssl');
 
         $template = file_get_contents('/usr/local/etc/ssl/opnsense.cnf');
         foreach (array_keys($extns) as $extnTag) {

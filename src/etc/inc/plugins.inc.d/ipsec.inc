@@ -938,8 +938,10 @@ function ipsec_write_cas()
         $x509cert = openssl_x509_parse(openssl_x509_read($cert));
         if (is_array($x509cert) && isset($x509cert['hash'])) {
             $fname = "{$capath}/{$x509cert['hash']}.0.crt";
-            $cafiles[] = $fname;
+            $linkname = "{$capath}/{$ca['refid']}.crt";
+            array_push($cafiles, $fname, $linkname);
             file_put_contents($fname, $cert);
+            @symlink(basename($fname), $linkname); /* add link with our internal reference */
         } else {
             log_msg(sprintf('Error: Invalid certificate hash info for %s', $ca['descr']), LOG_ERR);
         }

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2024 Deciso B.V.
+ * Copyright (C) 2015-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -129,6 +129,23 @@ abstract class BaseField
      * @var BaseModel|null keep record of the model which originally created this field
      */
     private $internalParentModel = null;
+
+
+    /**
+     * @param array $node input array to traverse
+     * @param string $path reference to information to be fetched (e.g. my.data)
+     * @return array
+     */
+    protected static function getArrayReference(array $node, string $path)
+    {
+        foreach (explode('.', $path) as $ref) {
+            if (!isset($node[$ref]) || !is_array($node[$ref])) {
+                return []; /* not found or not valid */
+            }
+            $node = $node[$ref];
+        }
+        return $node;
+    }
 
     /**
      * @return bool
@@ -382,6 +399,15 @@ abstract class BaseField
     }
 
     /**
+     * check if field value is equal to given string
+     * @return bool
+     */
+    public function isEqual(string $test): bool
+    {
+        return $this->getCurrentValue() === $test;
+    }
+
+    /**
      * Try to convert to current value as float
      * @return float
      */
@@ -510,14 +536,9 @@ abstract class BaseField
     }
 
     /**
-     * check if current value is empty AND NOT zero (either boolean field as false or an empty field)
+     * check if this field is required
      * @return bool
      */
-    public function isEmptyString(): bool
-    {
-        return $this->getCurrentValue() !== "0" && $this->isEmpty();
-    }
-
     public function isRequired(): bool
     {
         return $this->internalIsRequired;
@@ -529,7 +550,7 @@ abstract class BaseField
      */
     public function isEmptyAndRequired(): bool
     {
-        return $this->internalIsRequired && ($this->internalValue == "" || $this->internalValue == null);
+        return $this->internalIsRequired && $this->getCurrentValue() === '';
     }
 
     /**
@@ -672,17 +693,26 @@ abstract class BaseField
      */
     public function getNodes()
     {
-        $result = array ();
+        $result = [];
         foreach ($this->iterateItems() as $key => $node) {
-            if ($node->isContainer()) {
-                $result[$key] = $node->getNodes();
-            } else {
-                $result[$key] = $node->getNodeData();
-            }
+            $result[$key] = $node->isContainer() ? $node->getNodes() : $node->getNodeData();
         }
-
         return $result;
     }
+
+    /**
+     * get nodes as array structure using getDescription() as leaves
+     * @return array
+     */
+    public function getNodeDescriptions()
+    {
+        $result = [];
+        foreach ($this->iterateItems() as $key => $node) {
+            $result[$key] = $node->isContainer() ? $node->getNodeDescriptions() :  $node->getDescription();
+        }
+        return $result;
+    }
+
 
     /**
      * companion for getNodes, displays node content. may be overwritten for alternative presentation.

@@ -32,27 +32,23 @@
             $('.selectpicker').selectpicker('refresh');
         });
 
-        $("#grid-destinations").UIBootgrid(
-            {   search:'/api/syslog/settings/searchDestinations',
-                get:'/api/syslog/settings/getDestination/',
-                set:'/api/syslog/settings/setDestination/',
-                add:'/api/syslog/settings/addDestination/',
-                del:'/api/syslog/settings/delDestination/',
-                toggle:'/api/syslog/settings/toggleDestination/'
+        $("#{{formGridDestination['table_id']}}").UIBootgrid(
+            {   search:'/api/syslog/settings/search_destinations',
+                get:'/api/syslog/settings/get_destination/',
+                set:'/api/syslog/settings/set_destination/',
+                add:'/api/syslog/settings/add_destination/',
+                del:'/api/syslog/settings/del_destination/',
+                toggle:'/api/syslog/settings/toggle_destination/'
             }
         );
 
-        let gridStatsInitialized = false;
+        $("#grid-statistics").UIBootgrid({
+            search: '/api/syslog/service/stats/'
+        });
+
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             if (e.target.id === 'statistics') {
-                if (!gridStatsInitialized) {
-                    $("#grid-statistics").UIBootgrid({
-                        search: '/api/syslog/service/stats/'
-                    });
-                    let gridStatsInitialized = true;
-                } else {
-                    $("#grid-statistics").bootgrid('reload');
-                }
+                $("#grid-statistics").bootgrid('reload');
             }
         });
 
@@ -91,6 +87,8 @@
                 }
             });
         });
+
+        $('#resetAct').insertAfter('#reconfigureAct').show();
     });
 </script>
 
@@ -105,31 +103,7 @@
         {{ partial("layout_partials/base_form",['fields':localForm,'id':'frm_local_settings'])}}
     </div>
     <div id="tab_remote" class="tab-pane fade in">
-        <!-- tab page "remote" -->
-        <table id="grid-destinations" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogDestination" data-editAlert="syslogChangeMessage">
-            <thead>
-            <tr>
-                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-                <th data-column-id="transport" data-type="string">{{ lang._('Transport') }}</th>
-                <th data-column-id="hostname" data-type="string">{{ lang._('Hostname') }}</th>
-                <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
-                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-                <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">{{ lang._('ID') }}</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td></td>
-                <td>
-                    <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                    <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
-                </td>
-            </tr>
-            </tfoot>
-        </table>
-        <hr/>
+        {{ partial('layout_partials/base_bootgrid_table', formGridDestination)}}
     </div>
     <div id="tab_statistics" class="tab-pane fade in">
         <table id="grid-statistics" class="table table-condensed table-hover table-striped table-responsive">
@@ -149,26 +123,16 @@
         </table>
         <hr/>
     </div>
-    <div class="col-md-12 __mb">
-        <div id="syslogChangeMessage" class="alert alert-info" style="display: none" role="alert">
-            {{ lang._('After changing settings, please remember to apply them with the button below') }}
-        </div>
-        <button class="btn btn-primary" id="reconfigureAct"
-                data-endpoint='/api/syslog/service/reconfigure'
-                data-label="{{ lang._('Apply') }}"
-                data-service-widget="syslog"
-                data-error-title="{{ lang._('Error reconfiguring Syslog') }}"
-                type="button"
-        ></button>
-        <button class="btn pull-right" id="resetAct"
-                data-endpoint='/api/syslog/service/reset'
-                data-label="{{ lang._('Reset Log Files') }}"
-                data-error-title="{{ lang._('Error resetting Syslog') }}"
-                type="button"
-        ></button>
-    </div>
 </div>
 
+<button class="btn pull-right" id="resetAct" style="display: none;"
+        data-endpoint='/api/syslog/service/reset'
+        data-label="{{ lang._('Reset Log Files') }}"
+        data-error-title="{{ lang._('Error resetting Syslog') }}"
+        type="button"
+></button>
+
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/syslog/service/reconfigure', 'data_service_widget': 'syslog'}) }}
 
 {# include dialogs #}
-{{ partial("layout_partials/base_dialog",['fields':formDialogDestination,'id':'DialogDestination','label':lang._('Edit destination')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogDestination,'id':formGridDestination['edit_dialog_id'],'label':lang._('Edit destination')])}}

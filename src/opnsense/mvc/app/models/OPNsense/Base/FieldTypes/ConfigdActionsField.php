@@ -28,6 +28,7 @@
 
 namespace OPNsense\Base\FieldTypes;
 
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Backend;
 
 /**
@@ -39,12 +40,12 @@ class ConfigdActionsField extends BaseListField
     /**
      * @var array collected options
      */
-    private static $internalStaticOptionList = array();
+    private static $internalStaticOptionList = [];
 
     /**
      * @var array filters to use on the configd selection
      */
-    private $internalFilters = array();
+    private $internalFilters = [];
 
     /**
      * @var string key to use for option selections, to prevent excessive reloading
@@ -57,10 +58,10 @@ class ConfigdActionsField extends BaseListField
     protected function actionPostLoadingEvent()
     {
         if (!isset(self::$internalStaticOptionList[$this->internalCacheKey])) {
-            self::$internalStaticOptionList[$this->internalCacheKey] = array();
+            self::$internalStaticOptionList[$this->internalCacheKey] = [];
 
             $backend = new Backend();
-            $service_tempfile = "/tmp/configdmodelfield.data";
+            $service_tempfile = (new AppConfig())->application->tempDir . '/configdmodelfield.data';
 
             // check configd daemon for list of available actions, cache results as long as configd is not restarted
             if (!file_exists($service_tempfile) || filemtime($service_tempfile) < $backend->getLastRestart()) {
@@ -69,12 +70,12 @@ class ConfigdActionsField extends BaseListField
                 if (is_array($actions)) {
                     file_put_contents($service_tempfile, $response);
                 } else {
-                    $actions = array();
+                    $actions = [];
                 }
             } else {
                 $actions = json_decode(file_get_contents($service_tempfile), true);
                 if (!is_array($actions)) {
-                    $actions = array();
+                    $actions = [];
                 }
             }
 

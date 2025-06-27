@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (!$userFound) {
                 $input_errors[] = gettext("Sorry, you cannot change settings for a non-local user.");
             } elseif (count($input_errors) == 0) {
-                $authenticator = get_authenticator();
+                $authenticator = (new OPNsense\Auth\AuthenticationFactory())->get('Local Database');
                 $input_errors = $authenticator->checkPolicy($username, $pconfig['passwordfld0'], $pconfig['passwordfld1']);
             }
         }

@@ -208,7 +208,7 @@ class HostnameField extends BaseField
                         $result = true;
                     } elseif (filter_var($value, FILTER_VALIDATE_DOMAIN, $filterOptDomain) !== false) {
                         // internalIpAllowed = false and ip address offered,  trigger validation
-                        $result = $val_is_ip ? false : true;
+                        $result = $val_is_ip ? false : preg_match_all('/(\s|\/|\*)/', $value) === 0;
                     }
                     if (!$result) {
                         // append validation message

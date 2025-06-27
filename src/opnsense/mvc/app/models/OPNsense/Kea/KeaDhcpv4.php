@@ -151,6 +151,9 @@ class KeaDhcpv4 extends BaseModel
             foreach ($subnet->option_data->iterateItems() as $key => $value) {
                 $target_fieldname = str_replace('_', '-', $key);
                 if ((string)$value != '') {
+                    if ($key == 'static_routes') {
+                        $value = implode(',', array_map('trim', explode(',', $value)));
+                    }
                     $record['option-data'][] = [
                         'name' => $target_fieldname,
                         'data' => (string)$value
@@ -172,11 +175,15 @@ class KeaDhcpv4 extends BaseModel
                     continue;
                 }
                 $res = [];
-                foreach (['hw_address', 'ip_address', 'hostname'] as $key) {
+                foreach (['ip_address', 'hostname'] as $key) {
                     if (!empty((string)$reservation->$key)) {
                         $res[str_replace('_', '-', $key)] = (string)$reservation->$key;
                     }
                 }
+                if (!$reservation->hw_address->isEmpty()) {
+                    $res['hw-address'] = str_replace('-', ':', $reservation->hw_address);
+                }
+
                 $record['reservations'][] = $res;
             }
             $result[] = $record;
@@ -199,7 +206,7 @@ class KeaDhcpv4 extends BaseModel
                 ],
                 'control-socket' => [
                     'socket-type' => 'unix',
-                    'socket-name' => '/var/run/kea4-ctrl-socket'
+                    'socket-name' => '/var/run/kea/kea4-ctrl-socket'
                 ],
                 'loggers' => [
                     [

@@ -139,10 +139,10 @@
                     </OptionValues>
                 </auth>
                 <id type="TextField">
-                    <Mask>/^([0-9a-zA-Z\.\-,_\:\=\@\%]){0,1024}$/u</Mask>
+                    <Mask>/^([0-9a-zA-Z\.\-,_\:\=\@\%\*\s]){0,1024}$/u</Mask>
                 </id>
                 <eap_id type="TextField">
-                    <Mask>/^([0-9a-zA-Z\.\-,_\:\=\@\%]){0,1024}$/u</Mask>
+                    <Mask>/^([0-9a-zA-Z\.\-,_\:\=\@\%\*\s]){0,1024}$/u</Mask>
                 </eap_id>
                 <certs type="CertificateField">
                     <Multiple>Y</Multiple>
@@ -196,10 +196,10 @@
                     </OptionValues>
                 </auth>
                 <id type="TextField">
-                    <Mask>/^([0-9a-zA-Z\.\-,_\:\=\@\%]){0,1024}$/u</Mask>
+                    <Mask>/^([0-9a-zA-Z\.\-,_\:\=\@\%\*\s]){0,1024}$/u</Mask>
                 </id>
                 <eap_id type="TextField">
-                    <Mask>/^([0-9a-zA-Z\.\-,_\:\=\@\%]){0,1024}$/u</Mask>
+                    <Mask>/^([0-9a-zA-Z\.\-,_\:\=\@\%\*\s]){0,1024}$/u</Mask>
                 </eap_id>
                 <groups type="AuthGroupField">
                     <Multiple>Y</Multiple>
@@ -208,6 +208,11 @@
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </certs>
+                <cacerts type="CertificateField">
+                    <type>ca</type>
+                    <Multiple>Y</Multiple>
+                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
+                </cacerts>
                 <pubkeys type="ModelRelationField">
                     <Model>
                         <host>
@@ -218,7 +223,6 @@
                     </Model>
                     <Multiple>Y</Multiple>
                 </pubkeys>
-                <!-- XXX add cacert field + logic in ipsec_write_cas -->
                 <description type="DescriptionField"/>
             </remote>
         </remotes>

@@ -48,7 +48,6 @@
       switch_mode(s_filter_val);
 
       let grid_log = $("#grid-log").UIBootgrid({
-          datakey: 'rnum',
           options:{
               initialSearchPhrase: getUrlHash('search'),
               sorting:false,
@@ -78,7 +77,8 @@
                                 $('#grid-log').bootgrid('setPageByRowId', parseInt($(this).data('row-id')));
                           });
 
-                          return btn[0];
+                          /* XXX simplify after 25.7 */
+                          return $('table#grid-log').length > 0 ? btn.prop('outerHTML') : btn[0];
                       } else {
                           return "";
                       }
@@ -111,6 +111,28 @@
               localStorage.setItem('log_validFrom_filter_{{module}}_{{scope}}', $("#validFrom_filter").val());
           }
           $('#grid-log').bootgrid('reload');
+      });
+
+      grid_log.on("loaded.rs.jquery.bootgrid", function(){
+          /* XXX remove after 25.7 */
+          if ($('table#grid-log').length > 0) {
+            if (page > 0) {
+              $("ul.pagination > li:last > a").data('page', page).click();
+              page = 0;
+            }
+
+            $(".action-page").click(function(event){
+                event.preventDefault();
+                $("#grid-log").bootgrid("search",  "");
+                page = parseInt((parseInt($(this).data('row-id')) / $("#grid-log").bootgrid("getRowCount")))+1;
+                $("input.search-field").val("");
+                if ($("#exact_severity").hasClass("fa-toggle-on")) {
+                    $("#severity_filter").selectpicker('deselectAll');
+                } else {
+                    $("#severity_filter").val("Debug").change();
+                }
+            });
+          }
       });
 
       $("#flushlog").on('click', function(event){
@@ -245,7 +267,7 @@
                         <th data-column-id="process_name" data-width="2em" data-type="string">{{ lang._('Process') }}</th>
                         <th data-column-id="pid" data-width="2em" data-type="numeric" data-visible="false">{{ lang._('PID') }}</th>
                         <th data-column-id="line" data-type="string">{{ lang._('Line') }}</th>
-                        <th data-column-id="rnum" data-type="numeric" data-formatter="page"  data-width="2em"></th>
+                        <th data-column-id="rnum" data-type="numeric" data-formatter="page" data-width="2em" data-identifier="true"></th>
                     </tr>
                     </thead>
                     <tbody>

@@ -48,8 +48,7 @@ convert_config(true);
 @touch('/usr/local/opnsense/www/index.php');
 
 /* flush user-facing caches */
-(new OPNsense\Core\ACL())->invalidateCache();
-(new OPNsense\Base\Menu\MenuSystem())->invalidateCache();
+system_cache_flush(true);
 
 /* reload subsystem that may have changed */
 system_firmware_configure(true);

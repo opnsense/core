@@ -41,7 +41,6 @@
             });
         }
 
-
         // Get all advanced fields, used for advanced mode tooltips
         const advancedFieldIds = "{{ advancedFieldIds }}".split(',');
 
@@ -67,8 +66,6 @@
             toggle:'/api/firewall/filter/toggle_rule/',
             options: {
                 responsive: true,
-                triggerEditFor: getUrlHash('edit'),
-                initialSearchPhrase: getUrlHash('search'),
                 rowCount: [20,50,100,200,500,1000],
                 requestHandler: function(request){
                     // Add category selectpicker
@@ -88,7 +85,6 @@
                 },
                 headerFormatters: {
                     enabled: function (column) { return "" },
-                    icons: function (column) { return "" },
                     source_port: function (column) { return "{{ lang._('Port') }}" },
                     destination_port: function (column) { return "{{ lang._('Port') }}" },
                     interface: function (column) {
@@ -137,6 +133,14 @@
                                 bootgrid-tooltip" data-row-id="${rowId}"
                                 title="{{ lang._('Move selected rule before this rule') }}">
                                 <span class="fa fa-fw fa-arrow-left"></span>
+                            </button>
+
+                            <button type="button" class="btn btn-xs btn-default command-toggle_log bootgrid-tooltip"
+                                data-row-id="${row.uuid}" data-value="${row.log}"
+                                title="${row.log == '1'
+                                    ? '{{ lang._("Disable Logging") }}'
+                                    : '{{ lang._("Enable Logging") }}'}">
+                                <i class="fa fa-exclamation-circle fa-fw ${row.log == '1' ? 'text-info' : 'text-muted'}"></i>
                             </button>
 
                             <button type="button" class="btn btn-xs btn-default command-edit
@@ -312,15 +316,6 @@
                                     ' data-toggle="tooltip" title="{{ lang._("First match") }}"></i> ';
                         }
 
-                        // Logging
-                        if (row.log == 0) {
-                            result += '<i class="fa fa-exclamation-circle fa-fw text-muted" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Logging disabled") }}"></i> ';
-                        } else {
-                            result += '<i class="fa fa-exclamation-circle fa-fw text-info" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Logging enabled") }}"></i> ';
-                        }
-
                         // XXX: Advanced fields all have different default values, so it cannot be generalized completely
                         const advancedDefaultPrefixes = ["0", "none", "any", "default", "keep"];
 
@@ -443,13 +438,8 @@
                             {},
                             function(data, status) {
                                 if (data.status === "ok") {
-                                    std_bootgrid_reload("{{ formGridFilterRule['table_id'] }}");
-                                    // Trigger change message, e.g., when using move_before
-                                    $("#change_message_base_form").slideDown(1000, function() {
-                                        setTimeout(function() {
-                                            $("#change_message_base_form").slideUp(2000);
-                                        }, 2000);
-                                    });
+                                    $("#{{ formGridFilterRule['table_id'] }}").bootgrid("reload");
+                                    $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
                                 }
                             },
                             function(xhr, textStatus, errorThrown) {
@@ -466,12 +456,55 @@
                     title: "{{ lang._('Move selected rule before this rule') }}",
                     sequence: 10
                 },
+                toggle_log: {
+                    method: function(event) {
+                        const uuid = $(this).data("row-id");
+                        const log = String(+$(this).data("value") ^ 1);
+                        ajaxCall(
+                            `/api/firewall/filter/toggle_rule_log/${uuid}/${log}`,
+                            {},
+                            function(data) {
+                                if (data.status === "ok") {
+                                    $("#{{ formGridFilterRule['table_id'] }}").bootgrid("reload");
+                                    $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
+                                }
+                            },
+                            function(xhr, textStatus, errorThrown) {
+                                showDialogAlert(
+                                    BootstrapDialog.TYPE_DANGER,
+                                    "{{ lang._('Request Failed') }}",
+                                    errorThrown
+                                );
+                            },
+                            'POST'
+                        );
+                    },
+                    classname: 'fa fa-fw fa-exclamation-circle',
+                    title: "{{ lang._('Toggle Logging') }}",
+                    sequence: 20
+                }
             },
 
         });
 
-        grid.on("loaded.rs.jquery.bootgrid", function() {
-            $('[data-toggle="tooltip"]').tooltip();
+        grid.on('loaded.rs.jquery.bootgrid', function () {
+            // Clean up any open tooltips
+            $('[data-toggle="tooltip"]').each(function () {
+                if ($(this).data('bs.tooltip')) {
+                    $(this).tooltip('hide');
+                }
+            });
+
+            // Remove events and delete old instance
+            $('[data-toggle="tooltip"]')
+                .off('.tooltip')
+                .removeData('bs.tooltip');
+
+            // Clean up orphaned tooltip divs
+            $('body > .tooltip').remove();
+
+            // Re-initialize tooltips
+            $('[data-toggle="tooltip"]').tooltip({ container: 'body' });
         });
 
         /* for performance reasons, only load catagories on page load */
@@ -480,6 +513,18 @@
 
             const $categoryFilter = $("#category_filter");
             const currentSelection = $categoryFilter.val();
+
+            // Sort used categories first, then alphabetically
+            data.rows.sort((a, b) => {
+                const aUsed = a.used > 0 ? 0 : 1;
+                const bUsed = b.used > 0 ? 0 : 1;
+
+                if (aUsed !== bUsed) {
+                    return aUsed - bUsed;
+                }
+
+                return a.name.localeCompare(b.name);
+            });
 
             $categoryFilter.empty().append(
                 data.rows.map(row => {
@@ -491,7 +536,7 @@
                         html: row.name,
                         id: row.used > 0 ? row.uuid : undefined,
                         "data-content": row.used > 0
-                            ? `<span>${optVal}</span><span style='background:#${bgColor};' class='badge pull-right'>${row.used}</span>`
+                            ? `<span><span class="badge badge-sm" style="background:#${bgColor};">${row.used}</span> ${optVal}</span>`
                             : undefined
                     });
                 })
@@ -500,13 +545,71 @@
             $categoryFilter.val(currentSelection).selectpicker('refresh');
         });
 
+        // Track if user has actually changed the interface dropdown, or it was the controller
+        let interfaceInitialized = false;
+
         // Populate interface selectpicker
-        $('#interface_select').fetch_options('/api/firewall/filter/get_interface_list');
+        $('#interface_select').fetch_options(
+            '/api/firewall/filter/get_interface_list',
+            {},
+            function (data) {
+                for (const groupKey in data) {
+                    const group = data[groupKey];
+                    group.items = group.items.map(item => {
+                        const count = item.count ?? 0;
+                        const label = (item.label || '');
+                        const subtext = group.label;
+
+                        const bgClassMap = {
+                            floating: 'bg-primary',
+                            group: 'bg-warning',
+                            interface: 'bg-info'
+                        };
+                        const badgeClass = bgClassMap[item.type] || 'bg-info';
+
+                        return {
+                            value: item.value,
+                            label: label,
+                            'data-content': `
+                                <span>
+                                    ${count > 0 ? `<span class="badge badge-sm ${badgeClass}">${count}</span>` : ''}
+                                    ${label}
+                                    <small class="text-muted ms-2"><em>${subtext}</em></small>
+                                </span>
+                            `.trim()
+                        };
+                    });
+                }
+                return data;
+            },
+            false,
+            function (data) {  // post_callback, apply the URL hash logic
+                const match = window.location.hash.match(/^#interface=([^&]+)/);
+                if (match) {
+                    const ifaceFromHash = decodeURIComponent(match[1]);
+
+                    const allOptions = Object.values(data).flatMap(group => group.items.map(i => i.value));
+                    if (allOptions.includes(ifaceFromHash)) {
+                        $('#interface_select').val(ifaceFromHash).selectpicker('refresh');
+                        grid.bootgrid('reload');
+                    }
+                }
+                interfaceInitialized = true;
+            },
+            true  // render_html to show counts as badges
+        );
+
         $("#interface_select_container").show();
 
         // move selectpickers into action bar
         $("#interface_select_container").detach().insertBefore('#{{formGridFilterRule["table_id"]}}-header > .row > .actionBar > .search');
-        $('#interface_select').change(function(){
+        $('#interface_select').on('changed.bs.select', function () {
+            // Only update url hash when user has changed the dropdown
+            if (!interfaceInitialized) return;
+
+            const hashVal = encodeURIComponent($(this).val() ?? '');
+            history.replaceState(null, null, `#interface=${hashVal}`);
+
             grid.bootgrid('reload');
         });
 
@@ -572,8 +675,6 @@
             }
         });
 
-
-
         // Hook into add event
         $('#{{formGridFilterRule["edit_dialog_id"]}}').on('opnsense_bootgrid_mapped', function(e, actionType) {
             if (actionType === 'add') {
@@ -597,9 +698,6 @@
                 }
             }
         });
-
-        // Wrap buttons and grid into divs to target them with css for responsiveness
-        $("#{{ formGridFilterRule['table_id'] }}").wrap('<div class="bootgrid-box"></div>');
 
         // Dynamically add fa icons to selectpickers
         $('#category_filter').parent().find('.dropdown-toggle').prepend('<i class="fa fa-tag" style="margin-right: 6px;"></i>');
@@ -634,31 +732,23 @@
         float: left;
         margin-left: 5px;
     }
-    /* Prevent bootgrid to break out of content box*/
-    .content-box {
-        overflow-x: auto;
+    /*
+     * XXX: Since the badge class uses its own default background-color, we must override it explicitly.
+     *      Essentially we would like to use the main style sheet for this.
+     *      bg-info is slightly different from text-info, so we use the text-info color for consistency.
+     */
+    .badge.bg-primary {
+        background-color: #C03E14 !important;
     }
-    .bootgrid-header,
-    .bootgrid-box,
-    .bootgrid-footer {
-        width: 100%;
-        background: none;
-        border: none;
-        max-width: 100%;
-        /* Prevents the grid from collapsing all dynamic columns completely */
-        min-width: 1200px;
+    .badge.bg-warning {
+        background-color: #f0ad4e !important;
     }
-    /* Not all dropdowns support data-container="body", ensure minimal vertical space for them */
-    .bootgrid-box {
-        min-height: 150px;
+    .badge.bg-info {
+        background-color: #31708f !important;
     }
-    #all_rules_button i {
-        margin-right: 5px;
-    }
-    /* Allow grid to wrap text to use more diagonal space */
-    .bootgrid-table tbody td {
-        white-space: normal;
-        word-wrap: break-word;
+    .badge-sm {
+        font-size: 12px;
+        padding: 2px 5px;
     }
 </style>
 
@@ -666,11 +756,11 @@
     <!-- filters -->
     <div class="hidden">
         <div id="type_filter_container" class="btn-group">
-            <select id="category_filter" data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="5" multiple data-width="200px" data-container="body">
+            <select id="category_filter" data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="30" multiple data-width="300px" data-container="body">
             </select>
         </div>
         <div id="interface_select_container" class="btn-group">
-            <select id="interface_select" class="selectpicker" data-live-search="true" data-show-subtext="true" data-size="15" data-width="200px" data-container="body">
+            <select id="interface_select" class="selectpicker" data-live-search="true" data-size="30" data-width="300px" data-container="body">
             </select>
         </div>
         <div id="internal_rule_selector" class="btn-group">
@@ -680,7 +770,7 @@
                     data-toggle="tooltip"
                     data-placement="bottom"
                     data-delay='{"show": 1000}'
-                    title="{{ lang._('Show automatically generated rules and statistics') }}">
+                    title="{{ lang._('Show all rules and statistics') }}">
                 <i class="fa fa-eye" aria-hidden="true"></i>
                 {{ lang._('Inspect') }}
             </button>

@@ -96,6 +96,10 @@ function getFormData(parent) {
                 } else if (sourceNode.hasClass("json-data")) {
                     // deserialize the field content - used for JS maintained fields
                     node[keypart] = sourceNode.data('data');
+                } else if (sourceNode.prop("type") === "color") {
+                    // strip leading '#' for backend compatibility
+                    const val = sourceNode.val();
+                    node[keypart] = val.startsWith("#") ? val.substring(1) : val;
                 } else {
                     node[keypart] = sourceNode.val();
                 }
@@ -196,6 +200,13 @@ function setFormData(parent,data) {
                     } else if (targetNode.hasClass('json-data')) {
                         // if the input field is JSON data, serialize the data into the field
                         targetNode.data('data', node[keypart]);
+                    } else if (targetNode.prop("type") === "color") {
+                        // color inputs get '#' prefix
+                        let val = node[keypart];
+                        if (typeof val === "string" && !val.startsWith("#")) {
+                            val = "#" + val;
+                        }
+                        targetNode.val(val);
                     } else if (targetNode.attr('type') !== 'file') {
                         // regular input type
                         targetNode.val(htmlDecode(node[keypart]));

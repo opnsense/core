@@ -76,7 +76,9 @@ class JsonKeyValueStoreField extends BaseListField
      */
     public function setSourceField($value)
     {
-        $this->internalSourceField = basename($this->internalParentNode->$value);
+        if (isset($this->internalParentNode->$value)) {
+            $this->internalSourceField = basename($this->internalParentNode->$value);
+        }
     }
 
     /**

@@ -141,7 +141,7 @@ EOD;
         if (isset($config['laggs']['lagg'][0])) {
             foreach ($config['laggs']['lagg'] as $lagg) {
                 $iflist_lagg[$lagg['laggif']] = $iflist_all[$lagg['laggif']] = [
-                    'dmesg' => "Link aggregation, member interfaces {$lagg['members']}",
+                    'descr' => "Link aggregation, member interfaces {$lagg['members']}",
                     'mac' => '00:00:00:00:00:00',
                 ];
             }
@@ -164,7 +164,7 @@ EOD;
         if (isset($config['vlans']['vlan'][0])) {
             foreach ($config['vlans']['vlan'] as $vlan) {
                 $iflist_all[$vlan['vlanif']] = [
-                    'dmesg' => "VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}",
+                    'descr' => "VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}",
                     'mac' => '00:00:00:00:00:00',
                 ];
             }
@@ -174,7 +174,7 @@ EOD;
     /* add WLAN parents now as LAGG/VLAN are not capable of handling it */
     foreach ($iflist_wlan as $iface) {
         $iflist_all[$iface] = [
-            'dmesg' => 'WLAN device parent',
+            'descr' => 'WLAN device parent',
             'mac' => '00:00:00:00:00:00',
         ];
     }
@@ -190,7 +190,7 @@ EOD;
         echo "No interfaces found!\n";
     } else {
         foreach ($iflist_all as $iface => $ifa) {
-            echo sprintf("%-16s %s %s\n", $iface, $ifa['mac'], $ifa['dmesg']);
+            echo sprintf("%-16s %s %s\n", $iface, $ifa['mac'], $ifa['descr']);
         }
     }
 
@@ -554,7 +554,7 @@ EOD;
         echo "\nLAGG-capable interfaces:\n\n";
 
         foreach ($unused_ifs as $iface => $ifa) {
-            echo sprintf("%-8s %s %s\n", $iface, $ifa['mac'], $ifa['dmesg']);
+            echo sprintf("%-8s %s %s\n", $iface, $ifa['mac'], $ifa['descr']);
         }
 
         if (empty($unused_ifs)) {
@@ -637,7 +637,7 @@ EOD;
         echo "\nVLAN-capable interfaces:\n\n";
 
         foreach ($iflist as $iface => $ifa) {
-            echo sprintf("%-8s %s %s\n", $iface, $ifa['mac'], $ifa['dmesg']);
+            echo sprintf("%-8s %s %s\n", $iface, $ifa['mac'], $ifa['descr']);
         }
 
         echo "\nEnter the parent interface name for the new VLAN (or nothing if finished): ";

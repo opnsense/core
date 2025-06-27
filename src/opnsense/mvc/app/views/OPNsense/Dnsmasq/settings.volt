@@ -109,6 +109,22 @@
                             $('#tag_select_container').show();
                         }
                     }
+
+                    // host grid needs custom commands (upload/download)
+                    if (['host'].includes(grid_id)) {
+                        $("#{{formGridHostOverride['table_id']}}").on('click', '#download_hosts', function(e){
+                            e.preventDefault();
+                            window.open("/api/dnsmasq/settings/download_hosts");
+                        });
+
+                        all_grids[grid_id].on('load.rs.jquery.bootgrid', function() {
+                            $("#upload_hosts").SimpleFileUploadDlg({
+                                onAction: function(){
+                                    $("#{{formGridHostOverride['table_id']}}").bootgrid('reload');
+                                }
+                            });
+                        })
+                    }
                 });
             }
         });
@@ -124,24 +140,16 @@
             }
         });
 
-        $("#download_hosts").click(function(e){
-            e.preventDefault();
-            window.open("/api/dnsmasq/settings/download_hosts");
-        });
-        $("#upload_hosts").SimpleFileUploadDlg({
-            onAction: function(){
-                $("#{{formGridHostOverride['table_id']}}").bootgrid('reload');
-            }
-        });
-
         $('.nav-tabs a').on('shown.bs.tab', function (e) {
             history.pushState(null, null, e.target.hash);
         });
-        $(window).on('hashchange', function(e) {
-            $('a[href="' + window.location.hash + '"]').click()
+
+        // We use two kinds of url hashes appended to the tab hash: & to search a host and ? to create a host
+        $(window).on('hashchange', function() {
+            $('a[href="' + (window.location.hash.split(/[?&]/)[0] || '') + '"]').click();
         });
-        let selected_tab = window.location.hash != "" ? window.location.hash : "#general";
-        $('a[href="' +selected_tab + '"]').click();
+
+        $('a[href="' + (window.location.hash.split(/[?&]/)[0] || '#general') + '"]').click();
 
         $("#range\\.start_addr, #range\\.ra_mode, #option\\.type").on("keyup change", function () {
             const addr = $("#range\\.start_addr").val() || "";
@@ -216,13 +224,35 @@
                         '#host\\.set_tag, ' +
                         '#range\\.interface, #range\\.set_tag, ' +
                         '#option\\.interface, #option\\.tag, ' +
-                        '#boot\\.tag'
+                        '#boot\\.interface, #boot\\.tag'
                     )
                     .selectpicker('val', selectedTags)
                     .selectpicker('refresh');
                 }
             }
         });
+
+        // Autofill dhcp reservation with URL hash
+        if (window.location.hash.startsWith('#hosts?')) {
+            const params = new URLSearchParams(window.location.hash.split('?')[1]);
+
+            // Switch to hosts tab
+            $('a[href="#hosts"]').one('shown.bs.tab', () => {
+                // Wait for grid to be ready
+                $('#{{ formGridHostOverride["table_id"] }}').one('loaded.rs.jquery.bootgrid', function () {
+                    // Wait for dialog to be ready
+                    $('#{{ formGridHostOverride["edit_dialog_id"] }}').one('opnsense_bootgrid_mapped', () => {
+                        if (params.has('host')) $('#host\\.host').val(params.get('host'));
+                        if (params.has('ip')) $('#host\\.ip').trigger('tokenize:tokens:add', [params.get('ip'), params.get('ip')]);
+                        if (params.has('client_id')) $('#host\\.client_id').val(params.get('client_id'));
+                        if (params.has('hwaddr')) $('#host\\.hwaddr').trigger('tokenize:tokens:add', [params.get('hwaddr'), params.get('hwaddr')]);
+                        history.replaceState(null, null, window.location.pathname + '#hosts');
+                    });
+
+                    $(this).find('.command-add').trigger('click');
+                });
+            }).tab('show');
+        }
 
     });
 </script>
@@ -242,19 +272,6 @@
         border-bottom-left-radius: 0;
     }
 </style>
-
-<div style="display: none;" id="hosts_tfoot_append">
-    <button
-        id="upload_hosts"
-        type="button"
-        data-title="{{ lang._('Import hosts') }}"
-        data-endpoint='/api/dnsmasq/settings/upload_hosts'
-        title="{{ lang._('Import csv') }}"
-        data-toggle="tooltip"
-        class="btn btn-xs"
-    ><span class="fa fa-fw fa-upload"></span></button>
-    <button id="download_hosts" type="button" title="{{ lang._('Export as csv') }}" data-toggle="tooltip"  class="btn btn-xs"><span class="fa fa-fw fa-table"></span></button>
-</div>
 
 <div id="tag_select_container" class="btn-group" style="display: none;">
     <button type="button" id="tag_select_clear" class="btn btn-default" title="{{ lang._('Clear Selection') }}">
@@ -281,7 +298,31 @@
     </div>
     <!-- Tab: Hosts -->
     <div id="hosts" class="tab-pane fade in">
-        {{ partial('layout_partials/base_bootgrid_table', formGridHostOverride + {'command_width': '8em'} )}}
+        {{
+            partial('layout_partials/base_bootgrid_table', formGridHostOverride + {
+                'command_width': '8em',
+                'grid_commands': {
+                    'upload_hosts': {
+                        'title': lang._('Import csv'),
+                        'class': 'btn btn-xs',
+                        'icon_class': 'fa fa-fw fa-upload',
+                        'data': {
+                            'title': lang._('Import hosts'),
+                            'endpoint': '/api/dnsmasq/settings/upload_hosts',
+                            'toggle': 'tooltip'
+                        }
+                    },
+                    'download_hosts': {
+                        'title': lang._('Export as csv'),
+                        'class': 'btn btn-xs',
+                        'icon_class': 'fa fa-fw fa-table',
+                        'data': {
+                            'toggle': 'tooltip'
+                        }
+                    }
+                }
+            })
+        }}
     </div>
     <!-- Tab: Domains -->
     <div id="domains" class="tab-pane fade in">

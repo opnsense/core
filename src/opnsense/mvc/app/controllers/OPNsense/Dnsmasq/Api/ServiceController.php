@@ -40,4 +40,9 @@ class ServiceController extends ApiMutableServiceControllerBase
     protected static $internalServiceTemplate = 'OPNsense/Dnsmasq';
     protected static $internalServiceEnabled = 'enable';
     protected static $internalServiceName = 'dnsmasq';
+
+    protected function invokeFirewallReload()
+    {
+        return true;
+    }
 }

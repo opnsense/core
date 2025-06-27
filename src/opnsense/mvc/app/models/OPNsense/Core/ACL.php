@@ -1,34 +1,35 @@
 <?php
 
-/**
- *    Copyright (C) 2015-2017 Deciso B.V.
+/*
+ * Copyright (C) 2015-2017 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 namespace OPNsense\Core;
+
+use OPNsense\Core\AppConfig;
+use OPNsense\Firewall\Util;
 
 /**
  * Class ACL, access control list management
@@ -129,7 +130,10 @@ class ACL
 
         // interpret group privilege data and update user data with group information.
         foreach ($groupmap as $groupkey => $groupNode) {
-            $allGroupPrivs[$groupkey] = [];
+            $this->allGroupPrivs[$groupkey] = [
+                'priv' => [],
+                'source_networks' => array_filter(explode(',', (string)$groupNode->source_networks))
+            ];
             foreach ($groupNode->children() as $itemKey => $node) {
                 $node_data = (string)$node;
                 if ($itemKey == "member" && $node_data != "") {
@@ -146,7 +150,7 @@ class ACL
                 } elseif ($itemKey == "priv") {
                     foreach (array_filter(explode(',', $node_data)) as $privname) {
                         if (array_key_exists($privname, $pageMap)) {
-                            $this->allGroupPrivs[$groupkey][] = $pageMap[$privname];
+                            $this->allGroupPrivs[$groupkey]['priv'][] = $pageMap[$privname];
                         }
                     }
                 }
@@ -219,7 +223,7 @@ class ACL
     public function __construct()
     {
         // set cache location
-        $this->aclCacheFilename = sys_get_temp_dir() . "/opnsense_acl_cache.json";
+        $this->aclCacheFilename = (new AppConfig())->application->tempDir . '/opnsense_acl_cache.json';
 
         // load module ACL's
         if (!$this->isExpired()) {
@@ -234,11 +238,53 @@ class ACL
     }
 
     /**
-     * iterator to collect all assigned access patterns for this user
+     * @param string $group groupname to check
+     * @param string $remote_addr users remote address
+     */
+    private function isAddressAllowed($group, $remote_addr)
+    {
+        $nets = $this->allGroupPrivs[$group]['source_networks'];
+        if (empty($nets)) {
+            return true;
+        }
+        foreach ($nets as $net) {
+            if (Util::isIPInCIDR($remote_addr, $net)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * return a list of locations for a user combined with source networks
+     * @param string $username user name
+     */
+    public function userUrlMasks($username)
+    {
+        foreach ($this->userDatabase[$username]["priv"] as $privset) {
+            foreach ($privset as $urlmask) {
+                yield [$urlmask, []];
+            }
+        }
+        foreach ($this->userDatabase[$username]["groups"] as $itemkey => $group) {
+            if (array_key_exists($group, $this->allGroupPrivs)) {
+                foreach ($this->allGroupPrivs[$group]['priv'] as $privset) {
+                    foreach ($privset as $urlmask) {
+                        yield [$urlmask, $this->allGroupPrivs[$group]['source_networks']];
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * iterator to collect all assigned access patterns for this user (optionally combined with location)
      * @param string $username user name
      */
     private function urlMasks($username)
     {
+        /* address of the connecting client */
+        $remote_addr = !empty($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
         if (array_key_exists($username, $this->userDatabase)) {
             // fetch masks from user privs
             foreach ($this->userDatabase[$username]["priv"] as $privset) {
@@ -249,7 +295,10 @@ class ACL
             // fetch masks from assigned groups
             foreach ($this->userDatabase[$username]["groups"] as $itemkey => $group) {
                 if (array_key_exists($group, $this->allGroupPrivs)) {
-                    foreach ($this->allGroupPrivs[$group] as $privset) {
+                    if (!$this->isAddressAllowed($group, $remote_addr)) {
+                        continue; /* skip not allowed */
+                    }
+                    foreach ($this->allGroupPrivs[$group]['priv'] as $privset) {
                         foreach ($privset as $urlmask) {
                             yield $urlmask;
                         }
