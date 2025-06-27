@@ -43,12 +43,6 @@ class CSVListField extends BaseField
     protected $internalIsContainer = false;
 
     /**
-     * item separator
-     * @var string
-     */
-    private $separatorchar = ",";
-
-    /**
      * selectable options, key/value store.
      * value = display option
      */
@@ -100,8 +94,8 @@ class CSVListField extends BaseField
      */
     public function getNodeData()
     {
-        $result = array ();
-        $selectlist = explode($this->separatorchar, (string)$this);
+        $selectlist = explode(',', $this->internalValue);
+        $result = [];
 
         foreach ($this->selectOptions as $optKey => $optValue) {
             $result[$optKey] = array("value" => $optValue, "selected" => 0);
@@ -135,7 +129,7 @@ class CSVListField extends BaseField
             }
         } else {
             // string list
-            foreach (explode($this->separatorchar, $list) as $option) {
+            foreach (explode(',', $list) as $option) {
                 if (strpos($option, "|") !== false) {
                     $tmp = explode("|", $option);
                     $this->selectOptions[$tmp[0]] = $tmp[1];
@@ -162,7 +156,7 @@ class CSVListField extends BaseField
                 };
 
                 if ($this->internalMaskPerItem) {
-                    $items = explode($this->separatorchar, $this->internalValue);
+                    $items = explode(',', $this->internalValue);
                     foreach ($items as $item) {
                         if (!$regex_match($item, $this->internalMask)) {
                             return ["\"" . $item . "\" is invalid. " . $this->getValidationMessage()];
@@ -177,5 +171,15 @@ class CSVListField extends BaseField
             }]);
         }
         return $validators;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getValues(): array
+    {
+        return array_values(array_filter(explode(',', $this->internalValue), function ($k) {
+            return !!strlen($k);
+        }));
     }
 }

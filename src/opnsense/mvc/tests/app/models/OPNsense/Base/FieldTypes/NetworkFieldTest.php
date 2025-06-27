@@ -70,6 +70,19 @@ class NetworkFieldTest extends Field_Framework_TestCase
         }
     }
 
+    public function testValidValuesMulti()
+    {
+        $field = new NetworkField();
+        $value = "192.168.1.1\n2000::1";
+        $field->setFieldSeparator("\n");
+        $field->setValue($value);
+        $this->assertEmpty($this->validate($field));
+        $this->assertTrue($field->isEqual($value));
+        $this->assertEquals(2, count($field->getValues()));
+        $this->assertEquals('192.168.1.1', $field->getValues()[0]);
+        $this->assertEquals('2000::1', $field->getValues()[1]);
+    }
+
     public function testValidValuesV6()
     {
         $field = new NetworkField();

@@ -153,7 +153,7 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
 
         $has_servers = false;
 
-        foreach (explode(',', (string)$destination->server) as $server) {
+        foreach ($destination->server->getValues() as $server) {
             if ($family == 'inet6') {
                 $routeif = shell_safe('/sbin/route -6 get %s | grep interface: | awk \'{ print $2 }\'', $server);
                 if (empty($routeif)) {

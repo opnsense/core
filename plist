@@ -1008,6 +1008,7 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/AutoNumberFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/Base64FieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/BooleanFieldTest.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/CSVListFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/CertificateFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/CertificateFieldTest/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/CountryFieldTest.php
