@@ -44,17 +44,6 @@ class SettingsController extends ApiMutableModelControllerBase
     protected static $internalModelClass = 'OPNsense\Monit\Monit';
 
     /**
-     * check if changes to the monit settings were made
-     * @return array result
-     */
-    public function dirtyAction()
-    {
-        $result = array('status' => 'ok');
-        $result['monit']['dirty'] = $this->getModel()->configChanged();
-        return $result;
-    }
-
-    /**
      * Retrieve alert settings or return defaults
      * @param $uuid item unique id
      * @return array monit alert content
