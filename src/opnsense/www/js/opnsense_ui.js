@@ -602,11 +602,9 @@ $.fn.SimpleActionButton = function (params) {
             let pre_action = function () {
                 return (new $.Deferred()).resolve();
             }
-
             if (params && params.onPreAction) {
                 pre_action = params.onPreAction;
             }
-
             pre_action().done(function () {
                 ajaxCall(this_button.data('endpoint'), {}, function (data, status) {
                     const hasStatusField = (typeof data === 'object') && ('status' in data);
@@ -621,12 +619,12 @@ $.fn.SimpleActionButton = function (params) {
                     }
 
                     if (!requestSucceeded) {
-                        BootstrapDialog.show({
-                            type: BootstrapDialog.TYPE_WARNING,
-                            title: this_button.data('error-title'),
-                            message: data.status_msg ? data.status_msg : data.status,
-                            draggable: true
-                        });
+                          BootstrapDialog.show({
+                              type: BootstrapDialog.TYPE_WARNING,
+                              title: this_button.data('error-title'),
+                              message: data['status_msg'] ? data['status_msg'] : data['status'],
+                              draggable: true
+                          });
                         setIcon(icon, 'fa fa-check fa-spinner fa-pulse', 'fa fa-spinner fa-pulse');
                     } else {
                         setIcon(icon, 'fa fa-spinner fa-pulse', 'fa fa-check');
