@@ -257,6 +257,8 @@
                 configbuilder_new();
             } else if (e.target.id == 'tab_peers') {
                 $('#{{formGridWireguardClient['table_id']}}').bootgrid('reload');
+            } else if (e.target.id == 'tab_instances') {
+                $('#{{formGridWireguardServer['table_id']}}').bootgrid('reload');
             }
         });
 
