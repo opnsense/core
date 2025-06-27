@@ -315,39 +315,6 @@ class Monit extends BaseModel
         return $messages;
     }
 
-    /* return the dirty marker file location */
-    private function dirtyFile()
-    {
-        return (new AppConfig())->application->tempDir . '/monit.dirty';
-    }
-
-    /**
-     * mark configuration as changed when data is pushed back to the config
-     */
-    public function serializeToConfig($validateFullModel = false, $disable_validation = false)
-    {
-        @touch($this->dirtyFile());
-        return parent::serializeToConfig($validateFullModel, $disable_validation);
-    }
-
-    /**
-     * get configuration state
-     * @return bool
-     */
-    public function configChanged()
-    {
-        return file_exists($this->dirtyFile());
-    }
-
-    /**
-     * mark configuration as consistent with the running config
-     * @return bool
-     */
-    public function configClean()
-    {
-        return @unlink($this->dirtyFile());
-    }
-
     /**
      * determine if services have links to this test node
      * @param string $testUUID uuid of the test node
