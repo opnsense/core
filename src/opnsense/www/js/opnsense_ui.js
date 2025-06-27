@@ -577,11 +577,28 @@ stdDialogRemoveItem.defaults = {
  */
 $.fn.SimpleActionButton = function (params) {
     let this_button = this;
+
+    function setIcon(icon, removeClasses = '', addClasses = '') {
+        icon
+          .removeClass(removeClasses)
+          .addClass('reload_progress' + (addClasses ? ' ' + addClasses : ''))
+          .css('width', addClasses ? '1em' : '');
+    }
+
     this.construct = function () {
-        let label_content = '<b>' + this_button.data('label') + '</b> <i class="reload_progress">';
+        const label_content = '<b>' + this_button.data('label') + '</b> <i class="reload_progress" style="display:inline-block;"></i>';
         this_button.html(label_content);
+
+        let hideCheckTimeout;
+
         this_button.on('click', function () {
-            this_button.find('.reload_progress').addClass("fa fa-spinner fa-pulse");
+            const icon = this_button.find('.reload_progress');
+
+            // prevent icon issues with multiple rapid clicks on the button
+            clearTimeout(hideCheckTimeout);
+
+            setIcon(icon, 'fa fa-check fa-spinner fa-pulse', 'fa fa-spinner fa-pulse');
+
             let pre_action = function () {
                 return (new $.Deferred()).resolve();
             }
@@ -590,19 +607,33 @@ $.fn.SimpleActionButton = function (params) {
             }
             pre_action().done(function () {
                 ajaxCall(this_button.data('endpoint'), {}, function (data, status) {
-                    let data_status = typeof data == 'object' && 'status' in data ? data['status'] : '';
+                    const hasStatusField = (typeof data === 'object') && ('status' in data);
+                    const dataStatus = hasStatusField ? String(data.status).toLowerCase().trim() : '';
+                    const requestSucceeded = (
+                        status === "success" &&
+                        (dataStatus === "" || dataStatus === "ok")
+                    );
+
                     if (params && params.onAction) {
                         params.onAction(data, status);
                     }
-                    if ((status != "success" || (data_status.toLowerCase().trim() != 'ok')) && data_status !== '') {
+
+                    if (!requestSucceeded) {
                           BootstrapDialog.show({
                               type: BootstrapDialog.TYPE_WARNING,
                               title: this_button.data('error-title'),
                               message: data['status_msg'] ? data['status_msg'] : data['status'],
                               draggable: true
                           });
+                        setIcon(icon, 'fa fa-check fa-spinner fa-pulse', 'fa fa-spinner fa-pulse');
+                    } else {
+                        setIcon(icon, 'fa fa-spinner fa-pulse', 'fa fa-check');
+
+                        hideCheckTimeout = setTimeout(function () {
+                            setIcon(icon, 'fa fa-check', '');
+                        }, 4000);
                     }
-                    this_button.find('.reload_progress').removeClass("fa fa-spinner fa-pulse");
+
                     if (this_button.data('service-widget')) {
                         updateServiceControlUI(this_button.data('service-widget'));
                     }
@@ -611,7 +642,7 @@ $.fn.SimpleActionButton = function (params) {
                     }
                 });
             }).fail(function () {
-                this_button.find('.reload_progress').removeClass("fa fa-spinner fa-pulse");
+                setIcon(icon, 'fa fa-check fa-spinner fa-pulse', '');
             });
         });
     }
