@@ -124,7 +124,6 @@
         });
 
         $("#reconfigureAct").after($("#downloadConfig"));
-
     });
 </script>
 
