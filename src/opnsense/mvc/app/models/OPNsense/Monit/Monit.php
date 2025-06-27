@@ -31,7 +31,6 @@ namespace OPNsense\Monit;
 
 use OPNsense\Base\BaseModel;
 use OPNsense\Base\Messages\Message;
-use OPNsense\Core\AppConfig;
 
 /**
  * Class Monit
