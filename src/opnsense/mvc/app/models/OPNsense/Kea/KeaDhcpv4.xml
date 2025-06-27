@@ -156,6 +156,10 @@
                 <hostname type="HostnameField">
                     <IsDNSName>Y</IsDNSName>
                 </hostname>
+                <dns_servers type="TextField">
+                    <Mask>/^(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\s*,\s*(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))*)?$/</Mask>
+                    <ValidationMessage>Please enter valid IPv4 addresses separated by commas (e.g., 8.8.8.8,8.8.4.4)</ValidationMessage>
+                </dns_servers>
                 <description type="DescriptionField"/>
             </reservation>
         </reservations>

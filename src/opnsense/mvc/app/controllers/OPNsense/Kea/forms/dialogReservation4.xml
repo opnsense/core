@@ -24,6 +24,12 @@
         <help>Offer a hostname to the client</help>
     </field>
     <field>
+        <id>reservation.dns_servers</id>
+        <label>DNS servers</label>
+        <type>text</type>
+        <help>DNS server IP addresses, comma separated (e.g. 8.8.8.8,8.8.4.4). Leave blank to use subnet defaults.</help>
+    </field>
+    <field>
         <id>reservation.description</id>
         <label>Description</label>
         <type>text</type>

@@ -183,6 +183,17 @@ class KeaDhcpv4 extends BaseModel
                 if (!$reservation->hw_address->isEmpty()) {
                     $res['hw-address'] = str_replace('-', ':', $reservation->hw_address);
                 }
+                
+                // Add domain-name-servers option if specified
+                if (!$reservation->dns_servers->isEmpty()) {
+                    if (!isset($res['option-data'])) {
+                        $res['option-data'] = [];
+                    }
+                    $res['option-data'][] = [
+                        'name' => 'domain-name-servers',
+                        'data' => (string)$reservation->dns_servers
+                    ];
+                }
 
                 $record['reservations'][] = $res;
             }
