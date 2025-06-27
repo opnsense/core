@@ -28,7 +28,7 @@
     'use strict';
 
     $( document ).ready(function () {
-        let grid_cert = $("#grid-cert").UIBootgrid({
+        let grid_cert = $("#{{formGridCert['table_id']}}").UIBootgrid({
             search:'/api/trust/cert/search/',
             get:'/api/trust/cert/get/',
             add:'/api/trust/cert/add/',
@@ -194,7 +194,7 @@
                         $("#user_filter").selectpicker('refresh');
                         if (selected_user) {
                             /* XXX: will re-query, ignore the glitch for now. */
-                            $('#grid-cert').bootgrid('reload');
+                            $("#{{formGridCert['table_id']}}").bootgrid('reload');
                         }
                     }
                 });
@@ -209,9 +209,9 @@
             }
         });
 
-        $("#filter_container").detach().prependTo('#grid-cert-header > .row > .actionBar > .actions');
+        $("#filter_container").detach().prependTo('#{{formGridCert['table_id']}}-header > .row > .actionBar > .actions');
         $(".cert_filter").change(function(){
-            $('#grid-cert').bootgrid('reload');
+            $("#{{formGridCert['table_id']}}").bootgrid('reload');
         });
 
         /**
@@ -328,33 +328,8 @@
                 </select>
             </div>
         </div>
-        <table id="grid-cert" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogCert">
-            <thead>
-                <tr>
-                    <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                    <th data-column-id="in_use" data-width="6em" data-type="string" data-formatter="in_use">{{ lang._('In use') }}</th>
-                    <th data-column-id="descr" data-width="15em" data-type="string">{{ lang._('Description') }}</th>
-                    <th data-column-id="caref" data-width="15em" data-type="string">{{ lang._('Issuer') }}</th>
-                    <th data-column-id="rfc3280_purpose" data-width="10em"  data-type="string">{{ lang._('Purpose') }}</th>
-                    <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
-                    <th data-column-id="valid_from" data-width="10em" data-type="datetime">{{ lang._('Valid from') }}</th>
-                    <th data-column-id="valid_to" data-width="10em" data-type="datetime">{{ lang._('Valid to') }}</th>
-                    <th data-column-id="commands" data-width="11em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td></td>
-                    <td>
-                        <button id='btn_new_cert' data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                        <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
+        {{ partial('layout_partials/base_bootgrid_table', formGridCert + {'command_width': '11em'})}}
     </div>
 </div>
 
-{{ partial("layout_partials/base_dialog",['fields':formDialogEditCert,'id':'DialogCert','label':lang._('Edit Certificate')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditCert,'id':formGridCert['edit_dialog_id'],'label':lang._('Edit Certificate')])}}
