@@ -148,10 +148,8 @@ function webgui_configure_do($verbose = false, $interface_map = null)
     /* regenerate the php.ini files in case the setup has changed */
     configd_run('template reload OPNsense/WebGui');
 
-    /* flush Phalcon volt templates */
-    foreach (glob('/usr/local/opnsense/mvc/app/cache/*.php') as $filename) {
-        unlink($filename);
-    }
+    /* arrange configuration directories and ownership */
+    passthru('/usr/local/etc/rc.subr.d/php');
 
     /* we need a marker file for development mode to ensure quick action */
     if (empty($config['system']['deployment'])) {
@@ -258,7 +256,7 @@ EOD;
 fastcgi.server = ( ".php" =>
   ( "localhost" =>
     (
-      "socket" => "/tmp/php-fastcgi.socket",
+      "socket" => "/var/lib/php/tmp/php-fastcgi.socket",
       "max-procs" => 8,
       "bin-environment" => (
         "PHP_FCGI_CHILDREN" => "5",

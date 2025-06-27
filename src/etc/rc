@@ -221,6 +221,8 @@ echo "done."
 # Recreate capabilities DB
 /usr/bin/cap_mkdb /etc/login.conf
 
+/usr/local/etc/rc.subr.d/php
+
 # Execute the early syshook / plugin commands
 /usr/local/etc/rc.syshook early
 
