@@ -85,6 +85,7 @@
                         let $container = $("<div style='height:150px;'/>");
                         let $type = $("<select id='download_type'/>");
                         let $password = $("<input id='download_password' type='password'/>");
+                        $type.append($("<option value='csr'/>").text('Certificate Signing Request'));
                         $type.append($("<option value='crt'/>").text('Certificate'));
                         $type.append($("<option value='prv'/>").text('Private key'));
                         $type.append($("<option value='pkcs12' selected=selected/>").text('PKCS #12'));
