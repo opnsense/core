@@ -156,11 +156,49 @@
                 <hostname type="HostnameField">
                     <IsDNSName>Y</IsDNSName>
                 </hostname>
-                <dns_servers type="TextField">
-                    <Mask>/^(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\s*,\s*(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))*)?$/</Mask>
-                    <ValidationMessage>Please enter valid IPv4 addresses separated by commas (e.g., 8.8.8.8,8.8.4.4)</ValidationMessage>
-                </dns_servers>
                 <description type="DescriptionField"/>
+                <option_data>
+                    <domain_name_servers type="NetworkField">
+                        <NetMaskAllowed>N</NetMaskAllowed>
+                        <AddressFamily>ipv4</AddressFamily>
+                        <AsList>Y</AsList>
+                        <FieldSeparator>,</FieldSeparator>
+                    </domain_name_servers>
+                    <domain_search type="HostnameField">
+                        <IpAllowed>N</IpAllowed>
+                        <FieldSeparator>,</FieldSeparator>
+                        <AsList>Y</AsList>
+                        <ValidationMessage>Please specify a valid list of domains</ValidationMessage>
+                    </domain_search>
+                    <routers type="NetworkField">
+                        <NetMaskAllowed>N</NetMaskAllowed>
+                        <AddressFamily>ipv4</AddressFamily>
+                        <AsList>Y</AsList>
+                        <FieldSeparator>,</FieldSeparator>
+                    </routers>
+                    <static_routes type=".\KeaStaticRoutesField"/>
+                    <domain_name type="HostnameField">
+                        <IpAllowed>N</IpAllowed>
+                    </domain_name>
+                    <ntp_servers type="NetworkField">
+                        <NetMaskAllowed>N</NetMaskAllowed>
+                        <AddressFamily>ipv4</AddressFamily>
+                        <AsList>Y</AsList>
+                        <FieldSeparator>,</FieldSeparator>
+                    </ntp_servers>
+                    <time_servers type="NetworkField">
+                        <NetMaskAllowed>N</NetMaskAllowed>
+                        <AddressFamily>ipv4</AddressFamily>
+                        <AsList>Y</AsList>
+                        <FieldSeparator>,</FieldSeparator>
+                    </time_servers>
+                    <tftp_server_name type="TextField">
+                        <Mask>/^([^\n"])*$/u</Mask>
+                    </tftp_server_name>
+                    <boot_file_name type="TextField">
+                        <Mask>/^([^\n"])*$/u</Mask>
+                    </boot_file_name>
+                </option_data>
             </reservation>
         </reservations>
         <ha_peers>
