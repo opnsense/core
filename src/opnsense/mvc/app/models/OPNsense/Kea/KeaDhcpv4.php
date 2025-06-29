@@ -183,6 +183,31 @@ class KeaDhcpv4 extends BaseModel
                 if (!$reservation->hw_address->isEmpty()) {
                     $res['hw-address'] = str_replace('-', ':', $reservation->hw_address);
                 }
+                
+                // Add DHCP option-data elements for reservations
+                foreach ($reservation->option_data->iterateItems() as $key => $value) {
+                    $target_fieldname = str_replace('_', '-', $key);
+                    if ((string)$value != '') {
+                        if ($key == 'static_routes') {
+                            $value = implode(',', array_map('trim', explode(',', $value)));
+                        }
+                        if (!isset($res['option-data'])) {
+                            $res['option-data'] = [];
+                        }
+                        $res['option-data'][] = [
+                            'name' => $target_fieldname,
+                            'data' => (string)$value
+                        ];
+                    } elseif ($key == 'domain_name') {
+                        if (!isset($res['option-data'])) {
+                            $res['option-data'] = [];
+                        }
+                        $res['option-data'][] = [
+                            'name' => $target_fieldname,
+                            'data' => (string)Config::getInstance()->object()->system->domain
+                        ];
+                    }
+                }
 
                 $record['reservations'][] = $res;
             }
