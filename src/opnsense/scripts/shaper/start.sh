@@ -33,11 +33,12 @@ fi
 if [ -z "${SERVICE}" -o "${SERVICE}" = "ipfw" ]; then
     if /etc/rc.d/ipfw enabled; then
         /etc/rc.d/ipfw start
+        # synchronize ipfw/pf load order
+        /usr/local/opnsense/scripts/shaper/sync_fw_hooks.py
     else
         /etc/rc.d/ipfw onestop
+        /sbin/ipfw -f flush
     fi
-
-    /usr/local/etc/rc.ipfw.post
 fi
 
 exit 0
