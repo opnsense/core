@@ -360,16 +360,25 @@ abstract class BaseField
      */
     public function __toString()
     {
-        return $this->getCurrentValue();
+        return $this->getValue();
     }
 
     /**
-     * return field current value
-     * @return null|string field current value
+     * return field current value (deprecated)
+     * @return string field current value
      */
     public function getCurrentValue(): string
     {
         return (string)$this->internalValue;
+    }
+
+    /**
+     * return field current value
+     * @return string field current value
+     */
+    public function getValue(): string
+    {
+        return $this->getCurrentValue();
     }
 
     /**
@@ -378,7 +387,7 @@ abstract class BaseField
      */
     public function isNumeric(): bool
     {
-        return is_numeric($this->getCurrentValue());
+        return is_numeric($this->getValue());
     }
 
     /**
@@ -387,7 +396,7 @@ abstract class BaseField
      */
     public function asFloat(): float
     {
-        return floatval($this->getCurrentValue());
+        return floatval($this->getValue());
     }
 
     /**
@@ -506,7 +515,7 @@ abstract class BaseField
      */
     public function isEmpty(): bool
     {
-        return empty($this->getCurrentValue());
+        return empty($this->getValue());
     }
 
     /**
