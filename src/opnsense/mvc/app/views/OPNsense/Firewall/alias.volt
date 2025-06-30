@@ -66,12 +66,12 @@
 <script>
     $( document ).ready(function() {
         $("#grid-aliases").UIBootgrid({
-            search:'/api/firewall/alias/searchItem',
-            get:'/api/firewall/alias/getItem/',
-            set:'/api/firewall/alias/setItem/',
-            add:'/api/firewall/alias/addItem/',
-            del:'/api/firewall/alias/delItem/',
-            toggle:'/api/firewall/alias/toggleItem/',
+            search:'/api/firewall/alias/search_item',
+            get:'/api/firewall/alias/get_item/',
+            set:'/api/firewall/alias/set_item/',
+            add:'/api/firewall/alias/add_item/',
+            del:'/api/firewall/alias/del_item/',
+            toggle:'/api/firewall/alias/toggle_item/',
             options:{
                 requestHandler: function(request){
                     if ( $('#type_filter').val().length > 0) {
@@ -298,7 +298,7 @@
         if ("{{selected_alias}}" !== "") {
             // UIBootgrid doesn't return a promise, wait for some time before opening the requested item
             setTimeout(function(){
-                ajaxGet("/api/firewall/alias/getAliasUUID/{{selected_alias}}", {}, function(data, status){
+                ajaxGet("/api/firewall/alias/get_alias_uuid/{{selected_alias}}", {}, function(data, status){
                     if (data.uuid !== undefined) {
                         var edit_item = $(".command-edit:eq(0)").clone(true);
                         edit_item.data('row-id', data.uuid).click();
@@ -340,7 +340,7 @@
         /**
          * fetch regions and countries for geoip selection
          */
-        ajaxGet("/api/firewall/alias/listCountries", {}, function(data){
+        ajaxGet("/api/firewall/alias/list_countries", {}, function(data){
             var regions = [];
             $.each(data, function(country, item) {
                 if (!regions.includes(item.region) && item.region != null) {
@@ -565,7 +565,7 @@
         });
 
         function loadSettings() {
-            let data_get_map = {'frm_GeopIPSettings':"/api/firewall/alias/getGeoIP"};
+            let data_get_map = {'frm_GeopIPSettings':"/api/firewall/alias/get_geo_ip"};
             mapDataToFormUI(data_get_map).done(function(data){
                 if (data.frm_GeopIPSettings.alias.geoip.usages) {
                     if (!data.frm_GeopIPSettings.alias.geoip.subscription && !data.frm_GeopIPSettings.alias.geoip.address_count) {
@@ -670,7 +670,7 @@
                             </select>
                         </div>
                     </div>
-                    <table id="grid-aliases" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogAlias" data-editAlert="aliasChangeMessage">
+                    <table id="grid-aliases" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogAlias" data-editAlert="change_message_base_form">
                         <thead>
                         <tr>
                             <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
@@ -711,23 +711,7 @@
       {{ partial("layout_partials/base_form",['fields':formGeoIPSettings,'id':'frm_GeopIPSettings'])}}
     </div>
 </div>
-<section class="page-content-main">
-  <div class="content-box">
-    <div class="col-md-12">
-        <br/>
-        <div id="aliasChangeMessage" class="alert alert-info" style="display: none" role="alert">
-            {{ lang._('After changing settings, please remember to apply them with the button below') }}
-        </div>
-        <button class="btn btn-primary" id="reconfigureAct"
-                data-endpoint='/api/firewall/alias/reconfigure'
-                data-label="{{ lang._('Apply') }}"
-                data-error-title="{{ lang._('Error reconfiguring aliases') }}"
-                type="button"
-        ></button>
-        <br/><br/>
-    </div>
-  </div>
-</section>
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/alias/reconfigure'}) }}
 
 {# Edit dialog #}
 <div class="modal fade" id="DialogAlias" tabindex="-1" role="dialog" aria-labelledby="DialogAliasLabel">

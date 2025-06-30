@@ -39,7 +39,8 @@ class CaController extends \OPNsense\Base\IndexController
 
     public function indexAction()
     {
-        $this->view->formDialogEditCert = $this->getForm("dialogCa");
+        $this->view->formDialogEditCa = $this->getForm('dialogCa');
+        $this->view->formGridCa = $this->getFormGrid('dialogCa');
         $this->view->pick('OPNsense/Trust/ca');
     }
 }

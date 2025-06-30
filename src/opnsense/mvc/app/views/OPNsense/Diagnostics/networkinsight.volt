@@ -59,13 +59,13 @@
       function do_startup()
       {
           var dfObj = new $.Deferred();
-          ajaxGet('/api/diagnostics/netflow/isEnabled', {}, function(is_enabled, status){
+          ajaxGet('/api/diagnostics/netflow/is_enabled', {}, function(is_enabled, status){
               if (is_enabled['local'] == 0) {
                   dfObj.reject();
                   return;
               }
               // fetch interface names
-              ajaxGet('/api/diagnostics/networkinsight/getInterfaces',{}, function(intf_names, status){
+              ajaxGet('/api/diagnostics/networkinsight/get_interfaces',{}, function(intf_names, status){
                   for (var key in intf_names) {
                       $('#interface_select').append($("<option></option>").attr("value",key).text(intf_names[key]));
                       $('#interface_select_detail').append($("<option></option>").attr("value",key).text(intf_names[key]));
@@ -75,7 +75,7 @@
                   // return promise, no need to wait for getMetadata
                   dfObj.resolve();
                   // fetch aggregators
-                  ajaxGet('/api/diagnostics/networkinsight/getMetadata',{}, function(metadata, status) {
+                  ajaxGet('/api/diagnostics/networkinsight/get_metadata',{}, function(metadata, status) {
                       Object.keys(metadata['aggregators']).forEach(function (agg_name) {
                           var res = metadata['aggregators'][agg_name]['resolutions'].join(',');
                           $("#export_collection").append($("<option data-resolutions='"+res+"'/>").val(agg_name).text(agg_name));

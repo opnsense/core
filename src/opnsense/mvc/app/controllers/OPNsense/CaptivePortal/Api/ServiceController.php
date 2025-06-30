@@ -31,6 +31,7 @@ namespace OPNsense\CaptivePortal\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Base\UIModelGrid;
 use OPNsense\CaptivePortal\CaptivePortal;
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Core\SanitizeFilter;
@@ -132,12 +133,13 @@ class ServiceController extends ApiControllerBase
                 strlen($this->request->getPost("content", "striptags", "")) > 20
                 || strlen((string)$template->content) == 0
             ) {
-                $temp_filename = 'cp_' . (string)$template->getAttributes()['uuid'] . '.tmp';
-                file_put_contents('/tmp/' . $temp_filename, $this->request->getPost("content", "striptags", ""));
+                $temp_filename = (new AppConfig())->application->tempDir;
+                $temp_filename .= '/cp_' . $template->getAttributes()['uuid'] . '.tmp';
+                file_put_contents($temp_filename, $this->request->getPost("content", "striptags", ""));
                 // strip defaults and unchanged files from template (standard js libs, etc)
                 $backend = new Backend();
                 $response = $backend->configdpRun("captiveportal strip_template", array($temp_filename));
-                unlink('/tmp/' . $temp_filename);
+                unlink($temp_filename);
                 $result = json_decode($response, true);
                 if ($result != null && !array_key_exists('error', $result)) {
                     $template->content = $result['payload'];

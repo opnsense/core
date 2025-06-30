@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2024 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2016-2025 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -74,6 +74,8 @@ REPLACEMENTS=	CORE_ABI \
 		CORE_COPYRIGHT_HOLDER \
 		CORE_COPYRIGHT_WWW \
 		CORE_COPYRIGHT_YEARS \
+		CORE_GID \
+		CORE_GROUP \
 		CORE_HASH \
 		CORE_MAINTAINER \
 		CORE_NAME \
@@ -87,6 +89,8 @@ REPLACEMENTS=	CORE_ABI \
 		CORE_SERIES \
 		CORE_SERIES_FW \
 		CORE_SYSLOGNG \
+		CORE_UID \
+		CORE_USER \
 		CORE_VERSION \
 		CORE_WWW
 

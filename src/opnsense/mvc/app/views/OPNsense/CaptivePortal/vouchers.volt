@@ -33,7 +33,7 @@
          * update zone list
          */
         function updateVoucherProviders() {
-            ajaxGet("/api/captiveportal/voucher/listProviders/", {}, function(data, status) {
+            ajaxGet("/api/captiveportal/voucher/list_providers/", {}, function(data, status) {
                 if (status == "success") {
                     $('#voucher-providers').html("");
                     $.each(data, function(key, value) {
@@ -59,7 +59,7 @@
          */
         function updateVoucherGroupList() {
             var voucher_provider = $('#voucher-providers').find("option:selected").val();
-            ajaxGet("/api/captiveportal/voucher/listVoucherGroups/" + voucher_provider + "/", {}, function(data, status) {
+            ajaxGet("/api/captiveportal/voucher/list_voucher_groups/" + voucher_provider + "/", {}, function(data, status) {
                 if (status == "success") {
                     $('#voucher-groups').html("");
                     $.each(data, function(key, value) {
@@ -102,7 +102,7 @@
 
             $("#grid-vouchers").bootgrid('clear');
 
-            ajaxGet("/api/captiveportal/voucher/listVouchers/" + voucher_provider + "/" + voucher_group + "/", {},
+            ajaxGet("/api/captiveportal/voucher/list_vouchers/" + voucher_provider + "/" + voucher_group + "/", {},
                 function (data, status) {
                     if (status == "success") {
                         $("#grid-vouchers").bootgrid('append', data);
@@ -128,7 +128,7 @@
                         cssClass: 'btn-primary',
                         action: function(dlg){
                             ajaxCall(
-                              "/api/captiveportal/voucher/dropVoucherGroup/" + voucher_provider + "/" + voucher_group + '/',
+                              "/api/captiveportal/voucher/drop_voucher_group/" + voucher_provider + "/" + voucher_group + '/',
                               {}, function(data,status){
                                   // reload grid after delete
                                   updateVoucherGroupList();
@@ -173,7 +173,7 @@
                 $('#generatevouchererror').show();
                 return;
             }
-            ajaxCall("/api/captiveportal/voucher/generateVouchers/" + voucher_provider + "/", {
+            ajaxCall("/api/captiveportal/voucher/generate_vouchers/" + voucher_provider + "/", {
                         'count':voucher_quantity,
                         'validity':voucher_validity,
                         'expirytime':voucher_expirytime,
@@ -232,7 +232,7 @@
                         label: '{{ lang._('Yes') }}',
                         cssClass: 'btn-primary',
                         action: function(dlg){
-                            ajaxCall("/api/captiveportal/voucher/dropExpiredVouchers/" + voucher_provider + "/" + voucher_group + '/',
+                            ajaxCall("/api/captiveportal/voucher/drop_expired_vouchers/" + voucher_provider + "/" + voucher_group + '/',
                                     {}, function(data,status){
                                         // reload grid after delete
                                         updateVoucherGroupList();
@@ -268,7 +268,7 @@
                             var deferreds = [];
                             $.each(rows, function (key, username) {
                                 deferreds.push(
-                                  ajaxCall("/api/captiveportal/voucher/expireVoucher/" + voucher_provider + "/",
+                                  ajaxCall("/api/captiveportal/voucher/expire_voucher/" + voucher_provider + "/",
                                       {username:username}, null
                                   ));
                             });

@@ -184,15 +184,7 @@ class CertController extends ApiMutableModelControllerBase
             $match_user = empty($user) || (in_array($record->commonname, $user));
             return $match_ca && $match_user;
         };
-        return $this->searchBase(
-            'cert',
-            [
-                'uuid', 'refid', 'descr', 'caref', 'rfc3280_purpose', 'name',
-                'valid_from', 'valid_to' , 'in_use', 'is_user', 'commonname'
-            ],
-            null,
-            $filter_funct
-        );
+        return $this->searchBase('cert', null, null, $filter_funct);
     }
 
     public function getAction($uuid = null)
@@ -306,8 +298,11 @@ class CertController extends ApiMutableModelControllerBase
         if ($this->request->isPost() && !empty($uuid)) {
             $node = $this->getModel()->getNodeByReference('cert.' . $uuid);
             $result['descr'] = $node !== null ? (string)$node->descr : '';
-            if ($node === null || empty((string)$node->crt_payload)) {
-                $result['error'] = gettext('Misssing certificate');
+            if ($node === null || (empty((string)$node->crt_payload)) && empty((string)$node->csr_payload)) {
+                $result['error'] = gettext('Missing certificate');
+            } elseif ($type == 'csr') {
+                $result['status'] = 'ok';
+                $result['payload'] = (string)$node->csr_payload;
             } elseif ($type == 'crt') {
                 $result['status'] = 'ok';
                 $result['payload'] = (string)$node->crt_payload;

@@ -92,7 +92,6 @@ class ServiceController extends ApiMutableServiceControllerBase
                     $result['status'] = trim($backend->configdRun('monit stop'));
                 }
             }
-            $this->getModel()->configClean();
             return $result;
         } else {
             return array('status' => 'failed');

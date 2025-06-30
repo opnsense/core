@@ -32,22 +32,22 @@ POSSIBILITY OF SUCH DAMAGE.
        * update service status
        */
       updateServiceControlUI('ids');
-      $("#grid-policy").UIBootgrid({
-              search:'/api/ids/settings/searchPolicy',
-              get:'/api/ids/settings/getPolicy/',
-              set:'/api/ids/settings/setPolicy/',
-              add:'/api/ids/settings/addPolicy/',
-              del:'/api/ids/settings/delPolicy/',
-              toggle:'/api/ids/settings/togglePolicy/'
+      $("#{{formGridPolicy['table_id']}}").UIBootgrid({
+              search:'/api/ids/settings/search_policy',
+              get:'/api/ids/settings/get_policy/',
+              set:'/api/ids/settings/set_policy/',
+              add:'/api/ids/settings/add_policy/',
+              del:'/api/ids/settings/del_policy/',
+              toggle:'/api/ids/settings/toggle_policy/'
           }
       );
-      $("#grid-policy-rule").UIBootgrid({
-              search:'/api/ids/settings/searchPolicyRule',
-              get:'/api/ids/settings/getPolicyRule/',
-              set:'/api/ids/settings/setPolicyRule/',
-              add:'/api/ids/settings/addPolicyRule/',
-              del:'/api/ids/settings/delPolicyRule/',
-              toggle:'/api/ids/settings/togglePolicyRule/'
+      $("#{{formGridPolicyRule['table_id']}}").UIBootgrid({
+              search:'/api/ids/settings/search_policy_rule',
+              get:'/api/ids/settings/get_policy_rule/',
+              set:'/api/ids/settings/set_policy_rule/',
+              add:'/api/ids/settings/add_policy_rule/',
+              del:'/api/ids/settings/del_policy_rule/',
+              toggle:'/api/ids/settings/toggle_policy_rule/'
           }
       );
       // policy content handling
@@ -130,76 +130,14 @@ POSSIBILITY OF SUCH DAMAGE.
 </ul>
 <div class="tab-content content-box">
     <div id="policies" class="tab-pane fade in">
-        <div class="col-md-12">
-          <table id="grid-policy" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogPolicy">
-              <thead>
-              <tr>
-                  <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-                  <th data-column-id="prio" data-type="string">{{ lang._('Priority') }}</th>
-                  <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
-                  <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-                  <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-              </tr>
-              </thead>
-              <tbody>
-              </tbody>
-              <tfoot>
-              <tr>
-                  <td></td>
-                  <td>
-                      <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-plus fa-fw"></span></button>
-                      <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o fa-fw"></span></button>
-                  </td>
-              </tr>
-              </tfoot>
-          </table>
-        </div>
+        {{ partial('layout_partials/base_bootgrid_table', formGridPolicy)}}
     </div>
     <div id="rules" class="tab-pane fade in">
-      <div class="col-md-12">
-        <table id="grid-policy-rule" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogPolicyRule">
-            <thead>
-            <tr>
-                <th data-column-id="sid" data-width="6em" data-type="string">{{ lang._('SID') }}</th>
-                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-                <th data-column-id="msg" data-type="string">{{ lang._('Msg') }}</th>
-                <th data-column-id="source" data-type="string">{{ lang._('Source') }}</th>
-                <th data-column-id="action" data-type="string">{{ lang._('Action') }}</th>
-                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-                <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td></td>
-                <td>
-                    <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-plus fa-fw"></span></button>
-                    <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o fa-fw"></span></button>
-                </td>
-            </tr>
-            </tfoot>
-        </table>
-      </div>
-    </div>
-    <div>
-      <div class="col-md-12">
-          <hr/>
-          <button class="btn btn-primary" id="reconfigureAct"
-                  data-endpoint='/api/ids/service/reconfigure'
-                  data-label="{{ lang._('Apply') }}"
-                  data-error-title="{{ lang._('Error reconfiguring IDS') }}"
-                  data-service-widget="ids"
-                  type="button"
-          ></button>
-          <br/>
-          <br/>
-      </div>
+        {{ partial('layout_partials/base_bootgrid_table', formGridPolicyRule)}}
     </div>
 </div>
 
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/ids/service/reconfigure'}) }}
 
-
-{{ partial("layout_partials/base_dialog",['fields':formDialogPolicy,'id':'DialogPolicy','label':lang._('Rule details'),'hasSaveBtn':'true'])}}
-{{ partial("layout_partials/base_dialog",['fields':formDialogPolicyRule,'id':'DialogPolicyRule','label':lang._('Rule details'),'hasSaveBtn':'true'])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogPolicy,'id':formGridPolicy['edit_dialog_id'],'label':lang._('Rule details'),'hasSaveBtn':'true'])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogPolicyRule,'id':formGridPolicyRule['edit_dialog_id'],'label':lang._('Rule details'),'hasSaveBtn':'true'])}}

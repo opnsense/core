@@ -34,12 +34,12 @@
         });
 
         const grid_peers = $("#{{formGridWireguardClient['table_id']}}").UIBootgrid({
-                search: '/api/wireguard/client/searchClient',
-                get: '/api/wireguard/client/getClient/',
-                set: '/api/wireguard/client/setClient/',
-                add: '/api/wireguard/client/addClient/',
-                del: '/api/wireguard/client/delClient/',
-                toggle: '/api/wireguard/client/toggleClient/',
+                search: '/api/wireguard/client/search_client',
+                get: '/api/wireguard/client/get_client/',
+                set: '/api/wireguard/client/set_client/',
+                add: '/api/wireguard/client/add_client/',
+                del: '/api/wireguard/client/del_client/',
+                toggle: '/api/wireguard/client/toggle_client/',
                 options:{
                     initialSearchPhrase: getUrlHash('search'),
                     requestHandler: function(request){
@@ -66,12 +66,12 @@
         });
 
         $("#{{formGridWireguardServer['table_id']}}").UIBootgrid({
-            search: '/api/wireguard/server/searchServer',
-            get: '/api/wireguard/server/getServer/',
-            set: '/api/wireguard/server/setServer/',
-            add: '/api/wireguard/server/addServer/',
-            del: '/api/wireguard/server/delServer/',
-            toggle: '/api/wireguard/server/toggleServer/',
+            search: '/api/wireguard/server/search_server',
+            get: '/api/wireguard/server/get_server/',
+            set: '/api/wireguard/server/set_server/',
+            add: '/api/wireguard/server/add_server/',
+            del: '/api/wireguard/server/del_server/',
+            toggle: '/api/wireguard/server/toggle_server/',
             options: {
                 formatters: {
                     "wgformatter": function (column, row) {
@@ -177,7 +177,7 @@
                     endpoint: endpoint.val()
                 }
             };
-            ajaxCall('/api/wireguard/client/addClientBuilder', peer, function(data, status) {
+            ajaxCall('/api/wireguard/client/add_client_builder', peer, function(data, status) {
                 if (data.validations) {
                     if (data.validations['configbuilder.tunneladdress']) {
                         /*
@@ -196,7 +196,7 @@
                                 'peer_dns': peer_dns.val()
                             }
                         };
-                        ajaxCall('/api/wireguard/server/setServer/' + instance_id, param, function(data, status){
+                        ajaxCall('/api/wireguard/server/set_server/' + instance_id, param, function(data, status){
                             configbuilder_new();
                         });
                     } else {
@@ -257,6 +257,8 @@
                 configbuilder_new();
             } else if (e.target.id == 'tab_peers') {
                 $('#{{formGridWireguardClient['table_id']}}').bootgrid('reload');
+            } else if (e.target.id == 'tab_instances') {
+                $('#{{formGridWireguardServer['table_id']}}').bootgrid('reload');
             }
         });
 

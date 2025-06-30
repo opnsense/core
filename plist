@@ -117,6 +117,7 @@
 /usr/local/etc/rc.sshd
 /usr/local/etc/rc.subr.d/crashdump
 /usr/local/etc/rc.subr.d/livemode
+/usr/local/etc/rc.subr.d/php
 /usr/local/etc/rc.subr.d/recover
 /usr/local/etc/rc.subr.d/swapon
 /usr/local/etc/rc.subr.d/tmp
@@ -169,7 +170,6 @@
 /usr/local/opnsense/contrib/mobile-broadband-provider-info/serviceproviders.xml
 /usr/local/opnsense/data/firmware/upgrade.html
 /usr/local/opnsense/data/unbound/root.min.hints
-/usr/local/opnsense/mvc/app/cache/README
 /usr/local/opnsense/mvc/app/config/AppConfig.php
 /usr/local/opnsense/mvc/app/config/config.php
 /usr/local/opnsense/mvc/app/config/loader.php
@@ -1257,6 +1257,7 @@
 /usr/local/opnsense/scripts/shaper/dummynet_stats.py
 /usr/local/opnsense/scripts/shaper/lib/__init__.py
 /usr/local/opnsense/scripts/shaper/setup.sh
+/usr/local/opnsense/scripts/shaper/start.sh
 /usr/local/opnsense/scripts/shaper/sync_fw_hooks.py
 /usr/local/opnsense/scripts/shaper/update_tables
 /usr/local/opnsense/scripts/shell/banner.php

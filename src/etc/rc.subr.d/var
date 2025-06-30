@@ -54,22 +54,25 @@ fi
 # old config files are stored in this place
 mkdir -p /var/etc
 
+RUNDIRS="
+/var/run
+/var/dhcpd/var/run
+/var/unbound/var/run
+/var/lib/php/cache
+/var/lib/php/sessions
+/var/lib/php/tmp
+"
+
 # Clear all files in this directory to prevent stale state of
 # services.  At one point this also helped to prevent shutdown(8)
 # from dropping "nologin" into the directory, preventing login on
 # the next boot.  However, do not touch the directory tree.
-for RUNDIR in /var/run /var/dhcpd/var/run /var/unbound/var/run; do
+#
+# We also clear PHP-related subsystems for consistency.
+for RUNDIR in ${RUNDIRS}; do
 	if [ -d ${RUNDIR} ]; then
 		find ${RUNDIR} ! -type d -exec rm {} \;
 	fi
-done
-
-# setup output directory for various php ui components
-for PHPDIR in /var/lib/php/sessions /var/lib/php/tmp /var/lib/php/cache; do
-	mkdir -p ${PHPDIR}
-	chown wwwonly:wheel ${PHPDIR} # XXX move to webgui.inc
-	chmod 750 ${PHPDIR}
-	rm -f ${PHPDIR}/*
 done
 
 if [ ${USE_MFS_VAR} -ne 0 ]; then

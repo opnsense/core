@@ -92,7 +92,7 @@
 
         $("#grid-overview").UIBootgrid(
             {
-                search: '/api/interfaces/overview/interfacesInfo',
+                search: '/api/interfaces/overview/interfaces_info',
                 options: {
                     selection: false,
                     formatters: {
@@ -219,7 +219,7 @@
                     let $element = $(this);
                     let device = $(this).data("device-id");
                     $element.remove('i').html('<i class="fa fa-spinner fa-spin"></i>');
-                    ajaxCall('/api/interfaces/overview/reloadInterface/' + device, {}, function (data, status) {
+                    ajaxCall('/api/interfaces/overview/reload_interface/' + device, {}, function (data, status) {
                         /* delay slightly to allow the interface to come up */
                         setTimeout(function() {
                             $element.remove('i').html('<i class="fa fa-fw fa-refresh"></i>');
@@ -235,7 +235,7 @@
                     let $element = $(this);
                     let device = $(this).data("row-id");
 
-                    ajaxGet('/api/interfaces/overview/getInterface/' + device, {}, function(data, status) {
+                    ajaxGet('/api/interfaces/overview/get_interface/' + device, {}, function(data, status) {
                         data = data['message'];
                         let $table = $('<table class="table table-bordered table-condensed table-hover table-striped"></table>');
                         let $table_body = $('<tbody/>');

@@ -39,6 +39,7 @@
                 }
             },
             options: {
+                virtualDOM: true,
                 formatters: {
                     lines: function (column, row) {
                         if (row[column.id]) {
@@ -56,11 +57,10 @@
                     }
                 }
             }
+        }).on('loaded.rs.jquery.bootgrid', function() {
+            $('button[data-action="add"]').hide();
+            $('button[data-action="deleteSelected"]').hide();
         });
-
-        $('button[data-action="add"]').hide();
-        $('button[data-action="deleteSelected"]').hide();
-
     });
 
 </script>

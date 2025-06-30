@@ -50,7 +50,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 $(".no-results, .bootgrid-placeholder").text("{{ lang._('Waiting for data...') }}");
             }, 20);
 
-            ajaxGet("/api/diagnostics/activity/getActivity", {}, function (data, status) {
+            ajaxGet("/api/diagnostics/activity/get_activity", {}, function (data, status) {
                 if (status == "success") {
                     $("#grid-top").bootgrid('append', data.details);
 

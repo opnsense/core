@@ -3,10 +3,33 @@
         <id>uuid</id>
         <label>UUID</label>
         <type>hidden</type>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>name</id>
         <label>Name</label>
         <type>text</type>
+    </field>
+    <field>
+        <id>active</id>
+        <label>Active</label>
+        <type>ignore</type>
+    </field>
+    <field>
+        <id>mountpoint</id>
+        <label>Mountpoint</label>
+        <type>ignore</type>
+    </field>
+    <field>
+        <id>size</id>
+        <label>Size</label>
+        <type>ignore</type>
+    </field>
+    <field>
+        <id>created</id>
+        <label>Created</label>
+        <type>ignore</type>
     </field>
 </form>

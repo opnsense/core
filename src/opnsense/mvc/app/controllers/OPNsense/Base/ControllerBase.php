@@ -127,7 +127,7 @@ class ControllerBase extends ControllerRoot
             '.volt' => function ($view) use ($appcfg, $volt_functions) {
                 $volt = new VoltEngine($view);
                 $volt->setOptions([
-                    'path' => $appcfg->application->cacheDir,
+                    'path' => $appcfg->application->cacheDir . '/', /* XXX definitely a Phalcon bug */
                     'separator' => '_'
                 ]);
                 foreach ($volt_functions as $func_name => $function) {

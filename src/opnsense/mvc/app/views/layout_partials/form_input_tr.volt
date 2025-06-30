@@ -37,6 +37,7 @@
  #                   select_multiple    multiple item select from dropdown
  #                   hidden             hidden fields not for user interaction
  #                   info               static text (help icon, no input or editing)
+ #                   color              color picker for selecting a color
  # label       :   attribute label (visible text)
  # size        :   size (width in characters) attribute if applicable
  # height      :   height (length in characters) attribute if applicable
@@ -115,6 +116,8 @@
             <textarea class="{{style|default('')}}" rows="{{height|default("5")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} aria-label="{{label|safe}}"></textarea>
         {% elseif type == "info" %}
             <span  class="{{style|default('')}}" id="{{ id }}"></span>
+        {% elseif type == "color" %}
+            <input type="color" class="form-control {{style|default('')}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} aria-label="{{label|safe}}">
         {% endif %}
         {% if help|default(false) %}
             <div class="hidden" data-for="help_for_{{ id }}">

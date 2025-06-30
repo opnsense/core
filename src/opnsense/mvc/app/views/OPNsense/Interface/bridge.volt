@@ -27,11 +27,11 @@
 <script>
     $( document ).ready(function() {
         $("#{{formGridBridge['table_id']}}").UIBootgrid(
-            {   search:'/api/interfaces/bridge_settings/searchItem/',
-                get:'/api/interfaces/bridge_settings/getItem/',
-                set:'/api/interfaces/bridge_settings/setItem/',
-                add:'/api/interfaces/bridge_settings/addItem/',
-                del:'/api/interfaces/bridge_settings/delItem/'
+            {   search:'/api/interfaces/bridge_settings/search_item/',
+                get:'/api/interfaces/bridge_settings/get_item/',
+                set:'/api/interfaces/bridge_settings/set_item/',
+                add:'/api/interfaces/bridge_settings/add_item/',
+                del:'/api/interfaces/bridge_settings/del_item/'
             }
         );
         $("#reconfigureAct").SimpleActionButton();

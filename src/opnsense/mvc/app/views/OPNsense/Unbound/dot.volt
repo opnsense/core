@@ -47,7 +47,7 @@
 
         function toggleNameservers(checked) {
             if (checked) {
-                ajaxGet(url="/api/unbound/settings/getNameservers", {}, callback=function(data, status) {
+                ajaxGet(url="/api/unbound/settings/get_nameservers", {}, callback=function(data, status) {
                     $('tr[id="row_unbound.forwarding.info"]').removeClass('hidden');
                     if (data.length && !data.includes('')) {
                         $('div[id="control_label_unbound.forwarding.info"]').append(
