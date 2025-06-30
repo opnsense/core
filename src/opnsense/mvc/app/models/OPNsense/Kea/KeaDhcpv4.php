@@ -138,7 +138,7 @@ class KeaDhcpv4 extends BaseModel
      * @param bool $defaults add defaults when set
      * @return array
      */
-    private function collectOptionData($node, $defaults=false)
+    private function collectOptionData($node, $defaults = false)
     {
         $result = [];
         foreach ($node->iterateItems() as $key => $value) {
