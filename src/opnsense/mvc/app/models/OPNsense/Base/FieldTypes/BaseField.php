@@ -524,7 +524,7 @@ abstract class BaseField
      */
     public function isEmptyString(): bool
     {
-        return $this->getCurrentValue() !== "0" && $this->isEmpty();
+        return $this->getValue() !== '0' && $this->isEmpty();
     }
 
     public function isRequired(): bool
