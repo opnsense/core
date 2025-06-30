@@ -55,7 +55,7 @@ class GidField extends IntegerField
         if (empty((string)$this) && $this->fieldLoaded) {
             $gids = [];
             foreach ($this->getParentModel()->group->iterateItems() as $group) {
-                $gids[] = (int)$group->gid->getCurrentValue();
+                $gids[] = (int)$group->gid->getValue();
             }
             for ($i = 2000; true; $i++) {
                 if (!in_array($i, $gids)) {
