@@ -377,11 +377,11 @@ abstract class BaseField
      */
     public function __toString()
     {
-        return $this->getCurrentValue();
+        return $this->getValue();
     }
 
     /**
-     * return field current value
+     * return field current value (deprecated)
      * @return string field current value
      */
     public function getCurrentValue(): string
@@ -390,12 +390,21 @@ abstract class BaseField
     }
 
     /**
+     * return field current value
+     * @return string field current value
+     */
+    public function getValue(): string
+    {
+        return $this->getCurrentValue();
+    }
+
+    /**
      * return field current value(s) as array (empty strings are omitted)
      * @return array field current values
      */
     public function getValues(): array
     {
-        $value = $this->getCurrentValue();
+        $value = $this->getValue();
         return strlen($value) ? [$value] : [];
     }
 
@@ -405,7 +414,7 @@ abstract class BaseField
      */
     public function isNumeric(): bool
     {
-        return is_numeric($this->getCurrentValue());
+        return is_numeric($this->getValue());
     }
 
     /**
@@ -414,7 +423,7 @@ abstract class BaseField
      */
     public function isEqual(string $test): bool
     {
-        return $this->getCurrentValue() === $test;
+        return $this->getValue() === $test;
     }
 
     /**
@@ -423,7 +432,7 @@ abstract class BaseField
      */
     public function asFloat(): float
     {
-        return floatval($this->getCurrentValue());
+        return floatval($this->getValue());
     }
 
     /**
@@ -542,7 +551,7 @@ abstract class BaseField
      */
     public function isEmpty(): bool
     {
-        return empty($this->getCurrentValue());
+        return empty($this->getValue());
     }
 
     /**
@@ -560,7 +569,7 @@ abstract class BaseField
      */
     public function isEmptyAndRequired(): bool
     {
-        return $this->internalIsRequired && $this->getCurrentValue() === '';
+        return $this->internalIsRequired && $this->getValue() === '';
     }
 
     /**
