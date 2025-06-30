@@ -1082,7 +1082,6 @@
 /usr/local/opnsense/scripts/dhcp/prefixes.sh
 /usr/local/opnsense/scripts/dhcp/unbound_watcher.py
 /usr/local/opnsense/scripts/dns/dnsmasq_dhcp_options.py
-/usr/local/opnsense/scripts/dns/ipset_alias.php
 /usr/local/opnsense/scripts/dns/query_dns.py
 /usr/local/opnsense/scripts/filter/delete_table.py
 /usr/local/opnsense/scripts/filter/download_geoip.py
