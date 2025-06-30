@@ -120,6 +120,8 @@ class TextFieldTest extends Field_Framework_TestCase
         $field->setValue($value);
 
         $this->assertEquals($field->getNodeData(), $value);
+        $this->assertEquals(1, count($field->getValues()));
+        $this->assertEquals($value, $field->getValues()[0]);
         $this->assertEmpty($this->validate($field));
     }
 
@@ -148,6 +150,7 @@ class TextFieldTest extends Field_Framework_TestCase
         $field->setValue("");
 
         $this->assertEmpty($this->validate($field));
+        $this->assertEquals(0, count($field->getValues()));
     }
 
     /**
