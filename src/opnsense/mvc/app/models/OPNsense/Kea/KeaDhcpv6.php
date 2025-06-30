@@ -59,7 +59,7 @@ class KeaDhcpv6 extends BaseModel
             }
         }
         // validate changed subnets
-        $this_interfaces = explode(',', $this->general->interfaces->getCurrentValue());
+        $this_interfaces = explode(',', $this->general->interfaces->getValue());
         foreach ($this->subnets->subnet6->iterateItems() as $subnet) {
             if (!$validateFullModel && !$subnet->isFieldChanged()) {
                 continue;
@@ -165,8 +165,8 @@ class KeaDhcpv6 extends BaseModel
                 }
                 $record['pd-pools'][] = [
                     'prefix' => (string)$pdpool->prefix,
-                    'prefix-len' => (int)$pdpool->prefix_len->getCurrentValue(),
-                    'delegated-len' => (int)$pdpool->delegated_len->getCurrentValue()
+                    'prefix-len' => (int)$pdpool->prefix_len->getValue(),
+                    'delegated-len' => (int)$pdpool->delegated_len->getValue()
                 ];
             }
             /* static reservations */

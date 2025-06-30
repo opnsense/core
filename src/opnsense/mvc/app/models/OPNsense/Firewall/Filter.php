@@ -205,7 +205,7 @@ class Filter extends BaseModel
                     } elseif (
                         !empty((string)$rule->max) &&
                         !empty((string)$rule->adaptiveend) &&
-                        (int)$rule->max->getCurrentValue() > (int)$rule->adaptiveend->getCurrentValue()
+                        (int)$rule->max->getValue() > (int)$rule->adaptiveend->getValue()
                     ) {
                         $messages->appendMessage(new Message(
                             gettext("The value of adaptive.end must be greater than the Max states value."),
@@ -214,7 +214,7 @@ class Filter extends BaseModel
                     } elseif (
                         !empty((string)$rule->adaptivestart) &&
                         !empty((string)$rule->adaptiveend) &&
-                        (int)$rule->adaptivestart->getCurrentValue() > (int)$rule->adaptiveend->getCurrentValue()
+                        (int)$rule->adaptivestart->getValue() > (int)$rule->adaptiveend->getValue()
                     ) {
                         $messages->appendMessage(new Message(
                             gettext("The value of adaptive.end must be greater than adaptive.start value."),
