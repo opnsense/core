@@ -41,6 +41,5 @@ class M1_0_8 extends BaseModelMigration
         // validation will fail because we want to change the type of tests linked to services
         $model->serializeToConfig(false, true);
         Config::getInstance()->save();
-        $model->configClean();
     }
 }
