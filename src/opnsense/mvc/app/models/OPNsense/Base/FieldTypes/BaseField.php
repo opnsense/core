@@ -732,9 +732,8 @@ abstract class BaseField
                 $result[$key] = $node->getNodeContent();
             } else {
                 $result[$key] = $node->getValue();
-                $result['$'.$key] = $node->getDescription();
+                $result['$' . $key] = $node->getDescription();
             }
-
         }
         return $result;
     }
