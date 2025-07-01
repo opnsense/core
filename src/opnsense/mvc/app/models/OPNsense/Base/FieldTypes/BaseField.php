@@ -510,7 +510,7 @@ abstract class BaseField
     }
 
     /**
-     * check if current value is empty  (either boolean field as false or an empty field)
+     * check if current value is empty (either boolean field as false or an empty field)
      * @return bool
      */
     public function isEmpty(): bool
