@@ -75,6 +75,7 @@ class NetworkFieldTest extends Field_Framework_TestCase
         $field = new NetworkField();
         $value = "192.168.1.1\n2000::1";
         $field->setFieldSeparator("\n");
+        $field->setAsList('Y');
         $field->setValue($value);
         $this->assertEmpty($this->validate($field));
         $this->assertTrue($field->isEqual($value));
