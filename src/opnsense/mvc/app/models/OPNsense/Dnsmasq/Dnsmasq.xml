@@ -133,6 +133,19 @@
                 <IpAllowed>N</IpAllowed>
                 <Required>Y</Required>
             </domain>
+            <ipset type="ModelRelationField">
+                <Model>
+                    <aliases>
+                        <source>OPNsense.Firewall.Alias</source>
+                        <items>aliases.alias</items>
+                        <display>name</display>
+                        <filters>
+                            <type>/^[Ee]xternal.*/</type>
+                            <name>/^(?!bogons$|bogonsv6$|virusprot$|sshlockout$|__captiveportal.*).*/</name>
+                        </filters>
+                    </aliases>
+                </Model>
+            </ipset>
             <srcip type="NetworkField">
                 <NetMaskAllowed>N</NetMaskAllowed>
             </srcip>

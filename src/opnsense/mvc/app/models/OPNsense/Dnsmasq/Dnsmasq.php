@@ -124,6 +124,19 @@ class Dnsmasq extends BaseModel
             }
         }
 
+        foreach ($this->domainoverrides->iterateItems() as $domain) {
+            if (!$validateFullModel && !$domain->isFieldChanged()) {
+                continue;
+            }
+            $key = $domain->__reference;
+
+            if ($domain->domain == '*') {
+                $messages->appendMessage(
+                    new Message(gettext("Top level wildcard entries are not allowed for Ipset."), $key . ".domain")
+                );
+            }
+        }
+
         foreach ($this->dhcp_ranges->iterateItems() as $range) {
             if (!$validateFullModel && !$range->isFieldChanged()) {
                 continue;
