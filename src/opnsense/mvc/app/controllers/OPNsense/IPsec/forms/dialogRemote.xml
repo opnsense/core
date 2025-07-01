@@ -55,6 +55,12 @@
       <help>List of certificate candidates to use for authentication.</help>
     </field>
     <field>
+      <id>remote.cacerts</id>
+      <label>Certificate Authorities</label>
+      <type>select_multiple</type>
+      <help>List of certificate authority candidates to use for authentication.</help>
+    </field>
+    <field>
       <id>remote.pubkeys</id>
       <label>Public Keys</label>
       <type>select_multiple</type>

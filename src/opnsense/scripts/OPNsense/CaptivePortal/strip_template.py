@@ -59,7 +59,8 @@ zip_content = None
 if len(sys.argv) < 2:
     response['error'] = 'Filename parameter missing'
 else:
-    input_filename = '/tmp/%s' % os.path.basename(sys.argv[1])
+    # XXX we pass the full path but do not accept any other directory
+    input_filename = '/var/lib/php/tmp/%s' % os.path.basename(sys.argv[1])
     try:
         zip_content = base64.b64decode(open(input_filename, 'rb').read())
     except binascii.Error:

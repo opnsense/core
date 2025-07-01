@@ -58,7 +58,7 @@ POSSIBILITY OF SUCH DAMAGE.
                       }}, {
                       label: "<?= gettext('Flush ARP Table');?>",
                       action: function(dialogRef) {
-                        ajaxCall("/api/diagnostics/interface/flushArp", {}, function (data, status) {
+                        ajaxCall("/api/diagnostics/interface/flush_arp", {}, function (data, status) {
                             $('#grid-arp').bootgrid('reload');
                         });
                     }

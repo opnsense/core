@@ -16,6 +16,16 @@
         <help>Domain of the host, e.g. example.com</help>
     </field>
     <field>
+        <id>host.local</id>
+        <label>Local</label>
+        <type>checkbox</type>
+        <help>Set the above domain as local. This will configure this DNS server as authoritative; it will not forward queries to any upstream servers for this domain.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
+    </field>
+    <field>
         <id>host.ip</id>
         <label>IP addresses</label>
         <type>select_multiple</type>
@@ -59,7 +69,7 @@
         <id>host.lease_time</id>
         <label>Lease time</label>
         <type>text</type>
-        <hint>86400</hint>
+        <hint>default</hint>
         <help>Defines how long the addresses (leases) given out by the server are valid (in seconds). Set 0 for infinite.</help>
         <grid_view>
             <visible>false</visible>

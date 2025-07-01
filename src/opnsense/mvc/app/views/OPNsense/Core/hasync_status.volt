@@ -93,7 +93,8 @@
                                 $(this).tooltip({title: "{{ lang._('Stop') | safe}}", container: "body", trigger: "hover"});
                                 break;
                         }
-                        $(this).click(function(){
+                        $(this).click(function(event){
+                            event.stopPropagation();
                             if ($(this).hasClass('locked')) {
                                 return;
                             }

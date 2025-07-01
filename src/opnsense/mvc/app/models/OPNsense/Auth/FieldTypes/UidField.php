@@ -55,7 +55,7 @@ class UidField extends IntegerField
         if (empty((string)$this) && $this->fieldLoaded) {
             $uids = [];
             foreach ($this->getParentModel()->user->iterateItems() as $user) {
-                $uids[] = (int)$user->uid->getCurrentValue();
+                $uids[] = (int)$user->uid->getValue();
             }
             for ($i = 2000; true; $i++) {
                 if (!in_array($i, $uids)) {

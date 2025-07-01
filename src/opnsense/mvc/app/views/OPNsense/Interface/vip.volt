@@ -1,11 +1,11 @@
 <script>
     $( document ).ready(function() {
         $("#{{formGridVip['table_id']}}").UIBootgrid(
-            {   search:'/api/interfaces/vip_settings/searchItem/',
-                get:'/api/interfaces/vip_settings/getItem/',
-                set:'/api/interfaces/vip_settings/setItem/',
-                add:'/api/interfaces/vip_settings/addItem/',
-                del:'/api/interfaces/vip_settings/delItem/',
+            {   search:'/api/interfaces/vip_settings/search_item/',
+                get:'/api/interfaces/vip_settings/get_item/',
+                set:'/api/interfaces/vip_settings/set_item/',
+                add:'/api/interfaces/vip_settings/add_item/',
+                del:'/api/interfaces/vip_settings/del_item/',
                 options:{
                     initialSearchPhrase: getUrlHash('search'),
                     requestHandler: function(request){
@@ -86,7 +86,7 @@
           </select>
       </div>
   </div>
-  {{ partial('layout_partials/base_bootgrid_table', formGridVip + {'command_width': '90'})}}
+  {{ partial('layout_partials/base_bootgrid_table', formGridVip)}}
 </div>
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/interfaces/vip_settings/reconfigure'}) }}
 {{ partial('layout_partials/base_dialog',['fields':formDialogVip,'id':formGridVip['edit_dialog_id'],'label':lang._('Edit Virtual IP')])}}

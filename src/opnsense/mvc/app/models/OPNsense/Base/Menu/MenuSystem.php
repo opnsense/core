@@ -197,7 +197,7 @@ class MenuSystem
     public function __construct()
     {
         // set cache location
-        $this->menuCacheFilename = sys_get_temp_dir() . "/opnsense_menu_cache.xml";
+        $this->menuCacheFilename = (new AppConfig())->application->tempDir . '/opnsense_menu_cache.xml';
 
         // load menu xml's
         $menuxml = null;

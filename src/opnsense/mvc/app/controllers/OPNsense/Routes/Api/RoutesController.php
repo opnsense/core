@@ -49,11 +49,7 @@ class RoutesController extends ApiMutableModelControllerBase
      */
     public function searchrouteAction()
     {
-        return $this->searchBase(
-            "route",
-            array('disabled', 'network', 'gateway', 'descr'),
-            "description"
-        );
+        return $this->searchBase("route", null, "description");
     }
 
     /**

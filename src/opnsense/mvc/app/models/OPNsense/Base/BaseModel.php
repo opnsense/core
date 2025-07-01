@@ -29,14 +29,15 @@
 namespace OPNsense\Base;
 
 use Exception;
-use http\Message;
 use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Base\ModelException;
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Config;
 use OPNsense\Core\Syslog;
 use ReflectionClass;
 use ReflectionException;
 use SimpleXMLElement;
+use http\Message;
 
 /**
  * Class BaseModel implements base model to bind config and definition to object.
@@ -389,14 +390,14 @@ abstract class BaseModel
     }
 
     /**
-     * @param string $tmpdir tempdir location, when empty, sys_get_temp_dir() is used (this users temp)
-     * @return model cache filename
+     * Get the cache file name for the model data storage
+     * @return string model cache filename
      */
     private static function getCacheFileName($tmpdir = null)
     {
         return sprintf(
-            "%smdl_cache_%s.json",
-            empty($tmpdir) ? sys_get_temp_dir() : $tmpdir,
+            '%s/mdl_cache_%s.json',
+            (new AppConfig())->application->tempDir,
             str_replace("\\", "_", (new ReflectionClass(get_called_class()))->getName())
         );
     }
@@ -443,10 +444,7 @@ abstract class BaseModel
      */
     public static function flushCacheData()
     {
-        /* wwwonly will use a different tempdir as root, when root calls a flush, both should be removed */
-        foreach (['/var/lib/php/tmp', '/tmp'] as $tmpdir) {
-            @unlink(self::getCacheFileName($tmpdir));
-        }
+        @unlink(self::getCacheFileName());
     }
 
     /**

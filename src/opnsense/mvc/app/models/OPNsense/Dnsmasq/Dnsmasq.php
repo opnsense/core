@@ -59,10 +59,18 @@ class Dnsmasq extends BaseModel
         $usedDhcpIpAddresses = [];
         foreach ($this->hosts->iterateItems() as $host) {
             if (!$host->hwaddr->isEmpty() || !$host->client_id->isEmpty()) {
-                foreach (explode(',', (string)$host->ip) as $ip) {
+                foreach (array_filter(explode(',', (string)$host->ip)) as $ip) {
                     $usedDhcpIpAddresses[$ip] = isset($usedDhcpIpAddresses[$ip]) ? $usedDhcpIpAddresses[$ip] + 1 : 1;
                 }
             }
+        }
+
+        $usedDhcpDomains = [];
+        foreach ($this->dhcp_ranges->iterateItems() as $range) {
+            if ($range->domain->isEmpty()) {
+                continue;
+            }
+            $usedDhcpDomains[(string)$range->domain][] = (string)$range->domain_type;
         }
 
         foreach ($this->hosts->iterateItems() as $host) {
@@ -75,8 +83,12 @@ class Dnsmasq extends BaseModel
             // all dhcp-host IP addresses must be unique, host overrides can have duplicate IP addresses
             if ($is_dhcp) {
                 $tmp_ipv4_cnt = 0;
-                foreach (explode(',', (string)$host->ip) as $ip) {
+                foreach (array_filter(explode(',', (string)$host->ip)) as $ip) {
                     $tmp_ipv4_cnt += (strpos($ip, ':') === false) ? 1 : 0;
+                    /* Partial IPv6 addresses can be duplicate */
+                    if (str_starts_with($ip, '::')) {
+                        continue;
+                    }
                     if ($usedDhcpIpAddresses[$ip] > 1) {
                         $messages->appendMessage(
                             new Message(
@@ -91,17 +103,36 @@ class Dnsmasq extends BaseModel
                         new Message(gettext("For IPv4 dhcp reservations, only a single address is allowed."), $key . ".ip")
                     );
                 }
-            }
 
-            if ($host->host->isEmpty() && !$is_dhcp) {
+                if ($host->host->isEmpty() && $host->ip->isEmpty()) {
+                    $messageText = gettext("At least a hostname or IP address must be provided for DHCP reservations.");
+                    $messages->appendMessage(new Message($messageText, $key . ".host"));
+                    $messages->appendMessage(new Message($messageText, $key . ".ip"));
+                }
+
+                if ($host->host == '*') {
+                    $messages->appendMessage(
+                        new Message(gettext("Wildcard entries are not allowed for DHCP reservations."), $key . ".host")
+                    );
+                }
+            } else {
+                if ($host->host->isEmpty() || $host->ip->isEmpty()) {
+                    $messageText = gettext("Both hostname and IP address are required for host overrides.");
+                    $messages->appendMessage(new Message($messageText, $key . ".host"));
+                    $messages->appendMessage(new Message($messageText, $key . ".ip"));
+                }
+            }
+        }
+
+        foreach ($this->domainoverrides->iterateItems() as $domain) {
+            if (!$validateFullModel && !$domain->isFieldChanged()) {
+                continue;
+            }
+            $key = $domain->__reference;
+
+            if ($domain->domain == '*') {
                 $messages->appendMessage(
-                    new Message(
-                        gettext(
-                            "Hostnames may only be omitted when either a hardware address " .
-                            "or a client identifier is provided."
-                        ),
-                        $key . ".host"
-                    )
+                    new Message(gettext("Top level wildcard entries are not allowed for Ipset."), $key . ".domain")
                 );
             }
         }
@@ -113,13 +144,40 @@ class Dnsmasq extends BaseModel
             $start_inet = strpos($range->start_addr, ':') !== false ? 'inet6' : 'inet';
             $end_inet = strpos($range->end_addr, ':') !== false ? 'inet6' : 'inet';
             $key = $range->__reference;
-            if (!$range->domain->isEmpty() && $range->end_addr->isEmpty()) {
-                $messages->appendMessage(
-                    new Message(
-                        gettext("Can only configure a domain when a full range (including end) is specified."),
-                        $key . ".domain"
-                    )
-                );
+            if (!$range->domain->isEmpty()) {
+                if ((string)$range->domain_type === 'range' && $range->end_addr->isEmpty()) {
+                    $messages->appendMessage(
+                        new Message(
+                            gettext("Can only configure a domain of type 'Range' when a full range (including end) is specified."),
+                            $key . ".end_addr"
+                        )
+                    );
+                }
+
+                if ((string)$range->domain_type === 'interface' && $range->interface->isEmpty()) {
+                    $messages->appendMessage(
+                        new Message(
+                            gettext("A domain of type 'Interface' requires an interface to be selected."),
+                            $key . ".interface"
+                        )
+                    );
+                }
+            }
+
+            if (!$range->domain->isEmpty() && isset($usedDhcpDomains[(string)$range->domain])) {
+                $typesUsed = array_unique($usedDhcpDomains[(string)$range->domain]);
+
+                if (in_array('interface', $typesUsed) && in_array('range', $typesUsed)) {
+                    $messages->appendMessage(
+                        new Message(
+                            sprintf(
+                                gettext("The domain '%s' cannot be used with both types 'Interface' and 'Range'."),
+                                (string)$range->domain
+                            ),
+                            $key . ".domain"
+                        )
+                    );
+                }
             }
 
             if ($start_inet != $end_inet && !$range->end_addr->isEmpty()) {

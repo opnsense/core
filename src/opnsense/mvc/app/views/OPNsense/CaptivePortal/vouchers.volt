@@ -33,7 +33,7 @@
          * update zone list
          */
         function updateVoucherProviders() {
-            ajaxGet("/api/captiveportal/voucher/listProviders/", {}, function(data, status) {
+            ajaxGet("/api/captiveportal/voucher/list_providers/", {}, function(data, status) {
                 if (status == "success") {
                     $('#voucher-providers').html("");
                     $.each(data, function(key, value) {
@@ -59,7 +59,7 @@
          */
         function updateVoucherGroupList() {
             var voucher_provider = $('#voucher-providers').find("option:selected").val();
-            ajaxGet("/api/captiveportal/voucher/listVoucherGroups/" + voucher_provider + "/", {}, function(data, status) {
+            ajaxGet("/api/captiveportal/voucher/list_voucher_groups/" + voucher_provider + "/", {}, function(data, status) {
                 if (status == "success") {
                     $('#voucher-groups').html("");
                     $.each(data, function(key, value) {
@@ -67,7 +67,7 @@
                     });
                     $('.selectpicker').selectpicker('refresh');
                     // link on change event
-                    $('#voucher-groups').on('change', function(){
+                    $('#voucher-groups').off().on('change', function(){
                         updateVoucherList();
                     });
                     // initial load voucher list
@@ -79,15 +79,12 @@
         /**
          * list vouchers in grid
          */
-        function updateVoucherList() {
-            var voucher_provider = $('#voucher-providers').find("option:selected").val();
-            var voucher_group = $('#voucher-groups').find("option:selected").val();
-            var gridopt = {
+        $("#grid-vouchers").UIBootgrid({
+            options: {
                 ajax: false,
                 selection: true,
                 multiSelect: true,
                 converters: {
-                    // convert datetime type fields from unix timestamp to readable format
                     datetime: {
                         from: function (value) {
                             return moment(parseInt(value) * 1000);
@@ -97,27 +94,19 @@
                         }
                     }
                 }
-            };
-            $("#grid-vouchers").bootgrid('destroy');
-            ajaxGet("/api/captiveportal/voucher/listVouchers/" + voucher_provider + "/" + voucher_group + "/", {},
+            }
+        });
+        function updateVoucherList() {
+            var voucher_provider = $('#voucher-providers').find("option:selected").val();
+            var voucher_group = $('#voucher-groups').find("option:selected").val();
+
+            $("#grid-vouchers").bootgrid('clear');
+
+            ajaxGet("/api/captiveportal/voucher/list_vouchers/" + voucher_provider + "/" + voucher_group + "/", {},
                 function (data, status) {
                     if (status == "success") {
-                        $("#grid-vouchers > tbody > tr").remove();
-                        $.each(data, function (key, value) {
-                            var fields = ["username", "starttime", "endtime", "expirytime", "state"];
-                            let tr_str = '<tr>';
-                            for (var i = 0; i < fields.length; i++) {
-                                if (value[fields[i]] != null) {
-                                    tr_str += '<td>' + value[fields[i]] + '</td>';
-                                } else {
-                                    tr_str += '<td></td>';
-                                }
-                            }
-                            tr_str += '</tr>';
-                            $("#grid-vouchers > tbody").append(tr_str);
-                        });
+                        $("#grid-vouchers").bootgrid('append', data);
                     }
-                    $("#grid-vouchers").bootgrid(gridopt);
                 }
             );
         }
@@ -139,7 +128,7 @@
                         cssClass: 'btn-primary',
                         action: function(dlg){
                             ajaxCall(
-                              "/api/captiveportal/voucher/dropVoucherGroup/" + voucher_provider + "/" + voucher_group + '/',
+                              "/api/captiveportal/voucher/drop_voucher_group/" + voucher_provider + "/" + voucher_group + '/',
                               {}, function(data,status){
                                   // reload grid after delete
                                   updateVoucherGroupList();
@@ -184,7 +173,7 @@
                 $('#generatevouchererror').show();
                 return;
             }
-            ajaxCall("/api/captiveportal/voucher/generateVouchers/" + voucher_provider + "/", {
+            ajaxCall("/api/captiveportal/voucher/generate_vouchers/" + voucher_provider + "/", {
                         'count':voucher_quantity,
                         'validity':voucher_validity,
                         'expirytime':voucher_expirytime,
@@ -243,7 +232,7 @@
                         label: '{{ lang._('Yes') }}',
                         cssClass: 'btn-primary',
                         action: function(dlg){
-                            ajaxCall("/api/captiveportal/voucher/dropExpiredVouchers/" + voucher_provider + "/" + voucher_group + '/',
+                            ajaxCall("/api/captiveportal/voucher/drop_expired_vouchers/" + voucher_provider + "/" + voucher_group + '/',
                                     {}, function(data,status){
                                         // reload grid after delete
                                         updateVoucherGroupList();
@@ -279,7 +268,7 @@
                             var deferreds = [];
                             $.each(rows, function (key, username) {
                                 deferreds.push(
-                                  ajaxCall("/api/captiveportal/voucher/expireVoucher/" + voucher_provider + "/",
+                                  ajaxCall("/api/captiveportal/voucher/expire_voucher/" + voucher_provider + "/",
                                       {username:username}, null
                                   ));
                             });
@@ -350,23 +339,21 @@
                     <hr/>
                 </div>
             </div>
-            <div  class="col-sm-12">
-                <table id="grid-vouchers" class="table table-condensed table-hover table-striped table-responsive">
-                    <thead>
-                    <tr>
-                        <th data-column-id="username" data-type="string" data-identifier="true">{{ lang._('Voucher') }}</th>
-                        <th data-column-id="starttime" data-type="datetime">{{ lang._('Valid from') }}</th>
-                        <th data-column-id="endtime" data-type="datetime">{{ lang._('Valid to') }}</th>
-                        <th data-column-id="expirytime" data-type="datetime">{{ lang._('Expires at') }}</th>
-                        <th data-column-id="state" data-type="string">{{ lang._('State') }}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                    <tfoot>
-                    </tfoot>
-                </table>
-            </div>
+            <table id="grid-vouchers" class="table table-condensed table-hover table-striped table-responsive">
+                <thead>
+                <tr>
+                    <th data-column-id="username" data-type="string" data-identifier="true">{{ lang._('Voucher') }}</th>
+                    <th data-column-id="starttime" data-type="datetime">{{ lang._('Valid from') }}</th>
+                    <th data-column-id="endtime" data-type="datetime">{{ lang._('Valid to') }}</th>
+                    <th data-column-id="expirytime" data-type="datetime">{{ lang._('Expires at') }}</th>
+                    <th data-column-id="state" data-type="string">{{ lang._('State') }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                </tfoot>
+            </table>
             <div  class="col-sm-12">
                 <div class="row">
                     <div class="col-sm-12">

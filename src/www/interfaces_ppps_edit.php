@@ -60,10 +60,10 @@ function interfaces_ptpid_next()
 function serial_devices()
 {
     // collect 3g/4g modems
-    $dmesg = array();
-    exec('/sbin/sysctl -a', $dmesg);
+    $sysctl = [];
+    exec('/sbin/sysctl -a', $sysctl);
     $modems = array();
-    foreach ($dmesg as $line) {
+    foreach ($sysctl as $line) {
         if (strpos($line, 'dev.u3g.') === 0) {
             $portnum = explode('.', $line)[2];
             if (is_numeric($portnum)) {

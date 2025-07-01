@@ -105,11 +105,12 @@ class CertController extends ApiMutableModelControllerBase
                     $error = gettext('Invalid X509 certificate provided');
                 } else {
                     $node->crt = base64_encode((string)$node->crt_payload);
-                    if (
-                        !empty(trim((string)$node->prv_payload)) &&
-                        openssl_pkey_get_private((string)$node->prv_payload) === false
-                    ) {
-                        $error = gettext('Invalid private key provided');
+                    if (!empty(trim((string)$node->prv_payload))) {
+                        if (openssl_pkey_get_private((string)$node->prv_payload) === false) {
+                            $error = gettext('Invalid private key provided: cannot parse private key data');
+                        } elseif (openssl_x509_check_private_key((string)$node->crt_payload, (string)$node->prv_payload) === false) {
+                            $error = gettext('Invalid private key provided: private key does not match certificate data');
+                        }
                     }
                 }
                 $this->getModel()->linkCaRefs($node->refid);
@@ -183,15 +184,7 @@ class CertController extends ApiMutableModelControllerBase
             $match_user = empty($user) || (in_array($record->commonname, $user));
             return $match_ca && $match_user;
         };
-        return $this->searchBase(
-            'cert',
-            [
-                'uuid', 'refid', 'descr', 'caref', 'rfc3280_purpose', 'name',
-                'valid_from', 'valid_to' , 'in_use', 'is_user', 'commonname'
-            ],
-            null,
-            $filter_funct
-        );
+        return $this->searchBase('cert', null, null, $filter_funct);
     }
 
     public function getAction($uuid = null)
@@ -305,8 +298,11 @@ class CertController extends ApiMutableModelControllerBase
         if ($this->request->isPost() && !empty($uuid)) {
             $node = $this->getModel()->getNodeByReference('cert.' . $uuid);
             $result['descr'] = $node !== null ? (string)$node->descr : '';
-            if ($node === null || empty((string)$node->crt_payload)) {
-                $result['error'] = gettext('Misssing certificate');
+            if ($node === null || (empty((string)$node->crt_payload)) && empty((string)$node->csr_payload)) {
+                $result['error'] = gettext('Missing certificate');
+            } elseif ($type == 'csr') {
+                $result['status'] = 'ok';
+                $result['payload'] = (string)$node->csr_payload;
             } elseif ($type == 'crt') {
                 $result['status'] = 'ok';
                 $result['payload'] = (string)$node->crt_payload;

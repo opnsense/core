@@ -136,13 +136,8 @@
     </Services>
     <VPN order="50" cssClass="fa fa-globe">
         <OpenVPN cssClass="fa fa-lock fa-fw">
-            <Instances url="/ui/openvpn/instances"/>
-            <Servers VisibleName="Servers [legacy]" order="10" url="/vpn_openvpn_server.php">
-                <Edit url="/vpn_openvpn_server.php?*" visibility="hidden"/>
-            </Servers>
-            <Clients VisibleName="Clients [legacy]" order="20" url="/vpn_openvpn_client.php">
-                <Edit url="/vpn_openvpn_client.php?*" visibility="hidden"/>
-            </Clients>
+            <Instances order="10" url="/ui/openvpn/instances"/>
+            <!-- XXX order gap for client/server legacy pages -->
             <CSC order="30" VisibleName="Client Specific Overrides" url="/ui/openvpn/client_overwrites"/>
             <ClientExport order="40" VisibleName="Client Export" url="/ui/openvpn/export">
                 <Edit url="/ui/openvpn/export?*" visibility="hidden"/>

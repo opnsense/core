@@ -44,6 +44,7 @@ class IndexController extends \OPNsense\Base\IndexController
     {
         // include dialog form definitions
         $this->view->formDialogEdit = $this->getForm("dialogEdit");
+        $this->view->formGridJobs = $this->getFormGrid('dialogEdit');
         $this->view->pick('OPNsense/Cron/index');
     }
 }

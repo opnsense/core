@@ -176,10 +176,14 @@ function filter_core_get_port_alias($aliasname, $aliases = [], $aliasObject = nu
 function filter_core_get_default_nat_outbound_networks()
 {
     global $config;
-    $result = ["127.0.0.0/8"];
+
+    $result = ['127.0.0.0/8'];
+
+    require_once 'plugins.inc.d/openvpn.inc'; /* XXX for openvpn_legacy() */
+
     // Add openvpn networks
     foreach (['openvpn-server', 'openvpn-client'] as $section) {
-        if (!empty($config['openvpn'][$section])) {
+        if (openvpn_legacy() && !empty($config['openvpn'][$section])) {
             foreach ($config['openvpn'][$section] as $ovpn) {
                 if (!isset($ovpn['disable']) && !empty($ovpn['tunnel_network'])) {
                     $result[] = $ovpn['tunnel_network'];
@@ -574,8 +578,13 @@ function filter_core_rules_system($fw, $defaults)
             if (!isset($ifcfg['internal_dynamic']) && $ifcfg['if'] != 'lo0') {
                 $protos_found = [];
                 $address_check = ['inet' => 'is_subnetv4', 'inet6' => 'is_subnetv6'];
-                foreach (array_keys(interfaces_addresses($ifcfg['if'], true, $fw->getIfconfigDetails())) as $addr) {
+                $ifdetails = $fw->getIfconfigDetails();
+                foreach (array_keys(interfaces_addresses($ifcfg['if'], true, $ifdetails)) as $addr) {
                     foreach ($ipv6_disabled ? ['inet'] : ['inet', 'inet6'] as $inet) {
+                        if ($inet == 'inet6' && !empty($ifdetails[$ifcfg['if']]['ipv6'][0]['link-local'])) {
+                            /* skip inet6 without a GUA as there is no public address to "stick" we should exclude these */
+                            continue;
+                        }
                         if (!in_array($inet, $protos_found) && $address_check[$inet]($addr)) {
                             $gwname = $fw->getGateways()->getInterfaceGateway($ifdescr, $inet, true, 'name');
                             if (!empty($gwname)) {

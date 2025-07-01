@@ -47,7 +47,7 @@ class AuthGroupFieldTest extends Field_Framework_TestCase
     {
         $this->assertInstanceOf('\OPNsense\Base\FieldTypes\AuthGroupField', new AuthGroupField());
         // switch config to test set for this type
-        (new AppConfig())->update('globals.config_path', __DIR__ . '/AuthGroupFieldTest/');
+        (new AppConfig())->update('application.configDir', __DIR__ . '/AuthGroupFieldTest');
         Config::getInstance()->forceReload();
     }
 
@@ -89,9 +89,18 @@ class AuthGroupFieldTest extends Field_Framework_TestCase
         // init field
         $field = new AuthGroupField();
         $field->eventPostLoading();
-        $field->setMultiple("Y");
+        $field->setMultiple('Y');
         $field->setValue('101,100');
+        $this->assertTrue($field->isEqual('101,100'));
+        $this->assertEquals(2, count($field->getValues()));
+        $this->assertEquals('101', $field->getValues()[0]);
+        $this->assertEquals('100', $field->getValues()[1]);
         $this->assertEmpty($this->validate($field));
+        $field->setValue('101,,100');
+        $this->assertTrue($field->isEqual('101,,100'));
+        $this->assertEquals(2, count($field->getValues()));
+        $this->assertEquals('101', $field->getValues()[0]);
+        $this->assertEquals('100', $field->getValues()[1]);
     }
 
     /**

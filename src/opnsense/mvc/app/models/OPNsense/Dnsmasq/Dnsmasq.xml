@@ -1,6 +1,6 @@
 <model>
     <mount>/dnsmasq</mount>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <items>
         <enable type="BooleanField"/>
         <regdhcp type="BooleanField"/>
@@ -76,6 +76,7 @@
         </no_ident>
         <hosts type="ArrayField">
             <host type="HostnameField">
+                <HostWildcardAllowed>Y</HostWildcardAllowed>
                 <IsDNSName>Y</IsDNSName>
                 <IpAllowed>N</IpAllowed>
             </host>
@@ -83,8 +84,8 @@
                 <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
                 <ValidationMessage>A valid domain must be specified.</ValidationMessage>
             </domain>
+            <local type="BooleanField"/>
             <ip type="NetworkField">
-                <Required>Y</Required>
                 <NetMaskAllowed>N</NetMaskAllowed>
                 <FieldSeparator>,</FieldSeparator>
                 <AsList>Y</AsList>
@@ -127,10 +128,24 @@
                 <ValidationMessage>Please enter a value between 1 and 99999.</ValidationMessage>
             </sequence>
             <domain type="HostnameField">
+                <HostWildcardAllowed>Y</HostWildcardAllowed>
                 <IsDNSName>Y</IsDNSName>
                 <IpAllowed>N</IpAllowed>
                 <Required>Y</Required>
             </domain>
+            <ipset type="ModelRelationField">
+                <Model>
+                    <aliases>
+                        <source>OPNsense.Firewall.Alias</source>
+                        <items>aliases.alias</items>
+                        <display>name</display>
+                        <filters>
+                            <type>/^[Ee]xternal.*/</type>
+                            <name>/^(?!bogons$|bogonsv6$|virusprot$|sshlockout$|__captiveportal.*).*/</name>
+                        </filters>
+                    </aliases>
+                </Model>
+            </ipset>
             <srcip type="NetworkField">
                 <NetMaskAllowed>N</NetMaskAllowed>
             </srcip>
@@ -190,6 +205,14 @@
                 <MaximumValue>64</MaximumValue>
             </prefix_len>
             <lease_time type="IntegerField"/>
+            <domain_type type="OptionField">
+                <OptionValues>
+                    <interface>Interface</interface>
+                    <range>Range</range>
+                </OptionValues>
+                <Default>range</Default>
+                <Required>Y</Required>
+            </domain_type>
             <domain type="HostnameField">
                 <IsDNSName>Y</IsDNSName>
                 <IpAllowed>N</IpAllowed>
@@ -283,7 +306,9 @@
                 </Model>
                 <Multiple>Y</Multiple>
             </tag>
-            <filename type="TextField"/>
+            <filename type="TextField">
+                <Required>Y</Required>
+            </filename>
             <servername type="TextField"/>
             <address type="TextField"/>
             <description type="DescriptionField"/>

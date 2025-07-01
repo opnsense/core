@@ -1,11 +1,11 @@
 <script>
     $( document ).ready(function() {
         $("#{{formGridVlan['table_id']}}").UIBootgrid(
-            {   search:'/api/interfaces/vlan_settings/searchItem/',
-                get:'/api/interfaces/vlan_settings/getItem/',
-                set:'/api/interfaces/vlan_settings/setItem/',
-                add:'/api/interfaces/vlan_settings/addItem/',
-                del:'/api/interfaces/vlan_settings/delItem/'
+            {   search:'/api/interfaces/vlan_settings/search_item/',
+                get:'/api/interfaces/vlan_settings/get_item/',
+                set:'/api/interfaces/vlan_settings/set_item/',
+                add:'/api/interfaces/vlan_settings/add_item/',
+                del:'/api/interfaces/vlan_settings/del_item/'
             }
         );
         $("#reconfigureAct").SimpleActionButton();

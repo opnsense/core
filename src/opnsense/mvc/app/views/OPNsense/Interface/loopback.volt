@@ -1,11 +1,11 @@
 <script>
     $( document ).ready(function() {
         $("#{{formGridLoopback['table_id']}}").UIBootgrid(
-            {   search:'/api/interfaces/loopback_settings/searchItem/',
-                get:'/api/interfaces/loopback_settings/getItem/',
-                set:'/api/interfaces/loopback_settings/setItem/',
-                add:'/api/interfaces/loopback_settings/addItem/',
-                del:'/api/interfaces/loopback_settings/delItem/',
+            {   search:'/api/interfaces/loopback_settings/search_item/',
+                get:'/api/interfaces/loopback_settings/get_item/',
+                set:'/api/interfaces/loopback_settings/set_item/',
+                add:'/api/interfaces/loopback_settings/add_item/',
+                del:'/api/interfaces/loopback_settings/del_item/',
                 options: {
                     formatters: {
                         "loFormatter": function (column, row) {

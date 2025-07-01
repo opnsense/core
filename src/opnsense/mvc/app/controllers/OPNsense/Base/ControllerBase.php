@@ -66,7 +66,7 @@ class ControllerBase extends ControllerRoot
           '/ui/js/jquery-3.5.1.min.js',
           // JQuery Tokenize2 (https://zellerda.github.io/Tokenize2/)
           '/ui/js/tokenize2.js',
-          // Bootgrid (grid system from http://www.jquery-bootgrid.com/ )
+          // Tabulator and related grid integration (https://tabulator.info/)
           '/ui/js/tabulator.min.js',
           '/ui/js/opnsense_bootgrid.js',
           // Bootstrap type ahead
@@ -103,6 +103,7 @@ class ControllerBase extends ControllerRoot
             '/ui/assets/fontawesome/css/v4-shims.min.css',
             // JQuery Tokenize2 (https://zellerda.github.io/Tokenize2/)
             '/css/tokenize2.css',
+            /* XXX provided for backwards compatibility */
             // Bootgrid (grid system from http://www.jquery-bootgrid.com/ )
             '/css/jquery.bootgrid.css'
         ];
@@ -126,7 +127,7 @@ class ControllerBase extends ControllerRoot
             '.volt' => function ($view) use ($appcfg, $volt_functions) {
                 $volt = new VoltEngine($view);
                 $volt->setOptions([
-                    'path' => $appcfg->application->cacheDir,
+                    'path' => $appcfg->application->cacheDir . '/', /* XXX definitely a Phalcon bug */
                     'separator' => '_'
                 ]);
                 foreach ($volt_functions as $func_name => $function) {

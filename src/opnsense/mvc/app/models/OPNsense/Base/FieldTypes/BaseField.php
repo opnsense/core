@@ -377,16 +377,35 @@ abstract class BaseField
      */
     public function __toString()
     {
-        return $this->getCurrentValue();
+        return $this->getValue();
     }
 
     /**
-     * return field current value
-     * @return null|string field current value
+     * return field current value (deprecated)
+     * @return string field current value
      */
     public function getCurrentValue(): string
     {
         return (string)$this->internalValue;
+    }
+
+    /**
+     * return field current value
+     * @return string field current value
+     */
+    public function getValue(): string
+    {
+        return $this->getCurrentValue();
+    }
+
+    /**
+     * return field current value(s) as array (empty strings are omitted)
+     * @return array field current values
+     */
+    public function getValues(): array
+    {
+        $value = $this->getValue();
+        return strlen($value) ? [$value] : [];
     }
 
     /**
@@ -395,7 +414,16 @@ abstract class BaseField
      */
     public function isNumeric(): bool
     {
-        return is_numeric($this->getCurrentValue());
+        return is_numeric($this->getValue());
+    }
+
+    /**
+     * check if field value is equal to given string
+     * @return bool
+     */
+    public function isEqual(string $test): bool
+    {
+        return $this->getValue() === $test;
     }
 
     /**
@@ -404,7 +432,7 @@ abstract class BaseField
      */
     public function asFloat(): float
     {
-        return floatval($this->getCurrentValue());
+        return floatval($this->getValue());
     }
 
     /**
@@ -518,23 +546,18 @@ abstract class BaseField
     }
 
     /**
-     * check if current value is empty  (either boolean field as false or an empty field)
+     * check if current value is empty (either boolean field as false or an empty field)
      * @return bool
      */
     public function isEmpty(): bool
     {
-        return empty($this->getCurrentValue());
+        return empty($this->getValue());
     }
 
     /**
-     * check if current value is empty AND NOT zero (either boolean field as false or an empty field)
+     * check if this field is required
      * @return bool
      */
-    public function isEmptyString(): bool
-    {
-        return $this->getCurrentValue() !== "0" && $this->isEmpty();
-    }
-
     public function isRequired(): bool
     {
         return $this->internalIsRequired;
@@ -546,7 +569,7 @@ abstract class BaseField
      */
     public function isEmptyAndRequired(): bool
     {
-        return $this->internalIsRequired && ($this->internalValue == "" || $this->internalValue == null);
+        return $this->internalIsRequired && $this->getValue() === '';
     }
 
     /**

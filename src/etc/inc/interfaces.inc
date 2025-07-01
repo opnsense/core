@@ -254,8 +254,8 @@ function _interfaces_bridge_configure($bridge, $ifconfig_details = null)
         }
     }
 
-    /* compare and apply requested flags */
-    foreach (['stp', 'edge', 'autoedge', 'ptp', 'autoptp', 'static', 'private', 'span'] as $section) {
+    /* compare and apply requested flags tailored for bridge members */
+    foreach (['stp', 'edge', 'autoedge', 'ptp', 'autoptp', 'static', 'private'] as $section) {
         $section_members = explode(',', $bridge[$section] ?? '');
         foreach ($members as $member => $device) {
             $flag = $section == 'static' ? 'sticky' : $section;
@@ -266,37 +266,47 @@ function _interfaces_bridge_configure($bridge, $ifconfig_details = null)
                 )
             ) {
                 /* in list equals off for tags starting with "auto" */
-                mwexecf(sprintf(
-                    "/sbin/ifconfig %s %s %s",
+                mwexecf('/sbin/ifconfig %s %s %s', [
                     $bridgeif,
                     (in_array($member, $section_members) ? '-' : '') . $flag,
                     $device
-                ));
+                ]);
             } elseif (
                 !str_starts_with($section, 'auto') && (
                 !isset($current_members[$device]) ||
                 in_array($flag, $current_members[$device]['flags']) != in_array($member, $section_members)
                 )
             ) {
-                mwexecf(sprintf(
-                    "/sbin/ifconfig %s %s %s",
+                mwexecf('/sbin/ifconfig %s %s %s', [
                     $bridgeif,
                     (!in_array($member, $section_members) ? '-' : '') . $flag,
                     $device
-                ));
+                ]);
             }
+        }
+    }
+
+    /* SPAN ports require a different handling since they are not allowed to be part of a bridge */
+    $span_device = $span_port = null;
+    if (!empty($bridge['span'])) {
+         $span_device = get_real_interface($bridge['span']);
+         $span_port = $bridge['span'];
+
+        if (!isset($current_members[$span_device]) || !in_array('span', $current_members[$span_device]['flags'])) {
+            mwexecf('/sbin/ifconfig %s span %s', [$bridgeif, $span_device]);
+        }
+    }
+    foreach ($current_members as $device => $info) {
+        /* remove span port not configured: GUI only supports one but FreeBSD allows multiple */
+        if (in_array('span', $info['flags']) && $device != $span_device) {
+            mwexecf('/sbin/ifconfig %s -span %s', [$bridgeif, $device]);
         }
     }
 
     /* update changed bridge properties */
     foreach (['maxage', 'fwddelay', 'holdcnt', 'maxaddr', 'timeout', 'proto'] as $prop) {
         if (!empty($bridge[$prop]) && (empty($this_if[$prop]) ||  $this_if[$prop] != $bridge[$prop])) {
-            mwexecf(sprintf(
-                "/sbin/ifconfig %s %s %s",
-                $bridgeif,
-                $prop,
-                $bridge[$prop]
-            ));
+            mwexecf('/sbin/ifconfig %s %s %s', [$bridgeif, $prop, $bridge[$prop]]);
         }
     }
 

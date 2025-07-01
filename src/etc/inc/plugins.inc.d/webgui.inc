@@ -148,10 +148,8 @@ function webgui_configure_do($verbose = false, $interface_map = null)
     /* regenerate the php.ini files in case the setup has changed */
     configd_run('template reload OPNsense/WebGui');
 
-    /* flush Phalcon volt templates */
-    foreach (glob('/usr/local/opnsense/mvc/app/cache/*.php') as $filename) {
-        unlink($filename);
-    }
+    /* arrange configuration directories and ownership */
+    passthru('/usr/local/etc/rc.subr.d/php');
 
     /* we need a marker file for development mode to ensure quick action */
     if (empty($config['system']['deployment'])) {
@@ -252,7 +250,12 @@ EOD;
         $lighty_use_syslog .= 'accesslog.use-syslog="enable"' . "\n";
     }
 
-    $fast_cgi_path = "/tmp/php-fastcgi.socket";
+    $change_user = '';
+    if (!empty($config['system']['webgui']['noroot']) || file_exists('/var/run/www_non_root')) {
+        $change_user .= "server.username = \"wwwonly\"\n";
+        $change_user .= "server.groupname = \"wwwonly\"\n";
+        touch('/var/run/www_non_root'); /* create file as root, lock going back to root */
+    }
 
     $fastcgi_config = <<<EOD
 #### fastcgi module
@@ -260,7 +263,7 @@ EOD;
 fastcgi.server = ( ".php" =>
   ( "localhost" =>
     (
-      "socket" => "{$fast_cgi_path}",
+      "socket" => "/var/lib/php/tmp/php-fastcgi.socket",
       "max-procs" => 8,
       "bin-environment" => (
         "PHP_FCGI_CHILDREN" => "5",
@@ -294,6 +297,8 @@ include "{$confdir}/conf.d/*.conf"
 
 server.max-keep-alive-requests = 15
 server.max-keep-alive-idle = 30
+
+{$change_user}
 
 ## a static document-root, for virtual-hosting take look at the
 ## server.virtual-* options

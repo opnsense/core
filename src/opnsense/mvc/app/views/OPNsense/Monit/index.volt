@@ -28,36 +28,23 @@
 <script>
 
    $( document ).ready(function() {
-      /**
-       * get the isSubsystemDirty value and print a notice
-       */
-      function isSubsystemDirty() {
-         ajaxGet("/api/monit/settings/dirty", {}, function(data,status) {
-            if (status == "success") {
-               if (data.monit.dirty === true) {
-                  $("#configChangedMsg").removeClass("hidden");
-               } else {
-                  $("#configChangedMsg").addClass("hidden");
-               }
-            }
-         });
-      }
 
-      /**
-       * apply changes and reload monit
-       */
-      $('#btnApplyConfig').SimpleActionButton({onAction: function(data, status){
-          isSubsystemDirty();
-      }});
-
+      $("#reconfigureAct").SimpleActionButton({
+         onPreAction: function() {
+            const dfObj = new $.Deferred();
+            saveFormToEndpoint("/api/monit/settings/set/", 'frm_GeneralSettings', function(){
+               dfObj.resolve();
+            });
+            return dfObj;
+         }
+      });
 
       /**
        * general settings
        */
-      mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/getGeneral/"}).done(function(){
+      mapDataToFormUI({'frm_GeneralSettings':"/api/monit/settings/get_general/"}).done(function(){
          formatTokenizersUI();
          $('.selectpicker').selectpicker('refresh');
-         isSubsystemDirty();
          updateServiceControlUI('monit');
          ShowHideGeneralFields();
       });
@@ -79,27 +66,16 @@
          ShowHideGeneralFields();
       });
 
-      $('#btnSaveGeneral').unbind('click').click(function(){
-         $("#btnSaveGeneralProgress").addClass("fa fa-spinner fa-pulse");
-         var frm_id = 'frm_GeneralSettings';
-         saveFormToEndpoint("/api/monit/settings/set/", frm_id, function(){
-            isSubsystemDirty();
-            updateServiceControlUI('monit');
-         }, true);
-         $("#btnSaveGeneralProgress").removeClass("fa fa-spinner fa-pulse");
-         $("#btnSaveGeneral").blur();
-      });
-
       /**
        * alert settings
        */
       $("#grid-alerts").UIBootgrid({
-         'search':'/api/monit/settings/searchAlert/',
-         'get':'/api/monit/settings/getAlert/',
-         'set':'/api/monit/settings/setAlert/',
-         'add':'/api/monit/settings/addAlert/',
-         'del':'/api/monit/settings/delAlert/',
-         'toggle':'/api/monit/settings/toggleAlert/'
+         'search':'/api/monit/settings/search_alert/',
+         'get':'/api/monit/settings/get_alert/',
+         'set':'/api/monit/settings/set_alert/',
+         'add':'/api/monit/settings/add_alert/',
+         'del':'/api/monit/settings/del_alert/',
+         'toggle':'/api/monit/settings/toggle_alert/'
       });
 
       /**
@@ -170,12 +146,12 @@
       $('#service\\.interface').on('changed.bs.select', function(e) {ShowHideFields();});
 
       $("#grid-services").UIBootgrid({
-         'search':'/api/monit/settings/searchService/',
-         'get':'/api/monit/settings/getService/',
-         'set':'/api/monit/settings/setService/',
-         'add':'/api/monit/settings/addService/',
-         'del':'/api/monit/settings/delService/',
-         'toggle':'/api/monit/settings/toggleService/'
+         'search':'/api/monit/settings/search_service/',
+         'get':'/api/monit/settings/get_service/',
+         'set':'/api/monit/settings/set_service/',
+         'add':'/api/monit/settings/add_service/',
+         'del':'/api/monit/settings/del_service/',
+         'toggle':'/api/monit/settings/toggle_service/'
       });
 
 
@@ -196,26 +172,15 @@
 
 
       $("#grid-tests").UIBootgrid({
-         'search':'/api/monit/settings/searchTest/',
-         'get':'/api/monit/settings/getTest/',
-         'set':'/api/monit/settings/setTest/',
-         'add':'/api/monit/settings/addTest/',
-         'del':'/api/monit/settings/delTest/'
+         'search':'/api/monit/settings/search_test/',
+         'get':'/api/monit/settings/get_test/',
+         'set':'/api/monit/settings/set_test/',
+         'add':'/api/monit/settings/add_test/',
+         'del':'/api/monit/settings/del_test/'
       });
 
    });
 </script>
-
-<div class="alert alert-info hidden" role="alert" id="configChangedMsg">
-   <button class="btn btn-primary pull-right" id="btnApplyConfig"
-           data-endpoint='/api/monit/service/reconfigure'
-           data-label="{{ lang._('Apply') }}"
-           data-service-widget="monit"
-           data-error-title="{{ lang._('Error reconfiguring Monit') }}"
-           type="button">
-   </button>
-   {{ lang._('The Monit configuration has been changed') }} <br /> {{ lang._('You must apply the changes in order for them to take effect.')}}
-</div>
 
 <ul class="nav nav-tabs" role="tablist" id="maintabs">
    <li class="active"><a data-toggle="tab" href="#general">{{ lang._('General Settings') }}</a></li>
@@ -226,17 +191,6 @@
 <div class="tab-content content-box">
    <div id="general" class="tab-pane fade in active">
       {{ partial("layout_partials/base_form",['fields':formGeneralSettings,'id':'frm_GeneralSettings'])}}
-      <div class="table-responsive">
-         <table class="table table-striped table-condensed table-responsive">
-            <tr>
-               <td>
-                  <button class="btn btn-primary" id="btnSaveGeneral" type="button">
-                     <b>{{ lang._('Save') }}</b> <i id="btnSaveGeneralProgress"></i>
-                  </button>
-               </td>
-            </tr>
-         </table>
-      </div>
    </div>
    <div id="alerts" class="tab-pane fade in">
       <table id="grid-alerts" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEditAlert">
@@ -313,6 +267,9 @@
       </table>
    </div>
 </div>
+
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/monit/service/reconfigure', 'data_service_widget': 'monit'}) }}
+
 {# include dialogs #}
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditAlert,'id':'DialogEditAlert','label':'Edit Alert&nbsp;&nbsp;<small>NOTE: For a detailed description see monit(1) section "ALERT MESSAGES".</small>'])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditService,'id':'DialogEditService','label':'Edit Service'])}}

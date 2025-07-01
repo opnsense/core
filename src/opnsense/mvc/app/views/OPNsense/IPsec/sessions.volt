@@ -30,11 +30,10 @@
     $( document ).ready(function() {
         let grid_phase1 = $("#grid-phase1").UIBootgrid({
             search:'/api/ipsec/sessions/search_phase1',
-            datakey: 'name',
             options:{
                 initialSearchPhrase: getUrlHash('search'),
                 multiSelect: false,
-                rowSelect: false,
+                rowSelect: true,
                 selection: true,
                 stickySelect: true,
                 formatters:{
@@ -74,12 +73,14 @@
             if (ids.length > 0) {
                 $("#grid-phase1").bootgrid('select', [ids[0].name]);
             }
-            $('.command-disconnect').click(function(){
+            $('.command-disconnect').click(function(e){
+                e.stopPropagation();
                 ajaxCall("/api/ipsec/sessions/disconnect/" + $(this).data('row-id'), {}, function(){
                     $('#grid-phase1').bootgrid('reload');
                 });
             });
-            $('.command-connect').click(function(){
+            $('.command-connect').click(function(e){
+                e.stopPropagation();
                 ajaxCall("/api/ipsec/sessions/connect/" + $(this).data('row-id'), {}, function(){
                     $('#grid-phase1').bootgrid('reload');
                 });
