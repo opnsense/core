@@ -29,6 +29,7 @@
 namespace OPNsense\Dnsmasq\Api;
 
 use OPNsense\Base\ApiControllerBase;
+use OPNsense\Base\UserException;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Dnsmasq\Dnsmasq;
@@ -130,7 +131,15 @@ class LeasesController extends ApiControllerBase
             return ['status' => 'error', 'message' => gettext('Missing lease IP or "all"')];
         }
 
-        $result = (new Backend())->configdpRun("dnsmasq delete leases " . escapeshellarg($ip));
+        $backend = new Backend();
+        $status = $backend->configdRun("dnsmasq status");
+
+        // XXX: Delegate responsibility of service control to user.
+        if (str_starts_with($status, 'dnsmasq is running')) {
+            throw new UserException(gettext('Dnsmasq must be stopped before deleting leases.'));
+        }
+
+        $result = $backend->configdpRun("dnsmasq delete leases " . escapeshellarg($ip));
 
         return ['status' => 'ok', 'result' => $result];
     }

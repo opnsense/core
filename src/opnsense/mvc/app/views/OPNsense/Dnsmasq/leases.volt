@@ -104,25 +104,52 @@
                         };
                         const addUrl = `${baseUrl}?${new URLSearchParams(addUrlParams)}`;
 
-                        if (row.is_reserved === '1') {
-                            return `
-                                <button type="button" class="btn btn-xs"
-                                    onclick="window.location.href = '${searchUrl}'"
-                                    title="{{ lang._('Find Reservation') }}">
-                                    <i class="fa fa-fw fa-search"></i>
-                                </button>
-                            `;
-                        } else {
-                            return `
-                                <button type="button" class="btn btn-xs"
-                                    onclick="window.location.href = '${addUrl}'"
-                                    title="{{ lang._('Add Reservation') }}">
-                                    <i class="fa fa-fw fa-plus"></i>
-                                </button>
-                            `;
-                        }
-                    }
+                        const deleteBtn = `
+                            <button type="button" class="btn btn-xs command-delete_lease" data-row-id="${row.address}"
+                                title="{{ lang._('Delete Lease') }}">
+                                <i class="fa fa-fw fa-trash"></i>
+                            </button>`;
 
+                        const reserveBtn = row.is_reserved === '1'
+                            ? `<button type="button" class="btn btn-xs"
+                                onclick="window.location.href = '${searchUrl}'"
+                                title="{{ lang._('Find Reservation') }}">
+                                <i class="fa fa-fw fa-search"></i>
+                            </button>`
+                            : `<button type="button" class="btn btn-xs"
+                                onclick="window.location.href = '${addUrl}'"
+                                title="{{ lang._('Add Reservation') }}">
+                                <i class="fa fa-fw fa-plus"></i>
+                            </button>`;
+
+                        return reserveBtn + deleteBtn;
+                    }
+                }
+            },
+            commands: {
+                delete_lease: {
+                    method(e) {
+                        const ip = $(this).data("row-id");
+                        BootstrapDialog.confirm(
+                            "{{ lang._('Are you sure you want to delete this lease? This can cause duplicate IP addresses in your network, use with care!') }}",
+                            function(ok) {
+                                if (!ok) return;
+                                ajaxCall(
+                                    "/api/dnsmasq/leases/delete_lease/" + encodeURIComponent(ip),
+                                    {},
+                                    function(data, status) {
+                                        if (status === "success" && data.status === "ok") {
+                                            $('#grid-leases').bootgrid('reload');
+                                        }
+                                    },
+                                    "POST"
+                                );
+                            }
+                        );
+                    },
+                    classname: "fa fa-fw fa-trash text-danger",
+                    title: "{{ lang._('Delete Lease') }}",
+                    sequence: 30
                 }
             }
         });
