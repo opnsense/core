@@ -29,14 +29,12 @@
                     <MaximumValue>9300</MaximumValue>
                 </mtu>
                 <dns type="NetworkField">
-                    <FieldSeparator>,</FieldSeparator>
                     <AsList>Y</AsList>
                     <NetMaskAllowed>N</NetMaskAllowed>
                     <WildcardEnabled>N</WildcardEnabled>
                     <ValidationMessage>Please use valid IPv4 or IPv6 addresses.</ValidationMessage>
                 </dns>
                 <tunneladdress type="NetworkField">
-                    <FieldSeparator>,</FieldSeparator>
                     <AsList>Y</AsList>
                 </tunneladdress>
                 <disableroutes type="BooleanField">

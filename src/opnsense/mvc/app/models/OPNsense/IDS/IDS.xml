@@ -152,7 +152,6 @@
             </interfaces>
             <homenet type="NetworkField">
                 <Required>Y</Required>
-                <FieldSeparator>,</FieldSeparator>
                 <Default>192.168.0.0/16,10.0.0.0/8,172.16.0.0/12</Default>
                 <AsList>Y</AsList>
             </homenet>

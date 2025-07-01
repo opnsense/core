@@ -34,13 +34,8 @@ use OPNsense\Base\Validators\CallbackValidator;
 /**
  * @package OPNsense\Base\FieldTypes
  */
-class NetworkField extends BaseField
+class NetworkField extends BaseSetField
 {
-    /**
-     * @var bool marks if this is a data node or a container
-     */
-    protected $internalIsContainer = false;
-
     /**
      * @var bool marks if net mask is required
      */
@@ -52,11 +47,6 @@ class NetworkField extends BaseField
     protected $internalNetMaskAllowed = true;
 
     /**
-     * @var null when multiple values could be provided at once, specify the split character
-     */
-    protected $internalFieldSeparator = null;
-
-    /**
      * @var bool wildcard (any) enabled
      */
     protected $internalWildcardEnabled = true;
@@ -65,11 +55,6 @@ class NetworkField extends BaseField
      * @var string Network family (ipv4, ipv6)
      */
     protected $internalAddressFamily = null;
-
-    /**
-     * @var bool when set, results are returned as list (with all options enabled)
-     */
-    private $internalAsList = false;
 
     /**
      * @var bool when set, host bits with a value other than zero are not allowed in the notation if a mask is provided
@@ -117,15 +102,6 @@ class NetworkField extends BaseField
     }
 
     /**
-     * if multiple addresses / networks maybe provided at once, set separator.
-     * @param string $value separator
-     */
-    public function setFieldSeparator($value)
-    {
-        $this->internalFieldSeparator = $value;
-    }
-
-    /**
      * enable "any" keyword
      * @param string $value Y/N
      */
@@ -135,19 +111,6 @@ class NetworkField extends BaseField
             $this->internalWildcardEnabled = true;
         } else {
             $this->internalWildcardEnabled = false;
-        }
-    }
-
-    /**
-     * select if multiple networks may be selected at once
-     * @param $value boolean value 0/1
-     */
-    public function setAsList($value)
-    {
-        if (trim(strtoupper($value)) == "Y") {
-            $this->internalAsList = true;
-        } else {
-            $this->internalAsList = false;
         }
     }
 
@@ -165,25 +128,6 @@ class NetworkField extends BaseField
     }
 
     /**
-     * get valid options, descriptions and selected value
-     * @return array
-     */
-    public function getNodeData()
-    {
-        if ($this->internalAsList) {
-            // return result as list
-            $result = array();
-            foreach (explode(',', $this->internalValue) as $net) {
-                $result[$net] = array("value" => $net, "selected" => 1);
-            }
-            return $result;
-        } else {
-            // normal, single field response
-            return $this->internalValue;
-        }
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function defaultValidationMessage()
@@ -197,13 +141,7 @@ class NetworkField extends BaseField
      */
     protected function isValidInput($input)
     {
-        $result = true;
-        if ($this->internalFieldSeparator == null) {
-            $values = [$input];
-        } else {
-            $values = explode($this->internalFieldSeparator, $input);
-        }
-        foreach ($values as $value) {
+        foreach ($this->iterateInput($input) as $value) {
             // parse filter options
             $filterOpt = 0;
             switch (strtolower($this->internalAddressFamily ?? '')) {
@@ -255,6 +193,7 @@ class NetworkField extends BaseField
                 return false;
             }
         }
+
         return true;
     }
 
@@ -278,15 +217,5 @@ class NetworkField extends BaseField
             }
         }
         return $validators;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getValues(): array
-    {
-        return array_values(array_filter(explode($this->internalFieldSeparator, $this->internalValue), function ($k) {
-            return !!strlen($k);
-        }));
     }
 }

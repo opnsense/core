@@ -33,23 +33,8 @@ use OPNsense\Base\Validators\CallbackValidator;
 /**
  * @package OPNsense\Base\FieldTypes
  */
-class HostnameField extends BaseField
+class HostnameField extends BaseSetField
 {
-    /**
-     * @var bool marks if this is a data node or a container
-     */
-    protected $internalIsContainer = false;
-
-    /**
-     * @var null when multiple values could be provided at once, specify the split character
-     */
-    protected $internalFieldSeparator = null;
-
-    /**
-     * @var bool when set, results are returned as list (with all options enabled)
-     */
-    private $internalAsList = false;
-
     /**
      * @var bool IP address allowed
      */
@@ -130,43 +115,6 @@ class HostnameField extends BaseField
     }
 
     /**
-     * if multiple hostnames maybe provided at once, set separator.
-     * @param string $value separator
-     */
-    public function setFieldSeparator($value)
-    {
-        $this->internalFieldSeparator = $value;
-    }
-
-    /**
-     * select if multiple hostnames may be selected at once
-     * @param $value boolean value 0/1
-     */
-    public function setAsList($value)
-    {
-        $this->internalAsList = trim(strtoupper($value)) == "Y";
-    }
-
-    /**
-     * get valid options, descriptions and selected value
-     * @return array
-     */
-    public function getNodeData()
-    {
-        if ($this->internalAsList) {
-            // return result as list
-            $result = [];
-            foreach (explode($this->internalFieldSeparator, $this->internalValue) as $net) {
-                $result[$net] = ["value" => $net, "selected" => 1];
-            }
-            return $result;
-        } else {
-            // normal, single field response
-            return $this->internalValue;
-        }
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function defaultValidationMessage()
@@ -182,16 +130,13 @@ class HostnameField extends BaseField
     {
         $validators = parent::getValidators();
         $sender = $this;
+
         if ($this->internalValue != null) {
             $validators[] = new CallbackValidator(["callback" => function ($data) use ($sender) {
                 $result = false;
                 $response = [];
-                if ($sender->internalFieldSeparator == null) {
-                    $values = [$data];
-                } else {
-                    $values = explode($sender->internalFieldSeparator, $data);
-                }
-                foreach ($values as $value) {
+
+                foreach ($sender->iterateInput($data) as $value) {
                     // set filter options
                     $filterOptDomain = $sender->internalIsDNSName ? 0 : FILTER_FLAG_HOSTNAME;
                     $val_is_ip = filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6) !== false;
@@ -200,6 +145,7 @@ class HostnameField extends BaseField
                     } elseif ($sender->internalZoneRootAllowed && substr($value, 0, 2) == '@.') {
                         $value = substr($value, 2);
                     }
+
                     if ($sender->internalZoneRootAllowed && $value == '@') {
                         $result = true;
                     } elseif ($sender->internalHostWildcardAllowed && $value == '*') {
@@ -210,16 +156,18 @@ class HostnameField extends BaseField
                         // internalIpAllowed = false and ip address offered,  trigger validation
                         $result = $val_is_ip ? false : preg_match_all('/(\s|\/|\*)/', $value) === 0;
                     }
+
                     if (!$result) {
                         // append validation message
-                        $response[] = $this->getValidationMessage();
+                        $response[] = $sender->getValidationMessage();
                         break;
                     }
                 }
+
                 return $response;
-            }
-            ]);
+            }]);
         }
+
         return $validators;
     }
 }

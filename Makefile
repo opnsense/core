@@ -403,6 +403,14 @@ lint-model:
 		(xmllint $${MODEL} --xpath '//*[@type="CSVListField" and Mask and (not(MaskPerItem) or MaskPerItem=N)]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
 			echo "$${MODEL}: $${LINE} uses Mask regex with MaskPerItem=N"; \
 		done; \
+		for TYPE in .\\AliasesField .\\DomainIPField HostnameField IPPortField NetworkField MacAddressField .\\RangeAddressField; do \
+			(xmllint $${MODEL} --xpath '//*[@type="'$${TYPE}'" and FieldSeparator=","]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
+				echo "$${MODEL}: $${LINE} FieldSeparator=, is the default"; \
+			done; \
+			(xmllint $${MODEL} --xpath '//*[@type="'$${TYPE}'" and AsList="N"]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
+				echo "$${MODEL}: $${LINE} AsList=N is the default"; \
+			done; \
+		done; \
 	done
 
 lint-acl:

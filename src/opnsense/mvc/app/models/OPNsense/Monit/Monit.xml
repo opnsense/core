@@ -26,7 +26,6 @@
             <Default>127.0.0.1</Default>
             <Required>Y</Required>
             <AsList>Y</AsList>
-            <FieldSeparator>,</FieldSeparator>
             <ValidationMessage>Please specify a valid servername or IP address.</ValidationMessage>
          </mailserver>
          <port type="IntegerField">

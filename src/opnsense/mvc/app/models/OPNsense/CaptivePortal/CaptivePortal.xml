@@ -63,7 +63,6 @@
                     <ValidationMessage>Please enter a valid servername, ip address or leave this option blank</ValidationMessage>
                 </servername>
                 <allowedAddresses type="NetworkField">
-                    <FieldSeparator>,</FieldSeparator>
                     <AsList>Y</AsList>
                     <WildcardEnabled>N</WildcardEnabled>
                 </allowedAddresses>
