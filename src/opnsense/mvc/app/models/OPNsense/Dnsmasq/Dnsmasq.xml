@@ -140,7 +140,7 @@
                         <items>aliases.alias</items>
                         <display>name</display>
                         <filters>
-                            <type>/^External.*/</type>
+                            <type>/^[Ee]xternal.*/</type>
                             <name>/^(?!bogons$|bogonsv6$|virusprot$|sshlockout$|__captiveportal.*).*/</name>
                         </filters>
                     </aliases>
