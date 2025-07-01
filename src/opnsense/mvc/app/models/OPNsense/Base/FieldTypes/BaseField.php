@@ -527,6 +527,10 @@ abstract class BaseField
         return $this->getValue() !== '0' && $this->isEmpty();
     }
 
+    /**
+     * check if this field is required
+     * @return bool
+     */
     public function isRequired(): bool
     {
         return $this->internalIsRequired;
