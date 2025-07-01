@@ -507,97 +507,100 @@
             $('[data-toggle="tooltip"]').tooltip({ container: 'body' });
         });
 
-        /* for performance reasons, only load catagories on page load */
-        ajaxCall('/api/firewall/filter/list_categories', {}, function (data) {
-            if (!data.rows) return;
+        function populateCategoriesSelectpicker() {
+            ajaxCall('/api/firewall/filter/list_categories', {}, function (data) {
+                if (!data.rows) return;
 
-            const $categoryFilter = $("#category_filter");
-            const currentSelection = $categoryFilter.val();
+                const $categoryFilter = $("#category_filter");
+                const currentSelection = $categoryFilter.val();
 
-            // Sort used categories first, then alphabetically
-            data.rows.sort((a, b) => {
-                const aUsed = a.used > 0 ? 0 : 1;
-                const bUsed = b.used > 0 ? 0 : 1;
+                // Sort used categories first, then alphabetically
+                data.rows.sort((a, b) => {
+                    const aUsed = a.used > 0 ? 0 : 1;
+                    const bUsed = b.used > 0 ? 0 : 1;
 
-                if (aUsed !== bUsed) {
-                    return aUsed - bUsed;
-                }
+                    if (aUsed !== bUsed) {
+                        return aUsed - bUsed;
+                    }
 
-                return a.name.localeCompare(b.name);
+                    return a.name.localeCompare(b.name);
+                });
+
+                $categoryFilter.empty().append(
+                    data.rows.map(row => {
+                        const optVal = $('<div/>').text(row.name).html();
+                        const bgColor = row.color || '31708f';
+
+                        return $("<option/>", {
+                            value: row.uuid,
+                            html: row.name,
+                            id: row.used > 0 ? row.uuid : undefined,
+                            "data-content": row.used > 0
+                                ? `<span><span class="badge badge-sm" style="background:#${bgColor};">${row.used}</span> ${optVal}</span>`
+                                : undefined
+                        });
+                    })
+                );
+
+                $categoryFilter.val(currentSelection).selectpicker('refresh');
             });
-
-            $categoryFilter.empty().append(
-                data.rows.map(row => {
-                    const optVal = $('<div/>').text(row.name).html();
-                    const bgColor = row.color || '31708f';
-
-                    return $("<option/>", {
-                        value: row.uuid,
-                        html: row.name,
-                        id: row.used > 0 ? row.uuid : undefined,
-                        "data-content": row.used > 0
-                            ? `<span><span class="badge badge-sm" style="background:#${bgColor};">${row.used}</span> ${optVal}</span>`
-                            : undefined
-                    });
-                })
-            );
-
-            $categoryFilter.val(currentSelection).selectpicker('refresh');
-        });
+        }
 
         // Track if user has actually changed the interface dropdown, or it was the controller
         let interfaceInitialized = false;
 
         // Populate interface selectpicker
-        $('#interface_select').fetch_options(
-            '/api/firewall/filter/get_interface_list',
-            {},
-            function (data) {
-                for (const groupKey in data) {
-                    const group = data[groupKey];
-                    group.items = group.items.map(item => {
-                        const count = item.count ?? 0;
-                        const label = (item.label || '');
-                        const subtext = group.label;
+        function populateInterfaceSelectpicker() {
+            $('#interface_select').fetch_options(
+                '/api/firewall/filter/get_interface_list',
+                {},
+                function (data) {
+                    for (const groupKey in data) {
+                        const group = data[groupKey];
+                        group.items = group.items.map(item => {
+                            const count = item.count ?? 0;
+                            const label = (item.label || '');
+                            const subtext = group.label;
 
-                        const bgClassMap = {
-                            floating: 'bg-primary',
-                            group: 'bg-warning',
-                            interface: 'bg-info'
-                        };
-                        const badgeClass = bgClassMap[item.type] || 'bg-info';
+                            const bgClassMap = {
+                                floating: 'bg-primary',
+                                group: 'bg-warning',
+                                interface: 'bg-info'
+                            };
+                            const badgeClass = bgClassMap[item.type] || 'bg-info';
 
-                        return {
-                            value: item.value,
-                            label: label,
-                            'data-content': `
-                                <span>
-                                    ${count > 0 ? `<span class="badge badge-sm ${badgeClass}">${count}</span>` : ''}
-                                    ${label}
-                                    <small class="text-muted ms-2"><em>${subtext}</em></small>
-                                </span>
-                            `.trim()
-                        };
-                    });
-                }
-                return data;
-            },
-            false,
-            function (data) {  // post_callback, apply the URL hash logic
-                const match = window.location.hash.match(/^#interface=([^&]+)/);
-                if (match) {
-                    const ifaceFromHash = decodeURIComponent(match[1]);
-
-                    const allOptions = Object.values(data).flatMap(group => group.items.map(i => i.value));
-                    if (allOptions.includes(ifaceFromHash)) {
-                        $('#interface_select').val(ifaceFromHash).selectpicker('refresh');
-                        grid.bootgrid('reload');
+                            return {
+                                value: item.value,
+                                label: label,
+                                'data-content': `
+                                    <span>
+                                        ${count > 0 ? `<span class="badge badge-sm ${badgeClass}">${count}</span>` : ''}
+                                        ${label}
+                                        <small class="text-muted ms-2"><em>${subtext}</em></small>
+                                    </span>
+                                `.trim()
+                            };
+                        });
                     }
-                }
-                interfaceInitialized = true;
-            },
-            true  // render_html to show counts as badges
-        );
+                    return data;
+                },
+                false,
+                function (data) {  // post_callback, apply the URL hash logic
+                    const match = window.location.hash.match(/^#interface=([^&]+)/);
+                    if (match) {
+                        const ifaceFromHash = decodeURIComponent(match[1]);
+
+                        const allOptions = Object.values(data).flatMap(group => group.items.map(i => i.value));
+                        if (allOptions.includes(ifaceFromHash)) {
+                            $('#interface_select').val(ifaceFromHash).selectpicker('refresh');
+                            grid.bootgrid('reload');
+                        }
+                    }
+                    interfaceInitialized = true;
+                },
+                true  // render_html to show counts as badges
+            );
+        }
 
         $("#interface_select_container").show();
 
@@ -702,7 +705,15 @@
         // Dynamically add fa icons to selectpickers
         $('#category_filter').parent().find('.dropdown-toggle').prepend('<i class="fa fa-tag" style="margin-right: 6px;"></i>');
 
-        $("#reconfigureAct").SimpleActionButton();
+        $("#reconfigureAct").SimpleActionButton({
+            onAction: function (data, status) {
+                populateInterfaceSelectpicker();
+                populateCategoriesSelectpicker();
+            }
+        });
+
+        populateInterfaceSelectpicker();
+        populateCategoriesSelectpicker();
 
     });
 </script>
