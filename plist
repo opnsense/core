@@ -98,8 +98,6 @@
 /usr/local/etc/rc.freebsd
 /usr/local/etc/rc.halt
 /usr/local/etc/rc.ipfw
-/usr/local/etc/rc.ipfw.flush_all
-/usr/local/etc/rc.ipfw.post
 /usr/local/etc/rc.linkup
 /usr/local/etc/rc.loader
 /usr/local/etc/rc.loader.d/00-banner
@@ -1255,6 +1253,7 @@
 /usr/local/opnsense/scripts/routes/gateways.php
 /usr/local/opnsense/scripts/routes/show_routes.py
 /usr/local/opnsense/scripts/shaper/dummynet_stats.py
+/usr/local/opnsense/scripts/shaper/flush_all.sh
 /usr/local/opnsense/scripts/shaper/lib/__init__.py
 /usr/local/opnsense/scripts/shaper/setup.sh
 /usr/local/opnsense/scripts/shaper/start.sh
