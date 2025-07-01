@@ -2,6 +2,7 @@
 
 """
     Copyright (c) 2025 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2025 Cedrik Pischem
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -124,4 +125,3 @@ if __name__ == '__main__':
         if not args.ip:
             parser.error("delete requires an IP or 'all'")
         delete_lease(args.ip)
-

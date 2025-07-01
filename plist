@@ -1072,8 +1072,8 @@
 /usr/local/opnsense/scripts/auth/sync_user.php
 /usr/local/opnsense/scripts/dhcp/cleanup_leases4.php
 /usr/local/opnsense/scripts/dhcp/cleanup_leases6.php
+/usr/local/opnsense/scripts/dhcp/dnsmasq_leases.py
 /usr/local/opnsense/scripts/dhcp/dnsmasq_watcher.py
-/usr/local/opnsense/scripts/dhcp/get_dnsmasq_leases.py
 /usr/local/opnsense/scripts/dhcp/get_kea_leases.py
 /usr/local/opnsense/scripts/dhcp/get_leases.py
 /usr/local/opnsense/scripts/dhcp/get_leases6.py
