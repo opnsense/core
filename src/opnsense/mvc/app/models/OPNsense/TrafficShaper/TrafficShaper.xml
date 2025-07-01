@@ -264,7 +264,6 @@
                 </iplen>
                 <source type="NetworkField">
                     <Required>Y</Required>
-                    <FieldSeparator>,</FieldSeparator>
                     <Default>any</Default>
                     <AsList>Y</AsList>
                 </source>
@@ -280,7 +279,6 @@
                 </src_port>
                 <destination type="NetworkField">
                     <Required>Y</Required>
-                    <FieldSeparator>,</FieldSeparator>
                     <Default>any</Default>
                     <AsList>Y</AsList>
                 </destination>

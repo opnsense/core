@@ -30,7 +30,6 @@
                 <psk type="Base64Field"/>
                 <tunneladdress type="NetworkField">
                     <NetMaskRequired>Y</NetMaskRequired>
-                    <FieldSeparator>,</FieldSeparator>
                     <Required>Y</Required>
                     <AsList>Y</AsList>
                 </tunneladdress>

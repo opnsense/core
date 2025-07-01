@@ -35,23 +35,8 @@ use OPNsense\Firewall\Util;
  * Class IPPortField
  * @package OPNsense\Base\FieldTypes
  */
-class IPPortField extends BaseField
+class IPPortField extends BaseSetField
 {
-    /**
-     * @var bool marks if this is a data node or a container
-     */
-    protected $internalIsContainer = false;
-
-    /**
-     * @var string when multiple values could be provided at once, specify the split character
-     */
-    protected $internalFieldSeparator = ',';
-
-    /**
-     * @var bool when set, results are returned as list (with all options enabled)
-     */
-    protected $internalAsList = false;
-
     /**
      * @var string Network family (ipv4, ipv6)
      */
@@ -69,25 +54,6 @@ class IPPortField extends BaseField
     public function setValue($value)
     {
         parent::setValue(trim($value));
-    }
-
-    /**
-     * get valid options, descriptions and selected value
-     * @return array
-     */
-    public function getNodeData()
-    {
-        if ($this->internalAsList) {
-            // return result as list
-            $result = array();
-            foreach (explode($this->internalFieldSeparator, $this->internalValue) as $address) {
-                $result[$address] = array("value" => $address, "selected" => 1);
-            }
-            return $result;
-        } else {
-            // normal, single field response
-            return $this->internalValue;
-        }
     }
 
     /**
@@ -109,15 +75,6 @@ class IPPortField extends BaseField
     }
 
     /**
-     * select if multiple IP-Port combinations may be selected at once
-     * @param $value string value Y/N
-     */
-    public function setAsList($value)
-    {
-        $this->internalAsList = trim(strtoupper($value)) == "Y";
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function defaultValidationMessage()
@@ -132,9 +89,10 @@ class IPPortField extends BaseField
     public function getValidators()
     {
         $validators = parent::getValidators();
+
         if ($this->internalValue != null) {
             $validators[] = new CallbackValidator(["callback" => function ($data) {
-                foreach ($this->internalAsList ? explode($this->internalFieldSeparator, $data) : [$data] as $value) {
+                foreach ($this->iterateInput($data) as $value) {
                     $parts = explode(':', $value);
                     if ($this->internalAddressFamily == 'ipv4' || $this->internalAddressFamily == null) {
                         if (count($parts) == 2 && Util::isIpv4Address($parts[0]) && Util::isPort($parts[1])) {

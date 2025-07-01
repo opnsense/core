@@ -19,7 +19,6 @@
         </language>
         <dns_servers type="NetworkField">
             <NetMaskAllowed>N</NetMaskAllowed>
-            <FieldSeparator>,</FieldSeparator>
             <AsList>Y</AsList>
         </dns_servers>
         <dnsallowoverride type="BooleanField">

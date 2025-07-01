@@ -16,7 +16,6 @@
                 <Required>Y</Required>
             </disablevpnrules>
             <passthrough_networks  type="NetworkField">
-                <FieldSeparator>,</FieldSeparator>
                 <AsList>Y</AsList>
                 <WildcardEnabled>N</WildcardEnabled>
             </passthrough_networks>
@@ -102,12 +101,10 @@
                 <attr>
                     <subnet type="NetworkField">
                         <NetMaskRequired>Y</NetMaskRequired>
-                        <FieldSeparator>,</FieldSeparator>
                         <AsList>Y</AsList>
                     </subnet>
                     <split-include type="NetworkField">
                         <NetMaskRequired>Y</NetMaskRequired>
-                        <FieldSeparator>,</FieldSeparator>
                         <AsList>Y</AsList>
                     </split-include>
                     <!-- UNITY_DEF_DOMAIN -->
@@ -139,12 +136,10 @@
                     </x_28679>
                     <dns type="NetworkField">
                         <NetmaskAllowed>N</NetmaskAllowed>
-                        <FieldSeparator>,</FieldSeparator>
                         <AsList>Y</AsList>
                     </dns>
                     <nbns type="NetworkField">
                         <NetmaskAllowed>N</NetmaskAllowed>
-                        <FieldSeparator>,</FieldSeparator>
                         <AsList>Y</AsList>
                     </nbns>
                 </attr>

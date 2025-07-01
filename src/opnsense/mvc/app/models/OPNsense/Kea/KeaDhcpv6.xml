@@ -63,11 +63,9 @@
                         <NetMaskAllowed>N</NetMaskAllowed>
                         <AddressFamily>ipv6</AddressFamily>
                         <AsList>Y</AsList>
-                        <FieldSeparator>,</FieldSeparator>
                     </dns_servers>
                     <domain_search type="HostnameField">
                         <IpAllowed>N</IpAllowed>
-                        <FieldSeparator>,</FieldSeparator>
                         <AsList>Y</AsList>
                         <ValidationMessage>Please specify a valid list of domains</ValidationMessage>
                     </domain_search>
@@ -127,7 +125,6 @@
                 </hostname>
                 <domain_search type="HostnameField">
                     <IpAllowed>N</IpAllowed>
-                    <FieldSeparator>,</FieldSeparator>
                     <AsList>Y</AsList>
                     <ValidationMessage>Please specify a valid list of domains</ValidationMessage>
                 </domain_search>

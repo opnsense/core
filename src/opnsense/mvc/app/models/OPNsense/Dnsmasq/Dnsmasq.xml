@@ -87,7 +87,6 @@
             <local type="BooleanField"/>
             <ip type="NetworkField">
                 <NetMaskAllowed>N</NetMaskAllowed>
-                <FieldSeparator>,</FieldSeparator>
                 <AsList>Y</AsList>
             </ip>
             <client_id type="TextField">
@@ -95,7 +94,6 @@
                 <ValidationMessage>Value must be a colon-separated hexadecimal sequence (e.g., 01:02:f3) or "*".</ValidationMessage>
             </client_id>
             <hwaddr type="MacAddressField">
-                <FieldSeparator>,</FieldSeparator>
                 <AsList>Y</AsList>
             </hwaddr>
             <lease_time type="IntegerField"/>
@@ -114,7 +112,6 @@
             <!-- Intentionally last, AliasesField back references other fields (which should already be there) -->
             <aliases type=".\AliasesField">
                 <AsList>Y</AsList>
-                <FieldSeparator>,</FieldSeparator>
                 <IsDNSName>Y</IsDNSName>
                 <IpAllowed>N</IpAllowed>
             </aliases>
