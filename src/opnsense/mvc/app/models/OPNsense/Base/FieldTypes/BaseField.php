@@ -720,14 +720,21 @@ abstract class BaseField
     }
 
     /**
-     * get nodes as array structure using getDescription() as leaves
+     * get nodes as array structure using getValue() and getDescription() as leaves, the latter prefixed with a
+     * dollar sign ($) as these are impossible to exist in our xml structure. (eg field, $field)
      * @return array
      */
-    public function getNodeDescriptions()
+    public function getNodeContent()
     {
         $result = [];
         foreach ($this->iterateItems() as $key => $node) {
-            $result[$key] = $node->isContainer() ? $node->getNodeDescriptions() :  $node->getDescription();
+            if ($node->isContainer()) {
+                $result[$key] = $node->getNodeContent();
+            } else {
+                $result[$key] = $node->getValue();
+                $result['$'.$key] = $node->getDescription();
+            }
+
         }
         return $result;
     }

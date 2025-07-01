@@ -413,7 +413,7 @@ abstract class BaseModel
         $class_info = new ReflectionClass(get_called_class());
         $persisted_at = self::persistedAt();
         if ($persisted_at == -1) {
-            return $class_info->newInstance(true)->getNodeDescriptions();
+            return $class_info->newInstance(true)->getNodeContent();
         }
         $cache_filename = self::getCacheFileName();
         $fobj = new \OPNsense\Core\FileObject($cache_filename, 'a+', 0600, LOCK_EX);
@@ -427,7 +427,7 @@ abstract class BaseModel
             $mdl = $class_info->newInstance(true);
             $cache_payload = [
                 'persisted_at' => self::persistedAt(),
-                'content' => $mdl->getNodeDescriptions()
+                'content' => $mdl->getNodeContent()
             ];
             $fobj->truncate(0)->writeJson($cache_payload);
             unset($fobj);
@@ -552,13 +552,14 @@ abstract class BaseModel
     }
 
     /**
-     * get nodes as array structure using getDescription() as leaves
+     * get nodes as array structure using getNodeContent() as leaves
      * @return array
      */
-    public function getNodeDescriptions()
+    public function getNodeContent()
     {
-        return $this->internalData->getNodeDescriptions();
+        return $this->internalData->getNodeContent();
     }
+
 
     /**
      * structured setter for model

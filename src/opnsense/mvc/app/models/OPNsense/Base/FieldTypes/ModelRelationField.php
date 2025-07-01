@@ -100,7 +100,7 @@ class ModelRelationField extends BaseListField
                 $pmodel = $this->getParentModel();
                 if ($pmodel !== null && strcasecmp(get_class($pmodel), $className) === 0) {
                     // model options from the same model, use this model instead of creating something new
-                    $searchItems = self::getArrayReference($pmodel->getNodeDescriptions(), $modelData['items']);
+                    $searchItems = self::getArrayReference($pmodel->getNodeContent(), $modelData['items']);
                     $this->internalOptionsFromThisModel = true;
                 } else {
                     $searchItems = $this->getCachedData($className, $modelData['items']);
@@ -110,7 +110,7 @@ class ModelRelationField extends BaseListField
                 foreach ($searchItems as $uuid => $node) {
                     $descriptions = [];
                     foreach ($displayKeys as $displayKey) {
-                        $descriptions[] = $node[$displayKey] ?? '';
+                        $descriptions[] = $node['$'.$displayKey] ?? '';
                     }
                     if (isset($modelData['filters'])) {
                         foreach ($modelData['filters'] as $filterKey => $filterValue) {
