@@ -67,6 +67,15 @@ class BaseSetField extends BaseField
     }
 
     /**
+     * check if this is a list type
+     * @return bool returns true if this field is behaving as a list
+     */
+    public function isList()
+    {
+        return $this->internalAsList;
+    }
+
+    /**
      * get valid options, descriptions and selected value
      * @return array
      */

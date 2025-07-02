@@ -43,6 +43,17 @@ class IPPortFieldTest extends Field_Framework_TestCase
         $this->assertInstanceOf('\OPNsense\Base\FieldTypes\IPPortField', new IPPortField());
     }
 
+    /**
+     * generic property tests
+     */
+    public function testGeneric()
+    {
+        $field = new IPPortField();
+
+        $this->assertFalse($field->isContainer());
+        $this->assertFalse($field->isList());
+    }
+
     public function testRequiredEmpty()
     {
         $this->expectException(\OPNsense\Base\ValidationException::class);
@@ -104,6 +115,20 @@ class IPPortFieldTest extends Field_Framework_TestCase
         $field = new IPPortField();
         $field->setValue("abcdefg");
         $this->validateThrow($field);
+    }
+
+    public function testValidHostname()
+    {
+        $field = new IPPortField();
+        $field->setValue('abcdefg:123');
+        $field->setHostnameAllowed('Y');
+        $this->assertEmpty($this->validate($field));
+        $field->setValue('abcdefg:123,b.c.d:332');
+        $this->assertNotEmpty($this->validate($field));
+        $field->setAsList('Y');
+        $this->assertEmpty($this->validate($field));
+        $field->setValue('abcdefg:123,b.c.d:332,foobar');
+        $this->assertNotEmpty($this->validate($field));
     }
 
     public function testInvalidValueAsListIpv4()
