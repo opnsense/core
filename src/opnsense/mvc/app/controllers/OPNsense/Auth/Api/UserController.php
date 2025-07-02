@@ -62,7 +62,7 @@ class UserController extends ApiMutableModelControllerBase
         $this_gids = !empty($group_memberships) ? explode(',', $group_memberships) : [];
         $groupmdl = new Group();
         foreach ($groupmdl->group->iterateItems() as $uuid => $group) {
-            $members = explode(',', $group->member->getCurrentValue());
+            $members = $group->member->getValues();
             if (in_array($this_uid, $members) && !in_array($group->gid, $this_gids)) {
                 unset($members[array_search($this_uid, $members)]);
             } elseif (!in_array($this_uid, $members) && in_array($group->gid, $this_gids)) {
@@ -96,7 +96,7 @@ class UserController extends ApiMutableModelControllerBase
                     $password[$i] = random_bytes(1);
                 }
             } else {
-                $password = $node->password->getCurrentValue();
+                $password = $node->password->getValue();
             }
             $hash = $this->getModel()->generatePasswordHash($password);
             if ($hash !== false && strpos($hash, '$') === 0) {
