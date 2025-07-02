@@ -32,12 +32,10 @@
                     <AddressFamily>ipv6</AddressFamily>
                 </tunnel_networkv6>
                 <local_networks type="NetworkField">
-                    <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </local_networks>
                 <remote_networks type="NetworkField">
-                    <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </remote_networks>
                 <route_gateway type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
@@ -61,23 +59,19 @@
                 </register_dns>
                 <dns_domain type="HostnameField"/>
                 <dns_domain_search type="HostnameField">
-                    <FieldSeparator>,</FieldSeparator>
                     <AsList>Y</AsList>
                 </dns_domain_search>
                 <dns_servers type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
-                    <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </dns_servers>
                 <ntp_servers type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
-                    <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </ntp_servers>
                 <wins_servers type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
-                    <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </wins_servers>
                 <description type="DescriptionField"/>
             </Overwrite>
@@ -167,13 +161,11 @@
                 </bridge_gateway>
                 <bridge_pool type="TextField"/>
                 <route type="NetworkField">
-                    <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                     <WildcardEnabled>N</WildcardEnabled>
                 </route>
                 <push_route type="NetworkField">
-                    <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                     <WildcardEnabled>N</WildcardEnabled>
                 </push_route>
                 <cert type="CertificateField">
@@ -355,18 +347,15 @@
                 </register_dns>
                 <dns_domain type="HostnameField"/>
                 <dns_domain_search type="HostnameField">
-                    <FieldSeparator>,</FieldSeparator>
                     <AsList>Y</AsList>
                 </dns_domain_search>
                 <dns_servers type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
-                    <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </dns_servers>
                 <ntp_servers type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
-                    <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </ntp_servers>
                 <tun_mtu type="IntegerField">
                     <MinimumValue>60</MinimumValue>

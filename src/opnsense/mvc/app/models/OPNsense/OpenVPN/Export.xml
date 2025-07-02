@@ -11,7 +11,6 @@
                 <hostname type="HostnameField">
                     <Required>Y</Required>
                     <AsList>Y</AsList>
-                    <FieldSeparator>,</FieldSeparator>
                 </hostname>
                 <template type="TextField"/>
                 <local_port type="IntegerField">

@@ -101,10 +101,9 @@
             <privatedomain type="CSVListField"/>
             <privateaddress type="NetworkField">
                 <Required>Y</Required>
-                <FieldSeparator>,</FieldSeparator>
                 <WildcardEnabled>N</WildcardEnabled>
                 <Default>0.0.0.0/8,10.0.0.0/8,100.64.0.0/10,169.254.0.0/16,172.16.0.0/12,192.0.2.0/24,192.168.0.0/16,198.18.0.0/15,198.51.100.0/24,203.0.113.0/24,233.252.0.0/24,::1/128,2001:db8::/32,fc00::/8,fd00::/8,fe80::/10</Default>
-                <asList>Y</asList>
+                <AsList>Y</AsList>
             </privateaddress>
             <insecuredomain type="CSVListField"/>
             <msgcachesize type="TextField">
@@ -165,9 +164,8 @@
                     <Required>Y</Required>
                     <ValidationMessage>Please specify a one or more valid network segment in CIDR notation (Ipv4/IPv6).</ValidationMessage>
                     <WildcardEnabled>N</WildcardEnabled>
-                    <FieldSeparator>,</FieldSeparator>
                     <NetMaskRequired>Y</NetMaskRequired>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </networks>
                 <description type="DescriptionField"/>
             </acl>

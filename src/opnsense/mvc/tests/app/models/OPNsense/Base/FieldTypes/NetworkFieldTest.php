@@ -41,6 +41,17 @@ class NetworkFieldTest extends Field_Framework_TestCase
         $this->assertInstanceOf('\OPNsense\Base\FieldTypes\NetworkField', new NetworkField());
     }
 
+    /**
+     * generic property tests
+     */
+    public function testGeneric()
+    {
+        $field = new NetworkField();
+
+        $this->assertFalse($field->isContainer());
+        $this->assertFalse($field->isList());
+    }
+
     public function testRequiredEmpty()
     {
         $this->expectException(\OPNsense\Base\ValidationException::class);

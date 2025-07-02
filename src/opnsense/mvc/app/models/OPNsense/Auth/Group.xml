@@ -27,8 +27,7 @@
                 <Multiple>Y</Multiple>
             </member>
             <source_networks type="NetworkField">
-                <FieldSeparator>,</FieldSeparator>
-                <asList>Y</asList>
+                <AsList>Y</AsList>
             </source_networks>
         </group>
     </items>

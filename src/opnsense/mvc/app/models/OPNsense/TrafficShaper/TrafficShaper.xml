@@ -264,9 +264,8 @@
                 </iplen>
                 <source type="NetworkField">
                     <Required>Y</Required>
-                    <FieldSeparator>,</FieldSeparator>
                     <Default>any</Default>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </source>
                 <source_not type="BooleanField">
                     <Default>0</Default>
@@ -280,9 +279,8 @@
                 </src_port>
                 <destination type="NetworkField">
                     <Required>Y</Required>
-                    <FieldSeparator>,</FieldSeparator>
                     <Default>any</Default>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </destination>
                 <destination_not type="BooleanField">
                     <Default>0</Default>

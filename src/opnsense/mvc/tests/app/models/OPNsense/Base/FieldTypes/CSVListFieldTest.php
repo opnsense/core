@@ -45,6 +45,17 @@ class CSVListFieldTest extends Field_Framework_TestCase
     }
 
     /**
+     * generic property tests
+     */
+    public function testGeneric()
+    {
+        $field = new CSVListField();
+
+        $this->assertFalse($field->isContainer());
+        $this->assertTrue($field->isList());
+    }
+
+    /**
      * value combination tests
      */
     public function testValues()
@@ -67,5 +78,24 @@ class CSVListFieldTest extends Field_Framework_TestCase
         $this->assertEquals(2, count($field->getValues()));
         $this->assertEquals('foo', $field->getValues()[0]);
         $this->assertEquals('bar', $field->getValues()[1]);
+    }
+
+    /**
+     * mask tests
+     */
+    public function testMask()
+    {
+        $field = new CSVListField();
+
+        $field->setValue('bar');
+        $this->assertEmpty($this->validate($field));
+        $field->setMask('/[^o,]+/');
+        $this->assertEmpty($this->validate($field));
+        $field->setValue('foo');
+        $this->assertNotEmpty($this->validate($field));
+        $field->setValue('f,bar');
+        $this->assertNotEmpty($this->validate($field));
+        $field->setMaskPerItem('Y');
+        $this->assertEmpty($this->validate($field));
     }
 }

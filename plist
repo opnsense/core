@@ -601,6 +601,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/Base64Field.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/BaseField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/BaseListField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/BaseSetField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/BooleanField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/CSVListField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/CertificateField.php

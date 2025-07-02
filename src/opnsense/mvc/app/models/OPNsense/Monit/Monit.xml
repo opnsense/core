@@ -25,8 +25,7 @@
          <mailserver type="HostnameField">
             <Default>127.0.0.1</Default>
             <Required>Y</Required>
-            <asList>Y</asList>
-            <FieldSeparator>,</FieldSeparator>
+            <AsList>Y</AsList>
             <ValidationMessage>Please specify a valid servername or IP address.</ValidationMessage>
          </mailserver>
          <port type="IntegerField">
@@ -102,9 +101,7 @@
             <MaximumValue>65535</MaximumValue>
             <ValidationMessage>Local Monit Port needs to be an integer value between 0 and 65535</ValidationMessage>
          </httpdPort>
-         <httpdAllow type="CSVListField">
-            <Multiple>Y</Multiple>
-         </httpdAllow>
+         <httpdAllow type="CSVListField"/>
          <mmonitUrl type="TextField"/>
          <mmonitTimeout type="IntegerField">
             <Default>5</Default>

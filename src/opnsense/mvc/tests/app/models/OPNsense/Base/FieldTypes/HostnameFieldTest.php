@@ -43,6 +43,17 @@ class HostnameFieldTest extends Field_Framework_TestCase
         $this->assertInstanceOf('\OPNsense\Base\FieldTypes\HostnameField', new HostnameField());
     }
 
+    /**
+     * generic property tests
+     */
+    public function testGeneric()
+    {
+        $field = new HostnameField();
+
+        $this->assertFalse($field->isContainer());
+        $this->assertFalse($field->isList());
+    }
+
     public function testRequiredEmpty()
     {
         $this->expectException(\OPNsense\Base\ValidationException::class);
