@@ -30,14 +30,14 @@
                 </mtu>
                 <dns type="NetworkField">
                     <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                     <NetMaskAllowed>N</NetMaskAllowed>
                     <WildcardEnabled>N</WildcardEnabled>
                     <ValidationMessage>Please use valid IPv4 or IPv6 addresses.</ValidationMessage>
                 </dns>
                 <tunneladdress type="NetworkField">
                     <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </tunneladdress>
                 <disableroutes type="BooleanField">
                     <Default>0</Default>

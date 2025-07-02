@@ -25,7 +25,7 @@
          <mailserver type="HostnameField">
             <Default>127.0.0.1</Default>
             <Required>Y</Required>
-            <asList>Y</asList>
+            <AsList>Y</AsList>
             <FieldSeparator>,</FieldSeparator>
             <ValidationMessage>Please specify a valid servername or IP address.</ValidationMessage>
          </mailserver>

@@ -266,7 +266,7 @@
                     <Required>Y</Required>
                     <FieldSeparator>,</FieldSeparator>
                     <Default>any</Default>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </source>
                 <source_not type="BooleanField">
                     <Default>0</Default>
@@ -282,7 +282,7 @@
                     <Required>Y</Required>
                     <FieldSeparator>,</FieldSeparator>
                     <Default>any</Default>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </destination>
                 <destination_not type="BooleanField">
                     <Default>0</Default>

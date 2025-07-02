@@ -32,7 +32,7 @@
                     <NetMaskRequired>Y</NetMaskRequired>
                     <FieldSeparator>,</FieldSeparator>
                     <Required>Y</Required>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </tunneladdress>
                 <serveraddress type="HostnameField">
                     <Constraints>

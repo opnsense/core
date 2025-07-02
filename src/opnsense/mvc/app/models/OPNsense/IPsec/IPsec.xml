@@ -17,7 +17,7 @@
             </disablevpnrules>
             <passthrough_networks  type="NetworkField">
                 <FieldSeparator>,</FieldSeparator>
-                <asList>Y</asList>
+                <AsList>Y</AsList>
                 <WildcardEnabled>N</WildcardEnabled>
             </passthrough_networks>
             <user_source type="AuthenticationServerField">
@@ -103,12 +103,12 @@
                     <subnet type="NetworkField">
                         <NetMaskRequired>Y</NetMaskRequired>
                         <FieldSeparator>,</FieldSeparator>
-                        <asList>Y</asList>
+                        <AsList>Y</AsList>
                     </subnet>
                     <split-include type="NetworkField">
                         <NetMaskRequired>Y</NetMaskRequired>
                         <FieldSeparator>,</FieldSeparator>
-                        <asList>Y</asList>
+                        <AsList>Y</AsList>
                     </split-include>
                     <!-- UNITY_DEF_DOMAIN -->
                     <x_28674 type="TextField"/>
@@ -140,12 +140,12 @@
                     <dns type="NetworkField">
                         <NetmaskAllowed>N</NetmaskAllowed>
                         <FieldSeparator>,</FieldSeparator>
-                        <asList>Y</asList>
+                        <AsList>Y</AsList>
                     </dns>
                     <nbns type="NetworkField">
                         <NetmaskAllowed>N</NetmaskAllowed>
                         <FieldSeparator>,</FieldSeparator>
-                        <asList>Y</asList>
+                        <AsList>Y</AsList>
                     </nbns>
                 </attr>
                 <eap-radius>

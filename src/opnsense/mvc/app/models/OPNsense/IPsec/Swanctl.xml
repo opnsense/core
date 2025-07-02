@@ -301,12 +301,12 @@
                 </policies>
                 <local_ts type="NetworkField">
                     <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                     <WildcardEnabled>N</WildcardEnabled>
                 </local_ts>
                 <remote_ts type="NetworkField">
                     <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                     <WildcardEnabled>N</WildcardEnabled>
                 </remote_ts>
                 <rekey_time type="IntegerField">

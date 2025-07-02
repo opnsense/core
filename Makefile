@@ -466,6 +466,7 @@ style-model:
 		perl -i -pe 's/<multiple>(.*?)<\/multiple>/<Multiple>$$1<\/Multiple>/g' $${MODEL}; \
 		perl -i -pe 's/<required>(.*?)<\/required>/<Required>$$1<\/Required>/g' $${MODEL}; \
 		perl -i -pe 's/<mask>(.*?)<\/mask>/<Mask>$$1<\/Mask>/g' $${MODEL}; \
+		perl -i -pe 's/<asList>(.*?)<\/asList>/<AsList>$$1<\/AsList>/g' $${MODEL}; \
 	done
 
 style: style-python style-php

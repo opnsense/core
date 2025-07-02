@@ -64,11 +64,11 @@
                 </servername>
                 <allowedAddresses type="NetworkField">
                     <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                     <WildcardEnabled>N</WildcardEnabled>
                 </allowedAddresses>
                 <allowedMACAddresses type="MacAddressField">
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </allowedMACAddresses>
                 <extendedPreAuthData type="BooleanField">
                     <Default>0</Default>
