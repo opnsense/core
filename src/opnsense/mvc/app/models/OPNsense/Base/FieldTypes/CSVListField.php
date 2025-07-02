@@ -35,18 +35,18 @@ use OPNsense\Base\Validators\CallbackValidator;
  * Physical stored as a single entry, stores multiple selections.
  * @package OPNsense\Base\FieldTypes
  */
-class CSVListField extends BaseField
+class CSVListField extends BaseSetField
 {
     /**
-     * @var bool marks if this is a data node or a container
+     * @var bool when set, results are returned as list (with all options enabled)
      */
-    protected $internalIsContainer = false;
+    protected $internalAsList = true;
 
     /**
      * selectable options, key/value store.
      * value = display option
      */
-    private $selectOptions = array();
+    private $selectOptions = [];
 
     /**
      * @var string basic regex validation to use for the complete field
@@ -81,11 +81,7 @@ class CSVListField extends BaseField
      */
     public function setMaskPerItem($value)
     {
-        if (strtoupper(trim($value)) == "Y") {
-            $this->internalMaskPerItem = true;
-        } else {
-            $this->internalMaskPerItem = false;
-        }
+        $this->internalMaskPerItem = strtoupper(trim($value)) == 'Y';
     }
 
     /**
@@ -94,19 +90,19 @@ class CSVListField extends BaseField
      */
     public function getNodeData()
     {
-        $selectlist = explode(',', $this->internalValue);
+        $selectlist = $this->iterateInput($this->internalValue);
         $result = [];
 
         foreach ($this->selectOptions as $optKey => $optValue) {
-            $result[$optKey] = array("value" => $optValue, "selected" => 0);
+            $result[$optKey] = ['value' => $optValue, 'selected' => 0];
         }
 
         foreach ($selectlist as $optKey) {
             if (strlen($optKey) > 0) {
                 if (isset($result[$optKey])) {
-                    $result[$optKey]["selected"] = 1;
+                    $result[$optKey]['selected'] = 1;
                 } else {
-                    $result[$optKey] = array("value" => $optKey, "selected" => 1);
+                    $result[$optKey] = ['value' => $optKey, 'selected' => 1];
                 }
             }
         }
@@ -129,9 +125,9 @@ class CSVListField extends BaseField
             }
         } else {
             // string list
-            foreach (explode(',', $list) as $option) {
-                if (strpos($option, "|") !== false) {
-                    $tmp = explode("|", $option);
+            foreach ($this->iterateInput($list) as $option) {
+                if (strpos($option, '|') !== false) {
+                    $tmp = explode('|', $option);
                     $this->selectOptions[$tmp[0]] = $tmp[1];
                 } else {
                     $this->selectOptions[$option] = $option;
@@ -147,39 +143,33 @@ class CSVListField extends BaseField
     public function getValidators()
     {
         $validators = parent::getValidators();
+
         if ($this->internalValue != null && $this->internalMask != null) {
-            $validators[] = new CallbackValidator(['callback' => function ($data) {
+            $that = $this;
+            $validators[] = new CallbackValidator(['callback' => function ($data) use ($that) {
                 $regex_match = function ($value, $pattern) {
                     $matches = [];
                     preg_match(trim($pattern), $value, $matches);
                     return isset($matches[0]) ? $matches[0] == $value : false;
                 };
 
-                if ($this->internalMaskPerItem) {
-                    $items = explode(',', $this->internalValue);
+                if ($that->internalMaskPerItem) {
+                    $items = $that->iterateInput($that->internalValue);
                     foreach ($items as $item) {
-                        if (!$regex_match($item, $this->internalMask)) {
-                            return ["\"" . $item . "\" is invalid. " . $this->getValidationMessage()];
+                        if (!$regex_match($item, $that->internalMask)) {
+                            return ["\"" . $item . "\" is invalid. " . $that->getValidationMessage()];
                         }
                     }
                 } else {
-                    if (!$regex_match($this->internalValue, $this->internalMask)) {
-                        return [$this->getValidationMessage()];
+                    if (!$regex_match($that->internalValue, $that->internalMask)) {
+                        return [$that->getValidationMessage()];
                     }
                 }
+
                 return [];
             }]);
         }
-        return $validators;
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getValues(): array
-    {
-        return array_values(array_filter(explode(',', $this->internalValue), function ($k) {
-            return !!strlen($k);
-        }));
+        return $validators;
     }
 }
