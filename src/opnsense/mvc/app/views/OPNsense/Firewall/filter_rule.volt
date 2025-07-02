@@ -507,7 +507,8 @@
             $('[data-toggle="tooltip"]').tooltip({ container: 'body' });
         });
 
-        function populateCategoriesSelectpicker() {
+        // Populate category selectpicker
+        function populateCategoriesSelectpicker(callback) {
             ajaxCall('/api/firewall/filter/list_categories', {}, function (data) {
                 if (!data.rows) return;
 
@@ -543,14 +544,21 @@
                 );
 
                 $categoryFilter.val(currentSelection).selectpicker('refresh');
+
+                if (typeof callback === "function") {
+                    callback();
+                }
             });
         }
 
         // Track if user has actually changed the interface dropdown, or it was the controller
         let interfaceInitialized = false;
 
+        // Do not reload the grid when selectpickers get refreshed during the reconfigureAct
+        let reconfigureActInProgress = false;
+
         // Populate interface selectpicker
-        function populateInterfaceSelectpicker() {
+        function populateInterfaceSelectpicker(callback) {
             $('#interface_select').fetch_options(
                 '/api/firewall/filter/get_interface_list',
                 {},
@@ -593,10 +601,17 @@
                         const allOptions = Object.values(data).flatMap(group => group.items.map(i => i.value));
                         if (allOptions.includes(ifaceFromHash)) {
                             $('#interface_select').val(ifaceFromHash).selectpicker('refresh');
-                            grid.bootgrid('reload');
+                            // Skip grid reload during reconfigureAct
+                            if (!reconfigureActInProgress) {
+                                grid.bootgrid('reload');
+                            }
                         }
                     }
                     interfaceInitialized = true;
+
+                    if (typeof callback === "function") {
+                        callback();
+                    }
                 },
                 true  // render_html to show counts as badges
             );
@@ -607,8 +622,8 @@
         // move selectpickers into action bar
         $("#interface_select_container").detach().insertBefore('#{{formGridFilterRule["table_id"]}}-header > .row > .actionBar > .search');
         $('#interface_select').on('changed.bs.select', function () {
-            // Only update url hash when user has changed the dropdown
-            if (!interfaceInitialized) return;
+            // Only update URL hash when user has changed the dropdown, and never during reconfigureAct
+            if (!interfaceInitialized || reconfigureActInProgress) return;
 
             const hashVal = encodeURIComponent($(this).val() ?? '');
             history.replaceState(null, null, `#interface=${hashVal}`);
@@ -617,7 +632,9 @@
         });
 
         $("#type_filter_container").detach().insertAfter("#interface_select_container");
-        $("#category_filter").change(function(){
+        $("#category_filter").on('changed.bs.select', function(){
+            // Skip grid reload during reconfigureAct
+            if (reconfigureActInProgress) return;
             grid.bootgrid('reload');
         });
 
@@ -705,10 +722,29 @@
         // Dynamically add fa icons to selectpickers
         $('#category_filter').parent().find('.dropdown-toggle').prepend('<i class="fa fa-tag" style="margin-right: 6px;"></i>');
 
+        // Save current selectpicker and reapply selection
+        function withPreservedSelection($select, populateFn) {
+            return new Promise(resolve => {
+                const prev = $select.val();
+                populateFn(() => {
+                    if (prev && prev.length > 0) {
+                        $select.val(prev).selectpicker('refresh');
+                    }
+                    resolve();
+                });
+            });
+        }
+
         $("#reconfigureAct").SimpleActionButton({
-            onAction: function (data, status) {
-                populateInterfaceSelectpicker();
-                populateCategoriesSelectpicker();
+            onAction(data, status) {
+                reconfigureActInProgress = true;
+
+                Promise.all([
+                    withPreservedSelection($('#interface_select'), populateInterfaceSelectpicker),
+                    withPreservedSelection($('#category_filter'), populateCategoriesSelectpicker)
+                ]).then(() => {
+                    reconfigureActInProgress = false;
+                });
             }
         });
 
