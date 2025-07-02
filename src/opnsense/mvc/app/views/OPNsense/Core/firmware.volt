@@ -46,7 +46,9 @@
                 return $(this).text();
             }).get();
             let name = row_by_col.join(',').toLowerCase();
-            if (search.length != 0 && name.indexOf(search) == -1) {
+            if (entries == 'plugin_entry' && !$(this).hasClass('filter_sup_inst') && !$("#plugin_show_community").is(':checked')) {
+                $(this).hide();
+            } else if (search.length != 0 && name.indexOf(search) == -1) {
                 $(this).hide();
             } else {
                 $(this).show();
@@ -436,8 +438,13 @@
                     bold_on = '<b>';
                     bold_off = '</b>';
                 }
+                let cls_filter_sup_inst = '';
+                if (['1', '2'].includes(row['tier']) || row['installed'] == '1' || row['configured'] == "1") {
+                    cls_filter_sup_inst = 'filter_sup_inst'; // supported [tier 1,2] or (should be) installed
+                }
                 $('#pluginlist > tbody').append(
-                    '<tr class="plugin_entry">' + '<td>' + bold_on + row['name'] + status_text + bold_off + '</td>' +
+                    '<tr class="plugin_entry '+cls_filter_sup_inst+'">' +
+                    '<td>' + bold_on + row['name'] + status_text + bold_off + '</td>' +
                     '<td>' + bold_on + row['version'] + bold_off + '</td>' +
                     '<td>' + bold_on + row['flatsize'] + bold_off + '</td>' +
                     '<td>' + bold_on + row['tier'] + bold_off + '</td>' +
@@ -485,6 +492,7 @@
             } else {
                 $('#plugin_actions').hide();
             }
+            $("#plugin_show_community").change();
 
             $("#changeloglist > tbody").empty();
             $("#changeloglist > thead").html("<tr><th>{{ lang._('Version') }}</th>" +
@@ -640,6 +648,7 @@
 
         $("#plugin_search").keyup(function () { generic_search(this, 'plugin_entry'); });
         $("#package_search").keyup(function () { generic_search(this, 'package_entry'); });
+        $("#plugin_show_community").change(function(){ $("#plugin_search").keyup();})
 
         ajaxGet('/api/core/firmware/running', {}, function(data, status) {
             if (data['status'] == 'busy') {
@@ -938,6 +947,16 @@
                 <div id="plugins" class="tab-pane table-responsive">
                     <table class="table table-striped table-condensed" id="pluginlist">
                         <thead>
+                            <tr>
+                                <th colspan="3"></th>
+                                <th colspan="4">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" id="plugin_show_community"> <strong>{{ lang._('Show (Tier 3) community plugins') }}</strong>
+                                        </label>
+                                    </div>
+                                </th>
+                            </tr>
                             <tr>
                                 <th style="vertical-align:middle"><input type="text" class="input-sm" autocomplete="off" id="plugin_search" placeholder="{{ lang._('Name') }}"></th>
                                 <th style="vertical-align:middle">{{ lang._('Version') }}</th>
