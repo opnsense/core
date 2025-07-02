@@ -45,13 +45,14 @@ class CSVListFieldTest extends Field_Framework_TestCase
     }
 
     /**
-     * value combination tests
+     * generic property tests
      */
     public function testGeneric()
     {
         $field = new CSVListField();
 
         $this->assertFalse($field->isContainer());
+        $this->assertTrue($field->isList());
     }
 
     /**
