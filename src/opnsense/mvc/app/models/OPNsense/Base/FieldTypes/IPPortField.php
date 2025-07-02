@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2024 Deciso B.V.
+ * Copyright (C) 2024-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,6 +43,11 @@ class IPPortField extends BaseSetField
     protected $internalAddressFamily = null;
 
     /**
+     * @var string port requirement
+     */
+    protected $internalPortOptional = false;
+
+    /**
      * @var bool hostname allowed
      */
     protected $internalHostnameAllowed = false;
@@ -66,12 +71,21 @@ class IPPortField extends BaseSetField
     }
 
     /**
+     * setter for optional port
+     * @param $value port allowed Y/N
+     */
+    public function setPortOptional($value)
+    {
+        $this->internalPortOptional = trim(strtoupper($value)) == 'Y';
+    }
+
+    /**
      * select if a hostname may be provided instead of an address (without addressfamily validation)
      * @param $value string value Y/N
      */
     public function setHostnameAllowed($value)
     {
-        $this->internalHostnameAllowed = trim(strtoupper($value)) == "Y";
+        $this->internalHostnameAllowed = trim(strtoupper($value)) == 'Y';
     }
 
     /**
@@ -94,18 +108,23 @@ class IPPortField extends BaseSetField
             $validators[] = new CallbackValidator(["callback" => function ($data) {
                 foreach ($this->iterateInput($data) as $value) {
                     $parts = explode(':', $value);
+
                     if ($this->internalAddressFamily == 'ipv4' || $this->internalAddressFamily == null) {
                         if (count($parts) == 2 && Util::isIpv4Address($parts[0]) && Util::isPort($parts[1])) {
                             continue;
                         }
+                        if ($this->internalPortOptional && Util::isIpv4Address($value)) {
+                            continue;
+                        }
                     }
-                    if (
-                        $this->internalHostnameAllowed &&
-                        count($parts) == 2 &&
-                        Util::isPort($parts[1]) &&
-                        filter_var($parts[0], FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false
-                    ) {
-                        continue;
+
+                    if ($this->internalHostnameAllowed) {
+                        if (count($parts) == 2 && Util::isPort($parts[1]) && filter_var($parts[0], FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false) {
+                            continue;
+                        }
+                        if ($this->internalPortOptional && filter_var($value, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false) {
+                            continue;
+                        }
                     }
 
                     if ($this->internalAddressFamily == 'ipv6' || $this->internalAddressFamily == null) {
@@ -116,6 +135,9 @@ class IPPortField extends BaseSetField
                             str_contains($parts[1], ':') &&
                             Util::isPort(trim($parts[1], ': '))
                         ) {
+                            continue;
+                        }
+                        if ($this->internalPortOptional && Util::isIpv6Address($value)) {
                             continue;
                         }
                     }
