@@ -71,9 +71,6 @@
                 }
             }
         });
-        grid_spd.on('loaded.rs.jquery.bootgrid', function() {
-            $('[data-toggle="tooltip"]').tooltip();
-        });
 
         $("#{{formGridSPD['table_id']}}").UIBootgrid({
           search:'/api/ipsec/manual_spd/search',
