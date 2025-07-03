@@ -140,7 +140,6 @@ CORE_DEPENDS?=		ca_root_nss \
 			dhcrelay \
 			dnsmasq \
 			dpinger \
-			expiretable \
 			filterlog \
 			flock \
 			flowd \

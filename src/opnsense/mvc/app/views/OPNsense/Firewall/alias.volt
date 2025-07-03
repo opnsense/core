@@ -454,6 +454,7 @@
             $("#row_alias\\.authtype").hide();
             $("#row_alias\\.interface").hide();
             $("#row_alias\\.path_expression").hide();
+            $("#row_alias\\.expire").hide();
             switch ($(this).val()) {
                 case 'authgroup':
                     $("#alias_type_authgroup").show();
@@ -470,6 +471,7 @@
                     $("#alias\\.proto").selectpicker('show');
                     break;
                 case 'external':
+                    $("#row_alias\\.expire").show();
                     break;
                 case 'networkgroup':
                     $("#alias_type_networkgroup").show();
@@ -679,6 +681,7 @@
                             <th data-column-id="type" data-width="12em" data-type="string">{{ lang._('Type') }}</th>
                             <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
                             <th data-column-id="content" data-type="string">{{ lang._('Content') }}</th>
+                            <th data-column-id="expire" data-type="string">{{ lang._('Expire') }}</th>
                             <th data-column-id="current_items" data-type="string">{{ lang._('Loaded#') }}</th>
                             <th data-column-id="last_updated"  data-formatter="timestamp" data-type="string">{{ lang._('Last updated') }}</th>
                             <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
@@ -986,6 +989,23 @@
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.enabled"></span>
+                                    </td>
+                                </tr>
+                                <tr id="row_alias.expire">
+                                    <td>
+                                        <div class="control-label" id="control_label_alias.expire">
+                                            <a id="help_for_alias.expire" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                                            <b>{{lang._('Expire')}}</b>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" size="50" id="alias.expire">
+                                        <div class="hidden" data-for="help_for_alias.expire">
+                                            <small>{{lang._('Time in seconds after which addresses are purged from the alias when not being used.')}}</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="help-block" id="help_block_alias.expire"></span>
                                     </td>
                                 </tr>
                                 <tr id="row_alias.description">

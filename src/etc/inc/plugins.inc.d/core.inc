@@ -264,10 +264,18 @@ function core_cron()
     $jobs = array();
 
     $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d syslog archive', '1');
-    $jobs[]['autocron'] = array('/usr/local/sbin/expiretable -v -t 3600 sshlockout', '2');
-    $jobs[]['autocron'] = array('/usr/local/sbin/expiretable -v -t 3600 virusprot', '3');
     $jobs[]['autocron'] = array('/usr/local/sbin/ping_hosts.sh', '*/4');
     $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d firmware changelog cron', '0', '22');
+
+    foreach ((new \OPNsense\Firewall\Alias(true))->aliases->alias->iterateItems() as $alias) {
+        if ($alias->type->isEqual('external') && !$alias->expire->isEmpty()) {
+            $cmd = [exec_safe("/sbin/pfctl -t %s -T expire %s", [$alias->name, $alias->expire])];
+            if ($alias->expire->asFloat() >= 3600) {
+                $cmd[] = '0,15,30,45';  /* every 15 minute cleanup */
+            }
+            $jobs[]['autocron'] = $cmd;
+        }
+    }
 
     /**
      * rrd graph collector, only schedule execution when enabled

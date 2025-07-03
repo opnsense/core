@@ -58,12 +58,7 @@ class AliasController extends ApiMutableModelControllerBase
             return $match_type && $match_cat;
         };
 
-        $result = $this->searchBase(
-            "aliases.alias",
-            ['enabled', 'name', 'description', 'type', 'content', 'current_items', 'last_updated'],
-            "name",
-            $filter_funct
-        );
+        $result = $this->searchBase("aliases.alias", null, "name", $filter_funct);
 
         /**
          * remap some source data from the model as searchBase() is not able to distinct this.
@@ -338,6 +333,7 @@ class AliasController extends ApiMutableModelControllerBase
             if (!empty($bckresult['messages'])) {
                 throw new UserException(implode("\n", $bckresult['messages']), gettext("Alias"));
             }
+            $backend->configdRun("cron restart", true);
             return array("status" => "ok");
         } else {
             return array("status" => "failed");

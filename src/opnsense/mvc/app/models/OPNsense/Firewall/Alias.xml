@@ -77,6 +77,10 @@
                         <Bearer>Bearer</Bearer>
                     </OptionValues>
                 </authtype>
+                <expire type="IntegerField">
+                    <MinimumValue>60</MinimumValue>
+                    <MaximumValue>999999999</MaximumValue>
+                </expire>
                 <categories type="ModelRelationField">
                     <Model>
                         <rulesets>
