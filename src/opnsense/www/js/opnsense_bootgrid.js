@@ -130,6 +130,7 @@ class UIBootgrid {
                 ...this._internalFormatters()
             }, // formatter callback functions passed to column definitions
             headerFormatters: {},
+            statusMapping: {},
             sorters: {
                 ...this._internalSorters()
             },
@@ -374,6 +375,8 @@ class UIBootgrid {
             }
         }
 
+        this.options.statusMapping = bootGridOptions?.statusMapping ?? {};
+
         // convert old-style converters
         // For context: these converters are relevant to have a notion of sorting or localization for column values
         // in cases where the backend doesn't do sorting for us (ajax=false).
@@ -389,7 +392,6 @@ class UIBootgrid {
                 console.error(`Converter "${key}" should be a formatter`);
             }
         }
-
 
         // Detect if old bootgrid was of 'responsive' type, meaning:
         // - overflow: inherit !important
@@ -823,6 +825,11 @@ class UIBootgrid {
     }
 
     _onCellRendered(cell, formatterParams) {
+        if (!$.isEmptyObject(this.options.statusMapping)) {
+            // XXX this fully assumes a row has a 'status' property
+            $(cell.getElement()).addClass(this.options.statusMapping[cell.getData()['status']]);
+        }
+
         if (!this.options.virtualDOM) {
             // if the DOM isn't virtual, all tooltips will have been rendered
             return;
