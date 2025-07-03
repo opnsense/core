@@ -1176,10 +1176,10 @@ class UIBootgrid {
                 let end, start;
 
                 if (this.options.ajax) {
-                    pageSize = this.curRowCount === true ? this.paginationTotal : this.curRowCount;
                     totalRows = this.paginationTotal;
                 }
 
+                pageSize = this.curRowCount === true ? this.paginationTotal : this.curRowCount;
                 end = currentPage * pageSize;
                 start = (totalRows === 0) ? 0 : ((currentPage - 1) * pageSize) + 1;
                 end = (totalRows === 0 || end === -1 || end > totalRows) ? totalRows : end;
