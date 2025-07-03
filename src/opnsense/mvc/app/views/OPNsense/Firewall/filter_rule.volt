@@ -509,46 +509,49 @@
 
         // Populate category selectpicker
         function populateCategoriesSelectpicker(callback) {
-            ajaxCall('/api/firewall/filter/list_categories', {}, function (data) {
-                if (!data.rows) return;
+            const currentSelection = $("#category_filter").val();
 
-                const $categoryFilter = $("#category_filter");
-                const currentSelection = $categoryFilter.val();
+            $("#category_filter").fetch_options(
+                '/api/firewall/filter/list_categories',
+                {},
+                function (data) {
+                    if (!data.rows) return [];
 
-                // Sort used categories first, then alphabetically
-                data.rows.sort((a, b) => {
-                    const aUsed = a.used > 0 ? 0 : 1;
-                    const bUsed = b.used > 0 ? 0 : 1;
+                    // Sort used categories first, then alphabetically
+                    data.rows.sort((a, b) => {
+                        const aUsed = a.used > 0 ? 0 : 1;
+                        const bUsed = b.used > 0 ? 0 : 1;
 
-                    if (aUsed !== bUsed) {
-                        return aUsed - bUsed;
-                    }
+                        if (aUsed !== bUsed) return aUsed - bUsed;
+                        return a.name.localeCompare(b.name);
+                    });
 
-                    return a.name.localeCompare(b.name);
-                });
-
-                $categoryFilter.empty().append(
-                    data.rows.map(row => {
+                    return data.rows.map(row => {
                         const optVal = $('<div/>').text(row.name).html();
                         const bgColor = row.color || '31708f';
 
-                        return $("<option/>", {
+                        return {
                             value: row.uuid,
-                            html: row.name,
+                            label: row.name,
                             id: row.used > 0 ? row.uuid : undefined,
-                            "data-content": row.used > 0
+                            'data-content': row.used > 0
                                 ? `<span><span class="badge badge-sm" style="background:#${bgColor};">${row.used}</span> ${optVal}</span>`
                                 : undefined
-                        });
-                    })
-                );
+                        };
+                    });
+                },
+                false,
+                function () {
+                    if (currentSelection?.length) {
+                        $("#category_filter").val(currentSelection).selectpicker('refresh');
+                    }
 
-                $categoryFilter.val(currentSelection).selectpicker('refresh');
-
-                if (typeof callback === "function") {
-                    callback();
-                }
-            });
+                    if (typeof callback === "function") {
+                        callback();
+                    }
+                },
+                true  // render_html
+            );
         }
 
         // Track if user has actually changed the interface dropdown, or it was the controller
@@ -722,26 +725,13 @@
         // Dynamically add fa icons to selectpickers
         $('#category_filter').parent().find('.dropdown-toggle').prepend('<i class="fa fa-tag" style="margin-right: 6px;"></i>');
 
-        // Save current selectpicker and reapply selection
-        function withPreservedSelection($select, populateFn) {
-            return new Promise(resolve => {
-                const prev = $select.val();
-                populateFn(() => {
-                    if (prev && prev.length > 0) {
-                        $select.val(prev).selectpicker('refresh');
-                    }
-                    resolve();
-                });
-            });
-        }
-
         $("#reconfigureAct").SimpleActionButton({
             onAction(data, status) {
                 reconfigureActInProgress = true;
 
                 Promise.all([
-                    withPreservedSelection($('#interface_select'), populateInterfaceSelectpicker),
-                    withPreservedSelection($('#category_filter'), populateCategoriesSelectpicker)
+                    new Promise(populateInterfaceSelectpicker),
+                    new Promise(populateCategoriesSelectpicker)
                 ]).then(() => {
                     reconfigureActInProgress = false;
                 });
