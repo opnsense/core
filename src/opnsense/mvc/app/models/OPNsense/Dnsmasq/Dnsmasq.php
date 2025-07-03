@@ -130,7 +130,7 @@ class Dnsmasq extends BaseModel
             }
             $key = $domain->__reference;
 
-            if ($domain->domain == '*') {
+            if ($domain->domain == '*' && !$domain->ipset->isEmpty()) {
                 $messages->appendMessage(
                     new Message(gettext("Top level wildcard entries are not allowed for Ipset."), $key . ".domain")
                 );
