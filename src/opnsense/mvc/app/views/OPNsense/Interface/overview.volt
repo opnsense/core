@@ -313,11 +313,11 @@
                     });
                     if ($collapsed.length > 0) {
                         $collapsed.show();
-                        $expand.html('Collapse');
+                        $expand.html("{{ lang._('Collapse') }}");
                     } else {
                         $collapse = $route_container.children('.route-content').slice(2);
                         $collapse.hide();
-                        $expand.html('Expand');
+                        $expand.html("{{ lang._('Expand') }}");
                     }
 
                     $("#grid-overview").bootgrid("normalizeRowHeight");
