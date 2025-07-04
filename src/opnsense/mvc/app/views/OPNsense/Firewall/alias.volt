@@ -450,6 +450,7 @@
                 $("#to-select_alias\\.content").click();
             }
             $(".alias_type").hide();
+            $("#alias\\.proto").selectpicker('hide');
             $("#row_alias\\.updatefreq").hide();
             $("#row_alias\\.authtype").hide();
             $("#row_alias\\.interface").hide();
@@ -458,7 +459,6 @@
             switch ($(this).val()) {
                 case 'authgroup':
                     $("#alias_type_authgroup").show();
-                    $("#alias\\.proto").selectpicker('hide');
                     break;
                 case 'geoip':
                     $("#alias_type_geoip").show();
@@ -475,11 +475,9 @@
                     break;
                 case 'networkgroup':
                     $("#alias_type_networkgroup").show();
-                    $("#alias\\.proto").selectpicker('hide');
                     break;
                 case 'dynipv6host':
                     $("#row_alias\\.interface").show();
-                    $("#alias\\.proto").selectpicker('hide');
                     $("#select_alias\\.content").show();
                     break;
                 case 'urljson':
@@ -508,7 +506,6 @@
                     /* FALLTHROUGH */
                 default:
                     $("#select_alias\\.content").show();
-                    $("#alias\\.proto").selectpicker('hide');
                     break;
             }
             if ($(this).val() === 'port') {
