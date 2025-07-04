@@ -131,7 +131,7 @@
                                 });
                                 $elements.append($('<button></button>')
                                     .attr('class', 'route-expand btn btn-primary btn-xs')
-                                    .text('Expand'));
+                                    .text("{{ lang._('Expand') }}"));
                             }
                             return $elements.prop('outerHTML');
 
