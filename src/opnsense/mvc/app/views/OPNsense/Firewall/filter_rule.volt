@@ -508,10 +508,10 @@
         });
 
         // Populate category selectpicker
-        function populateCategoriesSelectpicker(callback) {
+        function populateCategoriesSelectpicker() {
             const currentSelection = $("#category_filter").val();
 
-            $("#category_filter").fetch_options(
+            return $("#category_filter").fetch_options(
                 '/api/firewall/filter/list_categories',
                 {},
                 function (data) {
@@ -545,10 +545,6 @@
                     if (currentSelection?.length) {
                         $("#category_filter").val(currentSelection).selectpicker('refresh');
                     }
-
-                    if (typeof callback === "function") {
-                        callback();
-                    }
                 },
                 true  // render_html
             );
@@ -561,8 +557,8 @@
         let reconfigureActInProgress = false;
 
         // Populate interface selectpicker
-        function populateInterfaceSelectpicker(callback) {
-            $('#interface_select').fetch_options(
+        function populateInterfaceSelectpicker() {
+            return $('#interface_select').fetch_options(
                 '/api/firewall/filter/get_interface_list',
                 {},
                 function (data) {
@@ -612,9 +608,6 @@
                     }
                     interfaceInitialized = true;
 
-                    if (typeof callback === "function") {
-                        callback();
-                    }
                 },
                 true  // render_html to show counts as badges
             );
@@ -730,8 +723,8 @@
                 reconfigureActInProgress = true;
 
                 Promise.all([
-                    new Promise(populateInterfaceSelectpicker),
-                    new Promise(populateCategoriesSelectpicker)
+                    populateInterfaceSelectpicker(),
+                    populateCategoriesSelectpicker()
                 ]).then(() => {
                     reconfigureActInProgress = false;
                 });
