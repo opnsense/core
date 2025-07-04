@@ -180,7 +180,7 @@
                 $('body').tooltip({
                     selector: '[data-toggle="tooltip"]',
                     container: 'body'
-                })
+                });
 
                 // fix menu scroll position on page load
                 $(".list-group-item.active").each(function(){
