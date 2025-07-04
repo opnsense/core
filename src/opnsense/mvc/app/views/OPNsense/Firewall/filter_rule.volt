@@ -507,51 +507,58 @@
             $('[data-toggle="tooltip"]').tooltip({ container: 'body' });
         });
 
+        // Populate category selectpicker
         function populateCategoriesSelectpicker() {
-            ajaxCall('/api/firewall/filter/list_categories', {}, function (data) {
-                if (!data.rows) return;
+            const currentSelection = $("#category_filter").val();
 
-                const $categoryFilter = $("#category_filter");
-                const currentSelection = $categoryFilter.val();
+            return $("#category_filter").fetch_options(
+                '/api/firewall/filter/list_categories',
+                {},
+                function (data) {
+                    if (!data.rows) return [];
 
-                // Sort used categories first, then alphabetically
-                data.rows.sort((a, b) => {
-                    const aUsed = a.used > 0 ? 0 : 1;
-                    const bUsed = b.used > 0 ? 0 : 1;
+                    // Sort used categories first, then alphabetically
+                    data.rows.sort((a, b) => {
+                        const aUsed = a.used > 0 ? 0 : 1;
+                        const bUsed = b.used > 0 ? 0 : 1;
 
-                    if (aUsed !== bUsed) {
-                        return aUsed - bUsed;
-                    }
+                        if (aUsed !== bUsed) return aUsed - bUsed;
+                        return a.name.localeCompare(b.name);
+                    });
 
-                    return a.name.localeCompare(b.name);
-                });
-
-                $categoryFilter.empty().append(
-                    data.rows.map(row => {
+                    return data.rows.map(row => {
                         const optVal = $('<div/>').text(row.name).html();
                         const bgColor = row.color || '31708f';
 
-                        return $("<option/>", {
+                        return {
                             value: row.uuid,
-                            html: row.name,
+                            label: row.name,
                             id: row.used > 0 ? row.uuid : undefined,
-                            "data-content": row.used > 0
+                            'data-content': row.used > 0
                                 ? `<span><span class="badge badge-sm" style="background:#${bgColor};">${row.used}</span> ${optVal}</span>`
                                 : undefined
-                        });
-                    })
-                );
-
-                $categoryFilter.val(currentSelection).selectpicker('refresh');
-            });
+                        };
+                    });
+                },
+                false,
+                function () {
+                    if (currentSelection?.length) {
+                        $("#category_filter").val(currentSelection).selectpicker('refresh');
+                    }
+                },
+                true  // render_html
+            );
         }
 
         // Track if user has actually changed the interface dropdown, or it was the controller
         let interfaceInitialized = false;
 
+        // Do not reload the grid when selectpickers get refreshed during the reconfigureAct
+        let reconfigureActInProgress = false;
+
         // Populate interface selectpicker
         function populateInterfaceSelectpicker() {
-            $('#interface_select').fetch_options(
+            return $('#interface_select').fetch_options(
                 '/api/firewall/filter/get_interface_list',
                 {},
                 function (data) {
@@ -593,10 +600,14 @@
                         const allOptions = Object.values(data).flatMap(group => group.items.map(i => i.value));
                         if (allOptions.includes(ifaceFromHash)) {
                             $('#interface_select').val(ifaceFromHash).selectpicker('refresh');
-                            grid.bootgrid('reload');
+                            // Skip grid reload during reconfigureAct
+                            if (!reconfigureActInProgress) {
+                                grid.bootgrid('reload');
+                            }
                         }
                     }
                     interfaceInitialized = true;
+
                 },
                 true  // render_html to show counts as badges
             );
@@ -607,8 +618,8 @@
         // move selectpickers into action bar
         $("#interface_select_container").detach().insertBefore('#{{formGridFilterRule["table_id"]}}-header > .row > .actionBar > .search');
         $('#interface_select').on('changed.bs.select', function () {
-            // Only update url hash when user has changed the dropdown
-            if (!interfaceInitialized) return;
+            // Only update URL hash when user has changed the dropdown, and never during reconfigureAct
+            if (!interfaceInitialized || reconfigureActInProgress) return;
 
             const hashVal = encodeURIComponent($(this).val() ?? '');
             history.replaceState(null, null, `#interface=${hashVal}`);
@@ -617,7 +628,9 @@
         });
 
         $("#type_filter_container").detach().insertAfter("#interface_select_container");
-        $("#category_filter").change(function(){
+        $("#category_filter").on('changed.bs.select', function(){
+            // Skip grid reload during reconfigureAct
+            if (reconfigureActInProgress) return;
             grid.bootgrid('reload');
         });
 
@@ -706,9 +719,18 @@
         $('#category_filter').parent().find('.dropdown-toggle').prepend('<i class="fa fa-tag" style="margin-right: 6px;"></i>');
 
         $("#reconfigureAct").SimpleActionButton({
-            onAction: function (data, status) {
-                populateInterfaceSelectpicker();
-                populateCategoriesSelectpicker();
+            onPreAction() {
+                reconfigureActInProgress = true;
+                return $.Deferred().resolve();
+            },
+            onAction(data, status) {
+                Promise.all([
+                    populateInterfaceSelectpicker(),
+                    populateCategoriesSelectpicker()
+                ])
+                .finally(() => {
+                    reconfigureActInProgress = false;
+                });
             }
         });
 
