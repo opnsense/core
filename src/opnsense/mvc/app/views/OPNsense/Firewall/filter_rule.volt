@@ -725,7 +725,8 @@
                 Promise.all([
                     populateInterfaceSelectpicker(),
                     populateCategoriesSelectpicker()
-                ]).then(() => {
+                ])
+                .finally(() => {
                     reconfigureActInProgress = false;
                 });
             }
