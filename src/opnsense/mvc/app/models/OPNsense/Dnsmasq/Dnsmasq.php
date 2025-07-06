@@ -57,11 +57,29 @@ class Dnsmasq extends BaseModel
         $messages = parent::performValidation($validateFullModel);
 
         $usedDhcpIpAddresses = [];
+        $usedHostFqdns = [];
+        $usedHostCnames = [];
         foreach ($this->hosts->iterateItems() as $host) {
             if (!$host->hwaddr->isEmpty() || !$host->client_id->isEmpty()) {
                 foreach (array_filter(explode(',', (string)$host->ip)) as $ip) {
                     $usedDhcpIpAddresses[$ip] = isset($usedDhcpIpAddresses[$ip]) ? $usedDhcpIpAddresses[$ip] + 1 : 1;
                 }
+            }
+
+            if (!$host->host->isEmpty()) {
+                $fqdn = (string)$host->host;
+                if (!$host->domain->isEmpty()) {
+                    $fqdn .= '.' . (string)$host->domain;
+                }
+                $usedHostFqdns[$fqdn] = true;
+            }
+
+            foreach (array_filter(explode(',', (string)$host->aliases)) as $alias) {
+                $usedHostFqdns[$alias] = true;
+            }
+
+            foreach (array_filter(explode(',', (string)$host->cnames)) as $cname) {
+                $usedHostCnames[$cname] = ($usedHostCnames[$cname] ?? 0) + 1;
             }
         }
 
@@ -122,6 +140,27 @@ class Dnsmasq extends BaseModel
                     $messages->appendMessage(new Message($messageText, $key . ".ip"));
                 }
             }
+
+            foreach (array_filter(explode(',', (string)$host->cnames)) as $cname) {
+                if ($usedHostCnames[$cname] > 1) {
+                    $messages->appendMessage(
+                        new Message(
+                            sprintf(gettext("'%s' is already used by another host override."), $cname),
+                            $key . ".cnames"
+                        )
+                    );
+                }
+
+                if (isset($usedHostFqdns[$cname])) {
+                    $messages->appendMessage(
+                        new Message(
+                            sprintf(gettext("'%s' must not overlap with any existing host or alias in any host override."), $cname),
+                            $key . ".cnames"
+                        )
+                    );
+                }
+            }
+
         }
 
         foreach ($this->domainoverrides->iterateItems() as $domain) {

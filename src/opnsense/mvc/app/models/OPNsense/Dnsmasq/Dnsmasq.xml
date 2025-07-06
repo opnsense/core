@@ -89,6 +89,11 @@
                 <NetMaskAllowed>N</NetMaskAllowed>
                 <AsList>Y</AsList>
             </ip>
+            <cnames type="HostnameField">
+                <AsList>Y</AsList>
+                <IsDNSName>Y</IsDNSName>
+                <IpAllowed>N</IpAllowed>
+            </cnames>
             <client_id type="TextField">
                 <Mask>/^(?:\*|(?:[0-9A-Fa-f]{2}(?::[0-9A-Fa-f]{2})+))$/</Mask>
                 <ValidationMessage>Value must be a colon-separated hexadecimal sequence (e.g., 01:02:f3) or "*".</ValidationMessage>
