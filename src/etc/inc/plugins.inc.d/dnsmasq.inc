@@ -108,6 +108,7 @@ function dnsmasq_firewall(\OPNsense\Firewall\Plugin $fw)
         }
         foreach ($fw->getInterfaceMapping() as $intf => $intfinfo) {
             if (in_array($intf, $dhcp_ifs)) {
+                /* ipv4 */
                 $baserule = [
                     'interface' => $intf,
                     'protocol' => 'udp',
@@ -128,6 +129,33 @@ function dnsmasq_firewall(\OPNsense\Firewall\Plugin $fw)
                 $fw->registerFilterRule(
                     1,
                     ['direction' => 'out', 'from_port' => 67, 'from' => '(self)', 'to_port' => 68],
+                    $baserule
+                );
+                /* ipv6 */
+                $baserule['ipprotocol'] = 'inet6';
+                $fw->registerFilterRule(
+                    1,
+                    ['from' => 'fe80::/10', 'to' => 'fe80::/10,ff02::/16', 'to_port' => 546],
+                    $baserule
+                );
+                $fw->registerFilterRule(
+                    1,
+                    ['from' => 'fe80::/10', 'to' => 'ff02::/16', 'to_port' => 547],
+                    $baserule
+                );
+                $fw->registerFilterRule(
+                    1,
+                    ['from' => 'ff02::/16', 'to' => 'fe80::/10', 'to_port' => 547],
+                    $baserule
+                );
+                $fw->registerFilterRule(
+                    1,
+                    ['from' => 'fe80::/10', 'to' => '(self)', 'to_port' => 546],
+                    $baserule
+                );
+                $fw->registerFilterRule(
+                    1,
+                    ['from' => '(self)', 'to' => 'fe80::/10', 'from_port' => 547, 'direction' => 'out'],
                     $baserule
                 );
             }
