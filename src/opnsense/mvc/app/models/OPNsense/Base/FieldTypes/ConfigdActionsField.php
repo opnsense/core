@@ -30,6 +30,7 @@ namespace OPNsense\Base\FieldTypes;
 
 use OPNsense\Core\AppConfig;
 use OPNsense\Core\Backend;
+use OPNsense\Core\File;
 
 /**
  * Class ConfigdActionsField list configurable configd actions
@@ -68,7 +69,7 @@ class ConfigdActionsField extends BaseListField
                 $response = $backend->configdRun("configd actions json", false, 20);
                 $actions = json_decode($response, true);
                 if (is_array($actions)) {
-                    file_put_contents($service_tempfile, $response);
+                    File::file_put_contents($service_tempfile, $response, 0640, 0, 'wwwonly');
                 } else {
                     $actions = [];
                 }
