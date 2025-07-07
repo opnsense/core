@@ -74,10 +74,6 @@ class Dnsmasq extends BaseModel
                 $usedHostFqdns[$fqdn] = true;
             }
 
-            foreach (array_filter(explode(',', (string)$host->aliases)) as $alias) {
-                $usedHostFqdns[$alias] = true;
-            }
-
             foreach (array_filter(explode(',', (string)$host->cnames)) as $cname) {
                 $usedHostCnames[$cname] = ($usedHostCnames[$cname] ?? 0) + 1;
             }
@@ -145,7 +141,7 @@ class Dnsmasq extends BaseModel
                 if ($usedHostCnames[$cname] > 1) {
                     $messages->appendMessage(
                         new Message(
-                            sprintf(gettext("'%s' is already used by another host override."), $cname),
+                            sprintf(gettext("CNAME '%s' is already in use by a host override."), $cname),
                             $key . ".cnames"
                         )
                     );
@@ -154,7 +150,7 @@ class Dnsmasq extends BaseModel
                 if (isset($usedHostFqdns[$cname])) {
                     $messages->appendMessage(
                         new Message(
-                            sprintf(gettext("'%s' must not overlap with any existing host or alias in any host override."), $cname),
+                            sprintf(gettext("CNAME '%s' overlaps with a host and domain combination in a host override."), $cname),
                             $key . ".cnames"
                         )
                     );
