@@ -84,6 +84,7 @@ function system_sysctl_defaults()
         'hw.vtnet.csum_disable' => [ 'default' => '1' ],
         'kern.coredump' => [ 'default' => '0' ],
         'kern.ipc.maxsockbuf' => [ 'default' => '4262144' ],
+        'kern.msgbuf_show_timestamp' => [ 'default' => '1' ],
         'kern.randompid' => [ 'default' => '1' ],
         'net.enc.in.ipsec_bpf_mask' => [ 'default' => '2' ], /* after processing */
         'net.enc.in.ipsec_filter_mask' => [ 'default' => '2' ], /* after processing */
