@@ -127,7 +127,7 @@
       function chart_interface_totals() {
           var selected_time = get_time_select();
           const fetch_params = selected_time.from + '/' + selected_time.to + '/' + selected_time.resolution + '/if,direction' ;
-          ajaxGet('/api/diagnostics/networkinsight/timeserie/FlowInterfaceTotals/bps/' + fetch_params,{},function(data,status){
+          ajaxGet('/api/diagnostics/networkinsight/timeserie/flow_interface_totals/bps/' + fetch_params,{},function(data,status){
               $.each(['chart_intf_in', 'chart_intf_out'], function(idx, target) {
                   let direction = target == 'chart_intf_in' ? 'in' : 'out';
                   let datasets = [];
