@@ -45,8 +45,7 @@ class File
         int $permissions = 0640,
         int $flags = 0,
         string $chown = null
-        )
-    {
+    ) {
         @touch($filename);
         @chmod($filename, $permissions);
         if (!empty($chown)) {

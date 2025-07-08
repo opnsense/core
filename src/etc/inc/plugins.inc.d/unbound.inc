@@ -634,7 +634,7 @@ function unbound_add_host_entries($ifconfig_details)
                             break;
                     }
 
-                    if (!empty($alias['description']) && !empty($general['txtsupport']) && $alias['hostname'] != '*.' ) {
+                    if (!empty($alias['description']) && !empty($general['txtsupport']) && $alias['hostname'] != '*.') {
                         $unbound_entries .= "local-data: '{$alias['hostname']}{$alias['domain']} TXT \"" . addslashes($alias['description']) . "\"'\n";
                     }
                 }
