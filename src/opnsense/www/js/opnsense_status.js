@@ -188,7 +188,7 @@ class StatusDialog {
 
                 $message.find('#dismiss-' + shortname).on('click', function (e) {
                     e.preventDefault();
-                    $.ajax('/api/core/system/dismissStatus', {
+                    $.ajax('/api/core/system/dismiss_status', {
                         type: 'post',
                         data: {'subject': shortname},
                         dialogRef: dialog,

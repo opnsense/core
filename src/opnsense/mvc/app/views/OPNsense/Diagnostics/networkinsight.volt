@@ -224,7 +224,7 @@
         }
         var selected_time = get_time_select();
         var time_url = selected_time.from + '/' + selected_time.to;
-        ajaxGet('/api/diagnostics/networkinsight/top/FlowDstPortTotals/'+time_url+'/dst_port,protocol/octets/25/',
+        ajaxGet('/api/diagnostics/networkinsight/top/flow_dst_port_totals/'+time_url+'/dst_port,protocol/octets/25/',
             {'filter_field': 'if', 'filter_value': $('#interface_select').val()}, function(data, status){
             if (status == 'success'){
               nv.addGraph(function() {
@@ -283,7 +283,7 @@
         }
         var selected_time = get_time_select();
         var time_url = selected_time.from + '/' + selected_time.to;
-        ajaxGet('/api/diagnostics/networkinsight/top/FlowSourceAddrTotals/'+time_url+'/src_addr/octets/25/',
+        ajaxGet('/api/diagnostics/networkinsight/top/flow_source_addr_totals/'+time_url+'/src_addr/octets/25/',
             {'filter_field': 'if', 'filter_value': $('#interface_select').val()}, function(data, status){
             if (status == 'success'){
               let add_src_pie = function(chart_data_in) {
@@ -375,7 +375,7 @@
         var selected_time = get_time_select();
         var time_url = selected_time.from + '/' + selected_time.to;
         measures.map(function(measure){
-          ajaxGet('/api/diagnostics/networkinsight/top/FlowInterfaceTotals/'+time_url+'/direction/'+measure+'/25/',
+          ajaxGet('/api/diagnostics/networkinsight/top/flow_interface_totals/'+time_url+'/direction/'+measure+'/25/',
               {'filter_field': 'if', 'filter_value': $('#interface_select').val()}, function(data, status){
                 var total_in = 0;
                 var total_out = 0;
@@ -431,7 +431,7 @@
         }
 
         var time_url = $("#date_detail_from").val() + '/' +  $("#date_detail_to").val();
-        ajaxGet('/api/diagnostics/networkinsight/top/FlowSourceAddrDetails/'+time_url+'/service_port,protocol,if,src_addr,dst_addr/octets/100/',
+        ajaxGet('/api/diagnostics/networkinsight/top/flow_source_addr_details/'+time_url+'/service_port,protocol,if,src_addr,dst_addr/octets/100/',
             {'filter_field': filters['filter_field'].join(','), 'filter_value': filters['filter_value'].join(',')}, function(data, status){
             if (status == 'success'){
                 let html = [];

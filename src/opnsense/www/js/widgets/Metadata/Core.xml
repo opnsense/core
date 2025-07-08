@@ -12,8 +12,8 @@
     <systeminformation>
         <filename>SystemInformation.js</filename>
         <endpoints>
-            <endpoint>/api/diagnostics/system/systemInformation</endpoint>
-            <endpoint>/api/diagnostics/system/systemTime</endpoint>
+            <endpoint>/api/diagnostics/system/system_information</endpoint>
+            <endpoint>/api/diagnostics/system/system_time</endpoint>
         </endpoints>
         <translations>
             <title>System Information</title>
@@ -30,7 +30,7 @@
         <filename>Interfaces.js</filename>
         <link>/ui/interfaces/overview</link>
         <endpoints>
-            <endpoint>/api/interfaces/overview/interfacesInfo</endpoint>
+            <endpoint>/api/interfaces/overview/interfaces_info</endpoint>
         </endpoints>
         <translations>
             <title>Interfaces</title>
@@ -84,7 +84,7 @@
     <memory>
         <filename>Memory.js</filename>
         <endpoints>
-            <endpoint>/api/diagnostics/system/systemResources</endpoint>
+            <endpoint>/api/diagnostics/system/system_resources</endpoint>
         </endpoints>
         <translations>
             <title>Memory</title>
@@ -96,7 +96,7 @@
     <disk>
         <filename>Disk.js</filename>
         <endpoints>
-            <endpoint>/api/diagnostics/system/systemDisk</endpoint>
+            <endpoint>/api/diagnostics/system/system_disk</endpoint>
         </endpoints>
         <translations>
             <title>Disk</title>
@@ -108,8 +108,8 @@
         <filename>Firewall.js</filename>
         <link>/ui/diagnostics/firewall/log</link>
         <endpoints>
-            <endpoint>/api/diagnostics/firewall/streamLog</endpoint>
-            <endpoint>/api/diagnostics/interface/getInterfaceNames</endpoint>
+            <endpoint>/api/diagnostics/firewall/stream_log</endpoint>
+            <endpoint>/api/diagnostics/interface/get_interface_names</endpoint>
         </endpoints>
         <translations>
             <title>Firewall</title>
@@ -178,7 +178,7 @@
         <filename>Gateways.js</filename>
         <link>/ui/routing/configuration</link>
         <endpoints>
-            <endpoint>/api/routing/settings/searchGateway</endpoint>
+            <endpoint>/api/routing/settings/search_gateway</endpoint>
         </endpoints>
         <translations>
             <title>Gateways</title>
@@ -192,7 +192,7 @@
     <thermalsensors>
         <filename>ThermalSensors.js</filename>
         <endpoints>
-            <endpoint>/api/diagnostics/system/systemTemperature</endpoint>
+            <endpoint>/api/diagnostics/system/system_temperature</endpoint>
         </endpoints>
         <translations>
             <title>Thermal Sensors</title>
@@ -240,7 +240,7 @@
         <filename>IpsecLeases.js</filename>
         <link>/ui/ipsec/leases</link>
         <endpoints>
-            <endpoint>/api/ipsec/connections/isEnabled</endpoint>
+            <endpoint>/api/ipsec/connections/is_enabled</endpoint>
             <endpoint>/api/ipsec/leases/pools</endpoint>
         </endpoints>
         <translations>
@@ -256,8 +256,8 @@
         <filename>IpsecTunnels.js</filename>
         <link>/ui/ipsec/sessions</link>
         <endpoints>
-            <endpoint>/api/ipsec/connections/isEnabled</endpoint>
-            <endpoint>/api/ipsec/sessions/searchPhase1</endpoint>
+            <endpoint>/api/ipsec/connections/is_enabled</endpoint>
+            <endpoint>/api/ipsec/sessions/search_phase1</endpoint>
             <endpoint>/api/ipsec/sessions/connect/*</endpoint>
             <endpoint>/api/ipsec/sessions/disconnect/*</endpoint>
         </endpoints>

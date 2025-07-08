@@ -121,7 +121,7 @@ class WidgetManager  {
     }
 
     async _loadWidgets() {
-        const response = await $.ajax('/api/core/dashboard/getDashboard', {
+        const response = await $.ajax('/api/core/dashboard/get_dashboard', {
             type: 'GET',
             dataType: 'json',
             contentType: 'application/json'
@@ -604,7 +604,7 @@ class WidgetManager  {
     }
 
     __restoreDefaults(dialog) {
-        $.ajax({type: "POST", url: "/api/core/dashboard/restoreDefaults"}).done((response) => {
+        $.ajax({type: "POST", url: "/api/core/dashboard/restore_defaults"}).done((response) => {
             if (response['result'] == 'failed') {
                 console.error('Failed to restore default widgets');
                 if (dialog !== undefined) {
@@ -676,7 +676,7 @@ class WidgetManager  {
 
         $.ajax({
             type: "POST",
-            url: "/api/core/dashboard/saveWidgets",
+            url: "/api/core/dashboard/save_widgets",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(payload),
