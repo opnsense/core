@@ -47,7 +47,7 @@ export default class Interfaces extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        const data = await this.ajaxCall('/api/interfaces/overview/interfacesInfo');
+        const data = await this.ajaxCall('/api/interfaces/overview/interfaces_info');
         if (!this.dataChanged('interfaces', data)) {
             return;
         }
