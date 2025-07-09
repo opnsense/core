@@ -49,7 +49,11 @@ class File
         @touch($filename);
         @chmod($filename, $permissions);
         if (!empty($chown)) {
-            @chown($filename, $chown);
+            $parts = explode(':', $chown);
+            @chown($filename, $part[0]);
+            if (!empty($parts[1])) {
+                @chgrp($filename, $part[1]);
+            }
         }
         return file_put_contents($filename, $data, $flags);
     }
