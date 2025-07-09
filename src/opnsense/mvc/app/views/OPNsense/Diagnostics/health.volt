@@ -144,7 +144,7 @@
 	</div>
 
 	<div id="health-header" class="panel-heading centered">
-        <button id="reset-zoom" class="btn btn-primary" style="align-self: flex-end;">Reset zoom</button>
+        <button id="reset-zoom" class="btn btn-primary" style="align-self: flex-end;">{{ lang._('Reset zoom') }}</button>
 
         <div class="label-select-pair">
             <label for="health-category-select"><b>{{ lang._('Category') }}</b></label>
