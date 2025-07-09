@@ -79,28 +79,6 @@ class CSVListField extends BaseSetField
     }
 
     /**
-     * retrieve data
-     * @return array
-     */
-    public function getNodeData()
-    {
-        $selectlist = $this->iterateInput($this->internalValue);
-        $result = [];
-
-        foreach ($selectlist as $optKey) {
-            if (strlen($optKey) > 0) {
-                if (isset($result[$optKey])) {
-                    $result[$optKey]['selected'] = 1;
-                } else {
-                    $result[$optKey] = ['value' => $optKey, 'selected' => 1];
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    /**
      * retrieve field validators for this field type
      * @return array returns regex validator
      */

@@ -49,7 +49,7 @@ class BaseSetField extends BaseField
     protected $internalAsList = false;
 
     /**
-     * if multiple addresses / networks maybe provided at once, set separator.
+     * set separator used for multiple entries
      * @param string $value separator
      */
     public function setFieldSeparator($value)
@@ -58,7 +58,7 @@ class BaseSetField extends BaseField
     }
 
     /**
-     * select if multiple networks may be selected at once
+     * select if multiple entries can be selected at once
      * @param $value boolean value 0/1
      */
     public function setAsList($value)
@@ -84,8 +84,8 @@ class BaseSetField extends BaseField
         if ($this->internalAsList) {
             /* return result as list */
             $result = [];
-            foreach (explode($this->internalFieldSeparator, $this->internalValue) as $net) {
-                $result[$net] = ['value' => $net, 'selected' => 1];
+            foreach (explode($this->internalFieldSeparator, $this->internalValue) as $entry) {
+                $result[$entry] = ['value' => $entry, 'selected' => 1];
             }
             return $result;
         }
