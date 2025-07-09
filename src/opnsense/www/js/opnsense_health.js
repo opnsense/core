@@ -95,7 +95,7 @@ class HealthGraph {
     }
 
     async _fetchRRDList() {
-        const list = await fetch(`/api/diagnostics/systemhealth/get_rr_dlist`).then(response => response.json());
+        const list = await fetch(`/api/diagnostics/systemhealth/get_rrd_list`).then(response => response.json());
         return list;
     }
 

@@ -73,7 +73,7 @@ class SystemhealthController extends ApiControllerBase
      * retrieve Available RRD data
      * @return array
      */
-    public function getRRDlistAction()
+    public function getRrdListAction()
     {
         # Source of data: filelisting of /var/db/rrd/*.rrd
         $result = ['data' => []];
