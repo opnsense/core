@@ -61,20 +61,23 @@ class ConfigdActionsField extends BaseListField
         if (!isset(self::$internalStaticOptionList[$this->internalCacheKey])) {
             self::$internalStaticOptionList[$this->internalCacheKey] = [];
 
+            $app = new AppConfig();
+            $cachefile = $app->application->tempDir . '/configdmodelfield.data';
+            $cacheowner = $app->globals->owner;
+
             $backend = new Backend();
-            $service_tempfile = (new AppConfig())->application->tempDir . '/configdmodelfield.data';
 
             // check configd daemon for list of available actions, cache results as long as configd is not restarted
-            if (!file_exists($service_tempfile) || filemtime($service_tempfile) < $backend->getLastRestart()) {
+            if (!file_exists($cachefile) || filemtime($cachefile) < $backend->getLastRestart()) {
                 $response = $backend->configdRun("configd actions json", false, 20);
                 $actions = json_decode($response, true);
                 if (is_array($actions)) {
-                    File::file_put_contents($service_tempfile, $response, 0640, 0, 'wwwonly');
+                    File::file_put_contents($cachefile, $response, 0640, 0, $cacheowner);
                 } else {
                     $actions = [];
                 }
             } else {
-                $actions = json_decode(file_get_contents($service_tempfile), true);
+                $actions = json_decode(file_get_contents($cachefile), true);
                 if (!is_array($actions)) {
                     $actions = [];
                 }
