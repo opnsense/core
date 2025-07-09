@@ -560,7 +560,6 @@ abstract class BaseModel
         return $this->internalData->getNodeContent();
     }
 
-
     /**
      * structured setter for model
      * @param array $data named array
