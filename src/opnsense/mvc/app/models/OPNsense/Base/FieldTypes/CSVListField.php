@@ -43,12 +43,6 @@ class CSVListField extends BaseSetField
     protected $internalAsList = true;
 
     /**
-     * selectable options, key/value store.
-     * value = display option
-     */
-    private $selectOptions = [];
-
-    /**
      * @var string basic regex validation to use for the complete field
      */
     protected $internalMask = null;
@@ -85,17 +79,13 @@ class CSVListField extends BaseSetField
     }
 
     /**
-     * retrieve data including selection options (from setSelectOptions)
+     * retrieve data
      * @return array
      */
     public function getNodeData()
     {
         $selectlist = $this->iterateInput($this->internalValue);
         $result = [];
-
-        foreach ($this->selectOptions as $optKey => $optValue) {
-            $result[$optKey] = ['value' => $optValue, 'selected' => 0];
-        }
 
         foreach ($selectlist as $optKey) {
             if (strlen($optKey) > 0) {
@@ -108,32 +98,6 @@ class CSVListField extends BaseSetField
         }
 
         return $result;
-    }
-
-    /**
-     * set all options for this select item.
-     * push a key/value array type to set all options or deliver a comma-separated list with keys and optional values
-     * divided by a pipe | sign.
-     * example :    optionA|text for option A, optionB|test for option B
-     * @param array|string $list key/value option list
-     */
-    public function setSelectOptions($list)
-    {
-        if (is_array($list)) {
-            foreach ($list as $optKey => $optValue) {
-                $this->selectOptions[$optKey] = $optValue;
-            }
-        } else {
-            // string list
-            foreach ($this->iterateInput($list) as $option) {
-                if (strpos($option, '|') !== false) {
-                    $tmp = explode('|', $option);
-                    $this->selectOptions[$tmp[0]] = $tmp[1];
-                } else {
-                    $this->selectOptions[$option] = $option;
-                }
-            }
-        }
     }
 
     /**

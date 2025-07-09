@@ -129,8 +129,9 @@
             <Required>Y</Required>
             <Default>0</Default>
          </noton>
-         <events type="CSVListField">
-            <SelectOptions>
+         <events type="OptionField">
+            <Multiple>Y</Multiple>
+            <OptionValues>
                <action>Action done</action>
                <checksum>Checksum failed</checksum>
                <bytein>Download bytes exceeded</bytein>
@@ -160,7 +161,7 @@
                <timestamp>Timestamp failed</timestamp>
                <uid>UID failed</uid>
                <uptime>Uptime failed</uptime>
-            </SelectOptions>
+            </OptionValues>
          </events>
          <format type="TextField"/>
          <reminder type="IntegerField">
