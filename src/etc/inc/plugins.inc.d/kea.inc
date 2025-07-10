@@ -170,11 +170,13 @@ function kea_syslog()
 function kea_firewall($fw)
 {
     global $config;
+
     $keav4 = new \OPNsense\Kea\KeaDhcpv4();
     $keav6 = new \OPNsense\Kea\KeaDhcpv6();
+
     if ($keav4->fwrulesEnabled()) {
         // automatic (IPv4) rules enabled
-        foreach (explode(',', $keav4->general->interfaces) as $intf) {
+        foreach ($keav4->general->interfaces->getValues() as $intf) {
             $fw->registerFilterRule(
                 1,
                 [
@@ -207,7 +209,7 @@ function kea_firewall($fw)
     }
 
     if ($keav6->fwrulesEnabled()) {
-        foreach (explode(',', $keav6->general->interfaces) as $intf) {
+        foreach ($keav6->general->interfaces->getValues() as $intf) {
             $default_opts = [
                 'protocol' => 'udp',
                 'ipprotocol' => 'inet6',
