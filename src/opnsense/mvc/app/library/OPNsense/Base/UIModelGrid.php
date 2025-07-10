@@ -127,7 +127,8 @@ class UIModelGrid
                 $row['uuid'] = $record->getAttributes()['uuid'];
                 $content = $record->getNodeContent();
                 foreach ($content as $field => $val) {
-                    if (str_starts_with($field, '$') && in_array($key = substr($field, 1), $fields)) {
+                    $key = substr($field, 1);
+                    if (str_starts_with($field, '$') && in_array($key, $fields)) {
                         $row[$key] = $val;
                         if ($content[$key] !== $val) {
                             /**
