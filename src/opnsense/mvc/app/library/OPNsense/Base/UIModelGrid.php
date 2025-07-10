@@ -125,9 +125,24 @@ class UIModelGrid
                 // before searching.
                 $row = [];
                 $row['uuid'] = $record->getAttributes()['uuid'];
-                foreach ($fields as $fieldname) {
-                    if ($record->$fieldname != null) {
-                        $row[$fieldname] = $record->$fieldname->getDescription();
+                $content = $record->getNodeContent();
+                foreach ($content as $field => $val) {
+                    if (str_starts_with($field, '$') && in_array($key = substr($field, 1), $fields)) {
+                        $row[$key] = $val;
+                        if ($content[$key] !== $val) {
+                            /**
+                             * getNodeContent() returns "$<key>" for description values
+                             * this would break API compat if we're returning this directly,
+                             * so swap the two around:
+                             *
+                             * [key] => "Descriptive (translated) value"
+                             * [$key] => "value used in config"
+                             *
+                             * only do this if the two values don't match, unconditionally including it
+                             * would double API response size.
+                             */
+                            $row[$field] = $content[$key];
+                        }
                     }
                 }
 
