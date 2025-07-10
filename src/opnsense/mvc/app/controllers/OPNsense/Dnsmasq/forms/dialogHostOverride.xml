@@ -35,11 +35,22 @@
     </field>
     <field>
         <id>host.aliases</id>
-        <label>Aliases</label>
+        <label>Alias Records</label>
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>list of aliases (fqdn)</help>
+        <help>Adds additional static A, AAAA and PTR records for the given alternative names (FQDN). Please note that these records are only created if IP addresses are configured in this host entry.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>host.cnames</id>
+        <label>CNAME Records</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>Adds additional CNAME records for the given alternative names (FQDN). Useful if this host entry has dynamic IPv4 and partial IPv6 addresses, as the CNAME record will point to the name instead of static IP addresses.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
