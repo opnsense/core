@@ -29,7 +29,7 @@
         <type>text</type>
         <hint>automatic</hint>
         <style>style_dhcpv4</style>
-        <help>Leave empty and the subnet mask will be auto-calculated from the interface or the network class of the start address. If a DHCP relay forwards IPv4 DHCP Discovers to Dnsmasq, setting a subnet mask is required in most cases.</help>
+        <help>Leave empty to auto-calculate the subnet mask from the interface or the network class of the start address. If a DHCP relay forwards IPv4 DHCP Discovers to Dnsmasq, setting a subnet mask is required in most cases.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
