@@ -110,7 +110,7 @@ class ModelRelationField extends BaseListField
                 foreach ($searchItems as $uuid => $node) {
                     $descriptions = [];
                     foreach ($displayKeys as $displayKey) {
-                        $descriptions[] = $node['$' . $displayKey] ?? '';
+                        $descriptions[] = $node['%' . $displayKey] ?? $node[$displayKey] ?? '';
                     }
                     if (isset($modelData['filters'])) {
                         foreach ($modelData['filters'] as $filterKey => $filterValue) {
