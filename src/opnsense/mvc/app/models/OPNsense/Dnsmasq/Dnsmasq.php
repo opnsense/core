@@ -156,7 +156,6 @@ class Dnsmasq extends BaseModel
                     );
                 }
             }
-
         }
 
         foreach ($this->domainoverrides->iterateItems() as $domain) {
