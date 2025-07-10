@@ -74,7 +74,7 @@ class Dnsmasq extends BaseModel
                 $usedHostFqdns[$fqdn] = true;
             }
 
-            foreach (array_filter(explode(',', (string)$host->cnames)) as $cname) {
+            foreach ($host->cnames->getValues() as $cname) {
                 $usedHostCnames[$cname] = ($usedHostCnames[$cname] ?? 0) + 1;
             }
         }
