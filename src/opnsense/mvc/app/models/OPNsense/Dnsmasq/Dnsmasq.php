@@ -289,6 +289,15 @@ class Dnsmasq extends BaseModel
                 );
             }
 
+            if (!$range->subnet_mask->isEmpty() && $is_static) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("Static only accepts a starting address."),
+                        $key . ".subnet_mask"
+                    )
+                );
+            }
+
             if ($range->interface->isEmpty() && !$range->ra_mode->isEmpty()) {
                 $messages->appendMessage(
                     new Message(
