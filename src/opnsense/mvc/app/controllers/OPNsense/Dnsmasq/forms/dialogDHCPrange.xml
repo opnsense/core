@@ -24,6 +24,17 @@
         <help>End of the range.</help>
     </field>
     <field>
+        <id>range.subnet_mask</id>
+        <label>Subnet Mask</label>
+        <type>text</type>
+        <hint>automatic</hint>
+        <style>style_dhcpv4</style>
+        <help>Leave empty to auto-calculate the subnet mask from the interface or the network class of the start address. If a DHCP relay forwards IPv4 DHCP Discovers to Dnsmasq, setting a subnet mask is required in most cases.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>range.constructor</id>
         <label>Constructor</label>
         <type>dropdown</type>

@@ -156,7 +156,6 @@ class Dnsmasq extends BaseModel
                     );
                 }
             }
-
         }
 
         foreach ($this->domainoverrides->iterateItems() as $domain) {
@@ -285,6 +284,15 @@ class Dnsmasq extends BaseModel
                     new Message(
                         gettext("End address may only be left empty for static ipv4 ranges."),
                         $key . ".end_addr"
+                    )
+                );
+            }
+
+            if (!$range->subnet_mask->isEmpty() && $is_static) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("Static only accepts a starting address."),
+                        $key . ".subnet_mask"
                     )
                 );
             }
