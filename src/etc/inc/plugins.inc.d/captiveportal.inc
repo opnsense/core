@@ -92,7 +92,7 @@ function captiveportal_firewall($fw)
                 continue;
             }
 
-            foreach (explode(',', $zone->interfaces) as $intf) {
+            foreach ($zone->interfaces->getValues() as $intf) {
                 // allow DNS
                 $fw->registerFilterRule(
                     1,
