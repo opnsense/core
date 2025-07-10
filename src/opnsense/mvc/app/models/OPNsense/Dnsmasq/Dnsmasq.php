@@ -137,7 +137,7 @@ class Dnsmasq extends BaseModel
                 }
             }
 
-            foreach (array_filter(explode(',', (string)$host->cnames)) as $cname) {
+            foreach ($host->cnames->getValues() as $cname) {
                 if ($usedHostCnames[$cname] > 1) {
                     $messages->appendMessage(
                         new Message(
