@@ -48,14 +48,14 @@
                 type: 'line',
                 data: {
                     datasets: [{
-                        label: 'Total queries',
+                        label: "{{ lang._('Total') }}",
                         data: feed_data,
                         borderWidth: 1,
                         parsing: {
                             yAxisKey: 'y.total'
                         }
                     }, {
-                        label: 'Blocked',
+                        label: "{{ lang._('Blocked') }}",
                         data: feed_data,
                         borderWidth: 1,
                         parsing: {
@@ -233,7 +233,7 @@
                                     }
                                 },
                                 afterBody: function(context) {
-                                    return 'Click to view details';
+                                    return "{{ lang._('Click to view details') }}";
                                 }
                             }
                         },
@@ -832,7 +832,7 @@
                         <div class="col-md-2"></div>
                         <div class="col-md-2">
                             <div class="vertical-center">
-                                <label class="h-100" style="margin-right: 5px;">Logarithmic</label>
+                                <label class="h-100" style="margin-right: 5px;">{{ lang._('Logarithmic') }}</label>
                                 <input id="toggle-log-cchart" type="checkbox"></input>
                             </div>
                         </div>
