@@ -147,7 +147,13 @@ function system_sysctl_get()
     $defaults = system_sysctl_defaults();
     $sysctls = [];
 
+    foreach (array_keys($defaults) as $name) {
+        /* compile list of required sysctls not necessarily present in config */
+        $sysctls[$name] = '';
+    }
+
     foreach (config_read_array('sysctl', 'item') as $tunable) {
+        /* get the user specified tunables from the configuration */
         $sysctls[$tunable['tunable']] = $tunable['value'];
     }
 
