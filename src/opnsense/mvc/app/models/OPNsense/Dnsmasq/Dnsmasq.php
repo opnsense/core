@@ -61,7 +61,7 @@ class Dnsmasq extends BaseModel
         $usedHostCnames = [];
         foreach ($this->hosts->iterateItems() as $host) {
             if (!$host->hwaddr->isEmpty() || !$host->client_id->isEmpty()) {
-                foreach (array_filter(explode(',', (string)$host->ip)) as $ip) {
+                foreach ($host->ip->getValues() as $ip) {
                     $usedDhcpIpAddresses[$ip] = isset($usedDhcpIpAddresses[$ip]) ? $usedDhcpIpAddresses[$ip] + 1 : 1;
                 }
             }
@@ -97,7 +97,7 @@ class Dnsmasq extends BaseModel
             // all dhcp-host IP addresses must be unique, host overrides can have duplicate IP addresses
             if ($is_dhcp) {
                 $tmp_ipv4_cnt = 0;
-                foreach (array_filter(explode(',', (string)$host->ip)) as $ip) {
+                foreach ($host->ip->getValues() as $ip) {
                     $tmp_ipv4_cnt += (strpos($ip, ':') === false) ? 1 : 0;
                     /* Partial IPv6 addresses can be duplicate */
                     if (str_starts_with($ip, '::')) {
@@ -271,7 +271,7 @@ class Dnsmasq extends BaseModel
                 );
             }
 
-            $is_static = in_array('static', explode(',', $range->mode));
+            $is_static = in_array('static', $range->mode->getValues());
             if (!$range->end_addr->isEmpty() && $is_static) {
                 $messages->appendMessage(
                     new Message(
@@ -323,7 +323,7 @@ class Dnsmasq extends BaseModel
                 ['ra-names', 'slaac', 'ra-stateless']
             ];
 
-            $selected_ra_modes = explode(',', $range->ra_mode);
+            $selected_ra_modes = $range->ra_mode->getValues();
 
             // If only one mode is selected, it is always valid
             if (count($selected_ra_modes) > 1) {
@@ -387,7 +387,7 @@ class Dnsmasq extends BaseModel
                 !$option->value->isEmpty() &&
                 !$option->option6->isEmpty()
             ) {
-                $values = array_map('trim', explode(',', (string)$option->value));
+                $values = array_map('trim', $option->value->getValues());
                 foreach ($values as $value) {
                     if (
                         Util::isIpv6Address(trim($value, '[]')) &&
@@ -434,10 +434,10 @@ class Dnsmasq extends BaseModel
         $result = [];
         if (!empty($this->dhcp_ranges->iterateItems()->current())) {
             $exclude = [];
-            foreach (explode(',', $this->dhcp->no_interface) as $item) {
+            foreach ($this->dhcp->no_interface->getValues() as $item) {
                 $exclude[] = $item;
             }
-            foreach (explode(',', $this->interface) as $item) {
+            foreach ($this->interface->getValues() as $item) {
                 if (!empty($item) && !in_array($item, $exclude)) {
                     $result[] = $item;
                 }
