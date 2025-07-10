@@ -125,9 +125,16 @@ class UIModelGrid
                 // before searching.
                 $row = [];
                 $row['uuid'] = $record->getAttributes()['uuid'];
+                $content = $record->getNodeContent();
                 foreach ($fields as $fieldname) {
-                    if ($record->$fieldname != null) {
-                        $row[$fieldname] = $record->$fieldname->getDescription();
+                    if (array_key_exists($fieldname, $content)) {
+                        $row[$fieldname] = $content[$fieldname];
+
+                        $descr = '$' . $fieldname;
+                        if (array_key_exists($descr, $content) && $content[$descr] !== $content[$fieldname]) {
+                            // descriptive/translated value available
+                            $row[$descr] = $content[$descr];
+                        }
                     }
                 }
 
