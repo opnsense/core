@@ -176,16 +176,16 @@ function restore_config_section_xmlrpc($new_config)
     $oldvips = [];
     if (isset($new_config['virtualip']['vip']) && isset($config['virtualip']['vip'])) {
         foreach ($config['virtualip']['vip'] as $vipindex => $vip) {
+            $vipKey = get_unique_vip_key($vip);
             if (!empty($vip['vhid']) && empty($vip['nosync'])) {
                 // rc.filter_synchronize only sends CARP VIPs and IP Aliases with a VHID. Keep the rest like it was.
-                $vipKey = get_unique_vip_key($vip);
                 $oldvips[$vipKey] = $vip;
                 // Remove entries that are present locally, but are not present in the new config.
                 if (!array_key_exists($vipKey, $vhidVipsInNewConfig)) {
                     unset($config['virtualip']['vip'][$vipindex]);
                 }
-            } else {
-                $vipbackup[] = $vip;
+            } elseif (!isset($vhidVipsInNewConfig[$vipKey])) {
+                $vipbackup[$vipKey] = $vip;
             }
         }
     }
@@ -195,9 +195,7 @@ function restore_config_section_xmlrpc($new_config)
 
     if (count($vipbackup) > 0) {
         // if $new_config contained VIPs and the old config contained VIPs with no VHID, prepend original VIPs
-        foreach ($vipbackup as $vip) {
-            array_unshift($config['virtualip']['vip'], $vip);
-        }
+        array_unshift($config['virtualip']['vip'], array_values($vipbackup));
     }
 
     /* Log what happened */
