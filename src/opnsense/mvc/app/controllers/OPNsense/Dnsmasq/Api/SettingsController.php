@@ -117,7 +117,7 @@ class SettingsController extends ApiMutableModelControllerBase
     public function uploadHostsAction()
     {
         if ($this->request->isPost() && $this->request->hasPost('payload')) {
-            /* fields used by kea */
+            /* fields used by kea (and isc dhcp export) */
             $map = [
                 'ip_address' => 'ip',
                 'hw_address' => 'hwaddr',
