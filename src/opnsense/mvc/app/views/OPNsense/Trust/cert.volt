@@ -329,7 +329,7 @@
                 </select>
             </div>
         </div>
-        {{ partial('layout_partials/base_bootgrid_table', formGridCert + {'command_width': '11em'})}}
+        {{ partial('layout_partials/base_bootgrid_table', formGridCert + {'command_width': '145'})}}
     </div>
 </div>
 
