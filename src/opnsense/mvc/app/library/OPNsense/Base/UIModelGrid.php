@@ -123,20 +123,7 @@ class UIModelGrid
 
                 // parse rows, because we may need to convert some (list) items we need to know the actual content
                 // before searching.
-                $row = [];
-                $row['uuid'] = $record->getAttributes()['uuid'];
-                $content = $record->getNodeContent();
-                foreach ($fields as $fieldname) {
-                    if (array_key_exists($fieldname, $content)) {
-                        $row[$fieldname] = $content[$fieldname];
-
-                        $descr = '$' . $fieldname;
-                        if (array_key_exists($descr, $content) && $content[$descr] !== $content[$fieldname]) {
-                            // descriptive/translated value available
-                            $row[$descr] = $content[$descr];
-                        }
-                    }
-                }
+                $row = array_merge(['uuid' => $record->getAttributes()['uuid']], $record->getNodeContent());
 
                 // if a search phrase is provided, use it to search in all requested fields
                 $search_clauses = preg_split('/\s+/', $searchPhrase);
@@ -144,10 +131,8 @@ class UIModelGrid
                     foreach ($search_clauses as $clause) {
                         $searchFound = false;
                         foreach ($fields as $fieldname) {
-                            if (
-                                isset($row[$fieldname]) &&
-                                strpos(strtolower($row[$fieldname]), strtolower($clause)) !== false
-                            ) {
+                            $item = $row['$' . $fieldname] ?? $row[$fieldname] ?? ''; /* prefer search by description */
+                            if (!empty($item) && strpos(strtolower($item), strtolower($clause)) !== false) {
                                 $searchFound = true;
                             }
                         }
