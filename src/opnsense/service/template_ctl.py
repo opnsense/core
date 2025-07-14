@@ -60,5 +60,3 @@ if __name__ == '__main__':
             syslog_debug(' %s generated %s' % (args.template, filename))
         syslog_notice('%s %s finished successfully' % (os.path.basename(sys.argv[0]), args.template))
         print('templates...done')
-
-
