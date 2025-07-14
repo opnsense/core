@@ -448,6 +448,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             write_config();
         }
         header(url_safe('Location: /services_dhcp.php?if=%s', array($if)));
+    } elseif ($act == "export") {
+        $static = dhcpd_staticmap();
+
+        header("Content-Type: text/csv");
+        header("Content-Disposition: attachment; filename=\"isc_export_{$if}.csv\"");
+        header("Content-Transfer-Encoding: binary");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+
+        $stream = fopen('php://output', 'w');
+
+        fputcsv($stream, ['ip_address', 'hw_address', 'hostname', 'description']);
+        foreach ($static as $record) {
+            if ($record['interface'] !== $if) {
+                continue;
+            }
+
+            fputcsv($stream, array_map(fn($k) => $record[$k], ['ipaddr', 'mac', 'hostname', 'descr']));
+        }
+
+        @fclose($stream);
+
         exit;
     }
 }
@@ -1128,7 +1150,16 @@ include("head.inc");
               <div class="table-responsive">
                 <table class="table table-striped">
                   <tr>
-                    <td colspan="6"><strong><?=gettext("DHCP Static Mappings for this interface.");?></strong></td>
+                    <td colspan="6">
+                      <form method="POST">
+                        <input name="if" type="hidden" value="<?=$if;?>" />
+                        <input name="act" type="hidden" value="export">
+                        <button type="submit" id="download_hosts" class="btn btn-xs" data-if="<?=$if;?>" data-toggle="tooltip" data-title="<?=gettext("Export as CSV");?>">
+                          <span class="fa fa-fw fa-table"></span>
+                        </button>
+                        <strong><?=gettext("DHCP Static Mappings for this interface.");?></strong>
+                      </form>
+                    </td>
                   </tr>
                   <tr>
                     <td><?=gettext("Static ARP");?></td>
