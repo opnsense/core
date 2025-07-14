@@ -131,7 +131,7 @@ class UIModelGrid
                     foreach ($search_clauses as $clause) {
                         $searchFound = false;
                         foreach ($fields as $fieldname) {
-                            $item = $row['$' . $fieldname] ?? $row[$fieldname] ?? ''; /* prefer search by description */
+                            $item = $row['%' . $fieldname] ?? $row[$fieldname] ?? ''; /* prefer search by description */
                             if (!empty($item) && strpos(strtolower($item), strtolower($clause)) !== false) {
                                 $searchFound = true;
                             }

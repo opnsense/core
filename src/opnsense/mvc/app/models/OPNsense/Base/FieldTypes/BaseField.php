@@ -735,7 +735,7 @@ abstract class BaseField
                 $result[$key] = $node->getValue();
                 $descr = $node->getDescription();
                 if ($descr != $result[$key]) {
-                    $result['$' . $key] = $descr;
+                    $result['%' . $key] = $descr;
                 }
             }
         }

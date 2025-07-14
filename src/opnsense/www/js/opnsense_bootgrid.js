@@ -1412,7 +1412,7 @@ class UIBootgrid {
                     this._onCellRendered(cell, formatterParams);
                 });
 
-                const key = `$${cell.getColumn().getDefinition().field}`;
+                const key = `%${cell.getColumn().getDefinition().field}`;
                 const data = cell.getData();
                 return data[key] ?? cell.getValue();
             },
