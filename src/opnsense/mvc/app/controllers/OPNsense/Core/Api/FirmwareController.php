@@ -910,13 +910,14 @@ class FirmwareController extends ApiMutableModelControllerBase
 
         $response['plugin'] = [];
         foreach ($plugins as $plugin) {
-            if ($plugin['repository'] == 'OPNsense' && isset($tiers[$plugin['name']])) {
-                $plugin['tier'] = str_ends_with($plugin['name'], '-devel') ? 'DEV' : $tiers[$plugin['name']];
+            if ($plugin['repository'] == 'OPNsense') {
+                $plugin['tier'] = $tiers[$plugin['name']];
             } elseif ($plugin['repository'] == 'SunnyValley') {
-                /* Supplemental third party */
+                /* XXX ask them to change this on their end */
                 $plugin['tier'] = '2';
             } else {
-                $plugin['tier'] = gettext('N/A');
+                /* for any community repository unknown force the lowest tier */
+                $plugin['tier'] = '4';
             }
             $response['plugin'][] = $plugin;
         }
