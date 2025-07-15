@@ -1,5 +1,15 @@
 <script>
     $( document ).ready(function() {
+        // Construct a map of field names to their allowed modes based on style declarations
+        const modeStyleFlat = "{{ modeStyleFlat }}";
+        const modeStyleMap = Object.fromEntries(
+            modeStyleFlat.split(';').filter(Boolean).map(entry => {
+                const [key, rest] = entry.split('=');
+                const [modes, type] = rest.split('|');
+                return [key, { modes: modes.split(','), type }];
+            })
+        );
+
         $("#{{formGridVip['table_id']}}").UIBootgrid(
             {   search:'/api/interfaces/vip_settings/search_item/',
                 get:'/api/interfaces/vip_settings/get_item/',
@@ -17,6 +27,20 @@
                     formatters: {
                         networkFormatter: function(column, row) {
                             return row.subnet + (row.subnet_bits ? '/' + row.subnet_bits : '');
+                        },
+                        modeFormatter: function (column, row) {
+                            // skips rendering based on mode mismatch and renders checkmark if boolean.
+                            const info = modeStyleMap[column.id];
+                            const mode = row.mode || '';
+                            if (info?.modes?.length && !info.modes.includes(mode)) {
+                                return '';
+                            }
+                            const value = row[column.id];
+                            if (info?.type === 'checkbox' && (value === '0' || value === '1')) {
+                                const icon = value === '1' ? 'fa-check' : 'fa-times';
+                                return `<span class="fa fa-fw ${icon}" data-value="${value}" data-row-id="${row.uuid}"></span>`;
+                            }
+                            return value;
                         },
                     },
                 }
