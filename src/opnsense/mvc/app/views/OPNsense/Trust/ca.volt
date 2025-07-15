@@ -188,7 +188,7 @@
 </ul>
 <div class="tab-content content-box">
     <div id="cert" class="tab-pane fade in active">
-        {{ partial('layout_partials/base_bootgrid_table', formGridCa + {'command_width': '11em'})}}
+        {{ partial('layout_partials/base_bootgrid_table', formGridCa + {'command_width': '145'})}}
     </div>
 </div>
 

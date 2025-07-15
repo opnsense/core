@@ -300,7 +300,6 @@
     <div id="hosts" class="tab-pane fade in">
         {{
             partial('layout_partials/base_bootgrid_table', formGridHostOverride + {
-                'command_width': '8em',
                 'grid_commands': {
                     'upload_hosts': {
                         'title': lang._('Import csv'),

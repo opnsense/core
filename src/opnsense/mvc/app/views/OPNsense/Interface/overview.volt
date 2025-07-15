@@ -400,7 +400,7 @@
                 <th data-column-id="ipv6" data-formatter="ipv6" data-type="string">{{ lang._('IPv6') }}</th>
                 <th data-column-id="gateways" data-formatter="gateways" data-type="string">{{ lang._('Gateway') }}</th>
                 <th data-column-id="routes" data-formatter="routes" data-type="string">{{ lang._('Routes') }}</th>
-                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                <th data-column-id="commands" data-width="125" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
             </tr>
         </thead>
         <tbody>
