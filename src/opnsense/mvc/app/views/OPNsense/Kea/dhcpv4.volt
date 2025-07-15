@@ -144,7 +144,6 @@
     <div id="reservations" class="tab-pane fade in">
         {{
             partial('layout_partials/base_bootgrid_table', formGridReservation + {
-                'command_width': '8em',
                 'grid_commands': {
                     'upload_reservations': {
                         'title': lang._('Import csv'),

@@ -197,7 +197,7 @@
     <div id="user" class="tab-pane fade in active">
         {{
             partial('layout_partials/base_bootgrid_table', formGridUser + {
-                'command_width': '9em',
+                'command_width': '135',
                 'grid_commands': {
                     'upload_users': {
                         'class': 'btn btn-xs btn-user-action',

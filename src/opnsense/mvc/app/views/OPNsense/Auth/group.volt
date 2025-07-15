@@ -57,7 +57,7 @@
 </script>
 
 <div class="tab-content content-box">
-    {{ partial('layout_partials/base_bootgrid_table', formGridGroup + {'command_width': '10em'})}}
+    {{ partial('layout_partials/base_bootgrid_table', formGridGroup)}}
 </div>
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditGroup,'id':formGridGroup['edit_dialog_id'],'label':lang._('Edit Group')])}}
