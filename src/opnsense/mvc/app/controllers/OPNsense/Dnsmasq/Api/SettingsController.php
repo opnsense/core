@@ -117,7 +117,7 @@ class SettingsController extends ApiMutableModelControllerBase
                 'descr' => 'description'
             ];
 
-            $result = array_map(function($item) use ($map) {
+            $result = array_map(function ($item) use ($map) {
                 return array_combine(
                     array_map(fn($k) => $map[$k] ?? $k, array_keys($item)),
                     array_values($item)
