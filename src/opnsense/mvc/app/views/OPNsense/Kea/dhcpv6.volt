@@ -186,7 +186,7 @@
     </div>
     <!-- reservations -->
     <div id="reservations" class="tab-pane fade in">
-        {{ partial('layout_partials/base_bootgrid_table', formGridReservation + {'command_width': '8em'} )}}
+        {{ partial('layout_partials/base_bootgrid_table', formGridReservation)}}
     </div>
     <!-- HA - peers -->
     <div id="ha-peers" class="tab-pane fade in">
