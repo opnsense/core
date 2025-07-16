@@ -69,5 +69,4 @@ class VipController extends \OPNsense\Base\IndexController
 
         return $result;
     }
-
 }
