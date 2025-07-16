@@ -48,6 +48,7 @@
             but can be configured as unicast address when multicast can not be used (for example with cloud providers)
         </help>
         <grid_view>
+            <mode>carp</mode>
             <formatter>modeFormatter</formatter>
             <visible>false</visible>
             <sequence>8</sequence>
@@ -64,6 +65,7 @@
             but can be configured as unicast address when multicast can not be used (for example with cloud providers)
         </help>
         <grid_view>
+            <mode>carp</mode>
             <formatter>modeFormatter</formatter>
             <visible>false</visible>
             <sequence>9</sequence>
@@ -77,6 +79,7 @@
       <style>mode mode_proxyarp</style>
       <grid_view>
         <type>boolean</type>
+        <mode>proxyarp</mode>
         <formatter>modeFormatter</formatter>
         <visible>false</visible>
         <sequence>10</sequence>
@@ -90,6 +93,7 @@
       <style>mode mode_carp mode_ipalias</style>
       <grid_view>
         <type>boolean</type>
+        <mode>carp ipalias</mode>
         <formatter>modeFormatter</formatter>
         <visible>false</visible>
         <sequence>11</sequence>
@@ -112,6 +116,7 @@
         <style>mode mode_carp mode_ipalias</style>
         <help>Enter the VHID group that the machines will share.</help>
         <grid_view>
+            <mode>carp ipalias</mode>
             <formatter>modeFormatter</formatter>
             <sequence>2</sequence>
             <width>8em</width>
@@ -124,6 +129,7 @@
         <style>mode mode_carp</style>
         <help>Specifies the base of the advertisement interval in seconds. The acceptable values are 1 to 255.</help>
         <grid_view>
+            <mode>carp</mode>
             <formatter>modeFormatter</formatter>
             <sequence>3</sequence>
             <width>6em</width>
@@ -139,6 +145,7 @@
           It is specified in 1/256 of seconds.  The acceptable values are 0 to 254.
         </help>
         <grid_view>
+            <mode>carp</mode>
             <formatter>modeFormatter</formatter>
             <sequence>4</sequence>
         </grid_view>
@@ -151,6 +158,7 @@
         <style>mode mode_carp mode_ipalias</style>
         <grid_view>
             <type>boolean</type>
+            <mode>carp ipalias</mode>
             <formatter>modeFormatter</formatter>
             <visible>false</visible>
         </grid_view>

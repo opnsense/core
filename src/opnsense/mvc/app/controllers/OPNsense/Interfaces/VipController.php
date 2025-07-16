@@ -35,38 +35,6 @@ class VipController extends \OPNsense\Base\IndexController
         $this->view->pick('OPNsense/Interface/vip');
         $this->view->formDialogVip = $this->getForm("dialogVip");
         $this->view->formGridVip = $this->getFormGrid("dialogVip");
-        $this->view->modeStyleMapJson = json_encode($this->getModeStyleMap($this->view->formDialogVip));
     }
 
-    /**
-     * Build a mapping of field names to their allowed modes and input types.
-     * Used by the Volt template to control visibility and formatting in the bootgrid.
-     */
-    protected function getModeStyleMap(array $form): array
-    {
-        $result = [];
-
-        foreach ($form as $field) {
-            if (!isset($field['style'], $field['id'], $field['type'])) {
-                continue;
-            }
-
-            $parts = explode('.', $field['id']);
-            $fieldName = end($parts);
-            $type = $field['type'];
-
-            $modes = [];
-            foreach (explode(' ', $field['style']) as $style) {
-                if (str_starts_with($style, 'mode_')) {
-                    $modes[] = substr($style, 5);
-                }
-            }
-
-            if (!empty($modes)) {
-                $result[$fieldName] = ['modes' => $modes, 'type' => $type];
-            }
-        }
-
-        return $result;
-    }
 }
