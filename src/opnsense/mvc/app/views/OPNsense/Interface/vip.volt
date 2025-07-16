@@ -30,13 +30,13 @@
                         },
                         modeFormatter: function (column, row) {
                             // skips rendering based on mode mismatch and renders checkmark if boolean.
-                            const info = modeStyleMap[column.id];
+                            const map = modeStyleMap[column.id];
                             const mode = row.mode || '';
-                            if (info?.modes?.length && !info.modes.includes(mode)) {
+                            if (map?.modes?.length && !map.modes.includes(mode)) {
                                 return '';
                             }
                             const value = row[column.id];
-                            if (info?.type === 'checkbox' && (value === '0' || value === '1')) {
+                            if (map?.type === 'checkbox' && (value === '0' || value === '1')) {
                                 const icon = value === '1' ? 'fa-check' : 'fa-times';
                                 return `<span class="fa fa-fw ${icon}" data-value="${value}" data-row-id="${row.uuid}"></span>`;
                             }
