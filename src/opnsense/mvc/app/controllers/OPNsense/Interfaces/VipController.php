@@ -35,18 +35,16 @@ class VipController extends \OPNsense\Base\IndexController
         $this->view->pick('OPNsense/Interface/vip');
         $this->view->formDialogVip = $this->getForm("dialogVip");
         $this->view->formGridVip = $this->getFormGrid("dialogVip");
-        $this->view->modeStyleFlat = $this->getModeStyleFlatMap($this->view->formDialogVip);
+        $this->view->modeStyleMapJson = json_encode($this->getModeStyleMap($this->view->formDialogVip));
     }
 
     /**
-     * Return a flat map string of field names to allowed modes based on their styles.
-     * Type is used to decide between boolean and text formatter in volt template
-     * ("vhid=carp,ipalias|checkbox;advbase=carp|text")
-     * Consumed by bootgrid formatter to automatically hide column fields based on mode
+     * Build a mapping of field names to their allowed modes and input types.
+     * Used by the Volt template to control visibility and formatting in the bootgrid.
      */
-    protected function getModeStyleFlatMap(array $form): string
+    protected function getModeStyleMap(array $form): array
     {
-        $entries = [];
+        $result = [];
 
         foreach ($form as $field) {
             if (!isset($field['style'], $field['id'], $field['type'])) {
@@ -65,11 +63,11 @@ class VipController extends \OPNsense\Base\IndexController
             }
 
             if (!empty($modes)) {
-                $entries[] = "{$fieldName}=" . implode(',', $modes) . "|{$type}";
+                $result[$fieldName] = ['modes' => $modes, 'type' => $type];
             }
         }
 
-        return implode(';', $entries);
+        return $result;
     }
 
 }

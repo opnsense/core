@@ -1,14 +1,7 @@
 <script>
     $( document ).ready(function() {
         // Construct a map of field names to their allowed modes based on style declarations
-        const modeStyleFlat = "{{ modeStyleFlat }}";
-        const modeStyleMap = Object.fromEntries(
-            modeStyleFlat.split(';').filter(Boolean).map(entry => {
-                const [key, rest] = entry.split('=');
-                const [modes, type] = rest.split('|');
-                return [key, { modes: modes.split(','), type }];
-            })
-        );
+        const modeStyleMap = JSON.parse('{{ modeStyleMapJson }}');
 
         $("#{{formGridVip['table_id']}}").UIBootgrid(
             {   search:'/api/interfaces/vip_settings/search_item/',
