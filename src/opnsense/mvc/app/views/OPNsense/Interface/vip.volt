@@ -1,6 +1,5 @@
 <script>
     $( document ).ready(function() {
-        // Construct a map of field names to their allowed modes based on style declarations
         const modeStyleMap = JSON.parse('{{ modeStyleMapJson }}');
 
         $("#{{formGridVip['table_id']}}").UIBootgrid(
