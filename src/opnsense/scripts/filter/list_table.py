@@ -26,8 +26,8 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
-    returns the contents of a pf table (optional as a json container)
-    usage : list_table.py [tablename] [optional|json]
+    returns the contents of a pf table
+    usage : list_table.py [tablename]
 """
 import subprocess
 import sys
@@ -37,30 +37,16 @@ if __name__ == '__main__':
     result = dict()
     if len(sys.argv) > 1:
         sp = subprocess.run(['/sbin/pfctl', '-t', sys.argv[1], '-vT', 'show'], capture_output=True, text=True)
-        prev_entry=''
-        statistics=dict()
-        for line in sp.stdout.split('\n') + []:
-            if not line.startswith('\t'):
-                this_entry = line.strip()
-                if len(prev_entry) > 0:
-                    result[prev_entry] = statistics
-                prev_entry = this_entry
-                statistics=dict()
-            else:
-                parts = line.split()
-                if len(parts) > 6:
-                    if parts[3].isdigit() and parts[5].isdigit():
-                        pkts=int(parts[3])
-                        bytes=int(parts[5])
-                        topic = parts[0].lower().replace('/', '_').replace(':', '')
-                        if pkts >= 0:
-                            statistics['%s_p' % topic] = pkts
-                            statistics['%s_b' % topic] = bytes
+        this_entry=None
+        labels = {}
+        for line in sp.stdout.split('\n'):
+            parts = line.split()
+            if len(parts) == 1:
+                this_entry = parts[0]
+                result[this_entry] = {'ip': this_entry}
+            elif this_entry and len(parts) > 6 and parts[3] != '0' and parts[3].isdigit() and parts[5].isdigit():
+                topic = parts[0].lower().replace('/', '_').replace(':', '')
+                result[this_entry]['%s_p' % topic] = int(parts[3])
+                result[this_entry]['%s_b' % topic] = int(parts[5])
 
-    # handle command line argument (type selection)
-    if len(sys.argv) > 2 and sys.argv[2] == 'json':
-        print(ujson.dumps(result))
-    else:
-        # output plain, simple no statistics
-        for table in result:
-            print (table)
+    print(ujson.dumps({'items': list(result.values())}))
