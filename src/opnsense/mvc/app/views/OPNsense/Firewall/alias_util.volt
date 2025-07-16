@@ -216,36 +216,28 @@
                                 <tr>
                                     <th data-column-id="ip" data-type="string"  data-identifier="true">{{ lang._('IP Address') }}</th>
                                     <th data-column-id="in_block_p" data-type="numeric" data-visible="false">
-                                      <span class="fa fa-fw fa-long-arrow-right text-info"></span><span class="fa fa-fw fa-times text-danger"></span>
-                                      <br/><small>{{lang._('packets')}}</small>
+                                      {{lang._('packets in (block)')}}
                                     </th>
                                     <th data-column-id="in_block_b" data-type="numeric" data-visible="false">
-                                      <span class="fa fa-fw fa-long-arrow-right text-info"></span><span class="fa fa-fw fa-times text-danger"></span>
-                                      <br/><small>{{lang._('bytes')}}</small>
+                                      {{lang._('bytes in (block)')}}
                                     </th>
                                     <th data-column-id="in_pass_p" data-type="numeric">
-                                      <span class="fa fa-fw fa-long-arrow-right text-info"></span><span class="fa fa-fw fa-play text-success"></span>
-                                      <br/><small>{{lang._('packets')}}</small>
+                                       {{lang._('packets in (pass)')}}
                                     </th>
                                     <th data-column-id="in_pass_b" data-type="numeric">
-                                      <span class="fa fa-fw fa-long-arrow-right text-info"></span><span class="fa fa-fw fa-play text-success"></span>
-                                      <br/><small>{{lang._('bytes')}}</small>
+                                      {{lang._('bytes in (pass)')}}
                                     </th>
                                     <th data-column-id="out_block_p" data-type="numeric" data-visible="false">
-                                      <span class="fa fa-fw fa-long-arrow-left text-info"></span><span class="fa fa-fw fa-times text-danger"></span>
-                                      <br/><small>{{lang._('packets')}}</small>
+                                      {{lang._('packets out (block)')}}
                                     </th>
                                     <th data-column-id="out_block_b" data-type="numeric" data-visible="false">
-                                      <span class="fa fa-fw fa-long-arrow-left text-info"></span><span class="fa fa-fw fa-times text-danger"></span>
-                                      <br/><small>{{lang._('bytes')}}</small>
+                                      {{lang._('bytes out (block)')}}
                                     </th>
                                     <th data-column-id="out_pass_p" data-type="numeric">
-                                      <span class="fa fa-fw fa-long-arrow-left text-info"></span><span class="fa fa-fw fa-play text-success"></span>
-                                      <br/><small>{{lang._('packets')}}</small>
+                                      {{lang._('packets out (pass)')}}
                                     </th>
                                     <th data-column-id="out_pass_b" data-type="numeric">
-                                      <span class="fa fa-fw fa-long-arrow-left text-info"></span><span class="fa fa-fw fa-play text-success"></span>
-                                      <br/><small>{{lang._('bytes')}}</small>
+                                      {{lang._('bytes out (pass)')}}
                                     </th>
                                     <th data-column-id="commands" data-formatter="commands"></th>
                                 </tr>
