@@ -256,12 +256,11 @@ class ControllerBase extends ControllerRoot
                             $record['label'] = gettext((string)$item);
                             break;
                         case 'id':
+                            $parts = explode('.', (string)$item);
                             if (!empty($root)) {
-                                $parts = explode('.', (string)$item);
                                 $record['column-id'] = implode('.', array_slice($parts, array_search($root, $parts) + 1));
                             } else {
-                                $tmp = explode('.', (string)$item);
-                                $record['column-id'] = end($tmp);
+                                $record['column-id'] = end($parts);
                             }
                             break;
                     }
