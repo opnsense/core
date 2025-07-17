@@ -152,7 +152,7 @@ class Helpers(object):
         return list(filter(None, result))
 
 
-    def getBracketedIp(self, str):
+    def get_bracketed_ip(self, str):
         """ returns ipv6 addresses with brackets else returns original
         :param tag: tag in dot notation (section.item)
         :return: boolean
