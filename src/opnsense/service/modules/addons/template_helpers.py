@@ -151,6 +151,23 @@ class Helpers(object):
             result.append(self.getNodeByTag('interfaces.'+name+'.if'))
         return list(filter(None, result))
 
+
+    def getBracketedIp(self, str):
+        """ returns ipv6 addresses with brackets else returns original
+        :param tag: tag in dot notation (section.item)
+        :return: boolean
+        """
+        if self.is_ipv6(str):
+            return "[" + str + "]"
+        return str
+
+    @staticmethod
+    def is_ipv6(str):
+        try:
+            return ipaddress.ip_address(str).version == 6
+        except ValueError:
+            return False
+
     @staticmethod
     def getIPNetwork(network):
         """
