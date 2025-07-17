@@ -235,7 +235,7 @@ class ControllerBase extends ControllerRoot
      * Extract grid fields from form definition
      * @return array
      */
-    public function getFormGrid($formname, $grid_id = null, $edit_alert_id = null)
+    public function getFormGrid($formname, $grid_id = null, $edit_alert_id = null, $root = null)
     {
         /* collect all fields, sort by sequence */
         $all_data = [];
@@ -256,8 +256,13 @@ class ControllerBase extends ControllerRoot
                             $record['label'] = gettext((string)$item);
                             break;
                         case 'id':
-                            $tmp = explode('.', (string)$item);
-                            $record['column-id'] = end($tmp);
+                            if (!empty($root)) {
+                                $parts = explode('.', (string)$item);
+                                $record['column-id'] = implode('.', array_slice($parts, array_search($root, $parts) + 1));
+                            } else {
+                                $tmp = explode('.', (string)$item);
+                                $record['column-id'] = end($tmp);
+                            }
                             break;
                     }
                 }

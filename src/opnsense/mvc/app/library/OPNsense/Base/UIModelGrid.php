@@ -169,7 +169,7 @@ class UIModelGrid
     {
         if (is_array($node)) {
             foreach($node as $key => $value) {
-                yield from $this->flatten($value, $key);
+                yield from $this->flatten($value, ltrim($path . '.' . $key, '.'));
             }
         } else {
             yield $path => $node;
