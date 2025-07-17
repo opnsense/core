@@ -165,10 +165,10 @@ class UIModelGrid
         return $result;
     }
 
-    private function flatten($node, $path='')
+    private function flatten($node, $path = '')
     {
         if (is_array($node)) {
-            foreach($node as $key => $value) {
+            foreach ($node as $key => $value) {
                 yield from $this->flatten($value, ltrim($path . '.' . $key, '.'));
             }
         } else {
