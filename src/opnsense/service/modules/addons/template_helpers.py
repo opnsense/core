@@ -154,8 +154,8 @@ class Helpers(object):
 
     def get_bracketed_ip(self, str):
         """ returns ipv6 addresses with brackets else returns original
-        :param tag: tag in dot notation (section.item)
-        :return: boolean
+        :param str: any string that may be an IPv6 address in a place where an IPv6 address would need brackets
+        :return: string
         """
         if self.is_ipv6(str):
             return "[" + str + "]"
