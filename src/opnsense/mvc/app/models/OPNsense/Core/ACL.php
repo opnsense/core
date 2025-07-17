@@ -482,6 +482,8 @@ class ACL
             flock($fp, LOCK_UN);
             fclose($fp);
             chmod($this->aclCacheFilename, 0660);
+            chown($this->aclCacheFilename, 'wwwonly'); /* XXX frontend owns file */
+            chgrp($this->aclCacheFilename, 'wheel'); /* XXX backend can work with it */
             return true;
         }
         return false;
