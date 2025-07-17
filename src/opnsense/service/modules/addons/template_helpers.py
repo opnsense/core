@@ -165,7 +165,7 @@ class Helpers(object):
     def is_ipv6(str):
         try:
             return ipaddress.ip_address(str).version == 6
-        except ValueError:
+        except:
             return False
 
     @staticmethod
