@@ -47,17 +47,14 @@ class IDSOverrideStatus extends AbstractStatus
 
     public function collectStatus()
     {
-        $customFile = '/usr/local/etc/suricata/custom.yaml';
-        $expectedHash = '0cd7bf5ab0aa582303cfdebb3d4071366b232f300ef285101467533fd54c95d7';
+        $fileHash = @hash_file('sha256', '/usr/local/etc/suricata/custom.yaml');
+        $sampleHash = @hash_file('sha256', '/usr/local/opnsense/service/templates/OPNsense/IDS/custom.yaml.sample');
 
-        if (is_file($customFile)) {
-            $currentHash = hash_file('sha256', $customFile);
-            if ($currentHash !== $expectedHash) {
-                $this->internalMessage = gettext(
-                    'The configuration contains manual overwrites, these may interfere with the settings configured here.'
-                );
-                $this->internalStatus = SystemStatusCode::NOTICE;
-            }
+        if ($fileHash && $sampleHash && $fileHash !== $sampleHash) {
+            $this->internalMessage = gettext(
+                'The configuration contains manual overwrites, these may interfere with the settings configured here.'
+            );
+            $this->internalStatus = SystemStatusCode::NOTICE;
         }
     }
 }
