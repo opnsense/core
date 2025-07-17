@@ -381,21 +381,12 @@ abstract class BaseField
     }
 
     /**
-     * return field current value (deprecated)
-     * @return string field current value
-     */
-    public function getCurrentValue(): string
-    {
-        return (string)$this->internalValue;
-    }
-
-    /**
-     * return field current value
+     * return field current value in order to be able to override it
      * @return string field current value
      */
     public function getValue(): string
     {
-        return $this->getCurrentValue();
+        return (string)$this->internalValue;
     }
 
     /**
