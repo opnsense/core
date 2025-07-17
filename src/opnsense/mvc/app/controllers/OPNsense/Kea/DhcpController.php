@@ -55,7 +55,7 @@ class DhcpController extends \OPNsense\Base\IndexController
         $this->view->formGridSubnet = $this->getFormGrid("dialogSubnet4");
 
         $this->view->formDialogReservation = $this->getForm("dialogReservation4");
-        $this->view->formGridReservation = $this->getFormGrid("dialogReservation4");
+        $this->view->formGridReservation = $this->getFormGrid("dialogReservation4", null, null, 'reservation');
 
         $this->view->formDialogPeer = $this->getForm("dialogPeer4");
         $this->view->formGridPeer = $this->getFormGrid("dialogPeer4");
