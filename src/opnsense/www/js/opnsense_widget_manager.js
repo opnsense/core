@@ -582,20 +582,24 @@ class WidgetManager  {
         ` : '';
         let $panel = $(`<div class="widget widget-${identifier}"></div>`);
         let $content = $(`<div class="widget-content"></div>`);
-        if (identifier !== 'Picture') {
-            let $header = $(`
-                <div class="widget-header">
-                    <div class="widget-header-left"></div>
-                    <div id="${identifier}-title" class="widget-title"><b>${title}</b></div>
-                    <div class="widget-command-container">
-                        ${link}
-                        <div id="close-handle-${identifier}" class="close-handle" style="display: none;">
-                            <i class="fa fa-times fa-xs"></i>
-                        </div>
+        const headerStyle = identifier === 'Picture' ? ' style="margin: 0;"' : '';
+        const titleElement = identifier !== 'Picture' ? 
+        `<div id="${identifier}-title" class="widget-title"><b>${title}</b></div>` : '';
+        const linkHandle = identifier !== 'Picture' ? link : '';
+        let $header = $(`
+            <div class="widget-header"${headerStyle}>
+                <div class="widget-header-left"></div>
+                ${titleElement}
+                <div class="widget-command-container">
+                    ${linkHandle}
+                    <div id="close-handle-${identifier}" class="close-handle" style="display: none;">
+                        <i class="fa fa-times fa-xs"></i>
                     </div>
                 </div>
-            `);
-            $content.append($header);
+            </div>
+        `);
+        $content.append($header);
+        if (identifier !== 'Picture') {
             let $divider = $(`<div class="panel-divider"><div class="line"></div></div></div>`);
             $content.append($divider);
         }
