@@ -121,27 +121,9 @@ class UIModelGrid
                     continue;
                 }
 
-                $flatten = function($input) {
-                    $result = [];
-                    $stack = [$input];
-
-                    while (!empty($stack)) {
-                        $current = array_pop($stack);
-                        foreach ($current as $key => $value) {
-                            if (is_array($value)) {
-                                $stack[] = $value;
-                            } else {
-                                $result[$key] = $value;
-                            }
-                        }
-                    }
-
-                    return $result;
-                };
-
                 // parse rows, because we may need to convert some (list) items we need to know the actual content
                 // before searching. We flatten the resulting array in case of nested containers
-                $row = $flatten(array_merge(['uuid' => $record->getAttributes()['uuid']], $record->getNodeContent()));
+                $row = iterator_to_array($this->flatten(array_merge(['uuid' => $record->getAttributes()['uuid']], $record->getNodeContent())));
 
                 // if a search phrase is provided, use it to search in all requested fields
                 $search_clauses = preg_split('/\s+/', $searchPhrase);
@@ -181,5 +163,16 @@ class UIModelGrid
         $result['current'] = (int)$currentPage;
 
         return $result;
+    }
+
+    private function flatten($node, $path='')
+    {
+        if (is_array($node)) {
+            foreach($node as $key => $value) {
+                yield from $this->flatten($value, $key);
+            }
+        } else {
+            yield $path => $node;
+        }
     }
 }
