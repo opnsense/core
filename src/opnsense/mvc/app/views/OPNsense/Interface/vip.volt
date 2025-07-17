@@ -1,5 +1,7 @@
 <script>
     $( document ).ready(function() {
+        const formGridVipJson = {{ formGridVip | json_encode() }};
+
         $("#{{formGridVip['table_id']}}").UIBootgrid(
             {   search:'/api/interfaces/vip_settings/search_item/',
                 get:'/api/interfaces/vip_settings/get_item/',
@@ -17,6 +19,24 @@
                     formatters: {
                         networkFormatter: function(column, row) {
                             return row.subnet + (row.subnet_bits ? '/' + row.subnet_bits : '');
+                        },
+                        modeFormatter(column, row) {
+                            // skips rendering based on mode mismatch and renders checkmark if boolean
+                            const field = formGridVipJson.fields.find(f => f["column-id"] === column.id);
+                            const value = row[column.id];
+                            const mode = row.mode ?? '';
+                            const allowedModes = (field?.mode ?? '').split(/\s+/);
+
+                            if (allowedModes.length && !allowedModes.includes(mode)) {
+                                return '';
+                            }
+
+                            if (field?.type === 'boolean' && (value === '0' || value === '1')) {
+                                const icon = value === '1' ? 'fa-check' : 'fa-times';
+                                return `<span class="fa fa-fw ${icon}" data-value="${value}" data-row-id="${row.uuid}"></span>`;
+                            }
+
+                            return value;
                         },
                     },
                 }
