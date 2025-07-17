@@ -489,7 +489,7 @@ class Config extends Singleton
                 }
             }
         }
-        $revision['time'] = microtime(true);
+        $revision['time'] = sprintf('%0.2f', microtime(true));
 
         return $revision;
     }

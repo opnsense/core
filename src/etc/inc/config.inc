@@ -290,7 +290,7 @@ function make_config_revision_entry($desc = '')
 
     $revision = [];
     $revision['username'] = $username;
-    $revision['time'] = microtime(true);
+    $revision['time'] = sprintf('%0.2f', microtime(true));
     $revision['description'] = $desc;
 
     return $revision;
