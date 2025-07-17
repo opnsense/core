@@ -302,9 +302,9 @@
             } else if (data['status'] == 'reboot') {
                 BootstrapDialog.show({
                     type:BootstrapDialog.TYPE_INFO,
-                    title: "{{ lang._('Your device is rebooting') }}",
+                    title: "{{ lang._('Your system is rebooting') }}",
                     closable: false,
-                    message: "{{ lang._('The upgrade has finished and your device is being rebooted at the moment, please wait...') }}" +
+                    message: "{{ lang._('The upgrade has finished and the system is being rebooted at the moment, please wait...') }}" +
                         ' <i class="fa fa-cog fa-spin"></i>',
                     onshow: function (dialogRef) {
                         setTimeout(rebootWait, 45000);
