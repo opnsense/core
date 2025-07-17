@@ -1162,6 +1162,8 @@ class UIBootgrid {
             resizable: "header",
             placeholder: this.placeholder[0],
             layout: 'fitColumns',
+            // tabulator uses "." for nested field access, disable this behavior since our keys can contain a dot.
+            nestedFieldSeparator:false,
             columns: this._parseColumns(),
 
             /* SERVER-SIDE OPTIONS */
