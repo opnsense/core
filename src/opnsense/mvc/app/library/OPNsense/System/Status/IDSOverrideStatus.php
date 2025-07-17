@@ -47,7 +47,7 @@ class IDSOverrideStatus extends AbstractStatus
 
     public function collectStatus()
     {
-        $fileHash = @hash_file('sha256', '/usr/local/etc/suricata/custom.yaml');
+        $fileHash = @hash_file('sha256', '/usr/local/opnsense/service/templates/OPNsense/IDS/custom.yaml');
         $sampleHash = @hash_file('sha256', '/usr/local/opnsense/service/templates/OPNsense/IDS/custom.yaml.sample');
 
         if ($fileHash && $sampleHash && $fileHash !== $sampleHash) {
