@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2015 Deciso B.V.
+ *    Copyright (C) 2015-2025 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -30,6 +30,7 @@
 
 namespace OPNsense\Auth;
 
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Config;
 
 /**
@@ -91,7 +92,7 @@ class Voucher extends Base implements IAuthConnector
      */
     private function openDatabase()
     {
-        $db_path = '/conf/vouchers_' . $this->refid . '.db';
+        $db_path = (new AppConfig())->application->configDir . '/vouchers_' . $this->refid . '.db';
         $this->dbHandle = new \SQLite3($db_path);
         $this->dbHandle->busyTimeout(30000);
         $results = $this->dbHandle->query("PRAGMA table_info('vouchers')");
