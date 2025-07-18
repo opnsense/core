@@ -411,6 +411,7 @@ class WidgetManager  {
                 $('.edit-handle').show();
                 $('#add_widget').show();
                 $('#restore-defaults').show();
+                $('.widget-title').show();
             } else {
                 this.runtimeOptions.editMode = false;
                 this.grid.enableMove(false);
@@ -421,6 +422,11 @@ class WidgetManager  {
                 $('.edit-handle').hide();
                 $('#add_widget').hide();
                 $('#restore-defaults').hide();
+                for (const [id, widget] of Object.entries(this.widgetClasses)) {
+                    if (!widget.isTitleVisible()) {
+                        $(`#${id}-title`).hide();
+                    }
+                }
             }
         });
 
