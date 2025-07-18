@@ -182,8 +182,7 @@ class Helpers(object):
     @staticmethod
     def to_int(s):
         try:
-            ret = int(s)
-            return ret
+            return int(s)
         except:
             return -1
 
