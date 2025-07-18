@@ -154,9 +154,10 @@ class Helpers(object):
 
 
     def get_host_port_from_tag(self, host_tag: str, port_tag: str, no_brackets_on_bare_ip: bool = False):
-        """ returns a formatting host and port and bracketed if IPv6
-        :param host: string
-        :param port: setting this < 0 will disable it's output and just output the ip formatted for inclusion with a separate formatted port
+        """ returns a formatting host and port and bracketed if IPv6 from tags
+        :param host_tag: string
+        :param port_tag: setting this < 0 will disable it's output and just output the ip formatted for inclusion with a separate formatted port
+        :param no_brackets_on_bare_ip: setting this to True means that there will not be brackets if it just returns an ip with no port
         :return: string
         """
         host = self.getNodeByTag(host_tag)
@@ -173,6 +174,7 @@ class Helpers(object):
         """ returns a formatting host and port and bracketed if IPv6
         :param host: string
         :param port: setting this < 0 will disable it's output and just output the ip formatted for inclusion with a separate formatted port
+        :param no_brackets_on_bare_ip: setting this to True means that there will not be brackets if it just returns an ip with no port
         :return: string
         """
         port_int = self.to_int(port)
