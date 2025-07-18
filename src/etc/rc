@@ -235,6 +235,11 @@ echo "done."
 # Recreate capabilities DB
 /usr/bin/cap_mkdb /etc/login.conf
 
+BOOTLOCK="/var/run/booting"
+
+touch ${BOOTLOCK}
+chmod 660 ${BOOTLOCK}
+
 /usr/local/etc/rc.subr.d/php
 
 # Execute the early syshook / plugin commands
@@ -246,7 +251,7 @@ echo "done."
 
 # Let the PHP-based configuration subsystem set up the system now
 echo -n "Launching the init system..."
-/usr/local/bin/flock -n -o /var/run/booting /usr/local/etc/rc.bootup || exit 1
+/usr/local/bin/flock -n -o ${BOOTLOCK} /usr/local/etc/rc.bootup || exit 1
 
 # Execute the normal syshook / plugin commands
 /usr/local/etc/rc.syshook start
