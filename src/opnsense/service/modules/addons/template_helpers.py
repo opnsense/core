@@ -163,6 +163,9 @@ class Helpers(object):
         host = self.getNodeByTag(host_tag)
         port = self.getNodeByTag(port_tag)
 
+        if host is None:
+            return ""
+
         if port is None:
             port = -1
 
