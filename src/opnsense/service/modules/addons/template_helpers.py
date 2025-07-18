@@ -153,11 +153,11 @@ class Helpers(object):
 
 
 
-    def get_host_port_from_tag(self, host_tag: str, port_tag: str, no_brackets_on_bare_ip: bool = False):
+    def get_host_port_from_tag(self, host_tag: str, port_tag: str, brackets_on_bare_ip: bool = False):
         """ returns a formatting host and port and bracketed if IPv6 from tags
         :param host_tag: string
         :param port_tag: setting this < 0 will disable it's output and just output the ip formatted for inclusion with a separate formatted port
-        :param no_brackets_on_bare_ip: setting this to True means that there will not be brackets if it just returns an ip with no port
+        :param no_brackets_on_bare_ip: setting this to True means that there will be brackets if it just returns an ip with no port
         :return: string
         """
         host = self.getNodeByTag(host_tag)
@@ -166,21 +166,21 @@ class Helpers(object):
         if port is None:
             port = -1
 
-        return self.get_host_port(host, port, no_brackets_on_bare_ip)
+        return self.get_host_port(host, port, brackets_on_bare_ip)
 
 
 
-    def get_host_port(self, host: str, port: str | int = 0, no_brackets_on_bare_ip: bool = False):
+    def get_host_port(self, host: str, port: str | int = -1, brackets_on_bare_ip: bool = False):
         """ returns a formatting host and port and bracketed if IPv6
         :param host: string
         :param port: setting this < 0 will disable it's output and just output the ip formatted for inclusion with a separate formatted port
-        :param no_brackets_on_bare_ip: setting this to True means that there will not be brackets if it just returns an ip with no port
+        :param brackets_on_bare_ip: setting this to True means that there will be brackets if it just returns an ip with no port
         :return: string
         """
         port_int = self.to_int(port)
         skip_port = port_int < 0
 
-        if skip_port and no_brackets_on_bare_ip:
+        if skip_port and not brackets_on_bare_ip:
             return host
 
         if self.is_ipv6(host):
