@@ -163,9 +163,6 @@ class Helpers(object):
         host = self.getNodeByTag(host_tag)
         port = self.getNodeByTag(port_tag)
 
-        if host is None:
-            return ""
-
         if port is None:
             port = -1
 
@@ -182,6 +179,9 @@ class Helpers(object):
         """
         port_int = self.to_int(port)
         skip_port = port_int < 0
+
+        if host is None or host != "":
+            return ""
 
         if skip_port and not brackets_on_bare_ip:
             return host
