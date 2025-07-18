@@ -588,10 +588,11 @@ class WidgetManager  {
         ` : '';
         let $panel = $(`<div class="widget widget-${identifier}"></div>`);
         let $content = $(`<div class="widget-content"></div>`);
-        const headerStyle = identifier === 'Picture' ? ' style="margin: 0;"' : '';
-        const titleElement = identifier !== 'Picture' ? 
+        const widget = this.widgetClasses[identifier];
+        const headerStyle = widget && !widget.isTitleVisible() ? ' style="margin: 0;"' : '';
+        const titleElement = widget && widget.isTitleVisible() ? 
         `<div id="${identifier}-title" class="widget-title"><b>${title}</b></div>` : '';
-        const linkHandle = identifier !== 'Picture' ? link : '';
+        const linkHandle = widget && widget.isTitleVisible() ? link : '';
         let $header = $(`
             <div class="widget-header"${headerStyle}>
                 <div class="widget-header-left"></div>
@@ -605,7 +606,7 @@ class WidgetManager  {
             </div>
         `);
         $content.append($header);
-        if (identifier !== 'Picture') {
+        if (widget && widget.isTitleVisible()) {
             let $divider = $(`<div class="panel-divider"><div class="line"></div></div></div>`);
             $content.append($divider);
         }

@@ -144,6 +144,10 @@ class BaseWidget {
         return null;
     }
 
+    isTitleVisible() {
+        return this.titleVisible;
+    }
+
     /* Utility/protected functions */
 
     ajaxCall(url, data={}, method='GET') {
