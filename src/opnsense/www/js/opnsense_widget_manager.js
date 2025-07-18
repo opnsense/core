@@ -590,9 +590,10 @@ class WidgetManager  {
         let $content = $(`<div class="widget-content"></div>`);
         const widget = this.widgetClasses[identifier];
         const headerStyle = widget && !widget.isTitleVisible() ? ' style="margin: 0;"' : '';
-        const titleElement = widget && widget.isTitleVisible() ? 
-        `<div id="${identifier}-title" class="widget-title"><b>${title}</b></div>` : '';
-        const linkHandle = widget && widget.isTitleVisible() ? link : '';
+        const titleDisplay = widget && widget.isTitleVisible() ? '' : ' style="display: none;"';
+        const linkDisplay = widget && widget.isTitleVisible() ? '' : ' style="display: none;"';
+        const titleElement = `<div id="${identifier}-title" class="widget-title"${titleDisplay}><b>${title}</b></div>`;
+        const linkHandle = link !== '' ? link.replace('class="link-handle"', `class="link-handle"${linkDisplay}`) : '';
         let $header = $(`
             <div class="widget-header"${headerStyle}>
                 <div class="widget-header-left"></div>
