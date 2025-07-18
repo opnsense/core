@@ -153,7 +153,7 @@ class Helpers(object):
 
 
 
-    def get_host_port_from_tag(self, host_tag: str, port_tag: str, brackets_on_bare_ip: bool = False):
+    def get_host_port_tag(self, host_tag: str, port_tag: str, brackets_on_bare_ip: bool = False):
         """ returns a formatting host and port and bracketed if IPv6 from tags
         :param host_tag: string
         :param port_tag: setting this < 0 will disable it's output and just output the ip formatted for inclusion with a separate formatted port
