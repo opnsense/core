@@ -151,15 +151,27 @@ class Helpers(object):
             result.append(self.getNodeByTag('interfaces.'+name+'.if'))
         return list(filter(None, result))
 
-
-    def get_bracketed_ip(self, str):
-        """ returns ipv6 addresses with brackets else returns original
-        :param str: any string that may be an IPv6 address in a place where an IPv6 address would need brackets
+    def get_host_port(self, host: str, port: str | int):
+        """ returns a formatting host and port and bracketed if IPv6
+        :param host: string
+        :param port: setting this < 0 will disable it's output and just output the ip formatted for inclusion with a separate formatted port
         :return: string
         """
-        if self.is_ipv6(str):
-            return "[" + str + "]"
-        return str
+        if self.is_ipv6(host):
+            host = "[" + host + "]"
+
+        if self.to_int(port) < 0:
+            return host
+
+        return '{}:{}'.format(host, port)
+
+    @staticmethod
+    def to_int(s):
+        try:
+            ret = int(s)
+            return ret
+        except:
+            return -1
 
     @staticmethod
     def is_ipv6(str):
