@@ -127,7 +127,7 @@ $.fn.UIBootgrid = function (params) {
             ajax: true,
             selection: true,
             multiSelect: true,
-            rowCount:[7,14,20,50,100,-1],
+            rowCount:[14,7,20,50,100,-1],
             url: params['search'],
             initialSearchPhrase: "",
             ajaxSettings: {
