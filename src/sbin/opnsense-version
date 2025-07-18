@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2018-2024 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2018-2025 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -32,8 +32,9 @@ OUTPUT=
 
 DO_CHECK=
 DO_ORIGIN=
+DO_RAW=
 
-while getopts AaCceHilNnOstVvwx OPT; do
+while getopts AaCceHilNnOR:stVvwx OPT; do
 	case ${OPT} in
 	A)
 		OUTPUT="${OUTPUT} \${product_arch}"
@@ -67,6 +68,9 @@ while getopts AaCceHilNnOstVvwx OPT; do
 		;;
 	O)
 		DO_ORIGIN="-O"
+		;;
+	R)
+		DO_RAW="-R ${OPTARG}"
 		;;
 	s)
 		OUTPUT="${OUTPUT} \${product_size}"
@@ -129,6 +133,11 @@ if grep -q '[{}]' ${VERSION}; then
 	eval "$(grep -v '[{}]' ${VERSION} | sed 's/[^"]*"\([^"]*\)"[^"]*"\([^"]*\)".*/\1="\2"/')"
 fi
 
+if [ -n "${DO_RAW}" ]; then
+	OUTPUT="\$${DO_RAW#"-R "}"
+	TARGET=nop
+fi
+
 case "${TARGET}" in
 core)
 	if [ -z "${OUTPUT}" ]; then
@@ -168,6 +177,9 @@ core)
 			esac
 		fi
 	fi
+	;;
+nop)
+	# for raw output mode
 	;;
 *)
 	if [ -z "${OUTPUT}" ]; then

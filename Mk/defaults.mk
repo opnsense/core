@@ -67,6 +67,8 @@ _CORE_SYSLOGNG!=${PKG} query %v syslog-ng
 CORE_SYSLOGNG?=	${_CORE_SYSLOGNG:S/./ /g:[1..2]:tW:S/ /./g}
 .endif
 
+VERSIONFILE=	opnsense/version/core
+
 REPLACEMENTS=	CORE_ABI \
 		CORE_ARCH \
 		CORE_COMMIT \
