@@ -2319,11 +2319,18 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         mwexec(join(' ', $mac_cmd));
     }
 
-    /* only try to set media properties when requested */
-    if (!empty($wancfg['media']) || !empty($wancfg['mediaopt'])) {
+    if (!empty($wancfg['media'])) {
         $intf_details = $ifconfig_details[$realhwif];
-        $media_changed = stripos($intf_details['media_raw'], $wancfg['media']) == false;
+        /* santizing current media to avoid mismatching on change detection */
+        $media_changed = stripos(explode('(', $intf_details['media_raw'])[0], $wancfg['media']) == false;
         if (!empty($wancfg['mediaopt'])) {
+            /*
+             * XXX Not sanitizing current media here, because in
+             * testing 'mediaopt' was not working consistenly and
+             * may even differ per driver.  If someone set 'media'
+             * it will very likely be set once with the right
+             * 'mediaopt' so the behaviour should be consistent.
+             */
             $media_changed |= stripos($intf_details['media_raw'], $wancfg['mediaopt']) == false;
         }
         if ($media_changed) {

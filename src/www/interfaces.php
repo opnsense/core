@@ -990,7 +990,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if (isset($mediaopts[0])) {
                     $new_config['media'] = $mediaopts[0];
                 }
-                if (isset($mediaopts[0])) {
+                if (isset($mediaopts[1])) {
                     $new_config ['mediaopt'] = $mediaopts[1];
                 }
             }
