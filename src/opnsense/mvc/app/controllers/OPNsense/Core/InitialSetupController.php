@@ -28,10 +28,19 @@
 
 namespace OPNsense\Core;
 
+use OPNsense\Core\Config;
+
 class InitialSetupController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
+        /**
+         * XXX: Eventually we might want to move this out of the way, but "mark" wizard as started on enter
+         */
+        if (isset(Config::getInstance()->object()->trigger_initial_wizard)) {
+            unset(Config::getInstance()->object()->trigger_initial_wizard);
+            Config::getInstance()->save();
+        }
         $this->view->all_tabs = [
             'step_0' => [
                 'title' => gettext('Welcome'),
