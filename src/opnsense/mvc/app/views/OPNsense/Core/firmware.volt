@@ -302,9 +302,9 @@
             } else if (data['status'] == 'reboot') {
                 BootstrapDialog.show({
                     type:BootstrapDialog.TYPE_INFO,
-                    title: "{{ lang._('Your device is rebooting') }}",
+                    title: "{{ lang._('Your system is rebooting') }}",
                     closable: false,
-                    message: "{{ lang._('The upgrade has finished and your device is being rebooted at the moment, please wait...') }}" +
+                    message: "{{ lang._('The upgrade has finished and the system is being rebooted at the moment, please wait...') }}" +
                         ' <i class="fa fa-cog fa-spin"></i>',
                     onshow: function (dialogRef) {
                         setTimeout(rebootWait, 45000);
@@ -948,22 +948,19 @@
                     <table class="table table-striped table-condensed" id="pluginlist">
                         <thead>
                             <tr>
-                                <th colspan="3"></th>
-                                <th colspan="4">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" id="plugin_show_community"> <strong>{{ lang._('Show (Tier 3) community plugins') }}</strong>
-                                        </label>
-                                    </div>
-                                </th>
-                            </tr>
-                            <tr>
                                 <th style="vertical-align:middle"><input type="text" class="input-sm" autocomplete="off" id="plugin_search" placeholder="{{ lang._('Name') }}"></th>
                                 <th style="vertical-align:middle">{{ lang._('Version') }}</th>
                                 <th style="vertical-align:middle">{{ lang._('Size') }}</th>
                                 <th style="vertical-align:middle">{{ lang._('Tier') }}</th>
                                 <th style="vertical-align:middle">{{ lang._('Repository') }}</th>
-                                <th style="vertical-align:middle">{{ lang._('Comment') }}</th>
+                                <th style="vertical-align:middle">
+                                        {{ lang._('Comment') }}
+                                        <span class="checkbox pull-right" style="margin:auto">
+                                            <label>
+                                                <input type="checkbox" id="plugin_show_community">{{ lang._('Show community plugins') }}
+                                            </label>
+                                        </span>
+                                </th>
                                 <th style="vertical-align:middle"></th>
                             </tr>
                         </thead>

@@ -152,7 +152,6 @@
 /usr/local/etc/rc.syshook.d/stop/99-config
 /usr/local/etc/rc.syshook.d/update/10-refresh.sh
 /usr/local/etc/rc.syshook.d/upgrade/10-sanity.sh
-/usr/local/etc/rc.syshook.d/upgrade/20-unbound-duckdb.py
 /usr/local/etc/rc.syshook.d/upgrade/90-cleanup.sh
 /usr/local/etc/ssh/sshd_config.d/README
 /usr/local/etc/ssl/ext_sources/README
@@ -561,6 +560,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/DiskSpaceStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/DnsmasqOverrideStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/FirewallStatus.php
+/usr/local/opnsense/mvc/app/library/OPNsense/System/Status/IDSOverrideStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/IPsecOverrideStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/LiveMediaStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/MonitOverrideStatus.php

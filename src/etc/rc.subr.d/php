@@ -25,7 +25,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-CHOWN="chown wwwonly:wheel"
+OWNER="wwwonly:wheel"
 
 # set up required output directories for various PHP components
 for PHPDIR in cache sessions tmp; do
@@ -36,13 +36,14 @@ for PHPDIR in cache sessions tmp; do
 	chmod 750 ${PHPDIR}
 
 	# important note: ownership change may fail when user is not known
-	${CHOWN} ${PHPDIR}
+	chown -R ${OWNER} ${PHPDIR}
 done
 
 # change ownership for GUI related file access
-find /conf/backup -name '*.xml' -exec ${CHOWN} {} \;
+find /conf -name 'vouchers_*.db' -exec chown ${OWNER} {} \;
+find /conf/backup -name '*.xml' -exec chown ${OWNER} {} \;
 for PHPOWN in /conf /conf/config.xml /conf/backup /var/run/booting; do
-	${CHOWN} ${PHPOWN}
+	chown ${OWNER} ${PHPOWN}
 done
 
 # flush Phalcon volt templates

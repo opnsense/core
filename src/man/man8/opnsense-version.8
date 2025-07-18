@@ -1,5 +1,5 @@
 .\"
-.\" Copyright (c) 2018-2024 Franco Fichtner <franco@opnsense.org>
+.\" Copyright (c) 2018-2025 Franco Fichtner <franco@opnsense.org>
 .\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
@@ -24,7 +24,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd August 27, 2024
+.Dd July 18, 2025
 .Dt OPNSENSE-VERSION 8
 .Os
 .Sh NAME
@@ -36,6 +36,7 @@
 .Op Ar package
 .Nm
 .Fl cO
+.Fl R Ar tag
 .Op Ar package
 .Sh DESCRIPTION
 The
@@ -87,7 +88,11 @@ Return the product name.
 .It Fl n
 Return the package name.
 .It Fl O
-Return the raw version data.
+Return the full raw version data.
+.It Fl R
+Returns the raw version data for
+.Ar tag
+only.
 .It Fl s
 Return the accumulated file size of the package.
 .It Fl t

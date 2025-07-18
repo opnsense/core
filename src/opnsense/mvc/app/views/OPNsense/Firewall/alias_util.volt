@@ -173,89 +173,79 @@
 
 </style>
 
-<section class="page-content-main">
-    <div class="container-fluid">
-        <div class="row">
-            <section class="col-xs-12">
-                <div class="row">
-                  <div class="col-xs-4">
-                      <select id="tablename" data-width="auto" data-live-search="true">
-                      </select>
-                      <button class="btn btn-default" id="refresh">
-                          <i class="fa fa-refresh" aria-hidden="true"></i>
-                      </button>
-                      <button class="btn btn-default" id="flushtable">
-                          {{ lang._('Flush') }}
-                      </button>
-                  </div>
-                  <div class="col-xs-4">
-                    <div class="input-group">
-                      <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" id="btn_quick_add">
-                            <i class="fa fa-plus" aria-hidden="true"></i>
-                        </button>
-                      </span>
-                      <input type="text" class="form-control" id="quick_add" placeholder="{{ lang._('Quick add address') }}"/>
-                    </div>
-                  </div>
-                  <div class="col-xs-4">
-                      <button class="btn btn-default pull-right" id="update_bogons"><i id="update_bogons_progress" class=""></i>
-                        {{ lang._('Update bogons') }}
-                      </button>
-                      <button class="btn btn-default pull-right" id="find_references" title="{{ lang._('Look up which aliases match a certain IP address') }}">
-                          <span class="fa fa-search"></span> {{ lang._('Find references') }}
-                      </button>
-                  </div>
+<div class="container-fluid">
+    <div class="row">
+        <section class="col-xs-12">
+            <div class="row">
+                <div class="col-xs-4">
+                    <select id="tablename" data-width="auto" data-live-search="true">
+                    </select>
+                    <button class="btn btn-default" id="refresh">
+                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                    </button>
+                    <button class="btn btn-default" id="flushtable">
+                        {{ lang._('Flush') }}
+                    </button>
                 </div>
-            </section>
-            <section class="col-xs-12">
-                <div class="content-box">
-                    <div class="table-responsive">
-                        <table class="table table-striped" id="alias_content" data-store-selection="true">
-                            <thead>
-                                <tr>
-                                    <th data-column-id="ip" data-type="string"  data-identifier="true">{{ lang._('IP Address') }}</th>
-                                    <th data-column-id="in_block_p" data-type="numeric" data-visible="false">
-                                      <span class="fa fa-fw fa-long-arrow-right text-info"></span><span class="fa fa-fw fa-times text-danger"></span>
-                                      <br/><small>{{lang._('packets')}}</small>
-                                    </th>
-                                    <th data-column-id="in_block_b" data-type="numeric" data-visible="false">
-                                      <span class="fa fa-fw fa-long-arrow-right text-info"></span><span class="fa fa-fw fa-times text-danger"></span>
-                                      <br/><small>{{lang._('bytes')}}</small>
-                                    </th>
-                                    <th data-column-id="in_pass_p" data-type="numeric">
-                                      <span class="fa fa-fw fa-long-arrow-right text-info"></span><span class="fa fa-fw fa-play text-success"></span>
-                                      <br/><small>{{lang._('packets')}}</small>
-                                    </th>
-                                    <th data-column-id="in_pass_b" data-type="numeric">
-                                      <span class="fa fa-fw fa-long-arrow-right text-info"></span><span class="fa fa-fw fa-play text-success"></span>
-                                      <br/><small>{{lang._('bytes')}}</small>
-                                    </th>
-                                    <th data-column-id="out_block_p" data-type="numeric" data-visible="false">
-                                      <span class="fa fa-fw fa-long-arrow-left text-info"></span><span class="fa fa-fw fa-times text-danger"></span>
-                                      <br/><small>{{lang._('packets')}}</small>
-                                    </th>
-                                    <th data-column-id="out_block_b" data-type="numeric" data-visible="false">
-                                      <span class="fa fa-fw fa-long-arrow-left text-info"></span><span class="fa fa-fw fa-times text-danger"></span>
-                                      <br/><small>{{lang._('bytes')}}</small>
-                                    </th>
-                                    <th data-column-id="out_pass_p" data-type="numeric">
-                                      <span class="fa fa-fw fa-long-arrow-left text-info"></span><span class="fa fa-fw fa-play text-success"></span>
-                                      <br/><small>{{lang._('packets')}}</small>
-                                    </th>
-                                    <th data-column-id="out_pass_b" data-type="numeric">
-                                      <span class="fa fa-fw fa-long-arrow-left text-info"></span><span class="fa fa-fw fa-play text-success"></span>
-                                      <br/><small>{{lang._('bytes')}}</small>
-                                    </th>
-                                    <th data-column-id="commands" data-formatter="commands"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="col-xs-4">
+                <div class="input-group">
+                    <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" id="btn_quick_add">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                    </span>
+                    <input type="text" class="form-control" id="quick_add" placeholder="{{ lang._('Quick add address') }}"/>
                 </div>
-            </section>
-        </div>
+                </div>
+                <div class="col-xs-4">
+                    <button class="btn btn-default pull-right" id="update_bogons"><i id="update_bogons_progress" class=""></i>
+                    {{ lang._('Update bogons') }}
+                    </button>
+                    <button class="btn btn-default pull-right" id="find_references" title="{{ lang._('Look up which aliases match a certain IP address') }}">
+                        <span class="fa fa-search"></span> {{ lang._('Find references') }}
+                    </button>
+                </div>
+            </div>
+        </section>
+        <section class="col-xs-12">
+            <div class="content-box">
+                <div class="table-responsive">
+                    <table class="table table-striped" id="alias_content" data-store-selection="true">
+                        <thead>
+                            <tr>
+                                <th data-column-id="ip" data-type="string"  data-identifier="true">{{ lang._('IP Address') }}</th>
+                                <th data-column-id="in_block_p" data-type="numeric" data-visible="false">
+                                    {{lang._('packets in (block)')}}
+                                </th>
+                                <th data-column-id="in_block_b" data-type="numeric" data-visible="false">
+                                    {{lang._('bytes in (block)')}}
+                                </th>
+                                <th data-column-id="in_pass_p" data-type="numeric">
+                                    {{lang._('packets in (pass)')}}
+                                </th>
+                                <th data-column-id="in_pass_b" data-type="numeric">
+                                    {{lang._('bytes in (pass)')}}
+                                </th>
+                                <th data-column-id="out_block_p" data-type="numeric" data-visible="false">
+                                    {{lang._('packets out (block)')}}
+                                </th>
+                                <th data-column-id="out_block_b" data-type="numeric" data-visible="false">
+                                    {{lang._('bytes out (block)')}}
+                                </th>
+                                <th data-column-id="out_pass_p" data-type="numeric">
+                                    {{lang._('packets out (pass)')}}
+                                </th>
+                                <th data-column-id="out_pass_b" data-type="numeric">
+                                    {{lang._('bytes out (pass)')}}
+                                </th>
+                                <th data-column-id="commands" data-formatter="commands"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
     </div>
-</section>
+</div>

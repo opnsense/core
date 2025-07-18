@@ -122,11 +122,16 @@ class InitialSetup extends BaseModel
                 }
             }
         }
-        $this->interfaces->lan->ipaddr = sprintf(
-            "%s/%s",
-            $this->getConfigItem('interfaces.lan.ipaddr'),
-            $this->getConfigItem('interfaces.lan.subnet')
-        );
+        if (!empty($this->getConfigItem('interfaces.lan.ipaddr'))) {
+            $this->interfaces->lan->ipaddr = sprintf(
+                "%s/%s",
+                $this->getConfigItem('interfaces.lan.ipaddr'),
+                $this->getConfigItem('interfaces.lan.subnet')
+            );
+        } else {
+            $this->interfaces->lan->configure_dhcp = '0';
+            $this->interfaces->lan->disable = '1';
+        }
     }
 
     /**
@@ -182,6 +187,14 @@ class InitialSetup extends BaseModel
                     new Message(
                         gettext("Automatic DHCP server configuration is only supported for networks larger than /27."),
                         "interfaces.lan.configure_dhcp"
+                    )
+                );
+            }
+            if ($this->interfaces->lan->ipaddr->isEmpty()) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("When LAN is enabled, an address needs to be provided."),
+                        "interfaces.lan.ipaddr"
                     )
                 );
             }
@@ -324,6 +337,8 @@ class InitialSetup extends BaseModel
                 $dhcprange->start_addr = $avail_addrs[40];
                 $dhcprange->end_addr = $avail_addrs[count($avail_addrs) - 10];
             }
+        } else {
+            unset($target->interfaces->lan);
         }
         $dnsmasq->serializeToConfig(false, true);
         /* forcefully disable isc dhcpd when enabled */

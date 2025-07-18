@@ -218,8 +218,8 @@ debug:
 mount:
 	@if [ ! -f ${WRKDIR}/.mount_done ]; then \
 	    echo -n "Enabling core.git live mount..."; \
-	    sed ${SED_REPLACE} ${.CURDIR}/src/opnsense/version/core.in > \
-	        ${.CURDIR}/src/opnsense/version/core; \
+	    sed ${SED_REPLACE} ${.CURDIR}/src/${VERSIONFILE}.in > \
+	        ${.CURDIR}/src/${VERSIONFILE}; \
 	    mount_unionfs ${.CURDIR}/src ${LOCALBASE}; \
 	    touch ${WRKDIR}/.mount_done; \
 	    echo "done"; \
@@ -234,6 +234,13 @@ umount:
 	    echo "done"; \
 	    service configd restart; \
 	fi
+
+manifest-check:
+	# check if all annotations are in the version file
+.for REPLACEMENT in ${REPLACEMENTS}
+	@grep -q '\"${REPLACEMENT}\": \"%%${REPLACEMENT}%%\"' ${.CURDIR}/src/${VERSIONFILE}.in || \
+	    (echo "Could not find ${REPLACEMENT} in version file"; exit 1)
+.endfor
 
 manifest:
 	@echo "name: \"${CORE_NAME}\""
@@ -260,8 +267,8 @@ manifest:
 		fi; \
 	done
 	@echo "}"
-	@if [ -f ${WRKSRC}${LOCALBASE}/opnsense/version/core ]; then \
-	    echo "annotations $$(cat ${WRKSRC}${LOCALBASE}/opnsense/version/core)"; \
+	@if [ -f ${WRKSRC}${LOCALBASE}/${VERSIONFILE} ]; then \
+	    echo "annotations $$(cat ${WRKSRC}${LOCALBASE}/${VERSIONFILE})"; \
 	fi
 
 .if ${.TARGETS:Mupgrade}
@@ -333,7 +340,7 @@ package-check:
 		exit 1; \
 	fi
 
-package: plist-check package-check clean-wrksrc
+package: plist-check manifest-check package-check clean-wrksrc
 .for CORE_DEPEND in ${CORE_DEPENDS}
 	@if ! ${PKG} info ${CORE_DEPEND} > /dev/null; then ${PKG} install -yfA ${CORE_DEPEND}; fi
 .endfor
@@ -341,7 +348,7 @@ package: plist-check package-check clean-wrksrc
 	@${CORE_MAKE} DESTDIR=${WRKSRC} install
 	@echo " done"
 	@echo ">>> Generated version info for ${CORE_NAME}-${CORE_PKGVERSION}:"
-	@cat ${WRKSRC}${LOCALBASE}/opnsense/version/core
+	@cat ${WRKSRC}${LOCALBASE}/${VERSIONFILE}
 	@echo -n ">>> Generating metadata for ${CORE_NAME}-${CORE_PKGVERSION}..."
 	@${CORE_MAKE} DESTDIR=${WRKSRC} metadata
 	@echo " done"

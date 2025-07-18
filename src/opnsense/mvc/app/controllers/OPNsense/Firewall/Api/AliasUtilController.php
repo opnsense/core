@@ -76,7 +76,7 @@ class AliasUtilController extends ApiControllerBase
     public function aliasesAction()
     {
         $backend = new Backend();
-        $result = json_decode($backend->configdRun("filter list tables json"));
+        $result = json_decode($backend->configdRun("filter list tables"));
         if ($result !== null) {
             sort($result, SORT_NATURAL | SORT_FLAG_CASE);
         }
@@ -91,54 +91,8 @@ class AliasUtilController extends ApiControllerBase
      */
     public function listAction($alias)
     {
-        $itemsPerPage = intval($this->request->getPost('rowCount', 'int', -1));
-        $currentPage = intval($this->request->getPost('current', 'int', 1));
-        $offset = $itemsPerPage > 0 ? ($currentPage - 1) * $itemsPerPage : 0;
-
-        $backend = new Backend();
-        $entries = json_decode($backend->configdpRun("filter list table", array($alias, "json")), true);
-        $entry_keys = array_keys($entries);
-
-        if ($this->request->hasPost('searchPhrase') && $this->request->getPost('searchPhrase') !== '') {
-            $searchPhrase = $this->request->getPost('searchPhrase');
-            $entry_keys = array_filter($entry_keys, function ($value) use ($searchPhrase) {
-                return strpos($value, $searchPhrase) !== false;
-            });
-        }
-
-        $formatted_full = array_map(function ($value) use (&$entries) {
-            $item = ['ip' => $value];
-            foreach ($entries[$value] as $ekey => $evalue) {
-                $item[$ekey] = $evalue;
-            }
-            return $item;
-        }, $entry_keys);
-
-        if (
-            $this->request->hasPost('sort') &&
-            is_array($this->request->getPost('sort')) &&
-            !empty($this->request->getPost('sort'))
-        ) {
-            $sortcolumn = array_key_first($this->request->getPost('sort'));
-            $sort_order = $this->request->getPost('sort')[$sortcolumn];
-            if (!empty(array_column($formatted_full, $sortcolumn))) {
-                array_multisort(
-                    array_column($formatted_full, $sortcolumn),
-                    $sort_order == 'asc' ? SORT_ASC : SORT_DESC,
-                    SORT_NATURAL,
-                    $formatted_full
-                );
-            }
-        }
-
-        $formatted = array_slice($formatted_full, $offset, $itemsPerPage > 0 ? $itemsPerPage : null);
-
-        return [
-            'total' => count($entry_keys),
-            'rowCount' => $itemsPerPage,
-            'current' => $currentPage,
-            'rows' => $formatted,
-        ];
+        $data = json_decode((new Backend())->configdpRun("filter list table", [$alias]), true) ?? [];
+        return $this->searchRecordsetBase($data['items'] ?? []);
     }
 
     /**
