@@ -151,9 +151,7 @@ class Helpers(object):
             result.append(self.getNodeByTag('interfaces.'+name+'.if'))
         return list(filter(None, result))
 
-
-
-    def get_host_port_tag(self, host_tag: str, port_tag: str, brackets_on_bare_ip: bool = False):
+    def get_host_port(self, host_tag: str, port_tag: str, brackets_on_bare_ip: bool = False):
         """ returns a formatting host and port and bracketed if IPv6 from tags
         :param host_tag: string
         :param port_tag: setting this < 0 will disable it's output and just output the ip formatted for inclusion with a separate formatted port
@@ -163,24 +161,11 @@ class Helpers(object):
         host = self.getNodeByTag(host_tag)
         port = self.getNodeByTag(port_tag)
 
-        if port is None:
-            port = -1
+        port = self.to_int(port) if port is not None else -1
 
-        return self.get_host_port(host, port, brackets_on_bare_ip)
+        skip_port = port < 0
 
-
-
-    def get_host_port(self, host: str, port: str | int = -1, brackets_on_bare_ip: bool = False):
-        """ returns a formatting host and port and bracketed if IPv6
-        :param host: string
-        :param port: setting this < 0 will disable it's output and just output the ip formatted for inclusion with a separate formatted port
-        :param brackets_on_bare_ip: setting this to True means that there will be brackets if it just returns an ip with no port
-        :return: string
-        """
-        port_int = self.to_int(port)
-        skip_port = port_int < 0
-
-        if host is None or host != "":
+        if host is None or host == "":
             return ""
 
         if skip_port and not brackets_on_bare_ip:
