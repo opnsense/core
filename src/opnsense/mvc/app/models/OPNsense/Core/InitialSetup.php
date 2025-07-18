@@ -193,7 +193,7 @@ class InitialSetup extends BaseModel
             if ($this->interfaces->lan->ipaddr->isEmpty()) {
                 $messages->appendMessage(
                     new Message(
-                        gettext("When lan is enabled, an address needs to be provided."),
+                        gettext("When LAN is enabled, an address needs to be provided."),
                         "interfaces.lan.ipaddr"
                     )
                 );
