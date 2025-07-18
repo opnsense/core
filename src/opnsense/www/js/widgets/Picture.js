@@ -27,6 +27,7 @@
 export default class Picture extends BaseWidget {
     constructor(config) {
         super(config);
+        this.titleVisible = false;
     }
 
     getMarkup() {
