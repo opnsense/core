@@ -182,7 +182,7 @@
         <id>dnsmasq.dhcp.default_fw_rules</id>
         <label>DHCP register firewall rules</label>
         <type>checkbox</type>
-        <help>Automatically register firewall rules to allow dhcp traffic for all explicitly selected interfaces, can be disabled for more fine grained control if needed. Changes are only effective after a firewall service restart (see system diagnostics).</help>
+        <help>Automatically register firewall rules to allow dhcp traffic for all explicitly selected interfaces, can be disabled for more fine grained control if needed.</help>
     </field>
     <field>
         <id>dnsmasq.dhcp.enable_ra</id>
