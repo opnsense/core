@@ -171,7 +171,7 @@ class Helpers(object):
         if skip_port and not brackets_on_bare_ip:
             return host
 
-        if self.is_ipv6(host):
+        if self.get_ip_version(host) == 6:
             host = "[" + host + "]"
 
         if skip_port:
@@ -187,11 +187,11 @@ class Helpers(object):
             return -1
 
     @staticmethod
-    def is_ipv6(str):
+    def get_ip_version(ip: str) -> bool:
         try:
-            return ipaddress.ip_address(str).version == 6
+            return ipaddress.ip_address(ip).version
         except:
-            return False
+            return -1
 
     @staticmethod
     def getIPNetwork(network):
