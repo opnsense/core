@@ -411,6 +411,7 @@ class WidgetManager  {
                 $('.edit-handle').show();
                 $('#add_widget').show();
                 $('#restore-defaults').show();
+                $('.widget-title').show();
             } else {
                 this.runtimeOptions.editMode = false;
                 this.grid.enableMove(false);
@@ -421,6 +422,11 @@ class WidgetManager  {
                 $('.edit-handle').hide();
                 $('#add_widget').hide();
                 $('#restore-defaults').hide();
+                for (const [id, widget] of Object.entries(this.widgetClasses)) {
+                    if (!widget.isTitleVisible()) {
+                        $(`#${id}-title`).hide();
+                    }
+                }
             }
         });
 
@@ -582,12 +588,18 @@ class WidgetManager  {
         ` : '';
         let $panel = $(`<div class="widget widget-${identifier}"></div>`);
         let $content = $(`<div class="widget-content"></div>`);
+        const widget = this.widgetClasses[identifier];
+        const headerStyle = widget && !widget.isTitleVisible() ? ' style="margin: 0;"' : '';
+        const titleDisplay = widget && widget.isTitleVisible() ? '' : ' style="display: none;"';
+        const linkDisplay = widget && widget.isTitleVisible() ? '' : ' style="display: none;"';
+        const titleElement = `<div id="${identifier}-title" class="widget-title"${titleDisplay}><b>${title}</b></div>`;
+        const linkHandle = link !== '' ? link.replace('class="link-handle"', `class="link-handle"${linkDisplay}`) : '';
         let $header = $(`
-            <div class="widget-header">
+            <div class="widget-header"${headerStyle}>
                 <div class="widget-header-left"></div>
-                <div id="${identifier}-title" class="widget-title"><b>${title}</b></div>
+                ${titleElement}
                 <div class="widget-command-container">
-                    ${link}
+                    ${linkHandle}
                     <div id="close-handle-${identifier}" class="close-handle" style="display: none;">
                         <i class="fa fa-times fa-xs"></i>
                     </div>
@@ -595,8 +607,10 @@ class WidgetManager  {
             </div>
         `);
         $content.append($header);
-        let $divider = $(`<div class="panel-divider"><div class="line"></div></div></div>`);
-        $content.append($divider);
+        if (widget && widget.isTitleVisible()) {
+            let $divider = $(`<div class="panel-divider"><div class="line"></div></div></div>`);
+            $content.append($divider);
+        }
         $content.append(content);
         $panel.append($content);
 

@@ -35,6 +35,7 @@ class BaseWidget {
         this.eventSourceUrl = null;
         this.eventSourceOnData = null;
         this.cachedData = {};
+        this.titleVisible = true;
 
         /* Connection timeout params */
         this.timeoutPeriod = 5000;
@@ -141,6 +142,10 @@ class BaseWidget {
 
     onWidgetOptionsChanged(options) {
         return null;
+    }
+
+    isTitleVisible() {
+        return this.titleVisible;
     }
 
     /* Utility/protected functions */
