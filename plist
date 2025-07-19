@@ -156,6 +156,7 @@
 /usr/local/etc/rc.syshook.d/update/10-refresh.sh
 /usr/local/etc/rc.syshook.d/upgrade/10-sanity.sh
 /usr/local/etc/rc.syshook.d/upgrade/20-gdrive-plugin.php
+/usr/local/etc/rc.syshook.d/upgrade/20-openvpn-plugin.php
 /usr/local/etc/rc.syshook.d/upgrade/90-cleanup.sh
 /usr/local/etc/ssh/sshd_config.d/README
 /usr/local/etc/ssl/ext_sources/README
