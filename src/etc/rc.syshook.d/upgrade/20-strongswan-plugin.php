@@ -32,20 +32,19 @@ require_once 'util.inc';
 
 $active = false;
 
-foreach (['server', 'client'] as $mode) {
-    if (isset($config['openvpn']["openvpn-{$mode}"])) {
-        foreach ($config['openvpn']["openvpn-{$mode}"] as $setting) {
-            if (empty($setting['disable'])) {
-                $active = true;
-                break 2;
-            }
+/* only scan for enabled phase 1 as phase 2 cannot work without it */
+if (!empty($config['ipsec']['phase1'])) {
+    foreach ($config['ipsec']['phase1'] as $ph1ent) {
+        if (empty($ph1ent['disabled'])) {
+            $active = true;
+            break;
         }
     }
 }
 
 if ($active) {
-    echo 'OpenVPN client/server legacy features are active. Installing replacement plugin...' . PHP_EOL;
-    passthru('/usr/local/opnsense/scripts/firmware/launcher.sh -u install os-openvpn-legacy');
+    echo 'IPsec legacy tunnels are active. Installing replacement plugin...' . PHP_EOL;
+    passthru('/usr/local/opnsense/scripts/firmware/launcher.sh -u install os-strongswan-legacy');
 } else {
-    echo 'OpenVPN client/server legacy features are not active. Not installing replacement plugin.' . PHP_EOL;
+    echo 'IPsec legacy tunnels are not active. Not installing replacement plugin.' . PHP_EOL;
 }
