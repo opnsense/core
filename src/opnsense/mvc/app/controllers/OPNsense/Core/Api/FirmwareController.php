@@ -910,15 +910,17 @@ class FirmwareController extends ApiMutableModelControllerBase
 
         $response['plugin'] = [];
         foreach ($plugins as $plugin) {
+            /* for any community repository, orphaned package or otherwise unknown force the lowest tier */
+            $plugin['tier'] = '4';
+
+            /* trusted repository handling */
             if ($plugin['repository'] == 'OPNsense') {
                 $plugin['tier'] = $tiers[$plugin['name']];
             } elseif ($plugin['repository'] == 'SunnyValley') {
                 /* XXX ask them to change this on their end */
                 $plugin['tier'] = '2';
-            } else {
-                /* for any community repository unknown force the lowest tier */
-                $plugin['tier'] = '4';
             }
+
             $response['plugin'][] = $plugin;
         }
 
