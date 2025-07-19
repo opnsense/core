@@ -151,6 +151,48 @@ class Helpers(object):
             result.append(self.getNodeByTag('interfaces.'+name+'.if'))
         return list(filter(None, result))
 
+    def get_host_port(self, host_tag: str, port_tag: str, brackets_on_bare_ip: bool = False):
+        """ returns a formatting host and port and bracketed if IPv6 from tags
+        :param host_tag: string
+        :param port_tag: setting this < 0 will disable it's output and just output the ip formatted for inclusion with a separate formatted port
+        :param no_brackets_on_bare_ip: setting this to True means that there will be brackets if it just returns an ip with no port
+        :return: string
+        """
+        host = self.getNodeByTag(host_tag)
+        port = self.getNodeByTag(port_tag)
+
+        port = self.to_int(port) if port is not None else -1
+
+        skip_port = port < 0
+
+        if host is None or host == "":
+            return ""
+
+        if skip_port and not brackets_on_bare_ip:
+            return host
+
+        if self.is_ipv6(host):
+            host = "[" + host + "]"
+
+        if skip_port:
+            return host
+
+        return '{}:{}'.format(host, port)
+
+    @staticmethod
+    def to_int(s):
+        try:
+            return int(s)
+        except:
+            return -1
+
+    @staticmethod
+    def is_ipv6(str):
+        try:
+            return ipaddress.ip_address(str).version == 6
+        except:
+            return False
+
     @staticmethod
     def getIPNetwork(network):
         """
