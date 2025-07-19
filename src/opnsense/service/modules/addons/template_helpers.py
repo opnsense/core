@@ -188,6 +188,8 @@ class Helpers(object):
 
     @staticmethod
     def get_ip_version(ip: str) -> bool:
+        """ returns an IP version or -1 if not an IP
+        """
         try:
             return ipaddress.ip_address(ip).version
         except:
