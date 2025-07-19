@@ -187,7 +187,7 @@ class Helpers(object):
             return -1
 
     @staticmethod
-    def get_ip_version(ip: str) -> bool:
+    def get_ip_version(ip: str) -> int:
         """ returns an IP version or -1 if not an IP
         """
         try:
