@@ -858,7 +858,7 @@ $.fn.replaceInputWithSelector = function (data, multiple=false) {
     this.new_item = function() {
         let $div = $("<div/>");
         let $table = $('<table style="max-width: 348px"/>');
-        let $select = $('<select data-live-search="true" data-size="5" data-width="348px"/>');
+        let $select = $('<select name="' + that[0].name + '" data-live-search="true" data-size="5" data-width="348px"></select>');
         if (multiple) {
             $select.attr('multiple', 'multiple');
         }
