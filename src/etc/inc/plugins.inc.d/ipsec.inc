@@ -135,6 +135,12 @@ function ipsec_syslog()
     return $logfacilities;
 }
 
+function ipsec_legacy()
+{
+    /* latch on to this legacy file for detection */
+    return file_exists('/usr/local/www/vpn_ipsec_phase1.php');
+}
+
 function ipsec_services()
 {
     global $config;
