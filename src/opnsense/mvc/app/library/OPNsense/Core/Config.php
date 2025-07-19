@@ -510,7 +510,7 @@ class Config extends Singleton
     /**
      * update config revision information (ROOT.revision tag)
      * @param array|null $revision revision tag (associative array)
-     * @param \SimpleXMLElement|null pass trough xml node
+     * @param \SimpleXMLElement|null pass through xml node
      * @return array revision data
      */
     private function updateRevision($revision, $node = null, $timestamp = null)
