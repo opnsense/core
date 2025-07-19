@@ -914,7 +914,7 @@ class FirmwareController extends ApiMutableModelControllerBase
             $plugin['tier'] = '4';
 
             /* trusted repository handling */
-            if ($plugin['repository'] == 'OPNsense') {
+            if ($plugin['repository'] == 'OPNsense' && $plugin['provided'] == '1') {
                 $plugin['tier'] = $tiers[$plugin['name']];
             } elseif ($plugin['repository'] == 'SunnyValley') {
                 /* XXX ask them to change this on their end */
