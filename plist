@@ -2467,9 +2467,6 @@
 /usr/local/www/system_general.php
 /usr/local/www/system_usermanager_passwordmg.php
 /usr/local/www/system_usermanager_settings_ldapacpicker.php
-/usr/local/www/vpn_ipsec_mobile.php
-/usr/local/www/vpn_ipsec_phase1.php
-/usr/local/www/vpn_ipsec_phase2.php
 /usr/local/www/xmlrpc.php
 @sample /usr/local/etc/bogons.sample
 @sample /usr/local/etc/bogonsv6.sample
