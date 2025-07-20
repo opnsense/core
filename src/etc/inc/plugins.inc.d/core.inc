@@ -332,6 +332,7 @@ function core_syslog()
     $logfacilities['audit'] = ['facility' => ['audit']];
     $logfacilities['configd'] = ['facility' => ['configd.py']];
     $logfacilities['dhcpd'] = ['facility' => ['dhcpd']];
+    $logfacilities['kernel'] = ['facility' => ['kernel']];
     $logfacilities['lighttpd'] = ['facility' => ['lighttpd']];
     $logfacilities['pkg'] = ['facility' => ['pkg', 'pkg-static']];
     $logfacilities['ppps'] = ['facility' => ['ppp']];
