@@ -90,6 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("The image file is too large. Please upload something smaller than 10MB.");
         } else {
             $fd_pic = fopen($_FILES['pictfile']['tmp_name'], "rb");
+            $data = '';
             while (($buf=fread($fd_pic, 8192)) != '') {
                 $data .= $buf;
             }
