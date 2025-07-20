@@ -46,10 +46,12 @@ function openvpn_syslog()
     return ['openvpn' => ['facility' => ['openvpn']]];
 }
 
-function openvpn_legacy()
+function openvpn_legacy($mode)
 {
-    /* latch on to this legacy file for detection */
-    return file_exists('/usr/local/www/vpn_openvpn_server.php');
+    global $config;
+
+    /* latch on to this legacy file for detection enhanced by old config $mode presence */
+    return file_exists('/usr/local/www/vpn_openvpn_server.php') && !empty($config['openvpn']["openvpn-{$mode}"]);
 }
 
 function openvpn_services()
@@ -59,7 +61,7 @@ function openvpn_services()
     $services = [];
 
     foreach (['server', 'client'] as $mode) {
-        if (openvpn_legacy() && isset($config['openvpn']["openvpn-{$mode}"])) {
+        if (openvpn_legacy($mode)) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as $setting) {
                 if (empty($setting['disable'])) {
                     $pconfig = array();
@@ -118,7 +120,7 @@ function openvpn_devices()
     $names = [];
 
     foreach (['server', 'client'] as $mode) {
-        if (openvpn_legacy() && !empty($config['openvpn']["openvpn-{$mode}"])) {
+        if (openvpn_legacy($mode)) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as $settings) {
                 $names["ovpn{$mode[0]}{$settings['vpnid']}"] = [
                     'descr' => sprintf('ovpn%s%s (OpenVPN %s %s)', $mode[0], $settings['vpnid'], $mode == 'server' ? gettext('Server') : gettext('Client'), $settings['description'] ?? ''),
@@ -1073,7 +1075,7 @@ function openvpn_configure_single($id)
     global $config;
 
     foreach (['server', 'client'] as $mode) {
-        if (openvpn_legacy() && isset($config['openvpn']["openvpn-{$mode}"])) {
+        if (openvpn_legacy($mode)) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as $settings) {
                 if ($id != $settings['vpnid']) {
                     continue;
@@ -1106,7 +1108,7 @@ function openvpn_configure_do($verbose = false, $interface_map = null, $carp_eve
     $reconfigured = false;
 
     foreach (['server', 'client'] as $mode) {
-        if (openvpn_legacy() && isset($config['openvpn']["openvpn-{$mode}"])) {
+        if (openvpn_legacy($mode)) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as $settings) {
                 if (empty($interface_map) || in_array($settings['interface'], $interface_map)) {
                     openvpn_reconfigure($mode, $settings, $carp_event);
@@ -1247,7 +1249,7 @@ function openvpn_get_remote_access_servers()
 
     $result = [];
 
-    if (openvpn_legacy() && !empty($config['openvpn']['openvpn-server'])) {
+    if (openvpn_legacy('server')) {
         foreach ($config['openvpn']['openvpn-server'] as $server) {
             if (in_array($server['mode'], array('server_tls', 'server_user', 'server_tls_user', 'p2p_tls'))) {
                 $result[$server['vpnid']] = $server;
@@ -1264,7 +1266,7 @@ function openvpn_refresh_crls()
 
     openvpn_create_dirs();
 
-    if (openvpn_legacy() && !empty($config['openvpn']['openvpn-server'])) {
+    if (openvpn_legacy('server')) {
         foreach ($config['openvpn']['openvpn-server'] as $settings) {
             if (empty($settings) || isset($settings['disable'])) {
                 continue;
