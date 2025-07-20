@@ -174,9 +174,13 @@ class OpenVPN extends BaseModel
                     ));
                 }
             }
-            if ((int)(string)$instance->keepalive_timeout < (int)(string)$instance->keepalive_interval) {
+
+            if (
+                $instance->keepalive_timeout->asFloat() < $instance->keepalive_interval->asFloat() * 2 ||
+                $instance->keepalive_timeout->isEmpty() != $instance->keepalive_interval->isEmpty()
+            ) {
                 $messages->appendMessage(new Message(
-                    gettext('Timeout should be larger than interval.'),
+                    gettext('Timeout must be at least twice the interval value.'),
                     $key . ".keepalive_timeout"
                 ));
             }
