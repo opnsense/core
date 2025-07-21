@@ -22,6 +22,7 @@
             <AsList>Y</AsList>
         </dns_servers>
         <dnsallowoverride type="BooleanField">
+            <Default>1</Default>
             <Required>Y</Required>
         </dnsallowoverride>
         <unbound>
