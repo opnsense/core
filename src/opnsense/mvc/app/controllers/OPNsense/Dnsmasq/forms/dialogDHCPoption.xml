@@ -42,7 +42,7 @@
         <id>option.value</id>
         <label>Value</label>
         <type>text</type>
-        <help>Value (or values) to send to the client. The special address 0.0.0.0 or [::] is taken to mean "the address of the machine running dnsmasq". When using "Match", leave empty to match on the option only.</help>
+        <help>Value (or values) to send to the client. The special address 0.0.0.0 or [::] is taken to mean "the address of the machine running Dnsmasq". When using "Match", leave empty to match on the option only.</help>
     </field>
     <field>
         <id>option.force</id>

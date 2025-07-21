@@ -74,7 +74,7 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>Match the hardware address of the client. Can be multiple addresses, e.g., if the client has multiple network cards. Though keep in mind that DNSmasq cannot assume which address is the correct one when multiple send DHCP Discover at the same time.</help>
+        <help>Match the hardware address of the client. Can be multiple addresses, e.g., if the client has multiple network cards. Though keep in mind that Dnsmasq cannot assume which address is the correct one when multiple send DHCP Discover at the same time.</help>
     </field>
     <field>
         <id>host.lease_time</id>

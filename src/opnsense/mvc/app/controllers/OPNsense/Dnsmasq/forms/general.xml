@@ -160,13 +160,13 @@
         <type>text</type>
         <hint>1000</hint>
         <advanced>true</advanced>
-        <help>Limits dnsmasq to the specified maximum number of DHCP leases. This limit is to prevent DoS attacks from hosts which create thousands of leases and use lots of memory in the dnsmasq process.</help>
+        <help>Limits Dnsmasq to the specified maximum number of DHCP leases. This limit is to prevent DoS attacks from hosts which create thousands of leases and use lots of memory in the Dnsmasq process.</help>
     </field>
     <field>
         <id>dnsmasq.dhcp.authoritative</id>
         <label>DHCP authoritative</label>
         <type>checkbox</type>
-        <help>Should be set when dnsmasq is definitely the only DHCP server on a network. For DHCPv4, it changes the behaviour from strict RFC compliance so that DHCP requests on unknown leases from unknown hosts are not ignored.</help>
+        <help>Should be set when Dnsmasq is definitely the only DHCP server on a network. For DHCPv4, it changes the behaviour from strict RFC compliance so that DHCP requests on unknown leases from unknown hosts are not ignored.</help>
     </field>
     <field>
         <id>dnsmasq.dhcp.reply_delay</id>
