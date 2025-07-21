@@ -7118,6 +7118,8 @@ table {
 
 .__iconspacer {
   padding-right: 10px;
+  width: 20px;
+  text-align: center;
 }
 
 hr {
