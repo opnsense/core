@@ -57,7 +57,17 @@
                         } else {
                             return "<span class=\"fa fa-fw fa-times\" data-value=\"0\" data-row-id=\"" + row.uuid + "\"></span>";
                         }
-                    }
+                    },
+                    commands: function (column, row) {
+                        return (row.uuid.includes('-') ?
+                            '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '" title="{{ lang._('Edit') }}"><span class="fa fa-fw fa-pencil"></span></button> ' +
+                            '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + row.uuid + '" title="{{ lang._('Copy') }}"><span class="fa fa-fw fa-clone"></span></button> ' +
+                            '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '" title="{{ lang._('Delete') }}"><span class="fa fa-fw fa-trash-o"></span></button> '
+                            : ''
+                        ) +
+                        '<button type="button" class="btn btn-xs btn-default command-raw_dump bootgrid-tooltip" data-row-id="' + row.uuid + '" title="{{ lang._('show certificate info') }}"><span class="fa fa-fw fa-info-circle"></span></button> ' +
+                        '<button type="button" class="btn btn-xs btn-default command-download bootgrid-tooltip" data-row-id="' + row.uuid + '" title="{{ lang._('Download') }}"><span class="fa fa-fw fa-cloud-download"></span></button>';
+                    },
                 }
             },
             commands: {
@@ -151,16 +161,6 @@
             }
         });
         grid_cert.on("loaded.rs.jquery.bootgrid", function (e){
-            /* should probably live in the "commands" section to optionally render items */
-            grid_cert.find('tr').each(function(){
-                let tr = $(this);
-                if (tr.data('row-id') !== undefined && !tr.data('row-id').includes('-')) {
-                    tr.find('button.command-edit').hide();
-                    tr.find('button.command-copy').hide();
-                    tr.find('button.command-delete').hide();
-                }
-            });
-
             // reload categories after grid load
             if ($("#ca_filter > option").length == 0) {
                 ajaxGet('/api/trust/cert/ca_list', {}, function(data, status){
