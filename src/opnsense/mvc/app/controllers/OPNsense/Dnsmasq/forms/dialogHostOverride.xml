@@ -35,7 +35,7 @@
     </field>
     <field>
         <id>host.aliases</id>
-        <label>Alias Records</label>
+        <label>Alias records</label>
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
@@ -46,7 +46,7 @@
     </field>
     <field>
         <id>host.cnames</id>
-        <label>CNAME Records</label>
+        <label>CNAME records</label>
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
@@ -90,7 +90,7 @@
         <id>host.set_tag</id>
         <label>Tag [set]</label>
         <type>dropdown</type>
-        <help>Optional tag to set for requests matching this range which can be used to selectively match dhcp options. Can be left empty if options with an interface tag exist, since the client automatically receives this tag based on the interface receiving the DHCP Discover.</help>
+        <help>Optional tag to set for requests matching this range which can be used to selectively match DHCP options. Can be left empty if options with an interface tag exist, since the client automatically receives this tag based on the interface receiving the DHCP Discover.</help>
     </field>
     <field>
         <id>host.ignore</id>

@@ -35,7 +35,7 @@
         <id>option.set_tag</id>
         <label>Tag [set]</label>
         <type>dropdown</type>
-        <help>Tag to set for requests matching this range which can be used to selectively match dhcp options</help>
+        <help>Tag to set for requests matching this range which can be used to selectively match DHCP options</help>
         <style>selectpicker style_match</style>
     </field>
     <field>
