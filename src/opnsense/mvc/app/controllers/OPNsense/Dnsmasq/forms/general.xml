@@ -14,9 +14,7 @@
         <label>Interface</label>
         <type>select_multiple</type>
         <hint>All</hint>
-        <help>
-            Interface IPs used to responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.
-        </help>
+        <help>Interface IPs used to respond to queries from clients. If no interfaces are selected, Dnsmasq will listen on all available IPv4 and IPv6 addresses by default. However, DHCP related firewall rules will only be added for explicitly selected interfaces, never for all interfaces.</help>
     </field>
     <field>
         <id>dnsmasq.strictbind</id>
@@ -142,9 +140,7 @@
         <label>Interface [no dhcp]</label>
         <type>select_multiple</type>
         <advanced>true</advanced>
-        <help>
-            Do not provide DHCP, TFTP or router advertisement on the specified interfaces, but do provide DNS service.
-        </help>
+        <help>Do not provide DHCP, TFTP or router advertisement on the specified interfaces, but do provide DNS service. Please note that Dnsmasq continues to listen on the default DHCP ports as long as any DHCP ranges are configured; setting this option only ignores these packets on the selected interfaces.</help>
     </field>
     <field>
         <id>dnsmasq.dhcp.fqdn</id>
