@@ -9,7 +9,7 @@
         <id>range.set_tag</id>
         <label>Tag [set]</label>
         <type>dropdown</type>
-        <help>Optional tag to set for requests matching this range which can be used to selectively match dhcp options</help>
+        <help>Optional tag to set for requests matching this range which can be used to selectively match DHCP options</help>
     </field>
     <field>
         <id>range.start_addr</id>
@@ -25,7 +25,7 @@
     </field>
     <field>
         <id>range.subnet_mask</id>
-        <label>Subnet Mask</label>
+        <label>Subnet mask</label>
         <type>text</type>
         <hint>automatic</hint>
         <style>style_dhcpv4</style>
@@ -57,7 +57,7 @@
     </field>
     <field>
         <id>range.ra_mode</id>
-        <label>RA Mode</label>
+        <label>RA mode</label>
         <type>select_multiple</type>
         <hint>Default</hint>
         <style>selectpicker style_dhcpv6</style>
@@ -68,7 +68,7 @@
     </field>
     <field>
         <id>range.ra_priority</id>
-        <label>RA Priority</label>
+        <label>RA priority</label>
         <type>dropdown</type>
         <help>Priority of the RA announcements.</help>
         <style>selectpicker style_ra</style>
@@ -88,7 +88,7 @@
     </field>
     <field>
         <id>range.ra_interval</id>
-        <label>RA Interval</label>
+        <label>RA interval</label>
         <type>text</type>
         <hint>60</hint>
         <style>style_ra</style>
@@ -99,7 +99,7 @@
     </field>
     <field>
         <id>range.ra_router_lifetime</id>
-        <label>RA Router Lifetime</label>
+        <label>RA router lifetime</label>
         <type>text</type>
         <hint>1200</hint>
         <style>style_ra</style>
@@ -131,7 +131,7 @@
     </field>
     <field>
         <id>range.domain_type</id>
-        <label>Domain Type</label>
+        <label>Domain type</label>
         <type>dropdown</type>
         <style>selectpicker</style>
         <advanced>true</advanced>

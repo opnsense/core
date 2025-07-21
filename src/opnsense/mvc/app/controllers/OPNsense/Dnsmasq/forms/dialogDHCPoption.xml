@@ -35,14 +35,14 @@
         <id>option.set_tag</id>
         <label>Tag [set]</label>
         <type>dropdown</type>
-        <help>Tag to set for requests matching this range which can be used to selectively match dhcp options</help>
+        <help>Tag to set for requests matching this range which can be used to selectively match DHCP options</help>
         <style>selectpicker style_match</style>
     </field>
     <field>
         <id>option.value</id>
         <label>Value</label>
         <type>text</type>
-        <help>Value (or values) to send to the client. The special address 0.0.0.0 or [::] is taken to mean "the address of the machine running dnsmasq". When using "Match", leave empty to match on the option only.</help>
+        <help>Value (or values) to send to the client. The special address 0.0.0.0 or [::] is taken to mean "the address of the machine running Dnsmasq". When using "Match", leave empty to match on the option only.</help>
     </field>
     <field>
         <id>option.force</id>

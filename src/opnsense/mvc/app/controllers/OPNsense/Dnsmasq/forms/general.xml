@@ -18,10 +18,10 @@
     </field>
     <field>
         <id>dnsmasq.strictbind</id>
-        <label>Strict Interface Binding</label>
+        <label>Strict interface binding</label>
         <type>checkbox</type>
         <advanced>true</advanced>
-        <help>By default we bind the wildcard address, even when listening on some interfaces. Requests that shouldn't be handled are discarded, this has the advantage of working even when interfaces come and go and change address. This option forces binding to only the interfaces we are listening on, which is less stable in non static environments.</help>
+        <help>By default we bind the wildcard address, even when listening on some interfaces. Requests that should not be handled are discarded, this has the advantage of working even when interfaces come and go and change address. This option forces binding to only the interfaces we are listening on, which is less stable in non static environments.</help>
     </field>
     <field>
         <type>header</type>
@@ -29,7 +29,7 @@
     </field>
     <field>
         <id>dnsmasq.port</id>
-        <label>Listen Port</label>
+        <label>Listen port</label>
         <type>text</type>
         <hint>53</hint>
         <help>The port used for responding to DNS queries. It should normally be left blank unless another service needs to bind to TCP/UDP port 53. Setting this to zero (0) completely disables DNS function</help>
@@ -41,7 +41,7 @@
     </field>
     <field>
         <id>dnsmasq.no_hosts</id>
-        <label>No Hosts Lookup</label>
+        <label>No hosts lookup</label>
         <type>checkbox</type>
         <help>Do not read hostnames in /etc/hosts</help>
     </field>
@@ -128,7 +128,7 @@
         <id>dnsmasq.strip_subnet</id>
         <label>Strip subnet</label>
         <type>checkbox</type>
-        <help>Strip the subnet received by a downstream DNS server. If add_subnet is used and the downstream DNS server already added a subnet, DNSMasq will not replace it without setting strip_subnet.</help>
+        <help>Strip the subnet received by a downstream DNS server. If "Add subnet" is used and the downstream DNS server already added a subnet, DNSMasq will not replace it without setting "Strip subnet".</help>
         <advanced>true</advanced>
     </field>
     <field>
@@ -137,14 +137,14 @@
     </field>
     <field>
         <id>dnsmasq.dhcp.no_interface</id>
-        <label>Interface [no dhcp]</label>
+        <label>Interface [no DHCP]</label>
         <type>select_multiple</type>
         <advanced>true</advanced>
         <help>Do not provide DHCP, TFTP or router advertisement on the specified interfaces, but do provide DNS service. Please note that Dnsmasq continues to listen on the default DHCP ports as long as any DHCP ranges are configured; setting this option only ignores these packets on the selected interfaces.</help>
     </field>
     <field>
         <id>dnsmasq.dhcp.fqdn</id>
-        <label>DHCP fqdn</label>
+        <label>DHCP FQDN</label>
         <type>checkbox</type>
         <help>If disabled, registers the unqualified names of DHCP clients into the DNS (e.g. 'smartphone'), in which case they should be unique. If enabled, the qualified name (e.g. 'smartphone.lan.internal') is registered. This option must be enabled if you are forwarding from Unbound to Dnsmasq for specific local domains.</help>
     </field>
@@ -152,7 +152,7 @@
         <id>dnsmasq.dhcp.domain</id>
         <label>DHCP default domain</label>
         <type>text</type>
-        <help>To ensure that all names have a domain part, there must be a default domain specified when dhcp-fqdn is set. Leave empty to use the system domain.</help>
+        <help>To ensure that all names have a domain part, there must be a default domain specified when DHCP FQDN is set. Leave empty to use the system domain.</help>
     </field>
     <field>
         <id>dnsmasq.dhcp.lease_max</id>
@@ -160,29 +160,29 @@
         <type>text</type>
         <hint>1000</hint>
         <advanced>true</advanced>
-        <help>Limits dnsmasq to the specified maximum number of DHCP leases. This limit is to prevent DoS attacks from hosts which create thousands of leases and use lots of memory in the dnsmasq process.</help>
+        <help>Limits Dnsmasq to the specified maximum number of DHCP leases. This limit is to prevent DoS attacks from hosts which create thousands of leases and use lots of memory in the Dnsmasq process.</help>
     </field>
     <field>
         <id>dnsmasq.dhcp.authoritative</id>
         <label>DHCP authoritative</label>
         <type>checkbox</type>
-        <help>Should be set when dnsmasq is definitely the only DHCP server on a network. For DHCPv4, it changes the behaviour from strict RFC compliance so that DHCP requests on unknown leases from unknown hosts are not ignored.</help>
+        <help>Should be set when Dnsmasq is definitely the only DHCP server on a network. For DHCPv4, it changes the behaviour from strict RFC compliance so that DHCP requests on unknown leases from unknown hosts are not ignored.</help>
     </field>
     <field>
         <id>dnsmasq.dhcp.reply_delay</id>
-        <label>DHCP Reply delay</label>
+        <label>DHCP reply delay</label>
         <type>text</type>
-        <help>Delays sending DHCPOFFER and PROXYDHCP replies for at least the specified number of seconds. This can be practical for split dhcp solutions, to make sure the secondary server answers slower than the primary.</help>
+        <help>Delays sending DHCPOFFER and PROXYDHCP replies for at least the specified number of seconds. This can be practical for split DHCP solutions, to make sure the secondary server answers slower than the primary.</help>
     </field>
     <field>
         <id>dnsmasq.dhcp.default_fw_rules</id>
         <label>DHCP register firewall rules</label>
         <type>checkbox</type>
-        <help>Automatically register firewall rules to allow dhcp traffic for all explicitly selected interfaces, can be disabled for more fine grained control if needed.</help>
+        <help>Automatically register firewall rules to allow DHCP traffic for all explicitly selected interfaces, can be disabled for more fine grained control if needed.</help>
     </field>
     <field>
         <id>dnsmasq.dhcp.enable_ra</id>
-        <label>Router Advertisements</label>
+        <label>Router advertisements</label>
         <type>checkbox</type>
         <help>Setting this will enable Router Advertisements for all configured DHCPv6 ranges with the managed address bits set, and the use SLAAC bit reset. To change this default, select a combination of the possible options in the individual DHCPv6 ranges. Keep in mind that this is a global option; if there are configured DHCPv6 ranges, RAs will be sent unconditionally and cannot be deactivated selectively. Setting Router Advertisement modes in DHCPv6 ranges will have no effect without this global option enabled.</help>
     </field>
@@ -190,7 +190,7 @@
         <id>dnsmasq.dhcp.nosync</id>
         <label>Disable HA sync</label>
         <type>checkbox</type>
-        <help>Ignore the dhcp general settings from being updated using ha sync.</help>
+        <help>Ignore the DHCP general settings from being updated using HA sync.</help>
     </field>
     <field>
         <type>header</type>
@@ -198,19 +198,19 @@
     </field>
     <field>
         <id>dnsmasq.regdhcp</id>
-        <label>Register ISC DHCP4 Leases</label>
+        <label>Register ISC DHCP4 leases</label>
         <type>checkbox</type>
         <help>If this option is set, then machines that specify their hostname when requesting a DHCP lease will be registered, so that their name can be resolved.</help>
     </field>
     <field>
         <id>dnsmasq.regdhcpdomain</id>
-        <label>DHCP Domain Override</label>
+        <label>DHCP domain override</label>
         <type>text</type>
         <help>The domain name to use for DHCP hostname registration. If empty, the default system domain is used. Note that all DHCP leases will be assigned to the same domain. If this is undesired, static DHCP lease registration is able to provide coherent mappings.</help>
     </field>
     <field>
         <id>dnsmasq.regdhcpstatic</id>
-        <label>Register DHCP Static Mappings</label>
+        <label>Register DHCP static mappings</label>
         <type>checkbox</type>
         <help>If this option is set, then DHCP static mappings will be registered, so that their name can be resolved.</help>
     </field>
