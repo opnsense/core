@@ -25,10 +25,10 @@
 
 CORE_ABI?=	25.7
 CORE_ADDITIONS?=#empty
-CORE_MESSAGE?=	TBA
+CORE_MESSAGE?=	Some will win, some will lose, some are born to sing the blues
 CORE_NAME?=	opnsense
 # adjust src/root/boot/lua/logo-hourglass.lua.in accordingly:
-CORE_NICKNAME?=	Not Yet
+CORE_NICKNAME?=	Visionary Viper
 CORE_TYPE?=	community
 # plugins that were migrated to core are here
 CORE_CONFLICTS?=firewall wireguard wireguard-go
