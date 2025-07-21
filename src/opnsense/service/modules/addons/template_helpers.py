@@ -151,7 +151,7 @@ class Helpers(object):
             result.append(self.getNodeByTag('interfaces.'+name+'.if'))
         return list(filter(None, result))
 
-    def get_host_port(self, host_tag: str, port_tag: str, brackets_on_bare_ip: bool = False):
+    def get_host_port(self, host_tag: str, port_tag: str, brackets_on_bare_ipv6: bool = False):
         """ returns a formatting host and port and bracketed if IPv6 from tags
         :param host_tag: string
         :param port_tag: setting this < 0 will disable it's output and just output the ip formatted for inclusion with a separate formatted port
@@ -172,7 +172,7 @@ class Helpers(object):
         if host is None or host == "":
             return ""
 
-        if skip_port and not brackets_on_bare_ip:
+        if skip_port and not brackets_on_bare_ipv6:
             return host
 
         if self.is_ipv6(host):
