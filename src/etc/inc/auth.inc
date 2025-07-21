@@ -65,15 +65,19 @@ function isAuthLocalIP($http_host)
         }
     };
 
-    // try using cached addresses
-    $interface_list_ips = get_cached_json_content("/var/lib/php/tmp/isAuthLocalIP.cache.json");
+    $auth_cache = '/var/lib/php/tmp/isAuthLocalIP.cache.json';
+
+    /* try using cached addresses */
+    $interface_list_ips = get_cached_json_content($auth_cache);
     if (!empty($interface_list_ips) && $address_in_list($interface_list_ips, $http_host)) {
         return true;
     }
 
-    // fetch addresses and store in cache
+    /* fetch addresses and store in cache */
     $interface_list_ips = get_configured_ip_addresses();
-    file_put_contents("/var/lib/php/tmp/isAuthLocalIP.cache.json", json_encode($interface_list_ips));
+    file_put_contents($auth_cache, json_encode($interface_list_ips));
+    chown($auth_cache, 'wwwonly'); /* XXX frontend owns file */
+    chgrp($auth_cache, 'wheel'); /* XXX backend can work with it */
 
     return $address_in_list($interface_list_ips, $http_host);
 }
