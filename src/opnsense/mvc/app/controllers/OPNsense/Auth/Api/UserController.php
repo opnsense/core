@@ -198,7 +198,7 @@ class UserController extends ApiMutableModelControllerBase
     public function addAction()
     {
         $data = $this->request->getPost(static::$internalModelName);
-        $this->setSaveAuditMessage(sprintf('user \"%s\" created"', $data['name']));
+        $this->setSaveAuditMessage(sprintf('user "%s" created', $data['name']));
         $result = $this->addBase('user', 'user');
         if ($result['result'] != 'failed') {
             if (!empty($data['name'])) {
@@ -211,7 +211,7 @@ class UserController extends ApiMutableModelControllerBase
     public function setAction($uuid = null)
     {
         $data = $this->request->getPost(static::$internalModelName);
-        $this->setSaveAuditMessage(sprintf('user \"%s\" changed"', $data['name']));
+        $this->setSaveAuditMessage(sprintf('user "%s" changed', $data['name']));
         $result = $this->setBase('user', 'user', $uuid);
         if ($result['result'] != 'failed') {
             if (!empty($data['name'])) {
