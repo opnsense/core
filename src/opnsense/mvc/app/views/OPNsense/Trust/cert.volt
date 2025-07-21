@@ -59,14 +59,16 @@
                         }
                     },
                     commands: function (column, row) {
-                        return (row.uuid.includes('-') ?
-                            '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '" title="{{ lang._('Edit') }}"><span class="fa fa-fw fa-pencil"></span></button> ' +
-                            '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + row.uuid + '" title="{{ lang._('Copy') }}"><span class="fa fa-fw fa-clone"></span></button> ' +
-                            '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '" title="{{ lang._('Delete') }}"><span class="fa fa-fw fa-trash-o"></span></button> '
-                            : ''
-                        ) +
-                        '<button type="button" class="btn btn-xs btn-default command-raw_dump bootgrid-tooltip" data-row-id="' + row.uuid + '" title="{{ lang._('show certificate info') }}"><span class="fa fa-fw fa-info-circle"></span></button> ' +
-                        '<button type="button" class="btn btn-xs btn-default command-download bootgrid-tooltip" data-row-id="' + row.uuid + '" title="{{ lang._('Download') }}"><span class="fa fa-fw fa-cloud-download"></span></button>';
+                        return (
+                            '<button type="button" class="btn btn-xs btn-default command-raw_dump bootgrid-tooltip" data-row-id="' + row.uuid + '" title="{{ lang._('show certificate info') }}"><span class="fa fa-fw fa-info-circle"></span></button> ' +
+                            '<button type="button" class="btn btn-xs btn-default command-download bootgrid-tooltip" data-row-id="' + row.uuid + '" title="{{ lang._('Download') }}"><span class="fa fa-fw fa-cloud-download"></span></button> ' +
+                            (row.uuid.includes('-') ?
+                                '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '" title="{{ lang._('Edit') }}"><span class="fa fa-fw fa-pencil"></span></button> ' +
+                                '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + row.uuid + '" title="{{ lang._('Clone') }}"><span class="fa fa-fw fa-clone"></span></button> ' +
+                                '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '" title="{{ lang._('Delete') }}"><span class="fa fa-fw fa-trash-o"></span></button>'
+                                : ''
+                            )
+                        );
                     },
                 }
             },
