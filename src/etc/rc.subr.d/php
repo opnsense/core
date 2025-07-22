@@ -43,7 +43,9 @@ done
 find /conf -name 'vouchers_*.db' -exec chown ${OWNER} {} \;
 find /conf/backup -name '*.xml' -exec chown ${OWNER} {} \;
 for PHPOWN in /conf /conf/config.xml /conf/backup /var/run/booting; do
-	chown ${OWNER} ${PHPOWN}
+	if [ -e ${PHPOWN} ]; then
+		chown ${OWNER} ${PHPOWN}
+	fi
 done
 
 # flush Phalcon volt templates
