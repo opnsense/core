@@ -35,7 +35,7 @@ if _tmpdir=$(mktemp -d -q /.diskless.XXXXXX); then
 	# only remove the directory
 	rmdir ${_tmpdir}
 else
-	# disable to avoid double /tmp mount in installer media
+	# disable to avoid spurious /tmp mount
 	USE_MFS_TMP=0
 fi
 
