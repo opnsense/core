@@ -134,8 +134,16 @@ if grep -q '[{}]' ${VERSION}; then
 fi
 
 if [ -n "${DO_RAW}" ]; then
-	OUTPUT="\$${DO_RAW#"-R "}"
+	FILE=${DO_RAW#"-R "}
+	OUTPUT="\$${FILE}"
 	TARGET=nop
+
+	if [ -f "${FILE}" ]; then
+		SED_REPLACE=$(set | grep -e '^CORE_' -e '^PLUGINS_' | sed -e 's/^\([CP][A-Z_]*\)='"'"*'\([^'"'"']*\)'"'"*'/-e "s=%%\1%%=\2=g"/g')
+		eval SED_REPLACE='$'"{SED_REPLACE}"
+		cat ${FILE} | eval sed ${SED_REPLACE}
+		exit 0
+	fi
 fi
 
 case "${TARGET}" in
