@@ -143,7 +143,10 @@ class FilterController extends FilterBaseController
             /* frontend can format categories with colors */
             if (!empty($record['categories'])) {
                 $catnames = array_map('trim', explode(',', $record['categories']));
-                $record['category_colors'] = array_map(fn($name) => $catcolors[$name], array_filter($catnames));
+                $record['category_colors'] = array_map(
+                    fn($name) => $catcolors[$name],
+                    array_filter($catnames, fn($name) => isset($catcolors[$name]))
+                );
             } else {
                 $record['category_colors'] = [];
             }
