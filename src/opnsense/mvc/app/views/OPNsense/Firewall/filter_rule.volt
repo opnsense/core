@@ -85,8 +85,6 @@
                 },
                 headerFormatters: {
                     enabled: function (column) { return "" },
-                    source_port: function (column) { return "{{ lang._('Port') }}" },
-                    destination_port: function (column) { return "{{ lang._('Port') }}" },
                     interface: function (column) {
                         return '<i class="fa-solid fa-fw fa-network-wired" data-toggle="tooltip" data-placement="right" title="{{ lang._('Network Interface') }}"></i>';
                     },
@@ -205,16 +203,6 @@
                             return '*';
                         }
                     },
-                    protocol: function(column, row) {
-                        const ipProtocol = row.ipprotocol ? row.ipprotocol : '';
-                        let targetValue = row[column.id] ? row[column.id] : '';
-
-                        if (!targetValue || targetValue === '' || targetValue === 'any' || targetValue === 'None') {
-                            targetValue = '*';
-                        }
-
-                        return ipProtocol ? `${ipProtocol} ${targetValue}` : targetValue;
-                    },
                     category: function (column, row) {
                         if (!row.categories || !row.category_colors) {
                             return '';
@@ -231,7 +219,7 @@
                         }).join(' ');
                     },
                     interfaces: function(column, row) {
-                        const interfaces = row[column.id] != null ? String(row[column.id]) : "";
+                        const interfaces = row["%interface"] || "";
 
                         // Apply negation
                         const isNegated = row.interfacenot == 1 ? "! " : "";
@@ -247,6 +235,7 @@
                         }
 
                         const tooltipText = interfaceList.join("<br>");
+                        const inlineList = interfaceList.join(", ");
 
                         return `
                             ${isNegated}
@@ -254,6 +243,7 @@
                                 <span class="interface-count">${interfaceList.length}</span>
                                 <i class="fa-solid fa-fw fa-network-wired"></i>
                             </span>
+                            (${inlineList})
                         `;
                     },
                     // Icons
