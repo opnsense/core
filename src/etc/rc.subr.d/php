@@ -25,6 +25,10 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
+# XXX Eventually we could try to ensure the user from here as it would
+# avoid our bootstrap worries regarding using a predefined non-root user
+# that does not even exist on the system which can prevent the GUI from
+# starting or changing ownership staying root.
 OWNER="$(opnsense-version -R CORE_USER):wheel"
 
 # set up required output directories for various PHP components
