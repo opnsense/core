@@ -219,7 +219,7 @@
                         }).join(' ');
                     },
                     interfaces: function(column, row) {
-                        const interfaces = row["%interface"] || row[column.id] || "";
+                        const interfaces = row["%" + column.id] || row[column.id] || "";
 
                         // Apply negation
                         const isNegated = row.interfacenot == 1 ? "! " : "";
