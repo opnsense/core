@@ -152,7 +152,8 @@
         <label>Version</label>
         <type>dropdown</type>
         <grid_view>
-            <ignore>true</ignore>
+            <sequence>35</sequence>
+            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -160,7 +161,7 @@
         <label>Protocol</label>
         <type>dropdown</type>
         <grid_view>
-            <formatter>protocol</formatter>
+            <formatter>any</formatter>
             <sequence>40</sequence>
             <sortable>false</sortable>
         </grid_view>
