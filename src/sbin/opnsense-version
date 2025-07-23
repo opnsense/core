@@ -135,8 +135,6 @@ fi
 
 if [ -n "${DO_RAW}" ]; then
 	FILE=${DO_RAW#"-R "}
-	OUTPUT="\$${FILE}"
-	TARGET=nop
 
 	if [ -f "${FILE}" ]; then
 		SED_REPLACE=$(set | grep -e '^CORE_' -e '^PLUGINS_' | sed -e 's/^\([CP][A-Z_]*\)='"'"*'\([^'"'"']*\)'"'"*'/-e "s=%%\1%%=\2=g"/g')
@@ -144,6 +142,9 @@ if [ -n "${DO_RAW}" ]; then
 		cat ${FILE} | eval sed ${SED_REPLACE}
 		exit 0
 	fi
+
+	OUTPUT=$(echo "${FILE}" | sed -e 's=\([A-Z][A-Z_]*\)=$\1=g')
+	TARGET=nop
 fi
 
 case "${TARGET}" in
