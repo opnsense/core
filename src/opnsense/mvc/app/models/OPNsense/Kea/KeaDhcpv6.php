@@ -59,7 +59,7 @@ class KeaDhcpv6 extends BaseModel
             }
         }
         // validate changed subnets
-        $this_interfaces = explode(',', $this->general->interfaces->getValue());
+        $this_interfaces = $this->general->interfaces->getValues();
         foreach ($this->subnets->subnet6->iterateItems() as $subnet) {
             if (!$validateFullModel && !$subnet->isFieldChanged()) {
                 continue;
