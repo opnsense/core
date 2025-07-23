@@ -134,7 +134,7 @@ if grep -q '[{}]' ${VERSION}; then
 fi
 
 if [ -n "${DO_RAW}" ]; then
-	OUTPUT="\$${DO_RAW#"-R "}"
+	OUTPUT=$(echo "${DO_RAW#"-R "}" | sed -e 's=\([A-Z][A-Z_]*\)=$\1=g')
 	TARGET=nop
 fi
 
