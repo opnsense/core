@@ -345,7 +345,7 @@
                     },
                     // Show Edit alias icon and integrate "not" functionality
                     alias: function(column, row) {
-                        const value = row[column.id] != null ? String(row[column.id]) : "";
+                        const value = row["%" + column.id] || row[column.id] || "";
 
                         // Explicitly map fields that support negation
                         const notFieldMap = {
