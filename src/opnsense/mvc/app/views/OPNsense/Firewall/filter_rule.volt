@@ -235,7 +235,6 @@
                         }
 
                         const tooltipText = interfaceList.join("<br>");
-                        const inlineList = interfaceList.join(", ");
 
                         return `
                             ${isNegated}
@@ -243,7 +242,6 @@
                                 <span class="interface-count">${interfaceList.length}</span>
                                 <i class="fa-solid fa-fw fa-network-wired"></i>
                             </span>
-                            (${inlineList})
                         `;
                     },
                     // Icons
