@@ -25,7 +25,30 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-OWNER="wwwonly:wheel"
+OWNERSHIP=$(opnsense-version -R 'CORE_GROUP=CORE_GID:CORE_USER=CORE_UID')
+OWNERGRP=${OWNERSHIP%:*}
+OWNERUSR=${OWNERSHIP##*:}
+
+PW=/usr/sbin/pw
+GROUP=${OWNERGRP%=*}
+GID=${OWNERGRP##*=}
+USER=${OWNERUSR%=*}
+UID=${OWNERUSR##*=}
+OWNER="${USER}:wheel"
+
+PW_ARG=add
+if ${PW} groupshow ${GROUP} >/dev/null 2>&1; then
+    PW_ARG=mod
+fi
+
+${PW} group${PW_ARG} ${GROUP} -g ${GID}
+
+PW_ARG=add
+if ${PW} usershow ${USER} >/dev/null 2>&1; then
+    PW_ARG=mod
+fi
+
+${PW} user${PW_ARG} ${USER} -u ${UID} -g ${GID} -c "World Wide Web Only" -d /nonexistent -s /usr/sbin/nologin
 
 # set up required output directories for various PHP components
 for _PHPDIR in cache sessions tmp; do

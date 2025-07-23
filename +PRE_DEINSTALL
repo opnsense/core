@@ -1,7 +1,3 @@
-if [ -n "${CORE_USER_GROUP_ONLY}" ]; then
-	exit 0
-fi
-
 /usr/local/etc/rc.d/configd stop
 
 echo "Resetting root shell"
