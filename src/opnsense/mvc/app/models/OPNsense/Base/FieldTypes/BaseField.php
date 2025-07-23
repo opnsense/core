@@ -742,7 +742,6 @@ abstract class BaseField
         return $result;
     }
 
-
     /**
      * companion for getNodes, displays node content. may be overwritten for alternative presentation.
      * @return null|string
