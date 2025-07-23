@@ -112,9 +112,10 @@ class FilterController extends FilterBaseController
 
         $catcolors = [];
         foreach ((new Category())->categories->category->iterateItems() as $category) {
+            $uuid = (string)$category->getAttributes()['uuid'];
             $color = trim((string)$category->color);
             // Assign default color if empty
-            $catcolors[trim((string)$category->name)] = empty($color) ? "#C03E14" : "#{$color}";
+            $catcolors[$uuid] = empty($color) ? "#C03E14" : "#{$color}";
         }
 
         $filter_funct_rs  = function (&$record) use (

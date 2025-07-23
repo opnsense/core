@@ -208,7 +208,7 @@
                             return '';
                         }
 
-                        const categories = row.categories.split(',').map(cat => cat.trim());
+                        const categories = (row["%categories"] || row.categories).split(',').map(cat => cat.trim());
                         const colors = Array.isArray(row.category_colors) ? row.category_colors : row.category_colors.split(',');
 
                         return categories.map((cat, index) => {
