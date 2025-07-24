@@ -67,6 +67,8 @@
             options: {
                 responsive: true,
                 rowCount: [20,50,100,200,500,1000],
+                initialSearchPhrase: getUrlHash('search'),
+                triggerEditFor: getUrlHash('edit'),
                 requestHandler: function(request){
                     // Add category selectpicker
                     if ( $('#category_filter').val().length > 0) {
