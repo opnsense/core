@@ -204,7 +204,7 @@
                         }
                     },
                     category: function (column, row) {
-                        if (!row.categories || !row.category_colors) {
+                        if (!row.categories || !Array.isArray(row.category_colors)) {
                             return '';
                         }
 
