@@ -102,6 +102,8 @@
                 <description type="DescriptionField">
                     <Required>Y</Required>
                 </description>
+                <local_ts type="TextField" volatile="true"/>
+                <remote_ts type="TextField" volatile="true"/>
             </Connection>
         </Connections>
         <locals>
