@@ -436,6 +436,7 @@
                     <WildcardEnabled>N</WildcardEnabled>
                 </destination>
                 <description type="DescriptionField"/>
+                <origin type="TextField" volatile="true"/>
             </SPD>
         </SPDs>
     </items>
