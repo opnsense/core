@@ -59,10 +59,7 @@ class VTIField extends ArrayField
     {
         parent::actionPostLoadingEvent();
         foreach ($this->iterateItems() as $key => $node) {
-            $type_node = new TextField();
-            $type_node->setInternalIsVirtual();
-            $type_node->setValue(strpos($key, 'ipsec') === 0 ? 'legacy' : 'vti');
-            $node->addChildNode('origin', $type_node);
+            $node->origin = strpos($key, 'ipsec') === 0 ? 'legacy' : 'vti';
         }
     }
 }
