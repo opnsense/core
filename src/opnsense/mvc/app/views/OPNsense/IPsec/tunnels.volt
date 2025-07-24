@@ -269,7 +269,7 @@
         <tr>
             <td colspan=7></td>
             <td>
-                <button data-action="add" type="button" title="{{ lang._('add phase 1 entry') }}" data-scope="phase1" class="btn btn-xs btn-primary legacy_action command-add">
+                <button type="button" title="{{ lang._('add phase 1 entry') }}" data-scope="phase1" class="btn btn-xs btn-primary legacy_action command-add">
                     <span class="fa fa-fw fa-plus"></span>
                 </button>
                 {# multi select isn't supported on master/detail views
