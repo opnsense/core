@@ -17,9 +17,6 @@
                         return request;
                     },
                     formatters: {
-                        networkFormatter: function(column, row) {
-                            return row.subnet + (row.subnet_bits ? '/' + row.subnet_bits : '');
-                        },
                         modeFormatter(column, row) {
                             // skips rendering based on mode mismatch and renders checkmark if boolean
                             const field = formGridVipJson.fields.find(f => f["column-id"] === column.id);

@@ -40,22 +40,16 @@ class VipField extends ArrayField
     {
         parent::actionPostLoadingEvent();
         foreach ($this->iterateItems() as $key => $node) {
-            $add_fields = ['address' => sprintf("%s/%s", $node->subnet, $node->subnet_bits)];
+            $node->address = sprintf("%s/%s", $node->subnet, $node->subnet_bits);
             if ($node->mode == 'carp') {
-                $add_fields['vhid_txt'] = sprintf(
+                $node->vhid_txt = sprintf(
                     gettext('%s (freq. %s/%s)'),
                     $node->vhid,
                     $node->advbase,
                     $node->advskew
                 );
             } else {
-                $add_fields['vhid_txt'] = (string)$node->vhid;
-            }
-            foreach ($add_fields as $key => $value) {
-                $tmp_node = new TextField();
-                $tmp_node->setInternalIsVirtual();
-                $tmp_node->setValue($value);
-                $node->addChildNode($key, $tmp_node);
+                $node->vhid_txt = (string)$node->vhid;
             }
         }
     }
