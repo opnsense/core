@@ -132,6 +132,15 @@ class UIModelGrid
                         $searchFound = false;
                         foreach ($fields as $fieldname) {
                             $item = $row['%' . $fieldname] ?? $row[$fieldname] ?? ''; /* prefer search by description */
+                            if (empty($row[$fieldname]) && $record->$fieldname != null) {
+                                /**
+                                 * Fallback, item is most likely virtual. Since the model has no knowledge
+                                 * of these types, but the controller explicitly asked for it, include it in the result.
+                                 * XXX this item should be a volatile field in the model.
+                                 */
+                                $item = $record->$fieldname->getDescription();
+                                $row[$fieldname] = $item;
+                            }
                             if (!empty($item) && strpos(strtolower($item), strtolower($clause)) !== false) {
                                 $searchFound = true;
                             }
