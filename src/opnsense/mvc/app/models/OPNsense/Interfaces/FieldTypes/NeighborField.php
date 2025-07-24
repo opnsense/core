@@ -85,14 +85,7 @@ class NeighborField extends ArrayField
     {
         parent::actionPostLoadingEvent();
         foreach ($this->iterateItems() as $key => $node) {
-            $type_node = new TextField();
-            $type_node->setInternalIsVirtual();
-            if (isset(self::$internalSourcemap[$key])) {
-                $type_node->setValue(self::$internalSourcemap[$key]);
-            } else {
-                $type_node->setValue('manual');
-            }
-            $node->addChildNode('origin', $type_node);
+            $node->origin = self::$internalSourcemap[$key] ?? 'manual';
         }
     }
 }

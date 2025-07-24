@@ -12,6 +12,7 @@
                 <NetMaskAllowed>N</NetMaskAllowed>
             </ipaddress>
             <descr type="DescriptionField"/>
+            <origin type="TextField" volatile="true"/>
         </neighbor>
     </items>
 </model>
