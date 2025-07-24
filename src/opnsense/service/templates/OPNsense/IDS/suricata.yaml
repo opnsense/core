@@ -256,10 +256,11 @@ outputs:
             session-resumption: {{ 'no' if helpers.empty('OPNsense.IDS.general.eveLog.tls.sessionResumption') else 'yes' }}
             # ja4 hashes in tls records will never be logged unless
             # the following is set to on. (Default off)
-            ja4: {{ 'on' if not helpers.empty('OPNsense.IDS.general.eveLog.tls.extended') or 'ja4' in OPNsense.IDS.general.eveLog.tls.custom.split(',') else 'off' }}
+{%          set tls_custom = OPNsense.IDS.general.eveLog.tls.custom|default('') %}
+            ja4: {{ 'on' if not helpers.empty('OPNsense.IDS.general.eveLog.tls.extended') or 'ja4' in tls_custom.split(',') else 'off' }}
+{%          if tls_custom != '' %}
             # custom controls which TLS fields that are included in eve-log
-{%          if not helpers.empty('OPNsense.IDS.general.eveLog.tls.custom') %}
-            custom: [{{ OPNsense.IDS.general.eveLog.tls.custom }}]
+            custom: [{{ tls_custom }}]
 {%          endif %}
 {%      endif %}
         #- files:
