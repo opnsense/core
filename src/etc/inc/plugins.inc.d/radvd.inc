@@ -367,17 +367,14 @@ function radvd_configure_do($verbose = false, $blacklist = [])
             continue;
         }
 
-        $radvdifs[$realif] = 1;
-        $autotype = 'unknown';
+        $autotype = isset($config['interfaces'][$trackif]['ipaddrv6']) ? $config['interfaces'][$trackif]['ipaddrv6'] : 'unknown';
 
-        if (isset($config['interfaces'][$trackif]['ipaddrv6'])) {
-            $autotype = $config['interfaces'][$trackif]['ipaddrv6'];
-        }
-
-        if ($autotype != 'dhcp6') {
+        if (!in_array($autotype, ['6rd', '6to4', 'dhcp6'])) {
             $radvdconf .= "# Skipping unsupported {$autotype} interface {$if}\n";
             continue;
         }
+
+        $radvdifs[$realif] = 1;
 
         $realtrackif = get_real_interface($trackif, 'inet6');
 
