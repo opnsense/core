@@ -21,4 +21,14 @@
         <type>dropdown</type>
         <help>Rule configured action</help>
     </field>
+    <field>
+        <id>rule.msg</id>
+        <label>Message</label>
+        <type>ignore</type>
+    </field>
+    <field>
+        <id>rule.source</id>
+        <label>Source</label>
+        <type>ignore</type>
+    </field>
 </form>
