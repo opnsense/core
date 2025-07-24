@@ -21,6 +21,8 @@
                         <drop>Drop</drop>
                     </OptionValues>
                 </action>
+                <msg type="TextField" volatile="true"/>
+                <source type="TextField" volatile="true"/>
             </rule>
         </rules>
         <policies>
