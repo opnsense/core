@@ -51,7 +51,7 @@ class M1_0_0 extends BaseModelMigration
         $mdlNode = $config->OPNsense->unboundplus;
 
         foreach (['dnsbl', 'miscellaneous'] as $strip) {
-            if (!empty($mdlNode->$strip)) {
+            if (isset($mdlNode->$strip)) {
                 $model->$strip->setAttributeValue('version', null);
             }
         }
