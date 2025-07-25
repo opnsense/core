@@ -54,7 +54,7 @@ class ConfigdProxyOverrideStatus extends AbstractStatus
          */
         foreach (glob('/usr/local/opnsense/service/conf/configd.conf.d/'. '*') as $file) {
             $contents = @file_get_contents($file);
-            if ($contents !== false && strpos($contents, 'PROXY=') !== false) {
+            if ($contents !== false && stripos($contents, '_PROXY=') !== false) {
                 $this->internalMessage = gettext(
                     'The configd environment contains a web proxy, it may interfere with the settings configured here.'
                 );
