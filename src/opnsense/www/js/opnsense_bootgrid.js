@@ -124,7 +124,7 @@ class UIBootgrid {
         this.options = {
             sorting: true,
             selection: true,
-            defaultRowCount: 25,
+            defaultRowCount: 50,
             rowCount: [10, 15, 25, 50, 100, 250, 500, 1000, true],
             remoteGridView: false, // parse gridview from <thead> or via ajax?
             formatters: {
