@@ -52,11 +52,9 @@ class ConfigdProxyOverrideStatus extends AbstractStatus
          * https://docs.opnsense.org/development/backend/configd.html
          * XXX: Almost impossible to troubleshoot without a clear hint.
          */
-        $dir = '/usr/local/opnsense/service/conf/configd.conf.d/';
-
-        foreach (glob($dir . '*') as $file) {
+        foreach (glob('/usr/local/opnsense/service/conf/configd.conf.d/'. '*') as $file) {
             $contents = @file_get_contents($file);
-            if ($contents !== false && stripos($contents, 'PROXY=') !== false) {
+            if ($contents !== false && strpos($contents, 'PROXY=') !== false) {
                 $this->internalMessage = gettext(
                     'The configd environment contains a web proxy, it may interfere with the settings configured here.'
                 );
