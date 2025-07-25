@@ -98,10 +98,27 @@ class NetworkAliasField extends BaseListField
      */
     public function getDescription()
     {
-        if (isset($this->internalOptionList[(string)$this])) {
-            return $this->internalOptionList[(string)$this];
+        $value = (string)$this;
+        $data = $this->internalOptionList;
+
+        if (str_contains($value, ',')) {
+            // map a csv string of keys to their corresponding descriptions
+            $keys = explode(',', $value);
+
+            return implode(',', array_map(function($key) use ($data) {
+                if (isset($data[$key])) {
+                    return $data[$key];
+                }
+            }, $keys));
         }
-        return (string)$this;
+
+        if (isset($data[$value])) {
+            // single key, single value
+            return $data[$value];
+        }
+
+        // just the key
+        return $value;
     }
 
     /**
