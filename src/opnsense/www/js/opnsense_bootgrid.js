@@ -496,6 +496,18 @@ class UIBootgrid {
         return template.replace(/{{ctx\.(\w+)}}/g, (_, key) => key in ctx ? ctx[key] : '');
     }
 
+    _getFriendlyRowCount(count) {
+        try {
+            let countNum = Number(count);
+            let countFriendly = countNum === this.options.defaultRowCount ? `default (${count})` : count;
+            countFriendly = count === true ? this._translate('all') : countFriendly;
+            return countFriendly;
+
+        } catch {
+            return count
+        }
+    }
+
     /**
      *
      * @returns array of column objects in tabulator-format based on this.gridView and this.options
@@ -976,14 +988,14 @@ class UIBootgrid {
         if (this.curRowCount === 'true') {
             this.curRowCount = true;
         }
-        $(`#${this.id}-rowcount-text`).text(this.curRowCount === true ? this._translate('all') : this.curRowCount);
+        $(`#${this.id}-rowcount-text`).text(this._getFriendlyRowCount(this.curRowCount));
 
         this.options.rowCount.forEach((count) => {
             let item = $(`
                 <li data-action="${count}"
                     class="${count.toString() === this.curRowCount.toString() ? 'active' : ''}"
                     aria-selected="${count.toString() === this.curRowCount.toString() ? 'true' : 'false'}">
-                    <a>${count === true ? this._translate('all') : count}</a>
+                    <a>${this._getFriendlyRowCount(count)}</a>
                 </li>
             `).on('click', (e) => {
                 e.preventDefault();
@@ -999,7 +1011,7 @@ class UIBootgrid {
                     localStorage.setItem(`${this.persistenceID}-rowCount`, this.curRowCount);
                     this.table.setPageSize(newRowCount);
 
-                    $(`#${this.id}-rowcount-text`).text(newRowCount === true ? this._translate('all') : newRowCount);
+                    $(`#${this.id}-rowcount-text`).text(this._getFriendlyRowCount(newRowCount));
 
                     $.each($(`#${this.id}-rowcount-items li`), (i, value) => {
                         let $li = $(value);
