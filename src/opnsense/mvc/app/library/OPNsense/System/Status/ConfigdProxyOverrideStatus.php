@@ -42,7 +42,8 @@ class ConfigdProxyOverrideStatus extends AbstractStatus
         // Only show in pages that are the most likely to have issues
         $this->internalScope = [
             '/ui/core/hasync',
-            '/ui/core/firmware'
+            '/ui/core/firmware',
+            '/ui/opncentral/host/admin'
         ];
     }
 
