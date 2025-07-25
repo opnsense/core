@@ -197,6 +197,17 @@ class UIBootgrid {
     }
 
     initialize() {
+        if (!this.options.rowCount.includes(this.options.defaultRowCount)) {
+            let splice_index = 0;
+
+            for (let i = 0; i < this.options.rowCount.length; i++) {
+                if (this.options.rowCount[i] === true) { continue; }
+                if (this.options.rowCount[i] > this.options.defaultRowCount) { splice_index = i; break; }
+            };
+
+            this.options.rowCount.splice(splice_index, 0, this.options.defaultRowCount);
+        }
+
         this.persistence = localStorage.getItem(`tabulator-${this.persistenceID}-persistence`);
         if (!this.persistence || this.options.static) {
             // If the user didn't change anything on the table, assume we start blank
