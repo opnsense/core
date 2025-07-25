@@ -54,7 +54,7 @@ class ConfigdProxyOverrideStatus extends AbstractStatus
             $contents = @file_get_contents($file);
             if ($contents !== false && stripos($contents, '_PROXY=') !== false) {
                 $this->internalMessage = gettext(
-                    'The configd environment contains a web proxy, it may interfere with the settings configured here.'
+                    'The configd environment contains custom proxy settings, these may interfere with the settings configured here.'
                 );
                 $this->internalStatus = SystemStatusCode::NOTICE;
                 break;
