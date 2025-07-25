@@ -499,8 +499,10 @@ class UIBootgrid {
     _getFriendlyRowCount(count) {
         try {
             let countNum = Number(count);
-            let countFriendly = countNum === this.options.defaultRowCount ? `default (${count})` : count;
-            countFriendly = count === true ? this._translate('all') : countFriendly;
+
+            let countFriendly = count === true ? this._translate('all') : count;
+            countFriendly = countNum === this.options.defaultRowCount ? `${countFriendly} (default)` : countFriendly;
+
             return countFriendly;
 
         } catch {
