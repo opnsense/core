@@ -411,6 +411,7 @@ class WidgetManager  {
                 $('.edit-handle').show();
                 $('#add_widget').show();
                 $('#restore-defaults').show();
+                $('.title-invisible').css('display', ''); // prevent inline display: block on show()
             } else {
                 this.runtimeOptions.editMode = false;
                 this.grid.enableMove(false);
@@ -421,7 +422,11 @@ class WidgetManager  {
                 $('.edit-handle').hide();
                 $('#add_widget').hide();
                 $('#restore-defaults').hide();
+                $('.title-invisible').hide();
             }
+
+            // expect layout to have shifted
+            this._updateGrid();
         });
 
         $('#edit-grid').mouseup(function() {
@@ -582,8 +587,11 @@ class WidgetManager  {
         ` : '';
         let $panel = $(`<div class="widget widget-${identifier}"></div>`);
         let $content = $(`<div class="widget-content"></div>`);
+        const widget = this.widgetClasses[identifier];
+        const headerClass = `${!widget.isTitleVisible() ? "title-invisible" : ""}`;
+        const headerStyle = !widget.isTitleVisible() ? "display: none" : "";
         let $header = $(`
-            <div class="widget-header">
+            <div class="widget-header ${headerClass}" style="${headerStyle}">
                 <div class="widget-header-left"></div>
                 <div id="${identifier}-title" class="widget-title"><b>${title}</b></div>
                 <div class="widget-command-container">
@@ -595,7 +603,11 @@ class WidgetManager  {
             </div>
         `);
         $content.append($header);
-        let $divider = $(`<div class="panel-divider"><div class="line"></div></div></div>`);
+        let $divider = $(`
+            <div class="panel-divider ${headerClass}" style="${headerStyle}">
+                <div class="line"></div>
+            </div>
+        `);
         $content.append($divider);
         $content.append(content);
         $panel.append($content);
