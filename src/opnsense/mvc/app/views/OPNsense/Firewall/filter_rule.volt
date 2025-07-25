@@ -266,7 +266,7 @@
                             const typeDigit = sortOrder.charAt(0);
                             if (ruleTypeIcons[typeDigit]) {
                                 result += `<i class="fa ${ruleTypeIcons[typeDigit].icon} fa-fw ${ruleTypeIcons[typeDigit].color}"
-                                            data-toggle="tooltip" title="${ruleTypeIcons[typeDigit].tooltip}"></i> `;
+                                            ${iconStyle} data-toggle="tooltip" title="${ruleTypeIcons[typeDigit].tooltip}"></i> `;
                             }
                         }
 
