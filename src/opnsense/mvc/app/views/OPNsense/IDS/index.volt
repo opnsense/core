@@ -423,7 +423,9 @@ POSSIBILITY OF SUCH DAMAGE.
                                     if (!iface || typeof iface !== 'string') {
                                         return '';
                                     }
-                                    return interface_descriptions[iface] || iface;
+                                    // IPS mode appends '^' to the interface
+                                    const trimmed_iface = iface.trim().replace('^', '');
+                                    return interface_descriptions[trimmed_iface] || trimmed_iface;
                                 },
                             },
                         }
