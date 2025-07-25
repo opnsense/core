@@ -424,6 +424,9 @@ class WidgetManager  {
                 $('#restore-defaults').hide();
                 $('.title-invisible').hide();
             }
+
+            // expect layout to have shifted
+            this._updateGrid();
         });
 
         $('#edit-grid').mouseup(function() {
