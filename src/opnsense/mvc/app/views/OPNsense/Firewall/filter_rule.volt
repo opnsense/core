@@ -354,7 +354,7 @@
                         // Apply negation
                         const isNegated = notField && row.hasOwnProperty(notField) && row[notField] == 1 ? "! " : "";
 
-                        if (!value || value.trim() === "" || value === "any" || value === "None") {
+                        if (!value || value === "" || value === "any" || value === "None") {
                             return isNegated + '*';
                         }
 
