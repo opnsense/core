@@ -221,23 +221,19 @@
                     interfaces: function(column, row) {
                         const interfaces = row["%" + column.id] || row[column.id] || "";
 
-                        // Apply negation
-                        const isNegated = row.interfacenot == 1 ? "! " : "";
-
-                        if (!interfaces || interfaces.trim() === "") {
-                            return isNegated + '*';
+                        if (interfaces === "") {
+                            return "*";
                         }
 
-                        const interfaceList = interfaces.split(",").map(iface => iface.trim());
-
-                        if (interfaceList.length === 1) {
-                            return isNegated + interfaceList[0];
+                        // Only single interfaces can be negated
+                        if (!interfaces.includes(",")) {
+                            return (row.interfacenot == 1 ? "! " : "") + interfaces;
                         }
 
+                        const interfaceList = interfaces.split(",");
                         const tooltipText = interfaceList.join("<br>");
 
                         return `
-                            ${isNegated}
                             <span data-toggle="tooltip" data-html="true" title="${tooltipText}" style="white-space: nowrap;">
                                 <span class="interface-count">${interfaceList.length}</span>
                                 <i class="fa-solid fa-fw fa-network-wired"></i>
