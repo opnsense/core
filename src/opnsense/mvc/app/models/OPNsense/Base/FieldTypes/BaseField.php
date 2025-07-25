@@ -712,7 +712,7 @@ abstract class BaseField
 
     /**
      * get nodes as array structure using getValue() and (optionally) getDescription() as leaves,
-     * the latter prefixed with a dollar sign ($) as these are impossible to exist in our xml structure.
+     * the latter prefixed with a percentage sign (%) as these are impossible to exist in our xml structure.
      * (eg field, $field)
      * @return array
      */
