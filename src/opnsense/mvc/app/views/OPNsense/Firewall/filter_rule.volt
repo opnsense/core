@@ -342,50 +342,24 @@
                     // Show Edit alias icon and integrate "not" functionality
                     alias: function(column, row) {
                         const value = row["%" + column.id] || row[column.id] || "";
+                        const isNegated = (row[column.id.replace('net', 'not')] == 1) ? "! " : "";
 
-                        // Explicitly map fields that support negation
-                        const notFieldMap = {
-                            "source_net": "source_not",
-                            "destination_net": "destination_not"
-                        };
-
-                        const notField = notFieldMap[column.id];
-
-                        // Apply negation
-                        const isNegated = notField && row.hasOwnProperty(notField) && row[notField] == 1 ? "! " : "";
-
-                        if (!value || value === "" || value === "any" || value === "None") {
+                        if (!value || value === "any") {
                             return isNegated + '*';
                         }
 
-                        // Ensure it's a string, or internal rules will not load anymore
-                        const stringValue = typeof value === "string" ? value : String(value);
+                        const values = value.split(',');
+                        const aliasFlags = row["is_alias_" + column.id] || [];
 
-                        const aliasFlagName = "is_alias_" + column.id;
-                        if (!row.hasOwnProperty(aliasFlagName)) {
-                            return isNegated + stringValue;
-                        }
-
-                        const generateAliasMarkup = (val) => `
-                            <span data-toggle="tooltip" title="${val}">
-                                ${val}&nbsp;
-                            </span>
-                            <a href="/ui/firewall/alias/index/${val}" data-toggle="tooltip" title="{{ lang._('Edit alias') }}">
-                                <i class="fa fa-fw fa-list"></i>
-                            </a>
-                        `;
-
-                        // If the alias flag is an array, handle multiple comma-separated aliases
-                        if (Array.isArray(row[aliasFlagName])) {
-                            const values = stringValue.split(',').map(s => s.trim());
-                            const aliasFlags = row[aliasFlagName];
-
-                            return isNegated + values.map((val, index) => aliasFlags[index] ? generateAliasMarkup(val) : val).join(', ');
-                        }
-
-                        // If alias flag is not an array, assume it's a boolean and a single alias
-                        return isNegated + (row[aliasFlagName] ? generateAliasMarkup(stringValue) : stringValue);
-                    },
+                        return isNegated + values.map((val, i) =>
+                            aliasFlags[i]
+                                ? `<span data-toggle="tooltip" title="${val}">${val}&nbsp;</span>
+                                <a href="/ui/firewall/alias/index/${val}" data-toggle="tooltip" title="{{ lang._('Edit alias') }}">
+                                    <i class="fa fa-fw fa-list"></i>
+                                </a>`
+                                : val
+                        ).join(', ');
+                    }
                 },
             },
             commands: {
