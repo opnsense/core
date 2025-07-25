@@ -29,7 +29,7 @@
         <id>server.pubkey</id>
         <label>Public key</label>
         <type>text</type>
-        <help>Public key of this instance. You can specify your own one, or a key will be generated after saving.</help>
+        <help>Public key of this instance. You can specify your own one, or generate one with the gear button.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
@@ -38,7 +38,7 @@
         <id>server.privkey</id>
         <label>Private key</label>
         <type>text</type>
-        <help>Private key of this instance. You can specify your own one, or a key will be generated after saving. Please keep this key safe.</help>
+        <help>Private key of this instance. You can specify your own one, or generate one with the gear button. Please keep this key safe.</help>
         <grid_view>
             <ignore>true</ignore>
         </grid_view>
