@@ -90,12 +90,12 @@ abstract class BaseListField extends BaseField
      * get valid options, descriptions and selected value
      * @return array
      */
-    public function getNodeData()
+    protected function getNodeOptions()
     {
         if (empty($this->internalEmptyDescription)) {
             $this->internalEmptyDescription = gettext('None');
         }
-        $result = array();
+        $result = [];
         // if option is not required, add empty placeholder
         if (!$this->internalIsRequired && !$this->internalMultiSelect) {
             $result[""] = [
@@ -124,9 +124,17 @@ abstract class BaseListField extends BaseField
     /**
      * {@inheritdoc}
      */
+    public function getNodeData()
+    {
+        $this->getNodeOptions();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDescription()
     {
-        $data = $this->getNodeData();
+        $data = $this->getNodeOptions();
         if (is_array($data)) {
             $items = [];
             foreach ($data as $fieldValue) {
