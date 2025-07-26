@@ -648,6 +648,7 @@
             <sortable>false</sortable>
             <label>Stats - Bytes</label>
             <sequence>118</sequence>
+            <formatter>bytes</formatter>
         </grid_view>
     </field>
     <field>
