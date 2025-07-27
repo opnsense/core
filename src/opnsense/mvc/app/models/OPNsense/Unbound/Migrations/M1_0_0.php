@@ -52,7 +52,7 @@ class M1_0_0 extends BaseModelMigration
 
         foreach (['dnsbl', 'miscellaneous'] as $strip) {
             if (isset($mdlNode->$strip)) {
-                $model->$strip->setAttributeValue('version', null);
+                $mdlNode->$strip->setAttributeValue('version', null);
             }
         }
 
