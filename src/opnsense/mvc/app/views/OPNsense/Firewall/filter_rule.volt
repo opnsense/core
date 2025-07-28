@@ -445,26 +445,6 @@
 
         });
 
-        grid.on('loaded.rs.jquery.bootgrid', function () {
-            // Clean up any open tooltips
-            $('[data-toggle="tooltip"]').each(function () {
-                if ($(this).data('bs.tooltip')) {
-                    $(this).tooltip('hide');
-                }
-            });
-
-            // Remove events and delete old instance
-            $('[data-toggle="tooltip"]')
-                .off('.tooltip')
-                .removeData('bs.tooltip');
-
-            // Clean up orphaned tooltip divs
-            $('body > .tooltip').remove();
-
-            // Re-initialize tooltips
-            $('[data-toggle="tooltip"]').tooltip({ container: 'body' });
-        });
-
         // Populate category selectpicker
         function populateCategoriesSelectpicker() {
             const currentSelection = $("#category_filter").val();
@@ -606,11 +586,6 @@
             $(this).toggleClass('active btn-primary');
 
             $checkbox.trigger("change");
-            $(this).tooltip('hide');
-        });
-
-        $('#all_rules_button').mouseleave(function(){
-            $('#all_rules_button').tooltip('hide')
         });
 
         // replace all "net" selectors with details retrieved from "list_network_select_options" endpoint
