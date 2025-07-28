@@ -41,6 +41,12 @@
             });
         }
 
+        // Show statistics columns when inspect button is checked
+        function updateStatisticColumns() {
+            const isChecked = $('#all_rules_checkbox').is(':checked');
+            grid.bootgrid(isChecked ? "setColumns" : "unsetColumns", ['evaluations', 'states', 'packets', 'bytes']);
+        }
+
         // Get all advanced fields, used for advanced mode tooltips
         const advancedFieldIds = "{{ advancedFieldIds }}".split(',');
 
@@ -52,9 +58,6 @@
                 columnLabels[columnId] = $(this).text().trim();
             }
         });
-
-        // Test if the UUID is valid, used to determine if automation model or internal rule
-        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
         // Initialize grid
         const grid = $("#{{formGridFilterRule['table_id']}}").UIBootgrid({
@@ -110,7 +113,7 @@
                         let rowId = row.uuid;
 
                         // If UUID is invalid, its an internal rule, use the #ref field to show a lookup button.
-                        if (!rowId || !uuidRegex.test(rowId)) {
+                        if (!rowId || !rowId.includes('-')) {
                             let ref = row["ref"] || "";
                             if (ref.trim().length > 0) {
                                 let url = `/${ref}`;
@@ -160,35 +163,21 @@
                             </button>
                         `;
                     },
-                    // Show rowtoggle for all rules, but disable interaction for internal rules with no valid UUID
+                    // Disable rowtoggle for internal rules
                     rowtoggle: function (column, row) {
-                        let rowId = row.uuid;
-                        let isEnabled = parseInt(row[column.id], 2) === 1;
-
-                        let iconClass = isEnabled
-                            ? "fa-check-square-o"
-                            : "fa-square-o text-muted";
-
-                        let tooltipText = isEnabled
-                            ? "{{ lang._('Enabled') }}"
-                            : "{{ lang._('Disabled') }}";
-
-                        // For valid UUIDs, make it interactive
-                        if (rowId && uuidRegex.test(rowId)) {
-                            return `
-                                <span style="cursor: pointer;" class="fa fa-fw ${iconClass}
-                                    command-toggle bootgrid-tooltip" data-value="${isEnabled ? 1 : 0}"
-                                    data-row-id="${rowId}" title="${tooltipText}">
-                                </span>
-                            `;
+                        const rowId = row.uuid || '';
+                        if (!rowId.includes('-')) {
+                            return '';
                         }
 
-                        // For internal rules, show a non-interactive toggle
+                        const isEnabled = row[column.id] === "1";
+
                         return `
-                            <span style="opacity: 0.5"
-                                class="fa fa-fw ${iconClass} bootgrid-tooltip"
+                            <span class="fa fa-fw ${isEnabled ? 'fa-check-square-o' : 'fa-square-o text-muted'} bootgrid-tooltip command-toggle"
+                                style="cursor: pointer;"
                                 data-value="${isEnabled ? 1 : 0}"
-                                data-row-id="${rowId}" title="${tooltipText}">
+                                data-row-id="${rowId}"
+                                title="${isEnabled ? '{{ lang._("Enabled") }}' : '{{ lang._("Disabled") }}'}">
                             </span>
                         `;
                     },
@@ -204,12 +193,12 @@
                         }
                     },
                     category: function (column, row) {
-                        if (!row.categories || !row.category_colors) {
+                        if (!row.categories || !Array.isArray(row.category_colors)) {
                             return '';
                         }
 
-                        const categories = (row["%categories"] || row.categories).split(',').map(cat => cat.trim());
-                        const colors = Array.isArray(row.category_colors) ? row.category_colors : row.category_colors.split(',');
+                        const categories = (row["%categories"] || row.categories).split(',');
+                        const colors = row.category_colors;
 
                         return categories.map((cat, index) => {
                             const color = colors[index]
@@ -221,23 +210,19 @@
                     interfaces: function(column, row) {
                         const interfaces = row["%" + column.id] || row[column.id] || "";
 
-                        // Apply negation
-                        const isNegated = row.interfacenot == 1 ? "! " : "";
-
-                        if (!interfaces || interfaces.trim() === "") {
-                            return isNegated + '*';
+                        if (interfaces === "") {
+                            return "*";
                         }
 
-                        const interfaceList = interfaces.split(",").map(iface => iface.trim());
-
-                        if (interfaceList.length === 1) {
-                            return isNegated + interfaceList[0];
+                        // Only single interfaces can be negated
+                        if (!interfaces.includes(",")) {
+                            return (row.interfacenot == 1 ? "! " : "") + interfaces;
                         }
 
+                        const interfaceList = interfaces.split(",");
                         const tooltipText = interfaceList.join("<br>");
 
                         return `
-                            ${isNegated}
                             <span data-toggle="tooltip" data-html="true" title="${tooltipText}" style="white-space: nowrap;">
                                 <span class="interface-count">${interfaceList.length}</span>
                                 <i class="fa-solid fa-fw fa-network-wired"></i>
@@ -266,7 +251,7 @@
                             const typeDigit = sortOrder.charAt(0);
                             if (ruleTypeIcons[typeDigit]) {
                                 result += `<i class="fa ${ruleTypeIcons[typeDigit].icon} fa-fw ${ruleTypeIcons[typeDigit].color}"
-                                            data-toggle="tooltip" title="${ruleTypeIcons[typeDigit].tooltip}"></i> `;
+                                            ${iconStyle} data-toggle="tooltip" title="${ruleTypeIcons[typeDigit].tooltip}"></i> `;
                             }
                         }
 
@@ -346,50 +331,29 @@
                     // Show Edit alias icon and integrate "not" functionality
                     alias: function(column, row) {
                         const value = row["%" + column.id] || row[column.id] || "";
+                        const isNegated = (row[column.id.replace('net', 'not')] == 1) ? "! " : "";
 
-                        // Explicitly map fields that support negation
-                        const notFieldMap = {
-                            "source_net": "source_not",
-                            "destination_net": "destination_not"
-                        };
+                        // Internal rule source/destination can be an object, skip them
+                        if (typeof value !== 'string') {
+                            return '';
+                        }
 
-                        const notField = notFieldMap[column.id];
-
-                        // Apply negation
-                        const isNegated = notField && row.hasOwnProperty(notField) && row[notField] == 1 ? "! " : "";
-
-                        if (!value || value.trim() === "" || value === "any" || value === "None") {
+                        if (!value || value === "any") {
                             return isNegated + '*';
                         }
 
-                        // Ensure it's a string, or internal rules will not load anymore
-                        const stringValue = typeof value === "string" ? value : String(value);
+                        const values = value.split(',');
+                        const aliasFlags = row["is_alias_" + column.id] || [];
 
-                        const aliasFlagName = "is_alias_" + column.id;
-                        if (!row.hasOwnProperty(aliasFlagName)) {
-                            return isNegated + stringValue;
-                        }
-
-                        const generateAliasMarkup = (val) => `
-                            <span data-toggle="tooltip" title="${val}">
-                                ${val}&nbsp;
-                            </span>
-                            <a href="/ui/firewall/alias/index/${val}" data-toggle="tooltip" title="{{ lang._('Edit alias') }}">
-                                <i class="fa fa-fw fa-list"></i>
-                            </a>
-                        `;
-
-                        // If the alias flag is an array, handle multiple comma-separated aliases
-                        if (Array.isArray(row[aliasFlagName])) {
-                            const values = stringValue.split(',').map(s => s.trim());
-                            const aliasFlags = row[aliasFlagName];
-
-                            return isNegated + values.map((val, index) => aliasFlags[index] ? generateAliasMarkup(val) : val).join(', ');
-                        }
-
-                        // If alias flag is not an array, assume it's a boolean and a single alias
-                        return isNegated + (row[aliasFlagName] ? generateAliasMarkup(stringValue) : stringValue);
-                    },
+                        return isNegated + values.map((val, i) =>
+                            aliasFlags[i]
+                                ? `<span data-toggle="tooltip" title="${val}">${val}&nbsp;</span>
+                                <a href="/ui/firewall/alias/index/${val}" data-toggle="tooltip" title="{{ lang._('Edit alias') }}">
+                                    <i class="fa fa-fw fa-list"></i>
+                                </a>`
+                                : val
+                        ).join(', ');
+                    }
                 },
             },
             commands: {
@@ -473,26 +437,6 @@
                 }
             },
 
-        });
-
-        grid.on('loaded.rs.jquery.bootgrid', function () {
-            // Clean up any open tooltips
-            $('[data-toggle="tooltip"]').each(function () {
-                if ($(this).data('bs.tooltip')) {
-                    $(this).tooltip('hide');
-                }
-            });
-
-            // Remove events and delete old instance
-            $('[data-toggle="tooltip"]')
-                .off('.tooltip')
-                .removeData('bs.tooltip');
-
-            // Clean up orphaned tooltip divs
-            $('body > .tooltip').remove();
-
-            // Re-initialize tooltips
-            $('[data-toggle="tooltip"]').tooltip({ container: 'body' });
         });
 
         // Populate category selectpicker
@@ -623,10 +567,14 @@
         });
 
         $("#internal_rule_selector").detach().insertAfter("#type_filter_container");
+
         $('#all_rules_checkbox').change(function(){
-            const isChecked = $('#all_rules_checkbox').is(':checked');
-            grid.bootgrid(isChecked ? "setColumns" : "unsetColumns", ['evaluations', 'states', 'packets', 'bytes']);
+            updateStatisticColumns();
             grid.bootgrid("reload");
+        });
+
+        grid.on('loaded.rs.jquery.bootgrid', function () {
+            updateStatisticColumns();  // ensures columns are consistent after reload
         });
 
         $('#all_rules_button').click(function(){
@@ -636,11 +584,6 @@
             $(this).toggleClass('active btn-primary');
 
             $checkbox.trigger("change");
-            $(this).tooltip('hide');
-        });
-
-        $('#all_rules_button').mouseleave(function(){
-            $('#all_rules_button').tooltip('hide')
         });
 
         // replace all "net" selectors with details retrieved from "list_network_select_options" endpoint
