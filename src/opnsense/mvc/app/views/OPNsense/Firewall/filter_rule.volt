@@ -333,6 +333,11 @@
                         const value = row["%" + column.id] || row[column.id] || "";
                         const isNegated = (row[column.id.replace('net', 'not')] == 1) ? "! " : "";
 
+                        // Internal rule source/destination can be an object, skip them
+                        if (typeof value !== 'string') {
+                            return '';
+                        }
+
                         if (!value || value === "any") {
                             return isNegated + '*';
                         }
