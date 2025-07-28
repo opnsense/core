@@ -41,6 +41,12 @@
             });
         }
 
+        // Show statistics columns when inspect button is checked
+        function updateStatisticColumns() {
+            const isChecked = $('#all_rules_checkbox').is(':checked');
+            grid.bootgrid(isChecked ? "setColumns" : "unsetColumns", ['evaluations', 'states', 'packets', 'bytes']);
+        }
+
         // Get all advanced fields, used for advanced mode tooltips
         const advancedFieldIds = "{{ advancedFieldIds }}".split(',');
 
@@ -556,10 +562,14 @@
         });
 
         $("#internal_rule_selector").detach().insertAfter("#type_filter_container");
+
         $('#all_rules_checkbox').change(function(){
-            const isChecked = $('#all_rules_checkbox').is(':checked');
-            grid.bootgrid(isChecked ? "setColumns" : "unsetColumns", ['evaluations', 'states', 'packets', 'bytes']);
+            updateStatisticColumns();
             grid.bootgrid("reload");
+        });
+
+        grid.on('loaded.rs.jquery.bootgrid', function () {
+            updateStatisticColumns();  // ensures columns are consistent after reload
         });
 
         $('#all_rules_button').click(function(){
