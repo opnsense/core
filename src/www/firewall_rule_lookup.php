@@ -30,6 +30,8 @@ require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("system.inc");
 
+use OPNsense\Firewall\Filter;
+
 $a_filter = &config_read_array('filter', 'rule');
 
 $fw = filter_core_get_initialized_plugin_system();
@@ -53,7 +55,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         header(url_safe('Location: /%s?if=%s&id=%s', [$parts['path'], $query['if'], $query['id']]));
                     }
                 } else {
-                    header(sprintf('Location: /%s', $rule->getRef()));
+                    // search model firewall rule
+                    $interface = '';
+                    foreach ((new Filter())->rules->rule->iterateItems() as $ruleItem) {
+                        if ($ruleItem->getAttribute('uuid') === $rid) {
+                            $interfaceValue = $ruleItem->interface->getValue();
+                            // multiple interfaces in a rule are skipped as empty string is the default for floating
+                            if ($interfaceValue !== '' && strpos($interfaceValue, ',') === false) {
+                                $interface = $interfaceValue;
+                            }
+                            break;
+                        }
+                    }
+
+                    $base = strtok($rule->getRef(), '#');
+                    $hash = url_safe('interface=%s&edit=%s', [$interface, $rid]);
+                    header("Location: /{$base}#{$hash}");
                 }
                 exit;
             }
