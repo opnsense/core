@@ -53,9 +53,6 @@
             }
         });
 
-        // Test if the UUID is valid, used to determine if automation model or internal rule
-        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-
         // Initialize grid
         const grid = $("#{{formGridFilterRule['table_id']}}").UIBootgrid({
             search:'/api/firewall/filter/search_rule/',
@@ -110,7 +107,7 @@
                         let rowId = row.uuid;
 
                         // If UUID is invalid, its an internal rule, use the #ref field to show a lookup button.
-                        if (!rowId || !uuidRegex.test(rowId)) {
+                        if (!rowId || !rowId.includes('-')) {
                             let ref = row["ref"] || "";
                             if (ref.trim().length > 0) {
                                 let url = `/${ref}`;
@@ -174,7 +171,7 @@
                             : "{{ lang._('Disabled') }}";
 
                         // For valid UUIDs, make it interactive
-                        if (rowId && uuidRegex.test(rowId)) {
+                        if (rowId && rowId.includes('-')) {
                             return `
                                 <span style="cursor: pointer;" class="fa fa-fw ${iconClass}
                                     command-toggle bootgrid-tooltip" data-value="${isEnabled ? 1 : 0}"
