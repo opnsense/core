@@ -157,35 +157,21 @@
                             </button>
                         `;
                     },
-                    // Show rowtoggle for all rules, but disable interaction for internal rules with no valid UUID
+                    // Disable rowtoggle for internal rules
                     rowtoggle: function (column, row) {
-                        let rowId = row.uuid;
-                        let isEnabled = parseInt(row[column.id], 2) === 1;
-
-                        let iconClass = isEnabled
-                            ? "fa-check-square-o"
-                            : "fa-square-o text-muted";
-
-                        let tooltipText = isEnabled
-                            ? "{{ lang._('Enabled') }}"
-                            : "{{ lang._('Disabled') }}";
-
-                        // For valid UUIDs, make it interactive
-                        if (rowId && rowId.includes('-')) {
-                            return `
-                                <span style="cursor: pointer;" class="fa fa-fw ${iconClass}
-                                    command-toggle bootgrid-tooltip" data-value="${isEnabled ? 1 : 0}"
-                                    data-row-id="${rowId}" title="${tooltipText}">
-                                </span>
-                            `;
+                        const rowId = row.uuid || '';
+                        if (!rowId.includes('-')) {
+                            return '';
                         }
 
-                        // For internal rules, show a non-interactive toggle
+                        const isEnabled = row[column.id] === "1";
+
                         return `
-                            <span style="opacity: 0.5"
-                                class="fa fa-fw ${iconClass} bootgrid-tooltip"
+                            <span class="fa fa-fw ${isEnabled ? 'fa-check-square-o' : 'fa-square-o text-muted'} bootgrid-tooltip command-toggle"
+                                style="cursor: pointer;"
                                 data-value="${isEnabled ? 1 : 0}"
-                                data-row-id="${rowId}" title="${tooltipText}">
+                                data-row-id="${rowId}"
+                                title="${isEnabled ? '{{ lang._("Enabled") }}' : '{{ lang._("Disabled") }}'}">
                             </span>
                         `;
                     },
