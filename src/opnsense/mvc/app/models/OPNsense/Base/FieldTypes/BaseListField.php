@@ -126,7 +126,7 @@ abstract class BaseListField extends BaseField
      */
     public function getNodeData()
     {
-        $this->getNodeOptions();
+        return $this->getNodeOptions();
     }
 
     /**
