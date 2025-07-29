@@ -208,7 +208,7 @@
                         `;
                     },
                     // Disable rowtoggle for internal rules
-                    rowtoggle: function (column, row) {
+                    rowtoggle: function (column, row, onRendered) {
                         if (row.isGroup) {           // <-- bucket row: do nothing
                             return "";
                         }
@@ -219,6 +219,13 @@
                         }
 
                         const isEnabled = row[column.id] === "1";
+
+                        onRendered((cell) => {
+                            const el = cell.getRow().getElement();
+                            if (!isEnabled) {
+                                el.style.opacity = "0.4";
+                            }
+                        });
 
                         return `
                             <span class="fa fa-fw ${isEnabled ? 'fa-check-square-o' : 'fa-square-o text-muted'} bootgrid-tooltip command-toggle"
@@ -308,9 +315,6 @@
                         }
 
                         let result = "";
-                        const iconStyle = (row.enabled == 0)
-                            ? 'style="opacity: 0.4; pointer-events: none;"'
-                            : '';
 
                         // Rule Type Icons (Determined by first digit of sort_order)
                         const ruleTypeIcons = {
@@ -327,52 +331,41 @@
                             const typeDigit = sortOrder.charAt(0);
                             if (ruleTypeIcons[typeDigit]) {
                                 result += `<i class="fa ${ruleTypeIcons[typeDigit].icon} fa-fw ${ruleTypeIcons[typeDigit].color}"
-                                            ${iconStyle} data-toggle="tooltip" title="${ruleTypeIcons[typeDigit].tooltip}"></i> `;
+                                            data-toggle="tooltip" title="${ruleTypeIcons[typeDigit].tooltip}"></i> `;
                             }
                         }
 
                         // Action
                         if (row.action.toLowerCase() === "block") {
-                            result += '<i class="fa fa-times fa-fw text-danger" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Block") }}"></i> ';
+                            result += '<i class="fa fa-times fa-fw text-danger" data-toggle="tooltip" title="{{ lang._("Block") }}"></i> ';
                         } else if (row.action.toLowerCase() === "reject") {
-                            result += '<i class="fa fa-times-circle fa-fw text-danger" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Reject") }}"></i> ';
+                            result += '<i class="fa fa-times-circle fa-fw text-danger" data-toggle="tooltip" title="{{ lang._("Reject") }}"></i> ';
                         } else {
-                            result += '<i class="fa fa-play fa-fw text-success" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Pass") }}"></i> ';
+                            result += '<i class="fa fa-play fa-fw text-success" data-toggle="tooltip" title="{{ lang._("Pass") }}"></i> ';
                         }
 
                         // Direction
                         if (row.direction.toLowerCase() === "in") {
-                            result += '<i class="fa fa-long-arrow-right fa-fw text-info" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("In") }}"></i> ';
+                            result += '<i class="fa fa-long-arrow-right fa-fw text-info" data-toggle="tooltip" title="{{ lang._("In") }}"></i> ';
                         } else if (row.direction.toLowerCase() === "out") {
-                            result += '<i class="fa fa-long-arrow-left fa-fw" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Out") }}"></i> ';
+                            result += '<i class="fa fa-long-arrow-left fa-fw" data-toggle="tooltip" title="{{ lang._("Out") }}"></i> ';
                         } else {
-                            result += '<i class="fa fa-exchange fa-fw" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Any") }}"></i> ';
+                            result += '<i class="fa fa-exchange fa-fw" data-toggle="tooltip" title="{{ lang._("Any") }}"></i> ';
                         }
 
                         // Quick match
                         if (row.quick == 0) {
-                            result += '<i class="fa fa-flash fa-fw text-muted" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Last match") }}"></i> ';
+                            result += '<i class="fa fa-flash fa-fw text-muted" data-toggle="tooltip" title="{{ lang._("Last match") }}"></i> ';
                         } else {
-                            // Default to "First match"
-                            result += '<i class="fa fa-flash fa-fw text-warning" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("First match") }}"></i> ';
+                            result += '<i class="fa fa-flash fa-fw text-warning" data-toggle="tooltip" title="{{ lang._("First match") }}"></i> ';
                         }
 
                         // XXX: Advanced fields all have different default values, so it cannot be generalized completely
                         const advancedDefaultPrefixes = ["0", "none", "any", "default", "keep"];
-
                         const usedAdvancedFields = [];
 
                         advancedFieldIds.forEach(function (fieldId) {
                             const value = row[fieldId];
-
                             if (value !== undefined) {
                                 const lowerValue = value.toString().toLowerCase().trim();
                                 // Check: if the value is empty OR starts with any default prefix, consider it default
@@ -398,8 +391,7 @@
                             tooltip = "{{ lang._('Advanced mode disabled') }}";
                         }
 
-                        result += `<i class="fa fa-cog fa-fw ${iconClass}" ${iconStyle}
-                                    data-toggle="tooltip" data-html="true" title="${tooltip}"></i>`;
+                        result += `<i class="fa fa-cog fa-fw ${iconClass}" data-toggle="tooltip" data-html="true" title="${tooltip}"></i>`;
 
                         // Return all icons
                         return result;
