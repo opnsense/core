@@ -338,7 +338,8 @@
                             return '';
                         }
 
-                        if (!value || value === "any") {
+                        // XXX: %source_port and %destination_port return "None" for some reason
+                        if (!value || value === "any" || value === "None") {
                             return isNegated + '*';
                         }
 
