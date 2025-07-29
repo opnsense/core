@@ -350,11 +350,17 @@ class UIBootgrid {
                     visible: def.visible
                 };
 
+                // wrap onRendered so we can provide the cell object
+                const cb = (fn) => {
+                    onRendered(fn(cell));
+                };
+
+                // always execute _onCellRendered
                 onRendered(() => {
                     this._onCellRendered(cell, formatterParams);
                 })
 
-                return formatterFn(column, cell.getData(), onRendered);
+                return formatterFn(column, cell.getData(), cb);
             }
         }
 
