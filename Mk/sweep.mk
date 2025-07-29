@@ -57,4 +57,4 @@ sweep-whitespace:
 .endif
 .endfor
 
-sweep: sweep-model sweep-php sweep-whitespace
+sweep: sweep-whitespace sweep-model sweep-php
