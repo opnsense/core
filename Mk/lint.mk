@@ -23,20 +23,31 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
+lint-desc:
+
 lint-shell:
-	@for FILE in $$(find ${.CURDIR}/src -name "*.sh" -type f); do \
+.for DIR in ${.CURDIR}/src
+.if exists(${DIR})
+	@for FILE in $$(find ${DIR} -name "*.sh" -type f); do \
 	    if [ "$$(head $${FILE} | grep -c '^#!\/')" == "0" ]; then \
 	        echo "Missing shebang in $${FILE}"; exit 1; \
 	    fi; \
 	    sh -n "$${FILE}" || exit 1; \
 	done
+.endif
+.endfor
 
 lint-xml:
-	@find ${.CURDIR}/src ${.CURDIR}/Scripts \
-	    -name "*.xml*" -type f -print0 | xargs -0 -n1 xmllint --noout
+.for DIR in ${.CURDIR}/src
+.if exists(${DIR})
+	@find ${DIR} -name "*.xml*" -type f -print0 | xargs -0 -n1 xmllint --noout
+.endif
+.endfor
 
 lint-model:
-	@for MODEL in $$(find ${.CURDIR}/src/opnsense/mvc/app/models -depth 3 \
+.for DIR in ${.CURDIR}/src/opnsense/mvc/app/models
+.if exists(${DIR})
+	@for MODEL in $$(find ${DIR} -depth 3 \
 	    -name "*.xml"); do \
 		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and (not(Required) or Required="N") and Default]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
 			echo "$${MODEL}: $${LINE} has a spurious default value set"; \
@@ -77,9 +88,13 @@ lint-model:
 			echo "$${MODEL}: $${LINE} does not end with a dot"; \
 		done; \
 	done
+.endif
+.endfor
+
+ACLDIR?=	${.CURDIR}/Scripts
 
 lint-acl:
-	@${.CURDIR}/Scripts/dashboard-acl.sh
+	@${ACLDIR}/dashboard-acl.sh ${ACLDIR}/..
 
 SCRIPTDIRS!=	find ${.CURDIR}/src/opnsense/scripts -type d -depth 1
 
@@ -96,6 +111,24 @@ lint-exec:
 LINTBIN?=	${.CURDIR}/contrib/parallel-lint/parallel-lint
 
 lint-php:
-	@${LINTBIN} src
+.for DIR in ${.CURDIR}/src
+.if exists(${DIR})
+	@${LINTBIN} ${DIR}
+.endif
+.endfor
 
-lint: plist-check lint-shell lint-xml lint-model lint-acl lint-exec lint-php
+lint-plist:
+.if exists(${.CURDIR}/plist)
+	@mkdir -p ${WRKDIR}
+	@${CORE_MAKE} DESTDIR=${DESTDIR} plist > ${WRKDIR}/plist.new
+	@cat ${.CURDIR}/plist > ${WRKDIR}/plist.old
+	@if ! cmp -s ${WRKDIR}/plist.old ${WRKDIR}/plist.new; then \
+		diff -u ${WRKDIR}/plist.old ${WRKDIR}/plist.new || true; \
+		echo ">>> Package file lists do not match.  Please run 'make plist-fix'." >&2; \
+		rm ${WRKDIR}/plist.*; \
+		exit 1; \
+	fi
+	@rm ${WRKDIR}/plist.*
+.endif
+
+lint: lint-plist lint-desc lint-shell lint-xml lint-model lint-acl lint-exec lint-php

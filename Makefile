@@ -317,18 +317,6 @@ plist:
 plist-fix:
 	@${CORE_MAKE} DESTDIR=${DESTDIR} plist > ${.CURDIR}/plist
 
-plist-check:
-	@mkdir -p ${WRKDIR}
-	@${CORE_MAKE} DESTDIR=${DESTDIR} plist > ${WRKDIR}/plist.new
-	@cat ${.CURDIR}/plist > ${WRKDIR}/plist.old
-	@if ! cmp -s ${WRKDIR}/plist.old ${WRKDIR}/plist.new; then \
-		diff -u ${WRKDIR}/plist.old ${WRKDIR}/plist.new || true; \
-		echo ">>> Package file lists do not match.  Please run 'make plist-fix'." >&2; \
-		rm ${WRKDIR}/plist.*; \
-		exit 1; \
-	fi
-	@rm ${WRKDIR}/plist.*
-
 metadata:
 	@mkdir -p ${DESTDIR}
 	@${CORE_MAKE} DESTDIR=${DESTDIR} scripts
@@ -341,7 +329,7 @@ package-check:
 		exit 1; \
 	fi
 
-package: plist-check manifest-check package-check clean-wrksrc
+package: lint-plist manifest-check package-check clean-wrksrc
 .for CORE_DEPEND in ${CORE_DEPENDS}
 	@if ! ${PKG} info ${CORE_DEPEND} > /dev/null; then ${PKG} install -yfA ${CORE_DEPEND}; fi
 .endfor
