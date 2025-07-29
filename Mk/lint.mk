@@ -23,6 +23,8 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
+COREREFDIR?=	${.CURDIR}
+
 lint-desc:
 
 lint-shell:
@@ -91,12 +93,10 @@ lint-model:
 .endif
 .endfor
 
-ACLDIR?=	${.CURDIR}/Scripts
-
 lint-acl:
-	@${ACLDIR}/dashboard-acl.sh ${ACLDIR}/..
+	@${COREREFDIR}/Scripts/dashboard-acl.sh ${COREREFDIR}
 
-SCRIPTDIRS!=	find ${.CURDIR}/src/opnsense/scripts -type d -depth 1
+SCRIPTDIRS!=	if [ -d ${.CURDIR}/src/opnsense/scripts ]; then find ${.CURDIR}/src/opnsense/scripts -type d -depth 1; fi
 
 lint-exec:
 .for DIR in ${.CURDIR}/src/etc/rc.d ${.CURDIR}/src/etc/rc.syshook.d ${SCRIPTDIRS}
@@ -108,12 +108,10 @@ lint-exec:
 .endif
 .endfor
 
-LINTBIN?=	${.CURDIR}/contrib/parallel-lint/parallel-lint
-
 lint-php:
 .for DIR in ${.CURDIR}/src
 .if exists(${DIR})
-	@${LINTBIN} ${DIR}
+	@${COREREFDIR}/contrib/parallel-lint/parallel-lint ${DIR}
 .endif
 .endfor
 
