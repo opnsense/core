@@ -246,7 +246,9 @@
                     },
                     category: function (column, row) {
                         if (!row.categories || !Array.isArray(row.category_colors)) {
-                            return row.isGroup ? "{{ lang._('No Category') }}" : '';
+                            return row.isGroup
+                                ? `<span class="category-icon"><i class="fa fa-fw fa-tag"></i></span>`
+                                : '';
                         }
 
                         const categories = (row["%categories"] || row.categories).split(',');
@@ -255,12 +257,11 @@
                         const icons = categories.map((cat, index) => {
                             const color = colors[index];
                             return `<span class="category-icon" data-toggle="tooltip" title="${cat}">
-                                        <i class="fas fa-circle" style="color: ${color};"></i>
+                                        <i class="fa fa-fw fa-tag" style="color: ${color};"></i>
                                     </span>`;
                         }).join(' ');
 
-                        // Add category label in brackets after the icons (bucket rows only)
-                        return row.isGroup ? `${icons} ${categories.join(', ')}` : icons;
+                        return row.isGroup ? `${icons} (${categories.join(', ')})` : icons;
                     },
                     interfaces: function(column, row) {
                         if (row.isGroup) {           // <-- bucket row: do nothing
