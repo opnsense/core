@@ -29,6 +29,8 @@ all:
 .include "Mk/defaults.mk"
 .include "Mk/git.mk"
 .include "Mk/lint.mk"
+.include "Mk/style.mk"
+.include "Mk/sweep.mk"
 .include "Mk/version.mk"
 
 .for REPLACEMENT in ABI PHP PYTHON
@@ -361,51 +363,7 @@ upgrade: upgrade-check clean-pkgdir package
 	@${PKG} add ${PKGDIR}/*.pkg
 	@${.CURDIR}/src/sbin/pluginctl -c webgui
 
-sweep:
-	find ${.CURDIR}/src ! -name "*.min.*" ! -name "*.svg" \
-	    ! -name "*.ser" -type f -print0 | \
-	    xargs -0 -n1 ${.CURDIR}/Scripts/cleanfile
-	find ${.CURDIR}/Scripts ${.CURDIR}/.github -type f -print0 | \
-	    xargs -0 -n1 ${.CURDIR}/Scripts/cleanfile
-	find ${.CURDIR} -type f -depth 1 -print0 | \
-	    xargs -0 -n1 ${.CURDIR}/Scripts/cleanfile
-
-STYLEDIRS?=	src/etc/inc src/opnsense
-
-style-python: debug
-	@pycodestyle-${CORE_PYTHON_DOT} --ignore=E501 ${.CURDIR}/src || true
-
-style-php: debug
-	@: > ${WRKDIR}/style.out
-.for STYLEDIR in ${STYLEDIRS}
-	@(phpcs --standard=ruleset.xml ${.CURDIR}/${STYLEDIR} \
-	    || true) >> ${WRKDIR}/style.out
-.endfor
-	@echo -n "Total number of style warnings: "
-	@grep '| WARNING' ${WRKDIR}/style.out | wc -l
-	@echo -n "Total number of style errors:   "
-	@grep '| ERROR' ${WRKDIR}/style.out | wc -l
-	@cat ${WRKDIR}/style.out | ${PAGER}
-	@rm ${WRKDIR}/style.out
-
-style-fix: style-model debug
-.for STYLEDIR in ${STYLEDIRS}
-	phpcbf --standard=ruleset.xml ${.CURDIR}/${STYLEDIR} || true
-.endfor
-
-style-model:
-	@for MODEL in $$(find ${.CURDIR}/src/opnsense/mvc/app/models -depth 3 \
-	    -name "*.xml"); do \
-		perl -i -pe 's/<default>(.*?)<\/default>/<Default>$$1<\/Default>/g' $${MODEL}; \
-		perl -i -pe 's/<multiple>(.*?)<\/multiple>/<Multiple>$$1<\/Multiple>/g' $${MODEL}; \
-		perl -i -pe 's/<required>(.*?)<\/required>/<Required>$$1<\/Required>/g' $${MODEL}; \
-		perl -i -pe 's/<mask>(.*?)<\/mask>/<Mask>$$1<\/Mask>/g' $${MODEL}; \
-		perl -i -pe 's/<asList>(.*?)<\/asList>/<AsList>$$1<\/AsList>/g' $${MODEL}; \
-	done
-
-style: style-python style-php
-
-glint: sweep style-fix plist-fix lint
+glint: sweep plist-fix lint
 
 license: debug
 	@${.CURDIR}/Scripts/license > ${.CURDIR}/LICENSE

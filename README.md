@@ -106,17 +106,6 @@ before issuing a pull request on GitHub.
 make style
 ----------
 
-Run the PSR12 and PEP8 style checks on MVC PHP code and Python,
-respectively.
-For php code you will need to have `phpcs` and `phpcbf` installed.
-
-You can use the package `php-codesniffer` on Debian/Ubuntu.
-Python code will require `pycodestyle`.
-
-For easier development you may want to use an OPNsense VM and install
-the `os-debug` plugin that will offer the necessary tools.
-
-make sweep
-----------
-
-Run Linux Kernel cleanfile whitespace sanitiser on all files.
+Run PSR12 and PEP8 style checks on MVC PHP code and Python, respectively.
+For easier development you may want to use an OPNsense VM and install the
+`os-debug` plugin that will offer the necessary tools.
