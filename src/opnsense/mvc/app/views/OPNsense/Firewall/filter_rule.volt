@@ -108,7 +108,7 @@
                         // start a new bucket whenever the label changes
                         if (!current || current._label !== label) {
                             current = {
-                                uuid           : `grp-${label}-${buckets.length}`,
+                                uuid           : `bucket${buckets.length}`,
                                 isGroup        : true,
                                 _label         : label,          // internal
                                 children       : []
@@ -253,29 +253,39 @@
                             return '*';
                         }
                     },
-                    category: function (column, row) {
-                        if (!row.categories || !Array.isArray(row.category_colors)) {
-                            return row.isGroup
-                                ? `<span class="category-icon">
-                                    <i class="fa fa-fw fa-tag" style="opacity: 0.8;"></i> {{ lang._('Default') }}</span>`
+                    // The category formatter is special as it renders differently for the bucket row
+                    category: function (column, row, onRendered) {
+                        const isGroup = row.isGroup;
+                        const hasCategories = row.categories && Array.isArray(row.category_colors);
+
+                        if (isGroup) {
+                            onRendered(cell => {
+                                cell.getRow().getElement().classList.add('bucket-row');
+                            });
+                        }
+
+                        if (!hasCategories) {
+                            return isGroup
+                                ? `<span class="category-icon category-cell">
+                                        <i class="fa fa-fw fa-tag" style="opacity: 0.8;"></i>
+                                        {{ lang._('Default') }}
+                                </span>`
                                 : '';
                         }
 
                         const categories = (row["%categories"] || row.categories).split(',');
-                        const colors = row.category_colors;
+                        const colors     = row.category_colors;
 
-                        const icons = categories.map((cat, index) => {
-                            const color = colors[index];
-                            return `<span class="category-icon" data-toggle="tooltip" title="${cat}">
-                                        <i class="fa fa-fw fa-tag" style="color: ${color};"></i>
-                                    </span>`;
-                        }).join(' ');
+                        const icons = categories.map((cat, idx) => `
+                            <span class="category-icon" data-toggle="tooltip" title="${cat}">
+                                <i class="fa fa-fw fa-tag" style="color:${colors[idx]};"></i>
+                            </span>`).join(' ');
 
-                        if (row.isGroup) {
-                            return `<span class="category-group-row">${icons} ${categories.join(', ')}</span>`;
-                        }
-
-                        return icons;
+                            return isGroup
+                                ? `<span class="category-cell">
+                                        <span class="category-cell-content">${icons} ${categories.join(', ')}</span>
+                                </span>`
+                                : icons;
                     },
                     interfaces: function(column, row) {
                         if (row.isGroup) {           // <-- bucket row: do nothing
@@ -782,6 +792,19 @@
         font-size: 12px;
         padding: 2px 5px;
     }
+
+    /* Custom styles for the bucket-row that hide all column lines and let the text break out of its cell */
+    .bucket-row .tabulator-cell{
+        border-right: none !important;
+        box-shadow: none !important;
+    }
+
+    .bucket-row .tabulator-cell[tabulator-field="categories"]{
+        overflow     : visible !important;
+        white-space  : nowrap  !important;
+        text-overflow: clip    !important;
+    }
+
 </style>
 
 <div class="tab-content content-box">
