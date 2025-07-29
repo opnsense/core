@@ -1,14 +1,14 @@
 <model>
     <mount>/bridges</mount>
     <version>1.0.0</version>
-    <description>Bridge interfaces</description>
+    <description>Bridge devices</description>
     <items>
         <bridged type="ArrayField">
             <bridgeif type="TextField">
                 <Required>Y</Required>
                 <Constraints>
                     <check001>
-                        <ValidationMessage>Bridge already exists!</ValidationMessage>
+                        <ValidationMessage>Bridge device already exists.</ValidationMessage>
                         <type>UniqueConstraint</type>
                     </check001>
                 </Constraints>

@@ -8,7 +8,7 @@
                 <Required>Y</Required>
                 <Constraints>
                     <check001>
-                        <ValidationMessage>Group name already exists!</ValidationMessage>
+                        <ValidationMessage>Group name already exists.</ValidationMessage>
                         <type>UniqueConstraint</type>
                     </check001>
                 </Constraints>
@@ -21,7 +21,7 @@
             <sequence type="IntegerField">
                 <MinimumValue>0</MinimumValue>
                 <MaximumValue>9999</MaximumValue>
-                <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
+                <ValidationMessage>Provide a valid sequence number for sorting.</ValidationMessage>
                 <Required>Y</Required>
                 <Default>0</Default>
             </sequence>

@@ -1,7 +1,7 @@
 <model>
     <mount>/gifs</mount>
     <version>1.0.0</version>
-    <description>GIF interfaces</description>
+    <description>GIF devices</description>
     <items>
         <gif type="ArrayField">
             <local-addr type=".\LinkAddressField" volatile="true">
@@ -18,7 +18,7 @@
                 <Required>Y</Required>
                 <Constraints>
                     <check001>
-                        <ValidationMessage>Gif already exists!</ValidationMessage>
+                        <ValidationMessage>GIF device already exists.</ValidationMessage>
                         <type>UniqueConstraint</type>
                     </check001>
                 </Constraints>
