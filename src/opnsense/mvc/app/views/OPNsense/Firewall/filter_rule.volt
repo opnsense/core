@@ -69,7 +69,7 @@
             toggle:'/api/firewall/filter/toggle_rule/',
             options: {
                 responsive: true,
-                rowCount: [20,50,100,200,500,1000],
+                rowCount: [-1],
                 requestHandler: function(request){
                     // Add category selectpicker
                     if ( $('#category_filter').val().length > 0) {
@@ -86,6 +86,47 @@
                     }
                     return request;
                 },
+                // tell Tabulator to render a tree
+                treeView           : true,
+                treeChildField     : "children",
+                treeStartExpanded  : true,
+                treeElementColumn  : "categories",
+
+                // convert the flat rows into a tree view
+                responseHandler : function (resp) {
+
+                    resp.rows.sort((a,b)=> (+a.sequence) - (+b.sequence));
+
+                    const buckets = [];
+                    let current   = null;
+
+                    resp.rows.forEach(r => {
+
+                        // readable label used for grouping
+                        const label = (r["%categories"] || r.categories || "");
+
+                        // start a new bucket whenever the label changes
+                        if (!current || current._label !== label) {
+                            current = {
+                                uuid           : `grp-${label}-${buckets.length}`,
+                                isGroup        : true,
+                                _label         : label,          // internal
+                                children       : []
+                            };
+
+                            // copy the category info from the first child to use as parent
+                            current.categories      = label;
+                            current.category_colors = r.category_colors || [];
+
+                            buckets.push(current);
+                        }
+
+                        current.children.push(r);
+                    });
+
+                    return Object.assign({}, resp, { rows : buckets });
+                },
+
                 headerFormatters: {
                     enabled: function (column) { return "" },
                     interface: function (column) {
@@ -110,6 +151,9 @@
                 formatters:{
                     // Only show command buttons for rules that have a uuid, internal rules will not have one
                     commands: function (column, row) {
+                        if (row.isGroup) {           // <-- bucket row: do nothing
+                            return "";
+                        }
                         let rowId = row.uuid;
 
                         // If UUID is invalid, its an internal rule, use the #ref field to show a lookup button.
@@ -165,6 +209,10 @@
                     },
                     // Disable rowtoggle for internal rules
                     rowtoggle: function (column, row) {
+                        if (row.isGroup) {           // <-- bucket row: do nothing
+                            return "";
+                        }
+
                         const rowId = row.uuid || '';
                         if (!rowId.includes('-')) {
                             return '';
@@ -182,6 +230,10 @@
                         `;
                     },
                     any: function(column, row) {
+                        if (row.isGroup) {           // <-- bucket row: do nothing
+                            return "";
+                        }
+
                         if (
                             row[column.id] !== '' &&
                             row[column.id] !== 'any' &&
@@ -194,7 +246,7 @@
                     },
                     category: function (column, row) {
                         if (!row.categories || !Array.isArray(row.category_colors)) {
-                            return '';
+                            return row.isGroup ? "{{ lang._('No Category') }}" : '';
                         }
 
                         const categories = (row["%categories"] || row.categories).split(',');
@@ -208,6 +260,10 @@
                         }).join(' ');
                     },
                     interfaces: function(column, row) {
+                        if (row.isGroup) {           // <-- bucket row: do nothing
+                            return "";
+                        }
+
                         const interfaces = row["%" + column.id] || row[column.id] || "";
 
                         if (interfaces === "") {
@@ -231,6 +287,10 @@
                     },
                     // Icons
                     ruleIcons: function(column, row) {
+                        if (row.isGroup) {           // <-- bucket row: do nothing
+                            return "";
+                        }
+
                         let result = "";
                         const iconStyle = (row.enabled == 0)
                             ? 'style="opacity: 0.4; pointer-events: none;"'
@@ -330,6 +390,10 @@
                     },
                     // Show Edit alias icon and integrate "not" functionality
                     alias: function(column, row) {
+                        if (row.isGroup) {           // <-- bucket row: do nothing
+                            return "";
+                        }
+
                         const value = row["%" + column.id] || row[column.id] || "";
                         const isNegated = (row[column.id.replace('net', 'not')] == 1) ? "! " : "";
 
