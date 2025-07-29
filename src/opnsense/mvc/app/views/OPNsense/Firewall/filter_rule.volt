@@ -128,7 +128,9 @@
                 },
 
                 headerFormatters: {
-                    enabled: function (column) { return "" },
+                    enabled: function (column) {
+                        return '<input type="checkbox" disabled style="pointer-events: none;" />';
+                    },
                     interface: function (column) {
                         return '<i class="fa-solid fa-fw fa-network-wired" data-toggle="tooltip" data-placement="right" title="{{ lang._('Network Interface') }}"></i>';
                     },
@@ -145,7 +147,7 @@
                         return '<i class="fa-solid fa-fw fa-database" data-toggle="tooltip" data-placement="left" title="{{ lang._('Total bytes matched by this rule') }}"></i>';
                     },
                     categories: function (column) {
-                        return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" data-placement="left" title="{{ lang._('Categories') }}"></i>';
+                        return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" data-placement="left" title="{{ lang._("Categories") }}"></i> {{ lang._("Categories") }}';
                     }
                 },
                 formatters:{
