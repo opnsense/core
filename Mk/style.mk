@@ -25,14 +25,14 @@
 
 STYLEDIRS=	${.CURDIR}/src/etc/inc ${.CURDIR}/src/opnsense
 
-style-python: debug
+style-python:
 	@pycodestyle-${CORE_PYTHON_DOT} --ignore=E501 ${.CURDIR}/src || true
 
-style-php: debug
+style-php:
 	@: > ${WRKDIR}/style.out
 .for DIR in ${STYLEDIRS}
 .if exists(${DIR})
-	@(phpcs --standard=ruleset.xml ${DIR} || true) >> ${WRKDIR}/style.out
+	@(phpcs --standard=${COREREFDIR}/ruleset.xml ${DIR} || true) >> ${WRKDIR}/style.out
 .endif
 .endfor
 	@echo -n "Total number of style warnings: "

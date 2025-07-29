@@ -23,42 +23,5 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-sweep-model:
-.for DIR in ${.CURDIR}/src/opnsense/mvc/app/models
-.if exists(${DIR})
-	@for MODEL in $$(find ${DIR} -depth 3 \
-	    -name "*.xml"); do \
-		perl -i -pe 's/<default>(.*?)<\/default>/<Default>$$1<\/Default>/g' $${MODEL}; \
-		perl -i -pe 's/<multiple>(.*?)<\/multiple>/<Multiple>$$1<\/Multiple>/g' $${MODEL}; \
-		perl -i -pe 's/<required>(.*?)<\/required>/<Required>$$1<\/Required>/g' $${MODEL}; \
-		perl -i -pe 's/<mask>(.*?)<\/mask>/<Mask>$$1<\/Mask>/g' $${MODEL}; \
-		perl -i -pe 's/<asList>(.*?)<\/asList>/<AsList>$$1<\/AsList>/g' $${MODEL}; \
-	done
-.endif
-.endfor
-
-sweep-php:
-.for DIR in ${STYLEDIRS}
-.if exists(${DIR})
-	phpcbf --standard=${COREREFDIR}/ruleset.xml ${DIR} || true
-.endif
-.endfor
-
-sweep-whitespace:
-.for DIR in ${.CURDIR}/src
-.if exists(${DIR})
-	find ${DIR} ! -name "*.min.*" ! -name "*.svg" \
-	    ! -name "*.ser" -type f -print0 | \
-	    xargs -0 -n1 ${COREREFDIR}/Scripts/cleanfile
-.endif
-.endfor
-.for DIR in ${.CURDIR}/Scripts ${.CURDIR}/.github
-.if exists(${DIR})
-	find ${DIR} -type f -print0 | \
-	    xargs -0 -n1 ${COREREFDIR}/Scripts/cleanfile
-.endif
-.endfor
-	find ${.CURDIR} -type f -depth 1 -print0 | \
-	    xargs -0 -n1 ${COREREFDIR}/Scripts/cleanfile
-
-sweep: sweep-whitespace sweep-model sweep-php
+# pin the core reference directory from the parse directory of this file
+COREREFDIR:=	${.PARSEDIR}/..

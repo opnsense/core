@@ -27,6 +27,7 @@ all:
 	@cat ${.CURDIR}/README.md | ${PAGER}
 
 .include "Mk/defaults.mk"
+.include "Mk/common.mk"
 .include "Mk/git.mk"
 .include "Mk/lint.mk"
 .include "Mk/style.mk"
@@ -216,9 +217,6 @@ PKGDIR?=${WRKDIR}/pkg
 WRKSRC?=${WRKDIR}/src
 TESTDIR?=${.CURDIR}/src/opnsense/mvc/tests
 
-debug:
-	@${VERSIONBIN} ${@} > /dev/null
-
 mount:
 	@if [ ! -f ${WRKDIR}/.mount_done ]; then \
 	    echo -n "Enabling core.git live mount..."; \
@@ -363,10 +361,12 @@ upgrade: upgrade-check clean-pkgdir package
 
 glint: sweep plist-fix lint
 
-license: debug
+license:
 	@${.CURDIR}/Scripts/license > ${.CURDIR}/LICENSE
 
 sync: license plist-fix
+
+.PHONY: license plist-fix sync
 
 migrate:
 	@src/opnsense/mvc/script/run_migrations.php
@@ -374,7 +374,7 @@ migrate:
 validate:
 	@src/opnsense/mvc/script/run_validations.php
 
-test: debug
+test:
 	@if [ "$$(${VERSIONBIN} -v)" != "${CORE_PKGVERSION}" ]; then \
 		echo "Installed version does not match, expected ${CORE_PKGVERSION}"; \
 		exit 1; \
