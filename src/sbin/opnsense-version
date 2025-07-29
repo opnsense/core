@@ -137,7 +137,7 @@ if [ -n "${DO_RAW}" ]; then
 	FILE=${DO_RAW#"-R "}
 
 	if [ -f "${FILE}" ]; then
-		SED_REPLACE=$(set | grep -e '^CORE_' -e '^PLUGINS_' | sed -e 's/^\([CP][A-Z_]*\)='"'"*'\([^'"'"']*\)'"'"*'/-e "s=%%\1%%=\2=g"/g')
+		SED_REPLACE=$(set | grep -e '^CORE_' -e '^PLUGIN_' | sed -e 's/^\([CP][A-Z_]*\)='"'"*'\([^'"'"']*\)'"'"*'/-e "s=%%\1%%=\2=g"/g')
 		eval SED_REPLACE='$'"{SED_REPLACE}"
 		cat ${FILE} | eval sed ${SED_REPLACE}
 		exit 0
