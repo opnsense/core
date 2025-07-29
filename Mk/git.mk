@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-ARGS=	diff feed mfc
+ARGS=	diff feed mlog slog mfc
 
 # handle argument expansion for required targets
 .for TARGET in ${.TARGETS}
@@ -93,8 +93,11 @@ reset:
 	@git reset --hard HEAD~1
 	@git checkout ${CORE_MAIN}
 
-log: ensure-stable
-	@git log --stat -p ${CORE_STABLE}
+mlog:
+	@git log --stat -p ${CORE_MAIN} ${mlog_ARGS}
+
+slog: ensure-stable
+	@git log --stat -p ${CORE_STABLE} ${slog_ARGS}
 
 pull:
 	@git checkout ${CORE_STABLE}
