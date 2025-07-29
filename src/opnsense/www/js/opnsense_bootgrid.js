@@ -467,6 +467,7 @@ class UIBootgrid {
                     sequence: data.sequence ?? null,
                     width: val.width,
                     editable: false,
+                    sortable: data.sortable ?? true
                 }
             }
         }
@@ -534,6 +535,7 @@ class UIBootgrid {
                     cssClass: this.options.responsive ? 'opnsense-bootgrid-responsive' : '',
                     variableHeight: true,
                     sorter: this.options.sorters[field.type] ?? null,
+                    headerSort: field.sortable
                 };
             }
 
