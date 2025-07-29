@@ -151,7 +151,6 @@ class Helpers(object):
             result.append(self.getNodeByTag('interfaces.'+name+'.if'))
         return list(filter(None, result))
 
-
     def host_for_port(self, host_tag: str):
         return self.host_with_port(
             host_tag=host_tag,
