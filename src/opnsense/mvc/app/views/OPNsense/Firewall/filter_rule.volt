@@ -69,7 +69,7 @@
             toggle:'/api/firewall/filter/toggle_rule/',
             options: {
                 responsive: true,
-                rowCount: [-1],
+                rowCount: [-1], // Tabulator tree view does not support pagination
                 requestHandler: function(request){
                     // Add category selectpicker
                     if ( $('#category_filter').val().length > 0) {
@@ -252,12 +252,15 @@
                         const categories = (row["%categories"] || row.categories).split(',');
                         const colors = row.category_colors;
 
-                        return categories.map((cat, index) => {
-                            const color = colors[index]
+                        const icons = categories.map((cat, index) => {
+                            const color = colors[index];
                             return `<span class="category-icon" data-toggle="tooltip" title="${cat}">
                                         <i class="fas fa-circle" style="color: ${color};"></i>
                                     </span>`;
                         }).join(' ');
+
+                        // Add category label in brackets after the icons (bucket rows only)
+                        return row.isGroup ? `${icons} ${categories.join(', ')}` : icons;
                     },
                     interfaces: function(column, row) {
                         if (row.isGroup) {           // <-- bucket row: do nothing
