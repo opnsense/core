@@ -43,14 +43,14 @@ class ConfigdProxyOverrideStatus extends AbstractStatus
         $this->internalScope = [
             '/ui/core/hasync',
             '/ui/core/firmware',
-            '/ui/opncentral/host/admin'
+            '/ui/opncentral/host/admin',
         ];
     }
 
     public function collectStatus()
     {
         // https://docs.opnsense.org/development/backend/configd.html
-        foreach (glob('/usr/local/opnsense/service/conf/configd.conf.d/'. '*') as $file) {
+        foreach (glob('/usr/local/opnsense/service/conf/configd.conf.d/*') as $file) {
             $contents = @file_get_contents($file);
             if ($contents !== false && stripos($contents, '_PROXY=') !== false) {
                 $this->internalMessage = gettext(
