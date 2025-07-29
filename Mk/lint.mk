@@ -69,6 +69,9 @@ lint-model:
 				echo "$${MODEL}: $${LINE} AsList=N is the default"; \
 			done; \
 		done; \
+		(xmllint $${MODEL} --xpath '//ValidationMessage[not(substring(., string-length(.), 1) = ".")]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
+			echo "$${MODEL}: $${LINE} does not end with a dot"; \
+		done; \
 	done
 
 lint-acl:
@@ -92,4 +95,3 @@ lint-php:
 	@${LINTBIN} src
 
 lint: plist-check lint-shell lint-xml lint-model lint-acl lint-exec lint-php
-
