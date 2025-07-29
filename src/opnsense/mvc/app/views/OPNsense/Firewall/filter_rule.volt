@@ -253,7 +253,7 @@
                             return '*';
                         }
                     },
-                    category: function (column, row, onRendered) {
+                    category: function (column, row) {
                         if (!row.categories || !Array.isArray(row.category_colors)) {
                             return row.isGroup
                                 ? `<span class="category-icon">
@@ -272,14 +272,7 @@
                         }).join(' ');
 
                         if (row.isGroup) {
-                            onRendered((cell) => {
-                                const el = cell.getRow().getElement();
-                                if (colors[0]) {
-                                    el.classList.add("category-group-row");
-                                    el.style.setProperty('--category-color', colors[0] || '#000');
-                                }
-                            });
-                            return `${icons} ${categories.join(', ')}`;
+                            return `<span class="category-group-row">${icons} ${categories.join(', ')}</span>`;
                         }
 
                         return icons;
@@ -788,17 +781,6 @@
     .badge-sm {
         font-size: 12px;
         padding: 2px 5px;
-    }
-    .category-group-row::before {
-        content: "";
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background-color: var(--category-color, #000);
-        opacity: 0.1;
-    }
-    .category-group-row {
-        position: relative;
     }
 </style>
 
