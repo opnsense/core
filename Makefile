@@ -27,6 +27,7 @@ all:
 	@cat ${.CURDIR}/README.md | ${PAGER}
 
 .include "Mk/defaults.mk"
+.include "Mk/git.mk"
 .include "Mk/lint.mk"
 .include "Mk/version.mk"
 
@@ -411,89 +412,6 @@ license: debug
 
 sync: license plist-fix
 
-ARGS=	diff feed mfc
-
-# handle argument expansion for required targets
-.for TARGET in ${.TARGETS}
-_TARGET=		${TARGET:C/\-.*//}
-.if ${_TARGET} != ${TARGET}
-.for ARGUMENT in ${ARGS}
-.if ${_TARGET} == ${ARGUMENT}
-${_TARGET}_ARGS+=	${TARGET:C/^[^\-]*(\-|\$)//:S/,/ /g}
-${TARGET}: ${_TARGET}
-.endif
-.endfor
-${_TARGET}_ARG=		${${_TARGET}_ARGS:[0]}
-.endif
-.endfor
-
-ensure-stable:
-	@if ! git show-ref --verify --quiet refs/heads/${CORE_STABLE}; then \
-		git update-ref refs/heads/${CORE_STABLE} refs/remotes/origin/${CORE_STABLE}; \
-		git config branch.${CORE_STABLE}.merge refs/heads/${CORE_STABLE}; \
-		git config branch.${CORE_STABLE}.remote origin; \
-	fi
-
-diff: ensure-stable
-	@if [ "$$(git tag -l | grep -cx '${diff_ARGS:[1]}')" = "1" ]; then \
-		git diff --stat -p ${diff_ARGS:[1]}; \
-	else \
-		git diff --stat -p ${CORE_STABLE} ${.CURDIR}/${diff_ARGS:[1]}; \
-	fi
-
-feed: ensure-stable
-	@git log --stat -p --reverse ${CORE_STABLE}...${feed_ARGS:[1]}~1
-
-mfc: ensure-stable clean
-.for MFC in ${mfc_ARGS}
-.if exists(${MFC})
-	@cp -r ${MFC} ${MFCDIR}
-	@git checkout ${CORE_STABLE}
-	@rm -rf ${MFC}
-	@mkdir -p $$(dirname ${MFC})
-	@mv ${MFCDIR}/$$(basename ${MFC}) ${MFC}
-	@git add -f .
-	@if ! git diff --quiet HEAD; then \
-		git commit -m "${MFC}: sync with ${CORE_MAIN}"; \
-	fi
-.else
-	@git checkout ${CORE_STABLE}
-	@if ! git cherry-pick -x ${MFC}; then \
-		git cherry-pick --abort; \
-	fi
-.endif
-	@git checkout ${CORE_MAIN}
-.endfor
-
-stable:
-	@git checkout ${CORE_STABLE}
-
-${CORE_MAINS}:
-	@git checkout ${CORE_MAIN}
-
-rebase:
-	@git checkout ${CORE_STABLE}
-	@git rebase -i
-	@git checkout ${CORE_MAIN}
-
-reset:
-	@git checkout ${CORE_STABLE}
-	@git reset --hard HEAD~1
-	@git checkout ${CORE_MAIN}
-
-log: ensure-stable
-	@git log --stat -p ${CORE_STABLE}
-
-pull:
-	@git checkout ${CORE_STABLE}
-	@git pull
-	@git checkout ${CORE_MAIN}
-
-push:
-	@git checkout ${CORE_STABLE}
-	@git push
-	@git checkout ${CORE_MAIN}
-
 migrate:
 	@src/opnsense/mvc/script/run_migrations.php
 
@@ -508,12 +426,6 @@ test: debug
 	@cd ${TESTDIR} && phpunit || true; rm -rf ${TESTDIR}/.phpunit.result.cache \
 	    ${TESTDIR}/app/models/OPNsense/ACL/AclConfig/backup; \
 	    git checkout -f ${TESTDIR}/app/models/OPNsense/ACL/AclConfig/config.xml
-
-
-checkout:
-	@${GIT} reset -q ${.CURDIR}/src && \
-	    ${GIT} checkout -f ${.CURDIR}/src && \
-	    ${GIT} clean -xdqf ${.CURDIR}/src
 
 clean-pkgdir:
 	@rm -rf ${PKGDIR}
