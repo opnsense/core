@@ -23,7 +23,8 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-COREREFDIR?=	${.CURDIR}
+# pin the core reference directory from the parse directory of this file
+COREREFDIR:=	${.PARSEDIR}/..
 
 lint-desc:
 
