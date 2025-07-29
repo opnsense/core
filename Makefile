@@ -211,12 +211,6 @@ CORE_CONFLICTS+=	${CONFLICT}-devel
 # assume conflicts are just for plugins
 CORE_CONFLICTS:=	${CORE_CONFLICTS:S/^/os-/g:O}
 
-WRKDIR?=${.CURDIR}/work
-MFCDIR?=${WRKDIR}/mfc
-PKGDIR?=${WRKDIR}/pkg
-WRKSRC?=${WRKDIR}/src
-TESTDIR?=${.CURDIR}/src/opnsense/mvc/tests
-
 mount:
 	@if [ ! -f ${WRKDIR}/.mount_done ]; then \
 	    echo -n "Enabling core.git live mount..."; \
@@ -383,18 +377,6 @@ test:
 	    ${TESTDIR}/app/models/OPNsense/ACL/AclConfig/backup; \
 	    git checkout -f ${TESTDIR}/app/models/OPNsense/ACL/AclConfig/config.xml
 
-clean-pkgdir:
-	@rm -rf ${PKGDIR}
-	@mkdir -p ${PKGDIR}
-
-clean-mfcdir:
-	@rm -rf ${MFCDIR}
-	@mkdir -p ${MFCDIR}
-
-clean-wrksrc:
-	@rm -rf ${WRKSRC}
-	@mkdir -p ${WRKSRC}
-
-clean: clean-pkgdir clean-wrksrc clean-mfcdir
+clean: clean-pkgdir clean-wrksrc clean-mfcdir checkout
 
 .PHONY: license plist
