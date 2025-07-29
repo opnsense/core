@@ -70,6 +70,10 @@ while getopts AaCceHilNnOR:stVvwx OPT; do
 		DO_ORIGIN="-O"
 		;;
 	R)
+		if [ "$(id -u)" != "0" ]; then
+			echo "Must be root to use '-R'."
+			exit 1
+		fi
 		DO_RAW="-R ${OPTARG}"
 		;;
 	s)
