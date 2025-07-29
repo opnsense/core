@@ -268,7 +268,7 @@
                             return isGroup
                                 ? `<span class="category-icon category-cell">
                                         <i class="fa fa-fw fa-tag" style="opacity: 0.8;"></i>
-                                        {{ lang._('Default') }}
+                                        <strong><em>{{ lang._('Default') }}</strong></em>
                                 </span>`
                                 : '';
                         }
@@ -283,7 +283,7 @@
 
                             return isGroup
                                 ? `<span class="category-cell">
-                                        <span class="category-cell-content">${icons} ${categories.join(', ')}</span>
+                                        <span class="category-cell-content"><strong><em>${icons} ${categories.join(', ')}</em></strong></span>
                                 </span>`
                                 : icons;
                     },
