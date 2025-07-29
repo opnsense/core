@@ -27,6 +27,7 @@ all:
 	@cat ${.CURDIR}/README.md | ${PAGER}
 
 .include "Mk/defaults.mk"
+.include "Mk/lint.mk"
 .include "Mk/version.mk"
 
 .for REPLACEMENT in ABI PHP PYTHON
@@ -371,76 +372,6 @@ upgrade: upgrade-check clean-pkgdir package
 	@${PKG} add ${PKGDIR}/*.pkg
 	@${.CURDIR}/src/sbin/pluginctl -c webgui
 
-lint-shell:
-	@find ${.CURDIR}/src ${.CURDIR}/Scripts \
-	    -name "*.sh" -type f -print0 | xargs -0 -n1 sh -n
-
-lint-xml:
-	@find ${.CURDIR}/src ${.CURDIR}/Scripts \
-	    -name "*.xml*" -type f -print0 | xargs -0 -n1 xmllint --noout
-
-lint-model:
-	@for MODEL in $$(find ${.CURDIR}/src/opnsense/mvc/app/models -depth 3 \
-	    -name "*.xml"); do \
-		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and (not(Required) or Required="N") and Default]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
-			echo "$${MODEL}: $${LINE} has a spurious default value set"; \
-		done; \
-		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and Default=""]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
-			echo "$${MODEL}: $${LINE} has an empty default value set"; \
-		done; \
-		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and BlankDesc="None"]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
-			echo "$${MODEL}: $${LINE} blank description is the default"; \
-		done; \
-		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and BlankDesc and Required="Y"]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
-			echo "$${MODEL}: $${LINE} blank description not applicable on required field"; \
-		done; \
-		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and BlankDesc and Multiple="Y"]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
-			echo "$${MODEL}: $${LINE} blank description not applicable on multiple field"; \
-		done; \
-		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and Multiple="N"]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
-			echo "$${MODEL}: $${LINE} Multiple=N is the default"; \
-		done; \
-		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and Required="N"]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
-			echo "$${MODEL}: $${LINE} Required=N is the default"; \
-		done; \
-		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and OptionValues[default[not(@value)] or multiple[not(@value)] or required[not(@value)]]]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
-			echo "$${MODEL}: $${LINE} option element default/multiple/required without value attribute"; \
-		done; \
-		(xmllint $${MODEL} --xpath '//*[@type="CSVListField" and Mask and (not(MaskPerItem) or MaskPerItem=N)]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
-			echo "$${MODEL}: $${LINE} uses Mask regex with MaskPerItem=N"; \
-		done; \
-		for TYPE in .\\AliasesField .\\DomainIPField HostnameField IPPortField NetworkField MacAddressField .\\RangeAddressField; do \
-			(xmllint $${MODEL} --xpath '//*[@type="'$${TYPE}'" and FieldSeparator=","]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
-				echo "$${MODEL}: $${LINE} FieldSeparator=, is the default"; \
-			done; \
-			(xmllint $${MODEL} --xpath '//*[@type="'$${TYPE}'" and AsList="N"]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
-				echo "$${MODEL}: $${LINE} AsList=N is the default"; \
-			done; \
-		done; \
-	done
-
-lint-acl:
-	@${.CURDIR}/Scripts/dashboard-acl.sh
-
-SCRIPTDIRS!=	find ${.CURDIR}/src/opnsense/scripts -type d -depth 1
-
-lint-exec:
-.for DIR in ${.CURDIR}/src/etc/rc.d ${.CURDIR}/src/etc/rc.syshook.d ${SCRIPTDIRS}
-.if exists(${DIR})
-	@find ${DIR} -path '**/htdocs_default' -prune -o -type f \
-	    ! -name "*.xml" ! -name "*.csv" ! -name "*.sql" -print0 | \
-	    xargs -0 -t -n1 test -x || \
-	    (echo "Missing executable permission in ${DIR}"; exit 1)
-.endif
-.endfor
-
-LINTBIN?=	${.CURDIR}/contrib/parallel-lint/parallel-lint
-
-lint-php:
-	@${LINTBIN} src
-
-lint: plist-check lint-shell lint-xml lint-model lint-acl lint-exec lint-php
-
 sweep:
 	find ${.CURDIR}/src ! -name "*.min.*" ! -name "*.svg" \
 	    ! -name "*.ser" -type f -print0 | \
@@ -468,7 +399,7 @@ style-php: debug
 	@cat ${WRKDIR}/style.out | ${PAGER}
 	@rm ${WRKDIR}/style.out
 
-style-fix: debug
+style-fix: style-model debug
 .for STYLEDIR in ${STYLEDIRS}
 	phpcbf --standard=ruleset.xml ${.CURDIR}/${STYLEDIR} || true
 .endfor
