@@ -63,7 +63,6 @@ www:*:80:
 u2f:*:116:
 ntpd:*:123:
 _ypldap:*:160:
-%%CORE_GROUP%%:*:%%CORE_GID%%:
 hast:*:845:
 tests:*:977:
 nogroup:*:65533:
@@ -97,7 +96,6 @@ auditdistd:*:78:77::0:0:Auditdistd unprivileged user:/var/empty:/usr/sbin/nologi
 www:*:80:80::0:0:World Wide Web Owner:/nonexistent:/usr/sbin/nologin
 ntpd:*:123:123::0:0:NTP Daemon:/var/db/ntp:/usr/sbin/nologin
 _ypldap:*:160:160::0:0:YP LDAP unprivileged user:/var/empty:/usr/sbin/nologin
-%%CORE_USER%%:*:%%CORE_UID%%:%%CORE_GID%%::0:0:World Wide Web Only:/nonexistent:/usr/sbin/nologin
 hast:*:845:845::0:0:HAST unprivileged user:/var/empty:/usr/sbin/nologin
 tests:*:977:977::0:0:Unprivileged user for tests:/nonexistent:/usr/sbin/nologin
 nobody:*:65534:65534::0:0:Unprivileged user:/nonexistent:/usr/sbin/nologin
@@ -233,8 +231,6 @@ function recover_ports()
     $tempname = tempnam('/tmp', 'recover.');
     $tempfile = fopen($tempname, 'w');
     $luacount = 0;
-
-    putenv('CORE_USER_GROUP_ONLY=yes');
 
     foreach ($pkgs as $pkg) {
         $raw = exec('/usr/local/sbin/pkg-static info --raw --raw-format json-compact ' . $pkg);

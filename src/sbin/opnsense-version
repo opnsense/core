@@ -70,6 +70,10 @@ while getopts AaCceHilNnOR:stVvwx OPT; do
 		DO_ORIGIN="-O"
 		;;
 	R)
+		if [ "$(id -u)" != "0" ]; then
+			echo "Must be root to use '-R'."
+			exit 1
+		fi
 		DO_RAW="-R ${OPTARG}"
 		;;
 	s)
@@ -137,13 +141,13 @@ if [ -n "${DO_RAW}" ]; then
 	FILE=${DO_RAW#"-R "}
 
 	if [ -f "${FILE}" ]; then
-		SED_REPLACE=$(set | grep -e '^CORE_' -e '^PLUGINS_' | sed -e 's/^\([CP][A-Z_]*\)='"'"*'\([^'"'"']*\)'"'"*'/-e "s=%%\1%%=\2=g"/g')
+		SED_REPLACE=$(set | grep -e '^CORE_' -e '^PLUGIN_' | sed -e 's/^\([CP][A-Z_]*\)='"'"*'\([^'"'"']*\)'"'"*'/-e "s=%%\1%%=\2=g"/g')
 		eval SED_REPLACE='$'"{SED_REPLACE}"
 		cat ${FILE} | eval sed ${SED_REPLACE}
 		exit 0
 	fi
 
-	OUTPUT=$(echo "${FILE}" | sed -e 's=\([A-Z][A-Z_]*\)=$\1=g')
+	OUTPUT=$(echo "${FILE}" | sed -e 's=\(CORE_[A-Z_]*\)=${\1}=g' -e 's=\(PLUGIN_[A-Z_]*\)=${\1}=g')
 	TARGET=nop
 fi
 
