@@ -27,6 +27,11 @@
 COREREFDIR:=	${.PARSEDIR}/..
 
 lint-desc:
+.if defined(PLUGIN_DESC)
+	@if [ ! -f ${.CURDIR}/${PLUGIN_DESC} ]; then \
+		echo ">>> Missing ${PLUGIN_DESC}"; exit 1; \
+	fi
+.endif
 
 lint-shell:
 .for DIR in ${.CURDIR}/src
