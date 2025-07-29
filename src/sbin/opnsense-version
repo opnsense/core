@@ -143,7 +143,7 @@ if [ -n "${DO_RAW}" ]; then
 		exit 0
 	fi
 
-	OUTPUT=$(echo "${FILE}" | sed -e 's=\([A-Z][A-Z_]*\)=$\1=g')
+	OUTPUT=$(echo "${FILE}" | sed -e 's=\(CORE_[A-Z_]*\)=${\1}=g' -e 's=\(PLUGIN_[A-Z_]*\)=${\1}=g')
 	TARGET=nop
 fi
 

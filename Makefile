@@ -253,8 +253,6 @@ manifest:
 	@echo "comment: \"${CORE_COMMENT}\""
 	@echo "desc: \"${CORE_HASH}\""
 	@echo "maintainer: \"${CORE_MAINTAINER}\""
-	@echo "users: [ \"${CORE_USER}\" ]"
-	@echo "groups: [ \"${CORE_GROUP}\" ]"
 	@echo "www: \"${CORE_WWW}\""
 	@echo "message: \"${CORE_MESSAGE}\""
 	@echo "categories: [ \"sysutils\", \"www\" ]"
