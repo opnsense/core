@@ -24,8 +24,12 @@
 # SUCH DAMAGE.
 
 lint-shell:
-	@find ${.CURDIR}/src ${.CURDIR}/Scripts \
-	    -name "*.sh" -type f -print0 | xargs -0 -n1 sh -n
+	@for FILE in $$(find ${.CURDIR}/src -name "*.sh" -type f); do \
+	    if [ "$$(head $${FILE} | grep -c '^#!\/')" == "0" ]; then \
+	        echo "Missing shebang in $${FILE}"; exit 1; \
+	    fi; \
+	    sh -n "$${FILE}" || exit 1; \
+	done
 
 lint-xml:
 	@find ${.CURDIR}/src ${.CURDIR}/Scripts \
