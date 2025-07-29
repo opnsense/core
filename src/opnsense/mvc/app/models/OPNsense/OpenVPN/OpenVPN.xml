@@ -152,9 +152,13 @@
                 <server type="NetworkField">
                     <WildcardEnabled>N</WildcardEnabled>
                     <Strict>Y</Strict>
+                    <NetMaskRequired>Y</NetMaskRequired>
+                    <ValidationMessage>Please specify a valid network segment in CIDR notation.</ValidationMessage>
                 </server>
                 <server_ipv6 type="NetworkField">
                     <WildcardEnabled>N</WildcardEnabled>
+                    <NetMaskRequired>Y</NetMaskRequired>
+                    <ValidationMessage>Please specify a valid network segment in CIDR notation.</ValidationMessage>
                 </server_ipv6>
                 <bridge_gateway type="NetworkField">
                     <WildcardEnabled>N</WildcardEnabled>
@@ -169,16 +173,16 @@
                     <WildcardEnabled>N</WildcardEnabled>
                 </push_route>
                 <cert type="CertificateField">
-                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
+                    <ValidationMessage>Please select a valid certificate from the list.</ValidationMessage>
                 </cert>
                 <crl type="CertificateField">
                     <type>crl</type>
-                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
+                    <ValidationMessage>Please select a valid certificate from the list.</ValidationMessage>
                 </crl>
                 <ca type="CertificateField">
                     <type>ca</type>
                     <BlankDesc> - Use from certificate</BlankDesc>
-                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
+                    <ValidationMessage>Please select a valid certificate from the list.</ValidationMessage>
                 </ca>
                 <cert_depth type="OptionField">
                     <BlankDesc>Do Not Check</BlankDesc>
@@ -390,7 +394,7 @@
                 </mode>
                 <key type="TextField">
                     <Required>Y</Required>
-                    <ValidationMessage>A key is required, generate one with the button</ValidationMessage>
+                    <ValidationMessage>A key is required; generate one with the button.</ValidationMessage>
                 </key>
                 <description type="DescriptionField"/>
             </StaticKey>
