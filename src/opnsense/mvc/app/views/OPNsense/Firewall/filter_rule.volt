@@ -59,9 +59,44 @@
             }
         });
 
-        const treeViewEnabled = localStorage.getItem("firewall_rule_tree") !== "0";
+        let treeViewEnabled = localStorage.getItem("firewall_rule_tree") !== "0";
         if (treeViewEnabled) {
             $('#toggle_tree_button').addClass('active btn-primary');
+        }
+
+        function dynamicResponseHandler(resp) {
+            // convert the flat rows into a tree view (if enabled)
+            if (!treeViewEnabled) {
+                return resp;
+            }
+
+            const buckets = [];
+            let current = null;
+
+            resp.rows.forEach(r => {
+                // readable label used for grouping
+                const label = (r["%categories"] || r.categories || "");
+
+                // start a new bucket whenever the label changes
+                if (!current || current._label !== label) {
+                    current = {
+                        uuid           : `bucket${buckets.length}`,
+                        isGroup        : true,
+                        _label         : label,          // internal
+                        children       : []
+                    };
+
+                    // copy the category info from the first child to use as parent
+                    current.categories      = label;
+                    current.category_colors = r.category_colors || [];
+
+                    buckets.push(current);
+                }
+
+                current.children.push(r);
+            });
+
+            return Object.assign({}, resp, { rows: buckets });
         }
 
         // Initialize grid
@@ -92,46 +127,13 @@
                     return request;
                 },
                 // tell Tabulator to render a tree
-                treeView           : treeViewEnabled,
+                treeView           : true,
                 treeChildField     : "children",
                 treeStartExpanded  : true,
                 treeElementColumn  : "categories",
 
                 // convert the flat rows into a tree view
-                responseHandler : function (resp) {
-                    if (!treeViewEnabled) {
-                        return resp;
-                    }
-
-                    const buckets = [];
-                    let current   = null;
-
-                    resp.rows.forEach(r => {
-
-                        // readable label used for grouping
-                        const label = (r["%categories"] || r.categories || "");
-
-                        // start a new bucket whenever the label changes
-                        if (!current || current._label !== label) {
-                            current = {
-                                uuid           : `bucket${buckets.length}`,
-                                isGroup        : true,
-                                _label         : label,          // internal
-                                children       : []
-                            };
-
-                            // copy the category info from the first child to use as parent
-                            current.categories      = label;
-                            current.category_colors = r.category_colors || [];
-
-                            buckets.push(current);
-                        }
-
-                        current.children.push(r);
-                    });
-
-                    return Object.assign({}, resp, { rows : buckets });
-                },
+                responseHandler: dynamicResponseHandler,
 
                 headerFormatters: {
                     enabled: function (column) {
@@ -694,10 +696,10 @@
         $("#tree_toggle_container").detach().insertAfter("#internal_rule_selector");
 
         $('#toggle_tree_button').click(function () {
-            const newState = !treeViewEnabled;
-            localStorage.setItem("firewall_rule_tree", newState ? "1" : "0");
-            $(this).toggleClass('active btn-primary', newState);
-            location.reload();
+            treeViewEnabled = !treeViewEnabled;
+            localStorage.setItem("firewall_rule_tree", treeViewEnabled ? "1" : "0");
+            $(this).toggleClass('active btn-primary', treeViewEnabled);
+            grid.bootgrid("reload");
         });
 
         // Collapse all tree view button
