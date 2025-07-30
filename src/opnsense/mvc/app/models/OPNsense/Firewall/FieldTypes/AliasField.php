@@ -93,6 +93,14 @@ class AliasField extends ArrayField
             if (!empty((string)$node->name) && !empty(self::$current_stats[(string)$node->name])) {
                 $node->current_items->setValue(self::$current_stats[(string)$node->name]['count']);
                 $node->last_updated->setValue(self::$current_stats[(string)$node->name]['updated']);
+                foreach (
+                    [
+                    'eval_nomatch', 'eval_match', 'in_block_p', 'in_block_b', 'in_pass_p',
+                    'in_pass_b', 'out_block_p', 'out_block_b', 'out_pass_p', 'out_pass_b'
+                    ] as $prop
+                ) {
+                    $node->$prop->setValue(self::$current_stats[(string)$node->name][$prop] ?? '');
+                }
             }
         }
     }
