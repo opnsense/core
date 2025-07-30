@@ -888,6 +888,18 @@
             </button>
             <input id="all_rules_checkbox" type="checkbox" style="display: none;">
         </div>
+        <div id="tree_toggle_container" class="btn-group">
+            <button id="toggle_tree_button"
+                    type="button"
+                    class="btn btn-default"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    data-delay='{"show": 1000}'
+                    title="{{ lang._('Show all categories in a tree') }}">
+                <i class="fa fa-sitemap" aria-hidden="true"></i>
+                {{ lang._('Tree') }}
+            </button>
+        </div>
     </div>
     <!-- grid -->
     {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '150'}) }}
