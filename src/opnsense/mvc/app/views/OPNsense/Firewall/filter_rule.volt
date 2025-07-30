@@ -69,7 +69,7 @@
             toggle:'/api/firewall/filter/toggle_rule/',
             options: {
                 responsive: true,
-                rowCount: [-1], // Tabulator tree view does not support pagination
+                rowCount: [20,50,100,200,500,1000,-1],
                 requestHandler: function(request){
                     // Add category selectpicker
                     if ( $('#category_filter').val().length > 0) {
@@ -94,8 +94,6 @@
 
                 // convert the flat rows into a tree view
                 responseHandler : function (resp) {
-
-                    resp.rows.sort((a,b)=> (+a.sequence) - (+b.sequence));
 
                     const buckets = [];
                     let current   = null;
