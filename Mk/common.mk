@@ -26,11 +26,11 @@
 # pin the core reference directory from the parse directory of this file
 COREREFDIR:=	${.PARSEDIR}/..
 
-WRKDIR?=${.CURDIR}/work
-MFCDIR?=${WRKDIR}/mfc
-PKGDIR?=${WRKDIR}/pkg
-WRKSRC?=${WRKDIR}/src
-TESTDIR?=${.CURDIR}/src/opnsense/mvc/tests
+WRKDIR?=	${.CURDIR}/work
+MFCDIR?=	/tmp/mfc.dir
+PKGDIR?=	${WRKDIR}/pkg
+WRKSRC?=	${WRKDIR}/src
+TESTDIR?=	${.CURDIR}/src/opnsense/mvc/tests
 
 clean-pkgdir:
 	@rm -rf ${PKGDIR}

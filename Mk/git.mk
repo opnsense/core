@@ -62,7 +62,6 @@ diff: ensure-stable
 feed: ensure-stable
 	@git log --stat -p --reverse ${CORE_STABLE}...${feed_ARGS:[1]}~1 ${.CURDIR}
 
-.if !target(mfc)
 mfc: ensure-stable clean-mfcdir
 .for MFC in ${mfc_ARGS}
 .if exists(${MFC})
@@ -83,7 +82,6 @@ mfc: ensure-stable clean-mfcdir
 .endif
 	@git checkout ${CORE_MAIN}
 .endfor
-.endif
 
 stable:
 	@git checkout ${CORE_STABLE}

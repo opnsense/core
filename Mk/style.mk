@@ -28,18 +28,17 @@ STYLEDIRS=	${.CURDIR}/src/etc/inc ${.CURDIR}/src/opnsense
 style-python:
 	@pycodestyle-${CORE_PYTHON_DOT} --ignore=E501 ${.CURDIR}/src || true
 
-style-php:
-	@: > ${WRKDIR}/style.out
+style-php: clean-mfcdir
 .for DIR in ${STYLEDIRS}
 .if exists(${DIR})
-	@(phpcs --standard=${COREREFDIR}/ruleset.xml ${DIR} || true) >> ${WRKDIR}/style.out
+	@(phpcs --standard=${COREREFDIR}/ruleset.xml ${DIR} || true) >> ${MFCDIR}/.style.out
 .endif
 .endfor
 	@echo -n "Total number of style warnings: "
-	@grep '| WARNING' ${WRKDIR}/style.out | wc -l
+	@grep '| WARNING' ${MFCDIR}/.style.out | wc -l
 	@echo -n "Total number of style errors:   "
-	@grep '| ERROR' ${WRKDIR}/style.out | wc -l
-	@cat ${WRKDIR}/style.out | ${PAGER}
-	@rm ${WRKDIR}/style.out
+	@grep '| ERROR' ${MFCDIR}/.style.out | wc -l
+	@cat ${MFCDIR}/.style.out | ${PAGER}
+	@rm ${MFCDIR}/.style.out
 
 style: style-python style-php
