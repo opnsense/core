@@ -39,8 +39,6 @@ ${_TARGET}_ARG=		${${_TARGET}_ARGS:[0]}
 .endif
 .endfor
 
-_feed_ARGS!=	${GITVERSION} ${CORE_STABLE}
-feed_ARGS?=	${_feed_ARGS}
 diff_ARGS?=	${.CURDIR}
 mlog_ARGS?=	${.CURDIR}
 slog_ARGS?=	${.CURDIR}
@@ -60,7 +58,9 @@ diff: ensure-stable
 	fi
 
 feed: ensure-stable
-	@git log --stat -p --reverse ${CORE_STABLE}...${feed_ARGS:[1]}~1 ${.CURDIR}
+	@FEED="${feed_ARGS:[1]}"; \
+	    if [ -z "$${FEED}" ]; then FEED=$$(${GITVERSION} ${CORE_STABLE} | awk '{print $$1}'); fi; \
+	    git log --stat -p --reverse ${CORE_STABLE}...$${FEED}~1 ${.CURDIR}
 
 mfc: ensure-stable clean-mfcdir
 .for MFC in ${mfc_ARGS}
