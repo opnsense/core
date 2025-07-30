@@ -265,8 +265,8 @@
                         if (!hasCategories) {
                             return isGroup
                                 ? `<span class="category-icon category-cell">
-                                        <i class="fa fa-fw fa-tag" style="opacity: 0.8;"></i>
-                                        <strong><em>{{ lang._('Default') }}</strong></em>
+                                        <i class="fa fa-fw fa-tag"></i>
+                                        <strong><em>{{ lang._('Uncategorized') }}</strong></em>
                                 </span>`
                                 : '';
                         }
@@ -279,11 +279,11 @@
                                 <i class="fa fa-fw fa-tag" style="color:${colors[idx]};"></i>
                             </span>`).join(' ');
 
-                            return isGroup
-                                ? `<span class="category-cell">
-                                        <span class="category-cell-content"><strong><em>${icons} ${categories.join(', ')}</em></strong></span>
-                                </span>`
-                                : icons;
+                        return isGroup
+                            ? `<span class="category-cell">
+                                    <span class="category-cell-content"><strong><em>${icons} ${categories.join(', ')}</em></strong></span>
+                            </span>`
+                            : icons;
                     },
                     interfaces: function(column, row) {
                         if (row.isGroup) {           // <-- bucket row: do nothing

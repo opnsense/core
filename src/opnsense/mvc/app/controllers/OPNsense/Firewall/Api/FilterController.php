@@ -111,11 +111,13 @@ class FilterController extends FilterBaseController
         }
 
         $catcolors = [];
+        $autoCategoryName  = gettext('Automatically generated rules');
+        $autoCategoryColor = '#000';
         foreach ((new Category())->categories->category->iterateItems() as $category) {
             $uuid = (string)$category->getAttributes()['uuid'];
             $color = trim((string)$category->color);
             // Assign default color if empty
-            $catcolors[$uuid] = empty($color) ? "#C03E14" : "#{$color}";
+            $catcolors[$uuid] = empty($color) ? $autoCategoryColor : "#{$color}";
         }
 
         $filter_funct_rs  = function (&$record) use (
@@ -124,7 +126,9 @@ class FilterController extends FilterBaseController
             $show_all,
             $fieldmap,
             $rule_stats,
-            $catcolors
+            $catcolors,
+            $autoCategoryName,
+            $autoCategoryColor
         ) {
             /* always merge stats when found */
             if (!empty($record['uuid']) && !empty($rule_stats[$record['uuid']])) {
@@ -175,6 +179,12 @@ class FilterController extends FilterBaseController
                         $record[$topic] = implode(',', $tmp);
                     }
                 }
+                // Tag legacy rules as "Automatic generated rules" if they have an empty category
+                if (!empty($record['legacy']) && empty($record['categories'])) {
+                    $record['categories'] = $autoCategoryName;
+                    $record['category_colors'] = [$autoCategoryColor];
+                }
+
                 return true;
             } else {
                 return false;
