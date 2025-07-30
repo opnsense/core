@@ -59,6 +59,13 @@
             }
         });
 
+        const treeViewEnabled = localStorage.getItem("firewall_rule_tree") !== "0";
+        if (treeViewEnabled) {
+            $('#toggle_tree_button').addClass('active btn-primary');
+        }
+
+        console.log("treeViewEnabled =", treeViewEnabled);
+
         // Initialize grid
         const grid = $("#{{formGridFilterRule['table_id']}}").UIBootgrid({
             search:'/api/firewall/filter/search_rule/',
@@ -87,13 +94,16 @@
                     return request;
                 },
                 // tell Tabulator to render a tree
-                treeView           : true,
+                treeView           : treeViewEnabled,
                 treeChildField     : "children",
                 treeStartExpanded  : true,
                 treeElementColumn  : "categories",
 
                 // convert the flat rows into a tree view
                 responseHandler : function (resp) {
+                    if (!treeViewEnabled) {
+                        return resp;
+                    }
 
                     const buckets = [];
                     let current   = null;
@@ -662,6 +672,15 @@
             $checkbox.trigger("change");
         });
 
+        $("#tree_toggle_container").detach().insertAfter("#internal_rule_selector");
+
+        $('#toggle_tree_button').click(function () {
+            const newState = !treeViewEnabled;
+            localStorage.setItem("firewall_rule_tree", newState ? "1" : "0");
+            $(this).toggleClass('active btn-primary', newState);
+            location.reload();
+        });
+
         // replace all "net" selectors with details retrieved from "list_network_select_options" endpoint
         ajaxGet('/api/firewall/filter/list_network_select_options', [], function(data, status){
             if (data.single) {
@@ -772,6 +791,10 @@
         float: left;
         margin-left: 5px;
     }
+    #tree_toggle_container {
+        float: left;
+        margin-left: 5px;
+    }
     /*
      * XXX: Since the badge class uses its own default background-color, we must override it explicitly.
      *      Essentially we would like to use the main style sheet for this.
@@ -828,6 +851,18 @@
                 {{ lang._('Inspect') }}
             </button>
             <input id="all_rules_checkbox" type="checkbox" style="display: none;">
+        </div>
+        <div id="tree_toggle_container" class="btn-group">
+            <button id="toggle_tree_button"
+                    type="button"
+                    class="btn btn-default"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    data-delay='{"show": 1000}'
+                    title="{{ lang._('Show all categories in a tree') }}">
+                <i class="fa fa-sitemap" aria-hidden="true"></i>
+                {{ lang._('Tree') }}
+            </button>
         </div>
     </div>
     <!-- grid -->
