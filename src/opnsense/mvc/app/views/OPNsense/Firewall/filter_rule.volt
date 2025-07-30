@@ -268,7 +268,16 @@
 
                         if (isGroup) {
                             onRendered(cell => {
-                                cell.getRow().getElement().classList.add('bucket-row');
+                                const el = cell.getRow().getElement();
+                                el.classList.add('bucket-row');
+
+                                const color = Array.isArray(row.category_colors) && row.category_colors.length
+                                    ? row.category_colors[0]
+                                    : null;
+
+                                if (color) {
+                                    el.style.setProperty('--category-color', color);
+                                }
                             });
                         }
 
@@ -824,6 +833,19 @@
         overflow     : visible !important;
         white-space  : nowrap  !important;
         text-overflow: clip    !important;
+    }
+
+     /* Colored line for bucket-rows */
+    .bucket-row::after {
+        content: "";
+        position: absolute;
+        left: 60px;
+        width: 100%;
+        top: 22px;
+        height: 2px;
+        background-color: var(--category-color, #000);
+        opacity: 0.4;
+        pointer-events: none;
     }
 
 </style>
