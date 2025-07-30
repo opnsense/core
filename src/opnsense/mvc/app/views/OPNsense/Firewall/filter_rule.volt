@@ -155,7 +155,19 @@
                         return '<i class="fa-solid fa-fw fa-database" data-toggle="tooltip" data-placement="left" title="{{ lang._('Total bytes matched by this rule') }}"></i>';
                     },
                     categories: function (column) {
-                        return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" data-placement="left" title="{{ lang._("Categories") }}"></i> {{ lang._("Categories") }}';
+                        if (!treeViewEnabled) {
+                            return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" data-placement="left" title="{{ lang._("Categories") }}"></i> {{ lang._("Categories") }}';
+                        }
+
+                        return `
+                            <div class="tree-header-actions">
+                                <button type="button" class="btn btn-xs btn-light tree-toggle-all" title="{{ lang._("Expand all") }}">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                                <i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Categories") }}"></i>
+                                {{ lang._("Categories") }}
+                            </div>
+                        `;
                     }
                 },
                 formatters:{
@@ -690,6 +702,24 @@
             location.reload();
         });
 
+        // Collapse all tree view button
+        let treeAllExpanded = true;
+        $('#{{ formGridFilterRule["table_id"] }}').on('click', '.tree-toggle-all', function () {
+            const $table = $('#{{ formGridFilterRule["table_id"] }}');
+
+            if (treeAllExpanded) {
+                $table.find('.tabulator-data-tree-control-collapse').trigger('click');
+            } else {
+                $table.find('.tabulator-data-tree-control-expand').trigger('click');
+            }
+
+            treeAllExpanded = !treeAllExpanded;
+
+            // Toggle icon from minus to plus and back
+            const $icon = $(this).find('i');
+            $icon.toggleClass('fa-minus fa-plus');
+        });
+
         // replace all "net" selectors with details retrieved from "list_network_select_options" endpoint
         ajaxGet('/api/firewall/filter/list_network_select_options', [], function(data, status){
             if (data.single) {
@@ -861,6 +891,18 @@
     .bucket-row .tabulator-data-tree-control,
     .bucket-row .tabulator-data-tree-control * {
         pointer-events: auto;
+    }
+
+    .tree-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .tree-header-actions .btn {
+        padding: 4px 4px;
+        font-size: 8px;
+        line-height: 1;
     }
 
 </style>
