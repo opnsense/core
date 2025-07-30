@@ -106,6 +106,13 @@ before issuing a pull request on GitHub.
 make style
 ----------
 
-Run PSR12 and PEP8 style checks on MVC PHP code and Python, respectively.
-For easier development you may want to use an OPNsense VM and install the
-`os-debug` plugin that will offer the necessary tools.
+Run the PSR12 and PEP8 style checks on MVC PHP code and Python,
+respectively.
+
+For easier development you may want to use an OPNsense VM and install
+the `os-debug` plugin that will offer the necessary tools.
+
+make sweep
+----------
+
+Run several automatic sanitizers on the code base.
