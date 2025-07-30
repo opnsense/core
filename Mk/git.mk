@@ -60,7 +60,7 @@ diff: ensure-stable
 	fi
 
 feed: ensure-stable
-	@git log --stat -p --reverse ${CORE_STABLE}...${feed_ARGS:[1]}~1
+	@git log --stat -p --reverse ${CORE_STABLE}...${feed_ARGS:[1]}~1 ${.CURDIR}
 
 .if !target(mfc)
 mfc: ensure-stable clean-mfcdir
