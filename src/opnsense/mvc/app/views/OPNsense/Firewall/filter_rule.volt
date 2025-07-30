@@ -835,6 +835,10 @@
         text-overflow: clip    !important;
     }
 
+    .bucket-row .tabulator-row-header input[type="checkbox"] {
+        visibility: hidden;
+    }
+
      /* Colored line for bucket-rows */
     .bucket-row::after {
         content: "";
