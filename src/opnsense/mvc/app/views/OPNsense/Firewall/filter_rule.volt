@@ -64,8 +64,6 @@
             $('#toggle_tree_button').addClass('active btn-primary');
         }
 
-        console.log("treeViewEnabled =", treeViewEnabled);
-
         // Initialize grid
         const grid = $("#{{formGridFilterRule['table_id']}}").UIBootgrid({
             search:'/api/firewall/filter/search_rule/',
