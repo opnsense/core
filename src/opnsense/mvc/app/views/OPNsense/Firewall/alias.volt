@@ -680,7 +680,17 @@
                             <th data-column-id="content" data-type="string">{{ lang._('Content') }}</th>
                             <th data-column-id="expire" data-type="string">{{ lang._('Expire') }}</th>
                             <th data-column-id="current_items" data-type="string">{{ lang._('Loaded#') }}</th>
-                            <th data-column-id="last_updated"  data-formatter="timestamp" data-type="string">{{ lang._('Last updated') }}</th>
+                            <th data-column-id="last_updated" data-width="150" data-formatter="timestamp" data-type="string">{{ lang._('Last updated') }}</th>
+                            <th data-column-id="eval_nomatch" data-visible="false"  data-type="numeric">{{ lang._('Unmatched') }}</th>
+                            <th data-column-id="eval_match"   data-type="numeric">{{ lang._('Matched') }}</th>
+                            <th data-column-id="in_block_p"   data-type="numeric">{{ lang._('In block pkt') }}</th>
+                            <th data-column-id="in_block_b" data-visible="false"  data-type="numeric">{{ lang._('In block bytes') }}</th>
+                            <th data-column-id="in_pass_p"   data-type="numeric">{{ lang._('In pass pkt') }}</th>
+                            <th data-column-id="in_pass_b" data-visible="false"  data-type="numeric">{{ lang._('In pass bytes') }}</th>
+                            <th data-column-id="out_block_p" data-visible="false"  data-type="numeric">{{ lang._('Out block pkt') }}</th>
+                            <th data-column-id="out_block_b" data-visible="false"  data-type="numeric">{{ lang._('Out block bytes') }}</th>
+                            <th data-column-id="out_pass_p" data-visible="false"  data-type="numeric">{{ lang._('Out pass pkt') }}</th>
+                            <th data-column-id="out_pass_b" data-visible="false"  data-type="numeric">{{ lang._('Out pass bytes') }}</th>
                             <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                         </tr>
                         </thead>

@@ -94,6 +94,16 @@
                 </categories>
                 <current_items type="IntegerField" volatile="true"/>
                 <last_updated type="TextField" volatile="true"/>
+                <eval_nomatch type="IntegerField" volatile="true"/>
+                <eval_match type="IntegerField" volatile="true"/>
+                <in_block_p type="IntegerField" volatile="true"/>
+                <in_block_b type="IntegerField" volatile="true"/>
+                <in_pass_p type="IntegerField" volatile="true"/>
+                <in_pass_b type="IntegerField" volatile="true"/>
+                <out_block_p type="IntegerField" volatile="true"/>
+                <out_block_b type="IntegerField" volatile="true"/>
+                <out_pass_p type="IntegerField" volatile="true"/>
+                <out_pass_b type="IntegerField" volatile="true"/>
                 <description type="DescriptionField"/>
             </alias>
         </aliases>
