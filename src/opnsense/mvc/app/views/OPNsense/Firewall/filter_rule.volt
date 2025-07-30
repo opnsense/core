@@ -831,8 +831,8 @@
 
     .bucket-row .tabulator-cell[tabulator-field="categories"] {
         overflow: visible !important;
-        white-space: nowrap  !important;
-        text-overflow: clip    !important;
+        white-space: nowrap !important;
+        text-overflow: clip !important;
     }
 
     .bucket-row .tabulator-row-header input[type="checkbox"] {
