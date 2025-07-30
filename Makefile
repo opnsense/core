@@ -28,7 +28,6 @@ all:
 
 .include "Mk/defaults.mk"
 .include "Mk/common.mk"
-.include "Mk/git.mk"
 .include "Mk/lint.mk"
 .include "Mk/style.mk"
 .include "Mk/sweep.mk"
@@ -97,6 +96,9 @@ CORE_HASH?=	${CORE_COMMIT:[3]}
 CORE_MAINS=	master main
 CORE_MAIN?=	${CORE_MAINS:[1]}
 CORE_STABLE?=	stable/${CORE_ABI}
+
+# XXX need CORE_STABLE here
+.include "Mk/git.mk"
 
 _CORE_SERIES=	${CORE_VERSION:S/./ /g}
 CORE_SERIES?=	${_CORE_SERIES:[1]}.${_CORE_SERIES:[2]}

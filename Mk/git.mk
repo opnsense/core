@@ -39,6 +39,12 @@ ${_TARGET}_ARG=		${${_TARGET}_ARGS:[0]}
 .endif
 .endfor
 
+_feed_ARGS!=	${GITVERSION} ${CORE_STABLE}
+feed_ARGS?=	${_feed_ARGS}
+diff_ARGS?=	${.CURDIR}
+mlog_ARGS?=	${.CURDIR}
+slog_ARGS?=	${.CURDIR}
+
 ensure-stable:
 	@if ! git show-ref --verify --quiet refs/heads/${CORE_STABLE}; then \
 		git update-ref refs/heads/${CORE_STABLE} refs/remotes/origin/${CORE_STABLE}; \
@@ -50,7 +56,7 @@ diff: ensure-stable
 	@if [ "$$(git tag -l | grep -cx '${diff_ARGS:[1]}')" = "1" ]; then \
 		git diff --stat -p ${diff_ARGS:[1]}; \
 	else \
-		git diff --stat -p ${CORE_STABLE} ${.CURDIR}/${diff_ARGS:[1]}; \
+		git diff --stat -p ${CORE_STABLE} ${diff_ARGS}; \
 	fi
 
 feed: ensure-stable
