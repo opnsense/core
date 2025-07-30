@@ -829,17 +829,18 @@
         box-shadow: none !important;
     }
 
-    .bucket-row .tabulator-cell[tabulator-field="categories"]{
-        overflow     : visible !important;
-        white-space  : nowrap  !important;
+    .bucket-row .tabulator-cell[tabulator-field="categories"] {
+        overflow: visible !important;
+        white-space: nowrap  !important;
         text-overflow: clip    !important;
     }
 
     .bucket-row .tabulator-row-header input[type="checkbox"] {
         visibility: hidden;
+        pointer-events: none;
     }
 
-     /* Colored line for bucket-rows */
+    /* Colored line for bucket-rows */
     .bucket-row::after {
         content: "";
         position: absolute;
@@ -850,6 +851,16 @@
         background-color: var(--category-color, #000);
         opacity: 0.3;
         pointer-events: none;
+    }
+
+    /* Only allow interaction with bucket row collapse button */
+    .bucket-row {
+        pointer-events: none;
+    }
+
+    .bucket-row .tabulator-data-tree-control,
+    .bucket-row .tabulator-data-tree-control * {
+        pointer-events: auto;
     }
 
 </style>
