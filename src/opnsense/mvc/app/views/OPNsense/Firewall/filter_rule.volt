@@ -840,11 +840,11 @@
         content: "";
         position: absolute;
         left: 60px;
-        width: 100%;
+        right: 60px;
         top: 22px;
         height: 2px;
         background-color: var(--category-color, #000);
-        opacity: 0.4;
+        opacity: 0.3;
         pointer-events: none;
     }
 
