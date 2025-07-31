@@ -64,6 +64,7 @@
             $('#toggle_tree_button').addClass('active btn-primary');
         }
 
+        // Lives outside the grid, so the logic of the response handler can be changed after grid initialization
         function dynamicResponseHandler(resp) {
             // convert the flat rows into a tree view (if enabled)
             if (!treeViewEnabled) {
@@ -161,7 +162,8 @@
                 formatters:{
                     // Only show command buttons for rules that have a uuid, internal rules will not have one
                     commands: function (column, row) {
-                        if (row.isGroup) {           // <-- bucket row: do nothing
+                        // All formatters except category must skip processing bucket rows in tree view
+                        if (row.isGroup) {
                             return "";
                         }
                         let rowId = row.uuid;
@@ -219,7 +221,7 @@
                     },
                     // Disable rowtoggle for internal rules
                     rowtoggle: function (column, row, onRendered) {
-                        if (row.isGroup) {           // <-- bucket row: do nothing
+                        if (row.isGroup) {
                             return "";
                         }
 
@@ -247,7 +249,7 @@
                         `;
                     },
                     any: function(column, row) {
-                        if (row.isGroup) {           // <-- bucket row: do nothing
+                        if (row.isGroup) {
                             return "";
                         }
 
@@ -305,7 +307,7 @@
                             : icons;
                     },
                     interfaces: function(column, row) {
-                        if (row.isGroup) {           // <-- bucket row: do nothing
+                        if (row.isGroup) {
                             return "";
                         }
 
@@ -332,7 +334,7 @@
                     },
                     // Icons
                     ruleIcons: function(column, row) {
-                        if (row.isGroup) {           // <-- bucket row: do nothing
+                        if (row.isGroup) {
                             return "";
                         }
 
@@ -420,7 +422,7 @@
                     },
                     // Show Edit alias icon and integrate "not" functionality
                     alias: function(column, row) {
-                        if (row.isGroup) {           // <-- bucket row: do nothing
+                        if (row.isGroup) {
                             return "";
                         }
 
