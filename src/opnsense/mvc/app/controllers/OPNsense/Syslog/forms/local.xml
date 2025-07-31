@@ -9,7 +9,7 @@
         <id>syslog.general.maxpreserve</id>
         <label>Maximum preserved files</label>
         <type>text</type>
-        <help>Number of logs to preserve. When no maximum file size is offered or the logs are smaller than the the size requested, this equals the number of days.</help>
+        <help>Number of logs to preserve. When no maximum file size is offered or the logs are smaller than the size requested, this equals the number of days.</help>
     </field>
     <field>
         <id>syslog.general.maxfilesize</id>

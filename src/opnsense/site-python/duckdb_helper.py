@@ -147,7 +147,7 @@ def export_database(source, target, owner_uid='root', owner_gid='wheel'):
     with DbConnection(source, read_only=True) as db:
         if db is not None and db.connection is not None:
             os.makedirs(target, mode=0o750, exist_ok=True)
-            shutil.chown(target, 'unbound', 'unbound')
+            shutil.chown(target, owner_uid, owner_gid)
             db.connection.execute("EXPORT DATABASE '%s';" % target)
             for filename in glob.glob('%s/*'% target):
                 shutil.chown(filename, owner_uid, owner_gid)
