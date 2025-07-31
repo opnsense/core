@@ -250,10 +250,8 @@ abstract class BaseModel
     private function parseXml(&$xml, &$config_data, &$internal_data, $model_path = '')
     {
         // copy xml tag attributes to Field
-        if ($config_data != null) {
-            foreach ($config_data->attributes() as $AttrKey => $AttrValue) {
-                $internal_data->setAttributeValue($AttrKey, (string)$AttrValue);
-            }
+        foreach ($config_data?->attributes() ?? [] as $AttrKey => $AttrValue) {
+            $internal_data->setAttributeValue($AttrKey, (string)$AttrValue);
         }
 
         // iterate model children
@@ -265,52 +263,42 @@ abstract class BaseModel
             $fieldObject = $this->getFieldObject($xmlNode, $thisModelPath, $new_ref);
 
             // now add content to this model (recursive)
+            $config_section_data = $config_data?->$tagName ?? null;
             if (!$fieldObject->isContainer()) {
                 $internal_data->addChildNode($tagName, $fieldObject);
-                if ($config_data != null && isset($config_data->$tagName)) {
-                    // set field content from config (if available)
-                    $fieldObject->setValue($config_data->$tagName);
-                }
+                $fieldObject->setValue($config_section_data ?? ''); /* prevent null being passed */
             } else {
                 // add new child node container, always try to pass config data
-                if ($config_data != null && isset($config_data->$tagName)) {
-                    $config_section_data = $config_data->$tagName;
-                } else {
-                    $config_section_data = null;
-                }
-
                 if ($fieldObject->isArrayType()) {
                     // handle Array types, recurring items
                     $node_count = 0;
-                    if ($config_section_data != null) {
-                        foreach ($config_section_data as $conf_section) {
-                            if ($conf_section->count() == 0) {
-                                // skip empty nodes: prevents legacy empty tags from being treated as invalid content items
-                                // (migration will drop these anyways)
-                                continue;
-                            }
-                            $node_count++;
-                            // Array items are identified by a UUID, read from attribute or create a new one
-                            $tagUUID = (string)$conf_section->attributes()['uuid'] ?? '';
-                            $new_uuid = false;
-                            if (empty($tagUUID)) {
-                                $tagUUID = $internal_data->generateUUID();
-                                $this->internalMissingUuids = true;
-                                $new_uuid = true;
-                            }
-
-                            // iterate array items from config data
-                            $child_node = $fieldObject->newContainerField(
-                                $fieldObject->__reference . "." . $tagUUID,
-                                $tagName
-                            );
-                            if ($new_uuid) {
-                                // if the node misses a uuid, copy it to this nodes attributes
-                                $child_node->setAttributeValue('uuid', $tagUUID);
-                            }
-                            $this->parseXml($xmlNode, $conf_section, $child_node, $thisModelPath);
-                            $fieldObject->addChildNode($tagUUID, $child_node);
+                    foreach ($config_section_data ?? [] as $conf_section) {
+                        if ($conf_section->count() == 0) {
+                            // skip empty nodes: prevents legacy empty tags from being treated as invalid content items
+                            // (migration will drop these anyway)
+                            continue;
                         }
+                        $node_count++;
+                        // Array items are identified by a UUID, read from attribute or create a new one
+                        $tagUUID = (string)$conf_section->attributes()['uuid'] ?? '';
+                        $new_uuid = false;
+                        if (empty($tagUUID)) {
+                            $tagUUID = $internal_data->generateUUID();
+                            $this->internalMissingUuids = true;
+                            $new_uuid = true;
+                        }
+
+                        // iterate array items from config data
+                        $child_node = $fieldObject->newContainerField(
+                            $fieldObject->__reference . "." . $tagUUID,
+                            $tagName
+                        );
+                        if ($new_uuid) {
+                            // if the node misses a uuid, copy it to this nodes attributes
+                            $child_node->setAttributeValue('uuid', $tagUUID);
+                        }
+                        $this->parseXml($xmlNode, $conf_section, $child_node, $thisModelPath);
+                        $fieldObject->addChildNode($tagUUID, $child_node);
                     }
                     if ($node_count == 0) {
                         // There's no content in config.xml for this array node.
