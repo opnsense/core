@@ -59,6 +59,47 @@
             }
         });
 
+        let treeViewEnabled = localStorage.getItem("firewall_rule_tree") !== "0";
+        if (treeViewEnabled) {
+            $('#toggle_tree_button').addClass('active btn-primary');
+        }
+
+        // Lives outside the grid, so the logic of the response handler can be changed after grid initialization
+        function dynamicResponseHandler(resp) {
+            // convert the flat rows into a tree view (if enabled)
+            if (!treeViewEnabled) {
+                return resp;
+            }
+
+            const buckets = [];
+            let current = null;
+
+            resp.rows.forEach(r => {
+                // readable label used for grouping
+                const label = (r["%categories"] || r.categories || "");
+
+                // start a new bucket whenever the label changes
+                if (!current || current._label !== label) {
+                    current = {
+                        uuid           : `bucket${buckets.length}`,
+                        isGroup        : true,
+                        _label         : label,          // internal
+                        children       : []
+                    };
+
+                    // copy the category info from the first child to use as parent
+                    current.categories      = label;
+                    current.category_colors = r.category_colors || [];
+
+                    buckets.push(current);
+                }
+
+                current.children.push(r);
+            });
+
+            return Object.assign({}, resp, { rows: buckets });
+        }
+
         // Initialize grid
         const grid = $("#{{formGridFilterRule['table_id']}}").UIBootgrid({
             search:'/api/firewall/filter/search_rule/',
@@ -69,7 +110,7 @@
             toggle:'/api/firewall/filter/toggle_rule/',
             options: {
                 responsive: true,
-                rowCount: [20,50,100,200,500,1000],
+                rowCount: [20,50,100,200,500,1000,-1],
                 requestHandler: function(request){
                     // Add category selectpicker
                     if ( $('#category_filter').val().length > 0) {
@@ -86,8 +127,19 @@
                     }
                     return request;
                 },
+                // tell Tabulator to render a tree
+                treeView           : true,
+                treeChildField     : "children",
+                treeStartExpanded  : true,
+                treeElementColumn  : "categories",
+
+                // convert the flat rows into a tree view
+                responseHandler: dynamicResponseHandler,
+
                 headerFormatters: {
-                    enabled: function (column) { return "" },
+                    enabled: function (column) {
+                        return '<input type="checkbox" disabled style="pointer-events: none;" />';
+                    },
                     interface: function (column) {
                         return '<i class="fa-solid fa-fw fa-network-wired" data-toggle="tooltip" data-placement="right" title="{{ lang._('Network Interface') }}"></i>';
                     },
@@ -104,12 +156,16 @@
                         return '<i class="fa-solid fa-fw fa-database" data-toggle="tooltip" data-placement="left" title="{{ lang._('Total bytes matched by this rule') }}"></i>';
                     },
                     categories: function (column) {
-                        return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" data-placement="left" title="{{ lang._('Categories') }}"></i>';
-                    }
+                        return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" data-placement="left" title="{{ lang._("Categories") }}"></i> {{ lang._("Categories") }}';
+                    },
                 },
                 formatters:{
                     // Only show command buttons for rules that have a uuid, internal rules will not have one
                     commands: function (column, row) {
+                        // All formatters except category must skip processing bucket rows in tree view
+                        if (row.isGroup) {
+                            return "";
+                        }
                         let rowId = row.uuid;
 
                         // If UUID is invalid, its an internal rule, use the #ref field to show a lookup button.
@@ -164,13 +220,24 @@
                         `;
                     },
                     // Disable rowtoggle for internal rules
-                    rowtoggle: function (column, row) {
+                    rowtoggle: function (column, row, onRendered) {
+                        if (row.isGroup) {
+                            return "";
+                        }
+
                         const rowId = row.uuid || '';
                         if (!rowId.includes('-')) {
                             return '';
                         }
 
                         const isEnabled = row[column.id] === "1";
+
+                        onRendered((cell) => {
+                            const el = cell.getRow().getElement();
+                            if (!isEnabled) {
+                                el.style.opacity = "0.4";
+                            }
+                        });
 
                         return `
                             <span class="fa fa-fw ${isEnabled ? 'fa-check-square-o' : 'fa-square-o text-muted'} bootgrid-tooltip command-toggle"
@@ -182,6 +249,10 @@
                         `;
                     },
                     any: function(column, row) {
+                        if (row.isGroup) {
+                            return "";
+                        }
+
                         if (
                             row[column.id] !== '' &&
                             row[column.id] !== 'any' &&
@@ -192,22 +263,54 @@
                             return '*';
                         }
                     },
-                    category: function (column, row) {
-                        if (!row.categories || !Array.isArray(row.category_colors)) {
-                            return '';
+                    // The category formatter is special as it renders differently for the bucket row
+                    category: function (column, row, onRendered) {
+                        const isGroup = row.isGroup;
+                        const hasCategories = row.categories && Array.isArray(row.category_colors);
+
+                        if (isGroup) {
+                            onRendered(cell => {
+                                const el = cell.getRow().getElement();
+                                el.classList.add('bucket-row');
+
+                                const color = Array.isArray(row.category_colors) && row.category_colors.length
+                                    ? row.category_colors[0]
+                                    : null;
+
+                                if (color) {
+                                    el.style.setProperty('--category-color', color);
+                                }
+                            });
+                        }
+
+                        if (!hasCategories) {
+                            return isGroup
+                                ? `<span class="category-icon category-cell">
+                                        <i class="fa fa-fw fa-tag"></i>
+                                        <strong><em>{{ lang._('Uncategorized') }}</strong></em>
+                                </span>`
+                                : '';
                         }
 
                         const categories = (row["%categories"] || row.categories).split(',');
-                        const colors = row.category_colors;
+                        const colors     = row.category_colors;
 
-                        return categories.map((cat, index) => {
-                            const color = colors[index]
-                            return `<span class="category-icon" data-toggle="tooltip" title="${cat}">
-                                        <i class="fas fa-circle" style="color: ${color};"></i>
-                                    </span>`;
-                        }).join(' ');
+                        const icons = categories.map((cat, idx) => `
+                            <span class="category-icon" data-toggle="tooltip" title="${cat}">
+                                <i class="fa fa-fw fa-tag" style="color:${colors[idx]};"></i>
+                            </span>`).join(' ');
+
+                        return isGroup
+                            ? `<span class="category-cell">
+                                    <span class="category-cell-content"><strong><em>${icons} ${categories.join(', ')}</em></strong></span>
+                            </span>`
+                            : icons;
                     },
                     interfaces: function(column, row) {
+                        if (row.isGroup) {
+                            return "";
+                        }
+
                         const interfaces = row["%" + column.id] || row[column.id] || "";
 
                         if (interfaces === "") {
@@ -231,10 +334,11 @@
                     },
                     // Icons
                     ruleIcons: function(column, row) {
+                        if (row.isGroup) {
+                            return "";
+                        }
+
                         let result = "";
-                        const iconStyle = (row.enabled == 0)
-                            ? 'style="opacity: 0.4; pointer-events: none;"'
-                            : '';
 
                         // Rule Type Icons (Determined by first digit of sort_order)
                         const ruleTypeIcons = {
@@ -251,52 +355,41 @@
                             const typeDigit = sortOrder.charAt(0);
                             if (ruleTypeIcons[typeDigit]) {
                                 result += `<i class="fa ${ruleTypeIcons[typeDigit].icon} fa-fw ${ruleTypeIcons[typeDigit].color}"
-                                            ${iconStyle} data-toggle="tooltip" title="${ruleTypeIcons[typeDigit].tooltip}"></i> `;
+                                            data-toggle="tooltip" title="${ruleTypeIcons[typeDigit].tooltip}"></i> `;
                             }
                         }
 
                         // Action
                         if (row.action.toLowerCase() === "block") {
-                            result += '<i class="fa fa-times fa-fw text-danger" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Block") }}"></i> ';
+                            result += '<i class="fa fa-times fa-fw text-danger" data-toggle="tooltip" title="{{ lang._("Block") }}"></i> ';
                         } else if (row.action.toLowerCase() === "reject") {
-                            result += '<i class="fa fa-times-circle fa-fw text-danger" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Reject") }}"></i> ';
+                            result += '<i class="fa fa-times-circle fa-fw text-danger" data-toggle="tooltip" title="{{ lang._("Reject") }}"></i> ';
                         } else {
-                            result += '<i class="fa fa-play fa-fw text-success" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Pass") }}"></i> ';
+                            result += '<i class="fa fa-play fa-fw text-success" data-toggle="tooltip" title="{{ lang._("Pass") }}"></i> ';
                         }
 
                         // Direction
                         if (row.direction.toLowerCase() === "in") {
-                            result += '<i class="fa fa-long-arrow-right fa-fw text-info" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("In") }}"></i> ';
+                            result += '<i class="fa fa-long-arrow-right fa-fw text-info" data-toggle="tooltip" title="{{ lang._("In") }}"></i> ';
                         } else if (row.direction.toLowerCase() === "out") {
-                            result += '<i class="fa fa-long-arrow-left fa-fw" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Out") }}"></i> ';
+                            result += '<i class="fa fa-long-arrow-left fa-fw" data-toggle="tooltip" title="{{ lang._("Out") }}"></i> ';
                         } else {
-                            result += '<i class="fa fa-exchange fa-fw" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Any") }}"></i> ';
+                            result += '<i class="fa fa-exchange fa-fw" data-toggle="tooltip" title="{{ lang._("Any") }}"></i> ';
                         }
 
                         // Quick match
                         if (row.quick == 0) {
-                            result += '<i class="fa fa-flash fa-fw text-muted" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Last match") }}"></i> ';
+                            result += '<i class="fa fa-flash fa-fw text-muted" data-toggle="tooltip" title="{{ lang._("Last match") }}"></i> ';
                         } else {
-                            // Default to "First match"
-                            result += '<i class="fa fa-flash fa-fw text-warning" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("First match") }}"></i> ';
+                            result += '<i class="fa fa-flash fa-fw text-warning" data-toggle="tooltip" title="{{ lang._("First match") }}"></i> ';
                         }
 
                         // XXX: Advanced fields all have different default values, so it cannot be generalized completely
                         const advancedDefaultPrefixes = ["0", "none", "any", "default", "keep"];
-
                         const usedAdvancedFields = [];
 
                         advancedFieldIds.forEach(function (fieldId) {
                             const value = row[fieldId];
-
                             if (value !== undefined) {
                                 const lowerValue = value.toString().toLowerCase().trim();
                                 // Check: if the value is empty OR starts with any default prefix, consider it default
@@ -322,14 +415,17 @@
                             tooltip = "{{ lang._('Advanced mode disabled') }}";
                         }
 
-                        result += `<i class="fa fa-cog fa-fw ${iconClass}" ${iconStyle}
-                                    data-toggle="tooltip" data-html="true" title="${tooltip}"></i>`;
+                        result += `<i class="fa fa-cog fa-fw ${iconClass}" data-toggle="tooltip" data-html="true" title="${tooltip}"></i>`;
 
                         // Return all icons
                         return result;
                     },
                     // Show Edit alias icon and integrate "not" functionality
                     alias: function(column, row) {
+                        if (row.isGroup) {
+                            return "";
+                        }
+
                         const value = row["%" + column.id] || row[column.id] || "";
                         const isNegated = (row[column.id.replace('net', 'not')] == 1) ? "! " : "";
 
@@ -587,6 +683,15 @@
             $checkbox.trigger("change");
         });
 
+        $("#tree_toggle_container").detach().insertAfter("#internal_rule_selector");
+
+        $('#toggle_tree_button').click(function () {
+            treeViewEnabled = !treeViewEnabled;
+            localStorage.setItem("firewall_rule_tree", treeViewEnabled ? "1" : "0");
+            $(this).toggleClass('active btn-primary', treeViewEnabled);
+            grid.bootgrid("reload");
+        });
+
         // replace all "net" selectors with details retrieved from "list_network_select_options" endpoint
         ajaxGet('/api/firewall/filter/list_network_select_options', [], function(data, status){
             if (data.single) {
@@ -697,6 +802,10 @@
         float: left;
         margin-left: 5px;
     }
+    #tree_toggle_container {
+        float: left;
+        margin-left: 5px;
+    }
     /*
      * XXX: Since the badge class uses its own default background-color, we must override it explicitly.
      *      Essentially we would like to use the main style sheet for this.
@@ -714,6 +823,46 @@
     .badge-sm {
         font-size: 12px;
         padding: 2px 5px;
+    }
+
+    /* Custom styles for the bucket-row that hide all column lines and let the text break out of its cell */
+    .bucket-row .tabulator-cell{
+        border-right: none !important;
+        box-shadow: none !important;
+    }
+
+    .bucket-row .tabulator-cell[tabulator-field="categories"] {
+        overflow: visible !important;
+        white-space: nowrap !important;
+        text-overflow: clip !important;
+    }
+
+    .bucket-row .tabulator-row-header input[type="checkbox"] {
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    /* Colored line for bucket-rows */
+    .bucket-row::after {
+        content: "";
+        position: absolute;
+        left: 60px;
+        right: 60px;
+        top: 22px;
+        height: 2px;
+        background-color: var(--category-color, #000);
+        opacity: 0.3;
+        pointer-events: none;
+    }
+
+    /* Only allow interaction with bucket row collapse button */
+    .bucket-row {
+        pointer-events: none;
+    }
+
+    .bucket-row .tabulator-data-tree-control,
+    .bucket-row .tabulator-data-tree-control * {
+        pointer-events: auto;
     }
 </style>
 
@@ -740,6 +889,18 @@
                 {{ lang._('Inspect') }}
             </button>
             <input id="all_rules_checkbox" type="checkbox" style="display: none;">
+        </div>
+        <div id="tree_toggle_container" class="btn-group">
+            <button id="toggle_tree_button"
+                    type="button"
+                    class="btn btn-default"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    data-delay='{"show": 1000}'
+                    title="{{ lang._('Show all categories in a tree') }}">
+                <i class="fa fa-sitemap" aria-hidden="true"></i>
+                {{ lang._('Tree') }}
+            </button>
         </div>
     </div>
     <!-- grid -->

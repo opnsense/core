@@ -253,6 +253,18 @@ class UIBootgrid {
             this.options.stickySelect = true;
         }
 
+        // Tree view compatibility
+        if (bootGridOptions?.treeView ?? false) {
+            this.compatOptions['dataTree'] = true;
+            this.compatOptions['dataTreeChildField'] = bootGridOptions.treeChildField || "children";
+            this.compatOptions['dataTreeStartExpanded'] = bootGridOptions.treeStartExpanded ?? false;
+
+            // Optional: set the column where the tree icon appears
+            if (bootGridOptions.treeElementColumn) {
+                this.compatOptions['dataTreeElementColumn'] = bootGridOptions.treeElementColumn;
+            }
+        }
+
         if (bootGridOptions?.triggerEditFor ?? null) {
             this.options.triggerEditFor = bootGridOptions.triggerEditFor;
         }
