@@ -191,8 +191,8 @@ class Swanctl extends BaseModel
                 $parent = null;
                 $thisnode = [];
                 foreach ($node->iterateItems() as $attr_name => $attr) {
-                    if ($key == 'connections' && in_array($attr_name ,['local_ts', 'remote_ts'])) {
-                        /* virtual nodes belonging to child */
+                    if ($attr->getInternalIsVolatile()) {
+                        /* skip volatile nodes, usually calculated */
                         continue;
                     } elseif ($attr_name == 'connection' && isset($data['connections'][(string)$attr])) {
                         $parent = (string)$attr;
