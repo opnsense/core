@@ -124,7 +124,8 @@ class UIBootgrid {
         this.options = {
             sorting: true,
             selection: true,
-            rowCount: [7, 14, 20, 50, 100, true],
+            defaultRowCount: 50,
+            rowCount: [10, 15, 25, 50, 100, 250, 500, 1000, true],
             remoteGridView: false, // parse gridview from <thead> or via ajax?
             formatters: {
                 ...this._internalFormatters()
@@ -196,6 +197,17 @@ class UIBootgrid {
     }
 
     initialize() {
+        if (!this.options.rowCount.includes(this.options.defaultRowCount)) {
+            let splice_index = 0;
+
+            for (let i = 0; i < this.options.rowCount.length; i++) {
+                if (this.options.rowCount[i] === true) { continue; }
+                if (this.options.rowCount[i] > this.options.defaultRowCount) { splice_index = i; break; }
+            };
+
+            this.options.rowCount.splice(splice_index, 0, this.options.defaultRowCount);
+        }
+
         this.persistence = localStorage.getItem(`tabulator-${this.persistenceID}-persistence`);
         if (!this.persistence || this.options.static) {
             // If the user didn't change anything on the table, assume we start blank
@@ -501,6 +513,20 @@ class UIBootgrid {
             return;
         }
         return template.replace(/{{ctx\.(\w+)}}/g, (_, key) => key in ctx ? ctx[key] : '');
+    }
+
+    _getFriendlyRowCount(count) {
+        try {
+            let countNum = Number(count);
+
+            let countFriendly = count === true ? this._translate('all') : count;
+            countFriendly = countNum === this.options.defaultRowCount ? `${countFriendly} (default)` : countFriendly;
+
+            return countFriendly;
+
+        } catch {
+            return count
+        }
     }
 
     /**
@@ -980,18 +1006,18 @@ class UIBootgrid {
         }
 
         // Rowcount
-        this.curRowCount = localStorage.getItem(`${this.persistenceID}-rowCount`) || this.options.rowCount[0];
+        this.curRowCount = localStorage.getItem(`${this.persistenceID}-rowCount`) || this.options.defaultRowCount;
         if (this.curRowCount === 'true') {
             this.curRowCount = true;
         }
-        $(`#${this.id}-rowcount-text`).text(this.curRowCount === true ? this._translate('all') : this.curRowCount);
+        $(`#${this.id}-rowcount-text`).text(this._getFriendlyRowCount(this.curRowCount));
 
         this.options.rowCount.forEach((count) => {
             let item = $(`
                 <li data-action="${count}"
                     class="${count.toString() === this.curRowCount.toString() ? 'active' : ''}"
                     aria-selected="${count.toString() === this.curRowCount.toString() ? 'true' : 'false'}">
-                    <a>${count === true ? this._translate('all') : count}</a>
+                    <a>${this._getFriendlyRowCount(count)}</a>
                 </li>
             `).on('click', (e) => {
                 e.preventDefault();
@@ -1007,7 +1033,7 @@ class UIBootgrid {
                     localStorage.setItem(`${this.persistenceID}-rowCount`, this.curRowCount);
                     this.table.setPageSize(newRowCount);
 
-                    $(`#${this.id}-rowcount-text`).text(newRowCount === true ? this._translate('all') : newRowCount);
+                    $(`#${this.id}-rowcount-text`).text(this._getFriendlyRowCount(newRowCount));
 
                     $.each($(`#${this.id}-rowcount-items li`), (i, value) => {
                         let $li = $(value);
