@@ -600,7 +600,10 @@ class OpenVPN extends BaseModel
                             $options['ifconfig'] = "{$ip1} {$ip2}";
                             $options['ifconfig-pool'] = "{$ip2} {$ip3}";
                         } else {
-                            $options['server'] = $parts[0] . " " . $mask . ($node->nopool == '1' ? ' nopool' : '');
+                            $options['server'] = $parts[0] . " " . $mask;
+                            if ($node->nopool->isEqual('1')) {
+                                $options['server'] .=  ' nopool';
+                            }
                         }
                     } elseif ((string)$node->dev_type == 'tap') {
                         if (!$node->bridge_gateway->isEmpty()) {
