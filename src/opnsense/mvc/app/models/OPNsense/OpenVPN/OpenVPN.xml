@@ -160,6 +160,7 @@
                     <NetMaskRequired>Y</NetMaskRequired>
                     <ValidationMessage>Please specify a valid network segment in CIDR notation.</ValidationMessage>
                 </server_ipv6>
+                <nopool type="BooleanField"/>
                 <bridge_gateway type="NetworkField">
                     <WildcardEnabled>N</WildcardEnabled>
                 </bridge_gateway>
