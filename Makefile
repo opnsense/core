@@ -215,7 +215,7 @@ CORE_CONFLICTS:=	${CORE_CONFLICTS:S/^/os-/g:O}
 
 mount:
 	@if [ ! -f ${WRKDIR}/.mount_done ]; then \
-	    echo -n "Enabling core.git live mount..."; \
+	    echo -n "Enabling core live mount..."; \
 	    sed ${SED_REPLACE} ${.CURDIR}/src/${VERSIONFILE}.in > \
 	        ${.CURDIR}/src/${VERSIONFILE}; \
 	    mount_unionfs ${.CURDIR}/src ${LOCALBASE}; \
@@ -226,7 +226,7 @@ mount:
 
 umount:
 	@if [ -f ${WRKDIR}/.mount_done ]; then \
-	    echo -n "Disabling core.git live mount..."; \
+	    echo -n "Disabling core live mount..."; \
 	    umount -f "<above>:${.CURDIR}/src"; \
 	    rm ${WRKDIR}/.mount_done; \
 	    echo "done"; \
@@ -371,13 +371,15 @@ validate:
 	@src/opnsense/mvc/script/run_validations.php
 
 test:
+.if exists(${TESTDIR})
 	@if [ "$$(${VERSIONBIN} -v)" != "${CORE_PKGVERSION}" ]; then \
 		echo "Installed version does not match, expected ${CORE_PKGVERSION}"; \
 		exit 1; \
 	fi
 	@cd ${TESTDIR} && phpunit || true; rm -rf ${TESTDIR}/.phpunit.result.cache \
 	    ${TESTDIR}/app/models/OPNsense/ACL/AclConfig/backup; \
-	    git checkout -f ${TESTDIR}/app/models/OPNsense/ACL/AclConfig/config.xml
+	    ${GIT} checkout -f ${TESTDIR}/app/models/OPNsense/ACL/AclConfig/config.xml
+.endif
 
 clean: clean-pkgdir clean-wrksrc clean-mfcdir checkout
 
