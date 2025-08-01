@@ -35,8 +35,7 @@ if _tmpdir=$(mktemp -d -q /.diskless.XXXXXX); then
 	# only remove the directory
 	rmdir ${_tmpdir}
 else
-	# config restore for install media does not support
-	# this as neither /var/log nor /root are persistent
+	# disable to avoid spurious /var/log mount
 	USE_MFS_VAR=0
 
 	# force the permission of /root to avoid a health audit
