@@ -364,7 +364,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     $rules = "{$limitrules}\n";
     $rules .= "{$aliases} \n";
-    $rules .= filter_setup_logging_interfaces($cnfint);
     $rules .= "\n";
     $rules .= "set skip on lo0\n";
     $rules .= "set skip on pfsync0\n";
@@ -707,20 +706,6 @@ function filter_get_time_based_rule_status($schedule)
         }
     }
     return false;
-}
-
-
-function filter_setup_logging_interfaces(&$FilterIflist)
-{
-    $rules = '';
-
-    if (isset($FilterIflist['lan'])) {
-        $rules .= "set loginterface {$FilterIflist['lan']['if']}\n";
-    } elseif (isset($FilterIflist['wan'])) {
-        $rules .= "set loginterface {$FilterIflist['wan']['if']}\n";
-    }
-
-    return $rules;
 }
 
 function default_table_entries_size()
