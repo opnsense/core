@@ -360,8 +360,6 @@ license:
 
 sync: license plist-fix
 
-.PHONY: license plist-fix sync
-
 migrate:
 	@src/opnsense/mvc/script/run_migrations.php
 
