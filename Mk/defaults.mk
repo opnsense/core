@@ -109,3 +109,7 @@ MFCDIR?=	/tmp/mfc.dir
 PKGDIR?=	${WRKDIR}/pkg
 WRKSRC?=	${WRKDIR}/src
 TESTDIR?=	${.CURDIR}/src/opnsense/mvc/tests
+
+CORE_MAINS=	master main
+CORE_MAIN?=	${CORE_MAINS:[1]}
+CORE_STABLE?=	stable/${CORE_ABI}
