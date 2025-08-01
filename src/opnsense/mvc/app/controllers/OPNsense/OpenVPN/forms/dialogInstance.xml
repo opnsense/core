@@ -164,6 +164,16 @@
         </grid_view>
     </field>
     <field>
+        <id>instance.nopool</id>
+        <label>No Pool</label>
+        <type>checkbox</type>
+        <style>role role_server_tun role_server_ovpn</style>
+        <help>Do not set up a dynamic pool for the server directive. IP addresses will only be pushed to a client if specified in a CSO, or they can be statically set in the client configuration.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>instance.bridge_gateway</id>
         <label>Bridge gateway</label>
         <type>text</type>
