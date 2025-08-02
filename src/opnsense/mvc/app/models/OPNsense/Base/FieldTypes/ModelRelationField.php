@@ -97,17 +97,8 @@ class ModelRelationField extends BaseListField
                 $displayKeys = explode(',', $modelData['display']);
                 $displayFormat = !empty($modelData['display_format']) ? $modelData['display_format'] : "%s";
 
-                $pmodel = $this->getParentModel();
-                if ($pmodel !== null && strcasecmp(get_class($pmodel), $className) === 0) {
-                    // model options from the same model, use this model instead of creating something new
-                    $searchItems = self::getArrayReference($pmodel->getNodeContent(), $modelData['items']);
-                    $this->internalOptionsFromThisModel = true;
-                } else {
-                    $searchItems = $this->getCachedData($className, $modelData['items']);
-                }
-
                 $groups = [];
-                foreach ($searchItems as $uuid => $node) {
+                foreach ($this->getCachedData($className, $modelData['items']) as $uuid => $node) {
                     $descriptions = [];
                     foreach ($displayKeys as $displayKey) {
                         $descriptions[] = $node['%' . $displayKey] ?? $node[$displayKey] ?? '';
