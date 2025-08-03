@@ -62,18 +62,34 @@ class ModelRelationField extends BaseListField
     private static $internalCacheOptionList = [];
 
     /**
+     * @var array collected options for target model
+     */
+    private static $internalCacheModelStruct = [];
+
+    /**
      * @param string $classname model classname to resolve
      * @param string $path reference to information to be fetched (e.g. my.data)
      * @return array
      */
-    public function getCachedData($classname, $path)
+    public function getCachedData($classname, $path, $force=false)
     {
         if (!class_exists($classname)) {
             return []; /* not found */
         }
-        $class_info = new ReflectionClass($classname);
-        $inst =  $class_info->newInstanceWithoutConstructor();
-        return self::getArrayReference($inst->getCachedData(), $path);
+        if (!isset(self::$internalCacheModelStruct[$classname]) || $force) {
+            $pmodel = $this->getParentModel();
+            if ($pmodel !== null && strcasecmp(get_class($pmodel), $classname) === 0) {
+                // model options from the same model, use this model instead of creating something new
+                self::$internalCacheModelStruct[$classname] = $pmodel->getNodeContent();
+                $this->internalOptionsFromThisModel = true;
+            } else {
+                $class_info = new ReflectionClass($classname);
+                $inst =  $class_info->newInstanceWithoutConstructor();
+                self::$internalCacheModelStruct[$classname] = $inst->getCachedData();
+            }
+        }
+
+        return self::getArrayReference(self::$internalCacheModelStruct[$classname], $path);
     }
 
     /**
@@ -85,7 +101,7 @@ class ModelRelationField extends BaseListField
         // only collect options once per source/filter combination, we use a static to save our unique option
         // combinations over the running application.
         if (!isset(self::$internalCacheOptionList[$this->internalCacheKey]) || $force) {
-            self::$internalCacheOptionList[$this->internalCacheKey] = array();
+            self::$internalCacheOptionList[$this->internalCacheKey] = [];
             foreach ($this->mdlStructure as $modelData) {
                 // only handle valid model sources
                 if (!isset($modelData['source']) || !isset($modelData['items']) || !isset($modelData['display'])) {
@@ -97,15 +113,7 @@ class ModelRelationField extends BaseListField
                 $displayKeys = explode(',', $modelData['display']);
                 $displayFormat = !empty($modelData['display_format']) ? $modelData['display_format'] : "%s";
 
-                $pmodel = $this->getParentModel();
-                if ($pmodel !== null && strcasecmp(get_class($pmodel), $className) === 0) {
-                    // model options from the same model, use this model instead of creating something new
-                    $searchItems = self::getArrayReference($pmodel->getNodeContent(), $modelData['items']);
-                    $this->internalOptionsFromThisModel = true;
-                } else {
-                    $searchItems = $this->getCachedData($className, $modelData['items']);
-                }
-
+                $searchItems = $this->getCachedData($className, $modelData['items'], $force);
                 $groups = [];
                 foreach ($searchItems as $uuid => $node) {
                     $descriptions = [];
@@ -215,7 +223,8 @@ class ModelRelationField extends BaseListField
     public function getValidators()
     {
         if ($this->internalValue != null) {
-            // if our options come from the same model, make sure to reload the options before validating them
+            // XXX: may be improved a bit to prevent the same object being constructed multiple times when used
+            //      in different fields (passing of $force parameter)
             $this->loadModelOptions($this->internalOptionsFromThisModel);
         }
         // Use validators from BaseListField, includes validations for multi-select, and single-select.
