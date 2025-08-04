@@ -108,6 +108,13 @@
             add:'/api/firewall/filter/add_rule/',
             del:'/api/firewall/filter/del_rule/',
             toggle:'/api/firewall/filter/toggle_rule/',
+            tabulatorOptions : {
+                // tell Tabulator to render a tree
+                dataTree              : true,
+                dataTreeChildField    : "children",
+                dataTreeStartExpanded : true,
+                dataTreeElementColumn : "categories",
+            },
             options: {
                 responsive: true,
                 rowCount: [20,50,100,200,500,1000,-1],
@@ -127,12 +134,6 @@
                     }
                     return request;
                 },
-                // tell Tabulator to render a tree
-                treeView           : true,
-                treeChildField     : "children",
-                treeStartExpanded  : true,
-                treeElementColumn  : "categories",
-
                 // convert the flat rows into a tree view
                 responseHandler: dynamicResponseHandler,
 
