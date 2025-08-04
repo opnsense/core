@@ -71,7 +71,7 @@ class ModelRelationField extends BaseListField
      * @param string $path reference to information to be fetched (e.g. my.data)
      * @return array
      */
-    public function getCachedData($classname, $path, $force=false)
+    public function getCachedData($classname, $path, $force = false)
     {
         if (!class_exists($classname)) {
             return []; /* not found */
