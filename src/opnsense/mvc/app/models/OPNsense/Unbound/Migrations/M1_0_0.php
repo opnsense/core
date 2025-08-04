@@ -49,12 +49,7 @@ class M1_0_0 extends BaseModelMigration
         }
 
         /* delete version attribute from model because it is already instantiated */
-        if (!empty($model->dnsbl->getAttributes())) {
-            $model->dnsbl->setAttributeValue('version', null);
-        }
-        if (!empty($model->miscellaneous->getAttributes())) {
-            $model->miscellaneous->setAttributeValue('version', null);
-        }
+        $model->dnsbl?->setAttributeValue('version', null);
 
         $mdlNode = $config->OPNsense->unboundplus;
 
