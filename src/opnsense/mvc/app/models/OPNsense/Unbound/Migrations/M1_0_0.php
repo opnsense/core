@@ -48,13 +48,15 @@ class M1_0_0 extends BaseModelMigration
             return;
         }
 
-        $mdlNode = $config->OPNsense->unboundplus;
-
-        foreach (['dnsbl', 'miscellaneous'] as $strip) {
-            if (!empty($mdlNode->$strip)) {
-                $mdlNode->$strip->setAttributeValue('version', null);
-            }
+        /* delete version attribute from model because it is already instantiated */
+        if (!empty($model->dnsbl->getAttributes())) {
+            $model->dnsbl->setAttributeValue('version', null);
         }
+        if (!empty($model->miscellaneous->getAttributes())) {
+            $model->miscellaneous->setAttributeValue('version', null);
+        }
+
+        $mdlNode = $config->OPNsense->unboundplus;
 
         if (!empty($mdlNode->miscellaneous->dotservers)) {
             foreach (explode(',', (string)$mdlNode->miscellaneous->dotservers) as $dot) {
