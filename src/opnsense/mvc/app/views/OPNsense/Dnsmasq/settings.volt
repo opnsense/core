@@ -71,6 +71,39 @@
                             'set':'/api/dnsmasq/settings/set_' + grid_id + '/',
                             'add':'/api/dnsmasq/settings/add_' + grid_id + '/',
                             'del':'/api/dnsmasq/settings/del_' + grid_id + '/',
+                            tabulatorOptions: {
+                                groupBy: [
+                                    "{{formGridDHCPrange['table_id']}}",
+                                    "{{formGridDHCPoption['table_id']}}",
+                                    "{{formGridDHCPboot['table_id']}}"
+                                ].includes(grid_id)
+                                    ? [
+                                        // 1st level group by interface
+                                        "%interface",
+                                        // 2nd level group by tag
+                                        row => row["%tag"] || row["%set_tag"] || ""
+                                    ]
+                                    : false,
+                                groupHeader: (value, count, data, group) => {
+                                    const isNested = group.getParentGroup() !== false;
+
+                                    // For %tag / %set_tag groups: suppress empty group headers
+                                    if (isNested && !value) {
+                                        return '';
+                                    }
+
+                                    // For %interface groups: show "Any" when value is empty
+                                    const displayValue = !isNested && !value ? "{{ lang._('Any') }}" : value;
+
+                                    const icons = {
+                                        tag: '<i class="fa fa-tag text-primary"></i>',
+                                        interface: '<i class="fa fa-ethernet text-info"></i>',
+                                    };
+
+                                    const key = isNested ? 'tag' : 'interface';
+                                    return `${icons[key]} ${displayValue}`;
+                                },
+                            },
                             options: {
                                 triggerEditFor: getUrlHash('edit'),
                                 initialSearchPhrase: getUrlHash('search'),
@@ -271,6 +304,14 @@
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
     }
+    /* Trick to hide empty groupBy header rows */
+    .tabulator-group.tabulator-group-level-1:has(> .tabulator-group-toggle:only-child) {
+        display: none;
+    }
+    .tabulator-row.tabulator-group span {
+        color: inherit !important;
+    }
+
 </style>
 
 <div id="tag_select_container" class="btn-group" style="display: none;">

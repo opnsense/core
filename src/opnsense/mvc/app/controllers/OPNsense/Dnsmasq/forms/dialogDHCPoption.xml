@@ -23,6 +23,10 @@
         <type>dropdown</type>
         <style>selectpicker style_set</style>
         <help>This adds a single interface as tag so this DHCP option can match the interface of a DHCP range.</help>
+        <grid_view>
+            <sequence>10</sequence>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>option.tag</id>
@@ -30,6 +34,10 @@
         <type>select_multiple</type>
         <help>If the optional tags are given then this option is only sent when all the tags are matched. Can be optionally combined with an interface tag.</help>
         <style>selectpicker style_set</style>
+        <grid_view>
+            <sequence>20</sequence>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>option.set_tag</id>
@@ -37,6 +45,10 @@
         <type>dropdown</type>
         <help>Tag to set for requests matching this range which can be used to selectively match DHCP options</help>
         <style>selectpicker style_match</style>
+        <grid_view>
+            <sequence>30</sequence>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>option.value</id>
