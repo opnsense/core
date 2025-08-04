@@ -311,6 +311,14 @@
     .tabulator-row.tabulator-group span {
         color: inherit !important;
     }
+    .tabulator-row.tabulator-group {
+        font-weight: normal !important;
+    }
+
+    .tabulator-row.tabulator-group {
+        border: none !important;
+        box-shadow: none;
+    }
 
 </style>
 
