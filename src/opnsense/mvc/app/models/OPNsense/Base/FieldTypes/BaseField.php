@@ -130,7 +130,6 @@ abstract class BaseField
      */
     private $internalParentModel = null;
 
-
     /**
      * @param array $node input array to traverse
      * @param string $path reference to information to be fetched (e.g. my.data)
@@ -713,9 +712,11 @@ abstract class BaseField
     public function getNodes()
     {
         $result = [];
+
         foreach ($this->iterateItems() as $key => $node) {
             $result[$key] = $node->isContainer() ? $node->getNodes() : $node->getNodeData();
         }
+
         return $result;
     }
 
@@ -728,6 +729,7 @@ abstract class BaseField
     public function getNodeContent()
     {
         $result = [];
+
         foreach ($this->iterateItems() as $key => $node) {
             if ($node->isContainer()) {
                 $result[$key] = $node->getNodeContent();
@@ -739,6 +741,7 @@ abstract class BaseField
                 }
             }
         }
+
         return $result;
     }
 
