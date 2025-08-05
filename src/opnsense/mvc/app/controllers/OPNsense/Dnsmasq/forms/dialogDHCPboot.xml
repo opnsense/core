@@ -4,9 +4,6 @@
         <label>Interface</label>
         <type>dropdown</type>
         <help>This adds a single interface as tag so this DHCP boot option can match the interface of a DHCP range.</help>
-        <grid_view>
-            <visible>false</visible>
-        </grid_view>
     </field>
     <field>
         <id>boot.tag</id>

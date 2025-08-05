@@ -4,9 +4,6 @@
         <label>Interface</label>
         <type>dropdown</type>
         <help>Interface to serve this range</help>
-        <grid_view>
-            <visible>false</visible>
-        </grid_view>
     </field>
     <field>
         <id>range.set_tag</id>
@@ -158,6 +155,7 @@
         <type>checkbox</type>
         <help>Ignore this range from being transfered or updated by ha sync.</help>
         <grid_view>
+            <visible>false</visible>
             <type>boolean</type>
             <formatter>boolean</formatter>
         </grid_view>
