@@ -130,7 +130,6 @@ abstract class BaseField
      */
     private $internalParentModel = null;
 
-
     /**
      * @param array $node input array to traverse
      * @param string $path reference to information to be fetched (e.g. my.data)
