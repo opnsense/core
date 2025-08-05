@@ -50,11 +50,15 @@ ensure-stable:
 		${GIT} config branch.${CORE_STABLE}.remote origin; \
 	fi
 
+.if exists(${.CURDIR}/Private)
+GIT_PRIVATE=	':!Private/'
+.endif
+
 diff: ensure-stable
 	@if [ "$$(${GIT} tag -l | grep -cx '${diff_ARGS:[1]}')" = "1" ]; then \
-		${GIT} diff --stat -p ${diff_ARGS:[1]}; \
+		${GIT} diff --stat -p ${diff_ARGS:[1]} ${GIT_PRIVATE}; \
 	else \
-		${GIT} diff --stat -p ${CORE_STABLE} ${diff_ARGS}; \
+		${GIT} diff --stat -p ${CORE_STABLE} ${diff_ARGS} ${GIT_PRIVATE}; \
 	fi
 
 feed: ensure-stable
