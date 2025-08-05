@@ -368,7 +368,7 @@ $( document ).ready(function() {
             <tr>
               <td><a id="help_for_language" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Language");?></td>
               <td>
-                <select name="language" class="selectpicker" data-style="btn-default" data-dropup-auto="true" data-size="8"
+                <select name="language" class="selectpicker" data-style="btn-default" data-dropup-auto="true" data-size="10">
 <?php
                   foreach (get_locale_list() as $lcode => $ldesc):?>
                   <option value="<?=$lcode;?>" <?= $lcode == $pconfig['language'] ? 'selected="selected"' : '' ?>>
