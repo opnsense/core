@@ -1,5 +1,5 @@
 <?php
- 
+
 /*
  * Copyright (C) 2017-2018 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2014-2015 Deciso B.V.
