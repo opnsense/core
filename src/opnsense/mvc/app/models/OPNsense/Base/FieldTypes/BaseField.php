@@ -703,9 +703,11 @@ abstract class BaseField
     public function getNodes()
     {
         $result = [];
+
         foreach ($this->iterateItems() as $key => $node) {
             $result[$key] = $node->isContainer() ? $node->getNodes() : $node->getNodeData();
         }
+
         return $result;
     }
 
@@ -718,6 +720,7 @@ abstract class BaseField
     public function getNodeContent()
     {
         $result = [];
+
         foreach ($this->iterateItems() as $key => $node) {
             if ($node->isContainer()) {
                 $result[$key] = $node->getNodeContent();
@@ -729,6 +732,7 @@ abstract class BaseField
                 }
             }
         }
+
         return $result;
     }
 
