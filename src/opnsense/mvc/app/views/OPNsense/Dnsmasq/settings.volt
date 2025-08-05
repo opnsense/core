@@ -41,6 +41,24 @@
             updateServiceControlUI('dnsmasq');
         });
 
+        /**
+         * Persist collapsed Tabulator groups.
+         */
+        function rememberCollapsedGroups(table, storageKey) {
+            // restore on first build
+            const collapsed = new Set(JSON.parse(localStorage.getItem(storageKey) || "[]"));
+            table.on("tableBuilt", () => {
+                table.setGroupStartOpen(key => !collapsed.has(key));
+            });
+
+            // store every toggle
+            table.on("groupVisibilityChanged", (group, visible) => {
+                const key = group.getKey();
+                visible ? collapsed.delete(key) : collapsed.add(key);
+                localStorage.setItem(storageKey, JSON.stringify([...collapsed]));
+            });
+        }
+
         let all_grids = {};
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             let grid_ids = null;
@@ -77,31 +95,23 @@
                                     "{{formGridDHCPoption['table_id']}}",
                                     "{{formGridDHCPboot['table_id']}}"
                                 ].includes(grid_id)
-                                    ? [
-                                        // 1st level group by interface
-                                        "%interface",
-                                        // 2nd level group by tag
-                                        row => row["%tag"] || row["%set_tag"] || ""
-                                    ]
+                                    ? "%interface"
                                     : false,
                                 groupHeader: (value, count, data, group) => {
-                                    const isNested = group.getParentGroup() !== false;
-
-                                    // For %tag / %set_tag groups: suppress empty group headers
-                                    if (isNested && !value) {
-                                        return '';
-                                    }
-
-                                    // For %interface groups: show "Any" when value is empty
-                                    const displayValue = !isNested && !value ? "{{ lang._('Any') }}" : value;
+                                    // Show "Any" when interface is empty
+                                    const displayValue = !value ? "{{ lang._('Any') }}" : value;
 
                                     const icons = {
-                                        tag: '<i class="fa fa-tag text-primary"></i>',
                                         interface: '<i class="fa fa-ethernet text-info"></i>',
                                     };
 
-                                    const key = isNested ? 'tag' : 'interface';
-                                    return `${icons[key]} ${displayValue}`;
+                                    return `${icons.interface} ${displayValue}`;
+                                },
+                                groupStartOpen: function (key) {
+                                    const collapsed = JSON.parse(
+                                        localStorage.getItem(`dnsmasq-${grid_id}-collapsed`) || "[]"
+                                    );
+                                    return !collapsed.includes(key);      // start closed only if remembered
                                 },
                             },
                             options: {
@@ -114,8 +124,12 @@
                                     }
                                     return request;
                                 }
-                            }
+                            },
                         });
+
+                        const table = $("#" + grid_id)[0].tabulator || all_grids[grid_id].data('UIBootgrid').table;
+                        rememberCollapsedGroups(table, `dnsmasq-${grid_id}-collapsed`);
+
                         /* insert headers when multiple grids exist on a single tab */
                         let header = $("#" + grid_id + "-header");
                         if (grid_id === 'option' ) {
@@ -158,6 +172,19 @@
                             });
                         })
                     }
+
+                    // track visibility of groupBy tabulator rows
+                    const table = $("#" + grid_id)[0].tabulator
+                        || all_grids[grid_id].data('UIBootgrid').table;
+
+                    table.on("groupVisibilityChanged", (group, visible) => {
+                        const key       = group.getKey();
+                        const collapsed = new Set(
+                            JSON.parse(localStorage.getItem(`dnsmasq-${grid_id}-collapsed`) || "[]")
+                        );
+                        visible ? collapsed.delete(key) : collapsed.add(key);
+                        localStorage.setItem(`dnsmasq-${grid_id}-collapsed`, JSON.stringify([...collapsed]));
+                    });
                 });
             }
         });
@@ -304,20 +331,12 @@
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
     }
-    /* Trick to hide empty groupBy header rows */
-    .tabulator-group.tabulator-group-level-1:has(> .tabulator-group-toggle:only-child) {
-        display: none;
-    }
     .tabulator-row.tabulator-group span {
         color: inherit !important;
     }
     .tabulator-row.tabulator-group {
-        font-weight: normal !important;
-    }
 
-    .tabulator-row.tabulator-group {
         border: none !important;
-        box-shadow: none;
     }
 
 </style>
