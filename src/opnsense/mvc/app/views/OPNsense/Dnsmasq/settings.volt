@@ -41,24 +41,6 @@
             updateServiceControlUI('dnsmasq');
         });
 
-        /**
-         * Persist collapsed Tabulator groups.
-         */
-        function rememberCollapsedGroups(table, storageKey) {
-            // restore on first build
-            const collapsed = new Set(JSON.parse(localStorage.getItem(storageKey) || "[]"));
-            table.on("tableBuilt", () => {
-                table.setGroupStartOpen(key => !collapsed.has(key));
-            });
-
-            // store every toggle
-            table.on("groupVisibilityChanged", (group, visible) => {
-                const key = group.getKey();
-                visible ? collapsed.delete(key) : collapsed.add(key);
-                localStorage.setItem(storageKey, JSON.stringify([...collapsed]));
-            });
-        }
-
         let all_grids = {};
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             let grid_ids = null;
@@ -107,12 +89,6 @@
 
                                     return `${icons.interface} ${displayValue}`;
                                 },
-                                groupStartOpen: function (key) {
-                                    const collapsed = JSON.parse(
-                                        localStorage.getItem(`dnsmasq-${grid_id}-collapsed`) || "[]"
-                                    );
-                                    return !collapsed.includes(key);      // start closed only if remembered
-                                },
                             },
                             options: {
                                 triggerEditFor: getUrlHash('edit'),
@@ -126,9 +102,6 @@
                                 }
                             },
                         });
-
-                        const table = $("#" + grid_id)[0].tabulator || all_grids[grid_id].data('UIBootgrid').table;
-                        rememberCollapsedGroups(table, `dnsmasq-${grid_id}-collapsed`);
 
                         /* insert headers when multiple grids exist on a single tab */
                         let header = $("#" + grid_id + "-header");
@@ -172,19 +145,6 @@
                             });
                         })
                     }
-
-                    // track visibility of groupBy tabulator rows
-                    const table = $("#" + grid_id)[0].tabulator
-                        || all_grids[grid_id].data('UIBootgrid').table;
-
-                    table.on("groupVisibilityChanged", (group, visible) => {
-                        const key       = group.getKey();
-                        const collapsed = new Set(
-                            JSON.parse(localStorage.getItem(`dnsmasq-${grid_id}-collapsed`) || "[]")
-                        );
-                        visible ? collapsed.delete(key) : collapsed.add(key);
-                        localStorage.setItem(`dnsmasq-${grid_id}-collapsed`, JSON.stringify([...collapsed]));
-                    });
                 });
             }
         });

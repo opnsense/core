@@ -98,6 +98,25 @@ $.fn.UIBootgrid = function(params) {
 
 $.fn.UIBootgrid.translations = {};
 
+/*
+ * Group-collapse persistence for Tabulator (state kept per-page+grid)
+ * Every grid starts ​collapsed. When the user opens a header we remember that key.
+ * On the next load only those remembered keys start open.
+ */
+function _rememberCollapsedGroups(tabulator, storageKey) {
+    const openSet = new Set(JSON.parse(localStorage.getItem(storageKey) || '[]'));
+
+    /* remember every toggle */
+    tabulator.on('groupVisibilityChanged', (grp, visible) => {
+        const k = grp.getKey();
+        visible ? openSet.add(k) : openSet.delete(k);
+        localStorage.setItem(storageKey, JSON.stringify([...openSet]));
+    });
+
+    /* tell Tabulator which groups begin open */
+    tabulator.setGroupStartOpen(key => openSet.has(key));
+}
+
 class UIBootgrid {
     constructor(id, options = {}, crud = {}, tabulatorOptions = {}) {
         // wrapper-specific state variables
@@ -579,7 +598,14 @@ class UIBootgrid {
 
             /* custom passed options */
             ...this.tabulatorOptions
+
         });
+
+        /* auto-enable group-collapse persistence when groupBy is active */
+        if (this.compatOptions.groupBy || this.tabulatorOptions.groupBy) {
+            const grpStoreKey = `tabulator-${this.persistenceID}-openGroups`;
+            _rememberCollapsedGroups(this.table, grpStoreKey);
+        }
     }
 
     _destroyTable() {
@@ -598,9 +624,12 @@ class UIBootgrid {
             }
         } else {
             localStorage.removeItem(`tabulator-${this.persistenceID}-persistence`);
-            Object.keys(localStorage)
-                .filter(key => key.startsWith(`tabulator-${this.persistenceID}`))
-                .forEach(key => localStorage.removeItem(key));
+              Object.keys(localStorage)
+                  .filter(key =>
+                      key.startsWith(`tabulator-${this.persistenceID}`) &&
+                      !key.endsWith('-openGroups') // <-- keep groupBy state
+                  )
+                  .forEach(key => localStorage.removeItem(key));
             this.persistence = false;
 
             if (this.options.resetButton) {
