@@ -147,7 +147,7 @@ class LinkAddressField extends BaseField
         if (Util::isIpAddress($value)) {
             $parent->ipaddr = $value;
             $parent->if = '';
-        } else {
+        } elseif (isset($parent->if)) {
             $parent->if = $value;
             $parent->ipaddr = '';
         }
