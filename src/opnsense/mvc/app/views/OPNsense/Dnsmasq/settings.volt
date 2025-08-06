@@ -290,14 +290,6 @@
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
     }
-    .tabulator-row.tabulator-group span {
-        color: inherit !important;
-    }
-    .tabulator-row.tabulator-group {
-
-        border: none !important;
-    }
-
 </style>
 
 <div id="tag_select_container" class="btn-group" style="display: none;">
