@@ -379,13 +379,13 @@
             return def;
         }
 
-        function createTopList(id, data, type, reverse_domains) {
+        function createTopList(id, data, type, reverse_domains, maxDomains = 10) {
             ajaxGet('/api/unbound/overview/is_block_list_enabled', {}, function(bl_enabled, status) {
                 /* reverse_domains refers to the domains for which the opposite action should take place,
                  * e.g. if a domain is presented that has been blocked N amount of times, but has been
                  * whitelisted at a later point in time, the action should be to block it, not whitelist it.
                  */
-                for (let i = 0; i < 10; i++) {
+                for (let i = 0; i < maxDomains; i++) {
                     let class_type = type == "pass" ? "block-domain" : "whitelist-domain";
                     let icon_type = type == "pass" ? "fa fa-ban text-danger" : "fa fa-pencil text-info";
                     let domain = Object.keys(data)[i];
@@ -427,7 +427,10 @@
         }
 
         function create_or_update_totals() {
-            ajaxGet('/api/unbound/overview/totals/10', {}, function(data, status) {
+            let maxDomains = $('#toggle-extended-domains').is(':checked') ? 50 : 10;
+            $('#top, #top-blocked').hide();
+            ajaxGet('/api/unbound/overview/totals/' + maxDomains, {}, function(data, status) {
+
                 $('.top-item').remove();
 
                 $('#totalCounter').html(data.total);
@@ -435,13 +438,15 @@
                 $('#sizeCounter').html(data.blocklist_size);
                 $('#resolvedCounter').html(data.resolved.total + " (" + data.resolved.pcnt + "%)");
 
-                createTopList('top', data.top, 'pass', new Set(data.blocklisted_domains));
-                createTopList('top-blocked', data.top_blocked, 'block', new Set(data.whitelisted_domains));
+                createTopList('top', data.top, 'pass', new Set(data.blocklisted_domains), maxDomains);
+                createTopList('top-blocked', data.top_blocked, 'block', new Set(data.whitelisted_domains), maxDomains);
 
                 $('#top li:nth-child(even)').addClass('odd-bg');
                 $('#top-blocked li:nth-child(even)').addClass('odd-bg');
 
                 $('#bannersub').html("Starting from " + (new Date(data.start_time * 1000)).toLocaleString());
+
+                $('#top, #top-blocked').fadeIn('slow');
             });
         }
 
@@ -482,6 +487,9 @@
 
                     if (window.localStorage.getItem("api.unbound.overview.logcchart") !== null) {
                         $("#toggle-log-cchart").prop('checked', window.localStorage.getItem("api.unbound.overview.logcchart") == 'true');
+                    }
+                    if (window.localStorage.getItem("api.unbound.overview.extendeddomains") !== null) {
+                        $("#toggle-extended-domains").prop('checked', window.localStorage.getItem("api.unbound.overview.extendeddomains") === 'true');
                     }
                 }
                 $('#timeperiod').selectpicker('refresh');
@@ -524,6 +532,13 @@
             }
             updateClientChart(this.checked);
         })
+
+        $("#toggle-extended-domains").change(function() {
+            if (window.localStorage) {
+                window.localStorage.setItem("api.unbound.overview.extendeddomains", this.checked);
+            }
+            create_or_update_totals();
+        });
 
         let blocklist_cb = function() {
             $(this).remove("i").html('<i class="fa fa-spinner fa-spin"></i>');
@@ -850,6 +865,14 @@
             </div>
             <div class="content-box">
                 <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row" style="padding: 15px 20px 2px;">
+                                <label style="margin-right: 5px;">{{ lang._('Show more domains') }}</label>
+                                <input type="checkbox" id="toggle-extended-domains"></input>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="top-list">
