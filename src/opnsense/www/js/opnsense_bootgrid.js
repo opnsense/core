@@ -598,7 +598,6 @@ class UIBootgrid {
 
             /* custom passed options */
             ...this.tabulatorOptions
-
         });
 
         /* auto-enable group-collapse persistence when groupBy is active */
@@ -624,12 +623,12 @@ class UIBootgrid {
             }
         } else {
             localStorage.removeItem(`tabulator-${this.persistenceID}-persistence`);
-              Object.keys(localStorage)
-                  .filter(key =>
-                      key.startsWith(`tabulator-${this.persistenceID}`) &&
-                      !key.endsWith('-openGroups') // <-- keep groupBy state
-                  )
-                  .forEach(key => localStorage.removeItem(key));
+            Object.keys(localStorage)
+                .filter(key =>
+                    key.startsWith(`tabulator-${this.persistenceID}`) &&
+                    !key.endsWith('-openGroups') // <-- keep groupBy state
+                )
+                .forEach(key => localStorage.removeItem(key));
             this.persistence = false;
 
             if (this.options.resetButton) {
