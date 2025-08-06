@@ -224,7 +224,7 @@ $( document ).ready(function() {
                   <tr>
                     <td><a id="help_for_language" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Language");?></td>
                     <td>
-                      <select name="language" class="selectpicker" data-style="btn-default">
+                      <select name="language" class="selectpicker" data-style="btn-default" data-dropup-auto="true" data-size="10">
                         <option value="" <?= empty($pconfig['language']) ? "selected='selected'" : '' ?>><?=gettext('System defaults') ?></option>
 <?php foreach (get_locale_list() as $lcode => $ldesc): ?>
                         <option value="<?= html_safe($lcode) ?>" <?= $lcode == $pconfig['language'] ? 'selected="selected"' : '' ?>><?= $ldesc ?></option>
