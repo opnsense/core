@@ -100,9 +100,8 @@
                                     }
                                     return request;
                                 }
-                            },
+                            }
                         });
-
                         /* insert headers when multiple grids exist on a single tab */
                         let header = $("#" + grid_id + "-header");
                         if (grid_id === 'option' ) {
