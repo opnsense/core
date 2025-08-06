@@ -103,18 +103,26 @@ $.fn.UIBootgrid.translations = {};
  * Every grid starts ​collapsed. When the user opens a header we remember that key.
  * On the next load only those remembered keys start open.
  */
-function _rememberCollapsedGroups(tabulator, storageKey) {
-    const openSet = new Set(JSON.parse(localStorage.getItem(storageKey) || '[]'));
+function rememberCollapsedGroupBy(tableId, storageKey) {
+    // load the remembered keys once
+    const openSet = new Set(
+        JSON.parse(localStorage.getItem(storageKey) || '[]'),
+    );
 
-    /* remember every toggle */
-    tabulator.on('groupVisibilityChanged', (grp, visible) => {
-        const k = grp.getKey();
-        visible ? openSet.add(k) : openSet.delete(k);
-        localStorage.setItem(storageKey, JSON.stringify([...openSet]));
-    });
+    // return the option + register the toggle listener
+    return {
+        groupStartOpen: key => openSet.has(key),
 
-    /* tell Tabulator which groups begin open */
-    tabulator.setGroupStartOpen(key => openSet.has(key));
+        // the helper also exposes a hook to attach after the
+        // Tabulator instance exists (to record future user toggles):
+        register(tab) {
+            tab.on('groupVisibilityChanged', (grp, visible) => {
+                const k = grp.getKey();
+                visible ? openSet.add(k) : openSet.delete(k);
+                localStorage.setItem(storageKey, JSON.stringify([...openSet]));
+            });
+        },
+    };
 }
 
 class UIBootgrid {
@@ -590,6 +598,17 @@ class UIBootgrid {
     }
 
     _constructTable() {
+        /* auto-enable group-collapse persistence when groupBy is active */
+        const persist = rememberCollapsedGroupBy(
+            this.id,
+            `tabulator-${this.persistenceID}-openGroups`,
+        );
+
+        // protect caller settings
+        if (!('groupStartOpen' in this.tabulatorOptions)) {
+            this.tabulatorOptions.groupStartOpen = persist.groupStartOpen;
+        }
+
         this.table = new Tabulator(`#${this.id}`, {
             ...this.tabulatorDefaults(),
 
@@ -600,11 +619,8 @@ class UIBootgrid {
             ...this.tabulatorOptions
         });
 
-        /* auto-enable group-collapse persistence when groupBy is active */
-        if (this.compatOptions.groupBy || this.tabulatorOptions.groupBy) {
-            const grpStoreKey = `tabulator-${this.persistenceID}-openGroups`;
-            _rememberCollapsedGroups(this.table, grpStoreKey);
-        }
+        // start tracking groupBy toggles
+        persist.register(this.table);
     }
 
     _destroyTable() {
