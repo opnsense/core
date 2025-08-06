@@ -65,7 +65,7 @@ if __name__ == '__main__':
     for filename in filenames:
         if not os.path.isfile(filename):
             continue
-        with open(filename, 'r') as csvfile:
+        with open(filename, 'r', encoding='utf-8',  errors='ignore') as csvfile:
             for idx, record in enumerate(csv.reader(csvfile, delimiter=',', quotechar='"')):
                 rec_key = ','.join(record[:2])
                 if idx == 0:

@@ -54,8 +54,8 @@ class DomainIPField extends NetworkField
             }
         } elseif ($value == '!') {
             return parent::setValue('');
-        } else {
-            return parent::setValue($value);
         }
+
+        return parent::setValue($value);
     }
 }
