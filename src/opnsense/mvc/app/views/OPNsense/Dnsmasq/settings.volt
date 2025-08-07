@@ -65,6 +65,11 @@
             if (grid_ids !== null) {
                 grid_ids.forEach(function (grid_id, index) {
                     if (all_grids[grid_id] === undefined) {
+                        const isGroupedGrid = [
+                            "{{formGridDHCPrange['table_id']}}",
+                            "{{formGridDHCPoption['table_id']}}",
+                            "{{formGridDHCPboot['table_id']}}"
+                        ].includes(grid_id);
                         all_grids[grid_id] = $("#"+grid_id).UIBootgrid({
                             'search':'/api/dnsmasq/settings/search_' + grid_id,
                             'get':'/api/dnsmasq/settings/get_' + grid_id + '/',
@@ -72,13 +77,7 @@
                             'add':'/api/dnsmasq/settings/add_' + grid_id + '/',
                             'del':'/api/dnsmasq/settings/del_' + grid_id + '/',
                             tabulatorOptions: {
-                                groupBy: [
-                                    "{{formGridDHCPrange['table_id']}}",
-                                    "{{formGridDHCPoption['table_id']}}",
-                                    "{{formGridDHCPboot['table_id']}}"
-                                ].includes(grid_id)
-                                    ? "%interface"
-                                    : false,
+                                groupBy: isGroupedGrid ? "%interface" : false,
                                 groupHeader: (value, count, data, group) => {
                                     // Show "Any" when interface is empty
                                     const displayValue = !value ? "{{ lang._('Any') }}" : value;
@@ -93,6 +92,8 @@
                             options: {
                                 triggerEditFor: getUrlHash('edit'),
                                 initialSearchPhrase: getUrlHash('search'),
+                                // Remove pagination from GroupBy
+                                rowCount: isGroupedGrid ? [-1] : undefined,
                                 requestHandler: function(request) {
                                     const selectedTags = $('#tag_select').val();
                                     if (selectedTags && selectedTags.length > 0) {
