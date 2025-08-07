@@ -83,7 +83,7 @@
                                     const displayValue = !value ? "{{ lang._('Any') }}" : value;
 
                                     const icons = {
-                                        interface: '<i class="fa fa-ethernet text-info"></i>',
+                                        interface: '<i class="fa fa-ethernet fa-sm text-info"></i>',
                                     };
 
                                     return `${icons.interface} ${displayValue}`;
