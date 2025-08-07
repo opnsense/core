@@ -284,8 +284,8 @@
 <!-- Navigation bar -->
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li><a data-toggle="tab" href="#general">{{ lang._('General') }}</a></li>
-    <li><a data-toggle="tab" href="#hosts">{{ lang._('Hosts') }}</a></li>
     <li><a data-toggle="tab" href="#domains">{{ lang._('Domains') }}</a></li>
+    <li><a data-toggle="tab" href="#hosts">{{ lang._('Hosts') }}</a></li>
     <li><a data-toggle="tab" href="#dhcpranges">{{ lang._('DHCP ranges') }}</a></li>
     <li><a data-toggle="tab" href="#dhcpoptions">{{ lang._('DHCP options') }}</a></li>
     <li><a data-toggle="tab" href="#dhcptags">{{ lang._('DHCP tags') }}</a></li>
