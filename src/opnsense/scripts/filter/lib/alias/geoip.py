@@ -34,6 +34,7 @@ import ujson
 import requests
 import zipfile
 import syslog
+from hashlib import md5
 from email.message import EmailMessage
 from configparser import ConfigParser
 from .base import BaseContentParser
@@ -43,6 +44,7 @@ class GEOIP(BaseContentParser):
     _updater_conf = '/usr/local/etc/filter_geoip.conf'
     _stats_output = '/usr/local/share/GeoIP/alias.stats'
     _target_dir = '/usr/local/share/GeoIP/alias'
+    _src_hash_file = '/usr/local/share/GeoIP/alias._source_hash.md5'
 
     @classmethod
     def process_zip(cls, tmp_stream, result):
@@ -133,14 +135,24 @@ class GEOIP(BaseContentParser):
 
 
     @classmethod
-    def _update(cls):
+    def _source_url(cls):
         url = None
         if os.path.exists(cls._updater_conf):
             cnf = ConfigParser()
             cnf.read(cls._updater_conf)
             if cnf.has_section('settings') and cnf.has_option('settings', 'url'):
                 url = cnf.get('settings', 'url').strip()
+        return url
 
+    @classmethod
+    def _source_hash(cls):
+        uri = cls._source_url()
+        if uri:
+            return md5(uri.encode()).hexdigest()
+
+    @classmethod
+    def _update(cls):
+        url = cls._source_url()
         result = {
             'address_count': 0 ,
             'file_count': 0,
@@ -166,6 +178,8 @@ class GEOIP(BaseContentParser):
                         cls.process_zip(tmp_stream, result)
                     elif filename.endswith('.gz'):
                         cls.process_gzip(tmp_stream, result)
+                    # dump location hash (detect changes in geoIP source selection)
+                    open(cls._src_hash_file, 'w').write(cls._source_hash())
 
         open(cls._stats_output,'w').write(ujson.dumps(result))
         return result
@@ -177,11 +191,16 @@ class GEOIP(BaseContentParser):
     def download(self):
         return self._update()
 
+    def source_changed(self):
+        if os.path.isfile(self._src_hash_file):
+            return open(self._src_hash_file).read() != self._source_hash()
+        return True
+
     def iter_addresses(self, country):
         do_update = True
         if os.path.isfile('%s/NL-IPv4' % self._target_dir):
             fstat = os.stat('%s/NL-IPv4' % self._target_dir)
-            if (time.time() - fstat.st_mtime) < (86400 - 90) and fstat.st_size > 1024:
+            if (time.time() - fstat.st_mtime) < (86400 - 90) and fstat.st_size > 1024 and not self.source_changed():
                 do_update = False
         if do_update:
             syslog.syslog(
