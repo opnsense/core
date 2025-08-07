@@ -100,29 +100,69 @@ $.fn.UIBootgrid.translations = {};
 
 /*
  * Group-collapse persistence for Tabulator (state kept per-page+grid)
- * Every grid starts ​collapsed. When the user opens a header we remember that key.
+ * Every grid starts collapsed. When the user opens a header we remember that key.
  * On the next load only those remembered keys start open.
+ *
+ * @param {string} tableId - ID of the Tabulator instance (not used directly)
+ * @param {string} storageKey - LocalStorage key to store the expanded group keys
+ * @returns {object} - Configuration for Tabulator (groupStartOpen + register hook)
  */
-function rememberCollapsedGroupBy(tableId, storageKey) {
-    // load the remembered keys once
-    const openSet = new Set(
-        JSON.parse(localStorage.getItem(storageKey) || '[]'),
+function persistGroupBy(tableId, storageKey) {
+    // Load remembered open group keys
+    const rememberedGroupKeys = new Set(
+        JSON.parse(localStorage.getItem(storageKey) || '[]')
     );
 
-    // return the option + register the toggle listener
     return {
-        groupStartOpen: key => openSet.has(key),
+        groupStartOpen: groupKey => rememberedGroupKeys.has(groupKey),
 
-        // the helper also exposes a hook to attach after the
-        // Tabulator instance exists (to record future user toggles):
-        register(tab) {
-            tab.on('groupVisibilityChanged', (grp, visible) => {
-                const k = grp.getKey();
-                visible ? openSet.add(k) : openSet.delete(k);
-                localStorage.setItem(storageKey, JSON.stringify([...openSet]));
+        // Hook to attach after Tabulator is initialized
+        register(tabulatorInstance) {
+            tabulatorInstance.on('groupVisibilityChanged', (groupComponent, isVisible) => {
+                const groupKey = groupComponent.getKey();
+                if (isVisible) {
+                    rememberedGroupKeys.add(groupKey);
+                } else {
+                    rememberedGroupKeys.delete(groupKey);
+                }
+                localStorage.setItem(storageKey, JSON.stringify([...rememberedGroupKeys]));
             });
         },
     };
+}
+
+/**
+ * Expand a specific group in a Tabulator table once after data reload.
+ * Intended for use after adding/copying a row, based on the selected option
+ * in a <select> element inside a dialog.
+ *
+ * @param {Tabulator} tableInstance - The Tabulator instance
+ * @param {string} dialogId - ID (without '#') of the dialog that contains the groupBy field
+ */
+function expandGroupBy(tableInstance, dialogId) {
+    const $dialogElement = $(`#${dialogId}`);
+    if (!$dialogElement.length) return;
+
+    // Since we groupBy e.g. %interface instead of interface, we need to adjust the field name to match
+    const groupFieldName = String(tableInstance.options.groupBy || '').replace(/^%/, '');
+    const $selectElement = $dialogElement.find(
+        `select[id$=".${groupFieldName}"], select[id="${groupFieldName}"]`
+    );
+    if (!$selectElement.length) return;
+
+    const selectedGroupKey = $selectElement.find('option:selected').text().trim();
+
+    const expandOnceAfterReload = () => {
+        tableInstance.off('dataProcessed', expandOnceAfterReload);
+        const groupToExpand = tableInstance.getGroups(true).find(group =>
+            String(group.getKey()).toLowerCase() === selectedGroupKey.toLowerCase()
+        );
+        if (groupToExpand) {
+            groupToExpand.show();
+        }
+    };
+
+    tableInstance.on('dataProcessed', expandOnceAfterReload);
 }
 
 class UIBootgrid {
@@ -599,7 +639,7 @@ class UIBootgrid {
 
     _constructTable() {
         /* auto-enable group-collapse persistence when groupBy is active */
-        const persist = rememberCollapsedGroupBy(
+        const persist = persistGroupBy(
             this.id,
             `tabulator-${this.persistenceID}-openGroups`,
         );
@@ -1702,6 +1742,7 @@ class UIBootgrid {
                         } else {
                             $("#" + editDlg).change();
                         }
+                        expandGroupBy(this.table, editDlg);
                         this._reload(true);
                         this.showSaveAlert(event);
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
@@ -1840,6 +1881,7 @@ class UIBootgrid {
                         } else {
                             $("#" + editDlg).change();
                         }
+                        expandGroupBy(this.table, editDlg);
                         this._reload(true);
                         this.showSaveAlert(event);
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
