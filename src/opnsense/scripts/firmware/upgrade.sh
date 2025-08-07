@@ -33,10 +33,10 @@ if output_cmd opnsense-update -u; then
 	if output_cmd /usr/local/etc/rc.syshook upgrade; then
 		# no pending kernels but still need a reboot
 		if ! output_cmd opnsense-update -K -c; then
-			output_reboot
+			output_reboot keep-log
 		# pending kernel applies before reboot
 		elif output_cmd opnsense-update -K; then
-			output_reboot
+			output_reboot keep-log
 		fi
 	fi
 
@@ -44,4 +44,4 @@ if output_cmd opnsense-update -u; then
 	output_cmd opnsense-update -es
 fi
 
-output_done
+output_done keep-log
