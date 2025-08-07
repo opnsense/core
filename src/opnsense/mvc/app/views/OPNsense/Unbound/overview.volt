@@ -427,7 +427,7 @@
         }
 
         function create_or_update_totals() {
-            let maxDomains = $('#toggle-extended-domains').is(':checked') ? 50 : 10;
+            let maxDomains = ($('#toggle-extended-domains').val() || 10);
             $('#top, #top-blocked').hide();
             ajaxGet('/api/unbound/overview/totals/' + maxDomains, {}, function(data, status) {
 
@@ -489,7 +489,7 @@
                         $("#toggle-log-cchart").prop('checked', window.localStorage.getItem("api.unbound.overview.logcchart") == 'true');
                     }
                     if (window.localStorage.getItem("api.unbound.overview.extendeddomains") !== null) {
-                        $("#toggle-extended-domains").prop('checked', window.localStorage.getItem("api.unbound.overview.extendeddomains") === 'true');
+                        $("#toggle-extended-domains").val(window.localStorage.getItem("api.unbound.overview.extendeddomains"));
                     }
                 }
                 $('#timeperiod').selectpicker('refresh');
@@ -535,7 +535,7 @@
 
         $("#toggle-extended-domains").change(function() {
             if (window.localStorage) {
-                window.localStorage.setItem("api.unbound.overview.extendeddomains", this.checked);
+                window.localStorage.setItem("api.unbound.overview.extendeddomains", $(this).val());
             }
             create_or_update_totals();
         });
@@ -866,10 +866,16 @@
             <div class="content-box">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-12">
-                            <div class="row" style="padding: 15px 20px 2px;">
-                                <label style="margin-right: 5px;">{{ lang._('Show more domains') }}</label>
-                                <input type="checkbox" id="toggle-extended-domains"></input>
+                        <div class="col-md-4">
+                            <div class="col-md-4 text-center" style="padding: 10px;">
+                                <label style="margin-right: 5px;">{{ lang._('Number of domains') }}</label>
+                                <select class="selectpicker" id="toggle-extended-domains" data-width="auto">
+                                    <option value="10">{{ lang._('10') }}</option>
+                                    <option value="25">{{ lang._('25') }}</option>
+                                    <option value="50">{{ lang._('50') }}</option>
+                                    <option value="75">{{ lang._('75') }}</option>
+                                    <option value="100">{{ lang._('100') }}</option>
+                                </select>
                             </div>
                         </div>
                     </div>
