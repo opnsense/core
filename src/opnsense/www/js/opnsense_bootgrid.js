@@ -143,8 +143,12 @@ function expandGroupBy(tableInstance, dialogId) {
     const $dialogElement = $(`#${dialogId}`);
     if (!$dialogElement.length) return;
 
-    // Since we groupBy e.g. %interface instead of interface, we need to adjust the field name to match
-    const groupFieldName = String(tableInstance.options.groupBy || '').replace(/^%/, '');
+    // Since we groupBy e.g. %interface instead of interface, we need to adjust the field name to match.
+    // We also only match the first level inside a groupBy array, as children will not be rendered
+    // until their parent is expanded, thus making them impossible to target recursively
+    const rawGroupBy = tableInstance.options.groupBy;
+    const firstGroupField = Array.isArray(rawGroupBy) ? rawGroupBy[0] : rawGroupBy;
+    const groupFieldName = String(firstGroupField || '').replace(/^%/, '');
     const $selectElement = $dialogElement.find(
         `select[id$=".${groupFieldName}"], select[id="${groupFieldName}"]`
     );
@@ -155,7 +159,7 @@ function expandGroupBy(tableInstance, dialogId) {
     const expandOnceAfterReload = () => {
         tableInstance.off('dataProcessed', expandOnceAfterReload);
         const groupToExpand = tableInstance.getGroups(true).find(group =>
-            String(group.getKey()).toLowerCase() === selectedGroupKey.toLowerCase()
+            String(group.getKey()).trim().toLowerCase() === selectedGroupKey.toLowerCase()
         );
         if (groupToExpand) {
             groupToExpand.show();
