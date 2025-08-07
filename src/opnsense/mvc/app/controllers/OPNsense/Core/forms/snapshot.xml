@@ -31,5 +31,8 @@
         <id>created</id>
         <label>Created</label>
         <type>ignore</type>
+        <grid_view>
+            <formatter>timestamp</formatter>
+        </grid_view>
     </field>
 </form>
