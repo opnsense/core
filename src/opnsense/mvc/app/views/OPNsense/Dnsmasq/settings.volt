@@ -100,7 +100,18 @@
                                         request['tags'] = selectedTags;
                                     }
                                     return request;
-                                }
+                                },
+                                headerFormatters: {
+                                    interface: function (column) {
+                                        return '<i class="fa fa-ethernet text-info"></i> {{ lang._("Interface") }}';
+                                    },
+                                    tag: function (column) {
+                                        return '<i class="fa fa-tag text-primary"></i> {{ lang._("Tag") }}';
+                                    },
+                                    set_tag: function (column) {
+                                        return '<i class="fa fa-tag text-primary"></i> {{ lang._("Tag [set]") }}';
+                                    },
+                                },
                             }
                         });
                         /* insert headers when multiple grids exist on a single tab */
