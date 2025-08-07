@@ -82,7 +82,7 @@
 .tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-right {
 }
 
-/* Tabulator groupBy column styles */
+/* Tabulator groupBy row styles */
 .tabulator-row.tabulator-group {
   border-top: none;
   border-bottom: 1px solid #E5E5E5;
