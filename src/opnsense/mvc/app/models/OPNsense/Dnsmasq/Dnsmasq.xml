@@ -1,6 +1,6 @@
 <model>
     <mount>/dnsmasq</mount>
-    <version>1.0.7</version>
+    <version>1.0.8</version>
     <items>
         <enable type="BooleanField"/>
         <regdhcp type="BooleanField"/>
@@ -55,6 +55,10 @@
                 <IsDNSName>Y</IsDNSName>
                 <IpAllowed>N</IpAllowed>
             </domain>
+            <local type="BooleanField">
+                <Required>Y</Required>
+                <Default>1</Default>
+            </local>
             <lease_max type="IntegerField">
                 <MinimumValue>0</MinimumValue>
             </lease_max>
