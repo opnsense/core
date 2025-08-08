@@ -53,7 +53,7 @@ class ServiceController extends ApiControllerBase
                     'id' => $service['name'] . (array_key_exists('id', $service) ? '/' . $service['id'] : ''),
                     'locked' => !empty($service['locked']) || !empty($service['nocheck']) ? 1 : 0,
                     'running' => strpos($service['status'], 'is running') !== false ? 1 : 0,
-                    'description' => $service['description'],
+                    'description' => gettext($service['description']),
                     'name' => $service['name'],
                 ];
                 $records[] = $record;
