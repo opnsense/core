@@ -119,6 +119,8 @@ class UIBootgrid {
         this.dataAvailable = false;
         this.customCommands = null;
         this.loading = false;
+        this.groupStorageKey = `tabulator-${this.persistenceID}-openGroups`;
+        this.rememberedGroupKeys = new Set(JSON.parse(localStorage.getItem(this.groupStorageKey) || '[]'));
 
         // wrapper-specific options
         this.options = {
@@ -599,7 +601,10 @@ class UIBootgrid {
         } else {
             localStorage.removeItem(`tabulator-${this.persistenceID}-persistence`);
             Object.keys(localStorage)
-                .filter(key => key.startsWith(`tabulator-${this.persistenceID}`))
+                .filter(key =>
+                    key.startsWith(`tabulator-${this.persistenceID}`) &&
+                    !key.endsWith('-openGroups') // <-- keep groupBy state
+                )
                 .forEach(key => localStorage.removeItem(key));
             this.persistence = false;
 
@@ -702,8 +707,6 @@ class UIBootgrid {
             this.tableInitialized = true;
         });
 
-
-
         this.table.on('dataProcessed', () =>  {
             this._onDataProcessed();
         });
@@ -727,6 +730,16 @@ class UIBootgrid {
                 $el.attr('title', $el.text()).tooltip({container: 'body', trigger: 'hover'}).tooltip('show');
             }
         }
+
+        this.table.on('groupVisibilityChanged', (groupComponent, isVisible) => {
+            const groupKey = groupComponent.getKey();
+            if (isVisible) {
+                this.rememberedGroupKeys.add(groupKey);
+            } else {
+                this.rememberedGroupKeys.delete(groupKey);
+            }
+            localStorage.setItem(this.groupStorageKey, JSON.stringify([...this.rememberedGroupKeys]));
+        });
 
         this.table.on('headerMouseEnter', onMouseEnter)
         this.table.on('cellMouseEnter', onMouseEnter);
@@ -1133,6 +1146,43 @@ class UIBootgrid {
         `
     }
 
+    /**
+     * Expand a specific group in a Tabulator table once after data reload.
+     * Intended for use after adding/copying a row, based on the selected option
+     * in a <select> element inside a dialog.
+     *
+     * @param {string} dialogId - ID (without '#') of the dialog that contains the groupBy field
+     */
+    expandGroupBy(dialogId) {
+        const $dialogElement = $(`#${dialogId}`);
+        if (!$dialogElement.length) return;
+
+        // Since we groupBy e.g. %interface instead of interface, we need to adjust the field name to match.
+        // We also only match the first level inside a groupBy array, as children will not be rendered
+        // until their parent is expanded, thus making them impossible to target recursively
+        const rawGroupBy = this.table.options.groupBy;
+        const firstGroupField = Array.isArray(rawGroupBy) ? rawGroupBy[0] : rawGroupBy;
+        const groupFieldName = String(firstGroupField || '').replace(/^%/, '');
+        const $selectElement = $dialogElement.find(
+            `select[id$=".${groupFieldName}"], select[id="${groupFieldName}"]`
+        );
+        if (!$selectElement.length) return;
+
+        const selectedGroupKey = $selectElement.find('option:selected').text().trim();
+
+        const expandOnceAfterReload = () => {
+            this.table.off('dataProcessed', expandOnceAfterReload);
+            const groupToExpand = this.table.getGroups(true).find(group =>
+                String(group.getKey()).trim().toLowerCase() === selectedGroupKey.toLowerCase()
+            );
+            if (groupToExpand) {
+                groupToExpand.show();
+            }
+        };
+
+        this.table.on('dataProcessed', expandOnceAfterReload);
+    }
+
     tabulatorDefaults() {
         return {
             autoResize: false,
@@ -1168,6 +1218,7 @@ class UIBootgrid {
                     $(row.getElement()).addClass('text-muted');
                 }
             },
+            groupStartOpen: groupKey => this.rememberedGroupKeys.has(groupKey),
             height: 120, /* represents the "no results found" view */
             resizable: "header",
             placeholder: this.placeholder[0],
@@ -1658,6 +1709,7 @@ class UIBootgrid {
                         } else {
                             $("#" + editDlg).change();
                         }
+                        this.expandGroupBy(editDlg);
                         this._reload(true);
                         this.showSaveAlert(event);
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
@@ -1796,6 +1848,7 @@ class UIBootgrid {
                         } else {
                             $("#" + editDlg).change();
                         }
+                        expandGroupBy(editDlg);
                         this._reload(true);
                         this.showSaveAlert(event);
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");

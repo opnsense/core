@@ -21,6 +21,7 @@
         <type>checkbox</type>
         <help>Set the above domain as local. This will configure this DNS server as authoritative; it will not forward queries to any upstream servers for this domain.</help>
         <grid_view>
+            <visible>false</visible>
             <type>boolean</type>
             <formatter>boolean</formatter>
         </grid_view>
@@ -91,6 +92,9 @@
         <label>Tag [set]</label>
         <type>dropdown</type>
         <help>Optional tag to set for requests matching this range which can be used to selectively match DHCP options. Can be left empty if options with an interface tag exist, since the client automatically receives this tag based on the interface receiving the DHCP Discover.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>host.ignore</id>
