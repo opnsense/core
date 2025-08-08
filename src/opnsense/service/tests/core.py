@@ -106,7 +106,7 @@ class TestCoreMethods(unittest.TestCase):
         self.dummysock = None
 
     def test_escape_sequence(self):
-        """ test if "end of data" is send correctly
+        """ test if "end of data" is sent correctly
         :return:
         """
         # send unknown command
