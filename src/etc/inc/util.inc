@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2023 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2025 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
@@ -785,6 +785,47 @@ function get_primary_interface_from_list($iflist = null)
     }
 
     return $ret;
+}
+
+/* XXX in practice "real interface" is called a "device" nowadays */
+function get_real_interface($interface = 'wan', $family = 'all')
+{
+    global $config;
+
+    if (empty($config['interfaces'][$interface])) {
+        /* assume the interface exists to force an error elsewhere */
+        return $family != 'both' ? $interface : [$interface];
+    }
+
+    $realif = []; /* store both: 0 => IPv4, 1 = > IPv6 (if different) */
+
+    $realif[0] = $config['interfaces'][$interface]['if'];
+
+    switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
+        case '6rd':
+        case '6to4':
+            $realif[1] = "{$interface}_stf";
+            break;
+        default:
+            break;
+    }
+
+    switch ($family) {
+    case 'inet6':
+        /* select special IPv6 interface if it exists */
+        $realif = $realif[1] ?? $realif[0];
+        break;
+    case 'both':
+        /* pass array as is */
+	break;
+    case 'all':
+        /* FALLTHROUGH: XXX historic weirdness */
+    default:
+        $realif = $realif[0];
+        break;
+    }
+
+    return $realif;
 }
 
 /*
