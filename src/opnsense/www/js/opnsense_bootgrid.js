@@ -1180,7 +1180,7 @@ class UIBootgrid {
             }
         };
 
-        tableInstance.on('dataProcessed', expandOnceAfterReload);
+        this.table.on('dataProcessed', expandOnceAfterReload);
     }
 
     tabulatorDefaults() {
