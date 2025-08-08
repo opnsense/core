@@ -58,7 +58,7 @@
         font-style: italic;
     }
 
-    ul.dropdown-menu.inner > li > a > span.text  {
+    ul.dropdown-menu.inner > li > a > span.text {
         width: 100% !important;
     }
 
@@ -255,7 +255,7 @@
                         }
                     }
                 },{
-                    label:  "{{ lang._('Close') }}",
+                    label: "{{ lang._('Close') }}",
                     action: function(sender){
                         sender.close();
                     }
@@ -429,15 +429,15 @@
             $content.unbind('tokenize:tokens:change');
             $content.tokenize2().trigger('tokenize:clear');
             target.each(function () {
-               $.each($(this).val(), function(key, item){
-                   $content.tokenize2().trigger('tokenize:tokens:add', item);
-               });
+                $.each($(this).val(), function(key, item){
+                    $content.tokenize2().trigger('tokenize:tokens:add', item);
+                });
             });
             $content.tokenize2().trigger('tokenize:select');
             $content.tokenize2().trigger('tokenize:dropdown:hide');
             // link on change event back
             $content.on('tokenize:tokens:change', function(e, value){
-               $content.change();
+                $content.change();
             });
         });
 
@@ -574,9 +574,9 @@
                           message: $msg,
                           type: BootstrapDialog.TYPE_INFO,
                           buttons: [{
-                              label:  "{{ lang._('Close') }}",
-                              action: function(sender){
-                                 sender.close();
+                              label: "{{ lang._('Close') }}",
+                              action: function (sender) {
+                                  sender.close();
                               }
                           }]
                         });
@@ -621,13 +621,10 @@
         $("#aliases_stat").detach().prependTo('#service_status_container');
         $("#service_status_container").css('width', '250px');
         $("#aliases_stat").tooltip({placement: 'bottom'});
-
-
-
     });
 </script>
 
-<div id="aliases_stat"  title="{{ lang._('Current Tables Entries/Firewall Maximum Table Entries') }}">
+<div id="aliases_stat" title="{{ lang._('Current Tables Entries/Firewall Maximum Table Entries') }}">
     <div class="col-xs-1"><i class="fa fa-fw fa-info-circle"></i></div>
     <div id="entries_bar" class="progress" style="text-align: center;">
         <div id="room_left" class="progress-bar" role="progressbar" aria-valuenow="0%" aria-valuemin="0" aria-valuemax="100" style="width: 0%; z-index: 0;"></div>
@@ -649,7 +646,7 @@
                     <div class="hidden">
                         <!-- filter per type container -->
                         <div id="type_filter_container" class="btn-group">
-                            <select id="type_filter"  data-title="{{ lang._('Filter type') }}" class="selectpicker" data-size="10" data-live-search="true" multiple="multiple" data-width="200px">
+                            <select id="type_filter" data-title="{{ lang._('Filter type') }}" class="selectpicker" data-size="10" data-live-search="true" multiple="multiple" data-width="200px">
                                 <option value="host">{{ lang._('Host(s)') }}</option>
                                 <option value="network">{{ lang._('Network(s)') }}</option>
                                 <option value="port">{{ lang._('Port(s)') }}</option>
@@ -665,7 +662,7 @@
                                 <option value="internal">{{ lang._('Internal (automatic)') }}</option>
                                 <option value="external">{{ lang._('External (advanced)') }}</option>
                             </select>
-                            <select id="category_filter"  data-title="{{ lang._('Categories') }}" class="selectpicker" data-size="10" data-live-search="true" data-size="5"  multiple data-width="200px">
+                            <select id="category_filter" data-title="{{ lang._('Categories') }}" class="selectpicker" data-size="10" data-live-search="true" data-size="5" multiple data-width="200px">
                             </select>
                         </div>
                     </div>
@@ -681,16 +678,16 @@
                             <th data-column-id="expire" data-type="string">{{ lang._('Expire') }}</th>
                             <th data-column-id="current_items" data-type="string">{{ lang._('Loaded#') }}</th>
                             <th data-column-id="last_updated" data-width="150" data-formatter="timestamp" data-type="string">{{ lang._('Last updated') }}</th>
-                            <th data-column-id="eval_nomatch" data-visible="false"  data-type="numeric">{{ lang._('Unmatched') }}</th>
-                            <th data-column-id="eval_match"   data-type="numeric">{{ lang._('Matched') }}</th>
-                            <th data-column-id="in_block_p"   data-type="numeric">{{ lang._('In block pkt') }}</th>
-                            <th data-column-id="in_block_b" data-visible="false"  data-type="numeric">{{ lang._('In block bytes') }}</th>
-                            <th data-column-id="in_pass_p"   data-type="numeric">{{ lang._('In pass pkt') }}</th>
-                            <th data-column-id="in_pass_b" data-visible="false"  data-type="numeric">{{ lang._('In pass bytes') }}</th>
-                            <th data-column-id="out_block_p" data-visible="false"  data-type="numeric">{{ lang._('Out block pkt') }}</th>
-                            <th data-column-id="out_block_b" data-visible="false"  data-type="numeric">{{ lang._('Out block bytes') }}</th>
-                            <th data-column-id="out_pass_p" data-visible="false"  data-type="numeric">{{ lang._('Out pass pkt') }}</th>
-                            <th data-column-id="out_pass_b" data-visible="false"  data-type="numeric">{{ lang._('Out pass bytes') }}</th>
+                            <th data-column-id="eval_nomatch" data-visible="false" data-type="numeric">{{ lang._('Unmatched') }}</th>
+                            <th data-column-id="eval_match" data-type="numeric">{{ lang._('Matched') }}</th>
+                            <th data-column-id="in_block_p" data-type="numeric">{{ lang._('In block pkt') }}</th>
+                            <th data-column-id="in_block_b" data-visible="false" data-type="numeric">{{ lang._('In block bytes') }}</th>
+                            <th data-column-id="in_pass_p" data-type="numeric">{{ lang._('In pass pkt') }}</th>
+                            <th data-column-id="in_pass_b" data-visible="false" data-type="numeric">{{ lang._('In pass bytes') }}</th>
+                            <th data-column-id="out_block_p" data-visible="false" data-type="numeric">{{ lang._('Out block pkt') }}</th>
+                            <th data-column-id="out_block_b" data-visible="false" data-type="numeric">{{ lang._('Out block bytes') }}</th>
+                            <th data-column-id="out_pass_p" data-visible="false" data-type="numeric">{{ lang._('Out pass pkt') }}</th>
+                            <th data-column-id="out_pass_b" data-visible="false" data-type="numeric">{{ lang._('Out pass bytes') }}</th>
                             <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                         </tr>
                         </thead>
@@ -951,7 +948,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <select id="alias.authtype"  data-container="body" class="selectpicker" style="margin-bottom: 3px;"></select>
+                                        <select id="alias.authtype" data-container="body" class="selectpicker" style="margin-bottom: 3px;"></select>
                                         <input type="text" placeholder="{{lang._('Username')}}" class="form-control" size="50" id="alias.username"/>
                                         <input type="password" class="form-control" size="50" id="alias.password"/>
                                         <div class="hidden" data-for="help_for_alias.authtype">
@@ -972,7 +969,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <select  class="selectpicker" id="alias.interface" data-container="body" data-width="200px"></select>
+                                        <select class="selectpicker" id="alias.interface" data-container="body" data-width="200px"></select>
                                         <div class="hidden" data-for="help_for_alias.interface">
                                             <small>{{lang._('Select the interface for the V6 dynamic IP')}}</small>
                                         </div>
