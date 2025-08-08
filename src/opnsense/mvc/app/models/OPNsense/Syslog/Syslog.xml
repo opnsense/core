@@ -86,9 +86,7 @@
                 <hostname type="HostnameField">
                     <Required>Y</Required>
                 </hostname>
-                <certificate type="CertificateField">
-                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
-                </certificate>
+                <certificate type="CertificateField"/>
                 <port type="PortField">
                     <Required>Y</Required>
                     <Default>514</Default>

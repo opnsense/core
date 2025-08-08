@@ -148,7 +148,6 @@
                 </eap_id>
                 <certs type="CertificateField">
                     <Multiple>Y</Multiple>
-                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </certs>
                 <pubkeys type="ModelRelationField">
                     <Model>
@@ -208,12 +207,10 @@
                 </groups>
                 <certs type="CertificateField">
                     <Multiple>Y</Multiple>
-                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </certs>
                 <cacerts type="CertificateField">
                     <type>ca</type>
                     <Multiple>Y</Multiple>
-                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </cacerts>
                 <pubkeys type="ModelRelationField">
                     <Model>

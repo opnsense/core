@@ -55,9 +55,7 @@
                     <Required>Y</Required>
                     <Default>1</Default>
                 </concurrentlogins>
-                <certificate type="CertificateField">
-                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
-                </certificate>
+                <certificate type="CertificateField"/>
                 <servername type="TextField">
                     <Mask>/^([0-9a-zA-Z.,_\-]){0,1024}$/u</Mask>
                     <ValidationMessage>Please enter a valid servername, ip address or leave this option blank</ValidationMessage>
