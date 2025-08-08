@@ -1,5 +1,15 @@
 <form>
     <field>
+        <id>option.interface</id>
+        <label>Interface</label>
+        <type>dropdown</type>
+        <style>selectpicker style_set</style>
+        <help>This adds a single interface as tag so this DHCP option can match the interface of a DHCP range.</help>
+        <grid_view>
+            <sequence>10</sequence>
+        </grid_view>
+    </field>
+    <field>
         <id>option.type</id>
         <label>Type</label>
         <type>dropdown</type>
@@ -18,18 +28,15 @@
         <help>DHCPv6 option to offer to the client.</help>
     </field>
     <field>
-        <id>option.interface</id>
-        <label>Interface</label>
-        <type>dropdown</type>
-        <style>selectpicker style_set</style>
-        <help>This adds a single interface as tag so this DHCP option can match the interface of a DHCP range.</help>
-    </field>
-    <field>
         <id>option.tag</id>
         <label>Tag</label>
         <type>select_multiple</type>
         <help>If the optional tags are given then this option is only sent when all the tags are matched. Can be optionally combined with an interface tag.</help>
         <style>selectpicker style_set</style>
+        <grid_view>
+            <sequence>20</sequence>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>option.set_tag</id>
@@ -37,6 +44,10 @@
         <type>dropdown</type>
         <help>Tag to set for requests matching this range which can be used to selectively match DHCP options</help>
         <style>selectpicker style_match</style>
+        <grid_view>
+            <sequence>30</sequence>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>option.value</id>
@@ -51,6 +62,7 @@
         <help>Always send the option, also when the client does not ask for it in the parameter request list.</help>
         <style>style_set</style>
         <grid_view>
+            <visible>false</visible>
             <type>boolean</type>
             <formatter>boolean</formatter>
         </grid_view>
