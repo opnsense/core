@@ -98,77 +98,6 @@ $.fn.UIBootgrid = function(params) {
 
 $.fn.UIBootgrid.translations = {};
 
-/*
- * Group-collapse persistence for Tabulator (state kept per-page+grid)
- * Every grid starts collapsed. When the user opens a header we remember that key.
- * On the next load only those remembered keys start open.
- *
- * @param {string} tableId - ID of the Tabulator instance (not used directly)
- * @param {string} storageKey - LocalStorage key to store the expanded group keys
- * @returns {object} - Configuration for Tabulator (groupStartOpen + register hook)
- */
-function persistGroupBy(tableId, storageKey) {
-    // Load remembered open group keys
-    const rememberedGroupKeys = new Set(
-        JSON.parse(localStorage.getItem(storageKey) || '[]')
-    );
-
-    return {
-        groupStartOpen: groupKey => rememberedGroupKeys.has(groupKey),
-
-        // Hook to attach after Tabulator is initialized
-        register(tabulatorInstance) {
-            tabulatorInstance.on('groupVisibilityChanged', (groupComponent, isVisible) => {
-                const groupKey = groupComponent.getKey();
-                if (isVisible) {
-                    rememberedGroupKeys.add(groupKey);
-                } else {
-                    rememberedGroupKeys.delete(groupKey);
-                }
-                localStorage.setItem(storageKey, JSON.stringify([...rememberedGroupKeys]));
-            });
-        },
-    };
-}
-
-/**
- * Expand a specific group in a Tabulator table once after data reload.
- * Intended for use after adding/copying a row, based on the selected option
- * in a <select> element inside a dialog.
- *
- * @param {Tabulator} tableInstance - The Tabulator instance
- * @param {string} dialogId - ID (without '#') of the dialog that contains the groupBy field
- */
-function expandGroupBy(tableInstance, dialogId) {
-    const $dialogElement = $(`#${dialogId}`);
-    if (!$dialogElement.length) return;
-
-    // Since we groupBy e.g. %interface instead of interface, we need to adjust the field name to match.
-    // We also only match the first level inside a groupBy array, as children will not be rendered
-    // until their parent is expanded, thus making them impossible to target recursively
-    const rawGroupBy = tableInstance.options.groupBy;
-    const firstGroupField = Array.isArray(rawGroupBy) ? rawGroupBy[0] : rawGroupBy;
-    const groupFieldName = String(firstGroupField || '').replace(/^%/, '');
-    const $selectElement = $dialogElement.find(
-        `select[id$=".${groupFieldName}"], select[id="${groupFieldName}"]`
-    );
-    if (!$selectElement.length) return;
-
-    const selectedGroupKey = $selectElement.find('option:selected').text().trim();
-
-    const expandOnceAfterReload = () => {
-        tableInstance.off('dataProcessed', expandOnceAfterReload);
-        const groupToExpand = tableInstance.getGroups(true).find(group =>
-            String(group.getKey()).trim().toLowerCase() === selectedGroupKey.toLowerCase()
-        );
-        if (groupToExpand) {
-            groupToExpand.show();
-        }
-    };
-
-    tableInstance.on('dataProcessed', expandOnceAfterReload);
-}
-
 class UIBootgrid {
     constructor(id, options = {}, crud = {}, tabulatorOptions = {}) {
         // wrapper-specific state variables
@@ -643,10 +572,7 @@ class UIBootgrid {
 
     _constructTable() {
         /* auto-enable group-collapse persistence when groupBy is active */
-        const persist = persistGroupBy(
-            this.id,
-            `tabulator-${this.persistenceID}-openGroups`,
-        );
+        const persist = this.persistGroupBy(`tabulator-${this.persistenceID}-openGroups`);
 
         // protect caller settings
         if (!('groupStartOpen' in this.tabulatorOptions)) {
@@ -664,7 +590,7 @@ class UIBootgrid {
         });
 
         // start tracking groupBy toggles
-        persist.register(this.table);
+        persist.register();
     }
 
     _destroyTable() {
@@ -1221,6 +1147,75 @@ class UIBootgrid {
         `
     }
 
+    /*
+    * Group-collapse persistence for Tabulator (state kept per-page+grid)
+    * Every grid starts collapsed. When the user opens a header we remember that key.
+    * On the next load only those remembered keys start open.
+    *
+    * @param {string} storageKey - LocalStorage key to store the expanded group keys
+    * @returns {object} - Configuration for Tabulator (groupStartOpen + register hook)
+    */
+    persistGroupBy(storageKey) {
+        // Load remembered open group keys
+        const rememberedGroupKeys = new Set(
+            JSON.parse(localStorage.getItem(storageKey) || '[]')
+        );
+
+        return {
+            groupStartOpen: groupKey => rememberedGroupKeys.has(groupKey),
+
+            // Hook to attach after Tabulator is initialized
+            register: () => {
+                this.table.on('groupVisibilityChanged', (groupComponent, isVisible) => {
+                    const groupKey = groupComponent.getKey();
+                    if (isVisible) {
+                        rememberedGroupKeys.add(groupKey);
+                    } else {
+                        rememberedGroupKeys.delete(groupKey);
+                    }
+                    localStorage.setItem(storageKey, JSON.stringify([...rememberedGroupKeys]));
+                });
+            },
+        };
+    }
+
+    /**
+     * Expand a specific group in a Tabulator table once after data reload.
+     * Intended for use after adding/copying a row, based on the selected option
+     * in a <select> element inside a dialog.
+     *
+     * @param {string} dialogId - ID (without '#') of the dialog that contains the groupBy field
+     */
+    expandGroupBy(dialogId) {
+        const $dialogElement = $(`#${dialogId}`);
+        if (!$dialogElement.length) return;
+
+        // Since we groupBy e.g. %interface instead of interface, we need to adjust the field name to match.
+        // We also only match the first level inside a groupBy array, as children will not be rendered
+        // until their parent is expanded, thus making them impossible to target recursively
+        const rawGroupBy = this.table.options.groupBy;
+        const firstGroupField = Array.isArray(rawGroupBy) ? rawGroupBy[0] : rawGroupBy;
+        const groupFieldName = String(firstGroupField || '').replace(/^%/, '');
+        const $selectElement = $dialogElement.find(
+            `select[id$=".${groupFieldName}"], select[id="${groupFieldName}"]`
+        );
+        if (!$selectElement.length) return;
+
+        const selectedGroupKey = $selectElement.find('option:selected').text().trim();
+
+        const expandOnceAfterReload = () => {
+            this.table.off('dataProcessed', expandOnceAfterReload);
+            const groupToExpand = this.table.getGroups(true).find(group =>
+                String(group.getKey()).trim().toLowerCase() === selectedGroupKey.toLowerCase()
+            );
+            if (groupToExpand) {
+                groupToExpand.show();
+            }
+        };
+
+        tableInstance.on('dataProcessed', expandOnceAfterReload);
+    }
+
     tabulatorDefaults() {
         return {
             autoResize: false,
@@ -1746,7 +1741,7 @@ class UIBootgrid {
                         } else {
                             $("#" + editDlg).change();
                         }
-                        expandGroupBy(this.table, editDlg);
+                        this.expandGroupBy(editDlg);
                         this._reload(true);
                         this.showSaveAlert(event);
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
@@ -1885,7 +1880,7 @@ class UIBootgrid {
                         } else {
                             $("#" + editDlg).change();
                         }
-                        expandGroupBy(this.table, editDlg);
+                        expandGroupBy(editDlg);
                         this._reload(true);
                         this.showSaveAlert(event);
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
