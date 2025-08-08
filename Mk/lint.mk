@@ -92,6 +92,9 @@ lint-model:
 		(xmllint $${MODEL} --xpath '//ValidationMessage[not(substring(., string-length(.), 1) = ".")]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
 			echo "$${MODEL}: $${LINE} does not end with a dot"; \
 		done; \
+		(xmllint $${MODEL} --xpath '/model/description' 2> /dev/null | wc -l | awk '{ print $$1 }' | grep -v '^1$$' || true) | while read LINE; do \
+			echo "$${MODEL}: <description/> is not on a single line or missing"; \
+		done; \
 	done
 .endif
 .endfor
