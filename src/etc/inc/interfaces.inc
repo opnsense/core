@@ -3539,31 +3539,6 @@ function interface_get_wireless_base($wlif)
     }
 }
 
-function get_real_interface($interface = 'wan', $family = 'all')
-{
-    global $config;
-
-    if (empty($config['interfaces'][$interface])) {
-        /* assume the interface exists to force an error elsewhere */
-        return $interface;
-    }
-
-    $realif = $config['interfaces'][$interface]['if'];
-
-    if ($family == 'inet6') {
-        switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
-            case '6rd':
-            case '6to4':
-                $realif = "{$interface}_stf";
-                break;
-            default:
-                break;
-        }
-    }
-
-    return $realif;
-}
-
 function get_interface_number_track6($wanif, $targetif)
 {
     $list = link_interface_to_track6($wanif);

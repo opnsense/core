@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017 Deciso B.V.
+ * Copyright (C) 2017-2025 Deciso B.V.
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>
  * Copyright (C) 2006 Peter Allgeyer <allgeyer@web.de>
@@ -114,37 +114,41 @@ function filter_configure()
 function ifgroup_setup()
 {
     global $config;
-    $all_ifgroups = array();
-    $all_ifs = array();
+
+    $all_ifgroups = [];
+    $all_ifs = [];
+
     $interface_details = legacy_interfaces_details();
+
     if (isset($config['ifgroups']['ifgroupentry'])) {
         foreach ($config['ifgroups']['ifgroupentry'] as $group) {
-            $all_ifgroups[$group['ifname']] = array();
+            $all_ifgroups[$group['ifname']] = [];
             foreach (preg_split('/[ |,]+/', $group['members']) as $member) {
                 if (!empty($config['interfaces'][$member])) {
-                    $if = $config['interfaces'][$member]['if'];
-                    if (!isset($all_ifs[$if])) {
-                        $all_ifs[$if] = array();
+                    foreach (get_real_interface($member, 'both') as $if) {
+                        if (!isset($all_ifs[$if])) {
+                            $all_ifs[$if] = [];
+                        }
+                        $all_ifs[$if][] = $group['ifname'];
+                        $all_ifgroups[$group['ifname']][] = $if;
                     }
-                    $all_ifs[$if][] = $group['ifname'];
-                    $all_ifgroups[$group['ifname']][] = $if;
                 }
             }
         }
     }
     foreach ($interface_details as $intf => $details) {
-        $thisifgroups = !empty($details['groups']) ? $details['groups'] : array();
+        $thisifgroups = !empty($details['groups']) ? $details['groups'] : [];
         foreach ($thisifgroups as $ifgroup) {
             if (isset($all_ifgroups[$ifgroup]) && !in_array($intf, $all_ifgroups[$ifgroup])) {
                 // detach
-                mwexecf('/sbin/ifconfig %s -group %s', array($intf, $ifgroup));
+                mwexecf('/sbin/ifconfig %s -group %s', [$intf, $ifgroup]);
             }
         }
         if (!empty($all_ifs[$intf])) {
             foreach ($all_ifs[$intf] as $ifgroup) {
                 if (!in_array($ifgroup, $thisifgroups)) {
                     // attach
-                    mwexecf('/sbin/ifconfig %s group %s', array($intf, $ifgroup));
+                    mwexecf('/sbin/ifconfig %s group %s', [$intf, $ifgroup]);
                 }
             }
         }
