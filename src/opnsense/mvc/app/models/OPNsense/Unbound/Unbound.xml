@@ -108,11 +108,11 @@
             <insecuredomain type="CSVListField"/>
             <msgcachesize type="TextField">
                 <Mask>/[0-9]+[kmg]?/i</Mask>
-                <ValidationMessage>The cache size should be numeric, optionally appended with 'k', 'm', or 'g'</ValidationMessage>
+                <ValidationMessage>The cache size should be numeric, optionally appended with 'k', 'm', or 'g'.</ValidationMessage>
             </msgcachesize>
             <rrsetcachesize type="TextField">
                 <Mask>/[0-9]+[kmg]?/i</Mask>
-                <ValidationMessage>The cache size should be numeric, optionally appended with 'k', 'm', or 'g'</ValidationMessage>
+                <ValidationMessage>The cache size should be numeric, optionally appended with 'k', 'm', or 'g'.</ValidationMessage>
             </rrsetcachesize>
             <outgoingnumtcp type="NumericField"/>
             <incomingnumtcp type="NumericField"/>
@@ -145,7 +145,7 @@
                 </enabled>
                 <name type="TextField">
                     <Required>Y</Required>
-                    <ValidationMessage>An Access list name is required</ValidationMessage>
+                    <ValidationMessage>An Access list name is required.</ValidationMessage>
                 </name>
                 <action type="OptionField">
                     <Default>allow</Default>

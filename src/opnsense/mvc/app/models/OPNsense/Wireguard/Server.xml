@@ -21,7 +21,7 @@
                 <pubkey type="Base64Field"/>
                 <privkey type="Base64Field">
                     <Required>Y</Required>
-                    <ValidationMessage>A private key is required</ValidationMessage>
+                    <ValidationMessage>A private key is required.</ValidationMessage>
                 </privkey>
                 <port type="PortField"/>
                 <mtu type="IntegerField">
