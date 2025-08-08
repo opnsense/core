@@ -1,6 +1,7 @@
 <model>
     <mount>//OPNsense/Syslog</mount>
     <version>1.0.2</version>
+    <description>System logging settings</description>
     <items>
         <general>
             <enabled type="BooleanField">

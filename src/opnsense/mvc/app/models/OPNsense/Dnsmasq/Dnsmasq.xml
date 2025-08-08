@@ -1,5 +1,6 @@
 <model>
     <mount>/dnsmasq</mount>
+    <description>Dnsmasq DNS and DHCP</description>
     <version>1.0.8</version>
     <items>
         <enable type="BooleanField"/>
