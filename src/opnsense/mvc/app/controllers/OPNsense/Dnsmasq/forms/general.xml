@@ -155,6 +155,12 @@
         <help>To ensure that all names have a domain part, there must be a default domain specified when DHCP FQDN is set. Leave empty to use the system domain.</help>
     </field>
     <field>
+        <id>dnsmasq.dhcp.local</id>
+        <label>DHCP local domain</label>
+        <type>checkbox</type>
+        <help>Sets all DHCP domains as local. This will configure this DNS server as authoritative; it will not forward queries to any upstream servers for these domains.</help>
+    </field>
+    <field>
         <id>dnsmasq.dhcp.lease_max</id>
         <label>DHCP max leases</label>
         <type>text</type>
