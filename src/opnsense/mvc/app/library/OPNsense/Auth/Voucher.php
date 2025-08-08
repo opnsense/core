@@ -114,8 +114,8 @@ class Voucher extends Base implements IAuthConnector
                 create index idx_voucher_group on vouchers(vouchergroup);
             ";
             $this->dbHandle->exec($sql_create);
-            chown($db_path, 'wwwonly'); /* XXX frontend owns file */
-            chgrp($db_path, 'wheel'); /* XXX backend can work with it */
+            @chown($db_path, 'wwwonly'); /* XXX frontend owns file */
+            @chgrp($db_path, 'wheel'); /* XXX backend can work with it */
         } elseif (count($known_fields) < 7) {
             // changed database, add columns when voucher table is incomplete
             if (!in_array("expirytime", $known_fields)) {
