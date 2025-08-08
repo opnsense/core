@@ -10,7 +10,7 @@
             </disabled>
             <name type="TextField">
                 <Required>Y</Required>
-                <ValidationMessage>A valid gateway name must be specified. The name must be less than 32 characters long and may only consist of the following characters: a-z, A-Z, 0-9, _</ValidationMessage>
+                <ValidationMessage>A valid gateway name must be specified. The name may only consist of the characters "a-zA-Z0-9_" and must be less than 32 characters long.</ValidationMessage>
                 <Mask>/^[a-zA-Z0-9_\-]{1,32}$/</Mask>
                 <Constraints>
                     <check001>

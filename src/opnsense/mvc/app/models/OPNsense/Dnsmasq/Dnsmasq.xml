@@ -203,7 +203,7 @@
             <subnet_mask type="NetworkField">
                 <NetMaskAllowed>N</NetMaskAllowed>
                 <AddressFamily>ipv4</AddressFamily>
-                <ValidationMessage>Please enter a valid IPv4 subnet mask like 255.255.255.0</ValidationMessage>
+                <ValidationMessage>Please enter a valid IPv4 subnet mask like 255.255.255.0.</ValidationMessage>
             </subnet_mask>
             <constructor type="InterfaceField"/>
             <mode type="OptionField">

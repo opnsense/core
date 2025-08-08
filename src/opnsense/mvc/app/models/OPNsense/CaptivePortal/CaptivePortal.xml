@@ -12,7 +12,7 @@
                 <zoneid type="AutoNumberField">
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>19</MaximumValue>
-                    <ValidationMessage>Maximum number of zones reached</ValidationMessage>
+                    <ValidationMessage>Maximum number of zones reached.</ValidationMessage>
                     <Required>Y</Required>
                 </zoneid>
                 <interfaces type="InterfaceField">
@@ -23,7 +23,7 @@
                         <enable>/^(?!0).*$/</enable>
                         <ipaddr>/^((?!dhcp).)*$/</ipaddr>
                     </filters>
-                    <ValidationMessage>At least one interface must be selected</ValidationMessage>
+                    <ValidationMessage>At least one interface must be selected.</ValidationMessage>
                 </interfaces>
                 <disableRules type="BooleanField">
                     <Default>0</Default>
@@ -42,14 +42,14 @@
                     <Default>0</Default>
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>10080</MaximumValue>
-                    <ValidationMessage>Idle timeout, in minutes, must be between 0 (no timeout) and 10080 (a week)</ValidationMessage>
+                    <ValidationMessage>Idle timeout, in minutes, must be between 0 (no timeout) and 10080 (a week).</ValidationMessage>
                 </idletimeout>
                 <hardtimeout type="IntegerField">
                     <Required>Y</Required>
                     <Default>0</Default>
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>10080</MaximumValue>
-                    <ValidationMessage>Hard timeout, in minutes, must be between 0 (no timeout) and 10080 (a week)</ValidationMessage>
+                    <ValidationMessage>Hard timeout, in minutes, must be between 0 (no timeout) and 10080 (a week).</ValidationMessage>
                 </hardtimeout>
                 <concurrentlogins type="BooleanField">
                     <Required>Y</Required>
@@ -58,7 +58,7 @@
                 <certificate type="CertificateField"/>
                 <servername type="TextField">
                     <Mask>/^([0-9a-zA-Z.,_\-]){0,1024}$/u</Mask>
-                    <ValidationMessage>Please enter a valid servername, ip address or leave this option blank</ValidationMessage>
+                    <ValidationMessage>Please enter a valid servername, ip address or leave this option blank.</ValidationMessage>
                 </servername>
                 <allowedAddresses type="NetworkField">
                     <AsList>Y</AsList>
@@ -79,7 +79,7 @@
                             <display>name</display>
                         </template>
                     </Model>
-                    <ValidationMessage>Related template not found</ValidationMessage>
+                    <ValidationMessage>Related template not found.</ValidationMessage>
                 </template>
                 <description type="DescriptionField">
                     <Required>Y</Required>
@@ -91,17 +91,17 @@
                 <fileid type="TextField">
                     <Required>Y</Required>
                     <Mask>/[0-9a-zA-Z\-]{1,255}/u</Mask>
-                    <ValidationMessage>Fileid should be an internally generated unique number</ValidationMessage>
+                    <ValidationMessage>File ID should be an internally generated unique number.</ValidationMessage>
                 </fileid>
                 <name type="TextField">
                     <Required>Y</Required>
                     <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
-                    <ValidationMessage>Template name should be a string between 1 and 255 characters</ValidationMessage>
+                    <ValidationMessage>Template name should be a string between 1 and 255 characters.</ValidationMessage>
                 </name>
                 <content type="TextField">
                     <Required>Y</Required>
                     <Mask>/[0-9a-zA-Z\+\=\/]{20,}/u</Mask>
-                    <ValidationMessage>File content should be in (base64 encoded) zip format</ValidationMessage>
+                    <ValidationMessage>File content should be in Base64-encoded ZIP format.</ValidationMessage>
                 </content>
             </template>
         </templates>
