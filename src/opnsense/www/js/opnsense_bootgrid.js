@@ -119,6 +119,8 @@ class UIBootgrid {
         this.dataAvailable = false;
         this.customCommands = null;
         this.loading = false;
+        this.groupStorageKey = `tabulator-${this.persistenceID}-openGroups`;
+        this.rememberedGroupKeys = new Set(JSON.parse(localStorage.getItem(this.groupStorageKey) || '[]'));
 
         // wrapper-specific options
         this.options = {
@@ -571,14 +573,6 @@ class UIBootgrid {
     }
 
     _constructTable() {
-        /* auto-enable group-collapse persistence when groupBy is active */
-        const persist = this.persistGroupBy(`tabulator-${this.persistenceID}-openGroups`);
-
-        // protect caller settings
-        if (!('groupStartOpen' in this.tabulatorOptions)) {
-            this.tabulatorOptions.groupStartOpen = persist.groupStartOpen;
-        }
-
         this.table = new Tabulator(`#${this.id}`, {
             ...this.tabulatorDefaults(),
 
@@ -588,9 +582,6 @@ class UIBootgrid {
             /* custom passed options */
             ...this.tabulatorOptions
         });
-
-        // start tracking groupBy toggles
-        persist.register();
     }
 
     _destroyTable() {
@@ -716,8 +707,6 @@ class UIBootgrid {
             this.tableInitialized = true;
         });
 
-
-
         this.table.on('dataProcessed', () =>  {
             this._onDataProcessed();
         });
@@ -741,6 +730,16 @@ class UIBootgrid {
                 $el.attr('title', $el.text()).tooltip({container: 'body', trigger: 'hover'}).tooltip('show');
             }
         }
+
+        this.table.on('groupVisibilityChanged', (groupComponent, isVisible) => {
+            const groupKey = groupComponent.getKey();
+            if (isVisible) {
+                this.rememberedGroupKeys.add(groupKey);
+            } else {
+                this.rememberedGroupKeys.delete(groupKey);
+            }
+            localStorage.setItem(this.groupStorageKey, JSON.stringify([...this.rememberedGroupKeys]));
+        });
 
         this.table.on('headerMouseEnter', onMouseEnter)
         this.table.on('cellMouseEnter', onMouseEnter);
@@ -1147,38 +1146,6 @@ class UIBootgrid {
         `
     }
 
-    /*
-    * Group-collapse persistence for Tabulator (state kept per-page+grid)
-    * Every grid starts collapsed. When the user opens a header we remember that key.
-    * On the next load only those remembered keys start open.
-    *
-    * @param {string} storageKey - LocalStorage key to store the expanded group keys
-    * @returns {object} - Configuration for Tabulator (groupStartOpen + register hook)
-    */
-    persistGroupBy(storageKey) {
-        // Load remembered open group keys
-        const rememberedGroupKeys = new Set(
-            JSON.parse(localStorage.getItem(storageKey) || '[]')
-        );
-
-        return {
-            groupStartOpen: groupKey => rememberedGroupKeys.has(groupKey),
-
-            // Hook to attach after Tabulator is initialized
-            register: () => {
-                this.table.on('groupVisibilityChanged', (groupComponent, isVisible) => {
-                    const groupKey = groupComponent.getKey();
-                    if (isVisible) {
-                        rememberedGroupKeys.add(groupKey);
-                    } else {
-                        rememberedGroupKeys.delete(groupKey);
-                    }
-                    localStorage.setItem(storageKey, JSON.stringify([...rememberedGroupKeys]));
-                });
-            },
-        };
-    }
-
     /**
      * Expand a specific group in a Tabulator table once after data reload.
      * Intended for use after adding/copying a row, based on the selected option
@@ -1251,6 +1218,7 @@ class UIBootgrid {
                     $(row.getElement()).addClass('text-muted');
                 }
             },
+            groupStartOpen: groupKey => this.rememberedGroupKeys.has(groupKey),
             height: 120, /* represents the "no results found" view */
             resizable: "header",
             placeholder: this.placeholder[0],
