@@ -811,18 +811,18 @@ function get_real_interface($interface = 'wan', $family = 'all')
     }
 
     switch ($family) {
-    case 'inet6':
-        /* select special IPv6 interface if it exists */
-        $realif = $realif[1] ?? $realif[0];
-        break;
-    case 'both':
-        /* pass array as is */
-	break;
-    case 'all':
-        /* FALLTHROUGH: XXX historic weirdness */
-    default:
-        $realif = $realif[0];
-        break;
+        case 'inet6':
+            /* select special IPv6 interface if it exists */
+            $realif = $realif[1] ?? $realif[0];
+            break;
+        case 'both':
+            /* pass array as is */
+            break;
+        case 'all':
+            /* FALLTHROUGH: XXX historic weirdness */
+        default:
+            $realif = $realif[0];
+            break;
     }
 
     return $realif;
