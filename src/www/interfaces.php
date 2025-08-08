@@ -261,9 +261,9 @@ function get_wireless_modes($interface)
 {
     $wireless_modes = [];
 
-    $cloned_interface = get_real_interface($interface);
-    if ($cloned_interface) {
-        $chan_list = shell_safe('/sbin/ifconfig -v %s list chan', $cloned_interface);
+    $device = get_real_interface($interface);
+    if ($device) {
+        $chan_list = shell_safe('/sbin/ifconfig -v %s list chan', $device);
         $matches = [];
 
         preg_match_all('/Channel\s+([^\s]+)\s+:\s+[^\s]+\s+[^\s]+\s+([^\s]+(?:\sht(?:\/[^\s]+)?)?)/', $chan_list, $matches);
@@ -304,9 +304,9 @@ function get_wireless_channel_info($interface)
 {
     $wireless_channels = [];
 
-    $cloned_interface = get_real_interface($interface);
-    if ($cloned_interface) {
-        $chan_list = shell_safe('/sbin/ifconfig %s list txpower', $cloned_interface);
+    $device = get_real_interface($interface);
+    if ($device) {
+        $chan_list = shell_safe('/sbin/ifconfig %s list txpower', $device);
         $matches = [];
 
         preg_match_all('/Channel\s+([^\s]+)\s+:\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+[^\s]+\s+([^\s]+)/', $chan_list, $matches);
@@ -598,9 +598,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         if (empty($toapplylist[$if])) {
             // only flush if the running config is not in our list yet
+            $devices = get_real_interface($if, 'both');
             $toapplylist[$if]['ifcfg'] = $a_interfaces[$if];
-            $toapplylist[$if]['ifcfg']['realif'] = get_real_interface($if);
-            $toapplylist[$if]['ifcfg']['realifv6'] = get_real_interface($if, "inet6");
+            $toapplylist[$if]['ifcfg']['realif'] = reset($devices);
+            $toapplylist[$if]['ifcfg']['realifv6'] = end($devices);
             $toapplylist[$if]['ppps'] = $a_ppps;
             file_put_contents('/tmp/.interfaces.apply', serialize($toapplylist));
         }
@@ -960,9 +961,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (count($input_errors) == 0) {
             $old_config = $a_interfaces[$if];
             // retrieve our interface names before anything changes
-            $old_config['realif'] = get_real_interface($if);
-            $old_config['realifv6'] = get_real_interface($if, "inet6");
-            $new_config = array();
+            $devices = get_real_interface($if, 'both');
+            $old_config['realif'] = reset($devices);
+            $old_config['realifv6'] = end($devices);
+            $new_config = [];
 
             // copy physical interface data (wireless is a strange case, partly managed via interface_sync_wireless_clones)
             $new_config['if'] = $old_config['if'];
