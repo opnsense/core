@@ -367,6 +367,11 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     $rules .= "\n";
     $rules .= "set skip on lo0\n";
     $rules .= "set skip on pfsync0\n";
+    foreach ((new \OPNsense\IPsec\Swanctl(true))->VTIs->VTI->iterateItems() as $vti) {
+        if (!$vti->skip_fw->isEmpty()) {
+            $rules .= sprintf("set skip on ipsec%s\n", $vti->reqid);
+        }
+    }
     $rules .= "\n";
     $rules .= $fw->anchorToText('ether', 'head');
     $rules .= filter_generate_scrubbing($cnfint);

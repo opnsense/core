@@ -397,6 +397,7 @@
                     <WildcardEnabled>N</WildcardEnabled>
                     <ValidationMessage>Please specify a valid address.</ValidationMessage>
                 </tunnel_remote2>
+                <skip_fw type="BooleanField"/>
                 <origin type="TextField" volatile="true"/>
                 <description type="DescriptionField"/>
             </VTI>
