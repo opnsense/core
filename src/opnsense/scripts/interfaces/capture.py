@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2022 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2022-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,6 @@ import argparse
 import glob
 import subprocess
 import os
-import sys
 import ujson
 import zipfile
 from datetime import datetime
@@ -50,6 +49,19 @@ def capture_pids(jobid):
         if line.isdigit():
             pids.append(line)
     return pids
+
+def netmap_interfaces():
+    """
+        :return: interfaces in netmap mode
+    """
+    result = []
+    this_if = None
+    for line in subprocess.run(['/sbin/ifconfig'], capture_output=True, text=True).stdout.split("\n"):
+        if not line.startswith('\t') and line.find(':') > -1:
+            this_if = line.split()[0].rstrip(':')
+        elif this_if is not None and line.find('options=') > -1 and line.find('NETMAP') > -1:
+            result.append(this_if)
+    return result
 
 
 def load_settings(filename):
@@ -102,6 +114,7 @@ if __name__ == '__main__':
             result['status'] = 'failed'
             result['status_msg'] = 'already active (pids: %s)' % ','.join(this_pids)
         else:
+            netmap_ifs = netmap_interfaces()
             result['status'] = 'ok'
             result['started_processes'] = 0
             settings = load_settings(all_jobs[cmd_args.job])
@@ -111,7 +124,7 @@ if __name__ == '__main__':
                     '/usr/sbin/daemon',
                     '-f',
                     '/usr/sbin/tcpdump',
-                    '-i', intf,
+                    '-i', intf if intf not in netmap_ifs else "netmap:%s/tr" % intf,
                     '-n',
                     '-U',
                     '-w', "%s%s_%s.pcap" % (TEMP_DIR, cmd_args.job, intf)
