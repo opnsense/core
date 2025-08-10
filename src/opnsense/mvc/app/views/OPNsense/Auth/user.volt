@@ -146,7 +146,7 @@
                 ajaxGet('/api/auth/user/new_otp_seed', {}, function(data){
                     if (data.seed) {
                         $("#user\\.otp_seed").val(data.seed);
-                        $('#otp_qrcode').empty().qrcode(data.otp_uri_template.replace('|USER|', $("#user\\.name").val()));
+                        $('#otp_qrcode').empty().qrcode(data.otp_uri_template.replace('|USER|', $("#user\\.name").val().replace(/&amp;/g, '&')));
                     }
                 });
             });
@@ -160,7 +160,7 @@
             $(".otp_default_hidden").hide();
             $('#otp_qrcode').empty();
             if ($("#user\\.otp_uri").val()) {
-                $('#otp_qrcode').qrcode($("#user\\.otp_uri").val());
+                $('#otp_qrcode').qrcode($("#user\\.otp_uri").val().replace(/&amp;/g, '&'));
             }
         });
 
