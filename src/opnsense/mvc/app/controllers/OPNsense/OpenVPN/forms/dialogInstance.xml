@@ -337,7 +337,6 @@
         <label>Data Ciphers</label>
         <type>select_multiple</type>
         <advanced>true</advanced>
-        <style>selectpicker</style>
         <help>Restrict the allowed ciphers to be negotiated to the ciphers in this list.</help>
         <grid_view>
             <visible>false</visible>
@@ -346,9 +345,8 @@
     <field>
         <id>instance.data-ciphers-fallback</id>
         <label>Data Ciphers Fallback</label>
-        <type>select_multiple</type>
+        <type>dropdown</type>
         <advanced>true</advanced>
-        <style>selectpicker</style>
         <help>
             Configure a cipher that is used to fall back to if we could not determine which cipher the peer is willing to use.
             This option should only be needed to connect to peers that are running OpenVPN 2.3 or older versions,
