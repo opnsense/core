@@ -146,7 +146,8 @@
                 ajaxGet('/api/auth/user/new_otp_seed', {}, function(data){
                     if (data.seed) {
                         $("#user\\.otp_seed").val(data.seed);
-                        $('#otp_qrcode').empty().qrcode(data.otp_uri_template.replace('|USER|', $("#user\\.name").val()));
+                        let tmp = $("<div/>").html(data.otp_uri_template).text();
+                        $('#otp_qrcode').empty().qrcode(tmp.replace('|USER|', $("#user\\.name").val()));
                     }
                 });
             });
