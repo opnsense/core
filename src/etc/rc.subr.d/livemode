@@ -63,7 +63,7 @@ if (is_install_media()) {
 
         $greeting = "Welcome!  {$namex} is running in live mode from install media.  Please\n" .
                     "login as 'root' to continue in live mode, or as 'installer' to start the\n" .
-                    "installation.  Use the default or previously-imported root password for\n" .
+                    "installation.  Use the default password 'opnsense' or previously-imported root password for\n" .
                     "both accounts.";
 
         if (!isset($config['system']['ssh']['noauto']) && is_process_running('sshd')) {
