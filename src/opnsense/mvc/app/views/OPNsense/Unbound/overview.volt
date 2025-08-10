@@ -428,27 +428,39 @@
 
         function create_or_update_totals() {
             let maxDomains = ($('#toggle-extended-domains').val() || 10);
-            $('#top, #top-blocked').hide();
-            ajaxGet('/api/unbound/overview/totals/' + maxDomains, {}, function(data, status) {
+            let $dropdown = $('#toggle-extended-domains');
+            let $dropdownToggle = $dropdown.parent().find('.dropdown-toggle');
+            let originalHtml = $dropdownToggle.html();
+            let originalWidth = $dropdownToggle.outerWidth();
+            let originalHeight = $dropdownToggle.outerHeight();
+    
+            $dropdown.prop('disabled', true).selectpicker('refresh');
+            $dropdownToggle.css({'width': originalWidth + 'px', 'height': originalHeight + 'px', 'display': 'flex', 'align-items': 'center', 'justify-content': 'center'}).html('<i class="fa fa-spinner fa-spin"></i>');
 
-                $('.top-item').remove();
+            $('#top, #top-blocked').fadeOut(200); 
+    
+        ajaxGet('/api/unbound/overview/totals/' + maxDomains, {}, function(data, status) {
+            $('.top-item').remove();
 
-                $('#totalCounter').html(data.total);
-                $('#blockedCounter').html(data.blocked.total + " (" + data.blocked.pcnt + "%)");
-                $('#sizeCounter').html(data.blocklist_size);
-                $('#resolvedCounter').html(data.resolved.total + " (" + data.resolved.pcnt + "%)");
+            $('#totalCounter').html(data.total);
+            $('#blockedCounter').html(data.blocked.total + " (" + data.blocked.pcnt + "%)");
+            $('#sizeCounter').html(data.blocklist_size);
+            $('#resolvedCounter').html(data.resolved.total + " (" + data.resolved.pcnt + "%)");
 
-                createTopList('top', data.top, 'pass', new Set(data.blocklisted_domains), maxDomains);
-                createTopList('top-blocked', data.top_blocked, 'block', new Set(data.whitelisted_domains), maxDomains);
+            createTopList('top', data.top, 'pass', new Set(data.blocklisted_domains), maxDomains);
+            createTopList('top-blocked', data.top_blocked, 'block', new Set(data.whitelisted_domains), maxDomains);
 
-                $('#top li:nth-child(even)').addClass('odd-bg');
-                $('#top-blocked li:nth-child(even)').addClass('odd-bg');
+            $('#top li:nth-child(even)').addClass('odd-bg');
+            $('#top-blocked li:nth-child(even)').addClass('odd-bg');
 
-                $('#bannersub').html("Starting from " + (new Date(data.start_time * 1000)).toLocaleString());
+            $('#bannersub').html("Starting from " + (new Date(data.start_time * 1000)).toLocaleString());
 
-                $('#top, #top-blocked').fadeIn('slow');
-            });
-        }
+            $dropdownToggle.css({'width': '', 'height': '', 'display': '', 'align-items': '', 'justify-content': ''}).html(originalHtml);
+        
+            $dropdown.prop('disabled', false).selectpicker('refresh');
+            $('#top, #top-blocked').fadeIn(200);
+        });
+    }
 
         function reset_tooltips() {
             $(".block-domain").attr('title', "{{ lang._('Block Domain') }}").tooltip({container: 'body', trigger: 'hover'});
@@ -494,6 +506,7 @@
                 }
                 $('#timeperiod').selectpicker('refresh');
                 $('#timeperiod-clients').selectpicker('refresh');
+                $('#toggle-extended-domains').selectpicker('refresh')
 
                 g_queryChart = create_chart($("#rollingChart"), 60, [], false);
                 g_clientChart = create_client_chart($("#rollingChartClient"), 60, [], false);
@@ -865,19 +878,19 @@
             </div>
             <div class="content-box">
                 <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="col-md-4 text-center" style="padding: 10px;">
-                                <label style="margin-right: 5px;">{{ lang._('Number of domains') }}</label>
-                                <select class="selectpicker" id="toggle-extended-domains" data-width="auto">
-                                    <option value="10">{{ lang._('10') }}</option>
-                                    <option value="25">{{ lang._('25') }}</option>
-                                    <option value="50">{{ lang._('50') }}</option>
-                                    <option value="75">{{ lang._('75') }}</option>
-                                    <option value="100">{{ lang._('100') }}</option>
-                                </select>
-                            </div>
+                    <div class="row justify-content-center" style="display: flex; flex-wrap: wrap;">
+                    <div class="col-md-4"></div>
+                        <div class="col-md-4 text-center" style="padding: 10px;">
+                            <span style="padding: 5px;"><b>{{ lang._('Number of domains') }}</b></span>
+                            <select class="selectpicker" id="toggle-extended-domains" data-width="auto">
+                                <option value="10">{{ lang._('10') }}</option>
+                                <option value="25">{{ lang._('25') }}</option>
+                                <option value="50">{{ lang._('50') }}</option>
+                                <option value="75">{{ lang._('75') }}</option>
+                                <option value="100">{{ lang._('100') }}</option>
+                            </select>
                         </div>
+                        <div class="col-md-4"></div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
