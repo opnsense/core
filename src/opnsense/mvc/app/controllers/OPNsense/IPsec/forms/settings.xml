@@ -23,6 +23,7 @@
             <label>Passthrough networks</label>
             <type>select_multiple</type>
             <style>tokenize</style>
+            <allownew>true</allownew>
             <help>
                 This exempts traffic for one or more subnets from getting processed by the IPsec stack in the kernel.
                 When sending all traffic to the remote location, you probably want to add your lan network(s) here.
