@@ -637,16 +637,8 @@ POSSIBILITY OF SUCH DAMAGE.
             }
         });
 
-        $("#grid-rule-files-search").keydown(function (e) {
-            var searchString = $(this).val();
-            $("#grid-rule-files > tbody > tr").each(function(){
-                var itemName = $(this).children('td:eq(1)').html();
-                if (itemName.toLowerCase().indexOf(searchString.toLowerCase())>=0) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
+        $("#grid-rule-files-search").on("keyup", function (e) {
+            $("#grid-rule-files").bootgrid("search", $(this).val(), e);
         });
 
         /**
