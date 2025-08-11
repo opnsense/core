@@ -65,9 +65,9 @@ class CertificateField extends BaseListField
             $this->certificateType = 'ca';
         } elseif (trim(strtolower($value)) == 'crl') {
             $this->certificateType = 'crl';
+        } else  {
+            $this->certificateType = 'cert';
         }
-
-        $this->certificateType = 'cert';
     }
 
     /**
