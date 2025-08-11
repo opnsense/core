@@ -379,13 +379,13 @@
             return def;
         }
 
-        function createTopList(id, data, type, reverse_domains) {
+        function createTopList(id, data, type, reverse_domains, maxDomains = 10) {
             ajaxGet('/api/unbound/overview/is_block_list_enabled', {}, function(bl_enabled, status) {
                 /* reverse_domains refers to the domains for which the opposite action should take place,
                  * e.g. if a domain is presented that has been blocked N amount of times, but has been
                  * whitelisted at a later point in time, the action should be to block it, not whitelist it.
                  */
-                for (let i = 0; i < 10; i++) {
+                for (let i = 0; i < maxDomains; i++) {
                     let class_type = type == "pass" ? "block-domain" : "whitelist-domain";
                     let icon_type = type == "pass" ? "fa fa-ban text-danger" : "fa fa-pencil text-info";
                     let domain = Object.keys(data)[i];
@@ -427,7 +427,19 @@
         }
 
         function create_or_update_totals() {
-            ajaxGet('/api/unbound/overview/totals/10', {}, function(data, status) {
+            let maxDomains = ($('#toggle-extended-domains').val() || 10);
+            let $dropdown = $('#toggle-extended-domains');
+            let $dropdownToggle = $dropdown.parent().find('.dropdown-toggle');
+            let originalHtml = $dropdownToggle.html();
+            let originalWidth = $dropdownToggle.outerWidth();
+            let originalHeight = $dropdownToggle.outerHeight();
+
+            $dropdown.prop('disabled', true).selectpicker('refresh');
+            $dropdownToggle.css({'width': originalWidth + 'px', 'height': originalHeight + 'px', 'display': 'flex', 'align-items': 'center', 'justify-content': 'center'}).html('<i class="fa fa-spinner fa-spin"></i>');
+
+            $('#top, #top-blocked').fadeOut(200);
+
+            ajaxGet('/api/unbound/overview/totals/' + maxDomains, {}, function(data, status) {
                 $('.top-item').remove();
 
                 $('#totalCounter').html(data.total);
@@ -435,13 +447,18 @@
                 $('#sizeCounter').html(data.blocklist_size);
                 $('#resolvedCounter').html(data.resolved.total + " (" + data.resolved.pcnt + "%)");
 
-                createTopList('top', data.top, 'pass', new Set(data.blocklisted_domains));
-                createTopList('top-blocked', data.top_blocked, 'block', new Set(data.whitelisted_domains));
+                createTopList('top', data.top, 'pass', new Set(data.blocklisted_domains), maxDomains);
+                createTopList('top-blocked', data.top_blocked, 'block', new Set(data.whitelisted_domains), maxDomains);
 
                 $('#top li:nth-child(even)').addClass('odd-bg');
                 $('#top-blocked li:nth-child(even)').addClass('odd-bg');
 
                 $('#bannersub').html("Starting from " + (new Date(data.start_time * 1000)).toLocaleString());
+
+                $dropdownToggle.css({'width': '', 'height': '', 'display': '', 'align-items': '', 'justify-content': ''}).html(originalHtml);
+
+                $dropdown.prop('disabled', false).selectpicker('refresh');
+                $('#top, #top-blocked').fadeIn(200);
             });
         }
 
@@ -483,9 +500,13 @@
                     if (window.localStorage.getItem("api.unbound.overview.logcchart") !== null) {
                         $("#toggle-log-cchart").prop('checked', window.localStorage.getItem("api.unbound.overview.logcchart") == 'true');
                     }
+                    if (window.localStorage.getItem("api.unbound.overview.extendeddomains") !== null) {
+                        $("#toggle-extended-domains").val(window.localStorage.getItem("api.unbound.overview.extendeddomains"));
+                    }
                 }
                 $('#timeperiod').selectpicker('refresh');
                 $('#timeperiod-clients').selectpicker('refresh');
+                $('#toggle-extended-domains').selectpicker('refresh');
 
                 g_queryChart = create_chart($("#rollingChart"), 60, [], false);
                 g_clientChart = create_client_chart($("#rollingChartClient"), 60, [], false);
@@ -524,6 +545,13 @@
             }
             updateClientChart(this.checked);
         })
+
+        $("#toggle-extended-domains").change(function() {
+            if (window.localStorage) {
+                window.localStorage.setItem("api.unbound.overview.extendeddomains", $(this).val());
+            }
+            create_or_update_totals();
+        });
 
         let blocklist_cb = function() {
             $(this).remove("i").html('<i class="fa fa-spinner fa-spin"></i>');
@@ -850,6 +878,20 @@
             </div>
             <div class="content-box">
                 <div class="container-fluid">
+                    <div class="row justify-content-center" style="display: flex; flex-wrap: wrap;">
+                    <div class="col-md-4"></div>
+                        <div class="col-md-4 text-center" style="padding: 10px;">
+                            <span style="padding: 5px;"><b>{{ lang._('Number of domains') }}</b></span>
+                            <select class="selectpicker" id="toggle-extended-domains" data-width="auto">
+                                <option value="10">{{ lang._('10') }}</option>
+                                <option value="25">{{ lang._('25') }}</option>
+                                <option value="50">{{ lang._('50') }}</option>
+                                <option value="75">{{ lang._('75') }}</option>
+                                <option value="100">{{ lang._('100') }}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4"></div>
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="top-list">
