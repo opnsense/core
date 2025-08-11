@@ -439,28 +439,28 @@
 
             $('#top, #top-blocked').fadeOut(200); 
     
-        ajaxGet('/api/unbound/overview/totals/' + maxDomains, {}, function(data, status) {
-            $('.top-item').remove();
+            ajaxGet('/api/unbound/overview/totals/' + maxDomains, {}, function(data, status) {
+                $('.top-item').remove();
 
-            $('#totalCounter').html(data.total);
-            $('#blockedCounter').html(data.blocked.total + " (" + data.blocked.pcnt + "%)");
-            $('#sizeCounter').html(data.blocklist_size);
-            $('#resolvedCounter').html(data.resolved.total + " (" + data.resolved.pcnt + "%)");
+                $('#totalCounter').html(data.total);
+                $('#blockedCounter').html(data.blocked.total + " (" + data.blocked.pcnt + "%)");
+                $('#sizeCounter').html(data.blocklist_size);
+                $('#resolvedCounter').html(data.resolved.total + " (" + data.resolved.pcnt + "%)");
 
-            createTopList('top', data.top, 'pass', new Set(data.blocklisted_domains), maxDomains);
-            createTopList('top-blocked', data.top_blocked, 'block', new Set(data.whitelisted_domains), maxDomains);
+                createTopList('top', data.top, 'pass', new Set(data.blocklisted_domains), maxDomains);
+                createTopList('top-blocked', data.top_blocked, 'block', new Set(data.whitelisted_domains), maxDomains);
 
-            $('#top li:nth-child(even)').addClass('odd-bg');
-            $('#top-blocked li:nth-child(even)').addClass('odd-bg');
+                $('#top li:nth-child(even)').addClass('odd-bg');
+                $('#top-blocked li:nth-child(even)').addClass('odd-bg');
 
-            $('#bannersub').html("Starting from " + (new Date(data.start_time * 1000)).toLocaleString());
+                $('#bannersub').html("Starting from " + (new Date(data.start_time * 1000)).toLocaleString());
 
-            $dropdownToggle.css({'width': '', 'height': '', 'display': '', 'align-items': '', 'justify-content': ''}).html(originalHtml);
+                $dropdownToggle.css({'width': '', 'height': '', 'display': '', 'align-items': '', 'justify-content': ''}).html(originalHtml);
         
-            $dropdown.prop('disabled', false).selectpicker('refresh');
-            $('#top, #top-blocked').fadeIn(200);
-        });
-    }
+                $dropdown.prop('disabled', false).selectpicker('refresh');
+                $('#top, #top-blocked').fadeIn(200);
+            });
+        }
 
         function reset_tooltips() {
             $(".block-domain").attr('title', "{{ lang._('Block Domain') }}").tooltip({container: 'body', trigger: 'hover'});
