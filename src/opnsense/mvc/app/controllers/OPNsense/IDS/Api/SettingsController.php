@@ -363,16 +363,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function listRulesetsAction()
     {
-        $result = array();
-        $result['rows'] = $this->listInstallableRules();
-        // sort by description
-        usort($result['rows'], function ($item1, $item2) {
-            return strcmp(strtolower($item1['description']), strtolower($item2['description']));
-        });
-        $result['rowCount'] = empty($result['rows']) ? 0 :  count($result['rows']);
-        $result['total'] = empty($result['rows']) ? 0 : count($result['rows']);
-        $result['current'] = 1;
-        return $result;
+        return $this->searchRecordsetBase($this->listInstallableRules(), null, 'description');
     }
 
     /**

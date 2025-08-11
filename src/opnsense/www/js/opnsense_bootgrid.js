@@ -939,6 +939,33 @@ class UIBootgrid {
         });
     }
 
+    /**
+     * @param {*} searchVal String to search for
+     * @param {*} e Event that triggered the search, usually an input field keyup
+     */
+    _search(searchVal, e) {
+        e.stopPropagation();
+        if (this.searchPhrase !== searchVal || (e.which === 13 && searchVal !== "")) {
+            this.searchPhrase = searchVal;
+            if (e.which === 13 || searchVal.length === 0 || searchVal.length >= 1) {
+                if (this.options.ajax) {
+                    window.clearTimeout(this.searchTimer);
+                    this.searchTimer = window.setTimeout(() => {
+                        this._reload();
+                    }, this.options.searchSettings.delay);
+                } else {
+                    this.table.setFilter((data, filterParams) => {
+                        return Object.values(data).some(
+                            val => typeof val === 'string' && val.toLowerCase().includes(this.searchPhrase.toLowerCase())
+                        )
+                    });
+                }
+            }
+        } else if (searchVal === "" && !this.options.ajax) {
+            this.table.clearFilter();
+        }
+    }
+
     _renderActionBar() {
         if (!this.options.navigation) {
             return;
@@ -948,28 +975,7 @@ class UIBootgrid {
 
         // search functionality
         $(`#${this.id}-search-field`).val(this.searchPhrase).on("keyup", (e) => {
-            e.stopPropagation();
-            let searchVal = $(`#${this.id}-search-field`).val();
-            if (this.searchPhrase !== searchVal || (e.which === 13 && searchVal !== "")) {
-                this.searchPhrase = searchVal;
-                if (e.which === 13 || searchVal.length === 0 || searchVal.length >= 1) {
-                    if (this.options.ajax) {
-                        window.clearTimeout(this.searchTimer);
-                        this.searchTimer = window.setTimeout(() => {
-                            this._reload();
-                            //this.table.setFilter('searchPhrase', '=', searchVal);
-                        }, this.options.searchSettings.delay);
-                    } else {
-                        this.table.setFilter((data, filterParams) => {
-                            return Object.values(data).some(
-                                val => typeof val === 'string' && val.toLowerCase().includes(this.searchPhrase.toLowerCase())
-                            )
-                        });
-                    }
-                }
-            } else if (searchVal === "" && !this.options.ajax) {
-                this.table.clearFilter();
-            }
+            this._search($(`#${this.id}-search-field`).val(), e);
         });
 
         // Refresh
@@ -1968,6 +1974,10 @@ class UIBootgrid {
                 col.hide();
             }
         })
+    }
+
+    search(value, event) {
+        this._search(value, event);
     }
 
     select(ids) {
