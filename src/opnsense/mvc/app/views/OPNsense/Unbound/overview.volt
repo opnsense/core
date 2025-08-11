@@ -506,7 +506,7 @@
                 }
                 $('#timeperiod').selectpicker('refresh');
                 $('#timeperiod-clients').selectpicker('refresh');
-                $('#toggle-extended-domains').selectpicker('refresh')
+                $('#toggle-extended-domains').selectpicker('refresh');
 
                 g_queryChart = create_chart($("#rollingChart"), 60, [], false);
                 g_clientChart = create_client_chart($("#rollingChartClient"), 60, [], false);
