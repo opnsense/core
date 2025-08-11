@@ -433,12 +433,12 @@
             let originalHtml = $dropdownToggle.html();
             let originalWidth = $dropdownToggle.outerWidth();
             let originalHeight = $dropdownToggle.outerHeight();
-    
+
             $dropdown.prop('disabled', true).selectpicker('refresh');
             $dropdownToggle.css({'width': originalWidth + 'px', 'height': originalHeight + 'px', 'display': 'flex', 'align-items': 'center', 'justify-content': 'center'}).html('<i class="fa fa-spinner fa-spin"></i>');
 
-            $('#top, #top-blocked').fadeOut(200); 
-    
+            $('#top, #top-blocked').fadeOut(200);
+
             ajaxGet('/api/unbound/overview/totals/' + maxDomains, {}, function(data, status) {
                 $('.top-item').remove();
 
@@ -456,7 +456,7 @@
                 $('#bannersub').html("Starting from " + (new Date(data.start_time * 1000)).toLocaleString());
 
                 $dropdownToggle.css({'width': '', 'height': '', 'display': '', 'align-items': '', 'justify-content': ''}).html(originalHtml);
-        
+
                 $dropdown.prop('disabled', false).selectpicker('refresh');
                 $('#top, #top-blocked').fadeIn(200);
             });
