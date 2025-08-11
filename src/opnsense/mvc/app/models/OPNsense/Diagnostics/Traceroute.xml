@@ -6,7 +6,7 @@
         <settings>
             <hostname type="HostnameField">
                <Required>Y</Required>
-               <ValidationMessage>Provide a valid hostname or address</ValidationMessage>
+               <ValidationMessage>Provide a valid hostname or address.</ValidationMessage>
             </hostname>
             <ipproto type="OptionField">
                 <Required>Y</Required>
@@ -26,7 +26,7 @@
             </protocol>
             <source_address type="NetworkField">
               <NetMaskAllowed>N</NetMaskAllowed>
-              <ValidationMessage>Provide a valid source address</ValidationMessage>
+              <ValidationMessage>Provide a valid source address.</ValidationMessage>
             </source_address>
         </settings>
     </items>

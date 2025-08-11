@@ -57,12 +57,8 @@ class PolicyRulesField extends ArrayField
             }
             foreach ($this->iterateItems() as $node) {
                 $rule = static::$internalRuleData[(string)$node->sid] ?? [];
-                foreach (['msg', 'source'] as $fieldname) {
-                    $field = new TextField();
-                    $field->setInternalIsVirtual();
-                    $field->setValue($rule[$fieldname] ?? '');
-                    $node->addChildNode($fieldname, $field);
-                }
+                $node->msg = $rule['msg'] ?? '';
+                $node->source = $rule['source'] ?? '';
             }
         }
     }

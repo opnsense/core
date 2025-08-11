@@ -437,9 +437,20 @@ class Dnsmasq extends BaseModel
             foreach ($this->dhcp->no_interface->getValues() as $item) {
                 $exclude[] = $item;
             }
-            foreach ($this->interface->getValues() as $item) {
-                if (!empty($item) && !in_array($item, $exclude)) {
-                    $result[] = $item;
+            if ($this->interface->isEmpty()) {
+                /* All -- use interfaces from ranges */
+                foreach ($this->dhcp_ranges->iterateItems() as $node) {
+                    $item = $node->interface->getValue();
+                    if (!in_array($item, $result) && !in_array($item, $exclude)) {
+                        $result[] = $item;
+                    }
+                }
+            } else {
+                /* specific interfaces */
+                foreach ($this->interface->getValues() as $item) {
+                    if (!empty($item) && !in_array($item, $exclude)) {
+                        $result[] = $item;
+                    }
                 }
             }
         }

@@ -103,3 +103,13 @@ SED_REPLACE=	# empty
 MAKE_REPLACE+=	${REPLACEMENT}="${${REPLACEMENT}}"
 SED_REPLACE+=	-e "s=%%${REPLACEMENT}%%=${${REPLACEMENT}}=g"
 .endfor
+
+WRKDIR?=	${.CURDIR}/work
+MFCDIR?=	/tmp/mfc.dir
+PKGDIR?=	${WRKDIR}/pkg
+WRKSRC?=	${WRKDIR}/src
+TESTDIR?=	${.CURDIR}/src/opnsense/mvc/tests
+
+CORE_MAINS=	master main
+CORE_MAIN?=	${CORE_MAINS:[1]}
+CORE_STABLE?=	stable/${CORE_ABI}

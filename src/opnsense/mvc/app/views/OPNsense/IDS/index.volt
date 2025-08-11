@@ -417,20 +417,17 @@ POSSIBILITY OF SUCH DAMAGE.
                             formatters:{
                                 info: function (column, row) {
                                     return "<button type=\"button\" class=\"btn btn-xs btn-default command-alertinfo bootgrid-tooltip\" title=\"{{ lang._('View') }}\" data-row-id=\"" + row.filepos + "/" + row.fileid + "\"><span class=\"fa fa-pencil fa-fw\"></span></button> ";
-                                }
-                            },
-                            converters: {
-                                // convert interface to name
-                                interface: {
-                                    from: function (value) { return value; },
-                                    to: function (value) {
-                                      if (value == null || typeof value !== 'string') {
-                                          return "";
-                                      }
-                                      return interface_descriptions[value.trim().replace('^' ,'')];
+                                },
+                                interface: function(column, row) {
+                                    const iface = row[column.id];
+                                    if (!iface || typeof iface !== 'string') {
+                                        return '';
                                     }
-                                }
-                            }
+                                    // IPS mode appends '^' to the interface
+                                    const trimmed_iface = iface.trim().replace('^', '');
+                                    return interface_descriptions[trimmed_iface] || trimmed_iface;
+                                },
+                            },
                         }
                     });
                     // tooltip wide fields in alert grid
@@ -640,16 +637,8 @@ POSSIBILITY OF SUCH DAMAGE.
             }
         });
 
-        $("#grid-rule-files-search").keydown(function (e) {
-            var searchString = $(this).val();
-            $("#grid-rule-files > tbody > tr").each(function(){
-                var itemName = $(this).children('td:eq(1)').html();
-                if (itemName.toLowerCase().indexOf(searchString.toLowerCase())>=0) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
+        $("#grid-rule-files-search").on("keyup", function (e) {
+            $("#grid-rule-files").bootgrid("search", $(this).val(), e);
         });
 
         /**
@@ -926,7 +915,7 @@ POSSIBILITY OF SUCH DAMAGE.
                   <th data-column-id="timestamp" data-type="string" data-sortable="false">{{ lang._('Timestamp') }}</th>
                   <th data-column-id="alert_sid" data-type="string" data-sortable="false"  data-width="70px">{{ lang._('SID') }}</th>
                   <th data-column-id="alert_action" data-type="string" data-sortable="false" data-width="70px">{{ lang._('Action') }}</th>
-                  <th data-column-id="in_iface" data-type="interface" data-sortable="false" data-width="100px">{{ lang._('Interface') }}</th>
+                  <th data-column-id="in_iface" data-type="string" data-formatter="interface" data-sortable="false" data-width="100px">{{ lang._('Interface') }}</th>
                   <th data-column-id="src_ip" data-type="string" data-sortable="false" data-width="150px">{{ lang._('Source') }}</th>
                   <th data-column-id="src_port" data-type="string" data-sortable="false" data-width="70px">{{ lang._('Port') }}</th>
                   <th data-column-id="dest_ip" data-type="string" data-sortable="false" data-width="150px">{{ lang._('Destination') }}</th>

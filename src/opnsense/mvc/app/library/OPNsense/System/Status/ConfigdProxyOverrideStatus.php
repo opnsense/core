@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2023 Deciso B.V.
+ * Copyright (C) 2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,25 +26,39 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Wireguard\FieldTypes;
+namespace OPNsense\System\Status;
 
-use OPNsense\Base\FieldTypes\ArrayField;
-use OPNsense\Base\FieldTypes\TextField;
+use OPNsense\System\AbstractStatus;
+use OPNsense\System\SystemStatusCode;
 
-class ServerField extends ArrayField
+class ConfigdProxyOverrideStatus extends AbstractStatus
 {
-    /**
-     * push internal reusable properties as virtuals
-     */
-    protected function actionPostLoadingEvent()
+    public function __construct()
     {
-        foreach ($this->internalChildnodes as $node) {
-            if (!$node->getInternalIsVirtual()) {
-                $node->cnfFilename = "/usr/local/etc/wireguard/wg{$node->instance}.conf";
-                $node->statFilename = "/usr/local/etc/wireguard/wg{$node->instance}.stat";
-                $node->interface = "wg{$node->instance}";
+        $this->internalPriority = 2;
+        $this->internalPersistent = true;
+        $this->internalIsBanner = true;
+        $this->internalTitle = gettext('Configd proxy configured');
+        // Only show in pages that are the most likely to have issues
+        $this->internalScope = [
+            '/ui/core/hasync',
+            '/ui/core/firmware',
+            '/ui/opncentral/host/admin',
+        ];
+    }
+
+    public function collectStatus()
+    {
+        // https://docs.opnsense.org/development/backend/configd.html
+        foreach (glob('/usr/local/opnsense/service/conf/configd.conf.d/*') as $file) {
+            $contents = @file_get_contents($file);
+            if ($contents !== false && stripos($contents, '_PROXY=') !== false) {
+                $this->internalMessage = gettext(
+                    'The configd environment contains custom proxy settings, these may interfere with the settings configured here.'
+                );
+                $this->internalStatus = SystemStatusCode::NOTICE;
+                break;
             }
         }
-        return parent::actionPostLoadingEvent();
     }
 }

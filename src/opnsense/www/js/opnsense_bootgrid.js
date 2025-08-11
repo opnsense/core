@@ -119,6 +119,8 @@ class UIBootgrid {
         this.dataAvailable = false;
         this.customCommands = null;
         this.loading = false;
+        this.groupStorageKey = `tabulator-${this.persistenceID}-openGroups`;
+        this.rememberedGroupKeys = new Set(JSON.parse(localStorage.getItem(this.groupStorageKey) || '[]'));
 
         // wrapper-specific options
         this.options = {
@@ -350,11 +352,17 @@ class UIBootgrid {
                     visible: def.visible
                 };
 
+                // wrap onRendered so we can provide the cell object
+                const cb = (fn) => {
+                    onRendered(fn(cell));
+                };
+
+                // always execute _onCellRendered
                 onRendered(() => {
                     this._onCellRendered(cell, formatterParams);
                 })
 
-                return formatterFn(column, cell.getData(), onRendered);
+                return formatterFn(column, cell.getData(), cb);
             }
         }
 
@@ -418,6 +426,8 @@ class UIBootgrid {
             this.compatOptions['renderVertical'] = 'virtual';
         }
 
+        this.tabulatorOptions = compatOptions.tabulatorOptions ??= {};
+
         return this;
     }
 
@@ -467,6 +477,7 @@ class UIBootgrid {
                     sequence: data.sequence ?? null,
                     width: val.width,
                     editable: false,
+                    sortable: data.sortable ?? true
                 }
             }
         }
@@ -534,6 +545,7 @@ class UIBootgrid {
                     cssClass: this.options.responsive ? 'opnsense-bootgrid-responsive' : '',
                     variableHeight: true,
                     sorter: this.options.sorters[field.type] ?? null,
+                    headerSort: field.sortable
                 };
             }
 
@@ -589,7 +601,10 @@ class UIBootgrid {
         } else {
             localStorage.removeItem(`tabulator-${this.persistenceID}-persistence`);
             Object.keys(localStorage)
-                .filter(key => key.startsWith(`tabulator-${this.persistenceID}`))
+                .filter(key =>
+                    key.startsWith(`tabulator-${this.persistenceID}`) &&
+                    !key.endsWith('-openGroups') // <-- keep groupBy state
+                )
                 .forEach(key => localStorage.removeItem(key));
             this.persistence = false;
 
@@ -692,8 +707,6 @@ class UIBootgrid {
             this.tableInitialized = true;
         });
 
-
-
         this.table.on('dataProcessed', () =>  {
             this._onDataProcessed();
         });
@@ -717,6 +730,16 @@ class UIBootgrid {
                 $el.attr('title', $el.text()).tooltip({container: 'body', trigger: 'hover'}).tooltip('show');
             }
         }
+
+        this.table.on('groupVisibilityChanged', (groupComponent, isVisible) => {
+            const groupKey = groupComponent.getKey();
+            if (isVisible) {
+                this.rememberedGroupKeys.add(groupKey);
+            } else {
+                this.rememberedGroupKeys.delete(groupKey);
+            }
+            localStorage.setItem(this.groupStorageKey, JSON.stringify([...this.rememberedGroupKeys]));
+        });
 
         this.table.on('headerMouseEnter', onMouseEnter)
         this.table.on('cellMouseEnter', onMouseEnter);
@@ -916,6 +939,33 @@ class UIBootgrid {
         });
     }
 
+    /**
+     * @param {*} searchVal String to search for
+     * @param {*} e Event that triggered the search, usually an input field keyup
+     */
+    _search(searchVal, e) {
+        e.stopPropagation();
+        if (this.searchPhrase !== searchVal || (e.which === 13 && searchVal !== "")) {
+            this.searchPhrase = searchVal;
+            if (e.which === 13 || searchVal.length === 0 || searchVal.length >= 1) {
+                if (this.options.ajax) {
+                    window.clearTimeout(this.searchTimer);
+                    this.searchTimer = window.setTimeout(() => {
+                        this._reload();
+                    }, this.options.searchSettings.delay);
+                } else {
+                    this.table.setFilter((data, filterParams) => {
+                        return Object.values(data).some(
+                            val => typeof val === 'string' && val.toLowerCase().includes(this.searchPhrase.toLowerCase())
+                        )
+                    });
+                }
+            }
+        } else if (searchVal === "" && !this.options.ajax) {
+            this.table.clearFilter();
+        }
+    }
+
     _renderActionBar() {
         if (!this.options.navigation) {
             return;
@@ -925,28 +975,7 @@ class UIBootgrid {
 
         // search functionality
         $(`#${this.id}-search-field`).val(this.searchPhrase).on("keyup", (e) => {
-            e.stopPropagation();
-            let searchVal = $(`#${this.id}-search-field`).val();
-            if (this.searchPhrase !== searchVal || (e.which === 13 && searchVal !== "")) {
-                this.searchPhrase = searchVal;
-                if (e.which === 13 || searchVal.length === 0 || searchVal.length >= 1) {
-                    if (this.options.ajax) {
-                        window.clearTimeout(this.searchTimer);
-                        this.searchTimer = window.setTimeout(() => {
-                            this._reload();
-                            //this.table.setFilter('searchPhrase', '=', searchVal);
-                        }, this.options.searchSettings.delay);
-                    } else {
-                        this.table.setFilter((data, filterParams) => {
-                            return Object.values(data).some(
-                                val => typeof val === 'string' && val.toLowerCase().includes(this.searchPhrase.toLowerCase())
-                            )
-                        });
-                    }
-                }
-            } else if (searchVal === "" && !this.options.ajax) {
-                this.table.clearFilter();
-            }
+            this._search($(`#${this.id}-search-field`).val(), e);
         });
 
         // Refresh
@@ -1123,6 +1152,43 @@ class UIBootgrid {
         `
     }
 
+    /**
+     * Expand a specific group in a Tabulator table once after data reload.
+     * Intended for use after adding/copying a row, based on the selected option
+     * in a <select> element inside a dialog.
+     *
+     * @param {string} dialogId - ID (without '#') of the dialog that contains the groupBy field
+     */
+    expandGroupBy(dialogId) {
+        const $dialogElement = $(`#${dialogId}`);
+        if (!$dialogElement.length) return;
+
+        // Since we groupBy e.g. %interface instead of interface, we need to adjust the field name to match.
+        // We also only match the first level inside a groupBy array, as children will not be rendered
+        // until their parent is expanded, thus making them impossible to target recursively
+        const rawGroupBy = this.table.options.groupBy;
+        const firstGroupField = Array.isArray(rawGroupBy) ? rawGroupBy[0] : rawGroupBy;
+        const groupFieldName = String(firstGroupField || '').replace(/^%/, '');
+        const $selectElement = $dialogElement.find(
+            `select[id$=".${groupFieldName}"], select[id="${groupFieldName}"]`
+        );
+        if (!$selectElement.length) return;
+
+        const selectedGroupKey = $selectElement.find('option:selected').text().trim();
+
+        const expandOnceAfterReload = () => {
+            this.table.off('dataProcessed', expandOnceAfterReload);
+            const groupToExpand = this.table.getGroups(true).find(group =>
+                String(group.getKey()).trim().toLowerCase() === selectedGroupKey.toLowerCase()
+            );
+            if (groupToExpand) {
+                groupToExpand.show();
+            }
+        };
+
+        this.table.on('dataProcessed', expandOnceAfterReload);
+    }
+
     tabulatorDefaults() {
         return {
             autoResize: false,
@@ -1158,6 +1224,7 @@ class UIBootgrid {
                     $(row.getElement()).addClass('text-muted');
                 }
             },
+            groupStartOpen: groupKey => this.rememberedGroupKeys.has(groupKey),
             height: 120, /* represents the "no results found" view */
             resizable: "header",
             placeholder: this.placeholder[0],
@@ -1648,6 +1715,7 @@ class UIBootgrid {
                         } else {
                             $("#" + editDlg).change();
                         }
+                        this.expandGroupBy(editDlg);
                         this._reload(true);
                         this.showSaveAlert(event);
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
@@ -1786,6 +1854,7 @@ class UIBootgrid {
                         } else {
                             $("#" + editDlg).change();
                         }
+                        expandGroupBy(editDlg);
                         this._reload(true);
                         this.showSaveAlert(event);
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
@@ -1905,6 +1974,10 @@ class UIBootgrid {
                 col.hide();
             }
         })
+    }
+
+    search(value, event) {
+        this._search(value, event);
     }
 
     select(ids) {

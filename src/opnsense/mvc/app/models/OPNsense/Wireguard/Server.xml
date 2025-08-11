@@ -21,7 +21,7 @@
                 <pubkey type="Base64Field"/>
                 <privkey type="Base64Field">
                     <Required>Y</Required>
-                    <ValidationMessage>A private key is required</ValidationMessage>
+                    <ValidationMessage>A private key is required.</ValidationMessage>
                 </privkey>
                 <port type="PortField"/>
                 <mtu type="IntegerField">
@@ -66,6 +66,9 @@
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Choose a peer.</ValidationMessage>
                 </peers>
+                <cnfFilename type="TextField" volatile="true"/>
+                <statFilename type="TextField" volatile="true"/>
+                <interface type="TextField" volatile="true"/>
                 <!-- Peer generator storage [default values] -->
                 <endpoint type="TextField"/>
                 <peer_dns type="TextField"/>

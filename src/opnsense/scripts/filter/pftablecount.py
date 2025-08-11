@@ -44,10 +44,30 @@ if __name__ == '__main__':
     tables_count = 0
     table_name = None
     for line in subprocess.run(['/sbin/pfctl', '-vvsT'], capture_output=True, text=True).stdout.strip().split('\n'):
-        if "-" in line and "\t" in line:
+        parts = line.strip().split()
+        digits = [int(x) for x in parts if x.isdigit()]
+        if "-" in parts[0]:
             table_name = line.split()[1].strip()
-        if "Addresses:" in line and table_name is not None:
-            table_size = int("".join(filter(str.isdigit, line)))
+            result['details'][table_name] = {}
+        elif table_name is None and len(digits) == 2:
+            continue
+        elif parts[0] == 'Evaluations:':
+            result['details'][table_name]['eval_nomatch'] = digits[0]
+            result['details'][table_name]['eval_match'] = digits[1]
+        elif parts[0] == 'In/Block:':
+            result['details'][table_name]['in_block_p'] = digits[0]
+            result['details'][table_name]['in_block_b'] = digits[1]
+        elif parts[0] == 'In/Pass:':
+            result['details'][table_name]['in_pass_p'] = digits[0]
+            result['details'][table_name]['in_pass_b'] = digits[1]
+        elif parts[0] == 'Out/Block:':
+            result['details'][table_name]['out_block_p'] = digits[0]
+            result['details'][table_name]['out_block_b'] = digits[1]
+        elif parts[0] == 'Out/Pass:':
+            result['details'][table_name]['out_pass_p'] = digits[0]
+            result['details'][table_name]['out_pass_b'] = digits[1]
+        elif parts[0] ==  'Addresses:':
+            table_size = digits[0]
             table_updated = None
             filename = "/var/db/aliastables/%s.txt" % table_name
             if os.path.isfile(filename):
@@ -58,10 +78,8 @@ if __name__ == '__main__':
                 table_size = max(planned_size, table_size)
                 table_updated = datetime.fromtimestamp(os.path.getmtime(filename)).isoformat()
 
-            result['details'][table_name] = {
-                'count': table_size,
-                'updated': table_updated
-            }
+            result['details'][table_name]['count'] = table_size
+            result['details'][table_name]['updated'] = table_updated
             result['used'] += table_size
 
     for line in subprocess.run(['/sbin/pfctl', '-sm'], capture_output=True, text=True).stdout.strip().split('\n'):

@@ -71,14 +71,7 @@
             set: '/api/wireguard/server/set_server/',
             add: '/api/wireguard/server/add_server/',
             del: '/api/wireguard/server/del_server/',
-            toggle: '/api/wireguard/server/toggle_server/',
-            options: {
-                formatters: {
-                    "wgformatter": function (column, row) {
-                        return "wg" + row[column.id];
-                    }
-                }
-            }
+            toggle: '/api/wireguard/server/toggle_server/'
         });
 
         $("#reconfigureAct").SimpleActionButton({

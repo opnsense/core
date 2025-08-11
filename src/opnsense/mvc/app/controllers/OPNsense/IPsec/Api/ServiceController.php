@@ -48,6 +48,11 @@ class ServiceController extends ApiMutableServiceControllerBase
         return true;
     }
 
+    protected function invokeFirewallReload()
+    {
+        return true;
+    }
+
     /**
      * {@inheritdoc}
      */

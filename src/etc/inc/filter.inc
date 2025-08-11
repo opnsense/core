@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017 Deciso B.V.
+ * Copyright (C) 2017-2025 Deciso B.V.
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>
  * Copyright (C) 2006 Peter Allgeyer <allgeyer@web.de>
@@ -114,37 +114,41 @@ function filter_configure()
 function ifgroup_setup()
 {
     global $config;
-    $all_ifgroups = array();
-    $all_ifs = array();
+
+    $all_ifgroups = [];
+    $all_ifs = [];
+
     $interface_details = legacy_interfaces_details();
+
     if (isset($config['ifgroups']['ifgroupentry'])) {
         foreach ($config['ifgroups']['ifgroupentry'] as $group) {
-            $all_ifgroups[$group['ifname']] = array();
+            $all_ifgroups[$group['ifname']] = [];
             foreach (preg_split('/[ |,]+/', $group['members']) as $member) {
                 if (!empty($config['interfaces'][$member])) {
-                    $if = $config['interfaces'][$member]['if'];
-                    if (!isset($all_ifs[$if])) {
-                        $all_ifs[$if] = array();
+                    foreach (get_real_interface($member, 'both') as $if) {
+                        if (!isset($all_ifs[$if])) {
+                            $all_ifs[$if] = [];
+                        }
+                        $all_ifs[$if][] = $group['ifname'];
+                        $all_ifgroups[$group['ifname']][] = $if;
                     }
-                    $all_ifs[$if][] = $group['ifname'];
-                    $all_ifgroups[$group['ifname']][] = $if;
                 }
             }
         }
     }
     foreach ($interface_details as $intf => $details) {
-        $thisifgroups = !empty($details['groups']) ? $details['groups'] : array();
+        $thisifgroups = !empty($details['groups']) ? $details['groups'] : [];
         foreach ($thisifgroups as $ifgroup) {
             if (isset($all_ifgroups[$ifgroup]) && !in_array($intf, $all_ifgroups[$ifgroup])) {
                 // detach
-                mwexecf('/sbin/ifconfig %s -group %s', array($intf, $ifgroup));
+                mwexecf('/sbin/ifconfig %s -group %s', [$intf, $ifgroup]);
             }
         }
         if (!empty($all_ifs[$intf])) {
             foreach ($all_ifs[$intf] as $ifgroup) {
                 if (!in_array($ifgroup, $thisifgroups)) {
                     // attach
-                    mwexecf('/sbin/ifconfig %s group %s', array($intf, $ifgroup));
+                    mwexecf('/sbin/ifconfig %s group %s', [$intf, $ifgroup]);
                 }
             }
         }
@@ -364,10 +368,14 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     $rules = "{$limitrules}\n";
     $rules .= "{$aliases} \n";
-    $rules .= filter_setup_logging_interfaces($cnfint);
     $rules .= "\n";
     $rules .= "set skip on lo0\n";
     $rules .= "set skip on pfsync0\n";
+    foreach ((new \OPNsense\IPsec\Swanctl(true))->VTIs->VTI->iterateItems() as $vti) {
+        if (!$vti->skip_fw->isEmpty()) {
+            $rules .= sprintf("set skip on ipsec%s\n", $vti->reqid);
+        }
+    }
     $rules .= "\n";
     $rules .= $fw->anchorToText('ether', 'head');
     $rules .= filter_generate_scrubbing($cnfint);
@@ -707,20 +715,6 @@ function filter_get_time_based_rule_status($schedule)
         }
     }
     return false;
-}
-
-
-function filter_setup_logging_interfaces(&$FilterIflist)
-{
-    $rules = '';
-
-    if (isset($FilterIflist['lan'])) {
-        $rules .= "set loginterface {$FilterIflist['lan']['if']}\n";
-    } elseif (isset($FilterIflist['wan'])) {
-        $rules .= "set loginterface {$FilterIflist['wan']['if']}\n";
-    }
-
-    return $rules;
 }
 
 function default_table_entries_size()

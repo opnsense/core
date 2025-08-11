@@ -77,8 +77,7 @@
                                 $('#grid-log').bootgrid('setPageByRowId', parseInt($(this).data('row-id')));
                           });
 
-                          /* XXX simplify after 25.7 */
-                          return $('table#grid-log').length > 0 ? btn.prop('outerHTML') : btn[0];
+                          return btn[0];
                       } else {
                           return "";
                       }
@@ -111,28 +110,6 @@
               localStorage.setItem('log_validFrom_filter_{{module}}_{{scope}}', $("#validFrom_filter").val());
           }
           $('#grid-log').bootgrid('reload');
-      });
-
-      grid_log.on("loaded.rs.jquery.bootgrid", function(){
-          /* XXX remove after 25.7 */
-          if ($('table#grid-log').length > 0) {
-            if (page > 0) {
-              $("ul.pagination > li:last > a").data('page', page).click();
-              page = 0;
-            }
-
-            $(".action-page").click(function(event){
-                event.preventDefault();
-                $("#grid-log").bootgrid("search",  "");
-                page = parseInt((parseInt($(this).data('row-id')) / $("#grid-log").bootgrid("getRowCount")))+1;
-                $("input.search-field").val("");
-                if ($("#exact_severity").hasClass("fa-toggle-on")) {
-                    $("#severity_filter").selectpicker('deselectAll');
-                } else {
-                    $("#severity_filter").val("Debug").change();
-                }
-            });
-          }
       });
 
       $("#flushlog").on('click', function(event){

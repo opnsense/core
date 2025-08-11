@@ -1,5 +1,3 @@
-#!/bin/sh
-
 # Copyright (c) 2025 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,51 +23,42 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-OWNERSHIP=$(opnsense-version -R 'CORE_GROUP=CORE_GID:CORE_USER=CORE_UID')
-OWNERGRP=${OWNERSHIP%:*}
-OWNERUSR=${OWNERSHIP##*:}
+sweep-model:
+.for DIR in ${.CURDIR}/src/opnsense/mvc/app/models
+.if exists(${DIR})
+	@for MODEL in $$(find ${DIR} -depth 3 \
+	    -name "*.xml"); do \
+		perl -i -pe 's/<default>(.*?)<\/default>/<Default>$$1<\/Default>/g' $${MODEL}; \
+		perl -i -pe 's/<multiple>(.*?)<\/multiple>/<Multiple>$$1<\/Multiple>/g' $${MODEL}; \
+		perl -i -pe 's/<required>(.*?)<\/required>/<Required>$$1<\/Required>/g' $${MODEL}; \
+		perl -i -pe 's/<mask>(.*?)<\/mask>/<Mask>$$1<\/Mask>/g' $${MODEL}; \
+		perl -i -pe 's/<asList>(.*?)<\/asList>/<AsList>$$1<\/AsList>/g' $${MODEL}; \
+	done
+.endif
+.endfor
 
-PW=/usr/sbin/pw
-GROUP=${OWNERGRP%=*}
-GID=${OWNERGRP##*=}
-USER=${OWNERUSR%=*}
-UID=${OWNERUSR##*=}
-OWNER="${USER}:wheel"
+sweep-php:
+.for DIR in ${STYLEDIRS}
+.if exists(${DIR})
+	phpcbf --standard=${COREREFDIR}/ruleset.xml ${DIR} || true
+.endif
+.endfor
 
-PW_ARG=add
-if ${PW} groupshow ${GROUP} >/dev/null 2>&1; then
-    PW_ARG=mod
-fi
+sweep-whitespace:
+.for DIR in ${.CURDIR}/src
+.if exists(${DIR})
+	find ${DIR} ! -name "*.min.*" ! -name "*.svg" \
+	    ! -name "*.ser" -type f -print0 | \
+	    xargs -0 -n1 ${COREREFDIR}/Scripts/cleanfile
+.endif
+.endfor
+.for DIR in ${.CURDIR}/Scripts ${.CURDIR}/.github
+.if exists(${DIR})
+	find ${DIR} -type f -print0 | \
+	    xargs -0 -n1 ${COREREFDIR}/Scripts/cleanfile
+.endif
+.endfor
+	find ${.CURDIR} -type f -depth 1 -print0 | \
+	    xargs -0 -n1 ${COREREFDIR}/Scripts/cleanfile
 
-${PW} group${PW_ARG} ${GROUP} -g ${GID}
-
-PW_ARG=add
-if ${PW} usershow ${USER} >/dev/null 2>&1; then
-    PW_ARG=mod
-fi
-
-${PW} user${PW_ARG} ${USER} -u ${UID} -g ${GID} -c "World Wide Web Only" -d /nonexistent -s /usr/sbin/nologin
-
-# set up required output directories for various PHP components
-for PHPDIR in cache sessions tmp; do
-	PHPDIR=/var/lib/php/${PHPDIR}
-
-	mkdir -p ${PHPDIR}
-	# XXX assess the need to chmod subdirectories not cleared by var script
-	chmod 750 ${PHPDIR}
-
-	# important note: ownership change may fail when user is not known
-	chown -R ${OWNER} ${PHPDIR}
-done
-
-# change ownership for GUI related file access
-find /conf -name 'vouchers_*.db' -exec chown ${OWNER} {} \;
-find /conf/backup -name '*.xml' -exec chown ${OWNER} {} \;
-for PHPOWN in /conf /conf/config.xml /conf/backup /var/run/booting; do
-	if [ -e ${PHPOWN} ]; then
-		chown ${OWNER} ${PHPOWN}
-	fi
-done
-
-# flush Phalcon volt templates
-find /var/lib/php/cache -name '*.php' -exec rm {} \;
+sweep: sweep-whitespace sweep-model sweep-php

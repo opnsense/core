@@ -130,7 +130,6 @@ abstract class BaseField
      */
     private $internalParentModel = null;
 
-
     /**
      * @param array $node input array to traverse
      * @param string $path reference to information to be fetched (e.g. my.data)
@@ -704,21 +703,24 @@ abstract class BaseField
     public function getNodes()
     {
         $result = [];
+
         foreach ($this->iterateItems() as $key => $node) {
             $result[$key] = $node->isContainer() ? $node->getNodes() : $node->getNodeData();
         }
+
         return $result;
     }
 
     /**
      * get nodes as array structure using getValue() and (optionally) getDescription() as leaves,
-     * the latter prefixed with a dollar sign ($) as these are impossible to exist in our xml structure.
+     * the latter prefixed with a percentage sign (%) as these are impossible to exist in our xml structure.
      * (eg field, $field)
      * @return array
      */
     public function getNodeContent()
     {
         $result = [];
+
         foreach ($this->iterateItems() as $key => $node) {
             if ($node->isContainer()) {
                 $result[$key] = $node->getNodeContent();
@@ -730,6 +732,7 @@ abstract class BaseField
                 }
             }
         }
+
         return $result;
     }
 

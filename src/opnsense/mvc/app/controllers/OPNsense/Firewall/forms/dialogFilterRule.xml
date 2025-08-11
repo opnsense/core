@@ -50,7 +50,7 @@
         <grid_view>
             <sortable>false</sortable>
             <formatter>category</formatter>
-            <sequence>112</sequence>
+            <sequence>1</sequence>
         </grid_view>
     </field>
     <field>
@@ -648,6 +648,7 @@
             <sortable>false</sortable>
             <label>Stats - Bytes</label>
             <sequence>118</sequence>
+            <formatter>bytes</formatter>
         </grid_view>
     </field>
     <field>

@@ -74,6 +74,19 @@
         </grid_view>
     </field>
     <field>
+        <id>vti.skip_fw</id>
+        <label>Skip firewall rules</label>
+        <type>checkbox</type>
+        <help>
+        By default inbound firewall rules only apply on the IPsec interface, outbound however passes both the virtual
+        interface and the IPsec (enc0) interface, which makes the use of source NAT impossible. This toggle offers
+        the option to skip the selected interface in our firewall rules which removes this inconsistency.
+        </help>
+        <grid_view>
+            <formatter>boolean</formatter>
+        </grid_view>
+    </field>
+    <field>
         <id>vti.description</id>
         <label>Name</label>
         <type>text</type>

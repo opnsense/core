@@ -102,6 +102,8 @@
                 <description type="DescriptionField">
                     <Required>Y</Required>
                 </description>
+                <local_ts type="TextField" volatile="true"/>
+                <remote_ts type="TextField" volatile="true"/>
             </Connection>
         </Connections>
         <locals>
@@ -146,7 +148,6 @@
                 </eap_id>
                 <certs type="CertificateField">
                     <Multiple>Y</Multiple>
-                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </certs>
                 <pubkeys type="ModelRelationField">
                     <Model>
@@ -206,12 +207,10 @@
                 </groups>
                 <certs type="CertificateField">
                     <Multiple>Y</Multiple>
-                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </certs>
                 <cacerts type="CertificateField">
                     <type>ca</type>
                     <Multiple>Y</Multiple>
-                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </cacerts>
                 <pubkeys type="ModelRelationField">
                     <Model>
@@ -395,6 +394,7 @@
                     <WildcardEnabled>N</WildcardEnabled>
                     <ValidationMessage>Please specify a valid address.</ValidationMessage>
                 </tunnel_remote2>
+                <skip_fw type="BooleanField"/>
                 <origin type="TextField" volatile="true"/>
                 <description type="DescriptionField"/>
             </VTI>
@@ -435,6 +435,7 @@
                     <WildcardEnabled>N</WildcardEnabled>
                 </destination>
                 <description type="DescriptionField"/>
+                <origin type="TextField" volatile="true"/>
             </SPD>
         </SPDs>
     </items>
