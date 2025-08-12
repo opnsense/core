@@ -86,10 +86,12 @@
                                     const displayValue = !value ? "{{ lang._('Any') }}" : value;
 
                                     const icons = {
-                                        interface: '<i class="fa fa-ethernet fa-sm text-info"></i>',
+                                        interface: '<i class="fa fa-fw fa-ethernet fa-sm text-info"></i>',
                                     };
 
-                                    return `${icons.interface} ${displayValue}`;
+                                    const countValue = `<span class="badge badge-sm bg-info">${count}</span>`;
+
+                                    return `${icons.interface} ${displayValue} ${countValue}`;
                                 },
                             },
                             options: {
@@ -106,13 +108,13 @@
                                 },
                                 headerFormatters: {
                                     interface: function (column) {
-                                        return '<i class="fa fa-ethernet text-info"></i> {{ lang._("Interface") }}';
+                                        return '<i class="fa fa-fw fa-ethernet text-info"></i> {{ lang._("Interface") }}';
                                     },
                                     tag: function (column) {
-                                        return '<i class="fa fa-tag text-primary"></i> {{ lang._("Tag") }}';
+                                        return '<i class="fa fa-fw fa-tag text-primary"></i> {{ lang._("Tag") }}';
                                     },
                                     set_tag: function (column) {
-                                        return '<i class="fa fa-tag text-primary"></i> {{ lang._("Tag [set]") }}';
+                                        return '<i class="fa fa-fw fa-tag text-primary"></i> {{ lang._("Tag [set]") }}';
                                     },
                                 },
                             }
@@ -290,6 +292,19 @@
     #tag_select_container .bootstrap-select > .dropdown-toggle {
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
+    }
+    /* XXX: Since the badge class uses its own default background-color, we must override it explicitly. */
+    .badge.bg-info {
+        background-color: #31708f !important;
+    }
+    .badge-sm {
+        font-size: 10px;
+        padding: 2px 4px;
+    }
+    .tabulator-row.tabulator-group span.badge {
+        color: #FFF !important;
+        margin-left: 2px !important;
+        vertical-align: middle;
     }
 </style>
 
