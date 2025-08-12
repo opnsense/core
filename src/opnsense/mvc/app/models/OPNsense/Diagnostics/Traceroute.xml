@@ -1,7 +1,7 @@
 <model>
     <mount>:memory:</mount>
     <version>1.0.0</version>
-    <description>OPNsense Traceroute Diagnostics</description>
+    <description>Traceroute diagnostics</description>
     <items>
         <settings>
             <hostname type="HostnameField">

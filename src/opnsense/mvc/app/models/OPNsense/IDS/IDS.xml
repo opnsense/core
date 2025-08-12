@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/IDS</mount>
     <version>1.1.0</version>
-    <description>OPNsense IDS</description>
+    <description>Intrusion detection</description>
     <items>
         <rules>
             <rule type=".\PolicyRulesField">
