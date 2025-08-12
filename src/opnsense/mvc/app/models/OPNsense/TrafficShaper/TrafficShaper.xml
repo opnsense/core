@@ -8,7 +8,7 @@
                 <number type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
-                    <ValidationMessage>Pipe number must be between 1...65535</ValidationMessage>
+                    <ValidationMessage>Pipe number must be between 1 and 65535.</ValidationMessage>
                     <Required>Y</Required>
                 </number>
                 <enabled type="BooleanField">
@@ -18,7 +18,7 @@
                 <bandwidth type="IntegerField">
                     <Required>Y</Required>
                     <MinimumValue>1</MinimumValue>
-                    <ValidationMessage>Bandwidth out of range</ValidationMessage>
+                    <ValidationMessage>Bandwidth out of range.</ValidationMessage>
                 </bandwidth>
                 <bandwidthMetric type="OptionField">
                     <Required>Y</Required>
@@ -29,12 +29,12 @@
                         <Mbit>Mbit/s</Mbit>
                         <Gbit>Gbit/s</Gbit>
                     </OptionValues>
-                    <ValidationMessage>Bandwidth metric should be either bit/s, kbit/s, Mbit/s or Gbit/s</ValidationMessage>
+                    <ValidationMessage>Bandwidth metric should be either bit/s, kbit/s, Mbit/s or Gbit/s.</ValidationMessage>
                 </bandwidthMetric>
                 <queue type="IntegerField">
                     <MinimumValue>2</MinimumValue>
                     <MaximumValue>100</MaximumValue>
-                    <ValidationMessage>queue size should be between 2...100</ValidationMessage>
+                    <ValidationMessage>Queue size should be between 2 and 100.</ValidationMessage>
                 </queue>
                 <mask type="OptionField">
                     <Required>Y</Required>
@@ -50,7 +50,7 @@
                 <buckets type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
-                    <ValidationMessage>bucket size should be between 1...65535</ValidationMessage>
+                    <ValidationMessage>Bucket size should be between 1 and 65535.</ValidationMessage>
                 </buckets>
                 <scheduler type="OptionField">
                     <BlankDesc>Weighted Fair Queueing</BlankDesc>
@@ -110,12 +110,12 @@
                 </fqcodel_flows>
                 <origin type="TextField">
                     <Mask>/^([a-z,A-Z,1-9]){0,30}$/</Mask>
-                    <ValidationMessage>Origin should be regular text of max 30 characters</ValidationMessage>
+                    <ValidationMessage>Origin should be regular text of max 30 characters.</ValidationMessage>
                 </origin>
                 <delay type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>3000</MaximumValue>
-                    <ValidationMessage>Please choose a value between 1 and 3000</ValidationMessage>
+                    <ValidationMessage>Please choose a value between 1 and 3000.</ValidationMessage>
                 </delay>
                 <description type="DescriptionField">
                     <Required>Y</Required>
@@ -127,7 +127,7 @@
                 <number type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
-                    <ValidationMessage>Queue number must be between 1...65535</ValidationMessage>
+                    <ValidationMessage>Queue number must be between 1 and 65535.</ValidationMessage>
                     <Required>Y</Required>
                 </number>
                 <enabled type="BooleanField">
@@ -142,7 +142,7 @@
                             <display>description</display>
                         </pipes>
                     </Model>
-                    <ValidationMessage>Related pipe not found</ValidationMessage>
+                    <ValidationMessage>Related pipe not found.</ValidationMessage>
                     <Required>Y</Required>
                 </pipe>
                 <weight type="IntegerField">
@@ -150,7 +150,7 @@
                     <MaximumValue>100</MaximumValue>
                     <Default>100</Default>
                     <Required>Y</Required>
-                    <ValidationMessage>Weight must be between 1...100</ValidationMessage>
+                    <ValidationMessage>Weight must be between 1 and 100.</ValidationMessage>
                 </weight>
                 <mask type="OptionField">
                     <Required>Y</Required>
@@ -166,7 +166,7 @@
                 <buckets type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
-                    <ValidationMessage>bucket size should be between 1...65535</ValidationMessage>
+                    <ValidationMessage>Bucket size should be between 1 and 65535.</ValidationMessage>
                 </buckets>
                 <codel_enable type="BooleanField">
                     <Default>0</Default>
@@ -207,7 +207,7 @@
                 </description>
                 <origin type="TextField">
                     <Mask>/^([a-z,A-Z,1-9]){0,30}$/</Mask>
-                    <ValidationMessage>origin should be regular text of max 30 characters</ValidationMessage>
+                    <ValidationMessage>Origin should be regular text of max 30 characters.</ValidationMessage>
                 </origin>
             </queue>
         </queues>
@@ -220,7 +220,7 @@
                 <sequence type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>1000000</MaximumValue>
-                    <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
+                    <ValidationMessage>Provide a valid sequence for sorting.</ValidationMessage>
                     <Required>Y</Required>
                     <Default>1</Default>
                 </sequence>
@@ -260,7 +260,7 @@
                 <iplen type="IntegerField">
                     <MinimumValue>2</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
-                    <ValidationMessage>The absolute limitation for packet size is 64K (65535 bytes)</ValidationMessage>
+                    <ValidationMessage>The absolute limitation for packet size is 64K (65535 bytes).</ValidationMessage>
                 </iplen>
                 <source type="NetworkField">
                     <Required>Y</Required>
@@ -344,13 +344,13 @@
                             </filters>
                         </queues>
                     </Model>
-                    <ValidationMessage>Related pipe or queue not found</ValidationMessage>
+                    <ValidationMessage>Related pipe or queue not found.</ValidationMessage>
                     <Required>Y</Required>
                 </target>
                 <description type="DescriptionField"/>
                 <origin type="TextField">
                     <Mask>/^([a-z,A-Z,1-9]){0,30}$/</Mask>
-                    <ValidationMessage>origin should be regular text of max 30 characters</ValidationMessage>
+                    <ValidationMessage>Origin should be regular text of max 30 characters.</ValidationMessage>
                 </origin>
             </rule>
         </rules>
