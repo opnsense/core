@@ -1,6 +1,7 @@
 <model>
     <mount>/ca+</mount>
     <version>1.0.0</version>
+    <description>Certificate authorities</description>
     <items>
         <ca type=".\CAsField">
             <refid type="TextField"/>

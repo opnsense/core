@@ -1,6 +1,7 @@
 <model>
     <mount>/cert+</mount>
     <version>1.0.0</version>
+    <description>Certificates</description>
     <items>
         <cert type=".\CertificatesField">
             <refid type="TextField"/>
