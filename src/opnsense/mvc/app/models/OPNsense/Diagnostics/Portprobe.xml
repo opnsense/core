@@ -1,7 +1,7 @@
 <model>
     <mount>:memory:</mount>
     <version>1.0.0</version>
-    <description>OPNsense Port probe</description>
+    <description>Port probe</description>
     <items>
         <settings>
             <hostname type="HostnameField">

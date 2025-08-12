@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/Netflow</mount>
     <version>1.0.1</version>
-    <description>OPNsense Netflow</description>
+    <description>NetFlow configuration</description>
     <items>
         <capture>
             <interfaces type="InterfaceField">

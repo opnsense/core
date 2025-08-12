@@ -1,7 +1,7 @@
 <model>
     <mount>:memory:</mount>
     <version>1.0.1</version>
-    <description>OPNsense DNS Diagnostics</description>
+    <description>DNS diagnostics</description>
     <items>
         <settings>
             <hostname type="HostnameField">
