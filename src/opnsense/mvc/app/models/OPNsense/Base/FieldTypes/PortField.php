@@ -191,12 +191,12 @@ class PortField extends BaseListField
     /**
      * @return array|string|null
      */
-    public function getNodeData()
+    protected function getNodeOptions()
     {
         // XXX: although it's not 100% clean,
         //      when using a selector we generally would expect to return a (appendable) list of options.
         if ($this->internalMultiSelect) {
-            return parent::getNodeData();
+            return parent::getNodeOptions();
         } else {
             return (string)$this;
         }
