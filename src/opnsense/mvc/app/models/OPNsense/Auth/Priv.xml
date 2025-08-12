@@ -1,6 +1,7 @@
 <model>
     <mount>:memory:</mount>
     <version>1.0.0</version>
+    <description>User and group privileges</description>
     <items>
         <users type="ModelRelationField">
             <Model>

@@ -1,6 +1,7 @@
 <model>
     <mount>/system/user+</mount>
     <version>1.0.0</version>
+    <description>User configuration</description>
     <items>
         <user type="ArrayField">
             <uid type=".\UidField"/>

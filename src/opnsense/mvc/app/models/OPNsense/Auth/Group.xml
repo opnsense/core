@@ -1,6 +1,7 @@
 <model>
     <mount>/system/group+</mount>
     <version>1.0.0</version>
+    <description>Group configuration</description>
     <items>
         <group type="ArrayField">
             <gid type=".\GidField"/>

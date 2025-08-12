@@ -1,6 +1,7 @@
 <model>
     <mount>//staticroutes</mount>
     <version>1.0.0</version>
+    <description>Static routes</description>
     <items>
         <route type="ArrayField">
           <network type="NetworkField">
