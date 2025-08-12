@@ -16,11 +16,11 @@
                 <number type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
-                    <ValidationMessage>not a valid number</ValidationMessage>
+                    <ValidationMessage>Not a valid number.</ValidationMessage>
                     <Required>Y</Required>
                     <Constraints>
                         <check001>
-                            <ValidationMessage>number should be unique</ValidationMessage>
+                            <ValidationMessage>Number should be unique.</ValidationMessage>
                             <type>UniqueConstraint</type>
                             <addFields>
                                 <field1>optfield</field1>
@@ -102,7 +102,7 @@
                 <Constraints>
                     <check001>
                         <type>DependConstraint</type>
-                        <ValidationMessage>when value1 is enabled value2 is required</ValidationMessage>
+                        <ValidationMessage>When "value1" is enabled, "value2" is required.</ValidationMessage>
                         <addFields>
                             <field1>value1</field1>
                         </addFields>

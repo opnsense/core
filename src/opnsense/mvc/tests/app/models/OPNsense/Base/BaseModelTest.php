@@ -171,7 +171,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     public function testValidationNOK()
     {
         $this->expectException(\OPNsense\Base\ValidationException::class);
-        $this->expectExceptionMessage("not a valid number");
+        $this->expectExceptionMessage('Not a valid number.');
         // replace all numbers
         foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
             $node->number = "XXX";
@@ -245,7 +245,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     public function testConstraintsNok()
     {
         $this->expectException(\OPNsense\Base\ValidationException::class);
-        $this->expectExceptionMessage("number should be unique");
+        $this->expectExceptionMessage('Number should be unique.');
         $count = 2;
         foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
             $count--;
@@ -375,7 +375,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     public function testDependConstraintNok()
     {
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage("when value1 is enabled value2 is required");
+        $this->expectExceptionMessage('When "value1" is enabled, "value2" is required.');
         BaseModelTest::$model->DependConstraint->value1 = "1";
         BaseModelTest::$model->DependConstraint->value2 = "";
         BaseModelTest::$model->serializeToConfig();
