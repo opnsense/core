@@ -1,7 +1,7 @@
 <model>
     <mount>:memory:</mount>
     <version>1.0.0</version>
-    <description>OPNsense Ping Diagnostics</description>
+    <description>Ping diagnostics</description>
     <items>
         <settings>
             <hostname type="HostnameField">

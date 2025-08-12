@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/Swanctl</mount>
     <version>1.0.0</version>
-    <description>OPNsense IPsec Connections</description>
+    <description>IPsec connections</description>
     <items>
         <Connections>
             <Connection type=".\ConnnectionField">

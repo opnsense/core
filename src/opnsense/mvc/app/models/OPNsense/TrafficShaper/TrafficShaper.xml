@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/TrafficShaper</mount>
     <version>1.0.3</version>
-    <description>OPNsense traffic shaper</description>
+    <description>Traffic shaper</description>
     <items>
         <pipes>
             <pipe type="ArrayField">
