@@ -49,7 +49,13 @@ class ConfigdProxyOverrideStatus extends AbstractStatus
 
     public function collectStatus()
     {
-        // https://docs.opnsense.org/development/backend/configd.html
+        /*
+         * We could also use the following without skimming files:
+         *
+         *   # configctl configd environment
+         *
+         * https://docs.opnsense.org/development/backend/configd.html
+         */
         foreach (glob('/usr/local/opnsense/service/conf/configd.conf.d/*') as $file) {
             $contents = @file_get_contents($file);
             if ($contents !== false && stripos($contents, '_PROXY=') !== false) {
