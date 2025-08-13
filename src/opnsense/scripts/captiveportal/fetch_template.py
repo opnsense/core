@@ -38,7 +38,7 @@ from io import BytesIO
 from lib import OPNsenseConfig
 
 response = dict()
-source_directory = '/usr/local/opnsense/scripts/OPNsense/CaptivePortal/htdocs_default'
+source_directory = '/usr/local/opnsense/scripts/captiveportal/htdocs_default'
 
 output_data = BytesIO()
 

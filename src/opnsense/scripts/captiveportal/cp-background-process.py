@@ -275,7 +275,7 @@ def main():
             # process accounting messages (uses php script, for reuse of Auth classes)
             try:
                 subprocess.run(
-                    ['/usr/local/opnsense/scripts/OPNsense/CaptivePortal/process_accounting_messages.php'],
+                    ['/usr/local/opnsense/scripts/captiveportal/process_accounting_messages.php'],
                     capture_output=True
                 )
             except OSError:
