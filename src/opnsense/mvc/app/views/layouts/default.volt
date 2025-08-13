@@ -1,5 +1,4 @@
 <!doctype html>
-<!doctype html>
 <html lang="{{ langcode|safe }}" class="no-js">
   <head>
 
