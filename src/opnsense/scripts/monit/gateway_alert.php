@@ -56,7 +56,6 @@ $clean = true;
 
 if (isset($config['gateways']['gateway_group'])) {
     foreach ($config['gateways']['gateway_group'] as $group) {
-
         $tiers_online = 0;
         foreach ($group['item'] as $item) {
             $gwname = explode("|", $item)[0];
