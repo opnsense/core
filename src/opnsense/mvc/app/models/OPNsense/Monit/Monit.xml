@@ -1,6 +1,6 @@
 <model>
    <mount>//OPNsense/monit</mount>
-   <version>1.0.13</version>
+   <version>1.0.14</version>
    <description>Monit settings</description>
    <items>
       <general>

@@ -810,6 +810,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Migrations/M1_0_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Monit/Migrations/M1_0_14.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Migrations/M1_0_6.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Migrations/M1_0_7.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Migrations/M1_0_8.php
@@ -1032,8 +1033,6 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest/config.xml
 /usr/local/opnsense/mvc/tests/phpunit.xml
 /usr/local/opnsense/mvc/tests/setup.php
-/usr/local/opnsense/scripts/OPNsense/Monit/carp_status
-/usr/local/opnsense/scripts/OPNsense/Monit/gateway_alert
 /usr/local/opnsense/scripts/auth/add_user.php
 /usr/local/opnsense/scripts/auth/list_group_members.php
 /usr/local/opnsense/scripts/auth/sync_group.php
@@ -1222,6 +1221,8 @@
 /usr/local/opnsense/scripts/ipsec/saddelete.py
 /usr/local/opnsense/scripts/ipsec/spddelete.py
 /usr/local/opnsense/scripts/ipsec/updown_event.py
+/usr/local/opnsense/scripts/monit/carp_status.php
+/usr/local/opnsense/scripts/monit/gateway_alert.php
 /usr/local/opnsense/scripts/monit/setup.sh
 /usr/local/opnsense/scripts/netflow/dump_log.py
 /usr/local/opnsense/scripts/netflow/export_details.py
