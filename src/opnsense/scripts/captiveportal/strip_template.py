@@ -39,7 +39,7 @@ import base64
 from io import BytesIO
 from hashlib import md5
 
-htdocs_default_root = '/usr/local/opnsense/scripts/OPNsense/CaptivePortal/htdocs_default'
+htdocs_default_root = '/usr/local/opnsense/scripts/captiveportal/htdocs_default'
 
 
 def load_exclude_list():
