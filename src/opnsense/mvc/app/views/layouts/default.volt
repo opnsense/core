@@ -1,4 +1,5 @@
 <!doctype html>
+<!doctype html>
 <html lang="{{ langcode|safe }}" class="no-js">
   <head>
 
@@ -95,6 +96,7 @@
                 initFormHelpUI();
                 initFormAdvancedUI();
                 addMultiSelectClearUI();
+                initGlobalOpenShortcuts();
 
                 updateSystemStatus();
 
