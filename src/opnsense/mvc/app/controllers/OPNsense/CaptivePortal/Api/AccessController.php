@@ -33,7 +33,6 @@ use OPNsense\Core\Backend;
 use OPNsense\Auth\AuthenticationFactory;
 use OPNsense\CaptivePortal\CaptivePortal;
 
-
 /**
  * Class AccessController
  * @package OPNsense\CaptivePortal
