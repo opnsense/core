@@ -57,14 +57,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 } else {
                     // search model firewall rule
                     $interface = '';
-                    foreach ((new Filter())->rules->rule->iterateItems() as $ruleItem) {
-                        if ($ruleItem->getAttribute('uuid') === $rid) {
-                            $interfaceValue = $ruleItem->interface->getValue();
-                            // multiple interfaces in a rule are skipped as empty string is the default for floating
-                            if ($interfaceValue !== '' && strpos($interfaceValue, ',') === false) {
-                                $interface = $interfaceValue;
-                            }
-                            break;
+                    $node = (new Filter())->getNodeByReference('rules.rule.' . $rid);
+                    if ($node !== null) {
+                        $interfaceValue = $node->interface->getValue();
+                        // multiple interfaces in a rule are skipped as empty string is the default for floating
+                        if ($interfaceValue !== '' && strpos($interfaceValue, ',') === false) {
+                            $interface = $interfaceValue;
                         }
                     }
 
