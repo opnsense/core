@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@ from io import BytesIO
 from lib import OPNsenseConfig
 
 response = dict()
-source_directory = '/usr/local/opnsense/scripts/captiveportal/htdocs_default'
+source_directory = '%s/htdocs_default' % os.path.realpath(os.path.dirname(__file__))
 
 output_data = BytesIO()
 
@@ -71,8 +71,7 @@ with zipfile.ZipFile(output_data, mode='w', compression=zipfile.ZIP_DEFLATED) as
             filename = '%s/%s' % (root, filename)
             output_filename = filename[len(source_directory)+1:]
             if output_filename not in user_filenames:
-                tmp = open(filename, 'rb').read()
-                zf.writestr(output_filename, tmp)
+                zf.writestr(output_filename, open(filename, 'rb').read())
 
 response['payload'] = base64.b64encode(output_data.getvalue()).decode()
 response['size'] = len(response['payload'])

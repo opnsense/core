@@ -187,7 +187,6 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ControllerRoot.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/IndexController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/UserException.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/Api/AbstractAccessController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/Api/AccessController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/Api/SessionController.php
@@ -1057,6 +1056,7 @@
 /usr/local/opnsense/scripts/captiveportal/htdocs_default/index.html
 /usr/local/opnsense/scripts/captiveportal/htdocs_default/js/bootstrap.min.js
 /usr/local/opnsense/scripts/captiveportal/htdocs_default/js/jquery-1.11.2.min.js
+/usr/local/opnsense/scripts/captiveportal/htdocs_default/js/jquery-3.5.1.min.js
 /usr/local/opnsense/scripts/captiveportal/lib/__init__.py
 /usr/local/opnsense/scripts/captiveportal/lib/arp.py
 /usr/local/opnsense/scripts/captiveportal/lib/daemonize.py
