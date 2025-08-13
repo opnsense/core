@@ -1066,10 +1066,6 @@
 /usr/local/opnsense/scripts/OPNsense/Monit/carp_status
 /usr/local/opnsense/scripts/OPNsense/Monit/gateway_alert
 /usr/local/opnsense/scripts/OPNsense/Monit/setup.sh
-/usr/local/opnsense/scripts/Wireguard/gen_keypair.py
-/usr/local/opnsense/scripts/Wireguard/reresolve-dns.py
-/usr/local/opnsense/scripts/Wireguard/wg-service-control.php
-/usr/local/opnsense/scripts/Wireguard/wg_show.py
 /usr/local/opnsense/scripts/auth/add_user.php
 /usr/local/opnsense/scripts/auth/list_group_members.php
 /usr/local/opnsense/scripts/auth/sync_group.php
@@ -1333,6 +1329,10 @@
 /usr/local/opnsense/scripts/unbound/start.sh
 /usr/local/opnsense/scripts/unbound/stats.py
 /usr/local/opnsense/scripts/unbound/wrapper.py
+/usr/local/opnsense/scripts/wireguard/gen_keypair.py
+/usr/local/opnsense/scripts/wireguard/reresolve-dns.py
+/usr/local/opnsense/scripts/wireguard/wg-service-control.php
+/usr/local/opnsense/scripts/wireguard/wg_show.py
 /usr/local/opnsense/service/conf/actions.d/actions_auth.conf
 /usr/local/opnsense/service/conf/actions.d/actions_captiveportal.conf
 /usr/local/opnsense/service/conf/actions.d/actions_configd.conf
