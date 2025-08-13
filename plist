@@ -2134,6 +2134,7 @@
 /usr/local/opnsense/www/js/widgets/Certificates.js
 /usr/local/opnsense/www/js/widgets/Cpu.js
 /usr/local/opnsense/www/js/widgets/Disk.js
+/usr/local/opnsense/www/js/widgets/DnsmasqLeases.js
 /usr/local/opnsense/www/js/widgets/Firewall.js
 /usr/local/opnsense/www/js/widgets/FirewallStates.js
 /usr/local/opnsense/www/js/widgets/Gateways.js

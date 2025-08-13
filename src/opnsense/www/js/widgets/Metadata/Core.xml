@@ -366,4 +366,18 @@
             <hiddenitems>Hidden Certificates</hiddenitems>
         </translations>
     </certificates>
+    <dnsmasqleases>
+        <filename>DnsmasqLeases.js</filename>
+        <link>/ui/dnsmasq/settings</link>
+        <endpoints>
+            <endpoint>/api/dnsmasq/settings/*</endpoint>
+            <endpoint>/api/dnsmasq/leases/*</endpoint>
+        </endpoints>
+        <translations>
+            <title>Dnsmasq DHCP</title>
+            <unconfigured>Dnsmasq is currently disabled.</unconfigured>
+            <noleases>No leases found.</noleases>
+            <notavailable>N/A</notavailable>
+        </translations>
+    </dnsmasqleases>
 </metadata>
