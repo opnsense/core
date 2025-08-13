@@ -1,5 +1,6 @@
 # This list contains the filenames that may not be overwritten by the user when creating custom templates.
 # All items in this list won't be stored in the config.xml by our framework
+css/bootstrap-theme.min
 css/bootstrap.css.map
 css/bootstrap.min.css
 fonts/glyphicons-halflings-regular.eot
@@ -8,3 +9,5 @@ fonts/glyphicons-halflings-regular.ttf
 fonts/glyphicons-halflings-regular.woff
 fonts/glyphicons-halflings-regular.woff2
 js/bootstrap.min.js
+js/jquery-1.11.2.min.js
+js/jquery-3.5.1.min.js

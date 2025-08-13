@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,9 +28,8 @@
 
 namespace OPNsense\CaptivePortal\Api;
 
-use OPNsense\Base\ApiControllerBase;
+use OPNsense\Base\ApiMutableServiceControllerBase;
 use OPNsense\Base\UIModelGrid;
-use OPNsense\CaptivePortal\CaptivePortal;
 use OPNsense\Core\AppConfig;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
@@ -40,43 +39,20 @@ use OPNsense\Core\SanitizeFilter;
  * Class ServiceController
  * @package OPNsense\CaptivePortal
  */
-class ServiceController extends ApiControllerBase
+class ServiceController extends ApiMutableServiceControllerBase
 {
-    /**
-     * reconfigure captive portal
-     */
-    public function reconfigureAction()
-    {
-        if ($this->request->isPost()) {
-            $backend = new Backend();
-            $bckresult = trim($backend->configdRun("filter reload"));
-            if ($bckresult == "OK") {
-                // generate captive portal config
-                $bckresult = trim($backend->configdRun('template reload OPNsense/Captiveportal'));
-                if ($bckresult == "OK") {
-                    $mdlCP = new CaptivePortal();
-                    if ($mdlCP->isEnabled()) {
-                        $bckresult = trim($backend->configdRun("captiveportal restart"));
-                        if ($bckresult == "OK") {
-                            $status = "ok";
-                        } else {
-                            $status = "error reloading captive portal";
-                        }
-                    } else {
-                        $backend->configdRun("captiveportal stop");
-                        $status = "ok";
-                    }
-                } else {
-                    $status = "error reloading captive portal template";
-                }
-            } else {
-                $status = "error reloading captive portal rules (" . $bckresult . ")";
-            }
+    protected static $internalServiceClass = '\OPNsense\CaptivePortal\CaptivePortal';
+    protected static $internalServiceTemplate = 'OPNsense/Captiveportal';
+    protected static $internalServiceName = 'captiveportal';
 
-            return array("status" => $status);
-        } else {
-            return array("status" => "failed");
-        }
+    protected function serviceEnabled()
+    {
+        return  $this->getModel()->isEnabled();
+    }
+
+    protected function invokeFirewallReload()
+    {
+        return true;
     }
 
     /**
@@ -87,15 +63,10 @@ class ServiceController extends ApiControllerBase
     public function getTemplateAction($fileid = null)
     {
         // get template name
-        if ($fileid != null) {
-            $templateFileId = (new SanitizeFilter())->sanitize($fileid, 'alnum');
-        } else {
-            $templateFileId = 'default';
-        }
+        $templateFileId = $fileid != null ? (new SanitizeFilter())->sanitize($fileid, 'alnum') : 'default';
 
         // request template data and output result (zipfile)
-        $backend = new Backend();
-        $response = $backend->configdpRun("captiveportal fetch_template", array($templateFileId));
+        $response = (new Backend())->configdpRun("captiveportal fetch_template", [$templateFileId]) ?? '';
         $result = json_decode($response, true);
         if ($result != null) {
             $response = $result['payload'];
@@ -116,55 +87,48 @@ class ServiceController extends ApiControllerBase
     public function saveTemplateAction()
     {
         if ($this->request->isPost() && $this->request->hasPost("name")) {
+            Config::getInstance()->lock();
+            $content = $this->request->getPost("content", "striptags", "");
             $templateName = $this->request->getPost("name", "striptags");
-            $mdlCP = new CaptivePortal();
             if ($this->request->hasPost("uuid")) {
                 $uuid = $this->request->getPost("uuid", "striptags");
-                $template = $mdlCP->getNodeByReference('templates.template.' . $uuid);
+                $template = $this->getModel()->getNodeByReference('templates.template.' . $uuid);
                 if ($template == null) {
-                    return array("name" => $templateName, "error" => "node not found");
+                    return ["name" => $templateName, "error" => "node not found"];
                 }
             } else {
-                $template = $mdlCP->getTemplateByName($templateName);
+                $template = $this->getModel()->getTemplateByName($templateName);
             }
 
             // cleanse input content, we only want to save changed files into our config
-            if (
-                strlen($this->request->getPost("content", "striptags", "")) > 20
-                || strlen((string)$template->content) == 0
-            ) {
+            if (strlen($content) > 20 || strlen((string)$template->content) == 0) {
                 $temp_filename = (new AppConfig())->application->tempDir;
                 $temp_filename .= '/cp_' . $template->getAttributes()['uuid'] . '.tmp';
-                file_put_contents($temp_filename, $this->request->getPost("content", "striptags", ""));
+                file_put_contents($temp_filename, $content);
                 // strip defaults and unchanged files from template (standard js libs, etc)
-                $backend = new Backend();
-                $response = $backend->configdpRun("captiveportal strip_template", array($temp_filename));
+                $response = (new Backend())->configdpRun("captiveportal strip_template", [$temp_filename]) ?? '';
                 unlink($temp_filename);
                 $result = json_decode($response, true);
-                if ($result != null && !array_key_exists('error', $result)) {
+                if (is_array($result) && !array_key_exists('error', $result)) {
                     $template->content = $result['payload'];
                 } else {
-                    return array("name" => $templateName, "error" => $result['error']);
+                    return ["name" => $templateName, "error" => $result['error']];
                 }
             }
 
             $template->name = $templateName;
-            $valMsgs = $mdlCP->performValidation();
-            $errorMsg = "";
-            foreach ($valMsgs as $field => $msg) {
-                if ($errorMsg != "") {
-                    $errorMsg .= " , ";
-                }
-                $errorMsg .= $msg->getMessage();
+            $errorMsg = [];
+            foreach ($this->getModel()->performValidation() as $validation_message) {
+                $errorMsg[] = (string)$validation_message;
             }
 
-            if ($errorMsg != "") {
-                return array("name" => (string)$template->name, "error" => $errorMsg);
+            if (!empty($errorMsg)) {
+                return ["name" => (string)$template->name, "error" => implode("\n", $errorMsg)];
             } else {
                 // data is valid, save and return.
-                $mdlCP->serializeToConfig();
+                $this->getModel()->serializeToConfig();
                 Config::getInstance()->save();
-                return array("name" => (string)$template->name);
+                return ["name" => (string)$template->name];
             }
         }
         return null;
@@ -177,13 +141,13 @@ class ServiceController extends ApiControllerBase
      */
     public function delTemplateAction($uuid)
     {
-        $result = array("result" => "failed");
+        $result = ["result" => "failed"];
         if ($this->request->isPost()) {
-            $mdlCP = new CaptivePortal();
+            Config::getInstance()->lock();
             if ($uuid != null) {
-                if ($mdlCP->templates->template->del($uuid)) {
+                if ($this->getModel()->templates->template->del($uuid)) {
                     // if item is removed, serialize to config and save
-                    $mdlCP->serializeToConfig();
+                    $this->getModel()->serializeToConfig();
                     Config::getInstance()->save();
                     $result['result'] = 'deleted';
                 } else {
@@ -201,12 +165,7 @@ class ServiceController extends ApiControllerBase
      */
     public function searchTemplatesAction()
     {
-        $mdlCP = new CaptivePortal();
-        $grid = new UIModelGrid($mdlCP->templates->template);
-        return $grid->fetchBindRequest(
-            $this->request,
-            array("name", "fileid"),
-            "name"
-        );
+        $grid = new UIModelGrid($this->getModel()->templates->template);
+        return $grid->fetchBindRequest($this->request, ["name", "fileid"], "name");
     }
 }
