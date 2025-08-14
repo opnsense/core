@@ -26,6 +26,12 @@
 
 export default class DnsmasqLeases extends BaseTableWidget {
 
+    constructor(config) {
+        super(config);
+        this.configurable = true;
+        this.configChanged = false;
+    }
+
     getGridOptions() {
         return {
             sizeToContent: 650
@@ -56,13 +62,18 @@ export default class DnsmasqLeases extends BaseTableWidget {
             return;
         }
 
-        if (!this.dataChanged('dhcp-leases', leaseRows)) {
+        // fetch current config (for leasesToShow)
+        const config = await this.getWidgetConfig() || {};
+        const limit = parseInt(config.leasesToShow ?? '10', 10) || 10;
+
+        if (!this.dataChanged('dhcp-leases', leaseRows) && !this.configChanged) {
             return;
         }
+        this.configChanged = false;
 
         $('#dnsmasqLeasesTable').empty();
         this.renderGauge(settingsResponse, leaseTotalCount);
-        this.processLeases(leaseRows);
+        this.processLeases(leaseRows, limit);
 
         $('[data-toggle="tooltip"]').tooltip('hide');
     }
@@ -102,7 +113,7 @@ export default class DnsmasqLeases extends BaseTableWidget {
         headerRowElement.find('.flex-cell').eq(1).hide();
     }
 
-    processLeases(leaseRows) {
+    processLeases(leaseRows, limit) {
         leaseRows
             .map(row => ({
                 hostname: row.hostname || this.translations.notavailable,
@@ -112,16 +123,16 @@ export default class DnsmasqLeases extends BaseTableWidget {
             }))
             // We sort via the most distant timestamp first, as that is most likely the latest lease
             .sort((a, b) => b.expireTimestamp - a.expireTimestamp)
-            // Limit the amount of displayed leases
-            .slice(0, 10)
+            // Limit the amount of displayed leases (from dropdown)
+            .slice(0, Math.max(1, limit))
             .forEach(lease => {
                 const hostname = (lease.hostname === '*') ? this.translations.notavailable : lease.hostname;
                 const header = `
                     <div style="display:flex;align-items:center;">
                         <i class="fa fa-laptop fa-fw text-primary"
-                        style="margin-right:5px;"
-                        data-toggle="tooltip"
-                        title="${lease.hwaddr}"></i>
+                           style="margin-right:5px;"
+                           data-toggle="tooltip"
+                           title="${lease.hwaddr}"></i>
                         <span style="font-weight:bold;">${hostname}</span>
                     </div>
                 `;
@@ -130,4 +141,31 @@ export default class DnsmasqLeases extends BaseTableWidget {
                 super.updateTable('dnsmasqLeasesTable', [[header, row]], lease.ipAddress);
             });
     }
+
+    async getWidgetOptions() {
+        return {
+            leasesToShow: {
+                id: 'leasesToShow',
+                title: this.translations.leasesselect,
+                type: 'select',
+                options: [
+                    { value: '2',  label: '2'  },
+                    { value: '5',  label: '5'  },
+                    { value: '10', label: '10' },
+                    { value: '20', label: '20' },
+                    { value: '30', label: '30' },
+                    { value: '40', label: '40' },
+                    { value: '50', label: '50' }
+                ],
+                default: '2',
+                required: true
+            }
+        };
+    }
+
+    async onWidgetOptionsChanged() {
+        this.configChanged = true;
+        await this.onWidgetTick();
+    }
+
 }

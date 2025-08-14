@@ -378,6 +378,7 @@
             <unconfigured>Dnsmasq is currently disabled.</unconfigured>
             <noleases>No leases found.</noleases>
             <leases>Leases</leases>
+            <leasesselect>Select amount of leases to show</leasesselect>
             <notavailable>N/A</notavailable>
         </translations>
     </dnsmasqleases>
