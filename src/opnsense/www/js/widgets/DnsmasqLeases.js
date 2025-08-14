@@ -39,6 +39,8 @@ export default class DnsmasqLeases extends BaseTableWidget {
     }
 
     async onWidgetTick() {
+        $('[data-toggle="tooltip"]').tooltip({container: 'body'});
+
         const settingsResponse = await this.ajaxCall(`/api/dnsmasq/settings/${'get'}`);
         if (settingsResponse?.dnsmasq?.enable !== '1') {
             this.displayError(this.translations.unconfigured, '/ui/dnsmasq/settings#general');
@@ -61,6 +63,8 @@ export default class DnsmasqLeases extends BaseTableWidget {
         $('#dnsmasqLeasesTable').empty();
         this.renderGauge(settingsResponse, leaseTotalCount);
         this.processLeases(leaseRows);
+
+        $('[data-toggle="tooltip"]').tooltip('hide');
     }
 
     displayError(message, linkHref) {
@@ -84,7 +88,7 @@ export default class DnsmasqLeases extends BaseTableWidget {
                     <div class="progress-bar" style="width:${leaseUsedPercent}%;"></div>
                     <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
                                 font-weight:bold; pointer-events:none; z-index:2;">
-                        ${leaseUsedCount} / ${leaseMaxValue} (${leaseUsedPercent}%)
+                        ${leaseUsedPercent}% (${leaseUsedCount} / ${leaseMaxValue} ${this.translations.leases})
                     </div>
                 </div>
             </div>
@@ -103,6 +107,7 @@ export default class DnsmasqLeases extends BaseTableWidget {
             .map(row => ({
                 hostname: row.hostname || this.translations.notavailable,
                 ipAddress: row.address || this.translations.notavailable,
+                hwaddr: row.hwaddr || this.translations.notavailable,
                 expireTimestamp: Number(row.expire) || 0
             }))
             // We sort via the most distant timestamp first, as that is most likely the latest lease
@@ -113,7 +118,10 @@ export default class DnsmasqLeases extends BaseTableWidget {
                 const hostname = (lease.hostname === '*') ? this.translations.notavailable : lease.hostname;
                 const header = `
                     <div style="display:flex;align-items:center;">
-                        <i class="fa fa-laptop fa-fw text-primary" style="margin-right:5px;"></i>
+                        <i class="fa fa-laptop fa-fw text-primary"
+                        style="margin-right:5px;"
+                        data-toggle="tooltip"
+                        title="${lease.hwaddr}"></i>
                         <span style="font-weight:bold;">${hostname}</span>
                     </div>
                 `;

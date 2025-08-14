@@ -377,6 +377,7 @@
             <title>Dnsmasq DHCP</title>
             <unconfigured>Dnsmasq is currently disabled.</unconfigured>
             <noleases>No leases found.</noleases>
+            <leases>Leases</leases>
             <notavailable>N/A</notavailable>
         </translations>
     </dnsmasqleases>
