@@ -121,6 +121,8 @@ class UIBootgrid {
         this.loading = false;
         this.groupStorageKey = `tabulator-${this.persistenceID}-openGroups`;
         this.rememberedGroupKeys = new Set(JSON.parse(localStorage.getItem(this.groupStorageKey) || '[]'));
+        this.treeStorageKey = `tabulator-${this.persistenceID}-openTree`;
+        this.rememberedTreeIds = new Set(JSON.parse(localStorage.getItem(this.treeStorageKey) || '[]'));
 
         // wrapper-specific options
         this.options = {
@@ -741,6 +743,16 @@ class UIBootgrid {
             localStorage.setItem(this.groupStorageKey, JSON.stringify([...this.rememberedGroupKeys]));
         });
 
+        const rememberTree = (row, open) => {
+            const id = row?.getData?.()?.[this.dataIdentifier];
+            if (!id) return;
+            open ? this.rememberedTreeIds.add(id) : this.rememberedTreeIds.delete(id);
+            localStorage.setItem(this.treeStorageKey, JSON.stringify([...this.rememberedTreeIds]));
+        };
+
+        this.table.on('dataTreeRowExpanded',  (row) => rememberTree(row, true));
+        this.table.on('dataTreeRowCollapsed', (row) => rememberTree(row, false));
+
         this.table.on('headerMouseEnter', onMouseEnter)
         this.table.on('cellMouseEnter', onMouseEnter);
 
@@ -843,8 +855,24 @@ class UIBootgrid {
             $last_btn.show();
         }
 
+        // Tree does not have a groupStartOpen style hook, so we must restore expansion after data is loaded
+        if (this.table?.options?.dataTree && this.rememberedTreeIds?.size) {
+            const queue = this.table.getRows();
+            while (queue.length) {
+                const row = queue.shift();
+                const data = row?.getData?.();
+                const id = data?.[this.dataIdentifier] ?? data?.[this.options.datakey];
+                if (id && this.rememberedTreeIds.has(id)) {
+                    row.treeExpand?.(); // no-op if already expanded
+                }
+                const kids = row.getTreeChildren?.();
+                if (kids && kids.length) queue.push(...kids);
+            }
+        }
+
         // backwards compat
         this.$element.trigger("loaded.rs.jquery.bootgrid");
+
     }
 
     _onCellRendered(cell, formatterParams) {

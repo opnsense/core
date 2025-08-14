@@ -81,7 +81,8 @@
                 // start a new bucket whenever the label changes
                 if (!current || current._label !== label) {
                     current = {
-                        uuid           : `bucket${buckets.length}`,
+                        // ensure uuid is as unique as possible for persistence handling
+                        uuid           : `${String(r.uuid).replace(/-/g, '')}`,
                         isGroup        : true,
                         _label         : label,          // internal
                         children       : []
@@ -112,7 +113,6 @@
                 // tell Tabulator to render a tree
                 dataTree              : true,
                 dataTreeChildField    : "children",
-                dataTreeStartExpanded : true,
                 dataTreeElementColumn : "categories",
             },
             options: {
