@@ -117,7 +117,7 @@
             },
             options: {
                 responsive: true,
-                rowCount: [20,50,100,200,500,1000,-1],
+                rowCount: [100,200,500,1000,-1],
                 requestHandler: function(request){
                     // Add category selectpicker
                     if ( $('#category_filter').val().length > 0) {

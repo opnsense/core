@@ -1212,6 +1212,41 @@ class UIBootgrid {
         this.table.on('dataProcessed', expandOnceAfterReload);
     }
 
+    /**
+     * Expand top level dataTree rows whose immediate child count increased.
+     *
+     * In tree view, category labels are not unique and the new/updated row
+     * could appear under any matching label or even create a new top-level node.
+     * Tracking by row index before/after reload ensures only the actual
+     * parent row(s) whose child count grew are expanded, avoiding expanding
+     * all rows with the same label.
+     */
+    expandDataTree() {
+        if (!this.table?.options?.dataTree) return;
+
+        const snapshot = () => {
+            const rowMap = new Map();
+            (this.table.getRows?.() || []).forEach(row => {
+                rowMap.set(row.getIndex?.(), (row.getTreeChildren?.() || []).length);
+            });
+            return rowMap;
+        };
+
+        const beforeSnapshot = snapshot();
+
+        const expandOnceAfterReload = () => {
+            this.table.off('dataProcessed', expandOnceAfterReload);
+            const afterSnapshot = snapshot();
+            afterSnapshot.forEach((childCount, rowId) => {
+                if (childCount > (beforeSnapshot.get(rowId) || 0)) {
+                    this.table.getRow?.(rowId)?.treeExpand?.();
+                }
+            });
+        };
+
+        this.table.on('dataProcessed', expandOnceAfterReload);
+    }
+
     tabulatorDefaults() {
         return {
             autoResize: false,
@@ -1739,6 +1774,7 @@ class UIBootgrid {
                             $("#" + editDlg).change();
                         }
                         this.expandGroupBy(editDlg);
+                        this.expandDataTree();
                         this._reload(true);
                         this.showSaveAlert(event);
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
@@ -1878,6 +1914,7 @@ class UIBootgrid {
                             $("#" + editDlg).change();
                         }
                         this.expandGroupBy(editDlg);
+                        this.expandDataTree();
                         this._reload(true);
                         this.showSaveAlert(event);
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
