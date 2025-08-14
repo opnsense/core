@@ -853,11 +853,6 @@ class UIBootgrid {
             $(cell.getElement()).addClass(this.options.statusMapping[cell.getData()['status']]);
         }
 
-        if (!this.options.virtualDOM) {
-            // if the DOM isn't virtual, all tooltips will have been rendered
-            return;
-        }
-
         const $el = $(cell.getElement())
         let elements = $el.find('.bootgrid-tooltip');
 
