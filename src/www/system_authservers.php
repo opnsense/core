@@ -544,12 +544,14 @@ $( document ).ready(function() {
                 $("#sync_memberof_constraint").prop('disabled', false);
             }
             $("#sync_memberof_groups").prop('disabled', false);
+            $("#sync_default_groups").prop('disabled', false);
         } else {
             $("#sync_memberof").prop('disabled', true);
             if ($("#type").val() !== 'radius') {
                 $("#sync_memberof_constraint").prop('disabled', true);
             }
             $("#sync_memberof_groups").prop('disabled', true);
+            $("#sync_default_groups").prop('disabled', true);
         }
     });
     $("#ldap_read_properties").change();
@@ -882,6 +884,15 @@ endif; ?>
                     </div>
                   </td>
                 </tr>
+                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
+                  <td><a id="help_for_sync_memberof_constraint" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Constraint groups'); ?></td>
+                  <td>
+                    <input id="sync_memberof_constraint" name="sync_memberof_constraint" type="checkbox" <?= empty($pconfig['sync_memberof_constraint']) ? '' : 'checked="checked"';?> />
+                    <div class="hidden" data-for="help_for_sync_memberof_constraint">
+                      <?= gettext("Constraint allowed groups to those selected in the container section. This may offer additional security in cases where users are able to inject memberOf attributes in different trees.");?>
+                    </div>
+                  </td>
+                </tr>
                 <tr class="auth_ldap auth_radius auth_ldap-totp auth_options hidden">
                   <td><a id="help_for_sync_default_groups" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Default groups'); ?></td>
                   <td>
@@ -894,16 +905,7 @@ endif; ?>
                     endforeach; ?>
                     </select>
                     <div class="hidden" data-for="help_for_sync_default_groups">
-                      <?= gettext("Group(s) to add by default when creating users");?>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
-                  <td><a id="help_for_sync_memberof_constraint" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Constraint groups'); ?></td>
-                  <td>
-                    <input id="sync_memberof_constraint" name="sync_memberof_constraint" type="checkbox" <?= empty($pconfig['sync_memberof_constraint']) ? '' : 'checked="checked"';?> />
-                    <div class="hidden" data-for="help_for_sync_memberof_constraint">
-                      <?= gettext("Constraint allowed groups to those selected in the container section. This may offer additional security in cases where users are able to inject memberOf attributes in different trees.");?>
+                      <?= gettext("Groups to add by default when creating users with enabled group synchronization only.");?>
                     </div>
                   </td>
                 </tr>
@@ -919,8 +921,8 @@ endif; ?>
                     endforeach; ?>
                     </select>
                     <div class="hidden" data-for="help_for_sync_memberof_groups">
-                      <?= gettext("Limit the groups which may be used by this authenticator, keep empty to consider all local groups in OPNsense. ".
-                                  "When groups are selected, you can assign unassigned groups to the user manually ");?>
+                      <?= gettext("Limit the groups which may be used by this authenticator. Keep empty to consider all local groups in OPNsense. ".
+                                  "When groups are selected, you can assign unassigned groups to the user manually.");?>
                     </div>
                   </td>
                 </tr>
@@ -929,10 +931,7 @@ endif; ?>
                   <td>
                     <input id="sync_create_local_users" name="sync_create_local_users" type="checkbox" <?= empty($pconfig['sync_create_local_users']) ? '' : 'checked="checked"';?> />
                     <div class="hidden" data-for="help_for_sync_create_local_users">
-                      <?= gettext(
-                        "To be used in combination with synchronize or default groups, allow the authenticator to create new local users after ".
-                        "successful login with group memberships returned for the user."
-                      );?>
+                      <?= gettext('Create local user accounts after successful login. Group membership is only enforced when group synchronization is enabled.') ?>
                     </div>
                   </td>
                 </tr>
