@@ -531,15 +531,18 @@ class LDAP extends Base implements IAuthConnector
                 }
             }
             // update group policies when applicable
-            if ($this->ldapSyncMemberOf && $this->ldapReadProperties) {
+            $default_groups = [];
+            if (!empty($this->ldapSyncDefaultGroups)) {
+                $default_groups = explode(",", strtolower($this->ldapSyncDefaultGroups));
+            }
+            if (
+                ($this->ldapSyncMemberOf && $this->ldapReadProperties) ||
+                (!empty($default_groups) && $this->ldapSyncCreateLocalUsers)
+            ) {
                 // list of enabled groups, so we can ignore some local groups if needed
                 $sync_groups = [];
-                $default_groups = [];
                 if (!empty($this->ldapSyncMemberOfLimit)) {
                     $sync_groups = explode(",", strtolower($this->ldapSyncMemberOfLimit));
-                }
-                if (!empty($this->ldapSyncDefaultGroups)) {
-                    $default_groups = explode(",", strtolower($this->ldapSyncDefaultGroups));
                 }
 
                 if ($this->ldapSyncMemberOfConstraint) {
