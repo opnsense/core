@@ -1194,14 +1194,14 @@ EOD;
     service_log("done.\n", $verbose);
 }
 
-function dhcpd_staticmap($proto = null, $valid_addresses = true, $ifconfig_details = null)
+function dhcpd_staticmap($proto = null, $valid_addresses = true, $ifconfig_details = null, $allow_disabled = false)
 {
     $staticmap = [];
     foreach (empty($proto) ? [4, 6] : [$proto] as $inet) {
         $ipaddr = $inet == 6 ? 'ipaddrv6' : 'ipaddr';
 
         foreach (config_read_array($inet == 6 ? 'dhcpdv6' : 'dhcpd') as $dhcpif => $dhcpifconf) {
-            if (!isset($dhcpifconf['staticmap']) || !isset($dhcpifconf['enable'])) {
+            if (!isset($dhcpifconf['staticmap']) || (!isset($dhcpifconf['enable']) && !$allow_disabled)) {
                 continue;
             }
 
