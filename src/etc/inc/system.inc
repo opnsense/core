@@ -276,6 +276,7 @@ function get_locale_list()
     $locales['ru_RU'] = gettext('Russian');
     $locales['es_ES'] = gettext('Spanish');
     $locales['tr_TR'] = gettext('Turkish');
+    $locales['uk_UA'] = gettext('Ukranian');
     $locales['vi_VN'] = gettext('Vietnamese');
 
     if (!product::getInstance()->development()) {
