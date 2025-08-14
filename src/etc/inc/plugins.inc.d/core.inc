@@ -343,85 +343,75 @@ function core_syslog()
     return $logfacilities;
 }
 
-/**
- *  sync configuration via xmlrpc
- * @return array
- */
 function core_xmlrpc_sync()
 {
-    $result = array();
+    $result = [];
 
-    $result[] = array(
+    $result[] = [
         'description' => gettext('Users and Groups'),
         'help' => gettext('Synchronize the users and groups over to the other HA host.'),
         'section' => 'system.user,system.group',
         'id' => 'users',
-        'services' => ["login"],
-    );
-    $result[] = array(
-        'description' => gettext('Auth Servers'),
+        'services' => ['login'],
+    ];
+
+    $result[] = [
+        'description' => gettext('Authentication Servers'),
         'help' => gettext('Synchronize the authentication servers (e.g. LDAP, RADIUS) over to the other HA host.'),
         'section' => 'system.authserver',
         'id' => 'authservers',
-        'services' => ["login"],
-    );
-    $result[] = array(
-        'description' => gettext('Certificates'),
+        'services' => ['login'],
+    ];
+
+    $result[] = [
+        'description' => gettext('Certificates and Authorities'),
         'help' => gettext('Synchronize the Certificate Authorities, Certificates, and Certificate Revocation Lists over to the other HA host.'),
         'section' => 'cert,ca,crl',
         'id' => 'certs',
-    );
-    $result[] = array(
-        'description' => gettext('DHCPD'),
-        'help' => gettext('Synchronize the DHCP Server settings over to the other HA host. This only applies to DHCP for IPv4.'),
-        'section' => 'dhcpd',
-        'id' => 'dhcpd',
-        'services' => ["dhcpd"],
-    );
-    $result[] = array(
-        'description' => gettext('DHCPDv6'),
-        'help' => gettext('Synchronize DHCPv6 including router advertisements.'),
-        'section' => 'dhcpdv6',
-        'id' => 'dhcpdv6',
-        'services' => ["dhcpdv6", "radvd"],
-    );
-    $result[] = array(
+    ];
+
+    $result[] = [
         'description' => gettext('Virtual IPs'),
         'help' => gettext('Synchronize the CARP Virtual IPs to the other HA host.'),
         'section' => 'virtualip',
         'id' => 'virtualip',
-    );
-    $result[] = array(
+    ];
+
+    $result[] = [
         'description' => gettext('Static Routes'),
         'help' => gettext('Synchronize the Static Route configuration and Gateways to the other HA host.'),
         'section' => 'staticroutes,gateways,OPNsense.Gateways',
         'id' => 'staticroutes',
-        'services' => ["routing", "dpinger"],
-    );
-    $result[] = array(
-        'description' => gettext('Syslog'),
+        'services' => ['routing', 'dpinger'],
+    ];
+
+    $result[] = [
+        'description' => gettext('System logging'),
         'section' => 'syslog,OPNsense.Syslog',
         'id' => 'syslog',
-        'services' => ["syslogd"],
-    );
-    $result[] = array(
+        'services' => ['syslogd'],
+    ];
+
+    $result[] = [
         'description' => gettext('Cron'),
         'section' => 'OPNsense.cron',
         'id' => 'cron',
-        'services' => ["cron"],
-    );
-    $result[] = array(
+        'services' => ['cron'],
+    ];
+
+    $result[] = [
         'description' => gettext('System Tunables'),
         'section' => 'sysctl',
         'id' => 'sysctl',
-        'services' => ["sysctl"],
-    );
-    $result[] = array(
+        'services' => ['sysctl'],
+    ];
+
+    $result[] = [
         'description' => gettext('Web GUI'),
         'section' => 'system.webgui',
         'id' => 'webgui',
-        'services' => ["webgui"],
-    );
+        'services' => ['webgui'],
+    ];
 
     return $result;
 }
