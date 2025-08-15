@@ -1155,6 +1155,8 @@ class UIBootgrid {
      * @param {string} dialogId - ID (without '#') of the dialog that contains the groupBy field
      */
     expandGroupBy(dialogId) {
+        if (!this.table?.options?.groupBy) return;
+
         const $dialogElement = $(`#${dialogId}`);
         if (!$dialogElement.length) return;
 
