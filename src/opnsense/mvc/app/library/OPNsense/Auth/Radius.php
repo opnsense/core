@@ -610,7 +610,7 @@ class Radius extends Base implements IAuthConnector
                             }
                         }
                         // update group policies when applicable
-                        if ($this->syncMemberOf) {
+                        if ($this->syncMemberOf || $this->syncCreateLocalUsers) {
                             $this->setGroupMembership(
                                 $username,
                                 $this->lastAuthProperties['class'] ?? '',
@@ -618,8 +618,6 @@ class Radius extends Base implements IAuthConnector
                                 $this->syncCreateLocalUsers,
                                 $this->syncDefaultGroups
                             );
-                        } elseif ($this->syncCreateLocalUsers) {
-                            $this->upsertUser($username);
                         }
                         return true;
                         break;
