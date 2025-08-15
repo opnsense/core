@@ -872,7 +872,6 @@ class UIBootgrid {
 
         // backwards compat
         this.$element.trigger("loaded.rs.jquery.bootgrid");
-
     }
 
     _onCellRendered(cell, formatterParams) {
