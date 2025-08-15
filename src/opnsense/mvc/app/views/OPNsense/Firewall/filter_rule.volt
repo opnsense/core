@@ -668,26 +668,47 @@
         });
 
         $("#inspect_toggle_container").detach().insertAfter("#type_filter_container");
-
-        grid.on('loaded.rs.jquery.bootgrid', function () {
-            updateStatisticColumns();  // ensures columns are consistent after reload
-        });
-
-        $("#tree_toggle_container").detach().insertAfter("#inspect_toggle_container");
-
-        $('#toggle_tree_button').click(function () {
-            treeViewEnabled = !treeViewEnabled;
-            localStorage.setItem("firewall_rule_tree", treeViewEnabled ? "1" : "0");
-            $(this).toggleClass('active btn-primary', treeViewEnabled);
-            grid.bootgrid("reload");
-        });
-
         $('#toggle_inspect_button').click(function () {
             inspectEnabled = !inspectEnabled;
             localStorage.setItem("firewall_rule_inspect", inspectEnabled ? "1" : "0");
             $(this).toggleClass('active btn-primary', inspectEnabled);
             updateStatisticColumns();
             grid.bootgrid("reload");
+        });
+
+        $("#tree_toggle_container").detach().insertAfter("#inspect_toggle_container");
+        $('#toggle_tree_button').click(function () {
+            treeViewEnabled = !treeViewEnabled;
+            localStorage.setItem("firewall_rule_tree", treeViewEnabled ? "1" : "0");
+            $(this).toggleClass('active btn-primary', treeViewEnabled);
+            $("#tree_expand_container").toggle(treeViewEnabled);
+            grid.bootgrid("reload");
+        });
+
+        // Visible only when tree view is enabled
+        $("#tree_expand_container").detach().insertAfter("#tree_toggle_container");
+        $("#tree_expand_container").toggle(treeViewEnabled);
+        $('#expand_tree_button').on('click', function () {
+            const $btn = $(this);
+            const $icon = $btn.find('i');
+            const $table = $('#{{ formGridFilterRule["table_id"] }}');
+
+            // If there are any collapsed controls, expand them all, otherwise collapse them all
+            if ($table.find('.tabulator-data-tree-control-expand').length) {
+                $table.find('.tabulator-data-tree-control-expand').trigger('click');
+                // show "collapse all" state
+                $icon.removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
+                $btn.attr('title', "{{ lang._('Collapse all') }}");
+            } else {
+                $table.find('.tabulator-data-tree-control-collapse').trigger('click');
+                // show "expand all" state
+                $icon.removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
+                $btn.attr('title', "{{ lang._('Expand all') }}");
+            }
+        });
+
+        grid.on('loaded.rs.jquery.bootgrid', function () {
+            updateStatisticColumns();  // ensures inspect columns are consistent after reload
         });
 
         // replace all "net" selectors with details retrieved from "list_network_select_options" endpoint
@@ -804,6 +825,10 @@
         float: left;
         margin-left: 5px;
     }
+    #tree_expand_container {
+        float: left;
+        margin-left: 5px;
+    }
     /*
      * XXX: Since the badge class uses its own default background-color, we must override it explicitly.
      *      Essentially we would like to use the main style sheet for this.
@@ -875,7 +900,7 @@
                     data-placement="bottom"
                     data-delay='{"show": 1000}'
                     title="{{ lang._('Show all rules and statistics') }}">
-                <i class="fa fa-eye" aria-hidden="true"></i>
+                <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
                 {{ lang._('Inspect') }}
             </button>
             <input id="all_rules_checkbox" type="checkbox" style="display: none;">
@@ -888,8 +913,19 @@
                     data-placement="bottom"
                     data-delay='{"show": 1000}'
                     title="{{ lang._('Show all categories in a tree') }}">
-                <i class="fa fa-sitemap" aria-hidden="true"></i>
+                <i class="fa fa-fw fa-sitemap" aria-hidden="true"></i>
                 {{ lang._('Tree') }}
+            </button>
+        </div>
+        <div id="tree_expand_container" class="btn-group">
+            <button id="expand_tree_button"
+                    type="button"
+                    class="btn btn-default"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    data-delay='{"show": 1000}'
+                    title="{{ lang._('Expand/Collapse all') }}">
+                <i class="fa fa-fw fa-angle-double-down" aria-hidden="true"></i>
             </button>
         </div>
     </div>
