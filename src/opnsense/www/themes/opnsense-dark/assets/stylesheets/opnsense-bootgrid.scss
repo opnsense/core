@@ -82,6 +82,10 @@
     pointer-events: auto;
 }
 
+.tabulator-row.tabulator-group:has(> .tabulator-group-toggle:only-child) { /* Trick to hide empty groupBy header rows */
+    display: none;
+}
+
 /* Checkbox column styles */
 .tabulator .tabulator-header .tabulator-frozen.tabulator-frozen-left {
     border-right: 1px solid map-get($colors, border-default); /* separates checkbox column from table rows */
