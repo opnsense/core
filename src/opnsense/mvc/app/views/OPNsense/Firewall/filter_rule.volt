@@ -840,19 +840,6 @@
         pointer-events: none;
     }
 
-    /* Colored line for bucket-rows */
-    .bucket-row::after {
-        content: "";
-        position: absolute;
-        left: 60px;
-        right: 60px;
-        top: 22px;
-        height: 2px;
-        background-color: var(--category-color, #000);
-        opacity: 0.3;
-        pointer-events: none;
-    }
-
     /* Only allow interaction with bucket row collapse button */
     .bucket-row {
         pointer-events: none;
