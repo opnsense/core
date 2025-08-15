@@ -823,32 +823,37 @@
         padding: 2px 5px;
     }
 
-    /* Custom styles for the bucket-row that hide all column lines and let the text break out of its cell */
-    .bucket-row .tabulator-cell{
-        border-right: none !important;
-        box-shadow: none !important;
+    /* bucket row style */
+    .bucket-row {
+        pointer-events: none;
     }
 
+    /* kill all per-cell borders/shadows and let bg come from ::before */
+    .bucket-row .tabulator-cell {
+        border: 0 !important;
+        box-shadow: none !important;
+        background: transparent !important;
+    }
+
+    /* category label can overhang; raise above ::before */
     .bucket-row .tabulator-cell[tabulator-field="categories"] {
         overflow: visible !important;
         white-space: nowrap !important;
         text-overflow: clip !important;
     }
 
+    /* keep only the collapse toggle clickable */
+    .bucket-row .tabulator-data-tree-control,
+    .bucket-row .tabulator-data-tree-control * {
+        pointer-events: auto;
+    }
+
+    /* hide row select checkbox in the row header */
     .bucket-row .tabulator-row-header input[type="checkbox"] {
         visibility: hidden;
         pointer-events: none;
     }
 
-    /* Only allow interaction with bucket row collapse button */
-    .bucket-row {
-        pointer-events: none;
-    }
-
-    .bucket-row .tabulator-data-tree-control,
-    .bucket-row .tabulator-data-tree-control * {
-        pointer-events: auto;
-    }
 </style>
 
 <div class="tab-content content-box">
