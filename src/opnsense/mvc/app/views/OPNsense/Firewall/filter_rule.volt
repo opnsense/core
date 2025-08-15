@@ -698,12 +698,10 @@
                 $table.find('.tabulator-data-tree-control-expand').trigger('click');
                 // show "collapse all" state
                 $icon.removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
-                $btn.attr('title', "{{ lang._('Collapse all') }}");
             } else {
                 $table.find('.tabulator-data-tree-control-collapse').trigger('click');
                 // show "expand all" state
                 $icon.removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
-                $btn.attr('title', "{{ lang._('Expand all') }}");
             }
         });
 
