@@ -73,18 +73,17 @@
 
 /* Tabulator groupBy row styles */
 .tabulator-row.tabulator-group {
-    border-top: none;
-    border-bottom: 1px solid #00000033;
-    border-right: none;
-}
-
-.tabulator-row.tabulator-group {
+    border: none;
     pointer-events: none;
 }
 
 .tabulator-row.tabulator-group .tabulator-group-toggle,
 .tabulator-row.tabulator-group .tabulator-group-toggle * {
     pointer-events: auto;
+}
+
+.tabulator-row.tabulator-group:has(> .tabulator-group-toggle:only-child) { /* Trick to hide empty groupBy header rows */
+    display: none;
 }
 
 /* Checkbox column styles */
