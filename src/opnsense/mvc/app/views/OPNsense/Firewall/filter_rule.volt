@@ -689,19 +689,13 @@
         $("#tree_expand_container").detach().insertAfter("#tree_toggle_container");
         $("#tree_expand_container").toggle(treeViewEnabled);
         $('#expand_tree_button').on('click', function () {
-            const $btn = $(this);
-            const $icon = $btn.find('i');
             const $table = $('#{{ formGridFilterRule["table_id"] }}');
 
             // If there are any collapsed controls, expand them all, otherwise collapse them all
             if ($table.find('.tabulator-data-tree-control-expand').length) {
                 $table.find('.tabulator-data-tree-control-expand').trigger('click');
-                // show "collapse all" state
-                $icon.removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
             } else {
                 $table.find('.tabulator-data-tree-control-collapse').trigger('click');
-                // show "expand all" state
-                $icon.removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
             }
         });
 
