@@ -306,7 +306,7 @@
 
                         return isGroup
                             ? `<span class="category-cell">
-                                    <span class="category-cell-content"><strong><em>${icons} ${categories.join(', ')}</em></strong></span>
+                                    <span class="category-cell-content"><strong>${icons} ${categories.join(', ')}</strong></span>
                             </span>`
                             : icons;
                     },
