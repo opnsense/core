@@ -731,6 +731,20 @@ class WidgetManager  {
         for (const [key, value] of Object.entries(options)) {
             let $option = $(`<div class="widget-option-container"></div>`);
             switch (value.type) {
+                case 'select':
+                    let $selectSingle = $(`<select class="widget_optionsform_selectpicker"
+                                         id="${value.id}"
+                                         data-container="body"
+                                         class="selectpicker"></select>`);
+
+                    for (const option of value.options) {
+                        let selected = config[key] === option.value;
+                        $selectSingle.append($(`<option value="${option.value}" ${selected ? 'selected' : ''}>${option.label}</option>`));
+                    }
+
+                    $option.append($(`<div><b>${value.title}</b></div>`));
+                    $option.append($selectSingle);
+                    break;
                 case 'select_multiple':
                     let $select = $(`<select class="widget_optionsform_selectpicker"
                                      id="${value.id}"
@@ -767,6 +781,9 @@ class WidgetManager  {
                     let values = {};
                     for (const [key, value] of Object.entries(options)) {
                         switch (value.type) {
+                            case 'select':
+                                values[key] = $(`#${value.id}`).val() ?? value.default;
+                            break;
                             case 'select_multiple':
                                 values[key] = $(`#${value.id}`).val();
                                 if (values[key].count === 0) {

@@ -43,6 +43,7 @@
             options: {
                 selection: false,
                 multiSelect: false,
+                initialSearchPhrase: getUrlHash('search'),
                 useRequestHandlerOnGet: true,
                 requestHandler: function(request) {
                     request['selected_interfaces'] = selected_interfaces;
