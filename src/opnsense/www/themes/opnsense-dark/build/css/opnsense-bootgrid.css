@@ -84,12 +84,7 @@
 
 /* Tabulator groupBy row styles */
 .tabulator-row.tabulator-group {
-  border-top: none;
-  border-bottom: 1px solid #E5E5E5;
-  border-right: none;
-}
-
-.tabulator-row.tabulator-group {
+  border: none;
   pointer-events: none;
 }
 

@@ -71,6 +71,17 @@
 .tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-right {
 }
 
+/* Tabulator groupBy row styles */
+.tabulator-row.tabulator-group {
+    border: none;
+    pointer-events: none;
+}
+
+.tabulator-row.tabulator-group .tabulator-group-toggle,
+.tabulator-row.tabulator-group .tabulator-group-toggle * {
+    pointer-events: auto;
+}
+
 /* Checkbox column styles */
 .tabulator .tabulator-header .tabulator-frozen.tabulator-frozen-left {
     border-right: 1px solid map-get($colors, border-default); /* separates checkbox column from table rows */
