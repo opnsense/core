@@ -81,17 +81,16 @@
                             'del':'/api/dnsmasq/settings/del_' + grid_id + '/',
                             tabulatorOptions: {
                                 groupBy: isGroupedGrid ? "%interface" : false,
-                                groupHeader: (value, count, data, group) => {
+                                groupHeader: (value, count) => {
                                     // Show "Any" when interface is empty
-                                    const displayValue = !value ? "{{ lang._('Any') }}" : value;
-
-                                    const icons = {
-                                        interface: '<i class="fa fa-fw fa-ethernet fa-sm text-info"></i>',
-                                    };
-
-                                    const countValue = `<span class="badge badge-sm bg-info">${count}</span>`;
-
-                                    return `${icons.interface} ${displayValue} ${countValue}`;
+                                    const displayValue = value || "{{ lang._('Any') }}";
+                                    return `
+                                        <span class="group-header">
+                                            <i class="fa fa-fw fa-sm fa-ethernet text-info"></i>
+                                            <span>${displayValue}</span>
+                                            <span class="badge badge-sm bg-info">${count}</span>
+                                        </span>
+                                    `;
                                 },
                             },
                             options: {
@@ -297,14 +296,33 @@
     .badge.bg-info {
         background-color: #31708f !important;
     }
+
     .badge-sm {
         font-size: 10px;
         padding: 2px 4px;
     }
+
+    .tabulator-row.tabulator-group span {
+        color: inherit !important;
+        margin-left: 0 !important;
+    }
+
+    /* Color for number inside the badge */
     .tabulator-row.tabulator-group span.badge {
         color: #FFF !important;
-        margin-left: 2px !important;
-        vertical-align: middle;
+    }
+
+    .tabulator-row.tabulator-group .group-header {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .tabulator-row.tabulator-group .group-header .fa {
+        margin-right: 4px;
+    }
+
+    .tabulator-row.tabulator-group .group-header > span.badge {
+        margin-left: 6px !important;
     }
 </style>
 
