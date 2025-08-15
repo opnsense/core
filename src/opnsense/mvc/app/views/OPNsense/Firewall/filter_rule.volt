@@ -43,8 +43,7 @@
 
         // Show statistics columns when inspect button is checked
         function updateStatisticColumns() {
-            const isChecked = $('#all_rules_checkbox').is(':checked');
-            grid.bootgrid(isChecked ? "setColumns" : "unsetColumns", ['evaluations', 'states', 'packets', 'bytes']);
+            grid.bootgrid(inspectEnabled ? "setColumns" : "unsetColumns", ['evaluations', 'states', 'packets', 'bytes']);
         }
 
         // Get all advanced fields, used for advanced mode tooltips
@@ -59,10 +58,12 @@
             }
         });
 
-        let treeViewEnabled = localStorage.getItem("firewall_rule_tree") !== "0";
-        if (treeViewEnabled) {
-            $('#toggle_tree_button').addClass('active btn-primary');
-        }
+        // Inspect and Tree are disabled by default
+        let treeViewEnabled = localStorage.getItem("firewall_rule_tree") === "1";
+        $('#toggle_tree_button').toggleClass('active btn-primary', treeViewEnabled);
+
+        let inspectEnabled = localStorage.getItem("firewall_rule_inspect") === "1";
+        $('#toggle_inspect_button').toggleClass('active btn-primary', inspectEnabled);
 
         // Lives outside the grid, so the logic of the response handler can be changed after grid initialization
         function dynamicResponseHandler(resp) {
@@ -128,7 +129,7 @@
                     if (selectedInterface && selectedInterface.length > 0) {
                         request['interface'] = selectedInterface;
                     }
-                    if ($('#all_rules_checkbox').is(':checked')) {
+                    if (inspectEnabled) {
                         // Send as a comma separated string
                         request['show_all'] = true;
                     }
@@ -664,32 +665,26 @@
             grid.bootgrid('reload');
         });
 
-        $("#internal_rule_selector").detach().insertAfter("#type_filter_container");
-
-        $('#all_rules_checkbox').change(function(){
-            updateStatisticColumns();
-            grid.bootgrid("reload");
-        });
+        $("#inspect_toggle_container").detach().insertAfter("#type_filter_container");
 
         grid.on('loaded.rs.jquery.bootgrid', function () {
             updateStatisticColumns();  // ensures columns are consistent after reload
         });
 
-        $('#all_rules_button').click(function(){
-            let $checkbox = $('#all_rules_checkbox');
-
-            $checkbox.prop("checked", !$checkbox.prop("checked"));
-            $(this).toggleClass('active btn-primary');
-
-            $checkbox.trigger("change");
-        });
-
-        $("#tree_toggle_container").detach().insertAfter("#internal_rule_selector");
+        $("#tree_toggle_container").detach().insertAfter("#inspect_toggle_container");
 
         $('#toggle_tree_button').click(function () {
             treeViewEnabled = !treeViewEnabled;
             localStorage.setItem("firewall_rule_tree", treeViewEnabled ? "1" : "0");
             $(this).toggleClass('active btn-primary', treeViewEnabled);
+            grid.bootgrid("reload");
+        });
+
+        $('#toggle_inspect_button').click(function () {
+            inspectEnabled = !inspectEnabled;
+            localStorage.setItem("firewall_rule_inspect", inspectEnabled ? "1" : "0");
+            $(this).toggleClass('active btn-primary', inspectEnabled);
+            updateStatisticColumns();
             grid.bootgrid("reload");
         });
 
@@ -799,7 +794,7 @@
         float: left;
         margin-left: 5px;
     }
-    #internal_rule_selector {
+    #inspect_toggle_container {
         float: left;
         margin-left: 5px;
     }
@@ -878,8 +873,8 @@
             <select id="interface_select" class="selectpicker" data-live-search="true" data-size="30" data-width="300px" data-container="body">
             </select>
         </div>
-        <div id="internal_rule_selector" class="btn-group">
-            <button id="all_rules_button"
+        <div id="inspect_toggle_container" class="btn-group">
+            <button id="toggle_inspect_button"
                     type="button"
                     class="btn btn-default"
                     data-toggle="tooltip"
