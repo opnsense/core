@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2025 Eddie Hyun <edwards.hyun@protonmail.ch>
  * Copyright (C) 2023 Deciso B.V.
  * Copyright (C) 2015 Jos Schellevis <jos@opnsense.org>
  * All rights reserved.
@@ -68,6 +69,16 @@ class SystemhealthController extends ApiControllerBase
         return $result;
     }
 
+    /**
+     * Retrieve a list of excluded (disabled) rrd reports' filenames
+     * @return array
+     */
+    private function getExcludedRrdFiles()
+    {
+        $config = Config::getInstance()->object();
+        $excl = $config->rrd->exclude; // comma separated filenames
+        return empty($excl) ? [] : explode(",", $excl);
+    }
 
     /**
      * retrieve Available RRD data
@@ -78,9 +89,13 @@ class SystemhealthController extends ApiControllerBase
         # Source of data: filelisting of /var/db/rrd/*.rrd
         $result = ['data' => []];
         $healthList = json_decode((new Backend())->configdRun('health list'), true);
+        $exclFiles = $this->getExcludedRrdFiles();
         $interfaces = $this->getInterfacesAction();
         if (is_array($healthList)) {
             foreach ($healthList as $healthItem => $details) {
+                if (in_array($details['filename'], $exclFiles)) {
+                    continue;
+                }
                 if (!array_key_exists($details['topic'], $result['data'])) {
                     $result['data'][$details['topic']] = [];
                 }
