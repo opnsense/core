@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -29,28 +29,22 @@
     connect ipsec connection
 """
 import sys
-import os
 import subprocess
-import ujson
 import vici
 
 # parse input parameter
-conn_id = None
-if len(sys.argv) > 1:
-    p_conn_id = sys.argv[1].strip()
+conn_id = sys.argv[1].strip() if len(sys.argv) > 1 else None
 
 # validate if SA is active before trying to disconnect, validates input data
 # and collect child sa's to bring up.
-conns_found = []
+children_found = []
 s = vici.Session()
 for conns in s.list_conns():
     for conn in conns:
-        if conn == p_conn_id:
-            conns_found.append(conn)
+        if conn == conn_id:
             for child in conns[conn]['children']:
-                if child not in conns_found:
-                    conns_found.append(child)
+                children_found.append(child)
 
 # setup connection if found
-for conn_id in conns_found:
-    subprocess.run(['/usr/local/sbin/ipsec', 'up', conn_id], capture_output=True)
+for child_id in children_found:
+    subprocess.run(['/usr/local/sbin/swanctl', '--initiate', '--child', child_id], capture_output=True)
