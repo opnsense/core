@@ -291,7 +291,7 @@
                             return isGroup
                                 ? `<span class="category-icon category-cell">
                                         <i class="fa fa-fw fa-tag"></i>
-                                        <strong><em>{{ lang._('Uncategorized') }}</strong></em>
+                                        <strong>{{ lang._('Uncategorized') }}</strong>
                                 </span>`
                                 : '';
                         }
