@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2025 Eddie Hyun <edwards.hyun@protonmail.ch>
  * Copyright (C) 2014-2015 Deciso B.V.
  * Copyright (C) 2007 Seth Mos <seth.mos@dds.nl>
  * Copyright (C) 2004-2009 Scott Ullrich <sullrich@gmail.com>
@@ -41,6 +42,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = [];
     $pconfig['rrdenable'] = isset($rrdcfg['enable']);
     $pconfig['unboundenable'] = !empty($unboundcfg['stats']);
+
+    if (!isset($rrdcfg['exclude'])) {
+        $rrdcfg['exclude'] = "";
+    }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     $configure_unbound = false;
@@ -65,6 +70,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif (!empty($pconfig['action']) && $pconfig['action'] == "ResetDNS") {
         $savemsg = gettext('All local Unbound statistics data has been cleared.');
         configd_run('unbound qstats reset');
+    } else if (!empty($pconfig['action']) && str_starts_with($pconfig['action'], "do_rrd_")) {
+        $rrdexclude = empty($rrdcfg['exclude']) ? [] : explode(",", $rrdcfg['exclude']);
+        $found = array_search($pconfig['filename'], $rrdexclude);
+        if (str_ends_with($pconfig['action'], "exclude") && $found === false) {
+            $rrdexclude[] = $pconfig['filename']; // in the exclusion list = excluded
+        }
+        if (str_ends_with($pconfig['action'], "include") && $found !== false) {
+            unset($rrdexclude[$found]);
+        }
+        sort($rrdexclude);
+        $rrdcfg['exclude'] = implode(",", $rrdexclude);
+        $savemsg = get_std_save_message();
+        write_config();
     } else {
         $rrdcfg['enable'] = !empty($pconfig['rrdenable']);
         $savemsg = get_std_save_message();
@@ -153,6 +171,30 @@ $(document).ready(function() {
                     }
                 }]
         });
+    });
+
+    $(".act_rrd").each(function(i) {
+        var rrdExclusion = <?=json_encode(empty($rrdcfg['exclude']) ? [] : explode(",", $rrdcfg['exclude']))?>;
+        var filename = $(this).data('id');
+        if (rrdExclusion.includes(filename)) {
+            $(this).attr('title', "<?=gettext("enable report");?>")
+                .addClass('excluded')
+                .click(function(event){
+                        $("#action").val("do_rrd_include");
+                        $("#filename").val(filename);
+                        $("#iform").submit();
+                    })
+                .children().first().addClass('text-muted').removeClass('text-success');
+        } else {
+            $(this).attr('title', "<?=gettext("disable report");?>")
+                .removeClass('excluded')
+                .click(function(event){
+                        $("#action").val("do_rrd_exclude");
+                        $("#filename").val(filename);
+                        $("#iform").submit();
+                    })
+                .children().first().addClass('text-success').removeClass('text-muted');
+        }
     });
 
     $(".act_flush").click(function(event){
@@ -285,6 +327,10 @@ $(document).ready(function() {
                         foreach ($all_rrd_files as $rrd_name => $rrd_file):?>
                         <tr>
                           <td>
+                            <button class="act_rrd btn btn-default btn-xs" data-toggle="tooltip"
+                                    data-id="<?=$rrd_file['filename'];?>">
+                              <i class="fa fa-play fa-fw"></i>
+                            </button>
                             <button class="act_flush btn btn-default btn-xs"
                                     title="<?=gettext("flush report");?>" data-toggle="tooltip"
                                     data-id="<?=$rrd_file['filename'];?>">

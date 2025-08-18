@@ -2,6 +2,7 @@
 <?php
 
 /*
+ * Copyright (C) 2025 Eddie Hyun <edwards.hyun@protonmail.ch>
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
  *
@@ -60,7 +61,8 @@ if (!is_dir('/var/db/rrd')) {
     @chown('/var/db/rrd', 'nobody');
 }
 
-$rrd_factory = new \OPNsense\RRD\Factory();
+$exclusion = empty($rrdcnf->exclude) ? [] : explode(",", $rrdcnf->exclude);
+$rrd_factory = new \OPNsense\RRD\Factory("/var/db/rrd", $exclusion);
 $rrd_factory->collect()->updateAll(isset($opts['d']));
 
 if (isset($opts['d'])) {

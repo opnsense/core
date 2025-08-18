@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2025 Eddie Hyun <edwards.hyun@protonmail.ch>
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
  *
@@ -43,6 +44,19 @@ class Factory
      * gathered statistics
      */
     private $stats = [];
+
+    private $rrd_exclusion = [];
+
+    /**
+     * @param string $basedir absolute path to the directory rrd files are in
+     * @param array $rrd_exclusion list of excluded rrd filenames
+     */
+    public function __construct(string $basedir, array $rrd_exclusion)
+    {
+        foreach ($rrd_exclusion as $excl) {
+            $this->rrd_exclusion[] = $basedir . "/" . $excl;
+        }
+    }
 
     /**
      * @param string $type type of rrd graph to get
@@ -141,7 +155,10 @@ class Factory
                     foreach (call_user_func([$fclassname, 'payloadSplitter'], $the_data) as $tfilename => $data) {
                         $obj = $cls->newInstance($tfilename);
                         $obj->create(); /* only creates when no target exists yet */
-                        $obj->update($data, $debug);
+                        /* excluded reports also get created to ensure them appear in the settings gui */
+                        if (!in_array($tfilename, $this->rrd_exclusion)) {
+                            $obj->update($data, $debug);
+                        }
                     }
                 }
             } catch (\Error | \Exception $e) {
