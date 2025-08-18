@@ -288,10 +288,13 @@
                         }
 
                         if (!hasCategories) {
+
                             return isGroup
                                 ? `<span class="category-icon category-cell">
-                                        <i class="fa fa-fw fa-tag"></i>
-                                        <strong>{{ lang._('Uncategorized') }}</strong>
+                                    <i class="fa fa-fw fa-tag"></i>
+                                    <strong>{{ lang._('Uncategorized') }}</strong>
+                                    <span class="badge badge-sm bg-info"
+                                            style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
                                 </span>`
                                 : '';
                         }
@@ -306,7 +309,11 @@
 
                         return isGroup
                             ? `<span class="category-cell">
-                                    <span class="category-cell-content"><strong>${icons} ${categories.join(', ')}</strong></span>
+                                    <span class="category-cell-content">
+                                        <strong>${icons} ${categories.join(', ')}</strong>
+                                        <span class="badge badge-sm bg-info"
+                                                style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
+                                    </span>
                             </span>`
                             : icons;
                     },
