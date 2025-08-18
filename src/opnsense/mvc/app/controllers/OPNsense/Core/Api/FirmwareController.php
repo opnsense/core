@@ -356,12 +356,15 @@ class FirmwareController extends ApiMutableModelControllerBase
         $version = (new SanitizeFilter())->sanitize($version, 'version');
 
         $backend = new Backend();
-        $html = trim($backend->configdRun(sprintf('firmware changelog html %s', $version)));
+        $html = trim($backend->configdpRun('firmware changelog html', [$version]));
+        $date = trim($backend->configdpRun('firmware changelog date', [$version]));
+
         if (!empty($html)) {
+            $response['version'] = $version;
             $response['status'] = 'ok';
             $response['html'] = $html;
+            $response['date'] = $date;
         }
-
 
         return $response;
     }

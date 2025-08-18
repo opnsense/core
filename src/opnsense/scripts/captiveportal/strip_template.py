@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,7 @@
     --------------------------------------------------------------------------------------
     read a user provided base64 encoded zip file and generate a new one without standard
     files. (strips javascript etc)
-    Filename should be provided by user parameter and must be available in /tmp/
+    Filename should be provided by user parameter and must be available in /var/lib/php/tmp
 """
 import sys
 import os.path
@@ -39,19 +39,7 @@ import base64
 from io import BytesIO
 from hashlib import md5
 
-htdocs_default_root = '/usr/local/opnsense/scripts/OPNsense/CaptivePortal/htdocs_default'
-
-
-def load_exclude_list():
-    """ load exclude list, files that should be removed from the input stream
-    """
-    result = []
-    excl_filename = '%s/exclude.list' % htdocs_default_root
-    for line in open(excl_filename, 'r').read().split('\n'):
-        line = line.strip()
-        if len(line) > 1 and line[0] != '#':
-            result.append(line)
-    return result
+htdocs_default_root = '%s/htdocs_default' % os.path.realpath(os.path.dirname(__file__))
 
 
 response = dict()
@@ -71,7 +59,8 @@ else:
         response['error'] = 'Error reading file'
 
 if 'error' not in response:
-    exclude_list = load_exclude_list()
+    with open('%s/exclude.list' % htdocs_default_root, 'r') as f_in:
+        exclude_list = [x.strip() for x in f_in if len(x) > 2 and not x.strip().startswith('#')]
     input_data = BytesIO(zip_content)
     output_data = BytesIO()
     with zipfile.ZipFile(input_data, mode='r', compression=zipfile.ZIP_DEFLATED) as zf_in:
@@ -81,16 +70,17 @@ if 'error' not in response:
             for zf_info in zf_in.infolist():
                 if zf_info.filename.find('index.html') > -1:
                     if index_location is None or len(index_location) > len(zf_info.filename):
-                        index_location = zf_info.filename
+                        index_location = zf_info.filename.replace('index.html', '')
             if index_location is not None:
                 for zf_info in zf_in.infolist():
                     if zf_info.filename[-1] != '/':
-                        filename = zf_info.filename.replace(index_location.replace('index.html', ''), '')
+                        filename = zf_info.filename.replace(index_location, '')
                         # ignore internal osx metadata files, maybe we need to ignore some others (windows?) as well
                         # here.
-                        if filename.split('/')[0] == '__MACOSX' or filename.split('/')[-1] == '.DS_Store':
+                        skip_list = set(['__MACOSX', '.DS_Store', '._.'])
+                        if len(set(filename.split('/')).intersection(skip_list)) > 0:
                             continue
-                        if filename not in exclude_list:
+                        elif filename not in exclude_list:
                             file_data = zf_in.read(zf_info.filename)
                             src_filename = '%s/%s' % (htdocs_default_root, filename)
                             if os.path.isfile(src_filename):

@@ -449,7 +449,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         header(url_safe('Location: /services_dhcp.php?if=%s', array($if)));
     } elseif ($act == "export") {
-        $static = dhcpd_staticmap();
+        $static = dhcpd_staticmap(null, true, null, true);
 
         header("Content-Type: text/csv");
         header("Content-Disposition: attachment; filename=\"isc_export_{$if}.csv\"");
