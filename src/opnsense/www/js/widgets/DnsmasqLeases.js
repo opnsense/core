@@ -53,7 +53,20 @@ export default class DnsmasqLeases extends BaseTableWidget {
             return;
         }
 
-        const leasesResponse = await this.ajaxCall(`/api/dnsmasq/leases/${'search'}`);
+        // fetch current config (for leasesToShow)
+        const config = await this.getWidgetConfig() || {};
+        const limit = parseInt(config.leasesToShow ?? '2', 10) || 2;
+
+        // furthest expire is assumed to be latest lease
+        const leasesResponse = await this.ajaxCall(
+            `/api/dnsmasq/leases/${'search'}`,
+            JSON.stringify({
+                rowCount: Math.max(1, limit),
+                sort: { expire: 'desc' }
+            }),
+            'POST'
+        );
+
         const leaseRows = leasesResponse?.rows ?? [];
         const leaseTotalCount = Number.isFinite(leasesResponse?.total) ? leasesResponse.total : leaseRows.length;
 
@@ -62,10 +75,6 @@ export default class DnsmasqLeases extends BaseTableWidget {
             return;
         }
 
-        // fetch current config (for leasesToShow)
-        const config = await this.getWidgetConfig() || {};
-        const limit = parseInt(config.leasesToShow ?? '10', 10) || 10;
-
         if (!this.dataChanged('dhcp-leases', leaseRows) && !this.configChanged) {
             return;
         }
@@ -73,7 +82,7 @@ export default class DnsmasqLeases extends BaseTableWidget {
 
         $('#dnsmasqLeasesTable').empty();
         this.renderGauge(settingsResponse, leaseTotalCount);
-        this.processLeases(leaseRows, limit);
+        this.processLeases(leaseRows);
 
         $('[data-toggle="tooltip"]').tooltip('hide');
     }
@@ -113,18 +122,14 @@ export default class DnsmasqLeases extends BaseTableWidget {
         headerRowElement.find('.flex-cell').eq(1).hide();
     }
 
-    processLeases(leaseRows, limit) {
+    processLeases(leaseRows) {
+        // Controller already sorted and limited leases
         leaseRows
             .map(row => ({
                 hostname: row.hostname || this.translations.notavailable,
                 ipAddress: row.address || this.translations.notavailable,
-                hwaddr: row.hwaddr || this.translations.notavailable,
-                expireTimestamp: Number(row.expire) || 0
+                hwaddr: row.hwaddr || this.translations.notavailable
             }))
-            // We sort via the most distant timestamp first, as that is most likely the latest lease
-            .sort((a, b) => b.expireTimestamp - a.expireTimestamp)
-            // Limit the amount of displayed leases (from dropdown)
-            .slice(0, Math.max(1, limit))
             .forEach(lease => {
                 const hostname = (lease.hostname === '*') ? this.translations.notavailable : lease.hostname;
                 const header = `
