@@ -138,28 +138,6 @@ abstract class Base
     }
 
     /**
-     * return or create a user
-     * @param string $username username
-     * @return SimpleXMLElement user settings (xml section)
-     */
-    protected function upsertUser($username)
-    {
-        /**
-         * XXX: we can replace the getUser() in setGroupMembership(), but this has the downside of creating
-         *      empty users (due to reversing the flow). For now we allow this duplication to exist.
-         */
-        $user = $this->getUser($username);
-        if ($user == null) {
-            $add_user = json_decode((new Backend())->configdpRun("auth add user", [$username]), true);
-            if (!empty($add_user) && $add_user['status'] == 'ok') {
-                Config::getInstance()->forceReload();
-                $user = $this->getUser($username);
-            }
-        }
-        return $user;
-    }
-
-    /**
      * update user group membership
      * @param string $username username
      * @param string $memberof list (\n separated) of groups

@@ -531,7 +531,7 @@ class LDAP extends Base implements IAuthConnector
                 }
             }
             // update group policies when applicable
-            if ($this->ldapSyncMemberOf && $this->ldapReadProperties) {
+            if (($this->ldapSyncMemberOf && $this->ldapReadProperties) || $this->ldapSyncCreateLocalUsers) {
                 // list of enabled groups, so we can ignore some local groups if needed
                 $sync_groups = [];
                 $default_groups = [];
@@ -542,7 +542,9 @@ class LDAP extends Base implements IAuthConnector
                     $default_groups = explode(",", strtolower($this->ldapSyncDefaultGroups));
                 }
 
-                if ($this->ldapSyncMemberOfConstraint) {
+                if (!$this->ldapSyncMemberOf) {
+                    $sync_groups = $default_groups;
+                } elseif ($this->ldapSyncMemberOfConstraint) {
                     // Filter "memberOf" results to those recorded in ldapAuthcontainers, where
                     // the first part of the member is considered the group name, the rest should be an exact
                     // (case insensitive) match.
@@ -568,8 +570,6 @@ class LDAP extends Base implements IAuthConnector
                     $this->ldapSyncCreateLocalUsers,
                     $default_groups
                 );
-            } elseif ($this->ldapSyncCreateLocalUsers) {
-                $this->upsertUser($username);
             }
         }
 
