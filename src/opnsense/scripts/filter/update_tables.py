@@ -48,6 +48,8 @@ if __name__ == '__main__':
     parser.add_argument('--source_conf', help='configuration xml', default='/usr/local/etc/filter_tables.conf')
     parser.add_argument('--aliases', help='aliases to update (targetted), comma separated', type=lambda x: x.split(','))
     parser.add_argument('--types', help='alias types to update (comma seperated)', type=lambda x: x.split(','))
+    parser.add_argument('--quick', help='quick mode, skip size comparison', default=False, action="store_true")
+
     inputargs = parser.parse_args()
     syslog.openlog('firewall', facility=syslog.LOG_LOCAL4)
 
@@ -79,22 +81,31 @@ if __name__ == '__main__':
 
     use_cached = lambda x: to_update is not None and x not in to_update
     for alias in aliases:
-        # fetch alias content including dependencies
-        # when a distinct set of aliases is offered, use current contents for all other alias types
-        alias_name = alias.get_name()
-        alias_content = alias.cached() if use_cached(alias_name) else alias.resolve()
+        # determine if an alias has expired or updated and collect full chain of dependencies (so we can resolve them).
         alias_changed_or_expired = max(alias.changed(), alias.expired())
-        for related_alias_name in aliases.get_alias_deps(alias_name):
-            if related_alias_name != alias_name:
+        alias_resolve_list = [alias]
+        for related_alias_name in aliases.get_alias_deps(alias.get_name()):
+            if related_alias_name != alias.get_name():
                 rel_alias = aliases.get(related_alias_name)
                 if rel_alias:
-                    alias_content += rel_alias.cached() if use_cached(related_alias_name) else rel_alias.resolve()
+                    alias_resolve_list.append(rel_alias)
                     alias_changed_or_expired = max(alias_changed_or_expired, rel_alias.changed(), rel_alias.expired())
+
+        if inputargs.quick and not alias_changed_or_expired and (
+            alias.get_pf_addr_count() != 0 or alias.get_file_size() == 0
+        ):
+            # quick mode, alias not changed or expired and target pf table contains some data
+            continue
 
         # only try to replace the contents of this alias if we're responsible for it (know how to parse)
         if alias.get_parser():
+            # query alias content, includes dependencies
+            alias_content = set()
+            for item in alias_resolve_list:
+                alias_content.union(item.cached() if use_cached(item.get_name()) else item.resolve())
+
             # when the alias or any of it's dependencies has changed, generate new
-            alias_filename = '/var/db/aliastables/%s.txt' % alias_name
+            alias_filename = alias.get_filename()
             if alias_changed_or_expired or not os.path.isfile(alias_filename):
                 alias_content_str = '\n'.join(sorted(alias_content))
                 if  not os.path.isfile(alias_filename) or alias_content_str != alias.read_alias_file(alias_filename):
@@ -110,13 +121,13 @@ if __name__ == '__main__':
                 if cnt_alias_content == 0:
                     if cnt_alias_pf_content > 0:
                         # flush when target is empty
-                        PF.flush(alias_name)
+                        PF.flush(alias.get_name())
                 else:
                     # replace table contents with collected alias
-                    error_output = PF.replace(alias_name, alias_filename)
+                    error_output = PF.replace(alias.get_name(), alias_filename)
                     if error_output.find('pfctl: ') > -1:
                         error_message = "Error loading alias [%s]: %s {current_size: %d, new_size: %d}" % (
-                            alias_name,
+                            alias.get_name(),
                             error_output.replace('pfctl: ', ''),
                             cnt_alias_pf_content,
                             cnt_alias_content,
