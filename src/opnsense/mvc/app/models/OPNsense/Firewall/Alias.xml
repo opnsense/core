@@ -75,6 +75,7 @@
                     <OptionValues>
                         <Basic>Basic</Basic>
                         <Bearer>Bearer</Bearer>
+                        <Header>Header</Header>
                     </OptionValues>
                 </authtype>
                 <expire type="IntegerField">
