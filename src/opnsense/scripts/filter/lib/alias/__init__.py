@@ -164,20 +164,20 @@ class Alias(object):
             # in case the cache doesn't exist at all. Although this costs time, it's probably the safest option here.
             return self.resolve()
 
-        return list(self._resolve_content)
+        return self._resolve_content
 
     @staticmethod
     def read_alias_file(filename):
         """
         :param filename: filename to read (when it exists)
-        :return: string, empty when not found or not parseable
+        :return: string|bool, False when not found or not parseable
         """
         if os.path.isfile(filename):
             try:
                 return open(filename, 'r').read()
             except UnicodeDecodeError:
-                return ''
-        return ''
+                return False
+        return False
 
 
     def resolve(self, force=False):
@@ -223,7 +223,7 @@ class Alias(object):
                 self._resolve_content = set(open(self._filename_alias_content).read().split())
 
         # return the addresses and networks of this alias
-        return list(self._resolve_content)
+        return self._resolve_content
 
     def get_parser(self):
         """ fetch address parser to use, None if alias type is not handled here or only during pre processing
@@ -270,6 +270,19 @@ class Alias(object):
             :return: string
         """
         return self._name
+
+    def get_filename(self):
+        """ return target filename for this alias content
+            :return: string
+        """
+        return '/var/db/aliastables/%s.txt' % self._name
+
+    def get_file_size(self):
+        """ return filesize in bytes of the full alias
+        """
+        if os.path.isfile(self.get_filename()):
+            return os.stat(self.get_filename()).st_size
+        return 0
 
     def get_deps(self):
         """ fetch alias dependencies
