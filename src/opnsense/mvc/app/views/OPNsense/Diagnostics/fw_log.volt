@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2014-2021 Deciso B.V.
+ # Copyright (c) 2014-2025 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -12,7 +12,7 @@
  #    this list of conditions and the following disclaimer in the documentation
  #    and/or other materials provided with the distribution.
  #
- # THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ # THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
  # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
  # AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
  # AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
@@ -25,97 +25,598 @@
  #}
 
 <script>
-    'use strict';
+    class RingBuffer {
+        constructor(capacity) {
+            if (capacity <= 0) throw new Error("capacity must be > 0");
+            this.capacity = capacity;
+            this.buf = new Array(capacity);
+            this.head = 0;         // points to most recent item
+            this.length = 0;       // number of valid items (≤ capacity)
 
-    $( document ).ready(function() {
-        var field_type_icons = {
-          'binat': 'fa-exchange',
-          'block': 'fa-ban',
-          'in': 'fa-arrow-right',
-          'nat': 'fa-exchange',
-          'out': 'fa-arrow-left',
-          'pass': 'fa-play',
-          'rdr': 'fa-exchange'
-        };
-        var interface_descriptions = {};
-        let hostnameMap = {};
+            this._subs = new Set();
+        }
 
-        /**
-         * reverse lookup address fields (replace address part for hostname if found)
-         */
-        function reverse_lookup() {
-            let to_fetch = [];
-            let unfinshed_lookup = false;
-             $(".address").each(function(){
-                let address = $(this).data('address');
-                if (!hostnameMap.hasOwnProperty(address) && !to_fetch.includes(address)) {
-                    // limit dns fetches to 50 per cycle
-                    if (to_fetch.length >= 50) {
-                        unfinshed_lookup = true;
-                        return;
-                    }
-                    to_fetch.push(address);
-                }
+        subscribe(handler) {
+            this._subs.add(handler);
+
+            return () => this._subs.delete(handler); // prevent a separate unsubscribe function()
+        }
+
+        _emit(event) {
+            for (const h of this._subs) {
+                h(event);
+            }
+        }
+
+        reset(src) {
+            const cap = this.capacity;
+            let k = Math.min(src.length, cap);
+            this.length = k;
+
+            // this assumes src[0] is the most recent data
+            for (let i = 0; i < k; i++) {
+                this.buf[i] = src[i];
+            }
+            this.head = 0;
+
+            this._emit({
+                type:'reset',
+            })
+        }
+
+        // Insert as "most recent". O(1)
+        push(value) {
+            this.head = (this.head - 1 + this.capacity) % this.capacity;
+            this.buf[this.head] = value;
+            if (this.length < this.capacity) this.length++;
+            else {
+                // when full, we overwrote the oldest; nothing else to do
+            }
+
+            this._emit({
+                type:'push',
+                data: value
             });
-            let update_grid = function() {
-                $(".address").each(function(){
-                    if (hostnameMap.hasOwnProperty($(this).data('address'))) {
-                          $(this).text($(this).text().replace(
-                            $(this).data('address'),
-                            hostnameMap[$(this).data('address')]
-                          ));
-                          $(this).removeClass('address');
-                    }
-                });
-            };
-            if (to_fetch.length > 0) {
-                ajaxGet('/api/diagnostics/dns/reverse_lookup', { 'address': to_fetch }, function(data, status) {
-                    $.each(to_fetch, function(index, address) {
-                        if (!data.hasOwnProperty(address) || data[address] === undefined) {
-                            hostnameMap[address] = address;
-                        } else {
-                            hostnameMap[address] = data[address];
-                        }
-                    });
-                    if (unfinshed_lookup) {
-                        // schedule next fetch
-                        reverse_lookup();
-                    }
-                    update_grid();
-                });
+        }
+
+        pushMany(values) {
+            const cap = this.capacity;
+            const n = values.length;
+            if (n === 0) return;
+
+            // We can only keep up to cap newest items
+            const m = Math.min(n, cap);
+
+            // Where the newest item (values[0]) will land
+            let start = (this.head - m) % cap;
+            if (start < 0) start += cap; // JS % can be negative
+
+            // Write in two chunks to handle wraparound
+            const firstLen = Math.min(m, cap - start); // chunk at end
+            for (let i = 0; i < firstLen; i++) this.buf[start + i] = values[i];
+            const secondLen = m - firstLen;              // chunk at start
+            for (let i = 0; i < secondLen; i++) this.buf[i] = values[firstLen + i];
+
+            // Update head and length
+            this.head = start;
+            this.length = Math.min(cap, this.length + n);
+
+            this._emit({
+                type: 'pushMany',
+                data: values
+            });
+        }
+
+        clear() {
+            this.head = 0;
+            this.length = 0;
+            this.buf.fill(undefined); // technically not necessary
+
+            this._emit({
+                type: 'clear',
+            });
+        }
+
+        // i = 0 -> most recent; i = length-1 -> oldest
+        get(i) {
+            if (i < 0 || i >= this.length) return undefined;
+            return this.buf[(this.head + i) % this.capacity];
+        }
+
+        set(i, value) {
+            if (i < 0 || i >= this.length) return;
+            this.buf[i] = value;
+        }
+
+        // Remove and return oldest. O(1)
+        pop() {
+            if (this.length === 0) return undefined;
+            const idx = (this.head + this.length - 1) % this.capacity;
+            const v = this.buf[idx];
+            this.length--;
+            return v;
+        }
+
+        copyTo(dst, n) {
+            if (!(dst instanceof RingBuffer)) throw new Error("dst must be a RingBuffer");
+            dst.clear();
+            const m = Math.min(n, this.length);
+            let tmp = [];
+            for (let i = m - 1; i >= 0; i--) {
+                tmp.push(this.get(i));
+                // dst.push(this.get(i));
+            }
+            dst.pushMany(tmp);
+        }
+
+        // Materialize as a real array, newest → oldest. O(n) but only when called.
+        toArray() {
+            const out = new Array(this.length);
+            for (let i = 0; i < this.length; i++) out[i] = this.get(i);
+            return out;
+        }
+
+        // practical zero-copy buffer operations (no clone to array necessary)
+        
+        // usage: for (const item of buffer)
+        *[Symbol.iterator]() {
+            for (let i = 0; i < this.length; i++) {
+                yield this.buf[(this.head + i) % this.capacity];
+            }
+        }
+
+        // Find first matching item (newest-first)
+        find(predicate) {
+            for (let i = 0; i < this.length; i++) {
+                const v = this.buf[(this.head + i) % this.capacity];
+                if (predicate(v, i)) return v;
+            }
+            return undefined;
+        }
+
+        // usage: const errors = buffer.filter(item => item.type === 'error')
+        filter(predicate) {
+            const results = [];
+            for (let i = 0; i < this.length; i++) {
+                const v = this.buf[(this.head + i) % this.capacity];
+                if (predicate(v, i)) results.push(v);
+            }
+            return results;
+        }
+
+        // usage: for (const x of buffer.filterIter(item => item.type === 'error'))
+        // practical when we need to bail early
+        *filterIter(predicate) {
+            for (let i = 0; i < this.length; i++) {
+                const v = this.buf[(this.head + i) % this.capacity];
+                if (predicate(v, i)) yield v;
+            }
+        }
+
+        map(fn) {
+            const { buf, head, length, capacity } = this;
+            if (length === 0) return this;
+
+            const end = head + length; // exclusive
+            let k = 0;                 // logical index 0..length-1
+
+            if (end <= capacity) {
+                // single contiguous block
+                for (let i = head; i < end; i++, k++) {
+                    const v = buf[i];
+                    buf[i] = fn.call(this, v, k, this);
+                }
             } else {
-                update_grid();
+                // first segment: head..capacity-1
+                for (let i = head; i < capacity; i++, k++) {
+                    const v = buf[i];
+                    buf[i] = fn.call(this, v, k, this);
+                }
+                // second segment: 0..(end - capacity - 1)
+                const wrapEnd = end - capacity;
+                for (let i = 0; i < wrapEnd; i++, k++) {
+                    const v = buf[i];
+                    buf[i] = fn.call(this, v, k, this);
+                }
+            }
+
+            return this;
+        }
+    }
+
+    class FilterViewModel {
+        /**
+         * Represents the live view as a model,
+         * maintaining a snapshot of the most recent entries
+         * into the main bucket. The snapshot can be updated
+         * with filters, using the bucket to fetch the data.
+         * 
+         * This model also maintains the main live log
+         * table.
+         */
+        constructor(bucket, table = null, bufferSize = 100) {
+            this.bufferSize = bufferSize;
+            this.bucket = bucket;
+            this.table = table;
+            this.viewBuffer = new RingBuffer(this.bufferSize);
+            this.filterStore = {
+                mode: 'AND',
+                filters: {},\
+                combinedFilters: {}
+            }
+            this.globalQuery = '';
+
+            this.bucket.subscribe(event => this._onBucketEvent(event));
+            this.viewBuffer.subscribe(event => this._onViewBufferEvent(event));
+        }
+
+        _init() {
+            // pushes this.bufferSize entries to the models' buffer
+            this.bucket.copyTo(this.viewBuffer, this.bufferSize);
+        }
+
+        _onBucketEvent(event) {
+            switch (event.type) {
+                case 'reset':
+                    this._init();
+                    break;
+                case 'push':
+                    if (this._passesCurrentFilters(event.data)) {
+                        this.viewBuffer.push(event.data);
+                    }
+                    break;
+                case 'pushMany':
+                    event.data.reverse();
+                    const tmp = event.data.filter(record => this._passesCurrentFilters(record));
+                    this.viewBuffer.pushMany(tmp);
+                    break;
             }
         }
 
         /**
-         * set new selection
-         * @param items list of lexical expressions
-         * @param operator enable or disable global OR operator
+         * Do table changes based on viewbuffer data change events.
+         * Since the viewbuffer is a reflection of the table, any data
+         * mutated on the viewbuffer is considered valid (passed the filter(s)).
          */
-        function set_selection(items, operator)
-        {
-            // remove old selection
-            $("#filters > span.badge").click();
-            // collect valid condition types
-            let conditions = [];
-            $("#filter_condition > option").each(function(){
-                conditions.push($(this).val());
-            });
-            items.forEach(function(value) {
-                let parts = value.split(new RegExp("("+conditions.join("|")+")(.+)$"));
-                if (parts.length >= 3 && $("#filter_tag").val(parts[0]).val() === parts[0] ) {
-                    $("#filter_tag").val(parts[0]);
-                    $("#filter_condition").val(parts[1]);
-                    $("#filter_value").val(parts[2]);
-                    $("#add_filter_condition").click();
-                } else if (value.toLowerCase() == "or=1") {
-                    operator = "1";
+        _onViewBufferEvent(event) {
+            // also investigate setData instead of addDate + remove
+            switch (event.type) {
+                case 'push':
+                    this.table.addData([event.data], true);
+                    break;
+                case 'pushMany':
+                    this.table.addData(event.data.reverse(), true);
+                    break;
+                case 'reset':
+                    let tmp = this.viewBuffer.toArray();
+                    this.table.addData(tmp, true);
+                    break;
+                case 'clear':
+                    this.table.clearData();
+                    break;
+            }
+
+            let rows = this.table.getRows();
+            if (this.viewBuffer.length >= this.bufferSize && rows.length > this.bufferSize) {
+                for (let i = this.bufferSize; i < rows.length; i++) {
+                    rows[i].delete();
                 }
+            }
+        }
+
+        _hashFilter({field, operator, value}) {
+            const str = [
+                String(field ?? '').trim().toLowerCase(),
+                String(operator ?? '').trim().toLowerCase(),
+                String(value ?? '').trim().toLowerCase(),
+            ].join('|');
+
+
+            let h = 5381;
+            for (let i = 0; i < str.length; i++) h = ((h << 5) + h) ^ str.charCodeAt(i);
+            // to unsigned 32-bit and hex
+            return (h >>> 0).toString(16);
+        }
+
+        /**
+         * Build a predicate from a simple UI filter.
+         * @param {string} field - key in the record, e.g. "src"
+         * @param {'contains'|'does not contain'|'is'|'is not'} operator
+         * @param {string} value - user input
+         * @returns {(item: Record<string, string>) => boolean}
+         */
+        _buildPredicate(field, operator, value) {
+            const needle = String(value ?? '').toLowerCase().trim();
+
+            return (item) => {
+                const haystack = String(item?.[field] ?? '').toLowerCase();
+
+                switch (operator) {
+                case '~':
+                    return haystack.includes(needle);
+                case '!~':
+                    return !haystack.includes(needle);
+                case '=':
+                    return haystack === needle;
+                case '!=':
+                    return haystack !== needle;
+                default:
+                    return true; // unknown operator -> pass everything
+                }
+            };
+        }
+
+        /**
+         * Special predicate for global search on top of current filters (if any)
+         */
+        _matchesAnyValue(item) {
+            if (!this.globalQuery) return true; // empty search → no extra filtering
+            const q = String(this.globalQuery).toLowerCase().trim();
+            if (!q) return true;
+            // Since values are strings, scan them all (partial, case-insensitive)
+            const vals = Object.values(item);
+            for (let i = 0; i < vals.length; i++) {
+                // converting this to a String will also implicitly join array values to "a,b,c" (i.e. __spec__)
+                const v = String(vals[i] ?? '').toLowerCase();
+                if (v.includes(q)) return true;
+            }
+            return false;
+        }
+
+        _buildFilterFn() {
+            const preds = [
+                ...Object.values(this.filterStore.filters ?? {})
+                    .map(f => this._buildPredicate(f.field, f.operator, f.value)),
+                ...Object.values(this.filterStore.combinedFilters ?? {})
+                    .map(cf => {
+                        const fns = cf.field.map(field => this._buildPredicate(field, cf.operator, cf.value));
+
+                        return (item) => {
+                            if (cf.operator.match('!')) {
+                                // negative case: none of the fields may contain (AND)
+                                cf.field.toString = function() {
+                                    return this.join(" {{lang._('and')}} ");
+                                };
+                                return fns.every(f => f(item));
+                            } else {
+                                // positive case: OR
+                                cf.field.toString = function() {
+                                    return this.join(" {{lang._('or')}} ");
+                                };
+                                return fns.some(f => f(item));
+                            }
+                        };
+                    })
+            ];
+
+            const hasGlobal = this.globalQuery !== '';
+            const isNoop = preds.length === 0 && !hasGlobal;
+            const mode = this.filterStore.mode;
+
+            const fieldsPass = (record) => {
+                if (preds.length === 0) return true;
+                if (mode === 'OR')  return preds.some(p => p(record));
+                if (mode === 'AND') return preds.every(p => p(record));
+                return false;
+            };
+
+            const fn = (record) => {
+                if (isNoop) return true;
+                if (!fieldsPass(record)) return false;
+
+                // - if we had any field predicates, always also require _matchesAnyValue
+                // - if we only have a global query, require _matchesAnyValue
+                // (_matchesAnyValue should return true when globalQuery is empty)
+                return (preds.length > 0 || hasGlobal) ? this._matchesAnyValue(record) : true;
+            };
+
+            return { fn, isNoop };
+        }
+
+        /**
+         * checks if a record passes the currently applied filters
+         * and global search query. Same logic as
+         * _filterChange(), but no state is modified.
+         */ 
+        _passesCurrentFilters(record) {
+            return this._buildFilterFn().fn(record);
+        }
+      
+        /**
+         * Called for any change to the filter state (filters added/removed or global
+         * search string modified). This function is idempotent.
+         */
+        _filterChange() {
+            const { fn, reset } = this._buildFilterFn();
+
+            if (reset) {
+                this._init();
+                return;
+            }
+
+            this.viewBuffer.clear();
+
+            const result = this.bucket.filter(fn);
+
+            this.viewBuffer.reset(result);
+        }
+
+
+        /**
+         * public API
+         */
+
+        /**
+         * data has changed, re-render (with applied filters)
+         */
+        reset() {
+            this._filterChange();
+        }
+
+        /**
+         * 
+         */
+        updateTable(records) {
+            try {
+                this.table.updateData(records, true);
+            } catch (e) {
+                // ignore
+            } 
+        }
+
+        setFilterMode(mode = 'AND') {
+            if (this.filterStore.mode !== mode) {
+                this.filterStore.mode = mode;
+
+                this._filterChange();
+            }
+        }
+
+        getFilterMode() {
+            return this.filterStore.mode;
+        }
+
+        /**
+         * Example: { field: 'src', operator: '=', value: '192.168.1.1', format:'RFC1918' (optional) }
+         * The optional 'format' parameter replaces the value for display purposes only
+         */
+        addFilter(filter) {
+            const id = this._hashFilter(filter);
+            this.filterStore.filters[id] = filter;
+            this._filterChange();
+        }
+
+        /**
+         * Example: { field: ['src', 'dst'], operator: '!=', value: '192.168.1.1' }
+         * The meaning of a combined filter is dependent on the operator. In the case of a
+         * positive operator, "OR" is used, otherwise "AND".
+         */
+        addCombinedFilter(filter) {
+            const id = this._hashFilter(filter);
+            this.filterStore.combinedFilters[id] = filter;
+            this._filterChange();
+        }
+
+        removeFilter(id) {
+            delete this.filterStore.filters[id];
+            delete this.filterStore.combinedFilters[id];
+            this._filterChange();
+        }
+
+        getFilters() {
+            return {...this.filterStore.filters, ...this.filterStore.combinedFilters};
+        }
+
+        clearFilters(refresh=true) {
+            this.filterStore.filters = {};
+            this.filterStore.combinedFilters = {};
+
+            if (refresh) this._filterChange();
+        }
+
+        setGlobalSearch(value) {
+            this.globalQuery = value;
+            this._filterChange();
+        }
+    }
+
+    $(document).ready(function() {
+        function fetch_log(last_digest=null, limit=null) {
+            const map = {
+                'pass': 0,
+                'nat': 1,
+                'rdr': 1,
+                'binat': 1,
+                'block': 3
+            }
+            return new Promise((resolve, reject) => {
+                ajaxGet('/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': limit}, function(data, status) {
+                    if (status == 'error' || data === undefined || data.length === 0) reject();
+                    for (let record of data) {
+                        // initial data formatting for front-end purposes
+                        // delete record['__spec__']; // we don't use __spec__ at the moment, so prevent search triggers on this
+                        record['status'] = map[record['action']];
+                        // deal with IPs we haven't seen before
+                        if (!hostnames.get(record.src)) hostnames.set(record.src, null);
+                        if (!hostnames.get(record.dst)) hostnames.set(record.dst, null);
+
+                        // make sure the hostname key exists
+                        record['srchostname'] = hostnames.get(record.src);
+                        record['dsthostname'] = hostnames.get(record.dst);
+                    }
+
+                    resolve(data);
+                });
             });
-            $("#filter_or_type").prop('checked', operator === "1" ? true : false);
-            $(".selectpicker").selectpicker('refresh');
-            $("#filter_tag").change();
+        }
+
+        function poller(interval) {
+            let last_digest = null;
+            if (buffer.get(0)) {
+                last_digest = buffer.get(0)['__digest__'];
+            }
+            fetch_log(last_digest).then((data) => {
+                // length check already passed
+                if (data[0]['__digest__'] === last_digest) {
+                    return;
+                }
+                data.pop(); // data includes last seen digest as last item
+                buffer.pushMany(data);
+            });
+
+            pollTimeout = setTimeout(poller, interval, interval);
+        }
+
+        function stopPoller() {
+            clearTimeout(pollTimeout);
+            pollTimeout = null;
+        }
+
+        function debounce(f, delay = 50, ensure = true) {
+            // debounce to prevent a flood of calls in a short time
+            let lastCall = Number.NEGATIVE_INFINITY;
+            let wait;
+            let handle;
+            return (...args) => {
+                wait = lastCall + delay - Date.now();
+                clearTimeout(handle);
+                if (wait <= 0 || ensure) {
+                    handle = setTimeout(() => {
+                        f(...args);
+                        lastCall = Date.now();
+                    }, wait);
+                }
+            };
+        }
+
+        function renderFilters() {
+            $list.empty();
+            const entries = Object.entries(filterVM.getFilters());
+            if (entries.length === 0) {
+                return;
+            }
+
+            // Build chips
+            let i = 0;
+            for (const [id, f] of entries) {
+                if (i > 0) {
+                    $list.append(
+                        $(`<li class="filter-sep" role="separator" aria-hidden="true">${filterVM.getFilterMode()}</li>`)
+                    );
+                }
+                const $chip = $(`
+                    <li class="filter-chip" data-id="${id}">
+                    <span>${f.field} ${operatorMap[f.operator].translation} “${f.format ?? f.value}”</span>
+                    <button aria-label="Remove filter" title="Remove filter">&times;</button>
+                    </li>
+                `);
+                $chip.find('button').on('click', function () {
+                    filterVM.removeFilter(id);
+                    renderFilters();
+                });
+                $list.append($chip);
+                i++;
+            }
         }
 
         /**
@@ -125,7 +626,7 @@
         function addTemplate(t_data) {
             ajaxCall('/api/diagnostics/lvtemplate/add_item/', t_data, function(data, status) {
                 if (data.result == "saved") {
-                    fetchTemplates(data.uuid);
+                    updateTemplatesSelect(data.uuid);
                 } else {
                     BootstrapDialog.show({
                     type: BootstrapDialog.TYPE_DANGER,
@@ -138,7 +639,7 @@
                         }
                         }]
                     });
-                    fetchTemplates("00000");
+                    updateTemplatesSelect();
                 }
             })
         }
@@ -151,7 +652,7 @@
         function editTemplate(t_id, t_data) {
             ajaxCall('/api/diagnostics/lvtemplate/set_item/' + t_id, t_data, function(data, status) {
                 if (data.result == "saved") {
-                    fetchTemplates(t_id);
+                    updateTemplatesSelect(t_id);
                 } else {
                     BootstrapDialog.show({
                     type: BootstrapDialog.TYPE_DANGER,
@@ -164,7 +665,7 @@
                         }
                         }]
                     });
-                    fetchTemplates(t_id);
+                    updateTemplatesSelect(t_id);
                 }
             })
         }
@@ -176,9 +677,9 @@
         function delTemplate(t_id) {
             ajaxCall('/api/diagnostics/lvtemplate/del_item/' + t_id, {}, function(data, status) {
                 if (data.result == "deleted") {
-                    //don't reset current filters so template can be restored right after delete
-                    $("#templates option[value=" + t_id + "]").remove();
-                    $("#templates").val("").selectpicker('refresh');
+                    filterVM.clearFilters();
+                    renderFilters();
+                    updateTemplatesSelect();
                 } else {
                     BootstrapDialog.show({
                     type: BootstrapDialog.TYPE_DANGER,
@@ -195,646 +696,720 @@
             })
         }
 
-        /**
-         * fetch templates from config
-         * @param opt select value to make :selected and apply
-         */
-        function fetchTemplates(opt) {
-            const t_fetched = new $.Deferred();
-            opt = opt || "00000";
-            //apply = apply || true;
-            $('#templ_name').val("");
-            $('#templates').empty();
-            $('#templates').append($('<option/>', {value: "00000", text: "None"}).data('template', {'filters': "0", 'or': "0"}).addClass("disp_none_opt templates"));
-            $('#templates').append($('<option/>', {value: "00001", text: "New"}).data('template', {'filters': "0", 'or': "0"}).attr('data-icon','fa-solid fa-file').addClass("add_new_opt templ_save"));
-            $('#templates').selectpicker('refresh');
-            $('.templates').show();
-            $('.templ_save').hide();
-            ajaxGet('/api/diagnostics/lvtemplate/search_item/', {}, function(data, status) {
-                let templates = data.rows;
-                $.each(templates, function(i, template) {
-                    $('#templates').append(template.uuid == opt ? $('<option/>', {value:template.uuid, text:template.name, selected: "selected" }).data('template', template) : $('<option/>', {value:template.uuid, text:template.name }).data('template', template));
-                });
-                $('#templates').selectpicker('refresh');
-                $('.badge').click();
-                $("#templates").change();
-                t_fetched.resolve();
-            });
-            return t_fetched;
-        }
-
-
-        function fetch_log() {
-            let record_spec = [];
-            // Overfetch for limited display scope to increase the chance of being able to find matches.
-            // As we fetch once per second, we would be limited to 25 records/sec of log data when 25 is selected.
-            let max_rows = Math.max(1000, parseInt($("#limit").val()));
-            // read heading, contains field specs
-            $("#grid-log > thead > tr > th ").each(function () {
-                record_spec.push({
-                    'column-id': $(this).data('column-id'),
-                    'type': $(this).data('type'),
-                    'class': $(this).attr('class')
-                });
-            });
-            // read last digest (record hash) from top data row
-            var last_digest = $("#grid-log > tbody > tr:first > td:first").text();
-            // fetch new log lines and add on top of grid-log
-            ajaxGet('/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': max_rows}, function(data, status) {
-                if (status == 'error') {
-                    // stop poller on failure
-                    $("#auto_refresh").prop('checked', false);
-                } else if (last_digest != '' && $("#grid-log > tbody > tr").length == 1){
-                    // $("#limit").change(); called, this request should be discarted (data grid reset)
-                    return;
-                } else if (data !== undefined && data.length > 0) {
-                    let record;
-                    let trs = [];
-                    while ((record = data.pop()) != null) {
-                        if (record['__digest__'] != last_digest) {
-                            var log_tr = $("<tr>");
-                            if (record.interface !== undefined && interface_descriptions[record.interface] !== undefined) {
-                                record['interface_name'] = interface_descriptions[record.interface];
-                            } else {
-                                record['interface_name'] = record.interface;
-                            }
-                            log_tr.data('details', record);
-                            log_tr.hide();
-                            $.each(record_spec, function(idx, field){
-                                var log_td = $('<td>').addClass(field['class']);
-                                var column_name = field['column-id'];
-                                var content = null;
-                                switch (field['type']) {
-                                    case 'icon':
-                                        var icon = field_type_icons[record[column_name]];
-                                        if (icon != undefined) {
-                                            log_td.html('<i class="fa '+icon+'" aria-hidden="true"></i><span style="display:none">'+record[column_name]+'</span>');
-                                        }
-                                        break;
-                                    case 'address':
-                                        log_td.text(record[column_name]);
-                                        log_td.addClass('address');
-                                        log_td.data('address', record[column_name]);
-                                        if (record[column_name+'port'] !== undefined) {
-                                            if (record['ipversion'] == 6) {
-                                                log_td.text('['+log_td.text()+']:'+record[column_name+'port']);
-                                            } else {
-                                                log_td.text(log_td.text()+':'+record[column_name+'port']);
+        const tableWrapper = $("#example-table").UIBootgrid({
+            options: {
+                ajax: false,
+                navigation: 0,
+                selection: false,
+                multiSelect: false,
+                virtualDOM: true,
+                formatters: {
+                    proto: function(column, row, onRendered) {
+                        return row.protoname.toUpperCase();
+                    },
+                    appendPort: function(column, row, onRendered) {
+                        const side = column.id === 'src' ? 'src' : 'dst';
+                        const ip = row[side], port = row[`${side}port`];
+                        return port ? `${row.ipversion == 6 ? `[${ip}]` : ip}:${port}` : ip;
+                    },
+                    interface: function(column, row, onRendered) {
+                        return interfaceMap[row[column.id]] ?? row[column.id];
+                    },
+                    info: function(column, row, onRendered) {
+                        onRendered((cell) => {
+                            $(cell.getElement()).click(function() {
+                                let sender_details = row;//sender_tr.data('details');
+                                let hidden_columns = ['__spec__', '__host__', '__digest__'];
+                                let map_icon = ['dir', 'action'];
+                                let sorted_keys = Object.keys(sender_details).sort();
+                                let tbl = $('<table class="table table-condensed table-hover"/>');
+                                let tbl_tbody = $("<tbody/>");
+                                for (let i=0 ; i < sorted_keys.length; i++) {
+                                    if (hidden_columns.indexOf(sorted_keys[i]) === -1 ) {
+                                        let row = $("<tr/>");
+                                        let icon = null;
+                                        if (map_icon.indexOf(sorted_keys[i]) !== -1) {
+                                            if (field_type_icons[sender_details[sorted_keys[i]]] !== undefined) {
+                                                icon = $("<i/>");
+                                                icon.addClass("fa fa-fw").addClass(field_type_icons[sender_details[sorted_keys[i]]]);
                                             }
                                         }
-                                        break;
-                                    case 'info':
-                                        log_td.html('<button class="act_info btn btn-xs fa fa-info-circle" aria-hidden="true"></i>');
-                                        break;
-                                    case 'label':
-                                        // record data is always html-escaped. no special protection required
-                                        log_td.html(record[column_name]);
-                                        break;
-                                    default:
-                                        if (record[column_name] != undefined) {
-                                            log_td.text(record[column_name]);
+                                        row.append($("<td/>").text(sorted_keys[i]));
+                                        if (sorted_keys[i] == 'rid') {
+                                        // rid field, links to rule origin
+                                        let rid = sender_details[sorted_keys[i]];
+                                        let rid_td = $("<td/>").addClass("act_info_fld_"+sorted_keys[i]);
+                                        if (rid.length >= 32) {
+                                            let rid_link = $("<a target='_blank' href='/firewall_rule_lookup.php?rid=" + rid + "'/>");
+                                            rid_link.text(rid);
+                                            rid_td.append($("<i/>").addClass('fa fa-fw fa-search'));
+                                            rid_td.append(rid_link);
                                         }
-                                }
-                                log_tr.append(log_td);
-                            });
-
-                            if (record['action'] == 'pass') {
-                                log_tr.addClass('fw_pass');
-                            } else if (record['action'] == 'block') {
-                                log_tr.addClass('fw_block');
-                            } else if (record['action'] == 'rdr' || record['action'] == 'nat' || record['action'] == 'binat') {
-                                log_tr.addClass('fw_nat');
-                            }
-                            trs.unshift(log_tr);
-                        }
-                    }
-                    $("#grid-log > tbody > tr:first").before(trs);
-                    // apply filter after load
-                    apply_filter();
-
-                    /**
-                     * Limit output, try to keep max X records on screen.
-                     * By removing the invisible items first, we should be able to keep the filtered ones
-                     * longer in scope. In theory the number of items in memory can grow to 2 x max_rows, but
-                     * in practice that's not really an issue.
-                     */
-                    $("#grid-log > tbody > tr:not(:visible):gt("+max_rows+")").remove();
-                    $("#grid-log > tbody > tr:visible:gt("+max_rows+")").remove();
-
-                    // bind info buttons
-                    $(".act_info").unbind('click').click(function(){
-                        var sender_tr = $(this).parent().parent();
-                        var sender_details = sender_tr.data('details');
-                        var hidden_columns = ['__spec__', '__host__', '__digest__'];
-                        var map_icon = ['dir', 'action'];
-                        var sorted_keys = Object.keys(sender_details).sort();
-                        var tbl = $('<table class="table table-condensed table-hover"/>');
-                        var tbl_tbody = $("<tbody/>");
-                        for (let i=0 ; i < sorted_keys.length; i++) {
-                            if (hidden_columns.indexOf(sorted_keys[i]) === -1 ) {
-                                var row = $("<tr/>");
-                                var icon = null;
-                                if (map_icon.indexOf(sorted_keys[i]) !== -1) {
-                                    if (field_type_icons[sender_details[sorted_keys[i]]] !== undefined) {
-                                        icon = $("<i/>");
-                                        icon.addClass("fa fa-fw").addClass(field_type_icons[sender_details[sorted_keys[i]]]);
+                                        row.append(rid_td);
+                                        } else if (icon === null) {
+                                        row.append($("<td/>").addClass("act_info_fld_"+sorted_keys[i]).html(
+                                            sender_details[sorted_keys[i]]
+                                        ));
+                                        } else {
+                                        row.append($("<td/>")
+                                            .append(icon)
+                                            .append($("<span/>").addClass("act_info_fld_"+sorted_keys[i]).text(
+                                                " [" + sender_details[sorted_keys[i]] + "]"
+                                            ))
+                                        );
+                                        }
+                                        tbl_tbody.append(row);
                                     }
                                 }
-                                row.append($("<td/>").text(sorted_keys[i]));
-                                if (sorted_keys[i] == 'rid') {
-                                  // rid field, links to rule origin
-                                  var rid = sender_details[sorted_keys[i]];
-                                  var rid_td = $("<td/>").addClass("act_info_fld_"+sorted_keys[i]);
-                                  if (rid.length >= 32) {
-                                      var rid_link = $("<a target='_blank' href='/firewall_rule_lookup.php?rid=" + rid + "'/>");
-                                      rid_link.text(rid);
-                                      rid_td.append($("<i/>").addClass('fa fa-fw fa-search'));
-                                      rid_td.append(rid_link);
-                                  }
-                                  row.append(rid_td);
-                                } else if (icon === null) {
-                                  row.append($("<td/>").addClass("act_info_fld_"+sorted_keys[i]).html(
-                                    sender_details[sorted_keys[i]]
-                                  ));
-                                } else {
-                                  row.append($("<td/>")
-                                      .append(icon)
-                                      .append($("<span/>").addClass("act_info_fld_"+sorted_keys[i]).text(
-                                        " [" + sender_details[sorted_keys[i]] + "]"
-                                      ))
-                                  );
-                                }
-                                tbl_tbody.append(row);
-                            }
-                        }
-                        tbl.append(tbl_tbody);
-                        BootstrapDialog.show({
-                           title: "{{ lang._('Detailed rule info') }}",
-                           message: tbl,
-                           type: BootstrapDialog.TYPE_INFO,
-                           draggable: true,
-                           buttons: [{
-                             label: '<i class="fa fa-search" aria-hidden="true"></i>',
-                             action: function(){
-                               $(this).unbind('click');
-                               $(".act_info_fld_src, .act_info_fld_dst").each(function(){
-                                  var target_field = $(this);
-                                  ajaxGet('/api/diagnostics/dns/reverse_lookup', {'address': target_field.text()}, function(data, status) {
-                                      if (data[target_field.text()] != undefined) {
-                                          var resolv_output = data[target_field.text()];
-                                          if (target_field.text() != resolv_output) {
-                                              target_field.text(target_field.text() + ' [' + resolv_output + ']');
-                                          }
-                                      }
-                                      target_field.prepend('<i class="fa fa-search" aria-hidden="true"></i>&nbsp;');
-                                  });
-                               });
-                             }
-                           },{
-                             label: "{{ lang._('Close') }}",
-                             action: function(dialogItself){
-                               dialogItself.close();
-                             }
-                           }]
-                        });
-                    });
-                    // reverse lookup when selected
-                    if ($('#dolookup').is(':checked')) {
-                        reverse_lookup();
+                                tbl.append(tbl_tbody);
+                                BootstrapDialog.show({
+                                title: "{{ lang._('Detailed rule info') }}",
+                                message: tbl,
+                                type: BootstrapDialog.TYPE_INFO,
+                                draggable: true,
+                                buttons: [{
+                                    label: '<i class="fa fa-search" aria-hidden="true"></i>',
+                                    action: function(){
+                                    $(this).unbind('click');
+                                    $(".act_info_fld_src, .act_info_fld_dst").each(function(){
+                                        let target_field = $(this);
+                                        ajaxGet('/api/diagnostics/dns/reverse_lookup', {'address': target_field.text()}, function(data, status) {
+                                            if (data[target_field.text()] != undefined) {
+                                                let resolv_output = data[target_field.text()];
+                                                if (target_field.text() != resolv_output) {
+                                                    target_field.text(target_field.text() + ' [' + resolv_output + ']');
+                                                }
+                                            }
+                                            target_field.prepend('<i class="fa fa-search" aria-hidden="true"></i>&nbsp;');
+                                        });
+                                    });
+                                    }
+                                },{
+                                    label: "{{ lang._('Close') }}",
+                                    action: function(dialogItself){
+                                    dialogItself.close();
+                                    }
+                                }]
+                                });
+                            });
+                        })
+                        return '<button class="act_info btn btn-xs fa fa-info-circle" aria-hidden="true"></i>'
                     }
+                },
+                statusMapping: {
+                    0: "filter-success",
+                    1: "filter-info",
+                    2: "filter-warning",
+                    3: "filter-danger",
+                    4: "filter-error"
                 }
-            });
+            },
+            tabulatorOptions: {
+                index: "__digest__",
+                autoResize: false,
+                addRowPos: 'top',
+                persistence: false, // ideally persistence should be on, but we have no reset button at the moment due to missing navigation
+                height:undefined,
+                layout:"fitColumns",
+            }
+        });
+
+        const $global = $('#globalSearch');
+        const $filterField = $('#filter-field');
+        const $filterOperator = $('#filter-operator')
+        const $filterValue = $('#filter-value');
+        const $interfaceSelect = $('#interface-select');
+        const $apply = $('#apply-filter');
+        const $list = $('#filtersList');
+
+        const operatorMap = {
+            '~': {val: 'contains', translation: "{{ lang._('contains') }}"},
+            '=': {val: 'is', translation: "{{ lang._('is') }}"},
+            '!~': {val: 'does not contain', translation: "{{ lang._('does not contain') }}"},
+            '!=': {val: 'is not', translation: "{{ lang._('is not') }}"}
         }
 
-        // matcher
-        function match_filter(value, condition, data)
-        {
-            if (data === undefined) {
-                return false;
+        const field_type_icons = {
+          'binat': 'fa-exchange',
+          'block': 'fa-ban',
+          'in': 'fa-arrow-right',
+          'nat': 'fa-exchange',
+          'out': 'fa-arrow-left',
+          'pass': 'fa-play',
+          'rdr': 'fa-exchange'
+        };
+        
+        const table = tableWrapper.bootgrid('getTable');
+        const seedAmount = 10000;
+        const buffer = new RingBuffer(seedAmount);
+        const filterVM = new FilterViewModel(buffer, table);
+        let pollTimeout = null;
+        let hostnames = new Map();
+        let interfaceMap = {};
+        let bufferDataUnsubscribe = null;
+
+        $apply.on('click', function () {
+            const field = $filterField.val();
+            const operator = $filterOperator.val();
+            const searchString = $filterValue.val().trim();
+            if (!searchString && field !== 'interface') return;
+
+            switch (field) {
+                case '__addr__':
+                    filterVM.addCombinedFilter({field: ['src', 'dst'], operator: operator, value: searchString});
+                    break;
+                case '__port__':
+                    filterVM.addCombinedFilter({field: ['srcport', 'dstport'], operator: operator, value: searchString});
+                    break;
+                case 'interface':
+                    filterVM.addFilter({field: field, operator: operator, value: $interfaceSelect.val(), format: $interfaceSelect.find('option:selected').text()});
+                    break;
+                default:
+                    filterVM.addFilter({ field: field, operator: operator, value: searchString });
+                    break;
             }
 
-            data = data.toLowerCase();
+            renderFilters();
+        });
 
-            return (condition === '=' && data == value) ||
-                (condition === '~' && data.match(value)) ||
-                (condition === '!=' && data != value) ||
-                (condition === '!~' && !data.match(value));
-        }
+        $filterValue.on('keydown', function (e) {
+            if (e.key === 'Enter') $apply.trigger('click');
+        });
 
-        // live filter
-        function apply_filter()
-        {
-            let filters = [];
-            let visible_rows = 1;
-            let max_rows = parseInt($("#limit").val());
-            $("#filters > span.badge").each(function(){
-                filters.push($(this).data('filter'));
-            });
-            let filter_or_type = $("#filter_or_type").is(':checked');
-            $("#grid-log > tbody > tr").each(function(){
-                let selected_tr = $(this);
-                let this_data = $(this).data('details');
-                if (this_data === undefined) {
-                    return;
-                }
-                let is_matched = (filters.length > 0) ? !filter_or_type : true;
-                for (let i=0; i < filters.length; i++) {
-                    let filter_value = filters[i].value.toLowerCase();
-                    let filter_condition = filters[i].condition;
-                    let this_condition_match = false;
-                    let filter_tag = filters[i].tag;
+        // Global instant (debounced) search
+        $global.on('input', debounce(function (e) {
+            globalQuery = (e.currentTarget && e.currentTarget.value) || '';
+            filterVM.setGlobalSearch(globalQuery);
+        }, 250));
 
-                    if (filter_tag === '__addr__') {
-                        let src_match = match_filter(filter_value, filter_condition, this_data['src']);
-                        let dst_match = match_filter(filter_value, filter_condition, this_data['dst']);
-                        if (!filter_condition.match('!')) {
-                            this_condition_match = src_match || dst_match;
-                        } else {
-                            this_condition_match = src_match && dst_match;
+        $(document).on('change', '.filters-right input[type="checkbox"]', function() {
+            const id = this.id;
+            const checked = this.checked;
+
+            switch (id) { 
+                case 'tg-lookup':
+                    if (checked) {
+                        const lookup = (maxPerRequest=50) => {
+                            return new Promise((resolve, reject) => {
+                                let toResolve = new Set();
+                                let again = false;
+                                for (const addr of hostnames) {
+                                    if (!addr[1]) { // new entries are null
+                                        toResolve.add(addr[0]);
+                                    }
+                                }
+
+                                if (toResolve.size === 0) {
+                                    resolve();
+                                    return;
+                                }
+
+                                const portion = () => {
+                                    let addresses = Array.from(toResolve);
+
+                                    if (addresses.length > maxPerRequest) {
+                                        addresses = addresses.slice(0, maxPerRequest);
+                                        again = true;
+                                    } else {
+                                        again = false;
+                                    }
+
+                                    addresses.forEach(addr => toResolve.delete(addr));
+                                    return addresses;
+                                }
+
+                                const runAjax = (addresses) => {
+                                    $.ajax({
+                                        type: 'GET',
+                                        url: '/api/diagnostics/dns/reverse_lookup',
+                                        dataType: 'json',
+                                        contentType: 'application/json',
+                                        data: { address: addresses },
+                                        complete: function (data, status) {
+                                            if ('responseJSON' in data) {
+                                                data = data['responseJSON'];
+                                                addresses.forEach(addr => {
+                                                    const resolved = data && data[addr];
+                                                    hostnames.set(addr, resolved || addr);
+                                                });
+
+                                                if (again) {
+                                                    // recurse
+                                                    runAjax(portion());
+                                                    return;
+                                                }
+                                            }
+
+                                            resolve();
+                                        }
+                                    });
+                                }
+
+                                runAjax(portion());
+                            });
                         }
-                    } else if (filter_tag === '__port__') {
-                        let srcport_match = match_filter(filter_value, filter_condition, this_data['srcport']);
-                        let dstport_match = match_filter(filter_value, filter_condition, this_data['dstport']);
-                        if (!filter_condition.match('!')) {
-                            this_condition_match = srcport_match || dstport_match;
-                        } else {
-                            this_condition_match = srcport_match && dstport_match;
+
+                        bufferDataUnsubscribe = buffer.subscribe((event) => {
+                            // register to active data feed, apply hostnames as they come
+                            if (event.type === "push" || event.type === "pushMany") {
+                                let records = Array.isArray(event.data) ? event.data : [event.data];
+                                records.map((record) => {
+                                    ['srchostname', 'dsthostname'].forEach(host => {
+                                        if (!record[host]) {
+                                            record[host] = '<span class="fa fa-spinner fa-pulse"></span>';
+                                        }
+                                    });
+                                });
+
+                                filterVM.updateTable(records);
+                                lookup().then(() => {
+                                    records.map((record) => {
+                                        record['srchostname'] = hostnames.get(record.src);
+                                        record['dsthostname'] = hostnames.get(record.dst);
+                                        return record;
+                                    });
+
+                                    filterVM.updateTable(records);
+                                })
+                            }
+                        });
+
+                        // initial hostname lookup
+                        tableWrapper.bootgrid('setColumns', ['srchostname', 'dsthostname']);
+                        lookup().then(() => {
+                             // operate on entire buffer
+                            buffer.map((record) => {
+                                record['srchostname'] = hostnames.get(record.src);
+                                record['dsthostname'] = hostnames.get(record.dst);
+                                return record;
+                            });
+
+                            filterVM.reset();
+                        });
+                    } else {
+                        if (bufferDataUnsubscribe !== null) {
+                            bufferDataUnsubscribe();
+                            bufferDataUnsubscribe = null;
+                            tableWrapper.bootgrid('unsetColumns', ['srchostname', 'dsthostname']);
+                            filterVM.reset();
+                        }
+                    }
+                    break;
+                case 'tg-poll':
+                    if (checked) {
+                        if (pollTimeout == null) {
+                            poller(1000);
                         }
                     } else {
-                        this_condition_match = match_filter(filter_value, filter_condition, this_data[filter_tag]);
+                        stopPoller();
                     }
-
-                    if (!this_condition_match && !filter_or_type) {
-                        // normal AND condition, exit when one of the criteria is not met
-                        is_matched = this_condition_match;
-                        break;
-                    } else if (filter_or_type) {
-                        // or condition is deselected by default
-                        is_matched = is_matched || this_condition_match;
-                    }
-                }
-                if (is_matched && visible_rows <= max_rows) {
-                    selected_tr.show();
-                    visible_rows += 1;
-                } else {
-                    selected_tr.hide();
-                }
-            });
-        }
-
-        $("#add_filter_condition").click(function(){
-            if ($("#filter_value").val() === "") {
-                return;
+                    break;
+                case 'tg-exclusive':
+                    filterVM.setFilterMode(checked ? 'OR' : 'AND');
+                    renderFilters();
+                    break;
             }
-            let $new_filter = $("<span/>").addClass("badge");
-            $new_filter.data('filter', {
-                tag:$("#filter_tag").val(),
-                condition:$("#filter_condition").val(),
-                value:$("#filter_value").val(),
-              }
-            );
-            $new_filter.text($("#filter_tag").val() + $("#filter_condition").val() + $("#filter_value").val());
-            $new_filter.click(function(){
-                $("#filter_tag").val($(this).data('filter').tag);
-                $("#filter_condition").val($(this).data('filter').condition);
-                $("#filter_value").val($(this).data('filter').value);
-                $(this).remove();
-                if ($("#filters > span.badge").length == 0) {
-                    $("#filters_help").hide();
-                }
-                $('.selectpicker').selectpicker('refresh');
-                $("#filter_tag").change();
-                apply_filter();
-            });
-            $("#filters").append($new_filter);
-            $("#filter_value").val("");
-            $("#filters_help").show();
-            apply_filter();
         });
 
-        $("#filter_or_type").click(function(){
-            apply_filter();
+        // Main startup logic
+        tableWrapper.on("load.rs.jquery.bootgrid", function() {
+            $(`#example-table > .tabulator-tableholder`)
+                .prepend($('<span class="bootgrid-overlay"><i class="fa fa-spinner fa-spin"></i></span>'));
         });
 
-        // reset log content on limit change, forces a reload
-        $("#limit").change(function(){
-            $('#grid-log > tbody').html("<tr></tr>");
-        });
+        $interfaceSelect.selectpicker();
+        $interfaceSelect.selectpicker('hide');
 
-        function poller() {
-            if ($("#auto_refresh").is(':checked')) {
-                fetch_log();
-            }
-            setTimeout(poller, 1000);
-        }
-        // manual refresh
-        $("#refresh").click(function(){
-            fetch_log();
-        });
-
-        // templates actions
-        $("#templates").change(function () {
-            if ($('#templ_save_start').is(':visible')) {
-                //apply chosen template
-                let t_data = $(this).find('option:selected').data('template') ? $(this).find('option:selected').data('template') : {'filters': "0", 'or': "0"};
-                set_selection(t_data.filters.split(','), t_data.or);
+        $filterField.on('change', function(e) {
+            const val = $(this).val();
+            if (val === 'interface') {
+                $interfaceSelect.selectpicker('show');
+                $filterValue.hide();
             } else {
-                //choose template to modify or create new one. Show Name input if New option clicked
-                if ($('#templates').val() === "00001") {
-                    $('#templates').selectpicker('hide');
-                    $('#templ_name').show().focus();
-                }
+                $interfaceSelect.selectpicker('hide');
+                $filterValue.show();
             }
         });
 
-        $('#templ_save_start').click(function () {
-            if ($(".badge").text() == '') {
-                BootstrapDialog.show({
-                    type: BootstrapDialog.TYPE_DANGER,
-                    title: "{{ lang._('Save filters template') }}",
-                    message: "{{ lang._('Filters not set') }}",
-                    buttons: [{
-                        label: "{{ lang._('Close') }}",
-                        action: function (dialogRef) {
-                            dialogRef.close();
-                        }
-                    }]
-                });
-            } else {
-                $('.templates').hide();
-                $('.templ_save').show();
-                $('#templ_name').focus();
-                if ($("#templates option").length == 3){
-                    //no stored templates. skip to new template name
-                    $('#templates').val("00001").selectpicker('refresh').change();
-                }
-            }
-        });
-
-        $("#templ_save_cancel").click(function () {
-            $('#templ_name').val("").hide();
-            $('.templ_save').hide();
-            $('.templates').show();
-            $('#templates').val('').selectpicker('refresh').selectpicker('show');
-        });
-
-        $("#templ_name").on('keyup', function (e) {
-            if (e.key === 'Enter' || e.keyCode === 13) {
-                $('#templ_save_apply').click();
-            } else if (e.keyCode === 27) {
-                $('#templ_name').val("").hide();
-                $('#templates').val('').selectpicker('refresh').selectpicker('show');
-            }
-        });
-
-        $("#templ_save_apply").click(function () {
-            let fltrs = "";
-            $('.badge').each(function () {
-                fltrs += $(this).text() + ",";
-            });
-            fltrs = fltrs.slice(0, -1);
-            let or = $('#filter_or_type').prop("checked") ? "1" : "0";
-            let t_data = {
-                'template': {
-                    'filters': fltrs,
-                    'or': or
-                }
-            };
-            $('#templates').selectpicker('refresh').selectpicker('show');
-            if ($("#templ_name").val().length >= 1 && $("#templ_name").is(':visible')) {
-                //new template
-                t_data.template.name = $("#templ_name").val();
-                $('#templ_name').val("").hide();
-                addTemplate(t_data);
-            } else if ($("#templ_name").val().length == 0 && $("#templ_name").is(':hidden') && $("#templates").val().length == 36) {
-                //edit template
-                let t_id = $("#templates").val();
-                t_data.template.name = $("#templates option:selected").text();
-                editTemplate(t_id, t_data);
-            }
-        });
-
-        $("#template_delete").click(function () {
-            let t_id = $('#templates').val();
-            if (t_id.length == 36) {
-                delTemplate(t_id);
-            }
-        });
-
-        // fetch interface mappings on load
         ajaxGet('/api/diagnostics/interface/get_interface_names', {}, function(data, status) {
-            interface_descriptions = data;
-            /**
-             * fetch log "static" dropdown filters and add logic
-             */
-            ajaxGet('/api/diagnostics/firewall/log_filters', {}, function(data, status) {
-                if (data.action !== undefined) {
-                    let filter_value_items = $("#filter_value_items");
-                    let filter_value = $("#filter_value");
-                    filter_value_items.data('filters', data);
-                    filter_value_items.change(function(){
-                        filter_value.val($(this).val())
-                    });
-                    $("#filter_tag").change(function(){
-                        let filters = filter_value_items.data('filters');
-                        let filter = $("#filter_tag").val();
-                        filter_value.hide();
-                        filter_value_items.parent().hide();
-                        if (filters[filter] !== undefined) {
-                            filter_value_items.parent().show();
-                            filter_value_items.empty();
-                            for (let i = 0 ; i < filters[filter].length ; ++i) {
-                                let filter_opt = $("<option/>").text(filters[filter][i]);
-                                if (filter_value.val() == filters[filter][i]) {
-                                    filter_opt.prop('selected', true);
-                                }
-                                filter_value_items.append(filter_opt);
-                            }
-                            filter_value_items.selectpicker('refresh');
-                            filter_value_items.change();
-                        } else {
-                            filter_value.show();
-                        }
-                    }).change();
-                    fetchTemplates("00000").done(function() {
-                        // get and apply url params. ie11 compat
-                        set_selection(window.location.search.substring(1).split("&"), "0");
-                    });
-                }
+            interfaceMap = data;
+
+            for (const [key, value] of Object.entries(interfaceMap)) {
+                $interfaceSelect.append(`<option value="${key}">${value}</option>`);
+            }
+
+            $interfaceSelect.selectpicker('refresh');
+
+            fetch_log(null, seedAmount).then((data) => {
+                buffer.reset(data);
+                $(`#example-table > .tabulator-tableholder > .bootgrid-overlay`).remove();
+
+                poller(1000);
             });
 
+            renderFilters();
         });
 
-        // startup poller
-        poller();
+        /**
+         * Template logic
+         */
+
+        const $templateSelect = $('#templateSelect');
+        const $stageTemplate = $('#stageTemplate');
+        const $saveTemplate = $('#saveTemplate');
+        const $deleteTemplate = $('#deleteTemplate');
+        const $cancelTemplate = $('#cancelTemplate');
+        const $templateName = $('#templateName');
+        $templateSelect.selectpicker();
+        let staging = false;
+
+        function updateTemplatesSelect(uuid=null) {
+            staging = false;
+            $saveTemplate.hide();
+            $deleteTemplate.show();
+            $templateName.hide();
+            $cancelTemplate.hide();
+            $stageTemplate.show();
+            $templateSelect.empty();
+            $templateSelect.append(`<option value="__none__">{{ lang._('None') }}</option>`);
+            $templateSelect.selectpicker('show');
+            $templateSelect.selectpicker('refresh');
+            ajaxGet('/api/diagnostics/lvtemplate/search_item', {}, function(data, status) {
+                if (data.rows && data.rows.length > 0) {
+                    for (const template of data.rows) {
+                        const $opt = $(`<option>`, {value: template.uuid, text: template.name, selected: template.uuid === uuid})
+                        .data('template', template);
+                        $templateSelect.append($opt);
+                    }
+                    $templateSelect.selectpicker('refresh');
+                }
+            });
+        }
+
+        updateTemplatesSelect();
+
+        $stageTemplate.click(function(e) {
+            staging = true;
+            $deleteTemplate.hide();
+            $saveTemplate.show();
+            $stageTemplate.hide();
+            $cancelTemplate.show();
+            $templateSelect.find('option[value="__none__"]').remove();
+            $templateSelect.prepend(`<option value="__new__" data-content="<span class='fa-solid fa-file'></span> {{ lang._('New') }}"></option>`);
+            $templateSelect.selectpicker('refresh');
+            $templateSelect.selectpicker('toggle');
+        });
+
+        $cancelTemplate.click(function(e) {
+            staging = false;
+            $saveTemplate.hide();
+            $deleteTemplate.show();
+
+            $cancelTemplate.hide();
+            $stageTemplate.show();
+            $saveTemplate.hide();
+            $deleteTemplate.show();
+            $templateSelect.find('option[value="__new__"]').remove();
+            $templateSelect.prepend(`<option value="__none__">{{ lang._('None') }}</option>`);
+            $templateSelect.selectpicker('refresh');
+            $templateName.hide();
+            $templateSelect.selectpicker('show');
+        });
+
+        $templateSelect.on('changed.bs.select', function(e) {
+            const val = $(this).val();
+
+            if (staging) {
+                $deleteTemplate.hide();
+                $saveTemplate.show();
+            } else {
+                $saveTemplate.hide();
+                $deleteTemplate.show();
+            }
+
+            if (val === '__new__') {
+                $templateSelect.selectpicker('hide');
+                $templateName.show();
+            } else if (val === '__none__') {
+                filterVM.clearFilters(true);
+                renderFilters();
+                $('#tg-exclusive').prop('checked', false);
+            } else {
+                // template got selected, apply filters
+                filterVM.clearFilters(false);
+                const tmpl = $(this).find('option:selected').data('template');
+                const parseTemplate = (template) => {
+                    const or = template.or;
+                    const mode = or === "1" ? 'OR' : 'AND';
+                    let interface = null;
+                    const filters = template.filters.split(',').map(val => {
+                        const parts = val.split(/(!=|!~|=|~)/);
+                        // XXX consolidate with earlier parsing
+                        switch (parts[0]) {
+                            case '__addr__':
+                                parts[0] = ['src', 'dst'];
+                                break;
+                            case '__port__':
+                                parts[0] = ['srcport', 'dstport']
+                            case 'interface':
+                                interface = interfaceMap[parts[2]]
+                                break;
+                        }
+                        return {field: parts[0], operator: parts[1], value: parts[2], format: interface};
+                    })
+
+                    return {filters, mode}
+                };
+                const {filters, mode} = parseTemplate(tmpl);
+                for (const filter of filters) {
+                    if (Array.isArray(filter.field)) {
+                        filterVM.addCombinedFilter(filter);
+                    } else {
+                        filterVM.addFilter(filter);
+                    }
+                }
+                filterVM.setFilterMode(mode);
+                if (mode === 'OR') {
+                    $('#tg-exclusive').prop('checked', true);
+                } else {
+                    $('#tg-exclusive').prop('checked', false);
+                }
+                renderFilters();
+            }
+        });
+
+        $saveTemplate.click(function(e) {
+            const filters = Object.values(filterVM.getFilters()).map(f => {
+                return `${f.field}${f.operator}${f.value}`;
+            }).join(',');
+            if ($templateName.val().length >= 1 && $templateName.is(':visible')) {
+                const name = $templateName.val();
+
+                addTemplate({
+                    'template': {
+                        'name': name,
+                        'filters': filters,
+                        'or': filterVM.getFilterMode() === 'OR' ? 1 : 0
+                    }
+                });
+            } else if ($templateName.val().length == 0 && $templateName.is(':hidden')) {
+                const template = $templateSelect.find('option:selected').data('template');
+                editTemplate(template.uuid, {
+                    'template': {
+                        'name': template.name,
+                        'or': filterVM.getFilterMode() === 'OR' ? 1 : 0,
+                        'filters': filters
+                    }
+                })
+            }
+        });
+
+        $deleteTemplate.click(function(e) {
+            const opt = $templateSelect.find('option:selected');
+            if (opt.val() !== '__none__') {
+                const id = opt.data('template').uuid;
+                delTemplate(id);
+            }
+        });
     });
 </script>
+
 <style>
-    .data-center {
-        text-align: center !important;
-    }
-    .table > tbody > tr > td {
-        padding-top: 1px !important;
-        padding-bottom: 1px !important;
-    }
-    .act_info {
-        cursor: pointer;
-    }
-    .fw_pass {
-        background: rgba(5, 142, 73, 0.3);
-    }
-    .fw_block {
-        background: rgba(235, 9, 9, 0.3);
-    }
-    .fw_nat {
-        background: rgba(73, 173, 255, 0.3);
-    }
+.filter-success {
+    background-color: #c3e6cb;
+}
+
+.filter-info {
+    background-color: #d9edf7;
+}
+
+.filter-danger {
+    background-color: #f5c6cb;
+}
+
+.filter-warning {
+    background-color: #ffeeba;
+}
+
+.filter-error {
+    background-color: #dc3545;
+}
+
+.filters-wrap { display:flex; gap:1rem; align-items:center; margin:0.5rem 0; }
+.filters-list { display:flex; gap:0.5rem; flex-wrap:wrap; margin:0.25rem 0 0; padding:0; list-style:none; align-items: center; }
+.filter-chip { background:#f2f2f2; border-radius:999px; padding:0.25rem 0.6rem; display:flex; gap:0.4rem; align-items:center; }
+.filter-chip button { border:none; background:transparent; cursor:pointer; font-weight:bold; }
+.muted { color:#666; font-size:0.9em; }
+.stack { display:flex; flex-direction:column; gap:0.35rem; }
+
+.filters-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;   /* keep tops aligned */
+  gap: 2rem;
+  min-height: 130px;
+  margin-bottom: 10px;
+}
+
+.filters-middle {
+    /* margin-left: auto;
+    margin-right: auto; */
+    display: flex;
+    flex-direction: row;
+    gap: 0.75rem;
+    /* min-width: 260px; */
+}
+
+/* Right column */
+.filters-right {
+  margin-left: auto;         /* push all the way right */
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 260px;
+}
+
+/* Toggle group row */
+.toggle-group {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+/* Right side actions */
+.filters-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* Responsive: stack on narrow screens */
+@media (max-width: 800px) {
+  .filters-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .filters-right {
+    margin-left: 0;
+    align-items: flex-start;
+  }
+  .filters-actions { justify-content: flex-start; }
+}
+
 </style>
 
-<div class="content-box">
-    <div class="content-box-main">
-        <div class="table-responsive">
-            <div  class="col-xs-12">
-                <div class="col-lg-7 col-sm-12">
-                  <table class="table table-condensed">
-                      <tbody>
-                          <tr>
-                              <td style="width:125px;">
-                                <select id="filter_tag" class="selectpicker" data-width="120px">
-                                    <option value="action">{{ lang._('action') }}</option>
-                                    <option value="interface_name">{{ lang._('interface') }}</option>
-                                    <option value="dir">{{ lang._('dir') }}</option>
-                                    <option value="__timestamp__">{{ lang._('Time') }}</option>
-                                    <option value="src">{{ lang._('src') }}</option>
-                                    <option value="srcport">{{ lang._('src_port') }}</option>
-                                    <option value="dst">{{ lang._('dst') }}</option>
-                                    <option value="dstport">{{ lang._('dst_port') }}</option>
-                                    <option value="__addr__">{{ lang._('address') }}</option>
-                                    <option value="__port__">{{ lang._('port') }}</option>
-                                    <option value="protoname">{{ lang._('protoname') }}</option>
-                                    <option value="label">{{ lang._('label') }}</option>
-                                    <option value="rid">{{ lang._('rule id') }}</option>
-                                    <option value="tcpflags">{{ lang._('tcpflags') }}</option>
-                                </select>
-                              </td>
-                              <td style="width:125px;">
-                                <select id="filter_condition" class="selectpicker"  data-width="120px">
-                                    <option value="~" selected=selected>{{ lang._('contains') }}</option>
-                                    <option value="=">{{ lang._('is') }}</option>
-                                    <option value="!~">{{ lang._('does not contain') }}</option>
-                                    <option value="!=">{{ lang._('is not') }}</option>
-                                </select>
-                              </td>
-                              <td style="width:200px;">
-                                <input type="text" id="filter_value"></input>
-                                <div>
-                                <select id="filter_value_items" class="selectpicker" data-width="200px"></select>
-                                </div>
-                              </td>
-                              <td>
-                                  <button class="btn" id="add_filter_condition" aria-hidden="true">
-                                      <i class="fa fa-plus"></i>
-                                  </button>
-                              </td>
-                          </tr>
-                          <tr>
-                              <td colspan="4">
-                                <div id="filters">
-                                </div>
-                                <div id="filters_help" style="display:none; padding-top:5px">
-                                  <small>{{ lang._('click on badge to remove filter') }}</small>
-                                </div>
-                              </td>
-                          </tr>
-                      </tbody>
-                      <tfoot>
-                        <tr>
-                            <td colspan="4">
-                                <label>
-                                    <input id="filter_or_type" type="checkbox">
-                                    {{ lang._('Select any of given criteria (or)') }}
-                                </label>
-                            </td>
-                        </tr>
-                      </tfoot>
-                  </table>
+<div class="tab-content content-box" style="padding: 10px;">
+
+    <div class="filters-bar">
+        <div class="filters-left">
+            <div class="filters-ui">
+                <!-- Live global search (matches ANY value in a record) -->
+                <div class="filters-wrap">
+                    <input id="globalSearch" type="text" placeholder="{{ lang._('Quick search (all fields)…') }}" />
                 </div>
-                <div class="col-lg-5 col-sm-12">
-                  <div class="pull-left" style="padding-bottom: 5px;padding-right: 5px;">
-                      <button type="button" class="btn btn-default templates" title="Save the current set of filters" id="templ_save_start">
-                          <span class="fa fa-angle-double-right"></span>
-                      </button>
-                      <button type="button" class="btn btn-default templ_save" title="Cancel" id="templ_save_cancel">
-                          <span class="fa fa-times"></span>
-                      </button>
-                      <div style="display: inline-block;vertical-align: top;">
-                          <select id="templates" class="selectpicker" title="Choose template" data-width="200"></select>
-                          <input type="text" id="templ_name" placeholder="Template name" style="width:200px;vertical-align:middle;display:none;">
-                      </div>
-                      <button type="button" class="btn btn-default templ_save" title="Save template" id="templ_save_apply">
-                          <span class="fa fa-save"></span>
-                      </button>
-                      <span class="templates">
-                          <button id="template_delete" type="button" class="btn btn-default" title="Delete selected template">
-                              <span class="fa fa-trash"></span>
-                          </button>
-                      </span>
-                  </div>
-                  <div class="pull-right">
-                    <div class="checkbox-inline">
-                      <label>
-                        <input id="auto_refresh" type="checkbox" checked="checked">
-                        <span class="fa fa-refresh"></span> {{ lang._('Auto refresh') }}
-                      </label>
-                      <br/>
-                      <label>
-                          <input id="dolookup" type="checkbox">
-                          <span class="fa fa-search"></span> {{ lang._('Lookup hostnames') }}
-                      </label>
-                    </div><br/>
-                    <select id="limit" class="selectpicker" data-width="150" >
-                        <option value="25" selected="selected">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                        <option value="250">250</option>
-                        <option value="500">500</option>
-                        <option value="1000">1000</option>
-                        <option value="2500">2500</option>
-                        <option value="5000">5000</option>
-                        <option value="10000">10000</option>
-                        <option value="20000">20000</option>
+
+                <div class="filters-wrap">
+                    <select id="filter-field" class="selectpicker" data-width="120px">
+                        <option value="action">{{ lang._('action') }}</option>
+                        <option value="interface">{{ lang._('interface') }}</option>
+                        <option value="dir">{{ lang._('dir') }}</option>
+                        <option value="__timestamp__">{{ lang._('Time') }}</option>
+                        <option value="src">{{ lang._('src') }}</option>
+                        <option value="srchostname">{{ lang._('srchostname') }}</option>
+                        <option value="srcport">{{ lang._('src_port') }}</option>
+                        <option value="dst">{{ lang._('dst') }}</option>
+                        <option value="dsthostname">{{ lang._('dsthostname') }}</option>
+                        <option value="dstport">{{ lang._('dst_port') }}</option>
+                        <option value="__addr__">{{ lang._('address') }}</option>
+                        <option value="__port__">{{ lang._('port') }}</option>
+                        <option value="protoname">{{ lang._('protoname') }}</option>
+                        <option value="label">{{ lang._('label') }}</option>
+                        <option value="rid">{{ lang._('rule id') }}</option>
+                        <option value="tcpflags">{{ lang._('tcpflags') }}</option>
                     </select>
-                    <button id="refresh" type="button" class="btn btn-default">
-                        <span class="fa fa-refresh"></span>
-                    </button>
-                  </div>
+                    <select id="filter-operator" class="selectpicker" data-width="150px">
+                        <option value="~" selected=selected>{{ lang._('contains') }}</option>
+                        <option value="=">{{ lang._('is') }}</option>
+                        <option value="!~">{{ lang._('does not contain') }}</option>
+                        <option value="!=">{{ lang._('is not') }}</option>
+                    </select>
+                    <input id="filter-value" type="text" placeholder="Search…" style="width: 200px;"/>
+                    <select id="interface-select" class="selectpicker" data-width="200px"></select>
+                    <button id="apply-filter" class="btn">{{ lang._('Apply') }}</button>
                 </div>
-            </div>
-            <div  class="col-xs-12">
-                <hr/>
-                <div class="table-responsive">
-                    <table id="grid-log" class="table table-condensed table-responsive">
-                        <thead>
-                          <tr>
-                              <th class="hidden" data-column-id="__digest__" data-type="string">{{ lang._('Hash') }}</th>
-                              <th class="data-center" data-column-id="action" data-type="icon"></th>
-                              <th data-column-id="interface_name" data-type="interface">{{ lang._('Interface') }}</th>
-                              <th data-column-id="dir" data-type="icon"></th>
-                              <th data-column-id="__timestamp__" data-type="string">{{ lang._('Time') }}</th>
-                              <th data-column-id="src" data-type="address">{{ lang._('Source') }}</th>
-                              <th data-column-id="dst" data-type="address">{{ lang._('Destination') }}</th>
-                              <th data-column-id="protoname" data-type="string">{{ lang._('Proto') }}</th>
-                              <th data-column-id="label" data-type="label">{{ lang._('Label') }}</th>
-                              <th data-column-id="" data-type="info" style="width:20px;"></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        <tr></tr>
-                        </tbody>
-                    </table>
-                    <br/>
-                </div>
+
+                <div class="muted">{{ lang._('Active filters')}}:</div>
+                <ul id="filtersList" class="filters-list"></ul>
             </div>
         </div>
+
+        <aside class="filters-middle">
+
+        </aside>
+
+        <aside class="filters-right">
+            <div>
+                <div class="muted">{{ lang._('Templates')}}</div>
+                <button id="stageTemplate" class="btn btn-default">
+                    <span class="fa fa-angle-double-right"></span>
+                </button>
+                <button id="cancelTemplate" class="btn btn-default" style="display: none;">
+                    <span class="fa fa-times"></span>
+                </button>
+                <select id="templateSelect" class="selectpicker" data-width="200px" title="{{ lang._('Choose template') }}"></select>
+                <input id="templateName" type="text" placeholder="{{ lang._('Template name...') }}" style="display: none; width: 200px;"/>
+                <button id="deleteTemplate" class="btn btn-default">
+                    <span class="fa fa-trash"></span>
+                </button>
+                <button id="saveTemplate" class="btn btn-default" style="display: none;">
+                    <span class="fa fa-save"></span>
+                </button>
+            </div>
+
+            &nbsp;
+
+            <div class="toggle-group">
+                <div class="muted">{{ lang._('Options')}}</div>
+                <label class="toggle">
+                    <input type="checkbox" id="tg-poll" checked/>
+                    <span class="toggle-ui"></span>
+                    <span class="fa fa-refresh"></span>
+                    <span class="toggle-label">{{ lang._('Auto-refresh') }}</span>
+                </label>
+
+                <label class="toggle">
+                    <input type="checkbox" id="tg-lookup" />
+                    <span class="toggle-ui"></span>
+                    <span class="fa fa-search"></span>
+                    <span class="toggle-label">{{ lang._('Lookup hostnames') }}</span>
+                </label>
+
+                <label class="toggle">
+                    <input type="checkbox" id="tg-exclusive" />
+                    <span class="toggle-ui"></span>
+                    <span class="fa fa-filter"></span>
+                    <span class="toggle-label">{{ lang._('Select any of given criteria (or)') }}</span>
+                </label>
+            </div>
+        </aside>
     </div>
+
+    <table id="example-table" class="table table-condensed table-hover table-striped table-responsive">
+        <thead>
+            <tr>
+                <th data-column-id="__digest__" data-identifier="true" data-sortable="false" data-visible="false">{{ lang._('Digest') }}</th>
+                <th data-column-id="__timestamp__" data-sortable="false" data-width="150">{{ lang._('Time') }}</th>
+                <th data-column-id="protoname" data-sortable="false" data-formatter="proto" data-width="80">{{ lang._('Protocol') }}</th>
+                <th data-column-id="src" data-type="string" data-formatter="appendPort" data-sortable="false">{{ lang._('Source') }}</th>
+                <th data-column-id="srchostname" data-type="string" data-sortable="false" data-visible="false">{{ lang._('Source Hostname') }}</th>
+                <th data-column-id="dst" data-type="string" data-formatter="appendPort" data-sortable="false">{{ lang._('Destination') }}</th>
+                <th data-column-id="dsthostname" data-type="string" data-sortable="false" data-visible="false">{{ lang._('Destination Hostname') }}</th>
+                <th data-column-id="interface" data-type="string" data-formatter="interface" data-sortable="false" data-width="80">{{ lang._('Interface') }}</th>
+                <th data-column-id="action" data-type="string" data-sortable="false" data-width="80">{{ lang._('Action') }}</th>
+                <th data-column-id="label" data-type="string" data-sortable="false">{{ lang._('Label') }}</th>
+                <th data-column-id="status" data-type="string" data-sortable="false" data-visible="false">{{ lang._('Status') }}</th>
+                <th data-column-id="" data-formatter="info" data-width="20"></th>
+            </tr>
+        </thead>
+    </table>
 </div>
