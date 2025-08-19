@@ -39,7 +39,18 @@ else
 	USE_MFS_TMP=0
 fi
 
-mkdir -p /tmp /var/lib/php/tmp
+TMPPERM=01777
+TMPDIRS="
+/tmp
+/var/lib/php/tmp
+"
+
+
+for TMPDIR in ${TMPDIRS}; do
+	mkdir -p ${TMPDIR}
+	find ${TMPDIR} -mindepth 1 -maxdepth 1 -exec rm -rf {} \;
+	chmod ${TMPPERM} ${TMPDIR}
+done
 
 if [ ${USE_MFS_TMP} -ne 0 ]; then
 	MAX_MFS_TMP=$(grep 'max_mfs_tmp' /conf/config.xml | sed 's/[^>]*>\([^<]*\)<.*/\1/')
@@ -50,12 +61,9 @@ if [ ${USE_MFS_TMP} -ne 0 ]; then
 		MAX_MFS_TMP=50
 	fi
 
-	mount -t tmpfs -o mode=01777,size=$((MAX_MEM_SYS / 100 * MAX_MFS_TMP)) tmpfs /tmp
-	mount -t tmpfs -o mode=01750,size=$((MAX_MEM_SYS / 100 * MAX_MFS_TMP)) tmpfs /var/lib/php/tmp
-else
-	rm -rf /tmp/*
-	chmod 1777 /tmp
+	TMP_SIZ=$((MAX_MEM_SYS / 100 * MAX_MFS_TMP))
 
-	rm -rf /var/lib/php/tmp/*
-	chmod 1750 /var/lib/php/tmp
+	for TMPDIR in ${TMPDIRS}; do
+		mount -t tmpfs -o mode=${TMPPERM},size=${TMP_SIZ} tmpfs ${TMPDIR}
+	done
 fi

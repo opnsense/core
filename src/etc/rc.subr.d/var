@@ -60,9 +60,9 @@ RUNDIRS="
 # Clear all files in this directory to prevent stale state of
 # services.  At one point this also helped to prevent shutdown(8)
 # from dropping "nologin" into the directory, preventing login on
-# the next boot.  However, do not touch the directory tree.
-#
-# We also clear PHP-related subsystems for consistency.
+# the next boot.  However, do not touch the directory tree since
+# packages can add their own directories there and expect them to
+# persist.   We also clear PHP-related subsystems for consistency.
 for RUNDIR in ${RUNDIRS}; do
 	if [ -d ${RUNDIR} ]; then
 		find ${RUNDIR} ! -type d -exec rm {} \;
