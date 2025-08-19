@@ -28,14 +28,17 @@
 OWNER="wwwonly:wheel"
 
 # set up required output directories for various PHP components
-for PHPDIR in cache sessions tmp; do
-	PHPDIR=/var/lib/php/${PHPDIR}
+for _PHPDIR in cache sessions tmp; do
+	PHPDIR=/var/lib/php/${_PHPDIR}
 
 	mkdir -p ${PHPDIR}
-	# XXX assess the need to chmod subdirectories not cleared by var script
-	chmod 750 ${PHPDIR}
+	if [ "${_PHPDIR}" = "tmp" ]; then
+		# special permission here
+		chmod 01777 ${PHPDIR}
+	else
+		chmod 750 ${PHPDIR}
+	fi
 
-	# important note: ownership change may fail when user is not known
 	chown -R ${OWNER} ${PHPDIR}
 done
 
