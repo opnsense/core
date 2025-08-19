@@ -93,6 +93,9 @@
          */
         $("#reconfigureAct").SimpleActionButton();
 
+        $('<button class="btn btn-primary pull-right" id="flushAct" type="button"><b>{{ lang._("Reset") }}</b> <i id="flushAct_progress" class=""></i></button>')
+        .insertAfter('#reconfigureAct');
+
         $("#flushAct").click(function(){
           // Ask user if it's ok to flush all of ipfw
           BootstrapDialog.show({
@@ -130,8 +133,6 @@
             $('a[href="' + window.location.hash + '"]').click()
         });
 
-        $('<button class="btn btn-primary pull-right" id="flushAct" type="button"><b>{{ lang._("Reset") }}</b> <i id="flushAct_progress" class=""></i></button>')
-        .insertAfter('#reconfigureAct');
     });
 
 </script>
