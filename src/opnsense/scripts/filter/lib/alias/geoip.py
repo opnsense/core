@@ -87,8 +87,6 @@ class GEOIP(BaseContentParser):
                                 if len(parts) > 1 and parts[1] in country_codes:
                                     country_code = country_codes[parts[1]]
                                     if country_code not in output_handles:
-                                        if not os.path.exists(cls._target_dir):
-                                            os.makedirs(cls._target_dir)
                                         output_handles[country_code] = open(
                                             '%s/%s-%s'%(cls._target_dir, country_code,proto), 'w'
                                         )
@@ -122,8 +120,6 @@ class GEOIP(BaseContentParser):
                         proto = 'IPv6' if record[network_field].find(':') > 0 else 'IPv4'
                         this_handle = "%s-%s" % (country_code, proto)
                         if this_handle not in output_handles:
-                            if not os.path.exists(cls._target_dir):
-                                os.makedirs(cls._target_dir)
                             output_handles[this_handle] = open('%s/%s'%(cls._target_dir, this_handle), 'w')
                             result['file_count'] += 1
                         output_handles[this_handle].write("%s\n" % record[network_field])
@@ -153,6 +149,8 @@ class GEOIP(BaseContentParser):
     @classmethod
     def _update(cls):
         url = cls._source_url()
+        if not os.path.exists(cls._target_dir):
+            os.makedirs(cls._target_dir)
         result = {
             'address_count': 0 ,
             'file_count': 0,
