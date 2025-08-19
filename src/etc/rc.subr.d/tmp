@@ -45,7 +45,6 @@ TMPDIRS="
 /var/lib/php/tmp
 "
 
-
 for TMPDIR in ${TMPDIRS}; do
 	mkdir -p ${TMPDIR}
 	find ${TMPDIR} -mindepth 1 -maxdepth 1 -exec rm -rf {} \;
