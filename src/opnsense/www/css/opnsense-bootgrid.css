@@ -77,13 +77,27 @@
     pointer-events: none;
 }
 
+.tabulator-row.tabulator-group span {
+    margin-left: 0;
+    color: #373736;
+}
+
+.tabulator-row .badge.count-badge {
+    background-color: #31708f;
+    color: #FFF;
+    font-size: 10px;
+    padding: 2px 4px;
+    position: relative;
+    top: -1px;
+}
+
 .tabulator-row.tabulator-group .tabulator-group-toggle,
 .tabulator-row.tabulator-group .tabulator-group-toggle * {
     pointer-events: auto;
 }
 
-.tabulator-row.tabulator-group:has(> .tabulator-group-toggle:only-child) { /* Trick to hide empty groupBy header rows */
-    display: none;
+.tabulator-row.tabulator-group:has(> .tabulator-group-toggle:only-child) {
+    display: none; /* Trick to hide empty groupBy header rows */
 }
 
 /* Checkbox column styles */
