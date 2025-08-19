@@ -58,8 +58,7 @@ export default class DnsmasqLeases extends BaseTableWidget {
         const limit = parseInt(config.leasesToShow ?? '2', 10) || 2;
 
         // furthest expire is assumed to be latest lease
-        const leasesResponse = await this.ajaxCall(
-            `/api/dnsmasq/leases/${'search'}`,
+        const leasesResponse = await this.ajaxCall(`/api/dnsmasq/leases/${'search'}`,
             JSON.stringify({
                 rowCount: Math.max(1, limit),
                 sort: { expire: 'desc' }
