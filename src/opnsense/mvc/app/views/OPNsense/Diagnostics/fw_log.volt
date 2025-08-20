@@ -157,7 +157,7 @@
         }
 
         // practical zero-copy buffer operations (no clone to array necessary)
-        
+
         // usage: for (const item of buffer)
         *[Symbol.iterator]() {
             for (let i = 0; i < this.length; i++) {
@@ -230,7 +230,7 @@
          * maintaining a snapshot of the most recent entries
          * into the main bucket. The snapshot can be updated
          * with filters, using the bucket to fetch the data.
-         * 
+         *
          * This model also maintains the main live log
          * table.
          */
@@ -417,11 +417,11 @@
          * checks if a record passes the currently applied filters
          * and global search query. Same logic as
          * _filterChange(), but no state is modified.
-         */ 
+         */
         _passesCurrentFilters(record) {
             return this._buildFilterFn().fn(record);
         }
-      
+
         /**
          * Called for any change to the filter state (filters added/removed or global
          * search string modified). This function is idempotent.
@@ -454,14 +454,14 @@
         }
 
         /**
-         * 
+         *
          */
         updateTable(records) {
             try {
                 this.table.updateData(records, true);
             } catch (e) {
                 // ignore
-            } 
+            }
         }
 
         setFilterMode(mode = 'AND') {
@@ -838,7 +838,7 @@
           'pass': 'fa-play',
           'rdr': 'fa-exchange'
         };
-        
+
         const table = tableWrapper.bootgrid('getTable');
         const seedAmount = 10000;
         const buffer = new RingBuffer(seedAmount);
@@ -886,7 +886,7 @@
             const id = this.id;
             const checked = this.checked;
 
-            switch (id) { 
+            switch (id) {
                 case 'tg-lookup':
                     if (checked) {
                         const lookup = (maxPerRequest=50) => {
