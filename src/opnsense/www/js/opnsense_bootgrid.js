@@ -1155,6 +1155,8 @@ class UIBootgrid {
      * @param {string} dialogId - ID (without '#') of the dialog that contains the groupBy field
      */
     expandGroupBy(dialogId) {
+        if (!this.table?.options?.groupBy) return;
+
         const $dialogElement = $(`#${dialogId}`);
         if (!$dialogElement.length) return;
 
@@ -1219,7 +1221,11 @@ class UIBootgrid {
                     $(row.getElement()).addClass('text-muted');
                 }
             },
-            groupStartOpen: groupKey => this.rememberedGroupKeys.has(groupKey),
+            // Start a group open if it was remembered. Open any group with an empty header (wins over persistence).
+            groupStartOpen: (value, count, data, group) => {
+                const isEmptyLabel = value == null || String(value).trim() === '';
+                return isEmptyLabel ? true : this.rememberedGroupKeys.has(group.getKey());
+            },
             height: 120, /* represents the "no results found" view */
             resizable: "header",
             placeholder: this.placeholder[0],

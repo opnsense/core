@@ -84,18 +84,31 @@
 
 /* Tabulator groupBy row styles */
 .tabulator-row.tabulator-group {
-  border-top: none;
-  border-bottom: 1px solid #E5E5E5;
-  border-right: none;
+  border: none;
+  pointer-events: none;
 }
 
-.tabulator-row.tabulator-group {
-  pointer-events: none;
+.tabulator-row.tabulator-group span {
+  margin-left: 0;
+  color: #ECECEC;
+}
+
+.tabulator-row .badge.chip {
+  background-color: #31708f;
+  color: #ECECEC;
+  font-size: 10px;
+  padding: 2px 4px;
+  position: relative;
+  top: -1px;
 }
 
 .tabulator-row.tabulator-group .tabulator-group-toggle,
 .tabulator-row.tabulator-group .tabulator-group-toggle * {
   pointer-events: auto;
+}
+
+.tabulator-row.tabulator-group:has(> .tabulator-group-toggle:only-child) {
+  display: none; /* Trick to hide empty groupBy header rows */
 }
 
 /* Checkbox column styles */

@@ -89,7 +89,7 @@
                                         interface: '<i class="fa fa-fw fa-ethernet fa-sm text-info"></i>',
                                     };
 
-                                    const countValue = `<span class="badge badge-sm bg-info">${count}</span>`;
+                                    const countValue = `<span class="badge chip">${count}</span>`;
 
                                     return `${icons.interface} ${displayValue} ${countValue}`;
                                 },
@@ -292,19 +292,6 @@
     #tag_select_container .bootstrap-select > .dropdown-toggle {
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
-    }
-    /* XXX: Since the badge class uses its own default background-color, we must override it explicitly. */
-    .badge.bg-info {
-        background-color: #31708f !important;
-    }
-    .badge-sm {
-        font-size: 10px;
-        padding: 2px 4px;
-    }
-    .tabulator-row.tabulator-group span.badge {
-        color: #FFF !important;
-        margin-left: 2px !important;
-        vertical-align: middle;
     }
 </style>
 
