@@ -82,7 +82,7 @@
     color: #373736;
 }
 
-.tabulator-row .badge.count-badge {
+.tabulator-row .badge.chip {
     background-color: #31708f;
     color: #FFF;
     font-size: 10px;

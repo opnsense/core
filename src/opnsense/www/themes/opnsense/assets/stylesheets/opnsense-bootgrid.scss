@@ -84,9 +84,9 @@
     color: map-get($colors, text-color);
 }
 
-.tabulator-row .badge.count-badge {
-    background-color: map-get($colors, count-badge-background);
-    color: map-get($colors, count-badge-text);
+.tabulator-row .badge.chip {
+    background-color: map-get($colors, chip-background);
+    color: map-get($colors, chip-text);
     font-size: 10px;
     padding: 2px 4px;
     position: relative;

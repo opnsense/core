@@ -75,6 +75,21 @@
 .tabulator-row.tabulator-group {
     border: none;
     pointer-events: none;
+    margin-left: 0;
+}
+
+.tabulator-row.tabulator-group .span {
+    margin-left: 0;
+    color: map-get($colors, text-color);
+}
+
+.tabulator-row .badge.chip {
+    background-color: map-get($colors, chip-background);
+    color: map-get($colors, chip-text);
+    font-size: 10px;
+    padding: 2px 4px;
+    position: relative;
+    top: -1px;
 }
 
 .tabulator-row.tabulator-group .tabulator-group-toggle,
@@ -82,8 +97,8 @@
     pointer-events: auto;
 }
 
-.tabulator-row.tabulator-group:has(> .tabulator-group-toggle:only-child) { /* Trick to hide empty groupBy header rows */
-    display: none;
+.tabulator-row.tabulator-group:has(> .tabulator-group-toggle:only-child) {
+    display: none; /* Trick to hide empty groupBy header rows */
 }
 
 /* Checkbox column styles */
