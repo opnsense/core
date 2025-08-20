@@ -744,7 +744,7 @@ class UIBootgrid {
         });
 
         const rememberTree = (row, open) => {
-            const id = row?.getData?.()?.[this.dataIdentifier];
+            const id = row.getData()[this.dataIdentifier];
             if (!id) return;
             open ? this.rememberedTreeIds.add(id) : this.rememberedTreeIds.delete(id);
             localStorage.setItem(this.treeStorageKey, JSON.stringify([...this.rememberedTreeIds]));
@@ -856,17 +856,17 @@ class UIBootgrid {
         }
 
         // Tree does not have a groupStartOpen style hook, so we must restore expansion after data is loaded
-        if (this.table?.options?.dataTree && this.rememberedTreeIds?.size) {
+        if (this.table.options.dataTree) {
             const queue = this.table.getRows();
             while (queue.length) {
                 const row = queue.shift();
-                const data = row?.getData?.();
-                const id = data?.[this.dataIdentifier] ?? data?.[this.options.datakey];
+                const data = row.getData();
+                const id = data[this.dataIdentifier] ?? data[this.options.datakey];
                 if (id && this.rememberedTreeIds.has(id)) {
-                    row.treeExpand?.(); // no-op if already expanded
+                    row.treeExpand(); // no-op if already expanded
                 }
-                const kids = row.getTreeChildren?.();
-                if (kids && kids.length) queue.push(...kids);
+                const kids = row.getTreeChildren();
+                if (kids.length) queue.push(...kids);
             }
         }
 
@@ -1225,8 +1225,8 @@ class UIBootgrid {
 
         const snapshot = () => {
             const rowMap = new Map();
-            (this.table.getRows?.() || []).forEach(row => {
-                rowMap.set(row.getIndex?.(), (row.getTreeChildren?.() || []).length);
+            (this.table.getRows() || []).forEach(row => {
+                rowMap.set(row.getIndex(), (row.getTreeChildren() || []).length);
             });
             return rowMap;
         };
@@ -1237,8 +1237,8 @@ class UIBootgrid {
             this.table.off('dataProcessed', expandOnceAfterReload);
             const afterSnapshot = snapshot();
             afterSnapshot.forEach((childCount, rowId) => {
-                if (childCount > (beforeSnapshot.get(rowId) || 0)) {
-                    this.table.getRow?.(rowId)?.treeExpand?.();
+                if (childCount > (beforeSnapshot.get(rowId) ?? 0)) {
+                    this.table.getRow(rowId).treeExpand();
                 }
             });
         };
