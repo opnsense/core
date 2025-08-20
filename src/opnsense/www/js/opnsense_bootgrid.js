@@ -121,7 +121,7 @@ class UIBootgrid {
         this.persistenceID = `${window.location.pathname}#${this.id}`;
         this.dataAvailable = false;
         this.customCommands = null;
-        this.loading = false;
+        this.loading = true;
         this.groupStorageKey = `tabulator-${this.persistenceID}-openGroups`;
         this.rememberedGroupKeys = new Set(JSON.parse(localStorage.getItem(this.groupStorageKey) || '[]'));
         this.treeStorageKey = `tabulator-${this.persistenceID}-openTree`;
@@ -129,6 +129,7 @@ class UIBootgrid {
 
         // wrapper-specific options
         this.options = {
+            disableScroll: false,
             sorting: true,
             selection: true,
             rowCount: [50, 100, 200, 500, 1000, true],
@@ -431,6 +432,10 @@ class UIBootgrid {
             this.compatOptions['renderVertical'] = 'virtual';
         }
 
+        if (bootGridOptions?.disableScroll ?? false) {
+            this.options.disableScroll = true;
+        }
+
         this.tabulatorOptions = compatOptions.tabulatorOptions ??= {};
 
         return this;
@@ -680,7 +685,9 @@ class UIBootgrid {
                 }
             }));
 
-            resizeObserver.observe($(`#${this.id} .tabulator-table`)[0]);
+            if (!this.options.disableScroll) {
+                resizeObserver.observe($(`#${this.id} .tabulator-table`)[0]);
+            }
 
             window.addEventListener('resize', this._debounce(() => {
                 // this is mainly intended for scaling the width of the table if
@@ -1984,6 +1991,10 @@ class UIBootgrid {
                 }, wait);
             }
         };
+    }
+
+    getTable() {
+        return this.table;
     }
 
     /**
