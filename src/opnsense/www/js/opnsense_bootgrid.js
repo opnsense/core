@@ -1224,10 +1224,7 @@ class UIBootgrid {
             // Start a group open if it was remembered. Open any group with an empty header (wins over persistence).
             groupStartOpen: (value, count, data, group) => {
                 const isEmptyLabel = value == null || String(value).trim() === '';
-                if (isEmptyLabel) {
-                    return true;
-                }
-                return this.rememberedGroupKeys.has(group.getKey());
+                return isEmptyLabel ? true : this.rememberedGroupKeys.has(group.getKey());
             },
             height: 120, /* represents the "no results found" view */
             resizable: "header",
