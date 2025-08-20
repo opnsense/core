@@ -230,7 +230,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           $input_errors[] = gettext('In order to automatically create users, a group policy needs to be configured (either choosing default groups and/or fetching the ones from the provider with the Synchronize groups option) otherwise you will end up with empty users.');
       }
 
-
       if (count($input_errors) == 0) {
           $server = [];
           $server['refid'] = uniqid();
