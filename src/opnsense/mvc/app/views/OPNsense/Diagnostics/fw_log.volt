@@ -1398,13 +1398,13 @@
         <thead>
             <tr>
                 <th data-column-id="__digest__" data-identifier="true" data-sortable="false" data-visible="false">{{ lang._('Digest') }}</th>
+                <th data-column-id="interface" data-type="string" data-formatter="interface" data-sortable="false" data-width="80">{{ lang._('Interface') }}</th>
                 <th data-column-id="__timestamp__" data-sortable="false" data-width="150">{{ lang._('Time') }}</th>
                 <th data-column-id="protoname" data-sortable="false" data-formatter="proto" data-width="80">{{ lang._('Protocol') }}</th>
                 <th data-column-id="src" data-type="string" data-formatter="appendPort" data-sortable="false">{{ lang._('Source') }}</th>
                 <th data-column-id="srchostname" data-type="string" data-sortable="false" data-visible="false">{{ lang._('Source Hostname') }}</th>
                 <th data-column-id="dst" data-type="string" data-formatter="appendPort" data-sortable="false">{{ lang._('Destination') }}</th>
                 <th data-column-id="dsthostname" data-type="string" data-sortable="false" data-visible="false">{{ lang._('Destination Hostname') }}</th>
-                <th data-column-id="interface" data-type="string" data-formatter="interface" data-sortable="false" data-width="80">{{ lang._('Interface') }}</th>
                 <th data-column-id="action" data-type="string" data-sortable="false" data-width="80">{{ lang._('Action') }}</th>
                 <th data-column-id="label" data-type="string" data-sortable="false">{{ lang._('Label') }}</th>
                 <th data-column-id="status" data-type="string" data-sortable="false" data-visible="false">{{ lang._('Status') }}</th>
