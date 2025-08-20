@@ -1824,6 +1824,8 @@ class UIBootgrid {
                         } else {
                             $("#" + editDlg).change();
                         }
+                        this.expandGroupBy(editDlg);
+                        this.expandDataTree();
                         this._reload(true);
                         this.showSaveAlert(event);
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
