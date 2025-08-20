@@ -89,7 +89,7 @@
                                         interface: '<i class="fa fa-fw fa-ethernet fa-sm text-info"></i>',
                                     };
 
-                                    const countValue = `<span class="badge count-badge">${count}</span>`;
+                                    const countValue = `<span class="badge chip">${count}</span>`;
 
                                     return `${icons.interface} ${displayValue} ${countValue}`;
                                 },
