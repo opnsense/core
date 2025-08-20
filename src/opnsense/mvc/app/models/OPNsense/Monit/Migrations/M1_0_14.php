@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2020 Deciso B.V.
+ * Copyright (C) 2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,38 +26,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\IPsec\Api;
+namespace OPNsense\Monit\Migrations;
 
-use OPNsense\Base\ApiMutableServiceControllerBase;
+use OPNsense\Base\BaseModelMigration;
 
-/**
- * {@inheritdoc}
- */
-class ServiceController extends ApiMutableServiceControllerBase
+class M1_0_14 extends BaseModelMigration
 {
-    protected static $internalServiceClass = '\OPNsense\IPsec\IPsec';
-    protected static $internalServiceEnabled = 'general.enabled';
-    protected static $internalServiceTemplate = 'OPNsense/IPsec';
-    protected static $internalServiceName = 'ipsec';
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function invokeInterfaceRegistration()
+    public function run($model)
     {
-        return true;
-    }
+        foreach ($model->service->iterateItems() as $srv) {
+            if ($srv->path->isEqual('/usr/local/opnsense/scripts/OPNsense/Monit/carp_status')) {
+                $srv->path = '/usr/local/opnsense/scripts/monit/carp_status.php';
+            } elseif ($srv->path->isEqual('/usr/local/opnsense/scripts/OPNsense/Monit/gateway_alert')) {
+                $srv->path = '/usr/local/opnsense/scripts/monit/gateway_alert.php';
+            }
+        }
 
-    protected function invokeFirewallReload()
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function reconfigureForceRestart()
-    {
-        return 0;
+        parent::run($model);
     }
 }

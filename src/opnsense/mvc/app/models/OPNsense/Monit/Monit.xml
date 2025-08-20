@@ -1,6 +1,6 @@
 <model>
    <mount>//OPNsense/monit</mount>
-   <version>1.0.13</version>
+   <version>1.0.14</version>
    <description>Monit settings</description>
    <items>
       <general>
@@ -13,14 +13,14 @@
             <Required>Y</Required>
             <MinimumValue>0</MinimumValue>
             <MaximumValue>86400</MaximumValue>
-            <ValidationMessage>Polling Interval needs to be an integer value between 0 and 86400</ValidationMessage>
+            <ValidationMessage>Polling Interval needs to be an integer value between 0 and 86400.</ValidationMessage>
          </interval>
          <startdelay type="IntegerField">
             <Default>120</Default>
             <Required>Y</Required>
             <MinimumValue>0</MinimumValue>
             <MaximumValue>86400</MaximumValue>
-            <ValidationMessage>Start Delay needs to be an integer value between 0 and 86400</ValidationMessage>
+            <ValidationMessage>Start Delay needs to be an integer value between 0 and 86400.</ValidationMessage>
          </startdelay>
          <mailserver type="HostnameField">
             <Default>127.0.0.1</Default>
@@ -33,7 +33,7 @@
             <Default>25</Default>
             <MinimumValue>0</MinimumValue>
             <MaximumValue>65535</MaximumValue>
-            <ValidationMessage>Port needs to be an integer value between 0 and 65535</ValidationMessage>
+            <ValidationMessage>Port needs to be an integer value between 0 and 65535.</ValidationMessage>
          </port>
          <username type="TextField"/>
          <password type="TextField"/>
@@ -99,7 +99,7 @@
             <Required>Y</Required>
             <MinimumValue>1</MinimumValue>
             <MaximumValue>65535</MaximumValue>
-            <ValidationMessage>Local Monit Port needs to be an integer value between 0 and 65535</ValidationMessage>
+            <ValidationMessage>Local Monit Port needs to be an integer value between 0 and 65535.</ValidationMessage>
          </httpdPort>
          <httpdAllow type="CSVListField"/>
          <mmonitUrl type="TextField"/>
@@ -108,7 +108,7 @@
             <Required>Y</Required>
             <MinimumValue>0</MinimumValue>
             <MaximumValue>86400</MaximumValue>
-            <ValidationMessage>M/Monit Timeout needs to be an integer value between 0 and 86400</ValidationMessage>
+            <ValidationMessage>M/Monit Timeout needs to be an integer value between 0 and 86400.</ValidationMessage>
          </mmonitTimeout>
          <mmonitRegisterCredentials type="BooleanField">
             <Default>1</Default>
@@ -167,7 +167,7 @@
          <reminder type="IntegerField">
             <MinimumValue>0</MinimumValue>
             <MaximumValue>86400</MaximumValue>
-            <ValidationMessage>Reminder needs to be an integer value between 0 and 86400</ValidationMessage>
+            <ValidationMessage>Reminder needs to be an integer value between 0 and 86400.</ValidationMessage>
          </reminder>
          <description type="DescriptionField"/>
       </alert>
@@ -216,14 +216,14 @@
             <Required>Y</Required>
             <MinimumValue>1</MinimumValue>
             <MaximumValue>86400</MaximumValue>
-            <ValidationMessage>Program Timeout needs to be an integer value between 1 and 86400</ValidationMessage>>
+            <ValidationMessage>Program Timeout needs to be an integer value between 1 and 86400.</ValidationMessage>
          </timeout>
          <starttimeout type="IntegerField">
             <Default>30</Default>
             <Required>Y</Required>
             <MinimumValue>0</MinimumValue>
             <MaximumValue>86400</MaximumValue>
-            <ValidationMessage>Start Delay needs to be an integer value between 0 and 86400</ValidationMessage>
+            <ValidationMessage>Start Delay needs to be an integer value between 0 and 86400.</ValidationMessage>
          </starttimeout>
          <address type="HostnameField"/>
          <interface type="InterfaceField">
@@ -249,7 +249,7 @@
                   <display>name</display>
                </template>
             </Model>
-            <ValidationMessage>Related item not found</ValidationMessage>
+            <ValidationMessage>Related item not found.</ValidationMessage>
             <Multiple>Y</Multiple>
          </tests>
          <depends type="ModelRelationField">
@@ -260,7 +260,7 @@
                   <display>name</display>
                </template>
             </Model>
-            <ValidationMessage>Related item not found</ValidationMessage>
+            <ValidationMessage>Related item not found.</ValidationMessage>
             <Multiple>Y</Multiple>
          </depends>
          <polltime type="TextField">

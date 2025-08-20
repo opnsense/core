@@ -43,8 +43,7 @@
 
         // Show statistics columns when inspect button is checked
         function updateStatisticColumns() {
-            const isChecked = $('#all_rules_checkbox').is(':checked');
-            grid.bootgrid(isChecked ? "setColumns" : "unsetColumns", ['evaluations', 'states', 'packets', 'bytes']);
+            grid.bootgrid(inspectEnabled ? "setColumns" : "unsetColumns", ['evaluations', 'states', 'packets', 'bytes']);
         }
 
         // Get all advanced fields, used for advanced mode tooltips
@@ -59,10 +58,12 @@
             }
         });
 
-        let treeViewEnabled = localStorage.getItem("firewall_rule_tree") !== "0";
-        if (treeViewEnabled) {
-            $('#toggle_tree_button').addClass('active btn-primary');
-        }
+        // Inspect and Tree are disabled by default
+        let treeViewEnabled = localStorage.getItem("firewall_rule_tree") === "1";
+        $('#toggle_tree_button').toggleClass('active btn-primary', treeViewEnabled);
+
+        let inspectEnabled = localStorage.getItem("firewall_rule_inspect") === "1";
+        $('#toggle_inspect_button').toggleClass('active btn-primary', inspectEnabled);
 
         // Lives outside the grid, so the logic of the response handler can be changed after grid initialization
         function dynamicResponseHandler(resp) {
@@ -81,7 +82,8 @@
                 // start a new bucket whenever the label changes
                 if (!current || current._label !== label) {
                     current = {
-                        uuid           : `bucket${buckets.length}`,
+                        // ensure uuid is as unique as possible for persistence handling
+                        uuid           : `${String(r.uuid).replace(/-/g, '')}`,
                         isGroup        : true,
                         _label         : label,          // internal
                         children       : []
@@ -112,12 +114,13 @@
                 // tell Tabulator to render a tree
                 dataTree              : true,
                 dataTreeChildField    : "children",
-                dataTreeStartExpanded : true,
                 dataTreeElementColumn : "categories",
             },
             options: {
                 responsive: true,
-                rowCount: [20,50,100,200,500,1000,-1],
+                rowCount: [100,200,500,1000,-1],
+                initialSearchPhrase: getUrlHash('search'),
+                triggerEditFor: getUrlHash('edit'),
                 requestHandler: function(request){
                     // Add category selectpicker
                     if ( $('#category_filter').val().length > 0) {
@@ -128,7 +131,7 @@
                     if (selectedInterface && selectedInterface.length > 0) {
                         request['interface'] = selectedInterface;
                     }
-                    if ($('#all_rules_checkbox').is(':checked')) {
+                    if (inspectEnabled) {
                         // Send as a comma separated string
                         request['show_all'] = true;
                     }
@@ -285,10 +288,13 @@
                         }
 
                         if (!hasCategories) {
+
                             return isGroup
                                 ? `<span class="category-icon category-cell">
-                                        <i class="fa fa-fw fa-tag"></i>
-                                        <strong><em>{{ lang._('Uncategorized') }}</strong></em>
+                                    <i class="fa fa-fw fa-tag"></i>
+                                    <strong>{{ lang._('Uncategorized') }}</strong>
+                                    <span class="badge badge-sm bg-info"
+                                            style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
                                 </span>`
                                 : '';
                         }
@@ -303,7 +309,11 @@
 
                         return isGroup
                             ? `<span class="category-cell">
-                                    <span class="category-cell-content"><strong><em>${icons} ${categories.join(', ')}</em></strong></span>
+                                    <span class="category-cell-content">
+                                        <strong>${icons} ${categories.join(', ')}</strong>
+                                        <span class="badge badge-sm bg-info"
+                                                style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
+                                    </span>
                             </span>`
                             : icons;
                     },
@@ -664,33 +674,40 @@
             grid.bootgrid('reload');
         });
 
-        $("#internal_rule_selector").detach().insertAfter("#type_filter_container");
-
-        $('#all_rules_checkbox').change(function(){
+        $("#inspect_toggle_container").detach().insertAfter("#type_filter_container");
+        $('#toggle_inspect_button').click(function () {
+            inspectEnabled = !inspectEnabled;
+            localStorage.setItem("firewall_rule_inspect", inspectEnabled ? "1" : "0");
+            $(this).toggleClass('active btn-primary', inspectEnabled);
             updateStatisticColumns();
             grid.bootgrid("reload");
         });
 
-        grid.on('loaded.rs.jquery.bootgrid', function () {
-            updateStatisticColumns();  // ensures columns are consistent after reload
-        });
-
-        $('#all_rules_button').click(function(){
-            let $checkbox = $('#all_rules_checkbox');
-
-            $checkbox.prop("checked", !$checkbox.prop("checked"));
-            $(this).toggleClass('active btn-primary');
-
-            $checkbox.trigger("change");
-        });
-
-        $("#tree_toggle_container").detach().insertAfter("#internal_rule_selector");
-
+        $("#tree_toggle_container").detach().insertAfter("#inspect_toggle_container");
         $('#toggle_tree_button').click(function () {
             treeViewEnabled = !treeViewEnabled;
             localStorage.setItem("firewall_rule_tree", treeViewEnabled ? "1" : "0");
             $(this).toggleClass('active btn-primary', treeViewEnabled);
+            $("#tree_expand_container").toggle(treeViewEnabled);
             grid.bootgrid("reload");
+        });
+
+        // Visible only when tree view is enabled
+        $("#tree_expand_container").detach().insertAfter("#tree_toggle_container");
+        $("#tree_expand_container").toggle(treeViewEnabled);
+        $('#expand_tree_button').on('click', function () {
+            const $table = $('#{{ formGridFilterRule["table_id"] }}');
+
+            // If there are any collapsed controls, expand them all, otherwise collapse them all
+            if ($table.find('.tabulator-data-tree-control-expand').length) {
+                $table.find('.tabulator-data-tree-control-expand').trigger('click');
+            } else {
+                $table.find('.tabulator-data-tree-control-collapse').trigger('click');
+            }
+        });
+
+        grid.on('loaded.rs.jquery.bootgrid', function () {
+            updateStatisticColumns();  // ensures inspect columns are consistent after reload
         });
 
         // replace all "net" selectors with details retrieved from "list_network_select_options" endpoint
@@ -799,11 +816,15 @@
         float: left;
         margin-left: 5px;
     }
-    #internal_rule_selector {
+    #inspect_toggle_container {
         float: left;
         margin-left: 5px;
     }
     #tree_toggle_container {
+        float: left;
+        margin-left: 5px;
+    }
+    #tree_expand_container {
         float: left;
         margin-left: 5px;
     }
@@ -826,45 +847,37 @@
         padding: 2px 5px;
     }
 
-    /* Custom styles for the bucket-row that hide all column lines and let the text break out of its cell */
-    .bucket-row .tabulator-cell{
-        border-right: none !important;
-        box-shadow: none !important;
+    /* bucket row style */
+    .bucket-row {
+        pointer-events: none;
     }
 
+    /* kill all per-cell borders/shadows and let bg come from ::before */
+    .bucket-row .tabulator-cell {
+        border: 0 !important;
+        box-shadow: none !important;
+        background: transparent !important;
+    }
+
+    /* category label can overhang; raise above ::before */
     .bucket-row .tabulator-cell[tabulator-field="categories"] {
         overflow: visible !important;
         white-space: nowrap !important;
         text-overflow: clip !important;
     }
 
+    /* keep only the collapse toggle clickable */
+    .bucket-row .tabulator-data-tree-control,
+    .bucket-row .tabulator-data-tree-control * {
+        pointer-events: auto;
+    }
+
+    /* hide row select checkbox in the row header */
     .bucket-row .tabulator-row-header input[type="checkbox"] {
         visibility: hidden;
         pointer-events: none;
     }
 
-    /* Colored line for bucket-rows */
-    .bucket-row::after {
-        content: "";
-        position: absolute;
-        left: 60px;
-        right: 60px;
-        top: 22px;
-        height: 2px;
-        background-color: var(--category-color, #000);
-        opacity: 0.3;
-        pointer-events: none;
-    }
-
-    /* Only allow interaction with bucket row collapse button */
-    .bucket-row {
-        pointer-events: none;
-    }
-
-    .bucket-row .tabulator-data-tree-control,
-    .bucket-row .tabulator-data-tree-control * {
-        pointer-events: auto;
-    }
 </style>
 
 <div class="tab-content content-box">
@@ -878,15 +891,15 @@
             <select id="interface_select" class="selectpicker" data-live-search="true" data-size="30" data-width="300px" data-container="body">
             </select>
         </div>
-        <div id="internal_rule_selector" class="btn-group">
-            <button id="all_rules_button"
+        <div id="inspect_toggle_container" class="btn-group">
+            <button id="toggle_inspect_button"
                     type="button"
                     class="btn btn-default"
                     data-toggle="tooltip"
                     data-placement="bottom"
                     data-delay='{"show": 1000}'
                     title="{{ lang._('Show all rules and statistics') }}">
-                <i class="fa fa-eye" aria-hidden="true"></i>
+                <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
                 {{ lang._('Inspect') }}
             </button>
             <input id="all_rules_checkbox" type="checkbox" style="display: none;">
@@ -899,8 +912,19 @@
                     data-placement="bottom"
                     data-delay='{"show": 1000}'
                     title="{{ lang._('Show all categories in a tree') }}">
-                <i class="fa fa-sitemap" aria-hidden="true"></i>
+                <i class="fa fa-fw fa-sitemap" aria-hidden="true"></i>
                 {{ lang._('Tree') }}
+            </button>
+        </div>
+        <div id="tree_expand_container" class="btn-group">
+            <button id="expand_tree_button"
+                    type="button"
+                    class="btn btn-default"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    data-delay='{"show": 1000}'
+                    title="{{ lang._('Expand/Collapse all') }}">
+                <i class="fa fa-fw fa-angle-double-down" aria-hidden="true"></i>
             </button>
         </div>
     </div>

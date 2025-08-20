@@ -119,6 +119,10 @@ class UIBootgrid {
         this.dataAvailable = false;
         this.customCommands = null;
         this.loading = true;
+        this.groupStorageKey = `tabulator-${this.persistenceID}-openGroups`;
+        this.rememberedGroupKeys = new Set(JSON.parse(localStorage.getItem(this.groupStorageKey) || '[]'));
+        this.treeStorageKey = `tabulator-${this.persistenceID}-openTree`;
+        this.rememberedTreeIds = new Set(JSON.parse(localStorage.getItem(this.treeStorageKey) || '[]'));
 
         // wrapper-specific options
         this.options = {
@@ -605,7 +609,10 @@ class UIBootgrid {
         } else {
             localStorage.removeItem(`tabulator-${this.persistenceID}-persistence`);
             Object.keys(localStorage)
-                .filter(key => key.startsWith(`tabulator-${this.persistenceID}`))
+                .filter(key =>
+                    key.startsWith(`tabulator-${this.persistenceID}`) &&
+                    !key.endsWith('-openGroups') // <-- keep groupBy state
+                )
                 .forEach(key => localStorage.removeItem(key));
             this.persistence = false;
 
@@ -734,6 +741,26 @@ class UIBootgrid {
             }
         }
 
+        this.table.on('groupVisibilityChanged', (groupComponent, isVisible) => {
+            const groupKey = groupComponent.getKey();
+            if (isVisible) {
+                this.rememberedGroupKeys.add(groupKey);
+            } else {
+                this.rememberedGroupKeys.delete(groupKey);
+            }
+            localStorage.setItem(this.groupStorageKey, JSON.stringify([...this.rememberedGroupKeys]));
+        });
+
+        const rememberTree = (row, open) => {
+            const id = row.getData()[this.dataIdentifier];
+            if (!id) return;
+            open ? this.rememberedTreeIds.add(id) : this.rememberedTreeIds.delete(id);
+            localStorage.setItem(this.treeStorageKey, JSON.stringify([...this.rememberedTreeIds]));
+        };
+
+        this.table.on('dataTreeRowExpanded',  (row) => rememberTree(row, true));
+        this.table.on('dataTreeRowCollapsed', (row) => rememberTree(row, false));
+
         this.table.on('headerMouseEnter', onMouseEnter)
         this.table.on('cellMouseEnter', onMouseEnter);
 
@@ -836,6 +863,21 @@ class UIBootgrid {
             $last_btn.show();
         }
 
+        // Tree does not have a groupStartOpen style hook, so we must restore expansion after data is loaded
+        if (this.table.options.dataTree) {
+            const queue = this.table.getRows();
+            while (queue.length) {
+                const row = queue.shift();
+                const data = row.getData();
+                const id = data[this.dataIdentifier] ?? data[this.options.datakey];
+                if (id && this.rememberedTreeIds.has(id)) {
+                    row.treeExpand(); // no-op if already expanded
+                }
+                const kids = row.getTreeChildren();
+                if (kids.length) queue.push(...kids);
+            }
+        }
+
         // backwards compat
         this.$element.trigger("loaded.rs.jquery.bootgrid");
     }
@@ -844,11 +886,6 @@ class UIBootgrid {
         if (!$.isEmptyObject(this.options.statusMapping)) {
             // XXX this fully assumes a row has a 'status' property
             $(cell.getElement()).addClass(this.options.statusMapping[cell.getData()['status']]);
-        }
-
-        if (!this.options.virtualDOM) {
-            // if the DOM isn't virtual, all tooltips will have been rendered
-            return;
         }
 
         const $el = $(cell.getElement())
@@ -932,6 +969,33 @@ class UIBootgrid {
         });
     }
 
+    /**
+     * @param {*} searchVal String to search for
+     * @param {*} e Event that triggered the search, usually an input field keyup
+     */
+    _search(searchVal, e) {
+        e.stopPropagation();
+        if (this.searchPhrase !== searchVal || (e.which === 13 && searchVal !== "")) {
+            this.searchPhrase = searchVal;
+            if (e.which === 13 || searchVal.length === 0 || searchVal.length >= 1) {
+                if (this.options.ajax) {
+                    window.clearTimeout(this.searchTimer);
+                    this.searchTimer = window.setTimeout(() => {
+                        this._reload();
+                    }, this.options.searchSettings.delay);
+                } else {
+                    this.table.setFilter((data, filterParams) => {
+                        return Object.values(data).some(
+                            val => typeof val === 'string' && val.toLowerCase().includes(this.searchPhrase.toLowerCase())
+                        )
+                    });
+                }
+            }
+        } else if (searchVal === "" && !this.options.ajax) {
+            this.table.clearFilter();
+        }
+    }
+
     _renderActionBar() {
         if (!this.options.navigation) {
             return;
@@ -941,28 +1005,7 @@ class UIBootgrid {
 
         // search functionality
         $(`#${this.id}-search-field`).val(this.searchPhrase).on("keyup", (e) => {
-            e.stopPropagation();
-            let searchVal = $(`#${this.id}-search-field`).val();
-            if (this.searchPhrase !== searchVal || (e.which === 13 && searchVal !== "")) {
-                this.searchPhrase = searchVal;
-                if (e.which === 13 || searchVal.length === 0 || searchVal.length >= 1) {
-                    if (this.options.ajax) {
-                        window.clearTimeout(this.searchTimer);
-                        this.searchTimer = window.setTimeout(() => {
-                            this._reload();
-                            //this.table.setFilter('searchPhrase', '=', searchVal);
-                        }, this.options.searchSettings.delay);
-                    } else {
-                        this.table.setFilter((data, filterParams) => {
-                            return Object.values(data).some(
-                                val => typeof val === 'string' && val.toLowerCase().includes(this.searchPhrase.toLowerCase())
-                            )
-                        });
-                    }
-                }
-            } else if (searchVal === "" && !this.options.ajax) {
-                this.table.clearFilter();
-            }
+            this._search($(`#${this.id}-search-field`).val(), e);
         });
 
         // Refresh
@@ -1139,6 +1182,80 @@ class UIBootgrid {
         `
     }
 
+    /**
+     * Expand a specific group in a Tabulator table once after data reload.
+     * Intended for use after adding/copying a row, based on the selected option
+     * in a <select> element inside a dialog.
+     *
+     * @param {string} dialogId - ID (without '#') of the dialog that contains the groupBy field
+     */
+    expandGroupBy(dialogId) {
+        if (!this.table?.options?.groupBy) return;
+
+        const $dialogElement = $(`#${dialogId}`);
+        if (!$dialogElement.length) return;
+
+        // Since we groupBy e.g. %interface instead of interface, we need to adjust the field name to match.
+        // We also only match the first level inside a groupBy array, as children will not be rendered
+        // until their parent is expanded, thus making them impossible to target recursively
+        const rawGroupBy = this.table.options.groupBy;
+        const firstGroupField = Array.isArray(rawGroupBy) ? rawGroupBy[0] : rawGroupBy;
+        const groupFieldName = String(firstGroupField || '').replace(/^%/, '');
+        const $selectElement = $dialogElement.find(
+            `select[id$=".${groupFieldName}"], select[id="${groupFieldName}"]`
+        );
+        if (!$selectElement.length) return;
+
+        const selectedGroupKey = $selectElement.find('option:selected').text().trim();
+
+        const expandOnceAfterReload = () => {
+            this.table.off('dataProcessed', expandOnceAfterReload);
+            const groupToExpand = this.table.getGroups(true).find(group =>
+                String(group.getKey()).trim().toLowerCase() === selectedGroupKey.toLowerCase()
+            );
+            if (groupToExpand) {
+                groupToExpand.show();
+            }
+        };
+
+        this.table.on('dataProcessed', expandOnceAfterReload);
+    }
+
+    /**
+     * Expand top level dataTree rows whose immediate child count increased.
+     *
+     * In tree view, category labels are not unique and the new/updated row
+     * could appear under any matching label or even create a new top-level node.
+     * Tracking by row index before/after reload ensures only the actual
+     * parent row(s) whose child count grew are expanded, avoiding expanding
+     * all rows with the same label.
+     */
+    expandDataTree() {
+        if (!this.table?.options?.dataTree) return;
+
+        const snapshot = () => {
+            const rowMap = new Map();
+            (this.table.getRows() || []).forEach(row => {
+                rowMap.set(row.getIndex(), (row.getTreeChildren() || []).length);
+            });
+            return rowMap;
+        };
+
+        const beforeSnapshot = snapshot();
+
+        const expandOnceAfterReload = () => {
+            this.table.off('dataProcessed', expandOnceAfterReload);
+            const afterSnapshot = snapshot();
+            afterSnapshot.forEach((childCount, rowId) => {
+                if (childCount > (beforeSnapshot.get(rowId) ?? 0)) {
+                    this.table.getRow(rowId).treeExpand();
+                }
+            });
+        };
+
+        this.table.on('dataProcessed', expandOnceAfterReload);
+    }
+
     tabulatorDefaults() {
         return {
             autoResize: false,
@@ -1173,6 +1290,11 @@ class UIBootgrid {
                 if (('disabled' in data && data.disabled == "1") || ('enabled' in data && data.enabled == "0")) {
                     $(row.getElement()).addClass('text-muted');
                 }
+            },
+            // Start a group open if it was remembered. Open any group with an empty header (wins over persistence).
+            groupStartOpen: (value, count, data, group) => {
+                const isEmptyLabel = value == null || String(value).trim() === '';
+                return isEmptyLabel ? true : this.rememberedGroupKeys.has(group.getKey());
             },
             height: 120, /* represents the "no results found" view */
             resizable: "header",
@@ -1664,6 +1786,8 @@ class UIBootgrid {
                         } else {
                             $("#" + editDlg).change();
                         }
+                        this.expandGroupBy(editDlg);
+                        this.expandDataTree();
                         this._reload(true);
                         this.showSaveAlert(event);
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
@@ -1714,6 +1838,8 @@ class UIBootgrid {
                         } else {
                             $("#" + editDlg).change();
                         }
+                        this.expandGroupBy(editDlg);
+                        this.expandDataTree();
                         this._reload(true);
                         this.showSaveAlert(event);
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
@@ -1802,6 +1928,8 @@ class UIBootgrid {
                         } else {
                             $("#" + editDlg).change();
                         }
+                        this.expandGroupBy(editDlg);
+                        this.expandDataTree();
                         this._reload(true);
                         this.showSaveAlert(event);
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
@@ -1925,6 +2053,10 @@ class UIBootgrid {
                 col.hide();
             }
         })
+    }
+
+    search(value, event) {
+        this._search(value, event);
     }
 
     select(ids) {

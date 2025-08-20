@@ -47,7 +47,7 @@ class NetworkAliasField extends BaseListField
     /**
      * @return string|null
      */
-    public function getNodeData()
+    protected function getNodeOptions()
     {
         // XXX: don't use as list, only for validation
         return (string)$this;

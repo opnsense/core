@@ -87,29 +87,52 @@ function dhcpd_dhcpv4_enabled()
 
 function dhcpd_services()
 {
-    $services = array();
+    $services = [];
 
     if (dhcpd_dhcpv4_enabled()) {
-        $pconfig = array();
+        $pconfig = [];
         $pconfig['name'] = 'dhcpd';
-        $pconfig['description'] = gettext("DHCPv4 Server");
-        $pconfig['php']['restart'] = array('dhcpd_dhcp4_configure');
-        $pconfig['php']['start'] = array('dhcpd_dhcp4_configure');
+        $pconfig['description'] = gettext('ISC DHCPv4 Server');
+        $pconfig['php']['restart'] = ['dhcpd_dhcp4_configure'];
+        $pconfig['php']['start'] = ['dhcpd_dhcp4_configure'];
         $pconfig['pidfile'] = '/var/dhcpd/var/run/dhcpd.pid';
         $services[] = $pconfig;
     }
 
     if (dhcpd_dhcpv6_enabled()) {
-        $pconfig = array();
+        $pconfig = [];
         $pconfig['name'] = 'dhcpd6';
-        $pconfig['description'] = gettext("DHCPv6 Server");
-        $pconfig['php']['restart'] = array('dhcpd_dhcp6_configure');
-        $pconfig['php']['start'] = array('dhcpd_dhcp6_configure');
+        $pconfig['description'] = gettext('ISC DHCPv6 Server');
+        $pconfig['php']['restart'] = ['dhcpd_dhcp6_configure'];
+        $pconfig['php']['start'] = ['dhcpd_dhcp6_configure'];
         $pconfig['pidfile'] = '/var/dhcpd/var/run/dhcpdv6.pid';
         $services[] = $pconfig;
     }
 
     return $services;
+}
+
+function dhcpd_xmlrpc_sync()
+{
+    $result = [];
+
+    $result[] = [
+        'description' => gettext('ISC DHCPv4'),
+        'help' => gettext('Synchronize the DHCP Server settings over to the other HA host.'),
+        'section' => 'dhcpd',
+        'id' => 'dhcpd',
+        'services' => ['dhcpd'],
+    ];
+
+    $result[] = [
+        'description' => gettext('ISC DHCPv6'),
+        'help' => gettext('Synchronize DHCPv6 including router advertisements.'),
+        'section' => 'dhcpdv6',
+        'id' => 'dhcpdv6',
+        'services' => ['dhcpdv6', 'radvd'], /* XXX we need to extract this */
+    ];
+
+    return $result;
 }
 
 function dhcpd_dhcp_configure($verbose = false, $family = null, $blacklist = [])
@@ -1171,14 +1194,14 @@ EOD;
     service_log("done.\n", $verbose);
 }
 
-function dhcpd_staticmap($proto = null, $valid_addresses = true, $ifconfig_details = null)
+function dhcpd_staticmap($proto = null, $valid_addresses = true, $ifconfig_details = null, $allow_disabled = false)
 {
     $staticmap = [];
     foreach (empty($proto) ? [4, 6] : [$proto] as $inet) {
         $ipaddr = $inet == 6 ? 'ipaddrv6' : 'ipaddr';
 
         foreach (config_read_array($inet == 6 ? 'dhcpdv6' : 'dhcpd') as $dhcpif => $dhcpifconf) {
-            if (!isset($dhcpifconf['staticmap']) || !isset($dhcpifconf['enable'])) {
+            if (!isset($dhcpifconf['staticmap']) || (!isset($dhcpifconf['enable']) && !$allow_disabled)) {
                 continue;
             }
 

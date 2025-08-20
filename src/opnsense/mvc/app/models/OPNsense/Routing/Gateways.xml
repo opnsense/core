@@ -10,10 +10,7 @@
             </disabled>
             <name type="TextField">
                 <Required>Y</Required>
-                <ValidationMessage>
-                    A valid gateway name must be specified. The name must be less than 32 characters long
-                    and may only consist of the following characters: a-z, A-Z, 0-9, _
-                </ValidationMessage>
+                <ValidationMessage>A valid gateway name must be specified. The name may only consist of the characters "a-zA-Z0-9_" and must be less than 32 characters long.</ValidationMessage>
                 <Mask>/^[a-zA-Z0-9_\-]{1,32}$/</Mask>
                 <Constraints>
                     <check001>
@@ -44,7 +41,7 @@
                 <Constraints>
                     <check001>
                         <type>UniqueConstraint</type>
-                        <ValidationMessage>This Gateway IP address already exists.</ValidationMessage>
+                        <ValidationMessage>This gateway IP address already exists.</ValidationMessage>
                     </check001>
                 </Constraints>
             </gateway>
@@ -61,7 +58,7 @@
                 <Constraints>
                     <check001>
                         <type>UniqueConstraint</type>
-                        <ValidationMessage>This Monitor IP address already exists.</ValidationMessage>
+                        <ValidationMessage>This monitor IP address already exists.</ValidationMessage>
                     </check001>
                 </Constraints>
             </monitor>
@@ -69,7 +66,7 @@
             <priority type="IntegerField">
                 <Default>255</Default>
                 <Required>Y</Required>
-                <ValidationMessage>Priority must be a value between 1 and 255</ValidationMessage>
+                <ValidationMessage>Priority must be a value between 1 and 255.</ValidationMessage>
                 <MinimumValue>0</MinimumValue>
                 <MaximumValue>255</MaximumValue>
             </priority>

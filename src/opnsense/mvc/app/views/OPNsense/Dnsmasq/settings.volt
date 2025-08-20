@@ -58,50 +58,73 @@
                     grid_ids = ["{{formGridDHCPrange['table_id']}}"];
                     break;
                 case '#dhcpoptions':
-                    grid_ids = ["{{formGridDHCPoption['table_id']}}", "{{formGridDHCPboot['table_id']}}"];
+                    grid_ids = ["{{formGridDHCPoption['table_id']}}"];
+                    break;
+                case '#dhcpboot':
+                    grid_ids = ["{{formGridDHCPboot['table_id']}}"];
                     break;
             }
             /* grid action selected, load or refresh target grid */
             if (grid_ids !== null) {
                 grid_ids.forEach(function (grid_id, index) {
                     if (all_grids[grid_id] === undefined) {
+                        const isGroupedGrid = [
+                            "{{formGridDHCPrange['table_id']}}",
+                            "{{formGridDHCPoption['table_id']}}",
+                            "{{formGridDHCPboot['table_id']}}"
+                        ].includes(grid_id);
                         all_grids[grid_id] = $("#"+grid_id).UIBootgrid({
                             'search':'/api/dnsmasq/settings/search_' + grid_id,
                             'get':'/api/dnsmasq/settings/get_' + grid_id + '/',
                             'set':'/api/dnsmasq/settings/set_' + grid_id + '/',
                             'add':'/api/dnsmasq/settings/add_' + grid_id + '/',
                             'del':'/api/dnsmasq/settings/del_' + grid_id + '/',
+                            tabulatorOptions: {
+                                groupBy: isGroupedGrid ? "%interface" : false,
+                                groupHeader: (value, count, data, group) => {
+                                    // Show "Any" when interface is empty
+                                    const displayValue = !value ? "{{ lang._('Any') }}" : value;
+
+                                    const icons = {
+                                        interface: '<i class="fa fa-fw fa-ethernet fa-sm text-info"></i>',
+                                    };
+
+                                    const countValue = `<span class="badge chip">${count}</span>`;
+
+                                    return `${icons.interface} ${displayValue} ${countValue}`;
+                                },
+                            },
                             options: {
                                 triggerEditFor: getUrlHash('edit'),
                                 initialSearchPhrase: getUrlHash('search'),
+                                // Remove pagination from GroupBy
+                                rowCount: isGroupedGrid ? [-1] : undefined,
                                 requestHandler: function(request) {
                                     const selectedTags = $('#tag_select').val();
                                     if (selectedTags && selectedTags.length > 0) {
                                         request['tags'] = selectedTags;
                                     }
                                     return request;
-                                }
+                                },
+                                headerFormatters: {
+                                    interface: function (column) {
+                                        return '<i class="fa fa-fw fa-ethernet text-info"></i> {{ lang._("Interface") }}';
+                                    },
+                                    tag: function (column) {
+                                        return '<i class="fa fa-fw fa-tag text-primary"></i> {{ lang._("Tag") }}';
+                                    },
+                                    set_tag: function (column) {
+                                        return '<i class="fa fa-fw fa-tag text-primary"></i> {{ lang._("Tag [set]") }}';
+                                    },
+                                },
                             }
                         });
-                        /* insert headers when multiple grids exist on a single tab */
-                        let header = $("#" + grid_id + "-header");
-                        if (grid_id === 'option' ) {
-                            header.find('div.actionBar').parent().prepend(
-                                $('<td id="heading-wrapper" class="col-sm-2 theading-text">{{ lang._('Options') }}</div>')
-                            );
-                        } else if (grid_id == 'boot') {
-                            header.find('div.actionBar').parent().prepend(
-                                $('<td id="heading-wrapper" class="col-sm-2 theading-text">{{ lang._('Boot') }}</div>')
-                            );
-                        } else if (grid_id == 'host') {
-                            all_grids[grid_id].find("tfoot td:last").append($("#hosts_tfoot_append > button").detach());
-                        }
                     } else {
                         all_grids[grid_id].bootgrid('reload');
 
                     }
                     // insert tag selectpicker in all grids that use tags or interfaces, boot excluded cause two grids in same tab
-                    if (!['domain', 'boot'].includes(grid_id)) {
+                    if (!['domain'].includes(grid_id)) {
                         let header = $("#" + grid_id + "-header");
                         let $actionBar = header.find('.actionBar');
                         if ($actionBar.length) {
@@ -190,7 +213,6 @@
 
         $('#tag_select').change(function () {
             Object.keys(all_grids).forEach(function (grid_id) {
-                // boot is not excluded here, as it reloads in same tab as options
                 if (!['domain'].includes(grid_id)) {
                     all_grids[grid_id].bootgrid('reload');
                 }
@@ -284,10 +306,11 @@
 <!-- Navigation bar -->
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li><a data-toggle="tab" href="#general">{{ lang._('General') }}</a></li>
-    <li><a data-toggle="tab" href="#hosts">{{ lang._('Hosts') }}</a></li>
     <li><a data-toggle="tab" href="#domains">{{ lang._('Domains') }}</a></li>
+    <li><a data-toggle="tab" href="#hosts">{{ lang._('Hosts') }}</a></li>
     <li><a data-toggle="tab" href="#dhcpranges">{{ lang._('DHCP ranges') }}</a></li>
     <li><a data-toggle="tab" href="#dhcpoptions">{{ lang._('DHCP options') }}</a></li>
+    <li><a data-toggle="tab" href="#dhcpboot">{{ lang._('DHCP boot') }}</a></li>
     <li><a data-toggle="tab" href="#dhcptags">{{ lang._('DHCP tags') }}</a></li>
 </ul>
 
@@ -331,10 +354,12 @@
     <div id="dhcpranges" class="tab-pane fade in">
         {{ partial('layout_partials/base_bootgrid_table', formGridDHCPrange)}}
     </div>
-    <!-- Tab: DHCP [boot] Options -->
+    <!-- Tab: DHCP Options -->
     <div id="dhcpoptions" class="tab-pane fade in">
         {{ partial('layout_partials/base_bootgrid_table', formGridDHCPoption)}}
-        <hr/>
+    </div>
+    <!-- Tab: DHCP Boot -->
+    <div id="dhcpboot" class="tab-pane fade in">
         {{ partial('layout_partials/base_bootgrid_table', formGridDHCPboot)}}
     </div>
     <!-- Tab: DHCP Tags -->

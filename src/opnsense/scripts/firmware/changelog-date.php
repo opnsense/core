@@ -1,7 +1,8 @@
+#!/usr/local/bin/php
 <?php
 
 /*
- * Copyright (c) 2020 Deciso B.V.
+ * Copyright (c) 2025 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,38 +27,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\IPsec\Api;
+$changelogfile = '/usr/local/opnsense/changelog/index.json';
 
-use OPNsense\Base\ApiMutableServiceControllerBase;
-
-/**
- * {@inheritdoc}
- */
-class ServiceController extends ApiMutableServiceControllerBase
-{
-    protected static $internalServiceClass = '\OPNsense\IPsec\IPsec';
-    protected static $internalServiceEnabled = 'general.enabled';
-    protected static $internalServiceTemplate = 'OPNsense/IPsec';
-    protected static $internalServiceName = 'ipsec';
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function invokeInterfaceRegistration()
-    {
-        return true;
-    }
-
-    protected function invokeFirewallReload()
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function reconfigureForceRestart()
-    {
-        return 0;
+if (!empty($argv[1]) && ($ret = json_decode(@file_get_contents($changelogfile), true)) != null) {
+    foreach ($ret as $entry) {
+        if ($entry['version'] == $argv[1]) {
+            echo $entry['date'] . PHP_EOL;
+        }
     }
 }

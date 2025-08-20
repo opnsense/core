@@ -1,7 +1,7 @@
 <model>
     <mount>:memory:</mount>
     <version>1.0.1</version>
-    <description>OPNsense Packet Capture</description>
+    <description>Packet capture</description>
     <items>
         <settings>
             <interface type=".\InterfaceField">

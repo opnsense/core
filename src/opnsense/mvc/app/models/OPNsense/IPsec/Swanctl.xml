@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/Swanctl</mount>
     <version>1.0.0</version>
-    <description>OPNsense IPsec Connections</description>
+    <description>IPsec connections</description>
     <items>
         <Connections>
             <Connection type=".\ConnnectionField">
@@ -148,7 +148,6 @@
                 </eap_id>
                 <certs type="CertificateField">
                     <Multiple>Y</Multiple>
-                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </certs>
                 <pubkeys type="ModelRelationField">
                     <Model>
@@ -208,12 +207,10 @@
                 </groups>
                 <certs type="CertificateField">
                     <Multiple>Y</Multiple>
-                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </certs>
                 <cacerts type="CertificateField">
                     <type>ca</type>
                     <Multiple>Y</Multiple>
-                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </cacerts>
                 <pubkeys type="ModelRelationField">
                     <Model>
@@ -397,6 +394,7 @@
                     <WildcardEnabled>N</WildcardEnabled>
                     <ValidationMessage>Please specify a valid address.</ValidationMessage>
                 </tunnel_remote2>
+                <skip_fw type="BooleanField"/>
                 <origin type="TextField" volatile="true"/>
                 <description type="DescriptionField"/>
             </VTI>

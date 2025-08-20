@@ -173,17 +173,13 @@
                     <AsList>Y</AsList>
                     <WildcardEnabled>N</WildcardEnabled>
                 </push_route>
-                <cert type="CertificateField">
-                    <ValidationMessage>Please select a valid certificate from the list.</ValidationMessage>
-                </cert>
+                <cert type="CertificateField"/>
                 <crl type="CertificateField">
                     <type>crl</type>
-                    <ValidationMessage>Please select a valid certificate from the list.</ValidationMessage>
                 </crl>
                 <ca type="CertificateField">
                     <type>ca</type>
                     <BlankDesc> - Use from certificate</BlankDesc>
-                    <ValidationMessage>Please select a valid certificate from the list.</ValidationMessage>
                 </ca>
                 <cert_depth type="OptionField">
                     <BlankDesc>Do Not Check</BlankDesc>

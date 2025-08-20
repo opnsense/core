@@ -276,10 +276,12 @@ function get_locale_list()
     $locales['ru_RU'] = gettext('Russian');
     $locales['es_ES'] = gettext('Spanish');
     $locales['tr_TR'] = gettext('Turkish');
+    $locales['uk_UA'] = gettext('Ukranian');
     $locales['vi_VN'] = gettext('Vietnamese');
 
     if (!product::getInstance()->development()) {
         /* below 30% progress or currently unvetted */
+        unset($locales['uk_UA']);
         unset($locales['vi_VN']);
     }
 
@@ -358,13 +360,12 @@ function get_nameservers($interface = null, $with_gateway = false)
 
     if (!empty($interface)) {
         /* only acquire servers provided for this interface */
-        $realif = get_real_interface($interface);
-        $realifv6 = get_real_interface($interface, 'inet6');
-        $list = shell_safe('/usr/local/sbin/ifctl -4nli %s', $realif);
+        $devices = get_real_interface($interface, 'both');
+        $list = shell_safe('/usr/local/sbin/ifctl -4nli %s', reset($devices));
         if (!empty($list)) {
             $dns_lists[] = $list;
         }
-        $list = shell_safe('/usr/local/sbin/ifctl -6nli %s', $realifv6);
+        $list = shell_safe('/usr/local/sbin/ifctl -6nli %s', end($devices));
         if (!empty($list)) {
             $dns_lists[] = $list;
         }
@@ -380,8 +381,8 @@ function get_nameservers($interface = null, $with_gateway = false)
         /* by design this only works on dynamic servers, not static ones */
         foreach (explode(',', $syscfg['dnsallowoverride_exclude']) as $intf) {
             if (isset($config['interfaces'][$intf])) {
-                $exclude_interfaces[] = get_real_interface($intf);
-                $exclude_interfaces[] = get_real_interface($intf, 'inet6');
+                $devices = get_real_interface($intf, 'both');
+                array_push($exclude_interfaces, ...$devices);
             }
         }
     }

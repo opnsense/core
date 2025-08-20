@@ -1,6 +1,7 @@
 <model>
     <mount>/dnsmasq</mount>
-    <version>1.0.7</version>
+    <description>Dnsmasq DNS and DHCP</description>
+    <version>1.0.8</version>
     <items>
         <enable type="BooleanField"/>
         <regdhcp type="BooleanField"/>
@@ -55,6 +56,10 @@
                 <IsDNSName>Y</IsDNSName>
                 <IpAllowed>N</IpAllowed>
             </domain>
+            <local type="BooleanField">
+                <Required>Y</Required>
+                <Default>1</Default>
+            </local>
             <lease_max type="IntegerField">
                 <MinimumValue>0</MinimumValue>
             </lease_max>
@@ -198,7 +203,7 @@
             <subnet_mask type="NetworkField">
                 <NetMaskAllowed>N</NetMaskAllowed>
                 <AddressFamily>ipv4</AddressFamily>
-                <ValidationMessage>Please enter a valid IPv4 subnet mask like 255.255.255.0</ValidationMessage>
+                <ValidationMessage>Please enter a valid IPv4 subnet mask like 255.255.255.0.</ValidationMessage>
             </subnet_mask>
             <constructor type="InterfaceField"/>
             <mode type="OptionField">

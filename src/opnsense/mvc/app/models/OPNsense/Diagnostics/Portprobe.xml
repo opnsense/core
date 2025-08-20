@@ -1,12 +1,12 @@
 <model>
     <mount>:memory:</mount>
     <version>1.0.0</version>
-    <description>OPNsense Port probe</description>
+    <description>Port probe</description>
     <items>
         <settings>
             <hostname type="HostnameField">
                <Required>Y</Required>
-               <ValidationMessage>Provide a valid hostname or address</ValidationMessage>
+               <ValidationMessage>Provide a valid hostname or address.</ValidationMessage>
             </hostname>
             <port type="PortField">
                 <Required>Y</Required>
@@ -21,7 +21,7 @@
             </ipproto>
             <source_address type="NetworkField">
               <NetMaskAllowed>N</NetMaskAllowed>
-              <ValidationMessage>Provide a valid source address</ValidationMessage>
+              <ValidationMessage>Provide a valid source address.</ValidationMessage>
             </source_address>
             <source_port type="PortField"/>
             <showtext type="BooleanField">

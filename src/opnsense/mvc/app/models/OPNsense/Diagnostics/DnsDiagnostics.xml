@@ -1,16 +1,16 @@
 <model>
     <mount>:memory:</mount>
     <version>1.0.1</version>
-    <description>OPNsense DNS Diagnostics</description>
+    <description>DNS diagnostics</description>
     <items>
         <settings>
             <hostname type="HostnameField">
                <Required>Y</Required>
-               <ValidationMessage>Provide a valid hostname or address to query</ValidationMessage>
+               <ValidationMessage>Provide a valid hostname or address to query.</ValidationMessage>
             </hostname>
             <server type="NetworkField">
               <NetMaskAllowed>N</NetMaskAllowed>
-              <ValidationMessage>Provide a valid server address</ValidationMessage>
+              <ValidationMessage>Provide a valid server address.</ValidationMessage>
             </server>
         </settings>
     </items>

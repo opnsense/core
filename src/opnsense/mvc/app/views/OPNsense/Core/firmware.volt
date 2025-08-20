@@ -180,8 +180,12 @@
     {
         ajaxCall('/api/core/firmware/changelog/' + version, {}, function (data, status) {
             if (data['html'] != undefined) {
+                header = data['version'];
+                if (data['date'] != '') {
+                    header += ' (' + data['date'] + ')';
+                }
                 /* we trust this data, it was signed by us and secured by csrf */
-                stdDialogInform(version, htmlDecode(data['html']), "{{ lang._('Close') }}", undefined, 'primary');
+                stdDialogInform(header, htmlDecode(data['html']), "{{ lang._('Close') }}", undefined, 'primary');
             }
         });
     }

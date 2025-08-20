@@ -1,12 +1,12 @@
 <model>
     <mount>:memory:</mount>
     <version>1.0.0</version>
-    <description>OPNsense Ping Diagnostics</description>
+    <description>Ping diagnostics</description>
     <items>
         <settings>
             <hostname type="HostnameField">
                <Required>Y</Required>
-               <ValidationMessage>Provide a valid hostname or address to ping</ValidationMessage>
+               <ValidationMessage>Provide a valid hostname or address to ping.</ValidationMessage>
             </hostname>
             <fam type="OptionField">
                 <Required>Y</Required>
@@ -18,7 +18,7 @@
             </fam>
             <source_address type="NetworkField">
                 <NetMaskAllowed>N</NetMaskAllowed>
-                <ValidationMessage>Provide a valid source address</ValidationMessage>
+                <ValidationMessage>Provide a valid source address.</ValidationMessage>
             </source_address>
             <packetsize type="IntegerField">
                 <MinimumValue>1</MinimumValue>

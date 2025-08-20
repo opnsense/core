@@ -28,11 +28,11 @@ sweep-model:
 .if exists(${DIR})
 	@for MODEL in $$(find ${DIR} -depth 3 \
 	    -name "*.xml"); do \
+		perl -i -pe 's/<multiple>([YyNn])<\/multiple>/<Multiple>$$1<\/Multiple>/g' $${MODEL}; \
+		perl -i -pe 's/<required>([YyNn])<\/required>/<Required>$$1<\/Required>/g' $${MODEL}; \
+		perl -i -pe 's/<asList>([YyNn])<\/asList>/<AsList>$$1<\/AsList>/g' $${MODEL}; \
 		perl -i -pe 's/<default>(.*?)<\/default>/<Default>$$1<\/Default>/g' $${MODEL}; \
-		perl -i -pe 's/<multiple>(.*?)<\/multiple>/<Multiple>$$1<\/Multiple>/g' $${MODEL}; \
-		perl -i -pe 's/<required>(.*?)<\/required>/<Required>$$1<\/Required>/g' $${MODEL}; \
 		perl -i -pe 's/<mask>(.*?)<\/mask>/<Mask>$$1<\/Mask>/g' $${MODEL}; \
-		perl -i -pe 's/<asList>(.*?)<\/asList>/<AsList>$$1<\/AsList>/g' $${MODEL}; \
 	done
 .endif
 .endfor

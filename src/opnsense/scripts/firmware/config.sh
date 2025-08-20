@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2024 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2024-2025 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,7 @@
 
 # source of common configuration related subroutines and variables
 
+LOGFILE="/var/cache/opnsense-update/.update.log"
 LOCKFILE=${LOCKFILE:-/tmp/pkg_upgrade.progress}
 BASEDIR="/usr/local/opnsense/scripts/firmware"
 LICENSEDIR="/usr/local/share/licenses"
@@ -135,13 +136,27 @@ output_cmd()
 
 output_done()
 {
+	KEEP_LOG=${1}
+
 	echo '***DONE***' >> ${LOCKFILE}
+
+	if  [ -n "${KEEP_LOG}" ]; then
+		cp ${LOCKFILE} ${LOGFILE}
+	fi
+
 	exit 0
 }
 
 output_reboot()
 {
+	KEEP_LOG=${1}
+
 	echo '***REBOOT***' >> ${LOCKFILE}
+
+	if  [ -n "${KEEP_LOG}" ]; then
+		cp ${LOCKFILE} ${LOGFILE}
+	fi
+
 	sleep 5
 	/usr/local/etc/rc.reboot
 }

@@ -1,6 +1,7 @@
 <model>
     <mount>/cert+</mount>
     <version>1.0.0</version>
+    <description>Certificates</description>
     <items>
         <cert type=".\CertificatesField">
             <refid type="TextField"/>
@@ -10,7 +11,6 @@
             <caref type="CertificateField">
                 <type>ca</type>
                 <BlankDesc>self-signed</BlankDesc>
-                <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
             </caref>
             <crt type="TextField"/>
             <csr type="TextField"/>

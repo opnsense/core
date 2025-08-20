@@ -73,6 +73,35 @@
 .tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-right {
 }
 
+/* Tabulator groupBy row styles */
+.tabulator-row.tabulator-group {
+    border: none;
+    pointer-events: none;
+}
+
+.tabulator-row.tabulator-group .span {
+    margin-left: 0;
+    color: map-get($colors, text-color);
+}
+
+.tabulator-row .badge.chip {
+    background-color: map-get($colors, chip-background);
+    color: map-get($colors, chip-text);
+    font-size: 10px;
+    padding: 2px 4px;
+    position: relative;
+    top: -1px;
+}
+
+.tabulator-row.tabulator-group .tabulator-group-toggle,
+.tabulator-row.tabulator-group .tabulator-group-toggle * {
+    pointer-events: auto;
+}
+
+.tabulator-row.tabulator-group:has(> .tabulator-group-toggle:only-child) {
+    display: none; /* Trick to hide empty groupBy header rows */
+}
+
 /* Checkbox column styles */
 .tabulator .tabulator-header .tabulator-frozen.tabulator-frozen-left {
     border-right: 1px solid map-get($colors, border-default); /* separates checkbox column from table rows */

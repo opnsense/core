@@ -68,7 +68,7 @@
                     <domain_search type="HostnameField">
                         <IpAllowed>N</IpAllowed>
                         <AsList>Y</AsList>
-                        <ValidationMessage>Please specify a valid list of domains</ValidationMessage>
+                        <ValidationMessage>Please specify a valid list of domains.</ValidationMessage>
                     </domain_search>
                     <routers type="NetworkField">
                         <NetMaskAllowed>N</NetMaskAllowed>
@@ -118,7 +118,7 @@
                             <display>subnet</display>
                         </subnets>
                     </Model>
-                    <ValidationMessage>Related subnet not found</ValidationMessage>
+                    <ValidationMessage>Related subnet not found.</ValidationMessage>
                     <Constraints>
                         <check001>
                             <reference>hw_address.check001</reference>
@@ -131,7 +131,7 @@
                     <AddressFamily>ipv4</AddressFamily>
                     <Constraints>
                         <check001>
-                            <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                            <ValidationMessage>Duplicate entry exists.</ValidationMessage>
                             <type>UniqueConstraint</type>
                         </check001>
                     </Constraints>
@@ -140,7 +140,7 @@
                     <Required>Y</Required>
                     <Constraints>
                         <check001>
-                            <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                            <ValidationMessage>Duplicate entry exists.</ValidationMessage>
                             <type>UniqueConstraint</type>
                             <addFields>
                                 <field1>subnet</field1>
@@ -161,7 +161,7 @@
                     <domain_search type="HostnameField">
                         <IpAllowed>N</IpAllowed>
                         <AsList>Y</AsList>
-                        <ValidationMessage>Please specify a valid list of domains</ValidationMessage>
+                        <ValidationMessage>Please specify a valid list of domains.</ValidationMessage>
                     </domain_search>
                     <routers type="NetworkField">
                         <NetMaskAllowed>N</NetMaskAllowed>
@@ -197,7 +197,7 @@
                     <Required>Y</Required>
                     <Constraints>
                         <check001>
-                            <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                            <ValidationMessage>Duplicate entry exists.</ValidationMessage>
                             <type>UniqueConstraint</type>
                         </check001>
                     </Constraints>
@@ -214,7 +214,7 @@
                     <Required>Y</Required>
                     <Constraints>
                         <check001>
-                            <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                            <ValidationMessage>Duplicate entry exists.</ValidationMessage>
                             <type>UniqueConstraint</type>
                         </check001>
                     </Constraints>

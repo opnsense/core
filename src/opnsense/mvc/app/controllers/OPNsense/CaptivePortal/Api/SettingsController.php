@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2015 Deciso B.V.
+ *    Copyright (C) 2015-2025 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -97,10 +97,6 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function searchZonesAction()
     {
-        return $this->searchBase(
-            "zones.zone",
-            null,
-            "description"
-        );
+        return $this->searchBase("zones.zone", null, "description");
     }
 }

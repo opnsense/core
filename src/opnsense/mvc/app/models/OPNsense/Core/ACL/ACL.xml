@@ -320,7 +320,7 @@
         </patterns>
     </page-interfaces-gre-edit>
     <page-interfaces-groups-edit>
-        <name>Interfaces: Groups: Edit</name>
+        <name>Firewall: Groups</name>
         <patterns>
             <pattern>ui/firewall/group</pattern>
             <pattern>api/firewall/group/*</pattern>

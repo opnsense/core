@@ -356,12 +356,15 @@ class FirmwareController extends ApiMutableModelControllerBase
         $version = (new SanitizeFilter())->sanitize($version, 'version');
 
         $backend = new Backend();
-        $html = trim($backend->configdRun(sprintf('firmware changelog html %s', $version)));
+        $html = trim($backend->configdpRun('firmware changelog html', [$version]));
+        $date = trim($backend->configdpRun('firmware changelog date', [$version]));
+
         if (!empty($html)) {
+            $response['version'] = $version;
             $response['status'] = 'ok';
             $response['html'] = $html;
+            $response['date'] = $date;
         }
-
 
         return $response;
     }
@@ -914,11 +917,8 @@ class FirmwareController extends ApiMutableModelControllerBase
             $plugin['tier'] = '4';
 
             /* trusted repository handling */
-            if ($plugin['repository'] == 'OPNsense' && $plugin['provided'] == '1') {
+            if (in_array($plugin['repository'], ['OPNsense', 'SunnyValley']) && $plugin['provided'] == '1') {
                 $plugin['tier'] = $tiers[$plugin['name']];
-            } elseif ($plugin['repository'] == 'SunnyValley') {
-                /* XXX ask them to change this on their end */
-                $plugin['tier'] = '2';
             }
 
             $response['plugin'][] = $plugin;

@@ -2,7 +2,7 @@
     <mount>//OPNsense/Firewall/Filter</mount>
     <version>1.0.4</version>
     <migration_prefix>MFP</migration_prefix>
-    <description>OPNsense firewall filter rules</description>
+    <description>Firewall autmation rules</description>
     <items>
         <rules>
             <rule type=".\FilterRuleField">
@@ -120,7 +120,7 @@
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
                     <EnableAlias>Y</EnableAlias>
-                    <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
+                    <ValidationMessage>Please specify a valid portnumber, name, alias or range.</ValidationMessage>
                 </source_port>
                 <!-- XXX: should map internally to  'source' => array('destination' => destination_net, "not" => true|false) -->
                 <destination_net type="NetworkAliasField">
@@ -136,7 +136,7 @@
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
                     <EnableAlias>Y</EnableAlias>
-                    <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
+                    <ValidationMessage>Please specify a valid portnumber, name, alias or range.</ValidationMessage>
                 </destination_port>
                 <gateway type="JsonKeyValueStoreField">
                     <ConfigdPopulateAct>interface gateways list -g</ConfigdPopulateAct>
@@ -310,7 +310,7 @@
                             </filters>
                         </queues>
                     </Model>
-                    <ValidationMessage>Related pipe or queue not found</ValidationMessage>
+                    <ValidationMessage>Related pipe or queue not found.</ValidationMessage>
                 </shaper1>
                 <shaper2 type="ModelRelationField">
                     <Model>
@@ -331,7 +331,7 @@
                             </filters>
                         </queues>
                     </Model>
-                    <ValidationMessage>Related pipe or queue not found</ValidationMessage>
+                    <ValidationMessage>Related pipe or queue not found.</ValidationMessage>
                 </shaper2>
                 <description type="DescriptionField"/>
             </rule>
@@ -349,7 +349,7 @@
                 <sequence type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>99999</MaximumValue>
-                    <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
+                    <ValidationMessage>Provide a valid sequence for sorting.</ValidationMessage>
                     <Required>Y</Required>
                     <Default>1</Default>
                 </sequence>
@@ -388,7 +388,7 @@
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
                     <EnableAlias>Y</EnableAlias>
-                    <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
+                    <ValidationMessage>Please specify a valid portnumber, name, alias or range.</ValidationMessage>
                 </source_port>
                 <destination_net type="NetworkAliasField">
                     <Default>any</Default>
@@ -402,7 +402,7 @@
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
                     <EnableAlias>Y</EnableAlias>
-                    <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
+                    <ValidationMessage>Please specify a valid portnumber, name, alias or range.</ValidationMessage>
                 </destination_port>
                 <target type="NetworkAliasField">
                     <Default>wanip</Default>
@@ -443,7 +443,7 @@
                 <sequence type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>99999</MaximumValue>
-                    <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
+                    <ValidationMessage>Provide a valid sequence for sorting.</ValidationMessage>
                     <Required>Y</Required>
                     <Default>1</Default>
                 </sequence>
@@ -495,7 +495,7 @@
                 <sequence type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>99999</MaximumValue>
-                    <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
+                    <ValidationMessage>Provide a valid sequence for sorting.</ValidationMessage>
                     <Required>Y</Required>
                     <Default>1</Default>
                 </sequence>

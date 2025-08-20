@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/IPsec</mount>
-    <version>1.0.4</version>
-    <description>OPNsense IPsec</description>
+    <version>1.0.5</version>
+    <description>IPsec settings</description>
     <items>
         <general>
             <enabled type="LegacyLinkField">
@@ -60,7 +60,10 @@
             </ignore_acquire_ts>
             <install_routes type="BooleanField"/>
             <cisco_unity type="BooleanField"/>
-            <make_before_break type="BooleanField"/>
+            <make_before_break type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </make_before_break>
             <retransmit_tries type="IntegerField"/>
             <retransmit_timeout type="NumericField"/>
             <retransmit_base type="NumericField"/>
