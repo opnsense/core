@@ -496,14 +496,17 @@ function initGlobalOpenShortcuts() {
         const tag = (t.tagName || '').toLowerCase();
         if (tag === 'input' || tag === 'textarea' || tag === 'select' || t.isContentEditable) return;
 
+        const $context = $('.modal:visible, .ui-dialog:visible, [role="dialog"]:visible').last();
+        const searchContext = $context.length > 0 ? $context : $(document);
+
         if (e.key === 'a' || e.key === 'A') {
-            const $adv = $('[id*="show_advanced"]').first();
+            const $adv = searchContext.find('[id*="show_advanced"]').first();
             if ($adv.length) {
                 $adv.click();
                 e.preventDefault();
             }
         } else if (e.key === 'h' || e.key === 'H') {
-            const $help = $('[id*="show_all_help"]').first();
+            const $help = searchContext.find('[id*="show_all_help"]').first();
             if ($help.length) {
                 $help.click();
                 e.preventDefault();
