@@ -182,7 +182,7 @@ env_init()
 
 		# refresh CRL files for libfetch consumption...
 		HOSTS=$(/usr/local/opnsense/scripts/firmware/hostnames.sh)
-		if /usr/local/opnsense/scripts/system/update-crl-fetch.py ${HOSTS}; then
+		if /usr/local/opnsense/scripts/system/update-crl-fetch.py ${HOSTS} vuxml.freebsd.org; then
 			/usr/local/opnsense/scripts/system/certctl.py rehash
 		fi
 
