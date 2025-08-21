@@ -1,40 +1,163 @@
+html,
 body {
-  padding-top: 40px;
-  padding-bottom: 40px;
-  background-color: #eee;
+  padding: 0;
+  margin: 0;
 }
 
-.form-signin {
-  max-width: 330px;
-  padding: 15px;
+body {
+  background: #fff;
+  font-family: "helvetica";
+  font-size: 24px;
+  font-weight: 300;
+  text-align: center
+}
+
+.deciso-brand {
+  position: relative;
+  display: block;
+  margin: 0 auto;
+  vertical-align: middle;
+  line-height: 1;
+  width: 220px;
+}
+
+.deciso-brand img {
+  width: 220px;
+  height: auto
+}
+
+.deciso-brand .hover-logo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0
+}
+
+.deciso-brand:hover .hover-logo {
+  opacity: 1
+}
+
+.deciso-brand:hover .regular-logo {
+  opacity: 0
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 110px;
+}
+
+header h1,
+header a {
+  display: inline-block;
+  line-height: 1;
+  margin: 0;
+}
+
+header img {
+  display: block;
+  width: 240px;
+  height: auto;
+}
+
+footer {
+  height: 35px;
+  padding-top: 25px;
+  padding-bottom: 15px
+}
+
+.content-row {
+  min-height: calc(100vh - 305px);
+  display: flex;
+  align-items: center;
+  padding: 60px 0
+}
+
+@media screen and (max-width:767px) {
+  .content-row {
+    padding: 45px 0;
+    min-height: calc(100vh - 275px);
+  }
+}
+
+.wrapper {
+  width: 100%;
+  text-align: center
+}
+
+.content {
+  display: block;
+  max-width: 1200px;
   margin: 0 auto;
 }
-.form-signin .form-signin-heading,
-.form-signin .checkbox {
-  margin-bottom: 10px;
+
+.content h1 {
+  color: #C03E14
 }
-.form-signin .checkbox {
-  font-weight: normal;
+
+
+@media screen and (max-width:768px) {
+  .content h3 {
+    font-size: 42px;
+    margin-bottom: 20px;
+  }
 }
-.form-signin .form-control {
-  position: relative;
-  height: auto;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  padding: 10px;
-  font-size: 16px;
+
+p {
+  margin: 0;
 }
-.form-signin .form-control:focus {
-  z-index: 2;
+
+@media screen and (max-width:600px) {
+  br {
+    display: none
+  }
 }
-.form-signin input[type="text"] {
-  margin-bottom: -1px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
+
+
+input[type="text"], input[type="password"] {
+    -webkit-appearance: none;font-family:"helvetica";color:#202020;
+    -moz-appearance: none;
+    appearance: none;
+    width: 300px;
+    height: 50px;
+    border-radius: 0;
+    padding: 0!important;
+    background: none;
+	  border:none;
+    border-bottom: 1px solid #D8D9D9;
+    font-size: 17px!important;
+    font-weight: 300;
+    margin-bottom: 10px;
+    color: #373736;
+    outline:none;
 }
-.form-signin input[type="password"] {
-  margin-bottom: 10px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+
+.btn{
+    font-size: 16px;
+    position: relative;
+    color: #FFFFFF;
+    font-weight: 300;
+    display: inline-block;
+    line-height: 1;
+    padding:13px 25px 16px;
+    background: #C03E14;
+    border-radius: 25px;
+    text-align: center;
+    font-style: normal;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+button, .btn {
+  font-family:"helvetica";
+  font-weight:700;
+  -webkit-appearance:none;
+  appearance:none;
+  border:none;
+  cursor:pointer;
+}
+
+.hidden {
+    display: none;
 }
