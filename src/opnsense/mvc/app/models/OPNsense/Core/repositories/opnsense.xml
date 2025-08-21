@@ -14,6 +14,14 @@
         </mirror>
         <mirror has_subscription="true">
             <url>https://opnsense-update.deciso.com</url>
+            <description>Deciso (HTTPS, Commercial)</description>
+        </mirror>
+        <mirror has_subscription="true">
+            <url>https://us-east.opnsense-update.deciso.com</url>
+            <description>Deciso (HTTPS, US, Commercial)</description>
+        </mirror>
+        <mirror has_subscription="true">
+            <url>https://nl.opnsense-update.deciso.com</url>
             <description>Deciso (HTTPS, NL, Commercial)</description>
         </mirror>
         <mirror>
