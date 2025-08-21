@@ -132,7 +132,6 @@ class Alias(object):
 
         return self._is_changed
 
-
     def expired(self):
         """ if this alias has an expiry (ttl), has it reached the end of it's lifetime
             :return: boolean
