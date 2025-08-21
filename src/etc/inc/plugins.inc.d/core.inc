@@ -420,13 +420,14 @@ function core_configure()
 {
     return [
         /* XXX these are all specialized and try to avoid extra script use */
+        'cache_flush' => ['system_cache_flush'],
+        'crl' => ['core_trust_crl'],
         'dns_reload' => ['system_resolver_configure'],
         'firmware_reload' => ['system_firmware_configure'],
         'route_reload' => ['system_routing_configure:2'],
         'syslog_reset' => ['system_syslog_reset'],
         'trust_reload' => ['system_trust_configure'],
         'user_changed' => ['core_user_changed_groups:2'],
-        'crl' => ['core_trust_crl'],
     ];
 }
 

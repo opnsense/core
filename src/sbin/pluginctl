@@ -148,11 +148,11 @@ function get_all_services($name = '', $id = '')
 }
 
 $jflags = JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_INVALID_UTF8_IGNORE;
-$opts = getopt('46cDdfghIirSsXx', [], $optind);
+$opts = getopt('46cDdfghIirqSsXx', [], $optind);
 $args = array_slice($argv, $optind);
 
 if (isset($opts['h'])) {
-    echo "Usage: pluginctl [-4|-6|-c|-D|-d|-f|-g|-h|-I|-i|-r|-S|-s|-X|-x] ...\n\n";
+    echo "Usage: pluginctl [-4|-6|-c|-D|-d|-f|-g|-h|-I|-i|-r|-q|-S|-s|-X|-x] ...\n\n";
     echo "\t-4 IPv4 address mode, return primary address of interface\n";
     echo "\t-6 IPv4 address mode, return primary address of interface\n";
     echo "\t-c configure mode (default), executes plugin [_configure] hook\n";
@@ -163,6 +163,7 @@ if (isset($opts['h'])) {
     echo "\t-h show this help text and exit\n";
     echo "\t-I information mode, lists registered device statistics\n";
     echo "\t-i invoke dynamic interface registration\n";
+    echo "\t-q quiet switch for configure mode\n";
     echo "\t-r run mode (e.g. command)\n";
     echo "\t-S service metadata dump\n";
     echo "\t-s service mode (e.g. myservice restart)\n";
@@ -325,7 +326,7 @@ if (isset($opts['h'])) {
     /* second argument is hook */
     $hook = array_shift($args);
     /* other arguments are passed as is */
-    plugins_configure($hook, true, $args);
+    plugins_configure($hook, !isset($opts['q']), $args);
 }
 
 exit (0);
