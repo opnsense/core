@@ -284,8 +284,8 @@ install:
 .if exists(${LOCALBASE}/opnsense/www/index.php)
 	# try to update the current system if it looks like one
 	@touch ${LOCALBASE}/opnsense/www/index.php
-.endif
 	@pluginctl -cq cache_flush
+.endif
 
 collect:
 	@(cd ${.CURDIR}/src; find * -type f) | while read FILE; do \
