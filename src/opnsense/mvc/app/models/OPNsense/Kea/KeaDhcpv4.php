@@ -207,6 +207,19 @@ class KeaDhcpv4 extends BaseModel
         return $result;
     }
 
+    private function getExpiredLeasesProcessingConfig()
+    {
+            if (empty((string)$this->general->kaffinity)) {
+            return null;
+        }
+
+        return [
+            'reclaim-timer-wait-time' => 10,
+            'hold-reclaimed-time' => (int)$this->general->hold_reclaimed_time->__toString(),
+            'flush-reclaimed-timer-wait-time' => 25
+        ];
+    }
+
     public function generateConfig($target = '/usr/local/etc/kea/kea-dhcp4.conf')
     {
         $cnf = [
@@ -238,6 +251,10 @@ class KeaDhcpv4 extends BaseModel
                 'subnet4' => $this->getConfigSubnets(),
             ]
         ];
+        $expiredLeasesConfig = $this->getExpiredLeasesProcessingConfig();
+            if ($expiredLeasesConfig !== null) {
+                $cnf['Dhcp4']['expired-leases-processing'] = $expiredLeasesConfig;
+            }
         if (!(new KeaCtrlAgent())->general->enabled->isEmpty()) {
             $cnf['Dhcp4']['hooks-libraries'] = [];
             $cnf['Dhcp4']['hooks-libraries'][] = [

@@ -33,6 +33,18 @@
         <help>Defines how long the addresses (leases) given out by the server are valid (in seconds)</help>
     </field>
     <field>
+        <id>dhcpv4.general.kaffinity</id>
+        <label>Lease Affinity</label>
+        <type>checkbox</type>
+        <help>Provides the means to assign the same lease to a returning client after its lease has expired</help>
+    </field>
+    <field>
+        <id>dhcpv4.general.hold_reclaimed_time</id>
+        <label>Affinity lifetime</label>
+        <type>text</type>
+        <help>Defines for how long a returning client will be able to keep the same lease (in seconds)</help>
+    </field>
+    <field>
         <id>dhcpv4.general.fwrules</id>
         <label>Firewall rules</label>
         <type>checkbox</type>
