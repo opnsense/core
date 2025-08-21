@@ -142,25 +142,25 @@
 
                 headerFormatters: {
                     enabled: function (column) {
-                        return '<input type="checkbox" disabled style="pointer-events: none;" />';
+                        return '<i class="fa-solid fa-fw fa-check-square" data-toggle="tooltip" title="{{ lang._('Enabled') }}"></i>';;
                     },
                     interface: function (column) {
-                        return '<i class="fa-solid fa-fw fa-network-wired" data-toggle="tooltip" data-placement="right" title="{{ lang._('Network Interface') }}"></i>';
+                        return '<i class="fa-solid fa-fw fa-network-wired" data-toggle="tooltip" title="{{ lang._('Network interface') }}"></i>';
                     },
                     evaluations: function (column) {
-                        return '<i class="fa-solid fa-fw fa-bullseye" data-toggle="tooltip" data-placement="left" title="{{ lang._('Number of rule evaluations') }}"></i>';
+                        return '<i class="fa-solid fa-fw fa-bullseye" data-toggle="tooltip" title="{{ lang._('Number of rule evaluations') }}"></i>';
                     },
                     states: function (column) {
-                        return '<i class="fa-solid fa-fw fa-chart-line" data-toggle="tooltip" data-placement="left" title="{{ lang._('Current active states for this rule') }}"></i>';
+                        return '<i class="fa-solid fa-fw fa-chart-line" data-toggle="tooltip" title="{{ lang._('Current active states for this rule') }}"></i>';
                     },
                     packets: function (column) {
-                        return '<i class="fa-solid fa-fw fa-box" data-toggle="tooltip" data-placement="left" title="{{ lang._('Total packets matched by this rule') }}"></i>';
+                        return '<i class="fa-solid fa-fw fa-box" data-toggle="tooltip" title="{{ lang._('Total packets matched by this rule') }}"></i>';
                     },
                     bytes: function (column) {
-                        return '<i class="fa-solid fa-fw fa-database" data-toggle="tooltip" data-placement="left" title="{{ lang._('Total bytes matched by this rule') }}"></i>';
+                        return '<i class="fa-solid fa-fw fa-database" data-toggle="tooltip" title="{{ lang._('Total bytes matched by this rule') }}"></i>';
                     },
                     categories: function (column) {
-                        return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" data-placement="left" title="{{ lang._("Categories") }}"></i> {{ lang._("Categories") }}';
+                        return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Categories") }}"></i>';
                     },
                 },
                 formatters:{
