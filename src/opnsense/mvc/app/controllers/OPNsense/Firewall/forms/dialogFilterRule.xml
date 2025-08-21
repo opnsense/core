@@ -12,7 +12,7 @@
             <width>50</width>
             <type>boolean</type>
             <formatter>rowtoggle</formatter>
-            <sequence>10</sequence>
+            <sequence>5</sequence>
             <align>center</align>
             <sortable>false</sortable>
         </grid_view>
@@ -23,7 +23,7 @@
         <type>info</type>
         <help>The order in which rules are being processed.</help>
         <grid_view>
-            <sequence>20</sequence>
+            <sequence>10</sequence>
             <visible>false</visible>
             <!-- The sequence order of firewall rules is absolute, no other field shall be sorted -->
             <order>asc</order>
@@ -36,7 +36,7 @@
         <type>text</type>
         <help>The order in which rules are being processed. Please note that this is not a unique identifier, the system will automatically recalculate the ruleset when rule positions are changed with the available "Move rule before this rule" button.</help>
         <grid_view>
-            <sequence>20</sequence>
+            <sequence>15</sequence>
             <visible>false</visible>
             <sortable>false</sortable>
         </grid_view>
@@ -51,6 +51,7 @@
             <sortable>false</sortable>
             <formatter>category</formatter>
             <sequence>1</sequence>
+            <width>80</width>
         </grid_view>
     </field>
     <field>
