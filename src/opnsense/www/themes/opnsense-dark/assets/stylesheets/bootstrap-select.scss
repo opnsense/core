@@ -1,3 +1,4 @@
+@use "sass:map";
 /*!
  * Bootstrap-select v1.13.18 (https://developer.snapappointments.com/bootstrap-select)
  *
@@ -5,7 +6,7 @@
  * Licensed under MIT (https://github.com/snapappointments/bootstrap-select/blob/master/LICENSE)
  */
 
-@import "config/colors";
+@use "config/colors" as colors;
 
 @-webkit-keyframes bs-notify-fadeOut {
   0% {
@@ -310,7 +311,7 @@ select.selectpicker {
   margin: 0 2%;
   min-height: 26px;
   padding: 3px 5px;
-  background: map-get($colors, content-background);
+  background: map.get(colors.$colors, content-background);
   border: 1px solid #e3e3e3;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
           box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
@@ -327,7 +328,7 @@ select.selectpicker {
 }
 .bootstrap-select .no-results {
   padding: 3px;
-  background: map-get($colors, content-background);
+  background: map.get(colors.$colors, content-background);
   margin: 0 5px;
   white-space: nowrap;
 }

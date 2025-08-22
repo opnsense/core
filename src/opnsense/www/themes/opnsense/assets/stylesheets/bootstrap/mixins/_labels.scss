@@ -1,3 +1,4 @@
+@use "sass:color";
 // Labels
 
 @mixin label-variant($color) {
@@ -6,7 +7,7 @@
   &[href] {
     &:hover,
     &:focus {
-      background-color: darken($color, 10%);
+      background-color: color.adjust($color, $lightness: -10%);
     }
   }
 }
