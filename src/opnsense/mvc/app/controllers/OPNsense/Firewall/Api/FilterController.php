@@ -137,12 +137,24 @@ class FilterController extends FilterBaseController
                 }
             }
             /* frontend can format aliases with an alias icon */
-            foreach (['source_net', 'source_port', 'destination_net', 'destination_port'] as $field) {
-                if (!empty($record[$field])) {
-                    $record["is_alias_{$field}"] = array_map(function ($value) {
-                        return Util::isAlias($value);
-                    }, array_map('trim', explode(',', $record[$field])));
+            foreach (['source_net','source_port','destination_net','destination_port'] as $field) {
+                if (empty($record[$field])) {
+                    continue;
                 }
+
+                $values = array_map('trim', explode(',', $record[$field]));
+
+                $record["alias_meta_{$field}"] = array_map(
+                    function ($val) {
+                        $isAlias = \OPNsense\Firewall\Util::isAlias($val);
+                        return [
+                            "value"       => $val,
+                            "isAlias"     => $isAlias,
+                            "description" => $isAlias ? (\OPNsense\Firewall\Util::aliasDescription($val) ?? '') : ''
+                        ];
+                    },
+                    $values
+                );
             }
 
             /* frontend can format categories with colors */

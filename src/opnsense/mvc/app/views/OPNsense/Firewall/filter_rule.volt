@@ -431,7 +431,7 @@
                         // Return all icons
                         return result;
                     },
-                    // Show Edit alias icon and integrate "not" functionality
+                    // Show Edit alias icon, alias description and integrate "not" functionality
                     alias: function(column, row) {
                         if (row.isGroup) {
                             return "";
@@ -450,18 +450,24 @@
                             return isNegated + '*';
                         }
 
-                        const values = value.split(',');
-                        const aliasFlags = row["is_alias_" + column.id] || [];
+                        const aliasMetadataList = row["alias_meta_" + column.id] || [];
 
-                        return isNegated + values.map((val, i) =>
-                            aliasFlags[i]
-                                ? `<span data-toggle="tooltip" title="${val}">${val}&nbsp;</span>
-                                <a href="/ui/firewall/alias/index/${val}" data-toggle="tooltip" title="{{ lang._('Edit alias') }}">
+                        const renderedItems = aliasMetadataList.map(aliasInfo => {
+                            if (aliasInfo.isAlias) {
+                                const tooltipHtml = aliasInfo.description || aliasInfo.value || "";
+                                return `
+                                    <span data-toggle="tooltip" data-html="true" title="${tooltipHtml}">${aliasInfo.value}&nbsp;</span>
+                                    <a href="/ui/firewall/alias/index/${encodeURIComponent(aliasInfo.value)}"
+                                    data-toggle="tooltip" title="{{ lang._('Edit alias') }}">
                                     <i class="fa fa-fw fa-list"></i>
-                                </a>`
-                                : val
-                        ).join(', ');
-                    }
+                                    </a>
+                                `;
+                            }
+                            return aliasInfo.value;
+                        }).join(", ");
+
+                        return isNegated + renderedItems;
+                    },
                 },
             },
             commands: {
