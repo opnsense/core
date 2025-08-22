@@ -1,3 +1,6 @@
+@use "sass:math";
+@use "../variables" as *;
+
 // Framework grid generation
 //
 // Used only by Bootstrap to generate the correct number of grid classes given
@@ -33,12 +36,12 @@
 @mixin calc-grid-column($index, $class, $type) {
   @if ($type == width) and ($index > 0) {
     .col-#{$class}-#{$index} {
-      width: percentage(calc($index / $grid-columns));
+      width: math.percentage(calc($index / $grid-columns));
     }
   }
   @if ($type == push) and ($index > 0) {
     .col-#{$class}-push-#{$index} {
-      left: percentage(calc($index / $grid-columns));
+      left: math.percentage(calc($index / $grid-columns));
     }
   }
   @if ($type == push) and ($index == 0) {
@@ -48,7 +51,7 @@
   }
   @if ($type == pull) and ($index > 0) {
     .col-#{$class}-pull-#{$index} {
-      right: percentage(calc($index / $grid-columns));
+      right: math.percentage(calc($index / $grid-columns));
     }
   }
   @if ($type == pull) and ($index == 0) {
@@ -58,7 +61,7 @@
   }
   @if ($type == offset) {
     .col-#{$class}-offset-#{$index} {
-      margin-left: percentage(calc($index / $grid-columns));
+      margin-left: math.percentage(calc($index / $grid-columns));
     }
   }
 }

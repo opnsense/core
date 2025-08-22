@@ -1,4 +1,5 @@
-@import "config/colors";
+@use "sass:map";
+@use "config/colors" as colors;
 
 :root {
     --chart-js-font-color: #ECECEC;
@@ -52,14 +53,14 @@
 .grid-stack-item-content {
   text-align: center;
   border-style: solid;
-  border-color: transparentize(map-get($colors, brand-primary), 0.85);
+  border-color: transparentize(map.get(colors.$colors, brand-primary), 0.85);
   border-width: 2px;
-  background-color: map-get($colors, page-content-head-background);
+  background-color: map.get(colors.$colors, page-content-head-background);
 }
 
 .widget-error {
     margin: 50px;
-    color: map-get($colors, dashboard-widget-error)
+    color: map.get(colors.$colors, dashboard-widget-error)
 }
 
 .widget-content {
@@ -138,7 +139,7 @@ td {
     display: inline-block;
     height: 1px;
     width: 70%;
-    background: map-get($colors, brand-primary);
+    background: map.get(colors.$colors, brand-primary);
     margin: 5px;
 }
 
@@ -273,14 +274,14 @@ div {
     display: flex;
     flex-flow: row wrap;
     padding: 0.5em 0.5em;
-    border-top: solid 1px transparentize(map-get($colors, brand-primary), 0.85);
+    border-top: solid 1px transparentize(map.get(colors.$colors, brand-primary), 0.85);
 }
 
 .flextable-row {
     display: flex;
     flex-flow: row wrap;
     padding: 0.5em 0.5em;
-    border-top: solid 1px transparentize(map-get($colors, brand-primary), 0.85);
+    border-top: solid 1px transparentize(map.get(colors.$colors, brand-primary), 0.85);
     align-items: center;
 }
 
@@ -289,7 +290,7 @@ div {
 }
 
 .flextable-row:hover {
-    background: map-get($colors, content-background) !important;
+    background: map.get(colors.$colors, content-background) !important;
 }
 
 .flex-cell {
@@ -309,10 +310,10 @@ div {
     width: 100%;
     padding: 0;
     border: 0;
-    border-top: transparentize(map-get($colors, brand-primary), 0.85);
+    border-top: transparentize(map.get(colors.$colors, brand-primary), 0.85);
 }
 .column .flex-cell:hover {
-    background: map-get($colors, content-background);
+    background: map.get(colors.$colors, content-background);
 }
 .flex-subcell {
     width: 100%;
@@ -320,7 +321,7 @@ div {
 }
 
 .column .flex-cell:not(:last-child) {
-    border-bottom: solid 1px transparentize(map-get($colors, brand-primary), 0.85);
+    border-bottom: solid 1px transparentize(map.get(colors.$colors, brand-primary), 0.85);
 }
 /* ----- */
 
@@ -333,16 +334,16 @@ div {
 .grid-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    border-top: 1px solid transparentize(map-get($colors, brand-primary), 0.85);
+    border-top: 1px solid transparentize(map.get(colors.$colors, brand-primary), 0.85);
     opacity: 0.4;
 }
 
 .grid-row:hover {
-    background: map-get($colors, content-background) !important;
+    background: map.get(colors.$colors, content-background) !important;
 }
 
 .grid-header {
-    border-top: 1px solid transparentize(map-get($colors, brand-primary), 0.85);
+    border-top: 1px solid transparentize(map.get(colors.$colors, brand-primary), 0.85);
     font-weight: bold;
 }
 

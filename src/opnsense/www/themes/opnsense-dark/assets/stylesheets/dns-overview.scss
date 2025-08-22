@@ -1,8 +1,9 @@
-@import "config/colors";
+@use "sass:map";
+@use "config/colors" as colors;
 
 .tab-content {
     padding: 10px;
-    border-top: 1px solid map-get($colors, content-background);
+    border-top: 1px solid map.get(colors.$colors, content-background);
 }
 
 .banner {
@@ -11,7 +12,7 @@
 
 .stats-element {
     height: 5em;
-    background: map-get($colors, content-background);
+    background: map.get(colors.$colors, content-background);
     overflow: hidden;
     display: flex;
     justify-content: flex-start;
@@ -95,7 +96,7 @@
 }
 
 .odd-bg {
-    background: map-get($colors, table-bg-accent) ;
+    background: map.get(colors.$colors, table-bg-accent) ;
 }
 
 .top-item {
@@ -170,7 +171,7 @@
 }
 
 .tag a fa-times {
-  color: map-get($colors, table-bg-accent);
+  color: map.get(colors.$colors, table-bg-accent);
   margin-bottom: 2px;
 }
 

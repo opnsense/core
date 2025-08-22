@@ -1,4 +1,5 @@
-@import "config/colors";
+@use "sass:map";
+@use "config/colors" as colors;
 
 .modal-backdrop {
   z-index: -1;
@@ -50,7 +51,7 @@
 
     &.type-primary {
         .modal-header {
-            background-color: map-get($colors, brand-primary);
+            background-color: map.get(colors.$colors, brand-primary);
         }
     }
 

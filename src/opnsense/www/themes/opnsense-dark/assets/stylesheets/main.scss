@@ -1,4 +1,9 @@
-@import "config/colors";
+@use "sass:color";
+@use "sass:map";
+@use "sass:meta";
+@use "config/colors";
+@use "bootstrap/mixins";
+@use "bootstrap/variables";
 
 @font-face {
   font-family: 'SourceSansProBold';
@@ -19,55 +24,53 @@
 }
 
 // Core variables and mixins
-@import "bootstrap/variables";
-@import "bootstrap/mixins";
 
 // Reset and dependencies
-@import "bootstrap/normalize";
-@import "bootstrap/print";
-@import "bootstrap/glyphicons";
+@include meta.load-css("bootstrap/normalize");
+@include meta.load-css("bootstrap/print");
+@include meta.load-css("bootstrap/glyphicons");
 
 // Core CSS
-@import "bootstrap/scaffolding";
-@import "bootstrap/type";
-@import "bootstrap/code";
-@import "bootstrap/grid";
-@import "bootstrap/tables";
-@import "bootstrap/forms";
-@import "bootstrap/buttons";
+@include meta.load-css("bootstrap/scaffolding");
+@include meta.load-css("bootstrap/type");
+@include meta.load-css("bootstrap/code");
+@include meta.load-css("bootstrap/grid");
+@include meta.load-css("bootstrap/tables");
+@include meta.load-css("bootstrap/forms");
+@include meta.load-css("bootstrap/buttons");
 
 // Components
-@import "bootstrap/component-animations";
-@import "bootstrap/dropdowns";
-@import "bootstrap/button-groups";
-@import "bootstrap/input-groups";
-@import "bootstrap/navs";
-@import "bootstrap/navbar";
-@import "bootstrap/breadcrumbs";
-@import "bootstrap/pagination";
-@import "bootstrap/pager";
-@import "bootstrap/labels";
-@import "bootstrap/badges";
-@import "bootstrap/jumbotron";
-@import "bootstrap/thumbnails";
-@import "bootstrap/alerts";
-@import "bootstrap/progress-bars";
-@import "bootstrap/media";
-@import "bootstrap/list-group";
-@import "bootstrap/panels";
-@import "bootstrap/responsive-embed";
-@import "bootstrap/wells";
-@import "bootstrap/close";
+@include meta.load-css("bootstrap/component-animations");
+@include meta.load-css("bootstrap/dropdowns");
+@include meta.load-css("bootstrap/button-groups");
+@include meta.load-css("bootstrap/input-groups");
+@include meta.load-css("bootstrap/navs");
+@include meta.load-css("bootstrap/navbar");
+@include meta.load-css("bootstrap/breadcrumbs");
+@include meta.load-css("bootstrap/pagination");
+@include meta.load-css("bootstrap/pager");
+@include meta.load-css("bootstrap/labels");
+@include meta.load-css("bootstrap/badges");
+@include meta.load-css("bootstrap/jumbotron");
+@include meta.load-css("bootstrap/thumbnails");
+@include meta.load-css("bootstrap/alerts");
+@include meta.load-css("bootstrap/progress-bars");
+@include meta.load-css("bootstrap/media");
+@include meta.load-css("bootstrap/list-group");
+@include meta.load-css("bootstrap/panels");
+@include meta.load-css("bootstrap/responsive-embed");
+@include meta.load-css("bootstrap/wells");
+@include meta.load-css("bootstrap/close");
 
 // Components w/ JavaScript
-@import "bootstrap/modals";
-@import "bootstrap/tooltip";
-@import "bootstrap/popovers";
-@import "bootstrap/carousel";
+@include meta.load-css("bootstrap/modals");
+@include meta.load-css("bootstrap/tooltip");
+@include meta.load-css("bootstrap/popovers");
+@include meta.load-css("bootstrap/carousel");
 
 // Utility classes
-@import "bootstrap/utilities";
-@import "bootstrap/responsive-utilities";
+@include meta.load-css("bootstrap/utilities");
+@include meta.load-css("bootstrap/responsive-utilities");
 
 
 
@@ -77,7 +80,7 @@
 
 html, body{
   height: 100%;
-  background-color: map-get($colors, body-background);
+  background-color: map.get(colors.$colors, body-background);
 }
 
 body{
@@ -108,9 +111,9 @@ body{
 }
 
 .page-content-head {
-  background: map-get($colors, page-content-head-background);
+  background: map.get(colors.$colors, page-content-head-background);
   border-bottom: 1px solid rgba(#D9D9D9, .50);
-  border-top: 1px solid lighten(map-get($colors, content-background), 10%);
+  border-top: 1px solid color.adjust(map.get(colors.$colors, content-background), $lightness: 10%);
   padding-bottom: 15px;
   padding-top: 20px;
 
@@ -125,13 +128,13 @@ body{
 }
 
 .page-content-main {
-  background: map-get($colors, content-background);
+  background: map.get(colors.$colors, content-background);
   min-height: calc(100% - 64px);
   padding: 15px 0 (15px + 58px);
 }
 
 .page-side{
-  border-right: 1px solid lighten(map-get($colors, content-background), 10%);
+  border-right: 1px solid color.adjust(map.get(colors.$colors, content-background), $lightness: 10%);
   height: 100% !important;
   height: calc(100% - 62px) !important;
   left: 0;
@@ -145,7 +148,7 @@ body{
 }
 
 .page-foot {
-  background: map-get($colors, page-foot-background);
+  background: map.get(colors.$colors, page-foot-background);
   bottom: 0;
   border-top: 1px solid rgba(#D9D9D9, .50);
   font-size: 12px;
@@ -156,8 +159,8 @@ body{
 }
 
 .content-box {
-  background: map-get($colors, body-background);
-  border: 1px solid map-get($colors, border-default);
+  background: map.get(colors.$colors, body-background);
+  border: 1px solid map.get(colors.$colors, border-default);
 
   @extend .clearfix;
 
@@ -186,13 +189,13 @@ body{
 }
 
 .page-content-main section[class^="col-"] + section[class^="col-"]{
-  padding-top: calc($grid-gutter-width/2);
+  padding-top: calc(variables.$grid-gutter-width/2);
 }
 
 .brand-logo{
     display: none;
 
-    @media (min-width: $screen-sm-min) {
+    @media (min-width: variables.$screen-sm-min) {
         display: inline-block;
     }
 }
@@ -200,31 +203,31 @@ body{
 .brand-icon{
     display: inline-block;
 
-    @media (min-width: $screen-sm-min) {
+    @media (min-width: variables.$screen-sm-min) {
         display: none;
     }
 }
 
 .col-sm-disable-spacer{
-    @media (min-width: $screen-sm-min) {
+    @media (min-width: variables.$screen-sm-min) {
         padding-top: 0 !important;
     }
 }
 
 .col-md-disable-spacer{
-    @media (min-width: $screen-md-min) {
+    @media (min-width: variables.$screen-md-min) {
         padding-top: 0 !important;
     }
 }
 
 .col-lg-disable-spacer{
-    @media (min-width: $screen-lg-min) {
+    @media (min-width: variables.$screen-lg-min) {
         padding-top: 0 !important;
     }
 }
 
 .page-login {
-    background: map-get($colors, content-background);
+    background: map.get(colors.$colors, content-background);
 
     .container{
         min-height: 100%;
@@ -243,13 +246,13 @@ body{
 .login-modal{
 
     &-container{
-        border: 1px solid map-get($colors, border-default);
+        border: 1px solid map.get(colors.$colors, border-default);
         max-width: 400px;
         margin: 100px auto 15px auto;
     }
 
     &-head{
-        background: map-get($colors, login-modal-head-background);
+        background: map.get(colors.$colors, login-modal-head-background);
         height: 75px !important;
         padding: 0 20px;
         .navbar-brand {
@@ -269,7 +272,7 @@ body{
 }
 
 .list-inline .btn-group-container{
-    @media (min-width:$screen-sm-min){
+    @media (min-width:variables.$screen-sm-min){
         float:right;
     }
 }
@@ -416,7 +419,7 @@ main.page-content.col-lg-12 {
 }
 
 button.toggle-sidebar {
-  color: map-get($colors, navbar-default-color);
+  color: map.get(colors.$colors, navbar-default-color);
   background-color: transparent;
   font-size: 14px;
   border: none;
@@ -442,7 +445,7 @@ ul.nav > li.dropdown > ul.dropdown-menu > li > a {
 
 .nav-tabs {
   margin-right: 1px;
-  border-bottom: 1px solid darken(map-get($colors, border-default), 30%);
+  border-bottom: 1px solid color.adjust(map.get(colors.$colors, border-default), $lightness: -30%);
 }
 
 .nav-tabs > li {
@@ -452,7 +455,7 @@ ul.nav > li.dropdown > ul.dropdown-menu > li > a {
 }
 
 .nav-tabs > li > a {
-  background: lighten(#000, 5%);
+  background: color.adjust(#000, $lightness: 5%);
   border-radius: 0px;
   border-top-right-radius: 10px;
   margin-right: 0px;
@@ -461,22 +464,22 @@ ul.nav > li.dropdown > ul.dropdown-menu > li > a {
 .nav-tabs > li > a,
 .nav-tabs > li > a:hover,
 .nav-tabs > li > a:focus {
-  border-right: 1px solid darken(#FBFBFB, 5%);
-  border-top: 1px solid darken(#FBFBFB, 5%);
-  border-left: 1px solid darken(#FBFBFB, 5%);
-  border-bottom: 1px solid darken(map-get($colors, border-default), 30%);
+  border-right: 1px solid color.adjust(#FBFBFB, $lightness: -5%);
+  border-top: 1px solid color.adjust(#FBFBFB, $lightness: -5%);
+  border-left: 1px solid color.adjust(#FBFBFB, $lightness: -5%);
+  border-bottom: 1px solid color.adjust(map.get(colors.$colors, border-default), $lightness: -30%);
 }
 
 .nav-tabs > li.active > a {
-  background: lighten(#000, 15%) !important;
+  background: color.adjust(#000, $lightness: 15%) !important;
 }
 
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
 .nav-tabs > li.active > a:focus {
-  border-right: 1px solid darken(map-get($colors, border-default), 30%);
-  border-top: 1px solid darken(map-get($colors, border-default), 30%);
-  border-left: 1px solid darken(map-get($colors, border-default), 30%);
+  border-right: 1px solid color.adjust(map.get(colors.$colors, border-default), $lightness: -30%);
+  border-top: 1px solid color.adjust(map.get(colors.$colors, border-default), $lightness: -30%);
+  border-left: 1px solid color.adjust(map.get(colors.$colors, border-default), $lightness: -30%);
 }
 
 .nav-tabs > li > a.visible-lg-inline-block:not(.pull-right) {
@@ -493,13 +496,13 @@ ul.nav > li.dropdown > ul.dropdown-menu > li > a {
 
 
 > li.active + li > a {
-  @media (min-width:$screen-sm-min){
+  @media (min-width:variables.$screen-sm-min){
     border-left: 1px solid transparent;
   }
 }
 
 li:last-child > a{
-  @media (max-width:$screen-xs-max){
+  @media (max-width:variables.$screen-xs-max){
     margin-bottom: 0;
   }
 }
@@ -588,7 +591,7 @@ hr {
     }
 
     &:before{
-        background: map-get($colors, brand-primary);
+        background: map.get(colors.$colors, brand-primary);
         content: "";
         height: 42px;
         min-height: 100%;
@@ -613,10 +616,10 @@ hr {
 .active-menu-title, .active-menu a{
     text-decoration: none;
     position: relative;
-    background-color: map-get($colors, content-background);
+    background-color: map.get(colors.$colors, content-background);
 
     > span.fa {
-      color: map-get($colors, brand-primary)
+      color: map.get(colors.$colors, brand-primary)
     }
 
     &:before{
@@ -624,16 +627,16 @@ hr {
     }
 
     &.active{
-        background-color: map-get($colors, brand-primary);
+        background-color: map.get(colors.$colors, brand-primary);
     }
 }
 
 .active-menu a:before{
-    background: lighten(map-get($colors, brand-primary), 30%);
+    background: color.adjust(map.get(colors.$colors, brand-primary), $lightness: 30%);
 }
 
 .alert.alert-danger{
-    color: map-get($colors, text-color) !important;
+    color: map.get(colors.$colors, text-color) !important;
 }
 
 .nav-tabs-justified>li>a, .nav-tabs.nav-justified>li>a{
@@ -680,13 +683,13 @@ hr {
   height:5px;
 }
 ::-webkit-scrollbar-track {
-  background: darken(#fff, 30%);
+  background: color.adjust(#fff, $lightness: -30%);
   box-shadow: 0px 0px 0px;
   border-radius:0;
 }
 ::-webkit-scrollbar-thumb {
   background: #000;
-  border: thin solid map-get($colors, border-default);
+  border: thin solid map.get(colors.$colors, border-default);
   border-radius: 0px;
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -700,7 +703,7 @@ hr {
 
 select {
   overflow: hidden;
-  border: 1px solid  darken(map-get($colors, border-default), 20%);
+  border: 1px solid  color.adjust(map.get(colors.$colors, border-default), $lightness: -20%);
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -715,7 +718,7 @@ select {
 }
 
 .table-responsive {
-  @media screen and (max-width: $screen-xs-max) {
+  @media screen and (max-width: variables.$screen-xs-max) {
     margin-bottom: 0;
     > .table {
       > thead,
@@ -795,14 +798,14 @@ div[data-for*="help_for"] {
 
 
 .bootgrid-table th > .column-header-anchor {
-  color: map-get($colors, text-color) !important;
+  color: map.get(colors.$colors, text-color) !important;
 }
 
 .bootgrid-header .actionBar .btn-group > .btn-group .dropdown-menu .dropdown-item:hover,
 .bootgrid-footer .infoBar .btn-group > .btn-group .dropdown-menu .dropdown-item:hover,
 .bootgrid-header .actionBar .btn-group > .btn-group .dropdown-menu .dropdown-item:focus,
 .bootgrid-footer .infoBar .btn-group > .btn-group .dropdown-menu .dropdown-item:focus {
-  color: map-get($colors, text-color);
+  color: map.get(colors.$colors, text-color);
 }
 
 .state_text {
@@ -811,11 +814,11 @@ div[data-for*="help_for"] {
 
 
 div.tab-content.content-box {
-  border-top: 1px solid map-get($colors, border-default);
+  border-top: 1px solid map.get(colors.$colors, border-default);
 }
 
 ul.jqtree-tree .jqtree-title {
-    color: lighten($color: #1c4257, $amount: 15%) !important;
+    color: color.adjust($color: #1c4257, $lightness: 15%) !important;
 }
 
 .nvtooltip {

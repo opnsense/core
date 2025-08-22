@@ -1,0 +1,19 @@
+/* Error: Undefined mixin.
+ *   ,
+ * 8 |     @include gradient-striped();
+ *   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ *   '
+ *   bootstrap/mixins/_progress-bar.scss 8:5  progress-bar-variant()
+ *   bootstrap/_progress-bars.scss 97:3       load-css()
+ *   main.scss 57:1                           root stylesheet */
+
+body::before {
+  font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
+      "Droid Sans Mono", monospace, monospace;
+  white-space: pre;
+  display: block;
+  padding: 1em;
+  margin-bottom: 1em;
+  border-bottom: 2px solid black;
+  content: "Error: Undefined mixin.\a   \2577 \a 8 \2502      @include gradient-striped();\a   \2502      ^^^^^^^^^^^^^^^^^^^^^^^^^^^\a   \2575 \a   bootstrap/mixins/_progress-bar.scss 8:5  progress-bar-variant()\a   bootstrap/_progress-bars.scss 97:3       load-css()\a   main.scss 57:1                           root stylesheet";
+}
