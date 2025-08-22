@@ -431,13 +431,13 @@
                         // Return all icons
                         return result;
                     },
-                    // Show Edit alias icon and integrate "not" functionality
+                    // Show Edit alias icon, alias description and integrate "not" functionality
                     alias: function(column, row) {
                         if (row.isGroup) {
                             return "";
                         }
 
-                        const value = row["%" + column.id] || row[column.id] || "";
+                        const value = row[column.id] || "";
                         const isNegated = (row[column.id.replace('net', 'not')] == 1) ? "! " : "";
 
                         // Internal rule source/destination can be an object, skip them
@@ -445,23 +445,30 @@
                             return '';
                         }
 
-                        // XXX: %source_port and %destination_port return "None" for some reason
-                        if (!value || value === "any" || value === "None") {
+                        if (!value || value === "any") {
                             return isNegated + '*';
                         }
 
-                        const values = value.split(',');
-                        const aliasFlags = row["is_alias_" + column.id] || [];
+                        const aliasMetadataList = row["alias_meta_" + column.id] || [];
 
-                        return isNegated + values.map((val, i) =>
-                            aliasFlags[i]
-                                ? `<span data-toggle="tooltip" title="${val}">${val}&nbsp;</span>
-                                <a href="/ui/firewall/alias/index/${val}" data-toggle="tooltip" title="{{ lang._('Edit alias') }}">
+                        const renderedItems = aliasMetadataList.map(aliasInfo => {
+                            if (aliasInfo.isAlias) {
+                                const tooltipHtml = aliasInfo.description || aliasInfo.value || "";
+                                return `
+                                    <span data-toggle="tooltip" data-html="true" title="${tooltipHtml}">${aliasInfo.value}&nbsp;</span>
+                                    <a href="/ui/firewall/alias/index/${encodeURIComponent(aliasInfo.value)}"
+                                    data-toggle="tooltip" title="{{ lang._('Edit alias') }}">
                                     <i class="fa fa-fw fa-list"></i>
-                                </a>`
-                                : val
-                        ).join(', ');
-                    }
+                                    </a>
+                                `;
+                            }
+                            // Not an alias, return translated value
+                            return aliasInfo["%value"];
+                        }).join(", ");
+
+                        // There can only be a single negated value
+                        return isNegated + renderedItems;
+                    },
                 },
             },
             commands: {

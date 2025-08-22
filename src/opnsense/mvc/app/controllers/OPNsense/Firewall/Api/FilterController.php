@@ -137,12 +137,28 @@ class FilterController extends FilterBaseController
                 }
             }
             /* frontend can format aliases with an alias icon */
-            foreach (['source_net', 'source_port', 'destination_net', 'destination_port'] as $field) {
-                if (!empty($record[$field])) {
-                    $record["is_alias_{$field}"] = array_map(function ($value) {
-                        return Util::isAlias($value);
-                    }, array_map('trim', explode(',', $record[$field])));
+            foreach (['source_net','source_port','destination_net','destination_port'] as $field) {
+                if (empty($record[$field])) {
+                    continue;
                 }
+
+                $rawValues = array_map('trim', explode(',', $record[$field]));
+                $translatedValues = [];
+                if (!empty($record['%' . $field])) {
+                    $translatedValues = array_map('trim', explode(',', (string)$record['%' . $field]));
+                }
+
+                $items = [];
+                foreach ($rawValues as $index => $val) {
+                    $isAlias = Util::isAlias($val);
+                    $items[] = [
+                        "value"       => $val,
+                        "%value"      => $translatedValues[$index] ?? $val,
+                        "isAlias"     => $isAlias,
+                        "description" => $isAlias ? (Util::aliasDescription($val) ?? '') : ''
+                    ];
+                }
+                $record["alias_meta_{$field}"] = $items;
             }
 
             /* frontend can format categories with colors */
