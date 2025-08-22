@@ -46,7 +46,7 @@ if __name__ == '__main__':
     for line in subprocess.run(['/sbin/pfctl', '-vvsT'], capture_output=True, text=True).stdout.strip().split('\n'):
         parts = line.strip().split()
         digits = [int(x) for x in parts if x.isdigit()]
-        if "-" in parts[0]:
+        if len(parts) > 1 and "-" in parts[0]:
             table_name = line.split()[1].strip()
             result['details'][table_name] = {}
         elif table_name is None and len(digits) == 2:
