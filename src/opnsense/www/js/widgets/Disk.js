@@ -57,7 +57,19 @@ export default class Disk extends BaseGaugeWidget {
 
         return size * units[unit];
     }
+    
+    /**
+     * Converts bytes to gigabytes using SI units (base-10).
+     * This returns a numeric value rounded to one decimal place without the "GB" label,
+     * useful for displaying raw numbers in a compact format.
+     * Note: Uses 1000-based conversion to match user-facing expectations
+     * (e.g. disk labels and UI conventions), not binary (1024-based) units.
+     */
 
+    _formatGB(bytes) {
+        return (bytes / (1000 * 1000 * 1000)).toFixed(1);
+    }
+    
     getMarkup() {
         return $(`
             <div class="${this.id}-chart-container">
@@ -83,6 +95,19 @@ export default class Disk extends BaseGaugeWidget {
             primaryText: (data, chart) => {
                 return chart.config.data.datasets[0].pct[0] + '%';
             },
+
+            // Displays used and total disk space in GB below the percentage,
+            // similar to the Memory widget layout. Uses base-10 formatting for clarity,
+
+            secondaryText: (data, chart) => {
+                const usedBytes = chart.config.data.datasets[0].data[0];
+                const freeBytes = chart.config.data.datasets[0].data[1];
+                const totalBytes = usedBytes + freeBytes;
+                const usedGB = this._formatGB(usedBytes);
+                const totalGB = this._formatGB(totalBytes);
+                return `(${usedGB}/${totalGB}) GB`;
+            }
+            
         })
 
         let context_detailed = document.getElementById("disk-detailed-chart").getContext("2d");
