@@ -49,7 +49,7 @@ if __name__ == '__main__':
         if len(parts) > 1 and "-" in parts[0]:
             table_name = line.split()[1].strip()
             result['details'][table_name] = {}
-        elif table_name is None and len(digits) == 2:
+        elif table_name is None or len(parts) < 2:
             continue
         elif parts[0] == 'Evaluations:':
             result['details'][table_name]['eval_nomatch'] = digits[0]
