@@ -1046,11 +1046,17 @@
 /usr/local/opnsense/scripts/captiveportal/htdocs_default/css/bootstrap.min.css
 /usr/local/opnsense/scripts/captiveportal/htdocs_default/css/signin.css
 /usr/local/opnsense/scripts/captiveportal/htdocs_default/exclude.list
+/usr/local/opnsense/scripts/captiveportal/htdocs_default/favicon/favicon.ico
 /usr/local/opnsense/scripts/captiveportal/htdocs_default/fonts/glyphicons-halflings-regular.eot
 /usr/local/opnsense/scripts/captiveportal/htdocs_default/fonts/glyphicons-halflings-regular.svg
 /usr/local/opnsense/scripts/captiveportal/htdocs_default/fonts/glyphicons-halflings-regular.ttf
 /usr/local/opnsense/scripts/captiveportal/htdocs_default/fonts/glyphicons-halflings-regular.woff
 /usr/local/opnsense/scripts/captiveportal/htdocs_default/fonts/glyphicons-halflings-regular.woff2
+/usr/local/opnsense/scripts/captiveportal/htdocs_default/images/OPNsense-logo-diap.svg
+/usr/local/opnsense/scripts/captiveportal/htdocs_default/images/OPNsense-logo.svg
+/usr/local/opnsense/scripts/captiveportal/htdocs_default/images/deciso-brand-hover-diap.svg
+/usr/local/opnsense/scripts/captiveportal/htdocs_default/images/deciso-brand-hover.svg
+/usr/local/opnsense/scripts/captiveportal/htdocs_default/images/deciso-brand.svg
 /usr/local/opnsense/scripts/captiveportal/htdocs_default/images/default-logo.svg
 /usr/local/opnsense/scripts/captiveportal/htdocs_default/images/favicon.png
 /usr/local/opnsense/scripts/captiveportal/htdocs_default/index.html
