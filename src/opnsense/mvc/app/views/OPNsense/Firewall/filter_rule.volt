@@ -437,7 +437,7 @@
                             return "";
                         }
 
-                        const value = row["%" + column.id] || row[column.id] || "";
+                        const value = row[column.id] || "";
                         const isNegated = (row[column.id.replace('net', 'not')] == 1) ? "! " : "";
 
                         // Internal rule source/destination can be an object, skip them
@@ -445,8 +445,7 @@
                             return '';
                         }
 
-                        // XXX: %source_port and %destination_port return "None" for some reason
-                        if (!value || value === "any" || value === "None") {
+                        if (!value || value === "any") {
                             return isNegated + '*';
                         }
 
@@ -463,9 +462,11 @@
                                     </a>
                                 `;
                             }
-                            return aliasInfo.value;
+                            // Not an alias, return translated value
+                            return aliasInfo["%value"];
                         }).join(", ");
 
+                        // There can only be a single negated value
                         return isNegated + renderedItems;
                     },
                 },
