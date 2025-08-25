@@ -134,18 +134,11 @@ abstract class BaseListField extends BaseField
      */
     public function getDescription()
     {
-        $data = $this->getNodeOptions();
-        if (is_array($data)) {
-            $items = [];
-            foreach ($data as $fieldValue) {
-                if ($fieldValue['selected'] == 1) {
-                    $items[] = $fieldValue['value'];
-                }
-            }
-            return implode(', ', $items);
-        } else {
-            return $data;
+        $items = [];
+        foreach ($this->getValues() as $item) {
+            $items[] = $this->internalOptionList[$item] ?? $item;
         }
+        return implode(', ', $items);
     }
 
     /**
