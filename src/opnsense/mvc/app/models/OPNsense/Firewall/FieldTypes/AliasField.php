@@ -84,7 +84,7 @@ class AliasField extends ArrayField
         }
         if (self::$current_stats === null) {
             self::$current_stats = [];
-            $stats = json_decode((new Backend())->configdRun('filter diag table_size'), true);
+            $stats = json_decode((string)(new Backend())->configdRun('filter diag table_size'), true);
             if (!empty($stats) && !empty($stats['details'])) {
                 self::$current_stats = $stats['details'];
             }
