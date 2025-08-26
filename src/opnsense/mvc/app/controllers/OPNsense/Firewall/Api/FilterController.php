@@ -105,7 +105,7 @@ class FilterController extends FilterBaseController
         $fieldmap = $this->getFieldMap();
         if ($show_all) {
             /* only query stats when fill info is requested */
-            $rule_stats = json_decode((new Backend())->configdRun("filter rule stats") ?? '', true) ?? [];
+            $rule_stats = json_decode((new Backend())->configdRun('filter rule stats'), true) ?? [];
         } else {
             $rule_stats = [];
         }
@@ -219,7 +219,7 @@ class FilterController extends FilterBaseController
 
         /* only fetch internal and legacy rules when 'show_all' is set */
         if ($show_all) {
-            $otherrules = json_decode((new Backend())->configdRun("filter list non_mvc_rules") ?? '', true) ?? [];
+            $otherrules = json_decode((new Backend())->configdRun('filter list non_mvc_rules'), true) ?? [];
         } else {
             $otherrules = [];
         }

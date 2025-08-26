@@ -165,7 +165,7 @@ class JsonKeyValueStoreField extends BaseListField
             } else {
                 /* initial configd call  */
                 $data = json_decode(
-                    (new Backend())->configdRun($this->internalConfigdPopulateAct, false, 20) ?? '',
+                    (new Backend())->configdRun($this->internalConfigdPopulateAct, false, 20),
                     true
                 );
             }

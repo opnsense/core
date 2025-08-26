@@ -117,7 +117,7 @@ class CertificatesField extends ArrayField
     protected static function getStaticChildren()
     {
         $result = [];
-        $ext_data = json_decode((new Backend())->configdRun('system trust ext_sources') ?? '', true);
+        $ext_data = json_decode((new Backend())->configdRun('system trust ext_sources'), true);
         if (is_array($ext_data)) {
             foreach ($ext_data as $data) {
                 $payload = \OPNsense\Trust\Store::parseX509($data['cert'] ?? '');
