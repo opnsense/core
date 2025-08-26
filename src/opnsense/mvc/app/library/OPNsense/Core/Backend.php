@@ -165,10 +165,10 @@ class Backend
             // handle timeouts
             if ((time() - $starttime) > $timeout) {
                 $this->getLogger()->error("Timeout (" . $timeout . ") executing : " . $event);
-                return null;
+                return '';
             } elseif (feof($stream)) {
                 $this->getLogger()->error("Configd disconnected while executing : " . $event);
-                return null;
+                return '';
             }
         }
 
@@ -176,7 +176,7 @@ class Backend
             strlen($resp) >= strlen($errorOfStream) &&
             substr($resp, 0, strlen($errorOfStream)) == $errorOfStream
         ) {
-            return null;
+            return '';
         }
 
         return str_replace($endOfStream, '', $resp);
