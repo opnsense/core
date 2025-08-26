@@ -142,19 +142,23 @@ class FilterController extends FilterBaseController
                     continue;
                 }
 
-                $values = array_map('trim', explode(',', $record[$field]));
+                $rawValues = array_map('trim', explode(',', $record[$field]));
+                $translatedValues = [];
+                if (!empty($record['%' . $field])) {
+                    $translatedValues = array_map('trim', explode(',', (string)$record['%' . $field]));
+                }
 
-                $record["alias_meta_{$field}"] = array_map(
-                    function ($val) {
-                        $isAlias = \OPNsense\Firewall\Util::isAlias($val);
-                        return [
-                            "value"       => $val,
-                            "isAlias"     => $isAlias,
-                            "description" => $isAlias ? (\OPNsense\Firewall\Util::aliasDescription($val) ?? '') : ''
-                        ];
-                    },
-                    $values
-                );
+                $items = [];
+                foreach ($rawValues as $index => $val) {
+                    $isAlias = Util::isAlias($val);
+                    $items[] = [
+                        "value"       => $val,
+                        "%value"      => $translatedValues[$index] ?? $val,
+                        "isAlias"     => $isAlias,
+                        "description" => $isAlias ? (Util::aliasDescription($val) ?? '') : ''
+                    ];
+                }
+                $record["alias_meta_{$field}"] = $items;
             }
 
             /* frontend can format categories with colors */
