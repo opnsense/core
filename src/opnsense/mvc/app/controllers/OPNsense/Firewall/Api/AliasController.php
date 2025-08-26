@@ -485,7 +485,7 @@ class AliasController extends ApiMutableModelControllerBase
             }
 
             $result[static::$internalModelName]['geoip']['address_count'] = 0;
-            $stats = json_decode((new Backend())->configdRun('filter geoip stats') ?? '', true) ?? [];
+            $stats = json_decode((new Backend())->configdRun('filter geoip stats'), true) ?? [];
             $result[static::$internalModelName]['geoip'] = array_merge(
                 $result[static::$internalModelName]['geoip'],
                 $stats

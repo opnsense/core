@@ -66,7 +66,7 @@ class ServiceController extends ApiMutableServiceControllerBase
         $templateFileId = $fileid != null ? (new SanitizeFilter())->sanitize($fileid, 'alnum') : 'default';
 
         // request template data and output result (zipfile)
-        $response = (new Backend())->configdpRun("captiveportal fetch_template", [$templateFileId]) ?? '';
+        $response = (new Backend())->configdpRun('captiveportal fetch_template', [$templateFileId]);
         $result = json_decode($response, true);
         if ($result != null) {
             $response = $result['payload'];
@@ -106,7 +106,7 @@ class ServiceController extends ApiMutableServiceControllerBase
                 $temp_filename .= '/cp_' . $template->getAttributes()['uuid'] . '.tmp';
                 file_put_contents($temp_filename, $content);
                 // strip defaults and unchanged files from template (standard js libs, etc)
-                $response = (new Backend())->configdpRun("captiveportal strip_template", [$temp_filename]) ?? '';
+                $response = (new Backend())->configdpRun('captiveportal strip_template', [$temp_filename]);
                 unlink($temp_filename);
                 $result = json_decode($response, true);
                 if (is_array($result) && !array_key_exists('error', $result)) {

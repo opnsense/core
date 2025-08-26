@@ -758,7 +758,7 @@ class FirmwareController extends ApiMutableModelControllerBase
     {
         $backend = new Backend();
         $result = array('status' => 'running');
-        $cmd_result = trim($backend->configdRun('firmware status') ?? '');
+        $cmd_result = trim($backend->configdRun('firmware status'));
 
         $result['log'] = $cmd_result;
 
@@ -785,7 +785,7 @@ class FirmwareController extends ApiMutableModelControllerBase
 
         if ($this->request->isPost()) {
             $package = (new SanitizeFilter())->sanitize($package, 'pkgname');
-            $text = trim($backend->configdRun(sprintf('firmware details %s', $package)) ?? '');
+            $text = trim($backend->configdRun(sprintf('firmware details %s', $package)));
             if (!empty($text)) {
                 $response['details'] = $text;
             }

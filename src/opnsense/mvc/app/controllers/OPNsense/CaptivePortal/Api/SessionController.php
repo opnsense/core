@@ -62,7 +62,7 @@ class SessionController extends ApiControllerBase
     public function searchAction()
     {
         $selected_zones = $this->request->get('selected_zones');
-        $records = json_decode((new Backend())->configdRun("captiveportal list_clients") ?? '', true);
+        $records = json_decode((new Backend())->configdRun('captiveportal list_clients'), true);
 
         $response = $this->searchRecordsetBase($records, null, 'userName', function ($key) use ($selected_zones) {
             return empty($selected_zones) || in_array($key['zoneid'], $selected_zones);

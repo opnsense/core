@@ -203,7 +203,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
             }
 
             if (!empty(static::$internalServiceTemplate)) {
-                $result = trim($backend->configdpRun('template reload', [static::$internalServiceTemplate]) ?? '');
+                $result = trim($backend->configdpRun('template reload', [static::$internalServiceTemplate]));
                 if ($result !== 'OK') {
                     throw new UserException(sprintf(
                         gettext('Template generation failed for internal service "%s". See backend log for details.'),
