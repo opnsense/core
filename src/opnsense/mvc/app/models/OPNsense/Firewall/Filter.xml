@@ -427,6 +427,9 @@
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Related category not found.</ValidationMessage>
                 </categories>
+                <tagged type="TextField">
+                    <Mask>/^([0-9a-zA-Z.,_\-]){0,512}$/u</Mask>
+                </tagged>
                 <description type="DescriptionField"/>
             </rule>
         </snatrules>

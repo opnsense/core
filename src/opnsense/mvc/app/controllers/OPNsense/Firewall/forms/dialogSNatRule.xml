@@ -94,6 +94,17 @@
         <help>For grouping purposes you may select multiple groups here to organize items.</help>
     </field>
     <field>
+        <id>rule.tagged</id>
+        <label>Match local tag</label>
+        <type>text</type>
+        <help>Used to specify that packets must already be tagged with the given tag in order to match the rule.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
+        </grid_view>
+    </field>
+    <field>
         <id>rule.description</id>
         <label>Description</label>
         <type>text</type>
