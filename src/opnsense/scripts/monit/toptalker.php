@@ -34,6 +34,7 @@
  * Type: needs to be 'Custom'
  * Path: path to this script with the real interface name as parameter:
  * /usr/local/opnsense/scripts/OPNsense/Monit/toptalker.php vtnet0
+ * Tests: ChangedStatus,NonZeroStatus
  * Poll Time: for testing use '1 cycles'
  * Results in one e-mail every 120 seconds if Polling Interval is not changed.
  * For normal work use something like '0-2 0 * * *' as Poll Time
