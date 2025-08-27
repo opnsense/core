@@ -261,9 +261,9 @@ function get_wireless_modes($interface)
 {
     $wireless_modes = [];
 
-    $cloned_interface = get_real_interface($interface);
-    if ($cloned_interface) {
-        $chan_list = shell_safe('/sbin/ifconfig -v %s list chan', $cloned_interface);
+    $device = get_real_interface($interface);
+    if ($device) {
+        $chan_list = shell_safe('/sbin/ifconfig -v %s list chan', $device);
         $matches = [];
 
         preg_match_all('/Channel\s+([^\s]+)\s+:\s+[^\s]+\s+[^\s]+\s+([^\s]+(?:\sht(?:\/[^\s]+)?)?)/', $chan_list, $matches);
@@ -304,9 +304,9 @@ function get_wireless_channel_info($interface)
 {
     $wireless_channels = [];
 
-    $cloned_interface = get_real_interface($interface);
-    if ($cloned_interface) {
-        $chan_list = shell_safe('/sbin/ifconfig %s list txpower', $cloned_interface);
+    $device = get_real_interface($interface);
+    if ($device) {
+        $chan_list = shell_safe('/sbin/ifconfig %s list txpower', $device);
         $matches = [];
 
         preg_match_all('/Channel\s+([^\s]+)\s+:\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+[^\s]+\s+([^\s]+)/', $chan_list, $matches);
