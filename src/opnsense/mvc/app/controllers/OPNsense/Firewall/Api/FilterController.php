@@ -230,19 +230,58 @@ class FilterController extends FilterBaseController
         return $result;
     }
 
+    // We want to use replaceInputWithSelector() for source_port and destination_port.
+    // The default for any or no port is "", and not "any". But we need a key to preselect "any" in the frontend, so we normalize.
+    private function normalizeRulePorts(string $mode, array $rule = null): array
+    {
+        $portFields = ['source_port', 'destination_port'];
+
+        if ($mode === 'set') {
+            $postedRule = $this->request->getPost()['rule'] ?? [];
+            $overlay = [];
+
+            foreach ($portFields as $portField) {
+                if (!array_key_exists($portField, $postedRule)) {
+                    continue;
+                }
+                $value = (string)$postedRule[$portField];
+                if (strcasecmp($value, 'any') === 0) {
+                    $overlay[$portField] = '';
+                }
+            }
+            return $overlay;
+        }
+
+        if ($mode === 'get' && is_array($rule)) {
+            foreach ($portFields as $portField) {
+                if (array_key_exists($portField, $rule) && (string)$rule[$portField] === '') {
+                    $rule[$portField] = 'any';
+                }
+            }
+            return $rule;
+        }
+
+        return [];
+    }
+
     public function setRuleAction($uuid)
     {
-        return $this->setBase("rule", "rules.rule", $uuid);
+        return $this->setBase("rule", "rules.rule", $uuid, $this->normalizeRulePorts('set'));
     }
 
     public function addRuleAction()
     {
-        return $this->addBase("rule", "rules.rule");
+        return $this->addBase("rule", "rules.rule", $this->normalizeRulePorts('set'));
     }
 
     public function getRuleAction($uuid = null)
     {
         $result = $this->getBase("rule", "rules.rule", $uuid);
+
+        if (!empty($result['rule'])) {
+            $result['rule'] = $this->normalizeRulePorts('get', $result['rule']);
+        }
+
         if ($this->request->get('fetchmode') === 'copy' && !empty($result['rule'])) {
             /* copy mode, generate new sequence at the end */
             $max = 0;

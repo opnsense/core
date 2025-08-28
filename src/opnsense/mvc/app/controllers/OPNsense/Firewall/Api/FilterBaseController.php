@@ -121,6 +121,40 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         return $result;
     }
 
+    /**
+     * list of available port options
+     * @return array
+     */
+    public function listPortSelectOptionsAction()
+    {
+        $result = [
+            'single' => [
+                'label' => gettext("Single port or range"),
+            ],
+            'any' => [
+                'label' => gettext("any"),
+                'items' => [
+                    "any" => gettext("any"),
+                ],
+            ],
+            'aliases' => [
+                'label' => gettext("Port Aliases"),
+                'items' => [],
+            ],
+        ];
+
+        foreach ((new \OPNsense\Firewall\Alias())->aliases->alias->iterateItems() as $alias) {
+            if ($alias->type == 'internal') {
+                /* currently only used for legacy bindings, align with legacy_list_aliases() usage */
+                continue;
+            }
+            if (strpos((string)$alias->type, 'port') !== false) {
+                $result['aliases']['items'][(string)$alias->name] = (string)$alias->name;
+            }
+        }
+
+        return $result;
+    }
 
     public function applyAction($rollback_revision = null)
     {

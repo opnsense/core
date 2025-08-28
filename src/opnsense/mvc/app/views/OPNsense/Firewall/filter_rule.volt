@@ -753,6 +753,14 @@
             }
         });
 
+        // replace all "port" selectors with details retrieved from "list_port_select_options" endpoint
+        ajaxGet('/api/firewall/filter/list_port_select_options', [], function (data) {
+            if (!data || !data.single) return;
+            $(".port_selector").each(function () {
+                const $s = $(this).replaceInputWithSelector(data, false); // single-select
+            });
+        });
+
         // Hook into add event
         $('#{{formGridFilterRule["edit_dialog_id"]}}').on('opnsense_bootgrid_mapped', function(e, actionType) {
             if (actionType === 'add') {
