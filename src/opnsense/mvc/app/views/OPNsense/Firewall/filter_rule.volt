@@ -885,6 +885,12 @@
         pointer-events: none;
     }
 
+    /* Do not allow Source/Destination selectpickers to grow infinitely */
+    #row_rule\.source_net .bootstrap-select > .dropdown-toggle,
+    #row_rule\.destination_net .bootstrap-select > .dropdown-toggle {
+        max-width: 348px;
+    }
+
 </style>
 
 <div class="tab-content content-box">
