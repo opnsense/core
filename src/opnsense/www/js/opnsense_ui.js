@@ -487,6 +487,35 @@ function initFormAdvancedUI() {
 }
 
 /**
+ * handle keyboard shortcuts for toggling advanced and help
+ */
+function initGlobalOpenShortcuts() {
+    $(document).off('keydown.opnsenseGlobalOpenToggles').on('keydown.opnsenseGlobalOpenToggles', function (e) {
+        if (e.ctrlKey || e.altKey || e.metaKey) return;
+        const t = e.target;
+        const tag = (t.tagName || '').toLowerCase();
+        if (tag === 'input' || tag === 'textarea' || tag === 'select' || t.isContentEditable) return;
+
+        const $context = $('.modal:visible, .ui-dialog:visible, [role="dialog"]:visible').last();
+        const searchContext = $context.length > 0 ? $context : $(document);
+
+        if (e.key === 'a' || e.key === 'A') {
+            const $adv = searchContext.find('[id*="show_advanced"]').first();
+            if ($adv.length) {
+                $adv.click();
+                e.preventDefault();
+            }
+        } else if (e.key === 'h' || e.key === 'H') {
+            const $help = searchContext.find('[id*="show_all_help"]').first();
+            if ($help.length) {
+                $help.click();
+                e.preventDefault();
+            }
+        }
+    });
+}
+
+/**
  * standard dialog when information is required, wrapper around BootstrapDialog
  */
 function stdDialogInform(title, message, close, callback, type, cssClass) {
