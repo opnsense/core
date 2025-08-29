@@ -1,3 +1,8 @@
+@use "sass:map";
+@use "../config/colors" as colors;
+@use "variables" as *;
+@use "mixins" as *;
+
 //
 // Tables
 // --------------------------------------------------
@@ -5,7 +10,7 @@
 
 table {
   background-color: $table-bg;
-  color: map-get($colors, text-color);
+  color: map.get(colors.$colors, text-color);
 }
 th {
   text-align: left;

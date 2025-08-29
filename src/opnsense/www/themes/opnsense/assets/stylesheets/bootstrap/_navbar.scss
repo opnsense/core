@@ -1,3 +1,7 @@
+@use "sass:color";
+@use "variables" as *;
+@use "mixins" as *;
+
 //
 // Navbars
 // --------------------------------------------------
@@ -309,7 +313,7 @@
   @include box-shadow($shadow);
 
   // Mixin behavior for optimum display
-  @extend .form-inline;
+  @extend .form-inline !optional;
 
   .form-group {
     @media (max-width: $grid-float-breakpoint-max) {
@@ -583,7 +587,7 @@
 
   .navbar-collapse,
   .navbar-form {
-    border-color: darken($navbar-inverse-bg, 7%);
+    border-color: color.adjust($navbar-inverse-bg, $lightness: -7%);
   }
 
   // Dropdowns

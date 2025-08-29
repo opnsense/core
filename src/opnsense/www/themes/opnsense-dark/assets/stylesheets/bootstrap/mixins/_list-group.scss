@@ -1,3 +1,5 @@
+@use "sass:color";
+@use "sass:map";
 // List Groups
 
 @mixin list-group-item-variant($state, $background, $color) {
@@ -18,12 +20,12 @@
     &:hover,
     &:focus {
       color: $color;
-      background-color: darken($background, 5%);
+      background-color: color.adjust($background, $lightness: -5%);
     }
     &.active,
     &.active:hover,
     &.active:focus {
-      color: map-get($colors, text-color);
+      color: map.get($colors, text-color);
       background-color: $color;
       border-color: $color;
     }
