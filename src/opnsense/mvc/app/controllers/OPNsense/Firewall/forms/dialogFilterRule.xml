@@ -202,7 +202,7 @@
         <label>Source Port</label>
         <type>text</type>
         <help>Source port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
-        <hint>any</hint>
+        <style>port_selector</style>
         <grid_view>
             <sequence>60</sequence>
             <sortable>false</sortable>
@@ -234,7 +234,7 @@
         <label>Destination Port</label>
         <type>text</type>
         <help>Destination port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
-        <hint>any</hint>
+        <style>port_selector</style>
         <grid_view>
             <sequence>80</sequence>
             <sortable>false</sortable>
