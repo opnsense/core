@@ -82,7 +82,7 @@
                     <Required>Y</Required>
                     <Default>any</Default>
                     <AddOptions>
-                        <opt1 value='TCP/UDP'>TCP/UDP</opt1>
+                        <opt1 value="TCP/UDP">TCP/UDP</opt1>
                     </AddOptions>
                 </protocol>
                 <icmptype type="OptionField">
@@ -120,7 +120,7 @@
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
                     <EnableAlias>Y</EnableAlias>
-                    <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
+                    <ValidationMessage>Please specify a valid portnumber, name, alias or range.</ValidationMessage>
                 </source_port>
                 <!-- XXX: should map internally to  'source' => array('destination' => destination_net, "not" => true|false) -->
                 <destination_net type="NetworkAliasField">
@@ -136,13 +136,13 @@
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
                     <EnableAlias>Y</EnableAlias>
-                    <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
+                    <ValidationMessage>Please specify a valid portnumber, name, alias or range.</ValidationMessage>
                 </destination_port>
                 <gateway type="JsonKeyValueStoreField">
                     <ConfigdPopulateAct>interface gateways list -g</ConfigdPopulateAct>
                     <ValidationMessage>Specify a valid gateway from the list matching the networks ip protocol.</ValidationMessage>
                 </gateway>
-                <replyto  type="JsonKeyValueStoreField">
+                <replyto type="JsonKeyValueStoreField">
                     <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
                     <ValidationMessage>Specify a valid gateway from the list matching the networks ip protocol.</ValidationMessage>
                 </replyto>
@@ -187,7 +187,7 @@
                 <max-src-conn-rates type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                 </max-src-conn-rates>
-                <overload  type="ModelRelationField">
+                <overload type="ModelRelationField">
                     <Model>
                         <aliases>
                             <source>OPNsense.Firewall.Alias</source>
@@ -310,7 +310,7 @@
                             </filters>
                         </queues>
                     </Model>
-                    <ValidationMessage>Related pipe or queue not found</ValidationMessage>
+                    <ValidationMessage>Related pipe or queue not found.</ValidationMessage>
                 </shaper1>
                 <shaper2 type="ModelRelationField">
                     <Model>
@@ -331,7 +331,7 @@
                             </filters>
                         </queues>
                     </Model>
-                    <ValidationMessage>Related pipe or queue not found</ValidationMessage>
+                    <ValidationMessage>Related pipe or queue not found.</ValidationMessage>
                 </shaper2>
                 <description type="DescriptionField"/>
             </rule>
@@ -349,7 +349,7 @@
                 <sequence type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>99999</MaximumValue>
-                    <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
+                    <ValidationMessage>Provide a valid sequence for sorting.</ValidationMessage>
                     <Required>Y</Required>
                     <Default>1</Default>
                 </sequence>
@@ -373,7 +373,7 @@
                     <Required>Y</Required>
                     <Default>any</Default>
                     <AddOptions>
-                        <opt1 value='TCP/UDP'>TCP/UDP</opt1>
+                        <opt1 value="TCP/UDP">TCP/UDP</opt1>
                     </AddOptions>
                 </protocol>
                 <source_net type="NetworkAliasField">
@@ -388,7 +388,7 @@
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
                     <EnableAlias>Y</EnableAlias>
-                    <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
+                    <ValidationMessage>Please specify a valid portnumber, name, alias or range.</ValidationMessage>
                 </source_port>
                 <destination_net type="NetworkAliasField">
                     <Default>any</Default>
@@ -402,7 +402,7 @@
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
                     <EnableAlias>Y</EnableAlias>
-                    <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
+                    <ValidationMessage>Please specify a valid portnumber, name, alias or range.</ValidationMessage>
                 </destination_port>
                 <target type="NetworkAliasField">
                     <Default>wanip</Default>
@@ -446,7 +446,7 @@
                 <sequence type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>99999</MaximumValue>
-                    <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
+                    <ValidationMessage>Provide a valid sequence for sorting.</ValidationMessage>
                     <Required>Y</Required>
                     <Default>1</Default>
                 </sequence>
@@ -498,7 +498,7 @@
                 <sequence type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>99999</MaximumValue>
-                    <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
+                    <ValidationMessage>Provide a valid sequence for sorting.</ValidationMessage>
                     <Required>Y</Required>
                     <Default>1</Default>
                 </sequence>

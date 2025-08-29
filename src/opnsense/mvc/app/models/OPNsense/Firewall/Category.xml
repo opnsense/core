@@ -17,7 +17,7 @@
                 <auto type="BooleanField"/>
                 <color type="TextField">
                     <Mask>/^([0-9a-fA-F]){6,6}$/u</Mask>
-                    <ValidationMessage>A valid color code consists of 6 hex digits</ValidationMessage>
+                    <ValidationMessage>A valid color code consists of 6 hex digits.</ValidationMessage>
                 </color>
             </category>
         </categories>
