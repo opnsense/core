@@ -37,6 +37,7 @@ $( document ).ready(function() {
             selection: true,
             multiSelect: false,
             rowSelect: true,
+            rowCount: [7, 20, 50, 100, 200, 500, -1],
             stickySelect: true,
             formatters: {
                 "mxformatter": function (column, row) {
@@ -71,6 +72,7 @@ $( document ).ready(function() {
             selection: true,
             multiSelect: true,
             rowSelect: true,
+            rowCount: [7, 20, 50, 100, 200, 500, -1],
             useRequestHandlerOnGet: true,
             requestHandler: function(request) {
                 let uuids = $("#{{formGridHostOverride['table_id']}}").bootgrid("getSelectedRows");

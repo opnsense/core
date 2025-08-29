@@ -149,6 +149,7 @@
               formatters: formatters,
               multiSelect: false,
               rowSelect: true,
+              rowCount: [7, 20, 50, 100, 200, 500, -1],
               selection: true
           }
       }).on("selected.rs.jquery.bootgrid", function(e, rows) {
@@ -175,6 +176,7 @@
           toggle: '/api/ipsec/tunnel/toggle_phase2/',
           options: {
               formatters: formatters,
+              rowCount: [7, 20, 50, 100, 200, 500, -1],
               useRequestHandlerOnGet: true,
               requestHandler: function(request) {
                   let ids = $("#grid-phase1").bootgrid("getSelectedRows");
