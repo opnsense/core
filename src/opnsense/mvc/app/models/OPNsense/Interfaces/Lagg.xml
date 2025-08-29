@@ -21,27 +21,27 @@
             </members>
             <primary_member type=".\LaggInterfaceField"/>
             <proto type="OptionField">
-              <Required>Y</Required>
-              <Default>lacp</Default>
-              <OptionValues>
-                  <none>None</none>
-                  <lacp>lacp</lacp>
-                  <failover>failover</failover>
-                  <fec>fec</fec>
-                  <loadbalance>loadbalance</loadbalance>
-                  <roundrobin>roundrobin</roundrobin>
-              </OptionValues>
+                <Required>Y</Required>
+                <Default>lacp</Default>
+                <OptionValues>
+                    <none>None</none>
+                    <lacp>lacp</lacp>
+                    <failover>failover</failover>
+                    <fec>fec</fec>
+                    <loadbalance>loadbalance</loadbalance>
+                    <roundrobin>roundrobin</roundrobin>
+                </OptionValues>
             </proto>
             <lacp_fast_timeout type="BooleanField">
                 <Default>0</Default>
                 <Required>Y</Required>
             </lacp_fast_timeout>
             <use_flowid type="OptionField">
-              <OptionValues>
-                  <default value="">Default</default>
-                  <yes value="1">Yes</yes>
-                  <no value="0">No</no>
-              </OptionValues>
+                <OptionValues>
+                    <default value="">Default</default>
+                    <yes value="1">Yes</yes>
+                    <no value="0">No</no>
+                </OptionValues>
             </use_flowid>
             <lagghash type="OptionField">
                 <Multiple>Y</Multiple>
