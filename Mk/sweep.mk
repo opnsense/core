@@ -33,6 +33,8 @@ sweep-model:
 		perl -i -pe 's/<asList>([YyNn])<\/asList>/<AsList>$$1<\/AsList>/g' $${MODEL}; \
 		perl -i -pe 's/<default>(.*?)<\/default>/<Default>$$1<\/Default>/g' $${MODEL}; \
 		perl -i -pe 's/<mask>(.*?)<\/mask>/<Mask>$$1<\/Mask>/g' $${MODEL}; \
+		env XMLLINT_INDENT="    " xmllint --format --output $${MODEL} $${MODEL}; \
+		sed -i '' 1d $${MODEL}; \
 	done
 .endif
 .endfor
