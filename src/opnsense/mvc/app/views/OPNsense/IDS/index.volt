@@ -318,7 +318,6 @@ POSSIBILITY OF SUCH DAMAGE.
                             set:'/api/ids/settings/set_rule/',
                             options:{
                                 requestHandler:addRuleFilters,
-                                rowCount:[10, 25, 50,100,500,1000] ,
                                 formatters:{
                                     rowtoggle: function (column, row) {
                                         var toggle = " <button type=\"button\" class=\"btn btn-xs btn-default command-edit bootgrid-tooltip\" data-row-id=\"" + row.sid + "\"><span class=\"fa fa-pencil fa-fw\"></span></button> ";
@@ -409,7 +408,6 @@ POSSIBILITY OF SUCH DAMAGE.
                         options:{
                             multiSelect:false,
                             selection:false,
-                            rowCount: [7,50,100,250,500,1000,5000],
                             requestHandler:addAlertQryFilters,
                             labels: {
                                 infos: "{{ lang._('Showing %s to %s') | format('{{ctx.start}}','{{ctx.end}}') }}"

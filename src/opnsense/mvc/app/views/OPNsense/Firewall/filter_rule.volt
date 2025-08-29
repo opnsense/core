@@ -118,7 +118,6 @@
             },
             options: {
                 responsive: true,
-                rowCount: [100,200,500,1000,-1],
                 initialSearchPhrase: getUrlHash('search'),
                 triggerEditFor: getUrlHash('edit'),
                 requestHandler: function(request){

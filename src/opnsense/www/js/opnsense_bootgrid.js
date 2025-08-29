@@ -129,7 +129,7 @@ class UIBootgrid {
             disableScroll: false,
             sorting: true,
             selection: true,
-            rowCount: [7, 14, 20, 50, 100, true],
+            rowCount: [50, 100, 200, 500, 1000, true], // tabulator y-overflows, no need for low defaults
             remoteGridView: false, // parse gridview from <thead> or via ajax?
             formatters: {
                 ...this._internalFormatters()
