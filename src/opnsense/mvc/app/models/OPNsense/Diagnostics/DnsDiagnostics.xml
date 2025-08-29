@@ -5,12 +5,12 @@
     <items>
         <settings>
             <hostname type="HostnameField">
-               <Required>Y</Required>
-               <ValidationMessage>Provide a valid hostname or address to query.</ValidationMessage>
+                <Required>Y</Required>
+                <ValidationMessage>Provide a valid hostname or address to query.</ValidationMessage>
             </hostname>
             <server type="NetworkField">
-              <NetMaskAllowed>N</NetMaskAllowed>
-              <ValidationMessage>Provide a valid server address.</ValidationMessage>
+                <NetMaskAllowed>N</NetMaskAllowed>
+                <ValidationMessage>Provide a valid server address.</ValidationMessage>
             </server>
         </settings>
     </items>
