@@ -11,8 +11,8 @@
             </interface>
             <description type="DescriptionField"/>
             <promiscuous type="BooleanField">
-              <Default>0</Default>
-              <Required>Y</Required>
+                <Default>0</Default>
+                <Required>Y</Required>
             </promiscuous>
             <fam type="OptionField">
                 <Required>Y</Required>

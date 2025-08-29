@@ -40,13 +40,13 @@
             <MinimumValue>1</MinimumValue>
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>Active timeout needs to be an integer value between 1 and 86400.</ValidationMessage>
-         </activeTimeout>
-         <inactiveTimeout type="IntegerField">
+        </activeTimeout>
+        <inactiveTimeout type="IntegerField">
             <Default>15</Default>
             <Required>Y</Required>
             <MinimumValue>1</MinimumValue>
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>Inactive timeout needs to be an integer value between 1 and 86400.</ValidationMessage>
-         </inactiveTimeout>
+        </inactiveTimeout>
     </items>
 </model>
