@@ -97,8 +97,6 @@
                             options: {
                                 triggerEditFor: getUrlHash('edit'),
                                 initialSearchPhrase: getUrlHash('search'),
-                                // Remove pagination from GroupBy
-                                rowCount: isGroupedGrid ? [-1] : undefined,
                                 requestHandler: function(request) {
                                     const selectedTags = $('#tag_select').val();
                                     if (selectedTags && selectedTags.length > 0) {

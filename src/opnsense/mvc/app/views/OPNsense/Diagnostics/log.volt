@@ -53,7 +53,6 @@
               sorting:false,
               rowSelect: false,
               selection: false,
-              rowCount:[20,50,100,200,500,1000,5000],
               virtualDOM: true,
               labels: {
                   infos: "{{ lang._('Showing %s to %s') | format('{{ctx.start}}','{{ctx.end}}') }}"

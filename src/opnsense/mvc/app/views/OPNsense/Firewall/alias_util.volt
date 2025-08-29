@@ -14,7 +14,6 @@
                     let grid = $('#alias_content').UIBootgrid({
                         search: '/api/firewall/alias_util/list/' + $(this).val(),
                         options: {
-                            rowCount: [20, 50, 100, 200, -1],
                             formatters: {
                                 commands: function (column, row) {
                                     return '<button type="button" class="btn btn-xs btn-default delete-ip bootgrid-tooltip" title="{{ lang._('Delete') }}" data-row-id="' + row.ip + '"><span class="fa fa-fw fa-trash-o"></span></button>';
