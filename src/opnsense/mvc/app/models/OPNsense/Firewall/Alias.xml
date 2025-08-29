@@ -55,14 +55,14 @@
                     </OptionValues>
                 </proto>
                 <interface type="InterfaceField">
-                  <Constraints>
-                      <check001>
-                          <ValidationMessage>IPv6 Dynamic Host require an interface to track.</ValidationMessage>
-                          <type>SetIfConstraint</type>
-                          <field>type</field>
-                          <check>dynipv6host</check>
-                      </check001>
-                  </Constraints>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>IPv6 Dynamic Host require an interface to track.</ValidationMessage>
+                            <type>SetIfConstraint</type>
+                            <field>type</field>
+                            <check>dynipv6host</check>
+                        </check001>
+                    </Constraints>
                 </interface>
                 <counters type="BooleanField"/>
                 <updatefreq type="NumericField">
