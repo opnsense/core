@@ -81,7 +81,6 @@
             <crt_payload type="TextField" volatile="true"/>
             <prv_payload type="TextField" volatile="true"/>
             <refcount type="IntegerField" volatile="true"/>
-
             <name type="TextField" volatile="true"/>
             <valid_from type="TextField" volatile="true"/>
             <valid_to type="TextField" volatile="true"/>
