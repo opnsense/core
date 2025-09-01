@@ -131,19 +131,20 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             'single' => [
                 'label' => gettext("Single port or range"),
             ],
-            'any' => [
-                'label' => gettext("any"),
+            'aliases' => [
+                'label' => gettext("Aliases"),
+                'items' => [],
+            ],
+            // XXX: Well known ports could be gathered from /etc/services but there is a lot of noise
+            'ports' => [
+                'label' => gettext("Ports"),
                 'items' => [
                     "any" => gettext("any"),
                 ],
             ],
-            'aliases' => [
-                'label' => gettext("Port Aliases"),
-                'items' => [],
-            ],
         ];
 
-        foreach ((new \OPNsense\Firewall\Alias())->aliases->alias->iterateItems() as $alias) {
+        foreach ((new Alias())->aliases->alias->iterateItems() as $alias) {
             if ($alias->type == 'internal') {
                 /* currently only used for legacy bindings, align with legacy_list_aliases() usage */
                 continue;

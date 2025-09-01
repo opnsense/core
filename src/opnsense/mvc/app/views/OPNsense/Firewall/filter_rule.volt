@@ -756,7 +756,7 @@
         ajaxGet('/api/firewall/filter/list_port_select_options', [], function (data) {
             if (!data || !data.single) return;
             $(".port_selector").each(function () {
-                const $s = $(this).replaceInputWithSelector(data, false); // single-select
+                $(this).replaceInputWithSelector(data, false);
             });
         });
 
