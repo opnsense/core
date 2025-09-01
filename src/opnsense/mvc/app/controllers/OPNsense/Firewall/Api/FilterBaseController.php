@@ -121,6 +121,41 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         return $result;
     }
 
+    /**
+     * list of available port options
+     * @return array
+     */
+    public function listPortSelectOptionsAction()
+    {
+        $result = [
+            'single' => [
+                'label' => gettext("Single port or range"),
+            ],
+            'aliases' => [
+                'label' => gettext("Aliases"),
+                'items' => [],
+            ],
+            // XXX: Well known ports could be gathered from /etc/services but there is a lot of noise
+            'ports' => [
+                'label' => gettext("Ports"),
+                'items' => [
+                    "any" => gettext("any"),
+                ],
+            ],
+        ];
+
+        foreach ((new Alias())->aliases->alias->iterateItems() as $alias) {
+            if ($alias->type == 'internal') {
+                /* currently only used for legacy bindings, align with legacy_list_aliases() usage */
+                continue;
+            }
+            if (strpos((string)$alias->type, 'port') !== false) {
+                $result['aliases']['items'][(string)$alias->name] = (string)$alias->name;
+            }
+        }
+
+        return $result;
+    }
 
     public function applyAction($rollback_revision = null)
     {
