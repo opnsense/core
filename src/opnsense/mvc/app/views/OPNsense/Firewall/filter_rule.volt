@@ -65,6 +65,10 @@
         let inspectEnabled = localStorage.getItem("firewall_rule_inspect") === "1";
         $('#toggle_inspect_button').toggleClass('active btn-primary', inspectEnabled);
 
+        // read interface from URL hash once, for the first grid load
+        const hashMatchInterface = window.location.hash.match(/(?:^#|&)interface=([^&]+)/);
+        let pendingUrlInterface = hashMatchInterface ? decodeURIComponent(hashMatchInterface[1]) : null;
+
         // Lives outside the grid, so the logic of the response handler can be changed after grid initialization
         function dynamicResponseHandler(resp) {
             // convert the flat rows into a tree view (if enabled)
@@ -125,9 +129,12 @@
                     if ( $('#category_filter').val().length > 0) {
                         request['category'] = $('#category_filter').val();
                     }
-                    // Add interface selectpicker
+                    // Add interface selectpicker, or fall back to hash for the first load
                     let selectedInterface = $('#interface_select').val();
-                    if (selectedInterface && selectedInterface.length > 0) {
+                    if ((!selectedInterface || selectedInterface.length === 0) && pendingUrlInterface) {
+                        request['interface'] = pendingUrlInterface;
+                        pendingUrlInterface = null; // consume the hash so it is not used again
+                    } else if (selectedInterface && selectedInterface.length > 0) {
                         request['interface'] = selectedInterface;
                     }
                     if (inspectEnabled) {
@@ -648,11 +655,6 @@
                         const allOptions = Object.values(data).flatMap(group => group.items.map(i => i.value));
                         if (allOptions.includes(ifaceFromHash)) {
                             $('#interface_select').val(ifaceFromHash).selectpicker('refresh');
-                            // Skip grid reload during reconfigureAct
-                            if (!reconfigureActInProgress) {
-                                console.log("bootgrid reload populateInterfaceSelectpicker");
-                                grid.bootgrid('reload');
-                            }
                         }
                     }
                     interfaceInitialized = true;
