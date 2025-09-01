@@ -323,9 +323,7 @@ class FilterController extends FilterBaseController
                 $prev_sequence = $prev_record->sequence->asFloat();
                 // raw gap between this and the previous sequence
                 $raw_gap = (int)$record->sequence->asFloat() - (int)$prev_record->sequence->asFloat();
-                /* distance will be averaged in push-forward logic,
-                 * which is why the minimum should be at least 2 (half is 1)
-                */
+                // distance will be averaged in push-forward logic, which is why the minimum should be at least 2 (half is 1)
                 $distance = max($raw_gap, 2);
             } elseif ($selected_node !== null && $target_node !== null) {
                 /* group processed */
