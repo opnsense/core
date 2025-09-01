@@ -5,8 +5,8 @@
     <items>
         <settings>
             <hostname type="HostnameField">
-               <Required>Y</Required>
-               <ValidationMessage>Provide a valid hostname or address.</ValidationMessage>
+                <Required>Y</Required>
+                <ValidationMessage>Provide a valid hostname or address.</ValidationMessage>
             </hostname>
             <port type="PortField">
                 <Required>Y</Required>
@@ -20,8 +20,8 @@
                 </OptionValues>
             </ipproto>
             <source_address type="NetworkField">
-              <NetMaskAllowed>N</NetMaskAllowed>
-              <ValidationMessage>Provide a valid source address.</ValidationMessage>
+                <NetMaskAllowed>N</NetMaskAllowed>
+                <ValidationMessage>Provide a valid source address.</ValidationMessage>
             </source_address>
             <source_port type="PortField"/>
             <showtext type="BooleanField">

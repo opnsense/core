@@ -46,7 +46,7 @@
             <maxaddr type="IntegerField">
                 <MinimumValue>1</MinimumValue>
             </maxaddr>
-            <timeout  type="IntegerField">
+            <timeout type="IntegerField">
                 <MinimumValue>0</MinimumValue>
             </timeout>
             <span type=".\BridgeMemberField"/>

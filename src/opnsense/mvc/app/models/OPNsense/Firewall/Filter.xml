@@ -82,7 +82,7 @@
                     <Required>Y</Required>
                     <Default>any</Default>
                     <AddOptions>
-                        <opt1 value='TCP/UDP'>TCP/UDP</opt1>
+                        <opt1 value="TCP/UDP">TCP/UDP</opt1>
                     </AddOptions>
                 </protocol>
                 <icmptype type="OptionField">
@@ -142,7 +142,7 @@
                     <ConfigdPopulateAct>interface gateways list -g</ConfigdPopulateAct>
                     <ValidationMessage>Specify a valid gateway from the list matching the networks ip protocol.</ValidationMessage>
                 </gateway>
-                <replyto  type="JsonKeyValueStoreField">
+                <replyto type="JsonKeyValueStoreField">
                     <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
                     <ValidationMessage>Specify a valid gateway from the list matching the networks ip protocol.</ValidationMessage>
                 </replyto>
@@ -187,7 +187,7 @@
                 <max-src-conn-rates type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                 </max-src-conn-rates>
-                <overload  type="ModelRelationField">
+                <overload type="ModelRelationField">
                     <Model>
                         <aliases>
                             <source>OPNsense.Firewall.Alias</source>
@@ -373,7 +373,7 @@
                     <Required>Y</Required>
                     <Default>any</Default>
                     <AddOptions>
-                        <opt1 value='TCP/UDP'>TCP/UDP</opt1>
+                        <opt1 value="TCP/UDP">TCP/UDP</opt1>
                     </AddOptions>
                 </protocol>
                 <source_net type="NetworkAliasField">

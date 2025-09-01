@@ -1,328 +1,328 @@
 <model>
-   <mount>//OPNsense/monit</mount>
-   <version>1.0.14</version>
-   <description>Monit settings</description>
-   <items>
-      <general>
-         <enabled type="BooleanField">
-            <Default>0</Default>
-            <Required>Y</Required>
-         </enabled>
-         <interval type="IntegerField">
-            <Default>120</Default>
-            <Required>Y</Required>
-            <MinimumValue>0</MinimumValue>
-            <MaximumValue>86400</MaximumValue>
-            <ValidationMessage>Polling Interval needs to be an integer value between 0 and 86400.</ValidationMessage>
-         </interval>
-         <startdelay type="IntegerField">
-            <Default>120</Default>
-            <Required>Y</Required>
-            <MinimumValue>0</MinimumValue>
-            <MaximumValue>86400</MaximumValue>
-            <ValidationMessage>Start Delay needs to be an integer value between 0 and 86400.</ValidationMessage>
-         </startdelay>
-         <mailserver type="HostnameField">
-            <Default>127.0.0.1</Default>
-            <Required>Y</Required>
-            <AsList>Y</AsList>
-            <ValidationMessage>Please specify a valid servername or IP address.</ValidationMessage>
-         </mailserver>
-         <port type="IntegerField">
-            <Required>Y</Required>
-            <Default>25</Default>
-            <MinimumValue>0</MinimumValue>
-            <MaximumValue>65535</MaximumValue>
-            <ValidationMessage>Port needs to be an integer value between 0 and 65535.</ValidationMessage>
-         </port>
-         <username type="TextField"/>
-         <password type="TextField"/>
-         <ssl type="BooleanField">
-            <Default>0</Default>
-            <Required>Y</Required>
-         </ssl>
-         <sslversion type="OptionField">
-            <Default>auto</Default>
-            <Required>Y</Required>
-            <OptionValues>
-               <auto>AUTO</auto>
-               <tlsv1>TLSV1</tlsv1>
-               <tlsv11>TLSV11</tlsv11>
-               <tlsv12>TLSV12</tlsv12>
-               <tlsv13>TLSV13</tlsv13>
-            </OptionValues>
-         </sslversion>
-         <sslverify type="BooleanField">
-            <Required>Y</Required>
-            <Default>1</Default>
-         </sslverify>
-         <logfile type="TextField">
-            <Mask>/^(\/[^\/ ]*)+\/?|syslog.*$/</Mask>
-            <ValidationMessage>Should be a valid absolute path to the log file or the keyword "syslog".</ValidationMessage>
-         </logfile>
-         <statefile type="TextField">
-            <Mask>/^(\/[^\/ ]*)+\/?$/</Mask>
-            <ValidationMessage>Should be a valid absolute path to the state file.</ValidationMessage>
-         </statefile>
-         <eventqueuePath type="TextField">
-            <Mask>/^(\/[^\/ ]*)+\/?$/</Mask>
-            <ValidationMessage>Should be a valid absolute path to the eventqueue directory.</ValidationMessage>
-         </eventqueuePath>
-         <eventqueueSlots type="IntegerField">
-            <ValidationMessage>Eventqueue Slots must be a numeric value.</ValidationMessage>
-         </eventqueueSlots>
-         <httpdEnabled type="BooleanField">
-            <Default>0</Default>
-            <Required>Y</Required>
-            <Constraints>
-                <check002>
-                    <reference>httpdPassword.check001</reference>
-                </check002>
-            </Constraints>
-         </httpdEnabled>
-         <httpdUsername type="TextField">
-            <Default>root</Default>
-            <Required>Y</Required>
-         </httpdUsername>
-         <httpdPassword type="TextField">
-            <Constraints>
-                <check001>
-                    <ValidationMessage>A value is required.</ValidationMessage>
-                    <type>SetIfConstraint</type>
-                    <field>httpdEnabled</field>
-                    <check>1</check>
-                </check001>
-            </Constraints>
-	 </httpdPassword>
-         <httpdPort type="IntegerField">
-            <Default>2812</Default>
-            <Required>Y</Required>
-            <MinimumValue>1</MinimumValue>
-            <MaximumValue>65535</MaximumValue>
-            <ValidationMessage>Local Monit Port needs to be an integer value between 0 and 65535.</ValidationMessage>
-         </httpdPort>
-         <httpdAllow type="CSVListField"/>
-         <mmonitUrl type="TextField"/>
-         <mmonitTimeout type="IntegerField">
-            <Default>5</Default>
-            <Required>Y</Required>
-            <MinimumValue>0</MinimumValue>
-            <MaximumValue>86400</MaximumValue>
-            <ValidationMessage>M/Monit Timeout needs to be an integer value between 0 and 86400.</ValidationMessage>
-         </mmonitTimeout>
-         <mmonitRegisterCredentials type="BooleanField">
-            <Default>1</Default>
-            <Required>Y</Required>
-         </mmonitRegisterCredentials>
-      </general>
-      <alert type="ArrayField">
-         <enabled type="BooleanField">
-            <Default>0</Default>
-            <Required>Y</Required>
-         </enabled>
-         <recipient type="EmailField">
-            <Default>root@localhost.local</Default>
-            <Required>Y</Required>
-            <ValidationMessage>Please enter a valid email address.</ValidationMessage>
-         </recipient>
-         <noton type="BooleanField">
-            <Required>Y</Required>
-            <Default>0</Default>
-         </noton>
-         <events type="OptionField">
-            <Multiple>Y</Multiple>
-            <OptionValues>
-               <action>Action done</action>
-               <checksum>Checksum failed</checksum>
-               <bytein>Download bytes exceeded</bytein>
-               <byteout>Upload bytes exceeded</byteout>
-               <connection>Connection failed</connection>
-               <content>Content failed</content>
-               <data>Data access error</data>
-               <exec>Execution failed</exec>
-               <fsflags>Filesystem flags failed</fsflags>
-               <gid>GID failed</gid>
-               <icmp>Ping failed</icmp>
-               <instance>Monit instance changed</instance>
-               <invalid>Invalid type</invalid>
-               <link>Link down</link>
-               <nonexist>Does not exist</nonexist>
-               <packetin>Download packets exceeded</packetin>
-               <packetout>Upload packets exceeded</packetout>
-               <permission>Permission failed</permission>
-               <pid>PID failed</pid>
-               <ppid>PPID failed</ppid>
-               <resource>Resource limit matched</resource>
-               <saturation>Saturation exceeded</saturation>
-               <size>Size failed</size>
-               <speed>Speed failed</speed>
-               <status>Status failed</status>
-               <timeout>Timeout</timeout>
-               <timestamp>Timestamp failed</timestamp>
-               <uid>UID failed</uid>
-               <uptime>Uptime failed</uptime>
-            </OptionValues>
-         </events>
-         <format type="TextField"/>
-         <reminder type="IntegerField">
-            <MinimumValue>0</MinimumValue>
-            <MaximumValue>86400</MaximumValue>
-            <ValidationMessage>Reminder needs to be an integer value between 0 and 86400.</ValidationMessage>
-         </reminder>
-         <description type="DescriptionField"/>
-      </alert>
-      <service type="ArrayField">
-         <enabled type="BooleanField">
-            <Default>0</Default>
-            <Required>Y</Required>
-         </enabled>
-         <name type="TextField">
-            <Required>Y</Required>
-            <Mask>/^([0-9a-zA-Z\._\-\$]){1,255}$/u</Mask>
-            <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as underscore, minus, dot and the dollar sign.</ValidationMessage>
-            <Constraints>
-               <check001>
-                  <ValidationMessage>Service name must be unique.</ValidationMessage>
-                  <type>UniqueConstraint</type>
-               </check001>
-            </Constraints>
-         </name>
-         <description type="DescriptionField"/>
-         <type type="OptionField">
-            <Required>Y</Required>
-            <OptionValues>
-               <process>Process</process>
-               <file>File</file>
-               <fifo>Fifo</fifo>
-               <filesystem>Filesystem</filesystem>
-               <directory>Directory</directory>
-               <host>Remote Host</host>
-               <system>System</system>
-               <custom>Custom</custom>
-               <network>Network</network>
-            </OptionValues>
-         </type>
-         <pidfile type="TextField">
-            <Mask>/^(\/[^\/ ]*)+\/?$/</Mask>
-            <ValidationMessage>Should be a valid absolute path to the PID file of the process.</ValidationMessage>
-         </pidfile>
-         <match type="TextField"/>
-         <path type="TextField">
-            <Mask>/^(\/[^\/ ]*)+\/?.*$/</Mask>
-            <ValidationMessage>Should be a valid absolute file or folder path.</ValidationMessage>
-         </path>
-         <timeout type="IntegerField">
-            <Default>300</Default>
-            <Required>Y</Required>
-            <MinimumValue>1</MinimumValue>
-            <MaximumValue>86400</MaximumValue>
-            <ValidationMessage>Program Timeout needs to be an integer value between 1 and 86400.</ValidationMessage>
-         </timeout>
-         <starttimeout type="IntegerField">
-            <Default>30</Default>
-            <Required>Y</Required>
-            <MinimumValue>0</MinimumValue>
-            <MaximumValue>86400</MaximumValue>
-            <ValidationMessage>Start Delay needs to be an integer value between 0 and 86400.</ValidationMessage>
-         </starttimeout>
-         <address type="HostnameField"/>
-         <interface type="InterfaceField">
-            <AddParentDevices>Y</AddParentDevices>
-            <filters>
-                <enable>/^(?!0).*$/</enable>
-                <ipaddr>/^((?!dhcp).)*$/</ipaddr>
-            </filters>
-         </interface>
-         <start type="TextField">
-            <Mask>/^(\/[^\/ ]*)+\/? .*$/</Mask>
-            <ValidationMessage>Should be a valid absolute path to the executable with its arguments.</ValidationMessage>
-         </start>
-         <stop type="TextField">
-            <Mask>/^(\/[^\/ ]*)+\/? .*$/</Mask>
-            <ValidationMessage>Should be a valid absolute path to the executable with its arguments.</ValidationMessage>
-         </stop>
-         <tests type="ModelRelationField">
-            <Model>
-               <template>
-                  <source>OPNsense.monit.monit</source>
-                  <items>test</items>
-                  <display>name</display>
-               </template>
-            </Model>
-            <ValidationMessage>Related item not found.</ValidationMessage>
-            <Multiple>Y</Multiple>
-         </tests>
-         <depends type="ModelRelationField">
-            <Model>
-               <template>
-                  <source>OPNsense.monit.monit</source>
-                  <items>service</items>
-                  <display>name</display>
-               </template>
-            </Model>
-            <ValidationMessage>Related item not found.</ValidationMessage>
-            <Multiple>Y</Multiple>
-         </depends>
-         <polltime type="TextField">
-            <Mask>/^([0-9a-zA-Z\*\-\, ]){1,255}$/u</Mask>
-            <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as asterisk, hyphen, comma and space.</ValidationMessage>
-         </polltime>
-      </service>
-      <test type="ArrayField">
-         <name type="TextField">
-            <Required>Y</Required>
-            <Mask>/^([0-9a-zA-Z\._\- ]){1,255}$/u</Mask>
-            <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as underscore, minus, dot and space.</ValidationMessage>
-         </name>
-         <type type="OptionField">
-            <Required>Y</Required>
-            <Default>Custom</Default>
-            <OptionValues>
-               <Existence>Existence</Existence>
-               <SystemResource>System Resource</SystemResource>
-               <ProcessResource>Process Resource</ProcessResource>
-               <ProcessDiskIO>Process Disk I/O</ProcessDiskIO>
-               <FileChecksum>File Checksum</FileChecksum>
-               <Timestamp>Timestamp</Timestamp>
-               <FileSize>File Size</FileSize>
-               <FileContent>File Content</FileContent>
-               <FilesystemMountFlags>Filesystem Mount Flags</FilesystemMountFlags>
-               <SpaceUsage>Space Usage</SpaceUsage>
-               <InodeUsage>Inode Usage</InodeUsage>
-               <DiskIO>Disk I/O</DiskIO>
-               <Permisssion>Permission</Permisssion>
-               <UID>UID</UID>
-               <GID>GID</GID>
-               <PID>PID</PID>
-               <PPID>PPID</PPID>
-               <Uptime>Uptime</Uptime>
-               <ProgramStatus>Program Status</ProgramStatus>
-               <NetworkInterface>Network Interface</NetworkInterface>
-               <NetworkPing>Network Ping</NetworkPing>
-               <Connection>Connection</Connection>
-               <Custom>Custom</Custom>
-            </OptionValues>
-         </type>
-         <condition type="TextField">
-            <Required>Y</Required>
-            <Mask>/^.{1,255}$/u</Mask>
-            <ValidationMessage>Should be a string between 1 and 255 characters.</ValidationMessage>
-         </condition>
-         <action type="OptionField">
-            <Required>Y</Required>
-            <OptionValues>
-               <alert>Alert</alert>
-               <restart>Restart</restart>
-               <start>Start</start>
-               <stop>Stop</stop>
-               <exec>Execute</exec>
-               <unmonitor>Unmonitor</unmonitor>
-            </OptionValues>
-         </action>
-         <path type="TextField">
-            <Mask>/^(\/[^\/ ]*)+\/?.*$/</Mask>
-            <ValidationMessage>Should be a valid absolute file path.</ValidationMessage>
-         </path>
-      </test>
-   </items>
+    <mount>//OPNsense/monit</mount>
+    <version>1.0.14</version>
+    <description>Monit settings</description>
+    <items>
+        <general>
+            <enabled type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </enabled>
+            <interval type="IntegerField">
+                <Default>120</Default>
+                <Required>Y</Required>
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>86400</MaximumValue>
+                <ValidationMessage>Polling Interval needs to be an integer value between 0 and 86400.</ValidationMessage>
+            </interval>
+            <startdelay type="IntegerField">
+                <Default>120</Default>
+                <Required>Y</Required>
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>86400</MaximumValue>
+                <ValidationMessage>Start Delay needs to be an integer value between 0 and 86400.</ValidationMessage>
+            </startdelay>
+            <mailserver type="HostnameField">
+                <Default>127.0.0.1</Default>
+                <Required>Y</Required>
+                <AsList>Y</AsList>
+                <ValidationMessage>Please specify a valid servername or IP address.</ValidationMessage>
+            </mailserver>
+            <port type="IntegerField">
+                <Required>Y</Required>
+                <Default>25</Default>
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>65535</MaximumValue>
+                <ValidationMessage>Port needs to be an integer value between 0 and 65535.</ValidationMessage>
+            </port>
+            <username type="TextField"/>
+            <password type="TextField"/>
+            <ssl type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </ssl>
+            <sslversion type="OptionField">
+                <Default>auto</Default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <auto>AUTO</auto>
+                    <tlsv1>TLSV1</tlsv1>
+                    <tlsv11>TLSV11</tlsv11>
+                    <tlsv12>TLSV12</tlsv12>
+                    <tlsv13>TLSV13</tlsv13>
+                </OptionValues>
+            </sslversion>
+            <sslverify type="BooleanField">
+                <Required>Y</Required>
+                <Default>1</Default>
+            </sslverify>
+            <logfile type="TextField">
+                <Mask>/^(\/[^\/ ]*)+\/?|syslog.*$/</Mask>
+                <ValidationMessage>Should be a valid absolute path to the log file or the keyword "syslog".</ValidationMessage>
+            </logfile>
+            <statefile type="TextField">
+                <Mask>/^(\/[^\/ ]*)+\/?$/</Mask>
+                <ValidationMessage>Should be a valid absolute path to the state file.</ValidationMessage>
+            </statefile>
+            <eventqueuePath type="TextField">
+                <Mask>/^(\/[^\/ ]*)+\/?$/</Mask>
+                <ValidationMessage>Should be a valid absolute path to the eventqueue directory.</ValidationMessage>
+            </eventqueuePath>
+            <eventqueueSlots type="IntegerField">
+                <ValidationMessage>Eventqueue Slots must be a numeric value.</ValidationMessage>
+            </eventqueueSlots>
+            <httpdEnabled type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+                <Constraints>
+                    <check002>
+                        <reference>httpdPassword.check001</reference>
+                    </check002>
+                </Constraints>
+            </httpdEnabled>
+            <httpdUsername type="TextField">
+                <Default>root</Default>
+                <Required>Y</Required>
+            </httpdUsername>
+            <httpdPassword type="TextField">
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>A value is required.</ValidationMessage>
+                        <type>SetIfConstraint</type>
+                        <field>httpdEnabled</field>
+                        <check>1</check>
+                    </check001>
+                </Constraints>
+            </httpdPassword>
+            <httpdPort type="IntegerField">
+                <Default>2812</Default>
+                <Required>Y</Required>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>65535</MaximumValue>
+                <ValidationMessage>Local Monit Port needs to be an integer value between 0 and 65535.</ValidationMessage>
+            </httpdPort>
+            <httpdAllow type="CSVListField"/>
+            <mmonitUrl type="TextField"/>
+            <mmonitTimeout type="IntegerField">
+                <Default>5</Default>
+                <Required>Y</Required>
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>86400</MaximumValue>
+                <ValidationMessage>M/Monit Timeout needs to be an integer value between 0 and 86400.</ValidationMessage>
+            </mmonitTimeout>
+            <mmonitRegisterCredentials type="BooleanField">
+                <Default>1</Default>
+                <Required>Y</Required>
+            </mmonitRegisterCredentials>
+        </general>
+        <alert type="ArrayField">
+            <enabled type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </enabled>
+            <recipient type="EmailField">
+                <Default>root@localhost.local</Default>
+                <Required>Y</Required>
+                <ValidationMessage>Please enter a valid email address.</ValidationMessage>
+            </recipient>
+            <noton type="BooleanField">
+                <Required>Y</Required>
+                <Default>0</Default>
+            </noton>
+            <events type="OptionField">
+                <Multiple>Y</Multiple>
+                <OptionValues>
+                    <action>Action done</action>
+                    <checksum>Checksum failed</checksum>
+                    <bytein>Download bytes exceeded</bytein>
+                    <byteout>Upload bytes exceeded</byteout>
+                    <connection>Connection failed</connection>
+                    <content>Content failed</content>
+                    <data>Data access error</data>
+                    <exec>Execution failed</exec>
+                    <fsflags>Filesystem flags failed</fsflags>
+                    <gid>GID failed</gid>
+                    <icmp>Ping failed</icmp>
+                    <instance>Monit instance changed</instance>
+                    <invalid>Invalid type</invalid>
+                    <link>Link down</link>
+                    <nonexist>Does not exist</nonexist>
+                    <packetin>Download packets exceeded</packetin>
+                    <packetout>Upload packets exceeded</packetout>
+                    <permission>Permission failed</permission>
+                    <pid>PID failed</pid>
+                    <ppid>PPID failed</ppid>
+                    <resource>Resource limit matched</resource>
+                    <saturation>Saturation exceeded</saturation>
+                    <size>Size failed</size>
+                    <speed>Speed failed</speed>
+                    <status>Status failed</status>
+                    <timeout>Timeout</timeout>
+                    <timestamp>Timestamp failed</timestamp>
+                    <uid>UID failed</uid>
+                    <uptime>Uptime failed</uptime>
+                </OptionValues>
+            </events>
+            <format type="TextField"/>
+            <reminder type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>86400</MaximumValue>
+                <ValidationMessage>Reminder needs to be an integer value between 0 and 86400.</ValidationMessage>
+            </reminder>
+            <description type="DescriptionField"/>
+        </alert>
+        <service type="ArrayField">
+            <enabled type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </enabled>
+            <name type="TextField">
+                <Required>Y</Required>
+                <Mask>/^([0-9a-zA-Z\._\-\$]){1,255}$/u</Mask>
+                <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as underscore, minus, dot and the dollar sign.</ValidationMessage>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>Service name must be unique.</ValidationMessage>
+                        <type>UniqueConstraint</type>
+                    </check001>
+                </Constraints>
+            </name>
+            <description type="DescriptionField"/>
+            <type type="OptionField">
+                <Required>Y</Required>
+                <OptionValues>
+                    <process>Process</process>
+                    <file>File</file>
+                    <fifo>Fifo</fifo>
+                    <filesystem>Filesystem</filesystem>
+                    <directory>Directory</directory>
+                    <host>Remote Host</host>
+                    <system>System</system>
+                    <custom>Custom</custom>
+                    <network>Network</network>
+                </OptionValues>
+            </type>
+            <pidfile type="TextField">
+                <Mask>/^(\/[^\/ ]*)+\/?$/</Mask>
+                <ValidationMessage>Should be a valid absolute path to the PID file of the process.</ValidationMessage>
+            </pidfile>
+            <match type="TextField"/>
+            <path type="TextField">
+                <Mask>/^(\/[^\/ ]*)+\/?.*$/</Mask>
+                <ValidationMessage>Should be a valid absolute file or folder path.</ValidationMessage>
+            </path>
+            <timeout type="IntegerField">
+                <Default>300</Default>
+                <Required>Y</Required>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>86400</MaximumValue>
+                <ValidationMessage>Program Timeout needs to be an integer value between 1 and 86400.</ValidationMessage>
+            </timeout>
+            <starttimeout type="IntegerField">
+                <Default>30</Default>
+                <Required>Y</Required>
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>86400</MaximumValue>
+                <ValidationMessage>Start Delay needs to be an integer value between 0 and 86400.</ValidationMessage>
+            </starttimeout>
+            <address type="HostnameField"/>
+            <interface type="InterfaceField">
+                <AddParentDevices>Y</AddParentDevices>
+                <filters>
+                    <enable>/^(?!0).*$/</enable>
+                    <ipaddr>/^((?!dhcp).)*$/</ipaddr>
+                </filters>
+            </interface>
+            <start type="TextField">
+                <Mask>/^(\/[^\/ ]*)+\/? .*$/</Mask>
+                <ValidationMessage>Should be a valid absolute path to the executable with its arguments.</ValidationMessage>
+            </start>
+            <stop type="TextField">
+                <Mask>/^(\/[^\/ ]*)+\/? .*$/</Mask>
+                <ValidationMessage>Should be a valid absolute path to the executable with its arguments.</ValidationMessage>
+            </stop>
+            <tests type="ModelRelationField">
+                <Model>
+                    <template>
+                        <source>OPNsense.monit.monit</source>
+                        <items>test</items>
+                        <display>name</display>
+                    </template>
+                </Model>
+                <ValidationMessage>Related item not found.</ValidationMessage>
+                <Multiple>Y</Multiple>
+            </tests>
+            <depends type="ModelRelationField">
+                <Model>
+                    <template>
+                        <source>OPNsense.monit.monit</source>
+                        <items>service</items>
+                        <display>name</display>
+                    </template>
+                </Model>
+                <ValidationMessage>Related item not found.</ValidationMessage>
+                <Multiple>Y</Multiple>
+            </depends>
+            <polltime type="TextField">
+                <Mask>/^([0-9a-zA-Z\*\-\, ]){1,255}$/u</Mask>
+                <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as asterisk, hyphen, comma and space.</ValidationMessage>
+            </polltime>
+        </service>
+        <test type="ArrayField">
+            <name type="TextField">
+                <Required>Y</Required>
+                <Mask>/^([0-9a-zA-Z\._\- ]){1,255}$/u</Mask>
+                <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as underscore, minus, dot and space.</ValidationMessage>
+            </name>
+            <type type="OptionField">
+                <Required>Y</Required>
+                <Default>Custom</Default>
+                <OptionValues>
+                    <Existence>Existence</Existence>
+                    <SystemResource>System Resource</SystemResource>
+                    <ProcessResource>Process Resource</ProcessResource>
+                    <ProcessDiskIO>Process Disk I/O</ProcessDiskIO>
+                    <FileChecksum>File Checksum</FileChecksum>
+                    <Timestamp>Timestamp</Timestamp>
+                    <FileSize>File Size</FileSize>
+                    <FileContent>File Content</FileContent>
+                    <FilesystemMountFlags>Filesystem Mount Flags</FilesystemMountFlags>
+                    <SpaceUsage>Space Usage</SpaceUsage>
+                    <InodeUsage>Inode Usage</InodeUsage>
+                    <DiskIO>Disk I/O</DiskIO>
+                    <Permisssion>Permission</Permisssion>
+                    <UID>UID</UID>
+                    <GID>GID</GID>
+                    <PID>PID</PID>
+                    <PPID>PPID</PPID>
+                    <Uptime>Uptime</Uptime>
+                    <ProgramStatus>Program Status</ProgramStatus>
+                    <NetworkInterface>Network Interface</NetworkInterface>
+                    <NetworkPing>Network Ping</NetworkPing>
+                    <Connection>Connection</Connection>
+                    <Custom>Custom</Custom>
+                </OptionValues>
+            </type>
+            <condition type="TextField">
+                <Required>Y</Required>
+                <Mask>/^.{1,255}$/u</Mask>
+                <ValidationMessage>Should be a string between 1 and 255 characters.</ValidationMessage>
+            </condition>
+            <action type="OptionField">
+                <Required>Y</Required>
+                <OptionValues>
+                    <alert>Alert</alert>
+                    <restart>Restart</restart>
+                    <start>Start</start>
+                    <stop>Stop</stop>
+                    <exec>Execute</exec>
+                    <unmonitor>Unmonitor</unmonitor>
+                </OptionValues>
+            </action>
+            <path type="TextField">
+                <Mask>/^(\/[^\/ ]*)+\/?.*$/</Mask>
+                <ValidationMessage>Should be a valid absolute file path.</ValidationMessage>
+            </path>
+        </test>
+    </items>
 </model>

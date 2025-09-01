@@ -210,7 +210,7 @@ class Alias extends BaseModel
         }
         // find all used in this model (alias nesting)
         foreach ($this->aliases->alias->iterateItems() as $alias) {
-            if (!in_array($alias->type, array('geoip', 'urltable'))) {
+            if (!$alias->type->isEqual('geoip')) {
                 $sepchar = $alias->content->getSeparatorChar();
                 $aliases = explode($sepchar, (string)$alias->content);
                 if (in_array($oldname, $aliases)) {

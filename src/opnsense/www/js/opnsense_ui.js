@@ -854,6 +854,7 @@ $.fn.SimpleFileUploadDlg = function (params) {
  * @param {*} params data structure to use for the select picker
  */
 $.fn.replaceInputWithSelector = function (data, multiple=false) {
+    let empty_select_token  = '<<empty_item>>';
     let that = this;
     this.new_item = function() {
         let $div = $("<div/>");
@@ -887,7 +888,7 @@ $.fn.replaceInputWithSelector = function (data, multiple=false) {
                 });
                 options.push(optgrp);
             } else {
-                options.push($("<option/>").val('').text(data[key].label));
+                options.push($("<option/>").val(empty_select_token).text(data[key].label));
             }
         });
         let $target = that.new_item();
@@ -899,29 +900,32 @@ $.fn.replaceInputWithSelector = function (data, multiple=false) {
         }
         $this_select.attr('for', $(this).attr('id')).selectpicker();
         $this_select.change(function(){
-            let $value = $(this).val();
-            if (Array.isArray($value)) {
-                $value = $value.filter(value => value !== '').join(',');
-            }
-            if ($value !== '') {
+            let $values = Array.isArray($(this).val()) ? $(this).val() : [$(this).val()];
+            let $value = $values.filter(value => !['', empty_select_token].includes(value)).join(',');
+            if (!$values.includes(empty_select_token)) {
                 $this_input.val($value);
                 $this_input.hide();
             } else {
+                /* manual input */
                 $this_input.show();
             }
         });
         $this_input.attr('id', $(this).attr('id'));
         $this_input.change(function(){
-            if (multiple) {
-                $this_select.val($(this).val().split(','));
+            let selopt = multiple ? $(this).val().split(',') : [$(this).val()];
+            $this_select.find('option').each(function(){
+                if (selopt.includes($(this).val())) {
+                    selopt.splice(selopt.indexOf($(this).val()), 1)
+                    $(this).attr('selected', 'selected');
+                } else {
+                    $(this).prop('selected', false);
+                }
+            });
+            if (selopt.length == 0) {
+                $this_input.hide(); /* items not in selector, show input */
             } else {
-                $this_select.val($(this).val());
-            }
-            if ($(this).val() === '' || $this_select.val() === null || $this_select.val() == '') {
-                $this_select.val('');
                 $this_input.show();
-            } else {
-                $this_input.hide();
+                $this_select.val(empty_select_token);
             }
             $this_select.selectpicker('refresh');
         });

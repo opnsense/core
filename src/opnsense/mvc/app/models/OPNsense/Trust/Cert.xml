@@ -32,12 +32,12 @@
                 <Required>Y</Required>
                 <Default>2048</Default>
                 <OptionValues>
-                    <RSA-512 value='512'>RSA-512</RSA-512>
-                    <RSA-1024 value='1024'>RSA-1024</RSA-1024>
-                    <RSA-2048 value='2048'>RSA-2048</RSA-2048>
-                    <RSA-3072 value='3072'>RSA-3072</RSA-3072>
-                    <RSA-4096 value='4096'>RSA-4096</RSA-4096>
-                    <RSA-8192 value='8192'>RSA-8192</RSA-8192>
+                    <RSA-512 value="512">RSA-512</RSA-512>
+                    <RSA-1024 value="1024">RSA-1024</RSA-1024>
+                    <RSA-2048 value="2048">RSA-2048</RSA-2048>
+                    <RSA-3072 value="3072">RSA-3072</RSA-3072>
+                    <RSA-4096 value="4096">RSA-4096</RSA-4096>
+                    <RSA-8192 value="8192">RSA-8192</RSA-8192>
                     <prime256v1>Elliptic Curve prime256v1</prime256v1>
                     <secp384r1>Elliptic Curve secp384r1</secp384r1>
                     <secp521r1>Elliptic Curve secp521r1</secp521r1>
@@ -118,7 +118,6 @@
             <rfc3280_purpose type="TextField" volatile="true"/>
             <in_use type="BooleanField" volatile="true"/>
             <is_user type="BooleanField" volatile="true"/>
-
             <name type="TextField" volatile="true"/>
             <valid_from type="TextField" volatile="true"/>
             <valid_to type="TextField" volatile="true"/>
