@@ -139,7 +139,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             'ports' => [
                 'label' => gettext("Ports"),
                 'items' => [
-                    "any" => gettext("any"),
+                    "" => gettext("any"),
                 ],
             ],
         ];
