@@ -674,7 +674,6 @@
 
             const hashVal = encodeURIComponent($(this).val() ?? '');
             history.replaceState(null, null, `#interface=${hashVal}`);
-            console.log("bootgrid reload interface_select changed");
             grid.bootgrid('reload');
         });
 
@@ -682,7 +681,6 @@
         $("#category_filter").on('changed.bs.select', function(){
             // Skip grid reload during reconfigureAct and initial page load
             if (!categoryInitialized || reconfigureActInProgress) return;
-            console.log("bootgrid reload category_filter changed");
             grid.bootgrid('reload');
         });
 
@@ -692,7 +690,6 @@
             localStorage.setItem("firewall_rule_inspect", inspectEnabled ? "1" : "0");
             $(this).toggleClass('active btn-primary', inspectEnabled);
             updateStatisticColumns();
-            console.log("bootgrid reload toggle_inspect_button changed");
             grid.bootgrid("reload");
         });
 
@@ -702,7 +699,6 @@
             localStorage.setItem("firewall_rule_tree", treeViewEnabled ? "1" : "0");
             $(this).toggleClass('active btn-primary', treeViewEnabled);
             $("#tree_expand_container").toggle(treeViewEnabled);
-            console.log("bootgrid reload tree_toggle_button changed");
             grid.bootgrid("reload");
         });
 
