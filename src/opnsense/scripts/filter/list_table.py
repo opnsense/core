@@ -36,17 +36,23 @@ import ujson
 if __name__ == '__main__':
     result = dict()
     if len(sys.argv) > 1:
-        sp = subprocess.run(['/sbin/pfctl', '-t', sys.argv[1], '-vT', 'show'], capture_output=True, text=True)
+        sp = subprocess.Popen(
+            ['/sbin/pfctl', '-t', sys.argv[1], '-vT', 'show'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            text=True
+        )
         this_entry=None
         labels = {}
-        for line in sp.stdout.split('\n'):
-            parts = line.split()
-            if len(parts) == 1:
-                this_entry = parts[0]
+        while (line := sp.stdout.readline()):
+            if line.startswith(' '):
+                this_entry = line.strip()
                 result[this_entry] = {'ip': this_entry}
-            elif this_entry and len(parts) > 6 and parts[3] != '0' and parts[3].isdigit() and parts[5].isdigit():
-                topic = parts[0].lower().replace('/', '_').replace(':', '')
-                result[this_entry]['%s_p' % topic] = int(parts[3])
-                result[this_entry]['%s_b' % topic] = int(parts[5])
+            elif this_entry and 'Packets:' in line and 'Packets: 0 ' not in line:
+                parts = line.split()
+                if this_entry and len(parts) > 6 and parts[3].isdigit() and parts[5].isdigit():
+                    topic = parts[0].lower().replace('/', '_').replace(':', '')
+                    result[this_entry]['%s_p' % topic] = int(parts[3])
+                    result[this_entry]['%s_b' % topic] = int(parts[5])
 
     print(ujson.dumps({'items': list(result.values())}))
