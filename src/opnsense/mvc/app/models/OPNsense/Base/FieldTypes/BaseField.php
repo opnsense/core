@@ -208,11 +208,13 @@ abstract class BaseField
      */
     public function eventPostLoading()
     {
-        foreach ($this->internalChildnodes as $nodeName => $node) {
-            $node->eventPostLoading();
+        if (!$this->internalFieldLoaded) {
+            foreach ($this->internalChildnodes as $nodeName => $node) {
+                $node->eventPostLoading();
+            }
+            $this->actionPostLoadingEvent();
+            $this->internalFieldLoaded = true;
         }
-        $this->actionPostLoadingEvent();
-        $this->internalFieldLoaded = true;
     }
 
     /**
