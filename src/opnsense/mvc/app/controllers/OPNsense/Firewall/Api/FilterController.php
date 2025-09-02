@@ -321,10 +321,8 @@ class FilterController extends FilterBaseController
             $uuid = $record->getAttribute('uuid');
             if ($prev_record != null && (string)$prev_record->prio_group == (string)$record->prio_group) {
                 $prev_sequence = $prev_record->sequence->asFloat();
-                // raw gap between this and the previous sequence
-                $raw_gap = (int)$record->sequence->asFloat() - (int)$prev_record->sequence->asFloat();
-                // distance will be averaged in push-forward logic, which is why the minimum should be at least 2 (half is 1)
-                $distance = max($raw_gap, 2);
+                /* distance will be averaged, which is why the minimum should be at least 2 (half is 1) */
+                $distance = max($record->sequence->asFloat() - $prev_record->sequence->asFloat(), 2);
             } elseif ($selected_node !== null && $target_node !== null) {
                 /* group processed */
                 break;
@@ -336,33 +334,24 @@ class FilterController extends FilterBaseController
 
             if ($uuid == $target_uuid) {
                 /**
-                 * Found our target, which will be the source’s new place.
-                 *
-                 * Important: use the raw_gap here, not $distance.
-                 * $distance is forced to >=2 so midpoint math never divides by zero.
-                 *
-                 * Example:
-                 *   prev=100, target=101 → raw gap=1, but distance=2.
-                 *   Using $distance would suggest room for a midpoint (101),
-                 *   colliding with the target’s sequence.
-                 *
-                 * With raw_gap we correctly detect "no gap" and shift later rules
-                 * forward to create space.
-                 */
-                if ($raw_gap > 1) {
-                    // normal case, safe gap
-                    $selected_id = (int)$prev_sequence + intdiv($raw_gap, 2);
+                 * found our target, which will be the sources new place,
+                 * reserve the full distance to facilitate for a swap.
+                 **/
+                if ($distance > 2) {
+                    /* gap exists, move selected rule to the midpoint of that gap */
+                    $selected_id = (int)$prev_sequence + intdiv($distance, 2);
                 } else {
-                    // no gap, shift target and everything after it forward
+                    /* no gap, shift target and all following rules and insert selected after prev */
                     $target_seq = (int)$record->sequence->asFloat();
-                    $shift = $target_seq + 1;
+                    $selected_id = (int)$prev_sequence + 100;
+                    $shift = $selected_id + 100;
                     foreach ($mdl->rules->rule->sortedBy(['prio_group', 'sequence']) as $rec2) {
                         if ((string)$rec2->prio_group == (string)$record->prio_group &&
                             (int)$rec2->sequence->asFloat() >= $target_seq) {
-                            $rec2->sequence = (string)$shift++;
+                            $rec2->sequence = (string)$shift;
+                            $shift += 100;
                         }
                     }
-                    $selected_id = $target_seq;
                 }
                 $target_node = $record;
             } elseif ($uuid == $selected_uuid) {
