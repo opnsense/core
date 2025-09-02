@@ -119,6 +119,25 @@
                 dataTree              : true,
                 dataTreeChildField    : "children",
                 dataTreeElementColumn : "categories",
+                rowFormatter: function(row) {
+                    const data = row.getData();
+                    const $element = $(row.getElement());
+
+                    // opacity when rule is disabled
+                    if ('enabled' in data && data.enabled == "0") {
+                        $element.addClass('row-disabled');
+                    }
+
+                    // hide the row selection checkbox for internal and dataTree group rules
+                    if (data.isGroup || !data.uuid || !data.uuid.includes("-")) {
+                        $element.addClass('row-no-select');
+                    }
+
+                    // bucket row (dataTree) styling
+                    if (data.isGroup) {
+                        $element.addClass('bucket-row');
+                    }
+                },
             },
             options: {
                 responsive: true,
@@ -230,7 +249,7 @@
                         `;
                     },
                     // Disable rowtoggle for internal rules
-                    rowtoggle: function (column, row, onRendered) {
+                    rowtoggle: function (column, row) {
                         if (row.isGroup) {
                             return "";
                         }
@@ -241,13 +260,6 @@
                         }
 
                         const isEnabled = row[column.id] === "1";
-
-                        onRendered((cell) => {
-                            const el = cell.getRow().getElement();
-                            if (!isEnabled) {
-                                el.style.opacity = "0.4";
-                            }
-                        });
 
                         return `
                             <span class="fa fa-fw ${isEnabled ? 'fa-check-square-o' : 'fa-square-o text-muted'} bootgrid-tooltip command-toggle"
@@ -274,24 +286,9 @@
                         }
                     },
                     // The category formatter is special as it renders differently for the bucket row
-                    category: function (column, row, onRendered) {
+                    category: function (column, row) {
                         const isGroup = row.isGroup;
                         const hasCategories = row.categories && Array.isArray(row.category_colors);
-
-                        if (isGroup) {
-                            onRendered(cell => {
-                                const el = cell.getRow().getElement();
-                                el.classList.add('bucket-row');
-
-                                const color = Array.isArray(row.category_colors) && row.category_colors.length
-                                    ? row.category_colors[0]
-                                    : null;
-
-                                if (color) {
-                                    el.style.setProperty('--category-color', color);
-                                }
-                            });
-                        }
 
                         if (!hasCategories) {
 
@@ -892,12 +889,13 @@
         pointer-events: auto;
     }
 
-    /* hide row select checkbox in the row header */
-    .bucket-row .tabulator-row-header input[type="checkbox"] {
+    /* hide the row selection checkbox for internal and dataTree group rules */
+    .row-no-select .tabulator-row-header input[type="checkbox"] {
         visibility: hidden;
         pointer-events: none;
     }
 
+    /* hide rowselect checkbox if tree is enabled, it does not work properly */
     .tree-enabled .tabulator-col.tabulator-row-header input[type="checkbox"] {
         visibility: hidden;
         pointer-events: none;
@@ -907,6 +905,11 @@
     #row_rule\.source_net .bootstrap-select > .dropdown-toggle,
     #row_rule\.destination_net .bootstrap-select > .dropdown-toggle {
         max-width: 348px;
+    }
+
+    /* fade disabled rows */
+    .row-disabled {
+        opacity: 0.4;
     }
 
 </style>
