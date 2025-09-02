@@ -294,7 +294,6 @@ class ArrayField extends BaseField
         return parent::getNodeContent();
     }
 
-
     /**
      * @param bool $include_static include non importable static items
      * @param array $exclude fieldnames to exclude
