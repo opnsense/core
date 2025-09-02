@@ -698,6 +698,7 @@
             treeViewEnabled = !treeViewEnabled;
             localStorage.setItem("firewall_rule_tree", treeViewEnabled ? "1" : "0");
             $(this).toggleClass('active btn-primary', treeViewEnabled);
+            $("#{{formGridFilterRule['table_id']}}").toggleClass("tree-enabled", treeViewEnabled);
             $("#tree_expand_container").toggle(treeViewEnabled);
             grid.bootgrid("reload");
         });
@@ -718,6 +719,7 @@
 
         grid.on('loaded.rs.jquery.bootgrid', function () {
             updateStatisticColumns();  // ensures inspect columns are consistent after reload
+            $("#{{formGridFilterRule['table_id']}}").toggleClass("tree-enabled", treeViewEnabled);
         });
 
         // replace all "net" selectors with details retrieved from "list_network_select_options" endpoint
@@ -892,6 +894,11 @@
 
     /* hide row select checkbox in the row header */
     .bucket-row .tabulator-row-header input[type="checkbox"] {
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    .tree-enabled .tabulator-col.tabulator-row-header input[type="checkbox"] {
         visibility: hidden;
         pointer-events: none;
     }
