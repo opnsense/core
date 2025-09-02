@@ -120,13 +120,13 @@
         </files>
         <fileTags>
             <tag type="ArrayField">
-              <property type="TextField">
-                  <Required>Y</Required>
-                  <Mask>/^([\t\n\v\f\r\- 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
-              </property>
-              <value type="TextField">
-                  <Mask>/^([\t\n\v\f\r\- 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
-              </value>
+                <property type="TextField">
+                    <Required>Y</Required>
+                    <Mask>/^([\t\n\v\f\r\- 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
+                </property>
+                <value type="TextField">
+                    <Mask>/^([\t\n\v\f\r\- 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
+                </value>
             </tag>
         </fileTags>
         <general>
@@ -176,13 +176,13 @@
                 <ValidationMessage>Related cron not found.</ValidationMessage>
             </UpdateCron>
             <AlertLogrotate type="OptionField">
-              <Required>Y</Required>
-              <Default>W0D23</Default>
-              <OptionValues>
-                  <W0D23>Weekly</W0D23>
-                  <D0>Daily</D0>
-              </OptionValues>
-              <ValidationMessage>Please select a valid rotation.</ValidationMessage>
+                <Required>Y</Required>
+                <Default>W0D23</Default>
+                <OptionValues>
+                    <W0D23>Weekly</W0D23>
+                    <D0>Daily</D0>
+                </OptionValues>
+                <ValidationMessage>Please select a valid rotation.</ValidationMessage>
             </AlertLogrotate>
             <AlertSaveLogs type="IntegerField">
                 <Required>Y</Required>
@@ -192,36 +192,36 @@
                 <ValidationMessage>Enter a valid number of logs to save.</ValidationMessage>
             </AlertSaveLogs>
             <MPMAlgo type="OptionField">
-              <BlankDesc>Default</BlankDesc>
-              <OptionValues>
-                  <ac>Aho-Corasick</ac>
-                  <ac-bs>Aho-Corasick, reduced memory implementation</ac-bs>
-                  <ac-ks>Aho-Corasick, "Ken Steele" variant</ac-ks>
-                  <hs>Hyperscan</hs>
-              </OptionValues>
-              <ValidationMessage>Please select a valid pattern matcher algorithm.</ValidationMessage>
-            </MPMAlgo>
-            <detect>
-              <Profile type="OptionField">
                 <BlankDesc>Default</BlankDesc>
                 <OptionValues>
-                    <low>Low</low>
-                    <medium>Medium</medium>
-                    <high>High</high>
-                    <custom>Custom</custom>
+                    <ac>Aho-Corasick</ac>
+                    <ac-bs>Aho-Corasick, reduced memory implementation</ac-bs>
+                    <ac-ks>Aho-Corasick, "Ken Steele" variant</ac-ks>
+                    <hs>Hyperscan</hs>
                 </OptionValues>
-                <ValidationMessage>Please select a valid detection profile.</ValidationMessage>
-              </Profile>
-              <toclient_groups type="IntegerField">
-                  <MinimumValue>0</MinimumValue>
-                  <MaximumValue>65535</MaximumValue>
-                  <ValidationMessage>Enter a valid toclient-groups size.</ValidationMessage>
-              </toclient_groups>
-              <toserver_groups type="IntegerField">
-                  <MinimumValue>0</MinimumValue>
-                  <MaximumValue>65535</MaximumValue>
-                  <ValidationMessage>Enter a valid toserver-groups size.</ValidationMessage>
-              </toserver_groups>
+                <ValidationMessage>Please select a valid pattern matcher algorithm.</ValidationMessage>
+            </MPMAlgo>
+            <detect>
+                <Profile type="OptionField">
+                    <BlankDesc>Default</BlankDesc>
+                    <OptionValues>
+                        <low>Low</low>
+                        <medium>Medium</medium>
+                        <high>High</high>
+                        <custom>Custom</custom>
+                    </OptionValues>
+                    <ValidationMessage>Please select a valid detection profile.</ValidationMessage>
+                </Profile>
+                <toclient_groups type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                    <ValidationMessage>Enter a valid toclient-groups size.</ValidationMessage>
+                </toclient_groups>
+                <toserver_groups type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                    <ValidationMessage>Enter a valid toserver-groups size.</ValidationMessage>
+                </toserver_groups>
             </detect>
             <syslog type="BooleanField">
                 <Default>0</Default>
