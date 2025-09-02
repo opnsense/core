@@ -136,7 +136,8 @@ abstract class BaseListField extends BaseField
     {
         $items = [];
         foreach ($this->getValues() as $item) {
-            $items[] = $this->internalOptionList[$item] ?? $item;
+            $val = $this->internalOptionList[$item] ?? $item;
+            $items[] = is_array($val) && isset($val['value']) ? $val['value'] : $val;
         }
         return implode(', ', $items);
     }
