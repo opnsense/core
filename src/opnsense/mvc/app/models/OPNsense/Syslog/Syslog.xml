@@ -21,67 +21,67 @@
         <destinations>
             <destination type="ArrayField">
                 <enabled type="BooleanField">
-                  <Default>1</Default>
-                  <Required>Y</Required>
+                    <Default>1</Default>
+                    <Required>Y</Required>
                 </enabled>
                 <transport type="OptionField">
-                  <Required>Y</Required>
-                  <Default>udp</Default>
-                  <OptionValues>
-                      <udp4>UDP(4)</udp4>
-                      <tcp4>TCP(4)</tcp4>
-                      <udp6>UDP(6)</udp6>
-                      <tcp6>TCP(6)</tcp6>
-                      <tls4>TLS(4)</tls4>
-                      <tls6>TLS(6)</tls6>
-                  </OptionValues>
+                    <Required>Y</Required>
+                    <Default>udp</Default>
+                    <OptionValues>
+                        <udp4>UDP(4)</udp4>
+                        <tcp4>TCP(4)</tcp4>
+                        <udp6>UDP(6)</udp6>
+                        <tcp6>TCP(6)</tcp6>
+                        <tls4>TLS(4)</tls4>
+                        <tls6>TLS(6)</tls6>
+                    </OptionValues>
                 </transport>
                 <program type="JsonKeyValueStoreField">
-                  <Multiple>Y</Multiple>
-                  <ConfigdPopulateAct>syslog list applications</ConfigdPopulateAct>
-                  <SortByValue>Y</SortByValue>
-                  <ValidationMessage>Specify valid source applications.</ValidationMessage>
+                    <Multiple>Y</Multiple>
+                    <ConfigdPopulateAct>syslog list applications</ConfigdPopulateAct>
+                    <SortByValue>Y</SortByValue>
+                    <ValidationMessage>Specify valid source applications.</ValidationMessage>
                 </program>
                 <level type="OptionField">
-                  <Multiple>Y</Multiple>
-                  <OptionValues>
-                      <debug>debug</debug>
-                      <info>info</info>
-                      <notice>notice</notice>
-                      <warn>warn</warn>
-                      <err>error</err>
-                      <crit>critical</crit>
-                      <alert>alert</alert>
-                      <emerg>emergency</emerg>
-                  </OptionValues>
+                    <Multiple>Y</Multiple>
+                    <OptionValues>
+                        <debug>debug</debug>
+                        <info>info</info>
+                        <notice>notice</notice>
+                        <warn>warn</warn>
+                        <err>error</err>
+                        <crit>critical</crit>
+                        <alert>alert</alert>
+                        <emerg>emergency</emerg>
+                    </OptionValues>
                 </level>
                 <facility type="OptionField">
-                  <Multiple>Y</Multiple>
-                  <OptionValues>
-                      <kern>kernel messages</kern>
-                      <user>user-level messages</user>
-                      <mail>mail system</mail>
-                      <daemon>system daemons</daemon>
-                      <auth>security/authorization messages</auth>
-                      <syslog>messages generated internally by syslogd</syslog>
-                      <lpr>line printer subsystem</lpr>
-                      <news>network news subsystem</news>
-                      <uucp>UUCP subsystem</uucp>
-                      <cron>clock daemon</cron>
-                      <authpriv>security/authorization messages</authpriv>
-                      <ftp>FTP daemon</ftp>
-                      <ntp>NTP subsystem</ntp>
-                      <security>log audit</security>
-                      <console>log alert</console>
-                      <local0>locally used (0)</local0>
-                      <local1>locally used (1)</local1>
-                      <local2>locally used (2)</local2>
-                      <local3>locally used (3)</local3>
-                      <local4>locally used (4)</local4>
-                      <local5>locally used (5)</local5>
-                      <local6>locally used (6)</local6>
-                      <local7>locally used (7)</local7>
-                  </OptionValues>
+                    <Multiple>Y</Multiple>
+                    <OptionValues>
+                        <kern>kernel messages</kern>
+                        <user>user-level messages</user>
+                        <mail>mail system</mail>
+                        <daemon>system daemons</daemon>
+                        <auth>security/authorization messages</auth>
+                        <syslog>messages generated internally by syslogd</syslog>
+                        <lpr>line printer subsystem</lpr>
+                        <news>network news subsystem</news>
+                        <uucp>UUCP subsystem</uucp>
+                        <cron>clock daemon</cron>
+                        <authpriv>security/authorization messages</authpriv>
+                        <ftp>FTP daemon</ftp>
+                        <ntp>NTP subsystem</ntp>
+                        <security>log audit</security>
+                        <console>log alert</console>
+                        <local0>locally used (0)</local0>
+                        <local1>locally used (1)</local1>
+                        <local2>locally used (2)</local2>
+                        <local3>locally used (3)</local3>
+                        <local4>locally used (4)</local4>
+                        <local5>locally used (5)</local5>
+                        <local6>locally used (6)</local6>
+                        <local7>locally used (7)</local7>
+                    </OptionValues>
                 </facility>
                 <hostname type="HostnameField">
                     <Required>Y</Required>
@@ -92,8 +92,8 @@
                     <Default>514</Default>
                 </port>
                 <rfc5424 type="BooleanField">
-                  <Default>0</Default>
-                  <Required>Y</Required>
+                    <Default>0</Default>
+                    <Required>Y</Required>
                 </rfc5424>
                 <description type="DescriptionField"/>
             </destination>
