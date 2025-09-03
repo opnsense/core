@@ -248,7 +248,7 @@ class FirewallController extends ApiControllerBase
                     $row['descr'] = $labels[$row['rule']]['descr'];
                 }
 
-                if (!empty($ruleid) && trim($row['label']) != $ruleid) {
+                if (!empty($ruleid) && trim($row['label'] ?? '') != $ruleid) {
                     return false;
                 }
                 /* filter using network clauses*/
