@@ -95,6 +95,7 @@
                 initFormHelpUI();
                 initFormAdvancedUI();
                 addMultiSelectClearUI();
+                initGlobalOpenShortcuts();
 
                 updateSystemStatus();
 
