@@ -527,14 +527,13 @@
                 'nat': 1,
                 'rdr': 1,
                 'binat': 1,
-                'block': 3
+                'block': 2
             }
             return new Promise((resolve, reject) => {
                 ajaxGet('/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': limit}, function(data, status) {
                     if (status == 'error' || data === undefined || data.length === 0) reject();
                     for (let record of data) {
                         // initial data formatting for front-end purposes
-                        // delete record['__spec__']; // we don't use __spec__ at the moment, so prevent search triggers on this
                         record['status'] = map[record['action']];
                         // deal with IPs we haven't seen before
                         if (!hostnames.get(record.src)) hostnames.set(record.src, null);
@@ -797,11 +796,9 @@
                     }
                 },
                 statusMapping: {
-                    0: "filter-success",
-                    1: "filter-info",
-                    2: "filter-warning",
-                    3: "filter-danger",
-                    4: "filter-error"
+                    0: "fw-pass",
+                    1: "fw-nat",
+                    2: "fw-block",
                 }
             },
             tabulatorOptions: {
@@ -1215,24 +1212,14 @@
 </script>
 
 <style>
-.filter-success {
-    background-color: #c3e6cb;
+.fw-pass {
+    background: rgba(5, 142, 73, 0.3);
 }
-
-.filter-info {
-    background-color: #d9edf7;
+.fw-block {
+    background: rgba(235, 9, 9, 0.3);
 }
-
-.filter-danger {
-    background-color: #f5c6cb;
-}
-
-.filter-warning {
-    background-color: #ffeeba;
-}
-
-.filter-error {
-    background-color: #dc3545;
+.fw-nat {
+    background: rgba(73, 173, 255, 0.3);
 }
 
 .filters-wrap { display:flex; gap:1rem; align-items:center; margin:0.5rem 0; }
