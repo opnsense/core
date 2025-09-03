@@ -35,6 +35,7 @@
                 {   search:'/api/diagnostics/firewall/query_states',
                     del:'/api/diagnostics/firewall/del_state/',
                     options:{
+                        virtualDOM: true,
                         formatters:{
                             commands: function (column, row) {
                                 return  '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" title="{{ lang._('Drop') }}" data-row-id="' + row.id + '"><span class="fa fa-trash-o fa-fw"></span></button>';
@@ -76,7 +77,6 @@
                 }
         );
         grid_states.on('loaded.rs.jquery.bootgrid', function() {
-            $('[data-toggle="tooltip"]').tooltip();
             if ($(".search-field").val() !== "" || $("#ruleid").val() !== "") {
                 $("#actKillStates").show();
             } else {
