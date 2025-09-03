@@ -22,6 +22,7 @@
         <label>Sort order</label>
         <type>info</type>
         <help>The order in which rules are being processed.</help>
+        <advanced>true</advanced>
         <grid_view>
             <sequence>10</sequence>
             <visible>false</visible>
@@ -35,6 +36,7 @@
         <label>Sequence</label>
         <type>text</type>
         <help>The order in which rules are being processed. Please note that this is not a unique identifier, the system will automatically recalculate the ruleset when rule positions are changed with the available "Move rule before this rule" button.</help>
+        <advanced>true</advanced>
         <grid_view>
             <sequence>15</sequence>
             <visible>false</visible>

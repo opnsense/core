@@ -46,12 +46,16 @@ class FilterController extends \OPNsense\Base\IndexController
     protected function getAdvancedIds($form)
     {
         $advancedFieldIds = [];
+        $exclude = ['sequence', 'sort_order'];
 
         foreach ($form as $field) {
             if (!empty($field['advanced']) && $field['advanced'] == "true") {
                 if (!empty($field['id'])) {
                     $tmp = explode('.', $field['id']);
-                    $advancedFieldIds[] = $tmp[count($tmp) - 1];
+                    $fieldId = $tmp[count($tmp) - 1];
+                    if (!in_array($fieldId, $exclude)) {
+                        $advancedFieldIds[] = $fieldId;
+                    }
                 }
             }
         }
