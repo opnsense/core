@@ -12,25 +12,26 @@
                 $('#tablename').change(function(){
                     $('#alias_content').bootgrid('destroy');
                     let grid = $('#alias_content').UIBootgrid({
+                        datakey: 'ip',
                         search: '/api/firewall/alias_util/list/' + $(this).val(),
                         options: {
-                            formatters: {
-                                commands: function (column, row) {
-                                    return '<button type="button" class="btn btn-xs btn-default delete-ip bootgrid-tooltip" title="{{ lang._('Delete') }}" data-row-id="' + row.ip + '"><span class="fa fa-fw fa-trash-o"></span></button>';
+                            virtualDOM: true,
+                        },
+                        commands: {
+                            delete: {
+                                title: "{{ lang._('Delete') }}",
+                                method: function() {
+                                    ajaxCall('/api/firewall/alias_util/delete/' + $('#tablename').val(), {'address': $(this).data('row-id')}, function () {
+                                        $('#alias_content').bootgrid('reload');
+                                    });
                                 },
+                                classname: 'fa fa-trash-o fa-fw',
+                                sequence: 1,
+                                requires: []
                             }
                         }
                     });
                     grid.on('loaded.rs.jquery.bootgrid', function () {
-                        grid.find('.delete-ip').on('click', function (e) {
-                            e.stopPropagation();
-                            ajaxCall(
-                                '/api/firewall/alias_util/delete/' + $('#tablename').val(),
-                                {'address': $(this).data('row-id')},
-                                function () {
-                                    $('#alias_content').bootgrid('reload');
-                                });
-                        });
                         // header labels
                         $("span.fa-long-arrow-right").attr('title', "{{lang._('in')}}").tooltip();
                         $("span.fa-long-arrow-left").attr('title', "{{lang._('out')}}").tooltip();
