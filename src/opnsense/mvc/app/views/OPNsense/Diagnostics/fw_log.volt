@@ -717,7 +717,7 @@
                     info: function(column, row, onRendered) {
                         onRendered((cell) => {
                             $(cell.getElement()).click(function() {
-                                let sender_details = row;//sender_tr.data('details');
+                                let sender_details = row;
                                 let hidden_columns = ['__spec__', '__host__', '__digest__'];
                                 let map_icon = ['dir', 'action'];
                                 let sorted_keys = Object.keys(sender_details).sort();
@@ -878,6 +878,20 @@
             globalQuery = (e.currentTarget && e.currentTarget.value) || '';
             filterVM.setGlobalSearch(globalQuery);
         }, 250));
+
+        $('#refresh').click(function (e) {
+            if (buffer.get(0)) {
+                last_digest = buffer.get(0)['__digest__'];
+                fetch_log(last_digest).then((data) => {
+                    // length check already passed
+                    if (data[0]['__digest__'] === last_digest) {
+                        return;
+                    }
+                    data.pop(); // data includes last seen digest as last item
+                    buffer.pushMany(data);
+                });
+            }
+        });
 
         $(document).on('change', '.filters-right input[type="checkbox"]', function() {
             const id = this.id;
@@ -1293,6 +1307,9 @@
                 <!-- Live global search (matches ANY value in a record) -->
                 <div class="filters-wrap">
                     <input id="globalSearch" type="text" placeholder="{{ lang._('Quick search (all fields)…') }}" />
+                    <button id="refresh" class="btn btn-default" type="button" title="{{ lang._('Refresh') }}">
+                        <span class="icon fa-solid fa-arrows-rotate"></span>
+                    </button>
                 </div>
 
                 <div class="filters-wrap">
