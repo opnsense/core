@@ -102,7 +102,7 @@ if __name__ == '__main__':
             # query alias content, includes dependencies
             alias_content = set()
             for item in alias_resolve_list:
-                alias_content.union(item.cached() if use_cached(item.get_name()) else item.resolve())
+                alias_content = alias_content.union(item.cached() if use_cached(item.get_name()) else item.resolve())
 
             # when the alias or any of it's dependencies has changed, generate new
             alias_filename = alias.get_filename()
