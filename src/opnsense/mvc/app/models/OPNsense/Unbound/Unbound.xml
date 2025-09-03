@@ -89,7 +89,7 @@
                     <opt6 value="5">Level 5</opt6>
                 </OptionValues>
             </logverbosity>
-            <valloglevel  type="OptionField">
+            <valloglevel type="OptionField">
                 <Default>0</Default>
                 <Required>Y</Required>
                 <OptionValues>

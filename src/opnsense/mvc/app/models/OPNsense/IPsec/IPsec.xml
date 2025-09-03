@@ -15,7 +15,7 @@
                 <Default>0</Default>
                 <Required>Y</Required>
             </disablevpnrules>
-            <passthrough_networks  type="NetworkField">
+            <passthrough_networks type="NetworkField">
                 <AsList>Y</AsList>
                 <WildcardEnabled>N</WildcardEnabled>
             </passthrough_networks>
@@ -117,24 +117,24 @@
                     <x_28673 type="BooleanField"/>
                     <x_28679 type="OptionField">
                         <OptionValues>
-                            <o1 value='1'>1 (768 bits)</o1 >
-                            <o2 value='2'>2 (1024 bits)</o2 >
-                            <o5 value='5'>5 (1536 bits)</o5 >
-                            <o14 value='14'>14 (2048 bits)</o14 >
-                            <o15 value='15'>15 (3072 bits)</o15 >
-                            <o16 value='16'>16 (4096 bits)</o16 >
-                            <o17 value='17'>17 (6144 bits)</o17 >
-                            <o18 value='18'>18 (8192 bits)</o18 >
-                            <o19 value='19'>19 (NIST EC 256 bits)</o19 >
-                            <o20 value='20'>20 (NIST EC 384 bits)</o20 >
-                            <o21 value='21'>21 (NIST EC 521 bits)</o21 >
-                            <o22 value='22'>22 (1024(sub 160) bits)</o22 >
-                            <o23 value='23'>23 (2048(sub 224) bits)</o23 >
-                            <o24 value='24'>24 (2048(sub 256) bits)</o24 >
-                            <o28 value='28'>28 (Brainpool EC 256 bits)</o28 >
-                            <o29 value='29'>29 (Brainpool EC 384 bits)</o29 >
-                            <o30 value='30'>30 (Brainpool EC 512 bits)</o30 >
-                            <o31 value='31'>31 (Elliptic Curve 25519)</o31 >
+                            <o1 value="1">1 (768 bits)</o1>
+                            <o2 value="2">2 (1024 bits)</o2>
+                            <o5 value="5">5 (1536 bits)</o5>
+                            <o14 value="14">14 (2048 bits)</o14>
+                            <o15 value="15">15 (3072 bits)</o15>
+                            <o16 value="16">16 (4096 bits)</o16>
+                            <o17 value="17">17 (6144 bits)</o17>
+                            <o18 value="18">18 (8192 bits)</o18>
+                            <o19 value="19">19 (NIST EC 256 bits)</o19>
+                            <o20 value="20">20 (NIST EC 384 bits)</o20>
+                            <o21 value="21">21 (NIST EC 521 bits)</o21>
+                            <o22 value="22">22 (1024(sub 160) bits)</o22>
+                            <o23 value="23">23 (2048(sub 224) bits)</o23>
+                            <o24 value="24">24 (2048(sub 256) bits)</o24>
+                            <o28 value="28">28 (Brainpool EC 256 bits)</o28>
+                            <o29 value="29">29 (Brainpool EC 384 bits)</o29>
+                            <o30 value="30">30 (Brainpool EC 512 bits)</o30>
+                            <o31 value="31">31 (Elliptic Curve 25519)</o31>
                         </OptionValues>
                     </x_28679>
                     <dns type="NetworkField">
