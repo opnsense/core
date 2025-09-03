@@ -294,6 +294,23 @@ class FilterController extends FilterBaseController
     }
 
     /**
+     * iterate rules for a prio_group, yield this record and the next in line (if any)
+     */
+    protected function ittrRules($prio_group)
+    {
+        $prev_record = null;
+        foreach ($this->getModel()->rules->rule->sortedBy(['prio_group', 'sequence']) as $record) {
+            if ($record->prio_group->isEqual($prio_group)) {
+                yield ['this' => $record, 'prev' => $prev_record];
+                $prev_record = $record;
+            } elseif ($prev_record !== null) {
+                /* last of selected group */
+                break;
+            }
+        }
+    }
+
+    /**
      * Moves the selected rule so that it appears immediately before the target rule.
      *
      * Uses integer gap numbering to update the sequence for only the moved rule.
@@ -311,66 +328,15 @@ class FilterController extends FilterBaseController
         if (!$this->request->isPost()) {
             return ["status" => "error", "message" => gettext("Invalid request method")];
         }
-        Config::getInstance()->lock();
-        $mdl = $this->getModel();
-        $prev_record = null;
-        $selected_id = null;
-        $selected_node = null;
-        $target_node = null;
-        foreach ($mdl->rules->rule->sortedBy(['prio_group', 'sequence']) as $record) {
-            $uuid = $record->getAttribute('uuid');
-            if ($prev_record != null && (string)$prev_record->prio_group == (string)$record->prio_group) {
-                $prev_sequence = $prev_record->sequence->asFloat();
-                /* distance will be averaged, which is why the minimum should be at least 2 (half is 1) */
-                $distance = max($record->sequence->asFloat() - $prev_record->sequence->asFloat(), 2);
-            } elseif ($selected_node !== null && $target_node !== null) {
-                /* group processed */
-                break;
-            } else {
-                /* first record, no previous one */
-                $prev_sequence = 1;
-                $distance = 2;
-            }
-
-            if ($uuid == $target_uuid) {
-                /**
-                 * found our target, which will be the sources new place,
-                 * reserve the full distance to facilitate for a swap.
-                 **/
-                $selected_id = ($distance >= 2)
-                    ? $prev_sequence + intdiv($distance, 2)
-                    : (int)$record->sequence->asFloat();
-                $target_node = $record;
-            } elseif ($uuid == $selected_uuid) {
-                $selected_node = $record;
-            } elseif ($selected_id !== null && $prev_sequence >= $record->sequence->asFloat()) {
-                $record->sequence = (string)($prev_sequence + $distance / 2);
-            } elseif ($target_node !== null && $selected_node !== null) {
-                /* both nodes found and the next one is in sequence, stop moving data */
-                break;
-            }
-            /* validate overflow */
-            if ($record->sequence->asFloat() > 999999) {
-                throw new UserException(
-                    gettext("Cannot renumber rules without exceeding the maximum sequence limit"),
-                    gettext("Filter")
-                );
-            }
-            $prev_record = $record;
-        }
-
-        if ($selected_node !== null) {
-            $selected_node->sequence = (string)$selected_id;
-        }
-
-        /* validate what we plan to commit */
-        if ($selected_node === null || $target_node === null) {
-            /* out of scope */
+        /* validate */
+        $target_node = $this->getModel()->getNodeByReference('rules.rule.'.$target_uuid);
+        $selected_node = $this->getModel()->getNodeByReference('rules.rule.'.$selected_uuid);
+        if ($target_node === null || $selected_node === null) {
             throw new UserException(
                 gettext("Either source or destination is not a rule managed with this component"),
                 gettext("Filter")
             );
-        } elseif ((string)$selected_node->prio_group != (string)$target_node->prio_group) {
+        } elseif (!$selected_node->prio_group->isEqual($target_node->prio_group)) {
             /* types don't match */
             $typeNames = [
                 '2' => gettext("Floating"),
@@ -387,9 +353,35 @@ class FilterController extends FilterBaseController
                 ),
                 gettext("Filter")
             );
+        } elseif ($selected_uuid === $target_uuid) {
+            throw new UserException(gettext("Cannot move to the same spot."), gettext("Filter"));
         }
-        $mdl->serializeToConfig(false, true); /* we're only changing sequences, forcefully save */
-        Config::getInstance()->save();
+        /* move the rule and optionally reorganize*/
+        $step_size = 50;
+        $new_key = null;
+        foreach ($this->ittrRules($target_node->prio_group) as $item) {
+            $uuid = $item['this']->getAttribute('uuid');
+            if ($target_uuid === $uuid) {
+                $prev_sequence = (($item['prev']?->sequence->asFloat()) ?? 1);
+                $distance = $item['this']->sequence->asFloat() - $prev_sequence;
+                if ($distance > 2) {
+                    $new_key = intdiv($distance, 2) + $prev_sequence;
+                    break;
+                } else {
+                    $new_key = $item['prev'] === null ? 1 : ($prev_sequence + $step_size);
+                    $item['this']->sequence = (string)($new_key + $step_size);
+                }
+            } elseif ($new_key !== null) {
+                if ($item['this']->sequence->asFloat() < $item['prev']?->sequence->asFloat()) {
+                    $item['this']->sequence = (string)($item['prev']?->sequence->asFloat() + $step_size);
+                }
+            }
+        }
+        if ($new_key !== null) {
+            $selected_node->sequence = (string)$new_key;
+            $this->getModel()->serializeToConfig(false, true); /* we're only changing sequences, forcefully save */
+            Config::getInstance()->save();
+        }
 
         return ["status" => "ok"];
     }
