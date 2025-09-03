@@ -12,12 +12,22 @@
                 $('#tablename').change(function(){
                     $('#alias_content').bootgrid('destroy');
                     let grid = $('#alias_content').UIBootgrid({
+                        datakey: 'ip',
                         search: '/api/firewall/alias_util/list/' + $(this).val(),
                         options: {
-                            formatters: {
-                                commands: function (column, row) {
-                                    return '<button type="button" class="btn btn-xs btn-default delete-ip bootgrid-tooltip" title="{{ lang._('Delete') }}" data-row-id="' + row.ip + '"><span class="fa fa-fw fa-trash-o"></span></button>';
+                            virtualDOM: true,
+                        },
+                        commands: {
+                            delete: {
+                                title: "{{ lang._('Delete') }}",
+                                method: function() {
+                                    ajaxCall('/api/firewall/alias_util/delete/' + $('#tablename').val(), {'address': $(this).data('row-id')}, function () {
+                                        $('#alias_content').bootgrid('reload');
+                                    });
                                 },
+                                classname: 'fa fa-trash-o fa-fw',
+                                sequence: 1,
+                                requires: []
                             }
                         }
                     });
