@@ -26,17 +26,21 @@
             <Required>Y</Required>
             <Default>1400</Default>
             <OptionValues>
-                <v1301 value='1301'>OPNsense 24.1[.x] or below</v1301>
-                <v1400 value='1400'>OPNsense 24.7 or above</v1400>
+                <v1301 value="1301">OPNsense 24.1 or below</v1301>
+                <v1400 value="1400">OPNsense 24.7 or above</v1400>
             </OptionValues>
         </pfsyncversion>
-        <synchronizetoip type="TextField"/>  <!-- XXX: accepts uri or address -->
+        <synchronizetoip type="TextField">
+            <!-- XXX: accepts uri or address -->
+        </synchronizetoip>
         <verifypeer type="BooleanField">
             <Default>0</Default>
             <Required>Y</Required>
         </verifypeer>
         <username type="TextField"/>
-        <password type="TextField"/>  <!-- XXX -->
+        <password type="TextField">
+            <!-- XXX -->
+        </password>
         <syncitems type="JsonKeyValueStoreField">
             <Multiple>Y</Multiple>
             <ConfigdPopulateAct>system ha options</ConfigdPopulateAct>
