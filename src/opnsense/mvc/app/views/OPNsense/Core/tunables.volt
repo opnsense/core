@@ -26,6 +26,32 @@
 
 <script>
     $( document ).ready(function() {
+        $('#reset_defaults').click(function(event) {
+            event.preventDefault();
+            BootstrapDialog.show({
+                type:BootstrapDialog.TYPE_DANGER,
+                title: "{{ lang._('Tunable') }}",
+                message: "{{ lang._('Are you sure you want to reset all tunables back to factory defaults?')}}",
+                buttons: [
+                    {
+                        label: "{{ lang._('No') }}",
+                        action: function(dialogRef) {
+                            dialogRef.close();
+                        }
+                    },
+                    {
+                        label: "{{ lang._('Yes') }}",
+                        action: function(dialogRef) {
+                            ajaxCall('/api/core/tunables/reset', {}, function(){
+                                dialogRef.close();
+                                $("#{{formGridTunable['table_id']}}").bootgrid('reload');
+                            });
+                        }
+                    }
+                ]
+            });
+        });
+
         $("#{{formGridTunable['table_id']}}").UIBootgrid(
             {   search:'/api/core/tunables/search_item/',
                 get:'/api/core/tunables/get_item/',
@@ -66,31 +92,6 @@
                 }
             }
         );
-        $(document).on('click', '#reset_defaults', function (event) {
-            event.preventDefault();
-            BootstrapDialog.show({
-                type:BootstrapDialog.TYPE_DANGER,
-                title: "{{ lang._('Tunable') }}",
-                message: "{{ lang._('Are you sure you want to reset all tunables back to factory defaults?')}}",
-                buttons: [
-                    {
-                        label: "{{ lang._('No') }}",
-                        action: function(dialogRef) {
-                            dialogRef.close();
-                        }
-                    },
-                    {
-                        label: "{{ lang._('Yes') }}",
-                        action: function(dialogRef) {
-                            ajaxCall('/api/core/tunables/reset', {}, function(){
-                                dialogRef.close();
-                                $("#{{formGridTunable['table_id']}}").bootgrid('reload');
-                            });
-                        }
-                    }
-                ]
-            });
-        });
 
         $("#reconfigureAct").SimpleActionButton();
     });

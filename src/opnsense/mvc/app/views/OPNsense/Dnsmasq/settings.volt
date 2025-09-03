@@ -133,16 +133,16 @@
 
                     // host grid needs custom commands (upload/download)
                     if (['host'].includes(grid_id)) {
-                        $("#{{formGridHostOverride['table_id']}}").on('click', '#download_hosts', function(e){
-                            e.preventDefault();
-                            window.open("/api/dnsmasq/settings/download_hosts");
-                        });
-
                         all_grids[grid_id].on('load.rs.jquery.bootgrid', function() {
                             $("#upload_hosts").SimpleFileUploadDlg({
                                 onAction: function(){
                                     $("#{{formGridHostOverride['table_id']}}").bootgrid('reload');
                                 }
+                            });
+
+                            $('#download_hosts').click(function(e) {
+                                e.preventDefault();
+                                window.open("/api/dnsmasq/settings/download_hosts");
                             });
                         })
                     }

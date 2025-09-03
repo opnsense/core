@@ -113,6 +113,11 @@
                     grid_user.bootgrid('reload');
                 }
             });
+
+            $("#download_users").click(function(e) {
+                e.preventDefault();
+                window.open("/api/auth/user/download");
+            });
         });
 
         let grid_apikey = $("#grid-apikey").UIBootgrid({
@@ -168,11 +173,6 @@
         $('.datepicker').datepicker({format: 'mm/dd/yyyy'});
         /* format  authorizedkeys */
         $("#user\\.authorizedkeys").css('max-width', 'inherit').prop('wrap', 'off');
-
-        $("#{{formGridUser['table_id']}}").on('click', '#download_users', function(e) {
-            e.preventDefault();
-            window.open("/api/auth/user/download");
-        });
     });
 
 </script>

@@ -64,6 +64,11 @@
                     grid_reservations.bootgrid('reload');
                 }
             });
+
+            $('#download_reservations').click(function(e) {
+                e.preventDefault();
+                window.open("/api/kea/dhcpv4/download_reservations");
+            });
         })
 
         $("#{{formGridPeer['table_id']}}").UIBootgrid(
@@ -84,11 +89,6 @@
             onAction: function(data, status) {
                 updateServiceControlUI('kea');
             }
-        });
-
-        $("#{{formGridReservation['table_id']}}").on('click', '#download_reservations', function(e){
-            e.preventDefault();
-            window.open("/api/kea/dhcpv4/download_reservations");
         });
 
         /**

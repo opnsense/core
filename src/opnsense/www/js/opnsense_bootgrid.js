@@ -82,13 +82,16 @@ $.fn.UIBootgrid = function(params) {
             label: $col.text(),
             width: width
         }
-    })
+    });
 
-    const $clone = $original.clone(true, true);
+    // Before replacing the element, search for custom grid commands so we don't
+    // lose their event bindings and data.
+    let customCommands = $original.find('tfoot td').children().not('[data-action]').detach();
+
     const $replacement = $('<div>').attr('id', id);
     $original.replaceWith($replacement);
 
-    let bg = new UIBootgrid(id).translateCompatOptions(params, $clone, cols).initialize();
+    let bg = new UIBootgrid(id).translateCompatOptions(params, $original, cols, customCommands).initialize();
 
     // store the instance so calls to $.bootgrid(...) are wired to the new implementation
     $replacement.data('UIBootgrid', bg);
@@ -226,7 +229,7 @@ class UIBootgrid {
     * This function modifies this.compatOptions if options can be directly included in Tabulator.
     * Otherwise, this.options is modified for wrapper-specific implementations (i.e. rowCount, requestHandler).
     */
-    translateCompatOptions(compatOptions, $table, columns) {
+    translateCompatOptions(compatOptions, $table, columns, customCommands) {
         this.compatColumns = columns;
         this.$compatElement = $table;
         let bootGridOptions = compatOptions.options;
@@ -345,7 +348,7 @@ class UIBootgrid {
         }
 
         // in the same context: check if there are other buttons defined
-        this.customCommands = this.$compatElement.find('tfoot td').children().not('[data-action]');
+        this.customCommands = customCommands;
 
         // convert old-style formatters
         for (const [key, formatterFn] of Object.entries(bootGridOptions?.formatters ?? {})) {
@@ -804,7 +807,7 @@ class UIBootgrid {
 
         // if there are custom commands defined, inject them here
         if (this.customCommands !== null) {
-            $(`#${this.id} > .tabulator-footer > .tabulator-footer-contents`).append(this.customCommands);
+            this.customCommands.appendTo($(`#${this.id} > .tabulator-footer > .tabulator-footer-contents`));
         }
 
         if (!this.options.navigation) {
