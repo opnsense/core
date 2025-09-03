@@ -494,6 +494,7 @@ function initGlobalOpenShortcuts() {
         if (e.ctrlKey || e.altKey || e.metaKey) return;
         const t = e.target;
         const tag = (t.tagName || '').toLowerCase();
+        if ($(".bootstrap-select.open .dropdown-menu.open").length) return;
         if (tag === 'input' || tag === 'textarea' || tag === 'select' || t.isContentEditable) return;
 
         const $context = $('.modal:visible, .ui-dialog:visible, [role="dialog"]:visible').last();
