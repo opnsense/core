@@ -58,7 +58,7 @@ class SingleSelectConstraint extends BaseConstraint
                 }
             }
 
-            if ($countNotEmpty > 1 || ($countNotEmpty == 0 && !empty($this->getOption('isRequired', null)))) {
+            if ($countNotEmpty > 1 || ($countNotEmpty == 0 && !empty($this->getOption('isRequired')))) {
                 $this->appendMessage($validator, $attribute);
                 return false;
             }
