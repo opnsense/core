@@ -388,7 +388,6 @@
                             <ValidationMessage>The host field is required if a domain has not been specified.</ValidationMessage>
                             <type>SetIfConstraint</type>
                             <field>domain</field>
-                            <check></check>
                         </check001>
                     </Constraints>
                     <HostWildcardAllowed>Y</HostWildcardAllowed>
@@ -401,7 +400,6 @@
                             <ValidationMessage>The domain field is required if a host has not been specified.</ValidationMessage>
                             <type>SetIfConstraint</type>
                             <field>hostname</field>
-                            <check></check>
                         </check001>
                     </Constraints>
                     <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
