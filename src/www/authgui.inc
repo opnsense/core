@@ -168,8 +168,12 @@ function session_auth()
 
     /* Validate incoming login request */
     if (isset($_POST['login']) && !empty($_POST['usernamefld']) && !empty($_POST['passwordfld'])) {
+	$tmp_otp = '';
+        if (!empty($_POST['otpfld']) && is_numeric($_POST['otpfld'])) {
+            $tmp_otp = $_POST['otpfld'];
+        }
         $authFactory = new \OPNsense\Auth\AuthenticationFactory();
-        $is_authenticated = $authFactory->authenticate("WebGui", $_POST['usernamefld'], $_POST['passwordfld']);
+        $is_authenticated = $authFactory->authenticate("WebGui", $_POST['usernamefld'], $_POST['passwordfld'].$tmp_otp);
 
         if ($is_authenticated) {
             $authenticator = $authFactory->lastUsedAuth;
@@ -410,7 +414,10 @@ function display_login_form($Login_Error)
           <label for="passwordfld"><?=gettext("Password:"); ?></label>
           <input id="passwordfld" type="password" name="passwordfld" class="form-control pwd" tabindex="2" />
         </div>
-
+	<div class="form-group">
+	   <label for="otpfld"><?=gettext("Optional OTP:"); ?></label>
+           <input id="otpfld" type="tel" name="otpfld" class="form-control pwd" tabindex="3" />
+        </div>
         <button type="submit" name="login" value="1" class="btn btn-primary pull-right"><?=gettext("Login"); ?></button>
 
       </form>
