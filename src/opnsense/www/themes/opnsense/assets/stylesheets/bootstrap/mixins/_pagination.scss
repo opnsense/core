@@ -1,3 +1,6 @@
+@use "../variables" as *;
+@use "border-radius" as *;
+
 // Pagination
 
 @mixin pagination-size($padding-vertical, $padding-horizontal, $font-size, $border-radius) {

@@ -1,6 +1,8 @@
+@use "sass:color";
+
 $colors: (
   brand-primary: #C03E14,
-  content-background: lighten(#101218, 5%),
+  content-background: color.adjust(#101218, $lightness: 5%),
   body-background: #101218,
   navbar-default-color: #ECECEC,
   page-content-head-background: #101218,

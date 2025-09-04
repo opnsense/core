@@ -1,3 +1,6 @@
+@use "variables" as *;
+@use "sass:math";
+@use "mixins" as *;
 //
 // Typography
 // --------------------------------------------------
@@ -61,7 +64,7 @@ p {
 
 .lead {
   margin-bottom: $line-height-computed;
-  font-size: floor(calc($font-size-base * 1.15));
+  font-size: math.floor(calc($font-size-base * 1.15));
   font-weight: 300;
   line-height: 1.4;
 
@@ -77,7 +80,7 @@ p {
 // Ex: (12px small font / 14px base font) * 100% = about 85%
 small,
 .small {
-  font-size: floor(calc(100% * $font-size-small / $font-size-base));
+  font-size: math.floor(calc(100% * $font-size-small / $font-size-base));
 }
 
 // Undo browser default styling
