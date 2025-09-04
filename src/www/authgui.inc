@@ -182,7 +182,7 @@ function session_auth()
             $_SESSION['Username'] = $authenticator->getUserName($_POST['usernamefld']);
             $_SESSION['last_access'] = time();
             $_SESSION['protocol'] = $config['system']['webgui']['protocol'];
-            if ($authenticator != null && $authenticator->shouldChangePassword($_SESSION['Username'], $_POST['passwordfld'])) {
+            if ($authenticator != null && $authenticator->shouldChangePassword($_SESSION['Username'], $_POST['passwordfld'].$tmp_otp)) {
                 $_SESSION['user_shouldChangePassword'] = true;
             }
             if (!isset($config['system']['webgui']['quietlogin'])) {
