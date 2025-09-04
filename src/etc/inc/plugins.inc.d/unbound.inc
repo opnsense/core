@@ -384,6 +384,8 @@ remote-control:
     control-key-file: /var/unbound/unbound_control.key
     control-cert-file: /var/unbound/unbound_control.pem
 
+include-toplevel:  /var/unbound/views.conf
+
 EOD;
 
     file_put_contents('/var/unbound/unbound.conf', $unboundconf);
