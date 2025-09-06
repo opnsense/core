@@ -72,7 +72,7 @@
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>500000</MaximumValue>
                 </over_time>
-                <dpd_delay  type="IntegerField">
+                <dpd_delay type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>500000</MaximumValue>
                 </dpd_delay>
@@ -275,7 +275,7 @@
                         <start>Start</start>
                     </OptionValues>
                 </close_action>
-                <dpd_action  type="OptionField">
+                <dpd_action type="OptionField">
                     <Required>Y</Required>
                     <Default>clear</Default>
                     <OptionValues>
