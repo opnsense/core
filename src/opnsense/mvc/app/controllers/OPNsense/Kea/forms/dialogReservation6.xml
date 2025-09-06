@@ -30,7 +30,7 @@
         <style>tokenize</style>
         <allownew>true</allownew>
         <separator>,</separator>
-        <help>Specifies a ´search list´ of Domain Names to be used by the client to locate not-fully-qualified domain names.</help>
+        <help>Specifies a ´search list´ of Domain Names to be used by the client to locate not-fully-qualified domain names. The first domain in this list will also be used for DNS registration of this host if enabled. If empty, the first domain in the interface's domain search list will be used. If this is empty, too, the system domain will be used.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>

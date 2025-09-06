@@ -118,6 +118,18 @@ function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details
                 }
             }
 
+            // Use the first search list domain for DNS registration
+            if ($proto == 6) {
+                $subnet_node = $keamdl->getNodeByReference("subnets.subnet6.{$reservation->subnet}");
+                if ($subnet_node) {
+                    if (!empty((string)$reservation->domain_search)) {
+                        $domain = explode(',', (string)$reservation->domain_search)[0];
+                    } elseif (!empty((string)$subnet_node->option_data->domain_search)) {
+                        $domain = explode(',', (string)$subnet_node->option_data->domain_search)[0];
+                    }
+                }
+            }
+
             $entry = [
                 'descr' => $description,
                 'domain' => $domain,
