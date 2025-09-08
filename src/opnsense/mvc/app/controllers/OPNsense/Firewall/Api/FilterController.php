@@ -329,8 +329,8 @@ class FilterController extends FilterBaseController
             return ["status" => "error", "message" => gettext("Invalid request method")];
         }
         /* validate */
-        $target_node = $this->getModel()->getNodeByReference('rules.rule.'.$target_uuid);
-        $selected_node = $this->getModel()->getNodeByReference('rules.rule.'.$selected_uuid);
+        $target_node = $this->getModel()->getNodeByReference('rules.rule.' . $target_uuid);
+        $selected_node = $this->getModel()->getNodeByReference('rules.rule.' . $selected_uuid);
         if ($target_node === null || $selected_node === null) {
             throw new UserException(
                 gettext("Either source or destination is not a rule managed with this component"),
