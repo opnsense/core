@@ -89,7 +89,7 @@ class HasyncStatusController extends ApiControllerBase
 
     public function restartAllAction($service = null, $service_id = null)
     {
-        if (true || $this->request->isPost()) {
+        if ($this->request->isPost()) {
             $backend = new Backend();
 
             $services = json_decode((new Backend())->configdRun('system ha exec services'), true);
