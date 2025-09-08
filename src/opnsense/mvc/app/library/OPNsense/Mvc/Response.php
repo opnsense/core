@@ -35,6 +35,7 @@ class Response
     private Headers $headers;
     private mixed $content = '';
     private bool $sent = false;
+    private bool $safe_output = false;
 
     public function __construct()
     {
@@ -46,9 +47,10 @@ class Response
         return $this->headers;
     }
 
-    public function setContent(mixed $content): void
+    public function setContent(mixed $content, bool $safe=false): void
     {
         $this->content = $content;
+        $this->safe_output = $safe;
     }
 
     public function getContent(): string
@@ -104,14 +106,25 @@ class Response
             while (ob_get_level() > 0) {
                 ob_end_flush();
             }
-            fpassthru($this->content);
+            if ($this->safe_output) {
+                fpassthru($this->content);
+            } else {
+                /* similar escaping tactic as used for array type output */
+                while (($buffer = fgets($this->content)) !== false) {
+                    echo htmlspecialchars($buffer, ENT_NOQUOTES);
+                }
+            }
             @fclose($this->content);
         } elseif (!empty($this->content)) {
             if (is_array($this->content)) {
-                echo json_encode($this->content);
+                $result = json_encode($this->content);
+                echo $this->safe_output ? $result : htmlspecialchars($result, ENT_NOQUOTES);
             } else {
+                /* XXX: assume safe content here, to prevent breaking existing callers.
+                        eventually we need to move the responsibility of marking data safe to the caller explicitly*/
                 echo $this->content;
             }
+
         }
 
         $this->sent = true;

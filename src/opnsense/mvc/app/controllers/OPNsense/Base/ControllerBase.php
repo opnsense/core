@@ -148,7 +148,7 @@ class ControllerBase extends ControllerRoot
         $this->view->processRender('', '');
         $this->view->finish();
 
-        $this->response->setContent($this->view->getContent());
+        $this->response->setContent($this->view->getContent(), true);
     }
 
     /**
