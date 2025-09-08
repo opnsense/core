@@ -808,6 +808,7 @@
                 persistence: false, // ideally persistence should be on, but we have no reset button at the moment due to missing navigation
                 height:undefined,
                 layout:"fitColumns",
+                pagination: false
             }
         });
 

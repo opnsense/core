@@ -268,7 +268,6 @@ class UIBootgrid {
         // navigation, determines whether actionbar, pagination and footer is rendered
         if ((bootGridOptions?.navigation ?? 3) === 0) {
             this.options.navigation = false;
-            this.compatOptions['pagination'] = false;
         }
 
         if (bootGridOptions?.rowCount ?? false) {
