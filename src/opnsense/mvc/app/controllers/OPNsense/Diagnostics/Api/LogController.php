@@ -90,7 +90,8 @@ class LogController extends ApiControllerBase
                         'Pragma: no-cache',
                         'Expires: 0'
                     ],
-                    60
+                    60,
+                    true
                 );
             } elseif ($action == "live") {
                 $offset = $this->request->get('offset', 'int', 0);

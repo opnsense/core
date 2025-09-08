@@ -174,6 +174,7 @@ class ApiControllerBase extends ControllerRoot
      * @param array $params list of parameters
      * @param array $headers http headers to send before pushing data
      * @param int $poll_timeout poll timeout after connect
+     * @param bool $safe when safe, no escaping will be applied
      */
     protected function configdStream(
         $action,
@@ -181,7 +182,8 @@ class ApiControllerBase extends ControllerRoot
         $headers = [
             'Content-Type: application/json', 'Content-Transfer-Encoding: binary', 'Pragma: no-cache', 'Expires: 0'
         ],
-        $poll_timeout = 2
+        $poll_timeout = 2,
+        $safe = false
     ) {
         $response = (new Backend())->configdpStream($action, $params, $poll_timeout);
 
@@ -189,7 +191,7 @@ class ApiControllerBase extends ControllerRoot
             $parts = explode(':', $header, 2);
             $this->response->setHeader($parts[0], ltrim($parts[1]));
         }
-        $this->response->setContent($response);
+        $this->response->setContent($response, $safe || $this->isExternalClient());
     }
 
     /**
@@ -352,11 +354,7 @@ class ApiControllerBase extends ControllerRoot
         $data = $dispatcher->getReturnedValue();
         if (is_array($data)) {
             $this->response->setContentType('application/json', 'UTF-8');
-            if ($this->isExternalClient()) {
-                $this->response->setContent(json_encode($data));
-            } else {
-                $this->response->setContent(htmlspecialchars(json_encode($data), ENT_NOQUOTES));
-            }
+            $this->response->setContent($data, $this->isExternalClient());
         } elseif (is_string($data)) {
             // XXX: fallback, controller returned data as string. a deprecation message might be an option here.
             $this->response->setContent($data);
