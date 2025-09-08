@@ -13,20 +13,19 @@
 /* theme: header */
 .tabulator .tabulator-header {
     background-color: transparent;
-    border-bottom: none;
+    border-bottom: 1px solid #999;
+    border-left: 1px solid map-get($colors, border-default);
+    border-right: 1px solid map-get($colors, border-default);
 }
 .tabulator .tabulator-header .tabulator-col {
-    border-right: 1px solid map-get($colors, border-default);
+    border-right: 1px solid #999;
     background-color: map-get($colors, body-background);
     color: map-get($colors, text-color);
 }
 .tabulator .tabulator-header .tabulator-col.tabulator-sortable.tabulator-col-sorter-element:hover {
     background-color: map-get($colors, table-bg-accent);
 }
-.tabulator .tabulator-headers {
-    height: 100% !important; /* make sure the border below appears */
-    border-bottom: 1px solid map-get($colors, border-default);
-}
+
 /*------------*/
 
 /* theme: body */
@@ -53,6 +52,9 @@
 }
 .tabulator .tabulator-tableholder {
     background-color: transparent;
+    border-left: 1px solid map-get($colors, border-default);
+    border-bottom: 1px solid map-get($colors, border-default);
+    border-right: 1px solid map-get($colors, border-default);
 }
 .tabulator-row.tabulator-selected {
     background-color: #2a2f45;
@@ -128,8 +130,8 @@
     white-space: nowrap;
     line-height: 1.2;
     vertical-align: top;
-    border-bottom: 1px solid rgba(map-get($colors, border-default), 0.5);
-    border-right: 1px solid rgba(map-get($colors, border-default), 0.5);
+    border-bottom: 1px solid #555;
+    border-right: 1px solid #555;
 }
 /*-------------*/
 
