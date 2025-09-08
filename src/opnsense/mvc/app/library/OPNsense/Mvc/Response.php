@@ -47,7 +47,7 @@ class Response
         return $this->headers;
     }
 
-    public function setContent(mixed $content, bool $safe=false): void
+    public function setContent(mixed $content, bool $safe = false): void
     {
         $this->content = $content;
         $this->safe_output = $safe;
@@ -124,7 +124,6 @@ class Response
                         eventually we need to move the responsibility of marking data safe to the caller explicitly*/
                 echo $this->content;
             }
-
         }
 
         $this->sent = true;
