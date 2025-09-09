@@ -305,6 +305,7 @@
                         <A>A (IPv4 address)</A>
                         <AAAA>AAAA (IPv6 address)</AAAA>
                         <MX>MX (Mail server)</MX>
+                        <TXT>TXT</TXT>
                     </OptionValues>
                     <Constraints>
                         <check001>
@@ -319,6 +320,9 @@
                         <check004>
                             <reference>server.check002</reference>
                         </check004>
+                        <check005>
+                            <reference>txtdata.check001</reference>
+                        </check005>
                     </Constraints>
                 </rr>
                 <mxprio type="IntegerField">
@@ -362,6 +366,17 @@
                         </check002>
                     </Constraints>
                 </server>
+                <txtdata type="DescriptionField">
+                    <!-- Use DescriptionField to cap to 255 characters -->
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>The field TXT Data is required.</ValidationMessage>
+                            <type>SetIfConstraint</type>
+                            <field>rr</field>
+                            <check>TXT</check>
+                        </check001>
+                    </Constraints>
+                </txtdata>
                 <description type="DescriptionField"/>
             </host>
         </hosts>
