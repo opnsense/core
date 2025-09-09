@@ -28,14 +28,9 @@
 """
 
 import argparse
-import glob
 import subprocess
-import os
-import sys
 import ujson
-import netaddr
-import netaddr.core
-from datetime import datetime
+from lib import OUI
 
 
 if __name__ == '__main__':
@@ -44,32 +39,18 @@ if __name__ == '__main__':
     parser.add_argument('mac', help='mac address')
     cmd_args = parser.parse_args()
 
-    mac = None
-    try:
-        mac = netaddr.EUI(cmd_args.mac)
-    except netaddr.core.AddrFormatError:
-        result['status'] = 'failed'
-        result['message'] = 'invalid mac'
-
-    if mac:
-        result['status'] = 'ok'
-        result['ip'] = []
-        result['ip6'] = []
-        result['org'] = "***"
-        with open("%s/eui/oui.txt" % os.path.dirname(netaddr.__file__)) as fh_macdb:
-            for line in fh_macdb:
-                if line.startswith(str(mac)[0:8]):
-                    result['org'] = line[18:].strip()
-                    break
-
-        for cmd in ['/usr/sbin/arp', '/usr/sbin/ndp']:
-            args = [cmd, '-na']
-            for line in subprocess.run(args, capture_output=True, text=True).stdout.split('\n'):
-                if line.upper().replace(':', '-').find(str(mac)) > -1:
-                    parts = line.split()
-                    if cmd.endswith('ndp'):
-                        result['ip6'].append(parts[0])
-                    else:
-                        result['ip'].append(parts[1].strip('()'))
+    result['status'] = 'ok'
+    result['ip'] = []
+    result['ip6'] = []
+    result['org'] = OUI().get_vendor(cmd_args.mac, '***')
+    for cmd in ['/usr/sbin/arp', '/usr/sbin/ndp']:
+        args = [cmd, '-na']
+        for line in subprocess.run(args, capture_output=True, text=True).stdout.split('\n'):
+            if line.find(cmd_args.mac) > -1:
+                parts = line.split()
+                if cmd.endswith('ndp'):
+                    result['ip6'].append(parts[0])
+                else:
+                    result['ip'].append(parts[1].strip('()'))
 
     print (ujson.dumps(result))
