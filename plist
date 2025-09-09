@@ -165,6 +165,7 @@
 /usr/local/opnsense/contrib/iana/dhcpv6-parameters-2.csv
 /usr/local/opnsense/contrib/iana/tzdata-iso3166.tab
 /usr/local/opnsense/contrib/iana/tzdata-zone.tab
+/usr/local/opnsense/contrib/ieee/oui.csv
 /usr/local/opnsense/contrib/mobile-broadband-provider-info/serviceproviders.xml
 /usr/local/opnsense/data/firmware/upgrade.html
 /usr/local/opnsense/data/unbound/root.min.hints
@@ -1191,6 +1192,7 @@
 /usr/local/opnsense/scripts/interfaces/carp_set_status.php
 /usr/local/opnsense/scripts/interfaces/dhclient-script
 /usr/local/opnsense/scripts/interfaces/ifctl.sh
+/usr/local/opnsense/scripts/interfaces/lib/__init__.py
 /usr/local/opnsense/scripts/interfaces/list_arp.py
 /usr/local/opnsense/scripts/interfaces/list_macdb.py
 /usr/local/opnsense/scripts/interfaces/list_ndp.py

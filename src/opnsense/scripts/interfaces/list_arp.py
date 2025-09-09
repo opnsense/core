@@ -29,24 +29,16 @@
     list arp table
 """
 import subprocess
-import os
 import sys
 import ujson
-import netaddr
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 import watchers.dhcpd
+from lib import OUI
+
 
 if __name__ == '__main__':
     # do we use reverse DNS lookup ?
     arp_arg = '-a' if '-r' in sys.argv else '-an'
-
-    # index mac database (shipped with netaddr)
-    macdb = dict()
-    with open("%s/eui/oui.txt" % os.path.dirname(netaddr.__file__)) as fh_macdb:
-        for line in fh_macdb:
-            if line[11:].startswith('(hex)'):
-                macprefix = line[0:8].replace('-', ':').lower()
-                macdb[macprefix] = line[18:].strip()
 
     result = []
 
@@ -73,11 +65,9 @@ if __name__ == '__main__':
             'expires': src_record['expires'] if 'expires' in src_record else -1,
             'permanent': src_record['permanent'] if 'permanent' in src_record else False,
             'type': src_record['type'],
-            'manufacturer': '',
+            'manufacturer': OUI().get_vendor(src_record['mac-address'], ''),
             'hostname': src_record['hostname'] if src_record['hostname'] != '?' else ''
         }
-        if record['mac'][0:8] in macdb:
-            record['manufacturer'] = macdb[record['mac'][0:8]]
         if record['ip'] in dhcp_leases:
             record['hostname'] = dhcp_leases[record['ip']]['hostname']
         result.append(record)
