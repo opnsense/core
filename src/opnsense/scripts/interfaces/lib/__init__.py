@@ -36,8 +36,8 @@ class OUI:
         if OUI._db is None:
             OUI._db = {}
             with open(DB_FILE, newline='') as f_oui:
-                for record in csv.reader(f_oui, delimiter=','):
-                    if len(record) > 2:
+                for idx, record in enumerate(csv.reader(f_oui, delimiter=',')):
+                    if idx > 0 and len(record) > 2:
                         OUI._db[record[1]] = record[2]
 
     def get_vendor(self, mac, default=''):
