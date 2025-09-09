@@ -46,7 +46,7 @@ class LaggInterfaceField extends BaseListField
                     $skip[] = (string)$node->if;
                 }
             }
-            $itfs = json_decode((new Backend())->configdRun("interface list ifconfig") ?? '', true) ?? [];
+            $itfs = json_decode((new Backend())->configdRun('interface list ifconfig'), true) ?? [];
             foreach ($itfs as $ifname => $ifinfo) {
                 if (in_array($ifname, $skip) || !$ifinfo['is_physical']) {
                     continue;
