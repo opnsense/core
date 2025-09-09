@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-ARGS=	diff feed mlog slog mfc
+ARGS=	diff feed mfc mlog slog tag
 
 # handle argument expansion for required targets
 .for TARGET in ${.TARGETS}
@@ -60,6 +60,9 @@ diff: ensure-stable
 	else \
 		${GIT} diff --stat -p ${CORE_STABLE} ${diff_ARGS} ${GIT_PRIVATE}; \
 	fi
+
+tag: ensure-stable
+	@${GIT} tag -a -m "stable release" "${tag_ARGS:[1]}" ${CORE_STABLE}
 
 feed: ensure-stable
 	@FEED="${feed_ARGS:[1]}"; \
