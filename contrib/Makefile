@@ -1,4 +1,4 @@
 ROOT=	/usr/local/opnsense/contrib
-TREES=	base32 iana IXR mobile-broadband-provider-info
+TREES=	base32 iana ieee IXR mobile-broadband-provider-info
 
 .include "../Mk/core.mk"

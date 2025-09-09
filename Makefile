@@ -183,7 +183,6 @@ CORE_DEPENDS?=		ca_root_nss \
 			py${CORE_PYTHON}-dnspython \
 			py${CORE_PYTHON}-jq \
 			py${CORE_PYTHON}-ldap3 \
-			py${CORE_PYTHON}-netaddr \
 			py${CORE_PYTHON}-requests \
 			py${CORE_PYTHON}-sqlite3 \
 			py${CORE_PYTHON}-ujson \
