@@ -68,7 +68,7 @@
         <id>reservation.option_data.domain_name</id>
         <label>Domain name</label>
         <type>text</type>
-        <help>The domain name to offer to the client, set to this firewall's domain name when left empty</help>
+        <help>The domain name to offer to the client, set to interface's domain name or this firewall's domain name when both left empty</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>

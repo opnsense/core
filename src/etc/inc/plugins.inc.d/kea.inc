@@ -112,7 +112,9 @@ function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details
             if ($proto == 4) {
                 $subnet_node = $keamdl->getNodeByReference("subnets.subnet4.{$reservation->subnet}");
                 if ($subnet_node) {
-                    if (!empty((string)$subnet_node->option_data->domain_name)) {
+                    if (!empty((string)$reservation->option_data->domain_name)) {
+                        $domain = (string)$reservation->option_data->domain_name;
+                    } elseif (!empty((string)$subnet_node->option_data->domain_name)) {
                         $domain = (string)$subnet_node->option_data->domain_name;
                     }
                 }
