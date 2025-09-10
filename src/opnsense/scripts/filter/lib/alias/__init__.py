@@ -246,7 +246,7 @@ class Alias(object):
         else:
             return None
 
-    def pre_process(self):
+    def pre_process(self, skip_result=False):
         """ alias type pre processors
             :return: set initial alias content
         """
@@ -254,7 +254,7 @@ class Alias(object):
         if self.get_type() == 'interface_net':
             PF.flush_network(self.get_name(), self._properties['interface'])
         # collect current table contents for selected types
-        if self.get_type() in ['interface_net', 'external']:
+        if self.get_type() in ['interface_net', 'external'] and not skip_result:
             result = result.union(set(PF.list_table(self.get_name())))
 
         return result
