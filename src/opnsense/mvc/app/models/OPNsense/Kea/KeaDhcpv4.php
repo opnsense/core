@@ -209,14 +209,14 @@ class KeaDhcpv4 extends BaseModel
 
     private function getExpiredLeasesProcessingConfig()
     {
-            if (empty((string)$this->general->kaffinity)) {
-            return null;
-        }
 
         return [
-            'reclaim-timer-wait-time' => 10,
+            'reclaim-timer-wait-time' => (int)$this->general->reclaim_timer_wait_time->__toString(),
             'hold-reclaimed-time' => (int)$this->general->hold_reclaimed_time->__toString(),
-            'flush-reclaimed-timer-wait-time' => 25
+            'flush-reclaimed-timer-wait-time' => (int)$this->general->flush_reclaimed_timer_wait_time->__toString(),
+            'max-reclaim-leases' => (int)$this->general->max_reclaim_leases->__toString(),
+            'max-reclaim-time' => (int)$this->general->max_reclaim_time->__toString(),
+            'unwarned-reclaim-cycles' => (int)$this->general->unwarned_reclaim_cycles->__toString(),
         ];
     }
 

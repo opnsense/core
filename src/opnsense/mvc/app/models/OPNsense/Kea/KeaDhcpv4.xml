@@ -31,10 +31,25 @@
         </general>
         <lexpire>
             <hold_reclaimed_time type="IntegerField">
-                <default>28800</default>
                 <MinimumValue>0</MinimumValue>
             </hold_reclaimed_time>
-            ###############################################################################################################
+            <reclaim_timer_wait_time type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+            </reclaim_timer_wait_time>
+            <flush_reclaimed_timer_wait_time type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </flush_reclaimed_timer_wait_time>
+            <max_reclaim_leases type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+                <Default>100</Default>
+            </max_reclaim_leases>
+            <max_reclaim_time type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+                <Default>10</Default>
+            </max_reclaim_time>
+            <unwarned_time type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </unwarned_time>
         </lexpire>
         <ha>
             <enabled type="BooleanField">

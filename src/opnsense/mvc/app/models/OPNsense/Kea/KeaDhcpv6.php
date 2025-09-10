@@ -194,6 +194,19 @@ class KeaDhcpv6 extends BaseModel
         return $result;
     }
 
+    private function getExpiredLeasesProcessingConfig()
+        {
+
+            return [
+                'reclaim-timer-wait-time' => (int)$this->general->reclaim_timer_wait_time->__toString(),
+                'hold-reclaimed-time' => (int)$this->general->hold_reclaimed_time->__toString(),
+                'flush-reclaimed-timer-wait-time' => (int)$this->general->flush_reclaimed_timer_wait_time->__toString(),
+                'max-reclaim-leases' => (int)$this->general->max_reclaim_leases->__toString(),
+                'max-reclaim-time' => (int)$this->general->max_reclaim_time->__toString(),
+                'unwarned-reclaim-cycles' => (int)$this->general->unwarned_reclaim_cycles->__toString(),
+            ];
+        }
+
     public function generateConfig($target = '/usr/local/etc/kea/kea-dhcp6.conf')
     {
         $cnf = [
@@ -224,6 +237,10 @@ class KeaDhcpv6 extends BaseModel
                 'subnet6' => $this->getConfigSubnets(),
             ]
         ];
+        $expiredLeasesConfig = $this->getExpiredLeasesProcessingConfig();
+            if ($expiredLeasesConfig !== null) {
+                $cnf['Dhcp6']['expired-leases-processing'] = $expiredLeasesConfig;
+            }
         if (!(new KeaCtrlAgent())->general->enabled->isEmpty()) {
             $cnf['Dhcp6']['hooks-libraries'] = [];
             $cnf['Dhcp6']['hooks-libraries'][] = [
