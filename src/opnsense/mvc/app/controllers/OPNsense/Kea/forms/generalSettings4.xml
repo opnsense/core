@@ -47,6 +47,7 @@
     <field>
         <type>header</type>
         <label>Lease Expiration</label>
+        <colapsed>true</colapsed>
     </field>
     <field>
         <id>dhcpv4.lexpire.hold_reclaimed_time</id>
@@ -91,6 +92,7 @@
     <field>
         <type>header</type>
         <label>High Availability</label>
+        <colapsed>true</colapsed>
     </field>
     <field>
         <id>dhcpv4.ha.enabled</id>

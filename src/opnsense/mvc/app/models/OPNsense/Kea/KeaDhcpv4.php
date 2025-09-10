@@ -209,7 +209,7 @@ class KeaDhcpv4 extends BaseModel
 
     private function getExpiredLeasesProcessingConfig()
     {
-        return [
+        $fields = [
             'reclaim-timer-wait-time' => (int)$this->lexpire->reclaim_timer_wait_time->__toString(),
             'hold-reclaimed-time' => (int)$this->lexpire->hold_reclaimed_time->__toString(),
             'flush-reclaimed-timer-wait-time' => (int)$this->lexpire->flush_reclaimed_timer_wait_time->__toString(),
@@ -217,7 +217,17 @@ class KeaDhcpv4 extends BaseModel
             'max-reclaim-time' => (int)$this->lexpire->max_reclaim_time->__toString(),
             'unwarned-reclaim-cycles' => (int)$this->lexpire->unwarned_reclaim_cycles->__toString(),
         ];
+
+    $config = [];
+    foreach ($fields as $key => $value) {
+        if (!empty($value)) {
+            $config[$key] = (int)$value;
+        }
     }
+
+    return $config;
+}
+
 
     public function generateConfig($target = '/usr/local/etc/kea/kea-dhcp4.conf')
     {

@@ -23,38 +23,26 @@
         </general>
         <lexpire>
             <hold_reclaimed_time type="IntegerField">
-                <default>3600</default>
-                <required>Y</required>
                 <MinimumValue>0</MinimumValue>
             </hold_reclaimed_time>
             <reclaim_timer_wait_time type="IntegerField">
-                <default>10</default>
-                <required>Y</required>
-                <hint>10</hint>
+                <Hint>10</Hint>
                 <MinimumValue>1</MinimumValue>
             </reclaim_timer_wait_time>
             <flush_reclaimed_timer_wait_time type="IntegerField">
-                <default>25</default>
-                <required>Y</required>
-                <hint>25</hint>
+                <Hint>25</Hint>
                 <MinimumValue>0</MinimumValue>
             </flush_reclaimed_timer_wait_time>
             <max_reclaim_leases type="IntegerField">
-                <default>100</default>
-                <required>Y</required>
-                <hint>100</hint>
+                <Hint>100</Hint>
                 <MinimumValue>0</MinimumValue>
             </max_reclaim_leases>
             <max_reclaim_time type="IntegerField">
-                <Default>10</Default>
-                <required>Y</required>
-                <hint>10</hint>
+                <Hint>10</Hint>
                 <MinimumValue>0</MinimumValue>
             </max_reclaim_time>
             <unwarned_reclaim_cycles type="IntegerField">
-                <default>5</default>
-                <required>Y</required>
-                <hint>5</hint>
+                <Hint>5</Hint>
                 <MinimumValue>0</MinimumValue>
             </unwarned_reclaim_cycles>
         </lexpire>
