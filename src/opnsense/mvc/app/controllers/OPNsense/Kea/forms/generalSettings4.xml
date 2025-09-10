@@ -47,7 +47,7 @@
     <field>
         <type>header</type>
         <label>Lease Expiration</label>
-        <colapsed>true</colapsed>
+        <collapse>true</collapse>
     </field>
     <field>
         <id>dhcpv4.lexpire.hold_reclaimed_time</id>
@@ -59,12 +59,14 @@
         <id>dhcpv4.lexpire.reclaim_timer_wait_time</id>
         <label>Reclamation delay</label>
         <type>text</type>
+        <hint>10</hint>
         <help>The interval between the completion of the previous reclamation cycle and the start of the next one. (in seconds)</help>
     </field>
     <field>
         <id>dhcpv4.lexpire.flush_reclaimed_timer_wait_time</id>
         <label>Reclamation initiation</label>
         <type>text</type>
+        <hint>25</hint>
         <advanced>true</advanced>
         <help>This parameter controls how often the server initiates the lease reclamation procedure. (in seconds)</help>
     </field>
@@ -72,6 +74,7 @@
         <id>dhcpv4.lexpire.max_reclaim_time</id>
         <label>Maximum Reclamation time</label>
         <type>text</type>
+        <hint>10</hint>
         <advanced>true</advanced>
         <help>Defines an upper limit to the length of time a lease reclamation procedure can take. (in milliseconds) (0 means no time limit) </help>
     </field>
@@ -79,6 +82,7 @@
         <id>dhcpv4.lexpire.max_reclaim_leases</id>
         <label>Maximum reclamation leases</label>
         <type>text</type>
+        <hint>100</hint>
         <advanced>true</advanced>
         <help>Defines the maximum number of reclaimed leases that can be processed at one time. (0 means unlimited)</help>
     </field>
@@ -86,13 +90,14 @@
         <id>dhcpv4.lexpire.unwarned_reclaim_cycles</id>
         <label>Cleanup circles</label>
         <type>text</type>
+        <hint>5</hint>
         <advanced>true</advanced>
         <help>This parameter specifies how many consecutive clean-up cycles must end with remaining leases to be processed before a warning is printed.</help>
     </field>
     <field>
         <type>header</type>
         <label>High Availability</label>
-        <colapsed>true</colapsed>
+        <collapse>true</collapse>
     </field>
     <field>
         <id>dhcpv4.ha.enabled</id>

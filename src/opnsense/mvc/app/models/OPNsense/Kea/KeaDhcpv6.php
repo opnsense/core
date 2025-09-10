@@ -194,25 +194,19 @@ class KeaDhcpv6 extends BaseModel
         return $result;
     }
 
-    private function getExpiredLeasesProcessingConfig()
-    {
-        $fields = [
-            'reclaim-timer-wait-time' => (int)$this->lexpire->reclaim_timer_wait_time->__toString(),
-            'hold-reclaimed-time' => (int)$this->lexpire->hold_reclaimed_time->__toString(),
-            'flush-reclaimed-timer-wait-time' => (int)$this->lexpire->flush_reclaimed_timer_wait_time->__toString(),
-            'max-reclaim-leases' => (int)$this->lexpire->max_reclaim_leases->__toString(),
-            'max-reclaim-time' => (int)$this->lexpire->max_reclaim_time->__toString(),
-            'unwarned-reclaim-cycles' => (int)$this->lexpire->unwarned_reclaim_cycles->__toString(),
-        ];
-
+private function getExpiredLeasesProcessingConfig()
+{
     $config = [];
-    foreach ($fields as $key => $value) {
-        if (!empty($value)) {
-            $config[$key] = (int)$value;
+    $lexpireFields = iterator_to_array($this->lexpire->iterateItems());
+    foreach ($lexpireFields as $fieldName => $fieldValue) {
+        $value = $fieldValue->__toString();
+        if ($value !== '' && $value !== null) {
+            $keaFieldName = str_replace('_', '-', $fieldName);
+            $config[$keaFieldName] = (int)$value;
         }
     }
 
-    return $config;
+    return empty($config) ? null : $config;
 }
 
     public function generateConfig($target = '/usr/local/etc/kea/kea-dhcp6.conf')
@@ -246,7 +240,9 @@ class KeaDhcpv6 extends BaseModel
             ]
         ];
         $expiredLeasesConfig = $this->getExpiredLeasesProcessingConfig();
-        $cnf['Dhcp6']['expired-leases-processing'] = $expiredLeasesConfig;
+        if ($expiredLeasesConfig !== null) {
+            $cnf['Dhcp6']['expired-leases-processing'] = $expiredLeasesConfig;
+        }
         if (!(new KeaCtrlAgent())->general->enabled->isEmpty()) {
             $cnf['Dhcp6']['hooks-libraries'] = [];
             $cnf['Dhcp6']['hooks-libraries'][] = [

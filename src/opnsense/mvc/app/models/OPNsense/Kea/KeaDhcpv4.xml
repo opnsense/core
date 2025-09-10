@@ -31,26 +31,27 @@
         </general>
         <lexpire>
             <hold_reclaimed_time type="IntegerField">
+                <Required>N</Required>
                 <MinimumValue>0</MinimumValue>
             </hold_reclaimed_time>
             <reclaim_timer_wait_time type="IntegerField">
-                <Hint>10</Hint>
+                <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
             </reclaim_timer_wait_time>
             <flush_reclaimed_timer_wait_time type="IntegerField">
-                <Hint>25</Hint>
+                <Required>N</Required>
                 <MinimumValue>0</MinimumValue>
             </flush_reclaimed_timer_wait_time>
-            <max_reclaim_leases type="IntegerField">
-                <Hint>100</Hint>
-                <MinimumValue>0</MinimumValue>
-            </max_reclaim_leases>
             <max_reclaim_time type="IntegerField">
-                <Hint>10</Hint>
+                <Required>N</Required>
                 <MinimumValue>0</MinimumValue>
             </max_reclaim_time>
+            <max_reclaim_leases type="IntegerField">
+                <Required>N</Required>
+                <MinimumValue>0</MinimumValue>
+            </max_reclaim_leases>
             <unwarned_reclaim_cycles type="IntegerField">
-                <Hint>5</Hint>
+                <Required>N</Required>
                 <MinimumValue>0</MinimumValue>
             </unwarned_reclaim_cycles>
         </lexpire>
