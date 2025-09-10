@@ -251,9 +251,7 @@ class KeaDhcpv4 extends BaseModel
             ]
         ];
         $expiredLeasesConfig = $this->getExpiredLeasesProcessingConfig();
-            if ($expiredLeasesConfig !== null) {
-                $cnf['Dhcp4']['expired-leases-processing'] = $expiredLeasesConfig;
-            }
+        $cnf['Dhcp4']['expired-leases-processing'] = $expiredLeasesConfig;
         if (!(new KeaCtrlAgent())->general->enabled->isEmpty()) {
             $cnf['Dhcp4']['hooks-libraries'] = [];
             $cnf['Dhcp4']['hooks-libraries'][] = [
