@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Kea/dhcp6</mount>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <description>Kea DHCPv6 configuration</description>
     <items>
         <general>

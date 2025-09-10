@@ -40,6 +40,50 @@
     </field>
     <field>
         <type>header</type>
+        <label>Lease Expiration</label>
+    </field>
+    <field>
+        <id>dhcpv6.lexpire.hold_reclaimed_time</id>
+        <label>Affinity lifetime</label>
+        <type>text</type>
+        <help>Defines for how long a returning client will be able to keep the same lease (in seconds)</help>
+    </field>
+    <field>
+        <id>dhcpv6.lexpire.reclaim-timer-wait-time</id>
+        <label>Reclamation delay</label>
+        <type>text</type>
+        <help>The interval between the completion of the previous reclamation cycle and the start of the next one. (in seconds)</help>
+    </field>
+    <field>
+        <id>dhcpv6.lexpire.flush-reclaimed-timer-wait-time</id>
+        <label>Reclamation initiation</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>This parameter controls how often the server initiates the lease reclamation procedure. (in seconds)</help>
+    </field>
+    <field>
+        <id>dhcpv6.lexpire.max-reclaim-time</id>
+        <label>Affinity lifetime</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Defines an upper limit to the length of time a lease reclamation procedure can take. (in milliseconds) Zero means no time limit. </help>
+    </field>
+    <field>
+        <id>dhcpv6.lexpire.max-reclaim-leases</id>
+        <label>Maximum Reclamation leases</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Defines the maximum number of reclaimed leases that can be processed at one time. Zero means unlimited</help>
+    </field>
+    <field>
+        <id>dhcpv6.lexpire.unwarned-reclaim-cycles</id>
+        <label>Affinity lifetime</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>This parameter specifies how many consecutive clean-up cycles must end with remaining leases to be processed before a warning is printed.</help>
+    </field>
+    <field>
+        <type>header</type>
         <label>High Availability</label>
     </field>
     <field>

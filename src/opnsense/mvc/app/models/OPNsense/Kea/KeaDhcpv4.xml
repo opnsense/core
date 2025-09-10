@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Kea/dhcp4</mount>
-    <version>1.0.5</version>
+    <version>1.1.0</version>
     <description>Kea DHCPv4 configuration</description>
     <items>
         <general>
@@ -28,16 +28,14 @@
                     <raw>raw</raw>
                 </OptionValues>
             </dhcp_socket_type>
-            <kaffinity type="BooleanField">
-                <Default>0</Default>
-                <Required>Y</Required>
-            </kaffinity>
+        </general>
+        <lexpire>
             <hold_reclaimed_time type="IntegerField">
                 <default>28800</default>
-                <Required>Y</Required>
                 <MinimumValue>0</MinimumValue>
             </hold_reclaimed_time>
-        </general>
+            ###############################################################################################################
+        </lexpire>
         <ha>
             <enabled type="BooleanField">
                 <Default>0</Default>
