@@ -266,7 +266,10 @@ abstract class BaseModel
             $config_section_data = $config_data?->$tagName ?? null;
             if (!$fieldObject->isContainer()) {
                 $internal_data->addChildNode($tagName, $fieldObject);
-                $fieldObject->setValue($config_section_data ?? ''); /* prevent null being passed */
+                if ($config_section_data !== null) {
+                    /* do not set initial data, default will take care */
+                    $fieldObject->setValue($config_section_data);
+                }
             } else {
                 // add new child node container, always try to pass config data
                 if ($fieldObject->isArrayType()) {
