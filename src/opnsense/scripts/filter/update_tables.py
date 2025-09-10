@@ -138,6 +138,12 @@ if __name__ == '__main__':
                         if error_output not in result['messages']:
                             result['messages'].append(error_message)
                             syslog.syslog(syslog.LOG_NOTICE, error_message)
+        else:
+            # We are not resolving these aliases and are not using their contents,
+            # they are not being used in any of the ones we manage, we still need to call pre_process()
+            # to assure aliases may be populated using the pre processing hook (currently only interface_net)
+            alias.pre_process(True)
+
 
     # cleanup removed aliases when reloading all
     if to_update is None:
