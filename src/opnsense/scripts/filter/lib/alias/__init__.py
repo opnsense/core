@@ -183,7 +183,7 @@ class Alias(object):
     def resolve(self, force=False):
         """ resolve (fetch) alias content, without dependencies.
             :force: force load
-            :return: string
+            :return: set
         """
         if not self._resolve_content:
             if self.expired() or self.changed() or force:
@@ -199,7 +199,7 @@ class Alias(object):
                         self._resolve_content = self._resolve_content.union(address_parser.resolve_dns())
                 except (IOError, DNSException) as e:
                     syslog.syslog(syslog.LOG_ERR, 'alias resolve error %s (%s)' % (self._name, e))
-                    self._resolve_content = set(undo_content.split("\n"))
+                    self._resolve_content = set(undo_content.split("\n")) if undo_content is not False else set()
 
                 resolve_content_str = '\n'.join(sorted(self._resolve_content))
                 if undo_content != resolve_content_str:
