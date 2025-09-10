@@ -358,13 +358,12 @@ class SettingsController extends ApiMutableModelControllerBase
 
     /**
      * List all installable rules including current status
-     * @return array list of items when $id is null otherwise the selected item is returned
+     * @return array|mixed list of items when $id is null otherwise the selected item is returned
      * @throws \Exception
      */
     public function listRulesetsAction()
     {
-        // Tabulator expects an array for rows, not an object
-        return $this->searchRecordsetBase($this->listInstallableRules(), null, 'description')['rows'];
+        return $this->searchRecordsetBase($this->listInstallableRules(), null, 'description');
     }
 
     /**
