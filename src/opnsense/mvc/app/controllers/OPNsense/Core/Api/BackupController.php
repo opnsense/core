@@ -201,7 +201,7 @@ class BackupController extends ApiControllerBase
                     $this->response->setRawHeader("Content-length: " . filesize($filename));
                     $this->response->setRawHeader("Pragma: no-cache");
                     $this->response->setRawHeader("Expires: 0");
-                    $this->response->setContent(fopen($filename, 'r'));
+                    $this->response->setContent(fopen($filename, 'r'), true);
                     break;
                 }
             }
