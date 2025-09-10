@@ -277,24 +277,6 @@ class ArrayField extends BaseField
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * This override is mainly intended for ModelRelationField, although other field types may need the same.
-     * When a field forward references a container (e.g. an ArrayField type further in the tree), the eventPostLoading()
-     * has't been triggered yet as that happens at a later stage.
-     *
-     * Part of this change involves saveguarding eventPostLoading() to a one-shot operation, so we are able to trigger
-     * the event which will otherwise be scheduled later. E.g. ModelRelationField.eventPostLoading() triggers the
-     * dependent of an array type which hasn't been fully populated yet.
-     *
-     */
-    public function getNodeContent()
-    {
-        $this->eventPostLoading();
-        return parent::getNodeContent();
-    }
-
-    /**
      * @param bool $include_static include non importable static items
      * @param array $exclude fieldnames to exclude
      * @return array simple array set
