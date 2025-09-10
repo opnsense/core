@@ -186,12 +186,15 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     public function reconfigureAction()
     {
         if ($this->request->isPost()) {
+            $running = $this->statusAction()['status'] == 'running';
             $restart = $this->reconfigureForceRestart();
             $enabled = $this->serviceEnabled();
             $backend = new Backend();
 
-            if ($restart || !$enabled) {
+            /* when the service is disabled we cannot assume status gave us the right information */
+            if (!$enabled || ($restart && $running)) {
                 $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' stop');
+                $running = false;
             }
 
             if ($this->invokeInterfaceRegistration()) {
@@ -213,7 +216,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
             }
 
             if ($enabled) {
-                if ($restart || $this->statusAction()['status'] != 'running') {
+                if ($restart || !$running) {
                     $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' start');
                 } else {
                     $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' reload');
