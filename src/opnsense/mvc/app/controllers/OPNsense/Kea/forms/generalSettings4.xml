@@ -69,21 +69,21 @@
     </field>
     <field>
         <id>dhcpv4.lexpire.max_reclaim_time</id>
-        <label>Affinity lifetime</label>
+        <label>Maximum Reclamation time</label>
         <type>text</type>
         <advanced>true</advanced>
-        <help>Defines an upper limit to the length of time a lease reclamation procedure can take. (in milliseconds) Zero means no time limit. </help>
+        <help>Defines an upper limit to the length of time a lease reclamation procedure can take. (in milliseconds) (0 means no time limit) </help>
     </field>
     <field>
         <id>dhcpv4.lexpire.max_reclaim_leases</id>
-        <label>Maximum Reclamation leases</label>
+        <label>Maximum reclamation leases</label>
         <type>text</type>
         <advanced>true</advanced>
-        <help>Defines the maximum number of reclaimed leases that can be processed at one time. Zero means unlimited</help>
+        <help>Defines the maximum number of reclaimed leases that can be processed at one time. (0 means unlimited)</help>
     </field>
     <field>
         <id>dhcpv4.lexpire.unwarned_reclaim_cycles</id>
-        <label>Affinity lifetime</label>
+        <label>Cleanup circles</label>
         <type>text</type>
         <advanced>true</advanced>
         <help>This parameter specifies how many consecutive clean-up cycles must end with remaining leases to be processed before a warning is printed.</help>

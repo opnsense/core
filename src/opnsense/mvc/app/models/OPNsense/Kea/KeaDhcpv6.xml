@@ -39,9 +39,9 @@
                 <MinimumValue>0</MinimumValue>
                 <Default>10</Default>
             </max_reclaim_time>
-            <unwarned_time type="IntegerField">
+            <unwarned_reclaim_cycles type="IntegerField">
                 <MinimumValue>0</MinimumValue>
-            </unwarned_time>
+            </unwarned_reclaim_cycles>
         </lexpire>
         <ha>
             <enabled type="BooleanField">
