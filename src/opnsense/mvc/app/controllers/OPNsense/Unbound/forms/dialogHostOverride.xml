@@ -47,12 +47,6 @@
         </grid_view>
     </field>
     <field>
-        <id>host.ttl</id>
-        <label>TTL (seconds)</label>
-        <type>text</type>
-        <help>TTL of the host, e.g. 3600</help>
-    </field>
-    <field>
         <id>host.server</id>
         <label>IP address</label>
         <type>text</type>
@@ -60,6 +54,20 @@
         <grid_view>
             <formatter>mxformatter</formatter>
         </grid_view>
+    </field>
+    <field>
+        <id>host.txtdata</id>
+        <label>TXT Data</label>
+        <type>text</type>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>host.ttl</id>
+        <label>TTL (seconds)</label>
+        <type>text</type>
+        <help>TTL of the host, e.g. 3600</help>
     </field>
     <field>
         <id>host.description</id>
