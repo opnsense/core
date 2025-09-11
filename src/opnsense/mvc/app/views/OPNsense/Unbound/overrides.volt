@@ -100,13 +100,20 @@ $( document ).ready(function() {
     /* Hide/unhide input fields based on selected RR (Type) value */
     $('select[id="host.rr"]').on('change', function(e) {
         if (this.value == "A" || this.value == "AAAA") {
+            $('tr[id="row_host.txtdata"]').addClass('hidden');
             $('tr[id="row_host.mx"]').addClass('hidden');
             $('tr[id="row_host.mxprio"]').addClass('hidden');
             $('tr[id="row_host.server"]').removeClass('hidden');
         } else if (this.value == "MX") {
+            $('tr[id="row_host.txtdata"]').addClass('hidden');
             $('tr[id="row_host.server"]').addClass('hidden');
             $('tr[id="row_host.mx"]').removeClass('hidden');
             $('tr[id="row_host.mxprio"]').removeClass('hidden');
+        } else if (this.value == "TXT") {
+            $('tr[id="row_host.server"]').addClass('hidden');
+            $('tr[id="row_host.mx"]').addClass('hidden');
+            $('tr[id="row_host.mxprio"]').addClass('hidden');
+            $('tr[id="row_host.txtdata"]').removeClass('hidden');
         }
     });
 

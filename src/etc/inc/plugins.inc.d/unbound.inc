@@ -632,6 +632,9 @@ function unbound_add_host_entries($ifconfig_details)
                         case 'MX':
                             $unbound_entries .= "local-data: \"{$alias['hostname']}{$alias['domain']} {$host->ttl} IN MX {$host->mxprio} {$host->mx}\"\n";
                             break;
+                        case 'TXT':
+                            $unbound_entries .= "local-data: '{$alias['hostname']}{$alias['domain']} {$host->ttl} IN TXT \"" . addslashes($host->txtdata) . "\"'\n";
+                            break;
                     }
 
                     if (!empty($alias['description']) && !empty($general['txtsupport']) && $alias['hostname'] != '*.') {
