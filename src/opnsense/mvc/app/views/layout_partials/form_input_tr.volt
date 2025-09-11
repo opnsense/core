@@ -38,6 +38,7 @@
  #                   hidden             hidden fields not for user interaction
  #                   info               static text (help icon, no input or editing)
  #                   color              color picker for selecting a color
+ #                   datetime-local     local time picker
  # label       :   attribute label (visible text)
  # size        :   size (width in characters) attribute if applicable
  # height      :   height (length in characters) attribute if applicable
@@ -62,8 +63,8 @@
         </div>
     </td>
     <td>
-        {% if type == "text" %}
-            <input  type="text" aria-label="{{label|safe}}"
+        {% if type in ["text", "datetime-local"] %}
+            <input  type="{{type}}" aria-label="{{label|safe}}"
                     class="form-control {{style|default('')}}"
                     size="{{size|default("50")}}"
                     id="{{ id }}"
