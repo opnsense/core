@@ -102,7 +102,7 @@ function unbound_optimization()
     return $optimization;
 }
 
-function _unbound_service_mount_sync($umount = false)
+function unbound_service_mount_sync($umount = false)
 {
     $mountpoints = [
         '/var/unbound/dev' => [
@@ -148,7 +148,7 @@ function _unbound_service_mount_sync($umount = false)
     }
 }
 
-function _unbound_service_stop()
+function unbound_service_stop()
 {
     $mdl = new \OPNsense\Unbound\Unbound();
 
@@ -167,12 +167,6 @@ function _unbound_service_stop()
     killbypid('/var/run/unbound.pid');
 }
 
-function unbound_service_stop()
-{
-    _unbound_service_stop();
-    _unbound_service_mount_sync(true);
-}
-
 function unbound_generate_config()
 {
     global $config;
@@ -187,7 +181,8 @@ function unbound_generate_config()
     foreach ($dirs as $dir) {
         mwexecf('/bin/mkdir -p %s', "/var/unbound{$dir}");
     }
-    _unbound_service_mount_sync();
+
+    unbound_service_mount_sync();
 
     $optimization = unbound_optimization();
 
@@ -394,7 +389,6 @@ EOD;
     chmod($root_hints_tmp, 0644);
     rename($root_hints_tmp, '/var/unbound/root.hints');
 
-    /* XXX: cleanup, should have been run, but interface changes during boot or wizard are messing things up */
     configd_run('template reload OPNsense/Unbound/*');
 }
 
@@ -451,11 +445,11 @@ function unbound_configure_do($verbose = false, $interface_map = null)
         return;
     }
 
+    unbound_service_stop();
+
     if (!unbound_enabled()) {
-        _unbound_service_stop(true);
+        unbound_service_mount_sync(true);
         return;
-    } else {
-        _unbound_service_stop();
     }
 
     service_log('Starting Unbound DNS...', $verbose);
