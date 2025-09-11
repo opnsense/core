@@ -145,6 +145,7 @@
                             <addFields>
                                 <field1>subnet</field1>
                             </addFields>
+                            <caseInsensitive>Y</caseInsensitive>
                         </check001>
                     </Constraints>
                 </hw_address>

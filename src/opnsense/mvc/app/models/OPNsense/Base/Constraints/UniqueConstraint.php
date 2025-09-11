@@ -50,6 +50,16 @@ class UniqueConstraint extends BaseConstraint
     {
         $node = $this->getOption('node');
         $fieldSeparator = chr(10) . chr(0);
+        $caseInsensitive = ($this->getOption('caseInsensitive') ?? 'N') === 'Y';
+
+        $normalize = static function ($v) use ($caseInsensitive) {
+            if ($v === null) {
+                return '';
+            }
+            $s = (string) $v;
+            return $caseInsensitive ? mb_strtolower($s, 'UTF-8') : $s;
+        };
+
         if ($node) {
             if (!$node->isRequired() && $node->isEmpty()) {
                 return true;
@@ -84,7 +94,7 @@ class UniqueConstraint extends BaseConstraint
                     foreach ($containerNode->iterateItems() as $item) {
                         $itemValue = '';
                         foreach ($keyFields as $field) {
-                            $itemValue .= $fieldSeparator . $item->$field;
+                            $itemValue .= $fieldSeparator . $normalize($item->$field);
                         }
                         if (empty(static::$itemmap[$nodeKey][$itemValue])) {
                             static::$itemmap[$nodeKey][$itemValue] = 0;
@@ -95,7 +105,7 @@ class UniqueConstraint extends BaseConstraint
             }
             $nodeValue = '';
             foreach ($keyFields as $field) {
-                $nodeValue .= $fieldSeparator . $parentNode->$field;
+                $nodeValue .= $fieldSeparator . $normalize($parentNode->$field);
             }
             if ((static::$itemmap[$nodeKey][$nodeValue] ?? 0) > 1) {
                 $this->appendMessage($validator, $attribute);
