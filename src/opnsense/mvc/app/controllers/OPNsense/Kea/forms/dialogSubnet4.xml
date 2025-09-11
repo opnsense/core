@@ -78,7 +78,7 @@
         <id>subnet4.option_data.domain_name</id>
         <label>Domain name</label>
         <type>text</type>
-        <help>The domain name to offer to the client, set to this firewall's domain name when left empty</help>
+        <help>A custom domain name to offer to the clients.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
