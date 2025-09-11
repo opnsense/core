@@ -168,7 +168,7 @@ function dnsmasq_configure_do($verbose = false)
     global $config;
 
     killbypid('/var/run/dnsmasq_dhcpd.pid');
-    mwexec('/usr/local/etc/rc.d/dnsmasq stop');
+    mwexec('/usr/local/etc/rc.d/dnsmasq stop', true);
 
     if (!dnsmasq_enabled()) {
         return;
