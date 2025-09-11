@@ -115,11 +115,11 @@ class Response
                 }
             }
             @fclose($this->content);
-        } elseif (!empty($this->content)) {
+        } else {
             if (is_array($this->content)) {
                 $result = json_encode($this->content);
                 echo $this->safe_output ? $result : htmlspecialchars($result, ENT_NOQUOTES);
-            } else {
+            } elseif (!empty($this->content)) {
                 /* XXX: assume safe content here, to prevent breaking existing callers.
                         eventually we need to move the responsibility of marking data safe to the caller explicitly*/
                 echo $this->content;
