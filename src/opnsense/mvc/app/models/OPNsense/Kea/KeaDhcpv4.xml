@@ -31,7 +31,6 @@
         </general>
         <lexpire>
             <hold_reclaimed_time type="IntegerField">
-                <default></default>
                 <Required>N</Required>
                 <MinimumValue>0</MinimumValue>
             </hold_reclaimed_time>
