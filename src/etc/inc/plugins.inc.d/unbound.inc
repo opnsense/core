@@ -452,11 +452,11 @@ function unbound_configure_do($verbose = false, $interface_map = null)
     }
 
     if (!unbound_enabled()) {
-        _unbound_service_stop(true);
+        unbound_service_stop();
         return;
-    } else {
-        _unbound_service_stop();
     }
+
+    _unbound_service_stop();
 
     service_log('Starting Unbound DNS...', $verbose);
 
