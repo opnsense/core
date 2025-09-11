@@ -31,6 +31,7 @@
         let grid_spd = $("#grid-spd").UIBootgrid({
             search:'/api/ipsec/spd/search',
             del:'/api/ipsec/spd/delete/',
+            datakey: 'id',
             options:{
                 formatters:{
                     commands: function (column, row) {
