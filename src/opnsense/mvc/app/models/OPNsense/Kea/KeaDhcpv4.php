@@ -212,10 +212,9 @@ class KeaDhcpv4 extends BaseModel
         $config = [];
         $lexpireFields = iterator_to_array($this->lexpire->iterateItems());
         foreach ($lexpireFields as $fieldName => $fieldValue) {
-            $value = $fieldValue->__toString();
-            if ($value !== '' && $value !== null) {
+            if (!$fieldValue->isEqual('')) {
                 $keaFieldName = str_replace('_', '-', $fieldName);
-                $config[$keaFieldName] = (int)$value;
+                $config[$keaFieldName] = (int)$fieldValue->getValue();
             }
         }
         return empty($config) ? null : $config;

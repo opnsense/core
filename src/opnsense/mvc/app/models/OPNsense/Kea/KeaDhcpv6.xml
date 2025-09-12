@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Kea/dhcp6</mount>
-    <version>1.1.0</version>
+    <version>1.0.4</version>
     <description>Kea DHCPv6 configuration</description>
     <items>
         <general>
@@ -23,27 +23,21 @@
         </general>
         <lexpire>
             <hold_reclaimed_time type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>0</MinimumValue>
             </hold_reclaimed_time>
             <reclaim_timer_wait_time type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
             </reclaim_timer_wait_time>
             <flush_reclaimed_timer_wait_time type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>0</MinimumValue>
             </flush_reclaimed_timer_wait_time>
             <max_reclaim_time type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>0</MinimumValue>
             </max_reclaim_time>
             <max_reclaim_leases type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>0</MinimumValue>
             </max_reclaim_leases>
             <unwarned_reclaim_cycles type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>0</MinimumValue>
             </unwarned_reclaim_cycles>
         </lexpire>
