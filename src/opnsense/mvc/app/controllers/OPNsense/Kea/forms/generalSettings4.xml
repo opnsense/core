@@ -76,7 +76,7 @@
         <type>text</type>
         <hint>10</hint>
         <advanced>true</advanced>
-        <help>Defines in milliseconds an upper limit to the length of time a lease reclamation procedure can take. Using 0 disables the time limit</help>
+        <help>Defines an upper limit in milliseconds to the length of time a lease reclamation procedure can take. Using "0" disables the time limit.</help>
     </field>
     <field>
         <id>dhcpv4.lexpire.max_reclaim_leases</id>
@@ -84,7 +84,7 @@
         <type>text</type>
         <hint>100</hint>
         <advanced>true</advanced>
-        <help>Defines the maximum number of reclaimed leases that can be processed at one time. Use 0 to set it to unlimited.</help>
+        <help>Defines the maximum number of reclaimed leases that can be processed at one time. Use "0" to set it to unlimited.</help>
     </field>
     <field>
         <id>dhcpv4.lexpire.unwarned_reclaim_cycles</id>
