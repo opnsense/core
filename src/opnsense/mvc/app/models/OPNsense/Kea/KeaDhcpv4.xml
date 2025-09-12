@@ -29,6 +29,26 @@
                 </OptionValues>
             </dhcp_socket_type>
         </general>
+        <lexpire>
+            <hold_reclaimed_time type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </hold_reclaimed_time>
+            <reclaim_timer_wait_time type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+            </reclaim_timer_wait_time>
+            <flush_reclaimed_timer_wait_time type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </flush_reclaimed_timer_wait_time>
+            <max_reclaim_time type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </max_reclaim_time>
+            <max_reclaim_leases type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </max_reclaim_leases>
+            <unwarned_reclaim_cycles type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </unwarned_reclaim_cycles>
+        </lexpire>
         <ha>
             <enabled type="BooleanField">
                 <Default>0</Default>
