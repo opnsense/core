@@ -194,6 +194,20 @@ class KeaDhcpv6 extends BaseModel
         return $result;
     }
 
+    private function getExpiredLeasesProcessingConfig()
+    {
+        $config = [];
+        $lexpireFields = iterator_to_array($this->lexpire->iterateItems());
+        foreach ($lexpireFields as $fieldName => $fieldValue) {
+            $value = $fieldValue->__toString();
+            if (!$fieldValue->isEqual('')) {
+                $keaFieldName = str_replace('_', '-', $fieldName);
+                $config[$keaFieldName] = (int)$fieldValue->getValue();
+            }
+        }
+        return empty($config) ? null : $config;
+    }
+
     public function generateConfig($target = '/usr/local/etc/kea/kea-dhcp6.conf')
     {
         $cnf = [
@@ -224,6 +238,10 @@ class KeaDhcpv6 extends BaseModel
                 'subnet6' => $this->getConfigSubnets(),
             ]
         ];
+        $expiredLeasesConfig = $this->getExpiredLeasesProcessingConfig();
+        if ($expiredLeasesConfig !== null) {
+            $cnf['Dhcp6']['expired-leases-processing'] = $expiredLeasesConfig;
+        }
         if (!(new KeaCtrlAgent())->general->enabled->isEmpty()) {
             $cnf['Dhcp6']['hooks-libraries'] = [];
             $cnf['Dhcp6']['hooks-libraries'][] = [
