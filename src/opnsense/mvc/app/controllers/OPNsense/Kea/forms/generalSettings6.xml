@@ -70,7 +70,7 @@
         <type>text</type>
         <hint>10</hint>
         <advanced>true</advanced>
-        <help>Defines an upper limit in milliseconds to the length of time a lease reclamation procedure may take. Using "0" disables the time limit.</help>
+        <help>Defines an upper limit in milliseconds to the length of time a lease reclamation procedure may take. Use "0" to disable the time limit.</help>
     </field>
     <field>
         <id>dhcpv6.lexpire.max_reclaim_leases</id>
