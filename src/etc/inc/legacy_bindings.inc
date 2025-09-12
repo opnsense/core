@@ -71,8 +71,13 @@ function configdp_run($cmd, $params = array(), $detach = false)
  */
 function legacy_html_escape_form_data(&$settings)
 {
+    $rename_keys = [];
     if (is_array($settings)) {
         foreach ($settings as $dataKey => &$dataValue) {
+            $cleansedKey = htmlspecialchars($dataKey, ENT_QUOTES | ENT_HTML401);
+            if ($cleansedKey != $dataKey) {
+                $rename_keys[$dataKey] = $cleansedKey;
+            }
             if (is_array($dataValue)) {
                 legacy_html_escape_form_data($dataValue);
             } elseif ($dataValue === null) {
@@ -80,6 +85,10 @@ function legacy_html_escape_form_data(&$settings)
             } else {
                 $settings[$dataKey] = htmlspecialchars($dataValue, ENT_QUOTES | ENT_HTML401);
             }
+        }
+        foreach ($rename_keys as $dataKey => $cleansedKey) {
+            $settings[$cleansedKey] = $settings[$dataKey];
+            unset($settings[$dataKey]);
         }
     }
 }
