@@ -42,7 +42,7 @@ abstract class Rule
     protected static $aliasMap = [];
 
     /* ease the reuse of parsing for pf keywords by using class constants */
-    const PARSE_PROTO = 'parseReplaceSimple,tcp/udp:{tcp udp}|a/n:"a/n",proto ';
+    const PARSE_PROTO = 'parseReplaceSimple,tcp/udp:{tcp udp}|a/n:"a/n"|skip:"skip",proto ';
 
     protected function loadAliasMap()
     {
