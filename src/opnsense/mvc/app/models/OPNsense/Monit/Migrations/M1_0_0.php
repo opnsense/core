@@ -34,7 +34,7 @@ use OPNsense\Core\Shell;
 
 class M1_0_0 extends BaseModelMigration
 {
-    public function post($model)
+    public function run($model)
     {
         $cfg = Config::getInstance();
         $cfgObj = $cfg->object();
@@ -134,5 +134,7 @@ class M1_0_0 extends BaseModelMigration
         /* add root filesystem service */
         $rootFsNode = $model->service->add();
         $rootFsNode->setNodes($rootFsService);
+
+        parent::run($model);
     }
 }

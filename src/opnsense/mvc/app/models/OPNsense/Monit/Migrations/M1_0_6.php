@@ -32,7 +32,7 @@ use OPNsense\Base\BaseModelMigration;
 
 class M1_0_6 extends BaseModelMigration
 {
-    public function post($model)
+    public function run($model)
     {
         /* extend tests */
         $defaultTests = array();
@@ -72,5 +72,7 @@ class M1_0_6 extends BaseModelMigration
             $srv->path = $newservice['path'];
             $srv->tests = $newservice['tests'];
         }
+
+        parent::run($model);
     }
 }

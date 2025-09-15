@@ -33,13 +33,14 @@ use OPNsense\Core\Config;
 
 class M1_0_8 extends BaseModelMigration
 {
-    public function post($model)
+    public function run($model)
     {
         foreach ($model->test->iterateItems() as $test) {
             $test->type = $model->getTestType($test->condition->getNodeData());
+            /* validation would fail because we want to change the type of tests linked to services */
+            $test->type->markUnchanged();
         }
-        // validation will fail because we want to change the type of tests linked to services
-        $model->serializeToConfig(false, true);
-        Config::getInstance()->save();
+
+        parent::run($model);
     }
 }
