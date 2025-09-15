@@ -284,7 +284,7 @@ install:
 .if exists(${LOCALBASE}/opnsense/www/index.php)
 	# try to update the current system if it looks like one
 	@touch ${LOCALBASE}/opnsense/www/index.php
-	@pluginctl -cq cache_flush
+	@${.CURDIR}/src/sbin/pluginctl -cq cache_flush
 .endif
 
 collect:
@@ -357,10 +357,10 @@ license:
 sync: license plist-fix
 
 migrate:
-	@src/opnsense/mvc/script/run_migrations.php
+	@${.CURDIR}/src/sbin/pluginctl -m
 
 validate:
-	@src/opnsense/mvc/script/run_validations.php
+	@${.CURDIR}/src/sbin/pluginctl -v
 
 test:
 .if exists(${TESTDIR})

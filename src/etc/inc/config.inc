@@ -168,7 +168,7 @@ function convert_config($verbose = false)
     }
 
     /* chain the new migration into this function call */
-    $cmd = '/usr/local/opnsense/mvc/script/run_migrations.php';
+    $cmd = '/usr/local/sbin/pluginctl -m';
     if ($verbose) {
         passthru($cmd);
     } else {

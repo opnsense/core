@@ -148,11 +148,12 @@ function get_all_services($name = '', $id = '')
 }
 
 $jflags = JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_INVALID_UTF8_IGNORE;
-$opts = getopt('46cDdfghIirqSsXx', [], $optind);
+$opts = getopt('46cDdfghIimrqSsvXx', [], $optind);
 $args = array_slice($argv, $optind);
+$ret = 0;
 
 if (isset($opts['h'])) {
-    echo "Usage: pluginctl [-4|-6|-c|-D|-d|-f|-g|-h|-I|-i|-r|-q|-S|-s|-X|-x] ...\n\n";
+    echo "Usage: pluginctl [-4|-6|-c|-D|-d|-f|-g|-h|-I|-i|-m|-r|-q|-S|-s|-v|-X|-x] ...\n\n";
     echo "\t-4 IPv4 address mode, return primary address of interface\n";
     echo "\t-6 IPv4 address mode, return primary address of interface\n";
     echo "\t-c configure mode (default), executes plugin [_configure] hook\n";
@@ -163,10 +164,12 @@ if (isset($opts['h'])) {
     echo "\t-h show this help text and exit\n";
     echo "\t-I information mode, lists registered device statistics\n";
     echo "\t-i invoke dynamic interface registration\n";
+    echo "\t-m invoke model migrations\n";
     echo "\t-q quiet switch for configure mode\n";
     echo "\t-r run mode (e.g. command)\n";
     echo "\t-S service metadata dump\n";
     echo "\t-s service mode (e.g. myservice restart)\n";
+    echo "\t-v invoke model validations\n";
     echo "\t-X XMLRPC sync metadata dump\n";
     echo "\t-x XMLRPC sync key/value list\n";
 } elseif (isset($opts['4']) || isset($opts['6'])) {
@@ -297,6 +300,10 @@ if (isset($opts['h'])) {
         $payload = new ArrayObject();
     }
     echo json_encode($payload, $jflags) . PHP_EOL;
+} elseif (isset($opts['m'])) {
+    passthru('/usr/local/opnsense/mvc/script/run_migrations.php', $ret);
+} elseif (isset($opts['v'])) {
+    passthru('/usr/local/opnsense/mvc/script/run_validations.php', $ret);
 } elseif (empty($args[0])) {
     // no arguments, list plugins of selected type
     $results = [];
@@ -329,4 +336,4 @@ if (isset($opts['h'])) {
     plugins_configure($hook, !isset($opts['q']), $args);
 }
 
-exit (0);
+exit ($ret);
