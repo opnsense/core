@@ -33,6 +33,7 @@ PKG=		true
 GIT!=		which git || echo true
 
 GITVERSION=	${.CURDIR}/Scripts/version.sh
+PLUGINCTL=	${.CURDIR}/src/sbin/pluginctl
 
 _CORE_ARCH!=	uname -p
 CORE_ARCH?=	${_CORE_ARCH}
