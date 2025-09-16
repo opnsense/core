@@ -283,7 +283,7 @@ install:
 .if exists(${LOCALBASE}/opnsense/www/index.php)
 	# try to update the current system if it looks like one
 	@touch ${LOCALBASE}/opnsense/www/index.php
-	@${.CURDIR}/src/sbin/pluginctl -cq cache_flush
+	@${PLUGINCTL} -cq cache_flush
 .endif
 
 collect:
@@ -346,7 +346,7 @@ upgrade-check:
 upgrade: upgrade-check clean-pkgdir package
 	@${PKG} delete -fy ${CORE_NAME} || true
 	@${PKG} add ${PKGDIR}/*.pkg
-	@${.CURDIR}/src/sbin/pluginctl -c webgui
+	@${PLUGINCTL} -c webgui
 
 glint: sweep plist-fix lint
 
@@ -356,10 +356,10 @@ license:
 sync: license plist-fix
 
 migrate:
-	@${.CURDIR}/src/sbin/pluginctl -m
+	@${PLUGINCTL} -m
 
 validate:
-	@${.CURDIR}/src/sbin/pluginctl -v
+	@${PLUGINCTL} -v
 
 test:
 .if exists(${TESTDIR})
