@@ -34,12 +34,13 @@ class M1_0_6 extends BaseModelMigration
 {
     public function run($model)
     {
-        /* extend tests */
-        $defaultTests = array();
-        $defaultTests['ChangedStatus'] = array(
-          "name" => "ChangedStatus", "condition" => "changed status",
-          "action" => "alert", "type" => "ProgramStatus"
-        );
+        $defaultTests = [];
+        $defaultTests['ChangedStatus'] = [
+            'action' => 'alert',
+            'condition' => 'changed status',
+            'name' => 'ChangedStatus',
+            'type' => 'ProgramStatus',
+        ];
 
         foreach ($defaultTests as &$newtest) {
             $found = false;
@@ -58,12 +59,16 @@ class M1_0_6 extends BaseModelMigration
             $newtest['uuid'] = $found->getAttribute('uuid');
         }
 
-        $defaultServices = array(
-            array("enabled" => "0", "type" => "custom", "name" => "carp_status_change",
-                  "path" => "/usr/local/opnsense/scripts/OPNsense/Monit/carp_status",
-                  "tests" => $defaultTests['ChangedStatus']['uuid']
-                )
-        );
+        $defaultServices = [
+            [
+                'enabled' => '0',
+                'name' => 'carp_status_change',
+                'path' => '/usr/local/opnsense/scripts/OPNsense/Monit/carp_status',
+                'tests' => $defaultTests['ChangedStatus']['uuid'],
+                'type' => 'custom',
+            ]
+        ];
+
         foreach ($defaultServices as &$newservice) {
             $srv = $model->service->Add();
             $srv->enabled = $newservice['enabled'];
