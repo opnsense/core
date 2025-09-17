@@ -32,6 +32,7 @@ namespace OPNsense\Unbound;
 use OPNsense\Base\BaseModel;
 use OPNsense\Base\Messages\Message;
 use OPNsense\Core\Backend;
+use OPNsense\Firewall\Util;
 
 class Unbound extends BaseModel
 {
@@ -61,6 +62,81 @@ class Unbound extends BaseModel
             }
         }
 
+        // Validate Split DNS subnet overlaps
+        if ($validateFullModel || $this->split_dns->view_subnets->isFieldChanged()) {
+            $subnets = [];
+            foreach ($this->split_dns->view_subnets->subnet->iterateItems() as $uuid => $subnet) {
+                if (!empty((string)$subnet->network) && !empty((string)$subnet->enabled)) {
+                    $currentNetwork = (string)$subnet->network;
+
+                    // Check for overlaps with existing subnets
+                    foreach ($subnets as $existingUuid => $existingNetwork) {
+                        if ($this->subnetsOverlap($currentNetwork, $existingNetwork)) {
+                            $messages->appendMessage(new Message(
+                                sprintf(gettext('Subnet %s overlaps with existing subnet %s'), $currentNetwork, $existingNetwork),
+                                'split_dns.view_subnets.subnet.' . $uuid . '.network'
+                            ));
+                            break;
+                        }
+                    }
+
+                    $subnets[$uuid] = $currentNetwork;
+                }
+            }
+        }
+
+        // Validate Split DNS host IP address versions match record types
+        if ($validateFullModel || $this->split_dns->view_hosts->isFieldChanged()) {
+            foreach ($this->split_dns->view_hosts->host->iterateItems() as $uuid => $host) {
+                if (!empty((string)$host->enabled) && !empty((string)$host->rr) && !empty((string)$host->server)) {
+                    $recordType = (string)$host->rr;
+                    $ipAddress = (string)$host->server;
+
+                    if ($recordType === 'A') {
+                        // Validate IPv4 for A records
+                        if (!Util::isIpv4Address($ipAddress)) {
+                            $messages->appendMessage(new Message(
+                                gettext('IPv4 address required for A record type'),
+                                'split_dns.view_hosts.host.' . $uuid . '.server'
+                            ));
+                        }
+                    } elseif ($recordType === 'AAAA') {
+                        // Validate IPv6 for AAAA records
+                        if (!Util::isIpv6Address($ipAddress)) {
+                            $messages->appendMessage(new Message(
+                                gettext('IPv6 address required for AAAA record type'),
+                                'split_dns.view_hosts.host.' . $uuid . '.server'
+                            ));
+                        }
+                    }
+                }
+            }
+        }
+
         return $messages;
+    }
+
+    /**
+     * Check if two CIDR subnets overlap
+     * @param string $cidr1 First CIDR (e.g., "192.168.1.0/24" or "2001:db8::/32")
+     * @param string $cidr2 Second CIDR (e.g., "192.168.0.0/16" or "2001:db8:1::/48")
+     * @return bool True if subnets overlap
+     */
+    private function subnetsOverlap($cidr1, $cidr2)
+    {
+        if (empty($cidr1) || empty($cidr2)) {
+            return false;
+        }
+
+        // Use existing OPNsense function to get network ranges (handles both IPv4 and IPv6)
+        $range1 = Util::cidrToRange($cidr1);
+        $range2 = Util::cidrToRange($cidr2);
+
+        if (!$range1 || !$range2) {
+            return false;
+        }
+
+        // Check if either network address falls within the other CIDR
+        return Util::isIPInCIDR($range1[0], $cidr2) || Util::isIPInCIDR($range2[0], $cidr1);
     }
 }
