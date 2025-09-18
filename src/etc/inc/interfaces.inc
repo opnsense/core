@@ -726,14 +726,15 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
      * split between a suspend and reset mode in order to accomodate the need.
      */
     if ($ifacecfg === false) {
-        $realif = get_real_interface($interface);
-        $realifv6 = get_real_interface($interface, "inet6");
         $ifcfg = $config['interfaces'][$interface];
         $ppps = isset($config['ppps']['ppp']) ? $config['ppps']['ppp'] : [];
+        $devices = get_real_interface($interface, 'both');
+        $realif = reset($devices);
+        $realifv6 = end($devices);
     } else {
         $ifcfg = $ifacecfg['ifcfg'];
         $ppps = $ifacecfg['ppps'];
-        /* When $ifacecfg is passed, it should contain the original interfaces */
+        /* when $ifacecfg is passed, it should contain the original interfaces */
         $realif = $ifacecfg['ifcfg']['realif'];
         $realifv6 = $ifacecfg['ifcfg']['realifv6'];
     }
@@ -2216,8 +2217,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
     $wandescr = !empty($wancfg['descr']) ? $wancfg['descr'] : strtoupper($interface);
 
-    $realif = get_real_interface($interface);
-    $realifv6 = get_real_interface($interface, 'inet6');
+    $_devices = get_real_interface($interface, 'both');
+    $realif = reset($_devices);
+    $realifv6 = end($_devices);
+
     $devices = plugins_devices();
 
     /* get the correct hardware interface if PPP is involved or return the one we have */
