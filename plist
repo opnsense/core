@@ -752,6 +752,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Migrations/M1_0_6.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Migrations/M1_0_7.php
+/usr/local/opnsense/mvc/app/models/OPNsense/IDS/Migrations/M1_1_1.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/FieldTypes/CharonLogLevelField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/FieldTypes/ConnnectionField.php
