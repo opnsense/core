@@ -175,14 +175,14 @@ if (isset($opts['h'])) {
 } elseif (isset($opts['4']) || isset($opts['6'])) {
     $ints = !empty($args[0]) ? [$args[0]] : array_keys($config['interfaces'] ?? []);
     $ifconfig_details = legacy_interfaces_details();
-    $ret = [];
+    $result = [];
 
     foreach ($ints as $int) {
         if (empty($config['interfaces'][$int])) {
             continue;
         }
 
-        $ret[$int] = [];
+        $result[$int] = [];
 
         foreach (['inet' => '4', 'inet6' => '6'] as $family => $opt) {
             if (!isset($opts[$opt])) {
@@ -192,7 +192,7 @@ if (isset($opts['h'])) {
             $raw = $opt === '4' ? interfaces_primary_address($int, $ifconfig_details) :
                 interfaces_primary_address6($int, $ifconfig_details);
 
-            $ret[$int][] = [
+            $result[$int][] = [
                 'address' => $raw[0],
                 'network' => $raw[1],
                 'bits' => $raw[2],
@@ -202,7 +202,7 @@ if (isset($opts['h'])) {
             ];
         }
     }
-    echo json_encode(!empty($ret) ? $ret : new ArrayObject(), $jflags) . PHP_EOL;
+    echo json_encode(!empty($result) ? $result : new ArrayObject(), $jflags) . PHP_EOL;
 } elseif (isset($opts['D'])) {
     echo json_encode(legacy_interfaces_details($args[0] ?? null), $jflags) . PHP_EOL;
 } elseif (isset($opts['d'])) {
