@@ -247,6 +247,7 @@
                         set:'/api/ids/settings/set_ruleset/',
                         toggle:'/api/ids/settings/toggle_ruleset/',
                         options:{
+                            virtualDOM: true,
                             navigation:0,
                             static: true,
                             formatters:{
@@ -316,6 +317,7 @@
                             get:'/api/ids/settings/get_rule_info/',
                             set:'/api/ids/settings/set_rule/',
                             options:{
+                                virtualDOM: true,
                                 requestHandler:addRuleFilters,
                                 formatters:{
                                     rowtoggle: function (column, row) {
@@ -405,6 +407,7 @@
                         search:'/api/ids/service/query_alerts',
                         get:'/api/ids/service/get_alert_info/',
                         options:{
+                            virtualDOM: true,
                             multiSelect:false,
                             selection:false,
                             requestHandler:addAlertQryFilters,
@@ -567,7 +570,10 @@
                         set:'/api/ids/settings/set_user_rule/',
                         add:'/api/ids/settings/add_user_rule/',
                         del:'/api/ids/settings/del_user_rule/',
-                        toggle:'/api/ids/settings/toggle_user_rule/'
+                        toggle:'/api/ids/settings/toggle_user_rule/',
+                        options: {
+                            virtualDOM: true,
+                        }
                     });
                     gridUserRulesInitialized = true;
                 } else {
