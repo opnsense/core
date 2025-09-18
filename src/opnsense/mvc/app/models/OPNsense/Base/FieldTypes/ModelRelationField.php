@@ -204,19 +204,6 @@ class ModelRelationField extends BaseListField
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getDescription()
-    {
-        $tmp = [];
-        foreach (explode(',', $this->internalValue) as $key) {
-            $tmp[] = $this->internalOptionList[$key] ?? '';
-        }
-        return implode(', ', $tmp);
-    }
-
-
-    /**
      * retrieve field validators for this field type
      * @return array returns Text/regex validator
      */
