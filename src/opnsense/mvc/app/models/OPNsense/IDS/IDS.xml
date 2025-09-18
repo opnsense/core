@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/IDS</mount>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <description>Intrusion detection</description>
     <items>
         <rules>
@@ -195,7 +195,6 @@
                 <BlankDesc>Default</BlankDesc>
                 <OptionValues>
                     <ac>Aho-Corasick</ac>
-                    <ac-bs>Aho-Corasick, reduced memory implementation</ac-bs>
                     <ac-ks>Aho-Corasick, "Ken Steele" variant</ac-ks>
                     <hs>Hyperscan</hs>
                 </OptionValues>
