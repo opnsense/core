@@ -887,7 +887,7 @@ $.fn.replaceInputWithSelector = function (data, multiple=false) {
                     optgrp.append($("<option/>").val(key2).text(this_item));
                 });
                 options.push(optgrp);
-            } else {
+            } else if (data[key].label !== undefined) {
                 options.push($("<option/>").val(empty_select_token).text(data[key].label));
             }
         });
