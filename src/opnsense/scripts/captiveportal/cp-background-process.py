@@ -97,7 +97,7 @@ class CPBackgroundProcess(object):
         cpzones = self._conf_zone_info
         for zoneid in cpzones:
             for conf_section in ['allowedaddresses', 'allowedmacaddresses']:
-                for address in cpzones[zoneid][conf_section]:
+                for address in (a.lower() for a in cpzones[zoneid][conf_section]):
                     if conf_section.find('mac') == -1:
                         sessions = self.db.sessions_per_address(zoneid, ip_address=address)
                         ip_address = address
@@ -126,7 +126,7 @@ class CPBackgroundProcess(object):
                         PF.remove_from_table(zoneid, dbclient['ipAddress'])
                         self.db.del_client(zoneid, dbclient['sessionId'], 'NAS-Request')
                 elif dbclient['authenticated_via'] == '---mac---' \
-                        and dbclient['macAddress'] not in cpzones[zoneid]['allowedmacaddresses']:
+                        and dbclient['macAddress'] not in (a.lower() for a in cpzones[zoneid]['allowedmacaddresses']):
                         if dbclient['ipAddress'] != '':
                             PF.remove_from_table(zoneid, dbclient['ipAddress'])
                         self.db.del_client(zoneid, dbclient['sessionId'], 'NAS-Request')
