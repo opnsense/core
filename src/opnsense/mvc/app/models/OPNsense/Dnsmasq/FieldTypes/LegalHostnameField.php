@@ -28,16 +28,26 @@
 
 namespace OPNsense\Dnsmasq\FieldTypes;
 
-use OPNsense\Base\FieldTypes\HostnameField;
+use OPNsense\Base\FieldTypes\BaseSetField;
 use OPNsense\Base\Validators\CallbackValidator;
 
-class LegalHostnameField extends HostnameField
+class LegalHostnameField extends BaseSetField
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected function defaultValidationMessage()
+    {
+        return gettext("Please enter a valid hostname.");
+    }
+
     /**
      * Dnsmasq only processes the first label in a hostname (separated by dots).
      * That is why we do not allow dots at all. We consider "label = hostname".
-     *
+     * IP addresses are not allowed implicitely as "." and ":" are not valid.
      * https://github.com/imp/dnsmasq/blob/770bce967cfc9967273d0acfb3ea018fb7b17522/src/util.c#L191
+     *
+     * @return array list of validators for this field
      */
     public function getValidators()
     {
@@ -49,38 +59,29 @@ class LegalHostnameField extends HostnameField
                     $response = [];
 
                     foreach ($sender->iterateInput($data) as $value) {
-                        // Reject IP addresses outright
-                        if (filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6) !== false) {
-                            $response[] = gettext("Hostname cannot contain IP addresses.");
-                            break;
+                        // Allow empty label (valid in some cases)
+                        if ($value === '') {
+                            continue;
                         }
 
                         // Allow host wildcard
                         if ($value === '*') {
                             continue;
-                        }
-
-                        // Skip empty label, valid in some cases
-                        if ($value === '') {
-                            continue;
+                        } elseif (str_contains($value, '*')) {
+                            $response[] = gettext("Hostname wildcard '*' must be a single character.");
                         }
 
                         if (!ctype_alnum($value[0])) {
                             $response[] = gettext("Hostname must start with a letter or digit.");
-                            break;
                         }
 
                         if (!preg_match('/^[A-Za-z0-9][A-Za-z0-9_-]*$/', $value)) {
-                            $response[] = gettext(
-                                "Hostname may only contain letters, digits, '-', or '_'."
-                            );
-                            break;
+                            $response[] = gettext("Hostname may only contain letters, digits, '-' and '_'.");
                         }
 
                         // RFC1035 2.3.1 applies here
                         if (strlen($value) > 63) {
                             $response[] = gettext("Hostname must not exceed 63 characters.");
-                            break;
                         }
                     }
 
