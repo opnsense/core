@@ -71,11 +71,15 @@ class LegalHostnameField extends BaseSetField
                             $response[] = gettext("Hostname wildcard '*' must be a single character.");
                         }
 
+                        // First character must be alphanumeric
                         if (!ctype_alnum($value[0])) {
                             $response[] = gettext("Hostname must start with a letter or digit.");
                         }
 
-                        if (!preg_match('/^[A-Za-z0-9][A-Za-z0-9_-]*$/', $value)) {
+                        // Remaining characters only alphanumeric and some special
+                        $alnumTail = str_replace(['-', '_'], '', substr($value, 1));
+
+                        if ($alnumTail !== '' && !ctype_alnum($alnumTail)) {
                             $response[] = gettext("Hostname may only contain letters, digits, '-' and '_'.");
                         }
 
