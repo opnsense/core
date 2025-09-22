@@ -80,11 +80,7 @@
             <Default>1</Default>
         </no_ident>
         <hosts type="ArrayField">
-            <host type="HostnameField">
-                <HostWildcardAllowed>Y</HostWildcardAllowed>
-                <IsDNSName>Y</IsDNSName>
-                <IpAllowed>N</IpAllowed>
-            </host>
+            <host type=".\LegalHostnameField"/>
             <domain type="TextField">
                 <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
                 <ValidationMessage>A valid domain must be specified.</ValidationMessage>
