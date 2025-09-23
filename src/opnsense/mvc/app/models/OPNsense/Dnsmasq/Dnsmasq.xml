@@ -81,10 +81,7 @@
         </no_ident>
         <hosts type="ArrayField">
             <host type=".\LegalHostnameField"/>
-            <domain type="TextField">
-                <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
-                <ValidationMessage>A valid domain must be specified.</ValidationMessage>
-            </domain>
+            <domain type=".\LegalDomainField"/>
             <local type="BooleanField"/>
             <ip type="NetworkField">
                 <NetMaskAllowed>N</NetMaskAllowed>
