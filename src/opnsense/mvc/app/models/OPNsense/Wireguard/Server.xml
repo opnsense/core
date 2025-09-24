@@ -66,6 +66,10 @@
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Choose a peer.</ValidationMessage>
                 </peers>
+                <debug type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </debug>
                 <cnfFilename type="TextField" volatile="true"/>
                 <statFilename type="TextField" volatile="true"/>
                 <interface type="TextField" volatile="true"/>
