@@ -46,7 +46,7 @@ function do_verify($serverid)
         return "Certificate depth {$certificate_depth} exceeded max allowed depth of {$allowed_depth}.";
     } elseif ($a_server['use_ocsp'] && $certificate_depth == 0) {
         $serial = getenv('tls_serial_' . $certificate_depth);
-        $ocsp_response = OPNsense\Trust\Store::ocsp_validate("/var/etc/openvpn/instance-" . $serverid . ".ca", $serial);
+        $ocsp_response = OPNsense\Trust\Store::ocsp_validate("/var/etc/openvpn/instance-" . $serverid . ".ca", $serial, $a_server['ocsp_nonce']);
         if (!$ocsp_response['pass']) {
             return sprintf(
                 "[serial : %s] @ %s - %s (%s)",

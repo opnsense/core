@@ -611,7 +611,7 @@ class Store
      * @param $serial serial number to check
      * @return array
      */
-    public static function ocsp_validate($ca_filename, $serial)
+    public static function ocsp_validate($ca_filename, $serial, $nonce = true)
     {
         if (!is_file($ca_filename)) {
             return [
@@ -633,8 +633,8 @@ class Store
             $verdict_pass = false;
             $result = exec(
                 exec_safe(
-                    "%s ocsp -resp_no_certs -timeout 10 -nonce -CAfile %s -issuer %s -url %s -serial %s 2>&1",
-                    ['/usr/bin/openssl', $ca_filename, $ca_filename, $ocsp_uri, $serial]
+                    "%s ocsp -resp_no_certs -timeout 10 %s -CAfile %s -issuer %s -url %s -serial %s 2>&1",
+                    ['/usr/bin/openssl', $nonce ? '-nonce' : '-no_nonce', $ca_filename, $ca_filename, $ocsp_uri, $serial]
                 ),
                 $output,
                 $retval
