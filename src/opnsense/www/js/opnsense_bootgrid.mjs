@@ -2073,7 +2073,7 @@ $.fn.UIBootgrid = function(params) {
     return $replacement;
 }
 
-/* These translations must come from the template, see default.volt */
+// These translations must come from the template, see default.volt
 $.fn.UIBootgrid.translations = {};
 
 // Expose "UIBootgrid" class for non-module scripts
