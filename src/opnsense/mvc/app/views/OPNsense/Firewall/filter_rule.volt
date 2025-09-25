@@ -921,7 +921,6 @@
             justify-content: flex-start;
             align-items: stretch;
             gap: 8px;
-            width: 1024px;
             max-width: 100%;
         }
 
@@ -965,7 +964,11 @@
             gap: 8px;
             flex: 1 1 100%;
         }
-        #dialogFilterRule-header #dialogFilterRule-actions-group .btn {
+
+        #dialogFilterRule-header #dialogFilterRule-actions-group .btn,
+        #dialogFilterRule-header #dialogFilterRule-actions-group .btn-group,
+        #dialogFilterRule-header #dialogFilterRule-actions-group .dropdown,
+        #dialogFilterRule-header #dialogFilterRule-actions-group .bootstrap-select {
             flex: 1;
         }
     }
@@ -976,11 +979,11 @@
     <!-- filters -->
     <div class="hidden">
         <div id="type_filter_container" class="btn-group">
-            <select id="category_filter" data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="30" multiple data-width="300px" data-container="body">
+            <select id="category_filter" data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="30" multiple data-width="200px" data-container="body">
             </select>
         </div>
         <div id="interface_select_container" class="btn-group">
-            <select id="interface_select" class="selectpicker" data-live-search="true" data-size="30" data-width="300px" data-container="body">
+            <select id="interface_select" class="selectpicker" data-live-search="true" data-size="30" data-width="200px" data-container="body">
             </select>
         </div>
         <div id="inspect_toggle_container" class="btn-group">
