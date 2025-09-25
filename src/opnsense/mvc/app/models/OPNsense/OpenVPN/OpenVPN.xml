@@ -207,6 +207,10 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </use_ocsp>
+                <ocsp_nonce type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </ocsp_nonce>
                 <auth type="OptionField">
                     <BlankDesc>OpenVPN default</BlankDesc>
                     <OptionValues>
