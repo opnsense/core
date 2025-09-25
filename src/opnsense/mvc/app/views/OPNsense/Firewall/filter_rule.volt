@@ -912,6 +912,64 @@
         opacity: 0.4;
     }
 
+    /* Small viewport layout for action bar */
+    @media (max-width: 1024px) {
+        /* Header lane fixed width */
+        #dialogFilterRule-header .actionBar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            align-items: stretch;
+            gap: 8px;
+            width: 1024px;
+            max-width: 100%;
+        }
+
+        /* Default: Each child gets its own row (unless grouped) */
+        #dialogFilterRule-header .actionBar > * {
+            flex: 1 1 100%;
+            margin: 0;
+            float: none !important;
+            display: flex;
+        }
+
+        /* Make inner elements stretch fully */
+        #dialogFilterRule-header .actionBar .bootstrap-select,
+        #dialogFilterRule-header .actionBar .bootstrap-select > .dropdown-toggle,
+        #dialogFilterRule-header .actionBar .btn,
+        #dialogFilterRule-header .actionBar .search .input-group,
+        #dialogFilterRule-header .actionBar .search .form-control {
+            flex: 1;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        /* Inspect + Tree + Expand share one row, equal widths */
+        #dialogFilterRule-header #inspect_toggle_container,
+        #dialogFilterRule-header #tree_toggle_container,
+        #dialogFilterRule-header #tree_expand_container {
+            flex: 1 1 0;
+            display: flex;
+        }
+
+        /* Search: Own row, stretches full width */
+        #dialogFilterRule-header .actionBar .search {
+            flex: 1 1 100%;
+        }
+
+        /* Action buttons: Equal widths on one row */
+        #dialogFilterRule-header #dialogFilterRule-actions-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 8px;
+            flex: 1 1 100%;
+        }
+        #dialogFilterRule-header #dialogFilterRule-actions-group .btn {
+            flex: 1;
+        }
+    }
+
 </style>
 
 <div class="tab-content content-box">
