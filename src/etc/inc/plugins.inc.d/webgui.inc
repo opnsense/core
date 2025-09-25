@@ -354,6 +354,7 @@ mimetype.assign             = (
   ".html"         =>      "text/html",
   ".htm"          =>      "text/html",
   ".js"           =>      "text/javascript",
+  ".mjs"          =>      "text/javascript",
   ".asc"          =>      "text/plain",
   ".c"            =>      "text/plain",
   ".conf"         =>      "text/plain",
