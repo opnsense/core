@@ -2077,4 +2077,4 @@ $.fn.UIBootgrid = function(params) {
 $.fn.UIBootgrid.translations = {};
 
 // Expose "UIBootgrid" class for non-module scripts
-// window.UIBootgrid = UIBootgrid;
+window.UIBootgrid = UIBootgrid;
