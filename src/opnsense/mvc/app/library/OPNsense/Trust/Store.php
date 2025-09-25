@@ -609,6 +609,7 @@ class Store
     /**
      * @param $ca_filename string filename
      * @param $serial serial number to check
+     * @param $nonce nonce check enabled
      * @return array
      */
     public static function ocsp_validate($ca_filename, $serial, $nonce = true)
