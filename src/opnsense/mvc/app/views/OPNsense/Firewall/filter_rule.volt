@@ -845,9 +845,6 @@
         float: left;
         margin-left: 5px;
     }
-    #dialogFilterRule-header .actionBar > .search {
-        margin-left: 20px;
-    }
     /*
      * XXX: Since the badge class uses its own default background-color, we must override it explicitly.
      *      Essentially we would like to use the main style sheet for this.
