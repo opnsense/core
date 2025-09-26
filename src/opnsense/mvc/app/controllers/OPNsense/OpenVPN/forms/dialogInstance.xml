@@ -299,8 +299,8 @@
         </grid_view>
     </field>
     <field>
-        <id>instance.ocsp_nonce</id>
-        <label>OCSP Nonce validation</label>
+        <id>instance.ocsp_no_nonce</id>
+        <label>Disable OCSP Nonce validation</label>
         <style>role role_server</style>
         <advanced>true</advanced>
         <type>checkbox</type>
