@@ -113,7 +113,7 @@
             $("#status_query").hide();
 
             $("#grid_services-header > .row > .actionBar").prepend($(`
-                <div id="sync_container" class="sync-controls">
+                <div id="sync_container">
                     <span>{{ lang._('Synchronize and reconfigure all') }}</span>
                     <span id="act_restart_all" class="btn btn-xs btn-default" data-toggle="tooltip"
                         title="{{ lang._('Synchronize and restart all services') }}">
@@ -142,10 +142,6 @@
         display: flex;
         gap: 8px;
         flex-wrap: wrap;
-    }
-
-    #grid_services-header .actionBar > .search {
-        margin-left: auto;
     }
 
     #grid_services-header .actionBar > #sync_container {
