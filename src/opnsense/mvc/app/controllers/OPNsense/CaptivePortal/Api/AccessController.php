@@ -52,12 +52,24 @@ class AccessController extends ApiControllerBase
         $backend = new Backend();
         $allClientsRaw = $backend->configdpRun("captiveportal list_clients", [$zoneid]);
         $allClients = json_decode($allClientsRaw, true);
+
+        $mdlCP = new CaptivePortal();
+        $cpZone = $mdlCP->getByZoneID($zoneid);
+
+        if ($cpZone != null && trim((string) $cpZone->authservers) == "") {
+            // no authentication needed, logon without username/password
+            $authType = 'none';
+        } else {
+            $authType = 'normal';
+        }
+
         if ($allClients != null) {
             // search for client by ip address
             foreach ($allClients as $connectedClient) {
                 if ($connectedClient['ipAddress'] == $this->getClientIp()) {
                     // client is authorized in this zone according to our administration
                     $connectedClient['clientState'] = 'AUTHORIZED';
+                    $connectedClient['authType'] = $authType;
                     return $connectedClient;
                 }
             }
@@ -65,20 +77,14 @@ class AccessController extends ApiControllerBase
 
         // return Unauthorized including authentication requirements
         $result = ['clientState' => "NOT_AUTHORIZED", "ipAddress" => $this->getClientIp()];
-        $mdlCP = new CaptivePortal();
-        $cpZone = $mdlCP->getByZoneID($zoneid);
+        $result['authType'] = $authType;
         if ($cpZone != null && (string)$cpZone->extendedPreAuthData == '1') {
             $mac = $this->getClientMac($result['ipAddress']);
             if (!empty($mac)) {
                 $result['macAddress'] = $mac;
             }
         }
-        if ($cpZone != null && trim((string)$cpZone->authservers) == "") {
-            // no authentication needed, logon without username/password
-            $result['authType'] = 'none';
-        } else {
-            $result['authType'] = 'normal';
-        }
+        
         return $result;
     }
 
