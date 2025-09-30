@@ -28,69 +28,89 @@
 
 namespace OPNsense\Dnsmasq\FieldTypes;
 
-use OPNsense\Base\FieldTypes\BaseSetField;
+use OPNsense\Base\FieldTypes\BaseField;
 use OPNsense\Base\Validators\CallbackValidator;
 
-class LegalHostnameField extends BaseSetField
+class LegalHostnameField extends BaseField
 {
+    /**
+     * @var bool not a container
+     */
+    protected $internalIsContainer = false;
+
+    /**
+     * @var bool validate as a full domain (default: false = hostname)
+     */
+    private $internalIsDomain = false;
+
+    /**
+     * @param string $value Y/N
+     */
+    public function setIsDomain($value): void
+    {
+        $this->internalIsDomain = strtoupper(trim($value)) === 'Y';
+    }
+
     /**
      * {@inheritdoc}
      */
     protected function defaultValidationMessage()
     {
-        return gettext("Please enter a valid hostname.");
+        return gettext(
+            "Labels must be 1–63 characters, start with a letter or digit, "
+            . "and may contain only letters, digits, '-' or '_'. "
+
+        );
     }
 
     /**
-     * Dnsmasq only processes the first label in a hostname (separated by dots).
-     * That is why we do not allow dots at all. We consider "label = hostname".
-     * IP addresses are not allowed implicitely as "." and ":" are not valid.
      * https://github.com/imp/dnsmasq/blob/770bce967cfc9967273d0acfb3ea018fb7b17522/src/util.c#L191
      *
      * @return array list of validators for this field
      */
     public function getValidators()
     {
-        $sender = $this;
+        $validators = parent::getValidators();
 
-        return [
-            new CallbackValidator([
-                "callback" => function ($data) use ($sender) {
-                    $response = [];
+        $validators[] = new CallbackValidator([
+            "callback" => function ($value) {
+                $isDomain = $this->internalIsDomain;
 
-                    foreach ($sender->iterateInput($data) as $value) {
-                        // Allow empty label (valid in some cases)
-                        if ($value === '') {
-                            continue;
-                        }
-
-                        // Allow host wildcard
-                        if ($value === '*') {
-                            continue;
-                        } elseif (str_contains($value, '*')) {
-                            $response[] = gettext("Hostname wildcard '*' must be a single character.");
-                        }
-
-                        // First character must be alphanumeric
-                        if (!ctype_alnum($value[0])) {
-                            $response[] = gettext("Hostname must start with a letter or digit.");
-                        }
-
-                        // Remaining characters only alphanumeric and some special
-                        $alnumTail = str_replace(['-', '_'], '', substr($value, 1));
-                        if ($alnumTail !== '' && !ctype_alnum($alnumTail)) {
-                            $response[] = gettext("Hostname may only contain letters, digits, '-' and '_'.");
-                        }
-
-                        // RFC1035 2.3.1 applies here
-                        if (strlen($value) > 63) {
-                            $response[] = gettext("Hostname must not exceed 63 characters.");
-                        }
-                    }
-
-                    return $response;
+                // Skip validation if empty
+                if ($value === '') {
+                    return [];
                 }
-            ])
-        ];
+
+                // single wildcard allowed in Host field
+                if (!$isDomain && $value === '*') {
+                    return [];
+                } elseif ($isDomain && $value === '*') {
+                    return [
+                        gettext("Wildcards are not allowed in domain names.")
+                    ];
+                }
+
+                // RFC1035 2.3.1 applies here
+                if ($isDomain && strlen($value) > 255) {
+                    return [
+                        gettext("All labels combined may not exceed 255 characters.")
+                    ];
+                }
+
+                // hostname = label, domain = label.label...
+                foreach ($isDomain ? explode('.', $value) : [$value] as $label) {
+                    // RFC1035 2.3.1 applies here
+                    if (!preg_match('/^(?![_-])[A-Za-z0-9_-]{1,63}$/', $label)) {
+                        return [$this->getValidationMessage()];
+                    }
+                }
+
+                // validation succeeded
+                return [];
+            }
+        ]);
+
+        return $validators;
     }
+
 }

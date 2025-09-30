@@ -81,7 +81,9 @@
         </no_ident>
         <hosts type="ArrayField">
             <host type=".\LegalHostnameField"/>
-            <domain type=".\LegalDomainField"/>
+            <domain type=".\LegalHostnameField">
+                <IsDomain>Y</IsDomain>
+            </domain>
             <local type="BooleanField"/>
             <ip type="NetworkField">
                 <NetMaskAllowed>N</NetMaskAllowed>
