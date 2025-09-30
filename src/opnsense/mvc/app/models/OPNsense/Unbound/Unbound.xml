@@ -304,8 +304,8 @@
                     <OptionValues>
                         <A>A (IPv4 address)</A>
                         <AAAA>AAAA (IPv6 address)</AAAA>
-                        <MX>MX (Mail server)</MX>
-                        <TXT>TXT</TXT>
+                        <MX>MX (mail server)</MX>
+                        <TXT>TXT (text)</TXT>
                     </OptionValues>
                     <Constraints>
                         <check001>
