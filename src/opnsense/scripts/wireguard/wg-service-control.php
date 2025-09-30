@@ -59,14 +59,6 @@ function get_vhid_status()
 }
 
 /**
- * idempotent: sets either "debug" or "-debug" without affecting link state
- */
-function wg_apply_debug_flag(string $iface, string $enabled): void
-{
-    mwexecf('/sbin/ifconfig %s %sdebug', [$iface, $enabled === '1' ? '' : '-']);
-}
-
-/**
  * mimic wg-quick behaviour, but bound to our config
  */
 function wg_start($server, $fhandle, $ifcfgflag = 'up', $reload = false)
@@ -88,7 +80,7 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up', $reload = false)
         mwexecf('/sbin/ifconfig %s mtu %s', [$server->interface, $server->mtu]);
     }
 
-    wg_apply_debug_flag($server->interface->getValue(), $server->debug->getValue());
+    mwexecf('/sbin/ifconfig %s %sdebug', [$server->interface->getValue(), $server->debug->getValue() === '1' ? '' : '-']);
 
     if (empty((string)$server->disableroutes)) {
         /**
@@ -318,9 +310,6 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
 
                             mwexecf('/sbin/ifconfig %s %s', [$node->interface, $carp_if_flag]);
                         }
-
-                        wg_apply_debug_flag($node->interface->getValue(), $node->debug->getValue());
-
                         break;
                 }
                 flock($statHandle, LOCK_UN);
