@@ -58,6 +58,7 @@ function get_vhid_status()
     return $vhids;
 }
 
+
 /**
  * mimic wg-quick behaviour, but bound to our config
  */
