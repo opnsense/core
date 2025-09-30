@@ -119,7 +119,7 @@
         <id>server.debug</id>
         <label>Debug Log</label>
         <type>checkbox</type>
-        <help>Enable the debug flag on this wireguard interface for enhanced error logging.</help>
+        <help>Enable the debug flag on this instance for enhanced error logging.</help>
         <grid_view>
             <visible>false</visible>
             <type>boolean</type>
