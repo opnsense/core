@@ -35,6 +35,8 @@ import subprocess
 import os
 import ujson
 import zipfile
+import pwd
+import grp
 from datetime import datetime
 
 
@@ -229,5 +231,9 @@ if __name__ == '__main__':
             if not filename.endswith('.zip'):
                 zfh.write(filename, os.path.basename(filename))
         zfh.close()
+
+        # always set file ownership for strict security mode
+        os.chown(result['filename'], pwd.getpwnam("wwwonly").pw_uid, grp.getgrnam("wheel").gr_gid)
+        os.chmod(result['filename'], 0o640)
 
     print (ujson.dumps(result))
