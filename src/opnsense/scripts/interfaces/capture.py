@@ -35,6 +35,8 @@ import subprocess
 import os
 import ujson
 import zipfile
+import pwd
+import grp
 from datetime import datetime
 
 
@@ -229,5 +231,15 @@ if __name__ == '__main__':
             if not filename.endswith('.zip'):
                 zfh.write(filename, os.path.basename(filename))
         zfh.close()
+
+        # decide ownership based on sentinel file for strict security mode (wwwonly)
+        if os.path.exists("/var/run/www_non_root"):
+            try:
+                uid = pwd.getpwnam("wwwonly").pw_uid
+                gid = grp.getgrnam("wheel").gr_gid
+                os.chown(result['filename'], uid, gid)
+            except Exception as e:
+                result['status'] = 'failed'
+                result['status_msg'] = f'chown failed: {e}'
 
     print (ujson.dumps(result))
