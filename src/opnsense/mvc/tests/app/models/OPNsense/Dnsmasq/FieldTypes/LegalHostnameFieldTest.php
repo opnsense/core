@@ -67,11 +67,27 @@ class LegalHostnameFieldTest extends Field_Framework_TestCase
         $this->assertEmpty($this->validate($field));
     }
 
+    public function testAsList()
+    {
+        $field = new LegalHostnameField();
+        $field->eventPostLoading();
+
+        $field->setValue("test,host123");
+        $this->assertNotEmpty($this->validate($field));
+        $this->assertIsString($field->getNodeData());
+
+        $field->setAsList("Y");
+        $field->setFieldSeparator(",");
+        $field->setValue("test,host123");
+        $this->assertEmpty($this->validate($field));
+        $this->assertIsArray($field->getNodeData());
+    }
+
     public function testValidLabels()
     {
         $field = new LegalHostnameField();
         $field->eventPostLoading();
-        foreach (["test", "host123", "valid-name", "a1_b2"] as $value) {
+        foreach (["test", "host123", "valid-name", "a1_b2", "1a-2b"] as $value) {
             $field->setValue($value);
             $this->assertEmpty($this->validate($field), "$value should be valid");
         }
