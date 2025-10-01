@@ -232,14 +232,7 @@ if __name__ == '__main__':
                 zfh.write(filename, os.path.basename(filename))
         zfh.close()
 
-        # decide ownership based on sentinel file for strict security mode (wwwonly)
-        if os.path.exists("/var/run/www_non_root"):
-            try:
-                uid = pwd.getpwnam("wwwonly").pw_uid
-                gid = grp.getgrnam("wheel").gr_gid
-                os.chown(result['filename'], uid, gid)
-            except Exception as e:
-                result['status'] = 'failed'
-                result['status_msg'] = f'chown failed: {e}'
+        # always set file ownership for strict security mode
+        os.chown(result['filename'], pwd.getpwnam("wwwonly").pw_uid, grp.getgrnam("wheel").gr_gid)
 
     print (ujson.dumps(result))
