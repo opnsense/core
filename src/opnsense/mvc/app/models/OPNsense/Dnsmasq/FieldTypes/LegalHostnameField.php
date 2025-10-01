@@ -95,7 +95,9 @@ class LegalHostnameField extends BaseSetField
                     $comments[] = sprintf("[%s] %s", $fqdn, $child->description);
                 }
             }
-            $this->getParentNode()->comments = implode("\n", $comments);
+            if ($this->getParentNode() !== null) {
+                $this->getParentNode()->comments = implode("\n", $comments);
+            }
 
             // validate the flattened string like any other input
             return parent::setValue(implode(",", $tmp));
