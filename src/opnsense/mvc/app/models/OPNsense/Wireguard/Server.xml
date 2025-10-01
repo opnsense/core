@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/wireguard/server</mount>
     <description>WireGuard instance configuration</description>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <items>
         <servers>
             <server type=".\ServerField">
@@ -66,6 +66,10 @@
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Choose a peer.</ValidationMessage>
                 </peers>
+                <debug type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </debug>
                 <cnfFilename type="TextField" volatile="true"/>
                 <statFilename type="TextField" volatile="true"/>
                 <interface type="TextField" volatile="true"/>
