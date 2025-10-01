@@ -706,7 +706,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/Dnsmasq.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/Dnsmasq.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/FieldTypes/AliasesField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/FieldTypes/DomainIPField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/FieldTypes/LegalHostnameField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/FieldTypes/RangeAddressField.php

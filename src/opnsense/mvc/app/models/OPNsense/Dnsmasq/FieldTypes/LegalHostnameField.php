@@ -28,20 +28,25 @@
 
 namespace OPNsense\Dnsmasq\FieldTypes;
 
-use OPNsense\Base\FieldTypes\BaseField;
+use OPNsense\Base\FieldTypes\BaseSetField;
 use OPNsense\Base\Validators\CallbackValidator;
 
-class LegalHostnameField extends BaseField
+class LegalHostnameField extends BaseSetField
 {
     /**
-     * @var bool not a container
-     */
-    protected $internalIsContainer = false;
-
-    /**
-     * @var bool validate as a full domain (default: false = hostname)
+     * @var bool validate as a full domain
      */
     private $internalIsDomain = false;
+
+    /**
+     * @var bool whether wildcard (“*”) is allowed
+     */
+    private $internalIsWildcardAllowed = false;
+
+    /**
+     * @var bool treat this field as legacy XML structure (<item> nodes)
+     */
+    private $internalIsLegacyXML = false;
 
     /**
      * @param string $value Y/N
@@ -49,6 +54,54 @@ class LegalHostnameField extends BaseField
     public function setIsDomain($value): void
     {
         $this->internalIsDomain = strtoupper(trim($value)) === 'Y';
+    }
+
+    /**
+     * @param string $value Y/N
+     */
+    public function setIsWildcardAllowed($value): void
+    {
+        $this->internalIsWildcardAllowed = strtoupper(trim($value)) === 'Y';
+    }
+
+    /**
+     * @param string $value Y/N
+     */
+    public function setLegacyXML($value): void
+    {
+        $this->internalIsLegacyXML = strtoupper(trim($value)) === 'Y';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setValue($value)
+    {
+        if ($this->internalIsLegacyXML &&
+            is_a($value, \SimpleXMLElement::class) &&
+            isset($value->item)) {
+            // flatten legacy structure
+            $tmp = [];
+            $comments = [];
+            foreach ($value->item as $child) {
+                if (empty((string)$child->domain)) {
+                    continue;
+                }
+                $fqdn = !empty((string)$child->host)
+                    ? sprintf("%s.%s", $child->host, $child->domain)
+                    : (string)$child->domain;
+                $tmp[] = $fqdn;
+                if (!empty((string)$child->description)) {
+                    $comments[] = sprintf("[%s] %s", $fqdn, $child->description);
+                }
+            }
+            $this->getParentNode()->comments = implode("\n", $comments);
+
+            // validate the flattened string like any other input
+            return parent::setValue(implode(",", $tmp));
+        }
+
+        return parent::setValue($value);
     }
 
     /**
@@ -75,33 +128,34 @@ class LegalHostnameField extends BaseField
         $validators[] = new CallbackValidator([
             "callback" => function ($value) {
                 $isDomain = $this->internalIsDomain;
+                $isWildcardAllowed = $this->internalIsWildcardAllowed;
 
-                // Skip validation if empty
-                if ($value === '') {
-                    return [];
-                }
+                // Validate each entry when AsList=Y, or the single value otherwise
+                foreach ($this->iterateInput($value) as $item) {
+                    // Skip validation if empty
+                    if ($item === '') {
+                        continue;
+                    }
 
-                // single wildcard allowed in Host field
-                if (!$isDomain && $value === '*') {
-                    return [];
-                } elseif ($isDomain && $value === '*') {
-                    return [
-                        gettext("Wildcards are not allowed in domain names.")
-                    ];
-                }
+                    if ($item === '*') {
+                        return $isWildcardAllowed ? [] : [
+                            gettext("Wildcards are not allowed.")
+                        ];
+                    }
 
-                // RFC1035 2.3.1 applies here
-                if ($isDomain && strlen($value) > 255) {
-                    return [
-                        gettext("All labels combined may not exceed 255 characters.")
-                    ];
-                }
-
-                // hostname = label, domain = label.label...
-                foreach ($isDomain ? explode('.', $value) : [$value] as $label) {
                     // RFC1035 2.3.1 applies here
-                    if (!preg_match('/^(?![_-])[A-Za-z0-9_-]{1,63}$/', $label)) {
-                        return [$this->getValidationMessage()];
+                    if ($isDomain && strlen($item) > 255) {
+                        return [
+                            gettext("All labels combined may not exceed 255 characters.")
+                        ];
+                    }
+
+                    // hostname = label, domain = label.label...
+                    foreach ($isDomain ? explode('.', $item) : [$item] as $label) {
+                        // RFC1035 2.3.1 applies here
+                        if (!preg_match('/^(?![_-])[A-Za-z0-9_-]{1,63}$/', $label)) {
+                            return [$this->getValidationMessage()];
+                        }
                     }
                 }
 

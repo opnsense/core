@@ -80,7 +80,9 @@
             <Default>1</Default>
         </no_ident>
         <hosts type="ArrayField">
-            <host type=".\LegalHostnameField"/>
+            <host type=".\LegalHostnameField">
+                <IsWildcardAllowed>Y</IsWildcardAllowed>
+            </host>
             <domain type=".\LegalHostnameField">
                 <IsDomain>Y</IsDomain>
             </domain>
@@ -89,10 +91,9 @@
                 <NetMaskAllowed>N</NetMaskAllowed>
                 <AsList>Y</AsList>
             </ip>
-            <cnames type="HostnameField">
+            <cnames type=".\LegalHostnameField">
+                <IsDomain>Y</IsDomain>
                 <AsList>Y</AsList>
-                <IsDNSName>Y</IsDNSName>
-                <IpAllowed>N</IpAllowed>
             </cnames>
             <client_id type="TextField">
                 <Mask>/^(?:\*|(?:[0-9A-Fa-f]{2}(?::[0-9A-Fa-f]{2})+))$/</Mask>
@@ -115,10 +116,10 @@
             <descr type="TextField"/>
             <comments type="TextField"/>
             <!-- Intentionally last, AliasesField back references other fields (which should already be there) -->
-            <aliases type=".\AliasesField">
+            <aliases type=".\LegalHostnameField">
+                <IsDomain>Y</IsDomain>
+                <IsLegacyXML>Y</IsLegacyXML>
                 <AsList>Y</AsList>
-                <IsDNSName>Y</IsDNSName>
-                <IpAllowed>N</IpAllowed>
             </aliases>
         </hosts>
         <domainoverrides type="ArrayField">
