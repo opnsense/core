@@ -300,8 +300,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         $limitrules .= "set limit table-entries {$config['system']['maximumtableentries']}\n";
         set_single_sysctl('net.pf.request_maxcount', $config['system']['maximumtableentries']);
     } else {
-        $max_table_entries = default_table_entries_size();
-        $req_table_entries = 1000000;
+        $max_table_entries = filter_current_table_entries();
+        $req_table_entries = filter_default_table_entries();
         if ($max_table_entries <= $req_table_entries) {
             $limitrules .= "set limit table-entries {$req_table_entries}\n";
             set_single_sysctl('net.pf.request_maxcount', $req_table_entries);
@@ -332,7 +332,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         $limitrules .= "set limit states {$config['system']['maximumstates']}\n";
         $limitrules .= "set limit src-nodes {$config['system']['maximumstates']}\n";
     } else {
-        $max_states = default_state_size();
+        $max_states = filter_default_state_size();
         $limitrules .= "set limit states {$max_states}\n";
         $limitrules .= "set limit src-nodes {$max_states}\n";
     }
@@ -353,7 +353,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     }
 
     /* if pf already generated a hostid, reuse it */
-    $current_hostid = get_current_hostid();
+    $current_hostid = filter_current_hostid();
     if (!empty($current_hostid)) {
         $limitrules .= "set hostid {$current_hostid}\n";
     }
@@ -717,26 +717,35 @@ function filter_get_time_based_rule_status($schedule)
     return false;
 }
 
-function default_table_entries_size()
+function filter_current_table_entries()
 {
-    $current = `pfctl -sm | grep table-entries | awk '{print $4};'`;
-
-    return $current;
+    return shell_safe('pfctl -sm | grep table-entries | awk \'{print $4}\'');
 }
 
-function default_state_size()
+function filter_default_table_entries()
 {
-    /* get system memory amount */
-    $memory = get_memory();
-    $physmem = $memory[0];
-
-    /* Be cautious and only allocate 10% of system memory to the state table */
-    $max_states = (int) ($physmem / 10) * 1000;
-
-    return $max_states;
+    /*
+     * Table entries have 160 bytes as of this commit
+     * (see "vm.uma.pf_table_entries.size" sysctl).
+     *
+     * Retain the minimum of 1 million, but quickly scale
+     * up to 5 million and cap at around 10 million.
+     *
+     * The resulting maximal memory requirement of a
+     * full table at the minimum 3GB recommendation is
+     * around 22% with roughly 5 million entries to make
+     * use of the growing GeoIP set.
+     */
+    return (min(10000000, max(1000000, (int)(get_single_sysctl('hw.physmem') / 1048576) * 1500)));
 }
 
-function get_current_hostid()
+function filter_default_state_size()
+{
+    /* be cautious and only allocate 10% of system memory to the state table */
+    return (int)(get_single_sysctl('hw.physmem') / 1048576) * 100;
+}
+
+function filter_current_hostid()
 {
     exec('/sbin/pfctl -si -v 2>/dev/null', $output);
 
