@@ -80,24 +80,20 @@
             <Default>1</Default>
         </no_ident>
         <hosts type="ArrayField">
-            <host type="HostnameField">
-                <HostWildcardAllowed>Y</HostWildcardAllowed>
-                <IsDNSName>Y</IsDNSName>
-                <IpAllowed>N</IpAllowed>
+            <host type=".\HostnameField">
+                <IsWildcardAllowed>Y</IsWildcardAllowed>
             </host>
-            <domain type="TextField">
-                <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
-                <ValidationMessage>A valid domain must be specified.</ValidationMessage>
+            <domain type=".\HostnameField">
+                <IsDomain>Y</IsDomain>
             </domain>
             <local type="BooleanField"/>
             <ip type="NetworkField">
                 <NetMaskAllowed>N</NetMaskAllowed>
                 <AsList>Y</AsList>
             </ip>
-            <cnames type="HostnameField">
+            <cnames type=".\HostnameField">
+                <IsDomain>Y</IsDomain>
                 <AsList>Y</AsList>
-                <IsDNSName>Y</IsDNSName>
-                <IpAllowed>N</IpAllowed>
             </cnames>
             <client_id type="TextField">
                 <Mask>/^(?:\*|(?:[0-9A-Fa-f]{2}(?::[0-9A-Fa-f]{2})+))$/</Mask>
@@ -120,10 +116,10 @@
             <descr type="TextField"/>
             <comments type="TextField"/>
             <!-- Intentionally last, AliasesField back references other fields (which should already be there) -->
-            <aliases type=".\AliasesField">
+            <aliases type=".\HostnameField">
+                <IsDomain>Y</IsDomain>
+                <IsLegacyXML>Y</IsLegacyXML>
                 <AsList>Y</AsList>
-                <IsDNSName>Y</IsDNSName>
-                <IpAllowed>N</IpAllowed>
             </aliases>
         </hosts>
         <domainoverrides type="ArrayField">
