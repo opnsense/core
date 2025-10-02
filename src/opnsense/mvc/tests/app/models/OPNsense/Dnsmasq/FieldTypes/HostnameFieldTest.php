@@ -33,25 +33,25 @@ require_once __DIR__ . '/../../Base/FieldTypes/Field_Framework_TestCase.php';
 // @CodingStandardsIgnoreEnd
 
 use tests\OPNsense\Base\FieldTypes\Field_Framework_TestCase;
-use OPNsense\Dnsmasq\FieldTypes\LegalHostnameField;
+use OPNsense\Dnsmasq\FieldTypes\HostnameField;
 
-class LegalHostnameFieldTest extends Field_Framework_TestCase
+class HostnameFieldTest extends Field_Framework_TestCase
 {
     public function testCanBeCreated()
     {
-        $this->assertInstanceOf(LegalHostnameField::class, new LegalHostnameField());
+        $this->assertInstanceOf(HostnameField::class, new HostnameField());
     }
 
     public function testIsContainer()
     {
-        $field = new LegalHostnameField();
+        $field = new HostnameField();
         $this->assertFalse($field->isContainer());
     }
 
     public function testRequiredEmpty()
     {
         $this->expectException(\OPNsense\Base\ValidationException::class);
-        $field = new LegalHostnameField();
+        $field = new HostnameField();
         $field->setRequired("Y");
         $field->setValue("");
         $field->eventPostLoading();
@@ -60,7 +60,7 @@ class LegalHostnameFieldTest extends Field_Framework_TestCase
 
     public function testRequiredNotEmpty()
     {
-        $field = new LegalHostnameField();
+        $field = new HostnameField();
         $field->setRequired("Y");
         $field->setValue("example");
         $field->eventPostLoading();
@@ -69,7 +69,7 @@ class LegalHostnameFieldTest extends Field_Framework_TestCase
 
     public function testAsList()
     {
-        $field = new LegalHostnameField();
+        $field = new HostnameField();
         $field->eventPostLoading();
 
         $field->setValue("test,host123");
@@ -85,7 +85,7 @@ class LegalHostnameFieldTest extends Field_Framework_TestCase
 
     public function testValidLabels()
     {
-        $field = new LegalHostnameField();
+        $field = new HostnameField();
         $field->eventPostLoading();
         foreach (["test", "host123", "valid-name", "a1_b2", "1a-2b"] as $value) {
             $field->setValue($value);
@@ -95,7 +95,7 @@ class LegalHostnameFieldTest extends Field_Framework_TestCase
 
     public function testInvalidLabels()
     {
-        $field = new LegalHostnameField();
+        $field = new HostnameField();
         foreach (["-bad", "_bad", "bad!"] as $value) {
             $field->setValue($value);
             $this->assertNotEmpty($this->validate($field), "$value should be invalid");
@@ -109,7 +109,7 @@ class LegalHostnameFieldTest extends Field_Framework_TestCase
 
     public function testInvalidDomain()
     {
-        $field = new LegalHostnameField();
+        $field = new HostnameField();
         $field->setIsDomain("Y");
 
         // domain >255 chars should fail
@@ -120,7 +120,7 @@ class LegalHostnameFieldTest extends Field_Framework_TestCase
 
     public function testWildcardAllowed()
     {
-        $field = new LegalHostnameField();
+        $field = new HostnameField();
         $field->setIsWildcardAllowed("Y");
         $field->setValue("*");
         $this->assertEmpty($this->validate($field), "Wildcard should be allowed");
@@ -132,7 +132,7 @@ class LegalHostnameFieldTest extends Field_Framework_TestCase
 
     public function testLegacyXML()
     {
-        $field = new LegalHostnameField();
+        $field = new HostnameField();
         $field->setLegacyXML("Y");
         $field->setIsDomain("Y");
     

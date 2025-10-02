@@ -31,7 +31,7 @@ namespace OPNsense\Dnsmasq\FieldTypes;
 use OPNsense\Base\FieldTypes\BaseSetField;
 use OPNsense\Base\Validators\CallbackValidator;
 
-class LegalHostnameField extends BaseSetField
+class HostnameField extends BaseSetField
 {
     /**
      * @var bool validate as a full domain
