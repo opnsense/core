@@ -156,7 +156,9 @@ class HostnameField extends BaseSetField
                     foreach ($isDomain ? explode('.', $item) : [$item] as $label) {
                         // RFC1035 2.3.1 applies here
                         if (!preg_match('/^(?![_-])[A-Za-z0-9_-]{1,63}$/', $label)) {
-                            return [$this->getValidationMessage()];
+                            return [
+                                $this->getValidationMessage()
+                            ];
                         }
                     }
                 }
