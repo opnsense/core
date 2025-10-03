@@ -1,4 +1,3 @@
-<?php if (!function_exists("opnsense_safe_tmp_unserialize")) { function opnsense_safe_tmp_unserialize($p){ $st=@stat($p); if($st===false) return null; if(function_exists("posix_getuid") && $st["uid"]!==@posix_getuid()) return null; if($st["size"]>1048576) return null; $d=@file_get_contents($p); if($d===false) return null; $v=@unserialize($d, ["allowed_classes"=>false]); return is_array($v)?$v:null; }} ?>
 <?php
 
 /*
@@ -36,6 +35,35 @@ require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
+
+/*
+ * Defensive helper: safely read a serialized temporary file created by the
+ * current php-fpm user only. Reject files not owned by the running user,
+ * excessively large files and disable class instantiation during unserialize.
+ */
+if (!function_exists('opnsense_safe_tmp_unserialize')) {
+    function opnsense_safe_tmp_unserialize(string $path)
+    {
+        $st = @stat($path);
+        if ($st === false) {
+            return null;
+        }
+        /* only accept files owned by the current php-fpm user (www) */
+        if (function_exists('posix_getuid') && $st['uid'] !== @posix_getuid()) {
+            return null;
+        }
+        /* small size cap to avoid memory issues */
+        if ($st['size'] > 1048576 /* 1MiB */) {
+            return null;
+        }
+        $data = @file_get_contents($path);
+        if ($data === false) {
+            return null;
+        }
+        $value = @unserialize($data, ['allowed_classes' => false]);
+        return is_array($value) ? $value : null;
+    }
+}
 
 /***************************************************************************************************************
  * imported from xmlparse_attr.inc
