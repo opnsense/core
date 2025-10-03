@@ -1,3 +1,4 @@
+<?php if (!function_exists("opnsense_safe_tmp_unserialize")) { function opnsense_safe_tmp_unserialize($p){ $st=@stat($p); if($st===false) return null; if(function_exists("posix_getuid") && $st["uid"]!==@posix_getuid()) return null; if($st["size"]>1048576) return null; $d=@file_get_contents($p); if($d===false) return null; $v=@unserialize($d, ["allowed_classes"=>false]); return is_array($v)?$v:null; }} ?>
 <?php
 
 /*
@@ -140,7 +141,7 @@ function parse_xml_regdomain(&$rdattributes, $rdfile = '', $rootobj = 'regulator
     $parsed_xml = array();
 
     if (file_exists('/tmp/regdomain.cache')) {
-        $parsed_xml = unserialize(file_get_contents('/tmp/regdomain.cache'));
+        $parsed_xml = opnsense_safe_tmp_unserialize('/tmp/regdomain.cache');
         if (!empty($parsed_xml)) {
             $rdmain = $parsed_xml['main'];
             $rdattributes = $parsed_xml['attributes'];
@@ -554,7 +555,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $intput_errors[] = gettext("You have already applied your settings!");
         } else {
             if (file_exists('/tmp/.interfaces.apply')) {
-                $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
+                $toapplylist = opnsense_safe_tmp_unserialize('/tmp/.interfaces.apply');
                 foreach ($toapplylist as $ifapply => $ifcfgo) {
                     interface_reset($ifapply, $ifcfgo, isset($ifcfgo['enable']));
                     interface_configure(false, $ifapply, true);
@@ -592,7 +593,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config("Interface {$pconfig['descr']}({$if}) is now disabled.");
         mark_subsystem_dirty('interfaces');
         if (file_exists('/tmp/.interfaces.apply')) {
-            $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
+            $toapplylist = opnsense_safe_tmp_unserialize('/tmp/.interfaces.apply');
         } else {
             $toapplylist = array();
         }
@@ -603,7 +604,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $toapplylist[$if]['ifcfg']['realif'] = reset($devices);
             $toapplylist[$if]['ifcfg']['realifv6'] = end($devices);
             $toapplylist[$if]['ppps'] = $a_ppps;
-            file_put_contents('/tmp/.interfaces.apply', serialize($toapplylist));
+            
+$tm='/tmp/.interfaces.apply.tmp'; @file_put_contents($tm, serialize($toapplylist), LOCK_EX); @chmod($tm, 0600); @rename($tm, '/tmp/.interfaces.apply');
         }
         if (!empty($ifgroup)) {
             header(url_safe('Location: /interfaces.php?if=%s&group=%s', array($if, $ifgroup)));
@@ -1262,7 +1264,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // log changes for apply action
             // (it would be better to diff the physical situation with the new config for changes)
             if (file_exists('/tmp/.interfaces.apply')) {
-                $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
+                $toapplylist = opnsense_safe_tmp_unserialize('/tmp/.interfaces.apply');
             } else {
                 $toapplylist = array();
             }
@@ -1271,7 +1273,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 // only flush if the running config is not in our list yet
                 $toapplylist[$if]['ifcfg'] = $old_config;
                 $toapplylist[$if]['ppps'] = $a_ppps;
-                file_put_contents('/tmp/.interfaces.apply', serialize($toapplylist));
+                
+$tm='/tmp/.interfaces.apply.tmp'; @file_put_contents($tm, serialize($toapplylist), LOCK_EX); @chmod($tm, 0600); @rename($tm, '/tmp/.interfaces.apply');
             }
 
             mark_subsystem_dirty('interfaces');
