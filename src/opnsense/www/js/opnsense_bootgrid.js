@@ -486,6 +486,8 @@ class UIBootgrid {
                     visible: data.visible ?? true,
                     sequence: data.sequence ?? null,
                     width: val.width,
+                    minWidth: data.minWidth ?? null,
+                    maxWidth: data.maxWidth ?? null,
                     editable: false,
                     sortable: data.sortable ?? true
                 }
@@ -563,8 +565,16 @@ class UIBootgrid {
                 // lock the width in place
                 col['minWidth'] = field.width;
                 col['maxWidth'] = field.width;
-            } else if (field.width) {
-                col['width'] = field.width;
+            } else {
+                if (field.width) {
+                    col['width'] = field.width;
+                }
+                if (field.minWidth) {
+                    col['minWidth'] = field.minWidth;
+                }
+                if (field.maxWidth) {
+                    col['maxWidth'] = field.maxWidth;
+                }
             }
 
             result.push(col);
