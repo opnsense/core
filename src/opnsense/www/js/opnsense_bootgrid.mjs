@@ -24,84 +24,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-$.fn.bootgrid = function(option, ...args) {
-    let ret;
+import {TabulatorFull as Tabulator} from 'tabulator-tables';
 
-    this.each(function() {
-        const $el = $(this);
-        let instance = $el.data('UIBootgrid');
-
-        if (typeof option === 'object' || option === undefined) {
-            // Caller instantiated jQuery bootgrid directly, unsupported
-            return;
-        }
-
-        if (typeof option === 'string' && instance && typeof instance[option] === 'function') {
-            // pass legacy bootgrid calls to new UIBootgrid implementation
-            ret = instance[option](...args);
-            return false;
-        }
-    });
-
-    return ret !== undefined ? ret : this;
-}
-
-$.fn.UIBootgrid = function(params) {
-    let id = this.attr('id');
-    const $original = this;
-    // while we have the element, figure out:
-    // - if we're in a responsive container before removing it
-    //   this determines whether rows should break to a newline or overflow (ellipsis)
-    let responsive = $original.parents('.table-responsive').length > 0;
-    if (params?.options?.responsive ?? false) {
-        responsive = params.options.responsive;
-    }
-    (params.options ??= {}).responsive = responsive;
-
-    // - parse the columns
-    let cols = {};
-    let firstHeadRow = $original.find("thead > tr").first();
-    firstHeadRow.children().each((i, col) => {
-        let $col = $(col);
-        let data = $col.data();
-        let width = null;
-        if (data.width !== undefined && data.width !== '') {
-            // intentionally ignore data.visible here so there is a value to go to
-            let isNumber = /^-?\d+(\.\d+)?$/.test(data.width);
-            if (!isNumber) {
-                // assume the value is a proper CSS unit, but add a margin to be safe
-                $col.css({width: data.width});
-                width = parseFloat($col.outerWidth()) + 5.0;
-            } else {
-                width = parseFloat(data.width);
-            }
-        }
-
-        cols[data.columnId] = {
-            data: data,
-            label: $col.text(),
-            width: width
-        }
-    });
-
-    // Before replacing the element, search for custom grid commands so we don't
-    // lose their event bindings and data.
-    let customCommands = $original.find('tfoot td').children().not('[data-action]').detach();
-
-    const $replacement = $('<div>').attr('id', id);
-    $original.replaceWith($replacement);
-
-    let bg = new UIBootgrid(id).translateCompatOptions(params, $original, cols, customCommands).initialize();
-
-    // store the instance so calls to $.bootgrid(...) are wired to the new implementation
-    $replacement.data('UIBootgrid', bg);
-
-    return $replacement;
-}
-
-$.fn.UIBootgrid.translations = {};
-
-class UIBootgrid {
+export class UIBootgrid {
     constructor(id, options = {}, crud = {}, tabulatorOptions = {}) {
         // wrapper-specific state variables
         this.id = id;
@@ -2071,3 +1996,85 @@ class UIBootgrid {
         return this.searchPhrase;
     }
 }
+
+/* jQuery compatibility layer */
+
+$.fn.bootgrid = function(option, ...args) {
+    let ret;
+
+    this.each(function() {
+        const $el = $(this);
+        let instance = $el.data('UIBootgrid');
+
+        if (typeof option === 'object' || option === undefined) {
+            // Caller instantiated jQuery bootgrid directly, unsupported
+            return;
+        }
+
+        if (typeof option === 'string' && instance && typeof instance[option] === 'function') {
+            // pass legacy bootgrid calls to new UIBootgrid implementation
+            ret = instance[option](...args);
+            return false;
+        }
+    });
+
+    return ret !== undefined ? ret : this;
+}
+
+$.fn.UIBootgrid = function(params) {
+    let id = this.attr('id');
+    const $original = this;
+    // while we have the element, figure out:
+    // - if we're in a responsive container before removing it
+    //   this determines whether rows should break to a newline or overflow (ellipsis)
+    let responsive = $original.parents('.table-responsive').length > 0;
+    if (params?.options?.responsive ?? false) {
+        responsive = params.options.responsive;
+    }
+    (params.options ??= {}).responsive = responsive;
+
+    // - parse the columns
+    let cols = {};
+    let firstHeadRow = $original.find("thead > tr").first();
+    firstHeadRow.children().each((i, col) => {
+        let $col = $(col);
+        let data = $col.data();
+        let width = null;
+        if (data.width !== undefined && data.width !== '') {
+            // intentionally ignore data.visible here so there is a value to go to
+            let isNumber = /^-?\d+(\.\d+)?$/.test(data.width);
+            if (!isNumber) {
+                // assume the value is a proper CSS unit, but add a margin to be safe
+                $col.css({width: data.width});
+                width = parseFloat($col.outerWidth()) + 5.0;
+            } else {
+                width = parseFloat(data.width);
+            }
+        }
+
+        cols[data.columnId] = {
+            data: data,
+            label: $col.text(),
+            width: width
+        }
+    });
+
+    // Before replacing the element, search for custom grid commands so we don't
+    // lose their event bindings and data.
+    let customCommands = $original.find('tfoot td').children().not('[data-action]').detach();
+    const $replacement = $('<div>').attr('id', id);
+    $original.replaceWith($replacement);
+
+    let bg = new UIBootgrid(id).translateCompatOptions(params, $original, cols, customCommands).initialize();
+
+    // store the instance so calls to $.bootgrid(...) are wired to the new implementation
+    $replacement.data('UIBootgrid', bg);
+
+    return $replacement;
+}
+
+// These translations must come from the template, see default.volt
+$.fn.UIBootgrid.translations = {};
+
+// Expose "UIBootgrid" class for non-module scripts
+window.UIBootgrid = UIBootgrid;

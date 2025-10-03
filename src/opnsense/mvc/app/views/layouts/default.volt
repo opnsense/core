@@ -40,6 +40,9 @@
     <script src="{{ cache_safe(filename) }}"></script>
     {% endfor %}
 
+    <!-- import map for ESM modules -->
+    <script type="importmap">{{ javascript_importmap|json_encode }}</script>
+
     <script>
             // setup default scripting after page loading.
             $( document ).ready(function() {
@@ -309,7 +312,9 @@
       </div>
     </div>
 
-    <script>
+    <script type="module">
+        import "UIBootgrid";
+
         /* hook translations  when all JS modules are loaded*/
         $.extend(jQuery.fn.UIBootgrid.translations, {
             add: "{{ lang._('Add') }}",
