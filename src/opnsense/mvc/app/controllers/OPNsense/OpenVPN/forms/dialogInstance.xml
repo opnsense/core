@@ -523,6 +523,7 @@ Set to 0 to disable, remember to change your client as well.
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
+        <advanced>true</advanced>
         <help>Specify routes to be excluded from the VPN tunnel. Traffic to these destinations will use the client’s existing default IP gateway (net_gateway) instead. Concretely, new routes will be added on the client system so that these destinations are sent via the user’s usual default gateway. Note: this feature is not supported on all client systems.</help>
         <grid_view>
             <visible>false</visible>
