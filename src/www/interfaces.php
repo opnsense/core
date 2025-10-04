@@ -170,7 +170,7 @@ function parse_xml_regdomain(&$rdattributes, $rdfile = '', $rootobj = 'regulator
         }
 
         $parsed_xml = array('main' => $rdmain, 'attributes' => $rdattributes);
-        $tmp = '/tmp/regdomain.cache.' . getmypid() . '.' . mt_rand();
+        $tmp = tempnam('/tmp', 'regdomain.cache.');
         @file_put_contents($tmp, serialize($parsed_xml));
         @rename($tmp, '/tmp/regdomain.cache');
     }
@@ -614,7 +614,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $toapplylist[$if]['ifcfg']['realifv6'] = end($devices);
             $toapplylist[$if]['ppps'] = $a_ppps;
             
-$tm='/tmp/.interfaces.apply.' . getmypid() . '.' . mt_rand(); @file_put_contents($tm, serialize($toapplylist)); @rename($tm, '/tmp/.interfaces.apply');
+$tm=tempnam('/tmp','interfaces.apply.'); @file_put_contents($tm, serialize($toapplylist)); @rename($tm, '/tmp/.interfaces.apply');
         }
         if (!empty($ifgroup)) {
             header(url_safe('Location: /interfaces.php?if=%s&group=%s', array($if, $ifgroup)));
@@ -1286,7 +1286,7 @@ $tm='/tmp/.interfaces.apply.' . getmypid() . '.' . mt_rand(); @file_put_contents
                 $toapplylist[$if]['ifcfg'] = $old_config;
                 $toapplylist[$if]['ppps'] = $a_ppps;
                 
-$tm='/tmp/.interfaces.apply.' . getmypid() . '.' . mt_rand(); @file_put_contents($tm, serialize($toapplylist)); @rename($tm, '/tmp/.interfaces.apply');
+$tm=tempnam('/tmp','interfaces.apply.'); @file_put_contents($tm, serialize($toapplylist)); @rename($tm, '/tmp/.interfaces.apply');
             }
 
             mark_subsystem_dirty('interfaces');
