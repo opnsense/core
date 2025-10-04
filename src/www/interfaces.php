@@ -36,34 +36,6 @@ require_once("filter.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-/*
- * Defensive helper: safely read a serialized temporary file created by the
- * current php-fpm user only. Reject files not owned by the running user,
- * excessively large files and disable class instantiation during unserialize.
- */
-if (!function_exists('opnsense_safe_tmp_unserialize')) {
-    function opnsense_safe_tmp_unserialize(string $path)
-    {
-        $st = @stat($path);
-        if ($st === false) {
-            return null;
-        }
-        /* only accept files owned by the current php-fpm user (www) */
-        if (function_exists('posix_getuid') && $st['uid'] !== @posix_getuid()) {
-            return null;
-        }
-        /* small size cap to avoid memory issues */
-        if ($st['size'] > 1048576 /* 1MiB */) {
-            return null;
-        }
-        $data = @file_get_contents($path);
-        if ($data === false) {
-            return null;
-        }
-        $value = @unserialize($data, ['allowed_classes' => false]);
-        return is_array($value) ? $value : null;
-    }
-}
 
 /***************************************************************************************************************
  * imported from xmlparse_attr.inc
@@ -169,7 +141,10 @@ function parse_xml_regdomain(&$rdattributes, $rdfile = '', $rootobj = 'regulator
     $parsed_xml = array();
 
     if (file_exists('/tmp/regdomain.cache')) {
-        $parsed_xml = opnsense_safe_tmp_unserialize('/tmp/regdomain.cache');
+        $parsed_xml = @unserialize(@file_get_contents('/tmp/regdomain.cache'), ['allowed_classes' => false]);
+        if (!is_array($parsed_xml)) {
+            $parsed_xml = array();
+        }
         if (!empty($parsed_xml)) {
             $rdmain = $parsed_xml['main'];
             $rdattributes = $parsed_xml['attributes'];
@@ -195,9 +170,9 @@ function parse_xml_regdomain(&$rdattributes, $rdfile = '', $rootobj = 'regulator
         }
 
         $parsed_xml = array('main' => $rdmain, 'attributes' => $rdattributes);
-        $rdcache = fopen('/tmp/regdomain.cache', 'w');
-        fwrite($rdcache, serialize($parsed_xml));
-        fclose($rdcache);
+        $tmp = '/tmp/regdomain.cache.' . getmypid() . '.' . mt_rand();
+        @file_put_contents($tmp, serialize($parsed_xml));
+        @rename($tmp, '/tmp/regdomain.cache');
     }
 
     return $rdmain;
@@ -583,7 +558,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $intput_errors[] = gettext("You have already applied your settings!");
         } else {
             if (file_exists('/tmp/.interfaces.apply')) {
-                $toapplylist = opnsense_safe_tmp_unserialize('/tmp/.interfaces.apply');
+                $toapplylist = @unserialize(@file_get_contents('/tmp/.interfaces.apply'), ['allowed_classes' => false]);
+                if (!is_array($toapplylist)) {
+                    $toapplylist = array();
+                }
                 foreach ($toapplylist as $ifapply => $ifcfgo) {
                     interface_reset($ifapply, $ifcfgo, isset($ifcfgo['enable']));
                     interface_configure(false, $ifapply, true);
@@ -621,7 +599,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config("Interface {$pconfig['descr']}({$if}) is now disabled.");
         mark_subsystem_dirty('interfaces');
         if (file_exists('/tmp/.interfaces.apply')) {
-            $toapplylist = opnsense_safe_tmp_unserialize('/tmp/.interfaces.apply');
+            $toapplylist = @unserialize(@file_get_contents('/tmp/.interfaces.apply'), ['allowed_classes' => false]);
+            if (!is_array($toapplylist)) {
+                $toapplylist = array();
+            }
         } else {
             $toapplylist = array();
         }
@@ -633,7 +614,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $toapplylist[$if]['ifcfg']['realifv6'] = end($devices);
             $toapplylist[$if]['ppps'] = $a_ppps;
             
-$tm='/tmp/.interfaces.apply.tmp'; @file_put_contents($tm, serialize($toapplylist), LOCK_EX); @chmod($tm, 0600); @rename($tm, '/tmp/.interfaces.apply');
+$tm='/tmp/.interfaces.apply.' . getmypid() . '.' . mt_rand(); @file_put_contents($tm, serialize($toapplylist)); @rename($tm, '/tmp/.interfaces.apply');
         }
         if (!empty($ifgroup)) {
             header(url_safe('Location: /interfaces.php?if=%s&group=%s', array($if, $ifgroup)));
@@ -1292,7 +1273,10 @@ $tm='/tmp/.interfaces.apply.tmp'; @file_put_contents($tm, serialize($toapplylist
             // log changes for apply action
             // (it would be better to diff the physical situation with the new config for changes)
             if (file_exists('/tmp/.interfaces.apply')) {
-                $toapplylist = opnsense_safe_tmp_unserialize('/tmp/.interfaces.apply');
+                $toapplylist = @unserialize(@file_get_contents('/tmp/.interfaces.apply'), ['allowed_classes' => false]);
+                if (!is_array($toapplylist)) {
+                    $toapplylist = array();
+                }
             } else {
                 $toapplylist = array();
             }
@@ -1302,7 +1286,7 @@ $tm='/tmp/.interfaces.apply.tmp'; @file_put_contents($tm, serialize($toapplylist
                 $toapplylist[$if]['ifcfg'] = $old_config;
                 $toapplylist[$if]['ppps'] = $a_ppps;
                 
-$tm='/tmp/.interfaces.apply.tmp'; @file_put_contents($tm, serialize($toapplylist), LOCK_EX); @chmod($tm, 0600); @rename($tm, '/tmp/.interfaces.apply');
+$tm='/tmp/.interfaces.apply.' . getmypid() . '.' . mt_rand(); @file_put_contents($tm, serialize($toapplylist)); @rename($tm, '/tmp/.interfaces.apply');
             }
 
             mark_subsystem_dirty('interfaces');
