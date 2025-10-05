@@ -1309,9 +1309,11 @@ function interfaces_pfsync_configure()
             $version = 'version ' . escapeshellarg($config['hasync']['pfsyncversion']);
         }
 
+        $defer = !empty($config['hasync']['pfsyncdefer']) ? 'defer' : '-defer';
+
         $intf_stats = legacy_interfaces_details(); /* XXX could require passing this down */
 
-        mwexec("/sbin/ifconfig pfsync0 syncdev {$syncdev} {$syncpeer} {$version} up");
+        mwexec("/sbin/ifconfig pfsync0 syncdev {$syncdev} {$syncpeer} {$version} {$defer} up");
 
         if (!empty($intf_stats[$syncdev]['mtu'])) {
             mwexecf('/sbin/ifconfig pfsync0 mtu %s', [$intf_stats[$syncdev]['mtu']]);
