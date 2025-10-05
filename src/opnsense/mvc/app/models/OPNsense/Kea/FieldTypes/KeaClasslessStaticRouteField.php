@@ -58,8 +58,6 @@ class KeaClasslessStaticRouteField extends BaseField
                     }
                 }
 
-                for ($i = 0; $i < count($entries); $i += 2) {
-                }
                 return $messages;
             }
             ]);
