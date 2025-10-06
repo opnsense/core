@@ -173,6 +173,10 @@
                     <AsList>Y</AsList>
                     <WildcardEnabled>N</WildcardEnabled>
                 </push_route>
+                <push_excluded_routes type="NetworkField">
+                    <AsList>Y</AsList>
+                    <WildcardEnabled>N</WildcardEnabled>
+                </push_excluded_routes>
                 <cert type="CertificateField"/>
                 <crl type="CertificateField">
                     <type>crl</type>

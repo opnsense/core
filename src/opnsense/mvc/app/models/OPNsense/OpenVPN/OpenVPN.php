@@ -765,7 +765,7 @@ class OpenVPN extends BaseModel
                 }
 
                 // routes (ipv4, ipv6 local or push)
-                foreach (['route', 'push_route'] as $type) {
+                foreach (['route', 'push_route', 'push_excluded_routes'] as $type) {
                     foreach (explode(',', (string)$node->$type) as $item) {
                         if (empty($item)) {
                             continue;
@@ -778,6 +778,8 @@ class OpenVPN extends BaseModel
                         }
                         if ($type == 'push_route') {
                             $options['push'][] = "\"{$target_fieldname} $item\"";
+                        } elseif ($type == 'push_excluded_routes') {
+                            $options['push'][] = "\"{$target_fieldname} $item net_gateway\"";
                         } else {
                             $options[$target_fieldname][] = $item;
                         }
