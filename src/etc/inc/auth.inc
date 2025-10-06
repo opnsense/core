@@ -255,7 +255,7 @@ function local_sync_accounts()
     $config_map = [];
     foreach (['user', 'group'] as $section) {
         $config_map[$section] = [];
-        if (!empty($config['system'][$section]) && is_array($config['system'][$section])) {
+        if (!empty($config['system'][$section])) {
             foreach ($config['system'][$section] as $item) {
                 if ($section == 'user' && (empty($item) || (empty($item['shell']) && !empty($item['uid'])))) {
                     /* no shell, no local user */
