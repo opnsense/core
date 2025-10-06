@@ -77,9 +77,11 @@ class HostnameField extends BaseSetField
      */
     public function setValue($value)
     {
-        if ($this->internalIsLegacyXML &&
+        if (
+            $this->internalIsLegacyXML &&
             is_a($value, \SimpleXMLElement::class) &&
-            isset($value->item)) {
+            isset($value->item)
+        ) {
             // flatten legacy structure
             $tmp = [];
             $comments = [];
@@ -114,7 +116,6 @@ class HostnameField extends BaseSetField
         return gettext(
             "Labels must be 1–63 characters, start with a letter or digit, "
             . "and may contain only letters, digits, '-' or '_'. "
-
         );
     }
 
@@ -170,5 +171,4 @@ class HostnameField extends BaseSetField
 
         return $validators;
     }
-
 }

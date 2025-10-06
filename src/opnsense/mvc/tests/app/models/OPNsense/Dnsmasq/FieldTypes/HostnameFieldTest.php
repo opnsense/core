@@ -135,16 +135,16 @@ class HostnameFieldTest extends Field_Framework_TestCase
         $field = new HostnameField();
         $field->setLegacyXML("Y");
         $field->setIsDomain("Y");
-    
+
         $xml = new \SimpleXMLElement(
             '<aliases><item><host>www</host><domain>example.com</domain><description>desc</description></item></aliases>'
         );
         $field->setValue($xml);
-    
+
         // run post-loading event to finalize setup
         $field->eventPostLoading();
-    
+
         $this->assertEmpty($this->validate($field), "Legacy XML structure should be flattened and validated");
         $this->assertStringContainsString("www.example.com", $field->getValue());
-    }    
+    }
 }
