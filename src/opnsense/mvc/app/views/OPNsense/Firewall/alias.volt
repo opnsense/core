@@ -365,7 +365,7 @@
                     $('.geoip_select[data-id="geoip_region_'+item.region+'"]').append(
                         $("<option/>")
                             .val(country)
-                            .data('icon', 'flag-icon flag-icon-' + country.toLowerCase() + ' flag-icon-squared')
+                            .attr('data-icon', 'flag-icon flag-icon-' + country.toLowerCase() + ' flag-icon-squared')
                             .html(item.name)
                     );
                 }
