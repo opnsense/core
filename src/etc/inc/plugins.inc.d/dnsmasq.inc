@@ -254,20 +254,10 @@ function _dnsmasq_add_host_entries()
         }
     }
 
-    if (!empty($dnsmasqcfg['dhcpfirst'])) {
-        file_put_contents('/var/etc/dnsmasq-hosts', $dhosts . $lhosts);
-    } else {
-        file_put_contents('/var/etc/dnsmasq-hosts', $lhosts . $dhosts);
-    }
+    file_safe(
+        '/var/etc/dnsmasq-hosts',
+        !empty($dnsmasqcfg['dhcpfirst']) ? $dhosts . $lhosts : $lhosts . $dhosts
+    );
 
-    /*
-     * Several reports indicated 600 permissions on this file.
-     * The reason is currently unknown, but setting it to 644
-     * as it should be brings the service back to life.
-     */
-    chmod('/var/etc/dnsmasq-hosts', 0644);
-
-    @unlink('/var/etc/dnsmasq-leases');
-    touch('/var/etc/dnsmasq-leases');
-    chmod('/var/etc/dnsmasq-leases', 0644);
+    file_safe('/var/etc/dnsmasq-leases'); /* clear file for later use */
 }

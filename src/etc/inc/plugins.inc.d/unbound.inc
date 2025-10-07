@@ -384,10 +384,7 @@ EOD;
     file_put_contents('/var/unbound/unbound.conf', $unboundconf);
 
     /* Unbound load tripping over this file is very strange so make it a very safe rewrite */
-    $root_hints_tmp = tempnam('/var/unbound', 'root.hints.');
-    copy('/usr/local/opnsense/data/unbound/root.min.hints', $root_hints_tmp);
-    chmod($root_hints_tmp, 0644);
-    rename($root_hints_tmp, '/var/unbound/root.hints');
+    file_safe('/var/unbound/root.hints', '/usr/local/opnsense/data/unbound/root.min.hints');
 
     configd_run('template reload OPNsense/Unbound/*');
 }

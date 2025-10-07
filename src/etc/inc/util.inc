@@ -895,6 +895,20 @@ function log_msg($msg, $prio = LOG_NOTICE)
     syslog($prio, "$page: $msg");
 }
 
+function file_safe($file, $text_or_source = '', $mode = 0644)
+{
+    $temp = tempnam('/tmp', str_replace('/', '_', $file) . '-');
+
+    if (file_exists($text_or_source)) {
+        copy($text_or_source, $temp);
+    } elseif (strlen($text_or_source)) {
+        file_put_contents($temp, $text_or_source);
+    }
+
+    chmod($temp, $mode);
+    rename($temp, $file);
+}
+
 function url_safe($format, $args = [])
 {
     if (!is_array($args)) {

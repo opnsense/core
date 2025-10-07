@@ -238,11 +238,7 @@ function system_resolvconf_generate($verbose = false)
         $resolvconf .= "search {$result}\n";
     }
 
-    $tempfile = tempnam('/tmp', 'resolv.conf');
-    file_put_contents($tempfile, $resolvconf);
-    chmod($tempfile, 0644);
-
-    rename($tempfile, '/etc/resolv.conf');
+    file_safe('/etc/resolv.conf', $resolvconf);
 
     /* setup static routes for DNS servers as configured */
     foreach ($routes as $host => $gateway) {
@@ -986,8 +982,7 @@ function system_trust_configure($verbose = false)
     }
     foreach (['/usr/local/etc/ssl/cert.pem'] as $pem) {
         @unlink($pem); /* do not clobber symlink target */
-        file_put_contents($pem, $ca_bundle);
-        chmod($pem, 0644);
+        file_safe($pem, $ca_bundle);
     }
 
     configd_run('template reload OPNsense/Trust');
