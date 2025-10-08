@@ -130,11 +130,10 @@
                 <Required>Y</Required>
                 <ValidationMessage>Please enter a value between 1 and 99999.</ValidationMessage>
             </sequence>
-            <domain type="HostnameField">
-                <HostWildcardAllowed>Y</HostWildcardAllowed>
-                <IsDNSName>Y</IsDNSName>
-                <IpAllowed>N</IpAllowed>
+            <domain type=".\HostnameField">
                 <Required>Y</Required>
+                <IsDomain>Y</IsDomain>
+                <IsWildcardAllowed>Y</IsWildcardAllowed>
             </domain>
             <ipset type="ModelRelationField">
                 <Model>
@@ -144,7 +143,7 @@
                         <display>name</display>
                         <filters>
                             <type>/^[Ee]xternal.*/</type>
-                            <name>/^(?!bogons$|bogonsv6$|virusprot$|sshlockout$|__captiveportal.*).*/</name>
+                            <name>/^(?!bogons$|bogonsv6$|virusprot$|sshlockout$|__.*).*/</name>
                         </filters>
                     </aliases>
                 </Model>
