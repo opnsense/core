@@ -46,6 +46,32 @@
  }
 
 /**
+ * format large numbers into short notation (e.g. 1.2K, 3.4M, 2.1B)
+ * @param value numeric value to format
+ * @param decimals decimal places (optional)
+ * @return string
+ */
+function numberFormat(value, decimals)
+{
+    if (decimals === undefined) {
+        decimals = 1;
+    }
+    const num = parseFloat(value);
+    if (isNaN(num) || num === 0) {
+        return "";
+    }
+
+    const k = 1000;
+    const units = ["", "K", "M", "B", "T"];
+    const i = Math.floor(Math.log(Math.abs(num)) / Math.log(k));
+
+    const scaled = num / Math.pow(k, i);
+    const formatted = scaled.toFixed(decimals).replace(/\.0$/, "");
+
+    return formatted + units[i];
+}
+
+/**
  * save form to server
  * @param url endpoint url
  * @param formid parent id to grep input data from

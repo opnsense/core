@@ -610,48 +610,13 @@
     </field>
     <!-- Not exposed in dialog, do not exist in model, only for grid -->
     <field>
-        <id>rule.evaluations</id>
-        <label>Evaluations</label>
+        <id>rule.statistics</id>
+        <label>Statistics</label>
         <type>ignore</type>
         <grid_view>
-            <visible>false</visible>
             <sortable>false</sortable>
-            <label>Stats - Evaluations</label>
+            <formatter>statistics</formatter>
             <sequence>115</sequence>
-        </grid_view>
-    </field>
-    <field>
-        <id>rule.states</id>
-        <label>States</label>
-        <type>ignore</type>
-        <grid_view>
-            <visible>false</visible>
-            <sortable>false</sortable>
-            <label>Stats - States</label>
-            <sequence>116</sequence>
-        </grid_view>
-    </field>
-    <field>
-        <id>rule.packets</id>
-        <label>Packets</label>
-        <type>ignore</type>
-        <grid_view>
-            <visible>false</visible>
-            <sortable>false</sortable>
-            <label>Stats - Packets</label>
-            <sequence>117</sequence>
-        </grid_view>
-    </field>
-    <field>
-        <id>rule.bytes</id>
-        <label>Bytes</label>
-        <type>ignore</type>
-        <grid_view>
-            <visible>false</visible>
-            <sortable>false</sortable>
-            <label>Stats - Bytes</label>
-            <sequence>118</sequence>
-            <formatter>bytes</formatter>
         </grid_view>
     </field>
     <field>

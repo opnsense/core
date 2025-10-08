@@ -41,11 +41,6 @@
             });
         }
 
-        // Show statistics columns when inspect button is checked
-        function updateStatisticColumns() {
-            grid.bootgrid(inspectEnabled ? "setColumns" : "unsetColumns", ['evaluations', 'states', 'packets', 'bytes']);
-        }
-
         // Get all advanced fields, used for advanced mode tooltips
         const advancedFieldIds = "{{ advancedFieldIds }}".split(',');
 
@@ -186,6 +181,21 @@
                     },
                     categories: function (column) {
                         return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Categories") }}"></i>';
+                    },
+                    statistics: function (column) {
+                        return `
+                            <span class="bootgrid-tooltip"
+                                data-toggle="tooltip"
+                                title="{{ lang._('Inspect rule statistics') }}">
+                                <i class="fa-solid fa-fw fa-eye"></i>
+                            </span>
+                            <span class="bootgrid-tooltip inspect-cache-flush"
+                                style="cursor:pointer; margin-left:4px;"
+                                data-toggle="tooltip"
+                                title="{{ lang._('Refresh') }}">
+                                <i class="fa-solid fa-fw fa-rotate-right"></i>
+                            </span>
+                        `;
                     },
                 },
                 formatters:{
@@ -472,6 +482,50 @@
                         // There can only be a single negated value
                         return isNegated + renderedItems;
                     },
+                    statistics: function(column, row) {
+                        if (row.isGroup) {
+                            return "";
+                        }
+
+                        // show nothing at all when Inspect is disabled
+                        if (!inspectEnabled) {
+                            return "";
+                        }
+
+                        const evals   = row["evaluations"] ?? "";
+                        const states  = row["states"] ?? "";
+                        const packets = row["packets"] ?? "";
+                        const bytes   = row["bytes"] ?? "";
+
+                        function render(icon, title, value, isBytes = false) {
+                            if (!value || value === "0") {
+                                return "";
+                            }
+
+                            const formatted = isBytes
+                                ? byteFormat(parseInt(value, 10))
+                                : numberFormat(value);
+
+                            return `
+                                <span data-toggle="tooltip" title="${title}">
+                                    <i class="fa fa-fw ${icon} text-muted"></i> ${formatted}
+                                </span>
+                            `;
+                        }
+
+                        const parts = [
+                            render("fa-bullseye", "{{ lang._('Evaluations') }}", evals),
+                            render("fa-chart-line", "{{ lang._('States') }}", states),
+                            render("fa-box", "{{ lang._('Packets') }}", packets),
+                            render("fa-database", "{{ lang._('Bytes') }}", bytes, true)
+                        ].filter(Boolean);
+
+                        if (parts.length === 0) {
+                            return "";
+                        }
+
+                        return `<div class="stats-cell">${parts.join(" ")}</div>`;
+                    },
                 },
             },
             commands: {
@@ -686,7 +740,6 @@
             inspectEnabled = !inspectEnabled;
             localStorage.setItem("firewall_rule_inspect", inspectEnabled ? "1" : "0");
             $(this).toggleClass('active btn-primary', inspectEnabled);
-            updateStatisticColumns();
             grid.bootgrid("reload");
         });
 
@@ -715,8 +768,15 @@
         });
 
         grid.on('loaded.rs.jquery.bootgrid', function () {
-            updateStatisticColumns();  // ensures inspect columns are consistent after reload
-            $("#{{formGridFilterRule['table_id']}}").toggleClass("tree-enabled", treeViewEnabled);
+            const $table = $("#{{formGridFilterRule['table_id']}}");
+            $table.toggleClass("tree-enabled", treeViewEnabled);
+
+            // Bind click event for cache flush icon in statistics header
+            $table.find('.inspect-cache-flush').off('click').on('click', function () {
+                ajaxCall('/api/firewall/filter/flush_inspect_cache', {}, function () {
+                    grid.bootgrid('reload');
+                }, null, 'POST');
+            });
         });
 
         // replace all "net" selectors with details retrieved from "list_network_select_options" endpoint
