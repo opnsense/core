@@ -912,15 +912,7 @@
         opacity: 0.4;
     }
 
-    /* Make the action bar a flex row */
-    #dialogFilterRule-header .actionBar {
-        display: flex;
-        flex-wrap: nowrap;
-        gap: 8px;
-        min-width: 0;
-    }
-
-    /* Only these two selectpickers should shrink */
+    /* Action bar specific layout */
     #interface_select_container,
     #type_filter_container {
         float: none !important;
@@ -930,7 +922,6 @@
         display: flex;
     }
 
-    /* Ensure the selectpicker itself can shrink */
     #interface_select_container .bootstrap-select,
     #type_filter_container .bootstrap-select {
         flex: 1 1 auto;
@@ -943,72 +934,18 @@
         min-width: 0;
     }
 
-    /* Right group */
-    #dialogFilterRule-header .actionBar > .search {
-        margin-left: auto;
-    }
-
-    /* Small viewport layout for action bar */
     @media (max-width: 1024px) {
-        #dialogFilterRule-header .actionBar {
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            align-items: stretch;
-            max-width: 100%;
-        }
-
-        /* Default: Each child gets its own row (unless grouped) */
-        #dialogFilterRule-header .actionBar > * {
-            flex: 1 1 100%;
+        #interface_select_container,
+        #type_filter_container {
+            max-width: none;
             margin: 0;
-            float: none !important;
-            display: flex;
         }
 
-        /* Make inner elements stretch fully */
-        #dialogFilterRule-header .actionBar .bootstrap-select,
-        #dialogFilterRule-header .actionBar .bootstrap-select > .dropdown-toggle,
-        #dialogFilterRule-header .actionBar .btn,
-        #dialogFilterRule-header .actionBar .search .input-group,
-        #dialogFilterRule-header .actionBar .search .form-control {
-            flex: 1;
-            width: 100% !important;
-            max-width: 100% !important;
-        }
-
-        /* Inspect + Tree + Expand share one row, equal widths */
         #dialogFilterRule-header #inspect_toggle_container,
         #dialogFilterRule-header #tree_toggle_container,
         #dialogFilterRule-header #tree_expand_container {
             flex: 1 1 0;
-        }
-
-        /* Search: Own row, stretches full width */
-        #dialogFilterRule-header .actionBar .search {
-            flex: 1 1 100%;
-            margin-left: 0;
-        }
-
-        /* Action buttons: Equal widths on one row */
-        #dialogFilterRule-header #dialogFilterRule-actions-group {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            gap: 8px;
-            flex: 1 1 100%;
-        }
-
-        #dialogFilterRule-header #dialogFilterRule-actions-group .btn,
-        #dialogFilterRule-header #dialogFilterRule-actions-group .btn-group,
-        #dialogFilterRule-header #dialogFilterRule-actions-group .dropdown,
-        #dialogFilterRule-header #dialogFilterRule-actions-group .bootstrap-select {
-            flex: 1;
-        }
-
-        /* Override selectpicker cap so they fill full width on small screens */
-        #interface_select_container,
-        #type_filter_container {
-            max-width: none;
+            margin: 0;
         }
     }
 

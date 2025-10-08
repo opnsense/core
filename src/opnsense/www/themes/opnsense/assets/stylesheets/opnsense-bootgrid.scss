@@ -67,6 +67,68 @@
     color: map-get($colors, text-color); /* spinner icon */
 }
 
+/* Action Bar responsive style */
+.bootgrid-header .actionBar {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    min-width: 0;
+}
+
+.bootgrid-header .actionBar > .search {
+    margin-left: auto;
+}
+
+@media (max-width: 1024px) {
+    .bootgrid-header .actionBar {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: stretch;
+        max-width: 100%;
+    }
+
+    .bootgrid-header .actionBar > * {
+        flex: 1 1 100%;
+        margin: 0;
+        float: none !important;
+        display: flex;
+    }
+
+    .bootgrid-header .actionBar .bootstrap-select,
+    .bootgrid-header .actionBar .bootstrap-select > .dropdown-toggle,
+    .bootgrid-header .actionBar .btn,
+    .bootgrid-header .actionBar .search .input-group,
+    .bootgrid-header .actionBar .search .form-control {
+        flex: 1;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .bootgrid-header .actionBar .search {
+        flex: 1 1 100%;
+        margin-left: 0;
+        margin-right: 0 !important;
+    }
+
+    .bootgrid-header .actionBar .search .input-group {
+        margin: 0 !important;
+    }
+
+    .bootgrid-header .actionBar .actions,
+    .bootgrid-header .actionBar .actions-group {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 8px;
+        flex: 1 1 100%;
+    }
+
+    .bootgrid-header .actionBar .actions > *,
+    .bootgrid-header .actionBar .actions-group > * {
+        flex: 1;
+    }
+}
+
 /* Command column styles */
 .tabulator-col.tabulator-frozen.tabulator-frozen-right {
 }
