@@ -182,17 +182,27 @@
                     categories: function (column) {
                         return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Categories") }}"></i>';
                     },
-                    statistics: function (column) {
+                    statistics: function () {
                         return `
-                            <span class="bootgrid-tooltip"
-                                data-toggle="tooltip"
-                                title="{{ lang._('Inspect rule statistics') }}">
+                            <span data-toggle="tooltip"
+                                title="{{ lang._('Statistics') }}">
                                 <i class="fa-solid fa-fw fa-eye"></i>
                             </span>
-                            <span class="bootgrid-tooltip inspect-cache-flush"
-                                style="cursor:pointer; margin-left:4px;"
+
+                            <span style="cursor:pointer; margin-left:4px;"
                                 data-toggle="tooltip"
-                                title="{{ lang._('Refresh') }}">
+                                title="{{ lang._('Refresh') }}"
+                                onclick="
+                                    ajaxCall(
+                                        '/api/firewall/filter/flush_inspect_cache',
+                                        {},
+                                        function() {
+                                            $('#{{ formGridFilterRule["table_id"] }}').bootgrid('reload');
+                                        },
+                                        null,
+                                        'POST'
+                                    );
+                                ">
                                 <i class="fa-solid fa-fw fa-rotate-right"></i>
                             </span>
                         `;
@@ -765,18 +775,6 @@
             } else {
                 $table.find('.tabulator-data-tree-control-collapse').trigger('click');
             }
-        });
-
-        grid.on('loaded.rs.jquery.bootgrid', function () {
-            const $table = $("#{{formGridFilterRule['table_id']}}");
-            $table.toggleClass("tree-enabled", treeViewEnabled);
-
-            // Bind click event for cache flush icon in statistics header
-            $table.find('.inspect-cache-flush').off('click').on('click', function () {
-                ajaxCall('/api/firewall/filter/flush_inspect_cache', {}, function () {
-                    grid.bootgrid('reload');
-                }, null, 'POST');
-            });
         });
 
         // replace all "net" selectors with details retrieved from "list_network_select_options" endpoint
