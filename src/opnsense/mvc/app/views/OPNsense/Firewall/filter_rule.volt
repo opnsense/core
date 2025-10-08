@@ -183,29 +183,33 @@
                         return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Categories") }}"></i>';
                     },
                     statistics: function () {
-                        return `
-                            <span data-toggle="tooltip"
-                                title="{{ lang._('Statistics') }}">
-                                <i class="fa-solid fa-fw fa-eye"></i>
+                        const element = $(`
+                            <span class="stats-header-icons">
+                                <span data-toggle="tooltip" title="{{ lang._('Statistics') }}">
+                                    <i class="fa-solid fa-fw fa-eye"></i>
+                                </span>
+                                <span class="inspect-cache-flush"
+                                    style="cursor:pointer; margin-left:4px;"
+                                    data-toggle="tooltip"
+                                    title="{{ lang._('Refresh') }}">
+                                    <i class="fa-solid fa-fw fa-rotate-right"></i>
+                                </span>
                             </span>
+                        `);
 
-                            <span style="cursor:pointer; margin-left:4px;"
-                                data-toggle="tooltip"
-                                title="{{ lang._('Refresh') }}"
-                                onclick="
-                                    ajaxCall(
-                                        '/api/firewall/filter/flush_inspect_cache',
-                                        {},
-                                        function() {
-                                            $('#{{ formGridFilterRule["table_id"] }}').bootgrid('reload');
-                                        },
-                                        null,
-                                        'POST'
-                                    );
-                                ">
-                                <i class="fa-solid fa-fw fa-rotate-right"></i>
-                            </span>
-                        `;
+                        element.find('.inspect-cache-flush').on('click', function () {
+                            ajaxCall(
+                                '/api/firewall/filter/flush_inspect_cache',
+                                {},
+                                function () {
+                                    $('#{{ formGridFilterRule["table_id"] }}').bootgrid('reload');
+                                },
+                                null,
+                                'POST'
+                            );
+                        });
+
+                        return element[0];
                     },
                 },
                 formatters:{
