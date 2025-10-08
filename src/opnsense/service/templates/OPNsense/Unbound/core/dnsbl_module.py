@@ -282,21 +282,6 @@ class DNSBL:
                 else:
                     log_err("dnsbl_module: error parsing blocklist: %s, reusing last known list" % e)
 
-        # translate source nets after loading the list, so we can easily match if in network
-        # enforce our data structure to contain a "source_net" for every domain
-        if 'data' in self.dnsbl and type(self.dnsbl['data']) is dict:
-            for key in self.dnsbl['data']:
-                if type(self.dnsbl['data'][key]) is dict:
-                    source_nets = []
-                    if 'source_net' in self.dnsbl['data'][key]:
-                        if type(self.dnsbl['data'][key]['source_net']) is list:
-                            for item in self.dnsbl['data'][key]['source_net']:
-                                try:
-                                    source_nets.append(ipaddress.ip_network(item, False))
-                                except ValueError:
-                                    log_err("dnsbl_module: unparsable network %s in %s" % (key, item))
-                    self.dnsbl['data'][key]['source_net'] = source_nets
-
         self.dnsbl_available = True
 
     def _in_network(self, client, networks):
@@ -324,32 +309,37 @@ class DNSBL:
         if not query.type in ('A', 'AAAA', 'CNAME', 'HTTPS'):
             return False
 
-        # if "orig" is defined, we know we are matching a CNAME.
-        # the CNAME may be blocked, while the original query is explicitly whitelisted.
-        # In these cases, the whitelisting should have priority since we don't expect
-        # users to trace the CNAMEs themselves.
-        domain = query.domain.rstrip('.').lower()
-        if mod_env['context'].global_pass_regex:
-            r = mod_env['context'].global_pass_regex
-            if r.match(domain) or (orig and r.match(orig)):
-                return False
+        ctx = mod_env['context']
 
+        domain = query.domain.rstrip('.').lower()
         sub = domain
         match = None
         while match is None:
             if sub in self.dnsbl['data']:
-                policy = self.dnsbl['data'][sub]
+                meta_list = self.dnsbl['data'][sub]
                 is_full_domain = sub == domain
-                if (is_full_domain) or (not is_full_domain and policy['wildcard']):
-                    if self._in_network(query.client, policy.get('source_net')):
-                        match = policy
-                    else:
-                        # allow query, but do not cache.
-                        if qstate and hasattr(qstate, 'no_cache_store'):
-                            qstate.no_cache_store = 1
-                        return False
+                for meta in meta_list:
+                    if (is_full_domain) or (not is_full_domain and meta.get('wildcard')):
+                        policy = ctx.get_config(str(meta.get('idx')))
+                        if policy:
+                            if self._in_network(query.client, policy.get('source_nets')):
+                                r = policy.get('pass_regex')
+                                if r and (r.match(sub) or (orig and r.match(orig))):
+                                    # if "orig" is defined, we know we are matching a CNAME.
+                                    # the CNAME may be blocked, while the original query is explicitly whitelisted.
+                                    # In these cases, the whitelisting should have priority since we don't expect
+                                    # users to trace the CNAMEs themselves.
+                                    return False
+                                match = policy
+                                match['bl'] = meta.get('bl')
+                                break
+                        else:
+                            # allow query, but do not cache.
+                            if qstate and hasattr(qstate, 'no_cache_store'):
+                                qstate.no_cache_store = 1
+                            return False
 
-            if '.' not in sub or not mod_env['context'].config.get('has_wildcards', False):
+            if '.' not in sub or not mod_env['context'].has_wildcards:
                 # either we have traversed all subdomains or there are no wildcards
                 # in the dataset, in which case traversal is not necessary
                 break
@@ -367,10 +357,8 @@ class ModuleContext:
     """
     def __init__(self, env):
         self.config = None
+        self.has_wildcards = False
         self.env = env
-        self.dst_addr = '0.0.0.0'
-        self.rcode = RCODE_NOERROR
-        self.global_pass_regex = None
         if self.env:
             self.dnssec_enabled = 'validator' in self.env.cfg.module_conf
 
@@ -379,17 +367,40 @@ class ModuleContext:
         set and parse configuration
         """
         self.config = config
-        self.dst_addr = self.config.get('dst_addr', '0.0.0.0')
-        self.rcode = RCODE_NXDOMAIN if self.config.get('rcode') == 'NXDOMAIN' else RCODE_NOERROR
-        passlist =  self.config.get('global_passlist_regex', None)
-        if passlist:
-            # when a pass/white list is offered, we need to be absolutely sure we can use the regex.
-            # compile and skip when invalid.
-            try:
-                self.global_pass_regex = re.compile(passlist, re.IGNORECASE)
-            except re.error:
-                log_err("dnsbl_module: unable to compile regex in global_passlist_regex")
-                self.global_pass_regex = None
+
+        for idx, cfg in self.config.items():
+            if idx == 'general':
+                self.has_wildcards = cfg.get('has_wildcards', False)
+                continue
+            self.config[idx]['address'] = cfg.get('address', '0.0.0.0')
+            self.config[idx]['rcode'] = RCODE_NXDOMAIN if cfg.get('rcode') == 'NXDOMAIN' else RCODE_NOERROR
+
+            passlist = cfg.get('passlist', None)
+            if passlist:
+                # when a pass/white list is offered, we need to be absolutely sure we can use the regex.
+                # compile and skip when invalid.
+                try:
+                    self.config[idx]['pass_regex'] = re.compile(passlist, re.IGNORECASE)
+                except re.error:
+                    log_err("dnsbl_module: unable to compile regex in global_passlist_regex")
+                    self.config[idx]['pass_regex'] = None
+
+            # translate source nets after loading the list, so we can easily match if in network
+            # enforce our data structure to contain a "source_net" for every domain
+            if 'source_nets' in cfg and type(cfg['source_nets']) is list:
+                source_nets = []
+                for item in cfg['source_nets']:
+                    try:
+                        source_nets.append(ipaddress.ip_network(item, False))
+                    except ValueError:
+                        log_err("dnsbl_module: unparsable network %s" % item)
+                self.config[idx]['source_nets'] = source_nets
+
+    def get_config(self, idx):
+        if idx and idx in self.config:
+            return self.config[idx]
+
+        return None
 
 def time_diff_ms(start):
     return round((time.time() - start) * 1000)
@@ -467,16 +478,19 @@ def deinit(id):
 def inform_super(id, qstate, superqstate, qdata):
     return True
 
-def set_answer_block(qstate, qdata, query, bl=None):
+def set_answer_block(qstate, qdata, query, match):
     ctx = mod_env['context']
     dnssec_status = sec_status_secure if ctx.dnssec_enabled else sec_status_unchecked
     logger = mod_env['logger']
+    rcode = match.get('rcode')
+    dst_addr = match.get('address')
+    bl = match.get('bl')
 
-    if ctx.rcode == RCODE_NXDOMAIN:
+    if rcode == RCODE_NXDOMAIN:
         # exit early
         qstate.return_rcode = RCODE_NXDOMAIN
         if logger.stats_enabled:
-            query.set_response(ACTION_BLOCK, SOURCE_LOCAL, bl, ctx.rcode,
+            query.set_response(ACTION_BLOCK, SOURCE_LOCAL, bl, rcode,
                         time_diff_ms(qdata['start_time']), dnssec_status, 0)
             mod_env['logger'].log_entry(query)
         return True
@@ -485,7 +499,7 @@ def set_answer_block(qstate, qdata, query, bl=None):
     # XXX AAAA
     msg = DNSMessage(query.domain, RR_TYPE_A, RR_CLASS_IN, PKT_QR | PKT_RA | PKT_AA)
     if (query.type == 'A') or (query.type == 'CNAME'):
-        msg.answer.append("%s %s IN A %s" % (query.domain, ttl, ctx.dst_addr))
+        msg.answer.append("%s %s IN A %s" % (query.domain, ttl, dst_addr))
     if not msg.set_return_msg(qstate):
         log_err("dnsbl_module: unable to create response for %s, dropping query" % query.domain)
         if logger.stats_enabled:
@@ -497,7 +511,7 @@ def set_answer_block(qstate, qdata, query, bl=None):
         qstate.return_msg.rep.security = dnssec_status
 
     if logger.stats_enabled:
-        query.set_response(ACTION_BLOCK, SOURCE_LOCAL, bl, ctx.rcode,
+        query.set_response(ACTION_BLOCK, SOURCE_LOCAL, bl, rcode,
             time_diff_ms(qdata['start_time']), dnssec_status, ttl)
         mod_env['logger'].log_entry(query)
     return True
@@ -510,7 +524,7 @@ def operate(id, event, qstate, qdata):
 
         match = mod_env['dnsbl'].policy_match(query, qstate)
         if match:
-            if not set_answer_block(qstate, qdata, query, match.get('bl')):
+            if not set_answer_block(qstate, qdata, query, match):
                 qstate.ext_state[id] = MODULE_ERROR
                 return True
 
@@ -560,7 +574,7 @@ def operate(id, event, qstate, qdata):
                                         # change the type to CNAME if a match is found to indicate
                                         # that a CNAME was the reason for blocking this domain.
                                         query.type = 'CNAME'
-                                        if not set_answer_block(qstate, qdata, query, match.get('bl')):
+                                        if not set_answer_block(qstate, qdata, query, match):
                                             qstate.ext_state[id] = MODULE_ERROR
                                         # block and exit on any match
                                         return True
@@ -639,19 +653,21 @@ if __name__ == '__main__' and test_mode:
     mod_env['context'] = ModuleContext(None)
 
     dnsbl = DNSBL(dnsbl_path=inputargs.dnsbl_path, size_file='/dev/null')
+    mod_env['context'].set_config(dnsbl.dnsbl['config'])
     match = dnsbl.policy_match(
         Query(
             client=inputargs.src,
             family='ip6' if inputargs.src.count(':') else 'ip4',
-            type=inputargs.type ,
+            type=inputargs.type,
             domain=inputargs.domain
         )
     )
     if match:
-        src_nets = match.get('source_net', [])
+        src_nets = match.get('source_nets', [])
         for i in range(len(src_nets)):
             src_nets[i] = str(src_nets[i])
-        match['source_net'] = src_nets
+        match['source_nets'] = src_nets
+        del match['pass_regex']
         msg = {'status': 'OK','action': 'Block','policy': match}
         print(json.dumps(msg))
     else:

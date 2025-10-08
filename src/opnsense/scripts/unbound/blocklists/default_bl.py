@@ -27,74 +27,29 @@
 """
 
 import syslog
-import re
 import os
 import hashlib
 import time
+import re
+import json
 from . import BaseBlocklistHandler
 
 class DefaultBlocklistHandler(BaseBlocklistHandler):
     def __init__(self):
         super().__init__('/usr/local/etc/unbound/unbound-blocklists.conf')
-        self.priority = 100
+        self.priority = 10
 
-    def get_config(self):
-        cfg = {}
-        if self.cnf and self.cnf.has_section('settings'):
-            if self.cnf.has_option('settings', 'address'):
-                cfg['dst_addr'] = self.cnf.get('settings', 'address')
-            if self.cnf.has_option('settings', 'rcode'):
-                cfg['rcode'] = self.cnf.get('settings', 'rcode')
-        return cfg
+        self.cnf_parsed = self._parse_config()
 
-    def get_blocklist(self):
-        result = {}
-        for blocklist, bl_shortcode in self._blocklists_in_config():
-            per_file_stats = {'uri': blocklist, 'blocklist': 0, 'wildcard': 0}
-            for domain in self._domains_in_blocklist(blocklist):
-                if self.domain_pattern.match(domain):
-                    per_file_stats['blocklist'] += 1
-                    if domain in result:
-                        # duplicate domain, signify in dataset for debugging purposes
-                        if 'duplicates' in result[domain]:
-                            result[domain]['duplicates'] += ',%s' % bl_shortcode
-                        else:
-                            result[domain]['duplicates'] = '%s' % bl_shortcode
-                    else:
-                        if domain.startswith('*.'):
-                            result[domain[2:]] = {'bl': bl_shortcode, 'wildcard': True}
-                            per_file_stats['wildcard'] += 1
-                        else:
-                            result[domain] = {'bl': bl_shortcode, 'wildcard': False}
-            syslog.syslog(
-                syslog.LOG_NOTICE,
-                'blocklist: %(uri)s (block: %(blocklist)d wildcard: %(wildcard)d)' % per_file_stats
-            )
-
-        if self.cnf and self.cnf.has_section('include'):
-            for key, value in self.cnf['include'].items():
-                if key.startswith('custom'):
-                    entry = value.rstrip().lower()
-                    if self.domain_pattern.match(entry):
-                        result[entry] = {'bl': 'Manual', 'wildcard': False}
-                elif key.startswith('wildcard'):
-                    entry = value.rstrip().lower()
-                    if self.domain_pattern.match(entry):
-                        # do not apply whitelist to wildcard domains
-                        result[entry] = {'bl': 'Manual', 'wildcard': True}
-
-        return result
-
-    def _blocklists_in_config(self):
-        """
-        Generator for derived classes to iterate over configured blocklists.
-        """
-        if self.cnf and self.cnf.has_section('blocklists'):
-            for blocklist in self.cnf['blocklists']:
-                list_type = blocklist.split('_', 1)
-                bl_shortcode = 'Custom' if list_type[0] == 'custom' else list_type[1]
-                yield (self.cnf['blocklists'][blocklist], bl_shortcode)
-
+    def _get_path(self, d, path, default=None):
+        cur = d
+        for part in path.split('.'):
+            if isinstance(cur, dict) and part in cur:
+                cur = cur[part]
+            else:
+                return default
+        return cur
+    
     def _blocklist_reader(self, uri):
         """
         Decides whether a blocklist can be read from a cached file or
@@ -133,7 +88,98 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
         else:
             syslog.syslog(syslog.LOG_ERR, 'unable to download blocklist from %s and no cache available' % uri)
 
-    def get_passlist_patterns(self):
-        if self.cnf.has_section('exclude'):
-            return list(self.cnf['exclude'].values())
-        return []
+    def _parse_config(self):
+        configs = []
+        if not self.cnf:
+            return configs
+        
+        # interpret these as arrays
+        arr_keys = ['source_nets', 'patterns', 'wildcards']
+        
+        for section in self.cnf.sections():
+            if section.startswith('blocklist:'):
+                config = {}
+                for k,v in self.cnf[section].items():
+                    parts = k.split(".")
+                    cur = config
+                    for part in parts[:-1]:
+                        cur = cur.setdefault(part, {})
+
+                    # normalize
+                    leaf = parts[-1]
+                    if leaf in arr_keys and isinstance(v, str):
+                        v = [] if v == '' else [x.strip() for x in v.split(',')]
+
+                    if len(parts) > 1:
+                        cur[leaf] = v
+                    else:
+                        cur.setdefault(leaf, v)
+
+                configs.append(config)
+        return configs
+
+    def get_policies(self, start_idx):
+        result = []
+        for config in self.cnf_parsed:
+            config.setdefault('__idx__', start_idx)
+
+            cfg = {}
+            # format passlist
+            default_pass = [self._get_path(config, "excludes.default", [])]
+            passlist = default_pass + self._get_path(config, "excludes.patterns", [])
+            compiled_passlist = set()
+            for pattern in passlist:
+                try:
+                    re.compile(pattern, re.IGNORECASE)
+                    compiled_passlist.add(pattern)
+                except re.error:
+                    syslog.syslog(syslog.LOG_ERR,
+                        'blocklist download : skip invalid whitelist exclude pattern "%s" (%s)' % (
+                            pattern, self.__class__.__name__
+                        )
+                    )
+            cfg.setdefault('passlist', '|'.join(compiled_passlist))
+            cfg.setdefault('source_nets', config.get('source_nets', []))
+            cfg.setdefault('address', config.get('address'))
+            cfg.setdefault('rcode', config.get('rcode'))
+            cfg.setdefault('description', config.get('description'))
+            result.append(cfg)
+            start_idx += 1
+
+        return result
+
+    def get_blocklists(self):
+        blocklists = []
+
+        for config in self.cnf_parsed:
+            idx = config.get('__idx__')
+            result = {}
+            for bl_shortcode, blocklist in self._get_path(config, "blocklists", {}).items():
+                per_file_stats = {'uri': blocklist, 'blocklist': 0, 'wildcard': 0}
+                for domain in self._domains_in_blocklist(blocklist):
+                    if self.domain_pattern.match(domain):
+                        per_file_stats['blocklist'] += 1
+                        if domain.startswith('*.'):
+                            result[domain[2:]] = {'idx': idx, 'bl': bl_shortcode, 'wildcard': True}
+                            per_file_stats['wildcard'] += 1
+                        else:
+                            result[domain] = {'idx': idx, 'bl': bl_shortcode, 'wildcard': False}
+                syslog.syslog(
+                    syslog.LOG_NOTICE,
+                    'blocklist: %(uri)s (block: %(blocklist)d wildcard: %(wildcard)d)' % per_file_stats
+                )
+
+            for domain in self._get_path(config, 'includes.patterns', []):
+                entry = domain.rstrip().lower()
+                if self.domain_pattern.match(entry):
+                    result[entry] = {'idx': idx, 'bl': 'Custom', 'wildcard': False}
+
+            for wildcard in self._get_path(config, 'includes.wildcards', []):
+                entry = wildcard.rstrip().lower()
+                if self.domain_pattern.match(entry):
+                    # do not apply whitelist to wildcard domains
+                    result[entry] = {'idx': idx, 'bl': 'Custom', 'wildcard': True}
+            
+            blocklists.append(result)
+
+        return blocklists

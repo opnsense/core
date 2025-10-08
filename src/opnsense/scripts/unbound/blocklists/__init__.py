@@ -36,12 +36,15 @@ import sys
 import fcntl
 import ujson
 import time
+import hashlib
 from configparser import ConfigParser
+from ipaddress import ip_network, collapse_addresses
 
 class BaseBlocklistHandler:
     def __init__(self, config=None):
         self.config = config
         self.cnf = None
+        self.cnf_indexed = None
         self.priority = 0
         self.cache_ttl = 72000
 
@@ -54,34 +57,33 @@ class BaseBlocklistHandler:
 
         self._load_config()
 
-    def get_config(self):
+    def get_policies(self, start_idx):
         """
-        Get statically defined configuration options.
+        Output configuration exposed to Unbound, idx is used by the derived class
+        to link a domain to a running policy.
         """
-        pass
+        if hasattr(self, "get_config") and callable(getattr(self, "get_config")):
+            self.idx = start_idx
+            return [self.get_config()]
 
-    def get_blocklist(self):
+    def get_blocklists(self):
         """
         Overridden by derived classes to produce a formatted blocklist. Returns a dictionary
-        with domains as keys and a dictionary of metadata as values
+        with domains as keys and a dictionary of metadata as values.
         """
-        pass
-
+        if hasattr(self, "get_blocklist") and callable(getattr(self, "get_blocklist")):
+            bl = self.get_blocklist()
+            for key in bl:
+                bl[key]['idx'] = self.idx
+            return [bl]
+        
     def get_passlist_patterns(self):
-        """
-        Implement in derived class to return a list of regex expressions to exclude from blocklist matching
-        """
+        # unused, should now be returned in a 'passlist' property in get_policies()
         return []
 
     def _blocklist_reader(self, uri):
         """
         Used by a derived class to define a caching and/or download routine.
-        """
-        pass
-
-    def _blocklists_in_config(self):
-        """
-        Generator for derived classes to iterate over configured blocklists.
         """
         pass
 
@@ -155,81 +157,38 @@ class BlocklistParser:
         self._register_handlers()
         self.startup_time = time.time()
 
-    def _register_handlers(self):
-        handlers = list()
-        for filename in glob.glob("%s/*.py" % os.path.dirname(__file__)):
-            importlib.import_module(".%s" % os.path.splitext(os.path.basename(filename))[0], __name__)
-
-        for module_name in dir(sys.modules[__name__]):
-            for attribute_name in dir(getattr(sys.modules[__name__], module_name)):
-                cls = getattr(getattr(sys.modules[__name__], module_name), attribute_name)
-                if isinstance(cls, type) and issubclass(cls, BaseBlocklistHandler)\
-                        and cls not in (BaseBlocklistHandler,):
-                    handlers.append(cls())
-        self.handlers = handlers
-
-    def _get_config(self):
-        cfg = {}
-        for handler in self.handlers:
-            tmp = handler.get_config()
-            if tmp:
-                cfg = tmp | cfg
-        return cfg
-
-    def _merge_results(self, blocklists):
-        """
-        Take output of all the handlers and merge based on each handlers' priority.
-        The default handler has highest priority
-        """
-        if len(blocklists) == 1:
-            return next(iter(blocklists.values()))
-
-        blocklists = dict(sorted(blocklists.items(), reverse=True))
-        first = next(iter(blocklists.values()))
-        for bl in list(blocklists.values())[1:]:
-            for key, value in bl.items():
-                if key not in first:
-                    # no collision, merge
-                    first[key] = value
-                else:
-                    # a handler with a lower priority has provided a policy
-                    # on a domain that already exists in the blocklist,
-                    # add it for debugging purposes
-                    first[key].setdefault('collisions', []).append(value)
-
-        return first
-
     def update_blocklist(self):
-        blocklists = {}
-        global_passlist = set()
+        cfg = {}
         merged = {}
+        blocklists = []
+
+        idx = 0
         for handler in self.handlers:
-            for pattern in handler.get_passlist_patterns():
-                try:
-                    re.compile(pattern, re.IGNORECASE)
-                    global_passlist.add(pattern)
-                except re.error:
-                    syslog.syslog(syslog.LOG_ERR,
-                        'blocklist download : skip invalid whitelist exclude pattern "%s" (%s)' % (
-                            pattern, handler.__class__.__name__
-                        )
-                    )
-            blocklists[handler.priority] = handler.get_blocklist()
+            tmp = {}
+            policies = handler.get_policies(idx)
+            for i, policy in enumerate(policies, start=idx):
+                tmp[i] = policy
+            if tmp:
+                idx += len(policies)
+                cfg = tmp | cfg
+            
+            for blocklist in handler.get_blocklists():
+                blocklists.append(blocklist)
 
-        merged['data'] = self._merge_results(blocklists)
-        merged['config'] = self._get_config()
-        wp = '|'.join(global_passlist)
-        merged['config']['global_passlist_regex'] = wp
-        syslog.syslog(syslog.LOG_NOTICE, 'blocklist processed : exclude domains matching %s' % wp)
+        merged['data'] = self._merge_items_with_config(blocklists, cfg)
+        merged['config'] = cfg
+        merged['config']['general'] = {}
 
-        # check if there are wildcards in the dataset
-        has_wildcards = False
-
-        for item in merged['data']:
-            if merged['data'][item].get('wildcard') == True:
-                has_wildcards = True
+        # check wildcard usage
+        found = False
+        for metadata_list in merged['data'].values():
+            for meta in metadata_list:
+                if meta.get('wildcard'):
+                    merged['config']['general']['has_wildcards'] = True
+                    found = True
+                    break
+            if found:
                 break
-        merged['config']['has_wildcards'] = has_wildcards
 
         # write out results
         if not os.path.exists('/var/unbound/data'):
@@ -244,3 +203,66 @@ class BlocklistParser:
         syslog.syslog(syslog.LOG_NOTICE, "blocklist parsing done in %0.2f seconds (%d records)" % (
             time.time() - self.startup_time, len(merged['data'])
         ))
+
+    def _register_handlers(self):
+        handlers = list()
+        for filename in glob.glob("%s/*.py" % os.path.dirname(__file__)):
+            importlib.import_module(".%s" % os.path.splitext(os.path.basename(filename))[0], __name__)
+
+        for module_name in dir(sys.modules[__name__]):
+            for attribute_name in dir(getattr(sys.modules[__name__], module_name)):
+                cls = getattr(getattr(sys.modules[__name__], module_name), attribute_name)
+                if isinstance(cls, type) and issubclass(cls, BaseBlocklistHandler)\
+                        and cls not in (BaseBlocklistHandler,):
+                    handlers.append(cls())
+        handlers.sort(key=lambda h: h.priority)
+        self.handlers = handlers
+
+    def _nets(self, cidr_list):
+        if not cidr_list:
+            return []
+        return [ip_network(n, strict=False) for n in cidr_list]
+
+    def _coverage_weight(self, nets):
+        if not nets:
+            return float('inf')
+        return sum(n.num_addresses for n in collapse_addresses(nets))
+
+    def _any_overlap(self, nets_a, nets_b):
+        if not nets_a or not nets_b:
+            return True
+        return any(a.overlaps(b) for a in nets_a for b in nets_b)
+
+    def _pairwise_disjoint(self, candidates):
+        for i in range(len(candidates)):
+            for j in range(i+1, len(candidates)):
+                if self._any_overlap(candidates[i][1], candidates[j][1]):
+                    return False
+        return True
+
+    def _merge_items_with_config(self, items, config):
+        per_key = {}
+        for d in items:
+            for key, meta in d.items():
+                idx = meta['idx']
+                nets = self._nets(config[idx].get('source_nets', []))
+                # primary: smaller = more specific
+                coverage = self._coverage_weight(nets)
+                pl = config[idx].get('passlist', '')
+                # secondary: prefer passlist
+                pass_penalty = 0 if (pl and pl != '.*localhost$') else 1
+                per_key.setdefault(key, []).append((idx, nets, meta, coverage, pass_penalty))
+
+        merged = {}
+        for key, cands in per_key.items():
+            sort_key = lambda t: (t[3], t[4], t[0])
+            ordered = sorted(cands, key=sort_key)
+
+            if self._pairwise_disjoint(cands):
+                # subnets do not overlap
+                merged[key] = [dict(meta) | {'idx': idx} for idx, _, meta, *_ in ordered]
+                continue
+
+            merged[key] = [dict(meta) for idx, _, meta, *_ in ordered]
+
+        return merged

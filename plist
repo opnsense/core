@@ -866,6 +866,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_1.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_11.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_13.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_3.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_5.php
