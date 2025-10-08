@@ -469,5 +469,4 @@ class FilterController extends FilterBaseController
 
         return ['status' => 'ok'];
     }
-
 }
