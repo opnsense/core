@@ -1,25 +1,23 @@
 <form>
     <field>
-        <id>unbound.dnsbl.enabled</id>
+        <id>blocklist.enabled</id>
         <label>Enable</label>
         <type>checkbox</type>
         <help>Enable the usage of DNS blocklists.</help>
+        <grid_view>
+            <width>6em</width>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+        </grid_view>
     </field>
     <field>
-        <id>unbound.dnsbl.safesearch</id>
-        <label>Force SafeSearch</label>
-        <type>checkbox</type>
-        <style>safesearch</style>
-        <help>Force the usage of SafeSearch on Google, DuckDuckGo, Bing, Qwant, PixaBay and YouTube</help>
-    </field>
-    <field>
-        <id>unbound.dnsbl.type</id>
+        <id>blocklist.type</id>
         <label>Type of DNSBL</label>
         <type>select_multiple</type>
         <help>Select which kind of DNSBL you want to use.</help>
     </field>
     <field>
-        <id>unbound.dnsbl.lists</id>
+        <id>blocklist.lists</id>
         <label>URLs of Blocklists</label>
         <type>select_multiple</type>
         <style>tokenize</style>
@@ -28,7 +26,7 @@
         <help>List of domains from where blocklist will be downloaded.</help>
     </field>
     <field>
-        <id>unbound.dnsbl.whitelists</id>
+        <id>blocklist.whitelists</id>
         <label>Whitelist Domains</label>
         <type>select_multiple</type>
         <style>tokenize</style>
@@ -36,7 +34,7 @@
         <help>List of domains to whitelist. You can use regular expressions.</help>
     </field>
     <field>
-        <id>unbound.dnsbl.blocklists</id>
+        <id>blocklist.blocklists</id>
         <label>Blocklist Domains</label>
         <type>select_multiple</type>
         <style>tokenize</style>
@@ -44,7 +42,7 @@
         <help>List of domains to blocklist. Only exact matches are supported.</help>
     </field>
     <field>
-        <id>unbound.dnsbl.wildcards</id>
+        <id>blocklist.wildcards</id>
         <label>Wildcard Domains</label>
         <type>select_multiple</type>
         <style>tokenize</style>
@@ -55,7 +53,18 @@
         </help>
     </field>
     <field>
-        <id>unbound.dnsbl.address</id>
+        <id>blocklist.source_nets</id>
+        <label>Source Net(s)</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>Source networks to apply policy on. Examples are 192.168.1.0/24 or 192.168.1.1. Leave empty to apply on everything</help>
+        <grid_view>
+            <formatter>listDisplay</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>blocklist.address</id>
         <label>Destination Address</label>
         <type>text</type>
         <advanced>true</advanced>
@@ -63,12 +72,25 @@
             Destination ip address for entries in the blocklist (leave empty to use default: 0.0.0.0).
             Not used when "Return NXDOMAIN" is checked.
         </help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
-        <id>unbound.dnsbl.nxdomain</id>
+        <id>blocklist.nxdomain</id>
         <label>Return NXDOMAIN</label>
         <type>checkbox</type>
         <advanced>true</advanced>
         <help>Use the DNS response code NXDOMAIN instead of a destination address.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>blocklist.description</id>
+        <label>Description</label>
+        <type>text</type>
     </field>
 </form>

@@ -35,19 +35,48 @@ use OPNsense\Firewall\Util;
 
 class OverviewController extends ApiControllerBase
 {
+    private $mdl = null;
+    private $types = [];
+    private $nodes = [];
+
+    public function __construct()
+    {
+        $this->mdl = new \OPNsense\Unbound\Unbound();
+        $this->types = $this->mdl->dnsbl->blocklist->getTemplateNode()->type->getNodeData();
+        $this->nodes = $this->mdl->dnsbl->blocklist->getNodes();
+
+    }
+
+    private function getBlocklistDescription($shortcode)
+    {
+        if (array_key_exists($shortcode, $this->types)) {
+            return $this->types[$shortcode]['value'];
+        }
+
+        return null;
+    }
+
+    private function getFlattenedCustomDomains($key) {
+        return array_values(array_unique(array_filter(
+            array_merge(
+                ...array_values(array_map(fn($v) => array_keys($v[$key] ?? []), $this->nodes))
+            ),
+            'strlen'
+        )));
+    }
+
     public function isEnabledAction()
     {
         $config = Config::getInstance()->object();
         return [
-            'enabled' => (new \OPNsense\Unbound\Unbound())->getNodes()['general']['stats']
+            'enabled' => $this->mdl->getNodes()['general']['stats']
         ];
     }
 
     public function isBlockListEnabledAction()
     {
-        return [
-            'enabled' => (new \OPNsense\Unbound\Unbound())->getNodes()['dnsbl']['enabled']
-        ];
+        $nodes = $this->mdl->getNodes()['dnsbl']['blocklist'];
+        return ['enabled' => (bool)array_filter($nodes, fn($v) => $v['enabled'])];
     }
 
     public function RollingAction($timeperiod, $clients = '0')
@@ -66,17 +95,12 @@ class OverviewController extends ApiControllerBase
             return [];
         }
 
-        $nodes = (new \OPNsense\Unbound\Unbound())->getNodes();
-        /* Map the blocklist type keys to their corresponding description */
-        $types = $nodes['dnsbl']['type'];
         foreach ($parsed['top_blocked'] as $domain => $props) {
-            if (array_key_exists($props['blocklist'], $types)) {
-                $parsed['top_blocked'][$domain]['blocklist'] = $types[$props['blocklist']]['value'];
-            }
+            $parsed['top_blocked'][$domain]['blocklist'] ??= $this->getBlocklistDescription($props['blocklist']);
         }
 
-        $parsed['whitelisted_domains'] = array_keys($nodes['dnsbl']['whitelists']);
-        $parsed['blocklisted_domains'] = array_keys($nodes['dnsbl']['blocklists']);
+        $parsed['whitelisted_domains'] = $this->getFlattenedCustomDomains('whitelists');
+        $parsed['blocklisted_domains'] = $this->getFlattenedCustomDomains('blocklists');
 
         return $parsed;
     }
@@ -99,13 +123,8 @@ class OverviewController extends ApiControllerBase
 
         $parsed = json_decode($response, true) ?? [];
 
-        /* Map the blocklist type keys to their corresponding description */
-        $nodes = (new \OPNsense\Unbound\Unbound())->getNodes();
-        $types = $nodes['dnsbl']['type'];
         foreach ($parsed as $idx => $query) {
-            if (array_key_exists($query['blocklist'], $types)) {
-                $parsed[$idx]['blocklist'] = $types[$query['blocklist']]['value'];
-            }
+            $parsed[$idx]['blocklist'] ??= $this->getBlocklistDescription($query['blocklist']);
 
             /* Handle front-end color status mapping, start off with OK */
             $parsed[$idx]['status'] = 0;
@@ -124,8 +143,8 @@ class OverviewController extends ApiControllerBase
         }
 
         $response = $this->searchRecordsetBase($parsed);
-        $response['whitelisted_domains'] = array_keys($nodes['dnsbl']['whitelists']);
-        $response['blocklisted_domains'] = array_keys($nodes['dnsbl']['blocklists']);
+        $response['whitelisted_domains'] = $this->getFlattenedCustomDomains('whitelists');
+        $response['blocklisted_domains'] = $this->getFlattenedCustomDomains('blocklists');
 
         return $response;
     }

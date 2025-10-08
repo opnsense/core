@@ -27,38 +27,108 @@
 
 <script>
    $(document).ready(function() {
-       var data_get_map = {'frm_dnsbl_settings':"/api/unbound/settings/get"};
-       let init_state = null;
-       mapDataToFormUI(data_get_map).done(function(data){
-           formatTokenizersUI();
-           $('.selectpicker').selectpicker('refresh');
-           init_state = $('.safesearch').is(':checked');
-       });
+        let gridLoaded = false;
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            $('#reconfigureAct').closest('content-box').show();
+            if (e.target.id === 'blocklists_tab' && !gridLoaded) {
+                $("#{{formGridDnsbl['table_id']}}").UIBootgrid({
+                    search:'/api/unbound/settings/searchDnsbl/',
+                    get:'/api/unbound/settings/getDnsbl/',
+                    set:'/api/unbound/settings/setDnsbl/',
+                    add:'/api/unbound/settings/addDnsbl/',
+                    del:'/api/unbound/settings/delDnsbl/',
+                    toggle:'/api/unbound/settings/toggleDnsbl/',
+                    options: {
+                        formatters: {
+                            'listDisplay': function(column, row) {
+                                return row.source_nets.split(',').join("<br/>");
+                            }
+                        }
+                    }
+                });
+                gridLoaded = true;
+            } else if (e.target.id === 'blocklist_tester_tab') {
+                $('#reconfigureAct').closest('content-box').hide();
+            }
+        });
 
-       $("#reconfigureAct").SimpleActionButton({
-          onPreAction: function() {
-              const dfObj = new $.Deferred();
-              let safesearch_changed = !($('.safesearch').is(':checked') == init_state);
-              init_state = $('.safesearch').is(':checked');
-              saveFormToEndpoint("/api/unbound/settings/set", 'frm_dnsbl_settings', function(){
-                  if (safesearch_changed) {
-                      /* Restart Unbound and apply the DNSBL after it has finished */
-                      ajaxCall('/api/unbound/service/reconfigure', {}, function(data,status) {
-                          dfObj.resolve();
-                      });
-                  } else {
-                      dfObj.resolve();
-                  }
-              }, true, function () { dfObj.reject(); });
-              return dfObj;
-          }
-      });
+        if (window.location.hash != "") {
+            $('a[href="' + window.location.hash + '"]').click();
+        } else {
+            $('a[href="#blocklists"]').click();
+        }
 
-      updateServiceControlUI('unbound');
+        $('.nav-tabs a').on('shown.bs.tab', function (e) {
+            history.pushState(null, null, e.target.hash);
+        });
+
+        $("#reconfigureAct").SimpleActionButton();
+
+        $("#tester_exec").click(function() {
+            $("#tester_exec_spinner").show();
+            ajaxCall('/api/unbound/diagnostics/testBlocklist', {
+                'domain': $("#tester_domain").val(),
+                'src': $("#tester_src").val(),
+            }, function(data, status) {
+                $("#blocklist_tester_result").empty();
+                $("#blocklist_tester_result").append($("<span/>")).text("{{lang._('Result')}}");
+                if (data.status !== undefined || data.action !== undefined) {
+                    $("#blocklist_tester_result").append($("<pre  style='white-space: pre-wrap; word-break: keep-all;'/>").text(JSON.stringify(data, null, 2)));
+                } else {
+                    $("#blocklist_tester_result").append($("<span/>").text("-"));
+                }
+                $("#tester_exec_spinner").hide();
+            });
+        });
+
+        updateServiceControlUI('unbound');
    });
 </script>
 
-<div class="content-box __mb">
-    {{ partial("layout_partials/base_form",['fields':dnsblForm,'id':'frm_dnsbl_settings'])}}
+<ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
+    <li><a data-toggle="tab" href="#blocklists" id="blocklists_tab">{{ lang._('Blocklists') }}</a></li>
+    <li><a data-toggle="tab" href="#blocklist_tester" id="blocklist_tester_tab">{{ lang._('Tester') }}</a></li>
+</ul>
+<div class="tab-content content-box __mb">
+    <div id="blocklists" class="tab-pane fade in active">
+        {{ partial('layout_partials/base_bootgrid_table', formGridDnsbl)}}
+    </div>
+
+    <div id="blocklist_tester" class="tab-pane fade in">
+        <table class="table table-condensed table-striped">
+            <thead>
+                <tr>
+                <th>{{ lang._('Property') }}</th>
+                <th>{{ lang._('Value') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ lang._('Domain') }}</td>
+                    <td><input type="text" id='tester_domain'></td>
+                </tr>
+                <tr>
+                    <td>{{ lang._('Source') }}</td>
+                    <td><input type="text"  id='tester_src'></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td>
+                        <button class="btn btn-primary" id="tester_exec">
+                            {{ lang._('Test') }}
+                            <i id="tester_exec_spinner" class="fa fa-spinner fa-pulse" aria-hidden="true" style="display:none;"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tfoot>
+            </table>
+            <div id="blocklist_tester_result">
+            </div>
+        </table>
+    </div>
 </div>
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/unbound/service/dnsbl'}) }}
+{{ partial("layout_partials/base_dialog",['fields':formDialogDnsbl,'id':formGridDnsbl['edit_dialog_id'],'label':lang._('Edit Blocklist')])}}
+

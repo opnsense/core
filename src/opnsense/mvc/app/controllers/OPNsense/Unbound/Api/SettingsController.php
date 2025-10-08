@@ -285,4 +285,36 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         return $this->toggleBase('acls.acl', $uuid, $enabled);
     }
+
+    /* DNSBL */
+
+    public function searchDnsblAction()
+    {
+        return $this->searchBase('dnsbl.blocklist', ['enabled', 'list', 'source_net', 'description']);
+    }
+
+    public function getDnsblAction($uuid = null)
+    {
+        return $this->getBase('blocklist', 'dnsbl.blocklist', $uuid);
+    }
+
+    public function addDnsblAction()
+    {
+        return $this->addBase('blocklist', 'dnsbl.blocklist');
+    }
+
+    public function delDnsblAction($uuid)
+    {
+        return $this->delBase('dnsbl.blocklist', $uuid);
+    }
+
+    public function setDnsblAction($uuid)
+    {
+        return $this->setBase('blocklist', 'dnsbl.blocklist', $uuid);
+    }
+
+    public function toggleDnsblAction($uuid, $enabled = null)
+    {
+        return $this->toggleBase('dnsbl.blocklist', $uuid, $enabled);
+    }
 }
