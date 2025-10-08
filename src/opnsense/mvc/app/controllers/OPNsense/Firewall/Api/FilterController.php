@@ -465,7 +465,6 @@ class FilterController extends FilterBaseController
             return ['status' => 'error', 'message' => gettext('Invalid request method')];
         }
 
-        // The "!" prelude flushes any cached script_output before execution
         (new Backend())->configdRun('!filter rule stats');
 
         return ['status' => 'ok'];
