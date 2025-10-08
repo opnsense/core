@@ -486,7 +486,7 @@ class UIBootgrid {
                     visible: data.visible ?? true,
                     sequence: data.sequence ?? null,
                     width: val.width,
-                    minWidth: data.minWidth ?? null,
+                    minWidth: data.minWidth || 80,
                     maxWidth: data.maxWidth ?? null,
                     editable: false,
                     sortable: data.sortable ?? true
