@@ -1070,7 +1070,7 @@ class UIBootgrid {
             let $resetBtn = $(`
                 <button id="${this.id}-reset" class="btn btn-default" type="button"
                         title="${this.persistence ? this.translations.resetGrid : ''}">
-                    <span class="icon fa-solid ${this.persistence ? 'fa-share-square' : 'fa-fw'}"></span>
+                    <span class="icon fa-solid fa-share-square"></span>
                 </button>
             `).on('click', (e) => {
                 e.stopPropagation();
