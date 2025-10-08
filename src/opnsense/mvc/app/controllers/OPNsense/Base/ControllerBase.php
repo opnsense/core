@@ -66,9 +66,6 @@ class ControllerBase extends ControllerRoot
           '/ui/js/jquery-3.5.1.min.js',
           // JQuery Tokenize2 (https://zellerda.github.io/Tokenize2/)
           '/ui/js/tokenize2.js',
-          // Tabulator and related grid integration (https://tabulator.info/)
-          '/ui/js/tabulator.min.js',
-          '/ui/js/opnsense_bootgrid.js',
           // Bootstrap type ahead
           '/ui/js/bootstrap3-typeahead.min.js',
           // OPNsense standard toolkit
@@ -81,6 +78,24 @@ class ControllerBase extends ControllerRoot
           '/ui/js/bootstrap-select.min.js',
           // bootstrap dialog
           '/ui/js/bootstrap-dialog.min.js'
+        ];
+    }
+
+    /**
+     * list of javascript modules, capable of import statements
+     *
+     * Note that these modules aren't fetched statically like the includes above,
+     * but are imported on demand. Filenames should preferably end in .mjs
+     * to signify that they are modules.
+     */
+    protected function templateJSImportMap()
+    {
+        return [
+            'imports' => [
+                // Tabulator and related grid integration (https://tabulator.info/)
+                'tabulator-tables' => '/ui/js/tabulator_esm.min.mjs',
+                'UIBootgrid' => '/ui/js/opnsense_bootgrid.mjs',
+            ]
         ];
     }
 
@@ -415,6 +430,7 @@ class ControllerBase extends ControllerRoot
 
         // Javascript includes
         $this->view->javascript_files = $this->templateJSIncludes();
+        $this->view->javascript_importmap = $this->templateJSImportMap();
         $this->view->css_files = $this->templateCSSIncludes();
 
         // set security policies
