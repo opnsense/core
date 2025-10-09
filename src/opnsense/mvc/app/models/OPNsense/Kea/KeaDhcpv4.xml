@@ -96,6 +96,7 @@
                         <AsList>Y</AsList>
                     </routers>
                     <static_routes type=".\KeaStaticRoutesField"/>
+                    <classless_static_route type=".\KeaClasslessStaticRouteField"/>
                     <domain_name type="HostnameField">
                         <IpAllowed>N</IpAllowed>
                     </domain_name>
@@ -189,6 +190,7 @@
                         <AsList>Y</AsList>
                     </routers>
                     <static_routes type=".\KeaStaticRoutesField"/>
+                    <classless_static_route type=".\KeaClasslessStaticRouteField"/>
                     <domain_name type="HostnameField">
                         <IpAllowed>N</IpAllowed>
                     </domain_name>

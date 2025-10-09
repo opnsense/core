@@ -28,22 +28,30 @@
  * User interface shared components, requires opnsense.js for supporting functions.
  */
 
- /**
-  * format bytes
-  * @param bytes number of bytes to format
-  * @param decimals decimal places
-  * @return string
-  */
- function byteFormat(bytes, decimals)
- {
-     if (decimals === undefined) {
+/**
+ * format bytes or large numbers
+ * @param value number to format
+ * @param decimals decimal places
+ * @param is_number when true, format as number, else byte
+ * @return string
+ */
+function byteFormat(value, decimals, is_number)
+{
+    if (decimals === undefined) {
         decimals = 0;
-     }
-     const kb = 1024;
-     const ndx = bytes === 0 ? 0 : Math.floor(Math.log(bytes) / Math.log(kb));
-     const fileSizeTypes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-     return (bytes / Math.pow(kb, ndx)).toFixed(decimals) + ' ' + fileSizeTypes[ndx];
- }
+    }
+
+    const base = is_number ? 1000 : 1024;
+    const fileSizeTypes = is_number
+        ? ["", "K", "M", "B", "T", "P", "E", "Z", "Y"]
+        : ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+    const ndx = value === 0 ? 0 : Math.floor(Math.log(value) / Math.log(base));
+    // Apply decimals if the base has been exceeded at least once
+    const usedDecimals = ndx === 0 ? 0 : decimals;
+
+    return (value / Math.pow(base, ndx)).toFixed(usedDecimals) + ' ' + fileSizeTypes[ndx];
+}
 
 /**
  * save form to server

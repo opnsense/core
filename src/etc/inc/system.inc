@@ -238,11 +238,7 @@ function system_resolvconf_generate($verbose = false)
         $resolvconf .= "search {$result}\n";
     }
 
-    $tempfile = tempnam('/tmp', 'resolv.conf');
-    file_put_contents($tempfile, $resolvconf);
-    chmod($tempfile, 0644);
-
-    rename($tempfile, '/etc/resolv.conf');
+    file_safe('/etc/resolv.conf', $resolvconf);
 
     /* setup static routes for DNS servers as configured */
     foreach ($routes as $host => $gateway) {
@@ -847,21 +843,6 @@ function system_syslog_reset($verbose = false)
     plugins_configure('dhcp', $verbose);
 }
 
-/*
- *     get_memory()
- *     returns an array listing the amount of
- *     memory installed in the hardware
- *     [0] net memory available for the OS (FreeBSD) after some is taken by BIOS, video or whatever - e.g. 235 MBytes
- *     [1] real (actual) memory of the system, should be the size of the RAM card/s - e.g. 256 MBytes
- */
-function get_memory()
-{
-    $physmem = get_single_sysctl("hw.physmem");
-    $realmem = get_single_sysctl("hw.realmem");
-    /* convert from bytes to megabytes */
-    return array(($physmem / 1048576),($realmem / 1048576));
-}
-
 function system_firmware_configure($verbose = false)
 {
     service_log('Writing firmware settings:', $verbose);
@@ -1001,8 +982,7 @@ function system_trust_configure($verbose = false)
     }
     foreach (['/usr/local/etc/ssl/cert.pem'] as $pem) {
         @unlink($pem); /* do not clobber symlink target */
-        file_put_contents($pem, $ca_bundle);
-        chmod($pem, 0644);
+        file_safe($pem, $ca_bundle);
     }
 
     configd_run('template reload OPNsense/Trust');

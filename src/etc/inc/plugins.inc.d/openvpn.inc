@@ -1279,9 +1279,10 @@ function openvpn_refresh_crls()
                 case 'server_user':
                     if (!empty($settings['crlref'])) {
                         $crl = lookup_crl($settings['crlref']);
-                        $fpath = "/var/etc/openvpn/server{$settings['vpnid']}.crl-verify";
-                        file_put_contents($fpath, !empty($crl['text']) ? base64_decode($crl['text']) : '');
-                        @chmod($fpath, 0644);
+                        file_safe(
+                            "/var/etc/openvpn/server{$settings['vpnid']}.crl-verify",
+                            !empty($crl['text']) ? base64_decode($crl['text']) : ''
+                        );
                     }
                     break;
             }
@@ -1290,10 +1291,11 @@ function openvpn_refresh_crls()
 
     foreach ((new OPNsense\OpenVPN\OpenVPN())->Instances->Instance->iterateItems() as $key => $node) {
         if (!empty((string)$node->enabled) && !empty((string)$node->crl)) {
-            $fpath = "/var/etc/openvpn/server-{$key}.crl-verify";
             $crl = lookup_crl((string)$node->crl);
-            file_put_contents($fpath, !empty($crl['text']) ? base64_decode($crl['text']) : '');
-            @chmod($fpath, 0644);
+            file_safe(
+                "/var/etc/openvpn/server-{$key}.crl-verify",
+                !empty($crl['text']) ? base64_decode($crl['text']) : ''
+            );
         }
     }
 }

@@ -26,39 +26,42 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Dnsmasq\FieldTypes;
+namespace OPNsense\Kea\FieldTypes;
 
-use OPNsense\Base\FieldTypes\HostnameField;
+use OPNsense\Base\FieldTypes\BaseField;
+use OPNsense\Base\Validators\CallbackValidator;
+use OPNsense\Firewall\Util;
 
-class AliasesField extends HostnameField
+class KeaClasslessStaticRouteField extends BaseField
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function setValue($value)
-    {
-        if (is_a($value, 'SimpleXMLElement') && isset($value->item)) {
-            /* auto convert to simple text blob */
-            $tmp = [];
-            $comments = [];
-            foreach ($value->item as $child) {
-                if (empty((string)$child->domain)) {
-                    continue;
-                }
-                if (!empty((string)$child->host)) {
-                    $fqdn = sprintf("%s.%s", $child->host, $child->domain);
-                } else {
-                    $fqdn = (string)$child->domain;
-                }
-                $tmp[] = $fqdn;
-                if (!empty((string)$child->description)) {
-                    $comments[] = sprintf("[%s] %s", $fqdn, $child->description);
-                }
-            }
-            $this->getParentNode()->comments = implode("\n", $comments);
-            return parent::setValue(implode(",", $tmp));
-        }
+    protected $internalIsContainer = false;
 
-        return parent::setValue($value);
+    public function getValidators()
+    {
+        $validators = parent::getValidators();
+        if ($this->internalValue != null) {
+            $validators[] = new CallbackValidator(["callback" => function ($data) {
+                $messages = [];
+                foreach (explode(',', $data) as $item) {
+                    $entries = array_map('trim', explode('-', $item));
+                    if (
+                        count($entries) != 2 ||
+                        !Util::isSubnetStrict($entries[0]) ||
+                        !Util::isIpv4Address(explode('/', $entries[0])[0]) ||
+                        !Util::isIpv4Address($entries[1])
+                    ) {
+                        $messages[] = sprintf(
+                            gettext('Entry "%s,%s" is not a valid dest_net - router_ip pair.'),
+                            $entries[0] ?? '',
+                            $entries[1] ?? ''
+                        );
+                    }
+                }
+
+                return $messages;
+            }
+            ]);
+        }
+        return $validators;
     }
 }

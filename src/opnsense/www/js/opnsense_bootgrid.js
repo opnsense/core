@@ -553,11 +553,10 @@ class UIBootgrid {
                     field: field.id,
                     resizable: !this.options.static,
                     sequence: field.sequence ?? null,
-                    headerSort: this.options.sorting,
+                    headerSort: this.options.sorting && field.sortable !== false,
                     cssClass: this.options.responsive ? 'opnsense-bootgrid-responsive' : '',
                     variableHeight: true,
                     sorter: this.options.sorters[field.type] ?? null,
-                    headerSort: field.sortable
                 };
             }
 
@@ -1080,7 +1079,7 @@ class UIBootgrid {
             let $resetBtn = $(`
                 <button id="${this.id}-reset" class="btn btn-default" type="button"
                         title="${this.persistence ? this.translations.resetGrid : ''}">
-                    <span class="icon fa-solid ${this.persistence ? 'fa-share-square' : 'fa-fw'}"></span>
+                    <span class="icon fa-solid fa-share-square"></span>
                 </button>
             `).on('click', (e) => {
                 e.stopPropagation();

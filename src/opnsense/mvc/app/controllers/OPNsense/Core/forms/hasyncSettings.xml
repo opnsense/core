@@ -39,6 +39,13 @@
         <help>Setting this option will force pfsync to synchronize its state table to this IP address. The default is directed multicast.</help>
     </field>
     <field>
+        <id>hasync.pfsyncdefer</id>
+        <label>Defer pfsync</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Defer transmission of the first packet in a state until a peer has acknowledged that the associated state has been inserted. This adds small delays but allows traffic to flow when more than one firewall might actively handle packets ("active/active")</help>
+    </field>
+    <field>
         <type>header</type>
         <label><![CDATA[Configuration Synchronization Settings (XMLRPC Sync) <a href="/ui/core/hasync_status">Perform synchronization </a>]]></label>
     </field>

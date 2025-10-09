@@ -706,8 +706,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/Dnsmasq.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/Dnsmasq.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/FieldTypes/AliasesField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/FieldTypes/DomainIPField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/FieldTypes/HostnameField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/FieldTypes/RangeAddressField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/Migrations/M1_0_0.php
@@ -800,6 +800,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/VxLan.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/VxLan.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Kea/FieldTypes/KeaClasslessStaticRouteField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/FieldTypes/KeaPoolsField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/FieldTypes/KeaStaticRoutesField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaCtrlAgent.php
@@ -1033,6 +1034,7 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/TextFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest/config.xml
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Dnsmasq/FieldTypes/HostnameFieldTest.php
 /usr/local/opnsense/mvc/tests/phpunit.xml
 /usr/local/opnsense/mvc/tests/setup.php
 /usr/local/opnsense/scripts/auth/add_user.php

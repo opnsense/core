@@ -41,11 +41,6 @@
             });
         }
 
-        // Show statistics columns when inspect button is checked
-        function updateStatisticColumns() {
-            grid.bootgrid(inspectEnabled ? "setColumns" : "unsetColumns", ['evaluations', 'states', 'packets', 'bytes']);
-        }
-
         // Get all advanced fields, used for advanced mode tooltips
         const advancedFieldIds = "{{ advancedFieldIds }}".split(',');
 
@@ -141,6 +136,7 @@
             },
             options: {
                 responsive: true,
+                sorting: false,
                 initialSearchPhrase: getUrlHash('search'),
                 triggerEditFor: getUrlHash('edit'),
                 requestHandler: function(request){
@@ -186,6 +182,35 @@
                     },
                     categories: function (column) {
                         return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Categories") }}"></i>';
+                    },
+                    statistics: function () {
+                        const element = $(`
+                            <span class="stats-header-icons">
+                                <span data-toggle="tooltip" title="{{ lang._('Statistics') }}">
+                                    <i class="fa-solid fa-fw fa-eye"></i>
+                                </span>
+                                <span class="inspect-cache-flush"
+                                    style="cursor:pointer; margin-left:4px;"
+                                    data-toggle="tooltip"
+                                    title="{{ lang._('Refresh') }}">
+                                    <i class="fa-solid fa-fw fa-rotate-right"></i>
+                                </span>
+                            </span>
+                        `);
+
+                        element.find('.inspect-cache-flush').on('click', function () {
+                            ajaxCall(
+                                '/api/firewall/filter/flush_inspect_cache',
+                                {},
+                                function () {
+                                    $('#{{ formGridFilterRule["table_id"] }}').bootgrid('reload');
+                                },
+                                null,
+                                'POST'
+                            );
+                        });
+
+                        return element[0];
                     },
                 },
                 formatters:{
@@ -472,6 +497,53 @@
                         // There can only be a single negated value
                         return isNegated + renderedItems;
                     },
+                    statistics: function(column, row) {
+                        if (row.isGroup || !inspectEnabled) {
+                            return "";
+                        }
+
+                        const evals   = row["evaluations"] ?? "";
+                        const states  = row["states"] ?? "";
+                        const packets = row["packets"] ?? "";
+                        const bytes   = row["bytes"] ?? "";
+
+                        function render(icon, title, value, is_number = false) {
+                            if (!value || value === "0") {
+                                return "";
+                            }
+
+                            const numValue  = parseInt(value, 10);
+                            const formatted = byteFormat(numValue, 1, is_number);
+
+                            return `
+                                <span data-toggle="tooltip" title="${title}: ${numValue.toLocaleString()}">
+                                    <i class="fa fa-fw ${icon} text-muted"></i> ${formatted}
+                                </span>
+                            `;
+                        }
+
+                        const parts = [
+                            render("fa-bullseye", "{{ lang._('Evaluations') }}", evals, true),
+                            render("fa-chart-line", "{{ lang._('States') }}", states, true),
+                            render("fa-box", "{{ lang._('Packets') }}", packets, true),
+                            render("fa-database", "{{ lang._('Bytes') }}", bytes)
+                        ].filter(Boolean);
+
+                        if (parts.length === 0) {
+                            return "";
+                        }
+
+                        // Split into two vertical rows
+                        const firstGroup  = parts.slice(0, 2).join(" ");
+                        const secondGroup = parts.slice(2).join(" ");
+
+                        return `
+                            <div class="stats-cell">
+                                <div>${firstGroup}</div>
+                                <div>${secondGroup}</div>
+                            </div>
+                        `;
+                    },
                 },
             },
             commands: {
@@ -686,7 +758,6 @@
             inspectEnabled = !inspectEnabled;
             localStorage.setItem("firewall_rule_inspect", inspectEnabled ? "1" : "0");
             $(this).toggleClass('active btn-primary', inspectEnabled);
-            updateStatisticColumns();
             grid.bootgrid("reload");
         });
 
@@ -712,11 +783,6 @@
             } else {
                 $table.find('.tabulator-data-tree-control-collapse').trigger('click');
             }
-        });
-
-        grid.on('loaded.rs.jquery.bootgrid', function () {
-            updateStatisticColumns();  // ensures inspect columns are consistent after reload
-            $("#{{formGridFilterRule['table_id']}}").toggleClass("tree-enabled", treeViewEnabled);
         });
 
         // replace all "net" selectors with details retrieved from "list_network_select_options" endpoint
@@ -947,6 +1013,15 @@
             flex: 1 1 0;
             margin: 0;
         }
+    }
+
+    .stats-cell {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .stats-cell div {
+        gap: 6px;
     }
 
 </style>

@@ -157,7 +157,9 @@ function setFormData(parent,data) {
                             // key value (sorted) list
                             // (eg node[keypart][0] = {selected: 0, value: 'my item', key: 'item'})
                             for (i=0; i < node[keypart].length; ++i) {
-                                let opt = $("<option>").val(htmlDecode(node[keypart][i].key)).text(node[keypart][i].value);
+                                let opt = $("<option>").val(htmlDecode(node[keypart][i].key)).text(
+                                    htmlDecode(node[keypart][i].value)
+                                );
                                 if (String(node[keypart][i].selected) !== "0") {
                                     opt.attr('selected', 'selected');
                                 }
@@ -171,7 +173,7 @@ function setFormData(parent,data) {
                             // default "dictionary" type select items
                             // (eg node[keypart]['item'] = {selected: 0, value: 'my item'})
                             $.each(node[keypart],function(indxItem, keyItem){
-                                let opt = $("<option>").val(htmlDecode(indxItem)).text(keyItem["value"]);
+                                let opt = $("<option>").val(htmlDecode(indxItem)).text(htmlDecode(keyItem["value"]));
                                 let optgroup = keyItem.optgroup ?? '';
                                 if (String(keyItem["selected"]) !== "0") {
                                     opt.attr('selected', 'selected');

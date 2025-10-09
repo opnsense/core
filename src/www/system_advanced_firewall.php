@@ -649,7 +649,7 @@ include("head.inc");
                   <input name="maximumstates" type="text" id="maximumstates" value="<?=$pconfig['maximumstates'];?>" />
                   <div class="hidden" data-for="help_for_maximumstates">
                     <?=gettext("Maximum number of connections to hold in the firewall state table.");?><br/>
-                    <?=gettext("Note: Leave this blank for the default. On your system the default size is:");?> <?= default_state_size() ?>
+                    <?=gettext("Note: Leave this blank for the default. On your system the default size is:");?> <?= filter_default_state_size() ?>
                   </div>
                 </td>
               </tr>
@@ -672,7 +672,7 @@ include("head.inc");
                     <?=gettext("Note: Leave this blank for the default.");?>
 <?php
                      if (empty($pconfig['maximumtableentries'])) :?>
-                        <?= gettext("On your system the default size is:");?> <?= default_table_entries_size(); ?>
+                        <?= gettext("On your system the default size is:");?> <?= filter_default_table_entries(); ?>
 <?php
                       endif;?>
                   </div>
