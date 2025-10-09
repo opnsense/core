@@ -516,12 +516,11 @@
                                 return "";
                             }
 
-                            const formatted = isBytes
-                                ? byteFormat(parseInt(value, 10))
-                                : numberFormat(value);
+                            const numValue  = parseInt(value, 10);
+                            const formatted = byteFormat(numValue, undefined, !isBytes);
 
                             return `
-                                <span data-toggle="tooltip" title="${title}">
+                                <span data-toggle="tooltip" title="${title}: ${numValue.toLocaleString()}">
                                     <i class="fa fa-fw ${icon} text-muted"></i> ${formatted}
                                 </span>
                             `;

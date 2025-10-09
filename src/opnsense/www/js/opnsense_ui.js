@@ -28,47 +28,26 @@
  * User interface shared components, requires opnsense.js for supporting functions.
  */
 
- /**
-  * format bytes
-  * @param bytes number of bytes to format
-  * @param decimals decimal places
-  * @return string
-  */
- function byteFormat(bytes, decimals)
- {
-     if (decimals === undefined) {
-        decimals = 0;
-     }
-     const kb = 1024;
-     const ndx = bytes === 0 ? 0 : Math.floor(Math.log(bytes) / Math.log(kb));
-     const fileSizeTypes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-     return (bytes / Math.pow(kb, ndx)).toFixed(decimals) + ' ' + fileSizeTypes[ndx];
- }
-
 /**
- * format large numbers into short notation (e.g. 1.2K, 3.4M, 2.1B)
- * @param value numeric value to format
- * @param decimals decimal places (optional)
+ * format bytes or large numbers
+ * @param value number to format
+ * @param decimals decimal places
+ * @param is_number when true, format as number, else byte
  * @return string
  */
-function numberFormat(value, decimals)
+function byteFormat(value, decimals, is_number)
 {
     if (decimals === undefined) {
-        decimals = 1;
-    }
-    const num = parseFloat(value);
-    if (isNaN(num) || num === 0) {
-        return "";
+        decimals = 0;
     }
 
-    const k = 1000;
-    const units = ["", "K", "M", "B", "T"];
-    const i = Math.floor(Math.log(Math.abs(num)) / Math.log(k));
+    const base = is_number ? 1000 : 1024;
+    const fileSizeTypes = is_number
+        ? ["", "K", "M", "B", "T", "P", "E", "Z", "Y"]
+        : ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
-    const scaled = num / Math.pow(k, i);
-    const formatted = scaled.toFixed(decimals).replace(/\.0$/, "");
-
-    return formatted + units[i];
+    const ndx = value === 0 ? 0 : Math.floor(Math.log(value) / Math.log(base));
+    return (value / Math.pow(base, ndx)).toFixed(decimals) + ' ' + fileSizeTypes[ndx];
 }
 
 /**
