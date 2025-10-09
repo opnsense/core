@@ -136,6 +136,7 @@
             },
             options: {
                 responsive: true,
+                sorting: false,
                 initialSearchPhrase: getUrlHash('search'),
                 triggerEditFor: getUrlHash('edit'),
                 requestHandler: function(request){
