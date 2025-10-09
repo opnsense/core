@@ -551,11 +551,10 @@ class UIBootgrid {
                     field: field.id,
                     resizable: !this.options.static,
                     sequence: field.sequence ?? null,
-                    headerSort: this.options.sorting,
+                    headerSort: this.options.sorting && field.sortable !== false,
                     cssClass: this.options.responsive ? 'opnsense-bootgrid-responsive' : '',
                     variableHeight: true,
                     sorter: this.options.sorters[field.type] ?? null,
-                    headerSort: field.sortable
                 };
             }
 

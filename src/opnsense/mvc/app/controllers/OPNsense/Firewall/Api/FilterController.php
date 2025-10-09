@@ -458,4 +458,15 @@ class FilterController extends FilterBaseController
 
         return $result;
     }
+
+    public function flushInspectCacheAction()
+    {
+        if (!$this->request->isPost()) {
+            return ['status' => 'error', 'message' => gettext('Invalid request method')];
+        }
+
+        (new Backend())->configdRun('!filter rule stats');
+
+        return ['status' => 'ok'];
+    }
 }
