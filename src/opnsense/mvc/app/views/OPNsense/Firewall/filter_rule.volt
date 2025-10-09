@@ -497,12 +497,7 @@
                         return isNegated + renderedItems;
                     },
                     statistics: function(column, row) {
-                        if (row.isGroup) {
-                            return "";
-                        }
-
-                        // show nothing at all when Inspect is disabled
-                        if (!inspectEnabled) {
+                        if (row.isGroup || !inspectEnabled) {
                             return "";
                         }
 
@@ -537,7 +532,16 @@
                             return "";
                         }
 
-                        return `<div class="stats-cell">${parts.join(" ")}</div>`;
+                        // Split into two vertical rows
+                        const firstGroup  = parts.slice(0, 2).join(" ");
+                        const secondGroup = parts.slice(2).join(" ");
+
+                        return `
+                            <div class="stats-cell">
+                                <div>${firstGroup}</div>
+                                <div>${secondGroup}</div>
+                            </div>
+                        `;
                     },
                 },
             },
@@ -971,6 +975,15 @@
     /* fade disabled rows */
     .row-disabled {
         opacity: 0.4;
+    }
+
+    .stats-cell {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .stats-cell div {
+        gap: 6px;
     }
 
 </style>
