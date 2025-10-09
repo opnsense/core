@@ -511,13 +511,13 @@
                         const packets = row["packets"] ?? "";
                         const bytes   = row["bytes"] ?? "";
 
-                        function render(icon, title, value, isBytes = false) {
+                        function render(icon, title, value, is_number = false) {
                             if (!value || value === "0") {
                                 return "";
                             }
 
                             const numValue  = parseInt(value, 10);
-                            const formatted = byteFormat(numValue, 1, !isBytes);
+                            const formatted = byteFormat(numValue, 1, is_number);
 
                             return `
                                 <span data-toggle="tooltip" title="${title}: ${numValue.toLocaleString()}">
@@ -527,10 +527,10 @@
                         }
 
                         const parts = [
-                            render("fa-bullseye", "{{ lang._('Evaluations') }}", evals),
-                            render("fa-chart-line", "{{ lang._('States') }}", states),
-                            render("fa-box", "{{ lang._('Packets') }}", packets),
-                            render("fa-database", "{{ lang._('Bytes') }}", bytes, true)
+                            render("fa-bullseye", "{{ lang._('Evaluations') }}", evals, true),
+                            render("fa-chart-line", "{{ lang._('States') }}", states, true),
+                            render("fa-box", "{{ lang._('Packets') }}", packets, true),
+                            render("fa-database", "{{ lang._('Bytes') }}", bytes)
                         ].filter(Boolean);
 
                         if (parts.length === 0) {
