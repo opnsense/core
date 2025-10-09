@@ -47,7 +47,10 @@ function byteFormat(value, decimals, is_number)
         : ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
     const ndx = value === 0 ? 0 : Math.floor(Math.log(value) / Math.log(base));
-    return (value / Math.pow(base, ndx)).toFixed(decimals) + ' ' + fileSizeTypes[ndx];
+    // Apply decimals if the base has been exceeded at least once
+    const usedDecimals = ndx === 0 ? 0 : decimals;
+
+    return (value / Math.pow(base, ndx)).toFixed(usedDecimals) + ' ' + fileSizeTypes[ndx];
 }
 
 /**

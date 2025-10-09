@@ -517,7 +517,7 @@
                             }
 
                             const numValue  = parseInt(value, 10);
-                            const formatted = byteFormat(numValue, undefined, !isBytes);
+                            const formatted = byteFormat(numValue, 1, !isBytes);
 
                             return `
                                 <span data-toggle="tooltip" title="${title}: ${numValue.toLocaleString()}">
