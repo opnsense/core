@@ -1001,10 +1001,15 @@
     }
 
     @media (max-width: 1024px) {
+        #dialogFilterRule-header .actionBar {
+            flex-wrap: wrap;
+        }
+
         #interface_select_container,
         #type_filter_container {
-            max-width: none;
-            margin: 0;
+            flex: 1 1 100%;
+            max-width: 100%;
+            margin: 0 0 8px 0;
         }
 
         #dialogFilterRule-header #inspect_toggle_container,

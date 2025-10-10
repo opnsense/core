@@ -83,6 +83,7 @@
 
 .bootgrid-header .actionBar > .search {
   margin-left: auto;
+  padding-left: 20px;
 }
 
 @media (max-width: 1024px) {
@@ -113,6 +114,7 @@
   .bootgrid-header .actionBar .search {
     flex: 1 1 100%;
     margin: 0;
+    padding-left: 0;
   }
 
   .bootgrid-header .actionBar .search .input-group {
