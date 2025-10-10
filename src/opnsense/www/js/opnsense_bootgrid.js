@@ -564,10 +564,9 @@ class UIBootgrid {
                 // lock the width in place
                 col['minWidth'] = field.width;
                 col['maxWidth'] = field.width;
+            } else if (field.width) {
+                col['width'] = field.width;
             } else {
-                if (field.width) {
-                    col['width'] = field.width;
-                }
                 if (field.minWidth) {
                     col['minWidth'] = field.minWidth;
                 }

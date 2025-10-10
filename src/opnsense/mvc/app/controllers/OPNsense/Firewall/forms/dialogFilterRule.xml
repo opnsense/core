@@ -71,6 +71,7 @@
         <help>You may enter a description here for your reference (not parsed).</help>
         <grid_view>
             <sequence>110</sequence>
+            <min-width>100</min-width>
         </grid_view>
     </field>
     <field>
@@ -190,6 +191,7 @@
         <grid_view>
             <formatter>alias</formatter>
             <sequence>50</sequence>
+            <min-width>100</min-width>
         </grid_view>
     </field>
     <field>
@@ -199,8 +201,10 @@
         <help>Source port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
         <style>port_selector</style>
         <grid_view>
+            <label>Port</label>
             <sequence>60</sequence>
             <formatter>alias</formatter>
+            <min-width>60</min-width>
         </grid_view>
     </field>
     <field>
@@ -220,6 +224,7 @@
         <grid_view>
             <formatter>alias</formatter>
             <sequence>70</sequence>
+            <min-width>100</min-width>
         </grid_view>
     </field>
     <field>
@@ -229,8 +234,10 @@
         <help>Destination port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
         <style>port_selector</style>
         <grid_view>
+            <label>Port</label>
             <sequence>80</sequence>
             <formatter>alias</formatter>
+            <min-width>60</min-width>
         </grid_view>
     </field>
     <field>
@@ -579,6 +586,7 @@
         <grid_view>
             <formatter>statistics</formatter>
             <sequence>115</sequence>
+            <min-width>200</min-width>
         </grid_view>
     </field>
     <field>
