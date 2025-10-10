@@ -77,7 +77,7 @@
             }
         });
 
-        $("#interface-selection-wrapper").detach().prependTo('#grid-leases-header > .row > .actionBar > .actions');
+        $("#interface-selection-wrapper").detach().insertAfter('#grid-leases-header .search');
 
         updateServiceControlUI('kea');
     });

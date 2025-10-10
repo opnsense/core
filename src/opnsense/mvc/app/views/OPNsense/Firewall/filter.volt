@@ -58,7 +58,7 @@
         $("#reconfigureAct").SimpleActionButton();
 
         // move filter into action header
-        $("#type_filter_container").detach().prependTo('#grid-rules-header > .row > .actionBar > .actions');
+        $("#type_filter_container").detach().insertAfter('#grid-rules-header .search');
         $("#category_filter").change(function(){
             $('#grid-rules').bootgrid('reload');
         });

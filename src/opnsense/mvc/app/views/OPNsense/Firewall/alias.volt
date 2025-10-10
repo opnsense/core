@@ -616,7 +616,7 @@
         });
 
         // move filter into action header
-        $("#type_filter_container").detach().prependTo('#grid-aliases-header > .row > .actionBar > .actions');
+        $("#type_filter_container").detach().insertAfter('#grid-aliases-header .search');
         // alias size in service container
         $("#aliases_stat").detach().prependTo('#service_status_container');
         $("#service_status_container").css('width', '250px');

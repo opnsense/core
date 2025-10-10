@@ -61,7 +61,7 @@
             $('#grid-vips').bootgrid('reload');
         });
 
-        $("#mode_filter_container").detach().prependTo('#grid-vips-header > .row > .actionBar > .actions');
+        $("#mode_filter_container").detach().insertAfter('#grid-vips-header .search');
 
         $(".carp_action").each(function(){
           $(this).SimpleActionButton({onAction: function(data, status){
