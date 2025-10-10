@@ -736,7 +736,7 @@
         $("#interface_select_container").show();
 
         // move selectpickers into action bar
-        $("#interface_select_container").detach().insertBefore('#{{formGridFilterRule["table_id"]}}-header > .row > .actionBar > .search');
+        $("#interface_select_container").detach().insertBefore('#{{formGridFilterRule["table_id"]}}-header .search');
         $('#interface_select').on('changed.bs.select', function () {
             // Skip grid reload during reconfigureAct and initial page load
             if (!interfaceInitialized || reconfigureActInProgress) return;
@@ -985,7 +985,6 @@
         flex: 1 1 150px;
         min-width: 0;
         max-width: 400px;
-        display: flex;
     }
 
     #interface_select_container .bootstrap-select,
@@ -994,22 +993,16 @@
         min-width: 0;
     }
 
-    #interface_select_container .bootstrap-select > .dropdown-toggle,
-    #type_filter_container .bootstrap-select > .dropdown-toggle {
-        width: 100%;
-        min-width: 0;
+    .bootgrid-header .actionBar .btn-group {
+        align-items: flex-start;
     }
 
     @media (max-width: 1024px) {
-        #dialogFilterRule-header .actionBar {
-            flex-wrap: wrap;
-        }
-
         #interface_select_container,
         #type_filter_container {
             flex: 1 1 100%;
             max-width: 100%;
-            margin: 0 0 8px 0;
+            margin: 0;
         }
 
         #dialogFilterRule-header #inspect_toggle_container,
