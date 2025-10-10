@@ -90,7 +90,7 @@
     .bootgrid-header .actionBar > * {
         flex: 1 1 100%;
         margin: 0;
-        float: none !important;
+        float: none;
         display: flex;
     }
 
@@ -100,18 +100,17 @@
     .bootgrid-header .actionBar .search .input-group,
     .bootgrid-header .actionBar .search .form-control {
         flex: 1;
-        width: 100% !important;
-        max-width: 100% !important;
+        width: 100%;
+        max-width: 100%;
     }
 
     .bootgrid-header .actionBar .search {
         flex: 1 1 100%;
-        margin-left: 0;
-        margin-right: 0 !important;
+        margin: 0;
     }
 
     .bootgrid-header .actionBar .search .input-group {
-        margin: 0 !important;
+        margin: 0;
     }
 
     .bootgrid-header .actionBar .actions,
