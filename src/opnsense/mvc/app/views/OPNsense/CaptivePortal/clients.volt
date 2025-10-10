@@ -76,7 +76,7 @@
             }
         });
 
-        $("#zone-selection-wrapper").detach().prependTo('#grid-clients-header > .row > .actionBar > .actions');
+        $("#zone-selection-wrapper").detach().insertBefore('#grid-clients-header .search');
     });
 </script>
 

@@ -212,7 +212,7 @@
             }
         });
 
-        $("#filter_container").detach().prependTo('#{{formGridCert['table_id']}}-header > .row > .actionBar > .actions');
+        $("#filter_container").detach().insertAfter('#{{formGridCert['table_id']}}-header .search');
         $(".cert_filter").change(function(){
             $("#{{formGridCert['table_id']}}").bootgrid('reload');
         });
