@@ -598,10 +598,11 @@ Set to 0 to disable, remember to change your client as well.
     </field>
     <field>
         <id>instance.dns_domain</id>
-        <label>DNS Default Domain</label>
-        <type>text</type>
-        <style>role role_server</style>
-        <help>Set Connection-specific DNS Suffix.</help>
+        <label>DNS Domain list</label>
+        <type>select_multiple</type>
+        <style>tokenize role role_server</style>
+        <allownew>true</allownew>
+        <help>Set Connection-specific DNS Suffixes.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>

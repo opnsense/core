@@ -664,7 +664,9 @@ class OpenVPN extends BaseModel
                         $options['push'][] = "\"register-dns\"";
                     }
                     if (!$node->dns_domain->isEmpty()) {
-                        $options['push'][] = "\"dhcp-option DOMAIN {$node->dns_domain}\"";
+                        foreach (explode(',', (string)$node->dns_domain) as $opt) {
+                            $options['push'][] = "\"dhcp-option DOMAIN {$opt}\"";
+                        }
                     }
                     if (!$node->dns_domain_search->isEmpty()) {
                         foreach (explode(',', (string)$node->dns_domain_search) as $opt) {
