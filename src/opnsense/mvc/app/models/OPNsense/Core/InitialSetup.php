@@ -140,6 +140,8 @@ class InitialSetup extends BaseModel
         } else {
             $this->deployment_type->multiwan = '1';
         }
+        /* use dnsmasq's dns port to detect if we are currently expected to use dnsmasq for dhcp auto-registration */
+        $this->deployment_type->dhcp_dns_registration = $this->getConfigItem('dnsmasq.port') == '53053' ? '1' : '0';
     }
 
     /**
@@ -188,7 +190,7 @@ class InitialSetup extends BaseModel
             }
         }
 
-        if ($this->interfaces->lan->disable == '0') {
+        if ($this->interfaces->lan->disable->isEmpty()) {
             $cnt = count(iterator_to_array(Util::cidrRangeIterator($this->interfaces->lan->ipaddr)));
             if (!$this->interfaces->lan->configure_dhcp->isEmpty() && $cnt < 50) {
                 $messages->appendMessage(
@@ -206,6 +208,25 @@ class InitialSetup extends BaseModel
                     )
                 );
             }
+        }
+        if (!$this->interfaces->lan->disable->isEmpty() && !$this->interfaces->lan->configure_dhcp->isEmpty()) {
+            $messages->appendMessage(
+                new Message(
+                    gettext("To configure a DHCP server, the network interface needs to be configured."),
+                    "interfaces.lan.configure_dhcp"
+                )
+            );
+        }
+        if (!$this->deployment_type->dhcp_dns_registration->isEmpty() && (
+            $this->interfaces->lan->configure_dhcp->isEmpty() ||
+            $this->unbound->enabled->isEmpty()
+        )) {
+            $messages->appendMessage(
+                new Message(
+                    gettext("This feature requires a configured dhcp server and dns resolver configured."),
+                    "deployment_type.dhcp_dns_registration"
+                )
+            );
         }
 
 
@@ -369,6 +390,27 @@ class InitialSetup extends BaseModel
         } else {
             unset($target->system->pf_disable_force_gw);
             unset($target->system->disablereplyto);
+        }
+
+        if (!$this->deployment_type->dhcp_dns_registration->isEmpty()) {
+            /* only configure when set (do not touch otherwise) */
+            $target->dnsmasq->port = '53053';
+            $mdl = new \OPNsense\Unbound\Unbound();
+            foreach ($mdl->dots->dot->iterateItems() as $uuid => $dot) {
+                if ($dot->server->isEqual('127.0.0.1')) {
+                    /* likely existing local domain forward, remove */
+                    $mdl->dots->dot->del($uuid);
+                }
+            }
+            $dot = $mdl->dots->dot->Add();
+            $dot->enabled = '1';
+            $dot->type = 'forward';
+            $dot->domain = $this->domain->getValue();
+            $dot->server = '127.0.0.1';
+            $dot->port = '53053';
+            $dot->description = 'Forward default domain to Dnsmasq DHCP';
+            /* forcefully flush model back to config */
+            $mdl->serializeToConfig(false, true);
         }
     }
 
