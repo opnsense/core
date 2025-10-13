@@ -793,7 +793,9 @@ class UIBootgrid {
             }
         });
         this.table.on('columnVisibilityChanged', (column, visible) => {
-            this._setPersistence(true);
+            if (!column._silentToggle) {
+                this._setPersistence(true);
+            }
         });
         this.table.on('columnMoved', (column, columns) => {
             this._setPersistence(true);
@@ -2038,22 +2040,26 @@ class UIBootgrid {
         this._destroyTable();
     }
 
-    setColumns(columns) {
+    setColumns(columns, silent = false) {
         this.table.getColumns().forEach((col) => {
             const def = col.getDefinition();
             if (columns.includes(def.field)) {
+                col._silentToggle = silent;
                 col.show();
+                delete col._silentToggle;
             }
-        })
+        });
     }
 
-    unsetColumns(columns) {
+    unsetColumns(columns, silent = false) {
         this.table.getColumns().forEach((col) => {
             const def = col.getDefinition();
             if (columns.includes(def.field)) {
+                col._silentToggle = silent;
                 col.hide();
+                delete col._silentToggle;
             }
-        })
+        });
     }
 
     search(value, event) {

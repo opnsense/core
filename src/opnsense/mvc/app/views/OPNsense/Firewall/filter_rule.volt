@@ -60,6 +60,10 @@
         let inspectEnabled = localStorage.getItem("firewall_rule_inspect") === "1";
         $('#toggle_inspect_button').toggleClass('active btn-primary', inspectEnabled);
 
+        function updateStatisticColumns() {
+            grid.bootgrid(inspectEnabled ? "setColumns" : "unsetColumns", ['statistics'], true);
+        }
+
         // read interface from URL hash once, for the first grid load
         const hashMatchInterface = window.location.hash.match(/(?:^#|&)interface=([^&]+)/);
         let pendingUrlInterface = hashMatchInterface ? decodeURIComponent(hashMatchInterface[1]) : null;
@@ -629,6 +633,10 @@
 
         });
 
+        grid.on('loaded.rs.jquery.bootgrid', function () {
+            updateStatisticColumns(); // ensures inspect columns are consistent after reload
+        });
+
         // Track if user has actually changed a dropdown, or it was the controller
         let interfaceInitialized = false;
         let categoryInitialized = false;
@@ -758,6 +766,7 @@
             inspectEnabled = !inspectEnabled;
             localStorage.setItem("firewall_rule_inspect", inspectEnabled ? "1" : "0");
             $(this).toggleClass('active btn-primary', inspectEnabled);
+            updateStatisticColumns();
             grid.bootgrid("reload");
         });
 
