@@ -132,6 +132,14 @@ class InitialSetup extends BaseModel
             $this->interfaces->lan->configure_dhcp = '0';
             $this->interfaces->lan->disable = '1';
         }
+        if (
+            $this->getConfigItem('system.pf_disable_force_gw', true) ||
+            $this->getConfigItem('system.disablereplyto', true)
+        ) {
+            $this->deployment_type->multiwan = '0';
+        } else {
+            $this->deployment_type->multiwan = '1';
+        }
     }
 
     /**
@@ -350,6 +358,21 @@ class InitialSetup extends BaseModel
     }
 
     /**
+     * flush deployment_type settings from in-memory model back to config
+     */
+    private function flush_deployment_type()
+    {
+        $target = Config::getInstance()->object();
+        if ($this->deployment_type->multiwan->isEmpty()) {
+            $target->system->pf_disable_force_gw = '1';
+            $target->system->disablereplyto = '1';
+        } else {
+            unset($target->system->pf_disable_force_gw);
+            unset($target->system->disablereplyto);
+        }
+    }
+
+    /**
      * reset root password when offered
      */
     private function flush_initial_pass()
@@ -386,6 +409,7 @@ class InitialSetup extends BaseModel
         $this->flush_network_wan();
         $this->flush_network_lan();
         $this->flush_initial_pass();
+        $this->flush_deployment_type();
         $this->unset_initial_wizard();
 
         Config::getInstance()->save();

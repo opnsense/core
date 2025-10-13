@@ -62,6 +62,10 @@ class InitialSetupController extends \OPNsense\Base\IndexController
                 'form' => $this->getForm('wizard_network_lan')
             ],
             'step_4' => [
+                'title' => gettext('Deployment type'),
+                'form' => $this->getForm('wizard_deployment_type')
+            ],
+            'step_5' => [
                 'title' => gettext('Set initial password'),
                 'form' => $this->getForm('wizard_root_password')
             ],

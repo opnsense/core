@@ -1,0 +1,12 @@
+<form>
+    <field>
+        <id>wizard.deployment_type.multiwan</id>
+        <label>Optimize for Multiwan</label>
+        <type>checkbox</type>
+        <help>Optimize setup to be used in scenarios where multiple connections to the internet are available,
+              this feature changes the standard destination based routing into a partial source based setup.
+              When only a single gateway is used, we advise to keep this setting disabled. You can always
+              enable the force default and/or reply-to features manually in the advanced firewall page or change firewall
+              rules manually.</help>
+    </field>
+</form>

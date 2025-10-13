@@ -89,6 +89,9 @@
                 </configure_dhcp>
             </lan>
         </interfaces>
+        <deployment_type>
+            <multiwan type="BooleanField"/>
+        </deployment_type>
         <password type="TextField"/>
         <password_confirm type="TextField"/>
     </items>

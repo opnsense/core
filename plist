@@ -224,6 +224,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/hasyncSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/snapshot.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/tunable.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/wizard_deployment_type.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/wizard_general_info.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/wizard_network_lan.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/wizard_network_wan.xml
