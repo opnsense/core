@@ -98,6 +98,7 @@ class ControllerBase extends ControllerRoot
             '/css/bootstrap-dialog.css',
             '/css/tabulator.min.css',
             '/css/opnsense-bootgrid.css',
+            '/css/opnsense-bootgrid-layout.css',
             // Font awesome
             '/ui/assets/fontawesome/css/all.min.css',
             '/ui/assets/fontawesome/css/v4-shims.min.css',
