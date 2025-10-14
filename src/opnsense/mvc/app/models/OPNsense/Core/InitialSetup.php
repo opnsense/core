@@ -132,6 +132,16 @@ class InitialSetup extends BaseModel
             $this->interfaces->lan->configure_dhcp = '0';
             $this->interfaces->lan->disable = '1';
         }
+        if (
+            $this->getConfigItem('system.pf_disable_force_gw', true) ||
+            $this->getConfigItem('system.disablereplyto', true)
+        ) {
+            $this->deployment_type->multiwan = '0';
+        } else {
+            $this->deployment_type->multiwan = '1';
+        }
+        /* use dnsmasq's dns port to detect if we are currently expected to use dnsmasq for dhcp auto-registration */
+        $this->deployment_type->dhcp_dns_registration = $this->getConfigItem('dnsmasq.port') == '53053' ? '1' : '0';
     }
 
     /**
@@ -180,7 +190,7 @@ class InitialSetup extends BaseModel
             }
         }
 
-        if ($this->interfaces->lan->disable == '0') {
+        if ($this->interfaces->lan->disable->isEmpty()) {
             $cnt = count(iterator_to_array(Util::cidrRangeIterator($this->interfaces->lan->ipaddr)));
             if (!$this->interfaces->lan->configure_dhcp->isEmpty() && $cnt < 50) {
                 $messages->appendMessage(
@@ -198,6 +208,25 @@ class InitialSetup extends BaseModel
                     )
                 );
             }
+        }
+        if (!$this->interfaces->lan->disable->isEmpty() && !$this->interfaces->lan->configure_dhcp->isEmpty()) {
+            $messages->appendMessage(
+                new Message(
+                    gettext("To configure a DHCP server, the network interface needs to be configured."),
+                    "interfaces.lan.configure_dhcp"
+                )
+            );
+        }
+        if (!$this->deployment_type->dhcp_dns_registration->isEmpty() && (
+            $this->interfaces->lan->configure_dhcp->isEmpty() ||
+            $this->unbound->enabled->isEmpty()
+        )) {
+            $messages->appendMessage(
+                new Message(
+                    gettext("This feature requires a configured dhcp server and dns resolver configured."),
+                    "deployment_type.dhcp_dns_registration"
+                )
+            );
         }
 
 
@@ -233,6 +262,11 @@ class InitialSetup extends BaseModel
     private function flush_network_wan()
     {
         $target = Config::getInstance()->object();
+        /* ensure wan exists*/
+        if (!isset($target->interfaces->wan)) {
+            $target->interfaces->addChild('wan');
+        }
+
         /* configure wan */
         $gateways = new Gateways();
         foreach ($gateways->gateway_item->iterateItems() as $uuid => $node) {
@@ -313,6 +347,8 @@ class InitialSetup extends BaseModel
             $target->interfaces->addChild('lan');
         }
         $target->interfaces->lan->enable = $this->interfaces->lan->disable->isEmpty() ? '1' : '0';
+        $target->interfaces->lan->blockpriv = '0';
+        $target->interfaces->lan->blockbogons = '0';
         $dnsmasq = new Dnsmasq();
         foreach ($dnsmasq->dhcp_ranges->iterateItems() as $uuid => $node) {
             if ($node->interface == 'lan') {
@@ -320,6 +356,7 @@ class InitialSetup extends BaseModel
                 $dnsmasq->dhcp_ranges->del($uuid);
             }
         }
+
         if ($target->interfaces->lan->enable == '1') {
             $parts = explode('/', $this->interfaces->lan->ipaddr);
             $target->interfaces->lan->ipaddr = $parts[0];
@@ -338,7 +375,7 @@ class InitialSetup extends BaseModel
                 $dhcprange->end_addr = $avail_addrs[count($avail_addrs) - 10];
             }
         } else {
-            unset($target->interfaces->lan);
+            $target->interfaces->lan->enable = '0';
         }
         $dnsmasq->serializeToConfig(false, true);
         /* forcefully disable isc dhcpd when enabled */
@@ -346,6 +383,42 @@ class InitialSetup extends BaseModel
             foreach ($target->dhcpd->children() as $node) {
                 unset($node->enable);
             }
+        }
+    }
+
+    /**
+     * flush deployment_type settings from in-memory model back to config
+     */
+    private function flush_deployment_type()
+    {
+        $target = Config::getInstance()->object();
+        if ($this->deployment_type->multiwan->isEmpty()) {
+            $target->system->pf_disable_force_gw = '1';
+            $target->system->disablereplyto = '1';
+        } else {
+            unset($target->system->pf_disable_force_gw);
+            unset($target->system->disablereplyto);
+        }
+
+        if (!$this->deployment_type->dhcp_dns_registration->isEmpty()) {
+            /* only configure when set (do not touch otherwise) */
+            $target->dnsmasq->port = '53053';
+            $mdl = new \OPNsense\Unbound\Unbound();
+            foreach ($mdl->dots->dot->iterateItems() as $uuid => $dot) {
+                if ($dot->server->isEqual('127.0.0.1')) {
+                    /* likely existing local domain forward, remove */
+                    $mdl->dots->dot->del($uuid);
+                }
+            }
+            $dot = $mdl->dots->dot->Add();
+            $dot->enabled = '1';
+            $dot->type = 'forward';
+            $dot->domain = $this->domain->getValue();
+            $dot->server = '127.0.0.1';
+            $dot->port = '53053';
+            $dot->description = 'Forward default domain to Dnsmasq DHCP';
+            /* forcefully flush model back to config */
+            $mdl->serializeToConfig(false, true);
         }
     }
 
@@ -386,6 +459,7 @@ class InitialSetup extends BaseModel
         $this->flush_network_wan();
         $this->flush_network_lan();
         $this->flush_initial_pass();
+        $this->flush_deployment_type();
         $this->unset_initial_wizard();
 
         Config::getInstance()->save();

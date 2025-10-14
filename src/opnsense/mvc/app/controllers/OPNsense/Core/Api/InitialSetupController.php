@@ -52,4 +52,15 @@ class InitialSetupController extends ApiMutableModelControllerBase
             return $result;
         }
     }
+
+    public function abortAction()
+    {
+        if ($this->request->isPost()) {
+            if (isset(Config::getInstance()->object()->trigger_initial_wizard)) {
+                unset(Config::getInstance()->object()->trigger_initial_wizard);
+                Config::getInstance()->save();
+            }
+        }
+        return ['result' => 'done']; /* not important */
+    }
 }

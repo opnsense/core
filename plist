@@ -224,6 +224,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/hasyncSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/snapshot.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/tunable.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/wizard_deployment_type.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/wizard_general_info.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/wizard_network_lan.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/wizard_network_wan.xml
@@ -1410,6 +1411,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Captiveportal/lighttpd-zone.conf
 /usr/local/opnsense/service/templates/OPNsense/Captiveportal/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/Cron/+TARGETS
+/usr/local/opnsense/service/templates/OPNsense/Cron/at.cron
 /usr/local/opnsense/service/templates/OPNsense/Cron/user.cron
 /usr/local/opnsense/service/templates/OPNsense/Dnsmasq/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Dnsmasq/dnsmasq.conf
