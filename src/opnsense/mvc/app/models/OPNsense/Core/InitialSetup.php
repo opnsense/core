@@ -375,7 +375,7 @@ class InitialSetup extends BaseModel
                 $dhcprange->end_addr = $avail_addrs[count($avail_addrs) - 10];
             }
         } else {
-            $target->interfaces->lan->enable = '0';
+            unset($target->interfaces->lan->enable);
         }
         $dnsmasq->serializeToConfig(false, true);
         /* forcefully disable isc dhcpd when enabled */
