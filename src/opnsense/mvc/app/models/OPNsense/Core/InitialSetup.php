@@ -262,6 +262,11 @@ class InitialSetup extends BaseModel
     private function flush_network_wan()
     {
         $target = Config::getInstance()->object();
+        /* ensure wan exists*/
+        if (!isset($target->interfaces->wan)) {
+            $target->interfaces->addChild('wan');
+        }
+
         /* configure wan */
         $gateways = new Gateways();
         foreach ($gateways->gateway_item->iterateItems() as $uuid => $node) {
@@ -342,6 +347,8 @@ class InitialSetup extends BaseModel
             $target->interfaces->addChild('lan');
         }
         $target->interfaces->lan->enable = $this->interfaces->lan->disable->isEmpty() ? '1' : '0';
+        $target->interfaces->lan->blockpriv = '0';
+        $target->interfaces->lan->blockbogons = '0';
         $dnsmasq = new Dnsmasq();
         foreach ($dnsmasq->dhcp_ranges->iterateItems() as $uuid => $node) {
             if ($node->interface == 'lan') {
@@ -349,6 +356,7 @@ class InitialSetup extends BaseModel
                 $dnsmasq->dhcp_ranges->del($uuid);
             }
         }
+
         if ($target->interfaces->lan->enable == '1') {
             $parts = explode('/', $this->interfaces->lan->ipaddr);
             $target->interfaces->lan->ipaddr = $parts[0];
@@ -367,7 +375,7 @@ class InitialSetup extends BaseModel
                 $dhcprange->end_addr = $avail_addrs[count($avail_addrs) - 10];
             }
         } else {
-            unset($target->interfaces->lan);
+            $target->interfaces->lan->enable = '0';
         }
         $dnsmasq->serializeToConfig(false, true);
         /* forcefully disable isc dhcpd when enabled */
