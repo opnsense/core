@@ -128,7 +128,8 @@ class InitialSetup extends BaseModel
                 $this->getConfigItem('interfaces.lan.ipaddr'),
                 $this->getConfigItem('interfaces.lan.subnet')
             );
-        } else {
+        }
+        if (empty($this->getConfigItem('interfaces.lan.ipaddr')) || empty($this->getConfigItem('interfaces.lan.if'))) {
             $this->interfaces->lan->configure_dhcp = '0';
             $this->interfaces->lan->disable = '1';
         }
@@ -229,6 +230,17 @@ class InitialSetup extends BaseModel
             );
         }
 
+        foreach (['wan', 'lan'] as $ifnm) {
+            if (empty($this->getConfigItem('interfaces.'.$ifnm.'.if')) && $this->interfaces->$ifnm->disable->isEmpty()) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("Unable to enable this interface as it is not attached to a device, please assign first and run the wizard again."),
+                        "interfaces.{$ifnm}.disable"
+                    )
+                );
+            }
+        }
+
 
         return $messages;
     }
@@ -266,8 +278,13 @@ class InitialSetup extends BaseModel
         if (!isset($target->interfaces->wan)) {
             $target->interfaces->addChild('wan');
         }
-
         /* configure wan */
+        $target->interfaces->wan->enable = $this->interfaces->wan->disable->isEmpty() ? '1' : '0';
+        if ($target->interfaces->wan->enable == '0') {
+            unset($target->interfaces->wan->enable);
+            return;
+        }
+
         $gateways = new Gateways();
         foreach ($gateways->gateway_item->iterateItems() as $uuid => $node) {
             if ($node->interface == 'wan' && $node->ipprotocol == 'inet') {
@@ -327,7 +344,6 @@ class InitialSetup extends BaseModel
                 ]);
             }
         }
-        $target->interfaces->wan->enable = '1';
         $target->interfaces->wan->spoofmac = (string)$this->interfaces->wan->spoofmac;
         $target->interfaces->wan->mtu = (string)$this->interfaces->wan->mtu;
         $target->interfaces->wan->mss = (string)$this->interfaces->wan->mss;

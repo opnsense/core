@@ -42,6 +42,8 @@
         </timezone>
         <interfaces>
             <wan>
+                <!--disable is only set manually, we always assume the intention is to enable wan-->
+                <disable type="BooleanField"/>
                 <ipv4_type type="OptionField">
                     <Required>Y</Required>
                     <Default>static</Default>
