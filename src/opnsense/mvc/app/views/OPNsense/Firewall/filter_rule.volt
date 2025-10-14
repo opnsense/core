@@ -61,7 +61,7 @@
         $('#toggle_inspect_button').toggleClass('active btn-primary', inspectEnabled);
 
         function updateStatisticColumns() {
-            grid.bootgrid(inspectEnabled ? "setColumns" : "unsetColumns", ['statistics'], true);
+            grid.bootgrid(inspectEnabled ? "setColumns" : "unsetColumns", ['statistics']);
         }
 
         // read interface from URL hash once, for the first grid load

@@ -2040,22 +2040,22 @@ class UIBootgrid {
         this._destroyTable();
     }
 
-    setColumns(columns, silent = false) {
+    setColumns(columns) {
         this.table.getColumns().forEach((col) => {
             const def = col.getDefinition();
             if (columns.includes(def.field)) {
-                col._silentToggle = silent;
+                col._silentToggle = true;
                 col.show();
                 delete col._silentToggle;
             }
         });
     }
 
-    unsetColumns(columns, silent = false) {
+    unsetColumns(columns) {
         this.table.getColumns().forEach((col) => {
             const def = col.getDefinition();
             if (columns.includes(def.field)) {
-                col._silentToggle = silent;
+                col._silentToggle = true;
                 col.hide();
                 delete col._silentToggle;
             }
