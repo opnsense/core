@@ -110,6 +110,29 @@ class RegexFieldTest extends Field_Framework_TestCase
         }
     }
 
+    // Test patterns with delimiters and trailing modifiers (PHP PCRE2 style)
+    public function testAllowDelimitersWithModifiers()
+    {
+        $field = new RegexField();
+        $field->setRequireDelimiters("Y");
+        $field->eventPostLoading();
+        foreach (["/^test$/im", "#[a-z]+#iu", "~\\d{3}~ms"] as $value) {
+            $field->setValue($value);
+            $this->assertEmpty($this->validate($field), "$value should be valid");
+        }
+    }
+
+    public function testRejectDelimitersWithModifiers()
+    {
+        $field = new RegexField();
+        $field->setRequireDelimiters("N");
+        $field->eventPostLoading();
+        foreach (["/^test$/im", "#[a-z]+#iu", "~\\d{3}~ms"] as $value) {
+            $field->setValue($value);
+            $this->assertNotEmpty($this->validate($field), "$value should be invalid (has delimiters)");
+        }
+    }
+
     public function testDefaultBehaviorNoDelimiters()
     {
         $field = new RegexField();
