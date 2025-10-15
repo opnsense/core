@@ -55,7 +55,7 @@
                     }
                 }
             });
-            $("#pool_filter_container").detach().prependTo('#grid-leases-header > .row > .actionBar > .actions');
+            $("#pool_filter_container").detach().insertAfter('#grid-leases-header .search');
             $("#pool_filter").change(function(){
                 $('#grid-leases').bootgrid('reload');
             });

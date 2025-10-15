@@ -138,14 +138,10 @@
     });
 </script>
 <style>
-    #grid_services-header .actionBar {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
-
-    #grid_services-header .actionBar > #sync_container {
-        margin-right: auto;
+    #grid_services-header .actionBar #act_restart_all {
+        flex: 0 0 auto !important;
+        width: auto !important;
+        align-self: center !important;
     }
 </style>
 <section class="page-content-main">
