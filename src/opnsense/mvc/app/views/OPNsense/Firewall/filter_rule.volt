@@ -736,7 +736,7 @@
         $("#interface_select_container").show();
 
         // move selectpickers into action bar
-        $("#interface_select_container").detach().insertBefore('#{{formGridFilterRule["table_id"]}}-header > .row > .actionBar > .search');
+        $("#interface_select_container").detach().insertBefore('#{{formGridFilterRule["table_id"]}}-header .search');
         $('#interface_select').on('changed.bs.select', function () {
             // Skip grid reload during reconfigureAct and initial page load
             if (!interfaceInitialized || reconfigureActInProgress) return;
@@ -978,6 +978,41 @@
         opacity: 0.4;
     }
 
+    /* Action bar specific layout */
+    #interface_select_container,
+    #type_filter_container {
+        float: none !important;
+        flex: 1 1 150px;
+        min-width: 0;
+        max-width: 400px;
+    }
+
+    #interface_select_container .bootstrap-select,
+    #type_filter_container .bootstrap-select {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .bootgrid-header .actionBar .btn-group {
+        align-items: flex-start;
+    }
+
+    @media (max-width: 1024px) {
+        #interface_select_container,
+        #type_filter_container {
+            flex: 1 1 100%;
+            max-width: 100%;
+            margin: 0;
+        }
+
+        #dialogFilterRule-header #inspect_toggle_container,
+        #dialogFilterRule-header #tree_toggle_container,
+        #dialogFilterRule-header #tree_expand_container {
+            flex: 1 1 0;
+            margin: 0;
+        }
+    }
+
     .stats-cell {
         display: flex;
         flex-direction: column;
@@ -993,11 +1028,11 @@
     <!-- filters -->
     <div class="hidden">
         <div id="type_filter_container" class="btn-group">
-            <select id="category_filter" data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="30" multiple data-width="300px" data-container="body">
+            <select id="category_filter" data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="30" multiple data-container="body">
             </select>
         </div>
         <div id="interface_select_container" class="btn-group">
-            <select id="interface_select" class="selectpicker" data-live-search="true" data-size="30" data-width="300px" data-container="body">
+            <select id="interface_select" class="selectpicker" data-live-search="true" data-size="30" data-container="body">
             </select>
         </div>
         <div id="inspect_toggle_container" class="btn-group">

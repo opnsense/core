@@ -128,8 +128,8 @@
             }
         });
 
-        $("#interface-selection-wrapper").detach().prependTo('#grid-leases-header > .row > .actionBar > .actions');
-        $("#protocol-selection-wrapper").detach().insertBefore("#interface-selection-wrapper");
+        $("#interface-selection-wrapper").detach().insertAfter('#grid-leases-header .search');
+        $("#protocol-selection-wrapper").detach().insertAfter("#interface-selection-wrapper");
 
         updateServiceControlUI('dnsmasq');
     });

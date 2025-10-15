@@ -136,8 +136,8 @@
             search:'/api/dhcpv6/leases/search_prefix/'
         });
 
-        $("#inactive-selection-wrapper").detach().prependTo('#grid-leases-header > .row > .actionBar');
-        $("#interface-selection-wrapper").detach().prependTo('#grid-leases-header > .row > .actionBar > .actions');
+        $("#inactive-selection-wrapper").detach().insertBefore('#grid-leases-header .search');
+        $("#interface-selection-wrapper").detach().insertAfter('#grid-leases-header .search');
 
         if (window.location.hash != "") {
             $('a[href="' + window.location.hash + '"]').click();
