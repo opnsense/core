@@ -218,10 +218,12 @@ class InitialSetup extends BaseModel
                 )
             );
         }
-        if (!$this->deployment_type->dhcp_dns_registration->isEmpty() && (
+        if (
+            !$this->deployment_type->dhcp_dns_registration->isEmpty() && (
             $this->interfaces->lan->configure_dhcp->isEmpty() ||
             $this->unbound->enabled->isEmpty()
-        )) {
+            )
+        ) {
             $messages->appendMessage(
                 new Message(
                     gettext("This feature requires a configured dhcp server and dns resolver configured."),
@@ -231,7 +233,7 @@ class InitialSetup extends BaseModel
         }
 
         foreach (['wan', 'lan'] as $ifnm) {
-            if (empty($this->getConfigItem('interfaces.'.$ifnm.'.if')) && $this->interfaces->$ifnm->disable->isEmpty()) {
+            if (empty($this->getConfigItem('interfaces.' . $ifnm . '.if')) && $this->interfaces->$ifnm->disable->isEmpty()) {
                 $messages->appendMessage(
                     new Message(
                         gettext("Unable to enable this interface as it is not attached to a device, please assign first and run the wizard again."),
