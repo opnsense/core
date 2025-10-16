@@ -153,6 +153,9 @@ class BackupController extends ApiControllerBase
     public function deleteBackupAction($backup)
     {
         $this->throwReadOnly();
+        if (!$this->request->isPost()) {
+            return ['status' => 'failed'];
+        }
         foreach (glob("/conf/backup/config-*.xml") as $filename) {
             $bckfilename = basename($filename);
             if ($backup === $bckfilename) {
@@ -169,6 +172,9 @@ class BackupController extends ApiControllerBase
     public function revertBackupAction($backup)
     {
         $this->throwReadOnly();
+        if (!$this->request->isPost()) {
+            return ['status' => 'failed'];
+        }
         foreach (glob("/conf/backup/config-*.xml") as $filename) {
             $bckfilename = basename($filename);
             if ($backup === $bckfilename) {
