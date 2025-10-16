@@ -60,7 +60,8 @@
     <page-diagnostics-factorydefaults>
         <name>Diagnostics: Factory defaults</name>
         <patterns>
-            <pattern>diag_defaults.php*</pattern>
+            <pattern>ui/core/defaults</pattern>
+            <pattern>api/core/defaults/*</pattern>
         </patterns>
     </page-diagnostics-factorydefaults>
     <page-diagnostics-haltsystem>
