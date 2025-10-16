@@ -105,10 +105,18 @@ if output_cmd ${BASEDIR}/changelog.sh fetch; then
 fi
 
 : > ${OUTFILE}
+
 output_cmd -o ${OUTFILE} ${PKG} update -f
 
-# always update the package manager so we can see the real updates directly
-output_cmd ${PKG} upgrade -r "${product_repo}" -Uy pkg
+PKG_LOCAL=$(${PKG} query %v pkg)
+PKG_REMOTE=$(${PKG} rquery -r "${product_repo}" %v pkg)
+
+# always update when the remote package manager
+# version mismatches or seems unfetchable
+if [ -z "${PKG_LOCAL}" ] || [ -z "${PKG_REMOTE}" ] || \\
+    [ "${PKG_LOCAL}" != "${PKG_REMOTE}" ]; then
+	output_cmd ${PKG} upgrade -r "${product_repo}" -y pkg
+fi
 
 # parse early errors
 if grep -q 'No address record' ${OUTFILE}; then
