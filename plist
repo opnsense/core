@@ -199,6 +199,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/forms/dialogZone.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/BackupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/DashboardController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/DefaultsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/FirmwareController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/HasyncController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/HasyncStatusController.php
@@ -210,6 +211,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/TunablesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/BackupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/DashboardController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/DefaultsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/FirmwareController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/HaltController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/HasyncController.php
@@ -520,6 +522,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Backend.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Config.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/ConfigException.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Core/ConfigMaintenance.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/File.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/FileObject.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/SanitizeFilter.php
@@ -888,6 +891,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/backup_history.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/dashboard.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Core/defaults.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/firmware.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/halt.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/hasync.volt
@@ -1316,6 +1320,7 @@
 /usr/local/opnsense/scripts/system/certctl.py
 /usr/local/opnsense/scripts/system/cpu.py
 /usr/local/opnsense/scripts/system/crl_fetch.py
+/usr/local/opnsense/scripts/system/factory_defaults.php
 /usr/local/opnsense/scripts/system/flush_config_history
 /usr/local/opnsense/scripts/system/get_locales.php
 /usr/local/opnsense/scripts/system/get_timezones.php
@@ -2438,7 +2443,6 @@
 /usr/local/www/csrf.inc
 /usr/local/www/diag_authentication.php
 /usr/local/www/diag_backup.php
-/usr/local/www/diag_defaults.php
 /usr/local/www/fbegin.inc
 /usr/local/www/firewall_nat.php
 /usr/local/www/firewall_nat_edit.php

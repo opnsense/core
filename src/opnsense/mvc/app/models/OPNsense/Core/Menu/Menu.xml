@@ -28,7 +28,7 @@
         </Access>
         <Configuration cssClass="fa fa-history fa-fw">
             <Backups url="/diag_backup.php"/>
-            <Defaults url="/diag_defaults.php"/>
+            <Defaults url="/ui/core/defaults"/>
             <History url="/ui/core/backup/history/this"/>
             <Wizard url="/ui/core/initial_setup"/>
         </Configuration>
