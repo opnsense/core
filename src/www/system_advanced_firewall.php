@@ -63,6 +63,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['syncookies_adaptend'] = isset($config['system']['syncookies_adaptend']) ? $config['system']['syncookies_adaptend'] : null;
     $pconfig['keepcounters'] = !empty($config['system']['keepcounters']);
     $pconfig['pfdebug'] = !empty($config['system']['pfdebug']) ?  $config['system']['pfdebug'] : 'urgent';
+    $pconfig['no_ipv6_rfc4890_req'] = isset($config['system']['no_ipv6_rfc4890_req']);
+    $pconfig['no_port0_block'] = isset($config['system']['no_port0_block']);
+    $pconfig['no_sshlockout'] = isset($config['system']['no_sshlockout']);
+    $pconfig['no_virusprot'] = isset($config['system']['no_virusprot']);
+
 
     /* XXX wrong storage location */
     $pconfig['logdefaultblock'] = empty($config['syslog']['nologdefaultblock']);
@@ -142,6 +147,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['noantilockout'] = true;
         } elseif (isset($config['system']['webgui']['noantilockout'])) {
             unset($config['system']['webgui']['noantilockout']);
+        }
+
+        if (!empty($pconfig['no_ipv6_rfc4890_req'])) {
+            $config['system']['no_ipv6_rfc4890_req'] = true;
+        } elseif (isset($config['system']['no_ipv6_rfc4890_req'])) {
+            unset($config['system']['no_ipv6_rfc4890_req']);
+        }
+
+        if (!empty($pconfig['no_port0_block'])) {
+            $config['system']['no_port0_block'] = true;
+        } elseif (isset($config['system']['no_port0_block'])) {
+            unset($config['system']['no_port0_block']);
+        }
+
+        if (!empty($pconfig['no_sshlockout'])) {
+            $config['system']['no_sshlockout'] = true;
+        } elseif (isset($config['system']['no_sshlockout'])) {
+            unset($config['system']['no_sshlockout']);
+        }
+
+        if (!empty($pconfig['no_virusprot'])) {
+            $config['system']['no_virusprot'] = true;
+        } elseif (isset($config['system']['no_virusprot'])) {
+            unset($config['system']['no_virusprot']);
         }
 
         if (!empty($pconfig['srctrack'])) {
@@ -714,6 +743,42 @@ include("head.inc");
                                 "in place that allows you in, or you will lock yourself out."),
                                 count($config['interfaces']) == 1 && !empty($config['interfaces']['wan']['if']) ?
                                 gettext('WAN') : gettext('LAN')) ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_no_ipv6_rfc4890_req" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable RFC4890 requirement rules"); ?></td>
+                <td>
+                  <input name="no_ipv6_rfc4890_req" type="checkbox" value="1" <?= empty($pconfig['no_ipv6_rfc4890_req']) ? '' : 'checked="checked"' ?>/>
+                  <div class="hidden" data-for="help_for_no_ipv6_rfc4890_req">
+                    <?= gettext("When selected, no automatic RFC4890 requirement rules will be created, blocking IPv6 without additional rules configured.") ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_no_port0_block" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable port 0 block"); ?></td>
+                <td>
+                  <input name="no_port0_block" type="checkbox" value="1" <?= empty($pconfig['no_port0_block']) ? '' : 'checked="checked"' ?>/>
+                  <div class="hidden" data-for="help_for_no_port0_block">
+                    <?= gettext("When selected, no automatic rule blocking port 0 will be created.") ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_no_sshlockout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable sshlockout"); ?></td>
+                <td>
+                  <input name="no_sshlockout" type="checkbox" value="1" <?= empty($pconfig['no_sshlockout']) ? '' : 'checked="checked"' ?>/>
+                  <div class="hidden" data-for="help_for_no_sshlockout">
+                    <?= gettext("When selected, no automatic rule blocking failed login attempts will be created. You can still specify your own rule using the sshlockout table") ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_no_virusprot" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable rate limit rule"); ?></td>
+                <td>
+                  <input name="no_virusprot" type="checkbox" value="1" <?= empty($pconfig['no_virusprot']) ? '' : 'checked="checked"' ?>/>
+                  <div class="hidden" data-for="help_for_no_virusprot">
+                    <?= gettext("When selected, no automatic rule blocking rate limited sessions will be createed. You can still specify your own rule using the virusprot table") ?>
                   </div>
                 </td>
               </tr>
