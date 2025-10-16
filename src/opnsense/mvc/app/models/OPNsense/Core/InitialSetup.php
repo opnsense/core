@@ -302,7 +302,12 @@ class InitialSetup extends BaseModel
             }
             $pppoe_idx = -1;
             $max_ptpid = 0;
-            for ($idx = 0; $idx < count($target->ppps->ppp); ++$idx) {
+            for ($idx = count($target->ppps->ppp); $idx >= 0; --$idx) {
+                if (empty((string)$target->ppps->ppp[$idx])) {
+                    # automatically remove any empty <ppp/> tags if they exist (legacy thing)
+                    unset($target->ppps->ppp[$idx]);
+                    continue;
+                }
                 if ($target->ppps->ppp[$idx]->if == $wanif) {
                     $pppoe_idx = $idx;
                 }
