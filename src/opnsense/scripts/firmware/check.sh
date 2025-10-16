@@ -109,7 +109,7 @@ fi
 output_cmd -o ${OUTFILE} ${PKG} update -f
 
 PKG_LOCAL=$(pkg query %v pkg)
-PKG_REMOTE=$(pkg rquery %v pkg)
+PKG_REMOTE=$(pkg rquery -r "${product_repo}" %v pkg)
 
 # always update when the remote package manager
 # version mismatches or seems unfetchable
