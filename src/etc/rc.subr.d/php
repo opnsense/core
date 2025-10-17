@@ -50,9 +50,6 @@ fi
 
 ${PW} user${PW_ARG} ${USER} -u ${UID} -g ${GID} -c "World Wide Web Only" -d /nonexistent -s /usr/sbin/nologin
 
-# ensure that "other" can access the tmp dir later on
-chmod 755 /var/lib /var/lib/php
-
 # set up required output directories for various PHP components
 for _PHPDIR in cache sessions tmp; do
 	PHPDIR=/var/lib/php/${_PHPDIR}
@@ -67,6 +64,9 @@ for _PHPDIR in cache sessions tmp; do
 
 	chown -R ${OWNER} ${PHPDIR}
 done
+
+# ensure that "other" can access the tmp dir later on
+chmod 755 /var/lib /var/lib/php
 
 # change ownership for GUI related file access
 find /conf -name 'vouchers_*.db' -exec chown ${OWNER} {} \;
