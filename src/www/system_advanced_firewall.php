@@ -778,7 +778,7 @@ include("head.inc");
                 <td>
                   <input name="no_virusprot" type="checkbox" value="1" <?= empty($pconfig['no_virusprot']) ? '' : 'checked="checked"' ?>/>
                   <div class="hidden" data-for="help_for_no_virusprot">
-                    <?= gettext("When selected, no automatic rule blocking rate limited sessions will be createed. You can still specify your own rule using the virusprot table") ?>
+                    <?= gettext("When selected, no automatic rule blocking rate limited sessions will be created. You can still specify your own rule using the virusprot table") ?>
                   </div>
                 </td>
               </tr>
