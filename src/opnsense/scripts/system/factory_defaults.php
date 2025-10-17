@@ -32,7 +32,7 @@ require_once 'system.inc';
 require_once 'util.inc';
 
 echo "waiting before shutdown..";
-for ($i=0; $i < 5; ++$i) {
+for ($i = 0; $i < 5; ++$i) {
     echo ".";
     sleep(1);
 }

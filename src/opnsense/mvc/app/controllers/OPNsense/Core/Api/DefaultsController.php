@@ -60,7 +60,8 @@ class DefaultsController extends ApiControllerBase
         $default_ip = '192.168.1.1';
         if (is_file('/usr/local/etc/config.xml')) {
             $cfg = Config::getInstance()->toArrayFromFile('/usr/local/etc/config.xml');
-            if (is_array($cfg) &&
+            if (
+                is_array($cfg) &&
                 !empty($cfg['interfaces']) &&
                 !empty($cfg['interfaces']['lan']) &&
                 !empty($cfg['interfaces']['lan']['ipaddr'])
@@ -93,7 +94,7 @@ class DefaultsController extends ApiControllerBase
     {
         $result = ['items' => []];
         $cm = new ConfigMaintenance();
-        foreach($cm->traverseConfig() as $item) {
+        foreach ($cm->traverseConfig() as $item) {
             $result['items'][] = $item;
         }
         return $result;
@@ -129,5 +130,4 @@ class DefaultsController extends ApiControllerBase
 
         return ['status' => 'ok'];
     }
-
 }

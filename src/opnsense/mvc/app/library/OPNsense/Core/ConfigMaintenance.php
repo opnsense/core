@@ -78,7 +78,7 @@ class ConfigMaintenance
     /**
      * collect all "flushable" configuration items (models)
      */
-    public function traverseConfig($node=null, $path='')
+    public function traverseConfig($node = null, $path = '')
     {
         if ($node === null) {
             $node = (Config::getInstance())->object();
@@ -114,7 +114,7 @@ class ConfigMaintenance
     /**
      *  del model item, requires a version attribute to identify itself as a model.
      */
-    public function delItem($item, $node=null, $path='')
+    public function delItem($item, $node = null, $path = '')
     {
         if ($node === null) {
             $node = (Config::getInstance())->object();
