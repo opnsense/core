@@ -99,9 +99,10 @@ class ConfigMaintenance
                         ];
                     } else {
                         $tmp = explode('.', $this_path);
+                        $descr = (string)$xmlNode->attributes()['description'];
                         yield [
                             'id' => $this_path,
-                            'description' => end($tmp)
+                            'description' => $descr ?? end($tmp)
                         ];
                     }
                 } else {
