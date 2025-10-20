@@ -318,9 +318,12 @@ function filter_core_rules_system($fw, $defaults)
 
     // block all in alias <virusprot>
     if (empty($config['system']['no_virusprot'])) {
-        $fw->registerFilterRule(1, ['from' => '<virusprot>', 'descr' => 'virusprot overload table',
-        '#ref' => 'system_advanced_firewall.php#no_virusprot'],
-        $defaults['block']);
+        $fw->registerFilterRule(
+            1,
+            ['from' => '<virusprot>', 'descr' => 'virusprot overload table',
+            '#ref' => 'system_advanced_firewall.php#no_virusprot'],
+            $defaults['block']
+        );
     }
 
     // block bogons and private nets
