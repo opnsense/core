@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2024 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2025 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -115,6 +115,7 @@ PKG_REMOTE=$(${PKG} rquery -r "${product_repo}" %v pkg)
 # version mismatches or seems unfetchable
 if [ -z "${PKG_LOCAL}" ] || [ -z "${PKG_REMOTE}" ] || \\
     [ "${PKG_LOCAL}" != "${PKG_REMOTE}" ]; then
+	output_txt "Updating package manager from version '${PKG_LOCAL}' to '${PKG_REMOTE}'"
 	output_cmd ${PKG} upgrade -r "${product_repo}" -y pkg
 fi
 
