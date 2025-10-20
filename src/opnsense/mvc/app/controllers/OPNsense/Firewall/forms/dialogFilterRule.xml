@@ -14,7 +14,6 @@
             <formatter>rowtoggle</formatter>
             <sequence>5</sequence>
             <align>center</align>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -28,7 +27,6 @@
             <visible>false</visible>
             <!-- The sequence order of firewall rules is absolute, no other field shall be sorted -->
             <order>asc</order>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -40,7 +38,6 @@
         <grid_view>
             <sequence>15</sequence>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -50,7 +47,6 @@
         <style>tokenize</style>
         <help>For grouping purposes you may select multiple groups here to organize items.</help>
         <grid_view>
-            <sortable>false</sortable>
             <formatter>category</formatter>
             <sequence>1</sequence>
             <width>80</width>
@@ -64,7 +60,8 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
         </grid_view>
     </field>
     <field>
@@ -74,7 +71,7 @@
         <help>You may enter a description here for your reference (not parsed).</help>
         <grid_view>
             <sequence>110</sequence>
-            <sortable>false</sortable>
+            <min-width>100</min-width>
         </grid_view>
     </field>
     <field>
@@ -98,7 +95,6 @@
         <grid_view>
             <formatter>interfaces</formatter>
             <sequence>25</sequence>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -136,7 +132,8 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
         </grid_view>
     </field>
     <field>
@@ -156,7 +153,6 @@
         <type>dropdown</type>
         <grid_view>
             <sequence>35</sequence>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -166,7 +162,6 @@
         <grid_view>
             <formatter>any</formatter>
             <sequence>40</sequence>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -196,7 +191,7 @@
         <grid_view>
             <formatter>alias</formatter>
             <sequence>50</sequence>
-            <sortable>false</sortable>
+            <min-width>100</min-width>
         </grid_view>
     </field>
     <field>
@@ -206,9 +201,10 @@
         <help>Source port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
         <style>port_selector</style>
         <grid_view>
+            <label>Port</label>
             <sequence>60</sequence>
-            <sortable>false</sortable>
             <formatter>alias</formatter>
+            <min-width>60</min-width>
         </grid_view>
     </field>
     <field>
@@ -228,7 +224,7 @@
         <grid_view>
             <formatter>alias</formatter>
             <sequence>70</sequence>
-            <sortable>false</sortable>
+            <min-width>100</min-width>
         </grid_view>
     </field>
     <field>
@@ -238,9 +234,10 @@
         <help>Destination port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
         <style>port_selector</style>
         <grid_view>
+            <label>Port</label>
             <sequence>80</sequence>
-            <sortable>false</sortable>
             <formatter>alias</formatter>
+            <min-width>60</min-width>
         </grid_view>
     </field>
     <field>
@@ -260,7 +257,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -271,7 +267,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -281,7 +276,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -297,7 +291,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -312,7 +305,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -323,7 +315,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -334,7 +325,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -345,7 +335,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -359,7 +348,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -370,7 +358,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -381,7 +368,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -392,7 +378,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -403,7 +388,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -414,7 +398,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -429,7 +412,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -442,7 +424,6 @@
             <type>boolean</type>
             <formatter>boolean</formatter>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -458,7 +439,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -469,7 +449,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -486,7 +465,6 @@
         <grid_view>
             <formatter>any</formatter>
             <sequence>100</sequence>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -500,7 +478,6 @@
             <type>boolean</type>
             <formatter>boolean</formatter>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -514,7 +491,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
             <formatter>default</formatter>
         </grid_view>
     </field>
@@ -531,7 +507,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -547,7 +522,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -561,7 +535,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -571,7 +544,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -594,7 +566,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -605,53 +576,17 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <!-- Not exposed in dialog, do not exist in model, only for grid -->
     <field>
-        <id>rule.evaluations</id>
-        <label>Evaluations</label>
+        <id>rule.statistics</id>
+        <label>Statistics</label>
         <type>ignore</type>
         <grid_view>
-            <visible>false</visible>
-            <sortable>false</sortable>
-            <label>Stats - Evaluations</label>
+            <formatter>statistics</formatter>
             <sequence>115</sequence>
-        </grid_view>
-    </field>
-    <field>
-        <id>rule.states</id>
-        <label>States</label>
-        <type>ignore</type>
-        <grid_view>
-            <visible>false</visible>
-            <sortable>false</sortable>
-            <label>Stats - States</label>
-            <sequence>116</sequence>
-        </grid_view>
-    </field>
-    <field>
-        <id>rule.packets</id>
-        <label>Packets</label>
-        <type>ignore</type>
-        <grid_view>
-            <visible>false</visible>
-            <sortable>false</sortable>
-            <label>Stats - Packets</label>
-            <sequence>117</sequence>
-        </grid_view>
-    </field>
-    <field>
-        <id>rule.bytes</id>
-        <label>Bytes</label>
-        <type>ignore</type>
-        <grid_view>
-            <visible>false</visible>
-            <sortable>false</sortable>
-            <label>Stats - Bytes</label>
-            <sequence>118</sequence>
-            <formatter>bytes</formatter>
+            <min-width>200</min-width>
         </grid_view>
     </field>
     <field>
@@ -660,7 +595,6 @@
         <type>ignore</type>
         <grid_view>
             <width>120</width>
-            <sortable>false</sortable>
             <formatter>ruleIcons</formatter>
             <sequence>15</sequence>
         </grid_view>

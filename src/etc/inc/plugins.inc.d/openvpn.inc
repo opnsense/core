@@ -365,7 +365,9 @@ function openvpn_validate_cidr($value, $name, $multiple = false, $ipproto = 'ipv
 function openvpn_add_dhcpopts(&$settings, &$conf)
 {
     if (!empty($settings['dns_domain'])) {
-        $conf .= "push \"dhcp-option DOMAIN {$settings['dns_domain']}\"\n";
+        foreach (explode(",", $settings['dns_domain']) as $domain) {
+            $conf .= "push \"dhcp-option DOMAIN {$domain}\"\n";
+        }
     }
     if (!empty($settings['dns_domain_search'])) {
         foreach (explode(",", $settings['dns_domain_search']) as $domain) {

@@ -41,6 +41,7 @@ use OPNsense\Core\Config;
 class CategoryController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'category';
+    protected static $internalModelUseSafeDelete = true; /* categories are used by uuid and name */
     protected static $internalModelClass = 'OPNsense\Firewall\Category';
 
     /**

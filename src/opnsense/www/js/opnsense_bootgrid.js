@@ -486,6 +486,8 @@ class UIBootgrid {
                     visible: data.visible ?? true,
                     sequence: data.sequence ?? null,
                     width: val.width,
+                    minWidth: data.minWidth || 80,
+                    maxWidth: data.maxWidth ?? null,
                     editable: false,
                     sortable: data.sortable ?? true
                 }
@@ -551,11 +553,10 @@ class UIBootgrid {
                     field: field.id,
                     resizable: !this.options.static,
                     sequence: field.sequence ?? null,
-                    headerSort: this.options.sorting,
+                    headerSort: this.options.sorting && field.sortable !== false,
                     cssClass: this.options.responsive ? 'opnsense-bootgrid-responsive' : '',
                     variableHeight: true,
                     sorter: this.options.sorters[field.type] ?? null,
-                    headerSort: field.sortable
                 };
             }
 
@@ -565,6 +566,13 @@ class UIBootgrid {
                 col['maxWidth'] = field.width;
             } else if (field.width) {
                 col['width'] = field.width;
+            } else {
+                if (field.minWidth) {
+                    col['minWidth'] = field.minWidth;
+                }
+                if (field.maxWidth) {
+                    col['maxWidth'] = field.maxWidth;
+                }
             }
 
             result.push(col);
@@ -794,7 +802,9 @@ class UIBootgrid {
             }
         });
         this.table.on('columnVisibilityChanged', (column, visible) => {
-            this._setPersistence(true);
+            if (!column._silentToggle) {
+                this._setPersistence(true);
+            }
         });
         this.table.on('columnMoved', (column, columns) => {
             this._setPersistence(true);
@@ -1070,7 +1080,7 @@ class UIBootgrid {
             let $resetBtn = $(`
                 <button id="${this.id}-reset" class="btn btn-default" type="button"
                         title="${this.persistence ? this.translations.resetGrid : ''}">
-                    <span class="icon fa-solid ${this.persistence ? 'fa-share-square' : 'fa-fw'}"></span>
+                    <span class="icon fa-solid fa-share-square"></span>
                 </button>
             `).on('click', (e) => {
                 e.stopPropagation();
@@ -2043,18 +2053,22 @@ class UIBootgrid {
         this.table.getColumns().forEach((col) => {
             const def = col.getDefinition();
             if (columns.includes(def.field)) {
+                col._silentToggle = true;
                 col.show();
+                delete col._silentToggle;
             }
-        })
+        });
     }
 
     unsetColumns(columns) {
         this.table.getColumns().forEach((col) => {
             const def = col.getDefinition();
             if (columns.includes(def.field)) {
+                col._silentToggle = true;
                 col.hide();
+                delete col._silentToggle;
             }
-        })
+        });
     }
 
     search(value, event) {

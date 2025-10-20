@@ -126,7 +126,7 @@
                         let header = $("#" + grid_id + "-header");
                         let $actionBar = header.find('.actionBar');
                         if ($actionBar.length) {
-                            $('#tag_select_container').detach().insertBefore($actionBar.find('.search'));
+                            $('#tag_select_container').detach().insertAfter($actionBar.find('.search'));
                             $('#tag_select_container').show();
                         }
                     }
@@ -280,16 +280,6 @@
 <style>
     tbody.collapsible > tr > td:first-child {
         padding-left: 30px;
-    }
-    #tag_select_clear {
-        border-right: none;
-    }
-    #tag_select_container {
-        margin-right: 20px;
-    }
-    #tag_select_container .bootstrap-select > .dropdown-toggle {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
     }
 </style>
 

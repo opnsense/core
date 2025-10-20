@@ -98,7 +98,7 @@ class ApiControllerBase extends ControllerRoot
                 // not applicable according to $filter_funct()
                 return false;
             } elseif (!empty($search_clauses)) {
-                foreach ($search_clauses as $clause) {
+                foreach ($search_clauses as $clauses) {
                     $matches = false;
                     foreach ($records[$key] as $itemkey => $itemval) {
                         if (!empty($fields) && !in_array($itemkey, $fields)) {
@@ -112,9 +112,16 @@ class ApiControllerBase extends ControllerRoot
                             });
                             $itemval = implode(' ', $tmp);
                         }
-
-                        if (stripos((string)$itemval, $clause) !== false) {
-                            $matches = true;
+                        /**
+                         *
+                         * Usually "clauses" are singular, in which case all clauses together act as an "AND"
+                         * When a "clauses" item is actually an array, all items in the list act as aliases for the same
+                         * phrase (OR)
+                         **/
+                        foreach ((array)$clauses as $clause) {
+                            if (stripos((string)$itemval, $clause) !== false) {
+                                $matches = true;
+                            }
                         }
                     }
                     if (!$matches) {

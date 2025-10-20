@@ -65,6 +65,9 @@ for _PHPDIR in cache sessions tmp; do
 	chown -R ${OWNER} ${PHPDIR}
 done
 
+# ensure that "other" can access the tmp dir later on
+chmod 755 /var/lib /var/lib/php
+
 # change ownership for GUI related file access
 find /conf -name 'vouchers_*.db' -exec chown ${OWNER} {} \;
 find /conf/backup -name '*.xml' -exec chown ${OWNER} {} \;

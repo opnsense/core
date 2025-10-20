@@ -1,5 +1,10 @@
 <form>
     <field>
+        <id>wizard.interfaces.wan.disable</id>
+        <label>Disable WAN</label>
+        <type>checkbox</type>
+    </field>
+    <field>
         <id>wizard.interfaces.wan.ipv4_type</id>
         <label>Type</label>
         <type>dropdown</type>

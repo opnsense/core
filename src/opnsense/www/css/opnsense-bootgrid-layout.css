@@ -1,0 +1,76 @@
+/*
+ * For universal layout adjustments that do not need theme compilation.
+ * No color or other variables allowed, only static layout changes.
+ * Avoids having to recompile/fix themes.
+ * /
+
+/* Action Bar responsive style */
+.bootgrid-header .actionBar {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    min-width: 0;
+}
+
+.bootgrid-header .actionBar > .search {
+    margin-left: auto;
+    padding-left: 20px;
+    flex: 0 1 400px;
+    min-width: 100px;
+}
+
+.bootgrid-header .actionBar > .btn-group,
+.bootgrid-header .actionBar > .actions .btn-group {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 1024px) {
+    .bootgrid-header .actionBar {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: stretch;
+        max-width: 100%;
+    }
+
+    .bootgrid-header .actionBar > * {
+        flex: 1 1 100%;
+        margin: 0;
+        float: none;
+        display: flex;
+    }
+
+    .bootgrid-header .actionBar .bootstrap-select,
+    .bootgrid-header .actionBar .bootstrap-select > .dropdown-toggle,
+    .bootgrid-header .actionBar .btn,
+    .bootgrid-header .actionBar .search .input-group,
+    .bootgrid-header .actionBar .search .form-control {
+        flex: 1;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .bootgrid-header .actionBar .search {
+        flex: 1 1 100%;
+        margin: 0;
+        padding-left: 0;
+    }
+
+    .bootgrid-header .actionBar .search .input-group {
+        margin: 0;
+    }
+
+    .bootgrid-header .actionBar .actions,
+    .bootgrid-header .actionBar .actions-group {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 8px;
+        flex: 1 1 100%;
+    }
+
+    .bootgrid-header .actionBar .actions > *,
+    .bootgrid-header .actionBar .actions-group > * {
+        flex: 1;
+    }
+}

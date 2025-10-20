@@ -152,12 +152,9 @@
 
       updateServiceControlUI('{{service}}');
 
-      // move filter into action header
-      $("#filter_container").detach().prependTo('#grid-log-header > .row > .actionBar > .actions');
-      $(".filter_act").tooltip();
-
-      $("#export-wrapper").detach().appendTo('#grid-log-header > .row > .actionBar > .btn-group');
-      $("#exportbtn").tooltip();
+      // Move filters directly into the actionBar instead of nested groups for better flex behavior
+      $("#filter_container").detach().insertAfter('#grid-log-header .search');
+      $("#export-wrapper").detach().appendTo('#grid-log-header .actionBar');
 
       function switch_mode(value) {
           let select = $("#severity_filter");

@@ -41,11 +41,6 @@
             });
         }
 
-        // Show statistics columns when inspect button is checked
-        function updateStatisticColumns() {
-            grid.bootgrid(inspectEnabled ? "setColumns" : "unsetColumns", ['evaluations', 'states', 'packets', 'bytes']);
-        }
-
         // Get all advanced fields, used for advanced mode tooltips
         const advancedFieldIds = "{{ advancedFieldIds }}".split(',');
 
@@ -64,6 +59,10 @@
 
         let inspectEnabled = localStorage.getItem("firewall_rule_inspect") === "1";
         $('#toggle_inspect_button').toggleClass('active btn-primary', inspectEnabled);
+
+        function updateStatisticColumns() {
+            grid.bootgrid(inspectEnabled ? "setColumns" : "unsetColumns", ['statistics']);
+        }
 
         // read interface from URL hash once, for the first grid load
         const hashMatchInterface = window.location.hash.match(/(?:^#|&)interface=([^&]+)/);
@@ -141,6 +140,7 @@
             },
             options: {
                 responsive: true,
+                sorting: false,
                 initialSearchPhrase: getUrlHash('search'),
                 triggerEditFor: getUrlHash('edit'),
                 requestHandler: function(request){
@@ -186,6 +186,35 @@
                     },
                     categories: function (column) {
                         return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Categories") }}"></i>';
+                    },
+                    statistics: function () {
+                        const element = $(`
+                            <span class="stats-header-icons">
+                                <span data-toggle="tooltip" title="{{ lang._('Statistics') }}">
+                                    <i class="fa-solid fa-fw fa-eye"></i>
+                                </span>
+                                <span class="inspect-cache-flush"
+                                    style="cursor:pointer; margin-left:4px;"
+                                    data-toggle="tooltip"
+                                    title="{{ lang._('Refresh') }}">
+                                    <i class="fa-solid fa-fw fa-rotate-right"></i>
+                                </span>
+                            </span>
+                        `);
+
+                        element.find('.inspect-cache-flush').on('click', function () {
+                            ajaxCall(
+                                '/api/firewall/filter/flush_inspect_cache',
+                                {},
+                                function () {
+                                    $('#{{ formGridFilterRule["table_id"] }}').bootgrid('reload');
+                                },
+                                null,
+                                'POST'
+                            );
+                        });
+
+                        return element[0];
                     },
                 },
                 formatters:{
@@ -472,6 +501,53 @@
                         // There can only be a single negated value
                         return isNegated + renderedItems;
                     },
+                    statistics: function(column, row) {
+                        if (row.isGroup || !inspectEnabled) {
+                            return "";
+                        }
+
+                        const evals   = row["evaluations"] ?? "";
+                        const states  = row["states"] ?? "";
+                        const packets = row["packets"] ?? "";
+                        const bytes   = row["bytes"] ?? "";
+
+                        function render(icon, title, value, is_number = false) {
+                            if (!value || value === "0") {
+                                return "";
+                            }
+
+                            const numValue  = parseInt(value, 10);
+                            const formatted = byteFormat(numValue, 1, is_number);
+
+                            return `
+                                <span data-toggle="tooltip" title="${title}: ${numValue.toLocaleString()}">
+                                    <i class="fa fa-fw ${icon} text-muted"></i> ${formatted}
+                                </span>
+                            `;
+                        }
+
+                        const parts = [
+                            render("fa-bullseye", "{{ lang._('Evaluations') }}", evals, true),
+                            render("fa-chart-line", "{{ lang._('States') }}", states, true),
+                            render("fa-box", "{{ lang._('Packets') }}", packets, true),
+                            render("fa-database", "{{ lang._('Bytes') }}", bytes)
+                        ].filter(Boolean);
+
+                        if (parts.length === 0) {
+                            return "";
+                        }
+
+                        // Split into two vertical rows
+                        const firstGroup  = parts.slice(0, 2).join(" ");
+                        const secondGroup = parts.slice(2).join(" ");
+
+                        return `
+                            <div class="stats-cell">
+                                <div>${firstGroup}</div>
+                                <div>${secondGroup}</div>
+                            </div>
+                        `;
+                    },
                 },
             },
             commands: {
@@ -555,6 +631,10 @@
                 }
             },
 
+        });
+
+        grid.on('loaded.rs.jquery.bootgrid', function () {
+            updateStatisticColumns(); // ensures inspect columns are consistent after reload
         });
 
         // Track if user has actually changed a dropdown, or it was the controller
@@ -664,7 +744,7 @@
         $("#interface_select_container").show();
 
         // move selectpickers into action bar
-        $("#interface_select_container").detach().insertBefore('#{{formGridFilterRule["table_id"]}}-header > .row > .actionBar > .search');
+        $("#interface_select_container").detach().insertBefore('#{{formGridFilterRule["table_id"]}}-header .search');
         $('#interface_select').on('changed.bs.select', function () {
             // Skip grid reload during reconfigureAct and initial page load
             if (!interfaceInitialized || reconfigureActInProgress) return;
@@ -712,11 +792,6 @@
             } else {
                 $table.find('.tabulator-data-tree-control-collapse').trigger('click');
             }
-        });
-
-        grid.on('loaded.rs.jquery.bootgrid', function () {
-            updateStatisticColumns();  // ensures inspect columns are consistent after reload
-            $("#{{formGridFilterRule['table_id']}}").toggleClass("tree-enabled", treeViewEnabled);
         });
 
         // replace all "net" selectors with details retrieved from "list_network_select_options" endpoint
@@ -912,17 +987,61 @@
         opacity: 0.4;
     }
 
+    /* Action bar specific layout */
+    #interface_select_container,
+    #type_filter_container {
+        float: none !important;
+        flex: 1 1 150px;
+        min-width: 0;
+        max-width: 400px;
+    }
+
+    #interface_select_container .bootstrap-select,
+    #type_filter_container .bootstrap-select {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .bootgrid-header .actionBar .btn-group {
+        align-items: flex-start;
+    }
+
+    @media (max-width: 1024px) {
+        #interface_select_container,
+        #type_filter_container {
+            flex: 1 1 100%;
+            max-width: 100%;
+            margin: 0;
+        }
+
+        #dialogFilterRule-header #inspect_toggle_container,
+        #dialogFilterRule-header #tree_toggle_container,
+        #dialogFilterRule-header #tree_expand_container {
+            flex: 1 1 0;
+            margin: 0;
+        }
+    }
+
+    .stats-cell {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .stats-cell div {
+        gap: 6px;
+    }
+
 </style>
 
 <div class="tab-content content-box">
     <!-- filters -->
     <div class="hidden">
         <div id="type_filter_container" class="btn-group">
-            <select id="category_filter" data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="30" multiple data-width="300px" data-container="body">
+            <select id="category_filter" data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="30" multiple data-container="body">
             </select>
         </div>
         <div id="interface_select_container" class="btn-group">
-            <select id="interface_select" class="selectpicker" data-live-search="true" data-size="30" data-width="300px" data-container="body">
+            <select id="interface_select" class="selectpicker" data-live-search="true" data-size="30" data-container="body">
             </select>
         </div>
         <div id="inspect_toggle_container" class="btn-group">

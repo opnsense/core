@@ -199,6 +199,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/forms/dialogZone.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/BackupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/DashboardController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/DefaultsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/FirmwareController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/HasyncController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/HasyncStatusController.php
@@ -210,6 +211,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/TunablesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/BackupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/DashboardController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/DefaultsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/FirmwareController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/HaltController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/HasyncController.php
@@ -224,6 +226,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/hasyncSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/snapshot.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/tunable.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/wizard_deployment_type.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/wizard_general_info.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/wizard_network_lan.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/wizard_network_wan.xml
@@ -519,6 +522,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Backend.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Config.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/ConfigException.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Core/ConfigMaintenance.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/File.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/FileObject.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/SanitizeFilter.php
@@ -627,6 +631,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/OptionField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/PortField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/ProtocolField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/RegexField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/TextField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UniqueIdField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UpdateOnlyTextField.php
@@ -888,6 +893,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/backup_history.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/dashboard.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Core/defaults.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/firmware.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/halt.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/hasync.volt
@@ -1032,6 +1038,7 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/OptionFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/PortFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/ProtocolFieldTest.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/RegexFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/TextFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest/config.xml
@@ -1316,6 +1323,7 @@
 /usr/local/opnsense/scripts/system/certctl.py
 /usr/local/opnsense/scripts/system/cpu.py
 /usr/local/opnsense/scripts/system/crl_fetch.py
+/usr/local/opnsense/scripts/system/factory_defaults.php
 /usr/local/opnsense/scripts/system/flush_config_history
 /usr/local/opnsense/scripts/system/get_locales.php
 /usr/local/opnsense/scripts/system/get_timezones.php
@@ -1411,6 +1419,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Captiveportal/lighttpd-zone.conf
 /usr/local/opnsense/service/templates/OPNsense/Captiveportal/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/Cron/+TARGETS
+/usr/local/opnsense/service/templates/OPNsense/Cron/at.cron
 /usr/local/opnsense/service/templates/OPNsense/Cron/user.cron
 /usr/local/opnsense/service/templates/OPNsense/Dnsmasq/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Dnsmasq/dnsmasq.conf
@@ -2083,6 +2092,7 @@
 /usr/local/opnsense/www/css/jqtree.css
 /usr/local/opnsense/www/css/jquery.bootgrid.css
 /usr/local/opnsense/www/css/nv.d3.css
+/usr/local/opnsense/www/css/opnsense-bootgrid-layout.css
 /usr/local/opnsense/www/css/opnsense-bootgrid.css
 /usr/local/opnsense/www/css/tabulator.min.css
 /usr/local/opnsense/www/css/tokenize2.css
@@ -2436,7 +2446,6 @@
 /usr/local/www/csrf.inc
 /usr/local/www/diag_authentication.php
 /usr/local/www/diag_backup.php
-/usr/local/www/diag_defaults.php
 /usr/local/www/fbegin.inc
 /usr/local/www/firewall_nat.php
 /usr/local/www/firewall_nat_edit.php

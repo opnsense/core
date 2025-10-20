@@ -150,9 +150,11 @@
     </field>
     <field>
         <id>cso.dns_domain</id>
-        <label>DNS Default Domain</label>
-        <type>text</type>
-        <help>Set Connection-specific DNS Suffix.</help>
+        <label>DNS Domain List</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>Set Connection-specific DNS Suffixes.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>

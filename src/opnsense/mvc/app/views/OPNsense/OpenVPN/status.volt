@@ -101,7 +101,7 @@
             $('#grid-sessions').bootgrid('reload');
         });
 
-        $("#type_filter_container").detach().prependTo('#grid-sessions-header > .row > .actionBar > .actions');
+        $("#type_filter_container").detach().insertAfter('#grid-sessions-header .search');
     });
 
 </script>

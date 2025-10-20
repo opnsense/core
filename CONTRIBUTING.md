@@ -27,7 +27,7 @@ but reporting an issue may help others to fill in.
 
 The issue categories are as follows:
 
-* support: community-based help figuring out setup issues or code problems
+* support: community-based help figuring out setup issues or code problems including awaiting triage
 * cleanup: cosmetic changes or non-operational bugs (display issues, etc.)
 * bug: identified operational bug (core features, etc.)
 * feature: behavioural changes, additions as well as missing options

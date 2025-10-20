@@ -77,7 +77,8 @@
             )
         );
 
-        $("#mode_filter_container").detach().prependTo('#{{formGridVip["table_id"]}}-header > .row > .actionBar > .actions');
+        $("#mode_filter_container").detach().insertAfter('#{{formGridVip["table_id"]}}-header .search');
+
         /**
          * select an unassigned carp vhid
          */

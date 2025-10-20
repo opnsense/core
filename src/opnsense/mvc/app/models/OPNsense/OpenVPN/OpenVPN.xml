@@ -57,7 +57,9 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </register_dns>
-                <dns_domain type="HostnameField"/>
+                <dns_domain type="HostnameField">
+                    <AsList>Y</AsList>
+                </dns_domain>
                 <dns_domain_search type="HostnameField">
                     <AsList>Y</AsList>
                 </dns_domain_search>
@@ -350,7 +352,9 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </register_dns>
-                <dns_domain type="HostnameField"/>
+                <dns_domain type="HostnameField">
+                    <AsList>Y</AsList>
+                </dns_domain>
                 <dns_domain_search type="HostnameField">
                     <AsList>Y</AsList>
                 </dns_domain_search>

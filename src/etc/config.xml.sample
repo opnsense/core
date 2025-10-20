@@ -83,7 +83,7 @@
   </interfaces>
   <dnsmasq>
       <enable>1</enable>
-      <port>0</port>
+      <port>53053</port>
       <interface>lan</interface>
       <dhcp_ranges>
           <interface>lan</interface>

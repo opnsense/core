@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2025 Deciso B.V.
+ * Copyright (C) 2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,45 +26,16 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Core\Api;
-
-use OPNsense\Base\ApiMutableModelControllerBase;
-use OPNsense\Core\Backend;
-use OPNsense\Core\Config;
+namespace OPNsense\Core;
 
 /**
- * Class InitialSetupController
+ * Class DefaultsController
  * @package OPNsense\Core
  */
-class InitialSetupController extends ApiMutableModelControllerBase
+class DefaultsController extends \OPNsense\Base\IndexController
 {
-    protected static $internalModelName = 'wizard';
-    protected static $internalModelClass = 'OPNsense\Core\InitialSetup';
-
-    public function configureAction()
+    public function indexAction()
     {
-        $result = parent::setAction();
-        if ($result['result'] == 'saved') {
-            $result = $this->getModel()->updateConfig();
-            if (isset(Config::getInstance()->object()->trigger_initial_wizard)) {
-                unset(Config::getInstance()->object()->trigger_initial_wizard);
-                Config::getInstance()->save();
-            }
-            (new Backend())->configdRun("service reload delay", true);
-            return $result;
-        } else {
-            return $result;
-        }
-    }
-
-    public function abortAction()
-    {
-        if ($this->request->isPost()) {
-            if (isset(Config::getInstance()->object()->trigger_initial_wizard)) {
-                unset(Config::getInstance()->object()->trigger_initial_wizard);
-                Config::getInstance()->save();
-            }
-        }
-        return ['result' => 'done']; /* not important */
+        $this->view->pick('OPNsense/Core/defaults');
     }
 }

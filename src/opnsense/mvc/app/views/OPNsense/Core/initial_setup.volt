@@ -55,6 +55,12 @@
                 );
             }
         });
+        $("#abort").click(function(){
+            ajaxCall("/api/core/initial_setup/abort",{}, function(){
+                /* redirect to index for finish page */
+                window.location = '/index.php?wizard_done';
+            });
+        });
     });
 </script>
 
@@ -80,6 +86,11 @@
             <button class="btn btn-primary action_next" id="btn_next_{{loop.index}}" data-next_index="{{loop.index + 1}}">
                 <b>{{ lang._('Next') }}</b>
             </button>
+                {% if loop.first %}
+                <button class="btn btn-primary pull-right" id="abort">
+                    <b>{{ lang._('Abort') }}</b>
+                </button>
+                {% endif %}
             {% else %}
             <button class="btn btn-primary" id="apply">
                 <b>{{ lang._('Apply') }}</b><i class="reload_progress"></i>

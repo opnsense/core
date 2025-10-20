@@ -225,7 +225,29 @@ class FilterController extends FilterBaseController
         }
 
         $_REQUEST = $ORG_REQ; /* XXX:  fix me ?*/
-        $result = $this->searchRecordsetBase(array_merge($otherrules, $filterset), null, "sort_order", $filter_funct_rs);
+
+        $search_clauses = [];
+        $backend = new Backend();
+        foreach (preg_split('/\s+/', (string)$this->request->getPost('searchPhrase', null, '')) as $token) {
+            if ($show_all && Util::isIpAddress($token)) {
+                $tmp = json_decode($backend->configdpRun('filter find_table_references', [$token]), true) ?? [];
+                $aliases = [$token];
+                if (is_array($tmp) && !empty($tmp['matches'])) {
+                    $aliases = array_merge($aliases, $tmp['matches']);
+                }
+                $search_clauses[] = $aliases;
+            } else {
+                $search_clauses[] = $token;
+            }
+        }
+        $result = $this->searchRecordsetBase(
+            array_merge($otherrules, $filterset),
+            null,
+            "sort_order",
+            $filter_funct_rs,
+            SORT_NATURAL | SORT_FLAG_CASE,
+            $search_clauses
+        );
 
         return $result;
     }
@@ -457,5 +479,16 @@ class FilterController extends FilterBaseController
         }
 
         return $result;
+    }
+
+    public function flushInspectCacheAction()
+    {
+        if (!$this->request->isPost()) {
+            return ['status' => 'error', 'message' => gettext('Invalid request method')];
+        }
+
+        (new Backend())->configdRun('!filter rule stats');
+
+        return ['status' => 'ok'];
     }
 }

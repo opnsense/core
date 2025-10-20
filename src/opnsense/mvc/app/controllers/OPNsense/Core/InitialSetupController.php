@@ -34,13 +34,6 @@ class InitialSetupController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
-        /**
-         * XXX: Eventually we might want to move this out of the way, but "mark" wizard as started on enter
-         */
-        if (isset(Config::getInstance()->object()->trigger_initial_wizard)) {
-            unset(Config::getInstance()->object()->trigger_initial_wizard);
-            Config::getInstance()->save();
-        }
         $this->view->all_tabs = [
             'step_0' => [
                 'title' => gettext('Welcome'),
@@ -62,6 +55,10 @@ class InitialSetupController extends \OPNsense\Base\IndexController
                 'form' => $this->getForm('wizard_network_lan')
             ],
             'step_4' => [
+                'title' => gettext('Deployment type'),
+                'form' => $this->getForm('wizard_deployment_type')
+            ],
+            'step_5' => [
                 'title' => gettext('Set initial password'),
                 'form' => $this->getForm('wizard_root_password')
             ],

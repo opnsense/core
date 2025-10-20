@@ -197,7 +197,7 @@
             <preSharedKey type="ArrayField">
                 <ident type="TextField">
                     <Required>Y</Required>
-                    <Mask>/^([a-zA-Z0-9@\.\:\-]*)/u</Mask>
+                    <Mask>/^([a-zA-Z0-9@\.\:\-_]*)/u</Mask>
                     <ValidationMessage>The identifier contains invalid characters.</ValidationMessage>
                     <Constraints>
                         <check001>
@@ -210,7 +210,7 @@
                     </Constraints>
                 </ident>
                 <remote_ident type="TextField">
-                    <Mask>/^([a-zA-Z0-9@\.\:\-]*)/u</Mask>
+                    <Mask>/^([a-zA-Z0-9@\.\:\-_]*)/u</Mask>
                     <ValidationMessage>The identifier contains invalid characters.</ValidationMessage>
                     <Constraints>
                         <reference>ident.check001</reference>
