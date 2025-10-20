@@ -403,6 +403,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         mwexecf('/sbin/pfctl -k label -k %s', $label);
     }
 
+    sleep(10);
+
     /*
      * check for a error while loading the rules file.  if an error has occurred
      * then output the contents of the error to the caller
