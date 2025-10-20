@@ -75,8 +75,7 @@ class OverviewController extends ApiControllerBase
 
     public function isBlockListEnabledAction()
     {
-        $nodes = $this->mdl->getNodes()['dnsbl']['blocklist'];
-        return ['enabled' => (bool)array_filter($nodes, fn($v) => $v['enabled'])];
+        return ['enabled' => (bool)array_filter($this->nodes['dnsbl']['blocklist'], fn($v) => $v['enabled'])];
     }
 
     public function RollingAction($timeperiod, $clients = '0')
