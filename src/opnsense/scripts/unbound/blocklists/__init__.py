@@ -175,6 +175,8 @@ class BlocklistParser:
             for blocklist in handler.get_blocklists():
                 blocklists.append(blocklist)
 
+        cfg = dict(sorted(cfg.items(), key=lambda kv: int(kv[0])))
+
         merged['data'] = self._merge_items_with_config(blocklists, cfg)
         merged['config'] = cfg
         merged['config']['general'] = {}
