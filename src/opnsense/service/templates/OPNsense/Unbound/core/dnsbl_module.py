@@ -374,6 +374,7 @@ class ModuleContext:
                 continue
             self.config[idx]['address'] = cfg.get('address', '0.0.0.0')
             self.config[idx]['rcode'] = RCODE_NXDOMAIN if cfg.get('rcode') == 'NXDOMAIN' else RCODE_NOERROR
+            self.config[idx]['pass_regex'] = None
 
             passlist = cfg.get('passlist', None)
             if passlist:
@@ -383,7 +384,6 @@ class ModuleContext:
                     self.config[idx]['pass_regex'] = re.compile(passlist, re.IGNORECASE)
                 except re.error:
                     log_err("dnsbl_module: unable to compile regex in global_passlist_regex")
-                    self.config[idx]['pass_regex'] = None
 
             # translate source nets after loading the list, so we can easily match if in network
             # enforce our data structure to contain a "source_net" for every domain
