@@ -113,7 +113,7 @@ PKG_REMOTE=$(${PKG} rquery -r "${product_repo}" %v pkg)
 
 # always update when the remote package manager
 # version mismatches or seems unfetchable
-if [ -z "${PKG_LOCAL}" ] || [ -z "${PKG_REMOTE}" ] || \\
+if [ -z "${PKG_LOCAL}" ] || [ -z "${PKG_REMOTE}" ] || \
     [ "${PKG_LOCAL}" != "${PKG_REMOTE}" ]; then
 	output_txt "Updating package manager from version '${PKG_LOCAL}' to '${PKG_REMOTE}'"
 	output_cmd ${PKG} upgrade -r "${product_repo}" -y pkg
@@ -157,9 +157,9 @@ else
     # now check what happens when we would go ahead
     output_cmd -o ${OUTFILE} ${PKG} upgrade ${force_all} -Un
     if  [ -n "${CUSTOMPKG}" ]; then
-        output_cmd -o ${OUTFILE} ${PKG} install -Un "${CUSTOMPKG}"
+        output_cmd -o ${OUTFILE} ${PKG} install -fUn "${CUSTOMPKG}"
     elif [ "${product_id}" != "${product_target}" ]; then
-        output_cmd -o ${OUTFILE} ${PKG} install -r "${product_repo}" -Un "${product_target}"
+        output_cmd -o ${OUTFILE} ${PKG} install -r "${product_repo}" -fUn "${product_target}"
     elif [ -z "$(${PKG} rquery %n ${product_id})" ]; then
         # although this should say "to update matching" we emulate for
         # check below as the package manager does not catch this
