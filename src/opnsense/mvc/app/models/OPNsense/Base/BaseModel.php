@@ -68,9 +68,8 @@ abstract class BaseModel
      */
     private $internal_model_version = "0.0.0";
 
-
     /**
-     * this models description
+     * this model's description
      * @var string
      */
     private $internal_model_descr = "";
@@ -464,7 +463,7 @@ abstract class BaseModel
             $this->internal_model_version = (string)$model_xml->version;
         }
         if (!empty($model_xml->description)) {
-            $this->internal_model_descr = preg_replace('/\s+/', ' ',(string)$model_xml->description);
+            $this->internal_model_descr = trim(preg_replace('/\s+/', ' ', (string)$model_xml->description));
         }
         if (!empty($model_xml->migration_prefix)) {
             $this->internal_model_migration_prefix = (string)$model_xml->migration_prefix;
