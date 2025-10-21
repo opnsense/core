@@ -50,6 +50,7 @@ class M1_0_13 extends BaseModelMigration
         $add_default = false;
         foreach ($old_dnsbl->children() as $key => $value) { 
             if ($key != 'enabled' && !empty((string)$value)) {
+                /* blocklist may or may not have been enabled - but properties were set, migrate it */
                 $add_default = true;
             }
         }
@@ -87,12 +88,14 @@ class M1_0_13 extends BaseModelMigration
                         $nodes['type'] = str_replace('ext_', '', (string)$value);
                     } elseif ($key == 'source_net') {
                         $nodes['source_nets'] = (string)$value;
+                    } elseif ($key == 'description' && empty($value)) {
+                        /* description now required */
+                        $nodes['description'] = '<migrated from Extended Blocklists plugin>';
                     } elseif (isset($new_structure[$key])) {
                         $nodes[$key] = (string)$value;
                     }
                 }
 
-                /* XXX account for description */
                 $bl->setNodes($nodes);
             }
 
@@ -107,11 +110,11 @@ class M1_0_13 extends BaseModelMigration
                     } elseif ($key == 'source_net') {
                         $nodes['source_nets'] = (string)$value;
                     } elseif (isset($new_structure[$key])) {
+                        /* description was already required */
                         $nodes[$key] = (string)$value;
                     }
                 }
 
-                /* XXX account for description (was required here) */
                 $bl->setNodes($nodes);
             }
         }
