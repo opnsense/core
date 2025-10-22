@@ -161,7 +161,7 @@ function kea_configure_do($verbose = false)
             killbypid('/var/run/prefixeskea.pid');
             mwexecf(
                 '/usr/sbin/daemon -m0 -f -p %s %s',
-                ['/var/run/prefixeskea.pid', '/usr/local/opnsense/scripts/kea/prefixeskea.sh']
+                ['/var/run/prefixeskea.pid', '/usr/local/opnsense/scripts/dhcp/prefixeskea.sh']
             );
         }
         service_log("done.\n", $verbose);
