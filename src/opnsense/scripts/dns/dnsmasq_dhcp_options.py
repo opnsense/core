@@ -41,20 +41,47 @@ parser = argparse.ArgumentParser()
 parser.add_argument("mode", nargs="?", default="dhcp", choices=["dhcp", "dhcp6"])
 args = parser.parse_args()
 
-result = {}
-# load iana specified per proto family, names will be overlayed when dnsmasq specifies them
+recommended = {}
+assigned = {}
+unassigned = {}
+
+# load IANA data
 with open('/usr/local/opnsense/contrib/' + option_src[args.mode], 'r') as csvfile:
     for r in csv.reader(csvfile, delimiter=',', quotechar='"'):
+        if not r or not r[0]:
+            continue
         r_range = [int(x) for x in r[0].split('-') if x.isdigit()]
-        if len(r) > 2 and len(r_range) > 0 and r[1].lower() not in ['unassigned', 'removed/unassigned', 'pad', 'end']:
-            for code in range(r_range[0], (r_range[1] if len(r_range) >1 else r_range[0]) + 1):
-                if str(code) not in result:
-                    result[str(code)] =  "%s [%d]" % (r[1].replace("\n", ' ').lower(), code)
+        if not r_range or len(r) < 2:
+            continue
+        name = r[1].strip().lower()
+        for code in range(r_range[0], (r_range[1] if len(r_range) > 1 else r_range[0]) + 1):
+            key = str(code)
+            if name in ['unassigned', 'removed/unassigned']:
+                # Only track unassigned for DHCPv4 (256 total), not DHCPv6 (65535 total)
+                if args.mode == 'dhcp':
+                    unassigned[key] = f"{name} [{code}]"
+            elif name not in ['pad', 'end']:
+                cleaned_name = name.replace('\n', ' ')
+                assigned[key] = f"{cleaned_name} [{code}]"
 
-sp = subprocess.run(['/usr/local/sbin/dnsmasq', '--help', args.mode], capture_output=True, text=True)
-for line in sp.stdout.split("\n"):
+# read dnsmasq supported options
+sp = subprocess.run(
+    ['/usr/local/sbin/dnsmasq', '--help', args.mode],
+    capture_output=True, text=True
+)
+
+for line in sp.stdout.splitlines():
     parts = line.split(maxsplit=1)
     if len(parts) == 2 and parts[0].isdigit():
-        result[parts[0]] = "%s [%s]" % (parts[1], parts[0])
+        key = parts[0]
+        val = f"{parts[1]} [{key}]"
+        recommended[key] = val
+        # Deduplicate from other groups
+        assigned.pop(key, None)
+        unassigned.pop(key, None)
 
-print(json.dumps(result))
+print(json.dumps({
+    "Common": recommended,        # Options directly supported by dnsmasq (help output)
+    "Assigned": assigned,
+    "Unassigned": unassigned
+}))
