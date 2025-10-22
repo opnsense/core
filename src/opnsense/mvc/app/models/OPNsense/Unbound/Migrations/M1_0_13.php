@@ -121,4 +121,12 @@ class M1_0_13 extends BaseModelMigration
             }
         }
     }
+
+    public function post($model)
+    {
+        $cfg = Config::getInstance()->object();
+        if (isset($cfg->Deciso->Unbound->ExtendedDnsbl)) {
+            unset($cfg->Deciso->Unbound);
+        }
+    }
 }
