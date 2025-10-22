@@ -39,7 +39,7 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
         super().__init__('/usr/local/etc/unbound/unbound-blocklists.conf')
         self.priority = 10
 
-        self.cnf_parsed = self._parse_config()
+        self.cnf_parsed = self._parse_config()            
 
     def _get_path(self, d, path, default=None):
         cur = d
@@ -50,7 +50,7 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
                 return default
         return cur
     
-    def _blocklist_reader(self, uri):
+    def _blocklist_reader(self, uri, config):
         """
         Decides whether a blocklist can be read from a cached file or
         needs to be downloaded. Yields (unformatted) domains either way
@@ -60,8 +60,9 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
         h = hashlib.md5(uri.encode()).hexdigest()
         cache_loc = '/tmp/bl_cache/'
         filep = cache_loc + h
-        if not os.path.exists(filep) or (time.time() - os.stat(filep).st_ctime >= self.cache_ttl):
-            # cache expired (20 hours) or not available yet, try to read, keep old one when failed
+        cache_ttl = float(config.get('cache_ttl', 72000))
+        if not os.path.exists(filep) or (time.time() - os.stat(filep).st_ctime >= cache_ttl):
+            # cache expired or not available yet, try to read, keep old one when failed
             try:
                 os.makedirs(cache_loc, exist_ok=True)
                 filep_t = "%s.tmp" % filep
@@ -87,6 +88,18 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
             )
         else:
             syslog.syslog(syslog.LOG_ERR, 'unable to download blocklist from %s and no cache available' % uri)
+
+    def _domains_in_blocklist(self, blocklist, config):
+        for line in self._blocklist_reader(blocklist, config):
+            # cut line into parts before comment marker (if any)
+            tmp = line.split('#')[0].split()
+            entry = None
+            while tmp:
+                entry = tmp.pop(-1)
+                if entry not in ['127.0.0.1', '0.0.0.0']:
+                    break
+            if entry:
+                yield entry.lower()
 
     def _parse_config(self):
         configs = []
@@ -156,7 +169,7 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
             result = {}
             for bl_shortcode, blocklist in self._get_path(config, "blocklists", {}).items():
                 per_file_stats = {'uri': blocklist, 'blocklist': 0, 'wildcard': 0}
-                for domain in self._domains_in_blocklist(blocklist):
+                for domain in self._domains_in_blocklist(blocklist, config):
                     if self.domain_pattern.match(domain):
                         per_file_stats['blocklist'] += 1
                         if domain.startswith('*.'):
