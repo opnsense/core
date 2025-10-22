@@ -231,7 +231,7 @@
                     </OptionValues>
                 </type>
                 <lists type="CSVListField"/>
-                <whitelists type="CSVListField"/>
+                <allowlists type="CSVListField"/>
                 <blocklists type="CSVListField"/>
                 <wildcards type="CSVListField">
                     <Mask>/^((?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.){1,})(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>

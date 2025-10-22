@@ -98,7 +98,7 @@ class OverviewController extends ApiControllerBase
             $parsed['top_blocked'][$domain]['blocklist'] ??= $this->getBlocklistDescription($props['blocklist']);
         }
 
-        $parsed['whitelisted_domains'] = $this->getFlattenedCustomDomains('whitelists');
+        $parsed['allowlisted_domains'] = $this->getFlattenedCustomDomains('allowlists');
         $parsed['blocklisted_domains'] = $this->getFlattenedCustomDomains('blocklists');
 
         return $parsed;
@@ -142,7 +142,7 @@ class OverviewController extends ApiControllerBase
         }
 
         $response = $this->searchRecordsetBase($parsed);
-        $response['whitelisted_domains'] = $this->getFlattenedCustomDomains('whitelists');
+        $response['allowlisted_domains'] = $this->getFlattenedCustomDomains('allowlists');
         $response['blocklisted_domains'] = $this->getFlattenedCustomDomains('blocklists');
 
         return $response;

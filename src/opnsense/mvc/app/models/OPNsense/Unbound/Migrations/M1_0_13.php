@@ -64,6 +64,8 @@ class M1_0_13 extends BaseModelMigration
             foreach (array_keys($new_structure) as $key) {
                 if (isset($old_dnsbl->$key)) {
                     $nodes[$key] = (string)$old_dnsbl->$key;
+                } elseif ($key == 'allowlists') {
+                    $nodes['allowlists'] = (string)$old_dnsbl->whitelists;
                 } else {
                     /* make sure "enabled" has a value */
                     $bl->$key->applyDefault();

@@ -60,7 +60,7 @@ class SettingsController extends ApiMutableModelControllerBase
 
                 // strip off any trailing dot
                 $value = rtrim($domain, '.');
-                $wl = explode(',', (string)$mdl->dnsbl->whitelists);
+                $wl = explode(',', (string)$mdl->dnsbl->allowlists);
                 $bl = explode(',', (string)$mdl->dnsbl->blocklists);
 
                 $existing_domains = explode(',', (string)$item);
@@ -71,10 +71,10 @@ class SettingsController extends ApiMutableModelControllerBase
                 }
 
                 // Check if domains should be switched around in the model
-                if ($type == 'whitelists' && in_array($value, $bl)) {
+                if ($type == 'allowlists' && in_array($value, $bl)) {
                     $mdl->dnsbl->blocklists = $remove($bl, $value);
                 } elseif ($type == 'blocklists' && in_array($value, $wl)) {
-                    $mdl->dnsbl->whitelists = $remove($wl, $value);
+                    $mdl->dnsbl->allowlists = $remove($wl, $value);
                 }
 
                 // update the model
