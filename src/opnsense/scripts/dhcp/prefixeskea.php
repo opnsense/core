@@ -45,7 +45,8 @@ if (($fh = fopen($leases_file, 'r')) !== false) {
 
     while (($row = fgetcsv($fh)) !== false) {
         $lease = @array_combine($header, $row);
-        if (empty($lease['duid']) || empty($lease['lease_type']) || empty($lease['address'])) {
+        if (!isset($lease['duid']) || !isset($lease['lease_type']) || !isset($lease['address']) ||
+            $lease['duid'] === '' || $lease['lease_type'] === '' || $lease['address'] === '') {
             continue;
         }
 
