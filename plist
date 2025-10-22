@@ -1094,6 +1094,8 @@
 /usr/local/opnsense/scripts/dhcp/get_leases6.py
 /usr/local/opnsense/scripts/dhcp/prefixes.php
 /usr/local/opnsense/scripts/dhcp/prefixes.sh
+/usr/local/opnsense/scripts/dhcp/prefixeskea.php
+/usr/local/opnsense/scripts/dhcp/prefixeskea.sh
 /usr/local/opnsense/scripts/dhcp/unbound_watcher.py
 /usr/local/opnsense/scripts/dns/dnsmasq_dhcp_options.py
 /usr/local/opnsense/scripts/dns/query_dns.py

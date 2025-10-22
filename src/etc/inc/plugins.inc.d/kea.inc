@@ -157,7 +157,16 @@ function kea_configure_do($verbose = false)
             $keaDhcpv6->generateConfig();
         }
         (new \OPNsense\Kea\KeaCtrlAgent())->generateConfig();
+        if ($keaDhcpv6->isEnabled()) {
+            killbypid('/var/run/prefixeskea.pid');
+            mwexecf(
+                '/usr/sbin/daemon -m0 -f -p %s %s',
+                ['/var/run/prefixeskea.pid', '/usr/local/opnsense/scripts/kea/prefixeskea.sh']
+            );
+        }
         service_log("done.\n", $verbose);
+    } else {
+        killbypid('/var/run/prefixeskea.pid');
     }
 }
 
