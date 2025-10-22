@@ -64,6 +64,20 @@
         </grid_view>
     </field>
     <field>
+        <id>blocklist.cache_ttl</id>
+        <label>Cache TTL</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>
+            TTL for the blocklists cache. Remote blocklists don't usually update more often than once a day.
+            Therefore, when blocklists are downloaded, they are cached locally to prevent unnecessary fetches over the internet.
+            You can change this behavior here if you know the remote files rotate faster than this.
+        </help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>blocklist.address</id>
         <label>Destination Address</label>
         <type>text</type>

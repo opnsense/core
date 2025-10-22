@@ -36,9 +36,25 @@ import sys
 import fcntl
 import ujson
 import time
-import hashlib
 from configparser import ConfigParser
 from ipaddress import ip_network, collapse_addresses
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def _coverage_weight_from_nets(nets_tuple):
+    if not nets_tuple:
+        return float('inf')
+    return sum(n.num_addresses for n in collapse_addresses(nets_tuple))
+
+@lru_cache(maxsize=None)
+def _parse_net(cidr):
+    # Parse a single CIDR once
+    return ip_network(cidr, strict=False)
+
+@lru_cache(maxsize=None)
+def _nets_from_tuple(cidr_tuple):
+    # Convert a tuple of CIDRs to a tuple of ip_networks
+    return tuple(_parse_net(c) for c in cidr_tuple)
 
 class BaseBlocklistHandler:
     def __init__(self, config=None):
@@ -46,7 +62,6 @@ class BaseBlocklistHandler:
         self.cnf = None
         self.cnf_indexed = None
         self.priority = 0
-        self.cache_ttl = 72000
 
         self.cur_bl_location = '/var/unbound/data/dnsbl.json'
 
@@ -59,7 +74,7 @@ class BaseBlocklistHandler:
 
     def get_policies(self, start_idx):
         """
-        Output configuration exposed to Unbound, idx is used by the derived class
+        Output configuration exposed to Unbound, start_idx is used by the derived class
         to link a domain to a running policy.
         """
         if hasattr(self, "get_config") and callable(getattr(self, "get_config")):
@@ -68,9 +83,10 @@ class BaseBlocklistHandler:
 
     def get_blocklists(self):
         """
-        Overridden by derived classes to produce a formatted blocklist. Returns a dictionary
-        with domains as keys and a dictionary of metadata as values.
+        Overridden by derived classes to produce a formatted blocklist. Returns an array
+        of dictionaries with domains as keys and a dictionary of metadata as values.
         """
+        # backwards compat
         if hasattr(self, "get_blocklist") and callable(getattr(self, "get_blocklist")):
             bl = self.get_blocklist()
             for key in bl:
@@ -81,12 +97,6 @@ class BaseBlocklistHandler:
         # unused, should now be returned in a 'passlist' property in get_policies()
         return []
 
-    def _blocklist_reader(self, uri):
-        """
-        Used by a derived class to define a caching and/or download routine.
-        """
-        pass
-
     def _load_config(self):
         """
         Load a configuration file.
@@ -94,21 +104,6 @@ class BaseBlocklistHandler:
         if os.path.exists(self.config):
             self.cnf = ConfigParser()
             self.cnf.read(self.config)
-
-    def _domains_in_blocklist(self, blocklist):
-        """
-        Generator for derived classes to iterate over cached/downloaded domains.
-        """
-        for line in self._blocklist_reader(blocklist):
-            # cut line into parts before comment marker (if any)
-            tmp = line.split('#')[0].split()
-            entry = None
-            while tmp:
-                entry = tmp.pop(-1)
-                if entry not in ['127.0.0.1', '0.0.0.0']:
-                    break
-            if entry:
-                yield entry.lower()
 
     def _uri_reader(self, uri):
         """
@@ -222,13 +217,12 @@ class BlocklistParser:
 
     def _nets(self, cidr_list):
         if not cidr_list:
-            return []
-        return [ip_network(n, strict=False) for n in cidr_list]
+            return ()
+        # ensure stable, hashable key for caching
+        return _nets_from_tuple(tuple(cidr_list))
 
     def _coverage_weight(self, nets):
-        if not nets:
-            return float('inf')
-        return sum(n.num_addresses for n in collapse_addresses(nets))
+        return _coverage_weight_from_nets(tuple(nets))
 
     def _any_overlap(self, nets_a, nets_b):
         if not nets_a or not nets_b:
@@ -236,33 +230,61 @@ class BlocklistParser:
         return any(a.overlaps(b) for a in nets_a for b in nets_b)
 
     def _pairwise_disjoint(self, candidates):
-        for i in range(len(candidates)):
-            for j in range(i+1, len(candidates)):
-                if self._any_overlap(candidates[i][1], candidates[j][1]):
-                    return False
+        """
+        Check that no two different candidates overlap.
+        candidates is a list of tuples: (idx, nets, meta, coverage, pass_penalty)
+        """
+        events = {4: [], 6: []}
+        for owner, (_, nets, *_) in enumerate(candidates):
+            for n in nets:
+                v = n.version
+                events[v].append((int(n.network_address), 1, owner))
+                events[v].append((int(n.broadcast_address), 0, owner))
+
+        for v in (4, 6):
+            if not events[v]:
+                continue
+            events[v].sort(key=lambda x: (x[0], -x[1]))
+            active = {}
+            for _, is_start, owner in events[v]:
+                if is_start:
+                    if active and owner not in active:
+                        return False
+                    active[owner] = active.get(owner, 0) + 1
+                else:
+                    cnt = active.get(owner, 0) - 1
+                    if cnt <= 0: active.pop(owner, None)
+                    else: active[owner] = cnt
         return True
 
     def _merge_items_with_config(self, items, config):
         per_key = {}
+
+        # Cache per idx so we don't recompute nets/coverage/pass_penalty repeatedly
+        idx_cache = {}  # idx -> (nets_tuple, coverage, pass_penalty)
+
         for d in items:
             for key, meta in d.items():
                 idx = meta['idx']
-                nets = self._nets(config[idx].get('source_nets', []))
-                # primary: smaller = more specific
-                coverage = self._coverage_weight(nets)
-                pl = config[idx].get('passlist', '')
-                # secondary: prefer passlist
-                pass_penalty = 0 if (pl and pl != '.*localhost$') else 1
+                if idx not in idx_cache:
+                    cfg = config[idx]
+                    nets = self._nets(cfg.get('source_nets', []))
+                    coverage = self._coverage_weight(nets)
+                    pl = cfg.get('passlist', '')
+                    pass_penalty = 0 if (pl and pl != '.*localhost$') else 1
+                    idx_cache[idx] = (nets, coverage, pass_penalty)
+
+                nets, coverage, pass_penalty = idx_cache[idx]
                 per_key.setdefault(key, []).append((idx, nets, meta, coverage, pass_penalty))
 
         merged = {}
         for key, cands in per_key.items():
-            sort_key = lambda t: (t[3], t[4], t[0])
-            ordered = sorted(cands, key=sort_key)
+            # Sort: primary coverage asc, then pass_penalty asc, then idx asc
+            ordered = sorted(cands, key=lambda t: (t[3], t[4], t[0]))
 
-            if self._pairwise_disjoint(cands):
-                # subnets do not overlap
-                merged[key] = [dict(meta) | {'idx': idx} for idx, _, meta, *_ in ordered]
+            if self._pairwise_disjoint(ordered):
+                # Subnets do not overlap
+                merged[key] = [({**meta, 'idx': idx}) for idx, _, meta, *_ in ordered]
                 continue
 
             merged[key] = [dict(meta) for idx, _, meta, *_ in ordered]
