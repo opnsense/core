@@ -284,9 +284,11 @@
                 case 'reset':
                     this.table.clearData();
                     this.table.setData(this.viewBuffer.toArray());
+                    $('.tooltip:visible').hide();
                     break;
                 case 'clear':
                     this.table.clearData();
+                    $('.tooltip:visible').hide();
                     break;
             }
         }
@@ -890,8 +892,9 @@
                                 let toResolve = new Set();
                                 let again = false;
                                 for (const addr of hostnames) {
-                                    if (!addr[1]) { // new entries are null
+                                    if (!addr[1] || addr[1] !== '<in-flight>') { // new entries are null or are already being processed
                                         toResolve.add(addr[0]);
+                                        hostnames.set(addr[0], '<in-flight>');
                                     }
                                 }
 
@@ -949,13 +952,6 @@
                             // register to active data feed (all data), apply hostnames as they come
                             if (event.type === "push" || event.type === "pushMany") {
                                 let records = Array.isArray(event.data) ? event.data : [event.data];
-                                records.map((record) => {
-                                    ['srchostname', 'dsthostname'].forEach(host => {
-                                        if (!record[host]) {
-                                            record[host] = '<span class="fa fa-spinner fa-pulse"></span>';
-                                        }
-                                    });
-                                });
 
                                 filterVM.updateTable(records);
                                 lookup().then(() => {
