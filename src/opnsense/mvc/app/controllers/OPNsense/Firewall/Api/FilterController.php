@@ -215,6 +215,7 @@ class FilterController extends FilterBaseController
         $ORG_REQ = $_REQUEST;
         unset($_REQUEST['rowCount']);
         unset($_REQUEST['current']);
+        unset($_REQUEST['searchPhrase']);
         $filterset = $this->searchBase("rules.rule", null, "sort_order", $filter_funct_mvc)['rows'];
 
         /* only fetch internal and legacy rules when 'show_all' is set */
