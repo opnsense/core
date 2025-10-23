@@ -112,9 +112,20 @@ mlog:
 slog: ensure-stable
 	@${GIT} log --stat -p ${CORE_STABLE} ${slog_ARGS}
 
+TO_PULL:=	# blank
+.if "${CORE_STABLE}" == "stable/${CORE_ABI}"
+.for __CORE_ABI in ${CORE_ABIS}
+TO_PULL+=	stable/${__CORE_ABI}
+.endfor
+.else
+TO_PULL+=	${CORE_STABLE}
+.endif
+
 pull:
-	@${GIT} checkout ${CORE_STABLE}
+.for _TO_PULL in ${TO_PULL}
+	@${GIT} checkout ${_TO_PULL}
 	@${GIT} pull
+.endfor
 	@${GIT} checkout ${CORE_MAIN}
 
 push:
