@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-CORE_ABI?=	25.7
+CORE_ABIS?=	25.7
 CORE_ADDITIONS?=#empty
 CORE_MESSAGE?=	Some will win, some will lose, some are born to sing the blues
 CORE_NAME?=	opnsense
