@@ -105,7 +105,6 @@ class UIBootgrid {
     constructor(id, options = {}, crud = {}, tabulatorOptions = {}) {
         // wrapper-specific state variables
         this.id = id;
-        this.dataIdentifier = null;
         this.$element = $(`#${id}`);
         this.table = null;
         this.searchPhrase = "";
@@ -459,11 +458,6 @@ class UIBootgrid {
             for (const [colId, val] of Object.entries(this.compatColumns)) {
                 let data = val.data;
 
-                // pick the first column marked as identifier to be used as ID (values returned by getSelectedRows etc.)
-                if (this.dataIdentifier === null && data.identifier !== undefined && data.identifier) {
-                    this.dataIdentifier = colId;
-                }
-
                 for (const [option, value] of Object.entries(data)) {
                     data[option] = value === '' ? null : value;
                 }
@@ -762,7 +756,7 @@ class UIBootgrid {
         });
 
         const rememberTree = (row, open) => {
-            const id = row.getData()[this.dataIdentifier];
+            const id = row.getData()[this.options.datakey];
             if (!id) return;
             open ? this.rememberedTreeIds.add(id) : this.rememberedTreeIds.delete(id);
             localStorage.setItem(this.treeStorageKey, JSON.stringify([...this.rememberedTreeIds]));
@@ -787,7 +781,7 @@ class UIBootgrid {
             // for both the selection & deselection, while we only want to know
             // the last known action.
             if (this.options.stickySelect && data.length == 0) {
-                this.table.selectRow(deselected[0].getData()[this.dataIdentifier]);
+                this.table.selectRow(deselected[0].getData()[this.options.datakey]);
             }
         }));
 
@@ -881,7 +875,7 @@ class UIBootgrid {
             while (queue.length) {
                 const row = queue.shift();
                 const data = row.getData();
-                const id = data[this.dataIdentifier] ?? data[this.options.datakey];
+                const id = data[this.options.datakey];
                 if (id && this.rememberedTreeIds.has(id)) {
                     row.treeExpand(); // no-op if already expanded
                 }
@@ -1271,7 +1265,7 @@ class UIBootgrid {
     tabulatorDefaults() {
         return {
             autoResize: false,
-            index: this.dataIdentifier,
+            index: this.options.datakey,
             renderVertical:"basic",
             persistence: {
                 sort: true,
@@ -2030,7 +2024,7 @@ class UIBootgrid {
     }
 
     getSelectedRows() {
-        return this.table.getSelectedData().map(row => row[this.dataIdentifier]);
+        return this.table.getSelectedData().map(row => row[this.options.datakey]);
     }
 
     getCurrentRows() {
