@@ -26,13 +26,14 @@
 all:
 	@cat ${.CURDIR}/README.md | ${PAGER}
 
+.include "Mk/version.mk"
+
 .include "Mk/defaults.mk"
 .include "Mk/common.mk"
 .include "Mk/git.mk"
 .include "Mk/lint.mk"
 .include "Mk/style.mk"
 .include "Mk/sweep.mk"
-.include "Mk/version.mk"
 
 .for REPLACEMENT in ABI PHP PYTHON
 . if empty(CORE_${REPLACEMENT})
