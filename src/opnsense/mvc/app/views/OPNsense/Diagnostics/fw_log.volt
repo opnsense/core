@@ -266,7 +266,6 @@
                     }
                     break;
                 case 'pushMany':
-                    event.data.reverse();
                     const tmp = event.data.filter(record => this._passesCurrentFilters(record));
                     this.viewBuffer.pushMany(tmp);
                     break;
@@ -279,28 +278,16 @@
          * mutated on the viewbuffer is considered valid (passed the filter(s)).
          */
         _onViewBufferEvent(event) {
-            // also investigate setData instead of addDate + remove
             switch (event.type) {
                 case 'push':
-                    this.table.addData([event.data], true);
-                    break;
                 case 'pushMany':
-                    this.table.addData(event.data.reverse(), true);
-                    break;
                 case 'reset':
-                    let tmp = this.viewBuffer.toArray();
-                    this.table.addData(tmp, true);
+                    this.table.clearData();
+                    this.table.setData(this.viewBuffer.toArray());
                     break;
                 case 'clear':
                     this.table.clearData();
                     break;
-            }
-
-            let rows = this.table.getRows();
-            if (this.viewBuffer.length >= this.bufferSize && rows.length > this.bufferSize) {
-                for (let i = this.bufferSize; i < rows.length; i++) {
-                    rows[i].delete();
-                }
             }
         }
 
@@ -454,14 +441,11 @@
         }
 
         /**
-         *
+         * Update existing records in the table. Records supplied but not found in
+         * the table (indexed by __digest__) are ignored.
          */
         updateTable(records) {
-            try {
-                this.table.updateData(records, true);
-            } catch (e) {
-                // ignore
-            }
+            this.table.updateData(records).catch((error) => {});
         }
 
         setFilterMode(mode = 'AND') {
@@ -540,8 +524,8 @@
                         if (!hostnames.get(record.dst)) hostnames.set(record.dst, null);
 
                         // make sure the hostname key exists
-                        record['srchostname'] = hostnames.get(record.src);
-                        record['dsthostname'] = hostnames.get(record.dst);
+                        record['srchostname'] = hostnames.get(record.src) || '<span class="fa fa-spinner fa-pulse"></span>';
+                        record['dsthostname'] = hostnames.get(record.dst) || '<span class="fa fa-spinner fa-pulse"></span>';
                     }
 
                     resolve(data);
@@ -962,7 +946,7 @@
                         }
 
                         bufferDataUnsubscribe = buffer.subscribe((event) => {
-                            // register to active data feed, apply hostnames as they come
+                            // register to active data feed (all data), apply hostnames as they come
                             if (event.type === "push" || event.type === "pushMany") {
                                 let records = Array.isArray(event.data) ? event.data : [event.data];
                                 records.map((record) => {
