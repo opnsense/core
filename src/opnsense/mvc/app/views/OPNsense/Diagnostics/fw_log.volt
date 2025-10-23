@@ -955,7 +955,7 @@
 
                                 filterVM.updateTable(records);
                                 lookup().then(() => {
-                                    records.map((record) => {
+                                    records = records.map((record) => {
                                         if (hostnames.get(record.src) !== '<in-flight>') {
                                             record['srchostname'] = hostnames.get(record.src);
                                         }
