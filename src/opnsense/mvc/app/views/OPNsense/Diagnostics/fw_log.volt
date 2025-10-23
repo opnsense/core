@@ -892,7 +892,7 @@
                                 let toResolve = new Set();
                                 let again = false;
                                 for (const addr of hostnames) {
-                                    if (!addr[1] || addr[1] !== '<in-flight>') { // new entries are null or are already being processed
+                                    if (!addr[1]) { // new entries are null or are already being processed
                                         toResolve.add(addr[0]);
                                         hostnames.set(addr[0], '<in-flight>');
                                     }
