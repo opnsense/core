@@ -284,9 +284,11 @@
                 case 'reset':
                     this.table.clearData();
                     this.table.setData(this.viewBuffer.toArray());
+                    $('.tooltip:visible').hide();
                     break;
                 case 'clear':
                     this.table.clearData();
+                    $('.tooltip:visible').hide();
                     break;
             }
         }
@@ -519,9 +521,6 @@
                     for (let record of data) {
                         // initial data formatting for front-end purposes
                         record['status'] = map[record['action']];
-                        // deal with IPs we haven't seen before
-                        if (!hostnames.get(record.src)) hostnames.set(record.src, null);
-                        if (!hostnames.get(record.dst)) hostnames.set(record.dst, null);
 
                         // make sure the hostname key exists
                         record['srchostname'] = hostnames.get(record.src);
@@ -679,6 +678,8 @@
             })
         }
 
+        let hostnames = new Map();
+
         const tableWrapper = $("#example-table").UIBootgrid({
             options: {
                 ajax: false,
@@ -687,6 +688,12 @@
                 multiSelect: false,
                 virtualDOM: true,
                 formatters: {
+                    lookup: function(column, row, onRendered) {
+                        const value = row[column.id.replace("hostname", "")];
+                        // deal with IPs we haven't seen before
+                        if (!hostnames.get(value)) hostnames.set(value, null);
+                        return hostnames.get(value) || '<span class="fa fa-spinner fa-pulse"></span>';
+                    },
                     proto: function(column, row, onRendered) {
                         return row.protoname.toUpperCase();
                     },
@@ -746,33 +753,38 @@
                                 }
                                 tbl.append(tbl_tbody);
                                 BootstrapDialog.show({
-                                title: "{{ lang._('Detailed rule info') }}",
-                                message: tbl,
-                                type: BootstrapDialog.TYPE_INFO,
-                                draggable: true,
-                                buttons: [{
-                                    label: '<i class="fa fa-search" aria-hidden="true"></i>',
-                                    action: function(){
-                                    $(this).unbind('click');
-                                    $(".act_info_fld_src, .act_info_fld_dst").each(function(){
-                                        let target_field = $(this);
-                                        ajaxGet('/api/diagnostics/dns/reverse_lookup', {'address': target_field.text()}, function(data, status) {
-                                            if (data[target_field.text()] != undefined) {
-                                                let resolv_output = data[target_field.text()];
-                                                if (target_field.text() != resolv_output) {
-                                                    target_field.text(target_field.text() + ' [' + resolv_output + ']');
+                                    title: "{{ lang._('Detailed rule info') }}",
+                                    message: tbl,
+                                    type: BootstrapDialog.TYPE_INFO,
+                                    draggable: true,
+                                    buttons: [{
+                                        label: '<i class="fa fa-search" aria-hidden="true"></i>',
+                                        action: function(){
+                                            $(this).unbind('click');
+                                            $(".act_info_fld_srchostname, .act_info_fld_dsthostname").each(function(){
+                                                let target_field = $(this);
+                                                const dir = target_field.attr('class').indexOf('src') > -1 ? 'src' : 'dst';
+                                                const ip = sender_details[dir];
+                                                const hostname = hostnames.get(ip);
+                                                if (hostname && hostname !== '<in-flight>') {
+                                                    target_field.text(hostname);
+                                                } else {
+                                                    ajaxGet('/api/diagnostics/dns/reverse_lookup', {'address': ip}, function(data, status) {
+                                                        if (data[ip] != undefined) {
+                                                            let resolv_output = data[ip];
+                                                            hostnames.set(ip, resolv_output);
+                                                            target_field.text(resolv_output);
+                                                        }
+                                                    });
                                                 }
-                                            }
-                                            target_field.prepend('<i class="fa fa-search" aria-hidden="true"></i>&nbsp;');
-                                        });
-                                    });
-                                    }
-                                },{
-                                    label: "{{ lang._('Close') }}",
-                                    action: function(dialogItself){
-                                    dialogItself.close();
-                                    }
-                                }]
+                                            });
+                                        }
+                                    },{
+                                        label: "{{ lang._('Close') }}",
+                                        action: function(dialogItself){
+                                        dialogItself.close();
+                                        }
+                                    }]
                                 });
                             });
                         })
@@ -826,7 +838,6 @@
         const buffer = new RingBuffer(seedAmount);
         const filterVM = new FilterViewModel(buffer, table);
         let pollTimeout = null;
-        let hostnames = new Map();
         let interfaceMap = {};
         let bufferDataUnsubscribe = null;
 
@@ -885,103 +896,96 @@
             switch (id) {
                 case 'tg-lookup':
                     if (checked) {
-                        const lookup = (maxPerRequest=50) => {
-                            return new Promise((resolve, reject) => {
-                                let toResolve = new Set();
-                                let again = false;
-                                for (const addr of hostnames) {
-                                    if (!addr[1]) { // new entries are null
-                                        toResolve.add(addr[0]);
-                                    }
+                        const lookup = (maxPerRequest = 50) => {
+                            const pending = [];
+                            for (const [addr, val] of hostnames) {
+                                if (!val && addr) { // new entries are null or already being processed
+                                    pending.push(addr);
+                                    hostnames.set(addr, '<in-flight>');
                                 }
+                            }
 
-                                if (toResolve.size === 0) {
-                                    resolve();
-                                    return;
-                                }
+                            if (pending.length === 0) return [];
 
-                                const portion = () => {
-                                    let addresses = Array.from(toResolve);
+                            // Split into chunks
+                            const batches = [];
+                            for (let i = 0; i < pending.length; i += maxPerRequest) {
+                                batches.push(pending.slice(i, i + maxPerRequest));
+                            }
 
-                                    if (addresses.length > maxPerRequest) {
-                                        addresses = addresses.slice(0, maxPerRequest);
-                                        again = true;
-                                    } else {
-                                        again = false;
-                                    }
-
-                                    addresses.forEach(addr => toResolve.delete(addr));
-                                    return addresses;
-                                }
-
-                                const runAjax = (addresses) => {
+                            return batches.map(addresses =>
+                                new Promise((resolve, reject) => {
                                     $.ajax({
                                         type: 'GET',
                                         url: '/api/diagnostics/dns/reverse_lookup',
                                         dataType: 'json',
                                         contentType: 'application/json',
                                         data: { address: addresses },
-                                        complete: function (data, status) {
-                                            if ('responseJSON' in data) {
-                                                data = data['responseJSON'];
+                                        complete: function (xhr) {
+                                            const data = xhr && xhr.responseJSON;
+                                            if (data) {
                                                 addresses.forEach(addr => {
                                                     const resolved = data && data[addr];
                                                     hostnames.set(addr, resolved || addr);
                                                 });
-
-                                                if (again) {
-                                                    // recurse
-                                                    runAjax(portion());
-                                                    return;
-                                                }
+                                                resolve();
+                                            } else {
+                                                // still mark something reasonable to avoid leaving <in-flight>
+                                                addresses.forEach(addr => hostnames.set(addr, addr));
+                                                reject(new Error('Invalid response for batch: ', addresses));
                                             }
-
-                                            resolve();
+                                        },
+                                        error: function (_xhr, status, err) {
+                                            // clear in-flight flags on error
+                                            addresses.forEach(addr => hostnames.set(addr, null));
+                                            reject(err || new Error(status || 'Request failed'));
                                         }
                                     });
-                                }
+                                })
+                            );
+                        };
 
-                                runAjax(portion());
-                            });
-                        }
+                        tableWrapper.bootgrid('setColumns', ['srchostname', 'dsthostname']);
 
-                        bufferDataUnsubscribe = buffer.subscribe((event) => {
-                            // register to active data feed (all data), apply hostnames as they come
+                        // lookup new entries
+                        bufferDataUnsubscribe = filterVM.viewBuffer.subscribe((event) => {
                             if (event.type === "push" || event.type === "pushMany") {
                                 let records = Array.isArray(event.data) ? event.data : [event.data];
-                                records.map((record) => {
-                                    ['srchostname', 'dsthostname'].forEach(host => {
-                                        if (!record[host]) {
-                                            record[host] = '<span class="fa fa-spinner fa-pulse"></span>';
+                                const promises = lookup();
+                                promises.forEach(p => p.then(() => {
+                                    records = records.map((record) => {
+                                        if (hostnames.get(record.src) !== '<in-flight>') {
+                                            record['srchostname'] = hostnames.get(record.src);
                                         }
-                                    });
-                                });
-
-                                filterVM.updateTable(records);
-                                lookup().then(() => {
-                                    records.map((record) => {
-                                        record['srchostname'] = hostnames.get(record.src);
-                                        record['dsthostname'] = hostnames.get(record.dst);
+                                        if (hostnames.get(record.dst) !== '<in-flight>') {
+                                            record['dsthostname'] = hostnames.get(record.dst);
+                                        }
                                         return record;
                                     });
 
                                     filterVM.updateTable(records);
-                                })
+                                }).catch((err) => {
+                                    console.error('Lookup batch failed:', err);
+                                }));
                             }
                         });
 
-                        // initial hostname lookup
-                        tableWrapper.bootgrid('setColumns', ['srchostname', 'dsthostname']);
-                        lookup().then(() => {
-                             // operate on entire buffer
-                            buffer.map((record) => {
-                                record['srchostname'] = hostnames.get(record.src);
-                                record['dsthostname'] = hostnames.get(record.dst);
+                        // lookup current view ("lookup" formatter will have collected addresses)
+                        // we do not lookup the entire buffer, as most items aren't relevant yet until
+                        // specifically asked for.
+                        const promises = lookup();
+                        promises.forEach(p => p.then(() => {
+                            filterVM.viewBuffer.map((record) => {
+                                if (hostnames.get(record.src) !== '<in-flight>') {
+                                    record['srchostname'] = hostnames.get(record.src);
+                                }
+                                if (hostnames.get(record.dst) !== '<in-flight>') {
+                                    record['dsthostname'] = hostnames.get(record.dst);
+                                }
                                 return record;
                             });
-
                             filterVM.reset();
-                        });
+                        }));
                     } else {
                         if (bufferDataUnsubscribe !== null) {
                             bufferDataUnsubscribe();
@@ -1391,9 +1395,9 @@
                 <th data-column-id="__timestamp__" data-sortable="false" data-width="150">{{ lang._('Time') }}</th>
                 <th data-column-id="protoname" data-sortable="false" data-formatter="proto" data-width="80">{{ lang._('Protocol') }}</th>
                 <th data-column-id="src" data-type="string" data-formatter="appendPort" data-sortable="false">{{ lang._('Source') }}</th>
-                <th data-column-id="srchostname" data-type="string" data-sortable="false" data-visible="false">{{ lang._('Source Hostname') }}</th>
+                <th data-column-id="srchostname" data-type="string" data-formatter="lookup" data-sortable="false" data-visible="false">{{ lang._('Source Hostname') }}</th>
                 <th data-column-id="dst" data-type="string" data-formatter="appendPort" data-sortable="false">{{ lang._('Destination') }}</th>
-                <th data-column-id="dsthostname" data-type="string" data-sortable="false" data-visible="false">{{ lang._('Destination Hostname') }}</th>
+                <th data-column-id="dsthostname" data-type="string" data-formatter="lookup" data-sortable="false" data-visible="false">{{ lang._('Destination Hostname') }}</th>
                 <th data-column-id="action" data-type="string" data-sortable="false" data-width="80">{{ lang._('Action') }}</th>
                 <th data-column-id="label" data-type="string" data-sortable="false">{{ lang._('Label') }}</th>
                 <th data-column-id="status" data-type="string" data-sortable="false" data-visible="false">{{ lang._('Status') }}</th>
