@@ -956,8 +956,12 @@
                                 filterVM.updateTable(records);
                                 lookup().then(() => {
                                     records.map((record) => {
-                                        record['srchostname'] = hostnames.get(record.src);
-                                        record['dsthostname'] = hostnames.get(record.dst);
+                                        if (hostnames.get(record.src) !== '<in-flight>') {
+                                            record['srchostname'] = hostnames.get(record.src);
+                                        }
+                                        if (hostnames.get(record.dst) !== '<in-flight>') {
+                                            record['dsthostname'] = hostnames.get(record.dst);
+                                        }
                                         return record;
                                     });
 
@@ -971,8 +975,12 @@
                         lookup().then(() => {
                              // operate on entire buffer
                             buffer.map((record) => {
-                                record['srchostname'] = hostnames.get(record.src);
-                                record['dsthostname'] = hostnames.get(record.dst);
+                                if (hostnames.get(record.src) !== '<in-flight>') {
+                                    record['srchostname'] = hostnames.get(record.src);
+                                }
+                                if (hostnames.get(record.dst) !== '<in-flight>') {
+                                    record['dsthostname'] = hostnames.get(record.dst);
+                                }
                                 return record;
                             });
 
