@@ -53,7 +53,7 @@ VERSIONBIN=	${LOCALBASE}/sbin/opnsense-version
 _CORE_ABI!=	${VERSIONBIN} -a
 CORE_ABI?=	${_CORE_ABI}
 .else
-CORE_ABI?=	${CORE_ABIS:[0]}
+CORE_ABI?=	${CORE_ABIS:[1]}
 VERSIONBIN=	true
 .endif
 
