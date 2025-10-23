@@ -41,7 +41,8 @@
                     options: {
                         formatters: {
                             'listDisplay': function(column, row) {
-                                return row.source_nets.split(',').join("<br/>");
+                                let id = `%${column.id}` in row ? `%${column.id}` : column.id;
+                                return row[id].split(',').join("<br/>");
                             }
                         }
                     }

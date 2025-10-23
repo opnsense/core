@@ -15,6 +15,9 @@
         <label>Type of DNSBL</label>
         <type>select_multiple</type>
         <help>Select which kind of DNSBL you want to use.</help>
+        <grid_view>
+            <formatter>listDisplay</formatter>
+        </grid_view>
     </field>
     <field>
         <id>blocklist.lists</id>
