@@ -34,7 +34,7 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>List of domains to allow. You can use regular expressions.</help>
+        <help>List of domains to allow. You can use regular expressions. This allow list only applies to blocklist matches on items in this policy.</help>
     </field>
     <field>
         <id>blocklist.blocklists</id>
@@ -61,7 +61,7 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>Source networks to apply policy on. Examples are 192.168.1.0/24 or 192.168.1.1. Leave empty to apply on everything</help>
+        <help>Source networks to apply policy on. Examples are 192.168.1.0/24 or 192.168.1.1. Leave empty to apply on everything. All specified networks should use the same protocol family and have equal sizes to avoid priority issues. </help>
         <grid_view>
             <formatter>listDisplay</formatter>
         </grid_view>

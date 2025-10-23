@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2023 Deciso B.V.
+    Copyright (c) 2023-2025 Deciso B.V.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -35,26 +35,11 @@ import importlib
 import sys
 import fcntl
 import ujson
+import uuid
 import time
 from configparser import ConfigParser
-from ipaddress import ip_network, collapse_addresses
-from functools import lru_cache
+from ipaddress import ip_network
 
-@lru_cache(maxsize=None)
-def _coverage_weight_from_nets(nets_tuple):
-    if not nets_tuple:
-        return float('inf')
-    return sum(n.num_addresses for n in collapse_addresses(nets_tuple))
-
-@lru_cache(maxsize=None)
-def _parse_net(cidr):
-    # Parse a single CIDR once
-    return ip_network(cidr, strict=False)
-
-@lru_cache(maxsize=None)
-def _nets_from_tuple(cidr_tuple):
-    # Convert a tuple of CIDRs to a tuple of ip_networks
-    return tuple(_parse_net(c) for c in cidr_tuple)
 
 class BaseBlocklistHandler:
     def __init__(self, config=None):
@@ -62,6 +47,8 @@ class BaseBlocklistHandler:
         self.cnf = None
         self.cnf_indexed = None
         self.priority = 0
+        # XXX: remove when plugins are refactored
+        self._compat_id = str(uuid.uuid4())
 
         self.cur_bl_location = '/var/unbound/data/dnsbl.json'
 
@@ -72,27 +59,32 @@ class BaseBlocklistHandler:
 
         self._load_config()
 
-    def get_policies(self, start_idx):
+    def get_policies(self):
         """
         Output configuration exposed to Unbound, start_idx is used by the derived class
         to link a domain to a running policy.
         """
         if hasattr(self, "get_config") and callable(getattr(self, "get_config")):
-            self.idx = start_idx
-            return [self.get_config()]
+            # static config, address and rcode can't be retrieved reliably after migration
+            cfg = {
+                'source_nets': [],
+                'address': '0.0.0.0',
+                'rcode': 'NOERROR',
+                'description': 'compat',
+                'id': self._compat_id
+            }
+            return [cfg]
 
-    def get_blocklists(self):
+    def blocklists_iter(self):
         """
         Overridden by derived classes to produce a formatted blocklist. Returns an array
         of dictionaries with domains as keys and a dictionary of metadata as values.
         """
         # backwards compat
         if hasattr(self, "get_blocklist") and callable(getattr(self, "get_blocklist")):
-            bl = self.get_blocklist()
-            for key in bl:
-                bl[key]['idx'] = self.idx
-            return [bl]
-        
+            for domain, cnf in self.get_blocklist().items():
+                yield domain, self._compat_id, cnf
+
     def get_passlist_patterns(self):
         # unused, should now be returned in a 'passlist' property in get_policies()
         return []
@@ -153,52 +145,66 @@ class BlocklistParser:
         self.startup_time = time.time()
 
     def update_blocklist(self):
-        cfg = {}
-        merged = {}
-        blocklists = []
+        merged_result = {
+            'data': {},
+            'config': {
+                'general': {
+                    'has_wildcards': False
+                }
+            }
+        }
+        # collect data from all handlers
+        policies = {}
+        blocklists = {}
+        for hidx, handler in enumerate(self.handlers):
+            for policy in handler.get_policies():
+                policies[policy['id']] = policy.copy()
+                if policy['source_nets']:
+                    # networks should be equally sized to use them properly when determining prioritization
+                    # the api validates these
+                    prio = max([ip_network(src).num_addresses for src in policy['source_nets']])
+                else:
+                    # without network specification, choose the highest network (least important)
+                    prio = ip_network('0::0/0').num_addresses
+                # persist sort criteria, network prio and handler index
+                policies[policy['id']]['prio'] = prio
+                policies[policy['id']]['hidx'] = hidx
+            # blocklist items per domain and policy
+            for domain, policy, cnf in handler.blocklists_iter():
+                if domain not in blocklists:
+                    blocklists[domain] = {}
+                if policy not in blocklists[domain]:
+                    blocklists[domain][policy] = []
+                blocklists[domain][policy].append(cnf)
 
-        idx = 0
-        for handler in self.handlers:
-            tmp = {}
-            policies = handler.get_policies(idx)
-            for i, policy in enumerate(policies, start=idx):
-                tmp[i] = policy
-            if tmp:
-                idx += len(policies)
-                cfg = tmp | cfg
-            
-            for blocklist in handler.get_blocklists():
-                blocklists.append(blocklist)
+        # sort policies by priority (smallest net first)
+        policies = dict(sorted(policies.items(), key=lambda x: (x[1]['prio'], x[1]['hidx'])))
 
-        cfg = dict(sorted(cfg.items(), key=lambda kv: int(kv[0])))
-
-        merged['data'] = self._merge_items_with_config(blocklists, cfg)
-        merged['config'] = cfg
-        merged['config']['general'] = {}
-
-        # check wildcard usage
-        found = False
-        for metadata_list in merged['data'].values():
-            for meta in metadata_list:
-                if meta.get('wildcard'):
-                    merged['config']['general']['has_wildcards'] = True
-                    found = True
-                    break
-            if found:
-                break
-
+        # build domain list sorted by policy priority
+        data = {}
+        for domain in blocklists:
+            data[domain] = []
+            for policy in policies:
+                if policy in blocklists[domain]:
+                    for item in blocklists[domain][policy]:
+                        item['idx'] = policy
+                        data[domain].append(item)
+                        if not merged_result['config']['general']['has_wildcards'] and item.get('wildcard'):
+                            merged_result['config']['general']['has_wildcards'] = True
+        merged_result['data'] = data
+        merged_result['config'].update(policies)
         # write out results
         if not os.path.exists('/var/unbound/data'):
             os.makedirs('/var/unbound/data')
         with open("/var/unbound/data/dnsbl.json.new", 'w') as unbound_outf:
-            if merged['data']:
-                ujson.dump(merged, unbound_outf)
+            if merged_result['data']:
+                ujson.dump(merged_result, unbound_outf)
 
         # atomically replace the current dnsbl so unbound can pick up on it
         os.replace('/var/unbound/data/dnsbl.json.new', '/var/unbound/data/dnsbl.json')
 
         syslog.syslog(syslog.LOG_NOTICE, "blocklist parsing done in %0.2f seconds (%d records)" % (
-            time.time() - self.startup_time, len(merged['data'])
+            time.time() - self.startup_time, len(merged_result['data'])
         ))
 
     def _register_handlers(self):
@@ -214,79 +220,3 @@ class BlocklistParser:
                     handlers.append(cls())
         handlers.sort(key=lambda h: h.priority)
         self.handlers = handlers
-
-    def _nets(self, cidr_list):
-        if not cidr_list:
-            return ()
-        # ensure stable, hashable key for caching
-        return _nets_from_tuple(tuple(cidr_list))
-
-    def _coverage_weight(self, nets):
-        return _coverage_weight_from_nets(tuple(nets))
-
-    def _any_overlap(self, nets_a, nets_b):
-        if not nets_a or not nets_b:
-            return True
-        return any(a.overlaps(b) for a in nets_a for b in nets_b)
-
-    def _pairwise_disjoint(self, candidates):
-        """
-        Check that no two different candidates overlap.
-        candidates is a list of tuples: (idx, nets, meta, coverage, pass_penalty)
-        """
-        events = {4: [], 6: []}
-        for owner, (_, nets, *_) in enumerate(candidates):
-            for n in nets:
-                v = n.version
-                events[v].append((int(n.network_address), 1, owner))
-                events[v].append((int(n.broadcast_address), 0, owner))
-
-        for v in (4, 6):
-            if not events[v]:
-                continue
-            events[v].sort(key=lambda x: (x[0], -x[1]))
-            active = {}
-            for _, is_start, owner in events[v]:
-                if is_start:
-                    if active and owner not in active:
-                        return False
-                    active[owner] = active.get(owner, 0) + 1
-                else:
-                    cnt = active.get(owner, 0) - 1
-                    if cnt <= 0: active.pop(owner, None)
-                    else: active[owner] = cnt
-        return True
-
-    def _merge_items_with_config(self, items, config):
-        per_key = {}
-
-        # Cache per idx so we don't recompute nets/coverage/pass_penalty repeatedly
-        idx_cache = {}  # idx -> (nets_tuple, coverage, pass_penalty)
-
-        for d in items:
-            for key, meta in d.items():
-                idx = meta['idx']
-                if idx not in idx_cache:
-                    cfg = config[idx]
-                    nets = self._nets(cfg.get('source_nets', []))
-                    coverage = self._coverage_weight(nets)
-                    pl = cfg.get('passlist', '')
-                    pass_penalty = 0 if (pl and pl != '.*localhost$') else 1
-                    idx_cache[idx] = (nets, coverage, pass_penalty)
-
-                nets, coverage, pass_penalty = idx_cache[idx]
-                per_key.setdefault(key, []).append((idx, nets, meta, coverage, pass_penalty))
-
-        merged = {}
-        for key, cands in per_key.items():
-            # Sort: primary coverage asc, then pass_penalty asc, then idx asc
-            ordered = sorted(cands, key=lambda t: (t[3], t[4], t[0]))
-
-            if self._pairwise_disjoint(ordered):
-                # Subnets do not overlap
-                merged[key] = [({**meta, 'idx': idx}) for idx, _, meta, *_ in ordered]
-                continue
-
-            merged[key] = [dict(meta) for idx, _, meta, *_ in ordered]
-
-        return merged
