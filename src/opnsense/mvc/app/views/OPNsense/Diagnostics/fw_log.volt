@@ -526,8 +526,13 @@
                         if (!hostnames.get(record.dst)) hostnames.set(record.dst, null);
 
                         // make sure the hostname key exists
-                        record['srchostname'] = hostnames.get(record.src) || '<span class="fa fa-spinner fa-pulse"></span>';
-                        record['dsthostname'] = hostnames.get(record.dst) || '<span class="fa fa-spinner fa-pulse"></span>';
+                        ['src', 'dst'].forEach(addr => {
+                            if (hostnames.get(record[addr]) !== '<in-flight>') {
+                                record[`${addr}hostname`] = hostnames.get(record.src) || '<span class="fa fa-spinner fa-pulse"></span>';
+                            } else {
+                                record[`${addr}hostname`] = '<span class="fa fa-spinner fa-pulse"></span>';
+                            }
+                        });
                     }
 
                     resolve(data);
@@ -948,44 +953,35 @@
                             });
                         }
 
+                        const updateRecords = () => {
+                            lookup().then(() => {
+                                buffer.map((record) => {
+                                    if (hostnames.get(record.src) !== '<in-flight>') {
+                                        record['srchostname'] = hostnames.get(record.src);
+                                    }
+                                    if (hostnames.get(record.dst) !== '<in-flight>') {
+                                        record['dsthostname'] = hostnames.get(record.dst);
+                                    }
+                                    return record;
+                                });
+
+                                filterVM.reset();
+                            });
+                        }
+
                         bufferDataUnsubscribe = buffer.subscribe((event) => {
                             // register to active data feed (all data), apply hostnames as they come
                             if (event.type === "push" || event.type === "pushMany") {
                                 let records = Array.isArray(event.data) ? event.data : [event.data];
 
                                 filterVM.updateTable(records);
-                                lookup().then(() => {
-                                    records = records.map((record) => {
-                                        if (hostnames.get(record.src) !== '<in-flight>') {
-                                            record['srchostname'] = hostnames.get(record.src);
-                                        }
-                                        if (hostnames.get(record.dst) !== '<in-flight>') {
-                                            record['dsthostname'] = hostnames.get(record.dst);
-                                        }
-                                        return record;
-                                    });
-
-                                    filterVM.updateTable(records);
-                                })
+                                updateRecords();
                             }
                         });
 
                         // initial hostname lookup
                         tableWrapper.bootgrid('setColumns', ['srchostname', 'dsthostname']);
-                        lookup().then(() => {
-                             // operate on entire buffer
-                            buffer.map((record) => {
-                                if (hostnames.get(record.src) !== '<in-flight>') {
-                                    record['srchostname'] = hostnames.get(record.src);
-                                }
-                                if (hostnames.get(record.dst) !== '<in-flight>') {
-                                    record['dsthostname'] = hostnames.get(record.dst);
-                                }
-                                return record;
-                            });
-
-                            filterVM.reset();
-                        });
+                        updateRecords();
                     } else {
                         if (bufferDataUnsubscribe !== null) {
                             bufferDataUnsubscribe();
