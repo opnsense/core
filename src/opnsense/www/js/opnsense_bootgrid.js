@@ -969,7 +969,7 @@ class UIBootgrid {
                         commands[k].method.bind(this)(event);
                     });
                 }
-            } else if ($(".command-" + k).length > 0) {
+            } else if ($selector === null && $(".command-" + k).length > 0) {
                 console.log("not all requirements met to link " + k);
             }
         });
