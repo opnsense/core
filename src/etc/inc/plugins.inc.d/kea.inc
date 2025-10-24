@@ -146,6 +146,9 @@ function kea_configure_do($verbose = false)
 {
     $keaDhcpv4 = new \OPNsense\Kea\KeaDhcpv4();
     $keaDhcpv6 = new \OPNsense\Kea\KeaDhcpv6();
+
+    killbypid('/var/run/kea-pd-routes.pid');
+
     if ($keaDhcpv4->isEnabled() || $keaDhcpv6->isEnabled()) {
         service_log('Sync KEA DHCP config...', $verbose);
         if ($keaDhcpv4->isEnabled() && $keaDhcpv4->general->manual_config->isEmpty()) {
@@ -158,15 +161,12 @@ function kea_configure_do($verbose = false)
         }
         (new \OPNsense\Kea\KeaCtrlAgent())->generateConfig();
         if ($keaDhcpv6->isEnabled()) {
-            killbypid('/var/run/kea-pd-routes.pid');
             mwexecf(
                 '/usr/sbin/daemon -m0 -f -p %s %s',
                 ['/var/run/kea-pd-routes.pid', '/usr/local/opnsense/scripts/dhcp/prefixeskea.sh']
             );
         }
         service_log("done.\n", $verbose);
-    } else {
-        killbypid('/var/run/kea-pd-routes.pid');
     }
 }
 
