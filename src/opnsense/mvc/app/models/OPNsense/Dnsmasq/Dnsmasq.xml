@@ -269,7 +269,7 @@
             <option6 type="JsonKeyValueStoreField">
                 <ConfigdPopulateAct>dnsmasq list dhcp_options6</ConfigdPopulateAct>
                 <OptionValues>
-                     <!-- mock option groups returned by JSON -->
+                    <!-- mock option groups returned by JSON -->
                     <optgroup1>Common</optgroup1>
                     <optgroup2>Assigned</optgroup2>
                     <optgroup3>Unassigned</optgroup3>
