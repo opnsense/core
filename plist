@@ -1239,6 +1239,8 @@
 /usr/local/opnsense/scripts/ipsec/saddelete.py
 /usr/local/opnsense/scripts/ipsec/spddelete.py
 /usr/local/opnsense/scripts/ipsec/updown_event.py
+/usr/local/opnsense/scripts/kea/prefixes.php
+/usr/local/opnsense/scripts/kea/prefixes.sh
 /usr/local/opnsense/scripts/monit/carp_status.php
 /usr/local/opnsense/scripts/monit/gateway_alert.php
 /usr/local/opnsense/scripts/monit/setup.sh
