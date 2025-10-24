@@ -115,7 +115,7 @@ PKG_REMOTE=$(${PKG} rquery -r "${product_repo}" %v pkg)
 # version mismatches or seems unfetchable
 if [ -z "${PKG_LOCAL}" ] || [ -z "${PKG_REMOTE}" ] || \
     [ "${PKG_LOCAL}" != "${PKG_REMOTE}" ]; then
-	output_txt "Updating package manager from version '${PKG_LOCAL}' to '${PKG_REMOTE}'"
+	output_txt "Upgrading package manager from version '${PKG_LOCAL}' to '${PKG_REMOTE}'"
 	output_cmd ${PKG} upgrade -r "${product_repo}" -y pkg
 fi
 

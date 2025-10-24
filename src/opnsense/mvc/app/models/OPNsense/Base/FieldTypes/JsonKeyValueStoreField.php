@@ -178,7 +178,24 @@ class JsonKeyValueStoreField extends BaseListField
         }
         if ($data != null) {
             static::$internalStaticContent[$cachename] = $data;
-            $this->internalOptionList = $data;
+
+            // Support optgroups
+            $this->internalOptionList = [];
+            foreach ($data as $key => $value) {
+                if (!is_array($value)) {
+                    // flat form: { "id": "Label" }
+                    $this->internalOptionList[$key] = $value;
+                } else {
+                    // grouped form: { "Group": { "id": "Label", ... } }
+                    foreach ($value as $subkey => $subval) {
+                        $this->internalOptionList[$subkey] = [
+                            'optgroup' => gettext($key),
+                            'value' => $subval,
+                        ];
+                    }
+                }
+            }
+
             if ($this->internalSelectAll && $this->internalValue == "") {
                 $this->internalValue = implode(',', array_keys($this->internalOptionList));
             }
