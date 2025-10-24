@@ -40,42 +40,44 @@ if (!file_exists($leases_file)) {
 
 $duid_arr = [];
 $now = time();
-if (($fh = fopen($leases_file, 'r')) !== false) {
-    $header = fgetcsv($fh);
+$fh = new SplFileObject($leases_file, 'r');
+$header = $fh->fgetcsv();
 
-    while (($row = fgetcsv($fh)) !== false) {
-        $lease = @array_combine($header, $row);
-        if (!isset($lease['duid']) || !isset($lease['lease_type']) || !isset($lease['address']) ||
-            $lease['duid'] === '' || $lease['lease_type'] === '' || $lease['address'] === '') {
-            continue;
-        }
-
-        $type = trim($lease['lease_type']);
-        $prefix_len = (int)$lease['prefix_len'];
-        $expire = (int)$lease['expire'];
-        $duid = strtolower(trim($lease['duid']));
-        $address = trim($lease['address']);
-
-        /* Skip expired leases */
-        if ($expire <= $now) {
-            continue;
-        }
-
-        if (!isset($duid_arr[$duid])) {
-            $duid_arr[$duid] = [];
-        }
-
-        /* IA_NA: type 0, prefix_len 128 - used as gateway */
-        if ($type === '0' && $prefix_len === 128) {
-            $duid_arr[$duid]['address'] = $address;
-        }
-        /* IA_PD: type 2, prefix_len <= 64 - the delegated prefix */
-        elseif ($type === '2' && $prefix_len <= 64) {
-            $prefix = "{$address}/{$prefix_len}";
-            $duid_arr[$duid]['prefix'][] = $prefix;
-        }
+while (!$fh->eof() && ($row = $fh->fgetcsv()) !== false) {
+    if ($row === [null] || count($row) < count($header)) {
+        continue;
     }
-    fclose($fh);
+
+    $lease = @array_combine($header, $row);
+    if (!isset($lease['duid']) || !isset($lease['lease_type']) || !isset($lease['address']) ||
+        $lease['duid'] === '' || $lease['lease_type'] === '' || $lease['address'] === '') {
+        continue;
+    }
+
+    $type = trim($lease['lease_type']);
+    $prefix_len = (int)$lease['prefix_len'];
+    $expire = (int)$lease['expire'];
+    $duid = strtolower(trim($lease['duid']));
+    $address = trim($lease['address']);
+
+    /* Skip expired leases */
+    if ($expire <= $now) {
+        continue;
+    }
+
+    if (!isset($duid_arr[$duid])) {
+        $duid_arr[$duid] = [];
+    }
+
+    /* IA_NA: type 0, prefix_len 128 - used as gateway */
+    if ($type === '0' && $prefix_len === 128) {
+        $duid_arr[$duid]['address'] = $address;
+    }
+    /* IA_PD: type 2, prefix_len <= 64 - the delegated prefix */
+    elseif ($type === '2' && $prefix_len <= 64) {
+        $prefix = "{$address}/{$prefix_len}";
+        $duid_arr[$duid]['prefix'][] = $prefix;
+    }
 }
 
 $routes = [];
@@ -90,14 +92,8 @@ foreach ($duid_arr as $entry) {
     }
 }
 
-/* expire all first */
-foreach (array_keys($routes) as $prefix) {
-    mwexecf('/sbin/route delete -inet6 %s', [$prefix], true);
-}
-
-/* active route apply */
+/* delete and re-add routes */
 foreach ($routes as $prefix => $address) {
-    if (!empty($address)) {
-        mwexecf('/sbin/route add -inet6 %s %s', [$prefix, $address]);
-    }
+    mwexecf('/sbin/route delete -inet6 %s', [$prefix], true);
+    mwexecf('/sbin/route add -inet6 %s %s', [$prefix, $address]);
 }
