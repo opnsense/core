@@ -215,6 +215,10 @@ class FilterController extends FilterBaseController
         $ORG_REQ = $_REQUEST;
         unset($_REQUEST['rowCount']);
         unset($_REQUEST['current']);
+        if ($show_all) {
+            /* searchBase should not filter here since we later search for IP addresses in aliases */
+            unset($_REQUEST['searchPhrase']);
+        }
         $filterset = $this->searchBase("rules.rule", null, "sort_order", $filter_funct_mvc)['rows'];
 
         /* only fetch internal and legacy rules when 'show_all' is set */
