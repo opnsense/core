@@ -163,7 +163,7 @@ function kea_configure_do($verbose = false)
         if ($keaDhcpv6->isEnabled()) {
             mwexecf(
                 '/usr/sbin/daemon -m0 -f -p %s %s',
-                ['/var/run/kea-pd-routes.pid', '/usr/local/opnsense/scripts/dhcp/prefixeskea.sh']
+                ['/var/run/kea-pd-routes.pid', '/usr/local/opnsense/scripts/kea/prefixes.sh']
             );
         }
         service_log("done.\n", $verbose);
