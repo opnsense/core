@@ -184,13 +184,10 @@ function setFormData(parent,data) {
                                 optgroups[optgroup].push(opt);
                             });
                         }
-                        // Render ungrouped items first (so None selection is first)
-                        if (optgroups[''] !== undefined) {
-                            targetNode.append(optgroups['']);
-                        }
-                        // Then render all other optgroups
                         for (const [group, items] of Object.entries(optgroups)) {
-                            if (group !== '') {
+                            if (group == '' && optgroups.length <= 1) {
+                                targetNode.append(items);
+                            } else {
                                 targetNode.append($("<optgroup/>").attr('label', group).append(items));
                             }
                         }

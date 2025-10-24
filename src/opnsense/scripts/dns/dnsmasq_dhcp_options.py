@@ -41,7 +41,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("mode", nargs="?", default="dhcp", choices=["dhcp", "dhcp6"])
 args = parser.parse_args()
 
-recommended = {}
+common = {}
 assigned = {}
 unassigned = {}
 
@@ -75,13 +75,14 @@ for line in sp.stdout.splitlines():
     if len(parts) == 2 and parts[0].isdigit():
         key = parts[0]
         val = f"{parts[1]} [{key}]"
-        recommended[key] = val
+        # Options directly supported by dnsmasq (help output)
+        common[key] = val
         # Deduplicate from other groups
         assigned.pop(key, None)
         unassigned.pop(key, None)
 
 print(json.dumps({
-    "Common": recommended,        # Options directly supported by dnsmasq (help output)
+    "Common": common,
     "Assigned": assigned,
     "Unassigned": unassigned
 }))

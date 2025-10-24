@@ -189,8 +189,8 @@ class JsonKeyValueStoreField extends BaseListField
                     // grouped form: { "Group": { "id": "Label", ... } }
                     foreach ($value as $subkey => $subval) {
                         $this->internalOptionList[$subkey] = [
+                            'optgroup' => gettext($key),
                             'value' => $subval,
-                            'optgroup' => $key
                         ];
                     }
                 }
