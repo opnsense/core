@@ -740,7 +740,7 @@ class UIBootgrid {
                 // column header is structured a little different, get the right element first
                 $el = $el.find('> .tabulator-col-content > .tabulator-col-title-holder > .tabulator-col-title');
             }
-            if ($el[0].offsetWidth < $el[0].scrollWidth && !$el.attr('title') && $el.children().length == 0){
+            if ($el[0].offsetWidth < $el[0].scrollWidth && !$el.attr('title') && $el.children(':not(br)').length == 0){
                 $el.attr('title', $el.text()).tooltip({container: 'body', trigger: 'hover'}).tooltip('show');
             }
         }

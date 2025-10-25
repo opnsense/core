@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2020-2023 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2020-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -29,5 +29,4 @@
 from blocklists import BlocklistParser
 
 if __name__ == '__main__':
-    bl = BlocklistParser()
-    bl.update_blocklist()
+    BlocklistParser().update_blocklist()
