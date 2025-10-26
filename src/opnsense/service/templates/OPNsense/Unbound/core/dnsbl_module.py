@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2022-2023 Deciso B.V.
+    Copyright (c) 2022-2025 Deciso B.V.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -161,11 +161,11 @@ class Logger:
     """
     Handles logging by creating a fifo and sending data to a listening process (if there is one)
     """
-    def __init__(self):
-        self._pipe_name = '/data/dns_logger'
+    def __init__(self, path='/data'):
+        self._pipe_name = '%s/dns_logger' % path.rstrip('/')
         self._pipe_fd = None
         self._pipe_timer = 0
-        self.stats_enabled = os.path.exists('/data/stats')
+        self.stats_enabled = os.path.exists('%s/stats' % path.rstrip('/'))
         if self.stats_enabled:
             self._lock = Lock()
             self._pipe_buffer = deque(maxlen=100000) # buffer to hold qdata as long as a backend is not present
@@ -238,13 +238,14 @@ class DNSBL:
     DNSBL implementation. Handles dynamically updating the blocklist as well as matching policies
     on incoming queries.
     """
-    def __init__(self, dnsbl_path='/data/dnsbl.json', size_file='/data/dnsbl.size'):
+    def __init__(self, context, dnsbl_path='/data/dnsbl.json', size_file='/data/dnsbl.size'):
         self.dnsbl_path = dnsbl_path
         self.size_file = size_file
         self.dnsbl_mtime_cache = 0
         self.dnsbl_update_time = 0
         self.dnsbl_available = False
         self.dnsbl = None
+        self._context = context
 
         self._update_dnsbl()
 
@@ -271,8 +272,8 @@ class DNSBL:
                 log_info('dnsbl_module: blocklist loaded. length is %d' % len(self.dnsbl['data']))
                 with open(self.size_file, 'w') as sfile:
                     sfile.write(str(len(self.dnsbl['data'])))
-                if mod_env and type(self.dnsbl.get('config')) is dict:
-                    mod_env['context'].set_config(self.dnsbl['config'])
+                if self._context and type(self.dnsbl.get('config')) is dict:
+                    self._context.set_config(self.dnsbl['config'])
             except (json.decoder.JSONDecodeError, KeyError) as e:
                 if not self.dnsbl:
                     log_err("dnsbl_module: unable to bootstrap blocklist, this is likely due to a corrupted \
@@ -309,8 +310,6 @@ class DNSBL:
         if not query.type in ('A', 'AAAA', 'CNAME', 'HTTPS'):
             return False
 
-        ctx = mod_env['context']
-
         domain = query.domain.rstrip('.').lower()
         sub = domain
         match = None
@@ -320,11 +319,11 @@ class DNSBL:
                 is_full_domain = sub == domain
                 for meta in meta_list:
                     if (is_full_domain) or (not is_full_domain and meta.get('wildcard')):
-                        policy = ctx.get_config(str(meta.get('idx')))
+                        policy = self._context.get_config(str(meta.get('idx')))
                         if policy:
                             if self._in_network(query.client, policy.get('source_nets')):
                                 r = policy.get('pass_regex')
-                                if r and (r.match(sub) or (orig and r.match(orig))):
+                                if r and (r.match(domain) or (orig and r.match(orig))):
                                     # if "orig" is defined, we know we are matching a CNAME.
                                     # the CNAME may be blocked, while the original query is explicitly whitelisted.
                                     # In these cases, the whitelisting should have priority since we don't expect
@@ -339,7 +338,7 @@ class DNSBL:
                                 qstate.no_cache_store = 1
                             return False
 
-            if '.' not in sub or not mod_env['context'].has_wildcards:
+            if '.' not in sub or not self._context.has_wildcards:
                 # either we have traversed all subdomains or there are no wildcards
                 # in the dataset, in which case traversal is not necessary
                 break
@@ -453,7 +452,7 @@ def init_standard(id, env):
     ctx = ModuleContext(env)
     mod_env['context'] = ctx
     mod_env['logger'] = Logger()
-    mod_env['dnsbl'] = DNSBL()
+    mod_env['dnsbl'] = DNSBL(ctx)
 
     if mod_env['logger'].stats_enabled:
         if not register_inplace_cb_reply_cache(cache_cb, env, id):
@@ -652,7 +651,7 @@ if __name__ == '__main__' and test_mode:
     # create an empty global context
     mod_env['context'] = ModuleContext(None)
 
-    dnsbl = DNSBL(dnsbl_path=inputargs.dnsbl_path, size_file='/dev/null')
+    dnsbl = DNSBL(mod_env['context'], dnsbl_path=inputargs.dnsbl_path, size_file='/dev/null')
     mod_env['context'].set_config(dnsbl.dnsbl['config'])
     match = dnsbl.policy_match(
         Query(
