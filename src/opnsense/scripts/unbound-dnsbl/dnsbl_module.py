@@ -36,8 +36,11 @@
 import time
 import dns
 import dns.name
+import unboundmodule
+sys.path.insert(0, "/unbound-dnsbl/")
 from lib import Query, ModuleContext
 from lib.dnsbl import DNSBL
+from lib.log import Logger
 from lib.utils import obj_path_exists
 
 

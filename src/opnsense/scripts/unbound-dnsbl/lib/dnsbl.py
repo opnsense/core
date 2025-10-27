@@ -29,9 +29,10 @@ import ipaddress
 import json
 import traceback
 from . import Query
+
 try:
     # create log_info(), log_err() function when not started within unbound
-    import unboundmodule
+    from unboundmodule import log_info, log_err
 except ImportError:
     def log_info(msg):
         return

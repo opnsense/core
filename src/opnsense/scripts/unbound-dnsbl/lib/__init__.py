@@ -31,7 +31,7 @@ RCODE_NOERROR = 0
 RCODE_NXDOMAIN = 3
 try:
     # create log_info(), log_err() function when not started within unbound
-    import unboundmodule
+    from unboundmodule import log_info, log_err
 except ImportError:
     def log_info(msg):
         return

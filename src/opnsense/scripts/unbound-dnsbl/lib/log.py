@@ -33,7 +33,7 @@ from . import Query
 
 try:
     # create log_info() function when not started within unbound
-    import unboundmodule
+    from unboundmodule import log_info
 except ImportError:
     def log_info(msg):
         return
