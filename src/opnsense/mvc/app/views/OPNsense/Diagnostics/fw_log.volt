@@ -234,7 +234,7 @@
          * This model also maintains the main live log
          * table.
          */
-        constructor(bucket, table = null, bufferSize = 100) {
+        constructor(bucket, table = null, bufferSize = 25) {
             this.bufferSize = bufferSize;
             this.bucket = bucket;
             this.table = table;
@@ -524,8 +524,8 @@
                         if (!hostnames.get(record.dst)) hostnames.set(record.dst, null);
 
                         // make sure the hostname key exists
-                        record['srchostname'] = hostnames.get(record.src) || '<span class="fa fa-spinner fa-pulse"></span>';
-                        record['dsthostname'] = hostnames.get(record.dst) || '<span class="fa fa-spinner fa-pulse"></span>';
+                        record['srchostname'] = hostnames.get(record.src);
+                        record['dsthostname'] = hostnames.get(record.dst);
                     }
 
                     resolve(data);
