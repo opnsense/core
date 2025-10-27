@@ -234,7 +234,7 @@
          * This model also maintains the main live log
          * table.
          */
-        constructor(bucket, table = null, bufferSize = 100) {
+        constructor(bucket, table = null, bufferSize = 25) {
             this.bufferSize = bufferSize;
             this.bucket = bucket;
             this.table = table;

@@ -125,6 +125,7 @@ class UIBootgrid {
         this.rememberedGroupKeys = new Set(JSON.parse(localStorage.getItem(this.groupStorageKey) || '[]'));
         this.treeStorageKey = `tabulator-${this.persistenceID}-openTree`;
         this.rememberedTreeIds = new Set(JSON.parse(localStorage.getItem(this.treeStorageKey) || '[]'));
+        this.isVisible = false;
 
         // wrapper-specific options
         this.options = {
@@ -709,10 +710,14 @@ class UIBootgrid {
             // since tabulator needs the page dimensions
             const intersectObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
-                  if (entry.isIntersecting) {
-                    this.table.redraw(true);
-                    this._onDataProcessed();
-                  }
+                    const isVisible = entry.isIntersecting;
+                    if (isVisible !== this.isVisible) {
+                        this.isVisible = isVisible;
+                        if (isVisible) {
+                            this.table.redraw(true);
+                            this._onDataProcessed();
+                        }
+                    }
                 });
             });
 
