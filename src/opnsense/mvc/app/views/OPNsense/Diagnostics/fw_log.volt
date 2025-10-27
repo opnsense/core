@@ -524,8 +524,8 @@
                         if (!hostnames.get(record.dst)) hostnames.set(record.dst, null);
 
                         // make sure the hostname key exists
-                        record['srchostname'] = hostnames.get(record.src) || '<span class="fa fa-spinner fa-pulse"></span>';
-                        record['dsthostname'] = hostnames.get(record.dst) || '<span class="fa fa-spinner fa-pulse"></span>';
+                        record['srchostname'] = hostnames.get(record.src);
+                        record['dsthostname'] = hostnames.get(record.dst);
                     }
 
                     resolve(data);
