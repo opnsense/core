@@ -31,6 +31,7 @@ import glob
 import sys
 import subprocess
 import select
+from dateutil.parser import isoparse
 from logformats import FormatContainer, BaseLogFormat
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from log_helper import reverse_log_reader
@@ -83,7 +84,7 @@ class LogMatcher:
             finally:
                 p.terminate()
 
-    def match_records(self):
+    def match_records(self, timestamp=None):
         for filename in self.log_filenames:
             if os.path.exists(filename):
                 format_container = FormatContainer(filename)
@@ -93,6 +94,13 @@ class LogMatcher:
                         record = self.parse_line(rec['line'], format_container)
                         if len(self.severity) == 0 or record['severity'] is None or record['severity'] in self.severity:
                             yield record
+
+                    # exit when data found is older than offered timestamp
+                    try:
+                        if timestamp and isoparse(record['timestamp']).timestamp() < timestamp:
+                            return
+                    except ValueError:
+                        pass
 
     def parse_line(self, line, format_container):
         frmt = format_container.get_format(line)

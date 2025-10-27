@@ -60,7 +60,7 @@ if __name__ == '__main__':
         limit = int(inputargs.limit) if inputargs.limit.isdigit()  else 0
         offset = int(inputargs.offset) if inputargs.offset.isdigit() else 0
         log_matcher = LogMatcher(inputargs.filter, inputargs.filename, inputargs.module, inputargs.severity)
-        for record in log_matcher.match_records():
+        for record in log_matcher.match_records(valid_from):
             result['total_rows'] += 1
             if (len(result['rows']) < limit or limit == 0) and (result['total_rows'] >= offset):
                 if inputargs.output == 'json':
@@ -70,12 +70,6 @@ if __name__ == '__main__':
             if limit > 0 and result['total_rows'] > offset + limit:
                 # do not fetch data until end of file...
                 break
-            # exit when data found is older than provided valid_from
-            try:
-                if valid_from and record.get('timestamp') and isoparse(record['timestamp']).timestamp() < valid_from:
-                    break
-            except ValueError:
-                pass
 
     # output results (when json)
     if inputargs.output == 'json':
