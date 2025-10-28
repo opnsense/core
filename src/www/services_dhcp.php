@@ -397,7 +397,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
                 $previous = !empty($config['dhcpd'][$if]['failover_peerip']) ? $config['dhcpd'][$if]['failover_peerip'] : "";
                 if ($previous != $pconfig['failover_peerip']) {
-                    mwexec("/bin/rm -rf /var/dhcpd/var/db/*");
+                    mwexecf('/bin/rm -rf /var/dhcpd/var/db/*');
                 }
             }
             // save changes to config

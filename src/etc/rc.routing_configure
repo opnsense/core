@@ -42,8 +42,8 @@ $monitor_gws = $argv[2] ?? '';
 /* drop deleted routes */
 foreach (glob("/tmp/delete_route_*.todo") as $filename) {
     $network = trim(file_get_contents($filename));
-    $inet = (is_subnetv6($network) ? "-inet6" : "-inet");
-    mwexec("/sbin/route delete {$inet} " . escapeshellarg($network), true);
+    $inet = is_subnetv6($network) ? 'inet6' : 'inet';
+    mwexecf('/sbin/route delete -%s %s', [$inet, $network], true);
     unlink($filename);
 }
 

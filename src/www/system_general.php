@@ -244,13 +244,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if ($olddnsgwname != "none" && ($olddnsgwname != $thisdnsgwname || $olddnsservers[$dnscounter-1] != $pconfig[$dnsname])) {
                 // A previous DNS GW name was specified. It has now gone or changed, or the DNS server address has changed.
                 // Remove the route. Later calls will add the correct new route if needed.
-                if (is_ipaddrv4($olddnsservers[$dnscounter-1])) {
-                    mwexec("/sbin/route delete " . escapeshellarg($olddnsservers[$dnscounter-1]));
-                } else {
-                    if (is_ipaddrv6($olddnsservers[$dnscounter-1])) {
-                        mwexec("/sbin/route delete -inet6 " . escapeshellarg($olddnsservers[$dnscounter-1]));
-                    }
-                }
+                mwexecf('/sbin/route delete -%s %s' . [
+                    is_ipaddrv4($olddnsservers[$dnscounter - 1]) ? 'inet' : 'inet6',
+                    $olddnsservers[$dnscounter - 1]
+                ]);
             }
         }
 

@@ -42,7 +42,7 @@ if (flock($fp, LOCK_EX)) {
     $failed_services = array();
     foreach (glob("/usr/local/etc/rc.carp_service_status.d/*") as $filename) {
         if (is_executable($filename)) {
-            $status = mwexec($filename, true);
+            $status = mwexecf($filename, [], true);
             if ($status != 0) {
                 $failed_services[] = basename($filename);
             }
