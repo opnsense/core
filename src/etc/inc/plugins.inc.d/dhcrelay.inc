@@ -26,6 +26,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+function dhcrelay_carp_enabled()
+{
+    $model = new \OPNsense\DHCRelay\DHCRelay();
+    return (string)$model->general->enablecarp == '1';
+}
+
 function dhcrelay_configure()
 {
     return [
@@ -88,6 +94,29 @@ function dhcrelay_xmlrpc_sync()
     return $result;
 }
 
+function dhcrelay_is_carp_master($interface, $ifconfig_details)
+{
+    $device = get_real_interface($interface);
+    // Check
+    if (empty($device) || !isset($ifconfig_details[$device])) {
+        return false;
+    }
+
+    // If no CARP configured on interface, start the service
+    if (empty($ifconfig_details[$device]['carp'])) {
+        return true;
+    }
+
+    // Check all CARP instances on interfaec
+    foreach ($ifconfig_details[$device]['carp'] as $carp) {
+        if (strtolower($carp['status']) === 'master') {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function dhcrelay_configure_id($verbose = false, $id_map = null)
 {
     if (!plugins_argument_map($id_map)) {
@@ -141,6 +170,11 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
             ($family == 'inet6' && !get_interface_ipv6($interface, $ifconfig_details))
         ) {
             log_msg("dhcrelay_configure_id() found no suitable IP address for $interface($device)", LOG_WARNING);
+            continue;
+        }
+
+        if (dhcrelay_carp_enabled() && !dhcrelay_is_carp_master($interface, $ifconfig_details)) {
+            log_msg("dhcrelay_configure_id() skipping $interface($device) - not CARP MASTER", LOG_INFO);
             continue;
         }
 
