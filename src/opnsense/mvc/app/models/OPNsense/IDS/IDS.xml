@@ -294,6 +294,47 @@
                         <Multiple>Y</Multiple>
                     </custom>
                 </tls>
+                <types>
+                    <enabled type="OptionField">
+                        <OptionValues>
+                            <dns>DNS</dns>
+                            <files>Files</files>
+                            <smtp>SMTP</smtp>
+                            <dnp3>DNP3</dnp3>
+                            <ftp>FTP</ftp>
+                            <rdp>RDP</rdp>
+                            <nfs>NFS</nfs>
+                            <smb>SMB</smb>
+                            <tftp>TFTP</tftp>
+                            <ike>IKE</ike>
+                            <dcerpc>DCE-RPC</dcerpc>
+                            <krb5>Kerberos</krb5>
+                            <bittorrent-dht>BitTorrent DHT</bittorrent-dht>
+                            <snmp>SNMP</snmp>
+                            <rfb>RFB/VNC</rfb>
+                            <sip>SIP</sip>
+                            <quic>QUIC</quic>
+                            <dhcp>DHCP</dhcp>
+                            <mqtt>MQTT</mqtt>
+                            <http2>HTTP/2</http2>
+                            <pgsql>PostgreSQL</pgsql>
+                            <stats>Statistics</stats>
+                            <flow>Bi-directional Flows</flow>
+                            <netflow>Uni-directional Netflows</netflow>
+                        </OptionValues>
+                        <Multiple>Y</Multiple>
+                    </enabled>
+                    <extended type="OptionField">
+                        <OptionValues>
+                            <files>Files</files>
+                            <smtp>SMTP</smtp>
+                            <dhcp>DHCP</dhcp>
+                            <mqtt>MQTT</mqtt>
+                            <pgsql>PostgreSQL</pgsql>
+                        </OptionValues>
+                        <Multiple>Y</Multiple>
+                    </extended>
+                </types>
             </eveLog>
         </general>
     </items>
