@@ -1051,6 +1051,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         $new_config['gatewayv6'] = $pconfig['gatewayv6'];
                     }
                     break;
+                case 'linklocal':
+                    $new_config['ipaddrv6'] = 'linklocal';
+                    break;
                 case 'slaac':
                     $new_config['ipaddrv6'] = 'slaac';
                     break;
@@ -1312,6 +1315,7 @@ $types4 = $types6 = ['none' => gettext('None')];
 /* always eligible (leading) */
 $types6['staticv6'] = gettext('Static IPv6');
 $types6['dhcp6'] = gettext('DHCPv6');
+$types6['linklocal'] = gettext('Link-local');
 $types6['slaac'] = gettext('SLAAC');
 
 if (!interface_ppps_capable($a_interfaces[$if], $a_ppps)) {
