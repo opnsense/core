@@ -2397,11 +2397,18 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
                 interface_dhcpv6_configure($interface, $wancfg);
             }
             break;
+        case 'linklocal':
+            mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv -ifdisabled up', $realifv6);
+            break;
         case '6rd':
             interface_6rd_configure($interface, $wancfg, $reload || $linkup);
+            /* XXX remaining edge case with different $realifv6 */
+            mwexecf('/sbin/ifconfig %s inet6 description %s up', [$realifv6, $interface_descr]);
             break;
         case '6to4':
             interface_6to4_configure($interface, $wancfg, $reload || $linkup);
+            /* XXX remaining edge case with different $realifv6 */
+            mwexecf('/sbin/ifconfig %s inet6 description %s up', [$realifv6, $interface_descr]);
             break;
         case 'track6':
             interface_track6_configure($interface, $wancfg, $reload || $linkup);
@@ -2411,15 +2418,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
                 interface_static6_configure($interface, $wancfg);
             }
             break;
-    }
-
-    /*
-     * In most cases the IPv6 device is the same as IPv4.
-     * If not the safe spot to add a description/up is below
-     * when the interface was most likely created.
-     */
-    if ($realif != $realifv6) {
-        mwexecf('/sbin/ifconfig %s inet6 description %s up', [$realifv6, $interface_descr]);
     }
 
     interfaces_vips_configure($interface);
