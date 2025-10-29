@@ -146,6 +146,9 @@ function kea_configure_do($verbose = false)
 {
     $keaDhcpv4 = new \OPNsense\Kea\KeaDhcpv4();
     $keaDhcpv6 = new \OPNsense\Kea\KeaDhcpv6();
+
+    killbypid('/var/run/kea_prefix_watcher.pid');
+
     if ($keaDhcpv4->isEnabled() || $keaDhcpv6->isEnabled()) {
         service_log('Sync KEA DHCP config...', $verbose);
         if ($keaDhcpv4->isEnabled() && $keaDhcpv4->general->manual_config->isEmpty()) {
@@ -157,6 +160,17 @@ function kea_configure_do($verbose = false)
             $keaDhcpv6->generateConfig();
         }
         (new \OPNsense\Kea\KeaCtrlAgent())->generateConfig();
+        if ($keaDhcpv6->isEnabled()) {
+            mwexecf(
+                '/usr/sbin/daemon -f -p %s -o %s %s %s',
+                [
+                    '/var/run/kea_prefix_watcher.pid',
+                    '/var/log/kea/kea_prefix_watcher.log',
+                    '/usr/local/opnsense/scripts/kea/kea_prefix_watcher.py',
+                    '/var/db/kea/kea-leases6.csv'
+                ]
+            );
+        }
         service_log("done.\n", $verbose);
     }
 }
