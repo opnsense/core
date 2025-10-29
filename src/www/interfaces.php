@@ -844,7 +844,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['spoofmac']) && !is_macaddr($pconfig['spoofmac'])) {
             $input_errors[] = gettext("A valid MAC address must be specified.");
         }
-
+        
+        if (empty($pconfig['mtu'])){
+            $pconfig['mtu'] = 1500;
+        }
+        
         if (!empty($pconfig['mtu'])) {
             $mtu_low = 576;
             $mtu_high = 65535;
