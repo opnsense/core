@@ -69,6 +69,7 @@ done
 chmod 755 /var/lib /var/lib/php
 
 # change ownership for GUI related file access
+mkdir -p /conf/backup
 find /conf -name 'vouchers_*.db' -exec chown ${OWNER} {} \;
 find /conf/backup -name '*.xml' -exec chown ${OWNER} {} \;
 for PHPOWN in /conf /conf/config.xml /conf/backup /var/run/booting; do
