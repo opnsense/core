@@ -1,5 +1,6 @@
 #!/usr/local/bin/php
 <?php
+require_once("util.inc");
 
 /*
  * Copyright (c) 2015-2023 Franco Fichtner <franco@opnsense.org>
@@ -222,9 +223,9 @@ function recover_ports()
 {
     $actions = ['pre-install', 'post-install'];
 
-    exec('/usr/local/sbin/pkg-static query -e \'%#U > 0 || %#G > 0\' %n', $pkgs);
 
-    if ($pkgs[0] == '') {
+    $pkgs = explode("\n", shell_safe('/usr/local/sbin/pkg-static query -e \'%%#U > 0 || %%#G > 0\' %%n'));
+    if (empty($pkgs[0])) {
         return;
     }
 
@@ -233,7 +234,7 @@ function recover_ports()
     $luacount = 0;
 
     foreach ($pkgs as $pkg) {
-        $raw = exec('/usr/local/sbin/pkg-static info --raw --raw-format json-compact ' . $pkg);
+        $raw = shell_safe('/usr/local/sbin/pkg-static info --raw --raw-format json-compact %s', [$pkg]);
         $info = json_decode($raw, true);
         foreach ($actions as $action) {
             if (!empty($info['scripts'][$action])) {
@@ -271,7 +272,7 @@ function recover_base($etc_group, $etc_master_passwd, $etc_shells, $etc_ttys, $p
     ];
 
     /* make sure the temporary user does not linger */
-    exec('/usr/sbin/pw userdel installer 2> /dev/null');
+    shell_safe('/usr/sbin/pw %s %s', ['userdel', 'installer']);
 
     foreach ($partial_restore as $file => $content) {
         if (!file_exists($file) || filesize($file) === 0) {
