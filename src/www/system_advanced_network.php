@@ -38,7 +38,7 @@ function get_mac_address($ip)
 {
     $macs = [];
 
-    exec(exec_safe('/usr/sbin/arp -an | grep %s | awk \'{ print $4 }\'', $ip), $macs);
+    $macs = explode("\n", shell_safe('/usr/sbin/arp -an | grep %s | awk \'{ print $4 }\'', [$ip]));
 
     return !empty($macs[0]) ? $macs[0] : '';
 }
