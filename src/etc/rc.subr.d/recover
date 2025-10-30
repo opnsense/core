@@ -28,6 +28,8 @@
  * SUCH DAMAGE.
  */
 
+/* XXX only use native PHP functions to ensure recovery as much as possible */
+
 $etc_group = <<<EOF
 wheel:*:0:root
 daemon:*:1:
