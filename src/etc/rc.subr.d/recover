@@ -1,6 +1,5 @@
 #!/usr/local/bin/php
 <?php
-require_once("util.inc");
 
 /*
  * Copyright (c) 2015-2023 Franco Fichtner <franco@opnsense.org>
@@ -223,9 +222,10 @@ function recover_ports()
 {
     $actions = ['pre-install', 'post-install'];
 
+    /* use exec() instead of shell_safe() to avoid dependencies here */
+    exec('/usr/local/sbin/pkg-static query -e \'%#U > 0 || %#G > 0\' %n', $pkgs);
 
-    $pkgs = explode("\n", shell_safe('/usr/local/sbin/pkg-static query -e \'%%#U > 0 || %%#G > 0\' %%n'));
-    if (empty($pkgs[0])) {
+    if ($pkgs[0] == '') {
         return;
     }
 
@@ -234,7 +234,8 @@ function recover_ports()
     $luacount = 0;
 
     foreach ($pkgs as $pkg) {
-        $raw = shell_safe('/usr/local/sbin/pkg-static info --raw --raw-format json-compact %s', [$pkg]);
+        /* use exec() instead of shell_safe() to avoid dependencies here */
+        $raw = exec('/usr/local/sbin/pkg-static info --raw --raw-format json-compact ' . escapeshellarg($pkg));
         $info = json_decode($raw, true);
         foreach ($actions as $action) {
             if (!empty($info['scripts'][$action])) {
@@ -271,8 +272,8 @@ function recover_base($etc_group, $etc_master_passwd, $etc_shells, $etc_ttys, $p
         '/etc/master.passwd' => $etc_master_passwd,
     ];
 
-    /* make sure the temporary user does not linger */
-    shell_safe('/usr/sbin/pw %s %s', ['userdel', 'installer']);
+    /* make sure the temporary user does not linger, use exec() instead of shell_safe() to avoid dependencies here */
+    exec('/usr/sbin/pw userdel installer 2> /dev/null');
 
     foreach ($partial_restore as $file => $content) {
         if (!file_exists($file) || filesize($file) === 0) {
