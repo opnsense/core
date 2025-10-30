@@ -1310,7 +1310,7 @@ function interfaces_pfsync_configure()
 
         $ifcargs[] = !empty($config['hasync']['pfsyncdefer']) ? 'defer' : '-defer';
 
-        mwexecf('/sbin/ifconfig '. str_repeat(' %s ', count($ifcargs)), $ifcargs);
+        mwexecf('/sbin/ifconfig ' . str_repeat(' %s ', count($ifcargs)), $ifcargs);
 
         /* Fix presumed replication issue when outgoing mtu is smaller than pfsync0's (https://github.com/opnsense/core/commit/15acbad935) */
         $intf_stats = legacy_interface_details($syncdev);
@@ -1436,7 +1436,7 @@ function interface_ipalias_configure($vip)
         $ifcargs = [get_real_interface($vip['interface']), 'inet'];
     }
 
-    $ifcargs[] = $vip['subnet'] . '/'. $vip['subnet_bits'];
+    $ifcargs[] = $vip['subnet'] . '/' . $vip['subnet_bits'];
     $ifcargs[] = 'alias';
 
     if (!empty($vip['gateway'])) {
@@ -1447,7 +1447,7 @@ function interface_ipalias_configure($vip)
         $ifcargs = array_merge($ifcargs, ['vhid', $vip['vhid']]);
     }
 
-    shell_safe('/sbin/ifconfig '. str_repeat(' %s ', count($ifcargs)), $ifcargs);
+    shell_safe('/sbin/ifconfig ' . str_repeat(' %s ', count($ifcargs)), $ifcargs);
 }
 
 function interface_carp_configure($vip)
@@ -1470,7 +1470,7 @@ function interface_carp_configure($vip)
     if ($vip['password'] != "") {
         $ifcargs = array_merge($ifcargs, ['pass', addslashes(str_replace(" ", "", $vip['password']))]);
     }
-    mwexecf('/sbin/ifconfig '. str_repeat(' %s ', count($ifcargs)), $ifcargs);
+    mwexecf('/sbin/ifconfig ' . str_repeat(' %s ', count($ifcargs)), $ifcargs);
 
 
     /* XXX use legacy_interface_setaddress */
@@ -1481,7 +1481,7 @@ function interface_carp_configure($vip)
     } else {
         return; /* invalid */
     }
-    mwexecf('/sbin/ifconfig '. str_repeat(' %s ', count($ifcargs)), $ifcargs);
+    mwexecf('/sbin/ifconfig ' . str_repeat(' %s ', count($ifcargs)), $ifcargs);
 
     /**
      *  XXX this is pretty flaky.
@@ -1499,7 +1499,7 @@ function interface_carp_configure($vip)
     } else {
         $ifcargs = array_merge($ifcargs, ['peer6', $vip['peer6']]);
     }
-    mwexecf('/sbin/ifconfig '. str_repeat(' %s ', count($ifcargs)), $ifcargs);
+    mwexecf('/sbin/ifconfig ' . str_repeat(' %s ', count($ifcargs)), $ifcargs);
 }
 
 function _interfaces_wlan_clone($realif, $wlcfg)
