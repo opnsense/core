@@ -162,9 +162,10 @@ function kea_configure_do($verbose = false)
         (new \OPNsense\Kea\KeaCtrlAgent())->generateConfig();
         if ($keaDhcpv6->isEnabled()) {
             mwexecf(
-                '/usr/sbin/daemon -m0 -f -p %s %s %s',
+                '/usr/sbin/daemon -f -p %s -o %s %s %s',
                 [
                     '/var/run/kea_prefix_watcher.pid',
+                    '/var/log/kea/kea_prefix_watcher.log',
                     '/usr/local/opnsense/scripts/dhcp/kea_prefix_watcher.py',
                     '/var/db/kea/kea-leases6.csv'
                 ]
