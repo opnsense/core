@@ -121,5 +121,3 @@ if __name__ == '__main__':
                         syslog.syslog(syslog.LOG_ERR, "failed adding route %s -> %s" % (prefix, ll_addr))
                     else:
                         syslog.syslog(syslog.LOG_NOTICE, "add route %s -> %s" % (prefix, ll_addr))
-
-
