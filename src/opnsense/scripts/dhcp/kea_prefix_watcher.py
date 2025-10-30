@@ -79,9 +79,10 @@ class NDP:
             parts = line.split()
             if idx > 0 and len(parts) > 1:
                 try:
-                    if ipaddress.ip_address(parts[0]).is_link_local:
-                        self._def_local_db[parts[1]] = parts[0].split('%')[0]
-                except ValueError:
+                    addr = parts[0].split('%')[0]
+                    if ipaddress.ip_address(addr).is_link_local:
+                        self._def_local_db[parts[1]] = parts[0]
+                except (ValueError, IndexError):
                     pass
 
 
