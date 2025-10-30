@@ -75,7 +75,6 @@ class NDP:
 
     def reload(self):
         ndpdata = subprocess.run(['/usr/sbin/ndp', '-an'], capture_output=True, text=True).stdout
-        ndpdata = open('/tmp/kea-leases6.csv-ndp', 'r').read()
         for idx, line in enumerate(ndpdata.split("\n")):
             parts = line.split()
             if idx > 0 and len(parts) > 1:
@@ -108,7 +107,7 @@ if __name__ == '__main__':
     ndp = NDP()
     for record in yield_log_records(inputargs.filename):
         # IA_PD: type 2, prefix_len <= 64 - the delegated prefix
-        if record.get('lease_type', 0) == 2 and record.get('prefix_len', 128) <= 60:
+        if record.get('lease_type', 0) == 2 and record.get('prefix_len', 128) <= 64:
             prefix = "%(address)s/%(prefix_len)d" %  record
             if (prefix not in prefixes or prefixes[prefix].get('hwaddr') != record.get('hwaddr')) \
                     and record.get('expire', 0) > time.time():
