@@ -64,6 +64,29 @@
             })
         }
 
+        resize(newCapacity) {
+            if (!Number.isInteger(newCapacity) || newCapacity <= 0) {
+                throw new Error("newCapacity must be a positive integer");
+            }
+            if (newCapacity === this.capacity) return this;
+
+            const oldCapacity = this.capacity;
+            const oldLength = this.length;
+
+            const m = Math.min(oldLength, newCapacity);
+            const newBuf = new Array(newCapacity);
+
+            for (let i = 0; i < m; i++) {
+                newBuf[i] = this.get(i);
+            }
+
+            this.buf = newBuf;
+            this.capacity = newCapacity;
+            this.length = m;
+            this.head = 0;
+            return this;
+        }
+
         // Insert as "most recent". O(1)
         push(value) {
             this.head = (this.head - 1 + this.capacity) % this.capacity;
@@ -142,9 +165,8 @@
             dst.clear();
             const m = Math.min(n, this.length);
             let tmp = [];
-            for (let i = m - 1; i >= 0; i--) {
+            for (let i = 0; i <= m; i++) {
                 tmp.push(this.get(i));
-                // dst.push(this.get(i));
             }
             dst.pushMany(tmp);
         }
@@ -282,8 +304,11 @@
                 case 'push':
                 case 'pushMany':
                 case 'reset':
+                    const holder = $('#livelog-table > .tabulator-tableholder')[0];
+                    const scrollPos = holder.scrollTop;
                     this.table.clearData();
                     this.table.setData(this.viewBuffer.toArray());
+                    holder.scrollTop = scrollPos;
                     $('.tooltip:visible').hide();
                     break;
                 case 'clear':
@@ -423,8 +448,6 @@
                 return;
             }
 
-            this.viewBuffer.clear();
-
             const result = this.bucket.filter(fn);
 
             this.viewBuffer.reset(result);
@@ -440,6 +463,12 @@
          */
         reset() {
             this._filterChange();
+        }
+
+        setBufferSize(bufferSize) {
+            this.bufferSize = bufferSize;
+            this.viewBuffer.resize(this.bufferSize);
+            this.reset();
         }
 
         /**
@@ -680,7 +709,7 @@
 
         let hostnames = new Map();
 
-        const tableWrapper = $("#example-table").UIBootgrid({
+        const tableWrapper = $("#livelog-table").UIBootgrid({
             options: {
                 ajax: false,
                 navigation: 0,
@@ -688,6 +717,9 @@
                 multiSelect: false,
                 virtualDOM: true,
                 formatters: {
+                    direction: function(column, row, onRendered) {
+                        return row.dir == 'in' ? "{{ lang._('In') }}" : "{{ lang._('Out') }}";
+                    },
                     lookup: function(column, row, onRendered) {
                         const value = row[column.id.replace("hostname", "")];
                         // deal with IPs we haven't seen before
@@ -815,6 +847,10 @@
         const $interfaceSelect = $('#interface-select');
         const $apply = $('#apply-filter');
         const $list = $('#filtersList');
+        const $tableSizeSelect = $('#table-size');
+        $tableSizeSelect.selectpicker();
+        const $historySizeSelect = $('#history-size');
+        $historySizeSelect.selectpicker();
 
         const operatorMap = {
             '~': {val: 'contains', translation: "{{ lang._('contains') }}"},
@@ -948,44 +984,32 @@
                         tableWrapper.bootgrid('setColumns', ['srchostname', 'dsthostname']);
 
                         // lookup new entries
-                        bufferDataUnsubscribe = filterVM.viewBuffer.subscribe((event) => {
-                            if (event.type === "push" || event.type === "pushMany") {
-                                let records = Array.isArray(event.data) ? event.data : [event.data];
-                                const promises = lookup();
-                                promises.forEach(p => p.then(() => {
-                                    records = records.map((record) => {
-                                        if (hostnames.get(record.src) !== '<in-flight>') {
-                                            record['srchostname'] = hostnames.get(record.src);
-                                        }
-                                        if (hostnames.get(record.dst) !== '<in-flight>') {
-                                            record['dsthostname'] = hostnames.get(record.dst);
-                                        }
-                                        return record;
-                                    });
+                        const updateViewBuffer = () => {
+                            const promises = lookup();
+                            promises.forEach(p => p.then(() => {
+                                filterVM.viewBuffer.map((record) => {
+                                    if (hostnames.get(record.src) !== '<in-flight>') {
+                                        record['srchostname'] = hostnames.get(record.src);
+                                    }
+                                    if (hostnames.get(record.dst) !== '<in-flight>') {
+                                        record['dsthostname'] = hostnames.get(record.dst);
+                                    }
+                                    return record;
+                                });
+                                filterVM.reset();
+                            }));
+                        };
 
-                                    filterVM.updateTable(records);
-                                }).catch((err) => {
-                                    console.error('Lookup batch failed:', err);
-                                }));
-                            }
+
+                        bufferDataUnsubscribe = filterVM.viewBuffer.subscribe((event) => {
+                            updateViewBuffer();
                         });
 
-                        // lookup current view ("lookup" formatter will have collected addresses)
+                        // lookup current view ("lookup" grid formatter will have collected addresses)
                         // we do not lookup the entire buffer, as most items aren't relevant yet until
                         // specifically asked for.
-                        const promises = lookup();
-                        promises.forEach(p => p.then(() => {
-                            filterVM.viewBuffer.map((record) => {
-                                if (hostnames.get(record.src) !== '<in-flight>') {
-                                    record['srchostname'] = hostnames.get(record.src);
-                                }
-                                if (hostnames.get(record.dst) !== '<in-flight>') {
-                                    record['dsthostname'] = hostnames.get(record.dst);
-                                }
-                                return record;
-                            });
-                            filterVM.reset();
-                        }));
+                        filterVM.reset();
+
                     } else {
                         if (bufferDataUnsubscribe !== null) {
                             bufferDataUnsubscribe();
@@ -1013,7 +1037,7 @@
 
         // Main startup logic
         tableWrapper.on("load.rs.jquery.bootgrid", function() {
-            $(`#example-table > .tabulator-tableholder`)
+            $(`#livelog-table > .tabulator-tableholder`)
                 .prepend($('<span class="bootgrid-overlay"><i class="fa fa-spinner fa-spin"></i></span>'));
         });
 
@@ -1042,7 +1066,7 @@
 
             fetch_log(null, seedAmount).then((data) => {
                 buffer.reset(data);
-                $(`#example-table > .tabulator-tableholder > .bootgrid-overlay`).remove();
+                $(`#livelog-table > .tabulator-tableholder > .bootgrid-overlay`).remove();
 
                 poller(1000);
             });
@@ -1210,6 +1234,20 @@
                 const id = opt.data('template').uuid;
                 delTemplate(id);
             }
+        });
+
+        $tableSizeSelect.on('changed.bs.select', function(e) {
+            filterVM.setBufferSize(parseInt($(this).val()));
+        });
+
+        $historySizeSelect.on('changed.bs.select', function(e) {
+            const bufSize = parseInt($(this).val());
+            buffer.resize(bufSize);
+            stopPoller();
+            fetch_log(null, bufSize).then((data) => {
+                buffer.reset(data);
+                poller(1000);
+            });
         });
     });
 </script>
@@ -1384,14 +1422,33 @@
                     <span class="toggle-label">{{ lang._('Select any of given criteria (or)') }}</span>
                 </label>
             </div>
+
+            <div>
+                <select id="table-size" class="selectpicker" data-width="100px">
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="75">75</option>
+                    <option value="100">100</option>
+                </select>
+                <label>{{ lang._('Table size') }}</label>
+            </div>
+            <div>
+                <select id="history-size" class="selectpicker" data-width="100px">
+                    <option value="10000">10000</option>
+                    <option value="20000">20000</option>
+                    <option value="30000">30000</option>
+                </select>
+                <label>{{ lang._('History size') }}</label>
+            </div>
         </aside>
     </div>
 
-    <table id="example-table" class="table table-condensed table-hover table-striped table-responsive">
+    <table id="livelog-table" class="table table-condensed table-hover table-striped table-responsive">
         <thead>
             <tr>
                 <th data-column-id="__digest__" data-identifier="true" data-sortable="false" data-visible="false">{{ lang._('Digest') }}</th>
                 <th data-column-id="interface" data-type="string" data-formatter="interface" data-sortable="false" data-width="80">{{ lang._('Interface') }}</th>
+                <th data-column-id="dir" data-type="string" data-formatter="direction" data-sortable="false" data-width="30"></th>
                 <th data-column-id="__timestamp__" data-sortable="false" data-width="150">{{ lang._('Time') }}</th>
                 <th data-column-id="protoname" data-sortable="false" data-formatter="proto" data-width="80">{{ lang._('Protocol') }}</th>
                 <th data-column-id="src" data-type="string" data-formatter="appendPort" data-sortable="false">{{ lang._('Source') }}</th>
@@ -1401,7 +1458,7 @@
                 <th data-column-id="action" data-type="string" data-sortable="false" data-width="80">{{ lang._('Action') }}</th>
                 <th data-column-id="label" data-type="string" data-sortable="false">{{ lang._('Label') }}</th>
                 <th data-column-id="status" data-type="string" data-sortable="false" data-visible="false">{{ lang._('Status') }}</th>
-                <th data-column-id="" data-formatter="info" data-width="20"></th>
+                <th data-column-id="" data-sortable="false" data-formatter="info" data-width="20"></th>
             </tr>
         </thead>
     </table>

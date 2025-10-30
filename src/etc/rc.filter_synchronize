@@ -51,7 +51,7 @@ function guess_interface_from_ip($ipaddress)
     }
 
     /* create a route table we can search */
-    exec("/usr/bin/netstat -rnWf " . $family, $output, $ret);
+    $output = explode("\n", shell_safe('/usr/bin/netstat %s %s', ['-rnWf', $family]));
 
     /* search for the route with the largest subnet mask */
     $largest_mask = 0;

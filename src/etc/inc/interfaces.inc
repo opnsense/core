@@ -1298,28 +1298,27 @@ function interfaces_pfsync_configure()
     }
 
     if (!empty($syncdev)) {
+        $ifcargs = ['pfsync0', 'syncdev', $syncdev];
         if (!empty($config['hasync']['pfsyncpeerip']) && is_ipaddrv4($config['hasync']['pfsyncpeerip'])) {
-            $syncpeer = "syncpeer " . escapeshellarg($config['hasync']['pfsyncpeerip']);
+            $ifcargs = array_merge($ifcargs, ['syncpeer', $config['hasync']['pfsyncpeerip']]);
         } else {
-            $syncpeer = "-syncpeer";
+            $ifcargs[] = '-syncpeer';
         }
-
-        $version = '';
         if (!empty($config['hasync']['pfsyncversion'])) {
-            $version = 'version ' . escapeshellarg($config['hasync']['pfsyncversion']);
+            $ifcargs = array_merge($ifcargs, ['version', $config['hasync']['pfsyncversion']]);
         }
 
-        $defer = !empty($config['hasync']['pfsyncdefer']) ? 'defer' : '-defer';
+        $ifcargs[] = !empty($config['hasync']['pfsyncdefer']) ? 'defer' : '-defer';
 
-        $intf_stats = legacy_interfaces_details(); /* XXX could require passing this down */
+        mwexecf('/sbin/ifconfig ' . str_repeat(' %s ', count($ifcargs)), $ifcargs);
 
-        mwexec("/sbin/ifconfig pfsync0 syncdev {$syncdev} {$syncpeer} {$version} {$defer} up");
-
-        if (!empty($intf_stats[$syncdev]['mtu'])) {
-            mwexecf('/sbin/ifconfig pfsync0 mtu %s', [$intf_stats[$syncdev]['mtu']]);
+        /* Fix presumed replication issue when outgoing mtu is smaller than pfsync0's (https://github.com/opnsense/core/commit/15acbad935) */
+        $intf_stats = legacy_interface_details($syncdev);
+        if (!empty($intf_stats['mtu'])) {
+            mwexecf('/sbin/ifconfig pfsync0 mtu %s', [$intf_stats['mtu']]);
         }
     } else {
-        mwexec('/sbin/ifconfig pfsync0 -syncdev -syncpeer down');
+        mwexecf('/sbin/ifconfig pfsync0 -syncdev -syncpeer down');
     }
 }
 
@@ -1431,20 +1430,24 @@ function interface_ipalias_configure($vip)
     if ($vip['interface'] != 'lo0' && !isset($config['interfaces'][$vip['interface']]['enable'])) {
         return;
     }
-
     if (is_ipaddrv6($vip['subnet'])) {
-        $if = get_real_interface($vip['interface'], 'inet6');
-        $af = 'inet6';
+        $ifcargs = [get_real_interface($vip['interface'], 'inet6'), 'inet6'];
     } else {
-        $if = get_real_interface($vip['interface']);
-        $af = 'inet';
+        $ifcargs = [get_real_interface($vip['interface']), 'inet'];
     }
 
-    $vhid = !empty($vip['vhid']) ? 'vhid ' . escapeshellarg($vip['vhid']) : '';
-    $gateway = !empty($vip['gateway']) ? escapeshellarg($vip['gateway']) . ' ' : '';
+    $ifcargs[] = $vip['subnet'] . '/' . $vip['subnet_bits'];
+    $ifcargs[] = 'alias';
 
-    /* XXX use legacy_interface_setaddress */
-    mwexec("/sbin/ifconfig " . escapeshellarg($if) . " {$af} " . escapeshellarg($vip['subnet']) . "/" . escapeshellarg($vip['subnet_bits']) . " alias " . $gateway . $vhid);
+    if (!empty($vip['gateway'])) {
+        $ifcargs[] = $vip['gateway'];
+    }
+
+    if (!empty($vip['vhid'])) {
+        $ifcargs = array_merge($ifcargs, ['vhid', $vip['vhid']]);
+    }
+
+    shell_safe('/sbin/ifconfig ' . str_repeat(' %s ', count($ifcargs)), $ifcargs);
 }
 
 function interface_carp_configure($vip)
@@ -1457,46 +1460,46 @@ function interface_carp_configure($vip)
     if (get_single_sysctl('net.inet.carp.allow') == '0') {
         return;
     }
-
     $realif = get_real_interface($vip['interface']);
+    $ifcargs = [$realif, 'vhid', $vip['vhid']];
 
-    $vip_password = escapeshellarg(addslashes(str_replace(" ", "", $vip['password'])));
-    $password = '';
-    if ($vip['password'] != "") {
-        $password = " pass {$vip_password}";
-    }
-
-    $advbase = "";
+    $ifcargs = array_merge($ifcargs, ['advskew', $vip['advskew']]);
     if (!empty($vip['advbase'])) {
-        $advbase = "advbase " . escapeshellarg($vip['advbase']);
+        $ifcargs = array_merge($ifcargs, ['advbase', $vip['advbase']]);
     }
+    if ($vip['password'] != "") {
+        $ifcargs = array_merge($ifcargs, ['pass', addslashes(str_replace(" ", "", $vip['password']))]);
+    }
+    mwexecf('/sbin/ifconfig ' . str_repeat(' %s ', count($ifcargs)), $ifcargs);
 
-    $advskew = "advskew " . escapeshellarg($vip['advskew']);
-    if (empty($vip['peer']) || $vip['peer'] == '224.0.0.18') {
-        $peercfg = ' mcast ';
-    } else {
-        $peercfg = ' peer ' . escapeshellarg($vip['peer']) . ' ';
-    }
-    if (empty($vip['peer6']) || $vip['peer6'] == 'ff02::12') {
-        $peercfg .= ' mcast6 ';
-    } else {
-        $peercfg .= ' peer6 ' . escapeshellarg($vip['peer6']) . ' ';
-    }
-
-    mwexec("/sbin/ifconfig {$realif} vhid " . escapeshellarg($vip['vhid']) . " {$advskew} {$advbase} {$password}");
 
     /* XXX use legacy_interface_setaddress */
     if (is_ipaddrv4($vip['subnet'])) {
-        mwexec("/sbin/ifconfig {$realif} " . escapeshellarg($vip['subnet']) . "/" . escapeshellarg($vip['subnet_bits']) . " alias vhid " . escapeshellarg($vip['vhid']));
+        $ifcargs = [$realif, $vip['subnet'] . '/' . $vip['subnet_bits'], 'alias', 'vhid', $vip['vhid']];
     } elseif (is_ipaddrv6($vip['subnet'])) {
-        mwexec("/sbin/ifconfig {$realif} inet6 " . escapeshellarg($vip['subnet']) . " prefixlen " . escapeshellarg($vip['subnet_bits']) . " alias vhid " . escapeshellarg($vip['vhid']));
+        $ifcargs = [$realif, 'inet6', $vip['subnet'], 'prefixlen', $vip['subnet_bits'], 'alias', 'vhid', $vip['vhid']];
+    } else {
+        return; /* invalid */
     }
+    mwexecf('/sbin/ifconfig ' . str_repeat(' %s ', count($ifcargs)), $ifcargs);
+
     /**
      *  XXX this is pretty flaky.
      *      If we configure peer[6] during setup, values won't stick, they appear to be flushed when
      *      the initial address is set.
      */
-    mwexec("/sbin/ifconfig {$realif} vhid " . escapeshellarg($vip['vhid']) . " {$peercfg}");
+    $ifcargs = [$realif, 'vhid', $vip['vhid']];
+    if (empty($vip['peer']) || $vip['peer'] == '224.0.0.18') {
+        $ifcargs[] = 'mcast';
+    } else {
+        $ifcargs = array_merge($ifcargs, ['peer', $vip['peer']]);
+    }
+    if (empty($vip['peer6']) || $vip['peer6'] == 'ff02::12') {
+        $ifcargs[] = 'mcast6';
+    } else {
+        $ifcargs = array_merge($ifcargs, ['peer6', $vip['peer6']]);
+    }
+    mwexecf('/sbin/ifconfig ' . str_repeat(' %s ', count($ifcargs)), $ifcargs);
 }
 
 function _interfaces_wlan_clone($realif, $wlcfg)
@@ -2533,7 +2536,7 @@ function interface_track6_6rd_configure($interface, $lancfg)
     /* convert the 128 bits for the lan address back into a valid IPv6 address */
     $rd6lan = convert_128bit_to_ipv6($rd6lanbin) . (1 + get_interface_number_track6($lancfg['track6-interface'], $interface));
 
-    $lanif = get_real_interface($interface, 'inet6');
+    $lanif = escapeshellarg(get_real_interface($interface, 'inet6'));
     list ($oip) = interfaces_primary_address6($interface);
     if (!empty($oip)) {
         mwexec("/sbin/ifconfig {$lanif} inet6 {$oip} delete");
@@ -2579,7 +2582,7 @@ function interface_track6_6to4_configure($interface, $lancfg)
     /* convert the 128 bits for the lan address back into a valid IPv6 address */
     $sixto4lan = convert_128bit_to_ipv6($sixto4lanbin) . (1 + get_interface_number_track6($lancfg['track6-interface'], $interface));
 
-    $lanif = get_real_interface($interface, 'inet6');
+    $lanif = escapeshellarg(get_real_interface($interface, 'inet6'));
     list ($oip) = interfaces_primary_address6($interface);
     if (!empty($oip)) {
         mwexec("/sbin/ifconfig {$lanif} inet6 {$oip} delete");

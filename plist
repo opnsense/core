@@ -1092,6 +1092,7 @@
 /usr/local/opnsense/scripts/dhcp/get_kea_leases.py
 /usr/local/opnsense/scripts/dhcp/get_leases.py
 /usr/local/opnsense/scripts/dhcp/get_leases6.py
+/usr/local/opnsense/scripts/dhcp/kea_prefix_watcher.py
 /usr/local/opnsense/scripts/dhcp/prefixes.php
 /usr/local/opnsense/scripts/dhcp/prefixes.sh
 /usr/local/opnsense/scripts/dhcp/unbound_watcher.py
