@@ -1499,7 +1499,7 @@ function interface_carp_configure($vip)
     } else {
         $ifcargs = array_merge($ifcargs, ['peer6', $vip['peer6']]);
     }
-    mwexec("/sbin/ifconfig {$realif} vhid " . escapeshellarg($vip['vhid']) . " {$peercfg}");
+    mwexecf('/sbin/ifconfig '. str_repeat(' %s ', count($ifcargs)), $ifcargs);
 }
 
 function _interfaces_wlan_clone($realif, $wlcfg)
