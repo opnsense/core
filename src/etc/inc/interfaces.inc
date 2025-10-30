@@ -1430,20 +1430,24 @@ function interface_ipalias_configure($vip)
     if ($vip['interface'] != 'lo0' && !isset($config['interfaces'][$vip['interface']]['enable'])) {
         return;
     }
-
     if (is_ipaddrv6($vip['subnet'])) {
-        $if = get_real_interface($vip['interface'], 'inet6');
-        $af = 'inet6';
+        $ifcargs = [get_real_interface($vip['interface'], 'inet6'), 'inet6'];
     } else {
-        $if = get_real_interface($vip['interface']);
-        $af = 'inet';
+        $ifcargs = [get_real_interface($vip['interface']), 'inet'];
     }
 
-    $vhid = !empty($vip['vhid']) ? 'vhid ' . escapeshellarg($vip['vhid']) : '';
-    $gateway = !empty($vip['gateway']) ? escapeshellarg($vip['gateway']) . ' ' : '';
+    $ifcargs[] = $vip['subnet'] . '/'. $vip['subnet_bits'];
+    $ifcargs[] = 'alias';
 
-    /* XXX use legacy_interface_setaddress */
-    mwexec("/sbin/ifconfig " . escapeshellarg($if) . " {$af} " . escapeshellarg($vip['subnet']) . "/" . escapeshellarg($vip['subnet_bits']) . " alias " . $gateway . $vhid);
+    if (!empty($vip['gateway'])) {
+        $ifcargs[] = $vip['gateway'];
+    }
+
+    if (!empty($vip['vhid'])) {
+        $ifcargs = array_merge($ifcargs, ['vhid', $vip['vhid']]);
+    }
+
+    shell_safe('/sbin/ifconfig '. str_repeat(' %s ', count($ifcargs)), $ifcargs);
 }
 
 function interface_carp_configure($vip)
@@ -1456,45 +1460,45 @@ function interface_carp_configure($vip)
     if (get_single_sysctl('net.inet.carp.allow') == '0') {
         return;
     }
-
     $realif = get_real_interface($vip['interface']);
+    $ifcargs = [$realif, 'vhid', $vip['vhid']];
 
-    $vip_password = escapeshellarg(addslashes(str_replace(" ", "", $vip['password'])));
-    $password = '';
-    if ($vip['password'] != "") {
-        $password = " pass {$vip_password}";
-    }
-
-    $advbase = "";
+    $ifcargs = array_merge($ifcargs, ['advskew', $vip['advskew']]);
     if (!empty($vip['advbase'])) {
-        $advbase = "advbase " . escapeshellarg($vip['advbase']);
+        $ifcargs = array_merge($ifcargs, ['advbase', $vip['advbase']]);
     }
+    if ($vip['password'] != "") {
+        $ifcargs = array_merge($ifcargs, ['pass', addslashes(str_replace(" ", "", $vip['password']))]);
+    }
+    mwexecf('/sbin/ifconfig '. str_repeat(' %s ', count($ifcargs)), $ifcargs);
 
-    $advskew = "advskew " . escapeshellarg($vip['advskew']);
-    if (empty($vip['peer']) || $vip['peer'] == '224.0.0.18') {
-        $peercfg = ' mcast ';
-    } else {
-        $peercfg = ' peer ' . escapeshellarg($vip['peer']) . ' ';
-    }
-    if (empty($vip['peer6']) || $vip['peer6'] == 'ff02::12') {
-        $peercfg .= ' mcast6 ';
-    } else {
-        $peercfg .= ' peer6 ' . escapeshellarg($vip['peer6']) . ' ';
-    }
-
-    mwexec("/sbin/ifconfig {$realif} vhid " . escapeshellarg($vip['vhid']) . " {$advskew} {$advbase} {$password}");
 
     /* XXX use legacy_interface_setaddress */
     if (is_ipaddrv4($vip['subnet'])) {
-        mwexec("/sbin/ifconfig {$realif} " . escapeshellarg($vip['subnet']) . "/" . escapeshellarg($vip['subnet_bits']) . " alias vhid " . escapeshellarg($vip['vhid']));
+        $ifcargs = [$realif, $vip['subnet'] . '/' . $vip['subnet_bits'], 'alias', 'vhid', $vip['vhid']];
     } elseif (is_ipaddrv6($vip['subnet'])) {
-        mwexec("/sbin/ifconfig {$realif} inet6 " . escapeshellarg($vip['subnet']) . " prefixlen " . escapeshellarg($vip['subnet_bits']) . " alias vhid " . escapeshellarg($vip['vhid']));
+        $ifcargs = [$realif, 'inet6', $vip['subnet'], 'prefixlen', $vip['subnet_bits'], 'alias', 'vhid', $vip['vhid']];
+    } else {
+        return; /* invalid */
     }
+    mwexecf('/sbin/ifconfig '. str_repeat(' %s ', count($ifcargs)), $ifcargs);
+
     /**
      *  XXX this is pretty flaky.
      *      If we configure peer[6] during setup, values won't stick, they appear to be flushed when
      *      the initial address is set.
      */
+    $ifcargs = [$realif, 'vhid', $vip['vhid']];
+    if (empty($vip['peer']) || $vip['peer'] == '224.0.0.18') {
+        $ifcargs[] = 'mcast';
+    } else {
+        $ifcargs = array_merge($ifcargs, ['peer', $vip['peer']]);
+    }
+    if (empty($vip['peer6']) || $vip['peer6'] == 'ff02::12') {
+        $ifcargs[] = 'mcast6';
+    } else {
+        $ifcargs = array_merge($ifcargs, ['peer6', $vip['peer6']]);
+    }
     mwexec("/sbin/ifconfig {$realif} vhid " . escapeshellarg($vip['vhid']) . " {$peercfg}");
 }
 
