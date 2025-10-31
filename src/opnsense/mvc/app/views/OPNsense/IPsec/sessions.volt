@@ -29,6 +29,7 @@
 
     $( document ).ready(function() {
         let grid_phase1 = $("#grid-phase1").UIBootgrid({
+            datakey: 'name',
             search:'/api/ipsec/sessions/search_phase1',
             options:{
                 initialSearchPhrase: getUrlHash('search'),
