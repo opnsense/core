@@ -1087,10 +1087,8 @@
 /usr/local/opnsense/scripts/captiveportal/strip_template.py
 /usr/local/opnsense/scripts/dhcp/cleanup_leases4.php
 /usr/local/opnsense/scripts/dhcp/cleanup_leases6.php
-/usr/local/opnsense/scripts/dhcp/get_kea_leases.py
 /usr/local/opnsense/scripts/dhcp/get_leases.py
 /usr/local/opnsense/scripts/dhcp/get_leases6.py
-/usr/local/opnsense/scripts/dhcp/kea_prefix_watcher.py
 /usr/local/opnsense/scripts/dhcp/prefixes.php
 /usr/local/opnsense/scripts/dhcp/prefixes.sh
 /usr/local/opnsense/scripts/dhcp/unbound_watcher.py
@@ -1240,6 +1238,8 @@
 /usr/local/opnsense/scripts/ipsec/saddelete.py
 /usr/local/opnsense/scripts/ipsec/spddelete.py
 /usr/local/opnsense/scripts/ipsec/updown_event.py
+/usr/local/opnsense/scripts/kea/get_kea_leases.py
+/usr/local/opnsense/scripts/kea/kea_prefix_watcher.py
 /usr/local/opnsense/scripts/monit/carp_status.php
 /usr/local/opnsense/scripts/monit/gateway_alert.php
 /usr/local/opnsense/scripts/monit/setup.sh
