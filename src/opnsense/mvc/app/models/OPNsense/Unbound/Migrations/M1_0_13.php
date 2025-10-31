@@ -53,6 +53,9 @@ class M1_0_13 extends BaseModelMigration
                 continue;
             }
             $mask = (int)$m[2];
+            if (!isset($groups[$mask])) {
+                $groups[$mask] = [];
+            }
             $groups[$mask][] = $cidr;
         }
 
