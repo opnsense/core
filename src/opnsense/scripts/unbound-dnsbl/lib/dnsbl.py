@@ -76,15 +76,17 @@ class DNSBL:
         with open(self.dnsbl_path, 'r') as f:
             try:
                 self.dnsbl = json.load(f)
+                if self._context and type(self.dnsbl.get('config')) is dict:
+                    if not self.dnsbl['config'].get('general'):
+                        # old format, needs blocklist reload
+                        raise ValueError("incompatible blocklist")
+                    self._context.set_config(self.dnsbl['config'])
                 log_info('dnsbl_module: blocklist loaded. length is %d' % len(self.dnsbl['data']))
                 with open(self.size_file, 'w') as sfile:
                     sfile.write(str(len(self.dnsbl['data'])))
-                if self._context and type(self.dnsbl.get('config')) is dict:
-                    self._context.set_config(self.dnsbl['config'])
-            except (json.decoder.JSONDecodeError, KeyError) as e:
-                if not self.dnsbl:
-                    log_err("dnsbl_module: unable to bootstrap blocklist, this is likely due to a corrupted "+
-                            "file. Please re-apply the blocklist settings.")
+            except (json.decoder.JSONDecodeError, KeyError, ValueError) as e:
+                if not self.dnsbl or isinstance(e, ValueError):
+                    log_err("dnsbl_module: unable to parse blocklist file: %s. Please re-apply the blocklist settings." % e)
                     self.dnsbl_available = False
                     return
                 else:
