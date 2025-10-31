@@ -166,7 +166,7 @@ function kea_configure_do($verbose = false)
                 [
                     '/var/run/kea_prefix_watcher.pid',
                     '/var/log/kea/kea_prefix_watcher.log',
-                    '/usr/local/opnsense/scripts/dhcp/kea_prefix_watcher.py',
+                    '/usr/local/opnsense/scripts/kea/kea_prefix_watcher.py',
                     '/var/db/kea/kea-leases6.csv'
                 ]
             );
