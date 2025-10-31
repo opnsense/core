@@ -38,6 +38,46 @@ class M1_0_13 extends BaseModelMigration
      * - Merge extended blocklists into OPNsense namespace
      * - move safesearch toggle to General container
      */
+
+    private function splitNets($source_net)
+    {
+        if ($source_net === null || trim($source_net) === '') {
+            return [];
+        }
+
+        $items = array_values(array_filter(array_map('trim', explode(',', $source_net)), 'strlen'));
+        $result = [];
+        $currentGroup = [];
+        $currentMask = null;
+
+        foreach ($items as $cidr) {
+            if (!preg_match('~^(.*)/(\d{1,3})$~', $cidr, $m)) {
+                continue;
+            }
+            $mask = (int)$m[2];
+
+            if ($currentMask === null) {
+                $currentMask = $mask;
+                $currentGroup = [$cidr];
+                continue;
+            }
+
+            if ($mask === $currentMask) {
+                $currentGroup[] = $cidr;
+            } else {
+                $result[] = implode(',', $currentGroup);
+                $currentGroup = [$cidr];
+                $currentMask = $mask;
+            }
+        }
+
+        if (!empty($currentGroup)) {
+            $result[] = implode(',', $currentGroup);
+        }
+
+        return $result;
+    }
+
     public function run($model)
     {
         $config = Config::getInstance()->object();
@@ -82,42 +122,46 @@ class M1_0_13 extends BaseModelMigration
 
             /* blocklist */
             foreach ($extdnsbl->blocklists->children() as $blocklist) {
-                $nodes = [];
-                $bl = $model->dnsbl->blocklist->add();
-                $new_structure = array_values($model->dnsbl->blocklist->getNodeContent())[0];
-                foreach ($blocklist->children() as $key => $value) {
-                    if ($key == 'list') {
-                        $nodes['type'] = str_replace('ext_', '', (string)$value);
-                    } elseif ($key == 'source_net') {
-                        $nodes['source_nets'] = (string)$value;
-                    } elseif ($key == 'description' && empty($value)) {
-                        /* description now required */
-                        $nodes['description'] = '<migrated from Extended Blocklists plugin>';
-                    } elseif (isset($new_structure[$key])) {
-                        $nodes[$key] = (string)$value;
+                foreach ($this->splitNets((string)$blocklist->source_net) as $net) {
+                    $nodes = [];
+                    $bl = $model->dnsbl->blocklist->add();
+                    $new_structure = array_values($model->dnsbl->blocklist->getNodeContent())[0];
+                    foreach ($blocklist->children() as $key => $value) {
+                        if ($key == 'list') {
+                            $nodes['type'] = str_replace('ext_', '', (string)$value);
+                        } elseif ($key == 'source_net') {
+                            $nodes['source_nets'] = $net;
+                        } elseif ($key == 'description' && empty($value)) {
+                            /* description now required */
+                            $nodes['description'] = '<migrated from Extended Blocklists plugin>';
+                        } elseif (isset($new_structure[$key])) {
+                            $nodes[$key] = (string)$value;
+                        }
                     }
-                }
 
-                $bl->setNodes($nodes);
+                    $bl->setNodes($nodes);
+                }
             }
 
             /* custom domains */
             foreach ($extdnsbl->custom_domains->children() as $domain) {
-                $nodes = [];
-                $bl = $model->dnsbl->blocklist->add();
-                $new_structure = array_values($model->dnsbl->blocklist->getNodeContent())[0];
-                foreach ($domain->children() as $key => $value) {
-                    if ($key == 'domains') {
-                        $nodes['blocklists'] = (string)$value;
-                    } elseif ($key == 'source_net') {
-                        $nodes['source_nets'] = (string)$value;
-                    } elseif (isset($new_structure[$key])) {
-                        /* description was already required */
-                        $nodes[$key] = (string)$value;
+                foreach ($this->splitNets((string)$domain->source_net) as $net) {
+                    $nodes = [];
+                    $bl = $model->dnsbl->blocklist->add();
+                    $new_structure = array_values($model->dnsbl->blocklist->getNodeContent())[0];
+                    foreach ($domain->children() as $key => $value) {
+                        if ($key == 'domains') {
+                            $nodes['blocklists'] = (string)$value;
+                        } elseif ($key == 'source_net') {
+                            $nodes['source_nets'] = $net;
+                        } elseif (isset($new_structure[$key])) {
+                            /* description was already required */
+                            $nodes[$key] = (string)$value;
+                        }
                     }
-                }
 
-                $bl->setNodes($nodes);
+                    $bl->setNodes($nodes);
+                }
             }
         }
     }
