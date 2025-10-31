@@ -42,40 +42,26 @@ class M1_0_13 extends BaseModelMigration
     private function splitNets($source_net)
     {
         if ($source_net === null || trim($source_net) === '') {
-            return [];
+            return [''];
         }
 
         $items = array_values(array_filter(array_map('trim', explode(',', $source_net)), 'strlen'));
-        $result = [];
-        $currentGroup = [];
-        $currentMask = null;
+        $groups = [];
 
         foreach ($items as $cidr) {
             if (!preg_match('~^(.*)/(\d{1,3})$~', $cidr, $m)) {
                 continue;
             }
             $mask = (int)$m[2];
-
-            if ($currentMask === null) {
-                $currentMask = $mask;
-                $currentGroup = [$cidr];
-                continue;
-            }
-
-            if ($mask === $currentMask) {
-                $currentGroup[] = $cidr;
-            } else {
-                $result[] = implode(',', $currentGroup);
-                $currentGroup = [$cidr];
-                $currentMask = $mask;
-            }
+            $groups[$mask][] = $cidr;
         }
 
-        if (!empty($currentGroup)) {
-            $result[] = implode(',', $currentGroup);
+        $out = [];
+        foreach ($groups as $mask => $list) {
+            $out[] = implode(',', $list);
         }
 
-        return $result;
+        return $out;
     }
 
     public function run($model)
