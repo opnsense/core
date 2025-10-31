@@ -1,0 +1,73 @@
+{
+    "data": {
+        "block.1.local": [
+            {
+                "bl": "Custom",
+                "wildcard": false,
+                "idx": "580e7f8b-3242-401a-b32e-ed56c3e8cf4a"
+            }
+        ],
+        "block.2.local": [
+            {
+                "bl": "Custom",
+                "wildcard": false,
+                "idx": "580e7f8b-3242-401a-b32e-ed56c3e8cf4a"
+            }
+        ],
+        "wildcard.1.local": [
+            {
+                "bl": "Custom",
+                "wildcard": true,
+                "idx": "580e7f8b-3242-401a-b32e-ed56c3e8cf4a"
+            }
+        ],
+        "wildcard.2.local": [
+            {
+                "bl": "Custom",
+                "wildcard": true,
+                "idx": "580e7f8b-3242-401a-b32e-ed56c3e8cf4a"
+            }
+        ],
+        "0.beer": [
+            {
+                "bl": "hgz007",
+                "wildcard": true,
+                "idx": "580e7f8b-3242-401a-b32e-ed56c3e8cf4a"
+            },
+            {
+                "bl": "hgz007",
+                "wildcard": true,
+                "idx": "709af075-f67f-40ca-959a-ec7c900991da"
+            }
+        ]
+    },
+    "config": {
+        "general": {
+            "has_wildcards": true
+        },
+        "580e7f8b-3242-401a-b32e-ed56c3e8cf4a": {
+            "source_nets": [
+                "10.0.0.0\/24",
+                "10.0.1.0\/24",
+                "0::0\/24"
+            ],
+            "address": "0.0.0.0",
+            "rcode": "NOERROR",
+            "description": "xxxx2",
+            "id": "580e7f8b-3242-401a-b32e-ed56c3e8cf4a",
+            "passlist": "^always_allow\\..*|.*localhost$",
+            "prio": 20282409603651670423947251286016,
+            "hidx": 0
+        },
+        "709af075-f67f-40ca-959a-ec7c900991da": {
+            "source_nets": [],
+            "address": "0.0.0.0",
+            "rcode": "NOERROR",
+            "description": "xxxx",
+            "id": "709af075-f67f-40ca-959a-ec7c900991da",
+            "passlist": ".*localhost$",
+            "prio": 340282366920938463463374607431768211456,
+            "hidx": 0
+        }
+    }
+}
