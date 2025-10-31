@@ -159,7 +159,7 @@ abstract class BaseModel
      * @throws ModelException when unable to parse field type
      * @throws ReflectionException when unable to create class
      */
-    private function getFieldObject($xmlNode, $thisModelPath, $new_ref)
+    private function getFieldObject($xmlNode, $thisModelPath, $new_ref, $internal_data)
     {
         if (self::$internalCacheReflectionClasses === null) {
             self::$internalCacheReflectionClasses = [];
@@ -238,6 +238,7 @@ abstract class BaseModel
             $fieldObject->setInternalIsVolatile();
         }
         if (!$fieldObject->isContainer()) {
+            $internal_data->addChildNode($xmlNode->getName(), $fieldObject);
             foreach ($field_methods as $method_name => $payload) {
                 $fieldObject->$method_name($payload);
             }
@@ -266,12 +267,11 @@ abstract class BaseModel
             $thisModelPath = empty($model_path) ? get_class($this) . "." . $tagName : $model_path . '.' . $tagName;
             // generate full object name ( section.section.field syntax ) and create new Field
             $new_ref = $internal_data->__reference == "" ? $tagName : $internal_data->__reference . "." . $tagName;
-            $fieldObject = $this->getFieldObject($xmlNode, $thisModelPath, $new_ref);
+            $fieldObject = $this->getFieldObject($xmlNode, $thisModelPath, $new_ref, $internal_data);
 
             // now add content to this model (recursive)
             $config_section_data = $config_data?->$tagName ?? null;
             if (!$fieldObject->isContainer()) {
-                $internal_data->addChildNode($tagName, $fieldObject);
                 if ($config_section_data !== null) {
                     /* do not set initial data, default will take care */
                     $fieldObject->setValue($config_section_data);
