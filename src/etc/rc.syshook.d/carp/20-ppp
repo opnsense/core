@@ -36,7 +36,7 @@ $type = !empty($argv[2]) ? $argv[2] : '';
 
 $a_hasync = &config_read_array('hasync');
 if (!empty($a_hasync['disconnectppps'])) {
-    if ($type != 'MASTER' && $type != 'BACKUP') {
+    if ($type != 'MASTER' && $type != 'BACKUP' && $type != 'INIT') {
        log_msg("Carp '$type' event unknown from source '{$subsystem}'");
        exit(1);
     } elseif (!strstr($subsystem, '@')) {
@@ -51,7 +51,7 @@ if (!empty($a_hasync['disconnectppps'])) {
             foreach($config['interfaces'] as $ifkey => $interface) {
                 if ($ppp['if'] == $interface['if']) {
                     log_msg("{$iface} is connected to ppp interface {$ifkey} set new status {$type}");
-                    if ($type == 'BACKUP') {
+                    if ($type == 'BACKUP' || $type == 'INIT') {
                         interface_suspend($ifkey);
                     } else {
                         interface_ppps_configure($ifkey);
