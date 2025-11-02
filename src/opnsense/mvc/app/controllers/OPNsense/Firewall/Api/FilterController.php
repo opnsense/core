@@ -71,19 +71,18 @@ class FilterController extends FilterBaseController
     public function searchRuleAction()
     {
         $categories = $this->request->get('category');
+        $show_all = !empty($this->request->get('show_all'));
         if (!empty($this->request->get('interface'))) {
-            $interface = $this->request->get('interface');
-            $interfaces = [$interface];
+            $interfaces = explode(",", $this->request->get('interface'));
             /* add groups which contain the selected interface */
             foreach ((new Group())->ifgroupentry->iterateItems() as $groupItem) {
-                if (in_array($interface, explode(',', (string)$groupItem->members))) {
+                if (array_intersect($interfaces, explode(',', (string)$groupItem->members))) {
                     $interfaces[] = (string)$groupItem->ifname;
                 }
             }
         } else {
             $interfaces = null;
         }
-        $show_all = !empty($this->request->get('show_all'));
 
         /* filter logic for mvc rules */
         $filter_funct_mvc = function ($record) use ($categories, $interfaces, $show_all) {
@@ -95,7 +94,7 @@ class FilterController extends FilterBaseController
             } elseif ($show_all) {
                 $is_if = array_intersect($interfaces, $rule_interfaces) || empty($rule_interfaces);
             } else {
-                $is_if = count($rule_interfaces) === 1 && $rule_interfaces[0] === $interfaces[0];
+                $is_if = count($rule_interfaces) === 1 && array_intersect($interfaces, $rule_interfaces);
             }
 
             return $is_cat && $is_if;
