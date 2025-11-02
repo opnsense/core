@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2024 Deciso B.V.
+ * Copyright (C) 2015-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -76,9 +76,7 @@ class JsonKeyValueStoreField extends BaseListField
      */
     public function setSourceField($value)
     {
-        if (isset($this->internalParentNode->$value)) {
-            $this->internalSourceField = basename($this->internalParentNode->$value);
-        }
+        $this->internalSourceField = $value;
     }
 
     /**
@@ -125,8 +123,13 @@ class JsonKeyValueStoreField extends BaseListField
     protected function actionPostLoadingEvent()
     {
         $data = null;
-        if ($this->internalSourceFile != null && $this->internalSourceField != null) {
-            $sourcefile = sprintf($this->internalSourceFile, $this->internalSourceField);
+        $sourcefield = null;
+        if (isset($this->internalParentNode->{$this->internalSourceField})) {
+            $sourcefield = basename($this->internalParentNode->{$this->internalSourceField});
+        }
+
+        if ($this->internalSourceFile != null && $sourcefield != null) {
+            $sourcefile = sprintf($this->internalSourceFile, $sourcefield);
         } else {
             $sourcefile = $this->internalSourceFile;
         }
