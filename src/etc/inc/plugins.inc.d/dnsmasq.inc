@@ -188,7 +188,7 @@ function dnsmasq_configure_do($verbose = false)
         if (!empty($config['dnsmasq']['regdhcpdomain'])) {
             $domain = $config['dnsmasq']['regdhcpdomain'];
         }
-        mwexecf('/usr/local/opnsense/scripts/dnsmasq/dnsmasq_watcher.py --domain %s', $domain);
+        mwexecf('/usr/local/opnsense/scripts/dhcp/dnsmasq_watcher.py --domain %s', $domain);
     }
 
     service_log("done.\n", $verbose);

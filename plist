@@ -1087,6 +1087,7 @@
 /usr/local/opnsense/scripts/captiveportal/strip_template.py
 /usr/local/opnsense/scripts/dhcp/cleanup_leases4.php
 /usr/local/opnsense/scripts/dhcp/cleanup_leases6.php
+/usr/local/opnsense/scripts/dhcp/dnsmasq_watcher.py
 /usr/local/opnsense/scripts/dhcp/get_leases.py
 /usr/local/opnsense/scripts/dhcp/get_leases6.py
 /usr/local/opnsense/scripts/dhcp/prefixes.php
@@ -1094,7 +1095,6 @@
 /usr/local/opnsense/scripts/dhcp/unbound_watcher.py
 /usr/local/opnsense/scripts/dns/query_dns.py
 /usr/local/opnsense/scripts/dnsmasq/dnsmasq_dhcp_options.py
-/usr/local/opnsense/scripts/dnsmasq/dnsmasq_watcher.py
 /usr/local/opnsense/scripts/dnsmasq/get_dnsmasq_leases.py
 /usr/local/opnsense/scripts/filter/delete_table.py
 /usr/local/opnsense/scripts/filter/download_geoip.py
