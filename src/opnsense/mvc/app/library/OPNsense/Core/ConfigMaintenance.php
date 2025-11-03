@@ -85,7 +85,7 @@ class ConfigMaintenance
             $this->foundrefs = [];
         }
         foreach ($node->children() as $xmlNode) {
-            if ($xmlNode->count() > 0) {
+            if ($xmlNode->count() > 0 || !empty($xmlNode->attributes()['version'])) {
                 $this_path = ltrim($path . '.' . $xmlNode->getName(), '.');
                 if (in_array($this_path, $this->foundrefs)) {
                     continue;
