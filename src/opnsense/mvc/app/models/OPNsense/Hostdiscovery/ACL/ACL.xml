@@ -1,0 +1,11 @@
+<acl>
+    <page-hostdiscovery>
+        <name>System: Host discovery</name>
+        <description>Allow access to the hostdiscovery server</description>
+        <patterns>
+            <pattern>ui/hostdiscovery/settings</pattern>
+            <pattern>api/hostdiscovery/settings/*</pattern>
+            <pattern>api/hostdiscovery/service/*</pattern>
+        </patterns>
+    </page-hostdiscovery>
+</acl>

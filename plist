@@ -24,6 +24,7 @@
 /usr/local/etc/inc/plugins.inc.d/dhcrelay.inc
 /usr/local/etc/inc/plugins.inc.d/dnsmasq.inc
 /usr/local/etc/inc/plugins.inc.d/dpinger.inc
+/usr/local/etc/inc/plugins.inc.d/hostwatch.inc
 /usr/local/etc/inc/plugins.inc.d/ipfw.inc
 /usr/local/etc/inc/plugins.inc.d/ipsec.inc
 /usr/local/etc/inc/plugins.inc.d/kea.inc
@@ -321,6 +322,10 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogSNatRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/geoIPSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/groupEdit.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Hostdiscovery/Api/ServiceController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Hostdiscovery/Api/SettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Hostdiscovery/SettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Hostdiscovery/forms/general.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/IndexController.php
@@ -746,6 +751,10 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_3.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_4.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/static_aliases/core.json
+/usr/local/opnsense/mvc/app/models/OPNsense/Hostdiscovery/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Hostdiscovery/Hostwatch.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Hostdiscovery/Hostwatch.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Hostdiscovery/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/FieldTypes/PolicyContentField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/FieldTypes/PolicyRulesField.php
@@ -936,6 +945,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/filter.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/filter_rule.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/group.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Hostdiscovery/settings.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/policy.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/connections.volt
@@ -1202,6 +1212,7 @@
 /usr/local/opnsense/scripts/interfaces/ifctl.sh
 /usr/local/opnsense/scripts/interfaces/lib/__init__.py
 /usr/local/opnsense/scripts/interfaces/list_arp.py
+/usr/local/opnsense/scripts/interfaces/list_hosts.py
 /usr/local/opnsense/scripts/interfaces/list_macdb.py
 /usr/local/opnsense/scripts/interfaces/list_ndp.py
 /usr/local/opnsense/scripts/interfaces/list_sockstat.py
@@ -1222,6 +1233,7 @@
 /usr/local/opnsense/scripts/interfaces/reconfigure_vips.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vlans.php
 /usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh
+/usr/local/opnsense/scripts/interfaces/setup_hostwatch.sh
 /usr/local/opnsense/scripts/interfaces/traceroute.py
 /usr/local/opnsense/scripts/interfaces/traffic_stats.php
 /usr/local/opnsense/scripts/interfaces/traffic_top.py
@@ -1367,6 +1379,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_filter.conf
 /usr/local/opnsense/service/conf/actions.d/actions_firmware.conf
 /usr/local/opnsense/service/conf/actions.d/actions_health.conf
+/usr/local/opnsense/service/conf/actions.d/actions_hostwatch.conf
 /usr/local/opnsense/service/conf/actions.d/actions_ids.conf
 /usr/local/opnsense/service/conf/actions.d/actions_interface.conf
 /usr/local/opnsense/service/conf/actions.d/actions_ipfw.conf
@@ -1427,6 +1440,8 @@
 /usr/local/opnsense/service/templates/OPNsense/Filter/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Filter/filter_geoip.conf
 /usr/local/opnsense/service/templates/OPNsense/Filter/filter_tables.conf
+/usr/local/opnsense/service/templates/OPNsense/Hostdiscovery/+TARGETS
+/usr/local/opnsense/service/templates/OPNsense/Hostdiscovery/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/IDS/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/IDS/OPNsense.rules
 /usr/local/opnsense/service/templates/OPNsense/IDS/classification.config
@@ -1480,6 +1495,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/filter.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/firewall.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/gateways.conf
+/usr/local/opnsense/service/templates/OPNsense/Syslog/local/hostwatch.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/ipsec.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/kea.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/lighttpd.conf

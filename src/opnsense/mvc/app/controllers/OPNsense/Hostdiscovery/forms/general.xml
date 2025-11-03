@@ -1,0 +1,35 @@
+<form>
+    <field>
+        <id>hostdiscovery.general.enabled</id>
+        <label>Enable</label>
+        <type>checkbox</type>
+        <help>Enable hostdiscovery service.</help>
+    </field>
+    <field>
+        <id>hostdiscovery.general.interface</id>
+        <label>Interfaces</label>
+        <hint>All</hint>
+        <type>select_multiple</type>
+        <help>Limit host discovery to the interfaces selected here.</help>
+    </field>
+    <field>
+        <id>hostdiscovery.general.promisc</id>
+        <label>Promiscuous mode</label>
+        <type>checkbox</type>
+        <help>Enable promiscuous mode, on by default, supports listening for network packets not targetted directly at us.</help>
+    </field>
+    <field>
+        <id>hostdiscovery.general.verbose</id>
+        <label>Verbose logging</label>
+        <type>checkbox</type>
+        <help>Verbosity mode, send more detailed information to the log.</help>
+    </field>
+    <field>
+        <id>hostdiscovery.general.skip_nets</id>
+        <label>Ignore networks</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>Ignore the selected networks.</help>
+    </field>
+</form>

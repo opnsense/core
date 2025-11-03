@@ -1,0 +1,34 @@
+<model>
+    <mount>//OPNsense/Hostwatch</mount>
+    <version>0.0.1</version>
+    <description>Host discovery</description>
+    <items>
+        <general>
+            <enabled type="BooleanField">
+                <Required>Y</Required>
+                <Default>1</Default>
+            </enabled>
+            <promisc type="BooleanField">
+                <Required>Y</Required>
+                <Default>1</Default>
+            </promisc>
+            <verbose type="BooleanField">
+                <Required>Y</Required>
+                <Default>0</Default>
+            </verbose>
+            <skip_nets type="NetworkField">
+                <AsList>Y</AsList>
+                <Strict>Y</Strict>
+                <WildcardEnabled>N</WildcardEnabled>
+            </skip_nets>
+            <interface type="InterfaceField">
+                <AllowDynamic>Y</AllowDynamic>
+                <Multiple>Y</Multiple>
+                <filters>
+                    <enable>/^(?!0).*$/</enable>
+                    <virtual>/^(?!1).*$/</virtual>
+                </filters>
+            </interface>
+        </general>
+    </items>
+</model>
