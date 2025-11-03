@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2020 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2025 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2015 Deciso B.V.
  * All rights reserved.
  *
@@ -282,18 +282,18 @@ class MenuSystem
         $ordid = count($ifgroups_seq) > 0 ? max($ifgroups_seq) : 0;
         foreach ($iftargets['if'] as $key => $descr) {
             if (array_key_exists($key, $iftargets['gr'])) {
-                $this->appendItem('Interfaces', $key, array(
-                    'visiblename' => '[' . $descr . ']',
+                $this->appendItem('Interfaces', $key, [
+                    'fixedname' => '[' . $descr . ']',
                     'cssclass' => 'fa fa-sitemap',
                     'order' => isset($ifgroups_seq[$key]) ? $ifgroups_seq[$key] : $ordid++,
-                ));
+                ]);
             } elseif (!array_key_exists($key, $ifgroups)) {
-                $this->appendItem('Interfaces', $key, array(
+                $this->appendItem('Interfaces', $key, [
                     'url' => '/interfaces.php?if=' . $key,
-                    'visiblename' => '[' . $descr . ']',
+                    'fixedname' => '[' . $descr . ']',
                     'cssclass' => 'fa fa-sitemap',
                     'order' => $ordid++,
-                ));
+                ]);
             }
         }
 
@@ -304,16 +304,16 @@ class MenuSystem
                     // referential integrity between ifgroups and interfaces isn't assured, skip when interface doesn't exist
                     continue;
                 }
-                $this->appendItem('Interfaces.' . $grouping, $key, array(
+                $this->appendItem('Interfaces.' . $grouping, $key, [
                     'url' => '/interfaces.php?if=' . $key . '&group=' . $grouping,
-                    'visiblename' => '[' . $iftargets['if'][$key] . ']',
+                    'fixedname' => '[' . $iftargets['if'][$key] . ']',
                     'order' => array_search($key, array_keys($iftargets['if']))
-                ));
+                ]);
                 if ($first) {
-                    $this->appendItem('Interfaces.' . $grouping . '.' . $key, 'Origin', array(
+                    $this->appendItem('Interfaces.' . $grouping . '.' . $key, 'Origin', [
                         'url' => '/interfaces.php?if=' . $key,
                         'visibility' => 'hidden',
-                    ));
+                    ]);
                     $first = false;
                 }
             }
@@ -321,83 +321,83 @@ class MenuSystem
 
         $ordid = 100;
         foreach ($iftargets['wl'] as $key => $descr) {
-            $this->appendItem('Interfaces.Wireless', $key, array(
-                'visiblename' => sprintf(gettext('%s Status'), $descr),
+            $this->appendItem('Interfaces.Wireless', $key, [
+                'fixedname' => sprintf(gettext('%s Status'), $descr),
                 'url' => '/status_wireless.php?if=' . $key,
                 'order' => $ordid++,
-            ));
+            ]);
         }
 
         // add interfaces to "Firewall: Rules" menu tab...
-        $iftargets['fw'] = array_merge(array('FloatingRules' => gettext('Floating')), $iftargets['fw']);
+        $iftargets['fw'] = array_merge(['FloatingRules' => gettext('Floating')], $iftargets['fw']);
         $ordid = 0;
         foreach ($iftargets['fw'] as $key => $descr) {
-            $this->appendItem('Firewall.Rules', $key, array(
+            $this->appendItem('Firewall.Rules', $key, [
                 'url' => '/firewall_rules.php?if=' . $key,
-                'visiblename' => $descr,
+                'fixedname' => $descr,
                 'order' => $ordid++,
-            ));
-            $this->appendItem('Firewall.Rules.' . $key, 'Select' . $key, array(
+            ]);
+            $this->appendItem('Firewall.Rules.' . $key, 'Select' . $key, [
                 'url' => '/firewall_rules.php?if=' . $key . '&*',
                 'visibility' => 'hidden',
-            ));
+            ]);
             if ($key == 'FloatingRules') {
-                $this->appendItem('Firewall.Rules.' . $key, 'Top' . $key, array(
+                $this->appendItem('Firewall.Rules.' . $key, 'Top' . $key, [
                     'url' => '/firewall_rules.php',
                     'visibility' => 'hidden',
-                ));
+                ]);
             }
-            $this->appendItem('Firewall.Rules.' . $key, 'Add' . $key, array(
+            $this->appendItem('Firewall.Rules.' . $key, 'Add' . $key, [
                 'url' => '/firewall_rules_edit.php?if=' . $key,
                 'visibility' => 'hidden',
-            ));
-            $this->appendItem('Firewall.Rules.' . $key, 'Edit' . $key, array(
+            ]);
+            $this->appendItem('Firewall.Rules.' . $key, 'Edit' . $key, [
                 'url' => '/firewall_rules_edit.php?if=' . $key . '&*',
                 'visibility' => 'hidden',
-            ));
+            ]);
         }
 
         // add interfaces to "Services: DHCPv[46]" menu tab:
         $ordid = 0;
         foreach ($iftargets['dhcp4'] as $key => $descr) {
-            $this->appendItem('Services.ISC_DHCPv4', $key, array(
+            $this->appendItem('Services.ISC_DHCPv4', $key, [
                 'url' => '/services_dhcp.php?if=' . $key,
-                'visiblename' => "[$descr]",
+                'fixedname' => "[$descr]",
                 'order' => $ordid++,
-            ));
-            $this->appendItem('Services.ISC_DHCPv4.' . $key, 'Edit' . $key, array(
+            ]);
+            $this->appendItem('Services.ISC_DHCPv4.' . $key, 'Edit' . $key, [
                 'url' => '/services_dhcp.php?if=' . $key . '&*',
                 'visibility' => 'hidden',
-            ));
-            $this->appendItem('Services.ISC_DHCPv4.' . $key, 'AddStatic' . $key, array(
+            ]);
+            $this->appendItem('Services.ISC_DHCPv4.' . $key, 'AddStatic' . $key, [
                 'url' => '/services_dhcp_edit.php?if=' . $key,
                 'visibility' => 'hidden',
-            ));
-            $this->appendItem('Services.ISC_DHCPv4.' . $key, 'EditStatic' . $key, array(
+            ]);
+            $this->appendItem('Services.ISC_DHCPv4.' . $key, 'EditStatic' . $key, [
                 'url' => '/services_dhcp_edit.php?if=' . $key . '&*',
                 'visibility' => 'hidden',
-            ));
+            ]);
         }
         $ordid = 0;
         foreach ($iftargets['dhcp6'] as $key => $descr) {
-            $this->appendItem('Services.ISC_DHCPv6', $key, array(
+            $this->appendItem('Services.ISC_DHCPv6', $key, [
                 'url' => '/services_dhcpv6.php?if=' . $key,
-                'visiblename' => "[$descr]",
+                'fixedname' => "[$descr]",
                 'order' => $ordid++,
-            ));
-            $this->appendItem('Services.ISC_DHCPv6.' . $key, 'Add' . $key, array(
+            ]);
+            $this->appendItem('Services.ISC_DHCPv6.' . $key, 'Add' . $key, [
                 'url' => '/services_dhcpv6_edit.php?if=' . $key,
                 'visibility' => 'hidden',
-            ));
-            $this->appendItem('Services.ISC_DHCPv6.' . $key, 'Edit' . $key, array(
+            ]);
+            $this->appendItem('Services.ISC_DHCPv6.' . $key, 'Edit' . $key, [
                 'url' => '/services_dhcpv6_edit.php?if=' . $key . '&*',
                 'visibility' => 'hidden',
-            ));
-            $this->appendItem('Services.RouterAdv', $key, array(
+            ]);
+            $this->appendItem('Services.RouterAdv', $key, [
                 'url' => '/services_router_advertisements.php?if=' . $key,
-                'visiblename' => "[$descr]",
+                'fixedname' => "[$descr]",
                 'order' => $ordid++,
-            ));
+            ]);
         }
     }
 
@@ -421,7 +421,7 @@ class MenuSystem
     public function getBreadcrumbs()
     {
         $nodes = $this->root->getChildren();
-        $breadcrumbs = array();
+        $breadcrumbs = [];
 
         while ($nodes != null) {
             $next = null;
@@ -432,7 +432,7 @@ class MenuSystem
                         $next = null;
                         break;
                     }
-                    $breadcrumbs[] = array('name' => $node->VisibleName);
+                    $breadcrumbs[] = ['name' => $node->VisibleName];
                     /* only go as far as the first reachable URL */
                     $next = empty($node->Url) ? $node->Children : null;
                     break;
