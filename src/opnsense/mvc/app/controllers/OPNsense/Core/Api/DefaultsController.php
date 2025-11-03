@@ -97,6 +97,7 @@ class DefaultsController extends ApiControllerBase
         foreach ($cm->traverseConfig() as $item) {
             $result['items'][] = $item;
         }
+        usort($result['items'], fn($a, $b) => strcasecmp($a['description'], $b['description']));
         return $result;
     }
 

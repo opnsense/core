@@ -94,15 +94,17 @@ class ConfigMaintenance
                     $this->foundrefs[] = $this_path;
                     if (isset($this->modelmap[$this_path])) {
                         yield [
+                            'description' => $this->modelmap[$this_path]['description'],
+                            'installed' => '1',
                             'id' => $this_path,
-                            'description' => $this->modelmap[$this_path]['description']
                         ];
                     } else {
                         $tmp = explode('.', $this_path);
                         $descr = (string)$xmlNode->attributes()['description'];
                         yield [
+                            'description' => !empty($descr) ? $descr : ucfirst(end($tmp)),
+                            'installed' => '0',
                             'id' => $this_path,
-                            'description' => $descr ?? end($tmp)
                         ];
                     }
                 } else {

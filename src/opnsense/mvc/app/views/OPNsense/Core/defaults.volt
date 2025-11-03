@@ -53,9 +53,11 @@
                 if (data.items) {
                     $("#sections").empty();
                     data.items.forEach(function (item, index) {
-                        $("#sections").append($("<option/>").val(item.id).text(
-                            item.description + ' [' + item.id + ']'
-                        ));
+                        let label = item.description + ' [' + item.id + ']';
+                        if (item.installed == "0") {
+                             label += ' ' + "{{ lang._('(not installed)') }}";
+                        }
+                        $("#sections").append($("<option/>").val(item.id).text(label));
                     });
                     $("#sections").selectpicker('refresh');
                 }
