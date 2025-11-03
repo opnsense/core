@@ -1,17 +1,17 @@
 <menu>
     <Firewall>
-        <Automation cssClass="fa fa-gear">
-            <Filter order="50" url="/ui/firewall/filter/">
+        <Rules>
+            <Filter order="0" VisibleName="Filter [new]" url="/ui/firewall/filter/">
                 <FilterRef url="/ui/firewall/filter#*" visibility="hidden"/>
             </Filter>
-            <SourceNat order="100" VisibleName="Source NAT" url="/ui/firewall/source_nat/">
-                <FilterRef url="/ui/firewall/source_nat#*" visibility="hidden"/>
-            </SourceNat>
-        </Automation>
+        </Rules>
         <NAT>
             <OneToOne order="200" VisibleName="One-to-One" url="/ui/firewall/one_to_one/">
                 <FilterRef url="/ui/firewall/one_to_one#*" visibility="hidden"/>
             </OneToOne>
+            <SourceNat order="300" VisibleName="Source NAT" url="/ui/firewall/source_nat/">
+                <FilterRef url="/ui/firewall/source_nat#*" visibility="hidden"/>
+            </SourceNat>
             <NPTv6 order="400" url="/ui/firewall/npt/">
                 <FilterRef url="/ui/firewall/npt#*" visibility="hidden"/>
             </NPTv6>
