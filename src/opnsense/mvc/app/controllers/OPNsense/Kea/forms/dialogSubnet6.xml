@@ -64,4 +64,16 @@
             <visible>false</visible>
         </grid_view>
     </field>
+    <field>
+        <id>subnet6.option_data.v6_dnr</id>
+        <label>DNR option content</label>
+        <type>text</type>
+        <help>
+	  <![CDATA[DNR (Discovery of Network-designated Resolvers) Option, only single backslashes required! See <a href="https://kea.readthedocs.io/en/latest/arm/dhcp6-srv.html#dnr-discovery-of-network-designated-resolvers-options-for-dhcpv6">Kea documentation</a> for syntax.]]>
+        </help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+        <advanced>true</advanced>
+    </field>
 </form>

@@ -89,6 +89,8 @@
                         <AsList>Y</AsList>
                         <ValidationMessage>Please specify a valid list of domains.</ValidationMessage>
                     </domain_search>
+                    <v6_dnr type="TextField">
+                    </v6_dnr>
                 </option_data>
                 <pools type=".\KeaPoolsField">
                 </pools>
