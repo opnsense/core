@@ -141,13 +141,13 @@ class MenuController extends ApiControllerBase
     {
         foreach ($menu_items as $menu_item) {
             if (!isset($menu_item->breadcrumb)) {
-                $menu_item->breadcrumb = gettext($menu_item->VisibleName);
+                $menu_item->breadcrumb = $menu_item->VisibleName;
                 $menu_item->depth = 1;
             }
             if ($menu_item->isVisible) {
                 if (count($menu_item->Children) > 0) {
                     foreach ($menu_item->Children as &$submenu) {
-                        $submenu->breadcrumb = $menu_item->breadcrumb . ' / ' . gettext($submenu->VisibleName);
+                        $submenu->breadcrumb = $menu_item->breadcrumb . ': ' . $submenu->VisibleName;
                         $submenu->depth = $menu_item->depth + 1;
                     }
                     $this->extractMenuLeaves($menu_item->Children, $items);
