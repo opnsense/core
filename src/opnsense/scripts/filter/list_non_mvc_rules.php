@@ -87,7 +87,7 @@ foreach ($fw->iterateFilterRules() as $prio => $item) {
             if (!empty($rule[$field])) {
                 foreach (($config['interfaces'] ?? []) as $ifkey => $ifdata) {
                     if (($ifdata['if'] ?? '') === $rule[$field]) {
-                        $rule[$field] = (!empty($ifdata['descr']) ? $ifdata['descr'] : strtoupper($ifkey)) . ' net';
+                        $rule[$field] = !empty($ifdata['descr']) ? $ifdata['descr'] : strtoupper($ifkey);
                         break;
                     }
                 }
