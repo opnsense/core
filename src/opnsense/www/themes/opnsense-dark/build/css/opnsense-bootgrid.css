@@ -74,19 +74,14 @@
 }
 
 /* Command column styles */
-.tabulator-col.tabulator-frozen.tabulator-frozen-right {
-}
-
-.tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-right {
-}
-
 /* Tabulator groupBy row styles */
 .tabulator-row.tabulator-group {
   border: none;
   pointer-events: none;
+  margin-left: 0;
 }
 
-.tabulator-row.tabulator-group span {
+.tabulator-row.tabulator-group .span {
   margin-left: 0;
   color: #ECECEC;
 }
@@ -120,12 +115,6 @@
   border-top: 1px solid #373736;
   border-bottom: 1px solid #E5E5E5;
   border-left: 1px solid #373736;
-}
-
-.tabulator-col.tabulator-row-header.tabulator-frozen.tabulator-frozen-left {
-}
-
-.tabulator-cell.tabulator-row-header.tabulator-frozen.tabulator-frozen-left {
 }
 
 /*------------*/
@@ -300,25 +289,28 @@
 }
 
 .bootgrid-placeholder {
-    font-size: 15px;
-    text-align: center;
-    white-space: normal;
-    font-weight: 400;
+  font-size: 15px;
+  text-align: center;
+  white-space: normal;
+  font-weight: 400;
 }
 
 .bootgrid-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 99;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
 }
+
 .overlay > i {
-    font-size: 20px;
-    color: white;
+  font-size: 20px;
+  color: white;
 }
+
+/*# sourceMappingURL=opnsense-bootgrid.css.map */
