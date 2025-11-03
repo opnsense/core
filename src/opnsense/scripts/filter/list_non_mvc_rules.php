@@ -74,6 +74,26 @@ foreach ($fw->iterateFilterRules() as $prio => $item) {
                 unset($rule[$src]);
             }
         }
+
+        /* normalize <virusprod> or (opt1) for frontend grid formatters */
+        foreach (['source_net', 'source_port', 'destination_net', 'destination_port'] as $field) {
+            if (!empty($rule[$field])) {
+                $rule[$field] = trim($rule[$field], "()<>");
+            }
+        }
+
+        /* physical interface (device) names to descriptions */
+        foreach (['source_net', 'destination_net'] as $field) {
+            if (!empty($rule[$field])) {
+                foreach (($config['interfaces'] ?? []) as $ifkey => $ifdata) {
+                    if (($ifdata['if'] ?? '') === $rule[$field]) {
+                        $rule[$field] = (!empty($ifdata['descr']) ? $ifdata['descr'] : strtoupper($ifkey)) . ' net';
+                        break;
+                    }
+                }
+            }
+        }
+
         $rule['action'] = $rule['action'] ?? 'pass';
         $rule['ipprotocol'] = $rule['ipprotocol'] ?? 'inet';
         if (!empty($rule['from_not'])) {
@@ -81,7 +101,7 @@ foreach ($fw->iterateFilterRules() as $prio => $item) {
             $rule['source_not'] = true;
         }
         if (!empty($rule['to_not'])) {
-            unset($rule['destination_not']);
+            unset($rule['to_not']);
             $rule['destination_not'] = true;
         }
 
