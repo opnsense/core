@@ -90,6 +90,7 @@
                         <ValidationMessage>Please specify a valid list of domains.</ValidationMessage>
                     </domain_search>
                     <v6_dnr type="TextField">
+                        <Mask>/^([^\n"])*$/u</Mask>
                     </v6_dnr>
                 </option_data>
                 <pools type=".\KeaPoolsField">
