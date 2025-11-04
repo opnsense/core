@@ -1,13 +1,13 @@
 <acl>
     <page-filter-api>
-        <name>Firewall: Automation: Filter</name>
+        <name>Firewall: Rules [new]</name>
         <patterns>
             <pattern>ui/firewall/filter/*</pattern>
             <pattern>api/firewall/filter/*</pattern>
         </patterns>
     </page-filter-api>
     <page-filter-snat-api>
-        <name>Firewall: Automation: Source NAT</name>
+        <name>Firewall: NAT: Source NAT</name>
         <patterns>
             <pattern>ui/firewall/source_nat/*</pattern>
             <pattern>api/firewall/source_nat/*</pattern>
