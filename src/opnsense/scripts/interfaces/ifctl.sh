@@ -259,6 +259,7 @@ fi
 TEMP=$(mktemp ${FILE}.XXXXXX)
 EXIT=0
 
+chmod 644 ${TEMP}
 : > ${TEMP}
 
 for CONTENT in ${DO_CONTENTS}; do
