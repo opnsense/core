@@ -1,18 +1,16 @@
 <menu>
     <Firewall>
-        <Rules>
-            <Filter order="0" VisibleName="Filter [new]" url="/ui/firewall/filter/">
-                <FilterRef url="/ui/firewall/filter#*" visibility="hidden"/>
-            </Filter>
-        </Rules>
+        <Rule VisibleName="Rules [new]" url="/ui/firewall/filter/" cssClass="fa fa-check fa-fw">
+            <FilterRef url="/ui/firewall/filter#*" visibility="hidden"/>
+        </Rule>
         <NAT>
             <OneToOne order="200" VisibleName="One-to-One" url="/ui/firewall/one_to_one/">
                 <FilterRef url="/ui/firewall/one_to_one#*" visibility="hidden"/>
             </OneToOne>
-            <SourceNat order="300" VisibleName="Source NAT" url="/ui/firewall/source_nat/">
+            <SourceNat order="400" VisibleName="Source NAT" url="/ui/firewall/source_nat/">
                 <FilterRef url="/ui/firewall/source_nat#*" visibility="hidden"/>
             </SourceNat>
-            <NPTv6 order="400" url="/ui/firewall/npt/">
+            <NPTv6 order="500" url="/ui/firewall/npt/">
                 <FilterRef url="/ui/firewall/npt#*" visibility="hidden"/>
             </NPTv6>
         </NAT>
