@@ -34,6 +34,7 @@
         let grid_states = $("#grid-states").UIBootgrid(
                 {   search:'/api/diagnostics/firewall/query_states',
                     del:'/api/diagnostics/firewall/del_state/',
+                    datakey: 'id',
                     options:{
                         virtualDOM: true,
                         formatters:{
