@@ -616,7 +616,7 @@
                     );
                 }
                 const $chip = $(`
-                    <li class="filter-chip" data-id="${id}">
+                    <li class="filter-chip badge" data-id="${id}">
                     <span>${f.field} ${operatorMap[f.operator].translation} “${f.format ?? f.value}”</span>
                     <button aria-label="Remove filter" title="Remove filter">&times;</button>
                     </li>
@@ -1265,7 +1265,7 @@
 
 .filters-wrap { display:flex; gap:1rem; align-items:center; margin:0.5rem 0; }
 .filters-list { display:flex; gap:0.5rem; flex-wrap:wrap; margin:0.25rem 0 0; padding:0; list-style:none; align-items: center; }
-.filter-chip { background:#f2f2f2; border-radius:999px; padding:0.25rem 0.6rem; display:flex; gap:0.4rem; align-items:center; }
+.filter-chip { border-radius:999px; padding:0.25rem 0.6rem; display:flex; gap:0.4rem; align-items:center; }
 .filter-chip button { border:none; background:transparent; cursor:pointer; font-weight:bold; }
 .muted { color:#666; font-size:0.9em; }
 .stack { display:flex; flex-direction:column; gap:0.35rem; }
