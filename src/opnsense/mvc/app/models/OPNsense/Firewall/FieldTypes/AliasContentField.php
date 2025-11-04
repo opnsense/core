@@ -81,10 +81,28 @@ class AliasContentField extends BaseField
      * @param array $data to validate
      * @return \Generator
      */
+
+    /** OLD
     private function getItems($data)
     {
         foreach (explode($this->separatorchar, $data) as $value) {
+
             yield $value;
+        }
+    }
+    */
+
+    private function getItems($data)
+    {
+        foreach (explode($this->separatorchar, $data) as $value) {
+            // Strip inline comments starting with #
+            if (strpos($value, '#') !== false) {
+                $value = preg_replace('/\s*#.*$/', '', $value);
+            }
+            $value = trim($value);
+            if ($value !== '') {
+                yield $value;
+            }
         }
     }
 

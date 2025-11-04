@@ -287,6 +287,13 @@ class Util
             if (!empty($name) && (string)$node['name'] == $name && $node['type'] == 'port') {
                 $aliases[] = $name;
                 foreach ($node['content'] as $address) {
+                    // Strip inline comments starting with #
+                    $address = preg_replace('/\s*#.*$/', '', $address);
+                    $address = trim($address);
+                    if ($address === '') {
+                        continue;
+                    }
+                    // /Strip inline comments starting with #
                     if (Util::isAlias($address)) {
                         if (!in_array($address, $aliases)) {
                             foreach (Util::getPortAlias($address, $aliases) as $port) {
