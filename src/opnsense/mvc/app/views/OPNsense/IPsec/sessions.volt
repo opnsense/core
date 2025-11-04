@@ -69,7 +69,6 @@
             }
         });
         grid_phase1.on('loaded.rs.jquery.bootgrid', function() {
-            $('[data-toggle="tooltip"]').tooltip({container: 'body', trigger: 'hover'});
             let ids = $("#grid-phase1").bootgrid("getCurrentRows");
             if (ids.length > 0) {
                 $("#grid-phase1").bootgrid('select', [ids[0].name]);
@@ -88,9 +87,6 @@
             });
         });
         grid_phase1.on("selected.rs.jquery.bootgrid", function(e, rows) {
-            $("#grid-phase2").bootgrid('reload');
-        });
-        grid_phase1.on("deselected.rs.jquery.bootgrid", function(e, rows) {
             $("#grid-phase2").bootgrid('reload');
         });
 
