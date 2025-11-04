@@ -76,22 +76,44 @@ foreach ($fw->iterateFilterRules() as $prio => $item) {
         }
 
         /* normalize <virusprod> or (opt1) for frontend grid formatters */
-        foreach (['source_net', 'source_port', 'destination_net', 'destination_port'] as $field) {
-            if (!empty($rule[$field])) {
-                $rule[$field] = trim($rule[$field], "()<>");
+        foreach (['source_net', 'destination_net', 'source_port', 'destination_port'] as $field) {
+            if (empty($rule[$field])) {
+                continue;
             }
-        }
 
-        /* physical interface (device) names to descriptions */
-        foreach (['source_net', 'destination_net'] as $field) {
-            if (!empty($rule[$field])) {
+            $val = $rule[$field];
+            $scope = null;
+
+            // pf syntax detection
+            if ($val[0] === '(') {
+                $scope = 'network';
+                $val = trim($val, '()');
+            } elseif ($val[0] === '<') {
+                $scope = 'address';
+                $val = trim($val, '<>');
+            }
+
+            // special case
+            if ($val === 'self') {
+                $rule[$field] = gettext('This Firewall');
+                continue;
+            }
+
+            // try to map to interface description
+            if (in_array($field, ['source_net', 'destination_net'], true)) {
                 foreach (($config['interfaces'] ?? []) as $ifkey => $ifdata) {
-                    if (($ifdata['if'] ?? '') === $rule[$field]) {
-                        $rule[$field] = !empty($ifdata['descr']) ? $ifdata['descr'] : strtoupper($ifkey);
-                        break;
+                    if (($ifdata['if'] ?? '') === $val) {
+                        $descr = $ifdata['descr'] ?: strtoupper($ifkey);
+                        $suffix = $scope === 'network' ? gettext('net') :
+                                ($scope === 'address' ? gettext('address') : '');
+                        $rule[$field] = "$descr $suffix";
+                        continue 2;
                     }
                 }
             }
+
+            // fallback for alias, literal or port
+            $rule[$field] = $val;
         }
 
         $rule['action'] = $rule['action'] ?? 'pass';
