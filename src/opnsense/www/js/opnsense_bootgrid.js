@@ -639,57 +639,10 @@ class UIBootgrid {
         });
 
         this.table.on('dataLoading', () => {
-            // Dynamically adjust table height to prevent dead space
-            // (workaround for https://github.com/olifolkerd/tabulator/issues/4419: maxHeight does not work without a fixed height)
             if (!this.originalTableHeight) {
                 // allow content to grow to 60vh
                 // XXX needs option
                 this.originalTableHeight = parseInt(parseInt(60) * window.innerHeight / 100);
-            }
-
-            const resizeObserver = new ResizeObserver(this._debounce((entries) => {
-                for (let entry of entries) {
-                    const height = entry.contentRect.height;
-                    const width = entry.contentRect.width;
-                    const scollbarGutterOffset = 16;
-                    let curTotalTableHeight = $(`#${this.id}`)[0].offsetHeight;
-                    const holderHeight = $(`#${this.id} .tabulator-tableholder`)[0].offsetHeight;
-
-                    if (holderHeight > height) {
-                        if (!this.dataAvailable) {
-                            this.table.setHeight(120); // default tabulator height
-                        } else {
-                            // dead space, shrink
-                            const diff = holderHeight - height;
-                            this.table.setHeight((curTotalTableHeight - diff) + scollbarGutterOffset);
-                        }
-                        return;
-                    }
-
-                    if (height > holderHeight) {
-                        const diff = height - holderHeight;
-                        const equal = curTotalTableHeight === this.originalTableHeight;
-                        const was = curTotalTableHeight;
-                        curTotalTableHeight = curTotalTableHeight + diff;
-                        if (was < this.originalTableHeight && curTotalTableHeight > this.originalTableHeight) {
-                            // max height reached, set it explicitly in case we're coming from a smaller size
-                            this.table.setHeight(this.originalTableHeight + scollbarGutterOffset);
-                            this.table.redraw();
-                            return;
-                        }
-
-                        if (curTotalTableHeight < this.originalTableHeight) {
-                            // we can grow
-                            this.table.setHeight(curTotalTableHeight + scollbarGutterOffset);
-                            this.table.redraw();
-                            return;
-                        }
-                    }
-                }
-            }));
-
-            if (!this.options.disableScroll) {
-                resizeObserver.observe($(`#${this.id} .tabulator-table`)[0]);
             }
 
             window.addEventListener('resize', this._debounce(() => {
@@ -705,23 +658,6 @@ class UIBootgrid {
                     this._onDataProcessed();
                 })
             }
-
-            // make sure we redraw the table as it enters the viewport (multiple tabbed grids)
-            // since tabulator needs the page dimensions
-            const intersectObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    const isVisible = entry.isIntersecting;
-                    if (isVisible !== this.isVisible) {
-                        this.isVisible = isVisible;
-                        if (isVisible) {
-                            this.table.redraw(true);
-                            this._onDataProcessed();
-                        }
-                    }
-                });
-            });
-
-            intersectObserver.observe(this.$element[0]);
 
             this.tableInitialized = true;
         });
@@ -790,7 +726,6 @@ class UIBootgrid {
             }
         }));
 
-
         // Triggers to activate persistence
         this.table.on('columnResized', (column) => {
             this._setPersistence(true);
@@ -807,6 +742,70 @@ class UIBootgrid {
         });
         this.table.on('columnMoved', (column, columns) => {
             this._setPersistence(true);
+        });
+
+        this.table.on('tableBuilt', () => {
+            // Dynamically adjust table height to prevent dead space
+            // (workaround for https://github.com/olifolkerd/tabulator/issues/4419: maxHeight does not work without a fixed height)
+            const target = $(`#${this.id} .tabulator-table`)[0];
+            const resizeObserver = new ResizeObserver(this._debounce((entries) => {
+                for (let entry of entries) {
+                    const height = entry.contentRect.height;
+                    const scollbarGutterOffset = 16;
+                    let curTotalTableHeight = $(`#${this.id}`)[0].offsetHeight;
+                    const holderHeight = $(`#${this.id} .tabulator-tableholder`)[0].offsetHeight;
+
+                    if (holderHeight > height) {
+                        if (!this.dataAvailable && !this.loading) {
+                            this.table.setHeight(120); // default tabulator height
+                        } else {
+                            // dead space, shrink
+                            const diff = holderHeight - height;
+                            this.table.setHeight((curTotalTableHeight - diff) + scollbarGutterOffset);
+                        }
+                        return;
+                    }
+
+                    if (height > holderHeight) {
+                        const diff = height - holderHeight;
+                        const was = curTotalTableHeight;
+                        curTotalTableHeight = curTotalTableHeight + diff;
+                        if (was < this.originalTableHeight && curTotalTableHeight > this.originalTableHeight) {
+                            // max height reached, set it explicitly in case we're coming from a smaller size
+                            this.table.setHeight(this.originalTableHeight + scollbarGutterOffset);
+                            this.table.redraw();
+                            return;
+                        }
+
+                        if (curTotalTableHeight < this.originalTableHeight) {
+                            // we can grow
+                            this.table.setHeight(curTotalTableHeight + scollbarGutterOffset);
+                            this.table.redraw();
+                            return;
+                        }
+                    }
+                }
+            }));
+
+            if (!this.options.disableScroll) {
+                resizeObserver.observe(target);
+            }
+
+            // make sure we redraw the table as it enters the viewport (multiple tabbed grids)
+            // since tabulator needs the page dimensions
+            const intersectObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const isVisible = entry.isIntersecting;
+                    if (isVisible !== this.isVisible) {
+                        this.isVisible = isVisible;
+                        if (isVisible) {
+                            this.table.redraw(true);
+                        }
+                    }
+                });
+            });
+
+            intersectObserver.observe(this.$element[0]);
         });
     }
 
