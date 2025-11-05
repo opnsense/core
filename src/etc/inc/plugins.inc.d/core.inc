@@ -228,18 +228,6 @@ function core_devices()
                 'ifdescr' => gettext('wireless clone'),
                 'name' => $conf['if'],
             ];
-
-            $realif = get_real_interface($id);
-            if ($realif == $conf['if']) {
-                continue;
-            }
-
-            /* return both implicit and explicit clone if implicit clone was given */
-            $wlan_names[$realif] = [
-                'descr' => sprintf('%s (%s)', $realif, gettext('wireless clone')),
-                'ifdescr' => gettext('wireless clone'),
-                'name' => $realif,
-            ];
         }
     }
 
