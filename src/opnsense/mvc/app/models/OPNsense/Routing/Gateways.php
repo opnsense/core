@@ -207,6 +207,9 @@ class Gateways extends BaseModel
                         if (empty($record['monitor_disable'])) {
                             $record['monitor_disable'] = '0';
                         }
+                        if (empty($record['monitor_noroute'])) {
+                            $record['monitor_noroute'] = '0';
+                        }
                         // backwards compatibility, hook "current_" fields
                         foreach ($this->gateway_item->getDpingerDefaults() as $key => $value) {
                             if (empty($record[$key])) {
@@ -403,6 +406,7 @@ class Gateways extends BaseModel
                         "name" => strtoupper("{$descr}_{$ctype}"),
                         "descr" => "Interface " . strtoupper("{$descr}_{$ctype}") . " Gateway",
                         "monitor_disable" => '1', // disable monitoring by default
+                        "monitor_noroute" => '0', // enabled host route by default
                         "gateway_interface" => false, // Dynamic gateway policy
                         "if" => $realif,
                         "dynamic" => true,

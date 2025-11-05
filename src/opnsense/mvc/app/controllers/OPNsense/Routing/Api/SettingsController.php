@@ -70,16 +70,22 @@ class SettingsController extends ApiMutableModelControllerBase
                 $gateways[$idx]['uuid'] = $gateway['name'];
             }
 
-            /* flags used by view to filter or format elements */
+            /*
+             * Flags used by view to filter or format elements:
+             *
+             * This output does not consistently represent the model data
+             * in types returned and actual values but is kept this way to
+             * provide a compatible API experience for existing API users.
+             */
             $gateways[$idx]['virtual'] = !empty($gateway['virtual']);
             $gateways[$idx]['disabled'] = !empty($gateway['disabled']);
             $gateways[$idx]['upstream'] = !empty($gateway['defaultgw']);
-            $gateways[$idx]['defaultgw'] = '0';
+            $gateways[$idx]['defaultgw'] = false;
             foreach (['default_gwv4', 'default_gwv6'] as $default_gw) {
                 /* gateway might be configured as defaultgw, whether it is active is determined here */
                 if (!empty($$default_gw)) {
                     if ($gateway['name'] == $$default_gw['name']) {
-                        $gateways[$idx]['defaultgw'] = '1';
+                        $gateways[$idx]['defaultgw'] = true;
                     }
                 }
             }
