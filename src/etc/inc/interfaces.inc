@@ -2396,12 +2396,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             break;
         case '6rd':
             interface_6rd_configure($interface, $wancfg, $reload || $linkup);
-            /* XXX remaining edge case with different $realifv6 */
             mwexecf('/sbin/ifconfig %s inet6 description %s up', [$realifv6, $ifdescr]);
             break;
         case '6to4':
             interface_6to4_configure($interface, $wancfg, $reload || $linkup);
-            /* XXX remaining edge case with different $realifv6 */
             mwexecf('/sbin/ifconfig %s inet6 description %s up', [$realifv6, $ifdescr]);
             break;
         case 'track6':
