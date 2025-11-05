@@ -333,7 +333,7 @@ function legacy_config_get_interfaces($filters = [], $exclude_ifs = [])
             $iface['descr'] = !empty($iface['descr']) ? $iface['descr'] : strtoupper($ifname);
             $iface['ipaddrv6'] = !empty($iface['ipaddrv6']) ? $iface['ipaddrv6'] : null;
             $iface['ipaddr'] = !empty($iface['ipaddr']) ? $iface['ipaddr'] : null;
-            $iface['devices'] = !empty($iface['if']) ? [$iface['if']] : [];
+            $iface['if'] = !empty($iface['if']) ? $iface['if'] : null;
             $interfaces[$ifname] = $iface;
         }
     }
