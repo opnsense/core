@@ -129,10 +129,10 @@ function radvd_configure_do($verbose = false, $blacklist = [])
             continue;
         }
 
-        $realif = get_real_interface($dhcpv6if, 'inet6');
-        $radvdifs[$realif] = 1;
+        $device = get_real_interface($dhcpv6if, 'inet6');
+        $radvdifs[$device] = 1;
 
-        $mtu = legacy_interface_stats($realif)['mtu'];
+        $mtu = legacy_interface_stats($device)['mtu'];
 
         if (isset($config['interfaces'][$dhcpv6if]['track6-interface'])) {
             $realtrackif = get_real_interface($config['interfaces'][$dhcpv6if]['track6-interface'], 'inet6');
@@ -154,7 +154,7 @@ function radvd_configure_do($verbose = false, $blacklist = [])
         }
 
         $radvdconf .= "# Generated RADVD config for manual assignment on {$dhcpv6if}\n";
-        $radvdconf .= "interface {$realif} {\n";
+        $radvdconf .= "interface {$device} {\n";
         $radvdconf .= "\tAdvSendAdvert on;\n";
         $radvdconf .= sprintf("\tMinRtrAdvInterval %s;\n", !empty($dhcpv6ifconf['ramininterval']) ? $dhcpv6ifconf['ramininterval'] : '200');
         $radvdconf .= sprintf("\tMaxRtrAdvInterval %s;\n", !empty($dhcpv6ifconf['ramaxinterval']) ? $dhcpv6ifconf['ramaxinterval'] : '600');
@@ -295,7 +295,7 @@ function radvd_configure_do($verbose = false, $blacklist = [])
                 if (is_ipaddrv6($ifcfgipv6)) {
                     $dnslist_tmp[] = $ifcfgipv6;
                 } else {
-                    log_msg("radvd_configure_do(manual) found no suitable IPv6 address on {$dhcpv6if}({$realif})", LOG_WARNING);
+                    log_msg("radvd_configure_do(manual) found no suitable IPv6 address on {$dhcpv6if}({$device})", LOG_WARNING);
                 }
             } elseif (!empty($config['system']['dnsserver'][0])) {
                 $dnslist_tmp = $config['system']['dnsserver'];
@@ -360,10 +360,10 @@ function radvd_configure_do($verbose = false, $blacklist = [])
         }
 
         $trackif = $config['interfaces'][$if]['track6-interface'];
-        $realif = get_real_interface($if, 'inet6');
+        $device = get_real_interface($if, 'inet6');
 
         /* prevent duplicate entries, manual overrides */
-        if (isset($radvdifs[$realif])) {
+        if (isset($radvdifs[$device])) {
             continue;
         }
 
@@ -374,11 +374,11 @@ function radvd_configure_do($verbose = false, $blacklist = [])
             continue;
         }
 
-        $radvdifs[$realif] = 1;
+        $radvdifs[$device] = 1;
 
         $realtrackif = get_real_interface($trackif, 'inet6');
 
-        $mtu = legacy_interface_stats($realif)['mtu'];
+        $mtu = legacy_interface_stats($device)['mtu'];
         $trackmtu = legacy_interface_stats($realtrackif)['mtu'];
         if (!empty($trackmtu) && !empty($mtu)) {
             if ($trackmtu < $mtu) {
@@ -394,7 +394,7 @@ function radvd_configure_do($verbose = false, $blacklist = [])
             if (is_ipaddrv6($ifcfgipv6)) {
                 $dnslist[] = $ifcfgipv6;
             } else {
-                log_msg("radvd_configure_do(auto) found no suitable IPv6 address on {$if}({$realif})", LOG_WARNING);
+                log_msg("radvd_configure_do(auto) found no suitable IPv6 address on {$if}({$device})", LOG_WARNING);
             }
         } elseif (!empty($config['system']['dnsserver'])) {
             foreach ($config['system']['dnsserver'] as $server) {
@@ -410,7 +410,7 @@ function radvd_configure_do($verbose = false, $blacklist = [])
         }
 
         $radvdconf .= "# Generated RADVD config for {$autotype} assignment from {$trackif} on {$if}\n";
-        $radvdconf .= "interface {$realif} {\n";
+        $radvdconf .= "interface {$device} {\n";
         $radvdconf .= "\tAdvSendAdvert on;\n";
         $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 0);
         $radvdconf .= "\tAdvManagedFlag on;\n";
