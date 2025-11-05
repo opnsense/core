@@ -344,10 +344,10 @@ class InitialSetup extends BaseModel
                     'interface' => 'wan',
                     'gateway' => (string)$this->interfaces->wan->gateway,
                     'name' => 'WAN_GW',
-                    'weight' => 1,
-                    'monitor_disable' => 1,
-                    'descr' => "WAN Gateway",
-                    'defaultgw' => true,
+                    'weight' => '1',
+                    'monitor_disable' => '1',
+                    'descr' => 'WAN Gateway',
+                    'defaultgw' => '1',
                 ]);
             }
         }

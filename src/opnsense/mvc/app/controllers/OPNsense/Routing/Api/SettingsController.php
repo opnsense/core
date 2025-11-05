@@ -74,12 +74,12 @@ class SettingsController extends ApiMutableModelControllerBase
             $gateways[$idx]['virtual'] = !empty($gateway['virtual']);
             $gateways[$idx]['disabled'] = !empty($gateway['disabled']);
             $gateways[$idx]['upstream'] = !empty($gateway['defaultgw']);
-            $gateways[$idx]['defaultgw'] = false;
+            $gateways[$idx]['defaultgw'] = '0';
             foreach (['default_gwv4', 'default_gwv6'] as $default_gw) {
                 /* gateway might be configured as defaultgw, whether it is active is determined here */
                 if (!empty($$default_gw)) {
                     if ($gateway['name'] == $$default_gw['name']) {
-                        $gateways[$idx]['defaultgw'] = true;
+                        $gateways[$idx]['defaultgw'] = '1';
                     }
                 }
             }
