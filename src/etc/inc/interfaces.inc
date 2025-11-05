@@ -731,9 +731,8 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
     } else {
         $ifcfg = $ifacecfg['ifcfg'];
         $ppps = $ifacecfg['ppps'];
-        /* when $ifacecfg is passed, it should contain the original interfaces */
-        $device = $ifacecfg['ifcfg']['realif'];
-        $realifv6 = $ifacecfg['ifcfg']['realifv6'];
+        $device = reset($ifcfg['devices']);
+        $realifv6 = end($ifcfg['devices']);
     }
 
     if (!$suspend) {
