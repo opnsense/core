@@ -90,7 +90,7 @@ foreach ($iflist as $ifname => $ifcfg) {
     list ($primary6,, $bits6) = interfaces_primary_address6($ifname, $ifdetails);
     $network6 = "{$primary6}/{$bits6}";
 
-    printf("\n %-15s -> ", "{$ifcfg['descr']} ({{$ifcfg['devices'][0]})");
+    printf("\n %-15s -> ", "{$ifcfg['descr']} ({$ifcfg['devices'][0]})");
 
     $v6first = false;
 
