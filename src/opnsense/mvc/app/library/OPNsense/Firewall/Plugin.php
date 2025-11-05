@@ -80,16 +80,16 @@ class Plugin
         // generate virtual IPv6 interfaces
         foreach ($this->interfaceMapping as $key => &$intf) {
             if (!empty($intf['ipaddrv6']) && ($intf['ipaddrv6'] == '6rd' || $intf['ipaddrv6'] == '6to4')) {
-                $realif = "{$key}_stf";
+                $device = "{$key}_stf";
                 // create new interface
-                $this->interfaceMapping[$realif] = [];
-                $this->interfaceMapping[$realif]['ifconfig']['ipv6'] = $intf['ifconfig']['ipv6'];
-                $this->interfaceMapping[$realif]['gatewayv6'] = $intf['gatewayv6'];
-                $this->interfaceMapping[$realif]['is_IPv6_override'] = true;
-                $this->interfaceMapping[$realif]['descr'] = $intf['descr'];
-                $this->interfaceMapping[$realif]['if'] = $realif;
+                $this->interfaceMapping[$device] = [];
+                $this->interfaceMapping[$device]['ifconfig']['ipv6'] = $intf['ifconfig']['ipv6'];
+                $this->interfaceMapping[$device]['gatewayv6'] = $intf['gatewayv6'];
+                $this->interfaceMapping[$device]['is_IPv6_override'] = true;
+                $this->interfaceMapping[$device]['descr'] = $intf['descr'];
+                $this->interfaceMapping[$device]['if'] = $device;
                 // link original interface
-                $intf['IPv6_override'] = $realif;
+                $intf['IPv6_override'] = $device;
             }
         }
     }
