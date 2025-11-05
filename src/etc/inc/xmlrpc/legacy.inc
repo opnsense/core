@@ -57,8 +57,8 @@ function does_vip_exist($vip)
         case "carp":
         case "ipalias":
             /* XXX: Make proper checks? */
-            $realif = get_real_interface($vip['interface']);
-            if (!does_interface_exist($realif)) {
+            $device = get_real_interface($vip['interface']);
+            if (!does_interface_exist($device)) {
                 return false;
             }
             break;
@@ -68,7 +68,7 @@ function does_vip_exist($vip)
             return false;
     }
 
-    foreach (array_keys(interfaces_addresses($realif, true)) as $vipips) {
+    foreach (array_keys(interfaces_addresses($device, true)) as $vipips) {
         if ($vipips == "{$vip['subnet']}/{$vip['subnet_bits']}") {
             return true;
         }
