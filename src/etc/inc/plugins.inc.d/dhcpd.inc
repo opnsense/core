@@ -298,8 +298,8 @@ EOPP;
 
         list ($ifcfgip, $ifcfgnet, $ifcfgsn) = interfaces_primary_address($dhcpif, $ifconfig_details);
         if (!is_ipaddrv4($ifcfgip) || !is_subnetv4($ifcfgnet)) {
-            $realif = get_real_interface($dhcpif);
-            log_msg("dhcpd_dhcp4_configure() found no suitable IPv4 address on {$dhcpif}({$realif})", LOG_WARNING);
+            $device = get_real_interface($dhcpif);
+            log_msg("dhcpd_dhcp4_configure() found no suitable IPv4 address on {$dhcpif}({$device})", LOG_WARNING);
             continue;
         }
 
@@ -1010,8 +1010,8 @@ EOD;
 
         list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
         if (!is_ipaddrv6($ifcfgipv6) || !is_subnetv6($networkv6)) {
-            $realif = get_real_interface($dhcpv6if, 'inet6');
-            log_msg("dhcpd_dhcp6_configure() found no suitable IPv6 address on {$dhcpv6if}({$realif})", LOG_WARNING);
+            $device = get_real_interface($dhcpv6if, 'inet6');
+            log_msg("dhcpd_dhcp6_configure() found no suitable IPv6 address on {$dhcpv6if}({$device})", LOG_WARNING);
             continue;
         }
 
