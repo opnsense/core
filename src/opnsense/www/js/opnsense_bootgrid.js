@@ -639,8 +639,6 @@ class UIBootgrid {
         });
 
         this.table.on('dataLoading', () => {
-            // Dynamically adjust table height to prevent dead space
-            // (workaround for https://github.com/olifolkerd/tabulator/issues/4419: maxHeight does not work without a fixed height)
             if (!this.originalTableHeight) {
                 // allow content to grow to 60vh
                 // XXX needs option
@@ -747,6 +745,8 @@ class UIBootgrid {
         });
 
         this.table.on('tableBuilt', () => {
+            // Dynamically adjust table height to prevent dead space
+            // (workaround for https://github.com/olifolkerd/tabulator/issues/4419: maxHeight does not work without a fixed height)
             const target = $(`#${this.id} .tabulator-table`)[0];
             const resizeObserver = new ResizeObserver(this._debounce((entries) => {
                 for (let entry of entries) {
@@ -755,12 +755,8 @@ class UIBootgrid {
                     let curTotalTableHeight = $(`#${this.id}`)[0].offsetHeight;
                     const holderHeight = $(`#${this.id} .tabulator-tableholder`)[0].offsetHeight;
 
-                    if (this.loading) {
-                        return;
-                    }
-
                     if (holderHeight > height) {
-                        if (!this.dataAvailable) {
+                        if (!this.dataAvailable && !this.loading) {
                             this.table.setHeight(120); // default tabulator height
                         } else {
                             // dead space, shrink
