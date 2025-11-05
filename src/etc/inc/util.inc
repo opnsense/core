@@ -787,7 +787,7 @@ function get_primary_interface_from_list($iflist = null)
     return $ret;
 }
 
-/* XXX in practice "real interface" is called a "device" nowadays */
+/* in practice "real interface" is called a "device" nowadays */
 function get_real_interface($interface = 'wan', $family = 'all')
 {
     global $config;
@@ -797,14 +797,14 @@ function get_real_interface($interface = 'wan', $family = 'all')
         return $family != 'both' ? $interface : [$interface];
     }
 
-    $realif = []; /* store both: 0 => IPv4, 1 = > IPv6 (if different) */
+    $devices = []; /* store both: 0 => IPv4, 1 = > IPv6 (if different) */
 
-    $realif[0] = $config['interfaces'][$interface]['if'];
+    $devices[0] = $config['interfaces'][$interface]['if'];
 
     switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
         case '6rd':
         case '6to4':
-            $realif[1] = "{$interface}_stf";
+            $devices[1] = "{$interface}_stf";
             break;
         default:
             break;
@@ -813,7 +813,7 @@ function get_real_interface($interface = 'wan', $family = 'all')
     switch ($family) {
         case 'inet6':
             /* select special IPv6 interface if it exists */
-            $realif = $realif[1] ?? $realif[0];
+            $devices = $devices[1] ?? $devices[0];
             break;
         case 'both':
             /* pass array as is */
@@ -821,11 +821,11 @@ function get_real_interface($interface = 'wan', $family = 'all')
         case 'all':
             /* FALLTHROUGH: XXX historic weirdness */
         default:
-            $realif = $realif[0];
+            $devices = $devices[0];
             break;
     }
 
-    return $realif;
+    return $devices;
 }
 
 /*
