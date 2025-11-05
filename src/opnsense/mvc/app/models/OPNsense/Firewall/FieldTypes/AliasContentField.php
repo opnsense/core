@@ -82,7 +82,7 @@ class AliasContentField extends BaseField
      * @return \Generator
      */
 
-    /** OLD
+    /** Original
     private function getItems($data)
     {
         foreach (explode($this->separatorchar, $data) as $value) {
@@ -94,14 +94,16 @@ class AliasContentField extends BaseField
 
     private function getItems($data)
     {
-        foreach (explode($this->separatorchar, $data) as $value) {
-            // Strip inline comments starting with #
-            if (strpos($value, '#') !== false) {
-                $value = preg_replace('/\s*#.*$/', '', $value);
+        foreach (explode($this->separatorchar, $data) as $row) {
+            // Remove all after first #
+            if (strpos($row, '#') !== false) {
+                $row = preg_replace('/\s*#.*$/', '', $row);
             }
-            $value = trim($value);
-            if ($value !== '') {
-                yield $value;
+            foreach (explode(',', $row) as $value) {
+                $value = trim($value);
+                if ($value !== '') {
+                    yield $value;
+                }
             }
         }
     }

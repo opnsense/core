@@ -151,14 +151,9 @@ function filter_core_get_port_alias($aliasname, $aliases = [], $aliasObject = nu
     $aliasObject = $aliasObject == null ? (new \OPNsense\Firewall\Alias(true)) : $aliasObject;
     foreach ($aliasObject->aliasIterator() as $aliased) {
         if ($aliasname == $aliased['name'] && $aliased['type'] == 'port' && !empty($aliased['enabled'])) {
+
             foreach ($aliased['content'] as $address) {
-                // Strip inline comments starting with #
-                $address = preg_replace('/\s*#.*$/', '', $address);
-                $address = trim($address);
-                if ($address === '') {
-                    continue;
-                }
-                // /Strip inline comments starting with #
+            /* Original
                 if (in_array($address, $all_aliases)) {
                     if (!in_array($address, $aliases)) {
                         foreach (filter_core_get_port_alias($address, $aliases, $aliasObject, $all_aliases) as $port) {
@@ -170,6 +165,29 @@ function filter_core_get_port_alias($aliasname, $aliases = [], $aliasObject = nu
                 } elseif ((is_port($address) || is_portrange($address)) && !in_array($address, $response)) {
                     $response[] = $address;
                 }
+                */
+                // Remove all after first #
+                if (strpos($address, '#') !== false) {
+                    $address = preg_replace('/\s*#.*$/', '', $address);
+                }
+                foreach (explode(',', $address) as $value) {
+                    $value = trim($value);
+                    if ($value === '') {
+                        continue;
+                    }
+                    if (in_array($value, $all_aliases)) {
+                        if (!in_array($value, $aliases)) {
+                            foreach (filter_core_get_port_alias($value, $aliases, $aliasObject, $all_aliases) as $port) {
+                                if (!in_array($port, $response)) {
+                                    $response[] = $port;
+                                }
+                            }
+                        }
+                    } elseif ((is_port($value) || is_portrange($value)) && !in_array($value, $response)) {
+                        $response[] = $value;
+                    }
+                }
+               // Remove all after first #
             }
         }
     }
