@@ -95,11 +95,10 @@ class AliasContentField extends BaseField
     private function getItems($data)
     {
         foreach (explode($this->separatorchar, $data) as $row) {
-            // Remove all after first #
-            if (strpos($row, '#') !== false) {
-                $row = preg_replace('/\s*#.*$/', '', $row);
-            }
             foreach (explode(',', $row) as $value) {
+                if (strpos($value, '#') !== false) {
+                    $value = preg_replace('/\s*#.*$/', '', $value);
+                }
                 $value = trim($value);
                 if ($value !== '') {
                     yield $value;

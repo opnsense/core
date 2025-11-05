@@ -193,16 +193,14 @@ class Alias(object):
                     address_parser = self.get_parser()
                     if address_parser:
                         for item in self.items():
-                            # Remove all after first #
-                            if '#' in item:
-                                item = item.split('#', 1)[0]
+                            # Split on comma and Remove all after first #
                             for value in item.split(','):
+                                if '#' in value:
+                                    value = value.split('#', 1)[0]
                                 value = value.strip()
                                 if not value:
                                     continue
-                                for address in address_parser.iter_addresses(value):
-                                    self._resolve_content.add(address)
-                            # /Remove all after first #
+                            # /Split on comma and Remove all after first #
                             for address in address_parser.iter_addresses(item):
                                 self._resolve_content.add(address)
                         # resolve hostnames (async) if there are any in the collected set

@@ -286,8 +286,8 @@ class Util
         foreach (self::$aliasObject->aliasIterator() as $node) {
             if (!empty($name) && (string)$node['name'] == $name && $node['type'] == 'port') {
                 $aliases[] = $name;
-                /* Original
                 foreach ($node['content'] as $address) {
+                /* Original
                     if (Util::isAlias($address)) {
                         if (!in_array($address, $aliases)) {
                             foreach (Util::getPortAlias($address, $aliases) as $port) {
@@ -301,12 +301,11 @@ class Util
                     }
                 }
                 */
-                foreach ($node['content'] as $address) {
-                    // Remove all after first #
-                    if (strpos($address, '#') !== false) {
-                        $address = preg_replace('/\s*#.*$/', '', $address);
-                    }
+                    // Split on comma and Remove all after first #
                     foreach (explode(',', $address) as $value) {
+                        if (strpos($value, '#') !== false) {
+                            $value = preg_replace('/\s*#.*$/', '', $value);
+                        }
                         $value = trim($value);
                         if ($value === '') {
                             continue;
@@ -323,8 +322,8 @@ class Util
                             $result[] = $value;
                         }
                     }
+                    // /Split on comma and Remove all after first #
                 }
-                // /Remove all after first #
             }
         }
 
