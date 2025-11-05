@@ -85,12 +85,35 @@ foreach ($fw->iterateFilterRules() as $prio => $item) {
             $rule['destination_not'] = true;
         }
 
+        foreach (['source', 'destination'] as $field) {
+            if (!empty($rule[$field])) {
+                $rule[$field . '_not'] = !empty($rule[$field]['not']) ? "1" : "0";
+                if (!empty($rule[$field]['any'])) {
+                    $rule[$field . '_net'] = 'any';
+                } elseif (!empty($rule[$field]['network'])) {
+                    $rule[$field . '_net'] = $rule[$field]['network'];
+                } else {
+                    $rule[$field . '_net'] = $rule[$field]['address'] ?? '';
+                }
+                $rule[$field . '_port'] = $rule[$field]['port'] ?? '';
+                unset($rule[$field]);
+            }
+        }
+
+
+        foreach (['source_net', 'destination_net', 'source_port', 'destination_port'] as $field) {
+            if (!empty($rule[$field] && $rule[$field] != '(self)')) {
+                $rule[$field] = trim($rule[$field], '()<>{}');
+            }
+        }
+
         /**
          * Evaluation order consists of a priority group and a sequence within the set,
          * prefixed with 1 as these are located after mvc rules.
          **/
         $rule['sort_order'] = sprintf("%06d.1%06d", $prio, $sequence++);
         $rule['legacy'] = true;
+        $rule['is_automatic'] = empty($rule['updated']); /* plugin generated rules have no timestamp */
         $rules[] = $rule;
     }
 }

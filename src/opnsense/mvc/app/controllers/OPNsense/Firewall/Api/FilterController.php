@@ -33,34 +33,124 @@ use OPNsense\Core\Backend;
 use OPNsense\Firewall\Category;
 use OPNsense\Firewall\Group;
 use OPNsense\Firewall\Util;
+use OPNsense\Firewall\Alias;
+
 
 class FilterController extends FilterBaseController
 {
     protected static $categorysource = "rules.rule";
 
-    private function getFieldMap()
+    /* cache properties */
+    private array $networks = [];
+    private array $legacy_fieldmap = [];
+    private array $catcolors = [];
+
+    /**
+     * @param string $names comma seperated list of network items
+     * @return array list of meta arrays
+     */
+    private function getNetworks($names)
     {
-        $result = ['category' => [], 'interface' => []];
-        foreach ((new Category())->categories->category->iterateItems() as $key => $category) {
-            $result['category'][$key] = (string)$category->name;
+        /* As we are rendering MVC and legacy content, we can't use the descriptions from the fieldtypes */
+        if (empty($this->networks)) {
+            $nets = [];
+            $nets['any'] = gettext('any');
+            $nets['(self)'] = gettext('This Firewall');
+            foreach (Config::getInstance()->object()->interfaces->children() as $ifname => $ifdetail) {
+                $descr = htmlspecialchars(!empty($ifdetail->descr) ? $ifdetail->descr : strtoupper($ifname));
+                $nets[$ifname] = $descr . ' ' . gettext('net');
+                if (!empty($ifdetail->if)) {
+                    /* some automatic rules use device names */
+                    $nets[(string)$ifdetail->if] = $descr . ' ' . gettext('net');
+                }
+                $nets[$ifname . 'ip'] = $descr . ' ' . gettext('address');
+            }
+            foreach ($nets as $key => $value) {
+                $this->networks[$key] = [
+                    'value' => $key,
+                    '%value' => $value,
+                    'isAlias' => false,
+                    'description' => ''
+                ];
+            }
+            $aliasmdl = new Alias(true);
+            Util::attachAliasObject($aliasmdl);
+            foreach ($aliasmdl->aliasIterator() as $alias) {
+                $this->networks[$alias['name']] = [
+                    'value' => $alias['name'],
+                    '%value' => $alias['name'],
+                    'isAlias' => true,
+                    'description' => Util::aliasDescription($alias['name'])
+                ];
+            }
         }
-        foreach ((Config::getInstance()->object())->interfaces->children() as $key => $ifdetail) {
-            $descr = !empty($ifdetail->descr) ? $ifdetail->descr : strtoupper($key);
-            $result['interface'][$key] = $descr;
+        $result = [];
+        foreach (array_map('trim', explode(',', $names)) as $name) {
+            if (isset($this->networks[$name])) {
+                $result[] = $this->networks[$name];
+            } else {
+                /* unknown type (e.g. address or port) */
+                $result[] = [
+                    'value' => $name,
+                    '%value' => $name,
+                    'isAlias' => false,
+                    'description' => ''
+                ];
+            }
         }
-        $result['action'] = [
-            'pass' => 'Pass',
-            'block' => 'Block',
-            'reject' => 'Reject'
-        ];
-
-        $result['ipprotocol'] = [
-            'inet' => gettext('IPv4'),
-            'inet6' => gettext('IPv6'),
-            'inet46' => gettext('IPv4+IPv6')
-        ];
-
         return $result;
+    }
+
+    /**
+     * @param array $cats list of category ids
+     * @return array colors
+     */
+    private function getCategoryColors($cats)
+    {
+        if (empty($this->catcolors)) {
+            foreach ((new Category())->categories->category->iterateItems() as $key => $category) {
+                $uuid = (string)$category->getAttributes()['uuid'];
+                $color = trim((string)$category->color);
+                $this->catcolors[$uuid] = !empty($color) ? "#{$color}" : '#000';
+            }
+        }
+        $result = [];
+        foreach ($cats as $cat) {
+            if (isset($this->catcolors[$cat])) {
+                $result[] = $this->catcolors[$cat];
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @return array cached fieldmapping for legacy data
+     */
+    private function getLegacyFieldMap()
+    {
+        if (empty($this->legacy_fieldmap)) {
+            $this->legacy_fieldmap = ['category' => [], 'interface' => []];
+            foreach ((new Category())->categories->category->iterateItems() as $key => $category) {
+                $this->legacy_fieldmap['category'][$key] = (string)$category->name;
+            }
+            foreach ((Config::getInstance()->object())->interfaces->children() as $key => $ifdetail) {
+                $descr = !empty($ifdetail->descr) ? $ifdetail->descr : strtoupper($key);
+                $this->legacy_fieldmap['interface'][$key] = $descr;
+            }
+            $this->legacy_fieldmap['action'] = [
+                'pass' => 'Pass',
+                'block' => 'Block',
+                'reject' => 'Reject'
+            ];
+
+            $this->legacy_fieldmap['ipprotocol'] = [
+                'inet' => gettext('IPv4'),
+                'inet6' => gettext('IPv6'),
+                'inet46' => gettext('IPv4+IPv6')
+            ];
+        }
+
+        return $this->legacy_fieldmap;
     }
 
     /**
@@ -100,8 +190,6 @@ class FilterController extends FilterBaseController
             return $is_cat && $is_if;
         };
 
-        /* filter logic for legacy and internal rules */
-        $fieldmap = $this->getFieldMap();
         if ($show_all) {
             /* only query stats when fill info is requested */
             $rule_stats = json_decode((new Backend())->configdRun('filter rule stats'), true) ?? [];
@@ -109,73 +197,28 @@ class FilterController extends FilterBaseController
             $rule_stats = [];
         }
 
-        $catcolors = [];
-        $autoCategoryName  = gettext('Automatically generated rules');
-        $autoCategoryColor = '#000';
-        foreach ((new Category())->categories->category->iterateItems() as $category) {
-            $uuid = (string)$category->getAttributes()['uuid'];
-            $color = trim((string)$category->color);
-            // Assign default color if empty
-            $catcolors[$uuid] = empty($color) ? $autoCategoryColor : "#{$color}";
-        }
 
-        $filter_funct_rs  = function (&$record) use (
-            $categories,
-            $interfaces,
-            $show_all,
-            $fieldmap,
-            $rule_stats,
-            $catcolors,
-            $autoCategoryName,
-            $autoCategoryColor
-        ) {
+        $filter_funct_rs  = function (&$record) use ($categories, $interfaces, $rule_stats) {
             /* always merge stats when found */
             if (!empty($record['uuid']) && !empty($rule_stats[$record['uuid']])) {
-                foreach ($rule_stats[$record['uuid']] as $key => $value) {
-                    $record[$key] = $value;
-                }
+                $record = array_merge($record, $rule_stats[$record['uuid']]);
             }
             /* frontend can format aliases with an alias icon */
             foreach (['source_net','source_port','destination_net','destination_port'] as $field) {
-                if (empty($record[$field])) {
-                    continue;
+                if (!empty($record[$field])) {
+                    $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
                 }
-
-                $rawValues = array_map('trim', explode(',', $record[$field]));
-                $translatedValues = [];
-                if (!empty($record['%' . $field])) {
-                    $translatedValues = array_map('trim', explode(',', (string)$record['%' . $field]));
-                }
-
-                $items = [];
-                foreach ($rawValues as $index => $val) {
-                    $isAlias = Util::isAlias($val);
-                    $items[] = [
-                        "value"       => $val,
-                        "%value"      => $translatedValues[$index] ?? $val,
-                        "isAlias"     => $isAlias,
-                        "description" => $isAlias ? (Util::aliasDescription($val) ?? '') : ''
-                    ];
-                }
-                $record["alias_meta_{$field}"] = $items;
             }
 
             /* frontend can format categories with colors */
-            if (!empty($record['categories'])) {
-                $catnames = array_map('trim', explode(',', $record['categories']));
-                $record['category_colors'] = array_map(
-                    fn($name) => $catcolors[$name],
-                    array_filter($catnames, fn($name) => isset($catcolors[$name]))
-                );
-            } else {
-                $record['category_colors'] = [];
-            }
+            $r_categories = !empty($record['categories']) ? array_map('trim', explode(',', $record['categories'])) : [];
+            $record['category_colors'] = $this->getCategoryColors($r_categories);
 
             if (empty($record['legacy'])) {
                 /* mvc already filtered */
                 return true;
             }
-            $is_cat = empty($categories) || array_intersect(explode(',', $record['category'] ?? ''), $categories);
+            $is_cat = empty($categories) || array_intersect($r_categories, $categories);
 
             if (empty($interfaces)) {
                 $is_if = empty($record['interface']) || count(explode(',', $record['interface'])) > 1;
@@ -185,7 +228,7 @@ class FilterController extends FilterBaseController
             }
             if ($is_cat && $is_if) {
                 /* translate/convert legacy fields before returning, similar to mvc handling */
-                foreach ($fieldmap as $topic => $data) {
+                foreach ($this->getLegacyFieldMap() as $topic => $data) {
                     if (!empty($record[$topic])) {
                         $tmp = [];
                         foreach (explode(',', $record[$topic]) as $item) {
@@ -195,9 +238,9 @@ class FilterController extends FilterBaseController
                     }
                 }
                 // Tag legacy rules as "Automatic generated rules" if they have an empty category
-                if (!empty($record['legacy']) && empty($record['categories'])) {
-                    $record['categories'] = $autoCategoryName;
-                    $record['category_colors'] = [$autoCategoryColor];
+                if (!empty($record['is_automatic'])) {
+                    $record['categories'] = gettext('Automatically generated rules');
+                    $record['category_colors'] = ['#000'];
                 }
 
                 return true;
