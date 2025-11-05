@@ -273,16 +273,16 @@ function add_gateway_to_config($interface, $gatewayip, $inet_type, $is_in_subnet
     }
 
     $item = [
-        'disabled' => 0,
+        'disabled' => '0',
         'descr' => sprintf('Interface %s Gateway', strtoupper($interface)),
-        'defaultgw' => $is_default ? 1 : 0,
+        'defaultgw' => $is_default ? '1' : '0',
         'ipprotocol' => $inet_type,
         'interface' => $interface,
         'gateway' => $gatewayip,
-        'monitor_disable' => 1,
+        'monitor_disable' => '1',
         'name' => $new_name,
-        'weight' => 1,
-        'fargw' => !$is_in_subnet ? 1 : 0
+        'weight' => '1',
+        'fargw' => !$is_in_subnet ? '1' : '0',
     ];
 
     $gw->createOrUpdateGateway($item, $uuid);
