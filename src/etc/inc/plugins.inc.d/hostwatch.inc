@@ -30,15 +30,6 @@
 function hostwatch_services()
 {
     $services = [];
-    $template = [
-        'configd' => [
-            'restart' => ['kea restart'],
-            'start' => ['kea start'],
-            'stop' => ['kea stop'],
-        ],
-        'name' => 'kea-dhcp',
-    ];
-
     if (!(new \OPNsense\Hostdiscovery\Hostwatch())->general->enabled->isEmpty()) {
         $services[] = [
             'description' => gettext('Host discovery service'),

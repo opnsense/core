@@ -1,11 +1,20 @@
 <acl>
     <page-hostdiscovery>
-        <name>System: Host discovery</name>
+        <name>Interfaces: Neighbors: Automatic discovery</name>
         <description>Allow access to the hostdiscovery server</description>
         <patterns>
             <pattern>ui/hostdiscovery/settings</pattern>
             <pattern>api/hostdiscovery/settings/*</pattern>
             <pattern>api/hostdiscovery/service/*</pattern>
+            <pattern>ui/hostdiscovery/settings</pattern>
         </patterns>
     </page-hostdiscovery>
+    <page-diagnostics-logs-hostdiscovery>
+        <name>Interfaces: Neighbors: Discovery Log</name>
+        <description>Allow access to the host discovery Log File</description>
+        <patterns>
+            <pattern>ui/diagnostics/log/core/hostdiscovery/*</pattern>
+            <pattern>api/diagnostics/log/core/hostdiscovery/*</pattern>
+        </patterns>
+    </page-diagnostics-logs-hostdiscovery>
 </acl>
