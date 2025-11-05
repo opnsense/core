@@ -59,13 +59,13 @@ function console_prompt_for_yn($prompt_text, $default = '')
     }
 }
 
-function console_get_interface_from_ppp($realif)
+function console_get_interface_from_ppp($device)
 {
     global $config;
 
     if (isset($config['ppps']['ppp'])) {
         foreach ($config['ppps']['ppp'] as $ppp) {
-            if ($realif == $ppp['if']) {
+            if ($device == $ppp['if']) {
                 $ifaces = explode(',', $ppp['ports']);
                 return $ifaces[0];
             }
