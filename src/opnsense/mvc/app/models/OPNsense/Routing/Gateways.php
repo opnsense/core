@@ -253,7 +253,7 @@ class Gateways extends BaseModel
      * @param string $ifname name of the interface
      * @param array $definedIntf configuration of interface
      * @param string $ipproto inet/inet6 type
-     * @return string $realif target device name
+     * @return string $device target device name
      */
     private function getRealInterface($definedIntf, $ifname, $ipproto = 'inet')
     {
@@ -263,20 +263,20 @@ class Gateways extends BaseModel
         }
 
         $ifcfg = $definedIntf[$ifname];
-        $realif = $ifcfg['if'];
+        $device = $ifcfg['if'];
 
         if ($ipproto == 'inet6') {
             switch ($ifcfg['ipaddrv6'] ?? 'none') {
                 case '6rd':
                 case '6to4':
-                    $realif = "{$ifname}_stf";
+                    $device = "{$ifname}_stf";
                     break;
                 default:
                     break;
             }
         }
 
-        return $realif;
+        return $device;
     }
 
     /**
@@ -395,7 +395,7 @@ class Gateways extends BaseModel
                 foreach (["inet", "inet6"] as $ipproto) {
                     // filename suffix and interface type as defined in the interface
                     $descr = !empty($ifcfg['descr']) ? $ifcfg['descr'] : $ifname;
-                    $realif = $this->getRealInterface($definedIntf, $ifname, $ipproto);
+                    $device = $this->getRealInterface($definedIntf, $ifname, $ipproto);
                     $ctype = self::convertType($ipproto, $ifcfg);
                     $ctype = $ctype != null ? $ctype : "GW";
                     // default configuration, when not set in gateway_item
@@ -408,12 +408,12 @@ class Gateways extends BaseModel
                         "monitor_disable" => '1', // disable monitoring by default
                         "monitor_noroute" => '0', // enabled host route by default
                         "gateway_interface" => false, // Dynamic gateway policy
-                        "if" => $realif,
+                        "if" => $device,
                         "dynamic" => true,
                         "virtual" => true
                     ];
                     // set default priority
-                    if (strstr($realif, 'gre') || strstr($realif, 'gif') || strstr($realif, 'ovpn')) {
+                    if (strstr($device, 'gre') || strstr($device, 'gif') || strstr($device, 'ovpn')) {
                         // consider tunnel type interfaces least attractive by default
                         $thisconf['priority'] = 255;
                     } else {
@@ -432,14 +432,14 @@ class Gateways extends BaseModel
                     }
                     if (!empty($thisconf['virtual']) && in_array($thisconf['name'], $reservednames)) {
                         /* if name is already taken, don't try to add a new (virtual) entry */
-                    } elseif (($router = Autoconf::getRouter($realif, $ipproto)) != null) {
+                    } elseif (($router = Autoconf::getRouter($device, $ipproto)) != null) {
                         $thisconf['gateway'] = $router;
                         if (empty($thisconf['monitor_disable']) && empty($thisconf['monitor'])) {
                             $thisconf['monitor'] = $thisconf['gateway'];
                         }
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
                         $this->cached_gateways[$gwkey] = $thisconf;
-                    } elseif (!empty($ifcfg['gateway_interface']) || substr($realif, 0, 5) == 'ovpnc') {
+                    } elseif (!empty($ifcfg['gateway_interface']) || substr($device, 0, 5) == 'ovpnc') {
                         // XXX: ditch ovpnc in a major upgrade in the future, supersede with interface setting
                         //      gateway_interface
 
