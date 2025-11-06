@@ -31,7 +31,6 @@ namespace OPNsense\Hostdiscovery\Api;
 use OPNsense\Base\ApiMutableServiceControllerBase;
 use OPNsense\Core\Backend;
 
-
 class ServiceController extends ApiMutableServiceControllerBase
 {
     protected static $internalServiceClass = '\OPNsense\Hostdiscovery\Hostwatch';

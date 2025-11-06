@@ -31,7 +31,6 @@ namespace OPNsense\Hostdiscovery;
 use OPNsense\Base\BaseModel;
 use OPNsense\Base\Messages\Message;
 
-
 class Hostwatch extends BaseModel
 {
 }

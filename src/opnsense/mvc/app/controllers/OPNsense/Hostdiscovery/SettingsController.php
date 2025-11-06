@@ -28,7 +28,6 @@
 
 namespace OPNsense\Hostdiscovery;
 
-
 class SettingsController extends \OPNsense\Base\IndexController
 {
     public function indexAction()

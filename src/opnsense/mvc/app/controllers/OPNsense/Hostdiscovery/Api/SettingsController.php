@@ -30,10 +30,8 @@ namespace OPNsense\Hostdiscovery\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
 
-
 class SettingsController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'hostdiscovery';
     protected static $internalModelClass = '\OPNsense\Hostdiscovery\Hostwatch';
-
 }

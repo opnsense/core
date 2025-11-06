@@ -33,7 +33,7 @@ function hostwatch_services()
     if (!(new \OPNsense\Hostdiscovery\Hostwatch())->general->enabled->isEmpty()) {
         $services[] = [
             'description' => gettext('Host discovery service'),
-            'pidfile' = '/var/run/hostwatch/hostwatch.pid',
+            'pidfile' => '/var/run/hostwatch/hostwatch.pid',
             'configd' => [
                 'restart' => ['hostwatch restart'],
                 'start' => ['hostwatch start'],
