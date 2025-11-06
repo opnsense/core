@@ -35,7 +35,6 @@ use OPNsense\Firewall\Group;
 use OPNsense\Firewall\Util;
 use OPNsense\Firewall\Alias;
 
-
 class FilterController extends FilterBaseController
 {
     protected static $categorysource = "rules.rule";
