@@ -420,6 +420,8 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/forms/general.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/forms/services.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/forms/tests.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Ntpd/Api/ServiceController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Ntpd/StatusController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/Api/ClientOverwritesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/Api/ExportController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/Api/InstancesController.php
@@ -965,6 +967,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Kea/leases6.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Monit/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Monit/status.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Ntpd/status.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/cso.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/export.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/instances.volt
@@ -1258,6 +1261,7 @@
 /usr/local/opnsense/scripts/netflow/lib/aggregates/source.py
 /usr/local/opnsense/scripts/netflow/lib/flowparser.py
 /usr/local/opnsense/scripts/netflow/lib/parse.py
+/usr/local/opnsense/scripts/ntpd/ntpd_status.php
 /usr/local/opnsense/scripts/openssh/ssh_query.py
 /usr/local/opnsense/scripts/openvpn/client_connect.php
 /usr/local/opnsense/scripts/openvpn/client_disconnect.sh
@@ -1374,6 +1378,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_kea.conf
 /usr/local/opnsense/service/conf/actions.d/actions_monit.conf
 /usr/local/opnsense/service/conf/actions.d/actions_netflow.conf
+/usr/local/opnsense/service/conf/actions.d/actions_ntpd.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openssh.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openvpn.conf
 /usr/local/opnsense/service/conf/actions.d/actions_shaper.conf
@@ -2480,7 +2485,6 @@
 /usr/local/www/services_ntpd_pps.php
 /usr/local/www/services_opendns.php
 /usr/local/www/services_router_advertisements.php
-/usr/local/www/status_ntpd.php
 /usr/local/www/status_wireless.php
 /usr/local/www/system_advanced_admin.php
 /usr/local/www/system_advanced_firewall.php
