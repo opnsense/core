@@ -123,7 +123,7 @@ class ConfigMaintenance
             $node = (Config::getInstance())->object();
         }
         foreach ($node->children() as $xmlNode) {
-            if ($xmlNode->count() > 0) {
+            if ($xmlNode->count() > 0 || !empty($xmlNode->attributes()['version'])) {
                 $this_path = ltrim($path . '.' . $xmlNode->getName(), '.');
                 if (!empty($xmlNode->attributes()['version'])) {
                     if ($this_path == $item) {
