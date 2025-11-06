@@ -197,7 +197,9 @@ function restore_config_section_xmlrpc($new_config)
 
     if (count($vipbackup) > 0) {
         // if $new_config contained VIPs and the old config contained VIPs with no VHID, prepend original VIPs
-        array_unshift($config['virtualip']['vip'], array_values($vipbackup));
+        foreach ($vipbackup as $vip) {
+            array_unshift($config['virtualip']['vip'], $vip);
+        }
     }
 
     /* Log what happened */
