@@ -146,6 +146,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			flock \
 			flowd \
 			hostapd \
+			hostwatch \
 			ifinfo \
 			iftop \
 			isc-dhcp44-server \
