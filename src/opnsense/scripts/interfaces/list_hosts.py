@@ -44,6 +44,13 @@ if __name__ == '__main__':
         epilog='Outputs a list of entries containing [ifname, ether, ip_address <,vendor>]'
     )
     parser.add_argument('-d', '--discover', help='Disable host discovery data', action="store_false", default=True)
+    parser.add_argument(
+        '-n',
+        '--ndp',
+        help='When not using host discovery data, enable ndp as well',
+        action="store_true",
+        default=False
+    )
     parser.add_argument('-p', '--proto', nargs='+', default=['inet', 'inet6'], choices=['inet', 'inet6'])
     parser.add_argument(
         '-v', '--verbose', help='Verbose output (including vendors)', action="store_true", default=False
@@ -80,7 +87,7 @@ if __name__ == '__main__':
                     if inputargs.verbose:
                         record.append(OUI().get_vendor(row['mac-address'], ''))
                     result['rows'].append(record)
-        if 'inet6' in inputargs.proto:
+        if 'inet6' in inputargs.proto and inputargs.ndp:
             sp = subprocess.run(['/usr/sbin/ndp', '-an'], capture_output=True, text=True)
             for line in sp.stdout.split('\n')[1:]:
                 line_parts = line.split()
