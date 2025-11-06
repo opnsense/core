@@ -42,9 +42,6 @@ POSSIBILITY OF SUCH DAMAGE.
                     dfObj.resolve();
                 });
                 return dfObj;
-            },
-            onAction: function(data, status) {
-                updateServiceControlUI('hostdiscovery');
             }
         });
 
@@ -116,4 +113,4 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
 </div>
 
-{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/hostdiscovery/service/reconfigure'}) }}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/hostdiscovery/service/reconfigure', 'data_service_widget': 'hostdiscovery'}) }}
