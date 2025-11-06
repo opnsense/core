@@ -215,7 +215,7 @@
 
             /* attach event handler to reload buttons */
             $('.interface-reload').each(function () {
-                $(this).click(function () {
+                $(this).unbind('click').click(function () {
                     let $element = $(this);
                     let device = $(this).data("device-id");
                     $element.remove('i').html('<i class="fa fa-spinner fa-spin"></i>');
@@ -231,7 +231,7 @@
 
             /* attach event handler to the command-info button */
             $(".interface-info").each(function () {
-                $(this).click(function () {
+                $(this).unbind('click').click(function () {
                     let $element = $(this);
                     let device = $(this).data("row-id");
 
