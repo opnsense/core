@@ -126,7 +126,6 @@ class UIBootgrid {
         this.treeStorageKey = `tabulator-${this.persistenceID}-openTree`;
         this.rememberedTreeIds = new Set(JSON.parse(localStorage.getItem(this.treeStorageKey) || '[]'));
         this.isVisible = false;
-        this.legacyLoadedTimeout = null;
 
         // wrapper-specific options
         this.options = {
@@ -663,19 +662,6 @@ class UIBootgrid {
             this.tableInitialized = true;
         });
 
-        this.table.on('renderComplete', () =>  {
-            /**
-             * backwards compat.
-             * renderComplete is triggered per visible row, so we push the event forward until the the last row is
-             * rendered.
-             */
-            clearTimeout(this.legacyLoadedTimeout);
-            let $target = this.$element;
-            this.legacyLoadedTimeout = setTimeout(function(){
-                $target.trigger("loaded.rs.jquery.bootgrid");
-            }, 200);
-        });
-
         this.table.on('dataProcessed', () =>  {
             this._onDataProcessed();
         });
@@ -813,7 +799,7 @@ class UIBootgrid {
                     if (isVisible !== this.isVisible) {
                         this.isVisible = isVisible;
                         if (isVisible) {
-                            this.table.redraw(true);
+                            this.table.redraw();
                         }
                     }
                 });
@@ -901,6 +887,9 @@ class UIBootgrid {
                 if (kids.length) queue.push(...kids);
             }
         }
+
+        // backwards compat
+        this.$element.trigger("loaded.rs.jquery.bootgrid");
     }
 
     _onCellRendered(cell, formatterParams) {
