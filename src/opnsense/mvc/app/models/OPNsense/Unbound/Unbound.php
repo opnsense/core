@@ -77,7 +77,7 @@ class Unbound extends BaseModel
                 }
                 if (count($ipproto) > 1) {
                     $messages->appendMessage(new Message(
-                        gettext("All offered networks should use the same IP protocol"),
+                        gettext('All offered networks should use the same IP protocol.'),
                         $node->source_nets->__reference
                     ));
                 }
