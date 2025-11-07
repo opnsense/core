@@ -246,6 +246,7 @@
                         get:'/api/ids/settings/get_ruleset/',
                         set:'/api/ids/settings/set_ruleset/',
                         toggle:'/api/ids/settings/toggle_ruleset/',
+                        datakey:'filename',
                         options:{
                             virtualDOM: true,
                             navigation:0,
