@@ -711,6 +711,7 @@
 
         const tableWrapper = $("#livelog-table").UIBootgrid({
             options: {
+                static: true,
                 ajax: false,
                 navigation: 0,
                 selection: false,
@@ -1458,7 +1459,7 @@
                 <th data-column-id="action" data-type="string" data-sortable="false" data-width="80">{{ lang._('Action') }}</th>
                 <th data-column-id="label" data-type="string" data-sortable="false">{{ lang._('Label') }}</th>
                 <th data-column-id="status" data-type="string" data-sortable="false" data-visible="false">{{ lang._('Status') }}</th>
-                <th data-column-id="" data-sortable="false" data-formatter="info" data-width="20"></th>
+                <th data-column-id="" data-sortable="false" data-formatter="info" data-width="30"></th>
             </tr>
         </thead>
     </table>
