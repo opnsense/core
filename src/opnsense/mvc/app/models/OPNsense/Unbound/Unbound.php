@@ -71,7 +71,7 @@ class Unbound extends BaseModel
                 );
                 if (count($sizes) > 1) {
                     $messages->appendMessage(new Message(
-                        gettext("All offered networks should be equally sized to avoid overlaps"),
+                        gettext('All offered networks should be equally sized to avoid overlaps.'),
                         $node->source_nets->__reference
                     ));
                 }
