@@ -418,6 +418,7 @@
                     <MaximumValue>65535</MaximumValue>
                 </reqid>
                 <connection_child type="ModelRelationField">
+                    <DisableCache>Y</DisableCache>
                     <Model>
                         <host>
                             <source>OPNsense.IPsec.Swanctl</source>
