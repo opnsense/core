@@ -1430,6 +1430,8 @@
                     <option value="50">50</option>
                     <option value="75">75</option>
                     <option value="100">100</option>
+                    <option value="30000">30000</option>
+                    <option value="80000">80000</option>
                 </select>
                 <label>{{ lang._('Table size') }}</label>
             </div>
@@ -1438,6 +1440,7 @@
                     <option value="10000">10000</option>
                     <option value="20000">20000</option>
                     <option value="30000">30000</option>
+                    <option value="80000">80000</option>
                 </select>
                 <label>{{ lang._('History size') }}</label>
             </div>
