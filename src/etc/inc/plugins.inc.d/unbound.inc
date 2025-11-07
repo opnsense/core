@@ -181,6 +181,7 @@ function unbound_generate_config()
     foreach ($dirs as $dir) {
         mwexecf('/bin/mkdir -p %s', "/var/unbound{$dir}");
     }
+
     /* deploy python module (without test suite) */
     $basedir = '/usr/local/opnsense/scripts/unbound-dnsbl/';
     foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($basedir)) as $filename) {
