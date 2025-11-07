@@ -80,6 +80,7 @@
          * list vouchers in grid
          */
         $("#grid-vouchers").UIBootgrid({
+            datakey: 'username',
             options: {
                 ajax: false,
                 selection: true,
