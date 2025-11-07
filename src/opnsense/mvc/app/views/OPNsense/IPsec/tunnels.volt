@@ -145,6 +145,7 @@
           search: '/api/ipsec/tunnel/search_phase1',
           del: '/api/ipsec/tunnel/del_phase1/',
           toggle: '/api/ipsec/tunnel/toggle_phase1/',
+          datakey: 'id',
           options: {
               formatters: formatters,
               multiSelect: false,
