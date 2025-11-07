@@ -40,6 +40,7 @@
             const table = $('#ntpd-table').UIBootgrid({
                 search: '/api/ntpd/service/status',
                 options: {
+                    static: true,
                     navigation: 0,
                     selection: false,
                     multiSelect: false,
