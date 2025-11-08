@@ -171,4 +171,16 @@
         <help>Custom TLS fields to include in eve-log for TLS. (Overrides extended if non-empty).</help>
         <advanced>true</advanced>
     </field>
+    <field>
+        <id>ids.general.eveLog.types.enabled</id>
+        <label>Enabled EVE types</label>
+        <type>select_multiple</type>
+        <help>The type of events to include in the EVE log.</help>
+    </field>
+    <field>
+        <id>ids.general.eveLog.types.extended</id>
+        <label>Extended EVE types</label>
+        <type>select_multiple</type>
+        <help>The type of events which, if enabled in the EVE log, will contain extended information.</help>
+    </field>
 </form>
