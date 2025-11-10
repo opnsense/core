@@ -183,11 +183,18 @@ function unbound_generate_config()
     }
 
     /* deploy python module (without test suite) */
+    $targetdir = "/var/unbound/unbound-dnsbl/";
+    @array_map('unlink', iterator_to_array(
+        new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($targetdir, FilesystemIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST)
+        )
+    );
+
     $basedir = '/usr/local/opnsense/scripts/unbound-dnsbl/';
     foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($basedir)) as $filename) {
-        $target = "/var/unbound/unbound-dnsbl/".substr($filename, strlen($basedir));
+        $target = $targetdir.substr($filename, strlen($basedir));
         if (str_ends_with($filename, '.py') && is_dir(dirname($target))) {
-            @unlink($target);
             @copy($filename, $target);
         }
     }
