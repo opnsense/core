@@ -132,4 +132,3 @@
 </div>
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/unbound/service/dnsbl'}) }}
 {{ partial("layout_partials/base_dialog",['fields':formDialogDnsbl,'id':formGridDnsbl['edit_dialog_id'],'label':lang._('Edit Blocklist')])}}
-

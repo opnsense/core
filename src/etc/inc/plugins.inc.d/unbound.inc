@@ -187,14 +187,14 @@ function unbound_generate_config()
     @array_map('unlink', iterator_to_array(
         new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($targetdir, FilesystemIterator::SKIP_DOTS),
-            RecursiveIteratorIterator::CHILD_FIRST)
+            RecursiveIteratorIterator::CHILD_FIRST
         )
-    );
+    ));
     @rmdir($targetdir . "lib/__pycache__");
 
     $basedir = '/usr/local/opnsense/scripts/unbound-dnsbl/';
     foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($basedir)) as $filename) {
-        $target = $targetdir.substr($filename, strlen($basedir));
+        $target = $targetdir . substr($filename, strlen($basedir));
         if (str_ends_with($filename, '.py') && is_dir(dirname($target))) {
             @copy($filename, $target);
         }

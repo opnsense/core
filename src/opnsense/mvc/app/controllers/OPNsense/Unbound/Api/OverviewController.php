@@ -44,7 +44,6 @@ class OverviewController extends ApiControllerBase
         $this->mdl = new \OPNsense\Unbound\Unbound();
         $this->types = $this->mdl->dnsbl->blocklist->getTemplateNode()->type->getNodeData();
         $this->nodes = $this->mdl->dnsbl->blocklist->getNodes();
-
     }
 
     private function getBlocklistDescription($shortcode)
@@ -56,7 +55,8 @@ class OverviewController extends ApiControllerBase
         return null;
     }
 
-    private function getFlattenedCustomDomains($key) {
+    private function getFlattenedCustomDomains($key)
+    {
         return array_values(array_unique(array_filter(
             array_merge(
                 ...array_values(array_map(fn($v) => array_keys($v[$key] ?? []), $this->nodes))

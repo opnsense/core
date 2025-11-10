@@ -77,7 +77,7 @@ class M1_0_13 extends BaseModelMigration
 
         /* skip default blocklist if no properties set (except for enabled) */
         $add_default = false;
-        foreach ($old_dnsbl->children() as $key => $value) { 
+        foreach ($old_dnsbl->children() as $key => $value) {
             if ($key != 'enabled' && !empty((string)$value)) {
                 /* blocklist may or may not have been enabled - but properties were set, migrate it */
                 $add_default = true;
@@ -104,7 +104,7 @@ class M1_0_13 extends BaseModelMigration
 
             $bl->setNodes($nodes);
         }
-        
+
         /* Extended blocklists */
         if (isset($config->Deciso->Unbound->ExtendedDnsbl)) {
             $extdnsbl = $config->Deciso->Unbound->ExtendedDnsbl;

@@ -67,7 +67,7 @@ class Unbound extends BaseModel
                     array_map(fn($x) => explode("/", $x)[1] ?? null, explode(",", $node->source_nets))
                 );
                 $ipproto = array_unique(
-                    array_map(fn($x) => strpos($x, ':') == false ? 'inet' : 'inet6' , explode(",", $node->source_nets))
+                    array_map(fn($x) => strpos($x, ':') == false ? 'inet' : 'inet6', explode(",", $node->source_nets))
                 );
                 if (count($sizes) > 1) {
                     $messages->appendMessage(new Message(
