@@ -5,4 +5,5 @@ safesearch.conf:/usr/local/etc/unbound.opnsense.d/safesearch.conf
 dot.conf:/usr/local/etc/unbound.opnsense.d/dot.conf
 private_domains.conf:/var/unbound/private_domains.conf
 domainoverrides.conf:/usr/local/etc/unbound.opnsense.d/domainoverrides.conf
+views.conf:/var/unbound/views.conf
 unbound_dhcpd.conf:/usr/local/etc/unbound_dhcpd.conf

@@ -440,5 +440,126 @@
                 <description type="DescriptionField"/>
             </alias>
         </aliases>
+        <split_dns>
+            <view_hosts>
+                <host type="ArrayField">
+                    <enabled type="BooleanField">
+                        <Default>1</Default>
+                        <Required>Y</Required>
+                    </enabled>
+                    <hostname type="HostnameField">
+                        <HostWildcardAllowed>Y</HostWildcardAllowed>
+                        <IsDNSName>Y</IsDNSName>
+                        <IpAllowed>N</IpAllowed>
+                    </hostname>
+                    <domain type="TextField">
+                        <Required>Y</Required>
+                        <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
+                        <ValidationMessage>A valid domain must be specified.</ValidationMessage>
+                    </domain>
+                    <rr type="OptionField">
+                        <Required>Y</Required>
+                        <Default>A</Default>
+                        <OptionValues>
+                            <A>A (IPv4 address)</A>
+                            <AAAA>AAAA (IPv6 address)</AAAA>
+                        </OptionValues>
+                        <Constraints>
+                            <check001>
+                                <reference>server.check001</reference>
+                            </check001>
+                            <check002>
+                                <reference>server.check002</reference>
+                            </check002>
+                        </Constraints>
+                    </rr>
+                    <ttl type="IntegerField">
+                        <!-- https://datatracker.ietf.org/doc/html/rfc2181 -->
+                        <MaximumValue>2147483647</MaximumValue>
+                        <MinimumValue>0</MinimumValue>
+                    </ttl>
+                    <server type="NetworkField">
+                        <Constraints>
+                            <check001>
+                                <ValidationMessage>The field IP address is required.</ValidationMessage>
+                                <type>SetIfConstraint</type>
+                                <field>rr</field>
+                                <check>A</check>
+                            </check001>
+                            <check002>
+                                <ValidationMessage>The field IP address is required.</ValidationMessage>
+                                <type>SetIfConstraint</type>
+                                <field>rr</field>
+                                <check>AAAA</check>
+                            </check002>
+                        </Constraints>
+                    </server>
+                    <view_uuids type="ModelRelationField">
+                        <Model>
+                            <view>
+                                <source>OPNsense.Unbound.Unbound</source>
+                                <items>split_dns.views.view</items>
+                                <display>name</display>
+                            </view>
+                        </Model>
+                        <Multiple>Y</Multiple>
+                    </view_uuids>
+                    <description type="DescriptionField"/>
+                </host>
+            </view_hosts>
+            <view_subnets>
+                <subnet type="ArrayField">
+                    <enabled type="BooleanField">
+                        <Default>1</Default>
+                        <Required>Y</Required>
+                    </enabled>
+                    <network type="NetworkField">
+                        <Required>Y</Required>
+                        <ValidationMessage>A valid network subnet in CIDR notation is required</ValidationMessage>
+                        <WildcardEnabled>N</WildcardEnabled>
+                        <NetMaskRequired>Y</NetMaskRequired>
+                        <AsList>N</AsList>
+                    </network>
+                    <view_uuid type="ModelRelationField">
+                        <Model>
+                            <view>
+                                <source>OPNsense.Unbound.Unbound</source>
+                                <items>split_dns.views.view</items>
+                                <display>name</display>
+                                <display_format>%s</display_format>
+                            </view>
+                        </Model>
+                        <ValidationMessage>Select a view for this subnet</ValidationMessage>
+                    </view_uuid>
+                    <description type="DescriptionField"/>
+                </subnet>
+            </view_subnets>
+            <views>
+                <view type="ArrayField">
+                    <enabled type="BooleanField">
+                        <Default>1</Default>
+                        <Required>Y</Required>
+                    </enabled>
+                    <name type="TextField">
+                        <Required>Y</Required>
+                        <ValidationMessage>A view name is required</ValidationMessage>
+                        <Mask>/^[a-zA-Z0-9_-]+$/</Mask>
+                        <ValidationMessage>View name must contain only letters, numbers, underscores, and hyphens</ValidationMessage>
+                        <MaximumLength>64</MaximumLength>
+                        <Constraints>
+                            <check001>
+                                <ValidationMessage>View name must be unique</ValidationMessage>
+                                <type>UniqueConstraint</type>
+                            </check001>
+                        </Constraints>
+                    </name>
+                    <view_first type="BooleanField">
+                        <Default>1</Default>
+                        <Required>Y</Required>
+                    </view_first>
+                    <description type="DescriptionField"/>
+                </view>
+            </views>
+        </split_dns>
     </items>
 </model>
