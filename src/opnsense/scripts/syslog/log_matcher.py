@@ -99,7 +99,7 @@ class LogMatcher:
                     try:
                         if timestamp and isoparse(record['timestamp']).timestamp() < timestamp:
                             return
-                    except ValueError:
+                    except (ValueError, TypeError):
                         pass
 
     def parse_line(self, line, format_container):
