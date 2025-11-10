@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2020 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2020-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -55,22 +55,11 @@ class ArpCache(BaseContentParser):
         except ValueError:
             cls._data = dict()
 
-        current_cache = cls.current_cache()
-        cls._data.update(current_cache)
-        used_addresses = set()
-        for macaddr in cls._data:
-            if cls._now  == cls._data[macaddr]['last_seen']:
-                for address in cls._data[macaddr]['items']:
-                    used_addresses.add(address)
+        cls._data.update(cls.current_cache())
         for macaddr in list(cls._data):
             if cls._now - cls._data[macaddr]['last_seen'] > cls._address_ttl:
-                # expired
                 del cls._data[macaddr]
-            elif cls._now != cls._data[macaddr]['last_seen']:
-                # reused within expiry
-                for ix in reversed(range(len(cls._data[macaddr]['items']))):
-                    if cls._data[macaddr]['items'][ix] in used_addresses:
-                        del cls._data[macaddr]['items'][ix]
+
         # save
         cls._cache_handle.seek(0)
         cls._cache_handle.truncate()
@@ -82,25 +71,21 @@ class ArpCache(BaseContentParser):
         """ fetch current arp+ndp items
         """
         current_macs = dict()
-        sp = subprocess.run(['/usr/sbin/ndp', '-an'], capture_output=True, text=True)
-        for line in sp.stdout.split('\n')[1:]:
-            line_parts = line.split()
-            if len(line_parts) > 3 and line_parts[1] != '(incomplete)':
-                if line_parts[1] not in current_macs:
-                    current_macs[line_parts[1]] = {'items': []}
-                current_macs[line_parts[1]]['last_seen'] = cls._now
-                current_macs[line_parts[1]]['items'].append(line_parts[0].split('%')[0])
+        # collect hosts, use hostdiscovery daemon when enabled, otherwise use arp+ndp
+        sp = subprocess.run(
+            ['/usr/local/opnsense/scripts/interfaces/list_hosts.py', '-n'],
+            capture_output=True,
+            text=True
+        )
+        try:
+            hosts = ujson.loads(sp.stdout)
+        except ValueError:
+            hosts = {}
 
-        sp = subprocess.run(['/usr/sbin/arp', '-an', '--libxo','json'], capture_output=True, text=True)
-        libxo_out = ujson.loads(sp.stdout)
-        if 'arp' in libxo_out and 'arp-cache' in libxo_out['arp']:
-            for rec in libxo_out['arp']['arp-cache']:
-                if 'incomplete' in rec and rec['incomplete'] is True:
-                    continue
-                if  rec['mac-address'] not in current_macs:
-                    current_macs[rec['mac-address']] = {'items': []}
-                current_macs[rec['mac-address']]['last_seen'] = cls._now
-                current_macs[rec['mac-address']]['items'].append(rec['ip-address'])
+        for item in hosts.get('rows', []):
+            if item[1] not in current_macs:
+                current_macs[item[1]] = {'items': [], 'last_seen': cls._now}
+            current_macs[item[1]]['items'].append(item[2])
 
         return current_macs
 
