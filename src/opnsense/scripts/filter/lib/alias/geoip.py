@@ -173,11 +173,17 @@ class GEOIP(BaseContentParser):
                     tmp_stream.write(r.content)
                     tmp_stream.seek(0)
                     if not filename or filename.lower().endswith('.zip'):
+                        syslog.syslog(syslog.LOG_NOTICE, 'found .zip format, process')
                         cls.process_zip(tmp_stream, result)
                     elif filename.endswith('.gz'):
+                        syslog.syslog(syslog.LOG_NOTICE, 'found .gz format, process')
                         cls.process_gzip(tmp_stream, result)
                     # dump location hash (detect changes in geoIP source selection)
                     open(cls._src_hash_file, 'w').write(cls._source_hash())
+                else:
+                    syslog.syslog(syslog.LOG_ERR,
+                                  'geoip update failed : [%s] %s' % (r.text.replace('\n', ''), r.status_code)
+                    )
 
         open(cls._stats_output,'w').write(ujson.dumps(result))
         return result
