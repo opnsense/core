@@ -865,6 +865,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_1.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_11.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_13.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_3.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_5.php
@@ -1340,6 +1341,17 @@
 /usr/local/opnsense/scripts/system/tls_groups.py
 /usr/local/opnsense/scripts/system/trigger_config_changed_events.py
 /usr/local/opnsense/scripts/system/update-crl-fetch.py
+/usr/local/opnsense/scripts/unbound-dnsbl/dnsbl_match.py
+/usr/local/opnsense/scripts/unbound-dnsbl/dnsbl_module.py
+/usr/local/opnsense/scripts/unbound-dnsbl/lib/__init__.py
+/usr/local/opnsense/scripts/unbound-dnsbl/lib/dnsbl.py
+/usr/local/opnsense/scripts/unbound-dnsbl/lib/log.py
+/usr/local/opnsense/scripts/unbound-dnsbl/lib/utils.py
+/usr/local/opnsense/scripts/unbound-dnsbl/tests/__init__.py
+/usr/local/opnsense/scripts/unbound-dnsbl/tests/dnsbl.json
+/usr/local/opnsense/scripts/unbound-dnsbl/tests/dnsbl_tests.py
+/usr/local/opnsense/scripts/unbound-dnsbl/tests/logger_tests.py
+/usr/local/opnsense/scripts/unbound-dnsbl/tests/utils_tests.py
 /usr/local/opnsense/scripts/unbound/blocklists.py
 /usr/local/opnsense/scripts/unbound/blocklists/__init__.py
 /usr/local/opnsense/scripts/unbound/blocklists/default_bl.py
@@ -1508,7 +1520,6 @@
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/access_lists.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/advanced.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/blocklists.conf
-/usr/local/opnsense/service/templates/OPNsense/Unbound/core/dnsbl_module.py
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/domainoverrides.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/dot.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/private_domains.conf

@@ -175,10 +175,28 @@ function unbound_generate_config()
     $python_dir = "/usr/local/lib/{$pythonv}";
     $chroot_python_dir = "/var/unbound{$python_dir}";
 
-    $dirs = ['/data', '/dev', '/etc', '/lib', '/run', '/usr', '/var/db', '/var/run', $python_dir];
+    $dirs = ['/data', '/dev', '/etc', '/lib', '/run', '/usr', '/var/db', '/var/run', '/unbound-dnsbl/lib', $python_dir];
 
     foreach ($dirs as $dir) {
         mwexecf('/bin/mkdir -p %s', "/var/unbound{$dir}");
+    }
+
+    /* deploy python module (without test suite) */
+    $targetdir = "/var/unbound/unbound-dnsbl/";
+    @array_map('unlink', iterator_to_array(
+        new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($targetdir, FilesystemIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        )
+    ));
+    @rmdir($targetdir . "lib/__pycache__");
+
+    $basedir = '/usr/local/opnsense/scripts/unbound-dnsbl/';
+    foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($basedir)) as $filename) {
+        $target = $targetdir . substr($filename, strlen($basedir));
+        if (str_ends_with($filename, '.py') && is_dir(dirname($target))) {
+            @copy($filename, $target);
+        }
     }
 
     unbound_service_mount_sync();
@@ -367,7 +385,7 @@ include: /var/unbound/etc/*.conf
 {$forward_conf}
 
 python:
-python-script: dnsbl_module.py
+python-script: unbound-dnsbl/dnsbl_module.py
 
 remote-control:
     control-enable: yes

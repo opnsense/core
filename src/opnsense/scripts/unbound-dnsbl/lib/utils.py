@@ -1,7 +1,5 @@
-#!/usr/local/bin/python3
-
 """
-    Copyright (c) 2020-2025 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2022-2025 Deciso B.V.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -26,7 +24,13 @@
     POSSIBILITY OF SUCH DAMAGE.
 """
 
-from blocklists import BlocklistParser
 
-if __name__ == '__main__':
-    BlocklistParser().update_blocklist()
+def obj_path_exists(obj, path):
+    if obj and isinstance(path, str):
+        for ref in path.split('.'):
+            if hasattr(obj, ref):
+                obj = getattr(obj, ref)
+            else:
+                return False
+        return True
+    return False
