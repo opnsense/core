@@ -1170,17 +1170,20 @@
                     const filters = template.filters.split(',').map(val => {
                         const parts = val.split(/(!=|!~|=|~)/);
                         // XXX consolidate with earlier parsing
-                        switch (parts[0]) {
+                        let field = parts[0];
+                        switch (field) {
                             case '__addr__':
-                                parts[0] = ['src', 'dst'];
+                                field = ['src', 'dst'];
                                 break;
                             case '__port__':
-                                parts[0] = ['srcport', 'dstport']
+                                field = ['srcport', 'dstport']
                             case 'interface':
-                                interface = interfaceMap[parts[2]]
+                            case 'interface_name':
+                                interface = interfaceMap[parts[2]];
+                                field = 'interface';
                                 break;
                         }
-                        return {field: parts[0], operator: parts[1], value: parts[2], format: interface};
+                        return {field: field, operator: parts[1], value: parts[2], format: interface};
                     })
 
                     return {filters, mode}
