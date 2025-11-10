@@ -182,7 +182,7 @@ class GEOIP(BaseContentParser):
                     open(cls._src_hash_file, 'w').write(cls._source_hash())
                 else:
                     syslog.syslog(syslog.LOG_ERR,
-                                  'geoip update failed : [%s] %s' % (r.text.replace('\n', ''), r.status_code)
+                                  'geoip update failed : %s [http_code: %s]' % (r.text.replace('\n', ''), r.status_code)
                     )
 
         open(cls._stats_output,'w').write(ujson.dumps(result))
