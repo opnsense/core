@@ -103,6 +103,9 @@ class M1_0_13 extends BaseModelMigration
             }
 
             $bl->setNodes($nodes);
+
+            /* Normalize deprecated blocklists */
+            $bl->type->normalizeValue();
         }
 
         /* Extended blocklists */
@@ -129,6 +132,7 @@ class M1_0_13 extends BaseModelMigration
                     }
 
                     $bl->setNodes($nodes);
+                    $bl->type->normalizeValue();
                 }
             }
 
@@ -150,6 +154,7 @@ class M1_0_13 extends BaseModelMigration
                     }
 
                     $bl->setNodes($nodes);
+                    $bl->type->normalizeValue();
                 }
             }
         }
