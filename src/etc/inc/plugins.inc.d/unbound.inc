@@ -187,6 +187,7 @@ function unbound_generate_config()
     foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($basedir)) as $filename) {
         $target = "/var/unbound/unbound-dnsbl/".substr($filename, strlen($basedir));
         if (str_ends_with($filename, '.py') && is_dir(dirname($target))) {
+            @unlink($target);
             @copy($filename, $target);
         }
     }
