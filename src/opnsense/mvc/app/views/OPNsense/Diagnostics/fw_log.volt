@@ -1166,8 +1166,8 @@
                 const parseTemplate = (template) => {
                     const or = template.or;
                     const mode = or === "1" ? 'OR' : 'AND';
-                    let interface = null;
                     const filters = template.filters.split(',').map(val => {
+                        let interface = null;
                         const parts = val.split(/(!=|!~|=|~)/);
                         // XXX consolidate with earlier parsing
                         switch (parts[0]) {
