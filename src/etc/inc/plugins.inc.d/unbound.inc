@@ -190,6 +190,7 @@ function unbound_generate_config()
             RecursiveIteratorIterator::CHILD_FIRST)
         )
     );
+    @rmdir($targetdir . "lib/__pycache__");
 
     $basedir = '/usr/local/opnsense/scripts/unbound-dnsbl/';
     foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($basedir)) as $filename) {
