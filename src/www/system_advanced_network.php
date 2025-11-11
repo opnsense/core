@@ -36,9 +36,7 @@ require_once("system.inc");
 
 function get_mac_address($ip)
 {
-    $macs = [];
-
-    $macs = explode("\n", shell_safe('/usr/sbin/arp -an | grep %s | awk \'{ print $4 }\'', [$ip]));
+    $macs = shell_safe('/usr/sbin/arp -an | grep %s | awk \'{ print $4 }\'', [$ip], true);
 
     return !empty($macs[0]) ? $macs[0] : '';
 }

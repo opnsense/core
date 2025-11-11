@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if(!empty($_GET['rescanwifi'])) {
         shell_safe('/sbin/ifconfig %s %s', [$rwlif, 'scan']);
         sleep(1);
-        header(url_safe('Location: /status_wireless.php?if=%s', array($if)));
+        header(url_safe('Location: /status_wireless.php?if=%s', [$if]));
         exit;
     }
 }
@@ -80,7 +80,7 @@ include("head.inc");
                 </thead>
                 <tbody>
 <?php
-                $states = explode("\n", shell_safe('/sbin/ifconfig %s %s %s  2>&1', [$rwlif, 'list', 'scan']));
+                $states = shell_safe('/sbin/ifconfig %s %s %s  2>&1', [$rwlif, 'list', 'scan'], true);
 
                 /* Skip Header */
                 array_shift($states);
@@ -135,11 +135,13 @@ include("head.inc");
                 </thead>
                 <tbody>
 <?php
-                $states = array();
-                $states = explode("\n", shell_safe('/sbin/ifconfig %s %s %s  2>&1', [$rwlif, 'list', 'sta']));
+                $states = shell_safe('/sbin/ifconfig %s %s %s  2>&1', [$rwlif, 'list', 'sta'], true);
+
+                /* Skip Header */
                 array_shift($states);
-                $counter=0;
-                foreach($states as $state):
+
+                $counter = 0;
+                foreach ($states as $state):
                   $split = preg_split("/[ ]+/i", $state);?>
                   <tr>
                     <td><?=$split[0];?></td>

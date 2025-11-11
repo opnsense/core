@@ -37,7 +37,7 @@ if ($ret != null) {
     $ret['product_latest'] = shell_safe('/usr/local/opnsense/scripts/firmware/latest.php');
     $ret['product_mirror'] = preg_replace('/\/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}\//i', '/${SUBSCRIPTION}/', shell_safe('opnsense-update -M'));
     $ret['product_time'] = date('D M j H:i:s T Y', filemtime('/usr/local/opnsense/www/index.php'));
-    $repos = explode("\n", shell_safe('opnsense-verify -l'));
+    $repos = shell_safe('opnsense-verify -l', [], true);
     sort($repos);
     $ret['product_log'] = empty(shell_safe('opnsense-update -G')) ? 0 : 1;
     $ret['product_repos'] = implode(', ', $repos);

@@ -459,12 +459,14 @@ function local_user_set_password(&$user, $password = null)
 function local_user_list_uids()
 {
     $uids = [];
-    foreach (explode("\n", shell_safe('/usr/sbin/pw usershow -a')) as $line) {
+
+    foreach (shell_safe('/usr/sbin/pw usershow -a', [], true) as $line) {
         $parts = explode(":", $line);
         if (count($parts) > 2) {
             $uids[] = $parts[2];
         }
     }
+
     return $uids;
 }
 
