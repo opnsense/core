@@ -972,7 +972,7 @@ function mwexecf_bg($format, $args = [], $mute = false)
     mwexec_bg(exec_safe($format, $args), $mute);
 }
 
-function shell_safe($format, $args = [])
+function shell_safe($format, $args = [], $explode = false, $separator = "\n")
 {
     $ret = shell_exec(exec_safe($format, $args));
 
@@ -981,8 +981,8 @@ function shell_safe($format, $args = [])
         $ret = '';
     }
 
-    /* always trim() result on a string */
-    return trim($ret);
+    /* explode as array or always trim() result on a single string */
+    return $explode ? explode($separator, $ret) : trim($ret);
 }
 
 /* check if an alias exists */
