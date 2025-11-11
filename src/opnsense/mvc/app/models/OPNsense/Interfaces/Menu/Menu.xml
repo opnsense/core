@@ -14,7 +14,7 @@
             <VXLAN url="/ui/interfaces/vxlan"/>
         </Devices>
         <Neighbors order="220" cssClass="fa fa-users fa-fw">
-            <Manual VisibleName="Static Assignments"  url="/ui/interfaces/neighbor"/>
+            <Manual VisibleName="Static Assignments" url="/ui/interfaces/neighbor"/>
         </Neighbors>
         <Overview order="230" url="/ui/interfaces/overview" cssClass="fa fa-tasks fa-fw"/>
         <Settings order="240" url="/system_advanced_network.php" cssClass="fa fa-cogs fa-fw"/>
