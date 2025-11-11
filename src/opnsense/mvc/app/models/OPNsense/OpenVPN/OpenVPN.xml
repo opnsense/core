@@ -259,8 +259,8 @@
                         <host>
                             <source>OPNsense.OpenVPN.OpenVPN</source>
                             <items>StaticKeys.StaticKey</items>
-                            <display>mode,description</display>
-                            <display_format>[%s] %s</display_format>
+                            <display>description,mode</display>
+                            <display_format>%s [%s]</display_format>
                         </host>
                     </Model>
                 </tls_key>
