@@ -35,10 +35,10 @@ use OPNsense\Core\Config;
 
 $result = [];
 
-exec("/usr/local/sbin/ntpq -pnw | /usr/bin/tail +3", $ntpq_output);
+exec("/usr/local/sbin/ntpq -pnw", $ntpq_output);
 $ntpq_servers = [];
 $server = [];
-foreach ($ntpq_output as $line) {
+foreach (array_slice($ntpq_output, 3) as $line) {
     if (empty($server['status'])) {
         $server['status'] = substr($line, 0, 1);
     }
