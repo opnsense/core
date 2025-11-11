@@ -283,14 +283,6 @@ function core_cron()
         );
     }
 
-    if (!empty($config['system']['dhcpbackup']) && $config['system']['dhcpbackup'] > 0) {
-        $jobs[]['autocron'] = array(
-            '/usr/local/etc/rc.syshook.d/backup/20-dhcpleases',
-            '0',
-            '*/' . $config['system']['dhcpbackup']
-        );
-    }
-
     if (!empty($config['system']['netflowbackup']) && $config['system']['netflowbackup'] > 0) {
         $jobs[]['autocron'] = array(
             '/usr/local/etc/rc.syshook.d/backup/20-netflow',
