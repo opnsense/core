@@ -48,9 +48,8 @@
                         ...headerFormatters()
                     },
                     formatters: {
-                        /* status is mapped to status_symbol, status itself is translated */
                         status: (col, row) => {
-                            const val = row[col.id], metaVal = meta.symbols?.status?.[row.status_symbol];
+                            const val = meta.symbols?.status?.[row.status]?.status, metaVal = meta.symbols?.status?.[row.status]?.descr;
                             return metaVal ? `<span class="has-tooltip" data-toggle="tooltip" title="${metaVal}">${val}</span>` : val;
                         },
                         type: (col, row) => {

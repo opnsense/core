@@ -39,36 +39,8 @@ exec("/usr/local/sbin/ntpq -pnw | /usr/bin/tail +3", $ntpq_output);
 $ntpq_servers = [];
 $server = [];
 foreach ($ntpq_output as $line) {
-    $status = gettext('Unknown');
-    switch (substr($line, 0, 1)) {
-        case ' ':
-            $status = gettext('Not Considered');
-            break;
-        case '*':
-            $status = gettext('Active Peer');
-            break;
-        case '+':
-            $status = gettext('Candidate');
-            break;
-        case 'o':
-            $status = gettext('PPS Peer');
-            break;
-        case '#':
-            $status = gettext('Selected');
-            break;
-        case '.':
-            $status = gettext('Excess Peer');
-            break;
-        case 'x':
-            $status = gettext('False Ticker');
-            break;
-        case '-':
-            $status = gettext('Outlier');
-            break;
-    }
     if (empty($server['status'])) {
-        $server['status'] = $status;
-        $server['status_symbol'] = substr($line, 0, 1);
+        $server['status'] = substr($line, 0, 1);
     }
     $line = substr($line, 1);
     $peerinfo = preg_split('/\s+/', $line);

@@ -53,13 +53,38 @@ class ServiceController extends ApiControllerBase
     {
         return [
             'status' => [
-                '*' => gettext('The current system peer your machine is syncing time from'),
-                '+' => gettext('Candidates that could be used if the primary fails'),
-                'o' => gettext('Peer synchronized to a Pulse Per Second signal'),
-                '#' => gettext('A source that is selected as a "backup" in the pool'),
-                '.' => gettext('Peer was considered, but rejected by the intersection algorithm'),
-                'x' => gettext('The peer is deemed to be delivering incorrect time, this peer is ignored'),
-                '-' => gettext('Peer responded, but statistically out of sync with the main cluster'),
+                '*' => [
+                    'descr' => gettext('The current system peer your machine is syncing time from'),
+                    'status' => gettext('Active Peer')
+                ],
+                '+' => [
+                    'descr' => gettext('Candidates that could be used if the primary fails'),
+                    'status' => gettext('Candidate')
+                ],
+                'o' => [
+                    'descr' => gettext('Peer synchronized to a Pulse Per Second signal'),
+                    'status' => gettext('PPS Peer')
+                ],
+                '#' => [
+                    'descr' => gettext('A source that is selected as a "backup" in the pool'),
+                    'status' => gettext('Selected')
+                ],
+                '.' => [
+                    'descr' => gettext('Peer was considered, but rejected by the intersection algorithm'),
+                    'status' => gettext('Excess Peer')
+                ],
+                'x' => [
+                    'descr' => gettext('The peer is deemed to be delivering incorrect time, this peer is ignored'),
+                    'status' => gettext('False Ticker')
+                ],
+                '-' => [
+                    'descr' => gettext('Peer responded, but statistically out of sync with the main cluster'),
+                    'status' => gettext('Outlier')
+                ],
+                ' ' => [
+                    'descr' => gettext('Not currently considered'),
+                    'status' => gettext('Not Considered')
+                ]
             ],
             'connection_type' => [
                 'u' => gettext('Unicast'),
