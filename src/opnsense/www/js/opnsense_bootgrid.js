@@ -378,7 +378,8 @@ class UIBootgrid {
                 let def = cell.getColumn().getDefinition();
                 let column = {
                     id: def.field,
-                    visible: def.visible
+                    visible: def.visible,
+                    title: def.title
                 };
 
                 onRendered(() => {
