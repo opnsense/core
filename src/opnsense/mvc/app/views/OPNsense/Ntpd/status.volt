@@ -76,12 +76,12 @@
                 html += `
                 <div class="gps-item">
                     <strong>Latitude:</strong>
-                    ${gps.lat.toFixed(5)} 
+                    ${gps.lat.toFixed(5)}
                     (${gps.lat_deg}&deg; ${(gps.lat_min * 60).toFixed(5)}${gps.lat_dir})
                 </div>
                 <div class="gps-item">
                     <strong>Longitude:</strong>
-                    ${gps.lon.toFixed(5)} 
+                    ${gps.lon.toFixed(5)}
                     (${gps.lon_deg}&deg; ${(gps.lon_min * 60).toFixed(5)}${gps.lon_dir})
                 </div>
                 <div class="gps-item">

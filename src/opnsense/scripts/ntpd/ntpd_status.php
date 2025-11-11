@@ -72,9 +72,14 @@ foreach (array_slice($ntpq_output, 3) as $line) {
 $result['ntpq_servers'] = $ntpq_servers;
 $result['gps'] = [];
 
-function nmeaGeoParts(?string $val, ?string $dir): ?array {
-    if ($val === null || $dir === null) return null;
-    if (!preg_match('/^\d+(\.\d+)?$/', $val)) return null;
+function nmeaGeoParts(?string $val, ?string $dir): ?array
+{
+    if ($val === null || $dir === null) {
+        return null;
+    }
+    if (!preg_match('/^\d+(\.\d+)?$/', $val)) {
+        return null;
+    }
 
     [$int, $frac] = array_pad(explode('.', $val, 2), 2, '0');
     $degStr = substr($int, 0, max(strlen($int) - 2, 0));
@@ -92,8 +97,12 @@ function nmeaGeoParts(?string $val, ?string $dir): ?array {
 
 exec("/usr/local/sbin/ntpq -c clockvar 2>/dev/null", $ntpq_clockvar_output);
 foreach ($ntpq_clockvar_output as $line) {
-    if (strncmp($line, "timecode=", 9) !== 0) continue;
-    if (!preg_match('/"([^"]+)"/', $line, $m)) continue;
+    if (strncmp($line, "timecode=", 9) !== 0) {
+        continue;
+    }
+    if (!preg_match('/"([^"]+)"/', $line, $m)) {
+        continue;
+    }
 
     $vars = explode(',', $m[1]);
     $type = $vars[0] ?? '';
@@ -158,7 +167,7 @@ if (!empty($cfg->ntpd->gps->type) && (string)$cfg->ntpd->gps->type == 'SureGPS' 
     while ($gpsport) {
         $buffer = fgets($gpsport);
         if (substr($buffer, 0, 6) == '$GPGSV') {
-            $gpgsv = explode(',',$buffer);
+            $gpgsv = explode(',', $buffer);
             $result['gps']['gps_satview'] = $gpgsv[3];
             break;
         }
