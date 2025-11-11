@@ -38,7 +38,7 @@ $version = shell_safe('opnsense-version');
 
 echo "\n*** {$config['system']['hostname']}.{$config['system']['domain']}: {$version} ***\n";
 
-$iflist = legacy_config_get_interfaces(array('enable' => true, 'virtual' => false));
+$iflist = legacy_config_get_interfaces(['enable' => true, 'virtual' => false]);
 $ifdetails = legacy_interfaces_details();
 
 if (!count($iflist)) {
@@ -84,17 +84,13 @@ foreach ($iflist as $ifname => $ifcfg) {
             break;
     }
 
-    $realif = get_real_interface($ifname);
-
     list ($primary,, $bits) = interfaces_primary_address($ifname, $ifdetails);
     $network = "{$primary}/{$bits}";
 
     list ($primary6,, $bits6) = interfaces_primary_address6($ifname, $ifdetails);
     $network6 = "{$primary6}/{$bits6}";
 
-    $tobanner = "{$ifcfg['descr']} ({$realif})";
-
-    printf("\n %-15s -> ", $tobanner);
+    printf("\n %-15s -> ", "{$ifcfg['descr']} ({$ifcfg['if']})");
 
     $v6first = false;
 
