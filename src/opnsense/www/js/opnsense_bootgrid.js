@@ -948,7 +948,7 @@ class UIBootgrid {
         });
     }
 
-    _wireCommand($selector=null, command=null, cell=null) {
+    _wireCommand($selector=null, command=null) {
         const commands = this._getCommands();
         if ($selector && command && command in commands) {
             let has_option = true;
