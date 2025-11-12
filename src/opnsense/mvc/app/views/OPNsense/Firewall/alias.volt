@@ -494,7 +494,7 @@
                         $("#alias\\.password").hide();
                         switch ($(this).val()) {
                             case 'Basic':
-                                $("#alias\\.username").show();
+                                $("#alias\\.username").show().attr('placeholder', '{{lang._('Username')}}');
                                 $("#alias\\.password").show().attr('placeholder', '{{lang._('Password')}}');
                                 break;
                             case 'Bearer':
