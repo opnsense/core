@@ -842,7 +842,7 @@
                             <tr>
                                 <td></td>
                                 <td style="white-space:nowrap;vertical-align:middle;">
-                                    <button class="btn btn-info" id="upgrade"><i class="fa fa-check"></i> {{ lang._('Update') }}</button>
+                                    <button class="btn btn-primary" id="upgrade"><i class="fa fa-check"></i> {{ lang._('Update') }}</button>
                                     <button class='btn btn-warning' id="upgrade_maj"><i class="fa fa-check"></i> {{ lang._('Upgrade') }}</button>
                                     <button class="btn btn-default" id="upgrade_cancel"><i class="fa fa-times"></i> {{ lang._('Cancel') }}</button>
                                 </td>
