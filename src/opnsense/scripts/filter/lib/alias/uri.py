@@ -71,6 +71,8 @@ class UriParser(BaseContentParser):
                 req_opts['auth'] = requests.auth.HTTPBasicAuth(self._username, self._password)
             elif self._authtype == 'Bearer':
                 req_opts['headers']['Authorization'] = f'Bearer {self._password}'
+            elif self._authtype == 'Header' and self._username is not None:
+                req_opts['headers'][self._username] = self._password
 
         # fetch data
         try:
