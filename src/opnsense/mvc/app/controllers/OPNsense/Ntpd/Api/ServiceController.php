@@ -81,6 +81,10 @@ class ServiceController extends ApiControllerBase
                     'descr' => gettext('Peer responded, but statistically out of sync with the main cluster'),
                     'status' => gettext('Outlier')
                 ],
+                '__pool' => [
+                    'descr' => gettext('The DNS pool as configured in Network Time -> General, contains a rotation of NTP servers providing time.'),
+                    'status' => gettext('DNS Pool')
+                ],
                 ' ' => [
                     'descr' => gettext('Not currently considered'),
                     'status' => gettext('Not Considered')

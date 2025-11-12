@@ -38,7 +38,7 @@ $result = [];
 exec("/usr/local/sbin/ntpq -pnw", $ntpq_output);
 $ntpq_servers = [];
 $server = [];
-foreach (array_slice($ntpq_output, 3) as $line) {
+foreach (array_slice($ntpq_output, 2) as $line) {
     if (empty($server['status'])) {
         $server['status'] = substr($line, 0, 1);
     }
@@ -48,7 +48,7 @@ foreach (array_slice($ntpq_output, 3) as $line) {
         $server['server'] = $peerinfo[0];
     }
     if (empty($peerinfo[1])) {
-        $server = [];
+        // newline in ntpq output
         continue;
     }
     $server['refid'] = $peerinfo[1];
@@ -62,7 +62,7 @@ foreach (array_slice($ntpq_output, 3) as $line) {
     $server['jitter'] = $peerinfo[9];
 
     if ($server['type'] === 'p') {
-        $server['server'] = gettext('DNS Pool');
+        $server['status'] = '__pool';
     }
 
     $ntpq_servers[] = $server;
