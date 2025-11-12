@@ -119,6 +119,9 @@
                     <v6_only_preferred type="IntegerField">
                         <MinimumValue>300</MinimumValue>
                     </v6_only_preferred>
+                    <v4_dnr type="TextField">
+                        <Mask>/^([^\n"])*$/u</Mask>
+                    </v4_dnr>
                 </option_data>
                 <match-client-id type="BooleanField">
                     <Default>1</Default>
