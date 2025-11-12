@@ -856,9 +856,6 @@ class UIBootgrid {
             this.table.redraw();
         }
 
-        // DOM layout changed, rewire commands
-        this._wireCommands();
-
         if (this.table.getData().length == 0 && !this.loading) {
             this.dataAvailable = false;
             this._getPlaceholder().html(this.translations.noresultsfound);
@@ -913,7 +910,7 @@ class UIBootgrid {
                 let commandClass = classes.find(c => c.startsWith('command-'));
                 if (commandClass) {
                     let command = commandClass.replace('command-', '');
-                    this._wireCommands($(el), command);
+                    this._wireCommand($(el), command);
                 }
             })
         }
@@ -951,33 +948,27 @@ class UIBootgrid {
         });
     }
 
-    _wireCommands($selector=null, command=null) {
+    _wireCommand($selector=null, command=null, cell=null) {
         const commands = this._getCommands();
-        Object.keys(commands).map((k) => {
+        if ($selector && command && command in commands) {
             let has_option = true;
-            for (let i = 0; i < commands[k]['requires'].length; i++) {
-                if (!(commands[k]['requires'][i] in this.crud)) {
+            for (let i = 0; i < commands[command]['requires'].length; i++) {
+                if (!(commands[command]['requires'][i] in this.crud)) {
                     has_option = false;
                 }
             }
+
             if (has_option) {
-                // in both cases, make sure to stop the event from bubbling up
+                // make sure to stop the event from bubbling up
                 // to the parent so no handlers on parent containers are executed
-                if ($selector && command && command === k) {
-                    $selector.unbind('click').on("click", function (event) {
-                        event.stopPropagation();
-                        commands[k].method.bind(this)(event);
-                    });
-                } else {
-                    this.$element.find(".command-" + k).unbind('click').on("click", function (event) {
-                        event.stopPropagation();
-                        commands[k].method.bind(this)(event);
-                    });
-                }
-            } else if ($selector === null && $(".command-" + k).length > 0) {
-                console.log("not all requirements met to link " + k);
+                $selector.unbind('click').on("click", function (event) {
+                    event.stopPropagation();
+                    commands[command].method.bind(this)(event);
+                });
+            } else if ($(".command-" + command).length > 0) {
+                console.log("not all requirements met to link " + command);
             }
-        });
+        }
     }
 
     /**
@@ -1589,6 +1580,10 @@ class UIBootgrid {
                         if (!(command.requires[i] in this.crud)) {
                             has_option = false;
                         }
+                    }
+
+                    if ('filter' in command) {
+                        has_option = command.filter(cell);
                     }
 
                     if (has_option) {
