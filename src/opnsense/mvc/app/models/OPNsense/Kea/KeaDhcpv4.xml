@@ -163,6 +163,7 @@
                         <check001>
                             <ValidationMessage>Duplicate entry exists.</ValidationMessage>
                             <type>UniqueConstraint</type>
+                            <caseInsensitive>Y</caseInsensitive>
                             <addFields>
                                 <field1>subnet</field1>
                             </addFields>
