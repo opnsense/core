@@ -95,6 +95,7 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
     }
 
     $mdl = new \OPNsense\DHCRelay\DHCRelay();
+    $carp_tracking = [];
     $relays = [];
 
     foreach ($mdl->relays->iterateItems() as $relay) {
@@ -103,11 +104,34 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
             continue;
         }
 
+
         if ((string)$relay->enabled == '1') {
             $relays[] = $relay;
+            $carp_tracking[$relay->carp_depend_on->getValue()] = ['status' => 'DISABLED'];
         }
 
         killbypid("/var/run/dhcrelay-{$target_id}.pid");
+    }
+
+    if (!empty($carp_tracking)) {
+        /* carp vhid tracking used */
+        foreach ((new OPNsense\Interfaces\Vip())->vip->iterateItems() as $id => $item) {
+            if ($item->mode == 'carp' && isset($carp_tracking[$id])) {
+                $carp_tracking[$id]['vhid'] = $item->vhid->getValue();
+            }
+        }
+        foreach (legacy_interfaces_details() as $ifdata) {
+            if (empty($ifdata['carp'])) {
+                continue;
+            }
+            foreach ($ifdata['carp'] as $data) {
+                foreach ($carp_tracking as &$item) {
+                    if (!empty($item) && $item['vhid'] == $data['vhid']) {
+                        $item['status'] = $data['status'];
+                    }
+                }
+            }
+        }
     }
 
     if (!count($relays)) {
@@ -124,6 +148,11 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
         if ($destination == null) {
             log_msg("dhcrelay_configure_id() found no destination server for $interface($device)", LOG_WARNING);
             continue;
+        } elseif (
+            !$relay->carp_depend_on->isEmpty() &&
+            $carp_tracking[$relay->carp_depend_on->getValue()]['status'] != 'MASTER'
+        ) {
+            continue;   /* disabled due to carp tracking */
         }
 
         $family = strpos((string)$destination->server, '.') !== false ? 'inet' : 'inet6';

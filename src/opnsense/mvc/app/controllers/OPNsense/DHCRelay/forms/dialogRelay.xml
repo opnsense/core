@@ -32,4 +32,14 @@
             <formatter>boolean</formatter>
         </grid_view>
     </field>
+    <field>
+        <id>relay.carp_depend_on</id>
+        <label>Depend on (CARP)</label>
+        <type>dropdown</type>
+        <style>role role_client selectpicker</style>
+        <help>The CARP VHID to depend on. When this virtual address is not in master state, then the instance will be shutdown.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
 </form>
