@@ -82,7 +82,7 @@ class ServiceController extends ApiControllerBase
                     'status' => gettext('Outlier')
                 ],
                 '__pool' => [
-                    'descr' => gettext('The DNS pool as configured in Network Time -> General, contains a rotation of NTP servers providing time.'),
+                    'descr' => gettext('A DNS pool as configured in Network Time: General, contains a rotation of NTP servers providing time.'),
                     'status' => gettext('DNS Pool')
                 ],
                 ' ' => [
