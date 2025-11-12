@@ -163,4 +163,14 @@
         </grid_view>
         <advanced>true</advanced>
     </field>
+    <field>
+        <id>subnet4.option_data.v4_dnr</id>
+        <label>DNR option content</label>
+        <type>text</type>
+        <help>DNR (Discovery of Network-designated Resolvers) Option, only single backslashes required! See Kea documentation for option "v4-dnr" to understand the syntax.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+        <advanced>true</advanced>
+    </field>
 </form>
