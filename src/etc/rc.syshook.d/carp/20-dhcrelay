@@ -29,9 +29,6 @@
 
 require_once("script/load_phalcon.php");
 
-$subsystem = !empty($argv[1]) ? $argv[1] : '';
-$type = !empty($argv[2]) ? $argv[2] : '';
-
 if ((new \OPNsense\DHCRelay\DHCRelay(true))->isCarpTrackingEnabled()) {
     /* only load plugin system when a relay has carp tracking enabled */
     require_once("config.inc");
