@@ -851,6 +851,8 @@ class UIBootgrid {
 
         this.normalizeRowHeight();
 
+        this._wireGlobalCommands();
+
         if (this.options.virtualDOM) {
             // redraw here to prevent pagination switches from breaking the virtualdom rendering process
             this.table.redraw();
@@ -910,7 +912,7 @@ class UIBootgrid {
                 let commandClass = classes.find(c => c.startsWith('command-'));
                 if (commandClass) {
                     let command = commandClass.replace('command-', '');
-                    this._wireCommand($(el), command);
+                    this._wireCellCommand($(el), command);
                 }
             })
         }
@@ -948,9 +950,9 @@ class UIBootgrid {
         });
     }
 
-    _wireCommand($selector=null, command=null) {
+    _wireCellCommand($selector, command) {
         const commands = this._getCommands();
-        if ($selector && command && command in commands) {
+        if (command in commands) {
             let has_option = true;
             for (let i = 0; i < commands[command]['requires'].length; i++) {
                 if (!(commands[command]['requires'][i] in this.crud)) {
@@ -965,10 +967,29 @@ class UIBootgrid {
                     event.stopPropagation();
                     commands[command].method.bind(this)(event);
                 });
-            } else if ($(".command-" + command).length > 0) {
-                console.log("not all requirements met to link " + command);
             }
         }
+    }
+
+    _wireGlobalCommands() {
+        const commands = Object.fromEntries(Object.entries(this._getCommands()).filter(([key, value]) => value?.global));
+        Object.keys(commands).map((k) => {
+            let has_option = true;
+            for (let i = 0; i < commands[k]['requires'].length; i++) {
+                if (!(commands[k]['requires'][i] in this.crud)) {
+                    has_option = false;
+                }
+            }
+
+            if (has_option) {
+                this.$element.find(".command-" + k).unbind('click').on("click", function (event) {
+                    event.stopPropagation();
+                    commands[k].method.bind(this)(event);
+                });
+            } else if ($(".command-" + k).length > 0) {
+                console.log("not all requirements met to link " + k);
+            }
+        });
     }
 
     /**
@@ -1489,7 +1510,8 @@ class UIBootgrid {
             "add": {
                 method: this.command_add.bind(this),
                 requires: ['get', 'set'],
-                sequence: 100
+                sequence: 100,
+                global: true
             },
             "edit": {
                 method: this.command_edit.bind(this),
@@ -1523,7 +1545,8 @@ class UIBootgrid {
             "delete-selected": {
                 method: this.command_delete_selected.bind(this),
                 requires: ['del'],
-                sequence: 100
+                sequence: 100,
+                global: true
             }
         };
         // register additional commands
