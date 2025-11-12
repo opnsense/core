@@ -69,6 +69,7 @@
                     // link on change event
                     $('#voucher-groups').off().on('change', function(){
                         updateVoucherList();
+                        $('.selectpicker').selectpicker('refresh');
                     });
                     // initial load voucher list
                     updateVoucherList();
