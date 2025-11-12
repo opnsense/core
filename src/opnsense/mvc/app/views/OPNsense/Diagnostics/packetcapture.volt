@@ -81,7 +81,6 @@
                     });
 
                     grid_jobs.on('loaded.rs.jquery.bootgrid', function() {
-                        $('[data-toggle="tooltip"]').tooltip();
                         $(".command-start").click(function(){
                             let id = $(this).data('row-id');
                             ajaxCall("/api/diagnostics/packet_capture/start/" + id, {}, function(){
