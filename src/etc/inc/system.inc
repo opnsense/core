@@ -528,6 +528,8 @@ function system_host_route($host, $gateway)
         $family = 'inet';
     } elseif (is_ipaddrv6($gateway)) {
         $family = 'inet6';
+    } elseif ($gateway === null) {
+        $family = is_ipaddrv4($host) ? 'inet' : 'inet6';
     } else {
         log_msg("ROUTING: not a valid host gateway address: '{$gateway}'", LOG_ERR);
         return;
@@ -537,11 +539,17 @@ function system_host_route($host, $gateway)
      * If the gateway is the same as the host we do not touch the route
      * as this is not needed and it may also break the routing table.
      */
-    if ($host == $gateway) {
+    if ($host === $gateway) {
         return;
     }
 
     mwexecf('/sbin/route delete -host -%s %s', [$family, $host], true);
+
+    /* this was an explicit delete */
+    if ($gateway === null) {
+        return;
+    }
+
     mwexecf('/sbin/route add -host -%s %s %s', [$family, $host, $gateway]);
 }
 
