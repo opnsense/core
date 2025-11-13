@@ -44,56 +44,62 @@
             }
         );
 
-        var grid_templates  = $("#grid-templates").UIBootgrid({
-            search: '/api/captiveportal/service/search_templates',
-            options: {
-                formatters: {
-                    "commands": function (column, row) {
-                        return '<button type="button" class="btn btn-xs btn-default command-download bootgrid-tooltip" data-toggle="tooltip" title="{{ lang._('Download') }}" data-row-id="' + row.fileid + '"><span class="fa fa-download fa-fw"></span></button> ' +
-                               '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '" data-row-name="' + row.name + '"><span class="fa fa-pencil fa-fw"></span></button> ' +
-                               '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-trash-o fa-fw"></span></button>';
-                    }
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            if (e.target.id == 'templates_tab') {
+                if (!$("#grid-templates").hasClass('tabulator')) {
+                    var grid_templates  = $("#grid-templates").UIBootgrid({
+                        search: '/api/captiveportal/service/search_templates',
+                        options: {
+                            formatters: {
+                                "commands": function (column, row) {
+                                    return '<button type="button" class="btn btn-xs btn-default command-download bootgrid-tooltip" data-toggle="tooltip" title="{{ lang._('Download') }}" data-row-id="' + row.fileid + '"><span class="fa fa-download fa-fw"></span></button> ' +
+                                        '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '" data-row-name="' + row.name + '"><span class="fa fa-pencil fa-fw"></span></button> ' +
+                                        '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-trash-o fa-fw"></span></button>';
+                                }
+                            }
+                        }
+                    });
+                    grid_templates.on("loaded.rs.jquery.bootgrid", function(){
+                        grid_templates.find(".command-edit").on("click", function(e) {
+                            $("#templateUUID").val($(this).data("row-id"));
+                            $("#templateName").val($(this).data("row-name"));
+                            $("#base64text_upload").val("");
+                            $('#DialogTemplate').modal({backdrop: 'static', keyboard: false});
+                        });
+                        grid_templates.find(".command-delete").on("click", function(e) {
+                            var uuid=$(this).data("row-id");
+                            stdDialogConfirm('{{ lang._('Confirm removal') }}',
+                                '{{ lang._('Do you want to remove the selected item?') }}',
+                                '{{ lang._('Yes') }}', '{{ lang._('Cancel') }}', function () {
+                                ajaxCall("/api/captiveportal/service/del_template/" + uuid, {},function(data,status){
+                                    // reload grid after delete
+                                    $("#grid-templates").bootgrid("reload");
+                                });
+                            });
+                        });
+                        grid_templates.find(".command-download").on("click", function(e) {
+                            window.open('/api/captiveportal/service/get_template/'+$(this).data("row-id")+'/','downloadTemplate');
+                        });
+
+                        /**
+                         * Open dialog to add new template
+                         */
+                        $("#addTemplateAct").off("click").on("click", function() {
+                            $("#templateUUID").val("");
+                            $("#templateName").val("");
+                            $("#base64text_upload").val("");
+                            $('#DialogTemplate').modal({backdrop: 'static', keyboard: false});
+                        });
+
+                        /**
+                         * download default template
+                         */
+                        $("#downloadTemplateAct").off("click").on("click", function() {
+                            window.open('/api/captiveportal/service/get_template/', 'downloadTemplate');
+                        });
+                    });
                 }
             }
-        });
-        grid_templates.on("loaded.rs.jquery.bootgrid", function(){
-            grid_templates.find(".command-edit").on("click", function(e) {
-                $("#templateUUID").val($(this).data("row-id"));
-                $("#templateName").val($(this).data("row-name"));
-                $("#base64text_upload").val("");
-                $('#DialogTemplate').modal({backdrop: 'static', keyboard: false});
-            });
-            grid_templates.find(".command-delete").on("click", function(e) {
-                var uuid=$(this).data("row-id");
-                stdDialogConfirm('{{ lang._('Confirm removal') }}',
-                    '{{ lang._('Do you want to remove the selected item?') }}',
-                    '{{ lang._('Yes') }}', '{{ lang._('Cancel') }}', function () {
-                    ajaxCall("/api/captiveportal/service/del_template/" + uuid, {},function(data,status){
-                        // reload grid after delete
-                        $("#grid-templates").bootgrid("reload");
-                    });
-                });
-            });
-            grid_templates.find(".command-download").on("click", function(e) {
-                window.open('/api/captiveportal/service/get_template/'+$(this).data("row-id")+'/','downloadTemplate');
-            });
-
-            /**
-             * Open dialog to add new template
-             */
-            $("#addTemplateAct").off("click").on("click", function() {
-                $("#templateUUID").val("");
-                $("#templateName").val("");
-                $("#base64text_upload").val("");
-                $('#DialogTemplate').modal({backdrop: 'static', keyboard: false});
-            });
-
-            /**
-             * download default template
-             */
-            $("#downloadTemplateAct").off("click").on("click", function() {
-                window.open('/api/captiveportal/service/get_template/', 'downloadTemplate');
-            });
         });
 
         /*************************************************************************************************************
@@ -150,7 +156,7 @@
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" href="#zones">{{ lang._('Zones') }}</a></li>
-    <li><a data-toggle="tab" href="#template">{{ lang._('Templates') }}</a></li>
+    <li><a data-toggle="tab" id="templates_tab" href="#template">{{ lang._('Templates') }}</a></li>
 </ul>
 <div class="tab-content content-box">
     <div id="zones" class="tab-pane fade in active">
