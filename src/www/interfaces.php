@@ -140,7 +140,10 @@ function parse_xml_regdomain(&$rdattributes, $rdfile = '', $rootobj = 'regulator
     $parsed_xml = array();
 
     if (file_exists('/tmp/regdomain.cache')) {
-        $parsed_xml = unserialize(file_get_contents('/tmp/regdomain.cache'));
+        $parsed_xml = @unserialize(@file_get_contents('/tmp/regdomain.cache'), ['allowed_classes' => false]);
+        if (!is_array($parsed_xml)) {
+            $parsed_xml = array();
+        }
         if (!empty($parsed_xml)) {
             $rdmain = $parsed_xml['main'];
             $rdattributes = $parsed_xml['attributes'];
@@ -166,9 +169,13 @@ function parse_xml_regdomain(&$rdattributes, $rdfile = '', $rootobj = 'regulator
         }
 
         $parsed_xml = array('main' => $rdmain, 'attributes' => $rdattributes);
-        $rdcache = fopen('/tmp/regdomain.cache', 'w');
-        fwrite($rdcache, serialize($parsed_xml));
-        fclose($rdcache);
+        $tmpFile = tempnam('/tmp', 'regdomain.cache.');
+        if ($tmpFile !== false) {
+            $bytesWritten = file_put_contents($tmpFile, serialize($parsed_xml));
+            if ($bytesWritten !== false) {
+                rename($tmpFile, '/tmp/regdomain.cache');
+            }
+        }
     }
 
     return $rdmain;
@@ -554,7 +561,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $intput_errors[] = gettext("You have already applied your settings!");
         } else {
             if (file_exists('/tmp/.interfaces.apply')) {
-                $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
+                $toapplylist = @unserialize(@file_get_contents('/tmp/.interfaces.apply'), ['allowed_classes' => false]);
+                if (!is_array($toapplylist)) {
+                    $toapplylist = array();
+                }
                 foreach ($toapplylist as $ifapply => $ifcfgo) {
                     interface_reset($ifapply, $ifcfgo, isset($ifcfgo['enable']));
                     interface_configure(false, $ifapply, true);
@@ -592,7 +602,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config("Interface {$pconfig['descr']}({$if}) is now disabled.");
         mark_subsystem_dirty('interfaces');
         if (file_exists('/tmp/.interfaces.apply')) {
-            $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
+            $toapplylist = @unserialize(@file_get_contents('/tmp/.interfaces.apply'), ['allowed_classes' => false]);
+            if (!is_array($toapplylist)) {
+                $toapplylist = array();
+            }
         } else {
             $toapplylist = array();
         }
@@ -601,7 +614,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $toapplylist[$if]['ifcfg'] = $a_interfaces[$if];
             $toapplylist[$if]['ifcfg']['devices'] = get_real_interface($if, 'both');
             $toapplylist[$if]['ppps'] = $a_ppps;
-            file_put_contents('/tmp/.interfaces.apply', serialize($toapplylist));
+            
+            $tmpFile = tempnam('/tmp', 'interfaces.apply.');
+            if ($tmpFile !== false) {
+                $bytesWritten = file_put_contents($tmpFile, serialize($toapplylist));
+                if ($bytesWritten !== false) {
+                    rename($tmpFile, '/tmp/.interfaces.apply');
+                }
+            }
         }
         if (!empty($ifgroup)) {
             header(url_safe('Location: /interfaces.php?if=%s&group=%s', array($if, $ifgroup)));
@@ -1261,7 +1281,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // log changes for apply action
             // (it would be better to diff the physical situation with the new config for changes)
             if (file_exists('/tmp/.interfaces.apply')) {
-                $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
+                $toapplylist = @unserialize(@file_get_contents('/tmp/.interfaces.apply'), ['allowed_classes' => false]);
+                if (!is_array($toapplylist)) {
+                    $toapplylist = array();
+                }
             } else {
                 $toapplylist = array();
             }
@@ -1270,7 +1293,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 // only flush if the running config is not in our list yet
                 $toapplylist[$if]['ifcfg'] = $old_config;
                 $toapplylist[$if]['ppps'] = $a_ppps;
-                file_put_contents('/tmp/.interfaces.apply', serialize($toapplylist));
+                
+                $tmpFile = tempnam('/tmp', 'interfaces.apply.');
+                if ($tmpFile !== false) {
+                    $bytesWritten = file_put_contents($tmpFile, serialize($toapplylist));
+                    if ($bytesWritten !== false) {
+                        rename($tmpFile, '/tmp/.interfaces.apply');
+                    }
+                }
             }
 
             mark_subsystem_dirty('interfaces');
