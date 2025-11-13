@@ -54,7 +54,18 @@
             Only use if you know what you are doing.
         </help>
     </field>
-        <field>
+    <field>
+        <id>unbound.advanced.hyperlocalroot</id>
+        <label>Hyperlocal Root</label>
+        <type>checkbox</type>
+        <help>
+            Download and maintain local copies of the root zone, .arpa, and
+            .root-servers.net as recommended by RFC 8806. This improves the
+            privacy and performance of recursive queries by keeping these zones
+            locally instead of querying external root servers.
+        </help>
+    </field>
+    <field>
         <id>unbound.advanced.outgoingnumtcp</id>
         <label>Outgoing TCP Buffers</label>
         <type>text</type>
