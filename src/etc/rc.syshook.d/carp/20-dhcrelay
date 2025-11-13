@@ -39,4 +39,3 @@ if ((new \OPNsense\DHCRelay\DHCRelay(true))->isCarpTrackingEnabled()) {
     /* signal dhcrelay */
     plugins_configure('dhcrelay', false);
 }
-
