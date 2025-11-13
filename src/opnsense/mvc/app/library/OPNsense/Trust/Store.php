@@ -508,14 +508,23 @@ class Store
      * @param string $private_key
      * @param string $friendly_name
      * @param string $passphrase
+     * @param string $caref
      * @return string
      */
-    public static function getPKCS12($certificate, $private_key, $friendly_name = null, $passphrase = null)
+    public static function getPKCS12(
+        $certificate,
+        $private_key,
+        $friendly_name = null,
+        $passphrase = null,
+        $caref = null)
     {
         $old_err_level = error_reporting(0); /* prevent openssl error from going to stderr/stdout */
         $options = [];
         if (!empty($friendly_name)) {
             $options['friendly_name'] = $friendly_name;
+        }
+        if (!empty($caref) && !empty(($cas = self::getCaChain($caref, true)))) {
+            $options['extracerts'] = $cas;
         }
         $result = [];
         if (!openssl_pkcs12_export($certificate, $result['payload'], $private_key, $passphrase, $options)) {
@@ -591,9 +600,10 @@ class Store
     /**
      * Extract certificate chain
      * @param string $caref reference number
-     * @return array|bool structure or boolean false if not found
+     * @param bool $aslist return array
+     * @return array|string list of certificates as single string or array
      */
-    public static function getCaChain($caref)
+    public static function getCaChain($caref, $aslist=false)
     {
         $chain = [];
         while (($item = self::getCA(!isset($item) ? $caref : $item->caref)) != null) {
@@ -603,7 +613,7 @@ class Store
             }
             $chain[] = $data;
         }
-        return implode("\n", $chain);
+        return !$aslist ? implode("\n", $chain) : $chain;
     }
 
     /**

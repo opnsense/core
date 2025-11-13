@@ -315,7 +315,8 @@ class CertController extends ApiMutableModelControllerBase
                     (string)$node->crt_payload,
                     (string)$node->prv_payload,
                     (string)$node->descr,
-                    $passphrase
+                    $passphrase,
+                    (string)$node->caref,
                 );
                 if (!empty($tmp['payload'])) {
                     // binary data, we need to encode it to deliver it to the client
