@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $rwlif = get_real_interface($if);
     if(!empty($_GET['rescanwifi'])) {
         shell_safe('/sbin/ifconfig %s %s', [$rwlif, 'scan']);
-        sleep(1);
+        sleep(1); /* XXX a historic couriosity */
         header(url_safe('Location: /status_wireless.php?if=%s', [$if]));
         exit;
     }
