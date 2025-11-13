@@ -62,7 +62,6 @@
         });
 
         grid_sessions.on('loaded.rs.jquery.bootgrid', function () {
-            $('[data-toggle="tooltip"]').tooltip();
             $(".ovpn-command").click(function(){
                 let this_cmd = $(this);
                 if (this_cmd.hasClass('command-kill')) {
