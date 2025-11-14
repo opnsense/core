@@ -786,7 +786,7 @@ function ipsec_configure_spd()
 
         $tmpfname = tempnam("/tmp", "setkey");
         file_put_contents($tmpfname, implode("\n", $spd_entries) . "\n");
-        mwexecf('/sbin/setkey -f %s', $tmpfname, true);
+        mwexecfm('/sbin/setkey -f %s', $tmpfname);
         unlink($tmpfname);
     }
 }
@@ -1142,8 +1142,8 @@ function ipsec_configure_do($verbose = false, $interface_map = null)
     $a_client = isset($config['ipsec']['client']) ? $config['ipsec']['client'] : [];
 
     if (!isset($ipseccfg['enable'])) {
-        mwexecf('/usr/local/etc/rc.d/strongswan onestop', [], true);
-        mwexecf('/sbin/ifconfig enc0 down', [], true);
+        mwexecfm('/usr/local/etc/rc.d/strongswan onestop');
+        mwexecfm('/sbin/ifconfig enc0 down');
         return;
     }
 
