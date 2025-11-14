@@ -1355,14 +1355,16 @@ function interface_proxyarp_configure($interface = '')
         }
         $vipif = get_real_interface($paif);
         $pid_filename = "/var/run/choparp_{$vipif}.pid";
-        $args = "-p {$pid_filename} {$vipif} auto";
+        $frmt = ['/usr/local/sbin/choparp -p %s %s auto'];
+        $args = [$pid_filename, $vipif];
         foreach ($paents as $paent) {
-            $args .= " " . escapeshellarg("{$paent['subnet']}/{$paent['subnet_bits']}");
+            $args[] = "{$paent['subnet']}/{$paent['subnet_bits']}";
+            $frmt[] = '%s';
         }
         if (!empty($interface)) {
             killbypid($pid_filename);
         }
-        mwexec_bg("/usr/local/sbin/choparp " . $args);
+        mwexecf_bg($frmt, $args);
     }
 }
 
@@ -2111,7 +2113,7 @@ EOD;
 
     /* configure wireless */
     $wlcmd_args = implode(" ", $wlcmd);
-    mwexec("/sbin/ifconfig " . escapeshellarg($if) . " " . $wlcmd_args, false);
+    mwexec("/sbin/ifconfig " . escapeshellarg($if) . " " . $wlcmd_args);
     unset($wlcmd_args, $wlcmd);
 
     /* configure txpower setting (it has been known to fail so run it separately) */
