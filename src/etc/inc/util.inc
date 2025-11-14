@@ -969,7 +969,7 @@ function exec_safe($format, $args = [])
         $args[$id] = escapeshellarg($arg ?? '');
     }
 
-    return vsprintf(join(' ', $format), $args);
+    return vsprintf(implode(' ', $format), $args);
 }
 
 /* run commands safely failure reports by default */
