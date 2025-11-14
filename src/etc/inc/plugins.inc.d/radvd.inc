@@ -91,8 +91,11 @@ function radvd_configure_do($verbose = false, $blacklist = [])
 {
     global $config;
 
+    $radvd_conf_file = '/var/etc/radvd.conf';
+    $radvd_pid_file = '/var/run/radvd.pid';
+
     if (!radvd_enabled()) {
-        killbypid('/var/run/radvd.pid');
+        killbypid($radvd_pid_file);
         return;
     }
 
@@ -457,23 +460,25 @@ function radvd_configure_do($verbose = false, $blacklist = [])
         $radvdconf .= "};\n";
     }
 
-    $radvd_conf_file = '/var/etc/radvd.conf';
-    file_put_contents($radvd_conf_file, $radvdconf);
+    file_safe($radvd_conf_file, $radvdconf);
 
     if (count($radvdifs)) {
         $last_version = @file_get_contents("{$radvd_conf_file}.last");
         $this_version = shell_safe('/bin/cat %s | sha256', $radvd_conf_file);
 
-        if (isvalidpid('/var/run/radvd.pid') && $last_version == $this_version) {
-            killbypid('/var/run/radvd.pid', 'HUP');
+        if (isvalidpid($radvd_pid_file) && $last_version == $this_version) {
+            killbypid($radvd_pid_file, 'HUP');
         } else {
-            killbypid('/var/run/radvd.pid');
-            file_put_contents("{$radvd_conf_file}.last", $this_version);
-            mwexec('/usr/local/sbin/radvd -p /var/run/radvd.pid -C /var/etc/radvd.conf -m syslog');
+            killbypid($radvd_pid_file);
+            file_safe("{$radvd_conf_file}.last", $this_version);
+            mwexecf('/usr/local/sbin/radvd -p %s -C %s -m syslog', [
+                $radvd_pid_file,
+                $radvd_conf_file,
+            ]);
         }
     } else {
         /* stop on invalid configuration for legacy condition above */
-        killbypid('/var/run/radvd.pid');
+        killbypid($radvd_pid_file);
         @unlink("{$radvd_conf_file}.last");
     }
 
