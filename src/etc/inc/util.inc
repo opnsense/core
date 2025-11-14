@@ -973,7 +973,8 @@ function mwexecf($format, $args = [], $mute = false)
 
 function mwexecf_bg($format, $args = [], $mute = false)
 {
-    mwexec_bg(exec_safe($format, $args), $mute);
+    /* XXX muting this makes no sense so this now never mutes */
+    mwexec_bg(exec_safe($format, $args));
 }
 
 function mwexecfm($format, $args = [])
