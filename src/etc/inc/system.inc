@@ -759,7 +759,7 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
             $cmd[] = exec_safe('%s', $rtent['network']);
 
             if (!empty($rtent['disabled'])) {
-                mwexec('/sbin/route delete ' . join(' ', $cmd), true);
+                mwexecf('/sbin/route delete ' . join(' ', $cmd), true);
                 continue;
             }
 
@@ -767,7 +767,7 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
             $interfacegw = $gateway['if'];
 
             if (is_ipaddr($gatewayip)) {
-                mwexec('/sbin/route delete ' . join(' ', $cmd), true);
+                mwexecf('/sbin/route delete ' . join(' ', $cmd), true);
 
                 if ($ipproto == 'inet' && is_ipaddrv6($gatewayip)) {
                     $cmd[] = '-inet6'; /* RFC 5549: gateway protocol differs */
@@ -782,13 +782,12 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
 
                 $cmd[] = exec_safe('%s', $gatewayip);
             } elseif (!empty($interfacegw)) {
-                $cmd[] = '-interface';
-                $cmd[] = exec_safe('%s', $interfacegw);
+                $cmd[] = exec_safe('-interface %s', $interfacegw);
 
-                mwexec('/sbin/route delete ' . join(' ', $cmd), true);
+                mwexecf('/sbin/route delete ' . join(' ', $cmd), true);
             }
 
-            mwexec('/sbin/route add ' . join(' ', $cmd), true);
+            mwexecf('/sbin/route add ' . join(' ', $cmd), true);
         }
     }
 
@@ -1097,7 +1096,7 @@ function system_devd_configure($verbose = false)
 {
     service_log('Starting device manager...', $verbose);
 
-    mwexec('/sbin/devd');
+    mwexecf('/sbin/devd');
     /* historic sleep */
     sleep(1);
 
@@ -1160,7 +1159,7 @@ function system_cron_configure($verbose = false)
 
     configd_run('template reload OPNsense/Cron');
 
-    mwexec('/etc/rc.d/cron restart');
+    mwexecf('/etc/rc.d/cron restart');
 
     service_log("done.\n", $verbose);
 }
@@ -1336,22 +1335,22 @@ function system_login_configure($verbose = false)
     service_log("done.\n", $verbose);
 
     /* force init(8) to reload /etc/ttys */
-    mwexec('/bin/kill -HUP 1');
+    mwexecf('/bin/kill -HUP 1');
 }
 
 function reset_factory_defaults($sync = true)
 {
-    mwexec('/bin/rm -fr /conf/* /var/log/* /root/.history');
-    mwexec('/usr/local/sbin/opnsense-beep stop');
+    mwexecf('/bin/rm -fr /conf/* /var/log/* /root/.history');
+    mwexecf('/usr/local/sbin/opnsense-beep stop');
 
     /* as we go through a special case directly shut down */
     $shutdown_cmd = '/sbin/shutdown -op now';
     if ($sync) {
-        mwexec($shutdown_cmd);
+        mwexecf($shutdown_cmd);
         while (true) {
             sleep(1);
         }
     } else {
-        mwexec_bg($shutdown_cmd);
+        mwexecf_bg($shutdown_cmd);
     }
 }
