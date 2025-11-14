@@ -1294,19 +1294,23 @@ function interfaces_pfsync_configure()
     }
 
     if (!empty($syncdev)) {
-        $ifcargs = ['pfsync0', 'syncdev', $syncdev];
+        $ifcfrmt = ['/sbin/ifconfig pfsync0 syncdev %s'];
+        $ifcargs = [$syncdev];
+
         if (!empty($config['hasync']['pfsyncpeerip']) && is_ipaddrv4($config['hasync']['pfsyncpeerip'])) {
-            $ifcargs = array_merge($ifcargs, ['syncpeer', $config['hasync']['pfsyncpeerip']]);
+            $ifcfrmt[] = 'syncpeer %s';
+            $ifcargs[] = $config['hasync']['pfsyncpeerip'];
         } else {
-            $ifcargs[] = '-syncpeer';
+            $ifcfrmt[] = '-syncpeer';
         }
         if (!empty($config['hasync']['pfsyncversion'])) {
-            $ifcargs = array_merge($ifcargs, ['version', $config['hasync']['pfsyncversion']]);
+            $ifcfrmt[] = 'version %s';
+            $ifcargs[] = $config['hasync']['pfsyncversion'];
         }
 
-        $ifcargs[] = !empty($config['hasync']['pfsyncdefer']) ? 'defer' : '-defer';
+        $ifcfrmt[] = !empty($config['hasync']['pfsyncdefer']) ? 'defer' : '-defer';
 
-        mwexecf('/sbin/ifconfig ' . str_repeat(' %s ', count($ifcargs)), $ifcargs);
+        mwexecf($ifcfrmt, $ifcargs);
 
         /* Fix presumed replication issue when outgoing mtu is smaller than pfsync0's (https://github.com/opnsense/core/commit/15acbad935) */
         $intf_stats = legacy_interface_details($syncdev);
