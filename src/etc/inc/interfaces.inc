@@ -2138,8 +2138,7 @@ function kill_hostapd($interface)
 
 function kill_wpasupplicant($interface)
 {
-    /* XXX OMG */
-    mwexec("/bin/pkill -f \"wpa_supplicant .*{$interface}\\.conf\"\n");
+    mwexecf("/bin/pkill -f \"wpa_supplicant .*\"%s\"\\.conf\"\n", $interface);
 }
 
 function interface_static_configure($interface, $wancfg)
