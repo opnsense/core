@@ -152,7 +152,7 @@ function unbound_service_stop()
 {
     $mdl = new \OPNsense\Unbound\Unbound();
 
-    mwexec('/usr/local/bin/flock -E 0 -o /tmp/unbound_start.lock true');
+    mwexecf('/usr/local/bin/flock -E 0 -o /tmp/unbound_start.lock true');
 
     if (empty((string)$mdl->general->cacheflush)) {
         if (isvalidpid('/var/run/unbound.pid')) {
