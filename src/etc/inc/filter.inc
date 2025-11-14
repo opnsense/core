@@ -176,7 +176,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
      * to ensure consistent pipe/queue config for pf and service
      * start during bootup.
      */
-    mwexec('/usr/local/opnsense/scripts/shaper/start.sh', true);
+    mwexecfm('/usr/local/opnsense/scripts/shaper/start.sh');
 
     ifgroup_setup();
 
@@ -279,9 +279,9 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     /* enable pf if we need to, otherwise disable */
     if (!isset($config['system']['disablefilter'])) {
-        mwexec("/sbin/pfctl -e", true);
+        mwexecfm('/sbin/pfctl -e'); /* XXX unsure why historically muted */
     } else {
-        mwexec("/sbin/pfctl -d", true);
+        mwexecfm('/sbin/pfctl -d'); /* XXX unsure why historically muted */
 
         unset($fobj);
 
@@ -396,7 +396,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     $fobj->truncate(0)->write($rules);
 
     @file_put_contents('/tmp/rules.limits', $limitrules);
-    mwexec('/sbin/pfctl -Of /tmp/rules.limits');
+    mwexecf('/sbin/pfctl -Of %s', '/tmp/rules.limits');
     exec('/sbin/pfctl -f /tmp/rules.debug 2>&1', $rules_error, $rules_loading);
 
     foreach ($sched_kill_states as $label) {
@@ -420,7 +420,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
             }
         }
 
-        mwexec('/sbin/pfctl -f /tmp/rules.debug.old');
+        mwexecf('/sbin/pfctl -f %s', '/tmp/rules.debug.old');
 
         syslog(LOG_ERR, trim(sprintf('There were error(s) loading the rules: %s%s', $rules_error[0], $config_line)));
         file_put_contents(
@@ -441,7 +441,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
      * XXX: Flush table when not user, ideally this should be update_tables.py responsibility.
      */
     if (!is_bogonsv6_used()) {
-        mwexec('/sbin/pfctl -t bogonsv6 -T flush');
+        mwexecf('/sbin/pfctl -t bogonsv6 -T flush');
     }
 
     service_log('.', $verbose);
@@ -454,11 +454,11 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     service_log('.', $verbose);
 
     /* enable permanent promiscuous mode to avoid dmesg noise */
-    mwexec('/sbin/ifconfig pflog0 promisc');
+    mwexecf('/sbin/ifconfig pflog0 promisc');
 
     /* bring up new instance of filterlog to load new rules */
     killbypid('/var/run/filterlog.pid');
-    mwexec('/usr/local/sbin/filterlog -i pflog0 -p /var/run/filterlog.pid');
+    mwexecf('/usr/local/sbin/filterlog -i pflog0 -p %s', '/var/run/filterlog.pid');
 
     unset($fobj);
 
