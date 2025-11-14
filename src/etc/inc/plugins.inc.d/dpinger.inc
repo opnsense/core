@@ -277,7 +277,7 @@ function dpinger_configure_do($verbose = false, $gwname_map = null)
         $args[] = $gateway['monitor'];
 
         /* foreground mode in background to deal with tentative connectivity */
-        mwexecf_bg($frmt, $args);
+        mwexecfb($frmt, $args);
     }
 
     if (count(dpinger_services())) {

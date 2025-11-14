@@ -485,7 +485,7 @@ function unbound_configure_do($verbose = false, $interface_map = null)
         @unlink('/var/unbound/data/stats');
     }
 
-    mwexecf_bg('/usr/local/bin/flock -n -E 0 -o /tmp/unbound_start.lock /usr/local/opnsense/scripts/unbound/start.sh %s', [$domain]);
+    mwexecfb('/usr/local/bin/flock -n -E 0 -o /tmp/unbound_start.lock /usr/local/opnsense/scripts/unbound/start.sh %s', [$domain]);
 
     waitforpid('/var/run/unbound.pid', 10);
 

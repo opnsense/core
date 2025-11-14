@@ -464,7 +464,7 @@ function ntpd_configure_do($verbose = false)
     if (empty($config['ntpd']['clientmode'])) {
         mwexecf('/usr/local/sbin/ntpd -g -c %s', ['/var/etc/ntpd.conf']);
     } else {
-        mwexecf_bg('/usr/local/sbin/ntpd -q -g -c %s', ['/var/etc/ntpd.conf']);
+        mwexecfb('/usr/local/sbin/ntpd -q -g -c %s', ['/var/etc/ntpd.conf']);
     }
 
     service_log("done.\n", $verbose);
