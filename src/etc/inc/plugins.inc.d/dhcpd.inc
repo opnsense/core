@@ -807,7 +807,7 @@ EOD;
 
     if (count($dhcpdifs) > 0) {
         mwexecf('/usr/local/opnsense/scripts/dhcp/cleanup_leases4.php -m');
-        mwexecf('/usr/local/sbin/dhcpd -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpd.conf -pf /var/run/dhcpd.pid ' . join(' ', $dhcpdifs));
+        mwexecf('/usr/local/sbin/dhcpd -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpd.conf -pf /var/run/dhcpd.pid ' . implode(' ', $dhcpdifs));
     }
 
     service_log("done.\n", $verbose);
@@ -1188,7 +1188,7 @@ EOD;
     @touch('/var/dhcpd/var/db/dhcpd6.leases');
 
     if (count($dhcpdv6ifs) > 0) {
-        mwexecf('/usr/local/sbin/dhcpd -6 -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpdv6.conf -pf /var/run/dhcpdv6.pid ' . join(' ', $dhcpdv6ifs));
+        mwexecf('/usr/local/sbin/dhcpd -6 -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpdv6.conf -pf /var/run/dhcpdv6.pid ' . implode(' ', $dhcpdv6ifs));
         mwexecf('/usr/sbin/daemon -m0 -f -p %s %s', ['/var/run/dhcpleases6.pid', '/usr/local/opnsense/scripts/dhcp/prefixes.sh']);
     }
 
