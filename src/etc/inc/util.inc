@@ -229,7 +229,7 @@ function service_control_start($name, $extras)
         }
     } elseif (isset($service['mwexec']['start'])) {
         foreach ($service['mwexec']['start'] as $cmd) {
-            mwexec($cmd);
+            mwexecf($cmd);
         }
     } else {
         return sprintf(gettext("Could not start service `%s'"), htmlspecialchars(service_name($service)));
@@ -255,7 +255,7 @@ function service_control_stop($name, $extras)
         }
     } elseif (isset($service['mwexec']['stop'])) {
         foreach ($service['mwexec']['stop'] as $cmd) {
-            mwexec($cmd);
+            mwexecf($cmd);
         }
     } elseif (isset($service['pidfile'])) {
         killbypid($service['pidfile']);
@@ -290,7 +290,7 @@ function service_control_restart($name, $extras)
         }
     } elseif (isset($service['mwexec']['restart'])) {
         foreach ($service['mwexec']['restart'] as $cmd) {
-            mwexec($cmd);
+            mwexecf($cmd);
         }
     } else {
         return sprintf(gettext("Could not restart service `%s'"), htmlspecialchars(service_name($service)));
