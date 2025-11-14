@@ -87,6 +87,7 @@ class IPsecProposalField extends BaseListField
             'aes128gcm16-ecp521' => null,
             'aes128gcm16-x25519' => 'aes128gcm16-curve25519 [DH31, Modern EC]',
             'aes128gcm16-x448' => 'aes128gcm16-curve448 [DH32, Modern EC]',
+            'aes256gcm16' => 'aes256gcm16',
         ];
     }
 
