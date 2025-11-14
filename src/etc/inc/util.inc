@@ -924,7 +924,7 @@ function url_safe($format, $args = [])
     return vsprintf($format, $args);
 }
 
-function mwexec($command, $mute = false)
+function mwexec($command, $mute = false) /* XXX deprecated */
 {
     $oarr = [];
     $retval = 0;
@@ -943,11 +943,17 @@ function mwexec($command, $mute = false)
     return $retval;
 }
 
-function mwexec_bg($command, $mute = false)
+function mwexec_bg($command, $mute = false) /* XXX deprecated */
 {
     mwexec("/usr/sbin/daemon -f {$command}", $mute);
 }
 
+function mwexecf_bg($format, $args = [], $mute = false) /* XXX deprecated */
+{
+    mwexec_bg(exec_safe($format, $args), $mute);
+}
+
+/* safe shell command formatter */
 function exec_safe($format, $args = [])
 {
     if (!is_array($args)) {
@@ -966,22 +972,46 @@ function exec_safe($format, $args = [])
     return vsprintf(join(' ', $format), $args);
 }
 
+/* run commands safely failure reports by default */
 function mwexecf($format, $args = [], $mute = false)
 {
-    return mwexec(exec_safe($format, $args), $mute);
+    $command = exec_safe($format, $args);
+    $retval = 0;
+    $oarr = [];
+
+    $garbage = exec("{$command} 2>&1", $oarr, $retval);
+    unset($garbage);
+
+    if ($retval != 0 && $mute !== true) {
+        $output = implode(' ', $oarr);
+        log_msg(sprintf("The command '%s'%s returned exit code '%d', the output was '%s'", $command, !empty($mute) ? "($mute) " : '', $retval, $output), LOG_ERR);
+        unset($output);
+    }
+
+    unset($oarr);
+
+    return $retval;
 }
 
-function mwexecf_bg($format, $args = [], $mute = false)
-{
-    /* XXX muting this makes no sense so this now never mutes */
-    mwexec_bg(exec_safe($format, $args));
-}
-
+/* run commands safely without failure reports */
 function mwexecfm($format, $args = [])
 {
     return mwexecf($format, $args, true);
 }
 
+/* run commands safely in the background */
+function mwexecfb($format, $args = [])
+{
+    if (!is_array($format)) {
+        $format = [$format];
+    }
+
+    array_unshift($format, '/usr/sbin/daemon -f');
+
+    return mwexecf($format, $args);
+}
+
+/* run commands and grab their output */
 function shell_safe($format, $args = [], $explode = false, $separator = "\n")
 {
     $ret = shell_exec(exec_safe($format, $args));
