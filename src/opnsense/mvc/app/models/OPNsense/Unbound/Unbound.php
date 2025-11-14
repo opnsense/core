@@ -60,6 +60,7 @@ class Unbound extends BaseModel
                 }
             }
         }
+
         foreach ($this->dnsbl->blocklist->iterateItems() as $node) {
             if ($node->isFieldChanged() || $validateFullModel) {
                 /* Extract all subnets (eg x.x.x.x/24 --> 24) and protocol families */
@@ -83,7 +84,6 @@ class Unbound extends BaseModel
                 }
             }
         }
-
 
         return $messages;
     }
