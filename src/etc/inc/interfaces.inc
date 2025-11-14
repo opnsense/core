@@ -2036,23 +2036,6 @@ EOD;
     }
 
     if ($reg_changing) {
-        /* set regulatory domain */
-        if ($wlcfg['regdomain']) {
-            $wlregcmd[] = "regdomain " . escapeshellarg($wlcfg['regdomain']);
-        }
-
-        /* set country */
-        if ($wlcfg['regcountry']) {
-            $wlregcmd[] = "country " . escapeshellarg($wlcfg['regcountry']);
-        }
-
-        /* set location */
-        if ($wlcfg['reglocation']) {
-            $wlregcmd[] = escapeshellarg($wlcfg['reglocation']);
-        }
-
-        $wlregcmd_args = implode(" ", $wlregcmd);
-
         /* build a complete list of the wireless clones for this interface */
         $clone_list = [];
         if (does_interface_exist("{$baseif}_wlan0")) {
@@ -2072,16 +2055,37 @@ EOD;
         foreach ($clone_list as $clone_if) {
             if (in_array($clone_if, $ifup)) {
                 $clones_up[] = $clone_if;
-                mwexec("{$ifconfig} " . escapeshellarg($clone_if) . " down");
+                mwexecf('/sbin/ifconfig %s down', $clone_if);
             }
         }
 
+        $wlregfrmt = ['/sbin/ifconfig %s'];
+        $wlregargs = [$if];
+
+        /* set regulatory domain */
+        if ($wlcfg['regdomain']) {
+            $wlregfrmt[] = 'regdomain %s';
+            $wlregargs[] = $wlcfg['regdomain'];
+        }
+
+        /* set country */
+        if ($wlcfg['regcountry']) {
+            $wlregfrmt[] = 'country %s';
+            $wlregargs[] = $wlcfg['regcountry'];
+        }
+
+        /* set location */
+        if ($wlcfg['reglocation']) {
+            $wlregfrmt[] = '%s';
+            $wlregargs[] = $wlcfg['reglocation'];
+        }
+
         /* apply the regulatory settings */
-        mwexec("{$ifconfig} " . escapeshellarg($if) . " {$wlregcmd_args}");
+        mwexecf($wlregfrmt, $wlregargs);
 
         /* bring the clones back up that were previously up */
         foreach ($clones_up as $clone_if) {
-            mwexec("{$ifconfig} " . escapeshellarg($clone_if) . " up");
+            mwexecf('/sbin/ifconfig %s up', $clone_if);
 
             /*
              * Rerun the setup script for the interface if it isn't this interface, the interface
@@ -2095,7 +2099,7 @@ EOD;
                     && isset($config['interfaces'][$friendly_if]['wireless']['wpa']['enable'])
                     && $config['interfaces'][$friendly_if]['wireless']['mode'] == 'bss'
                 ) {
-                    mwexec('/bin/sh /tmp/' . escapeshellarg($clone_if) . '_setup.sh');
+                    mwexecf('/bin/sh %s', "/tmp/{$clone_if}_setup.sh");
                 }
             }
         }
@@ -2108,22 +2112,21 @@ EOD;
          *
          * XXX but we do not have the standard when wireless was not configured...
          */
-        mwexec("/sbin/ifconfig " . escapeshellarg($if) . " mode " . escapeshellarg($standard));
+        mwexecf('/sbin/ifconfig %s mode %s', [$if, $standard]);
     }
 
     /* configure wireless */
-    $wlcmd_args = implode(" ", $wlcmd);
-    mwexec("/sbin/ifconfig " . escapeshellarg($if) . " " . $wlcmd_args);
-    unset($wlcmd_args, $wlcmd);
+    mwexecf('/sbin/ifconfig %s ' . implode(' ', $wlcmd), $if);
 
     /* configure txpower setting (it has been known to fail so run it separately) */
     if (!empty($wlcfg['txpower'])) {
         mwexecf('/sbin/ifconfig %s txpower %s', array($if, $wlcfg['txpower']));
     }
 
-    sleep(1);
+    sleep(1); /* XXX historic sleep */
+
     /* execute hostapd and wpa_supplicant if required in shell */
-    mwexec('/bin/sh /tmp/' . escapeshellarg($if) . '_setup.sh');
+    mwexecf('/bin/sh %s', "/tmp/{$if}_setup.sh");
 
     return 0;
 }
@@ -2135,7 +2138,7 @@ function kill_hostapd($interface)
 
 function kill_wpasupplicant($interface)
 {
-    mwexec("/bin/pkill -f \"wpa_supplicant .*{$interface}\\.conf\"\n");
+    mwexecf("/bin/pkill -f \"wpa_supplicant .*\"%s\"\\.conf\"\n", $interface);
 }
 
 function interface_static_configure($interface, $wancfg)
@@ -2345,14 +2348,20 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             $media_changed |= stripos($intf_details['media_raw'], $wancfg['mediaopt']) == false;
         }
         if ($media_changed) {
-            $cmd = "/sbin/ifconfig " . escapeshellarg($realhwif);
+            $cmd_frmt = ['/sbin/ifconfig %s'];
+            $cmd_args = [$realhwif];
+
             if (!empty($wancfg['media'])) {
-                $cmd .= " media " . escapeshellarg($wancfg['media']);
+                $cmd_frmt[] = 'media %s';
+                $cmd_args[] = $wancfg['media'];
             }
+
             if (!empty($wancfg['mediaopt'])) {
-                $cmd .= " mediaopt " . escapeshellarg($wancfg['mediaopt']);
+                $cmd_frmt[] = 'mediaopt %s';
+                $cmd_args[] = $wancfg['mediaopt'];
             }
-            mwexec($cmd);
+
+            mwexecf($cmd_frmt, $cmd_args);
         }
     }
 
@@ -2533,14 +2542,13 @@ function interface_track6_6rd_configure($interface, $lancfg)
     /* convert the 128 bits for the lan address back into a valid IPv6 address */
     $rd6lan = convert_128bit_to_ipv6($rd6lanbin) . (1 + get_interface_number_track6($lancfg['track6-interface'], $interface));
 
-    $lanif = escapeshellarg($lancfg['if']);
     list ($oip) = interfaces_primary_address6($interface);
     if (!empty($oip)) {
-        mwexec("/sbin/ifconfig {$lanif} inet6 {$oip} delete");
+        mwexecf('/sbin/ifconfig %s inet6 %s delete', [$lancfg['if'], $oip]);
     }
 
     log_msg("rd6 {$interface} with ipv6 address {$rd6lan} based on {$lancfg['track6-interface']} ipv4 {$ip4address}");
-    mwexec("/sbin/ifconfig {$lanif} inet6 {$rd6lan} prefixlen 64");
+    mwexecf('/sbin/ifconfig %s inet6 %s prefixlen 64', [$lancfg['if'], $rd6lan]);
 }
 
 function interface_track6_6to4_configure($interface, $lancfg)
@@ -2579,14 +2587,13 @@ function interface_track6_6to4_configure($interface, $lancfg)
     /* convert the 128 bits for the lan address back into a valid IPv6 address */
     $sixto4lan = convert_128bit_to_ipv6($sixto4lanbin) . (1 + get_interface_number_track6($lancfg['track6-interface'], $interface));
 
-    $lanif = escapeshellarg($lancfg['if']);
     list ($oip) = interfaces_primary_address6($interface);
     if (!empty($oip)) {
-        mwexec("/sbin/ifconfig {$lanif} inet6 {$oip} delete");
+        mwexecf('/sbin/ifconfig %s inet6 %s delete', [$lancfg['if'], $oip]);
     }
 
     log_msg("6to4 {$interface} with ipv6 address {$sixto4lan} based on {$lancfg['track6-interface']} ipv4 {$ip4address}");
-    mwexec("/sbin/ifconfig {$lanif} inet6 {$sixto4lan} prefixlen 64");
+    mwexecf('/sbin/ifconfig %s inet6 %s prefixlen 64', [$lancfg['if'], $sixto4lan]);
 }
 
 function interface_6rd_configure($interface, $wancfg, $update = false)
@@ -2760,19 +2767,20 @@ function interface_dhcpv6_configure($interface, $wancfg)
     /* always kill rtsold in case of reconfigure */
     killbypid('/var/run/rtsold.pid');
 
-    $rtsoldcommand = exec_safe('/usr/sbin/rtsold -aiu -p %s -A %s -R %s', [
+    $rtsold_frmt = ['/usr/sbin/rtsold -aiu -p %s -A %s -R %s'];
+    $rtsold_args = [
         '/var/run/rtsold.pid',
         '/var/etc/rtsold_script.sh',
         '/usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh',
-    ]);
+    ];
 
     if (!empty($syscfg['dhcp6_debug'])) {
-        $mode = [ '1' => ' -d', '2' => ' -D' ];
-        $rtsoldcommand .= $mode[$syscfg['dhcp6_debug']];
+        $mode = [ '1' => '-d', '2' => '-D' ];
+        $rtsold_frmt[] = $mode[$syscfg['dhcp6_debug']];
     }
 
     /* fire up rtsold for IPv6 RAs first */
-    mwexec($rtsoldcommand);
+    mwexecf($rtsold_frmt, $rtsold_args);
 
     /* unconditional trigger for hybrid approach, reloads without advertisements */
     mwexecf('/var/etc/rtsold_script.sh %s', [$wancfg['if']]);
