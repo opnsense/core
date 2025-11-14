@@ -235,23 +235,31 @@ function dpinger_configure_do($verbose = false, $gwname_map = null)
             }
         }
 
+        /* see note below on why -f is being used */
+        $frmt = ['/usr/local/bin/dpinger -f'];
+        $args = [];
+
         /* log warnings via syslog */
-        $params  = '-S ';
+        $frmt[] = '-S';
 
         /* disable unused reporting thread */
-        $params .= '-r 0 ';
+        $frmt[] = '-r 0';
 
         /* identifier */
-        $params .= exec_safe('-i %s ', $name);
+        $frmt[] = '-i %s';
+        $args[] = $name;
 
         /* bind src address */
-        $params .= exec_safe('-B %s ', $gwifip);
+        $frmt[] = '-B %s';
+        $args[] = $gwifip;
 
         /* PID filename */
-        $params .= exec_safe('-p %s ', "/var/run/dpinger_{$name}.pid");
+        $frmt[] = '-p %s';
+        $args[] = "/var/run/dpinger_{$name}.pid";
 
         /* status socket */
-        $params .= exec_safe('-u %s ', "/var/run/dpinger_{$name}.sock");
+        $frmt[] = '-u %s';
+        $args[] = "/var/run/dpinger_{$name}.sock";
 
         foreach (
             [
@@ -261,12 +269,15 @@ function dpinger_configure_do($verbose = false, $gwname_map = null)
             'data_length' => '-d %s '
             ] as $pname => $ppattern
         ) {
-            $params .= exec_safe($ppattern, $gateway["current_" . $pname]);
+            $frmt[] = $ppattern;
+            $args[] = $gateway["current_{$pname}"];
         }
-        $params .= exec_safe('%s ', $gateway['monitor']);
+
+        $frmt[] = '%s';
+        $args[] = $gateway['monitor'];
 
         /* foreground mode in background to deal with tentative connectivity */
-        mwexec_bg("/usr/local/bin/dpinger -f {$params}");
+        mwexecf_bg($frmt, $args);
     }
 
     if (count(dpinger_services())) {

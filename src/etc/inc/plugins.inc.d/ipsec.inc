@@ -1457,20 +1457,17 @@ function ipsec_configure_do($verbose = false, $interface_map = null)
 
     file_put_contents("/usr/local/etc/swanctl/swanctl.conf", $swanctltxt);
 
-    /* mange process */
     if (isvalidpid('/var/run/charon.pid')) {
-        /* Update configuration changes */
-        mwexec_bg('/usr/local/etc/rc.d/strongswan onereload', false);
+        mwexecf_bg('/usr/local/etc/rc.d/strongswan onereload');
     } else {
-        mwexec_bg("/usr/local/etc/rc.d/strongswan onestart", false);
+        mwexecf_bg('/usr/local/etc/rc.d/strongswan onestart');
     }
 
-    /* load manually defined SPD entries */
     ipsec_configure_spd();
 
     service_log("done.\n", $verbose);
 
-    /* reload routes on all attached VTI devices */
+    /* reload routes on all attached VTI devices after done since this prints too */
     plugins_configure('route_reload', $verbose, [array_keys(array_merge(ipsec_get_configured_vtis(), (new \OPNsense\IPsec\Swanctl())->getVtiDevices()))]);
 }
 
