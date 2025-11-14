@@ -56,10 +56,10 @@ function dhcrelay_services()
     $services = [];
 
     foreach ($mdl->relays->iterateItems() as $relay) {
-        if ((string)$relay->enabled == '1' && ($dst = $mdl->getNodeByReference("destinations.{$relay->destination}")) != null) {
+        if ($relay->enabled->isEqual('1') && ($dst = $mdl->getNodeByReference("destinations.{$relay->destination}")) != null) {
             $pconfig = [];
             $pconfig['name'] = 'dhcrelay';
-            $pconfig['description'] = (strpos((string)$dst->server, '.') !== false ?
+            $pconfig['description'] = (strpos($dst->server->getValue(), '.') !== false ?
                 gettext('DHCPv4 Relay') : gettext('DHCPv6 Relay')) . " ({$relay->interface})";
             $pconfig['php']['restart'] = ['dhcrelay_configure_id'];
             $pconfig['php']['start'] = ['dhcrelay_configure_id'];
@@ -104,9 +104,9 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
             continue;
         }
 
-        if ((string)$relay->enabled == '1') {
-            $relays[] = $relay;
+        if ($relay->enabled->isEqual('1')) {
             $carp_tracking[$relay->carp_depend_on->getValue()] = ['status' => 'DISABLED'];
+            $relays[] = $relay;
         }
 
         killbypid("/var/run/dhcrelay-{$target_id}.pid");
@@ -154,9 +154,9 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
             continue;   /* disabled due to carp tracking */
         }
 
-        $family = strpos((string)$destination->server, '.') !== false ? 'inet' : 'inet6';
+        $family = strpos($destination->server->getValue(), '.') !== false ? 'inet' : 'inet6';
 
-        $interface = (string)$relay->interface;
+        $interface = $relay->interface->getValue();
         $device = get_real_interface($interface, $family);
 
         if (empty($device) || !isset($ifconfig_details[$device]) || $ifconfig_details[$device]['macaddr'] == '00:00:00:00:00:00') {
@@ -172,12 +172,17 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
             continue;
         }
 
-        $cmd = [exec_safe('daemon -S -T dhcrelay -f -p %s', "/var/run/dhcrelay-{$relay->getAttribute('uuid')}.pid")];
-        $cmd[] = sprintf('/usr/local/sbin/dhcrelay%s -d', $family == 'inet6' ? '6' : '');
-        if (!empty((string)$relay->agent_info)) {
-            $cmd[] = sprintf('-o%s', $family == 'inet' ? 'r' : '');
+        $cmd_frmt = ['/usr/sbin/daemon -S -T dhcrelay -f -p %s'];
+        $cmd_args = ["/var/run/dhcrelay-{$relay->getAttribute('uuid')}.pid"];
+
+        $cmd_frmt[] = sprintf('/usr/local/sbin/dhcrelay%s -d', $family == 'inet6' ? '6' : '');
+
+        if (!$relay->agent_info->isEmpty()) {
+            $cmd_frmt[] = sprintf('-o%s', $family == 'inet' ? 'r' : '');
         }
-        $cmd[] = exec_safe('-i %s', $device);
+
+        $cmd_frmt[] = '-i %s';
+        $cmd_args[] = $device;
 
         $has_servers = false;
 
@@ -190,7 +195,8 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
                 }
                 $server .= '%' . $routeif;
             }
-            $cmd[] = exec_safe('%s', $server);
+            $cmd_frmt[] = '%s';
+            $cmd_args[] = $server;
             $has_servers = true;
         }
 
@@ -199,7 +205,7 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
             continue;
         }
 
-        mwexec(join(' ', $cmd));
+        mwexecf($cmd_frmt, $cmd_args);
     }
 
     service_log("done.\n", $verbose);
@@ -211,7 +217,7 @@ function dhcrelay_bound_instances($family = null)
     $instances = [];
 
     foreach ($mdl->relays->iterateItems() as $relay) {
-        if ((string)$relay->enabled != '1') {
+        if (!$relay->enabled->isEqual('1')) {
             continue;
         }
 
@@ -220,16 +226,18 @@ function dhcrelay_bound_instances($family = null)
             continue;
         }
 
-        $dstfamily = strpos((string)$destination->server, '.') !== false ? 'inet' : 'inet6';
+        $dstfamily = strpos($destination->server->getValue(), '.') !== false ? 'inet' : 'inet6';
         if ($family !== null && $family != $dstfamily) {
             continue;
         }
 
-        if (!isset($instances[(string)$relay->interface])) {
-            $instances[(string)$relay->interface] = [];
+        $interface = $relay->interface->getValue();
+
+        if (!isset($instances[$interface])) {
+            $instances[$interface] = [];
         }
 
-        $instances[(string)$relay->interface][] = $relay->getAttribute('uuid');
+        $instances[$interface][] = $relay->getAttribute('uuid');
     }
 
     return $instances;
