@@ -80,7 +80,7 @@ include("head.inc");
                 </thead>
                 <tbody>
 <?php
-                $states = shell_safe('/sbin/ifconfig %s %s %s  2>&1', [$rwlif, 'list', 'scan'], true);
+                $states = shell_safe('/sbin/ifconfig %s %s %s 2>&1', [$rwlif, 'list', 'scan'], true);
 
                 /* Skip Header */
                 array_shift($states);
@@ -135,7 +135,7 @@ include("head.inc");
                 </thead>
                 <tbody>
 <?php
-                $states = shell_safe('/sbin/ifconfig %s %s %s  2>&1', [$rwlif, 'list', 'sta'], true);
+                $states = shell_safe('/sbin/ifconfig %s %s %s 2>&1', [$rwlif, 'list', 'sta'], true);
 
                 /* Skip Header */
                 array_shift($states);
