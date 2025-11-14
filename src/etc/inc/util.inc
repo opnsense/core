@@ -955,11 +955,15 @@ function exec_safe($format, $args = [])
         $args = [$args];
     }
 
+    if (!is_array($format)) {
+        $format = [$format];
+    }
+
     foreach ($args as $id => $arg) {
         $args[$id] = escapeshellarg($arg ?? '');
     }
 
-    return vsprintf($format, $args);
+    return vsprintf(join(' ', $format), $args);
 }
 
 function mwexecf($format, $args = [], $mute = false)
