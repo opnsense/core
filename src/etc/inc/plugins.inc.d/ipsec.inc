@@ -1458,9 +1458,9 @@ function ipsec_configure_do($verbose = false, $interface_map = null)
     file_put_contents("/usr/local/etc/swanctl/swanctl.conf", $swanctltxt);
 
     if (isvalidpid('/var/run/charon.pid')) {
-        mwexecf_bg('/usr/local/etc/rc.d/strongswan onereload');
+        mwexecfb('/usr/local/etc/rc.d/strongswan onereload');
     } else {
-        mwexecf_bg('/usr/local/etc/rc.d/strongswan onestart');
+        mwexecfb('/usr/local/etc/rc.d/strongswan onestart');
     }
 
     ipsec_configure_spd();

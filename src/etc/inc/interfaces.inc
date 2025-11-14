@@ -1364,7 +1364,7 @@ function interface_proxyarp_configure($interface = '')
         if (!empty($interface)) {
             killbypid($pid_filename);
         }
-        mwexecf_bg($frmt, $args);
+        mwexecfb($frmt, $args);
     }
 }
 

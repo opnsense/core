@@ -1351,6 +1351,6 @@ function reset_factory_defaults($sync = true)
             sleep(1);
         }
     } else {
-        mwexecf_bg($shutdown_cmd);
+        mwexecfb($shutdown_cmd);
     }
 }
