@@ -61,7 +61,7 @@ function _killbypid($pid, $sig, $waitforit, $caller)
         return;
     }
 
-    while (mwexecf('/bin/kill -0 %s', $pid, true) == 0) {
+    while (mwexecfm('/bin/kill -0 %s', $pid) == 0) {
         usleep(200 * 1000);
     }
 }
@@ -69,7 +69,7 @@ function _killbypid($pid, $sig, $waitforit, $caller)
 function isvalidpid($pidfile)
 {
     if (file_exists($pidfile)) {
-        return mwexecf('/bin/pgrep -nF %s', $pidfile, true) == 0;
+        return mwexecfm('/bin/pgrep -nF %s', $pidfile) == 0;
     }
 
     return false;
@@ -974,6 +974,11 @@ function mwexecf($format, $args = [], $mute = false)
 function mwexecf_bg($format, $args = [], $mute = false)
 {
     mwexec_bg(exec_safe($format, $args), $mute);
+}
+
+function mwexecfm($format, $args = [])
+{
+    return mwexecf($format, $args, true);
 }
 
 function shell_safe($format, $args = [], $explode = false, $separator = "\n")

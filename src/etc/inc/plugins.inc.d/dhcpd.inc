@@ -143,7 +143,7 @@ function dhcpd_dhcp_configure($verbose = false, $family = null, $blacklist = [])
         mwexecf('/bin/mkdir -p %s', "/var/dhcpd{$dir}");
     }
 
-    if (mwexecf('/sbin/mount -uw %s', '/var/dhcpd/dev', true)) {
+    if (mwexecfm('/sbin/mount -uw %s', '/var/dhcpd/dev')) {
         mwexecf('/sbin/mount -t devfs devfs %s', '/var/dhcpd/dev');
     }
 
