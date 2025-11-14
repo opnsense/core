@@ -759,7 +759,7 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
             $cmd[] = exec_safe('%s', $rtent['network']);
 
             if (!empty($rtent['disabled'])) {
-                mwexecfm('/sbin/route delete ' . join(' ', $cmd));
+                mwexecfm('/sbin/route delete ' . implode(' ', $cmd));
                 continue;
             }
 
@@ -767,7 +767,7 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
             $interfacegw = $gateway['if'];
 
             if (is_ipaddr($gatewayip)) {
-                mwexecfm('/sbin/route delete ' . join(' ', $cmd));
+                mwexecfm('/sbin/route delete ' . implode(' ', $cmd));
 
                 if ($ipproto == 'inet' && is_ipaddrv6($gatewayip)) {
                     $cmd[] = '-inet6'; /* RFC 5549: gateway protocol differs */
@@ -784,10 +784,10 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
             } elseif (!empty($interfacegw)) {
                 $cmd[] = exec_safe('-interface %s', $interfacegw);
 
-                mwexecfm('/sbin/route delete ' . join(' ', $cmd));
+                mwexecfm('/sbin/route delete ' . implode(' ', $cmd));
             }
 
-            mwexecfm('/sbin/route add ' . join(' ', $cmd));
+            mwexecfm('/sbin/route add ' . implode(' ', $cmd));
         }
     }
 
