@@ -104,7 +104,6 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
             continue;
         }
 
-
         if ((string)$relay->enabled == '1') {
             $relays[] = $relay;
             $carp_tracking[$relay->carp_depend_on->getValue()] = ['status' => 'DISABLED'];
