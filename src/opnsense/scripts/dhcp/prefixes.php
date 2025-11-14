@@ -127,7 +127,7 @@ foreach ($duid_arr as $entry) {
 
 /* expire all first */
 foreach (array_keys($routes) as $prefix) {
-    mwexecf('/sbin/route delete -inet6 %s', [$prefix], true);
+    mwexecfm('/sbin/route delete -inet6 %s', [$prefix]);
 }
 
 /* active route apply */

@@ -137,7 +137,7 @@ function unbound_service_mount_sync($umount = false)
         $mntcmd = '/sbin/mount ' . ($dev['fstype'] != 'devfs' ? '-r' : '') . ' -t %s %s %s';
         if (!empty($mounted[$mntpoint])) {
             if ($umount || $mounted[$mntpoint]['special'] != $dev['special']) {
-                mwexecf('/sbin/umount %s', $mntpoint, true);
+                mwexecfm('/sbin/umount %s', $mntpoint);
                 if (!$umount) {
                     mwexecf($mntcmd, $mntargs);
                 }

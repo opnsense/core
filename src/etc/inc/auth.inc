@@ -410,7 +410,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
         @unlink("{$user_home}/.ssh/authorized_keys");
     }
 
-    mwexecf('/usr/sbin/pw %s %s', [$lock_account, $user_name], true);
+    mwexecfm('/usr/sbin/pw %s %s', [$lock_account, $user_name]);
 }
 
 function local_user_set_password(&$user, $password = null)
@@ -520,7 +520,7 @@ function local_group_set($group, $uids = null)
         $group_members = implode(',', $members);
     }
 
-    $ret = mwexecf('/usr/sbin/pw groupshow %s', $group_name, true);
+    $ret = mwexecfm('/usr/sbin/pw groupshow %s', $group_name);
     if ($ret) {
         $group_op = 'groupadd';
     } else {
