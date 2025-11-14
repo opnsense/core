@@ -768,7 +768,6 @@ EOD;
             }
         }
 
-        $dhcpdifs[] = get_real_interface($dhcpif);
         if (!empty($newzone['domain-name']) && isset($dhcpifconf['ddnsupdate']) && is_ipaddrv4($dhcpifconf['ddnsdomainprimary'])) {
             $newzone['dns-servers'] = array($dhcpifconf['ddnsdomainprimary']);
             $newzone['ddnsdomainkeyname'] = $dhcpifconf['ddnsdomainkeyname'] ?? '';
@@ -789,6 +788,8 @@ EOD;
                 $omapi_added = true;
             }
         }
+
+        $dhcpdifs[] = escapeshellarg(get_real_interface($dhcpif));
     }
 
     if ($need_ddns_updates) {
@@ -805,8 +806,8 @@ EOD;
     @touch('/var/dhcpd/var/db/dhcpd.leases');
 
     if (count($dhcpdifs) > 0) {
-        mwexec('/usr/local/opnsense/scripts/dhcp/cleanup_leases4.php -m');
-        mwexec('/usr/local/sbin/dhcpd -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpd.conf -pf /var/run/dhcpd.pid ' . join(' ', $dhcpdifs));
+        mwexecf('/usr/local/opnsense/scripts/dhcp/cleanup_leases4.php -m');
+        mwexecf('/usr/local/sbin/dhcpd -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpd.conf -pf /var/run/dhcpd.pid ' . join(' ', $dhcpdifs));
     }
 
     service_log("done.\n", $verbose);
@@ -1168,7 +1169,7 @@ EOD;
             $ddns_zones[] = $newzone;
         }
 
-        $dhcpdv6ifs[] = escapeshellcmd(get_real_interface($dhcpv6if, 'inet6'));
+        $dhcpdv6ifs[] = escapeshellarg(get_real_interface($dhcpv6if, 'inet6'));
     }
 
     if ($need_ddns_updates) {
@@ -1187,7 +1188,7 @@ EOD;
     @touch('/var/dhcpd/var/db/dhcpd6.leases');
 
     if (count($dhcpdv6ifs) > 0) {
-        mwexec('/usr/local/sbin/dhcpd -6 -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpdv6.conf -pf /var/run/dhcpdv6.pid ' . join(' ', $dhcpdv6ifs));
+        mwexecf('/usr/local/sbin/dhcpd -6 -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpdv6.conf -pf /var/run/dhcpdv6.pid ' . join(' ', $dhcpdv6ifs));
         mwexecf('/usr/sbin/daemon -m0 -f -p %s %s', ['/var/run/dhcpleases6.pid', '/usr/local/opnsense/scripts/dhcp/prefixes.sh']);
     }
 
