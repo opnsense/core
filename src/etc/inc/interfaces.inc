@@ -2302,9 +2302,12 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
          * the kernel into the transition where it will auto-add the right
          * address on the following "up" event.
          */
-        $mac_cmd[] = exec_safe('/sbin/ifconfig %s link %s', [$realhwif, $mac_next]);
+        $mac_frmt = ['/sbin/ifconfig %s link %s'];
+        $mac_args = [$realhwif, $mac_next];
+
         if ($realhwif == $realifv6) {
             $ll_found = false;
+
             foreach (array_keys(interfaces_addresses($realifv6, true, $ifconfig_details)) as $tmpiface) {
                 if (is_linklocal($tmpiface)) {
                     $tmpip = explode('%', $tmpiface)[0];
@@ -2312,11 +2315,13 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
                     $ll_found = true;
                 }
             }
+
             if ($ll_found) {
-                $mac_cmd[] = 'down';
+                $mac_frmt[] = 'down';
             }
         }
-        mwexec(join(' ', $mac_cmd));
+
+        mwexecf($mac_frmt, $mac_args);
     }
 
     if (!empty($wancfg['media'])) {
