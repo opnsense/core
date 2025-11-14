@@ -972,7 +972,7 @@ function exec_safe($format, $args = [])
     return vsprintf(implode(' ', $format), $args);
 }
 
-/* run commands safely failure reports by default */
+/* run commands safely with failure reports by default */
 function mwexecf($format, $args = [], $mute = false)
 {
     $command = exec_safe($format, $args);
