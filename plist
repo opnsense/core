@@ -531,6 +531,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/ConfigMaintenance.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/File.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/FileObject.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Core/Safe.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/SanitizeFilter.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Shell.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Singleton.php

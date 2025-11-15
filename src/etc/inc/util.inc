@@ -30,6 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+require_once 'app/library/OPNsense/Core/Safe.php';
 require_once 'IPv6.inc';
 
 function killbyname($procname, $sig = 'TERM', $waitforit = true)
@@ -956,20 +957,19 @@ function mwexecf_bg($format, $args = [], $mute = false) /* XXX deprecated */
 /* safe shell command formatter */
 function exec_safe($format, $args = [])
 {
-    if (!is_array($args)) {
-        /* just in case there's only one argument */
-        $args = [$args];
-    }
+    return OPNsense\Core\Safe::exec_safe($format, $args);
+}
 
-    if (!is_array($format)) {
-        $format = [$format];
-    }
+/* pass commands through to stdout */
+function pass_safe($format, $args = [], &$result_code = null)
+{
+    return OPNsense\Core\Safe::pass_safe($format, $args, $result_code);
+}
 
-    foreach ($args as $id => $arg) {
-        $args[$id] = escapeshellarg($arg ?? '');
-    }
-
-    return vsprintf(implode(' ', $format), $args);
+/* run commands and grab their output */
+function shell_safe($format, $args = [], $explode = false, $separator = "\n")
+{
+    return OPNsense\Core\Safe::shell_safe($format, $args, $explode, $separator);
 }
 
 /* run commands safely with failure reports by default */
@@ -1009,26 +1009,6 @@ function mwexecfb($format, $args = [])
     array_unshift($format, '/usr/sbin/daemon -f');
 
     return mwexecf($format, $args);
-}
-
-/* pass commands through to stdout */
-function pass_safe($format, $args = [], &$result_code = null)
-{
-    passthru(exec_safe($format, $args), $result_code);
-}
-
-/* run commands and grab their output */
-function shell_safe($format, $args = [], $explode = false, $separator = "\n")
-{
-    $ret = shell_exec(exec_safe($format, $args));
-
-    /* shell_exec() has weird semantics */
-    if ($ret === false || $ret === null) {
-        $ret = '';
-    }
-
-    /* explode as array or always trim() result on a single string */
-    return $explode ? explode($separator, $ret) : trim($ret);
 }
 
 /* check if an alias exists */
