@@ -38,14 +38,12 @@ class M1_0_0 extends BaseModelMigration
     {
         $cfg = Config::getInstance();
         $cfgObj = $cfg->object();
-        $shellObj = new Shell();
 
         /* get number of cpus and calculate load average limits */
-        $nCPU = [];
-        $shellObj->exec('/sbin/sysctl -n kern.smp.cpus', false, $nCPU);
-        $LoadAvg1 = $nCPU[0] * 2;
-        $LoadAvg5 = $nCPU[0] + ($nCPU[0] / 2);
-        $LoadAvg15 = $nCPU[0];
+        $nCPU = Shell::shell_safe('/sbin/sysctl -n kern.smp.cpus');
+        $LoadAvg1 = $nCPU * 2;
+        $LoadAvg5 = $nCPU + ($nCPU / 2);
+        $LoadAvg15 = $nCPU;
 
         /* inherit SMTP settings from System->Settings->Notifications */
         if (!empty($cfgObj->notifications->smtp->ipaddress)) {
