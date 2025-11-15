@@ -172,12 +172,17 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
             continue;
         }
 
-        $cmd = [exec_safe('daemon -S -T dhcrelay -f -p %s', "/var/run/dhcrelay-{$relay->getAttribute('uuid')}.pid")];
-        $cmd[] = sprintf('/usr/local/sbin/dhcrelay%s -d', $family == 'inet6' ? '6' : '');
+        $cmd_frmt = ['/usr/sbin/daemon -S -T dhcrelay -f -p %s'];
+        $cmd_args = ["/var/run/dhcrelay-{$relay->getAttribute('uuid')}.pid"];
+
+        $cmd_frmt[] = sprintf('/usr/local/sbin/dhcrelay%s -d', $family == 'inet6' ? '6' : '');
+
         if (!empty((string)$relay->agent_info)) {
-            $cmd[] = sprintf('-o%s', $family == 'inet' ? 'r' : '');
+            $cmd_frmt[] = sprintf('-o%s', $family == 'inet' ? 'r' : '');
         }
-        $cmd[] = exec_safe('-i %s', $device);
+
+        $cmd_frmt[] = '-i %s';
+        $cmd_args[] = $device;
 
         $has_servers = false;
 
@@ -190,7 +195,8 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
                 }
                 $server .= '%' . $routeif;
             }
-            $cmd[] = exec_safe('%s', $server);
+            $cmd_frmt[] = '%s';
+            $cmd_args[] = $server;
             $has_servers = true;
         }
 
@@ -199,7 +205,7 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
             continue;
         }
 
-        mwexec(join(' ', $cmd));
+        mwexecf($cmd_frmt, $cmd_args);
     }
 
     service_log("done.\n", $verbose);

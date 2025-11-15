@@ -61,7 +61,7 @@ function _killbypid($pid, $sig, $waitforit, $caller)
         return;
     }
 
-    while (mwexecf('/bin/kill -0 %s', $pid, true) == 0) {
+    while (mwexecfm('/bin/kill -0 %s', $pid) == 0) {
         usleep(200 * 1000);
     }
 }
@@ -69,7 +69,7 @@ function _killbypid($pid, $sig, $waitforit, $caller)
 function isvalidpid($pidfile)
 {
     if (file_exists($pidfile)) {
-        return mwexecf('/bin/pgrep -nF %s', $pidfile, true) == 0;
+        return mwexecfm('/bin/pgrep -nF %s', $pidfile) == 0;
     }
 
     return false;
@@ -229,7 +229,7 @@ function service_control_start($name, $extras)
         }
     } elseif (isset($service['mwexec']['start'])) {
         foreach ($service['mwexec']['start'] as $cmd) {
-            mwexec($cmd);
+            mwexecf($cmd);
         }
     } else {
         return sprintf(gettext("Could not start service `%s'"), htmlspecialchars(service_name($service)));
@@ -255,7 +255,7 @@ function service_control_stop($name, $extras)
         }
     } elseif (isset($service['mwexec']['stop'])) {
         foreach ($service['mwexec']['stop'] as $cmd) {
-            mwexec($cmd);
+            mwexecf($cmd);
         }
     } elseif (isset($service['pidfile'])) {
         killbypid($service['pidfile']);
@@ -290,7 +290,7 @@ function service_control_restart($name, $extras)
         }
     } elseif (isset($service['mwexec']['restart'])) {
         foreach ($service['mwexec']['restart'] as $cmd) {
-            mwexec($cmd);
+            mwexecf($cmd);
         }
     } else {
         return sprintf(gettext("Could not restart service `%s'"), htmlspecialchars(service_name($service)));
@@ -924,7 +924,7 @@ function url_safe($format, $args = [])
     return vsprintf($format, $args);
 }
 
-function mwexec($command, $mute = false)
+function mwexec($command, $mute = false) /* XXX deprecated */
 {
     $oarr = [];
     $retval = 0;
@@ -943,11 +943,17 @@ function mwexec($command, $mute = false)
     return $retval;
 }
 
-function mwexec_bg($command, $mute = false)
+function mwexec_bg($command, $mute = false) /* XXX deprecated */
 {
     mwexec("/usr/sbin/daemon -f {$command}", $mute);
 }
 
+function mwexecf_bg($format, $args = [], $mute = false) /* XXX deprecated */
+{
+    mwexec_bg(exec_safe($format, $args), $mute);
+}
+
+/* safe shell command formatter */
 function exec_safe($format, $args = [])
 {
     if (!is_array($args)) {
@@ -955,23 +961,57 @@ function exec_safe($format, $args = [])
         $args = [$args];
     }
 
+    if (!is_array($format)) {
+        $format = [$format];
+    }
+
     foreach ($args as $id => $arg) {
         $args[$id] = escapeshellarg($arg ?? '');
     }
 
-    return vsprintf($format, $args);
+    return vsprintf(implode(' ', $format), $args);
 }
 
+/* run commands safely with failure reports by default */
 function mwexecf($format, $args = [], $mute = false)
 {
-    return mwexec(exec_safe($format, $args), $mute);
+    $command = exec_safe($format, $args);
+    $retval = 0;
+    $oarr = [];
+
+    $garbage = exec("{$command} 2>&1", $oarr, $retval);
+    unset($garbage);
+
+    if ($retval != 0 && $mute !== true) {
+        $output = implode(' ', $oarr);
+        log_msg(sprintf("The command '%s'%s returned exit code '%d', the output was '%s'", $command, !empty($mute) ? "($mute) " : '', $retval, $output), LOG_ERR);
+        unset($output);
+    }
+
+    unset($oarr);
+
+    return $retval;
 }
 
-function mwexecf_bg($format, $args = [], $mute = false)
+/* run commands safely without failure reports */
+function mwexecfm($format, $args = [])
 {
-    mwexec_bg(exec_safe($format, $args), $mute);
+    return mwexecf($format, $args, true);
 }
 
+/* run commands safely in the background */
+function mwexecfb($format, $args = [])
+{
+    if (!is_array($format)) {
+        $format = [$format];
+    }
+
+    array_unshift($format, '/usr/sbin/daemon -f');
+
+    return mwexecf($format, $args);
+}
+
+/* run commands and grab their output */
 function shell_safe($format, $args = [], $explode = false, $separator = "\n")
 {
     $ret = shell_exec(exec_safe($format, $args));

@@ -137,7 +137,7 @@ function unbound_service_mount_sync($umount = false)
         $mntcmd = '/sbin/mount ' . ($dev['fstype'] != 'devfs' ? '-r' : '') . ' -t %s %s %s';
         if (!empty($mounted[$mntpoint])) {
             if ($umount || $mounted[$mntpoint]['special'] != $dev['special']) {
-                mwexecf('/sbin/umount %s', $mntpoint, true);
+                mwexecfm('/sbin/umount %s', $mntpoint);
                 if (!$umount) {
                     mwexecf($mntcmd, $mntargs);
                 }
@@ -152,7 +152,7 @@ function unbound_service_stop()
 {
     $mdl = new \OPNsense\Unbound\Unbound();
 
-    mwexec('/usr/local/bin/flock -E 0 -o /tmp/unbound_start.lock true');
+    mwexecf('/usr/local/bin/flock -E 0 -o /tmp/unbound_start.lock true');
 
     if (empty((string)$mdl->general->cacheflush)) {
         if (isvalidpid('/var/run/unbound.pid')) {
@@ -485,7 +485,7 @@ function unbound_configure_do($verbose = false, $interface_map = null)
         @unlink('/var/unbound/data/stats');
     }
 
-    mwexecf_bg('/usr/local/bin/flock -n -E 0 -o /tmp/unbound_start.lock /usr/local/opnsense/scripts/unbound/start.sh %s', [$domain]);
+    mwexecfb('/usr/local/bin/flock -n -E 0 -o /tmp/unbound_start.lock /usr/local/opnsense/scripts/unbound/start.sh %s', [$domain]);
 
     waitforpid('/var/run/unbound.pid', 10);
 
