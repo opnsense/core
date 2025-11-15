@@ -71,7 +71,7 @@ function system_sysctl_defaults()
 
     /* notes:
      *  - always set 'default' so the backend can use it and the user can see it
-     *  - since this is a function the settings could be derived from confiugration
+     *  - since this is a function the settings could be derived from configuration
      *    values or functions although in reality this is/was very rarely needed.
      *  - 'description' and 'type' can be used to indicate persistence of these values
      *    when in reality these are not available due to kernel modules unloaded or
