@@ -1011,6 +1011,12 @@ function mwexecfb($format, $args = [])
     return mwexecf($format, $args);
 }
 
+/* pass commands through to stdout */
+function pass_safe($format, $args = [], &$result_code = null)
+{
+    passthru(exec_safe($format, $args), $result_code);
+}
+
 /* run commands and grab their output */
 function shell_safe($format, $args = [], $explode = false, $separator = "\n")
 {

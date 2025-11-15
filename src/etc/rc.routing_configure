@@ -51,7 +51,7 @@ foreach (glob("/tmp/delete_route_*.todo") as $filename) {
 system_routing_configure(true, null, !$monitor_hook);
 
 if ($monitor_hook) {
-    passthru(exec_safe('/usr/local/etc/rc.syshook monitor %s', $monitor_gws));
+    pass_safe('/usr/local/etc/rc.syshook monitor %s', $monitor_gws);
 }
 
 filter_configure_sync(true, false);
