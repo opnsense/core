@@ -721,7 +721,7 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
      * The function formerly known as interface_bring_down() is largely intact,
      * but its purpose was split between different use cases that it could not
      * handle correctly not being aware of the caller's requirements.  Now we
-     * split between a suspend and reset mode in order to accomodate the need.
+     * split between a suspend and reset mode in order to accommodate the need.
      */
     if ($ifacecfg === false) {
         $ifcfg = $config['interfaces'][$interface];
@@ -2321,12 +2321,12 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
     if (!empty($wancfg['media'])) {
         $intf_details = $ifconfig_details[$realhwif];
-        /* santizing current media to avoid mismatching on change detection */
+        /* sanitizing current media to avoid mismatching on change detection */
         $media_changed = stripos(explode('(', $intf_details['media_raw'])[0], $wancfg['media']) == false;
         if (!empty($wancfg['mediaopt'])) {
             /*
              * XXX Not sanitizing current media here, because in
-             * testing 'mediaopt' was not working consistenly and
+             * testing 'mediaopt' was not working consistently and
              * may even differ per driver.  If someone set 'media'
              * it will very likely be set once with the right
              * 'mediaopt' so the behaviour should be consistent.
@@ -4105,7 +4105,7 @@ function _interfaces_primary_address6($interface, $ifconfig_details = null, $all
 
 function interfaces_routed_address6($interface, $ifconfig_details = null)
 {
-   /* "routed" returns a non-link-local address only, possiby derived from tracking interfaces */
+   /* "routed" returns a non-link-local address only, possibly derived from tracking interfaces */
     return _interfaces_primary_address6($interface, $ifconfig_details, true, false);
 }
 
