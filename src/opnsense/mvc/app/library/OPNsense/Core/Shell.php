@@ -29,8 +29,6 @@
 
 namespace OPNsense\Core;
 
-use OPNsense\Core\AppConfig;
-
 /**
  * Class Shell shell/command handling routines
  * @package OPNsense\Core
@@ -38,89 +36,52 @@ use OPNsense\Core\AppConfig;
 class Shell
 {
     /**
-     * simulation mode, only print commands, dom not execute
-     * @var bool
-     */
-    private $simulate = false;
-
-    /**
-     * debug mode
-     * @var bool
-     */
-    private $debug = false;
-
-    /**
-     * new shell object
-     */
-    public function __construct()
-    {
-        // init, set simulation mode / debug autoput
-        $appconfig = new AppConfig();
-        $this->simulate = $appconfig->globals->simulate_mode;
-        $this->debug = $appconfig->globals->debug;
-    }
-
-    /**
-     * execute command or list of commands
-     *
-     * @param string|array $command command to execute
-     * @param bool $mute
-     * @param array &$output
-     */
-    public function exec($command, $mute = false, &$output = null)
-    {
-        if (!is_array($command)) {
-            $command = array($command);
-        }
-
-        foreach ($command as $comm) {
-            $this->execSingle($comm, $mute, $output);
-        }
-    }
-
-    /**
-     * execute shell command
+     * run commands safely with failure reports by default
      * @param string $command command to execute
      * @param bool $mute
-     * @param array &$output
      * @return int
      */
-    private function execSingle($command, $mute = false, &$output = null)
+    static public function run_safe($format, $args = [], $mute = false)
     {
-        $oarr = array();
-        $retval = 0;
+        $command = self::exec_safe($format, $args);
+        $result_code = 0;
+        $output = [];
 
-        // debug output
-        if ($this->debug) {
-            print("Shell->exec : " . $command . " \n");
-        }
+        /* stderr to stdout for error logging */
+        exec("{$command} 2>&1", $output, $result_code);
 
-        // only execute actual command if not in simulation mode
-        if (!$this->simulate) {
-            exec("$command 2>&1", $output, $retval);
-
-            if (($retval != 0) && ($mute === false)) {
-                // TODO: log
-                unset($output);
+        if ($result_code != 0 && $mute == false) {
+            /* use this prefix for the log message for legacy emulation */
+            $page = $_SERVER['SCRIPT_NAME'];
+            if (empty($page)) {
+                $files = get_included_files();
+                $page = basename($files[0]);
             }
 
-            unset($oarr);
-            return $retval;
+            /* log directly without opening syslog to avoid clobbering the subsequent callers */
+            syslog(LOG_ERR, "{$page}: " . sprintf(
+                'The command <%s> returned exit code %d and the output was "%s"',
+                $command,
+                $result_code,
+                implode(' ', $output)
+            ));
         }
 
-        return null;
+        return $result_code;
     }
 
-    /* safe shell command formatter */
+    /**
+     * safe shell command formatter
+     */
     public static function exec_safe($format, $args = [])
     {
+        if (!is_array($format)) {
+            $format = [$format];
+        }
+
         if (!is_array($args)) {
             /* just in case there's only one argument */
             $args = [$args];
-        }
-
-        if (!is_array($format)) {
-            $format = [$format];
         }
 
         foreach ($args as $id => $arg) {
@@ -130,7 +91,9 @@ class Shell
         return vsprintf(implode(' ', $format), $args);
     }
 
-    /* pass commands through to stdout */
+    /**
+     * pass commands through to stdout
+     */
     public static function pass_safe($format, $args = [], &$result_code = null)
     {
         return passthru(self::exec_safe($format, $args), $result_code);
