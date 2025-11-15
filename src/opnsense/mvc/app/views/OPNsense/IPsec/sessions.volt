@@ -87,7 +87,12 @@
             });
         });
         grid_phase1.on("selected.rs.jquery.bootgrid", function(e, rows) {
-            $("#grid-phase2").bootgrid('reload');
+            if (rows.length > 0 && rows[0].connected) {
+                $("#grid-phase2").bootgrid('reload');
+                $("#box-phase2").show();
+            } else {
+                $("#box-phase2").hide();
+            }
         });
 
         let grid_phase2 = $("#grid-phase2").UIBootgrid({
@@ -106,14 +111,6 @@
                     request['id'] = ids.length > 0 ? ids[0] : "__not_found__";
                     return request;
                 }
-            }
-        });
-
-        grid_phase2.on('loaded.rs.jquery.bootgrid', function() {
-            if (grid_phase2.bootgrid("getTotalRowCount") > 0) {
-                $("#box-phase2").show();
-            } else {
-                $("#box-phase2").hide();
             }
         });
 
