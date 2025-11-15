@@ -36,6 +36,35 @@ namespace OPNsense\Core;
 class Shell
 {
     /**
+     * safe shell command formatter
+     */
+    public static function exec_safe($format, $args = [])
+    {
+        if (!is_array($format)) {
+            $format = [$format];
+        }
+
+        if (!is_array($args)) {
+            /* just in case there's only one argument */
+            $args = [$args];
+        }
+
+        foreach ($args as $id => $arg) {
+            $args[$id] = escapeshellarg($arg ?? '');
+        }
+
+        return vsprintf(implode(' ', $format), $args);
+    }
+
+    /**
+     * pass commands through to stdout
+     */
+    public static function pass_safe($format, $args = [], &$result_code = null)
+    {
+        return passthru(self::exec_safe($format, $args), $result_code);
+    }
+
+    /**
      * run commands safely with failure reports by default
      * @param string $command command to execute
      * @param bool $mute
@@ -71,35 +100,8 @@ class Shell
     }
 
     /**
-     * safe shell command formatter
+     * run commands and grab their output
      */
-    public static function exec_safe($format, $args = [])
-    {
-        if (!is_array($format)) {
-            $format = [$format];
-        }
-
-        if (!is_array($args)) {
-            /* just in case there's only one argument */
-            $args = [$args];
-        }
-
-        foreach ($args as $id => $arg) {
-            $args[$id] = escapeshellarg($arg ?? '');
-        }
-
-        return vsprintf(implode(' ', $format), $args);
-    }
-
-    /**
-     * pass commands through to stdout
-     */
-    public static function pass_safe($format, $args = [], &$result_code = null)
-    {
-        return passthru(self::exec_safe($format, $args), $result_code);
-    }
-
-    /* run commands and grab their output */
     public static function shell_safe($format, $args = [], $explode = false, $separator = "\n")
     {
         $ret = shell_exec(self::exec_safe($format, $args));
