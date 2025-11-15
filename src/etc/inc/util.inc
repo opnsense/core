@@ -30,7 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once 'app/library/OPNsense/Core/Safe.php';
+require_once 'app/library/OPNsense/Core/Shell.php';
 require_once 'IPv6.inc';
 
 function killbyname($procname, $sig = 'TERM', $waitforit = true)
@@ -957,19 +957,19 @@ function mwexecf_bg($format, $args = [], $mute = false) /* XXX deprecated */
 /* safe shell command formatter */
 function exec_safe($format, $args = [])
 {
-    return OPNsense\Core\Safe::exec_safe($format, $args);
+    return OPNsense\Core\Shell::exec_safe($format, $args);
 }
 
 /* pass commands through to stdout */
 function pass_safe($format, $args = [], &$result_code = null)
 {
-    return OPNsense\Core\Safe::pass_safe($format, $args, $result_code);
+    return OPNsense\Core\Shell::pass_safe($format, $args, $result_code);
 }
 
 /* run commands and grab their output */
 function shell_safe($format, $args = [], $explode = false, $separator = "\n")
 {
-    return OPNsense\Core\Safe::shell_safe($format, $args, $explode, $separator);
+    return OPNsense\Core\Shell::shell_safe($format, $args, $explode, $separator);
 }
 
 /* run commands safely with failure reports by default */

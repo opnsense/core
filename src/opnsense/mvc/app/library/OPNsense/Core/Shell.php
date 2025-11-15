@@ -2,6 +2,7 @@
 
 /*
  * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2025 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -108,5 +109,44 @@ class Shell
         }
 
         return null;
+    }
+
+    /* safe shell command formatter */
+    public static function exec_safe($format, $args = [])
+    {
+        if (!is_array($args)) {
+            /* just in case there's only one argument */
+            $args = [$args];
+        }
+
+        if (!is_array($format)) {
+            $format = [$format];
+        }
+
+        foreach ($args as $id => $arg) {
+            $args[$id] = escapeshellarg($arg ?? '');
+        }
+
+        return vsprintf(implode(' ', $format), $args);
+    }
+
+    /* pass commands through to stdout */
+    public static function pass_safe($format, $args = [], &$result_code = null)
+    {
+        return passthru(self::exec_safe($format, $args), $result_code);
+    }
+
+    /* run commands and grab their output */
+    public static function shell_safe($format, $args = [], $explode = false, $separator = "\n")
+    {
+        $ret = shell_exec(self::exec_safe($format, $args));
+
+        /* shell_exec() has weird semantics */
+        if ($ret === false || $ret === null) {
+            $ret = '';
+        }
+
+        /* explode as array or always trim() result on a single string */
+        return $explode ? explode($separator, $ret) : trim($ret);
     }
 }
