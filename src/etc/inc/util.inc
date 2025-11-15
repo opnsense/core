@@ -975,22 +975,7 @@ function shell_safe($format, $args = [], $explode = false, $separator = "\n")
 /* run commands safely with failure reports by default */
 function mwexecf($format, $args = [], $mute = false)
 {
-    $command = exec_safe($format, $args);
-    $retval = 0;
-    $oarr = [];
-
-    $garbage = exec("{$command} 2>&1", $oarr, $retval);
-    unset($garbage);
-
-    if ($retval != 0 && $mute !== true) {
-        $output = implode(' ', $oarr);
-        log_msg(sprintf("The command '%s'%s returned exit code '%d', the output was '%s'", $command, !empty($mute) ? "($mute) " : '', $retval, $output), LOG_ERR);
-        unset($output);
-    }
-
-    unset($oarr);
-
-    return $retval;
+    return OPNsense\Core\Shell::run_safe($format, $args, $mute);
 }
 
 /* run commands safely without failure reports */
