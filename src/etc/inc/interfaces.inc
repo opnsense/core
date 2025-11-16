@@ -1683,16 +1683,9 @@ function interface_wireless_configure($if, &$wancfg)
     fwrite($fd_set, "#!/bin/sh\n");
     fwrite($fd_set, "# wireless configuration script.\n\n");
 
-    /* set values for /path/program */
-    $wpa_supplicant = '/usr/local/sbin/wpa_supplicant';
-    $hostapd = '/usr/local/sbin/hostapd';
-    $ifconfig = '/sbin/ifconfig';
-    $sysctl = '/sbin/sysctl';
-
     /* Set all wireless ifconfig variables (split up to get rid of needed checking) */
-
-    $wlcmd = [];
     $wl_sysctl = [];
+    $wlcmd = [];
 
     /* Make sure it's up */
     $wlcmd[] = "up";
@@ -1997,16 +1990,16 @@ EOD;
     if (!empty($wl_sysctl)) {
         fwrite($fd_set, "# sysctls for {$baseif}\n");
         foreach ($wl_sysctl as $wl_sysctl_line) {
-            fwrite($fd_set, "{$sysctl} {$wl_sysctl_prefix}.{$wl_sysctl_line}\n");
+            fwrite($fd_set, exec_safe('/sbin/sysctl %s.%s', [$wl_sysctl_prefix, $wl_sysctl_line]) . PHP_EOL);
         }
     }
 
     if (isset($wlcfg['wpa']['enable'])) {
         if ($wlcfg['mode'] == "bss") {
-            fwrite($fd_set, "{$wpa_supplicant} -B -i {$if} -c /var/etc/wpa_supplicant_{$if}.conf\n");
+            fwrite($fd_set, exec_safe('/usr/local/sbin/wpa_supplicant -B -i %s -c %s', [$if, "/var/etc/wpa_supplicant_{$if}.conf"]) . PHP_EOL);
         }
         if ($wlcfg['mode'] == "hostap") {
-            fwrite($fd_set, "{$hostapd} -B -P /var/run/hostapd_{$if}.pid /var/etc/hostapd_{$if}.conf\n");
+            fwrite($fd_set, exec_safe('/usr/local/sbin/hostapd -B -P %s %s', ["/var/run/hostapd_{$if}.pid", "/var/etc/hostapd_{$if}.conf"]) . PHP_EOL);
         }
     }
 
@@ -2017,9 +2010,7 @@ EOD;
      * before applying, because changing them requires bringing
      * down all wireless networks on the interface.
      */
-    exec("{$ifconfig} " . escapeshellarg($if), $output);
-    $ifconfig_str = implode(PHP_EOL, $output);
-    unset($output);
+    $ifconfig_str = shell_safe('/sbin/ifconfig %s', $if);
     $reg_changing = false;
 
     /* special case for the debug country code */
