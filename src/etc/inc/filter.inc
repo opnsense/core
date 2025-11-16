@@ -397,7 +397,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     @file_put_contents('/tmp/rules.limits', $limitrules);
     mwexecf('/sbin/pfctl -Of %s', '/tmp/rules.limits');
-    exec('/sbin/pfctl -f /tmp/rules.debug 2>&1', $rules_error, $rules_loading);
+    $rules_loading = mwexecf('/sbin/pfctl -f /tmp/rules.debug > /tmp/rules.debug.error');
 
     foreach ($sched_kill_states as $label) {
         mwexecf('/sbin/pfctl -k label -k %s', $label);
@@ -408,6 +408,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
      * then output the contents of the error to the caller
      */
     if ($rules_loading) {
+        $rules_error = explode("\n", file_get_contents('/tmp/rules.debug.error'));
         $config_line = '';
 
         /* only report issues with line numbers */
@@ -420,7 +421,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
             }
         }
 
-        mwexecf('/sbin/pfctl -f %s', '/tmp/rules.debug.old');
+        mwexecf('/sbin/pfctl -f /tmp/rules.debug.old');
 
         syslog(LOG_ERR, trim(sprintf('There were error(s) loading the rules: %s%s', $rules_error[0], $config_line)));
         file_put_contents(
@@ -747,9 +748,7 @@ function filter_default_state_size()
 
 function filter_current_hostid()
 {
-    exec('/sbin/pfctl -si -v 2>/dev/null', $output);
-
-    foreach ($output as $line) {
+    foreach (shell_safe('/sbin/pfctl -si -v 2> /dev/null', [], true) as $line) {
         if (strpos($line, 'Hostid:') !== false) {
             return preg_split('/\s+/', $line)[1];
         }
