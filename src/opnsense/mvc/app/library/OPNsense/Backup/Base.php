@@ -66,19 +66,12 @@ abstract class Base
 
         file_put_contents($file, $pass);
         file_put_contents("{$file}.dec", $data);
-        exec(
-            sprintf(
-                '/usr/local/bin/openssl enc -e -%s -md %s -pbkdf2 -iter %s -in %s -out %s -pass file:%s 2> /dev/null',
-                escapeshellarg($cipher),
-                escapeshellarg($hash),
-                escapeshellarg($pbkdf2),
-                escapeshellarg("{$file}.dec"),
-                escapeshellarg("{$file}.enc"),
-                escapeshellarg($file)
-            ),
-            $unused,
-            $retval
+
+        $retval = Shell::run_safe(
+            '/usr/local/bin/openssl enc -e -%s -md %s -pbkdf2 -iter %s -in %s -out %s -pass file:%s 2> /dev/null',
+            [$cipher, $hash, $pbkdf2, "{$file}.dec", "{$file}.enc", $file]
         );
+
         @unlink("{$file}.dec");
         @unlink($file);
 
@@ -149,19 +142,22 @@ abstract class Base
 
         file_put_contents($file, $pass);
         file_put_contents("{$file}.enc", base64_decode($data));
-        exec(
-            sprintf(
-                '/usr/local/bin/openssl enc -d -%s -md %s %s -in %s -out %s -pass file:%s 2> /dev/null',
-                escapeshellarg($cipher),
-                escapeshellarg($hash),
-                $pbkdf2 === null ? '' : '-pbkdf2 -iter=' . escapeshellarg($pbkdf2),
-                escapeshellarg("{$file}.enc"),
-                escapeshellarg("{$file}.dec"),
-                escapeshellarg($file)
-            ),
-            $unused,
-            $retval
-        );
+
+        $frmt = ['/usr/local/bin/openssl enc -d -%s -md %s'];
+        $args = [$cipher, $hash];
+
+        if ($pbkdf2 !== null) {
+            $frmt[] = '-pbkdf2 -iter=%s';
+            $args[] = $pbkdf2;
+        }
+
+        $frmt[] = '-in %s -out %s -pass file:%s 2> /dev/null';
+        $args[] = "{$file}.enc";
+        $args[] = "{$file}.dec";
+        $args[] = $file;
+
+        $retval = Shell::run_safe($frmt, $args);
+
         @unlink("{$file}.enc");
         @unlink($file);
 
