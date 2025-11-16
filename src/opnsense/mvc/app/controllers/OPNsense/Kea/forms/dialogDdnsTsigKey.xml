@@ -1,0 +1,20 @@
+<form>
+    <field>
+        <id>tsig_keys.name</id>
+        <label>Name</label>
+        <type>text</type>
+        <help>TSIG key name.</help>
+    </field>
+    <field>
+        <id>tsig_keys.algorithm</id>
+        <label>Algorithm</label>
+        <type>dropdown</type>
+        <help>Select the TSIG hash algorithm.</help>
+    </field>
+    <field>
+        <id>tsig_keys.secret</id>
+        <label>Secret</label>
+        <type>text</type>
+        <help>Base64-encoded shared secret.</help>
+    </field>
+</form>
