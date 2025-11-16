@@ -30,6 +30,7 @@
 namespace OPNsense\Backup;
 
 use OPNsense\Core\AppConfig;
+use OPNsense\Core\Shell;
 
 /**
  * Backup stub file, contains shared logic for all backup strategies
@@ -82,7 +83,7 @@ abstract class Base
         @unlink($file);
 
         if (file_exists("{$file}.enc") && !$retval) {
-            $version = trim(shell_exec('opnsense-version -Nv') ?? '');
+            $version = Shell::shell_safe('opnsense-version -Nv');
             $result = "---- BEGIN {$tag} ----\n";
             $result .= "Version: {$version}\n";
             $result .= "Cipher: " . strtoupper($cipher) . "\n";
