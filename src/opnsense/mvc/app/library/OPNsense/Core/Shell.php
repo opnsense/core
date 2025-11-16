@@ -111,7 +111,7 @@ class Shell
             $ret = '';
         }
 
-        /* explode as array or always trim() result on a single string */
-        return $explode ? explode($separator, $ret) : trim($ret);
+        /* explode as array or single string by default */
+        return $explode ? explode($separator, rtrim($ret)) : trim($ret);
     }
 }
