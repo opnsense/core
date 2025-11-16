@@ -42,16 +42,13 @@ if (isset($opts['h']) || empty($opts['g'])) {
     $a_group = &config_read_array('system', 'group');
 
     $localgroups = [];
-    exec("/usr/sbin/pw groupshow -a", $data, $ret);
-    if (!$ret) {
-        foreach ($data as $record) {
-            $line = explode(':', $record);
-            // filter system managed users and groups
-            if (count($line) < 3 || !strncmp($line[0], '_', 1) || $line[2] < 2000 || $line[2] > 65000) {
-                continue;
-            }
-            $localgroups[$line[0]] = $line;
+    foreach (shell_safe('/usr/sbin/pw %s -a', 'groupshow', true) as $record) {
+        $line = explode(':', $record);
+        // filter system managed users and groups
+        if (count($line) < 3 || !strncmp($line[0], '_', 1) || $line[2] < 2000 || $line[2] > 65000) {
+            continue;
         }
+        $localgroups[$line[0]] = $line;
     }
 
     $update_group = null;
