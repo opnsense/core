@@ -401,7 +401,9 @@
                     <Required>Y</Required>
                     <ValidationMessage>A key is required; generate one with the button.</ValidationMessage>
                 </key>
-                <description type="DescriptionField"/>
+                <description type="DescriptionField">
+                    <Required>Y</Required>
+                </description>
             </StaticKey>
         </StaticKeys>
     </items>
