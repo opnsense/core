@@ -118,19 +118,18 @@ function unbound_service_mount_sync($umount = false)
             'fstype' => 'nullfs'
         ]
     ];
+
     /* collect mounted */
-    exec('/sbin/mount --libxo json 2>&1', $out_mnt, $ret_mnt);
     $mounted = [];
-    if (!$ret_mnt && !empty($out_mnt[0])) {
-        $tmp = json_decode($out_mnt[0], true) ?? [];
-        if (!empty($tmp['mount']) && !empty($tmp['mount']['mounted'])) {
-            foreach ($tmp['mount']['mounted'] as $dev) {
-                if (!empty($dev['node'])) {
-                    $mounted[$dev['node']] = $dev;
-                }
+    $tmp = json_decode(shell_safe('/sbin/mount --libxo json'), true) ?? [];
+    if (!empty($tmp['mount']) && !empty($tmp['mount']['mounted'])) {
+        foreach ($tmp['mount']['mounted'] as $dev) {
+            if (!empty($dev['node'])) {
+                $mounted[$dev['node']] = $dev;
             }
         }
     }
+
     /* sync requested mountpoints */
     foreach ($mountpoints as $mntpoint => $dev) {
         $mntargs = [$dev['fstype'], $dev['special'], $mntpoint];
