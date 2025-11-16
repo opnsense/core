@@ -33,7 +33,7 @@ function system_powerd_configure($verbose = false)
     global $config;
 
     if (is_process_running('powerd')) {
-        exec('/usr/bin/killall powerd');
+        mwexecf('/usr/bin/killall powerd');
     }
 
     if (!isset($config['system']['powerd_enable'])) {
@@ -865,8 +865,8 @@ function system_firmware_configure($verbose = false)
             continue;
         }
 
-         /* run the script in passthru() but avoid standard output from this side */
-         passthru($script . '> /dev/null');
+         /* offer visibility of errors only */
+         pass_safe($script . '> /dev/null');
 
         /* make a note about repo being handled */
         service_log(' ' . preg_replace('/\..*?$/', '', $basename));
@@ -974,7 +974,7 @@ function system_trust_configure($verbose = false)
     service_log("done.\n", $verbose);
 
     /* collects all trusted certificates into /etc/ssl/certs directory */
-    passthru('/usr/local/opnsense/scripts/system/certctl.py rehash');
+    pass_safe('/usr/local/opnsense/scripts/system/certctl.py rehash');
 
     service_log('Writing trust bundles...', $verbose);
 
