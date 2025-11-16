@@ -176,7 +176,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
      * to ensure consistent pipe/queue config for pf and service
      * start during bootup.
      */
-    mwexecfm('/usr/local/opnsense/scripts/shaper/start.sh');
+    mwexecf('/usr/local/opnsense/scripts/shaper/start.sh');
 
     ifgroup_setup();
 
@@ -279,9 +279,9 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     /* enable pf if we need to, otherwise disable */
     if (!isset($config['system']['disablefilter'])) {
-        mwexecfm('/sbin/pfctl -e'); /* XXX unsure why historically muted */
+        mwexecfm('/sbin/pfctl -e');
     } else {
-        mwexecfm('/sbin/pfctl -d'); /* XXX unsure why historically muted */
+        mwexecfm('/sbin/pfctl -d');
 
         unset($fobj);
 
