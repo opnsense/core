@@ -150,6 +150,14 @@
             <type>checkbox</type>
             <help>Send Cisco Unity vendor ID payload (IKEv1 only).</help>
         </field>
+
+        <field>
+            <id>ipsec.charon.reqid_base</id>
+            <label>Reqid base</label>
+            <type>text</type>
+            <hint>1</hint>
+            <help>Value of the first reqid to be automatically assigned to a CHILD_SA.</help>
+        </field>
         <field>
             <type>header</type>
             <label>Retransmission</label>
