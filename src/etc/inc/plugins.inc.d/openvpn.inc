@@ -291,31 +291,36 @@ function openvpn_port_next($prot, $interface = "wan")
 
 function openvpn_get_cipherlist()
 {
-    $ciphers = ["" => gettext("None")];
-    exec('/usr/local/sbin/openvpn --show-ciphers', $lines);
-    foreach ($lines as $line) {
+    $ciphers = ['' => gettext('None')];
+
+    foreach (shell_safe('/usr/local/sbin/openvpn --show-ciphers', [], true) as $line) {
         if (strstr($line, '  (') !== false) {
             $cipher = explode(' ', $line)[0];
             $ciphers[$cipher] = $line;
         }
     }
+
     ksort($ciphers, SORT_STRING | SORT_FLAG_CASE);
+
     return $ciphers;
 }
 
 function openvpn_get_digestlist()
 {
-    $digests = array();
-    exec('/usr/local/sbin/openvpn --show-digests', $lines);
-    foreach ($lines as $line) {
+    $digests = [];
+
+    foreach (shell_safe('/usr/local/sbin/openvpn --show-digests', [], true) as $line) {
         if (strstr($line, 'digest size') !== false) {
             $digest = explode(' ', $line)[0];
             $bits = explode(' ', explode('bit', $line)[0])[1];
             $digests[$digest] = $digest . " (" . $bits . "-bit)";
         }
     }
+
     ksort($digests);
-    $digests["none"] = gettext("None (No Authentication)");
+
+    $digests['none'] = gettext('None (No Authentication)');
+
     return $digests;
 }
 
