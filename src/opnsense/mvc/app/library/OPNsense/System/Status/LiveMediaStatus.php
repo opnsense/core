@@ -28,9 +28,10 @@
 
 namespace OPNsense\System\Status;
 
+use OPNsense\Core\Config;
+use OPNsense\Core\Shell;
 use OPNsense\System\AbstractStatus;
 use OPNsense\System\SystemStatusCode;
-use OPNsense\Core\Config;
 
 class LiveMediaStatus extends AbstractStatus
 {
@@ -63,8 +64,8 @@ class LiveMediaStatus extends AbstractStatus
         $this->internalStatus = SystemStatusCode::NOTICE;
         $this->internalMessage = gettext('You are currently running in live media mode. A reboot will reset the configuration.');
         if (empty(Config::getInstance()->object()->system->ssh->noauto)) {
-            exec('/bin/pgrep -anx sshd', $output, $retval); /* XXX portability shortcut */
-            if (intval($retval) == 0) {
+            /* XXX portability shortcut */
+            if (Shell::run_safe('/bin/pgrep -anx sshd') == 0) {
                 $this->internalMessage .= ' ' . gettext('SSH remote login is enabled for the users "root" and "installer" using the same password.');
             }
         }
