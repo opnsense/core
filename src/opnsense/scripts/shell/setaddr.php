@@ -598,7 +598,7 @@ if (empty($config['interfaces']['lan'])) {
         unset($config['dhcpdv6']['lan']);
     }
     unset($config['nat']);
-    system("rm /var/dhcpd/var/db/* >/dev/null 2>/dev/null");
+    shell_safe('rm /var/dhcpd/var/db/*');
     $restart_dhcpd = true;
 }
 
