@@ -1533,8 +1533,7 @@ function _interfaces_wlan_clone($device, $wlcfg)
     }
 
     if (does_interface_exist($device)) {
-        exec("/sbin/ifconfig " . escapeshellarg($device), $output, $ret);
-        $ifconfig_str = implode(PHP_EOL, $output);
+        $ifconfig_str = shell_safe('/sbin/ifconfig %s', $device);
         if (($wlcfg_mode == 'hostap') && !preg_match('/hostap/si', $ifconfig_str)) {
             log_msg("Interface {$device} changed to hostap mode");
             $needs_clone = true;
@@ -1556,9 +1555,8 @@ function _interfaces_wlan_clone($device, $wlcfg)
 
         legacy_interface_destroy($device);
 
-        exec("/sbin/ifconfig wlan create wlandev {$baseif} {$mode} bssid name {$device} 2>&1", $out, $ret);
-        if ($ret != 0) {
-            log_msg("Failed to clone interface {$baseif} with error code {$ret}, output {$out[0]}", LOG_ERR);
+        if (mwexecf('/sbin/ifconfig wlan create wlandev %s %s bssid name %s', [$baseif, $mode, $device])) {
+            log_msg("Failed to clone interface {$baseif} to {$device}", LOG_ERR);
             return null;
         }
 
