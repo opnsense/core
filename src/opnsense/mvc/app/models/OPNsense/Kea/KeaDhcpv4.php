@@ -90,6 +90,33 @@ class KeaDhcpv4 extends BaseModel
             }
         }
 
+        // Require DDNS service to be enabled when DHCPv4's DDNS is enabled
+        if (!empty((string)$this->general->enable_ddns)) {
+            $ddns = new KeaDhcpDdns();
+            if (empty((string)$ddns->general->enabled)) {
+                $messages->appendMessage(
+                    new Message(gettext('Enable the DHCP-DDNS service to use Dynamic DNS updates.'), 'general.enable_ddns')
+                );
+            }
+        }
+
+        // Enforce that ddns qualifying suffix ends with a dot when set
+        foreach ($this->subnets->subnet4->iterateItems() as $subnet) {
+            if (!$validateFullModel && !$subnet->isFieldChanged()) {
+                continue;
+            }
+            $send_updates = !empty((string)$subnet->ddns_options->send_updates);
+            $suffix = trim((string)$subnet->ddns_options->qualifying_suffix);
+            if ($send_updates && $suffix !== '' && substr($suffix, -1) !== '.') {
+                $messages->appendMessage(
+                    new Message(
+                        gettext('DDNS qualifying suffix must end with a dot.'),
+                        $subnet->__reference . '.ddns_options.qualifying_suffix'
+                    )
+                );
+            }
+        }
+
         return $messages;
     }
 
@@ -175,6 +202,40 @@ class KeaDhcpv4 extends BaseModel
                 'pools' => [],
                 'reservations' => []
             ];
+
+            // Conditionally include DDNS settings only when send-updates is enabled,
+            // and only include fields that have meaningful values.
+            $ddns_send_updates = !empty((string)$subnet->ddns_options->send_updates);
+            if ($ddns_send_updates) {
+                $record['ddns-send-updates'] = true;
+                if (!empty((string)$subnet->ddns_options->override_no_update)) {
+                    $record['ddns-override-no-update'] = true;
+                }
+                if (!empty((string)$subnet->ddns_options->override_client_update)) {
+                    $record['ddns-override-client-update'] = true;
+                }
+                if ((string)$subnet->ddns_options->replace_client_name !== '') {
+                    $record['ddns-replace-client-name'] = (string)$subnet->ddns_options->replace_client_name;
+                }
+                if ((string)$subnet->ddns_options->generated_prefix !== '') {
+                    $record['ddns-generated-prefix'] = (string)$subnet->ddns_options->generated_prefix;
+                }
+                if ((string)$subnet->ddns_options->qualifying_suffix !== '') {
+                    $record['ddns-qualifying-suffix'] = (string)$subnet->ddns_options->qualifying_suffix;
+                }
+                if ((string)$subnet->ddns_options->hostname_char_set !== '') {
+                    $record['hostname-char-set'] = (string)$subnet->ddns_options->hostname_char_set;
+                }
+                if ((string)$subnet->ddns_options->hostname_char_replacement !== '') {
+                    $record['hostname-char-replacement'] = (string)$subnet->ddns_options->hostname_char_replacement;
+                }
+                if (!empty((string)$subnet->ddns_options->update_on_renew)) {
+                    $record['ddns-update-on-renew'] = true;
+                }
+                if ((string)$subnet->ddns_options->conflict_resolution_mode !== '') {
+                    $record['ddns-conflict-resolution-mode'] = (string)$subnet->ddns_options->conflict_resolution_mode;
+                }
+            }
             /* add pools */
             foreach (array_filter(explode("\n", $subnet->pools->getValue())) as $pool) {
                 $record['pools'][] = ['pool' => $pool];
@@ -236,6 +297,11 @@ class KeaDhcpv4 extends BaseModel
                 'control-socket' => [
                     'socket-type' => 'unix',
                     'socket-name' => '/var/run/kea/kea4-ctrl-socket'
+                ],
+                'dhcp-ddns' => [
+                    'enable-updates' => !empty((string)$this->general->enable_ddns),
+                    'server-ip' => '127.0.0.1',
+                    'server-port' => 53001,
                 ],
                 'loggers' => [
                     [
