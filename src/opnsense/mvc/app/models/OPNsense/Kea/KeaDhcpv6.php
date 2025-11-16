@@ -73,7 +73,8 @@ class KeaDhcpv6 extends BaseModel
         }
 
         // Require DDNS service to be enabled when DHCPv6's DDNS is enabled
-        if (!empty((string)$this->general->enable_ddns)) {
+        // Skip this check when manual configuration is enabled for DHCPv6
+        if (!empty((string)$this->general->enable_ddns) && $this->general->manual_config->isEmpty()) {
             $ddns = new KeaDhcpDdns();
             if (empty((string)$ddns->general->enabled)) {
                 $messages->appendMessage(
