@@ -69,6 +69,7 @@
             <retransmit_base type="NumericField"/>
             <retransmit_jitter type="IntegerField"/>
             <retransmit_limit type="IntegerField"/>
+            <reqid_base type="IntegerField"/>
             <syslog>
                 <daemon>
                     <ike_name type="BooleanField">
