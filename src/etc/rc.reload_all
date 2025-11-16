@@ -57,5 +57,5 @@ plugins_configure('local', true);
 plugins_configure('vpn', true);
 
 /* plugins service reload */
-passthru('/usr/local/etc/rc.freebsd stop');
-passthru('/usr/local/etc/rc.freebsd start');
+pass_safe('/usr/local/etc/rc.freebsd stop');
+pass_safe('/usr/local/etc/rc.freebsd start');
