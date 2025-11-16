@@ -1065,19 +1065,22 @@ function get_sysctl($names)
         return [];
     }
 
-    if (is_array($names)) {
-        $name_list = [];
-        foreach ($names as $name) {
-            $name_list[] = escapeshellarg($name);
-        }
-    } else {
-        $name_list = [escapeshellarg($names)];
+    if (!is_array($names)) {
+        $names = [$names];
     }
 
-    exec("/sbin/sysctl -i " . implode(" ", $name_list), $output);
+    $frmt = ['/sbin/sysctl -i'];
+    $args = [];
+
+    foreach ($names as $name) {
+        $args[] = $name;
+        $frmt[] = '%s';
+    }
+
     $values = [];
-    foreach ($output as $line) {
-        $line = explode(": ", $line, 2);
+
+    foreach (shell_safe($frmt, $args, true) as $line) {
+        $line = explode(': ', $line, 2);
         if (count($line) == 2) {
             $values[$line[0]] = $line[1];
         }
@@ -1121,24 +1124,24 @@ function set_sysctl($values, $filter = true)
     $sysctls = null;
 
     if ($filter) {
-        exec('/sbin/sysctl -WaN', $list, $success);
-        if ($success == 0) {
-            $sysctls = $list;
-        }
+        $sysctls = shell_safe('/sbin/sysctl -WaN', [], true);
     }
 
-    $value_list = [];
+    $frmt = ['/sbin/sysctl'];
+    $args = [];
+
     foreach ($values as $key => $value) {
         if ($sysctls !== null && !in_array($key, $sysctls)) {
             continue;
         }
-        $value_list[] = escapeshellarg($key) . '=' . escapeshellarg($value);
+
+        $frmt[] = '%s=%s';
+        $args[] = $key;
+        $args[] = $value;
     }
 
-    if (count($value_list)) {
-        exec('/sbin/sysctl ' . implode(' ', $value_list), $output);
-
-        foreach ($output as $line) {
+    if (count($args)) {
+        foreach (shell_safe($frmt, $args, true) as $line) {
             $line = explode(': ', $line, 2);
             if (count($line) == 2) {
                 $ret[$line[0]] = true;
