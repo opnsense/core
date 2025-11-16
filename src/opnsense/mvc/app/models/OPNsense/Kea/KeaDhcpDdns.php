@@ -49,7 +49,10 @@ class KeaDhcpDdns extends BaseModel
             $dhcpv6 = new KeaDhcpv6();
             $v4_ddns = !empty((string)$dhcpv4->general->enable_ddns);
             $v6_ddns = !empty((string)$dhcpv6->general->enable_ddns);
-            if ($v4_ddns || $v6_ddns) {
+            // Skip dependency when the respective service uses manual configuration
+            $v4_blocks_disable = $v4_ddns && $dhcpv4->general->manual_config->isEmpty();
+            $v6_blocks_disable = $v6_ddns && $dhcpv6->general->manual_config->isEmpty();
+            if ($v4_blocks_disable || $v6_blocks_disable) {
                 $messages->appendMessage(
                     new Message(
                         gettext('Cannot disable DHCP-DDNS service while DHCPv4 or DHCPv6 DDNS is enabled.'),
