@@ -32,6 +32,7 @@ use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\ACL;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Core\Shell;
 
 /**
  * Class BackupController
@@ -135,8 +136,7 @@ class BackupController extends ApiControllerBase
                 }
             }
             if (!empty($bckfilename1) && !empty($bckfilename2)) {
-                $diff = [];
-                exec("/usr/bin/diff -u " . escapeshellarg($bckfilename2) . " " . escapeshellarg($bckfilename1), $diff);
+                $diff = Shell::shell_safe('/usr/bin/diff -u %s %s', [$bckfilename2, $bckfilename1], true);
                 if (!empty($diff)) {
                     foreach ($diff as $line) {
                         $result['items'][] = htmlspecialchars($line, ENT_QUOTES | ENT_HTML401);
