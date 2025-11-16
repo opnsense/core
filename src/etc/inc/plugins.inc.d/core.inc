@@ -428,11 +428,9 @@ function core_user_changed_groups($unused, $username)
     if (is_array($config['system']['user'])) {
         foreach ($config['system']['user'] as $user) {
             if ($user['name'] == $username && (!empty($user['shell']) || $user['uid'] == 0)) {
-                exec("/usr/bin/groups " . escapeshellarg($username) . ' 2>/dev/null', $out, $ret);
-                $current_groups = [];
-                if (!$ret) {
-                    $current_groups = explode(" ", $out[0]);
-                }
+                $output = shell_safe('/usr/bin/groups %s 2> /dev/null', $username);
+                $current_groups = strlen($output) ? explode(' ', $output) : [];
+
                 foreach ($config['system']['group'] as $group) {
                     $in_group = false;
                     foreach (!empty($group['member']) ? $group['member'] : [] as $grp) {
