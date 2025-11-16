@@ -32,13 +32,13 @@
 require_once('script/load_phalcon.php');
 
 use OPNsense\Core\Config;
+use OPNsense\Core\Shell;
 
-$result = [];
-
-exec("/usr/local/sbin/ntpq -pnw", $ntpq_output);
 $ntpq_servers = [];
+$result = [];
 $server = [];
-foreach (array_slice($ntpq_output, 2) as $line) {
+
+foreach (array_slice(Shell::shell_safe('/usr/local/sbin/ntpq -pnw', [], true), 2) as $line) {
     if (empty($server['status'])) {
         $server['status'] = substr($line, 0, 1);
     }
@@ -95,8 +95,7 @@ function nmeaGeoParts(?string $val, ?string $dir): ?array
     return ['dec' => $dec, 'deg' => $deg, 'min' => $min, 'dir' => $dir];
 }
 
-exec("/usr/local/sbin/ntpq -c clockvar 2>/dev/null", $ntpq_clockvar_output);
-foreach ($ntpq_clockvar_output as $line) {
+foreach (Shell::shell_safe('/usr/local/sbin/ntpq -c clockvar 2> /dev/null', [], true) as $line) {
     if (strncmp($line, "timecode=", 9) !== 0) {
         continue;
     }
