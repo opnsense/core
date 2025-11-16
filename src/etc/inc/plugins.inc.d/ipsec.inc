@@ -700,12 +700,12 @@ function ipsec_configure_spd()
      * try to figure out which SPD entries where created manually and collect them in a list sequenced by reqid
      * when the entry is either bound to an interface (ifname=) or has a lifetime, these where not likely created by us
      */
-    exec('/sbin/setkey -PD', $lines);
-    $line_count = 0;
     $src = $dst = $direction = $reqid = '';
-    $is_automatic = false;
     $previous_spd_entries = [];
-    foreach ($lines as $line) {
+    $is_automatic = false;
+    $line_count = 0;
+
+    foreach (shell_safe('/sbin/setkey -PD', [], true) as $line) {
         if ($line[0] != "\t") {
             $tmp = explode(' ', $line);
             $src = $dst = $direction = $reqid = '';
