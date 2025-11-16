@@ -46,16 +46,13 @@ if (isset($opts['h']) || empty($opts['u'])) {
      *      currently we need this to remove the shell account when dropped on update.
      */
     $localusers = [];
-    exec("/usr/sbin/pw usershow -a", $data, $ret);
-    if (!$ret) {
-        foreach ($data as $record) {
-            $line = explode(':', $record);
-            // filter system managed users
-            if (count($line) < 3 ||  !strncmp($line[0], '_', 1) || ($line[2] < 2000 && $line[0] != 'root') || $line[2] > 65000) {
-                continue;
-            }
-            $localusers[$line[0]] = $line;
+    foreach (shell_safe('/usr/sbin/pw %s -a', 'usershow', true) as $record) {
+        $line = explode(':', $record);
+        // filter system managed users
+        if (count($line) < 3 ||  !strncmp($line[0], '_', 1) || ($line[2] < 2000 && $line[0] != 'root') || $line[2] > 65000) {
+            continue;
         }
+        $localusers[$line[0]] = $line;
     }
 
     $update_user = null;
