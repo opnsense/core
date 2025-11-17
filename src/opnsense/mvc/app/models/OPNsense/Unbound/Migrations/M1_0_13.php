@@ -72,6 +72,10 @@ class M1_0_13 extends BaseModelMigration
         $config = Config::getInstance()->object();
         $old_dnsbl = $config->OPNsense->unboundplus->dnsbl;
 
+        if (!isset($old_dnsbl)) {
+            return;
+        }
+
         /* move safesearch boolean to general */
         $model->general->safesearch = $old_dnsbl->safesearch;
 
