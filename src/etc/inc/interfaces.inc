@@ -1432,24 +1432,32 @@ function interface_ipalias_configure($vip)
     if ($vip['interface'] != 'lo0' && !isset($config['interfaces'][$vip['interface']]['enable'])) {
         return;
     }
+
+    $ifcfrmt = ['/sbin/ifconfig %s %s %s/%s alias'];
+    $ifcargs = [];
+
     if (is_ipaddrv6($vip['subnet'])) {
-        $ifcargs = [get_real_interface($vip['interface'], 'inet6'), 'inet6'];
+        $ifcargs[] = get_real_interface($vip['interface'], 'inet6');
+        $ifcargs[] = 'inet6';
     } else {
-        $ifcargs = [get_real_interface($vip['interface']), 'inet'];
+        $ifcargs[] = get_real_interface($vip['interface'], 'inet');
+        $ifcargs[] = 'inet';
     }
 
-    $ifcargs[] = $vip['subnet'] . '/' . $vip['subnet_bits'];
-    $ifcargs[] = 'alias';
+    $ifcargs[] = $vip['subnet'];
+    $ifcargs[] = $vip['subnet_bits'];
 
     if (!empty($vip['gateway'])) {
         $ifcargs[] = $vip['gateway'];
+        $ifcfrmt[] = '%s';
     }
 
     if (!empty($vip['vhid'])) {
-        $ifcargs = array_merge($ifcargs, ['vhid', $vip['vhid']]);
+        $ifcargs[] = $vip['vhid'];
+        $ifcfrmt[] = 'vhid %s';
     }
 
-    shell_safe('/sbin/ifconfig ' . str_repeat(' %s ', count($ifcargs)), $ifcargs);
+    shell_safe($ifcfrmt, $ifcargs);
 }
 
 function interface_carp_configure($vip)
