@@ -168,7 +168,7 @@ function dnsmasq_configure_do($verbose = false)
     global $config;
 
     killbypid('/var/run/dnsmasq_dhcpd.pid');
-    mwexec('/usr/local/etc/rc.d/dnsmasq stop', true);
+    mwexecfm('/usr/local/etc/rc.d/dnsmasq stop');
 
     if (!dnsmasq_enabled()) {
         return;
@@ -180,7 +180,7 @@ function dnsmasq_configure_do($verbose = false)
 
     configd_run('template reload OPNsense/Dnsmasq');
 
-    mwexec('/usr/local/etc/rc.d/dnsmasq start');
+    mwexecf('/usr/local/etc/rc.d/dnsmasq start');
 
     if (!empty($config['dnsmasq']['regdhcp'])) {
         /* XXX: deprecate when moving ISC to plugins ? */
