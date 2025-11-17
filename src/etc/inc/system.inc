@@ -32,9 +32,7 @@ function system_powerd_configure($verbose = false)
 {
     global $config;
 
-    if (is_process_running('powerd')) {
-        mwexecf('/usr/bin/killall powerd');
-    }
+    killbyname('powerd');
 
     if (!isset($config['system']['powerd_enable'])) {
         return;
@@ -59,7 +57,7 @@ function system_powerd_configure($verbose = false)
 
     mwexecf(
         '/usr/sbin/powerd -b %s -a %s -n %s',
-        array($battery_mode, $ac_mode, $normal_mode)
+        [$battery_mode, $ac_mode, $normal_mode]
     );
 
     service_log("done.\n", $verbose);
