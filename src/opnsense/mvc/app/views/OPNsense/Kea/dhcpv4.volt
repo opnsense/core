@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2023 Deciso B.V.
+ # Copyright (c) 2023-2025 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -41,44 +41,62 @@
             updateServiceControlUI('kea');
         });
 
+        let all_grids = {};
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            let grid_ids = null;
 
-        $("#{{formGridSubnet['table_id']}}").UIBootgrid(
-            {   search:'/api/kea/dhcpv4/search_subnet',
-                get:'/api/kea/dhcpv4/get_subnet/',
-                set:'/api/kea/dhcpv4/set_subnet/',
-                add:'/api/kea/dhcpv4/add_subnet/',
-                del:'/api/kea/dhcpv4/del_subnet/'
+            switch (e.target.hash) {
+                case '#subnets':
+                    grid_ids = ["{{ formGridSubnet['table_id'] }}"];
+                    break;
+                case '#reservations':
+                    grid_ids = ["{{ formGridReservation['table_id'] }}"];
+                    break;
+                case '#ha-peers':
+                    grid_ids = ["{{ formGridPeer['table_id'] }}"];
+                    break;
             }
-        );
 
-        const grid_reservations = $("#{{formGridReservation['table_id']}}").UIBootgrid(
-            {   search:'/api/kea/dhcpv4/search_reservation',
-                get:'/api/kea/dhcpv4/get_reservation/',
-                set:'/api/kea/dhcpv4/set_reservation/',
-                add:'/api/kea/dhcpv4/add_reservation/',
-                del:'/api/kea/dhcpv4/del_reservation/'
+            if (grid_ids !== null) {
+                grid_ids.forEach(function (grid_id) {
+                    if (all_grids[grid_id] === undefined) {
+                        all_grids[grid_id] = $("#" + grid_id).UIBootgrid({
+                            search: '/api/kea/dhcpv4/search_' + grid_id,
+                            get:    '/api/kea/dhcpv4/get_' + grid_id + '/',
+                            set:    '/api/kea/dhcpv4/set_' + grid_id + '/',
+                            add:    '/api/kea/dhcpv4/add_' + grid_id + '/',
+                            del:    '/api/kea/dhcpv4/del_' + grid_id + '/',
+                            options: {
+                                triggerEditFor: getUrlHash('edit'),
+                                initialSearchPhrase: getUrlHash('search')
+                            }
+                        });
+
+                        // Reservation-only commands
+                        if (grid_id === "{{ formGridReservation['table_id'] }}") {
+
+                            all_grids[grid_id].on('load.rs.jquery.bootgrid', function() {
+
+                                $("#upload_reservations").SimpleFileUploadDlg({
+                                    onAction: function() {
+                                        all_grids[grid_id].bootgrid('reload');
+                                    }
+                                });
+
+                                $('#download_reservations').click(function(e) {
+                                    e.preventDefault();
+                                    window.open("/api/kea/dhcpv4/download_reservations");
+                                });
+                            });
+                        }
+
+                    } else {
+                        all_grids[grid_id].bootgrid('reload');
+                    }
+
+                });
             }
-        ).on('load.rs.jquery.bootgrid', function() {
-            $("#upload_reservations").SimpleFileUploadDlg({
-                onAction: function(){
-                    grid_reservations.bootgrid('reload');
-                }
-            });
-
-            $('#download_reservations').click(function(e) {
-                e.preventDefault();
-                window.open("/api/kea/dhcpv4/download_reservations");
-            });
-        })
-
-        $("#{{formGridPeer['table_id']}}").UIBootgrid(
-            {   search:'/api/kea/dhcpv4/search_peer',
-                get:'/api/kea/dhcpv4/get_peer/',
-                set:'/api/kea/dhcpv4/set_peer/',
-                add:'/api/kea/dhcpv4/add_peer/',
-                del:'/api/kea/dhcpv4/del_peer/'
-            }
-        );
+        });
 
         $("#reconfigureAct").SimpleActionButton({
             onPreAction: function() {
@@ -122,6 +140,35 @@
                 }
             });
         });
+
+        $('.nav-tabs a').on('shown.bs.tab', function (e) {
+            history.pushState(null, null, e.target.hash);
+        });
+
+        // We use two kinds of url hashes appended to the tab hash: & to search a reservation and ? to create a reservation
+        $(window).on('hashchange', function() {
+            $('a[href="' + (window.location.hash.split(/[?&]/)[0] || '') + '"]').click();
+        });
+
+        $('a[href="' + (window.location.hash.split(/[?&]/)[0] || '#settings') + '"]').click();
+
+        // Autofill dhcp reservation with URL hash
+        if (window.location.hash.startsWith('#reservations?')) {
+            const params = new URLSearchParams(window.location.hash.split('?')[1]);
+
+            $('a[href="#reservations"]').one('shown.bs.tab', () => {
+                $('#{{ formGridReservation["table_id"] }}').one('loaded.rs.jquery.bootgrid', function () {
+                    $('#{{ formGridReservation["edit_dialog_id"] }}').one('opnsense_bootgrid_mapped', () => {
+                        if (params.has('hostname')) $('#reservation\\.hostname').val(params.get('hostname'));
+                        if (params.has('ip_address')) $('#reservation\\.ip_address').val(params.get('ip_address'));
+                        if (params.has('hw_address')) $('#reservation\\.hw_address').val(params.get('hw_address'));
+                        history.replaceState(null, null, window.location.pathname + '#reservations');
+                    });
+                    $(this).find('.command-add').trigger('click');
+                });
+            }).tab('show');
+        }
+
     });
 </script>
 
