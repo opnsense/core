@@ -257,7 +257,7 @@ function core_cron()
 
     foreach ((new \OPNsense\Firewall\Alias(true))->aliases->alias->iterateItems() as $alias) {
         if ($alias->type->isEqual('external') && !$alias->expire->isEmpty()) {
-            $cmd = [exec_safe("/sbin/pfctl -qt %s -T expire %s", [$alias->name, $alias->expire])];
+            $cmd = [exec_safe('/sbin/pfctl -qt %s -T expire %s', [$alias->name, $alias->expire])];
             if ($alias->expire->asFloat() >= 3600) {
                 $cmd[] = '0,15,30,45';  /* every 15 minute cleanup */
             }
