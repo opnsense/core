@@ -1245,7 +1245,7 @@ EOD;
     );
 
     /* appease netgraph by setting the correct node name */
-    shell_safe('/usr/sbin/daemon -f /usr/local/opnsense/scripts/interfaces/ppp-rename.sh %s %s %s', [$interface, $ifcfg['if'], $ppp['type']]);
+    mwexecfb('/usr/local/opnsense/scripts/interfaces/ppp-rename.sh %s %s %s', [$interface, $ifcfg['if'], $ppp['type']]);
 
     /* wait for functional device */
     $max = 20;
@@ -1457,7 +1457,7 @@ function interface_ipalias_configure($vip)
         $ifcfrmt[] = 'vhid %s';
     }
 
-    shell_safe($ifcfrmt, $ifcargs);
+    mwexecf($ifcfrmt, $ifcargs);
 }
 
 function interface_carp_configure($vip)
