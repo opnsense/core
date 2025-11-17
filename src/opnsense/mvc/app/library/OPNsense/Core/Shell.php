@@ -45,7 +45,6 @@ class Shell
         }
 
         if (!is_array($args)) {
-            /* just in case there's only one argument */
             $args = [$args];
         }
 
