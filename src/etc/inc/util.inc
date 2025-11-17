@@ -30,6 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+require_once 'app/library/OPNsense/Core/Shell.php';
 require_once 'IPv6.inc';
 
 function killbyname($procname, $sig = 'TERM', $waitforit = true)
@@ -924,12 +925,12 @@ function url_safe($format, $args = [])
     return vsprintf($format, $args);
 }
 
-function mwexec($command, $mute = false)
+function mwexec($command, $mute = false) /* XXX deprecated */
 {
     $oarr = [];
     $retval = 0;
 
-    $garbage = exec("{$command} 2>&1", $oarr, $retval);
+    $garbage = exec("{$command} 2>&1", $oarr, $retval); /* XXX to be removed */
     unset($garbage);
 
     if ($retval != 0 && $mute !== true) {
@@ -943,46 +944,56 @@ function mwexec($command, $mute = false)
     return $retval;
 }
 
-function mwexec_bg($command, $mute = false)
+function mwexec_bg($command, $mute = false) /* XXX deprecated */
 {
     mwexec("/usr/sbin/daemon -f {$command}", $mute);
 }
 
-function exec_safe($format, $args = [])
-{
-    if (!is_array($args)) {
-        /* just in case there's only one argument */
-        $args = [$args];
-    }
-
-    foreach ($args as $id => $arg) {
-        $args[$id] = escapeshellarg($arg ?? '');
-    }
-
-    return vsprintf($format, $args);
-}
-
-function mwexecf($format, $args = [], $mute = false)
-{
-    return mwexec(exec_safe($format, $args), $mute);
-}
-
-function mwexecf_bg($format, $args = [], $mute = false)
+function mwexecf_bg($format, $args = [], $mute = false) /* XXX deprecated */
 {
     mwexec_bg(exec_safe($format, $args), $mute);
 }
 
+/* safe shell command formatter */
+function exec_safe($format, $args = [])
+{
+    return OPNsense\Core\Shell::exec_safe($format, $args);
+}
+
+/* pass commands through to stdout */
+function pass_safe($format, $args = [], &$result_code = null)
+{
+    return OPNsense\Core\Shell::pass_safe($format, $args, $result_code);
+}
+
+/* run commands and grab their output */
 function shell_safe($format, $args = [], $explode = false, $separator = "\n")
 {
-    $ret = shell_exec(exec_safe($format, $args));
+    return OPNsense\Core\Shell::shell_safe($format, $args, $explode, $separator);
+}
 
-    /* shell_exec() has weird semantics */
-    if ($ret === false || $ret === null) {
-        $ret = '';
+/* run commands safely with failure reports by default */
+function mwexecf($format, $args = [], $mute = false)
+{
+    return OPNsense\Core\Shell::run_safe($format, $args, $mute);
+}
+
+/* run commands safely without failure reports */
+function mwexecfm($format, $args = [])
+{
+    return mwexecf($format, $args, true);
+}
+
+/* run commands safely in the background */
+function mwexecfb($format, $args = [])
+{
+    if (!is_array($format)) {
+        $format = [$format];
     }
 
-    /* explode as array or always trim() result on a single string */
-    return $explode ? explode($separator, $ret) : trim($ret);
+    array_unshift($format, '/usr/sbin/daemon -f');
+
+    return mwexecf($format, $args);
 }
 
 /* check if an alias exists */
