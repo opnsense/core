@@ -71,7 +71,11 @@
                             add:    '/api/kea/dhcpv4/add_' + grid_id + '/',
                             del:    '/api/kea/dhcpv4/del_' + grid_id + '/',
                             tabulatorOptions: {
-                                groupBy: isGroupedGrid ? "subnet" : false,
+                                groupBy: !isGroupedGrid
+                                    ? false
+                                    : (grid_id === "{{formGridSubnet['table_id']}}"
+                                        ? "subnet"
+                                        : "%subnet"),
                                 groupHeader: (value, count, data, group) => {
                                     const icons = {
                                         subnet: '<i class="fa fa-fw fa-ethernet fa-sm text-info"></i>',
