@@ -116,7 +116,12 @@ if (openssh_enabled() || $config['system']['webgui']['protocol'] == 'https') {
 
 if ($config['system']['webgui']['protocol'] == 'https') {
     echo ' HTTPS: ';
-    pass_safe('openssl x509 -in %s -noout -fingerprint -sha256 | sed "s/Fingerprint=//" | tr ":" " " | sed -E "s/(^.{54})./\1,               /" | tr "," "\n"', '/usr/local/etc/lighttpd_webgui/cert.pem');
+    pass_safe(
+        'openssl x509 -in %s -noout -fingerprint -sha256 | ' .
+        'sed "s/Fingerprint=//" | tr ":" " " | tr "[:lower:]" "[:upper:]" | ' .
+        'sed -E "s/(^.{54})./\1,               /" | tr "," "\n"',
+        '/usr/local/etc/lighttpd_webgui/cert.pem'
+    );
 }
 
 if (openssh_enabled()) {
