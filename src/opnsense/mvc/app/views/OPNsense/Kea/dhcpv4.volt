@@ -47,25 +47,39 @@
 
             switch (e.target.hash) {
                 case '#subnets':
-                    grid_ids = ["{{ formGridSubnet['table_id'] }}"];
+                    grid_ids = ["{{formGridSubnet['table_id']}}"];
                     break;
                 case '#reservations':
-                    grid_ids = ["{{ formGridReservation['table_id'] }}"];
+                    grid_ids = ["{{formGridReservation['table_id']}}"];
                     break;
                 case '#ha-peers':
-                    grid_ids = ["{{ formGridPeer['table_id'] }}"];
+                    grid_ids = ["{{formGridPeer['table_id']}}"];
                     break;
             }
 
             if (grid_ids !== null) {
                 grid_ids.forEach(function (grid_id) {
                     if (all_grids[grid_id] === undefined) {
+                        const isGroupedGrid = [
+                            "{{formGridSubnet['table_id']}}",
+                            "{{formGridReservation['table_id']}}"
+                        ].includes(grid_id);
                         all_grids[grid_id] = $("#" + grid_id).UIBootgrid({
                             search: '/api/kea/dhcpv4/search_' + grid_id,
                             get:    '/api/kea/dhcpv4/get_' + grid_id + '/',
                             set:    '/api/kea/dhcpv4/set_' + grid_id + '/',
                             add:    '/api/kea/dhcpv4/add_' + grid_id + '/',
                             del:    '/api/kea/dhcpv4/del_' + grid_id + '/',
+                            tabulatorOptions: {
+                                groupBy: isGroupedGrid ? "subnet" : false,
+                                groupHeader: (value, count, data, group) => {
+                                    const icons = {
+                                        subnet: '<i class="fa fa-fw fa-ethernet fa-sm text-info"></i>',
+                                    };
+                                    const countValue = `<span class="badge chip">${count}</span>`;
+                                    return `${icons.subnet} ${value} ${countValue}`;
+                                },
+                            },
                             options: {
                                 triggerEditFor: getUrlHash('edit'),
                                 initialSearchPhrase: getUrlHash('search')
