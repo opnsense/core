@@ -49,7 +49,7 @@ if (isset($opts['h']) || empty($opts['u'])) {
     foreach (shell_safe('/usr/sbin/pw %s -a', 'usershow', true) as $record) {
         $line = explode(':', $record);
         // filter system managed users
-        if (count($line) < 3 ||  !strncmp($line[0], '_', 1) || ($line[2] < 2000 && $line[0] != 'root') || $line[2] > 65000) {
+        if (count($line) < 3 || !strncmp($line[0], '_', 1) || ($line[2] < 2000 && $line[0] != 'root') || $line[2] > 65000) {
             continue;
         }
         $localusers[$line[0]] = $line;
