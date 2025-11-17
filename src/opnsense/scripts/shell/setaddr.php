@@ -32,7 +32,6 @@ require_once("config.inc");
 require_once("interfaces.inc");
 require_once("util.inc");
 require_once("filter.inc");
-require_once("util.inc");
 require_once("system.inc");
 
 function console_prompt_for_yn($prompt_text, $default = '')
@@ -598,7 +597,7 @@ if (empty($config['interfaces']['lan'])) {
         unset($config['dhcpdv6']['lan']);
     }
     unset($config['nat']);
-    system("rm /var/dhcpd/var/db/* >/dev/null 2>/dev/null");
+    shell_safe('rm /var/dhcpd/var/db/*');
     $restart_dhcpd = true;
 }
 

@@ -116,12 +116,12 @@ if (openssh_enabled() || $config['system']['webgui']['protocol'] == 'https') {
 
 if ($config['system']['webgui']['protocol'] == 'https') {
     echo ' HTTPS: ';
-    passthru('openssl x509 -in /usr/local/etc/lighttpd_webgui/cert.pem -noout -fingerprint -sha256 | sed "s/Fingerprint=//" | tr ":" " " | sed -E "s/(^.{54})./\1,               /" | tr "," "\n"');
+    pass_safe('openssl x509 -in %s -noout -fingerprint -sha256 | sed "s/Fingerprint=//" | tr ":" " " | sed -E "s/(^.{54})./\1,               /" | tr "," "\n"', '/usr/local/etc/lighttpd_webgui/cert.pem');
 }
 
 if (openssh_enabled()) {
     foreach (glob('/conf/sshd/ssh_host_*_key.pub') as $ssh_host_pub_key_file_path) {
         echo ' SSH:   ';
-        passthru("ssh-keygen -l -f " . escapeshellarg($ssh_host_pub_key_file_path) . " | awk '{ print $2 \" \" $4 }' | sed 's/SHA256:/SHA256 /'");
+        pass_safe('ssh-keygen -l -f %s | awk \'{ print $2 " " $4 }\' | sed "s/SHA256:/SHA256 /"', $ssh_host_pub_key_file_path);
     }
 }
