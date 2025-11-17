@@ -1309,10 +1309,15 @@ function interfaces_pfsync_configure()
         }
 
         $ifcfrmt[] = !empty($config['hasync']['pfsyncdefer']) ? 'defer' : '-defer';
+        $ifcfrmt[] = 'up';
 
         mwexecf($ifcfrmt, $ifcargs);
 
-        /* Fix presumed replication issue when outgoing mtu is smaller than pfsync0's (https://github.com/opnsense/core/commit/15acbad935) */
+        /*
+         * Fix presumed replication issue when outgoing MTU
+         * is smaller than what is set in pfsync0, also see
+         * https://github.com/opnsense/core/commit/15acbad935
+         */
         $intf_stats = legacy_interface_details($syncdev);
         if (!empty($intf_stats['mtu'])) {
             mwexecf('/sbin/ifconfig pfsync0 mtu %s', [$intf_stats['mtu']]);
