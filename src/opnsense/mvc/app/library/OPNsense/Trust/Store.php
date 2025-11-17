@@ -644,7 +644,8 @@ class Store
             $verdict_pass = false;
             $output = Shell::shell_safe(
                 '/usr/bin/openssl ocsp -resp_no_certs -timeout 10 -nonce -CAfile %s -issuer %s -url %s -serial %s 2>&1',
-                [$ca_filename, $ca_filename, $ocsp_uri, $serial]
+                [$ca_filename, $ca_filename, $ocsp_uri, $serial],
+                true
             );
             foreach ($output as $line) {
                 if (str_starts_with($line, "{$serial}:")) {
