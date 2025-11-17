@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } else {
                 if (isset($id)) {
                     if ($clone['if'] != $a_clones[$id]['if']) {
-                        mwexec("/sbin/ifconfig " . escapeshellarg($a_clones[$id]['cloneif']) . " destroy");
+                        mwexecf('/sbin/ifconfig %s destroy', $a_clones[$id]['cloneif']);
                     }
                     $a_clones[$id] = $clone;
                 } else {
