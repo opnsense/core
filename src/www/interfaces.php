@@ -245,9 +245,7 @@ function test_wireless_capability($if, $cap)
         return false;
     }
 
-    $lines = shell_safe('/sbin/ifconfig %s list caps', $if, true);
-
-    foreach ($lines as $line) {
+    foreach (shell_safe('/sbin/ifconfig %s list caps', $if, true) as $line) {
         if (preg_match("/^drivercaps=.*<.*{$caps[$cap]}.*>$/", $line)) {
             return true;
         }
