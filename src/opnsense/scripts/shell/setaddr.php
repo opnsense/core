@@ -32,7 +32,6 @@ require_once("config.inc");
 require_once("interfaces.inc");
 require_once("util.inc");
 require_once("filter.inc");
-require_once("util.inc");
 require_once("system.inc");
 
 function console_prompt_for_yn($prompt_text, $default = '')
