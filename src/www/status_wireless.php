@@ -38,10 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         header(url_safe('Location: /index.php'));
         exit;
     }
-    $rwlif = escapeshellarg(get_real_interface($if));
+    $rwlif = get_real_interface($if);
     if(!empty($_GET['rescanwifi'])) {
-        mwexec("/sbin/ifconfig {$rwlif} scan; sleep 1");
-        header(url_safe('Location: /status_wireless.php?if=%s', array($if)));
+        mwexecf('/sbin/ifconfig %s %s', [$rwlif, 'scan']);
+        sleep(1); /* XXX a historic couriosity */
+        header(url_safe('Location: /status_wireless.php?if=%s', [$if]));
         exit;
     }
 }
@@ -79,7 +80,8 @@ include("head.inc");
                 </thead>
                 <tbody>
 <?php
-                exec("/sbin/ifconfig {$rwlif} list scan 2>&1", $states, $ret);
+                $states = shell_safe('/sbin/ifconfig %s %s %s 2>&1', [$rwlif, 'list', 'scan'], true);
+
                 /* Skip Header */
                 array_shift($states);
 
@@ -133,11 +135,13 @@ include("head.inc");
                 </thead>
                 <tbody>
 <?php
-                $states = array();
-                exec("/sbin/ifconfig {$rwlif} list sta 2>&1", $states, $ret);
+                $states = shell_safe('/sbin/ifconfig %s %s %s 2>&1', [$rwlif, 'list', 'sta'], true);
+
+                /* Skip Header */
                 array_shift($states);
-                $counter=0;
-                foreach($states as $state):
+
+                $counter = 0;
+                foreach ($states as $state):
                   $split = preg_split("/[ ]+/i", $state);?>
                   <tr>
                     <td><?=$split[0];?></td>
