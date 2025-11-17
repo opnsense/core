@@ -911,7 +911,6 @@ function file_safe($file, $text_or_source = '', $mode = 0644)
 function url_safe($format, $args = [])
 {
     if (!is_array($args)) {
-        /* just in case there's only one argument */
         $args = [$args];
     }
 
