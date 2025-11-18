@@ -284,6 +284,11 @@
         <advanced>true</advanced>
     </field>
     <field>
+        <type>subheader</type>
+        <label>Policy</label>
+        <advanced>true</advanced>
+    </field>
+    <field>
         <id>rule.statetype</id>
         <label>State type</label>
         <type>dropdown</type>
@@ -306,6 +311,23 @@
         <grid_view>
             <visible>false</visible>
         </grid_view>
+    </field>
+    <field>
+        <id>rule.nopfsync</id>
+        <label>NO pfsync</label>
+        <type>checkbox</type>
+        <help>This prevents states created by this rule to be synced with pfsync.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <type>subheader</type>
+        <label>Timeouts</label>
+        <advanced>true</advanced>
     </field>
     <field>
         <id>rule.statetimeout</id>
@@ -366,6 +388,11 @@
         <grid_view>
             <visible>false</visible>
         </grid_view>
+    </field>
+    <field>
+        <type>subheader</type>
+        <label>Limits</label>
+        <advanced>true</advanced>
     </field>
     <field>
         <id>rule.max</id>
@@ -441,18 +468,6 @@
         </help>
         <advanced>true</advanced>
         <grid_view>
-            <visible>false</visible>
-        </grid_view>
-    </field>
-    <field>
-        <id>rule.nopfsync</id>
-        <label>NO pfsync</label>
-        <type>checkbox</type>
-        <help>This prevents states created by this rule to be synced with pfsync.</help>
-        <advanced>true</advanced>
-        <grid_view>
-            <type>boolean</type>
-            <formatter>boolean</formatter>
             <visible>false</visible>
         </grid_view>
     </field>
