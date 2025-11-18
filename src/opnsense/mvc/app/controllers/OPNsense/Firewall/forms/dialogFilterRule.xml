@@ -309,9 +309,39 @@
     </field>
     <field>
         <id>rule.statetimeout</id>
-        <label>State timeout</label>
+        <label>TCP established</label>
         <type>text</type>
-        <help>State Timeout in seconds (TCP only)</help>
+        <help>The state timeout in seconds of fully established TCP.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.udp-first</id>
+        <label>UDP first</label>
+        <type>text</type>
+        <help>The state timeout in seconds after the first UDP packet.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.udp-single</id>
+        <label>UDP single</label>
+        <type>text</type>
+        <help>The state timeout in seconds if both hosts have sent UDP packets.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.udp-multiple</id>
+        <label>UDP multiple</label>
+        <type>text</type>
+        <help>The state timeout in seconds if the source host sends more than one UDP packet but the destination host has never sent one back.</help>
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>

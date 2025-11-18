@@ -169,6 +169,15 @@
                 <statetimeout type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                 </statetimeout>
+                <udp-first type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                </udp-first>
+                <udp-multiple type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                </udp-multiple>
+                <udp-single type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                </udp-single>
                 <max-src-nodes type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                 </max-src-nodes>
