@@ -34,6 +34,17 @@
 
         $("#grid-leases").UIBootgrid({
             search:'/api/kea/leases6/search/',
+            tabulatorOptions: {
+                groupBy: "if_descr",
+                groupHeader: (value, count, data, group) => {
+                    const displayValue = value ? value : "{{ lang._('Any') }}";
+                    const icons = {
+                        if_descr: '<i class="fa fa-fw fa-ethernet fa-sm text-info"></i>',
+                    };
+                    const countValue = `<span class="badge chip">${count}</span>`;
+                    return `${icons.if_descr} ${displayValue} ${countValue}`;
+                },
+            },
             options: {
                 selection: false,
                 multiSelect: false,
@@ -73,6 +84,34 @@
                     "timestamp": function (column, row) {
                         return moment.unix(row[column.id]).local().format('YYYY-MM-DD HH:mm:ss');
                     },
+                    "commands": function (column, row) {
+                        const baseUrl = `/ui/kea/dhcpv6#reservations`;
+                        const searchUrl = `${baseUrl}&search=${encodeURIComponent(row.duid || '')}`;
+                        const addUrlParams = {
+                            ip_address: row.address || '',
+                            duid: row.duid || '',
+                            hostname: row.hostname || ''
+                        };
+                        const addUrl = `${baseUrl}?${new URLSearchParams(addUrlParams)}`;
+
+                        if (row.is_reserved === '1') {
+                            return `
+                                <button type="button" class="btn btn-xs"
+                                    onclick="window.location.href='${searchUrl}'"
+                                    title="{{ lang._('Find Reservation') }}">
+                                    <i class="fa fa-fw fa-search"></i>
+                                </button>
+                            `;
+                        } else {
+                            return `
+                                <button type="button" class="btn btn-xs"
+                                    onclick="window.location.href='${addUrl}'"
+                                    title="{{ lang._('Add Reservation') }}">
+                                    <i class="fa fa-fw fa-plus"></i>
+                                </button>
+                            `;
+                        }
+                    },
                 }
             }
         });
@@ -107,6 +146,7 @@
                 <th data-column-id="valid_lifetime" data-type="integer">{{ lang._('Lifetime') }}</th>
                 <th data-column-id="expire" data-type="string" data-formatter="timestamp">{{ lang._('Expire') }}</th>
                 <th data-column-id="hostname" data-type="string" data-formatter="overflowformatter">{{ lang._('Hostname') }}</th>
+                <th data-column-id="commands" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
             </tr>
         </thead>
         <tbody>
