@@ -31,6 +31,8 @@ namespace OPNsense\Kea\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Kea\KeaDhcpv4;
+use OPNsense\Kea\KeaDhcpv6;
 
 abstract class LeasesController extends ApiControllerBase
 {
@@ -73,6 +75,34 @@ abstract class LeasesController extends ApiControllerBase
             }
         } else {
             $records = [];
+        }
+
+        // Mark records as reserved based on hwaddr (IPv4) or duid (IPv6) match
+        $kea4 = new KeaDhcpv4();
+        $kea6 = new KeaDhcpv6();
+
+        $resv4 = [];
+        $resv6 = [];
+
+        foreach ($kea4->reservations->reservation->iterateItems() as $reservation) {
+            $resv4[strtolower((string)$reservation->hw_address)] = true;
+        }
+
+        foreach ($kea6->reservations->reservation->iterateItems() as $reservation) {
+            $resv6[strtolower((string)$reservation->duid)] = true;
+        }
+
+        foreach ($records as &$record) {
+            $addr = $record['address'] ?? '';
+            $is_v6 = strpos($addr, ':') !== false;
+
+            if ($is_v6) {
+                $duid = strtolower($record['duid'] ?? '');
+                $record['is_reserved'] = isset($resv6[$duid]) ? '1' : '0';
+            } else {
+                $mac = strtolower($record['hwaddr'] ?? '');
+                $record['is_reserved'] = isset($resv4[$mac]) ? '1' : '0';
+            }
         }
 
         $response = $this->searchRecordsetBase($records, null, 'address', function ($key) use ($selected_interfaces) {
