@@ -85,7 +85,7 @@
                         return moment.unix(row[column.id]).local().format('YYYY-MM-DD HH:mm:ss');
                     },
                     "commands": function (column, row) {
-                        const baseUrl = `/ui/kea/dhcpv4#reservations`;
+                        const baseUrl = `/ui/kea/dhcp/v4#reservations`;
                         const searchUrl = `${baseUrl}&search=${encodeURIComponent(row.hwaddr || '')}`;
                         const addUrlParams = {
                             ip_address: row.address || '',
