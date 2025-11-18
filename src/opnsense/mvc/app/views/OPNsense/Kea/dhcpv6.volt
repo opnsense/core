@@ -94,51 +94,18 @@
                             }
                         });
 
-                        /**
-                         * Reservations csv download and upload
-                         */
+                        // Reservation-only commands
                         if (grid_id === "{{ formGridReservation['table_id'] }}") {
                             all_grids[grid_id].on('load.rs.jquery.bootgrid', function() {
-                                const $tfoot = all_grids[grid_id].find("tfoot td:last");
-
-                                if (!$('#upload_reservations').length) {
-                                    $tfoot.append(`
-                                        <button
-                                            id="upload_reservations"
-                                            type="button"
-                                            data-title="{{ lang._('Import reservations') }}"
-                                            data-endpoint='/api/kea/dhcpv6/upload_reservations'
-                                            title="{{ lang._('Import csv') }}"
-                                            data-toggle="tooltip"
-                                            class="btn btn-xs"
-                                        >
-                                            <span class="fa fa-fw fa-upload"></span>
-                                        </button>
-                                    `);
-                                }
-                                if (!$('#download_reservations').length) {
-                                    $tfoot.append(`
-                                        <button
-                                            id="download_reservations"
-                                            type="button"
-                                            title="{{ lang._('Export as csv') }}"
-                                            data-toggle="tooltip"
-                                            class="btn btn-xs"
-                                        >
-                                            <span class="fa fa-fw fa-table"></span>
-                                        </button>
-                                    `);
-                                }
-
-                                $("#download_reservations").off('click').on('click', function(e){
-                                    e.preventDefault();
-                                    window.open("/api/kea/dhcpv6/download_reservations");
-                                });
-
                                 $("#upload_reservations").SimpleFileUploadDlg({
                                     onAction: function(){
                                         all_grids[grid_id].bootgrid('reload');
                                     }
+                                });
+
+                                $('#download_reservations').click(function(e){
+                                    e.preventDefault();
+                                    window.open("/api/kea/dhcpv6/download_reservations");
                                 });
                             });
                         }
@@ -243,7 +210,30 @@
     </div>
     <!-- reservations -->
     <div id="reservations" class="tab-pane fade in">
-        {{ partial('layout_partials/base_bootgrid_table', formGridReservation)}}
+        {{
+            partial('layout_partials/base_bootgrid_table', formGridReservation + {
+                'grid_commands': {
+                    'upload_reservations': {
+                        'title': lang._('Import csv'),
+                        'class': 'btn btn-xs',
+                        'icon_class': 'fa fa-fw fa-upload',
+                        'data': {
+                            'title': lang._('Import reservations'),
+                            'endpoint': '/api/kea/dhcpv6/upload_reservations',
+                            'toggle': 'tooltip'
+                        }
+                    },
+                    'download_reservations': {
+                        'title': lang._('Export as csv'),
+                        'class': 'btn btn-xs',
+                        'icon_class': 'fa fa-fw fa-table',
+                        'data': {
+                            'toggle': 'tooltip'
+                        }
+                    }
+                }
+            })
+        }}
     </div>
     <!-- HA - peers -->
     <div id="ha-peers" class="tab-pane fade in">

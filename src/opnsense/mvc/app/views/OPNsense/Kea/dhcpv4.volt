@@ -92,9 +92,7 @@
 
                         // Reservation-only commands
                         if (grid_id === "{{ formGridReservation['table_id'] }}") {
-
                             all_grids[grid_id].on('load.rs.jquery.bootgrid', function() {
-
                                 $("#upload_reservations").SimpleFileUploadDlg({
                                     onAction: function() {
                                         all_grids[grid_id].bootgrid('reload');
