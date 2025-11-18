@@ -135,6 +135,7 @@
         </thead>
         <tbody class="collapsible" {% if field['collapse']|default(false)=='true' %}style="display: none;"{%endif%}>
 {#- endmacro #}
+
                             {% elseif field['type'] == 'subheader' %}
                                 <tr{% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
                                     <td colspan="3">
