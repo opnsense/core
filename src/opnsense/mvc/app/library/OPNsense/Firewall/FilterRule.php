@@ -242,6 +242,15 @@ class FilterRule extends Rule
                     if (!empty($rule['statetimeout'])) {
                         $rule['state']['options'][] = "tcp.established " . $rule['statetimeout'];
                     }
+                    if (!empty($rule['udp-first'])) {
+                        $rule['state']['options'][] = "udp.first " . $rule['udp-first'];
+                    }
+                    if (!empty($rule['udp-multiple'])) {
+                        $rule['state']['options'][] = "udp.multiple " . $rule['udp-multiple'];
+                    }
+                    if (!empty($rule['udp-single'])) {
+                        $rule['state']['options'][] = "udp.single " . $rule['udp-single'];
+                    }
                     if (!empty($rule['max-src-conn-rate']) && !empty($rule['max-src-conn-rates'])) {
                         $otbl = !empty($rule['overload']) ? $rule['overload'] : "virusprot";
                         $rule['state']['options'][] = "max-src-conn-rate " . $rule['max-src-conn-rate'] . " " .
