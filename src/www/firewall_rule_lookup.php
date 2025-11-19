@@ -76,6 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 ?>
+<h1>(Rule) Not found.</h1>
 <script>
     // close when not found
     window.close();
