@@ -40,7 +40,7 @@ class M1_0_0 extends BaseModelMigration
         $cfgObj = $cfg->object();
 
         /* get number of cpus and calculate load average limits */
-        $nCPU = Shell::shell_safe('/sbin/sysctl -n kern.smp.cpus');
+        $nCPU = (int)Shell::shell_safe('/sbin/sysctl -n kern.smp.cpus');
         $LoadAvg1 = $nCPU * 2;
         $LoadAvg5 = $nCPU + ($nCPU / 2);
         $LoadAvg15 = $nCPU;

@@ -44,12 +44,12 @@ done
 shift $((OPTIND - 1))
 
 if [ ! -c "/dev/speaker" ]; then
-	exit 1
+	exit 0
 fi
 
 if [ -f /conf/config.xml ]; then
 	if [ "$(/usr/bin/grep -c disablebeep /conf/config.xml)" != "0" ]; then
-		exit
+		exit 0
 	fi
 fi
 

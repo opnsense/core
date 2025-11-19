@@ -45,7 +45,6 @@ class Shell
         }
 
         if (!is_array($args)) {
-            /* just in case there's only one argument */
             $args = [$args];
         }
 
@@ -76,7 +75,10 @@ class Shell
         $result_code = 0;
         $output = [];
 
-        /* stderr to stdout for error logging */
+        /*
+         * Redirect stderr to stdout for error logging and because
+         * stderr appears to be passed through to the executing code.
+         */
         exec("{$command} 2>&1", $output, $result_code);
 
         if ($result_code != 0 && $mute == false) {
@@ -111,7 +113,14 @@ class Shell
             $ret = '';
         }
 
-        /* explode as array or single string by default */
-        return $explode ? explode($separator, rtrim($ret)) : trim($ret);
+        /* single string output */
+        if (!$explode) {
+            return trim($ret);
+        }
+
+        /* explode as array emulating exec()'s semantics */
+        $ret = rtrim($ret);
+
+        return strlen($ret) ? explode($separator, $ret) : [];
     }
 }

@@ -1245,7 +1245,7 @@ EOD;
     );
 
     /* appease netgraph by setting the correct node name */
-    shell_safe('/usr/sbin/daemon -f /usr/local/opnsense/scripts/interfaces/ppp-rename.sh %s %s %s', [$interface, $ifcfg['if'], $ppp['type']]);
+    mwexecfb('/usr/local/opnsense/scripts/interfaces/ppp-rename.sh %s %s %s', [$interface, $ifcfg['if'], $ppp['type']]);
 
     /* wait for functional device */
     $max = 20;
@@ -1309,10 +1309,15 @@ function interfaces_pfsync_configure()
         }
 
         $ifcfrmt[] = !empty($config['hasync']['pfsyncdefer']) ? 'defer' : '-defer';
+        $ifcfrmt[] = 'up';
 
         mwexecf($ifcfrmt, $ifcargs);
 
-        /* Fix presumed replication issue when outgoing mtu is smaller than pfsync0's (https://github.com/opnsense/core/commit/15acbad935) */
+        /*
+         * Fix presumed replication issue when outgoing MTU
+         * is smaller than what is set in pfsync0, also see
+         * https://github.com/opnsense/core/commit/15acbad935
+         */
         $intf_stats = legacy_interface_details($syncdev);
         if (!empty($intf_stats['mtu'])) {
             mwexecf('/sbin/ifconfig pfsync0 mtu %s', [$intf_stats['mtu']]);
@@ -1432,24 +1437,32 @@ function interface_ipalias_configure($vip)
     if ($vip['interface'] != 'lo0' && !isset($config['interfaces'][$vip['interface']]['enable'])) {
         return;
     }
+
+    $ifcfrmt = ['/sbin/ifconfig %s %s %s/%s alias'];
+    $ifcargs = [];
+
     if (is_ipaddrv6($vip['subnet'])) {
-        $ifcargs = [get_real_interface($vip['interface'], 'inet6'), 'inet6'];
+        $ifcargs[] = get_real_interface($vip['interface'], 'inet6');
+        $ifcargs[] = 'inet6';
     } else {
-        $ifcargs = [get_real_interface($vip['interface']), 'inet'];
+        $ifcargs[] = get_real_interface($vip['interface'], 'inet');
+        $ifcargs[] = 'inet';
     }
 
-    $ifcargs[] = $vip['subnet'] . '/' . $vip['subnet_bits'];
-    $ifcargs[] = 'alias';
+    $ifcargs[] = $vip['subnet'];
+    $ifcargs[] = $vip['subnet_bits'];
 
     if (!empty($vip['gateway'])) {
         $ifcargs[] = $vip['gateway'];
+        $ifcfrmt[] = '%s';
     }
 
     if (!empty($vip['vhid'])) {
-        $ifcargs = array_merge($ifcargs, ['vhid', $vip['vhid']]);
+        $ifcargs[] = $vip['vhid'];
+        $ifcfrmt[] = 'vhid %s';
     }
 
-    shell_safe('/sbin/ifconfig ' . str_repeat(' %s ', count($ifcargs)), $ifcargs);
+    mwexecf($ifcfrmt, $ifcargs);
 }
 
 function interface_carp_configure($vip)
@@ -1462,46 +1475,65 @@ function interface_carp_configure($vip)
     if (get_single_sysctl('net.inet.carp.allow') == '0') {
         return;
     }
+
     $device = get_real_interface($vip['interface']);
-    $ifcargs = [$device, 'vhid', $vip['vhid']];
 
-    $ifcargs = array_merge($ifcargs, ['advskew', $vip['advskew']]);
+    $ifcfrmt = ['/sbin/ifconfig %s vhid %s advskew %s'];
+    $ifcargs = [$device, $vip['vhid'], $vip['advskew']];
+
     if (!empty($vip['advbase'])) {
-        $ifcargs = array_merge($ifcargs, ['advbase', $vip['advbase']]);
+        $ifcargs[] = $vip['advbase'];
+        $ifcfrmt[] = 'advbase %s';
     }
-    if ($vip['password'] != "") {
-        $ifcargs = array_merge($ifcargs, ['pass', addslashes(str_replace(" ", "", $vip['password']))]);
+
+    if ($vip['password'] != '') {
+        /* XXX password processing ooks like an ancient workaround and likely not needed */
+        $ifcargs[] = addslashes(str_replace(' ', '', $vip['password']));
+        $ifcfrmt[] = 'pass %s';
     }
-    mwexecf('/sbin/ifconfig ' . str_repeat(' %s ', count($ifcargs)), $ifcargs);
 
+    mwexecf($ifcfrmt, $ifcargs);
 
-    /* XXX use legacy_interface_setaddress */
+    $ifcfrmt = ['/sbin/ifconfig %s'];
+    $ifcargs = [$device];
+
     if (is_ipaddrv4($vip['subnet'])) {
-        $ifcargs = [$device, $vip['subnet'] . '/' . $vip['subnet_bits'], 'alias', 'vhid', $vip['vhid']];
+        $ifcfrmt[] = '%s/%s alias vhid %s';
     } elseif (is_ipaddrv6($vip['subnet'])) {
-        $ifcargs = [$device, 'inet6', $vip['subnet'], 'prefixlen', $vip['subnet_bits'], 'alias', 'vhid', $vip['vhid']];
+        $ifcfrmt[] = 'inet6 %s prefixlen %s alias vhid %s';
     } else {
         return; /* invalid */
     }
-    mwexecf('/sbin/ifconfig ' . str_repeat(' %s ', count($ifcargs)), $ifcargs);
+
+    $ifcargs[] = $vip['subnet'];
+    $ifcargs[] = $vip['subnet_bits'];
+    $ifcargs[] = $vip['vhid'];
+
+    mwexecf($ifcfrmt, $ifcargs);
 
     /**
      *  XXX this is pretty flaky.
      *      If we configure peer[6] during setup, values won't stick, they appear to be flushed when
      *      the initial address is set.
      */
-    $ifcargs = [$device, 'vhid', $vip['vhid']];
+    $ifcfrmt = ['/sbin/ifconfig %s vhid %s'];
+    $ifcargs = [$device, $vip['vhid']];
+
     if (empty($vip['peer']) || $vip['peer'] == '224.0.0.18') {
-        $ifcargs[] = 'mcast';
+        $ifcfrmt[] = 'mcast';
     } else {
-        $ifcargs = array_merge($ifcargs, ['peer', $vip['peer']]);
+        $ifcargs[] = $vip['peer'];
+        $ifcfrmt[] = 'peer %s';
     }
+
     if (empty($vip['peer6']) || $vip['peer6'] == 'ff02::12') {
-        $ifcargs[] = 'mcast6';
+        $ifcfrmt[] = 'mcast6';
     } else {
-        $ifcargs = array_merge($ifcargs, ['peer6', $vip['peer6']]);
+        $ifcargs[] = $vip['peer6'];
+        $ifcfrmt[] = 'peer6 %s';
     }
-    mwexecf('/sbin/ifconfig ' . str_repeat(' %s ', count($ifcargs)), $ifcargs);
+
+    mwexecf($ifcfrmt, $ifcargs);
 }
 
 function _interfaces_wlan_clone($device, $wlcfg)

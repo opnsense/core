@@ -384,9 +384,14 @@ function addMultiSelectClearUI() {
             }
             destination.val(source.val().join('\n'));
             destination.unbind('change').change(function(){
+                source.unbind('tokenize:tokens:change');
                 source.tokenize2().trigger('tokenize:clear');
                 $.each($(this).val().split("\n"), function( index, value ) {
                     source.tokenize2().trigger('tokenize:tokens:add', [value, value, true]);
+                });
+                /* re-attach change event to signal changes to original control (see formatTokenizersUI) */
+                source.on('tokenize:tokens:change', function(){
+                    source.change();
                 });
             });
         });

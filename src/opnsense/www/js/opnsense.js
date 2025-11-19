@@ -149,6 +149,7 @@ function setFormData(parent,data) {
                             // when setting the same content twice to a widget, tokenize2 sorting mixes up.
                             // Ideally formatTokenizersUI() or tokenize2 should handle this better, but for now
                             // this seems like the only fix that actually works.
+                            targetNode.unbind('tokenize:tokens:change');
                             targetNode.tokenize2().trigger('tokenize:clear');
                         }
                         targetNode.empty(); // flush

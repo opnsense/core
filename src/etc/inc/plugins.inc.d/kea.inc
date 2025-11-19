@@ -161,14 +161,11 @@ function kea_configure_do($verbose = false)
         }
         (new \OPNsense\Kea\KeaCtrlAgent())->generateConfig();
         if ($keaDhcpv6->isEnabled()) {
-            mwexecf(
-                '/usr/sbin/daemon -f -p %s -o %s %s %s',
-                [
-                    '/var/run/kea_prefix_watcher.pid',
-                    '/var/log/kea/kea_prefix_watcher.log',
-                    '/usr/local/opnsense/scripts/kea/kea_prefix_watcher.py',
-                    '/var/db/kea/kea-leases6.csv'
-                ]
+            mwexecfb(
+                '/usr/local/opnsense/scripts/kea/kea_prefix_watcher.py %s',
+                '/var/db/kea/kea-leases6.csv',
+                '/var/run/kea_prefix_watcher.pid',
+                '/var/log/kea/kea_prefix_watcher.log'
             );
         }
         service_log("done.\n", $verbose);
