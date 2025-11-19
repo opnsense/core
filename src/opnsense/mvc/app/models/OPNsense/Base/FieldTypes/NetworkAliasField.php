@@ -85,7 +85,7 @@ class NetworkAliasField extends BaseListField
             }
             // aliases
             foreach (self::getArrayReference(Alias::getCachedData(), 'aliases.alias') as $uuid => $alias) {
-                if ($alias['type'] == 'port') {
+                if ($alias['type'] != 'port') {
                     self::$internalStaticOptionList[$alias['name']] = $alias['name'];
                 }
             }
