@@ -91,9 +91,9 @@ class Config extends Singleton
      * @param &array $arrayData array structure to check
      * @return bool
      */
-    private function isArraySequential(&$arrayData)
+    private function isArraySequential($arrayData)
     {
-        return is_array($arrayData) && ctype_digit(implode('', array_keys($arrayData)));
+        return is_array($arrayData) && array_is_list($arrayData);
     }
 
     /**
