@@ -61,8 +61,6 @@ abstract class LeasesController extends ApiControllerBase
         }
 
         // Mark records as reserved based on hwaddr (IPv4) or duid (IPv6) match
-        $kea4 = new KeaDhcpv4();
-        $kea6 = new KeaDhcpv6();
 
         $resv4 = [];
         $resv6 = [];
