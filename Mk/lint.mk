@@ -123,7 +123,7 @@ lint-exec:
 	    -e '^system(' ':!*.js' ':!*.py' ':!*/contrib/*' \
 	    ':!*/OPNsense/Core/Shell.php' ':!*/interfaces.lib.inc' \
 	    ':!*/inc/certs.inc' ':!*/rc.configure_firmware' \
-	    ':!*/rc.subr.d/recover' ${DIR}
+	    ':!*/rc.subr.d/recover' ${DIR} || true
 .endif
 .endfor
 
