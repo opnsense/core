@@ -918,7 +918,7 @@ function url_safe($format, $args = [])
 
     foreach ($args as $id => $arg) {
         /* arguments could be empty, so force default */
-        $args[$id] = !empty($arg) ? urlencode($arg) : '';
+        $args[$id] = urlencode($arg ?? '');
     }
 
     return vsprintf($format, $args);
