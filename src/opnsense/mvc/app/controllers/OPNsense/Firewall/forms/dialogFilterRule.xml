@@ -285,7 +285,7 @@
     </field>
     <field>
         <type>subheader</type>
-        <label>Policy</label>
+        <label>State options</label>
         <advanced>true</advanced>
     </field>
     <field>
@@ -326,7 +326,7 @@
     </field>
     <field>
         <type>subheader</type>
-        <label>Timeouts</label>
+        <label>State timeouts</label>
         <advanced>true</advanced>
     </field>
     <field>
@@ -391,7 +391,7 @@
     </field>
     <field>
         <type>subheader</type>
-        <label>Limits</label>
+        <label>State limits</label>
         <advanced>true</advanced>
     </field>
     <field>
