@@ -139,8 +139,8 @@
                             {% elseif field['type'] == 'subheader' %}
                                 <tr{% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
                                     <td colspan="3">
-                                        <div style="padding-bottom: 5px; padding-top: 5px; font-size: 14px; padding-left: 14px;">
-                                            <i class="fa fa-angle-right" aria-hidden="true" style="visibility: hidden;"></i>
+                                        <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px; padding-left: 5px;">
+                                            <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
                                             &nbsp;
                                             <b>{{ field['label'] }}</b>
                                         </div>

@@ -168,33 +168,43 @@
                 </nopfsync>
                 <statetimeout type="IntegerField">
                     <MinimumValue>1</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
                 </statetimeout>
                 <udp-first type="IntegerField">
                     <MinimumValue>1</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
                 </udp-first>
                 <udp-multiple type="IntegerField">
                     <MinimumValue>1</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
                 </udp-multiple>
                 <udp-single type="IntegerField">
                     <MinimumValue>1</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
                 </udp-single>
                 <max-src-nodes type="IntegerField">
                     <MinimumValue>1</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
                 </max-src-nodes>
                 <max-src-states type="IntegerField">
                     <MinimumValue>1</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
                 </max-src-states>
                 <max-src-conn type="IntegerField">
                     <MinimumValue>1</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
                 </max-src-conn>
                 <max type="IntegerField">
                     <MinimumValue>1</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
                 </max>
                 <max-src-conn-rate type="IntegerField">
                     <MinimumValue>1</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
                 </max-src-conn-rate>
                 <max-src-conn-rates type="IntegerField">
                     <MinimumValue>1</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
                 </max-src-conn-rates>
                 <overload type="ModelRelationField">
                     <Model>
@@ -212,9 +222,11 @@
                 </overload>
                 <adaptivestart type="IntegerField">
                     <MinimumValue>0</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
                 </adaptivestart>
                 <adaptiveend type="IntegerField">
                     <MinimumValue>0</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
                 </adaptiveend>
                 <prio type="OptionField">
                     <BlankDesc>Any priority</BlankDesc>
