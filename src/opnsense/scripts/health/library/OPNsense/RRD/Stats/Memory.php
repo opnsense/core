@@ -32,7 +32,8 @@ class Memory extends Base
 {
     public function run()
     {
-        $sysctls = [
+        $frmt = [
+            '/sbin/sysctl',
             'vm.stats.vm.v_page_count',
             'vm.stats.vm.v_active_count',
             'vm.stats.vm.v_inactive_count',
@@ -41,7 +42,8 @@ class Memory extends Base
             'vm.stats.vm.v_wire_count'
         ];
 
-        $memory = $this->shellCmd('/sbin/sysctl ' . implode(' ', $sysctls));
+        $memory = $this->shellCmd($frmt);
+
         if (!empty($memory)) {
             $percentages = [];
             $data = [];
@@ -55,6 +57,7 @@ class Memory extends Base
             }
             return $percentages;
         }
+
         return [];
     }
 }
