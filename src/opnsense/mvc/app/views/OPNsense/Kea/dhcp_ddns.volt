@@ -1,6 +1,5 @@
 {#
- # Copyright (c) 2023 Deciso B.V.
- # All rights reserved.
+ # Copyright (C) 2025 Yip Rui Fung <rf@yrf.me>
  #
  # Redistribution and use in source and binary forms, with or without modification,
  # are permitted provided that the following conditions are met:

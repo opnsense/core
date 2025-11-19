@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Kea/dhcp_ddns</mount>
-    <version>1.0.7</version>
+    <version>1.0.0</version>
     <description>Kea DHCP-DDNS Configuration</description>
     <items>
         <general>

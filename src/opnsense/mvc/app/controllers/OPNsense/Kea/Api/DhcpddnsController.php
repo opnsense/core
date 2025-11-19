@@ -1,8 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2025 Deciso B.V.
- * All rights reserved.
+ * Copyright (C) 2025 Yip Rui Fung <rf@yrf.me>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -33,17 +32,7 @@ use OPNsense\Base\ApiMutableModelControllerBase;
 class DhcpddnsController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'dhcp_ddns';
-    protected static $internalModelClass = 'OPNsense\\Kea\\KeaDhcpDdns';
-
-    /**
-     * Return general model data for DDNS
-     * @return array
-     */
-    public function getAction()
-    {
-        // default implementation from ApiMutableModelControllerBase is sufficient
-        return parent::getAction();
-    }
+    protected static $internalModelClass = 'OPNsense\Kea\KeaDhcpDdns';
 
     /* Forward DDNS domains */
     public function searchForwardDomainAction()
