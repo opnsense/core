@@ -50,9 +50,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     parse_str($parts['query'], $query);
                     if (!empty($parts['fragment'])) {
                         header(url_safe('Location: /%s?if=%s#%s', [$parts['path'], $query['if'], $parts['fragment']]));
-                    } elseif (!empty($query['if']) && !empty($query['id'])) {
+                    } elseif (strlen($query['if']) && strlen($query['id'])) {
                         // firewall index reference
-                        header(url_safe('Location: /%s?if=%s&id=%s', [$parts['path'], $query['if'], $query['id']]));
+                        $loc = url_safe('Location: /%s?if=%s&id=%s', [$parts['path'], $query['if'], $query['id']]);
+                        // `"0"` is a valid rule `"id"`, empty() check in url_safe() converts it
+                        // to "" and redirects to the wrong Location. This fix is an ugly one,
+                        // but validating all url_safe() calls and migrating to better emptiness
+                        // check is a lot of refactoring, that's why this ad-hoc hack takes place.
+                        if ($query['id'] === "0" && $loc[-1] === "=")
+                            $loc = $loc . "0";
+                        header($loc);
                     }
                 } else {
                     // search model firewall rule
