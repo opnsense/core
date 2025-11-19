@@ -109,7 +109,7 @@
 
                         if (row.is_reserved === '1') {
                             btn = $(`
-                                <button type="button" class="btn btn-xs"
+                                <button type="button" class="btn btn-xs" data-toggle="tooltip"
                                     title="{{ lang._('Find Reservation') }}">
                                     <i class="fa fa-fw fa-search"></i>
                                 </button>
@@ -118,7 +118,7 @@
                             });
                         } else {
                             btn = $(`
-                                <button type="button" class="btn btn-xs"
+                                <button type="button" class="btn btn-xs" data-toggle="tooltip"
                                     title="{{ lang._('Add Reservation') }}">
                                     <i class="fa fa-fw fa-plus"></i>
                                 </button>
