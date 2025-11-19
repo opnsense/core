@@ -23,7 +23,8 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-ARGS=	diff feed mfc mlog slog tag
+ARGS=	diff feed mfc mlog slog tag vim
+VIM!=	which vim || echo false
 
 # handle argument expansion for required targets
 .for TARGET in ${.TARGETS}
@@ -139,5 +140,13 @@ checkout:
 	@${GIT} reset -q ${.CURDIR}/src && \
 	    ${GIT} checkout -f ${.CURDIR}/src && \
 	    ${GIT} clean -xdqf ${.CURDIR}/src
+.endif
+.endfor
+
+vim:
+.for DIR in ${.CURDIR}/src
+.if exists(${DIR})
+	@FOUND="$$(find ${.CURDIR}/src -type f -name "${vim_ARG}" | head -n 1)"; \
+	    if [ -n "$${FOUND}" ]; then ${VIM} "$${FOUND}"; else exit 1; fi
 .endif
 .endfor
