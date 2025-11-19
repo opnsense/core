@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     parse_str($parts['query'], $query);
                     if (!empty($parts['fragment'])) {
                         header(url_safe('Location: /%s?if=%s#%s', [$parts['path'], $query['if'], $parts['fragment']]));
-                    } elseif (!empty($query['if']) && !empty($query['id'])) {
+                    } elseif (!empty($query['if']) && isset($query['id'])) {
                         // firewall index reference
                         header(url_safe('Location: /%s?if=%s&id=%s', [$parts['path'], $query['if'], $query['id']]));
                     }
