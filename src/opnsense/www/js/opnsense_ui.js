@@ -316,7 +316,12 @@ function addMultiSelectClearUI() {
             let element = $('select[id="' + id + '"]');
             if (element.hasClass("tokenize")) {
                 // trigger close on all Tokens
+                element.unbind('tokenize:tokens:change');
                 element.tokenize2().trigger('tokenize:clear');
+                /* re-attach change event to signal changes to original control (see formatTokenizersUI) */
+                element.on('tokenize:tokens:change', function(){
+                    source.change();
+                });
                 element.change();
             } else {
                 // remove options from selection
