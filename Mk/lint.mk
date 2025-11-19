@@ -116,6 +116,16 @@ lint-exec:
 	    (echo "Missing executable permission in ${DIR}"; exit 1)
 .endif
 .endfor
+.for DIR in ${.CURDIR}/src
+.if exists(${DIR})
+	@git grep -e '[^li][^w>:]exec(' -e '^exec(' -e 'shell_exec(' \
+	    -e '[^f]passthru(' -e '^passthru(' -e '[^._a-z]system(' \
+	    -e '^system(' ':!*.js' ':!*.py' ':!*/contrib/*' \
+	    ':!*/OPNsense/Core/Shell.php' ':!*/interfaces.lib.inc' \
+	    ':!*/inc/certs.inc' ':!*/rc.configure_firmware' \
+	    ':!*/rc.subr.d/recover' ${DIR}
+.endif
+.endfor
 
 lint-php:
 .for DIR in ${.CURDIR}/src
