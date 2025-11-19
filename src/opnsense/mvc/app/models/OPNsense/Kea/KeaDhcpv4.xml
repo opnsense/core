@@ -70,6 +70,12 @@
                     <NetMaskRequired>Y</NetMaskRequired>
                     <AddressFamily>ipv4</AddressFamily>
                     <Required>Y</Required>
+                    <Constraints>
+                        <check001>
+                            <type>UniqueConstraint</type>
+                            <ValidationMessage>Subnet must be unique.</ValidationMessage>
+                        </check001>
+                    </Constraints>
                 </subnet>
                 <next_server type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
