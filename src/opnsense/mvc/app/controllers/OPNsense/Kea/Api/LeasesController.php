@@ -60,23 +60,6 @@ abstract class LeasesController extends ApiControllerBase
             ];
         }
 
-        if (!empty($leases) && isset($leases['records'])) {
-            $records = $leases['records'];
-            foreach ($records as &$record) {
-                $record['if_descr'] = '';
-                $record['if_name'] = '';
-                if (!empty($record['if']) && isset($ifmap[$record['if']])) {
-                    $record['if_descr'] = $ifmap[$record['if']]['descr'];
-                    $record['if_name'] = $ifmap[$record['if']]['key'];
-                    $interfaces[$ifmap[$record['if']]['key']] = $ifmap[$record['if']]['descr'];
-                }
-                $mac = strtoupper(substr(str_replace(':', '', $record['hwaddr']), 0, 6));
-                $record['mac_info'] = isset($mac_db[$mac]) ? $mac_db[$mac] : '';
-            }
-        } else {
-            $records = [];
-        }
-
         // Mark records as reserved based on hwaddr (IPv4) or duid (IPv6) match
         $kea4 = new KeaDhcpv4();
         $kea6 = new KeaDhcpv6();
@@ -92,17 +75,33 @@ abstract class LeasesController extends ApiControllerBase
             $resv6[strtolower((string)$reservation->duid)] = true;
         }
 
-        foreach ($records as &$record) {
-            $addr = $record['address'] ?? '';
-            $is_v6 = strpos($addr, ':') !== false;
-
-            if ($is_v6) {
-                $duid = strtolower($record['duid'] ?? '');
-                $record['is_reserved'] = isset($resv6[$duid]) ? '1' : '0';
-            } else {
-                $mac = strtolower($record['hwaddr'] ?? '');
-                $record['is_reserved'] = isset($resv4[$mac]) ? '1' : '0';
+        if (!empty($leases) && isset($leases['records'])) {
+            $records = $leases['records'];
+            foreach ($records as &$record) {
+                // Interface
+                $record['if_descr'] = '';
+                $record['if_name'] = '';
+                if (!empty($record['if']) && isset($ifmap[$record['if']])) {
+                    $record['if_descr'] = $ifmap[$record['if']]['descr'];
+                    $record['if_name'] = $ifmap[$record['if']]['key'];
+                    $interfaces[$ifmap[$record['if']]['key']] = $ifmap[$record['if']]['descr'];
+                }
+                // Vendor
+                $mac = strtoupper(substr(str_replace(':', '', $record['hwaddr']), 0, 6));
+                $record['mac_info'] = isset($mac_db[$mac]) ? $mac_db[$mac] : '';
+                // Reservation
+                $addr = $record['address'] ?? '';
+                $is_v6 = strpos($addr, ':') !== false;
+                if ($is_v6) {
+                    $duid = strtolower($record['duid'] ?? '');
+                    $record['is_reserved'] = isset($resv6[$duid]) ? '1' : '0';
+                } else {
+                    $mac_lower = strtolower($record['hwaddr'] ?? '');
+                    $record['is_reserved'] = isset($resv4[$mac_lower]) ? '1' : '0';
+                }
             }
+        } else {
+            $records = [];
         }
 
         $response = $this->searchRecordsetBase($records, null, 'address', function ($key) use ($selected_interfaces) {
