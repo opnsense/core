@@ -89,8 +89,7 @@ abstract class LeasesController extends ApiControllerBase
                 $record['mac_info'] = isset($mac_db[$mac]) ? $mac_db[$mac] : '';
                 // Reservation
                 $addr = $record['address'] ?? '';
-                $is_v6 = strpos($addr, ':') !== false;
-                if ($is_v6) {
+                if (strpos($addr, ':') !== false) {
                     $duid = strtolower($record['duid'] ?? '');
                     $record['is_reserved'] = isset($resv6[$duid]) ? '1' : '0';
                 } else {
