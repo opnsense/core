@@ -3764,23 +3764,35 @@ function ip_in_interface_alias_subnet($interface, $ipalias)
     return false;
 }
 
-function get_interface_ip($interface, $ifconfig_details = null)
+function get_interface_ip($interface, $ifconfig_details = null, $mode = 'primary')
 {
     if (is_ipaddrv4($interface)) {
         return $interface;
     }
 
-    if (strstr($interface, '_vip')) {
-        foreach (config_read_array('virtualip', 'vip') as $vip) {
-            if ($vip['mode'] == 'carp') {
-                if ($interface == "{$vip['interface']}_vip{$vip['vhid']}" && is_ipaddrv4($vip['subnet'])) {
-                    return $vip['subnet'];
-                }
+    $vips = (strstr($interface, '_vip') || $mode == 'any') ? config_read_array('virtualip', 'vip') : [];
+    $ip_alias = null;
+
+    foreach ($vips as $vip) {
+        if ($interface == $vip['interface'] && is_ipaddrv4($vip['subnet'])) {
+            /*
+             * The 'any' mode is unreliable in what it returns but will indicate
+             * but will indicate that a static address has been set via VIP.
+             */
+            $ip_alias = $vip['subnet'];
+
+            if ($vip['mode'] == 'carp' && $interface == "{$vip['interface']}_vip{$vip['vhid']}") {
+                return $ip_alias;
             }
         }
     }
 
     list ($ip) = interfaces_primary_address($interface, $ifconfig_details);
+
+    if ($mode = 'any') {
+        /* can still end up with null but that is fine */
+        $ip = $ip ?? $ip_alias;
+    }
 
     return $ip;
 }
@@ -3791,12 +3803,19 @@ function get_interface_ipv6($interface, $ifconfig_details = null, $mode = 'prima
         return $interface;
     }
 
-    if (strstr($interface, '_vip')) {
-        foreach (config_read_array('virtualip', 'vip') as $vip) {
-            if ($vip['mode'] == 'carp') {
-                if ($interface == "{$vip['interface']}_vip{$vip['vhid']}" && is_ipaddrv6($vip['subnet'])) {
-                    return $vip['subnet'];
-                }
+    $vips = (strstr($interface, '_vip') || $mode == 'any') ? config_read_array('virtualip', 'vip') : [];
+    $ipv6_alias = null;
+
+    foreach ($vips as $vip) {
+        if ($interface == $vip['interface'] && is_ipaddrv6($vip['subnet'])) {
+            /*
+             * The 'any' mode is unreliable in what it returns but will indicate
+             * that a static address has been set via VIP that is reliable.
+             */
+            $ipv6_alias = $vip['subnet'];
+
+            if ($vip['mode'] == 'carp' && $interface == "{$vip['interface']}_vip{$vip['vhid']}") {
+                return $ipv6_alias;
             }
         }
     }
@@ -3812,6 +3831,11 @@ function get_interface_ipv6($interface, $ifconfig_details = null, $mode = 'prima
         default:
             list ($ipv6) = interfaces_primary_address6($interface, $ifconfig_details);
             break;
+    }
+
+    if ($mode = 'any') {
+        /* can still end up with null but that is fine */
+        $ipv6 = $ipv6 ?? $ipv6_alias;
     }
 
     return $ipv6;

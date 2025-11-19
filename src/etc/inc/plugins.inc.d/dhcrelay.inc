@@ -165,8 +165,8 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
         }
 
         if (
-            !isset($iflist[$interface]) || ($family == 'inet' && !get_interface_ip($interface, $ifconfig_details)) ||
-            ($family == 'inet6' && !get_interface_ipv6($interface, $ifconfig_details))
+            !isset($iflist[$interface]) || ($family == 'inet' && !get_interface_ip($interface, $ifconfig_details, 'any')) ||
+            ($family == 'inet6' && !get_interface_ipv6($interface, $ifconfig_details, 'any'))
         ) {
             log_msg("dhcrelay_configure_id() found no suitable IP address for $interface($device)", LOG_WARNING);
             continue;
