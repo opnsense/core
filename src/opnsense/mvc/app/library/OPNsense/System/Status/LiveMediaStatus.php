@@ -64,8 +64,7 @@ class LiveMediaStatus extends AbstractStatus
         $this->internalStatus = SystemStatusCode::NOTICE;
         $this->internalMessage = gettext('You are currently running in live media mode. A reboot will reset the configuration.');
         if (empty(Config::getInstance()->object()->system->ssh->noauto)) {
-            /* XXX portability shortcut */
-            if (Shell::run_safe('/bin/pgrep -anx sshd') == 0) {
+            if (Shell::run_safe('/bin/pgrep -anx sshd') == 0) { /* XXX portability shortcut */
                 $this->internalMessage .= ' ' . gettext('SSH remote login is enabled for the users "root" and "installer" using the same password.');
             }
         }
