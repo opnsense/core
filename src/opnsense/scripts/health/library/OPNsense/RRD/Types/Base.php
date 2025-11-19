@@ -28,6 +28,8 @@
 
 namespace OPNsense\RRD\Types;
 
+use OPNsense\Core\Shell;
+
 abstract class Base
 {
     /**
@@ -148,22 +150,22 @@ abstract class Base
         if (!$overwrite && file_exists($this->filename)) {
             return $this;
         }
-        $cmd_text = sprintf('/usr/local/bin/rrdtool create %s  --step %d ', $this->filename, 60);
+
+        $cmd_frmt = ['/usr/local/bin/rrdtool create %s --step %d'];
+        $cmd_args = [$this->filename, 60];
+
         foreach ($this->datasets as $dataset) {
-            $cmd_text .= 'DS:' . implode(':', $dataset) . ' ';
+            $cmd_args[] = implode(':', $dataset);
+            $cmd_frmt[] = 'DS:%s';
         }
+
         foreach ($this->round_robin_archives as $rra) {
-            $cmd_text .=  'RRA:' . implode(':', $rra) . ' ';
+            $cmd_args[] = implode(':', $rra);
+            $cmd_frmt[] = 'RRA:%s';
         }
-        $cmd_text .= ' 2>&1';
-        exec($cmd_text, $rrdcreateoutput, $rrdcreatereturn);
-        if ($rrdcreatereturn != 0) {
-            $rrdcreateoutput = implode(" ", $rrdcreateoutput);
-            syslog(
-                LOG_ERR,
-                sprintf('RRD create failed exited with %s, the error is: %s', $rrdcreatereturn, $rrdcreateoutput)
-            );
-        }
+
+        Shell::run_safe($cmd_frmt, $cmd_args);
+
         return $this;
     }
 
@@ -175,8 +177,9 @@ abstract class Base
      */
     public function update(array $dataset = [], bool $debug = false)
     {
-        $values = [];
         $map_by_name = count($dataset) > 0 && !isset($dataset[0]);
+        $values = [];
+
         foreach ($this->datasets as $idx => $ds) {
             if ($map_by_name) {
                 $value = isset($dataset[$ds[0]]) ? $dataset[$ds[0]] : 'U';
@@ -188,11 +191,11 @@ abstract class Base
                 echo sprintf("[%s] '%s' missing in datafeed\n", get_class($this), $ds[0]);
             }
         }
-        $cmd_text = sprintf('/usr/local/bin/rrdtool update %s N:%s 2>&1', $this->filename, implode(':', $values));
-        exec($cmd_text, $rrdcreateoutput, $rrdcreatereturn);
-        if ($rrdcreatereturn != 0 && $debug) {
-            echo sprintf("[cmd failed] %s\n", $cmd_text);
-        }
+
+        Shell::run_safe('/usr/local/bin/rrdtool update %s N:%s', [
+            $this->filename, implode(':', $values),
+        ], !$debug);
+
         return $this;
     }
 
