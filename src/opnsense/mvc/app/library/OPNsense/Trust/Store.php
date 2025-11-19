@@ -516,8 +516,8 @@ class Store
         $private_key,
         $friendly_name = null,
         $passphrase = null,
-        $caref = null)
-    {
+        $caref = null
+    ) {
         $old_err_level = error_reporting(0); /* prevent openssl error from going to stderr/stdout */
         $options = [];
         if (!empty($friendly_name)) {
@@ -603,7 +603,7 @@ class Store
      * @param bool $aslist return array
      * @return array|string list of certificates as single string or array
      */
-    public static function getCaChain($caref, $aslist=false)
+    public static function getCaChain($caref, $aslist = false)
     {
         $chain = [];
         while (($item = self::getCA(!isset($item) ? $caref : $item->caref)) != null) {
