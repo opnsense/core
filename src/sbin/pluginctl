@@ -301,9 +301,9 @@ if (isset($opts['h'])) {
     }
     echo json_encode($payload, $jflags) . PHP_EOL;
 } elseif (isset($opts['m'])) {
-    passthru('/usr/local/opnsense/mvc/script/run_migrations.php', $ret);
+    pass_safe('/usr/local/opnsense/mvc/script/run_migrations.php', [], $ret);
 } elseif (isset($opts['v'])) {
-    passthru('/usr/local/opnsense/mvc/script/run_validations.php', $ret);
+    pass_safe('/usr/local/opnsense/mvc/script/run_validations.php', [], $ret);
 } elseif (empty($args[0])) {
     // no arguments, list plugins of selected type
     $results = [];
@@ -336,4 +336,4 @@ if (isset($opts['h'])) {
     plugins_configure($hook, !isset($opts['q']), $args);
 }
 
-exit ($ret);
+exit($ret);
