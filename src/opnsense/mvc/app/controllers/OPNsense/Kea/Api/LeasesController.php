@@ -67,7 +67,7 @@ abstract class LeasesController extends ApiControllerBase
         $resv4 = [];
         $resv6 = [];
 
-        foreach ($kea4->reservations->reservation->iterateItems() as $reservation) {
+        foreach ((new KeaDhcpv4())->reservations->reservation->iterateItems() as $reservation) {
             $resv4[strtolower((string)$reservation->hw_address)] = true;
         }
 
