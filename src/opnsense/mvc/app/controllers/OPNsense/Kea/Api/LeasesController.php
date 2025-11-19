@@ -31,6 +31,8 @@ namespace OPNsense\Kea\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Kea\KeaDhcpv4;
+use OPNsense\Kea\KeaDhcpv6;
 
 abstract class LeasesController extends ApiControllerBase
 {
@@ -58,9 +60,22 @@ abstract class LeasesController extends ApiControllerBase
             ];
         }
 
+        // Mark records as reserved based on hwaddr (IPv4) or duid (IPv6) match
+        $resv4 = [];
+        $resv6 = [];
+
+        foreach ((new KeaDhcpv4())->reservations->reservation->iterateItems() as $reservation) {
+            $resv4[strtolower((string)$reservation->hw_address)] = true;
+        }
+
+        foreach ((new KeaDhcpv6())->reservations->reservation->iterateItems() as $reservation) {
+            $resv6[strtolower((string)$reservation->duid)] = true;
+        }
+
         if (!empty($leases) && isset($leases['records'])) {
             $records = $leases['records'];
             foreach ($records as &$record) {
+                // Interface
                 $record['if_descr'] = '';
                 $record['if_name'] = '';
                 if (!empty($record['if']) && isset($ifmap[$record['if']])) {
@@ -68,8 +83,18 @@ abstract class LeasesController extends ApiControllerBase
                     $record['if_name'] = $ifmap[$record['if']]['key'];
                     $interfaces[$ifmap[$record['if']]['key']] = $ifmap[$record['if']]['descr'];
                 }
+                // Vendor
                 $mac = strtoupper(substr(str_replace(':', '', $record['hwaddr']), 0, 6));
                 $record['mac_info'] = isset($mac_db[$mac]) ? $mac_db[$mac] : '';
+                // Reservation
+                $addr = $record['address'] ?? '';
+                if (strpos($addr, ':') !== false) {
+                    $duid = strtolower($record['duid'] ?? '');
+                    $record['is_reserved'] = isset($resv6[$duid]) ? '1' : '0';
+                } else {
+                    $mac_lower = strtolower($record['hwaddr'] ?? '');
+                    $record['is_reserved'] = isset($resv4[$mac_lower]) ? '1' : '0';
+                }
             }
         } else {
             $records = [];

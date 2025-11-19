@@ -52,13 +52,13 @@ class DhcpController extends \OPNsense\Base\IndexController
         $this->view->formGeneralSettings = $this->getForm("generalSettings4");
 
         $this->view->formDialogSubnet = $this->getForm("dialogSubnet4");
-        $this->view->formGridSubnet = $this->getFormGrid("dialogSubnet4");
+        $this->view->formGridSubnet = $this->getFormGrid("dialogSubnet4", 'subnet');
 
         $this->view->formDialogReservation = $this->getForm("dialogReservation4");
-        $this->view->formGridReservation = $this->getFormGrid("dialogReservation4", null, null, 'reservation');
+        $this->view->formGridReservation = $this->getFormGrid("dialogReservation4", 'reservation', null, 'reservation');
 
         $this->view->formDialogPeer = $this->getForm("dialogPeer4");
-        $this->view->formGridPeer = $this->getFormGrid("dialogPeer4");
+        $this->view->formGridPeer = $this->getFormGrid("dialogPeer4", 'peer');
     }
 
     public function v6Action()
