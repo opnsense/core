@@ -87,16 +87,6 @@ class Config extends Singleton
     }
 
     /**
-     * check if array is a sequential type.
-     * @param &array $arrayData array structure to check
-     * @return bool
-     */
-    private function isArraySequential(&$arrayData)
-    {
-        return is_array($arrayData) && ctype_digit(implode('', array_keys($arrayData)));
-    }
-
-    /**
      * serialize xml to array structure (backwards compatibility mode)
      * @param null|array $forceList force specific tags to be contained in a list.
      * @param DOMNode $node node to read
@@ -128,7 +118,7 @@ class Config extends Singleton
                     $old_content = $result[$xmlNodeName];
                     // check if array content is associative, move items to new list
                     // (handles first item of specific type)
-                    if (!$this->isArraySequential($old_content)) {
+                    if (!is_array($old_content) || !array_is_list($old_content)) {
                         $result[$xmlNodeName] = array();
                         $result[$xmlNodeName][] = $old_content;
                     }
@@ -253,7 +243,7 @@ class Config extends Singleton
             } elseif (is_numeric($itemKey)) {
                 // recurring tag (content), use parent tagname.
                 $childNode = $node->addChild($parentTagName);
-            } elseif ($this->isArraySequential($itemValue)) {
+            } elseif (is_array($itemValue) && array_is_list($itemValue)) {
                 // recurring tag, skip placeholder.
                 $childNode = $node;
             } else {
