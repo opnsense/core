@@ -178,6 +178,11 @@ class FilterController extends FilterBaseController
             $is_cat = empty($categories) || array_intersect(explode(',', $record->categories), $categories);
             $rule_interfaces = array_filter(explode(',', (string)$record->interface));
 
+            /* inverted interface acts as floating rule */
+            if ((string)$record->interfacenot === "1") {
+                $rule_interfaces = [];
+            }
+
             if (empty($interfaces)) {
                 $is_if = count($rule_interfaces) != 1;
             } elseif ($show_all) {
@@ -221,6 +226,9 @@ class FilterController extends FilterBaseController
 
             if (empty($interfaces)) {
                 $is_if = empty($record['interface']) || count(explode(',', $record['interface'])) > 1;
+            } elseif ((string)$record['interfacenot'] === "1") {
+                /* inverted interface acts as floating rule */
+                $is_if = true;
             } else {
                 $is_if = array_intersect(explode(',', $record['interface'] ?? ''), $interfaces);
                 $is_if = $is_if || empty($record['interface']);
@@ -481,8 +489,8 @@ class FilterController extends FilterBaseController
         foreach ((new \OPNsense\Firewall\Filter())->rules->rule->iterateItems() as $rule) {
             $interfaces = array_filter(explode(',', (string)$rule->interface));
 
-            if (count($interfaces) !== 1) {
-                // floating: empty or multiple interfaces
+            if ((string)$rule->interfacenot === "1" || count($interfaces) !== 1) {
+                // floating: empty, multiple, or inverted interface
                 $ruleCounts['floating'] = ($ruleCounts['floating'] ?? 0) + 1;
             } else {
                 // single interface

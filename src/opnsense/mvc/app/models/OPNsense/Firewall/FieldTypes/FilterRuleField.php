@@ -108,7 +108,11 @@ class FilterRuleContainerField extends ContainerField
     {
         $configObj = Config::getInstance()->object();
         $interface = (string)$this->interface;
-        if (strpos($interface, ",") !== false || empty($interface)) {
+
+        if ((string)$this->interfacenot === "1" && !empty($interface)) {
+            // floating (inverted interface)
+            return 200000;
+        } elseif (strpos($interface, ",") !== false || empty($interface)) {
             // floating (multiple interfaces involved)
             return 200000;
         } elseif (
