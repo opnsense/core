@@ -157,6 +157,7 @@
 /usr/local/etc/ssl/ext_sources/README
 /usr/local/etc/ssl/opnsense.cnf
 /usr/local/etc/strongswan.opnsense.d/README
+/usr/local/etc/suricata/conf.d/README
 /usr/local/etc/unbound.opnsense.d/README
 /usr/local/libexec/opnsense-auth
 /usr/local/opnsense/contrib/IXR/IXR_Library.php
