@@ -244,6 +244,7 @@
                     <OptionValues>
                         <AES-256-GCM>AES-256-GCM</AES-256-GCM>
                         <AES-128-GCM>AES-128-GCM</AES-128-GCM>
+                        <AES-256-CBC>AES-256-CBC</AES-256-CBC>
                         <CHACHA20-POLY1305>CHACHA20-POLY1305</CHACHA20-POLY1305>
                     </OptionValues>
                 </data-ciphers>
@@ -251,6 +252,7 @@
                     <OptionValues>
                         <AES-256-GCM>AES-256-GCM</AES-256-GCM>
                         <AES-128-GCM>AES-128-GCM</AES-128-GCM>
+                        <AES-256-CBC>AES-256-CBC</AES-256-CBC>
                         <CHACHA20-POLY1305>CHACHA20-POLY1305</CHACHA20-POLY1305>
                     </OptionValues>
                 </data-ciphers-fallback>
