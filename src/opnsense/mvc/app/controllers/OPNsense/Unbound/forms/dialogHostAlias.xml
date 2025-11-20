@@ -20,13 +20,13 @@
         <id>alias.hostname</id>
         <label>Host</label>
         <type>text</type>
-        <help>Name of the host, without the domain part. Use "*" to create a wildcard entry.</help>
+        <help>Name of the host, without the domain part. Use "*" to create a wildcard entry. When left empty, the value defined in the parent override is used.</help>
     </field>
     <field>
         <id>alias.domain</id>
         <label>Domain</label>
         <type>text</type>
-        <help>Domain of the host, e.g. example.com</help>
+        <help>Domain of the host, e.g. example.com. When left empty, the value defined in the parent override is used.</help>
     </field>
     <field>
         <id>alias.description</id>
