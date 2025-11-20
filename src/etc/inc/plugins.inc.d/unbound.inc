@@ -118,26 +118,25 @@ function unbound_service_mount_sync($umount = false)
             'fstype' => 'nullfs'
         ]
     ];
+
     /* collect mounted */
-    exec('/sbin/mount --libxo json 2>&1', $out_mnt, $ret_mnt);
     $mounted = [];
-    if (!$ret_mnt && !empty($out_mnt[0])) {
-        $tmp = json_decode($out_mnt[0], true) ?? [];
-        if (!empty($tmp['mount']) && !empty($tmp['mount']['mounted'])) {
-            foreach ($tmp['mount']['mounted'] as $dev) {
-                if (!empty($dev['node'])) {
-                    $mounted[$dev['node']] = $dev;
-                }
+    $tmp = json_decode(shell_safe('/sbin/mount --libxo json'), true) ?? [];
+    if (!empty($tmp['mount']) && !empty($tmp['mount']['mounted'])) {
+        foreach ($tmp['mount']['mounted'] as $dev) {
+            if (!empty($dev['node'])) {
+                $mounted[$dev['node']] = $dev;
             }
         }
     }
+
     /* sync requested mountpoints */
     foreach ($mountpoints as $mntpoint => $dev) {
         $mntargs = [$dev['fstype'], $dev['special'], $mntpoint];
         $mntcmd = '/sbin/mount ' . ($dev['fstype'] != 'devfs' ? '-r' : '') . ' -t %s %s %s';
         if (!empty($mounted[$mntpoint])) {
             if ($umount || $mounted[$mntpoint]['special'] != $dev['special']) {
-                mwexecf('/sbin/umount %s', $mntpoint, true);
+                mwexecfm('/sbin/umount %s', $mntpoint);
                 if (!$umount) {
                     mwexecf($mntcmd, $mntargs);
                 }
@@ -152,7 +151,7 @@ function unbound_service_stop()
 {
     $mdl = new \OPNsense\Unbound\Unbound();
 
-    mwexec('/usr/local/bin/flock -E 0 -o /tmp/unbound_start.lock true');
+    mwexecf('/usr/local/bin/flock -E 0 -o /tmp/unbound_start.lock true');
 
     if (empty((string)$mdl->general->cacheflush)) {
         if (isvalidpid('/var/run/unbound.pid')) {
