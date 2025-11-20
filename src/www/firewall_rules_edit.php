@@ -155,6 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         $pconfig['category'] = !empty($pconfig['category']) ? explode(",", $pconfig['category']) : [];
         $pconfig['icmptype'] = !empty($pconfig['icmptype']) ? explode(",", $pconfig['icmptype']) : [];
+        $pconfig['icmp6-type'] = !empty($pconfig['icmp6-type']) ? explode(",", $pconfig['icmp6-type']) : [];
 
         // process fields with some kind of logic
         address_to_pconfig(
@@ -194,6 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['src'] = "any";
         $pconfig['dst'] = "any";
         $pconfig['icmptype'] = [];
+        $pconfig['icmp6-type'] = [];
     }
 
     // initialize empty fields
@@ -618,8 +620,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if ($pconfig['protocol'] == "icmp" && !empty($pconfig['icmptype'])) {
             $filterent['icmptype'] = implode(',', $pconfig['icmptype']);
-        } elseif ($pconfig['protocol'] == 'ipv6-icmp' && !empty($pconfig['icmp6-type'])) {
-            $filterent['icmp6-type'] = $pconfig['icmp6-type'];
+        } elseif ($pconfig['protocol'] == "ipv6-icmp" && !empty($pconfig['icmp6-type'])) {
+            $filterent['icmp6-type'] = implode(',', $pconfig['icmp6-type']);
         }
 
         // reset port values for non tcp/udp traffic
@@ -1098,10 +1100,9 @@ include("head.inc");
                   <tr id="icmp6box">
                     <td><a id="help_for_icmp6-type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ICMP6 type");?></td>
                     <td>
-                      <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="icmp6-type" class="selectpicker" data-live-search="true" data-size="5" >
+                      <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="icmp6-type[]" class="selectpicker" title="<?=gettext("Any");?>" data-live-search="true" data-size="5" multiple="multiple">
 <?php
                       $icmp6types = array(
-                          "" => gettext("any"),
                           "unreach" => gettext("Destination unreachable"),
                           "toobig" => gettext("Packet too big"),
                           "timex" => gettext("Time exceeded"),
@@ -1131,7 +1132,7 @@ include("head.inc");
                       );
 
                       foreach ($icmp6types as $icmp6type => $descr): ?>
-                        <option value="<?=$icmp6type;?>" <?= $icmp6type == $pconfig['icmp6-type'] ? "selected=\"selected\"" : ""; ?>>
+                        <option value="<?=$icmp6type;?>" <?= in_array($icmp6type, $pconfig['icmp6-type'] ?? []) ? "selected=\"selected\"" : ""; ?>>
                           <?=$descr;?>
                         </option>
 <?php
