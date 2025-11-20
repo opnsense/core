@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -24,36 +24,22 @@
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
-
-    --------------------------------------------------------------------------------------
-
-    script to fetch all suricata rule information into a single json object with the following contents:
-        rules : all relevant metadata from the rules including the default enabled or disabled state
-        total_rows: total rowcount for this selection
-        parameters: list of parameters used
 """
 
-import sys
-sys.path.insert(0, "/usr/local/opnsense/site-python")
+import argparse
 import ujson
 from lib.rulecache import RuleCache
-from params import update_params
 
-# Because rule parsing isn't very useful when the rule definitions didn't change we create a single json file
-# to hold the last results (combined with creation date and number of files).
 if __name__ == '__main__':
     rc = RuleCache()
     if rc.is_changed():
         rc.create()
 
-    # load parameters, ignore validation here the search method only processes valid input
-    parameters = {'limit': '0', 'offset': '0', 'sort_by': '', 'filter': ''}
-    update_params(parameters)
-    # rename, filter tag to filter_txt
-    parameters['filter_txt'] = parameters['filter']
-    del parameters['filter']
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--limit', help='limit the amount of results', default=0, type=int)
+    parser.add_argument('--offset', help='offset to start', default=0, type=int)
+    parser.add_argument('--sort_by', help='sort by field names', default='')
+    parser.add_argument('--filter', help='filter to apply', default='')
+    args = parser.parse_args()
 
-    # dump output
-    result = rc.search(**parameters)
-    result['parameters'] = parameters
-    print(ujson.dumps(result))
+    print(ujson.dumps(rc.search(limit=args.limit, offset=args.offset, filter_txt=args.filter, sort_by=args.sort_by)))
