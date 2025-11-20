@@ -197,6 +197,17 @@ class OpenVPN extends BaseModel
                     $key . ".fragment"
                 ));
             }
+            if ($instance->dev_type == 'ovpn' && in_array('fast-io', $instance->various_flags->getValues())) {
+                $messages->appendMessage(new Message(
+                    gettext('DCO type instances do not support fast-io.'),
+                    $key . ".various_flags"
+                ));
+            }
+            if (!str_starts_with($instance->proto->getValue(), 'udp') &&
+                in_array('fast-io', $instance->various_flags->getValues())
+            ) {
+                $messages->appendMessage(new Message(gettext('fast-io requires UDP.'), $key . ".various_flags"));
+            }
         }
         return $messages;
     }
