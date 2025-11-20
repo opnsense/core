@@ -359,22 +359,13 @@ while : ; do
 			fi
 		done
 
-		# XXX restore DUID from either /var/db or /conf (backwards
-		# compat with <= 25.7), but eventually /var/db is the only
-		# location we should use as >= 26.1 will not back up to
-		# /conf anymore since /var MFS is long gone.
-		FILE=dhcp6c_duid
-		DIR=
+		# This is a historic restore, but we use the old system one
+		# instead of having it in /conf since /var MFS is no more.
+		FILE="/var/db/dhcp6c_duid"
 
-		if [ -f "${MNT}/var/db/${FILE}" ]; then
-			DIR=/var/db
-		elif [ -f "${MNT}/conf/${FILE}" ]; then
-			DIR=/conf
-		fi
-
-		if [ -n "${DIR}" ]; then
-			echo -n "Restoring ${FILE} from ${DIR}..."
-			cp "${MNT}${DIR}/${FILE}" /var/db
+		if [ -f "${MNT}${FILE}" ]; then
+			echo -n "Restoring ${FILE}..."
+			cp "${MNT}${FILE}" /var/db
 			echo "done."
 		fi
 
