@@ -281,6 +281,7 @@
                         <route-noexec>route-noexec</route-noexec>
                         <route-nopull>route-nopull</route-nopull>
                         <explicit-exit-notify>explicit-exit-notify</explicit-exit-notify>
+                        <fast-io>fast-io</fast-io>
                     </OptionValues>
                 </various_flags>
                 <various_push_flags type="OptionField">
