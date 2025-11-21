@@ -229,7 +229,7 @@ function filter_core_rules_system($fw, $defaults)
         // IPv6 ICMP requirements
         $fw->registerFilterRule(
             1,
-            ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '1,2,135,136',
+            ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '1,2,3,4,135,136',
                 'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'disabled' => $ipv6_disabled,
                 '#ref' => 'system_advanced_firewall.php#no_ipv6_rfc4890_req'],
             $defaults['pass']
