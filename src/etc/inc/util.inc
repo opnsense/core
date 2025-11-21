@@ -992,7 +992,7 @@ function mwexecfb($format, $args = [])
 
     array_unshift($format, '/usr/sbin/daemon -f');
 
-    return mwexecf($format, $args);
+    return OPNsense\Core\Shell::run_safe($format, $args);
 }
 
 /* check if an alias exists */
