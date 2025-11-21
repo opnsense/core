@@ -397,7 +397,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     @file_put_contents('/tmp/rules.limits', $limitrules);
     mwexecf('/sbin/pfctl -Of %s', '/tmp/rules.limits');
-    $rules_loading = mwexecf('/sbin/pfctl -f /tmp/rules.debug > /tmp/rules.debug.error');
+    $rules_loading = mwexecfm('/sbin/pfctl -f /tmp/rules.debug > /tmp/rules.debug.error');
 
     foreach ($sched_kill_states as $label) {
         mwexecf('/sbin/pfctl -k label -k %s', $label);
