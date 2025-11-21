@@ -107,8 +107,6 @@
                 <description type="DescriptionField"/>
                 <ddns_options>
                     <send_updates type="BooleanField"/>
-                    <override_no_update type="BooleanField"/>
-                    <override_client_update type="BooleanField"/>
                     <replace_client_name type="OptionField">
                         <Default>never</Default>
                         <Required>Y</Required>
@@ -122,8 +120,6 @@
                     <generated_prefix type="TextField"/>
                     <update_on_renew type="BooleanField"/>
                     <qualifying_suffix type="TextField"/>
-                    <hostname_char_set type="TextField"/>
-                    <hostname_char_replacement type="TextField"/>
                     <conflict_resolution_mode type="OptionField">
                         <Default>check-with-dhcid</Default>
                         <Required>Y</Required>
