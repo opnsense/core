@@ -178,7 +178,6 @@ class FilterController extends FilterBaseController
             $is_cat = empty($categories) || array_intersect(explode(',', $record->categories), $categories);
             $rule_interfaces = array_filter(explode(',', (string)$record->interface));
 
-            /* inverted interface acts as floating rule */
             if ((string)$record->interfacenot === "1") {
                 $rule_interfaces = [];
             }
@@ -227,7 +226,6 @@ class FilterController extends FilterBaseController
             if (empty($interfaces)) {
                 $is_if = empty($record['interface']) || count(explode(',', $record['interface'])) > 1;
             } elseif ((string)$record['interfacenot'] === "1") {
-                /* inverted interface acts as floating rule */
                 $is_if = true;
             } else {
                 $is_if = array_intersect(explode(',', $record['interface'] ?? ''), $interfaces);
