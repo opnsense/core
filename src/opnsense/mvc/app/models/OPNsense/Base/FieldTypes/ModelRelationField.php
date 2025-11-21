@@ -179,8 +179,6 @@ class ModelRelationField extends BaseListField
         $this->internalDisableCache = trim(strtoupper($value)) == "Y";
     }
 
-
-
     /**
      * load model options when initialized
      */
