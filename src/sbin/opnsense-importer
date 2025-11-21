@@ -359,8 +359,10 @@ while : ; do
 			fi
 		done
 
-		# This is a historic restore, but we use the old system one
-		# instead of having it in /conf since /var MFS is no more.
+		# This is a historic restore, but we use the file in use by
+		# dhcp6c itself instead of using the obsolete one in /conf
+		# since /var MFS is no more and the DUID can be optionally
+		# stored in the config.xml anyway if a backup is wanted.
 		FILE="/var/db/dhcp6c_duid"
 
 		if [ -f "${MNT}${FILE}" ]; then
