@@ -170,10 +170,8 @@ function interfaces_wlan_clone($device)
         if (!isset($config['interfaces'][$if]['wireless'])) {
             continue;
         }
-        $realif = get_real_interface($if);
-        /* XXX 'if' check only required if parent is still embedded */
-        if ($device == $realif || $device == $config['interfaces'][$if]['if']) {
-            return _interfaces_wlan_clone($realif, $config['interfaces'][$if]);
+        if ($device == $config['interfaces'][$if]['if']) {
+            return _interfaces_wlan_clone($device, $config['interfaces'][$if]);
         }
     }
 
