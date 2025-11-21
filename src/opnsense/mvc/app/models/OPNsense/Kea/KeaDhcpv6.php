@@ -72,17 +72,6 @@ class KeaDhcpv6 extends BaseModel
             }
         }
 
-        // Require DDNS service to be enabled when DHCPv6's DDNS is enabled
-        // Skip this check when manual configuration is enabled for DHCPv6
-        if (!empty((string)$this->general->enable_ddns) && $this->general->manual_config->isEmpty()) {
-            $ddns = new KeaDhcpDdns();
-            if (empty((string)$ddns->general->enabled)) {
-                $messages->appendMessage(
-                    new Message(gettext('Enable the DHCP-DDNS service to use Dynamic DNS updates.'), 'general.enable_ddns')
-                );
-            }
-        }
-
         // Enforce that ddns qualifying suffix ends with a dot when set
         foreach ($this->subnets->subnet6->iterateItems() as $subnet) {
             if (!$validateFullModel && !$subnet->isFieldChanged()) {
