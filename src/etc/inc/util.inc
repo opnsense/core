@@ -980,7 +980,7 @@ function mwexecf($format, $args = [], $mute = false)
 /* run commands safely without failure reports */
 function mwexecfm($format, $args = [])
 {
-    return mwexecf($format, $args, true);
+    return OPNsense\Core\Shell::run_safe($format, $args, true);
 }
 
 /* run commands safely in the background */
