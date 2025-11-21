@@ -147,6 +147,9 @@ vim:
 .for DIR in ${.CURDIR}/src
 .if exists(${DIR})
 	@FOUND="$$(find ${.CURDIR}/src -type f -name "${vim_ARG}" | head -n 1)"; \
-	    if [ -n "$${FOUND}" ]; then ${VIM} "$${FOUND}"; else exit 1; fi
+	    if [ -n "$${FOUND}" ]; then \
+		${VIM} "$${FOUND}"; \
+		${PHPBIN} -l "$${FOUND}" > /dev/null; \
+	    else exit 1; fi
 .endif
 .endfor
