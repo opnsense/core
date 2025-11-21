@@ -152,12 +152,6 @@ class KeaDhcpv6 extends BaseModel
             $ddns_send_updates = !empty((string)$subnet->ddns_options->send_updates);
             if ($ddns_send_updates) {
                 $record['ddns-send-updates'] = true;
-                if (!empty((string)$subnet->ddns_options->override_no_update)) {
-                    $record['ddns-override-no-update'] = true;
-                }
-                if (!empty((string)$subnet->ddns_options->override_client_update)) {
-                    $record['ddns-override-client-update'] = true;
-                }
                 if ((string)$subnet->ddns_options->replace_client_name !== '') {
                     $record['ddns-replace-client-name'] = (string)$subnet->ddns_options->replace_client_name;
                 }
@@ -166,12 +160,6 @@ class KeaDhcpv6 extends BaseModel
                 }
                 if ((string)$subnet->ddns_options->qualifying_suffix !== '') {
                     $record['ddns-qualifying-suffix'] = (string)$subnet->ddns_options->qualifying_suffix;
-                }
-                if ((string)$subnet->ddns_options->hostname_char_set !== '') {
-                    $record['hostname-char-set'] = (string)$subnet->ddns_options->hostname_char_set;
-                }
-                if ((string)$subnet->ddns_options->hostname_char_replacement !== '') {
-                    $record['hostname-char-replacement'] = (string)$subnet->ddns_options->hostname_char_replacement;
                 }
                 if (!empty((string)$subnet->ddns_options->update_on_renew)) {
                     $record['ddns-update-on-renew'] = true;
