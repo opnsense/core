@@ -39,12 +39,6 @@
         <help>Automatically add a basic set of firewall rules to allow dhcp traffic, more fine grained controls can be offered manually when disabling this option.</help>
     </field>
     <field>
-        <id>dhcpv6.general.enable_ddns</id>
-        <label>Enable DDNS</label>
-        <type>checkbox</type>
-        <help>Enable Dynamic DNS Updates (DDNS) using the Kea DHCP-DDNS server.</help>
-    </field>
-    <field>
         <type>header</type>
         <label>Lease Expiration</label>
         <collapse>true</collapse>

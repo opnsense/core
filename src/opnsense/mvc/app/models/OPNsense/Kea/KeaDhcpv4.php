@@ -289,7 +289,7 @@ class KeaDhcpv4 extends BaseModel
                     'socket-name' => '/var/run/kea/kea4-ctrl-socket'
                 ],
                 'dhcp-ddns' => [
-                    'enable-updates' => !empty((string)$this->general->enable_ddns),
+                    'enable-updates' => false,
                     'server-ip' => '127.0.0.1',
                     'server-port' => 53001,
                 ],
@@ -311,6 +311,14 @@ class KeaDhcpv4 extends BaseModel
         if ($expiredLeasesConfig !== null) {
             $cnf['Dhcp4']['expired-leases-processing'] = $expiredLeasesConfig;
         }
+
+        foreach ($this->subnets->subnet4->iterateItems() as $subnet) {
+            if (!empty((string)$subnet->ddns_options->send_updates)) {
+                $cnf['Dhcp4']['dhcp-ddns']['enable-updates'] = true;
+                break;
+            }
+        }
+
         if (!(new KeaCtrlAgent())->general->enabled->isEmpty()) {
             $cnf['Dhcp4']['hooks-libraries'] = [];
             $cnf['Dhcp4']['hooks-libraries'][] = [

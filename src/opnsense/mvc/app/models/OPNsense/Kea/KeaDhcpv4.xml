@@ -28,7 +28,6 @@
                     <raw>raw</raw>
                 </OptionValues>
             </dhcp_socket_type>
-            <enable_ddns type="BooleanField"/>
         </general>
         <lexpire>
             <hold_reclaimed_time type="IntegerField">
