@@ -52,26 +52,6 @@
         </grid_view>
     </field>
     <field>
-        <id>subnet6.ddns_options.override_no_update</id>
-        <label>Override no-update</label>
-        <type>checkbox</type>
-        <help>Override client request to disable DNS updates.</help>
-        <advanced>true</advanced>
-        <grid_view>
-            <visible>false</visible>
-        </grid_view>
-    </field>
-    <field>
-        <id>subnet6.ddns_options.override_client_update</id>
-        <label>Override client update</label>
-        <type>checkbox</type>
-        <help>Server performs updates regardless of client preference.</help>
-        <advanced>true</advanced>
-        <grid_view>
-            <visible>false</visible>
-        </grid_view>
-    </field>
-    <field>
         <id>subnet6.ddns_options.replace_client_name</id>
         <label>Replace client name</label>
         <type>dropdown</type>
@@ -104,26 +84,6 @@
         <label>Qualifying suffix</label>
         <type>text</type>
         <help>Suffix appended to hostnames to form FQDNs. Must end with a dot.</help>
-        <grid_view>
-            <visible>false</visible>
-        </grid_view>
-    </field>
-    <field>
-        <id>subnet6.ddns_options.hostname_char_set</id>
-        <label>Hostname invalid char set</label>
-        <type>text</type>
-        <help>POSIX Extended Regex Expression that matches invalid characters. Default: [^A-Za-z0-9.-]</help>
-        <advanced>true</advanced>
-        <grid_view>
-            <visible>false</visible>
-        </grid_view>
-    </field>
-    <field>
-        <id>subnet6.ddns_options.hostname_char_replacement</id>
-        <label>Hostname char replacement</label>
-        <type>text</type>
-        <help>Replacement for each invalid character. Empty means omit invalid characters.</help>
-        <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
         </grid_view>
