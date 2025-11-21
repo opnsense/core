@@ -112,7 +112,7 @@ class FilterRuleContainerField extends ContainerField
         if (
             // floating: empty, multiple, or inverted interface
             (string)$this->interfacenot === "1" ||
-            (strpos($interface, ",") !== false && !empty($interface)) ||
+            (strpos($interface, ",")) !== false ||
             empty($interface)
         ) {
             return 200000;
