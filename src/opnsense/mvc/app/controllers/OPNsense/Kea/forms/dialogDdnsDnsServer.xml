@@ -1,11 +1,11 @@
 <form>
     <field>
-        <id>dns_servers.name</id>
-        <label>Name</label>
+        <id>dns_servers.description</id>
+        <label>Description</label>
         <type>text</type>
-        <help>Display name for this DNS server (not used in generated config).</help>
+        <help>Description for this DNS server entry</help>
         <grid_view>
-            <label>Name</label>
+            <label>Description</label>
             <visible>true</visible>
         </grid_view>
     </field>

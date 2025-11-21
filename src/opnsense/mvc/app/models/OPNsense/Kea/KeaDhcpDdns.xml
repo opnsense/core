@@ -12,12 +12,11 @@
         </general>
         <!-- shared DNS servers, can be referenced by domains -->
         <dns_servers type="ArrayField">
-            <name type="TextField">
+            <description type="TextField">
                 <Required>Y</Required>
-            </name>
+            </description>
             <ip_address type="NetworkField">
                 <NetMaskAllowed>N</NetMaskAllowed>
-                <!-- allow both IPv4 and IPv6 addresses -->
                 <Required>Y</Required>
             </ip_address>
             <port type="IntegerField">
@@ -62,7 +61,7 @@
                         <dns>
                             <source>OPNsense.Kea.KeaDhcpDdns</source>
                             <items>dns_servers</items>
-                            <display>name</display>
+                            <display>description</display>
                         </dns>
                     </Model>
                     <Multiple>Y</Multiple>
@@ -97,7 +96,7 @@
                         <dns>
                             <source>OPNsense.Kea.KeaDhcpDdns</source>
                             <items>dns_servers</items>
-                            <display>name</display>
+                            <display>description</display>
                         </dns>
                     </Model>
                     <Multiple>Y</Multiple>
