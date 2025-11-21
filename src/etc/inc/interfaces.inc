@@ -3924,7 +3924,7 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
     global $config;
 
     $ifcache = [];
-    $realifs = [];
+    $devices = [];
     $result = [];
 
     if (!is_array($interfaces)) {
@@ -3938,37 +3938,37 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
                 if (empty($config['interfaces'][$interface]['virtual'])) {
                     $ifcache[$tmpif] = $interface;
                 }
-                $realifs[] = $tmpif;
+                $devices[] = $tmpif;
             }
         } else {
             /* take interfaces as is */
-            $realifs[] = $interface;
+            $devices[] = $interface;
         }
     }
 
-    if (!count($realifs)) {
+    if (!count($devices)) {
         return $result;
     }
 
-    $realifs = array_unique($realifs);
+    $devices = array_unique($devices);
     if (!empty($ifconfig_details)) {
         $intf_details = $ifconfig_details;
     } else {
-        $intf_details = count($realifs) > 1 ? legacy_interfaces_details() : legacy_interfaces_details($realifs[0]);
+        $intf_details = count($devices) > 1 ? legacy_interfaces_details() : legacy_interfaces_details($devices[0]);
     }
 
-    foreach ($realifs as $realif) {
+    foreach ($devices as $device) {
         foreach (['ipv4', 'ipv6'] as $proto) {
-            if (empty($intf_details[$realif][$proto])) {
+            if (empty($intf_details[$device][$proto])) {
                 continue;
             }
-            foreach ($intf_details[$realif][$proto] as $address) {
+            foreach ($intf_details[$device][$proto] as $address) {
                 if (empty($address['ipaddr'])) {
                     continue;
                 }
                 $scope = '';
                 if (!empty($address['link-local'])) {
-                    $scope = "%{$realif}";
+                    $scope = "%{$device}";
                 }
                 $suffix = '';
                 if ($as_subnet) {
@@ -3989,9 +3989,9 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
                     'detached' => !empty($address['detached']),
                     'tentative' => !empty($address['tentative']),
                     'family' => $proto == 'ipv4' ? 'inet' : 'inet6',
-                    'interface' => !empty($ifcache[$realif]) ? $ifcache[$realif] : null,
+                    'interface' => !empty($ifcache[$device]) ? $ifcache[$device] : null,
                     'key' => $key,
-                    'name' => $realif,
+                    'name' => $device,
                     'scope' => !empty($address['link-local']),
                     'unique' => ($proto == 'ipv4' || !empty($address['link-local'])) ? false : is_uniquelocal($address['ipaddr']),
                 ];
