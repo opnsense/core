@@ -448,10 +448,10 @@ include("head.inc");
                 <td><a id="help_for_pf_share_forward" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Shared forwarding');?> </td>
                 <td>
                   <input name="pf_share_forward" type="checkbox" id="pf_share_forward" value="yes" <?= !empty($pconfig['pf_share_forward']) ? 'checked="checked"' : '' ?>/>
-                  <?=gettext('Use shared forwarding between packet filter, traffic shaper and captive portal'); ?>
+                  <?= gettext('Use shared forwarding between packet filter and traffic shaper') ?>
                   <div class="hidden" data-for="help_for_pf_share_forward">
                     <?= gettext('Using policy routing in the packet filter rules causes packets to skip ' .
-                                'processing for the traffic shaper and captive portal tasks. ' .
+                                'processing for the traffic shaper. ' .
                                 'Using this option enables the sharing of such forwarding decisions ' .
                                 'between all components to accommodate complex setups.') ?>
                   </div>
