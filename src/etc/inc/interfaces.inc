@@ -171,7 +171,7 @@ function interfaces_wlan_clone($device)
             continue;
         }
         if ($device == $config['interfaces'][$if]['if']) {
-            return _interfaces_wlan_clone($devicef, $config['interfaces'][$if]);
+            return _interfaces_wlan_clone($device, $config['interfaces'][$if]);
         }
     }
 
