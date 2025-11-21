@@ -152,6 +152,7 @@ function filter_core_get_port_alias($aliasname, $aliases = [], $aliasObject = nu
     foreach ($aliasObject->aliasIterator() as $aliased) {
         if ($aliasname == $aliased['name'] && $aliased['type'] == 'port' && !empty($aliased['enabled'])) {
             foreach ($aliased['content'] as $address) {
+            /* Original
                 if (in_array($address, $all_aliases)) {
                     if (!in_array($address, $aliases)) {
                         foreach (filter_core_get_port_alias($address, $aliases, $aliasObject, $all_aliases) as $port) {
@@ -163,6 +164,29 @@ function filter_core_get_port_alias($aliasname, $aliases = [], $aliasObject = nu
                 } elseif ((is_port($address) || is_portrange($address)) && !in_array($address, $response)) {
                     $response[] = $address;
                 }
+                */
+                // Split on comma and Remove all after first #
+                foreach (explode(',', $address) as $value) {
+                    if (strpos($value, '#') !== false) {
+                        $value = preg_replace('/\s*#.*$/', '', $value);
+                    }
+                    $value = trim($value);
+                    if ($value === '') {
+                        continue;
+                    }
+                    if (in_array($value, $all_aliases)) {
+                        if (!in_array($value, $aliases)) {
+                            foreach (filter_core_get_port_alias($value, $aliases, $aliasObject, $all_aliases) as $port) {
+                                if (!in_array($port, $response)) {
+                                    $response[] = $port;
+                                }
+                            }
+                        }
+                    } elseif ((is_port($value) || is_portrange($value)) && !in_array($value, $response)) {
+                        $response[] = $value;
+                    }
+                }
+               // Split on comma and Remove all after first #
             }
         }
     }
