@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015-2023 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -243,3 +243,12 @@ class Helpers(object):
                 result.append(sfilename[len(template_path):].lstrip('/'))
 
         return result
+
+    @staticmethod
+    def absolute_glob(pathname):
+        """
+        :param pathname: absolute glob pattern to be used to construct "conf.d"
+                         type of patterns for applications which do not support to collect the items.
+        :return: list of files matching the pattern
+        """
+        return list(glob.glob(pathname))

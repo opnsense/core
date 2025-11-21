@@ -426,8 +426,8 @@ reference-config-file: /usr/local/etc/suricata/reference.config
 
 {# include generated installed_rules.yaml and old manual import custom.yaml, which we should deprecate at some point #}
 {% set include_files = ['installed_rules.yaml', 'custom.yaml'] %}{%
-for sfilename in helpers.glob("/usr/local/etc/suricata/conf.d/*.yaml") %}{%
-  do include_files.append(local_config_filter)
+for sfilename in helpers.absolute_glob("/usr/local/etc/suricata/conf.d/*.yaml") %}{%
+  do include_files.append(sfilename)
 %}
 {%  endfor %}
 
