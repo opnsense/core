@@ -93,7 +93,7 @@
                     <OptionValues>
                         <tun>TUN</tun>
                         <tap>TAP</tap>
-                        <ovpn>DCO (experimental)</ovpn>
+                        <ovpn>DCO</ovpn>
                     </OptionValues>
                 </dev_type>
                 <verb type="OptionField">

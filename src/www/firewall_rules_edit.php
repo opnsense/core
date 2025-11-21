@@ -1395,7 +1395,7 @@ include("head.inc");
                   </tr>
 
                   <tr>
-                      <td><a id="help_for_shaper" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Traffic shaping [experimental]");?></td>
+                      <td><a id="help_for_shaper" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Traffic shaping') ?></td>
                       <td>
                         <table class="table table-condensed">
                           <thead>
