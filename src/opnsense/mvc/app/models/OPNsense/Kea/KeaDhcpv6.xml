@@ -20,7 +20,6 @@
                 <Required>Y</Required>
                 <Default>1</Default>
             </fwrules>
-            <enable_ddns type="BooleanField"/>
         </general>
         <lexpire>
             <hold_reclaimed_time type="IntegerField">

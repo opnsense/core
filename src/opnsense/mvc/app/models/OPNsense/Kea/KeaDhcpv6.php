@@ -275,7 +275,7 @@ class KeaDhcpv6 extends BaseModel
                     'socket-name' => '/var/run/kea/kea6-ctrl-socket'
                 ],
                 'dhcp-ddns' => [
-                    'enable-updates' => !empty((string)$this->general->enable_ddns),
+                    'enable-updates' => false,
                     'server-ip' => '127.0.0.1',
                     'server-port' => 53001,
                 ],
@@ -297,6 +297,14 @@ class KeaDhcpv6 extends BaseModel
         if ($expiredLeasesConfig !== null) {
             $cnf['Dhcp6']['expired-leases-processing'] = $expiredLeasesConfig;
         }
+
+        foreach ($this->subnets->subnet6->iterateItems() as $subnet) {
+            if (!empty((string)$subnet->ddns_options->send_updates)) {
+                $cnf['Dhcp6']['dhcp-ddns']['enable-updates'] = true;
+                break;
+            }
+        }
+
         if (!(new KeaCtrlAgent())->general->enabled->isEmpty()) {
             $cnf['Dhcp6']['hooks-libraries'] = [];
             $cnf['Dhcp6']['hooks-libraries'][] = [
