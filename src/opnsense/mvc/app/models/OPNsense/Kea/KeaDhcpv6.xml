@@ -62,6 +62,12 @@
                     <NetMaskRequired>Y</NetMaskRequired>
                     <AddressFamily>ipv6</AddressFamily>
                     <Required>Y</Required>
+                    <Constraints>
+                        <check001>
+                            <type>UniqueConstraint</type>
+                            <ValidationMessage>Subnet must be unique.</ValidationMessage>
+                        </check001>
+                    </Constraints>
                 </subnet>
                 <allocator type="OptionField">
                     <BlankDesc>Default</BlankDesc>
