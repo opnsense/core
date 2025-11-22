@@ -90,6 +90,23 @@ class KeaDhcpv4 extends BaseModel
             }
         }
 
+        // Enforce that ddns qualifying suffix ends with a dot when set
+        foreach ($this->subnets->subnet4->iterateItems() as $subnet) {
+            if (!$validateFullModel && !$subnet->isFieldChanged()) {
+                continue;
+            }
+            $send_updates = !empty((string)$subnet->ddns_options->send_updates);
+            $suffix = trim((string)$subnet->ddns_options->qualifying_suffix);
+            if ($send_updates && $suffix !== '' && substr($suffix, -1) !== '.') {
+                $messages->appendMessage(
+                    new Message(
+                        gettext('DDNS qualifying suffix must end with a dot.'),
+                        $subnet->__reference . '.ddns_options.qualifying_suffix'
+                    )
+                );
+            }
+        }
+
         return $messages;
     }
 
@@ -175,6 +192,28 @@ class KeaDhcpv4 extends BaseModel
                 'pools' => [],
                 'reservations' => []
             ];
+
+            // Conditionally include DDNS settings only when send-updates is enabled,
+            // and only include fields that have meaningful values.
+            $ddns_send_updates = !empty((string)$subnet->ddns_options->send_updates);
+            if ($ddns_send_updates) {
+                $record['ddns-send-updates'] = true;
+                if ((string)$subnet->ddns_options->replace_client_name !== '') {
+                    $record['ddns-replace-client-name'] = (string)$subnet->ddns_options->replace_client_name;
+                }
+                if ((string)$subnet->ddns_options->generated_prefix !== '') {
+                    $record['ddns-generated-prefix'] = (string)$subnet->ddns_options->generated_prefix;
+                }
+                if ((string)$subnet->ddns_options->qualifying_suffix !== '') {
+                    $record['ddns-qualifying-suffix'] = (string)$subnet->ddns_options->qualifying_suffix;
+                }
+                if (!empty((string)$subnet->ddns_options->update_on_renew)) {
+                    $record['ddns-update-on-renew'] = true;
+                }
+                if ((string)$subnet->ddns_options->conflict_resolution_mode !== '') {
+                    $record['ddns-conflict-resolution-mode'] = (string)$subnet->ddns_options->conflict_resolution_mode;
+                }
+            }
             /* add pools */
             foreach (array_filter(explode("\n", $subnet->pools)) as $pool) {
                 $record['pools'][] = ['pool' => $pool];
@@ -237,6 +276,11 @@ class KeaDhcpv4 extends BaseModel
                     'socket-type' => 'unix',
                     'socket-name' => '/var/run/kea/kea4-ctrl-socket'
                 ],
+                'dhcp-ddns' => [
+                    'enable-updates' => false,
+                    'server-ip' => '127.0.0.1',
+                    'server-port' => 53001,
+                ],
                 'loggers' => [
                     [
                         'name' => 'kea-dhcp4',
@@ -255,6 +299,14 @@ class KeaDhcpv4 extends BaseModel
         if ($expiredLeasesConfig !== null) {
             $cnf['Dhcp4']['expired-leases-processing'] = $expiredLeasesConfig;
         }
+
+        foreach ($this->subnets->subnet4->iterateItems() as $subnet) {
+            if (!empty((string)$subnet->ddns_options->send_updates)) {
+                $cnf['Dhcp4']['dhcp-ddns']['enable-updates'] = true;
+                break;
+            }
+        }
+
         if (!(new KeaCtrlAgent())->general->enabled->isEmpty()) {
             $cnf['Dhcp4']['hooks-libraries'] = [];
             $cnf['Dhcp4']['hooks-libraries'][] = [
