@@ -12,16 +12,14 @@
         </general>
         <!-- shared DNS servers, can be referenced by domains -->
         <dns_servers type="ArrayField">
-            <description type="TextField">
+            <description type="DescriptionField">
                 <Required>Y</Required>
             </description>
             <ip_address type="NetworkField">
                 <NetMaskAllowed>N</NetMaskAllowed>
                 <Required>Y</Required>
             </ip_address>
-            <port type="IntegerField">
-                <MinimumValue>1</MinimumValue>
-                <MaximumValue>65535</MaximumValue>
+            <port type="PortField">
                 <Default>53</Default>
                 <Required>Y</Required>
             </port>
@@ -41,10 +39,10 @@
                     <IpAllowed>N</IpAllowed>
                     <ValidationMessage>Please specify a valid domain name.</ValidationMessage>
                     <Constraints>
-                        <uniq001>
-                            <ValidationMessage>Duplicate forward domain exists.</ValidationMessage>
+                        <check001>
                             <type>UniqueConstraint</type>
-                        </uniq001>
+                            <ValidationMessage>Duplicate forward domain exists.</ValidationMessage>
+                        </check001>
                     </Constraints>
                 </name>
                 <key_name type="ModelRelationField">
@@ -76,10 +74,10 @@
                     <IpAllowed>N</IpAllowed>
                     <ValidationMessage>Please specify a valid domain name.</ValidationMessage>
                     <Constraints>
-                        <uniq001>
-                            <ValidationMessage>Duplicate reverse domain exists.</ValidationMessage>
+                        <check001>
                             <type>UniqueConstraint</type>
-                        </uniq001>
+                            <ValidationMessage>Duplicate reverse domain exists.</ValidationMessage>
+                        </check001>
                     </Constraints>
                 </name>
                 <key_name type="ModelRelationField">
