@@ -1,7 +1,7 @@
 <form>
     <field>
         <id>ddns_domains.name</id>
-        <label>Domain name</label>
+        <label>Forward domain</label>
         <type>text</type>
         <help>Forward DDNS domain (e.g. example.com.)</help>
     </field>
