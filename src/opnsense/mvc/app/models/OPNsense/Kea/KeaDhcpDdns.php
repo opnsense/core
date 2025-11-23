@@ -46,8 +46,7 @@ class KeaDhcpDdns extends BaseModel
             if (!$validateFullModel && !$domain->isFieldChanged()) {
                 continue;
             }
-            $name = trim((string)$domain->name);
-            if ($name !== '' && substr($name, -1) !== '.') {
+            if (!($domain->name->isEmpty()) && !str_ends_with($domain->name->getValue(), '.')) {
                 $messages->appendMessage(
                     new Message(
                         gettext('Domain must be a fully qualified domain name ending with a dot.'),
@@ -60,8 +59,7 @@ class KeaDhcpDdns extends BaseModel
             if (!$validateFullModel && !$domain->isFieldChanged()) {
                 continue;
             }
-            $name = trim((string)$domain->name);
-            if ($name !== '' && substr($name, -1) !== '.') {
+            if (!($domain->name->isEmpty()) && !str_ends_with($domain->name->getValue(), '.')) {
                 $messages->appendMessage(
                     new Message(
                         gettext('Domain must be a fully qualified domain name ending with a dot.'),
@@ -76,7 +74,7 @@ class KeaDhcpDdns extends BaseModel
 
     public function isEnabled()
     {
-        return (string)$this->general->enabled == '1';
+        return $this->general->enabled->isEmpty();
     }
 
     /**
@@ -90,16 +88,16 @@ class KeaDhcpDdns extends BaseModel
         $tsigNameMap = $this->getTsigKeyNameMap();
         foreach ($this->dns_servers->iterateItems() as $uuid => $srv) {
             $item = [];
-            if ((string)$srv->ip_address !== '') {
-                $item['ip-address'] = (string)$srv->ip_address;
+            if (!($srv->ip_address->isEmpty())) {
+                $item['ip-address'] = $srv->ip_address->getValue();
             }
-            if ((string)$srv->port !== '') {
-                $item['port'] = (int)((string)$srv->port);
+            if (!($srv->port->isEmpty())) {
+                $item['port'] = (int)($srv->port->getValue());
             }
-            if ((string)$srv->key_name !== '') {
-                $kn = (string)$srv->key_name;
+            if (!($srv->key_name->isEmpty())) {
+                $kn = $srv->key_name->getValue();
                 // key_name is a ModelRelationField (UUID). Resolve to TSIG key name.
-                if (isset($tsigNameMap[$kn]) && $tsigNameMap[$kn] !== '') {
+                if (!empty($tsigNameMap[$kn])) {
                     $item['key-name'] = $tsigNameMap[$kn];
                 }
             }
@@ -118,9 +116,8 @@ class KeaDhcpDdns extends BaseModel
     {
         $map = [];
         foreach ($this->tsig_keys->iterateItems() as $uuid => $key) {
-            $name = (string)$key->name;
-            if ($name !== '') {
-                $map[$uuid] = $name;
+            if (!($key->name->isEmpty())) {
+                $map[$uuid] = $key->name->getValue();
             }
         }
         return $map;
@@ -130,14 +127,14 @@ class KeaDhcpDdns extends BaseModel
         $tsig_keys = [];
         foreach ($this->tsig_keys->iterateItems() as $key) {
             $item = [];
-            if ((string)$key->name !== '') {
-                $item['name'] = (string)$key->name;
+            if (!($key->name->isEmpty())) {
+                $item['name'] = $key->name->getValue();
             }
-            if ((string)$key->algorithm !== '') {
-                $item['algorithm'] = (string)$key->algorithm;
+            if (!($key->algorithm->isEmpty())) {
+                $item['algorithm'] = $key->algorithm->getValue();
             }
-            if ((string)$key->secret !== '') {
-                $item['secret'] = (string)$key->secret;
+            if (!($key->secret->isEmpty())) {
+                $item['secret'] = $key->secret->getValue();
             }
             if (!empty($item)) {
                 $tsig_keys[] = $item;
@@ -152,24 +149,23 @@ class KeaDhcpDdns extends BaseModel
         $tsigNameMap = $this->getTsigKeyNameMap();
         foreach ($domainsNode->iterateItems() as $domain) {
             $entry = [];
-            if ((string)$domain->name !== '') {
+            if (!($domain->name->isEmpty())) {
                 // emit stored value as-is; validation ensures FQDN (trailing dot)
-                $entry['name'] = (string)$domain->name;
+                $entry['name'] = $domain->name->getValue();
             }
-            if ((string)$domain->key_name !== '') {
-                $kn = (string)$domain->key_name; // UUID from ModelRelationField
-                if (isset($tsigNameMap[$kn]) && $tsigNameMap[$kn] !== '') {
+            if (!($domain->key_name->isEmpty())) {
+                $kn = $domain->key_name->getValue(); // UUID from ModelRelationField
+                if (!empty($tsigNameMap[$kn])) {
                     $entry['key-name'] = $tsigNameMap[$kn];
                 }
             }
 
             // dns-servers referenced via ModelRelationField (comma-separated UUIDs)
             $servers = [];
-            $refs = isset($domain->dns_servers) ? (string)$domain->dns_servers : '';
+            $refs = !($domain->dns_servers->isEmpty()) ? $domain->dns_servers->getValue() : '';
             if (!empty($refs)) {
                 foreach (array_filter(explode(',', $refs)) as $uuid) {
-                    $uuid = trim($uuid);
-                    if ($uuid === '' || !isset($serversMap[$uuid])) {
+                    if (empty($uuid) || empty($serversMap[$uuid])) {
                         continue;
                     }
                     $servers[] = $serversMap[$uuid];

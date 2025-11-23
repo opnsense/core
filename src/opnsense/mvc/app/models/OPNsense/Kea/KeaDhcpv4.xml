@@ -148,9 +148,9 @@
                             <when-not-present>when-not-present</when-not-present>
                         </OptionValues>
                     </replace_client_name>
-                    <generated_prefix type="TextField"/>
+                    <generated_prefix type="HostnameField"/>
                     <update_on_renew type="BooleanField"/>
-                    <qualifying_suffix type="TextField"/>
+                    <qualifying_suffix type="HostnameField"/>
                     <conflict_resolution_mode type="OptionField">
                         <Default>check-with-dhcid</Default>
                         <Required>Y</Required>

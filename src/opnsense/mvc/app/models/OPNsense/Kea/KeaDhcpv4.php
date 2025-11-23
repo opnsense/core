@@ -95,9 +95,10 @@ class KeaDhcpv4 extends BaseModel
             if (!$validateFullModel && !$subnet->isFieldChanged()) {
                 continue;
             }
-            $send_updates = !empty((string)$subnet->ddns_options->send_updates);
-            $suffix = trim((string)$subnet->ddns_options->qualifying_suffix);
-            if ($send_updates && $suffix !== '' && substr($suffix, -1) !== '.') {
+
+            $suffix = $subnet->ddns_options->qualifying_suffix;
+            if (!($subnet->ddns_options->send_updates->isEmpty()) &&
+                !($suffix->isEmpty()) && !str_ends_with($suffix->getValue(), '.')) {
                 $messages->appendMessage(
                     new Message(
                         gettext('DDNS qualifying suffix must end with a dot.'),
@@ -194,24 +195,23 @@ class KeaDhcpv4 extends BaseModel
             ];
 
             // Conditionally include DDNS settings only when send-updates is enabled,
-            // and only include fields that have meaningful values.
-            $ddns_send_updates = !empty((string)$subnet->ddns_options->send_updates);
-            if ($ddns_send_updates) {
+            // and only include fields that have meaningful values.;
+            if (!($subnet->ddns_options->send_updates->isEmpty())) {
                 $record['ddns-send-updates'] = true;
-                if ((string)$subnet->ddns_options->replace_client_name !== '') {
-                    $record['ddns-replace-client-name'] = (string)$subnet->ddns_options->replace_client_name;
+                if (!($subnet->ddns_options->replace_client_name->isEmpty())) {
+                    $record['ddns-replace-client-name'] = $subnet->ddns_options->replace_client_name->getValue();
                 }
-                if ((string)$subnet->ddns_options->generated_prefix !== '') {
-                    $record['ddns-generated-prefix'] = (string)$subnet->ddns_options->generated_prefix;
+                if (!($subnet->ddns_options->generated_prefix->isEmpty())) {
+                    $record['ddns-generated-prefix'] = $subnet->ddns_options->generated_prefix->getValue();
                 }
-                if ((string)$subnet->ddns_options->qualifying_suffix !== '') {
-                    $record['ddns-qualifying-suffix'] = (string)$subnet->ddns_options->qualifying_suffix;
+                if (!($subnet->ddns_options->qualifying_suffix->isEmpty())) {
+                    $record['ddns-qualifying-suffix'] = $subnet->ddns_options->qualifying_suffix->getValue();
                 }
-                if (!empty((string)$subnet->ddns_options->update_on_renew)) {
+                if (!($subnet->ddns_options->update_on_renew->isEmpty())) {
                     $record['ddns-update-on-renew'] = true;
                 }
-                if ((string)$subnet->ddns_options->conflict_resolution_mode !== '') {
-                    $record['ddns-conflict-resolution-mode'] = (string)$subnet->ddns_options->conflict_resolution_mode;
+                if (!($subnet->ddns_options->conflict_resolution_mode->isEmpty())) {
+                    $record['ddns-conflict-resolution-mode'] = $subnet->ddns_options->conflict_resolution_mode->getValue();
                 }
             }
             /* add pools */
@@ -301,7 +301,7 @@ class KeaDhcpv4 extends BaseModel
         }
 
         foreach ($this->subnets->subnet4->iterateItems() as $subnet) {
-            if (!empty((string)$subnet->ddns_options->send_updates)) {
+            if (!($subnet->ddns_options->send_updates->isEmpty())) {
                 $cnf['Dhcp4']['dhcp-ddns']['enable-updates'] = true;
                 break;
             }
