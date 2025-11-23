@@ -1,7 +1,7 @@
 <form>
     <field>
         <id>ddns_domains.name</id>
-        <label>Reverse zone</label>
+        <label>Reverse domain</label>
         <type>text</type>
         <help>Reverse DDNS domain (e.g. 0.168.192.in-addr.arpa. or ip6.arpa. variant)</help>
     </field>
