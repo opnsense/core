@@ -625,12 +625,12 @@ function unbound_add_host_entries($ifconfig_details)
                                 $unbound_entries .= "local-zone: \"{$alias['domain']}\" redirect\n";
                                 $unbound_entries .= "local-data: \"{$alias['domain']} {$host->ttl} IN {$host->rr} {$host->server}\"\n";
                             } else {
-                                if (($override_is_main || $tmp_aliases[0]['hostname'] === '*') && !in_array($host->server, $ptr_records, true)) {
+                                if (($override_is_main || $tmp_aliases[0]['hostname'] === '*') && !in_array($host->server->getValue(), $ptr_records, true)) {
                                     /* Only generate a PTR record for the non-alias override and only if the IP is not already associated with a PTR.
                                      * The exception to this is an alias whose parent uses a wildcard and as such does not specify a PTR record.
                                      */
                                     $unbound_entries .= "local-data-ptr: \"{$host->server} {$alias['hostname']}{$alias['domain']}\"\n";
-                                    $ptr_records[] = $host->server;
+                                    $ptr_records[] = $host->server->getValue();
                                 } else {
                                     syslog(LOG_WARNING, 'PTR record already exists for ' . $alias['hostname'] . $alias['domain'] . '(' . $host->server . ')');
                                 }
