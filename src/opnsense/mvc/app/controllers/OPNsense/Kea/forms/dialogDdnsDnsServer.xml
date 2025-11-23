@@ -4,10 +4,6 @@
         <label>Description</label>
         <type>text</type>
         <help>Description for this DNS server entry</help>
-        <grid_view>
-            <label>Description</label>
-            <visible>true</visible>
-        </grid_view>
     </field>
     <field>
         <id>dns_servers.ip_address</id>
@@ -26,8 +22,5 @@
         <label>TSIG key</label>
         <type>dropdown</type>
         <help>Select an optional TSIG key for updates sent to this server. When set, this server-specific key overrides any TSIG key configured on the domain/zone.</help>
-        <grid_view>
-            <label>TSIG key</label>
-        </grid_view>
     </field>
 </form>
