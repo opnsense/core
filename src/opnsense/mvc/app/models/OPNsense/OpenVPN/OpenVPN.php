@@ -203,7 +203,8 @@ class OpenVPN extends BaseModel
                     $key . ".various_flags"
                 ));
             }
-            if (!str_starts_with($instance->proto->getValue(), 'udp') &&
+            if (
+                !str_starts_with($instance->proto->getValue(), 'udp') &&
                 in_array('fast-io', $instance->various_flags->getValues())
             ) {
                 $messages->appendMessage(new Message(gettext('fast-io requires UDP.'), $key . ".various_flags"));
