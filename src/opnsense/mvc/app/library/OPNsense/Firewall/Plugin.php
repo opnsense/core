@@ -296,7 +296,11 @@ class Plugin
     public function registerForwardRule($prio, $conf)
     {
         if (!empty($this->systemDefaults['forward'])) {
-            $conf = array_merge($this->systemDefaults['forward'], $conf);
+            foreach ($this->systemDefaults['forward'] as $key => $val) {
+                if (empty($conf[$key])) {
+                    $conf[$key] = $val;
+                }
+            }
         }
         $rule = new ForwardRule($this->interfaceMapping, $conf);
         if (empty($this->natRules[$prio])) {

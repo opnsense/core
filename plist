@@ -729,6 +729,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Alias.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Category.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Category.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/DNat.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/DNat.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/DynamicAliases/CaptivePortalAliases.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/DynamicAliases/InterfaceNetworkAliases.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/DynamicAliases/README.md
@@ -736,11 +738,15 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasContentField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasNameField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/CategoryField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/DNatSequenceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/FilterRuleField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/FilterSequenceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/GroupField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/GroupNameField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/InterfaceField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/NetworkMappedField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/PortMappedField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/ScheduleField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/SourceNatRuleField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/TosField.php
