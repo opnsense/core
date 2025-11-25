@@ -72,7 +72,7 @@ abstract class JsonSampleTestCase extends TestCase
         $this->loadSnapshotConfig();
         $model = $this->getModelInstance();
 
-        $tmp = tempnam('/tmp', 'jsonsample-');
+        $tmp = tempnam('/var/lib/php/tmp/', 'json_sample_test_');
         $model->generateConfig($tmp);
 
         $expected = $this->loadExpectedSnapshot();
