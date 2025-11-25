@@ -8,9 +8,9 @@ use OPNsense\Kea\KeaDhcpv4;
 
 class KeaDhcpv4Test extends JsonSampleTestCase
 {
-    protected function getSnapshotDir(): string
+    protected function getSnapshotFile(): string
     {
-        return __DIR__ . '/KeaDhcpv4Test';
+        return 'KeaDhcpv4Test.json';
     }
 
     protected function getModelInstance()
