@@ -149,7 +149,7 @@
               <th data-column-id="bytes-out" data-type="numeric"  data-formatter="bytes">{{ lang._('Bytes out') }}</th>
               <th data-column-id="local-class"  data-visible="false" data-type="string">{{ lang._('Local Auth') }}</th>
               <th data-column-id="remote-class"  data-visible="false" data-type="string">{{ lang._('Remote Auth') }}</th>
-              <th data-column-id="commands" data-width="6em" data-formatter="commands" data-sortable="false"></th>
+              <th data-column-id="commands" data-width="6em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
           </tr>
         </thead>
         <tbody>
