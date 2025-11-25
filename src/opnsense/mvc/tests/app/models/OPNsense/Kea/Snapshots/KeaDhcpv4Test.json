@@ -3,8 +3,8 @@
         "valid-lifetime": 4000,
         "interfaces-config": {
             "interfaces": [
-                "hn0",
-                "hn2"
+                "igc0",
+                "igc2"
             ],
             "dhcp-socket-type": "raw"
         },

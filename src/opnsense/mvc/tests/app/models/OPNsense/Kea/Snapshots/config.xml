@@ -6,12 +6,12 @@
   </system>
   <interfaces>
     <lan>
-      <if>hn0</if>
+      <if>igc0</if>
       <descr>LAN</descr>
       <enable>1</enable>
     </lan>
     <opt1>
-      <if>hn2</if>
+      <if>igc2</if>
       <descr>OPT1</descr>
       <enable>1</enable>
     </opt1>
@@ -146,6 +146,102 @@
           </peer>
         </ha_peers>
       </dhcp4>
+      <dhcp6 version="1.0.0" persisted_at="1764085415.29" description="Kea DHCPv6 configuration">
+        <general>
+          <enabled>1</enabled>
+          <manual_config>0</manual_config>
+          <interfaces>lan,opt1</interfaces>
+          <valid_lifetime>4000</valid_lifetime>
+          <fwrules>1</fwrules>
+        </general>
+        <lexpire>
+          <hold_reclaimed_time>20</hold_reclaimed_time>
+          <reclaim_timer_wait_time>10</reclaim_timer_wait_time>
+          <flush_reclaimed_timer_wait_time>25</flush_reclaimed_timer_wait_time>
+          <max_reclaim_time>10</max_reclaim_time>
+          <max_reclaim_leases>100</max_reclaim_leases>
+          <unwarned_reclaim_cycles>5</unwarned_reclaim_cycles>
+        </lexpire>
+        <ha>
+          <enabled>1</enabled>
+          <this_server_name>opn-dev-02</this_server_name>
+          <max_unacked_clients>10</max_unacked_clients>
+        </ha>
+        <subnets>
+          <subnet6 uuid="0a182eb4-14f6-4731-b62f-f8b380828531">
+            <subnet>fd80::/48</subnet>
+            <allocator/>
+            <pd-allocator/>
+            <option_data>
+              <dns_servers/>
+              <domain_search/>
+              <v6_dnr/>
+            </option_data>
+            <pools>fd80::100-fd80::199</pools>
+            <interface>lan</interface>
+            <description/>
+          </subnet6>
+          <subnet6 uuid="7b3e7e4d-c148-4409-9a5f-5e2348baa23f">
+            <subnet>fd81::/48</subnet>
+            <allocator>iterative</allocator>
+            <pd-allocator>random</pd-allocator>
+            <option_data>
+              <dns_servers>fe80::1,fe80::2</dns_servers>
+              <domain_search>test2.local,test3.local</domain_search>
+              <v6_dnr>1 ,fe80::3</v6_dnr>
+            </option_data>
+            <pools>fd81::100-fd81::199</pools>
+            <interface>opt1</interface>
+            <description>TestDescription</description>
+          </subnet6>
+        </subnets>
+        <reservations>
+          <reservation uuid="ec45c7ca-5596-49f7-be04-9ff3bd0a045c">
+            <subnet>0a182eb4-14f6-4731-b62f-f8b380828531</subnet>
+            <ip_address>fd80::1</ip_address>
+            <duid>fe:fe:fe</duid>
+            <hostname/>
+            <domain_search/>
+            <description/>
+          </reservation>
+          <reservation uuid="5503c690-0af4-4efd-8158-244ca69f7ed7">
+            <subnet>0a182eb4-14f6-4731-b62f-f8b380828531</subnet>
+            <ip_address>fd80::2</ip_address>
+            <duid>fe:fe:fb</duid>
+            <hostname>testhost</hostname>
+            <domain_search>test1.local,test2.local</domain_search>
+            <description>TestDescription</description>
+          </reservation>
+        </reservations>
+        <pd_pools>
+          <pd_pool uuid="1f3b0a63-e7d2-4567-bdd0-7cd980a119d9">
+            <subnet>0a182eb4-14f6-4731-b62f-f8b380828531</subnet>
+            <prefix>fd80:0:0:1000::</prefix>
+            <prefix_len>52</prefix_len>
+            <delegated_len>56</delegated_len>
+            <description/>
+          </pd_pool>
+          <pd_pool uuid="fb7861cb-c345-466c-ab02-75662bd856ce">
+            <subnet>0a182eb4-14f6-4731-b62f-f8b380828531</subnet>
+            <prefix>fd80:0:0:2000::</prefix>
+            <prefix_len>52</prefix_len>
+            <delegated_len>56</delegated_len>
+            <description>TestDescription</description>
+          </pd_pool>
+        </pd_pools>
+        <ha_peers>
+          <peer uuid="96c44f24-f3a7-41b9-a9d8-b5d98493e691">
+            <name>opn-dev-02</name>
+            <role>primary</role>
+            <url>http://172.16.1.127:8001/</url>
+          </peer>
+          <peer uuid="ac2c19df-42c8-44b7-b040-761e58d264b7">
+            <name>opn04</name>
+            <role>standby</role>
+            <url>http://172.16.1.130:8001/</url>
+          </peer>
+        </ha_peers>
+      </dhcp6>
     </Kea>
   </OPNsense>
 </opnsense>
