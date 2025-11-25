@@ -52,6 +52,7 @@ class DNSBL:
         self.dnsbl_update_time = 0
         self.dnsbl_available = False
         self.dnsbl = None
+        self.warn_file = "/data/dnsbl_format_warning"
         self._context = context
 
         self._update_dnsbl()
@@ -88,9 +89,13 @@ class DNSBL:
                 if not self.dnsbl or isinstance(e, ValueError):
                     log_err("dnsbl_module: unable to parse blocklist file: %s. Please re-apply the blocklist settings." % e)
                     self.dnsbl_available = False
+                    open(self.warn_file, "a").close()
                     return
                 else:
                     log_err("dnsbl_module: error parsing blocklist: %s, reusing last known list" % e)
+
+        if os.path.exists(self.warn_file):
+            os.remove(self.warn_file)
 
         self.dnsbl_available = True
 
