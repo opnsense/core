@@ -135,18 +135,26 @@ class Plugin
         if (is_array($groups)) {
             foreach ($groups as $key => $gwgr) {
                 $routeto = [];
-                $proto = 'inet';
+                $proto = null;
+                /* All route-to tags must match, either {(if1 ip1), (if2 ip2)} or {if1 if2} */
+                $mode = null;
                 foreach ($gwgr as $gw) {
-                    if (Util::isIpAddress($gw['gwip']) && !empty($gw['int'])) {
-                        $gwweight = empty($gw['weight']) ? 1 : $gw['weight'];
-                        $routeto[] = str_repeat("( {$gw['int']} {$gw['gwip']} )", $gwweight);
-                        if (strstr($gw['gwip'], ':')) {
-                            $proto = 'inet6';
-                        }
+                    if ($proto !== null && $proto != $gw['ipprotocol']) {
+                        /* protocols must match */
+                        continue;
+                    }
+                    $proto = $gw['ipprotocol'];
+                    $gwweight = empty($gw['weight']) ? 1 : $gw['weight'];
+                    if ((Util::isIpAddress($gw['gwip']) && !empty($gw['int'])) && ($mode === null || $mode === 'gw')) {
+                        $routeto[] = rtrim(str_repeat(" ( {$gw['int']} {$gw['gwip']} ) ,", $gwweight), ',');
+                        $mode = 'gw'; /* gateway [ip] mode */
+                    } elseif ($mode === null || $mode === 'if') {
+                        $routeto[] = rtrim(str_repeat(" {$gw['int']} ,", $gwweight), ',');
+                        $mode = 'if'; /* interface [ip] mode */
                     }
                 }
                 if (count($routeto) > 0) {
-                    $routetologic = "route-to {" . implode(' ', $routeto) . "}";
+                    $routetologic = "route-to {" . implode(' , ', $routeto) . "}";
                     if (!empty($gwgr[0]['poolopts'])) {
                         // Since Gateways->getGroups() returns detail items, we have no other choice than
                         // to copy top level attributes into the details if they matter (poolopts)
@@ -157,9 +165,7 @@ class Plugin
                             $routetologic .= " sticky-address ";
                         }
                     }
-                    $this->gatewayMapping[$key] = array("logic" => $routetologic,
-                                                        "proto" => $proto,
-                                                        "type" => "group");
+                    $this->gatewayMapping[$key] = ["logic" => $routetologic, "proto" => $proto, "type" => "group"];
                 }
             }
         }
