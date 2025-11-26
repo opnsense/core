@@ -151,7 +151,7 @@ class Helpers(object):
             result.append(self.getNodeByTag('interfaces.'+name+'.if'))
         return list(filter(None, result))
 
-    def format_host_str_for_port(self, host: str) -> str:
+    def host_str_for_port(self, host: str) -> str:
         """ returns a formatting host (bracketed if IPv6) from a string
         :param host: string
         :return: string
@@ -162,7 +162,7 @@ class Helpers(object):
 
     def host_for_port(self, host_tag: str) -> str:
         host = self.getNodeByTag(host_tag)
-        return self.format_host_str_for_port(host)
+        return self.host_str_for_port(host)
 
     def host_with_port(self, host_tag: str, port_tag: str) -> str:
         """ returns a formatting host and port and bracketed if IPv6 from tags
@@ -188,7 +188,7 @@ class Helpers(object):
         if skip_port:
             return host
 
-        host = self.format_host_str_for_port(host)
+        host = self.host_str_for_port(host)
 
         return '{}:{}'.format(host, port)
 
