@@ -121,6 +121,7 @@
                         </host>
                     </Model>
                     <Required>Y</Required>
+                    <DisableCache>Y</DisableCache>
                 </connection>
                 <round type="IntegerField">
                     <Required>Y</Required>
@@ -158,6 +159,7 @@
                         </host>
                     </Model>
                     <Multiple>Y</Multiple>
+                    <DisableCache>Y</DisableCache>
                 </pubkeys>
                 <description type="DescriptionField"/>
             </local>
@@ -177,6 +179,7 @@
                         </host>
                     </Model>
                     <Required>Y</Required>
+                    <DisableCache>Y</DisableCache>
                 </connection>
                 <round type="IntegerField">
                     <Required>Y</Required>
@@ -221,6 +224,7 @@
                         </host>
                     </Model>
                     <Multiple>Y</Multiple>
+                    <DisableCache>Y</DisableCache>
                 </pubkeys>
                 <description type="DescriptionField"/>
             </remote>
@@ -240,6 +244,7 @@
                         </host>
                     </Model>
                     <Required>Y</Required>
+                    <DisableCache>Y</DisableCache>
                 </connection>
                 <reqid type="IntegerField">
                     <MinimumValue>1</MinimumValue>
