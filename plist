@@ -2157,8 +2157,6 @@
 /usr/local/opnsense/www/js/gridstack-all.min.js
 /usr/local/opnsense/www/js/jquery-3.5.1.min.js
 /usr/local/opnsense/www/js/jquery-sortable.js
-/usr/local/opnsense/www/js/jquery.bootgrid.LICENSE
-/usr/local/opnsense/www/js/jquery.bootgrid.js
 /usr/local/opnsense/www/js/jquery.qrcode.js
 /usr/local/opnsense/www/js/jquery.qrcode.js.LICENSE
 /usr/local/opnsense/www/js/luxon.min.js
@@ -2168,7 +2166,6 @@
 /usr/local/opnsense/www/js/opnsense-treeview.js
 /usr/local/opnsense/www/js/opnsense.js
 /usr/local/opnsense/www/js/opnsense_bootgrid.js
-/usr/local/opnsense/www/js/opnsense_bootgrid_plugin.js
 /usr/local/opnsense/www/js/opnsense_health.js
 /usr/local/opnsense/www/js/opnsense_status.js
 /usr/local/opnsense/www/js/opnsense_theme.js
