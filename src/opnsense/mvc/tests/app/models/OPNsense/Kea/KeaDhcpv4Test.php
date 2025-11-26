@@ -92,25 +92,16 @@ class KeaDhcpv4Test extends JsonSampleTestCase
 
     public function testPhysicalInterfacesParsing(): void
     {
-        $xml = <<<XML
-    <opnsense>
-    <interfaces>
-        <lan><if>igc0</if></lan>
-        <wan><if>igc1</if></wan>
-    </interfaces>
-    </opnsense>
-    XML;
-
-        \OPNsense\Core\Config::getInstance()->setXml($xml);
+        // config.xml already loaded by JsonSampleTestCase::loadSnapshotConfig()
 
         $m = $this->getModelInstance();
-        $m->general->interfaces = "lan,wan";
+        $m->general->interfaces = "lan,opt1";
 
         $ifs = (new \ReflectionClass($m))
             ->getMethod('getConfigPhysicalInterfaces')
             ->invoke($m);
 
-        $this->assertSame(['igc0','igc1'], $ifs);
+        $this->assertSame(['igc0','igc2'], $ifs);
     }
 
 }

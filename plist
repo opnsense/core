@@ -1056,6 +1056,14 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Dnsmasq/FieldTypes/HostnameFieldTest.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Kea/Base/JsonSampleTestCase.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Kea/KeaCtrlAgentTest.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Kea/KeaDhcpv4Test.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Kea/KeaDhcpv6Test.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Kea/Snapshots/KeaCtrlAgentTest.json
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Kea/Snapshots/KeaDhcpv4Test.json
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Kea/Snapshots/KeaDhcpv6Test.json
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Kea/Snapshots/config.xml
 /usr/local/opnsense/mvc/tests/phpunit.xml
 /usr/local/opnsense/mvc/tests/setup.php
 /usr/local/opnsense/scripts/auth/add_user.php
