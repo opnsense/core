@@ -214,7 +214,7 @@ class KeaDhcpv4 extends BaseModel
         foreach ($lexpireFields as $fieldName => $fieldValue) {
             if (!$fieldValue->isEqual('')) {
                 $keaFieldName = str_replace('_', '-', $fieldName);
-                $config[$keaFieldName] = (int)$fieldValue->getValue();
+                $config[$keaFieldName] = $fieldValue->asInt();
             }
         }
         return empty($config) ? null : $config;
@@ -224,7 +224,7 @@ class KeaDhcpv4 extends BaseModel
     {
         $cnf = [
             'Dhcp4' => [
-                'valid-lifetime' => (int)$this->general->valid_lifetime->getValue(),
+                'valid-lifetime' => $this->general->valid_lifetime->asInt(),
                 'interfaces-config' => [
                     'interfaces' => $this->getConfigPhysicalInterfaces(),
                     'dhcp-socket-type' => $this->general->dhcp_socket_type->getValue()
@@ -271,7 +271,7 @@ class KeaDhcpv4 extends BaseModel
                                 'heartbeat-delay' => 10000,
                                 'max-response-delay' => 60000,
                                 'max-ack-delay' => 5000,
-                                'max-unacked-clients' => (int)$this->ha->max_unacked_clients->getValue(),
+                                'max-unacked-clients' => $this->ha->max_unacked_clients->asInt(),
                                 'sync-timeout' => 60000,
                             ]
                         ]
