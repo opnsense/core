@@ -165,8 +165,8 @@ class KeaDhcpv6 extends BaseModel
                 }
                 $record['pd-pools'][] = [
                     'prefix' => $pdpool->prefix->getValue(),
-                    'prefix-len' => (int)$pdpool->prefix_len->getValue(),
-                    'delegated-len' => (int)$pdpool->delegated_len->getValue()
+                    'prefix-len' => $pdpool->prefix_len->asInt(),
+                    'delegated-len' => $pdpool->delegated_len->asInt()
                 ];
             }
             /* static reservations */
@@ -201,7 +201,7 @@ class KeaDhcpv6 extends BaseModel
         foreach ($lexpireFields as $fieldName => $fieldValue) {
             if (!$fieldValue->isEqual('')) {
                 $keaFieldName = str_replace('_', '-', $fieldName);
-                $config[$keaFieldName] = (int)$fieldValue->getValue();
+                $config[$keaFieldName] = $fieldValue->asInt();
             }
         }
         return empty($config) ? null : $config;
@@ -211,7 +211,7 @@ class KeaDhcpv6 extends BaseModel
     {
         $cnf = [
             'Dhcp6' => [
-                'valid-lifetime' => (int)$this->general->valid_lifetime->getValue(),
+                'valid-lifetime' => $this->general->valid_lifetime->asInt(),
                 'interfaces-config' => [
                     'interfaces' => $this->getConfigPhysicalInterfaces()
                 ],
@@ -257,7 +257,7 @@ class KeaDhcpv6 extends BaseModel
                                 'heartbeat-delay' => 10000,
                                 'max-response-delay' => 60000,
                                 'max-ack-delay' => 5000,
-                                'max-unacked-clients' => (int)$this->ha->max_unacked_clients->getValue(),
+                                'max-unacked-clients' => $this->ha->max_unacked_clients->asInt(),
                                 'sync-timeout' => 60000,
                             ]
                         ]
