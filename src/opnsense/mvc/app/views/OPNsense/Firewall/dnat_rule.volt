@@ -106,7 +106,7 @@
                 responseHandler: dynamicResponseHandler,
                 headerFormatters: {
                     disabled: function (column) {
-                        return '<i class="fa-solid fa-fw fa-check-square" data-toggle="tooltip" title="{{ lang._('Disabled') }}"></i>';;
+                        return '<i class="fa-solid fa-fw fa-check-square" data-toggle="tooltip" title="{{ lang._('Enabled') }}"></i>';;
                     },
                     interface: function (column) {
                         return '<i class="fa-solid fa-fw fa-network-wired" data-toggle="tooltip" title="{{ lang._('Network interface') }}"></i>';
