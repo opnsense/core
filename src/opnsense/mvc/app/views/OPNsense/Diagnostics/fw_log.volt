@@ -1277,24 +1277,22 @@
 .filters-bar {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;   /* keep tops aligned */
+  align-items: flex-start; /* keep tops aligned */
   gap: 2rem;
   min-height: 130px;
   margin-bottom: 10px;
 }
 
 .filters-middle {
-    /* margin-left: auto;
-    margin-right: auto; */
+    margin-left: auto;
     display: flex;
     flex-direction: row;
     gap: 0.75rem;
-    /* min-width: 260px; */
 }
 
 /* Right column */
 .filters-right {
-  margin-left: auto;         /* push all the way right */
+  margin-left: auto; /* push all the way right */
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -1336,6 +1334,7 @@
         <div class="filters-left">
             <div class="filters-ui">
                 <!-- Live global search (matches ANY value in a record) -->
+                <div class="muted">{{ lang._('Filters')}}</div>
                 <div class="filters-wrap">
                     <input id="globalSearch" type="text" placeholder="{{ lang._('Quick search (all fields)…') }}" />
                     <button id="refresh" class="btn btn-default" type="button" title="{{ lang._('Refresh') }}">
@@ -1379,10 +1378,6 @@
         </div>
 
         <aside class="filters-middle">
-
-        </aside>
-
-        <aside class="filters-right">
             <div>
                 <div class="muted">{{ lang._('Templates')}}</div>
                 <button id="stageTemplate" class="btn btn-default">
@@ -1400,9 +1395,9 @@
                     <span class="fa fa-save"></span>
                 </button>
             </div>
+        </aside>
 
-            &nbsp;
-
+        <aside class="filters-right">
             <div class="toggle-group">
                 <div class="muted">{{ lang._('Options')}}</div>
                 <label class="toggle">
