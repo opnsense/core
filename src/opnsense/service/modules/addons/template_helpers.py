@@ -157,7 +157,7 @@ class Helpers(object):
         :return: string
         """
         if self.is_ipv6(host):
-            host = "[" + host + "]"
+            return "[" + host + "]"
         return host
 
     def host_for_port(self, host_tag: str) -> str:
@@ -168,22 +168,19 @@ class Helpers(object):
         """ returns a formatting host and port and bracketed if IPv6 from tags
         :param host_tag: string
         :param port_tag: setting this < 0 will disable it's output and just output the ip formatted for inclusion with a separate formatted port
-        :param no_brackets_on_bare_ip: setting this to True means that there will be brackets on IPv6 even if it just returns an address with no port
         :return: string
         """
         host = self.getNodeByTag(host_tag)
         port = self.getNodeByTag(port_tag)
-
-        if port is None or port == "":
-            port = -1
-        else:
-            port = int(port)
-
-
-        skip_port = port < 0
+        skip_port = False
 
         if host is None or host == "":
             return ""
+
+        if port is None or port == "":
+            skip_port = True
+        else:
+            port = int(port)
 
         if skip_port:
             return host
