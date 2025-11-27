@@ -711,7 +711,6 @@
 
         const tableWrapper = $("#livelog-table").UIBootgrid({
             options: {
-                static: true,
                 ajax: false,
                 navigation: 0,
                 selection: false,
