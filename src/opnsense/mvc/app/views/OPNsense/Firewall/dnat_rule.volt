@@ -167,7 +167,7 @@
                                 style="cursor: pointer;"
                                 data-value="${isEnabled ? 1 : 0}"
                                 data-row-id="${rowId}"
-                                title="${isEnabled ? '{{ lang._("Disabled") }}' : '{{ lang._("Enabled") }}'}">
+                                title="${isEnabled ? '{{ lang._("Enabled") }}' : '{{ lang._("Disabled") }}'}">
                             </span>
                         `;
                     },
