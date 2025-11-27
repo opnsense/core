@@ -27,6 +27,9 @@
  */
 
 namespace OPNsense\Firewall\Api;
+use OPNsense\Base\UserException;
+use OPNsense\Core\Config;
+use OPNsense\Firewall\Category;
 
 class DNatController extends FilterBaseController
 {
@@ -38,10 +41,26 @@ class DNatController extends FilterBaseController
     {
         $category = (array)$this->request->get('category');
         $filter_funct = function ($record) use ($category) {
-            $cats = !empty((string)$record->category) ? explode(',', (string)$record->category) : [];
-            return empty($category) || array_intersect($cats, $category);
+            /* categories are indexed by name in the record, but offered as uuid in the selector */
+            $catids = !empty((string)$record->categories) ? explode(',', (string)$record->categories) : [];
+            return empty($category) || array_intersect($catids, $category);
         };
-        return $this->searchBase("rule", null, "sequence", $filter_funct);
+
+        $results =  $this->searchBase("rule", null, "sequence", $filter_funct);
+
+        /* curry results */
+        foreach ($results['rows'] as &$record) {
+            /* offer list of colors to be used by the frontend  */
+            $record['category_colors'] = $this->getCategoryColors(explode(',', $record['categories']));
+            /* format "networks" and ports */
+            foreach (['source.network','source.port','destination.network','destination.port'] as $field) {
+                if (!empty($record[$field])) {
+                    $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
+                }
+            }
+        }
+
+        return $results;
     }
 
     public function setRuleAction($uuid)
@@ -64,31 +83,108 @@ class DNatController extends FilterBaseController
         return $this->delBase("rule", $uuid);
     }
 
-    public function toggleRuleAction($uuid, $enabled = null)
-    {
-        return $this->toggleBase("rule", $uuid, $enabled);
-    }
-
-        /**
-     * @param array $cats list of category ids
-     * @return array colors
+    /**
+     * opposite toggle (disable instead of enable)
      */
-    private function getCategoryColors($cats)
+    public function toggleRuleAction($uuid, $disabled = null)
     {
-        if (empty($this->catcolors)) {
-            foreach ((new Category())->categories->category->iterateItems() as $key => $category) {
-                $uuid = (string)$category->getAttributes()['uuid'];
-                $color = trim((string)$category->color);
-                $this->catcolors[$uuid] = !empty($color) ? "#{$color}" : '#000';
-            }
-        }
-        $result = [];
-        foreach ($cats as $cat) {
-            if (isset($this->catcolors[$cat])) {
-                $result[] = $this->catcolors[$cat];
+        $result = ['result' => 'failed'];
+        if ($this->request->isPost() && $uuid != null) {
+            Config::getInstance()->lock();
+            $node = $this->getModel()->getNodeByReference('rule.' . $uuid);
+            if ($node != null) {
+                if (in_array($disabled, ['0', '1'])) {
+                    $node->disabled = (string)$disabled;
+                } else {
+                    $node->disabled = (string)$node->disabled == '1' ? '0' : '1';
+                }
+                $result['result'] = $node->disabled->isEmpty() ? 'Enabled' : 'Disabled';
+                $this->save(false, true);
             }
         }
         return $result;
     }
+
+    /**
+     * Moves the selected rule so that it appears immediately before the target rule.
+     *
+     * Uses integer gap numbering to update the sequence for only the moved rule.
+     * Rules will be renumbered within the selected range to prevent movements causing overlaps,
+     * but try to keep the changes as minimal as possible.
+     *
+     * @param string $selected_uuid The UUID of the rule to be moved.
+     * @param string $target_uuid   The UUID of the target rule (the rule before which the selected rule is to be placed).
+     * @return array Returns ["status" => "ok"] on success, throws a userexception otherwise.
+     */
+    public function moveRuleBeforeAction($selected_uuid, $target_uuid)
+    {
+        if (!$this->request->isPost()) {
+            return ["status" => "error", "message" => gettext("Invalid request method")];
+        }
+        $target_node = $this->getModel()->getNodeByReference('rule.' . $target_uuid);
+        $selected_node = $this->getModel()->getNodeByReference('rule.' . $selected_uuid);
+        if ($target_node === null || $selected_node === null) {
+            throw new UserException(
+                gettext("Either source or destination is not a rule managed with this component"),
+                gettext("DNat")
+            );
+        }
+        $step_size = 50;
+        $new_key = null;
+        $prev_record = null;
+        foreach ($this->getModel()->rule->sortedBy(['sequence']) as $record) {
+            $uuid = $record->getAttribute('uuid');
+            if ($target_uuid === $uuid) {
+                $prev_sequence = (($prev_record?->sequence->asFloat()) ?? 1);
+                $distance = $record->sequence->asFloat() - $prev_sequence;
+                if ($distance > 2) {
+                    $new_key = intdiv($distance, 2) + $prev_sequence;
+                    break;
+                } else {
+                    $new_key = $prev_record === null ? 1 : ($prev_sequence + $step_size);
+                    $record->sequence = (string)($new_key + $step_size);
+                }
+            } elseif ($new_key !== null) {
+                if ($record->sequence->asFloat() < $prev_record?->sequence->asFloat()) {
+                    $record->sequence = (string)($prev_record?->sequence->asFloat() + $step_size);
+                }
+            }
+            $prev_record = $record;
+        }
+        if ($new_key !== null) {
+            $selected_node->sequence = (string)$new_key;
+            /* we're only changing sequences, forcefully save */
+            $this->getModel()->serializeToConfig(false, true);
+            Config::getInstance()->save();
+        }
+
+        return ["status" => "ok"];
+    }
+
+    public function toggleRuleLogAction($uuid, $log)
+    {
+        if (!$this->request->isPost()) {
+            return ['status' => 'error', 'message' => gettext('Invalid request method')];
+        }
+
+        $mdl = $this->getModel();
+        $node = null;
+        foreach ($mdl->rule->iterateItems() as $item) {
+            if ((string)$item->getAttribute('uuid') === $uuid) {
+                $node = $item;
+                break;
+            }
+        }
+        if ($node === null) {
+            throw new UserException(gettext("Rule not found"), gettext("DNat"));
+        }
+
+        $node->log = $log;
+        $mdl->serializeToConfig();
+        Config::getInstance()->save();
+
+        return ['status' => 'ok'];
+    }
+
 }
 

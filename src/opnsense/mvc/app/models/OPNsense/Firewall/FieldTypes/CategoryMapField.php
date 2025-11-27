@@ -28,24 +28,26 @@
 
 namespace OPNsense\Firewall\FieldTypes;
 
-use OPNsense\Base\FieldTypes\BaseListField;
+use OPNsense\Base\FieldTypes\BaseField;
 use OPNsense\Firewall\Category;
 
-class CategoryField extends BaseListField
+class CategoryMapField extends BaseField
 {
     protected $internalIsContainer = false;
-    private static $categories = null;
+    private static $catidmap = null;
 
     protected function actionPostLoadingEvent()
     {
-        if (self::$categories === null) {
-            /* categories keyed by name */
-            self::$categories = [];
-            foreach ((new Category())->categories->category->iterateItems() as $category) {
-                self::$categories[$category->name->getValue()] = $category->name->getValue();
+        if (self::$catidmap === null) {
+            /* categories keyed by name {name=uuid} */
+            self::$catidmap = [];
+            foreach ((new Category())->categories->category->iterateItems() as $key => $category) {
+                self::$catidmap[$category->name->getValue()] = $key;
             }
         }
-        $this->internalOptionList = self::$categories;
+        $record = $this->getParentNode();
+        $catids = array_values(array_intersect_key(self::$catidmap, array_flip($record->category->getValues())));
+        $this->internalValue = implode(',', $catids);
         return parent::actionPostLoadingEvent();
     }
 }

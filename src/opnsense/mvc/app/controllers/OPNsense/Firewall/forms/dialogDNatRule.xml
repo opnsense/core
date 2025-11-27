@@ -93,6 +93,7 @@
         <help>Match everything except the specified source.</help>
         <grid_view>
             <ignore>true</ignore>
+            <column-id>source.not</column-id>
         </grid_view>
     </field>
     <field>
@@ -105,6 +106,7 @@
             <formatter>alias</formatter>
             <sequence>50</sequence>
             <min-width>100</min-width>
+            <column-id>source.network</column-id>
         </grid_view>
     </field>
     <field>
@@ -117,6 +119,7 @@
             <sequence>60</sequence>
             <formatter>alias</formatter>
             <min-width>60</min-width>
+            <column-id>source.port</column-id>
         </grid_view>
     </field>
     <field>
@@ -130,6 +133,7 @@
         <help>Match everything except the specified destination.</help>
         <grid_view>
             <ignore>true</ignore>
+            <column-id>destination.not</column-id>
         </grid_view>
     </field>
     <field>
@@ -142,6 +146,7 @@
             <formatter>alias</formatter>
             <sequence>70</sequence>
             <min-width>100</min-width>
+            <column-id>destination.network</column-id>
         </grid_view>
     </field>
     <field>
@@ -154,6 +159,7 @@
             <sequence>80</sequence>
             <formatter>alias</formatter>
             <min-width>60</min-width>
+            <column-id>destination.port</column-id>
         </grid_view>
     </field>
     <field>

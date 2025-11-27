@@ -83,6 +83,8 @@
             <category type=".\CategoryField">
                 <Multiple>Y</Multiple>
             </category>
+            <!-- internal mapper to translate category to a comma seperated list of uuids  -->
+            <categories type=".\CategoryMapField" volatile="true"/>
             <descr type="DescriptionField"/>
             <tag type="TextField"/>
             <tagged type="TextField"/>

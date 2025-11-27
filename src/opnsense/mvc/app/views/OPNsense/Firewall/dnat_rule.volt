@@ -27,8 +27,8 @@
  <script>
     $(document).ready(function() {
 
-// XXX: Most code comments are the same as filter_rule.volt, thats why they're omitted.
-//      Large blocks of code are exactly the same, so we could think about a base view for these new views.
+    // XXX: Most code comments are the same as filter_rule.volt, thats why they're omitted.
+    //      Large blocks of code are exactly the same, so we could think about a base view for these new views.
 
     let treeViewEnabled = localStorage.getItem("dnat_tree") === "1";
         $('#toggle_tree_button').toggleClass('active btn-primary', treeViewEnabled);
@@ -79,7 +79,7 @@
                     const data = row.getData();
                     const $element = $(row.getElement());
 
-                    if ('enabled' in data && data.enabled == "0") {
+                    if ('disabled' in data && data.disabled == "1") {
                         $element.addClass('row-disabled');
                     }
 
@@ -103,9 +103,7 @@
                     }
                     return request;
                 },
-
                 responseHandler: dynamicResponseHandler,
-
                 headerFormatters: {
                     disabled: function (column) {
                         return '<i class="fa-solid fa-fw fa-check-square" data-toggle="tooltip" title="{{ lang._('Disabled') }}"></i>';;
@@ -159,19 +157,11 @@
                         `;
                     },
                     rowtoggle: function (column, row) {
-                        if (row.isGroup) {
-                            return "";
-                        }
-
                         const rowId = row.uuid || '';
-                        if (!rowId.includes('-')) {
+                        if (row.isGroup || !rowId.includes('-')) {
                             return '';
                         }
-
-                        const isEnabled = row[column.id] === "1";
-
-// XXX: Its a disabled checkbox, not an enabled checkbox... Labels have been flipped.
-//      Toggling the rule does not work right now, needs to be fixed.
+                        const isEnabled = row[column.id] === "0";
                         return `
                             <span class="fa fa-fw ${isEnabled ? 'fa-check-square-o' : 'fa-square-o text-muted'} bootgrid-tooltip command-toggle"
                                 style="cursor: pointer;"
@@ -196,7 +186,6 @@
                             return '*';
                         }
                     },
-// XXX: Category handling seems different for dnat, we have to check this later. Also the key is different from filter_rule.volt (category vs. categories)
                     category: function (column, row) {
                         const isGroup = row.isGroup;
                         const hasCategories = row.category && Array.isArray(row.category_colors);
@@ -256,14 +245,12 @@
                             </span>
                         `;
                     },
-// XXX: The controller must return the map needed here, still needs to be implemented
                     alias: function(column, row) {
                         if (row.isGroup) {
                             return "";
                         }
-
                         const value = row[column.id] || "";
-                        const isNegated = (row[column.id.replace('net', 'not')] == 1) ? "! " : "";
+                        const isNegated = (row[column.id.replace('network', 'not')] == 1) ? "! " : "";
 
                         if (typeof value !== 'string') {
                             return '';
@@ -294,10 +281,9 @@
                 },
             },
             commands: {
-// XXX: Must be implemented in the controller
                 move_before: {
                     method: function(event) {
-                        const selected = $("#{{ formGridFilterRule['table_id'] }}").bootgrid("getSelectedRows");
+                        const selected = $("#{{ formGridDNatRule['table_id'] }}").bootgrid("getSelectedRows");
                         if (selected.length !== 1) {
                             showDialogAlert(
                                 BootstrapDialog.TYPE_WARNING,
@@ -324,7 +310,7 @@
                             {},
                             function(data, status) {
                                 if (data.status === "ok") {
-                                    $("#{{ formGridFilterRule['table_id'] }}").bootgrid("reload");
+                                    $("#{{ formGridDNatRule['table_id'] }}").bootgrid("reload");
                                     $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
                                 }
                             },
@@ -342,17 +328,16 @@
                     title: "{{ lang._('Move selected rule before this rule') }}",
                     sequence: 10
                 },
-// XXX: Must be implemented in the controller
                 toggle_log: {
                     method: function(event) {
                         const uuid = $(this).data("row-id");
                         const log = String(+$(this).data("value") ^ 1);
                         ajaxCall(
-                            `/api/firewall/filter/toggle_rule_log/${uuid}/${log}`,
+                            `/api/firewall/filter/d_nat/${uuid}/${log}`,
                             {},
                             function(data) {
                                 if (data.status === "ok") {
-                                    $("#{{ formGridFilterRule['table_id'] }}").bootgrid("reload");
+                                    $("#{{ formGridDNatRule['table_id'] }}").bootgrid("reload");
                                     $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
                                 }
                             },
@@ -437,7 +422,7 @@
         $("#tree_expand_container").detach().insertAfter("#tree_toggle_container");
         $("#tree_expand_container").toggle(treeViewEnabled);
         $('#expand_tree_button').on('click', function () {
-            const $table = $('#{{ formGridFilterRule["table_id"] }}');
+            const $table = $('#{{ formGridDNatRule["table_id"] }}');
 
             if ($table.find('.tabulator-data-tree-control-expand').length) {
                 $table.find('.tabulator-data-tree-control-expand').trigger('click');
