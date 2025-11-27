@@ -69,7 +69,7 @@ class UIModelGrid
         $sortBy = empty($defaultSort) ? array() : array($defaultSort);
         $sortDescending = false;
 
-        if ($request->hasPost('sort') && is_array($request->get("sort"))) {
+        if ($request->hasPost('sort') && !empty($request->get("sort")) && is_array($request->get("sort"))) {
             $sortBy = array_keys($request->get("sort"));
             if (!empty($sortBy) && $request->get("sort")[$sortBy[0]] == "desc") {
                 $sortDescending = true;
