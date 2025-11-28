@@ -28,7 +28,8 @@
     $(document).ready(function() {
 
     // XXX: Most code comments are the same as filter_rule.volt, thats why they're omitted.
-    //      Large blocks of code are exactly the same, so we could think about a base view for these new views.
+    //      Large blocks of code are exactly the same, so we could think about a base view.
+    //      Though since there are subtle differences leaving them separated might be best for now.
 
     function showDialogAlert(type, title, message) {
         BootstrapDialog.show({
@@ -347,7 +348,7 @@
                         const uuid = $(this).data("row-id");
                         const log = String(+$(this).data("value") ^ 1);
                         ajaxCall(
-                            `/api/firewall/filter/d_nat/${uuid}/${log}`,
+                            `/api/firewall/d_nat/toggle_rule_log/${uuid}/${log}`,
                             {},
                             function(data) {
                                 if (data.status === "ok") {
