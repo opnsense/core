@@ -97,7 +97,7 @@ class KeaDhcpv4 extends BaseModel
             }
 
             $suffix = $subnet->ddns_options->qualifying_suffix;
-            if (!($subnet->ddns_options->send_updates->isEmpty()) &&
+            if (!($subnet->ddns_options->send_updates->isEqual('1')) &&
                 !($suffix->isEmpty()) && !str_ends_with($suffix->getValue(), '.')) {
                 $messages->appendMessage(
                     new Message(
@@ -196,12 +196,12 @@ class KeaDhcpv4 extends BaseModel
 
             // Conditionally include DDNS settings only when send-updates is enabled,
             // and only include fields that have meaningful values.;
-            if (!($subnet->ddns_options->send_updates->isEmpty())) {
+            if (!($subnet->ddns_options->send_updates->isEqual('1'))) {
                 $record['ddns-send-updates'] = true;
                 if (!($subnet->ddns_options->qualifying_suffix->isEmpty())) {
                     $record['ddns-qualifying-suffix'] = $subnet->ddns_options->qualifying_suffix->getValue();
                 }
-                if (!($subnet->ddns_options->update_on_renew->isEmpty())) {
+                if ($subnet->ddns_options->update_on_renew->isEqual('1')) {
                     $record['ddns-update-on-renew'] = true;
                 }
                 if (!($subnet->ddns_options->conflict_resolution_mode->isEmpty())) {
@@ -295,7 +295,7 @@ class KeaDhcpv4 extends BaseModel
         }
 
         foreach ($this->subnets->subnet4->iterateItems() as $subnet) {
-            if (!($subnet->ddns_options->send_updates->isEmpty())) {
+            if ($subnet->ddns_options->send_updates->isEqual('1')) {
                 $cnf['Dhcp4']['dhcp-ddns']['enable-updates'] = true;
                 break;
             }

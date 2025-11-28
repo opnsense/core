@@ -74,7 +74,7 @@ class KeaDhcpDdns extends BaseModel
 
     public function isEnabled()
     {
-        return $this->general->enabled->isEmpty();
+        return $this->general->enabled->isEqual('1');
     }
 
     /**
@@ -92,7 +92,7 @@ class KeaDhcpDdns extends BaseModel
                 $item['ip-address'] = $srv->ip_address->getValue();
             }
             if (!($srv->port->isEmpty())) {
-                $item['port'] = (int)($srv->port->getValue());
+                $item['port'] = $srv->port->asInt();
             }
             if (!($srv->key_name->isEmpty())) {
                 $kn = $srv->key_name->getValue();
