@@ -43,25 +43,6 @@
         </grid_view>
     </field>
     <field>
-        <id>subnet4.ddns_options.replace_client_name</id>
-        <label>Replace client name</label>
-        <type>dropdown</type>
-        <help>Controls when the server replaces the client supplied hostname.</help>
-        <grid_view>
-            <visible>false</visible>
-        </grid_view>
-    </field>
-    <field>
-        <id>subnet4.ddns_options.generated_prefix</id>
-        <label>Generated prefix</label>
-        <type>text</type>
-        <help>Prefix to use when generating hostnames.</help>
-        <advanced>true</advanced>
-        <grid_view>
-            <visible>false</visible>
-        </grid_view>
-    </field>
-    <field>
         <id>subnet4.ddns_options.update_on_renew</id>
         <label>Update on renew</label>
         <type>checkbox</type>

@@ -138,17 +138,6 @@
                 <description type="DescriptionField"/>
                 <ddns_options>
                     <send_updates type="BooleanField"/>
-                    <replace_client_name type="OptionField">
-                        <Default>never</Default>
-                        <Required>Y</Required>
-                        <OptionValues>
-                            <never>never</never>
-                            <always>always</always>
-                            <when-present>when-present</when-present>
-                            <when-not-present>when-not-present</when-not-present>
-                        </OptionValues>
-                    </replace_client_name>
-                    <generated_prefix type="HostnameField"/>
                     <update_on_renew type="BooleanField"/>
                     <qualifying_suffix type="HostnameField"/>
                     <conflict_resolution_mode type="OptionField">

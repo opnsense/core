@@ -151,12 +151,6 @@ class KeaDhcpv6 extends BaseModel
             // and only include fields that have meaningful values.
             if (!($subnet->ddns_options->send_updates->isEmpty())) {
                 $record['ddns-send-updates'] = true;
-                if (!($subnet->ddns_options->replace_client_name->isEmpty())) {
-                    $record['ddns-replace-client-name'] = $subnet->ddns_options->replace_client_name->getValue();
-                }
-                if (!($subnet->ddns_options->generated_prefix->isEmpty())) {
-                    $record['ddns-generated-prefix'] = $subnet->ddns_options->generated_prefix->getValue();
-                }
                 if (!($subnet->ddns_options->qualifying_suffix->isEmpty())) {
                     $record['ddns-qualifying-suffix'] = $subnet->ddns_options->qualifying_suffix->getValue();
                 }
