@@ -29,6 +29,7 @@
                     <inet6>IPv6</inet6>
                     <inet46>IPv4+IPv6</inet46>
                 </OptionValues>
+                <BlankDesc>any</BlankDesc>
             </ipprotocol>
             <protocol type="ProtocolField">
                 <!-- XXX: currently optional, need to decide what to do with it -->
@@ -37,6 +38,7 @@
                 <AddOptions>
                     <opt1 value="tcp/udp">TCP/UDP</opt1>
                 </AddOptions>
+                <BlankDesc>any</BlankDesc>
             </protocol>
             <source>
                 <network type=".\NetworkMappedField"/>

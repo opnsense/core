@@ -57,6 +57,7 @@
         <id>rule.interface</id>
         <label>Interface</label>
         <type>select_multiple</type>
+        <hint>any</hint>
         <help>Choose the interface(s) on which the traffic originates.</help>
         <grid_view>
             <formatter>interfaces</formatter>
@@ -65,7 +66,7 @@
     </field>
     <field>
         <id>rule.ipprotocol</id>
-        <label>IP Protocol</label>
+        <label>Version</label>
         <type>dropdown</type>
         <help>Select IPv4, IPv6 or both.</help>
         <grid_view>
@@ -85,7 +86,8 @@
     </field>
     <field>
         <type>header</type>
-        <label>Source</label>
+        <label>Source (advanced)</label>
+        <collapse>true</collapse>
     </field>
     <field>
         <id>rule.source.not</id>
@@ -104,6 +106,7 @@
         <style>net_selector net_selector_multi</style>
         <help>Specify the source network or alias to match.</help>
         <grid_view>
+            <label>Source</label>
             <formatter>alias</formatter>
             <sequence>50</sequence>
             <min-width>100</min-width>
@@ -117,6 +120,7 @@
         <style>port_selector</style>
         <help>Source port or port range.</help>
         <grid_view>
+            <label>Port</label>
             <sequence>60</sequence>
             <formatter>alias</formatter>
             <min-width>60</min-width>
@@ -144,6 +148,7 @@
         <style>net_selector net_selector_multi</style>
         <help>Destination address or alias to match.</help>
         <grid_view>
+            <label>Destination</label>
             <formatter>alias</formatter>
             <sequence>70</sequence>
             <min-width>100</min-width>
@@ -157,6 +162,7 @@
         <style>port_selector</style>
         <help>Destination port or port range.</help>
         <grid_view>
+            <label>Port</label>
             <sequence>80</sequence>
             <formatter>alias</formatter>
             <min-width>60</min-width>
