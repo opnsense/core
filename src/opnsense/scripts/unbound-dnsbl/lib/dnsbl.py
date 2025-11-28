@@ -55,12 +55,12 @@ class DNSBL:
         self.warn_file = "/data/dnsbl_format_warning"
         self._context = context
 
-        self._update_dnsbl()
+        self._update_dnsbl(True)
 
     def _dnsbl_exists(self):
         return os.path.isfile(self.dnsbl_path) and os.path.getsize(self.dnsbl_path) > 0
 
-    def _update_dnsbl(self):
+    def _update_dnsbl(self, log=False):
         t = time.time()
         if (t - self.dnsbl_update_time) > 60:
             self.dnsbl_update_time = t
@@ -72,6 +72,10 @@ class DNSBL:
                 self.dnsbl_mtime_cache = fstat
                 log_info("dnsbl_module: updating blocklist.")
                 self._load_dnsbl()
+            elif log:
+                log_info("dnsbl_module: not updating blocklist.")
+        elif log:
+            log_info("dnsbl_module: limiting update blocklist execution.")
 
     def _load_dnsbl(self):
         with open(self.dnsbl_path, 'r') as f:
