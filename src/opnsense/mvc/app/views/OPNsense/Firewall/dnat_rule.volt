@@ -488,6 +488,8 @@
             });
         });
 
+        $('#category_filter').parent().find('.dropdown-toggle').prepend('<i class="fa fa-tag" style="margin-right: 6px;"></i>');
+
         $("#reconfigureAct").SimpleActionButton({
             onPreAction() {
                 reconfigureActInProgress = true;
