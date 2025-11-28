@@ -196,7 +196,7 @@
                             row[column.id] !== 'any' &&
                             row[column.id] !== 'None'
                         ) {
-                            return row[column.id];
+                            return row[`%${column.id}`] || row[column.id];
                         } else {
                             return '*';
                         }
