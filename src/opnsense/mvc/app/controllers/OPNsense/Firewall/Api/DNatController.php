@@ -48,12 +48,12 @@ class DNatController extends FilterBaseController
 
         $results =  $this->searchBase("rule", null, "sequence", $filter_funct);
 
-        /* curry results */
+        /* carry results */
         foreach ($results['rows'] as &$record) {
             /* offer list of colors to be used by the frontend  */
             $record['category_colors'] = $this->getCategoryColors(explode(',', $record['categories']));
             /* format "networks" and ports */
-            foreach (['source.network','source.port','destination.network','destination.port'] as $field) {
+            foreach (['source.network','source.port','destination.network','destination.port', 'target', 'local-port'] as $field) {
                 if (!empty($record[$field])) {
                     $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
                 }
