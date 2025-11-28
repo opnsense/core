@@ -440,9 +440,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     service_log('.', $verbose);
 
-    /* enable permanent promiscuous mode to avoid dmesg noise */
-    mwexecf('/sbin/ifconfig pflog0 promisc');
-
     /* bring up new instance of filterlog to load new rules */
     killbypid('/var/run/filterlog.pid');
     mwexecf('/usr/local/sbin/filterlog -i pflog0 -p %s', '/var/run/filterlog.pid');
