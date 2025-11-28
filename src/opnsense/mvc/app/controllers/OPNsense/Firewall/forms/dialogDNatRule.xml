@@ -69,6 +69,7 @@
         <type>dropdown</type>
         <help>Select IPv4, IPv6 or both.</help>
         <grid_view>
+            <formatter>any</formatter>
             <sequence>30</sequence>
         </grid_view>
     </field>
