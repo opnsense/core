@@ -196,7 +196,7 @@ class KeaDhcpv4 extends BaseModel
 
             // Conditionally include DDNS settings only when send-updates is enabled,
             // and only include fields that have meaningful values.;
-            if (!($subnet->ddns_options->send_updates->isEqual('1'))) {
+            if ($subnet->ddns_options->send_updates->isEqual('1')) {
                 $record['ddns-send-updates'] = true;
                 if (!($subnet->ddns_options->qualifying_suffix->isEmpty())) {
                     $record['ddns-qualifying-suffix'] = $subnet->ddns_options->qualifying_suffix->getValue();
