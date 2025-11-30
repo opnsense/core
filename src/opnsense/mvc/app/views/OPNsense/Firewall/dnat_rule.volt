@@ -27,25 +27,25 @@
  <script>
     $(document).ready(function() {
 
-    // XXX: Most code comments are the same as filter_rule.volt, thats why they're omitted.
-    //      Large blocks of code are exactly the same, so we could think about a base view.
-    //      Though since there are subtle differences leaving them separated might be best for now.
+        // XXX: Most code comments are the same as filter_rule.volt, thats why they're omitted.
+        //      Large blocks of code are exactly the same, so we could think about a base view.
+        //      Though since there are subtle differences leaving them separated might be best for now.
 
-    function showDialogAlert(type, title, message) {
-        BootstrapDialog.show({
-            type: type,
-            title: title,
-            message: message,
-            buttons: [{
-                label: '{{ lang._('Close') }}',
-                action: function(dialogRef) {
-                    dialogRef.close();
-                }
-            }]
-        });
-    }
+        function showDialogAlert(type, title, message) {
+            BootstrapDialog.show({
+                type: type,
+                title: title,
+                message: message,
+                buttons: [{
+                    label: '{{ lang._('Close') }}',
+                    action: function(dialogRef) {
+                        dialogRef.close();
+                    }
+                }]
+            });
+        }
 
-    let treeViewEnabled = localStorage.getItem("dnat_tree") === "1";
+        let treeViewEnabled = localStorage.getItem("dnat_tree") === "1";
         $('#toggle_tree_button').toggleClass('active btn-primary', treeViewEnabled);
 
         function dynamicResponseHandler(resp) {
