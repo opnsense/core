@@ -1,6 +1,6 @@
 <model>
     <mount>/nat/rule+</mount>
-    <version>0.0.1</version>
+    <version>1.0.0</version>
     <description>Destination NAT (port-forward)</description>
     <items>
         <rule type="ArrayField">
@@ -98,9 +98,10 @@
                     <disable>Disable</disable>
                 </OptionValues>
             </natreflection>
-            <!-- TODO: add field type? the amount of logic behind this field is somewhat annoying.-->
-            <associated-rule-id type="TextField"/>
-            <!-- XXX: need special field type to enforce content?-->
+            <pass type="BooleanField"/>
+            <!-- drop in a future version (27.1?), used for migration purposes.-->
+            <associated-rule-id type=".\DNatAssociatedRuleField"/>
+            <!-- handled via controller setBaseHook() -->
             <created>
                 <username type="TextField"/>
                 <time type="TextField"/>

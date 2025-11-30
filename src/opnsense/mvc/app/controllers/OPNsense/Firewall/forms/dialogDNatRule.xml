@@ -261,11 +261,10 @@
         </grid_view>
     </field>
     <field>
-        <id>rule.associated-rule-id</id>
-        <label>Associated Rule ID</label>
-        <type>text</type>
-        <help>Internal reference to related filter rule.</help>
-        <advanced>true</advanced>
+        <id>rule.pass</id>
+        <label>Automatically pass</label>
+        <type>checkbox</type>
+        <help>When this checkbox is set, traffic matching this nat rule will automatically be passed without inspecting firewall rules. We do advise to create rules manually for better visibilty, please keep in mind the destination for the rule should match the target defined in this NAT rule.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
