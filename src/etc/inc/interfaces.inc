@@ -3848,7 +3848,9 @@ function interfaces_staticarp_configure($if, $ifconfig_details = null)
     }
 
     $have = in_array('staticarp', $ifconfig_details[$ifcfg['if']]['flags']);
-    $want = isset($config['dhcpd'][$if]['staticarp']);
+    $want = isset($config['dhcpd'][$if]['staticarp']) &&
+        isset($config['dhcpd'][$if]['enable']) &&
+        file_exists('/usr/local/www/services_dhcp.php');
 
     if ($have !== $want) {
         mwexecf('/sbin/ifconfig %s %sstaticarp', [$ifcfg['if'], $want ? '' : '-']);
