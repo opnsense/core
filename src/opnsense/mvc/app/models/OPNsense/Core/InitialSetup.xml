@@ -94,6 +94,7 @@
         <deployment_type>
             <multiwan type="BooleanField"/>
             <dhcp_dns_registration type="BooleanField"/>
+            <maxthreads type="BooleanField"/>
         </deployment_type>
         <password type="TextField"/>
         <password_confirm type="TextField"/>

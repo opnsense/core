@@ -141,6 +141,12 @@ class InitialSetup extends BaseModel
         } else {
             $this->deployment_type->multiwan = '1';
         }
+        foreach ((new Tunables())->item->iterateItems() as $node) {
+            if ($node->tunable == 'net.isr.maxthreads' && $node->value->isEqual('-1')) {
+                $this->deployment_type->maxthreads = '1';
+            }
+        }
+
         /* use dnsmasq's dns port to detect if we are currently expected to use dnsmasq for dhcp auto-registration */
         $this->deployment_type->dhcp_dns_registration = $this->getConfigItem('dnsmasq.port') == '53053' ? '1' : '0';
     }
@@ -441,6 +447,32 @@ class InitialSetup extends BaseModel
             $dot->port = '53053';
             $dot->description = 'Forward default domain to Dnsmasq DHCP';
             /* forcefully flush model back to config */
+            $mdl->serializeToConfig(false, true);
+        }
+
+        /* net.isr.maxthreads (IPsec optimalisations) */
+        $mdl = new Tunables();
+        if ($this->deployment_type->maxthreads->isEmpty()) {
+            foreach ($mdl->item->iterateItems() as $uuid => $node) {
+                if ($node->tunable == 'net.isr.maxthreads' && $node->value->isEqual('-1')) {
+                    $mdl->item->Del($uuid);
+                    $mdl->serializeToConfig(false, true);
+                    break;
+                }
+            }
+        } else {
+            $isrnode = null;
+            foreach ($mdl->item->iterateItems() as $node) {
+                if ($node->tunable == 'net.isr.maxthreads') {
+                    $isrnode = $node;
+                    break;
+                }
+            }
+            if ($isrnode === null) {
+                $isrnode = $mdl->item->Add();
+                $isrnode->tunable = 'net.isr.maxthreads';
+            }
+            $isrnode->value = '-1';
             $mdl->serializeToConfig(false, true);
         }
     }
