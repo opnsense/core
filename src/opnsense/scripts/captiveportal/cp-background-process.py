@@ -229,12 +229,14 @@ def main():
             # reload cached arp table contents
             bgprocess.arp.reload()
 
+            accounting_info = IPFW.list_accounting_info()
+
             # process sessions per zone
             for zoneid in bgprocess.list_zone_ids():
-                bgprocess.sync_zone(zoneid, IPFW.list_accounting_info())
+                bgprocess.sync_zone(zoneid, accounting_info)
 
             # update accounting info, for all zones
-            bgprocess.db.update_accounting_info(IPFW.list_accounting_info())
+            bgprocess.db.update_accounting_info(accounting_info)
 
             # close the database handle while waiting for the next poll
             bgprocess.db.close()

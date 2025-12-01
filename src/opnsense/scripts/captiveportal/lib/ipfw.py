@@ -42,10 +42,7 @@ class IPFW(object):
                 line_pkts = int(parts[1])
                 line_bytes = int(parts[2])
                 last_accessed = int(parts[3])
-                if parts[7] != 'any':
-                    ip_address = parts[7]
-                else:
-                    ip_address = parts[9]
+                ip_address = parts[7] if parts[7] != 'any' else parts[9]
 
                 if ip_address not in result:
                     result[ip_address] = {'rule': int(parts[0]),
