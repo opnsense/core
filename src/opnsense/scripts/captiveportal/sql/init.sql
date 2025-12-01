@@ -22,10 +22,10 @@ create index cp_clients_zone ON cp_clients (zoneid);
 create table session_info (
       zoneid int
 ,     sessionid varchar
-,     prev_packets_in integer
-,     prev_bytes_in   integer
-,     prev_packets_out integer
-,     prev_bytes_out   integer
+,     prev_packets_in integer default (0)
+,     prev_bytes_in   integer default (0)
+,     prev_packets_out integer default (0)
+,     prev_bytes_out   integer default (0)
 ,     packets_in integer default (0)
 ,     packets_out integer default (0)
 ,     bytes_in integer default (0)

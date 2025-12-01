@@ -1093,6 +1093,7 @@
 /usr/local/opnsense/scripts/captiveportal/lib/arp.py
 /usr/local/opnsense/scripts/captiveportal/lib/daemonize.py
 /usr/local/opnsense/scripts/captiveportal/lib/db.py
+/usr/local/opnsense/scripts/captiveportal/lib/ipfw.py
 /usr/local/opnsense/scripts/captiveportal/lib/pf.py
 /usr/local/opnsense/scripts/captiveportal/listClients.py
 /usr/local/opnsense/scripts/captiveportal/overlay_template.py
