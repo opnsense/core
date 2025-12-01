@@ -44,6 +44,11 @@ function dhcpd_run()
     ];
 }
 
+function dhcpd_syslog()
+{
+    return ['dhcpd' => ['facility' => ['dhcpd']]];
+}
+
 function dhcpd_dhcpv6_enabled()
 {
     global $config;
