@@ -184,6 +184,7 @@ class SettingsController extends ApiMutableModelControllerBase
     public function delHostOverrideAction($uuid)
     {
         /* Make sure the linked aliases are deleted as well. */
+        Config::getInstance()->lock();
         $node = $this->getModel();
         foreach ($node->aliases->alias->iterateItems() as $alias_uuid => $alias) {
             if ($alias->host == $uuid) {
