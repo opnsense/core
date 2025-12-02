@@ -34,6 +34,7 @@ use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Core\Firmware;
 use OPNsense\Core\SanitizeFilter;
+use OPNsense\Core\Shell;
 
 /**
  * Class FirmwareController
@@ -810,7 +811,7 @@ class FirmwareController extends ApiMutableModelControllerBase
         $backend = new Backend();
         $response = [];
 
-        $version = explode(' ', trim(shell_exec('opnsense-version -nv') ?? ''));
+        $version = explode(' ', Shell::shell_safe('opnsense-version -nv'));
         foreach (['product_id' => 0, 'product_version' => 1] as $result => $index) {
             $response[$result] = !empty($version[$index]) ? $version[$index] : 'unknown';
         }
