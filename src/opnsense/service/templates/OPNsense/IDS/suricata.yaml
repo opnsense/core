@@ -424,8 +424,8 @@ rule-files:
 classification-file: /usr/local/etc/suricata/classification.config
 reference-config-file: /usr/local/etc/suricata/reference.config
 
-{# include generated installed_rules.yaml and old manual import custom.yaml, which we should deprecate at some point #}
-{% set include_files = ['installed_rules.yaml', 'custom.yaml'] %}{%
+{# include generated installed_rules.yaml #}
+{% set include_files = ['installed_rules.yaml'] %}{%
 for sfilename in helpers.absolute_glob("/usr/local/etc/suricata/conf.d/*.yaml") %}{%
   do include_files.append(sfilename)
 %}
