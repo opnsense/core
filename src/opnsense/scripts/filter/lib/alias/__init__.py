@@ -109,6 +109,9 @@ class Alias(object):
         for item in self._items:
             if item not in self._known_aliases or self.get_name() == item:
                 yield item
+            elif not self.supports_nesting():
+                # yield items unconditionally when nesting is not supported
+                yield item
 
     def uniqueid(self):
         """ generate an identification hash for this alias
@@ -284,11 +287,17 @@ class Alias(object):
             return os.stat(self.get_filename()).st_size
         return 0
 
+    def supports_nesting(self):
+        """ return if this alias supports nesting
+        """
+        return self.get_type() not in ['geoip']
+
     def get_deps(self):
         """ fetch alias dependencies
-            :param in_data: raw input data (ruleset)
-            :return: new ruleset
         """
+        if not self.supports_nesting():
+            # when nesting is not supported
+            return
         for item in self._items:
             if item in self._known_aliases:
                 yield item
