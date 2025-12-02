@@ -199,6 +199,14 @@
         <help>Ignore the DHCP general settings from being updated using HA sync.</help>
     </field>
     <field>
+        <id>dnsmasq.dhcp.log_dhcp</id>
+        <label>Log Settings</label>
+        <type>select_multiple</type>
+        <style>selectpicker</style>
+        <advanced>true</advanced>
+        <help>Set one or multiple configuration flags that influence the DHCP and RA logging behavior.</help>
+    </field>
+    <field>
         <type>header</type>
         <label>ISC / KEA DHCP (legacy)</label>
     </field>
