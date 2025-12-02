@@ -231,7 +231,8 @@ class FilterController extends FilterBaseController
             if (empty($interfaces)) {
                 $is_if = empty($record['interface']) || count(explode(',', $record['interface'])) > 1;
             } elseif ((string)$record['interfacenot'] === "1") {
-                $is_if = true;
+                /* XXX given that $interfaces is deduplicated multiple interfaces unmute the match */
+                $is_if = empty($record['interface']) || count($interfaces > 1) || $record['interface'] != $interfaces[0];
             } else {
                 $is_if = array_intersect(explode(',', $record['interface'] ?? ''), $interfaces);
                 $is_if = $is_if || empty($record['interface']);
