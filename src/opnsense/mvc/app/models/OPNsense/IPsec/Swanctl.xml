@@ -221,8 +221,8 @@
                         </host>
                     </Model>
                     <Multiple>Y</Multiple>
-                    <DisableCache>Y</DisableCache>
                 </pubkeys>
+                <description type="DescriptionField"/>
             </remote>
         </remotes>
         <children>
