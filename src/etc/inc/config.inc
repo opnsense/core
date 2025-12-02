@@ -167,29 +167,16 @@ function convert_config($verbose = false)
         write_config('Factory configuration', false);
     }
 
+    $function = $verbose ? 'pass_safe' : 'mwexecf';
+
     /* chain the new migration into this function call */
-    $cmd = '/usr/local/sbin/pluginctl -m';
-    if ($verbose) {
-        passthru($cmd);
-    } else {
-        mwexecf($cmd);
-    }
+    $function('/usr/local/sbin/pluginctl -m');
 
     /* register pluggable interfaces */
-    $cmd = '/usr/local/sbin/pluginctl -i';
-    if ($verbose) {
-        passthru($cmd);
-    } else {
-        mwexecf($cmd);
-    }
+    $function('/usr/local/sbin/pluginctl -i');
 
     /* factory reset on release type and plugins if necessary */
-    $cmd = '/usr/local/opnsense/scripts/firmware/register.php sync';
-    if ($verbose) {
-        passthru($cmd);
-    } else {
-        mwexecf($cmd);
-    }
+    $function('/usr/local/opnsense/scripts/firmware/register.php sync');
 
     /* reload the config as it was rewritten and saved in the script context */
     OPNsense\Core\Config::getInstance()->forceReload();
