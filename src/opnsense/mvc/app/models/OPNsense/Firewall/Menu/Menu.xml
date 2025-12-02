@@ -13,7 +13,7 @@
             <SourceNat order="400" VisibleName="Source NAT" url="/ui/firewall/source_nat/">
                 <FilterRef url="/ui/firewall/source_nat#*" visibility="hidden"/>
             </SourceNat>
-            <NPTv6 order="600" url="/ui/firewall/npt/">
+            <NPTv6 order="500" url="/ui/firewall/npt/">
                 <FilterRef url="/ui/firewall/npt#*" visibility="hidden"/>
             </NPTv6>
         </NAT>
