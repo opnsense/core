@@ -30,7 +30,6 @@ namespace OPNsense\Firewall\FieldTypes;
 
 use OPNsense\Base\FieldTypes\PortField;
 
-
 class PortMappedField extends PortField
 {
     protected $internalIsContainer = false;

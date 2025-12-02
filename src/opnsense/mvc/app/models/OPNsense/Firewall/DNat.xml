@@ -44,7 +44,7 @@
                 <network type=".\NetworkMappedField"/>
                 <!-- volatile reads, but never writes back. it's used to populate network when address is used-->
                 <address type=".\NetworkMappedField" volatile="true"/>
-                <port  type=".\PortMappedField">
+                <port type=".\PortMappedField">
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
                     <EnableAlias>Y</EnableAlias>
@@ -56,7 +56,7 @@
                 <network type=".\NetworkMappedField"/>
                 <!-- volatile reads, but never writes back. it's used to populate network when address is used-->
                 <address type=".\NetworkMappedField" volatile="true"/>
-                <port  type=".\PortMappedField">
+                <port type=".\PortMappedField">
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
                     <EnableAlias>Y</EnableAlias>

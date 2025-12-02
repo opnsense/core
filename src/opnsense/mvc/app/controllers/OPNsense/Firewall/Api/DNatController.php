@@ -27,6 +27,7 @@
  */
 
 namespace OPNsense\Firewall\Api;
+
 use OPNsense\Base\UserException;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Category;
@@ -208,6 +209,4 @@ class DNatController extends FilterBaseController
 
         return ['status' => 'ok'];
     }
-
 }
-

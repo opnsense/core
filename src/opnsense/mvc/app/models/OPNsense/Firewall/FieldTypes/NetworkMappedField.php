@@ -30,7 +30,6 @@ namespace OPNsense\Firewall\FieldTypes;
 
 use OPNsense\Base\FieldTypes\NetworkAliasField;
 
-
 class NetworkMappedField extends NetworkAliasField
 {
     protected $internalIsContainer = false;
