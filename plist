@@ -302,6 +302,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/AliasController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/AliasUtilController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/CategoryController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/DNatController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/FilterBaseController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/FilterController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/FilterUtilController.php
@@ -310,12 +311,14 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/OneToOneController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/SourceNatController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/CategoryController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/DNatController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/FilterController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/GroupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/NptController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/OneToOneController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/SourceNatController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/categoryEdit.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogDNatRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogFilterRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogNptRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogOneToOneRule.xml
@@ -729,6 +732,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Alias.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Category.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Category.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/DNat.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/DNat.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/DynamicAliases/CaptivePortalAliases.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/DynamicAliases/InterfaceNetworkAliases.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/DynamicAliases/README.md
@@ -736,11 +741,17 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasContentField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasNameField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/CategoryField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/CategoryMapField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/DNatAssociatedRuleField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/DNatSequenceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/FilterRuleField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/FilterSequenceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/GroupField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/GroupNameField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/InterfaceField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/NetworkMappedField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/PortMappedField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/ScheduleField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/SourceNatRuleField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/TosField.php
@@ -946,6 +957,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias_util.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/category.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Firewall/dnat_rule.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/filter.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/filter_rule.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/group.volt
@@ -2477,8 +2489,6 @@
 /usr/local/www/diag_authentication.php
 /usr/local/www/diag_backup.php
 /usr/local/www/fbegin.inc
-/usr/local/www/firewall_nat.php
-/usr/local/www/firewall_nat_edit.php
 /usr/local/www/firewall_nat_out.php
 /usr/local/www/firewall_nat_out_edit.php
 /usr/local/www/firewall_rule_lookup.php

@@ -1,0 +1,272 @@
+<form>
+    <field>
+        <type>header</type>
+        <label>General</label>
+    </field>
+    <field>
+        <id>rule.disabled</id>
+        <label>Disabled</label>
+        <type>checkbox</type>
+        <help>Disable this rule so it will not be used.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+            <sequence>5</sequence>
+            <width>50</width>
+            <align>center</align>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.sequence</id>
+        <label>Sequence</label>
+        <type>text</type>
+        <help>Rules are evaluated in sequence order.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <order>asc</order>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.category</id>
+        <label>Categories</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <help>Assign categories for rule organization.</help>
+        <grid_view>
+            <formatter>category</formatter>
+            <sequence>1</sequence>
+            <width>80</width>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.descr</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>Enter a description to identify this rule.</help>
+        <grid_view>
+            <sequence>110</sequence>
+            <min-width>100</min-width>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Interface</label>
+    </field>
+    <field>
+        <id>rule.interface</id>
+        <label>Interface</label>
+        <type>select_multiple</type>
+        <hint>any</hint>
+        <help>Choose the interface(s) on which the traffic originates.</help>
+        <grid_view>
+            <formatter>interfaces</formatter>
+            <sequence>25</sequence>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.ipprotocol</id>
+        <label>Version</label>
+        <type>dropdown</type>
+        <help>Select IPv4, IPv6 or both.</help>
+        <grid_view>
+            <formatter>any</formatter>
+            <sequence>30</sequence>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.protocol</id>
+        <label>Protocol</label>
+        <type>dropdown</type>
+        <help>Select the protocol this rule should match.</help>
+        <grid_view>
+            <formatter>any</formatter>
+            <sequence>35</sequence>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Source (advanced)</label>
+        <collapse>true</collapse>
+    </field>
+    <field>
+        <id>rule.source.not</id>
+        <label>Invert Source</label>
+        <type>checkbox</type>
+        <help>Match everything except the specified source.</help>
+        <grid_view>
+            <ignore>true</ignore>
+            <column-id>source.not</column-id>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.source.network</id>
+        <label>Source Address</label>
+        <type>text</type>
+        <style>net_selector net_selector_multi</style>
+        <help>Specify the source network or alias to match.</help>
+        <grid_view>
+            <label>Source</label>
+            <formatter>alias</formatter>
+            <sequence>50</sequence>
+            <min-width>100</min-width>
+            <column-id>source.network</column-id>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.source.port</id>
+        <label>Source Port</label>
+        <type>text</type>
+        <style>port_selector</style>
+        <help>Source port or port range.</help>
+        <grid_view>
+            <label>Port</label>
+            <sequence>60</sequence>
+            <formatter>alias</formatter>
+            <min-width>60</min-width>
+            <column-id>source.port</column-id>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Destination</label>
+    </field>
+    <field>
+        <id>rule.destination.not</id>
+        <label>Invert Destination</label>
+        <type>checkbox</type>
+        <help>Match everything except the specified destination.</help>
+        <grid_view>
+            <ignore>true</ignore>
+            <column-id>destination.not</column-id>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.destination.network</id>
+        <label>Destination Address</label>
+        <type>text</type>
+        <style>net_selector net_selector_multi</style>
+        <help>Destination address or alias to match.</help>
+        <grid_view>
+            <label>Destination</label>
+            <formatter>alias</formatter>
+            <sequence>70</sequence>
+            <min-width>100</min-width>
+            <column-id>destination.network</column-id>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.destination.port</id>
+        <label>Destination Port</label>
+        <type>text</type>
+        <style>port_selector</style>
+        <help>Destination port or port range.</help>
+        <grid_view>
+            <label>Port</label>
+            <sequence>80</sequence>
+            <formatter>alias</formatter>
+            <min-width>60</min-width>
+            <column-id>destination.port</column-id>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Translation</label>
+    </field>
+    <field>
+        <id>rule.target</id>
+        <label>Redirect Target IP</label>
+        <type>text</type>
+        <style>net_selector</style>
+        <help>The internal IP address to forward traffic to.</help>
+        <grid_view>
+            <formatter>alias</formatter>
+            <sequence>90</sequence>
+            <min-width>100</min-width>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.local-port</id>
+        <label>Redirect Target Port</label>
+        <type>text</type>
+        <style>port_selector</style>
+        <help>The port on the internal host to forward traffic to.</help>
+        <grid_view>
+            <formatter>alias</formatter>
+            <sequence>95</sequence>
+            <min-width>60</min-width>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.poolopts</id>
+        <label>Pool Options</label>
+        <type>dropdown</type>
+        <help>Choose how traffic is distributed when multiple target IPs are used.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Options</label>
+    </field>
+    <field>
+        <id>rule.log</id>
+        <label>Log</label>
+        <type>checkbox</type>
+        <help>Log packets matching this rule.</help>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.nosync</id>
+        <label>No XMLRPC Sync</label>
+        <type>checkbox</type>
+        <help>Exclude this rule from synchronizing to HA peers.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.natreflection</id>
+        <label>NAT Reflection</label>
+        <type>dropdown</type>
+        <help>Control NAT reflection for this rule.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.tag</id>
+        <label>Set Tag</label>
+        <type>text</type>
+        <help>Assign a tag to packets matching this rule.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.tagged</id>
+        <label>Match Tag</label>
+        <type>text</type>
+        <help>Only match packets that have this tag.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.pass</id>
+        <label>Automatically pass</label>
+        <type>checkbox</type>
+        <help>When this checkbox is set, traffic matching this nat rule will automatically be passed without inspecting firewall rules. We do advise to create rules manually for better visibility, please keep in mind the destination for the rule should match the target defined in this NAT rule.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+</form>

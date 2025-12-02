@@ -253,13 +253,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
     }
 
-    if (!empty($config['nat']['rule'])) {
-        // register user forward rules
-        foreach ($config['nat']['rule'] as $rule) {
-            if (is_array($rule)) {
-                $fw->registerForwardRule(600, $rule);
-            }
-        }
+    foreach ((new OPNsense\Firewall\DNat())->rule->sortedBy(['sequence']) as $key => $rule) {
+        $fw->registerForwardRule(600, $rule->getNodeContent());
     }
 
     openlog("firewall", LOG_DAEMON, LOG_LOCAL4);
