@@ -179,6 +179,11 @@ class FilterController extends FilterBaseController
             $rule_interfaces = array_filter(explode(',', (string)$record->interface));
 
             if ((string)$record->interfacenot === "1") {
+                /*
+                 * XXX Block the search from matching the interface in this
+                 * case.  It's not entirely correct, but at the moment we are
+                 * not able to search for !interface either.
+                 */
                 $rule_interfaces = [];
             }
 
