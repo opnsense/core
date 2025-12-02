@@ -427,7 +427,7 @@ abstract class BaseField
 
     /**
      * convert current value to int
-     * @return float
+     * @return int
      */
     public function asInt(): int
     {
