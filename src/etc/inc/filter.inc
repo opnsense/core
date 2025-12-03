@@ -387,13 +387,11 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     @copy('/tmp/ifconfig.debug', '/tmp/ifconfig.debug.old');
 
     mwexecf('ifconfig > %s', '/tmp/ifconfig.debug');
-
     $fobj->truncate(0)->write($rules);
-
     @file_put_contents('/tmp/rules.limits', $limitrules);
-    mwexecf('/sbin/pfctl -Of %s', '/tmp/rules.limits');
-    $rules_loading = mwexecfm('/sbin/pfctl -f /tmp/rules.debug > /tmp/rules.debug.error');
 
+    mwexecf('/sbin/pfctl -Of %s', '/tmp/rules.limits');
+    $load_failed = mwexecfm('/sbin/pfctl -f %s > %s', ['/tmp/rules.debug', '/tmp/rules.debug.error']);
     foreach ($sched_kill_states as $label) {
         mwexecf('/sbin/pfctl -k label -k %s', $label);
     }
@@ -402,7 +400,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
      * check for a error while loading the rules file.  if an error has occurred
      * then output the contents of the error to the caller
      */
-    if ($rules_loading) {
+    if ($load_failed) {
         $rules_error = explode("\n", file_get_contents('/tmp/rules.debug.error'));
         $config_line = '';
 
@@ -432,6 +430,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
         return;
     }
+
+    unlink('/tmp/rules.debug.error');
 
     service_log('.', $verbose);
 
