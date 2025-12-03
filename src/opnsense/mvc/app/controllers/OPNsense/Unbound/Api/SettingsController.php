@@ -84,7 +84,6 @@ class SettingsController extends ApiMutableModelControllerBase
                     $list = array_filter($existing_domains); // removes all empty entries
                     $list[] = $value;
                     $node->$type = implode(',', $list);
-
                 }
             }
 
