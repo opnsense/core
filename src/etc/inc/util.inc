@@ -982,10 +982,24 @@ function mwexecfm($format, $args = [])
 }
 
 /* run commands safely in the background */
-function mwexecfb($format, $args = [])
+function mwexecfb($format, $args = [], ?string $pidfile = null, ?string $logfile = null)
 {
     if (!is_array($format)) {
         $format = [$format];
+    }
+
+    if (!is_array($args)) {
+        $args = [$args];
+    }
+
+    if (!is_null($pidfile)) {
+        array_unshift($format, '-p %s');
+        array_unshift($args, $pidfile);
+    }
+
+    if (!is_null($logfile)) {
+        array_unshift($format, '-o %s');
+        array_unshift($args, $logfile);
     }
 
     array_unshift($format, '/usr/sbin/daemon -f');
