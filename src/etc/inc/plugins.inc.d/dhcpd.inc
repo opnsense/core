@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2024 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2025 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -171,11 +171,7 @@ function dhcpd_dhcp4_configure($verbose = false)
     $ddns_zones = [];
 
     if (!dhcpd_dhcpv4_enabled()) {
-        /*
-         * XXX If there is no enabled server interfaces_staticarp_configure()
-         * is not executed as documented.  This likely does not matter, but
-         * since it came up as odd in testing make a note here for the future.
-         */
+        /* XXX dhcpd_staticarp() does not care to disable either way */
         killbypid('/var/dhcpd/var/run/dhcpd.pid');
         return;
     }
@@ -233,8 +229,7 @@ EOD;
      * to setup failover peer "bleh" entries
      */
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
-        /* certainly odd but documented and side effect populates ARP table */
-        interfaces_staticarp_configure($dhcpif, $ifconfig_details);
+        dhcpd_staticarp($dhcpif, $ifconfig_details);
 
         if (!isset($dhcpifconf['enable'])) {
             continue;
@@ -1296,4 +1291,27 @@ function dhcpd_parse_duid($duid_string)
     $duid = array_slice($parsed_duid, 4);
 
     return [$iaid, $duid];
+}
+
+function dhcpd_staticarp($interface, $ifconfig_details)
+{
+    global $config;
+
+    $ifcfg = $config['interfaces'][$interface];
+    if (empty($ifcfg['if']) || !isset($ifcfg['enable'])) {
+        return;
+    }
+
+    $device = $ifcfg['if'];
+
+    $have = in_array('staticarp', $ifconfig_details[$device]['flags']);
+    $want = isset($config['dhcpd'][$interface]['staticarp']);
+
+    if ($have !== $want) {
+        mwexecf('/sbin/ifconfig %s %sstaticarp', [$device, $want ? '' : '-']);
+        mwexecf('/usr/sbin/arp -d -i %s -a', [$device]);
+
+        /* call this only when the ARP cache was flushed */
+        interfaces_neighbors_configure($interface, $ifconfig_details);
+    }
 }
