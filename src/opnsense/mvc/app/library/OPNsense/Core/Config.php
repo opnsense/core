@@ -118,7 +118,7 @@ class Config extends Singleton
                     $old_content = $result[$xmlNodeName];
                     // check if array content is associative, move items to new list
                     // (handles first item of specific type)
-                    if (!is_array($old_content) || !array_is_list($old_content)) {
+                    if (!is_array($old_content) || !is_int(array_key_first($old_content))) {
                         $result[$xmlNodeName] = array();
                         $result[$xmlNodeName][] = $old_content;
                     }
@@ -240,10 +240,10 @@ class Config extends Singleton
                     }
                 }
                 continue;
-            } elseif (is_numeric($itemKey)) {
+            } elseif (is_int($itemKey)) {
                 // recurring tag (content), use parent tagname.
                 $childNode = $node->addChild($parentTagName);
-            } elseif (is_array($itemValue) && array_is_list($itemValue)) {
+            } elseif (is_array($itemValue) && is_int(array_key_first($itemValue))) {
                 // recurring tag, skip placeholder.
                 $childNode = $node;
             } else {
