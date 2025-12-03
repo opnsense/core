@@ -98,6 +98,15 @@ class FilterController extends FilterBaseController
             $is_cat = empty($categories) || array_intersect(explode(',', $record->categories), $categories);
             $rule_interfaces = $record->interface->getValues();
 
+            if ((string)$record->interfacenot === "1") {
+                /*
+                 * XXX Block the search from matching the interface in this
+                 * case.  It's not entirely correct, but at the moment we are
+                 * not able to search for !interface either.
+                 */
+                $rule_interfaces = [];
+            }
+
             if (empty($interfaces)) {
                 $is_if = count($rule_interfaces) != 1;
             } elseif ($show_all) {
@@ -141,6 +150,9 @@ class FilterController extends FilterBaseController
 
             if (empty($interfaces)) {
                 $is_if = empty($record['interface']) || count(explode(',', $record['interface'])) > 1;
+            } elseif ((string)$record['interfacenot'] === "1") {
+                /* XXX given that $interfaces is deduplicated multiple interfaces unmute the match */
+                $is_if = empty($record['interface']) || count($interfaces) > 1 || $record['interface'] != $interfaces[0];
             } else {
                 $is_if = array_intersect(explode(',', $record['interface'] ?? ''), $interfaces);
                 $is_if = $is_if || empty($record['interface']);
@@ -403,8 +415,8 @@ class FilterController extends FilterBaseController
         foreach ((new \OPNsense\Firewall\Filter())->rules->rule->iterateItems() as $rule) {
             $interfaces = $rule->interface->getValues();
 
-            if (count($interfaces) !== 1) {
-                // floating: empty or multiple interfaces
+            if ($rule->interfacenot->isEqual(1) || count($interfaces) !== 1) {
+                // floating: empty, multiple, or inverted interface
                 $ruleCounts['floating'] = ($ruleCounts['floating'] ?? 0) + 1;
             } else {
                 // single interface
