@@ -94,7 +94,9 @@ class FilterRuleContainerField extends ContainerField
         $result['type'] = (string)$this->action;
         $result['reply-to'] = (string)$this->replyto;
         /* XXX this is an approximation of the complex situation and will be removed eventually */
-        $result['floating'] = count($this->interface->getValues()) != 1;
+        if (count($this->interface->getValues()) != 1) {
+            $result['floating'] = true;
+        }
         return $result;
     }
 
