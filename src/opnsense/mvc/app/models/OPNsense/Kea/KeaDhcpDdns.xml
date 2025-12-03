@@ -1,0 +1,132 @@
+<model>
+    <mount>//OPNsense/Kea/dhcp_ddns</mount>
+    <version>1.0.0</version>
+    <description>Kea DHCP-DDNS Configuration</description>
+    <items>
+        <general>
+            <enabled type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </enabled>
+            <manual_config type="BooleanField"/>
+        </general>
+        <!-- shared DNS servers, can be referenced by domains -->
+        <dns_servers type="ArrayField">
+            <description type="DescriptionField">
+                <Required>Y</Required>
+            </description>
+            <ip_address type="NetworkField">
+                <NetMaskAllowed>N</NetMaskAllowed>
+                <Required>Y</Required>
+            </ip_address>
+            <port type="PortField">
+                <Default>53</Default>
+                <Required>Y</Required>
+            </port>
+            <key_name type="ModelRelationField">
+                <Model>
+                    <tsig>
+                        <source>OPNsense.Kea.KeaDhcpDdns</source>
+                        <items>tsig_keys</items>
+                        <display>name</display>
+                    </tsig>
+                </Model>
+            </key_name>
+        </dns_servers>
+        <forward_ddns>
+            <ddns_domains type="ArrayField">
+                <name type="HostnameField">
+                    <IpAllowed>N</IpAllowed>
+                    <ValidationMessage>Please specify a valid domain name.</ValidationMessage>
+                    <Constraints>
+                        <check001>
+                            <type>UniqueConstraint</type>
+                            <ValidationMessage>Duplicate forward domain exists.</ValidationMessage>
+                        </check001>
+                    </Constraints>
+                </name>
+                <key_name type="ModelRelationField">
+                    <Model>
+                        <tsig>
+                            <source>OPNsense.Kea.KeaDhcpDdns</source>
+                            <items>tsig_keys</items>
+                            <display>name</display>
+                        </tsig>
+                    </Model>
+                </key_name>
+                <dns_servers type="ModelRelationField">
+                    <Model>
+                        <dns>
+                            <source>OPNsense.Kea.KeaDhcpDdns</source>
+                            <items>dns_servers</items>
+                            <display>description</display>
+                        </dns>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                    <Required>Y</Required>
+                    <ValidationMessage>Please select at least one DNS server.</ValidationMessage>
+                </dns_servers>
+            </ddns_domains>
+        </forward_ddns>
+        <reverse_ddns>
+            <ddns_domains type="ArrayField">
+                <name type="HostnameField">
+                    <IpAllowed>N</IpAllowed>
+                    <ValidationMessage>Please specify a valid domain name.</ValidationMessage>
+                    <Constraints>
+                        <check001>
+                            <type>UniqueConstraint</type>
+                            <ValidationMessage>Duplicate reverse domain exists.</ValidationMessage>
+                        </check001>
+                    </Constraints>
+                </name>
+                <key_name type="ModelRelationField">
+                    <Model>
+                        <tsig>
+                            <source>OPNsense.Kea.KeaDhcpDdns</source>
+                            <items>tsig_keys</items>
+                            <display>name</display>
+                        </tsig>
+                    </Model>
+                </key_name>
+                <dns_servers type="ModelRelationField">
+                    <Model>
+                        <dns>
+                            <source>OPNsense.Kea.KeaDhcpDdns</source>
+                            <items>dns_servers</items>
+                            <display>description</display>
+                        </dns>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                    <Required>Y</Required>
+                    <ValidationMessage>Please select at least one DNS server.</ValidationMessage>
+                </dns_servers>
+            </ddns_domains>
+        </reverse_ddns>
+        <tsig_keys type="ArrayField">
+            <name type="TextField">
+                <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>Duplicate TSIG key name exists.</ValidationMessage>
+                        <type>UniqueConstraint</type>
+                    </check001>
+                </Constraints>
+            </name>
+            <algorithm type="OptionField">
+                <Required>Y</Required>
+                <OptionValues>
+                    <HMAC-MD5>HMAC-MD5</HMAC-MD5>
+                    <HMAC-SHA1>HMAC-SHA1</HMAC-SHA1>
+                    <HMAC-SHA224>HMAC-SHA224</HMAC-SHA224>
+                    <HMAC-SHA256>HMAC-SHA256</HMAC-SHA256>
+                    <HMAC-SHA384>HMAC-SHA384</HMAC-SHA384>
+                    <HMAC-SHA512>HMAC-SHA512</HMAC-SHA512>
+                </OptionValues>
+            </algorithm>
+            <secret type="Base64Field">
+                <Required>Y</Required>
+            </secret>
+        </tsig_keys>
+    </items>
+</model>

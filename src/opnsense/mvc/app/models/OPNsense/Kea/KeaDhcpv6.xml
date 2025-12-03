@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Kea/dhcp6</mount>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>Kea DHCPv6 configuration</description>
     <items>
         <general>
@@ -105,6 +105,21 @@
                     <Required>Y</Required>
                 </interface>
                 <description type="DescriptionField"/>
+                <ddns_options>
+                    <send_updates type="BooleanField"/>
+                    <update_on_renew type="BooleanField"/>
+                    <qualifying_suffix type="HostnameField"/>
+                    <conflict_resolution_mode type="OptionField">
+                        <Default>check-with-dhcid</Default>
+                        <Required>Y</Required>
+                        <OptionValues>
+                            <check-with-dhcid>check-with-dhcid</check-with-dhcid>
+                            <no-check-with-dhcid>no-check-with-dhcid</no-check-with-dhcid>
+                            <check-exists-with-dhcid>check-exists-with-dhcid</check-exists-with-dhcid>
+                            <no-check-without-dhcid>no-check-without-dhcid</no-check-without-dhcid>
+                        </OptionValues>
+                    </conflict_resolution_mode>
+                </ddns_options>
             </subnet6>
         </subnets>
         <reservations>
