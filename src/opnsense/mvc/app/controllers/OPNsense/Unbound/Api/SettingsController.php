@@ -49,18 +49,18 @@ class SettingsController extends ApiMutableModelControllerBase
             $type = $this->request->getPost('type');
             $mdl = $this->getModel();
 
+            $remove = function ($csv, $part) {
+                while (($i = array_search($part, $csv)) !== false) {
+                    unset($csv[$i]);
+                }
+                return implode(',', $csv);
+            };
+
             foreach ($mdl->dnsbl->blocklist->iterateItems() as $uuid => $node) {
                 $node = $mdl->getNodeByReference('dnsbl.blocklist.' . $uuid);
                 $modelType = $node->$type;
 
                 if ($node != null) {
-                    $remove = function ($csv, $part) {
-                        while (($i = array_search($part, $csv)) !== false) {
-                            unset($csv[$i]);
-                        }
-                        return implode(',', $csv);
-                    };
-
                     // strip off any trailing dot
                     $value = rtrim($domain, '.');
 
