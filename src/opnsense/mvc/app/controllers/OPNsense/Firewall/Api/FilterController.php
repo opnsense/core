@@ -40,87 +40,7 @@ class FilterController extends FilterBaseController
     protected static $categorysource = "rules.rule";
 
     /* cache properties */
-    private array $networks = [];
     private array $legacy_fieldmap = [];
-    private array $catcolors = [];
-
-    /**
-     * @param string $names comma seperated list of network items
-     * @return array list of meta arrays
-     */
-    private function getNetworks($names)
-    {
-        /* As we are rendering MVC and legacy content, we can't use the descriptions from the fieldtypes */
-        if (empty($this->networks)) {
-            $nets = [];
-            $nets['any'] = gettext('any');
-            $nets['(self)'] = gettext('This Firewall');
-            foreach (Config::getInstance()->object()->interfaces->children() as $ifname => $ifdetail) {
-                $descr = htmlspecialchars(!empty($ifdetail->descr) ? $ifdetail->descr : strtoupper($ifname));
-                $nets[$ifname] = $descr . ' ' . gettext('net');
-                if (!empty($ifdetail->if)) {
-                    /* some automatic rules use device names */
-                    $nets[(string)$ifdetail->if] = $descr . ' ' . gettext('net');
-                }
-                $nets[$ifname . 'ip'] = $descr . ' ' . gettext('address');
-            }
-            foreach ($nets as $key => $value) {
-                $this->networks[$key] = [
-                    'value' => $key,
-                    '%value' => $value,
-                    'isAlias' => false,
-                    'description' => ''
-                ];
-            }
-            $aliasmdl = new Alias(true);
-            Util::attachAliasObject($aliasmdl);
-            foreach ($aliasmdl->aliasIterator() as $alias) {
-                $this->networks[$alias['name']] = [
-                    'value' => $alias['name'],
-                    '%value' => $alias['name'],
-                    'isAlias' => true,
-                    'description' => Util::aliasDescription($alias['name'])
-                ];
-            }
-        }
-        $result = [];
-        foreach (array_map('trim', explode(',', $names)) as $name) {
-            if (isset($this->networks[$name])) {
-                $result[] = $this->networks[$name];
-            } else {
-                /* unknown type (e.g. address or port) */
-                $result[] = [
-                    'value' => $name,
-                    '%value' => $name,
-                    'isAlias' => false,
-                    'description' => ''
-                ];
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * @param array $cats list of category ids
-     * @return array colors
-     */
-    private function getCategoryColors($cats)
-    {
-        if (empty($this->catcolors)) {
-            foreach ((new Category())->categories->category->iterateItems() as $key => $category) {
-                $uuid = (string)$category->getAttributes()['uuid'];
-                $color = trim((string)$category->color);
-                $this->catcolors[$uuid] = !empty($color) ? "#{$color}" : '#000';
-            }
-        }
-        $result = [];
-        foreach ($cats as $cat) {
-            if (isset($this->catcolors[$cat])) {
-                $result[] = $this->catcolors[$cat];
-            }
-        }
-        return $result;
-    }
 
     /**
      * @return array cached fieldmapping for legacy data
@@ -162,11 +82,11 @@ class FilterController extends FilterBaseController
         $categories = $this->request->get('category');
         $show_all = !empty($this->request->get('show_all'));
         if (!empty($this->request->get('interface'))) {
-            $interfaces = explode(",", $this->request->get('interface'));
+            $interfaces = explode(',', $this->request->get('interface'));
             /* add groups which contain the selected interface */
             foreach ((new Group())->ifgroupentry->iterateItems() as $groupItem) {
-                if (array_intersect($interfaces, explode(',', (string)$groupItem->members))) {
-                    $interfaces[] = (string)$groupItem->ifname;
+                if (array_intersect($interfaces, $groupItem->members->getValues())) {
+                    $interfaces[] = $groupItem->ifname->getValue();
                 }
             }
         } else {
@@ -176,7 +96,7 @@ class FilterController extends FilterBaseController
         /* filter logic for mvc rules */
         $filter_funct_mvc = function ($record) use ($categories, $interfaces, $show_all) {
             $is_cat = empty($categories) || array_intersect(explode(',', $record->categories), $categories);
-            $rule_interfaces = array_filter(explode(',', (string)$record->interface));
+            $rule_interfaces = $record->interface->getValues();
 
             if ((string)$record->interfacenot === "1") {
                 /*
@@ -321,15 +241,17 @@ class FilterController extends FilterBaseController
 
     public function getRuleAction($uuid = null)
     {
-        $result = $this->getBase("rule", "rules.rule", $uuid);
+        $result = $this->getBase('rule', 'rules.rule', $uuid);
+
         if ($this->request->get('fetchmode') === 'copy' && !empty($result['rule'])) {
             /* copy mode, generate new sequence at the end */
             $max = 0;
             foreach ($this->getModel()->rules->rule->iterateItems() as $rule) {
-                $max = (int)((string)$rule->sequence) > $max ? (int)((string)$rule->sequence) : $max;
+                $max = max($rule->sequence->asInt(), $max);
             }
             $result['rule']['sequence'] = $max + 100;
         }
+
         return $result;
     }
 
@@ -491,7 +413,7 @@ class FilterController extends FilterBaseController
         // Count rules per interface
         $ruleCounts = [];
         foreach ((new \OPNsense\Firewall\Filter())->rules->rule->iterateItems() as $rule) {
-            $interfaces = array_filter(explode(',', (string)$rule->interface));
+            $interfaces = $rule->interface->getValues();
 
             if ($rule->interfacenot->isEqual(1) || count($interfaces) !== 1) {
                 // floating: empty, multiple, or inverted interface

@@ -93,7 +93,8 @@ class FilterRuleContainerField extends ContainerField
         $result['descr'] = (string)$this->description;
         $result['type'] = (string)$this->action;
         $result['reply-to'] = (string)$this->replyto;
-        if (strpos((string)$this->interface, ",") !== false) {
+        /* XXX this is an approximation of the complex situation and will be removed eventually */
+        if (count($this->interface->getValues()) != 1) {
             $result['floating'] = true;
         }
         return $result;
@@ -107,8 +108,7 @@ class FilterRuleContainerField extends ContainerField
     public function getPriority()
     {
         $configObj = Config::getInstance()->object();
-        $interface = (string)$this->interface;
-
+        $interface = $this->interface->getValue();
         if (
             // floating: empty, multiple, or inverted interface
             (string)$this->interfacenot === "1" ||
@@ -125,8 +125,8 @@ class FilterRuleContainerField extends ContainerField
             if (static::$ifgroups === null) {
                 static::$ifgroups = [];
                 foreach ((new Group())->ifgroupentry->iterateItems() as $node) {
-                    if (!empty((string)$node->sequence)) {
-                        static::$ifgroups[(string)$node->ifname] =  (int)((string)$node->sequence);
+                    if (!$node->sequence->isEmpty()) {
+                        static::$ifgroups[$node->ifname->getValue()] = $node->sequence->asInt();
                     }
                 }
             }

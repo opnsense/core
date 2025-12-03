@@ -205,6 +205,7 @@ function filter_core_get_default_nat_outbound_networks()
 function filter_core_rules_system($fw, $defaults)
 {
     global $config;
+
     $ipv6_disabled = !isset($config['system']['ipv6allow']);
 
     $dhcrelay6_interfaces = plugins_run('dhcrelay_interfaces', ['inet6']);
@@ -224,12 +225,11 @@ function filter_core_rules_system($fw, $defaults)
         $defaults['block']
     );
 
-
     if (empty($config['system']['no_ipv6_rfc4890_req'])) {
         // IPv6 ICMP requirements
         $fw->registerFilterRule(
             1,
-            ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '1,2,135,136',
+            ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '1,2,3,4,135,136',
                 'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'disabled' => $ipv6_disabled,
                 '#ref' => 'system_advanced_firewall.php#no_ipv6_rfc4890_req'],
             $defaults['pass']
@@ -400,8 +400,9 @@ function filter_core_rules_system($fw, $defaults)
             }
             $fw->registerFilterRule(1, $dhcpv6_opts, $defaults['pass']);
         }
+
         // IPv4
-        switch (empty($intfinfo['ipaddr']) ? "" : $intfinfo['ipaddr']) {
+        switch ($intfinfo['ipaddr'] ?? 'none') {
             case "pptp":
                 $fw->registerFilterRule(
                     1,
@@ -474,11 +475,13 @@ function filter_core_rules_system($fw, $defaults)
                 }
                 break;
         }
+
         // IPv6
         if ($ipv6_disabled) {
             continue;
         }
-        switch (isset($intfinfo['ipaddrv6']) ? $intfinfo['ipaddrv6'] : null) {
+
+        switch ($intfinfo['ipaddrv6'] ?? 'none') {
             case "6rd":
                 $fw->registerFilterRule(
                     1,
@@ -563,6 +566,7 @@ function filter_core_rules_system($fw, $defaults)
         'quick' => false, "descr" => "let out anything from firewall host itself"],
         $defaults['pass']
     );
+
     // ipsec
     if (!empty(iterator_to_array($fw->getInterfaceMapping())['enc0'])) {
         $fw->registerFilterRule(

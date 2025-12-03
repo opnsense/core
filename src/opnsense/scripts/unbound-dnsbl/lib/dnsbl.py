@@ -52,6 +52,7 @@ class DNSBL:
         self.dnsbl_update_time = 0
         self.dnsbl_available = False
         self.dnsbl = None
+        self.warn_file = "/data/dnsbl_format_warning"
         self._context = context
 
         self._update_dnsbl()
@@ -88,9 +89,13 @@ class DNSBL:
                 if not self.dnsbl or isinstance(e, ValueError):
                     log_err("dnsbl_module: unable to parse blocklist file: %s. Please re-apply the blocklist settings." % e)
                     self.dnsbl_available = False
+                    open(self.warn_file, "a").close()
                     return
                 else:
                     log_err("dnsbl_module: error parsing blocklist: %s, reusing last known list" % e)
+
+        if os.path.exists(self.warn_file):
+            os.remove(self.warn_file)
 
         self.dnsbl_available = True
 
@@ -130,6 +135,10 @@ class DNSBL:
                     if (is_full_domain) or (not is_full_domain and meta.get('wildcard')):
                         policy = self._context.get_config(str(meta.get('idx')))
                         if policy:
+                            # this domain has a policy attached, disable caching for this domain
+                            # to prevent queries coming from different source nets to skip policy matching.
+                            if qstate and hasattr(qstate, 'no_cache_store'):
+                                qstate.no_cache_store = 1
                             if self._in_network(query.client, policy.get('source_nets')):
                                 r = policy.get('pass_regex')
                                 if r and (r.match(domain) or (orig and r.match(orig))):
@@ -142,9 +151,6 @@ class DNSBL:
                                 match['bl'] = meta.get('bl')
                                 break
                         else:
-                            # allow query, but do not cache.
-                            if qstate and hasattr(qstate, 'no_cache_store'):
-                                qstate.no_cache_store = 1
                             return False
 
             if '.' not in sub or not self._context.has_wildcards:

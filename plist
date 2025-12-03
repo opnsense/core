@@ -157,6 +157,7 @@
 /usr/local/etc/ssl/ext_sources/README
 /usr/local/etc/ssl/opnsense.cnf
 /usr/local/etc/strongswan.opnsense.d/README
+/usr/local/etc/suricata/conf.d/README
 /usr/local/etc/unbound.opnsense.d/README
 /usr/local/libexec/opnsense-auth
 /usr/local/opnsense/contrib/IXR/IXR_Library.php
@@ -301,6 +302,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/AliasController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/AliasUtilController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/CategoryController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/DNatController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/FilterBaseController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/FilterController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/FilterUtilController.php
@@ -309,12 +311,14 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/OneToOneController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/SourceNatController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/CategoryController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/DNatController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/FilterController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/GroupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/NptController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/OneToOneController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/SourceNatController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/categoryEdit.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogDNatRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogFilterRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogNptRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogOneToOneRule.xml
@@ -578,6 +582,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/OpensshOverrideStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/RootLockStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/SystemBootingStatus.php
+/usr/local/opnsense/mvc/app/library/OPNsense/System/Status/UnboundBlocklistStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/UnboundOverrideStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/SystemStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/SystemStatusCode.php
@@ -727,6 +732,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Alias.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Category.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Category.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/DNat.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/DNat.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/DynamicAliases/CaptivePortalAliases.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/DynamicAliases/InterfaceNetworkAliases.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/DynamicAliases/README.md
@@ -734,11 +741,17 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasContentField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasNameField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/CategoryField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/CategoryMapField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/DNatAssociatedRuleField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/DNatSequenceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/FilterRuleField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/FilterSequenceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/GroupField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/GroupNameField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/InterfaceField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/NetworkMappedField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/PortMappedField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/ScheduleField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/SourceNatRuleField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/TosField.php
@@ -944,6 +957,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias_util.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/category.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Firewall/dnat_rule.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/filter.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/filter_rule.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/group.volt
@@ -1091,6 +1105,7 @@
 /usr/local/opnsense/scripts/captiveportal/lib/arp.py
 /usr/local/opnsense/scripts/captiveportal/lib/daemonize.py
 /usr/local/opnsense/scripts/captiveportal/lib/db.py
+/usr/local/opnsense/scripts/captiveportal/lib/ipfw.py
 /usr/local/opnsense/scripts/captiveportal/lib/pf.py
 /usr/local/opnsense/scripts/captiveportal/listClients.py
 /usr/local/opnsense/scripts/captiveportal/overlay_template.py
@@ -1561,7 +1576,6 @@
 /usr/local/opnsense/site-python/daemonize.py
 /usr/local/opnsense/site-python/duckdb_helper.py
 /usr/local/opnsense/site-python/log_helper.py
-/usr/local/opnsense/site-python/params.py
 /usr/local/opnsense/site-python/sqlite3_helper.py
 /usr/local/opnsense/site-python/tls_helper.py
 /usr/local/opnsense/site-python/watchers/__init__.py
@@ -2156,8 +2170,6 @@
 /usr/local/opnsense/www/js/gridstack-all.min.js
 /usr/local/opnsense/www/js/jquery-3.5.1.min.js
 /usr/local/opnsense/www/js/jquery-sortable.js
-/usr/local/opnsense/www/js/jquery.bootgrid.LICENSE
-/usr/local/opnsense/www/js/jquery.bootgrid.js
 /usr/local/opnsense/www/js/jquery.qrcode.js
 /usr/local/opnsense/www/js/jquery.qrcode.js.LICENSE
 /usr/local/opnsense/www/js/luxon.min.js
@@ -2167,7 +2179,6 @@
 /usr/local/opnsense/www/js/opnsense-treeview.js
 /usr/local/opnsense/www/js/opnsense.js
 /usr/local/opnsense/www/js/opnsense_bootgrid.js
-/usr/local/opnsense/www/js/opnsense_bootgrid_plugin.js
 /usr/local/opnsense/www/js/opnsense_health.js
 /usr/local/opnsense/www/js/opnsense_status.js
 /usr/local/opnsense/www/js/opnsense_theme.js
@@ -2478,8 +2489,6 @@
 /usr/local/www/diag_authentication.php
 /usr/local/www/diag_backup.php
 /usr/local/www/fbegin.inc
-/usr/local/www/firewall_nat.php
-/usr/local/www/firewall_nat_edit.php
 /usr/local/www/firewall_nat_out.php
 /usr/local/www/firewall_nat_out_edit.php
 /usr/local/www/firewall_rule_lookup.php
@@ -2526,6 +2535,5 @@
 @sample /usr/local/etc/bogons.sample
 @sample /usr/local/etc/bogonsv6.sample
 @sample /usr/local/etc/config.xml.sample
-@sample /usr/local/opnsense/service/templates/OPNsense/IDS/custom.yaml.sample
 @shadow /usr/local/etc/pkg/repos/FreeBSD.conf.sample
 @shadow /usr/local/etc/pkg/repos/OPNsense.conf.sample

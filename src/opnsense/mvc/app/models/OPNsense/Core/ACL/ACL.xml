@@ -215,17 +215,12 @@
             <pattern>firewall_nat_out_edit.php*</pattern>
         </patterns>
     </page-firewall-nat-outbound-edit>
-    <page-firewall-nat-portforward>
-        <name>Firewall: NAT: Port Forward</name>
-        <patterns>
-            <pattern>firewall_nat.php*</pattern>
-            <pattern>api/firewall/category/search_item*</pattern>
-        </patterns>
-    </page-firewall-nat-portforward>
     <page-firewall-nat-portforward-edit>
-        <name>Firewall: NAT: Port Forward: Edit</name>
+        <name>Firewall: NAT: Destination NAT</name>
         <patterns>
-            <pattern>firewall_nat_edit.php*</pattern>
+            <pattern>ui/firewall/d_nat</pattern>
+            <pattern>api/firewall/d_nat/*</pattern>
+            <pattern>api/firewall/category/search_item*</pattern>
         </patterns>
     </page-firewall-nat-portforward-edit>
     <page-firewall-rules>

@@ -473,7 +473,7 @@
     </field>
     <field>
         <type>header</type>
-        <label>Traffic shaping [experimental]</label>
+        <label>Traffic shaping</label>
         <advanced>true</advanced>
     </field>
     <field>

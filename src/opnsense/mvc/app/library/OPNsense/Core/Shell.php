@@ -69,7 +69,7 @@ class Shell
      * @param bool $mute
      * @return int
      */
-    static public function run_safe($format, $args = [], $mute = false)
+    public static function run_safe($format, $args = [], $mute = false)
     {
         $command = self::exec_safe($format, $args);
         $result_code = 0;

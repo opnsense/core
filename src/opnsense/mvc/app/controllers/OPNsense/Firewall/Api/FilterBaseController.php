@@ -32,6 +32,7 @@ use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Alias;
 use OPNsense\Firewall\Category;
+use OPNsense\Firewall\Util;
 
 /**
  * Class FilterBaseController implements actions for various types
@@ -42,6 +43,85 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
     protected static $internalModelName = 'filter';
     protected static $internalModelClass = 'OPNsense\Firewall\Filter';
     protected static $categorysource = null;
+
+    /* store data for cached getters */
+    private array $networks = [];
+    private ?array $catcolors = null;
+
+    /**
+     * @param array $cats list of category ids
+     * @return array colors
+     */
+    protected function getCategoryColors(array $cats)
+    {
+        if ($this->catcolors === null) {
+            $this->catcolors = []; /* init to prevent empty categories initiating models constantly */
+            foreach ((new Category())->categories->category->iterateItems() as $key => $category) {
+                $uuid = (string)$category->getAttributes()['uuid'];
+                $color = trim((string)$category->color->getValue(true));
+                $this->catcolors[$uuid] = !empty($color) ? "#{$color}" : '#000';
+            }
+        }
+        /* extract catcolors by index */
+        return array_values(array_intersect_key($this->catcolors, array_flip($cats)));
+    }
+
+    /**
+     * @param string $names comma seperated list of network items
+     * @return array list of meta arrays
+     */
+    protected function getNetworks($names)
+    {
+        /* As we are rendering MVC and legacy content, we can't use the descriptions from the fieldtypes */
+        if (empty($this->networks)) {
+            $nets = [];
+            $nets['any'] = gettext('any');
+            $nets['(self)'] = gettext('This Firewall');
+            foreach (Config::getInstance()->object()->interfaces->children() as $ifname => $ifdetail) {
+                $descr = htmlspecialchars(!empty($ifdetail->descr) ? $ifdetail->descr : strtoupper($ifname));
+                $nets[$ifname] = $descr . ' ' . gettext('net');
+                if (!empty($ifdetail->if)) {
+                    /* some automatic rules use device names */
+                    $nets[(string)$ifdetail->if] = $descr . ' ' . gettext('net');
+                }
+                $nets[$ifname . 'ip'] = $descr . ' ' . gettext('address');
+            }
+            foreach ($nets as $key => $value) {
+                $this->networks[$key] = [
+                    'value' => $key,
+                    '%value' => $value,
+                    'isAlias' => false,
+                    'description' => ''
+                ];
+            }
+            $aliasmdl = new Alias(true);
+            Util::attachAliasObject($aliasmdl);
+            foreach ($aliasmdl->aliasIterator() as $alias) {
+                $this->networks[$alias['name']] = [
+                    'value' => $alias['name'],
+                    '%value' => $alias['name'],
+                    'isAlias' => true,
+                    'description' => Util::aliasDescription($alias['name'])
+                ];
+            }
+        }
+        $result = [];
+        foreach (array_map('trim', explode(',', $names)) as $name) {
+            if (isset($this->networks[$name])) {
+                $result[] = $this->networks[$name];
+            } else {
+                /* unknown type (e.g. address or port) */
+                $result[] = [
+                    'value' => $name,
+                    '%value' => $name,
+                    'isAlias' => false,
+                    'description' => ''
+                ];
+            }
+        }
+        return $result;
+    }
+
 
     /**
      * list categories and usage
@@ -113,7 +193,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             if ($alias->type == 'internal') {
                 /* currently only used for legacy bindings, align with legacy_list_aliases() usage */
                 continue;
-            } elseif (strpos((string)$alias->type, "port") === false) {
+            } elseif ($alias->type != 'port') {
                 $result['aliases']['items'][(string)$alias->name] = (string)$alias->name;
             }
         }
@@ -149,7 +229,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
                 /* currently only used for legacy bindings, align with legacy_list_aliases() usage */
                 continue;
             }
-            if (strpos((string)$alias->type, 'port') !== false) {
+            if ((string)$alias->type == 'port') {
                 $result['aliases']['items'][(string)$alias->name] = (string)$alias->name;
             }
         }

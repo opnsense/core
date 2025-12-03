@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2017 Deciso B.V.
+ * Copyright (C) 2015-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,22 +42,6 @@ class SettingsController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'ids';
     protected static $internalModelClass = '\OPNsense\IDS\IDS';
-    private $modelHandle = null;
-
-    /**
-     * Get (or create) model object
-     * @return null|BaseModel
-     * @throws \ReflectionException
-     */
-    protected function getModel()
-    {
-        if ($this->modelHandle == null) {
-            $this->modelHandle = (new \ReflectionClass(static::$internalModelClass))->newInstance();
-        }
-
-        return $this->modelHandle;
-    }
-
 
     /**
      * Query non layered model items
@@ -66,11 +50,9 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     protected function getModelNodes()
     {
-        $settingsNodes = array('general');
-        $result = array();
-        $mdlIDS = $this->getModel();
-        foreach ($settingsNodes as $key) {
-            $result[$key] = $mdlIDS->$key->getNodes();
+        $result = [];
+        foreach (['general'] as $key) {
+            $result[$key] = $this->getModel()->$key->getNodes();
         }
         return $result;
     }
@@ -131,9 +113,9 @@ class SettingsController extends ApiMutableModelControllerBase
 
             // request list of installed rules
             $backend = new Backend();
-            $response = $backend->configdpRun("ids query rules", array($itemsPerPage,
+            $response = $backend->configdpRun("ids query rules", [$itemsPerPage,
                 ($currentPage - 1) * $itemsPerPage,
-                $searchPhrase, $sortStr));
+                $searchPhrase, $sortStr]);
 
             $data = json_decode($response, true);
 
@@ -143,18 +125,17 @@ class SettingsController extends ApiMutableModelControllerBase
                     $row['enabled'] = $this->getModel()->getRuleStatus($row['sid'], $row['enabled']);
                     $row['action'] = strtolower($this->getModel()->getRuleAction($row['sid'], $row['action'], true));
                 }
-                $result = array();
+                $result = [];
                 $result['rows'] = $data['rows'];
                 $result['rowCount'] = empty($result['rows']) || !is_array($result['rows']) ? 0 : count($result['rows']);
                 $result['total'] = $data['total_rows'];
-                $result['parameters'] = $data['parameters'];
                 $result['current'] = (int)$currentPage;
                 return $result;
             } else {
-                return array();
+                return [];
             }
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -169,8 +150,7 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         // request list of installed rules
         if (!empty($sid)) {
-            $backend = new Backend();
-            $response = $backend->configdpRun("ids query rules", array(1, 0,'sid/' . $sid));
+            $response = (new Backend())->configdpRun("ids query rules", [1, 0,'sid/' . $sid]);
             $data = json_decode($response, true);
         } else {
             $data = null;
@@ -189,23 +169,12 @@ class SettingsController extends ApiMutableModelControllerBase
                     $ref = trim($ref);
                     $item_html = '<small><a href="%url%" target="_blank">%ref%</a></small>';
                     if (substr($ref, 0, 4) == 'url,') {
-                        $item_html = str_replace("%url%", 'http://' . substr($ref, 4), $item_html);
+                        $item_html = str_replace("%url%", 'https://' . substr($ref, 4), $item_html);
                         $item_html = str_replace("%ref%", substr($ref, 4), $item_html);
-                    } elseif (substr($ref, 0, 7) == "system,") {
-                        $item_html = str_replace("%url%", substr($ref, 7), $item_html);
-                        $item_html = str_replace("%ref%", substr($ref, 7), $item_html);
-                    } elseif (substr($ref, 0, 8) == "bugtraq,") {
-                        $item_html = str_replace("%url%", "http://www.securityfocus.com/bid/" .
-                            substr($ref, 8), $item_html);
-                        $item_html = str_replace("%ref%", "bugtraq " . substr($ref, 8), $item_html);
                     } elseif (substr($ref, 0, 4) == "cve,") {
                         $item_html = str_replace("%url%", "https://cve.mitre.org/cgi-bin/cvename.cgi?name=" .
                             substr($ref, 4), $item_html);
                         $item_html = str_replace("%ref%", substr($ref, 4), $item_html);
-                    } elseif (substr($ref, 0, 7) == "nessus,") {
-                        $item_html = str_replace("%url%", "http://cgi.nessus.org/plugins/dump.php3?id=" .
-                            substr($ref, 7), $item_html);
-                        $item_html = str_replace("%ref%", 'nessus ' . substr($ref, 7), $item_html);
                     } else {
                         continue;
                     }
@@ -215,7 +184,7 @@ class SettingsController extends ApiMutableModelControllerBase
             ksort($row);
             return $row;
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -237,7 +206,7 @@ class SettingsController extends ApiMutableModelControllerBase
             }
             return $data;
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -249,14 +218,13 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     private function listInstallableRules()
     {
-        $result = array();
-        $backend = new Backend();
-        $response = $backend->configdRun("ids list installablerulesets");
+        $result = [];
+        $response = (new Backend())->configdRun("ids list installablerulesets");
         $data = json_decode($response, true);
         if ($data != null && array_key_exists("items", $data)) {
             ksort($data['items']);
             foreach ($data['items'] as $filename => $fileinfo) {
-                $item = array();
+                $item = [];
                 $item['description'] = $fileinfo['description'];
                 $item['filename'] = $fileinfo['filename'];
                 $item['documentation_url'] = $fileinfo['documentation_url'];
@@ -268,7 +236,6 @@ class SettingsController extends ApiMutableModelControllerBase
                     $item['documentation'] = null;
                 }
 
-                // format timestamps
                 if ($fileinfo['modified_local'] == null) {
                     $item['modified_local'] = null;
                 } else {
@@ -291,7 +258,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function getRulesetpropertiesAction()
     {
-        $result = array('properties' => array());
+        $result = ['properties' => []];
         $backend = new Backend();
         $response = $backend->configdRun("ids list installablerulesets");
         $data = json_decode($response, true);
@@ -317,7 +284,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function setRulesetpropertiesAction()
     {
-        $result = array("result" => "failed");
+        $result = ["result" => "failed"];
         if ($this->request->isPost() && $this->request->hasPost("properties")) {
             // only update properties available in "ids list installablerulesets"
             $backend = new Backend();
@@ -328,7 +295,7 @@ class SettingsController extends ApiMutableModelControllerBase
                 foreach ($setProperties as $key => $value) {
                     if (isset($data['properties'][$key])) {
                         if (!isset($result['fields'])) {
-                            $result['fields'] = array(); // return updated fields
+                            $result['fields'] = []; // return updated fields
                         }
                         $result['fields'][] = $key;
                         $resultTag = null;
@@ -381,7 +348,7 @@ class SettingsController extends ApiMutableModelControllerBase
                 return $rule;
             }
         }
-        return array();
+        return [];
     }
 
     /**
@@ -394,7 +361,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function setRulesetAction($filename)
     {
-        $result = array("result" => "failed");
+        $result = ["result" => "failed"];
         if ($this->request->isPost()) {
             // we're only allowed to edit filenames which have an install ruleset, request valid ones from configd
             $backend = new Backend();
@@ -430,7 +397,7 @@ class SettingsController extends ApiMutableModelControllerBase
     public function toggleRulesetAction($filenames, $enabled = null)
     {
         $update_count = 0;
-        $result = array("status" => "none");
+        $result = ["status" => "none"];
         if ($this->request->isPost()) {
             $backend = new Backend();
             $response = $backend->configdRun("ids list installablerulesets");
@@ -513,7 +480,7 @@ class SettingsController extends ApiMutableModelControllerBase
                 return $this->save();
             }
         }
-        return array();
+        return [];
     }
 
     /**
@@ -526,7 +493,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function setRuleAction($sid)
     {
-        $result = array("result" => "failed");
+        $result = ["result" => "failed"];
         if ($this->request->isPost() && $this->request->hasPost("action")) {
             if ($this->request->hasPost('enabled')) {
                 $this->toggleRuleAction($sid, $this->request->getPost("enabled", "int", null));
@@ -695,7 +662,8 @@ class SettingsController extends ApiMutableModelControllerBase
         /* XXX: toggle search backend data for rule information as this action can be rather slow and we don't want
                 to enforce this on all callers */
         $this->getModel()->rules->rule->queryRuleInfo();
-        $this->modelHandle = null;
+        $this->invalidateModel();
+
         return $this->searchBase("rules.rule", null, "sid");
     }
 

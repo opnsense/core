@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2014-2015 Deciso B.V.
+ # Copyright (c) 2014-2025 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -48,15 +48,6 @@
 
     $( document ).ready(function() {
         var interface_descriptions = {};
-        //
-        var data_get_map = {'frm_GeneralSettings':"/api/ids/settings/get"};
-
-        /**
-         * update service status
-         */
-        function updateStatus() {
-            updateServiceControlUI('ids');
-        }
 
         /**
          * list all known classtypes and add to selection box
@@ -138,7 +129,6 @@
                 $('#processing-dialog').modal('hide');
             });
 
-
             if ( selected_logfile != "none") {
                 request['fileid'] = selected_logfile;
             }
@@ -156,7 +146,7 @@
                     $(".detect_custom").closest("tr").addClass("hidden");
                 }
             });
-            mapDataToFormUI(data_get_map).done(function(data){
+            mapDataToFormUI({'frm_GeneralSettings':'/api/ids/settings/get'}).done(function(data){
                 // set schedule updates link to cron
                 $.each(data.frm_GeneralSettings.ids.general.UpdateCron, function(key, value) {
                     if (value.selected == 1) {
@@ -183,11 +173,7 @@
             var rows = $("#"+gridId).bootgrid('getSelectedRows');
             if (rows != undefined){
                 var deferreds = [];
-                if (state != undefined) {
-                    var url_suffix = state;
-                } else {
-                    var url_suffix = "";
-                }
+                var url_suffix = state ?? '';
                 var base = $.when({});
                 var keyset = [];
                 $.each(rows, function(key, uuid){
@@ -230,17 +216,13 @@
         /**
          * load content on tab changes
          */
-        let gridRuleFilesInitialized = false;
-        let gridInstalledRulesInitialized = false;
-        let gridUserRulesInitialized = false;
-        let gridAlertsInitialized = false;
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             loadGeneralSettings();
             if (e.target.id == 'download_settings_tab') {
                 /**
                  * grid for installable rule files
                  */
-                if (!gridRuleFilesInitialized) {
+                if (!$("#grid-rule-files").hasClass('tabulator')) {
                     $("#grid-rule-files").UIBootgrid({
                         search:'/api/ids/settings/list_rulesets',
                         get:'/api/ids/settings/get_ruleset/',
@@ -278,7 +260,6 @@
                             actionToggleSelected('grid-rule-files', '/api/ids/settings/toggle_ruleset/', 1, 20);
                         });
                     });
-                    gridRuleFilesInitialized = true;
                 } else {
                     $('#grid-rule-files').bootgrid('reload');
                 }
@@ -302,17 +283,13 @@
                     }
                 });
             } else if (e.target.id == 'rule_tab'){
-                //
-                // activate rule tab page
-                //
-
                 // delay refresh for a bit
                 setTimeout(updateRuleMetadata, 500);
 
                 /**
                  * grid installed rules
                  */
-                if (!gridInstalledRulesInitialized) {
+                if (!$("#grid-installedrules").hasClass('tabulator')) {
                     $("#grid-installedrules").UIBootgrid(
                         {   search:'/api/ids/settings/searchinstalledrules',
                             get:'/api/ids/settings/get_rule_info/',
@@ -394,16 +371,12 @@
                             });
                         });
                     });
-                    gridInstalledRulesInitialized = true;
                 } else {
                     $('#grid-installedrules').bootgrid('reload');
                 }
             } else if (e.target.id == 'alert_tab') {
                 updateAlertLogs();
-                /**
-                 * grid query alerts
-                 */
-                if (!gridAlertsInitialized) {
+                if (!$("#grid-alerts").hasClass('tabulator')) {
                     var grid_alerts = $("#grid-alerts").UIBootgrid({
                         search:'/api/ids/service/query_alerts',
                         get:'/api/ids/service/get_alert_info/',
@@ -559,12 +532,11 @@
                                 });
                         }).end();
                   });
-                  gridAlertsInitialized = true;
                 } else {
                     $("#grid-alerts").bootgrid('reload');
                 }
             } else if (e.target.id == 'userrules_tab') {
-                if (!gridUserRulesInitialized) {
+                if (!$("#grid-userrules").hasClass('tabulator')) {
                     $("#grid-userrules").UIBootgrid({
                         search:'/api/ids/settings/search_user_rule',
                         get:'/api/ids/settings/get_user_rule/',
@@ -576,7 +548,6 @@
                             virtualDOM: true,
                         }
                     });
-                    gridUserRulesInitialized = true;
                 } else {
                     $("#grid-userrules").bootgrid('reload');
                 }
@@ -653,7 +624,7 @@
             interface_descriptions = data;
         });
 
-        updateStatus();
+        updateServiceControlUI('ids');
 
         // update history on tab state and implement navigation
         if (window.location.hash != "") {

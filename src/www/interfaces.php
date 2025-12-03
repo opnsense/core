@@ -140,7 +140,7 @@ function parse_xml_regdomain(&$rdattributes, $rdfile = '', $rootobj = 'regulator
     $parsed_xml = array();
 
     if (file_exists('/tmp/regdomain.cache')) {
-        $parsed_xml = unserialize(file_get_contents('/tmp/regdomain.cache'));
+        $parsed_xml = unserialize(file_get_contents('/tmp/regdomain.cache'), ['allowed_classes' => false]);
         if (!empty($parsed_xml)) {
             $rdmain = $parsed_xml['main'];
             $rdattributes = $parsed_xml['attributes'];
@@ -165,16 +165,16 @@ function parse_xml_regdomain(&$rdattributes, $rdfile = '', $rootobj = 'regulator
             unset($rdattributes['shared-frequency-bands']);
         }
 
-        $parsed_xml = array('main' => $rdmain, 'attributes' => $rdattributes);
-        $rdcache = fopen('/tmp/regdomain.cache', 'w');
-        fwrite($rdcache, serialize($parsed_xml));
-        fclose($rdcache);
+        file_safe('/tmp/regdomain.cache', serialize([
+            'main' => $rdmain, 'attributes' => $rdattributes,
+        ]));
     }
 
     return $rdmain;
 }
 
-function parse_xml_config_raw_attr($cffile, $rootobj, &$parsed_attributes, $isstring = "false") {
+function parse_xml_config_raw_attr($cffile, $rootobj, &$parsed_attributes, $isstring = 'false')
+{
     global $depth, $curpath, $parsedcfg, $havedata, $parsedattrs;
     $parsedcfg = array();
     $curpath = array();
@@ -552,7 +552,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $intput_errors[] = gettext("You have already applied your settings!");
         } else {
             if (file_exists('/tmp/.interfaces.apply')) {
-                $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
+                $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'), ['allowed_classes' => false]);
                 foreach ($toapplylist as $ifapply => $ifcfgo) {
                     interface_reset($ifapply, $ifcfgo, isset($ifcfgo['enable']));
                     interface_configure(false, $ifapply, true);
@@ -590,16 +590,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config("Interface {$pconfig['descr']}({$if}) is now disabled.");
         mark_subsystem_dirty('interfaces');
         if (file_exists('/tmp/.interfaces.apply')) {
-            $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
+            $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'), ['allowed_classes' => false]);
         } else {
-            $toapplylist = array();
+            $toapplylist = [];
         }
         if (empty($toapplylist[$if])) {
             // only flush if the running config is not in our list yet
             $toapplylist[$if]['ifcfg'] = $a_interfaces[$if];
             $toapplylist[$if]['ifcfg']['devices'] = get_real_interface($if, 'both');
             $toapplylist[$if]['ppps'] = $a_ppps;
-            file_put_contents('/tmp/.interfaces.apply', serialize($toapplylist));
+            file_safe('/tmp/.interfaces.apply', serialize($toapplylist));
         }
         if (!empty($ifgroup)) {
             header(url_safe('Location: /interfaces.php?if=%s&group=%s', array($if, $ifgroup)));
@@ -1259,16 +1259,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // log changes for apply action
             // (it would be better to diff the physical situation with the new config for changes)
             if (file_exists('/tmp/.interfaces.apply')) {
-                $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
+                $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'), ['allowed_classes' => false]);
             } else {
-                $toapplylist = array();
+                $toapplylist = [];
             }
 
             if (empty($toapplylist[$if])) {
                 // only flush if the running config is not in our list yet
                 $toapplylist[$if]['ifcfg'] = $old_config;
                 $toapplylist[$if]['ppps'] = $a_ppps;
-                file_put_contents('/tmp/.interfaces.apply', serialize($toapplylist));
+                file_safe('/tmp/.interfaces.apply', serialize($toapplylist));
             }
 
             mark_subsystem_dirty('interfaces');

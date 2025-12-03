@@ -388,7 +388,7 @@ function dpinger_watcher()
 
     if (file_exists($cache_file) && isvalidpid('/var/run/gateway_watcher.pid')) {
         try {
-            $result = @unserialize(file_get_contents($cache_file));
+            $result = @unserialize(file_get_contents($cache_file), ['allowed_classes' => false]);
             if ($result !== false) {
                 return $result;
             }

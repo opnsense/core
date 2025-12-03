@@ -64,7 +64,6 @@
                 grid_ids.forEach(function (grid_id) {
                     if (all_grids[grid_id] === undefined) {
                         const isGroupedGrid = [
-                            "{{formGridSubnet['table_id']}}",
                             "{{formGridPDPool['table_id']}}",
                             "{{formGridReservation['table_id']}}"
                         ].includes(grid_id);
@@ -77,9 +76,7 @@
                             tabulatorOptions: {
                                 groupBy: !isGroupedGrid
                                     ? false
-                                    : (grid_id === "{{formGridSubnet['table_id']}}"
-                                        ? "subnet"
-                                        : "%subnet"),
+                                    : "%subnet",
                                 groupHeader: (value, count, data, group) => {
                                     const icons = {
                                         subnet: '<i class="fa fa-fw fa-ethernet fa-sm text-info"></i>',

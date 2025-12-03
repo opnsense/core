@@ -696,6 +696,8 @@ $.fn.SimpleActionButton = function (params) {
                     if (this_button.data('grid-reload')) {
                         $(this_button.data('grid-reload')).bootgrid('reload');
                     }
+
+                    updateSystemStatus();
                 });
             }).fail(function () {
                 setIcon(icon, 'fa fa-check fa-spinner fa-pulse', '');

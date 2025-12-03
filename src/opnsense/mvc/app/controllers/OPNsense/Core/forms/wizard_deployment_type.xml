@@ -19,4 +19,16 @@
               configure DNSMasq to listen on port 53053 and install forwards to it from Unboud
               (which is used as our resolver)</help>
     </field>
+    <field>
+        <id>wizard.deployment_type.maxthreads</id>
+        <label>Optimize for IPsec</label>
+        <type>checkbox</type>
+        <help>IPsec traffic processing is deferred to a separate thread by default via netisr.
+              The system default for such processing is single-threaded by default due to protocol ordering requirements,
+              but this can be scaled up to the amount of CPUs a machine has.
+              This scaling can only happen for multiple flows, not single packets,
+              therefore this option will only provide proper load distribution,
+              not throughput performance gains for single flows.
+        </help>
+    </field>
 </form>

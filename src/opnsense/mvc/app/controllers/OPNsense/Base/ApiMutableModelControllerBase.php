@@ -233,6 +233,14 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     }
 
     /**
+     * reset internal model handle set the next getModel() will initiate it again
+     */
+    protected function invalidateModel()
+    {
+        $this->modelHandle = null;
+    }
+
+    /**
      * Validate and save model after update or insertion.
      * Use the reference node and tag to rename validation output for a specific node to a new offset, which makes
      * it easier to reference specific uuids without having to use them in the frontend descriptions.

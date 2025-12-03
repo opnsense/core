@@ -417,12 +417,21 @@ abstract class BaseField
     }
 
     /**
-     * Try to convert to current value as float
+     * convert current value to float
      * @return float
      */
     public function asFloat(): float
     {
-        return floatval($this->getValue());
+        return (float)$this->getValue();
+    }
+
+    /**
+     * convert current value to int
+     * @return int
+     */
+    public function asInt(): int
+    {
+        return (int)$this->getValue();
     }
 
     /**

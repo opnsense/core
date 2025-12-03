@@ -35,7 +35,7 @@ function timeout($wait = 7)
     while ($ret) {
         echo '.';
         shell_safe('/bin/stty cbreak -echo');
-        $ret = !!mwexecf('timeout 1 dd of=/dev/null count=1 status=none');
+        $ret = !!mwexecfm('timeout 1 dd of=/dev/null count=1 status=none');
         shell_safe('/bin/stty -cbreak echo');
         if (--$wait == 0) {
             break;

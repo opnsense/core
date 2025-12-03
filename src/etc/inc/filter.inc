@@ -253,13 +253,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
     }
 
-    if (!empty($config['nat']['rule'])) {
-        // register user forward rules
-        foreach ($config['nat']['rule'] as $rule) {
-            if (is_array($rule)) {
-                $fw->registerForwardRule(600, $rule);
-            }
-        }
+    foreach ((new OPNsense\Firewall\DNat())->rule->sortedBy(['sequence']) as $key => $rule) {
+        $fw->registerForwardRule(600, $rule->getNodeContent());
     }
 
     openlog("firewall", LOG_DAEMON, LOG_LOCAL4);
@@ -392,13 +387,11 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     @copy('/tmp/ifconfig.debug', '/tmp/ifconfig.debug.old');
 
     mwexecf('ifconfig > %s', '/tmp/ifconfig.debug');
-
     $fobj->truncate(0)->write($rules);
-
     @file_put_contents('/tmp/rules.limits', $limitrules);
-    mwexecf('/sbin/pfctl -Of %s', '/tmp/rules.limits');
-    $rules_loading = mwexecf('/sbin/pfctl -f /tmp/rules.debug > /tmp/rules.debug.error');
 
+    mwexecf('/sbin/pfctl -Of %s', '/tmp/rules.limits');
+    $load_failed = mwexecfm('/sbin/pfctl -f %s > %s', ['/tmp/rules.debug', '/tmp/rules.debug.error']);
     foreach ($sched_kill_states as $label) {
         mwexecf('/sbin/pfctl -k label -k %s', $label);
     }
@@ -407,7 +400,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
      * check for a error while loading the rules file.  if an error has occurred
      * then output the contents of the error to the caller
      */
-    if ($rules_loading) {
+    if ($load_failed) {
         $rules_error = explode("\n", file_get_contents('/tmp/rules.debug.error'));
         $config_line = '';
 
@@ -421,7 +414,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
             }
         }
 
-        mwexecf('/sbin/pfctl -f /tmp/rules.debug.old');
+        mwexecf('/sbin/pfctl -f %s', '/tmp/rules.debug.old');
 
         syslog(LOG_ERR, trim(sprintf('There were error(s) loading the rules: %s%s', $rules_error[0], $config_line)));
         file_put_contents(
@@ -438,8 +431,16 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         return;
     }
 
+    unlink('/tmp/rules.debug.error');
+
+    service_log('.', $verbose);
+
+    /* bring up new instance of filterlog to load new rules */
+    killbypid('/var/run/filterlog.pid');
+    mwexecf('/usr/local/sbin/filterlog -i pflog0 -p %s', '/var/run/filterlog.pid');
+
     /*
-     * XXX: Flush table when not user, ideally this should be update_tables.py responsibility.
+     * XXX: Flush table when not used, ideally this should be update_tables.py responsibility.
      */
     if (!is_bogonsv6_used()) {
         mwexecf('/sbin/pfctl -t bogonsv6 -T flush');
@@ -451,15 +452,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         configd_run('template reload OPNsense/Filter');
         configd_run('filter refresh_aliases', true);
     }
-
-    service_log('.', $verbose);
-
-    /* enable permanent promiscuous mode to avoid dmesg noise */
-    mwexecf('/sbin/ifconfig pflog0 promisc');
-
-    /* bring up new instance of filterlog to load new rules */
-    killbypid('/var/run/filterlog.pid');
-    mwexecf('/usr/local/sbin/filterlog -i pflog0 -p %s', '/var/run/filterlog.pid');
 
     unset($fobj);
 

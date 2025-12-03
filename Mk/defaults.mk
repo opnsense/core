@@ -40,7 +40,7 @@ CORE_ARCH?=	${_CORE_ARCH}
 
 CORE_MAKE=	${MAKE}
 
-PHPBIN=		${LOCALBASE}/bin/php
+PHPBIN!=	which php || echo ${LOCABASE}/bin/php
 
 .if exists(${PHPBIN})
 _CORE_PHP!=	${PHPBIN} -v

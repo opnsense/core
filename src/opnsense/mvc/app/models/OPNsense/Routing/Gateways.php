@@ -617,7 +617,7 @@ class Gateways extends BaseModel
     }
 
     /**
-     * get gateway groups and active
+     * get gateway active groups
      * @param array $status_info gateway status info (from dpinger)
      * @return array usable gateway groups
      */
@@ -647,7 +647,7 @@ class Gateways extends BaseModel
                         }
                         // check status for all gateways in this tier
                         foreach ($tier as $gwname) {
-                            if (!empty($all_gateways[$gwname]['gateway']) && !empty($status_info[$gwname])) {
+                            if (!empty($status_info[$gwname])) {
                                 $gateway = $all_gateways[$gwname];
                                 switch ($status_info[$gwname]['status']) {
                                     case 'down':
@@ -669,7 +669,8 @@ class Gateways extends BaseModel
                                 }
                                 $gateway_item = [
                                     'int' => $gateway['if'],
-                                    'gwip' => $gateway['gateway'],
+                                    'gwip' => $gateway['gateway'] ?? '',
+                                    'ipprotocol' => $gateway['ipprotocol'],
                                     'poolopts' => isset($gw_group->poolopts) ? (string)$gw_group->poolopts : null,
                                     'weight' => !empty($gateway['weight']) ? $gateway['weight'] : '1',
                                 ];

@@ -84,7 +84,7 @@ class PortField extends BaseListField
         'teredo',
         'telnet',
         'tftp',
-        'rfb'
+        'rfb',
     ];
 
     /**
@@ -123,7 +123,7 @@ class PortField extends BaseListField
             }
             if ($this->enableAlias) {
                 foreach (self::getArrayReference(Alias::getCachedData(), 'aliases.alias') as $uuid => $alias) {
-                    if (strpos($alias['type'], "port") !== false) {
+                    if ($alias['type'] == 'port') {
                         self::$internalCacheOptionList[$setid][$alias['name']] = $alias['name'];
                     }
                 }

@@ -92,9 +92,6 @@
         <Categories url="/ui/firewall/category" cssClass="fa fa-tags fa-fw"/>
         <Groups url="/ui/firewall/group" cssClass="fa fa-sitemap fa-fw"/>
         <NAT cssClass="fa fa-exchange fa-fw">
-            <PortForward order="100" VisibleName="Port Forward" url="/firewall_nat.php">
-                <Edit url="/firewall_nat_edit.php*" visibility="hidden"/>
-            </PortForward>
             <Outbound order="300" VisibleName="Outbound" url="/firewall_nat_out.php">
                 <Edit url="/firewall_nat_out_edit.php*" visibility="hidden"/>
             </Outbound>

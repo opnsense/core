@@ -26,10 +26,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 function hostwatch_services()
 {
     $services = [];
+
     if (!(new \OPNsense\Hostdiscovery\Hostwatch())->general->enabled->isEmpty()) {
         $services[] = [
             'description' => gettext('Host discovery service'),
@@ -43,13 +43,10 @@ function hostwatch_services()
         ];
     }
 
-
     return $services;
 }
 
 function hostwatch_syslog()
 {
-    $logfacilities = [];
-    $logfacilities['hostwatch'] = ['facility' => ['hostwatch']];
-    return $logfacilities;
+    return ['hostwatch' => ['facility' => ['hostwatch']]];
 }

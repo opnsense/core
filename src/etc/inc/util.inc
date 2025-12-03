@@ -998,7 +998,7 @@ function mwexecfb($format, $args = [], ?string $pidfile = null, ?string $logfile
     }
 
     if (!is_null($logfile)) {
-        array_unshift($format, '-0 %s');
+        array_unshift($format, '-o %s');
         array_unshift($args, $logfile);
     }
 

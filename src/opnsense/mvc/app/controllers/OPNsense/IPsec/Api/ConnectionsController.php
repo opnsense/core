@@ -124,7 +124,7 @@ class ConnectionsController extends ApiMutableModelControllerBase
                 }
             }
             if ($changed) {
-                $this->save();
+                $this->save(false, true);
             }
         }
         return $result;

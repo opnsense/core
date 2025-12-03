@@ -34,6 +34,7 @@ import ujson
 from lib.db import DB
 from lib.arp import ARP
 from lib.pf import PF
+from lib.ipfw import IPFW
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--username', help='username', type=str, required=True)

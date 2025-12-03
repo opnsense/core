@@ -32,20 +32,18 @@ class Mbuf extends Base
 {
     public function run()
     {
-        $netstat = $this->shellCmd('/usr/bin/netstat -m');
-        if (!empty($netstat)) {
-            foreach ($netstat as $line) {
-                if (strpos($line, 'mbuf clusters in use') !== false) {
-                    $tmp = explode('/', explode(' ', $line)[0]);
-                    return [
-                        'current' => $tmp[0],
-                        'cache' => $tmp[1],
-                        'total' => $tmp[2],
-                        'max' => $tmp[3]
-                    ];
-                }
+        foreach ($this->shellCmd('/usr/bin/netstat -m') as $line) {
+            if (strpos($line, 'mbuf clusters in use') !== false) {
+                $tmp = explode('/', explode(' ', $line)[0]);
+                return [
+                    'current' => $tmp[0],
+                    'cache' => $tmp[1],
+                    'total' => $tmp[2],
+                    'max' => $tmp[3]
+                ];
             }
         }
+
         return [];
     }
 }
