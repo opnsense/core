@@ -82,11 +82,11 @@ class FilterController extends FilterBaseController
         $categories = $this->request->get('category');
         $show_all = !empty($this->request->get('show_all'));
         if (!empty($this->request->get('interface'))) {
-            $interfaces = explode(",", $this->request->get('interface'));
+            $interfaces = explode(',', $this->request->get('interface'));
             /* add groups which contain the selected interface */
             foreach ((new Group())->ifgroupentry->iterateItems() as $groupItem) {
-                if (array_intersect($interfaces, explode(',', (string)$groupItem->members))) {
-                    $interfaces[] = (string)$groupItem->ifname;
+                if (array_intersect($interfaces, $groupItem->members->getValues())) {
+                    $interfaces[] = $groupItem->ifname->getValue();
                 }
             }
         } else {
@@ -96,7 +96,7 @@ class FilterController extends FilterBaseController
         /* filter logic for mvc rules */
         $filter_funct_mvc = function ($record) use ($categories, $interfaces, $show_all) {
             $is_cat = empty($categories) || array_intersect(explode(',', $record->categories), $categories);
-            $rule_interfaces = array_filter(explode(',', (string)$record->interface));
+            $rule_interfaces = $record->interface->getValues();
 
             if (empty($interfaces)) {
                 $is_if = count($rule_interfaces) != 1;
@@ -229,15 +229,17 @@ class FilterController extends FilterBaseController
 
     public function getRuleAction($uuid = null)
     {
-        $result = $this->getBase("rule", "rules.rule", $uuid);
+        $result = $this->getBase('rule', 'rules.rule', $uuid);
+
         if ($this->request->get('fetchmode') === 'copy' && !empty($result['rule'])) {
             /* copy mode, generate new sequence at the end */
             $max = 0;
             foreach ($this->getModel()->rules->rule->iterateItems() as $rule) {
-                $max = (int)((string)$rule->sequence) > $max ? (int)((string)$rule->sequence) : $max;
+                $max = max($rule->sequence->asInt(), $max);
             }
             $result['rule']['sequence'] = $max + 100;
         }
+
         return $result;
     }
 
@@ -399,7 +401,7 @@ class FilterController extends FilterBaseController
         // Count rules per interface
         $ruleCounts = [];
         foreach ((new \OPNsense\Firewall\Filter())->rules->rule->iterateItems() as $rule) {
-            $interfaces = array_filter(explode(',', (string)$rule->interface));
+            $interfaces = $rule->interface->getValues();
 
             if (count($interfaces) !== 1) {
                 // floating: empty or multiple interfaces

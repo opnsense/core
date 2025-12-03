@@ -203,18 +203,16 @@ class Filter extends BaseModel
                             $rule->adaptivestart->__reference
                         ));
                     } elseif (
-                        !empty((string)$rule->max) &&
-                        !empty((string)$rule->adaptiveend) &&
-                        (int)$rule->max->getValue() > (int)$rule->adaptiveend->getValue()
+                        !$rule->max->isEmpty() && !$rule->adaptiveend->isEmpty() &&
+                        $rule->max->asInt() > $rule->adaptiveend->asInt()
                     ) {
                         $messages->appendMessage(new Message(
                             gettext("The value of adaptive.end must be greater than the Max states value."),
                             $rule->adaptiveend->__reference
                         ));
                     } elseif (
-                        !empty((string)$rule->adaptivestart) &&
-                        !empty((string)$rule->adaptiveend) &&
-                        (int)$rule->adaptivestart->getValue() > (int)$rule->adaptiveend->getValue()
+                        !$rule->adaptivestart->isEmpty() && !$rule->adaptiveend->isEmpty() &&
+                        $rule->adaptivestart->asInt() > $rule->adaptiveend->asInt()
                     ) {
                         $messages->appendMessage(new Message(
                             gettext("The value of adaptive.end must be greater than adaptive.start value."),

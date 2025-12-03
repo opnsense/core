@@ -38,7 +38,7 @@ class KeaCtrlAgent extends BaseModel
         $cnf = [
             'Control-agent' => [
                 'http-host' => $this->general->http_host->getValue(),
-                'http-port' => (int)$this->general->http_port->getValue(),
+                'http-port' => $this->general->http_port->asInt(),
                 'control-sockets' => [
                     'dhcp4' => [
                         'socket-type' => 'unix',

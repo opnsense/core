@@ -107,8 +107,8 @@ class FilterRuleContainerField extends ContainerField
     public function getPriority()
     {
         $configObj = Config::getInstance()->object();
-        $interface = (string)$this->interface;
-        if (strpos($interface, ",") !== false || empty($interface)) {
+        $interface = $this->interface->getValue();
+        if (strpos($interface, ',') !== false || empty($interface)) {
             // floating (multiple interfaces involved)
             return 200000;
         } elseif (
@@ -120,8 +120,8 @@ class FilterRuleContainerField extends ContainerField
             if (static::$ifgroups === null) {
                 static::$ifgroups = [];
                 foreach ((new Group())->ifgroupentry->iterateItems() as $node) {
-                    if (!empty((string)$node->sequence)) {
-                        static::$ifgroups[(string)$node->ifname] =  (int)((string)$node->sequence);
+                    if (!$node->sequence->isEmpty()) {
+                        static::$ifgroups[$node->ifname->getValue()] = $node->sequence->asInt();
                     }
                 }
             }
