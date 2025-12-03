@@ -493,7 +493,7 @@ class FilterController extends FilterBaseController
         foreach ((new \OPNsense\Firewall\Filter())->rules->rule->iterateItems() as $rule) {
             $interfaces = array_filter(explode(',', (string)$rule->interface));
 
-            if ((string)$rule->interfacenot === "1" || count($interfaces) !== 1) {
+            if ($rule->interfacenot->isEqual(1) || count($interfaces) !== 1) {
                 // floating: empty, multiple, or inverted interface
                 $ruleCounts['floating'] = ($ruleCounts['floating'] ?? 0) + 1;
             } else {
