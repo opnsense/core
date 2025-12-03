@@ -62,7 +62,7 @@ function _killbypid($pid, $sig, $waitforit, $caller)
         return;
     }
 
-    while (mwexecf('/bin/kill -0 %s', $pid, true) == 0) {
+    while (mwexecfm('/bin/kill -0 %s', $pid) == 0) {
         usleep(200 * 1000);
     }
 }
@@ -70,7 +70,7 @@ function _killbypid($pid, $sig, $waitforit, $caller)
 function isvalidpid($pidfile)
 {
     if (file_exists($pidfile)) {
-        return mwexecf('/bin/pgrep -nF %s', $pidfile, true) == 0;
+        return mwexecfm('/bin/pgrep -nF %s', $pidfile) == 0;
     }
 
     return false;
@@ -103,9 +103,7 @@ function waitfordad($grace_period = 1)
 
 function is_process_running($process)
 {
-    exec('/bin/pgrep -anx ' . escapeshellarg($process), $output, $retval);
-
-    return (intval($retval) == 0);
+    return !mwexecfm('/bin/pgrep -anx %s', $process);
 }
 
 function service_by_filter($filter = [])
@@ -230,7 +228,7 @@ function service_control_start($name, $extras)
         }
     } elseif (isset($service['mwexec']['start'])) {
         foreach ($service['mwexec']['start'] as $cmd) {
-            mwexec($cmd);
+            mwexecf($cmd);
         }
     } else {
         return sprintf(gettext("Could not start service `%s'"), htmlspecialchars(service_name($service)));
@@ -256,7 +254,7 @@ function service_control_stop($name, $extras)
         }
     } elseif (isset($service['mwexec']['stop'])) {
         foreach ($service['mwexec']['stop'] as $cmd) {
-            mwexec($cmd);
+            mwexecf($cmd);
         }
     } elseif (isset($service['pidfile'])) {
         killbypid($service['pidfile']);
@@ -291,7 +289,7 @@ function service_control_restart($name, $extras)
         }
     } elseif (isset($service['mwexec']['restart'])) {
         foreach ($service['mwexec']['restart'] as $cmd) {
-            mwexec($cmd);
+            mwexecf($cmd);
         }
     } else {
         return sprintf(gettext("Could not restart service `%s'"), htmlspecialchars(service_name($service)));
