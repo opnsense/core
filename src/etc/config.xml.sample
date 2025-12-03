@@ -82,14 +82,14 @@
     </lan>
   </interfaces>
   <dnsmasq>
-      <enable>1</enable>
-      <port>0</port>
+    <enable>1</enable>
+    <port>0</port>
+    <interface>lan</interface>
+    <dhcp_ranges>
       <interface>lan</interface>
-      <dhcp_ranges>
-          <interface>lan</interface>
-          <start_addr>192.168.1.100</start_addr>
-          <end_addr>192.168.1.199</end_addr>
-      </dhcp_ranges>
+      <start_addr>192.168.1.100</start_addr>
+      <end_addr>192.168.1.199</end_addr>
+    </dhcp_ranges>
   </dnsmasq>
   <unbound>
     <enable>1</enable>
