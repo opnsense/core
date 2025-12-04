@@ -90,7 +90,7 @@
                     const data = row.getData();
                     const $element = $(row.getElement());
 
-                    if ('disabled' in data && data.disabled == "1") {
+                    if ('enabled' in data && data.enabled == "0") {
                         $element.addClass('row-disabled');
                     }
 
@@ -544,7 +544,7 @@
         box-shadow: none !important;
         background: transparent !important;
     }
-    .bucket-row .tabulator-cell[tabulator-field="category"] {
+    .bucket-row .tabulator-cell[tabulator-field="categories"] {
         overflow: visible !important;
         white-space: nowrap !important;
         text-overflow: clip !important;
