@@ -105,7 +105,6 @@
         <style>net_selector</style>
         <help>Enter the internal subnet for the 1:1 mapping.</help>
         <grid_view>
-            <label>Source</label>
             <formatter>alias</formatter>
             <sequence>50</sequence>
             <min-width>100</min-width>
@@ -132,7 +131,6 @@
         <style>net_selector</style>
         <help>The 1:1 mapping will only be used for connections to or from the specified destination. Hint: this is usually 'any'.</help>
         <grid_view>
-            <label>Destination</label>
             <formatter>alias</formatter>
             <sequence>70</sequence>
             <min-width>100</min-width>
