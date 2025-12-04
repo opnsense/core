@@ -90,6 +90,7 @@ class LogMatcher:
                 format_container = FormatContainer(filename)
                 for rec in reverse_log_reader(filename):
                     self.row_number += 1
+                    record = None
                     if self._match_line(rec['line']):
                         record = self.parse_line(rec['line'], format_container)
                         if len(self.severity) == 0 or record['severity'] is None or record['severity'] in self.severity:
@@ -97,7 +98,7 @@ class LogMatcher:
 
                     # exit when data found is older than offered timestamp
                     try:
-                        if timestamp and isoparse(record['timestamp']).timestamp() < timestamp:
+                        if timestamp and record and isoparse(record['timestamp']).timestamp() < timestamp:
                             return
                     except (ValueError, TypeError):
                         pass
