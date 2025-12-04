@@ -3828,7 +3828,7 @@ function get_interface_mac($interface, $ifconfig_details = null)
     return $intf_details['macaddr'];
 }
 
-function interfaces_neighbors_configure($interface = null, $ifconfig_details = null)
+function interfaces_neighbors_configure($interface, $ifconfig_details = null)
 {
     global $config;
 
