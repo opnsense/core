@@ -64,40 +64,46 @@ class DNSBL:
         t = time.time()
         if (t - self.dnsbl_update_time) > 60:
             self.dnsbl_update_time = t
-            if not self._dnsbl_exists():
-                self.dnsbl_available = False
-                return
+            self._load_dnsbl()
+
+    def _load_dnsbl(self):
+        last_state = self.dnsbl_available
+
+        if not self._dnsbl_exists():
+            self.dnsbl_available = False
+        else:
             fstat = os.stat(self.dnsbl_path).st_mtime
             if fstat != self.dnsbl_mtime_cache:
                 self.dnsbl_mtime_cache = fstat
                 log_info("dnsbl_module: updating blocklist.")
-                self._load_dnsbl()
-
-    def _load_dnsbl(self):
-        with open(self.dnsbl_path, 'r') as f:
-            try:
-                self.dnsbl = json.load(f)
-                if self._context and type(self.dnsbl.get('config')) is dict:
-                    if not self.dnsbl['config'].get('general'):
-                        # old format, needs blocklist reload
-                        raise ValueError("incompatible blocklist")
-                    self._context.set_config(self.dnsbl['config'])
-                log_info('dnsbl_module: blocklist loaded. length is %d' % len(self.dnsbl['data']))
-                with open(self.size_file, 'w') as sfile:
-                    sfile.write(str(len(self.dnsbl['data'])))
-            except (json.decoder.JSONDecodeError, KeyError, ValueError) as e:
-                if not self.dnsbl or isinstance(e, ValueError):
-                    log_err("dnsbl_module: unable to parse blocklist file: %s. Please re-apply the blocklist settings." % e)
-                    self.dnsbl_available = False
-                    open(self.warn_file, "a").close()
-                    return
-                else:
-                    log_err("dnsbl_module: error parsing blocklist: %s, reusing last known list" % e)
+                with open(self.dnsbl_path, 'r') as f:
+                    try:
+                        self.dnsbl = json.load(f)
+                        if self._context and type(self.dnsbl.get('config')) is dict:
+                            if not self.dnsbl['config'].get('general'):
+                                # old format, needs blocklist reload
+                                raise ValueError("incompatible blocklist")
+                            self._context.set_config(self.dnsbl['config'])
+                        self.dnsbl_available = True
+                        log_info('dnsbl_module: blocklist loaded. length is %d' % len(self.dnsbl['data']))
+                    except (json.decoder.JSONDecodeError, KeyError, ValueError) as e:
+                        if not self.dnsbl or isinstance(e, ValueError):
+                            log_err("dnsbl_module: unable to parse blocklist file: %s. Please re-apply the blocklist settings." % e)
+                            self.dnsbl_available = False
+                            open(self.warn_file, "a").close()
+                            return
+                        else:
+                            log_err("dnsbl_module: error parsing blocklist: %s, reusing last known state" % e)
 
         if os.path.exists(self.warn_file):
             os.remove(self.warn_file)
 
-        self.dnsbl_available = True
+        if last_state != self.dnsbl_available:
+            with open(self.size_file, 'w') as sfile:
+                sfile.write(str(len(self.dnsbl['data'])) if self.dnsbl_available else '0')
+
+        if not self.dnsbl_available:
+            self.dnsbl = None
 
     def _in_network(self, client, networks):
         if not networks:
