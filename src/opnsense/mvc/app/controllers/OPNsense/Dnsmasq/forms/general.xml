@@ -208,10 +208,9 @@
     <field>
         <id>dnsmasq.dhcp.log_quiet</id>
         <label>Quiet log messages</label>
-        <type>select_multiple</type>
-        <style>selectpicker</style>
+        <type>checkbox</type>
         <advanced>true</advanced>
-        <help>Suppress logging of the routine operation of these protocols. Errors and problems will still be logged. When "Log DHCP options and tags" is enabled, quieting "DHCP" and "DHCPv6" will be overridden.</help>
+        <help>Suppress logging of the routine operation of DHCP, RA and TFTP. Errors and problems will still be logged.</help>
     </field>
     <field>
         <type>header</type>
