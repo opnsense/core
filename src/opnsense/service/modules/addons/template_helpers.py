@@ -160,18 +160,12 @@ class Helpers(object):
             return "[" + host + "]"
         return host
 
-    def host_for_port(self, host_tag: str) -> str:
-        host = self.getNodeByTag(host_tag)
-        return self.host_str_for_port(host)
-
-    def host_with_port(self, host_tag: str, port_tag: str) -> str:
-        """ returns a formatting host and port and bracketed if IPv6 from tags
-        :param host_tag: string
-        :param port_tag: setting this < 0 will disable it's output and just output the ip formatted for inclusion with a separate formatted port
+    def host_str_with_port(self, host: str, port: str) -> str:
+        """ returns a formatting host (bracketed if IPv6) from a string
+        :param host: string
+        :param port: setting this to none or "" will disable it's output and just output the ip formatted for inclusion with a separate formatted port
         :return: string
         """
-        host = self.getNodeByTag(host_tag)
-        port = self.getNodeByTag(port_tag)
         skip_port = False
 
         if host is None or host == "":
@@ -188,6 +182,21 @@ class Helpers(object):
         host = self.host_str_for_port(host)
 
         return '{}:{}'.format(host, port)
+
+    def host_for_port(self, host_tag: str) -> str:
+        host = self.getNodeByTag(host_tag)
+        return self.host_str_for_port(host)
+
+    def host_with_port(self, host_tag: str, port_tag: str) -> str:
+        """ returns a formatting host and port and bracketed if IPv6 from tags
+        :param host_tag: string
+        :param port_tag: setting this to none or "" will disable it's output and just output the ip formatted for inclusion with a separate formatted port
+        :return: string
+        """
+        host = self.getNodeByTag(host_tag)
+        port = self.getNodeByTag(port_tag)
+
+        return self.host_str_with_port(host, port)
 
     @staticmethod
     def is_ipv6(ip: str) -> bool:
