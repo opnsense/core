@@ -199,6 +199,20 @@
         <help>Ignore the DHCP general settings from being updated using HA sync.</help>
     </field>
     <field>
+        <id>dnsmasq.dhcp.log_dhcp</id>
+        <label>Log DHCP options and tags</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Extra logging for DHCP, log all the options sent to DHCP clients and the tags used to determine them.</help>
+    </field>
+    <field>
+        <id>dnsmasq.dhcp.log_quiet</id>
+        <label>Quiet log messages</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Suppress logging of the routine operation of DHCP, RA and TFTP. Errors and problems will still be logged.</help>
+    </field>
+    <field>
         <type>header</type>
         <label>ISC / KEA DHCP (legacy)</label>
     </field>

@@ -74,6 +74,24 @@
             </reply_delay>
             <enable_ra type="BooleanField"/>
             <nosync type="BooleanField"/>
+            <log_dhcp type="BooleanField">
+                <Constraints>
+                    <check001>
+                        <reference>log_quiet.check001</reference>
+                    </check001>
+                </Constraints>
+            </log_dhcp>
+            <log_quiet type="BooleanField">
+                <Constraints>
+                    <check001>
+                        <type>SingleSelectConstraint</type>
+                        <addFields>
+                            <field>log_dhcp</field>
+                        </addFields>
+                        <ValidationMessage>This option and "Log DHCP options and tags" cannot be enabled at the same time.</ValidationMessage>
+                    </check001>
+                </Constraints>
+            </log_quiet>
         </dhcp>
         <no_ident type="BooleanField">
             <Required>Y</Required>
