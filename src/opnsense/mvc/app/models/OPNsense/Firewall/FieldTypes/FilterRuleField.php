@@ -110,6 +110,7 @@ class FilterRuleContainerField extends ContainerField
         $configObj = Config::getInstance()->object();
         $interfaces = $this->interface->getValues();
 
+        /* XXX this is an approximation of the complex situation and will be removed eventually */
         if (count($interfaces) != 1) {
             // floating (multiple interfaces involved)
             return 200000;
