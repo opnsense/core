@@ -152,19 +152,19 @@ class Helpers(object):
         return list(filter(None, result))
 
     def host_str_for_port(self, host: str) -> str:
-        """ returns a formatting host (bracketed if IPv6) from a string
-        :param host: string
-        :return: string
+        """
+        :param host: network host
+        :return: formatted host, bracketed if IPv6
         """
         if self.is_ipv6(host):
             return "[" + host + "]"
         return host
 
     def host_str_with_port(self, host: str, port: str) -> str:
-        """ returns a formatting host (bracketed if IPv6) from a string
-        :param host: string
-        :param port: setting this to none or "" will disable it's output and just output the ip formatted for inclusion with a separate formatted port
-        :return: string
+        """
+        :param host: network host
+        :param port: network port; setting this to none or "" will make it so no port is included
+        :return: formatted host, bracketed if IPv6 and there is a port
         """
         skip_port = False
 
@@ -184,14 +184,18 @@ class Helpers(object):
         return '{}:{}'.format(host, port)
 
     def host_for_port(self, host_tag: str) -> str:
+        """
+        :param host_tag: tag of a network host
+        :return: formatted host and port, bracketed if IPv6
+        """
         host = self.getNodeByTag(host_tag)
         return self.host_str_for_port(host)
 
     def host_with_port(self, host_tag: str, port_tag: str) -> str:
-        """ returns a formatting host and port and bracketed if IPv6 from tags
-        :param host_tag: string
-        :param port_tag: setting this to none or "" will disable it's output and just output the ip formatted for inclusion with a separate formatted port
-        :return: string
+        """
+        :param host_tag: tag of a network host
+        :param port_tag: tag of a network port; setting this to none or "" will make it so no port is included
+        :return: formatted host and port, bracketed if IPv6 and there is a port
         """
         host = self.getNodeByTag(host_tag)
         port = self.getNodeByTag(port_tag)
