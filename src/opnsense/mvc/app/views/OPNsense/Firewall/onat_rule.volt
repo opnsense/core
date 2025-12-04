@@ -199,7 +199,7 @@
                     },
                     category: function (column, row) {
                         const isGroup = row.isGroup;
-                        const hasCategories = row.category && Array.isArray(row.category_colors);
+                        const hasCategories = row.categories && Array.isArray(row.category_colors);
 
                         if (!hasCategories) {
 
@@ -213,7 +213,7 @@
                                 : '';
                         }
 
-                        const category = (row["%category"] || row.category).split(',');
+                        const category = (row["%categories"] || row.categories).split(',');
                         const colors     = row.category_colors;
 
                         const icons = category.map((cat, idx) => `
