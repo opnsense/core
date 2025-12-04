@@ -74,16 +74,16 @@
             </reply_delay>
             <enable_ra type="BooleanField"/>
             <nosync type="BooleanField"/>
-            <log_dhcp type="OptionField">
+            <log_dhcp type="BooleanField"/>
+            <log_quiet type="OptionField">
                 <OptionValues>
-                    <log-dhcp>log-dhcp</log-dhcp>
-                    <quiet-dhcp>quiet-dhcp</quiet-dhcp>
-                    <quiet-dhcp6>quiet-dhcp6</quiet-dhcp6>
-                    <quiet-ra>quiet-ra</quiet-ra>
-                    <quiet-tftp>quiet-tftp</quiet-tftp>
+                    <quiet-dhcp>DHCP</quiet-dhcp>
+                    <quiet-dhcp6>DHCPv6</quiet-dhcp6>
+                    <quiet-ra>RA</quiet-ra>
+                    <quiet-tftp>TFTP</quiet-tftp>
                 </OptionValues>
                 <Multiple>Y</Multiple>
-            </log_dhcp>
+            </log_quiet>
         </dhcp>
         <no_ident type="BooleanField">
             <Required>Y</Required>

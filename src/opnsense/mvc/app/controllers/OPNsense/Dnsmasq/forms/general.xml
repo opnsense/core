@@ -200,11 +200,18 @@
     </field>
     <field>
         <id>dnsmasq.dhcp.log_dhcp</id>
-        <label>Log Settings</label>
+        <label>Log DHCP options and tags</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Extra logging for DHCP, log all the options sent to DHCP clients and the tags used to determine them.</help>
+    </field>
+    <field>
+        <id>dnsmasq.dhcp.log_quiet</id>
+        <label>Quiet log messages</label>
         <type>select_multiple</type>
         <style>selectpicker</style>
         <advanced>true</advanced>
-        <help>Set one or multiple configuration flags that influence the DHCP and RA logging behavior.</help>
+        <help>Suppress logging of the routine operation of these protocols. Errors and problems will still be logged. When "Log DHCP options and tags" is enabled, quieting "DHCP" and "DHCPv6" will be overridden.</help>
     </field>
     <field>
         <type>header</type>
