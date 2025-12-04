@@ -148,7 +148,7 @@
         <type>checkbox</type>
         <help>Log packets that are handled by this rule</help>
         <grid_view>
-            <visible>false</visible>
+            <ignore>true</ignore>
         </grid_view>
     </field>
     <field>
