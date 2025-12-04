@@ -108,16 +108,17 @@ class FilterRuleContainerField extends ContainerField
     public function getPriority()
     {
         $configObj = Config::getInstance()->object();
-        $interface = $this->interface->getValue();
-        if (strpos($interface, ',') !== false || empty($interface)) {
+        $interfaces = $this->interface->getValues();
+
+        if (count($interfaces) != 1) {
             // floating (multiple interfaces involved)
             return 200000;
-        } elseif (
-            !empty($configObj->interfaces) &&
-            !empty($configObj->interfaces->$interface) &&
-            !empty($configObj->interfaces->$interface->type) &&
-            $configObj->interfaces->$interface->type == 'group'
-        ) {
+        }
+
+        // there can be only one
+        $interface = $interfaces[0];
+
+        if ($configObj?->interfaces?->$interface?->type == 'group') {
             if (static::$ifgroups === null) {
                 static::$ifgroups = [];
                 foreach ((new Group())->ifgroupentry->iterateItems() as $node) {
@@ -126,15 +127,17 @@ class FilterRuleContainerField extends ContainerField
                     }
                 }
             }
+
             if (!isset(static::$ifgroups[$interface])) {
                 static::$ifgroups[$interface] = 0;
             }
+
             // group type
             return 300000 + static::$ifgroups[$interface];
-        } else {
-            // default
-            return 400000;
         }
+
+        // default
+        return 400000;
     }
 }
 
