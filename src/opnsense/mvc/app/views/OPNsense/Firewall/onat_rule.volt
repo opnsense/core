@@ -116,7 +116,7 @@
                 },
                 responseHandler: dynamicResponseHandler,
                 headerFormatters: {
-                    disabled: function (column) {
+                    enabled: function (column) {
                         return '<i class="fa-solid fa-fw fa-check-square" data-toggle="tooltip" title="{{ lang._('Enabled') }}"></i>';;
                     },
                     interface: function (column) {
@@ -620,4 +620,4 @@
 </div>
 
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/one_to_one/apply'}) }}
-{{ partial("layout_partials/base_dialog",{'fields':formDialogOneToOneNatRule,'id':formGridOneToOneNatRule['edit_dialog_id'],'label':lang._('Edit Destination Nat')}) }}
+{{ partial("layout_partials/base_dialog",{'fields':formDialogOneToOneNatRule,'id':formGridOneToOneNatRule['edit_dialog_id'],'label':lang._('Edit One-to-One Nat')}) }}
