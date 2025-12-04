@@ -37,11 +37,31 @@ class OneToOneController extends FilterBaseController
 
     public function searchRuleAction()
     {
-        $category = $this->request->get('category');
+        $category = (array)$this->request->get('category');
+
         $filter_funct = function ($record) use ($category) {
-            return empty($category) || array_intersect(explode(',', $record->categories), $category);
+            /* categories are indexed by name in the record, but offered as uuid in the selector */
+            $catids = !empty((string)$record->categories) ? explode(',', (string)$record->categories) : [];
+            return empty($category) || array_intersect($catids, $category);
         };
-        return $this->searchBase("onetoone.rule", null, "sequence", $filter_funct);
+
+        $results = $this->searchBase("onetoone.rule", null, "sequence", $filter_funct);
+
+        /* carry results */
+        foreach ($results['rows'] as &$record) {
+            /* offer list of colors to be used by the frontend */
+            $record['category_colors'] = $this->getCategoryColors(
+                !empty($record['categories']) ? explode(',', $record['categories']) : []
+            );
+            /* format "networks" and target */
+            foreach (['source_net', 'destination_net'] as $field) {
+                if (!empty($record[$field])) {
+                    $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
+                }
+            }
+        }
+
+        return $results;
     }
 
     public function setRuleAction($uuid)

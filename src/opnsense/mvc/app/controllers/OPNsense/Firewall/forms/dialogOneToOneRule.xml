@@ -83,7 +83,7 @@
         <type>text</type>
         <help>Enter the external subnet's starting address for the 1:1 mapping or network. This is the address or network the traffic will translate to/from.</help>
         <grid_view>
-            <formatter>alias</formatter>
+            <formatter>any</formatter>
             <sequence>40</sequence>
             <min-width>100</min-width>
         </grid_view>
@@ -113,8 +113,7 @@
     </field>
     <field>
         <type>header</type>
-        <label>Destination (advanced)</label>
-        <collapse>true</collapse>
+        <label>Destination</label>
     </field>
     <field>
         <id>rule.destination_not</id>
@@ -149,7 +148,7 @@
         <type>checkbox</type>
         <help>Log packets that are handled by this rule</help>
         <grid_view>
-            <ignore>true</ignore>
+            <visible>false</visible>
         </grid_view>
     </field>
     <field>
@@ -157,7 +156,7 @@
         <label>NAT reflection</label>
         <type>dropdown</type>
         <grid_view>
-            <ignore>true</ignore>
+            <visible>false</visible>
         </grid_view>
     </field>
 </form>
