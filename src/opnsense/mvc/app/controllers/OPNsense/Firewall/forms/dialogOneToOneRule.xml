@@ -79,7 +79,7 @@
     </field>
     <field>
         <id>rule.external</id>
-        <label>External network (Target)</label>
+        <label>External network</label>
         <type>text</type>
         <help>Enter the external subnet's starting address for the 1:1 mapping or network. This is the address or network the traffic will translate to/from.</help>
         <grid_view>
@@ -100,7 +100,7 @@
     </field>
     <field>
         <id>rule.source_net</id>
-        <label>Source (Internal)</label>
+        <label>Source</label>
         <type>text</type>
         <style>net_selector</style>
         <help>Enter the internal subnet for the 1:1 mapping.</help>
