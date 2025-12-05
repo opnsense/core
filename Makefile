@@ -363,19 +363,13 @@ migrate:
 validate:
 	@${PLUGINCTL} -v
 
-# XXX we should stop treating AclConfig dir as the test's actual /conf dir
-TEST_NO_CLOBBER=	${TESTDIR}/app/models/OPNsense/ACL/AclConfig/config.xml
-
 test:
 .if exists(${TESTDIR})
 	@if [ "$$(${VERSIONBIN} -v)" != "${CORE_PKGVERSION}" ]; then \
 		echo "Installed version does not match, expected ${CORE_PKGVERSION}"; \
 		exit 1; \
 	fi
-	@cd ${TESTDIR} && cp ${TEST_NO_CLOBBER} ${TEST_NO_CLOBBER}.save && \
-	    phpunit || true; rm -rf ${TESTDIR}/.phpunit.result.cache \
-	    ${TESTDIR}/app/models/OPNsense/ACL/AclConfig/backup; \
-	    mv ${TEST_NO_CLOBBER}.save ${TEST_NO_CLOBBER}
+	@cd ${TESTDIR} && phpunit || true; rm -rf ${TESTDIR}/.phpunit.result.cache
 .endif
 
 clean: clean-pkgdir clean-wrksrc clean-mfcdir checkout

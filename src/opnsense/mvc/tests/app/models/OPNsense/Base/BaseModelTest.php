@@ -1,33 +1,34 @@
 <?php
 
-/**
- *    Copyright (C) 2016 Deciso B.V.
- *    All rights reserved.
+/*
+ * Copyright (C) 2016-2025 Deciso B.V.
+ * All rights reserved.
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 namespace tests\OPNsense\Base;
 
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Config;
 
 require_once 'BaseModel/TestModel.php';
@@ -36,26 +37,19 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
 {
     private static $model = null;
 
-    public function testResetConfig()
+    public static function cleanupTestFiles()
     {
-        // reset version, force migrations
-        if (
-            !empty(Config::getInstance()->object()->tests) &&
-            !empty(Config::getInstance()->object()->tests->OPNsense) &&
-            !empty(Config::getInstance()->object()->tests->OPNsense->TestModel)
-        ) {
-            Config::getInstance()->object()->tests->OPNsense->TestModel['version'] = '0.0.0';
-            Config::getInstance()->object()->tests->OPNsense->TestModel->general->FromEmail = "sample@example.com";
-        }
-        BaseModelTest::$model = new BaseModel\TestModel();
-        $this->assertEquals((string)BaseModelTest::$model->general->FromEmail, 'sample@example.com');
+        array_map('unlink', glob(__DIR__ . '/BaseModelConfig/backup/config-*.xml'));
+        @unlink(__DIR__ . '/BaseModelConfig/config.xml');
     }
 
-    /**
-     * @depends testResetConfig
-     */
     public function testCanBeCreated()
     {
+        BaseModelTest::cleanupTestFiles();
+
+        (new AppConfig())->update('application.configDir', __DIR__ . '/BaseModelConfig');
+        Config::getInstance()->forceReload();
+
         BaseModelTest::$model = new BaseModel\TestModel();
         $this->assertInstanceOf('tests\OPNsense\Base\BaseModel\TestModel', BaseModelTest::$model);
     }
@@ -410,5 +404,13 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
             Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value2,
             "xxx"
         );
+    }
+
+    /**
+     * @afterClass
+     */
+    public static function postCleanup()
+    {
+        BaseModelTest::cleanupTestFiles();
     }
 }
