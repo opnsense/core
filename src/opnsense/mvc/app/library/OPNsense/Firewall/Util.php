@@ -287,6 +287,7 @@ class Util
             if (!empty($name) && (string)$node['name'] == $name && $node['type'] == 'port') {
                 $aliases[] = $name;
                 foreach ($node['content'] as $address) {
+                /* Original
                     if (Util::isAlias($address)) {
                         if (!in_array($address, $aliases)) {
                             foreach (Util::getPortAlias($address, $aliases) as $port) {
@@ -298,6 +299,30 @@ class Util
                     } elseif (!in_array($address, $result)) {
                         $result[] = $address;
                     }
+                }
+                */
+                    // Split on comma and Remove all after first #
+                    foreach (explode(',', $address) as $value) {
+                        if (strpos($value, '#') !== false) {
+                            $value = preg_replace('/\s*#.*$/', '', $value);
+                        }
+                        $value = trim($value);
+                        if ($value === '') {
+                            continue;
+                        }
+                        if (Util::isAlias($value)) {
+                            if (!in_array($value, $aliases)) {
+                                foreach (Util::getPortAlias($value, $aliases) as $port) {
+                                    if (!in_array($port, $result)) {
+                                        $result[] = $port;
+                                    }
+                                }
+                            }
+                        } elseif (!in_array($value, $result)) {
+                            $result[] = $value;
+                        }
+                    }
+                    // /Split on comma and Remove all after first #
                 }
             }
         }
