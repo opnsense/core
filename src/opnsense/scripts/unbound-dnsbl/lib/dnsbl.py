@@ -50,7 +50,6 @@ class DNSBL:
         self.size_file = size_file
         self.dnsbl_mtime_cache = 0
         self.dnsbl_update_time = 0
-        self.dnsbl_available = False
         self.dnsbl = None
         self.warn_file = "/data/dnsbl_format_warning"
         self._context = context
@@ -67,10 +66,10 @@ class DNSBL:
             self._load_dnsbl()
 
     def _load_dnsbl(self):
-        last_state = self.dnsbl_available
+        last_state = self.dnsbl is not None
 
         if not self._dnsbl_exists():
-            self.dnsbl_available = False
+            self.dnsbl = None
         else:
             fstat = os.stat(self.dnsbl_path).st_mtime
             if fstat != self.dnsbl_mtime_cache:
@@ -82,14 +81,13 @@ class DNSBL:
                         if self._context and type(self.dnsbl.get('config')) is dict:
                             if not self.dnsbl['config'].get('general'):
                                 # old format, needs blocklist reload
+                                self.dnsbl = None
                                 raise ValueError("incompatible blocklist")
                             self._context.set_config(self.dnsbl['config'])
-                        self.dnsbl_available = True
                         log_info('dnsbl_module: blocklist loaded. length is %d' % len(self.dnsbl['data']))
                     except (json.decoder.JSONDecodeError, KeyError, ValueError) as e:
                         if not self.dnsbl or isinstance(e, ValueError):
                             log_err("dnsbl_module: unable to parse blocklist file: %s. Please re-apply the blocklist settings." % e)
-                            self.dnsbl_available = False
                             open(self.warn_file, "a").close()
                             return
                         else:
@@ -98,12 +96,9 @@ class DNSBL:
         if os.path.exists(self.warn_file):
             os.remove(self.warn_file)
 
-        if last_state != self.dnsbl_available:
+        if last_state != self.dnsbl is not None:
             with open(self.size_file, 'w') as sfile:
-                sfile.write(str(len(self.dnsbl['data'])) if self.dnsbl_available else '0')
-
-        if not self.dnsbl_available:
-            self.dnsbl = None
+                sfile.write(str(len(self.dnsbl['data'])) if self.dnsbl else '0')
 
     def _in_network(self, client, networks):
         if not networks:
@@ -124,7 +119,7 @@ class DNSBL:
     def policy_match(self, query: Query, qstate=None, orig=None):
         self._update_dnsbl()
 
-        if not self.dnsbl_available:
+        if not self.dnsbl:
             return False
 
         if not query.type in ('A', 'AAAA', 'CNAME', 'HTTPS'):
