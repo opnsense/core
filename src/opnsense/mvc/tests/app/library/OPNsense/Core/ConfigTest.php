@@ -68,9 +68,8 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
         unset($test['filter']['rule'][1]);
 
         $cnf->fromArray($test);
-        $cnf->save(['username' => __CLASS__, 'description' => 'N/A', 'time' => '0'], false);
 
-        $this->assertEquals(file_get_contents(self::$configDir . '/backup/config.xml'), file_get_contents(self::$configDir . '/config.xml'));
+        $this->assertEquals(file_get_contents(self::$configDir . '/backup/config.xml'), (string)$cnf);
     }
 
     /**
