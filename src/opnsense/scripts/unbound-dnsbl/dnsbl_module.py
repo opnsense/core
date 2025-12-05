@@ -37,6 +37,7 @@ import time
 import dns
 import dns.name
 import unboundmodule
+sys.path.insert(0, "/var/unbound/unbound-dnsbl/") # unbound-check doesn't use a chroot
 sys.path.insert(0, "/unbound-dnsbl/")
 from lib import Query, ModuleContext
 from lib.dnsbl import DNSBL
