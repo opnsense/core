@@ -293,4 +293,105 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             return array("status" => "error");
         }
     }
+
+    /**
+     * Moves the selected rule so that it appears immediately before the target rule.
+     *
+     * Uses integer gap numbering to update the sequence for only the moved rule.
+     * Rules will be renumbered within the selected range to prevent movements causing overlaps,
+     * but try to keep the changes as minimal as possible.
+     *
+     * @param string $selected_uuid     The UUID of the rule to be moved.
+     * @param string $target_uuid       The UUID of the target rule (the rule before which the selected rule is to be placed).
+     * @param string $node_reference    Node reference prefix, e.g. "onetoone.rule.".
+     * @param string $sort_key          Sort key field, e.g. "sequence".
+     * @param string $component_label   The component name used in gettext (e.g. "DNat", "Filter", "Nat").
+     * @return array Returns ["status" => "ok"] on success, throws a UserException otherwise.
+     */
+    public function moveRuleBeforeBase($selected_uuid, $target_uuid, $node_reference, $sort_key, $component_label)
+    {
+        if (!$this->request->isPost()) {
+            return ["status" => "error", "message" => gettext("Invalid request method")];
+        }
+
+        $target_node   = $this->getModel()->getNodeByReference($node_reference . $target_uuid);
+        $selected_node = $this->getModel()->getNodeByReference($node_reference . $selected_uuid);
+
+        if ($target_node === null || $selected_node === null) {
+            throw new UserException(
+                gettext("Either source or destination is not a rule managed with this component"),
+                gettext($component_label)
+            );
+        }
+
+        $step_size = 50;
+        $new_key = null;
+        $prev_record = null;
+
+        $collection_reference = rtrim($node_reference, '.');
+        $collection = $this->getModel()->getNodeByReference($collection_reference);
+
+        foreach ($collection->sortedBy([$sort_key]) as $record) {
+            $uuid = $record->getAttribute('uuid');
+
+            if ($target_uuid === $uuid) {
+                $prev_sequence = (($prev_record?->$sort_key->asFloat()) ?? 1);
+                $distance = $record->$sort_key->asFloat() - $prev_sequence;
+
+                if ($distance > 2) {
+                    $new_key = intdiv($distance, 2) + $prev_sequence;
+                    break;
+                } else {
+                    $new_key = $prev_record === null ? 1 : ($prev_sequence + $step_size);
+                    $record->$sort_key = (string)($new_key + $step_size);
+                }
+            } elseif ($new_key !== null) {
+                if ($record->$sort_key->asFloat() < $prev_record?->$sort_key->asFloat()) {
+                    $record->$sort_key = (string)($prev_record?->$sort_key->asFloat() + $step_size);
+                }
+            }
+
+            $prev_record = $record;
+        }
+
+        if ($new_key !== null) {
+            $selected_node->$sort_key = (string)$new_key;
+            $this->getModel()->serializeToConfig(false, true);
+            Config::getInstance()->save();
+        }
+
+        return ["status" => "ok"];
+    }
+
+    /**
+     * Toggle the "log" flag of a rule.
+     *
+     * @param string $uuid             UUID of the rule to update.
+     * @param string $log              New log value ("0" or "1").
+     * @param string $node_reference   Node reference prefix, e.g. "onetoone.rule." or "rule.".
+     * @param string $component_label  Component name used for gettext error messages.
+     * @return array                   ["status" => "ok"] on success, throws UserException otherwise.
+     */
+    protected function toggleRuleLogBase($uuid, $log, $node_reference, $component_label)
+    {
+        if (!$this->request->isPost()) {
+            return ['status' => 'error', 'message' => gettext('Invalid request method')];
+        }
+
+        $mdl = $this->getModel();
+        $node = $mdl->getNodeByReference($node_reference . $uuid);
+
+        if ($node === null) {
+            throw new UserException(
+                gettext("Rule not found"),
+                gettext($component_label)
+            );
+        }
+
+        $node->log = $log;
+        $mdl->serializeToConfig();
+        Config::getInstance()->save();
+
+        return ['status' => 'ok'];
+    }
 }

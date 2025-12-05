@@ -255,31 +255,7 @@ class FilterController extends FilterBaseController
 
     public function toggleRuleLogAction($uuid, $log)
     {
-        if (!$this->request->isPost()) {
-            return ['status' => 'error', 'message' => gettext('Invalid request method')];
-        }
-
-        $mdl = $this->getModel();
-        $node = null;
-        foreach ($mdl->rules->rule->iterateItems() as $item) {
-            if ((string)$item->getAttribute('uuid') === $uuid) {
-                $node = $item;
-                break;
-            }
-        }
-
-        if ($node === null) {
-            throw new UserException(
-                gettext("Rule not found"),
-                gettext("Filter")
-            );
-        }
-
-        $node->log = $log;
-        $mdl->serializeToConfig();
-        Config::getInstance()->save();
-
-        return ['status' => 'ok'];
+        return $this->toggleRuleLogBase($uuid, $log, 'rules.rule.', 'Filter');
     }
 
     /**
