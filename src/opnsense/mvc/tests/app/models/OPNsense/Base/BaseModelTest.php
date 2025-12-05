@@ -35,23 +35,23 @@ require_once 'BaseModel/TestModel.php';
 
 class BaseModelTest extends \PHPUnit\Framework\TestCase
 {
+    private static $configDir = __DIR__ . '/BaseModelConfig';
     private static $model = null;
 
     public static function cleanupTestFiles()
     {
-        array_map('unlink', glob(__DIR__ . '/BaseModelConfig/backup/config-*.xml'));
-        @unlink(__DIR__ . '/BaseModelConfig/config.xml');
+        @unlink(self::$configDir . '/config.xml');
     }
 
     public function testCanBeCreated()
     {
-        BaseModelTest::cleanupTestFiles();
+        self::cleanupTestFiles();
 
-        (new AppConfig())->update('application.configDir', __DIR__ . '/BaseModelConfig');
+        (new AppConfig())->update('application.configDir', self::$configDir);
         Config::getInstance()->forceReload();
 
-        BaseModelTest::$model = new BaseModel\TestModel();
-        $this->assertInstanceOf('tests\OPNsense\Base\BaseModel\TestModel', BaseModelTest::$model);
+        self::$model = new BaseModel\TestModel();
+        $this->assertInstanceOf('tests\OPNsense\Base\BaseModel\TestModel', self::$model);
     }
 
     /**
@@ -59,7 +59,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testGeneralAvailable()
     {
-        $this->assertNotNull(BaseModelTest::$model->general);
+        $this->assertNotNull(self::$model->general);
     }
 
     /**
@@ -67,9 +67,9 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testRunMigrations()
     {
-        BaseModelTest::$model->runMigrations();
+        self::$model->runMigrations();
         // migration should have prefixed our default email address
-        $this->assertEquals((string)BaseModelTest::$model->general->FromEmail, '100_001_sample@example.com');
+        $this->assertEquals(self::$model->general->FromEmail->getValue(), '100_001_sample@example.com');
     }
 
     /**
@@ -77,8 +77,8 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testCanSetStringValue()
     {
-        BaseModelTest::$model->general->FromEmail = "test@test.nl";
-        $this->assertEquals(BaseModelTest::$model->general->FromEmail, "test@test.nl");
+        self::$model->general->FromEmail = 'test@test.nl';
+        $this->assertEquals(self::$model->general->FromEmail->getValue(), 'test@test.nl');
     }
 
     /**
@@ -87,8 +87,8 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     public function testCannotSetNonExistingField()
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage("FromEmailXXX not an attribute of general");
-        BaseModelTest::$model->general->FromEmailXXX = "test@test.nl";
+        $this->expectExceptionMessage('FromEmailXXX not an attribute of general');
+        self::$model->general->FromEmailXXX = 'test@test.nl';
     }
 
     /**
@@ -97,25 +97,26 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     public function testCanAssignArrayType()
     {
         // purge test items (if any)
-        foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
-            BaseModelTest::$model->arraytypes->item->Del($nodeid);
+        foreach (self::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
+            self::$model->arraytypes->item->Del($nodeid);
         }
         // generate new items
         for ($i = 1; $i <= 10; $i++) {
-            $node = BaseModelTest::$model->arraytypes->item->Add();
+            $node = self::$model->arraytypes->item->Add();
             $node->number = $i;
         }
         // flush to disk
-        BaseModelTest::$model->serializeToConfig();
-        Config::getInstance()->save();
+        self::$model->serializeToConfig();
+        Config::getInstance()->save(['username' => __CLASS__, 'description' => 'N/A', 'time' => '0'], false);
+        $this->assertNotEquals(file_get_contents(self::$configDir . '/backup/config.xml'), file_get_contents(self::$configDir . '/config.xml'));
 
         // load from disk
         Config::getInstance()->forceReload();
-        BaseModelTest::$model = new BaseModel\TestModel();
+        self::$model = new BaseModel\TestModel();
 
         // read items, logically the sequence should be the same as the generated items
         $i = 1;
-        foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $node) {
+        foreach (self::$model->arraytypes->item->iterateItems() as $node) {
             $this->assertEquals($i, (string)$node->number);
             $i++;
         }
@@ -126,17 +127,17 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testCanDeleteSpecificItem()
     {
-        foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
+        foreach (self::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
             if ($node->number->isEqual(5)) {
-                BaseModelTest::$model->arraytypes->item->Del($nodeid);
+                self::$model->arraytypes->item->Del($nodeid);
             }
         }
         // item with number 5 should be deleted
-        foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
+        foreach (self::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
             $this->assertNotEquals((string)$node->number, 5);
         }
         // 9 items left
-        $this->assertEquals(count(iterator_to_array(BaseModelTest::$model->arraytypes->item->iterateItems())), 9);
+        $this->assertEquals(count(iterator_to_array(self::$model->arraytypes->item->iterateItems())), 9);
     }
 
     /**
@@ -144,7 +145,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testArrayIsKeydByUUID()
     {
-        foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
+        foreach (self::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
             $this->assertCount(5, explode('-', $nodeid));
         }
     }
@@ -155,8 +156,8 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     public function testValidationOk()
     {
         // nothing changed, valid config
-        BaseModelTest::$model->serializeToConfig();
-        $this->assertInstanceOf('tests\OPNsense\Base\BaseModel\TestModel', BaseModelTest::$model);
+        self::$model->serializeToConfig();
+        $this->assertInstanceOf('tests\OPNsense\Base\BaseModel\TestModel', self::$model);
     }
 
     /**
@@ -167,10 +168,10 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\OPNsense\Base\ValidationException::class);
         $this->expectExceptionMessage('Not a valid number.');
         // replace all numbers
-        foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
+        foreach (self::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
             $node->number = "XXX";
         }
-        BaseModelTest::$model->serializeToConfig();
+        self::$model->serializeToConfig();
     }
 
     /**
@@ -178,7 +179,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testsetNodeByReferenceFound()
     {
-        $this->assertEquals(BaseModelTest::$model->setNodeByReference('general.FromEmail', 'test@test.com'), true);
+        $this->assertEquals(self::$model->setNodeByReference('general.FromEmail', 'test@test.com'), true);
     }
 
     /**
@@ -186,7 +187,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testsetNodeByReferenceNotFound()
     {
-        $this->assertEquals(BaseModelTest::$model->setNodeByReference('general.FromEmailxx', 'test@test.com'), false);
+        $this->assertEquals(self::$model->setNodeByReference('general.FromEmailxx', 'test@test.com'), false);
     }
 
     /**
@@ -194,7 +195,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testGenerateXML()
     {
-        $xml = BaseModelTest::$model->toXML();
+        $xml = self::$model->toXML();
         $this->assertInstanceOf(\SimpleXMLElement::class, $xml);
         $this->assertNotEquals(count($xml->OPNsense), 0);
         $this->assertNotEquals(count($xml->OPNsense->TestModel), 0);
@@ -210,16 +211,16 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     {
         $data = array();
         $i = 100;
-        foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
+        foreach (self::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
             $data[$node->__reference] = $i;
             $i++;
         }
         foreach ($data as $key => $value) {
-            $node = BaseModelTest::$model->getNodeByReference($key);
+            $node = self::$model->getNodeByReference($key);
             $node->setNodes(array('number' => $value));
         }
 
-        foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
+        foreach (self::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
             $this->assertGreaterThan(99, (string)$node->number);
         }
     }
@@ -229,7 +230,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetNodes()
     {
-        $data = BaseModelTest::$model->arraytypes->item->getNodes();
+        $data = self::$model->arraytypes->item->getNodes();
         $this->assertEquals(count($data), 9);
     }
 
@@ -241,13 +242,13 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\OPNsense\Base\ValidationException::class);
         $this->expectExceptionMessage('Number should be unique.');
         $count = 2;
-        foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
+        foreach (self::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
             $count--;
             if ($count >= 0) {
                 $node->number = 999;
             }
         }
-        BaseModelTest::$model->serializeToConfig();
+        self::$model->serializeToConfig();
     }
 
     /**
@@ -256,12 +257,12 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     public function testConstraintsOk()
     {
         $count = 1;
-        foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
+        foreach (self::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
             $count++;
             $node->number = $count;
         }
-        BaseModelTest::$model->serializeToConfig();
-        $this->assertInstanceOf('tests\OPNsense\Base\BaseModel\TestModel', BaseModelTest::$model);
+        self::$model->serializeToConfig();
+        $this->assertInstanceOf('tests\OPNsense\Base\BaseModel\TestModel', self::$model);
     }
 
     /**
@@ -269,10 +270,10 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testAllOrNoneInitial()
     {
-        BaseModelTest::$model->AllOrNone->value1 = "";
-        BaseModelTest::$model->AllOrNone->value2 = "";
-        BaseModelTest::$model->AllOrNone->value3 = "";
-        BaseModelTest::$model->serializeToConfig();
+        self::$model->AllOrNone->value1 = '';
+        self::$model->AllOrNone->value2 = '';
+        self::$model->AllOrNone->value3 = '';
+        self::$model->serializeToConfig();
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value1, '');
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value2, '');
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value3, '');
@@ -285,10 +286,10 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage("All fields should contain data or none of them");
-        BaseModelTest::$model->AllOrNone->value1 = "";
-        BaseModelTest::$model->AllOrNone->value2 = "X";
-        BaseModelTest::$model->AllOrNone->value3 = "";
-        BaseModelTest::$model->serializeToConfig();
+        self::$model->AllOrNone->value1 = '';
+        self::$model->AllOrNone->value2 = 'X';
+        self::$model->AllOrNone->value3 = '';
+        self::$model->serializeToConfig();
     }
 
     /**
@@ -296,10 +297,10 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testAllOrNoneOk()
     {
-        BaseModelTest::$model->AllOrNone->value1 = "X1";
-        BaseModelTest::$model->AllOrNone->value2 = "X2";
-        BaseModelTest::$model->AllOrNone->value3 = "X3";
-        BaseModelTest::$model->serializeToConfig();
+        self::$model->AllOrNone->value1 = 'X1';
+        self::$model->AllOrNone->value2 = 'X2';
+        self::$model->AllOrNone->value3 = 'X3';
+        self::$model->serializeToConfig();
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value1, "X1");
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value2, "X2");
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->AllOrNone->value3, "X3");
@@ -311,10 +312,10 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testSingleSelectInitial()
     {
-        BaseModelTest::$model->SingleSelect->value1 = "";
-        BaseModelTest::$model->SingleSelect->value2 = "";
-        BaseModelTest::$model->SingleSelect->value3 = "";
-        BaseModelTest::$model->serializeToConfig();
+        self::$model->SingleSelect->value1 = '';
+        self::$model->SingleSelect->value2 = '';
+        self::$model->SingleSelect->value3 = '';
+        self::$model->serializeToConfig();
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SingleSelect->value1, '');
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SingleSelect->value2, '');
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SingleSelect->value3, '');
@@ -327,10 +328,10 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage("Only one option could be selected");
-        BaseModelTest::$model->SingleSelect->value1 = "x";
-        BaseModelTest::$model->SingleSelect->value2 = "x";
-        BaseModelTest::$model->SingleSelect->value3 = "";
-        BaseModelTest::$model->serializeToConfig();
+        self::$model->SingleSelect->value1 = 'x';
+        self::$model->SingleSelect->value2 = 'x';
+        self::$model->SingleSelect->value3 = '';
+        self::$model->serializeToConfig();
     }
 
 
@@ -339,10 +340,10 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testSingleSelectOk()
     {
-        BaseModelTest::$model->SingleSelect->value1 = "";
-        BaseModelTest::$model->SingleSelect->value2 = "x";
-        BaseModelTest::$model->SingleSelect->value3 = "";
-        BaseModelTest::$model->serializeToConfig();
+        self::$model->SingleSelect->value1 = '';
+        self::$model->SingleSelect->value2 = 'x';
+        self::$model->SingleSelect->value3 = '';
+        self::$model->serializeToConfig();
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SingleSelect->value1, '');
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SingleSelect->value2, 'x');
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SingleSelect->value3, '');
@@ -353,9 +354,9 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testDependConstraintInitial()
     {
-        BaseModelTest::$model->DependConstraint->value1 = "0";
-        BaseModelTest::$model->DependConstraint->value2 = "";
-        BaseModelTest::$model->serializeToConfig();
+        self::$model->DependConstraint->value1 = '0';
+        self::$model->DependConstraint->value2 = '';
+        self::$model->serializeToConfig();
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value1, "0");
         $this->assertEquals(
             Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value2,
@@ -370,9 +371,9 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('When "value1" is enabled, "value2" is required.');
-        BaseModelTest::$model->DependConstraint->value1 = "1";
-        BaseModelTest::$model->DependConstraint->value2 = "";
-        BaseModelTest::$model->serializeToConfig();
+        self::$model->DependConstraint->value1 = '1';
+        self::$model->DependConstraint->value2 = '';
+        self::$model->serializeToConfig();
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value1, "0");
     }
 
@@ -381,9 +382,9 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testDependConstraintOk1()
     {
-        BaseModelTest::$model->DependConstraint->value1 = "1";
-        BaseModelTest::$model->DependConstraint->value2 = "xxx";
-        BaseModelTest::$model->serializeToConfig();
+        self::$model->DependConstraint->value1 = '1';
+        self::$model->DependConstraint->value2 = 'xxx';
+        self::$model->serializeToConfig();
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value1, "1");
         $this->assertEquals(
             Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value2,
@@ -396,9 +397,9 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testDependConstraintOk2()
     {
-        BaseModelTest::$model->DependConstraint->value1 = "0";
-        BaseModelTest::$model->DependConstraint->value2 = "xxx";
-        BaseModelTest::$model->serializeToConfig();
+        self::$model->DependConstraint->value1 = '0';
+        self::$model->DependConstraint->value2 = 'xxx';
+        self::$model->serializeToConfig();
         $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value1, "0");
         $this->assertEquals(
             Config::getInstance()->object()->tests->OPNsense->TestModel->DependConstraint->value2,
@@ -411,6 +412,6 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public static function postCleanup()
     {
-        BaseModelTest::cleanupTestFiles();
+        self::cleanupTestFiles();
     }
 }
