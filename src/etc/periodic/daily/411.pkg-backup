@@ -1,0 +1,131 @@
+#!/bin/sh -
+#
+# $FreeBSD$
+#
+
+if [ -r /etc/defaults/periodic.conf ]; then
+	. /etc/defaults/periodic.conf
+	source_periodic_confs
+fi
+
+rc=0
+
+do_dump() {
+	echo "pragma user_version=" $(${pkgcmd} ${pkgargs} shell "pragma user_version")";"
+	${pkgcmd} ${pkgargs} shell .dump
+}
+
+backup_pkg() {
+	local pkgargs="$1"
+	local bak_file="$2"
+	local rc
+
+	local count="${daily_backup_pkg_count:-7}"
+	local lower=$(( ${count} - 1 ))
+	for i in $(jot ${count} ${lower} 0); do
+		local higher=$(( ${i} + 1 ))
+		local file
+		if [ ${i} == 0 ]; then
+			file=${bak_file}
+		else
+			file=${bak_file}.${i}
+		fi
+		[ -e "${file}" ] && \
+			mv -f "${file}" "${bak_file}.${higher}"
+	done
+
+	if do_dump | xz -c > ${bak_file}; then
+		rc=0
+	else
+		rc=3
+	fi
+
+	# Prune very old backups
+	local OLDBACKUPS="pkgng.db pkgdb.bak.tbz pkgdb.bak.tbz.2"
+	for file in ${OLDBACKUPS}; do
+		[ -f /var/backups/${file} ] && rm /var/backups/${file}
+	done
+
+	return $rc
+}
+
+backup_pkg_all() {
+	local bak=$1
+	local last_rc
+
+	: ${daily_backup_pkg_chroots=$pkg_chroots}
+	: ${daily_backup_pkg_jails=$pkg_jails}
+
+	if [ ! -d $bak ]; then
+		install -d -o root -g wheel -m 750 $bak || {
+			echo 'pkg-backup is enabled but' \
+			"$daily_backup_pkg_dbdir doesn't exist" ;
+		exit 2 ; }
+	fi
+
+	echo
+	echo 'Backing up pkg database:'
+
+	# We always backup the pkg database for the host system, but only
+	# print a banner line if we're also backing up for any chroots or
+	# jails.
+
+	if [ -n "${daily_backup_pkg_chroots}" -o \
+		-n "${daily_backup_pkg_jails}" ]; then
+		echo "Host system:"
+	fi
+
+	backup_pkg '' "${bak}/pkg.sql.xz"
+	rc=$?
+
+	for c in $daily_backup_pkg_chroots ; do
+		echo
+		echo "chroot: $c"
+		bak_file="${bak}/pkg.chroot-$(echo $c | tr -C a-zA-Z0-9.- _).sql.xz"
+		backup_pkg "-c $c" $bak_file
+		last_rc=$?
+		[ $last_rc -gt 1 ] && rc=$last_rc
+	done
+
+	case $daily_backup_pkg_jails in
+	\*)
+		jails=$(jls -q -h name | sed -e 1d)
+		;;
+	'')
+		jails=
+		;;
+	*)
+		jails=$daily_backup_pkg_jails
+		;;
+	esac
+
+	for j in $jails ; do
+		echo
+		echo "jail: $j"
+		bak_file="${bak}/pkg.jail-$(echo $j | tr -C a-zA-Z0-9._- _).sql.xz"
+		backup_pkg "-j $j" $bak_file
+		last_rc=$?
+		[ $last_rc -gt 1 ] && rc=$last_rc
+	done
+
+	return $rc
+}
+
+case "${daily_backup_pkg_enable:-YES}" in
+[Nn][Oo])
+	;;
+*)
+	bak="${daily_backup_pkg_dir:-/var/backups}"
+	bak_file="${bak}/pkg.sql.xz"
+	pkgcmd=/usr/local/sbin/pkg
+
+	if ! ${pkgcmd} -N >/dev/null 2>&1 ; then
+		echo 'pkg-backup is enabled but pkg is not used'
+		rc=2
+	else
+		backup_pkg_all $bak
+	fi
+	;;
+esac
+
+exit $rc

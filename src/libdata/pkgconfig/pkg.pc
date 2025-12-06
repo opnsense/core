@@ -1,0 +1,9 @@
+prefix=/usr/local
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: pkg
+Description: Library to manipulate packages
+Version: 2.4.2
+Libs: -L${libdir} -lpkg
+Cflags: -I${includedir}

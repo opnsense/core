@@ -1,0 +1,105 @@
+#!/bin/sh -
+#
+# $FreeBSD$
+#
+
+if [ -r /etc/defaults/periodic.conf ]; then
+	. /etc/defaults/periodic.conf
+	source_periodic_confs
+fi
+
+list_pkgs() {
+    local pkgargs="$1"
+    local bak_file="$2"
+    local rc
+
+    bak=/var/backups
+
+    [ -r $bak/$bak_file ] && mv -f $bak/$bak_file $bak/${bak_file}2
+    ${pkgcmd} ${pkgargs} info > $bak/$bak_file
+    rc=$?
+
+    cmp -sz $bak/$bak_file $bak/${bak_file}2
+    if [ $? -eq 1 ]; then
+	diff -U 0 $bak/${bak_file}2 $bak/${bak_file} | \
+	    grep '^[-+][^-+]' | sort -k 1.2
+    fi
+
+    return $rc
+}
+
+list_pkgs_all() {
+    local rc
+    local jails
+    local bak_file
+    local rc=0
+
+    : ${daily_status_pkg_changes_chroots=$pkg_chroots}
+    : ${daily_status_pkg_changes_jails=$pkg_jails}
+
+    # We always show pkg changes for the base system, but only print a
+    # banner line if we're also going to show pkg changes for any
+    # chroots or jails.
+
+    if [ -n "${daily_status_pkg_changes_chroots}" -o \
+	 -n "${daily_status_pkg_changes_jails}" ];
+    then
+	echo "Host system:"
+    fi
+
+    list_pkgs '' pkg.bak
+    [ $? -ne 0 ] && rc=1
+
+    for c in $daily_status_pkg_changes_chroots ; do
+	echo
+	echo "chroot: $c"
+	bak_file="pkg.chroot-$(echo $c | tr -C a-zA-Z0-9.- _).bak"
+
+	list_pkgs "-c $c" $bak_file
+	[ $? -ne 0 ] && rc=1
+    done
+
+    case $daily_status_pkg_changes_jails in
+	\*)
+	    jails=$(jls -q -h name | sed -e 1d)
+	    ;;
+	'')
+	    jails=
+	    ;;
+	*)
+	    jails=$daily_status_pkg_changes_jails
+	    ;;
+    esac
+
+    for j in $jails ; do
+	echo
+	echo "jail: $j"
+	bak_file="pkg.jail-$(echo $j | tr -C a-zA-Z0-9.- _).bak"
+
+	list_pkgs "-j $j" $bak_file
+	[ $? -ne 0 ] && rc=1
+    done
+	
+    return $rc
+}
+
+case "$daily_status_pkg_changes_enable" in
+	[Yy][Ee][Ss])
+	pkgcmd=/usr/local/sbin/pkg
+
+	echo
+	echo 'Changes in installed packages:'
+
+	if ! ${pkgcmd} -N >/dev/null 2>&1 ; then
+		echo 'status-pkg-changes is enabled but pkg is not used'
+		rc=2
+	else
+	    list_pkgs_all
+	fi
+	;;
+	*)
+	rc=0
+	;;
+esac
+
+exit $rc

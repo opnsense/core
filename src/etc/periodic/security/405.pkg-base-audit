@@ -1,0 +1,230 @@
+#!/bin/sh -f
+#
+# Copyright (c) 2004 Oliver Eikemeier. All rights reserved.
+# Copyright (c) 2014 Matthew Seaman <matthew@FreeBSD.org>
+# Copyright (c) 2016 Miroslav Lachman <000.fbsd@quip.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+# 1. Redistributions of source code must retain the above copyright notice
+#    this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# 3. Neither the name of the author nor the names of its contributors may be
+#    used to endorse or promote products derived from this software without
+#    specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+# COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+# NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# $FreeBSD$
+#
+
+if [ -r /etc/defaults/periodic.conf ]; then
+	. /etc/defaults/periodic.conf
+	source_periodic_confs
+fi
+
+: ${security_status_baseaudit_enable:=YES}
+: ${security_status_baseaudit_period:=daily}
+: ${security_status_baseaudit_quiet:=NO}
+: ${security_status_baseaudit_chroots=$pkg_chroots}
+: ${security_status_baseaudit_jails=$pkg_jails}
+: ${security_status_baseaudit_jails_ignore+=""}
+: ${security_status_baseaudit_expiry:=2}
+
+# Compute PKG_DBDIR from the config file.
+pkgcmd=/usr/local/sbin/pkg
+PKG_DBDIR=`${pkgcmd} config PKG_DBDIR`
+auditfile="${PKG_DBDIR}/vuln.xml"
+
+audit_base() {
+	local pkgargs="$1"
+	local basedir="$2"
+	local rc
+	local then
+	local now
+	local usrlv
+	local krnlv
+	local strlen
+	local chrootv
+	local jailv
+	local jid
+
+	# get version from chroot
+	if [ -n "`echo "$pkgargs" | egrep '^-c'`" ]; then
+		if [ -x "$basedir/bin/freebsd-version" ]; then
+			chrootv=$($basedir/bin/freebsd-version -u)
+			## safety check - strlen
+			strlen=$(echo "$chrootv" | wc -c)
+			if [ $strlen -gt 17 -o $strlen -lt 11 ]; then
+				echo "Wrong version string, cannot run audit"
+				return 3
+			fi
+			usrlv=$(echo $chrootv | sed 's,^,FreeBSD-,;s,-RELEASE-p,_,;s,-RELEASE$,,')
+		else
+			echo "Cannot guess chroot version"
+			return 3
+		fi
+	# get version from jail
+	elif [ -n "`echo "$pkgargs" | egrep '^-j'`" ]; then
+		jid=$(echo "$pkgargs" | awk '$1 ~ /^-[j]/ { print $2 }')
+		jailv=$(jexec $jid freebsd-version -u)
+		## safety check - strlen
+		strlen=$(echo "$jailv" | wc -c)
+		if [ $strlen -gt 17 -o $strlen -lt 11 ]; then
+			echo "Wrong version string, cannot run audit"
+			return 3
+		fi
+		usrlv=$(echo $jailv | sed 's,^,FreeBSD-,;s,-RELEASE-p,_,;s,-RELEASE$,,')
+	# get version from host
+	else
+		usrlv=$(freebsd-version -u | sed 's,^,FreeBSD-,;s,-RELEASE-p,_,;s,-RELEASE$,,')
+	fi
+
+	then=`stat -f '%m' "${basedir}${auditfile}" 2> /dev/null` || rc=3
+	now=`date +%s` || rc=3
+	# Add 10 minutes of padding since the check is in seconds.
+	if [ $rc -ne 0 -o \
+		$(( 86400 \* "${security_status_baseaudit_expiry}" )) \
+		-le $(( ${now} - ${then} + 600 )) ]; then
+		# When non-interactive, sleep to reduce congestion on mirrors
+		anticongestion
+		f="-F"
+	else
+		echo -n 'Database fetched: '
+		date -r "${then}" -Iminutes || rc=3
+	fi
+
+	# cannot check kernel in jail or chroot
+	if [ -z "`echo "$pkgargs" | egrep '^-[cj]'`" -a `sysctl -n security.jail.jailed` = 0 ]; then
+		krnlv=$(freebsd-version -k | sed 's,^,FreeBSD-kernel-,;s,-RELEASE-p,_,;s,-RELEASE$,,')
+		${pkgcmd} audit $f $q $krnlv || { rc=$?; [ $rc -lt 3 ] && rc=3; }
+	fi
+
+	${pkgcmd} audit $f $q $usrlv || { rc=$?; [ $rc -lt 3 ] && rc=3; }
+
+	return $rc
+}
+
+# Use $pkg_chroots to provide a default list of chroots, and
+# $pkg_jails to provide a default list of jails (or '*' for all jails)
+# for all pkg periodic scripts, or set
+# $security_status_baseaudit_chroots and
+# $security_status_baseaudit_jails for this script only.
+
+audit_base_all() {
+	local rc
+	local last_rc
+	local jails
+
+	# We always show audit results for the base system, but only print
+	# a banner line if we're also showing audit results for any
+	# chroots or jails.
+
+	if [ -n "${security_status_baseaudit_chroots}" -o \
+		-n "${security_status_baseaudit_jails}" ]; then
+		echo "Host system:"
+	fi
+
+	audit_base '' ''
+	last_rc=$?
+	[ $last_rc -gt 1 ] && rc=$last_rc
+
+	for c in $security_status_baseaudit_chroots ; do
+		echo
+		echo "chroot: $c"
+		audit_base "-c $c" $c
+		last_rc=$?
+		[ $last_rc -gt 1 ] && rc=$last_rc
+	done
+
+	case $security_status_baseaudit_jails in
+	\*)
+		jails=$(jls -q -h name path | sed -e 1d -e 's/ /|/')
+		;;
+	'')
+		jails=
+		;;
+	*)
+		# Given the jail name or jid, find the jail path
+		jails=
+		for j in $security_status_baseaudit_jails ; do
+			p=$(jls -j $j -h name path | sed -e 1d -e 's/ /|/')
+			jails="${jails} ${p}"
+		done
+		;;
+	esac
+
+	for j in ${jails} ; do
+		# ignore some jails
+		# we iterate to get exact matches because we want substring matches
+		# foo should not match foo.bar
+		for ignore in ${security_status_baseaudit_jails_ignore} ; do
+			if [ "${j%|*}" = "${ignore}" ]; then
+				echo
+				echo "ignoring jail: ${j%|*}"
+				# continue with the main loop
+				continue 2
+			fi
+		done
+
+		# ignore some jails
+		# we iterate to get prefix matches because we foo to match foo.bar
+		for ignore in ${security_status_baseaudit_jails_ignore_wild} ; do
+			if [ $(expr "${j%|*}" : "${ignore}") -ne 0 ] ; then
+				echo
+				echo "ignoring jail: ${j%|*}"
+				# continue with the main loop
+				continue 2
+			fi
+		done
+
+		echo
+		echo "jail: ${j%|*}"
+		audit_base "-j ${j%|*}" ${j##*|}
+		last_rc=$?
+		[ $last_rc -gt 1 ] && rc=$last_rc
+	done
+
+	return $rc
+}
+
+rc=0
+
+if check_yesno_period security_status_baseaudit_enable
+then
+	echo
+	echo 'Checking for security vulnerabilities in base (userland & kernel):'
+
+	if ! ${pkgcmd} -N >/dev/null 2>&1 ; then
+		echo 'pkg-audit is enabled but pkg is not used'
+		rc=2
+	else
+		case "${security_status_baseaudit_quiet}" in
+		[Yy][Ee][Ss])
+			q='-q'
+			;;
+		*)
+			q=
+			;;
+		esac
+
+		audit_base_all ; rc=$?
+	fi
+fi
+
+exit "$rc"
