@@ -112,16 +112,34 @@ CORE_PKGVERSION=	${CORE_VERSION}
 CORE_PYTHON_DOT=	${CORE_PYTHON:C/./&./1}
 
 CORE_COMMENT?=		${CORE_PRODUCT} ${CORE_TYPE} release
+<<<<<<< HEAD
 CORE_MAINTAINER?=	project@opnsense.org
 CORE_ORIGIN?=		opnsense/${CORE_NAME}
 CORE_PACKAGESITE?=	https://pkg.opnsense.org
 CORE_PRODUCT?=		OPNsense
 CORE_REPOSITORY?=	${CORE_ABI}/latest
 CORE_WWW?=		https://opnsense.org/
+=======
+CORE_MAINTAINER =	support@eprotek.org
+CORE_ORIGIN =		eprotek/${CORE_NAME}
+CORE_PACKAGESITE =	https://pkg.eprotek.org
+CORE_PRODUCT =		eProtek
+CORE_REPOSITORY =	${CORE_ABI}/latest
+CORE_WWW =		https://eProtek.org/
+>>>>>>> 9c776380f (final changes)
 CORE_USER?=		wwwonly
 CORE_UID?=		789
 CORE_GROUP?=		${CORE_USER}
 CORE_GID?=		${CORE_UID}
+<<<<<<< HEAD
+=======
+CORE_VERSION =          1.0.0
+CORE_PKGVERSION =       1.0.0
+CORE_NICKNAME =         MVP
+CORE_COPYRIGHT_HOLDER =	Viren Shah.
+CORE_COPYRIGHT_WWW =	https://www.virenshah.com/
+CORE_COPYRIGHT_YEARS =	2025-2026
+>>>>>>> 9c776380f (final changes)
 
 CORE_DEPENDS_aarch64?=	py${CORE_PYTHON}-duckdb \
 			py${CORE_PYTHON}-numpy \
