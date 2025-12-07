@@ -112,7 +112,7 @@ CORE_PYTHON_DOT=	${CORE_PYTHON:C/./&./1}
 
 CORE_COMMENT?=		${CORE_PRODUCT} ${CORE_TYPE} release
 CORE_MAINTAINER?=	support@eprotek.org
-CORE_ORIGIN?=		opnsense/${CORE_NAME}
+CORE_ORIGIN?=		eprotek/${CORE_NAME}
 CORE_PACKAGESITE?=	https://pkg.eprotek.org
 CORE_PRODUCT?=		eProtek
 CORE_REPOSITORY?=	${CORE_ABI}/latest
