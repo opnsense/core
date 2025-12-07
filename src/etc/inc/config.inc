@@ -48,15 +48,6 @@ final class product
         self::$data = json_decode(file_get_contents('/usr/local/opnsense/version/core'), true);
 
         /* boot detection */
-        /* frontend-only branding version override */
-        if (!empty(self::$data['product_display_version'])) {
-            self::$data['product_version'] = self::$data['product_display_version'];
-        }
-
-        if (!empty(self::$data['product_display_nickname'])) {
-            self::$data['product_nickname'] = self::$data['product_display_nickname'];
-        }
-
         self::$data['product_booting'] = false;
         $fp = fopen('/var/run/booting', 'a+e');
         if ($fp) {
