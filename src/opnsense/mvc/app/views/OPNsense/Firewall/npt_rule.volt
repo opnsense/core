@@ -216,31 +216,6 @@
                             </span>`
                             : icons;
                     },
-                    interfaces: function(column, row) {
-                        if (row.isGroup) {
-                            return "";
-                        }
-
-                        const interfaces = row["%" + column.id] || row[column.id] || "";
-
-                        if (interfaces === "") {
-                            return "*";
-                        }
-
-                        if (!interfaces.includes(",")) {
-                            return (row.interfacenot == 1 ? "! " : "") + interfaces;
-                        }
-
-                        const interfaceList = interfaces.split(",");
-                        const tooltipText = interfaceList.join("<br>");
-
-                        return `
-                            <span data-toggle="tooltip" data-html="true" title="${tooltipText}" style="white-space: nowrap;">
-                                <span class="interface-count">${interfaceList.length}</span>
-                                <i class="fa-solid fa-fw fa-network-wired"></i>
-                            </span>
-                        `;
-                    },
                 },
             },
             commands: {

@@ -59,7 +59,6 @@
         <type>dropdown</type>
         <help>Choose which interface this rule applies to.</help>
         <grid_view>
-            <formatter>interfaces</formatter>
             <sequence>30</sequence>
         </grid_view>
     </field>
@@ -93,7 +92,6 @@
         <type>dropdown</type>
         <help>Use prefix defined on the selected interface instead of the interface this rule applies to when target prefix is not provided.</help>
         <grid_view>
-            <formatter>interfaces</formatter>
             <sequence>60</sequence>
         </grid_view>
     </field>
