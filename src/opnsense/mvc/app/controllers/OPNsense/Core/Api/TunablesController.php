@@ -28,9 +28,10 @@
 namespace OPNsense\Core\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Base\UserException;
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
-use OPNsense\Base\UserException;
 
 class TunablesController extends ApiMutableModelControllerBase
 {
@@ -70,9 +71,11 @@ class TunablesController extends ApiMutableModelControllerBase
     public function resetAction()
     {
         if ($this->request->isPost()) {
-            if (file_exists('/usr/local/etc/config.xml')) {
+            $default_xml = (new AppConfig())->application->configDefault;
+
+            if (file_exists($default_xml)) {
                 Config::getInstance()->lock();
-                $factory_config = Config::getInstance()->toArrayFromFile('/usr/local/etc/config.xml', []);
+                $factory_config = Config::getInstance()->toArrayFromFile($default_xml);
                 $mdl = $this->getModel()->Default();
                 if (!empty($factory_config['sysctl']['item'])) {
                     foreach ($factory_config['sysctl']['item'] as $item) {
@@ -82,12 +85,15 @@ class TunablesController extends ApiMutableModelControllerBase
                         }
                     }
                 }
+
                 $this->save();
+
                 return ['status' => 'ok'];
             } else {
                 return ['status' => 'no_default'];
             }
         }
+
         return ['status' => 'failed'];
     }
 

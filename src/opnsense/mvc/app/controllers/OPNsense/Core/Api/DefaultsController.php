@@ -30,6 +30,7 @@ namespace OPNsense\Core\Api;
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\ACL;
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Core\ConfigMaintenance;
@@ -57,9 +58,11 @@ class DefaultsController extends ApiControllerBase
      */
     public function getAction()
     {
+        $default_xml = (new AppConfig())->application->configDefault;
         $default_ip = '192.168.1.1';
-        if (is_file('/usr/local/etc/config.xml')) {
-            $cfg = Config::getInstance()->toArrayFromFile('/usr/local/etc/config.xml');
+
+        if (is_file($default_xml)) {
+            $cfg = Config::getInstance()->toArrayFromFile($default_xml);
             if (
                 is_array($cfg) &&
                 !empty($cfg['interfaces']) &&
@@ -69,6 +72,7 @@ class DefaultsController extends ApiControllerBase
                 $default_ip = $cfg['interfaces']['lan']['ipaddr'];
             }
         }
+
         return ['default_ip' => $default_ip];
     }
 
