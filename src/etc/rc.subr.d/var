@@ -59,6 +59,7 @@ RUNDIRS="
 /var/unbound/var/run
 /var/lib/php/cache
 /var/lib/php/sessions
+/var/lib/php/tests
 /var/lib/php/tmp
 "
 
