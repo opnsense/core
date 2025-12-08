@@ -59,7 +59,6 @@
         <type>dropdown</type>
         <help>Choose which interface this rule applies to. Hint: in most cases, you'll want to use WAN here</help>
         <grid_view>
-            <formatter>interfaces</formatter>
             <sequence>25</sequence>
         </grid_view>
     </field>
