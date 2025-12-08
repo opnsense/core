@@ -1,0 +1,85 @@
+<model>
+    <mount>//OPNsense/radvd</mount>
+    <version>1.0.0</version>
+    <description>Radvd configuration</description>
+    <items>
+        <entries type="ArrayField">
+            <interface type="InterfaceField">
+                <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>A configuration for this interface already exists.</ValidationMessage>
+                        <type>UniqueConstraint</type>
+                    </check001>
+                </Constraints>
+            </interface>
+            <mode type="OptionField">
+                <Required>Y</Required>
+                <Default>disabled</Default>
+                <OptionValues>
+                    <disabled>Disabled</disabled>
+                    <router>Router Only</router>
+                    <unmanaged>Unmanaged</unmanaged>
+                    <managed>Managed</managed>
+                    <assist>Assisted</assist>
+                    <stateless>Stateless</stateless>
+                </OptionValues>
+            </mode>
+            <AdvDefaultPreference type="OptionField">
+                <Required>Y</Required>
+                <Default>medium</Default>
+                <OptionValues>
+                    <low>Low</low>
+                    <medium>Medium</medium>
+                    <high>High</high>
+                </OptionValues>
+            </AdvDefaultPreference>
+            <!--- XXX needs work -->
+            <source_address type="TextField"/>
+            <DeprecatePrefix type="OptionField">
+                <!-- XXX advanced option -->
+                <BlankDesc>Automatic</BlankDesc>
+                <OptionValues>
+                    <on>On</on>
+                    <off>Off</off>
+                </OptionValues>
+            </DeprecatePrefix>
+            <RemoveRoute type="OptionField">
+                <!-- XXX advanced option -->
+                <BlankDesc>Automatic</BlankDesc>
+                <OptionValues>
+                    <on>On</on>
+                    <off>Off</off>
+                </OptionValues>
+            </RemoveRoute>
+            <routes type="NetworkField">
+                <!-- XXX advanced option -->
+                <NetMaskRequired>Y</NetMaskRequired>
+                <AsList>Y</AsList>
+            </routes>
+            <RDNSS type="NetworkField">
+                <NetMaskAllowed>N</NetMaskAllowed>
+                <AsList>Y</AsList>
+            </RDNSS>
+            <DNSSL type="HostnameField">
+                <IsDNSName>Y</IsDNSName>
+                <IpAllowed>N</IpAllowed>
+                <AsList>Y</AsList>
+            </DNSSL>
+            <dns type="BooleanField">
+                <!--- XXX advanced option -->
+                <Required>Y</Required>
+                <Default>1</Default>
+            </dns>
+            <AdvDNSSLLifetime type="IntegerField"/>
+            <AdvDefaultLifetime type="IntegerField"/>
+            <AdvLinkMTU type="IntegerField"/>
+            <AdvPreferredLifetime type="IntegerField"/>
+            <AdvRDNSSLifetime type="IntegerField"/>
+            <AdvRouteLifetime type="IntegerField"/>
+            <AdvValidLifetime type="IntegerField"/>
+            <MaxRtrAdvInterval type="IntegerField"/>
+            <MinRtrAdvInterval type="IntegerField"/>
+        </entries>
+    </items>
+</model>

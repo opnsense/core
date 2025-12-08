@@ -858,6 +858,9 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/OpenVPN.php
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/OpenVPN.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Radvd/Migrations/M1_0_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Radvd/Radvd.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Radvd/Radvd.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Routes/Route.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Routes/Route.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Routing/FieldTypes/GatewayField.php
