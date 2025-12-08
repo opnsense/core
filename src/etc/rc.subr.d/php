@@ -51,7 +51,7 @@ fi
 ${PW} user${PW_ARG} ${USER} -u ${UID} -g ${GID} -c "World Wide Web Only" -d /nonexistent -s /usr/sbin/nologin
 
 # set up required output directories for various PHP components
-for _PHPDIR in cache sessions tmp; do
+for _PHPDIR in cache sessions tests tmp; do
 	PHPDIR=/var/lib/php/${_PHPDIR}
 
 	mkdir -p ${PHPDIR}

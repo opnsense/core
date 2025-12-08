@@ -38,10 +38,9 @@ return new OPNsense\Core\AppConfig([
         'libraryDir' => __DIR__ . '/../../../app/library/',
         'contribDir' => __DIR__ . '/../../../../../../contrib',
         'configDefault'  => '/does/not/exist/config.xml',
-        /* XXX consider changing these for testing environment */
-        'cacheDir' => '/var/lib/php/cache',
-        'tempDir' => '/var/lib/php/tmp',
-        'configDir' => '/conf',
+        'configDir' => '/var/lib/php/tests',
+        'cacheDir' => '/var/lib/php/tests',
+        'tempDir' => '/var/lib/php/tests',
     ],
     'globals' => [
         'debug'          => false,
