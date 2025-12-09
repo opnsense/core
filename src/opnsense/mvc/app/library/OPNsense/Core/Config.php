@@ -379,7 +379,7 @@ class Config extends Singleton
                 }
             );
 
-            $result = simplexml_load_string($xml);
+            $result = simplexml_load_string($xml, "SimpleXMLElement", LIBXML_NOBLANKS);
             restore_error_handler();
             if (!$this->statusIsLocked) {
                 flock($fp, LOCK_UN);
