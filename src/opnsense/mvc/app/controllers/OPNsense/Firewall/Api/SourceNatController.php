@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2020 Deciso B.V.
+ * Copyright (C) 2020-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,11 +33,31 @@ class SourceNatController extends FilterBaseController
 
     public function searchRuleAction()
     {
-        $category = $this->request->get('category');
+        $category = (array)$this->request->get('category');
+
         $filter_funct = function ($record) use ($category) {
-            return empty($category) || array_intersect(explode(',', $record->categories), $category);
+            /* categories are indexed by name in the record, but offered as uuid in the selector */
+            $catids = !empty((string)$record->categories) ? explode(',', (string)$record->categories) : [];
+            return empty($category) || array_intersect($catids, $category);
         };
-        return $this->searchBase("snatrules.rule", ['enabled', 'sequence', 'description'], "sequence", $filter_funct);
+
+        $results = $this->searchBase("snatrules.rule", null, "sequence", $filter_funct);
+
+        /* carry results */
+        foreach ($results['rows'] as &$record) {
+            /* offer list of colors to be used by the frontend */
+            $record['category_colors'] = $this->getCategoryColors(
+                !empty($record['categories']) ? explode(',', $record['categories']) : []
+            );
+            /* format "networks" and ports */
+            foreach (['source_net','source_port','destination_net','destination_port', 'target', 'target_port'] as $field) {
+                if (!empty($record[$field])) {
+                    $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
+                }
+            }
+        }
+
+        return $results;
     }
 
     public function setRuleAction($uuid)
@@ -63,5 +83,15 @@ class SourceNatController extends FilterBaseController
     public function toggleRuleAction($uuid, $enabled = null)
     {
         return $this->toggleBase("snatrules.rule", $uuid, $enabled);
+    }
+
+    public function moveRuleBeforeAction($selected_uuid, $target_uuid)
+    {
+        return $this->moveRuleBeforeBase($selected_uuid, $target_uuid, 'snatrules.rule.', 'sequence', 'SNat');
+    }
+
+    public function toggleRuleLogAction($uuid, $log)
+    {
+        return $this->toggleRuleLogBase($uuid, $log, 'snatrules.rule.', 'SNat');
     }
 }
