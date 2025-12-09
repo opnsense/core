@@ -113,9 +113,6 @@ class FilterRuleContainerField extends ContainerField
             return 200000;
         }
 
-        // there can be only one
-        $interface = $interfaces[0];
-
         if ($configObj?->interfaces?->$interface?->type == 'group') {
             if (static::$ifgroups === null) {
                 static::$ifgroups = [];
