@@ -90,7 +90,7 @@ class FilterController extends FilterBaseController
                 }
             }
         } else {
-            $interfaces = null;
+            $interfaces = [];
         }
 
         /* filter logic for mvc rules */
@@ -98,21 +98,18 @@ class FilterController extends FilterBaseController
             $is_cat = empty($categories) || array_intersect(explode(',', $record->categories), $categories);
             $rule_interfaces = $record->interface->getValues();
 
-            if ((string)$record->interfacenot === "1") {
-                /*
-                 * XXX Block the search from matching the interface in this
-                 * case.  It's not entirely correct, but at the moment we are
-                 * not able to search for !interface either.
-                 */
-                $rule_interfaces = [];
+            if (!$record->interfacenot->isEmpty()) {
+                $if_intersects = !array_intersect($interfaces, $rule_interfaces); /* All but interface */
+            } else {
+                $if_intersects = array_intersect($interfaces, $rule_interfaces);
             }
 
             if (empty($interfaces)) {
-                $is_if = count($rule_interfaces) != 1;
+                $is_if = count($rule_interfaces) != 1 || !$record->interfacenot->isEmpty();
             } elseif ($show_all) {
-                $is_if = array_intersect($interfaces, $rule_interfaces) || empty($rule_interfaces);
+                $is_if = $if_intersects || empty($rule_interfaces);
             } else {
-                $is_if = count($rule_interfaces) === 1 && array_intersect($interfaces, $rule_interfaces);
+                $is_if = $if_intersects;
             }
 
             return $is_cat && $is_if;
@@ -148,15 +145,13 @@ class FilterController extends FilterBaseController
             }
             $is_cat = empty($categories) || array_intersect($r_categories, $categories);
 
-            if (empty($interfaces)) {
-                $is_if = empty($record['interface']) || count(explode(',', $record['interface'])) > 1;
-            } elseif ((string)$record['interfacenot'] === "1") {
-                /* XXX given that $interfaces is deduplicated multiple interfaces unmute the match */
-                $is_if = empty($record['interface']) || count($interfaces) > 1 || $record['interface'] != $interfaces[0];
+            if (!empty($record['interfacenot'])) {
+                $is_if = !array_intersect(explode(',', $record['interface'] ?? ''), $interfaces);
             } else {
                 $is_if = array_intersect(explode(',', $record['interface'] ?? ''), $interfaces);
-                $is_if = $is_if || empty($record['interface']);
             }
+            $is_if = $is_if || empty($record['interface']);
+
             if ($is_cat && $is_if) {
                 /* translate/convert legacy fields before returning, similar to mvc handling */
                 foreach ($this->getLegacyFieldMap() as $topic => $data) {
@@ -415,7 +410,7 @@ class FilterController extends FilterBaseController
         foreach ((new \OPNsense\Firewall\Filter())->rules->rule->iterateItems() as $rule) {
             $interfaces = $rule->interface->getValues();
 
-            if ($rule->interfacenot->isEqual(1) || count($interfaces) !== 1) {
+            if (!$rule->interfacenot->isEmpty() || count($interfaces) !== 1) {
                 // floating: empty, multiple, or inverted interface
                 $ruleCounts['floating'] = ($ruleCounts['floating'] ?? 0) + 1;
             } else {
