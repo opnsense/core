@@ -111,12 +111,12 @@ class FilterRuleContainerField extends ContainerField
         $interface = $this->interface->getValue();
         if (!empty((string)$this->interfacenot) || (strpos($interface, ",")) !== false || empty($interface)) {
             return 200000;
-        } elseif (
-            !empty($configObj->interfaces) &&
-            !empty($configObj->interfaces->$interface) &&
-            !empty($configObj->interfaces->$interface->type) &&
-            $configObj->interfaces->$interface->type == 'group'
-        ) {
+        }
+
+        // there can be only one
+        $interface = $interfaces[0];
+
+        if ($configObj?->interfaces?->$interface?->type == 'group') {
             if (static::$ifgroups === null) {
                 static::$ifgroups = [];
                 foreach ((new Group())->ifgroupentry->iterateItems() as $node) {
@@ -125,15 +125,17 @@ class FilterRuleContainerField extends ContainerField
                     }
                 }
             }
+
             if (!isset(static::$ifgroups[$interface])) {
                 static::$ifgroups[$interface] = 0;
             }
+
             // group type
             return 300000 + static::$ifgroups[$interface];
-        } else {
-            // default
-            return 400000;
         }
+
+        // default
+        return 400000;
     }
 }
 

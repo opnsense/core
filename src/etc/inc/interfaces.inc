@@ -2454,12 +2454,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     interfaces_vips_configure($interface);
+    interfaces_neighbors_configure($interface, $ifconfig_details);
 
     /* XXX device member plugin hook */
     link_interface_to_bridge($interface, $device, $ifconfig_details);
-
-    /* XXX may be called twice since also tied to dhcp configure */
-    interfaces_staticarp_configure($interface, $ifconfig_details);
 
     service_log("done.\n", $verbose);
 
@@ -3830,35 +3828,19 @@ function get_interface_mac($interface, $ifconfig_details = null)
     return $intf_details['macaddr'];
 }
 
-function interfaces_staticarp_configure($if, $ifconfig_details = null)
+function interfaces_neighbors_configure($interface, $ifconfig_details = null)
 {
     global $config;
 
-    $ifcfg = $config['interfaces'][$if];
+    $ifcfg = $config['interfaces'][$interface];
     if (empty($ifcfg['if']) || !isset($ifcfg['enable'])) {
         return;
     }
 
-    if (empty($ifconfig_details)) {
-        $ifconfig_details = legacy_interfaces_details($ifcfg['if']);
-    }
-
-    if (empty($ifconfig_details[$ifcfg['if']])) {
-        return;
-    }
-
-    $have = in_array('staticarp', $ifconfig_details[$ifcfg['if']]['flags']);
-    $want = isset($config['dhcpd'][$if]['staticarp']);
-
-    if ($have !== $want) {
-        mwexecf('/sbin/ifconfig %s %sstaticarp', [$ifcfg['if'], $want ? '' : '-']);
-        mwexecf('/usr/sbin/arp -d -i %s -a', [$ifcfg['if']]);
-    }
-
-    interfaces_neighbors_configure($ifcfg['if'], $ifconfig_details);
+    _interfaces_neighbors_configure($ifcfg['if'], $ifconfig_details);
 }
 
-function interfaces_neighbors_configure($device = null, $ifconfig_details = null)
+function _interfaces_neighbors_configure($device = null, $ifconfig_details = null)
 {
     $subnets = [];
 

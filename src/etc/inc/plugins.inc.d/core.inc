@@ -367,7 +367,7 @@ function core_xmlrpc_sync()
     $result[] = [
         'description' => gettext('System logging'),
         'section' => 'syslog,OPNsense.Syslog',
-        'id' => 'syslog',
+        'id' => 'syslog-ng',
         'services' => ['syslogd'],
     ];
 

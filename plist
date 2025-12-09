@@ -1029,6 +1029,9 @@
 /usr/local/opnsense/mvc/script/run_migrations.php
 /usr/local/opnsense/mvc/script/run_validations.php
 /usr/local/opnsense/mvc/tests/app/config/config.php
+/usr/local/opnsense/mvc/tests/app/library/OPNsense/Core/ConfigConfig/backup/array.xml
+/usr/local/opnsense/mvc/tests/app/library/OPNsense/Core/ConfigConfig/backup/object.xml
+/usr/local/opnsense/mvc/tests/app/library/OPNsense/Core/ConfigTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/ACL/AclConfig/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/ACL/AclTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/BaseModel/Migrations/M0_0_1.php
@@ -1036,6 +1039,7 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/BaseModel/Migrations/M1_0_1.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/BaseModel/TestModel.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/BaseModel/TestModel.xml
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/BaseModelConfig/backup/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/BaseModelTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/Constraints/ComparedToFieldConstraintTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/Constraints/UniqueConstraintTest.php

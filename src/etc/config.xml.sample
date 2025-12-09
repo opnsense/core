@@ -94,11 +94,6 @@
   <unbound>
     <enable>1</enable>
   </unbound>
-  <snmpd>
-    <syslocation/>
-    <syscontact/>
-    <rocommunity>public</rocommunity>
-  </snmpd>
   <nat>
     <outbound>
       <mode>automatic</mode>

@@ -31,4 +31,4 @@ require_once("config.inc");
 require_once("interfaces.inc");
 require_once("util.inc");
 
-interfaces_neighbors_configure();
+_interfaces_neighbors_configure();

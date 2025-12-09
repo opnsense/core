@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<opnsense>
+  <revision>
+    <username>tests\OPNsense\Base\BaseModelTest</username>
+    <description>N/A</description>
+    <time>0</time>
+  </revision>
+</opnsense>
