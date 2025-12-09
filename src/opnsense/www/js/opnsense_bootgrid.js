@@ -2083,4 +2083,8 @@ class UIBootgrid {
     getSearchPhrase() {
         return this.searchPhrase;
     }
+
+    setPersistence(value) {
+        this._setPersistence(value);
+    }
 }
