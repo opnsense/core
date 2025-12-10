@@ -94,7 +94,7 @@ class FilterRuleContainerField extends ContainerField
         $result['type'] = (string)$this->action;
         $result['reply-to'] = (string)$this->replyto;
         /* XXX this is an approximation of the complex situation and will be removed eventually */
-        if (count($this->interface->getValues()) != 1) {
+        if (count($this->interface->getValues()) != 1 || !$this->interfacenot->isEmpty()) {
             $result['floating'] = true;
         }
         return $result;
@@ -108,10 +108,16 @@ class FilterRuleContainerField extends ContainerField
     public function getPriority()
     {
         $configObj = Config::getInstance()->object();
-        $interface = $this->interface->getValue();
-        if (!empty((string)$this->interfacenot) || (strpos($interface, ",")) !== false || empty($interface)) {
+        $interfaces = $this->interface->getValues();
+
+        /* XXX this is an approximation of the complex situation and will be removed eventually */
+        if (count($interfaces) != 1 || !$this->interfacenot->isEmpty()) {
+            // floating (multiple interfaces involved)
             return 200000;
         }
+
+        // there can be only one
+        $interface = $interfaces[0];
 
         if ($configObj?->interfaces?->$interface?->type == 'group') {
             if (static::$ifgroups === null) {
