@@ -588,7 +588,6 @@
             margin: 0;
         }
 
-        #dialogFilterRule-header #inspect_toggle_container,
         #dialogFilterRule-header #tree_toggle_container,
         #dialogFilterRule-header #tree_expand_container {
             flex: 1 1 0;
