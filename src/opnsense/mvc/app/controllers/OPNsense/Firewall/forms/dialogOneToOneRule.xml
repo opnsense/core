@@ -63,6 +63,10 @@
         </grid_view>
     </field>
     <field>
+        <type>header</type>
+        <label>Mapping</label>
+    </field>
+    <field>
         <id>rule.type</id>
         <label>Type</label>
         <type>dropdown</type>
@@ -71,10 +75,6 @@
             <formatter>any</formatter>
             <sequence>30</sequence>
         </grid_view>
-    </field>
-    <field>
-        <type>header</type>
-        <label>Mapping</label>
     </field>
     <field>
         <id>rule.external</id>
