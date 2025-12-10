@@ -326,7 +326,6 @@ class Filter extends BaseModel
         return $messages;
     }
 
-    // XXX: This can be cleaned up now, no consumers anymore
     /**
      * Rollback this model to a previous version.
      * Make sure to remove this object afterwards, since its contents won't be updated.

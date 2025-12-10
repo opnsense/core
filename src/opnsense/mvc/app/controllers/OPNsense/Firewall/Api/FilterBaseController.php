@@ -237,7 +237,6 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         return $result;
     }
 
-    // XXX: Could be cleaned up
     public function applyAction($rollback_revision = null)
     {
         if ($this->request->isPost()) {
@@ -251,7 +250,6 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         }
     }
 
-    // XXX: Could be cleaned up
     public function cancelRollbackAction($rollback_revision)
     {
         if ($this->request->isPost()) {
@@ -263,7 +261,6 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         }
     }
 
-    // XXX: Could be cleaned up
     public function savepointAction()
     {
         if ($this->request->isPost()) {
@@ -296,5 +293,4 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             return array("status" => "error");
         }
     }
-
 }
