@@ -91,12 +91,12 @@ class OneToOneController extends FilterBaseController
 
     public function moveRuleBeforeAction($selected_uuid, $target_uuid)
     {
-        return $this->moveRuleBeforeBase($selected_uuid, $target_uuid, 'onetoone.rule.', 'sequence', 'One-to-One');
+        return $this->moveRuleBeforeBase($selected_uuid, $target_uuid, 'onetoone.rule', 'sequence');
     }
 
     public function toggleRuleLogAction($uuid, $log)
     {
-        return $this->toggleRuleLogBase($uuid, $log, 'onetoone.rule.', 'One-to-One');
+        return $this->toggleRuleLogBase($uuid, $log, 'onetoone.rule');
     }
 
 }
