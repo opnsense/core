@@ -108,16 +108,10 @@ class FilterRuleContainerField extends ContainerField
     public function getPriority()
     {
         $configObj = Config::getInstance()->object();
-        $interfaces = $this->interface->getValues();
-
-        /* XXX this is an approximation of the complex situation and will be removed eventually */
-        if (count($interfaces) != 1) {
-            // floating (multiple interfaces involved)
+        $interface = $this->interface->getValue();
+        if (!empty((string)$this->interfacenot) || (strpos($interface, ",")) !== false || empty($interface)) {
             return 200000;
         }
-
-        // there can be only one
-        $interface = $interfaces[0];
 
         if ($configObj?->interfaces?->$interface?->type == 'group') {
             if (static::$ifgroups === null) {
