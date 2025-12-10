@@ -108,10 +108,13 @@ class FilterController extends FilterBaseController
                 $is_if = count($rule_interfaces) != 1 || !$record->interfacenot->isEmpty();
             } elseif ($show_all) {
                 $is_if = $if_intersects || empty($rule_interfaces);
+            } elseif (!$record->interfacenot->isEmpty()) {
+                // Exclude as it should only be returned with show_all
+                $is_if = false;
             } else {
-                $is_if = $if_intersects;
+                // Include only an exact match, not a partial overlap
+                $is_if = $if_intersects && (count($interfaces) == count($rule_interfaces));
             }
-
             return $is_cat && $is_if;
         };
 
