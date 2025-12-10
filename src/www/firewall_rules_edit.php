@@ -853,6 +853,13 @@ include("head.inc");
       <?php endif;?>
 
       formatTokenizersUI();
+
+      $("#btn_cancel").click(function(e){
+          e.preventDefault();
+          //id="interface"
+          let target = Array.isArray($("#interface").val()) ? 'FloatingRules' : $("#interface").val();
+          window.location = '/firewall_rules.php?if=' + target;
+      });
   });
 
   </script>
@@ -973,10 +980,10 @@ include("head.inc");
                     <td>
 <?php
                     if (!empty($pconfig['floating'])): ?>
-                      <select name="interface[]" title="Select interfaces..." multiple="multiple" class="selectpicker" data-live-search="true" data-size="5" tabindex="2" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
+                      <select name="interface[]" id="interface" title="Select interfaces..." multiple="multiple" class="selectpicker" data-live-search="true" data-size="5" tabindex="2" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
 <?php
                     else: ?>
-                      <select name="interface" class="selectpicker" data-live-search="true" data-size="5" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
+                      <select name="interface" id="interface" class="selectpicker" data-live-search="true" data-size="5" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
 <?php
                     endif;
 
@@ -1826,7 +1833,7 @@ endforeach;?>
                       <td>&nbsp;</td>
                       <td>
                         <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
-                        <input type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/firewall_rules.php?if=<?= !empty($pconfig['floating']) ? 'FloatingRules' : $pconfig['interface'] ?>'" />
+                        <butto id="btn_cancel" class="btn btn-default"><?=html_safe(gettext('Cancel'));?></button>
                       </td>
                     </tr>
                   </table>
