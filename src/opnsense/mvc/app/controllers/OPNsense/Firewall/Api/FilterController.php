@@ -255,7 +255,7 @@ class FilterController extends FilterBaseController
 
     public function toggleRuleLogAction($uuid, $log)
     {
-        return $this->toggleRuleLogBase($uuid, $log, 'rules.rule.', 'Filter');
+        return $this->toggleRuleLogBase($uuid, $log, 'rules.rule');
     }
 
     /**
