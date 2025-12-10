@@ -895,7 +895,7 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = [])
 
             if (!isset($config['interfaces'][$ifname]['dhcpd6track6allowoverride'])) {
                 /* mock a real server */
-                if (!empty($dhcpdv6cfg[$ifname]) && $dhcpdv6cfg[$ifname]['enable'] == '-1') {
+                if (!empty($dhcpdv6cfg[$ifname]['enable']) && $dhcpdv6cfg[$ifname]['enable'] == '-1') {
                     /* tracking, but dhcpv6 disabled */
                     $dhcpdv6cfg[$ifname] = [];
                 } else {
