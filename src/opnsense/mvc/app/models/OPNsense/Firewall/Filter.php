@@ -46,7 +46,6 @@ class Filter extends BaseModel
         $port_protos = ['TCP', 'UDP', 'TCP/UDP'];
         // standard model validations
         $messages = parent::performValidation($validateFullModel);
-        // XXX: snatrules validation fails here when adding a new rule, must be fixed
         foreach ([$this->rules->rule, $this->snatrules->rule] as $rules) {
             foreach ($rules->iterateItems() as $rule) {
                 if ($validateFullModel || $rule->isFieldChanged()) {
