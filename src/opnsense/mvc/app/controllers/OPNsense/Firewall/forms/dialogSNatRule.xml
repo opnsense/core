@@ -100,7 +100,7 @@
         <id>rule.source_net</id>
         <label>Source Address</label>
         <type>text</type>
-        <style>net_selector net_selector_multi</style>
+        <style>net_selector</style>
         <help>Source network or alias to match.</help>
         <grid_view>
             <label>Source</label>
@@ -141,7 +141,7 @@
         <id>rule.destination_net</id>
         <label>Destination Address</label>
         <type>text</type>
-        <style>net_selector net_selector_multi</style>
+        <style>net_selector</style>
         <help>Destination network or alias to match.</help>
         <grid_view>
             <label>Destination</label>
