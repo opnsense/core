@@ -84,25 +84,42 @@
                             options: {
                                 triggerEditFor: getUrlHash('edit'),
                                 initialSearchPhrase: getUrlHash('search')
+                            },
+                            commands: {
+                                upload_reservations: {
+                                    onRendered: function() {
+                                        const $el = $(this);
+                                        $el.data('title', "{{ lang._('Import Reservations') }}");
+                                        $el.data('endpoint', '/api/kea/dhcpv4/upload_reservations');
+                                        $el.SimpleFileUploadDlg({
+                                            onAction: function() {
+                                                all_grids[grid_id].bootgrid('reload');
+                                            }
+                                        });
+                                    },
+                                    footer: true,
+                                    classname: 'fa fa-fw fa-upload',
+                                    title: "{{ lang._('Import csv') }}",
+                                    filter: function() {
+                                        return grid_id === "{{ formGridReservation['table_id'] }}";
+                                    },
+                                    sequence: 400
+                                },
+                                download_reservations: {
+                                    footer: true,
+                                    classname: 'fa fa-fw fa-table',
+                                    title: "{{ lang._('Export as csv') }}",
+                                    method: function(e) {
+                                        e.preventDefault();
+                                        window.open("/api/kea/dhcpv4/download_reservations");
+                                    },
+                                    filter: function() {
+                                        return grid_id === "{{ formGridReservation['table_id'] }}";
+                                    },
+                                    sequence: 500
+                                }
                             }
                         });
-
-                        // Reservation-only commands
-                        if (grid_id === "{{ formGridReservation['table_id'] }}") {
-                            all_grids[grid_id].on('load.rs.jquery.bootgrid', function() {
-                                $("#upload_reservations").SimpleFileUploadDlg({
-                                    onAction: function() {
-                                        all_grids[grid_id].bootgrid('reload');
-                                    }
-                                });
-
-                                $('#download_reservations').click(function(e) {
-                                    e.preventDefault();
-                                    window.open("/api/kea/dhcpv4/download_reservations");
-                                });
-                            });
-                        }
-
                     } else {
                         all_grids[grid_id].bootgrid('reload');
                     }
@@ -200,28 +217,7 @@
     <!-- reservations -->
     <div id="reservations" class="tab-pane fade in">
         {{
-            partial('layout_partials/base_bootgrid_table', formGridReservation + {
-                'grid_commands': {
-                    'upload_reservations': {
-                        'title': lang._('Import csv'),
-                        'class': 'btn btn-xs',
-                        'icon_class': 'fa fa-fw fa-upload',
-                        'data': {
-                            'title': lang._('Import Reservations'),
-                            'endpoint': '/api/kea/dhcpv4/upload_reservations',
-                            'toggle': 'tooltip'
-                        }
-                    },
-                    'download_reservations': {
-                        'title': lang._('Export as csv'),
-                        'class': 'btn btn-xs',
-                        'icon_class': 'fa fa-fw fa-table',
-                        'data': {
-                            'toggle': 'tooltip'
-                        }
-                    }
-                }
-            })
+            partial('layout_partials/base_bootgrid_table', formGridReservation)
         }}
     </div>
     <!-- HA - peers -->

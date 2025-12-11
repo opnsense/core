@@ -811,6 +811,10 @@ class UIBootgrid {
     }
 
     _renderFooter() {
+        if (!this.options.navigation) {
+            $(`#${this.id} > .tabulator-footer > .tabulator-footer-contents`).children().empty().text('');
+        }
+
         this._renderFooterCommands();
 
         // if there are custom commands defined, inject them here
@@ -818,40 +822,33 @@ class UIBootgrid {
             this.customCommands.appendTo($(`#${this.id} > .tabulator-footer > .tabulator-footer-contents`));
         }
 
-        if (!this.options.navigation) {
-            $(`#${this.id} > .tabulator-footer > .tabulator-footer-contents`).children().not('.bootgrid-footer-commands').empty().text('');
-            return;
-        }
-
         // swap page counter and paginator around (old look & feel).
         // we hook in before tableBuilt, but after dataLoading
         // since we know the footer is rendered at this point,
         // but we don't want to wait on the data before swapping
         // the UI elements around.
+        if (this.options.navigation) {
+            let a = $(`#${this.id} .tabulator-page-counter`)[0];
+            let b = $(`#${this.id} .tabulator-paginator`)[0];
+            var aparent = a.parentNode;
+            var asibling = a.nextSibling === b ? a : a.nextSibling;
+            b.parentNode.insertBefore(a, b);
+            aparent.insertBefore(b, asibling);
 
-        let a = $(`#${this.id} .tabulator-page-counter`)[0];
-        let b = $(`#${this.id} .tabulator-paginator`)[0];
-        var aparent = a.parentNode;
-        var asibling = a.nextSibling === b ? a : a.nextSibling;
-        b.parentNode.insertBefore(a, b);
-        aparent.insertBefore(b, asibling);
-
-        // replace pagination text
-        $(`#${this.id} .tabulator-paginator button[data-page=first]`).html("&laquo;");
-        $(`#${this.id} .tabulator-paginator button[data-page=prev]`).html("&lsaquo;");
-        $(`#${this.id} .tabulator-paginator button[data-page=next]`).html("&rsaquo;");
-        $(`#${this.id} .tabulator-paginator button[data-page=last]`).html("&raquo;");
+            // replace pagination text
+            $(`#${this.id} .tabulator-paginator button[data-page=first]`).html("&laquo;");
+            $(`#${this.id} .tabulator-paginator button[data-page=prev]`).html("&lsaquo;");
+            $(`#${this.id} .tabulator-paginator button[data-page=next]`).html("&rsaquo;");
+            $(`#${this.id} .tabulator-paginator button[data-page=last]`).html("&raquo;");
+        }
     }
 
     _onDataProcessed() {
-        // refresh tooltips
-        if (!this.options.virtualDOM) {
-            this._tooltips();
-        }
+        // remove active tooltips
+        // note that this affects the whole page, but there is currently no way around this
+        $('.tooltip:visible').hide();
 
         this.normalizeRowHeight();
-
-        this._wireGlobalCommands();
 
         if (this.options.virtualDOM) {
             // redraw here to prevent pagination switches from breaking the virtualdom rendering process
@@ -898,61 +895,43 @@ class UIBootgrid {
             $(cell.getElement()).addClass(this.options.statusMapping[cell.getData()['status']]);
         }
 
-        const $el = $(cell.getElement())
-        let elements = $el.find('.bootgrid-tooltip');
+        const $cell = $(cell.getElement())
+        $cell.find('.bootgrid-tooltip').each((i, el) => {
+            const $el = $(el);
 
-        if (elements.length > 0) {
-            this._tooltips();
-        }
+            const existingTitle = $el.attr('title');
+            const command = el.className.match(/command-([^\s]+)/)?.[1];
 
-        let actions = $el.find('[class*="command-"]');
+            if (command && !existingTitle) {
+                const cmdobj = this._getCommands()[command] ?? null;
+                if (!cmdobj || !cmdobj?.title) {
+                    console.error(`No tooltip match for command ${command}`);
+                } else {
+                    $el.attr('title', typeof cmdobj.title === "function" ? cmdobj.title(cell) : cmdobj.title);
+                }
+            }
+            // XXX consider a dedicated invisible overlay for bootgrid tooltips
+            $el.tooltip({container: 'body', trigger: 'hover'});
+        });
+
+        let actions = $cell.find('[class*="command-"]');
         if (actions.length > 0) {
             actions.each((i, el) => {
-                let classes = $(el).attr('class').split(/\s+/);
-                let commandClass = classes.find(c => c.startsWith('command-'));
-                if (commandClass) {
-                    let command = commandClass.replace('command-', '');
-                    this._wireCellCommand($(el), command);
+                let command = el.className.match(/command-([^\s]+)/)?.[1];
+                if (command) {
+                    this._linkCellCommand($(el), command, cell);
                 }
             })
         }
     }
 
-    _tooltips() {
-        /* first hide everything that may already be active, XXX this may be too agressive */
-        $('.tooltip:visible').hide();
-
-        this.$element.find(".bootgrid-tooltip").each((index, el) => {
-            if ($(el).attr('title') !== undefined) {
-                // keep this tooltip
-            } else if ($(el).hasClass('command-add')) {
-                $(el).attr('title', this._translate('add'));
-            } else if ($(el).hasClass('command-delete-selected')) {
-                $(el).attr('title', this._translate('deleteSelected'));
-            } else if ($(el).hasClass('command-edit')) {
-                $(el).attr('title', this._translate('edit'));
-            } else if ($(el).hasClass('command-toggle')) {
-                if ($(el).data('value') === 1) {
-                    $(el).attr('title', this._translate('disable'));
-                } else {
-                    $(el).attr('title', this._translate('enable'));
-                }
-            } else if ($(el).hasClass('command-delete')) {
-                $(el).attr('title', this._translate('delete'));
-            } else if ($(el).hasClass('command-info')) {
-                $(el).attr('title', this._translate('info'));
-            } else if ($(el).hasClass('command-copy')) {
-                $(el).attr('title', this._translate('clone'));
-            } else {
-                $(el).attr('title', 'Error: no tooltip match');
-            }
-            $(el).tooltip({container: 'body', trigger: 'hover'});
-        });
-    }
-
-    _wireCellCommand($selector, command) {
+    _linkCellCommand($selector, command, cell) {
         const commands = this._getCommands();
         if (command in commands) {
+            if (!commands[command]?.method && !commands[command]?.onRendered) {
+                return;
+            }
+
             let has_option = true;
             for (let i = 0; i < commands[command]['requires'].length; i++) {
                 if (!(commands[command]['requires'][i] in this.crud)) {
@@ -965,15 +944,21 @@ class UIBootgrid {
                 // to the parent so no handlers on parent containers are executed
                 $selector.unbind('click').on("click", function (event) {
                     event.stopPropagation();
-                    commands[command].method.bind(this)(event);
+                    commands[command].method?.bind(this)(event);
                 });
             }
+
+            commands[command].onRendered?.bind($selector)(cell);
         }
     }
 
-    _wireGlobalCommands() {
-        const commands = Object.fromEntries(Object.entries(this._getCommands()).filter(([key, value]) => value?.global));
+    _linkFooterCommands() {
+        const commands = Object.fromEntries(Object.entries(this._getCommands()).filter(([key, value]) => value?.footer));
         Object.keys(commands).map((k) => {
+            if (!commands[k]?.method && !commands[k]?.onRendered) {
+                return;
+            }
+
             let has_option = true;
             for (let i = 0; i < commands[k]['requires'].length; i++) {
                 if (!(commands[k]['requires'][i] in this.crud)) {
@@ -981,13 +966,20 @@ class UIBootgrid {
                 }
             }
 
-            if (has_option) {
-                this.$element.find(".command-" + k).unbind('click').on("click", function (event) {
+            const $command = this.$element.find(".command-" + k);
+            const exists = $command.length > 0;
+
+            if (has_option && exists) {
+                $command.unbind('click').on("click", function (event) {
                     event.stopPropagation();
-                    commands[k].method.bind(this)(event);
+                    commands[k].method?.bind(this)(event);
                 });
-            } else if ($(".command-" + k).length > 0) {
-                console.log("not all requirements met to link " + k);
+            } else if (exists) {
+                console.log(`not all requirements met to link ${k} for table ${this.id}`);
+            }
+
+            if (exists) {
+                commands[k].onRendered?.bind($command)();
             }
         });
     }
@@ -1110,26 +1102,52 @@ class UIBootgrid {
     }
 
     _renderFooterCommands() {
-        let $footer = $(`#${this.id} > .tabulator-footer > .tabulator-footer-contents > .tabulator-paginator`);
+        const $footerPrimary = $(`#${this.id} > .tabulator-footer > .tabulator-footer-contents > .tabulator-paginator`);
+        const $footerSecondary = $(`#${this.id} > .tabulator-footer > .tabulator-footer-contents`);
         let $commandContainer = $('<div class="text-left bootgrid-footer-commands">');
-        if (this.options.addButton) {
-            $commandContainer.append($(`
-                <button data-action="add" type="button" class="btn btn-xs btn-primary command-add bootgrid-tooltip">
-                    <span class="fa fa-plus fa-fw"></span>
+
+        // select only footer commands that pass the filter and sort by sequence
+        const commands = Object.fromEntries(
+            Object.entries(this._getCommands())
+                .filter(([_, v]) => v?.footer && (typeof v.filter !== "function" || v.filter()))
+                .sort(([, a], [, b]) => a.sequence - b.sequence)
+        );
+
+        for (const [key, command] of Object.entries(commands)) {
+            if (key === 'add' && !this.options.addButton) {
+                // special case: not included in the template so don't render it
+                continue;
+            }
+
+            if (key === 'delete-selected' && !this.options.deleteSelectedButton) {
+                continue;
+            }
+
+            const title = typeof command?.title === "function"
+                ? `title=${command?.title()}`
+                : `title=${command?.title}` ?? '';
+
+            const $element = $(`
+                <button type="button" class="btn btn-xs ${key === 'add' ? 'btn-primary' : 'btn-default'} command-${key} bootgrid-tooltip" ${title}>
+                    <span class="${command.classname}"></span>
                 </button>
-            `));
+            `);
+
+            if (key === 'add' || key === 'delete-selected') {
+                $commandContainer.append($element);
+            } else {
+                $element.appendTo($footerSecondary);
+            }
         }
 
-        if (this.options.deleteSelectedButton) {
-            $commandContainer.append($(`
-                <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default command-delete-selected bootgrid-tooltip">
-                    <span class="fa fa-trash-o fa-fw"></span>
-                </button>
-            `))
+        $footerPrimary.after($commandContainer);
 
-        }
+        // bind tooltips
+        $(`#${this.id} > .tabulator-footer`).find('.bootgrid-tooltip').each((i, el) => {
+            $(el).tooltip({container: 'body', trigger: 'hover'});
+        });
 
-        $footer.after($commandContainer);
+        this._linkFooterCommands();
     }
 
     _populateColumnSelection() {
@@ -1504,49 +1522,78 @@ class UIBootgrid {
 
     /**
     *  register commands
+    *
+    * The command object can have the following properties:
+    * - method: a function that is executed on command click
+    * - title: translated title to be shown as a tooltip. Can be a function with the cell object as param
+    * - requires: an array of strings marking which this.crud properties are required
+    * - sequence: order of commands rendering
+    * - footer: true|false whether this command should be rendered in the table footer
+    * - classname: required. icon class added to the span inside the button element
+    * - filter: a function that returns true or false determining if the command should be rendered.
+    *           the cell object is passed in only if footer: false
+    * - onRendered: a function that runs after the element including event bindings have been rendered,
+    *               this allows the caller to override the behavior. The element is bound to the
+    *               function, but the full cell object is passed in as a parameter as well (but only if footer: false).
+    *               This function has priority over 'method'.
     */
     _getCommands() {
         let result = {
             "add": {
                 method: this.command_add.bind(this),
                 requires: ['get', 'set'],
+                classname: 'fa fa-plus fa-fw',
                 sequence: 100,
-                global: true
+                footer: true,
+                title: this._translate('add')
             },
             "edit": {
                 method: this.command_edit.bind(this),
                 classname: 'fa fa-fw fa-pencil',
                 requires: ['get', 'set'],
-                sequence: 100
+                sequence: 100,
+                title: this._translate('edit')
             },
             "delete": {
                 method: this.command_delete.bind(this),
                 classname: 'fa fa-fw fa-trash-o',
                 requires: ['del'],
-                sequence: 500
+                sequence: 500,
+                title: this._translate('delete')
             },
             "copy": {
                 method: this.command_copy.bind(this),
                 classname: 'fa fa-fw fa-clone',
                 requires: ['get', 'set'],
-                sequence: 200
+                sequence: 200,
+                title: this._translate('clone')
             },
             "info": {
                 method: this.command_info.bind(this),
                 classname: 'fa fa-fw fa-info-circle',
                 requires: ['info'],
-                sequence: 500
+                sequence: 500,
+                title: this._translate('info')
             },
             "toggle": {
                 method: this.command_toggle.bind(this),
                 requires: ['toggle'],
-                sequence: 100
+                sequence: 100,
+                title: (cell) => {
+                    if (parseInt(cell.getValue()) === 1) {
+                        return this._translate('disable');
+                    } else {
+                        return this._translate('enable');
+                    }
+                }
             },
             "delete-selected": {
                 method: this.command_delete_selected.bind(this),
                 requires: ['del'],
+                classname: 'fa fa-trash-o fa-fw',
                 sequence: 100,
-                global: true
+                footer: true,
+                title: this._translate('deleteSelected')
             }
         };
         // register additional commands
@@ -1583,38 +1630,35 @@ class UIBootgrid {
             },
             commands: (cell, formatterParams, onRendered) => {
                 let html = [];
-                // sort commands by sequence
-                let commands = this._getCommands();
-                let commandlist = Array();
-                Object.keys(commands).map(function (k) {
-                    let item = commands[k];
-                    item.name = k;
-                    commandlist.push(item)
-                });
-                commandlist = commandlist.sort(function (a, b) {
-                    return (a.sequence > b.sequence) ? 1 : ((b.sequence > a.sequence) ? -1 : 0);
-                }
-                );
+                let commandlist = Object.entries(this._getCommands())
+                    .filter(([_, c]) => !c?.footer && (typeof c.filter !== "function" || c.filter(cell)))
+                    .map(([name, c]) => ({ ...c, name }))
+                    .sort((a, b) => a.sequence - b.sequence);
+
                 let rowid = this.options.datakey;
+
                 commandlist.map((command) => {
                     let has_option = command.classname !== undefined;
-                    let option_title_str = command.title !== undefined ? " title=\"" + command.title + "\"" : "";
+
                     for (let i = 0; i < command.requires.length; i++) {
                         if (!(command.requires[i] in this.crud)) {
                             has_option = false;
                         }
                     }
 
-                    if ('filter' in command) {
-                        has_option = command.filter(cell);
-                    }
-
                     if (has_option) {
-                        html.push("<button type=\"button\" " + option_title_str +
-                            " class=\"btn btn-xs btn-default bootgrid-tooltip command-" + command.name +
-                            "\" data-row-id=\"" + cell.getData()[rowid] + "\">" +
-                            "<span class=\"" + command.classname + "\"></span></button>"
-                        );
+                        let title = typeof command?.title === "function"
+                            ? `title=${command?.title(cell)}`
+                            : `title=${command?.title}` ?? '';
+
+                        html.push(`
+                            <button type="button"
+                                    ${title}
+                                    class="btn btn-xs btn-default bootgrid-tooltip
+                                           command-${command.name}" data-row-id="${cell.getData()[rowid]}">
+                                <span class="${command.classname}"></span>
+                            </button>
+                        `);
                     }
                 });
 
