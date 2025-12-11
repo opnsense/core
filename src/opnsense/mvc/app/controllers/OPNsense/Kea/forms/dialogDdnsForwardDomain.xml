@@ -1,0 +1,20 @@
+<form>
+    <field>
+        <id>ddns_domains.name</id>
+        <label>Forward domain</label>
+        <type>text</type>
+        <help>Forward DDNS domain (e.g. example.com.)</help>
+    </field>
+    <field>
+        <id>ddns_domains.key_name</id>
+        <label>TSIG key</label>
+        <type>dropdown</type>
+        <help>Select an optional TSIG key to authenticate updates for this domain. Note: if a DNS server has a TSIG key configured, that server-specific key takes precedence over the domain key.</help>
+    </field>
+    <field>
+        <id>ddns_domains.dns_servers</id>
+        <label>DNS servers</label>
+        <type>select_multiple</type>
+        <help>Select one or more shared DNS servers to update for this domain.</help>
+    </field>
+</form>
