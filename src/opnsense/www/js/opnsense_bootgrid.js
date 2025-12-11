@@ -811,17 +811,15 @@ class UIBootgrid {
     }
 
     _renderFooter() {
+        if (!this.options.navigation) {
+            $(`#${this.id} > .tabulator-footer > .tabulator-footer-contents`).children().empty().text('');
+        }
+
         this._renderFooterCommands();
-        this._wireFooterCommands();
 
         // if there are custom commands defined, inject them here
         if (this.customCommands !== null) {
             this.customCommands.appendTo($(`#${this.id} > .tabulator-footer > .tabulator-footer-contents`));
-        }
-
-        if (!this.options.navigation) {
-            $(`#${this.id} > .tabulator-footer > .tabulator-footer-contents`).children().not('.bootgrid-footer-commands').empty().text('');
-            return;
         }
 
         // swap page counter and paginator around (old look & feel).
@@ -845,7 +843,7 @@ class UIBootgrid {
     }
 
     _onDataProcessed() {
-        // refresh tooltips
+        // remove active tooltips
         // note that this affects the whole page, but there is currently no way around this
         $('.tooltip:visible').hide();
 
@@ -896,56 +894,37 @@ class UIBootgrid {
             $(cell.getElement()).addClass(this.options.statusMapping[cell.getData()['status']]);
         }
 
-        const $el = $(cell.getElement())
+        const $cell = $(cell.getElement())
+        $cell.find('.bootgrid-tooltip').each((i, el) => {
+            const $el = $(el);
 
-        let elements = $el.find('.bootgrid-tooltip');
-        if (elements.length > 0) {
-            this._tooltips(elements);
-        }
+            const existingTitle = $el.attr('title');
+            const command = el.className.match(/command-([^\s]+)/)?.[1];
 
-        let actions = $el.find('[class*="command-"]');
+            if (command && !existingTitle) {
+                const cmdobj = this._getCommands()[command] ?? null;
+                if (!cmdobj || !cmdobj?.title) {
+                    console.error(`No tooltip match for command ${command}`);
+                } else {
+                    $el.attr('title', typeof cmdobj.title === "function" ? cmdobj.title(cell) : cmdobj.title);
+                }
+            }
+            // XXX consider a dedicated invisible overlay for bootgrid tooltips
+            $el.tooltip({container: 'body', trigger: 'hover'});
+        });
+
+        let actions = $cell.find('[class*="command-"]');
         if (actions.length > 0) {
             actions.each((i, el) => {
-                let classes = $(el).attr('class').split(/\s+/);
-                let commandClass = classes.find(c => c.startsWith('command-'));
-                if (commandClass) {
-                    let command = commandClass.replace('command-', '');
-                    this._wireCellCommand($(el), command, cell);
+                let command = el.className.match(/command-([^\s]+)/)?.[1];
+                if (command) {
+                    this._linkCellCommand($(el), command, cell);
                 }
             })
         }
     }
 
-    _tooltips(elements) {
-        elements.each((index, el) => {
-            if ($(el).attr('title') !== undefined) {
-                // keep this tooltip
-            } else if ($(el).hasClass('command-add')) {
-                $(el).attr('title', this._translate('add'));
-            } else if ($(el).hasClass('command-delete-selected')) {
-                $(el).attr('title', this._translate('deleteSelected'));
-            } else if ($(el).hasClass('command-edit')) {
-                $(el).attr('title', this._translate('edit'));
-            } else if ($(el).hasClass('command-toggle')) {
-                if ($(el).data('value') === 1) {
-                    $(el).attr('title', this._translate('disable'));
-                } else {
-                    $(el).attr('title', this._translate('enable'));
-                }
-            } else if ($(el).hasClass('command-delete')) {
-                $(el).attr('title', this._translate('delete'));
-            } else if ($(el).hasClass('command-info')) {
-                $(el).attr('title', this._translate('info'));
-            } else if ($(el).hasClass('command-copy')) {
-                $(el).attr('title', this._translate('clone'));
-            } else {
-                $(el).attr('title', 'Error: no tooltip match');
-            }
-            $(el).tooltip({container: 'body', trigger: 'hover'});
-        });
-    }
-
-    _wireCellCommand($selector, command, cell) {
+    _linkCellCommand($selector, command, cell) {
         const commands = this._getCommands();
         if (command in commands) {
             if (!commands[command]?.method && !commands[command]?.onRendered) {
@@ -972,7 +951,7 @@ class UIBootgrid {
         }
     }
 
-    _wireFooterCommands() {
+    _linkFooterCommands() {
         const commands = Object.fromEntries(Object.entries(this._getCommands()).filter(([key, value]) => value?.footer));
         Object.keys(commands).map((k) => {
             if (!commands[k]?.method && !commands[k]?.onRendered) {
@@ -1136,17 +1115,16 @@ class UIBootgrid {
         for (const [key, command] of Object.entries(commands)) {
             if (key === 'add' && !this.options.addButton) {
                 // special case: not included in the template so don't render it
-                return;
+                continue;
             }
 
             if (key === 'delete-selected' && !this.options.deleteSelectedButton) {
-                return;
+                continue;
             }
 
-            // set data-toggle="tooltip" here to ensure tooltip rendering for custom commands
             const title = typeof command?.title === "function"
-                ? `data-toggle="tooltip" title=${command?.title()}`
-                : `data-toggle="tooltip" title=${command?.title}` ?? '';
+                ? `title=${command?.title()}`
+                : `title=${command?.title}` ?? '';
 
             const $element = $(`
                 <button type="button" class="btn btn-xs ${key === 'add' ? 'btn-primary' : 'btn-default'} command-${key} bootgrid-tooltip" ${title}>
@@ -1162,6 +1140,13 @@ class UIBootgrid {
         }
 
         $footerPrimary.after($commandContainer);
+
+        // bind tooltips
+        $(`#${this.id} > .tabulator-footer`).find('.bootgrid-tooltip').each((i, el) => {
+            $(el).tooltip({container: 'body', trigger: 'hover'});
+        });
+
+        this._linkFooterCommands();
     }
 
     _populateColumnSelection() {
@@ -1661,10 +1646,9 @@ class UIBootgrid {
                     }
 
                     if (has_option) {
-                        // set data-toggle="tooltip" here to ensure tooltip rendering for custom commands
                         let title = typeof command?.title === "function"
-                            ? `data-toggle="tooltip" title=${command?.title(cell)}`
-                            : `data-toggle="tooltip" title=${command?.title}` ?? '';
+                            ? `title=${command?.title(cell)}`
+                            : `title=${command?.title}` ?? '';
 
                         html.push(`
                             <button type="button"
