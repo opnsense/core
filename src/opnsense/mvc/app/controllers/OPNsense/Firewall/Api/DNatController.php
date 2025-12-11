@@ -131,11 +131,11 @@ class DNatController extends FilterBaseController
 
     public function moveRuleBeforeAction($selected_uuid, $target_uuid)
     {
-        return $this->moveRuleBeforeBase($selected_uuid, $target_uuid, 'rule.', 'sequence', 'DNat');
+        return $this->moveRuleBeforeBase($selected_uuid, $target_uuid, 'rule', 'sequence');
     }
 
     public function toggleRuleLogAction($uuid, $log)
     {
-        return $this->toggleRuleLogBase($uuid, $log, 'rule.', 'DNat');
+        return $this->toggleRuleLogBase($uuid, $log, 'rule');
     }
 }
