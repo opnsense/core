@@ -827,19 +827,20 @@ class UIBootgrid {
         // since we know the footer is rendered at this point,
         // but we don't want to wait on the data before swapping
         // the UI elements around.
+        if (this.options.navigation) {
+            let a = $(`#${this.id} .tabulator-page-counter`)[0];
+            let b = $(`#${this.id} .tabulator-paginator`)[0];
+            var aparent = a.parentNode;
+            var asibling = a.nextSibling === b ? a : a.nextSibling;
+            b.parentNode.insertBefore(a, b);
+            aparent.insertBefore(b, asibling);
 
-        let a = $(`#${this.id} .tabulator-page-counter`)[0];
-        let b = $(`#${this.id} .tabulator-paginator`)[0];
-        var aparent = a.parentNode;
-        var asibling = a.nextSibling === b ? a : a.nextSibling;
-        b.parentNode.insertBefore(a, b);
-        aparent.insertBefore(b, asibling);
-
-        // replace pagination text
-        $(`#${this.id} .tabulator-paginator button[data-page=first]`).html("&laquo;");
-        $(`#${this.id} .tabulator-paginator button[data-page=prev]`).html("&lsaquo;");
-        $(`#${this.id} .tabulator-paginator button[data-page=next]`).html("&rsaquo;");
-        $(`#${this.id} .tabulator-paginator button[data-page=last]`).html("&raquo;");
+            // replace pagination text
+            $(`#${this.id} .tabulator-paginator button[data-page=first]`).html("&laquo;");
+            $(`#${this.id} .tabulator-paginator button[data-page=prev]`).html("&lsaquo;");
+            $(`#${this.id} .tabulator-paginator button[data-page=next]`).html("&rsaquo;");
+            $(`#${this.id} .tabulator-paginator button[data-page=last]`).html("&raquo;");
+        }
     }
 
     _onDataProcessed() {
