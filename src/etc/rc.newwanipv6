@@ -77,6 +77,7 @@ system_resolver_configure();
 
 if ($force == 'no') {
     /* we used to log here but many have complained about spurious log lines caused by RAs */
+    plugins_configure('dhcp:radvd');
     return;
 }
 
