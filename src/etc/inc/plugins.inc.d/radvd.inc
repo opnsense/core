@@ -198,8 +198,13 @@ function radvd_configure_do($verbose = false, $blacklist = [])
 
         $stanzas = [];
 
-        list (, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
+        list ($ifcfgipv6, $networkv6, $subnetbitsv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
         if (is_subnetv6($networkv6)) {
+            if ($subnetbitsv6 < 64 ) {
+                /* force subnet to 64 as per radvd complaint "prefix length should be 64 for xzy" */
+                $subnetv6 = gen_subnetv6($ifcfgipv6, $subnetbitsv6);
+                $networkv6 = "{$subnetv6}/64";
+            }                
             $stanzas[] = $networkv6;
         }
 
