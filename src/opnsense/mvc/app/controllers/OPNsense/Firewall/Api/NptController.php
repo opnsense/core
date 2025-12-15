@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2023 Deciso B.V.
+ * Copyright (C) 2023-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,7 +25,11 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
 namespace OPNsense\Firewall\Api;
+
+use OPNsense\Base\UserException;
+use OPNsense\Core\Config;
 
 class NptController extends FilterBaseController
 {
@@ -33,16 +37,25 @@ class NptController extends FilterBaseController
 
     public function searchRuleAction()
     {
-        $category = $this->request->get('category');
+        $category = (array)$this->request->get('category');
+
         $filter_funct = function ($record) use ($category) {
-            return empty($category) || array_intersect(explode(',', $record->categories), $category);
+            /* categories are indexed by name in the record, but offered as uuid in the selector */
+            $catids = !$record->categories->isEmpty() ? $record->categories->getValues() : [];
+            return empty($category) || array_intersect($catids, $category);
         };
-        return $this->searchBase(
-            "npt.rule",
-            ['enabled', 'sequence', 'source_net', 'destination_net', 'trackif', 'description'],
-            "sequence",
-            $filter_funct
-        );
+
+        $results = $this->searchBase("npt.rule", null, "sequence", $filter_funct);
+
+        /* carry results */
+        foreach ($results['rows'] as &$record) {
+            /* offer list of colors to be used by the frontend */
+            $record['category_colors'] = $this->getCategoryColors(
+                !empty($record['categories']) ? explode(',', $record['categories']) : []
+            );
+        }
+
+        return $results;
     }
 
     public function setRuleAction($uuid)
@@ -69,4 +82,15 @@ class NptController extends FilterBaseController
     {
         return $this->toggleBase("npt.rule", $uuid, $enabled);
     }
+
+    public function moveRuleBeforeAction($selected_uuid, $target_uuid)
+    {
+        return $this->moveRuleBeforeBase($selected_uuid, $target_uuid, 'npt.rule', 'sequence');
+    }
+
+    public function toggleRuleLogAction($uuid, $log)
+    {
+        return $this->toggleRuleLogBase($uuid, $log, 'npt.rule');
+    }
+
 }
