@@ -92,5 +92,4 @@ class NptController extends FilterBaseController
     {
         return $this->toggleRuleLogBase($uuid, $log, 'npt.rule');
     }
-
 }

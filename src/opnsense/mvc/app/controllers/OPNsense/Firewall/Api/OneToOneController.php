@@ -98,5 +98,4 @@ class OneToOneController extends FilterBaseController
     {
         return $this->toggleRuleLogBase($uuid, $log, 'onetoone.rule');
     }
-
 }
