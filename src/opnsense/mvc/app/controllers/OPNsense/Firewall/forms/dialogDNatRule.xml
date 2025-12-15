@@ -1,7 +1,7 @@
 <form>
     <field>
         <type>header</type>
-        <label>General</label>
+        <label>Organization</label>
     </field>
     <field>
         <id>rule.disabled</id>
