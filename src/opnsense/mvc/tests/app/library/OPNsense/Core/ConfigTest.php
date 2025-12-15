@@ -43,19 +43,19 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
     /**
      * test construct
      */
-    public function testCanBeCreated()
+    public function testCanBeArray()
     {
         self::cleanupTestFiles();
 
-        // switch config to test set for this type
         (new AppConfig())->update('application.configDir', self::$configDir);
+        (new AppConfig())->update('application.configDefault', self::$configDir . '/backup/array.xml');
         Config::getInstance()->forceReload();
 
         $this->assertNotEmpty(Config::getInstance()->toArray(['rule']));
     }
 
     /**
-     * @depends testCanBeCreated
+     * @depends testCanBeArray
      */
     public function test_to_from_array()
     {
@@ -69,7 +69,39 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
 
         $cnf->fromArray($test);
 
-        $this->assertEquals(file_get_contents(self::$configDir . '/backup/config.xml'), (string)$cnf);
+        $this->assertEquals(file_get_contents(self::$configDir . '/backup/array.xml'), (string)$cnf);
+    }
+
+    /**
+     * test construct
+     */
+    public function testCanBeObject()
+    {
+        self::cleanupTestFiles();
+
+        (new AppConfig())->update('application.configDir', self::$configDir);
+        (new AppConfig())->update('application.configDefault', self::$configDir . '/backup/object.xml');
+        Config::getInstance()->forceReload();
+
+        $this->assertNotEmpty(Config::getInstance()->object());
+    }
+
+    /**
+     * @depends testCanBeObject
+     */
+    public function test_to_from_object()
+    {
+        $cnf = Config::getInstance();
+
+        $ramode = (string)$cnf->object()->dhcpdv6->lan->ramode;
+
+        /* test that deleting items does not leave whitespace behind and closes parent */
+        unset($cnf->object()->dhcpdv6->lan->ramode);
+        $this->assertEquals($cnf->object()->dhcpdv6->lan->asXml(), '<lan/>');
+
+        /* put the node back with the previous value and check that it opens again too */
+        $cnf->object()->dhcpdv6->lan->addChild('ramode', $ramode);
+        $this->assertEquals(file_get_contents(self::$configDir . '/backup/object.xml'), (string)$cnf);
     }
 
     /**

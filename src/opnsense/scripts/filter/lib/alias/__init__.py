@@ -153,7 +153,7 @@ class Alias(object):
             it was an alias from us if such a file exists.
             :return: boolean
         """
-        return self.get_parser() is not None and os.path.isfile(self._filename_alias_hash)
+        return self.has_parser() is not None and os.path.isfile(self._filename_alias_hash)
 
     def cached(self):
         """ load cached contents in case we don't want to resolve the alias
@@ -211,7 +211,7 @@ class Alias(object):
                     with open(self._filename_alias_content, 'w') as f_out:
                         f_out.write(resolve_content_str)
 
-                if self.get_parser():
+                if self.has_parser():
                     # flush md5 hash to disk (when unchanged)
                     new_uniqueid = self.uniqueid()
                     old_uniqueid = None
@@ -248,6 +248,13 @@ class Alias(object):
             return AuthGroup(**self._properties)
         else:
             return None
+
+    def has_parser(self):
+        # should match the list above (get_parser may thrown an IOError at setup)
+        return self._type in [
+            'host', 'network', 'networkgroup', 'url', 'urltable', 'urljson',
+            'geoip', 'dynipv6host', 'mac', 'asn', 'authgroup'
+        ]
 
     def pre_process(self, skip_result=False):
         """ alias type pre processors

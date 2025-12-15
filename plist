@@ -962,6 +962,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/filter_rule.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/group.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/npt_rule.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Firewall/onat_rule.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Hostdiscovery/settings.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/policy.volt
@@ -1030,7 +1031,8 @@
 /usr/local/opnsense/mvc/script/run_migrations.php
 /usr/local/opnsense/mvc/script/run_validations.php
 /usr/local/opnsense/mvc/tests/app/config/config.php
-/usr/local/opnsense/mvc/tests/app/library/OPNsense/Core/ConfigConfig/backup/config.xml
+/usr/local/opnsense/mvc/tests/app/library/OPNsense/Core/ConfigConfig/backup/array.xml
+/usr/local/opnsense/mvc/tests/app/library/OPNsense/Core/ConfigConfig/backup/object.xml
 /usr/local/opnsense/mvc/tests/app/library/OPNsense/Core/ConfigTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/ACL/AclConfig/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/ACL/AclTest.php

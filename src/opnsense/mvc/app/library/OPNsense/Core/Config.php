@@ -313,8 +313,11 @@ class Config extends Singleton
      */
     protected function init()
     {
+        $app = new AppConfig();
+
+        $this->config_file = $app->application->configDir . '/config.xml';
         $this->statusIsLocked = false;
-        $this->config_file = (new AppConfig())->application->configDir . '/config.xml';
+
         try {
             $this->load();
         } catch (\Exception $e) {
@@ -338,9 +341,12 @@ class Config extends Singleton
 
             /* in case there are no backups, restore defaults */
             $logger->error(gettext('No valid config.xml found, attempting to restore factory config.'));
-            $this->restoreBackup('/usr/local/etc/config.xml');
-            @chown($this->config_file, 'wwwonly'); /* XXX frontend owns file */
-            @chgrp($this->config_file, 'wheel'); /* XXX backend can work with it */
+            $this->restoreBackup($app->application->configDefault);
+
+            /* XXX perhaps better to fold this into restoreBackup()? */
+            list($user, $group) = explode(':', $app->globals->owner);
+            @chown($this->config_file, $user);
+            @chgrp($this->config_file, $group);
         }
     }
 
@@ -379,7 +385,7 @@ class Config extends Singleton
                 }
             );
 
-            $result = simplexml_load_string($xml);
+            $result = simplexml_load_string($xml, "SimpleXMLElement", LIBXML_NOBLANKS);
             restore_error_handler();
             if (!$this->statusIsLocked) {
                 flock($fp, LOCK_UN);

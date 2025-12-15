@@ -364,13 +364,7 @@ validate:
 	@${PLUGINCTL} -v
 
 test:
-.if exists(${TESTDIR})
-	@if [ "$$(${VERSIONBIN} -v)" != "${CORE_PKGVERSION}" ]; then \
-		echo "Installed version does not match, expected ${CORE_PKGVERSION}"; \
-		exit 1; \
-	fi
 	@cd ${TESTDIR} && phpunit || true; rm -rf ${TESTDIR}/.phpunit.result.cache
-.endif
 
 clean: clean-pkgdir clean-wrksrc clean-mfcdir checkout
 

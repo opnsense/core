@@ -98,7 +98,7 @@ if __name__ == '__main__':
             continue
 
         # only try to replace the contents of this alias if we're responsible for it (know how to parse)
-        if alias.get_parser():
+        if alias.has_parser():
             # query alias content, includes dependencies
             alias_content = set()
             for item in alias_resolve_list:

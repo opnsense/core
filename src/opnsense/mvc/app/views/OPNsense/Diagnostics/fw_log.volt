@@ -304,11 +304,7 @@
                 case 'push':
                 case 'pushMany':
                 case 'reset':
-                    const holder = $('#livelog-table > .tabulator-tableholder')[0];
-                    const scrollPos = holder.scrollTop;
-                    this.table.clearData();
-                    this.table.setData(this.viewBuffer.toArray());
-                    holder.scrollTop = scrollPos;
+                    this.table.replaceData(this.viewBuffer.toArray());
                     $('.tooltip:visible').hide();
                     break;
                 case 'clear':
@@ -722,9 +718,19 @@
                     },
                     lookup: function(column, row, onRendered) {
                         const value = row[column.id.replace("hostname", "")];
+                        const hostname = hostnames.get(value);
                         // deal with IPs we haven't seen before
-                        if (!hostnames.get(value)) hostnames.set(value, null);
-                        return hostnames.get(value) || '<span class="fa fa-spinner fa-pulse"></span>';
+                        if (!hostname) hostnames.set(value, null);
+
+                        const side = column.id.includes('src') ? 'src' : 'dst';
+                        const port = row[`${side}port`];
+
+                        if (!hostname) return '<span class="fa fa-spinner fa-pulse"></span>';
+
+                        const hasIPv6 = hostname.includes(':');
+                        return port
+                            ? `${hasIPv6 ? `[${hostname}]` : hostname}:${port}`
+                            : hostname;
                     },
                     proto: function(column, row, onRendered) {
                         return row.protoname.toUpperCase();
@@ -833,13 +839,13 @@
                 index: "__digest__",
                 autoResize: false,
                 addRowPos: 'top',
-                persistence: false, // ideally persistence should be on, but we have no reset button at the moment due to missing navigation
                 height:undefined,
                 layout:"fitColumns",
                 pagination: false
             }
         });
 
+        const $reset = $('#table-reset');
         const $global = $('#globalSearch');
         const $filterField = $('#filter-field');
         const $filterOperator = $('#filter-operator')
@@ -876,6 +882,11 @@
         let pollTimeout = null;
         let interfaceMap = {};
         let bufferDataUnsubscribe = null;
+
+        $reset.on('click', function() {
+            tableWrapper.bootgrid('setPersistence', false);
+            location.reload();
+        });
 
         $apply.on('click', function () {
             const field = $filterField.val();
@@ -981,6 +992,7 @@
                             );
                         };
 
+                        tableWrapper.bootgrid('unsetColumns', ['src', 'dst']);
                         tableWrapper.bootgrid('setColumns', ['srchostname', 'dsthostname']);
 
                         // lookup new entries
@@ -1015,6 +1027,7 @@
                             bufferDataUnsubscribe();
                             bufferDataUnsubscribe = null;
                             tableWrapper.bootgrid('unsetColumns', ['srchostname', 'dsthostname']);
+                            tableWrapper.bootgrid('setColumns', ['src', 'dst']);
                             filterVM.reset();
                         }
                     }
@@ -1037,6 +1050,8 @@
 
         // Main startup logic
         tableWrapper.on("load.rs.jquery.bootgrid", function() {
+            tableWrapper.bootgrid('unsetColumns', ['srchostname', 'dsthostname']);
+            tableWrapper.bootgrid('setColumns', ['src', 'dst']);
             $(`#livelog-table > .tabulator-tableholder`)
                 .prepend($('<span class="bootgrid-overlay"><i class="fa fa-spinner fa-spin"></i></span>'));
         });
@@ -1247,7 +1262,10 @@
             const bufSize = parseInt($(this).val());
             buffer.resize(bufSize);
             stopPoller();
+            $(`#livelog-table > .tabulator-tableholder`)
+                .prepend($('<span class="bootgrid-overlay"><i class="fa fa-spinner fa-spin"></i></span>'));
             fetch_log(null, bufSize).then((data) => {
+                $(`#livelog-table > .tabulator-tableholder > .bootgrid-overlay`).remove();
                 buffer.reset(data);
                 poller(1000);
             });
@@ -1325,6 +1343,9 @@
   .filters-actions { justify-content: flex-start; }
 }
 
+.tabulator-row.tabulator-row-odd {
+    background-color: transparent;
+}
 </style>
 
 <div class="tab-content content-box" style="padding: 10px;">
@@ -1336,8 +1357,11 @@
                 <div class="muted">{{ lang._('Filters')}}</div>
                 <div class="filters-wrap">
                     <input id="globalSearch" type="text" placeholder="{{ lang._('Quick search (all fields)…') }}" />
-                    <button id="refresh" class="btn btn-default" type="button" title="{{ lang._('Refresh') }}">
+                    <button id="refresh" class="btn btn-default" type="button" data-toggle="tooltip" title="{{ lang._('Refresh') }}">
                         <span class="icon fa-solid fa-arrows-rotate"></span>
+                    </button>
+                    <button id="table-reset" class="btn" title="{{ lang._('Reset all table dimension modifications and reload the page') }}">
+                        <span class="icon fa-solid fa-share-square"></span>
                     </button>
                 </div>
 
@@ -1427,6 +1451,9 @@
                     <option value="50">50</option>
                     <option value="75">75</option>
                     <option value="100">100</option>
+                    <option value="1000">1000</option>
+                    <option value="5000">5000</option>
+                    <option value="10000">10000</option>
                 </select>
                 <label>{{ lang._('Table size') }}</label>
             </div>
@@ -1454,7 +1481,7 @@
                 <th data-column-id="dst" data-type="string" data-formatter="appendPort" data-sortable="false">{{ lang._('Destination') }}</th>
                 <th data-column-id="dsthostname" data-type="string" data-formatter="lookup" data-sortable="false" data-visible="false">{{ lang._('Destination Hostname') }}</th>
                 <th data-column-id="action" data-type="string" data-sortable="false" data-width="80">{{ lang._('Action') }}</th>
-                <th data-column-id="label" data-type="string" data-sortable="false">{{ lang._('Label') }}</th>
+                <th data-column-id="label" data-type="string" data-sortable="false" data-width="350">{{ lang._('Label') }}</th>
                 <th data-column-id="status" data-type="string" data-sortable="false" data-visible="false">{{ lang._('Status') }}</th>
                 <th data-column-id="" data-sortable="false" data-formatter="info" data-width="30"></th>
             </tr>

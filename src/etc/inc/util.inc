@@ -946,11 +946,6 @@ function mwexec_bg($command, $mute = false) /* XXX deprecated */
     mwexec("/usr/sbin/daemon -f {$command}", $mute);
 }
 
-function mwexecf_bg($format, $args = [], $mute = false) /* XXX deprecated */
-{
-    mwexec_bg(exec_safe($format, $args), $mute);
-}
-
 /* safe shell command formatter */
 function exec_safe($format, $args = [])
 {
