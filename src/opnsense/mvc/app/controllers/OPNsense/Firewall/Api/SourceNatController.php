@@ -37,7 +37,7 @@ class SourceNatController extends FilterBaseController
 
         $filter_funct = function ($record) use ($category) {
             /* categories are indexed by name in the record, but offered as uuid in the selector */
-            $catids = !empty((string)$record->categories) ? explode(',', (string)$record->categories) : [];
+            $catids = !$record->categories->isEmpty() ? $record->categories->getValues() : [];
             return empty($category) || array_intersect($catids, $category);
         };
 
