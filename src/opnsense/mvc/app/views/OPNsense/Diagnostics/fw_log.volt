@@ -1050,6 +1050,8 @@
 
         // Main startup logic
         tableWrapper.on("load.rs.jquery.bootgrid", function() {
+            tableWrapper.bootgrid('unsetColumns', ['srchostname', 'dsthostname']);
+            tableWrapper.bootgrid('setColumns', ['src', 'dst']);
             $(`#livelog-table > .tabulator-tableholder`)
                 .prepend($('<span class="bootgrid-overlay"><i class="fa fa-spinner fa-spin"></i></span>'));
         });
