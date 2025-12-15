@@ -40,7 +40,7 @@ class DNatAssociatedRuleField extends NetworkAliasField
     public function setValue($value)
     {
         if (is_a($value, \SimpleXMLElement::class) && $value == 'pass') {
-            $this->getParentNode()->pass = '1';
+            $this->getParentNode()->pass = 'pass';
         }
         /* unused, flush */
         return parent::setValue('');

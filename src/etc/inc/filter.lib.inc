@@ -636,6 +636,35 @@ function filter_core_rules_system($fw, $defaults)
             }
         }
     }
+
+    // auto-generated DNAT rules
+    foreach ((new OPNsense\Firewall\DNat(False))->rule->sortedBy(['sequence']) as $key => $rule) {
+        if ($rule->disabled->isEmpty() && $rule->pass == 'rule') {
+            $dnatrule = $rule->getNodeContent();
+            $tmprule = [
+                'ipprotocol' =>  $dnatrule['ipprotocol'],
+                'interface' => $dnatrule['interface'],
+                'protocol' =>  $dnatrule['protocol'],
+                'source' => $dnatrule['source'],
+                'destination' => [
+                    'network' => $dnatrule['target']
+                ],
+                'log' => $dnatrule['log'],
+                'descr' => $dnatrule['descr']
+            ];
+
+            if (!empty($dnatrule['destination']['port']) && !empty($dnatrule['local-port'])) {
+                $tmprule['destination']['port'] = $dnatrule['local-port'];
+                $parts = explode('-', $dnatrule['destination']['port']);
+                if (count($parts) == 2) {
+                    $range_end = $parts[1] - $parts[0] +  $dnatrule['local-port'];
+                    $dnatrule['local-port'] .= sprint("-%s", $range_end);
+                }
+            }
+            $fw->registerFilterRule(500000, $tmprule); /* automatic at the end of our ruleset */
+        }
+    }
+
 }
 
 /**
