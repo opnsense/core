@@ -27,10 +27,6 @@
  <script>
     $(document).ready(function() {
 
-        // XXX: Most code comments are the same as filter_rule.volt, thats why they're omitted.
-        //      Large blocks of code are exactly the same, so we could think about a base view.
-        //      Though since there are subtle differences leaving them separated might be best for now.
-
         function showDialogAlert(type, title, message) {
             BootstrapDialog.show({
                 type: type,
@@ -45,7 +41,7 @@
             });
         }
 
-        let treeViewEnabled = localStorage.getItem("dnat_tree") === "1";
+        let treeViewEnabled = localStorage.getItem("npt_tree") === "1";
         $('#toggle_tree_button').toggleClass('active btn-primary', treeViewEnabled);
 
         function dynamicResponseHandler(resp) {
@@ -57,7 +53,7 @@
             let current = null;
 
             resp.rows.forEach(r => {
-                const label = (r["%category"] || r.category || "");
+                const label = (r["%categories"] || r.categories || "");
 
                 if (!current || current._label !== label) {
                     current = {
@@ -67,7 +63,7 @@
                         children       : []
                     };
 
-                    current.category      = label;
+                    current.categories      = label;
                     current.category_colors = r.category_colors || [];
 
                     buckets.push(current);
@@ -79,22 +75,22 @@
             return Object.assign({}, resp, { rows: buckets });
         }
 
-        const grid = $("#{{ formGridDNatRule['table_id'] }}").UIBootgrid({
-            search : '/api/firewall/d_nat/search_rule/',
-            get    : '/api/firewall/d_nat/get_rule/',
-            set    : '/api/firewall/d_nat/set_rule/',
-            add    : '/api/firewall/d_nat/add_rule/',
-            del    : '/api/firewall/d_nat/del_rule/',
-            toggle : '/api/firewall/d_nat/toggle_rule/',
+        const grid = $("#{{ formGridNptRule['table_id'] }}").UIBootgrid({
+            search : '/api/firewall/npt/search_rule/',
+            get    : '/api/firewall/npt/get_rule/',
+            set    : '/api/firewall/npt/set_rule/',
+            add    : '/api/firewall/npt/add_rule/',
+            del    : '/api/firewall/npt/del_rule/',
+            toggle : '/api/firewall/npt/toggle_rule/',
             tabulatorOptions : {
                 dataTree              : true,
                 dataTreeChildField    : "children",
-                dataTreeElementColumn : "category",
+                dataTreeElementColumn : "categories",
                 rowFormatter: function(row) {
                     const data = row.getData();
                     const $element = $(row.getElement());
 
-                    if ('disabled' in data && data.disabled == "1") {
+                    if ('enabled' in data && data.enabled == "0") {
                         $element.addClass('row-disabled');
                     }
 
@@ -120,13 +116,13 @@
                 },
                 responseHandler: dynamicResponseHandler,
                 headerFormatters: {
-                    disabled: function (column) {
+                    enabled: function (column) {
                         return '<i class="fa-solid fa-fw fa-check-square" data-toggle="tooltip" title="{{ lang._('Enabled') }}"></i>';;
                     },
                     interface: function (column) {
                         return '<i class="fa-solid fa-fw fa-network-wired" data-toggle="tooltip" title="{{ lang._('Network interface') }}"></i>';
                     },
-                    category: function (column) {
+                    categories: function (column) {
                         return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Categories") }}"></i>';
                     },
                 },
@@ -186,24 +182,9 @@
                             </span>
                         `;
                     },
-                    any: function(column, row) {
-                        if (row.isGroup) {
-                            return "";
-                        }
-
-                        if (
-                            row[column.id] !== '' &&
-                            row[column.id] !== 'any' &&
-                            row[column.id] !== 'None'
-                        ) {
-                            return row[`%${column.id}`] || row[column.id];
-                        } else {
-                            return '*';
-                        }
-                    },
                     category: function (column, row) {
                         const isGroup = row.isGroup;
-                        const hasCategories = row.category && Array.isArray(row.category_colors);
+                        const hasCategories = row.categories && Array.isArray(row.category_colors);
 
                         if (!hasCategories) {
 
@@ -217,7 +198,7 @@
                                 : '';
                         }
 
-                        const category = (row["%category"] || row.category).split(',');
+                        const category = (row["%categories"] || row.categories).split(',');
                         const colors     = row.category_colors;
 
                         const icons = category.map((cat, idx) => `
@@ -235,70 +216,12 @@
                             </span>`
                             : icons;
                     },
-                    interfaces: function(column, row) {
-                        if (row.isGroup) {
-                            return "";
-                        }
-
-                        const interfaces = row["%" + column.id] || row[column.id] || "";
-
-                        if (interfaces === "") {
-                            return "*";
-                        }
-
-                        if (!interfaces.includes(",")) {
-                            return (row.interfacenot == 1 ? "! " : "") + interfaces;
-                        }
-
-                        const interfaceList = interfaces.split(",");
-                        const tooltipText = interfaceList.join("<br>");
-
-                        return `
-                            <span data-toggle="tooltip" data-html="true" title="${tooltipText}" style="white-space: nowrap;">
-                                <span class="interface-count">${interfaceList.length}</span>
-                                <i class="fa-solid fa-fw fa-network-wired"></i>
-                            </span>
-                        `;
-                    },
-                    alias: function(column, row) {
-                        if (row.isGroup) {
-                            return "";
-                        }
-                        const value = row[column.id] || "";
-                        const isNegated = (row[column.id.replace('network', 'not')] == 1) ? "! " : "";
-
-                        if (typeof value !== 'string') {
-                            return '';
-                        }
-
-                        if (!value || value === "any") {
-                            return isNegated + '*';
-                        }
-
-                        const aliasMetadataList = row["alias_meta_" + column.id] || [];
-
-                        const renderedItems = aliasMetadataList.map(aliasInfo => {
-                            if (aliasInfo.isAlias) {
-                                const tooltipHtml = aliasInfo.description || aliasInfo.value || "";
-                                return `
-                                    <span data-toggle="tooltip" data-html="true" title="${tooltipHtml}">${aliasInfo.value}&nbsp;</span>
-                                    <a href="/ui/firewall/alias/index/${encodeURIComponent(aliasInfo.value)}"
-                                    data-toggle="tooltip" title="{{ lang._('Edit alias') }}">
-                                    <i class="fa fa-fw fa-list"></i>
-                                    </a>
-                                `;
-                            }
-                            return aliasInfo["%value"];
-                        }).join(", ");
-
-                        return isNegated + renderedItems;
-                    },
                 },
             },
             commands: {
                 move_before: {
                     method: function(event) {
-                        const selected = $("#{{ formGridDNatRule['table_id'] }}").bootgrid("getSelectedRows");
+                        const selected = $("#{{ formGridNptRule['table_id'] }}").bootgrid("getSelectedRows");
                         if (selected.length !== 1) {
                             showDialogAlert(
                                 BootstrapDialog.TYPE_WARNING,
@@ -321,11 +244,11 @@
                         }
 
                         ajaxCall(
-                            "/api/firewall/d_nat/move_rule_before/" + selectedUuid + "/" + targetUuid,
+                            "/api/firewall/npt/move_rule_before/" + selectedUuid + "/" + targetUuid,
                             {},
                             function(data, status) {
                                 if (data.status === "ok") {
-                                    $("#{{ formGridDNatRule['table_id'] }}").bootgrid("reload");
+                                    $("#{{ formGridNptRule['table_id'] }}").bootgrid("reload");
                                     $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
                                 }
                             },
@@ -348,11 +271,11 @@
                         const uuid = $(this).data("row-id");
                         const log = String(+$(this).data("value") ^ 1);
                         ajaxCall(
-                            `/api/firewall/d_nat/toggle_rule_log/${uuid}/${log}`,
+                            `/api/firewall/npt/toggle_rule_log/${uuid}/${log}`,
                             {},
                             function(data) {
                                 if (data.status === "ok") {
-                                    $("#{{ formGridDNatRule['table_id'] }}").bootgrid("reload");
+                                    $("#{{ formGridNptRule['table_id'] }}").bootgrid("reload");
                                     $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
                                 }
                             },
@@ -380,7 +303,7 @@
             const currentSelection = $("#category_filter").val();
 
             return $("#category_filter").fetch_options(
-                '/api/firewall/d_nat/list_categories',
+                '/api/firewall/npt/list_categories',
                 {},
                 function (data) {
                     if (!data.rows) return [];
@@ -418,7 +341,7 @@
             );
         }
 
-        $("#category_filter_container").detach().insertBefore('#{{ formGridDNatRule["table_id"] }}-header .search');
+        $("#category_filter_container").detach().insertBefore('#{{ formGridNptRule["table_id"] }}-header .search');
         $("#category_filter").on('changed.bs.select', function(){
             if (!categoryInitialized || reconfigureActInProgress) return;
             grid.bootgrid('reload');
@@ -427,9 +350,9 @@
         $("#tree_toggle_container").detach().insertAfter("#category_filter_container");
         $('#toggle_tree_button').click(function() {
             treeViewEnabled = !treeViewEnabled;
-            localStorage.setItem("dnat_tree", treeViewEnabled ? "1" : "0");
+            localStorage.setItem("onat_tree", treeViewEnabled ? "1" : "0");
             $(this).toggleClass('active btn-primary', treeViewEnabled);
-            $("#{{ formGridDNatRule['table_id'] }}").toggleClass("tree-enabled", treeViewEnabled);
+            $("#{{ formGridNptRule['table_id'] }}").toggleClass("tree-enabled", treeViewEnabled);
             $("#tree_expand_container").toggle(treeViewEnabled);
             grid.bootgrid("reload");
         });
@@ -437,55 +360,13 @@
         $("#tree_expand_container").detach().insertAfter("#tree_toggle_container");
         $("#tree_expand_container").toggle(treeViewEnabled);
         $('#expand_tree_button').on('click', function () {
-            const $table = $('#{{ formGridDNatRule["table_id"] }}');
+            const $table = $('#{{ formGridNptRule["table_id"] }}');
 
             if ($table.find('.tabulator-data-tree-control-expand').length) {
                 $table.find('.tabulator-data-tree-control-expand').trigger('click');
             } else {
                 $table.find('.tabulator-data-tree-control-collapse').trigger('click');
             }
-        });
-
-        ajaxGet('/api/firewall/d_nat/list_network_select_options', [], function(data, status){
-            if (data.single) {
-                $(".net_selector").each(function(){
-                    $(this).replaceInputWithSelector(data, $(this).hasClass('net_selector_multi'));
-                    /* enforce single selection when "single host or network" or "any" are selected */
-                    if ($(this).hasClass('net_selector_multi')) {
-                        $("select[for='" + $(this).attr('id') + "']").on('shown.bs.select', function(){
-                            $(this).data('previousValue', $(this).val());
-                        }).change(function(){
-                            const prev = Array.isArray($(this).data('previousValue')) ? $(this).data('previousValue') : [];
-                            const is_single = $(this).val().includes('') || $(this).val().includes('any');
-                            const was_single = prev.includes('') || prev.includes('any');
-                            let refresh = false;
-                            if (was_single && is_single && $(this).val().length > 1) {
-                                $(this).val($(this).val().filter(value => !prev.includes(value)));
-                                refresh = true;
-                            } else if (is_single && $(this).val().length > 1) {
-                                if ($(this).val().includes('any') && !prev.includes('any')) {
-                                    $(this).val('any');
-                                } else{
-                                    $(this).val('');
-                                }
-                                refresh = true;
-                            }
-                            if (refresh) {
-                                $(this).selectpicker('refresh');
-                                $(this).trigger('change');
-                            }
-                            $(this).data('previousValue', $(this).val());
-                        });
-                    }
-                });
-            }
-        });
-
-        ajaxGet('/api/firewall/d_nat/list_port_select_options', [], function (data) {
-            if (!data || !data.single) return;
-            $(".port_selector").each(function () {
-                $(this).replaceInputWithSelector(data, false);
-            });
         });
 
         $('#category_filter').parent().find('.dropdown-toggle').prepend('<i class="fa fa-tag" style="margin-right: 6px;"></i>');
@@ -548,7 +429,7 @@
         box-shadow: none !important;
         background: transparent !important;
     }
-    .bucket-row .tabulator-cell[tabulator-field="category"] {
+    .bucket-row .tabulator-cell[tabulator-field="categories"] {
         overflow: visible !important;
         white-space: nowrap !important;
         text-overflow: clip !important;
@@ -619,8 +500,8 @@
         </div>
     </div>
 
-    {{ partial('layout_partials/base_bootgrid_table', formGridDNatRule + {'command_width':'150'}) }}
+    {{ partial('layout_partials/base_bootgrid_table', formGridNptRule + {'command_width':'150'}) }}
 </div>
 
-{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/d_nat/apply'}) }}
-{{ partial("layout_partials/base_dialog",{'fields':formDialogDNatRule,'id':formGridDNatRule['edit_dialog_id'],'label':lang._('Edit Destination Nat')}) }}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/npt/apply'}) }}
+{{ partial("layout_partials/base_dialog",{'fields':formDialogNptRule,'id':formGridNptRule['edit_dialog_id'],'label':lang._('Edit NPT Rule')}) }}

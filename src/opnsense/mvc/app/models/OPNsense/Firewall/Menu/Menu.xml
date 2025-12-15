@@ -10,7 +10,7 @@
             <DNat order="100" VisibleName="Destination NAT" url="/ui/firewall/d_nat/">
                 <FilterRef url="/ui/firewall/d_nat#*" visibility="hidden"/>
             </DNat>
-            <OneToOne order="200" VisibleName="One-to-One" url="/ui/firewall/one_to_one/">
+            <OneToOne order="200" VisibleName="One-to-One NAT" url="/ui/firewall/one_to_one/">
                 <FilterRef url="/ui/firewall/one_to_one#*" visibility="hidden"/>
             </OneToOne>
             <NPTv6 order="500" url="/ui/firewall/npt/">

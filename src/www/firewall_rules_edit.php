@@ -1833,7 +1833,7 @@ endforeach;?>
                       <td>&nbsp;</td>
                       <td>
                         <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
-                        <butto id="btn_cancel" class="btn btn-default"><?=html_safe(gettext('Cancel'));?></button>
+                        <button id="btn_cancel" class="btn btn-default"><?=html_safe(gettext('Cancel'));?></button>
                       </td>
                     </tr>
                   </table>
