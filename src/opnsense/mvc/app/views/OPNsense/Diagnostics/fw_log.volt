@@ -304,11 +304,7 @@
                 case 'push':
                 case 'pushMany':
                 case 'reset':
-                    const holder = $('#livelog-table > .tabulator-tableholder')[0];
-                    const scrollPos = holder.scrollTop;
-                    this.table.clearData();
-                    this.table.setData(this.viewBuffer.toArray());
-                    holder.scrollTop = scrollPos;
+                    this.table.replaceData(this.viewBuffer.toArray());
                     $('.tooltip:visible').hide();
                     break;
                 case 'clear':
@@ -1266,7 +1262,10 @@
             const bufSize = parseInt($(this).val());
             buffer.resize(bufSize);
             stopPoller();
+            $(`#livelog-table > .tabulator-tableholder`)
+                .prepend($('<span class="bootgrid-overlay"><i class="fa fa-spinner fa-spin"></i></span>'));
             fetch_log(null, bufSize).then((data) => {
+                $(`#livelog-table > .tabulator-tableholder > .bootgrid-overlay`).remove();
                 buffer.reset(data);
                 poller(1000);
             });
@@ -1452,6 +1451,9 @@
                     <option value="50">50</option>
                     <option value="75">75</option>
                     <option value="100">100</option>
+                    <option value="1000">1000</option>
+                    <option value="5000">5000</option>
+                    <option value="10000">10000</option>
                 </select>
                 <label>{{ lang._('Table size') }}</label>
             </div>
