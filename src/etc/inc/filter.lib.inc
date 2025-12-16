@@ -638,7 +638,7 @@ function filter_core_rules_system($fw, $defaults)
     }
 
     // auto-generated DNAT rules
-    foreach ((new OPNsense\Firewall\DNat(False))->rule->sortedBy(['sequence']) as $key => $rule) {
+    foreach ((new OPNsense\Firewall\DNat(false))->rule->sortedBy(['sequence']) as $key => $rule) {
         if ($rule->disabled->isEmpty() && $rule->pass == 'rule') {
             $dnatrule = $rule->getNodeContent();
             $tmprule = [
@@ -664,7 +664,6 @@ function filter_core_rules_system($fw, $defaults)
             $fw->registerFilterRule(500000, $tmprule); /* automatic at the end of our ruleset */
         }
     }
-
 }
 
 /**
