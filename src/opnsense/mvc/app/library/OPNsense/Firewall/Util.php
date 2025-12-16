@@ -568,4 +568,49 @@ class Util
             }
         }
     }
+
+    /**
+     * query anti lockout interface and ports using only our config object
+     * @return array [if => [ports]]
+     */
+    public static function getAntiLockout()
+    {
+        $cfg = Config::getInstance()->object();
+        if (isset($cfg->system->webgui->noantilockout)) {
+            return [];
+        }
+
+        /*  "priority" list to identify primary local interface: lan, optX or wan */
+        $iflist = array_keys((array)$cfg->interfaces->children());
+        natsort($iflist);
+        foreach ($iflist as $if) {
+            if (preg_match('/^(lan|opt[0-9]+|wan)$/', $if)) {
+                $lockout_if = $if;
+                break;
+            }
+        }
+        if (empty($lockout_if)) {
+            return [];
+        }
+        $lockout_ports = [];
+        if (empty($cfg->system->webgui->port)) {
+            $lockout_ports[] = $cfg->system->webgui->protocol == 'https' ? '443' : '80';
+        } else {
+            $lockout_ports[] = (string)$cfg->system->webgui->port;
+        }
+        if ($cfg->system->webgui->protocol == 'https' && !isset($cfg->system->webgui->disablehttpredirect)) {
+            $lockout_ports[] = '80';
+        }
+        if (isset($cfg->system->ssh->enabled)) {
+            /**
+             * filter_core_get_antilockout() checked for install media as well,
+             * which looks like an overkill and is expensive to check
+             **/
+            $lockout_ports[] = empty($cfg->system->ssh->port) ? '22' : (string)$cfg->system->ssh->port;
+        }
+        sort($lockout_ports);
+
+        /* return a convenient one-entry array to iterate over for our callers */
+        return [$lockout_if => $lockout_ports];
+    }
 }
