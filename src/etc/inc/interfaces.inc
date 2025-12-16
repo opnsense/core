@@ -3988,12 +3988,13 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
                     'bits' => $address['subnetbits'],
                     'deprecated' => !empty($address['deprecated']),
                     'detached' => !empty($address['detached']),
-                    'tentative' => !empty($address['tentative']),
                     'family' => $proto == 'ipv4' ? 'inet' : 'inet6',
                     'interface' => !empty($ifcache[$device]) ? $ifcache[$device] : null,
                     'key' => $key,
+                    'lifetime' => ($proto == 'ipv6' ? $address['vltime'] : '0'),
                     'name' => $device,
                     'scope' => !empty($address['link-local']),
+                    'tentative' => !empty($address['tentative']),
                     'unique' => ($proto == 'ipv4' || !empty($address['link-local'])) ? false : is_uniquelocal($address['ipaddr']),
                 ];
             }
@@ -4100,6 +4101,8 @@ function _interfaces_primary_address6($interface, $ifconfig_details = null, $all
         $interface = array_merge([$interface], array_keys(link_interface_to_track6($interface)));
     }
 
+    $lifetime = false;
+
     foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
         /* XXX consider excluding 'autoconf', but only when it's not in SLAAC mode */
         if ($addr['family'] != 'inet6' || $addr['deprecated'] || $addr['detached'] || $addr['tentative'] || $addr['alias']) {
@@ -4112,6 +4115,12 @@ function _interfaces_primary_address6($interface, $ifconfig_details = null, $all
             continue;
         }
 
+        /* valid candidates from here but need to check lifetime */
+        if ($lifetime !== false && $addr['lifetime'] <= $lifetime) {
+            break; /* already found one and lifetime was not increasing */
+        }
+        $lifetime = $addr['lifetime'];
+
         $networkv6 = gen_subnetv6($addr['address'], $addr['bits']) . "/{$addr['bits']}";
         $subnetbitsv6 = $addr['bits'];
         $ifcfgipv6 = $addr['address'];
@@ -4119,7 +4128,6 @@ function _interfaces_primary_address6($interface, $ifconfig_details = null, $all
             $ifcfgipv6 .= "%{$addr['name']}";
         }
         $devicev6 = $addr['name'];
-        break; /* all done */
     }
 
     return [ $ifcfgipv6, $networkv6, $subnetbitsv6, $devicev6 ];
