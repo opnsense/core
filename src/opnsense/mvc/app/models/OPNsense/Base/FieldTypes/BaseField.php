@@ -445,10 +445,9 @@ abstract class BaseField
             $this->internalInitialValue = (string)$value;
         }
         $this->internalValue = (string)$value;
-        // apply filters, may be extended later.
-        $filters = array('applyFilterChangeCase');
-        foreach ($filters as $filter) {
-            $this->$filter();
+        // apply case when specified
+        if (!empty($this->internalChangeCase)) {
+            $this->applyFilterChangeCase();
         }
     }
 
