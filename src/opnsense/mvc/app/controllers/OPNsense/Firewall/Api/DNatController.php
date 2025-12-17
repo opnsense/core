@@ -89,10 +89,10 @@ class DNatController extends FilterBaseController
                     'nordr' => '1',
                     'interface' => $if,
                     '%interface' => $ifname,
-                    'destination.network' => $if.'ip',
+                    'destination.network' => $if . 'ip',
                     'destination.port' => $port,
                     'alias_meta_destination.port' => $this->getNetworks($port),
-                    'alias_meta_destination.network' => $this->getNetworks($if.'ip'),
+                    'alias_meta_destination.network' => $this->getNetworks($if . 'ip'),
                     'descr' => gettext('Anti-Lockout Rule')
                 ]);
             }
