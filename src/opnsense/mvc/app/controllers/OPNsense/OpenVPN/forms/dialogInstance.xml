@@ -712,4 +712,14 @@ Set to 0 to disable, remember to change your client as well.
             <visible>false</visible>
         </grid_view>
     </field>
+    <field>
+        <id>instance.verify-x509-name</id>
+        <label>Verify X.509 name</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Accept connections only if a host's X.509 name is equal to name.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
 </fields>
