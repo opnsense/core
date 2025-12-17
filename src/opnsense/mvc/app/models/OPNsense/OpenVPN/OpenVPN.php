@@ -718,6 +718,10 @@ class OpenVPN extends BaseModel
                     if (!$node->{'ifconfig-pool-persist'}->isEmpty()) {
                         $options['ifconfig-pool-persist'] = "/var/etc/openvpn/instance-{$node_uuid}.pool";
                     }
+
+                    if (!empty((string)$node->verify-x509-name)) {
+                        $options['verify-x509-name'] = (string)$node->verify-x509-name;
+                    }
                 }
                 $options['persist-tun'] = null;
                 $options['persist-key'] = null;
