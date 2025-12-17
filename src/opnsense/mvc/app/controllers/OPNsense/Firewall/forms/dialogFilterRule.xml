@@ -169,7 +169,7 @@
         <label>ICMP type</label>
         <type>select_multiple</type>
         <hint>Any</hint>
-        <advanced>true</advanced>
+        <style>selectpicker rule_protocol protocol_icmp</style>
         <grid_view>
             <ignore>true</ignore>
         </grid_view>
