@@ -1201,6 +1201,7 @@
 /usr/local/opnsense/scripts/health/definitions/interface-packets.xml
 /usr/local/opnsense/scripts/health/definitions/interface-traffic.xml
 /usr/local/opnsense/scripts/health/definitions/interface-vpnusers.xml
+/usr/local/opnsense/scripts/health/definitions/system-cputemp.xml
 /usr/local/opnsense/scripts/health/definitions/system-processor.xml
 /usr/local/opnsense/scripts/health/fetchData.py
 /usr/local/opnsense/scripts/health/flush_rrd.py
