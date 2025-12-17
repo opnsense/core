@@ -244,9 +244,9 @@
                 </data-ciphers>
                 <data-ciphers-fallback type="OptionField">
                     <OptionValues>
-                        <AES-256-GCM>AES-256-GCM</AES-256-GCM>
-                        <AES-128-GCM>AES-128-GCM</AES-128-GCM>
                         <AES-256-CBC>AES-256-CBC</AES-256-CBC>
+                        <AES-128-GCM>AES-128-GCM</AES-128-GCM>
+                        <AES-256-GCM>AES-256-GCM</AES-256-GCM>
                         <CHACHA20-POLY1305>CHACHA20-POLY1305</CHACHA20-POLY1305>
                     </OptionValues>
                 </data-ciphers-fallback>
