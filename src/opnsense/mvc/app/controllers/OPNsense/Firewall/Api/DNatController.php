@@ -31,6 +31,7 @@ namespace OPNsense\Firewall\Api;
 use OPNsense\Base\UserException;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Category;
+use OPNsense\Firewall\Util;
 
 class DNatController extends FilterBaseController
 {
@@ -75,6 +76,28 @@ class DNatController extends FilterBaseController
                 }
             }
         }
+
+        foreach (Util::getAntiLockout() as $if => $ports) {
+            $ifname = Config::getInstance()->object()->interfaces->$if?->name ?? strtoupper($if);
+            foreach ($ports as $idx => $port) {
+                array_unshift($results['rows'], [
+                    'uuid' => 'lockout_' . $idx,
+                    'ipprotocol' => 'inet46',
+                    '%ipprotocol' => gettext('IPv4+IPv6'),
+                    'protocol' => 'tcp',
+                    'disabled' => '0',
+                    'nordr' => '1',
+                    'interface' => $if,
+                    '%interface' => $ifname,
+                    'destination.network' => $if.'ip',
+                    'destination.port' => $port,
+                    'alias_meta_destination.port' => $this->getNetworks($port),
+                    'alias_meta_destination.network' => $this->getNetworks($if.'ip'),
+                    'descr' => gettext('Anti-Lockout Rule')
+                ]);
+            }
+        }
+
 
         return $results;
     }

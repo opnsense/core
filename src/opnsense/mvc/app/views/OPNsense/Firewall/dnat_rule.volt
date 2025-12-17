@@ -132,7 +132,7 @@
                 },
                 formatters:{
                     commands: function (column, row) {
-                        if (row.isGroup) {
+                        if (row.isGroup || !row.uuid.includes('-')) {
                             return "";
                         }
                         let rowId = row.uuid;
