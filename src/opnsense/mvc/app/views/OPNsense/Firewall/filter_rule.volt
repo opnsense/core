@@ -862,6 +862,12 @@
             }
         });
 
+        // Hide additional protocol settings in dialog, e.g., ICMP types
+        $("#rule\\.protocol").change(function() {
+            $(".rule_protocol:not(div)").closest('tr').hide();
+            $(".protocol_"+$(this).val()+':not(div)').closest('tr').show();
+        });
+
         // Dynamically add fa icons to selectpickers
         $('#category_filter').parent().find('.dropdown-toggle').prepend('<i class="fa fa-tag" style="margin-right: 6px;"></i>');
 
