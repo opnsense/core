@@ -17,19 +17,6 @@
         </grid_view>
     </field>
     <field>
-        <id>rule.nordr</id>
-        <label>No RDR (NOT)</label>
-        <type>checkbox</type>
-        <help>Enabling this option will disable redirection for traffic matching this rule.</help>
-        <grid_view>
-            <type>boolean</type>
-            <formatter>boolean</formatter>
-            <sequence>5</sequence>
-            <width>100</width>
-            <align>center</align>
-        </grid_view>
-    </field>
-    <field>
         <id>rule.sequence</id>
         <label>Sequence</label>
         <type>text</type>
@@ -223,6 +210,19 @@
     <field>
         <type>header</type>
         <label>Options</label>
+    </field>
+    <field>
+        <id>rule.nordr</id>
+        <label>No RDR (NOT)</label>
+        <type>checkbox</type>
+        <help>Enabling this option will disable redirection for traffic matching this rule.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <sequence>6</sequence>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>rule.log</id>

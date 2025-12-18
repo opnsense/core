@@ -132,10 +132,20 @@
                 },
                 formatters:{
                     commands: function (column, row) {
-                        if (row.isGroup || !row.uuid.includes('-')) {
+                        if (row.isGroup) {
                             return "";
                         }
                         let rowId = row.uuid;
+
+                        if (!rowId.includes('-')) {
+                            return `
+                                <a href="/system_advanced_firewall.php"
+                                class="btn btn-xs btn-default bootgrid-tooltip"
+                                title="{{ lang._('Lookup Rule') }}">
+                                    <span class="fa fa-fw fa-search"></span>
+                                </a>
+                            `;
+                        }
 
                         return `
                             <button type="button" class="btn btn-xs btn-default command-move_before
