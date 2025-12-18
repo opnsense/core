@@ -5,6 +5,11 @@
  * /
 
 /* Action Bar responsive style */
+.bootgrid-header,
+.bootgrid-footer {
+  margin: 15px 0;
+}
+
 .bootgrid-header .actionBar {
     display: flex;
     flex-wrap: nowrap;

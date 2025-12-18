@@ -130,15 +130,11 @@ $( document ).ready(function() {
         font-weight: 800;
         font-style: italic;
     }
-
-    #infosection {
-        margin: 1em;
-    }
 </style>
 
 <div class="content-box __mb">
     {{ partial('layout_partials/base_bootgrid_table', formGridHostOverride)}}
-    <div id="infosection" class="tab-content col-xs-12 __mb">
+    <div id="infosection" class="bootgrid-footer container-fluid">
         {{ lang._('Entries in this section override individual results from the forwarders.') }}
         {{ lang._('Use these for changing DNS results or for adding custom DNS records.') }}
         {{ lang._('Keep in mind that all resource record types (i.e. A, AAAA, MX, etc. records) of a specified host below are being overwritten.') }}
