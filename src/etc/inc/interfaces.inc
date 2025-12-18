@@ -4101,7 +4101,7 @@ function _interfaces_primary_address6($interface, $ifconfig_details = null, $all
         $interface = array_merge([$interface], array_keys(link_interface_to_track6($interface)));
     }
 
-    $lifetime = false;
+    $lifetime = 0;
 
     foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
         /* XXX consider excluding 'autoconf', but only when it's not in SLAAC mode */
@@ -4115,11 +4115,38 @@ function _interfaces_primary_address6($interface, $ifconfig_details = null, $all
             continue;
         }
 
-        /* valid candidates from here but need to check lifetime */
-        if ($lifetime !== false && $addr['lifetime'] <= $lifetime) {
-            break; /* already found one and lifetime was not increasing */
+        /*
+         * Lifetimes need to be checked now.  To avoid regressions with
+         * previous behaviour enforce strict rules:
+         *
+         * 1. If the top address found has a non-zero lifetime,
+         *    allow lifetime-based deferral and keep the highest lifetime
+         *    address as a candidate.
+         * 2. Go through the list sequentially and find the highest
+         *    remaining liftime.  The idea is that the lifetimes are
+         *    ascending when prefix with dhcp6c shifts although the code
+         *    can skip all lover in-between lifetimes too.
+         * 3. If a lifetime of 0 is encountered down the line use the
+         *    previously found address.
+         */
+        if ($ifcfgipv6 == null && !$lifetime) {
+            /* continue rule 1 */
+            $lifetime = $addr['lifetime'];
+        } elseif ($ifcfgipv6 != null && $lifetime) {
+            if (!$addr['lifetime']) {
+                /* rule 3 */
+                break;
+            }
+            if ($addr['lifetime'] <= $lifetime) {
+                /* continue rule 2 */
+                continue;
+            }
+            /* continue rule 1 */
+            $lifetime = $addr['lifetime'];
+        } elseif ($ifcfgipv6 != null && !$lifetime) {
+            /* end rule 1 */
+            break;
         }
-        $lifetime = $addr['lifetime'];
 
         $networkv6 = gen_subnetv6($addr['address'], $addr['bits']) . "/{$addr['bits']}";
         $subnetbitsv6 = $addr['bits'];
