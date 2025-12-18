@@ -351,10 +351,10 @@ function legacy_interfaces_details($intf = null)
                 'detached' => false,
                 'ipaddr' => $addr,
                 'link-local' => !!preg_match('/^fe[89ab][0-9a-f]:/i', $addr),
-                'pltime' => 0,
+                'pltime' => '0',
                 'tentative' => false,
                 'tunnel' => false,
-                'vltime' => 0,
+                'vltime' => '0',
             ];
             for ($i = 0; $i < count($line_parts); ++$i) {
                 if ($line_parts[$i] == 'prefixlen') {
