@@ -220,6 +220,7 @@
         <grid_view>
             <type>boolean</type>
             <formatter>boolean</formatter>
+            <sequence>6</sequence>
             <visible>false</visible>
         </grid_view>
     </field>
