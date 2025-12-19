@@ -171,7 +171,7 @@
         <hint>Any</hint>
         <style>selectpicker rule_protocol protocol_icmp</style>
         <grid_view>
-            <ignore>true</ignore>
+            <visible>false</visible>
         </grid_view>
     </field>
     <field>
@@ -181,7 +181,7 @@
         <hint>Any</hint>
         <style>selectpicker rule_protocol protocol_ipv6-icmp</style>
         <grid_view>
-            <ignore>true</ignore>
+            <visible>false</visible>
         </grid_view>
     </field>
     <field>
