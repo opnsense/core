@@ -181,11 +181,15 @@
             }
         });
 
-        $("#accounts_search").on("keyup", function () {
+        $("#accounts_search").on("input", function () {
             const needle = $(this).val().toLowerCase();
+            if (!needle) {
+                $("#accounts_table tbody tr").show();
+                return;
+            }
             $("#accounts_table tbody tr").each(function () {
                 const haystack = $(this).text().toLowerCase();
-                $(this).toggle(haystack.indexOf(needle) !== -1);
+                $(this).toggle(haystack.includes(needle));
             });
         });
     });
