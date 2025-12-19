@@ -106,6 +106,37 @@
                         <maskrep>Address Mask Reply (Deprecated)</maskrep>
                     </OptionValues>
                 </icmptype>
+                <icmp6type type="OptionField">
+                    <Multiple>Y</Multiple>
+                    <OptionValues>
+                        <unreach>Destination unreachable</unreach>
+                        <toobig>Packet too big</toobig>
+                        <timex>Time exceeded</timex>
+                        <paramprob>Invalid IPv6 header</paramprob>
+                        <echoreq>Echo service request</echoreq>
+                        <echorep>Echo service reply</echorep>
+                        <groupqry>Group membership query</groupqry>
+                        <listqry>Multicast listener query</listqry>
+                        <grouprep>Group membership report</grouprep>
+                        <listenrep>Multicast listener report</listenrep>
+                        <groupterm>Group membership termination</groupterm>
+                        <listendone>Multicast listener done</listendone>
+                        <routersol>Router solicitation</routersol>
+                        <routeradv>Router advertisement</routeradv>
+                        <neighbrsol>Neighbor solicitation</neighbrsol>
+                        <neighbradv>Neighbor advertisement</neighbradv>
+                        <redir>Shorter route exists</redir>
+                        <routrrenum>Route renumbering</routrrenum>
+                        <fqdnreq>FQDN query</fqdnreq>
+                        <niqry>Node information query</niqry>
+                        <wrureq>Who-are-you request</wrureq>
+                        <fqdnrep>FQDN reply</fqdnrep>
+                        <nirep>Node information reply</nirep>
+                        <wrurep>Who-are-you reply</wrurep>
+                        <mtraceresp>mtrace response</mtraceresp>
+                        <mtrace>mtrace messages</mtrace>
+                    </OptionValues>
+                </icmp6type>
                 <!-- XXX: should map internally to  'source' => array('network' => $source_net, "not" => true|false) -->
                 <source_net type="NetworkAliasField">
                     <Default>any</Default>

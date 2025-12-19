@@ -262,11 +262,11 @@ class FilterRule extends Rule
                 }
             }
             // icmp-type switch (ipv4/ipv6)
-            if (!empty($rule['protocol']) && $rule['protocol'] == "icmp" && !empty($rule['icmptype'])) {
-                if ($rule['ipprotocol'] == 'inet') {
+            if (!empty($rule['protocol']) && in_array($rule['protocol'], ['icmp', 'ipv6-icmp'], true)) {
+                if ($rule['ipprotocol'] == 'inet' && !empty($rule['icmptype'])) {
                     $rule['icmp-type'] = $rule['icmptype'];
-                } elseif ($rule['ipprotocol'] == 'inet6') {
-                    $rule['icmp6-type'] = $rule['icmptype'];
+                } elseif ($rule['ipprotocol'] == 'inet6' && !empty($rule['icmp6type'])) {
+                    $rule['icmp6-type'] = $rule['icmp6type'];
                 }
             }
             // icmpv6

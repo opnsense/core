@@ -46,7 +46,8 @@ class FilterController extends \OPNsense\Base\IndexController
     protected function getAdvancedIds($form)
     {
         $advancedFieldIds = [];
-        $exclude = ['sequence', 'sort_order'];
+        $exclude = ['sequence', 'sort_order']; // force-exclude even if advanced
+        $include = ['icmptype', 'icmp6type']; // force-include, hidden based on user input
 
         foreach ($form as $field) {
             if (!empty($field['advanced']) && $field['advanced'] == "true") {
@@ -60,6 +61,6 @@ class FilterController extends \OPNsense\Base\IndexController
             }
         }
 
-        return implode(',', $advancedFieldIds);
+        return implode(',', array_unique(array_merge($advancedFieldIds, $include)));
     }
 }
