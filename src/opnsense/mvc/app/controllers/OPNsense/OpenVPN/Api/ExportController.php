@@ -190,27 +190,35 @@ class ExportController extends ApiControllerBase
                 "users" => []
             ]
         ];
+
         $server = (new OpenVPN())->getInstanceById($vpnid);
-        if ($server !== null) {
-            $usernames = [];
-            foreach (Config::getInstance()->object()->system->user as $user) {
-                $usernames[] = (string)$user->name;
-            }
-            foreach ((new Cert())->cert->iterateItems() as $cert) {
-                if ($cert->caref == $server['caref']) {
-                    $result[(string)$cert->refid] = [
-                        "description" => (string)$cert->descr,
-                        "users" => []
-                    ];
-                    if (
-                        in_array($cert->commonname, $usernames) &&
-                        in_array($cert->cert_type, ['usr_cert', 'combined_server_client'])
-                    ) {
-                        $result[(string)$cert->refid]['users'][] = (string)$cert->commonname;
-                    }
-                }
+        if ($server === null) {
+            return $result;
+        }
+
+        $configObj = Config::getInstance()->object();
+        $server_caref = (string)$server['caref'];
+
+        $usernames_map = [];
+        foreach ($configObj->xpath("//system/user/name") as $name) {
+            $usernames_map[(string)$name] = true;
+        }
+        $certs = $configObj->xpath(sprintf("//cert[caref='%s']", $server_caref));
+
+        foreach ($certs as $cert) {
+            $refid = (string)$cert->refid;
+            $cn    = (string)$cert->commonname;
+            $type  = (string)$cert->cert_type;
+
+            $result[$refid] = [
+                "description" => (string)$cert->descr,
+                "users" => []
+            ];
+            if (isset($usernames_map[$cn]) && ($type === 'usr_cert' || $type === 'combined')) {
+                $result[$refid]['users'][] = $cn;
             }
         }
+
         return $result;
     }
 
