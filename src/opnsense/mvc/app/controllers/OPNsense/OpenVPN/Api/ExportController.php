@@ -196,7 +196,7 @@ class ExportController extends ApiControllerBase
             foreach (Config::getInstance()->object()->system->user as $user) {
                 $usernames[] = (string)$user->name;
             }
-            foreach ((new Cert())->cert->iterateItems() as $cert) {
+            foreach ((new Cert(True))->cert->iterateItems() as $cert) {
                 if ($cert->caref == $server['caref']) {
                     $result[(string)$cert->refid] = [
                         "description" => (string)$cert->descr,
