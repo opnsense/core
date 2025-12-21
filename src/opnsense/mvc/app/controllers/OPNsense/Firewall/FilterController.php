@@ -38,22 +38,22 @@ class FilterController extends \OPNsense\Base\IndexController
     }
 
     /**
-     * Get an array of field IDs that have the advanced flag set to "true".
+     * Get an array of field IDs that have the advanced flag set to "true" to be used for grid tooltips.
      *
      * @param array $form An array of field definitions
      * @return string list of fieldnames, comma separated for easy template usage
      */
     protected function getAdvancedIds($form)
     {
-        $advancedFieldIds = [];
-        $exclude = ['sequence', 'sort_order'];
+        $advancedFieldIds = ['icmptype', 'icmp6type']; // force-include, hidden based on user input
+        $exclude = ['sequence', 'sort_order']; // force-exclude even if advanced
 
         foreach ($form as $field) {
             if (!empty($field['advanced']) && $field['advanced'] == "true") {
                 if (!empty($field['id'])) {
                     $tmp = explode('.', $field['id']);
                     $fieldId = $tmp[count($tmp) - 1];
-                    if (!in_array($fieldId, $exclude)) {
+                    if (!in_array($fieldId, $exclude) && !in_array($field, $advancedFieldIds)) {
                         $advancedFieldIds[] = $fieldId;
                     }
                 }

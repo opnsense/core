@@ -99,6 +99,13 @@ class Filter extends BaseModel
                         ));
                     }
 
+                    if ($rule->icmp6type && !$rule->icmp6type->isEmpty() && !in_array($rule->protocol, ['IPV6-ICMP'])) {
+                        $messages->appendMessage(new Message(
+                            gettext("Option only applies to IPV6-ICMP packets"),
+                            $rule->icmp6type->__reference
+                        ));
+                    }
+
                     if (strpos($rule->source_net, ',') !== false && $rule->source_not == '1') {
                         $messages->appendMessage(new Message(
                             gettext("Inverting sources is only allowed for single targets to avoid mis-interpretations"),
