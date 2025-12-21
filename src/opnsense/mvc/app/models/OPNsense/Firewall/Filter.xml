@@ -106,6 +106,30 @@
                         <maskrep>Address Mask Reply (Deprecated)</maskrep>
                     </OptionValues>
                 </icmptype>
+                <icmp6type type="OptionField">
+                    <Multiple>Y</Multiple>
+                    <OptionValues>
+                        <unreach value="1">Destination unreachable</unreach>
+                        <toobig value="2">Packet too big</toobig>
+                        <timex value="3">Time exceeded</timex>
+                        <paramprob value="4">Invalid IPv6 header</paramprob>
+                        <echoreq value="128">Echo service request</echoreq>
+                        <echorep value="129">Echo service reply</echorep>
+                        <listqry value="130">Multicast Listener Query</listqry>
+                        <listenrep value="131">Multicast listener report</listenrep>
+                        <listendone value="132">Multicast listener done</listendone>
+                        <routersol value="133">Router solicitation</routersol>
+                        <routeradv value="134">Router advertisement</routeradv>
+                        <neighbrsol value="135">Neighbor solicitation</neighbrsol>
+                        <neighbradv value="136">Neighbor advertisement</neighbradv>
+                        <redir value="137">Shorter route exists</redir>
+                        <routrrenum value="138">Route renumbering</routrrenum>
+                        <niqry value="139">ICMP Node Information Query</niqry>
+                        <nirep value="140">Node information reply</nirep>
+                        <mtraceresp value="200">mtrace response</mtraceresp>
+                        <mtrace value="201">mtrace messages</mtrace>
+                    </OptionValues>
+                </icmp6type>
                 <!-- XXX: should map internally to  'source' => array('network' => $source_net, "not" => true|false) -->
                 <source_net type="NetworkAliasField">
                     <Default>any</Default>
