@@ -102,7 +102,9 @@ class AccessController extends ApiControllerBase
 
     protected function getClientMac($ip)
     {
-        $this->arp = empty($this->arp) ? json_decode((new Backend())->configdRun("interface list arp json"), true) : [];
+        if (empty($this->arp)) {
+            $this->arp = json_decode((new Backend())->configdRun("interface list arp json"), true) ?? [];
+        }
         foreach ($this->arp as $arp) {
             if (!empty($arp['ip'] && $arp['ip'] == $ip)) {
                 return $arp['mac'];
