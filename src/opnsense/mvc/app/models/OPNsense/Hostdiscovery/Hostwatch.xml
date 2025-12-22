@@ -10,7 +10,7 @@
             </enabled>
             <promisc type="BooleanField">
                 <Required>Y</Required>
-                <Default>1</Default>
+                <Default>0</Default>
             </promisc>
             <verbose type="BooleanField">
                 <Required>Y</Required>
