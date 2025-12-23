@@ -62,7 +62,7 @@ class OverviewController extends ApiControllerBase
         ];
     }
 
-    /* Deprecated, to be removed for 26.7 */
+    /* XXX deprecated and to be removed for 26.7 */
     public function isBlockListEnabledAction()
     {
         return ['enabled' => (bool)array_filter($this->nodes, fn($v) => $v['enabled'])];
