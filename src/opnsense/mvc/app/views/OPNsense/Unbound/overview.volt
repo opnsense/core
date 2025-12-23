@@ -386,7 +386,6 @@
                     let category = type === 'block' ? data.top_blocked : data.top;
                     let domain = Object.keys(category)[i];
                     let statObj = Object.values(category)[i];
-                    console.log(statObj)
                     if (typeof domain == 'undefined' || typeof statObj == 'undefined') {
                         $('#' + id).append(
                             '<li class="list-group-item list-group-item-border list-item-domain top-item">' +
