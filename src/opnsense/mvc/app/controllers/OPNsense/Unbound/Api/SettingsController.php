@@ -43,10 +43,12 @@ class SettingsController extends ApiMutableModelControllerBase
     public function updateBlocklistAction()
     {
         $result = ["status" => "failed"];
-        if ($this->request->isPost() && $this->request->hasPost('domain') && $this->request->hasPost('type')) {
+        if ($this->request->isPost() && $this->request->hasPost('domain') && $this->request->hasPost('type') && $this->request->hasPost('uuid')) {
             Config::getInstance()->lock();
             $domain = $this->request->getPost('domain');
             $type = $this->request->getPost('type');
+            $uuid = $this->request->getPost('uuid');
+            $action = 'block';
             $mdl = $this->getModel();
 
             $remove = function ($csv, $part) {
@@ -56,42 +58,44 @@ class SettingsController extends ApiMutableModelControllerBase
                 return implode(',', $csv);
             };
 
-            foreach ($mdl->dnsbl->blocklist->iterateItems() as $uuid => $node) {
-                $node = $mdl->getNodeByReference('dnsbl.blocklist.' . $uuid);
-                $modelType = $node->$type;
-
-                if ($node != null) {
-                    // strip off any trailing dot
-                    $value = rtrim($domain, '.');
-
-                    $existing_domains = explode(',', (string)$modelType);
-                    if (in_array($value, $existing_domains)) {
-                        // value already in model
-                        continue;
-                    }
-
-                    $wl = explode(',', (string)$node->allowlists);
-                    $bl = explode(',', (string)$node->blocklists);
-
-                    // Check if domains should be switched around in the model
-                    if ($type == 'allowlists' && in_array($value, $bl)) {
-                        $node->blocklists = $remove($bl, $value);
-                    } elseif ($type == 'blocklists' && in_array($value, $wl)) {
-                        $node->allowlists = $remove($wl, $value);
-                    }
-
-                    // update the model
-                    $list = array_filter($existing_domains); // removes all empty entries
-                    $list[] = $value;
-                    $node->$type = implode(',', $list);
-                }
+            $node = $mdl->getNodeByReference('dnsbl.blocklist.' . $uuid);
+            if ($node == null) {
+                return $result;
             }
+
+            $modelType = $node->$type;
+            // strip off any trailing dot
+            $value = rtrim($domain, '.');
+
+            $existing_domains = explode(',', (string)$modelType);
+            if (in_array($value, $existing_domains)) {
+                // value already in model
+                return $result;
+            }
+
+            $wl = explode(',', (string)$node->allowlists);
+            $bl = explode(',', (string)$node->blocklists);
+
+            // Check if domains should be switched around in the model
+            if ($type == 'allowlists' && in_array($value, $bl)) {
+                $node->blocklists = $remove($bl, $value);
+            } elseif ($type == 'blocklists' && in_array($value, $wl)) {
+                $node->allowlists = $remove($wl, $value);
+            }
+
+            // update the model
+            $list = array_filter($existing_domains); // removes all empty entries
+            $list[] = $value;
+            $node->$type = implode(',', $list);
 
             $mdl->serializeToConfig();
             Config::getInstance()->save();
 
-            $service = new \OPNsense\Unbound\Api\ServiceController();
-            $result = $service->dnsblAction();
+            if ($type == 'allowlists') {
+                $action = 'allow';
+            }
+
+            $result = (new Backend())->configdpRun('unbound dnsblquick', [$uuid, $domain, $action]);
         }
 
         return $result;

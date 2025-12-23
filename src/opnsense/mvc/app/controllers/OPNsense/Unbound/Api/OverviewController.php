@@ -55,24 +55,14 @@ class OverviewController extends ApiControllerBase
         return null;
     }
 
-    private function getFlattenedCustomDomains($key)
-    {
-        return array_values(array_unique(array_filter(
-            array_merge(
-                ...array_values(array_map(fn($v) => array_keys($v[$key] ?? []), $this->nodes))
-            ),
-            'strlen'
-        )));
-    }
-
     public function isEnabledAction()
     {
-        $config = Config::getInstance()->object();
         return [
             'enabled' => $this->mdl->getNodes()['general']['stats']
         ];
     }
 
+    /* Deprecated, to be removed for 26.7 */
     public function isBlockListEnabledAction()
     {
         return ['enabled' => (bool)array_filter($this->nodes, fn($v) => $v['enabled'])];
@@ -97,9 +87,6 @@ class OverviewController extends ApiControllerBase
         foreach ($parsed['top_blocked'] as $domain => $props) {
             $parsed['top_blocked'][$domain]['blocklist'] ??= $this->getBlocklistDescription($props['blocklist']);
         }
-
-        $parsed['allowlisted_domains'] = $this->getFlattenedCustomDomains('allowlists');
-        $parsed['blocklisted_domains'] = $this->getFlattenedCustomDomains('blocklists');
 
         return $parsed;
     }
@@ -142,9 +129,25 @@ class OverviewController extends ApiControllerBase
         }
 
         $response = $this->searchRecordsetBase($parsed);
-        $response['allowlisted_domains'] = $this->getFlattenedCustomDomains('allowlists');
-        $response['blocklisted_domains'] = $this->getFlattenedCustomDomains('blocklists');
 
+        return $response;
+    }
+
+    public function getPoliciesAction($uuid = null)
+    {
+        $response = ['policies' => []];
+
+        foreach ($this->mdl->dnsbl->blocklist->iterateItems() as $policy_uuid => $policy) {
+            if ($uuid !== null && $uuid == $policy_uuid) {
+                $response = $policy->getNodeContent();
+                $response['uuid'] = $policy_uuid;
+                break;
+            }
+
+            $response['policies'][$policy_uuid] = $policy->getNodeContent();
+        }
+
+        $response['blocklistDescriptions'] = $this->types;
         return $response;
     }
 }
