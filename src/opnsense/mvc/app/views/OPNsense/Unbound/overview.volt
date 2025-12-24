@@ -380,7 +380,7 @@
         }
 
         function createTopList(id, data, type, maxDomains = 10) {
-            ajaxGet('/api/unbound/overview/getPolicies', {}, function(policies, status) {
+            ajaxGet('/api/unbound/overview/get_policies', {}, function(policies, status) {
                 const enabled = Object.values(policies.policies).some(v => v.enabled === "1");
                 for (let i = 0; i < maxDomains; i++) {
                     let category = type === 'block' ? data.top_blocked : data.top;
@@ -563,7 +563,7 @@
         function refreshPoliciesDialog(dialogRef, domain, uuid, appliedAction, blocklist) {
             const cleanDomain = domain.replace(/\.$/, "");
 
-            ajaxGet('/api/unbound/overview/getPolicies', {}, function (data, status) {
+            ajaxGet('/api/unbound/overview/get_policies', {}, function (data, status) {
                 const $table = $('<table class="table table-striped table-sm mb-0">');
                 const $tbody = $('<tbody>');
                 const $thead = $('<thead>').append(
@@ -663,7 +663,7 @@
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             if (e.target.id == 'query_details_tab') {
                 $("#grid-queries").bootgrid('destroy');
-                ajaxGet('/api/unbound/overview/getPolicies', {}, function(policies, status) {
+                ajaxGet('/api/unbound/overview/get_policies', {}, function(policies, status) {
                     const enabled = Object.values(policies.policies).some(v => v.enabled === "1");
                     let grid_queries = $("#grid-queries").UIBootgrid({
                         search:'/api/unbound/overview/search_queries/',
