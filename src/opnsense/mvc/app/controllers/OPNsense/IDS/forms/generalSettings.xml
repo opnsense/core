@@ -34,7 +34,7 @@
         <label>Listeners</label>
         <style>ids_mode ids_mode_divert</style>
         <type>text</type>
-        <help>Specify the number of listeners to initiate, usually this equals the number of cpus in your system.</help>
+        <help>Specify the number of listeners to initiate, usually this equals the number of CPUs in your system.</help>
     </field>
     <field>
         <type>header</type>
