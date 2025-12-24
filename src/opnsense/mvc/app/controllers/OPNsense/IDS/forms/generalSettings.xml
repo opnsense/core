@@ -13,7 +13,7 @@
         <id>ids.general.mode</id>
         <label>Capture mode</label>
         <type>dropdown</type>
-        <help><![CDATA[Choose pcap live mode for inspection only (IDS), netmap to filter all traffic on the selected interfaces in IPS mode and divert to integrate IPS in firewall rules.]]></help>
+        <help>Choose PCAP live capture mode for inspection only (IDS), Netmap to filter all traffic on the selected interfaces in IPS mode and Divert to integrate IPS in firewall rules.</help>
     </field>
     <field>
         <id>ids.general.promisc</id>
