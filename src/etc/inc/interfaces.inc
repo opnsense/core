@@ -2785,6 +2785,7 @@ function interface_dhcpv6_configure($interface, $wancfg)
 
     /* always kill rtsold in case of reconfigure */
     killbypid('/var/run/rtsold.pid');
+    @unlink("/tmp/rtsold.{$wancfg['if']}.done");
 
     $rtsold_frmt = ['/usr/sbin/rtsold -aiu -p %s -A %s -R %s'];
     $rtsold_args = [
@@ -2801,8 +2802,14 @@ function interface_dhcpv6_configure($interface, $wancfg)
     /* fire up rtsold for IPv6 RAs first */
     mwexecf($rtsold_frmt, $rtsold_args);
 
-    /* unconditional trigger for hybrid approach, reloads without advertisements */
-    mwexecf('/var/etc/rtsold_script.sh %s', [$wancfg['if']]);
+    /*
+     * Trigger for hybrid approach to allow reloading without
+     * advertisements after timeout which can be necessary.
+     * Can be adjusted to fit ISP timing or completely disabled.
+     */
+    if (!empty($syscfg['dhcp6_ratimeout'] ?? '10')) {
+        mwexecfb('/var/etc/rtsold_script.sh %s', [$wancfg['if']]);
+    }
 }
 
 function interface_dhcpv6_id($interface)
@@ -2927,6 +2934,9 @@ EOF;
         $dhcp6ccommand .= ' -n';
     }
 
+    /* XXX does not exist yet: integer in seconds from 0 to n, 0 actually disables it */
+    $ratimeout = $syscfg['dhcp6_ratimeout'] ?? '10';
+
     $dhcp6cconf = '';
 
     /* merge configs and prepare single instance of dhcp6c for startup */
@@ -2959,7 +2969,13 @@ fi
 if [ -n "\${2}" ]; then
     # Note that the router file can be written by ppp-linkup.sh or
     # this script so do not clear the file as it may already exist.
-    /usr/local/sbin/ifctl -i \${1} -6rd -a \${2}
+    /usr/local/sbin/ifctl -i "\${1}" -6rd -a "\${2}"
+else
+    sleep "{$ratimeout}"
+    if [ -f "/tmp/rtsold.\${1}.done" ]; then
+        # normal RA came through
+        exit 0
+    fi
 fi
 if [ -f /var/run/dhcp6c.pid ]; then
     if ! /bin/pkill -0 -F /var/run/dhcp6c.pid; then
@@ -2973,6 +2989,7 @@ else
     /usr/bin/logger -t dhcp6c "RTSOLD script - Starting dhcp6c daemon"
     {$dhcp6ccommand}
 fi
+touch "/tmp/rtsold.\${1}.done"
 
 EOD;
 
