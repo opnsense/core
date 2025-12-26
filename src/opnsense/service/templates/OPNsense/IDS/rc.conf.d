@@ -11,12 +11,12 @@ suricata_netmap="YES"
 
 {% elif OPNsense.IDS.general.mode|default("") == "divert" %}
 # IPS mode, divert sockets
-suricata_divertport="443"
+suricata_divertport="8000"
 {# add rest of listeners, above adds the first #}
 {% set addFlags=[] %}
 {% set listeners = OPNsense.IDS.general.divert_listeners|default('1')|int %}
 {%   for idx in range(1, listeners) %}
-{%     do addFlags.append('-d 443') %}
+{%     do addFlags.append('-d 8000') %}
 {%   endfor %}
 suricata_flags="$suricata_flags {{ addFlags|join(' ') }}"
 

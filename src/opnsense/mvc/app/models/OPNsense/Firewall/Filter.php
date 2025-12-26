@@ -254,6 +254,12 @@ class Filter extends BaseModel
                                 }
                             }
                         }
+                        if (!$rule->{'divert-to'}->isEmpty() && $rule->action != 'pass') {
+                            $messages->appendMessage(new Message(
+                                gettext("Divert-to is only valid for pass rules."),
+                                $rule->{'divert-to'}->__reference
+                            ));
+                        }
                     }
                 }
             }
