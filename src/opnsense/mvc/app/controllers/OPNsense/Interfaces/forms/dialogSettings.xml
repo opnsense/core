@@ -1,0 +1,78 @@
+<form>
+    <field>
+        <type>header</type>
+        <label>General</label>
+    </field>
+    <field>
+        <id>settings.disablechecksumoffloading</id>
+        <label>Disable hardware checksum offload</label>
+        <type>checkbox</type>
+        <help>Checking this option will disable hardware checksum offloading. Checksum offloading is broken in some hardware, particularly some Realtek cards. Rarely, drivers may have problems with checksum offloading and some specific NICs.</help>
+    </field>
+    <field>
+        <id>settings.disablesegmentationoffloading</id>
+        <label>Disable hardware TCP segmentation offload</label>
+        <type>checkbox</type>
+        <help>Checking this option will disable hardware TCP segmentation offloading (TSO, TSO4, TSO6). This offloading is broken in some hardware drivers, and may impact performance with some specific NICs.</help>
+    </field>
+    <field>
+        <id>settings.disablelargereceiveoffloading</id>
+        <label>Disable hardware large receive offload</label>
+        <type>checkbox</type>
+        <help>Checking this option will disable hardware large receive offloading (LRO). This offloading is broken in some hardware drivers, and may impact performance with some specific NICs.</help>
+    </field>
+    <field>
+        <id>settings.disablevlanhwfilter</id>
+        <label>VLAN Hardware Filtering</label>
+        <type>dropdown</type>
+        <help>Set usage of VLAN hardware filtering. This hardware acceleration may be broken in a particular device driver, or may impact performance.</help>
+    </field>
+    <field>
+        <id>settings.sharednet</id>
+        <label>Suppress ARP messages</label>
+        <type>checkbox</type>
+        <help>This option will suppress ARP log messages when multiple interfaces reside on the same broadcast domain.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>IPv6 options</label>
+    </field>
+    <field>
+        <id>settings.ipv6allow</id>
+        <label>Allow IPv6</label>
+        <type>checkbox</type>
+        <help>If unchecked, IPv6 interface configuration will be ignored and all forwarding traffic will be blocked. Use with care.</help>
+    </field>
+    <field>
+        <id>settings.dhcp6_norelease</id>
+        <label>Prevent release</label>
+        <type>checkbox</type>
+        <help>Do not send a release message on client exit to prevent the release of an allocated address or prefix on the server.</help>
+    </field>
+    <field>
+        <id>settings.dhcp6_debug</id>
+        <label>Log level</label>
+        <type>dropdown</type>
+        <help>Modify log level for IPv6 clients. Info will give status, interface leases and addresses. Debug will give full diagnostics.</help>
+    </field>
+    <field>
+        <id>settings.ipv6duid</id>
+        <label>System DHCP Unique Identifier</label>
+        <type>text</type>
+        <help>
+            <![CDATA[This field can be used to enter an explicit DUID for use by the system IPv6 DHCP client(s).<br/>
+            The DUID is a persistent, globally unique identifier that DHCPv6 uses to identify a device independently of its interfaces.<br/>
+            The correct format for each DUID type is as follows, all entries to be in hex format "xx" separated by a colon.<br/>
+            <b>LLT</b>: 4 bytes "00:01:00:01" followed by 4 bytes Unix time e.g. "00:01:02:03", followed by 6 bytes of a MAC address.<br/>
+            <b>LL</b>: 4 bytes "00:03:00:01" followed by 6 bytes of a MAC address.<br/>
+            <b>UUID</b>: 4 bytes "00:00:00:04" followed by 8 bytes of a universally unique identifier.<br/>
+            <b>EN</b>: 2 bytes "00:02" followed by 4 bytes of the enterprise number e.g. "00:00:00:01", followed by a variable length identifier of hex values up to 122 bytes in length.]]>
+        </help>
+    </field>
+    <field>
+        <id>settings.dhcp6_ratimeout</id>
+        <label>Router advertisement timeout</label>
+        <type>text</type>
+        <help>Reload without advertisements after timeout. Can be adjusted to fit ISP timing. 0 completely disables the timeout.</help>
+    </field>
+</form>

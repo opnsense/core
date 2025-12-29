@@ -562,7 +562,7 @@ function configure_interface_hardware($ifs, $intf_details = null)
 {
     global $config;
 
-    $hwsettings = $config['system'];
+    $hwsettings = $config['OPNsense']['Interfaces']['settings'];
 
     /* XXX this needs fixing, lots of devices are not capable */
     if (
@@ -584,7 +584,11 @@ function configure_interface_hardware($ifs, $intf_details = null)
     foreach ($config['interfaces'] as $iface => $ifconf) {
         if (!empty($ifconf['if']) && $ifconf['if'] == $ifs) {
             if (!empty($ifconf['hw_settings_overwrite'])) {
-                $hwsettings = $ifconf;
+                foreach ($ifconf as $key => $value) {
+                    if (isset($hwsettings[$key])) {
+                        $hwsettings[$key] = $value;
+                    }
+                }
             }
             break;
         }
@@ -598,33 +602,33 @@ function configure_interface_hardware($ifs, $intf_details = null)
         $lro_set = in_array('lro', $intf_details['options']);
 
         // hardware checksum offloading offloading
-        if (isset($hwsettings['disablechecksumoffloading']) && $csum_set) {
+        if (!empty($hwsettings['disablechecksumoffloading']) && $csum_set) {
             legacy_interface_flags($ifs, '-txcsum -rxcsum', false);
-        } elseif (!isset($hwsettings['disablechecksumoffloading']) && !$csum_set) {
+        } elseif (empty($hwsettings['disablechecksumoffloading']) && !$csum_set) {
             legacy_interface_flags($ifs, 'txcsum rxcsum', false);
         }
-        if (isset($hwsettings['disablechecksumoffloading']) && $csumv6_set) {
+        if (!empty($hwsettings['disablechecksumoffloading']) && $csumv6_set) {
             legacy_interface_flags($ifs, '-txcsum6 -rxcsum6', false);
-        } elseif (!isset($hwsettings['disablechecksumoffloading']) && !$csumv6_set) {
+        } elseif (empty($hwsettings['disablechecksumoffloading']) && !$csumv6_set) {
             legacy_interface_flags($ifs, 'txcsum6 rxcsum6', false);
         }
 
         // TCP segmentation offloading
-        if (isset($hwsettings['disablesegmentationoffloading']) && $tso_set) {
+        if (!empty($hwsettings['disablesegmentationoffloading']) && $tso_set) {
             legacy_interface_flags($ifs, '-tso', false);
-        } elseif (!isset($hwsettings['disablesegmentationoffloading']) && !$tso_set) {
+        } elseif (empty($hwsettings['disablesegmentationoffloading']) && !$tso_set) {
             legacy_interface_flags($ifs, 'tso', false);
         }
 
         // large receive offload
-        if (isset($hwsettings['disablelargereceiveoffloading']) && $lro_set) {
+        if (!empty($hwsettings['disablelargereceiveoffloading']) && $lro_set) {
             legacy_interface_flags($ifs, '-lro', false);
-        } elseif (!isset($hwsettings['disablelargereceiveoffloading']) && !$lro_set) {
+        } elseif (empty($hwsettings['disablelargereceiveoffloading']) && !$lro_set) {
             legacy_interface_flags($ifs, 'lro', false);
         }
 
         // disable/enable hardware VLAN tags, will be skipped when "Leave default" (option 2) is selected
-        if (!isset($hwsettings['disablevlanhwfilter']) || $hwsettings['disablevlanhwfilter'] == 1) {
+        if ($hwsettings['disablevlanhwfilter'] != 2) {
             // probe already selected options
             $selected_opts = [];
             foreach ($intf_details['options'] as $opt) {
@@ -636,9 +640,9 @@ function configure_interface_hardware($ifs, $intf_details = null)
             }
             // set one tag at a time to avoid driver issues
             foreach (array('vlanhwtag', 'vlanhwfilter', 'vlanhwtso', 'vlanhwcsum') as $tag) {
-                if (!isset($hwsettings['disablevlanhwfilter']) && !in_array($tag, $selected_opts)) {
+                if (empty($hwsettings['disablevlanhwfilter']) && !in_array($tag, $selected_opts)) {
                     legacy_interface_flags($ifs, $tag);
-                } elseif (isset($hwsettings['disablevlanhwfilter']) && in_array($tag, $selected_opts)) {
+                } elseif (!empty($hwsettings['disablevlanhwfilter']) && in_array($tag, $selected_opts)) {
                     legacy_interface_flags($ifs, '-' . $tag);
                 }
             }

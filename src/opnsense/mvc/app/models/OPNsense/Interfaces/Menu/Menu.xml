@@ -17,7 +17,7 @@
             <Manual VisibleName="Static Assignments" url="/ui/interfaces/neighbor"/>
         </Neighbors>
         <Overview order="230" url="/ui/interfaces/overview" cssClass="fa fa-tasks fa-fw"/>
-        <Settings order="240" url="/system_advanced_network.php" cssClass="fa fa-cogs fa-fw"/>
+        <Settings order="240" url="/ui/interfaces/settings" cssClass="fa fa-cogs fa-fw"/>
         <VIP order="250" VisibleName="Virtual IPs" cssClass="fa fa-clone fa-fw">
             <Settings url="/ui/interfaces/vip"/>
             <Status url="/ui/diagnostics/interface/vip"/>

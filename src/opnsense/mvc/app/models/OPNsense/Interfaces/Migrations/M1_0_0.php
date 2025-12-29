@@ -1,8 +1,7 @@
-#!/usr/local/bin/php
 <?php
 
 /*
- * Copyright (C) 2024 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,38 +26,48 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once 'config.inc';
-require_once 'util.inc';
-require_once 'system.inc';
-require_once 'interfaces.inc';
-require_once 'filter.inc';
-require_once 'auth.inc';
+namespace OPNsense\Interfaces\Migrations;
 
-if (empty($argv[1]) || empty($argv[2])) {
-    exit(1);
+use OPNsense\Base\BaseModelMigration;
+use OPNsense\Core\Config;
+
+class M1_0_0 extends BaseModelMigration
+{
+    private $keys = [
+        'disablechecksumoffloading',
+        'disablesegmentationoffloading',
+        'disablelargereceiveoffloading',
+        'disablevlanhwfilter',
+        'sharednet',
+        'dhcp6_norelease',
+        'dhcp6_debug',
+        'ipv6duid',
+        'ipv6allow'
+    ];
+
+    public function run($model)
+    {
+        $config = Config::getInstance()->object();
+        $nodes = [];
+
+        foreach ($this->keys as $key) {
+            if (isset($config->system->$key)) {
+                $nodes[$key] = (string)$config->system->$key;
+            } else {
+                $model->$key->applyDefault();
+            }
+        }
+
+        $model->setNodes($nodes);
+    }
+
+    public function post($model)
+    {
+        $config = Config::getInstance()->object();
+        foreach ($this->keys as $key) {
+            if (isset($config->system->$key)) {
+                unset($config->system->$key);
+            }
+        }
+    }
 }
-
-$interface = convert_real_interface_to_friendly_interface_name($argv[1]);
-$family = $argv[2];
-
-if (empty($interface) || ($family != 4 && $family != 6)) {
-    exit(1);
-}
-
-if (!interface_ppps_bound($interface, $family)) {
-    exit(1);
-}
-
-switch (!empty($config['OPNsense']['Interfaces']['settings']['ipv6allow']) ? ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') : 'none') {
-    case 'dhcp6':
-    case 'slaac':
-        interface_dhcpv6_prepare($interface, $config['interfaces'][$interface]);
-        interface_dhcpv6_configure($interface, $config['interfaces'][$interface]);
-        /* signal this succeeded to avoid triggering a newwanip event right away */
-        exit(0);
-    default:
-        interface_static6_configure($interface, $config['interfaces'][$interface]);
-        system_routing_configure(false, $interface, true, 'inet6');
-}
-
-exit(1);

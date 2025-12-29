@@ -206,7 +206,7 @@ function filter_core_rules_system($fw, $defaults)
 {
     global $config;
 
-    $ipv6_disabled = !isset($config['system']['ipv6allow']);
+    $ipv6_disabled = empty($config['OPNsense']['Interfaces']['settings']['ipv6allow']);
 
     $dhcrelay6_interfaces = plugins_run('dhcrelay_interfaces', ['inet6']);
     $dhcrelay6_interfaces = !empty($dhcrelay6_interfaces['dhcrelay']) ? $dhcrelay6_interfaces['dhcrelay'] : [];
@@ -214,7 +214,7 @@ function filter_core_rules_system($fw, $defaults)
     $fw->registerFilterRule(
         1,
         ['ipprotocol' => 'inet6','descr' => 'Block all IPv6', 'disabled' => !$ipv6_disabled,
-            '#ref' => 'system_advanced_network.php#ipv6allow'],
+            '#ref' => 'ui/interfaces/settings'],
         $defaults['block']
     );
 
@@ -376,7 +376,7 @@ function filter_core_rules_system($fw, $defaults)
         if (!$ipv6_disabled && in_array($intfinfo['ipaddrv6'], ['dhcp6', 'slaac'])) {
             $fw->registerFilterRule(1, [
                 'descr' => 'allow dhcpv6 client in ' . $intfinfo['descr'],
-                '#ref' => 'system_advanced_network.php#ipv6allow',
+                '#ref' => 'ui/interfaces/settings',
                 'interface' => $intf,
                 'protocol' => 'udp',
                 /* omit 'from' as the server may use a GUA instead */
@@ -386,7 +386,7 @@ function filter_core_rules_system($fw, $defaults)
             ], $defaults['pass']);
             $dhcpv6_opts = [
                 'descr' => 'allow dhcpv6 client out ' . $intfinfo['descr'],
-                '#ref' => 'system_advanced_network.php#ipv6allow',
+                '#ref' => 'ui/interfaces/settings',
                 'direction' => 'out',
                 'interface' => $intf,
                 'protocol' => 'udp',
