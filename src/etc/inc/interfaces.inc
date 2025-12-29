@@ -2999,16 +2999,19 @@ EOD;
 
 function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
 {
-    $dhcp6cconf = "interface {$wanif} {\n";
+    $dhcp6cconf = '';
 
     if ($wancfg['ipaddrv6'] == 'slaac') {
         /* for SLAAC interfaces we do fire off a dhcp6 client for just our name servers */
+        $dhcp6cconf .= "interface {$wanif} {\n";
         $dhcp6cconf .= "  information-only;\n";
         $dhcp6cconf .= "  request domain-name-servers;\n";
         $dhcp6cconf .= "  request domain-name;\n";
-        $dhcp6cconf .= "  script \"/var/etc/dhcp6c_{$interface}_script.sh\"; # we'd like some nameservers please\n";
+        $dhcp6cconf .= "  script \"/var/etc/dhcp6c_{$interface}_script.sh\";\n";
         $dhcp6cconf .= "};\n";
-    } else {
+    } elseif ($wancfg['ipaddrv6'] == 'dhcp6') {
+        $dhcp6cconf .= "interface {$wanif} {\n";
+
         if (!isset($wancfg['dhcp6prefixonly'])) {
             $dhcp6cconf .= "  send ia-na {$id}; # request stateful address\n";
         }
@@ -3017,9 +3020,11 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
             $dhcp6cconf .= "  send ia-pd {$id}; # request prefix delegation\n";
         }
 
+	/* XXX toggle via dhcp6_request_dns */
         $dhcp6cconf .= "  request domain-name-servers;\n";
         $dhcp6cconf .= "  request domain-name;\n";
-        $dhcp6cconf .= "  script \"/var/etc/dhcp6c_{$interface}_script.sh\"; # we'd like some nameservers please\n";
+
+        $dhcp6cconf .= "  script \"/var/etc/dhcp6c_{$interface}_script.sh\";\n";
         $dhcp6cconf .= "};\n";
 
         if (!isset($wancfg['dhcp6prefixonly'])) {
