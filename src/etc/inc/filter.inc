@@ -43,7 +43,7 @@ function is_bogonsv6_used()
      */
     $usebogonsv6 = false;
 
-    if (isset($config['system']['ipv6allow']) && isset($config['interfaces'])) {
+    if (!empty($config['OPNsense']['Interfaces']['settings']['ipv6allow']) && isset($config['interfaces'])) {
         foreach ($config['interfaces'] as $ifacedata) {
             if (isset($ifacedata['enable']) && isset($ifacedata['blockbogons'])) {
                 $usebogonsv6 = true;

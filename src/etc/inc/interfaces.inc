@@ -2422,7 +2422,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     /* we do not set "ifdisabled" to avoid clobbering assigned tunnel devices */
     mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv -no_dad description %s up', [$device, $ifdescr]);
 
-    switch (isset($config['system']['ipv6allow']) ? ($wancfg['ipaddrv6'] ?? 'none') : 'none') {
+    switch (!empty($config['OPNsense']['Interfaces']['settings']['ipv6allow']) ? ($wancfg['ipaddrv6'] ?? 'none') : 'none') {
         case 'slaac':
         case 'dhcp6':
             mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled up', $device);
@@ -2770,10 +2770,11 @@ function interface_6to4_configure($interface, $wancfg, $update = false)
 function interface_dhcpv6_configure($interface, $wancfg)
 {
     $syscfg = config_read_array('system');
+    $hwsettings = config_read_array('OPNsense', 'Interfaces', 'settings');
 
     /* write DUID if override was set */
-    if (!empty($syscfg['ipv6duid'])) {
-        dhcp6c_duid_write($syscfg['ipv6duid']);
+    if (!empty($hwsettings['ipv6duid'])) {
+        dhcp6c_duid_write($hwsettings['ipv6duid']);
     /* clear DUID if it is faulty */
     } elseif (empty(dhcp6c_duid_read())) {
         dhcp6c_duid_clear();
@@ -2794,9 +2795,10 @@ function interface_dhcpv6_configure($interface, $wancfg)
         '/usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh',
     ];
 
-    if (!empty($syscfg['dhcp6_debug'])) {
+    $dhcp6_debug = config_read_array('OPNsense', 'Interfaces', 'settings')['dhcp6_debug'];
+    if (!empty($dhcp6_debug)) {
         $mode = [ '1' => '-d', '2' => '-D' ];
-        $rtsold_frmt[] = $mode[$syscfg['dhcp6_debug']];
+        $rtsold_frmt[] = $mode[$dhcp6_debug];
     }
 
     /* fire up rtsold for IPv6 RAs first */
@@ -2924,16 +2926,18 @@ EOF;
             '/var/run/dhcp6c.pid',
     ]);
 
-    if (!empty($syscfg['dhcp6_debug'])) {
+    $hwsettings = config_read_array('OPNsense', 'Interfaces', 'settings');
+
+    if (!empty($hwsettings['dhcp6_debug'])) {
         $mode = [ '1' => ' -d', '2' => ' -D' ];
-        $dhcp6ccommand .= $mode[$syscfg['dhcp6_debug']];
+        $dhcp6ccommand .= $mode[$hwsettings['dhcp6_debug']];
     }
 
-    if (!empty($syscfg['dhcp6_norelease'])) {
+    if (!empty($hwsettings['dhcp6_norelease'])) {
         $dhcp6ccommand .= ' -n';
     }
 
-    /* XXX does not exist yet: integer in seconds from 0 to n, 0 actually disables it */
+    /* integer in seconds from 0 to n, 0 actually disables it */
     $ratimeout = $syscfg['dhcp6_ratimeout'] ?? '10';
 
     $dhcp6cconf = '';

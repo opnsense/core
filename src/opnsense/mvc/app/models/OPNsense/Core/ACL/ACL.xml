@@ -511,12 +511,6 @@
             <pattern>system_advanced_misc.php*</pattern>
         </patterns>
     </page-system-advanced-misc>
-    <page-system-advanced-network>
-        <name>System: Advanced: Network</name>
-        <patterns>
-            <pattern>system_advanced_network.php*</pattern>
-        </patterns>
-    </page-system-advanced-network>
     <page-system-advanced-sysctl>
         <name>System: Advanced: Tunables</name>
         <patterns>

@@ -379,6 +379,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/LoopbackSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/NeighborSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/OverviewController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VipSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VlanSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VxlanSettingsController.php
@@ -389,6 +390,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/LoopbackController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/NeighborController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/OverviewController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VipController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VlanController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VxlanController.php
@@ -398,6 +400,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogLagg.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogLoopback.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogNeighbor.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVip.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVlan.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVxlan.xml
@@ -800,6 +803,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Bridge.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Bridge.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/BridgeMemberField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/DUIDField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/LaggInterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/LinkAddressField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/NeighborField.php
@@ -816,9 +820,12 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Loopback.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Loopback.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor/dhcpd.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Settings.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Settings.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vip.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vip.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vlan.php
@@ -982,6 +989,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/loopback.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/neighbor.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/overview.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Interface/settings.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vip.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vlan.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vxlan.volt
@@ -1233,6 +1241,7 @@
 /usr/local/opnsense/scripts/interfaces/carp_global_status.php
 /usr/local/opnsense/scripts/interfaces/carp_set_status.php
 /usr/local/opnsense/scripts/interfaces/dhclient-script
+/usr/local/opnsense/scripts/interfaces/gen_duid.php
 /usr/local/opnsense/scripts/interfaces/ifctl.sh
 /usr/local/opnsense/scripts/interfaces/lib/__init__.py
 /usr/local/opnsense/scripts/interfaces/list_arp.py
@@ -1254,6 +1263,7 @@
 /usr/local/opnsense/scripts/interfaces/reconfigure_gres.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_laggs.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_neighbors.php
+/usr/local/opnsense/scripts/interfaces/reconfigure_settings.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vips.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vlans.php
 /usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh
