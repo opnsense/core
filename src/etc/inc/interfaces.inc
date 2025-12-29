@@ -3064,7 +3064,7 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
             }
         }
 
-	foreach ($assoc_pd as $i => $pd_conf) {
+        foreach ($assoc_pd as $i => $pd_conf) {
             $dhcp6cconf .= "id-assoc pd {$i} {\n";
             $dhcp6cconf .= $pd_conf;
             $dhcp6cconf .= "};\n";
