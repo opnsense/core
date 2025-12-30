@@ -28,7 +28,6 @@
     $(document).ready(function() {
         const getMap = {'frm_settings':'/api/interfaces/settings/get'};
         mapDataToFormUI(getMap).done(function(data) {
-            console.log(data);
             const duids = data.frm_settings.duids;
             formatTokenizersUI();
             $('.selectpicker').selectpicker('refresh');
@@ -38,7 +37,11 @@
                     <a id="llt" href="#">{{ lang._('Insert a new LLT DUID') }}</a><br/>
                     <a id="ll" href="#">{{ lang._('Insert a new LL DUID') }}</a><br/>
                     <a id="uuid" href="#">{{ lang._('Insert a new UUID DUID') }}</a><br/>
-                    <a id="en" href="#">{{ lang._('Insert a new EN DUID') }}</a>
+                    <a id="en" href="#">{{ lang._('Insert a new EN DUID') }}</a><br/>
+                    <a id="clear" class="text-danger" href="#">
+                        <i class="fa fa-times-circle"></i>
+                        <small>{{ lang._('Clear') }}</small>
+                    </a>
                 </div>
             `);
             $container.insertAfter($('#settings\\.ipv6duid'));
@@ -47,6 +50,9 @@
                     $('#settings\\.ipv6duid').val(duids[id] ?? '');
                 });
             });
+            $('#clear').click(function() {
+                $('#settings\\.ipv6duid').val('');
+            })
         });
 
         $("#reconfigureAct").SimpleActionButton({
