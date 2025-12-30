@@ -3020,7 +3020,7 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
             $dhcp6cconf .= "  send ia-pd {$id}; # request prefix delegation\n";
         }
 
-	/* XXX toggle via dhcp6_request_dns */
+        /* XXX toggle via dhcp6_request_dns */
         $dhcp6cconf .= "  request domain-name-servers;\n";
         $dhcp6cconf .= "  request domain-name;\n";
 
