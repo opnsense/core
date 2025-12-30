@@ -61,7 +61,7 @@
         <type>text</type>
         <help>
             <![CDATA[This field can be used to enter an explicit DUID for use by the system IPv6 DHCP client(s).<br/>
-            The DUID is a persistent, globally unique identifier that DHCPv6 uses to identify a device independently of its interfaces.<br/>
+            The DUID is a persistent, globally unique identifier that DHCPv6 uses to identify this device independently of the interfaces.<br/>
             The correct format for each DUID type is as follows, all entries to be in hex format "xx" separated by a colon.<br/>
             <b>LLT</b>: 4 bytes "00:01:00:01" followed by 4 bytes Unix time e.g. "00:01:02:03", followed by 6 bytes of a MAC address.<br/>
             <b>LL</b>: 4 bytes "00:03:00:01" followed by 6 bytes of a MAC address.<br/>
