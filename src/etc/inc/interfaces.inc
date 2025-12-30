@@ -2809,7 +2809,7 @@ function interface_dhcpv6_configure($interface, $wancfg)
      * advertisements after timeout which can be necessary.
      * Can be adjusted to fit ISP timing or completely disabled.
      */
-    if (!empty($syscfg['dhcp6_ratimeout'] ?? '10')) {
+    if (!empty($hwsettings['dhcp6_ratimeout'] ?? '10')) {
         mwexecfb('/var/etc/rtsold_script.sh %s', [$wancfg['if']]);
     }
 }
@@ -2844,6 +2844,7 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
 
     $id = interface_dhcpv6_id($interface);
     $syscfg = config_read_array('system');
+    $hwsettings = config_read_array('OPNsense', 'Interfaces', 'settings');
     $device = $wancfg['if'];
 
     $dhcp6cconf = "# generated for {$interface} in {$wancfg['ipaddrv6']} mode\n";
@@ -2938,7 +2939,7 @@ EOF;
     }
 
     /* integer in seconds from 0 to n, 0 actually disables it */
-    $ratimeout = $syscfg['dhcp6_ratimeout'] ?? '10';
+    $ratimeout = $hwsettings['dhcp6_ratimeout'] ?? '10';
 
     $dhcp6cconf = '';
 
