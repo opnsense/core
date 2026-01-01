@@ -2867,9 +2867,9 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
     $dhcp6cscript = <<<EOF
 #!/bin/sh
 
-case \$REASON in
-INFOREQ|REBIND|RENEW|REQUEST)
-    /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$device} executing"
+case \${REASON} in
+INFOREQ|REBIND|RENEW|REQUEST|SOLICIT)
+    /usr/bin/logger -t dhcp6c "dhcp6c_script: \${REASON} on {$device} executing"
 
     ARGS=
     for NAMESERVER in \${new_domain_name_servers}; do
@@ -2887,22 +2887,20 @@ INFOREQ|REBIND|RENEW|REQUEST)
     for PD in \${PDINFO}; do
         ARGS="\${ARGS} -a \${PD}"
     done
-    if [ \${REASON} != "RENEW" -a \${REASON} != "REBIND" ]; then
-        # cannot update since PDINFO may be incomplete in these cases
-        # as each PD is being handled separately via the client side
+    if [ \${REASON} != "INFOREQ" ]; then
         /usr/local/sbin/ifctl -i {$device} -6pd \${ARGS}
     fi
 
     FORCE=
-    if [ \${REASON} = "REQUEST" ]; then
-        /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$device} renewal"
+    if [ \${REASON} = "REQUEST" -o \${REASON} = "SOLICIT" ]; then
+        /usr/bin/logger -t dhcp6c "dhcp6c_script: \${REASON} on {$device} renewal"
         FORCE=force
     fi
 
     /usr/local/sbin/configctl -d interface newipv6 {$device} \${FORCE}
     ;;
 EXIT|RELEASE)
-    /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$device} executing"
+    /usr/bin/logger -t dhcp6c "dhcp6c_script: \${REASON} on {$device} executing"
 
     /usr/local/sbin/ifctl -i {$device} -6nd
     /usr/local/sbin/ifctl -i {$device} -6sd
@@ -2911,7 +2909,7 @@ EXIT|RELEASE)
     /usr/local/sbin/configctl -d interface newipv6 {$device}
     ;;
 *)
-    /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$device} ignored"
+    /usr/bin/logger -t dhcp6c "dhcp6c_script: \${REASON} on {$device} ignored"
     ;;
 esac
 
@@ -3019,6 +3017,8 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
             /* XXX $id from dhcp6_request_pd */
             $dhcp6cconf .= "  send ia-pd {$id}; # request prefix delegation\n";
         }
+        /* XXX decide what to do with this */
+        //$dhcp6cconf .= "  send rapid-commit;\n";
 
         /* XXX toggle via dhcp6_request_dns */
         $dhcp6cconf .= "  request domain-name-servers;\n";
