@@ -62,7 +62,7 @@
         });
 
         ajaxGet('/api/ntpd/service/gps', {}, function (data, status) {
-            const gps = data.gps || {};
+            const gps = data.gps || data || {};
             const container = document.getElementById('gps-content');
 
             if (!gps.ok) {
