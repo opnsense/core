@@ -1,4 +1,4 @@
-# Copyright (c) 2023-2024 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2023-2026 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -32,3 +32,7 @@ CORE_NICKNAME?=	Visionary Viper
 CORE_TYPE?=	community
 # plugins that were migrated to core are here
 CORE_CONFLICTS?=firewall wireguard wireguard-go
+
+CORE_COPYRIGHT_HOLDER?=	Deciso B.V.
+CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
+CORE_COPYRIGHT_YEARS?=	2014-2026

@@ -123,10 +123,6 @@ CORE_UID?=		789
 CORE_GROUP?=		${CORE_USER}
 CORE_GID?=		${CORE_UID}
 
-CORE_COPYRIGHT_HOLDER?=	Deciso B.V.
-CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
-CORE_COPYRIGHT_YEARS?=	2014-2025
-
 CORE_DEPENDS_aarch64?=	py${CORE_PYTHON}-duckdb \
 			py${CORE_PYTHON}-numpy \
 			py${CORE_PYTHON}-pandas \
