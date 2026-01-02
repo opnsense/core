@@ -2769,7 +2769,6 @@ function interface_6to4_configure($interface, $wancfg, $update = false)
 
 function interface_dhcpv6_configure($interface, $wancfg)
 {
-    $syscfg = config_read_array('system');
     $hwsettings = config_read_array('OPNsense', 'Interfaces', 'settings');
 
     /* write DUID if override was set */
@@ -2843,7 +2842,6 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
     }
 
     $id = interface_dhcpv6_id($interface);
-    $syscfg = config_read_array('system');
     $hwsettings = config_read_array('OPNsense', 'Interfaces', 'settings');
     $device = $wancfg['if'];
 

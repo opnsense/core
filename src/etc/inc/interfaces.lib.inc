@@ -584,9 +584,14 @@ function configure_interface_hardware($ifs, $intf_details = null)
     foreach ($config['interfaces'] as $iface => $ifconf) {
         if (!empty($ifconf['if']) && $ifconf['if'] == $ifs) {
             if (!empty($ifconf['hw_settings_overwrite'])) {
-                foreach ($ifconf as $key => $value) {
-                    if (isset($hwsettings[$key])) {
-                        $hwsettings[$key] = $value;
+                foreach ($hwsettings as $key => $value) {
+                    /* XXX per-if hw overwrites still expect isset(), so always set a value. */
+                    if (!isset($ifconf[$key])) {
+                        /* XXX note that this also sets non-boolean $hwsettings fields to 0, but these aren't used here. */
+                        $hwsettings[$key] = '0';
+                    } else {
+                        /* XXX this also accounts for disablevlanhwfilter options 0/1/2 */
+                        $hwsettings[$key] = $ifconf[$key];
                     }
                 }
             }
