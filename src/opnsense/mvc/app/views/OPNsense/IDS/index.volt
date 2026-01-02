@@ -294,6 +294,7 @@
                         {   search:'/api/ids/settings/searchinstalledrules',
                             get:'/api/ids/settings/get_rule_info/',
                             set:'/api/ids/settings/set_rule/',
+                            datakey: 'sid',
                             options:{
                                 virtualDOM: true,
                                 requestHandler:addRuleFilters,
