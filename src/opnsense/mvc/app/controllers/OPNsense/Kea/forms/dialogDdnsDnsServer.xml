@@ -1,0 +1,26 @@
+<form>
+    <field>
+        <id>dns_servers.description</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>Description for this DNS server entry</help>
+    </field>
+    <field>
+        <id>dns_servers.ip_address</id>
+        <label>IP address</label>
+        <type>text</type>
+        <help>DNS server IP address (IPv4 or IPv6)</help>
+    </field>
+    <field>
+        <id>dns_servers.port</id>
+        <label>Port</label>
+        <type>text</type>
+        <help>DNS server port, default 53</help>
+    </field>
+    <field>
+        <id>dns_servers.key_name</id>
+        <label>TSIG key</label>
+        <type>dropdown</type>
+        <help>Select an optional TSIG key for updates sent to this server. When set, this server-specific key overrides any TSIG key configured on the domain/zone.</help>
+    </field>
+</form>

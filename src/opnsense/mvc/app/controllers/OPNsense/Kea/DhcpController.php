@@ -88,4 +88,26 @@ class DhcpController extends \OPNsense\Base\IndexController
     {
         $this->view->pick('OPNsense/Kea/leases6');
     }
+
+    public function ddnsAction()
+    {
+        $this->view->pick('OPNsense/Kea/dhcp_ddns');
+        $this->view->formGeneralSettings = $this->getForm("generalSettingsDdns");
+
+        // Forward zones (domains)
+        $this->view->formDialogForwardDomain = $this->getForm("dialogDdnsForwardDomain");
+        $this->view->formGridForwardDomain = $this->getFormGrid("dialogDdnsForwardDomain");
+
+        // Reverse zones (domains)
+        $this->view->formDialogReverseDomain = $this->getForm("dialogDdnsReverseDomain");
+        $this->view->formGridReverseDomain = $this->getFormGrid("dialogDdnsReverseDomain");
+
+        // Shared DNS servers
+        $this->view->formDialogDnsServer = $this->getForm("dialogDdnsDnsServer");
+        $this->view->formGridDnsServer = $this->getFormGrid("dialogDdnsDnsServer");
+
+        // TSIG keys
+        $this->view->formDialogTsigKey = $this->getForm("dialogDdnsTsigKey");
+        $this->view->formGridTsigKey = $this->getFormGrid("dialogDdnsTsigKey");
+    }
 }

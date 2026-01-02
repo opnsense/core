@@ -1,0 +1,19 @@
+<form>
+    <field>
+        <type>header</type>
+        <label>Service</label>
+    </field>
+    <field>
+        <id>dhcp_ddns.general.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>Enable DHCP-DDNS service.</help>
+    </field>
+    <field>
+        <id>dhcp_ddns.general.manual_config</id>
+        <label>Manual config</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Disable configuration file generation and manage the file (/usr/local/etc/kea/kea-dhcp-ddns.conf) manually.</help>
+    </field>
+</form>

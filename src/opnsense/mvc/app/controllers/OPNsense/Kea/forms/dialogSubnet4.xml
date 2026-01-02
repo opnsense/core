@@ -30,6 +30,47 @@
     </field>
     <field>
         <type>header</type>
+        <label>Dynamic DNS (DDNS)</label>
+        <collapse>true</collapse>
+    </field>
+    <field>
+        <id>subnet4.ddns_options.send_updates</id>
+        <label>Send updates</label>
+        <type>checkbox</type>
+        <help>Enable Dynamic DNS updates for this subnet.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>subnet4.ddns_options.update_on_renew</id>
+        <label>Update on renew</label>
+        <type>checkbox</type>
+        <help>Send DNS updates when leases are renewed.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>subnet4.ddns_options.qualifying_suffix</id>
+        <label>Qualifying suffix</label>
+        <type>text</type>
+        <help>Suffix appended to hostnames to form FQDNs. Must end with a dot.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>subnet4.ddns_options.conflict_resolution_mode</id>
+        <label>Conflict resolution</label>
+        <type>dropdown</type>
+        <help>How to resolve DNS conflicts.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
         <label>DHCP option data</label>
     </field>
     <field>
