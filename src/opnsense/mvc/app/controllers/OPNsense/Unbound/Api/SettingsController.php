@@ -95,7 +95,16 @@ class SettingsController extends ApiMutableModelControllerBase
                 $action = 'allow';
             }
 
-            $result = (new Backend())->configdpRun('unbound dnsblquick', [$uuid, $domain, $action]);
+            $result["status"] = trim((new Backend())->configdpRun('unbound dnsblquick', [$uuid, $domain, $action]));
+            if ($result["status"] != "OK" && str_contains($result["status"], '99')) {
+                /* locked */
+                $result["status"] = "failed";
+                throw new \OPNsense\Base\UserException(gettext(
+                    "The action was successfully applied, but could not be loaded into Unbound " .
+                    "because another update process is already active. " .
+                    "Please re-apply the Unbound blocklists settings manually."
+                ), gettext("Blocklist error"));
+            }
         }
 
         return $result;

@@ -411,7 +411,7 @@
                         openPoliciesDialog(domain, uuid, action, statObj?.blocklist ?? "");
                     });
 
-                    let bl = uuid ? `(${policies.policies[uuid].description})` : '';
+                    let bl = (uuid && uuid in policies.policies) ? `(${policies.policies[uuid].description})` : '';
 
                     let $li = $(`
                         <li class="list-group-item list-group-item-border list-item-domain top-item">
@@ -585,7 +585,7 @@
                         ? policy.description + " ({{ lang._('matched') }})"
                         : policy.description;
 
-                    const allowed = (new Set(policy.allowlists.split(',').map(w => w.trim()))).has(domain);
+                    const allowed = (new Set(policy.allowlists.split(',').map(w => w.trim()))).has(cleanDomain);
                     const blocked = (new Set(policy.blocklists.split(',').map(w => w.trim()))).has(cleanDomain);
 
                     let action = 'block';
