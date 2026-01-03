@@ -146,6 +146,10 @@
                     $(".detect_custom").closest("tr").addClass("hidden");
                 }
             });
+            $("#ids\\.general\\.mode").change(function(){
+                $(".ids_mode").closest("tr").hide();
+                $(".ids_mode_" + $(this).val()).closest("tr").show();
+            });
             mapDataToFormUI({'frm_GeneralSettings':'/api/ids/settings/get'}).done(function(data){
                 // set schedule updates link to cron
                 $.each(data.frm_GeneralSettings.ids.general.UpdateCron, function(key, value) {

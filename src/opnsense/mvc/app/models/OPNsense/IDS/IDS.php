@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,12 +39,12 @@ class IDS extends BaseModel
     /**
      * @var array internal list of all sid's in this object
      */
-    private $sid_list = array();
+    private $sid_list = [];
 
     /**
      * @var array internal list of all known actions (key/value)
      */
-    private $action_list = array();
+    private $action_list = [];
 
     /**
      * update internal cache of sid's and actions

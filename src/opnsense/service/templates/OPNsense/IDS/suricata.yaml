@@ -341,7 +341,7 @@ flow-timeouts:
 stream:
   memcap: 64mb
   checksum-validation: yes
-  inline: {% if OPNsense.IDS.general.ips|default("0") == "1" %}true{% else %}auto{% endif +%}
+  inline: {% if OPNsense.IDS.general.mode|default("") in ["netmap", "divert"] %}true{% else %}auto{% endif +%}
 
   midstream-policy: ignore
   reassembly:
@@ -405,7 +405,7 @@ netmap:
    disable-promisc: {% if helpers.empty('OPNsense.IDS.general.promisc') %}yes{% else %}no{% endif +%}
    checksum-checks: auto
 
-  {% if helpers.exists('OPNsense.IDS.general.interfaces') %}
+  {% if helpers.exists('OPNsense.IDS.general.interfaces') and OPNsense.IDS.general.mode|default("") == "netmap" %}
     {% for intfName in OPNsense.IDS.general.interfaces.split(',') %}
 
  - interface: {{helpers.physical_interface(intfName)}}
