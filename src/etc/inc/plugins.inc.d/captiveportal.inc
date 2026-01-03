@@ -93,7 +93,7 @@ function captiveportal_firewall($fw)
             }
 
             foreach (explode(',', $zone->interfaces) as $intf) {
-                // allow DNS
+                // allow DNS (IPv4)
                 $fw->registerFilterRule(
                     1,
                     [
@@ -110,10 +110,28 @@ function captiveportal_firewall($fw)
                     ]
                 );
 
+                // allow DNS (IPv6)
+                $fw->registerFilterRule(
+                    1,
+                    [
+                        'type' => 'pass',
+                        'interface' => $intf,
+                        'ipprotocol' => 'inet6',
+                        'protocol' => 'tcp/udp',
+                        'direction' => 'in',
+                        'from' => 'any',
+                        'to' => '(self)',
+                        'to_port' => 53,
+                        'descr' => "Allow DNS for Captive Portal (zone {$zoneid})",
+                        'log' => !isset($config['syslog']['nologdefaultpass']),
+                        '#ref' => "ui/captiveportal#edit={$uuid}",
+                    ]
+                );
+
                 foreach (['80', '443'] as $to_port) {
                     $rdr_port = $to_port === '443' ? (8000 + (int)$zoneid) : (9000 + (int)$zoneid);
 
-                    // forward to localhost if not authenticated
+                    // forward to localhost if not authenticated (IPv4)
                     $fw->registerForwardRule(
                         2,
                         [
@@ -135,7 +153,29 @@ function captiveportal_firewall($fw)
                         ]
                     );
 
-                    // Allow access to the captive portal
+                    // forward to localhost if not authenticated (IPv6)
+                    $fw->registerForwardRule(
+                        2,
+                        [
+                            'interface' => $intf,
+                            'pass' => true,
+                            'nordr' => false,
+                            'ipprotocol' => 'inet6',
+                            'protocol' => 'tcp',
+                            'from' => "<__captiveportal_zone_{$zoneid}>",
+                            'from_not' => true,
+                            'to' => "<__captiveportal_zone_{$zoneid}>",
+                            'to_not' => true,
+                            'to_port' => $to_port,
+                            'target' => '::1',
+                            'localport' => $rdr_port,
+                            'natreflection' => 'disable',
+                            'descr' => "Redirect to Captive Portal (zone {$zoneid})",
+                            '#ref' => "ui/captiveportal#edit={$uuid}"
+                        ]
+                    );
+
+                    // Allow access to the captive portal (IPv4)
                     $proto = $to_port === '443' ? 'https' : 'http';
                     $fw->registerFilterRule(
                         2,
@@ -152,14 +192,50 @@ function captiveportal_firewall($fw)
                             '#ref' => "ui/captiveportal#edit={$uuid}",
                         ]
                     );
+
+                    // Allow access to the captive portal (IPv6)
+                    $fw->registerFilterRule(
+                        2,
+                        [
+                            'type' => 'pass',
+                            'interface' => $intf,
+                            'ipprotocol' => 'inet6',
+                            'protocol' => 'tcp',
+                            'direction' => 'in',
+                            'from' => 'any',
+                            'to' => '(self)',
+                            'to_port' => $rdr_port,
+                            'descr' => "Allow access to Captive Portal ({$proto}, zone {$zoneid})",
+                            'log' => !isset($config['syslog']['nologdefaultpass']),
+                            '#ref' => "ui/captiveportal#edit={$uuid}",
+                        ]
+                    );
                 }
 
-                // block all non-authenticated users
+                // block all non-authenticated users (IPv4)
                 $fw->registerFilterRule(
                     3,
                     [
                         'type' => 'block',
                         'interface' => $intf,
+                        'direction' => 'in',
+                        'from' => "<__captiveportal_zone_{$zoneid}>",
+                        'from_not' => true,
+                        'to' => "<__captiveportal_zone_{$zoneid}>",
+                        'to_not' => true,
+                        'descr' => "Default Captive Portal block rule (zone {$zoneid})",
+                        'log' => !isset($config['syslog']['nologdefaultblock']),
+                        '#ref' => "ui/captiveportal#edit={$uuid}",
+                    ]
+                );
+
+                // block all non-authenticated users (IPv6)
+                $fw->registerFilterRule(
+                    3,
+                    [
+                        'type' => 'block',
+                        'interface' => $intf,
+                        'ipprotocol' => 'inet6',
                         'direction' => 'in',
                         'from' => "<__captiveportal_zone_{$zoneid}>",
                         'from_not' => true,

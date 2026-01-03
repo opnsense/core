@@ -72,13 +72,74 @@
                 requestHandler: function(request) {
                     request['selected_zones'] = $("#zone-selection").val();
                     return request;
+                },
+                formatters: {
+                    ipAddress: function(column, row) {
+                        // Try to get enriched arrays first
+                        let ipv4Addresses = Array.isArray(row.ipv4Addresses) ? row.ipv4Addresses : [];
+                        let ipv6Addresses = Array.isArray(row.ipv6Addresses) ? row.ipv6Addresses : [];
+
+                        // Fallback: if arrays are empty but ipAddress exists, use it
+                        if (ipv4Addresses.length === 0 && ipv6Addresses.length === 0 && row.ipAddress) {
+                            // Classify the stored IP
+                            if (row.ipAddress.indexOf(':') >= 0) {
+                                ipv6Addresses = [row.ipAddress];
+                            } else {
+                                ipv4Addresses = [row.ipAddress];
+                            }
+                        }
+
+                        // Combine all addresses (IPv4 first, then IPv6)
+                        let allAddresses = ipv4Addresses.concat(ipv6Addresses);
+
+                        if (allAddresses.length === 0) {
+                            return '<span class="text-muted">-</span>';
+                        }
+
+                        // Show all addresses with tooltip for full content
+                        // Escape HTML for tooltip title attribute
+                        let tooltip = allAddresses.join('\n').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                        let displayHtml = allAddresses.join('<br>');
+                        // Wrap in span with tooltip - use data-html="false" for plain text tooltip
+                        return '<span data-toggle="tooltip" data-placement="top" title="' + tooltip + '">' + displayHtml + '</span>';
+                    },
+                    userName: function(column, row) {
+                        // Extract IP from username@ip format and show just username
+                        let userName = row.userName || '';
+                        if (userName && userName.indexOf('@') >= 0) {
+                            return userName.split('@')[0] || userName;
+                        }
+                        return userName;
+                    }
                 }
             }
+        });
+
+        // Initialize tooltips after grid loads (following OPNsense pattern)
+        $("#grid-clients").on("loaded.rs.jquery.bootgrid", function() {
+            // Find and initialize tooltips in IP address cells
+            $("#grid-clients").find('[data-column-id="ipAddress"] [data-toggle="tooltip"]').each(function() {
+                // Destroy existing tooltip if any
+                $(this).tooltip('destroy');
+                // Initialize tooltip
+                $(this).tooltip({container: 'body', html: false});
+            });
         });
 
         $("#zone-selection-wrapper").detach().prependTo('#grid-clients-header > .row > .actionBar > .actions');
     });
 </script>
+
+<style>
+    [data-column-id="ipAddress"] {
+        white-space: normal !important;
+        word-break: break-all;
+        line-height: 1.5;
+        max-height: 80px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs"></ul>
 <div class="tab-content content-box col-xs-12 __mb">
@@ -91,14 +152,14 @@
             <tr>
                 <th data-column-id="sessionId" data-type="string" data-identifier="true" data-visible="false">{{ lang._('Session') }}</th>
                 <th data-column-id="zoneid" data-width="7em"  data-type="string" data-visible="false">{{ lang._('Zoneid') }}</th>
-                <th data-column-id="userName" data-type="string">{{ lang._('Username') }}</th>
-                <th data-column-id="macAddress" data-type="string"  data-width="12em" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('MAC address') }}</th>
-                <th data-column-id="ipAddress" data-type="string"  data-width="12em" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('IP address') }}</th>
-                <th data-column-id="bytes_in" data-type="string"  data-width="8em" data-formatter="bytes" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('Bytes (in)') }}</th>
-                <th data-column-id="bytes_out" data-type="string" data-width="8em" data-formatter="bytes"  data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('Bytes (out)') }}</th>
-                <th data-column-id="startTime" data-type="datetime">{{ lang._('Connected since') }}</th>
-                <th data-column-id="last_accessed" data-type="datetime" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('Last accessed') }}</th>
-                <th data-column-id="commands" data-searchable="false" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                <th data-column-id="userName" data-type="string" data-width="10em" data-formatter="userName">{{ lang._('Username') }}</th>
+                <th data-column-id="macAddress" data-type="string" data-width="10em" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('MAC address') }}</th>
+                <th data-column-id="ipAddress" data-type="string" data-width="9em" data-formatter="ipAddress" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('IP Address') }}</th>
+                <th data-column-id="bytes_in" data-type="string" data-width="7em" data-formatter="bytes" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('Bytes (in)') }}</th>
+                <th data-column-id="bytes_out" data-type="string" data-width="7em" data-formatter="bytes" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('Bytes (out)') }}</th>
+                <th data-column-id="startTime" data-type="datetime" data-width="10em">{{ lang._('Connected since') }}</th>
+                <th data-column-id="last_accessed" data-type="datetime" data-width="10em" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('Last accessed') }}</th>
+                <th data-column-id="commands" data-searchable="false" data-width="5em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
             </tr>
         </thead>
         <tbody>

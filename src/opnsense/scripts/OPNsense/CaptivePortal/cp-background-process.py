@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -187,20 +187,66 @@ class CPBackgroundProcess(object):
                             drop_session_reason = "accounting limit reached for session %s" % db_client['sessionId']
                             delete_reason = "Session-Timeout"
                 elif db_client['authenticated_via'] == '---mac---':
-                    # detect mac changes
-                    current_ip = self.arp.get_address_by_mac(db_client['macAddress'])
-                    if current_ip is not None and db_client['ipAddress'] != current_ip:
-                        if db_client['ipAddress'] != '':
-                            # remove old ip
-                            PF.remove_from_table(zoneid, db_client['ipAddress'])
-                        self.db.update_client_ip(zoneid, db_client['sessionId'], current_ip)
-                        PF.add_to_table(zoneid, current_ip)
+                    # MAC-based authentication: ensure prioritized addresses (IPv4 + IPv6) are in PF table
+                    # Enhanced to support dual-stack and IPv6 address rotation (privacy extensions, SLAAC changes, DHCPv6 renewals)
+                    # Note: We can only discover addresses that appear in NDP (have been used for neighbor discovery)
+                    # New addresses will be discovered as they appear in NDP and added automatically
+                    all_addresses = self.arp.get_all_addresses_by_mac(db_client['macAddress'])
+
+                    if all_addresses:
+                        # Get the primary address (prefer IPv4, then first IPv6)
+                        current_ip = None
+                        for addr in all_addresses:
+                            if ':' not in addr:  # IPv4
+                                current_ip = addr
+                                break
+                        if current_ip is None:
+                            current_ip = all_addresses[0]  # Use first IPv6 if no IPv4
+
+                        # Update database if primary address changed
+                        if current_ip != db_client['ipAddress']:
+                            old_ip = db_client['ipAddress']
+                            if old_ip != '':
+                                syslog.syslog(syslog.LOG_INFO,
+                                    "MAC-based session %s: primary IP changed from %s to %s (zone %s)" %
+                                    (db_client['sessionId'], old_ip, current_ip, zoneid))
+                            self.db.update_client_ip(zoneid, db_client['sessionId'], current_ip)
+
+                        # Add all addresses to PF table (dual-stack support)
+                        for addr in all_addresses:
+                            if addr not in registered_addresses:
+                                PF.add_to_table(zoneid, addr)
+                                syslog.syslog(syslog.LOG_INFO,
+                                    "MAC-based session %s: added address %s to PF table (zone %s)" %
+                                    (db_client['sessionId'], addr, zoneid))
+                    elif db_client['ipAddress'] != '':
+                        # Handle expired addresses: stored IP no longer exists in ARP/NDP
+                        stored_ip = db_client['ipAddress']
+                        stored_entry = self.arp.get_by_ipaddress(stored_ip)
+                        if stored_entry is None:
+                            # IP expired and MAC has no addresses - remove from PF table
+                            PF.remove_from_table(zoneid, stored_ip)
+                            syslog.syslog(syslog.LOG_INFO,
+                                "MAC-based session %s: expired IP %s removed from PF table (zone %s)" %
+                                (db_client['sessionId'], stored_ip, zoneid))
 
                 # check session, if it should be active, validate its properties
                 if drop_session_reason is None:
                     # registered client, but not active or missing accounting according to pf (after reboot)
                     if cpnet not in registered_addresses:
                         PF.add_to_table(zoneid, cpnet)
+
+                    # Dual-stack awareness: check for additional prioritized addresses (IPv4/IPv6) not in PF table
+                    # This ensures dual-stack clients have all their addresses allowed (that appear in NDP)
+                    # Note: We can only discover addresses that appear in NDP (have been used for neighbor discovery)
+                    if db_client['macAddress'] and db_client['macAddress'] != '':
+                        all_addresses = self.arp.get_all_addresses_by_mac(db_client['macAddress'])
+                        for addr in all_addresses:
+                            if addr not in registered_addresses:
+                                PF.add_to_table(zoneid, addr)
+                                syslog.syslog(syslog.LOG_INFO,
+                                    "Session %s: added missing dual-stack address %s to PF table (zone %s)" %
+                                    (db_client['sessionId'], addr, zoneid))
                 else:
                     # remove session
                     PF.remove_from_table(zoneid, cpnet)

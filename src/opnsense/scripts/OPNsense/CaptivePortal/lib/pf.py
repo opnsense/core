@@ -27,6 +27,7 @@
 import subprocess
 import tempfile
 import time
+import ipaddress
 
 class PF(object):
     def __init__(self):
@@ -46,18 +47,37 @@ class PF(object):
         subprocess.run(['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'add', address], capture_output=True)
 
     @staticmethod
+    def _is_ipv6(address):
+        """Check if address is IPv6
+        :param address: IP address string
+        :return: True if IPv6, False if IPv4
+        """
+        try:
+            # Remove scope ID if present (e.g., fe80::1%em0 -> fe80::1)
+            addr = address.split('%')[0]
+            ipaddress.IPv6Address(addr)
+            return True
+        except (ValueError, AttributeError):
+            return False
+
+    @staticmethod
     def remove_from_table(zoneid, address):
         subprocess.run(['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'del', address], capture_output=True)
         # kill associated states to and from this host
         subprocess.run(['/sbin/pfctl', '-k', f'{address}'], capture_output=True)
-        subprocess.run(['/sbin/pfctl', '-k', '0.0.0.0/0', '-k', f'{address}'], capture_output=True)
+        # Use appropriate wildcard based on IP version
+        wildcard = '::/0' if PF._is_ipv6(address) else '0.0.0.0/0'
+        subprocess.run(['/sbin/pfctl', '-k', wildcard, '-k', f'{address}'], capture_output=True)
 
     @staticmethod
     def sync_accounting(zoneid):
         rules = ''
         for entry in PF.list_table(zoneid):
-            rules += f'ether pass in quick proto {{ 0x0800 }} l3 from {entry} to any label "{entry}-in"\n'
-            rules += f'ether pass out quick proto {{ 0x0800 }} l3 from any to {entry} label "{entry}-out"\n'
+            # Use appropriate protocol number based on IP version
+            # 0x0800 = IPv4, 0x86dd = IPv6
+            proto = '0x86dd' if PF._is_ipv6(entry) else '0x0800'
+            rules += f'ether pass in quick proto {{ {proto} }} l3 from {entry} to any label "{entry}-in"\n'
+            rules += f'ether pass out quick proto {{ {proto} }} l3 from any to {entry} label "{entry}-out"\n'
 
         with tempfile.NamedTemporaryFile(mode="w", delete=True) as tmp_file:
             tmp_file.write(rules)
