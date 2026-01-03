@@ -87,10 +87,11 @@ class Logger:
                 except:
                     pass
 
-    def log_entry(self, query: Query):
+    def log_entry(self, query: Query, match=None):
         if not self.stats_enabled:
             return
-        self._pipe_buffer.append((uuid.uuid4(),) + query.request + query.response)
+        uuid = match.get('id') if match else ''
+        self._pipe_buffer.append((uuid,) + query.request + query.response)
         if self._pipe_fd is None:
             if (time.time() - self._pipe_timer) > self._retry_timer:
                 self._pipe_timer = time.time()

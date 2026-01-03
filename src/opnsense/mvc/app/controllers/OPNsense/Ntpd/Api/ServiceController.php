@@ -111,7 +111,7 @@ class ServiceController extends ApiControllerBase
 
     public function gpsAction()
     {
-        return json_decode((new Backend())->configdRun('ntpd status'), true)['gps'];
+        return json_decode((new Backend())->configdRun('ntpd status'), true);
     }
 
     public function statusAction()

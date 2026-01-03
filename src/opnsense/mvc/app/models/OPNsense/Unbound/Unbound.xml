@@ -376,6 +376,7 @@
                         </check001>
                     </Constraints>
                 </txtdata>
+                <aliascount type=".\AliasRefCount" volatile="true"/>
                 <description type="DescriptionField"/>
             </host>
         </hosts>

@@ -31,6 +31,7 @@ namespace OPNsense\Firewall\Api;
 use OPNsense\Base\UserException;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Category;
+use OPNsense\Firewall\Util;
 
 class DNatController extends FilterBaseController
 {
@@ -75,6 +76,29 @@ class DNatController extends FilterBaseController
                 }
             }
         }
+
+        foreach (Util::getAntiLockout() as $if => $ports) {
+            $ifname = Config::getInstance()->object()->interfaces->$if?->name ?? strtoupper($if);
+            foreach ($ports as $idx => $port) {
+                array_unshift($results['rows'], [
+                    'uuid' => 'lockout_' . $idx,
+                    'ipprotocol' => 'inet46',
+                    '%ipprotocol' => gettext('IPv4+IPv6'),
+                    'protocol' => 'tcp',
+                    'disabled' => '0',
+                    'nordr' => '1',
+                    'interface' => $if,
+                    '%interface' => $ifname,
+                    'destination.network' => $if . 'ip',
+                    'destination.port' => $port,
+                    'alias_meta_destination.port' => $this->getNetworks($port),
+                    'alias_meta_destination.network' => $this->getNetworks($if . 'ip'),
+                    'descr' => gettext('Anti-Lockout Rule'),
+                    'category' => gettext('Automatically generated rules')
+                ]);
+            }
+        }
+
 
         return $results;
     }
@@ -129,84 +153,13 @@ class DNatController extends FilterBaseController
         return $result;
     }
 
-    /**
-     * Moves the selected rule so that it appears immediately before the target rule.
-     *
-     * Uses integer gap numbering to update the sequence for only the moved rule.
-     * Rules will be renumbered within the selected range to prevent movements causing overlaps,
-     * but try to keep the changes as minimal as possible.
-     *
-     * @param string $selected_uuid The UUID of the rule to be moved.
-     * @param string $target_uuid   The UUID of the target rule (the rule before which the selected rule is to be placed).
-     * @return array Returns ["status" => "ok"] on success, throws a userexception otherwise.
-     */
     public function moveRuleBeforeAction($selected_uuid, $target_uuid)
     {
-        if (!$this->request->isPost()) {
-            return ["status" => "error", "message" => gettext("Invalid request method")];
-        }
-        $target_node = $this->getModel()->getNodeByReference('rule.' . $target_uuid);
-        $selected_node = $this->getModel()->getNodeByReference('rule.' . $selected_uuid);
-        if ($target_node === null || $selected_node === null) {
-            throw new UserException(
-                gettext("Either source or destination is not a rule managed with this component"),
-                gettext("DNat")
-            );
-        }
-        $step_size = 50;
-        $new_key = null;
-        $prev_record = null;
-        foreach ($this->getModel()->rule->sortedBy(['sequence']) as $record) {
-            $uuid = $record->getAttribute('uuid');
-            if ($target_uuid === $uuid) {
-                $prev_sequence = (($prev_record?->sequence->asFloat()) ?? 1);
-                $distance = $record->sequence->asFloat() - $prev_sequence;
-                if ($distance > 2) {
-                    $new_key = intdiv($distance, 2) + $prev_sequence;
-                    break;
-                } else {
-                    $new_key = $prev_record === null ? 1 : ($prev_sequence + $step_size);
-                    $record->sequence = (string)($new_key + $step_size);
-                }
-            } elseif ($new_key !== null) {
-                if ($record->sequence->asFloat() < $prev_record?->sequence->asFloat()) {
-                    $record->sequence = (string)($prev_record?->sequence->asFloat() + $step_size);
-                }
-            }
-            $prev_record = $record;
-        }
-        if ($new_key !== null) {
-            $selected_node->sequence = (string)$new_key;
-            /* we're only changing sequences, forcefully save */
-            $this->getModel()->serializeToConfig(false, true);
-            Config::getInstance()->save();
-        }
-
-        return ["status" => "ok"];
+        return $this->moveRuleBeforeBase($selected_uuid, $target_uuid, 'rule', 'sequence');
     }
 
     public function toggleRuleLogAction($uuid, $log)
     {
-        if (!$this->request->isPost()) {
-            return ['status' => 'error', 'message' => gettext('Invalid request method')];
-        }
-
-        $mdl = $this->getModel();
-        $node = null;
-        foreach ($mdl->rule->iterateItems() as $item) {
-            if ((string)$item->getAttribute('uuid') === $uuid) {
-                $node = $item;
-                break;
-            }
-        }
-        if ($node === null) {
-            throw new UserException(gettext("Rule not found"), gettext("DNat"));
-        }
-
-        $node->log = $log;
-        $mdl->serializeToConfig();
-        Config::getInstance()->save();
-
-        return ['status' => 'ok'];
+        return $this->toggleRuleLogBase($uuid, $log, 'rule');
     }
 }

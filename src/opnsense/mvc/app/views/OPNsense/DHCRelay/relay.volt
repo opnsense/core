@@ -52,7 +52,11 @@ $( document ).ready(function() {
             $(this).parent().prepend($('<td id="heading-wrapper" class="col-sm-2 theading-text">{{ lang._('Relays') }}</div>'));
         }
     });
-    $("#reconfigureAct").SimpleActionButton();
+    $("#reconfigureAct").SimpleActionButton({
+        onAction(data, status) {
+            $('#{{ formGridRelay['table_id'] }}').bootgrid('reload');
+        }
+    });
 });
 </script>
 <div class="content-box __mb">

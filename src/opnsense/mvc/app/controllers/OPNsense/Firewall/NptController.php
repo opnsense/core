@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2023 Deciso B.V.
+ * Copyright (C) 2023-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,29 +31,8 @@ class NptController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
-        $this->view->pick('OPNsense/Firewall/filter');
-        $this->view->ruleController = "npt";
-        $this->view->gridFields = [
-            [
-                'id' => 'enabled', 'formatter' => 'rowtoggle' ,'width' => '6em', 'heading' => gettext('Enabled')
-            ],
-            [
-                'id' => 'sequence','width' => '9em', 'heading' => gettext('Sequence')
-            ],
-            [
-                'id' => 'source_net', 'heading' => gettext('Internal IPv6 Prefix')
-            ],
-            [
-                'id' => 'destination_net', 'heading' => gettext('External IPv6 Prefix')
-            ],
-            [
-                'id' => 'trackif', 'heading' => gettext('Track if')
-            ],
-            [
-                'id' => 'description', 'heading' => gettext('Description')
-            ]
-        ];
-
-        $this->view->formDialogFilterRule = $this->getForm("dialogNptRule");
+        $this->view->pick('OPNsense/Firewall/npt_rule');
+        $this->view->formDialogNptRule = $this->getForm('dialogNptRule');
+        $this->view->formGridNptRule = $this->getFormGrid('dialogNptRule');
     }
 }

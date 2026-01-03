@@ -642,7 +642,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/OptionField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/PortField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/ProtocolField.php
-/usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/RegexField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/TextField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UniqueIdField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UpdateOnlyTextField.php
@@ -884,6 +883,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Trust/General.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Trust/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/FieldTypes/AliasRefCount.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/FieldTypes/UnboundInterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_0.php
@@ -958,9 +958,11 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias_util.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/category.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/dnat_rule.volt
-/usr/local/opnsense/mvc/app/views/OPNsense/Firewall/filter.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/filter_rule.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/group.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Firewall/npt_rule.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Firewall/onat_rule.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Firewall/snat_rule.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Hostdiscovery/settings.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/policy.volt
@@ -1068,7 +1070,6 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/OptionFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/PortFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/ProtocolFieldTest.php
-/usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/RegexFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/TextFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest/config.xml
@@ -1199,6 +1200,7 @@
 /usr/local/opnsense/scripts/health/definitions/interface-packets.xml
 /usr/local/opnsense/scripts/health/definitions/interface-traffic.xml
 /usr/local/opnsense/scripts/health/definitions/interface-vpnusers.xml
+/usr/local/opnsense/scripts/health/definitions/system-cputemp.xml
 /usr/local/opnsense/scripts/health/definitions/system-processor.xml
 /usr/local/opnsense/scripts/health/fetchData.py
 /usr/local/opnsense/scripts/health/flush_rrd.py

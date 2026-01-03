@@ -28,8 +28,6 @@
 
 namespace OPNsense\Core;
 
-use OPNsense\Core\AppConfig;
-use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
 
 /**
