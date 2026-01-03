@@ -35,14 +35,16 @@ use OPNsense\Core\Backend;
 class ServiceController extends ApiMutableServiceControllerBase
 {
     protected static $internalServiceClass = '\OPNsense\Unbound\Unbound';
-    protected static $internalServiceTemplate = 'OPNsense/Unbound/*';
+    /* XXX for legacy template refresh only */
+    //protected static $internalServiceTemplate = 'OPNsense/Unbound/*';
     protected static $internalServiceEnabled = 'general.enabled';
     protected static $internalServiceName = 'unbound';
 
     public function dnsblAction()
     {
         $backend = new Backend();
-        $backend->configdRun('template reload ' . escapeshellarg(static::$internalServiceTemplate));
+        /* XXX currently hardcoded to not cause side effect of $internalServiceTemplate use */
+        $backend->configdRun('template reload OPNsense/Unbound/*');
         $response = $backend->configdRun(static::$internalServiceName . ' dnsbl');
         return array('status' => $response);
     }

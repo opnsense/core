@@ -41,7 +41,6 @@ class IPsecOverrideStatus extends AbstractStatus
         $this->internalIsBanner = true;
         $this->internalScope[] = '/ui/ipsec/connections*';
         $this->internalScope[] = '/ui/ipsec/tunnels*';
-        $this->internalScope[] = '/vpn_ipsec_mobile.php';
     }
 
     public function collectStatus()

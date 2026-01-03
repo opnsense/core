@@ -41,10 +41,7 @@ class ManualSPDController extends ApiMutableModelControllerBase
 
     public function searchAction()
     {
-        return $this->searchBase(
-            'SPDs.SPD',
-            ['enabled', 'description', 'origin', 'reqid', 'connection_child', 'source', 'destination']
-        );
+        return $this->searchBase('SPDs.SPD');
     }
 
     public function setAction($uuid = null)

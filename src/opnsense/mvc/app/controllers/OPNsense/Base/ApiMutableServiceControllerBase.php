@@ -158,6 +158,14 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     }
 
     /**
+     * invoke firewall reload check, return true to invoke configd action
+     */
+    protected function invokeFirewallReload()
+    {
+        return false;
+    }
+
+    /**
      * check if service is enabled according to model
      */
     protected function serviceEnabled()
@@ -190,8 +198,12 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
                 $backend->configdRun('interface invoke registration');
             }
 
+            if ($this->invokeFirewallReload()) {
+                $backend->configdRun('filter reload skip_alias');
+            }
+
             if (!empty(static::$internalServiceTemplate)) {
-                $result = trim($backend->configdpRun('template reload', [static::$internalServiceTemplate]) ?? '');
+                $result = trim($backend->configdpRun('template reload', [static::$internalServiceTemplate]));
                 if ($result !== 'OK') {
                     throw new UserException(sprintf(
                         gettext('Template generation failed for internal service "%s". See backend log for details.'),

@@ -37,6 +37,8 @@
  #                   select_multiple    multiple item select from dropdown
  #                   hidden             hidden fields not for user interaction
  #                   info               static text (help icon, no input or editing)
+ #                   color              color picker for selecting a color
+ #                   datetime-local     local time picker
  # label       :   attribute label (visible text)
  # size        :   size (width in characters) attribute if applicable
  # height      :   height (length in characters) attribute if applicable
@@ -61,8 +63,8 @@
         </div>
     </td>
     <td>
-        {% if type == "text" %}
-            <input  type="text" aria-label="{{label|safe}}"
+        {% if type in ["text", "datetime-local"] %}
+            <input  type="{{type}}" aria-label="{{label|safe}}"
                     class="form-control {{style|default('')}}"
                     size="{{size|default("50")}}"
                     id="{{ id }}"
@@ -115,6 +117,8 @@
             <textarea class="{{style|default('')}}" rows="{{height|default("5")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} aria-label="{{label|safe}}"></textarea>
         {% elseif type == "info" %}
             <span  class="{{style|default('')}}" id="{{ id }}"></span>
+        {% elseif type == "color" %}
+            <input type="color" class="form-control {{style|default('')}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} aria-label="{{label|safe}}">
         {% endif %}
         {% if help|default(false) %}
             <div class="hidden" data-for="help_for_{{ id }}">

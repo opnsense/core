@@ -21,6 +21,26 @@
                 <Default>1</Default>
             </fwrules>
         </general>
+        <lexpire>
+            <hold_reclaimed_time type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </hold_reclaimed_time>
+            <reclaim_timer_wait_time type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+            </reclaim_timer_wait_time>
+            <flush_reclaimed_timer_wait_time type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </flush_reclaimed_timer_wait_time>
+            <max_reclaim_time type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </max_reclaim_time>
+            <max_reclaim_leases type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </max_reclaim_leases>
+            <unwarned_reclaim_cycles type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </unwarned_reclaim_cycles>
+        </lexpire>
         <ha>
             <enabled type="BooleanField">
                 <Default>0</Default>
@@ -42,20 +62,42 @@
                     <NetMaskRequired>Y</NetMaskRequired>
                     <AddressFamily>ipv6</AddressFamily>
                     <Required>Y</Required>
+                    <Constraints>
+                        <check001>
+                            <type>UniqueConstraint</type>
+                            <ValidationMessage>Subnet must be unique.</ValidationMessage>
+                        </check001>
+                    </Constraints>
                 </subnet>
+                <allocator type="OptionField">
+                    <BlankDesc>Default</BlankDesc>
+                    <OptionValues>
+                        <iterative>iterative</iterative>
+                        <random>random</random>
+                    </OptionValues>
+                </allocator>
+                <pd-allocator type="OptionField">
+                    <BlankDesc>Default</BlankDesc>
+                    <OptionValues>
+                        <iterative>iterative</iterative>
+                        <random>random</random>
+                        <flq>Free Lease Queue Allocator</flq>
+                    </OptionValues>
+                </pd-allocator>
                 <option_data>
                     <dns_servers type="NetworkField">
                         <NetMaskAllowed>N</NetMaskAllowed>
                         <AddressFamily>ipv6</AddressFamily>
                         <AsList>Y</AsList>
-                        <FieldSeparator>,</FieldSeparator>
                     </dns_servers>
                     <domain_search type="HostnameField">
                         <IpAllowed>N</IpAllowed>
-                        <FieldSeparator>,</FieldSeparator>
                         <AsList>Y</AsList>
-                        <ValidationMessage>Please specify a valid list of domains</ValidationMessage>
+                        <ValidationMessage>Please specify a valid list of domains.</ValidationMessage>
                     </domain_search>
+                    <v6_dnr type="TextField">
+                        <Mask>/^([^\n"])*$/u</Mask>
+                    </v6_dnr>
                 </option_data>
                 <pools type=".\KeaPoolsField">
                 </pools>
@@ -75,7 +117,7 @@
                             <display>subnet</display>
                         </subnets>
                     </Model>
-                    <ValidationMessage>Related subnet not found</ValidationMessage>
+                    <ValidationMessage>Related subnet not found.</ValidationMessage>
                     <Constraints>
                         <check001>
                             <reference>duid.check001</reference>
@@ -88,7 +130,7 @@
                     <AddressFamily>ipv6</AddressFamily>
                     <Constraints>
                         <check001>
-                            <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                            <ValidationMessage>Duplicate entry exists.</ValidationMessage>
                             <type>UniqueConstraint</type>
                         </check001>
                     </Constraints>
@@ -99,7 +141,7 @@
                     <ValidationMessage>Value must be a colon-separated hexadecimal sequence (e.g., 01:02:f3).</ValidationMessage>
                     <Constraints>
                         <check001>
-                            <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                            <ValidationMessage>Duplicate entry exists.</ValidationMessage>
                             <type>UniqueConstraint</type>
                             <addFields>
                                 <field1>subnet</field1>
@@ -112,9 +154,8 @@
                 </hostname>
                 <domain_search type="HostnameField">
                     <IpAllowed>N</IpAllowed>
-                    <FieldSeparator>,</FieldSeparator>
                     <AsList>Y</AsList>
-                    <ValidationMessage>Please specify a valid list of domains</ValidationMessage>
+                    <ValidationMessage>Please specify a valid list of domains.</ValidationMessage>
                 </domain_search>
                 <description type="DescriptionField"/>
             </reservation>
@@ -129,7 +170,7 @@
                             <display>subnet</display>
                         </subnets>
                     </Model>
-                    <ValidationMessage>Related subnet not found</ValidationMessage>
+                    <ValidationMessage>Related subnet not found.</ValidationMessage>
                     <Required>Y</Required>
                 </subnet>
                 <prefix type="NetworkField">
@@ -156,7 +197,7 @@
                     <Required>Y</Required>
                     <Constraints>
                         <check001>
-                            <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                            <ValidationMessage>Duplicate entry exists.</ValidationMessage>
                             <type>UniqueConstraint</type>
                         </check001>
                     </Constraints>
@@ -173,7 +214,7 @@
                     <Required>Y</Required>
                     <Constraints>
                         <check001>
-                            <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                            <ValidationMessage>Duplicate entry exists.</ValidationMessage>
                             <type>UniqueConstraint</type>
                         </check001>
                     </Constraints>

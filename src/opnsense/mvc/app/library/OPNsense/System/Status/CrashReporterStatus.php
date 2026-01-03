@@ -44,7 +44,7 @@ class CrashReporterStatus extends AbstractStatus
     public function collectStatus()
     {
         $src_logs = array_merge(glob('/var/crash/textdump*'), glob('/var/crash/vmcore*'));
-        $php_log = '/tmp/PHP_errors.log';
+        $php_log = '/var/lib/php/tmp/PHP_errors.log';
 
         $src_errors = count($src_logs) > 0;
         if ($src_errors) {
@@ -82,6 +82,6 @@ class CrashReporterStatus extends AbstractStatus
         foreach ($files as $file) {
             @unlink($file);
         }
-        @unlink('/tmp/PHP_errors.log');
+        @unlink('/var/lib/php/tmp/PHP_errors.log');
     }
 }

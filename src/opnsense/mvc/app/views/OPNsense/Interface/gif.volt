@@ -27,11 +27,11 @@
 <script>
     $( document ).ready(function() {
         $("#{{formGridGif['table_id']}}").UIBootgrid(
-            {   search:'/api/interfaces/gif_settings/searchItem/',
-                get:'/api/interfaces/gif_settings/getItem/',
-                set:'/api/interfaces/gif_settings/setItem/',
-                add:'/api/interfaces/gif_settings/addItem/',
-                del:'/api/interfaces/gif_settings/delItem/'
+            {   search:'/api/interfaces/gif_settings/search_item/',
+                get:'/api/interfaces/gif_settings/get_item/',
+                set:'/api/interfaces/gif_settings/set_item/',
+                add:'/api/interfaces/gif_settings/add_item/',
+                del:'/api/interfaces/gif_settings/del_item/'
             }
         );
         $("#reconfigureAct").SimpleActionButton();

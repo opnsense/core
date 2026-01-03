@@ -78,6 +78,19 @@ class Alias extends BaseModel
                         $messages->appendMessage(new Message(gettext('Illegal characters in token'), $ref . '.authtype'));
                     }
                     break;
+                case 'Header':
+                    if (empty($username) || empty($password)) {
+                        $messages->appendMessage(new Message(gettext('Please provide a header key and value when Header auth is selected'), $ref . '.authtype'));
+                    } elseif (strlen($username) > 255) {
+                        $messages->appendMessage(new Message(gettext('Invalid key length'), $ref . '.authtype'));
+                    } elseif (strlen($password) > 512) {
+                        $messages->appendMessage(new Message(gettext('Invalid value length'), $ref . '.authtype'));
+                    } elseif (!preg_match('/^[A-Za-z0-9-_.]+$/', $username)) {
+                        $messages->appendMessage(new Message(gettext('Illegal characters in key'), $ref . '.authtype'));
+                    } elseif (!preg_match('/^[A-Za-z0-9-_.]+$/', $password)) {
+                        $messages->appendMessage(new Message(gettext('Illegal characters in value'), $ref . '.authtype'));
+                    }
+                    break;
             }
         }
 
@@ -210,7 +223,7 @@ class Alias extends BaseModel
         }
         // find all used in this model (alias nesting)
         foreach ($this->aliases->alias->iterateItems() as $alias) {
-            if (!in_array($alias->type, array('geoip', 'urltable'))) {
+            if (!$alias->type->isEqual('geoip')) {
                 $sepchar = $alias->content->getSeparatorChar();
                 $aliases = explode($sepchar, (string)$alias->content);
                 if (in_array($oldname, $aliases)) {

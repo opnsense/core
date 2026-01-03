@@ -78,8 +78,10 @@ function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details
     foreach (empty($proto) ? [4,6] : [$proto] as $proto) {
         if ($proto == 6) {
             $keamdl = new \OPNsense\Kea\KeaDhcpv6();
+            $ipaddr = 'ipaddrv6';
         } else {
             $keamdl = new \OPNsense\Kea\KeaDhcpv4();
+            $ipaddr = 'ipaddr';
         }
 
         if (empty((string)$keamdl->general->enabled)) {
@@ -110,7 +112,9 @@ function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details
             if ($proto == 4) {
                 $subnet_node = $keamdl->getNodeByReference("subnets.subnet4.{$reservation->subnet}");
                 if ($subnet_node) {
-                    if (!empty((string)$subnet_node->option_data->domain_name)) {
+                    if (!empty((string)$reservation->option_data->domain_name)) {
+                        $domain = (string)$reservation->option_data->domain_name;
+                    } elseif (!empty((string)$subnet_node->option_data->domain_name)) {
                         $domain = (string)$subnet_node->option_data->domain_name;
                     }
                 }
@@ -121,7 +125,7 @@ function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details
                 'domain' => $domain,
                 'hostname' => $hostname,
                 'interface' => null, /* XXX reservations are bound to "floating" subnets */
-                'ipaddr' => $ip_address,
+                $ipaddr => $ip_address,
             ];
 
             $staticmap[] = $entry;
@@ -142,6 +146,9 @@ function kea_configure_do($verbose = false)
 {
     $keaDhcpv4 = new \OPNsense\Kea\KeaDhcpv4();
     $keaDhcpv6 = new \OPNsense\Kea\KeaDhcpv6();
+
+    killbypid('/var/run/kea_prefix_watcher.pid');
+
     if ($keaDhcpv4->isEnabled() || $keaDhcpv6->isEnabled()) {
         service_log('Sync KEA DHCP config...', $verbose);
         if ($keaDhcpv4->isEnabled() && $keaDhcpv4->general->manual_config->isEmpty()) {
@@ -153,6 +160,14 @@ function kea_configure_do($verbose = false)
             $keaDhcpv6->generateConfig();
         }
         (new \OPNsense\Kea\KeaCtrlAgent())->generateConfig();
+        if ($keaDhcpv6->isEnabled()) {
+            mwexecfb(
+                '/usr/local/opnsense/scripts/kea/kea_prefix_watcher.py %s',
+                '/var/db/kea/kea-leases6.csv',
+                '/var/run/kea_prefix_watcher.pid',
+                '/var/log/kea/kea_prefix_watcher.log'
+            );
+        }
         service_log("done.\n", $verbose);
     }
 }
@@ -168,11 +183,13 @@ function kea_syslog()
 function kea_firewall($fw)
 {
     global $config;
+
     $keav4 = new \OPNsense\Kea\KeaDhcpv4();
     $keav6 = new \OPNsense\Kea\KeaDhcpv6();
+
     if ($keav4->fwrulesEnabled()) {
         // automatic (IPv4) rules enabled
-        foreach (explode(',', $keav4->general->interfaces) as $intf) {
+        foreach ($keav4->general->interfaces->getValues() as $intf) {
             $fw->registerFilterRule(
                 1,
                 [
@@ -205,7 +222,7 @@ function kea_firewall($fw)
     }
 
     if ($keav6->fwrulesEnabled()) {
-        foreach (explode(',', $keav6->general->interfaces) as $intf) {
+        foreach ($keav6->general->interfaces->getValues() as $intf) {
             $default_opts = [
                 'protocol' => 'udp',
                 'ipprotocol' => 'inet6',

@@ -3,7 +3,7 @@
         <name>Diagnostics: ARP Table</name>
         <patterns>
             <pattern>ui/diagnostics/interface/arp/*</pattern>
-            <pattern>api/diagnostics/interface/getArp*</pattern>
+            <pattern>api/diagnostics/interface/get_arp*</pattern>
             <pattern>api/diagnostics/interface/search_arp*</pattern>
         </patterns>
     </page-diagnostics-arptable>
@@ -11,7 +11,7 @@
         <name>Diagnostics: NDP Table</name>
         <patterns>
             <pattern>ui/diagnostics/interface/ndp/*</pattern>
-            <pattern>api/diagnostics/interface/getNdp*</pattern>
+            <pattern>api/diagnostics/interface/get_ndp*</pattern>
             <pattern>api/diagnostics/interface/search_ndp*</pattern>
         </patterns>
     </page-diagnostics-ndptable>
@@ -19,16 +19,16 @@
         <name>Diagnostics: Netstat</name>
         <patterns>
             <pattern>ui/diagnostics/interface/netstat/*</pattern>
-            <pattern>api/diagnostics/interface/getInterfaceStatistics*</pattern>
-            <pattern>api/diagnostics/interface/getProtocolStatistics*</pattern>
-            <pattern>api/diagnostics/interface/getSocketStatistics*</pattern>
+            <pattern>api/diagnostics/interface/get_interface_statistics*</pattern>
+            <pattern>api/diagnostics/interface/get_protocol_statistics*</pattern>
+            <pattern>api/diagnostics/interface/get_socket_statistics*</pattern>
         </patterns>
     </page-diagnostics-netstat>
     <page-diagnostics-routingtables>
         <name>Diagnostics: Routing tables</name>
         <patterns>
             <pattern>ui/diagnostics/interface/routes/*</pattern>
-            <pattern>api/diagnostics/interface/getRoutes*</pattern>
+            <pattern>api/diagnostics/interface/get_routes*</pattern>
         </patterns>
     </page-diagnostics-routingtables>
     <page-diagnostics-system-activity>

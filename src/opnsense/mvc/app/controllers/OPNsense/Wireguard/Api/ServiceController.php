@@ -69,7 +69,7 @@ class ServiceController extends ApiMutableServiceControllerBase
      */
     public function showAction()
     {
-        $payload = json_decode((new Backend())->configdRun("wireguard show") ?? '', true);
+        $payload = json_decode((new Backend())->configdRun('wireguard show'), true);
         $records = !empty($payload) && !empty($payload['records']) ? $payload['records'] : [];
         $key_descriptions = []; /* descriptions per interface + pub-key */
         $ifnames = []; /* interface / instance names */

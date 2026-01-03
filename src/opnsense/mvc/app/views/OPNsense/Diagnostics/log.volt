@@ -48,13 +48,11 @@
       switch_mode(s_filter_val);
 
       let grid_log = $("#grid-log").UIBootgrid({
-          datakey: 'rnum',
           options:{
               initialSearchPhrase: getUrlHash('search'),
               sorting:false,
               rowSelect: false,
               selection: false,
-              rowCount:[20,50,100,200,500,1000,5000],
               virtualDOM: true,
               labels: {
                   infos: "{{ lang._('Showing %s to %s') | format('{{ctx.start}}','{{ctx.end}}') }}"
@@ -154,12 +152,9 @@
 
       updateServiceControlUI('{{service}}');
 
-      // move filter into action header
-      $("#filter_container").detach().prependTo('#grid-log-header > .row > .actionBar > .actions');
-      $(".filter_act").tooltip();
-
-      $("#export-wrapper").detach().appendTo('#grid-log-header > .row > .actionBar > .btn-group');
-      $("#exportbtn").tooltip();
+      // Move filters directly into the actionBar instead of nested groups for better flex behavior
+      $("#filter_container").detach().insertAfter('#grid-log-header .search');
+      $("#export-wrapper").detach().appendTo('#grid-log-header .actionBar');
 
       function switch_mode(value) {
           let select = $("#severity_filter");
@@ -245,7 +240,7 @@
                         <th data-column-id="process_name" data-width="2em" data-type="string">{{ lang._('Process') }}</th>
                         <th data-column-id="pid" data-width="2em" data-type="numeric" data-visible="false">{{ lang._('PID') }}</th>
                         <th data-column-id="line" data-type="string">{{ lang._('Line') }}</th>
-                        <th data-column-id="rnum" data-type="numeric" data-formatter="page"  data-width="2em"></th>
+                        <th data-column-id="rnum" data-type="numeric" data-formatter="page" data-width="2em" data-identifier="true"></th>
                     </tr>
                     </thead>
                     <tbody>

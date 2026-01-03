@@ -33,10 +33,11 @@ require_once('script/load_phalcon.php');
 use OPNsense\Core\Config;
 
 $config = Config::getInstance()->object();
+$url_sub = '';
 
 /* calculate the effective ABI */
-$args = [ exec_safe('-A %s', shell_safe('opnsense-version -x')) ];
-$url_sub = '';
+$frmt = ['/usr/local/sbin/opnsense-update -sd -A %s'];
+$args = [shell_safe('opnsense-version -x')];
 
 if (!empty($config->system->firmware->subscription)) {
     /*
@@ -50,12 +51,14 @@ if (!empty($config->system->firmware->subscription)) {
 }
 
 if (!empty($config->system->firmware->mirror)) {
-    $args[] = exec_safe('-m %s', $config->system->firmware->mirror . $url_sub);
+    $frmt[] = '-m %s';
+    $args[] = $config->system->firmware->mirror . $url_sub;
 }
 
 if (!empty($config->system->firmware->flavour)) {
-    $args[] = exec_safe('-n %s', (string)$config->system->firmware->flavour);
+    $frmt[] = '-n %s';
+    $args[] = (string)$config->system->firmware->flavour;
 }
 
 /* rewrite the config via the defaults and possible arguments */
-shell_safe('/usr/local/sbin/opnsense-update -sd ' . join(' ', $args));
+shell_safe($frmt, $args);

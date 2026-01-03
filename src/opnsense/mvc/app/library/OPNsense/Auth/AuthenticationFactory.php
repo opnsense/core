@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2019 Deciso B.V.
+ * Copyright (C) 2015-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,44 +47,73 @@ class AuthenticationFactory
      */
     private function listConnectors()
     {
-        $connectors = array();
+        $connectors = [];
+        $interface = 'OPNsense\\Auth\\IAuthConnector';
         foreach (glob(__DIR__ . "/*.php") as $filename) {
-            $pathParts = explode('/', $filename);
-            $vendor = $pathParts[count($pathParts) - 3];
-            $module = $pathParts[count($pathParts) - 2];
-            $classname = explode('.php', $pathParts[count($pathParts) - 1])[0];
-            $reflClass = new \ReflectionClass("{$vendor}\\{$module}\\{$classname}");
-            if ($reflClass->implementsInterface('OPNsense\\Auth\\IAuthConnector')) {
-                if ($reflClass->hasMethod('getType')) {
-                    $connectorType = $reflClass->getMethod('getType')->invoke(null);
-                    $connector = array();
-                    $connector['class'] = "{$vendor}\\{$module}\\{$classname}";
-                    $connector['classHandle'] = $reflClass;
-                    $connector['type'] = $connectorType;
-                    $connectors[$connectorType] = $connector;
-                }
+            $classname = 'OPNsense\\Auth\\' . explode('.php', basename($filename))[0];
+            $reflClass = new \ReflectionClass($classname);
+            if (!$reflClass->isInterface() && $reflClass->implementsInterface($interface)) {
+                $connectorType = $reflClass->getMethod('getType')->invoke(null);
+                $connectors[$connectorType] = [
+                    'class' => $classname,
+                    'classHandle' => $reflClass,
+                    'type' => $connectorType
+                ];
             }
         }
         return $connectors;
     }
 
     /**
+     * @param string $service filter on service when offered
+     * @return array list of SSO providers
+     */
+    public function listSSOproviders(string $service = ''): array
+    {
+        $result = [];
+        $interface = 'OPNsense\Auth\SSOProviders\\ISSOContainer';
+        foreach (glob(__DIR__ . "/SSOProviders/*.php") as $filename) {
+            $classname = 'OPNsense\\Auth\\SSOProviders\\' . explode('.php', basename($filename))[0];
+            $reflClass = new \ReflectionClass($classname);
+            if (!$reflClass->isInterface() && $reflClass->implementsInterface($interface)) {
+                foreach (($reflClass->newInstance())->listProviders() as $provider) {
+                    if (empty($service) || $provider->service == $service) {
+                        $result[] = $provider;
+                    }
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
      * request list of configured servers, the factory needs to be aware of its options and settings to
      * be able to instantiate useful connectors.
+     * @param string $service name of the service we request our authenticators for
      * @return array list of configured servers
      */
-    public function listServers()
+    public function listServers(string $service = '')
     {
-        $servers = array();
+        $servers = [];
         $servers['Local Database'] = array("name" => "Local Database", "type" => "local");
         $configObj = Config::getInstance()->object();
         foreach ($configObj->system->children() as $key => $value) {
             if ($key == 'authserver' && !empty($value->type) && !empty($value->name)) {
-                $authServerSettings = array();
+                $authServerSettings = [];
                 foreach ($value as $itemKey => $itemValue) {
                     $authServerSettings[$itemKey] = (string)$itemValue;
                 }
                 $servers[$authServerSettings['name']] = $authServerSettings;
+            }
+        }
+
+        if (!empty($service)) {
+            /**
+             * Single sign on providers are bound to their service, which is different than our usual
+             * user/pass authentication flow in which case the authenticate() method passes the requested service
+             */
+            foreach ($this->listSSOproviders($service) as $provider) {
+                $servers[$provider->id] = $provider->asArray();
             }
         }
 
@@ -98,8 +127,8 @@ class AuthenticationFactory
      */
     public function get($authserver)
     {
-        $servers = $this->listServers();
-        $servers['Local API'] = array("name" => "Local API Database", "type" => "api");
+        $servers = $this->listServers(); /* only servers, no SSO providers */
+        $servers['Local API'] = ["name" => "Local API Database", "type" => "api"];
         // create a new auth connector
         if (isset($servers[$authserver]['type'])) {
             $connectors = $this->listConnectors();
@@ -123,7 +152,7 @@ class AuthenticationFactory
      */
     public function getService($service_name)
     {
-        $aliases = array();
+        $aliases = [];
         // cleanse service name
         $srv_name = strtolower(str_replace(array('-', '_'), '', $service_name));
         foreach (glob(__DIR__ . "/Services/*.php") as $filename) {
@@ -215,7 +244,7 @@ class AuthenticationFactory
      */
     public function listConfigOptions()
     {
-        $result = array();
+        $result = [];
         foreach ($this->listConnectors() as $connector) {
             if ($connector['classHandle']->hasMethod('getDescription')) {
                 $obj = $connector['classHandle']->newInstance();
@@ -224,7 +253,7 @@ class AuthenticationFactory
                 if ($connector['classHandle']->hasMethod('getConfigurationOptions')) {
                     $authItem['additionalFields'] = $obj->getConfigurationOptions();
                 } else {
-                    $authItem['additionalFields'] = array();
+                    $authItem['additionalFields'] = [];
                 }
                 $result[$obj->getType()] = $authItem;
             }

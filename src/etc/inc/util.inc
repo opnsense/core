@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2023 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2025 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
@@ -30,6 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+require_once 'app/library/OPNsense/Core/Shell.php';
 require_once 'IPv6.inc';
 
 function killbyname($procname, $sig = 'TERM', $waitforit = true)
@@ -61,7 +62,7 @@ function _killbypid($pid, $sig, $waitforit, $caller)
         return;
     }
 
-    while (mwexecf('/bin/kill -0 %s', $pid, true) == 0) {
+    while (mwexecfm('/bin/kill -0 %s', $pid) == 0) {
         usleep(200 * 1000);
     }
 }
@@ -69,7 +70,7 @@ function _killbypid($pid, $sig, $waitforit, $caller)
 function isvalidpid($pidfile)
 {
     if (file_exists($pidfile)) {
-        return mwexecf('/bin/pgrep -nF %s', $pidfile, true) == 0;
+        return mwexecfm('/bin/pgrep -nF %s', $pidfile) == 0;
     }
 
     return false;
@@ -102,9 +103,7 @@ function waitfordad($grace_period = 1)
 
 function is_process_running($process)
 {
-    exec('/bin/pgrep -anx ' . escapeshellarg($process), $output, $retval);
-
-    return (intval($retval) == 0);
+    return !mwexecfm('/bin/pgrep -anx %s', $process);
 }
 
 function service_by_filter($filter = [])
@@ -229,7 +228,7 @@ function service_control_start($name, $extras)
         }
     } elseif (isset($service['mwexec']['start'])) {
         foreach ($service['mwexec']['start'] as $cmd) {
-            mwexec($cmd);
+            mwexecf($cmd);
         }
     } else {
         return sprintf(gettext("Could not start service `%s'"), htmlspecialchars(service_name($service)));
@@ -255,7 +254,7 @@ function service_control_stop($name, $extras)
         }
     } elseif (isset($service['mwexec']['stop'])) {
         foreach ($service['mwexec']['stop'] as $cmd) {
-            mwexec($cmd);
+            mwexecf($cmd);
         }
     } elseif (isset($service['pidfile'])) {
         killbypid($service['pidfile']);
@@ -290,7 +289,7 @@ function service_control_restart($name, $extras)
         }
     } elseif (isset($service['mwexec']['restart'])) {
         foreach ($service['mwexec']['restart'] as $cmd) {
-            mwexec($cmd);
+            mwexecf($cmd);
         }
     } else {
         return sprintf(gettext("Could not restart service `%s'"), htmlspecialchars(service_name($service)));
@@ -638,16 +637,9 @@ function is_uniquelocal($ipaddr)
 /* returns true if $ipaddr is a valid dotted IPv4 address or an alias thereof */
 function is_ipaddroralias($ipaddr)
 {
-    if (is_alias($ipaddr)) {
-        foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias) {
-            if ($alias['name'] == $ipaddr && !preg_match("/port/i", $alias['type'])) {
-                return true;
-            }
-        }
-
-        return false;
+    if (\OPNsense\Firewall\Util::isAlias($ipaddr, true)) {
+        return true;
     }
-
     return is_ipaddr($ipaddr);
 }
 
@@ -728,15 +720,9 @@ function is_portrange($portrange)
 /* returns true if $port is a valid port number or an alias thereof */
 function is_portoralias($port)
 {
-    if (is_alias($port)) {
-        foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias) {
-            if ($alias['name'] == $port && preg_match("/port/i", $alias['type'])) {
-                return true;
-            }
-        }
-        return false;
+    if (\OPNsense\Firewall\Util::isPortAlias($port)) {
+        return true;
     }
-
     return is_port($port);
 }
 
@@ -798,6 +784,47 @@ function get_primary_interface_from_list($iflist = null)
     }
 
     return $ret;
+}
+
+/* in practice "real interface" is called a "device" nowadays */
+function get_real_interface($interface = 'wan', $family = 'all')
+{
+    global $config;
+
+    if (empty($config['interfaces'][$interface])) {
+        /* assume the interface exists to force an error elsewhere */
+        return $family != 'both' ? $interface : [$interface];
+    }
+
+    $devices = []; /* store both: 0 => IPv4, 1 = > IPv6 (if different) */
+
+    $devices[0] = $config['interfaces'][$interface]['if'];
+
+    switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
+        case '6rd':
+        case '6to4':
+            $devices[1] = "{$interface}_stf";
+            break;
+        default:
+            break;
+    }
+
+    switch ($family) {
+        case 'inet6':
+            /* select special IPv6 interface if it exists */
+            $devices = $devices[1] ?? $devices[0];
+            break;
+        case 'both':
+            /* pass array as is */
+            break;
+        case 'all':
+            /* FALLTHROUGH: XXX historic weirdness */
+        default:
+            $devices = $devices[0];
+            break;
+    }
+
+    return $devices;
 }
 
 /*
@@ -867,27 +894,40 @@ function log_msg($msg, $prio = LOG_NOTICE)
     syslog($prio, "$page: $msg");
 }
 
+function file_safe($file, $text_or_source = '', $mode = 0644)
+{
+    $temp = tempnam('/tmp', str_replace('/', '_', $file) . '-');
+
+    if (file_exists($text_or_source)) {
+        copy($text_or_source, $temp);
+    } elseif (strlen($text_or_source)) {
+        file_put_contents($temp, $text_or_source);
+    }
+
+    chmod($temp, $mode);
+    rename($temp, $file);
+}
+
 function url_safe($format, $args = [])
 {
     if (!is_array($args)) {
-        /* just in case there's only one argument */
         $args = [$args];
     }
 
     foreach ($args as $id => $arg) {
         /* arguments could be empty, so force default */
-        $args[$id] = !empty($arg) ? urlencode($arg) : '';
+        $args[$id] = urlencode($arg ?? '');
     }
 
     return vsprintf($format, $args);
 }
 
-function mwexec($command, $mute = false)
+function mwexec($command, $mute = false) /* XXX deprecated */
 {
     $oarr = [];
     $retval = 0;
 
-    $garbage = exec("{$command} 2>&1", $oarr, $retval);
+    $garbage = exec("{$command} 2>&1", $oarr, $retval); /* XXX to be removed */
     unset($garbage);
 
     if ($retval != 0 && $mute !== true) {
@@ -901,46 +941,65 @@ function mwexec($command, $mute = false)
     return $retval;
 }
 
-function mwexec_bg($command, $mute = false)
+function mwexec_bg($command, $mute = false) /* XXX deprecated */
 {
     mwexec("/usr/sbin/daemon -f {$command}", $mute);
 }
 
+/* safe shell command formatter */
 function exec_safe($format, $args = [])
 {
+    return OPNsense\Core\Shell::exec_safe($format, $args);
+}
+
+/* pass commands through to stdout */
+function pass_safe($format, $args = [], &$result_code = null)
+{
+    return OPNsense\Core\Shell::pass_safe($format, $args, $result_code);
+}
+
+/* run commands and grab their output */
+function shell_safe($format, $args = [], $explode = false, $separator = "\n")
+{
+    return OPNsense\Core\Shell::shell_safe($format, $args, $explode, $separator);
+}
+
+/* run commands safely with failure reports by default */
+function mwexecf($format, $args = [], $mute = false)
+{
+    return OPNsense\Core\Shell::run_safe($format, $args, $mute);
+}
+
+/* run commands safely without failure reports */
+function mwexecfm($format, $args = [])
+{
+    return OPNsense\Core\Shell::run_safe($format, $args, true);
+}
+
+/* run commands safely in the background */
+function mwexecfb($format, $args = [], ?string $pidfile = null, ?string $logfile = null)
+{
+    if (!is_array($format)) {
+        $format = [$format];
+    }
+
     if (!is_array($args)) {
-        /* just in case there's only one argument */
         $args = [$args];
     }
 
-    foreach ($args as $id => $arg) {
-        $args[$id] = escapeshellarg($arg ?? '');
+    if (!is_null($pidfile)) {
+        array_unshift($format, '-p %s');
+        array_unshift($args, $pidfile);
     }
 
-    return vsprintf($format, $args);
-}
-
-function mwexecf($format, $args = [], $mute = false)
-{
-    return mwexec(exec_safe($format, $args), $mute);
-}
-
-function mwexecf_bg($format, $args = [], $mute = false)
-{
-    mwexec_bg(exec_safe($format, $args), $mute);
-}
-
-function shell_safe($format, $args = [])
-{
-    $ret = shell_exec(exec_safe($format, $args));
-
-    /* shell_exec() has weird semantics */
-    if ($ret === false || $ret === null) {
-        $ret = '';
+    if (!is_null($logfile)) {
+        array_unshift($format, '-o %s');
+        array_unshift($args, $logfile);
     }
 
-    /* always trim() result on a string */
-    return trim($ret);
+    array_unshift($format, '/usr/sbin/daemon -f');
+
+    return OPNsense\Core\Shell::run_safe($format, $args);
 }
 
 /* check if an alias exists */
@@ -1001,19 +1060,22 @@ function get_sysctl($names)
         return [];
     }
 
-    if (is_array($names)) {
-        $name_list = [];
-        foreach ($names as $name) {
-            $name_list[] = escapeshellarg($name);
-        }
-    } else {
-        $name_list = [escapeshellarg($names)];
+    if (!is_array($names)) {
+        $names = [$names];
     }
 
-    exec("/sbin/sysctl -i " . implode(" ", $name_list), $output);
+    $frmt = ['/sbin/sysctl -i'];
+    $args = [];
+
+    foreach ($names as $name) {
+        $args[] = $name;
+        $frmt[] = '%s';
+    }
+
     $values = [];
-    foreach ($output as $line) {
-        $line = explode(": ", $line, 2);
+
+    foreach (shell_safe($frmt, $args, true) as $line) {
+        $line = explode(': ', $line, 2);
         if (count($line) == 2) {
             $values[$line[0]] = $line[1];
         }
@@ -1057,24 +1119,24 @@ function set_sysctl($values, $filter = true)
     $sysctls = null;
 
     if ($filter) {
-        exec('/sbin/sysctl -WaN', $list, $success);
-        if ($success == 0) {
-            $sysctls = $list;
-        }
+        $sysctls = shell_safe('/sbin/sysctl -WaN', [], true);
     }
 
-    $value_list = [];
+    $frmt = ['/sbin/sysctl'];
+    $args = [];
+
     foreach ($values as $key => $value) {
         if ($sysctls !== null && !in_array($key, $sysctls)) {
             continue;
         }
-        $value_list[] = escapeshellarg($key) . '=' . escapeshellarg($value);
+
+        $frmt[] = '%s=%s';
+        $args[] = $key;
+        $args[] = $value;
     }
 
-    if (count($value_list)) {
-        exec('/sbin/sysctl ' . implode(' ', $value_list), $output);
-
-        foreach ($output as $line) {
+    if (count($args)) {
+        foreach (shell_safe($frmt, $args, true) as $line) {
             $line = explode(': ', $line, 2);
             if (count($line) == 2) {
                 $ret[$line[0]] = true;

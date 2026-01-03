@@ -109,6 +109,9 @@ class Alias(object):
         for item in self._items:
             if item not in self._known_aliases or self.get_name() == item:
                 yield item
+            elif not self.supports_nesting():
+                # yield items unconditionally when nesting is not supported
+                yield item
 
     def uniqueid(self):
         """ generate an identification hash for this alias
@@ -150,7 +153,7 @@ class Alias(object):
             it was an alias from us if such a file exists.
             :return: boolean
         """
-        return self.get_parser() is not None and os.path.isfile(self._filename_alias_hash)
+        return self.has_parser() is not None and os.path.isfile(self._filename_alias_hash)
 
     def cached(self):
         """ load cached contents in case we don't want to resolve the alias
@@ -164,26 +167,26 @@ class Alias(object):
             # in case the cache doesn't exist at all. Although this costs time, it's probably the safest option here.
             return self.resolve()
 
-        return list(self._resolve_content)
+        return self._resolve_content
 
     @staticmethod
     def read_alias_file(filename):
         """
         :param filename: filename to read (when it exists)
-        :return: string, empty when not found or not parseable
+        :return: string|bool, False when not found or not parseable
         """
         if os.path.isfile(filename):
             try:
                 return open(filename, 'r').read()
             except UnicodeDecodeError:
-                return ''
-        return ''
+                return False
+        return False
 
 
     def resolve(self, force=False):
         """ resolve (fetch) alias content, without dependencies.
             :force: force load
-            :return: string
+            :return: set
         """
         if not self._resolve_content:
             if self.expired() or self.changed() or force:
@@ -199,7 +202,7 @@ class Alias(object):
                         self._resolve_content = self._resolve_content.union(address_parser.resolve_dns())
                 except (IOError, DNSException) as e:
                     syslog.syslog(syslog.LOG_ERR, 'alias resolve error %s (%s)' % (self._name, e))
-                    self._resolve_content = set(undo_content.split("\n"))
+                    self._resolve_content = set(undo_content.split("\n")) if undo_content is not False else set()
 
                 resolve_content_str = '\n'.join(sorted(self._resolve_content))
                 if undo_content != resolve_content_str:
@@ -208,7 +211,7 @@ class Alias(object):
                     with open(self._filename_alias_content, 'w') as f_out:
                         f_out.write(resolve_content_str)
 
-                if self.get_parser():
+                if self.has_parser():
                     # flush md5 hash to disk (when unchanged)
                     new_uniqueid = self.uniqueid()
                     old_uniqueid = None
@@ -223,7 +226,7 @@ class Alias(object):
                 self._resolve_content = set(open(self._filename_alias_content).read().split())
 
         # return the addresses and networks of this alias
-        return list(self._resolve_content)
+        return self._resolve_content
 
     def get_parser(self):
         """ fetch address parser to use, None if alias type is not handled here or only during pre processing
@@ -246,7 +249,14 @@ class Alias(object):
         else:
             return None
 
-    def pre_process(self):
+    def has_parser(self):
+        # should match the list above (get_parser may thrown an IOError at setup)
+        return self._type in [
+            'host', 'network', 'networkgroup', 'url', 'urltable', 'urljson',
+            'geoip', 'dynipv6host', 'mac', 'asn', 'authgroup'
+        ]
+
+    def pre_process(self, skip_result=False):
         """ alias type pre processors
             :return: set initial alias content
         """
@@ -254,7 +264,7 @@ class Alias(object):
         if self.get_type() == 'interface_net':
             PF.flush_network(self.get_name(), self._properties['interface'])
         # collect current table contents for selected types
-        if self.get_type() in ['interface_net', 'external']:
+        if self.get_type() in ['interface_net', 'external'] and not skip_result:
             result = result.union(set(PF.list_table(self.get_name())))
 
         return result
@@ -271,11 +281,30 @@ class Alias(object):
         """
         return self._name
 
+    def get_filename(self):
+        """ return target filename for this alias content
+            :return: string
+        """
+        return '/var/db/aliastables/%s.txt' % self._name
+
+    def get_file_size(self):
+        """ return filesize in bytes of the full alias
+        """
+        if os.path.isfile(self.get_filename()):
+            return os.stat(self.get_filename()).st_size
+        return 0
+
+    def supports_nesting(self):
+        """ return if this alias supports nesting
+        """
+        return self.get_type() not in ['geoip']
+
     def get_deps(self):
         """ fetch alias dependencies
-            :param in_data: raw input data (ruleset)
-            :return: new ruleset
         """
+        if not self.supports_nesting():
+            # when nesting is not supported
+            return
         for item in self._items:
             if item in self._known_aliases:
                 yield item

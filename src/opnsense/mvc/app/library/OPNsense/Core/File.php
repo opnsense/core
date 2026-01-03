@@ -36,12 +36,25 @@ class File
      * @param mixed $data The data to write.
      * @param int $permissions permissions to set, see chmod for usage
      * @param int $flags flags to pass to file_put_contents()
+     * @param string $chown username to chown to
      * @return int|false
      */
-    public static function file_put_contents(string $filename, mixed $data, int $permissions = 0640, int $flags = 0)
-    {
+    public static function file_put_contents(
+        string $filename,
+        mixed $data,
+        int $permissions = 0640,
+        int $flags = 0,
+        string $chown = null
+    ) {
         @touch($filename);
         @chmod($filename, $permissions);
+        if (!empty($chown)) {
+            $parts = explode(':', $chown);
+            @chown($filename, $parts[0]);
+            if (!empty($parts[1])) {
+                @chgrp($filename, $parts[1]);
+            }
+        }
         return file_put_contents($filename, $data, $flags);
     }
 }

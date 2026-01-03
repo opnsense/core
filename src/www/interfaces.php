@@ -140,7 +140,7 @@ function parse_xml_regdomain(&$rdattributes, $rdfile = '', $rootobj = 'regulator
     $parsed_xml = array();
 
     if (file_exists('/tmp/regdomain.cache')) {
-        $parsed_xml = unserialize(file_get_contents('/tmp/regdomain.cache'));
+        $parsed_xml = unserialize(file_get_contents('/tmp/regdomain.cache'), ['allowed_classes' => false]);
         if (!empty($parsed_xml)) {
             $rdmain = $parsed_xml['main'];
             $rdattributes = $parsed_xml['attributes'];
@@ -165,16 +165,16 @@ function parse_xml_regdomain(&$rdattributes, $rdfile = '', $rootobj = 'regulator
             unset($rdattributes['shared-frequency-bands']);
         }
 
-        $parsed_xml = array('main' => $rdmain, 'attributes' => $rdattributes);
-        $rdcache = fopen('/tmp/regdomain.cache', 'w');
-        fwrite($rdcache, serialize($parsed_xml));
-        fclose($rdcache);
+        file_safe('/tmp/regdomain.cache', serialize([
+            'main' => $rdmain, 'attributes' => $rdattributes,
+        ]));
     }
 
     return $rdmain;
 }
 
-function parse_xml_config_raw_attr($cffile, $rootobj, &$parsed_attributes, $isstring = "false") {
+function parse_xml_config_raw_attr($cffile, $rootobj, &$parsed_attributes, $isstring = 'false')
+{
     global $depth, $curpath, $parsedcfg, $havedata, $parsedattrs;
     $parsedcfg = array();
     $curpath = array();
@@ -245,9 +245,7 @@ function test_wireless_capability($if, $cap)
         return false;
     }
 
-    exec(sprintf('/sbin/ifconfig %s list caps', escapeshellarg($if)), $lines);
-
-    foreach ($lines as $line) {
+    foreach (shell_safe('/sbin/ifconfig %s list caps', $if, true) as $line) {
         if (preg_match("/^drivercaps=.*<.*{$caps[$cap]}.*>$/", $line)) {
             return true;
         }
@@ -261,9 +259,9 @@ function get_wireless_modes($interface)
 {
     $wireless_modes = [];
 
-    $cloned_interface = get_real_interface($interface);
-    if ($cloned_interface) {
-        $chan_list = shell_safe('/sbin/ifconfig -v %s list chan', $cloned_interface);
+    $device = get_real_interface($interface);
+    if ($device) {
+        $chan_list = shell_safe('/sbin/ifconfig -v %s list chan', $device);
         $matches = [];
 
         preg_match_all('/Channel\s+([^\s]+)\s+:\s+[^\s]+\s+[^\s]+\s+([^\s]+(?:\sht(?:\/[^\s]+)?)?)/', $chan_list, $matches);
@@ -304,9 +302,9 @@ function get_wireless_channel_info($interface)
 {
     $wireless_channels = [];
 
-    $cloned_interface = get_real_interface($interface);
-    if ($cloned_interface) {
-        $chan_list = shell_safe('/sbin/ifconfig %s list txpower', $cloned_interface);
+    $device = get_real_interface($interface);
+    if ($device) {
+        $chan_list = shell_safe('/sbin/ifconfig %s list txpower', $device);
         $matches = [];
 
         preg_match_all('/Channel\s+([^\s]+)\s+:\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+[^\s]+\s+([^\s]+)/', $chan_list, $matches);
@@ -554,7 +552,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $intput_errors[] = gettext("You have already applied your settings!");
         } else {
             if (file_exists('/tmp/.interfaces.apply')) {
-                $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
+                $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'), ['allowed_classes' => false]);
                 foreach ($toapplylist as $ifapply => $ifcfgo) {
                     interface_reset($ifapply, $ifcfgo, isset($ifcfgo['enable']));
                     interface_configure(false, $ifapply, true);
@@ -592,17 +590,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config("Interface {$pconfig['descr']}({$if}) is now disabled.");
         mark_subsystem_dirty('interfaces');
         if (file_exists('/tmp/.interfaces.apply')) {
-            $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
+            $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'), ['allowed_classes' => false]);
         } else {
-            $toapplylist = array();
+            $toapplylist = [];
         }
         if (empty($toapplylist[$if])) {
             // only flush if the running config is not in our list yet
             $toapplylist[$if]['ifcfg'] = $a_interfaces[$if];
-            $toapplylist[$if]['ifcfg']['realif'] = get_real_interface($if);
-            $toapplylist[$if]['ifcfg']['realifv6'] = get_real_interface($if, "inet6");
+            $toapplylist[$if]['ifcfg']['devices'] = get_real_interface($if, 'both');
             $toapplylist[$if]['ppps'] = $a_ppps;
-            file_put_contents('/tmp/.interfaces.apply', serialize($toapplylist));
+            file_safe('/tmp/.interfaces.apply', serialize($toapplylist));
         }
         if (!empty($ifgroup)) {
             header(url_safe('Location: /interfaces.php?if=%s&group=%s', array($if, $ifgroup)));
@@ -960,9 +957,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (count($input_errors) == 0) {
             $old_config = $a_interfaces[$if];
             // retrieve our interface names before anything changes
-            $old_config['realif'] = get_real_interface($if);
-            $old_config['realifv6'] = get_real_interface($if, "inet6");
-            $new_config = array();
+            $old_config['devices'] = get_real_interface($if, 'both');
+            $new_config = [];
 
             // copy physical interface data (wireless is a strange case, partly managed via interface_sync_wireless_clones)
             $new_config['if'] = $old_config['if'];
@@ -990,7 +986,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if (isset($mediaopts[0])) {
                     $new_config['media'] = $mediaopts[0];
                 }
-                if (isset($mediaopts[0])) {
+                if (isset($mediaopts[1])) {
                     $new_config ['mediaopt'] = $mediaopts[1];
                 }
             }
@@ -1048,6 +1044,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     if ($pconfig['gatewayv6'] != 'none') {
                         $new_config['gatewayv6'] = $pconfig['gatewayv6'];
                     }
+                    break;
+                case 'linklocal':
+                    $new_config['ipaddrv6'] = 'linklocal';
                     break;
                 case 'slaac':
                     $new_config['ipaddrv6'] = 'slaac';
@@ -1260,16 +1259,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // log changes for apply action
             // (it would be better to diff the physical situation with the new config for changes)
             if (file_exists('/tmp/.interfaces.apply')) {
-                $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
+                $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'), ['allowed_classes' => false]);
             } else {
-                $toapplylist = array();
+                $toapplylist = [];
             }
 
             if (empty($toapplylist[$if])) {
                 // only flush if the running config is not in our list yet
                 $toapplylist[$if]['ifcfg'] = $old_config;
                 $toapplylist[$if]['ppps'] = $a_ppps;
-                file_put_contents('/tmp/.interfaces.apply', serialize($toapplylist));
+                file_safe('/tmp/.interfaces.apply', serialize($toapplylist));
             }
 
             mark_subsystem_dirty('interfaces');
@@ -1310,6 +1309,7 @@ $types4 = $types6 = ['none' => gettext('None')];
 /* always eligible (leading) */
 $types6['staticv6'] = gettext('Static IPv6');
 $types6['dhcp6'] = gettext('DHCPv6');
+$types6['linklocal'] = gettext('Link-local');
 $types6['slaac'] = gettext('SLAAC');
 
 if (!interface_ppps_capable($a_interfaces[$if], $a_ppps)) {

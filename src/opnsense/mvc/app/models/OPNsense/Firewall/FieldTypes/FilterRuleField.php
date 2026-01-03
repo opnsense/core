@@ -93,7 +93,8 @@ class FilterRuleContainerField extends ContainerField
         $result['descr'] = (string)$this->description;
         $result['type'] = (string)$this->action;
         $result['reply-to'] = (string)$this->replyto;
-        if (strpos((string)$this->interface, ",") !== false) {
+        /* XXX this is an approximation of the complex situation and will be removed eventually */
+        if (count($this->interface->getValues()) != 1 || !$this->interfacenot->isEmpty()) {
             $result['floating'] = true;
         }
         return $result;
@@ -107,33 +108,37 @@ class FilterRuleContainerField extends ContainerField
     public function getPriority()
     {
         $configObj = Config::getInstance()->object();
-        $interface = (string)$this->interface;
-        if (strpos($interface, ",") !== false || empty($interface)) {
+        $interfaces = $this->interface->getValues();
+
+        /* XXX this is an approximation of the complex situation and will be removed eventually */
+        if (count($interfaces) != 1 || !$this->interfacenot->isEmpty()) {
             // floating (multiple interfaces involved)
             return 200000;
-        } elseif (
-            !empty($configObj->interfaces) &&
-            !empty($configObj->interfaces->$interface) &&
-            !empty($configObj->interfaces->$interface->type) &&
-            $configObj->interfaces->$interface->type == 'group'
-        ) {
+        }
+
+        // there can be only one
+        $interface = $interfaces[0];
+
+        if ($configObj?->interfaces?->$interface?->type == 'group') {
             if (static::$ifgroups === null) {
                 static::$ifgroups = [];
                 foreach ((new Group())->ifgroupentry->iterateItems() as $node) {
-                    if (!empty((string)$node->sequence)) {
-                        static::$ifgroups[(string)$node->ifname] =  (int)((string)$node->sequence);
+                    if (!$node->sequence->isEmpty()) {
+                        static::$ifgroups[$node->ifname->getValue()] = $node->sequence->asInt();
                     }
                 }
             }
+
             if (!isset(static::$ifgroups[$interface])) {
                 static::$ifgroups[$interface] = 0;
             }
+
             // group type
             return 300000 + static::$ifgroups[$interface];
-        } else {
-            // default
-            return 400000;
         }
+
+        // default
+        return 400000;
     }
 }
 
@@ -143,6 +148,8 @@ class FilterRuleContainerField extends ContainerField
  */
 class FilterRuleField extends ArrayField
 {
+    protected static $internalStaticChildren = [];
+
     /**
      * @inheritDoc
      */

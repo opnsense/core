@@ -51,8 +51,8 @@
         })
 
         $("#grid-leases").UIBootgrid({
-            search:'/api/dhcpv4/leases/searchLease/',
-            del:'/api/dhcpv4/leases/delLease/',
+            search:'/api/dhcpv4/leases/search_lease/',
+            del:'/api/dhcpv4/leases/del_lease/',
             options: {
                 virtualDOM: true,
                 selection: false,
@@ -95,11 +95,8 @@
                     "tooltipformatter": function (column, row) {
                         return '<span class="overflow">' + row[column.id] + '</span><br/>'
                     },
-                    "statusformatter": function (column, row, onRendered) {
+                    "statusformatter": function (column, row) {
                         let connected = row.status == 'online' ? 'text-success' : 'text-danger';
-                        onRendered(() => {
-                            $('[data-toggle="tooltip"]').tooltip({container: 'body', trigger: 'hover'});
-                        })
                         return '<i class="fa fa-plug ' + connected +'" title="' + row.status + '" data-toggle="tooltip"></i>'
                     },
                     "commands": function (column, row) {
@@ -132,8 +129,8 @@
             }
         });
 
-        $("#inactive-selection-wrapper").detach().prependTo('#grid-leases-header > .row > .actionBar');
-        $("#interface-selection-wrapper").detach().prependTo('#grid-leases-header > .row > .actionBar > .actions');
+        $("#inactive-selection-wrapper").detach().insertBefore('#grid-leases-header .search');
+        $("#interface-selection-wrapper").detach().insertAfter('#grid-leases-header .search');
 
         updateServiceControlUI('dhcpv4');
     });

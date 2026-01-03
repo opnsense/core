@@ -112,4 +112,20 @@ class DiagnosticsController extends ApiControllerBase
         }
         return $ret;
     }
+
+    public function testBlocklistAction()
+    {
+        if ($this->request->isPost() && $this->request->hasPost('domain')) {
+            $src = $this->request->getPost('src', null, '127.0.0.1');
+            $backend = new Backend();
+            $response = json_decode($backend->configdpRun('unbound domain test', [
+                $this->request->getPost('domain'), $src
+            ]), true);
+
+            if (!empty($response)) {
+                return $response;
+            }
+        }
+        return ["status" => "error"];
+    }
 }

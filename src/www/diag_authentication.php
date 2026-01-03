@@ -60,10 +60,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config = parse_config();
             $userindex = index_users();
             $groups = getUserGroups($authenticator->getUserName($_POST['username']));
-            $savemsg .= "<br />" . gettext("This user is a member of these groups") . ": <br />";
+            $savemsg .= "<br /><br/><strong>" . gettext("This user is a member of these groups") . ": </strong> <br />";
             foreach ($groups as $group) {
                 $savemsg .= "{$group} ";
             }
+            $savemsg .= "<br /><br/><strong>" . gettext("May access the following locations, depending on source address") . ":</strong> <br />";
+            $savemsg .= "<table style='width:700px;' class='alert-info'>";
+            $savemsg .= sprintf("<tr><td>%s</td><td>%s</td></tr>", gettext('Uri'), gettext('Networks'));
+            foreach ((new \OPNsense\Core\ACL())->userUrlMasks($_POST['username']) as $item) {
+                $savemsg .= sprintf("<tr><td>%s</td><td>%s</td></tr>", $item[0], implode(',', $item[1]));
+            }
+            $savemsg .= "</table>";
             if (!empty($authenticator->getLastAuthProperties())) {
                 $savemsg .= "<br/><br/>" . gettext("Attributes received from server") . ": <br />";
             }

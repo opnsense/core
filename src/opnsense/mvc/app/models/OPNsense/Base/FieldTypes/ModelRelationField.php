@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,8 @@
 
 namespace OPNsense\Base\FieldTypes;
 
+use ReflectionClass;
+
 /**
  * Class ModelRelationField defines a relation to another entity within the model, acts like a select item.
  * @package OPNsense\Base\FieldTypes
@@ -49,6 +51,8 @@ class ModelRelationField extends BaseListField
       */
     private $internalOptionsFromThisModel = false;
 
+    private $internalDisableCache = false;
+
     /**
      * @var string cache relations
      */
@@ -60,6 +64,37 @@ class ModelRelationField extends BaseListField
     private static $internalCacheOptionList = [];
 
     /**
+     * @var array collected options for target model
+     */
+    private static $internalCacheModelStruct = [];
+
+    /**
+     * @param string $classname model classname to resolve
+     * @param string $path reference to information to be fetched (e.g. my.data)
+     * @return array
+     */
+    public function getCachedData($classname, $path, $force = false)
+    {
+        if (!class_exists($classname)) {
+            return []; /* not found */
+        }
+        if ($this->internalDisableCache || !isset(self::$internalCacheModelStruct[$classname]) || $force) {
+            $pmodel = $this->getParentModel();
+            if ($pmodel !== null && strcasecmp(get_class($pmodel), $classname) === 0) {
+                // model options from the same model, use this model instead of creating something new
+                self::$internalCacheModelStruct[$classname] = $pmodel->getNodeContent();
+                $this->internalOptionsFromThisModel = true;
+            } else {
+                $class_info = new ReflectionClass($classname);
+                $inst =  $class_info->newInstanceWithoutConstructor();
+                self::$internalCacheModelStruct[$classname] = $inst->getCachedData();
+            }
+        }
+
+        return self::getArrayReference(self::$internalCacheModelStruct[$classname], $path);
+    }
+
+    /**
      * load model option list
      * @param boolean $force force option load if we already seen this model before
      */
@@ -68,77 +103,44 @@ class ModelRelationField extends BaseListField
         // only collect options once per source/filter combination, we use a static to save our unique option
         // combinations over the running application.
         if (!isset(self::$internalCacheOptionList[$this->internalCacheKey]) || $force) {
-            self::$internalCacheOptionList[$this->internalCacheKey] = array();
+            self::$internalCacheOptionList[$this->internalCacheKey] = [];
             foreach ($this->mdlStructure as $modelData) {
                 // only handle valid model sources
                 if (!isset($modelData['source']) || !isset($modelData['items']) || !isset($modelData['display'])) {
                     continue;
                 }
 
-                // handle optional/missing classes, i.e. from plugins
                 $className = str_replace('.', '\\', $modelData['source']);
-                if (!class_exists($className)) {
-                    continue;
-                }
-                if (
-                    $this->getParentModel() !== null &&
-                        strcasecmp(get_class($this->getParentModel()), $className) === 0
-                ) {
-                    // model options from the same model, use this model in stead of creating something new
-                    $modelObj = $this->getParentModel();
-                    $this->internalOptionsFromThisModel = true;
-                } else {
-                    if ($this->getParentModel() !== null) {
-                        $modelObj = new $className($this->getParentModel()->isLazyLoaded());
-                    } else {
-                        $modelObj = new $className();
-                    }
-                }
-
                 $groupKey = isset($modelData['group']) ? $modelData['group'] : null;
                 $displayKeys = explode(',', $modelData['display']);
                 $displayFormat = !empty($modelData['display_format']) ? $modelData['display_format'] : "%s";
-                $groups = array();
 
-                $searchItems = $modelObj->getNodeByReference($modelData['items']);
-                if (!empty($searchItems)) {
-                    foreach ($modelObj->getNodeByReference($modelData['items'])->iterateItems() as $node) {
-                        $descriptions = [];
-                        foreach ($displayKeys as $displayKey) {
-                            $descriptions[] = $node->$displayKey != null ? $node->$displayKey->getDescription() : '';
+                $searchItems = $this->getCachedData($className, $modelData['items'], $force);
+                $groups = [];
+                foreach ($searchItems as $uuid => $node) {
+                    $descriptions = [];
+                    foreach ($displayKeys as $displayKey) {
+                        $descriptions[] = $node['%' . $displayKey] ?? $node[$displayKey] ?? '';
+                    }
+                    if (isset($modelData['filters'])) {
+                        foreach ($modelData['filters'] as $filterKey => $filterValue) {
+                            $fieldData = $node[$filterKey] ?? null;
+                            if (!preg_match($filterValue, $fieldData) && $fieldData != null) {
+                                continue 2;
+                            }
                         }
-                        if (!isset($node->getAttributes()['uuid'])) {
+                    }
+                    if (!empty($groupKey)) {
+                        if (!isset($node[$groupKey]) || isset($groups[$node[$groupKey]])) {
                             continue;
                         }
-
-                        if (isset($modelData['filters'])) {
-                            foreach ($modelData['filters'] as $filterKey => $filterValue) {
-                                $fieldData = $node->$filterKey;
-                                if (!preg_match($filterValue, $fieldData) && $fieldData != null) {
-                                    continue 2;
-                                }
-                            }
-                        }
-
-                        if (!empty($groupKey)) {
-                            if ($node->$groupKey == null) {
-                                continue;
-                            }
-                            $group = (string)$node->$groupKey;
-                            if (isset($groups[$group])) {
-                                continue;
-                            }
-                            $groups[$group] = 1;
-                        }
-
-                        $uuid = $node->getAttributes()['uuid'];
-                        self::$internalCacheOptionList[$this->internalCacheKey][$uuid] = vsprintf(
-                            $displayFormat,
-                            $descriptions
-                        );
+                        $groups[$node[$groupKey]] = 1;
                     }
+                    self::$internalCacheOptionList[$this->internalCacheKey][$uuid] = vsprintf(
+                        $displayFormat,
+                        $descriptions
+                    );
                 }
-                unset($modelObj);
             }
 
             if (!$this->internalIsSorted) {
@@ -163,6 +165,18 @@ class ModelRelationField extends BaseListField
             // set internal key for this node based on sources and filter criteria
             $this->internalCacheKey = md5(serialize($mdlStructure));
         }
+    }
+
+    /**
+     * Disable caching and force a model reload, this can be useful in cases where multiple layers of generated
+     * fields stack on each other which are dependent or if the related model has dynamically generated items.
+     * (in which case the persisted_at attribute doesn't tell the full story)
+     *
+     * @param $value boolean value Y/N
+     */
+    public function setDisableCache($value)
+    {
+        $this->internalDisableCache = trim(strtoupper($value)) == "Y";
     }
 
     /**
@@ -204,26 +218,14 @@ class ModelRelationField extends BaseListField
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getDescription()
-    {
-        $tmp = [];
-        foreach (explode(',', $this->internalValue) as $key) {
-            $tmp[] = $this->internalOptionList[$key] ?? '';
-        }
-        return implode(', ', $tmp);
-    }
-
-
-    /**
      * retrieve field validators for this field type
      * @return array returns Text/regex validator
      */
     public function getValidators()
     {
         if ($this->internalValue != null) {
-            // if our options come from the same model, make sure to reload the options before validating them
+            // XXX: may be improved a bit to prevent the same object being constructed multiple times when used
+            //      in different fields (passing of $force parameter)
             $this->loadModelOptions($this->internalOptionsFromThisModel);
         }
         // Use validators from BaseListField, includes validations for multi-select, and single-select.

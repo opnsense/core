@@ -47,7 +47,7 @@ class NetworkAliasField extends BaseListField
     /**
      * @return string|null
      */
-    public function getNodeData()
+    protected function getNodeOptions()
     {
         // XXX: don't use as list, only for validation
         return (string)$this;
@@ -67,10 +67,10 @@ class NetworkAliasField extends BaseListField
     protected function actionPostLoadingEvent()
     {
         if (!isset(self::$internalStaticOptionList)) {
-            self::$internalStaticOptionList = array();
+            self::$internalStaticOptionList = [];
         }
         if (empty(self::$internalStaticOptionList)) {
-            self::$internalStaticOptionList = array();
+            self::$internalStaticOptionList = [];
             // static nets
             self::$internalStaticOptionList['any'] = gettext('any');
             self::$internalStaticOptionList['(self)'] = gettext("This Firewall");
@@ -84,24 +84,13 @@ class NetworkAliasField extends BaseListField
                 }
             }
             // aliases
-            foreach ((new Alias(true))->aliases->alias->iterateItems() as $alias) {
-                if (strpos((string)$alias->type, "port") === false) {
-                    self::$internalStaticOptionList[(string)$alias->name] = (string)$alias->name;
+            foreach (self::getArrayReference(Alias::getCachedData(), 'aliases.alias') as $uuid => $alias) {
+                if ($alias['type'] != 'port') {
+                    self::$internalStaticOptionList[$alias['name']] = $alias['name'];
                 }
             }
         }
         $this->internalOptionList = self::$internalStaticOptionList;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDescription()
-    {
-        if (isset($this->internalOptionList[(string)$this])) {
-            return $this->internalOptionList[(string)$this];
-        }
-        return (string)$this;
     }
 
     /**

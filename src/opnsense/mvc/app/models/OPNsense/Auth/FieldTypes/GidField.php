@@ -35,7 +35,7 @@ use OPNsense\Base\Validators\IntegerValidator;
 class GidField extends IntegerField
 {
     /**
-     * @var bool past actionPostLoadingEvent? (load uid id from disk, generate new when not)
+     * @var bool past actionPostLoadingEvent? (load GID from disk, generate new when not)
      */
     private $fieldLoaded = false;
 
@@ -44,7 +44,7 @@ class GidField extends IntegerField
      */
     protected function defaultValidationMessage()
     {
-        return gettext('Invalid uid.');
+        return gettext('Invalid group ID.');
     }
 
     /**
@@ -55,7 +55,7 @@ class GidField extends IntegerField
         if (empty((string)$this) && $this->fieldLoaded) {
             $gids = [];
             foreach ($this->getParentModel()->group->iterateItems() as $group) {
-                $gids[] = (int)$group->gid->getCurrentValue();
+                $gids[] = $group->gid->asInt();
             }
             for ($i = 2000; true; $i++) {
                 if (!in_array($i, $gids)) {

@@ -43,7 +43,7 @@ function get_country_codes()
 
     $dn_cc = [];
 
-    $iso3166_tab = $contribDir . '/tzdata/iso3166.tab';
+    $iso3166_tab = $contribDir . '/iana/tzdata-iso3166.tab';
     if (file_exists($iso3166_tab)) {
         $dn_cc_file = file($iso3166_tab);
         foreach ($dn_cc_file as $line) {

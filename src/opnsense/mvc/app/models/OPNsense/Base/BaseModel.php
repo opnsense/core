@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2023 Deciso B.V.
+ * Copyright (C) 2015-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,14 +29,15 @@
 namespace OPNsense\Base;
 
 use Exception;
-use http\Message;
 use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Base\ModelException;
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Config;
 use OPNsense\Core\Syslog;
 use ReflectionClass;
 use ReflectionException;
 use SimpleXMLElement;
+use http\Message;
 
 /**
  * Class BaseModel implements base model to bind config and definition to object.
@@ -68,6 +69,12 @@ abstract class BaseModel
     private $internal_model_version = "0.0.0";
 
     /**
+     * this model's description
+     * @var string
+     */
+    private $internal_model_descr = "";
+
+    /**
      * prefix for migration files, default is M (e.g. M1_0_0.php equals version 1.0.0)
      * when models share a namespace, they should be allowed to use their own unique prefix
      * @var string
@@ -81,7 +88,7 @@ abstract class BaseModel
     private $internal_current_model_version = null;
 
     /**
-     * cache classes
+     * cache classes and their metadata per reference
      * @var null
      */
     private static $internalCacheReflectionClasses = null;
@@ -146,18 +153,43 @@ abstract class BaseModel
 
     /**
      * fetch reflection class (cached by field type)
-     * @param string $classname classname to construct
+     * @param SimpleXMLElement $xmlNode model node
+     * @param string $thisModelPath reference to the node (a.b.c)
      * @return BaseField type class
      * @throws ModelException when unable to parse field type
      * @throws ReflectionException when unable to create class
      */
-    private function getNewField($classname)
+    private function getFieldObject($xmlNode, $thisModelPath, $new_ref)
     {
         if (self::$internalCacheReflectionClasses === null) {
-            self::$internalCacheReflectionClasses = array();
+            self::$internalCacheReflectionClasses = [];
         }
-        $classname_idx = str_replace("\\", "_", $classname);
-        if (!isset(self::$internalCacheReflectionClasses[$classname_idx])) {
+        if (!isset(self::$internalCacheReflectionClasses[$thisModelPath])) {
+            // every item results in a Field type object, the first step is to determine which object to create
+            // based on the input model spec
+            $xmlNodeType = $xmlNode->attributes()["type"];
+            if (!empty($xmlNodeType)) {
+                // construct field type object
+                if (strpos($xmlNodeType, "\\") !== false) {
+                    // application specific field type contains path separator
+                    if (strpos($xmlNodeType, ".\\") === 0) {
+                        // use current namespace (.\Class)
+                        $namespace = explode("\\", get_class($this));
+                        array_pop($namespace);
+                        $namespace = implode("\\", $namespace);
+                        $classname = str_replace(".\\", $namespace . "\\FieldTypes\\", (string)$xmlNodeType);
+                    } else {
+                        $classname = (string)$xmlNodeType;
+                    }
+                } else {
+                    // standard field type
+                    $classname = "OPNsense\\Base\\FieldTypes\\" . $xmlNodeType;
+                }
+            } else {
+                // no type defined, so this must be a standard container (without content)
+                $classname = 'OPNsense\Base\FieldTypes\ContainerField';
+            }
+
             $is_derived_from_basefield = false;
             if (class_exists($classname)) {
                 $field_rfcls = new ReflectionClass($classname);
@@ -176,9 +208,41 @@ abstract class BaseModel
                 // class found, but of wrong type. raise an exception.
                 throw new ModelException("class " . $field_rfcls->name . " of wrong type in model definition");
             }
-            self::$internalCacheReflectionClasses[$classname_idx] = $field_rfcls;
+            $field_methods = [];
+            /**
+             * cache field setters per module path, these can't change over iterations
+             */
+            foreach ($xmlNode->children() as $fieldMethod) {
+                $method_name = "set" . $fieldMethod->getName();
+                if ($field_rfcls->hasMethod($method_name)) {
+                    $field_methods[$method_name] = $this->parseOptionData($fieldMethod);
+                }
+            }
+            $field_is_volatile = ($xmlNode->attributes()["volatile"] ?? '') == 'true';
+            $node_name = $xmlNode->getName();
+            self::$internalCacheReflectionClasses[$thisModelPath] = [
+                'cls' => $field_rfcls,
+                'methods' => $field_methods,
+                'is_volatile' => $field_is_volatile,
+                'name' => $node_name
+            ];
+        } else {
+            $field_rfcls = self::$internalCacheReflectionClasses[$thisModelPath]['cls'];
+            $field_methods = self::$internalCacheReflectionClasses[$thisModelPath]['methods'];
+            $field_is_volatile = self::$internalCacheReflectionClasses[$thisModelPath]['is_volatile'];
+            $node_name  = self::$internalCacheReflectionClasses[$thisModelPath]['name'];
         }
-        return self::$internalCacheReflectionClasses[$classname_idx];
+        $fieldObject = $field_rfcls->newInstance($new_ref, $node_name);
+        $fieldObject->setParentModel($this);
+        if ($field_is_volatile) {
+            $fieldObject->setInternalIsVolatile();
+        }
+        if (!$fieldObject->isContainer()) {
+            foreach ($field_methods as $method_name => $payload) {
+                $fieldObject->$method_name($payload);
+            }
+        }
+        return $fieldObject;
     }
 
     /**
@@ -189,114 +253,61 @@ abstract class BaseModel
      * @throws ModelException parse error
      * @throws ReflectionException
      */
-    private function parseXml(&$xml, &$config_data, &$internal_data)
+    private function parseXml(&$xml, &$config_data, &$internal_data, $model_path = '')
     {
         // copy xml tag attributes to Field
-        if ($config_data != null) {
-            foreach ($config_data->attributes() as $AttrKey => $AttrValue) {
-                $internal_data->setAttributeValue($AttrKey, (string)$AttrValue);
-            }
+        foreach ($config_data?->attributes() ?? [] as $AttrKey => $AttrValue) {
+            $internal_data->setAttributeValue($AttrKey, (string)$AttrValue);
         }
 
         // iterate model children
         foreach ($xml->children() as $xmlNode) {
             $tagName = $xmlNode->getName();
-            // every item results in a Field type object, the first step is to determine which object to create
-            // based on the input model spec
-            $xmlNodeType = $xmlNode->attributes()["type"];
-            if (!empty($xmlNodeType)) {
-                // construct field type object
-                if (strpos($xmlNodeType, "\\") !== false) {
-                    // application specific field type contains path separator
-                    if (strpos($xmlNodeType, ".\\") === 0) {
-                        // use current namespace (.\Class)
-                        $namespace = explode("\\", get_class($this));
-                        array_pop($namespace);
-                        $namespace = implode("\\", $namespace);
-                        $classname = str_replace(".\\", $namespace . "\\FieldTypes\\", (string)$xmlNodeType);
-                    } else {
-                        $classname = (string)$xmlNodeType;
-                    }
-                    $field_rfcls = $this->getNewField($classname);
-                } else {
-                    // standard field type
-                    $field_rfcls = $this->getNewField("OPNsense\\Base\\FieldTypes\\" . $xmlNodeType);
-                }
-            } else {
-                // no type defined, so this must be a standard container (without content)
-                $field_rfcls = $this->getNewField('OPNsense\Base\FieldTypes\ContainerField');
-            }
-
+            $thisModelPath = empty($model_path) ? get_class($this) . "." . $tagName : $model_path . '.' . $tagName;
             // generate full object name ( section.section.field syntax ) and create new Field
-            if ($internal_data->__reference == "") {
-                $new_ref = $tagName;
-            } else {
-                $new_ref = $internal_data->__reference . "." . $tagName;
-            }
-            $fieldObject = $field_rfcls->newInstance($new_ref, $tagName);
-            $fieldObject->setParentModel($this);
-            if (($xmlNode->attributes()["volatile"] ?? '') == 'true') {
-                $fieldObject->setInternalIsVolatile();
-            }
+            $new_ref = $internal_data->__reference == "" ? $tagName : $internal_data->__reference . "." . $tagName;
+            $fieldObject = $this->getFieldObject($xmlNode, $thisModelPath, $new_ref);
 
             // now add content to this model (recursive)
-            if ($fieldObject->isContainer() == false) {
+            $config_section_data = $config_data?->$tagName ?? null;
+            if (!$fieldObject->isContainer()) {
                 $internal_data->addChildNode($tagName, $fieldObject);
-                if ($xmlNode->count() > 0) {
-                    // if fieldtype contains properties, try to call the setters
-                    foreach ($xmlNode->children() as $fieldMethod) {
-                        $method_name = "set" . $fieldMethod->getName();
-                        if ($field_rfcls->hasMethod($method_name)) {
-                            // XXX: For array objects we will execute parseOptionData() more than needed as the
-                            //      the model data itself can't change in the meantime.
-                            //      e.g. setOptionValues() with a list of static options will recalculate for each item.
-                            $fieldObject->$method_name($this->parseOptionData($fieldMethod));
-                        }
-                    }
-                }
-                if ($config_data != null && isset($config_data->$tagName)) {
-                    // set field content from config (if available)
-                    $fieldObject->setValue($config_data->$tagName);
+                if ($config_section_data !== null) {
+                    /* do not set initial data, default will take care */
+                    $fieldObject->setValue($config_section_data);
                 }
             } else {
                 // add new child node container, always try to pass config data
-                if ($config_data != null && isset($config_data->$tagName)) {
-                    $config_section_data = $config_data->$tagName;
-                } else {
-                    $config_section_data = null;
-                }
-
                 if ($fieldObject->isArrayType()) {
                     // handle Array types, recurring items
                     $node_count = 0;
-                    if ($config_section_data != null) {
-                        foreach ($config_section_data as $conf_section) {
-                            if ($conf_section->count() == 0) {
-                                // skip empty nodes: prevents legacy empty tags from being treated as invalid content items
-                                // (migration will drop these anyways)
-                                continue;
-                            }
-                            $node_count++;
-                            // Array items are identified by a UUID, read from attribute or create a new one
-                            if (isset($conf_section->attributes()->uuid)) {
-                                $tagUUID = (string)$conf_section->attributes()['uuid'];
-                            } else {
-                                $tagUUID = $internal_data->generateUUID();
-                                $this->internalMissingUuids = true;
-                            }
-
-                            // iterate array items from config data
-                            $child_node = $fieldObject->newContainerField(
-                                $fieldObject->__reference . "." . $tagUUID,
-                                $tagName
-                            );
-                            $this->parseXml($xmlNode, $conf_section, $child_node);
-                            if (!isset($conf_section->attributes()->uuid)) {
-                                // if the node misses a uuid, copy it to this nodes attributes
-                                $child_node->setAttributeValue('uuid', $tagUUID);
-                            }
-                            $fieldObject->addChildNode($tagUUID, $child_node);
+                    foreach ($config_section_data ?? [] as $conf_section) {
+                        if ($conf_section->count() == 0) {
+                            // skip empty nodes: prevents legacy empty tags from being treated as invalid content items
+                            // (migration will drop these anyway)
+                            continue;
                         }
+                        $node_count++;
+                        // Array items are identified by a UUID, read from attribute or create a new one
+                        $tagUUID = (string)$conf_section->attributes()['uuid'] ?? '';
+                        $new_uuid = false;
+                        if (empty($tagUUID)) {
+                            $tagUUID = $internal_data->generateUUID();
+                            $this->internalMissingUuids = true;
+                            $new_uuid = true;
+                        }
+
+                        // iterate array items from config data
+                        $child_node = $fieldObject->newContainerField(
+                            $fieldObject->__reference . "." . $tagUUID,
+                            $tagName
+                        );
+                        if ($new_uuid) {
+                            // if the node misses a uuid, copy it to this nodes attributes
+                            $child_node->setAttributeValue('uuid', $tagUUID);
+                        }
+                        $this->parseXml($xmlNode, $conf_section, $child_node, $thisModelPath);
+                        $fieldObject->addChildNode($tagUUID, $child_node);
                     }
                     if ($node_count == 0) {
                         // There's no content in config.xml for this array node.
@@ -306,12 +317,12 @@ abstract class BaseModel
                             $tagName
                         );
                         $child_node->setInternalIsVirtual();
-                        $this->parseXml($xmlNode, $config_section_data, $child_node);
+                        $this->parseXml($xmlNode, $config_section_data, $child_node, $thisModelPath);
                         $fieldObject->addChildNode($tagUUID, $child_node);
                     }
                 } else {
                     // All other node types (Text,Email,...)
-                    $this->parseXml($xmlNode, $config_section_data, $fieldObject);
+                    $this->parseXml($xmlNode, $config_section_data, $fieldObject, $thisModelPath);
                 }
 
                 // add object as child to this node
@@ -349,6 +360,91 @@ abstract class BaseModel
     }
 
     /**
+     * use model xml to find persisted_at for this model in the active configuration
+     * @return float last persisted at timestamp, -1 when uncacheable (isLegacyMapper)
+     */
+    public static function persistedAt()
+    {
+        $class_info = new ReflectionClass(get_called_class());
+        $model_filename = substr($class_info->getFileName(), 0, strlen($class_info->getFileName()) - 3) . "xml";
+        $model_xml = @simplexml_load_file($model_filename);
+        if ($model_xml != null && !empty($model_xml->mount)) {
+            if (strpos($model_xml->mount, "//") === 0) {
+                $src_mountpoint = $model_xml->mount;
+            } elseif (str_ends_with($model_xml->mount, '+') && strpos($model_xml->mount, "//") !== 0) {
+                return -1;
+            } else {
+                $src_mountpoint = "/opnsense{$model_xml->mount}";
+            }
+
+            $tmp_config_data = Config::getInstance()->xpath($src_mountpoint);
+            if ($tmp_config_data !== false && $tmp_config_data->length > 0) {
+                $config_array = simplexml_import_dom($tmp_config_data->item(0));
+                return floatval((string)$config_array->attributes()['persisted_at']);
+            }
+        }
+        return 0.0;
+    }
+
+    /**
+     * Get the cache file name for the model data storage
+     * @return string model cache filename
+     */
+    private static function getCacheFileName($tmpdir = null)
+    {
+        return sprintf(
+            '%s/mdl_cache_%s.json',
+            (new AppConfig())->application->tempDir,
+            str_replace("\\", "_", (new ReflectionClass(get_called_class()))->getName())
+        );
+    }
+
+    /**
+     * Return the cached data of this object, excluding any dynamic data which lazy loading would exclude.
+     * Values returned are collected via getDescription() on the nodes as this is the data the user is normally
+     * presented.
+     * @return array
+     */
+    public static function getCachedData()
+    {
+        $class_info = new ReflectionClass(get_called_class());
+        $persisted_at = self::persistedAt();
+        if ($persisted_at == -1) {
+            return $class_info->newInstance(true)->getNodeContent();
+        }
+        $cache_filename = self::getCacheFileName();
+        $fobj = new \OPNsense\Core\FileObject($cache_filename, 'a+', 0660, LOCK_EX, 'wwwonly:wheel');
+        $cache_payload = $fobj->readJson() ?? [];
+        if (!isset($cache_payload['persisted_at']) || $cache_payload['persisted_at'] != $persisted_at) {
+            /**
+             * cache invalid or expired, calculate new content
+             * We assume we don't need dynamic content as the cost might be high and is certainly not cacheable
+             * using the same logic.
+             **/
+            $mdl = $class_info->newInstance(true);
+            $cache_payload = [
+                'persisted_at' => self::persistedAt(),
+                'content' => $mdl->getNodeContent()
+            ];
+            $fobj->truncate(0)->writeJson($cache_payload);
+            unset($fobj);
+        }
+        return $cache_payload['content'];
+    }
+
+    /**
+     * Remove cache file.
+     *
+     * When cached data is used, we can only determine the validity of the stored data by looking at the configuration,
+     * in case the object also gathers dynamic data, the components responsible for pushing that data should invalidate
+     * the case in order to appear in the set.
+     */
+    public static function flushCacheData()
+    {
+        @unlink(self::getCacheFileName());
+    }
+
+    /**
      * Construct new model type, using its own xml template
      * @throws ModelException if the model xml is not found or invalid
      * @throws ReflectionException
@@ -365,6 +461,9 @@ abstract class BaseModel
         $model_xml = $this->getModelXML();
         if (!empty($model_xml->version)) {
             $this->internal_model_version = (string)$model_xml->version;
+        }
+        if (!empty($model_xml->description)) {
+            $this->internal_model_descr = trim(preg_replace('/\s+/', ' ', (string)$model_xml->description));
         }
         if (!empty($model_xml->migration_prefix)) {
             $this->internal_model_migration_prefix = (string)$model_xml->migration_prefix;
@@ -450,6 +549,15 @@ abstract class BaseModel
     public function getNodes()
     {
         return $this->internalData->getNodes();
+    }
+
+    /**
+     * get nodes as array structure using getNodeContent() as leaves
+     * @return array
+     */
+    public function getNodeContent()
+    {
+        return $this->internalData->getNodeContent();
     }
 
     /**
@@ -595,7 +703,13 @@ abstract class BaseModel
             $this->internalData->addToXMLNode($xml->xpath($this->internal_mountpoint)[0]);
             // add this model's version to the newly created xml structure
             if (!empty($this->internal_current_model_version)) {
-                $xml->xpath($this->internal_mountpoint)[0]->addAttribute('version', $this->internal_current_model_version);
+                $rootnode = $xml->xpath($this->internal_mountpoint)[0];
+                $rootnode->addAttribute('version', $this->internal_current_model_version);
+                /* when versioned, also mark node with a timestamp */
+                $rootnode->addAttribute('persisted_at', sprintf("%0.2f", microtime(true)));
+                if (!empty($this->internal_model_descr)) {
+                    $rootnode->addAttribute('description', $this->internal_model_descr);
+                }
             }
         }
 

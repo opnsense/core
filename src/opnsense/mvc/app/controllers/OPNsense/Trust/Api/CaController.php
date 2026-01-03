@@ -140,10 +140,7 @@ class CaController extends ApiMutableModelControllerBase
 
     public function searchAction()
     {
-        return $this->searchBase(
-            'ca',
-            ['uuid', 'refid', 'descr', 'caref', 'name', 'refcount', 'valid_from', 'valid_to'],
-        );
+        return $this->searchBase('ca');
     }
 
     public function getAction($uuid = null)
@@ -235,7 +232,7 @@ class CaController extends ApiMutableModelControllerBase
             $node = $this->getModel()->getNodeByReference('ca.' . $uuid);
             $result['descr'] = $node !== null ? (string)$node->descr : '';
             if ($node === null || empty((string)$node->crt_payload)) {
-                $result['error'] = gettext('Misssing certificate');
+                $result['error'] = gettext('Missing certificate');
             } elseif ($type == 'crt') {
                 $result['status'] = 'ok';
                 $result['payload'] = (string)$node->crt_payload;

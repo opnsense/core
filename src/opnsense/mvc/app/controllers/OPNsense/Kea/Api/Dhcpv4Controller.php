@@ -46,6 +46,7 @@ class Dhcpv4Controller extends ApiMutableModelControllerBase
         return [
             self::$internalModelName => [
                 'general' => $data[self::$internalModelName]['general'],
+                'lexpire' => $data[self::$internalModelName]['lexpire'],
                 'ha' => $data[self::$internalModelName]['ha'],
                 'this_hostname' => (string)Config::getInstance()->object()->system->hostname
             ]

@@ -1,18 +1,19 @@
 <menu>
     <Firewall>
-        <Automation cssClass="fa fa-gear">
-            <Filter order="50" url="/ui/firewall/filter/">
-                <FilterRef url="/ui/firewall/filter#*" visibility="hidden"/>
-            </Filter>
-            <SourceNat order="100" VisibleName="Source NAT" url="/ui/firewall/source_nat/">
+        <Rule VisibleName="Rules [new]" url="/ui/firewall/filter/" cssClass="fa fa-check fa-fw">
+            <FilterRef url="/ui/firewall/filter#*" visibility="hidden"/>
+        </Rule>
+        <NAT>
+            <SourceNat order="80" VisibleName="Source NAT" url="/ui/firewall/source_nat/">
                 <FilterRef url="/ui/firewall/source_nat#*" visibility="hidden"/>
             </SourceNat>
-        </Automation>
-        <NAT>
-            <OneToOne order="200" VisibleName="One-to-One" url="/ui/firewall/one_to_one/">
+            <DNat order="100" VisibleName="Destination NAT" url="/ui/firewall/d_nat/">
+                <FilterRef url="/ui/firewall/d_nat#*" visibility="hidden"/>
+            </DNat>
+            <OneToOne order="200" VisibleName="One-to-One NAT" url="/ui/firewall/one_to_one/">
                 <FilterRef url="/ui/firewall/one_to_one#*" visibility="hidden"/>
             </OneToOne>
-            <NPTv6 order="400" url="/ui/firewall/npt/">
+            <NPTv6 order="500" url="/ui/firewall/npt/">
                 <FilterRef url="/ui/firewall/npt#*" visibility="hidden"/>
             </NPTv6>
         </NAT>

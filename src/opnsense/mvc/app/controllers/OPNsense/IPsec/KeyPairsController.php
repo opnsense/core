@@ -37,6 +37,7 @@ class KeyPairsController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->formDialogKeyPair = $this->getForm('dialogKeyPair');
+        $this->view->formGridKeyPair = $this->getFormGrid('dialogKeyPair');
         $this->view->pick('OPNsense/IPsec/key_pairs');
     }
 }

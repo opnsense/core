@@ -52,8 +52,8 @@
         })
 
         $("#grid-leases").UIBootgrid({
-            search:'/api/dhcpv6/leases/searchLease/',
-            del:'/api/dhcpv6/leases/delLease/',
+            search:'/api/dhcpv6/leases/search_lease/',
+            del:'/api/dhcpv6/leases/del_lease/',
             options: {
                 selection: false,
                 multiSelect: false,
@@ -133,11 +133,11 @@
         });
 
         $("#grid-prefixes").UIBootgrid({
-            search:'/api/dhcpv6/leases/searchPrefix/'
+            search:'/api/dhcpv6/leases/search_prefix/'
         });
 
-        $("#inactive-selection-wrapper").detach().prependTo('#grid-leases-header > .row > .actionBar');
-        $("#interface-selection-wrapper").detach().prependTo('#grid-leases-header > .row > .actionBar > .actions');
+        $("#inactive-selection-wrapper").detach().insertBefore('#grid-leases-header .search');
+        $("#interface-selection-wrapper").detach().insertAfter('#grid-leases-header .search');
 
         if (window.location.hash != "") {
             $('a[href="' + window.location.hash + '"]').click();

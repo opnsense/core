@@ -58,19 +58,42 @@
                     grid_ids = ["{{formGridDHCPrange['table_id']}}"];
                     break;
                 case '#dhcpoptions':
-                    grid_ids = ["{{formGridDHCPoption['table_id']}}", "{{formGridDHCPboot['table_id']}}"];
+                    grid_ids = ["{{formGridDHCPoption['table_id']}}"];
+                    break;
+                case '#dhcpboot':
+                    grid_ids = ["{{formGridDHCPboot['table_id']}}"];
                     break;
             }
             /* grid action selected, load or refresh target grid */
             if (grid_ids !== null) {
                 grid_ids.forEach(function (grid_id, index) {
                     if (all_grids[grid_id] === undefined) {
+                        const isGroupedGrid = [
+                            "{{formGridDHCPrange['table_id']}}",
+                            "{{formGridDHCPoption['table_id']}}",
+                            "{{formGridDHCPboot['table_id']}}"
+                        ].includes(grid_id);
                         all_grids[grid_id] = $("#"+grid_id).UIBootgrid({
                             'search':'/api/dnsmasq/settings/search_' + grid_id,
                             'get':'/api/dnsmasq/settings/get_' + grid_id + '/',
                             'set':'/api/dnsmasq/settings/set_' + grid_id + '/',
                             'add':'/api/dnsmasq/settings/add_' + grid_id + '/',
                             'del':'/api/dnsmasq/settings/del_' + grid_id + '/',
+                            tabulatorOptions: {
+                                groupBy: isGroupedGrid ? "%interface" : false,
+                                groupHeader: (value, count, data, group) => {
+                                    // Show "Any" when interface is empty
+                                    const displayValue = !value ? "{{ lang._('Any') }}" : value;
+
+                                    const icons = {
+                                        interface: '<i class="fa fa-fw fa-ethernet fa-sm text-info"></i>',
+                                    };
+
+                                    const countValue = `<span class="badge chip">${count}</span>`;
+
+                                    return `${icons.interface} ${displayValue} ${countValue}`;
+                                },
+                            },
                             options: {
                                 triggerEditFor: getUrlHash('edit'),
                                 initialSearchPhrase: getUrlHash('search'),
@@ -80,34 +103,48 @@
                                         request['tags'] = selectedTags;
                                     }
                                     return request;
-                                }
+                                },
+                                headerFormatters: {
+                                    interface: function (column) {
+                                        return '<i class="fa fa-fw fa-ethernet text-info"></i> {{ lang._("Interface") }}';
+                                    },
+                                    tag: function (column) {
+                                        return '<i class="fa fa-fw fa-tag text-primary"></i> {{ lang._("Tag") }}';
+                                    },
+                                    set_tag: function (column) {
+                                        return '<i class="fa fa-fw fa-tag text-primary"></i> {{ lang._("Tag [set]") }}';
+                                    },
+                                },
                             }
                         });
-                        /* insert headers when multiple grids exist on a single tab */
-                        let header = $("#" + grid_id + "-header");
-                        if (grid_id === 'option' ) {
-                            header.find('div.actionBar').parent().prepend(
-                                $('<td id="heading-wrapper" class="col-sm-2 theading-text">{{ lang._('Options') }}</div>')
-                            );
-                        } else if (grid_id == 'boot') {
-                            header.find('div.actionBar').parent().prepend(
-                                $('<td id="heading-wrapper" class="col-sm-2 theading-text">{{ lang._('Boot') }}</div>')
-                            );
-                        } else if (grid_id == 'host') {
-                            all_grids[grid_id].find("tfoot td:last").append($("#hosts_tfoot_append > button").detach());
-                        }
                     } else {
                         all_grids[grid_id].bootgrid('reload');
 
                     }
                     // insert tag selectpicker in all grids that use tags or interfaces, boot excluded cause two grids in same tab
-                    if (!['domain', 'boot'].includes(grid_id)) {
+                    if (!['domain'].includes(grid_id)) {
                         let header = $("#" + grid_id + "-header");
                         let $actionBar = header.find('.actionBar');
                         if ($actionBar.length) {
-                            $('#tag_select_container').detach().insertBefore($actionBar.find('.search'));
+                            $('#tag_select_container').detach().insertAfter($actionBar.find('.search'));
                             $('#tag_select_container').show();
                         }
+                    }
+
+                    // host grid needs custom commands (upload/download)
+                    if (['host'].includes(grid_id)) {
+                        all_grids[grid_id].on('load.rs.jquery.bootgrid', function() {
+                            $("#upload_hosts").SimpleFileUploadDlg({
+                                onAction: function(){
+                                    $("#{{formGridHostOverride['table_id']}}").bootgrid('reload');
+                                }
+                            });
+
+                            $('#download_hosts').click(function(e) {
+                                e.preventDefault();
+                                window.open("/api/dnsmasq/settings/download_hosts");
+                            });
+                        })
                     }
                 });
             }
@@ -124,24 +161,16 @@
             }
         });
 
-        $("#download_hosts").click(function(e){
-            e.preventDefault();
-            window.open("/api/dnsmasq/settings/download_hosts");
-        });
-        $("#upload_hosts").SimpleFileUploadDlg({
-            onAction: function(){
-                $("#{{formGridHostOverride['table_id']}}").bootgrid('reload');
-            }
-        });
-
         $('.nav-tabs a').on('shown.bs.tab', function (e) {
             history.pushState(null, null, e.target.hash);
         });
-        $(window).on('hashchange', function(e) {
-            $('a[href="' + window.location.hash + '"]').click()
+
+        // We use two kinds of url hashes appended to the tab hash: & to search a host and ? to create a host
+        $(window).on('hashchange', function() {
+            $('a[href="' + (window.location.hash.split(/[?&]/)[0] || '') + '"]').click();
         });
-        let selected_tab = window.location.hash != "" ? window.location.hash : "#general";
-        $('a[href="' +selected_tab + '"]').click();
+
+        $('a[href="' + (window.location.hash.split(/[?&]/)[0] || '#general') + '"]').click();
 
         $("#range\\.start_addr, #range\\.ra_mode, #option\\.type").on("keyup change", function () {
             const addr = $("#range\\.start_addr").val() || "";
@@ -182,7 +211,6 @@
 
         $('#tag_select').change(function () {
             Object.keys(all_grids).forEach(function (grid_id) {
-                // boot is not excluded here, as it reloads in same tab as options
                 if (!['domain'].includes(grid_id)) {
                     all_grids[grid_id].bootgrid('reload');
                 }
@@ -216,13 +244,35 @@
                         '#host\\.set_tag, ' +
                         '#range\\.interface, #range\\.set_tag, ' +
                         '#option\\.interface, #option\\.tag, ' +
-                        '#boot\\.tag'
+                        '#boot\\.interface, #boot\\.tag'
                     )
                     .selectpicker('val', selectedTags)
                     .selectpicker('refresh');
                 }
             }
         });
+
+        // Autofill dhcp reservation with URL hash
+        if (window.location.hash.startsWith('#hosts?')) {
+            const params = new URLSearchParams(window.location.hash.split('?')[1]);
+
+            // Switch to hosts tab
+            $('a[href="#hosts"]').one('shown.bs.tab', () => {
+                // Wait for grid to be ready
+                $('#{{ formGridHostOverride["table_id"] }}').one('loaded.rs.jquery.bootgrid', function () {
+                    // Wait for dialog to be ready
+                    $('#{{ formGridHostOverride["edit_dialog_id"] }}').one('opnsense_bootgrid_mapped', () => {
+                        if (params.has('host')) $('#host\\.host').val(params.get('host'));
+                        if (params.has('ip')) $('#host\\.ip').trigger('tokenize:tokens:add', [params.get('ip'), params.get('ip')]);
+                        if (params.has('client_id')) $('#host\\.client_id').val(params.get('client_id'));
+                        if (params.has('hwaddr')) $('#host\\.hwaddr').trigger('tokenize:tokens:add', [params.get('hwaddr'), params.get('hwaddr')]);
+                        history.replaceState(null, null, window.location.pathname + '#hosts');
+                    });
+
+                    $(this).find('.command-add').trigger('click');
+                });
+            }).tab('show');
+        }
 
     });
 </script>
@@ -231,30 +281,7 @@
     tbody.collapsible > tr > td:first-child {
         padding-left: 30px;
     }
-    #tag_select_clear {
-        border-right: none;
-    }
-    #tag_select_container {
-        margin-right: 20px;
-    }
-    #tag_select_container .bootstrap-select > .dropdown-toggle {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-    }
 </style>
-
-<div style="display: none;" id="hosts_tfoot_append">
-    <button
-        id="upload_hosts"
-        type="button"
-        data-title="{{ lang._('Import hosts') }}"
-        data-endpoint='/api/dnsmasq/settings/upload_hosts'
-        title="{{ lang._('Import csv') }}"
-        data-toggle="tooltip"
-        class="btn btn-xs"
-    ><span class="fa fa-fw fa-upload"></span></button>
-    <button id="download_hosts" type="button" title="{{ lang._('Export as csv') }}" data-toggle="tooltip"  class="btn btn-xs"><span class="fa fa-fw fa-table"></span></button>
-</div>
 
 <div id="tag_select_container" class="btn-group" style="display: none;">
     <button type="button" id="tag_select_clear" class="btn btn-default" title="{{ lang._('Clear Selection') }}">
@@ -267,10 +294,11 @@
 <!-- Navigation bar -->
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li><a data-toggle="tab" href="#general">{{ lang._('General') }}</a></li>
-    <li><a data-toggle="tab" href="#hosts">{{ lang._('Hosts') }}</a></li>
     <li><a data-toggle="tab" href="#domains">{{ lang._('Domains') }}</a></li>
+    <li><a data-toggle="tab" href="#hosts">{{ lang._('Hosts') }}</a></li>
     <li><a data-toggle="tab" href="#dhcpranges">{{ lang._('DHCP ranges') }}</a></li>
     <li><a data-toggle="tab" href="#dhcpoptions">{{ lang._('DHCP options') }}</a></li>
+    <li><a data-toggle="tab" href="#dhcpboot">{{ lang._('DHCP boot') }}</a></li>
     <li><a data-toggle="tab" href="#dhcptags">{{ lang._('DHCP tags') }}</a></li>
 </ul>
 
@@ -281,7 +309,30 @@
     </div>
     <!-- Tab: Hosts -->
     <div id="hosts" class="tab-pane fade in">
-        {{ partial('layout_partials/base_bootgrid_table', formGridHostOverride + {'command_width': '8em'} )}}
+        {{
+            partial('layout_partials/base_bootgrid_table', formGridHostOverride + {
+                'grid_commands': {
+                    'upload_hosts': {
+                        'title': lang._('Import csv'),
+                        'class': 'btn btn-xs',
+                        'icon_class': 'fa fa-fw fa-upload',
+                        'data': {
+                            'title': lang._('Import hosts'),
+                            'endpoint': '/api/dnsmasq/settings/upload_hosts',
+                            'toggle': 'tooltip'
+                        }
+                    },
+                    'download_hosts': {
+                        'title': lang._('Export as csv'),
+                        'class': 'btn btn-xs',
+                        'icon_class': 'fa fa-fw fa-table',
+                        'data': {
+                            'toggle': 'tooltip'
+                        }
+                    }
+                }
+            })
+        }}
     </div>
     <!-- Tab: Domains -->
     <div id="domains" class="tab-pane fade in">
@@ -291,10 +342,12 @@
     <div id="dhcpranges" class="tab-pane fade in">
         {{ partial('layout_partials/base_bootgrid_table', formGridDHCPrange)}}
     </div>
-    <!-- Tab: DHCP [boot] Options -->
+    <!-- Tab: DHCP Options -->
     <div id="dhcpoptions" class="tab-pane fade in">
         {{ partial('layout_partials/base_bootgrid_table', formGridDHCPoption)}}
-        <hr/>
+    </div>
+    <!-- Tab: DHCP Boot -->
+    <div id="dhcpboot" class="tab-pane fade in">
         {{ partial('layout_partials/base_bootgrid_table', formGridDHCPboot)}}
     </div>
     <!-- Tab: DHCP Tags -->

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2018-2024 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2018-2025 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -32,8 +32,9 @@ OUTPUT=
 
 DO_CHECK=
 DO_ORIGIN=
+DO_RAW=
 
-while getopts AaCceHilNnOstVvwx OPT; do
+while getopts AaCceHilNnOR:stVvwx OPT; do
 	case ${OPT} in
 	A)
 		OUTPUT="${OUTPUT} \${product_arch}"
@@ -67,6 +68,13 @@ while getopts AaCceHilNnOstVvwx OPT; do
 		;;
 	O)
 		DO_ORIGIN="-O"
+		;;
+	R)
+		if [ "$(id -u)" != "0" ]; then
+			echo "Must be root to use '-R'."
+			exit 1
+		fi
+		DO_RAW="-R ${OPTARG}"
 		;;
 	s)
 		OUTPUT="${OUTPUT} \${product_size}"
@@ -129,6 +137,20 @@ if grep -q '[{}]' ${VERSION}; then
 	eval "$(grep -v '[{}]' ${VERSION} | sed 's/[^"]*"\([^"]*\)"[^"]*"\([^"]*\)".*/\1="\2"/')"
 fi
 
+if [ -n "${DO_RAW}" ]; then
+	FILE=${DO_RAW#"-R "}
+
+	if [ -f "${FILE}" ]; then
+		SED_REPLACE=$(set | grep -e '^CORE_' -e '^PLUGIN_' | sed -e 's/^\([CP][A-Z_]*\)='"'"*'\([^'"'"']*\)'"'"*'/-e "s=%%\1%%=\2=g"/g')
+		eval SED_REPLACE='$'"{SED_REPLACE}"
+		cat ${FILE} | eval sed ${SED_REPLACE}
+		exit 0
+	fi
+
+	OUTPUT=$(echo "${FILE}" | sed -e 's=\(CORE_[A-Z_]*\)=${\1}=g' -e 's=\(PLUGIN_[A-Z_]*\)=${\1}=g')
+	TARGET=nop
+fi
+
 case "${TARGET}" in
 core)
 	if [ -z "${OUTPUT}" ]; then
@@ -168,6 +190,9 @@ core)
 			esac
 		fi
 	fi
+	;;
+nop)
+	# for raw output mode
 	;;
 *)
 	if [ -z "${OUTPUT}" ]; then

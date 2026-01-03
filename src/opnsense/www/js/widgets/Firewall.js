@@ -172,10 +172,10 @@ export default class Firewall extends BaseTableWidget {
     }
 
     async onMarkupRendered() {
-        const data = await this.ajaxCall('/api/diagnostics/interface/getInterfaceNames');
+        const data = await this.ajaxCall('/api/diagnostics/interface/get_interface_names');
         this.ifMap = data;
 
-        super.openEventSource('/api/diagnostics/firewall/streamLog', this._onMessage.bind(this));
+        super.openEventSource('/api/diagnostics/firewall/stream_log', this._onMessage.bind(this));
 
         let context = document.getElementById('fw-chart').getContext('2d');
         let config = {

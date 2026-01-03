@@ -32,12 +32,10 @@
                     <AddressFamily>ipv6</AddressFamily>
                 </tunnel_networkv6>
                 <local_networks type="NetworkField">
-                    <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </local_networks>
                 <remote_networks type="NetworkField">
-                    <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </remote_networks>
                 <route_gateway type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
@@ -59,25 +57,23 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </register_dns>
-                <dns_domain type="HostnameField"/>
+                <dns_domain type="HostnameField">
+                    <AsList>Y</AsList>
+                </dns_domain>
                 <dns_domain_search type="HostnameField">
-                    <FieldSeparator>,</FieldSeparator>
                     <AsList>Y</AsList>
                 </dns_domain_search>
                 <dns_servers type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
-                    <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </dns_servers>
                 <ntp_servers type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
-                    <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </ntp_servers>
                 <wins_servers type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
-                    <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </wins_servers>
                 <description type="DescriptionField"/>
             </Overwrite>
@@ -97,7 +93,7 @@
                     <OptionValues>
                         <tun>TUN</tun>
                         <tap>TAP</tap>
-                        <ovpn>DCO (experimental)</ovpn>
+                        <ovpn>DCO</ovpn>
                     </OptionValues>
                 </dev_type>
                 <verb type="OptionField">
@@ -158,35 +154,38 @@
                 <server type="NetworkField">
                     <WildcardEnabled>N</WildcardEnabled>
                     <Strict>Y</Strict>
+                    <NetMaskRequired>Y</NetMaskRequired>
+                    <ValidationMessage>Please specify a valid network segment in CIDR notation.</ValidationMessage>
                 </server>
                 <server_ipv6 type="NetworkField">
                     <WildcardEnabled>N</WildcardEnabled>
+                    <NetMaskRequired>Y</NetMaskRequired>
+                    <ValidationMessage>Please specify a valid network segment in CIDR notation.</ValidationMessage>
                 </server_ipv6>
+                <nopool type="BooleanField"/>
                 <bridge_gateway type="NetworkField">
                     <WildcardEnabled>N</WildcardEnabled>
                 </bridge_gateway>
                 <bridge_pool type="TextField"/>
                 <route type="NetworkField">
-                    <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                     <WildcardEnabled>N</WildcardEnabled>
                 </route>
                 <push_route type="NetworkField">
-                    <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                     <WildcardEnabled>N</WildcardEnabled>
                 </push_route>
-                <cert type="CertificateField">
-                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
-                </cert>
+                <push_excluded_routes type="NetworkField">
+                    <AsList>Y</AsList>
+                    <WildcardEnabled>N</WildcardEnabled>
+                </push_excluded_routes>
+                <cert type="CertificateField"/>
                 <crl type="CertificateField">
                     <type>crl</type>
-                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </crl>
                 <ca type="CertificateField">
                     <type>ca</type>
                     <BlankDesc> - Use from certificate</BlankDesc>
-                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </ca>
                 <cert_depth type="OptionField">
                     <BlankDesc>Do Not Check</BlankDesc>
@@ -243,15 +242,17 @@
                 <data-ciphers type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>
-                        <AES-256-GCM>AES-256-GCM</AES-256-GCM>
+                        <AES-256-CBC>AES-256-CBC</AES-256-CBC>
                         <AES-128-GCM>AES-128-GCM</AES-128-GCM>
+                        <AES-256-GCM>AES-256-GCM</AES-256-GCM>
                         <CHACHA20-POLY1305>CHACHA20-POLY1305</CHACHA20-POLY1305>
                     </OptionValues>
                 </data-ciphers>
                 <data-ciphers-fallback type="OptionField">
                     <OptionValues>
-                        <AES-256-GCM>AES-256-GCM</AES-256-GCM>
+                        <AES-256-CBC>AES-256-CBC</AES-256-CBC>
                         <AES-128-GCM>AES-128-GCM</AES-128-GCM>
+                        <AES-256-GCM>AES-256-GCM</AES-256-GCM>
                         <CHACHA20-POLY1305>CHACHA20-POLY1305</CHACHA20-POLY1305>
                     </OptionValues>
                 </data-ciphers-fallback>
@@ -260,8 +261,8 @@
                         <host>
                             <source>OPNsense.OpenVPN.OpenVPN</source>
                             <items>StaticKeys.StaticKey</items>
-                            <display>mode,description</display>
-                            <display_format>[%s] %s</display_format>
+                            <display>description,mode</display>
+                            <display_format>%s [%s]</display_format>
                         </host>
                     </Model>
                 </tls_key>
@@ -272,6 +273,7 @@
                 <various_flags type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>
+                        <block-ipv6>block-ipv6</block-ipv6>
                         <client-to-client>client-to-client</client-to-client>
                         <duplicate-cn>duplicate-cn</duplicate-cn>
                         <float>float</float>
@@ -281,11 +283,13 @@
                         <route-noexec>route-noexec</route-noexec>
                         <route-nopull>route-nopull</route-nopull>
                         <explicit-exit-notify>explicit-exit-notify</explicit-exit-notify>
+                        <fast-io>fast-io</fast-io>
                     </OptionValues>
                 </various_flags>
                 <various_push_flags type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>
+                        <block-ipv6>push block-ipv6</block-ipv6>
                         <block-outside-dns>push block-outside-dns</block-outside-dns>
                         <register-dns>push register-dns</register-dns>
                         <explicit-exit-notify>explicit-exit-notify</explicit-exit-notify>
@@ -351,20 +355,19 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </register_dns>
-                <dns_domain type="HostnameField"/>
+                <dns_domain type="HostnameField">
+                    <AsList>Y</AsList>
+                </dns_domain>
                 <dns_domain_search type="HostnameField">
-                    <FieldSeparator>,</FieldSeparator>
                     <AsList>Y</AsList>
                 </dns_domain_search>
                 <dns_servers type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
-                    <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </dns_servers>
                 <ntp_servers type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
-                    <FieldSeparator>,</FieldSeparator>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </ntp_servers>
                 <tun_mtu type="IntegerField">
                     <MinimumValue>60</MinimumValue>
@@ -385,6 +388,7 @@
                 <http-proxy type="IPPortField">
                     <HostnameAllowed>Y</HostnameAllowed>
                 </http-proxy>
+                <verify-x509-name type="TextField"/>
             </Instance>
         </Instances>
         <StaticKeys>
@@ -399,9 +403,11 @@
                 </mode>
                 <key type="TextField">
                     <Required>Y</Required>
-                    <ValidationMessage>A key is required, generate one with the button</ValidationMessage>
+                    <ValidationMessage>A key is required; generate one with the button.</ValidationMessage>
                 </key>
-                <description type="DescriptionField"/>
+                <description type="DescriptionField">
+                    <Required>Y</Required>
+                </description>
             </StaticKey>
         </StaticKeys>
     </items>

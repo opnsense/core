@@ -71,6 +71,8 @@ class UriParser(BaseContentParser):
                 req_opts['auth'] = requests.auth.HTTPBasicAuth(self._username, self._password)
             elif self._authtype == 'Bearer':
                 req_opts['headers']['Authorization'] = f'Bearer {self._password}'
+            elif self._authtype == 'Header' and self._username is not None:
+                req_opts['headers'][self._username] = self._password
 
         # fetch data
         try:
@@ -80,7 +82,7 @@ class UriParser(BaseContentParser):
                 req.raw.decode_content = True
                 stime = time.time()
                 if self._type == 'urljson':
-                    data = req.raw.read().decode()
+                    data = req.raw.read().decode(errors='replace')
                     syslog.syslog(syslog.LOG_NOTICE, 'fetch alias url %s (bytes: %s)' % (url, len(data)))
                     # also support existing a.b format by prefixing [.], only raise exceptions on original input
                     jqc = None
@@ -101,7 +103,7 @@ class UriParser(BaseContentParser):
                             for address in super().iter_addresses(raw_address):
                                 yield address
                 else:
-                    lines = req.raw.read().decode().splitlines()
+                    lines = req.raw.read().decode(errors='replace').splitlines()
                     syslog.syslog(syslog.LOG_NOTICE, 'fetch alias url %s (lines: %s)' % (url, len(lines)))
                     for line in lines:
                         for raw_address in self._parse_line(line):

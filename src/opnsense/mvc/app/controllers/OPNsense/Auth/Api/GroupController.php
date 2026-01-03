@@ -67,7 +67,7 @@ class GroupController extends ApiMutableModelControllerBase
     public function addAction()
     {
         $data = $this->request->getPost(static::$internalModelName);
-        $this->setSaveAuditMessage(sprintf('group \"%s\" created"', $data['name']));
+        $this->setSaveAuditMessage(sprintf('group "%s" created', $data['name']));
         $result = $this->addBase('group', 'group');
         if ($result['result'] != 'failed') {
             (new Backend())->configdpRun('auth sync group', [$data['name']]);
@@ -78,7 +78,7 @@ class GroupController extends ApiMutableModelControllerBase
     public function setAction($uuid = null)
     {
         $data = $this->request->getPost(static::$internalModelName);
-        $this->setSaveAuditMessage(sprintf('group \"%s\" changed"', $data['name']));
+        $this->setSaveAuditMessage(sprintf('group "%s" changed', $data['name']));
         $result = $this->setBase('group', 'group', $uuid);
         if ($result['result'] != 'failed') {
             if (!empty($data['name'])) {

@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2015-2024 Deciso B.V.
+ *    Copyright (C) 2015-2025 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -47,10 +47,8 @@ class SessionController extends ApiControllerBase
      */
     public function listAction($zoneid = 0)
     {
-        $mdlCP = new CaptivePortal();
-        $cpZone = $mdlCP->getByZoneID($zoneid);
-        if ($cpZone != null) {
-            $allClientsRaw = (new Backend())->configdpRun("captiveportal list_clients", [$cpZone->zoneid]);
+        if ((new CaptivePortal())->getByZoneID($zoneid) != null) {
+            $allClientsRaw = (new Backend())->configdpRun("captiveportal list_clients", [$zoneid]);
             return json_decode($allClientsRaw ?? '', true);
         } else {
             // illegal zone, return empty response
@@ -64,7 +62,7 @@ class SessionController extends ApiControllerBase
     public function searchAction()
     {
         $selected_zones = $this->request->get('selected_zones');
-        $records = json_decode((new Backend())->configdRun("captiveportal list_clients") ?? '', true);
+        $records = json_decode((new Backend())->configdRun('captiveportal list_clients'), true);
 
         $response = $this->searchRecordsetBase($records, null, 'userName', function ($key) use ($selected_zones) {
             return empty($selected_zones) || in_array($key['zoneid'], $selected_zones);
@@ -80,8 +78,7 @@ class SessionController extends ApiControllerBase
     public function zonesAction()
     {
         $response = [];
-        $mdlCP = new CaptivePortal();
-        foreach ($mdlCP->zones->zone->iterateItems() as $zone) {
+        foreach ((new CaptivePortal())->zones->zone->iterateItems() as $zone) {
             $response[(string)$zone->zoneid] = (string)$zone->description;
         }
         asort($response);

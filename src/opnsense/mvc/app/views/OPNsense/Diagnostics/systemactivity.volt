@@ -1,63 +1,68 @@
 {#
+ # Copyright(c) 2014-2015 Deciso B.V.
+ # All rights reserved.
+ #
+ # Redistribution and use in source and binary forms, with or without modification,
+ # are permitted provided that the following conditions are met:
+ #
+ # 1. Redistributions of source code must retain the above copyright notice,
+ #    this list of conditions and the following disclaimer.
+ #
+ # 2. Redistributions in binary form must reproduce the above copyright notice,
+ #    this list of conditions and the following disclaimer in the documentation
+ #    and/or other materials provided with the distribution.
+ #
+ # THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ # AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ # AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ # OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ # POSSIBILITY OF SUCH DAMAGE.
+ #}
 
-OPNsense® is Copyright © 2014 – 2015 by Deciso B.V.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-1.  Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
-
-2.  Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-
-#}
 <script src="{{ cache_safe('/ui/js/moment-with-locales.min.js') }}"></script>
 
 <script>
     'use strict';
 
     $( document ).ready(function() {
-        /**
-         * fetch system activity
-         */
-        function updateTop() {
-            var gridopt = {
+        $("#grid-top").UIBootgrid({
+            options: {
                 ajax: false, // handle pagination and sorting locally
                 selection: false,
                 multiSelect: true,
                 virtualDOM: true,
-                responseHandler: function(response) {
-                    return response.details;
-                }
-            };
-            if ($("#grid-top").hasClass('bootgrid-table')) {
-                $("#grid-top").bootgrid('clear');
-            } else {
-                $("#grid-top")
-                    .UIBootgrid({
-                        search: "/api/diagnostics/activity/getActivity",
-                        options: gridopt
-                    })
-                    .on("loaded.rs.jquery.bootgrid", function (e) {
-                        if ($('#grid-top tbody tr').length == 1 && $("#grid-top").bootgrid("getSearchPhrase") == '') {
-                            $("#grid-top td").text("{{ lang._('Waiting for data...') }}");
-                        }
-                    });
             }
+        })
+
+        /**
+         * fetch system activity
+         */
+        function updateTop() {
+            $("#grid-top").bootgrid('clear');
+
+            setTimeout(function() {
+                $(".no-results, .bootgrid-placeholder").text("{{ lang._('Waiting for data...') }}");
+            }, 20);
+
+            ajaxGet("/api/diagnostics/activity/get_activity", {}, function (data, status) {
+                if (status == "success") {
+                    $("#grid-top").bootgrid('append', data.details);
+
+                    var header_txt = "";
+                    $.each(data['headers'], function (key, value) {
+                        header_txt += value;
+                        header_txt += "<br/>";
+                    });
+
+                    $("#header_data").html(header_txt);
+                    $('#header_data_show').show();
+                }
+            });
         }
 
 

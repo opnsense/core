@@ -89,7 +89,7 @@ $aclObj = new \OPNsense\Core\ACL();
                           foreach($menuSystem as $topMenuItem): ?>
 <?php
                           if (count($topMenuItem->Children) >= 1): ?>
-                            <a href="#<?=$topMenuItem->Id;?>" class="list-group-item <?= $topMenuItem->Selected ? 'active-menu-title' : ''; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="<?=$topMenuItem->CssClass;?> __iconspacer"></span><span style="word-break: keep-all"><?= html_safe(gettext($topMenuItem->VisibleName)) ?></span></a>
+                            <a href="#<?=$topMenuItem->Id;?>" class="list-group-item <?= $topMenuItem->Selected ? 'active-menu-title' : ''; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="<?=$topMenuItem->CssClass;?> __iconspacer"></span><span style="word-break: keep-all"><?= html_safe($topMenuItem->VisibleName) ?></span></a>
                             <div class="collapse <?=$topMenuItem->Selected ? 'active-menu in' :'';?>" id="<?=$topMenuItem->Id;?>">
 <?php
                             foreach($topMenuItem->Children as $subMenuItem): ?>
@@ -98,7 +98,7 @@ $aclObj = new \OPNsense\Core\ACL();
                                <a href="#<?=$topMenuItem->Id;?>_<?=$subMenuItem->Id;?>" class="list-group-item <?=$subMenuItem->Selected ? "active-menu-title" : '';?>" data-toggle="collapse" data-parent="#<?=$topMenuItem->Id;?>" aria-expanded="<?=$subMenuItem->Selected ? "true" : "false";?>">
                                   <div style="display: table;width: 100%;">
                                     <div style="display: table-row">
-                                      <div style="display: table-cell"><?=html_safe(gettext($subMenuItem->VisibleName));?></div>
+                                      <div style="display: table-cell"><?= html_safe($subMenuItem->VisibleName) ?></div>
                                         <div style="display: table-cell; text-align:right; vertical-align:middle;"><span class="<?=$subMenuItem->CssClass;?>"></span></div>
                                       </div>
                                   </div>
@@ -108,10 +108,10 @@ $aclObj = new \OPNsense\Core\ACL();
                                   foreach ($subMenuItem->Children as $subsubMenuItem):?>
 <?php
                                     if ($subsubMenuItem->IsExternal == "Y"):?>
-                                            <a href="<?=$subsubMenuItem->Url;?>" target="_blank" rel="noopener noreferrer" class="list-group-item menu-level-3-item <?=$subsubMenuItem->Selected ? 'active' :'';?>"><?=html_safe(gettext($subsubMenuItem->VisibleName));?></a>
+                                            <a href="<?=$subsubMenuItem->Url;?>" target="_blank" rel="noopener noreferrer" class="list-group-item menu-level-3-item <?=$subsubMenuItem->Selected ? 'active' :'';?>"><?= html_safe($subsubMenuItem->VisibleName) ?></a>
 <?php
                                     elseif ($aclObj->isPageAccessible($_SESSION['Username'],$subsubMenuItem->Url)):?>
-                                            <a href="<?=$subsubMenuItem->Url;?>" class="list-group-item menu-level-3-item <?=$subsubMenuItem->Selected ? 'active' :'';?>"><?=html_safe(gettext($subsubMenuItem->VisibleName));?></a>
+                                            <a href="<?=$subsubMenuItem->Url;?>" class="list-group-item menu-level-3-item <?=$subsubMenuItem->Selected ? 'active' :'';?>"><?= html_safe($subsubMenuItem->VisibleName) ?></a>
 <?php
                                     endif;
                                   endforeach;?>
@@ -121,7 +121,7 @@ $aclObj = new \OPNsense\Core\ACL();
                                 <a href="<?=$subMenuItem->Url;?>" target="_blank" rel="noopener noreferrer" class="list-group-item <?=$subMenuItem->Selected ? 'active' : '';?>" aria-expanded="<?=$subMenuItem->Selected ? 'true' : 'false';?>">
                                   <div style="display: table;width: 100%;">
                                     <div style="display: table-row">
-                                      <div style="display: table-cell"><?=html_safe(gettext($subMenuItem->VisibleName));?></div>
+                                      <div style="display: table-cell"><?= html_safe($subMenuItem->VisibleName) ?></div>
                                         <div style="display: table-cell; text-align:right; vertical-align:middle;"><span class="<?=$subMenuItem->CssClass;?>"></span></div>
                                       </div>
                                   </div>
@@ -131,7 +131,7 @@ $aclObj = new \OPNsense\Core\ACL();
                                 <a href="<?=$subMenuItem->Url;?>" class="list-group-item <?=$subMenuItem->Selected ? 'active' :'';?>">
                                   <div style="display: table;width: 100%;">
                                     <div style="display: table-row">
-                                      <div style="display: table-cell"><?=html_safe(gettext($subMenuItem->VisibleName));?></div>
+                                      <div style="display: table-cell"><?= html_safe($subMenuItem->VisibleName) ?></div>
                                         <div style="display: table-cell; text-align:right; vertical-align:middle;"><span class="<?=$subMenuItem->CssClass;?>"></span></div>
                                     </div>
                                   </div>
@@ -147,12 +147,12 @@ $aclObj = new \OPNsense\Core\ACL();
 <?php
                               if ($topMenuItem->IsExternal == "Y" ):?>
                                 <a href="<?=$topMenuItem->Url;?>" target="_blank" rel="noopener noreferrer" class="list-group-item <?=$topMenuItem->Selected ? 'active-menu-title' : '';?>" data-parent="#mainmenu">
-                                    <span class="<?=$topMenuItem->CssClass;?> __iconspacer"></span><?=html_safe(gettext($topMenuItem->VisibleName));?>
+                                    <span class="<?=$topMenuItem->CssClass;?> __iconspacer"></span><?= html_safe($topMenuItem->VisibleName) ?>
                                 </a>
 <?php
                               elseif ($aclObj->isPageAccessible($_SESSION['Username'],$topMenuItem->Url)):?>
                                 <a href="<?=$topMenuItem->Url;?>" class="list-group-item <?=$topMenuItem->Selected ? 'active-menu-title' : '';?>" data-parent="#mainmenu">
-                                    <span class="<?=$topMenuItem->CssClass;?> __iconspacer"></span><?=html_safe(gettext($topMenuItem->VisibleName));?>
+                                    <span class="<?=$topMenuItem->CssClass;?> __iconspacer"></span><?= html_safe($topMenuItem->VisibleName) ?>
                                 </a>
 
 <?php

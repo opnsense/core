@@ -28,7 +28,9 @@
 
 namespace OPNsense\Trust;
 
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Config;
+use OPNsense\Core\Shell;
 
 /**
  * Wrapper around [legacy] trust store
@@ -43,7 +45,7 @@ class Store
         'OU' => 'organizationalunit',
         'C' => 'country',
         'emailAddress' => 'email',
-        'CN' => 'commonname'
+        'CN' => 'commonname',
     ];
 
     /**
@@ -196,7 +198,7 @@ class Store
     private static function _createSSLOptions($keylen_curve, $digest_alg, $x509_extensions = 'usr_cert', $extns = [])
     {
         // define temp filename to use for openssl.cnf and add extensions values to it
-        $configFilename = tempnam(sys_get_temp_dir(), 'ssl');
+        $configFilename = tempnam((new AppConfig())->application->tempDir, 'ssl');
 
         $template = file_get_contents('/usr/local/etc/ssl/opnsense.cnf');
         foreach (array_keys($extns) as $extnTag) {
@@ -507,14 +509,23 @@ class Store
      * @param string $private_key
      * @param string $friendly_name
      * @param string $passphrase
+     * @param string $caref
      * @return string
      */
-    public static function getPKCS12($certificate, $private_key, $friendly_name = null, $passphrase = null)
-    {
+    public static function getPKCS12(
+        $certificate,
+        $private_key,
+        $friendly_name = null,
+        $passphrase = null,
+        $caref = null
+    ) {
         $old_err_level = error_reporting(0); /* prevent openssl error from going to stderr/stdout */
         $options = [];
         if (!empty($friendly_name)) {
             $options['friendly_name'] = $friendly_name;
+        }
+        if (!empty($caref) && !empty(($cas = self::getCaChain($caref, true)))) {
+            $options['extracerts'] = $cas;
         }
         $result = [];
         if (!openssl_pkcs12_export($certificate, $result['payload'], $private_key, $passphrase, $options)) {
@@ -590,9 +601,10 @@ class Store
     /**
      * Extract certificate chain
      * @param string $caref reference number
-     * @return array|bool structure or boolean false if not found
+     * @param bool $aslist return array
+     * @return array|string list of certificates as single string or array
      */
-    public static function getCaChain($caref)
+    public static function getCaChain($caref, $aslist = false)
     {
         $chain = [];
         while (($item = self::getCA(!isset($item) ? $caref : $item->caref)) != null) {
@@ -602,7 +614,7 @@ class Store
             }
             $chain[] = $data;
         }
-        return implode("\n", $chain);
+        return !$aslist ? implode("\n", $chain) : $chain;
     }
 
     /**
@@ -630,13 +642,10 @@ class Store
         }
         if ($ocsp_uri !== null) {
             $verdict_pass = false;
-            $result = exec(
-                exec_safe(
-                    "%s ocsp -resp_no_certs -timeout 10 -nonce -CAfile %s -issuer %s -url %s -serial %s 2>&1",
-                    ['/usr/bin/openssl', $ca_filename, $ca_filename, $ocsp_uri, $serial]
-                ),
-                $output,
-                $retval
+            $output = Shell::shell_safe(
+                '/usr/bin/openssl ocsp -resp_no_certs -timeout 10 -nonce -CAfile %s -issuer %s -url %s -serial %s 2>&1',
+                [$ca_filename, $ca_filename, $ocsp_uri, $serial],
+                true
             );
             foreach ($output as $line) {
                 if (str_starts_with($line, "{$serial}:")) {

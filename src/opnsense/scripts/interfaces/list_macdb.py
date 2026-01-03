@@ -32,34 +32,27 @@
 import os.path
 import sys
 import ujson
-import importlib.util
+from lib import OUI
+
 
 if __name__ == '__main__':
-    oui_registry_file = "%s/eui/oui.txt" % os.path.dirname(importlib.util.find_spec('netaddr').origin)
     cache_file = '/tmp/oui.txt.json'
     result = {}
-    if os.path.isfile(oui_registry_file):
-        oui_mtime = os.stat(oui_registry_file).st_mtime
-        if os.path.isfile(cache_file) and os.stat(cache_file).st_mtime == os.stat(oui_registry_file).st_mtime:
-            try:
-                result = ujson.loads(open(cache_file).read())
-            except ValueError:
-                result = {}
+    oui_mtime = OUI().st_time
+    if os.path.isfile(cache_file) and os.stat(cache_file).st_mtime == oui_mtime:
+        try:
+            result = ujson.loads(open(cache_file).read())
+        except ValueError:
+            result = {}
 
-        if len(result) == 0:
-            for line in open(oui_registry_file, 'rb'):
-                line = line.decode()
-                if line.find('(base 16)') > -1:
-                    parts=line.split('(base 16)')
-                    if len(parts) >= 2:
-                        result[parts[0].strip()] = parts[1].strip()
+    if len(result) == 0:
+        result = OUI().get_db()
+        json_payload = ujson.dumps(result)
+        open(cache_file, 'w').write(json_payload)
+        os.chmod(cache_file, 0o444)
+        os.utime(cache_file, (oui_mtime, oui_mtime))
 
-            json_payload = ujson.dumps(result)
-            open(cache_file, 'w').write(json_payload)
-            os.chmod(cache_file, 0o444)
-            os.utime(cache_file, (oui_mtime, oui_mtime))
-
-            print(json_payload)
-            sys.exit(0)
+        print(json_payload)
+        sys.exit(0)
 
     print(ujson.dumps(result))

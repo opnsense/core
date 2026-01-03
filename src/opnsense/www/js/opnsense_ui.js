@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2024 Deciso B.V.
+ * Copyright (C) 2015-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,22 +28,30 @@
  * User interface shared components, requires opnsense.js for supporting functions.
  */
 
- /**
-  * format bytes
-  * @param bytes number of bytes to format
-  * @param decimals decimal places
-  * @return string
-  */
- function byteFormat(bytes, decimals)
- {
-     if (decimals === undefined) {
+/**
+ * format bytes or large numbers
+ * @param value number to format
+ * @param decimals decimal places
+ * @param is_number when true, format as number, else byte
+ * @return string
+ */
+function byteFormat(value, decimals, is_number)
+{
+    if (decimals === undefined) {
         decimals = 0;
-     }
-     const kb = 1024;
-     const ndx = bytes === 0 ? 0 : Math.floor(Math.log(bytes) / Math.log(kb));
-     const fileSizeTypes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-     return (bytes / Math.pow(kb, ndx)).toFixed(decimals) + ' ' + fileSizeTypes[ndx];
- }
+    }
+
+    const base = is_number ? 1000 : 1024;
+    const fileSizeTypes = is_number
+        ? ["", "K", "M", "B", "T", "P", "E", "Z", "Y"]
+        : ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+    const ndx = value === 0 ? 0 : Math.floor(Math.log(value) / Math.log(base));
+    // Apply decimals if the base has been exceeded at least once
+    const usedDecimals = ndx === 0 ? 0 : decimals;
+
+    return (value / Math.pow(base, ndx)).toFixed(usedDecimals) + ' ' + fileSizeTypes[ndx];
+}
 
 /**
  * save form to server
@@ -308,7 +316,12 @@ function addMultiSelectClearUI() {
             let element = $('select[id="' + id + '"]');
             if (element.hasClass("tokenize")) {
                 // trigger close on all Tokens
+                element.unbind('tokenize:tokens:change');
                 element.tokenize2().trigger('tokenize:clear');
+                /* re-attach change event to signal changes to original control (see formatTokenizersUI) */
+                element.on('tokenize:tokens:change', function(){
+                    source.change();
+                });
                 element.change();
             } else {
                 // remove options from selection
@@ -376,9 +389,14 @@ function addMultiSelectClearUI() {
             }
             destination.val(source.val().join('\n'));
             destination.unbind('change').change(function(){
+                source.unbind('tokenize:tokens:change');
                 source.tokenize2().trigger('tokenize:clear');
                 $.each($(this).val().split("\n"), function( index, value ) {
                     source.tokenize2().trigger('tokenize:tokens:add', [value, value, true]);
+                });
+                /* re-attach change event to signal changes to original control (see formatTokenizersUI) */
+                source.on('tokenize:tokens:change', function(){
+                    source.change();
                 });
             });
         });
@@ -487,6 +505,36 @@ function initFormAdvancedUI() {
 }
 
 /**
+ * handle keyboard shortcuts for toggling advanced and help
+ */
+function initGlobalOpenShortcuts() {
+    $(document).off('keydown.opnsenseGlobalOpenToggles').on('keydown.opnsenseGlobalOpenToggles', function (e) {
+        if (e.ctrlKey || e.altKey || e.metaKey) return;
+        const t = e.target;
+        const tag = (t.tagName || '').toLowerCase();
+        if ($(".bootstrap-select.open .dropdown-menu.open").length) return;
+        if (tag === 'input' || tag === 'textarea' || tag === 'select' || t.isContentEditable) return;
+
+        const $context = $('.modal:visible, .ui-dialog:visible, [role="dialog"]:visible').last();
+        const searchContext = $context.length > 0 ? $context : $(document);
+
+        if (e.key === 'a' || e.key === 'A') {
+            const $adv = searchContext.find('[id*="show_advanced"]').first();
+            if ($adv.length) {
+                $adv.click();
+                e.preventDefault();
+            }
+        } else if (e.key === 'h' || e.key === 'H') {
+            const $help = searchContext.find('[id*="show_all_help"]').first();
+            if ($help.length) {
+                $help.click();
+                e.preventDefault();
+            }
+        }
+    });
+}
+
+/**
  * standard dialog when information is required, wrapper around BootstrapDialog
  */
 function stdDialogInform(title, message, close, callback, type, cssClass) {
@@ -572,16 +620,41 @@ stdDialogRemoveItem.defaults = {
  *  Action button, expects the following data attributes on the widget
  *      data-endpoint='/path/to/my/endpoint'
  *      data-label="Apply text"
+ *      data-icon="fa fa-icon"
  *      data-service-widget="service" (optional service widget to signal)
  *      data-error-title="My error message"
  */
 $.fn.SimpleActionButton = function (params) {
     let this_button = this;
+
+    function setIcon(icon, removeClasses = '', addClasses = '') {
+        icon
+          .removeClass(removeClasses)
+          .addClass('reload_progress' + (addClasses ? ' ' + addClasses : ''))
+          .css('width', addClasses ? '1em' : '');
+    }
+
     this.construct = function () {
-        let label_content = '<b>' + this_button.data('label') + '</b> <i class="reload_progress">';
-        this_button.html(label_content);
+        let label_contents = [];
+        if (this_button.data('icon')) {
+            label_contents.push($("<i/>").addClass(this_button.data('icon')).prop('outerHTML'));
+        }
+        if (this_button.data('label')) {
+            label_contents.push('<b>' + this_button.data('label') + '</b>');
+        }
+        label_contents.push('<i class="reload_progress" style="display:inline-block;"></i>');
+        this_button.html(label_contents.join(' '));
+
+        let hideCheckTimeout;
+
         this_button.on('click', function () {
-            this_button.find('.reload_progress').addClass("fa fa-spinner fa-pulse");
+            const icon = this_button.find('.reload_progress');
+
+            // prevent icon issues with multiple rapid clicks on the button
+            clearTimeout(hideCheckTimeout);
+
+            setIcon(icon, 'fa fa-check fa-spinner fa-pulse', 'fa fa-spinner fa-pulse');
+
             let pre_action = function () {
                 return (new $.Deferred()).resolve();
             }
@@ -590,28 +663,44 @@ $.fn.SimpleActionButton = function (params) {
             }
             pre_action().done(function () {
                 ajaxCall(this_button.data('endpoint'), {}, function (data, status) {
-                    let data_status = typeof data == 'object' && 'status' in data ? data['status'] : '';
+                    const hasStatusField = (typeof data === 'object') && ('status' in data);
+                    const dataStatus = hasStatusField ? String(data.status).toLowerCase().trim() : '';
+                    const requestSucceeded = (
+                        status === "success" &&
+                        (dataStatus === "" || dataStatus === "ok")
+                    );
+
                     if (params && params.onAction) {
                         params.onAction(data, status);
                     }
-                    if ((status != "success" || (data_status.toLowerCase().trim() != 'ok')) && data_status !== '') {
+
+                    if (!requestSucceeded) {
                           BootstrapDialog.show({
                               type: BootstrapDialog.TYPE_WARNING,
                               title: this_button.data('error-title'),
                               message: data['status_msg'] ? data['status_msg'] : data['status'],
                               draggable: true
                           });
+                        setIcon(icon, 'fa fa-check fa-spinner fa-pulse', 'fa fa-spinner fa-pulse');
+                    } else {
+                        setIcon(icon, 'fa fa-spinner fa-pulse', 'fa fa-check');
+
+                        hideCheckTimeout = setTimeout(function () {
+                            setIcon(icon, 'fa fa-check', '');
+                        }, 4000);
                     }
-                    this_button.find('.reload_progress').removeClass("fa fa-spinner fa-pulse");
+
                     if (this_button.data('service-widget')) {
                         updateServiceControlUI(this_button.data('service-widget'));
                     }
                     if (this_button.data('grid-reload')) {
-                        std_bootgrid_reload(this_button.data('grid-reload'));
+                        $(this_button.data('grid-reload')).bootgrid('reload');
                     }
+
+                    updateSystemStatus();
                 });
             }).fail(function () {
-                this_button.find('.reload_progress').removeClass("fa fa-spinner fa-pulse");
+                setIcon(icon, 'fa fa-check fa-spinner fa-pulse', '');
             });
         });
     }
@@ -642,8 +731,10 @@ $.fn.SimpleActionButton = function (params) {
  * @param params
  * @param data_callback callout to cleanse data before usage
  * @param store_data store data in data attribute (in its original form)
+ * @param post_callback invoked after options are rendered and selectpicker is refreshed
+ * @param render_html if true, assumes HTML as `data-content`
  */
-$.fn.fetch_options = function(url, params, data_callback, store_data) {
+$.fn.fetch_options = function(url, params, data_callback, store_data, post_callback, render_html = false) {
     var deferred = $.Deferred();
     var $obj = $(this);
     $obj.empty();
@@ -655,9 +746,18 @@ $.fn.fetch_options = function(url, params, data_callback, store_data) {
         if (typeof data_callback === "function") {
             data = data_callback(data);
         }
+
         if (Array.isArray(data)) {
             data.map(function (item) {
-                $obj.append($("<option/>").attr({"value": item.value}).text(item.label));
+                const $option = $('<option>', { value: item.value });
+
+                if (render_html && item['data-content']) {
+                    $option.attr('data-content', item['data-content']);
+                } else {
+                    $option.text(item.label);
+                }
+
+                $obj.append($option);
             });
         } else {
             for (const groupKey in data) {
@@ -667,30 +767,42 @@ $.fn.fetch_options = function(url, params, data_callback, store_data) {
                         label: group.label,
                         'data-icon': group.icon
                     });
+
                     for (const item of group.items) {
-                        $optgroup.append(
-                            $('<option>', {
-                                value: item.value,
-                                text: item.label,
-                                'data-subtext': group.label,
-                                selected: item.selected ? 'selected' : undefined
-                            })
-                        );
+                        const $option = $('<option>', {
+                            value: item.value,
+                            'data-subtext': group.label,
+                            selected: item.selected ? 'selected' : undefined
+                        });
+
+                        if (render_html && item['data-content']) {
+                            $option.attr('data-content', item['data-content']);
+                        } else {
+                            $option.text(item.label);
+                        }
+
+                        $optgroup.append($option);
                     }
+
                     $obj.append($optgroup);
                 }
             }
         }
+
         if ($obj.hasClass('selectpicker')) {
             $obj.selectpicker('refresh');
         }
         $obj.change();
+
+        if (typeof post_callback === "function") {
+            post_callback(data);
+        }
+
         deferred.resolve();
     });
 
     return deferred.promise();
 };
-
 
 /**
  *  File upload dialog, constructs a modal, asks for a file to upload and sets {'payload': ..,, 'filename': ...}
@@ -800,11 +912,12 @@ $.fn.SimpleFileUploadDlg = function (params) {
  * @param {*} params data structure to use for the select picker
  */
 $.fn.replaceInputWithSelector = function (data, multiple=false) {
+    let empty_select_token  = '<<empty_item>>';
     let that = this;
     this.new_item = function() {
         let $div = $("<div/>");
         let $table = $('<table style="max-width: 348px"/>');
-        let $select = $('<select data-live-search="true" data-size="5" data-width="348px"/>');
+        let $select = $('<select name="' + that[0].name + '" data-live-search="true" data-size="5" data-width="348px"></select>');
         if (multiple) {
             $select.attr('multiple', 'multiple');
         }
@@ -832,8 +945,8 @@ $.fn.replaceInputWithSelector = function (data, multiple=false) {
                     optgrp.append($("<option/>").val(key2).text(this_item));
                 });
                 options.push(optgrp);
-            } else {
-                options.push($("<option/>").val('').text(data[key].label));
+            } else if (data[key].label !== undefined) {
+                options.push($("<option/>").val(empty_select_token).text(data[key].label));
             }
         });
         let $target = that.new_item();
@@ -845,29 +958,32 @@ $.fn.replaceInputWithSelector = function (data, multiple=false) {
         }
         $this_select.attr('for', $(this).attr('id')).selectpicker();
         $this_select.change(function(){
-            let $value = $(this).val();
-            if (Array.isArray($value)) {
-                $value = $value.filter(value => value !== '').join(',');
-            }
-            if ($value !== '') {
+            let $values = Array.isArray($(this).val()) ? $(this).val() : [$(this).val()];
+            let $value = $values.filter(value => !['', empty_select_token].includes(value)).join(',');
+            if (!$values.includes(empty_select_token)) {
                 $this_input.val($value);
                 $this_input.hide();
             } else {
+                /* manual input */
                 $this_input.show();
             }
         });
         $this_input.attr('id', $(this).attr('id'));
         $this_input.change(function(){
-            if (multiple) {
-                $this_select.val($(this).val().split(','));
+            let selopt = multiple ? $(this).val().split(',') : [$(this).val()];
+            $this_select.find('option').each(function(){
+                if (selopt.includes($(this).val())) {
+                    selopt.splice(selopt.indexOf($(this).val()), 1)
+                    $(this).attr('selected', 'selected');
+                } else {
+                    $(this).prop('selected', false);
+                }
+            });
+            if (selopt.length == 0) {
+                $this_input.hide(); /* items not in selector, show input */
             } else {
-                $this_select.val($(this).val());
-            }
-            if ($(this).val() === '' || $this_select.val() === null || $this_select.val() == '') {
-                $this_select.val('');
                 $this_input.show();
-            } else {
-                $this_input.hide();
+                $this_select.val(empty_select_token);
             }
             $this_select.selectpicker('refresh');
         });

@@ -287,7 +287,7 @@ div {
 }
 
 .flextable-row:hover {
-  background: #1a1d27 !important;
+  background: rgb(26.2, 29.475, 39.3) !important;
 }
 
 .flex-cell {
@@ -312,7 +312,7 @@ div {
 }
 
 .column .flex-cell:hover {
-  background: #1a1d27;
+  background: rgb(26.2, 29.475, 39.3);
 }
 
 .flex-subcell {
@@ -339,7 +339,7 @@ div {
 }
 
 .grid-row:hover {
-  background: #1a1d27 !important;
+  background: rgb(26.2, 29.475, 39.3) !important;
 }
 
 .grid-header {
@@ -360,5 +360,3 @@ div {
   align-items: center;
   justify-content: center;
 }
-
-/*# sourceMappingURL=dashboard.css.map */

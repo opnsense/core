@@ -1,4 +1,4 @@
 #!/bin/sh
 
 echo -n "Generating configuration: "
-configctl -w 10 template reload \*
+/usr/local/opnsense/service/template_ctl.py \*

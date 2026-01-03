@@ -80,16 +80,16 @@ class Plugin
         // generate virtual IPv6 interfaces
         foreach ($this->interfaceMapping as $key => &$intf) {
             if (!empty($intf['ipaddrv6']) && ($intf['ipaddrv6'] == '6rd' || $intf['ipaddrv6'] == '6to4')) {
-                $realif = "{$key}_stf";
+                $device = "{$key}_stf";
                 // create new interface
-                $this->interfaceMapping[$realif] = [];
-                $this->interfaceMapping[$realif]['ifconfig']['ipv6'] = $intf['ifconfig']['ipv6'];
-                $this->interfaceMapping[$realif]['gatewayv6'] = $intf['gatewayv6'];
-                $this->interfaceMapping[$realif]['is_IPv6_override'] = true;
-                $this->interfaceMapping[$realif]['descr'] = $intf['descr'];
-                $this->interfaceMapping[$realif]['if'] = $realif;
+                $this->interfaceMapping[$device] = [];
+                $this->interfaceMapping[$device]['ifconfig']['ipv6'] = $intf['ifconfig']['ipv6'];
+                $this->interfaceMapping[$device]['gatewayv6'] = $intf['gatewayv6'];
+                $this->interfaceMapping[$device]['is_IPv6_override'] = true;
+                $this->interfaceMapping[$device]['descr'] = $intf['descr'];
+                $this->interfaceMapping[$device]['if'] = $device;
                 // link original interface
-                $intf['IPv6_override'] = $realif;
+                $intf['IPv6_override'] = $device;
             }
         }
     }
@@ -135,18 +135,26 @@ class Plugin
         if (is_array($groups)) {
             foreach ($groups as $key => $gwgr) {
                 $routeto = [];
-                $proto = 'inet';
+                $proto = null;
+                /* All route-to tags must match, either {(if1 ip1), (if2 ip2)} or {if1 if2} */
+                $mode = null;
                 foreach ($gwgr as $gw) {
-                    if (Util::isIpAddress($gw['gwip']) && !empty($gw['int'])) {
-                        $gwweight = empty($gw['weight']) ? 1 : $gw['weight'];
-                        $routeto[] = str_repeat("( {$gw['int']} {$gw['gwip']} )", $gwweight);
-                        if (strstr($gw['gwip'], ':')) {
-                            $proto = 'inet6';
-                        }
+                    if ($proto !== null && $proto != $gw['ipprotocol']) {
+                        /* protocols must match */
+                        continue;
+                    }
+                    $proto = $gw['ipprotocol'];
+                    $gwweight = empty($gw['weight']) ? 1 : $gw['weight'];
+                    if ((Util::isIpAddress($gw['gwip']) && !empty($gw['int'])) && ($mode === null || $mode === 'gw')) {
+                        $routeto[] = rtrim(str_repeat(" ( {$gw['int']} {$gw['gwip']} ) ,", $gwweight), ',');
+                        $mode = 'gw'; /* gateway [ip] mode */
+                    } elseif ($mode === null || $mode === 'if') {
+                        $routeto[] = rtrim(str_repeat(" {$gw['int']} ,", $gwweight), ',');
+                        $mode = 'if'; /* interface [ip] mode */
                     }
                 }
                 if (count($routeto) > 0) {
-                    $routetologic = "route-to {" . implode(' ', $routeto) . "}";
+                    $routetologic = "route-to {" . implode(' , ', $routeto) . "}";
                     if (!empty($gwgr[0]['poolopts'])) {
                         // Since Gateways->getGroups() returns detail items, we have no other choice than
                         // to copy top level attributes into the details if they matter (poolopts)
@@ -157,9 +165,7 @@ class Plugin
                             $routetologic .= " sticky-address ";
                         }
                     }
-                    $this->gatewayMapping[$key] = array("logic" => $routetologic,
-                                                        "proto" => $proto,
-                                                        "type" => "group");
+                    $this->gatewayMapping[$key] = ["logic" => $routetologic, "proto" => $proto, "type" => "group"];
                 }
             }
         }
@@ -214,10 +220,10 @@ class Plugin
      * @param bool $quick
      * @return null
      */
-    public function registerAnchor($name, $type = "fw", $priority = 0, $placement = "tail", $quick = false, $ifs = null)
+    public function registerAnchor($name, $type = "fw", $priority = 0, $placement = "tail", $quick = false)
     {
         $anchorKey = sprintf("%s.%s.%08d.%08d", $type, $placement, $priority, count($this->anchors));
-        $this->anchors[$anchorKey] = ['name' => $name, 'quick' => $quick, 'ifs' => $ifs];
+        $this->anchors[$anchorKey] = ['name' => $name, 'quick' => $quick];
         ksort($this->anchors);
     }
 
@@ -233,20 +239,8 @@ class Plugin
         foreach (explode(',', $types) as $type) {
             foreach ($this->anchors as $anchorKey => $anchor) {
                 if (strpos($anchorKey, "{$type}.{$placement}") === 0) {
-                    $result .= ($type == "fw" || $type == "ether") ? "" : "{$type}-";
-                    $prefix = $type == "ether" ? "ether " : "";
-                    $result .= "{$prefix}anchor \"{$anchor['name']}\"";
                     if ($anchor['quick']) {
                         $result .= " quick";
-                    }
-                    if (!empty($anchor['ifs'])) {
-                        $ifs = array_filter(array_map(function ($if) {
-                            return $this->interfaceMapping[$if]['if'] ?? null;
-                        }, explode(',', $anchor['ifs'])));
-
-                        if (!empty($ifs)) {
-                            $result .= " on {" . implode(', ', $ifs) . "}";
-                        }
                     }
                     $result .= "\n";
                 }
@@ -290,7 +284,11 @@ class Plugin
     public function registerForwardRule($prio, $conf)
     {
         if (!empty($this->systemDefaults['forward'])) {
-            $conf = array_merge($this->systemDefaults['forward'], $conf);
+            foreach ($this->systemDefaults['forward'] as $key => $val) {
+                if (empty($conf[$key])) {
+                    $conf[$key] = $val;
+                }
+            }
         }
         $rule = new ForwardRule($this->interfaceMapping, $conf);
         if (empty($this->natRules[$prio])) {

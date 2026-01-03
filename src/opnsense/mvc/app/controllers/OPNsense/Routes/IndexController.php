@@ -40,6 +40,7 @@ class IndexController extends \OPNsense\Base\IndexController
     {
         // include dialog form definitions
         $this->view->formDialogEditRoute = $this->getForm("dialogEditRoute");
+        $this->view->formGridRoute = $this->getFormGrid('dialogEditRoute');
         $this->view->pick('OPNsense/Routes/index');
     }
 }

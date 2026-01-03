@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -26,10 +26,9 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
-    returns a list of pf tables (optional as a json container)
+    returns a list of pf tables as json structure
 """
 import subprocess
-import sys
 import ujson
 
 if __name__ == '__main__':
@@ -37,10 +36,4 @@ if __name__ == '__main__':
     sp = subprocess.run(['/sbin/pfctl', '-sT'], capture_output=True, text=True)
     for line in sp.stdout.strip().split('\n'):
         result.append(line.strip())
-    # handle command line argument (type selection)
-    if len(sys.argv) > 1 and sys.argv[1] == 'json':
-        print(ujson.dumps(result))
-    else:
-        # output plain
-        for table in result:
-            print (table)
+    print(ujson.dumps(result))

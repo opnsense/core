@@ -97,4 +97,7 @@ elif [ "${COMMAND}" = "html" -a -n "${VERSION}" ]; then
 	changelog_show "$(basename ${VERSION}).htm"
 elif [ "${COMMAND}" = "text" -a -n "${VERSION}" ]; then
 	changelog_show "$(basename ${VERSION}).txt"
+elif [ "${COMMAND}" = "date" -a -n "${VERSION}" ]; then
+	# added here for completeness, but called directly in backend action
+	/usr/local/opnsense/scripts/firmware/changelog-date.php "$(basename ${VERSION})"
 fi

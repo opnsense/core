@@ -1,11 +1,11 @@
 <script>
     $( document ).ready(function() {
         $("#{{formGridVxlan['table_id']}}").UIBootgrid(
-            {   search:'/api/interfaces/vxlan_settings/searchItem/',
-                get:'/api/interfaces/vxlan_settings/getItem/',
-                set:'/api/interfaces/vxlan_settings/setItem/',
-                add:'/api/interfaces/vxlan_settings/addItem/',
-                del:'/api/interfaces/vxlan_settings/delItem/',
+            {   search:'/api/interfaces/vxlan_settings/search_item/',
+                get:'/api/interfaces/vxlan_settings/get_item/',
+                set:'/api/interfaces/vxlan_settings/set_item/',
+                add:'/api/interfaces/vxlan_settings/add_item/',
+                del:'/api/interfaces/vxlan_settings/del_item/',
                 options: {
                     formatters: {
                         "vxlanFormatter": function (column, row) {

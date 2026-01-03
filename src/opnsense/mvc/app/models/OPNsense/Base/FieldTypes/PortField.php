@@ -84,7 +84,7 @@ class PortField extends BaseListField
         'teredo',
         'telnet',
         'tftp',
-        'rfb'
+        'rfb',
     ];
 
     /**
@@ -122,9 +122,9 @@ class PortField extends BaseListField
                 }
             }
             if ($this->enableAlias) {
-                foreach ((new Alias())->aliases->alias->iterateItems() as $alias) {
-                    if (strpos((string)$alias->type, "port") !== false) {
-                        self::$internalCacheOptionList[$setid][(string)$alias->name] = (string)$alias->name;
+                foreach (self::getArrayReference(Alias::getCachedData(), 'aliases.alias') as $uuid => $alias) {
+                    if ($alias['type'] == 'port') {
+                        self::$internalCacheOptionList[$setid][$alias['name']] = $alias['name'];
                     }
                 }
             }
@@ -191,12 +191,12 @@ class PortField extends BaseListField
     /**
      * @return array|string|null
      */
-    public function getNodeData()
+    protected function getNodeOptions()
     {
         // XXX: although it's not 100% clean,
         //      when using a selector we generally would expect to return a (appendable) list of options.
         if ($this->internalMultiSelect) {
-            return parent::getNodeData();
+            return parent::getNodeOptions();
         } else {
             return (string)$this;
         }

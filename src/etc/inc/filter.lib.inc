@@ -148,7 +148,7 @@ function filter_core_get_port_alias($aliasname, $aliases = [], $aliasObject = nu
 {
     $response = [];
     $aliases[] = $aliasname;
-    $aliasObject = $aliasObject == null ? (new \OPNsense\Firewall\Alias()) : $aliasObject;
+    $aliasObject = $aliasObject == null ? (new \OPNsense\Firewall\Alias(true)) : $aliasObject;
     foreach ($aliasObject->aliasIterator() as $aliased) {
         if ($aliasname == $aliased['name'] && $aliased['type'] == 'port' && !empty($aliased['enabled'])) {
             foreach ($aliased['content'] as $address) {
@@ -176,11 +176,15 @@ function filter_core_get_port_alias($aliasname, $aliases = [], $aliasObject = nu
 function filter_core_get_default_nat_outbound_networks()
 {
     global $config;
-    $result = ["127.0.0.0/8"];
+
+    $result = ['127.0.0.0/8'];
+
+    require_once 'plugins.inc.d/openvpn.inc'; /* XXX for openvpn_legacy() */
+
     // Add openvpn networks
-    foreach (['openvpn-server', 'openvpn-client'] as $section) {
-        if (!empty($config['openvpn'][$section])) {
-            foreach ($config['openvpn'][$section] as $ovpn) {
+    foreach (['server', 'client'] as $section) {
+        if (openvpn_legacy($section)) {
+            foreach ($config['openvpn']["openvpn-{$section}"] as $ovpn) {
                 if (!isset($ovpn['disable']) && !empty($ovpn['tunnel_network'])) {
                     $result[] = $ovpn['tunnel_network'];
                 }
@@ -201,6 +205,7 @@ function filter_core_get_default_nat_outbound_networks()
 function filter_core_rules_system($fw, $defaults)
 {
     global $config;
+
     $ipv6_disabled = !isset($config['system']['ipv6allow']);
 
     $dhcrelay6_interfaces = plugins_run('dhcrelay_interfaces', ['inet6']);
@@ -220,50 +225,61 @@ function filter_core_rules_system($fw, $defaults)
         $defaults['block']
     );
 
-    // IPv6 ICMP requirements
-    $fw->registerFilterRule(
-        1,
-        ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '1,2,135,136',
-            'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'disabled' => $ipv6_disabled],
-        $defaults['pass']
-    );
-    // Allow only bare essential icmpv6 packets
-    $fw->registerFilterRule(
-        1,
-        ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,129,133,134,135,136',
-            'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'from' => '(self)',
-            'to' => 'fe80::/10,ff02::/16', 'direction' => 'out', 'disabled' => $ipv6_disabled],
-        $defaults['pass']
-    );
-    $fw->registerFilterRule(
-        1,
-        ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,133,134,135,136',
-            'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'from' => 'fe80::/10',
-            'to' => 'fe80::/10,ff02::/16', 'direction' => 'in', 'disabled' => $ipv6_disabled ],
-        $defaults['pass']
-    );
-    $fw->registerFilterRule(
-        1,
-        ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,133,134,135,136',
-            'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'from' => 'ff02::/16',
-            'to' => 'fe80::/10', 'direction' => 'in', 'disabled' => $ipv6_disabled],
-        $defaults['pass']
-    );
-    $fw->registerFilterRule(
-        1,
-        ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,133,134,135,136',
-            'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'from' => '::',
-            'to' => 'ff02::/16', 'direction' => 'in', 'disabled' => $ipv6_disabled],
-        $defaults['pass']
-    );
-    // block all targeting port 0
-    foreach (['from_port', 'to_port'] as $target) {
+    if (empty($config['system']['no_ipv6_rfc4890_req'])) {
+        // IPv6 ICMP requirements
         $fw->registerFilterRule(
             1,
-            ['ipprotocol' => 'inet46', 'protocol' => 'tcp/udp', $target => '0',
-                'descr' => 'block all targeting port 0'],
-            $defaults['block']
+            ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '1,2,3,4,135,136',
+                'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'disabled' => $ipv6_disabled,
+                '#ref' => 'system_advanced_firewall.php#no_ipv6_rfc4890_req'],
+            $defaults['pass']
         );
+        // Allow only bare essential icmpv6 packets
+        $fw->registerFilterRule(
+            1,
+            ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,129,133,134,135,136',
+                'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'from' => '(self)',
+                'to' => 'fe80::/10,ff02::/16', 'direction' => 'out', 'disabled' => $ipv6_disabled,
+                '#ref' => 'system_advanced_firewall.php#no_ipv6_rfc4890_req'],
+            $defaults['pass']
+        );
+        $fw->registerFilterRule(
+            1,
+            ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,133,134,135,136',
+                'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'from' => 'fe80::/10',
+                'to' => 'fe80::/10,ff02::/16', 'direction' => 'in', 'disabled' => $ipv6_disabled,
+                '#ref' => 'system_advanced_firewall.php#no_ipv6_rfc4890_req'],
+            $defaults['pass']
+        );
+        $fw->registerFilterRule(
+            1,
+            ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,133,134,135,136',
+                'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'from' => 'ff02::/16',
+                'to' => 'fe80::/10', 'direction' => 'in', 'disabled' => $ipv6_disabled,
+                '#ref' => 'system_advanced_firewall.php#no_ipv6_rfc4890_req'],
+            $defaults['pass']
+        );
+        $fw->registerFilterRule(
+            1,
+            ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,133,134,135,136',
+                'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'from' => '::',
+                'to' => 'ff02::/16', 'direction' => 'in', 'disabled' => $ipv6_disabled,
+                '#ref' => 'system_advanced_firewall.php#no_ipv6_rfc4890_req'],
+            $defaults['pass']
+        );
+    }
+
+    // block all targeting port 0
+    if (empty($config['system']['no_port0_block'])) {
+        foreach (['from_port', 'to_port'] as $target) {
+            $fw->registerFilterRule(
+                1,
+                ['ipprotocol' => 'inet46', 'protocol' => 'tcp/udp', $target => '0',
+                    'descr' => 'block all targeting port 0',
+                    '#ref' => 'system_advanced_firewall.php#no_port0_block'],
+                $defaults['block']
+            );
+        }
     }
     // CARP defaults
     if ((new OPNsense\Interfaces\Vip())->isCarpEnabled()) {
@@ -277,27 +293,38 @@ function filter_core_rules_system($fw, $defaults)
     }
 
     // Lockout rules
-    $fw->registerFilterRule(
-        1,
-        ['protocol' => 'tcp', 'from' => '<sshlockout>', 'to' => '(self)' , 'descr' => 'sshlockout', 'direction' => 'in',
-        'to_port' => !empty($config['system']['ssh']['port']) ? $config['system']['ssh']['port'] : 22],
-        $defaults['block']
-    );
-    $webport = '443';
-    if (!empty($config['system']['webgui']['port'])) {
-        $webport = $config['system']['webgui']['port'];
-    } elseif ($config['system']['webgui']['protocol'] == 'http') {
-        $webport = '80';
+    if (empty($config['system']['no_sshlockout'])) {
+        $fw->registerFilterRule(
+            1,
+            ['protocol' => 'tcp', 'from' => '<sshlockout>', 'to' => '(self)' , 'descr' => 'sshlockout', 'direction' => 'in',
+            'to_port' => !empty($config['system']['ssh']['port']) ? $config['system']['ssh']['port'] : 22,
+            '#ref' => 'system_advanced_firewall.php#no_sshlockout'],
+            $defaults['block']
+        );
+        $webport = '443';
+        if (!empty($config['system']['webgui']['port'])) {
+            $webport = $config['system']['webgui']['port'];
+        } elseif ($config['system']['webgui']['protocol'] == 'http') {
+            $webport = '80';
+        }
+        $fw->registerFilterRule(
+            1,
+            ['protocol' => 'tcp', 'from' => '<sshlockout>', 'to' => '(self)' , 'descr' => 'sshlockout',
+            'direction' => 'in','to_port' => $webport,
+            '#ref' => 'system_advanced_firewall.php#no_sshlockout'],
+            $defaults['block']
+        );
     }
-    $fw->registerFilterRule(
-        1,
-        ['protocol' => 'tcp', 'from' => '<sshlockout>', 'to' => '(self)' , 'descr' => 'sshlockout',
-        'direction' => 'in','to_port' => $webport],
-        $defaults['block']
-    );
 
     // block all in alias <virusprot>
-    $fw->registerFilterRule(1, ['from' => '<virusprot>', 'descr' => 'virusprot overload table'], $defaults['block']);
+    if (empty($config['system']['no_virusprot'])) {
+        $fw->registerFilterRule(
+            1,
+            ['from' => '<virusprot>', 'descr' => 'virusprot overload table',
+            '#ref' => 'system_advanced_firewall.php#no_virusprot'],
+            $defaults['block']
+        );
+    }
 
     // block bogons and private nets
     $bogontmpl = ['type' => 'block', 'log' => !isset($config['syslog']['nologbogons']), 'disablereplyto' => 1];
@@ -373,8 +400,9 @@ function filter_core_rules_system($fw, $defaults)
             }
             $fw->registerFilterRule(1, $dhcpv6_opts, $defaults['pass']);
         }
+
         // IPv4
-        switch (empty($intfinfo['ipaddr']) ? "" : $intfinfo['ipaddr']) {
+        switch ($intfinfo['ipaddr'] ?? 'none') {
             case "pptp":
                 $fw->registerFilterRule(
                     1,
@@ -447,11 +475,13 @@ function filter_core_rules_system($fw, $defaults)
                 }
                 break;
         }
+
         // IPv6
         if ($ipv6_disabled) {
             continue;
         }
-        switch (isset($intfinfo['ipaddrv6']) ? $intfinfo['ipaddrv6'] : null) {
+
+        switch ($intfinfo['ipaddrv6'] ?? 'none') {
             case "6rd":
                 $fw->registerFilterRule(
                     1,
@@ -536,6 +566,7 @@ function filter_core_rules_system($fw, $defaults)
         'quick' => false, "descr" => "let out anything from firewall host itself"],
         $defaults['pass']
     );
+
     // ipsec
     if (!empty(iterator_to_array($fw->getInterfaceMapping())['enc0'])) {
         $fw->registerFilterRule(
@@ -574,8 +605,13 @@ function filter_core_rules_system($fw, $defaults)
             if (!isset($ifcfg['internal_dynamic']) && $ifcfg['if'] != 'lo0') {
                 $protos_found = [];
                 $address_check = ['inet' => 'is_subnetv4', 'inet6' => 'is_subnetv6'];
-                foreach (array_keys(interfaces_addresses($ifcfg['if'], true, $fw->getIfconfigDetails())) as $addr) {
+                $ifdetails = $fw->getIfconfigDetails();
+                foreach (array_keys(interfaces_addresses($ifcfg['if'], true, $ifdetails)) as $addr) {
                     foreach ($ipv6_disabled ? ['inet'] : ['inet', 'inet6'] as $inet) {
+                        if ($inet == 'inet6' && !empty($ifdetails[$ifcfg['if']]['ipv6'][0]['link-local'])) {
+                            /* skip inet6 without a GUA as there is no public address to "stick" we should exclude these */
+                            continue;
+                        }
                         if (!in_array($inet, $protos_found) && $address_check[$inet]($addr)) {
                             $gwname = $fw->getGateways()->getInterfaceGateway($ifdescr, $inet, true, 'name');
                             if (!empty($gwname)) {
@@ -598,6 +634,34 @@ function filter_core_rules_system($fw, $defaults)
                     }
                 }
             }
+        }
+    }
+
+    // auto-generated DNAT rules
+    foreach ((new OPNsense\Firewall\DNat(false))->rule->sortedBy(['sequence']) as $key => $rule) {
+        if ($rule->disabled->isEmpty() && $rule->pass == 'rule') {
+            $dnatrule = $rule->getNodeContent();
+            $tmprule = [
+                'ipprotocol' =>  $dnatrule['ipprotocol'],
+                'interface' => $dnatrule['interface'],
+                'protocol' =>  $dnatrule['protocol'],
+                'source' => $dnatrule['source'],
+                'destination' => [
+                    'network' => $dnatrule['target']
+                ],
+                'log' => $dnatrule['log'],
+                'descr' => $dnatrule['descr']
+            ];
+
+            if (!empty($dnatrule['destination']['port']) && !empty($dnatrule['local-port'])) {
+                $tmprule['destination']['port'] = $dnatrule['local-port'];
+                $parts = explode('-', $dnatrule['destination']['port']);
+                if (count($parts) == 2) {
+                    $range_end = $parts[1] - $parts[0] +  $dnatrule['local-port'];
+                    $dnatrule['local-port'] .= sprint("-%s", $range_end);
+                }
+            }
+            $fw->registerFilterRule(500000, $tmprule); /* automatic at the end of our ruleset */
         }
     }
 }

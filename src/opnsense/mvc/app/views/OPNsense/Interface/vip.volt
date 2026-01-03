@@ -1,11 +1,13 @@
 <script>
     $( document ).ready(function() {
+        const formGridVipJson = {{ formGridVip | json_encode() }};
+
         $("#{{formGridVip['table_id']}}").UIBootgrid(
-            {   search:'/api/interfaces/vip_settings/searchItem/',
-                get:'/api/interfaces/vip_settings/getItem/',
-                set:'/api/interfaces/vip_settings/setItem/',
-                add:'/api/interfaces/vip_settings/addItem/',
-                del:'/api/interfaces/vip_settings/delItem/',
+            {   search:'/api/interfaces/vip_settings/search_item/',
+                get:'/api/interfaces/vip_settings/get_item/',
+                set:'/api/interfaces/vip_settings/set_item/',
+                add:'/api/interfaces/vip_settings/add_item/',
+                del:'/api/interfaces/vip_settings/del_item/',
                 options:{
                     initialSearchPhrase: getUrlHash('search'),
                     requestHandler: function(request){
@@ -15,8 +17,23 @@
                         return request;
                     },
                     formatters: {
-                        networkFormatter: function(column, row) {
-                            return row.subnet + (row.subnet_bits ? '/' + row.subnet_bits : '');
+                        modeFormatter(column, row) {
+                            // skips rendering based on mode mismatch and renders checkmark if boolean
+                            const field = formGridVipJson.fields.find(f => f["column-id"] === column.id);
+                            const value = row[column.id];
+                            const mode = row.mode ?? '';
+                            const allowedModes = (field?.mode ?? '').split(/\s+/);
+
+                            if (allowedModes.length && !allowedModes.includes(mode)) {
+                                return '';
+                            }
+
+                            if (field?.type === 'boolean' && (value === '0' || value === '1')) {
+                                const icon = value === '1' ? 'fa-check' : 'fa-times';
+                                return `<span class="fa fa-fw ${icon}" data-value="${value}" data-row-id="${row.uuid}"></span>`;
+                            }
+
+                            return value;
                         },
                     },
                 }
@@ -60,7 +77,8 @@
             )
         );
 
-        $("#mode_filter_container").detach().prependTo('#{{formGridVip["table_id"]}}-header > .row > .actionBar > .actions');
+        $("#mode_filter_container").detach().insertAfter('#{{formGridVip["table_id"]}}-header .search');
+
         /**
          * select an unassigned carp vhid
          */
@@ -86,7 +104,7 @@
           </select>
       </div>
   </div>
-  {{ partial('layout_partials/base_bootgrid_table', formGridVip + {'command_width': '90'})}}
+  {{ partial('layout_partials/base_bootgrid_table', formGridVip)}}
 </div>
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/interfaces/vip_settings/reconfigure'}) }}
 {{ partial('layout_partials/base_dialog',['fields':formDialogVip,'id':formGridVip['edit_dialog_id'],'label':lang._('Edit Virtual IP')])}}

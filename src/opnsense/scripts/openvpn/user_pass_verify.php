@@ -96,9 +96,6 @@ function do_auth($common_name, $serverid, $method, $auth_file)
     } elseif (empty($a_server['authmode'])) {
         return 'No authentication server has been selected to authenticate against. ' .
         "Denying authentication for user {$username}";
-    } elseif (!empty($a_server['local_group']) && !in_array($a_server['local_group'], getUserGroups($username))) {
-        return "OpenVPN '$serverid' requires the local group {$a_server['local_group']}. " .
-            "Denying authentication for user {$username}";
     }
 
     if (file_exists("/var/etc/openvpn/server{$serverid}.ca")) {
@@ -131,6 +128,10 @@ function do_auth($common_name, $serverid, $method, $auth_file)
             }
 
             if ($authenticator->authenticate($username, $password)) {
+                if (!empty($a_server['local_group']) && !in_array($a_server['local_group'], getUserGroups($username))) {
+                    return "OpenVPN '$serverid' requires the local group {$a_server['local_group']}. " .
+                        "Denying authentication for user {$username}";
+                }
                 // fetch or create client specific override
                 $common_name = empty($a_server['cso_login_matching']) ? $common_name : $username;
                 syslog(

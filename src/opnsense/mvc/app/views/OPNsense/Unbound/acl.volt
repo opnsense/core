@@ -43,12 +43,12 @@ $( document ).ready(function() {
     });
 
     $("#{{formGridAcl['table_id']}}").UIBootgrid({
-        search:'/api/unbound/settings/searchAcl',
-        get:'/api/unbound/settings/getAcl/',
-        set:'/api/unbound/settings/setAcl/',
-        add:'/api/unbound/settings/addAcl/',
-        del:'/api/unbound/settings/delAcl/',
-        toggle:'/api/unbound/settings/toggleAcl/'
+        search:'/api/unbound/settings/search_acl',
+        get:'/api/unbound/settings/get_acl/',
+        set:'/api/unbound/settings/set_acl/',
+        add:'/api/unbound/settings/add_acl/',
+        del:'/api/unbound/settings/del_acl/',
+        toggle:'/api/unbound/settings/toggle_acl/'
     });
 
     $("div.actionBar").parent().prepend($('<td id="heading-wrapper" class="col-sm-2 theading-text">{{ lang._('Access Control Lists') }}</div>'));

@@ -178,6 +178,24 @@ class Util
     }
 
     /**
+     * fetch alias by name from model
+     * @param string $name name
+     * @return Alias|null
+     */
+    private static function getAliasByName($name)
+    {
+        if (self::$aliasObject == null) {
+            // Cache the alias object to avoid object creation overhead.
+            self::$aliasObject = new Alias(true);
+            self::$aliasObject->flushCache();
+        }
+        if (!empty($name)) {
+            return self::$aliasObject->getByName($name);
+        }
+        return null;
+    }
+
+    /**
      * check if name exists in alias config section
      * @param string $name name
      * @param boolean $valid check if the alias can safely be used
@@ -186,20 +204,29 @@ class Util
      */
     public static function isAlias($name, $valid = false)
     {
-        if (self::$aliasObject == null) {
-            // Cache the alias object to avoid object creation overhead.
-            self::$aliasObject = new Alias();
-            self::$aliasObject->flushCache();
-        }
-        if (!empty($name)) {
-            $alias = self::$aliasObject->getByName($name);
-            if ($alias != null) {
-                if ($valid) {
-                    // check validity for port type aliases
-                    if (preg_match("/port/i", (string)$alias->type) && empty((string)$alias->content)) {
-                        return false;
-                    }
+        $alias = self::getAliasByName($name);
+        if ($alias != null) {
+            if ($valid) {
+                // check validity for port type aliases
+                if ((string)$alias->type == 'port' && empty((string)$alias->content)) {
+                    return false;
                 }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @return boolean true when alias exists and is a port type
+     */
+    public static function isPortAlias($name)
+    {
+
+        $alias = self::getAliasByName($name);
+        if ($alias != null) {
+            // check validity for port type aliases
+            if ((string)$alias->type == 'port' && !empty((string)$alias->content)) {
                 return true;
             }
         }
@@ -215,7 +242,7 @@ class Util
     {
         if (empty(self::$aliasDescriptions)) {
             // read all aliases at once, and cache descriptions.
-            foreach ((new Alias())->aliasIterator() as $alias) {
+            foreach ((new Alias(true))->aliasIterator() as $alias) {
                 if (empty(self::$aliasDescriptions[$alias['name']])) {
                     if (!empty($alias['description'])) {
                         self::$aliasDescriptions[$alias['name']] = '<strong>' . $alias['description'] . '</strong><br/>';
@@ -253,7 +280,7 @@ class Util
     {
         if (self::$aliasObject == null) {
             // Cache the alias object to avoid object creation overhead.
-            self::$aliasObject = new Alias();
+            self::$aliasObject = new Alias(true);
         }
         $result = array();
         foreach (self::$aliasObject->aliasIterator() as $node) {
@@ -540,5 +567,50 @@ class Util
                 }
             }
         }
+    }
+
+    /**
+     * query anti lockout interface and ports using only our config object
+     * @return array [if => [ports]]
+     */
+    public static function getAntiLockout()
+    {
+        $cfg = Config::getInstance()->object();
+        if (isset($cfg->system->webgui->noantilockout)) {
+            return [];
+        }
+
+        /*  "priority" list to identify primary local interface: lan, optX or wan */
+        $iflist = array_keys((array)$cfg->interfaces->children());
+        natsort($iflist);
+        foreach ($iflist as $if) {
+            if (preg_match('/^(lan|opt[0-9]+|wan)$/', $if)) {
+                $lockout_if = $if;
+                break;
+            }
+        }
+        if (empty($lockout_if)) {
+            return [];
+        }
+        $lockout_ports = [];
+        if (empty($cfg->system->webgui->port)) {
+            $lockout_ports[] = $cfg->system->webgui->protocol == 'https' ? '443' : '80';
+        } else {
+            $lockout_ports[] = (string)$cfg->system->webgui->port;
+        }
+        if ($cfg->system->webgui->protocol == 'https' && !isset($cfg->system->webgui->disablehttpredirect)) {
+            $lockout_ports[] = '80';
+        }
+        if (isset($cfg->system->ssh->enabled)) {
+            /**
+             * filter_core_get_antilockout() checked for install media as well,
+             * which looks like an overkill and is expensive to check
+             **/
+            $lockout_ports[] = empty($cfg->system->ssh->port) ? '22' : (string)$cfg->system->ssh->port;
+        }
+        sort($lockout_ports);
+
+        /* return a convenient one-entry array to iterate over for our callers */
+        return [$lockout_if => $lockout_ports];
     }
 }

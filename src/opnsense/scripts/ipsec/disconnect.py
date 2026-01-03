@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -29,15 +29,11 @@
     disconnect ipsec connection
 """
 import sys
-import os
 import subprocess
-import ujson
 import vici
 
 # parse input parameter
-conn_id = None
-if len(sys.argv) > 1:
-    conn_id = sys.argv[1].strip()
+conn_id = sys.argv[1].strip() if len(sys.argv) > 1 else None
 
 # validate if SA is active before trying to disconnect, validates input data
 conn_found = False
@@ -49,4 +45,4 @@ for sas in s.list_sas():
 
 # terminate connection if found
 if conn_found:
-    subprocess.run(['/usr/local/sbin/ipsec', 'down', conn_id], capture_output=True)
+    subprocess.run(['/usr/local/sbin/swanctl', '--terminate', '--ike',  conn_id], capture_output=True)

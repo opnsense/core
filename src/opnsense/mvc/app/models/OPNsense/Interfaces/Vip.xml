@@ -64,6 +64,8 @@
                 <Required>Y</Required>
                 <Default>0</Default>
             </nosync>
+            <address type="TextField" volatile="true"/>
+            <vhid_txt type="TextField" volatile="true"/>
             <descr type="DescriptionField"/>
         </vip>
     </items>

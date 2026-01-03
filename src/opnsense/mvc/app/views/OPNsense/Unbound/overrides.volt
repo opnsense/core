@@ -27,16 +27,17 @@
 <script>
 $( document ).ready(function() {
     let grid_hosts = $("#{{formGridHostOverride['table_id']}}").UIBootgrid({
-        search:'/api/unbound/settings/searchHostOverride/',
-        get:'/api/unbound/settings/getHostOverride/',
-        set:'/api/unbound/settings/setHostOverride/',
-        add:'/api/unbound/settings/addHostOverride/',
-        del:'/api/unbound/settings/delHostOverride/',
-        toggle:'/api/unbound/settings/toggleHostOverride/',
+        search:'/api/unbound/settings/search_host_override/',
+        get:'/api/unbound/settings/get_host_override/',
+        set:'/api/unbound/settings/set_host_override/',
+        add:'/api/unbound/settings/add_host_override/',
+        del:'/api/unbound/settings/del_host_override/',
+        toggle:'/api/unbound/settings/toggle_host_override/',
         options: {
             selection: true,
             multiSelect: false,
             rowSelect: true,
+            rowCount: [7, 20, 50, 100, 200, 500, -1],
             stickySelect: true,
             formatters: {
                 "mxformatter": function (column, row) {
@@ -50,23 +51,20 @@ $( document ).ready(function() {
         }
     }).on("selected.rs.jquery.bootgrid", function (e, rows) {
         $("#{{formGridHostAlias['table_id']}}").bootgrid('reload');
-    }).on("deselected.rs.jquery.bootgrid", function (e, rows) {
-        $("#{{formGridHostAlias['table_id']}}").bootgrid('reload');
     }).on("loaded.rs.jquery.bootgrid", function (e) {
         let ids = $("#{{formGridHostOverride['table_id']}}").bootgrid("getCurrentRows");
         if (ids.length > 0) {
             $("#{{formGridHostOverride['table_id']}}").bootgrid('select', [ids[0].uuid]);
         }
-        $("#{{formGridHostAlias['table_id']}}").bootgrid('reload');
     });
 
     let grid_aliases = $("#{{formGridHostAlias['table_id']}}").UIBootgrid({
-        search:'/api/unbound/settings/searchHostAlias/',
-        get:'/api/unbound/settings/getHostAlias/',
-        set:'/api/unbound/settings/setHostAlias/',
-        add:'/api/unbound/settings/addHostAlias/',
-        del:'/api/unbound/settings/delHostAlias/',
-        toggle:'/api/unbound/settings/toggleHostAlias/',
+        search:'/api/unbound/settings/search_host_alias/',
+        get:'/api/unbound/settings/get_host_alias/',
+        set:'/api/unbound/settings/set_host_alias/',
+        add:'/api/unbound/settings/add_host_alias/',
+        del:'/api/unbound/settings/del_host_alias/',
+        toggle:'/api/unbound/settings/toggle_host_alias/',
         options: {
             labels: {
                 noResults: "{{ lang._('No results found for selected host or none selected') }}"
@@ -74,6 +72,7 @@ $( document ).ready(function() {
             selection: true,
             multiSelect: true,
             rowSelect: true,
+            rowCount: [7, 20, 50, 100, 200, 500, -1],
             useRequestHandlerOnGet: true,
             requestHandler: function(request) {
                 let uuids = $("#{{formGridHostOverride['table_id']}}").bootgrid("getSelectedRows");
@@ -101,13 +100,20 @@ $( document ).ready(function() {
     /* Hide/unhide input fields based on selected RR (Type) value */
     $('select[id="host.rr"]').on('change', function(e) {
         if (this.value == "A" || this.value == "AAAA") {
+            $('tr[id="row_host.txtdata"]').addClass('hidden');
             $('tr[id="row_host.mx"]').addClass('hidden');
             $('tr[id="row_host.mxprio"]').addClass('hidden');
             $('tr[id="row_host.server"]').removeClass('hidden');
         } else if (this.value == "MX") {
+            $('tr[id="row_host.txtdata"]').addClass('hidden');
             $('tr[id="row_host.server"]').addClass('hidden');
             $('tr[id="row_host.mx"]').removeClass('hidden');
             $('tr[id="row_host.mxprio"]').removeClass('hidden');
+        } else if (this.value == "TXT") {
+            $('tr[id="row_host.server"]').addClass('hidden');
+            $('tr[id="row_host.mx"]').addClass('hidden');
+            $('tr[id="row_host.mxprio"]').addClass('hidden');
+            $('tr[id="row_host.txtdata"]').removeClass('hidden');
         }
     });
 
@@ -124,15 +130,11 @@ $( document ).ready(function() {
         font-weight: 800;
         font-style: italic;
     }
-
-    #infosection {
-        margin: 1em;
-    }
 </style>
 
 <div class="content-box __mb">
     {{ partial('layout_partials/base_bootgrid_table', formGridHostOverride)}}
-    <div id="infosection" class="tab-content col-xs-12 __mb">
+    <div id="infosection" class="bootgrid-footer container-fluid">
         {{ lang._('Entries in this section override individual results from the forwarders.') }}
         {{ lang._('Use these for changing DNS results or for adding custom DNS records.') }}
         {{ lang._('Keep in mind that all resource record types (i.e. A, AAAA, MX, etc. records) of a specified host below are being overwritten.') }}

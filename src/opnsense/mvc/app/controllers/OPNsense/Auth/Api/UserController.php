@@ -62,7 +62,7 @@ class UserController extends ApiMutableModelControllerBase
         $this_gids = !empty($group_memberships) ? explode(',', $group_memberships) : [];
         $groupmdl = new Group();
         foreach ($groupmdl->group->iterateItems() as $uuid => $group) {
-            $members = explode(',', $group->member->getCurrentValue());
+            $members = $group->member->getValues();
             if (in_array($this_uid, $members) && !in_array($group->gid, $this_gids)) {
                 unset($members[array_search($this_uid, $members)]);
             } elseif (!in_array($this_uid, $members) && in_array($group->gid, $this_gids)) {
@@ -85,7 +85,7 @@ class UserController extends ApiMutableModelControllerBase
         /* Password handling */
         if (
             !empty((string)$node->scrambled_password) || (
-            $node->password->isFieldChanged() && !empty($node->password->getCurrentValue())
+            $node->password->isFieldChanged() && !$node->password->isEmpty()
             )
         ) {
             if (!empty((string)$node->scrambled_password)) {
@@ -96,7 +96,7 @@ class UserController extends ApiMutableModelControllerBase
                     $password[$i] = random_bytes(1);
                 }
             } else {
-                $password = $node->password->getCurrentValue();
+                $password = $node->password->getValue();
             }
             $hash = $this->getModel()->generatePasswordHash($password);
             if ($hash !== false && strpos($hash, '$') === 0) {
@@ -170,7 +170,7 @@ class UserController extends ApiMutableModelControllerBase
                 },
                 function ($node) use ($that) {
                     /* new user without password, scramble one */
-                    if ($node->password->isFieldChanged() && empty($node->password->getCurrentValue())) {
+                    if ($node->password->isFieldChanged() && $node->password->isEmpty()) {
                         $node->scrambled_password = '1';
                     }
                     $that->setBaseHook($node);
@@ -198,7 +198,7 @@ class UserController extends ApiMutableModelControllerBase
     public function addAction()
     {
         $data = $this->request->getPost(static::$internalModelName);
-        $this->setSaveAuditMessage(sprintf('user \"%s\" created"', $data['name']));
+        $this->setSaveAuditMessage(sprintf('user "%s" created', $data['name']));
         $result = $this->addBase('user', 'user');
         if ($result['result'] != 'failed') {
             if (!empty($data['name'])) {
@@ -211,7 +211,7 @@ class UserController extends ApiMutableModelControllerBase
     public function setAction($uuid = null)
     {
         $data = $this->request->getPost(static::$internalModelName);
-        $this->setSaveAuditMessage(sprintf('user \"%s\" changed"', $data['name']));
+        $this->setSaveAuditMessage(sprintf('user "%s" changed', $data['name']));
         $result = $this->setBase('user', 'user', $uuid);
         if ($result['result'] != 'failed') {
             if (!empty($data['name'])) {

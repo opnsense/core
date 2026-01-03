@@ -16,11 +16,11 @@
             <pattern>api/core/dashboard/*</pattern>
             <pattern>api/diagnostics/cpu_usage/*</pattern>
             <pattern>api/diagnostics/firewall/pf_states</pattern>
-            <pattern>api/diagnostics/system/systemDisk</pattern>
-            <pattern>api/diagnostics/system/systemInformation</pattern>
-            <pattern>api/diagnostics/system/systemResources</pattern>
-            <pattern>api/diagnostics/system/systemTemperature</pattern>
-            <pattern>api/diagnostics/system/systemTime</pattern>
+            <pattern>api/diagnostics/system/system_disk</pattern>
+            <pattern>api/diagnostics/system/system_information</pattern>
+            <pattern>api/diagnostics/system/system_resources</pattern>
+            <pattern>api/diagnostics/system/system_temperature</pattern>
+            <pattern>api/diagnostics/system/system_time</pattern>
             <pattern>api/diagnostics/system/system_mbuf</pattern>
             <pattern>api/diagnostics/system/system_swap</pattern>
         </patterns>
@@ -41,7 +41,7 @@
         <name>System: Status</name>
         <patterns>
             <pattern>api/core/system/status*</pattern>
-            <pattern>api/core/system/dismissStatus</pattern>
+            <pattern>api/core/system/dismiss_status</pattern>
         </patterns>
     </page-system-status>
     <page-diagnostics-authentication>
@@ -60,7 +60,8 @@
     <page-diagnostics-factorydefaults>
         <name>Diagnostics: Factory defaults</name>
         <patterns>
-            <pattern>diag_defaults.php*</pattern>
+            <pattern>ui/core/defaults</pattern>
+            <pattern>api/core/defaults/*</pattern>
         </patterns>
     </page-diagnostics-factorydefaults>
     <page-diagnostics-haltsystem>
@@ -205,7 +206,7 @@
         <name>Firewall: NAT: Outbound</name>
         <patterns>
             <pattern>firewall_nat_out.php*</pattern>
-            <pattern>api/firewall/category/searchItem*</pattern>
+            <pattern>api/firewall/category/search_item*</pattern>
         </patterns>
     </page-firewall-nat-outbound>
     <page-firewall-nat-outbound-edit>
@@ -214,24 +215,19 @@
             <pattern>firewall_nat_out_edit.php*</pattern>
         </patterns>
     </page-firewall-nat-outbound-edit>
-    <page-firewall-nat-portforward>
-        <name>Firewall: NAT: Port Forward</name>
-        <patterns>
-            <pattern>firewall_nat.php*</pattern>
-            <pattern>api/firewall/category/searchItem*</pattern>
-        </patterns>
-    </page-firewall-nat-portforward>
     <page-firewall-nat-portforward-edit>
-        <name>Firewall: NAT: Port Forward: Edit</name>
+        <name>Firewall: NAT: Destination NAT</name>
         <patterns>
-            <pattern>firewall_nat_edit.php*</pattern>
+            <pattern>ui/firewall/d_nat</pattern>
+            <pattern>api/firewall/d_nat/*</pattern>
+            <pattern>api/firewall/category/search_item*</pattern>
         </patterns>
     </page-firewall-nat-portforward-edit>
     <page-firewall-rules>
         <name>Firewall: Rules</name>
         <patterns>
             <pattern>firewall_rules.php*</pattern>
-            <pattern>api/firewall/category/searchItem*</pattern>
+            <pattern>api/firewall/category/search_item*</pattern>
             <pattern>api/firewall/filter_util/rule_stats*</pattern>
         </patterns>
     </page-firewall-rules>
@@ -278,9 +274,9 @@
         <name>Diagnostics: Logs: Firewall: Live View</name>
         <patterns>
             <pattern>ui/diagnostics/firewall/log*</pattern>
-            <pattern>api/diagnostics/firewall/streamLog</pattern>
+            <pattern>api/diagnostics/firewall/stream_log</pattern>
             <pattern>api/diagnostics/firewall/log*</pattern>
-            <pattern>api/diagnostics/interface/getInterfaceNames</pattern>
+            <pattern>api/diagnostics/interface/get_interface_names</pattern>
             <pattern>api/diagnostics/dns/reverse_lookup*</pattern>
             <pattern>api/diagnostics/lvtemplate/*</pattern>
         </patterns>
@@ -320,7 +316,7 @@
         </patterns>
     </page-interfaces-gre-edit>
     <page-interfaces-groups-edit>
-        <name>Interfaces: Groups: Edit</name>
+        <name>Firewall: Groups</name>
         <patterns>
             <pattern>ui/firewall/group</pattern>
             <pattern>api/firewall/group/*</pattern>
@@ -654,12 +650,6 @@
             <pattern>api/openvpn/export/*</pattern>
         </patterns>
     </page-openvpn-client-export>
-    <page-openvpn-client>
-        <name>VPN: OpenVPN: Client</name>
-        <patterns>
-            <pattern>vpn_openvpn_client.php*</pattern>
-        </patterns>
-    </page-openvpn-client>
     <page-openvpn-csc>
         <name>VPN: OpenVPN: Client Specific Override</name>
         <patterns>
@@ -674,12 +664,6 @@
             <pattern>api/openvpn/instances/*</pattern>
         </patterns>
     </page-openvpn-instances>
-    <page-openvpn-server>
-        <name>VPN: OpenVPN: Server</name>
-        <patterns>
-            <pattern>vpn_openvpn_server.php*</pattern>
-        </patterns>
-    </page-openvpn-server>
     <page-xmlrpclibrary>
         <name>XMLRPC Library</name>
         <patterns>

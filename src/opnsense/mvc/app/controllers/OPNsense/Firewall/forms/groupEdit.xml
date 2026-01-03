@@ -4,6 +4,9 @@
         <label>Name</label>
         <type>text</type>
         <help>Only texts containing letters, digits and underscores with a maximum length of 15 characters are allowed and the name may not end with a digit.</help>
+        <grid_view>
+            <formatter>ifname</formatter>
+        </grid_view>
     </field>
     <field>
         <id>group.members</id>
@@ -12,16 +15,24 @@
         <help>Rules for WAN type interfaces in groups do not contain the reply-to mechanism upon which Multi-WAN typically relies.</help>
     </field>
     <field>
-        <id>group.nogroup</id>
-        <label>(no) GUI groups</label>
-        <type>checkbox</type>
-        <help>Prevent grouping these members in the interfaces menu section</help>
-    </field>
-    <field>
         <id>group.sequence</id>
         <label>Sequence</label>
         <type>text</type>
         <help>priority sequence used in sorting the groups</help>
+        <grid_view>
+            <width>100</width>
+        </grid_view>
+    </field>
+    <field>
+        <id>group.nogroup</id>
+        <label>(no) GUI groups</label>
+        <type>checkbox</type>
+        <help>Prevent grouping these members in the interfaces menu section</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
     </field>
     <field>
         <id>group.descr</id>

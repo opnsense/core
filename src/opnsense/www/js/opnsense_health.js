@@ -91,16 +91,16 @@ class HealthGraph {
     }
 
     exportData() {
-        window.open(`/api/diagnostics/systemhealth/exportAsCSV/${this.currentSystem}/${this.currentDetailLevel}`);
+        window.open(`/api/diagnostics/systemhealth/export_as_csv/${this.currentSystem}/${this.currentDetailLevel}`);
     }
 
     async _fetchRRDList() {
-        const list = await fetch(`/api/diagnostics/systemhealth/getRRDlist`).then(response => response.json());
+        const list = await fetch(`/api/diagnostics/systemhealth/get_rrd_list`).then(response => response.json());
         return list;
     }
 
     async _fetchData() {
-        const data = await fetch(`/api/diagnostics/systemhealth/getSystemHealth/${this.currentSystem}/${this.currentDetailLevel}`)
+        const data = await fetch(`/api/diagnostics/systemhealth/get_system_health/${this.currentSystem}/${this.currentDetailLevel}`)
             .then(response => response.json());
         return data;
     }

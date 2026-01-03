@@ -92,10 +92,17 @@ class Filter extends BaseModel
                         }
                     }
 
-                    if (!$rule->icmptype->isEmpty() && !in_array($rule->protocol, ['ICMP'])) {
+                    if ($rule->icmptype && !$rule->icmptype->isEmpty() && !in_array($rule->protocol, ['ICMP'])) {
                         $messages->appendMessage(new Message(
                             gettext("Option only applies to ICMP packets"),
                             $rule->icmptype->__reference
+                        ));
+                    }
+
+                    if ($rule->icmp6type && !$rule->icmp6type->isEmpty() && !in_array($rule->protocol, ['IPV6-ICMP'])) {
+                        $messages->appendMessage(new Message(
+                            gettext("Option only applies to IPV6-ICMP packets"),
+                            $rule->icmp6type->__reference
                         ));
                     }
 
@@ -112,24 +119,6 @@ class Filter extends BaseModel
                         ));
                     }
 
-                    // Additional source nat validations
-                    if ($rule->target !== null) {
-                        $target_is_addr = Util::isSubnet($rule->target) || Util::isIpAddress($rule->target);
-                        $target_proto = strpos($rule->target, ':') === false ? "inet" : "inet6";
-                        if ($target_is_addr && $target_proto != $rule->ipprotocol) {
-                            $messages->appendMessage(new Message(
-                                gettext("Target address type should match selected TCP/IP protocol version."),
-                                $rule->target->__reference
-                            ));
-                        }
-                        if (!empty((string)$rule->target_port) && !in_array($rule->protocol, $port_protos)) {
-                            $messages->appendMessage(new Message(
-                                gettext("Target ports are only valid for tcp or udp type rules."),
-                                $rule->target_port->__reference
-                            ));
-                        }
-                    }
-
                     if (
                         !empty((string)$rule->interfacenot) && (
                         count(explode(',', $rule->interface)) != 1 || empty((string)$rule->interface)
@@ -140,21 +129,6 @@ class Filter extends BaseModel
                                 "single targets to avoid mis-interpretations"),
                             $rule->interfacenot->__reference
                         ));
-                    }
-                    if ($rule->statetype == 'none') {
-                        foreach (
-                            [
-                            'statetimeout', 'max', 'max-src-states', 'max-src-nodes', 'adaptivestart', 'adaptiveend',
-                            'max-src-conn'
-                            ] as $fieldname
-                        ) {
-                            if (!empty((string)$rule->$fieldname)) {
-                                $messages->appendMessage(new Message(
-                                    gettext("Invalid option when statetype is none."),
-                                    $rule->$fieldname->__reference
-                                ));
-                            }
-                        }
                     }
                     if (!in_array($rule->protocol, ['TCP', 'TCP/UDP'])) {
                         foreach (
@@ -171,78 +145,113 @@ class Filter extends BaseModel
                             }
                         }
                     }
-                    if (!empty((string)$rule->{'max-src-conn-rate'}) xor !empty((string)$rule->{'max-src-conn-rates'})) {
-                        $tmp = empty((string)$rule->{'max-src-conn-rate'}) ? 'max-src-conn-rate' : 'max-src-conn-rates';
-                        $messages->appendMessage(new Message(
-                            gettext("Need to specify both a number of connections and a time interval."),
-                            $rule->$tmp->__reference
-                        ));
-                    }
 
-                    if (!empty((string)$rule->tcpflags1) && empty((string)$rule->tcpflags2)) {
-                        $messages->appendMessage(new Message(
-                            gettext("If you specify TCP flags that should be set " .
-                                "you should specify out of which flags as well."),
-                            $rule->tcpflags2->__reference
-                        ));
-                    }
-                    if (empty((string)$rule->max) && ($rule->adaptivestart == '0' || $rule->adaptiveend == '0')) {
-                        $messages->appendMessage(new Message(
-                            gettext('Disabling adaptive timeouts is only supported in ".
-                                "combination with a configured maximum number of states for the same rule.'),
-                            $rule->max->__reference
-                        ));
-                    } elseif ($rule->adaptivestart == '0' xor $rule->adaptiveend == '0') {
-                        $messages->appendMessage(new Message(
-                            gettext("Adaptive timeouts must be disabled together."),
-                            $rule->adaptivestart->__reference
-                        ));
-                    } elseif (!empty((string)$rule->adaptivestart) xor !empty((string)$rule->adaptiveend)) {
-                        $messages->appendMessage(new Message(
-                            gettext("The adaptive timouts values must be set together."),
-                            $rule->adaptivestart->__reference
-                        ));
-                    } elseif (
-                        !empty((string)$rule->max) &&
-                        !empty((string)$rule->adaptiveend) &&
-                        (int)$rule->max->getCurrentValue() > (int)$rule->adaptiveend->getCurrentValue()
-                    ) {
-                        $messages->appendMessage(new Message(
-                            gettext("The value of adaptive.end must be greater than the Max states value."),
-                            $rule->adaptiveend->__reference
-                        ));
-                    } elseif (
-                        !empty((string)$rule->adaptivestart) &&
-                        !empty((string)$rule->adaptiveend) &&
-                        (int)$rule->adaptivestart->getCurrentValue() > (int)$rule->adaptiveend->getCurrentValue()
-                    ) {
-                        $messages->appendMessage(new Message(
-                            gettext("The value of adaptive.end must be greater than adaptive.start value."),
-                            $rule->adaptiveend->__reference
-                        ));
-                    }
-
-                    if ((string)$rule->{'set-prio'} == '' && (string)$rule->{'set-prio-low'} != '') {
-                        $messages->appendMessage(new Message(
-                            gettext("Set priority for low latency and acknowledgements " .
-                                "requires a set priority for normal packets."),
-                            $rule->{'set-prio-low'}->__reference
-                        ));
-                    }
-                    if (!empty((string)$rule->shaper1) || !empty((string)$rule->shaper2)) {
-                        if (!empty((string)$rule->shaper2) && empty((string)$rule->shaper1)) {
+                    /* rule type specific rules (filter, snat) */
+                    if ($rule->target !== null) {
+                        // Additional source nat validations
+                        $target_is_addr = Util::isSubnet($rule->target) || Util::isIpAddress($rule->target);
+                        $target_proto = strpos($rule->target, ':') === false ? "inet" : "inet6";
+                        if ($target_is_addr && $target_proto != $rule->ipprotocol) {
                             $messages->appendMessage(new Message(
-                                gettext("A shaper is required when configuring one in the reverse direction."),
-                                $rule->shaper2->__reference
+                                gettext("Target address type should match selected TCP/IP protocol version."),
+                                $rule->target->__reference
                             ));
-                        } elseif (!empty((string)$rule->shaper2)) {
-                            $tmp1 = $dntargets[(string)$rule->shaper1] ?? ['type' => '-'];
-                            $tmp2 = $dntargets[(string)$rule->shaper2] ?? ['type' => '-'];
-                            if ($tmp1['type'] != $tmp2['type']) {
+                        }
+                        if (!empty((string)$rule->target_port) && !in_array($rule->protocol, $port_protos)) {
+                            $messages->appendMessage(new Message(
+                                gettext("Target ports are only valid for tcp or udp type rules."),
+                                $rule->target_port->__reference
+                            ));
+                        }
+                    } else {
+                        // Additional filter validations
+                        if (empty((string)$rule->max) && ($rule->adaptivestart == '0' || $rule->adaptiveend == '0')) {
+                            $messages->appendMessage(new Message(
+                                gettext('Disabling adaptive timeouts is only supported in ".
+                                    "combination with a configured maximum number of states for the same rule.'),
+                                $rule->max->__reference
+                            ));
+                        } elseif ($rule->adaptivestart == '0' xor $rule->adaptiveend == '0') {
+                            $messages->appendMessage(new Message(
+                                gettext("Adaptive timeouts must be disabled together."),
+                                $rule->adaptivestart->__reference
+                            ));
+                        } elseif (!empty((string)$rule->adaptivestart) xor !empty((string)$rule->adaptiveend)) {
+                            $messages->appendMessage(new Message(
+                                gettext("The adaptive timouts values must be set together."),
+                                $rule->adaptivestart->__reference
+                            ));
+                        } elseif (
+                            !$rule->max->isEmpty() && !$rule->adaptiveend->isEmpty() &&
+                            $rule->max->asInt() > $rule->adaptiveend->asInt()
+                        ) {
+                            $messages->appendMessage(new Message(
+                                gettext("The value of adaptive.end must be greater than the Max states value."),
+                                $rule->adaptiveend->__reference
+                            ));
+                        } elseif (
+                            !$rule->adaptivestart->isEmpty() && !$rule->adaptiveend->isEmpty() &&
+                            $rule->adaptivestart->asInt() > $rule->adaptiveend->asInt()
+                        ) {
+                            $messages->appendMessage(new Message(
+                                gettext("The value of adaptive.end must be greater than adaptive.start value."),
+                                $rule->adaptiveend->__reference
+                            ));
+                        }
+                        if ($rule->statetype == 'none') {
+                            foreach (
+                                [
+                                'statetimeout', 'max', 'max-src-states', 'max-src-nodes', 'adaptivestart', 'adaptiveend',
+                                'max-src-conn'
+                                ] as $fieldname
+                            ) {
+                                if (!empty((string)$rule->$fieldname)) {
+                                    $messages->appendMessage(new Message(
+                                        gettext("Invalid option when statetype is none."),
+                                        $rule->$fieldname->__reference
+                                    ));
+                                }
+                            }
+                        }
+
+                        if (!empty((string)$rule->{'max-src-conn-rate'}) xor !empty((string)$rule->{'max-src-conn-rates'})) {
+                            $tmp = empty((string)$rule->{'max-src-conn-rate'}) ? 'max-src-conn-rate' : 'max-src-conn-rates';
+                            $messages->appendMessage(new Message(
+                                gettext("Need to specify both a number of connections and a time interval."),
+                                $rule->$tmp->__reference
+                            ));
+                        }
+
+                        if (!empty((string)$rule->tcpflags1) && empty((string)$rule->tcpflags2)) {
+                            $messages->appendMessage(new Message(
+                                gettext("If you specify TCP flags that should be set " .
+                                    "you should specify out of which flags as well."),
+                                $rule->tcpflags2->__reference
+                            ));
+                        }
+
+                        if ((string)$rule->{'set-prio'} == '' && (string)$rule->{'set-prio-low'} != '') {
+                            $messages->appendMessage(new Message(
+                                gettext("Set priority for low latency and acknowledgements " .
+                                    "requires a set priority for normal packets."),
+                                $rule->{'set-prio-low'}->__reference
+                            ));
+                        }
+                        if (!empty((string)$rule->shaper1) || !empty((string)$rule->shaper2)) {
+                            if (!empty((string)$rule->shaper2) && empty((string)$rule->shaper1)) {
                                 $messages->appendMessage(new Message(
-                                    gettext("Pipes and queues can not be combined."),
+                                    gettext("A shaper is required when configuring one in the reverse direction."),
                                     $rule->shaper2->__reference
                                 ));
+                            } elseif (!empty((string)$rule->shaper2)) {
+                                $tmp1 = $dntargets[(string)$rule->shaper1] ?? ['type' => '-'];
+                                $tmp2 = $dntargets[(string)$rule->shaper2] ?? ['type' => '-'];
+                                if ($tmp1['type'] != $tmp2['type']) {
+                                    $messages->appendMessage(new Message(
+                                        gettext("Pipes and queues can not be combined."),
+                                        $rule->shaper2->__reference
+                                    ));
+                                }
                             }
                         }
                     }

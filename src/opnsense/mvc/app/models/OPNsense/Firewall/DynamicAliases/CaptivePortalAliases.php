@@ -46,7 +46,7 @@ class CaptivePortalAliases
                 $result["__captiveportal_zone_{$zoneid}"] = [
                     "enabled" => "1",
                     "name" => "__captiveportal_zone_{$zoneid}",
-                    "type" => "internal",
+                    "type" => "external",
                     "description" => sprintf("%s %s", (string)$zone->descr, gettext("captiveportal")),
                     "content" => "",
                 ];

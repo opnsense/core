@@ -117,7 +117,7 @@ class CertificatesField extends ArrayField
     protected static function getStaticChildren()
     {
         $result = [];
-        $ext_data = json_decode((new Backend())->configdRun('system trust ext_sources') ?? '', true);
+        $ext_data = json_decode((new Backend())->configdRun('system trust ext_sources'), true);
         if (is_array($ext_data)) {
             foreach ($ext_data as $data) {
                 $payload = \OPNsense\Trust\Store::parseX509($data['cert'] ?? '');
@@ -133,6 +133,11 @@ class CertificatesField extends ArrayField
 
     protected function actionPostLoadingEvent()
     {
+        parent::actionPostLoadingEvent();
+        if ($this->getParentModel()->isLazyLoaded()) {
+            /* skip dynamic content */
+            return;
+        }
         $usernames = [];
         foreach (Config::getInstance()->object()->system->user as $user) {
             if (isset($user->name)) {
@@ -192,6 +197,5 @@ class CertificatesField extends ArrayField
 
             $node->is_user = in_array((string)$node->commonname, $usernames) ? '1' : '0';
         }
-        return parent::actionPostLoadingEvent();
     }
 }

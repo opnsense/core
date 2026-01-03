@@ -93,7 +93,8 @@
                                 $(this).tooltip({title: "{{ lang._('Stop') | safe}}", container: "body", trigger: "hover"});
                                 break;
                         }
-                        $(this).click(function(){
+                        $(this).click(function(event){
+                            event.stopPropagation();
                             if ($(this).hasClass('locked')) {
                                 return;
                             }
@@ -112,13 +113,16 @@
             $("#status_query").hide();
 
             $("#grid_services-header > .row > .actionBar").prepend($(`
-                <div class="pull-left" style="position: absolute; top: 50%; transform:translateY(-50%);">
-                    <span> {{ lang._('Synchronize and reconfigure all') }} </span>
-                    <span id="act_restart_all" class="btn btn-xs btn-default" data-toggle="tooltip" title="{{ lang._('Synchronize and restart all services') }}">
+                <div id="sync_container">
+                    <span>{{ lang._('Synchronize and reconfigure all') }}</span>
+                    <span id="act_restart_all" class="btn btn-xs btn-default" data-toggle="tooltip"
+                        title="{{ lang._('Synchronize and restart all services') }}">
                         <i class="fa fa-repeat fa-fw"></i>
                     </span>
                 </div>
-            `).click(function() {
+            `));
+
+            $("#act_restart_all").click(function () {
                 let icon = $(this).find('i');
                 if (icon.hasClass('spinner')) {
                     return;
@@ -128,10 +132,18 @@
                     icon.removeClass('fa-spinner fa-pulse').addClass('fa-repeat');
                     $('#grid_services').bootgrid('reload');
                 });
-            }));
+            });
+
         });
     });
 </script>
+<style>
+    #grid_services-header .actionBar #act_restart_all {
+        flex: 0 0 auto !important;
+        width: auto !important;
+        align-self: center !important;
+    }
+</style>
 <section class="page-content-main">
     <div class="container-fluid">
         <div class="row">

@@ -1,14 +1,14 @@
 <model>
     <mount>/laggs</mount>
     <version>1.0.0</version>
-    <description>Lagg interfaces</description>
+    <description>LAGG devices</description>
     <items>
         <lagg type="ArrayField">
             <laggif type="TextField">
                 <Required>Y</Required>
                 <Constraints>
                     <check001>
-                        <ValidationMessage>Lagg already exists!</ValidationMessage>
+                        <ValidationMessage>LAGG device already exists.</ValidationMessage>
                         <type>UniqueConstraint</type>
                     </check001>
                 </Constraints>
@@ -17,31 +17,31 @@
             <members type=".\LaggInterfaceField">
                 <Required>Y</Required>
                 <Multiple>Y</Multiple>
-                <ValidationMessage>At least one valid member is required</ValidationMessage>
+                <ValidationMessage>At least one valid member is required.</ValidationMessage>
             </members>
             <primary_member type=".\LaggInterfaceField"/>
             <proto type="OptionField">
-              <Required>Y</Required>
-              <Default>lacp</Default>
-              <OptionValues>
-                  <none>None</none>
-                  <lacp>lacp</lacp>
-                  <failover>failover</failover>
-                  <fec>fec</fec>
-                  <loadbalance>loadbalance</loadbalance>
-                  <roundrobin>roundrobin</roundrobin>
-              </OptionValues>
+                <Required>Y</Required>
+                <Default>lacp</Default>
+                <OptionValues>
+                    <none>None</none>
+                    <lacp>lacp</lacp>
+                    <failover>failover</failover>
+                    <fec>fec</fec>
+                    <loadbalance>loadbalance</loadbalance>
+                    <roundrobin>roundrobin</roundrobin>
+                </OptionValues>
             </proto>
             <lacp_fast_timeout type="BooleanField">
                 <Default>0</Default>
                 <Required>Y</Required>
             </lacp_fast_timeout>
             <use_flowid type="OptionField">
-              <OptionValues>
-                  <default value="">Default</default>
-                  <yes value="1">Yes</yes>
-                  <no value="0">No</no>
-              </OptionValues>
+                <OptionValues>
+                    <default value="">Default</default>
+                    <yes value="1">Yes</yes>
+                    <no value="0">No</no>
+                </OptionValues>
             </use_flowid>
             <lagghash type="OptionField">
                 <Multiple>Y</Multiple>

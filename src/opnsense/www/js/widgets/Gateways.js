@@ -48,7 +48,7 @@ export default class Gateways extends BaseTableWidget {
     }
 
     async _fetchGateways() {
-        const data = await this.ajaxCall('/api/routing/settings/searchGateway');
+        const data = await this.ajaxCall('/api/routing/settings/search_gateway');
         if (!data.rows || !data.rows.length) {
             return false;
         }

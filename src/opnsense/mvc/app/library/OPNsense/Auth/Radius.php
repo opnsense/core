@@ -480,7 +480,7 @@ class Radius extends Base implements IAuthConnector
      */
     public function authenticate($username, $password)
     {
-        $this->lastAuthProperties = array();// reset auth properties
+        $this->lastAuthProperties = [];// reset auth properties
         $radius = radius_auth_open();
 
         $error = null;
@@ -592,7 +592,7 @@ class Radius extends Base implements IAuthConnector
                                     break;
                                 case RADIUS_FRAMED_ROUTE:
                                     if (empty($this->lastAuthProperties['Framed-Route'])) {
-                                        $this->lastAuthProperties['Framed-Route'] = array();
+                                        $this->lastAuthProperties['Framed-Route'] = [];
                                     }
                                     $this->lastAuthProperties['Framed-Route'][] = $resa['data'];
                                     break;

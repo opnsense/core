@@ -46,6 +46,7 @@ class ItemController extends \OPNsense\Base\IndexController
         $this->view->selected_uuid = htmlspecialchars($uuid, ENT_QUOTES | ENT_HTML401);
         // include dialog form definitions
         $this->view->formDialogEdit = $this->getForm("dialogEdit");
+        $this->view->formGridJobs = $this->getFormGrid('dialogEdit');
         $this->view->pick('OPNsense/Cron/index');
     }
 }

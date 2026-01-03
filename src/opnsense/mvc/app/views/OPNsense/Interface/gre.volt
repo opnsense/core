@@ -27,11 +27,11 @@
 <script>
     $( document ).ready(function() {
         $("#{{formGridGre['table_id']}}").UIBootgrid(
-            {   search:'/api/interfaces/gre_settings/searchItem/',
-                get:'/api/interfaces/gre_settings/getItem/',
-                set:'/api/interfaces/gre_settings/setItem/',
-                add:'/api/interfaces/gre_settings/addItem/',
-                del:'/api/interfaces/gre_settings/delItem/'
+            {   search:'/api/interfaces/gre_settings/search_item/',
+                get:'/api/interfaces/gre_settings/get_item/',
+                set:'/api/interfaces/gre_settings/set_item/',
+                add:'/api/interfaces/gre_settings/add_item/',
+                del:'/api/interfaces/gre_settings/del_item/'
             }
         );
         $("#reconfigureAct").SimpleActionButton();

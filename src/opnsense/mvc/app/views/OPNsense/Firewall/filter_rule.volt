@@ -41,7 +41,6 @@
             });
         }
 
-
         // Get all advanced fields, used for advanced mode tooltips
         const advancedFieldIds = "{{ advancedFieldIds }}".split(',');
 
@@ -54,8 +53,57 @@
             }
         });
 
-        // Test if the UUID is valid, used to determine if automation model or internal rule
-        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+        // Inspect and Tree are disabled by default
+        let treeViewEnabled = localStorage.getItem("firewall_rule_tree") === "1";
+        $('#toggle_tree_button').toggleClass('active btn-primary', treeViewEnabled);
+
+        let inspectEnabled = localStorage.getItem("firewall_rule_inspect") === "1";
+        $('#toggle_inspect_button').toggleClass('active btn-primary', inspectEnabled);
+
+        function updateStatisticColumns() {
+            grid.bootgrid(inspectEnabled ? "setColumns" : "unsetColumns", ['statistics']);
+        }
+
+        // read interface from URL hash once, for the first grid load
+        const hashMatchInterface = window.location.hash.match(/(?:^#|&)interface=([^&]+)/);
+        let pendingUrlInterface = hashMatchInterface ? decodeURIComponent(hashMatchInterface[1]) : null;
+
+        // Lives outside the grid, so the logic of the response handler can be changed after grid initialization
+        function dynamicResponseHandler(resp) {
+            // convert the flat rows into a tree view (if enabled)
+            if (!treeViewEnabled) {
+                return resp;
+            }
+
+            const buckets = [];
+            let current = null;
+
+            resp.rows.forEach(r => {
+                // readable label used for grouping
+                const label = (r["%categories"] || r.categories || "");
+
+                // start a new bucket whenever the label changes
+                if (!current || current._label !== label) {
+                    current = {
+                        // ensure uuid is as unique as possible for persistence handling
+                        uuid           : `${String(r.uuid).replace(/-/g, '')}`,
+                        isGroup        : true,
+                        _label         : label,          // internal
+                        children       : []
+                    };
+
+                    // copy the category info from the first child to use as parent
+                    current.categories      = label;
+                    current.category_colors = r.category_colors || [];
+
+                    buckets.push(current);
+                }
+
+                current.children.push(r);
+            });
+
+            return Object.assign({}, resp, { rows: buckets });
+        }
 
         // Initialize grid
         const grid = $("#{{formGridFilterRule['table_id']}}").UIBootgrid({
@@ -65,58 +113,121 @@
             add:'/api/firewall/filter/add_rule/',
             del:'/api/firewall/filter/del_rule/',
             toggle:'/api/firewall/filter/toggle_rule/',
+            tabulatorOptions : {
+                // tell Tabulator to render a tree
+                dataTree              : true,
+                dataTreeChildField    : "children",
+                dataTreeElementColumn : "categories",
+                rowFormatter: function(row) {
+                    const data = row.getData();
+                    const $element = $(row.getElement());
+
+                    // opacity when rule is disabled
+                    if ('enabled' in data && data.enabled == "0") {
+                        $element.addClass('row-disabled');
+                    }
+
+                    // hide the row selection checkbox for internal and dataTree group rules
+                    if (data.isGroup || !data.uuid || !data.uuid.includes("-")) {
+                        $element.addClass('row-no-select');
+                    }
+
+                    // bucket row (dataTree) styling
+                    if (data.isGroup) {
+                        $element.addClass('bucket-row');
+                    }
+                },
+            },
             options: {
                 responsive: true,
-                triggerEditFor: getUrlHash('edit'),
+                sorting: false,
                 initialSearchPhrase: getUrlHash('search'),
-                rowCount: [20,50,100,200,500,1000],
+                triggerEditFor: getUrlHash('edit'),
                 requestHandler: function(request){
                     // Add category selectpicker
                     if ( $('#category_filter').val().length > 0) {
                         request['category'] = $('#category_filter').val();
                     }
-                    // Add interface selectpicker
+                    // Add interface selectpicker, or fall back to hash for the first load
                     let selectedInterface = $('#interface_select').val();
-                    if (selectedInterface && selectedInterface.length > 0) {
+                    if ((!selectedInterface || selectedInterface.length === 0) && pendingUrlInterface) {
+                        request['interface'] = pendingUrlInterface;
+                        pendingUrlInterface = null; // consume the hash so it is not used again
+                    } else if (selectedInterface && selectedInterface.length > 0) {
                         request['interface'] = selectedInterface;
                     }
-                    if ($('#all_rules_checkbox').is(':checked')) {
+                    if (inspectEnabled) {
                         // Send as a comma separated string
                         request['show_all'] = true;
                     }
                     return request;
                 },
+                // convert the flat rows into a tree view
+                responseHandler: dynamicResponseHandler,
+
                 headerFormatters: {
-                    enabled: function (column) { return "" },
-                    icons: function (column) { return "" },
-                    source_port: function (column) { return "{{ lang._('Port') }}" },
-                    destination_port: function (column) { return "{{ lang._('Port') }}" },
+                    enabled: function (column) {
+                        return '<i class="fa-solid fa-fw fa-check-square" data-toggle="tooltip" title="{{ lang._('Enabled') }}"></i>';;
+                    },
                     interface: function (column) {
-                        return '<i class="fa-solid fa-fw fa-network-wired" data-toggle="tooltip" data-placement="right" title="{{ lang._('Network Interface') }}"></i>';
+                        return '<i class="fa-solid fa-fw fa-network-wired" data-toggle="tooltip" title="{{ lang._('Network interface') }}"></i>';
                     },
                     evaluations: function (column) {
-                        return '<i class="fa-solid fa-fw fa-bullseye" data-toggle="tooltip" data-placement="left" title="{{ lang._('Number of rule evaluations') }}"></i>';
+                        return '<i class="fa-solid fa-fw fa-bullseye" data-toggle="tooltip" title="{{ lang._('Number of rule evaluations') }}"></i>';
                     },
                     states: function (column) {
-                        return '<i class="fa-solid fa-fw fa-chart-line" data-toggle="tooltip" data-placement="left" title="{{ lang._('Current active states for this rule') }}"></i>';
+                        return '<i class="fa-solid fa-fw fa-chart-line" data-toggle="tooltip" title="{{ lang._('Current active states for this rule') }}"></i>';
                     },
                     packets: function (column) {
-                        return '<i class="fa-solid fa-fw fa-box" data-toggle="tooltip" data-placement="left" title="{{ lang._('Total packets matched by this rule') }}"></i>';
+                        return '<i class="fa-solid fa-fw fa-box" data-toggle="tooltip" title="{{ lang._('Total packets matched by this rule') }}"></i>';
                     },
                     bytes: function (column) {
-                        return '<i class="fa-solid fa-fw fa-database" data-toggle="tooltip" data-placement="left" title="{{ lang._('Total bytes matched by this rule') }}"></i>';
+                        return '<i class="fa-solid fa-fw fa-database" data-toggle="tooltip" title="{{ lang._('Total bytes matched by this rule') }}"></i>';
                     },
                     categories: function (column) {
-                        return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" data-placement="left" title="{{ lang._('Categories') }}"></i>';
-                    }
+                        return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Categories") }}"></i>';
+                    },
+                    statistics: function () {
+                        const element = $(`
+                            <span class="stats-header-icons">
+                                <span data-toggle="tooltip" title="{{ lang._('Statistics') }}">
+                                    <i class="fa-solid fa-fw fa-eye"></i>
+                                </span>
+                                <span class="inspect-cache-flush"
+                                    style="cursor:pointer; margin-left:4px;"
+                                    data-toggle="tooltip"
+                                    title="{{ lang._('Refresh') }}">
+                                    <i class="fa-solid fa-fw fa-rotate-right"></i>
+                                </span>
+                            </span>
+                        `);
+
+                        element.find('.inspect-cache-flush').on('click', function () {
+                            ajaxCall(
+                                '/api/firewall/filter/flush_inspect_cache',
+                                {},
+                                function () {
+                                    $('#{{ formGridFilterRule["table_id"] }}').bootgrid('reload');
+                                },
+                                null,
+                                'POST'
+                            );
+                        });
+
+                        return element[0];
+                    },
                 },
                 formatters:{
                     // Only show command buttons for rules that have a uuid, internal rules will not have one
                     commands: function (column, row) {
+                        // All formatters except category must skip processing bucket rows in tree view
+                        if (row.isGroup) {
+                            return "";
+                        }
                         let rowId = row.uuid;
 
                         // If UUID is invalid, its an internal rule, use the #ref field to show a lookup button.
-                        if (!rowId || !uuidRegex.test(rowId)) {
+                        if (!rowId || !rowId.includes('-')) {
                             let ref = row["ref"] || "";
                             if (ref.trim().length > 0) {
                                 let url = `/${ref}`;
@@ -139,6 +250,14 @@
                                 <span class="fa fa-fw fa-arrow-left"></span>
                             </button>
 
+                            <button type="button" class="btn btn-xs btn-default command-toggle_log bootgrid-tooltip"
+                                data-row-id="${row.uuid}" data-value="${row.log}"
+                                title="${row.log == '1'
+                                    ? '{{ lang._("Disable Logging") }}'
+                                    : '{{ lang._("Enable Logging") }}'}">
+                                <i class="fa fa-exclamation-circle fa-fw ${row.log == '1' ? 'text-info' : 'text-muted'}"></i>
+                            </button>
+
                             <button type="button" class="btn btn-xs btn-default command-edit
                                 bootgrid-tooltip" data-row-id="${rowId}"
                                 title="{{ lang._('Edit') }}">
@@ -158,39 +277,33 @@
                             </button>
                         `;
                     },
-                    // Show rowtoggle for all rules, but disable interaction for internal rules with no valid UUID
+                    // Disable rowtoggle for internal rules
                     rowtoggle: function (column, row) {
-                        let rowId = row.uuid;
-                        let isEnabled = parseInt(row[column.id], 2) === 1;
-
-                        let iconClass = isEnabled
-                            ? "fa-check-square-o"
-                            : "fa-square-o text-muted";
-
-                        let tooltipText = isEnabled
-                            ? "{{ lang._('Enabled') }}"
-                            : "{{ lang._('Disabled') }}";
-
-                        // For valid UUIDs, make it interactive
-                        if (rowId && uuidRegex.test(rowId)) {
-                            return `
-                                <span style="cursor: pointer;" class="fa fa-fw ${iconClass}
-                                    command-toggle bootgrid-tooltip" data-value="${isEnabled ? 1 : 0}"
-                                    data-row-id="${rowId}" title="${tooltipText}">
-                                </span>
-                            `;
+                        if (row.isGroup) {
+                            return "";
                         }
 
-                        // For internal rules, show a non-interactive toggle
+                        const rowId = row.uuid || '';
+                        if (!rowId.includes('-')) {
+                            return '';
+                        }
+
+                        const isEnabled = row[column.id] === "1";
+
                         return `
-                            <span style="opacity: 0.5"
-                                class="fa fa-fw ${iconClass} bootgrid-tooltip"
+                            <span class="fa fa-fw ${isEnabled ? 'fa-check-square-o' : 'fa-square-o text-muted'} bootgrid-tooltip command-toggle"
+                                style="cursor: pointer;"
                                 data-value="${isEnabled ? 1 : 0}"
-                                data-row-id="${rowId}" title="${tooltipText}">
+                                data-row-id="${rowId}"
+                                title="${isEnabled ? '{{ lang._("Enabled") }}' : '{{ lang._("Disabled") }}'}">
                             </span>
                         `;
                     },
                     any: function(column, row) {
+                        if (row.isGroup) {
+                            return "";
+                        }
+
                         if (
                             row[column.id] !== '' &&
                             row[column.id] !== 'any' &&
@@ -201,51 +314,61 @@
                             return '*';
                         }
                     },
-                    protocol: function(column, row) {
-                        const ipProtocol = row.ipprotocol ? row.ipprotocol : '';
-                        let targetValue = row[column.id] ? row[column.id] : '';
-
-                        if (!targetValue || targetValue === '' || targetValue === 'any' || targetValue === 'None') {
-                            targetValue = '*';
-                        }
-
-                        return ipProtocol ? `${ipProtocol} ${targetValue}` : targetValue;
-                    },
+                    // The category formatter is special as it renders differently for the bucket row
                     category: function (column, row) {
-                        if (!row.categories || !row.category_colors) {
-                            return '';
+                        const isGroup = row.isGroup;
+                        const hasCategories = row.categories && Array.isArray(row.category_colors);
+
+                        if (!hasCategories) {
+
+                            return isGroup
+                                ? `<span class="category-icon category-cell">
+                                    <i class="fa fa-fw fa-tag"></i>
+                                    <strong>{{ lang._('Uncategorized') }}</strong>
+                                    <span class="badge badge-sm bg-info"
+                                            style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
+                                </span>`
+                                : '';
                         }
 
-                        const categories = row.categories.split(',').map(cat => cat.trim());
-                        const colors = Array.isArray(row.category_colors) ? row.category_colors : row.category_colors.split(',');
+                        const categories = (row["%categories"] || row.categories).split(',');
+                        const colors     = row.category_colors;
 
-                        return categories.map((cat, index) => {
-                            const color = colors[index]
-                            return `<span class="category-icon" data-toggle="tooltip" title="${cat}">
-                                        <i class="fas fa-circle" style="color: ${color};"></i>
-                                    </span>`;
-                        }).join(' ');
+                        const icons = categories.map((cat, idx) => `
+                            <span class="category-icon" data-toggle="tooltip" title="${cat}">
+                                <i class="fa fa-fw fa-tag" style="color:${colors[idx]};"></i>
+                            </span>`).join(' ');
+
+                        return isGroup
+                            ? `<span class="category-cell">
+                                    <span class="category-cell-content">
+                                        <strong>${icons} ${categories.join(', ')}</strong>
+                                        <span class="badge badge-sm bg-info"
+                                                style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
+                                    </span>
+                            </span>`
+                            : icons;
                     },
                     interfaces: function(column, row) {
-                        const interfaces = row[column.id] != null ? String(row[column.id]) : "";
-
-                        // Apply negation
-                        const isNegated = row.interfacenot == 1 ? "! " : "";
-
-                        if (!interfaces || interfaces.trim() === "") {
-                            return isNegated + '*';
+                        if (row.isGroup) {
+                            return "";
                         }
 
-                        const interfaceList = interfaces.split(",").map(iface => iface.trim());
+                        const interfaces = row["%" + column.id] || row[column.id] || "";
 
-                        if (interfaceList.length === 1) {
-                            return isNegated + interfaceList[0];
+                        if (interfaces === "") {
+                            return "*";
                         }
 
+                        // Only single interfaces can be negated
+                        if (!interfaces.includes(",")) {
+                            return (row.interfacenot == 1 ? "! " : "") + interfaces;
+                        }
+
+                        const interfaceList = interfaces.split(",");
                         const tooltipText = interfaceList.join("<br>");
 
                         return `
-                            ${isNegated}
                             <span data-toggle="tooltip" data-html="true" title="${tooltipText}" style="white-space: nowrap;">
                                 <span class="interface-count">${interfaceList.length}</span>
                                 <i class="fa-solid fa-fw fa-network-wired"></i>
@@ -254,10 +377,11 @@
                     },
                     // Icons
                     ruleIcons: function(column, row) {
+                        if (row.isGroup) {
+                            return "";
+                        }
+
                         let result = "";
-                        const iconStyle = (row.enabled == 0)
-                            ? 'style="opacity: 0.4; pointer-events: none;"'
-                            : '';
 
                         // Rule Type Icons (Determined by first digit of sort_order)
                         const ruleTypeIcons = {
@@ -280,55 +404,35 @@
 
                         // Action
                         if (row.action.toLowerCase() === "block") {
-                            result += '<i class="fa fa-times fa-fw text-danger" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Block") }}"></i> ';
+                            result += '<i class="fa fa-times fa-fw text-danger" data-toggle="tooltip" title="{{ lang._("Block") }}"></i> ';
                         } else if (row.action.toLowerCase() === "reject") {
-                            result += '<i class="fa fa-times-circle fa-fw text-danger" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Reject") }}"></i> ';
+                            result += '<i class="fa fa-times-circle fa-fw text-danger" data-toggle="tooltip" title="{{ lang._("Reject") }}"></i> ';
                         } else {
-                            result += '<i class="fa fa-play fa-fw text-success" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Pass") }}"></i> ';
+                            result += '<i class="fa fa-play fa-fw text-success" data-toggle="tooltip" title="{{ lang._("Pass") }}"></i> ';
                         }
 
                         // Direction
                         if (row.direction.toLowerCase() === "in") {
-                            result += '<i class="fa fa-long-arrow-right fa-fw text-info" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("In") }}"></i> ';
+                            result += '<i class="fa fa-long-arrow-right fa-fw text-info" data-toggle="tooltip" title="{{ lang._("In") }}"></i> ';
                         } else if (row.direction.toLowerCase() === "out") {
-                            result += '<i class="fa fa-long-arrow-left fa-fw" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Out") }}"></i> ';
+                            result += '<i class="fa fa-long-arrow-left fa-fw" data-toggle="tooltip" title="{{ lang._("Out") }}"></i> ';
                         } else {
-                            result += '<i class="fa fa-exchange fa-fw" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Any") }}"></i> ';
+                            result += '<i class="fa fa-exchange fa-fw" data-toggle="tooltip" title="{{ lang._("Any") }}"></i> ';
                         }
 
                         // Quick match
                         if (row.quick == 0) {
-                            result += '<i class="fa fa-flash fa-fw text-muted" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Last match") }}"></i> ';
+                            result += '<i class="fa fa-flash fa-fw text-muted" data-toggle="tooltip" title="{{ lang._("Last match") }}"></i> ';
                         } else {
-                            // Default to "First match"
-                            result += '<i class="fa fa-flash fa-fw text-warning" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("First match") }}"></i> ';
-                        }
-
-                        // Logging
-                        if (row.log == 0) {
-                            result += '<i class="fa fa-exclamation-circle fa-fw text-muted" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Logging disabled") }}"></i> ';
-                        } else {
-                            result += '<i class="fa fa-exclamation-circle fa-fw text-info" ' + iconStyle +
-                                    ' data-toggle="tooltip" title="{{ lang._("Logging enabled") }}"></i> ';
+                            result += '<i class="fa fa-flash fa-fw text-warning" data-toggle="tooltip" title="{{ lang._("First match") }}"></i> ';
                         }
 
                         // XXX: Advanced fields all have different default values, so it cannot be generalized completely
                         const advancedDefaultPrefixes = ["0", "none", "any", "default", "keep"];
-
                         const usedAdvancedFields = [];
 
                         advancedFieldIds.forEach(function (fieldId) {
                             const value = row[fieldId];
-
                             if (value !== undefined) {
                                 const lowerValue = value.toString().toLowerCase().trim();
                                 // Check: if the value is empty OR starts with any default prefix, consider it default
@@ -354,58 +458,95 @@
                             tooltip = "{{ lang._('Advanced mode disabled') }}";
                         }
 
-                        result += `<i class="fa fa-cog fa-fw ${iconClass}" ${iconStyle}
-                                    data-toggle="tooltip" data-html="true" title="${tooltip}"></i>`;
+                        result += `<i class="fa fa-cog fa-fw ${iconClass}" data-toggle="tooltip" data-html="true" title="${tooltip}"></i>`;
 
                         // Return all icons
                         return result;
                     },
-                    // Show Edit alias icon and integrate "not" functionality
+                    // Show Edit alias icon, alias description and integrate "not" functionality
                     alias: function(column, row) {
-                        const value = row[column.id] != null ? String(row[column.id]) : "";
+                        if (row.isGroup) {
+                            return "";
+                        }
 
-                        // Explicitly map fields that support negation
-                        const notFieldMap = {
-                            "source_net": "source_not",
-                            "destination_net": "destination_not"
-                        };
+                        const value = row[column.id] || "";
+                        const isNegated = (row[column.id.replace('net', 'not')] == 1) ? "! " : "";
 
-                        const notField = notFieldMap[column.id];
+                        // Internal rule source/destination can be an object, skip them
+                        if (typeof value !== 'string') {
+                            return '';
+                        }
 
-                        // Apply negation
-                        const isNegated = notField && row.hasOwnProperty(notField) && row[notField] == 1 ? "! " : "";
-
-                        if (!value || value.trim() === "" || value === "any" || value === "None") {
+                        if (!value || value === "any") {
                             return isNegated + '*';
                         }
 
-                        // Ensure it's a string, or internal rules will not load anymore
-                        const stringValue = typeof value === "string" ? value : String(value);
+                        const aliasMetadataList = row["alias_meta_" + column.id] || [];
 
-                        const aliasFlagName = "is_alias_" + column.id;
-                        if (!row.hasOwnProperty(aliasFlagName)) {
-                            return isNegated + stringValue;
+                        const renderedItems = aliasMetadataList.map(aliasInfo => {
+                            if (aliasInfo.isAlias) {
+                                const tooltipHtml = aliasInfo.description || aliasInfo.value || "";
+                                return `
+                                    <span data-toggle="tooltip" data-html="true" title="${tooltipHtml}">${aliasInfo.value}&nbsp;</span>
+                                    <a href="/ui/firewall/alias/index/${encodeURIComponent(aliasInfo.value)}"
+                                    data-toggle="tooltip" title="{{ lang._('Edit alias') }}">
+                                    <i class="fa fa-fw fa-list"></i>
+                                    </a>
+                                `;
+                            }
+                            // Not an alias, return translated value
+                            return aliasInfo["%value"];
+                        }).join(", ");
+
+                        // There can only be a single negated value
+                        return isNegated + renderedItems;
+                    },
+                    statistics: function(column, row) {
+                        if (row.isGroup || !inspectEnabled) {
+                            return "";
                         }
 
-                        const generateAliasMarkup = (val) => `
-                            <span data-toggle="tooltip" title="${val}">
-                                ${val}&nbsp;
-                            </span>
-                            <a href="/ui/firewall/alias/index/${val}" data-toggle="tooltip" title="{{ lang._('Edit alias') }}">
-                                <i class="fa fa-fw fa-list"></i>
-                            </a>
+                        const evals   = row["evaluations"] ?? "";
+                        const states  = row["states"] ?? "";
+                        const packets = row["packets"] ?? "";
+                        const bytes   = row["bytes"] ?? "";
+
+                        function render(icon, title, value, is_number = false) {
+                            if (!value || value === "0") {
+                                return "";
+                            }
+
+                            const numValue  = parseInt(value, 10);
+                            const formatted = byteFormat(numValue, 1, is_number);
+
+                            return `
+                                <span data-toggle="tooltip" title="${title}: ${numValue.toLocaleString()}">
+                                    <i class="fa fa-fw ${icon} text-muted"></i> ${formatted}
+                                </span>
+                            `;
+                        }
+
+                        const parts = [
+                            render("fa-bullseye", "{{ lang._('Evaluations') }}", evals, true),
+                            render("fa-chart-line", "{{ lang._('States') }}", states, true),
+                            render("fa-box", "{{ lang._('Packets') }}", packets, true),
+                            render("fa-database", "{{ lang._('Bytes') }}", bytes)
+                        ].filter(Boolean);
+
+                        if (parts.length === 0) {
+                            return "";
+                        }
+
+                        // Split into two vertical rows
+                        const firstGroup  = parts.slice(0, 2).join(" ");
+                        const secondGroup = parts.slice(2).join(" ");
+
+                        return `
+                            <div class="stats-cell">
+                                <div>${firstGroup}</div>
+                                <div>${secondGroup}</div>
+                            </div>
                         `;
-
-                        // If the alias flag is an array, handle multiple comma-separated aliases
-                        if (Array.isArray(row[aliasFlagName])) {
-                            const values = stringValue.split(',').map(s => s.trim());
-                            const aliasFlags = row[aliasFlagName];
-
-                            return isNegated + values.map((val, index) => aliasFlags[index] ? generateAliasMarkup(val) : val).join(', ');
-                        }
-
-                        // If alias flag is not an array, assume it's a boolean and a single alias
-                        return isNegated + (row[aliasFlagName] ? generateAliasMarkup(stringValue) : stringValue);
                     },
                 },
             },
@@ -443,13 +584,8 @@
                             {},
                             function(data, status) {
                                 if (data.status === "ok") {
-                                    std_bootgrid_reload("{{ formGridFilterRule['table_id'] }}");
-                                    // Trigger change message, e.g., when using move_before
-                                    $("#change_message_base_form").slideDown(1000, function() {
-                                        setTimeout(function() {
-                                            $("#change_message_base_form").slideUp(2000);
-                                        }, 2000);
-                                    });
+                                    $("#{{ formGridFilterRule['table_id'] }}").bootgrid("reload");
+                                    $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
                                 }
                             },
                             function(xhr, textStatus, errorThrown) {
@@ -466,74 +602,196 @@
                     title: "{{ lang._('Move selected rule before this rule') }}",
                     sequence: 10
                 },
+                toggle_log: {
+                    method: function(event) {
+                        const uuid = $(this).data("row-id");
+                        const log = String(+$(this).data("value") ^ 1);
+                        ajaxCall(
+                            `/api/firewall/filter/toggle_rule_log/${uuid}/${log}`,
+                            {},
+                            function(data) {
+                                if (data.status === "ok") {
+                                    $("#{{ formGridFilterRule['table_id'] }}").bootgrid("reload");
+                                    $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
+                                }
+                            },
+                            function(xhr, textStatus, errorThrown) {
+                                showDialogAlert(
+                                    BootstrapDialog.TYPE_DANGER,
+                                    "{{ lang._('Request Failed') }}",
+                                    errorThrown
+                                );
+                            },
+                            'POST'
+                        );
+                    },
+                    classname: 'fa fa-fw fa-exclamation-circle',
+                    title: "{{ lang._('Toggle Logging') }}",
+                    sequence: 20
+                }
             },
 
         });
 
-        grid.on("loaded.rs.jquery.bootgrid", function() {
-            $('[data-toggle="tooltip"]').tooltip();
+        grid.on('loaded.rs.jquery.bootgrid', function () {
+            updateStatisticColumns(); // ensures inspect columns are consistent after reload
         });
 
-        /* for performance reasons, only load catagories on page load */
-        ajaxCall('/api/firewall/filter/list_categories', {}, function (data) {
-            if (!data.rows) return;
+        // Track if user has actually changed a dropdown, or it was the controller
+        let interfaceInitialized = false;
+        let categoryInitialized = false;
 
-            const $categoryFilter = $("#category_filter");
-            const currentSelection = $categoryFilter.val();
+        // Do not reload the grid when selectpickers get refreshed during the reconfigureAct
+        let reconfigureActInProgress = false;
 
-            $categoryFilter.empty().append(
-                data.rows.map(row => {
-                    const optVal = $('<div/>').text(row.name).html();
-                    const bgColor = row.color || '31708f';
+        // Populate category selectpicker
+        function populateCategoriesSelectpicker() {
+            const currentSelection = $("#category_filter").val();
 
-                    return $("<option/>", {
-                        value: row.uuid,
-                        html: row.name,
-                        id: row.used > 0 ? row.uuid : undefined,
-                        "data-content": row.used > 0
-                            ? `<span>${optVal}</span><span style='background:#${bgColor};' class='badge pull-right'>${row.used}</span>`
-                            : undefined
+            return $("#category_filter").fetch_options(
+                '/api/firewall/filter/list_categories',
+                {},
+                function (data) {
+                    if (!data.rows) return [];
+
+                    // Sort used categories first, then alphabetically
+                    data.rows.sort((a, b) => {
+                        const aUsed = a.used > 0 ? 0 : 1;
+                        const bUsed = b.used > 0 ? 0 : 1;
+
+                        if (aUsed !== bUsed) return aUsed - bUsed;
+                        return a.name.localeCompare(b.name);
                     });
-                })
-            );
 
-            $categoryFilter.val(currentSelection).selectpicker('refresh');
-        });
+                    return data.rows.map(row => {
+                        const optVal = $('<div/>').text(row.name).html();
+                        const bgColor = row.color || '31708f';
+
+                        return {
+                            value: row.uuid,
+                            label: row.name,
+                            id: row.used > 0 ? row.uuid : undefined,
+                            'data-content': row.used > 0
+                                ? `<span><span class="badge badge-sm" style="background:#${bgColor};">${row.used}</span> ${optVal}</span>`
+                                : undefined
+                        };
+                    });
+                },
+                false,
+                function () {
+                    if (currentSelection?.length) {
+                        $("#category_filter").val(currentSelection).selectpicker('refresh');
+                    }
+                    categoryInitialized = true;
+                },
+                true  // render_html
+            );
+        }
 
         // Populate interface selectpicker
-        $('#interface_select').fetch_options('/api/firewall/filter/get_interface_list');
+        function populateInterfaceSelectpicker() {
+            return $('#interface_select').fetch_options(
+                '/api/firewall/filter/get_interface_list',
+                {},
+                function (data) {
+                    for (const groupKey in data) {
+                        const group = data[groupKey];
+                        group.items = group.items.map(item => {
+                            const count = item.count ?? 0;
+                            const label = (item.label || '');
+                            const subtext = group.label;
+
+                            const bgClassMap = {
+                                floating: 'bg-primary',
+                                group: 'bg-warning',
+                                interface: 'bg-info'
+                            };
+                            const badgeClass = bgClassMap[item.type] || 'bg-info';
+
+                            return {
+                                value: item.value,
+                                label: label,
+                                'data-content': `
+                                    <span>
+                                        ${count > 0 ? `<span class="badge badge-sm ${badgeClass}">${count}</span>` : ''}
+                                        ${label}
+                                        <small class="text-muted ms-2"><em>${subtext}</em></small>
+                                    </span>
+                                `.trim()
+                            };
+                        });
+                    }
+                    return data;
+                },
+                false,
+                function (data) {  // post_callback, apply the URL hash logic
+                    const match = window.location.hash.match(/^#interface=([^&]+)/);
+                    if (match) {
+                        const ifaceFromHash = decodeURIComponent(match[1]);
+
+                        const allOptions = Object.values(data).flatMap(group => group.items.map(i => i.value));
+                        if (allOptions.includes(ifaceFromHash)) {
+                            $('#interface_select').val(ifaceFromHash).selectpicker('refresh');
+                        }
+                    }
+                    interfaceInitialized = true;
+
+                },
+                true  // render_html to show counts as badges
+            );
+        }
+
         $("#interface_select_container").show();
 
         // move selectpickers into action bar
-        $("#interface_select_container").detach().insertBefore('#{{formGridFilterRule["table_id"]}}-header > .row > .actionBar > .search');
-        $('#interface_select').change(function(){
+        $("#interface_select_container").detach().insertBefore('#{{formGridFilterRule["table_id"]}}-header .search');
+        $('#interface_select').on('changed.bs.select', function () {
+            // Skip grid reload during reconfigureAct and initial page load
+            if (!interfaceInitialized || reconfigureActInProgress) return;
+
+            const hashVal = encodeURIComponent($(this).val() ?? '');
+            history.replaceState(null, null, `#interface=${hashVal}`);
             grid.bootgrid('reload');
         });
 
         $("#type_filter_container").detach().insertAfter("#interface_select_container");
-        $("#category_filter").change(function(){
+        $("#category_filter").on('changed.bs.select', function(){
+            // Skip grid reload during reconfigureAct and initial page load
+            if (!categoryInitialized || reconfigureActInProgress) return;
             grid.bootgrid('reload');
         });
 
-        $("#internal_rule_selector").detach().insertAfter("#type_filter_container");
-        $('#all_rules_checkbox').change(function(){
-            const isChecked = $('#all_rules_checkbox').is(':checked');
-            grid.bootgrid(isChecked ? "setColumns" : "unsetColumns", ['evaluations', 'states', 'packets', 'bytes']);
+        $("#inspect_toggle_container").detach().insertAfter("#type_filter_container");
+        $('#toggle_inspect_button').click(function () {
+            inspectEnabled = !inspectEnabled;
+            localStorage.setItem("firewall_rule_inspect", inspectEnabled ? "1" : "0");
+            $(this).toggleClass('active btn-primary', inspectEnabled);
+            updateStatisticColumns();
             grid.bootgrid("reload");
         });
 
-        $('#all_rules_button').click(function(){
-            let $checkbox = $('#all_rules_checkbox');
-
-            $checkbox.prop("checked", !$checkbox.prop("checked"));
-            $(this).toggleClass('active btn-primary');
-
-            $checkbox.trigger("change");
-            $(this).tooltip('hide');
+        $("#tree_toggle_container").detach().insertAfter("#inspect_toggle_container");
+        $('#toggle_tree_button').click(function () {
+            treeViewEnabled = !treeViewEnabled;
+            localStorage.setItem("firewall_rule_tree", treeViewEnabled ? "1" : "0");
+            $(this).toggleClass('active btn-primary', treeViewEnabled);
+            $("#{{formGridFilterRule['table_id']}}").toggleClass("tree-enabled", treeViewEnabled);
+            $("#tree_expand_container").toggle(treeViewEnabled);
+            grid.bootgrid("reload");
         });
 
-        $('#all_rules_button').mouseleave(function(){
-            $('#all_rules_button').tooltip('hide')
+        // Visible only when tree view is enabled
+        $("#tree_expand_container").detach().insertAfter("#tree_toggle_container");
+        $("#tree_expand_container").toggle(treeViewEnabled);
+        $('#expand_tree_button').on('click', function () {
+            const $table = $('#{{ formGridFilterRule["table_id"] }}');
+
+            // If there are any collapsed controls, expand them all, otherwise collapse them all
+            if ($table.find('.tabulator-data-tree-control-expand').length) {
+                $table.find('.tabulator-data-tree-control-expand').trigger('click');
+            } else {
+                $table.find('.tabulator-data-tree-control-collapse').trigger('click');
+            }
         });
 
         // replace all "net" selectors with details retrieved from "list_network_select_options" endpoint
@@ -572,7 +830,13 @@
             }
         });
 
-
+        // replace all "port" selectors with details retrieved from "list_port_select_options" endpoint
+        ajaxGet('/api/firewall/filter/list_port_select_options', [], function (data) {
+            if (!data || !data.single) return;
+            $(".port_selector").each(function () {
+                $(this).replaceInputWithSelector(data, false);
+            });
+        });
 
         // Hook into add event
         $('#{{formGridFilterRule["edit_dialog_id"]}}').on('opnsense_bootgrid_mapped', function(e, actionType) {
@@ -598,13 +862,33 @@
             }
         });
 
-        // Wrap buttons and grid into divs to target them with css for responsiveness
-        $("#{{ formGridFilterRule['table_id'] }}").wrap('<div class="bootgrid-box"></div>');
+        // Hide additional protocol settings in dialog, e.g., ICMP types
+        $("#rule\\.protocol").change(function() {
+            $(".rule_protocol:not(div)").closest('tr').hide();
+            $(".protocol_"+$(this).val().toLowerCase()+':not(div)').closest('tr').show();
+        });
 
         // Dynamically add fa icons to selectpickers
         $('#category_filter').parent().find('.dropdown-toggle').prepend('<i class="fa fa-tag" style="margin-right: 6px;"></i>');
 
-        $("#reconfigureAct").SimpleActionButton();
+        $("#reconfigureAct").SimpleActionButton({
+            onPreAction() {
+                reconfigureActInProgress = true;
+                return $.Deferred().resolve();
+            },
+            onAction(data, status) {
+                Promise.all([
+                    populateInterfaceSelectpicker(),
+                    populateCategoriesSelectpicker()
+                ])
+                .finally(() => {
+                    reconfigureActInProgress = false;
+                });
+            }
+        });
+
+        populateInterfaceSelectpicker();
+        populateCategoriesSelectpicker();
 
     });
 </script>
@@ -630,61 +914,177 @@
         float: left;
         margin-left: 5px;
     }
-    #internal_rule_selector {
+    #inspect_toggle_container {
         float: left;
         margin-left: 5px;
     }
-    /* Prevent bootgrid to break out of content box*/
-    .content-box {
-        overflow-x: auto;
+    #tree_toggle_container {
+        float: left;
+        margin-left: 5px;
     }
-    .bootgrid-header,
-    .bootgrid-box,
-    .bootgrid-footer {
-        width: 100%;
-        background: none;
-        border: none;
-        max-width: 100%;
-        /* Prevents the grid from collapsing all dynamic columns completely */
-        min-width: 1200px;
+    #tree_expand_container {
+        float: left;
+        margin-left: 5px;
     }
-    /* Not all dropdowns support data-container="body", ensure minimal vertical space for them */
-    .bootgrid-box {
-        min-height: 150px;
+    /*
+     * XXX: Since the badge class uses its own default background-color, we must override it explicitly.
+     *      Essentially we would like to use the main style sheet for this.
+     *      bg-info is slightly different from text-info, so we use the text-info color for consistency.
+     */
+    .badge.bg-primary {
+        background-color: #C03E14 !important;
     }
-    #all_rules_button i {
-        margin-right: 5px;
+    .badge.bg-warning {
+        background-color: #f0ad4e !important;
     }
-    /* Allow grid to wrap text to use more diagonal space */
-    .bootgrid-table tbody td {
-        white-space: normal;
-        word-wrap: break-word;
+    .badge.bg-info {
+        background-color: #31708f !important;
     }
+    .badge-sm {
+        font-size: 12px;
+        padding: 2px 5px;
+    }
+
+    /* bucket row style */
+    .bucket-row {
+        pointer-events: none;
+    }
+
+    /* kill all per-cell borders/shadows and let bg come from ::before */
+    .bucket-row .tabulator-cell {
+        border: 0 !important;
+        box-shadow: none !important;
+        background: transparent !important;
+    }
+
+    /* category label can overhang; raise above ::before */
+    .bucket-row .tabulator-cell[tabulator-field="categories"] {
+        overflow: visible !important;
+        white-space: nowrap !important;
+        text-overflow: clip !important;
+    }
+
+    /* keep only the collapse toggle clickable */
+    .bucket-row .tabulator-data-tree-control,
+    .bucket-row .tabulator-data-tree-control * {
+        pointer-events: auto;
+    }
+
+    /* hide the row selection checkbox for internal and dataTree group rules */
+    .row-no-select .tabulator-row-header input[type="checkbox"] {
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    /* hide rowselect checkbox if tree is enabled, it does not work properly */
+    .tree-enabled .tabulator-col.tabulator-row-header input[type="checkbox"] {
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    /* Do not allow Source/Destination selectpickers to grow infinitely */
+    #row_rule\.source_net .bootstrap-select > .dropdown-toggle,
+    #row_rule\.destination_net .bootstrap-select > .dropdown-toggle {
+        max-width: 348px;
+    }
+
+    /* fade disabled rows */
+    .row-disabled {
+        opacity: 0.4;
+    }
+
+    /* Action bar specific layout */
+    #interface_select_container,
+    #type_filter_container {
+        float: none !important;
+        flex: 1 1 150px;
+        min-width: 0;
+        max-width: 400px;
+    }
+
+    #interface_select_container .bootstrap-select,
+    #type_filter_container .bootstrap-select {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .bootgrid-header .actionBar .btn-group {
+        align-items: flex-start;
+    }
+
+    @media (max-width: 1024px) {
+        #interface_select_container,
+        #type_filter_container {
+            flex: 1 1 100%;
+            max-width: 100%;
+            margin: 0;
+        }
+
+        #dialogFilterRule-header #inspect_toggle_container,
+        #dialogFilterRule-header #tree_toggle_container,
+        #dialogFilterRule-header #tree_expand_container {
+            flex: 1 1 0;
+            margin: 0;
+        }
+    }
+
+    .stats-cell {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .stats-cell div {
+        gap: 6px;
+    }
+
 </style>
 
 <div class="tab-content content-box">
     <!-- filters -->
     <div class="hidden">
         <div id="type_filter_container" class="btn-group">
-            <select id="category_filter" data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="5" multiple data-width="200px" data-container="body">
+            <select id="category_filter" data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="30" multiple data-container="body">
             </select>
         </div>
         <div id="interface_select_container" class="btn-group">
-            <select id="interface_select" class="selectpicker" data-live-search="true" data-show-subtext="true" data-size="15" data-width="200px" data-container="body">
+            <select id="interface_select" class="selectpicker" data-live-search="true" data-size="30" data-container="body">
             </select>
         </div>
-        <div id="internal_rule_selector" class="btn-group">
-            <button id="all_rules_button"
+        <div id="inspect_toggle_container" class="btn-group">
+            <button id="toggle_inspect_button"
                     type="button"
                     class="btn btn-default"
                     data-toggle="tooltip"
                     data-placement="bottom"
                     data-delay='{"show": 1000}'
-                    title="{{ lang._('Show automatically generated rules and statistics') }}">
-                <i class="fa fa-eye" aria-hidden="true"></i>
+                    title="{{ lang._('Show all rules and statistics') }}">
+                <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
                 {{ lang._('Inspect') }}
             </button>
             <input id="all_rules_checkbox" type="checkbox" style="display: none;">
+        </div>
+        <div id="tree_toggle_container" class="btn-group">
+            <button id="toggle_tree_button"
+                    type="button"
+                    class="btn btn-default"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    data-delay='{"show": 1000}'
+                    title="{{ lang._('Show all categories in a tree') }}">
+                <i class="fa fa-fw fa-sitemap" aria-hidden="true"></i>
+                {{ lang._('Tree') }}
+            </button>
+        </div>
+        <div id="tree_expand_container" class="btn-group">
+            <button id="expand_tree_button"
+                    type="button"
+                    class="btn btn-default"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    data-delay='{"show": 1000}'
+                    title="{{ lang._('Expand/Collapse all') }}">
+                <i class="fa fa-fw fa-angle-double-down" aria-hidden="true"></i>
+            </button>
         </div>
     </div>
     <!-- grid -->

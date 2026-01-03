@@ -38,5 +38,6 @@ class SpdController extends \OPNsense\Base\IndexController
     {
         $this->view->pick('OPNsense/IPsec/spd');
         $this->view->formDialogSPD = $this->getForm('dialogSPD');
+        $this->view->formGridSPD = $this->getFormGrid('dialogSPD');
     }
 }

@@ -32,7 +32,7 @@ use OPNsense\Base\BaseModelMigration;
 
 class M1_0_7 extends BaseModelMigration
 {
-    public function post($model)
+    public function run($model)
     {
         /* extend tests */
         $defaultTests = [];
@@ -69,6 +69,7 @@ class M1_0_7 extends BaseModelMigration
                 'tests' => $defaultTests['NonZeroStatus']['uuid']
             ]
         ];
+
         foreach ($defaultServices as &$newservice) {
             $srv = $model->service->Add();
             $srv->enabled = $newservice['enabled'];

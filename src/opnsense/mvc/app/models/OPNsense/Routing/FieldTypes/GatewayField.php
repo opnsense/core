@@ -57,6 +57,7 @@ class GatewayField extends ArrayField
             if (!is_a($node->getParentNode(), 'OPNsense\Routing\FieldTypes\GatewayField')) {
                 continue;
             }
+            /* hidden, only visible when called direct (e.g. $node->current_XXX) */
             $targetfield = sprintf("current_%s", $property);
             if (!isset($node->$targetfield)) {
                 $new_item = new TextField();

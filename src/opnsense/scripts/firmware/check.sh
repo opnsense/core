@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2024 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2025 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -105,10 +105,19 @@ if output_cmd ${BASEDIR}/changelog.sh fetch; then
 fi
 
 : > ${OUTFILE}
+
 output_cmd -o ${OUTFILE} ${PKG} update -f
 
-# always update the package manager so we can see the real updates directly
-output_cmd ${PKG} upgrade -r "${product_repo}" -Uy pkg
+PKG_LOCAL=$(${PKG} query %v pkg)
+PKG_REMOTE=$(${PKG} rquery -r "${product_repo}" %v pkg)
+
+# always update when the remote package manager
+# version mismatches or seems unfetchable
+if [ -z "${PKG_LOCAL}" ] || [ -z "${PKG_REMOTE}" ] || \
+    [ "${PKG_LOCAL}" != "${PKG_REMOTE}" ]; then
+	output_txt "Upgrading package manager from version '${PKG_LOCAL}' to '${PKG_REMOTE}'"
+	output_cmd ${PKG} upgrade -r "${product_repo}" -y pkg
+fi
 
 # parse early errors
 if grep -q 'No address record' ${OUTFILE}; then
@@ -148,9 +157,9 @@ else
     # now check what happens when we would go ahead
     output_cmd -o ${OUTFILE} ${PKG} upgrade ${force_all} -Un
     if  [ -n "${CUSTOMPKG}" ]; then
-        output_cmd -o ${OUTFILE} ${PKG} install -Un "${CUSTOMPKG}"
+        output_cmd -o ${OUTFILE} ${PKG} install -fUn "${CUSTOMPKG}"
     elif [ "${product_id}" != "${product_target}" ]; then
-        output_cmd -o ${OUTFILE} ${PKG} install -r "${product_repo}" -Un "${product_target}"
+        output_cmd -o ${OUTFILE} ${PKG} install -r "${product_repo}" -fUn "${product_target}"
     elif [ -z "$(${PKG} rquery %n ${product_id})" ]; then
         # although this should say "to update matching" we emulate for
         # check below as the package manager does not catch this

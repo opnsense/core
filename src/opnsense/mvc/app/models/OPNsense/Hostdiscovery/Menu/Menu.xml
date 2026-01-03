@@ -1,0 +1,8 @@
+<menu>
+    <Interfaces>
+        <Neighbors>
+            <Hostdiscovery VisibleName="Automatic Discovery" cssClass="fa fa-network-wired fa-fw"  url="/ui/hostdiscovery/settings"/>
+            <LogFile order="100" VisibleName="Discovery log" url="/ui/diagnostics/log/core/hostwatch"/>
+        </Neighbors>
+    </Interfaces>
+</menu>

@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2025 Deciso B.V.
  * Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
  * All rights reserved.
  *
@@ -33,12 +34,9 @@ function rrd_export()
     $result = "\t<rrddata>\n";
     $rrd_files = glob("{$rrddbpath}/*.rrd");
     foreach ($rrd_files as $rrd_file) {
-        $basename = basename($rrd_file);
-        $xml_file = preg_replace('/\.rrd$/', ".xml", $rrd_file);
-        exec("/usr/local/bin/rrdtool dump '{$rrd_file}' '{$xml_file}'");
-        $xml_data = @file_get_contents($xml_file);
-        @unlink($xml_file);
-        if ($xml_data !== false) {
+        $xml_data = shell_safe('/usr/local/bin/rrdtool %s %s', ['dump', $rrd_file]);
+        if (!empty($xml_data)) {
+            $basename = basename($rrd_file);
             $result .= "\t\t<rrddatafile>\n";
             $result .= "\t\t\t<filename>{$basename}</filename>\n";
             $result .= "\t\t\t<xmldata>" . base64_encode(gzdeflate($xml_data)) . "</xmldata>\n";
@@ -54,24 +52,21 @@ function rrd_import()
     global $config;
 
     foreach ($config['rrddata']['rrddatafile'] as $rrd) {
+        $rrd_file = "/var/db/rrd/" . basename($rrd['filename']);
         if (!empty($rrd['xmldata'])) {
-            $rrd_file = "/var/db/rrd/{$rrd['filename']}";
             $xml_file = preg_replace('/\.rrd$/', ".xml", $rrd_file);
             if (file_put_contents($xml_file, gzinflate(base64_decode($rrd['xmldata']))) === false) {
                 log_msg("Cannot write $xml_file", LOG_ERR);
                 continue;
             }
-            $output = array();
-            $status = null;
-            exec("/usr/local/bin/rrdtool restore -f '{$xml_file}' '{$rrd_file}'", $output, $status);
-            if ($status) {
+            $output = shell_safe('/usr/local/bin/rrdtool %s %s %s %s', ['restore', '-f', $xml_file, $rrd_file]);
+            if (!empty($output)) {
                 log_msg("rrdtool restore -f '{$xml_file}' '{$rrd_file}' failed returning {$status}.", LOG_ERR);
                 continue;
             }
             unlink($xml_file);
         } elseif (!empty($rrd['data'])) {
             /* rrd backup format */
-            $rrd_file = "/var/db/rrd/{$rrd['filename']}";
             $rrd_fd = fopen($rrd_file, "w");
             if (!$rrd_fd) {
                 log_msg("Cannot write $rrd_file", LOG_ERR);

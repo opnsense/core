@@ -39,8 +39,7 @@ use OPNsense\CaptivePortal\CaptivePortal;
  */
 class AccessController extends ApiControllerBase
 {
-    private static $arp = [];
-    private static $ndp = [];
+    private array $arp = [];
 
     /**
      * request client session data
@@ -48,7 +47,7 @@ class AccessController extends ApiControllerBase
      * @return array
      * @throws \OPNsense\Base\ModelException
      */
-    private function clientSession(string $zoneid)
+    protected function clientSession(string $zoneid)
     {
         $backend = new Backend();
         $allClientsRaw = $backend->configdpRun("captiveportal list_clients", [$zoneid]);
@@ -107,7 +106,7 @@ class AccessController extends ApiControllerBase
     /**
      * determine clients ip address
      */
-    private function getClientIp()
+    protected function getClientIp()
     {
         $clientAddress = $this->request->getClientAddress();
         $forwardedFor = $this->request->getHeader('X-Forwarded-For');
@@ -131,40 +130,133 @@ class AccessController extends ApiControllerBase
         }
     }
 
-    private function getClientMac($ip)
+    protected function getClientMac($ip)
     {
-        // determine if IP is IPv6
-        $is_ipv6 = is_ipaddrv6($ip);
-
-        if ($is_ipv6) {
-            // use NDP for IPv6 addresses
-            if (empty(self::$ndp)) {
-                self::$ndp = json_decode((new Backend())->configdRun("interface list ndp json"), true);
+        if (empty($this->arp)) {
+            /* use hostwatch dump for IPv4, fallback to NDP for IPv6 */
+            $data = json_decode((new Backend())->configdRun('hostwatch dump'), true) ?? [];
+            if (!empty($data['rows'])) {
+                foreach ($data['rows'] as $row) {
+                    $this->arp[$row[2]] = $row[1];
+                }
             }
+        }
 
-            if (self::$ndp != null) {
-                foreach (self::$ndp as $ndp) {
+        // Check cached result first
+        if (isset($this->arp[$ip])) {
+            return $this->arp[$ip];
+        }
+
+        // For IPv6, also check NDP (hostwatch may not have IPv6 yet)
+        if (is_ipaddrv6($ip)) {
+            $ndp_data = json_decode((new Backend())->configdRun("interface list ndp json"), true);
+            if ($ndp_data != null) {
+                foreach ($ndp_data as $ndp) {
                     // remove scope from IPv6 address if present (e.g., fe80::1%em0 -> fe80::1)
                     $ndp_ip = explode('%', $ndp['ip'])[0];
                     if (!empty($ndp['ip']) && $ndp_ip == $ip) {
+                        $this->arp[$ip] = $ndp['mac'];
                         return $ndp['mac'];
                     }
                 }
             }
-        } else {
-            // use ARP for IPv4 addresses
-            if (empty(self::$arp)) {
-                self::$arp = json_decode((new Backend())->configdRun("interface list arp json"), true);
-            }
+        }
 
-            if (self::$arp != null) {
-                foreach (self::$arp as $arp) {
-                    if (!empty($arp['ip']) && $arp['ip'] == $ip) {
-                        return $arp['mac'];
+        return $this->arp[$ip] ?? null;
+    }
+
+    /**
+     * retrieve session info
+     * @param int|string $zoneid zone id number, provided for backwards compatibility
+     * @return array
+     * @throws \OPNsense\Base\ModelException
+     *
+     */
+    public function statusAction($zoneid = 0)
+    {
+        if ($this->request->isOptions()) {
+            // return empty result on CORS preflight
+            return [];
+        } elseif ($this->request->isPost() || $this->request->isGet()) {
+            $clientSession = $this->clientSession($this->request->getHeader("zoneid"));
+            return $clientSession;
+        }
+    }
+
+    /**
+     * RFC 8908: Captive Portal API status object
+     *
+     * The URI for this endpoint can be provisioned to the client
+     * as defined by RFC 7710.
+     *
+     * Request and response must set media type as "application/captive+json".
+     *
+     * Response contains the following fields:
+     * - captive: boolean: client is currently in a state of captivity.
+     * - user-portal-url: string: URL to login web portal (must be HTTPS).
+     * - seconds-remaining: number: seconds until session expires,
+     *   only relevant if hardtimeout set.
+     *
+     * Fields not implemented here but possible in the future:
+     * - venue-info-url: string: Information page (must be HTTPS)
+     * - can-extend-session: boolean: hint that client system can access
+     *   user-portal-url to extend session.
+     * - bytes-remaining: number: no. of bytes after which session expires.
+     *
+     * Response must set Cache-Control to 'private' or 'no-store'
+     */
+    public function apiAction()
+    {
+        if (
+            $this->request->isGet() &&
+            $this->request->getHeader("accept") == "application/captive+json"
+        ) {
+            $result = [];
+            $zoneId = $this->request->getHeader("zoneid");
+            $clientSession = $this->clientSession($zoneId);
+            $captive = $clientSession["clientState"] != "AUTHORIZED";
+            $host = $this->request->getHeader('X-Forwarded-Host');
+
+            $zone = (new \OPNsense\CaptivePortal\CaptivePortal())->getByZoneId($zoneId);
+
+            if ($zone != null && !empty($clientSession['startTime'])) {
+                $startTime = (int)$clientSession['startTime'];
+                $secondsPassed = time() - $startTime;
+                $remainingTimes = [];
+
+                if (!empty((string)$zone->hardtimeout)) {
+                    $timeout = (int)$zone->hardtimeout * 60;
+                    if ($secondsPassed < $timeout) {
+                        $remainingTimes[] = $timeout - $secondsPassed;
                     }
                 }
+
+                if (!empty($clientSession['acc_session_timeout'])) {
+                    $timeout = (int)$clientSession['acc_session_timeout'];
+                    if ($secondsPassed < $timeout) {
+                        $remainingTimes[] = $timeout - $secondsPassed;
+                    }
+                }
+
+                if (!empty($remainingTimes)) {
+                    $result['seconds-remaining'] = min($remainingTimes);
+                }
             }
+
+            $this->response->setRawHeader("Cache-Control: private");
+            $this->response->setContentType("application/captive+json");
+
+            $result["captive"] = $captive;
+            $result["user-portal-url"] = "https://{$host}/index.html";
+
+            $this->response->setContent($result);
+
+            return;
         }
+
+        $this->response->setStatusCode(400);
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setContent(['status'  => 400, 'message' => 'Bad request']);
     }
 
     /**
@@ -328,81 +420,5 @@ class AccessController extends ApiControllerBase
             }
         }
         return ["clientState" => "UNKNOWN", "ipAddress" => $this->getClientIp()];
-    }
-
-    /**
-     * retrieve session info
-     * @param int|string $zoneid zone id number, provided for backwards compatibility
-     * @return array
-     * @throws \OPNsense\Base\ModelException
-     *
-     */
-    public function statusAction($zoneid = 0)
-    {
-        if ($this->request->isOptions()) {
-            // return empty result on CORS preflight
-            return [];
-        } elseif ($this->request->isPost() || $this->request->isGet()) {
-            $clientSession = $this->clientSession($this->request->getHeader("zoneid"));
-            return $clientSession;
-        }
-    }
-
-    /**
-     * RFC 8908: Captive Portal API status object
-     *
-     * The URI for this endpoint can be provisioned to the client
-     * as defined by RFC 7710.
-     *
-     * Request and response must set media type as "application/captive+json".
-     *
-     * Response contains the following fields:
-     * - captive: boolean: client is currently in a state of captivity.
-     * - user-portal-url: string: URL to login web portal (must be HTTPS).
-     * - seconds-remaining: number: seconds until session expires,
-     *   only relevant if hardtimeout set.
-     *
-     * Fields not implemented here but possible in the future:
-     * - venue-info-url: string: Information page (must be HTTPS)
-     * - can-extend-session: boolean: hint that client system can access
-     *   user-portal-url to extend session.
-     * - bytes-remaining: number: no. of bytes after which session expires.
-     *
-     * Response must set Cache-Control to 'private' or 'no-store'
-     */
-    public function apiAction()
-    {
-        if (
-            $this->request->isGet() &&
-            $this->request->getHeader("accept") == "application/captive+json"
-        ) {
-            $result = [];
-            $zoneId = $this->request->getHeader("zoneid");
-            $clientSession = $this->clientSession($zoneId);
-            $captive = $clientSession["clientState"] != "AUTHORIZED";
-            $host = $this->request->getHeader('X-Forwarded-Host');
-
-            $zone = (new \OPNsense\CaptivePortal\CaptivePortal())->getByZoneId($zoneId);
-
-            if ($zone != null && !empty((string)$zone->hardtimeout) && !empty($clientSession['startTime'])) {
-                if ((time() - (int)$clientSession['startTime']) < (string)$zone->hardtimeout * 60) {
-                    $result['seconds-remaining'] = (string)$zone->hardtimeout * 60 - ((time() - (int)$clientSession['startTime']));
-                }
-            }
-
-            $this->response->setRawHeader("Cache-Control: private");
-            $this->response->setContentType("application/captive+json");
-
-            $result["captive"] = $captive;
-            $result["user-portal-url"] = "https://{$host}/index.html";
-
-            $this->response->setContent($result);
-
-            return;
-        }
-
-        $this->response->setStatusCode(400);
-        $this->response->setContentType('application/json', 'UTF-8');
-        $this->response->setContent(['status'  => 400, 'message' => 'Bad request']);
     }
 }

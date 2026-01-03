@@ -60,7 +60,7 @@ class Local extends Base implements IAuthConnector
      */
     public function getLastAuthProperties()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -72,7 +72,7 @@ class Local extends Base implements IAuthConnector
      */
     public function checkPolicy($username, $old_password, $new_password)
     {
-        $result = array();
+        $result = [];
         $configObj = Config::getInstance()->object();
         if (!empty($configObj->system->webgui->enable_password_policy_constraints)) {
             if (!empty($configObj->system->webgui->password_policy_length)) {

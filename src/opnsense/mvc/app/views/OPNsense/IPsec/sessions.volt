@@ -29,12 +29,12 @@
 
     $( document ).ready(function() {
         let grid_phase1 = $("#grid-phase1").UIBootgrid({
-            search:'/api/ipsec/sessions/search_phase1',
             datakey: 'name',
+            search:'/api/ipsec/sessions/search_phase1',
             options:{
                 initialSearchPhrase: getUrlHash('search'),
                 multiSelect: false,
-                rowSelect: false,
+                rowSelect: true,
                 selection: true,
                 stickySelect: true,
                 formatters:{
@@ -69,27 +69,30 @@
             }
         });
         grid_phase1.on('loaded.rs.jquery.bootgrid', function() {
-            $('[data-toggle="tooltip"]').tooltip({container: 'body', trigger: 'hover'});
             let ids = $("#grid-phase1").bootgrid("getCurrentRows");
             if (ids.length > 0) {
                 $("#grid-phase1").bootgrid('select', [ids[0].name]);
             }
-            $('.command-disconnect').click(function(){
+            $('.command-disconnect').click(function(e){
+                e.stopPropagation();
                 ajaxCall("/api/ipsec/sessions/disconnect/" + $(this).data('row-id'), {}, function(){
                     $('#grid-phase1').bootgrid('reload');
                 });
             });
-            $('.command-connect').click(function(){
+            $('.command-connect').click(function(e){
+                e.stopPropagation();
                 ajaxCall("/api/ipsec/sessions/connect/" + $(this).data('row-id'), {}, function(){
                     $('#grid-phase1').bootgrid('reload');
                 });
             });
         });
         grid_phase1.on("selected.rs.jquery.bootgrid", function(e, rows) {
-            $("#grid-phase2").bootgrid('reload');
-        });
-        grid_phase1.on("deselected.rs.jquery.bootgrid", function(e, rows) {
-            $("#grid-phase2").bootgrid('reload');
+            if (rows.length > 0 && rows[0].connected) {
+                $("#grid-phase2").bootgrid('reload');
+                $("#box-phase2").show();
+            } else {
+                $("#box-phase2").hide();
+            }
         });
 
         let grid_phase2 = $("#grid-phase2").UIBootgrid({
@@ -108,14 +111,6 @@
                     request['id'] = ids.length > 0 ? ids[0] : "__not_found__";
                     return request;
                 }
-            }
-        });
-
-        grid_phase2.on('loaded.rs.jquery.bootgrid', function() {
-            if (grid_phase2.bootgrid("getTotalRowCount") > 0) {
-                $("#box-phase2").show();
-            } else {
-                $("#box-phase2").hide();
             }
         });
 
@@ -154,7 +149,7 @@
               <th data-column-id="bytes-out" data-type="numeric"  data-formatter="bytes">{{ lang._('Bytes out') }}</th>
               <th data-column-id="local-class"  data-visible="false" data-type="string">{{ lang._('Local Auth') }}</th>
               <th data-column-id="remote-class"  data-visible="false" data-type="string">{{ lang._('Remote Auth') }}</th>
-              <th data-column-id="commands" data-width="6em" data-formatter="commands" data-sortable="false"></th>
+              <th data-column-id="commands" data-width="6em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
           </tr>
         </thead>
         <tbody>

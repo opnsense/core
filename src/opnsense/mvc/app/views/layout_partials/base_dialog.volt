@@ -136,6 +136,16 @@
         <tbody class="collapsible" {% if field['collapse']|default(false)=='true' %}style="display: none;"{%endif%}>
 {#- endmacro #}
 
+                            {% elseif field['type'] == 'subheader' %}
+                                <tr{% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
+                                    <td colspan="3">
+                                        <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px; padding-left: 5px;">
+                                            <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                                            &nbsp;
+                                            <b>{{ field['label'] }}</b>
+                                        </div>
+                                    </td>
+                                </tr>
                             {% else %}
                               {{ partial("layout_partials/form_input_tr",field)}}
                             {% endif %}

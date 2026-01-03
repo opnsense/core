@@ -45,8 +45,8 @@ class Bridge extends BaseModel
                 continue;
             }
             $key = $bridge->__reference;
-            $members = explode(',', $bridge->members->getCurrentValue());
-            if (!$bridge->span->isEmpty() && in_array($bridge->span->getCurrentValue(), $members)) {
+            $members = $bridge->members->getValues();
+            if (!$bridge->span->isEmpty() && in_array($bridge->span->getValue(), $members)) {
                 $messages->appendMessage(
                     new Message(
                         gettext("Span interface cannot be part of the bridge."),
@@ -58,7 +58,7 @@ class Bridge extends BaseModel
                 if ($bridge->$section->isEmpty()) {
                     continue;
                 }
-                foreach (explode(',', $bridge->$section->getCurrentValue()) as $if) {
+                foreach ($bridge->$section->getValues() as $if) {
                     if (!in_array($if, $members)) {
                         $messages->appendMessage(
                             new Message(

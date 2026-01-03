@@ -4,6 +4,10 @@
         <label>Enabled</label>
         <type>checkbox</type>
         <help>Enable this zone</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+        </grid_view>
     </field>
     <field>
         <id>zone.zoneid</id>
@@ -16,6 +20,9 @@
         <label>Interfaces</label>
         <type>select_multiple</type>
         <help><![CDATA[Select interface(s) to enable for captive portal.]]></help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>zone.disableRules</id>
@@ -23,18 +30,31 @@
         <label>Disable firewall rules</label>
         <help>If this option is set, no automatic firewall rules for portal redirection and traffic blocking will be generated. This option allows you to override the default portal behavior for advanced use cases, such as redirections for DNS. See the documentation to see which rules you should implement in this scenario.</help>
         <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
     </field>
     <field>
         <id>zone.authservers</id>
         <label>Authenticate using</label>
         <type>select_multiple</type>
         <help><![CDATA[Select authentication methods to use, leave empty for no authentication needed.]]></help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>zone.alwaysSendAccountingReqs</id>
         <label>Always send accounting requests</label>
         <type>checkbox</type>
         <help><![CDATA[This will make the captive portal always send accounting requests, rather than just when there is a need for accounting (e.g. when there is a daily session limit).]]></help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
     </field>
     <field>
         <id>zone.authEnforceGroup</id>
@@ -42,36 +62,56 @@
         <type>dropdown</type>
         <help><![CDATA[Restrict access to users in the selected (local)group. <br/>
         <b>NOTE:</b> please be aware that users (or vouchers) which aren't administered locally will be denied when using this option.]]></help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>zone.idletimeout</id>
         <label>Idle timeout (minutes)</label>
         <type>text</type>
         <help><![CDATA[Clients will be disconnected after this amount of inactivity. They may log in again immediately, though. Enter 0 to disable idle timeout.]]></help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>zone.hardtimeout</id>
         <label>Hard timeout (minutes)</label>
         <type>text</type>
         <help><![CDATA[Clients will be disconnected after this amount of time, regardless of activity. They may log in again immediately, though. Enter 0 to disable hard timeout (not recommended unless an idle timeout is set).]]></help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>zone.concurrentlogins</id>
         <type>checkbox</type>
         <label>Concurrent user logins</label>
         <help><![CDATA[If this option is set, users can login on multiple machines at once. If disabled subsequent logins will cause machines previously logged in with the same username to be disconnected.]]></help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
     </field>
     <field>
         <id>zone.certificate</id>
         <label>SSL certificate</label>
         <type>dropdown</type>
         <help><![CDATA[If provided, all traffic will be transmitted over an HTTPS connection to protect against eavesdroppers.]]></help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>zone.servername</id>
         <label>Hostname</label>
         <type>text</type>
         <help><![CDATA[Hostname (of this machine) to redirect login page to, leave blank to use this interface IP address, otherwise make sure the client can access DNS to resolve this location. When using a SSL certificate, make sure both this name and the cert name are equal.]]></help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>zone.allowedAddresses</id>
@@ -80,6 +120,9 @@
         <style>tokenize</style>
         <help><![CDATA[Avoid authentication for addresses and subnets in this list]]></help>
         <allownew>true</allownew>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>zone.allowedMACAddresses</id>
@@ -89,6 +132,9 @@
         <help><![CDATA[Avoid authentication for physical addresses in this list]]></help>
         <allownew>true</allownew>
         <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>zone.extendedPreAuthData</id>
@@ -96,12 +142,20 @@
         <label>Extended pre auth data</label>
         <advanced>true</advanced>
         <help><![CDATA[Offer extended data to the login template before authentication  (mac addresses for upstream use).]]></help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
     </field>
     <field>
         <id>zone.template</id>
         <label>Custom template</label>
         <type>dropdown</type>
         <help>Use custom template package for user login</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>zone.description</id>

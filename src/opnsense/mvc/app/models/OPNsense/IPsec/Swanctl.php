@@ -82,7 +82,14 @@ class Swanctl extends BaseModel
                 }
             }
         }
-        foreach ($vtis as $key => $node) {
+        foreach ($this->VTIs->VTI->iterateItems() as $node) {
+            if (!$validateFullModel && !$node->isFieldChanged()) {
+                continue;
+            } elseif ($node->origin->getValue() == 'legacy') {
+                /* read-only auto-generated */
+                continue;
+            }
+            $key = $node->__reference;
             $vti_inets = [];
             foreach (['local', 'remote', 'tunnel_local', 'tunnel_remote', 'tunnel_local2', 'tunnel_remote2'] as $prop) {
                 if (empty((string)$node->$prop)) {
@@ -120,7 +127,11 @@ class Swanctl extends BaseModel
             }
         }
 
-        foreach ($spds as $key => $node) {
+        foreach ($this->SPDs->SPD->iterateItems() as $node) {
+            if (!$validateFullModel && !$node->isFieldChanged()) {
+                continue;
+            }
+            $key = $node->__reference;
             if (
                 ((string)$node->reqid == '' && (string)$node->connection_child == '') ||
                 ((string)$node->reqid != '' && (string)$node->connection_child != '')
@@ -128,6 +139,18 @@ class Swanctl extends BaseModel
                 $messages->appendMessage(
                     new Message(gettext("Either reqid or child must be set"), $key . ".connection_child")
                 );
+            }
+        }
+
+        foreach ($this->remotes->remote->iterateItems() as $node) {
+            if (!$validateFullModel && !$node->isFieldChanged()) {
+                continue;
+            }
+            $key = $node->__reference;
+            if (!$node->cacerts->isEmpty() && !$node->certs->isEmpty()) {
+                 $messages->appendMessage(
+                     new Message(gettext("Either match on a certificate or an autority, but not both."), $key . ".certs")
+                 );
             }
         }
 
@@ -171,7 +194,10 @@ class Swanctl extends BaseModel
                 $parent = null;
                 $thisnode = [];
                 foreach ($node->iterateItems() as $attr_name => $attr) {
-                    if ($attr_name == 'connection' && isset($data['connections'][(string)$attr])) {
+                    if ($attr->getInternalIsVolatile()) {
+                        /* skip volatile nodes, usually calculated */
+                        continue;
+                    } elseif ($attr_name == 'connection' && isset($data['connections'][(string)$attr])) {
                         $parent = (string)$attr;
                         continue;
                     } elseif ($attr_name == 'pools') {

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2024 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2025 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -42,6 +42,11 @@ function dhcpd_run()
     return [
         'static_mapping' => 'dhcpd_staticmap',
     ];
+}
+
+function dhcpd_syslog()
+{
+    return ['dhcpd' => ['facility' => ['dhcpd']]];
 }
 
 function dhcpd_dhcpv6_enabled()
@@ -87,29 +92,52 @@ function dhcpd_dhcpv4_enabled()
 
 function dhcpd_services()
 {
-    $services = array();
+    $services = [];
 
     if (dhcpd_dhcpv4_enabled()) {
-        $pconfig = array();
+        $pconfig = [];
         $pconfig['name'] = 'dhcpd';
-        $pconfig['description'] = gettext("DHCPv4 Server");
-        $pconfig['php']['restart'] = array('dhcpd_dhcp4_configure');
-        $pconfig['php']['start'] = array('dhcpd_dhcp4_configure');
+        $pconfig['description'] = gettext('ISC DHCPv4 Server');
+        $pconfig['php']['restart'] = ['dhcpd_dhcp4_configure'];
+        $pconfig['php']['start'] = ['dhcpd_dhcp4_configure'];
         $pconfig['pidfile'] = '/var/dhcpd/var/run/dhcpd.pid';
         $services[] = $pconfig;
     }
 
     if (dhcpd_dhcpv6_enabled()) {
-        $pconfig = array();
+        $pconfig = [];
         $pconfig['name'] = 'dhcpd6';
-        $pconfig['description'] = gettext("DHCPv6 Server");
-        $pconfig['php']['restart'] = array('dhcpd_dhcp6_configure');
-        $pconfig['php']['start'] = array('dhcpd_dhcp6_configure');
+        $pconfig['description'] = gettext('ISC DHCPv6 Server');
+        $pconfig['php']['restart'] = ['dhcpd_dhcp6_configure'];
+        $pconfig['php']['start'] = ['dhcpd_dhcp6_configure'];
         $pconfig['pidfile'] = '/var/dhcpd/var/run/dhcpdv6.pid';
         $services[] = $pconfig;
     }
 
     return $services;
+}
+
+function dhcpd_xmlrpc_sync()
+{
+    $result = [];
+
+    $result[] = [
+        'description' => gettext('ISC DHCPv4'),
+        'help' => gettext('Synchronize the DHCP Server settings over to the other HA host.'),
+        'section' => 'dhcpd',
+        'id' => 'dhcpd',
+        'services' => ['dhcpd'],
+    ];
+
+    $result[] = [
+        'description' => gettext('ISC DHCPv6'),
+        'help' => gettext('Synchronize DHCPv6 including router advertisements.'),
+        'section' => 'dhcpdv6',
+        'id' => 'dhcpdv6',
+        'services' => ['dhcpdv6', 'radvd'], /* XXX we need to extract this */
+    ];
+
+    return $result;
 }
 
 function dhcpd_dhcp_configure($verbose = false, $family = null, $blacklist = [])
@@ -120,7 +148,7 @@ function dhcpd_dhcp_configure($verbose = false, $family = null, $blacklist = [])
         mwexecf('/bin/mkdir -p %s', "/var/dhcpd{$dir}");
     }
 
-    if (mwexecf('/sbin/mount -uw %s', '/var/dhcpd/dev', true)) {
+    if (mwexecfm('/sbin/mount -uw %s', '/var/dhcpd/dev')) {
         mwexecf('/sbin/mount -t devfs devfs %s', '/var/dhcpd/dev');
     }
 
@@ -143,11 +171,7 @@ function dhcpd_dhcp4_configure($verbose = false)
     $ddns_zones = [];
 
     if (!dhcpd_dhcpv4_enabled()) {
-        /*
-         * XXX If there is no enabled server interfaces_staticarp_configure()
-         * is not executed as documented.  This likely does not matter, but
-         * since it came up as odd in testing make a note here for the future.
-         */
+        /* XXX dhcpd_staticarp() does not care to disable either way */
         killbypid('/var/dhcpd/var/run/dhcpd.pid');
         return;
     }
@@ -205,8 +229,7 @@ EOD;
      * to setup failover peer "bleh" entries
      */
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
-        /* certainly odd but documented and side effect populates ARP table */
-        interfaces_staticarp_configure($dhcpif, $ifconfig_details);
+        dhcpd_staticarp($dhcpif, $ifconfig_details);
 
         if (!isset($dhcpifconf['enable'])) {
             continue;
@@ -275,8 +298,8 @@ EOPP;
 
         list ($ifcfgip, $ifcfgnet, $ifcfgsn) = interfaces_primary_address($dhcpif, $ifconfig_details);
         if (!is_ipaddrv4($ifcfgip) || !is_subnetv4($ifcfgnet)) {
-            $realif = get_real_interface($dhcpif);
-            log_msg("dhcpd_dhcp4_configure() found no suitable IPv4 address on {$dhcpif}({$realif})", LOG_WARNING);
+            $device = get_real_interface($dhcpif);
+            log_msg("dhcpd_dhcp4_configure() found no suitable IPv4 address on {$dhcpif}({$device})", LOG_WARNING);
             continue;
         }
 
@@ -745,7 +768,6 @@ EOD;
             }
         }
 
-        $dhcpdifs[] = get_real_interface($dhcpif);
         if (!empty($newzone['domain-name']) && isset($dhcpifconf['ddnsupdate']) && is_ipaddrv4($dhcpifconf['ddnsdomainprimary'])) {
             $newzone['dns-servers'] = array($dhcpifconf['ddnsdomainprimary']);
             $newzone['ddnsdomainkeyname'] = $dhcpifconf['ddnsdomainkeyname'] ?? '';
@@ -766,6 +788,8 @@ EOD;
                 $omapi_added = true;
             }
         }
+
+        $dhcpdifs[] = escapeshellarg(get_real_interface($dhcpif));
     }
 
     if ($need_ddns_updates) {
@@ -782,8 +806,8 @@ EOD;
     @touch('/var/dhcpd/var/db/dhcpd.leases');
 
     if (count($dhcpdifs) > 0) {
-        mwexec('/usr/local/opnsense/scripts/dhcp/cleanup_leases4.php -m');
-        mwexec('/usr/local/sbin/dhcpd -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpd.conf -pf /var/run/dhcpd.pid ' . join(' ', $dhcpdifs));
+        mwexecf('/usr/local/opnsense/scripts/dhcp/cleanup_leases4.php -m');
+        mwexecf('/usr/local/sbin/dhcpd -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpd.conf -pf /var/run/dhcpd.pid ' . implode(' ', $dhcpdifs));
     }
 
     service_log("done.\n", $verbose);
@@ -871,7 +895,7 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = [])
 
             if (!isset($config['interfaces'][$ifname]['dhcpd6track6allowoverride'])) {
                 /* mock a real server */
-                if (!empty($dhcpdv6cfg[$ifname]) && $dhcpdv6cfg[$ifname]['enable'] == '-1') {
+                if (!empty($dhcpdv6cfg[$ifname]['enable']) && $dhcpdv6cfg[$ifname]['enable'] == '-1') {
                     /* tracking, but dhcpv6 disabled */
                     $dhcpdv6cfg[$ifname] = [];
                 } else {
@@ -987,8 +1011,8 @@ EOD;
 
         list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
         if (!is_ipaddrv6($ifcfgipv6) || !is_subnetv6($networkv6)) {
-            $realif = get_real_interface($dhcpv6if, 'inet6');
-            log_msg("dhcpd_dhcp6_configure() found no suitable IPv6 address on {$dhcpv6if}({$realif})", LOG_WARNING);
+            $device = get_real_interface($dhcpv6if, 'inet6');
+            log_msg("dhcpd_dhcp6_configure() found no suitable IPv6 address on {$dhcpv6if}({$device})", LOG_WARNING);
             continue;
         }
 
@@ -1145,7 +1169,7 @@ EOD;
             $ddns_zones[] = $newzone;
         }
 
-        $dhcpdv6ifs[] = escapeshellcmd(get_real_interface($dhcpv6if, 'inet6'));
+        $dhcpdv6ifs[] = escapeshellarg(get_real_interface($dhcpv6if, 'inet6'));
     }
 
     if ($need_ddns_updates) {
@@ -1164,21 +1188,21 @@ EOD;
     @touch('/var/dhcpd/var/db/dhcpd6.leases');
 
     if (count($dhcpdv6ifs) > 0) {
-        mwexec('/usr/local/sbin/dhcpd -6 -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpdv6.conf -pf /var/run/dhcpdv6.pid ' . join(' ', $dhcpdv6ifs));
+        mwexecf('/usr/local/sbin/dhcpd -6 -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpdv6.conf -pf /var/run/dhcpdv6.pid ' . implode(' ', $dhcpdv6ifs));
         mwexecf('/usr/sbin/daemon -m0 -f -p %s %s', ['/var/run/dhcpleases6.pid', '/usr/local/opnsense/scripts/dhcp/prefixes.sh']);
     }
 
     service_log("done.\n", $verbose);
 }
 
-function dhcpd_staticmap($proto = null, $valid_addresses = true, $ifconfig_details = null)
+function dhcpd_staticmap($proto = null, $valid_addresses = true, $ifconfig_details = null, $allow_disabled = false)
 {
     $staticmap = [];
     foreach (empty($proto) ? [4, 6] : [$proto] as $inet) {
         $ipaddr = $inet == 6 ? 'ipaddrv6' : 'ipaddr';
 
         foreach (config_read_array($inet == 6 ? 'dhcpdv6' : 'dhcpd') as $dhcpif => $dhcpifconf) {
-            if (!isset($dhcpifconf['staticmap']) || !isset($dhcpifconf['enable'])) {
+            if (!isset($dhcpifconf['staticmap']) || (!isset($dhcpifconf['enable']) && !$allow_disabled)) {
                 continue;
             }
 
@@ -1267,4 +1291,27 @@ function dhcpd_parse_duid($duid_string)
     $duid = array_slice($parsed_duid, 4);
 
     return [$iaid, $duid];
+}
+
+function dhcpd_staticarp($interface, $ifconfig_details)
+{
+    global $config;
+
+    $ifcfg = $config['interfaces'][$interface];
+    if (empty($ifcfg['if']) || !isset($ifcfg['enable'])) {
+        return;
+    }
+
+    $device = $ifcfg['if'];
+
+    $have = in_array('staticarp', $ifconfig_details[$device]['flags']);
+    $want = isset($config['dhcpd'][$interface]['staticarp']);
+
+    if ($have !== $want) {
+        mwexecf('/sbin/ifconfig %s %sstaticarp', [$device, $want ? '' : '-']);
+        mwexecf('/usr/sbin/arp -d -i %s -a', [$device]);
+
+        /* call this only when the ARP cache was flushed */
+        interfaces_neighbors_configure($interface, $ifconfig_details);
+    }
 }

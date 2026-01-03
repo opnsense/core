@@ -44,7 +44,7 @@ class MHA1_0_0 extends BaseModelMigration
         if (!($model instanceof Hasync)) {
             return;
         }
-        $services = json_decode((new Backend())->configdRun('system ha options') ?? '', true);
+        $services = json_decode((new Backend())->configdRun('system ha options'), true);
         if (!empty($services)) {
             $src = Config::getInstance()->object()->hasync;
             $syncitems = [];

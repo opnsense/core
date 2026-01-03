@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2024 Deciso B.V.
+ * Copyright (C) 2015-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -129,6 +129,22 @@ abstract class BaseField
      * @var BaseModel|null keep record of the model which originally created this field
      */
     private $internalParentModel = null;
+
+    /**
+     * @param array $node input array to traverse
+     * @param string $path reference to information to be fetched (e.g. my.data)
+     * @return array
+     */
+    protected static function getArrayReference(array $node, string $path)
+    {
+        foreach (explode('.', $path) as $ref) {
+            if (!isset($node[$ref]) || !is_array($node[$ref])) {
+                return []; /* not found or not valid */
+            }
+            $node = $node[$ref];
+        }
+        return $node;
+    }
 
     /**
      * @return bool
@@ -360,16 +376,26 @@ abstract class BaseField
      */
     public function __toString()
     {
-        return $this->getCurrentValue();
+        return $this->getValue();
     }
 
     /**
-     * return field current value
-     * @return null|string field current value
+     * return field current value in order to be able to override it
+     * @return string field current value
      */
-    public function getCurrentValue(): string
+    public function getValue(): string
     {
         return (string)$this->internalValue;
+    }
+
+    /**
+     * return field current value(s) as array (empty strings are omitted)
+     * @return array field current values
+     */
+    public function getValues(): array
+    {
+        $value = $this->getValue();
+        return strlen($value) ? [$value] : [];
     }
 
     /**
@@ -378,16 +404,34 @@ abstract class BaseField
      */
     public function isNumeric(): bool
     {
-        return is_numeric($this->getCurrentValue());
+        return is_numeric($this->getValue());
     }
 
     /**
-     * Try to convert to current value as float
+     * check if field value is equal to given string
+     * @return bool
+     */
+    public function isEqual(string $test): bool
+    {
+        return $this->getValue() === $test;
+    }
+
+    /**
+     * convert current value to float
      * @return float
      */
     public function asFloat(): float
     {
-        return floatval($this->getCurrentValue());
+        return (float)$this->getValue();
+    }
+
+    /**
+     * convert current value to int
+     * @return int
+     */
+    public function asInt(): int
+    {
+        return (int)$this->getValue();
     }
 
     /**
@@ -401,10 +445,9 @@ abstract class BaseField
             $this->internalInitialValue = (string)$value;
         }
         $this->internalValue = (string)$value;
-        // apply filters, may be extended later.
-        $filters = array('applyFilterChangeCase');
-        foreach ($filters as $filter) {
-            $this->$filter();
+        // apply case when specified
+        if (!empty($this->internalChangeCase)) {
+            $this->applyFilterChangeCase();
         }
     }
 
@@ -501,23 +544,18 @@ abstract class BaseField
     }
 
     /**
-     * check if current value is empty  (either boolean field as false or an empty field)
+     * check if current value is empty (either boolean field as false or an empty field)
      * @return bool
      */
     public function isEmpty(): bool
     {
-        return empty($this->getCurrentValue());
+        return empty($this->getValue());
     }
 
     /**
-     * check if current value is empty AND NOT zero (either boolean field as false or an empty field)
+     * check if this field is required
      * @return bool
      */
-    public function isEmptyString(): bool
-    {
-        return $this->getCurrentValue() !== "0" && $this->isEmpty();
-    }
-
     public function isRequired(): bool
     {
         return $this->internalIsRequired;
@@ -529,7 +567,7 @@ abstract class BaseField
      */
     public function isEmptyAndRequired(): bool
     {
-        return $this->internalIsRequired && ($this->internalValue == "" || $this->internalValue == null);
+        return $this->internalIsRequired && $this->getValue() === '';
     }
 
     /**
@@ -672,12 +710,34 @@ abstract class BaseField
      */
     public function getNodes()
     {
-        $result = array ();
+        $result = [];
+
+        foreach ($this->iterateItems() as $key => $node) {
+            $result[$key] = $node->isContainer() ? $node->getNodes() : $node->getNodeData();
+        }
+
+        return $result;
+    }
+
+    /**
+     * get nodes as array structure using getValue() and (optionally) getDescription() as leaves,
+     * the latter prefixed with a percentage sign (%) as these are impossible to exist in our xml structure.
+     * (eg field, $field)
+     * @return array
+     */
+    public function getNodeContent()
+    {
+        $result = [];
+
         foreach ($this->iterateItems() as $key => $node) {
             if ($node->isContainer()) {
-                $result[$key] = $node->getNodes();
+                $result[$key] = $node->getNodeContent();
             } else {
-                $result[$key] = $node->getNodeData();
+                $result[$key] = $node->getValue();
+                $descr = $node->getDescription();
+                if ($descr != $result[$key]) {
+                    $result['%' . $key] = $descr;
+                }
             }
         }
 

@@ -41,6 +41,17 @@ class NetworkFieldTest extends Field_Framework_TestCase
         $this->assertInstanceOf('\OPNsense\Base\FieldTypes\NetworkField', new NetworkField());
     }
 
+    /**
+     * generic property tests
+     */
+    public function testGeneric()
+    {
+        $field = new NetworkField();
+
+        $this->assertFalse($field->isContainer());
+        $this->assertFalse($field->isList());
+    }
+
     public function testRequiredEmpty()
     {
         $this->expectException(\OPNsense\Base\ValidationException::class);
@@ -68,6 +79,20 @@ class NetworkFieldTest extends Field_Framework_TestCase
             $field->setValue($value);
             $this->assertEmpty($this->validate($field));
         }
+    }
+
+    public function testValidValuesMulti()
+    {
+        $field = new NetworkField();
+        $value = "192.168.1.1\n2000::1";
+        $field->setFieldSeparator("\n");
+        $field->setAsList('Y');
+        $field->setValue($value);
+        $this->assertEmpty($this->validate($field));
+        $this->assertTrue($field->isEqual($value));
+        $this->assertEquals(2, count($field->getValues()));
+        $this->assertEquals('192.168.1.1', $field->getValues()[0]);
+        $this->assertEquals('2000::1', $field->getValues()[1]);
     }
 
     public function testValidValuesV6()

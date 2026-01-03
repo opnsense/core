@@ -40,6 +40,7 @@ class CertController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->formDialogEditCert = $this->getForm("dialogCert");
+        $this->view->formGridCert = $this->getFormGrid('dialogCert');
         $this->view->pick('OPNsense/Trust/cert');
     }
 }

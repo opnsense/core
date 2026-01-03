@@ -347,19 +347,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = sprintf(gettext("The Source IP address %s Address Family differs from the destination %s."), $pconfig['src'], $pconfig['dst']);
         }
     }
-    foreach (array('src', 'dst') as $fam) {
-        if (is_ipaddr($pconfig[$fam])) {
-            if ((is_ipaddrv6($pconfig[$fam]) || is_subnetv6($pconfig[$fam])) && $pconfig['ipprotocol'] == "inet") {
-                $input_errors[] = gettext("You can not use IPv6 addresses in IPv4 rules.");
-            } elseif ((is_ipaddrv4($pconfig[$fam]) || is_subnetv4($pconfig[$fam])) && $pconfig['ipprotocol'] == "inet6") {
-                $input_errors[] = gettext("You can not use IPv4 addresses in IPv6 rules.");
-            }
+
+    foreach (['src', 'dst'] as $fam) {
+        /* do not validate the subnet as the concern is address family validation */
+        $testip = explode('/', $pconfig[$fam])[0];
+        if (strpbrk($testip, '.:') === false) {
+            continue; /* does not look like an IP adress */
+        }
+
+        if ($pconfig['ipprotocol'] == 'inet' && is_ipaddrv6($testip)) {
+            $input_errors[] = gettext('You can not use IPv6 addresses in IPv4 rules.');
+            break; /* break early to avoid multiple of the same message */
+        } elseif ($pconfig['ipprotocol'] == 'inet6' && is_ipaddrv4($testip)) {
+            $input_errors[] = gettext('You can not use IPv4 addresses in IPv6 rules.');
+            break; /* break early to avoid multiple of the same message */
+        } elseif ($pconfig['ipprotocol'] == 'inet46' && is_ipaddr($testip)) {
+            $input_errors[] = gettext('You can not use an IPv4 or IPv6 address in combined IPv4 + IPv6 rules.');
+            break; /* break early to avoid multiple of the same message */
         }
     }
 
-    if ((is_ipaddr($pconfig['src']) || is_ipaddr($pconfig['dst'])) && ($pconfig['ipprotocol'] == "inet46")) {
-        $input_errors[] = gettext('You can not use an IPv4 or IPv6 address in combined IPv4 + IPv6 rules.');
-    }
     if (!empty($pconfig['os'])) {
         if ($pconfig['protocol'] != "tcp") {
             $input_errors[] = gettext("OS detection is only valid with protocol tcp.");
@@ -846,6 +853,13 @@ include("head.inc");
       <?php endif;?>
 
       formatTokenizersUI();
+
+      $("#btn_cancel").click(function(e){
+          e.preventDefault();
+          //id="interface"
+          let target = Array.isArray($("#interface").val()) ? 'FloatingRules' : $("#interface").val();
+          window.location = '/firewall_rules.php?if=' + target;
+      });
   });
 
   </script>
@@ -966,10 +980,10 @@ include("head.inc");
                     <td>
 <?php
                     if (!empty($pconfig['floating'])): ?>
-                      <select name="interface[]" title="Select interfaces..." multiple="multiple" class="selectpicker" data-live-search="true" data-size="5" tabindex="2" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
+                      <select name="interface[]" id="interface" title="Select interfaces..." multiple="multiple" class="selectpicker" data-live-search="true" data-size="5" tabindex="2" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
 <?php
                     else: ?>
-                      <select name="interface" class="selectpicker" data-live-search="true" data-size="5" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
+                      <select name="interface" id="interface" class="selectpicker" data-live-search="true" data-size="5" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
 <?php
                     endif;
 
@@ -1077,7 +1091,7 @@ include("head.inc");
                       );
 
                       foreach ($icmptypes as $icmptype => $descr): ?>
-                        <option value="<?=$icmptype;?>" <?= in_array($icmptype, $pconfig['icmptype']) ? "selected=\"selected\"" : ""; ?>>
+                        <option value="<?=$icmptype;?>" <?= in_array($icmptype, $pconfig['icmptype'] ?? []) ? "selected=\"selected\"" : ""; ?>>
                           <?=$descr;?>
                         </option>
 <?php
@@ -1388,7 +1402,7 @@ include("head.inc");
                   </tr>
 
                   <tr>
-                      <td><a id="help_for_shaper" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Traffic shaping [experimental]");?></td>
+                      <td><a id="help_for_shaper" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Traffic shaping') ?></td>
                       <td>
                         <table class="table table-condensed">
                           <thead>
@@ -1819,7 +1833,7 @@ endforeach;?>
                       <td>&nbsp;</td>
                       <td>
                         <input name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
-                        <input type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/firewall_rules.php?if=<?= !empty($pconfig['floating']) ? 'FloatingRules' : $pconfig['interface'] ?>'" />
+                        <button id="btn_cancel" class="btn btn-default"><?=html_safe(gettext('Cancel'));?></button>
                       </td>
                     </tr>
                   </table>

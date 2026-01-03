@@ -50,7 +50,7 @@ class TrafficShaper extends BaseModel
             if ($validateFullModel || $node->isFieldChanged()) {
                 $parentNode = $node->getParentNode();
                 if (in_array($node->getInternalXMLTagName(), ['bandwidth', 'bandwidthMetric'])) {
-                    $currentval = (int)(string)$parentNode->bandwidth;
+                    $currentval = $parentNode->bandwidth->asInt();
                     $maximumval = $max_bandwidth;
                     if ($parentNode->bandwidthMetric == "Kbit") {
                         $maximumval /= 1000;

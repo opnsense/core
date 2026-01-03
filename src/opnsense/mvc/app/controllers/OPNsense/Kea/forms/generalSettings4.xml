@@ -30,7 +30,7 @@
         <id>dhcpv4.general.valid_lifetime</id>
         <label>Valid lifetime</label>
         <type>text</type>
-        <help>Defines how long the addresses (leases) given out by the server are valid (in seconds)</help>
+        <help>The valid life time of the leases given out by the server in seconds.</help>
     </field>
     <field>
         <id>dhcpv4.general.fwrules</id>
@@ -46,7 +46,58 @@
     </field>
     <field>
         <type>header</type>
+        <label>Lease Expiration</label>
+        <collapse>true</collapse>
+    </field>
+    <field>
+        <id>dhcpv4.lexpire.hold_reclaimed_time</id>
+        <label>Affinity lifetime</label>
+        <type>text</type>
+        <help>Defines in seconds for how long a returning client will be able to retrieve the same lease.</help>
+    </field>
+    <field>
+        <id>dhcpv4.lexpire.reclaim_timer_wait_time</id>
+        <label>Reclamation delay</label>
+        <type>text</type>
+        <hint>10</hint>
+        <help>The interval in seconds between the completion of the previous reclamation cycle and the start of the next one.</help>
+    </field>
+    <field>
+        <id>dhcpv4.lexpire.flush_reclaimed_timer_wait_time</id>
+        <label>Reclamation initiation</label>
+        <type>text</type>
+        <hint>25</hint>
+        <advanced>true</advanced>
+        <help>This parameter controls the server wait time in seconds between each lease reclamation procedure.</help>
+    </field>
+    <field>
+        <id>dhcpv4.lexpire.max_reclaim_time</id>
+        <label>Maximum Reclamation time</label>
+        <type>text</type>
+        <hint>10</hint>
+        <advanced>true</advanced>
+        <help>Defines an upper limit in milliseconds to the length of time a lease reclamation procedure may take. Use "0" to disable the time limit.</help>
+    </field>
+    <field>
+        <id>dhcpv4.lexpire.max_reclaim_leases</id>
+        <label>Maximum reclamation leases</label>
+        <type>text</type>
+        <hint>100</hint>
+        <advanced>true</advanced>
+        <help>Defines the maximum number of reclaimed leases that can be processed at one time. Use "0" to set it to unlimited.</help>
+    </field>
+    <field>
+        <id>dhcpv4.lexpire.unwarned_reclaim_cycles</id>
+        <label>Cleanup circles</label>
+        <type>text</type>
+        <hint>5</hint>
+        <advanced>true</advanced>
+        <help>This parameter specifies how many consecutive clean-up cycles must end with remaining leases to be processed before a warning is printed.</help>
+    </field>
+    <field>
+        <type>header</type>
         <label>High Availability</label>
+        <collapse>true</collapse>
     </field>
     <field>
         <id>dhcpv4.ha.enabled</id>

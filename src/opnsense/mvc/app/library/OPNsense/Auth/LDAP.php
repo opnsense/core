@@ -54,7 +54,7 @@ class LDAP extends Base implements IAuthConnector
     /**
      * @var array list of attributes to return in searches
      */
-    private $ldapSearchAttr = array();
+    private $ldapSearchAttr = [];
 
     /**
      * @var null|string ldap configuration property set.
@@ -134,7 +134,7 @@ class LDAP extends Base implements IAuthConnector
     /**
      * @var array internal list of authentication properties (returned by radius auth)
      */
-    private $lastAuthProperties = array();
+    private $lastAuthProperties = [];
 
     /**
      * close ldap handle if open
@@ -180,7 +180,7 @@ class LDAP extends Base implements IAuthConnector
                     $info = @ldap_get_entries($this->ldapHandle, $sr);
                     if ($info !== false) {
                         if ($result === false) {
-                            $result = array();
+                            $result = [];
                             $result['count'] = 0;
                         }
                         for ($i = 0; $i < $info["count"]; $i++) {
@@ -310,13 +310,13 @@ class LDAP extends Base implements IAuthConnector
      */
     public function getConfigurationOptions()
     {
-        $options = array();
-        $options["caseInSensitiveUsernames"] = array();
+        $options = [];
+        $options["caseInSensitiveUsernames"] = [];
         $options["caseInSensitiveUsernames"]["name"] = gettext("Match case insensitive");
         $options["caseInSensitiveUsernames"]["help"] = gettext("Allow mixed case input when gathering local user settings.");
         $options["caseInSensitiveUsernames"]["type"] = "checkbox";
         $options["caseInSensitiveUsernames"]["validate"] = function ($value) {
-            return array();
+            return [];
         };
         return $options;
     }
@@ -398,7 +398,7 @@ class LDAP extends Base implements IAuthConnector
             $userNameAttribute = strtolower($userNameAttribute);
             // add $userNameAttribute to search results
             $this->addSearchAttribute($userNameAttribute);
-            $result = array();
+            $result = [];
             if (empty($extendedQuery)) {
                 $searchResults = $this->search("({$userNameAttribute}={$username})");
             } else {
@@ -445,7 +445,7 @@ class LDAP extends Base implements IAuthConnector
      */
     public function listOUs()
     {
-        $result = array();
+        $result = [];
         if ($this->ldapHandle !== false) {
             $searchResults = $this->search("(|(ou=*)(cn=Users))");
             if ($searchResults !== false) {

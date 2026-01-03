@@ -35,7 +35,7 @@ use OPNsense\Base\Validators\IntegerValidator;
 class UidField extends IntegerField
 {
     /**
-     * @var bool past actionPostLoadingEvent? (load uid id from disk, generate new when not)
+     * @var bool past actionPostLoadingEvent? (load UID from disk, generate new when not)
      */
     private $fieldLoaded = false;
 
@@ -44,7 +44,7 @@ class UidField extends IntegerField
      */
     protected function defaultValidationMessage()
     {
-        return gettext('Invalid uid.');
+        return gettext('Invalid user ID.');
     }
 
     /**
@@ -55,7 +55,7 @@ class UidField extends IntegerField
         if (empty((string)$this) && $this->fieldLoaded) {
             $uids = [];
             foreach ($this->getParentModel()->user->iterateItems() as $user) {
-                $uids[] = (int)$user->uid->getCurrentValue();
+                $uids[] = $user->uid->asInt();
             }
             for ($i = 2000; true; $i++) {
                 if (!in_array($i, $uids)) {

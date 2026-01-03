@@ -2,13 +2,6 @@
     <VPN>
         <IPsec cssClass="fa fa-lock fa-fw">
             <Connections order="5" url="/ui/ipsec/connections"/>
-            <Tunnels order="10" VisibleName="Tunnel Settings [legacy]" url="/ui/ipsec/tunnels">
-                <Phase1 url="/vpn_ipsec_phase1.php*" visibility="hidden"/>
-                <Phase2 url="/vpn_ipsec_phase2.php*" visibility="hidden"/>
-            </Tunnels>
-            <Mobile order="20" VisibleName="Mobile Clients [legacy]" url="/vpn_ipsec_mobile.php">
-                <Act url="/vpn_ipsec_mobile.php*" visibility="hidden"/>
-            </Mobile>
             <Keys order="30" VisibleName="Pre-Shared Keys" url="/ui/ipsec/pre_shared_keys"/>
             <KeyPairs order="40" VisibleName="Key Pairs" url="/ui/ipsec/key_pairs" />
             <Settings order="50" VisibleName="Mobile &amp; Advanced Settings" url="/ui/ipsec/connections/settings"/>

@@ -32,7 +32,6 @@ require_once("config.inc");
 require_once("interfaces.inc");
 require_once("util.inc");
 require_once("filter.inc");
-require_once("util.inc");
 require_once("system.inc");
 
 function console_prompt_for_yn($prompt_text, $default = '')
@@ -59,13 +58,13 @@ function console_prompt_for_yn($prompt_text, $default = '')
     }
 }
 
-function console_get_interface_from_ppp($realif)
+function console_get_interface_from_ppp($device)
 {
     global $config;
 
     if (isset($config['ppps']['ppp'])) {
         foreach ($config['ppps']['ppp'] as $ppp) {
-            if ($realif == $ppp['if']) {
+            if ($device == $ppp['if']) {
                 $ifaces = explode(',', $ppp['ports']);
                 return $ifaces[0];
             }
@@ -273,16 +272,16 @@ function add_gateway_to_config($interface, $gatewayip, $inet_type, $is_in_subnet
     }
 
     $item = [
-        'disabled' => 0,
+        'disabled' => '0',
         'descr' => sprintf('Interface %s Gateway', strtoupper($interface)),
-        'defaultgw' => $is_default ? 1 : 0,
+        'defaultgw' => $is_default ? '1' : '0',
         'ipprotocol' => $inet_type,
         'interface' => $interface,
         'gateway' => $gatewayip,
-        'monitor_disable' => 1,
+        'monitor_disable' => '1',
         'name' => $new_name,
-        'weight' => 1,
-        'fargw' => !$is_in_subnet ? 1 : 0
+        'weight' => '1',
+        'fargw' => !$is_in_subnet ? '1' : '0',
     ];
 
     $gw->createOrUpdateGateway($item, $uuid);
@@ -598,7 +597,7 @@ if (empty($config['interfaces']['lan'])) {
         unset($config['dhcpdv6']['lan']);
     }
     unset($config['nat']);
-    system("rm /var/dhcpd/var/db/* >/dev/null 2>/dev/null");
+    shell_safe('rm /var/dhcpd/var/db/*');
     $restart_dhcpd = true;
 }
 

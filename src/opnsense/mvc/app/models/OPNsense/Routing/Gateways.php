@@ -205,7 +205,10 @@ class Gateways extends BaseModel
                         }
 
                         if (empty($record['monitor_disable'])) {
-                            $record['monitor_disable'] = 0;
+                            $record['monitor_disable'] = '0';
+                        }
+                        if (empty($record['monitor_noroute'])) {
+                            $record['monitor_noroute'] = '0';
                         }
                         // backwards compatibility, hook "current_" fields
                         foreach ($this->gateway_item->getDpingerDefaults() as $key => $value) {
@@ -250,7 +253,7 @@ class Gateways extends BaseModel
      * @param string $ifname name of the interface
      * @param array $definedIntf configuration of interface
      * @param string $ipproto inet/inet6 type
-     * @return string $realif target device name
+     * @return string $device target device name
      */
     private function getRealInterface($definedIntf, $ifname, $ipproto = 'inet')
     {
@@ -260,20 +263,20 @@ class Gateways extends BaseModel
         }
 
         $ifcfg = $definedIntf[$ifname];
-        $realif = $ifcfg['if'];
+        $device = $ifcfg['if'];
 
         if ($ipproto == 'inet6') {
             switch ($ifcfg['ipaddrv6'] ?? 'none') {
                 case '6rd':
                 case '6to4':
-                    $realif = "{$ifname}_stf";
+                    $device = "{$ifname}_stf";
                     break;
                 default:
                     break;
             }
         }
 
-        return $realif;
+        return $device;
     }
 
     /**
@@ -392,24 +395,25 @@ class Gateways extends BaseModel
                 foreach (["inet", "inet6"] as $ipproto) {
                     // filename suffix and interface type as defined in the interface
                     $descr = !empty($ifcfg['descr']) ? $ifcfg['descr'] : $ifname;
-                    $realif = $this->getRealInterface($definedIntf, $ifname, $ipproto);
+                    $device = $this->getRealInterface($definedIntf, $ifname, $ipproto);
                     $ctype = self::convertType($ipproto, $ifcfg);
                     $ctype = $ctype != null ? $ctype : "GW";
                     // default configuration, when not set in gateway_item
                     $thisconf = [
                         "interface" => $ifname,
-                        "weight" => 1,
+                        "weight" => '1',
                         "ipprotocol" => $ipproto,
                         "name" => strtoupper("{$descr}_{$ctype}"),
                         "descr" => "Interface " . strtoupper("{$descr}_{$ctype}") . " Gateway",
-                        "monitor_disable" => true, // disable monitoring by default
+                        "monitor_disable" => '1', // disable monitoring by default
+                        "monitor_noroute" => '0', // enabled host route by default
                         "gateway_interface" => false, // Dynamic gateway policy
-                        "if" => $realif,
+                        "if" => $device,
                         "dynamic" => true,
                         "virtual" => true
                     ];
                     // set default priority
-                    if (strstr($realif, 'gre') || strstr($realif, 'gif') || strstr($realif, 'ovpn')) {
+                    if (strstr($device, 'gre') || strstr($device, 'gif') || strstr($device, 'ovpn')) {
                         // consider tunnel type interfaces least attractive by default
                         $thisconf['priority'] = 255;
                     } else {
@@ -428,14 +432,14 @@ class Gateways extends BaseModel
                     }
                     if (!empty($thisconf['virtual']) && in_array($thisconf['name'], $reservednames)) {
                         /* if name is already taken, don't try to add a new (virtual) entry */
-                    } elseif (($router = Autoconf::getRouter($realif, $ipproto)) != null) {
+                    } elseif (($router = Autoconf::getRouter($device, $ipproto)) != null) {
                         $thisconf['gateway'] = $router;
                         if (empty($thisconf['monitor_disable']) && empty($thisconf['monitor'])) {
                             $thisconf['monitor'] = $thisconf['gateway'];
                         }
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
                         $this->cached_gateways[$gwkey] = $thisconf;
-                    } elseif (!empty($ifcfg['gateway_interface']) || substr($realif, 0, 5) == 'ovpnc') {
+                    } elseif (!empty($ifcfg['gateway_interface']) || substr($device, 0, 5) == 'ovpnc') {
                         // XXX: ditch ovpnc in a major upgrade in the future, supersede with interface setting
                         //      gateway_interface
 
@@ -613,7 +617,7 @@ class Gateways extends BaseModel
     }
 
     /**
-     * get gateway groups and active
+     * get gateway active groups
      * @param array $status_info gateway status info (from dpinger)
      * @return array usable gateway groups
      */
@@ -643,7 +647,7 @@ class Gateways extends BaseModel
                         }
                         // check status for all gateways in this tier
                         foreach ($tier as $gwname) {
-                            if (!empty($all_gateways[$gwname]['gateway']) && !empty($status_info[$gwname])) {
+                            if (!empty($status_info[$gwname])) {
                                 $gateway = $all_gateways[$gwname];
                                 switch ($status_info[$gwname]['status']) {
                                     case 'down':
@@ -665,9 +669,10 @@ class Gateways extends BaseModel
                                 }
                                 $gateway_item = [
                                     'int' => $gateway['if'],
-                                    'gwip' => $gateway['gateway'],
+                                    'gwip' => $gateway['gateway'] ?? '',
+                                    'ipprotocol' => $gateway['ipprotocol'],
                                     'poolopts' => isset($gw_group->poolopts) ? (string)$gw_group->poolopts : null,
-                                    'weight' => !empty($gateway['weight']) ? $gateway['weight'] : 1
+                                    'weight' => !empty($gateway['weight']) ? $gateway['weight'] : '1',
                                 ];
                                 $all_tiers[$tieridx][] = $gateway_item;
                                 if ($is_up) {

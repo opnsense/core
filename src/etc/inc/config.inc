@@ -167,29 +167,16 @@ function convert_config($verbose = false)
         write_config('Factory configuration', false);
     }
 
+    $function = $verbose ? 'pass_safe' : 'mwexecf';
+
     /* chain the new migration into this function call */
-    $cmd = '/usr/local/opnsense/mvc/script/run_migrations.php';
-    if ($verbose) {
-        passthru($cmd);
-    } else {
-        mwexecf($cmd);
-    }
+    $function('/usr/local/sbin/pluginctl -m');
 
     /* register pluggable interfaces */
-    $cmd = '/usr/local/sbin/pluginctl -i';
-    if ($verbose) {
-        passthru($cmd);
-    } else {
-        mwexecf($cmd);
-    }
+    $function('/usr/local/sbin/pluginctl -i');
 
     /* factory reset on release type and plugins if necessary */
-    $cmd = '/usr/local/opnsense/scripts/firmware/register.php sync';
-    if ($verbose) {
-        passthru($cmd);
-    } else {
-        mwexecf($cmd);
-    }
+    $function('/usr/local/opnsense/scripts/firmware/register.php sync');
 
     /* reload the config as it was rewritten and saved in the script context */
     OPNsense\Core\Config::getInstance()->forceReload();
@@ -290,7 +277,7 @@ function make_config_revision_entry($desc = '')
 
     $revision = [];
     $revision['username'] = $username;
-    $revision['time'] = microtime(true);
+    $revision['time'] = sprintf('%0.2f', microtime(true));
     $revision['description'] = $desc;
 
     return $revision;
@@ -333,6 +320,7 @@ function legacy_config_get_interfaces($filters = [], $exclude_ifs = [])
             $iface['descr'] = !empty($iface['descr']) ? $iface['descr'] : strtoupper($ifname);
             $iface['ipaddrv6'] = !empty($iface['ipaddrv6']) ? $iface['ipaddrv6'] : null;
             $iface['ipaddr'] = !empty($iface['ipaddr']) ? $iface['ipaddr'] : null;
+            $iface['if'] = !empty($iface['if']) ? $iface['if'] : null;
             $interfaces[$ifname] = $iface;
         }
     }

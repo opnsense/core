@@ -62,7 +62,6 @@
         });
 
         grid_sessions.on('loaded.rs.jquery.bootgrid', function () {
-            $('[data-toggle="tooltip"]').tooltip();
             $(".ovpn-command").click(function(){
                 let this_cmd = $(this);
                 if (this_cmd.hasClass('command-kill')) {
@@ -101,7 +100,7 @@
             $('#grid-sessions').bootgrid('reload');
         });
 
-        $("#type_filter_container").detach().prependTo('#grid-sessions-header > .row > .actionBar > .actions');
+        $("#type_filter_container").detach().insertAfter('#grid-sessions-header .search');
     });
 
 </script>

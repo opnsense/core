@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2024 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2025 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -32,9 +32,7 @@ function system_powerd_configure($verbose = false)
 {
     global $config;
 
-    if (is_process_running('powerd')) {
-        exec('/usr/bin/killall powerd');
-    }
+    killbyname('powerd');
 
     if (!isset($config['system']['powerd_enable'])) {
         return;
@@ -59,7 +57,7 @@ function system_powerd_configure($verbose = false)
 
     mwexecf(
         '/usr/sbin/powerd -b %s -a %s -n %s',
-        array($battery_mode, $ac_mode, $normal_mode)
+        [$battery_mode, $ac_mode, $normal_mode]
     );
 
     service_log("done.\n", $verbose);
@@ -70,11 +68,12 @@ function system_sysctl_defaults()
     global $config;
 
     /* notes:
-     *  - set 'optional' => true for values that should no longer be enforced by default
+     *  - always set 'default' so the backend can use it and the user can see it
+     *  - since this is a function the settings could be derived from configuration
+     *    values or functions although in reality this is/was very rarely needed.
      *  - 'description' and 'type' can be used to indicate persistence of these values
      *    when in reality these are not available due to kernel modules unloaded or
      *    compile time options unset (like debugging)
-     *  - always set 'default' so the backend can use it and the user can see it
      */
 
     return [
@@ -84,6 +83,7 @@ function system_sysctl_defaults()
         'hw.vtnet.csum_disable' => [ 'default' => '1' ],
         'kern.coredump' => [ 'default' => '0' ],
         'kern.ipc.maxsockbuf' => [ 'default' => '4262144' ],
+        'kern.msgbuf_show_timestamp' => [ 'default' => '1' ],
         'kern.randompid' => [ 'default' => '1' ],
         'net.enc.in.ipsec_bpf_mask' => [ 'default' => '2' ], /* after processing */
         'net.enc.in.ipsec_filter_mask' => [ 'default' => '2' ], /* after processing */
@@ -145,14 +145,13 @@ function system_sysctl_get()
     $defaults = system_sysctl_defaults();
     $sysctls = [];
 
-    foreach ($defaults as $name => $info) {
+    foreach (array_keys($defaults) as $name) {
         /* compile list of required sysctls not necessarily present in config */
-        if (empty($info['optional'])) {
-            $sysctls[$name] = '';
-        }
+        $sysctls[$name] = '';
     }
 
     foreach (config_read_array('sysctl', 'item') as $tunable) {
+        /* get the user specified tunables from the configuration */
         $sysctls[$tunable['tunable']] = $tunable['value'];
     }
 
@@ -237,11 +236,7 @@ function system_resolvconf_generate($verbose = false)
         $resolvconf .= "search {$result}\n";
     }
 
-    $tempfile = tempnam('/tmp', 'resolv.conf');
-    file_put_contents($tempfile, $resolvconf);
-    chmod($tempfile, 0644);
-
-    rename($tempfile, '/etc/resolv.conf');
+    file_safe('/etc/resolv.conf', $resolvconf);
 
     /* setup static routes for DNS servers as configured */
     foreach ($routes as $host => $gateway) {
@@ -264,6 +259,7 @@ function get_locale_list()
     $locales['cs_CZ'] = gettext('Czech');
     $locales['fr_FR'] = gettext('French');
     $locales['de_DE'] = gettext('German');
+    $locales['el_GR'] = gettext('Greek');
     $locales['it_IT'] = gettext('Italian');
     $locales['ja_JP'] = gettext('Japanese');
     $locales['ko_KR'] = gettext('Korean');
@@ -274,6 +270,7 @@ function get_locale_list()
     $locales['ru_RU'] = gettext('Russian');
     $locales['es_ES'] = gettext('Spanish');
     $locales['tr_TR'] = gettext('Turkish');
+    $locales['uk_UA'] = gettext('Ukrainian');
     $locales['vi_VN'] = gettext('Vietnamese');
 
     if (!product::getInstance()->development()) {
@@ -356,13 +353,12 @@ function get_nameservers($interface = null, $with_gateway = false)
 
     if (!empty($interface)) {
         /* only acquire servers provided for this interface */
-        $realif = get_real_interface($interface);
-        $realifv6 = get_real_interface($interface, 'inet6');
-        $list = shell_safe('/usr/local/sbin/ifctl -4nli %s', $realif);
+        $devices = get_real_interface($interface, 'both');
+        $list = shell_safe('/usr/local/sbin/ifctl -4nli %s', reset($devices));
         if (!empty($list)) {
             $dns_lists[] = $list;
         }
-        $list = shell_safe('/usr/local/sbin/ifctl -6nli %s', $realifv6);
+        $list = shell_safe('/usr/local/sbin/ifctl -6nli %s', end($devices));
         if (!empty($list)) {
             $dns_lists[] = $list;
         }
@@ -378,8 +374,8 @@ function get_nameservers($interface = null, $with_gateway = false)
         /* by design this only works on dynamic servers, not static ones */
         foreach (explode(',', $syscfg['dnsallowoverride_exclude']) as $intf) {
             if (isset($config['interfaces'][$intf])) {
-                $exclude_interfaces[] = get_real_interface($intf);
-                $exclude_interfaces[] = get_real_interface($intf, 'inet6');
+                $devices = get_real_interface($intf, 'both');
+                array_push($exclude_interfaces, ...$devices);
             }
         }
     }
@@ -530,6 +526,8 @@ function system_host_route($host, $gateway)
         $family = 'inet';
     } elseif (is_ipaddrv6($gateway)) {
         $family = 'inet6';
+    } elseif ($gateway === null) {
+        $family = is_ipaddrv4($host) ? 'inet' : 'inet6';
     } else {
         log_msg("ROUTING: not a valid host gateway address: '{$gateway}'", LOG_ERR);
         return;
@@ -539,11 +537,17 @@ function system_host_route($host, $gateway)
      * If the gateway is the same as the host we do not touch the route
      * as this is not needed and it may also break the routing table.
      */
-    if ($host == $gateway) {
+    if ($host === $gateway) {
         return;
     }
 
-    mwexecf('/sbin/route delete -host -%s %s', [$family, $host], true);
+    mwexecfm('/sbin/route delete -host -%s %s', [$family, $host]);
+
+    /* this was an explicit delete */
+    if ($gateway === null) {
+        return;
+    }
+
     mwexecf('/sbin/route add -host -%s %s %s', [$family, $host, $gateway]);
 }
 
@@ -641,7 +645,7 @@ function system_default_route($gw, $routes)
 
     log_msg("ROUTING: setting {$family} default route to {$gateway}");
 
-    mwexecf('/sbin/route delete -%s default', [$family], true);
+    mwexecfm('/sbin/route delete -%s default', [$family]);
     mwexecf('/sbin/route add -%s default %s', [$family, $gateway]);
 }
 
@@ -753,7 +757,7 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
             $cmd[] = exec_safe('%s', $rtent['network']);
 
             if (!empty($rtent['disabled'])) {
-                mwexec('/sbin/route delete ' . join(' ', $cmd), true);
+                mwexecfm('/sbin/route delete ' . implode(' ', $cmd));
                 continue;
             }
 
@@ -761,28 +765,27 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
             $interfacegw = $gateway['if'];
 
             if (is_ipaddr($gatewayip)) {
-                mwexec('/sbin/route delete ' . join(' ', $cmd), true);
+                mwexecfm('/sbin/route delete ' . implode(' ', $cmd));
 
                 if ($ipproto == 'inet' && is_ipaddrv6($gatewayip)) {
                     $cmd[] = '-inet6'; /* RFC 5549: gateway protocol differs */
                 }
 
                 if (!empty($gateway['fargw']) && $gateway['ipprotocol'] != 'inet6') {
-                    mwexecf('/sbin/route delete -%s %s -interface %s ', [$ipproto, $gatewayip, $interfacegw], true);
-                    mwexecf('/sbin/route add -%s %s -interface %s', [$ipproto, $gatewayip, $interfacegw], true);
+                    mwexecfm('/sbin/route delete -%s %s -interface %s ', [$ipproto, $gatewayip, $interfacegw]);
+                    mwexecfm('/sbin/route add -%s %s -interface %s', [$ipproto, $gatewayip, $interfacegw]);
                 } elseif (is_linklocal($gatewayip) && strpos($gatewayip, '%') === false) {
                     $gatewayip .= "%{$interfacegw}";
                 }
 
                 $cmd[] = exec_safe('%s', $gatewayip);
             } elseif (!empty($interfacegw)) {
-                $cmd[] = '-interface';
-                $cmd[] = exec_safe('%s', $interfacegw);
+                $cmd[] = exec_safe('-interface %s', $interfacegw);
 
-                mwexec('/sbin/route delete ' . join(' ', $cmd), true);
+                mwexecfm('/sbin/route delete ' . implode(' ', $cmd));
             }
 
-            mwexec('/sbin/route add ' . join(' ', $cmd), true);
+            mwexecfm('/sbin/route add ' . implode(' ', $cmd));
         }
     }
 
@@ -845,21 +848,6 @@ function system_syslog_reset($verbose = false)
     plugins_configure('dhcp', $verbose);
 }
 
-/*
- *     get_memory()
- *     returns an array listing the amount of
- *     memory installed in the hardware
- *     [0] net memory available for the OS (FreeBSD) after some is taken by BIOS, video or whatever - e.g. 235 MBytes
- *     [1] real (actual) memory of the system, should be the size of the RAM card/s - e.g. 256 MBytes
- */
-function get_memory()
-{
-    $physmem = get_single_sysctl("hw.physmem");
-    $realmem = get_single_sysctl("hw.realmem");
-    /* convert from bytes to megabytes */
-    return array(($physmem / 1048576),($realmem / 1048576));
-}
-
 function system_firmware_configure($verbose = false)
 {
     service_log('Writing firmware settings:', $verbose);
@@ -875,8 +863,8 @@ function system_firmware_configure($verbose = false)
             continue;
         }
 
-         /* run the script in passthru() but avoid standard output from this side */
-         passthru($script . '> /dev/null');
+         /* offer visibility of errors only */
+         pass_safe($script . '> /dev/null');
 
         /* make a note about repo being handled */
         service_log(' ' . preg_replace('/\..*?$/', '', $basename));
@@ -984,7 +972,7 @@ function system_trust_configure($verbose = false)
     service_log("done.\n", $verbose);
 
     /* collects all trusted certificates into /etc/ssl/certs directory */
-    passthru('/usr/local/opnsense/scripts/system/certctl.py rehash');
+    pass_safe('/usr/local/opnsense/scripts/system/certctl.py rehash');
 
     service_log('Writing trust bundles...', $verbose);
 
@@ -999,8 +987,7 @@ function system_trust_configure($verbose = false)
     }
     foreach (['/usr/local/etc/ssl/cert.pem'] as $pem) {
         @unlink($pem); /* do not clobber symlink target */
-        file_put_contents($pem, $ca_bundle);
-        chmod($pem, 0644);
+        file_safe($pem, $ca_bundle);
     }
 
     configd_run('template reload OPNsense/Trust');
@@ -1093,7 +1080,7 @@ function system_kernel_configure($verbose = false)
     }
 
     foreach ($mods as $mod) {
-        mwexecf('/sbin/kldload %s', $mod, true);
+        mwexecfm('/sbin/kldload %s', $mod);
     }
 
     /* we now have /dev/pf, time to fix permissions for proxies */
@@ -1107,7 +1094,7 @@ function system_devd_configure($verbose = false)
 {
     service_log('Starting device manager...', $verbose);
 
-    mwexec('/sbin/devd');
+    mwexecf('/sbin/devd');
     /* historic sleep */
     sleep(1);
 
@@ -1170,7 +1157,7 @@ function system_cron_configure($verbose = false)
 
     configd_run('template reload OPNsense/Cron');
 
-    mwexec('/etc/rc.d/cron restart');
+    mwexecf('/etc/rc.d/cron restart');
 
     service_log("done.\n", $verbose);
 }
@@ -1186,17 +1173,20 @@ function system_console_types()
     );
 }
 
-function system_console_speed()
+function system_cache_flush($verbose = false)
 {
-    global $config;
+    service_log('Flushing all caches...', $verbose);
 
-    $speed = 115200;
+    (new OPNsense\Core\ACL())->invalidateCache();
 
-    if (!empty($config['system']['serialspeed']) && is_numeric($config['system']['serialspeed'])) {
-        $speed = $config['system']['serialspeed'];
+    (new OPNsense\Base\Menu\MenuSystem())->invalidateCache();
+
+    /* clears ALL model caches, not just model specific ones via flushCacheData() */
+    foreach (glob('/var/lib/php/tmp/mdl_cache_*.json') as $filename) {
+        @unlink($filename);
     }
 
-    return $speed;
+    service_log("done.\n", $verbose);
 }
 
 function system_login_configure($verbose = false)
@@ -1208,7 +1198,11 @@ function system_login_configure($verbose = false)
     /* depends on user account locking */
     local_sync_accounts();
 
-    $serialspeed = system_console_speed();
+    $serialspeed = 115200;
+
+    if (!empty($config['system']['serialspeed']) && is_numeric($config['system']['serialspeed'])) {
+        $serialspeed = $config['system']['serialspeed'];
+    }
 
     $new_boot_config = array();
     $new_boot_config['comconsole_speed'] = null;
@@ -1339,22 +1333,22 @@ function system_login_configure($verbose = false)
     service_log("done.\n", $verbose);
 
     /* force init(8) to reload /etc/ttys */
-    mwexec('/bin/kill -HUP 1');
+    mwexecf('/bin/kill -HUP 1');
 }
 
 function reset_factory_defaults($sync = true)
 {
-    mwexec('/bin/rm -fr /conf/* /var/log/* /root/.history');
-    mwexec('/usr/local/sbin/opnsense-beep stop');
+    mwexecf('/bin/rm -fr /conf/* /var/log/* /root/.history');
+    mwexecf('/usr/local/sbin/opnsense-beep stop');
 
     /* as we go through a special case directly shut down */
     $shutdown_cmd = '/sbin/shutdown -op now';
     if ($sync) {
-        mwexec($shutdown_cmd);
+        mwexecf($shutdown_cmd);
         while (true) {
             sleep(1);
         }
     } else {
-        mwexec_bg($shutdown_cmd);
+        mwexecfb($shutdown_cmd);
     }
 }

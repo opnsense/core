@@ -22,7 +22,7 @@
         <type>text</type>
         <help>Provide an address and subnet to use. (e.g 192.168.0.1/24)</help>
         <grid_view>
-            <formatter>networkFormatter</formatter>
+            <column-id>address</column-id>
             <sequence>1</sequence>
         </grid_view>
     </field>
@@ -48,6 +48,8 @@
             but can be configured as unicast address when multicast can not be used (for example with cloud providers)
         </help>
         <grid_view>
+            <mode>carp</mode>
+            <formatter>modeFormatter</formatter>
             <visible>false</visible>
             <sequence>8</sequence>
         </grid_view>
@@ -63,6 +65,8 @@
             but can be configured as unicast address when multicast can not be used (for example with cloud providers)
         </help>
         <grid_view>
+            <mode>carp</mode>
+            <formatter>modeFormatter</formatter>
             <visible>false</visible>
             <sequence>9</sequence>
         </grid_view>
@@ -75,7 +79,8 @@
       <style>mode mode_proxyarp</style>
       <grid_view>
         <type>boolean</type>
-        <formatter>boolean</formatter>
+        <mode>proxyarp</mode>
+        <formatter>modeFormatter</formatter>
         <visible>false</visible>
         <sequence>10</sequence>
       </grid_view>
@@ -88,7 +93,8 @@
       <style>mode mode_carp mode_ipalias</style>
       <grid_view>
         <type>boolean</type>
-        <formatter>boolean</formatter>
+        <mode>carp ipalias</mode>
+        <formatter>modeFormatter</formatter>
         <visible>false</visible>
         <sequence>11</sequence>
       </grid_view>
@@ -110,6 +116,9 @@
         <style>mode mode_carp mode_ipalias</style>
         <help>Enter the VHID group that the machines will share.</help>
         <grid_view>
+            <mode>carp ipalias</mode>
+            <column-id>vhid_txt</column-id>
+            <formatter>modeFormatter</formatter>
             <sequence>2</sequence>
             <width>8em</width>
         </grid_view>
@@ -121,8 +130,7 @@
         <style>mode mode_carp</style>
         <help>Specifies the base of the advertisement interval in seconds. The acceptable values are 1 to 255.</help>
         <grid_view>
-            <sequence>3</sequence>
-            <width>6em</width>
+            <ignore>true</ignore>
         </grid_view>
     </field>
     <field>
@@ -135,7 +143,7 @@
           It is specified in 1/256 of seconds.  The acceptable values are 0 to 254.
         </help>
         <grid_view>
-            <sequence>4</sequence>
+            <ignore>true</ignore>
         </grid_view>
     </field>
     <field>
@@ -146,7 +154,8 @@
         <style>mode mode_carp mode_ipalias</style>
         <grid_view>
             <type>boolean</type>
-            <formatter>boolean</formatter>
+            <mode>carp ipalias</mode>
+            <formatter>modeFormatter</formatter>
             <visible>false</visible>
         </grid_view>
     </field>

@@ -34,7 +34,7 @@ import datetime
 
 def parse_flow(flow_line):
     tmp = flow_line.split()
-    if flow_line.find(':') > 0 and len(tmp) > 8:
+    if flow_line.find(':') > 0 and len(tmp) > 8 and tmp[0].isdigit():
         # IPv6 layout
         return {
             'BKT':tmp[0],
@@ -47,7 +47,7 @@ def parse_flow(flow_line):
             'drop_pkt':int(tmp[7]) if tmp[7].isdigit() else 0,
             'drop_bytes':int(tmp[8]) if tmp[8].isdigit() else 0,
         }
-    elif len(tmp) > 7:
+    elif len(tmp) > 7 and tmp[0].isdigit():
         return {
             'BKT':tmp[0],
             'Prot':tmp[1],

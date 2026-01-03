@@ -134,7 +134,7 @@ class FilterRule extends Rule
                     $rule['reply'] = "reply-to {$if} ";
                 }
             }
-        } elseif (!isset($rule['disablereplyto']) && ($rule['direction'] ?? "") != 'any') {
+        } elseif (!isset($rule['disablereplyto']) && ($rule['direction'] ?? "") != 'any' && empty($rule['interfacenot'])) {
             $proto = $rule['ipprotocol'];
             if (!empty($this->interfaceMapping[$rule['interface']]['if']) && empty($rule['gateway'])) {
                 $if = $this->interfaceMapping[$rule['interface']]['if'];
@@ -242,6 +242,15 @@ class FilterRule extends Rule
                     if (!empty($rule['statetimeout'])) {
                         $rule['state']['options'][] = "tcp.established " . $rule['statetimeout'];
                     }
+                    if (!empty($rule['udp-first'])) {
+                        $rule['state']['options'][] = "udp.first " . $rule['udp-first'];
+                    }
+                    if (!empty($rule['udp-multiple'])) {
+                        $rule['state']['options'][] = "udp.multiple " . $rule['udp-multiple'];
+                    }
+                    if (!empty($rule['udp-single'])) {
+                        $rule['state']['options'][] = "udp.single " . $rule['udp-single'];
+                    }
                     if (!empty($rule['max-src-conn-rate']) && !empty($rule['max-src-conn-rates'])) {
                         $otbl = !empty($rule['overload']) ? $rule['overload'] : "virusprot";
                         $rule['state']['options'][] = "max-src-conn-rate " . $rule['max-src-conn-rate'] . " " .
@@ -253,11 +262,11 @@ class FilterRule extends Rule
                 }
             }
             // icmp-type switch (ipv4/ipv6)
-            if (!empty($rule['protocol']) && $rule['protocol'] == "icmp" && !empty($rule['icmptype'])) {
-                if ($rule['ipprotocol'] == 'inet') {
+            if (!empty($rule['protocol']) && in_array($rule['protocol'], ['icmp', 'ipv6-icmp'], true)) {
+                if ($rule['ipprotocol'] == 'inet' && !empty($rule['icmptype'])) {
                     $rule['icmp-type'] = $rule['icmptype'];
-                } elseif ($rule['ipprotocol'] == 'inet6') {
-                    $rule['icmp6-type'] = $rule['icmptype'];
+                } elseif ($rule['ipprotocol'] == 'inet6' && !empty($rule['icmp6type'])) {
+                    $rule['icmp6-type'] = $rule['icmp6type'];
                 }
             }
             // icmpv6

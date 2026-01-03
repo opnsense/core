@@ -135,6 +135,14 @@ function ipsec_syslog()
     return $logfacilities;
 }
 
+function ipsec_legacy()
+{
+    global $config;
+
+    /* latch on to this legacy file for detection enhanced by old config 'phase1' presence  */
+    return file_exists('/usr/local/www/vpn_ipsec_phase1.php') && !empty($config['ipsec']['phase1']);
+}
+
 function ipsec_services()
 {
     global $config;
@@ -165,7 +173,8 @@ function ipsec_interfaces()
     $interfaces = [];
 
     $is_enabled = $swanctl->isEnabled();
-    if (!$is_enabled && isset($config['ipsec']['phase1'])) {
+
+    if (!$is_enabled && ipsec_legacy()) {
         foreach ($config['ipsec']['phase1'] as $ph1ent) {
             if (empty($ph1ent['disabled'])) {
                 $is_enabled = true;
@@ -227,9 +236,10 @@ function ipsec_devices()
 function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
 {
     global $config;
+
     if (
         (string)(new \OPNsense\IPsec\IPsec())->general->disablevpnrules == '0' &&
-            isset($config['ipsec']['enable']) && isset($config['ipsec']['phase1'])
+            isset($config['ipsec']['enable']) && ipsec_legacy()
     ) {
         $enable_replyto = empty($config['system']['disablereplyto']);
         $enable_routeto = empty($config['system']['pf_disable_force_gw']);
@@ -374,6 +384,7 @@ function ipsec_get_phase1_src(&$ph1ent)
 function ipsec_parse_phase2($ikeid)
 {
     global $config;
+
     $result = [
         "type" => "tunnel",  // strongswan's default when type is not specified
         "local_ts" => [],
@@ -387,12 +398,13 @@ function ipsec_parse_phase2($ikeid)
         "uniqid_reqid" => []
     ];
 
-    $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : [];
+    $a_phase1 = ipsec_legacy() ? $config['ipsec']['phase1'] : [];
     $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : [];
     $a_client = isset($config['ipsec']['client']) ? $config['ipsec']['client'] : [];
     $ph1ent = current(array_filter($a_phase1, function ($e) use ($ikeid) {
         return $e['ikeid'] == $ikeid;
     }));
+
     if ($ph1ent) {
         $uniqids = [];
         $keyexchange = !empty($ph1ent['iketype']) ? $ph1ent['iketype'] : "ikev1";
@@ -541,6 +553,7 @@ function ipsec_parse_phase2($ikeid)
             $result['ah_proposals'] = $ah_content;
         }
     }
+
     return $result;
 }
 
@@ -687,12 +700,12 @@ function ipsec_configure_spd()
      * try to figure out which SPD entries where created manually and collect them in a list sequenced by reqid
      * when the entry is either bound to an interface (ifname=) or has a lifetime, these where not likely created by us
      */
-    exec('/sbin/setkey -PD', $lines);
-    $line_count = 0;
     $src = $dst = $direction = $reqid = '';
-    $is_automatic = false;
     $previous_spd_entries = [];
-    foreach ($lines as $line) {
+    $is_automatic = false;
+    $line_count = 0;
+
+    foreach (shell_safe('/sbin/setkey -PD', [], true) as $line) {
         if ($line[0] != "\t") {
             $tmp = explode(' ', $line);
             $src = $dst = $direction = $reqid = '';
@@ -718,8 +731,8 @@ function ipsec_configure_spd()
         $line_count++;
     }
 
-    // process manual added spd entries
-    if (!empty($config['ipsec']['phase1']) && !empty($config['ipsec']['phase2'])) {
+    /* process manual added spd entries */
+    if (ipsec_legacy() && !empty($config['ipsec']['phase2'])) {
         foreach ($config['ipsec']['phase1'] as $ph1ent) {
             if (!empty($ph1ent['disabled'])) {
                 continue;
@@ -773,7 +786,7 @@ function ipsec_configure_spd()
 
         $tmpfname = tempnam("/tmp", "setkey");
         file_put_contents($tmpfname, implode("\n", $spd_entries) . "\n");
-        mwexec("/sbin/setkey -f " . $tmpfname, true);
+        mwexecfm('/sbin/setkey -f %s', $tmpfname);
         unlink($tmpfname);
     }
 }
@@ -785,7 +798,7 @@ function ipsec_setup_pinghosts()
 {
     global $config;
 
-    $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : [];
+    $a_phase1 = ipsec_legacy() ? $config['ipsec']['phase1'] : [];
     $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : [];
 
     @unlink('/var/db/ipsecpinghosts');
@@ -873,7 +886,8 @@ function ipsec_setup_pinghosts()
 function ipsec_write_strongswan_conf()
 {
     global $config;
-    $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : [];
+
+    $a_phase1 = ipsec_legacy() ? $config['ipsec']['phase1'] : [];
     $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : [];
     $a_client = isset($config['ipsec']['client']) ? $config['ipsec']['client'] : [];
 
@@ -938,8 +952,10 @@ function ipsec_write_cas()
         $x509cert = openssl_x509_parse(openssl_x509_read($cert));
         if (is_array($x509cert) && isset($x509cert['hash'])) {
             $fname = "{$capath}/{$x509cert['hash']}.0.crt";
-            $cafiles[] = $fname;
+            $linkname = "{$capath}/{$ca['refid']}.crt";
+            array_push($cafiles, $fname, $linkname);
             file_put_contents($fname, $cert);
+            @symlink(basename($fname), $linkname); /* add link with our internal reference */
         } else {
             log_msg(sprintf('Error: Invalid certificate hash info for %s', $ca['descr']), LOG_ERR);
         }
@@ -957,7 +973,8 @@ function ipsec_write_cas()
 function ipsec_write_certs()
 {
     global $config;
-    $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : [];
+
+    $a_phase1 = ipsec_legacy() ? $config['ipsec']['phase1'] : [];
 
     foreach ((new \OPNsense\IPsec\Swanctl())->getUsedCertrefs() as $certref) {
         $cert = lookup_cert($certref);
@@ -976,6 +993,7 @@ function ipsec_write_certs()
         @chmod($ph1certfile, 0600);
         file_put_contents($ph1certfile, base64_decode($cert['crt']));
     }
+
     foreach ($a_phase1 as $ph1ent) {
         if (isset($ph1ent['disabled'])) {
             continue;
@@ -1037,8 +1055,9 @@ function ipsec_write_keypairs()
 function ipsec_write_secrets()
 {
     global $config;
+
+    $a_phase1 = ipsec_legacy() ? $config['ipsec']['phase1'] : [];
     $secrets = [];
-    $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : [];
 
     foreach ($a_phase1 as $seq => $ph1ent) {
         if (isset($ph1ent['disabled'])) {
@@ -1089,7 +1108,7 @@ function ipsec_configure_do($verbose = false, $interface_map = null)
     if (!empty($interface_map)) {
         $active = false;
 
-        if (isset($config['ipsec']['phase1'])) {
+        if (ipsec_legacy()) {
             foreach ($config['ipsec']['phase1'] as $phase1) {
                 if (!isset($phase1['disabled']) && in_array($phase1['interface'], $interface_map)) {
                     $active = true;
@@ -1117,27 +1136,26 @@ function ipsec_configure_do($verbose = false, $interface_map = null)
         set_single_sysctl('net.key.preferred_oldsa', '0');
     }
 
-
     $ipseccfg = $config['ipsec'] ?? [];
-    $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : [];
+    $a_phase1 = ipsec_legacy() ? $config['ipsec']['phase1'] : [];
     $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : [];
     $a_client = isset($config['ipsec']['client']) ? $config['ipsec']['client'] : [];
 
     if (!isset($ipseccfg['enable'])) {
-        mwexec('/usr/local/etc/rc.d/strongswan onestop', true);
-        mwexec('/sbin/ifconfig enc0 down', true);
+        mwexecfm('/usr/local/etc/rc.d/strongswan onestop');
+        mwexecfm('/sbin/ifconfig enc0 down');
         return;
     }
 
     if (get_single_sysctl('net.inet.ipsec.def_policy') == '') {
-        mwexec('/sbin/kldload ipsec');
+        mwexecf('/sbin/kldload ipsec');
     }
-    mwexec('/sbin/ifconfig enc0 up');
+    mwexecf('/sbin/ifconfig enc0 up');
 
     service_log('Configuring IPsec VPN...', $verbose);
 
     /* cleanup legacy ipsec.conf bits but then recreate structure to mute charon complaints */
-    mwexec('rm -rf /usr/local/etc/ipsec.d');
+    mwexecf('rm -rf /usr/local/etc/ipsec.d');
     foreach (['aacerts', 'acerts', 'cacerts', 'certs', 'crls', 'ocspcerts', 'private', 'reqs'] as $dir) {
         mkdir("/usr/local/etc/ipsec.d/{$dir}", 0664, true);
     }
@@ -1170,6 +1188,7 @@ function ipsec_configure_do($verbose = false, $interface_map = null)
             ]
         ];
     }
+
     if (count($a_phase1)) {
         foreach ($a_phase1 as $ph1ent) {
             if (isset($ph1ent['disabled'])) {
@@ -1438,20 +1457,17 @@ function ipsec_configure_do($verbose = false, $interface_map = null)
 
     file_put_contents("/usr/local/etc/swanctl/swanctl.conf", $swanctltxt);
 
-    /* mange process */
     if (isvalidpid('/var/run/charon.pid')) {
-        /* Update configuration changes */
-        mwexec_bg('/usr/local/etc/rc.d/strongswan onereload', false);
+        mwexecfb('/usr/local/etc/rc.d/strongswan onereload');
     } else {
-        mwexec_bg("/usr/local/etc/rc.d/strongswan onestart", false);
+        mwexecfb('/usr/local/etc/rc.d/strongswan onestart');
     }
 
-    /* load manually defined SPD entries */
     ipsec_configure_spd();
 
     service_log("done.\n", $verbose);
 
-    /* reload routes on all attached VTI devices */
+    /* reload routes on all attached VTI devices after done since this prints too */
     plugins_configure('route_reload', $verbose, [array_keys(array_merge(ipsec_get_configured_vtis(), (new \OPNsense\IPsec\Swanctl())->getVtiDevices()))]);
 }
 
@@ -1478,7 +1494,7 @@ function ipsec_get_configured_vtis()
 {
     global $config;
 
-    $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : [];
+    $a_phase1 = ipsec_legacy() ? $config['ipsec']['phase1'] : [];
     $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : [];
     $configured_intf = [];
 

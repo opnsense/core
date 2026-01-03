@@ -1,6 +1,7 @@
 <model>
     <mount>/dnsmasq</mount>
-    <version>1.0.5</version>
+    <description>Dnsmasq DNS and DHCP</description>
+    <version>1.0.8</version>
     <items>
         <enable type="BooleanField"/>
         <regdhcp type="BooleanField"/>
@@ -9,6 +10,7 @@
         <strict_order type="BooleanField"/>
         <domain_needed type="BooleanField"/>
         <no_private_reverse type="BooleanField"/>
+        <no_resolv type="BooleanField"/>
         <log_queries type="BooleanField"/>
         <no_hosts type="BooleanField"/>
         <strictbind type="BooleanField"/>
@@ -46,11 +48,18 @@
             <no_interface type="InterfaceField">
                 <Multiple>Y</Multiple>
             </no_interface>
-            <fqdn type="BooleanField"/>
+            <fqdn type="BooleanField">
+                <Required>Y</Required>
+                <Default>1</Default>
+            </fqdn>
             <domain type="HostnameField">
                 <IsDNSName>Y</IsDNSName>
                 <IpAllowed>N</IpAllowed>
             </domain>
+            <local type="BooleanField">
+                <Required>Y</Required>
+                <Default>1</Default>
+            </local>
             <lease_max type="IntegerField">
                 <MinimumValue>0</MinimumValue>
             </lease_max>
@@ -65,37 +74,53 @@
             </reply_delay>
             <enable_ra type="BooleanField"/>
             <nosync type="BooleanField"/>
+            <log_dhcp type="BooleanField">
+                <Constraints>
+                    <check001>
+                        <reference>log_quiet.check001</reference>
+                    </check001>
+                </Constraints>
+            </log_dhcp>
+            <log_quiet type="BooleanField">
+                <Constraints>
+                    <check001>
+                        <type>SingleSelectConstraint</type>
+                        <addFields>
+                            <field>log_dhcp</field>
+                        </addFields>
+                        <ValidationMessage>This option and "Log DHCP options and tags" cannot be enabled at the same time.</ValidationMessage>
+                    </check001>
+                </Constraints>
+            </log_quiet>
         </dhcp>
         <no_ident type="BooleanField">
             <Required>Y</Required>
             <Default>1</Default>
         </no_ident>
         <hosts type="ArrayField">
-            <host type="HostnameField">
-                <IsDNSName>Y</IsDNSName>
-                <IpAllowed>N</IpAllowed>
+            <host type=".\HostnameField">
+                <IsWildcardAllowed>Y</IsWildcardAllowed>
             </host>
-            <domain type="TextField">
-                <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
-                <ValidationMessage>A valid domain must be specified.</ValidationMessage>
+            <domain type=".\HostnameField">
+                <IsDomain>Y</IsDomain>
             </domain>
+            <local type="BooleanField"/>
             <ip type="NetworkField">
-                <Required>Y</Required>
                 <NetMaskAllowed>N</NetMaskAllowed>
-                <FieldSeparator>,</FieldSeparator>
                 <AsList>Y</AsList>
             </ip>
+            <cnames type=".\HostnameField">
+                <IsDomain>Y</IsDomain>
+                <AsList>Y</AsList>
+            </cnames>
             <client_id type="TextField">
                 <Mask>/^(?:\*|(?:[0-9A-Fa-f]{2}(?::[0-9A-Fa-f]{2})+))$/</Mask>
                 <ValidationMessage>Value must be a colon-separated hexadecimal sequence (e.g., 01:02:f3) or "*".</ValidationMessage>
             </client_id>
             <hwaddr type="MacAddressField">
-                <FieldSeparator>,</FieldSeparator>
                 <AsList>Y</AsList>
             </hwaddr>
-            <lease_time type="IntegerField">
-                <MinimumValue>1</MinimumValue>
-            </lease_time>
+            <lease_time type="IntegerField"/>
             <ignore type="BooleanField"/>
             <set_tag type="ModelRelationField">
                 <Model>
@@ -109,11 +134,10 @@
             <descr type="TextField"/>
             <comments type="TextField"/>
             <!-- Intentionally last, AliasesField back references other fields (which should already be there) -->
-            <aliases type=".\AliasesField">
+            <aliases type=".\HostnameField">
+                <IsDomain>Y</IsDomain>
+                <IsLegacyXML>Y</IsLegacyXML>
                 <AsList>Y</AsList>
-                <FieldSeparator>,</FieldSeparator>
-                <IsDNSName>Y</IsDNSName>
-                <IpAllowed>N</IpAllowed>
             </aliases>
         </hosts>
         <domainoverrides type="ArrayField">
@@ -124,11 +148,24 @@
                 <Required>Y</Required>
                 <ValidationMessage>Please enter a value between 1 and 99999.</ValidationMessage>
             </sequence>
-            <domain type="HostnameField">
-                <IsDNSName>Y</IsDNSName>
-                <IpAllowed>N</IpAllowed>
+            <domain type=".\HostnameField">
                 <Required>Y</Required>
+                <IsDomain>Y</IsDomain>
+                <IsWildcardAllowed>Y</IsWildcardAllowed>
             </domain>
+            <ipset type="ModelRelationField">
+                <Model>
+                    <aliases>
+                        <source>OPNsense.Firewall.Alias</source>
+                        <items>aliases.alias</items>
+                        <display>name</display>
+                        <filters>
+                            <type>/^[Ee]xternal.*/</type>
+                            <name>/^(?!bogons$|bogonsv6$|virusprot$|sshlockout$|__.*).*/</name>
+                        </filters>
+                    </aliases>
+                </Model>
+            </ipset>
             <srcip type="NetworkField">
                 <NetMaskAllowed>N</NetMaskAllowed>
             </srcip>
@@ -176,6 +213,11 @@
             <end_addr type=".\RangeAddressField">
                 <NetMaskAllowed>N</NetMaskAllowed>
             </end_addr>
+            <subnet_mask type="NetworkField">
+                <NetMaskAllowed>N</NetMaskAllowed>
+                <AddressFamily>ipv4</AddressFamily>
+                <ValidationMessage>Please enter a valid IPv4 subnet mask like 255.255.255.0.</ValidationMessage>
+            </subnet_mask>
             <constructor type="InterfaceField"/>
             <mode type="OptionField">
                 <OptionValues>
@@ -187,9 +229,15 @@
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>64</MaximumValue>
             </prefix_len>
-            <lease_time type="IntegerField">
-                <MinimumValue>1</MinimumValue>
-            </lease_time>
+            <lease_time type="IntegerField"/>
+            <domain_type type="OptionField">
+                <OptionValues>
+                    <interface>Interface</interface>
+                    <range>Range</range>
+                </OptionValues>
+                <Default>range</Default>
+                <Required>Y</Required>
+            </domain_type>
             <domain type="HostnameField">
                 <IsDNSName>Y</IsDNSName>
                 <IpAllowed>N</IpAllowed>
@@ -229,9 +277,21 @@
             </type>
             <option type="JsonKeyValueStoreField">
                 <ConfigdPopulateAct>dnsmasq list dhcp_options</ConfigdPopulateAct>
+                <OptionValues>
+                    <!-- mock option groups returned by JSON -->
+                    <optgroup1>Common</optgroup1>
+                    <optgroup2>Assigned</optgroup2>
+                    <optgroup3>Unassigned</optgroup3>
+                </OptionValues>
             </option>
             <option6 type="JsonKeyValueStoreField">
                 <ConfigdPopulateAct>dnsmasq list dhcp_options6</ConfigdPopulateAct>
+                <OptionValues>
+                    <!-- mock option groups returned by JSON -->
+                    <optgroup1>Common</optgroup1>
+                    <optgroup2>Assigned</optgroup2>
+                    <optgroup3>Unassigned</optgroup3>
+                </OptionValues>
             </option6>
             <interface type="InterfaceField">
                 <BlankDesc>Any</BlankDesc>
@@ -265,6 +325,14 @@
             <description type="DescriptionField"/>
         </dhcp_options>
         <dhcp_boot type="ArrayField">
+            <interface type="InterfaceField">
+                <BlankDesc>Any</BlankDesc>
+                <Filters>
+                    <if>/^(?!lo0$).*/</if>
+                    <type>/(?s)^((?!group).)*$/</type>
+                </Filters>
+                <AllowDynamic>Y</AllowDynamic>
+            </interface>
             <tag type="ModelRelationField">
                 <Model>
                     <tag>
@@ -273,8 +341,11 @@
                         <display>tag</display>
                     </tag>
                 </Model>
+                <Multiple>Y</Multiple>
             </tag>
-            <filename type="TextField"/>
+            <filename type="TextField">
+                <Required>Y</Required>
+            </filename>
             <servername type="TextField"/>
             <address type="TextField"/>
             <description type="DescriptionField"/>

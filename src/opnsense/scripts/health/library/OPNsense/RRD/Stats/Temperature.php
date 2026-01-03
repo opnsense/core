@@ -32,12 +32,19 @@ class Temperature extends Base
 {
     public function run()
     {
-        $data = $this->shellCmd(
-            '/sbin/sysctl -ni dev.cpu.0.temperature hw.acpi.thermal.tz0.temperature hw.temperature.CPU'
-        );
+        $frmt = [
+            '/sbin/sysctl -ni',
+            'dev.cpu.0.temperature',
+            'hw.acpi.thermal.tz0.temperature',
+            'hw.temperature.CPU',
+        ];
+
+        $data = $this->shellCmd($frmt);
+
         if (!empty($data)) {
             return [preg_replace('/[^0-9,.]/', '', $data[0])];
         }
+
         return [];
     }
 }

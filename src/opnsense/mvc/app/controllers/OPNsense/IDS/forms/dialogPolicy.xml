@@ -4,6 +4,11 @@
         <label>Enabled</label>
         <type>checkbox</type>
         <help>Enable this policy.</help>
+        <grid_view>
+            <width>100</width>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+        </grid_view>
     </field>
     <field>
         <id>policy.prio</id>
@@ -29,6 +34,9 @@
         <style>json-data</style>
         <type>hidden</type>
         <help>metadata rules per category</help>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
     </field>
     <field>
         <id>policy.new_action</id>

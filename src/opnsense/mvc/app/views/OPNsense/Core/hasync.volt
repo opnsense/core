@@ -50,17 +50,4 @@
     </div>
 </div>
 
-<section class="page-content-main">
-    <div class="content-box">
-        <div class="col-md-12">
-            <br/>
-            <button class="btn btn-primary" id="reconfigureAct"
-                    data-label="{{ lang._('Apply') }}"
-                    data-endpoint='/api/core/hasync/reconfigure'
-                    data-error-title="{{ lang._('Error reconfiguring HAsync') }}"
-                    type="button"
-            ></button>
-            <br/><br/>
-        </div>
-    </div>
-</section>
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/core/hasync/reconfigure'}) }}

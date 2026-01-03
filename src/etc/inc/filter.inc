@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017 Deciso B.V.
+ * Copyright (C) 2017-2025 Deciso B.V.
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>
  * Copyright (C) 2006 Peter Allgeyer <allgeyer@web.de>
@@ -114,37 +114,41 @@ function filter_configure()
 function ifgroup_setup()
 {
     global $config;
-    $all_ifgroups = array();
-    $all_ifs = array();
+
+    $all_ifgroups = [];
+    $all_ifs = [];
+
     $interface_details = legacy_interfaces_details();
+
     if (isset($config['ifgroups']['ifgroupentry'])) {
         foreach ($config['ifgroups']['ifgroupentry'] as $group) {
-            $all_ifgroups[$group['ifname']] = array();
+            $all_ifgroups[$group['ifname']] = [];
             foreach (preg_split('/[ |,]+/', $group['members']) as $member) {
                 if (!empty($config['interfaces'][$member])) {
-                    $if = $config['interfaces'][$member]['if'];
-                    if (!isset($all_ifs[$if])) {
-                        $all_ifs[$if] = array();
+                    foreach (get_real_interface($member, 'both') as $if) {
+                        if (!isset($all_ifs[$if])) {
+                            $all_ifs[$if] = [];
+                        }
+                        $all_ifs[$if][] = $group['ifname'];
+                        $all_ifgroups[$group['ifname']][] = $if;
                     }
-                    $all_ifs[$if][] = $group['ifname'];
-                    $all_ifgroups[$group['ifname']][] = $if;
                 }
             }
         }
     }
     foreach ($interface_details as $intf => $details) {
-        $thisifgroups = !empty($details['groups']) ? $details['groups'] : array();
+        $thisifgroups = !empty($details['groups']) ? $details['groups'] : [];
         foreach ($thisifgroups as $ifgroup) {
             if (isset($all_ifgroups[$ifgroup]) && !in_array($intf, $all_ifgroups[$ifgroup])) {
                 // detach
-                mwexecf('/sbin/ifconfig %s -group %s', array($intf, $ifgroup));
+                mwexecf('/sbin/ifconfig %s -group %s', [$intf, $ifgroup]);
             }
         }
         if (!empty($all_ifs[$intf])) {
             foreach ($all_ifs[$intf] as $ifgroup) {
                 if (!in_array($ifgroup, $thisifgroups)) {
                     // attach
-                    mwexecf('/sbin/ifconfig %s group %s', array($intf, $ifgroup));
+                    mwexecf('/sbin/ifconfig %s group %s', [$intf, $ifgroup]);
                 }
             }
         }
@@ -157,11 +161,22 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     service_log('Configuring firewall.', $verbose);
 
+    /*
+     * Flush alias cache so consumers can find dynamically generated
+     * items on their next cycle.  This ensures items like captive
+     * portal zones are available after applying them.
+     */
+    \OPNsense\Firewall\Alias::flushCacheData();
+
     /* Use filter lock to not allow concurrent filter reloads during this run. */
     $fobj = new \OPNsense\Core\FileObject('/tmp/rules.debug', 'a+', 0600, LOCK_EX);
 
-    /* kickstart dnctl regardless of shaping configuration */
-    mwexec('/etc/rc.d/dnctl start', true);
+    /*
+     * Kickstart dnctl and ipfw (no-op if shaper not configured)
+     * to ensure consistent pipe/queue config for pf and service
+     * start during bootup.
+     */
+    mwexecf('/usr/local/opnsense/scripts/shaper/start.sh');
 
     ifgroup_setup();
 
@@ -238,13 +253,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
     }
 
-    if (!empty($config['nat']['rule'])) {
-        // register user forward rules
-        foreach ($config['nat']['rule'] as $rule) {
-            if (is_array($rule)) {
-                $fw->registerForwardRule(600, $rule);
-            }
-        }
+    foreach ((new OPNsense\Firewall\DNat())->rule->sortedBy(['sequence']) as $key => $rule) {
+        $fw->registerForwardRule(600, $rule->getNodeContent());
     }
 
     openlog("firewall", LOG_DAEMON, LOG_LOCAL4);
@@ -264,9 +274,9 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     /* enable pf if we need to, otherwise disable */
     if (!isset($config['system']['disablefilter'])) {
-        mwexec("/sbin/pfctl -e", true);
+        mwexecfm('/sbin/pfctl -e');
     } else {
-        mwexec("/sbin/pfctl -d", true);
+        mwexecfm('/sbin/pfctl -d');
 
         unset($fobj);
 
@@ -285,8 +295,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         $limitrules .= "set limit table-entries {$config['system']['maximumtableentries']}\n";
         set_single_sysctl('net.pf.request_maxcount', $config['system']['maximumtableentries']);
     } else {
-        $max_table_entries = default_table_entries_size();
-        $req_table_entries = 1000000;
+        $max_table_entries = filter_current_table_entries();
+        $req_table_entries = filter_default_table_entries();
         if ($max_table_entries <= $req_table_entries) {
             $limitrules .= "set limit table-entries {$req_table_entries}\n";
             set_single_sysctl('net.pf.request_maxcount', $req_table_entries);
@@ -317,7 +327,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         $limitrules .= "set limit states {$config['system']['maximumstates']}\n";
         $limitrules .= "set limit src-nodes {$config['system']['maximumstates']}\n";
     } else {
-        $max_states = default_state_size();
+        $max_states = filter_default_state_size();
         $limitrules .= "set limit states {$max_states}\n";
         $limitrules .= "set limit src-nodes {$max_states}\n";
     }
@@ -338,7 +348,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     }
 
     /* if pf already generated a hostid, reuse it */
-    $current_hostid = get_current_hostid();
+    $current_hostid = filter_current_hostid();
     if (!empty($current_hostid)) {
         $limitrules .= "set hostid {$current_hostid}\n";
     }
@@ -353,10 +363,14 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     $rules = "{$limitrules}\n";
     $rules .= "{$aliases} \n";
-    $rules .= filter_setup_logging_interfaces($cnfint);
     $rules .= "\n";
     $rules .= "set skip on lo0\n";
     $rules .= "set skip on pfsync0\n";
+    foreach ((new \OPNsense\IPsec\Swanctl(true))->VTIs->VTI->iterateItems() as $vti) {
+        if (!$vti->skip_fw->isEmpty()) {
+            $rules .= sprintf("set skip on ipsec%s\n", $vti->reqid);
+        }
+    }
     $rules .= "\n";
     $rules .= $fw->anchorToText('ether', 'head');
     $rules .= filter_generate_scrubbing($cnfint);
@@ -373,13 +387,11 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     @copy('/tmp/ifconfig.debug', '/tmp/ifconfig.debug.old');
 
     mwexecf('ifconfig > %s', '/tmp/ifconfig.debug');
-
     $fobj->truncate(0)->write($rules);
-
     @file_put_contents('/tmp/rules.limits', $limitrules);
-    mwexec('/sbin/pfctl -Of /tmp/rules.limits');
-    exec('/sbin/pfctl -f /tmp/rules.debug 2>&1', $rules_error, $rules_loading);
 
+    mwexecf('/sbin/pfctl -Of %s', '/tmp/rules.limits');
+    $load_failed = mwexecfm('/sbin/pfctl -f %s > %s', ['/tmp/rules.debug', '/tmp/rules.debug.error']);
     foreach ($sched_kill_states as $label) {
         mwexecf('/sbin/pfctl -k label -k %s', $label);
     }
@@ -388,7 +400,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
      * check for a error while loading the rules file.  if an error has occurred
      * then output the contents of the error to the caller
      */
-    if ($rules_loading) {
+    if ($load_failed) {
+        $rules_error = explode("\n", file_get_contents('/tmp/rules.debug.error'));
         $config_line = '';
 
         /* only report issues with line numbers */
@@ -401,7 +414,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
             }
         }
 
-        mwexec('/sbin/pfctl -f /tmp/rules.debug.old');
+        mwexecf('/sbin/pfctl -f %s', '/tmp/rules.debug.old');
 
         syslog(LOG_ERR, trim(sprintf('There were error(s) loading the rules: %s%s', $rules_error[0], $config_line)));
         file_put_contents(
@@ -418,11 +431,19 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         return;
     }
 
+    unlink('/tmp/rules.debug.error');
+
+    service_log('.', $verbose);
+
+    /* bring up new instance of filterlog to load new rules */
+    killbypid('/var/run/filterlog.pid');
+    mwexecf('/usr/local/sbin/filterlog -i pflog0 -p %s', '/var/run/filterlog.pid');
+
     /*
-     * XXX: Flush table when not user, ideally this should be update_tables.py responsibility.
+     * XXX: Flush table when not used, ideally this should be update_tables.py responsibility.
      */
     if (!is_bogonsv6_used()) {
-        mwexec('/sbin/pfctl -t bogonsv6 -T flush');
+        mwexecf('/sbin/pfctl -t bogonsv6 -T flush');
     }
 
     service_log('.', $verbose);
@@ -431,15 +452,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         configd_run('template reload OPNsense/Filter');
         configd_run('filter refresh_aliases', true);
     }
-
-    service_log('.', $verbose);
-
-    /* enable permanent promiscuous mode to avoid dmesg noise */
-    mwexec('/sbin/ifconfig pflog0 promisc');
-
-    /* bring up new instance of filterlog to load new rules */
-    killbypid('/var/run/filterlog.pid');
-    mwexec('/usr/local/sbin/filterlog -i pflog0 -p /var/run/filterlog.pid');
 
     unset($fobj);
 
@@ -555,7 +567,7 @@ function filter_generate_scrubbing(&$FilterIflist)
 function filter_generate_aliases()
 {
     $aliases = "# User Aliases\n";
-    $aliasObject = new \OPNsense\Firewall\Alias();
+    $aliasObject = new \OPNsense\Firewall\Alias(true);
     // list of registered aliases for faster is_alias() lookup
     $all_aliases = [];
     foreach ($aliasObject->aliasIterator() as $aliased) {
@@ -698,44 +710,37 @@ function filter_get_time_based_rule_status($schedule)
     return false;
 }
 
-
-function filter_setup_logging_interfaces(&$FilterIflist)
+function filter_current_table_entries()
 {
-    $rules = '';
-
-    if (isset($FilterIflist['lan'])) {
-        $rules .= "set loginterface {$FilterIflist['lan']['if']}\n";
-    } elseif (isset($FilterIflist['wan'])) {
-        $rules .= "set loginterface {$FilterIflist['wan']['if']}\n";
-    }
-
-    return $rules;
+    return shell_safe('pfctl -sm | grep table-entries | awk \'{print $4}\'');
 }
 
-function default_table_entries_size()
+function filter_default_table_entries()
 {
-    $current = `pfctl -sm | grep table-entries | awk '{print $4};'`;
-
-    return $current;
+    /*
+     * Table entries have 160 bytes as of this commit
+     * (see "vm.uma.pf_table_entries.size" sysctl).
+     *
+     * Retain the minimum of 1 million, but quickly scale
+     * up to 5 million and cap at around 10 million.
+     *
+     * The resulting maximal memory requirement of a
+     * full table at the minimum 3GB recommendation is
+     * around 22% with roughly 5 million entries to make
+     * use of the growing GeoIP set.
+     */
+    return (min(10000000, max(1000000, (int)(get_single_sysctl('hw.physmem') / 1048576) * 1500)));
 }
 
-function default_state_size()
+function filter_default_state_size()
 {
-    /* get system memory amount */
-    $memory = get_memory();
-    $physmem = $memory[0];
-
-    /* Be cautious and only allocate 10% of system memory to the state table */
-    $max_states = (int) ($physmem / 10) * 1000;
-
-    return $max_states;
+    /* be cautious and only allocate 10% of system memory to the state table */
+    return (int)(get_single_sysctl('hw.physmem') / 1048576) * 100;
 }
 
-function get_current_hostid()
+function filter_current_hostid()
 {
-    exec('/sbin/pfctl -si -v 2>/dev/null', $output);
-
-    foreach ($output as $line) {
+    foreach (shell_safe('/sbin/pfctl -si -v 2> /dev/null', [], true) as $line) {
         if (strpos($line, 'Hostid:') !== false) {
             return preg_split('/\s+/', $line)[1];
         }

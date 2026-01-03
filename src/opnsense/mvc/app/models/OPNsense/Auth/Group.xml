@@ -1,6 +1,7 @@
 <model>
     <mount>/system/group+</mount>
     <version>1.0.0</version>
+    <description>Group configuration</description>
     <items>
         <group type="ArrayField">
             <gid type=".\GidField"/>
@@ -26,6 +27,9 @@
             <member type=".\MemberField">
                 <Multiple>Y</Multiple>
             </member>
+            <source_networks type="NetworkField">
+                <AsList>Y</AsList>
+            </source_networks>
         </group>
     </items>
 </model>

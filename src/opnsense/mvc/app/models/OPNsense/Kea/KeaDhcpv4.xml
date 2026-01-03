@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Kea/dhcp4</mount>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <description>Kea DHCPv4 configuration</description>
     <items>
         <general>
@@ -29,6 +29,26 @@
                 </OptionValues>
             </dhcp_socket_type>
         </general>
+        <lexpire>
+            <hold_reclaimed_time type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </hold_reclaimed_time>
+            <reclaim_timer_wait_time type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+            </reclaim_timer_wait_time>
+            <flush_reclaimed_timer_wait_time type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </flush_reclaimed_timer_wait_time>
+            <max_reclaim_time type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </max_reclaim_time>
+            <max_reclaim_leases type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </max_reclaim_leases>
+            <unwarned_reclaim_cycles type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </unwarned_reclaim_cycles>
+        </lexpire>
         <ha>
             <enabled type="BooleanField">
                 <Default>0</Default>
@@ -50,6 +70,12 @@
                     <NetMaskRequired>Y</NetMaskRequired>
                     <AddressFamily>ipv4</AddressFamily>
                     <Required>Y</Required>
+                    <Constraints>
+                        <check001>
+                            <type>UniqueConstraint</type>
+                            <ValidationMessage>Subnet must be unique.</ValidationMessage>
+                        </check001>
+                    </Constraints>
                 </subnet>
                 <next_server type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
@@ -64,23 +90,19 @@
                         <NetMaskAllowed>N</NetMaskAllowed>
                         <AddressFamily>ipv4</AddressFamily>
                         <AsList>Y</AsList>
-                        <FieldSeparator>,</FieldSeparator>
                     </domain_name_servers>
                     <domain_search type="HostnameField">
                         <IpAllowed>N</IpAllowed>
-                        <FieldSeparator>,</FieldSeparator>
                         <AsList>Y</AsList>
-                        <ValidationMessage>Please specify a valid list of domains</ValidationMessage>
+                        <ValidationMessage>Please specify a valid list of domains.</ValidationMessage>
                     </domain_search>
                     <routers type="NetworkField">
                         <NetMaskAllowed>N</NetMaskAllowed>
                         <AddressFamily>ipv4</AddressFamily>
                         <AsList>Y</AsList>
-                        <FieldSeparator>,</FieldSeparator>
                     </routers>
-                    <static_routes type="TextField">
-                        <!-- Needs a custom validator to validate ip pairs-->
-                    </static_routes>
+                    <static_routes type=".\KeaStaticRoutesField"/>
+                    <classless_static_route type=".\KeaClasslessStaticRouteField"/>
                     <domain_name type="HostnameField">
                         <IpAllowed>N</IpAllowed>
                     </domain_name>
@@ -88,13 +110,11 @@
                         <NetMaskAllowed>N</NetMaskAllowed>
                         <AddressFamily>ipv4</AddressFamily>
                         <AsList>Y</AsList>
-                        <FieldSeparator>,</FieldSeparator>
                     </ntp_servers>
                     <time_servers type="NetworkField">
                         <NetMaskAllowed>N</NetMaskAllowed>
                         <AddressFamily>ipv4</AddressFamily>
                         <AsList>Y</AsList>
-                        <FieldSeparator>,</FieldSeparator>
                     </time_servers>
                     <tftp_server_name type="TextField">
                         <Mask>/^([^\n"])*$/u</Mask>
@@ -105,6 +125,9 @@
                     <v6_only_preferred type="IntegerField">
                         <MinimumValue>300</MinimumValue>
                     </v6_only_preferred>
+                    <v4_dnr type="TextField">
+                        <Mask>/^([^\n"])*$/u</Mask>
+                    </v4_dnr>
                 </option_data>
                 <match-client-id type="BooleanField">
                     <Default>1</Default>
@@ -125,7 +148,7 @@
                             <display>subnet</display>
                         </subnets>
                     </Model>
-                    <ValidationMessage>Related subnet not found</ValidationMessage>
+                    <ValidationMessage>Related subnet not found.</ValidationMessage>
                     <Constraints>
                         <check001>
                             <reference>hw_address.check001</reference>
@@ -138,7 +161,7 @@
                     <AddressFamily>ipv4</AddressFamily>
                     <Constraints>
                         <check001>
-                            <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                            <ValidationMessage>Duplicate entry exists.</ValidationMessage>
                             <type>UniqueConstraint</type>
                         </check001>
                     </Constraints>
@@ -147,8 +170,9 @@
                     <Required>Y</Required>
                     <Constraints>
                         <check001>
-                            <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                            <ValidationMessage>Duplicate entry exists.</ValidationMessage>
                             <type>UniqueConstraint</type>
+                            <caseInsensitive>Y</caseInsensitive>
                             <addFields>
                                 <field1>subnet</field1>
                             </addFields>
@@ -159,6 +183,44 @@
                     <IsDNSName>Y</IsDNSName>
                 </hostname>
                 <description type="DescriptionField"/>
+                <option_data>
+                    <domain_name_servers type="NetworkField">
+                        <NetMaskAllowed>N</NetMaskAllowed>
+                        <AddressFamily>ipv4</AddressFamily>
+                        <AsList>Y</AsList>
+                    </domain_name_servers>
+                    <domain_search type="HostnameField">
+                        <IpAllowed>N</IpAllowed>
+                        <AsList>Y</AsList>
+                        <ValidationMessage>Please specify a valid list of domains.</ValidationMessage>
+                    </domain_search>
+                    <routers type="NetworkField">
+                        <NetMaskAllowed>N</NetMaskAllowed>
+                        <AddressFamily>ipv4</AddressFamily>
+                        <AsList>Y</AsList>
+                    </routers>
+                    <static_routes type=".\KeaStaticRoutesField"/>
+                    <classless_static_route type=".\KeaClasslessStaticRouteField"/>
+                    <domain_name type="HostnameField">
+                        <IpAllowed>N</IpAllowed>
+                    </domain_name>
+                    <ntp_servers type="NetworkField">
+                        <NetMaskAllowed>N</NetMaskAllowed>
+                        <AddressFamily>ipv4</AddressFamily>
+                        <AsList>Y</AsList>
+                    </ntp_servers>
+                    <time_servers type="NetworkField">
+                        <NetMaskAllowed>N</NetMaskAllowed>
+                        <AddressFamily>ipv4</AddressFamily>
+                        <AsList>Y</AsList>
+                    </time_servers>
+                    <tftp_server_name type="TextField">
+                        <Mask>/^([^\n"])*$/u</Mask>
+                    </tftp_server_name>
+                    <boot_file_name type="TextField">
+                        <Mask>/^([^\n"])*$/u</Mask>
+                    </boot_file_name>
+                </option_data>
             </reservation>
         </reservations>
         <ha_peers>
@@ -167,7 +229,7 @@
                     <Required>Y</Required>
                     <Constraints>
                         <check001>
-                            <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                            <ValidationMessage>Duplicate entry exists.</ValidationMessage>
                             <type>UniqueConstraint</type>
                         </check001>
                     </Constraints>
@@ -184,7 +246,7 @@
                     <Required>Y</Required>
                     <Constraints>
                         <check001>
-                            <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                            <ValidationMessage>Duplicate entry exists.</ValidationMessage>
                             <type>UniqueConstraint</type>
                         </check001>
                     </Constraints>

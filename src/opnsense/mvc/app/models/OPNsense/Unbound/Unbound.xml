@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>1.0.12</version>
+    <version>1.0.13</version>
     <items>
         <general>
             <enabled type="BooleanField">
@@ -33,6 +33,7 @@
             <noregrecords type="BooleanField"/>
             <txtsupport type="BooleanField"/>
             <cacheflush type="BooleanField"/>
+            <safesearch type="BooleanField"/>
             <local_zone_type type="OptionField">
                 <Default>transparent</Default>
                 <Required>Y</Required>
@@ -89,7 +90,7 @@
                     <opt6 value="5">Level 5</opt6>
                 </OptionValues>
             </logverbosity>
-            <valloglevel  type="OptionField">
+            <valloglevel type="OptionField">
                 <Default>0</Default>
                 <Required>Y</Required>
                 <OptionValues>
@@ -101,19 +102,18 @@
             <privatedomain type="CSVListField"/>
             <privateaddress type="NetworkField">
                 <Required>Y</Required>
-                <FieldSeparator>,</FieldSeparator>
                 <WildcardEnabled>N</WildcardEnabled>
                 <Default>0.0.0.0/8,10.0.0.0/8,100.64.0.0/10,169.254.0.0/16,172.16.0.0/12,192.0.2.0/24,192.168.0.0/16,198.18.0.0/15,198.51.100.0/24,203.0.113.0/24,233.252.0.0/24,::1/128,2001:db8::/32,fc00::/8,fd00::/8,fe80::/10</Default>
-                <asList>Y</asList>
+                <AsList>Y</AsList>
             </privateaddress>
             <insecuredomain type="CSVListField"/>
             <msgcachesize type="TextField">
                 <Mask>/[0-9]+[kmg]?/i</Mask>
-                <ValidationMessage>The cache size should be numeric, optionally appended with 'k', 'm', or 'g'</ValidationMessage>
+                <ValidationMessage>The cache size should be numeric, optionally appended with 'k', 'm', or 'g'.</ValidationMessage>
             </msgcachesize>
             <rrsetcachesize type="TextField">
                 <Mask>/[0-9]+[kmg]?/i</Mask>
-                <ValidationMessage>The cache size should be numeric, optionally appended with 'k', 'm', or 'g'</ValidationMessage>
+                <ValidationMessage>The cache size should be numeric, optionally appended with 'k', 'm', or 'g'.</ValidationMessage>
             </rrsetcachesize>
             <outgoingnumtcp type="NumericField"/>
             <incomingnumtcp type="NumericField"/>
@@ -146,7 +146,7 @@
                 </enabled>
                 <name type="TextField">
                     <Required>Y</Required>
-                    <ValidationMessage>An Access list name is required</ValidationMessage>
+                    <ValidationMessage>An Access list name is required.</ValidationMessage>
                 </name>
                 <action type="OptionField">
                     <Default>allow</Default>
@@ -165,86 +165,83 @@
                     <Required>Y</Required>
                     <ValidationMessage>Please specify a one or more valid network segment in CIDR notation (Ipv4/IPv6).</ValidationMessage>
                     <WildcardEnabled>N</WildcardEnabled>
-                    <FieldSeparator>,</FieldSeparator>
                     <NetMaskRequired>Y</NetMaskRequired>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </networks>
                 <description type="DescriptionField"/>
             </acl>
         </acls>
         <dnsbl>
-            <enabled type="BooleanField">
-                <Default>0</Default>
-                <Required>Y</Required>
-            </enabled>
-            <safesearch type="BooleanField"/>
-            <type type="OptionField">
-                <Multiple>Y</Multiple>
-                <OptionValues>
-                    <atf>Abuse.ch - ThreatFox IOC database</atf>
-                    <aa>AdAway List</aa>
-                    <ag>AdGuard List</ag>
-                    <bla0>Blocklist.site Abuse</bla0>
-                    <bla>Blocklist.site Ads</bla>
-                    <blc>Blocklist.site Crypto</blc>
-                    <bld>Blocklist.site Drugs</bld>
-                    <blf>Blocklist.site Fraud</blf>
-                    <blf0>Blocklist.site Facebook</blf0>
-                    <blg>Blocklist.site Gambling</blg>
-                    <blm>Blocklist.site Malware</blm>
-                    <blp>Blocklist.site Phishing</blp>
-                    <blp0>Blocklist.site Piracy</blp0>
-                    <blp1>Blocklist.site Porn</blp1>
-                    <blr>Blocklist.site Ransomware</blr>
-                    <blr0>Blocklist.site Redirect</blr0>
-                    <bls>Blocklist.site Scam</bls>
-                    <blt>Blocklist.site Tiktok</blt>
-                    <blt0>Blocklist.site Torrent</blt0>
-                    <blt1>Blocklist.site Tracking</blt1>
-                    <bly>Blocklist.site Youtube</bly>
-                    <el>EasyList</el>
-                    <ep>EasyPrivacy</ep>
-                    <hgz001>[hagezi] Multi LIGHT - Basic protection</hgz001>
-                    <hgz002>[hagezi] Multi NORMAL - All-round protection</hgz002>
-                    <hgz003>[hagezi] Multi PRO - Extended protection</hgz003>
-                    <hgz004>[hagezi] Multi PRO mini </hgz004>
-                    <hgz005>[hagezi] Multi PRO++ - Maximum protection</hgz005>
-                    <hgz006>[hagezi] Multi PRO++ mini</hgz006>
-                    <hgz007>[hagezi] Multi ULTIMATE - Aggressive protection</hgz007>
-                    <hgz008>[hagezi] Multi ULTIMATE mini</hgz008>
-                    <hgz009>[hagezi] Fake - scams / fakes</hgz009>
-                    <hgz010>[hagezi] Pop-Up Ads</hgz010>
-                    <hgz011>[hagezi] Threat Intelligence Feeds</hgz011>
-                    <hgz012>[hagezi] Threat Intelligence Feeds - Medium</hgz012>
-                    <hgz013>[hagezi] Threat Intelligence Feeds - Mini</hgz013>
-                    <hgz014>[hagezi] DoH/VPN/TOR/Proxy Bypass</hgz014>
-                    <hgz015>[hagezi] Safesearch not supported</hgz015>
-                    <hgz016>[hagezi] Dynamic DNS blocking</hgz016>
-                    <hgz017>[hagezi] Badware Hoster blocking</hgz017>
-                    <hgz018>[hagezi] Anti Piracy</hgz018>
-                    <hgz019>[hagezi] Gambling</hgz019>
-                    <hgz020>[hagezi] Gambling - Medium</hgz020>
-                    <hgz021>[hagezi] Gambling - Mini</hgz021>
-                    <oisd0>OISD - Domain Blocklist Ads</oisd0>
-                    <oisd1>OISD - Domain Blocklist Big</oisd1>
-                    <oisd2>OISD - Domain Blocklist NSFW</oisd2>
-                    <sb>Steven Black List</sb>
-                    <yy>YoYo List</yy>
-                </OptionValues>
-            </type>
-            <lists type="CSVListField"/>
-            <whitelists type="CSVListField"/>
-            <blocklists type="CSVListField"/>
-            <wildcards type="CSVListField">
-                <Mask>/^((?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.){1,})(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
-                <ValidationMessage>A valid domain must be specified.</ValidationMessage>
-                <MaskPerItem>Y</MaskPerItem>
-            </wildcards>
-            <address type="NetworkField">
-                <NetMaskAllowed>N</NetMaskAllowed>
-                <AddressFamily>ipv4</AddressFamily>
-            </address>
-            <nxdomain type="BooleanField"/>
+            <blocklist type="ArrayField">
+                <enabled type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </enabled>
+                <type type="OptionField">
+                    <Multiple>Y</Multiple>
+                    <OptionValues>
+                        <atf>Abuse.ch - ThreatFox IOC database</atf>
+                        <ag>AdGuard List</ag>
+                        <el>EasyList</el>
+                        <ep>EasyPrivacy</ep>
+                        <hgz001>[hagezi] Multi LIGHT - Basic protection</hgz001>
+                        <hgz002>[hagezi] Multi NORMAL - All-round protection</hgz002>
+                        <hgz003>[hagezi] Multi PRO - Extended protection</hgz003>
+                        <hgz004>[hagezi] Multi PRO mini </hgz004>
+                        <hgz005>[hagezi] Multi PRO++ - Maximum protection</hgz005>
+                        <hgz006>[hagezi] Multi PRO++ mini</hgz006>
+                        <hgz007>[hagezi] Multi ULTIMATE - Aggressive protection</hgz007>
+                        <hgz008>[hagezi] Multi ULTIMATE mini</hgz008>
+                        <hgz009>[hagezi] Fake - scams / fakes</hgz009>
+                        <hgz010>[hagezi] Pop-Up Ads</hgz010>
+                        <hgz011>[hagezi] Threat Intelligence Feeds</hgz011>
+                        <hgz012>[hagezi] Threat Intelligence Feeds - Medium</hgz012>
+                        <hgz013>[hagezi] Threat Intelligence Feeds - Mini</hgz013>
+                        <hgz014>[hagezi] DoH/VPN/TOR/Proxy Bypass</hgz014>
+                        <hgz015>[hagezi] Safesearch not supported</hgz015>
+                        <hgz016>[hagezi] Dynamic DNS blocking</hgz016>
+                        <hgz017>[hagezi] Badware Hoster blocking</hgz017>
+                        <hgz018>[hagezi] Anti Piracy</hgz018>
+                        <hgz019>[hagezi] Gambling</hgz019>
+                        <hgz020>[hagezi] Gambling - Medium</hgz020>
+                        <hgz021>[hagezi] Gambling - Mini</hgz021>
+                        <oisd0>OISD - Domain Blocklist Ads</oisd0>
+                        <oisd1>OISD - Domain Blocklist Big</oisd1>
+                        <oisd2>OISD - Domain Blocklist NSFW</oisd2>
+                        <sb>Steven Black List</sb>
+                        <yy>YoYo List</yy>
+                    </OptionValues>
+                </type>
+                <lists type="CSVListField"/>
+                <allowlists type="CSVListField"/>
+                <blocklists type="CSVListField"/>
+                <wildcards type="CSVListField">
+                    <Mask>/^((?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.){1,})(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
+                    <ValidationMessage>A valid domain must be specified.</ValidationMessage>
+                    <MaskPerItem>Y</MaskPerItem>
+                </wildcards>
+                <source_nets type="NetworkField">
+                    <Multiple>Y</Multiple>
+                    <Strict>Y</Strict>
+                    <ValidationMessage>Please specify a valid network segment or address (IPv4/IPv6). If a mask is provided, please omit the host bits.</ValidationMessage>
+                    <WildcardEnabled>N</WildcardEnabled>
+                    <NetMaskRequired>N</NetMaskRequired>
+                    <AsList>Y</AsList>
+                </source_nets>
+                <address type="NetworkField">
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <AddressFamily>ipv4</AddressFamily>
+                </address>
+                <nxdomain type="BooleanField"/>
+                <cache_ttl type="IntegerField">
+                    <Required>Y</Required>
+                    <Default>72000</Default>
+                </cache_ttl>
+                <description type="DescriptionField">
+                    <Required>Y</Required>
+                    <ValidationMessage>To keep track of which policies are applicable to source networks, a description should be provided. It should be a string between 1 and 255 characters.</ValidationMessage>
+                </description>
+            </blocklist>
         </dnsbl>
         <forwarding>
             <enabled type="BooleanField"/>
@@ -306,7 +303,8 @@
                     <OptionValues>
                         <A>A (IPv4 address)</A>
                         <AAAA>AAAA (IPv6 address)</AAAA>
-                        <MX>MX (Mail server)</MX>
+                        <MX>MX (mail server)</MX>
+                        <TXT>TXT (text)</TXT>
                     </OptionValues>
                     <Constraints>
                         <check001>
@@ -321,6 +319,9 @@
                         <check004>
                             <reference>server.check002</reference>
                         </check004>
+                        <check005>
+                            <reference>txtdata.check001</reference>
+                        </check005>
                     </Constraints>
                 </rr>
                 <mxprio type="IntegerField">
@@ -364,6 +365,18 @@
                         </check002>
                     </Constraints>
                 </server>
+                <txtdata type="DescriptionField">
+                    <!-- Use DescriptionField to cap to 255 characters -->
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>The field TXT Data is required.</ValidationMessage>
+                            <type>SetIfConstraint</type>
+                            <field>rr</field>
+                            <check>TXT</check>
+                        </check001>
+                    </Constraints>
+                </txtdata>
+                <aliascount type=".\AliasRefCount" volatile="true"/>
                 <description type="DescriptionField"/>
             </host>
         </hosts>
@@ -390,7 +403,6 @@
                             <ValidationMessage>The host field is required if a domain has not been specified.</ValidationMessage>
                             <type>SetIfConstraint</type>
                             <field>domain</field>
-                            <check></check>
                         </check001>
                     </Constraints>
                     <HostWildcardAllowed>Y</HostWildcardAllowed>
@@ -403,7 +415,6 @@
                             <ValidationMessage>The domain field is required if a host has not been specified.</ValidationMessage>
                             <type>SetIfConstraint</type>
                             <field>hostname</field>
-                            <check></check>
                         </check001>
                     </Constraints>
                     <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>

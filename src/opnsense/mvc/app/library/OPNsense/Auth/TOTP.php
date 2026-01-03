@@ -62,7 +62,7 @@ trait TOTP
      */
     private function timesToCheck()
     {
-        $result = array();
+        $result = [];
         if ($this->graceperiod > $this->timeWindow) {
             $step = $this->timeWindow;
             $start = -1 * floor($this->graceperiod  / $this->timeWindow) * $this->timeWindow;
@@ -217,12 +217,12 @@ trait TOTP
      */
     private function getTOTPConfigurationOptions()
     {
-        $fields = array();
-        $fields["otpLength"] = array();
+        $fields = [];
+        $fields["otpLength"] = [];
         $fields["otpLength"]["name"] = gettext("Token length");
         $fields["otpLength"]["type"] = "dropdown";
         $fields["otpLength"]["default"] = 6;
-        $fields["otpLength"]["options"] = array();
+        $fields["otpLength"]["options"] = [];
         $fields["otpLength"]["options"]["6"] = "6";
         $fields["otpLength"]["options"]["8"] = "8";
         $fields["otpLength"]["help"] = gettext("Token length to use");
@@ -230,10 +230,10 @@ trait TOTP
             if (!in_array($value, array(6,8))) {
                 return array(gettext("Only token lengths of 6 or 8 characters are supported"));
             } else {
-                return array();
+                return [];
             }
         };
-        $fields["timeWindow"] = array();
+        $fields["timeWindow"] = [];
         $fields["timeWindow"]["name"] = gettext("Time window");
         $fields["timeWindow"]["type"] = "text";
         $fields["timeWindow"]["default"] = null;
@@ -243,10 +243,10 @@ trait TOTP
             if (!empty($value) && filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value) {
                 return array(gettext("Please enter a valid time window in seconds"));
             } else {
-                return array();
+                return [];
             }
         };
-        $fields["graceperiod"] = array();
+        $fields["graceperiod"] = [];
         $fields["graceperiod"]["name"] = gettext("Grace period");
         $fields["graceperiod"]["type"] = "text";
         $fields["graceperiod"]["default"] = null;
@@ -256,15 +256,15 @@ trait TOTP
             if (!empty($value) && filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value) {
                 return array(gettext("Please enter a valid grace period in seconds"));
             } else {
-                return array();
+                return [];
             }
         };
-        $fields["passwordFirst"] = array();
+        $fields["passwordFirst"] = [];
         $fields["passwordFirst"]["name"] = gettext("Reverse token order");
         $fields["passwordFirst"]["help"] = gettext("Checking this box requires the token after the password. Default requires the token before the password.");
         $fields["passwordFirst"]["type"] = "checkbox";
         $fields["passwordFirst"]["validate"] = function ($value) {
-            return array();
+            return [];
         };
 
         return $fields;

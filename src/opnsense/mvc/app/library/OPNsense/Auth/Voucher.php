@@ -1,35 +1,34 @@
 <?php
 
-/**
- *    Copyright (C) 2015 Deciso B.V.
+/*
+ * Copyright (C) 2015-2025 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 namespace OPNsense\Auth;
 
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Config;
 
 /**
@@ -66,7 +65,7 @@ class Voucher extends Base implements IAuthConnector
     /**
      * @var array internal list of authentication properties (returned by radius auth)
      */
-    private $lastAuthProperties = array();
+    private $lastAuthProperties = [];
 
     /**
      * type name in configuration
@@ -91,11 +90,11 @@ class Voucher extends Base implements IAuthConnector
      */
     private function openDatabase()
     {
-        $db_path = '/conf/vouchers_' . $this->refid . '.db';
+        $db_path = (new AppConfig())->application->configDir . '/vouchers_' . $this->refid . '.db';
         $this->dbHandle = new \SQLite3($db_path);
         $this->dbHandle->busyTimeout(30000);
         $results = $this->dbHandle->query("PRAGMA table_info('vouchers')");
-        $known_fields = array();
+        $known_fields = [];
         while ($row = $results->fetchArray(SQLITE3_ASSOC)) {
             $known_fields[] = $row['name'];
         }
@@ -115,6 +114,8 @@ class Voucher extends Base implements IAuthConnector
                 create index idx_voucher_group on vouchers(vouchergroup);
             ";
             $this->dbHandle->exec($sql_create);
+            @chown($db_path, 'wwwonly'); /* XXX frontend owns file */
+            @chgrp($db_path, 'wheel'); /* XXX backend can work with it */
         } elseif (count($known_fields) < 7) {
             // changed database, add columns when voucher table is incomplete
             if (!in_array("expirytime", $known_fields)) {
@@ -191,7 +192,7 @@ class Voucher extends Base implements IAuthConnector
      */
     public function generateVouchers($vouchergroup, $count, $validity, $expirytime, $starttime = null)
     {
-        $response = array();
+        $response = [];
         if ($this->dbHandle != null) {
             $characterMap = '!#$%()*+,-./0123456789:;=?@ABCDEFGHIJKLMNPQRSTUVWXYZ[\]_abcdefghijkmnopqrstuvwxyz';
             if ($this->simplePasswords) {
@@ -265,7 +266,7 @@ class Voucher extends Base implements IAuthConnector
      */
     public function listVoucherGroups()
     {
-        $response = array();
+        $response = [];
         $stmt = $this->dbHandle->prepare('select distinct vouchergroup from vouchers');
         $result = $stmt->execute();
         while ($row = $result->fetchArray()) {
@@ -281,7 +282,7 @@ class Voucher extends Base implements IAuthConnector
      */
     public function listVouchers($vouchergroup)
     {
-        $response = array();
+        $response = [];
         $stmt = $this->dbHandle->prepare('
                   select username, validity, expirytime, starttime, vouchergroup
                   from vouchers
@@ -289,7 +290,7 @@ class Voucher extends Base implements IAuthConnector
         $stmt->bindParam(':vouchergroup', $vouchergroup);
         $result = $stmt->execute();
         while ($row = $result->fetchArray()) {
-            $record = array();
+            $record = [];
             $record['username'] = $row['username'];
             $record['validity'] = $row['validity'];
             $record['expirytime'] = $row['expirytime'];
@@ -411,15 +412,15 @@ class Voucher extends Base implements IAuthConnector
      */
     public function getConfigurationOptions()
     {
-        $fields = array();
-        $fields["simplePasswords"] = array();
+        $fields = [];
+        $fields["simplePasswords"] = [];
         $fields["simplePasswords"]["name"] = gettext("Use simple passwords (less secure)");
         $fields["simplePasswords"]["type"] = "checkbox";
         $fields["simplePasswords"]["help"] = gettext("Use simple (less secure) passwords, which are easier to read");
         $fields["simplePasswords"]["validate"] = function ($value) {
-            return array();
+            return [];
         };
-        $fields["usernameLength"] = array();
+        $fields["usernameLength"] = [];
         $fields["usernameLength"]["name"] = gettext("Username length");
         $fields["usernameLength"]["type"] = "text";
         $fields["usernameLength"]["default"] = null;
@@ -428,10 +429,10 @@ class Voucher extends Base implements IAuthConnector
             if ($value != '' && (filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value || $value < 1)) {
                 return array(gettext("Username length must be a number or empty for default."));
             } else {
-                return array();
+                return [];
             }
         };
-        $fields["passwordLength"] = array();
+        $fields["passwordLength"] = [];
         $fields["passwordLength"]["name"] = gettext("Password length");
         $fields["passwordLength"]["type"] = "text";
         $fields["passwordLength"]["default"] = null;
@@ -440,7 +441,7 @@ class Voucher extends Base implements IAuthConnector
             if ($value != '' && (filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value || $value < 0)) {
                 return array(gettext("Password length must be a number or empty for default."));
             } else {
-                return array();
+                return [];
             }
         };
 

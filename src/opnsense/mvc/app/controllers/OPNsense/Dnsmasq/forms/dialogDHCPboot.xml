@@ -1,9 +1,18 @@
 <form>
     <field>
+        <id>boot.interface</id>
+        <label>Interface</label>
+        <type>dropdown</type>
+        <help>This adds a single interface as tag so this DHCP boot option can match the interface of a DHCP range.</help>
+    </field>
+    <field>
         <id>boot.tag</id>
         <label>Tag</label>
-        <type>dropdown</type>
-        <help>Only offer this boot image to the clients matched by the given tag.</help>
+        <type>select_multiple</type>
+        <help>If the optional tags are given then this option is only sent when all the tags are matched. Can be optionally combined with an interface tag.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>boot.filename</id>
@@ -21,7 +30,7 @@
         <type>text</type>
     </field>
     <field>
-        <id>option.description</id>
+        <id>boot.description</id>
         <label>Description</label>
         <type>text</type>
         <help>You may enter a description here for your reference (not parsed).</help>

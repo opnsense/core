@@ -49,6 +49,7 @@ class UniqueConstraint extends BaseConstraint
     public function validate($validator, $attribute): bool
     {
         $node = $this->getOption('node');
+        $checkCaseInsensitive = $this->getOption('caseInsensitive', 'N') == 'Y';
         $fieldSeparator = chr(10) . chr(0);
         if ($node) {
             if (!$node->isRequired() && $node->isEmpty()) {
@@ -86,6 +87,7 @@ class UniqueConstraint extends BaseConstraint
                         foreach ($keyFields as $field) {
                             $itemValue .= $fieldSeparator . $item->$field;
                         }
+                        $itemValue = $checkCaseInsensitive ? strtolower($itemValue) : $itemValue;
                         if (empty(static::$itemmap[$nodeKey][$itemValue])) {
                             static::$itemmap[$nodeKey][$itemValue] = 0;
                         }
@@ -97,6 +99,7 @@ class UniqueConstraint extends BaseConstraint
             foreach ($keyFields as $field) {
                 $nodeValue .= $fieldSeparator . $parentNode->$field;
             }
+            $nodeValue = $checkCaseInsensitive ? strtolower($nodeValue) : $nodeValue;
             if ((static::$itemmap[$nodeKey][$nodeValue] ?? 0) > 1) {
                 $this->appendMessage($validator, $attribute);
                 return false;

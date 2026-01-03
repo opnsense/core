@@ -29,8 +29,8 @@
 
 namespace OPNsense\Monit;
 
-use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
+use OPNsense\Base\Messages\Message;
 
 /**
  * Class Monit
@@ -312,33 +312,6 @@ class Monit extends BaseModel
             }
         }
         return $messages;
-    }
-
-    /**
-     * mark configuration as changed when data is pushed back to the config
-     */
-    public function serializeToConfig($validateFullModel = false, $disable_validation = false)
-    {
-        @touch("/tmp/monit.dirty");
-        return parent::serializeToConfig($validateFullModel, $disable_validation);
-    }
-
-    /**
-     * get configuration state
-     * @return bool
-     */
-    public function configChanged()
-    {
-        return file_exists("/tmp/monit.dirty");
-    }
-
-    /**
-     * mark configuration as consistent with the running config
-     * @return bool
-     */
-    public function configClean()
-    {
-        return @unlink("/tmp/monit.dirty");
     }
 
     /**

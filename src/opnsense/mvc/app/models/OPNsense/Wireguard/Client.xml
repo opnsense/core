@@ -30,9 +30,8 @@
                 <psk type="Base64Field"/>
                 <tunneladdress type="NetworkField">
                     <NetMaskRequired>Y</NetMaskRequired>
-                    <FieldSeparator>,</FieldSeparator>
                     <Required>Y</Required>
-                    <asList>Y</asList>
+                    <AsList>Y</AsList>
                 </tunneladdress>
                 <serveraddress type="HostnameField">
                     <Constraints>
@@ -54,8 +53,8 @@
                 </endpoint>
                 <keepalive type="IntegerField">
                     <MinimumValue>1</MinimumValue>
-                    <MaximumValue>86400</MaximumValue>
-                    <ValidationMessage>Please specify a value between 1 and 86400.</ValidationMessage>
+                    <MaximumValue>65535</MaximumValue>
+                    <ValidationMessage>Please specify a value between 1 and 65535.</ValidationMessage>
                 </keepalive>
                 <servers type="ModelRelationField" volatile="true">
                     <Model>

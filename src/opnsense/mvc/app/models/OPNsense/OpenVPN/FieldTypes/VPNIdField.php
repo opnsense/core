@@ -58,7 +58,7 @@ class VPNIdField extends IntegerField
             for ($i = 1; true; $i++) {
                 if (!in_array($i, self::$internalLegacyVPNids)) {
                     $this->internalValue = (string)$i;
-                    $this_uuid = $this->getParentNode()->getAttributes()['uuid'];
+                    $this_uuid = $this->getParentNode()->getAttributes()['uuid'] ?? (string)$i;
                     self::$internalLegacyVPNids[$this_uuid] = $i;
                     break;
                 }

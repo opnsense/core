@@ -1,7 +1,7 @@
 <model>
     <mount>/gres</mount>
     <version>1.0.0</version>
-    <description>GRE interfaces</description>
+    <description>GRE devices</description>
     <items>
         <gre type="ArrayField">
             <local-addr type=".\LinkAddressField" volatile="true">
@@ -18,7 +18,7 @@
                 <Required>Y</Required>
                 <Constraints>
                     <check001>
-                        <ValidationMessage>Gre already exists!</ValidationMessage>
+                        <ValidationMessage>GRE device already exists.</ValidationMessage>
                         <type>UniqueConstraint</type>
                     </check001>
                 </Constraints>

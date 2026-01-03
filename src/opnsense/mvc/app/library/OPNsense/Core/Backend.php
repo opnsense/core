@@ -123,7 +123,6 @@ class Backend
     public function configdpStream($event, $params = [], $poll_timeout = 2, $detach = false, $timeout = 120, $connect_timeout = 10)
     {
         if (!is_array($params)) {
-            /* just in case there's only one parameter */
             $params = [$params];
         }
 
@@ -165,10 +164,10 @@ class Backend
             // handle timeouts
             if ((time() - $starttime) > $timeout) {
                 $this->getLogger()->error("Timeout (" . $timeout . ") executing : " . $event);
-                return null;
+                return '';
             } elseif (feof($stream)) {
                 $this->getLogger()->error("Configd disconnected while executing : " . $event);
-                return null;
+                return '';
             }
         }
 
@@ -176,7 +175,7 @@ class Backend
             strlen($resp) >= strlen($errorOfStream) &&
             substr($resp, 0, strlen($errorOfStream)) == $errorOfStream
         ) {
-            return null;
+            return '';
         }
 
         return str_replace($endOfStream, '', $resp);
@@ -195,7 +194,6 @@ class Backend
     public function configdpRun($event, $params = [], $detach = false, $timeout = 120, $connect_timeout = 10)
     {
         if (!is_array($params)) {
-            /* just in case there's only one parameter */
             $params = [$params];
         }
 

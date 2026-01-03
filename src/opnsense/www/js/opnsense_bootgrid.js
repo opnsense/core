@@ -67,8 +67,14 @@ $.fn.UIBootgrid = function(params) {
         let width = null;
         if (data.width !== undefined && data.width !== '') {
             // intentionally ignore data.visible here so there is a value to go to
-            $col.css({width: data.width});
-            width = parseFloat($col.outerWidth()) + 5.0;
+            let isNumber = /^-?\d+(\.\d+)?$/.test(data.width);
+            if (!isNumber) {
+                // assume the value is a proper CSS unit, but add a margin to be safe
+                $col.css({width: data.width});
+                width = parseFloat($col.outerWidth()) + 5.0;
+            } else {
+                width = parseFloat(data.width);
+            }
         }
 
         cols[data.columnId] = {
@@ -76,13 +82,16 @@ $.fn.UIBootgrid = function(params) {
             label: $col.text(),
             width: width
         }
-    })
+    });
 
-    const $clone = $original.clone(true, true);
+    // Before replacing the element, search for custom grid commands so we don't
+    // lose their event bindings and data.
+    let customCommands = $original.find('tfoot td').children().not('[data-action]').detach();
+
     const $replacement = $('<div>').attr('id', id);
     $original.replaceWith($replacement);
 
-    let bg = new UIBootgrid(id).translateCompatOptions(params, $clone, cols).initialize();
+    let bg = new UIBootgrid(id).translateCompatOptions(params, $original, cols, customCommands).initialize();
 
     // store the instance so calls to $.bootgrid(...) are wired to the new implementation
     $replacement.data('UIBootgrid', bg);
@@ -107,24 +116,35 @@ class UIBootgrid {
         this.isResizing = false;
         this.totalKnown = false;
         this.paginationTotal = undefined;
+        this.persistence = false;
         this.persistenceID = `${window.location.pathname}#${this.id}`;
+        this.dataAvailable = false;
+        this.customCommands = null;
+        this.loading = true;
+        this.groupStorageKey = `tabulator-${this.persistenceID}-openGroups`;
+        this.rememberedGroupKeys = new Set(JSON.parse(localStorage.getItem(this.groupStorageKey) || '[]'));
+        this.treeStorageKey = `tabulator-${this.persistenceID}-openTree`;
+        this.rememberedTreeIds = new Set(JSON.parse(localStorage.getItem(this.treeStorageKey) || '[]'));
+        this.isVisible = false;
 
         // wrapper-specific options
         this.options = {
+            disableScroll: false,
             sorting: true,
             selection: true,
-            rowCount: [7, 14, 20, 50, 100, true],
+            rowCount: [50, 100, 200, 500, 1000, true],
             remoteGridView: false, // parse gridview from <thead> or via ajax?
             formatters: {
                 ...this._internalFormatters()
             }, // formatter callback functions passed to column definitions
             headerFormatters: {},
+            statusMapping: {},
             sorters: {
                 ...this._internalSorters()
             },
             requestHandler: (request) => request,
             responseHandler: (response) => response,
-            datakey: 'uuid',
+            datakey: 'uuid', // Only used for command button identification
             resetButton: true,
             searchSettings: {
                 delay: 1000
@@ -145,7 +165,9 @@ class UIBootgrid {
             commands: {}, //additional registered commands
             virtualDOM: false,
             stickySelect: false,
+            rowSelect: false,
             triggerEditFor: null,
+            static: false, // no persistent storage, no resizable columns
             ...options
         };
 
@@ -172,19 +194,20 @@ class UIBootgrid {
             removeWarning: 'Remove selected item(s)?',
             noresultsfound: 'No results found!',
             refresh: 'Refresh',
-            ...$.fn.UIBootgrid.translations
+            ...$.fn.UIBootgrid.translations /* Passed in from default.volt */
         };
+
+        this.placeholder = $(`<span id="${this.id}-placeholder" class="bootgrid-placeholder"></span>`);
 
         // wrapper-specific single version of truth of table layout
         this.gridView = null;
     }
 
     initialize() {
-        if (!localStorage.getItem(`tabulator-${this.persistenceID}-persistence`)) {
+        this.persistence = localStorage.getItem(`tabulator-${this.persistenceID}-persistence`);
+        if (!this.persistence || this.options.static) {
             // If the user didn't change anything on the table, assume we start blank
-            Object.keys(localStorage)
-                .filter(key => key.startsWith(`tabulator-${this.persistenceID}`))
-                .forEach(key => localStorage.removeItem(key));
+            this._setPersistence(false);
         }
 
         if (this.options.triggerEditFor) {
@@ -206,7 +229,7 @@ class UIBootgrid {
     * This function modifies this.compatOptions if options can be directly included in Tabulator.
     * Otherwise, this.options is modified for wrapper-specific implementations (i.e. rowCount, requestHandler).
     */
-    translateCompatOptions(compatOptions, $table, columns) {
+    translateCompatOptions(compatOptions, $table, columns, customCommands) {
         this.compatColumns = columns;
         this.$compatElement = $table;
         let bootGridOptions = compatOptions.options;
@@ -217,13 +240,21 @@ class UIBootgrid {
             this.compatOptions['sortMode'] = 'local';
             this.compatOptions['paginationMode'] = 'local';
             this.compatOptions['filterMode'] = 'local';
+        } else {
+            this.compatOptions['ajaxURL'] = compatOptions.search;
         }
 
-        if (!(bootGridOptions?.selection ?? true)) {
-            this.compatOptions['selectableRows'] = false;
-            this.compatOptions['rowHeader'] = null;
-        } else if (!(bootGridOptions?.multiSelect ?? true)) {
+        if (bootGridOptions?.selection ?? true) {
             this.compatOptions['selectableRows'] = 1;
+            if (bootGridOptions?.multiSelect ?? true) {
+                this.compatOptions['selectableRows'] = true;
+            }
+            // TODO rowSelect toggle (currently not support by tabulator)
+
+            this.options.rowSelect = bootGridOptions?.rowSelect ?? false;
+        } else {
+             // remove checkbox select column
+            this.compatOptions['rowHeader'] = null;
         }
 
         if (bootGridOptions?.stickySelect ?? false) {
@@ -243,9 +274,6 @@ class UIBootgrid {
             // -1 signified "all" previously. rowCount and paginationSize are handled in this wrapper
             this.options.rowCount = bootGridOptions.rowCount.map(item => item === -1 ? true : item);
         }
-
-        // we assume a url is unconditional
-        this.compatOptions['ajaxURL'] = compatOptions?.search;
 
         if (bootGridOptions?.initialSearchPhrase ?? false) {
             this.searchPhrase = bootGridOptions.initialSearchPhrase;
@@ -276,7 +304,8 @@ class UIBootgrid {
         }
 
         if (compatOptions?.datakey) {
-            this.options.datakey = compatOptions.datakey;
+            // note: this does not come from the 'options' object
+            this.options.datakey = compatOptions?.datakey;
         }
 
         if (bootGridOptions?.onBeforeRenderDialog) {
@@ -287,6 +316,12 @@ class UIBootgrid {
             this.options.sorting = false;
         }
 
+        if (bootGridOptions?.static ?? false) {
+            this.options.static = true;
+            this.compatOptions['resizable'] = false;
+            this.compatOptions['persistence'] = false;
+        }
+
         if (compatOptions.get) this.crud.get = compatOptions.get;
         if (compatOptions.set) this.crud.set = compatOptions.set;
         if (compatOptions.add) this.crud.add = compatOptions.add;
@@ -295,7 +330,7 @@ class UIBootgrid {
         if (compatOptions.toggle) this.crud.toggle = compatOptions.toggle;
 
         // any additional commands?
-        if ('commands' in compatOptions) {
+        if (compatOptions.commands) {
             this.options.commands = compatOptions.commands;
         }
 
@@ -311,6 +346,9 @@ class UIBootgrid {
             this.options.deleteSelectedButton = true;
         }
 
+        // in the same context: check if there are other buttons defined
+        this.customCommands = customCommands;
+
         // convert old-style formatters
         for (const [key, formatterFn] of Object.entries(bootGridOptions?.formatters ?? {})) {
             this.options.formatters[key] = (cell, formatterParams, onRendered) => {
@@ -319,7 +357,18 @@ class UIBootgrid {
                     id: def.field,
                     visible: def.visible
                 };
-                return formatterFn(column, cell.getData(), onRendered);
+
+                // wrap onRendered so we can provide the cell object
+                const cb = (fn) => {
+                    onRendered(fn(cell));
+                };
+
+                // always execute _onCellRendered
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                })
+
+                return formatterFn(column, cell.getData(), cb);
             }
         }
 
@@ -329,11 +378,19 @@ class UIBootgrid {
                 let def = cell.getColumn().getDefinition();
                 let column = {
                     id: def.field,
-                    visible: def.visible
+                    visible: def.visible,
+                    title: def.title
                 };
+
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                })
+
                 return formatterFn(column);
             }
         }
+
+        this.options.statusMapping = bootGridOptions?.statusMapping ?? {};
 
         // convert old-style converters
         // For context: these converters are relevant to have a notion of sorting or localization for column values
@@ -350,7 +407,6 @@ class UIBootgrid {
                 console.error(`Converter "${key}" should be a formatter`);
             }
         }
-
 
         // Detect if old bootgrid was of 'responsive' type, meaning:
         // - overflow: inherit !important
@@ -377,6 +433,12 @@ class UIBootgrid {
             this.compatOptions['renderVertical'] = 'virtual';
         }
 
+        if (bootGridOptions?.disableScroll ?? false) {
+            this.options.disableScroll = true;
+        }
+
+        this.tabulatorOptions = compatOptions.tabulatorOptions ??= {};
+
         return this;
     }
 
@@ -402,7 +464,7 @@ class UIBootgrid {
                     data[option] = value === '' ? null : value;
                 }
 
-                if (data.type && this.options.ajax && data.type in this.options.formatters && data.type !== 'boolean') {
+                if (data.type && data.type in this.options.formatters && data.type !== 'boolean') {
                     // use formatters instead of converters
                     data.formatter = data.type;
                 }
@@ -420,7 +482,10 @@ class UIBootgrid {
                     visible: data.visible ?? true,
                     sequence: data.sequence ?? null,
                     width: val.width,
+                    minWidth: data.minWidth || 80,
+                    maxWidth: data.maxWidth ?? null,
                     editable: false,
+                    sortable: data.sortable ?? true
                 }
             }
         }
@@ -458,12 +523,22 @@ class UIBootgrid {
                     headerSort: false,
                     headerHozAlign: "center",
                     // hozAlign:  'center',
-                }
+                };
 
                 if (!field.width) {
                     field.width = '100';
                 }
             } else {
+                if (Object.getOwnPropertyNames(Object.prototype).includes(field.id)) {
+                    // internally, tabulator reassigns the column IDs to a regular object,
+                    // since a regular object contains some reserved keywords, account for these
+                    // by providing a header formatter
+                    field.headerFormatter = field.id;
+                    this.options.headerFormatters[field.headerFormatter] = (column) => {
+                        return column.getColumn().getDefinition().title;
+                    }
+                }
+
                 col = {
                     visible: field.visible,
                     editable: field.editable,
@@ -472,13 +547,13 @@ class UIBootgrid {
                     title: field.label,
                     titleFormatter: this.options.headerFormatters[field?.headerFormatter] ?? null,
                     field: field.id,
-                    resizable: true,
+                    resizable: !this.options.static,
                     sequence: field.sequence ?? null,
-                    headerSort: this.options.sorting,
+                    headerSort: this.options.sorting && field.sortable !== false,
                     cssClass: this.options.responsive ? 'opnsense-bootgrid-responsive' : '',
                     variableHeight: true,
                     sorter: this.options.sorters[field.type] ?? null,
-                }
+                };
             }
 
             if (field.width && !col.resizable) {
@@ -487,6 +562,13 @@ class UIBootgrid {
                 col['maxWidth'] = field.width;
             } else if (field.width) {
                 col['width'] = field.width;
+            } else {
+                if (field.minWidth) {
+                    col['minWidth'] = field.minWidth;
+                }
+                if (field.maxWidth) {
+                    col['maxWidth'] = field.maxWidth;
+                }
             }
 
             result.push(col);
@@ -518,53 +600,175 @@ class UIBootgrid {
 
     _destroyTable() {
         this.table.destroy();
+        $(`#${this.id}-header`).remove();
+        $(`#${this.id}`).replaceWith(this.$compatElement);
     }
 
     _setPersistence(value) {
-        if (value) {
+        if (value && !this.options.static) {
             localStorage.setItem(`tabulator-${this.persistenceID}-persistence`, value);
+            this.persistence = true;
+
+            if (this.options.resetButton) {
+                $(`#${this.id}-reset`).removeClass('fa-fw').addClass('fa-share-square').attr('title', this.translations.resetGrid);
+            }
         } else {
             localStorage.removeItem(`tabulator-${this.persistenceID}-persistence`);
+            Object.keys(localStorage)
+                .filter(key =>
+                    key.startsWith(`tabulator-${this.persistenceID}`) &&
+                    !key.endsWith('-openGroups') // <-- keep groupBy state
+                )
+                .forEach(key => localStorage.removeItem(key));
+            this.persistence = false;
+
+            if (this.options.resetButton) {
+                $(`#${this.id}-reset`).removeClass('fa-share-square').addClass('fa-fw');
+            }
         }
     }
 
     _registerEvents() {
         this.table.on('dataLoading', () => {
+            this._getPlaceholder().html('');
             if (!this.navigationRendered) {
                 this._renderFooter();
                 this._populateColumnSelection();
+                this.$element.trigger("load.rs.jquery.bootgrid", []);
                 this.navigationRendered = true;
             }
         });
 
         this.table.on('dataLoading', () => {
-            // Dynamically adjust table height to prevent dead space
-            // (workaround for https://github.com/olifolkerd/tabulator/issues/4419: maxHeight does not work without a fixed height)
             if (!this.originalTableHeight) {
-                // this.originalTableHeight = parseInt(parseInt(this.table.options.height) * window.innerHeight / 100);
                 // allow content to grow to 60vh
                 // XXX needs option
                 this.originalTableHeight = parseInt(parseInt(60) * window.innerHeight / 100);
             }
 
+            window.addEventListener('resize', this._debounce(() => {
+                // this is mainly intended for scaling the width of the table if
+                // the width of the window changes.
+                this.table.redraw();
+            }));
+
+            if (!this.options.ajax) {
+                this.table.setPageSize(this.curRowCount);
+
+                this.table.on("pageLoaded", (pageno) => {
+                    this._onDataProcessed();
+                })
+            }
+
+            this.tableInitialized = true;
+        });
+
+        this.table.on('dataProcessed', () =>  {
+            this._onDataProcessed();
+        });
+
+        this.table.on('dataChanged', this._debounce(() => {
+            // debounce this so we catch the correct event if
+            // data has been added (this event fires in rapid succession in this case,
+            // but doesn't trigger dataProcessed at the end)
+            this._onDataProcessed();
+        }));
+
+        const onMouseEnter = (e, cell) => {
+            // tooltip when ellipsis is used (overflow on text elements without children)
+            let el = cell.getElement();
+            let $el = $(el);
+            if ($el.hasClass('tabulator-col')) {
+                // column header is structured a little different, get the right element first
+                $el = $el.find('> .tabulator-col-content > .tabulator-col-title-holder > .tabulator-col-title');
+            }
+            if ($el[0].offsetWidth < $el[0].scrollWidth && !$el.attr('title') && $el.children(':not(br)').length == 0){
+                $el.attr('title', $el.text()).tooltip({container: 'body', trigger: 'hover'}).tooltip('show');
+            }
+        }
+
+        this.table.on('groupVisibilityChanged', (groupComponent, isVisible) => {
+            const groupKey = groupComponent.getKey();
+            if (isVisible) {
+                this.rememberedGroupKeys.add(groupKey);
+            } else {
+                this.rememberedGroupKeys.delete(groupKey);
+            }
+            localStorage.setItem(this.groupStorageKey, JSON.stringify([...this.rememberedGroupKeys]));
+        });
+
+        const rememberTree = (row, open) => {
+            const id = row.getData()[this.options.datakey];
+            if (!id) return;
+            open ? this.rememberedTreeIds.add(id) : this.rememberedTreeIds.delete(id);
+            localStorage.setItem(this.treeStorageKey, JSON.stringify([...this.rememberedTreeIds]));
+        };
+
+        this.table.on('dataTreeRowExpanded',  (row) => rememberTree(row, true));
+        this.table.on('dataTreeRowCollapsed', (row) => rememberTree(row, false));
+
+        this.table.on('headerMouseEnter', onMouseEnter)
+        this.table.on('cellMouseEnter', onMouseEnter);
+
+        this.table.on('rowSelected', (row) => {
+            this.$element.trigger("selected.rs.jquery.bootgrid", [[row.getData()]]);
+        });
+
+        this.table.on('rowDeselected', (row) => {
+            this.$element.trigger("deselected.rs.jquery.bootgrid", [[row.getData()]]);
+        });
+
+        this.table.on("rowSelectionChanged", this._debounce((data, rows, selected, deselected) => {
+            // XXX debouncing this is a bit of a hack, but this function is run
+            // for both the selection & deselection, while we only want to know
+            // the last known action.
+            if (this.options.stickySelect && data.length == 0) {
+                this.table.selectRow(deselected[0].getData()[this.options.datakey]);
+            }
+        }));
+
+        // Triggers to activate persistence
+        this.table.on('columnResized', (column) => {
+            this._setPersistence(true);
+        });
+        this.table.on('headerClick', (e, column) => {
+            if (this.options.sorting) {
+                this._setPersistence(true);
+            }
+        });
+        this.table.on('columnVisibilityChanged', (column, visible) => {
+            if (!column._silentToggle) {
+                this._setPersistence(true);
+            }
+        });
+        this.table.on('columnMoved', (column, columns) => {
+            this._setPersistence(true);
+        });
+
+        this.table.on('tableBuilt', () => {
+            // Dynamically adjust table height to prevent dead space
+            // (workaround for https://github.com/olifolkerd/tabulator/issues/4419: maxHeight does not work without a fixed height)
+            const target = $(`#${this.id} .tabulator-table`)[0];
             const resizeObserver = new ResizeObserver(this._debounce((entries) => {
                 for (let entry of entries) {
                     const height = entry.contentRect.height;
-                    const width = entry.contentRect.width;
                     const scollbarGutterOffset = 16;
                     let curTotalTableHeight = $(`#${this.id}`)[0].offsetHeight;
                     const holderHeight = $(`#${this.id} .tabulator-tableholder`)[0].offsetHeight;
 
                     if (holderHeight > height) {
-                        // dead space, shrink
-                        const diff = holderHeight - height;
-                        this.table.setHeight((curTotalTableHeight - diff) + scollbarGutterOffset);
+                        if (!this.dataAvailable && !this.loading) {
+                            this.table.setHeight(120); // default tabulator height
+                        } else {
+                            // dead space, shrink
+                            const diff = holderHeight - height;
+                            this.table.setHeight((curTotalTableHeight - diff) + scollbarGutterOffset);
+                        }
                         return;
                     }
 
                     if (height > holderHeight) {
                         const diff = height - holderHeight;
-                        const equal = curTotalTableHeight === this.originalTableHeight;
                         const was = curTotalTableHeight;
                         curTotalTableHeight = curTotalTableHeight + diff;
                         if (was < this.originalTableHeight && curTotalTableHeight > this.originalTableHeight) {
@@ -584,167 +788,65 @@ class UIBootgrid {
                 }
             }));
 
-            resizeObserver.observe($(`#${this.id} .tabulator-table`)[0]);
-
-            window.onresize = this._debounce(() => {
-                // this is mainly intended for scaling the width of the table if
-                // the width of the window changes.
-                this.table.redraw();
-            });
-
-            if (this.options.virtualDOM) {
-                // Start watching for dynamically inserted DOM elements and trigger their tooltips and commands.
-                // XXX This has a slight performance penalty on virtual DOM scrolling for large datasets.
-                let targetNode = $(`#${this.id} .tabulator-table`)[0];
-                var observer = new MutationObserver((mutationsList, observer) => {
-                    mutationsList.forEach((mutation) => {
-                    mutation.addedNodes.forEach((node) => {
-                        if (node.nodeType === 1 && $(node).hasClass('tabulator-row')) {
-                            let commands = $(node).find('.bootgrid-tooltip');
-                            if (commands.length > 0) {
-                                this._tooltips();
-                            }
-
-                            let actions = $(node).find('[class*="command-"]');
-                            if (actions.length > 0) {
-                                actions.each((i, el) => {
-                                    let classes = $(el).attr('class').split(/\s+/);
-                                    let commandClass = classes.find(c => c.startsWith('command-'));
-                                    if (commandClass) {
-                                        let command = commandClass.replace('command-', '');
-                                        this._wireCommands($(el), command);
-                                    }
-                                })
-                            }
-                        }
-                    });
-                    });
-                });
-
-                observer.observe(targetNode, {
-                    childList: true,
-                    subtree: false
-                });
-            }
-
-            if (!this.options.ajax) {
-                this.table.setPageSize(this.curRowCount);
-
-                this.table.on("pageLoaded", (pageno) => {
-                    this._onDataProcessed();
-                })
+            if (!this.options.disableScroll) {
+                resizeObserver.observe(target);
             }
 
             // make sure we redraw the table as it enters the viewport (multiple tabbed grids)
             // since tabulator needs the page dimensions
-            const intersectObserver = new IntersectionObserver((entries, observer) => {
+            const intersectObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                  if (entry.isIntersecting) {
-                    this.table.redraw(true);
-                    this._onDataProcessed();
-                  }
+                    const isVisible = entry.isIntersecting;
+                    if (isVisible !== this.isVisible) {
+                        this.isVisible = isVisible;
+                        if (isVisible) {
+                            this.table.redraw();
+                        }
+                    }
                 });
             });
 
             intersectObserver.observe(this.$element[0]);
-
-            this.tableInitialized = true;
-        });
-
-        this.table.on('dataProcessed', () =>  {
-            this._onDataProcessed();
-
-            // Check if the total amount of rows is known, if not, remove the "last page"
-            if (!this.totalKnown && this.options.ajax) {
-                $(`#${this.id} .tabulator-paginator button[data-page=last]`).remove();
-            }
-        });
-
-        this.table.on('dataChanged', this._debounce(() => {
-            // debounce this so we catch the correct event if
-            // data has been added (this event fires in rapid succession in this case,
-            // but doesn't trigger dataProcessed at the end)
-            this._onDataProcessed();
-        }));
-
-        this.table.on('cellMouseEnter', (e, cell) => {
-            // tooltip when ellipsis is used (overflow on text elements without children)
-            let el = cell.getElement();
-            let $el = $(el);
-            if (el.offsetWidth < el.scrollWidth && !$el.attr('title') && $el.children().length == 0){
-                $el.attr('title', $el.text()).tooltip({container: 'body', trigger: 'hover'}).tooltip('show');
-            }
-        });
-
-        this.table.on('rowSelected', (row) => {
-            this.$element.trigger("selected.rs.jquery.bootgrid", [this.table.getSelectedData()]);
-        });
-
-        this.table.on('rowDeselected', (row) => {
-            this.$element.trigger("deselected.rs.jquery.bootgrid", [[row.getData()]]);
-        });
-
-        this.table.on("rowSelectionChanged", this._debounce((data, rows, selected, deselected) => {
-            // XXX debouncing this is a bit of a hack, but this function is run
-            // for both the selection & deselection, while we only want to know
-            // the last known action.
-            if (this.options.stickySelect && data.length == 0) {
-                this.table.selectRow(deselected[0].getData()[this.options.datakey]);
-            }
-        }));
-
-
-        // Triggers to activate persistence
-        this.table.on('columnResized', (column) => {
-            this._setPersistence(true);
-        });
-        this.table.on('headerClick', (e, column) => {
-            if (this.options.sorting) {
-                this._setPersistence(true);
-            }
-        });
-        this.table.on('columnVisibilityChanged', (column, visible) => {
-            this._setPersistence(true);
-        });
-        this.table.on('columnMoved', (column, columns) => {
-            this._setPersistence(true);
         });
     }
 
     _renderFooter() {
         if (!this.options.navigation) {
-            $(`#${this.id} > .tabulator-footer`).remove();
-            return;
+            $(`#${this.id} > .tabulator-footer > .tabulator-footer-contents`).children().empty().text('');
         }
 
         this._renderFooterCommands();
+
+        // if there are custom commands defined, inject them here
+        if (this.customCommands !== null) {
+            this.customCommands.appendTo($(`#${this.id} > .tabulator-footer > .tabulator-footer-contents`));
+        }
 
         // swap page counter and paginator around (old look & feel).
         // we hook in before tableBuilt, but after dataLoading
         // since we know the footer is rendered at this point,
         // but we don't want to wait on the data before swapping
         // the UI elements around.
+        if (this.options.navigation) {
+            let a = $(`#${this.id} .tabulator-page-counter`)[0];
+            let b = $(`#${this.id} .tabulator-paginator`)[0];
+            var aparent = a.parentNode;
+            var asibling = a.nextSibling === b ? a : a.nextSibling;
+            b.parentNode.insertBefore(a, b);
+            aparent.insertBefore(b, asibling);
 
-        // XXX this doesn't work on the captive portal page. why?
-        let a = $(`#${this.id} .tabulator-page-counter`)[0];
-        let b = $(`#${this.id} .tabulator-paginator`)[0];
-        var aparent = a.parentNode;
-        var asibling = a.nextSibling === b ? a : a.nextSibling;
-        b.parentNode.insertBefore(a, b);
-        aparent.insertBefore(b, asibling);
-
-        // replace pagination text
-        $(`#${this.id} .tabulator-paginator button[data-page=first]`).html("&laquo;");
-        $(`#${this.id} .tabulator-paginator button[data-page=prev]`).html("&lsaquo;");
-        $(`#${this.id} .tabulator-paginator button[data-page=next]`).html("&rsaquo;");
-        $(`#${this.id} .tabulator-paginator button[data-page=last]`).html("&raquo;");
+            // replace pagination text
+            $(`#${this.id} .tabulator-paginator button[data-page=first]`).html("&laquo;");
+            $(`#${this.id} .tabulator-paginator button[data-page=prev]`).html("&lsaquo;");
+            $(`#${this.id} .tabulator-paginator button[data-page=next]`).html("&rsaquo;");
+            $(`#${this.id} .tabulator-paginator button[data-page=last]`).html("&raquo;");
+        }
     }
 
     _onDataProcessed() {
-        // refresh tooltips
-        if (!this.options.virtualDOM) {
-            this._tooltips();
-        }
+        // remove active tooltips
+        // note that this affects the whole page, but there is currently no way around this
+        $('.tooltip:visible').hide();
 
         this.normalizeRowHeight();
 
@@ -753,69 +855,160 @@ class UIBootgrid {
             this.table.redraw();
         }
 
-        // DOM layout changed, rewire commands
-        this._wireCommands();
+        if (this.table.getData().length == 0 && !this.loading) {
+            this.dataAvailable = false;
+            this._getPlaceholder().html(this.translations.noresultsfound);
+        } else {
+            this.dataAvailable = true;
+        }
+
+        // Check if the total amount of rows is known, if not, remove the "last page"
+        let $last_btn = $(`#${this.id} .tabulator-paginator button[data-page=last]`);
+        if (!this.totalKnown && this.options.ajax) {
+            $last_btn.hide();
+        } else {
+            $last_btn.show();
+        }
+
+        // Tree does not have a groupStartOpen style hook, so we must restore expansion after data is loaded
+        if (this.table.options.dataTree) {
+            const queue = this.table.getRows();
+            while (queue.length) {
+                const row = queue.shift();
+                const data = row.getData();
+                const id = data[this.options.datakey];
+                if (id && this.rememberedTreeIds.has(id)) {
+                    row.treeExpand(); // no-op if already expanded
+                }
+                const kids = row.getTreeChildren();
+                if (kids.length) queue.push(...kids);
+            }
+        }
 
         // backwards compat
         this.$element.trigger("loaded.rs.jquery.bootgrid");
     }
 
-    _tooltips() {
-        this.$element.find(".bootgrid-tooltip").each((index, el) => {
-            if ($(el).attr('title') !== undefined) {
-                // keep this tooltip
-            } else if ($(el).hasClass('command-add')) {
-                $(el).attr('title', this._translate('add'));
-            } else if ($(el).hasClass('command-delete-selected')) {
-                $(el).attr('title', this._translate('deleteSelected'));
-            } else if ($(el).hasClass('command-edit')) {
-                $(el).attr('title', this._translate('edit'));
-            } else if ($(el).hasClass('command-toggle')) {
-                if ($(el).data('value') === 1) {
-                    $(el).attr('title', this._translate('disable'));
+    _onCellRendered(cell, formatterParams) {
+        if (!$.isEmptyObject(this.options.statusMapping)) {
+            // XXX this fully assumes a row has a 'status' property
+            $(cell.getElement()).addClass(this.options.statusMapping[cell.getData()['status']]);
+        }
+
+        const $cell = $(cell.getElement())
+        $cell.find('.bootgrid-tooltip').each((i, el) => {
+            const $el = $(el);
+
+            const existingTitle = $el.attr('title');
+            const command = el.className.match(/command-([^\s]+)/)?.[1];
+
+            if (command && !existingTitle) {
+                const cmdobj = this._getCommands()[command] ?? null;
+                if (!cmdobj || !cmdobj?.title) {
+                    console.error(`No tooltip match for command ${command}`);
                 } else {
-                    $(el).attr('title', this._translate('enable'));
+                    $el.attr('title', typeof cmdobj.title === "function" ? cmdobj.title(cell) : cmdobj.title);
                 }
-            } else if ($(el).hasClass('command-delete')) {
-                $(el).attr('title', this._translate('delete'));
-            } else if ($(el).hasClass('command-info')) {
-                $(el).attr('title', this._translate('info'));
-            } else if ($(el).hasClass('command-copy')) {
-                $(el).attr('title', this._translate('clone'));
-            } else {
-                $(el).attr('title', 'Error: no tooltip match');
             }
-            $(el).tooltip({container: 'body', trigger: 'hover'});
+            // XXX consider a dedicated invisible overlay for bootgrid tooltips
+            $el.tooltip({container: 'body', trigger: 'hover'});
         });
+
+        let actions = $cell.find('[class*="command-"]');
+        if (actions.length > 0) {
+            actions.each((i, el) => {
+                let command = el.className.match(/command-([^\s]+)/)?.[1];
+                if (command) {
+                    this._linkCellCommand($(el), command, cell);
+                }
+            })
+        }
     }
 
-    _wireCommands($selector=null, command=null) {
+    _linkCellCommand($selector, command, cell) {
         const commands = this._getCommands();
+        if (command in commands) {
+            if (!commands[command]?.method && !commands[command]?.onRendered) {
+                return;
+            }
+
+            let has_option = true;
+            for (let i = 0; i < commands[command]['requires'].length; i++) {
+                if (!(commands[command]['requires'][i] in this.crud)) {
+                    has_option = false;
+                }
+            }
+
+            if (has_option) {
+                // make sure to stop the event from bubbling up
+                // to the parent so no handlers on parent containers are executed
+                $selector.unbind('click').on("click", function (event) {
+                    event.stopPropagation();
+                    commands[command].method?.bind(this)(event);
+                });
+            }
+
+            commands[command].onRendered?.bind($selector)(cell);
+        }
+    }
+
+    _linkFooterCommands() {
+        const commands = Object.fromEntries(Object.entries(this._getCommands()).filter(([key, value]) => value?.footer));
         Object.keys(commands).map((k) => {
+            if (!commands[k]?.method && !commands[k]?.onRendered) {
+                return;
+            }
+
             let has_option = true;
             for (let i = 0; i < commands[k]['requires'].length; i++) {
                 if (!(commands[k]['requires'][i] in this.crud)) {
                     has_option = false;
                 }
             }
-            if (has_option) {
-                // in both cases, make sure to stop the event from bubbling up
-                // to the parent so no handlers on parent containers are executed
-                if ($selector && command && command === k) {
-                    $selector.unbind('click').on("click", function (event) {
-                        event.stopPropagation();
-                        commands[k].method.bind(this)(event);
-                    });
-                } else {
-                    this.$element.find(".command-" + k).unbind('click').on("click", function (event) {
-                        event.stopPropagation();
-                        commands[k].method.bind(this)(event);
-                    });
-                }
-            } else if ($(".command-" + k).length > 0) {
-                console.log("not all requirements met to link " + k);
+
+            const $command = this.$element.find(".command-" + k);
+            const exists = $command.length > 0;
+
+            if (has_option && exists) {
+                $command.unbind('click').on("click", function (event) {
+                    event.stopPropagation();
+                    commands[k].method?.bind(this)(event);
+                });
+            } else if (exists) {
+                console.log(`not all requirements met to link ${k} for table ${this.id}`);
+            }
+
+            if (exists) {
+                commands[k].onRendered?.bind($command)();
             }
         });
+    }
+
+    /**
+     * @param {*} searchVal String to search for
+     * @param {*} e Event that triggered the search, usually an input field keyup
+     */
+    _search(searchVal, e) {
+        e.stopPropagation();
+        if (this.searchPhrase !== searchVal || (e.which === 13 && searchVal !== "")) {
+            this.searchPhrase = searchVal;
+            if (e.which === 13 || searchVal.length === 0 || searchVal.length >= 1) {
+                if (this.options.ajax) {
+                    window.clearTimeout(this.searchTimer);
+                    this.searchTimer = window.setTimeout(() => {
+                        this._reload();
+                    }, this.options.searchSettings.delay);
+                } else {
+                    this.table.setFilter((data, filterParams) => {
+                        return Object.values(data).some(
+                            val => typeof val === 'string' && val.toLowerCase().includes(this.searchPhrase.toLowerCase())
+                        )
+                    });
+                }
+            }
+        } else if (searchVal === "" && !this.options.ajax) {
+            this.table.clearFilter();
+        }
     }
 
     _renderActionBar() {
@@ -827,28 +1020,7 @@ class UIBootgrid {
 
         // search functionality
         $(`#${this.id}-search-field`).val(this.searchPhrase).on("keyup", (e) => {
-            e.stopPropagation();
-            let searchVal = $(`#${this.id}-search-field`).val();
-            if (this.searchPhrase !== searchVal || (e.which === 13 && searchVal !== "")) {
-                this.searchPhrase = searchVal;
-                if (e.which === 13 || searchVal.length === 0 || searchVal.length >= 1) {
-                    if (this.options.ajax) {
-                        window.clearTimeout(this.searchTimer);
-                        this.searchTimer = window.setTimeout(() => {
-                            this._reload();
-                            //this.table.setFilter('searchPhrase', '=', searchVal);
-                        }, this.options.searchSettings.delay);
-                    } else {
-                        this.table.setFilter((data, filterParams) => {
-                            return Object.values(data).some(
-                                val => typeof val === 'string' && val.toLowerCase().includes(this.searchPhrase.toLowerCase())
-                            )
-                        });
-                    }
-                }
-            } else if (searchVal === "" && !this.options.ajax) {
-                this.table.clearFilter();
-            }
+            this._search($(`#${this.id}-search-field`).val(), e);
         });
 
         // Refresh
@@ -909,11 +1081,15 @@ class UIBootgrid {
         // Reset button
         if (this.options.resetButton) {
             let $resetBtn = $(`
-                <button id="${this.id}-reset" class="btn btn-default" type="button" title="Reset to defaults">
+                <button id="${this.id}-reset" class="btn btn-default" type="button"
+                        title="${this.persistence ? this.translations.resetGrid : ''}">
                     <span class="icon fa-solid fa-share-square"></span>
                 </button>
             `).on('click', (e) => {
                 e.stopPropagation();
+                if (!this.persistence) {
+                    return;
+                }
                 Object.keys(localStorage)
                     .filter(key => key.startsWith(`tabulator-${this.persistenceID}`) || key.startsWith(this.persistenceID))
                     .forEach(key => localStorage.removeItem(key));
@@ -926,30 +1102,52 @@ class UIBootgrid {
     }
 
     _renderFooterCommands() {
-        if (!this.options.navigation) {
-            return;
-        }
-
-        let $footer = $(`#${this.id} > .tabulator-footer > .tabulator-footer-contents > .tabulator-paginator`);
+        const $footerPrimary = $(`#${this.id} > .tabulator-footer > .tabulator-footer-contents > .tabulator-paginator`);
+        const $footerSecondary = $(`#${this.id} > .tabulator-footer > .tabulator-footer-contents`);
         let $commandContainer = $('<div class="text-left bootgrid-footer-commands">');
-        if (this.options.addButton) {
-            $commandContainer.append($(`
-                <button data-action="add" type="button" class="btn btn-xs btn-primary command-add bootgrid-tooltip">
-                    <span class="fa fa-plus fa-fw"></span>
+
+        // select only footer commands that pass the filter and sort by sequence
+        const commands = Object.fromEntries(
+            Object.entries(this._getCommands())
+                .filter(([_, v]) => v?.footer && (typeof v.filter !== "function" || v.filter()))
+                .sort(([, a], [, b]) => a.sequence - b.sequence)
+        );
+
+        for (const [key, command] of Object.entries(commands)) {
+            if (key === 'add' && !this.options.addButton) {
+                // special case: not included in the template so don't render it
+                continue;
+            }
+
+            if (key === 'delete-selected' && !this.options.deleteSelectedButton) {
+                continue;
+            }
+
+            const title = typeof command?.title === "function"
+                ? `title=${command?.title()}`
+                : `title=${command?.title}` ?? '';
+
+            const $element = $(`
+                <button type="button" class="btn btn-xs ${key === 'add' ? 'btn-primary' : 'btn-default'} command-${key} bootgrid-tooltip" ${title}>
+                    <span class="${command.classname}"></span>
                 </button>
-            `));
+            `);
+
+            if (key === 'add' || key === 'delete-selected') {
+                $commandContainer.append($element);
+            } else {
+                $element.appendTo($footerSecondary);
+            }
         }
 
-        if (this.options.deleteSelectedButton) {
-            $commandContainer.append($(`
-                <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default command-delete-selected bootgrid-tooltip">
-                    <span class="fa fa-trash-o fa-fw"></span>
-                </button>
-            `))
+        $footerPrimary.after($commandContainer);
 
-        }
+        // bind tooltips
+        $(`#${this.id} > .tabulator-footer`).find('.bootgrid-tooltip').each((i, el) => {
+            $(el).tooltip({container: 'body', trigger: 'hover'});
+        });
 
-        $footer.after($commandContainer);
+        this._linkFooterCommands();
     }
 
     _populateColumnSelection() {
@@ -978,7 +1176,8 @@ class UIBootgrid {
                 column.toggle();
 
                 // make sure to redraw the table so new column widths are calculated
-                 this.table.redraw(true);
+                this.table.redraw(true);
+                this._onDataProcessed();
             })
 
             $(`#${this.id}-columnselect-items`).append(item);
@@ -1024,6 +1223,80 @@ class UIBootgrid {
         `
     }
 
+    /**
+     * Expand a specific group in a Tabulator table once after data reload.
+     * Intended for use after adding/copying a row, based on the selected option
+     * in a <select> element inside a dialog.
+     *
+     * @param {string} dialogId - ID (without '#') of the dialog that contains the groupBy field
+     */
+    expandGroupBy(dialogId) {
+        if (!this.table?.options?.groupBy) return;
+
+        const $dialogElement = $(`#${dialogId}`);
+        if (!$dialogElement.length) return;
+
+        // Since we groupBy e.g. %interface instead of interface, we need to adjust the field name to match.
+        // We also only match the first level inside a groupBy array, as children will not be rendered
+        // until their parent is expanded, thus making them impossible to target recursively
+        const rawGroupBy = this.table.options.groupBy;
+        const firstGroupField = Array.isArray(rawGroupBy) ? rawGroupBy[0] : rawGroupBy;
+        const groupFieldName = String(firstGroupField || '').replace(/^%/, '');
+        const $selectElement = $dialogElement.find(
+            `select[id$=".${groupFieldName}"], select[id="${groupFieldName}"]`
+        );
+        if (!$selectElement.length) return;
+
+        const selectedGroupKey = $selectElement.find('option:selected').text().trim();
+
+        const expandOnceAfterReload = () => {
+            this.table.off('dataProcessed', expandOnceAfterReload);
+            const groupToExpand = this.table.getGroups(true).find(group =>
+                String(group.getKey()).trim().toLowerCase() === selectedGroupKey.toLowerCase()
+            );
+            if (groupToExpand) {
+                groupToExpand.show();
+            }
+        };
+
+        this.table.on('dataProcessed', expandOnceAfterReload);
+    }
+
+    /**
+     * Expand top level dataTree rows whose immediate child count increased.
+     *
+     * In tree view, category labels are not unique and the new/updated row
+     * could appear under any matching label or even create a new top-level node.
+     * Tracking by row index before/after reload ensures only the actual
+     * parent row(s) whose child count grew are expanded, avoiding expanding
+     * all rows with the same label.
+     */
+    expandDataTree() {
+        if (!this.table?.options?.dataTree) return;
+
+        const snapshot = () => {
+            const rowMap = new Map();
+            (this.table.getRows() || []).forEach(row => {
+                rowMap.set(row.getIndex(), (row.getTreeChildren() || []).length);
+            });
+            return rowMap;
+        };
+
+        const beforeSnapshot = snapshot();
+
+        const expandOnceAfterReload = () => {
+            this.table.off('dataProcessed', expandOnceAfterReload);
+            const afterSnapshot = snapshot();
+            afterSnapshot.forEach((childCount, rowId) => {
+                if (childCount > (beforeSnapshot.get(rowId) ?? 0)) {
+                    this.table.getRow(rowId).treeExpand();
+                }
+            });
+        };
+
+        this.table.on('dataProcessed', expandOnceAfterReload);
+    }
+
     tabulatorDefaults() {
         return {
             autoResize: false,
@@ -1039,7 +1312,7 @@ class UIBootgrid {
             },
             movableColumns: true,
             persistenceID:this.persistenceID,
-            selectableRows: true,
+            selectableRows: false,
             selectableRowsPersistence: false,
             rowHeader: { // implements row selection checkbox
                 formatter:"rowSelection",
@@ -1059,14 +1332,21 @@ class UIBootgrid {
                     $(row.getElement()).addClass('text-muted');
                 }
             },
-            height: '20vh', /* represents the "no results found" view */
+            // Start a group open if it was remembered. Open any group with an empty header (wins over persistence).
+            groupStartOpen: (value, count, data, group) => {
+                const isEmptyLabel = value == null || String(value).trim() === '';
+                return isEmptyLabel ? true : this.rememberedGroupKeys.has(group.getKey());
+            },
+            height: 120, /* represents the "no results found" view */
             resizable: "header",
-            placeholder: this._translate('noresultsfound'), // XXX: improve styling, can return a function returning HTML or a DOM node
+            placeholder: this.placeholder[0],
             layout: 'fitColumns',
+            // tabulator uses "." for nested field access, disable this behavior since our keys can contain a dot.
+            nestedFieldSeparator:false,
             columns: this._parseColumns(),
 
             /* SERVER-SIDE OPTIONS */
-            dataLoaderLoading: '<i class="fa fa-spinner fa-spin"></i>',
+            dataLoaderLoading: '<span style="height: 33px;"></span>',
 
             /* pagination */
             pagination: true,
@@ -1077,14 +1357,17 @@ class UIBootgrid {
                 let end, start;
 
                 if (this.options.ajax) {
-                    pageSize = this.curRowCount === true ? this.paginationTotal : this.curRowCount;
                     totalRows = this.paginationTotal;
                 }
 
+                pageSize = this.curRowCount === true ? this.paginationTotal : this.curRowCount;
                 end = currentPage * pageSize;
                 start = (totalRows === 0) ? 0 : ((currentPage - 1) * pageSize) + 1;
                 end = (totalRows === 0 || end === -1 || end > totalRows) ? totalRows : end;
 
+                if (!this.options.navigation) {
+                    return '';
+                }
                 if (this.totalKnown || !this.options.ajax) {
                     return this._translate('infosTotal', {start: start, end: end, totalRows: totalRows});
                 } else {
@@ -1101,8 +1384,11 @@ class UIBootgrid {
                 'data': 'rows'
             },
             ajaxResponse: (url, params, response) => {
+                this.loading = false;
+                $(`#${this.id} > .tabulator-tableholder > .bootgrid-overlay`).remove();
+
                 // handle pagination response, set last_page as appropriate
-                // the counter text (showing x of y) is handled in a module extension called "rowpage"
+                // the counter text (showing x of y) is handled in the 'paginationCounter'
                 if (response.total_rows != undefined) {
                     // we don't know the 'last_page'
                     if (response.rowCount == params.rowCount) {
@@ -1127,6 +1413,10 @@ class UIBootgrid {
             /* server-side filtering/search logic */
             filterMode: "remote",
             ajaxRequestFunc: (url, config, params) => {
+                this.loading = true;
+                $(`#${this.id} > .tabulator-tableholder`)
+                    .prepend($('<span class="bootgrid-overlay"><i class="fa fa-spinner fa-spin"></i></span>'));
+
                 // params.filter is an array of filter objects:
                 // [
                 //     {field:"age", type:">", value:52}, //filter by age greater than 52
@@ -1196,7 +1486,7 @@ class UIBootgrid {
 
     /**
      * set current page and scroll to row
-     * @param {*} id datakey option value
+     * @param {*} id dataIdentifier option value
      */
     setPageByRowId(id) {
         let page = parseInt((id / this.curRowCount) + 1);
@@ -1226,49 +1516,84 @@ class UIBootgrid {
         }
     }
 
+    _getPlaceholder() {
+        return $(`#${this.id}-placeholder`);
+    }
+
     /**
     *  register commands
+    *
+    * The command object can have the following properties:
+    * - method: a function that is executed on command click
+    * - title: translated title to be shown as a tooltip. Can be a function with the cell object as param
+    * - requires: an array of strings marking which this.crud properties are required
+    * - sequence: order of commands rendering
+    * - footer: true|false whether this command should be rendered in the table footer
+    * - classname: required. icon class added to the span inside the button element
+    * - filter: a function that returns true or false determining if the command should be rendered.
+    *           the cell object is passed in only if footer: false
+    * - onRendered: a function that runs after the element including event bindings have been rendered,
+    *               this allows the caller to override the behavior. The element is bound to the
+    *               function, but the full cell object is passed in as a parameter as well (but only if footer: false).
+    *               This function has priority over 'method'.
     */
     _getCommands() {
         let result = {
             "add": {
                 method: this.command_add.bind(this),
                 requires: ['get', 'set'],
-                sequence: 100
+                classname: 'fa fa-plus fa-fw',
+                sequence: 100,
+                footer: true,
+                title: this._translate('add')
             },
             "edit": {
                 method: this.command_edit.bind(this),
                 classname: 'fa fa-fw fa-pencil',
                 requires: ['get', 'set'],
-                sequence: 100
+                sequence: 100,
+                title: this._translate('edit')
             },
             "delete": {
                 method: this.command_delete.bind(this),
                 classname: 'fa fa-fw fa-trash-o',
                 requires: ['del'],
-                sequence: 500
+                sequence: 500,
+                title: this._translate('delete')
             },
             "copy": {
                 method: this.command_copy.bind(this),
                 classname: 'fa fa-fw fa-clone',
                 requires: ['get', 'set'],
-                sequence: 200
+                sequence: 200,
+                title: this._translate('clone')
             },
             "info": {
                 method: this.command_info.bind(this),
                 classname: 'fa fa-fw fa-info-circle',
                 requires: ['info'],
-                sequence: 500
+                sequence: 500,
+                title: this._translate('info')
             },
             "toggle": {
                 method: this.command_toggle.bind(this),
                 requires: ['toggle'],
-                sequence: 100
+                sequence: 100,
+                title: (cell) => {
+                    if (parseInt(cell.getValue()) === 1) {
+                        return this._translate('disable');
+                    } else {
+                        return this._translate('enable');
+                    }
+                }
             },
             "delete-selected": {
                 method: this.command_delete_selected.bind(this),
                 requires: ['del'],
-                sequence: 100
+                classname: 'fa fa-trash-o fa-fw',
+                sequence: 100,
+                footer: true,
+                title: this._translate('deleteSelected')
             }
         };
         // register additional commands
@@ -1295,26 +1620,26 @@ class UIBootgrid {
                  * default formatter: called for every cell where no formatter is explicitly defined.
                  * No sanitization is performed
                  */
-                return cell.getValue();
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                });
+
+                const key = `%${cell.getColumn().getDefinition().field}`;
+                const data = cell.getData();
+                return data[key] ?? cell.getValue();
             },
             commands: (cell, formatterParams, onRendered) => {
                 let html = [];
-                // sort commands by sequence
-                let commands = this._getCommands();
-                let commandlist = Array();
-                Object.keys(commands).map(function (k) {
-                    let item = commands[k];
-                    item.name = k;
-                    commandlist.push(item)
-                });
-                commandlist = commandlist.sort(function (a, b) {
-                    return (a.sequence > b.sequence) ? 1 : ((b.sequence > a.sequence) ? -1 : 0);
-                }
-                );
+                let commandlist = Object.entries(this._getCommands())
+                    .filter(([_, c]) => !c?.footer && (typeof c.filter !== "function" || c.filter(cell)))
+                    .map(([name, c]) => ({ ...c, name }))
+                    .sort((a, b) => a.sequence - b.sequence);
+
                 let rowid = this.options.datakey;
+
                 commandlist.map((command) => {
                     let has_option = command.classname !== undefined;
-                    let option_title_str = command.title !== undefined ? " title=\"" + command.title + "\"" : "";
+
                     for (let i = 0; i < command.requires.length; i++) {
                         if (!(command.requires[i] in this.crud)) {
                             has_option = false;
@@ -1322,42 +1647,74 @@ class UIBootgrid {
                     }
 
                     if (has_option) {
-                        html.push("<button type=\"button\" " + option_title_str +
-                            " class=\"btn btn-xs btn-default bootgrid-tooltip command-" + command.name +
-                            "\" data-row-id=\"" + cell.getData()[rowid] + "\">" +
-                            "<span class=\"" + command.classname + "\"></span></button>"
-                        );
+                        let title = typeof command?.title === "function"
+                            ? `title=${command?.title(cell)}`
+                            : `title=${command?.title}` ?? '';
+
+                        html.push(`
+                            <button type="button"
+                                    ${title}
+                                    class="btn btn-xs btn-default bootgrid-tooltip
+                                           command-${command.name}" data-row-id="${cell.getData()[rowid]}">
+                                <span class="${command.classname}"></span>
+                            </button>
+                        `);
                     }
                 });
+
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                });
+
                 return html.join('\n');
             },
             commandsWithInfo: (cell, formatterParams, onRendered) => {
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                });
+
                 return '<button type="button" class="btn btn-xs btn-default command-info bootgrid-tooltip" data-row-id="' + cell.getData()[this.options.datakey] + '"><span class="fa fa-fw fa-info-circle"></span></button> ' +
                     '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + cell.getData()[this.options.datakey] + '"><span class="fa fa-fw fa-pencil"></span></button>' +
                     '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + cell.getData()[this.options.datakey] + '"><span class="fa fa-fw fa-clone"></span></button>' +
                     '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + cell.getData()[this.options.datakey] + '"><span class="fa fa-fw fa-trash-o"></span></button>';
             },
             rowtoggle: (cell, formatterParams, onRendered) => {
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                });
+
                 if (parseInt(cell.getValue(), 2) === 1) {
                     return '<span style="cursor: pointer;" class="fa fa-fw fa-check-square-o command-toggle bootgrid-tooltip" data-value="1" data-row-id="' + cell.getData()[this.options.datakey] + '"></span>';
                 } else {
                     return '<span style="cursor: pointer;" class="fa fa-fw fa-square-o command-toggle bootgrid-tooltip" data-value="0" data-row-id="' + cell.getData()[this.options.datakey] + '"></span>';
                 }
             },
-            boolean: (cell, formatterParams) => {
+            boolean: (cell, formatterParams, onRendered) => {
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                });
+
                 if (parseInt(cell.getValue(), 2) === 1) {
                     return "<span class=\"fa fa-fw fa-check\" data-value=\"1\" data-row-id=\"" + cell.getData()[this.options.datakey] + "\"></span>";
                 } else {
                     return "<span class=\"fa fa-fw fa-times\" data-value=\"0\" data-row-id=\"" + cell.getData()[this.options.datakey] + "\"></span>";
                 }
             },
-            bytes: (cell, formatterParams) => {
+            bytes: (cell, formatterParams, onRendered) => {
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                });
+
                 if (cell.getValue() && cell.getValue() > 0) {
                     return byteFormat(cell.getValue(), 2);
                 }
                 return '';
             },
-            statusled: (cell, formatterParams) => {
+            statusled: (cell, formatterParams, onRendered) => {
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                });
+
                 if (cell.getValue() && cell.getValue() == 'red') {
                     return "<span class=\"fa fa-fw fa-square text-danger\"></span>";
                 } else if (cell.getValue() && cell.getValue() == 'green') {
@@ -1367,6 +1724,10 @@ class UIBootgrid {
                 }
             },
             datetime: (cell, formatterParams, onRendered) => {
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                });
+
                 return cell.getValue() ? moment(parseInt(cell.getValue())*1000).format("lll") : "";
             },
         }
@@ -1498,6 +1859,8 @@ class UIBootgrid {
                         } else {
                             $("#" + editDlg).change();
                         }
+                        this.expandGroupBy(editDlg);
+                        this.expandDataTree();
                         this._reload(true);
                         this.showSaveAlert(event);
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
@@ -1548,6 +1911,8 @@ class UIBootgrid {
                         } else {
                             $("#" + editDlg).change();
                         }
+                        this.expandGroupBy(editDlg);
+                        this.expandDataTree();
                         this._reload(true);
                         this.showSaveAlert(event);
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
@@ -1636,6 +2001,8 @@ class UIBootgrid {
                         } else {
                             $("#" + editDlg).change();
                         }
+                        this.expandGroupBy(editDlg);
+                        this.expandDataTree();
                         this._reload(true);
                         this.showSaveAlert(event);
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
@@ -1697,6 +2064,10 @@ class UIBootgrid {
         };
     }
 
+    getTable() {
+        return this.table;
+    }
+
     /**
      * jQuery.bootgrid backwards compatibility functions
      */
@@ -1743,27 +2114,39 @@ class UIBootgrid {
         this.table.getColumns().forEach((col) => {
             const def = col.getDefinition();
             if (columns.includes(def.field)) {
+                col._silentToggle = true;
                 col.show();
+                delete col._silentToggle;
             }
-        })
+        });
     }
 
     unsetColumns(columns) {
         this.table.getColumns().forEach((col) => {
             const def = col.getDefinition();
             if (columns.includes(def.field)) {
+                col._silentToggle = true;
                 col.hide();
+                delete col._silentToggle;
             }
-        })
+        });
     }
 
-    select(datakeys) {
-        datakeys.forEach((datakey) => {
-            this.table.selectRow(datakey);
+    search(value, event) {
+        this._search(value, event);
+    }
+
+    select(ids) {
+        ids.forEach((id) => {
+            this.table.selectRow(id);
         })
     }
 
     getSearchPhrase() {
         return this.searchPhrase;
+    }
+
+    setPersistence(value) {
+        this._setPersistence(value);
     }
 }

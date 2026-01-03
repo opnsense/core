@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2015 Deciso B.V.
+ *    Copyright (C) 2015-2025 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -45,9 +45,8 @@ class VoucherController extends ApiControllerBase
      */
     public function listProvidersAction()
     {
-        $result = array();
-        $authFactory = new AuthenticationFactory();
-        foreach ($authFactory->listServers() as $authName => $authProps) {
+        $result = [];
+        foreach ((new AuthenticationFactory())->listServers() as $authName => $authProps) {
             if ($authProps['type'] == 'voucher') {
                 $result[] = $authName;
             }
@@ -62,12 +61,11 @@ class VoucherController extends ApiControllerBase
      */
     public function listVoucherGroupsAction($provider)
     {
-        $authFactory = new AuthenticationFactory();
-        $auth = $authFactory->get(urldecode($provider));
+        $auth = (new AuthenticationFactory())->get(urldecode($provider));
         if ($auth != null && method_exists($auth, 'listVoucherGroups')) {
             return $auth->listVoucherGroups();
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -79,12 +77,11 @@ class VoucherController extends ApiControllerBase
      */
     public function listVouchersAction($provider, $group)
     {
-        $authFactory = new AuthenticationFactory();
-        $auth = $authFactory->get(urldecode($provider));
+        $auth = (new AuthenticationFactory())->get(urldecode($provider));
         if ($auth != null && method_exists($auth, 'listVouchers')) {
             return $auth->listVouchers(urldecode($group));
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -97,14 +94,13 @@ class VoucherController extends ApiControllerBase
     public function dropVoucherGroupAction($provider, $group)
     {
         if ($this->request->isPost()) {
-            $authFactory = new AuthenticationFactory();
-            $auth = $authFactory->get(urldecode($provider));
+            $auth = (new AuthenticationFactory())->get(urldecode($provider));
             if ($auth != null && method_exists($auth, 'dropVoucherGroup')) {
                 $auth->dropVoucherGroup(urldecode($group));
                 return array("status" => "drop");
             }
         }
-        return array("status" => "error");
+        return ["status" => "error"];
     }
 
     /**
@@ -116,13 +112,12 @@ class VoucherController extends ApiControllerBase
     public function dropExpiredVouchersAction($provider, $group)
     {
         if ($this->request->isPost()) {
-            $authFactory = new AuthenticationFactory();
-            $auth = $authFactory->get(urldecode($provider));
+            $auth = (new AuthenticationFactory())->get(urldecode($provider));
             if ($auth != null && method_exists($auth, 'dropExpired')) {
                 return array("status" => "drop", "count" => $auth->dropExpired(urldecode($group)));
             }
         }
-        return array("status" => "error");
+        return ["status" => "error"];
     }
 
 
@@ -133,10 +128,9 @@ class VoucherController extends ApiControllerBase
      */
     public function generateVouchersAction($provider)
     {
-        $response = array("status" => "error");
+        $response = ["status" => "error"];
         if ($this->request->isPost()) {
-            $authFactory = new AuthenticationFactory();
-            $auth = $authFactory->get(urldecode($provider));
+            $auth = (new AuthenticationFactory())->get(urldecode($provider));
             if ($auth != null && method_exists($auth, 'generateVouchers')) {
                 $count = $this->request->getPost('count', 'int', 0);
                 $validity = $this->request->getPost('validity', 'int', 0);
@@ -162,11 +156,10 @@ class VoucherController extends ApiControllerBase
      */
     public function expireVoucherAction($provider)
     {
-        $response = array("status" => "error");
+        $response = ["status" => "error"];
         $username = $this->request->getPost('username', 'string', null);
         if ($this->request->isPost() && $username != null) {
-            $authFactory = new AuthenticationFactory();
-            $auth = $authFactory->get(urldecode($provider));
+            $auth = (new AuthenticationFactory())->get(urldecode($provider));
             if ($auth != null && method_exists($auth, 'expireVoucher')) {
                 $auth->expireVoucher($username);
                 $response['status'] = 'ok';

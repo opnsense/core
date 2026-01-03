@@ -96,6 +96,10 @@ function getFormData(parent) {
                 } else if (sourceNode.hasClass("json-data")) {
                     // deserialize the field content - used for JS maintained fields
                     node[keypart] = sourceNode.data('data');
+                } else if (sourceNode.prop("type") === "color") {
+                    // strip leading '#' for backend compatibility
+                    const val = sourceNode.val();
+                    node[keypart] = val.startsWith("#") ? val.substring(1) : val;
                 } else {
                     node[keypart] = sourceNode.val();
                 }
@@ -145,6 +149,7 @@ function setFormData(parent,data) {
                             // when setting the same content twice to a widget, tokenize2 sorting mixes up.
                             // Ideally formatTokenizersUI() or tokenize2 should handle this better, but for now
                             // this seems like the only fix that actually works.
+                            targetNode.unbind('tokenize:tokens:change');
                             targetNode.tokenize2().trigger('tokenize:clear');
                         }
                         targetNode.empty(); // flush
@@ -153,7 +158,9 @@ function setFormData(parent,data) {
                             // key value (sorted) list
                             // (eg node[keypart][0] = {selected: 0, value: 'my item', key: 'item'})
                             for (i=0; i < node[keypart].length; ++i) {
-                                let opt = $("<option>").val(htmlDecode(node[keypart][i].key)).text(node[keypart][i].value);
+                                let opt = $("<option>").val(htmlDecode(node[keypart][i].key)).text(
+                                    htmlDecode(node[keypart][i].value)
+                                );
                                 if (String(node[keypart][i].selected) !== "0") {
                                     opt.attr('selected', 'selected');
                                 }
@@ -167,7 +174,7 @@ function setFormData(parent,data) {
                             // default "dictionary" type select items
                             // (eg node[keypart]['item'] = {selected: 0, value: 'my item'})
                             $.each(node[keypart],function(indxItem, keyItem){
-                                let opt = $("<option>").val(htmlDecode(indxItem)).text(keyItem["value"]);
+                                let opt = $("<option>").val(htmlDecode(indxItem)).text(htmlDecode(keyItem["value"]));
                                 let optgroup = keyItem.optgroup ?? '';
                                 if (String(keyItem["selected"]) !== "0") {
                                     opt.attr('selected', 'selected');
@@ -196,6 +203,13 @@ function setFormData(parent,data) {
                     } else if (targetNode.hasClass('json-data')) {
                         // if the input field is JSON data, serialize the data into the field
                         targetNode.data('data', node[keypart]);
+                    } else if (targetNode.prop("type") === "color") {
+                        // color inputs get '#' prefix
+                        let val = node[keypart];
+                        if (typeof val === "string" && !val.startsWith("#")) {
+                            val = "#" + val;
+                        }
+                        targetNode.val(val);
                     } else if (targetNode.attr('type') !== 'file') {
                         // regular input type
                         targetNode.val(htmlDecode(node[keypart]));

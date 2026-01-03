@@ -156,7 +156,8 @@ abstract class Base
             foreach ($cnf->system->group as $group) {
                 $known_groups[] = strtolower((string)$group->name);
                 // when user is known, collect current groups
-                if ($user != null && in_array((string)$user->uid, (array)$group->member)) {
+                $group_members = explode(',', implode(',', (array)$group->member));
+                if ($user != null && in_array((string)$user->uid, $group_members)) {
                     $user_groups[] = strtolower((string)$group->name);
                 }
             }

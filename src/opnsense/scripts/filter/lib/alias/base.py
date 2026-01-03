@@ -133,7 +133,7 @@ class AsyncDNSResolver:
                                     if addr.rdtype is RdataType.CNAME:
                                         # query cname (recursion)
                                         self._request_queue.append(addr.target)
-                                    else:
+                                    elif hasattr(addr, 'address'):
                                         self._response.add(addr.address)
                     elif type(response) in [dns.resolver.NXDOMAIN, dns.exception.Timeout, dns.resolver.NoNameservers]:
                         if str(response) not in collected_errors:

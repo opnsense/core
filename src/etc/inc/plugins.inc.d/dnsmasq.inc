@@ -60,7 +60,7 @@ function dnsmasq_services()
     if (!empty((string)$mdl->dns_port)) {
         $pconfig['dns_ports'] = [ (string)$mdl->dns_port ];
     }
-    $pconfig['description'] = gettext('Dnsmasq DNS');
+    $pconfig['description'] = gettext('Dnsmasq DNS/DHCP');
     $pconfig['php']['restart'] = ['dnsmasq_configure_do'];
     $pconfig['php']['start'] = ['dnsmasq_configure_do'];
     $pconfig['configd']['stop'] = ['dnsmasq stop'];
@@ -84,7 +84,7 @@ function dnsmasq_xmlrpc_sync()
     $result = [];
 
     $result[] = [
-        'description' => gettext('Dnsmasq DNS'),
+        'description' => gettext('Dnsmasq DNS/DHCP'),
         'section' => 'dnsmasq',
         'id' => 'dnsforwarder',
         'services' => ['dnsmasq'],
@@ -108,6 +108,7 @@ function dnsmasq_firewall(\OPNsense\Firewall\Plugin $fw)
         }
         foreach ($fw->getInterfaceMapping() as $intf => $intfinfo) {
             if (in_array($intf, $dhcp_ifs)) {
+                /* ipv4 */
                 $baserule = [
                     'interface' => $intf,
                     'protocol' => 'udp',
@@ -130,6 +131,33 @@ function dnsmasq_firewall(\OPNsense\Firewall\Plugin $fw)
                     ['direction' => 'out', 'from_port' => 67, 'from' => '(self)', 'to_port' => 68],
                     $baserule
                 );
+                /* ipv6 */
+                $baserule['ipprotocol'] = 'inet6';
+                $fw->registerFilterRule(
+                    1,
+                    ['from' => 'fe80::/10', 'to' => 'fe80::/10,ff02::/16', 'to_port' => 546],
+                    $baserule
+                );
+                $fw->registerFilterRule(
+                    1,
+                    ['from' => 'fe80::/10', 'to' => 'ff02::/16', 'to_port' => 547],
+                    $baserule
+                );
+                $fw->registerFilterRule(
+                    1,
+                    ['from' => 'ff02::/16', 'to' => 'fe80::/10', 'to_port' => 547],
+                    $baserule
+                );
+                $fw->registerFilterRule(
+                    1,
+                    ['from' => 'fe80::/10', 'to' => '(self)', 'to_port' => 546],
+                    $baserule
+                );
+                $fw->registerFilterRule(
+                    1,
+                    ['from' => '(self)', 'to' => 'fe80::/10', 'from_port' => 547, 'direction' => 'out'],
+                    $baserule
+                );
             }
         }
     }
@@ -140,20 +168,19 @@ function dnsmasq_configure_do($verbose = false)
     global $config;
 
     killbypid('/var/run/dnsmasq_dhcpd.pid');
-    mwexec('/usr/local/etc/rc.d/dnsmasq stop');
+    mwexecfm('/usr/local/etc/rc.d/dnsmasq stop');
 
     if (!dnsmasq_enabled()) {
         return;
     }
 
-    service_log('Starting Dnsmasq DNS...', $verbose);
+    service_log('Starting Dnsmasq...', $verbose);
 
     _dnsmasq_add_host_entries();
 
-    /* XXX: cleanup, should have been run, but interface changes during boot or wizard are messing things up */
     configd_run('template reload OPNsense/Dnsmasq');
 
-    mwexec('/usr/local/etc/rc.d/dnsmasq start');
+    mwexecf('/usr/local/etc/rc.d/dnsmasq start');
 
     if (!empty($config['dnsmasq']['regdhcp'])) {
         /* XXX: deprecate when moving ISC to plugins ? */
@@ -181,11 +208,18 @@ function _dnsmasq_add_host_entries()
 
     foreach ($dnsmasqcfg['hosts'] as $host) {
         /* The host.ip field supports multiple IPv4 and IPv6 addresses */
-        foreach (explode(',', $host['ip']) as $ip) {
-            if (!empty($host['host']) && empty($host['domain'])) {
+        foreach (array_filter(explode(',', $host['ip'])) as $ip) {
+            /* skip partial IPv6 addresses */
+            if (str_starts_with($ip, '::')) {
+                continue;
+            }
+            if (empty($host['host'])) {
+                /* do not render partial DHCP lease entries */
+            } elseif ($host['host'] === '*') {
+                /* do not render wildcard hosts as they are handled directly by dnsmasq.conf */
+            } elseif (empty($host['domain'])) {
                 $lhosts .= "{$ip}\t{$host['host']}\n";
-            } elseif (!empty($host['host'])) {
-                /* XXX: The question is if we do want "host" as a global alias */
+            } else {
                 $lhosts .= "{$ip}\t{$host['host']}.{$host['domain']} {$host['host']}\n";
             }
             if (!empty($host['aliases'])) {
@@ -220,20 +254,10 @@ function _dnsmasq_add_host_entries()
         }
     }
 
-    if (!empty($dnsmasqcfg['dhcpfirst'])) {
-        file_put_contents('/var/etc/dnsmasq-hosts', $dhosts . $lhosts);
-    } else {
-        file_put_contents('/var/etc/dnsmasq-hosts', $lhosts . $dhosts);
-    }
+    file_safe(
+        '/var/etc/dnsmasq-hosts',
+        !empty($dnsmasqcfg['dhcpfirst']) ? $dhosts . $lhosts : $lhosts . $dhosts
+    );
 
-    /*
-     * Several reports indicated 600 permissions on this file.
-     * The reason is currently unknown, but setting it to 644
-     * as it should be brings the service back to life.
-     */
-    chmod('/var/etc/dnsmasq-hosts', 0644);
-
-    @unlink('/var/etc/dnsmasq-leases');
-    touch('/var/etc/dnsmasq-leases');
-    chmod('/var/etc/dnsmasq-leases', 0644);
+    file_safe('/var/etc/dnsmasq-leases'); /* clear file for later use */
 }

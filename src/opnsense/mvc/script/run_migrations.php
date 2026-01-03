@@ -60,7 +60,7 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($model_dir
                             " to " . $version_post . "\n";
                         $executed_migration = true;
                     } else {
-                        echo "*** " .  $mdl_class_info->getName() . " Migration failed, check log for details\n";
+                        echo "*** {$mdl_class_info->getName()} migration failed from {$version_pre} to {$version_post}, check log for details\n";
                     }
                 } elseif (!empty($version_post)) {
                     if ($mig_performed) {

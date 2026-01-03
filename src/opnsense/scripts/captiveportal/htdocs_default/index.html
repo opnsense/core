@@ -1,0 +1,184 @@
+<!doctype html>
+<html>
+	<head>
+	<meta charset="UTF-8">
+	<title>Captive Portal login</title>
+
+		<link rel="shortcut icon" href="favicon/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="favicon/favicon.ico" type="image/x-icon">
+		<link href="css/signin.css" rel="stylesheet">
+		<meta name="theme-color" content="#ffffff">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="OPNsense">
+		<script src="js/jquery-3.5.1.min.js"></script>
+		<script>
+				$( document ).ready(function() {
+					let redirurl = (new URL(window.location)).searchParams.get('redirurl');
+					/**
+					 * logon action
+					 */
+					$("#signin").click(function (event) {
+						event.preventDefault();
+						// hide alerts
+						$("#alertMSG").addClass("hidden");
+						// try to login
+						$.ajax({
+							type: "POST",
+							url: "/api/captiveportal/access/logon/",
+							dataType:"json",
+							data:{ user: $("#inputUsername").val(), password: $("#inputPassword").val() }
+						}).done(function(data) {
+							// redirect on successful login
+							if (data['clientState'] == 'AUTHORIZED') {
+								if (redirurl !== null) {
+									window.location = 'http://'+redirurl+'?refresh';
+								} else {
+									// no target, reload page
+									window.location.reload();
+								}
+							} else {
+								$("#inputUsername").val("");
+								$("#inputPassword").val("");
+								$("#errorMSGtext").html("authentication failed");
+								$("#alertMSG").removeClass("hidden");
+							}
+						}).fail(function(){
+							$("#errorMSGtext").html("unable to connect to authentication server");
+							$("#alertMSG").removeClass("hidden");
+						});
+					});
+
+					/**
+					 * login anonymous, only applicable when server is configured without authentication
+					 */
+					$("#signin_anon").click(function (event) {
+						event.preventDefault();
+						// hide alerts
+						$("#alertMSG").addClass("hidden");
+						// try to login
+						$.ajax({
+							type: "POST",
+							url: "/api/captiveportal/access/logon/",
+							dataType:"json",
+							data:{ user: '', password: '' }
+						}).done(function(data) {
+							// redirect on successful login
+							if (data['clientState'] == 'AUTHORIZED') {
+								if (redirurl !== null) {
+									window.location = 'http://'+redirurl+'?refresh';
+								} else {
+									window.location.reload();
+								}
+							} else {
+								$("#inputUsername").val("");
+								$("#inputPassword").val("");
+								$("#errorMSGtext").html("login failed");
+								$("#alertMSG").removeClass("hidden");
+							}
+						}).fail(function(){
+							$("#errorMSGtext").html("unable to connect to authentication server");
+							$("#alertMSG").removeClass("hidden");
+						});
+					});
+
+					/**
+					 * logoff action
+					 */
+					$("#logoff").click(function (event) {
+						event.preventDefault();
+						// hide alerts
+						$("#alertMSG").addClass("hidden");
+						// try to login
+						$.ajax({
+							type: "POST",
+							url: "/api/captiveportal/access/logoff/",
+							dataType:"json",
+							data:{ user: '', password: '' }
+						}).done(function(data) {
+							// refresh page
+							window.location.reload();
+						}).fail(function(){
+							$("#errorMSGtext").html("unable to connect to authentication server");
+							$("#alertMSG").removeClass("hidden");
+						});
+					});
+
+					/**
+					 * close / hide error message
+					 */
+					$("#btnCloseError").click(function(){
+						$("#alertMSG").addClass("hidden");
+					});
+
+					/**
+					 * execute after pageload
+					 */
+					$.ajax({
+						type: "POST",
+						url: "/api/captiveportal/access/status/",
+						dataType:"json",
+						data:{ user: $("#inputUsername").val(), password: $("#inputPassword").val() }
+					}).done(function(data) {
+						if (data['clientState'] == 'AUTHORIZED') {
+						$("#logout_frm").removeClass('hidden');
+						} else if (data['authType'] == 'none') {
+							$("#login_none").removeClass('hidden');
+						} else {
+							$("#login_password").removeClass('hidden');
+						}
+					}).fail(function(){
+						$("#errorMSGtext").html("unable to connect to authentication server");
+						$("#alertMSG").removeClass("hidden");
+					});
+				});
+		</script>
+
+	</head>
+	<body>
+		<header>
+			<h1><a href="/"><img src="images/OPNsense-logo.svg" class="maintenance-logo" alt="OPNsense"></a></h1>
+		</header>
+		<main>
+			<section class="content-row">
+				<article class="wrapper">
+					<!-- User option 1: login needed with name and password -->
+					<div id="login_password" class="hidden">
+						<form class="form-signin">
+							<h2 class="form-signin-heading">Please sign in</h2>
+							<input type="text" id="inputUsername" class="form-control" placeholder="Username" required autofocus autocomplete="none" autocapitalize="none" autocorrect="off">
+							<input type="password" autocomplete="new-password" id="inputPassword" class="form-control" placeholder="Password" required>
+							<button class="btn" id="signin" type="button">Sign in</button>
+						</form>
+					</div>
+					<!-- User option 2: login needed, without username, password -->
+					<div id="login_none" class="hidden">
+						<form class="form-signin">
+							<button class="btn" id="signin_anon" type="button">Sign in</button>
+						</form>
+					</div>
+					<!-- User option 3: Already logged in, show logout button -->
+					<div id="logout_frm" class="hidden">
+						<form class="form-signin">
+							<button class="btn" id="logoff" type="button">Logout</button>
+						</form>
+					</div>
+					<!-- Message dialog -->
+					<div class="alert alert-danger alert-dismissible hidden" role="alert" id="alertMSG">
+						<br/>
+						<button type="button" class="btn close" id="btnCloseError" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<span id="errorMSGtext"></span>
+					</div>
+				</article>
+			</section>
+		</main>
+		<footer>
+			<a class="deciso-brand" href="https://deciso.com" target="_blank" rel="noopener">
+				<img class="regular-logo" src="images/deciso-brand.svg">
+				<img class="hover-logo" src="images/deciso-brand-hover.svg">
+			</a>
+		</footer>
+	</body>
+</html>

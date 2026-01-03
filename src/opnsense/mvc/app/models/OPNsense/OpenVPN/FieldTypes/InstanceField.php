@@ -41,6 +41,7 @@ class InstanceField extends ArrayField
         foreach ($this->internalChildnodes as $node) {
             $uuid = $node->getAttributes()['uuid'] ?? null;
             if (!$node->getInternalIsVirtual() && $uuid) {
+                /* hidden, only visible when called direct (e.g. $node->current_XXX) */
                 $files = [
                     'cnfFilename' => "/var/etc/openvpn/instance-{$uuid}.conf",
                     'pidFilename' => "/var/run/ovpn-instance-{$uuid}.pid",

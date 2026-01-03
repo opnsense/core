@@ -4,6 +4,7 @@
     "name": "bogons",
     "type": "external",
     "description": "bogon networks (internal)",
+    "expire": "",
     "content": ""
   },
   "bogonsv6": {
@@ -11,6 +12,7 @@
     "name": "bogonsv6",
     "type": "external",
     "description": "bogon networks IPv6 (internal)",
+    "expire": "",
     "content": ""
   },
   "virusprot": {
@@ -18,6 +20,7 @@
     "name": "virusprot",
     "type": "external",
     "description": "overload table for rate limiting (internal)",
+    "expire": "3600",
     "content": ""
   },
   "sshlockout": {
@@ -25,6 +28,7 @@
     "name": "sshlockout",
     "type": "external",
     "description": "abuse lockout table (internal)",
+    "expire": "3600",
     "content": ""
   }
 }

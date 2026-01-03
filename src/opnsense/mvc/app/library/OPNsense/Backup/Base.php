@@ -29,12 +29,24 @@
 
 namespace OPNsense\Backup;
 
+use OPNsense\Core\AppConfig;
+use OPNsense\Core\Shell;
+
 /**
  * Backup stub file, contains shared logic for all backup strategies
  * @package OPNsense\Backup
  */
 abstract class Base
 {
+    /**
+     * get a temporary unique file on the disk
+     * @return string file name
+     */
+    private function tempFile()
+    {
+        return tempnam((new AppConfig())->application->tempDir, 'php-encrypt-');
+    }
+
     /**
      * encrypt+encode base64
      * @param string $data to encrypt
@@ -44,7 +56,7 @@ abstract class Base
      */
     public function encrypt($data, $pass, $tag = 'config.xml')
     {
-        $file = tempnam(sys_get_temp_dir(), 'php-encrypt');
+        $file = $this->tempFile();
         @unlink("{$file}.enc");
 
         /* current encryption defaults, change as needed */
@@ -54,24 +66,17 @@ abstract class Base
 
         file_put_contents($file, $pass);
         file_put_contents("{$file}.dec", $data);
-        exec(
-            sprintf(
-                '/usr/local/bin/openssl enc -e -%s -md %s -pbkdf2 -iter %s -in %s -out %s -pass file:%s 2> /dev/null',
-                escapeshellarg($cipher),
-                escapeshellarg($hash),
-                escapeshellarg($pbkdf2),
-                escapeshellarg("{$file}.dec"),
-                escapeshellarg("{$file}.enc"),
-                escapeshellarg($file)
-            ),
-            $unused,
-            $retval
+
+        $retval = Shell::run_safe(
+            '/usr/local/bin/openssl enc -e -%s -md %s -pbkdf2 -iter %s -in %s -out %s -pass file:%s 2> /dev/null',
+            [$cipher, $hash, $pbkdf2, "{$file}.dec", "{$file}.enc", $file]
         );
+
         @unlink("{$file}.dec");
         @unlink($file);
 
         if (file_exists("{$file}.enc") && !$retval) {
-            $version = trim(shell_exec('opnsense-version -Nv') ?? '');
+            $version = Shell::shell_safe('opnsense-version -Nv');
             $result = "---- BEGIN {$tag} ----\n";
             $result .= "Version: {$version}\n";
             $result .= "Cipher: " . strtoupper($cipher) . "\n";
@@ -97,7 +102,7 @@ abstract class Base
      */
     public function decrypt($data, $pass, $tag = 'config.xml')
     {
-        $file = tempnam(sys_get_temp_dir(), 'php-encrypt');
+        $file = $this->tempFile();
         @unlink("{$file}.dec");
 
         $data = explode("\n", $data);
@@ -137,19 +142,22 @@ abstract class Base
 
         file_put_contents($file, $pass);
         file_put_contents("{$file}.enc", base64_decode($data));
-        exec(
-            sprintf(
-                '/usr/local/bin/openssl enc -d -%s -md %s %s -in %s -out %s -pass file:%s 2> /dev/null',
-                escapeshellarg($cipher),
-                escapeshellarg($hash),
-                $pbkdf2 === null ? '' : '-pbkdf2 -iter=' . escapeshellarg($pbkdf2),
-                escapeshellarg("{$file}.enc"),
-                escapeshellarg("{$file}.dec"),
-                escapeshellarg($file)
-            ),
-            $unused,
-            $retval
-        );
+
+        $frmt = ['/usr/local/bin/openssl enc -d -%s -md %s'];
+        $args = [$cipher, $hash];
+
+        if ($pbkdf2 !== null) {
+            $frmt[] = '-pbkdf2 -iter=%s';
+            $args[] = $pbkdf2;
+        }
+
+        $frmt[] = '-in %s -out %s -pass file:%s 2> /dev/null';
+        $args[] = "{$file}.enc";
+        $args[] = "{$file}.dec";
+        $args[] = $file;
+
+        $retval = Shell::run_safe($frmt, $args);
+
         @unlink("{$file}.enc");
         @unlink($file);
 

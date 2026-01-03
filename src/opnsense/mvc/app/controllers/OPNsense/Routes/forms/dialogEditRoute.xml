@@ -4,6 +4,11 @@
     <label>Disabled</label>
     <type>checkbox</type>
     <help>Set this option to disable this static route without removing it from the list.</help>
+    <grid_view>
+      <width>100</width>
+      <type>boolean</type>
+      <formatter>rowtoggle</formatter>
+    </grid_view>
   </field>
   <field>
     <id>route.network</id>

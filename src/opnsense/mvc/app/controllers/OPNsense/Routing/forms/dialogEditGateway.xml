@@ -3,28 +3,46 @@
         <id>gateway_item.disabled</id>
         <label>Disabled</label>
         <type>checkbox</type>
+        <grid_view>
+            <width>100</width>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+        </grid_view>
     </field>
     <field>
         <id>gateway_item.name</id>
         <label>Name</label>
         <type>text</type>
-    </field>
-    <field>
-        <id>gateway_item.descr</id>
-        <label>Description</label>
-        <type>text</type>
+        <grid_view>
+            <formatter>nameformatter</formatter>
+        </grid_view>
     </field>
     <field>
         <id>gateway_item.interface</id>
         <label>Interface</label>
         <type>dropdown</type>
         <help>Choose which interface this gateway applies to.</help>
+        <grid_view>
+            <formatter>interfaceformatter</formatter>
+        </grid_view>
     </field>
     <field>
         <id>gateway_item.ipprotocol</id>
         <label>Address Family</label>
         <type>dropdown</type>
         <help>Choose the Internet Protocol this gateway uses.</help>
+        <grid_view>
+            <formatter>protocolformatter</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>gateway_item.priority</id>
+        <label>Priority</label>
+        <type>text</type>
+        <help>Choose a value between 1 and 255. Influences sort order when selecting a (default) gateway, lower means more important.</help>
+        <grid_view>
+            <formatter>priorityformatter</formatter>
+        </grid_view>
     </field>
     <field>
         <id>gateway_item.gateway</id>
@@ -36,18 +54,33 @@
         <label>Upstream Gateway</label>
         <type>checkbox</type>
         <help>This will select the above gateway as a default gateway candidate.</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
     </field>
     <field>
         <id>gateway_item.fargw</id>
         <label>Far Gateway</label>
         <type>checkbox</type>
         <help>This will allow the gateway to exist outside of the interface subnet.</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
     </field>
     <field>
         <id>gateway_item.monitor_disable</id>
         <label>Disable Gateway Monitoring</label>
         <type>checkbox</type>
         <help>This will consider this gateway as always being "up".</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
     </field>
     <field>
         <id>gateway_item.monitor_noroute</id>
@@ -55,6 +88,11 @@
         <type>checkbox</type>
         <style>monitor_opt</style>
         <help>Do not create a dedicated host route for this monitor.</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
     </field>
     <field>
         <id>gateway_item.monitor_killstates</id>
@@ -62,6 +100,11 @@
         <type>checkbox</type>
         <style>monitor_opt</style>
         <help>If this gateway goes down, force clients to reconnect over a different online gateway by killing states associated with this gateway. This option requires "default gateway switching" to be enabled, or this gateway assigned as part of a gateway group to trigger.</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
     </field>
     <field>
         <id>gateway_item.monitor_killstates_priority</id>
@@ -69,6 +112,11 @@
         <type>checkbox</type>
         <style>monitor_opt</style>
         <help>If another gateway comes up with a higher priority than this gateway, force clients to reconnect by killing states associated with this gateway. This option requires "default gateway switching" to be enabled, or this gateway assigned as part of a gateway group to trigger. The common use case for this option are metered connections over LTE that should only be used when no other gateway is online.</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
     </field>
     <field>
         <id>gateway_item.monitor</id>
@@ -86,12 +134,11 @@
         <label>Mark Gateway as Down</label>
         <type>checkbox</type>
         <help>This will force this gateway to be considered "down".</help>
-    </field>
-    <field>
-        <id>gateway_item.priority</id>
-        <label>Priority</label>
-        <type>text</type>
-        <help>Choose a value between 1 and 255. Influences sort order when selecting a (default) gateway, lower means more important.</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
     </field>
     <field>
         <id>gateway_item.weight</id>
@@ -99,6 +146,9 @@
         <advanced>true</advanced>
         <type>text</type>
         <help>Weight for this gateway when used in a gateway group. Specificed as an integer number between 1 and 5. Default equals 1.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>gateway_item.latencylow</id>
@@ -106,6 +156,9 @@
         <advanced>true</advanced>
         <type>text</type>
         <help>Low threshold for latency in milliseconds. Default is 200.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>gateway_item.latencyhigh</id>
@@ -113,6 +166,9 @@
         <advanced>true</advanced>
         <type>text</type>
         <help>High threshold for latency in milliseconds. Default is 500.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>gateway_item.losslow</id>
@@ -120,6 +176,9 @@
         <advanced>true</advanced>
         <type>text</type>
         <help>Low threshold for packet loss in %. Default is 10.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>gateway_item.losshigh</id>
@@ -127,6 +186,9 @@
         <advanced>true</advanced>
         <type>text</type>
         <help>High thresholds for packet loss in %. Default is 20.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>gateway_item.interval</id>
@@ -134,6 +196,9 @@
         <advanced>true</advanced>
         <type>text</type>
         <help>How often that an ICMP probe will be sent in seconds. Default is 1.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>gateway_item.time_period</id>
@@ -141,6 +206,9 @@
         <advanced>true</advanced>
         <type>text</type>
         <help>The time period over which results are averaged. Default is 60.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>gateway_item.loss_interval</id>
@@ -148,6 +216,9 @@
         <advanced>true</advanced>
         <type>text</type>
         <help>Time interval before packets are treated as lost. Default is 4 (four times the probe interval).</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>gateway_item.data_length</id>
@@ -155,5 +226,39 @@
         <advanced>true</advanced>
         <type>text</type>
         <help>Specify the number of data bytes to be sent. Default is 1.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>gateway_item.delay</id>
+        <label>RTT</label>
+        <type>ignore</type>
+    </field>
+    <field>
+        <id>gateway_item.stddev</id>
+        <label>RTTd</label>
+        <type>ignore</type>
+    </field>
+    <field>
+        <id>gateway_item.loss</id>
+        <label>Loss</label>
+        <type>ignore</type>
+    </field>
+    <field>
+        <id>gateway_item.status</id>
+        <label>Status</label>
+        <type>ignore</type>
+        <grid_view>
+            <formatter>statusformatter</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>gateway_item.descr</id>
+        <label>Description</label>
+        <type>text</type>
+        <grid_view>
+            <formatter>descriptionFormatter</formatter>
+        </grid_view>
     </field>
 </form>

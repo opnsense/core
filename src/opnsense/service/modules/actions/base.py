@@ -53,6 +53,9 @@ class BaseAction:
                  self.allowed_groups.add(item)
         self.full_command = action_parameters.get('__full_command', '')
 
+    def cache_flush(self, parameters):
+        pass
+
     def is_allowed(self, session : xucred = None):
         """ Check if action is allowed for the session provided.
             An action config may optionally supply allowed_groups (or generic in configd.conf) as constraint for

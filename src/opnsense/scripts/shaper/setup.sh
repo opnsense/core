@@ -24,6 +24,9 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-# sysctl settings
-sysctl net.inet.ip.dummynet.io_fast=1 > /dev/null
-sysctl net.inet.ip.dummynet.hash_size=256 > /dev/null
+# sysctl settings, use sysctl.kld.d since this setup script is called
+# before module load through rc, meaning the sysctls don't exist yet.
+cat <<EOF > /etc/sysctl.kld.d/dummynet.conf
+net.inet.ip.dummynet.io_fast=1
+net.inet.ip.dummynet.hash_size=256
+EOF

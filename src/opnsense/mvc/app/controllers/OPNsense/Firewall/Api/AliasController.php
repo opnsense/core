@@ -1,31 +1,29 @@
 <?php
 
-/**
- *    Copyright (C) 2018 Deciso B.V.
+/*
+ * Copyright (C) 2018 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 namespace OPNsense\Firewall\Api;
@@ -60,12 +58,7 @@ class AliasController extends ApiMutableModelControllerBase
             return $match_type && $match_cat;
         };
 
-        $result = $this->searchBase(
-            "aliases.alias",
-            ['enabled', 'name', 'description', 'type', 'content', 'current_items', 'last_updated'],
-            "name",
-            $filter_funct
-        );
+        $result = $this->searchBase("aliases.alias", null, "name", $filter_funct);
 
         /**
          * remap some source data from the model as searchBase() is not able to distinct this.
@@ -258,7 +251,7 @@ class AliasController extends ApiMutableModelControllerBase
         ];
 
         $contribDir = (new AppConfig())->application->contribDir;
-        foreach (explode("\n", file_get_contents($contribDir . '/tzdata/iso3166.tab')) as $line) {
+        foreach (explode("\n", file_get_contents($contribDir . '/iana/tzdata-iso3166.tab')) as $line) {
             $line = trim($line);
             if (strlen($line) > 3 && substr($line, 0, 1) != '#') {
                 $result[substr($line, 0, 2)] = array(
@@ -267,7 +260,7 @@ class AliasController extends ApiMutableModelControllerBase
                 );
             }
         }
-        foreach (explode("\n", file_get_contents($contribDir . '/tzdata/zone.tab')) as $line) {
+        foreach (explode("\n", file_get_contents($contribDir . '/iana/tzdata-zone.tab')) as $line) {
             if (strlen($line) > 0 && substr($line, 0, 1) == '#') {
                 continue;
             }
@@ -340,6 +333,7 @@ class AliasController extends ApiMutableModelControllerBase
             if (!empty($bckresult['messages'])) {
                 throw new UserException(implode("\n", $bckresult['messages']), gettext("Alias"));
             }
+            $backend->configdRun("cron restart", true);
             return array("status" => "ok");
         } else {
             return array("status" => "failed");
@@ -491,13 +485,11 @@ class AliasController extends ApiMutableModelControllerBase
             }
 
             $result[static::$internalModelName]['geoip']['address_count'] = 0;
-            if (file_exists('/usr/local/share/GeoIP/alias.stats')) {
-                $stats = json_decode(file_get_contents('/usr/local/share/GeoIP/alias.stats'), true);
-                $result[static::$internalModelName]['geoip'] = array_merge(
-                    $result[static::$internalModelName]['geoip'],
-                    $stats
-                );
-            }
+            $stats = json_decode((new Backend())->configdRun('filter geoip stats'), true) ?? [];
+            $result[static::$internalModelName]['geoip'] = array_merge(
+                $result[static::$internalModelName]['geoip'],
+                $stats
+            );
         }
         return $result;
     }

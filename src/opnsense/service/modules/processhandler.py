@@ -159,23 +159,28 @@ class HandlerClient(threading.Thread):
         exec_in_background = False
         # noinspection PyBroadException
         try:
+            cmd_preludes = set()
             # receive command, maximum data length is 4k... longer messages will be truncated
             data = self.connection.recv(4096).decode()
+            while len(data):
+                if data[0] in [' ', '&', '!']:
+                    cmd_preludes.add(data[0])
+                    data = data[1:]
+                else:
+                    break
             # map command to action
             data_parts = shlex.split(data)
             if len(data_parts) == 0 or len(data_parts[0]) == 0:
                 # no data found
                 self.connection.sendall('no data\n'.encode())
             else:
-                if data_parts[0][0] == "&":
-                    # set run in background
-                    exec_in_background = True
-                    data_parts[0] = data_parts[0][1:]
+                exec_in_background = "&" in cmd_preludes    # run in background?
+                if '!' in cmd_preludes:
+                     self.action_handler.cache_flush(data_parts) # flush cache when applicable
 
                 # when running in background, return this message uuid and detach socket
                 if exec_in_background:
-                    result = self.message_uuid
-                    self.connection.sendall(('%s\n%c%c%c' % (result, chr(0), chr(0), chr(0))).encode())
+                    self.connection.sendall(('%s\n%c%c%c' % (self.message_uuid, chr(0), chr(0), chr(0))).encode())
                     self.connection.shutdown(socket.SHUT_RDWR)
                     self.connection.close()
 
@@ -317,6 +322,7 @@ class ActionHandler(object):
         :return: action object or None if not found
         """
         target = self.action_map
+        action = list(action) # copy
         while type(target) is dict and len(action) > 0 and action[0] in target:
             tmp = action.pop(0)
             target = target[tmp]
@@ -325,6 +331,11 @@ class ActionHandler(object):
             return target, action
 
         return None, []
+
+    def cache_flush(self, action):
+        action_obj, action_params = self.find_action(action)
+        if action_obj is not None:
+            action_obj.cache_flush(action_params)
 
     def execute(self, action, message_uuid, connection, session):
         """ execute configuration defined action

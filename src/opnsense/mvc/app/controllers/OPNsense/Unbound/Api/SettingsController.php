@@ -43,52 +43,70 @@ class SettingsController extends ApiMutableModelControllerBase
     public function updateBlocklistAction()
     {
         $result = ["status" => "failed"];
-        if ($this->request->isPost() && $this->request->hasPost('domain') && $this->request->hasPost('type')) {
+        if ($this->request->isPost() && $this->request->hasPost('domain') && $this->request->hasPost('type') && $this->request->hasPost('uuid')) {
             Config::getInstance()->lock();
             $domain = $this->request->getPost('domain');
             $type = $this->request->getPost('type');
+            $uuid = $this->request->getPost('uuid');
+            $action = 'block';
             $mdl = $this->getModel();
-            $item = $mdl->getNodeByReference('dnsbl.' . $type);
 
-            if ($item != null) {
-                $remove = function ($csv, $part) {
-                    while (($i = array_search($part, $csv)) !== false) {
-                        unset($csv[$i]);
-                    }
-                    return implode(',', $csv);
-                };
-
-                // strip off any trailing dot
-                $value = rtrim($domain, '.');
-                $wl = explode(',', (string)$mdl->dnsbl->whitelists);
-                $bl = explode(',', (string)$mdl->dnsbl->blocklists);
-
-                $existing_domains = explode(',', (string)$item);
-                if (in_array($value, $existing_domains)) {
-                    // value already in model, no need to re-run a potentially
-                    // expensive dnsbl action
-                    return ["status" => "OK"];
+            $remove = function ($csv, $part) {
+                while (($i = array_search($part, $csv)) !== false) {
+                    unset($csv[$i]);
                 }
+                return implode(',', $csv);
+            };
 
-                // Check if domains should be switched around in the model
-                if ($type == 'whitelists' && in_array($value, $bl)) {
-                    $mdl->dnsbl->blocklists = $remove($bl, $value);
-                } elseif ($type == 'blocklists' && in_array($value, $wl)) {
-                    $mdl->dnsbl->whitelists = $remove($wl, $value);
-                }
+            $node = $mdl->getNodeByReference('dnsbl.blocklist.' . $uuid);
+            if ($node == null) {
+                return $result;
+            }
 
-                // update the model
-                $list = array_filter($existing_domains); // removes all empty entries
-                $list[] = $value;
-                $mdl->dnsbl->$type = implode(',', $list);
+            $modelType = $node->$type;
+            // strip off any trailing dot
+            $value = rtrim($domain, '.');
 
-                $mdl->serializeToConfig();
-                Config::getInstance()->save();
+            $existing_domains = explode(',', (string)$modelType);
+            if (in_array($value, $existing_domains)) {
+                // value already in model
+                return $result;
+            }
 
-                $service = new \OPNsense\Unbound\Api\ServiceController();
-                $result = $service->dnsblAction();
+            $wl = explode(',', (string)$node->allowlists);
+            $bl = explode(',', (string)$node->blocklists);
+
+            // Check if domains should be switched around in the model
+            if ($type == 'allowlists' && in_array($value, $bl)) {
+                $node->blocklists = $remove($bl, $value);
+            } elseif ($type == 'blocklists' && in_array($value, $wl)) {
+                $node->allowlists = $remove($wl, $value);
+            }
+
+            // update the model
+            $list = array_filter($existing_domains); // removes all empty entries
+            $list[] = $value;
+            $node->$type = implode(',', $list);
+
+            $mdl->serializeToConfig();
+            Config::getInstance()->save();
+
+            if ($type == 'allowlists') {
+                $action = 'allow';
+            }
+
+            $result["status"] = trim((new Backend())->configdpRun('unbound dnsblquick', [$uuid, $domain, $action]));
+            if ($result["status"] != "OK" && str_contains($result["status"], '99')) {
+                /* locked */
+                $result["status"] = "failed";
+                throw new \OPNsense\Base\UserException(gettext(
+                    "The action was successfully applied, but could not be loaded into Unbound " .
+                    "because another update process is already active. " .
+                    "Please re-apply the Unbound blocklists settings manually."
+                ), gettext("Blocklist error"));
             }
         }
+
         return $result;
     }
 
@@ -184,6 +202,7 @@ class SettingsController extends ApiMutableModelControllerBase
     public function delHostOverrideAction($uuid)
     {
         /* Make sure the linked aliases are deleted as well. */
+        Config::getInstance()->lock();
         $node = $this->getModel();
         foreach ($node->aliases->alias->iterateItems() as $alias_uuid => $alias) {
             if ($alias->host == $uuid) {
@@ -284,5 +303,37 @@ class SettingsController extends ApiMutableModelControllerBase
     public function toggleAclAction($uuid, $enabled = null)
     {
         return $this->toggleBase('acls.acl', $uuid, $enabled);
+    }
+
+    /* DNSBL */
+
+    public function searchDnsblAction()
+    {
+        return $this->searchBase('dnsbl.blocklist', ['enabled', 'list', 'source_net', 'description']);
+    }
+
+    public function getDnsblAction($uuid = null)
+    {
+        return $this->getBase('blocklist', 'dnsbl.blocklist', $uuid);
+    }
+
+    public function addDnsblAction()
+    {
+        return $this->addBase('blocklist', 'dnsbl.blocklist');
+    }
+
+    public function delDnsblAction($uuid)
+    {
+        return $this->delBase('dnsbl.blocklist', $uuid);
+    }
+
+    public function setDnsblAction($uuid)
+    {
+        return $this->setBase('blocklist', 'dnsbl.blocklist', $uuid);
+    }
+
+    public function toggleDnsblAction($uuid, $enabled = null)
+    {
+        return $this->toggleBase('dnsbl.blocklist', $uuid, $enabled);
     }
 }

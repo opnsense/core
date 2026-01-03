@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2019 Deciso B.V.
+ * Copyright (C) 2019-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -90,12 +90,12 @@ abstract class BaseListField extends BaseField
      * get valid options, descriptions and selected value
      * @return array
      */
-    public function getNodeData()
+    protected function getNodeOptions()
     {
         if (empty($this->internalEmptyDescription)) {
             $this->internalEmptyDescription = gettext('None');
         }
-        $result = array();
+        $result = [];
         // if option is not required, add empty placeholder
         if (!$this->internalIsRequired && !$this->internalMultiSelect) {
             $result[""] = [
@@ -124,20 +124,22 @@ abstract class BaseListField extends BaseField
     /**
      * {@inheritdoc}
      */
+    public function getNodeData()
+    {
+        return $this->getNodeOptions();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDescription()
     {
-        $data = $this->getNodeData();
-        if (is_array($data)) {
-            $items = [];
-            foreach ($data as $fieldValue) {
-                if ($fieldValue['selected'] == 1) {
-                    $items[] = $fieldValue['value'];
-                }
-            }
-            return implode(', ', $items);
-        } else {
-            return $data;
+        $items = [];
+        foreach ($this->getValues() as $item) {
+            $val = $this->internalOptionList[$item] ?? $item;
+            $items[] = is_array($val) && isset($val['value']) ? $val['value'] : $val;
         }
+        return implode(', ', $items);
     }
 
     /**
@@ -186,5 +188,15 @@ abstract class BaseListField extends BaseField
         }
 
         $this->setValue(implode(',', $values));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getValues(): array
+    {
+        return array_values(array_filter(explode(',', $this->internalValue), function ($k) {
+            return !!strlen($k);
+        }));
     }
 }

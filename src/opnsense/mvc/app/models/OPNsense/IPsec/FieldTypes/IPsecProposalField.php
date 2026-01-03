@@ -87,6 +87,7 @@ class IPsecProposalField extends BaseListField
             'aes128gcm16-ecp521' => null,
             'aes128gcm16-x25519' => 'aes128gcm16-curve25519 [DH31, Modern EC]',
             'aes128gcm16-x448' => 'aes128gcm16-curve448 [DH32, Modern EC]',
+            'aes256gcm16' => 'aes256gcm16',
         ];
     }
 
@@ -124,6 +125,7 @@ class IPsecProposalField extends BaseListField
                 'aes256-sha1-ecp521' => 'aes256-sha1-ecp521 [DH21, NIST EC]',
                 'aes256-sha256-modp1024' => 'aes256-sha256-modp1024 [DH2]',
                 'aes256-sha512-modp1024' => 'aes256-sha512-modp1024 [DH2]',
+                'aes256-sha1' => 'aes256-sha1',
                 'aes256-sha256' => 'aes256-sha256',
                 'null' => gettext('null (testing only, no encryption and no integrity checking!)')
             ]

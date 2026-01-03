@@ -49,13 +49,13 @@
             </proto>
             <descr type="DescriptionField"/>
             <vlanif type="TextField">
-              <Required>Y</Required>
-              <Constraints>
-                <check001>
-                    <ValidationMessage>The device name must be unique.</ValidationMessage>
-                    <type>UniqueConstraint</type>
-                </check001>
-              </Constraints>
+                <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>The device name must be unique.</ValidationMessage>
+                        <type>UniqueConstraint</type>
+                    </check001>
+                </Constraints>
             </vlanif>
         </vlan>
     </items>

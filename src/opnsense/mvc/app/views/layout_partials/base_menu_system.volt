@@ -6,7 +6,7 @@
                     {% for topMenuItem in menuSystem %}
                         {% if topMenuItem.Children|length >= 1 %}
                             <a href="#{{ topMenuItem.Id }}" class="list-group-item {% if topMenuItem.Selected %}  active-menu-title {% endif  %}" data-toggle="collapse" data-parent="#mainmenu">
-                                <span class="{{ topMenuItem.CssClass }} __iconspacer"></span><span style="word-break: keep-all">{{ lang._(topMenuItem.VisibleName) }}</span>
+                                <span class="{{ topMenuItem.CssClass }} __iconspacer"></span><span style="word-break: keep-all">{{ topMenuItem.VisibleName }}</span>
                             </a>
                             <div class="collapse  {% if topMenuItem.Selected %} active-menu in {% endif  %}" id="{{ topMenuItem.Id }}">
                                 {% for subMenuItem in topMenuItem.Children %}
@@ -16,7 +16,7 @@
                                             data-toggle="collapse" data-parent="#{{ topMenuItem.Id }}">
                                             <div style="display: table;width: 100%;">
                                                 <div style="display: table-row">
-                                                    <div style="display: table-cell">{{ lang._(subMenuItem.VisibleName) }}</div>
+                                                    <div style="display: table-cell">{{ subMenuItem.VisibleName }}</div>
                                                     <div style="display: table-cell; text-align:right; vertical-align:middle;">
                                                         <span class="{{ subMenuItem.CssClass }}"></span>
                                                     </div>
@@ -25,9 +25,9 @@
                                         </a>
                                         <div class="collapse {% if subMenuItem.Selected %} active-menu in {% endif  %}" id="{{ topMenuItem.Id }}_{{ subMenuItem.Id }}">
                                             {% for subsubMenuItem in subMenuItem.Children %} {% if subsubMenuItem.IsExternal == "Y" %}
-                                            <a href="{{ subsubMenuItem.Url }}" target="_blank" rel="noopener noreferrer" class="list-group-item menu-level-3-item {% if subsubMenuItem.Selected %} active {% endif  %}">{{ lang._(subsubMenuItem.VisibleName) }}</a>
+                                            <a href="{{ subsubMenuItem.Url }}" target="_blank" rel="noopener noreferrer" class="list-group-item menu-level-3-item {% if subsubMenuItem.Selected %} active {% endif  %}">{{ subsubMenuItem.VisibleName }}</a>
                                             {% elseif acl.isPageAccessible(session.get('Username'),subsubMenuItem.Url) %}
-                                            <a href="{{ subsubMenuItem.Url }}" class="list-group-item menu-level-3-item {% if subsubMenuItem.Selected %} active {% endif  %}">{{ lang._(subsubMenuItem.VisibleName) }}</a>
+                                            <a href="{{ subsubMenuItem.Url }}" class="list-group-item menu-level-3-item {% if subsubMenuItem.Selected %} active {% endif  %}">{{ subsubMenuItem.VisibleName }}</a>
                                             {% endif %} {% endfor %}
                                         </div>
                                     {% elseif subMenuItem.IsExternal == "Y" %}
@@ -35,7 +35,7 @@
                                             aria-expanded="{% if subMenuItem.Selected %}true{%else%}false{% endif  %}">
                                             <div style="display: table;width: 100%;">
                                                 <div style="display: table-row">
-                                                    <div style="display: table-cell">{{ lang._(subMenuItem.VisibleName) }}</div>
+                                                    <div style="display: table-cell">{{ subMenuItem.VisibleName }}</div>
                                                     <div style="display: table-cell; text-align:right; vertical-align:middle;">
                                                         <span class="{{ subMenuItem.CssClass }}"></span>
                                                     </div>
@@ -46,7 +46,7 @@
                                         <a href="{{ subMenuItem.Url }}" class="list-group-item {% if subMenuItem.Selected %} active {% endif  %}">
                                             <div style="display: table;width: 100%;">
                                                 <div style="display: table-row">
-                                                    <div style="display: table-cell">{{ lang._(subMenuItem.VisibleName) }}</div>
+                                                    <div style="display: table-cell">{{ subMenuItem.VisibleName }}</div>
                                                     <div style="display: table-cell; text-align:right; vertical-align:middle;">
                                                         <span class="{{ subMenuItem.CssClass }}"></span>
                                                     </div>
@@ -60,11 +60,11 @@
                             {# parent level link menu items that pivot #}
                             {% if topMenuItem.IsExternal == "Y" %}
                                 <a href="{{ topMenuItem.Url }}" target="_blank" rel="noopener noreferrer" class="list-group-item {% if topMenuItem.Selected %}  active-menu-title {% endif  %}" data-parent="#mainmenu">
-                                    <span class="{{ topMenuItem.CssClass }} __iconspacer"></span>{{ lang._(topMenuItem.VisibleName) }}
+                                    <span class="{{ topMenuItem.CssClass }} __iconspacer"></span>{{ topMenuItem.VisibleName }}
                                 </a>
                             {% elseif acl.isPageAccessible(session.get('Username'),topMenuItem.Url) %}
                                 <a href="{{ topMenuItem.Url }}" class="list-group-item {% if topMenuItem.Selected %}  active-menu-title {% endif  %}" data-parent="#mainmenu">
-                                    <span class="{{ topMenuItem.CssClass }} __iconspacer"></span>{{ lang._(topMenuItem.VisibleName) }}
+                                    <span class="{{ topMenuItem.CssClass }} __iconspacer"></span>{{ topMenuItem.VisibleName }}
                                 </a>
                             {% endif %}
                         {% endif %}

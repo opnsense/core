@@ -40,12 +40,20 @@ class CertificateField extends BaseListField
     /**
      * @var string certificate type cert/ca, reflects config section to use as source
      */
-    private $certificateType = "cert";
+    private $certificateType = 'cert';
 
     /**
      * @var array cached collected certs
      */
-    private static $internalStaticOptionList = array();
+    private static $internalStaticOptionList = [];
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function defaultValidationMessage()
+    {
+        return gettext('Please select a valid certificate from the list.');
+    }
 
     /**
      * set certificate type (cert/ca)
@@ -53,12 +61,12 @@ class CertificateField extends BaseListField
      */
     public function setType($value)
     {
-        if (trim(strtolower($value)) == "ca") {
-            $this->certificateType = "ca";
-        } elseif (trim(strtolower($value)) == "crl") {
-            $this->certificateType = "crl";
+        if (trim(strtolower($value)) == 'ca') {
+            $this->certificateType = 'ca';
+        } elseif (trim(strtolower($value)) == 'crl') {
+            $this->certificateType = 'crl';
         } else {
-            $this->certificateType = "cert";
+            $this->certificateType = 'cert';
         }
     }
 

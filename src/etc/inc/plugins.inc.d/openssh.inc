@@ -81,7 +81,7 @@ function openssh_xmlrpc_sync()
 function openssh_stop()
 {
     /* if run from a shell session, `-af' and the full path is needed */
-    mwexecf('/bin/pkill -af %s', '/usr/local/sbin/sshd', true);
+    mwexecfm('/bin/pkill -af %s', '/usr/local/sbin/sshd');
 }
 
 function openssh_configure_do($verbose = false, $interface_map = null)
@@ -168,9 +168,6 @@ function openssh_configure_do($verbose = false, $interface_map = null)
     $sshconf .= "PubkeyAuthentication yes\n";
     $sshconf .= "Subsystem sftp internal-sftp\n";
     $sshconf .= "AllowGroups wheel";
-    if (!empty($sshcfg['group'][0])) {
-        $sshconf .= " {$sshcfg['group'][0]}";
-    }
     $sshconf .= "\n";
     if (isset($sshcfg['permitrootlogin'])) {
         $sshconf .= "PermitRootLogin yes\n";

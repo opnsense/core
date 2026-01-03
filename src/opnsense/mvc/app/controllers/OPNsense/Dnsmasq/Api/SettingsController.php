@@ -110,14 +110,28 @@ class SettingsController extends ApiMutableModelControllerBase
     public function downloadHostsAction()
     {
         if ($this->request->isGet()) {
-            $this->exportCsv($this->getModel()->hosts->asRecordSet(false, ['comments']));
+            $map = [
+                'ip' => 'ip_address',
+                'hwaddr' => 'hw_address',
+                'host' => 'hostname',
+                'descr' => 'description'
+            ];
+
+            $result = array_map(function ($item) use ($map) {
+                return array_combine(
+                    array_map(fn($k) => $map[$k] ?? $k, array_keys($item)),
+                    array_values($item)
+                );
+            }, $this->getModel()->hosts->asRecordSet(false, ['comments']));
+
+            $this->exportCsv($result);
         }
     }
 
     public function uploadHostsAction()
     {
         if ($this->request->isPost() && $this->request->hasPost('payload')) {
-            /* fields used by kea */
+            /* fields used by kea (and isc dhcp export) */
             $map = [
                 'ip_address' => 'ip',
                 'hw_address' => 'hwaddr',
@@ -241,14 +255,30 @@ class SettingsController extends ApiMutableModelControllerBase
         return $this->getBase('option', 'dhcp_options', $uuid);
     }
 
+    private function getOptionOverlay(): array
+    {
+        $option = $this->request->getPost()['option'];
+        $overlay = [];
+
+        if ($option['type'] === 'set') {
+            $overlay['set_tag'] = '';
+        } elseif ($option['type'] === 'match') {
+            $overlay['tag'] = '';
+            $overlay['interface'] = '';
+            $overlay['force'] = '';
+        }
+
+        return $overlay;
+    }
+
     public function setOptionAction($uuid)
     {
-        return $this->setBase('option', 'dhcp_options', $uuid);
+        return $this->setBase('option', 'dhcp_options', $uuid, $this->getOptionOverlay());
     }
 
     public function addOptionAction()
     {
-        return $this->addBase('option', 'dhcp_options');
+        return $this->addBase('option', 'dhcp_options', $this->getOptionOverlay());
     }
 
     public function delOptionAction($uuid)

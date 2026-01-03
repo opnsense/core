@@ -95,6 +95,7 @@
                 initFormHelpUI();
                 initFormAdvancedUI();
                 addMultiSelectClearUI();
+                initGlobalOpenShortcuts();
 
                 updateSystemStatus();
 
@@ -177,7 +178,10 @@
                     $("#system_status").show();
                 });
                 // enable bootstrap tooltips
-                $('[data-toggle="tooltip"]').tooltip();
+                $('body').tooltip({
+                    selector: '[data-toggle="tooltip"]',
+                    container: 'body'
+                });
 
                 // fix menu scroll position on page load
                 $(".list-group-item.active").each(function(){
@@ -306,6 +310,7 @@
     </div>
 
     <script>
+        /* hook translations  when all JS modules are loaded*/
         $.extend(jQuery.fn.UIBootgrid.translations, {
             add: "{{ lang._('Add') }}",
             deleteSelected: "{{ lang._('Delete selected') }}",
@@ -322,6 +327,7 @@
             refresh: "{{ lang._('Refresh') }}",
             infosTotal: "{{ lang._('Showing %s to %s of %s entries') | format('{{ctx.start}}','{{ctx.end}}','{{ctx.totalRows}}') }}",
             infos: "{{ lang._('Showing %s to %s') | format('{{ctx.start}}','{{ctx.end}}') }}",
+            resetGrid: "{{ lang._('Reset grid layout') }}"
         });
     </script>
 

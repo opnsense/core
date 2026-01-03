@@ -3,7 +3,7 @@
         <div class="col-md-12">
             <br/>
             <div id="{{ message_id|default('change_message_base_form') }}" class="alert alert-info" style="display: none" role="alert">
-                {{ lang._('After changing settings, please remember to apply them.') }}
+                {{ lang._(data_change_message_content | default('After changing settings, please remember to apply them.')) }}
             </div>
             <button class="btn btn-primary" id="{{ button_id|default('reconfigureAct') }}"
                     data-endpoint="{{ data_endpoint }}"

@@ -65,15 +65,19 @@ function isAuthLocalIP($http_host)
         }
     };
 
-    // try using cached addresses
-    $interface_list_ips = get_cached_json_content("/tmp/isAuthLocalIP.cache.json");
+    $auth_cache = '/var/lib/php/tmp/isAuthLocalIP.cache.json';
+
+    /* try using cached addresses */
+    $interface_list_ips = get_cached_json_content($auth_cache);
     if (!empty($interface_list_ips) && $address_in_list($interface_list_ips, $http_host)) {
         return true;
     }
 
-    // fetch addresses and store in cache
+    /* fetch addresses and store in cache */
     $interface_list_ips = get_configured_ip_addresses();
-    file_put_contents("/tmp/isAuthLocalIP.cache.json", json_encode($interface_list_ips));
+    file_put_contents($auth_cache, json_encode($interface_list_ips));
+    chown($auth_cache, 'wwwonly'); /* XXX frontend owns file */
+    chgrp($auth_cache, 'wheel'); /* XXX backend can work with it */
 
     return $address_in_list($interface_list_ips, $http_host);
 }
@@ -232,28 +236,31 @@ function local_sync_accounts()
 
     /* we need to know the current state of users and groups, both configured and actual */
     $current_data = [];
+
     foreach (['usershow', 'groupshow'] as $command) {
         $section = $command == 'usershow' ? 'user' : 'group';
         $current_data[$section] = [];
-        $data = "";
-        exec("/usr/sbin/pw {$command} -a", $data, $ret);
-        if (!$ret) {
-            foreach ($data as $record) {
-                $line = explode(':', $record);
-                // filter system managed users and groups
-                if (count($line) < 3 ||  !strncmp($line[0], '_', 1) || ($line[2] < 2000 && $line[0] != 'root') || $line[2] > 65000) {
-                    continue;
-                }
-                $current_data[$section][$line[2]] = $line;
+
+        foreach (shell_safe('/usr/sbin/pw %s -a', $command, true) as $record) {
+            $line = explode(':', $record);
+
+            // filter system managed users and groups
+            if (count($line) < 3 ||  !strncmp($line[0], '_', 1) || ($line[2] < 2000 && $line[0] != 'root') || $line[2] > 65000) {
+                continue;
             }
+
+            $current_data[$section][$line[2]] = $line;
         }
     }
+
+    /* get array of user and group IDs in the configuration */
     $config_map = [];
+
     foreach (['user', 'group'] as $section) {
         $config_map[$section] = [];
-        if (is_array($config['system'][$section])) {
+        if (!empty($config['system'][$section])) {
             foreach ($config['system'][$section] as $item) {
-                if ($section == 'user' && (empty($item['shell']) && $item['uid'] != 0)) {
+                if ($section == 'user' && (empty($item) || (empty($item['shell']) && !empty($item['uid'])))) {
                     /* no shell, no local user */
                     continue;
                 }
@@ -262,6 +269,7 @@ function local_sync_accounts()
             }
         }
     }
+
     /* remove conflicting users and groups (uid/gid or name mismatch) */
     foreach ($current_data as $section => $data) {
         foreach ($data as $oid => $object) {
@@ -406,7 +414,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
         @unlink("{$user_home}/.ssh/authorized_keys");
     }
 
-    mwexecf('/usr/sbin/pw %s %s', [$lock_account, $user_name], true);
+    mwexecfm('/usr/sbin/pw %s %s', [$lock_account, $user_name]);
 }
 
 function local_user_set_password(&$user, $password = null)
@@ -455,12 +463,14 @@ function local_user_set_password(&$user, $password = null)
 function local_user_list_uids()
 {
     $uids = [];
-    foreach (explode("\n", shell_safe('/usr/sbin/pw usershow -a')) as $line) {
+
+    foreach (shell_safe('/usr/sbin/pw usershow -a', [], true) as $line) {
         $parts = explode(":", $line);
         if (count($parts) > 2) {
             $uids[] = $parts[2];
         }
     }
+
     return $uids;
 }
 
@@ -514,23 +524,11 @@ function local_group_set($group, $uids = null)
         $group_members = implode(',', $members);
     }
 
-    $ret = mwexecf('/usr/sbin/pw groupshow %s', $group_name, true);
-    if ($ret) {
-        $group_op = 'groupadd';
-    } else {
-        $group_op = 'groupmod';
-    }
+    $new = mwexecfm('/usr/sbin/pw groupshow %s', $group_name);
 
-    mwexecf('/usr/sbin/pw %s %s -g %s -M %s', [$group_op, $group_name, $group_gid, $group_members]);
-}
-
-function auth_get_authserver_local()
-{
-    return [
-      'host' => $config['system']['hostname'],
-      'name' => gettext('Local Database'),
-      'type' => 'local',
-    ];
+    mwexecf('/usr/sbin/pw group%s %s -g %s -M %s', [
+        $new ? 'add' : 'mod', $group_name, $group_gid, $group_members
+    ]);
 }
 
 /**
@@ -539,67 +537,14 @@ function auth_get_authserver_local()
  */
 function auth_get_authserver($name)
 {
-    global $config;
-
-    if ($name == 'Local Database') {
-        return auth_get_authserver_local();
+    $servers = auth_get_authserver_list();
+    if (isset($servers[$name])) {
+        return $servers[$name];
     }
-
-    if (!empty($config['system']['authserver'])) {
-        foreach ($config['system']['authserver'] as $authcfg) {
-            if ($authcfg['name'] == $name) {
-                if ($authcfg['type'] == 'ldap' || $authcfg['type'] == 'ldap-totp') {
-                    // make sure a user and password entry exists and are null for anonymous usage
-                    if (empty($authcfg['ldap_binddn'])) {
-                        $authcfg['ldap_binddn'] = null;
-                    }
-                    if (empty($authcfg['ldap_bindpw'])) {
-                        $authcfg['ldap_bindpw'] = null;
-                    }
-                }
-                return $authcfg;
-            }
-        }
-    }
-
     return false;
 }
 
-function auth_get_authserver_list()
+function auth_get_authserver_list($service = '')
 {
-    global $config;
-
-    $list = [];
-
-    if (!empty($config['system']['authserver'])) {
-        foreach ($config['system']['authserver'] as $authcfg) {
-            /* Add support for disabled entries? */
-            $list[$authcfg['name']] = $authcfg;
-        }
-    }
-
-    $list['Local Database'] = auth_get_authserver_local();
-
-    return $list;
-}
-
-/**
- * return authenticator object
- * @param array|null $authcfg configuration
- * @return Auth\Base type object
- */
-function get_authenticator($authcfg = null)
-{
-    if (empty($authcfg)) {
-        $authName = 'Local Database';
-    } else {
-        $authName = $authcfg['name'];
-        if ($authcfg['type'] == 'local') {
-            // avoid gettext type issues on Local Database, authenticator should always be named "Local Database"
-            $authName = 'Local Database';
-        }
-    }
-
-    $authFactory = new OPNsense\Auth\AuthenticationFactory();
-    return $authFactory->get($authName);
+    return (new \OPNsense\Auth\AuthenticationFactory())->listServers($service);
 }

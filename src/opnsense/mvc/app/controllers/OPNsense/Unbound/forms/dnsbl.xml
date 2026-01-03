@@ -1,25 +1,26 @@
 <form>
     <field>
-        <id>unbound.dnsbl.enabled</id>
+        <id>blocklist.enabled</id>
         <label>Enable</label>
         <type>checkbox</type>
         <help>Enable the usage of DNS blocklists.</help>
+        <grid_view>
+            <width>6em</width>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+        </grid_view>
     </field>
     <field>
-        <id>unbound.dnsbl.safesearch</id>
-        <label>Force SafeSearch</label>
-        <type>checkbox</type>
-        <style>safesearch</style>
-        <help>Force the usage of SafeSearch on Google, DuckDuckGo, Bing, Qwant, PixaBay and YouTube</help>
-    </field>
-    <field>
-        <id>unbound.dnsbl.type</id>
+        <id>blocklist.type</id>
         <label>Type of DNSBL</label>
         <type>select_multiple</type>
         <help>Select which kind of DNSBL you want to use.</help>
+        <grid_view>
+            <formatter>listDisplay</formatter>
+        </grid_view>
     </field>
     <field>
-        <id>unbound.dnsbl.lists</id>
+        <id>blocklist.lists</id>
         <label>URLs of Blocklists</label>
         <type>select_multiple</type>
         <style>tokenize</style>
@@ -28,15 +29,15 @@
         <help>List of domains from where blocklist will be downloaded.</help>
     </field>
     <field>
-        <id>unbound.dnsbl.whitelists</id>
-        <label>Whitelist Domains</label>
+        <id>blocklist.allowlists</id>
+        <label>Allowlist Domains</label>
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>List of domains to whitelist. You can use regular expressions.</help>
+        <help>List of domains to allow. You can use regular expressions. This allow list only applies to blocklist matches on items in this policy.</help>
     </field>
     <field>
-        <id>unbound.dnsbl.blocklists</id>
+        <id>blocklist.blocklists</id>
         <label>Blocklist Domains</label>
         <type>select_multiple</type>
         <style>tokenize</style>
@@ -44,7 +45,7 @@
         <help>List of domains to blocklist. Only exact matches are supported.</help>
     </field>
     <field>
-        <id>unbound.dnsbl.wildcards</id>
+        <id>blocklist.wildcards</id>
         <label>Wildcard Domains</label>
         <type>select_multiple</type>
         <style>tokenize</style>
@@ -55,7 +56,32 @@
         </help>
     </field>
     <field>
-        <id>unbound.dnsbl.address</id>
+        <id>blocklist.source_nets</id>
+        <label>Source Net(s)</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>Source networks to apply policy on. Examples are 192.168.1.0/24 or 192.168.1.1. Leave empty to apply on everything. All specified networks should use the same protocol family and have equal sizes to avoid priority issues. </help>
+        <grid_view>
+            <formatter>listDisplay</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>blocklist.cache_ttl</id>
+        <label>Cache TTL</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>
+            TTL for the blocklists cache. Remote blocklists don't usually update more often than once a day.
+            Therefore, when blocklists are downloaded, they are cached locally to prevent unnecessary fetches over the internet.
+            You can change this behavior here if you know the remote files rotate faster than this.
+        </help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>blocklist.address</id>
         <label>Destination Address</label>
         <type>text</type>
         <advanced>true</advanced>
@@ -63,12 +89,25 @@
             Destination ip address for entries in the blocklist (leave empty to use default: 0.0.0.0).
             Not used when "Return NXDOMAIN" is checked.
         </help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
-        <id>unbound.dnsbl.nxdomain</id>
+        <id>blocklist.nxdomain</id>
         <label>Return NXDOMAIN</label>
         <type>checkbox</type>
         <advanced>true</advanced>
         <help>Use the DNS response code NXDOMAIN instead of a destination address.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>blocklist.description</id>
+        <label>Description</label>
+        <type>text</type>
     </field>
 </form>

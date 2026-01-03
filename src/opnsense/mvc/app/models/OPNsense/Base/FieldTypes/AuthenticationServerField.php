@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2019 Deciso B.V.
+ * Copyright (C) 2015-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,12 +39,17 @@ class AuthenticationServerField extends BaseListField
     /**
      * @var array collected options
      */
-    private static $internalStaticOptionList = array();
+    private static $internalStaticOptionList = [];
 
     /**
      * @var array filters to use on the authservers list
      */
-    private $internalFilters = array();
+    private array $internalFilters = [];
+
+    /**
+     * @var string optionally pass service we're requesting our servers for
+     */
+    private string $internalService = '';
 
     /**
      * @var string key to use for option selections, to prevent excessive reloading
@@ -57,10 +62,10 @@ class AuthenticationServerField extends BaseListField
     protected function actionPostLoadingEvent()
     {
         if (!isset(self::$internalStaticOptionList[$this->internalCacheKey])) {
-            self::$internalStaticOptionList[$this->internalCacheKey] = array();
+            self::$internalStaticOptionList[$this->internalCacheKey] = [];
 
             $authFactory = new \OPNsense\Auth\AuthenticationFactory();
-            $allAuthServers = $authFactory->listServers();
+            $allAuthServers = $authFactory->listServers($this->internalService);
 
             foreach ($allAuthServers as $key => $value) {
                 // use filters to determine relevance
@@ -78,7 +83,7 @@ class AuthenticationServerField extends BaseListField
                     }
                 }
                 if ($isMatched) {
-                    self::$internalStaticOptionList[$this->internalCacheKey][$key] = $key;
+                    self::$internalStaticOptionList[$this->internalCacheKey][$key] = $value['name'];
                 }
             }
             natcasesort(self::$internalStaticOptionList[$this->internalCacheKey]);
@@ -89,13 +94,25 @@ class AuthenticationServerField extends BaseListField
     /**
      * set filters to use (in regex) per field, all tags are combined
      * and cached for the next object using the same filters
-     * @param $filters filters to use
+     * @param array $filters filters to use
      */
     public function setFilters($filters)
     {
         if (is_array($filters)) {
             $this->internalFilters = $filters;
-            $this->internalCacheKey = md5(serialize($this->internalFilters));
+            $this->internalCacheKey = md5(serialize($this->internalFilters) . $this->internalService);
+        }
+    }
+
+    /**
+     * set service type to limit results too
+     * @param string $service service name
+     */
+    public function setService($service)
+    {
+        if (is_string($service)) {
+            $this->internalService = $service;
+            $this->internalCacheKey = md5(serialize($this->internalFilters) . $this->internalService);
         }
     }
 }

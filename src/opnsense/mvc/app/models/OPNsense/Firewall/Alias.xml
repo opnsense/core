@@ -55,14 +55,14 @@
                     </OptionValues>
                 </proto>
                 <interface type="InterfaceField">
-                  <Constraints>
-                      <check001>
-                          <ValidationMessage>IPv6 Dynamic Host require an interface to track.</ValidationMessage>
-                          <type>SetIfConstraint</type>
-                          <field>type</field>
-                          <check>dynipv6host</check>
-                      </check001>
-                  </Constraints>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>IPv6 Dynamic Host require an interface to track.</ValidationMessage>
+                            <type>SetIfConstraint</type>
+                            <field>type</field>
+                            <check>dynipv6host</check>
+                        </check001>
+                    </Constraints>
                 </interface>
                 <counters type="BooleanField"/>
                 <updatefreq type="NumericField">
@@ -75,8 +75,13 @@
                     <OptionValues>
                         <Basic>Basic</Basic>
                         <Bearer>Bearer</Bearer>
+                        <Header>Header</Header>
                     </OptionValues>
                 </authtype>
+                <expire type="IntegerField">
+                    <MinimumValue>60</MinimumValue>
+                    <MaximumValue>999999999</MaximumValue>
+                </expire>
                 <categories type="ModelRelationField">
                     <Model>
                         <rulesets>
@@ -90,6 +95,16 @@
                 </categories>
                 <current_items type="IntegerField" volatile="true"/>
                 <last_updated type="TextField" volatile="true"/>
+                <eval_nomatch type="IntegerField" volatile="true"/>
+                <eval_match type="IntegerField" volatile="true"/>
+                <in_block_p type="IntegerField" volatile="true"/>
+                <in_block_b type="IntegerField" volatile="true"/>
+                <in_pass_p type="IntegerField" volatile="true"/>
+                <in_pass_b type="IntegerField" volatile="true"/>
+                <out_block_p type="IntegerField" volatile="true"/>
+                <out_block_b type="IntegerField" volatile="true"/>
+                <out_pass_p type="IntegerField" volatile="true"/>
+                <out_pass_b type="IntegerField" volatile="true"/>
                 <description type="DescriptionField"/>
             </alias>
         </aliases>

@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     }
 
-    $pconfig = array();
+    $pconfig = [];
 
     if (isset($_GET['savemsg'])) {
         $savemsg = htmlspecialchars(gettext($_GET['savemsg']));
@@ -78,18 +78,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig[$dnsgwname] = !empty($config['system'][$dnsgwname]) ? $config['system'][$dnsgwname] : 'none';
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $input_errors = array();
+    $input_errors = [];
     $pconfig = $_POST;
 
     /* input validation */
     $reqdfields = explode(" ", "hostname domain");
-    $reqdfieldsn = array(gettext("Hostname"),gettext("Domain"));
+    $reqdfieldsn = [gettext("Hostname"),gettext("Domain")];
 
     if (!empty($_FILES['pictfile']) && is_uploaded_file($_FILES['pictfile']['tmp_name'])) {
         if ($_FILES['pictfile']['size'] > (10 * 1024 * 1024)) {
             $input_errors[] = gettext("The image file is too large. Please upload something smaller than 10MB.");
         } else {
             $fd_pic = fopen($_FILES['pictfile']['tmp_name'], "rb");
+            $data = '';
             while (($buf=fread($fd_pic, 8192)) != '') {
                 $data .= $buf;
             }
@@ -132,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     /* collect direct attached networks and static routes */
-    $direct_networks_list = array();
+    $direct_networks_list = [];
     foreach ($all_intf_details as $ifname => $ifcnf) {
         foreach ($ifcnf['ipv4'] as $addr) {
             $direct_networks_list[] = gen_subnet($addr['ipaddr'], $addr['subnetbits']) . "/{$addr['subnetbits']}";
@@ -220,9 +221,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         $olddnsservers = $config['system']['dnsserver'];
-        $config['system']['dnsserver'] = array();
-
+        $config['system']['dnsserver'] = [];
         $outdnscounter = 0;
+        $staleroutes = [];
+
         for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
             $dnsname="dns{$dnscounter}";
             $dnsgwname="dns{$dnscounter}gw";
@@ -232,7 +234,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (!empty($pconfig[$dnsname])) {
                 $config['system']['dnsserver'][] = $pconfig[$dnsname];
             }
+
             $config['system'][$dnsgwname] = "none";
+
             if (!empty($pconfig[$dnsgwname])) {
                 // The indexes used to save the item don't have to correspond to the ones in the config, but since
                 // we always redirect after save, the configuration content is read after a successful change.
@@ -240,30 +244,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $outdnsgwname="dns{$outdnscounter}gw";
                 $config['system'][$outdnsgwname] = $thisdnsgwname;
             }
+
             if ($olddnsgwname != "none" && ($olddnsgwname != $thisdnsgwname || $olddnsservers[$dnscounter-1] != $pconfig[$dnsname])) {
                 // A previous DNS GW name was specified. It has now gone or changed, or the DNS server address has changed.
                 // Remove the route. Later calls will add the correct new route if needed.
-                if (is_ipaddrv4($olddnsservers[$dnscounter-1])) {
-                    mwexec("/sbin/route delete " . escapeshellarg($olddnsservers[$dnscounter-1]));
-                } else {
-                    if (is_ipaddrv6($olddnsservers[$dnscounter-1])) {
-                        mwexec("/sbin/route delete -inet6 " . escapeshellarg($olddnsservers[$dnscounter-1]));
-                    }
-                }
+                $staleroutes[] = $olddnsservers[$dnscounter - 1];
             }
         }
 
         write_config();
 
-        /* time zone change first */
-        system_timezone_configure();
+        foreach ($staleroutes as $staleroute) {
+            /* explicit flush before proceeding */
+            system_host_route($staleroute, null);
+        }
+
+        system_timezone_configure(); /* time zone change first */
         system_hostname_configure();
         system_resolver_configure();
         plugins_configure('dns');
         plugins_configure('dhcp');
         filter_configure();
 
-        header(url_safe('Location: /system_general.php?savemsg=%s', array('The changes have been applied successfully.')));
+        header(url_safe('Location: /system_general.php?savemsg=%s', ['The changes have been applied successfully.']));
         exit;
     }
 }
@@ -341,9 +344,9 @@ $( document ).ready(function() {
               <td>
                 <input name="domain" type="text" value="<?=$pconfig['domain'];?>" />
                 <div class="hidden" data-for="help_for_domain">
-                  <?=gettext("Do not use 'local' as your internal domain name. It is reserved for and will interfere with mDNS (avahi, bonjour, etc.). Use the special-purpose home.arpa domain instead."); ?>
+                  <?=gettext("Do not use 'local' as your internal domain name. It is reserved for and will interfere with mDNS (avahi, bonjour, etc.). Instead, use the special-use domain internal or home.arpa, also to avoid DNSSEC validation issues."); ?>
                   <br />
-                  <?=sprintf(gettext("e.g. %sexample.net, branch.example.com, home.arpa, etc.%s"),'<em>','</em>') ?>
+                  <?=sprintf(gettext("e.g. %sinternal, name.internal%s"),'<em>','</em>') ?>
                 </div>
               </td>
             </tr>
@@ -367,7 +370,7 @@ $( document ).ready(function() {
             <tr>
               <td><a id="help_for_language" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Language");?></td>
               <td>
-                <select name="language" class="selectpicker" data-style="btn-default">
+                <select name="language" class="selectpicker" data-style="btn-default" data-dropup-auto="true" data-size="10">
 <?php
                   foreach (get_locale_list() as $lcode => $ldesc):?>
                   <option value="<?=$lcode;?>" <?= $lcode == $pconfig['language'] ? 'selected="selected"' : '' ?>>
@@ -521,7 +524,7 @@ $( document ).ready(function() {
                   <strong><?=gettext("Exclude interfaces");?></strong>
                   <br/>
                   <select name="dnsallowoverride_exclude[]" class="selectpicker" data-style="btn-default" data-live-search="true"  multiple="multiple">
-<?php foreach (legacy_config_get_interfaces(array('virtual' => false, "enable" => true)) as $iface => $ifcfg): ?>
+<?php foreach (legacy_config_get_interfaces(['virtual' => false, 'enable' => true]) as $iface => $ifcfg): ?>
                     <option value="<?=$iface;?>" <?=in_array($iface, $pconfig['dnsallowoverride_exclude']) ? "selected='selected'" : "";?>>
                       <?= $ifcfg['descr'] ?>
                     </option>

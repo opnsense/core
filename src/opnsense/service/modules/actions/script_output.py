@@ -38,6 +38,17 @@ from .base import BaseAction
 class Action(BaseAction):
     temp_prefix = 'tmpcfd_'
     cached_results = None
+
+    def cache_flush(self, parameters):
+        if Action.cached_results is None or not self.cache_ttl:
+            return
+        try:
+            script_hash = hashlib.sha256(self._cmd_builder(parameters).encode()).hexdigest()
+        except TypeError as e:
+            return
+        if script_hash in Action.cached_results and os.path.isfile(Action.cached_results[script_hash]['filename']):
+            os.remove(Action.cached_results[script_hash]['filename'])
+
     def execute(self, parameters, message_uuid, *args, **kwargs):
         super().execute(parameters, message_uuid, *args, **kwargs)
         try:

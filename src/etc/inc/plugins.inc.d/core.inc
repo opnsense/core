@@ -228,18 +228,6 @@ function core_devices()
                 'ifdescr' => gettext('wireless clone'),
                 'name' => $conf['if'],
             ];
-
-            $realif = get_real_interface($id);
-            if ($realif == $conf['if']) {
-                continue;
-            }
-
-            /* return both implicit and explicit clone if implicit clone was given */
-            $wlan_names[$realif] = [
-                'descr' => sprintf('%s (%s)', $realif, gettext('wireless clone')),
-                'ifdescr' => gettext('wireless clone'),
-                'name' => $realif,
-            ];
         }
     }
 
@@ -264,10 +252,18 @@ function core_cron()
     $jobs = array();
 
     $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d syslog archive', '1');
-    $jobs[]['autocron'] = array('/usr/local/sbin/expiretable -v -t 3600 sshlockout', '2');
-    $jobs[]['autocron'] = array('/usr/local/sbin/expiretable -v -t 3600 virusprot', '3');
     $jobs[]['autocron'] = array('/usr/local/sbin/ping_hosts.sh', '*/4');
     $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d firmware changelog cron', '0', '22');
+
+    foreach ((new \OPNsense\Firewall\Alias(true))->aliases->alias->iterateItems() as $alias) {
+        if ($alias->type->isEqual('external') && !$alias->expire->isEmpty()) {
+            $cmd = [exec_safe('/sbin/pfctl -qt %s -T expire %s', [$alias->name, $alias->expire])];
+            if ($alias->expire->asFloat() >= 3600) {
+                $cmd[] = '0,15,30,45';  /* every 15 minute cleanup */
+            }
+            $jobs[]['autocron'] = $cmd;
+        }
+    }
 
     /**
      * rrd graph collector, only schedule execution when enabled
@@ -287,14 +283,6 @@ function core_cron()
         );
     }
 
-    if (!empty($config['system']['dhcpbackup']) && $config['system']['dhcpbackup'] > 0) {
-        $jobs[]['autocron'] = array(
-            '/usr/local/etc/rc.syshook.d/backup/20-dhcpleases',
-            '0',
-            '*/' . $config['system']['dhcpbackup']
-        );
-    }
-
     if (!empty($config['system']['netflowbackup']) && $config['system']['netflowbackup'] > 0) {
         $jobs[]['autocron'] = array(
             '/usr/local/etc/rc.syshook.d/backup/20-netflow',
@@ -310,7 +298,7 @@ function core_cron()
         }
     }
 
-    if (!empty((string)(new OPNsense\Trust\General())->fetch_crls)) {
+    if (!(new OPNsense\Trust\General())->fetch_crls->isEmpty()) {
         $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d system trust download_crls', '1');
     }
 
@@ -323,7 +311,7 @@ function core_syslog()
 
     $logfacilities['audit'] = ['facility' => ['audit']];
     $logfacilities['configd'] = ['facility' => ['configd.py']];
-    $logfacilities['dhcpd'] = ['facility' => ['dhcpd']];
+    $logfacilities['kernel'] = ['facility' => ['kernel']];
     $logfacilities['lighttpd'] = ['facility' => ['lighttpd']];
     $logfacilities['pkg'] = ['facility' => ['pkg', 'pkg-static']];
     $logfacilities['ppps'] = ['facility' => ['ppp']];
@@ -334,85 +322,75 @@ function core_syslog()
     return $logfacilities;
 }
 
-/**
- *  sync configuration via xmlrpc
- * @return array
- */
 function core_xmlrpc_sync()
 {
-    $result = array();
+    $result = [];
 
-    $result[] = array(
+    $result[] = [
         'description' => gettext('Users and Groups'),
         'help' => gettext('Synchronize the users and groups over to the other HA host.'),
         'section' => 'system.user,system.group',
         'id' => 'users',
-        'services' => ["login"],
-    );
-    $result[] = array(
-        'description' => gettext('Auth Servers'),
+        'services' => ['login'],
+    ];
+
+    $result[] = [
+        'description' => gettext('Authentication Servers'),
         'help' => gettext('Synchronize the authentication servers (e.g. LDAP, RADIUS) over to the other HA host.'),
         'section' => 'system.authserver',
         'id' => 'authservers',
-        'services' => ["login"],
-    );
-    $result[] = array(
-        'description' => gettext('Certificates'),
+        'services' => ['login'],
+    ];
+
+    $result[] = [
+        'description' => gettext('Certificates and Authorities'),
         'help' => gettext('Synchronize the Certificate Authorities, Certificates, and Certificate Revocation Lists over to the other HA host.'),
         'section' => 'cert,ca,crl',
         'id' => 'certs',
-    );
-    $result[] = array(
-        'description' => gettext('DHCPD'),
-        'help' => gettext('Synchronize the DHCP Server settings over to the other HA host. This only applies to DHCP for IPv4.'),
-        'section' => 'dhcpd',
-        'id' => 'dhcpd',
-        'services' => ["dhcpd"],
-    );
-    $result[] = array(
-        'description' => gettext('DHCPDv6'),
-        'help' => gettext('Synchronize DHCPv6 including router advertisements.'),
-        'section' => 'dhcpdv6',
-        'id' => 'dhcpdv6',
-        'services' => ["dhcpdv6", "radvd"],
-    );
-    $result[] = array(
+    ];
+
+    $result[] = [
         'description' => gettext('Virtual IPs'),
         'help' => gettext('Synchronize the CARP Virtual IPs to the other HA host.'),
         'section' => 'virtualip',
         'id' => 'virtualip',
-    );
-    $result[] = array(
+    ];
+
+    $result[] = [
         'description' => gettext('Static Routes'),
         'help' => gettext('Synchronize the Static Route configuration and Gateways to the other HA host.'),
         'section' => 'staticroutes,gateways,OPNsense.Gateways',
         'id' => 'staticroutes',
-        'services' => ["routing", "dpinger"],
-    );
-    $result[] = array(
-        'description' => gettext('Syslog'),
+        'services' => ['routing', 'dpinger'],
+    ];
+
+    $result[] = [
+        'description' => gettext('System logging'),
         'section' => 'syslog,OPNsense.Syslog',
-        'id' => 'syslog',
-        'services' => ["syslogd"],
-    );
-    $result[] = array(
+        'id' => 'syslog-ng',
+        'services' => ['syslogd'],
+    ];
+
+    $result[] = [
         'description' => gettext('Cron'),
         'section' => 'OPNsense.cron',
         'id' => 'cron',
-        'services' => ["cron"],
-    );
-    $result[] = array(
+        'services' => ['cron'],
+    ];
+
+    $result[] = [
         'description' => gettext('System Tunables'),
         'section' => 'sysctl',
         'id' => 'sysctl',
-        'services' => ["sysctl"],
-    );
-    $result[] = array(
+        'services' => ['sysctl'],
+    ];
+
+    $result[] = [
         'description' => gettext('Web GUI'),
         'section' => 'system.webgui',
         'id' => 'webgui',
-        'services' => ["webgui"],
-    );
+        'services' => ['webgui'],
+    ];
 
     return $result;
 }
@@ -421,13 +399,14 @@ function core_configure()
 {
     return [
         /* XXX these are all specialized and try to avoid extra script use */
+        'cache_flush' => ['system_cache_flush'],
+        'crl' => ['core_trust_crl'],
         'dns_reload' => ['system_resolver_configure'],
         'firmware_reload' => ['system_firmware_configure'],
         'route_reload' => ['system_routing_configure:2'],
         'syslog_reset' => ['system_syslog_reset'],
         'trust_reload' => ['system_trust_configure'],
         'user_changed' => ['core_user_changed_groups:2'],
-        'crl' => ['core_trust_crl'],
     ];
 }
 
@@ -448,11 +427,9 @@ function core_user_changed_groups($unused, $username)
     if (is_array($config['system']['user'])) {
         foreach ($config['system']['user'] as $user) {
             if ($user['name'] == $username && (!empty($user['shell']) || $user['uid'] == 0)) {
-                exec("/usr/bin/groups " . escapeshellarg($username) . ' 2>/dev/null', $out, $ret);
-                $current_groups = [];
-                if (!$ret) {
-                    $current_groups = explode(" ", $out[0]);
-                }
+                $output = shell_safe('/usr/bin/groups %s 2> /dev/null', $username);
+                $current_groups = strlen($output) ? explode(' ', $output) : [];
+
                 foreach ($config['system']['group'] as $group) {
                     $in_group = false;
                     foreach (!empty($group['member']) ? $group['member'] : [] as $grp) {

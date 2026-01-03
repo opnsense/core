@@ -38,13 +38,21 @@ class FileObject
      * @param string $mode type of access you require to the stream.
      * @param int $permissions permissions to set, see chmod for usage
      * @param bool $operation flock operation mode when set
+     * @param string $chown username to chown to
      */
-    public function __construct($filename, $mode, $permissions = null, $operation = null)
+    public function __construct($filename, $mode, $permissions = null, $operation = null, string $chown = null)
     {
         $this->fhandle = fopen($filename, $mode . 'e');   /* always add close-on-exec flag to prevent fork inherit */
 
         if ($permissions != null) {
             @chmod($filename, $permissions);
+        }
+        if (!empty($chown)) {
+            $parts = explode(':', $chown);
+            @chown($filename, $parts[0]);
+            if (!empty($parts[1])) {
+                @chgrp($filename, $parts[1]);
+            }
         }
         if ($operation != null) {
             if (!flock($this->fhandle, $operation)) {

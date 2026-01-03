@@ -69,26 +69,6 @@ function dict_to_tree(node, path) {
 }
 
 /**
- * return child data for provided node
- * @param {*} raw_data all source data
- * @param {*} node jqTree node to traverse
- * @returns
- */
-function tree_node_data(raw_data, node)
-{
-    let path = [];
-    while (node.id !== undefined) {
-        path.push(node.name);
-        node = node.parent;
-    }
-    let tmp = raw_data;
-    for (let i=path.length -1 ; i >=0 ; i--) {
-        tmp = tmp[path[i]];
-    }
-    return tmp;
-}
-
-/**
  * create or update tree
  * @param {*} src_data source data
  * @param {*} target object reference

@@ -258,7 +258,7 @@ function legacy_interfaces_details($intf = null)
         $tmp_intf = '';
     }
 
-    $cmd = '/sbin/ifconfig -m -v ' . $tmp_intf;
+    $cmd = '/sbin/ifconfig -Lmv ' . $tmp_intf;
     exec($cmd . ' 2>&1', $ifconfig_data, $ret);
     if ($ret) {
         /* only error if no explicit interface was chosen */
@@ -351,8 +351,10 @@ function legacy_interfaces_details($intf = null)
                 'detached' => false,
                 'ipaddr' => $addr,
                 'link-local' => !!preg_match('/^fe[89ab][0-9a-f]:/i', $addr),
+                'pltime' => '0',
                 'tentative' => false,
                 'tunnel' => false,
+                'vltime' => '0',
             ];
             for ($i = 0; $i < count($line_parts); ++$i) {
                 if ($line_parts[$i] == 'prefixlen') {
@@ -376,6 +378,10 @@ function legacy_interfaces_details($intf = null)
                     $tmp['detached'] = true;
                 } elseif ($line_parts[$i] == 'tentative') {
                     $tmp['tentative'] = true;
+                } elseif ($line_parts[$i] == 'pltime') {
+                    $tmp['pltime'] = $line_parts[$i + 1];
+                } elseif ($line_parts[$i] == 'vltime') {
+                    $tmp['vltime'] = $line_parts[$i + 1];
                 }
             }
             if (isset($tmp['subnetbits'])) {
@@ -700,8 +706,7 @@ function get_interface_list($only_active = false, $include_dmesg = false)
     $ifnames_up = legacy_interface_listget('up');
     $ifnames = legacy_interface_listget();
 
-    $all_interfaces = legacy_config_get_interfaces(['virtual' => false]);
-    $all_interface_data = legacy_interfaces_details();
+    $interface_data = legacy_interfaces_details();
 
     if ($only_active) {
         $_ifnames = [];
@@ -724,25 +729,18 @@ function get_interface_list($only_active = false, $include_dmesg = false)
             continue;
         }
 
-        $ifdata = !empty($all_interface_data[$ifname]) ? $all_interface_data[$ifname] : [];
+        $ifdata = !empty($interface_data[$ifname]) ? $interface_data[$ifname] : [];
         $toput = [
           'up' => in_array($ifname, $ifnames_up),
           'ipaddr' => !empty($ifdata['ipv4'][0]['ipaddr']) ? $ifdata['ipv4'][0]['ipaddr'] : null,
           'mac' => !empty($ifdata['macaddr']) ? $ifdata['macaddr'] : null,
-          'dmesg' => '',
+          'descr' => '',
         ];
 
-        foreach ($all_interfaces as $name => $int) {
-            if ($int['if'] == $ifname) {
-                $toput['friendly'] = $name;
-                break;
-            }
-        }
-
         foreach ($dmesg_arr as $dmesg_line) {
-            $dmesg = [];
-            if (preg_match("/^{$ifname}: <(.*?)>/i", $dmesg_line, $dmesg) == 1) {
-                $toput['dmesg'] = $dmesg[1];
+            $descr = [];
+            if (preg_match("/\b{$ifname}: <(.*?)>/i", $dmesg_line, $descr) == 1) {
+                $toput['descr'] = $descr[1];
                 break;
             }
         }

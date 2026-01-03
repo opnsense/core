@@ -71,7 +71,7 @@ class ServiceController extends ApiControllerBase
      */
     public function searchSessionsAction()
     {
-        $data = json_decode((new Backend())->configdRun('openvpn connections client,server') ?? '', true) ?? [];
+        $data = json_decode((new Backend())->configdRun('openvpn connections client,server'), true) ?? [];
         $records = [];
         $roles = ['client', 'server'];
         if ($this->request->has('type') && is_array($this->request->get('type'))) {
@@ -140,7 +140,7 @@ class ServiceController extends ApiControllerBase
     public function searchRoutesAction()
     {
         $records = [];
-        $data = json_decode((new Backend())->configdRun('openvpn connections client,server') ?? '', true) ?? [];
+        $data = json_decode((new Backend())->configdRun('openvpn connections client,server'), true) ?? [];
         $records = [];
         $roles = ['client', 'server'];
         if ($this->request->has('type') && is_array($this->request->get('type'))) {
@@ -179,7 +179,7 @@ class ServiceController extends ApiControllerBase
         $server_id = $this->request->get('server_id', null);
         $session_id = $this->request->get('session_id', null);
         if ($server_id != null && $session_id != null) {
-            $data = json_decode((new Backend())->configdpRun('openvpn kill', [$server_id, $session_id]) ?? '', true);
+            $data = json_decode((new Backend())->configdpRun('openvpn kill', [$server_id, $session_id]), true);
             if (!empty($data)) {
                 return $data;
             }

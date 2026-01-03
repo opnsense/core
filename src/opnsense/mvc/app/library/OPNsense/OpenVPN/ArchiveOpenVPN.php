@@ -28,6 +28,9 @@
 
 namespace OPNsense\OpenVPN;
 
+use OPNsense\Core\AppConfig;
+use OPNsense\Core\Shell;
+
 class ArchiveOpenVPN extends PlainOpenVPN
 {
     /**
@@ -67,7 +70,7 @@ class ArchiveOpenVPN extends PlainOpenVPN
     {
         $conf = $this->openvpnConfParts();
         $base_filename = $this->getBaseFilename();
-        $tempdir = tempnam(sys_get_temp_dir(), '_ovpn');
+        $tempdir = tempnam((new AppConfig())->application->tempDir, '_ovpn');
         $content_dir = $tempdir . "/" . $base_filename;
         if (file_exists($tempdir)) {
             unlink($tempdir);
@@ -105,11 +108,7 @@ class ArchiveOpenVPN extends PlainOpenVPN
         }
         file_put_contents("{$content_dir}/{$base_filename}.ovpn", implode("\n", $conf));
 
-        $command = "cd " . escapeshellarg("{$tempdir}")
-            . " && /usr/local/bin/zip -r "
-            . escapeshellarg("{$content_dir}.zip")
-            . " " . escapeshellarg($base_filename);
-        exec($command);
+        Shell::run_safe('cd %s && /usr/local/bin/zip -r %s %s', [$tempdir, $content_dir . "zip", $base_filename]);
         $result = file_get_contents($content_dir . ".zip");
 
         // cleanup

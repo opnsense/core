@@ -57,12 +57,34 @@ class Dnsmasq extends BaseModel
         $messages = parent::performValidation($validateFullModel);
 
         $usedDhcpIpAddresses = [];
+        $usedHostFqdns = [];
+        $usedHostCnames = [];
         foreach ($this->hosts->iterateItems() as $host) {
             if (!$host->hwaddr->isEmpty() || !$host->client_id->isEmpty()) {
-                foreach (explode(',', (string)$host->ip) as $ip) {
+                foreach ($host->ip->getValues() as $ip) {
                     $usedDhcpIpAddresses[$ip] = isset($usedDhcpIpAddresses[$ip]) ? $usedDhcpIpAddresses[$ip] + 1 : 1;
                 }
             }
+
+            if (!$host->host->isEmpty()) {
+                $fqdn = (string)$host->host;
+                if (!$host->domain->isEmpty()) {
+                    $fqdn .= '.' . (string)$host->domain;
+                }
+                $usedHostFqdns[$fqdn] = true;
+            }
+
+            foreach ($host->cnames->getValues() as $cname) {
+                $usedHostCnames[$cname] = ($usedHostCnames[$cname] ?? 0) + 1;
+            }
+        }
+
+        $usedDhcpDomains = [];
+        foreach ($this->dhcp_ranges->iterateItems() as $range) {
+            if ($range->domain->isEmpty()) {
+                continue;
+            }
+            $usedDhcpDomains[(string)$range->domain][] = (string)$range->domain_type;
         }
 
         foreach ($this->hosts->iterateItems() as $host) {
@@ -70,10 +92,17 @@ class Dnsmasq extends BaseModel
                 continue;
             }
             $key = $host->__reference;
+            $is_dhcp = !$host->hwaddr->isEmpty() || !$host->client_id->isEmpty();
 
             // all dhcp-host IP addresses must be unique, host overrides can have duplicate IP addresses
-            if (!$host->hwaddr->isEmpty() || !$host->client_id->isEmpty()) {
-                foreach (explode(',', (string)$host->ip) as $ip) {
+            if ($is_dhcp) {
+                $tmp_ipv4_cnt = 0;
+                foreach ($host->ip->getValues() as $ip) {
+                    $tmp_ipv4_cnt += (strpos($ip, ':') === false) ? 1 : 0;
+                    /* Partial IPv6 addresses can be duplicate */
+                    if (str_starts_with($ip, '::')) {
+                        continue;
+                    }
                     if ($usedDhcpIpAddresses[$ip] > 1) {
                         $messages->appendMessage(
                             new Message(
@@ -83,21 +112,61 @@ class Dnsmasq extends BaseModel
                         );
                     }
                 }
+                if ($tmp_ipv4_cnt > 1) {
+                    $messages->appendMessage(
+                        new Message(gettext("For IPv4 dhcp reservations, only a single address is allowed."), $key . ".ip")
+                    );
+                }
+
+                if ($host->host->isEmpty() && $host->ip->isEmpty()) {
+                    $messageText = gettext("At least a hostname or IP address must be provided for DHCP reservations.");
+                    $messages->appendMessage(new Message($messageText, $key . ".host"));
+                    $messages->appendMessage(new Message($messageText, $key . ".ip"));
+                }
+
+                if ($host->host == '*') {
+                    $messages->appendMessage(
+                        new Message(gettext("Wildcard entries are not allowed for DHCP reservations."), $key . ".host")
+                    );
+                }
+            } else {
+                if ($host->host->isEmpty() || $host->ip->isEmpty()) {
+                    $messageText = gettext("Both hostname and IP address are required for host overrides.");
+                    $messages->appendMessage(new Message($messageText, $key . ".host"));
+                    $messages->appendMessage(new Message($messageText, $key . ".ip"));
+                }
             }
 
-            if (
-                $host->host->isEmpty() &&
-                $host->hwaddr->isEmpty() &&
-                $host->client_id->isEmpty()
-            ) {
+            foreach ($host->cnames->getValues() as $cname) {
+                if ($usedHostCnames[$cname] > 1) {
+                    $messages->appendMessage(
+                        new Message(
+                            sprintf(gettext("CNAME '%s' is already in use by a host override."), $cname),
+                            $key . ".cnames"
+                        )
+                    );
+                }
+
+                if (isset($usedHostFqdns[$cname])) {
+                    $messages->appendMessage(
+                        new Message(
+                            sprintf(gettext("CNAME '%s' overlaps with a host and domain combination in a host override."), $cname),
+                            $key . ".cnames"
+                        )
+                    );
+                }
+            }
+        }
+
+        foreach ($this->domainoverrides->iterateItems() as $domain) {
+            if (!$validateFullModel && !$domain->isFieldChanged()) {
+                continue;
+            }
+            $key = $domain->__reference;
+
+            if ($domain->domain == '*' && !$domain->ipset->isEmpty()) {
                 $messages->appendMessage(
-                    new Message(
-                        gettext(
-                            "Hostnames may only be omitted when either a hardware address " .
-                            "or a client identifier is provided."
-                        ),
-                        $key . ".host"
-                    )
+                    new Message(gettext("Top level wildcard entries are not allowed for Ipset."), $key . ".domain")
                 );
             }
         }
@@ -109,13 +178,40 @@ class Dnsmasq extends BaseModel
             $start_inet = strpos($range->start_addr, ':') !== false ? 'inet6' : 'inet';
             $end_inet = strpos($range->end_addr, ':') !== false ? 'inet6' : 'inet';
             $key = $range->__reference;
-            if (!$range->domain->isEmpty() && $range->end_addr->isEmpty()) {
-                $messages->appendMessage(
-                    new Message(
-                        gettext("Can only configure a domain when a full range (including end) is specified."),
-                        $key . ".domain"
-                    )
-                );
+            if (!$range->domain->isEmpty()) {
+                if ((string)$range->domain_type === 'range' && $range->end_addr->isEmpty()) {
+                    $messages->appendMessage(
+                        new Message(
+                            gettext("Can only configure a domain of type 'Range' when a full range (including end) is specified."),
+                            $key . ".end_addr"
+                        )
+                    );
+                }
+
+                if ((string)$range->domain_type === 'interface' && $range->interface->isEmpty()) {
+                    $messages->appendMessage(
+                        new Message(
+                            gettext("A domain of type 'Interface' requires an interface to be selected."),
+                            $key . ".interface"
+                        )
+                    );
+                }
+            }
+
+            if (!$range->domain->isEmpty() && isset($usedDhcpDomains[(string)$range->domain])) {
+                $typesUsed = array_unique($usedDhcpDomains[(string)$range->domain]);
+
+                if (in_array('interface', $typesUsed) && in_array('range', $typesUsed)) {
+                    $messages->appendMessage(
+                        new Message(
+                            sprintf(
+                                gettext("The domain '%s' cannot be used with both types 'Interface' and 'Range'."),
+                                (string)$range->domain
+                            ),
+                            $key . ".domain"
+                        )
+                    );
+                }
             }
 
             if ($start_inet != $end_inet && !$range->end_addr->isEmpty()) {
@@ -175,7 +271,7 @@ class Dnsmasq extends BaseModel
                 );
             }
 
-            $is_static = in_array('static', explode(',', $range->mode));
+            $is_static = in_array('static', $range->mode->getValues());
             if (!$range->end_addr->isEmpty() && $is_static) {
                 $messages->appendMessage(
                     new Message(
@@ -183,12 +279,20 @@ class Dnsmasq extends BaseModel
                         $key . ".end_addr"
                     )
                 );
-            }
-            if ($is_static && $start_inet == 'inet6') {
+            } elseif ($range->end_addr->isEmpty() && !$is_static && $start_inet == 'inet') {
                 $messages->appendMessage(
                     new Message(
-                        gettext("Static is only available IPv4."),
-                        $key . ".mode"
+                        gettext("End address may only be left empty for static ipv4 ranges."),
+                        $key . ".end_addr"
+                    )
+                );
+            }
+
+            if (!$range->subnet_mask->isEmpty() && $is_static) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("Static only accepts a starting address."),
+                        $key . ".subnet_mask"
                     )
                 );
             }
@@ -202,6 +306,15 @@ class Dnsmasq extends BaseModel
                 );
             }
 
+            if (!$range->ra_mode->isEmpty() && (!$range->prefix_len->isEmpty() && $range->prefix_len->asFloat() < 64)) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("Prefix length must be at least 64 when router advertisements are used."),
+                        $key . ".prefix_len"
+                    )
+                );
+            }
+
             // Validate RA mode combinations
             $valid_ra_mode_combinations = [
                 ['ra-names', 'slaac'],
@@ -210,7 +323,7 @@ class Dnsmasq extends BaseModel
                 ['ra-names', 'slaac', 'ra-stateless']
             ];
 
-            $selected_ra_modes = explode(',', $range->ra_mode);
+            $selected_ra_modes = $range->ra_mode->getValues();
 
             // If only one mode is selected, it is always valid
             if (count($selected_ra_modes) > 1) {
@@ -274,7 +387,7 @@ class Dnsmasq extends BaseModel
                 !$option->value->isEmpty() &&
                 !$option->option6->isEmpty()
             ) {
-                $values = array_map('trim', explode(',', (string)$option->value));
+                $values = array_map('trim', $option->value->getValues());
                 foreach ($values as $value) {
                     if (
                         Util::isIpv6Address(trim($value, '[]')) &&
@@ -321,12 +434,23 @@ class Dnsmasq extends BaseModel
         $result = [];
         if (!empty($this->dhcp_ranges->iterateItems()->current())) {
             $exclude = [];
-            foreach (explode(',', $this->dhcp->no_interface) as $item) {
+            foreach ($this->dhcp->no_interface->getValues() as $item) {
                 $exclude[] = $item;
             }
-            foreach (explode(',', $this->interface) as $item) {
-                if (!empty($item) && !in_array($item, $exclude)) {
-                    $result[] = $item;
+            if ($this->interface->isEmpty()) {
+                /* All -- use interfaces from ranges */
+                foreach ($this->dhcp_ranges->iterateItems() as $node) {
+                    $item = $node->interface->getValue();
+                    if (!in_array($item, $result) && !in_array($item, $exclude)) {
+                        $result[] = $item;
+                    }
+                }
+            } else {
+                /* specific interfaces */
+                foreach ($this->interface->getValues() as $item) {
+                    if (!empty($item) && !in_array($item, $exclude)) {
+                        $result[] = $item;
+                    }
                 }
             }
         }

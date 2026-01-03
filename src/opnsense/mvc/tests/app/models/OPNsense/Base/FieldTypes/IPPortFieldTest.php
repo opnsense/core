@@ -43,6 +43,17 @@ class IPPortFieldTest extends Field_Framework_TestCase
         $this->assertInstanceOf('\OPNsense\Base\FieldTypes\IPPortField', new IPPortField());
     }
 
+    /**
+     * generic property tests
+     */
+    public function testGeneric()
+    {
+        $field = new IPPortField();
+
+        $this->assertFalse($field->isContainer());
+        $this->assertFalse($field->isList());
+    }
+
     public function testRequiredEmpty()
     {
         $this->expectException(\OPNsense\Base\ValidationException::class);
@@ -104,6 +115,44 @@ class IPPortFieldTest extends Field_Framework_TestCase
         $field = new IPPortField();
         $field->setValue("abcdefg");
         $this->validateThrow($field);
+    }
+
+    public function testValidHostname()
+    {
+        $field = new IPPortField();
+        $field->setValue('abcdefg:123');
+        $field->setHostnameAllowed('Y');
+        $this->assertEmpty($this->validate($field));
+        $field->setValue('abcdefg:123,b.c.d:332');
+        $this->assertNotEmpty($this->validate($field));
+        $field->setAsList('Y');
+        $this->assertEmpty($this->validate($field));
+        $field->setValue('abcdefg:123,b.c.d:332,foobar');
+        $this->assertNotEmpty($this->validate($field));
+        $field->setPortOptional('Y');
+        $this->assertEmpty($this->validate($field));
+    }
+
+    public function testValidPortOptional()
+    {
+        $field = new IPPortField();
+        $field->setAsList('Y');
+        $field->setPortOptional('Y');
+        $field->setHostnameAllowed('Y');
+        $field->setValue('abcdeg,127.0.0.1,::1');
+        $this->assertEmpty($this->validate($field));
+        $field->setValue('[::1]:123');
+        $this->assertEmpty($this->validate($field));
+        $field->setValue('[::1]');
+        $this->assertNotEmpty($this->validate($field));
+        $field->setValue('[foobar]');
+        $this->assertNotEmpty($this->validate($field));
+        $field->setValue('[foobar]:123');
+        $this->assertNotEmpty($this->validate($field));
+        $field->setValue('foobar:123');
+        $this->assertEmpty($this->validate($field));
+        $field->setHostnameAllowed('N');
+        $this->assertNotEmpty($this->validate($field));
     }
 
     public function testInvalidValueAsListIpv4()

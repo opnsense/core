@@ -61,7 +61,7 @@ class System implements IService
      */
     public function supportedAuthenticators()
     {
-        $result = array();
+        $result = [];
         $configObj = Config::getInstance()->object();
 
         if (!empty((string)$configObj->system->webgui->authmode)) {

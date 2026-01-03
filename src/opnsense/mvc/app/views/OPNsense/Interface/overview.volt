@@ -92,7 +92,7 @@
 
         $("#grid-overview").UIBootgrid(
             {
-                search: '/api/interfaces/overview/interfacesInfo',
+                search: '/api/interfaces/overview/interfaces_info',
                 options: {
                     selection: false,
                     formatters: {
@@ -131,7 +131,7 @@
                                 });
                                 $elements.append($('<button></button>')
                                     .attr('class', 'route-expand btn btn-primary btn-xs')
-                                    .text('Expand'));
+                                    .text("{{ lang._('Expand') }}"));
                             }
                             return $elements.prop('outerHTML');
 
@@ -215,11 +215,11 @@
 
             /* attach event handler to reload buttons */
             $('.interface-reload').each(function () {
-                $(this).click(function () {
+                $(this).unbind('click').click(function () {
                     let $element = $(this);
                     let device = $(this).data("device-id");
                     $element.remove('i').html('<i class="fa fa-spinner fa-spin"></i>');
-                    ajaxCall('/api/interfaces/overview/reloadInterface/' + device, {}, function (data, status) {
+                    ajaxCall('/api/interfaces/overview/reload_interface/' + device, {}, function (data, status) {
                         /* delay slightly to allow the interface to come up */
                         setTimeout(function() {
                             $element.remove('i').html('<i class="fa fa-fw fa-refresh"></i>');
@@ -231,11 +231,11 @@
 
             /* attach event handler to the command-info button */
             $(".interface-info").each(function () {
-                $(this).click(function () {
+                $(this).unbind('click').click(function () {
                     let $element = $(this);
                     let device = $(this).data("row-id");
 
-                    ajaxGet('/api/interfaces/overview/getInterface/' + device, {}, function(data, status) {
+                    ajaxGet('/api/interfaces/overview/get_interface/' + device, {}, function(data, status) {
                         data = data['message'];
                         let $table = $('<table class="table table-bordered table-condensed table-hover table-striped"></table>');
                         let $table_body = $('<tbody/>');
@@ -304,6 +304,7 @@
 
                 if (count > 2) {
                     $expand.show();
+                    $("#grid-overview").bootgrid("normalizeRowHeight");
                 }
 
                 $expand.click(function (even) {
@@ -312,11 +313,11 @@
                     });
                     if ($collapsed.length > 0) {
                         $collapsed.show();
-                        $expand.html('Collapse');
+                        $expand.html("{{ lang._('Collapse') }}");
                     } else {
                         $collapse = $route_container.children('.route-content').slice(2);
                         $collapse.hide();
-                        $expand.html('Expand');
+                        $expand.html("{{ lang._('Expand') }}");
                     }
 
                     $("#grid-overview").bootgrid("normalizeRowHeight");
@@ -399,7 +400,7 @@
                 <th data-column-id="ipv6" data-formatter="ipv6" data-type="string">{{ lang._('IPv6') }}</th>
                 <th data-column-id="gateways" data-formatter="gateways" data-type="string">{{ lang._('Gateway') }}</th>
                 <th data-column-id="routes" data-formatter="routes" data-type="string">{{ lang._('Routes') }}</th>
-                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                <th data-column-id="commands" data-width="125" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
             </tr>
         </thead>
         <tbody>

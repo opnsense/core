@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@ class MenuItem
      * named array of child items
      * @var array
      */
-    private $children  = array();
+    private $children  = [];
 
     /**
      * this items id (xml tag name)
@@ -139,13 +139,13 @@ class MenuItem
     public function __construct($id, $parent = null)
     {
         $this->id = $id;
-        $this->visibleName = $id;
+        $this->visibleName = gettext($id);
         $this->parent = $parent;
-        $prop_exclude_list = array("getXmlPropertySetterName" => true);
+        $prop_exclude_list = ['getXmlPropertySetterName' => true];
         if (self::$internalClassMethodAliases === null) {
-            self::$internalClassMethodAliases = array();
-            self::$internalClassSetterNames = array();
-            self::$internalClassGetterNames = array();
+            self::$internalClassMethodAliases = [];
+            self::$internalClassSetterNames = [];
+            self::$internalClassGetterNames = [];
             // cache method names, get_class_methods() should always return the initial methods.
             // Caching the methods delivers quite some performance at minimal memory cost.
             foreach (get_class_methods($this) as $methodName) {
@@ -203,7 +203,7 @@ class MenuItem
      */
     public function setVisibleName($value)
     {
-        $this->visibleName = $value;
+        $this->visibleName = gettext($value);
     }
 
     /**
@@ -213,6 +213,15 @@ class MenuItem
     public function getVisibleName()
     {
         return $this->visibleName;
+    }
+
+    /**
+     * alternate setter for visiblename field
+     * @param $value
+     */
+    public function setFixedName($value)
+    {
+        $this->visibleName = $value;
     }
 
     /**
@@ -302,7 +311,7 @@ class MenuItem
      * @param array $properties named array property list, there should be setters for every option
      * @return MenuItem
      */
-    public function append($id, $properties = array())
+    public function append($id, $properties = [])
     {
         // items should be unique by id, search children for given id first
         $newMenuItem = null;
@@ -352,7 +361,7 @@ class MenuItem
     public function addXmlNode($xmlNode)
     {
         // copy properties from xml node attributes
-        $properties = array();
+        $properties = [];
         foreach ($xmlNode->attributes() as $attrKey => $attrValue) {
             $properties[$attrKey] = (string)$attrValue;
         }
@@ -392,7 +401,7 @@ class MenuItem
                 if ($node->getUrl() != "") {
                     // hash part isn't available on server end
                     $menuItemUrl = explode("#", $node->getUrl())[0];
-                    $match = str_replace(array(".", "*","?", "@"), array("\.", ".*","\?", "\@"), $menuItemUrl);
+                    $match = str_replace([".", "*","?", "@"], ["\.", ".*","\?", "\@"], $menuItemUrl);
                     if (preg_match("@^{$match}$@", "{$url}")) {
                         $node->select();
                     }
@@ -407,7 +416,7 @@ class MenuItem
      */
     public function getChildren()
     {
-        $result = array();
+        $result = [];
         // sort by order/id and map getters to array items
         foreach ($this->children as $key => &$node) {
             if ($node->isVisible()) {

@@ -82,7 +82,7 @@ class Session
      * @param string|null $default_value default value when not found
      * @return string|null
      */
-    public function get(string $name, ?string $default_value = null): string|null
+    public function get(string $name, ?string $default_value = null): string|array|null
     {
         return $this->payload[$name] ?? $default_value;
     }

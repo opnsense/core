@@ -34,6 +34,7 @@ class ConfigurationController extends \OPNsense\Base\IndexController
     {
         // include dialog form definitions
         $this->view->formDialogEditGateway = $this->getForm("dialogEditGateway");
+        $this->view->formGridGateway = $this->getFormGrid('dialogEditGateway');
         $this->view->pick('OPNsense/Routing/configuration');
     }
 }

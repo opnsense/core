@@ -36,7 +36,7 @@ echo "\nEnter a host name or IP address: ";
 
 $pinghost = chop(fgets($fp));
 echo "\n";
-passthru("/sbin/ping -c 3 -n " . escapeshellarg($pinghost));
+pass_safe('/sbin/ping -c 3 -n %s', $pinghost);
 echo "\nPress ENTER to continue.\n";
 fgets($fp);
 fclose($fp);

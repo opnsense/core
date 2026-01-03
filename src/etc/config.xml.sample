@@ -6,12 +6,12 @@
   <system>
     <optimization>normal</optimization>
     <hostname>OPNsense</hostname>
-    <domain>localdomain</domain>
+    <domain>internal</domain>
     <dnsallowoverride>1</dnsallowoverride>
     <dnsallowoverride_exclude/>
     <group>
       <name>admins</name>
-      <description><![CDATA[System Administrators]]></description>
+      <description>System Administrators</description>
       <scope>system</scope>
       <gid>1999</gid>
       <member>0</member>
@@ -19,7 +19,7 @@
     </group>
     <user>
       <name>root</name>
-      <descr><![CDATA[System Administrator]]></descr>
+      <descr>System Administrator</descr>
       <scope>system</scope>
       <groupname>admins</groupname>
       <password>$2y$10$YRVoF4SgskIsrXOvOQjGieB9XqHPRra9R7d80B3BZdbY/j21TwBfS</password>
@@ -82,23 +82,18 @@
     </lan>
   </interfaces>
   <dnsmasq>
-      <enable>1</enable>
-      <port>0</port>
+    <enable>1</enable>
+    <port>53053</port>
+    <interface>lan</interface>
+    <dhcp_ranges>
       <interface>lan</interface>
-      <dhcp_ranges>
-          <interface>lan</interface>
-          <start_addr>192.168.1.100</start_addr>
-          <end_addr>192.168.1.199</end_addr>
-      </dhcp_ranges>
+      <start_addr>192.168.1.100</start_addr>
+      <end_addr>192.168.1.199</end_addr>
+    </dhcp_ranges>
   </dnsmasq>
   <unbound>
     <enable>1</enable>
   </unbound>
-  <snmpd>
-    <syslocation/>
-    <syscontact/>
-    <rocommunity>public</rocommunity>
-  </snmpd>
   <nat>
     <outbound>
       <mode>automatic</mode>
@@ -108,7 +103,7 @@
     <rule>
       <type>pass</type>
       <ipprotocol>inet</ipprotocol>
-      <descr><![CDATA[Default allow LAN to any rule]]></descr>
+      <descr>Default allow LAN to any rule</descr>
       <interface>lan</interface>
       <source>
         <network>lan</network>
@@ -120,7 +115,7 @@
     <rule>
       <type>pass</type>
       <ipprotocol>inet6</ipprotocol>
-      <descr><![CDATA[Default allow LAN IPv6 to any rule]]></descr>
+      <descr>Default allow LAN IPv6 to any rule</descr>
       <interface>lan</interface>
       <source>
         <network>lan</network>

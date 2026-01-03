@@ -57,8 +57,8 @@ function does_vip_exist($vip)
         case "carp":
         case "ipalias":
             /* XXX: Make proper checks? */
-            $realif = get_real_interface($vip['interface']);
-            if (!does_interface_exist($realif)) {
+            $device = get_real_interface($vip['interface']);
+            if (!does_interface_exist($device)) {
                 return false;
             }
             break;
@@ -68,7 +68,7 @@ function does_vip_exist($vip)
             return false;
     }
 
-    foreach (array_keys(interfaces_addresses($realif, true)) as $vipips) {
+    foreach (array_keys(interfaces_addresses($device, true)) as $vipips) {
         if ($vipips == "{$vip['subnet']}/{$vip['subnet_bits']}") {
             return true;
         }
@@ -176,16 +176,18 @@ function restore_config_section_xmlrpc($new_config)
     $oldvips = [];
     if (isset($new_config['virtualip']['vip']) && isset($config['virtualip']['vip'])) {
         foreach ($config['virtualip']['vip'] as $vipindex => $vip) {
+            $vipKey = get_unique_vip_key($vip);
             if (!empty($vip['vhid']) && empty($vip['nosync'])) {
                 // rc.filter_synchronize only sends CARP VIPs and IP Aliases with a VHID. Keep the rest like it was.
-                $vipKey = get_unique_vip_key($vip);
                 $oldvips[$vipKey] = $vip;
                 // Remove entries that are present locally, but are not present in the new config.
                 if (!array_key_exists($vipKey, $vhidVipsInNewConfig)) {
                     unset($config['virtualip']['vip'][$vipindex]);
                 }
-            } else {
-                $vipbackup[] = $vip;
+            } elseif (!empty($vip['vhid']) && !empty($vip['nosync'])) {
+                null; /* merge_config_attributes() will preserve these records */
+            } elseif (!isset($vhidVipsInNewConfig[$vipKey])) {
+                $vipbackup[$vipKey] = $vip;
             }
         }
     }

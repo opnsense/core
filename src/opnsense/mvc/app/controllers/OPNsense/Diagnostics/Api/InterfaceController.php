@@ -174,6 +174,9 @@ class InterfaceController extends ApiControllerBase
                 } else {
                     $routingentry['intf_description'] = "";
                 }
+
+                // also stitch together a sensible unique datakey for identification purposes in the frontend
+                $routingentry['id'] = $routingentry['destination'] . ',' . $routingentry['gateway'];
             }
         }
         return $routingtable;

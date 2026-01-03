@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2024 Deciso B.V.
+ * Copyright (C) 2016-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,19 +30,21 @@ require_once __DIR__ . '/../../../app/config/AppConfig.php';
 
 return new OPNsense\Core\AppConfig([
     'application' => [
+        'baseUri' => '/opnsense_gui/',
         'controllersDir' => __DIR__ . '/../../../app/controllers/',
         'modelsDir' => __DIR__ . '/../../../app/models/',
         'viewsDir' => __DIR__ . '/../../../app/views/',
         'pluginsDir' => __DIR__ . '/../../../app/plugins/',
         'libraryDir' => __DIR__ . '/../../../app/library/',
-        'cacheDir' => __DIR__ . '/../../../app/cache/',
-        'contribDir' => __DIR__ . '/../../../../contrib/',
-        'baseUri' => '/opnsense_gui/',
+        'contribDir' => __DIR__ . '/../../../../../../contrib',
+        'configDefault'  => '/does/not/exist/config.xml',
+        'configDir' => '/var/lib/php/tests',
+        'cacheDir' => '/var/lib/php/tests',
+        'tempDir' => '/var/lib/php/tests',
     ],
     'globals' => [
-        'config_path'    => '/conf/',
-        'temp_path'      => '/tmp/',
         'debug'          => false,
+        'owner'          => 'wwwonly:wheel',
         'simulate_mode'  => false,
     ],
 ]);

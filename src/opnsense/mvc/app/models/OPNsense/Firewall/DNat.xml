@@ -1,0 +1,123 @@
+<model>
+    <mount>/nat/rule+</mount>
+    <version>1.0.0</version>
+    <description>Destination NAT (port-forward)</description>
+    <items>
+        <rule type="ArrayField">
+            <sequence type=".\DNatSequenceField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>999999</MaximumValue>
+                <ValidationMessage>Sequence shall be between 1 and 999999.</ValidationMessage>
+                <Required>Y</Required>
+                <!-- Intentionally no default set as its applied by actionPostLoadingEvent() -->
+            </sequence>
+            <disabled type="BooleanField"/>
+            <nordr type="BooleanField"/>
+            <interface type="InterfaceField">
+                <Multiple>Y</Multiple>
+                <Filters>
+                    <if>/^(?!lo0$).*/</if>
+                </Filters>
+                <AllowDynamic>Y</AllowDynamic>
+            </interface>
+            <ipprotocol type="OptionField">
+                <!-- XXX: currently optional, need to decide what to do with it -->
+                <!-- <Required>Y</Required>
+                <Default>inet</Default> -->
+                <OptionValues>
+                    <inet>IPv4</inet>
+                    <inet6>IPv6</inet6>
+                    <inet46>IPv4+IPv6</inet46>
+                </OptionValues>
+                <BlankDesc>any</BlankDesc>
+            </ipprotocol>
+            <protocol type="ProtocolField">
+                <!-- XXX: currently optional, need to decide what to do with it -->
+                <!-- <Required>Y</Required>
+                <Default>any</Default> -->
+                <AddOptions>
+                    <opt1 value="tcp/udp">TCP/UDP</opt1>
+                </AddOptions>
+                <BlankDesc>any</BlankDesc>
+            </protocol>
+            <source>
+                <network type=".\NetworkMappedField"/>
+                <!-- volatile reads, but never writes back. it's used to populate network when address is used-->
+                <address type=".\NetworkMappedField" volatile="true"/>
+                <port type=".\PortMappedField">
+                    <EnableWellKnown>Y</EnableWellKnown>
+                    <EnableRanges>Y</EnableRanges>
+                    <EnableAlias>Y</EnableAlias>
+                    <ValidationMessage>Please specify a valid portnumber, name, alias or range.</ValidationMessage>
+                </port>
+                <not type="BooleanField"/>
+            </source>
+            <destination>
+                <network type=".\NetworkMappedField"/>
+                <!-- volatile reads, but never writes back. it's used to populate network when address is used-->
+                <address type=".\NetworkMappedField" volatile="true"/>
+                <port type=".\PortMappedField">
+                    <EnableWellKnown>Y</EnableWellKnown>
+                    <EnableRanges>Y</EnableRanges>
+                    <EnableAlias>Y</EnableAlias>
+                    <ValidationMessage>Please specify a valid portnumber, name, alias or range.</ValidationMessage>
+                </port>
+                <not type="BooleanField"/>
+            </destination>
+            <target type="NetworkAliasField"/>
+            <local-port type="PortField">
+                <EnableAlias>Y</EnableAlias>
+                <ValidationMessage>Please specify a valid portnumber, name, alias or range.</ValidationMessage>
+            </local-port>
+            <!-- -->
+            <poolopts type="OptionField">
+                <BlankDesc>Default</BlankDesc>
+                <OptionValues>
+                    <rr value="round-robin">Round Robin</rr>
+                    <rrsa value="round-robin sticky-address">Round Robin with Sticky Address</rrsa>
+                    <random>Random</random>
+                    <randomsa value="random sticky-address">Random with Sticky Address</randomsa>
+                    <source-hash>Source Hash</source-hash>
+                    <bitmask>Bitmask</bitmask>
+                </OptionValues>
+            </poolopts>
+            <log type="BooleanField"/>
+            <category type=".\CategoryField">
+                <Multiple>Y</Multiple>
+            </category>
+            <!-- internal mapper to translate category to a comma seperated list of uuids  -->
+            <categories type=".\CategoryMapField" volatile="true"/>
+            <descr type="DescriptionField"/>
+            <tag type="TextField"/>
+            <tagged type="TextField"/>
+            <nosync type="BooleanField"/>
+            <natreflection type="OptionField">
+                <BlankDesc>Use system default</BlankDesc>
+                <OptionValues>
+                    <purenat>Enable</purenat>
+                    <disable>Disable</disable>
+                </OptionValues>
+            </natreflection>
+            <pass type="OptionField">
+                <BlankDesc>Manual</BlankDesc>
+                <OptionValues>
+                    <rule>Register rule</rule>
+                    <pass>Pass</pass>
+                </OptionValues>
+            </pass>
+            <!-- drop in a future version (27.1?), used for migration purposes.-->
+            <associated-rule-id type=".\DNatAssociatedRuleField"/>
+            <!-- handled via controller setBaseHook() -->
+            <created>
+                <username type="TextField"/>
+                <time type="TextField"/>
+                <description type="TextField"/>
+            </created>
+            <updated>
+                <username type="TextField"/>
+                <time type="TextField"/>
+                <description type="TextField"/>
+            </updated>
+        </rule>
+    </items>
+</model>

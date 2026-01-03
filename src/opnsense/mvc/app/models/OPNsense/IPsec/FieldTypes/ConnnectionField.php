@@ -63,15 +63,11 @@ class ConnnectionField extends ArrayField
         }
         foreach ($this->internalChildnodes as $node) {
             if (!$node->getInternalIsVirtual()) {
-                $extra_attr = ['local_ts' => '', 'remote_ts' => ''];
                 $conn_uuid = (string)$node->getAttribute('uuid');
-                foreach (self::$child_attrs as $key) {
-                    $child_node = new TextField();
-                    $child_node->setInternalIsVirtual();
+                foreach (['local_ts', 'remote_ts'] as $key) {
                     if (isset(self::$child_data[$conn_uuid]) && !empty(self::$child_data[$conn_uuid][$key])) {
-                        $child_node->setValue(implode(',', array_unique(self::$child_data[$conn_uuid][$key])));
+                        $node->$key->setValue(implode(',', array_unique(self::$child_data[$conn_uuid][$key])));
                     }
-                    $node->addChildNode($key, $child_node);
                 }
             }
         }

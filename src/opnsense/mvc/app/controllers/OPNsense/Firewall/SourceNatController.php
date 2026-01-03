@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2020 Deciso B.V.
+ * Copyright (C) 2020-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,20 +31,8 @@ class SourceNatController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
-        $this->view->pick('OPNsense/Firewall/filter');
-        $this->view->SavePointBtns = true;
-        $this->view->ruleController = "source_nat";
-        $this->view->gridFields = [
-            [
-                'id' => 'enabled', 'formatter' => 'rowtoggle' ,'width' => '6em', 'heading' => gettext('Enabled')
-            ],
-            [
-                'id' => 'sequence','width' => '9em', 'heading' => gettext('Sequence')
-            ],
-            [
-                'id' => 'description', 'heading' => gettext('Description')
-            ]
-        ];
-        $this->view->formDialogFilterRule = $this->getForm("dialogSNatRule");
+        $this->view->pick('OPNsense/Firewall/snat_rule');
+        $this->view->formDialogSNatRule = $this->getForm('dialogSNatRule');
+        $this->view->formGridSNatRule = $this->getFormGrid('dialogSNatRule');
     }
 }

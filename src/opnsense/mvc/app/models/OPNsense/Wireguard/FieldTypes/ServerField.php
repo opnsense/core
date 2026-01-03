@@ -40,17 +40,9 @@ class ServerField extends ArrayField
     {
         foreach ($this->internalChildnodes as $node) {
             if (!$node->getInternalIsVirtual()) {
-                $files = [
-                    'cnfFilename' => "/usr/local/etc/wireguard/wg{$node->instance}.conf",
-                    'statFilename' => "/usr/local/etc/wireguard/wg{$node->instance}.stat",
-                    'interface' => "wg{$node->instance}",
-                ];
-                foreach ($files as $name => $payload) {
-                    $new_item = new TextField();
-                    $new_item->setInternalIsVirtual();
-                    $new_item->setValue($payload);
-                    $node->addChildNode($name, $new_item);
-                }
+                $node->cnfFilename = "/usr/local/etc/wireguard/wg{$node->instance}.conf";
+                $node->statFilename = "/usr/local/etc/wireguard/wg{$node->instance}.stat";
+                $node->interface = "wg{$node->instance}";
             }
         }
         return parent::actionPostLoadingEvent();

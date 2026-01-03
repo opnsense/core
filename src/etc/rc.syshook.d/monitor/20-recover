@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (c) 2024 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2024-2025 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,14 +39,17 @@ $metered_found_prios = ['inet' => 256, 'inet6' => 256];
 $metered_gws = ['inet' => [], 'inet6' => []];
 
 foreach (return_gateways_status() as $status) {
-    if ($status['status'] == 'down') {
+    if (strpos($status['status'], 'down') !== false) {
         /* recover monitors stuck in down state ignoring "force_down" */
-        $gwnames[] = $status['name'];
+        if ($status['status'] == 'down') {
+            $gwnames[] = $status['name'];
+        }
+        /* kill states for all down transitions including "force_down" */
         if (!empty($status['monitor_killstates']) && in_array($status['name'], $affected_gateways)) {
             $uuid = trim(configdp_run('filter kill gateway_states', [$status['gateway']], true));
             log_msg("ROUTING: killing states for unreachable gateway {$status['name']} [$uuid]", LOG_NOTICE);
         }
-    } elseif ($status['status'] != 'force_down') {
+    } else {
         /* collect "metered" gateways for all non-down status reports */
         if (!empty($status['monitor_killstates_priority'])) {
             $metered_gws[$status['ipprotocol']][] = $status;

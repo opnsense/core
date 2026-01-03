@@ -1,30 +1,29 @@
 {#
+ # Copyright (c) 2014-2025 Deciso B.V.
+ # All rights reserved.
+ #
+ # Redistribution and use in source and binary forms, with or without modification,
+ # are permitted provided that the following conditions are met:
+ #
+ # 1. Redistributions of source code must retain the above copyright notice,
+ #    this list of conditions and the following disclaimer.
+ #
+ # 2. Redistributions in binary form must reproduce the above copyright notice,
+ #    this list of conditions and the following disclaimer in the documentation
+ #    and/or other materials provided with the distribution.
+ #
+ # THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ # AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ # AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ # OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ # POSSIBILITY OF SUCH DAMAGE.
+ #}
 
-OPNsense® is Copyright © 2014 – 2015 by Deciso B.V.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-1.  Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
-
-2.  Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-
-#}
 <style>
     .tooltip-inner {
         min-width: 250px;
@@ -49,21 +48,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
     $( document ).ready(function() {
         var interface_descriptions = {};
-        //
-        var data_get_map = {'frm_GeneralSettings':"/api/ids/settings/get"};
-
-        /**
-         * update service status
-         */
-        function updateStatus() {
-            updateServiceControlUI('ids');
-        }
 
         /**
          * list all known classtypes and add to selection box
          */
         function updateRuleMetadata() {
-            ajaxGet("/api/ids/settings/listRuleMetadata", {}, function(data, status) {
+            ajaxGet("/api/ids/settings/list_rule_metadata", {}, function(data, status) {
                 if (status == "success") {
                     $('#rulemetadata').empty();
                     $.each(Object.assign({}, {'action': ['drop', 'alert'], 'status': ['enabled', 'disabled']}, data), function(key, values) {
@@ -92,7 +82,7 @@ POSSIBILITY OF SUCH DAMAGE.
          * update list of available alert logs
          */
         function updateAlertLogs() {
-            ajaxGet("/api/ids/service/getAlertLogs", {}, function(data, status) {
+            ajaxGet("/api/ids/service/get_alert_logs", {}, function(data, status) {
                 if (status == "success") {
                     $('#alert-logfile').html("");
                     $.each(data, function(key, value) {
@@ -139,7 +129,6 @@ POSSIBILITY OF SUCH DAMAGE.
                 $('#processing-dialog').modal('hide');
             });
 
-
             if ( selected_logfile != "none") {
                 request['fileid'] = selected_logfile;
             }
@@ -157,7 +146,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     $(".detect_custom").closest("tr").addClass("hidden");
                 }
             });
-            mapDataToFormUI(data_get_map).done(function(data){
+            mapDataToFormUI({'frm_GeneralSettings':'/api/ids/settings/get'}).done(function(data){
                 // set schedule updates link to cron
                 $.each(data.frm_GeneralSettings.ids.general.UpdateCron, function(key, value) {
                     if (value.selected == 1) {
@@ -184,28 +173,21 @@ POSSIBILITY OF SUCH DAMAGE.
             var rows = $("#"+gridId).bootgrid('getSelectedRows');
             if (rows != undefined){
                 var deferreds = [];
-                if (state != undefined) {
-                    var url_suffix = state;
-                } else {
-                    var url_suffix = "";
-                }
+                var url_suffix = state ?? '';
                 var base = $.when({});
                 var keyset = [];
                 $.each(rows, function(key, uuid){
-                    // only perform action in visible items
-                    if ($("#"+gridId).find("tr[data-row-id='"+uuid+"']").is(':visible')) {
-                        keyset.push(uuid);
-                        if ( combine === undefined || keyset.length > combine || rows[rows.length - 1] === uuid) {
-                            var call_url = url + keyset.join(',') +'/'+url_suffix;
-                            base = base.then(function() {
-                                var defer = $.Deferred();
-                                ajaxCall(call_url, {}, function(){
-                                    defer.resolve();
-                                });
-                                return defer.promise();
+                    keyset.push(uuid);
+                    if ( combine === undefined || keyset.length > combine || rows[rows.length - 1] === uuid) {
+                        var call_url = url + keyset.join(',') +'/'+url_suffix;
+                        base = base.then(function() {
+                            var defer = $.Deferred();
+                            ajaxCall(call_url, {}, function(){
+                                defer.resolve();
                             });
-                            keyset = [];
-                        }
+                            return defer.promise();
+                        });
+                        keyset = [];
                     }
                 });
                 // last action in the list, reload grid and release this promise
@@ -234,23 +216,23 @@ POSSIBILITY OF SUCH DAMAGE.
         /**
          * load content on tab changes
          */
-        let gridRuleFilesInitialized = false;
-        let gridInstalledRulesInitialized = false;
-        let gridUserRulesInitialized = false;
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             loadGeneralSettings();
             if (e.target.id == 'download_settings_tab') {
                 /**
                  * grid for installable rule files
                  */
-                if (!gridRuleFilesInitialized) {
+                if (!$("#grid-rule-files").hasClass('tabulator')) {
                     $("#grid-rule-files").UIBootgrid({
-                        search:'/api/ids/settings/listRulesets',
-                        get:'/api/ids/settings/getRuleset/',
-                        set:'/api/ids/settings/setRuleset/',
-                        toggle:'/api/ids/settings/toggleRuleset/',
+                        search:'/api/ids/settings/list_rulesets',
+                        get:'/api/ids/settings/get_ruleset/',
+                        set:'/api/ids/settings/set_ruleset/',
+                        toggle:'/api/ids/settings/toggle_ruleset/',
+                        datakey:'filename',
                         options:{
+                            virtualDOM: true,
                             navigation:0,
+                            static: true,
                             formatters:{
                                 editor: function (column, row) {
                                     return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit bootgrid-tooltip\" data-row-id=\"" + row.filename + "\"><span class=\"fa fa-pencil fa-fw\"></span></button>";
@@ -267,13 +249,22 @@ POSSIBILITY OF SUCH DAMAGE.
                                 }
                             }
                         }
+                    }).on('loaded.rs.jquery.bootgrid', function(e) {
+                        /**
+                         * disable/enable selected rulesets
+                         */
+                        $("#disableSelectedRuleSets").unbind('click').click(function(){
+                            actionToggleSelected('grid-rule-files', '/api/ids/settings/toggle_ruleset/', 0, 20);
+                        });
+                        $("#enableSelectedRuleSets").unbind('click').click(function(){
+                            actionToggleSelected('grid-rule-files', '/api/ids/settings/toggle_ruleset/', 1, 20);
+                        });
                     });
-                    gridRuleFilesInitialized = true;
                 } else {
                     $('#grid-rule-files').bootgrid('reload');
                 }
                 // display file settings (if available)
-                ajaxGet("/api/ids/settings/getRulesetproperties", {}, function(data, status) {
+                ajaxGet("/api/ids/settings/get_rulesetproperties", {}, function(data, status) {
                     if (status == "success") {
                         var rows = [];
                         // generate rows with field references
@@ -291,34 +282,22 @@ POSSIBILITY OF SUCH DAMAGE.
                         }
                     }
                 });
-                /**
-                 * disable/enable selected rulesets
-                 */
-                $("#disableSelectedRuleSets").unbind('click').click(function(){
-                    actionToggleSelected('grid-rule-files', '/api/ids/settings/toggleRuleset/', 0, 20);
-                });
-                $("#enableSelectedRuleSets").unbind('click').click(function(){
-                    actionToggleSelected('grid-rule-files', '/api/ids/settings/toggleRuleset/', 1, 20);
-                });
             } else if (e.target.id == 'rule_tab'){
-                //
-                // activate rule tab page
-                //
-
                 // delay refresh for a bit
                 setTimeout(updateRuleMetadata, 500);
 
                 /**
                  * grid installed rules
                  */
-                if (!gridInstalledRulesInitialized) {
+                if (!$("#grid-installedrules").hasClass('tabulator')) {
                     $("#grid-installedrules").UIBootgrid(
                         {   search:'/api/ids/settings/searchinstalledrules',
                             get:'/api/ids/settings/get_rule_info/',
                             set:'/api/ids/settings/set_rule/',
+                            datakey: 'sid',
                             options:{
+                                virtualDOM: true,
                                 requestHandler:addRuleFilters,
-                                rowCount:[10, 25, 50,100,500,1000] ,
                                 formatters:{
                                     rowtoggle: function (column, row) {
                                         var toggle = " <button type=\"button\" class=\"btn btn-xs btn-default command-edit bootgrid-tooltip\" data-row-id=\"" + row.sid + "\"><span class=\"fa fa-pencil fa-fw\"></span></button> ";
@@ -360,56 +339,52 @@ POSSIBILITY OF SUCH DAMAGE.
                                     return (new $.Deferred()).resolve();
                                 }
                             },
-                            toggle:'/api/ids/settings/toggleRule/'
+                            toggle:'/api/ids/settings/toggle_rule/'
                         }
-                    );
-                    gridInstalledRulesInitialized = true;
+                    ).on('loaded.rs.jquery.bootgrid', function() {
+                        /**
+                         * disable/enable [+action] selected rules
+                         */
+                        $("#disableSelectedRules").unbind('click').click(function(event){
+                            event.preventDefault();
+                            $("#disableSelectedRules > span").removeClass("fa-square-o").addClass("fa-spinner fa-pulse");
+                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggle_rule/', 0, 100).done(function(){
+                                $("#disableSelectedRules > span").removeClass("fa-spinner fa-pulse");
+                                $("#disableSelectedRules > span").addClass("fa-square-o");
+                            });
+                        });
+                        $("#enableSelectedRules").unbind('click').click(function(){
+                            $("#enableSelectedRules > span").removeClass("fa-check-square-o").addClass("fa-spinner fa-pulse");
+                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggle_rule/', 1, 100).done(function(){
+                                $("#enableSelectedRules > span").removeClass("fa-spinner fa-pulse").addClass("fa-check-square-o");
+                            });
+                        });
+                        $("#alertSelectedRules").unbind('click').click(function(){
+                            $("#alertSelectedRules > span").addClass("fa-spinner fa-pulse");
+                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggle_rule/', "alert", 100).done(function(){
+                                $("#alertSelectedRules > span").removeClass("fa-spinner fa-pulse");
+                            });
+                        });
+                        $("#dropSelectedRules").unbind('click').click(function(){
+                            $("#dropSelectedRules > span").addClass("fa-spinner fa-pulse");
+                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggle_rule/', "drop", 100).done(function(){
+                                $("#dropSelectedRules > span").removeClass("fa-spinner fa-pulse");
+                            });
+                        });
+                    });
                 } else {
                     $('#grid-installedrules').bootgrid('reload');
                 }
-
-                /**
-                 * disable/enable [+action] selected rules
-                 */
-                $("#disableSelectedRules").unbind('click').click(function(event){
-                    event.preventDefault();
-                    $("#disableSelectedRules > span").removeClass("fa-square-o").addClass("fa-spinner fa-pulse");
-                    actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', 0, 100).done(function(){
-                        $("#disableSelectedRules > span").removeClass("fa-spinner fa-pulse");
-                        $("#disableSelectedRules > span").addClass("fa-square-o");
-                    });
-                });
-                $("#enableSelectedRules").unbind('click').click(function(){
-                    $("#enableSelectedRules > span").removeClass("fa-check-square-o").addClass("fa-spinner fa-pulse");
-                    actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', 1, 100).done(function(){
-                        $("#enableSelectedRules > span").removeClass("fa-spinner fa-pulse").addClass("fa-check-square-o");
-                    });
-                });
-                $("#alertSelectedRules").unbind('click').click(function(){
-                    $("#alertSelectedRules > span").addClass("fa-spinner fa-pulse");
-                    actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', "alert", 100).done(function(){
-                        $("#alertSelectedRules > span").removeClass("fa-spinner fa-pulse");
-                    });
-                });
-                $("#dropSelectedRules").unbind('click').click(function(){
-                    $("#dropSelectedRules > span").addClass("fa-spinner fa-pulse");
-                    actionToggleSelected('grid-installedrules', '/api/ids/settings/toggleRule/', "drop", 100).done(function(){
-                        $("#dropSelectedRules > span").removeClass("fa-spinner fa-pulse");
-                    });
-                });
             } else if (e.target.id == 'alert_tab') {
                 updateAlertLogs();
-                /**
-                 * grid query alerts
-                 */
-                if (!$("#grid-alerts").hasClass('bootgrid-table')) {
+                if (!$("#grid-alerts").hasClass('tabulator')) {
                     var grid_alerts = $("#grid-alerts").UIBootgrid({
                         search:'/api/ids/service/query_alerts',
                         get:'/api/ids/service/get_alert_info/',
                         options:{
+                            virtualDOM: true,
                             multiSelect:false,
                             selection:false,
-                            rowCount: [7,50,100,250,500,1000,5000],
                             requestHandler:addAlertQryFilters,
                             labels: {
                                 infos: "{{ lang._('Showing %s to %s') | format('{{ctx.start}}','{{ctx.end}}') }}"
@@ -417,20 +392,17 @@ POSSIBILITY OF SUCH DAMAGE.
                             formatters:{
                                 info: function (column, row) {
                                     return "<button type=\"button\" class=\"btn btn-xs btn-default command-alertinfo bootgrid-tooltip\" title=\"{{ lang._('View') }}\" data-row-id=\"" + row.filepos + "/" + row.fileid + "\"><span class=\"fa fa-pencil fa-fw\"></span></button> ";
-                                }
-                            },
-                            converters: {
-                                // convert interface to name
-                                interface: {
-                                    from: function (value) { return value; },
-                                    to: function (value) {
-                                      if (value == null || typeof value !== 'string') {
-                                          return "";
-                                      }
-                                      return interface_descriptions[value.trim().replace('^' ,'')];
+                                },
+                                interface: function(column, row) {
+                                    const iface = row[column.id];
+                                    if (!iface || typeof iface !== 'string') {
+                                        return '';
                                     }
-                                }
-                            }
+                                    // IPS mode appends '^' to the interface
+                                    const trimmed_iface = iface.trim().replace('^', '');
+                                    return interface_descriptions[trimmed_iface] || trimmed_iface;
+                                },
+                            },
                         }
                     });
                     // tooltip wide fields in alert grid
@@ -530,7 +502,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                                     } else {
                                                         rule_params['enabled'] = 0;
                                                     }
-                                                    ajaxCall("/api/ids/settings/setRule/"+data['alert_sid'], rule_params, function() {
+                                                    ajaxCall("/api/ids/settings/set_rule/"+data['alert_sid'], rule_params, function() {
                                                         $("#alert_sid_action > small").remove();
                                                         $("#alert_sid_action").append($('<small/>').html("{{ lang._('Changes will be active after apply (rules tab)') }}"));
                                                     });
@@ -561,18 +533,22 @@ POSSIBILITY OF SUCH DAMAGE.
                                 });
                         }).end();
                   });
+                } else {
+                    $("#grid-alerts").bootgrid('reload');
                 }
             } else if (e.target.id == 'userrules_tab') {
-                if (!gridUserRulesInitialized) {
+                if (!$("#grid-userrules").hasClass('tabulator')) {
                     $("#grid-userrules").UIBootgrid({
-                        search:'/api/ids/settings/searchUserRule',
-                        get:'/api/ids/settings/getUserRule/',
-                        set:'/api/ids/settings/setUserRule/',
-                        add:'/api/ids/settings/addUserRule/',
-                        del:'/api/ids/settings/delUserRule/',
-                        toggle:'/api/ids/settings/toggleUserRule/'
+                        search:'/api/ids/settings/search_user_rule',
+                        get:'/api/ids/settings/get_user_rule/',
+                        set:'/api/ids/settings/set_user_rule/',
+                        add:'/api/ids/settings/add_user_rule/',
+                        del:'/api/ids/settings/del_user_rule/',
+                        toggle:'/api/ids/settings/toggle_user_rule/',
+                        options: {
+                            virtualDOM: true,
+                        }
                     });
-                    gridUserRulesInitialized = true;
                 } else {
                     $("#grid-userrules").bootgrid('reload');
                 }
@@ -601,7 +577,7 @@ POSSIBILITY OF SUCH DAMAGE.
             $(".rulesetprop").each(function(){
                 settings[$(this).data('id')] = $(this).val();
             });
-            ajaxCall("/api/ids/settings/setRulesetproperties", {'properties': settings}, function(data,status) {
+            ajaxCall("/api/ids/settings/set_rulesetproperties", {'properties': settings}, function(data,status) {
                 $("#updateSettings_progress").removeClass("fa fa-spinner fa-pulse");
                 $("#rulesetChangeMessage").slideDown(1000, function(){
                     setTimeout(function(){
@@ -637,27 +613,19 @@ POSSIBILITY OF SUCH DAMAGE.
             }
         });
 
-        $("#grid-rule-files-search").keydown(function (e) {
-            var searchString = $(this).val();
-            $("#grid-rule-files > tbody > tr").each(function(){
-                var itemName = $(this).children('td:eq(1)').html();
-                if (itemName.toLowerCase().indexOf(searchString.toLowerCase())>=0) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
+        $("#grid-rule-files-search").on("keyup", function (e) {
+            $("#grid-rule-files").bootgrid("search", $(this).val(), e);
         });
 
         /**
          * Initialize
          */
         // fetch interface mappings on load
-        ajaxGet('/api/diagnostics/interface/getInterfaceNames', {}, function(data, status) {
+        ajaxGet('/api/diagnostics/interface/get_interface_names', {}, function(data, status) {
             interface_descriptions = data;
         });
 
-        updateStatus();
+        updateServiceControlUI('ids');
 
         // update history on tab state and implement navigation
         if (window.location.hash != "") {
@@ -670,7 +638,7 @@ POSSIBILITY OF SUCH DAMAGE.
             history.pushState(null, null, e.target.hash);
         });
 
-        ajaxGet('/api/ids/settings/checkPolicyRule', {}, function(data, status) {
+        ajaxGet('/api/ids/settings/check_policy_rule', {}, function(data, status) {
             if (data.status === 'warning') {
                 $("#policyRuleMessage").html(data.message);
                 $("#policyRuleMessage").show();
@@ -688,7 +656,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     label: '{{ lang._('Yes') }}',
                     cssClass: 'btn-primary',
                     action: function(dlg){
-                        ajaxCall("/api/ids/service/dropAlertLog/", {filename: selected_log.data('filename')}, function(data,status){
+                        ajaxCall("/api/ids/service/drop_alert_log/", {filename: selected_log.data('filename')}, function(data,status){
                             $('#alert-logfile option').prop('selected', false);
                             updateAlertLogs();
                             $('#grid-alerts').bootgrid('reload');
@@ -806,7 +774,7 @@ POSSIBILITY OF SUCH DAMAGE.
           <button class="btn btn-primary" style="display:none" id="updateSettings" type="button"><b>{{ lang._('Save') }}</b> <i id="updateSettings_progress" class=""></i></button>
 
           <button class="btn btn-primary" id="updateRulesAct"
-                  data-endpoint='/api/ids/service/updateRules'
+                  data-endpoint='/api/ids/service/update_rules'
                   data-label="{{ lang._('Download & Update Rules') }}"
                   data-error-title="{{ lang._('Error reconfiguring IDS') }}"
                   data-service-widget="ids"
@@ -857,7 +825,7 @@ POSSIBILITY OF SUCH DAMAGE.
             </div>
             <hr/>
             <button class="btn btn-primary act_update"
-                    data-endpoint='/api/ids/service/reloadRules'
+                    data-endpoint='/api/ids/service/reload_rules'
                     data-label="{{ lang._('Apply') }}"
                     data-error-title="{{ lang._('Error reconfiguring IDS') }}"
                     type="button"
@@ -896,7 +864,7 @@ POSSIBILITY OF SUCH DAMAGE.
             </div>
             <hr/>
             <button class="btn btn-primary act_update"
-                    data-endpoint='/api/ids/service/reloadRules'
+                    data-endpoint='/api/ids/service/reload_rules'
                     data-label="{{ lang._('Apply') }}"
                     data-error-title="{{ lang._('Error reconfiguring IDS') }}"
                     type="button"
@@ -923,7 +891,7 @@ POSSIBILITY OF SUCH DAMAGE.
                   <th data-column-id="timestamp" data-type="string" data-sortable="false">{{ lang._('Timestamp') }}</th>
                   <th data-column-id="alert_sid" data-type="string" data-sortable="false"  data-width="70px">{{ lang._('SID') }}</th>
                   <th data-column-id="alert_action" data-type="string" data-sortable="false" data-width="70px">{{ lang._('Action') }}</th>
-                  <th data-column-id="in_iface" data-type="interface" data-sortable="false" data-width="100px">{{ lang._('Interface') }}</th>
+                  <th data-column-id="in_iface" data-type="string" data-formatter="interface" data-sortable="false" data-width="100px">{{ lang._('Interface') }}</th>
                   <th data-column-id="src_ip" data-type="string" data-sortable="false" data-width="150px">{{ lang._('Source') }}</th>
                   <th data-column-id="src_port" data-type="string" data-sortable="false" data-width="70px">{{ lang._('Port') }}</th>
                   <th data-column-id="dest_ip" data-type="string" data-sortable="false" data-width="150px">{{ lang._('Destination') }}</th>

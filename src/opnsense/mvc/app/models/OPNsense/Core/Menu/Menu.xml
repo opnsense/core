@@ -28,7 +28,7 @@
         </Access>
         <Configuration cssClass="fa fa-history fa-fw">
             <Backups url="/diag_backup.php"/>
-            <Defaults url="/diag_defaults.php"/>
+            <Defaults url="/ui/core/defaults"/>
             <History url="/ui/core/backup/history/this"/>
             <Wizard url="/ui/core/initial_setup"/>
         </Configuration>
@@ -92,9 +92,6 @@
         <Categories url="/ui/firewall/category" cssClass="fa fa-tags fa-fw"/>
         <Groups url="/ui/firewall/group" cssClass="fa fa-sitemap fa-fw"/>
         <NAT cssClass="fa fa-exchange fa-fw">
-            <PortForward order="100" VisibleName="Port Forward" url="/firewall_nat.php">
-                <Edit url="/firewall_nat_edit.php*" visibility="hidden"/>
-            </PortForward>
             <Outbound order="300" VisibleName="Outbound" url="/firewall_nat_out.php">
                 <Edit url="/firewall_nat_out_edit.php*" visibility="hidden"/>
             </Outbound>
@@ -124,11 +121,11 @@
         </LogFiles>
     </Firewall>
     <Services order="60" cssClass="fa fa-cog">
-        <ISC_DHCPv4 VisibleName="ISC DHCPv4" cssClass="fa fa-bullseye fa-fw">
+        <ISC_DHCPv4 VisibleName="ISC DHCPv4 [legacy]" cssClass="fa fa-bullseye fa-fw">
             <Leases order="300" url="/ui/dhcpv4/leases"/>
             <LogFile VisibleName="Log File" order="400" url="/ui/diagnostics/log/core/dhcpd"/>
         </ISC_DHCPv4>
-        <ISC_DHCPv6 VisibleName="ISC DHCPv6" cssClass="fa fa-bullseye fa-fw">
+        <ISC_DHCPv6 VisibleName="ISC DHCPv6 [legacy]" cssClass="fa fa-bullseye fa-fw">
             <Leases order="400" url="/ui/dhcpv6/leases"/>
         </ISC_DHCPv6>
         <OpenDNS VisibleName="OpenDNS" url="/services_opendns.php" cssClass="fa fa-tags fa-fw"/>
@@ -136,13 +133,8 @@
     </Services>
     <VPN order="50" cssClass="fa fa-globe">
         <OpenVPN cssClass="fa fa-lock fa-fw">
-            <Instances url="/ui/openvpn/instances"/>
-            <Servers VisibleName="Servers [legacy]" order="10" url="/vpn_openvpn_server.php">
-                <Edit url="/vpn_openvpn_server.php?*" visibility="hidden"/>
-            </Servers>
-            <Clients VisibleName="Clients [legacy]" order="20" url="/vpn_openvpn_client.php">
-                <Edit url="/vpn_openvpn_client.php?*" visibility="hidden"/>
-            </Clients>
+            <Instances order="10" url="/ui/openvpn/instances"/>
+            <!-- XXX order gap for client/server legacy pages -->
             <CSC order="30" VisibleName="Client Specific Overrides" url="/ui/openvpn/client_overwrites"/>
             <ClientExport order="40" VisibleName="Client Export" url="/ui/openvpn/export">
                 <Edit url="/ui/openvpn/export?*" visibility="hidden"/>

@@ -55,17 +55,4 @@
     </div>
 </div>
 
-<section class="page-content-main">
-    <div class="content-box">
-        <div class="col-md-12">
-            <br/>
-            <button class="btn btn-primary" id="reconfigureAct"
-                    data-endpoint='/api/kea/service/reconfigure'
-                    data-label="{{ lang._('Apply') }}"
-                    data-error-title="{{ lang._('Error reconfiguring DHCPv4') }}"
-                    type="button"
-            ></button>
-            <br/><br/>
-        </div>
-    </div>
-</section>
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/kea/service/reconfigure'}) }}

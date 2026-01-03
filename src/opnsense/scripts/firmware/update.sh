@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2023 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2025 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -46,12 +46,23 @@ fi
 # read reboot flag and record current package name and version state
 ALWAYS_REBOOT=$(/usr/local/sbin/pluginctl -g system.firmware.reboot)
 PKGS_HASH=$(${PKG} query %n-%v 2> /dev/null | sha256)
+UPDATE_FAILED=
 
-# upgrade all packages if possible
-output_cmd opnsense-update ${FORCE} -pt "opnsense${SUFFIX}"
+# update all packages if possible
+if ! output_cmd opnsense-update ${FORCE} -pt "opnsense${SUFFIX}"; then
+	UPDATE_FAILED=1
+fi
 
 # restart the web server
 output_cmd /usr/local/etc/rc.restart_webgui
+
+# if the uodate failed then abort and and try to recover
+if [ -n "${UPDATE_FAILED}" ]; then
+	output_txt "Partial update failure detected: attempting automatic cleanup."
+	output_cmd opnsense-update -Fs
+	output_txt "No further actions will be taken. Please restart the update now."
+	output_done keep-log
+fi
 
 # run plugin resolver if requested
 if [ "${CMD}" = "sync" ]; then
@@ -61,13 +72,13 @@ fi
 # if we can update base, we'll do that as well
 if opnsense-update ${FORCE} -bk -c; then
 	if output_cmd opnsense-update ${FORCE} -bk; then
-		output_reboot
+		output_reboot keep-log
 	fi
 fi
 
 if [ "${ALWAYS_REBOOT}" = "1" ]; then
 	if [ "${PKGS_HASH}" != "$(${PKG} query %n-%v 2> /dev/null | sha256)" ]; then
-		output_reboot
+		output_reboot keep-log
 	fi
 fi
 

@@ -39,7 +39,7 @@ export default class SystemInformation extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        const data = await this.ajaxCall('/api/diagnostics/system/systemTime');
+        const data = await this.ajaxCall('/api/diagnostics/system/system_time');
         $('#uptime').text(data['uptime']);
         $('#loadavg').text(data['loadavg']);
         $('#datetime').text(data['datetime']);
@@ -47,7 +47,7 @@ export default class SystemInformation extends BaseTableWidget {
     }
 
     async onMarkupRendered() {
-        const data = await this.ajaxCall('/api/diagnostics/system/systemInformation');
+        const data = await this.ajaxCall('/api/diagnostics/system/system_information');
         let rows = [];
         for (let [key, value] of Object.entries(data)) {
             if (!key in this.translations) {

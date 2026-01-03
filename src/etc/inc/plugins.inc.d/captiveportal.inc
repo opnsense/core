@@ -85,14 +85,12 @@ function captiveportal_firewall($fw)
 
             $zoneid = (string)$zone->zoneid;
             $uuid = $zone->getAttribute('uuid');
-            // register anchor, to be filled with ether rules for accounting
-            $fw->registerAnchor("captiveportal_zone_{$zoneid}", "ether", 0, "head", false, (string)$zone->interfaces);
 
             if (!$zone->disableRules->isEmpty()) {
                 continue;
             }
 
-            foreach (explode(',', $zone->interfaces) as $intf) {
+            foreach ($zone->interfaces->getValues() as $intf) {
                 // allow DNS (IPv4)
                 $fw->registerFilterRule(
                     1,

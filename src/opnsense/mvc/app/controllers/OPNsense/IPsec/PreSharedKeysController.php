@@ -37,6 +37,7 @@ class PreSharedKeysController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->formDialogPSK = $this->getForm('dialogPSK');
+        $this->view->formGridPSK = $this->getFormGrid('dialogPSK');
         $this->view->pick('OPNsense/IPsec/pre_shared_keys');
     }
 }

@@ -34,7 +34,8 @@ class DnsblController extends IndexController
 {
     public function indexAction()
     {
-        $this->view->dnsblForm = $this->getForm('dnsbl');
+        $this->view->formGridDnsbl = $this->getFormGrid('dnsbl');
+        $this->view->formDialogDnsbl = $this->getForm('dnsbl');
         $this->view->pick('OPNsense/Unbound/dnsbl');
     }
 }

@@ -137,6 +137,9 @@ export default class ThermalSensors extends BaseWidget {
                         filter: function(tooltipItem) {
                             return tooltipItem.datasetIndex === 0;
                         },
+                        bodyFont: {
+                           size: 9
+                        },
                         callbacks: {
                             label: (tooltipItem) => {
                                 let idx = tooltipItem.dataIndex;
@@ -215,7 +218,7 @@ export default class ThermalSensors extends BaseWidget {
     }
 
     async _fetchSensors() {
-        const data = await this.ajaxCall('/api/diagnostics/system/systemTemperature');
+        const data = await this.ajaxCall('/api/diagnostics/system/system_temperature');
         return data;
     }
 

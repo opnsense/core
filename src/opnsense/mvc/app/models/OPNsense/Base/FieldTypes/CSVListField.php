@@ -35,24 +35,12 @@ use OPNsense\Base\Validators\CallbackValidator;
  * Physical stored as a single entry, stores multiple selections.
  * @package OPNsense\Base\FieldTypes
  */
-class CSVListField extends BaseField
+class CSVListField extends BaseSetField
 {
     /**
-     * @var bool marks if this is a data node or a container
+     * @var bool when set, results are returned as list (with all options enabled)
      */
-    protected $internalIsContainer = false;
-
-    /**
-     * item separator
-     * @var string
-     */
-    private $separatorchar = ",";
-
-    /**
-     * selectable options, key/value store.
-     * value = display option
-     */
-    private $selectOptions = array();
+    protected $internalAsList = true;
 
     /**
      * @var string basic regex validation to use for the complete field
@@ -87,63 +75,7 @@ class CSVListField extends BaseField
      */
     public function setMaskPerItem($value)
     {
-        if (strtoupper(trim($value)) == "Y") {
-            $this->internalMaskPerItem = true;
-        } else {
-            $this->internalMaskPerItem = false;
-        }
-    }
-
-    /**
-     * retrieve data including selection options (from setSelectOptions)
-     * @return array
-     */
-    public function getNodeData()
-    {
-        $result = array ();
-        $selectlist = explode($this->separatorchar, (string)$this);
-
-        foreach ($this->selectOptions as $optKey => $optValue) {
-            $result[$optKey] = array("value" => $optValue, "selected" => 0);
-        }
-
-        foreach ($selectlist as $optKey) {
-            if (strlen($optKey) > 0) {
-                if (isset($result[$optKey])) {
-                    $result[$optKey]["selected"] = 1;
-                } else {
-                    $result[$optKey] = array("value" => $optKey, "selected" => 1);
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * set all options for this select item.
-     * push a key/value array type to set all options or deliver a comma-separated list with keys and optional values
-     * divided by a pipe | sign.
-     * example :    optionA|text for option A, optionB|test for option B
-     * @param array|string $list key/value option list
-     */
-    public function setSelectOptions($list)
-    {
-        if (is_array($list)) {
-            foreach ($list as $optKey => $optValue) {
-                $this->selectOptions[$optKey] = $optValue;
-            }
-        } else {
-            // string list
-            foreach (explode($this->separatorchar, $list) as $option) {
-                if (strpos($option, "|") !== false) {
-                    $tmp = explode("|", $option);
-                    $this->selectOptions[$tmp[0]] = $tmp[1];
-                } else {
-                    $this->selectOptions[$option] = $option;
-                }
-            }
-        }
+        $this->internalMaskPerItem = strtoupper(trim($value)) == 'Y';
     }
 
     /**
@@ -153,29 +85,33 @@ class CSVListField extends BaseField
     public function getValidators()
     {
         $validators = parent::getValidators();
+
         if ($this->internalValue != null && $this->internalMask != null) {
-            $validators[] = new CallbackValidator(['callback' => function ($data) {
+            $that = $this;
+            $validators[] = new CallbackValidator(['callback' => function ($data) use ($that) {
                 $regex_match = function ($value, $pattern) {
                     $matches = [];
                     preg_match(trim($pattern), $value, $matches);
                     return isset($matches[0]) ? $matches[0] == $value : false;
                 };
 
-                if ($this->internalMaskPerItem) {
-                    $items = explode($this->separatorchar, $this->internalValue);
+                if ($that->internalMaskPerItem) {
+                    $items = $that->iterateInput($that->internalValue);
                     foreach ($items as $item) {
-                        if (!$regex_match($item, $this->internalMask)) {
-                            return ["\"" . $item . "\" is invalid. " . $this->getValidationMessage()];
+                        if (!$regex_match($item, $that->internalMask)) {
+                            return ["\"" . $item . "\" is invalid. " . $that->getValidationMessage()];
                         }
                     }
                 } else {
-                    if (!$regex_match($this->internalValue, $this->internalMask)) {
-                        return [$this->getValidationMessage()];
+                    if (!$regex_match($that->internalValue, $that->internalMask)) {
+                        return [$that->getValidationMessage()];
                     }
                 }
+
                 return [];
             }]);
         }
+
         return $validators;
     }
 }

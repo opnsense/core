@@ -36,6 +36,7 @@ class UniqueTestContainer extends ArrayField
 {
     private bool $valuesRequired = false;
     private array $internalNodes = [];
+    private bool $caseInsensitive = false;
 
     /**
      * @param $nodes a single node or an array of nodes
@@ -70,6 +71,11 @@ class UniqueTestContainer extends ArrayField
         }
     }
 
+    public function setCaseInsensitive(bool $val)
+    {
+        $this->caseInsensitive = $val;
+    }
+
     public function validate()
     {
         $uniqueConstraints = [];
@@ -77,6 +83,8 @@ class UniqueTestContainer extends ArrayField
         foreach ($this->internalNodes as $idx => $nodes) {
             $addFields = [];
             $constraint = new UniqueConstraint();
+            $constraint->setOption('caseInsensitive', $this->caseInsensitive ? "Y" : "N");
+
             foreach ($nodes as $name => $value) {
                 if ($name === array_key_first($nodes)) {
                     $constraint->setOption('node', $this->{'item' . $idx}->$name);
@@ -178,5 +186,31 @@ class UniqueConstraintTest extends \PHPUnit\Framework\Testcase
         $msgs = $container->validate();
 
         $this->assertEquals(2, count($msgs));
+    }
+
+    public function testCaseInsensitiveDuplicatesFail()
+    {
+        $container = new UniqueTestContainer();
+        $container->setCaseInsensitive(true);
+
+        $container->addNode(['unique_test' => 'Value1']);
+        $container->addNode(['unique_test' => 'value1']);
+
+        $msgs = $container->validate();
+
+        $this->assertEquals(2, count($msgs));
+    }
+
+    public function testCaseSensitiveDifferentCasePasses()
+    {
+        $container = new UniqueTestContainer();
+        $container->setCaseInsensitive(false);
+
+        $container->addNode(['unique_test' => 'Value1']);
+        $container->addNode(['unique_test' => 'value1']);
+
+        $msgs = $container->validate();
+
+        $this->assertEquals(0, count($msgs));
     }
 }

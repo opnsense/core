@@ -19,10 +19,10 @@
         </language>
         <dns_servers type="NetworkField">
             <NetMaskAllowed>N</NetMaskAllowed>
-            <FieldSeparator>,</FieldSeparator>
-            <asList>Y</asList>
+            <AsList>Y</AsList>
         </dns_servers>
         <dnsallowoverride type="BooleanField">
+            <Default>1</Default>
             <Required>Y</Required>
         </dnsallowoverride>
         <unbound>
@@ -42,6 +42,8 @@
         </timezone>
         <interfaces>
             <wan>
+                <!--disable is only set manually, we always assume the intention is to enable wan-->
+                <disable type="BooleanField"/>
                 <ipv4_type type="OptionField">
                     <Required>Y</Required>
                     <Default>static</Default>
@@ -89,6 +91,11 @@
                 </configure_dhcp>
             </lan>
         </interfaces>
+        <deployment_type>
+            <multiwan type="BooleanField"/>
+            <dhcp_dns_registration type="BooleanField"/>
+            <maxthreads type="BooleanField"/>
+        </deployment_type>
         <password type="TextField"/>
         <password_confirm type="TextField"/>
     </items>

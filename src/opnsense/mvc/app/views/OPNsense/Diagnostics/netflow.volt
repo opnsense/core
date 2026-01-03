@@ -46,7 +46,7 @@
         });
 
         $("#act_refresh_cache_stats").click(function(){
-            ajaxGet('/api/diagnostics/netflow/cacheStats', {}, function(data, status) {
+            ajaxGet('/api/diagnostics/netflow/cache_stats', {}, function(data, status) {
                 var html = [];
                 // convert to plain Array
                 var data_arr = $.makeArray(data)[0];

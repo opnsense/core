@@ -378,7 +378,7 @@ function gentitle($breadcrumbs, $navlevelsep = ': ')
     if (isset($breadcrumbs[0]['name'])) {
         $output = array();
         foreach ($breadcrumbs as $crumb) {
-            $output[] = gettext($crumb['name']);
+            $output[] = $crumb['name'];
         }
     }
 

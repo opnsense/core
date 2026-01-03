@@ -37,7 +37,7 @@ class StoreB64Field extends TextField
      */
     public function __toString()
     {
-        return base64_decode($this->getCurrentValue()) ?? '';
+        return base64_decode($this->getValue()) ?? '';
     }
 
     /**

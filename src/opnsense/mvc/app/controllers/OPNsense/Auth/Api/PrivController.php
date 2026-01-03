@@ -50,7 +50,7 @@ class PrivController extends ApiMutableModelControllerBase
         $userprivs = [];
         $groupprivs = [];
         foreach ((new User())->user->iterateItems() as $user) {
-            foreach (explode(',', $user->priv->getCurrentValue()) as $priv) {
+            foreach ($user->priv->getValues() as $priv) {
                 if (!isset($userprivs[$priv])) {
                     $userprivs[$priv] = [];
                 }
@@ -58,7 +58,7 @@ class PrivController extends ApiMutableModelControllerBase
             }
         }
         foreach ((new Group())->group->iterateItems() as $group) {
-            foreach (explode(',', $group->priv->getCurrentValue()) as $priv) {
+            foreach ($group->priv->getValues() as $priv) {
                 if (!isset($groupprivs[$priv])) {
                     $groupprivs[$priv] = [];
                 }
@@ -86,7 +86,7 @@ class PrivController extends ApiMutableModelControllerBase
             $result['priv']['id'] = $id;
             foreach ((new User())->user->iterateItems() as $uuid => $user) {
                 if (
-                    in_array($id, explode(',', $user->priv->getCurrentValue())) &&
+                    in_array($id, $user->priv->getValues()) &&
                     isset($result['priv']['users'][$uuid])
                 ) {
                     $result['priv']['users'][$uuid]['selected'] = 1;
@@ -94,7 +94,7 @@ class PrivController extends ApiMutableModelControllerBase
             }
             foreach ((new Group())->group->iterateItems() as $uuid => $group) {
                 if (
-                    in_array($id, explode(',', $group->priv->getCurrentValue())) &&
+                    in_array($id, $group->priv->getValues()) &&
                     isset($result['priv']['groups'][$uuid])
                 ) {
                     $result['priv']['groups'][$uuid]['selected'] = 1;
@@ -116,13 +116,9 @@ class PrivController extends ApiMutableModelControllerBase
             $usermdl = new User();
             $groupmdl = new Group();
             foreach ([$usermdl->user, $groupmdl->group] as $topic) {
-                if ($topic == $usermdl->user) {
-                    $uuids = explode(',', $mdl->users->getCurrentValue());
-                } else {
-                    $uuids = explode(',', $mdl->groups->getCurrentValue());
-                }
+                $uuids = $topic == $usermdl->user ? $mdl->users->getValues() : $mdl->groups->getValues();
                 foreach ($topic->iterateItems() as $uuid => $item) {
-                    $privlist = array_filter(explode(',', $item->priv->getCurrentValue()));
+                    $privlist = $item->priv->getValues();
                     if (!in_array($uuid, $uuids) && in_array($id, $privlist)) {
                         unset($privlist[array_search($id, $privlist)]);
                     } elseif (in_array($uuid, $uuids) && !in_array($id, $privlist)) {

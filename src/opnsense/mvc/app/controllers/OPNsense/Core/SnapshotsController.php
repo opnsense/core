@@ -44,5 +44,6 @@ class SnapshotsController extends \OPNsense\Base\IndexController
     {
         $this->view->pick('OPNsense/Core/snapshot');
         $this->view->SnapshotForm = $this->getForm('snapshot');
+        $this->view->formGridSnapshot = $this->getFormGrid('snapshot');
     }
 }

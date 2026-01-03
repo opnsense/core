@@ -223,7 +223,7 @@ class FirewallController extends ApiControllerBase
     public function queryPfTopAction()
     {
         if ($this->request->isPost()) {
-            $pftop = json_decode((new Backend())->configdpRun('filter diag top') ?? '', true) ?? [];
+            $pftop = json_decode((new Backend())->configdpRun('filter diag top'), true) ?? [];
 
             $clauses = [];
             $networks = [];
@@ -248,7 +248,7 @@ class FirewallController extends ApiControllerBase
                     $row['descr'] = $labels[$row['rule']]['descr'];
                 }
 
-                if (!empty($ruleid) && trim($row['label']) != $ruleid) {
+                if (!empty($ruleid) && trim($row['label'] ?? '') != $ruleid) {
                     return false;
                 }
                 /* filter using network clauses*/

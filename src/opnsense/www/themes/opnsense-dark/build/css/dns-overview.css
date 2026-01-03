@@ -1,6 +1,6 @@
 .tab-content {
   padding: 10px;
-  border-top: 1px solid #1a1d27;
+  border-top: 1px solid rgb(26.2, 29.475, 39.3);
 }
 
 .banner {
@@ -9,7 +9,7 @@
 
 .stats-element {
   height: 5em;
-  background: #1a1d27;
+  background: rgb(26.2, 29.475, 39.3);
   overflow: hidden;
   display: flex;
   justify-content: flex-start;
@@ -176,3 +176,5 @@
 .tooltip-inner {
   max-width: 1000px !important;
 }
+
+/*# sourceMappingURL=dns-overview.css.map */

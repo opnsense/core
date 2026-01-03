@@ -121,7 +121,7 @@ class WidgetManager  {
     }
 
     async _loadWidgets() {
-        const response = await $.ajax('/api/core/dashboard/getDashboard', {
+        const response = await $.ajax('/api/core/dashboard/get_dashboard', {
             type: 'GET',
             dataType: 'json',
             contentType: 'application/json'
@@ -411,6 +411,7 @@ class WidgetManager  {
                 $('.edit-handle').show();
                 $('#add_widget').show();
                 $('#restore-defaults').show();
+                $('.title-invisible').css('display', ''); // prevent inline display: block on show()
             } else {
                 this.runtimeOptions.editMode = false;
                 this.grid.enableMove(false);
@@ -421,7 +422,11 @@ class WidgetManager  {
                 $('.edit-handle').hide();
                 $('#add_widget').hide();
                 $('#restore-defaults').hide();
+                $('.title-invisible').hide();
             }
+
+            // expect layout to have shifted
+            this._updateGrid();
         });
 
         $('#edit-grid').mouseup(function() {
@@ -582,8 +587,11 @@ class WidgetManager  {
         ` : '';
         let $panel = $(`<div class="widget widget-${identifier}"></div>`);
         let $content = $(`<div class="widget-content"></div>`);
+        const widget = this.widgetClasses[identifier];
+        const headerClass = `${!widget.isTitleVisible() ? "title-invisible" : ""}`;
+        const headerStyle = !widget.isTitleVisible() ? "display: none" : "";
         let $header = $(`
-            <div class="widget-header">
+            <div class="widget-header ${headerClass}" style="${headerStyle}">
                 <div class="widget-header-left"></div>
                 <div id="${identifier}-title" class="widget-title"><b>${title}</b></div>
                 <div class="widget-command-container">
@@ -595,7 +603,11 @@ class WidgetManager  {
             </div>
         `);
         $content.append($header);
-        let $divider = $(`<div class="panel-divider"><div class="line"></div></div></div>`);
+        let $divider = $(`
+            <div class="panel-divider ${headerClass}" style="${headerStyle}">
+                <div class="line"></div>
+            </div>
+        `);
         $content.append($divider);
         $content.append(content);
         $panel.append($content);
@@ -604,7 +616,7 @@ class WidgetManager  {
     }
 
     __restoreDefaults(dialog) {
-        $.ajax({type: "POST", url: "/api/core/dashboard/restoreDefaults"}).done((response) => {
+        $.ajax({type: "POST", url: "/api/core/dashboard/restore_defaults"}).done((response) => {
             if (response['result'] == 'failed') {
                 console.error('Failed to restore default widgets');
                 if (dialog !== undefined) {
@@ -676,7 +688,7 @@ class WidgetManager  {
 
         $.ajax({
             type: "POST",
-            url: "/api/core/dashboard/saveWidgets",
+            url: "/api/core/dashboard/save_widgets",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(payload),
@@ -719,6 +731,20 @@ class WidgetManager  {
         for (const [key, value] of Object.entries(options)) {
             let $option = $(`<div class="widget-option-container"></div>`);
             switch (value.type) {
+                case 'select':
+                    let $selectSingle = $(`<select class="widget_optionsform_selectpicker"
+                                         id="${value.id}"
+                                         data-container="body"
+                                         class="selectpicker"></select>`);
+
+                    for (const option of value.options) {
+                        let selected = config[key] === option.value;
+                        $selectSingle.append($(`<option value="${option.value}" ${selected ? 'selected' : ''}>${option.label}</option>`));
+                    }
+
+                    $option.append($(`<div><b>${value.title}</b></div>`));
+                    $option.append($selectSingle);
+                    break;
                 case 'select_multiple':
                     let $select = $(`<select class="widget_optionsform_selectpicker"
                                      id="${value.id}"
@@ -755,6 +781,9 @@ class WidgetManager  {
                     let values = {};
                     for (const [key, value] of Object.entries(options)) {
                         switch (value.type) {
+                            case 'select':
+                                values[key] = $(`#${value.id}`).val() ?? value.default;
+                            break;
                             case 'select_multiple':
                                 values[key] = $(`#${value.id}`).val();
                                 if (values[key].count === 0) {

@@ -28,6 +28,9 @@
 
 namespace OPNsense\OpenVPN;
 
+use OPNsense\Core\AppConfig;
+use OPNsense\Core\Shell;
+
 class ViscosityVisz extends PlainOpenVPN
 {
     /**
@@ -68,11 +71,8 @@ class ViscosityVisz extends PlainOpenVPN
     protected function archive($tempdir, $content_dir)
     {
         $outputFilename = "{$content_dir}.zip";
-        $command = "cd " . escapeshellarg($tempdir)
-            . " && /usr/bin/tar cfz "
-            . escapeshellarg($outputFilename)
-            . " Viscosity.visc";
-        exec($command);
+
+        Shell::run_safe('cd %s && /usr/bin/tar cfz %s Viscosity.visc', [$tempdir, $outputFilename]);
 
         return $outputFilename;
     }
@@ -101,7 +101,7 @@ class ViscosityVisz extends PlainOpenVPN
     public function getContent()
     {
         $conf = $this->openvpnConfParts();
-        $tempdir = tempnam(sys_get_temp_dir(), '_ovpn');
+        $tempdir = tempnam((new AppConfig())->application->tempDir, '_ovpn');
         $content_dir = $tempdir . "/Viscosity.visc";
         if (file_exists($tempdir)) {
             unlink($tempdir);

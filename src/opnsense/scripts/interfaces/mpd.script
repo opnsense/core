@@ -427,6 +427,8 @@ ModemIdent:
 	log "The modem is not responding to any ATI[1,3-5,8] commands."
 	failure
 
+MomIdentGeneriicc:
+	log "Mangled MomIdentGeneriicc redirected to ModemIdentGeneric"
 ModemIdentGeneric:
 	set $ModemDescription "Hayes compatible modem"
 	if $SimPin != "" call DialPeerSetPin

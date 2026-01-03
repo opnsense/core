@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -69,7 +69,7 @@ class UIModelGrid
         $sortBy = empty($defaultSort) ? array() : array($defaultSort);
         $sortDescending = false;
 
-        if ($request->hasPost('sort') && is_array($request->get("sort"))) {
+        if ($request->hasPost('sort') && !empty($request->get("sort")) && is_array($request->get("sort"))) {
             $sortBy = array_keys($request->get("sort"));
             if (!empty($sortBy) && $request->get("sort")[$sortBy[0]] == "desc") {
                 $sortDescending = true;
@@ -122,14 +122,8 @@ class UIModelGrid
                 }
 
                 // parse rows, because we may need to convert some (list) items we need to know the actual content
-                // before searching.
-                $row = [];
-                $row['uuid'] = $record->getAttributes()['uuid'];
-                foreach ($fields as $fieldname) {
-                    if ($record->$fieldname != null) {
-                        $row[$fieldname] = $record->$fieldname->getDescription();
-                    }
-                }
+                // before searching we flatten the resulting array in case of nested containers
+                $row = iterator_to_array($this->flatten(array_merge(['uuid' => $record->getAttributes()['uuid']], $record->getNodeContent())));
 
                 // if a search phrase is provided, use it to search in all requested fields
                 $search_clauses = preg_split('/\s+/', $searchPhrase);
@@ -137,10 +131,8 @@ class UIModelGrid
                     foreach ($search_clauses as $clause) {
                         $searchFound = false;
                         foreach ($fields as $fieldname) {
-                            if (
-                                isset($row[$fieldname]) &&
-                                strpos(strtolower($row[$fieldname]), strtolower($clause)) !== false
-                            ) {
+                            $item = $row['%' . $fieldname] ?? $row[$fieldname] ?? ''; /* prefer search by description */
+                            if (!empty($item) && strpos(strtolower($item), strtolower($clause)) !== false) {
                                 $searchFound = true;
                             }
                         }
@@ -171,5 +163,16 @@ class UIModelGrid
         $result['current'] = (int)$currentPage;
 
         return $result;
+    }
+
+    private function flatten($node, $path = '')
+    {
+        if (is_array($node)) {
+            foreach ($node as $key => $value) {
+                yield from $this->flatten($value, ltrim($path . '.' . $key, '.'));
+            }
+        } else {
+            yield $path => $node;
+        }
     }
 }

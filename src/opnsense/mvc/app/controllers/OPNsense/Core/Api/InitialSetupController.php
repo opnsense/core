@@ -46,10 +46,25 @@ class InitialSetupController extends ApiMutableModelControllerBase
         $result = parent::setAction();
         if ($result['result'] == 'saved') {
             $result = $this->getModel()->updateConfig();
+            if (isset(Config::getInstance()->object()->trigger_initial_wizard)) {
+                unset(Config::getInstance()->object()->trigger_initial_wizard);
+                Config::getInstance()->save();
+            }
             (new Backend())->configdRun("service reload delay", true);
             return $result;
         } else {
             return $result;
         }
+    }
+
+    public function abortAction()
+    {
+        if ($this->request->isPost()) {
+            if (isset(Config::getInstance()->object()->trigger_initial_wizard)) {
+                unset(Config::getInstance()->object()->trigger_initial_wizard);
+                Config::getInstance()->save();
+            }
+        }
+        return ['result' => 'done']; /* not important */
     }
 }

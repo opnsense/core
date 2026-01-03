@@ -34,5 +34,6 @@ class VtiController extends \OPNsense\Base\IndexController
     {
         $this->view->pick('OPNsense/IPsec/vti');
         $this->view->formDialogVTI = $this->getForm('dialogVTI');
+        $this->view->formGridVTI = $this->getFormGrid('dialogVTI');
     }
 }
