@@ -434,6 +434,28 @@ class FilterController extends FilterBaseController
         return $result;
     }
 
+    public function downloadRulesAction()
+    {
+        if ($this->request->isGet()) {
+            $this->exportCsv($this->getModel()->rules->rule->asRecordSet(false, [], function($node, $record){
+                return array_merge(['@uuid' => $node->getAttribute('uuid')], $record);
+            }));
+        }
+    }
+
+    public function uploadRulesAction()
+    {
+        if ($this->request->isPost() && $this->request->hasPost('payload')) {
+            return $this->importCsv(
+                'rules.rule',
+                $this->request->getPost('payload'),
+                ['@uuid']
+            );
+        } else {
+            return ['status' => 'failed'];
+        }
+    }
+
     public function flushInspectCacheAction()
     {
         if (!$this->request->isPost()) {

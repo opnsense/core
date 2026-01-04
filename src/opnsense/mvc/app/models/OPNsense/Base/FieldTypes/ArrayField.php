@@ -279,9 +279,10 @@ class ArrayField extends BaseField
     /**
      * @param bool $include_static include non importable static items
      * @param array $exclude fieldnames to exclude
+     * @param function $callback function called on each record ($node, $record) -> $record
      * @return array simple array set
      */
-    public function asRecordSet($include_static = false, $exclude = [])
+    public function asRecordSet($include_static = false, $exclude = [], $callback = null)
     {
         $records = [];
         $iterator =  $include_static ? $this->iterateItems() : parent::iterateItems();
@@ -292,7 +293,11 @@ class ArrayField extends BaseField
                     $record[$tag] = (string)$node;
                 }
             }
-            $records[] = $record;
+            if (is_callable($callback)) {
+                $records[] = $callback($anode, $record);
+            } else {
+                $records[] = $record;
+            }
         }
         return $records;
     }
@@ -313,7 +318,7 @@ class ArrayField extends BaseField
             foreach (parent::iterateItems() as $node) {
                 $keydata = [];
                 foreach ($keyfields as $keyfield) {
-                    $keydata[] = (string)$node->$keyfield;
+                    $keydata[] = $keyfield != '@uuid' ? (string)$node->$keyfield : $node->getAttribute('uuid');
                 }
                 $key = implode("\n", $keydata);
                 if (isset($current[$key])) {
