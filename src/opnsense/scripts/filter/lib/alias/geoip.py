@@ -224,6 +224,7 @@ class GEOIP(BaseContentParser):
                         except (ipaddress.AddressValueError, ValueError):
                             pass
 
+    @staticmethod
     def is_valid_alias_stats(path):
     """
     Validates the alias.stats file.
