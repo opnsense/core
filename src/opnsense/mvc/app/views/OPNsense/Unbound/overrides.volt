@@ -52,6 +52,9 @@ $( document ).ready(function() {
     }).on("selected.rs.jquery.bootgrid", function (e, rows) {
         $("#{{formGridHostAlias['table_id']}}").bootgrid('reload');
     }).on("loaded.rs.jquery.bootgrid", function (e) {
+        /* not optimal, but when multiSelect is false, a delete selected doesn't make much sense */
+        $("#dialogHostOverride").find('.command-delete-selected').remove()
+
         let ids = $("#{{formGridHostOverride['table_id']}}").bootgrid("getCurrentRows");
         if (ids.length > 0) {
             $("#{{formGridHostOverride['table_id']}}").bootgrid('select', [ids[0].uuid]);
