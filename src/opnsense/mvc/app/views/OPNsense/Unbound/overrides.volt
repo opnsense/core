@@ -133,7 +133,7 @@ $( document ).ready(function() {
 </style>
 
 <div class="content-box __mb">
-    {{ partial('layout_partials/base_bootgrid_table', formGridHostOverride)}}
+    {{ partial('layout_partials/base_bootgrid_table', formGridHostOverride + {'hide_delete': true})}}
     <div id="infosection" class="bootgrid-footer container-fluid">
         {{ lang._('Entries in this section override individual results from the forwarders.') }}
         {{ lang._('Use these for changing DNS results or for adding custom DNS records.') }}
