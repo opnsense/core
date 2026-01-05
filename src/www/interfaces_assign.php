@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $is_ppp = false;
         foreach (config_read_array('ppps', 'ppp') as $ppp) {
-            if ($ppp['if'] = $_POST['if_add']) {
+            if ($ppp['if'] == $_POST['if_add']) {
                 $is_ppp = true;
                 break;
             }
