@@ -458,7 +458,7 @@ class Store
                     $altnames[$target][] = $parts[1];
                 }
                 foreach ($altnames as $key => $values) {
-                    $result[$target] = implode("\n", $values);
+                    $result[$key] = implode("\n", $values);
                 }
             }
 
