@@ -222,3 +222,23 @@ class GEOIP(BaseContentParser):
                             yield address.strip()
                         except (ipaddress.AddressValueError, ValueError):
                             pass
+
+    def is_valid_alias_stats(path):
+    """
+    Validates the alias.stats file.
+    Returns True if the file exists, can be parsed, and contains non-zero and non-null required fields.
+    """
+    if not os.path.isfile(path):
+        return False
+    try:
+        with open(path, "r") as f:
+            data = ujson.load(f)
+        return (
+            isinstance(data, dict)
+            and data.get("address_count", 0) > 0
+            and data.get("file_count", 0) > 0
+            and data.get("timestamp") is not None
+            and data.get("locations_filename") is not None
+        )
+    except Exception:
+        return False
