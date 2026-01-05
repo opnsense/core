@@ -385,6 +385,7 @@
                             virtualDOM: true,
                             multiSelect:false,
                             selection:false,
+                            rowCount: [50, 100, 200, 500, 1000, 5000, 10000],
                             requestHandler:addAlertQryFilters,
                             labels: {
                                 infos: "{{ lang._('Showing %s to %s') | format('{{ctx.start}}','{{ctx.end}}') }}"
