@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<opnsense>
+  <trigger_initial_wizard/>
+  <theme>opnsense</theme>
+  <sysctl/>
+  <unbound version="1.0.13" persisted_at="1762794040.38" description="Unbound configuration">
+    <enable>1</enable>
+  </unbound>
+  <nat>
+    <outbound>
+      <mode>automatic</mode>
+    </outbound>
+  </nat>
+  <filter>
+    <rule>
+      <type>pass</type>
+      <ipprotocol>inet</ipprotocol>
+      <descr>Default allow LAN to any rule</descr>
+      <interface>lan</interface>
+      <source>
+        <network>lan</network>
+      </source>
+      <destination>
+        <any/>
+      </destination>
+    </rule>
+    <rule>
+      <type>pass</type>
+      <ipprotocol>inet6</ipprotocol>
+      <descr>Default allow LAN IPv6 to any rule</descr>
+      <interface>lan</interface>
+      <source>
+        <network>lan</network>
+      </source>
+      <destination>
+        <any/>
+      </destination>
+    </rule>
+  </filter>
+  <rrd>
+    <enable/>
+  </rrd>
+  <revision>
+    <username>tests\OPNsense\Core\ConfigTest</username>
+    <description>N/A</description>
+    <time>0</time>
+  </revision>
+</opnsense>
