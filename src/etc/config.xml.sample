@@ -96,7 +96,7 @@
     <dhcp_ranges>
       <interface>lan</interface>
       <start_addr>::</start_addr>
-      <constructor>wan</constructor>
+      <constructor>lan</constructor>
       <ra_mode>ra-stateless</ra_mode>
     </dhcp_ranges>
   </dnsmasq>
