@@ -1,6 +1,7 @@
 ipsec.pam:/etc/pam.d/ipsec
 motd:/var/run/motd
 sshd.pam:/etc/pam.d/sshd
-sudoers:/usr/local/etc/sudoers.d/opnsense
+sudoers:/usr/local/etc/sudoers.d/20-opnsense
+sudoers.deprecated:/usr/local/etc/sudoers.d/opnsense
 system.pam:/etc/pam.d/system
 csh.cshrc:/etc/csh.cshrc
