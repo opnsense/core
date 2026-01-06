@@ -35,6 +35,26 @@
 
     $( document ).ready(function() {
 
+        /* hook import/export buttons */
+        $("#upload_pipes").SimpleFileUploadDlg({
+            onAction: function(){
+                $('#{{formGridPipe["table_id"]}}').bootgrid('reload');
+            }
+        });
+        $('#download_pipes').click(function(e){
+            e.preventDefault();
+            window.open("/api/trafficshaper/settings/download_pipes");
+        });
+        $("#upload_queues").SimpleFileUploadDlg({
+            onAction: function(){
+                $('#{{formGridQueue["table_id"]}}').bootgrid('reload');
+            }
+        });
+        $('#download_queues').click(function(e){
+            e.preventDefault();
+            window.open("/api/trafficshaper/settings/download_queues");
+        });
+
         /*************************************************************************************************************
          * link grid actions
          *************************************************************************************************************/
@@ -144,10 +164,54 @@
 </ul>
 <div class="tab-content content-box">
     <div id="pipes" class="tab-pane fade in active">
-        {{ partial('layout_partials/base_bootgrid_table', formGridPipe)}}
+        {{ partial('layout_partials/base_bootgrid_table', formGridPipe + {
+                'grid_commands': {
+                    'upload_pipes': {
+                        'title': lang._('Import csv'),
+                        'class': 'btn btn-xs',
+                        'icon_class': 'fa fa-fw fa-upload',
+                        'data': {
+                            'title': lang._('Import csv'),
+                            'endpoint': '/api/trafficshaper/settings/upload_pipes',
+                            'toggle': 'tooltip'
+                        }
+                    },
+                    'download_pipes': {
+                        'title': lang._('Export as csv'),
+                        'class': 'btn btn-xs',
+                        'icon_class': 'fa fa-fw fa-table',
+                        'data': {
+                            'toggle': 'tooltip'
+                        }
+                    }
+                }
+            }
+        )}}
     </div>
     <div id="queues" class="tab-pane fade in">
-        {{ partial('layout_partials/base_bootgrid_table', formGridQueue)}}
+        {{ partial('layout_partials/base_bootgrid_table', formGridQueue + {
+                'grid_commands': {
+                    'upload_queues': {
+                        'title': lang._('Import csv'),
+                        'class': 'btn btn-xs',
+                        'icon_class': 'fa fa-fw fa-upload',
+                        'data': {
+                            'title': lang._('Import csv'),
+                            'endpoint': '/api/trafficshaper/settings/upload_queues',
+                            'toggle': 'tooltip'
+                        }
+                    },
+                    'download_queues': {
+                        'title': lang._('Export as csv'),
+                        'class': 'btn btn-xs',
+                        'icon_class': 'fa fa-fw fa-table',
+                        'data': {
+                            'toggle': 'tooltip'
+                        }
+                    }
+                }
+            }
+        )}}
     </div>
     <div id="rules" class="tab-pane fade in">
         {{ partial('layout_partials/base_bootgrid_table', formGridRule)}}

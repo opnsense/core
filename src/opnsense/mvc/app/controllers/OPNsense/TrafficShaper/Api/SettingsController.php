@@ -261,4 +261,49 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         return $this->toggleBase("rules.rule", $uuid, $enabled);
     }
+
+    public function downloadPipesAction()
+    {
+        if ($this->request->isGet()) {
+            $this->exportCsv($this->getModel()->pipes->pipe->asRecordSet(
+                false,
+                [],
+                function($node, $record) {
+                    return array_merge(['@uuid' => $node->getAttribute('uuid')], $record);
+                })
+            );
+        }
+    }
+
+    public function uploadPipesAction()
+    {
+        if ($this->request->isPost() && $this->request->hasPost('payload')) {
+            return $this->importCsv('pipes.pipe', $this->request->getPost('payload'), ['@uuid']);
+        } else {
+            return ['status' => 'failed'];
+        }
+    }
+
+    public function downloadQueuesAction()
+    {
+        if ($this->request->isGet()) {
+            $this->exportCsv($this->getModel()->queues->queue->asRecordSet(
+                false,
+                [],
+                function($node, $record) {
+                    return array_merge(['@uuid' => $node->getAttribute('uuid')], $record);
+                })
+            );
+        }
+    }
+
+    public function uploadQueuesAction()
+    {
+        if ($this->request->isPost() && $this->request->hasPost('payload')) {
+            return $this->importCsv('queues.queue', $this->request->getPost('payload'), ['@uuid']);
+        } else {
+            return ['status' => 'failed'];
+        }
+    }
+
 }
