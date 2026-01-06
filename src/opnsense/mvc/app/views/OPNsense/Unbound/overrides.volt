@@ -52,9 +52,6 @@ $( document ).ready(function() {
     }).on("selected.rs.jquery.bootgrid", function (e, rows) {
         $("#{{formGridHostAlias['table_id']}}").bootgrid('reload');
     }).on("loaded.rs.jquery.bootgrid", function (e) {
-        /* not optimal, but when multiSelect is false, a delete selected doesn't make much sense */
-        $("#dialogHostOverride").find('.command-delete-selected').remove()
-
         let ids = $("#{{formGridHostOverride['table_id']}}").bootgrid("getCurrentRows");
         if (ids.length > 0) {
             $("#{{formGridHostOverride['table_id']}}").bootgrid('select', [ids[0].uuid]);
@@ -136,7 +133,7 @@ $( document ).ready(function() {
 </style>
 
 <div class="content-box __mb">
-    {{ partial('layout_partials/base_bootgrid_table', formGridHostOverride)}}
+    {{ partial('layout_partials/base_bootgrid_table', formGridHostOverride + {'hide_delete': true})}}
     <div id="infosection" class="bootgrid-footer container-fluid">
         {{ lang._('Entries in this section override individual results from the forwarders.') }}
         {{ lang._('Use these for changing DNS results or for adding custom DNS records.') }}
