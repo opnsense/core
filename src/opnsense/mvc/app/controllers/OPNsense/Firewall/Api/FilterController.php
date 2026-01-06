@@ -446,7 +446,7 @@ class FilterController extends FilterBaseController
             $this->exportCsv($this->getModel()->rules->rule->asRecordSet(
                 false,
                 [],
-                function($node, $record) use ($categories){
+                function ($node, $record) use ($categories) {
                     if (!empty($record['categories'])) {
                         $cats = [];
                         foreach (explode(',', $record['categories']) as $key) {
@@ -457,8 +457,8 @@ class FilterController extends FilterBaseController
                         $record['categories'] = implode(',', $cats);
                     }
                     return array_merge(['@uuid' => $node->getAttribute('uuid')], $record);
-                })
-            );
+                }
+            ));
         }
     }
 

@@ -268,10 +268,10 @@ class SettingsController extends ApiMutableModelControllerBase
             $this->exportCsv($this->getModel()->pipes->pipe->asRecordSet(
                 false,
                 [],
-                function($node, $record) {
+                function ($node, $record) {
                     return array_merge(['@uuid' => $node->getAttribute('uuid')], $record);
-                })
-            );
+                }
+            ));
         }
     }
 
@@ -290,10 +290,10 @@ class SettingsController extends ApiMutableModelControllerBase
             $this->exportCsv($this->getModel()->queues->queue->asRecordSet(
                 false,
                 [],
-                function($node, $record) {
+                function ($node, $record) {
                     return array_merge(['@uuid' => $node->getAttribute('uuid')], $record);
-                })
-            );
+                }
+            ));
         }
     }
 
@@ -305,5 +305,4 @@ class SettingsController extends ApiMutableModelControllerBase
             return ['status' => 'failed'];
         }
     }
-
 }

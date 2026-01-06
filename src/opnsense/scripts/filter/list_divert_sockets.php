@@ -33,4 +33,3 @@ require_once('script/load_phalcon.php');
  */
 
 echo json_encode(['8000' => gettext("Intrusion Detection")]);
-
