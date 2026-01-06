@@ -437,19 +437,56 @@ class FilterController extends FilterBaseController
     public function downloadRulesAction()
     {
         if ($this->request->isGet()) {
-            $this->exportCsv($this->getModel()->rules->rule->asRecordSet(false, [], function($node, $record){
-                return array_merge(['@uuid' => $node->getAttribute('uuid')], $record);
-            }));
+            /* categories have unique names, export names instead of ids so we can easily map them on other targets */
+            $categories = [];
+            foreach ((new Category())->categories->category->iterateItems() as $key => $category) {
+                $categories[$key] = $category->name->getValue();
+            }
+            /* XXX:  as shaper1/2 don't have functional keys, we can only export uuid's here*/
+            $this->exportCsv($this->getModel()->rules->rule->asRecordSet(
+                false,
+                [],
+                function($node, $record) use ($categories){
+                    if (!empty($record['categories'])) {
+                        $cats = [];
+                        foreach (explode(',', $record['categories']) as $key) {
+                            if (isset($categories[$key])) {
+                                $cats[] = $categories[$key];
+                            }
+                        }
+                        $record['categories'] = implode(',', $cats);
+                    }
+                    return array_merge(['@uuid' => $node->getAttribute('uuid')], $record);
+                })
+            );
         }
     }
 
     public function uploadRulesAction()
     {
         if ($this->request->isPost() && $this->request->hasPost('payload')) {
+            /* catgories have unique names, need to map them to uuids */
+            $categories = [];
+            foreach ((new Category())->categories->category->iterateItems() as $key => $category) {
+                $categories[$category->name->getValue()] = $key;
+            }
+
             return $this->importCsv(
                 'rules.rule',
                 $this->request->getPost('payload'),
-                ['@uuid']
+                ['@uuid'],
+                function (&$record) use ($categories) {
+                    if (!empty($record['categories'])) {
+                        /* only map what we know, ignore the rest */
+                        $cats = [];
+                        foreach (explode(',', $record['categories']) as $key) {
+                            if (isset($categories[$key])) {
+                                $cats[] = $categories[$key];
+                            }
+                        }
+                        $record['categories'] = implode(',', $cats);
+                    }
+                }
             );
         } else {
             return ['status' => 'failed'];
