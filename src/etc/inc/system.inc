@@ -117,7 +117,7 @@ function system_sysctl_defaults()
         'net.inet6.ip6.log_cannot_forward' => [ 'default' => '0' ],
         'net.inet6.ip6.prefer_tempaddr' => [ 'default' => '0' ],
         'net.inet6.ip6.redirect' => [ 'default' => '0' ],
-        'net.inet6.ip6.rfc6204w3' => [ 'default' => !empty($config['OPNsense']['Interfaces']['settings']['ipv6allow']) ? '1' : '0' ],
+        'net.inet6.ip6.rfc6204w3' => [ 'default' => is_ipv6_allowed() ? '1' : '0' ],
         'net.inet6.ip6.use_tempaddr' => [ 'default' => '0' ],
         'net.link.bridge.pfil_bridge' => [ 'default' => '0' ],
         'net.link.bridge.pfil_local_phys' => [ 'default' => '0' ],

@@ -2422,7 +2422,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     /* we do not set "ifdisabled" to avoid clobbering assigned tunnel devices */
     mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv -no_dad description %s up', [$device, $ifdescr]);
 
-    switch (!empty($config['OPNsense']['Interfaces']['settings']['ipv6allow']) ? ($wancfg['ipaddrv6'] ?? 'none') : 'none') {
+    switch (is_ipv6_allowed() ? ($wancfg['ipaddrv6'] ?? 'none') : 'none') {
         case 'slaac':
         case 'dhcp6':
             mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled up', $device);

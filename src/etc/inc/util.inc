@@ -1234,6 +1234,14 @@ function is_install_media()
     return true;
 }
 
+function is_ipv6_allowed()
+{
+    global $config;
+
+    /* XXX if the interface settings migration failed this turns off ipv6 */
+    return !empty($config['OPNsense']['Interfaces']['settings']['ipv6allow']);
+}
+
 function dhcp6c_duid_read()
 {
     $parts = [];

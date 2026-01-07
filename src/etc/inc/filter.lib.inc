@@ -206,7 +206,7 @@ function filter_core_rules_system($fw, $defaults)
 {
     global $config;
 
-    $ipv6_disabled = empty($config['OPNsense']['Interfaces']['settings']['ipv6allow']);
+    $ipv6_disabled = !is_ipv6_allowed();
 
     $dhcrelay6_interfaces = plugins_run('dhcrelay_interfaces', ['inet6']);
     $dhcrelay6_interfaces = !empty($dhcrelay6_interfaces['dhcrelay']) ? $dhcrelay6_interfaces['dhcrelay'] : [];

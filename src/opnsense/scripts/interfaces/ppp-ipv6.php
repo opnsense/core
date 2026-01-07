@@ -49,7 +49,7 @@ if (!interface_ppps_bound($interface, $family)) {
     exit(1);
 }
 
-switch (!empty($config['OPNsense']['Interfaces']['settings']['ipv6allow']) ? ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') : 'none') {
+switch (is_ipv6_allowed() ? ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') : 'none') {
     case 'dhcp6':
     case 'slaac':
         interface_dhcpv6_prepare($interface, $config['interfaces'][$interface]);
