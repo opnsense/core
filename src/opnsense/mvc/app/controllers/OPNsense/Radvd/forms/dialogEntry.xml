@@ -1,0 +1,129 @@
+<form>
+    <field>
+        <type>header</type>
+        <label>General Settings</label>
+    </field>
+    <field>
+        <id>entries.interface</id>
+        <label>Interface</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>entries.mode</id>
+        <label>Mode</label>
+        <type>dropdown</type>
+        <help>Select which flags to set in Router Advertisements sent from this interface. Use "Router Only" to disable Stateless Address Autoconfiguration (SLAAC) and DHCPv6, "Unmanaged" for SLAAC (A flag), "Managed" for Stateful DHCPv6 (M+O flags), "Assisted" for Stateful DHCPv6 and SLAAC (M+O+A flags), or "Stateless" for Stateless DHCPv6 and SLAAC (O+A flags).</help>
+    </field>
+    <field>
+        <id>entries.AdvDefaultPreference</id>
+        <label>Default Router Preference</label>
+        <type>dropdown</type>
+        <help>Select the Priority for the Router Advertisement (RA) Daemon.</help>
+    </field>
+    <field>
+        <id>entries.source_address</id>
+        <label>Source Address</label>
+        <type>text</type>
+        <help>Select the source address embedded in the RA messages. If a CARP address is used DeprecatePrefix and RemoveRoute are both set to "off" by default.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>DNS Settings</label>
+    </field>
+    <field>
+        <id>entries.dns</id>
+        <label>Enable DNS Advertisement</label>
+        <type>checkbox</type>
+        <help>Control the behavior of the embedded DNS configuration (RFC 8106). Leave unchecked to use a custom DNS configuration.</help>
+    </field>
+    <field>
+        <id>entries.RDNSS</id>
+        <label>Recursive DNS Servers (RDNSS)</label>
+        <type>text</type>
+        <help>Leave blank to use the system default DNS servers: This interface IP address if a DNS service is enabled or the configured global DNS servers.</help>
+    </field>
+    <field>
+        <id>entries.DNSSL</id>
+        <label>DNS Search List (DNSSL)</label>
+        <type>text</type>
+        <help>The default is to use the domain name of this system as the DNSSL option in Router Advertisements. You may optionally specify one or multiple domain(s) here. Use the semicolon character as separator.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Prefix Settings</label>
+        <collapse>true</collapse>
+    </field>
+    <field>
+        <id>entries.DeprecatePrefix</id>
+        <label>Deprecate Prefix</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>entries.RemoveRoute</id>
+        <label>Remove Route</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>entries.routes</id>
+        <label>Routes</label>
+        <type>text</type>
+        <help>Routes are specified in CIDR format. The prefix of a route definition should be network prefix; it can be used to advertise more specific routes to the hosts.</help>
+    </field>
+        <field>
+        <type>header</type>
+        <label>Interval Settings</label>
+        <collapse>true</collapse>
+    </field>
+    <field>
+        <id>entries.MaxRtrAdvInterval</id>
+        <label>Max Router Advertisement Interval</label>
+        <type>text</type>
+        <help>The maximum time allowed between sending unsolicited multicast router advertisements from the interface, in seconds.</help>
+    </field>
+    <field>
+        <id>entries.MinRtrAdvInterval</id>
+        <label>Min Router Advertisement Interval</label>
+        <type>text</type>
+        <help>The minimum time allowed between sending unsolicited multicast router advertisements from the interface, in seconds.</help>
+    </field>
+    <field>
+        <id>entries.AdvLinkMTU</id>
+        <label>Link MTU</label>
+        <type>text</type>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Lifetime Settings</label>
+        <collapse>true</collapse>
+    </field>
+    <field>
+        <id>entries.AdvDNSSLLifetime</id>
+        <label>DNSSL Lifetime</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>entries.AdvRDNSSLifetime</id>
+        <label>RDNSS Lifetime</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>entries.AdvDefaultLifetime</id>
+        <label>Default Router Lifetime</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>entries.AdvPreferredLifetime</id>
+        <label>Preferred Lifetime</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>entries.AdvValidLifetime</id>
+        <label>Valid Lifetime</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>entries.AdvRouteLifetime</id>
+        <label>Route Lifetime</label>
+        <type>text</type>
+    </field>
+</form>
