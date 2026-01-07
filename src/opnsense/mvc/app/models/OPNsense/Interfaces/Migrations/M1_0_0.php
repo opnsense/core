@@ -34,14 +34,14 @@ use OPNsense\Core\Config;
 class M1_0_0 extends BaseModelMigration
 {
     private $keys = [
-        'disablechecksumoffloading',
-        'disablesegmentationoffloading',
-        'disablelargereceiveoffloading',
-        'disablevlanhwfilter',
-        'dhcp6_norelease',
         'dhcp6_debug',
+        'dhcp6_norelease',
+        'disablechecksumoffloading',
+        'disablelargereceiveoffloading',
+        'disablesegmentationoffloading',
+        'disablevlanhwfilter',
+        'ipv6allow',
         'ipv6duid',
-        'ipv6allow'
     ];
 
     public function run($model)
@@ -56,6 +56,13 @@ class M1_0_0 extends BaseModelMigration
                 if (!isset($config->system->$key)) {
                     $nodes[$_key] = '1';
                 }
+            } elseif ($key == 'ipv6duid') {
+                $_key = 'dhcp6_duid';
+                if (isset($config->system->$key)) {
+                    $nodes[$_key] = (string)$config->system->$key;
+                }
+            } elseif ($key == 'dhcp6_debug') {
+                $nodes[$key] = isset($config->system->$key) ? '1' : '0';
             } elseif (isset($config->system->$key)) {
                 $nodes[$key] = (string)$config->system->$key;
             }

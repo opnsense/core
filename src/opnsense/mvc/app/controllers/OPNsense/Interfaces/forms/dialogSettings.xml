@@ -58,7 +58,7 @@
         <help>Reload without advertisements after timeout. Can be adjusted to fit ISP timing. "0" completely disables the timeout.</help>
     </field>
     <field>
-        <id>settings.ipv6duid</id>
+        <id>settings.dhcp6_duid</id>
         <label>System DHCP Unique Identifier</label>
         <type>text</type>
         <help>

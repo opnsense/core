@@ -36,7 +36,7 @@
             <Default>0</Default>
             <Required>Y</Required>
         </dhcp6_debug>
-        <ipv6duid type=".\DUIDField"/>
+        <dhcp6_duid type=".\DUIDField"/>
         <dhcp6_ratimeout type="IntegerField">
             <Default>10</Default>
             <Required>Y</Required>

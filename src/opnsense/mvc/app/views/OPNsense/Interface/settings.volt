@@ -44,14 +44,14 @@
                     </a>
                 </div>
             `);
-            $container.insertAfter($('#settings\\.ipv6duid'));
+            $container.insertAfter($('#settings\\.dhcp6_duid'));
             ['current', 'llt', 'll', 'uuid', 'en'].forEach(id => {
                 $(`#${id}`).click(function() {
-                    $('#settings\\.ipv6duid').val(duids[id] ?? '');
+                    $('#settings\\.dhcp6_duid').val(duids[id] ?? '');
                 });
             });
             $('#clear').click(function() {
-                $('#settings\\.ipv6duid').val('');
+                $('#settings\\.dhcp6_duid').val('');
             })
         });
 

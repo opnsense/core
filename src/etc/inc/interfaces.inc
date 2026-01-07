@@ -2772,8 +2772,8 @@ function interface_dhcpv6_configure($interface, $wancfg)
     $settings = new OPNsense\Interfaces\Settings();
 
     /* write DUID if override was set */
-    if (!$settings->ipv6duid->isEmpty()) {
-        dhcp6c_duid_write($settings->ipv6duid->getValue());
+    if (!$settings->dhcp6_duid->isEmpty()) {
+        dhcp6c_duid_write($settings->dhcp6_duid->getValue());
     /* clear DUID if it is faulty */
     } elseif (empty(dhcp6c_duid_read())) {
         dhcp6c_duid_clear();
