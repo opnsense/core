@@ -157,6 +157,7 @@
 /usr/local/etc/ssl/ext_sources/README
 /usr/local/etc/ssl/opnsense.cnf
 /usr/local/etc/strongswan.opnsense.d/README
+/usr/local/etc/sudoers.d/opnsense
 /usr/local/etc/suricata/conf.d/README
 /usr/local/etc/unbound.opnsense.d/README
 /usr/local/libexec/opnsense-auth
@@ -1472,7 +1473,6 @@
 /usr/local/opnsense/service/templates/OPNsense/Auth/motd
 /usr/local/opnsense/service/templates/OPNsense/Auth/sshd.pam
 /usr/local/opnsense/service/templates/OPNsense/Auth/sudoers
-/usr/local/opnsense/service/templates/OPNsense/Auth/sudoers.deprecated
 /usr/local/opnsense/service/templates/OPNsense/Auth/system.pam
 /usr/local/opnsense/service/templates/OPNsense/Captiveportal/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Captiveportal/captiveportal.conf
