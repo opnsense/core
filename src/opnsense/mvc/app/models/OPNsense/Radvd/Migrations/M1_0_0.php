@@ -116,7 +116,7 @@ class M1_0_0 extends BaseModelMigration
             $entry->DeprecatePrefix->normalizeValue();
             $entry->RemoveRoute->normalizeValue();
             $entry->mode->normalizeValue();
-            $entry->priority->normalizeValue();
+            $entry->AdvDefaultPreference->normalizeValue();
 
             /* yet if interface is empty we must remove the entry */
             $entry->interface->normalizeValue();
