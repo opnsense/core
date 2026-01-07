@@ -26,47 +26,43 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Interfaces\Migrations;
+namespace OPNsense\Core\Migrations;
 
 use OPNsense\Base\BaseModelMigration;
+use OPNsense\Core\Tunables;
 use OPNsense\Core\Config;
 
-class M1_0_0 extends BaseModelMigration
+class MTUN1_0_2 extends BaseModelMigration
 {
-    private $keys = [
-        'disablechecksumoffloading',
-        'disablesegmentationoffloading',
-        'disablelargereceiveoffloading',
-        'disablevlanhwfilter',
-        'dhcp6_norelease',
-        'dhcp6_debug',
-        'ipv6duid',
-        'ipv6allow'
-    ];
-
+    /**
+     * Migrate sharednet settings
+     * @param $model
+     */
     public function run($model)
     {
-        $config = Config::getInstance()->object();
-        $nodes = [];
-
-        foreach ($this->keys as $key) {
-            if (isset($config->system->$key)) {
-                $nodes[$key] = (string)$config->system->$key;
-            } else {
-                $model->$key->applyDefault();
-            }
+        if (!($model instanceof Tunables)) {
+            return;
         }
 
-        $model->setNodes($nodes);
+        $config = Config::getInstance()->object();
+
+        if (isset($config?->system?->sharednet)) {
+            $model->item->add()->setNodes([
+                'tunable' => 'net.link.ether.inet.log_arp_movements',
+                'value' => '0',
+            ]);
+            $model->item->add()->setNodes([
+                'tunable' => 'net.link.ether.inet.log_arp_wrong_iface',
+                'value' => '0',
+            ]);
+        }
     }
 
     public function post($model)
     {
         $config = Config::getInstance()->object();
-        foreach ($this->keys as $key) {
-            if (isset($config->system->$key)) {
-                unset($config->system->$key);
-            }
+        if (isset($config?->system?->sharednet)) {
+            unset($config->system->sharednet);
         }
     }
 }

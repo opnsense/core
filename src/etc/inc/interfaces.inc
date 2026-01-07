@@ -2769,11 +2769,11 @@ function interface_6to4_configure($interface, $wancfg, $update = false)
 
 function interface_dhcpv6_configure($interface, $wancfg)
 {
-    $hwsettings = config_read_array('OPNsense', 'Interfaces', 'settings');
+    $settings = new OPNsense\Interfaces\Setting();
 
     /* write DUID if override was set */
-    if (!empty($hwsettings['ipv6duid'])) {
-        dhcp6c_duid_write($hwsettings['ipv6duid']);
+    if (!$settings->ipv6duid->isEmpty()) {
+        dhcp6c_duid_write($settings->ipv6duid->getValue());
     /* clear DUID if it is faulty */
     } elseif (empty(dhcp6c_duid_read())) {
         dhcp6c_duid_clear();
@@ -2787,18 +2787,13 @@ function interface_dhcpv6_configure($interface, $wancfg)
     killbypid('/var/run/rtsold.pid');
     @unlink("/tmp/rtsold.{$wancfg['if']}.done");
 
-    $rtsold_frmt = ['/usr/sbin/rtsold -aiu -p %s -A %s -R %s'];
+    $rtsold_frmt = ['/usr/sbin/rtsold -%s -aiu -p %s -A %s -R %s'];
     $rtsold_args = [
+        $settings->dhcp6_debug->isEmpty() ? 'd' : 'D',
         '/var/run/rtsold.pid',
         '/var/etc/rtsold_script.sh',
         '/usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh',
     ];
-
-    $dhcp6_debug = config_read_array('OPNsense', 'Interfaces', 'settings')['dhcp6_debug'];
-    if (!empty($dhcp6_debug)) {
-        $mode = [ '1' => '-d', '2' => '-D' ];
-        $rtsold_frmt[] = $mode[$dhcp6_debug];
-    }
 
     /* fire up rtsold for IPv6 RAs first */
     mwexecf($rtsold_frmt, $rtsold_args);
@@ -2808,7 +2803,7 @@ function interface_dhcpv6_configure($interface, $wancfg)
      * advertisements after timeout which can be necessary.
      * Can be adjusted to fit ISP timing or completely disabled.
      */
-    if (!empty($hwsettings['dhcp6_ratimeout'] ?? '10')) {
+    if (!$settings->dhcp6_ratimeout->isEmpty()) {
         mwexecfb('/var/etc/rtsold_script.sh %s', [$wancfg['if']]);
     }
 }
@@ -2841,8 +2836,8 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
         return;
     }
 
+    $settings = new OPNsense\Interfaces\Setting();
     $id = interface_dhcpv6_id($interface);
-    $hwsettings = config_read_array('OPNsense', 'Interfaces', 'settings');
     $device = $wancfg['if'];
 
     $dhcp6cconf = "# generated for {$interface} in {$wancfg['ipaddrv6']} mode\n";
@@ -2920,24 +2915,17 @@ EOF;
     @file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript);
     @chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
 
-    $dhcp6ccommand = exec_safe('/usr/local/sbin/dhcp6c -c %s -p %s', [
-            '/var/etc/dhcp6c.conf',
-            '/var/run/dhcp6c.pid',
+    $dhcp6ccommand = exec_safe('/usr/local/sbin/dhcp6c -%s -c %s -p %s', [
+        $settings->dhcp6_debug->isEmpty() ? 'd' : 'D',
+        '/var/etc/dhcp6c.conf',
+        '/var/run/dhcp6c.pid',
     ]);
 
-    $hwsettings = config_read_array('OPNsense', 'Interfaces', 'settings');
-
-    if (!empty($hwsettings['dhcp6_debug'])) {
-        $mode = [ '1' => ' -d', '2' => ' -D' ];
-        $dhcp6ccommand .= $mode[$hwsettings['dhcp6_debug']];
-    }
-
-    if (!empty($hwsettings['dhcp6_norelease'])) {
+    if (!$settings->dhcp6_norelease->isEmpty()) {
         $dhcp6ccommand .= ' -n';
     }
 
-    /* integer in seconds from 0 to n, 0 actually disables it */
-    $ratimeout = $hwsettings['dhcp6_ratimeout'] ?? '10';
+    $ratimeout = $settings->dhcp6_ratimeout->getValue();
 
     $dhcp6cconf = '';
 

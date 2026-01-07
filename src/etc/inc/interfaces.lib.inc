@@ -562,6 +562,7 @@ function configure_interface_hardware($ifs, $intf_details = null)
 {
     global $config;
 
+    /* XXX the whole function should move to interfaces.inc */
     $hwsettings = $config['OPNsense']['Interfaces']['settings'];
 
     /* XXX this needs fixing, lots of devices are not capable */

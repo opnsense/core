@@ -24,20 +24,17 @@
                 <opt2 value="2">Leave default</opt2>
             </OptionValues>
         </disablevlanhwfilter>
-        <sharednet type="BooleanField"/>
         <ipv6allow type="BooleanField">
             <Default>1</Default>
             <Required>Y</Required>
         </ipv6allow>
-        <dhcp6_norelease type="BooleanField"/>
-        <dhcp6_debug type="OptionField">
+        <dhcp6_norelease type="BooleanField">
             <Default>0</Default>
             <Required>Y</Required>
-            <OptionValues>
-                <opt0 value="0">Standard</opt0>
-                <opt1 value="1">Info</opt1>
-                <opt2 value="2">Debug</opt2>
-            </OptionValues>
+        </dhcp6_norelease>
+        <dhcp6_debug type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
         </dhcp6_debug>
         <ipv6duid type=".\DUIDField"/>
         <dhcp6_ratimeout type="IntegerField">

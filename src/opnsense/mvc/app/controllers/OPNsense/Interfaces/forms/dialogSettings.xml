@@ -28,12 +28,6 @@
         <help>Set usage of VLAN hardware filtering. This hardware acceleration may be broken in a particular device driver, or may impact performance.</help>
     </field>
     <field>
-        <id>settings.sharednet</id>
-        <label>Suppress ARP messages</label>
-        <type>checkbox</type>
-        <help>This option will suppress ARP log messages when multiple interfaces reside on the same broadcast domain.</help>
-    </field>
-    <field>
         <type>header</type>
         <label>IPv6 options</label>
     </field>

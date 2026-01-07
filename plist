@@ -683,6 +683,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/M1_0_1.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/MHA1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/MHA1_0_1.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/MTUN1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Tunables.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Tunables.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/repositories/opnsense.xml
@@ -2541,7 +2542,6 @@
 /usr/local/www/system_advanced_admin.php
 /usr/local/www/system_advanced_firewall.php
 /usr/local/www/system_advanced_misc.php
-/usr/local/www/system_advanced_network.php
 /usr/local/www/system_authservers.php
 /usr/local/www/system_gateway_groups.php
 /usr/local/www/system_gateway_groups_edit.php
