@@ -408,7 +408,7 @@ class ControllerBase extends ControllerRoot
             foreach (array_reverse($this->view->menuBreadcrumbs) as $crumb) {
                 $output[] = gettext($crumb['name']);
             }
-            $this->view->headTitle = join(' | ', $output);
+            $this->view->headTitle = strip_tags(join(' | ', $output));
         }
 
         // append ACL object to view
