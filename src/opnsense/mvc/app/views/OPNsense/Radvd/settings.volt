@@ -34,6 +34,7 @@
             del:'/api/radvd/settings/del_entry/'
         });
         $("#reconfigureAct").SimpleActionButton();
+        updateServiceControlUI('radvd');
     });
 </script>
 
