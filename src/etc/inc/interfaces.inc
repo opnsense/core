@@ -595,9 +595,6 @@ function _interfaces_hardware($device, $intf_details = null)
 {
     global $config;
 
-    /* XXX the whole function should move to interfaces.inc */
-    $hwsettings = $config['OPNsense']['Interfaces']['settings'];
-
     /* XXX this needs fixing, lots of devices are not capable */
     if (
         strstr($device, 'vlan') || strpos($device, 'qinq') === 0 ||
@@ -613,6 +610,9 @@ function _interfaces_hardware($device, $intf_details = null)
     } else {
         $intf_details = legacy_interface_details($device);
     }
+
+    $settings = new OPNsense\Interfaces\Settings();
+    $hwsettings = $settings->getNodeContent();
 
     /* interface overwrites */
     foreach ($config['interfaces'] as $iface => $ifconf) {
@@ -678,7 +678,7 @@ function _interfaces_hardware($device, $intf_details = null)
                 }
             }
             // set one tag at a time to avoid driver issues
-            foreach (array('vlanhwtag', 'vlanhwfilter', 'vlanhwtso', 'vlanhwcsum') as $tag) {
+            foreach (['vlanhwtag', 'vlanhwfilter', 'vlanhwtso', 'vlanhwcsum'] as $tag) {
                 if (empty($hwsettings['disablevlanhwfilter']) && !in_array($tag, $selected_opts)) {
                     legacy_interface_flags($device, $tag);
                 } elseif (!empty($hwsettings['disablevlanhwfilter']) && in_array($tag, $selected_opts)) {
