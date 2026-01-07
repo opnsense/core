@@ -2844,24 +2844,25 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
     $syscfg = config_read_array('system');
     $device = $wancfg['if'];
 
+    $dhcp6cconf = "# generated for {$interface} in {$wancfg['ipaddrv6']} mode\n";
+
     if (!empty($wancfg['adv_dhcp6_config_file_override'])) {
         $dhcp6cfile = $wancfg['adv_dhcp6_config_file_override_path'];
         if (file_exists($dhcp6cfile)) {
-            $dhcp6cconf = file_get_contents($dhcp6cfile);
-            $dhcp6cconf = DHCP6_Config_File_Substitutions($wancfg, $device, $dhcp6cconf);
+            $dhcp6cconf .= DHCP6_Config_File_Substitutions($wancfg, $device, file_get_contents($dhcp6cfile));
         } else {
             log_msg("DHCP6 config file override does not exist: '{$dhcp6cfile}'", LOG_ERR);
         }
     } elseif (!empty($wancfg['adv_dhcp6_config_advanced'])) {
-        $dhcp6cconf = DHCP6_Config_File_Advanced($interface, $wancfg, $device, $id);
+        $dhcp6cconf .= DHCP6_Config_File_Advanced($interface, $wancfg, $device, $id);
     } else {
-        $dhcp6cconf = DHCP6_Config_File_Basic($interface, $wancfg, $device, $id);
+        $dhcp6cconf .= DHCP6_Config_File_Basic($interface, $wancfg, $device, $id);
     }
 
     if (!$cleanup) {
-        @file_put_contents("/var/etc/dhcp6c_{$interface}.conf", $dhcp6cconf);
+        @file_put_contents("/var/etc/dhcp6c.{$device}.conf", $dhcp6cconf);
     } else {
-        @unlink("/var/etc/dhcp6c_{$interface}.conf");
+        @unlink("/var/etc/dhcp6c.{$device}.conf");
     }
 
     $dhcp6cscript = <<<EOF
@@ -2943,12 +2944,9 @@ EOF;
             continue;
         }
 
-        if (!file_exists("/var/etc/dhcp6c_{$_interface}.conf")) {
-            /* config file not yet rendered, defer for later */
-            continue;
+        if (file_exists("/var/etc/dhcp6c.{$_wancfg['if']}.conf")) {
+            $dhcp6cconf .= file_get_contents("/var/etc/dhcp6c.{$_wancfg['if']}.conf");
         }
-
-        $dhcp6cconf .= file_get_contents("/var/etc/dhcp6c_{$_interface}.conf");
     }
 
     @file_put_contents('/var/etc/dhcp6c.conf', $dhcp6cconf);
