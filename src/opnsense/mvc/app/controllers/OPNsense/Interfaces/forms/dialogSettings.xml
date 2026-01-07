@@ -39,17 +39,17 @@
         <!-- XXX this should be hidden under advanced eventually -->
     </field>
     <field>
+        <id>settings.dhcp6_debug</id>
+        <label>Debug logging</label>
+        <type>checkbox</type>
+        <help>Modify logging for IPv6 clients to give full diagnostics.</help>
+    </field>
+    <field>
         <id>settings.dhcp6_norelease</id>
         <label>Prevent release</label>
         <type>checkbox</type>
         <help>Do not send a release message on client exit to prevent the release of an allocated address or prefix on the server.</help>
         <advanced>true</advanced>
-    </field>
-    <field>
-        <id>settings.dhcp6_debug</id>
-        <label>Log level</label>
-        <type>dropdown</type>
-        <help>Modify log level for IPv6 clients. Info will give status, interface leases and addresses. Debug will give full diagnostics.</help>
     </field>
     <field>
         <id>settings.dhcp6_ratimeout</id>
