@@ -51,7 +51,15 @@ class M1_0_0 extends BaseModelMigration
             $content = ['interface' => $key];
             $content['source_address'] = 'XXX';
             if (!empty($node->ramode)) {
-                $content['mode'] = (string)$node->ramode;
+                $mode = (string)$node->ramode;
+                // Migrate ramode disabled option to its own enabled key
+                if ($mode == 'disabled') {
+                    $content['enabled'] = '0';
+                    // There is no mode here, will instead become current model default
+                } else {
+                    $content['enabled'] = '1';
+                    $content['mode'] = $mode;
+                }
             }
             if (!empty($node->rapriority)) {
                 $content['priority'] = (string)$node->rapriority;

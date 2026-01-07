@@ -31,7 +31,8 @@
             get:'/api/radvd/settings/get_entry/',
             set:'/api/radvd/settings/set_entry/',
             add:'/api/radvd/settings/add_entry/',
-            del:'/api/radvd/settings/del_entry/'
+            del:'/api/radvd/settings/del_entry/',
+            toggle:'/api/radvd/settings/toggle_entry/'
         });
         $("#reconfigureAct").SimpleActionButton();
         // XXX needs an Endpoint for status

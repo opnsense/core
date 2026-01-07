@@ -59,4 +59,9 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         return $this->delBase('entries', $uuid);
     }
+
+    public function toggleEntryAction($uuid, $enabled = null)
+    {
+        return $this->toggleBase('entries', $uuid, $enabled);
+    }
 }

@@ -4,6 +4,10 @@
     <description>Radvd configuration</description>
     <items>
         <entries type="ArrayField">
+            <enabled type="BooleanField">
+                <Default>1</Default>
+                <Required>Y</Required>
+            </enabled>
             <interface type="InterfaceField">
                 <Required>Y</Required>
                 <Constraints>
@@ -15,10 +19,8 @@
             </interface>
             <mode type="OptionField">
                 <Required>Y</Required>
-                <Default>disabled</Default>
+                <Default>stateless</Default>
                 <OptionValues>
-                    <!--- XXX Maybe migrate the disabled selection to an own "enabled" model field for grid toggling -->
-                    <disabled>Disabled</disabled>
                     <router>Router Only</router>
                     <unmanaged>Unmanaged</unmanaged>
                     <managed>Managed</managed>

@@ -4,6 +4,16 @@
         <label>General Settings</label>
     </field>
     <field>
+        <id>entries.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>Enable or disable this entry.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+        </grid_view>
+    </field>
+    <field>
         <id>entries.interface</id>
         <label>Interface</label>
         <type>dropdown</type>
