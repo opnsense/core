@@ -79,7 +79,7 @@ class DUIDField extends TextField
     {
         $validators = parent::getValidators();
 
-        $validators[] = new CallbackValidator(["callback" => function($data) {
+        $validators[] = new CallbackValidator(["callback" => function ($data) {
             $messages = [];
             if (!empty($data) && !$this->isValidDuid($data)) {
                 $messages[] = gettext('A valid DUID must be specified.');

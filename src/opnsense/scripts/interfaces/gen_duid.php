@@ -38,36 +38,36 @@ $result = [];
 $llt = '';
 $ts = time() - 946684800;
 $hts = dechex($ts);
-$timestamp = sprintf("%s",$hts);
-$timestamp_array = str_split($timestamp,2);
-$timestamp = implode(":",$timestamp_array);
+$timestamp = sprintf("%s", $hts);
+$timestamp_array = str_split($timestamp, 2);
+$timestamp = implode(":", $timestamp_array);
 $type = "\x00\x01\x00\x01";
-for ($count = 0; $count < strlen($type); ) {
-    $llt .= bin2hex( $type[$count]);
+for ($count = 0; $count < strlen($type);) {
+    $llt .= bin2hex($type[$count]);
     $count++;
     if ($count < strlen($type)) {
         $llt .= ':';
     }
 }
-$result['llt'] = strtoupper($llt.':'.$timestamp.':'.$system_mac);
+$result['llt'] = strtoupper($llt . ':' . $timestamp . ':' . $system_mac);
 
 // LL - NO TIMESTAMP: Just 00:03:00:01: + Link layer address in canonical form, so says RFC.
 $ll = '';
 $type = "\x00\x03\x00\x01";
-for ($count = 0; $count < strlen($type); ) {
-    $ll .= bin2hex( $type[$count]);
+for ($count = 0; $count < strlen($type);) {
+    $ll .= bin2hex($type[$count]);
     $count++;
     if ($count < strlen($type)) {
         $ll .= ':';
     }
 }
-$result['ll'] = strtoupper($ll.':'.$system_mac);
+$result['ll'] = strtoupper($ll . ':' . $system_mac);
 
 // UUID
 $uuid = '';
-$type = "\x00\x00\x00\x04".random_bytes(16);
-for ($count = 0; $count < strlen($type); ) {
-    $uuid .= bin2hex( $type[$count]);
+$type = "\x00\x00\x00\x04" . random_bytes(16);
+for ($count = 0; $count < strlen($type);) {
+    $uuid .= bin2hex($type[$count]);
     $count++;
     if ($count < strlen($type)) {
         $uuid .= ':';
@@ -77,9 +77,9 @@ $result['uuid'] = strtoupper($uuid);
 
 // EN - Using OPNsense PEN
 $en = '';
-$type = "\x00\x02\x00\x00\xD2\x6D".random_bytes(8);
-for ($count = 0; $count < strlen($type); ) {
-    $en .= bin2hex( $type[$count]);
+$type = "\x00\x02\x00\x00\xD2\x6D" . random_bytes(8);
+for ($count = 0; $count < strlen($type);) {
+    $en .= bin2hex($type[$count]);
     $count++;
     if ($count < strlen($type)) {
         $en .= ':';
