@@ -2785,6 +2785,7 @@ function interface_dhcpv6_configure($interface, $wancfg)
 
     /* always kill rtsold in case of reconfigure */
     killbypid('/var/run/rtsold.pid');
+    @unlink("/tmp/rtsold.{$wancfg['if']}.done");
 
     $rtsold_frmt = ['/usr/sbin/rtsold -aiu -p %s -A %s -R %s'];
     $rtsold_args = [
@@ -2801,8 +2802,14 @@ function interface_dhcpv6_configure($interface, $wancfg)
     /* fire up rtsold for IPv6 RAs first */
     mwexecf($rtsold_frmt, $rtsold_args);
 
-    /* unconditional trigger for hybrid approach, reloads without advertisements */
-    mwexecf('/var/etc/rtsold_script.sh %s', [$wancfg['if']]);
+    /*
+     * Trigger for hybrid approach to allow reloading without
+     * advertisements after timeout which can be necessary.
+     * Can be adjusted to fit ISP timing or completely disabled.
+     */
+    if (!empty($syscfg['dhcp6_ratimeout'] ?? '10')) {
+        mwexecfb('/var/etc/rtsold_script.sh %s', [$wancfg['if']]);
+    }
 }
 
 function interface_dhcpv6_id($interface)
@@ -2837,32 +2844,33 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
     $syscfg = config_read_array('system');
     $device = $wancfg['if'];
 
+    $dhcp6cconf = "# generated for {$interface} in {$wancfg['ipaddrv6']} mode\n";
+
     if (!empty($wancfg['adv_dhcp6_config_file_override'])) {
         $dhcp6cfile = $wancfg['adv_dhcp6_config_file_override_path'];
         if (file_exists($dhcp6cfile)) {
-            $dhcp6cconf = file_get_contents($dhcp6cfile);
-            $dhcp6cconf = DHCP6_Config_File_Substitutions($wancfg, $device, $dhcp6cconf);
+            $dhcp6cconf .= DHCP6_Config_File_Substitutions($wancfg, $device, file_get_contents($dhcp6cfile));
         } else {
             log_msg("DHCP6 config file override does not exist: '{$dhcp6cfile}'", LOG_ERR);
         }
     } elseif (!empty($wancfg['adv_dhcp6_config_advanced'])) {
-        $dhcp6cconf = DHCP6_Config_File_Advanced($interface, $wancfg, $device, $id);
+        $dhcp6cconf .= DHCP6_Config_File_Advanced($interface, $wancfg, $device, $id);
     } else {
-        $dhcp6cconf = DHCP6_Config_File_Basic($interface, $wancfg, $device, $id);
+        $dhcp6cconf .= DHCP6_Config_File_Basic($interface, $wancfg, $device, $id);
     }
 
     if (!$cleanup) {
-        @file_put_contents("/var/etc/dhcp6c_{$interface}.conf", $dhcp6cconf);
+        @file_put_contents("/var/etc/dhcp6c.{$device}.conf", $dhcp6cconf);
     } else {
-        @unlink("/var/etc/dhcp6c_{$interface}.conf");
+        @unlink("/var/etc/dhcp6c.{$device}.conf");
     }
 
     $dhcp6cscript = <<<EOF
 #!/bin/sh
 
-case \$REASON in
-INFOREQ|REBIND|RENEW|REQUEST)
-    /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$device} executing"
+case \${REASON} in
+INFOREQ|REBIND|RENEW|REQUEST|SOLICIT)
+    /usr/bin/logger -t dhcp6c "dhcp6c_script: \${REASON} on {$device} executing"
 
     ARGS=
     for NAMESERVER in \${new_domain_name_servers}; do
@@ -2880,22 +2888,20 @@ INFOREQ|REBIND|RENEW|REQUEST)
     for PD in \${PDINFO}; do
         ARGS="\${ARGS} -a \${PD}"
     done
-    if [ \${REASON} != "RENEW" -a \${REASON} != "REBIND" ]; then
-        # cannot update since PDINFO may be incomplete in these cases
-        # as each PD is being handled separately via the client side
+    if [ \${REASON} != "INFOREQ" ]; then
         /usr/local/sbin/ifctl -i {$device} -6pd \${ARGS}
     fi
 
     FORCE=
-    if [ \${REASON} = "REQUEST" ]; then
-        /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$device} renewal"
+    if [ \${REASON} = "REQUEST" -o \${REASON} = "SOLICIT" ]; then
+        /usr/bin/logger -t dhcp6c "dhcp6c_script: \${REASON} on {$device} renewal"
         FORCE=force
     fi
 
     /usr/local/sbin/configctl -d interface newipv6 {$device} \${FORCE}
     ;;
 EXIT|RELEASE)
-    /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$device} executing"
+    /usr/bin/logger -t dhcp6c "dhcp6c_script: \${REASON} on {$device} executing"
 
     /usr/local/sbin/ifctl -i {$device} -6nd
     /usr/local/sbin/ifctl -i {$device} -6sd
@@ -2904,7 +2910,7 @@ EXIT|RELEASE)
     /usr/local/sbin/configctl -d interface newipv6 {$device}
     ;;
 *)
-    /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$device} ignored"
+    /usr/bin/logger -t dhcp6c "dhcp6c_script: \${REASON} on {$device} ignored"
     ;;
 esac
 
@@ -2927,6 +2933,9 @@ EOF;
         $dhcp6ccommand .= ' -n';
     }
 
+    /* XXX does not exist yet: integer in seconds from 0 to n, 0 actually disables it */
+    $ratimeout = $syscfg['dhcp6_ratimeout'] ?? '10';
+
     $dhcp6cconf = '';
 
     /* merge configs and prepare single instance of dhcp6c for startup */
@@ -2935,12 +2944,9 @@ EOF;
             continue;
         }
 
-        if (!file_exists("/var/etc/dhcp6c_{$_interface}.conf")) {
-            /* config file not yet rendered, defer for later */
-            continue;
+        if (file_exists("/var/etc/dhcp6c.{$_wancfg['if']}.conf")) {
+            $dhcp6cconf .= file_get_contents("/var/etc/dhcp6c.{$_wancfg['if']}.conf");
         }
-
-        $dhcp6cconf .= file_get_contents("/var/etc/dhcp6c_{$_interface}.conf");
     }
 
     @file_put_contents('/var/etc/dhcp6c.conf', $dhcp6cconf);
@@ -2959,7 +2965,13 @@ fi
 if [ -n "\${2}" ]; then
     # Note that the router file can be written by ppp-linkup.sh or
     # this script so do not clear the file as it may already exist.
-    /usr/local/sbin/ifctl -i \${1} -6rd -a \${2}
+    /usr/local/sbin/ifctl -i "\${1}" -6rd -a "\${2}"
+else
+    sleep "{$ratimeout}"
+    if [ -f "/tmp/rtsold.\${1}.done" ]; then
+        # normal RA came through
+        exit 0
+    fi
 fi
 if [ -f /var/run/dhcp6c.pid ]; then
     if ! /bin/pkill -0 -F /var/run/dhcp6c.pid; then
@@ -2973,6 +2985,7 @@ else
     /usr/bin/logger -t dhcp6c "RTSOLD script - Starting dhcp6c daemon"
     {$dhcp6ccommand}
 fi
+touch "/tmp/rtsold.\${1}.done"
 
 EOD;
 
@@ -2982,59 +2995,81 @@ EOD;
 
 function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
 {
-    $dhcp6cconf = "interface {$wanif} {\n";
+    $dhcp6cconf = '';
 
     if ($wancfg['ipaddrv6'] == 'slaac') {
         /* for SLAAC interfaces we do fire off a dhcp6 client for just our name servers */
+        $dhcp6cconf .= "interface {$wanif} {\n";
         $dhcp6cconf .= "  information-only;\n";
         $dhcp6cconf .= "  request domain-name-servers;\n";
         $dhcp6cconf .= "  request domain-name;\n";
-        $dhcp6cconf .= "  script \"/var/etc/dhcp6c_{$interface}_script.sh\"; # we'd like some nameservers please\n";
+        $dhcp6cconf .= "  script \"/var/etc/dhcp6c_{$interface}_script.sh\";\n";
         $dhcp6cconf .= "};\n";
-    } else {
+    } elseif ($wancfg['ipaddrv6'] == 'dhcp6') {
+        $dhcp6cconf .= "interface {$wanif} {\n";
+
         if (!isset($wancfg['dhcp6prefixonly'])) {
             $dhcp6cconf .= "  send ia-na {$id}; # request stateful address\n";
         }
         if (is_numeric($wancfg['dhcp6-ia-pd-len'])) {
+            /* XXX $id from dhcp6_request_pd */
             $dhcp6cconf .= "  send ia-pd {$id}; # request prefix delegation\n";
         }
+        /* XXX decide what to do with this */
+        //$dhcp6cconf .= "  send rapid-commit;\n";
 
+        /* XXX toggle via dhcp6_request_dns */
         $dhcp6cconf .= "  request domain-name-servers;\n";
         $dhcp6cconf .= "  request domain-name;\n";
-        $dhcp6cconf .= "  script \"/var/etc/dhcp6c_{$interface}_script.sh\"; # we'd like some nameservers please\n";
+
+        $dhcp6cconf .= "  script \"/var/etc/dhcp6c_{$interface}_script.sh\";\n";
         $dhcp6cconf .= "};\n";
 
         if (!isset($wancfg['dhcp6prefixonly'])) {
             $dhcp6cconf .= "id-assoc na {$id} { };\n";
         }
 
+        $assoc_pd = [];
+
         if (is_numeric($wancfg['dhcp6-ia-pd-len'])) {
-            $dhcp6cconf .= "id-assoc pd {$id} {\n";
+            $pd_conf = '';
             if (isset($wancfg['dhcp6-ia-pd-send-hint'])) {
                 $preflen = 64 - $wancfg['dhcp6-ia-pd-len'];
-                $dhcp6cconf .= "  prefix ::/{$preflen} infinity;\n";
+                $pd_conf .= "  prefix ::/{$preflen} infinity;\n";
             }
             if (isset($wancfg['dhcp6-prefix-id']) && is_numeric($wancfg['dhcp6-prefix-id'])) {
-                $dhcp6cconf .= "  prefix-interface {$wanif} {\n";
-                $dhcp6cconf .= "    sla-id {$wancfg['dhcp6-prefix-id']};\n";
-                $dhcp6cconf .= "    sla-len {$wancfg['dhcp6-ia-pd-len']};\n";
+                $pd_conf .= "  prefix-interface {$wanif} {\n";
+                $pd_conf .= "    sla-id {$wancfg['dhcp6-prefix-id']};\n";
+                $pd_conf .= "    sla-len {$wancfg['dhcp6-ia-pd-len']};\n";
                 if (isset($wancfg['dhcp6_ifid'])) {
-                    $dhcp6cconf .= "    ifid {$wancfg['dhcp6_ifid']};\n";
+                    $pd_conf .= "    ifid {$wancfg['dhcp6_ifid']};\n";
                 }
-                $dhcp6cconf .= "  };\n";
+                $pd_conf .= "  };\n";
             }
+            if (strlen($pd_conf)) {
+                /* XXX $id from dhcp6_assoc_pd */
+                $assoc_pd[$id] = ($assoc_pd[$id] ?? '') . $pd_conf;
+            }
+
             foreach (link_interface_to_track6($interface) as $friendly => $lancfg) {
                 if (is_numeric($lancfg['track6-prefix-id'])) {
                     $trackifv6 = get_real_interface($friendly, 'inet6');
-                    $dhcp6cconf .= "  prefix-interface {$trackifv6} {\n";
-                    $dhcp6cconf .= "    sla-id {$lancfg['track6-prefix-id']};\n";
-                    $dhcp6cconf .= "    sla-len {$wancfg['dhcp6-ia-pd-len']};\n";
+                    $pd_conf = "  prefix-interface {$trackifv6} {\n";
+                    $pd_conf .= "    sla-id {$lancfg['track6-prefix-id']};\n";
+                    $pd_conf .= "    sla-len {$wancfg['dhcp6-ia-pd-len']};\n";
                     if (isset($lancfg['track6_ifid'])) {
-                        $dhcp6cconf .= "    ifid {$lancfg['track6_ifid']};\n";
+                        $pd_conf .= "    ifid {$lancfg['track6_ifid']};\n";
                     }
-                    $dhcp6cconf .= "  };\n";
+                    $pd_conf .= "  };\n";
+                    /* XXX $id from track6_assoc_pd */
+                    $assoc_pd[$id] = ($assoc_pd[$id] ?? '') . $pd_conf;
                 }
             }
+        }
+
+        foreach ($assoc_pd as $i => $pd_conf) {
+            $dhcp6cconf .= "id-assoc pd {$i} {\n";
+            $dhcp6cconf .= $pd_conf;
             $dhcp6cconf .= "};\n";
         }
     }
@@ -3988,12 +4023,13 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
                     'bits' => $address['subnetbits'],
                     'deprecated' => !empty($address['deprecated']),
                     'detached' => !empty($address['detached']),
-                    'tentative' => !empty($address['tentative']),
                     'family' => $proto == 'ipv4' ? 'inet' : 'inet6',
                     'interface' => !empty($ifcache[$device]) ? $ifcache[$device] : null,
                     'key' => $key,
+                    'lifetime' => ($proto == 'ipv6' ? $address['vltime'] : '0'),
                     'name' => $device,
                     'scope' => !empty($address['link-local']),
+                    'tentative' => !empty($address['tentative']),
                     'unique' => ($proto == 'ipv4' || !empty($address['link-local'])) ? false : is_uniquelocal($address['ipaddr']),
                 ];
             }
@@ -4100,6 +4136,8 @@ function _interfaces_primary_address6($interface, $ifconfig_details = null, $all
         $interface = array_merge([$interface], array_keys(link_interface_to_track6($interface)));
     }
 
+    $lifetime = 0;
+
     foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
         /* XXX consider excluding 'autoconf', but only when it's not in SLAAC mode */
         if ($addr['family'] != 'inet6' || $addr['deprecated'] || $addr['detached'] || $addr['tentative'] || $addr['alias']) {
@@ -4112,6 +4150,39 @@ function _interfaces_primary_address6($interface, $ifconfig_details = null, $all
             continue;
         }
 
+        /*
+         * Lifetimes need to be checked now.  To avoid regressions with
+         * previous behaviour enforce strict rules:
+         *
+         * 1. If the top address found has a non-zero lifetime,
+         *    allow lifetime-based deferral and keep the highest lifetime
+         *    address as a candidate.
+         * 2. Go through the list sequentially and find the highest
+         *    remaining liftime.  The idea is that the lifetimes are
+         *    ascending when prefix with dhcp6c shifts although the code
+         *    can skip all lover in-between lifetimes too.
+         * 3. If a lifetime of 0 is encountered down the line use the
+         *    previously found address.
+         */
+        if ($ifcfgipv6 == null && !$lifetime) {
+            /* continue rule 1 */
+            $lifetime = $addr['lifetime'];
+        } elseif ($ifcfgipv6 != null && $lifetime) {
+            if (!$addr['lifetime']) {
+                /* rule 3 */
+                break;
+            }
+            if ($addr['lifetime'] <= $lifetime) {
+                /* continue rule 2 */
+                continue;
+            }
+            /* continue rule 1 */
+            $lifetime = $addr['lifetime'];
+        } elseif ($ifcfgipv6 != null && !$lifetime) {
+            /* end rule 1 */
+            break;
+        }
+
         $networkv6 = gen_subnetv6($addr['address'], $addr['bits']) . "/{$addr['bits']}";
         $subnetbitsv6 = $addr['bits'];
         $ifcfgipv6 = $addr['address'];
@@ -4119,7 +4190,6 @@ function _interfaces_primary_address6($interface, $ifconfig_details = null, $all
             $ifcfgipv6 .= "%{$addr['name']}";
         }
         $devicev6 = $addr['name'];
-        break; /* all done */
     }
 
     return [ $ifcfgipv6, $networkv6, $subnetbitsv6, $devicev6 ];

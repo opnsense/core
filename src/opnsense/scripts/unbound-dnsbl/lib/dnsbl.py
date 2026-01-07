@@ -144,8 +144,8 @@ class DNSBL:
                                 r = policy.get('pass_regex')
                                 if r and (r.match(domain) or (orig and r.match(orig))):
                                     # if "orig" is defined, we know we are matching a CNAME.
-                                    # the CNAME may be blocked, while the original query is explicitly whitelisted.
-                                    # In these cases, the whitelisting should have priority since we don't expect
+                                    # the CNAME may be blocked, while the original query is explicitly allowlisted.
+                                    # In these cases, the allowlisting should have priority since we don't expect
                                     # users to trace the CNAMEs themselves.
                                     return False
                                 match = policy

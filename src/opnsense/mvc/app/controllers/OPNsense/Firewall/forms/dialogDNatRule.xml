@@ -1,7 +1,7 @@
 <form>
     <field>
         <type>header</type>
-        <label>General</label>
+        <label>Organization</label>
     </field>
     <field>
         <id>rule.disabled</id>
@@ -212,6 +212,19 @@
         <label>Options</label>
     </field>
     <field>
+        <id>rule.nordr</id>
+        <label>No RDR (NOT)</label>
+        <type>checkbox</type>
+        <help>Enabling this option will disable redirection for traffic matching this rule.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <sequence>6</sequence>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>rule.log</id>
         <label>Log</label>
         <type>checkbox</type>
@@ -262,9 +275,9 @@
     </field>
     <field>
         <id>rule.pass</id>
-        <label>Automatically pass</label>
-        <type>checkbox</type>
-        <help>When this checkbox is set, traffic matching this nat rule will automatically be passed without inspecting firewall rules. We do advise to create rules manually for better visibility, please keep in mind the destination for the rule should match the target defined in this NAT rule.</help>
+        <label>Firewall rule</label>
+        <type>dropdown</type>
+        <help>By default, firewall rules need to be created manually, which is also the advised option. Alternatively you can use Pass, which passes traffic on the nat rule (not visible in the rules tab) or generate interface rules which can be overruled via rules with a higher priority. Please keep in mind the destination for the rule should match the target defined in this NAT rule.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>

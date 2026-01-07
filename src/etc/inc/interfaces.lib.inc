@@ -258,7 +258,7 @@ function legacy_interfaces_details($intf = null)
         $tmp_intf = '';
     }
 
-    $cmd = '/sbin/ifconfig -m -v ' . $tmp_intf;
+    $cmd = '/sbin/ifconfig -Lmv ' . $tmp_intf;
     exec($cmd . ' 2>&1', $ifconfig_data, $ret);
     if ($ret) {
         /* only error if no explicit interface was chosen */
@@ -351,8 +351,10 @@ function legacy_interfaces_details($intf = null)
                 'detached' => false,
                 'ipaddr' => $addr,
                 'link-local' => !!preg_match('/^fe[89ab][0-9a-f]:/i', $addr),
+                'pltime' => '0',
                 'tentative' => false,
                 'tunnel' => false,
+                'vltime' => '0',
             ];
             for ($i = 0; $i < count($line_parts); ++$i) {
                 if ($line_parts[$i] == 'prefixlen') {
@@ -376,6 +378,10 @@ function legacy_interfaces_details($intf = null)
                     $tmp['detached'] = true;
                 } elseif ($line_parts[$i] == 'tentative') {
                     $tmp['tentative'] = true;
+                } elseif ($line_parts[$i] == 'pltime') {
+                    $tmp['pltime'] = $line_parts[$i + 1];
+                } elseif ($line_parts[$i] == 'vltime') {
+                    $tmp['vltime'] = $line_parts[$i + 1];
                 }
             }
             if (isset($tmp['subnetbits'])) {

@@ -337,7 +337,6 @@
         <label>Data Ciphers</label>
         <type>select_multiple</type>
         <advanced>true</advanced>
-        <style>selectpicker role role_server</style>
         <help>Restrict the allowed ciphers to be negotiated to the ciphers in this list.</help>
         <grid_view>
             <visible>false</visible>
@@ -348,7 +347,6 @@
         <label>Data Ciphers Fallback</label>
         <type>dropdown</type>
         <advanced>true</advanced>
-        <style>selectpicker role role_server</style>
         <help>
             Configure a cipher that is used to fall back to if we could not determine which cipher the peer is willing to use.
             This option should only be needed to connect to peers that are running OpenVPN 2.3 or older versions,
@@ -710,6 +708,16 @@ Set to 0 to disable, remember to change your client as well.
         <type>text</type>
         <style>role role_client</style>
         <help>Use a http proxy to connect to the selected server, define as host:port.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>instance.verify-x509-name</id>
+        <label>Verify X.509 name</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Accept connections only if a host's X.509 name is equal to name.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>

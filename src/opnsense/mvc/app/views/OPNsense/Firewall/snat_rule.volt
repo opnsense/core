@@ -27,10 +27,6 @@
  <script>
     $(document).ready(function() {
 
-        // XXX: Most code comments are the same as filter_rule.volt, thats why they're omitted.
-        //      Large blocks of code are exactly the same, so we could think about a base view.
-        //      Though since there are subtle differences leaving them separated might be best for now.
-
         function showDialogAlert(type, title, message) {
             BootstrapDialog.show({
                 type: type,
@@ -45,7 +41,7 @@
             });
         }
 
-        let treeViewEnabled = localStorage.getItem("dnat_tree") === "1";
+        let treeViewEnabled = localStorage.getItem("snat_tree") === "1";
         $('#toggle_tree_button').toggleClass('active btn-primary', treeViewEnabled);
 
         function dynamicResponseHandler(resp) {
@@ -57,7 +53,7 @@
             let current = null;
 
             resp.rows.forEach(r => {
-                const label = (r["%category"] || r.category || "");
+                const label = (r["%categories"] || r.categories || "");
 
                 if (!current || current._label !== label) {
                     current = {
@@ -67,7 +63,7 @@
                         children       : []
                     };
 
-                    current.category      = label;
+                    current.categories      = label;
                     current.category_colors = r.category_colors || [];
 
                     buckets.push(current);
@@ -79,22 +75,22 @@
             return Object.assign({}, resp, { rows: buckets });
         }
 
-        const grid = $("#{{ formGridDNatRule['table_id'] }}").UIBootgrid({
-            search : '/api/firewall/d_nat/search_rule/',
-            get    : '/api/firewall/d_nat/get_rule/',
-            set    : '/api/firewall/d_nat/set_rule/',
-            add    : '/api/firewall/d_nat/add_rule/',
-            del    : '/api/firewall/d_nat/del_rule/',
-            toggle : '/api/firewall/d_nat/toggle_rule/',
+        const grid = $("#{{ formGridSNatRule['table_id'] }}").UIBootgrid({
+            search : '/api/firewall/source_nat/search_rule/',
+            get    : '/api/firewall/source_nat/get_rule/',
+            set    : '/api/firewall/source_nat/set_rule/',
+            add    : '/api/firewall/source_nat/add_rule/',
+            del    : '/api/firewall/source_nat/del_rule/',
+            toggle : '/api/firewall/source_nat/toggle_rule/',
             tabulatorOptions : {
                 dataTree              : true,
                 dataTreeChildField    : "children",
-                dataTreeElementColumn : "category",
+                dataTreeElementColumn : "categories",
                 rowFormatter: function(row) {
                     const data = row.getData();
                     const $element = $(row.getElement());
 
-                    if ('disabled' in data && data.disabled == "1") {
+                    if ('enabled' in data && data.enabled == "0") {
                         $element.addClass('row-disabled');
                     }
 
@@ -120,13 +116,13 @@
                 },
                 responseHandler: dynamicResponseHandler,
                 headerFormatters: {
-                    disabled: function (column) {
+                    enabled: function (column) {
                         return '<i class="fa-solid fa-fw fa-check-square" data-toggle="tooltip" title="{{ lang._('Enabled') }}"></i>';;
                     },
                     interface: function (column) {
                         return '<i class="fa-solid fa-fw fa-network-wired" data-toggle="tooltip" title="{{ lang._('Network interface') }}"></i>';
                     },
-                    category: function (column) {
+                    categories: function (column) {
                         return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Categories") }}"></i>';
                     },
                 },
@@ -136,16 +132,6 @@
                             return "";
                         }
                         let rowId = row.uuid;
-
-                        if (!rowId.includes('-')) {
-                            return `
-                                <a href="/system_advanced_firewall.php"
-                                class="btn btn-xs btn-default bootgrid-tooltip"
-                                title="{{ lang._('Lookup Rule') }}">
-                                    <span class="fa fa-fw fa-search"></span>
-                                </a>
-                            `;
-                        }
 
                         return `
                             <button type="button" class="btn btn-xs btn-default command-move_before
@@ -213,7 +199,7 @@
                     },
                     category: function (column, row) {
                         const isGroup = row.isGroup;
-                        const hasCategories = row.category && Array.isArray(row.category_colors);
+                        const hasCategories = row.categories && Array.isArray(row.category_colors);
 
                         if (!hasCategories) {
 
@@ -227,7 +213,7 @@
                                 : '';
                         }
 
-                        const category = (row["%category"] || row.category).split(',');
+                        const category = (row["%categories"] || row.categories).split(',');
                         const colors     = row.category_colors;
 
                         const icons = category.map((cat, idx) => `
@@ -308,7 +294,7 @@
             commands: {
                 move_before: {
                     method: function(event) {
-                        const selected = $("#{{ formGridDNatRule['table_id'] }}").bootgrid("getSelectedRows");
+                        const selected = $("#{{ formGridSNatRule['table_id'] }}").bootgrid("getSelectedRows");
                         if (selected.length !== 1) {
                             showDialogAlert(
                                 BootstrapDialog.TYPE_WARNING,
@@ -331,11 +317,11 @@
                         }
 
                         ajaxCall(
-                            "/api/firewall/d_nat/move_rule_before/" + selectedUuid + "/" + targetUuid,
+                            "/api/firewall/source_nat/move_rule_before/" + selectedUuid + "/" + targetUuid,
                             {},
                             function(data, status) {
                                 if (data.status === "ok") {
-                                    $("#{{ formGridDNatRule['table_id'] }}").bootgrid("reload");
+                                    $("#{{ formGridSNatRule['table_id'] }}").bootgrid("reload");
                                     $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
                                 }
                             },
@@ -358,11 +344,11 @@
                         const uuid = $(this).data("row-id");
                         const log = String(+$(this).data("value") ^ 1);
                         ajaxCall(
-                            `/api/firewall/d_nat/toggle_rule_log/${uuid}/${log}`,
+                            `/api/firewall/source_nat/toggle_rule_log/${uuid}/${log}`,
                             {},
                             function(data) {
                                 if (data.status === "ok") {
-                                    $("#{{ formGridDNatRule['table_id'] }}").bootgrid("reload");
+                                    $("#{{ formGridSNatRule['table_id'] }}").bootgrid("reload");
                                     $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
                                 }
                             },
@@ -390,7 +376,7 @@
             const currentSelection = $("#category_filter").val();
 
             return $("#category_filter").fetch_options(
-                '/api/firewall/d_nat/list_categories',
+                '/api/firewall/source_nat/list_categories',
                 {},
                 function (data) {
                     if (!data.rows) return [];
@@ -428,7 +414,7 @@
             );
         }
 
-        $("#category_filter_container").detach().insertBefore('#{{ formGridDNatRule["table_id"] }}-header .search');
+        $("#category_filter_container").detach().insertBefore('#{{ formGridSNatRule["table_id"] }}-header .search');
         $("#category_filter").on('changed.bs.select', function(){
             if (!categoryInitialized || reconfigureActInProgress) return;
             grid.bootgrid('reload');
@@ -437,9 +423,9 @@
         $("#tree_toggle_container").detach().insertAfter("#category_filter_container");
         $('#toggle_tree_button').click(function() {
             treeViewEnabled = !treeViewEnabled;
-            localStorage.setItem("dnat_tree", treeViewEnabled ? "1" : "0");
+            localStorage.setItem("snat_tree", treeViewEnabled ? "1" : "0");
             $(this).toggleClass('active btn-primary', treeViewEnabled);
-            $("#{{ formGridDNatRule['table_id'] }}").toggleClass("tree-enabled", treeViewEnabled);
+            $("#{{ formGridSNatRule['table_id'] }}").toggleClass("tree-enabled", treeViewEnabled);
             $("#tree_expand_container").toggle(treeViewEnabled);
             grid.bootgrid("reload");
         });
@@ -447,7 +433,7 @@
         $("#tree_expand_container").detach().insertAfter("#tree_toggle_container");
         $("#tree_expand_container").toggle(treeViewEnabled);
         $('#expand_tree_button').on('click', function () {
-            const $table = $('#{{ formGridDNatRule["table_id"] }}');
+            const $table = $('#{{ formGridSNatRule["table_id"] }}');
 
             if ($table.find('.tabulator-data-tree-control-expand').length) {
                 $table.find('.tabulator-data-tree-control-expand').trigger('click');
@@ -456,7 +442,7 @@
             }
         });
 
-        ajaxGet('/api/firewall/d_nat/list_network_select_options', [], function(data, status){
+        ajaxGet('/api/firewall/source_nat/list_network_select_options', [], function(data, status){
             if (data.single) {
                 $(".net_selector").each(function(){
                     $(this).replaceInputWithSelector(data, $(this).hasClass('net_selector_multi'));
@@ -491,7 +477,7 @@
             }
         });
 
-        ajaxGet('/api/firewall/d_nat/list_port_select_options', [], function (data) {
+        ajaxGet('/api/firewall/source_nat/list_port_select_options', [], function (data) {
             if (!data || !data.single) return;
             $(".port_selector").each(function () {
                 $(this).replaceInputWithSelector(data, false);
@@ -558,7 +544,7 @@
         box-shadow: none !important;
         background: transparent !important;
     }
-    .bucket-row .tabulator-cell[tabulator-field="category"] {
+    .bucket-row .tabulator-cell[tabulator-field="categories"] {
         overflow: visible !important;
         white-space: nowrap !important;
         text-overflow: clip !important;
@@ -598,6 +584,7 @@
             margin: 0;
         }
 
+        #dialogFilterRule-header #inspect_toggle_container,
         #dialogFilterRule-header #tree_toggle_container,
         #dialogFilterRule-header #tree_expand_container {
             flex: 1 1 0;
@@ -629,8 +616,8 @@
         </div>
     </div>
 
-    {{ partial('layout_partials/base_bootgrid_table', formGridDNatRule + {'command_width':'150'}) }}
+    {{ partial('layout_partials/base_bootgrid_table', formGridSNatRule + {'command_width':'150'}) }}
 </div>
 
-{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/d_nat/apply'}) }}
-{{ partial("layout_partials/base_dialog",{'fields':formDialogDNatRule,'id':formGridDNatRule['edit_dialog_id'],'label':lang._('Edit Destination Nat')}) }}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/source_nat/apply'}) }}
+{{ partial("layout_partials/base_dialog",{'fields':formDialogSNatRule,'id':formGridSNatRule['edit_dialog_id'],'label':lang._('Edit Source Nat')}) }}

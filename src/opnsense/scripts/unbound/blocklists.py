@@ -26,7 +26,31 @@
     POSSIBILITY OF SUCH DAMAGE.
 """
 
+import argparse
 from blocklists import BlocklistParser
 
 if __name__ == '__main__':
-    BlocklistParser().update_blocklist()
+    parser = argparse.ArgumentParser(description="Manage blocklist")
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    # modify subcommand
+    modify_parser = subparsers.add_parser("modify", help="Modify blocklist")
+    modify_parser.add_argument("--uuid", help="policy UUID")
+    modify_parser.add_argument("--domain", help="Domain name")
+    modify_parser.add_argument(
+        "--action",
+        choices=["block", "allow"],
+        help="Action to perform"
+    )
+
+    # update subcommand
+    subparsers.add_parser("update", help="Update blocklist")
+
+    args = parser.parse_args()
+
+    parser_obj = BlocklistParser()
+
+    if args.command == "modify":
+        parser_obj.modify_blocklist(args.uuid, args.domain, args.action)
+    elif args.command == "update":
+        parser_obj.update_blocklist()

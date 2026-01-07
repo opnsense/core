@@ -105,6 +105,18 @@
             return Object.assign({}, resp, { rows: buckets });
         }
 
+        /* hook import/export buttons */
+        $("#upload_rules").SimpleFileUploadDlg({
+            onAction: function(){
+                $('#{{formGridFilterRule["edit_dialog_id"]}}').bootgrid('reload');
+            }
+        });
+
+        $('#download_rules').click(function(e){
+            e.preventDefault();
+            window.open("/api/firewall/filter/download_rules");
+        });
+
         // Initialize grid
         const grid = $("#{{formGridFilterRule['table_id']}}").UIBootgrid({
             search:'/api/firewall/filter/search_rule/',
@@ -862,6 +874,12 @@
             }
         });
 
+        // Hide additional protocol settings in dialog, e.g., ICMP types
+        $("#rule\\.protocol").change(function() {
+            $(".rule_protocol:not(div)").closest('tr').hide();
+            $(".protocol_"+$(this).val().toLowerCase()+':not(div)').closest('tr').show();
+        });
+
         // Dynamically add fa icons to selectpickers
         $('#category_filter').parent().find('.dropdown-toggle').prepend('<i class="fa fa-tag" style="margin-right: 6px;"></i>');
 
@@ -1082,7 +1100,29 @@
         </div>
     </div>
     <!-- grid -->
-    {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '150'}) }}
+    {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '150'}+ {
+                'grid_commands': {
+                    'upload_rules': {
+                        'title': lang._('Import csv'),
+                        'class': 'btn btn-xs',
+                        'icon_class': 'fa fa-fw fa-upload',
+                        'data': {
+                            'title': lang._('Import rules'),
+                            'endpoint': '/api/firewall/filter/upload_rules',
+                            'toggle': 'tooltip'
+                        }
+                    },
+                    'download_rules': {
+                        'title': lang._('Export as csv'),
+                        'class': 'btn btn-xs',
+                        'icon_class': 'fa fa-fw fa-table',
+                        'data': {
+                            'toggle': 'tooltip'
+                        }
+                    }
+                }
+        })
+    }}
 </div>
 
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/filter/apply'}) }}

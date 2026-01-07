@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/IDS</mount>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <description>Intrusion detection</description>
     <items>
         <rules>
@@ -134,10 +134,22 @@
                 <Default>0</Default>
                 <Required>Y</Required>
             </enabled>
-            <ips type="BooleanField">
-                <Default>0</Default>
+            <mode type="OptionField">
                 <Required>Y</Required>
-            </ips>
+                <Default>pcap</Default>
+                <OptionValues>
+                    <pcap>pcap live mode (IDS)</pcap>
+                    <netmap>Netmap (IPS)</netmap>
+                    <divert>Divert (IPS)</divert>
+                </OptionValues>
+                <ValidationMessage>Please select a valid mode.</ValidationMessage>
+            </mode>
+            <divert_listeners type="IntegerField">
+                <Required>Y</Required>
+                <Default>1</Default>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>256</MaximumValue>
+            </divert_listeners>
             <promisc type="BooleanField">
                 <Default>0</Default>
                 <Required>Y</Required>

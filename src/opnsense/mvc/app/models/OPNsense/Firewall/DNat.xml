@@ -98,7 +98,13 @@
                     <disable>Disable</disable>
                 </OptionValues>
             </natreflection>
-            <pass type="BooleanField"/>
+            <pass type="OptionField">
+                <BlankDesc>Manual</BlankDesc>
+                <OptionValues>
+                    <rule>Register rule</rule>
+                    <pass>Pass</pass>
+                </OptionValues>
+            </pass>
             <!-- drop in a future version (27.1?), used for migration purposes.-->
             <associated-rule-id type=".\DNatAssociatedRuleField"/>
             <!-- handled via controller setBaseHook() -->

@@ -144,6 +144,66 @@ class BlocklistParser:
         self._register_handlers()
         self.startup_time = time.time()
 
+    def modify_blocklist(self, uuid=None, domain=None, action='block'):
+        if uuid is None or domain is None:
+            return
+
+        if not os.path.isfile("/var/unbound/data/dnsbl.json"):
+            return
+
+        dnsbl = {}
+        with open("/var/unbound/data/dnsbl.json", "r") as inf:
+            try:
+                dnsbl = ujson.load(inf)
+            except ValueError as e:
+                return
+
+        cfg = dnsbl.get("config", {})
+        policy = cfg.get(uuid)
+        if policy is None:
+            # must be an existing policy
+            return
+
+        if action != 'block':
+            orig = policy['passlist'].split('|') if policy['passlist'] else []
+            if domain in orig:
+                return
+
+            passlist = f"{domain}|{policy['passlist']}"
+            try:
+                re.compile(passlist, re.IGNORECASE)
+            except re.error:
+                return
+            cfg[uuid]["passlist"] = passlist
+        else:
+            # remove from passlist here
+            orig = policy["passlist"].split("|") if policy["passlist"] else []
+            if domain in orig:
+                orig.remove(domain)
+                cfg[uuid]["passlist"] = "|".join(orig)
+
+            meta = dnsbl.setdefault("data", {}).setdefault(domain, [])
+            new_meta = {"bl": "Custom", "wildcard": False, "idx": uuid}
+            if meta:
+                if not any(item["idx"] == uuid for item in meta):
+                    # policies attached, need to sort
+                    policies_pos = {k: i for i, k in enumerate(cfg)}
+                    new_pos = policies_pos[uuid]
+                    insert_at = next(
+                        (i for i, item in enumerate(meta) if policies_pos[item["idx"]] > new_pos),
+                        len(meta),
+                    )
+                    meta.insert(insert_at, new_meta)
+            else:
+                # domain not yet in blocklist
+                meta.append(new_meta)
+
+        if dnsbl.get('data'):
+            with open("/var/unbound/data/dnsbl.json.new", 'w') as unbound_outf:
+                ujson.dump(dnsbl, unbound_outf)
+            # atomically replace the current dnsbl so unbound can pick up on it
+            os.replace('/var/unbound/data/dnsbl.json.new', '/var/unbound/data/dnsbl.json')
+
     def update_blocklist(self):
         merged_result = {
             'data': {},

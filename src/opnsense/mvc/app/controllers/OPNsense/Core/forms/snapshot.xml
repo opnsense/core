@@ -16,6 +16,9 @@
         <id>active</id>
         <label>Active</label>
         <type>ignore</type>
+        <grid_view>
+            <formatter>active</formatter>
+        </grid_view>
     </field>
     <field>
         <id>mountpoint</id>

@@ -146,6 +146,10 @@
                     $(".detect_custom").closest("tr").addClass("hidden");
                 }
             });
+            $("#ids\\.general\\.mode").change(function(){
+                $(".ids_mode").closest("tr").hide();
+                $(".ids_mode_" + $(this).val()).closest("tr").show();
+            });
             mapDataToFormUI({'frm_GeneralSettings':'/api/ids/settings/get'}).done(function(data){
                 // set schedule updates link to cron
                 $.each(data.frm_GeneralSettings.ids.general.UpdateCron, function(key, value) {
@@ -294,6 +298,7 @@
                         {   search:'/api/ids/settings/searchinstalledrules',
                             get:'/api/ids/settings/get_rule_info/',
                             set:'/api/ids/settings/set_rule/',
+                            datakey: 'sid',
                             options:{
                                 virtualDOM: true,
                                 requestHandler:addRuleFilters,
@@ -384,6 +389,7 @@
                             virtualDOM: true,
                             multiSelect:false,
                             selection:false,
+                            rowCount: [50, 100, 200, 500, 1000, 5000, 10000],
                             requestHandler:addAlertQryFilters,
                             labels: {
                                 infos: "{{ lang._('Showing %s to %s') | format('{{ctx.start}}','{{ctx.end}}') }}"

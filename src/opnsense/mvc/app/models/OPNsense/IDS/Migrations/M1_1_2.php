@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2020-2025 Deciso B.V.
+ * Copyright (C) 2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,22 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OPNsense\Firewall;
 
-class SourceNatController extends \OPNsense\Base\IndexController
+namespace OPNsense\IDS\Migrations;
+
+use OPNsense\Base\BaseModelMigration;
+use OPNsense\Core\Config;
+use OPNSense\IDS\IDS;
+
+class M1_1_2 extends BaseModelMigration
 {
-    public function indexAction()
+    public function run($model)
     {
-        $this->view->pick('OPNsense/Firewall/snat_rule');
-        $this->view->formDialogSNatRule = $this->getForm('dialogSNatRule');
-        $this->view->formGridSNatRule = $this->getFormGrid('dialogSNatRule');
+        $cnf = Config::getInstance()->object();
+        if ($cnf?->OPNsense?->IDS?->general?->ips == '1') {
+            $model->general->mode = 'netmap';
+        }
+
+        parent::run($model);
     }
 }

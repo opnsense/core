@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2020-2025 Deciso B.V.
+ * Copyright (C) 2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,29 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OPNsense\Firewall;
 
-class SourceNatController extends \OPNsense\Base\IndexController
+namespace OPNsense\Unbound\FieldTypes;
+
+use OPNsense\Base\FieldTypes\BaseField;
+
+class AliasRefCount extends BaseField
 {
-    public function indexAction()
+    protected $internalIsContainer = false;
+    private $refcountcache = null;
+
+    public function actionPostLoadingEvent()
     {
-        $this->view->pick('OPNsense/Firewall/snat_rule');
-        $this->view->formDialogSNatRule = $this->getForm('dialogSNatRule');
-        $this->view->formGridSNatRule = $this->getFormGrid('dialogSNatRule');
+        if ($this->refcountcache === null) {
+            $this->refcountcache = [];
+            foreach ($this->getParentModel()->aliases->alias->iterateItems() as $node) {
+                $uuid = $node->host->getValue();
+                if (!isset($this->refcountcache[$uuid])) {
+                    $this->refcountcache[$uuid] = 0;
+                }
+                $this->refcountcache[$uuid]++;
+            }
+        }
+        $uuid = $this->getParentNode()->getAttribute('uuid') ?? '';
+        $this->setValue($this->refcountcache[$uuid] ?? '0');
     }
 }

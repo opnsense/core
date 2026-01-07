@@ -98,8 +98,8 @@
             <thead>
                 <tr>
                     <th data-column-id="interface_name" data-type="string">{{ lang._('Interface') }}</th>
-                    <th data-column-id="ip_address">{{ lang._('MAC Address') }}</th>
-                    <th data-column-id="ether_address" data-type="string">{{ lang._('IP Address') }}</th>
+                    <th data-column-id="ip_address">{{ lang._('IP Address') }}</th>
+                    <th data-column-id="ether_address" data-type="string">{{ lang._('MAC Address') }}</th>
                     <th data-column-id="organization_name" data-type="string">{{ lang._('Organization') }}</th>
                 </tr>
             </thead>

@@ -1,7 +1,7 @@
+#!/usr/local/bin/php
 <?php
-
 /*
- * Copyright (C) 2020-2025 Deciso B.V.
+ * Copyright (C) 2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,11 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OPNsense\Firewall;
+require_once('script/load_phalcon.php');
 
-class SourceNatController extends \OPNsense\Base\IndexController
-{
-    public function indexAction()
-    {
-        $this->view->pick('OPNsense/Firewall/snat_rule');
-        $this->view->formDialogSNatRule = $this->getForm('dialogSNatRule');
-        $this->view->formGridSNatRule = $this->getFormGrid('dialogSNatRule');
-    }
-}
+/**
+ * currently IDPS (Suricata) is the only service offering divert sockets, as this might change in the future
+ * we reserve a simple command to list registered/active services which may be used as divert targets.
+ */
+
+echo json_encode(['8000' => gettext("Intrusion Detection")]);

@@ -651,9 +651,17 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         $data = [];
         $stream = fopen('php://temp', 'rw+');
         fwrite($stream, $payload);
+        /**
+         * auto-detect separator character (either , or ;), as the header is highly unlikely to contain both,
+         * it should be safe to use the first one found in the header
+         * (to increase compatibility with tools like Excel).
+         **/
+        $sep1 = strpos($payload, ',') !== false ? strpos($payload, ',') : 9999;
+        $sep2 = strpos($payload, ';') !== false ? strpos($payload, ';') : 9999;
+        $separator = $sep1 < $sep2 ? ',' : ';';
         fseek($stream, 0);
         $heading = [];
-        while (($line = fgetcsv($stream)) !== false) {
+        while (($line = fgetcsv($stream, null, $separator)) !== false) {
             if (empty($heading)) {
                 $heading = $line;
             } else {

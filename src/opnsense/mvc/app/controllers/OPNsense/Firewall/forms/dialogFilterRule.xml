@@ -169,9 +169,19 @@
         <label>ICMP type</label>
         <type>select_multiple</type>
         <hint>Any</hint>
-        <advanced>true</advanced>
+        <style>selectpicker rule_protocol protocol_icmp</style>
         <grid_view>
-            <ignore>true</ignore>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.icmp6type</id>
+        <label>ICMPv6 type</label>
+        <type>select_multiple</type>
+        <hint>Any</hint>
+        <style>selectpicker rule_protocol protocol_ipv6-icmp</style>
+        <grid_view>
+            <visible>false</visible>
         </grid_view>
     </field>
     <field>
@@ -277,6 +287,17 @@
         <grid_view>
             <visible>false</visible>
         </grid_view>
+    </field>
+    <!-- XXX: start as advanced, promote to non-advanced feature in a later version -->
+    <field>
+        <id>rule.divert-to</id>
+        <label>Divert-to</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+        <help>Send packets matching this rule to the service specified, when the service is not running, packets will be dropped</help>
     </field>
     <field>
         <type>header</type>
