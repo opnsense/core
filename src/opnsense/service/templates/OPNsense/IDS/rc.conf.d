@@ -1,14 +1,13 @@
-suricata_flags="-D"
 {% if not helpers.empty('OPNsense.IDS.general.enabled') %}
 suricata_setup="/usr/local/opnsense/scripts/suricata/setup.sh"
 suricata_enable="YES"
+suricata_flags="-D"
 {% if not helpers.empty('OPNsense.IDS.general.verbosity') %}
-suricata_flags="$suricata_flags -{{OPNsense.IDS.general.verbosity}}"
+suricata_flags="${suricata_flags} -{{OPNsense.IDS.general.verbosity}}"
 {% endif %}
 {% if OPNsense.IDS.general.mode|default("") == "netmap" %}
 # IPS mode, switch to netmap
 suricata_netmap="YES"
-
 {% elif OPNsense.IDS.general.mode|default("") == "divert" %}
 # IPS mode, divert sockets
 suricata_divertport="8000"
@@ -18,8 +17,7 @@ suricata_divertport="8000"
 {%   for idx in range(1, listeners) %}
 {%     do addFlags.append('-d 8000') %}
 {%   endfor %}
-suricata_flags="$suricata_flags {{ addFlags|join(' ') }}"
-
+suricata_flags="${suricata_flags} {{ addFlags|join(' ') }}"
 {% else %}
 # IDS mode, pcap live mode
 {% set addFlags=[] %}
