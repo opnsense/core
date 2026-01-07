@@ -1234,6 +1234,14 @@ function is_install_media()
     return true;
 }
 
+function is_ipv6_allowed()
+{
+    global $config;
+
+    /* the setting is negated on purpose so it always defaults to enabled */
+    return empty($config['OPNsense']['Interfaces']['settings']['disableipv6']);
+}
+
 function dhcp6c_duid_read()
 {
     $parts = [];
