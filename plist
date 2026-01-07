@@ -566,8 +566,6 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/ExportFactory.php
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/IExportProvider.php
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/PlainOpenVPN.php
-/usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/TheGreenBow.php
-/usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/TheGreenBow.tgb
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/ViscosityVisz.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/AbstractStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/ConfigdProxyOverrideStatus.php
