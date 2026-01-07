@@ -445,7 +445,7 @@ class FilterController extends FilterBaseController
             /* XXX:  as shaper1/2 don't have functional keys, we can only export uuid's here*/
             $this->exportCsv($this->getModel()->rules->rule->asRecordSet(
                 false,
-                [],
+                ['sort_order', 'prio_group'],
                 function ($node, $record) use ($categories) {
                     if (!empty($record['categories'])) {
                         $cats = [];
