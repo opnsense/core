@@ -611,6 +611,7 @@ function _interfaces_hardware($device, $intf_details = null)
         $intf_details = legacy_interface_details($device);
     }
 
+    /* XXX move to caller, performance concerns */
     $settings = new OPNsense\Interfaces\Settings();
     $hwsettings = $settings->getNodeContent();
 
