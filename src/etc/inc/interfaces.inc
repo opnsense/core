@@ -589,9 +589,9 @@ function _interfaces_gif_configure($gif)
 
 /**
  * configure interface hardware settings
- * @param string $ifs interface name
+ * @param string $device network device
  */
-function _interfaces_hardware($ifs, $intf_details = null)
+function _interfaces_hardware($device, $intf_details = null)
 {
     global $config;
 
@@ -600,23 +600,23 @@ function _interfaces_hardware($ifs, $intf_details = null)
 
     /* XXX this needs fixing, lots of devices are not capable */
     if (
-        strstr($ifs, 'vlan') || strpos($ifs, 'qinq') === 0 ||
-        strpos($ifs, 'lo') === 0 || strpos($ifs, 'vxlan') === 0 ||
-        strpos($ifs, 'ipsec') === 0 || strpos($ifs, '/') === 0
+        strstr($device, 'vlan') || strpos($device, 'qinq') === 0 ||
+        strpos($device, 'lo') === 0 || strpos($device, 'vxlan') === 0 ||
+        strpos($device, 'ipsec') === 0 || strpos($device, '/') === 0
     ) {
         /* skip checksumming  */
         return;
     }
 
     if ($intf_details !== null) {
-        $intf_details = $intf_details[$ifs];
+        $intf_details = $intf_details[$device];
     } else {
-        $intf_details = legacy_interface_details($ifs);
+        $intf_details = legacy_interface_details($device);
     }
 
     /* interface overwrites */
     foreach ($config['interfaces'] as $iface => $ifconf) {
-        if (!empty($ifconf['if']) && $ifconf['if'] == $ifs) {
+        if (!empty($ifconf['if']) && $ifconf['if'] == $device) {
             if (!empty($ifconf['hw_settings_overwrite'])) {
                 foreach ($hwsettings as $key => $value) {
                     /* XXX per-if hw overwrites still expect isset(), so always set a value. */
@@ -642,28 +642,28 @@ function _interfaces_hardware($ifs, $intf_details = null)
 
         // hardware checksum offloading offloading
         if (!empty($hwsettings['disablechecksumoffloading']) && $csum_set) {
-            legacy_interface_flags($ifs, '-txcsum -rxcsum', false);
+            legacy_interface_flags($device, '-txcsum -rxcsum', false);
         } elseif (empty($hwsettings['disablechecksumoffloading']) && !$csum_set) {
-            legacy_interface_flags($ifs, 'txcsum rxcsum', false);
+            legacy_interface_flags($device, 'txcsum rxcsum', false);
         }
         if (!empty($hwsettings['disablechecksumoffloading']) && $csumv6_set) {
-            legacy_interface_flags($ifs, '-txcsum6 -rxcsum6', false);
+            legacy_interface_flags($device, '-txcsum6 -rxcsum6', false);
         } elseif (empty($hwsettings['disablechecksumoffloading']) && !$csumv6_set) {
-            legacy_interface_flags($ifs, 'txcsum6 rxcsum6', false);
+            legacy_interface_flags($device, 'txcsum6 rxcsum6', false);
         }
 
         // TCP segmentation offloading
         if (!empty($hwsettings['disablesegmentationoffloading']) && $tso_set) {
-            legacy_interface_flags($ifs, '-tso', false);
+            legacy_interface_flags($device, '-tso', false);
         } elseif (empty($hwsettings['disablesegmentationoffloading']) && !$tso_set) {
-            legacy_interface_flags($ifs, 'tso', false);
+            legacy_interface_flags($device, 'tso', false);
         }
 
         // large receive offload
         if (!empty($hwsettings['disablelargereceiveoffloading']) && $lro_set) {
-            legacy_interface_flags($ifs, '-lro', false);
+            legacy_interface_flags($device, '-lro', false);
         } elseif (empty($hwsettings['disablelargereceiveoffloading']) && !$lro_set) {
-            legacy_interface_flags($ifs, 'lro', false);
+            legacy_interface_flags($device, 'lro', false);
         }
 
         // disable/enable hardware VLAN tags, will be skipped when "Leave default" (option 2) is selected
@@ -680,9 +680,9 @@ function _interfaces_hardware($ifs, $intf_details = null)
             // set one tag at a time to avoid driver issues
             foreach (array('vlanhwtag', 'vlanhwfilter', 'vlanhwtso', 'vlanhwcsum') as $tag) {
                 if (empty($hwsettings['disablevlanhwfilter']) && !in_array($tag, $selected_opts)) {
-                    legacy_interface_flags($ifs, $tag);
+                    legacy_interface_flags($device, $tag);
                 } elseif (!empty($hwsettings['disablevlanhwfilter']) && in_array($tag, $selected_opts)) {
-                    legacy_interface_flags($ifs, '-' . $tag);
+                    legacy_interface_flags($device, '-' . $tag);
                 }
             }
         }
