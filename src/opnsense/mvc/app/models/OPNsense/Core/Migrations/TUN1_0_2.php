@@ -32,7 +32,7 @@ use OPNsense\Base\BaseModelMigration;
 use OPNsense\Core\Tunables;
 use OPNsense\Core\Config;
 
-class MTUN1_0_2 extends BaseModelMigration
+class TUN1_0_2 extends BaseModelMigration
 {
     /**
      * Migrate sharednet settings
