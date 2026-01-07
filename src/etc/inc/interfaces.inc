@@ -2769,7 +2769,7 @@ function interface_6to4_configure($interface, $wancfg, $update = false)
 
 function interface_dhcpv6_configure($interface, $wancfg)
 {
-    $settings = new OPNsense\Interfaces\Setting();
+    $settings = new OPNsense\Interfaces\Settings();
 
     /* write DUID if override was set */
     if (!$settings->ipv6duid->isEmpty()) {
@@ -2836,7 +2836,7 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
         return;
     }
 
-    $settings = new OPNsense\Interfaces\Setting();
+    $settings = new OPNsense\Interfaces\Settings();
     $id = interface_dhcpv6_id($interface);
     $device = $wancfg['if'];
 
