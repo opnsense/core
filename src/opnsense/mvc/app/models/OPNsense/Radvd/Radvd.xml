@@ -17,6 +17,7 @@
                 <Required>Y</Required>
                 <Default>disabled</Default>
                 <OptionValues>
+                    <!--- Maybe migrate the disabled selection to an own "enabled" model field for grid toggling -->
                     <disabled>Disabled</disabled>
                     <router>Router Only</router>
                     <unmanaged>Unmanaged</unmanaged>
