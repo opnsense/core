@@ -32,22 +32,30 @@
         <label>IPv6 options</label>
     </field>
     <field>
-        <id>settings.ipv6allow</id>
-        <label>Allow IPv6</label>
+        <id>settings.disableipv6</id>
+        <label>Turn off IPv6</label>
         <type>checkbox</type>
-        <help>If unchecked, IPv6 interface configuration will be ignored and all forwarding traffic will be blocked. Use with care.</help>
+        <help>If checked, IPv6 interface configuration will be ignored and all forwarding traffic will be blocked. Use with care.</help>
+        <!-- XXX this should be hidden under advanced eventually -->
     </field>
     <field>
         <id>settings.dhcp6_norelease</id>
         <label>Prevent release</label>
         <type>checkbox</type>
         <help>Do not send a release message on client exit to prevent the release of an allocated address or prefix on the server.</help>
+        <advanced>true</advanced>
     </field>
     <field>
         <id>settings.dhcp6_debug</id>
         <label>Log level</label>
         <type>dropdown</type>
         <help>Modify log level for IPv6 clients. Info will give status, interface leases and addresses. Debug will give full diagnostics.</help>
+    </field>
+    <field>
+        <id>settings.dhcp6_ratimeout</id>
+        <label>Router advertisement timeout</label>
+        <type>text</type>
+        <help>Reload without advertisements after timeout. Can be adjusted to fit ISP timing. "0" completely disables the timeout.</help>
     </field>
     <field>
         <id>settings.ipv6duid</id>
@@ -62,11 +70,5 @@
             <b>UUID</b>: 4 bytes "00:00:00:04" followed by 8 bytes of a universally unique identifier.<br/>
             <b>EN</b>: 2 bytes "00:02" followed by 4 bytes of the enterprise number e.g. "00:00:00:01", followed by a variable length identifier of hex values up to 122 bytes in length.]]>
         </help>
-    </field>
-    <field>
-        <id>settings.dhcp6_ratimeout</id>
-        <label>Router advertisement timeout</label>
-        <type>text</type>
-        <help>Reload without advertisements after timeout. Can be adjusted to fit ISP timing. 0 completely disables the timeout.</help>
     </field>
 </form>

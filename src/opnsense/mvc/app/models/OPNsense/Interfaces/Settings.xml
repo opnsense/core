@@ -24,10 +24,10 @@
                 <opt2 value="2">Leave default</opt2>
             </OptionValues>
         </disablevlanhwfilter>
-        <ipv6allow type="BooleanField">
-            <Default>1</Default>
+        <disableipv6 type="BooleanField">
+            <Default>0</Default>
             <Required>Y</Required>
-        </ipv6allow>
+        </disableipv6>
         <dhcp6_norelease type="BooleanField">
             <Default>0</Default>
             <Required>Y</Required>

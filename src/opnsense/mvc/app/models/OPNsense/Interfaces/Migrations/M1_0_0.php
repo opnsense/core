@@ -50,10 +50,18 @@ class M1_0_0 extends BaseModelMigration
         $nodes = [];
 
         foreach ($this->keys as $key) {
-            if (isset($config->system->$key)) {
+            $_key = $key;
+            if ($key == 'ipv6allow') {
+                $_key = 'disableipv6';
+                if (!isset($config->system->$key)) {
+                    $nodes[$_key] = '1';
+                }
+            } elseif (isset($config->system->$key)) {
                 $nodes[$key] = (string)$config->system->$key;
-            } else {
-                $model->$key->applyDefault();
+            }
+
+            if (!isset($nodes[$_key])) {
+                $model->$_key->applyDefault();
             }
         }
 

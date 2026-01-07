@@ -1238,8 +1238,8 @@ function is_ipv6_allowed()
 {
     global $config;
 
-    /* XXX if the interface settings migration failed this turns off ipv6 */
-    return !empty($config['OPNsense']['Interfaces']['settings']['ipv6allow']);
+    /* the setting is negated on purpose so it always defaults to enabled */
+    return empty($config['OPNsense']['Interfaces']['settings']['disableipv6']);
 }
 
 function dhcp6c_duid_read()
