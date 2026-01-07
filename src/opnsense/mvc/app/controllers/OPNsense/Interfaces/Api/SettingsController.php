@@ -39,9 +39,6 @@ class SettingsController extends ApiMutableModelControllerBase
     public function getAction()
     {
         $duids = json_decode((new Backend())->configdRun('interface settings gen_duid'), true);
-        if (!$this->getModel()->dhcp6_duid->isValidDuid($duids['current'])) {
-            $duids['current'] = $duids['default'];
-        }
         $result = parent::getAction();
         $result['duids'] = $duids;
         return $result;
