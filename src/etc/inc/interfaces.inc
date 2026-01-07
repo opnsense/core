@@ -239,7 +239,7 @@ function _interfaces_bridge_configure($bridge, $ifconfig_details = null)
     $current_members = !empty($this_if['members']) ? $this_if['members'] : [];
     foreach ($members as $member => $device) {
         if (empty($current_members[$device])) {
-            configure_interface_hardware($device, $ifconfig_details);
+            _interfaces_hardware($device, $ifconfig_details);
             legacy_interface_flags($device, 'up');
             legacy_bridge_member($bridgeif, $device);
         }
@@ -384,7 +384,7 @@ function _interfaces_lagg_configure($lagg)
              * LAGG side anyway.
              */
             legacy_interface_mtu($member, $mtu);
-            configure_interface_hardware($member);
+            _interfaces_hardware($member);
             legacy_interface_flags($member, 'up');
             mwexecf('/sbin/ifconfig %s laggport %s', [$lagg['laggif'], $member]);
         }
@@ -587,6 +587,108 @@ function _interfaces_gif_configure($gif)
     return $gif['gifif'];
 }
 
+/**
+ * configure interface hardware settings
+ * @param string $ifs interface name
+ */
+function _interfaces_hardware($ifs, $intf_details = null)
+{
+    global $config;
+
+    /* XXX the whole function should move to interfaces.inc */
+    $hwsettings = $config['OPNsense']['Interfaces']['settings'];
+
+    /* XXX this needs fixing, lots of devices are not capable */
+    if (
+        strstr($ifs, 'vlan') || strpos($ifs, 'qinq') === 0 ||
+        strpos($ifs, 'lo') === 0 || strpos($ifs, 'vxlan') === 0 ||
+        strpos($ifs, 'ipsec') === 0 || strpos($ifs, '/') === 0
+    ) {
+        /* skip checksumming  */
+        return;
+    }
+
+    if ($intf_details !== null) {
+        $intf_details = $intf_details[$ifs];
+    } else {
+        $intf_details = legacy_interface_details($ifs);
+    }
+
+    /* interface overwrites */
+    foreach ($config['interfaces'] as $iface => $ifconf) {
+        if (!empty($ifconf['if']) && $ifconf['if'] == $ifs) {
+            if (!empty($ifconf['hw_settings_overwrite'])) {
+                foreach ($hwsettings as $key => $value) {
+                    /* XXX per-if hw overwrites still expect isset(), so always set a value. */
+                    if (!isset($ifconf[$key])) {
+                        /* XXX note that this also sets non-boolean $hwsettings fields to 0, but these aren't used here. */
+                        $hwsettings[$key] = '0';
+                    } else {
+                        /* XXX this also accounts for disablevlanhwfilter options 0/1/2 */
+                        $hwsettings[$key] = $ifconf[$key];
+                    }
+                }
+            }
+            break;
+        }
+    }
+
+    if (!empty($intf_details)) {
+        // get current settings
+        $csum_set = in_array('rxcsum', $intf_details['options']) || in_array('txcsum', $intf_details['options']);
+        $csumv6_set = in_array('rxcsum_ipv6', $intf_details['options']) || in_array('txcsum_ipv6', $intf_details['options']);
+        $tso_set = in_array('tso4', $intf_details['options']) || in_array('tso6', $intf_details['options']);
+        $lro_set = in_array('lro', $intf_details['options']);
+
+        // hardware checksum offloading offloading
+        if (!empty($hwsettings['disablechecksumoffloading']) && $csum_set) {
+            legacy_interface_flags($ifs, '-txcsum -rxcsum', false);
+        } elseif (empty($hwsettings['disablechecksumoffloading']) && !$csum_set) {
+            legacy_interface_flags($ifs, 'txcsum rxcsum', false);
+        }
+        if (!empty($hwsettings['disablechecksumoffloading']) && $csumv6_set) {
+            legacy_interface_flags($ifs, '-txcsum6 -rxcsum6', false);
+        } elseif (empty($hwsettings['disablechecksumoffloading']) && !$csumv6_set) {
+            legacy_interface_flags($ifs, 'txcsum6 rxcsum6', false);
+        }
+
+        // TCP segmentation offloading
+        if (!empty($hwsettings['disablesegmentationoffloading']) && $tso_set) {
+            legacy_interface_flags($ifs, '-tso', false);
+        } elseif (empty($hwsettings['disablesegmentationoffloading']) && !$tso_set) {
+            legacy_interface_flags($ifs, 'tso', false);
+        }
+
+        // large receive offload
+        if (!empty($hwsettings['disablelargereceiveoffloading']) && $lro_set) {
+            legacy_interface_flags($ifs, '-lro', false);
+        } elseif (empty($hwsettings['disablelargereceiveoffloading']) && !$lro_set) {
+            legacy_interface_flags($ifs, 'lro', false);
+        }
+
+        // disable/enable hardware VLAN tags, will be skipped when "Leave default" (option 2) is selected
+        if ($hwsettings['disablevlanhwfilter'] != 2) {
+            // probe already selected options
+            $selected_opts = [];
+            foreach ($intf_details['options'] as $opt) {
+                if ($opt == 'vlan_hwtagging') {
+                    $selected_opts[] = 'vlanhwtag';
+                } else {
+                    $selected_opts[] = str_replace('_', '', $opt);
+                }
+            }
+            // set one tag at a time to avoid driver issues
+            foreach (array('vlanhwtag', 'vlanhwfilter', 'vlanhwtso', 'vlanhwcsum') as $tag) {
+                if (empty($hwsettings['disablevlanhwfilter']) && !in_array($tag, $selected_opts)) {
+                    legacy_interface_flags($ifs, $tag);
+                } elseif (!empty($hwsettings['disablevlanhwfilter']) && in_array($tag, $selected_opts)) {
+                    legacy_interface_flags($ifs, '-' . $tag);
+                }
+            }
+        }
+    }
+}
+
 function interfaces_hardware($verbose = false)
 {
     service_log('Configuring hardware interfaces...', $verbose);
@@ -594,7 +696,7 @@ function interfaces_hardware($verbose = false)
     $intf_details = legacy_interfaces_details();
 
     foreach (array_keys(get_interface_list()) as $device) {
-        configure_interface_hardware($device, $intf_details);
+        _interfaces_hardware($device, $intf_details);
     }
 
     service_log("done.\n", $verbose);
@@ -2392,7 +2494,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     /* apply interface hardware settings (tso, lro, ..) */
-    configure_interface_hardware($realhwif, $ifconfig_details);
+    _interfaces_hardware($realhwif, $ifconfig_details);
 
     if (!empty($wancfg['mtu']) && strpos($realhwif, '/') === false) {
         interface_configure_mtu($realhwif, $wancfg['mtu'], $ifconfig_details);
@@ -3681,7 +3783,7 @@ function link_interface_to_bridge($interface, $attach_device = null, $ifconfig_d
                 break;
             }
 
-            configure_interface_hardware($attach_device);
+            _interfaces_hardware($attach_device);
 
             /*
              * The MTU of the first member interface to be added is used as the bridge
