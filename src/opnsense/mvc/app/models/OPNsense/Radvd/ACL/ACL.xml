@@ -7,7 +7,7 @@
             <pattern>api/radvd/settings/*</pattern>
         </patterns>
     </page-radvd-settings>
-    <!-- Does a Log file exist? -->
+    <!-- XXX Does a Log file exist? -->
     <page-radvd-log>
         <name>Services: Router Advertisements: Log</name>
         <description>Allow access to Router Advertisement Logs</description>

@@ -34,7 +34,7 @@ class ServiceController extends ApiMutableServiceControllerBase
 {
     protected static $internalServiceClass = '\OPNsense\Radvd\Radvd';
     protected static $internalServiceTemplate = 'OPNsense/Radvd';
-    // There is no model field for an enabled service enabled right now
+    // XXX There is no model field for an enabled service enabled right now
     // protected static $internalServiceEnabled = 'general.enabled';
     protected static $internalServiceName = 'radvd';
 }

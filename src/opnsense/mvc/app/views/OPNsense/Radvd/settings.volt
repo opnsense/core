@@ -34,7 +34,7 @@
             del:'/api/radvd/settings/del_entry/'
         });
         $("#reconfigureAct").SimpleActionButton();
-        // needs an Endpoint for status
+        // XXX needs an Endpoint for status
         updateServiceControlUI('radvd');
     });
 </script>
@@ -43,6 +43,6 @@
     {{ partial('layout_partials/base_bootgrid_table', formGridEntry)}}
 </div>
 
-<!-- ServiceController missing, reconfigure will not work yet -->
+<!-- XXX reconfigure will not work yet -->
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/radvd/service/reconfigure', 'data_service_widget': 'radvd'}) }}
 {{ partial('layout_partials/base_dialog',['fields':formDialogEntry,'id':formGridEntry['edit_dialog_id'],'label':lang._('Edit Entry')])}}
