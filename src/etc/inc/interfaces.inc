@@ -2869,6 +2869,12 @@ function interface_6to4_configure($interface, $wancfg, $update = false)
     link_interface_to_track6($interface, $update);
 }
 
+function interface_dhcpv6_duid()
+{
+    /* flush the latest DUID and exit */
+    interface_dhcpv6_configure('duidonly', null);
+}
+
 function interface_dhcpv6_configure($interface, $wancfg)
 {
     $settings = new OPNsense\Interfaces\Settings();
