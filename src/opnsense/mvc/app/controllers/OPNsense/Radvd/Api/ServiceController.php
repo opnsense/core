@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2020-2025 Deciso B.V.
+ * Copyright (C) 2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,35 +28,13 @@
 
 namespace OPNsense\Radvd\Api;
 
-use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Base\ApiMutableServiceControllerBase;
 
-class SettingsController extends ApiMutableModelControllerBase
+class ServiceController extends ApiMutableServiceControllerBase
 {
-    protected static $internalModelName = 'radvd';
-    protected static $internalModelClass = 'OPNsense\Radvd\Radvd';
-
-    public function searchEntryAction()
-    {
-        return $this->searchBase('entries');
-    }
-
-    public function setEntryAction($uuid)
-    {
-        return $this->setBase('entries', 'entries', $uuid);
-    }
-
-    public function addEntryAction()
-    {
-        return $this->addBase('entries', 'entries');
-    }
-
-    public function getEntryAction($uuid = null)
-    {
-        return $this->getBase('entries', 'entries', $uuid);
-    }
-
-    public function delEntryAction($uuid)
-    {
-        return $this->delBase('entries', $uuid);
-    }
+    protected static $internalServiceClass = '\OPNsense\Radvd\Radvd';
+    protected static $internalServiceTemplate = 'OPNsense/Radvd';
+    // There is no model field for an enabled service enabled right now
+    // protected static $internalServiceEnabled = 'general.enabled';
+    protected static $internalServiceName = 'radvd';
 }
