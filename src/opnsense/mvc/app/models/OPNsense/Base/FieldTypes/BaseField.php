@@ -859,7 +859,7 @@ abstract class BaseField
      * @param ?string $content (part of) the failed content
      * @return string current validation message
      */
-    protected function getValidationMessage($content=null)
+    protected function getValidationMessage($content = null)
     {
         $msg = $this->internalValidationMessage !== null ?
             gettext($this->internalValidationMessage) :

@@ -117,7 +117,7 @@ class ArrayField extends BaseField
      * @return ContainerField created node
      * @throws \Exception
      */
-    public function add($uuid=null)
+    public function add($uuid = null)
     {
         $nodeUUID = empty($uuid) ? $this->generateUUID() : $uuid;
         $container_node = $this->newContainerField($this->__reference . "." . $nodeUUID, $this->internalXMLTagName);
