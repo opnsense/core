@@ -34,7 +34,7 @@
     <field>
         <id>entries.source_address</id>
         <label>Source Address</label>
-        <type>text</type>
+        <type>dropdown</type>
         <help>Select the source address embedded in the RA messages. If a CARP address is used DeprecatePrefix and RemoveRoute are both set to "off" by default.</help>
         <grid_view>
             <visible>false</visible>
@@ -95,7 +95,9 @@
     <field>
         <id>entries.RDNSS</id>
         <label>Recursive DNS Servers (RDNSS)</label>
-        <type>text</type>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
         <help>Leave blank to use the system default DNS servers: This interface IP address if a DNS service is enabled or the configured global DNS servers.</help>
         <grid_view>
             <visible>false</visible>
@@ -104,7 +106,9 @@
     <field>
         <id>entries.DNSSL</id>
         <label>DNS Search List (DNSSL)</label>
-        <type>text</type>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
         <help>The default is to use the domain name of this system as the DNSSL option in Router Advertisements. You may optionally specify one or multiple domain(s) here. Use the semicolon character as separator.</help>
         <grid_view>
             <visible>false</visible>
