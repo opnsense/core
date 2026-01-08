@@ -101,7 +101,8 @@ class M1_0_0 extends BaseModelMigration
             if (!empty($node->AdvRemoveRoute) && (string)$node->AdvRemoveRoute == 'off') {
                 $content['RemoveRoute'] = (string)$node->AdvRemoveRoute;
             }
-            foreach ([
+            foreach (
+                [
                 'AdvDNSSLLifetime',
                 'AdvDefaultLifetime',
                 'AdvLinkMTU',
@@ -109,7 +110,8 @@ class M1_0_0 extends BaseModelMigration
                 'AdvRDNSSLifetime',
                 'AdvRouteLifetime',
                 'AdvValidLifetime',
-            ] as $adv) {
+                ] as $adv
+            ) {
                 if (!empty($node->$adv)) {
                     $content[$adv] = (string)$node->$adv;
                 }
@@ -169,7 +171,7 @@ class M1_0_0 extends BaseModelMigration
             'rasamednsasdhcp6',
         ];
 
-	foreach ($legacy as $key => $node) {
+        foreach ($legacy as $key => $node) {
             foreach ($remove as $_remove) {
                 unset($node->$_remove);
             }
