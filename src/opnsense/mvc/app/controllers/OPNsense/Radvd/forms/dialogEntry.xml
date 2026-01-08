@@ -27,15 +27,16 @@
     </field>
     <field>
         <id>entries.AdvDefaultPreference</id>
-        <label>Default Router Preference</label>
+        <label>Preference</label>
         <type>dropdown</type>
         <help>Select the Priority for the Router Advertisement (RA) Daemon.</help>
     </field>
     <field>
         <id>entries.source_address</id>
         <label>Source Address</label>
-        <type>dropdown</type>
+        <type>text</type>
         <help>Select the source address embedded in the RA messages. If a CARP address is used DeprecatePrefix and RemoveRoute are both set to "off" by default.</help>
+        <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
         </grid_view>
@@ -72,6 +73,7 @@
         <id>entries.AdvLinkMTU</id>
         <label>Link MTU</label>
         <type>text</type>
+        <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
         </grid_view>
