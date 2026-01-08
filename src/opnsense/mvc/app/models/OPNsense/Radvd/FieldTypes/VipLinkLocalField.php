@@ -53,19 +53,9 @@ class VipLinkLocalField extends BaseField
     private function vipExistsOnInterface(string $addr): bool
     {
         $ifname = $this->getParentNode()->interface->getValue();
+        $mdl = new Vip();
 
-        foreach ((new Vip())->vip->iterateItems() as $vip) {
-            if (!$vip->interface->isEqual($ifname)) {
-                continue;
-            } elseif (!in_array($vip->mode->getValue(), ['ipalias', 'carp'])) {
-                continue;
-            } elseif ($vip->subnet->isEqual($addr)) {
-                /* XXX requires a perfect match but ignores case and compression like radvd.inc */
-                return true;
-            }
-        }
-
-        return false;
+        return $mdl->findSubnet($addr, $ifname, '6') !== '';
     }
 
     public function getValidators()

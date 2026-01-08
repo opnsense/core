@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2025 Deciso B.V.
+ * Copyright (C) 2025-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@ namespace OPNsense\Radvd\Migrations;
 
 use OPNsense\Base\BaseModelMigration;
 use OPNsense\Core\Config;
+use OPNsense\Interfaces\Vip;
 
 class M1_0_0 extends BaseModelMigration
 {
@@ -41,6 +42,8 @@ class M1_0_0 extends BaseModelMigration
     {
         $config = Config::getInstance()->object();
         $legacy = $config->dhcpdv6->children();
+        $vips = new Vip();
+
         if (is_null($legacy)) {
             /* nothing to migrate */
             return;
@@ -63,7 +66,16 @@ class M1_0_0 extends BaseModelMigration
             if (!empty($node->rapriority)) {
                 $content['priority'] = (string)$node->rapriority;
             }
-            /* XXX rainterface -> AdvRASrcAddress, either address or _vip notation but want address */
+            if (!empty($node->rainterface)) {
+                /*
+                 * The migration idea here is to find it and embed the address
+                 * verbatim in order to simplify the code and get rid of the
+                 * legacy <interface>_vip<vhid> notation.  If the lookup fails
+                 * an empty string is returned and thus no address will be
+                 * referenced anymore here which avoids migration errors.
+                 */
+                $content['AdvRASrcAddress'] = $vips->findSubnet((string)$node->rainterface, $key, '6');
+            }
             if (!empty($node->raroutes)) {
                 $content['routes'] = (string)$node->raroutes;
             }
