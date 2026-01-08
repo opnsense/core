@@ -260,12 +260,6 @@ class Filter extends BaseModel
                                 $rule->{'divert-to'}->__reference
                             ));
                         }
-                        if (!$rule->{'divert-to'}->isEmpty() && $rule->ipprotocol != 'inet') {
-                            $messages->appendMessage(new Message(
-                                gettext("Divert-to is currently only supported for IPv4 rules."),
-                                $rule->{'divert-to'}->__reference
-                            ));
-                        }
                     }
                 }
             }
