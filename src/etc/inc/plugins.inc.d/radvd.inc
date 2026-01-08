@@ -145,7 +145,7 @@ function radvd_configure_do($verbose = false, $blacklist = [])
         $carp_mode = false;
         $src_addr = false;
 
-        $ifcfgipv6 = get_interface_ipv6(!empty($dhcpv6ifconf['rainterface']) ? $dhcpv6ifconf['rainterface'] : $dhcpv6if); /* XXX */
+        $ifcfgipv6 = !$entry->AdvRASrcAddress->isEmpty() ? $entry->AdvRASrcAddress->getValue() : get_interface_ipv6($dhcpv6if);
         if (!is_ipaddrv6($ifcfgipv6) && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
             $radvdconf .= "# Skipping addressless interface {$dhcpv6if}\n";
             continue;

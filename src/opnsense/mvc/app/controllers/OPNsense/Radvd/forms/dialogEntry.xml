@@ -29,10 +29,11 @@
         <id>entries.AdvDefaultPreference</id>
         <label>Preference</label>
         <type>dropdown</type>
+        <advanced>true</advanced>
         <help>Select the Priority for the Router Advertisement (RA) Daemon.</help>
     </field>
     <field>
-        <id>entries.source_address</id>
+        <id>entries.AdvRASrcAddress</id>
         <label>Source Address</label>
         <type>text</type>
         <help>Select the source address embedded in the RA messages. If a CARP address is used DeprecatePrefix and RemoveRoute are both set to "off" by default.</help>
@@ -51,19 +52,21 @@
         </grid_view>
     </field>
     <field>
-        <id>entries.RemoveRoute</id>
-        <label>Remove Route</label>
-        <type>dropdown</type>
+        <id>entries.routes</id>
+        <label>Routes</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>Routes are specified in CIDR format. The prefix of a route definition should be network prefix; it can be used to advertise more specific routes to the hosts.</help>
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
         </grid_view>
     </field>
     <field>
-        <id>entries.routes</id>
-        <label>Routes</label>
-        <type>text</type>
-        <help>Routes are specified in CIDR format. The prefix of a route definition should be network prefix; it can be used to advertise more specific routes to the hosts.</help>
+        <id>entries.RemoveRoute</id>
+        <label>Remove Route</label>
+        <type>dropdown</type>
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
@@ -119,7 +122,6 @@
     <field>
         <type>header</type>
         <label>Interval Settings</label>
-        <collapse>true</collapse>
     </field>
     <field>
         <id>entries.MinRtrAdvInterval</id>

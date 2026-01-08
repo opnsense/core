@@ -28,17 +28,6 @@
                     <stateless>Stateless</stateless>
                 </OptionValues>
             </mode>
-            <AdvDefaultPreference type="OptionField">
-                <Required>Y</Required>
-                <Default>medium</Default>
-                <OptionValues>
-                    <low>Low</low>
-                    <medium>Medium</medium>
-                    <high>High</high>
-                </OptionValues>
-            </AdvDefaultPreference>
-            <!--- XXX needs work (migration)-->
-            <source_address type=".\VipLinkLocalField"/>
             <DeprecatePrefix type="OptionField">
                 <BlankDesc>Automatic</BlankDesc>
                 <OptionValues>
@@ -55,10 +44,12 @@
             </RemoveRoute>
             <routes type="NetworkField">
                 <NetMaskRequired>Y</NetMaskRequired>
+                <AddressFamily>ipv6</AddressFamily>
                 <AsList>Y</AsList>
             </routes>
             <RDNSS type="NetworkField">
                 <NetMaskAllowed>N</NetMaskAllowed>
+                <AddressFamily>ipv6</AddressFamily>
                 <AsList>Y</AsList>
             </RDNSS>
             <DNSSL type="HostnameField">
@@ -82,9 +73,19 @@
             <AdvDefaultLifetime type="IntegerField"/>
             <AdvLinkMTU type="IntegerField"/>
             <AdvPreferredLifetime type="IntegerField"/>
+            <AdvRASrcAddress type=".\VipLinkLocalField"/>
             <AdvRDNSSLifetime type="IntegerField"/>
             <AdvRouteLifetime type="IntegerField"/>
             <AdvValidLifetime type="IntegerField"/>
+            <AdvDefaultPreference type="OptionField">
+                <Required>Y</Required>
+                <Default>medium</Default>
+                <OptionValues>
+                    <low>Low</low>
+                    <medium>Medium</medium>
+                    <high>High</high>
+                </OptionValues>
+            </AdvDefaultPreference>
         </entries>
     </items>
 </model>

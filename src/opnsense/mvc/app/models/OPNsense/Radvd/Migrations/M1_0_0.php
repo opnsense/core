@@ -49,7 +49,6 @@ class M1_0_0 extends BaseModelMigration
         foreach ($legacy as $key => $node) {
             $entry = $model->entries->add();
             $content = ['interface' => $key];
-            $content['source_address'] = 'XXX';
             if (!empty($node->ramode)) {
                 $mode = (string)$node->ramode;
                 // Migrate ramode disabled option to its own enabled key
@@ -64,7 +63,7 @@ class M1_0_0 extends BaseModelMigration
             if (!empty($node->rapriority)) {
                 $content['priority'] = (string)$node->rapriority;
             }
-            /* XXX rainterface -> source_address */
+            /* XXX rainterface -> AdvRASrcAddress, either address or _vip notation but want address */
             if (!empty($node->raroutes)) {
                 $content['routes'] = (string)$node->raroutes;
             }
@@ -161,7 +160,7 @@ class M1_0_0 extends BaseModelMigration
             'radisablerdnss',
             'radnsserver',
             'radomainsearchlist',
-            /* XXX 'rainterface', */
+            'rainterface',
             'ramaxinterval',
             'ramininterval',
             'ramode',

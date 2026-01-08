@@ -44,12 +44,10 @@ class VipLinkLocalField extends BaseField
 
     private function isValidLinkLocalAddress(string $addr): bool
     {
-        return !(
-            strpos($addr, '%') !== false ||
-            strpos($addr, '/') !== false ||
-            !Util::isIpv6Address($addr) ||
-            !Util::isLinkLocal($addr)
-        );
+        return strpos($addr, '%') === false &&
+            strpos($addr, '/') === false &&
+            Util::isIpv6Address($addr) &&
+            Util::isLinkLocal($addr);
     }
 
     private function vipExistsOnInterface(string $addr): bool
@@ -57,21 +55,12 @@ class VipLinkLocalField extends BaseField
         $ifname = $this->getParentNode()->interface->getValue();
 
         foreach ((new Vip())->vip->iterateItems() as $vip) {
-            if ($vip->interface->getValue() !== $ifname) {
+            if (!$vip->interface->isEqual($ifname)) {
                 continue;
-            }
-
-            if (!in_array($vip->mode->getValue(), ['ipalias', 'carp'], true)) {
+            } elseif (!in_array($vip->mode->getValue(), ['ipalias', 'carp'])) {
                 continue;
-            }
-
-            $vipAddr = $vip->subnet->getValue();
-
-            if (
-                Util::isIpv6Address($vipAddr) &&
-                Util::isLinkLocal($vipAddr) &&
-                strcasecmp($vipAddr, $addr) === 0
-            ) {
+            } elseif ($vip->subnet->isEqual($addr)) {
+                /* XXX requires a perfect match but ignores case and compression like radvd.inc */
                 return true;
             }
         }
