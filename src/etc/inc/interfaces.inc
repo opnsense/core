@@ -587,6 +587,99 @@ function _interfaces_gif_configure($gif)
     return $gif['gifif'];
 }
 
+/**
+ * configure interface hardware settings
+ * @param string $device network device
+ */
+function configure_interface_hardware($device, $intf_details = null)
+{
+    global $config;
+
+    /* XXX this needs fixing, lots of devices are not capable */
+    if (
+        strstr($device, 'vlan') || strpos($device, 'qinq') === 0 ||
+        strpos($device, 'lo') === 0 || strpos($device, 'vxlan') === 0 ||
+        strpos($device, 'ipsec') === 0 || strpos($device, '/') === 0
+    ) {
+        /* skip checksumming  */
+        return;
+    }
+
+    if ($intf_details !== null) {
+        $intf_details = $intf_details[$device];
+    } else {
+        $intf_details = legacy_interface_details($device);
+    }
+
+    /* make a copy of the current global configuration to adjust below */
+    $hwsettings = $config['system'];
+
+    /* interface overwrites */
+    foreach ($config['interfaces'] as $iface => $ifconf) {
+        if (!empty($ifconf['if']) && $ifconf['if'] == $device) {
+            if (!empty($ifconf['hw_settings_overwrite'])) {
+                $hwsettings = $ifconf;
+            }
+            break;
+        }
+    }
+
+    if (!empty($intf_details)) {
+        // get current settings
+        $csum_set = in_array('rxcsum', $intf_details['options']) || in_array('txcsum', $intf_details['options']);
+        $csumv6_set = in_array('rxcsum_ipv6', $intf_details['options']) || in_array('txcsum_ipv6', $intf_details['options']);
+        $tso_set = in_array('tso4', $intf_details['options']) || in_array('tso6', $intf_details['options']);
+        $lro_set = in_array('lro', $intf_details['options']);
+
+        // hardware checksum offloading offloading
+        if (isset($hwsettings['disablechecksumoffloading']) && $csum_set) {
+            legacy_interface_flags($device, '-txcsum -rxcsum', false);
+        } elseif (!isset($hwsettings['disablechecksumoffloading']) && !$csum_set) {
+            legacy_interface_flags($device, 'txcsum rxcsum', false);
+        }
+        if (isset($hwsettings['disablechecksumoffloading']) && $csumv6_set) {
+            legacy_interface_flags($device, '-txcsum6 -rxcsum6', false);
+        } elseif (!isset($hwsettings['disablechecksumoffloading']) && !$csumv6_set) {
+            legacy_interface_flags($device, 'txcsum6 rxcsum6', false);
+        }
+
+        // TCP segmentation offloading
+        if (isset($hwsettings['disablesegmentationoffloading']) && $tso_set) {
+            legacy_interface_flags($device, '-tso', false);
+        } elseif (!isset($hwsettings['disablesegmentationoffloading']) && !$tso_set) {
+            legacy_interface_flags($device, 'tso', false);
+        }
+
+        // large receive offload
+        if (isset($hwsettings['disablelargereceiveoffloading']) && $lro_set) {
+            legacy_interface_flags($device, '-lro', false);
+        } elseif (!isset($hwsettings['disablelargereceiveoffloading']) && !$lro_set) {
+            legacy_interface_flags($device, 'lro', false);
+        }
+
+        // disable/enable hardware VLAN tags, will be skipped when "Leave default" (option 2) is selected
+        if (!isset($hwsettings['disablevlanhwfilter']) || $hwsettings['disablevlanhwfilter'] == 1) {
+            // probe already selected options
+            $selected_opts = [];
+            foreach ($intf_details['options'] as $opt) {
+                if ($opt == 'vlan_hwtagging') {
+                    $selected_opts[] = 'vlanhwtag';
+                } else {
+                    $selected_opts[] = str_replace('_', '', $opt);
+                }
+            }
+            // set one tag at a time to avoid driver issues
+            foreach (['vlanhwtag', 'vlanhwfilter', 'vlanhwtso', 'vlanhwcsum'] as $tag) {
+                if (!isset($hwsettings['disablevlanhwfilter']) && !in_array($tag, $selected_opts)) {
+                    legacy_interface_flags($device, $tag);
+                } elseif (isset($hwsettings['disablevlanhwfilter']) && in_array($tag, $selected_opts)) {
+                    legacy_interface_flags($device, '-' . $tag);
+                }
+            }
+        }
+    }
+}
+
 function interfaces_hardware($verbose = false)
 {
     service_log('Configuring hardware interfaces...', $verbose);
