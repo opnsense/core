@@ -275,7 +275,7 @@
         </field>
         <field>
             <id>ipsec.charon.syslog.daemon.lib</id>
-            <label>Libstrongwan library messages</label>
+            <label>Libstrongswan library messages</label>
             <type>dropdown</type>
         </field>
         <field>

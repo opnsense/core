@@ -7,7 +7,7 @@
     </field>
     <field>
         <id>connection.org_uuid</id>
-        <label>Orignal UUID</label>
+        <label>Original UUID</label>
         <type>text</type>
         <style>hidden_attr</style>
     </field>
