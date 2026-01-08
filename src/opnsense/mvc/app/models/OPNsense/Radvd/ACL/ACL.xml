@@ -1,19 +1,19 @@
 <acl>
-    <page-radvd-settings>
+    <page-services-router-advertisements>
         <name>Services: Router Advertisements: Settings</name>
         <description>Allow access to Router Advertisement Settings</description>
         <patterns>
-            <pattern>ui/radvd/settings/*</pattern>
+            <pattern>ui/radvd/settings</pattern>
             <pattern>api/radvd/settings/*</pattern>
         </patterns>
-    </page-radvd-settings>
+    </page-services-router-advertisements>
     <!-- XXX Does a Log file exist? -->
-    <page-radvd-log>
+    <page-logs-router-advertisements>
         <name>Services: Router Advertisements: Log</name>
         <description>Allow access to Router Advertisement Logs</description>
         <patterns>
             <pattern>ui/diagnostics/log/core/radvd/*</pattern>
             <pattern>api/diagnostics/log/core/radvd/*</pattern>
         </patterns>
-    </page-radvd-log>
+    </page-logs-router-advertisements>
 </acl>

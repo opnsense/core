@@ -1,9 +1,9 @@
 <menu>
     <Services>
-        <radvd VisibleName="Router Advertisements" cssClass="fa fa-bullseye fa-fw">
+        <RouterAdv VisibleName="Router Advertisements" cssClass="fa fa-bullseye fa-fw">
             <Settings order="10" url="/ui/radvd/settings"/>
             <!-- XXX Does a Log file exist? -->
             <Log VisibleName="Log File" order="20" url="/ui/diagnostics/log/core/radvd"/>
-        </radvd>
+        </RouterAdv>
     </Services>
 </menu>

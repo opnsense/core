@@ -2546,7 +2546,6 @@
 /usr/local/www/services_ntpd_gps.php
 /usr/local/www/services_ntpd_pps.php
 /usr/local/www/services_opendns.php
-/usr/local/www/services_router_advertisements.php
 /usr/local/www/status_wireless.php
 /usr/local/www/system_advanced_admin.php
 /usr/local/www/system_advanced_firewall.php
