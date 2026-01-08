@@ -394,8 +394,7 @@ abstract class BaseField
      */
     public function getValues(): array
     {
-        $value = $this->getValue();
-        return strlen($value) ? [$value] : [];
+        return $this->isSet() ? [$this->getValue()] : [];
     }
 
     /**
@@ -414,6 +413,24 @@ abstract class BaseField
     public function isEqual(string $test): bool
     {
         return $this->getValue() === $test;
+    }
+
+    /**
+     * check if current value is empty (either boolean field as false or an empty field)
+     * @return bool
+     */
+    public function isEmpty(): bool
+    {
+        return empty($this->getValue());
+    }
+
+    /**
+     * check if current value is set (the stored string should be of zero length)
+     * @return bool
+     */
+    public function isSet(): bool
+    {
+        return !!strlen($this->getValue());
     }
 
     /**
@@ -541,15 +558,6 @@ abstract class BaseField
             return $this->internalChildnodes[$name];
         }
         return null;
-    }
-
-    /**
-     * check if current value is empty (either boolean field as false or an empty field)
-     * @return bool
-     */
-    public function isEmpty(): bool
-    {
-        return empty($this->getValue());
     }
 
     /**
