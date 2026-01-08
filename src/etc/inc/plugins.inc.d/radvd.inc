@@ -179,7 +179,7 @@ function radvd_configure_do($verbose = false, $blacklist = [])
         $radvdconf .= "\tAdvSendAdvert on;\n";
         $radvdconf .= "\tMinRtrAdvInterval {$entry->MinRtrAdvInterval->getValue()};\n";
         $radvdconf .= "\tMaxRtrAdvInterval {$entry->MaxRtrAdvInterval->getValue()};\n";
-        if (strlen($entry->AdvDefaultLifetime->getValue())) {
+        if ($entry->AdvDefaultLifetime->isSet()) {
             $radvdconf .= "\tAdvDefaultLifetime {$entry->AdvDefaultLifetime->getValue()};\n";
         }
         $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 0);
