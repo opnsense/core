@@ -177,7 +177,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dhcp6_debug'] = !isset($config['system']['dhcp6_debug']) ? '0' : $config['system']['dhcp6_debug'];
     $pconfig['ipv6duid'] = $config['system']['ipv6duid'];
     $pconfig['disablevlanhwfilter']  = !isset($config['system']['disablevlanhwfilter']) ? '0' : $config['system']['disablevlanhwfilter'];
-    $pconfig['sharednet'] = isset($config['system']['sharednet']);
     $pconfig['ipv6_duid_llt_value'] = generate_new_duid('1');
     $pconfig['ipv6_duid_ll_value'] = generate_new_duid('2');
     $pconfig['ipv6_duid_uuid_value'] = generate_new_duid('3');
@@ -191,12 +190,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (!count($input_errors)) {
-        if (!empty($pconfig['sharednet'])) {
-            $config['system']['sharednet'] = true;
-        } elseif (isset($config['system']['sharednet'])) {
-            unset($config['system']['sharednet']);
-        }
-
         if (!empty($pconfig['ipv6allow'])) {
             $config['system']['ipv6allow'] = true;
         } elseif (isset($config['system']['ipv6allow'])) {
@@ -340,16 +333,6 @@ include("head.inc");
                   </select>
                   <div class="hidden" data-for="help_for_disablevlanhwfilter">
                     <?= gettext('Set usage of VLAN hardware filtering. This hardware acceleration may be broken in a particular device driver, or may impact performance.') ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_sharednet" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ARP Handling"); ?></td>
-                <td>
-                  <input name="sharednet" type="checkbox" id="sharednet" value="yes" <?= !empty($pconfig['sharednet']) ? 'checked="checked"' : '' ?>/>
-                  <?=gettext("Suppress ARP messages"); ?>
-                  <div class="hidden" data-for="help_for_sharednet">
-                    <?=gettext("This option will suppress ARP log messages when multiple interfaces reside on the same broadcast domain"); ?>
                   </div>
                 </td>
               </tr>
