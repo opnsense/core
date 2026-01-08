@@ -95,9 +95,10 @@
     </dhcp_ranges>
     <dhcp_ranges>
       <interface>lan</interface>
-      <start_addr>::</start_addr>
+      <start_addr>::100</start_addr>
+      <end_addr>::199</end_addr>
       <constructor>lan</constructor>
-      <ra_mode>ra-stateless</ra_mode>
+      <ra_mode>slaac</ra_mode>
     </dhcp_ranges>
   </dnsmasq>
   <unbound>
