@@ -83,10 +83,12 @@ class FilterController extends FilterBaseController
         $show_all = !empty($this->request->get('show_all'));
         if (!empty($this->request->get('interface'))) {
             $interfaces = explode(',', $this->request->get('interface'));
-            /* add groups which contain the selected interface */
-            foreach ((new Group())->ifgroupentry->iterateItems() as $groupItem) {
-                if (array_intersect($interfaces, $groupItem->members->getValues())) {
-                    $interfaces[] = $groupItem->ifname->getValue();
+            if ($show_all) {
+                /* add groups which contain the selected interface when looking at full impact*/
+                foreach ((new Group())->ifgroupentry->iterateItems() as $groupItem) {
+                    if (array_intersect($interfaces, $groupItem->members->getValues())) {
+                        $interfaces[] = $groupItem->ifname->getValue();
+                    }
                 }
             }
         } else {

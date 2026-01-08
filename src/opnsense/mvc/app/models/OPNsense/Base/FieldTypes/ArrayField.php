@@ -113,12 +113,13 @@ class ArrayField extends BaseField
 
     /**
      * add new node containing the types from the first node (copy)
+     * @param string|null $uuid to use (generate one when not offered)
      * @return ContainerField created node
      * @throws \Exception
      */
-    public function add()
+    public function add($uuid = null)
     {
-        $nodeUUID = $this->generateUUID();
+        $nodeUUID = empty($uuid) ? $this->generateUUID() : $uuid;
         $container_node = $this->newContainerField($this->__reference . "." . $nodeUUID, $this->internalXMLTagName);
 
         $template_ref = $this->internalTemplateNode->__reference;
@@ -349,7 +350,7 @@ class ArrayField extends BaseField
             }
             if ($node === null) {
                 $results['inserted'] += 1;
-                $node = $this->add();
+                $node = $this->add(!empty($record['@uuid']) ? $record['@uuid'] : null);
             } else {
                 $results['updated'] += 1;
             }
