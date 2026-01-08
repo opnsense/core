@@ -9,6 +9,7 @@
         <type>checkbox</type>
         <help>Enable or disable this entry.</help>
         <grid_view>
+            <width>6em</width>
             <type>boolean</type>
             <formatter>rowtoggle</formatter>
         </grid_view>
@@ -40,6 +41,42 @@
         </grid_view>
     </field>
     <field>
+        <id>entries.DeprecatePrefix</id>
+        <label>Deprecate Prefix</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>entries.RemoveRoute</id>
+        <label>Remove Route</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>entries.routes</id>
+        <label>Routes</label>
+        <type>text</type>
+        <help>Routes are specified in CIDR format. The prefix of a route definition should be network prefix; it can be used to advertise more specific routes to the hosts.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>entries.AdvLinkMTU</id>
+        <label>Link MTU</label>
+        <type>text</type>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+        <field>
         <type>header</type>
         <label>DNS Settings</label>
     </field>
@@ -52,6 +89,7 @@
         <grid_view>
             <type>boolean</type>
             <formatter>boolean</formatter>
+            <visible>false</visible>
         </grid_view>
     </field>
     <field>
@@ -68,44 +106,6 @@
         <label>DNS Search List (DNSSL)</label>
         <type>text</type>
         <help>The default is to use the domain name of this system as the DNSSL option in Router Advertisements. You may optionally specify one or multiple domain(s) here. Use the semicolon character as separator.</help>
-        <grid_view>
-            <visible>false</visible>
-        </grid_view>
-    </field>
-    <field>
-        <type>header</type>
-        <label>Prefix Settings</label>
-        <collapse>true</collapse>
-    </field>
-    <field>
-        <id>entries.DeprecatePrefix</id>
-        <label>Deprecate Prefix</label>
-        <type>dropdown</type>
-        <grid_view>
-            <visible>false</visible>
-        </grid_view>
-    </field>
-    <field>
-        <id>entries.RemoveRoute</id>
-        <label>Remove Route</label>
-        <type>dropdown</type>
-        <grid_view>
-            <visible>false</visible>
-        </grid_view>
-    </field>
-    <field>
-        <id>entries.routes</id>
-        <label>Routes</label>
-        <type>text</type>
-        <help>Routes are specified in CIDR format. The prefix of a route definition should be network prefix; it can be used to advertise more specific routes to the hosts.</help>
-        <grid_view>
-            <visible>false</visible>
-        </grid_view>
-    </field>
-    <field>
-        <id>entries.AdvLinkMTU</id>
-        <label>Link MTU</label>
-        <type>text</type>
         <grid_view>
             <visible>false</visible>
         </grid_view>
