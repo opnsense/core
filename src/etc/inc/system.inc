@@ -123,8 +123,6 @@ function system_sysctl_defaults()
         'net.link.bridge.pfil_local_phys' => [ 'default' => '0' ],
         'net.link.bridge.pfil_member' => [ 'default' => '1' ],
         'net.link.bridge.pfil_onlyip' => [ 'default' => '0' ],
-        'net.link.ether.inet.log_arp_movements' => [ 'default' => '1' ],
-        'net.link.ether.inet.log_arp_wrong_iface' => [ 'default' => '1' ],
         'net.link.tap.user_open' => [ 'default' => '1' ],
         'net.link.vlan.mtag_pcp' => [ 'default' => '1' ],
         'net.local.dgram.maxdgram' => [ 'default' => '8192' ],
