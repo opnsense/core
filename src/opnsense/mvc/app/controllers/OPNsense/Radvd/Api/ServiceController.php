@@ -29,12 +29,28 @@
 namespace OPNsense\Radvd\Api;
 
 use OPNsense\Base\ApiMutableServiceControllerBase;
+use OPNsense\Core\Backend;
 
 class ServiceController extends ApiMutableServiceControllerBase
 {
     protected static $internalServiceClass = '\OPNsense\Radvd\Radvd';
     protected static $internalServiceTemplate = 'OPNsense/Radvd';
-    // XXX There is no model field for an enabled service enabled right now
-    // protected static $internalServiceEnabled = 'general.enabled';
     protected static $internalServiceName = 'radvd';
+
+    protected function serviceEnabled()
+    {
+        /* consider this always on -- radvd_enabled() code is complicated */
+        return true;
+    }
+
+    public function reconfigureAction()
+    {
+        if (!$this->request->isPost()) {
+            return ['status' => 'failed'];
+        }
+
+        (new Backend())->configdRun('radvd configure');
+
+        return ['status' => 'ok'];
+    }
 }

@@ -45,9 +45,10 @@
     </field>
     <field>
         <id>entries.dns</id>
-        <label>Enable DNS Advertisement</label>
+        <label>Enable DNS</label>
         <type>checkbox</type>
-        <help>Control the behavior of the embedded DNS configuration (RFC 8106). Leave unchecked to use a custom DNS configuration.</help>
+        <help>Control the sending of the embedded DNS configuration (RFC 8106).</help>
+        <advanced>true</advanced>
         <grid_view>
             <type>boolean</type>
             <formatter>boolean</formatter>
@@ -115,16 +116,16 @@
         <collapse>true</collapse>
     </field>
     <field>
-        <id>entries.MaxRtrAdvInterval</id>
-        <label>Max Router Advertisement Interval</label>
-        <type>text</type>
-        <help>The maximum time allowed between sending unsolicited multicast router advertisements from the interface, in seconds.</help>
-    </field>
-    <field>
         <id>entries.MinRtrAdvInterval</id>
         <label>Min Router Advertisement Interval</label>
         <type>text</type>
         <help>The minimum time allowed between sending unsolicited multicast router advertisements from the interface, in seconds.</help>
+    </field>
+    <field>
+        <id>entries.MaxRtrAdvInterval</id>
+        <label>Max Router Advertisement Interval</label>
+        <type>text</type>
+        <help>The maximum time allowed between sending unsolicited multicast router advertisements from the interface, in seconds.</help>
     </field>
     <field>
         <type>header</type>

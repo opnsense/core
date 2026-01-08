@@ -1447,6 +1447,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_ntpd.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openssh.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openvpn.conf
+/usr/local/opnsense/service/conf/actions.d/actions_radvd.conf
 /usr/local/opnsense/service/conf/actions.d/actions_shaper.conf
 /usr/local/opnsense/service/conf/actions.d/actions_syslog.conf
 /usr/local/opnsense/service/conf/actions.d/actions_system.conf

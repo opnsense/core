@@ -131,10 +131,10 @@ function dhcpd_xmlrpc_sync()
 
     $result[] = [
         'description' => gettext('ISC DHCPv6'),
-        'help' => gettext('Synchronize DHCPv6 including router advertisements.'),
+        'help' => gettext('Synchronize DHCPv6 Server settings over to the other HA host.'),
         'section' => 'dhcpdv6',
         'id' => 'dhcpdv6',
-        'services' => ['dhcpdv6', 'radvd'], /* XXX we need to extract this */
+        'services' => ['dhcpdv6'],
     ];
 
     return $result;

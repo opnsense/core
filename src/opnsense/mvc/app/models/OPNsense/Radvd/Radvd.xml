@@ -70,10 +70,17 @@
                 <AsList>Y</AsList>
             </DNSSL>
             <dns type="BooleanField">
-                <!--- XXX advanced option -->
                 <Required>Y</Required>
                 <Default>1</Default>
             </dns>
+            <MinRtrAdvInterval type="IntegerField">
+                <Default>200</Default>
+                <Required>Y</Required>
+            </MinRtrAdvInterval>
+            <MaxRtrAdvInterval type="IntegerField">
+                <Default>600</Default>
+                <Required>Y</Required>
+            </MaxRtrAdvInterval>
             <AdvDNSSLLifetime type="IntegerField"/>
             <AdvDefaultLifetime type="IntegerField"/>
             <AdvLinkMTU type="IntegerField"/>
@@ -81,8 +88,6 @@
             <AdvRDNSSLifetime type="IntegerField"/>
             <AdvRouteLifetime type="IntegerField"/>
             <AdvValidLifetime type="IntegerField"/>
-            <MaxRtrAdvInterval type="IntegerField"/>
-            <MinRtrAdvInterval type="IntegerField"/>
         </entries>
     </items>
 </model>
