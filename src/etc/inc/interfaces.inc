@@ -239,7 +239,7 @@ function _interfaces_bridge_configure($bridge, $ifconfig_details = null)
     $current_members = !empty($this_if['members']) ? $this_if['members'] : [];
     foreach ($members as $member => $device) {
         if (empty($current_members[$device])) {
-            configure_interface_hardware($device, $ifconfig_details);
+            _interfaces_hardware($device, $ifconfig_details);
             legacy_interface_flags($device, 'up');
             legacy_bridge_member($bridgeif, $device);
         }
@@ -384,7 +384,7 @@ function _interfaces_lagg_configure($lagg)
              * LAGG side anyway.
              */
             legacy_interface_mtu($member, $mtu);
-            configure_interface_hardware($member);
+            _interfaces_hardware($member);
             legacy_interface_flags($member, 'up');
             mwexecf('/sbin/ifconfig %s laggport %s', [$lagg['laggif'], $member]);
         }
@@ -587,6 +587,108 @@ function _interfaces_gif_configure($gif)
     return $gif['gifif'];
 }
 
+/**
+ * configure interface hardware settings
+ * @param string $device network device
+ */
+function _interfaces_hardware($device, $intf_details = null)
+{
+    global $config;
+
+    /* XXX this needs fixing, lots of devices are not capable */
+    if (
+        strstr($device, 'vlan') || strpos($device, 'qinq') === 0 ||
+        strpos($device, 'lo') === 0 || strpos($device, 'vxlan') === 0 ||
+        strpos($device, 'ipsec') === 0 || strpos($device, '/') === 0
+    ) {
+        /* skip checksumming  */
+        return;
+    }
+
+    if ($intf_details !== null) {
+        $intf_details = $intf_details[$device];
+    } else {
+        $intf_details = legacy_interface_details($device);
+    }
+
+    /* make a copy of the current global configuration to adjust below */
+    $hwsettings = $config['OPNsense']['Interfaces']['settings'];
+
+    /* interface overwrites */
+    foreach ($config['interfaces'] as $iface => $ifconf) {
+        if (!empty($ifconf['if']) && $ifconf['if'] == $device) {
+            if (!empty($ifconf['hw_settings_overwrite'])) {
+                foreach ($hwsettings as $key => $value) {
+                    /* XXX per-if hw overwrites still expect isset(), so always set a value. */
+                    if (!isset($ifconf[$key])) {
+                        /* XXX note that this also sets non-boolean $hwsettings fields to 0, but these aren't used here. */
+                        $hwsettings[$key] = '0';
+                    } else {
+                        /* XXX this also accounts for disablevlanhwfilter options 0/1/2 */
+                        $hwsettings[$key] = $ifconf[$key];
+                    }
+                }
+            }
+            break;
+        }
+    }
+
+    if (!empty($intf_details)) {
+        // get current settings
+        $csum_set = in_array('rxcsum', $intf_details['options']) || in_array('txcsum', $intf_details['options']);
+        $csumv6_set = in_array('rxcsum_ipv6', $intf_details['options']) || in_array('txcsum_ipv6', $intf_details['options']);
+        $tso_set = in_array('tso4', $intf_details['options']) || in_array('tso6', $intf_details['options']);
+        $lro_set = in_array('lro', $intf_details['options']);
+
+        // hardware checksum offloading offloading
+        if (!empty($hwsettings['disablechecksumoffloading']) && $csum_set) {
+            legacy_interface_flags($device, '-txcsum -rxcsum', false);
+        } elseif (empty($hwsettings['disablechecksumoffloading']) && !$csum_set) {
+            legacy_interface_flags($device, 'txcsum rxcsum', false);
+        }
+        if (!empty($hwsettings['disablechecksumoffloading']) && $csumv6_set) {
+            legacy_interface_flags($device, '-txcsum6 -rxcsum6', false);
+        } elseif (empty($hwsettings['disablechecksumoffloading']) && !$csumv6_set) {
+            legacy_interface_flags($device, 'txcsum6 rxcsum6', false);
+        }
+
+        // TCP segmentation offloading
+        if (!empty($hwsettings['disablesegmentationoffloading']) && $tso_set) {
+            legacy_interface_flags($device, '-tso', false);
+        } elseif (empty($hwsettings['disablesegmentationoffloading']) && !$tso_set) {
+            legacy_interface_flags($device, 'tso', false);
+        }
+
+        // large receive offload
+        if (!empty($hwsettings['disablelargereceiveoffloading']) && $lro_set) {
+            legacy_interface_flags($device, '-lro', false);
+        } elseif (empty($hwsettings['disablelargereceiveoffloading']) && !$lro_set) {
+            legacy_interface_flags($device, 'lro', false);
+        }
+
+        // disable/enable hardware VLAN tags, will be skipped when "Leave default" (option 2) is selected
+        if ($hwsettings['disablevlanhwfilter'] != 2) {
+            // probe already selected options
+            $selected_opts = [];
+            foreach ($intf_details['options'] as $opt) {
+                if ($opt == 'vlan_hwtagging') {
+                    $selected_opts[] = 'vlanhwtag';
+                } else {
+                    $selected_opts[] = str_replace('_', '', $opt);
+                }
+            }
+            // set one tag at a time to avoid driver issues
+            foreach (['vlanhwtag', 'vlanhwfilter', 'vlanhwtso', 'vlanhwcsum'] as $tag) {
+                if (empty($hwsettings['disablevlanhwfilter']) && !in_array($tag, $selected_opts)) {
+                    legacy_interface_flags($device, $tag);
+                } elseif (!empty($hwsettings['disablevlanhwfilter']) && in_array($tag, $selected_opts)) {
+                    legacy_interface_flags($device, '-' . $tag);
+                }
+            }
+        }
+    }
+}
+
 function interfaces_hardware($verbose = false)
 {
     service_log('Configuring hardware interfaces...', $verbose);
@@ -594,7 +696,7 @@ function interfaces_hardware($verbose = false)
     $intf_details = legacy_interfaces_details();
 
     foreach (array_keys(get_interface_list()) as $device) {
-        configure_interface_hardware($device, $intf_details);
+        _interfaces_hardware($device, $intf_details);
     }
 
     service_log("done.\n", $verbose);
@@ -2392,7 +2494,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     /* apply interface hardware settings (tso, lro, ..) */
-    configure_interface_hardware($realhwif, $ifconfig_details);
+    _interfaces_hardware($realhwif, $ifconfig_details);
 
     if (!empty($wancfg['mtu']) && strpos($realhwif, '/') === false) {
         interface_configure_mtu($realhwif, $wancfg['mtu'], $ifconfig_details);
@@ -2422,7 +2524,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     /* we do not set "ifdisabled" to avoid clobbering assigned tunnel devices */
     mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv -no_dad description %s up', [$device, $ifdescr]);
 
-    switch (isset($config['system']['ipv6allow']) ? ($wancfg['ipaddrv6'] ?? 'none') : 'none') {
+    switch (is_ipv6_allowed() ? ($wancfg['ipaddrv6'] ?? 'none') : 'none') {
         case 'slaac':
         case 'dhcp6':
             mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled up', $device);
@@ -2767,13 +2869,19 @@ function interface_6to4_configure($interface, $wancfg, $update = false)
     link_interface_to_track6($interface, $update);
 }
 
+function interface_dhcpv6_duid()
+{
+    /* flush the latest DUID and exit */
+    interface_dhcpv6_configure('duidonly', null);
+}
+
 function interface_dhcpv6_configure($interface, $wancfg)
 {
-    $syscfg = config_read_array('system');
+    $settings = new OPNsense\Interfaces\Settings();
 
     /* write DUID if override was set */
-    if (!empty($syscfg['ipv6duid'])) {
-        dhcp6c_duid_write($syscfg['ipv6duid']);
+    if (!$settings->dhcp6_duid->isEmpty()) {
+        dhcp6c_duid_write($settings->dhcp6_duid->getValue());
     /* clear DUID if it is faulty */
     } elseif (empty(dhcp6c_duid_read())) {
         dhcp6c_duid_clear();
@@ -2787,17 +2895,13 @@ function interface_dhcpv6_configure($interface, $wancfg)
     killbypid('/var/run/rtsold.pid');
     @unlink("/tmp/rtsold.{$wancfg['if']}.done");
 
-    $rtsold_frmt = ['/usr/sbin/rtsold -aiu -p %s -A %s -R %s'];
+    $rtsold_frmt = ['/usr/sbin/rtsold -%s -aiu -p %s -A %s -R %s'];
     $rtsold_args = [
+        $settings->dhcp6_debug->isEmpty() ? 'd' : 'D',
         '/var/run/rtsold.pid',
         '/var/etc/rtsold_script.sh',
         '/usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh',
     ];
-
-    if (!empty($syscfg['dhcp6_debug'])) {
-        $mode = [ '1' => '-d', '2' => '-D' ];
-        $rtsold_frmt[] = $mode[$syscfg['dhcp6_debug']];
-    }
 
     /* fire up rtsold for IPv6 RAs first */
     mwexecf($rtsold_frmt, $rtsold_args);
@@ -2807,7 +2911,7 @@ function interface_dhcpv6_configure($interface, $wancfg)
      * advertisements after timeout which can be necessary.
      * Can be adjusted to fit ISP timing or completely disabled.
      */
-    if (!empty($syscfg['dhcp6_ratimeout'] ?? '10')) {
+    if (!$settings->dhcp6_ratimeout->isEmpty()) {
         mwexecfb('/var/etc/rtsold_script.sh %s', [$wancfg['if']]);
     }
 }
@@ -2840,8 +2944,8 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
         return;
     }
 
+    $settings = new OPNsense\Interfaces\Settings();
     $id = interface_dhcpv6_id($interface);
-    $syscfg = config_read_array('system');
     $device = $wancfg['if'];
 
     $dhcp6cconf = "# generated for {$interface} in {$wancfg['ipaddrv6']} mode\n";
@@ -2919,22 +3023,16 @@ EOF;
     @file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript);
     @chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
 
-    $dhcp6ccommand = exec_safe('/usr/local/sbin/dhcp6c -c %s -p %s', [
-            '/var/etc/dhcp6c.conf',
-            '/var/run/dhcp6c.pid',
-    ]);
+    $cmdfrmt = ['/usr/local/sbin/dhcp6c -%s'];
+    $cmdargs = [!empty($syscfg['dhcp6_debug']) ? 'D' : 'd'];
 
-    if (!empty($syscfg['dhcp6_debug'])) {
-        $mode = [ '1' => ' -d', '2' => ' -D' ];
-        $dhcp6ccommand .= $mode[$syscfg['dhcp6_debug']];
+    if (!$settings->dhcp6_norelease->isEmpty()) {
+        $cmdfrmt[] = '-n';
     }
 
-    if (!empty($syscfg['dhcp6_norelease'])) {
-        $dhcp6ccommand .= ' -n';
-    }
+    $dhcp6ccommand = exec_safe($cmdfrmt, $cmdargs);
 
-    /* XXX does not exist yet: integer in seconds from 0 to n, 0 actually disables it */
-    $ratimeout = $syscfg['dhcp6_ratimeout'] ?? '10';
+    $ratimeout = $settings->dhcp6_ratimeout->getValue();
 
     $dhcp6cconf = '';
 
@@ -2973,17 +3071,21 @@ else
         exit 0
     fi
 fi
-if [ -f /var/run/dhcp6c.pid ]; then
-    if ! /bin/pkill -0 -F /var/run/dhcp6c.pid; then
-        rm -f /var/run/dhcp6c.pid
+CONFFILE="/var/etc/dhcp6c.conf"
+PIDFILE="/var/run/dhcp6c.pid"
+if [ -f "\${PIDFILE}" ]; then
+    if ! /bin/pkill -0 -F "\${PIDFILE}"; then
+        rm -f "\${PIDFILE}"
     fi
 fi
-if [ -f /var/run/dhcp6c.pid ]; then
+if [ ! -f "\${CONFFILE}" ]; then
+    /usr/bin/logger -t dhcp6c "RTSOLD script - Skipping daemon for dhcp6c"
+elif [ -f "\${PIDFILE}" ]; then
     /usr/bin/logger -t dhcp6c "RTSOLD script - Sending SIGHUP to dhcp6c"
-    /bin/pkill -HUP -F /var/run/dhcp6c.pid
+    /bin/pkill -HUP -F "\${PIDFILE}"
 else
-    /usr/bin/logger -t dhcp6c "RTSOLD script - Starting dhcp6c daemon"
-    {$dhcp6ccommand}
+    /usr/bin/logger -t dhcp6c "RTSOLD script - Starting daemon for dhcp6c"
+    {$dhcp6ccommand} -c "\${CONFFILE}" -p "\${PIDFILE}"
 fi
 touch "/tmp/rtsold.\${1}.done"
 
@@ -3690,7 +3792,7 @@ function link_interface_to_bridge($interface, $attach_device = null, $ifconfig_d
                 break;
             }
 
-            configure_interface_hardware($attach_device);
+            _interfaces_hardware($attach_device);
 
             /*
              * The MTU of the first member interface to be added is used as the bridge

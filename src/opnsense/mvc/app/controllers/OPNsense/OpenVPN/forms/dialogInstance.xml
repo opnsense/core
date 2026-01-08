@@ -5,7 +5,7 @@
     </field>
     <field>
         <id>instance.vpnid</id>
-        <label>vpnid</label>
+        <label>VPN ID</label>
         <!-- hide id, but push to server-->
         <style>role</style>
         <type>text</type>

@@ -1,4 +1,3 @@
-#!/usr/local/bin/php
 <?php
 
 /*
@@ -27,8 +26,30 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("config.inc");
-require_once("system.inc");
-require_once("util.inc");
+namespace OPNsense\Interfaces\Api;
 
-echo json_encode(system_sysctl_defaults());
+use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Core\Backend;
+
+class SettingsController extends ApiMutableModelControllerBase
+{
+    protected static $internalModelName = 'settings';
+    protected static $internalModelClass = 'OPNsense\Interfaces\Settings';
+
+    public function getAction()
+    {
+        $duids = json_decode((new Backend())->configdRun('interface settings gen_duid'), true);
+        $result = parent::getAction();
+        $result['duids'] = $duids;
+        return $result;
+    }
+
+    public function reconfigureAction()
+    {
+        $result = ['status' => 'failed'];
+        if ($this->request->isPost()) {
+            $result['status'] = strtolower(trim((new Backend())->configdRun('interface settings configure')));
+        }
+        return $result;
+    }
+}

@@ -1,0 +1,45 @@
+<model>
+    <mount>//OPNsense/Interfaces/settings</mount>
+    <version>1.0.0</version>
+    <description>Global interface settings</description>
+    <items>
+        <disablechecksumoffloading type="BooleanField">
+            <Default>1</Default>
+            <Required>Y</Required>
+        </disablechecksumoffloading>
+        <disablesegmentationoffloading type="BooleanField">
+            <Default>1</Default>
+            <Required>Y</Required>
+        </disablesegmentationoffloading>
+        <disablelargereceiveoffloading type="BooleanField">
+            <Default>1</Default>
+            <Required>Y</Required>
+        </disablelargereceiveoffloading>
+        <disablevlanhwfilter type="OptionField">
+            <Default>2</Default>
+            <Required>Y</Required>
+            <OptionValues>
+                <opt0 value="0">Enable VLAN Hardware Filtering</opt0>
+                <opt1 value="1">Disable VLAN Hardware Filtering</opt1>
+                <opt2 value="2">Leave default</opt2>
+            </OptionValues>
+        </disablevlanhwfilter>
+        <disableipv6 type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </disableipv6>
+        <dhcp6_norelease type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </dhcp6_norelease>
+        <dhcp6_debug type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </dhcp6_debug>
+        <dhcp6_duid type=".\DUIDField"/>
+        <dhcp6_ratimeout type="IntegerField">
+            <Default>10</Default>
+            <Required>Y</Required>
+        </dhcp6_ratimeout>
+    </items>
+</model>

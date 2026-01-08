@@ -1,4 +1,3 @@
-#!/usr/local/bin/php
 <?php
 
 /*
@@ -27,8 +26,43 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("config.inc");
-require_once("system.inc");
-require_once("util.inc");
+namespace OPNsense\Core\Migrations;
 
-echo json_encode(system_sysctl_defaults());
+use OPNsense\Base\BaseModelMigration;
+use OPNsense\Core\Tunables;
+use OPNsense\Core\Config;
+
+class TUN1_0_2 extends BaseModelMigration
+{
+    /**
+     * Migrate sharednet settings
+     * @param $model
+     */
+    public function run($model)
+    {
+        if (!($model instanceof Tunables)) {
+            return;
+        }
+
+        $config = Config::getInstance()->object();
+
+        if (isset($config?->system?->sharednet)) {
+            $model->item->add()->setNodes([
+                'tunable' => 'net.link.ether.inet.log_arp_movements',
+                'value' => '0',
+            ]);
+            $model->item->add()->setNodes([
+                'tunable' => 'net.link.ether.inet.log_arp_wrong_iface',
+                'value' => '0',
+            ]);
+        }
+    }
+
+    public function post($model)
+    {
+        $config = Config::getInstance()->object();
+        if (isset($config?->system?->sharednet)) {
+            unset($config->system->sharednet);
+        }
+    }
+}

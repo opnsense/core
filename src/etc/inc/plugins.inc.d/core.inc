@@ -403,6 +403,12 @@ function core_configure()
         'crl' => ['core_trust_crl'],
         'dns_reload' => ['system_resolver_configure'],
         'firmware_reload' => ['system_firmware_configure'],
+        'networking_reload' => [
+            'interface_dhcpv6_duid:0',
+            'system_sysctl_configure',
+            'interfaces_hardware',
+            'filter_configure:0',
+        ],
         'route_reload' => ['system_routing_configure:2'],
         'syslog_reset' => ['system_syslog_reset'],
         'trust_reload' => ['system_trust_configure'],

@@ -1,4 +1,3 @@
-#!/usr/local/bin/php
 <?php
 
 /*
@@ -27,8 +26,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("config.inc");
-require_once("system.inc");
-require_once("util.inc");
+namespace OPNsense\Interfaces;
 
-echo json_encode(system_sysctl_defaults());
+class SettingsController extends \OPNsense\Base\IndexController
+{
+    public function indexAction()
+    {
+        $this->view->pick('OPNsense/Interface/settings');
+        $this->view->formDialogSettings = $this->getForm('dialogSettings');
+    }
+}

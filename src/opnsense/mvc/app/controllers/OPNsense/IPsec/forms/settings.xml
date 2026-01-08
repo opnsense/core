@@ -245,7 +245,7 @@
         </field>
         <field>
             <id>ipsec.charon.syslog.daemon.esp</id>
-            <label>libipsec library messages</label>
+            <label>Libipsec library messages</label>
             <type>dropdown</type>
         </field>
         <field>
@@ -275,7 +275,7 @@
         </field>
         <field>
             <id>ipsec.charon.syslog.daemon.lib</id>
-            <label>libstrongwan library messages</label>
+            <label>Libstrongswan library messages</label>
             <type>dropdown</type>
         </field>
         <field>
@@ -295,7 +295,7 @@
         </field>
         <field>
             <id>ipsec.charon.syslog.daemon.tls</id>
-            <label>libtls library messages</label>
+            <label>Libtls library messages</label>
             <type>dropdown</type>
         </field>
         <field>

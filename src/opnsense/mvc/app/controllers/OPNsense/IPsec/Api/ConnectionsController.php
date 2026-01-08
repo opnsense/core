@@ -100,7 +100,7 @@ class ConnectionsController extends ApiMutableModelControllerBase
             foreach (['locals.local', 'remotes.remote', 'children.child'] as $ref) {
                 $container = $this->getModel()->getNodeByReference($ref);
                 if ($container != null) {
-                    $orignal_items = [];
+                    $original_items = [];
                     $has_children = false;
                     foreach ($container->iterateItems() as $node_uuid => $node) {
                         if ($node->connection == $copy_uuid) {
@@ -108,13 +108,13 @@ class ConnectionsController extends ApiMutableModelControllerBase
                             foreach ($node->iterateItems() as $key => $field) {
                                 $record[$key] = (string)$field;
                             }
-                            $orignal_items[] = $record;
+                            $original_items[] = $record;
                         } elseif ($node->connection == $uuid) {
                             $has_children = true;
                         }
                     }
                     if (!$has_children) {
-                        foreach ($orignal_items as $record) {
+                        foreach ($original_items as $record) {
                             $node = $container->Add();
                             $record['connection'] = $uuid;
                             $node->setNodes($record);

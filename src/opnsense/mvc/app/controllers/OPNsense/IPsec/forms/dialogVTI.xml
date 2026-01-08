@@ -1,7 +1,7 @@
 <form>
     <field>
         <id>vti.enabled</id>
-        <label>enabled</label>
+        <label>Enabled</label>
         <type>checkbox</type>
         <grid_view>
             <type>boolean</type>

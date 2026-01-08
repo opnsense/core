@@ -33,11 +33,6 @@
     <disablenatreflection>yes</disablenatreflection>
     <usevirtualterminal>1</usevirtualterminal>
     <disableconsolemenu/>
-    <disablevlanhwfilter>1</disablevlanhwfilter>
-    <disablechecksumoffloading>1</disablechecksumoffloading>
-    <disablesegmentationoffloading>1</disablesegmentationoffloading>
-    <disablelargereceiveoffloading>1</disablelargereceiveoffloading>
-    <ipv6allow>1</ipv6allow>
     <powerd_ac_mode>hadp</powerd_ac_mode>
     <powerd_battery_mode>hadp</powerd_battery_mode>
     <powerd_normal_mode>hadp</powerd_normal_mode>
