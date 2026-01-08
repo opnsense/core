@@ -1,19 +1,19 @@
 <form>
     <field>
         <id>connection.uuid</id>
-        <label>uuid</label>
+        <label>UUID</label>
         <type>text</type>
         <style>hidden_attr</style>
     </field>
     <field>
         <id>connection.org_uuid</id>
-        <label>orignal uuid</label>
+        <label>Orignal UUID</label>
         <type>text</type>
         <style>hidden_attr</style>
     </field>
     <field>
         <id>connection.enabled</id>
-        <label>enabled</label>
+        <label>Enabled</label>
         <type>checkbox</type>
     </field>
     <field>

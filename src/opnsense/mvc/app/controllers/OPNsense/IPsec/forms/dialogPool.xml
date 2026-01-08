@@ -1,7 +1,7 @@
 <form>
     <field>
         <id>pool.enabled</id>
-        <label>enabled</label>
+        <label>Enabled</label>
         <type>checkbox</type>
     </field>
     <field>

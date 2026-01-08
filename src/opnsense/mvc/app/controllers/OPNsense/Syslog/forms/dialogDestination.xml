@@ -70,9 +70,9 @@
   </field>
   <field>
     <id>destination.rfc5424</id>
-    <label>rfc5424</label>
+    <label>RFC5424</label>
     <type>checkbox</type>
-    <help>Use rfc5424 formatted messages for this destination.</help>
+    <help>Use RFC5424 formatted messages for this destination.</help>
     <grid_view>
       <visible>false</visible>
       <type>boolean</type>
