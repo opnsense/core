@@ -32,9 +32,7 @@ function system_powerd_configure($verbose = false)
 {
     global $config;
 
-    if (is_process_running('powerd')) {
-        exec('/usr/bin/killall powerd');
-    }
+    killbyname('powerd');
 
     if (!isset($config['system']['powerd_enable'])) {
         return;
@@ -59,7 +57,7 @@ function system_powerd_configure($verbose = false)
 
     mwexecf(
         '/usr/sbin/powerd -b %s -a %s -n %s',
-        array($battery_mode, $ac_mode, $normal_mode)
+        [$battery_mode, $ac_mode, $normal_mode]
     );
 
     service_log("done.\n", $verbose);
@@ -543,7 +541,7 @@ function system_host_route($host, $gateway)
         return;
     }
 
-    mwexecf('/sbin/route delete -host -%s %s', [$family, $host], true);
+    mwexecfm('/sbin/route delete -host -%s %s', [$family, $host]);
 
     /* this was an explicit delete */
     if ($gateway === null) {
@@ -647,7 +645,7 @@ function system_default_route($gw, $routes)
 
     log_msg("ROUTING: setting {$family} default route to {$gateway}");
 
-    mwexecf('/sbin/route delete -%s default', [$family], true);
+    mwexecfm('/sbin/route delete -%s default', [$family]);
     mwexecf('/sbin/route add -%s default %s', [$family, $gateway]);
 }
 
@@ -759,7 +757,7 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
             $cmd[] = exec_safe('%s', $rtent['network']);
 
             if (!empty($rtent['disabled'])) {
-                mwexec('/sbin/route delete ' . join(' ', $cmd), true);
+                mwexecfm('/sbin/route delete ' . implode(' ', $cmd));
                 continue;
             }
 
@@ -767,28 +765,27 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
             $interfacegw = $gateway['if'];
 
             if (is_ipaddr($gatewayip)) {
-                mwexec('/sbin/route delete ' . join(' ', $cmd), true);
+                mwexecfm('/sbin/route delete ' . implode(' ', $cmd));
 
                 if ($ipproto == 'inet' && is_ipaddrv6($gatewayip)) {
                     $cmd[] = '-inet6'; /* RFC 5549: gateway protocol differs */
                 }
 
                 if (!empty($gateway['fargw']) && $gateway['ipprotocol'] != 'inet6') {
-                    mwexecf('/sbin/route delete -%s %s -interface %s ', [$ipproto, $gatewayip, $interfacegw], true);
-                    mwexecf('/sbin/route add -%s %s -interface %s', [$ipproto, $gatewayip, $interfacegw], true);
+                    mwexecfm('/sbin/route delete -%s %s -interface %s ', [$ipproto, $gatewayip, $interfacegw]);
+                    mwexecfm('/sbin/route add -%s %s -interface %s', [$ipproto, $gatewayip, $interfacegw]);
                 } elseif (is_linklocal($gatewayip) && strpos($gatewayip, '%') === false) {
                     $gatewayip .= "%{$interfacegw}";
                 }
 
                 $cmd[] = exec_safe('%s', $gatewayip);
             } elseif (!empty($interfacegw)) {
-                $cmd[] = '-interface';
-                $cmd[] = exec_safe('%s', $interfacegw);
+                $cmd[] = exec_safe('-interface %s', $interfacegw);
 
-                mwexec('/sbin/route delete ' . join(' ', $cmd), true);
+                mwexecfm('/sbin/route delete ' . implode(' ', $cmd));
             }
 
-            mwexec('/sbin/route add ' . join(' ', $cmd), true);
+            mwexecfm('/sbin/route add ' . implode(' ', $cmd));
         }
     }
 
@@ -866,8 +863,8 @@ function system_firmware_configure($verbose = false)
             continue;
         }
 
-         /* run the script in passthru() but avoid standard output from this side */
-         passthru($script . '> /dev/null');
+         /* offer visibility of errors only */
+         pass_safe($script . '> /dev/null');
 
         /* make a note about repo being handled */
         service_log(' ' . preg_replace('/\..*?$/', '', $basename));
@@ -975,7 +972,7 @@ function system_trust_configure($verbose = false)
     service_log("done.\n", $verbose);
 
     /* collects all trusted certificates into /etc/ssl/certs directory */
-    passthru('/usr/local/opnsense/scripts/system/certctl.py rehash');
+    pass_safe('/usr/local/opnsense/scripts/system/certctl.py rehash');
 
     service_log('Writing trust bundles...', $verbose);
 
@@ -1083,7 +1080,7 @@ function system_kernel_configure($verbose = false)
     }
 
     foreach ($mods as $mod) {
-        mwexecf('/sbin/kldload %s', $mod, true);
+        mwexecfm('/sbin/kldload %s', $mod);
     }
 
     /* we now have /dev/pf, time to fix permissions for proxies */
@@ -1097,7 +1094,7 @@ function system_devd_configure($verbose = false)
 {
     service_log('Starting device manager...', $verbose);
 
-    mwexec('/sbin/devd');
+    mwexecf('/sbin/devd');
     /* historic sleep */
     sleep(1);
 
@@ -1160,7 +1157,7 @@ function system_cron_configure($verbose = false)
 
     configd_run('template reload OPNsense/Cron');
 
-    mwexec('/etc/rc.d/cron restart');
+    mwexecf('/etc/rc.d/cron restart');
 
     service_log("done.\n", $verbose);
 }
@@ -1336,22 +1333,22 @@ function system_login_configure($verbose = false)
     service_log("done.\n", $verbose);
 
     /* force init(8) to reload /etc/ttys */
-    mwexec('/bin/kill -HUP 1');
+    mwexecf('/bin/kill -HUP 1');
 }
 
 function reset_factory_defaults($sync = true)
 {
-    mwexec('/bin/rm -fr /conf/* /var/log/* /root/.history');
-    mwexec('/usr/local/sbin/opnsense-beep stop');
+    mwexecf('/bin/rm -fr /conf/* /var/log/* /root/.history');
+    mwexecf('/usr/local/sbin/opnsense-beep stop');
 
     /* as we go through a special case directly shut down */
     $shutdown_cmd = '/sbin/shutdown -op now';
     if ($sync) {
-        mwexec($shutdown_cmd);
+        mwexecf($shutdown_cmd);
         while (true) {
             sleep(1);
         }
     } else {
-        mwexec_bg($shutdown_cmd);
+        mwexecfb($shutdown_cmd);
     }
 }
