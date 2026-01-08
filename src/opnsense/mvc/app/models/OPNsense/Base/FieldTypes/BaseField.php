@@ -856,13 +856,20 @@ abstract class BaseField
     }
 
     /**
+     * @param ?string $content (part of) the failed content
      * @return string current validation message
      */
-    protected function getValidationMessage()
+    protected function getValidationMessage($content=null)
     {
-        return $this->internalValidationMessage !== null ?
+        $msg = $this->internalValidationMessage !== null ?
             gettext($this->internalValidationMessage) :
             $this->defaultValidationMessage();
+
+        if (!empty($msg) && substr_count($msg, '%s') == 1) {
+            return sprintf($msg, $content);
+        } else {
+            return $msg;
+        }
     }
 
     /**
