@@ -37,8 +37,8 @@
                     <high>High</high>
                 </OptionValues>
             </AdvDefaultPreference>
-            <!--- XXX needs work -->
-            <source_address type="TextField"/>
+            <!--- XXX needs work (migration)-->
+            <source_address type=".\VipLinkLocalField"/>
             <DeprecatePrefix type="OptionField">
                 <BlankDesc>Automatic</BlankDesc>
                 <OptionValues>

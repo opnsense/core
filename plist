@@ -870,6 +870,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/OpenVPN.php
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/OpenVPN.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Radvd/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Radvd/FieldTypes/VipLinkLocalField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Radvd/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Radvd/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Radvd/Radvd.php
