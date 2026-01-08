@@ -1,7 +1,7 @@
 <form>
     <field>
         <id>rule.enabled</id>
-        <label>enabled</label>
+        <label>Enabled</label>
         <type>checkbox</type>
         <help>Enable this rule</help>
     </field>

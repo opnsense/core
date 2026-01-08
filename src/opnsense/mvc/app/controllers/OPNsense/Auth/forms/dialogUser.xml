@@ -9,7 +9,7 @@
     </field>
     <field>
         <id>user.uid</id>
-        <label>uid</label>
+        <label>UID</label>
         <type>info</type>
         <grid_view>
             <visible>false</visible>
