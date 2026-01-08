@@ -3024,15 +3024,14 @@ EOF;
     @file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript);
     @chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
 
-    $dhcp6ccommand = exec_safe('/usr/local/sbin/dhcp6c -%s -c %s -p %s', [
-        $settings->dhcp6_debug->isEmpty() ? 'd' : 'D',
-        '/var/etc/dhcp6c.conf',
-        '/var/run/dhcp6c.pid',
-    ]);
+    $cmdfrmt = ['/usr/local/sbin/dhcp6c -%s'];
+    $cmdargs = [!empty($syscfg['dhcp6_debug']) ? 'D' : 'd'];
 
     if (!$settings->dhcp6_norelease->isEmpty()) {
-        $dhcp6ccommand .= ' -n';
+        $cmdfrmt[] = '-n';
     }
+
+    $dhcp6ccommand = exec_safe($cmdfrmt, $cmdargs);
 
     $ratimeout = $settings->dhcp6_ratimeout->getValue();
 
@@ -3073,17 +3072,21 @@ else
         exit 0
     fi
 fi
-if [ -f /var/run/dhcp6c.pid ]; then
-    if ! /bin/pkill -0 -F /var/run/dhcp6c.pid; then
-        rm -f /var/run/dhcp6c.pid
+CONFFILE="/var/etc/dhcp6c.conf"
+PIDFILE="/var/run/dhcp6c.pid"
+if [ -f "\${PIDFILE}" ]; then
+    if ! /bin/pkill -0 -F "\${PIDFILE}"; then
+        rm -f "\${PIDFILE}"
     fi
 fi
-if [ -f /var/run/dhcp6c.pid ]; then
+if [ ! -f "\${CONFFILE}" ]; then
+    /usr/bin/logger -t dhcp6c "RTSOLD script - Skipping daemon for dhcp6c"
+elif [ -f "\${PIDFILE}" ]; then
     /usr/bin/logger -t dhcp6c "RTSOLD script - Sending SIGHUP to dhcp6c"
-    /bin/pkill -HUP -F /var/run/dhcp6c.pid
+    /bin/pkill -HUP -F "\${PIDFILE}"
 else
-    /usr/bin/logger -t dhcp6c "RTSOLD script - Starting dhcp6c daemon"
-    {$dhcp6ccommand}
+    /usr/bin/logger -t dhcp6c "RTSOLD script - Starting daemon for dhcp6c"
+    {$dhcp6ccommand} -c "\${CONFFILE}" -p "\${PIDFILE}"
 fi
 touch "/tmp/rtsold.\${1}.done"
 
