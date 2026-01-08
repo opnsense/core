@@ -430,7 +430,7 @@ abstract class BaseField
      */
     public function isSet(): bool
     {
-        return !!strlen($this->getValue());
+        return $this->getValue() !== '';
     }
 
     /**
@@ -570,15 +570,6 @@ abstract class BaseField
     }
 
     /**
-     * check if this field is unused and required
-     * @return bool
-     */
-    public function isEmptyAndRequired(): bool
-    {
-        return $this->internalIsRequired && $this->getValue() === '';
-    }
-
-    /**
      * retrieve constraint objects by defined constraints name (/key)
      * @param $name
      * @return null|object
@@ -641,7 +632,7 @@ abstract class BaseField
     public function getValidators()
     {
         $validators = $this->getConstraintValidators();
-        if ($this->isEmptyAndRequired()) {
+        if ($this->isRequired() && !$this->isSet()) {
             $validators[] = new PresenceOf(['message' => gettext('A value is required.')]);
         }
         return $validators;
