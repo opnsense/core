@@ -1247,7 +1247,7 @@ EOD;
     );
 
     /* appease netgraph by setting the correct node name */
-    shell_safe('/usr/sbin/daemon -f /usr/local/opnsense/scripts/interfaces/ppp-rename.sh %s %s %s', [$interface, $ifcfg['if'], $ppp['type']]);
+    mwexecfb('/usr/local/opnsense/scripts/interfaces/ppp-rename.sh %s %s %s', [$interface, $ifcfg['if'], $ppp['type']]);
 
     /* wait for functional device */
     $max = 20;
@@ -1369,7 +1369,7 @@ function interface_proxyarp_configure($interface = '')
         if (!empty($interface)) {
             killbypid($pid_filename);
         }
-        mwexec_bg("/usr/local/sbin/choparp " . $args);
+        mwexecfb("/usr/local/sbin/choparp " . $args);
     }
 }
 
