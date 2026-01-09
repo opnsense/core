@@ -417,6 +417,24 @@ abstract class BaseField
     }
 
     /**
+     * check if current value is empty (either boolean field as false or an empty field)
+     * @return bool
+     */
+    public function isEmpty(): bool
+    {
+        return empty($this->getValue());
+    }
+
+    /**
+     * check if current value is set (the stored string should be of zero length)
+     * @return bool
+     */
+    public function isSet(): bool
+    {
+        return $this->getValue() !== '';
+    }
+
+    /**
      * convert current value to float
      * @return float
      */
@@ -541,15 +559,6 @@ abstract class BaseField
             return $this->internalChildnodes[$name];
         }
         return null;
-    }
-
-    /**
-     * check if current value is empty (either boolean field as false or an empty field)
-     * @return bool
-     */
-    public function isEmpty(): bool
-    {
-        return empty($this->getValue());
     }
 
     /**
