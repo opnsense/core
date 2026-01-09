@@ -300,18 +300,18 @@ class Vip extends BaseModel
                 }
             }
             switch ($vip->mode->getValue()) {
-            case 'carp':
-                if ($reference == "{$vip->interface}_vip{$vip->vhid}") {
-                    /* translated from legacy format */
-                    return $subnet;
-                }
-                /* FALLTHROUGH */
-            default:
-                if ($reference === $subnet) {
-                    /* exact match is intentional */
-                    return $subnet;
-                }
-                break;
+                case 'carp':
+                    if ($reference == "{$vip->interface}_vip{$vip->vhid}") {
+                        /* translated from legacy format */
+                        return $subnet;
+                    }
+                    /* FALLTHROUGH */
+                default:
+                    if ($reference === $subnet) {
+                        /* exact match is intentional */
+                        return $subnet;
+                    }
+                    break;
             }
         }
 
