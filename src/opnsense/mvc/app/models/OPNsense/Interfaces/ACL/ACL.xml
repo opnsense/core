@@ -7,7 +7,7 @@
         </patterns>
     </page-interfaces-neighbor>
     <page-system-advanced-network>
-        <name>System: Advanced: Network</name>
+        <name>Interfaces: Settings</name>
         <patterns>
             <pattern>ui/interfaces/settings</pattern>
             <pattern>api/interfaces/settings/*</pattern>

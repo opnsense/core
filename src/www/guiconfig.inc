@@ -331,23 +331,6 @@ function get_specialnets($only_enabled = false)
     return $specialnets;
 }
 
-function pprint_address($adr) {
-    $specialnets = get_specialnets();
-    if (isset($adr['any'])) {
-        $padr = "*";
-    } elseif (isset($adr['network'])) {
-        $padr = $specialnets[$adr['network']];
-    } else {
-        $padr = isset($adr['address']) ? $adr['address'] : null;
-    }
-
-    if (isset($adr['not'])) {
-        $padr = "! " . $padr;
-    }
-
-    return $padr;
-}
-
 function pprint_port($port) {
     global $wkports;
 

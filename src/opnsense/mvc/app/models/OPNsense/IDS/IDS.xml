@@ -138,7 +138,7 @@
                 <Required>Y</Required>
                 <Default>pcap</Default>
                 <OptionValues>
-                    <pcap>pcap live mode (IDS)</pcap>
+                    <pcap>PCAP live mode (IDS)</pcap>
                     <netmap>Netmap (IPS)</netmap>
                     <divert>Divert (IPS)</divert>
                 </OptionValues>
