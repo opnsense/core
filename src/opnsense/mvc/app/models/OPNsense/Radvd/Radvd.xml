@@ -61,11 +61,11 @@
                 <Required>Y</Required>
                 <Default>1</Default>
             </dns>
-            <!-- XXX validation incomplete: Minimum interval must be between 3 and <ramax*0.75> seconds. -->
             <MinRtrAdvInterval type="IntegerField">
                 <Default>200</Default>
                 <Required>Y</Required>
                 <MinimumValue>3</MinimumValue>
+                <ValidationMessage>Value cannot be less than 3 seconds.</ValidationMessage>
             </MinRtrAdvInterval>
             <MaxRtrAdvInterval type="IntegerField">
                 <Default>600</Default>
@@ -79,7 +79,6 @@
                 <MaximumValue>4294967295</MaximumValue>
                 <ValidationMessage>Value must be between 1 and 42949672.</ValidationMessage>
             </AdvDNSSLLifetime>
-            <!-- XXX validation missing: ramaxinterval – 9000 -->
             <AdvDefaultLifetime type="IntegerField"/>
             <AdvLinkMTU type="IntegerField">
                 <MinimumValue>1280</MinimumValue>

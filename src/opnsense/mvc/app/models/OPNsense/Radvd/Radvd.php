@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2025 Deciso B.V.
+ * Copyright (C) 2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,63 @@
 namespace OPNsense\Radvd;
 
 use OPNsense\Base\BaseModel;
+use OPNsense\Base\Messages\Message;
 
+/**
+ * Class Radvd
+ * @package OPNsense\Radvd
+ */
 class Radvd extends BaseModel
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function performValidation($validateFullModel = false)
+    {
+        $messages = parent::performValidation($validateFullModel);
+
+        foreach ($this->entries->iterateItems() as $entry) {
+            if (!$validateFullModel && !$entry->isFieldChanged()) {
+                continue;
+            }
+
+            $key = $entry->__reference;
+
+            $raMin = $entry->MinRtrAdvInterval->asInt();
+            $raMax = $entry->MaxRtrAdvInterval->asInt();
+            $raMinAllowed = (int)floor($raMax * 0.75);
+
+            if ($raMin > $raMinAllowed) {
+                $messages->appendMessage(
+                    new Message(
+                        sprintf(
+                            gettext('Value cannot be greater than %s.'),
+                            (string)$raMinAllowed
+                        ),
+                        $key . '.MinRtrAdvInterval'
+                    )
+                );
+            }
+
+            if (!$entry->AdvDefaultLifetime->isEmpty()) {
+                $defaultLifetime = $entry->AdvDefaultLifetime->asInt();
+                $defaultLifetimeMax = (int)9000;
+
+                if ($defaultLifetime < $raMax || $defaultLifetime > $defaultLifetimeMax) {
+                    $messages->appendMessage(
+                        new Message(
+                            sprintf(
+                                gettext('AdvDefaultLifetime must be between %s and %s seconds.'),
+                                (string)$raMax,
+                                (string)$defaultLifetimeMax
+                            ),
+                            $key . '.AdvDefaultLifetime'
+                        )
+                    );
+                }
+            }
+        }
+
+        return $messages;
+    }
 }
