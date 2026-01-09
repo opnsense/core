@@ -61,22 +61,52 @@
                 <Required>Y</Required>
                 <Default>1</Default>
             </dns>
+            <!-- XXX validation incomplete: Minimum interval must be between 3 and <ramax*0.75> seconds. -->
             <MinRtrAdvInterval type="IntegerField">
                 <Default>200</Default>
                 <Required>Y</Required>
+                <MinimumValue>3</MinimumValue>
             </MinRtrAdvInterval>
             <MaxRtrAdvInterval type="IntegerField">
                 <Default>600</Default>
                 <Required>Y</Required>
+                <MinimumValue>4</MinimumValue>
+                <MaximumValue>1800</MaximumValue>
+                <ValidationMessage>Maximum interval must be between 4 and 1800 seconds.</ValidationMessage>
             </MaxRtrAdvInterval>
-            <AdvDNSSLLifetime type="IntegerField"/>
+            <AdvDNSSLLifetime type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>4294967295</MaximumValue>
+                <ValidationMessage>Value must be between 1 and 42949672.</ValidationMessage>
+            </AdvDNSSLLifetime>
+            <!-- XXX validation missing: ramaxinterval – 9000 -->
             <AdvDefaultLifetime type="IntegerField"/>
-            <AdvLinkMTU type="IntegerField"/>
-            <AdvPreferredLifetime type="IntegerField"/>
+            <AdvLinkMTU type="IntegerField">
+                <MinimumValue>1280</MinimumValue>
+                <MaximumValue>65535</MaximumValue>
+                <ValidationMessage>AdvLinkMTU must be between 1280 and 65535 bytes.</ValidationMessage>
+            </AdvLinkMTU>
+            <AdvPreferredLifetime type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>4294967295</MaximumValue>
+                <ValidationMessage>Value must be between 1 and 42949672.</ValidationMessage>
+            </AdvPreferredLifetime>
             <AdvRASrcAddress type=".\VipLinkLocalField"/>
-            <AdvRDNSSLifetime type="IntegerField"/>
-            <AdvRouteLifetime type="IntegerField"/>
-            <AdvValidLifetime type="IntegerField"/>
+            <AdvRDNSSLifetime type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>4294967295</MaximumValue>
+                <ValidationMessage>Value must be between 1 and 42949672.</ValidationMessage>
+            </AdvRDNSSLifetime>
+            <AdvRouteLifetime type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>4294967295</MaximumValue>
+                <ValidationMessage>Value must be between 1 and 42949672.</ValidationMessage>
+            </AdvRouteLifetime>
+            <AdvValidLifetime type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>4294967295</MaximumValue>
+                <ValidationMessage>Value must be between 1 and 42949672.</ValidationMessage>
+            </AdvValidLifetime>
             <AdvDefaultPreference type="OptionField">
                 <Required>Y</Required>
                 <Default>medium</Default>
