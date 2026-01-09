@@ -38,8 +38,7 @@ export default class Services extends BaseTableWidget {
     }
 
     getMarkup() {
-        // Return a flex container instead of a table for compact tile layout
-        return $(`<div id="services-container" style="display: flex; flex-wrap: wrap; padding: 5px; gap: 5px; justify-content: space-between;"></div>`);
+        return $(`<div id="services-container" style="display: flex; flex-wrap: wrap; padding: 5px; gap: 5px; justify-content: flex-start;"></div>`);
     }
 
     serviceControl(actions) {
@@ -67,7 +66,6 @@ export default class Services extends BaseTableWidget {
         $('.service-status').tooltip('hide');
         $('.srv_status_act2').tooltip('hide');
 
-        // Sort by description for better readability
         data.rows.sort((a, b) => a.description.localeCompare(b.description));
 
         for (const service of data.rows) {
@@ -90,7 +88,7 @@ export default class Services extends BaseTableWidget {
                     border: 1px solid #e5e5e5;
                     border-radius: 4px;
                     padding: 8px;
-                    width: 49%;
+                    width: 32%;
                     flex-grow: 1;
                     min-width: 140px;
                     display: flex;
