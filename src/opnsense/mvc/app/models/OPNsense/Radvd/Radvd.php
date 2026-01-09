@@ -75,7 +75,7 @@ class Radvd extends BaseModel
                     $messages->appendMessage(
                         new Message(
                             sprintf(
-                                gettext('AdvDefaultLifetime must be between %s and %s seconds.'),
+                                gettext('Value must be between %s and %s seconds.'),
                                 (string)$raMax,
                                 (string)$defaultLifetimeMax
                             ),
