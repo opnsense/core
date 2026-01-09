@@ -12,4 +12,4 @@ done
 touch /usr/local/etc/suricata/installed_rules.yaml
 
 # always load ipdivert so inline mode is available
-kldload ipdivert 2>/dev/null
+kldload -q ipdivert || true
