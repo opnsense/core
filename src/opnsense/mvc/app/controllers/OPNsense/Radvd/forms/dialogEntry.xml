@@ -18,6 +18,7 @@
         <id>entries.interface</id>
         <label>Interface</label>
         <type>dropdown</type>
+        <help>Choose the interface that should send Router Advertisements.</help>
     </field>
     <field>
         <id>entries.mode</id>
@@ -47,6 +48,7 @@
         <label>Deprecate Prefix</label>
         <type>dropdown</type>
         <advanced>true</advanced>
+        <help>Deprecate advertised prefixes on shutdown by announcing a zero preferred lifetime.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
@@ -68,6 +70,7 @@
         <label>Remove Route</label>
         <type>dropdown</type>
         <advanced>true</advanced>
+        <help>Withdraw advertised routes on shutdown by sending a zero lifetime.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
@@ -77,11 +80,12 @@
         <label>Link MTU</label>
         <type>text</type>
         <advanced>true</advanced>
+        <help>Advertise a specific MTU to clients. Must be equal or greater than 1280 and valid for the link.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
     </field>
-        <field>
+    <field>
         <type>header</type>
         <label>DNS Settings</label>
     </field>
@@ -144,6 +148,7 @@
         <id>entries.AdvDNSSLLifetime</id>
         <label>DNSSL Lifetime</label>
         <type>text</type>
+        <help>Lifetime in seconds for advertised DNS search domains.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
@@ -152,6 +157,7 @@
         <id>entries.AdvRDNSSLifetime</id>
         <label>RDNSS Lifetime</label>
         <type>text</type>
+        <help>Lifetime in seconds for advertised recursive DNS servers.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
@@ -160,6 +166,7 @@
         <id>entries.AdvDefaultLifetime</id>
         <label>Default Router Lifetime</label>
         <type>text</type>
+        <help>Lifetime in seconds this router is considered a valid default router.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
@@ -168,6 +175,7 @@
         <id>entries.AdvPreferredLifetime</id>
         <label>Preferred Lifetime</label>
         <type>text</type>
+        <help>Lifetime in seconds addresses remain preferred for new connections.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
@@ -176,6 +184,7 @@
         <id>entries.AdvValidLifetime</id>
         <label>Valid Lifetime</label>
         <type>text</type>
+        <help>Lifetime in seconds addresses remain valid before becoming unusable.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
@@ -184,6 +193,7 @@
         <id>entries.AdvRouteLifetime</id>
         <label>Route Lifetime</label>
         <type>text</type>
+        <help>Lifetime in seconds for advertised routes.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
