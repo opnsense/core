@@ -55,8 +55,14 @@ class IPsecProposalField extends BaseListField
 
     private function AeadPhase1()
     {
-        /* a PRF is mandatory for IKE proposals containing AEAD algorithms (gcm) */
+        /* a PRF is mandatory for IKE proposals containing AEAD algorithms (e.g. GCM, ChaCha20-Poly1305 */
         return [
+            'chacha20poly1305-sha256-x25519' => 'chacha20poly1305-sha256-curve25519 [DH31, Modern EC]',
+            'chacha20poly1305-sha384-x25519' => 'chacha20poly1305-sha384-curve25519 [DH31, Modern EC]',
+            'chacha20poly1305-sha512-x25519' => 'chacha20poly1305-sha512-curve25519 [DH31, Modern EC]',
+            'chacha20poly1305-sha256-x448' => 'chacha20poly1305-sha256-curve448 [DH32, Modern EC]',
+            'chacha20poly1305-sha384-x448' => 'chacha20poly1305-sha384-curve448 [DH32, Modern EC]',
+            'chacha20poly1305-sha512-x448' => 'chacha20poly1305-sha512-curve448 [DH32, Modern EC]',
             'aes256gcm16-sha256-modp2048' => null,
             'aes256gcm16-sha512-modp2048' => null,
             'aes256gcm16-sha256-ecp521' => null,
@@ -79,6 +85,9 @@ class IPsecProposalField extends BaseListField
     private function AeadPhase2()
     {
         return [
+            'chacha20poly1305' => 'chacha20poly1305 [no PFS]',
+            'chacha20poly1305-x25519' => 'chacha20poly1305-curve25519 [DH31, Modern EC]',
+            'chacha20poly1305-x448' => 'chacha20poly1305-curve448 [DH32, Modern EC]',
             'aes256gcm16-modp2048' => null,
             'aes256gcm16-ecp521' => null,
             'aes256gcm16-x25519' => 'aes256gcm16-curve25519 [DH31, Modern EC]',
