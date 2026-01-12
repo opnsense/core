@@ -96,14 +96,14 @@ function radvd_xmlrpc_sync()
     ]];
 }
 
-function radvd_configure_dhcp($verbose = false, $family = null, $blacklist = [])
+function radvd_configure_dhcp($verbose = false, $family = null, $ignorelist = [])
 {
     if ($family == null || $family == 'inet6') {
-        radvd_configure_do($verbose, $blacklist);
+        radvd_configure_do($verbose, $ignorelist);
     }
 }
 
-function radvd_configure_do($verbose = false, $blacklist = [])
+function radvd_configure_do($verbose = false, $ignorelist = [])
 {
     global $config;
 
@@ -129,13 +129,16 @@ function radvd_configure_do($verbose = false, $blacklist = [])
         $dhcpv6if = $entry->interface->getValue();
 
         if (isset($config['interfaces'][$dhcpv6if]['track6-interface']) && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
-            /* handled by automatic case */
+            /* need to check now to disable automatic case below */
+            if ($entry->enabled->isEmpty()) {
+                $ignorelist[$dhcpv6if] = '1';
+            }
             continue;
         } elseif (!isset($config['interfaces'][$dhcpv6if]['enable'])) {
             $radvdconf .= "# Skipping disabled interface {$dhcpv6if}\n";
             continue;
-        } elseif (isset($blacklist[$dhcpv6if])) {
-            $radvdconf .= "# Skipping blacklisted interface {$dhcpv6if}\n";
+        } elseif (isset($ignorelist[$dhcpv6if])) {
+            $radvdconf .= "# Skipping ignored interface {$dhcpv6if}\n";
             continue;
         } elseif ($entry->enabled->isEmpty()) {
             $radvdconf .= "# Skipping unset interface {$dhcpv6if}\n";
@@ -354,11 +357,8 @@ function radvd_configure_do($verbose = false, $blacklist = [])
         } elseif (!isset($config['interfaces'][$if]['enable'])) {
             $radvdconf .= "# Skipping disabled interface {$if}\n";
             continue;
-        } elseif (isset($blacklist[$if])) {
-            $radvdconf .= "# Skipping blacklisted interface {$if}\n";
-            continue;
-        } elseif (!empty($config['dhcpdv6'][$if]) && !empty($config['dhcpdv6'][$if]['ramode']) && $config['dhcpdv6'][$if]['ramode'] == 'disabled') {
-            $radvdconf .= "# Skipping explicit disabled interface {$if}\n";
+        } elseif (isset($ignorelist[$if])) {
+            $radvdconf .= "# Skipping ignored interface {$if}\n";
             continue;
         }
 

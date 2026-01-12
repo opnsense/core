@@ -140,7 +140,7 @@ function dhcpd_xmlrpc_sync()
     return $result;
 }
 
-function dhcpd_dhcp_configure($verbose = false, $family = null, $blacklist = [])
+function dhcpd_dhcp_configure($verbose = false, $family = null, $ignorelist = [])
 {
     $dirs = ['/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run'];
 
@@ -159,7 +159,7 @@ function dhcpd_dhcp_configure($verbose = false, $family = null, $blacklist = [])
     }
 
     if ($family == null || $family == 'inet6') {
-        dhcpd_dhcp6_configure($verbose, $blacklist);
+        dhcpd_dhcp6_configure($verbose, $ignorelist);
     }
 }
 
@@ -849,7 +849,7 @@ function dhcpd_zones($ddns_zones, $ipproto = 'inet')
     return $dhcpdconf;
 }
 
-function dhcpd_dhcp6_configure($verbose = false, $blacklist = [])
+function dhcpd_dhcp6_configure($verbose = false, $ignorelist = [])
 {
     global $config;
 
@@ -881,7 +881,7 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = [])
     /* we add a fake entry for interfaces that are set to track6 another WAN */
     foreach (array_keys($iflist) as $ifname) {
         /* Do not put in the config an interface which is down */
-        if (isset($blacklist[$ifname])) {
+        if (isset($ignorelist[$ifname])) {
             continue;
         }
         if (!empty($config['interfaces'][$ifname]['track6-interface'])) {
@@ -1005,7 +1005,7 @@ EOD;
             continue;
         }
 
-        if (isset($blacklist[$dhcpv6if])) {
+        if (isset($ignorelist[$dhcpv6if])) {
             continue;
         }
 

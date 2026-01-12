@@ -50,19 +50,22 @@ class M1_0_0 extends BaseModelMigration
         }
 
         foreach ($legacy as $key => $node) {
+            if (empty($node->ramode)) {
+                /* ignore entries without ramode set */
+                continue;
+            }
+
             $entry = $model->entries->add();
             $content = ['interface' => $key];
-            if (!empty($node->ramode)) {
-                $mode = (string)$node->ramode;
-                // Migrate ramode disabled option to its own enabled key
-                if ($mode == 'disabled') {
-                    $content['enabled'] = '0';
-                    // There is no mode here, will instead become current model default
-                } else {
-                    $content['enabled'] = '1';
-                    $content['mode'] = $mode;
-                }
+
+            $mode = (string)$node->ramode;
+            if ($mode == 'disabled') {
+                $content['enabled'] = '0';
+            } else {
+                $content['enabled'] = '1';
+                $content['mode'] = $mode;
             }
+
             if (!empty($node->rapriority)) {
                 $content['priority'] = (string)$node->rapriority;
             }
