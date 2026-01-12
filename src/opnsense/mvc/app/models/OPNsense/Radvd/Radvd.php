@@ -49,10 +49,18 @@ class Radvd extends BaseModel
                 continue;
             }
 
+            $raMax = $entry->MaxRtrAdvInterval->asInt();
+            if (
+                $raMax < $entry->MaxRtrAdvInterval->getMinimumvalue() ||
+                $raMax > $entry->MaxRtrAdvInterval->getMaximumvalue()
+            ) {
+                /* skip extra validations on MaxRtrAdvInterval when not valid */
+                continue;
+            }
+
             $key = $entry->__reference;
 
             $raMin = $entry->MinRtrAdvInterval->asInt();
-            $raMax = $entry->MaxRtrAdvInterval->asInt();
             $raMinAllowed = (int)floor($raMax * 0.75);
 
             if ($raMin > $raMinAllowed) {
