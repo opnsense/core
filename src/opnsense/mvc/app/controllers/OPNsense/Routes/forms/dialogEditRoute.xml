@@ -1,9 +1,9 @@
 <form>
   <field>
-    <id>route.disabled</id>
-    <label>Disabled</label>
+    <id>route.enabled</id>
+    <label>Enabled</label>
     <type>checkbox</type>
-    <help>Set this option to disable this static route without removing it from the list.</help>
+    <help>Set this option to enable this static route without removing it from the list.</help>
     <grid_view>
       <width>100</width>
       <type>boolean</type>

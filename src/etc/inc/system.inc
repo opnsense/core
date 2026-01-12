@@ -754,7 +754,16 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
 
             $cmd[] = exec_safe('%s', $rtent['network']);
 
-            if (!empty($rtent['disabled'])) {
+            $is_disabled = false;
+            if (isset($rtent['enabled'])) {
+                if (empty($rtent['enabled'])) {
+                    $is_disabled = true;
+                }
+            } elseif (!empty($rtent['disabled'])) {
+                $is_disabled = true;
+            }
+
+            if ($is_disabled) {
                 mwexecfm('/sbin/route delete ' . implode(' ', $cmd));
                 continue;
             }

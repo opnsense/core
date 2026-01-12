@@ -123,20 +123,23 @@ class RoutesController extends ApiMutableModelControllerBase
      * @throws \ReflectionException when not bound to model
      * @throws \OPNsense\Base\ModelException when not bound to model
      */
-    public function togglerouteAction($uuid, $disabled = null)
+    public function togglerouteAction($uuid, $enabled = null)
     {
         $result = array("result" => "failed");
         if ($this->request->isPost() && $uuid != null) {
             $node = $this->getModel()->getNodeByReference('route.' . $uuid);
             if ($node != null) {
-                if ($disabled == '0' || $disabled == '1') {
-                    $node->disabled = (string)$disabled;
-                } elseif ((string)$node->disabled == '1') {
-                    $node->disabled = '0';
+                if ($enabled == '0' || $enabled == '1') {
+                    $node->enabled = (string)$enabled;
+                } 
+                elseif ((string)$node->enabled == '1') {
+                    $node->enabled = '0'; 
                 } else {
-                    $node->disabled = '1';
+                    $node->enabled = '1'; 
                 }
-                $result['result'] = (string)$node->disabled == '1' ? 'Disabled' : 'Enabled';
+
+                $result['result'] = (string)$node->enabled == '1' ? 'Enabled' : 'Disabled';
+                
                 $this->save();
             }
         }
