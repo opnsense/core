@@ -122,17 +122,6 @@
             }
         });
 
-        /**
-         *
-         */
-        $("#subnet4\\.option_data_autocollect").change(function(){
-            if ($(this).is(':checked')) {
-                $(".option_data_autocollect").closest('tr').hide();
-            } else {
-                $(".option_data_autocollect").closest('tr').show();
-            }
-        });
-
         /* Manual configuration, hide all config elements except the service section*/
         $("#dhcpv6\\.general\\.manual_config").change(function(){
             let manual_config = $(this).is(':checked');

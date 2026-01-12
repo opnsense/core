@@ -45,10 +45,13 @@ class KeaDhcpv4 extends BaseModel
     public function setNodes($data)
     {
         $ifconfig = json_decode((new Backend())->configdRun('interface list ifconfig'), true) ?? [];
+        $dns_active = null;
+
         foreach ($this->subnets->subnet4->iterateItems() as $subnet) {
             if (!$subnet->option_data_autocollect->isEmpty()) {
-                // find first possible candidate to use as a gateway.
                 $host_ip = null;
+
+                /* find first possible candidate to use as a gateway */
                 foreach ($ifconfig as $if => $details) {
                     foreach ($details['ipv4'] as $net) {
                         if (Util::isIPInCIDR($net['ipaddr'], $subnet->subnet->getValue())) {
@@ -60,11 +63,24 @@ class KeaDhcpv4 extends BaseModel
 
                 if (!empty($host_ip)) {
                     $subnet->option_data->routers = $host_ip;
-                    $subnet->option_data->domain_name_servers = $host_ip;
                     $subnet->option_data->ntp_servers = $host_ip;
+
+                    $dns_active = $dns_active ?? call_user_func(function () {
+                        foreach (json_decode((new Backend())->configdpRun('service list'), true) as $service) {
+                            if (empty($service['dns_ports']) && in_array('53', $service['dns_ports'])) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    });
+                    if ($dns_active) {
+                        $subnet->option_data->domain_name_servers = $host_ip;
+                    }
                 }
+
             }
         }
+
         return parent::setNodes($data);
     }
 
