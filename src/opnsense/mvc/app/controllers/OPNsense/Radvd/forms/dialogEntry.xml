@@ -99,6 +99,16 @@
         </grid_view>
     </field>
     <field>
+        <id>entries.nat64prefix</id>
+        <label>NAT64 prefix</label>
+        <type>text</type>
+        <help>The NAT64 prefix included in the router advertisements. The "well-known prefix" reserved for this service is 64:ff9b::/96.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>entries.AdvLinkMTU</id>
         <label>Link MTU</label>
         <type>text</type>

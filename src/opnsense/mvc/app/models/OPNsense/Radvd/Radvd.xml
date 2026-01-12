@@ -115,6 +115,10 @@
                     <high>High</high>
                 </OptionValues>
             </AdvDefaultPreference>
+            <nat64prefix type="NetworkField">
+                <NetMaskRequired>Y</NetMaskRequired>
+                <AddressFamily>ipv6</AddressFamily>
+            </nat64prefix>
         </entries>
     </items>
 </model>

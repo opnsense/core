@@ -49,6 +49,32 @@ class Radvd extends BaseModel
                 continue;
             }
 
+            $key = $entry->__reference;
+
+            if (!$entry->nat64prefix->isEmpty()) {
+                $prefix = $entry->nat64prefix->getValue();
+                if (strpos($prefix, '/') !== false) {
+                    $prefix = explode('/', $prefix);
+                    switch ($prefix[1]) {
+                        case '32':
+                        case '40':
+                        case '48':
+                        case '56':
+                        case '64':
+                        case '96':
+                            break;
+                        default:
+                            $messages->appendMessage(
+                                new Message(
+                                    gettext('Prefix size must be one of 32, 40, 48, 56, 64 or 96.'),
+                                    $key . '.nat64prefix'
+                                )
+                            );
+                            break;
+                    }
+                }
+            }
+
             $raMax = $entry->MaxRtrAdvInterval->asInt();
             if (
                 $raMax < $entry->MaxRtrAdvInterval->getMinimumvalue() ||
@@ -57,8 +83,6 @@ class Radvd extends BaseModel
                 /* skip extra validations on MaxRtrAdvInterval when not valid */
                 continue;
             }
-
-            $key = $entry->__reference;
 
             $raMin = $entry->MinRtrAdvInterval->asInt();
             $raMinAllowed = (int)floor($raMax * 0.75);
