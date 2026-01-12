@@ -55,7 +55,7 @@ class IPsecProposalField extends BaseListField
 
     private function AeadPhase1()
     {
-        /* a PRF is mandatory for IKE proposals containing AEAD algorithms (e.g. GCM, ChaCha20-Poly1305 */
+        /* a PRF is mandatory for IKE proposals containing AEAD algorithms, e.g. GCM and ChaCha20-Poly1305 */
         return [
             'chacha20poly1305-sha256-x25519' => 'chacha20poly1305-sha256-curve25519 [DH31, Modern EC]',
             'chacha20poly1305-sha384-x25519' => 'chacha20poly1305-sha384-curve25519 [DH31, Modern EC]',
