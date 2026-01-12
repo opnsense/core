@@ -393,11 +393,6 @@ class MenuSystem
                 'url' => '/services_dhcpv6_edit.php?if=' . $key . '&*',
                 'visibility' => 'hidden',
             ]);
-            $this->appendItem('Services.RouterAdv', $key, [
-                'url' => '/services_router_advertisements.php?if=' . $key,
-                'fixedname' => "[$descr]",
-                'order' => $ordid++,
-            ]);
         }
     }
 

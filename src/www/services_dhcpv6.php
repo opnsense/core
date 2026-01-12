@@ -116,10 +116,6 @@ function process_track6_form($if)
 {
     $dhcpdv6cfg = &config_read_array('dhcpdv6');
     $this_server = [];
-    if (isset($dhcpdv6cfg[$if]) && isset($dhcpdv6cfg[$if]['ramode'])) {
-        /* keep ramode for router advertisements so we can use this field to disable the service when in tracking mode */
-        $this_server['ramode'] = $dhcpdv6cfg[$if]['ramode'];
-    }
     if (empty($_POST['enable'])) {
         $this_server['enable'] = '-1';
     }

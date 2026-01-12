@@ -446,6 +446,10 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/forms/dialogInstance.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/forms/dialogStaticKey.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/forms/export_options.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Radvd/Api/ServiceController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Radvd/Api/SettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Radvd/SettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Radvd/forms/dialogEntry.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/Api/GatewayController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/Api/RoutesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/IndexController.php
@@ -865,6 +869,12 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/OpenVPN.php
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/OpenVPN.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Radvd/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Radvd/FieldTypes/VipLinkLocalField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Radvd/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Radvd/Migrations/M1_0_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Radvd/Radvd.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Radvd/Radvd.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Routes/Route.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Routes/Route.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Routing/FieldTypes/GatewayField.php
@@ -1007,6 +1017,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/export.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/instances.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/status.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Radvd/settings.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Routes/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Routing/configuration.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Syslog/index.volt
@@ -1437,6 +1448,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_ntpd.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openssh.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openvpn.conf
+/usr/local/opnsense/service/conf/actions.d/actions_radvd.conf
 /usr/local/opnsense/service/conf/actions.d/actions_shaper.conf
 /usr/local/opnsense/service/conf/actions.d/actions_syslog.conf
 /usr/local/opnsense/service/conf/actions.d/actions_system.conf
@@ -2536,7 +2548,6 @@
 /usr/local/www/services_ntpd_gps.php
 /usr/local/www/services_ntpd_pps.php
 /usr/local/www/services_opendns.php
-/usr/local/www/services_router_advertisements.php
 /usr/local/www/status_wireless.php
 /usr/local/www/system_advanced_admin.php
 /usr/local/www/system_advanced_firewall.php
