@@ -471,7 +471,7 @@ function radvd_configure_do($verbose = false, $blacklist = [])
         } else {
             killbypid($radvd_pid_file);
             file_safe("{$radvd_conf_file}.last", $this_version);
-            mwexecf('/usr/local/sbin/radvd -d2 -p %s -C %s -m syslog', [
+            mwexecf('/usr/local/sbin/radvd -d1 -p %s -C %s -m syslog', [
                 $radvd_pid_file,
                 $radvd_conf_file,
             ]);
