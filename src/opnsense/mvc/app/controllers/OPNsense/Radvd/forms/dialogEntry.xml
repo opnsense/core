@@ -44,6 +44,9 @@
         <type>dropdown</type>
         <advanced>true</advanced>
         <help>Select the Priority for the Router Advertisement (RA) Daemon.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>entries.DeprecatePrefix</id>
@@ -128,7 +131,7 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>Leave blank to use the system default DNS servers: This interface IP address if a DNS service is enabled or the configured global DNS servers.</help>
+        <help>The default is to use this interface IP address with an enabled DNS service or the configured global DNS servers. You may specify up to three explict servers here instead.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
@@ -149,7 +152,7 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>The default is to use the domain name of this system as the DNSSL option in Router Advertisements. You may optionally specify one or multiple domain(s) here. Use the semicolon character as separator.</help>
+        <help>The default is to use the domain name of this system as the DNSSL option. You may specify explicit domains here instead.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
