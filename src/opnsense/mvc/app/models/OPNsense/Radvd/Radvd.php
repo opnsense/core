@@ -51,6 +51,17 @@ class Radvd extends BaseModel
 
             $key = $entry->__reference;
 
+            if (!$entry->Base6Interface->isEmpty()) {
+                if ($entry->Base6Interface->isEqual($entry->interface->GetValue())) {
+                    $messages->appendMessage(
+                        new Message(
+                            gettext('Constructor cannot be the same as interface.'),
+                            $key . '.Base6Interface'
+                        )
+                    );
+                }
+            }
+
             if (!$entry->nat64prefix->isEmpty()) {
                 $prefix = $entry->nat64prefix->getValue();
                 if (strpos($prefix, '/') !== false) {

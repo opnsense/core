@@ -21,6 +21,16 @@
         <help>Choose the interface that should send Router Advertisements.</help>
     </field>
     <field>
+        <id>entries.Base6Interface</id>
+        <label>Constructor</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>Construct a prefix out of IPv6 addresses of the chosen interface. In most cases an NDP proxy is required if the same prefix is shared by multiple interfaces.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>entries.mode</id>
         <label>Mode</label>
         <type>dropdown</type>

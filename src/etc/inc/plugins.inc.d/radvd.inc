@@ -204,9 +204,13 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
 
         $stanzas = [];
 
-        list (, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
-        if (is_subnetv6($networkv6)) {
-            $stanzas[] = $networkv6;
+        if (!$entry->Base6Interface->isEmpty()) {
+            $stanzas[] = 'base6';
+        } else {
+            list (, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
+            if (is_subnetv6($networkv6)) {
+                $stanzas[] = $networkv6;
+            }
         }
 
         foreach (config_read_array('virtualip', 'vip') as $vip) {
@@ -249,7 +253,13 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
         $stanzas = array_unique($stanzas);
 
         foreach ($stanzas as $stanza) {
-            $radvdconf .= "\tprefix {$stanza} {\n";
+            if ($stanza === 'base6') {
+                $radvdconf .= "\tprefix ::/64 {\n";
+                $baseif = get_real_interface($entry->Base6Interface->getValue(), 'inet6');
+                $radvdconf .= "\t\tBase6Interface {$baseif};\n";
+            } else {
+                $radvdconf .= "\tprefix {$stanza} {\n";
+            }
             $radvdconf .= "\t\tDeprecatePrefix " . (!$entry->DeprecatePrefix->isEmpty() ? $entry->DeprecatePrefix->getValue() : ($carp_mode ? 'off' : 'on')) . ";\n";
             switch ($entry->mode->getValue()) {
                 case 'assist':
