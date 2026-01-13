@@ -21,6 +21,13 @@
         <help>Choose the interface that should send Router Advertisements.</help>
     </field>
     <field>
+        <id>entries.Base6Interface</id>
+        <label>Constructor</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>If this option is specified, the prefix will be constructed from the address of the chosen interface.</help>
+    </field>
+    <field>
         <id>entries.mode</id>
         <label>Mode</label>
         <type>dropdown</type>

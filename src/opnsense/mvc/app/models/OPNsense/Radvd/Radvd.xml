@@ -17,6 +17,7 @@
                     </check001>
                 </Constraints>
             </interface>
+            <Base6Interface type="InterfaceField"/>
             <mode type="OptionField">
                 <Required>Y</Required>
                 <Default>stateless</Default>
