@@ -52,6 +52,7 @@ function dhcpd_syslog()
 function dhcpd_dhcpv6_enabled()
 {
     global $config;
+
     $explicit_off = [];
 
     /* handle manually configured DHCP6 server settings first */
@@ -64,12 +65,13 @@ function dhcpd_dhcpv6_enabled()
             }
         }
     }
+
     /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
-    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifnm => $ifcfg) {
+    foreach (legacy_config_get_interfaces(['virtual' => false]) as $ifnm => $ifcfg) {
         if (in_array($ifnm, $explicit_off)) {
             continue;
         }
-        if (isset($ifcfg['enable']) && !empty($ifcfg['track6-interface']) && !isset($ifcfg['dhcpd6track6allowoverride'])) {
+        if (isset($ifcfg['enable']) && ($ifcfg['ipaddrv6'] ?? 'none') == 'track6' && !isset($ifcfg['dhcpd6track6allowoverride'])) {
             return true;
         }
     }
@@ -884,7 +886,7 @@ function dhcpd_dhcp6_configure($verbose = false, $ignorelist = [])
         if (isset($ignorelist[$ifname])) {
             continue;
         }
-        if (!empty($config['interfaces'][$ifname]['track6-interface'])) {
+        if (($config['interfaces'][$ifname]['ipaddrv6'] ?? 'none') == 'track6') {
             list ($ifcfgipv6) = interfaces_primary_address6($ifname, $ifconfig_details);
             if (!is_ipaddrv6($ifcfgipv6)) {
                 continue;

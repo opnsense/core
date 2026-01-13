@@ -126,7 +126,6 @@ function process_track6_form($if)
     header(url_safe('Location: /services_dhcpv6.php?if=%s', array($if)));
 }
 
-
 function reconfigure_dhcpd()
 {
     system_resolver_configure();
@@ -136,12 +135,13 @@ function reconfigure_dhcpd()
 
 $if = null;
 $act = null;
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // handle identifiers and action
     if (!empty($_GET['if']) && !empty($config['interfaces'][$_GET['if']]) &&
         isset($config['interfaces'][$_GET['if']]['enable']) &&
         (is_ipaddr($config['interfaces'][$_GET['if']]['ipaddrv6']) ||
-        !empty($config['interfaces'][$_GET['if']]['track6-interface']))) {
+        $config['interfaces'][$_GET['if']]['ipaddrv6'] == 'track6')) {
         $if = $_GET['if'];
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -163,7 +163,7 @@ if ($if === null) {
     /* if no interface is provided this invoke is invalid */
     header(url_safe('Location: /index.php'));
     exit;
-} elseif (!empty($config['interfaces'][$if]['track6-interface']) && !isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
+} elseif (($config['interfaces'][$if]['ipaddrv6'] ?? 'none') == 'track6' && !isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         show_track6_form($if);
     } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {

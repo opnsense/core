@@ -59,7 +59,7 @@ function radvd_enabled($mdl)
         if (in_array($ifnm, $explicit_off)) {
             continue;
         }
-        if (isset($ifcfg['enable']) && !empty($ifcfg['track6-interface']) && !isset($ifcfg['dhcpd6track6allowoverride'])) {
+        if (isset($ifcfg['enable']) && ($ifcfg['ipaddrv6'] ?? 'none') == 'track6' && !isset($ifcfg['dhcpd6track6allowoverride'])) {
             return true;
         }
     }
@@ -128,7 +128,7 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
     foreach ($mdl->entries->iterateItems() as $entry) {
         $dhcpv6if = $entry->interface->getValue();
 
-        if (isset($config['interfaces'][$dhcpv6if]['track6-interface']) && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
+        if (($config['interfaces'][$dhcpv6if]['ipaddrv6'] ?? 'none') == 'track6' && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
             /* need to check now to disable automatic case below */
             if ($entry->enabled->isEmpty()) {
                 $ignorelist[$dhcpv6if] = '1';
@@ -353,7 +353,7 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
 
     /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
     foreach (array_keys(get_configured_interface_with_descr()) as $if) {
-        if (!isset($config['interfaces'][$if]['track6-interface']) || isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
+        if (($config['interfaces'][$if]['ipaddrv6'] ?? 'none') != 'track6' || isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
             /* handled by manual case */
             continue;
         } elseif (empty($config['interfaces'][$config['interfaces'][$if]['track6-interface']])) {
