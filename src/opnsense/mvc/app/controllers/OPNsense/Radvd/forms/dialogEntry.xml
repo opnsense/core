@@ -25,7 +25,7 @@
         <label>Constructor</label>
         <type>dropdown</type>
         <advanced>true</advanced>
-        <help>If this option is specified, the prefix will be constructed from the address of the chosen interface.</help>
+        <help>If this option is specified, the primary prefix will be constructed from the address of the chosen interface.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
