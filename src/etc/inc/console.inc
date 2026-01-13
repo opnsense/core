@@ -377,7 +377,7 @@ EOD;
             if ($wanif) {
                 $config['interfaces']['lan']['track6-interface'] = 'wan';
                 $config['interfaces']['lan']['track6-prefix-id'] = '0';
-                $config['interfaces']['lan']['ipaddrv6'] = 'track6';
+                $config['interfaces']['lan']['ipaddrv6'] = 'idassoc6';
                 $config['interfaces']['lan']['subnetv6'] = '64';
             }
 

@@ -739,7 +739,7 @@ function interfaces_configure($verbose = false)
             continue;
         }
 
-        $is_track6 = !empty($ifcfg['ipaddrv6']) && $ifcfg['ipaddrv6'] == 'track6';
+        $is_track6 = !empty($ifcfg['ipaddrv6']) && in_array($ifcfg['ipaddrv6'], ['idassoc6', 'track6']);
         if (!strstr($ifcfg['if'], 'bridge') && $is_track6) {
             $track6[$ifcfg['if']] = $if;
             continue;
@@ -870,6 +870,7 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
             interface_dhcpv6_prepare($interface, $ifcfg, true);
             killbypid('/var/run/dhcp6c.pid', 'HUP');
             break;
+        case 'idassoc6':
         case 'track6':
             interface_track6_configure($interface, $ifcfg);
             break;
@@ -2545,6 +2546,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             interface_6to4_configure($interface, $wancfg, $reload || $linkup);
             mwexecf('/sbin/ifconfig %s inet6 description %s up', [$realifv6, $ifdescr]);
             break;
+        case 'idassoc6':
         case 'track6':
             interface_track6_configure($interface, $wancfg, $reload || $linkup);
             break;
@@ -3737,7 +3739,7 @@ function link_interface_to_track6($wanif, $update = false)
             continue;
         }
 
-        if ($lancfg['ipaddrv6'] == 'track6' && $lancfg['track6-interface'] == $wanif) {
+        if (in_array($lancfg['ipaddrv6'], ['idassoc6', 'track6']) && $lancfg['track6-interface'] == $wanif) {
             $list[$lanif] = $lancfg;
         }
     }

@@ -321,7 +321,7 @@ function console_configure_ip_address($version)
             $upperifname
         ), 'y')
     ) {
-        $intip = 'track6';
+        $intip = 'idassoc6';
         $intbits = '64';
         $isintdhcp = true;
         $restart_dhcpd = true;
@@ -441,7 +441,7 @@ $config['interfaces'][$interface]['subnetv6'] = $intbits6;
 $config['interfaces'][$interface]['gatewayv6'] = $gwname6;
 $config['interfaces'][$interface]['enable'] = true;
 
-if ($intip6 == 'track6') {
+if ($intip6 == 'idassoc6') {
     $config['interfaces'][$interface]['track6-interface'] = 'wan';
     $config['interfaces'][$interface]['track6-prefix-id'] = '0';
 } else {
