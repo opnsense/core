@@ -56,7 +56,7 @@ fi
 # restart the web server
 output_cmd /usr/local/etc/rc.restart_webgui
 
-# if the uodate failed then abort and and try to recover
+# if the update failed then abort and and try to recover
 if [ -n "${UPDATE_FAILED}" ]; then
 	output_txt "Partial update failure detected: attempting automatic cleanup."
 	output_cmd opnsense-update -Fs
