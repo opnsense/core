@@ -1531,7 +1531,6 @@
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/README
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/audit.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/configd.conf
-/usr/local/opnsense/service/templates/OPNsense/Syslog/local/dhcpd.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/dhcrelay.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/dnsmasq.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/filter.conf
@@ -1554,6 +1553,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Syslog/newsyslog.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/Syslog/sources/001-local.conf
+/usr/local/opnsense/service/templates/OPNsense/Syslog/sources/005-unbound.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/syslog-ng-config-events.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/syslog-ng-destinations.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/syslog-ng-local.conf
