@@ -360,6 +360,9 @@ class MenuSystem
         // add interfaces to "Services: DHCPv[46]" menu tab:
         $ordid = 0;
         foreach ($iftargets['dhcp4'] as $key => $descr) {
+            if (!file_exists('/usr/local/www/services_dhcp.php')) {
+                break;
+            }
             $this->appendItem('Services.ISC_DHCPv4', $key, [
                 'url' => '/services_dhcp.php?if=' . $key,
                 'fixedname' => "[$descr]",
@@ -380,6 +383,9 @@ class MenuSystem
         }
         $ordid = 0;
         foreach ($iftargets['dhcp6'] as $key => $descr) {
+            if (!file_exists('/usr/local/www/services_dhcpv6.php')) {
+                break;
+            }
             $this->appendItem('Services.ISC_DHCPv6', $key, [
                 'url' => '/services_dhcpv6.php?if=' . $key,
                 'fixedname' => "[$descr]",

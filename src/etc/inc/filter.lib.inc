@@ -438,7 +438,7 @@ function filter_core_rules_system($fw, $defaults)
                 $fw->registerFilterRule(1, $dhcpv4_opts, $defaults['pass']);
                 break;
             default:
-                if (isset($config['dhcpd'][$intf]['enable'])) {
+                if (file_exists('/usr/local/www/services_dhcp.php') && isset($config['dhcpd'][$intf]['enable'])) {
                     $fw->registerFilterRule(
                         1,
                         ['protocol' => 'udp', 'direction' => 'in', 'from_port' => 68, 'to' => '255.255.255.255',
