@@ -1130,13 +1130,12 @@
 /usr/local/opnsense/scripts/captiveportal/strip_template.py
 /usr/local/opnsense/scripts/dhcp/cleanup_leases4.php
 /usr/local/opnsense/scripts/dhcp/cleanup_leases6.php
-/usr/local/opnsense/scripts/dhcp/dnsmasq_watcher.py
 /usr/local/opnsense/scripts/dhcp/get_leases.py
 /usr/local/opnsense/scripts/dhcp/get_leases6.py
 /usr/local/opnsense/scripts/dhcp/prefixes.php
 /usr/local/opnsense/scripts/dhcp/prefixes.sh
-/usr/local/opnsense/scripts/dhcp/unbound_watcher.py
 /usr/local/opnsense/scripts/dnsmasq/dnsmasq_dhcp_options.py
+/usr/local/opnsense/scripts/dnsmasq/dnsmasq_watcher.py
 /usr/local/opnsense/scripts/dnsmasq/get_dnsmasq_leases.py
 /usr/local/opnsense/scripts/filter/delete_table.py
 /usr/local/opnsense/scripts/filter/download_geoip.py
@@ -1410,6 +1409,7 @@
 /usr/local/opnsense/scripts/unbound/restore_db.py
 /usr/local/opnsense/scripts/unbound/start.sh
 /usr/local/opnsense/scripts/unbound/stats.py
+/usr/local/opnsense/scripts/unbound/unbound_watcher.py
 /usr/local/opnsense/scripts/unbound/wrapper.py
 /usr/local/opnsense/scripts/wireguard/gen_keypair.py
 /usr/local/opnsense/scripts/wireguard/reresolve-dns.py
