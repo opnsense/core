@@ -69,6 +69,14 @@ if [ "${CMD}" = "sync" ]; then
 	/usr/local/opnsense/scripts/firmware/sync.subr.sh
 fi
 
+# XXX this is not for a stable release
+if [ ! -f /usr/local/opnsense/version/isc-dhcp ]; then
+       echo "Installing legacy ISC-DHCP plugin for compatibility..."
+       /usr/local/opnsense/scripts/firmware/launcher.sh -u install os-isc-dhcp-devel
+else
+       echo "Skipping already installed legacy ISC-DHCP plugin..."
+fi
+
 # if we can update base, we'll do that as well
 if opnsense-update ${FORCE} -bk -c; then
 	if output_cmd opnsense-update ${FORCE} -bk; then
