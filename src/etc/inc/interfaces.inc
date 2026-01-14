@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2025 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2026 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2008 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2008-2009 Ermal Luçi
  * Copyright (C) 2005 Espen Johansen
