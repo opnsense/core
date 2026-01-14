@@ -242,34 +242,34 @@ function validate_track6_idassoc6(&$pconfig, $if)
     global $config, $input_errors;
 
     if (!empty($pconfig["{$pconfig['type6']}-prefix-id--hex"]) && !ctype_xdigit($pconfig["{$pconfig['type6']}-prefix-id--hex"])) {
-         $input_errors[] = gettext("You must enter a valid hexadecimal number for the IPv6 prefix ID.");
-     } elseif (!empty($pconfig["{$pconfig['type6']}-interface"])) {
-         $ipv6_delegation_length = calculate_ipv6_delegation_length($pconfig["{$pconfig['type6']}-interface"]);
-         if ($ipv6_delegation_length >= 0) {
-             $ipv6_num_prefix_ids = pow(2, $ipv6_delegation_length);
-             $track6_prefix_id = intval($pconfig["{$pconfig['type6']}-prefix-id--hex"], 16);
-             if ($track6_prefix_id < 0 || $track6_prefix_id >= $ipv6_num_prefix_ids) {
-                 $input_errors[] = gettext("You specified an IPv6 prefix ID that is out of range.");
-             }
-             foreach (link_interface_to_track6($pconfig["{$pconfig['type6']}-interface"]) as $trackif => $trackcfg) {
-                 if ($trackif != $if && $trackcfg["{$pconfig['type6']}-prefix-id"] == $track6_prefix_id) {
-                     $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
-                     break;
-                 }
-             }
-             if (isset($config['interfaces'][$pconfig["{$pconfig['type6']}-interface"]]['dhcp6-prefix-id'])) {
-                 if ($config['interfaces'][$pconfig["{$pconfig['type6']}-interface"]]['dhcp6-prefix-id'] == $track6_prefix_id) {
-                     $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
-                 }
-             }
-         }
-     }
+        $input_errors[] = gettext("You must enter a valid hexadecimal number for the IPv6 prefix ID.");
+    } elseif (!empty($pconfig["{$pconfig['type6']}-interface"])) {
+        $ipv6_delegation_length = calculate_ipv6_delegation_length($pconfig["{$pconfig['type6']}-interface"]);
+        if ($ipv6_delegation_length >= 0) {
+            $ipv6_num_prefix_ids = pow(2, $ipv6_delegation_length);
+            $track6_prefix_id = intval($pconfig["{$pconfig['type6']}-prefix-id--hex"], 16);
+            if ($track6_prefix_id < 0 || $track6_prefix_id >= $ipv6_num_prefix_ids) {
+                $input_errors[] = gettext("You specified an IPv6 prefix ID that is out of range.");
+            }
+            foreach (link_interface_to_track6($pconfig["{$pconfig['type6']}-interface"]) as $trackif => $trackcfg) {
+                if ($trackif != $if && $trackcfg["{$pconfig['type6']}-prefix-id"] == $track6_prefix_id) {
+                    $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
+                    break;
+                }
+            }
+            if (isset($config['interfaces'][$pconfig["{$pconfig['type6']}-interface"]]['dhcp6-prefix-id'])) {
+                if ($config['interfaces'][$pconfig["{$pconfig['type6']}-interface"]]['dhcp6-prefix-id'] == $track6_prefix_id) {
+                    $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
+                }
+            }
+        }
+    }
 
-     if (isset($pconfig["{$pconfig['type6']}_ifid--hex"]) && $pconfig["{$pconfig['type6']}_ifid--hex"] != '') {
-         if (!ctype_xdigit($pconfig["{$pconfig['type6']}_ifid--hex"])) {
-             $input_errors[] = gettext('You must enter a valid hexadecimal number for the IPv6 interface ID.');
-         }
-     }
+    if (isset($pconfig["{$pconfig['type6']}_ifid--hex"]) && $pconfig["{$pconfig['type6']}_ifid--hex"] != '') {
+        if (!ctype_xdigit($pconfig["{$pconfig['type6']}_ifid--hex"])) {
+            $input_errors[] = gettext('You must enter a valid hexadecimal number for the IPv6 interface ID.');
+        }
+    }
 }
 
 function find_track6_idassoc6($ifdescrs)
@@ -462,6 +462,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'dhcp6-ia-pd-len',
         'dhcp6-prefix-id',
         'dhcp6_ifid',
+        'dhcp6_norequest_dns',
+        'dhcp6_rapid_commit',
         'dhcp6vlanprio',
         'dhcphostname',
         'dhcprejectfrom',
@@ -508,6 +510,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dhcp6-prefix-id--hex'] = isset($pconfig['dhcp6-prefix-id']) && $pconfig['dhcp6-prefix-id'] != '' ? sprintf("%x", $pconfig['dhcp6-prefix-id']) : '';
     $pconfig['dhcp6_ifid--hex'] = isset($pconfig['dhcp6_ifid']) && $pconfig['dhcp6_ifid'] != '' ? sprintf("%x", $pconfig['dhcp6_ifid']) : '';
     $pconfig['dhcpd6track6allowoverride'] = isset($a_interfaces[$if]['dhcpd6track6allowoverride']);
+    $pconfig['dhcp6_request_dns'] = empty($pconfig['dhcp6_norequest_dns']);
 
     foreach(['-interface', '-prefix-id', '-prefix-id--hex', '_ifid', '_ifid--hex'] as $fieldname) {
         /* only for form consistency */
@@ -1114,6 +1117,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                     if (isset($pconfig['dhcp6_ifid--hex']) && ctype_xdigit($pconfig['dhcp6_ifid--hex'])) {
                         $new_config['dhcp6_ifid'] = intval($pconfig['dhcp6_ifid--hex'], 16);
+                    }
+                    if (empty($pconfig['dhcp6_request_dns'])) {
+                        /* inverted for better default */
+                        $new_config['dhcp6_norequest_dns'] = true;
+                    }
+                    if (!empty($pconfig['dhcp6_rapid_commit'])) {
+                        $new_config['dhcp6_rapid_commit'] = true;
                     }
                     $new_config['adv_dhcp6_interface_statement_send_options'] = $pconfig['adv_dhcp6_interface_statement_send_options'];
                     $new_config['adv_dhcp6_interface_statement_request_options'] = $pconfig['adv_dhcp6_interface_statement_request_options'];
@@ -1987,7 +1997,7 @@ include("head.inc");
                               </label>
                               <label class="btn btn-default <?=!empty($pconfig['adv_dhcp_config_file_override']) ? "active" : "";?>">
                                 <input name="adv_dhcp_config_file_override" type="radio" value="file" <?=!empty($pconfig['adv_dhcp_config_file_override']) ? "checked=\"\"" : "";?> />
-                                <?=gettext("Config File Override");?>
+                                <?=gettext("Override");?>
                               </label>
                             </div>
                             <div class="hidden" data-for="help_for_dhcp_mode">
@@ -2276,7 +2286,7 @@ include("head.inc");
                               </label>
                               <label class="btn btn-default <?=!empty($pconfig['adv_dhcp6_config_file_override']) ? "active" : "";?>">
                                 <input name="adv_dhcp6_config_file_override" type="radio" value="file" <?=!empty($pconfig['adv_dhcp6_config_file_override']) ? "checked=\"\"" : "";?> />
-                                <?=gettext("Config File Override");?>
+                                <?=gettext("Override");?>
                               </label>
                             </div>
                             <div class="hidden" data-for="help_for_dhcpv6_mode">
@@ -2332,11 +2342,29 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr class="dhcpv6_basic">
+                          <td><a id="help_for_dhcp6_request_dns" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Request DNS configuration') ?></td>
+                          <td>
+                            <input name="dhcp6_request_dns" type="checkbox" id="dhcp6_request_dns" value="yes" <?= !empty($pconfig['dhcp6_request_dns']) ? 'checked="checked"' : '' ?> />
+                            <div class="hidden" data-for="help_for_dhcp6_request_dns">
+                              <?= gettext('Request DNS configuration from the server.') ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="dhcpv6_basic">
                           <td><a id="help_for_dhcp6-ia-pd-send-hint" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Send prefix hint') ?></td>
                           <td>
                             <input name="dhcp6-ia-pd-send-hint" type="checkbox" id="dhcp6-ia-pd-send-hint" value="yes" <?=!empty($pconfig['dhcp6-ia-pd-send-hint']) ? "checked=\"checked\"" : "";?> />
                             <div class="hidden" data-for="help_for_dhcp6-ia-pd-send-hint">
                               <?=gettext("Send an IPv6 prefix hint to indicate the desired prefix size for delegation"); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="dhcpv6_basic">
+                          <td><a id="help_for_dhcp6_rapid_commit" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Send rapid commit') ?></td>
+                          <td>
+                            <input name="dhcp6_rapid_commit" type="checkbox" id="dhcp6_rapid_commit" value="yes" <?= !empty($pconfig['dhcp6_rapid_commit']) ? 'checked="checked"' : '' ?> />
+                            <div class="hidden" data-for="help_for_dhcp6_rapid_commit">
+                              <?= gettext('Send a rapid-commit option in solicit messages and wait for an immediate reply instead of advertisements.') ?>
                             </div>
                           </td>
                         </tr>
