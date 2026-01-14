@@ -1128,12 +1128,6 @@
 /usr/local/opnsense/scripts/captiveportal/set_session_restrictions.py
 /usr/local/opnsense/scripts/captiveportal/sql/init.sql
 /usr/local/opnsense/scripts/captiveportal/strip_template.py
-/usr/local/opnsense/scripts/dhcp/cleanup_leases4.php
-/usr/local/opnsense/scripts/dhcp/cleanup_leases6.php
-/usr/local/opnsense/scripts/dhcp/get_leases.py
-/usr/local/opnsense/scripts/dhcp/get_leases6.py
-/usr/local/opnsense/scripts/dhcp/prefixes.php
-/usr/local/opnsense/scripts/dhcp/prefixes.sh
 /usr/local/opnsense/scripts/dnsmasq/dnsmasq_dhcp_options.py
 /usr/local/opnsense/scripts/dnsmasq/dnsmasq_watcher.py
 /usr/local/opnsense/scripts/dnsmasq/get_dnsmasq_leases.py
@@ -1419,8 +1413,6 @@
 /usr/local/opnsense/service/conf/actions.d/actions_captiveportal.conf
 /usr/local/opnsense/service/conf/actions.d/actions_configd.conf
 /usr/local/opnsense/service/conf/actions.d/actions_cron.conf
-/usr/local/opnsense/service/conf/actions.d/actions_dhcpd.conf
-/usr/local/opnsense/service/conf/actions.d/actions_dhcpd6.conf
 /usr/local/opnsense/service/conf/actions.d/actions_dhcrelay.conf
 /usr/local/opnsense/service/conf/actions.d/actions_dns.conf
 /usr/local/opnsense/service/conf/actions.d/actions_dnsmasq.conf
