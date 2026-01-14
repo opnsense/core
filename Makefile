@@ -145,7 +145,6 @@ CORE_DEPENDS?=		ca_root_nss \
 			hostwatch \
 			ifinfo \
 			iftop \
-			isc-dhcp44-server \
 			kea \
 			lighttpd \
 			monit \

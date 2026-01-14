@@ -3,8 +3,6 @@
 /usr/local/bin/python3
 /usr/local/etc/devd/carp.conf
 /usr/local/etc/devd/ifnet.conf
-/usr/local/etc/dhcpd.opnsense.d/README
-/usr/local/etc/dhcpd6.opnsense.d/README
 /usr/local/etc/dnsmasq.conf.d/README
 /usr/local/etc/inc/IPv6.inc
 /usr/local/etc/inc/XMLRPC_Client.inc
@@ -20,7 +18,6 @@
 /usr/local/etc/inc/plugins.inc
 /usr/local/etc/inc/plugins.inc.d/captiveportal.inc
 /usr/local/etc/inc/plugins.inc.d/core.inc
-/usr/local/etc/inc/plugins.inc.d/dhcpd.inc
 /usr/local/etc/inc/plugins.inc.d/dhcrelay.inc
 /usr/local/etc/inc/plugins.inc.d/dnsmasq.inc
 /usr/local/etc/inc/plugins.inc.d/dpinger.inc
@@ -239,12 +236,6 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/IndexController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/ItemController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/forms/dialogEdit.xml
-/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv4/Api/LeasesController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv4/Api/ServiceController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv4/LeasesController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv6/Api/LeasesController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv6/Api/ServiceController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv6/LeasesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/DHCRelay/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/DHCRelay/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/DHCRelay/RelayController.php
@@ -948,8 +939,6 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/snapshot.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/tunables.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Cron/index.volt
-/usr/local/opnsense/mvc/app/views/OPNsense/DHCPv4/leases.volt
-/usr/local/opnsense/mvc/app/views/OPNsense/DHCPv6/leases.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/DHCRelay/relay.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/arp.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/dns_diagnostics.volt
@@ -2541,10 +2530,6 @@
 /usr/local/www/interfaces_wireless_edit.php
 /usr/local/www/javascript/opnsense_legacy.js
 /usr/local/www/reporting_settings.php
-/usr/local/www/services_dhcp.php
-/usr/local/www/services_dhcp_edit.php
-/usr/local/www/services_dhcpv6.php
-/usr/local/www/services_dhcpv6_edit.php
 /usr/local/www/services_ntpd.php
 /usr/local/www/services_ntpd_gps.php
 /usr/local/www/services_ntpd_pps.php
