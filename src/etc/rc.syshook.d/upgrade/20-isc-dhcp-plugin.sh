@@ -23,6 +23,9 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-echo "Installing legacy ISC-DHCP plugin for compatibility..."
-
-/usr/local/opnsense/scripts/firmware/launcher.sh -u install os-isc-dhcp
+if [ ! -f /usr/local/opnsense/version/isc-dhcp ]; then
+	echo "Installing legacy ISC-DHCP plugin for compatibility..."
+	/usr/local/opnsense/scripts/firmware/launcher.sh -u install os-isc-dhcp
+else
+	echo "Skipping already installed legacy ISC-DHCP plugin..."
+fi
