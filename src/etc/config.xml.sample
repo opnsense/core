@@ -80,10 +80,20 @@
     <enable>1</enable>
     <port>53053</port>
     <interface>lan</interface>
+    <dhcp>
+      <enable_ra>1</enable_ra>
+    </dhcp>
     <dhcp_ranges>
       <interface>lan</interface>
       <start_addr>192.168.1.100</start_addr>
       <end_addr>192.168.1.199</end_addr>
+    </dhcp_ranges>
+    <dhcp_ranges>
+      <interface>lan</interface>
+      <start_addr>::1000</start_addr>
+      <end_addr>::2000</end_addr>
+      <constructor>lan</constructor>
+      <ra_mode>slaac</ra_mode>
     </dhcp_ranges>
   </dnsmasq>
   <unbound>
