@@ -3,7 +3,7 @@
         <id>hostdiscovery.general.enabled</id>
         <label>Enable</label>
         <type>checkbox</type>
-        <help>Enable hostdiscovery service.</help>
+        <help>Enable the "hostwatch" service to discover network hosts.</help>
     </field>
     <field>
         <id>hostdiscovery.general.interface</id>

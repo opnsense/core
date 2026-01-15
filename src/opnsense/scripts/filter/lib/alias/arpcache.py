@@ -71,7 +71,7 @@ class ArpCache(BaseContentParser):
         """ fetch current arp+ndp items
         """
         current_macs = dict()
-        # collect hosts, use hostdiscovery daemon when enabled, otherwise use arp+ndp
+        # collect hosts, use hostwatch daemon when enabled, otherwise use arp+ndp
         sp = subprocess.run(
             ['/usr/local/opnsense/scripts/interfaces/list_hosts.py', '-n'],
             capture_output=True,
