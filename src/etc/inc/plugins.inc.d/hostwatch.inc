@@ -39,7 +39,7 @@ function hostwatch_services()
                 'start' => ['hostwatch start'],
                 'stop' => ['hostwatch stop'],
             ],
-            'name' => 'hostdiscovery',
+            'name' => 'hostwatch',
         ];
     }
 
