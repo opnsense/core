@@ -773,7 +773,7 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
                     mwexecfm('/sbin/route delete -%s %s -interface %s ', [$ipproto, $gatewayip, $interfacegw]);
                     mwexecfm('/sbin/route add -%s %s -interface %s', [$ipproto, $gatewayip, $interfacegw]);
                 } elseif (is_linklocal($gatewayip) && strpos($gatewayip, '%') === false) {
-                    $gatewayip .= "%{$interfacegw}";
+                    $gatewayip .= "%%{$interfacegw}"; /* XXX workaround for vsprintf() */
                 }
 
                 $cmd[] = exec_safe('%s', $gatewayip);
