@@ -70,7 +70,7 @@
     </field>
     <field>
         <id>entries.RemoveAdvOnExit</id>
-        <label>Shutdown Advertisment</label>
+        <label>Shutdown Advertisement</label>
         <type>dropdown</type>
         <advanced>true</advanced>
         <help>Upon shutdown, send a final advertisement with zero router lifetime.</help>
