@@ -144,6 +144,7 @@
 /usr/local/etc/rc.syshook.d/start/25-syslog
 /usr/local/etc/rc.syshook.d/start/90-carp
 /usr/local/etc/rc.syshook.d/start/90-cron
+/usr/local/etc/rc.syshook.d/start/90-hostwatch
 /usr/local/etc/rc.syshook.d/start/90-openvpn
 /usr/local/etc/rc.syshook.d/start/90-sysctl
 /usr/local/etc/rc.syshook.d/start/95-beep
