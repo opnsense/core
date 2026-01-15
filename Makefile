@@ -343,7 +343,7 @@ upgrade-check:
 upgrade: upgrade-check clean-pkgdir package
 	@${PKG} delete -fy ${CORE_NAME} || true
 	@${PKG} add ${PKGDIR}/*.pkg
-	@${PLUGINCTL} -c webgui
+	${.CURDIR}/src/etc/rc.restart_webgui
 
 glint: sweep plist-fix lint
 
