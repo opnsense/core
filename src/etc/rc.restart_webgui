@@ -7,6 +7,9 @@ require_once('util.inc');
 require_once('system.inc');
 require_once('plugins.inc.d/webgui.inc');
 
+/* XXX hook for the development version only */
+pass_safe('/usr/local/etc/rc.syshook.d/upgrade/20-isc-dhcp-plugin.sh devel');
+
 if (count($argv) > 1) {
     if (is_numeric($argv[1])) {
         /* starting delayed */
