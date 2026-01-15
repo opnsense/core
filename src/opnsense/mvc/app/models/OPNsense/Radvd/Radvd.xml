@@ -36,6 +36,13 @@
                     <off>Off</off>
                 </OptionValues>
             </DeprecatePrefix>
+            <RemoveAdvOnExit type="OptionField">
+                <BlankDesc>Automatic</BlankDesc>
+                <OptionValues>
+                    <on>On</on>
+                    <off>Off</off>
+                </OptionValues>
+            </RemoveAdvOnExit>
             <RemoveRoute type="OptionField">
                 <BlankDesc>Automatic</BlankDesc>
                 <OptionValues>

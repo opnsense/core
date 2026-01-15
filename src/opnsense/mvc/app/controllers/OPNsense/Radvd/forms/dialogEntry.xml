@@ -69,6 +69,16 @@
         </grid_view>
     </field>
     <field>
+        <id>entries.RemoveAdvOnExit</id>
+        <label>Shutdown Advertisment</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>Upon shutdown, send a final advertisement with zero router lifetime.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>entries.AdvDefaultLifetime</id>
         <label>Default Lifetime</label>
         <type>text</type>

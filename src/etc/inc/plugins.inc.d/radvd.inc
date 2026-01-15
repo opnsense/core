@@ -245,9 +245,10 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
         if ($carp_mode) {
             /* to avoid wrong MAC being stuck during failover */
             $radvdconf .= "\tAdvSourceLLAddress off;\n";
-            /* to avoid final advertisement with zero router lifetime */
-            $radvdconf .= "\tRemoveAdvOnExit off;\n";
         }
+
+        /* to avoid final advertisement with zero router lifetime */
+        $radvdconf .= "\tRemoveAdvOnExit " . (!$entry->RemoveAdvOnExit->isEmpty() ? $entry->RemoveAdvOnExit->getValue() : ($carp_mode ? 'off' : 'on')) . ";\n";
 
         /* VIPs may duplicate readings from system */
         $stanzas = array_unique($stanzas);
