@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2024 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2024-2026 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -115,13 +115,22 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
         killbypid("/var/run/dhcrelay-{$target_id}.pid");
     }
 
+    if (!count($relays)) {
+        return;
+    }
+
+    service_log(sprintf('Starting DHCP relay%s...', empty($id_map) ? 's' : ' for ' . join(', ', $id_map)), $verbose);
+
+    $iflist = get_configured_interface_with_descr();
+    $ifconfig_details = legacy_interfaces_details();
+
     if (!empty($carp_tracking)) {
         foreach ((new OPNsense\Interfaces\Vip())->vip->iterateItems() as $id => $item) {
             if ($item->mode->isEqual('carp') && isset($carp_tracking[$id])) {
                 $carp_tracking[$id]['vhid'] = $item->vhid->getValue();
             }
         }
-        foreach (legacy_interfaces_details() as $ifdata) {
+        foreach ($ifconfig_details as $ifdata) {
             if (empty($ifdata['carp'])) {
                 continue;
             }
@@ -134,15 +143,6 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
             }
         }
     }
-
-    if (!count($relays)) {
-        return;
-    }
-
-    service_log(sprintf('Starting DHCP relay%s...', empty($id_map) ? 's' : ' for ' . join(', ', $id_map)), $verbose);
-
-    $iflist = get_configured_interface_with_descr();
-    $ifconfig_details = legacy_interfaces_details();
 
     foreach ($relays as $relay) {
         $destination = $mdl->getNodeByReference("destinations.{$relay->destination}");
