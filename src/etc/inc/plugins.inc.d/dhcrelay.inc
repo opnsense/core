@@ -105,17 +105,19 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
         }
 
         if ($relay->enabled->isEqual('1')) {
-            $carp_tracking[$relay->carp_depend_on->getValue()] = ['status' => 'DISABLED'];
             $relays[] = $relay;
+
+            if (!$relay->carp_depend_on->isEmpty()) {
+                $carp_tracking[$relay->carp_depend_on->getValue()] = ['status' => 'DISABLED'];
+            }
         }
 
         killbypid("/var/run/dhcrelay-{$target_id}.pid");
     }
 
     if (!empty($carp_tracking)) {
-        /* carp vhid tracking used */
         foreach ((new OPNsense\Interfaces\Vip())->vip->iterateItems() as $id => $item) {
-            if ($item->mode == 'carp' && isset($carp_tracking[$id])) {
+            if ($item->mode->isEqual('carp') && isset($carp_tracking[$id])) {
                 $carp_tracking[$id]['vhid'] = $item->vhid->getValue();
             }
         }
@@ -125,7 +127,7 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
             }
             foreach ($ifdata['carp'] as $data) {
                 foreach ($carp_tracking as &$item) {
-                    if (!empty($item) && $item['vhid'] == $data['vhid']) {
+                    if (isset($item['vhid']) && $item['vhid'] == $data['vhid']) {
                         $item['status'] = $data['status'];
                     }
                 }
