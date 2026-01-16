@@ -234,6 +234,9 @@ function system_resolvconf_generate($verbose = false)
         $resolvconf .= "search {$result}\n";
     }
 
+    /* append custom user options */
+    $resolvconf .= @file_get_contents('/etc/resolv.conf.local');
+
     file_safe('/etc/resolv.conf', $resolvconf);
 
     /* setup static routes for DNS servers as configured */
