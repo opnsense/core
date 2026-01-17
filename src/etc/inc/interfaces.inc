@@ -2990,16 +2990,14 @@ INFOREQ|REBIND|RENEW|REQUEST|SOLICIT)
     done
     /usr/local/sbin/ifctl -i {$device} -6sd \${ARGS}
 
-    ARGS=
-    for PD in \${PDINFO}; do
-        ARGS="\${ARGS} -a \${PD}"
-    done
-    if [ \${REASON} != "INFOREQ" ]; then
-        /usr/local/sbin/ifctl -i {$device} -6pd \${ARGS}
-    fi
-
     FORCE=
-    if [ \${REASON} = "REQUEST" -o \${REASON} = "SOLICIT" ]; then
+    if [ \${REASON} != "INFOREQ" ]; then
+        ARGS=
+        for PD in \${PDINFO}; do
+            ARGS="\${ARGS} -a \${PD}"
+        done
+        /usr/local/sbin/ifctl -i {$device} -6pd \${ARGS}
+
         /usr/bin/logger -t dhcp6c "dhcp6c_script: \${REASON} on {$device} renewal"
         FORCE=force
     fi
