@@ -3024,7 +3024,7 @@ EOF;
     @chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
 
     $cmdfrmt = ['/usr/local/sbin/dhcp6c -%s'];
-    $cmdargs = [!empty($syscfg['dhcp6_debug']) ? 'D' : 'd'];
+    $cmdargs = [$settings->dhcp6_debug->isEmpty() ? 'd' : 'D'];
 
     if (!$settings->dhcp6_norelease->isEmpty()) {
         $cmdfrmt[] = '-n';
