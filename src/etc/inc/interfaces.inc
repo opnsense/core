@@ -2901,7 +2901,7 @@ function interface_dhcpv6_configure($interface, $wancfg)
     $rtsold_args = [
         $settings->dhcp6_debug->isEmpty() ? 'd' : 'D',
         '/var/run/rtsold.pid',
-        '/var/etc/rtsold_script.sh',
+        '/usr/local/opnsense/scripts/interfaces/rtsold_script.sh',
         '/usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh',
     ];
 
@@ -2914,7 +2914,7 @@ function interface_dhcpv6_configure($interface, $wancfg)
      * Can be adjusted to fit ISP timing or completely disabled.
      */
     if (!$settings->dhcp6_ratimeout->isEmpty()) {
-        mwexecfb('/var/etc/rtsold_script.sh %s', [$wancfg['if']]);
+        mwexecfb('/usr/local/opnsense/scripts/interfaces/rtsold_script.sh %s', [$wancfg['if']]);
     }
 }
 
@@ -3041,17 +3041,6 @@ EOF;
     @file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript);
     @chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
 
-    $cmdfrmt = ['/usr/local/sbin/dhcp6c -%s'];
-    $cmdargs = [$settings->dhcp6_debug->isEmpty() ? 'd' : 'D'];
-
-    if (!$settings->dhcp6_norelease->isEmpty()) {
-        $cmdfrmt[] = '-n';
-    }
-
-    $dhcp6ccommand = exec_safe($cmdfrmt, $cmdargs);
-
-    $ratimeout = $settings->dhcp6_ratimeout->getValue();
-
     $dhcp6cconf = '';
 
     /* merge configs and prepare single instance of dhcp6c for startup */
@@ -3066,51 +3055,6 @@ EOF;
     }
 
     @file_put_contents('/var/etc/dhcp6c.conf', $dhcp6cconf);
-
-    $rtsold_script = <<<EOD
-#!/bin/sh
-# this file was auto-generated, do not edit
-if [ -z "\${1}" ]; then
-    echo "Nothing to do."
-    exit 0
-fi
-if grep -q "^interface \${1} " /var/etc/radvd.conf; then
-       echo "Rejecting own configuration."
-       exit 0
-fi
-if [ -n "\${2}" ]; then
-    # Note that the router file can be written by ppp-linkup.sh or
-    # this script so do not clear the file as it may already exist.
-    /usr/local/sbin/ifctl -i "\${1}" -6rd -a "\${2}"
-else
-    sleep "{$ratimeout}"
-    if [ -f "/tmp/rtsold.\${1}.done" ]; then
-        # normal RA came through
-        exit 0
-    fi
-fi
-CONFFILE="/var/etc/dhcp6c.conf"
-PIDFILE="/var/run/dhcp6c.pid"
-if [ -f "\${PIDFILE}" ]; then
-    if ! /bin/pkill -0 -F "\${PIDFILE}"; then
-        rm -f "\${PIDFILE}"
-    fi
-fi
-if [ ! -f "\${CONFFILE}" ]; then
-    /usr/bin/logger -t dhcp6c "RTSOLD script - Skipping daemon for dhcp6c"
-elif [ -f "\${PIDFILE}" ]; then
-    /usr/bin/logger -t dhcp6c "RTSOLD script - Sending SIGHUP to dhcp6c"
-    /bin/pkill -HUP -F "\${PIDFILE}"
-else
-    /usr/bin/logger -t dhcp6c "RTSOLD script - Starting daemon for dhcp6c"
-    {$dhcp6ccommand} -c "\${CONFFILE}" -p "\${PIDFILE}"
-fi
-touch "/tmp/rtsold.\${1}.done"
-
-EOD;
-
-    @file_put_contents('/var/etc/rtsold_script.sh', $rtsold_script);
-    @chmod('/var/etc/rtsold_script.sh', 0755);
 }
 
 function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)

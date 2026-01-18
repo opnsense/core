@@ -1263,6 +1263,7 @@
 /usr/local/opnsense/scripts/interfaces/reconfigure_vips.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vlans.php
 /usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh
+/usr/local/opnsense/scripts/interfaces/rtsold_script.sh
 /usr/local/opnsense/scripts/interfaces/setup_hostwatch.sh
 /usr/local/opnsense/scripts/interfaces/traceroute.py
 /usr/local/opnsense/scripts/interfaces/traffic_stats.php
