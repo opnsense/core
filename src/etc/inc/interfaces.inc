@@ -2974,6 +2974,8 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
     $dhcp6cscript = <<<EOF
 #!/bin/sh
 
+FORCE=
+
 case \${REASON} in
 INFOREQ|REBIND|RENEW|REQUEST|SOLICIT)
     /usr/bin/logger -t dhcp6c "dhcp6c_script: \${REASON} on {$device} executing"
@@ -2990,16 +2992,23 @@ INFOREQ|REBIND|RENEW|REQUEST|SOLICIT)
     done
     /usr/local/sbin/ifctl -i {$device} -6sd \${ARGS}
 
-    FORCE=
     if [ \${REASON} != "INFOREQ" ]; then
         ARGS=
         for PD in \${PDINFO}; do
             ARGS="\${ARGS} -a \${PD}"
         done
-        /usr/local/sbin/ifctl -i {$device} -6pd \${ARGS}
 
-        /usr/bin/logger -t dhcp6c "dhcp6c_script: \${REASON} on {$device} renewal"
+        if /usr/local/sbin/ifctl -i {$device} -6pu \${ARGS}; then
+            FORCE=force
+        fi
+    fi
+
+    if [ \${REASON} = "REQUEST" -o \${REASON} = "SOLICIT" ]; then
         FORCE=force
+    fi
+
+    if [ -n "\${FORCE}" ]; then
+        /usr/bin/logger -t dhcp6c "dhcp6c_script: \${REASON} on {$device} renewal"
     fi
 
     /usr/local/sbin/configctl -d interface newipv6 {$device} \${FORCE}
