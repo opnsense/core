@@ -32,6 +32,7 @@ import os
 import time
 import subprocess
 import syslog
+import sys
 
 
 def yield_log_records(filename, poll_interval=5):
@@ -45,6 +46,7 @@ def yield_log_records(filename, poll_interval=5):
         filenames = ['%s.2' % filename, '%s.1' % filename, filename]
 
     for fn in (x for x in filenames if os.path.exists(x)):
+        fhandle = None
         lstpos = None
         header = {}
         while True:
@@ -105,6 +107,9 @@ if __name__ == '__main__':
     prefixes = {}
     syslog.openlog('kea-dhcp6', facility=syslog.LOG_LOCAL4)
     syslog.syslog(syslog.LOG_NOTICE, "startup kea prefix watcher")
+    if not os.path.isfile(inputargs.filename):
+        syslog.syslog(syslog.LOG_ERR, "lease file does not exist: %s" % inputargs.filename)
+        sys.exit(1)
     ndp = NDP()
     for record in yield_log_records(inputargs.filename):
         # IA_PD: type 2, prefix_len <= 64 - the delegated prefix
