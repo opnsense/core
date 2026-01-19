@@ -65,7 +65,7 @@ function convert_128bit_to_ipv6($ip6bin)
         return false;
     }
 
-    $ip6arr = array();
+    $ip6arr = [];
     $ip6binarr = str_split($ip6bin, 16);
     foreach ($ip6binarr as $binpart) {
         $ip6arr[] = dechex(bindec($binpart));
@@ -93,7 +93,7 @@ function interfaces_loopback_configure($verbose = false)
 
 function interfaces_vlan_priorities()
 {
-    $priorities = array();
+    $priorities = [];
 
     $priorities['1'] = gettext('Background (1, lowest)');
     $priorities['0'] = gettext('Best Effort (0, default)');
@@ -1441,7 +1441,7 @@ function interface_proxyarp_configure($interface = '')
         }
     }
 
-    $paa = array();
+    $paa = [];
     if (isset($config['virtualip']['vip'])) {
         /* group by interface */
         foreach ($config['virtualip']['vip'] as $vipent) {
@@ -1705,7 +1705,7 @@ function interface_sync_wireless_clones(&$ifcfg, $sync_changes = false) /* XXX k
 {
     global $config;
 
-    $shared_settings = array(
+    $shared_settings = [
         'channel',
         'diversity',
         'protmode',
@@ -1717,7 +1717,7 @@ function interface_sync_wireless_clones(&$ifcfg, $sync_changes = false) /* XXX k
         'turbo',
         'txantenna',
         'txpower',
-    );
+    ];
 
     $baseif = interface_get_wireless_base($ifcfg['if']);
 
@@ -1961,7 +1961,7 @@ function interface_wireless_configure($if, &$wancfg)
     /* generate wpa_supplicant/hostap config if wpa is enabled */
     switch ($wlcfg['mode'] ?? 'bss') {
         case 'bss':
-            $authentication = array();
+            $authentication = [];
             if (isset($wlcfg['wpa']['enable'])) {
                 if ($wlcfg['wpa']['wpa_key_mgmt'] == 'WPA-EAP' && isset($wlcfg['wpa']['wpa_eap_method'])) {
                     switch ($wlcfg['wpa']['wpa_eap_method']) {
@@ -2244,7 +2244,7 @@ EOD;
 
     /* configure txpower setting (it has been known to fail so run it separately) */
     if (!empty($wlcfg['txpower'])) {
-        mwexecf('/sbin/ifconfig %s txpower %s', array($if, $wlcfg['txpower']));
+        mwexecf('/sbin/ifconfig %s txpower %s', [$if, $wlcfg['txpower']]);
     }
 
     sleep(1); /* XXX historic sleep */
@@ -2773,9 +2773,9 @@ function interface_6rd_configure($interface, $wancfg, $update = false)
     legacy_interface_mtu($stfiface, $mtu);
 
     /* use original prefix length for network address to avoid setting the same subnet as on the LAN side (/64 prefix) */
-    mwexecf('/sbin/ifconfig %s inet6 %s/%s', array($stfiface, $rd6prefix, $rd6prefixlen));
-    mwexecf('/sbin/ifconfig %s stfv4br %s', array($stfiface, $wancfg['gateway-6rd']));
-    mwexecf('/sbin/ifconfig %s stfv4net %s/%s', array($stfiface, $ip4address, $wancfg['prefix-6rd-v4plen']));
+    mwexecf('/sbin/ifconfig %s inet6 %s/%s', [$stfiface, $rd6prefix, $rd6prefixlen]);
+    mwexecf('/sbin/ifconfig %s stfv4br %s', [$stfiface, $wancfg['gateway-6rd']]);
+    mwexecf('/sbin/ifconfig %s stfv4net %s/%s', [$stfiface, $ip4address, $wancfg['prefix-6rd-v4plen']]);
     mwexecf('/usr/local/sbin/ifctl -i %s -6rd -a %s', [$stfiface, $rd6brgw]);
 
     $gateways = new \OPNsense\Routing\Gateways();
@@ -2835,7 +2835,7 @@ function interface_6to4_configure($interface, $wancfg, $update = false)
     $stflanbin = str_pad($stfprefixstartbin . $stflanbin, 128, "0", STR_PAD_RIGHT);
 
     /* convert the 128 bits for the broker address back into a valid IPv6 address */
-    $stfbrarr = array();
+    $stfbrarr = [];
     $stfbrbinarr = str_split($stfbrokerbin, 16);
     foreach ($stfbrbinarr as $bin) {
         $stfbrarr[] = dechex(bindec($bin));
@@ -2843,7 +2843,7 @@ function interface_6to4_configure($interface, $wancfg, $update = false)
     $stfbrgw = Net_IPv6::compress(implode(":", $stfbrarr));
 
     /* convert the 128 bits for the broker address back into a valid IPv6 address */
-    $stflanarr = array();
+    $stflanarr = [];
     $stflanbinarr = str_split($stflanbin, 16);
     foreach ($stflanbinarr as $bin) {
         $stflanarr[] = dechex(bindec($bin));
@@ -2861,7 +2861,7 @@ function interface_6to4_configure($interface, $wancfg, $update = false)
     }
     legacy_interface_mtu($stfiface, $mtu);
 
-    mwexecf('/sbin/ifconfig %s inet6 %s prefixlen 16', array($stfiface, $stflan));
+    mwexecf('/sbin/ifconfig %s inet6 %s prefixlen 16', [$stfiface, $stflan]);
     mwexecf('/usr/local/sbin/ifctl -i %s -6rd -a %s', [$stfiface, $stfbrgw]);
 
     $gateways = new \OPNsense\Routing\Gateways();
@@ -3549,9 +3549,9 @@ function DHCP_Config_File_Substitutions($wancfg, $wanif, $dhclientconf)
 
     /* Arrays of MAC Address Types, Cases, Delimiters */
     /* ASCII or HEX, Upper or Lower Case, Various Delimiters (none, space, colon, hyphen, period) */
-    $various_mac_types      = array("mac_addr_ascii", "mac_addr_hex");
-    $various_mac_cases      = array("U", "L");
-    $various_mac_delimiters = array("", " ", ":", "-", ".");
+    $various_mac_types      = ['mac_addr_ascii', 'mac_addr_hex'];
+    $various_mac_cases      = ['U', 'L'];
+    $various_mac_delimiters = ['', ' ', ':', '-', '.'];
 
     /* Apply MAC Address Substitutions */
     foreach ($various_mac_types as $various_mac_type) {
@@ -3660,7 +3660,7 @@ function convert_friendly_interface_to_friendly_descr($interface)
                     }
                 }
             } else {
-                foreach (legacy_config_get_interfaces(array('virtual' => false)) as $if => $ifcfg) {
+                foreach (legacy_config_get_interfaces(['virtual' => false]) as $if => $ifcfg) {
                     if ($if == $interface || $ifcfg['descr'] == $interface) {
                         return $ifcfg['ifdescr'];
                     }

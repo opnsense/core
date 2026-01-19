@@ -484,14 +484,14 @@ function legacy_interfaces_details($intf = null)
             if (empty($result[$current_interface]["carp"])) {
                 $result[$current_interface]["carp"] = [];
             }
-            $result[$current_interface]["carp"][$line_parts[3]] = array(
+            $result[$current_interface]["carp"][$line_parts[3]] = [
                 "status" => $line_parts[1],
                 "vhid" => $line_parts[3],
                 "advbase" => $line_parts[5],
                 "advskew" => $line_parts[7],
                 "peer" => null,
                 "peer6" => null,
-            );
+            ];
             if (isset($ifconfig_data[$lineid + 1]) && strpos($ifconfig_data[$lineid + 1], "peer6") !== false) {
                 preg_match("/\Wpeer (.*)\Wpeer6 (.*)$/", $ifconfig_data[$lineid + 1], $matches);
                 $result[$current_interface]["carp"][$line_parts[3]]['peer'] = $matches[1];
