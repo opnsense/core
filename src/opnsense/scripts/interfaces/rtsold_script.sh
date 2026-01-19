@@ -37,6 +37,7 @@ if grep -q "^interface ${IFNAME} " /var/etc/radvd.conf; then
        exit 0
 fi
 
+DONEFILE="/tmp/rtsold.${IFNAME}.done"
 CONFFILE="/var/etc/dhcp6c.conf"
 PIDFILE="/var/run/dhcp6c.pid"
 
@@ -59,7 +60,7 @@ if [ -n "${ROUTER}" ]; then
 else
     # in this case we are the failsafe start if no RA was sent
     sleep "$(get_var RATIMEOUT)"
-    if [ -f "/tmp/rtsold.${IFNAME}.done" ]; then
+    if [ -f "${DONEFILE}" ]; then
         # normal RA came through
         exit 0
     fi
@@ -79,4 +80,4 @@ else
     /usr/local/sbin/dhcp6c $(get_var EXTRAOPTS) -c "${CONFFILE}" -p "${PIDFILE}"
 fi
 
-touch "/tmp/rtsold.${IFNAME}.done"
+touch "${DONEFILE}"
