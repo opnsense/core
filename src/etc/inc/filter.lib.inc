@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016 Deciso B.V.
+ * Copyright (C) 2016-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -637,7 +637,7 @@ function filter_core_rules_system($fw, $defaults)
         }
     }
 
-    // auto-generated DNAT rules
+    /* auto-generated DNAT rules */
     foreach ((new OPNsense\Firewall\DNat(false))->rule->sortedBy(['sequence']) as $key => $rule) {
         if ($rule->disabled->isEmpty() && $rule->pass == 'rule') {
             $dnatrule = $rule->getNodeContent();
