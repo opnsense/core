@@ -38,7 +38,7 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function getAction()
     {
-        $duids = json_decode((new Backend())->configdRun('interface settings gen_duid'), true);
+        $duids = json_decode((new Backend())->configdpRun('interface settings gen_duid', [$this->request->getClientAddress()]), true);
         $result = parent::getAction();
         $result['duids'] = $duids;
         return $result;

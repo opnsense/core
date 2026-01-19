@@ -30,8 +30,20 @@ require_once("interfaces.inc");
 require_once("config.inc");
 require_once("util.inc");
 
-$primary_if = get_primary_interface_from_list();
-$system_mac = get_interface_mac(get_real_interface($primary_if));
+$client_ip = isset($argv[1]) ? $argv[1] : '';
+$system_mac = '';
+
+if (!empty($client_ip)) {
+    $macs = OPNsense\Core\Shell::shell_safe('/usr/sbin/arp -an | grep %s | awk \'{ print $4 }\'', [$client_ip], true);
+    $system_mac = !empty($macs[0]) ? $macs[0] : '';
+}
+
+// fall back to the MAC of a primary interface on this system
+if (empty($system_mac)) {
+    $primary_if = get_primary_interface_from_list();
+    $system_mac = get_interface_mac(get_real_interface($primary_if));
+}
+
 $result = [];
 
 // LLT
