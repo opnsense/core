@@ -1590,7 +1590,7 @@ function interface_carp_configure($vip)
     }
 
     if ($vip['password'] != '') {
-        /* XXX password processing ooks like an ancient workaround and likely not needed */
+        /* XXX password processing looks like an ancient workaround and likely not needed */
         $ifcargs[] = addslashes(str_replace(' ', '', $vip['password']));
         $ifcfrmt[] = 'pass %s';
     }
