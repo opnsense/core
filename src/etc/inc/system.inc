@@ -265,6 +265,7 @@ function get_locale_list()
     $locales['ja_JP'] = gettext('Japanese');
     $locales['ko_KR'] = gettext('Korean');
     $locales['no_NO'] = gettext('Norwegian');
+    $locales['fa_IR'] = gettext('Persian');
     $locales['pl_PL'] = gettext('Polish');
     $locales['pt_BR'] = gettext('Portuguese (Brazil)');
     $locales['pt_PT'] = gettext('Portuguese (Portugal)');
@@ -276,6 +277,7 @@ function get_locale_list()
 
     if (!product::getInstance()->development()) {
         /* below 30% progress or currently unvetted */
+        unset($locales['fa_IR']);
         unset($locales['vi_VN']);
     }
 
