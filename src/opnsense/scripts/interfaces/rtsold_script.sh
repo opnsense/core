@@ -24,12 +24,15 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-if [ -z "${1}" ]; then
+IFNAME=${1}
+ROUTER=${2}
+
+if [ -z "${IFNAME}" ]; then
     echo "Nothing to do."
     exit 0
 fi
 
-if grep -q "^interface ${1} " /var/etc/radvd.conf; then
+if grep -q "^interface ${IFNAME} " /var/etc/radvd.conf; then
        echo "Rejecting own configuration."
        exit 0
 fi
@@ -49,13 +52,14 @@ get_var()
     grep "^#${VAR}=" "${CONFFILE}" | head -n 1 | tr -d "#${VAR}="
 }
 
-if [ -n "${2}" ]; then
+if [ -n "${ROUTER}" ]; then
     # Note that the router file can be written by ppp-linkup.sh or
-    # this script so do not clear the file as it may already exist.
-    /usr/local/sbin/ifctl -i "${1}" -6rd -a "${2}"
+    # this script so only replace information if it was supplied
+    /usr/local/sbin/ifctl -i "${IFNAME}" -6rd -a "${ROUTER}"
 else
+    # in this case we are the failsafe start if no RA was sent
     sleep "$(get_var RATIMEOUT)"
-    if [ -f "/tmp/rtsold.${1}.done" ]; then
+    if [ -f "/tmp/rtsold.${IFNAME}.done" ]; then
         # normal RA came through
         exit 0
     fi
@@ -75,4 +79,4 @@ else
     /usr/local/sbin/dhcp6c $(get_var EXTRAOPTS) -c "${CONFFILE}" -p "${PIDFILE}"
 fi
 
-touch "/tmp/rtsold.${1}.done"
+touch "/tmp/rtsold.${IFNAME}.done"
