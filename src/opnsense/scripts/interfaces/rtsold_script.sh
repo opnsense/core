@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2018 Martin Wasley <martin@team-rebellion.net>
+# Copyright (C) 2018 Martin Wasley <mjwasley@gmail.com>
 # Copyright (c) 2017-2026 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without

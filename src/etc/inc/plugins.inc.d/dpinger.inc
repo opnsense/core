@@ -2,7 +2,7 @@
 
 /*
  * Copyright (C) 2020 Deciso B.V.
- * Copyright (C) 2018 Martin Wasley <martin@team-rebellion.net>
+ * Copyright (C) 2018 Martin Wasley <mjwasley@gmail.com>
  * Copyright (C) 2016-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>
  * Copyright (C) 2008 Seth Mos <seth.mos@dds.nl>
