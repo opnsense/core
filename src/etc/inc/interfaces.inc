@@ -2952,6 +2952,15 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
 
     $dhcp6cconf = "# generated for {$interface} in {$wancfg['ipaddrv6']} mode\n";
 
+    $cmdargs = [$settings->dhcp6_debug->isEmpty() ? '-d' : '-D'];
+    if (!$settings->dhcp6_norelease->isEmpty()) {
+        $cmdargs[] = '-n';
+    }
+    $dhcp6ccommand = join(' ', $cmdargs);
+
+    $dhcp6cconf .= "#EXTRAOPTS={$dhcp6ccommand}\n";
+    $dhcp6cconf .= "#RATIMEOUT={$settings->dhcp6_ratimeout->getValue()}\n";
+
     if (!empty($wancfg['adv_dhcp6_config_file_override'])) {
         $dhcp6cfile = $wancfg['adv_dhcp6_config_file_override_path'];
         if (file_exists($dhcp6cfile)) {
