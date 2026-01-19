@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2025-2026 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -54,6 +54,9 @@ lint-model:
 .if exists(${.CURDIR}/${DIR})
 	@for MODEL in $$(find ${DIR} -depth 3 \
 	    -name "*.xml"); do \
+		(xmllint $${MODEL} --xpath '/model/description' 2> /dev/null | wc -l | awk '{ print $$1 }' | grep -v '^1$$' || true) | while read LINE; do \
+			echo "$${MODEL}: <description/> is not on a single line or missing"; \
+		done; \
 		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and (not(Required) or Required="N") and Default]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
 			echo "$${MODEL}: $${LINE} has a spurious default value set"; \
 		done; \
@@ -97,9 +100,6 @@ lint-model:
 		done; \
 		(grep '<ValidationMessage>[a-z ]' $${MODEL} || true) | while read LINE; do \
 			echo "$${MODEL}: $${LINE} does not start with an uppercase letter"; \
-		done; \
-		(xmllint $${MODEL} --xpath '/model/description' 2> /dev/null | wc -l | awk '{ print $$1 }' | grep -v '^1$$' || true) | while read LINE; do \
-			echo "$${MODEL}: <description/> is not on a single line or missing"; \
 		done; \
 	done
 .endif
