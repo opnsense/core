@@ -113,6 +113,8 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
 
     if (!radvd_enabled($mdl)) {
         killbypid($radvd_pid_file);
+        @unlink($radvd_conf_file);
+        @unlink($radvd_pid_file);
         return;
     }
 

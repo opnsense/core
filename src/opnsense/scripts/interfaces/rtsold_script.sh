@@ -33,6 +33,7 @@ if [ -z "${IFNAME}" ]; then
 fi
 
 if grep -q "^interface ${IFNAME} " /var/etc/radvd.conf; then
+       /usr/bin/logger -t dhcp6c "rtsold_script: rejecting dhcp6c"
        echo "Rejecting own configuration."
        exit 0
 fi
@@ -42,7 +43,7 @@ CONFFILE="/var/etc/dhcp6c.conf"
 PIDFILE="/var/run/dhcp6c.pid"
 
 if [ ! -f "${CONFFILE}" ]; then
-    /usr/bin/logger -t dhcp6c "RTSOLD script - Skipping daemon for dhcp6c"
+    /usr/bin/logger -t dhcp6c "rtsold_script: skipping dhcp6c"
     exit 0
 fi
 
@@ -73,10 +74,10 @@ if [ -f "${PIDFILE}" ]; then
 fi
 
 if [ -f "${PIDFILE}" ]; then
-    /usr/bin/logger -t dhcp6c "RTSOLD script - Sending SIGHUP to dhcp6c"
+    /usr/bin/logger -t dhcp6c "rtsold_script: reloading dhcp6c"
     /bin/pkill -HUP -F "${PIDFILE}"
 else
-    /usr/bin/logger -t dhcp6c "RTSOLD script - Starting daemon for dhcp6c"
+    /usr/bin/logger -t dhcp6c "rtsold_script: starting dhcp6c"
     /usr/local/sbin/dhcp6c $(get_var EXTRAOPTS) -c "${CONFFILE}" -p "${PIDFILE}"
 fi
 
