@@ -329,8 +329,13 @@ class MenuSystem
         }
 
         // add interfaces to "Firewall: Rules" menu tab...
+        $this->appendItem('Firewall.Rules', 'Migration', [
+                'url' => '/ui/firewall/migration',
+                'fixedname' => sprintf("<i class='fa fa-fw fa-gears'> </i> %s", gettext('Migration assistant')),
+                'order' => 0,
+        ]);
         $iftargets['fw'] = array_merge(['FloatingRules' => gettext('Floating')], $iftargets['fw']);
-        $ordid = 0;
+        $ordid = 1;
         foreach ($iftargets['fw'] as $key => $descr) {
             $this->appendItem('Firewall.Rules', $key, [
                 'url' => '/firewall_rules.php?if=' . $key,
