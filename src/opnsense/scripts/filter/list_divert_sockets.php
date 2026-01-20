@@ -25,11 +25,10 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-require_once('script/load_phalcon.php');
 
 /**
  * currently IDPS (Suricata) is the only service offering divert sockets, as this might change in the future
  * we reserve a simple command to list registered/active services which may be used as divert targets.
  */
 
-echo json_encode(['8000' => gettext("Intrusion Detection")]);
+echo json_encode(['8000' => gettext('Intrusion Detection')]) . PHP_EOL;
