@@ -1,5 +1,6 @@
 #!/usr/local/bin/php
 <?php
+
 /*
  * Copyright (C) 2026 Deciso B.V.
  * All rights reserved.
