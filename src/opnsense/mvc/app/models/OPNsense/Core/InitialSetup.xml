@@ -46,10 +46,10 @@
                 <disable type="BooleanField"/>
                 <ipv4_type type="OptionField">
                     <Required>Y</Required>
-                    <Default>static</Default>
+                    <Default>dhcp</Default>
                     <OptionValues>
-                        <static>Static</static>
                         <dhcp>DHCP</dhcp>
+                        <static>Static</static>
                         <pppoe>PPPoE</pppoe>
                     </OptionValues>
                 </ipv4_type>
