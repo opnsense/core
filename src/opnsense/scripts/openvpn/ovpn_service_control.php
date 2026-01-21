@@ -165,8 +165,8 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
             $destroy_if = !empty($instance_stats['dev_type']) && $instance_stats['dev_type'] != $node->dev_type;
             $carp_down = false;
             if ((string)$node->role == 'client' && !empty($vhids[(string)$node->carp_depend_on])) {
-                /* consider up if CARP disabled */
-                $carp_down = $vhids[(string)$node->carp_depend_on] == 'BACKUP';
+                $status = $vhids[(string)$node->carp_depend_on];
+                $carp_down = $status == 'BACKUP' || $status == 'INIT'; /* consider up if DISABLED */
             }
             switch ($action) {
                 case 'stop':
