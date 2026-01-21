@@ -31,7 +31,7 @@ namespace OPNsense\Interfaces\Migrations;
 use OPNsense\Base\BaseModelMigration;
 use OPNsense\Core\Config;
 
-class M1_0_0 extends BaseModelMigration
+class SET1_0_0 extends BaseModelMigration
 {
     private $keys = [
         'dhcp6_debug',
