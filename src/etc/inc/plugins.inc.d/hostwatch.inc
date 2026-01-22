@@ -51,3 +51,15 @@ function hostwatch_syslog()
 {
     return ['hostwatch' => ['facility' => ['hostwatch']]];
 }
+
+function hostwatch_xmlrpc_sync()
+{
+    $result = [];
+
+    $result['id'] = 'hostwatch';
+    $result['section'] = 'OPNsense.Hostwatch';
+    $result['description'] = gettext('Host discovery service');
+    $result['services'] = ['hostwatch'];
+
+    return [$result];
+}
