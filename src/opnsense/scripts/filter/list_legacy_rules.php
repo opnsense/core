@@ -112,8 +112,8 @@ if (!empty($config['filter']['rule'])) {
         }
         foreach (['source', 'destination'] as $field) {
             if (!empty($rule[$field])) {
-                $target_rule[$field . '_not'] = !empty($rule[$field]['not']) ? "1" : "0";
-                if (!empty($rule[$field]['any'])) {
+                $target_rule[$field . '_not'] = isset($rule[$field]['not']) ? "1" : "0";
+                if (isset($rule[$field]['any'])) {
                     $target_rule[$field . '_net'] = 'any';
                 } elseif (!empty($rule[$field]['network'])) {
                     $target_rule[$field . '_net'] = $rule[$field]['network'];
