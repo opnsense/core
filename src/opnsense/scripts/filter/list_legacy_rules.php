@@ -100,7 +100,7 @@ if (!empty($config['filter']['rule'])) {
             'tagged' => $rule['tagged'] ?? '',
             'tcpflags1' => $rule['tcpflags1'] ?? '',
             'tcpflags2' => $rule['tcpflags2'] ?? '',
-            'categories' => $rule['categories'] ?? '',
+            'categories' => $rule['category'] ?? '',
             'sched' => $rule['sched'] ?? '',
             'tos' => $rule['tos'] ?? '',
             'shaper1' => $rule['shaper1'] ?? '',
