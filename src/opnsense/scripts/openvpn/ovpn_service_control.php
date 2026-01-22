@@ -148,7 +148,7 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
         $mdl->generateInstanceConfig($instance_id);
     }
 
-    $vhids = $action == 'configure' ? get_vhid_status() : [];
+    $vhids = get_vhid_status();
     $instance_ids = [];
 
     foreach ($mdl->Instances->Instance->iterateItems() as $key => $node) {
@@ -163,22 +163,26 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
         if (flock($statHandle, LOCK_EX)) {
             $instance_stats = ovpn_instance_stats($node, $statHandle);
             $destroy_if = !empty($instance_stats['dev_type']) && $instance_stats['dev_type'] != $node->dev_type;
+            $carp_down = false;
+            if ((string)$node->role == 'client' && !empty($vhids[(string)$node->carp_depend_on])) {
+                $carp_down = $vhids[(string)$node->carp_depend_on] != 'MASTER';
+            }
             switch ($action) {
                 case 'stop':
                     ovpn_stop($node);
                     break;
                 case 'start':
-                    ovpn_start($node, $statHandle);
+                    if (!$carp_down) {
+                        ovpn_start($node, $statHandle);
+                    }
                     break;
                 case 'restart':
                     ovpn_stop($node, $destroy_if);
-                    ovpn_start($node, $statHandle);
+                    if (!$carp_down) {
+                        ovpn_start($node, $statHandle);
+                    }
                     break;
                 case 'configure':
-                    $carp_down = false;
-                    if ((string)$node->role == 'client' && !empty($vhids[(string)$node->carp_depend_on])) {
-                        $carp_down = $vhids[(string)$node->carp_depend_on] != 'MASTER';
-                    }
                     if ($carp_down) {
                         if (isvalidpid($node->pidFilename)) {
                             ovpn_stop($node);
