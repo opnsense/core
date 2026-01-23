@@ -45,6 +45,7 @@ class ProtocolFieldTest extends Field_Framework_TestCase
     }
 
     /**
+     * required empty
      */
     public function testRequiredEmpty()
     {
@@ -70,21 +71,22 @@ class ProtocolFieldTest extends Field_Framework_TestCase
     }
 
     /**
-     * required not empty
+     * valid values (uppercase except "any")
      */
     public function testValidValues()
     {
         $field = new ProtocolField();
         $field->setRequired('Y');
+        $field->setAddOptions(['xxX' => 'xxX']);
         $field->eventPostLoading();
-        foreach (['TcP', 'UDp', 'Any'] as $value) {
+        foreach (['TCP', 'UDP', 'any', 'XXX'] as $value) {
             $field->setValue($value);
             $this->assertEmpty($this->validate($field));
         }
     }
 
     /**
-     * required not empty lowercase
+     * valid values lowercase
      */
     public function testValidValuesLower()
     {
@@ -99,7 +101,7 @@ class ProtocolFieldTest extends Field_Framework_TestCase
     }
 
     /**
-     * set not found not required
+     * not found not required
      */
     public function testInvalidValues()
     {
