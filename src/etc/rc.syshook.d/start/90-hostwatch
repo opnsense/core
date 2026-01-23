@@ -1,4 +1,0 @@
-#!/bin/sh
-
-# work around mysterious first-time-only segfault
-/usr/local/etc/rc.d/hostwatch start
