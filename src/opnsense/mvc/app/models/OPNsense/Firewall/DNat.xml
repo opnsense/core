@@ -35,8 +35,9 @@
                 <!-- XXX: currently optional, need to decide what to do with it -->
                 <!-- <Required>Y</Required>
                 <Default>any</Default> -->
+                <ChangeCase>lower</ChangeCase>
                 <AddOptions>
-                    <opt1 value="tcp/udp">TCP/UDP</opt1>
+                    <opt1 value="TCP/UDP">TCP/UDP</opt1>
                 </AddOptions>
                 <BlankDesc>any</BlankDesc>
             </protocol>
