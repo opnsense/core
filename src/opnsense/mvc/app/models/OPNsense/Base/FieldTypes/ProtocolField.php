@@ -61,32 +61,53 @@ class ProtocolField extends BaseListField
     {
         /* IPv6 extension headers are skipped by the packet filter, we cannot police them */
         $ipv6_ext = ['IPV6-ROUTE', 'IPV6-FRAG', 'IPV6-OPTS', 'IPV6-NONXT', 'MOBILITY-HEADER'];
+
+        /* construct option hash to avoid repopulating options multiple times */
         $opt_hash = empty($this->additionalOptions) ? hash('sha256', json_encode($this->additionalOptions)) : '-';
-        $opt_hash .= $this->internalIsRequired ? 'r' : 'o';
+        $opt_hash .= $this->internalIsRequired ? 'R' : 'O';
         $opt_hash .= $this->internalChangeCase;
+
         if (empty(self::$internalStaticOptionList[$opt_hash])) {
-            self::$internalStaticOptionList[$opt_hash] = [];
-            if ($this->internalIsRequired) {
-                /* 'any' is not treated with ChangeCase apparently */
-                self::$internalStaticOptionList[$opt_hash]['any'] = gettext('any');
-            }
+            $any_label = gettext('any');
+            $new_list = [];
+
+            /* populate generic protocol options */
             foreach (explode("\n", file_get_contents('/etc/protocols')) as $line) {
                 if (substr($line, 0, 1) != "#") {
                     $parts = preg_split('/\s+/', $line);
                     if (count($parts) >= 4 && $parts[1] > 0) {
                         $protocol = $this->applyChangeCase($parts[0]);
-                        if (!in_array(strtoupper($protocol), $ipv6_ext) && !isset(self::$internalStaticOptionList[$protocol])) {
-                            self::$internalStaticOptionList[$opt_hash][$protocol] = strtoupper($protocol);
+                        if (in_array(strtoupper($protocol), $ipv6_ext)) {
+                            continue;
                         }
+                        $new_list[$protocol] = strtoupper($protocol);
                     }
                 }
             }
+
             /* append additional options */
             foreach ($this->additionalOptions as $prop => $value) {
-                self::$internalStaticOptionList[$opt_hash][$this->applyChangeCase($prop)] = $value;
+                /* allow overwriting all values, but make sure 'any' is lowercase and prepended last */
+                if (strtolower($prop) == 'any') {
+                    $any_label = $value;
+                    continue;
+                }
+
+                $new_list[$this->applyChangeCase($prop)] = $value;
             }
-            asort(self::$internalStaticOptionList[$opt_hash], SORT_NATURAL | SORT_FLAG_CASE);
+
+            /* sort backwards to append 'any' last if needed */
+            arsort($new_list, SORT_NATURAL | SORT_FLAG_CASE);
+
+            if ($this->internalIsRequired) {
+                /* 'any' is not treated with ChangeCase for backwards compatibility  */
+                $new_list['any'] = $any_label;
+            }
+
+            /* reverse and store the result */
+            self::$internalStaticOptionList[$opt_hash] = array_reverse($new_list, true);
         }
+
         $this->internalOptionList = self::$internalStaticOptionList[$opt_hash];
     }
 
@@ -96,7 +117,7 @@ class ProtocolField extends BaseListField
     public function setValue($value)
     {
         $new_value = empty($this->internalChangeCase) || strtolower((string)$value) == 'any' ?
-            strtolower((string)$value) : $this->applyChangeCase((string)$value);
+            strtolower((string)$value) : $this->applyChangeCase($value);
 
         /* if first set and not altered by the user, store initial value */
         if ($this->internalFieldLoaded === false && $this->internalInitialValue === false) {

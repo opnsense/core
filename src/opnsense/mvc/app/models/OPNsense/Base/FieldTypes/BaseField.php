@@ -458,7 +458,7 @@ abstract class BaseField
     public function setValue($value)
     {
         $new_value = empty($this->internalChangeCase) ?
-            (string)$value : $this->applyChangeCase((string)$value);
+            (string)$value : $this->applyChangeCase($value);
 
         /* if first set and not altered by the user, store initial value */
         if ($this->internalFieldLoaded === false && $this->internalInitialValue === false) {
@@ -897,7 +897,7 @@ abstract class BaseField
 
     /**
      * change character case on save
-     * @param string $value set case type, upper, lower, null (don't change)
+     * @param string $value set case type "upper" or "lower"
      */
     public function setChangeCase($value)
     {
@@ -905,9 +905,8 @@ abstract class BaseField
             $this->internalChangeCase = 'UPPER';
         } elseif (strtoupper(trim($value)) == 'LOWER') {
             $this->internalChangeCase = 'LOWER';
-        } else {
-            $this->internalChangeCase = null;
         }
+        /* do not allow changing back to the "null" default */
     }
 
     /**
@@ -921,8 +920,10 @@ abstract class BaseField
 
     /**
      * apply configured change case to this node
+     * @param $value to be case-changed as configured
+     * @return string case-changed value for use
      */
-    public function applyChangeCase($value)
+    public function applyChangeCase(string $value): string
     {
         if (!empty($value)) {
             if ($this->internalChangeCase == 'UPPER') {
