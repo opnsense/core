@@ -919,7 +919,7 @@ abstract class BaseField
     }
 
     /**
-     * apply configured change case to this node
+     * apply configured change case to a given value
      * @param $value to be case-changed as configured
      * @return string case-changed value for use
      */
