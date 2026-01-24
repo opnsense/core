@@ -116,7 +116,7 @@ class ProtocolField extends BaseListField
      */
     public function setValue($value)
     {
-        $new_value = empty($this->internalChangeCase) || strtolower((string)$value) == 'any' ?
+        $new_value = strtolower((string)$value) == 'any' ?
             strtolower((string)$value) : $this->applyChangeCase($value);
 
         /* if first set and not altered by the user, store initial value */
