@@ -906,7 +906,7 @@ abstract class BaseField
         } elseif (strtoupper(trim($value)) == 'LOWER') {
             $this->internalChangeCase = 'LOWER';
         }
-        /* do not allow changing back to the "null" default */
+        /* do not allow changing back to the "null" default via typo */
     }
 
     /**
