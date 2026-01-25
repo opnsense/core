@@ -57,6 +57,11 @@ class KeaDhcpv6 extends BaseModel
             if (!Util::isIPInCIDR($reservation->ip_address->getValue(), $subnet)) {
                 $messages->appendMessage(new Message(gettext("Address not in specified subnet"), $key . ".ip_address"));
             }
+            if (!$reservation->duid->isEmpty() && !$reservation->hw_address->isEmpty()) {
+                $messages->appendMessage(new Message(gettext("Either a DUID or an Ether address should be specified, but not both"), $key . ".duid"));
+            } elseif ($reservation->duid->isEmpty() && $reservation->hw_address->isEmpty()) {
+                $messages->appendMessage(new Message(gettext("Either a DUID or an Ether address should be specified."), $key . ".duid"));
+            }
         }
         // validate changed subnets
         $this_interfaces = $this->general->interfaces->getValues();
@@ -175,7 +180,7 @@ class KeaDhcpv6 extends BaseModel
                     continue;
                 }
                 $res = ['option-data' => []];
-                foreach (['duid', 'hostname'] as $key) {
+                foreach (['duid', 'hw_address', 'hostname'] as $key) {
                     if (!$reservation->$key->isEmpty()) {
                         $res[str_replace('_', '-', $key)] = $reservation->$key->getValue();
                     }

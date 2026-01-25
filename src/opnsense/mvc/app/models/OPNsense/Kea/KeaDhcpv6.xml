@@ -136,7 +136,6 @@
                     </Constraints>
                 </ip_address>
                 <duid type="TextField">
-                    <Required>Y</Required>
                     <Mask>/^(?:[0-9A-Fa-f]{2}(?::[0-9A-Fa-f]{2})+)$/</Mask>
                     <ValidationMessage>Value must be a colon-separated hexadecimal sequence (e.g., 01:02:f3).</ValidationMessage>
                     <Constraints>
@@ -149,6 +148,18 @@
                         </check001>
                     </Constraints>
                 </duid>
+                <hw_address type="MacAddressField">
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Duplicate entry exists.</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                            <caseInsensitive>Y</caseInsensitive>
+                            <addFields>
+                                <field1>subnet</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </hw_address>
                 <hostname type="HostnameField">
                     <IsDNSName>Y</IsDNSName>
                 </hostname>
