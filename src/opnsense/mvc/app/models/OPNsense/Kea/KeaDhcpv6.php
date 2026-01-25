@@ -251,6 +251,9 @@ class KeaDhcpv6 extends BaseModel
             $cnf['Dhcp6']['hooks-libraries'][] = [
                 'library' => '/usr/local/lib/kea/hooks/libdhcp_lease_cmds.so'
             ];
+            $cnf['Dhcp6']['hooks-libraries'][] = [
+                'library' => '/usr/local/lib/kea/hooks/libdhcp_host_cmds.so'
+            ];
             if (!$this->ha->enabled->isEmpty()) {
                 $record = [
                     'library' => '/usr/local/lib/kea/hooks/libdhcp_ha.so',
