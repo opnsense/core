@@ -75,6 +75,21 @@ class KeaDhcpv6 extends BaseModel
                     new Message(gettext("Interface not configured in general settings"), $key . ".interface")
                 );
             }
+            foreach ($subnet->pools->getValues() as $pool) {
+                if (Util::isSubnet($pool)) {
+                    $range = Util::cidrToRange($pool);
+                } else {
+                    $range = explode('-', $pool);
+                }
+                foreach (!empty($range) ? $range : [] as $addr) {
+                    if (!Util::isIPInCIDR($addr, $subnet->subnet->getValue())) {
+                        $messages->appendMessage(
+                            new Message(sprintf(gettext("Pool %s not in specified subnet"), $pool), $key . ".pools")
+                        );
+                        break;
+                    }
+                }
+            }
         }
 
         return $messages;
