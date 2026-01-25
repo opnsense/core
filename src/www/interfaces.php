@@ -252,7 +252,7 @@ function validate_track6_idassoc6(&$pconfig, $if)
                 $input_errors[] = gettext("You specified an IPv6 prefix ID that is out of range.");
             }
             foreach (link_interface_to_track6($pconfig["{$pconfig['type6']}-interface"]) as $trackif => $trackcfg) {
-                if ($trackif != $if && $trackcfg["{$pconfig['type6']}-prefix-id"] == $track6_prefix_id) {
+                if ($trackif != $if && $trackcfg['track6-prefix-id'] == $track6_prefix_id) {
                     $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
                     break;
                 }
