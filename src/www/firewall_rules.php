@@ -281,17 +281,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $savemsg = get_std_save_message();
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del' && isset($id)) {
         // delete single item
-        if (!empty($a_filter[$id]['associated-rule-id'])) {
-            // unlink nat entry
-            if (isset($config['nat']['rule'])) {
-                $a_nat = &config_read_array('nat', 'rule');
-                foreach ($a_nat as &$natent) {
-                    if ($natent['associated-rule-id'] == $a_filter[$id]['associated-rule-id']) {
-                        $natent['associated-rule-id'] = '';
-                    }
-                }
-            }
-        }
         unset($a_filter[$id]);
         write_config();
         mark_subsystem_dirty('filter');
@@ -300,15 +289,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del_x' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
         // delete selected rules
         foreach ($pconfig['rule'] as $rulei) {
-            // unlink nat entry
-            if (isset($config['nat']['rule'])) {
-                $a_nat = &config_read_array('nat', 'rule');
-                foreach ($a_nat as &$natent) {
-                    if ($natent['associated-rule-id'] == $a_filter[$rulei]['associated-rule-id']) {
-                        $natent['associated-rule-id'] = '';
-                    }
-                }
-            }
             unset($a_filter[$rulei]);
         }
         write_config();
@@ -1022,14 +1002,12 @@ $( document ).ready(function() {
                       <button id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("Move selected rules before this rule")) ?>" class="act_move btn btn-default btn-xs" aria-label="<?= html_safe(gettext("Move selected rules before this rule")) ?>">
                         <i class="fa fa-arrow-left fa-fw"></i>
                       </button>
-<?php if (empty($filterent['associated-rule-id'])): ?>
                       <a href="firewall_rules_edit.php?if=<?=$selected_if;?>&id=<?=$i;?>" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>" aria-label="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs">
                         <i class="fa fa-pencil fa-fw"></i>
                       </a>
                       <a href="firewall_rules_edit.php?if=<?=$selected_if;?>&dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Clone')) ?>" aria-label="<?= html_safe(gettext('Clone')) ?>">
                         <i class="fa fa-clone fa-fw"></i>
                       </a>
-<?php endif ?>
                       <a id="del_<?=$i;?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs" aria-label="<?= html_safe(gettext('Delete')) ?>">
                         <i class="fa fa-trash fa-fw"></i>
                       </a>
