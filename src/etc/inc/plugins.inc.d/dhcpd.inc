@@ -1304,6 +1304,10 @@ function dhcpd_staticarp($interface, $ifconfig_details)
 
     $device = $ifcfg['if'];
 
+    if (empty($ifconfig_details[$device])) {
+        return;
+    }
+
     $have = in_array('staticarp', $ifconfig_details[$device]['flags']);
     $want = isset($config['dhcpd'][$interface]['staticarp']);
 
