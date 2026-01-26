@@ -100,6 +100,7 @@ class Hostwatch:
             return self._def_local_db[mac]
 
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('filename',
