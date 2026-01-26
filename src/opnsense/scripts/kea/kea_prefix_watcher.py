@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2025 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2025-2026 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@
 import argparse
 import csv
 import ipaddress
+import json
 import os
 import time
 import subprocess
@@ -69,24 +70,34 @@ def yield_log_records(filename, poll_interval=5):
             else:
                 time.sleep(poll_interval)
 
-class NDP:
-    """ simplistic NDP link local lookup
+class Hostwatch:
+    """
+    Use hostwatch service to gather link-local IPv6 addresses.
+    The endpoint falls back to NDP when hostwatch service is not running.
     """
     def __init__(self):
         self._def_local_db = {}
 
     def reload(self):
-        ndpdata = subprocess.run(['/usr/sbin/ndp', '-an'], capture_output=True, text=True).stdout
-        for idx, line in enumerate(ndpdata.split("\n")):
-            parts = line.split()
-            if idx > 0 and len(parts) > 1:
-                try:
-                    addr = parts[0].split('%')[0]
-                    if ipaddress.ip_address(addr).is_link_local:
-                        self._def_local_db[parts[1]] = parts[0]
-                except (ValueError, IndexError):
-                    pass
+        self._def_local_db.clear()
 
+        out = subprocess.run(['/usr/local/sbin/configctl', 'hostwatch', 'dump_full'], capture_output=True, text=True).stdout
+
+        try:
+            rows = json.loads(out).get("rows", [])
+        except (ValueError, TypeError):
+            return
+
+        for row in rows:
+            try:
+                # [ifname, mac, ip, vendor]
+                mac = row[1]
+                addr = row[2]
+
+                if ipaddress.ip_address(addr).is_link_local:
+                    self._def_local_db[mac] = addr
+            except (ValueError, IndexError):
+                pass
 
     def get(self, mac):
         if mac not in self._def_local_db:
@@ -94,7 +105,6 @@ class NDP:
 
         if mac in self._def_local_db:
             return self._def_local_db[mac]
-
 
 
 if __name__ == '__main__':
@@ -110,7 +120,7 @@ if __name__ == '__main__':
     if not os.path.isfile(inputargs.filename):
         syslog.syslog(syslog.LOG_ERR, "lease file does not exist: %s" % inputargs.filename)
         sys.exit(1)
-    ndp = NDP()
+    hostwatch = Hostwatch()
     for record in yield_log_records(inputargs.filename):
         # IA_PD: type 2, prefix_len <= 64 - the delegated prefix
         if record.get('lease_type', 0) == 2 and record.get('prefix_len', 128) <= 64:
@@ -118,7 +128,7 @@ if __name__ == '__main__':
             if (prefix not in prefixes or prefixes[prefix].get('hwaddr') != record.get('hwaddr')) \
                     and record.get('expire', 0) > time.time():
                 prefixes[prefix] = record
-                ll_addr = ndp.get(record.get('hwaddr'))
+                ll_addr = hostwatch.get(record.get('hwaddr'))
                 # lazy drop
                 subprocess.run(['/sbin/route', 'delete', '-inet6', prefix], capture_output=True)
                 if record.get('valid_lifetime', 0) > 0:
