@@ -3109,6 +3109,11 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
 
         ksort($assoc_pd, SORT_NUMERIC);
 
+        /* for backwards compatibility always emit this PD request */
+        if (!isset($assoc_pd[$id])) {
+            $assoc_pd[$id] = '';
+        }
+
         $dhcp6cconf .= "interface {$wanif} {\n";
 
         if (!isset($wancfg['dhcp6prefixonly'])) {
