@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2025-2026 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,7 @@
 import argparse
 import csv
 import ipaddress
-import json
+import ujson
 import os
 import time
 import subprocess
@@ -81,23 +81,16 @@ class Hostwatch:
     def reload(self):
         self._def_local_db.clear()
 
-        out = subprocess.run(['/usr/local/sbin/configctl', 'hostwatch', 'dump_full'], capture_output=True, text=True).stdout
+        out = subprocess.run(
+            ['/usr/local/opnsense/scripts/interfaces/list_hosts.py', '--proto', 'inet6', '--ndp'],
+            capture_output=True,
+            text=True
+        ).stdout
 
-        try:
-            rows = json.loads(out).get("rows", [])
-        except (ValueError, TypeError):
-            return
-
-        for row in rows:
-            try:
-                # [ifname, mac, ip, vendor]
-                mac = row[1]
-                addr = row[2]
-
-                if ipaddress.ip_address(addr).is_link_local:
-                    self._def_local_db[mac] = addr
-            except (ValueError, IndexError):
-                pass
+        for row in ujson.loads(out).get("rows", []):
+            # [ifname, mac, ip]
+            if ipaddress.ip_address(row[2]).is_link_local:
+                self._def_local_db[row[1]] = row[2]
 
     def get(self, mac):
         if mac not in self._def_local_db:
