@@ -65,16 +65,16 @@ abstract class LeasesController extends ApiControllerBase
         $resv6 = [];
 
         foreach ((new KeaDhcpv4())->reservations->reservation->iterateItems() as $reservation) {
-            $resv4[strtolower($reservation->hw_address->getValue())] = true;
+            $resv4[strtolower($reservation->hw_address->getValue())] = 'hwaddr';
         }
 
         foreach ((new KeaDhcpv6())->reservations->reservation->iterateItems() as $reservation) {
             // At least one of these is required in the model
             if (!$reservation->duid->isEmpty()) {
-                $resv6[strtolower($reservation->duid->getValue())] = true;
+                $resv6[strtolower($reservation->duid->getValue())] = 'duid';
             }
             if (!$reservation->hw_address->isEmpty()) {
-                $resv6[strtolower($reservation->hw_address->getValue())] = true;
+                $resv6[strtolower($reservation->hw_address->getValue())] = 'hwaddr';
             }
         }
 
@@ -93,15 +93,25 @@ abstract class LeasesController extends ApiControllerBase
                 $mac = strtoupper(substr(str_replace(':', '', $record['hwaddr']), 0, 6));
                 $record['mac_info'] = isset($mac_db[$mac]) ? $mac_db[$mac] : '';
                 // Reservation
+                $record['is_reserved'] = '0';
+                $record['is_reserved_key'] = '';
                 $addr = $record['address'] ?? '';
                 if (strpos($addr, ':') !== false) {
                     $duid = strtolower($record['duid'] ?? '');
                     $mac = strtolower($record['hwaddr'] ?? '');
-                    $record['is_reserved'] =
-                        isset($resv6[$duid]) || isset($resv6[$mac]) ? '1' : '0';
+                    if (isset($resv6[$duid])) {
+                        $record['is_reserved'] = '1';
+                        $record['is_reserved_key'] = 'duid';
+                    } elseif (isset($resv6[$mac])) {
+                        $record['is_reserved'] = '1';
+                        $record['is_reserved_key'] = 'hwaddr';
+                    }
                 } else {
                     $mac = strtolower($record['hwaddr'] ?? '');
-                    $record['is_reserved'] = isset($resv4[$mac]) ? '1' : '0';
+                    if (isset($resv4[$mac])) {
+                        $record['is_reserved'] = '1';
+                        $record['is_reserved_key'] = 'hwaddr';
+                    }
                 }
             }
         } else {
