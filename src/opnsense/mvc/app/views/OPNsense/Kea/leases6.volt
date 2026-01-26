@@ -90,6 +90,7 @@
                         const addUrlParams = {
                             ip_address: row.address || '',
                             duid: row.duid || '',
+                            hw_address: row.hwaddr || '',
                             hostname: row.hostname || ''
                         };
                         const addUrl = `${baseUrl}?${new URLSearchParams(addUrlParams)}`;
