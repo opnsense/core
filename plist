@@ -1242,6 +1242,7 @@
 /usr/local/opnsense/scripts/interfaces/carp_global_status.php
 /usr/local/opnsense/scripts/interfaces/carp_set_status.php
 /usr/local/opnsense/scripts/interfaces/dhclient-script
+/usr/local/opnsense/scripts/interfaces/dhcp6c_script.sh
 /usr/local/opnsense/scripts/interfaces/gen_duid.php
 /usr/local/opnsense/scripts/interfaces/ifctl.sh
 /usr/local/opnsense/scripts/interfaces/lib/__init__.py
