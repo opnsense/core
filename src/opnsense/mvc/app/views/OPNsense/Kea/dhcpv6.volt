@@ -175,6 +175,7 @@
                         if (params.has('hostname')) $('#reservation\\.hostname').val(params.get('hostname'));
                         if (params.has('ip_address')) $('#reservation\\.ip_address').val(params.get('ip_address'));
                         if (params.has('duid')) $('#reservation\\.duid').val(params.get('duid'));
+                        if (params.has('hw_address')) $('#reservation\\.hw_address').val(params.get('hw_address'));
                         history.replaceState(null, null, window.location.pathname + '#reservations');
                     });
                     $(this).find('.command-add').trigger('click');
