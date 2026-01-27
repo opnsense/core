@@ -922,30 +922,6 @@ function url_safe($format, $args = [])
     return vsprintf($format, $args);
 }
 
-function mwexec($command, $mute = false) /* XXX deprecated */
-{
-    $oarr = [];
-    $retval = 0;
-
-    $garbage = exec("{$command} 2>&1", $oarr, $retval); /* XXX to be removed */
-    unset($garbage);
-
-    if ($retval != 0 && $mute !== true) {
-        $output = implode(' ', $oarr);
-        log_msg(sprintf("The command '%s'%s returned exit code '%d', the output was '%s'", $command, !empty($mute) ? "($mute) " : '', $retval, $output), LOG_ERR);
-        unset($output);
-    }
-
-    unset($oarr);
-
-    return $retval;
-}
-
-function mwexec_bg($command, $mute = false) /* XXX deprecated */
-{
-    mwexec("/usr/sbin/daemon -f {$command}", $mute);
-}
-
 /* safe shell command formatter */
 function exec_safe($format, $args = [])
 {
