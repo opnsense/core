@@ -90,6 +90,17 @@ class KeaDhcpv6 extends BaseModel
                     }
                 }
             }
+            // validate changed pd_pools
+            foreach ($this->pd_pools->pd_pool->iterateItems() as $pool) {
+                if (!$validateFullModel && !$pool->isFieldChanged()) {
+                    continue;
+                }
+                $key = $pool->__reference;
+                if ($pool->prefix_len->getValue() >= $pool->delegated_len->getValue()) {
+                    $messages->appendMessage(new Message(gettext("Delegated length must be longer than or equal to prefix length"), $key . ".delegated_len"));
+                }
+            }
+
         }
 
         return $messages;
