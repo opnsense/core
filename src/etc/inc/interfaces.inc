@@ -3001,23 +3001,27 @@ INFOREQ|REBIND|RENEW|REQUEST|SOLICIT)
     done
     /usr/local/sbin/ifctl -i {$device} -6sd \${ARGS}
 
-    if [ \${REASON} != "INFOREQ" ]; then
+    if [ \${REASON} = "REQUEST" -o \${REASON} = "SOLICIT" ]; then
+        /usr/bin/logger -t dhcp6c "dhcp6c_script: \${REASON} on {$device} connected to server"
+        FORCE=\${REASON}
+
+        # can safely clear the prefix during connect
+        /usr/local/sbin/ifctl -i {$device} -6pd
+    fi
+
+    if [ \${REASON} != "INFOREQ" -a -n "\${PDINFO}" ]; then
         ARGS=
         for PD in \${PDINFO}; do
             ARGS="\${ARGS} -a \${PD}"
         done
 
         if /usr/local/sbin/ifctl -i {$device} -6pu \${ARGS}; then
-            FORCE=force
+            /usr/bin/logger -t dhcp6c "dhcp6c_script: \${REASON} on {$device} prefix now \${PDINFO}"
+
+            if [ -z "\${FORCE}" ]; then
+                FORCE=\${REASON}
+            fi
         fi
-    fi
-
-    if [ \${REASON} = "REQUEST" -o \${REASON} = "SOLICIT" ]; then
-        FORCE=force
-    fi
-
-    if [ -n "\${FORCE}" ]; then
-        /usr/bin/logger -t dhcp6c "dhcp6c_script: \${REASON} on {$device} renewal"
     fi
 
     /usr/local/sbin/configctl -d interface newipv6 {$device} \${FORCE}
@@ -3104,6 +3108,11 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
         }
 
         ksort($assoc_pd, SORT_NUMERIC);
+
+        /* for backwards compatibility always emit this PD request */
+        if (!isset($assoc_pd[$id])) {
+            $assoc_pd[$id] = '';
+        }
 
         $dhcp6cconf .= "interface {$wanif} {\n";
 

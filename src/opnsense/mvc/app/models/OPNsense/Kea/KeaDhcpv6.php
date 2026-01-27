@@ -57,6 +57,11 @@ class KeaDhcpv6 extends BaseModel
             if (!Util::isIPInCIDR($reservation->ip_address->getValue(), $subnet)) {
                 $messages->appendMessage(new Message(gettext("Address not in specified subnet"), $key . ".ip_address"));
             }
+            if (!$reservation->duid->isEmpty() && !$reservation->hw_address->isEmpty()) {
+                $messages->appendMessage(new Message(gettext("Either a DUID or an Ether address should be specified, but not both"), $key . ".duid"));
+            } elseif ($reservation->duid->isEmpty() && $reservation->hw_address->isEmpty()) {
+                $messages->appendMessage(new Message(gettext("Either a DUID or an Ether address should be specified."), $key . ".duid"));
+            }
         }
         // validate changed subnets
         $this_interfaces = $this->general->interfaces->getValues();
@@ -69,6 +74,21 @@ class KeaDhcpv6 extends BaseModel
                 $messages->appendMessage(
                     new Message(gettext("Interface not configured in general settings"), $key . ".interface")
                 );
+            }
+            foreach ($subnet->pools->getValues() as $pool) {
+                if (Util::isSubnet($pool)) {
+                    $range = Util::cidrToRange($pool);
+                } else {
+                    $range = explode('-', $pool);
+                }
+                foreach (!empty($range) ? $range : [] as $addr) {
+                    if (!Util::isIPInCIDR($addr, $subnet->subnet->getValue())) {
+                        $messages->appendMessage(
+                            new Message(sprintf(gettext("Pool %s not in specified subnet"), $pool), $key . ".pools")
+                        );
+                        break;
+                    }
+                }
             }
         }
 
@@ -175,7 +195,7 @@ class KeaDhcpv6 extends BaseModel
                     continue;
                 }
                 $res = ['option-data' => []];
-                foreach (['duid', 'hostname'] as $key) {
+                foreach (['duid', 'hw_address', 'hostname'] as $key) {
                     if (!$reservation->$key->isEmpty()) {
                         $res[str_replace('_', '-', $key)] = $reservation->$key->getValue();
                     }
@@ -245,6 +265,9 @@ class KeaDhcpv6 extends BaseModel
             $cnf['Dhcp6']['hooks-libraries'] = [];
             $cnf['Dhcp6']['hooks-libraries'][] = [
                 'library' => '/usr/local/lib/kea/hooks/libdhcp_lease_cmds.so'
+            ];
+            $cnf['Dhcp6']['hooks-libraries'][] = [
+                'library' => '/usr/local/lib/kea/hooks/libdhcp_host_cmds.so'
             ];
             if (!$this->ha->enabled->isEmpty()) {
                 $record = [

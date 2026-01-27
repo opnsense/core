@@ -85,6 +85,7 @@ class DNatController extends FilterBaseController
                     'ipprotocol' => 'inet46',
                     '%ipprotocol' => gettext('IPv4+IPv6'),
                     'protocol' => 'tcp',
+                    '%protocol' => 'TCP',
                     'disabled' => '0',
                     'nordr' => '1',
                     'interface' => $if,

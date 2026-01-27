@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2025 Deciso B.V.
+ * Copyright (C) 2015-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -118,7 +118,7 @@ abstract class BaseField
     /**
      * @var string $internalToLower
      */
-    private $internalChangeCase = null;
+    protected $internalChangeCase = null;
 
     /**
      * @var bool is field loaded (after post loading event)
@@ -457,15 +457,15 @@ abstract class BaseField
      */
     public function setValue($value)
     {
-        // if first set and not altered by the user, store initial value
+        $new_value = empty($this->internalChangeCase) ?
+            (string)$value : $this->applyChangeCase($value);
+
+        /* if first set and not altered by the user, store initial value */
         if ($this->internalFieldLoaded === false && $this->internalInitialValue === false) {
-            $this->internalInitialValue = (string)$value;
+            $this->internalInitialValue = $new_value;
         }
-        $this->internalValue = (string)$value;
-        // apply case when specified
-        if (!empty($this->internalChangeCase)) {
-            $this->applyFilterChangeCase();
-        }
+
+        $this->internalValue = $new_value;
     }
 
     /**
@@ -897,7 +897,7 @@ abstract class BaseField
 
     /**
      * change character case on save
-     * @param string $value set case type, upper, lower, null (don't change)
+     * @param string $value set case type "upper" or "lower"
      */
     public function setChangeCase($value)
     {
@@ -905,9 +905,8 @@ abstract class BaseField
             $this->internalChangeCase = 'UPPER';
         } elseif (strtoupper(trim($value)) == 'LOWER') {
             $this->internalChangeCase = 'LOWER';
-        } else {
-            $this->internalChangeCase = null;
         }
+        /* do not allow changing back to the "null" default via typo */
     }
 
     /**
@@ -920,17 +919,21 @@ abstract class BaseField
     }
 
     /**
-     * apply change case to this node, called by setValue
+     * apply configured change case to a given value
+     * @param $value to be case-changed as configured
+     * @return string case-changed value for use
      */
-    private function applyFilterChangeCase()
+    public function applyChangeCase(string $value): string
     {
-        if (!empty($this->internalValue)) {
+        if (!empty($value)) {
             if ($this->internalChangeCase == 'UPPER') {
-                $this->internalValue = strtoupper($this->internalValue);
+                $value = strtoupper($value);
             } elseif ($this->internalChangeCase == 'LOWER') {
-                $this->internalValue = strtolower($this->internalValue);
+                $value = strtolower($value);
             }
         }
+
+        return $value;
     }
 
     /**

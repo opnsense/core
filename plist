@@ -141,7 +141,6 @@
 /usr/local/etc/rc.syshook.d/start/25-syslog
 /usr/local/etc/rc.syshook.d/start/90-carp
 /usr/local/etc/rc.syshook.d/start/90-cron
-/usr/local/etc/rc.syshook.d/start/90-hostwatch
 /usr/local/etc/rc.syshook.d/start/90-openvpn
 /usr/local/etc/rc.syshook.d/start/90-sysctl
 /usr/local/etc/rc.syshook.d/start/95-beep
@@ -582,6 +581,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/LiveMediaStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/MonitOverrideStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/OpensshOverrideStatus.php
+/usr/local/opnsense/mvc/app/library/OPNsense/System/Status/ResolvConfOverrideStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/RootLockStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/SystemBootingStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/UnboundBlocklistStatus.php

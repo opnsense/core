@@ -18,6 +18,12 @@
         <help>duid of the client in question</help>
     </field>
     <field>
+        <id>reservation.hw_address</id>
+        <label>MAC address</label>
+        <type>text</type>
+        <help>MAC/Ether address of the client in question, although for IPv6 usually a DUID is used, we can specify an ether address instead.</help>
+    </field>
+    <field>
         <id>reservation.hostname</id>
         <label>Hostname</label>
         <type>text</type>

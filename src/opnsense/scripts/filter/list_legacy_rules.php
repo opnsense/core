@@ -63,7 +63,7 @@ if (!empty($config['filter']['rule'])) {
     foreach ($config['filter']['rule'] as $rule) {
         $target_rule = [
             '@uuid' => $rule['@attributes']['uuid'],
-            'enabled' => !empty($rule['disable']) ? '1' : '0',
+            'enabled' => empty($rule['disabled']) ? '1' : '0',
             'statetype' => !empty($rule['statetype']) ? explode(' ', $rule['statetype'])[0] : 'keep',
             'state-policy' => $rule['state-policy'] ?? '',
             'sequence' => $sequence,
@@ -100,7 +100,7 @@ if (!empty($config['filter']['rule'])) {
             'tagged' => $rule['tagged'] ?? '',
             'tcpflags1' => $rule['tcpflags1'] ?? '',
             'tcpflags2' => $rule['tcpflags2'] ?? '',
-            'categories' => $rule['categories'] ?? '',
+            'categories' => $rule['category'] ?? '',
             'sched' => $rule['sched'] ?? '',
             'tos' => $rule['tos'] ?? '',
             'shaper1' => $rule['shaper1'] ?? '',
@@ -112,8 +112,8 @@ if (!empty($config['filter']['rule'])) {
         }
         foreach (['source', 'destination'] as $field) {
             if (!empty($rule[$field])) {
-                $target_rule[$field . '_not'] = !empty($rule[$field]['not']) ? "1" : "0";
-                if (!empty($rule[$field]['any'])) {
+                $target_rule[$field . '_not'] = isset($rule[$field]['not']) ? "1" : "0";
+                if (isset($rule[$field]['any'])) {
                     $target_rule[$field . '_net'] = 'any';
                 } elseif (!empty($rule[$field]['network'])) {
                     $target_rule[$field . '_net'] = $rule[$field]['network'];

@@ -78,20 +78,20 @@
     To switch from the legacy rules to the new rules interface, a migration is needed.
     As this can be a risky operation, manual intervention is required.
 
-    This module assist you in moving your rules to the new application and offers pointers to
+    This module assists you in moving your rules to the new application and offers pointers to
     various components available to guide you through the process.
 
     When using a ZFS based setup, you can use snapshots to revert back to the old situation when accidents happen,
     The other option is to use configuration history to undo changes or backup your configuration [1].
 
-    To prevent being locked out during the process, enable the anti-lockout rule and make sure to access the machine
+    To prevent being locked out during the process, do not disable the anti-lockout rule and access the machine
     via your LAN interface [2].
 
     With all preparations in place, we can export the rules into a format our new rules interface understands [3].
 
-    {tip} Use a tool like Microsoft Excel to inspect and modify rules in the csv file before importing them or when certain validations fail.
+    {tip} Use a tool like Microsoft Excel to inspect and modify rules in the CSV file before importing them or when certain validations fail.
 
-    Now we can import the exsiting rules into the new user interface [4].
+    Now we can import the existing rules into the new user interface [4].
 
     After validating the rules are as expected, you can remove all legacy rules via [5] which forwards you to the new rules page after completion.
 
@@ -105,7 +105,7 @@
         </div>
         <div>
             <i class="fa fa-fw fa-check"></i>
-            <a target="_new" href="/system_advanced_firewall.php">{{ lang._('Deselect anti-lockout in advanced settings')}}</a>
+            <a target="_new" href="/system_advanced_firewall.php">{{ lang._('Do not disable anti-lockout in advanced settings')}}</a>
         </div>
         <div>
             <i class="fa fa-fw fa-file-csv"></i>
