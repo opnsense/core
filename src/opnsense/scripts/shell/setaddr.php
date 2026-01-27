@@ -538,9 +538,8 @@ function console_configure_dhcpd($version = 4)
         echo "\n";
     }
 
-    /* XXX: not disabling dnsmasq as there might be other consumers */
-    if ($version === 6 && isset($config['dhcpdv6'][$interface]['enable'])) {
-        unset($config['dhcpdv6'][$interface]['enable']);
+    if ($version === 6) {
+        $config['dnsmasq']['dhcp'] = ['enable_ra' => '1'];
     }
 }
 
@@ -598,6 +597,14 @@ if (empty($config['interfaces']['lan'])) {
     unset($config['nat']);
     shell_safe('rm /var/dhcpd/var/db/*');
     $restart_dhcpd = true;
+}
+
+if (isset($config['dhcpd'][$interface]['enable'])) {
+    unset($config['dhcpd'][$interface]['enable']);
+}
+
+if (isset($config['dhcpdv6'][$interface]['enable'])) {
+    unset($config['dhcpdv6'][$interface]['enable']);
 }
 
 echo "\nWriting configuration...";
