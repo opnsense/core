@@ -105,7 +105,7 @@ abstract class LeasesController extends ApiControllerBase
                 } else {
                     $mac = strtolower($record['hwaddr'] ?? '');
                     if (isset($resv4[$mac])) {
-                        $record['is_reserved'] = $resv6[$mac];
+                        $record['is_reserved'] = $resv4[$mac];
                     }
                 }
             }
