@@ -206,7 +206,7 @@ function system_resolvconf_generate($verbose = false)
     );
 
     if (!empty($syscfg['domain'])) {
-        $resolvconf = "domain {$syscfg['domain']}\n";
+        $resolvconf .= "domain {$syscfg['domain']}\n";
     }
 
     if (!isset($syscfg['dnslocalhost']) && !empty(service_by_filter(['dns_ports' => '53']))) {
