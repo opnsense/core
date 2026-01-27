@@ -50,6 +50,13 @@
                         $("#grid-hosts").UIBootgrid({
                         search:'/api/hostdiscovery/service/search',
                         options: {
+                            requestHandler: function (params) {
+                                // sort on last_seen by default
+                                if ($.isEmptyObject(params.sort)) {
+                                    params.sort = {'last_seen': 'desc'};
+                                }
+                                return params;
+                            },
                             responseHandler: function (response) {
                                 if (response.rows.length > 0 && response.rows[0].source == 'discovery') {
                                     $("#legacy_alert").hide();
@@ -101,6 +108,8 @@
                     <th data-column-id="ip_address">{{ lang._('IP Address') }}</th>
                     <th data-column-id="ether_address" data-type="string">{{ lang._('MAC Address') }}</th>
                     <th data-column-id="organization_name" data-type="string">{{ lang._('Organization') }}</th>
+                    <th data-column-id="first_seen" data-visible="false" data-type="string">{{ lang._('First Seen') }}</th>
+                    <th data-column-id="last_seen" data-type="string">{{ lang._('Last Seen') }}</th>
                 </tr>
             </thead>
             <tbody>
