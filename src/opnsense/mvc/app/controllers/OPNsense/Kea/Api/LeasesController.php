@@ -72,8 +72,7 @@ abstract class LeasesController extends ApiControllerBase
             // At least one of these is required in the model
             if (!$reservation->duid->isEmpty()) {
                 $resv6[strtolower($reservation->duid->getValue())] = 'duid';
-            }
-            if (!$reservation->hw_address->isEmpty()) {
+            } elseif (!$reservation->hw_address->isEmpty()) {
                 $resv6[strtolower($reservation->hw_address->getValue())] = 'hwaddr';
             }
         }
@@ -93,24 +92,20 @@ abstract class LeasesController extends ApiControllerBase
                 $mac = strtoupper(substr(str_replace(':', '', $record['hwaddr']), 0, 6));
                 $record['mac_info'] = isset($mac_db[$mac]) ? $mac_db[$mac] : '';
                 // Reservation
-                $record['is_reserved'] = '0';
-                $record['is_reserved_key'] = '';
+                $record['is_reserved'] = '';
                 $addr = $record['address'] ?? '';
                 if (strpos($addr, ':') !== false) {
                     $duid = strtolower($record['duid'] ?? '');
                     $mac = strtolower($record['hwaddr'] ?? '');
                     if (isset($resv6[$duid])) {
-                        $record['is_reserved'] = '1';
-                        $record['is_reserved_key'] = $resv6[$duid];
+                        $record['is_reserved'] = $resv6[$duid];
                     } elseif (isset($resv6[$mac])) {
-                        $record['is_reserved'] = '1';
-                        $record['is_reserved_key'] = $resv6[$mac];
+                        $record['is_reserved'] = $resv6[$mac];
                     }
                 } else {
                     $mac = strtolower($record['hwaddr'] ?? '');
                     if (isset($resv4[$mac])) {
-                        $record['is_reserved'] = '1';
-                        $record['is_reserved_key'] = $resv6[$mac];
+                        $record['is_reserved'] = $resv6[$mac];
                     }
                 }
             }
