@@ -392,10 +392,19 @@ EOD;
                 }
             }
             $config['dnsmasq']['enable'] = '1';
+            $config['dnsmasq']['dhcp'] = ['enable_ra' => '1'];
             $config['dnsmasq']['dhcp_ranges'][] = [
-                'interface' => 'lan',
+                '@attributes' => ['uuid' => generate_uuid()],
                 'start_addr' => '192.168.1.100',
-                'end_addr' => '192.168.1.200'
+                'end_addr' => '192.168.1.199',
+                'interface' => 'lan',
+            ];
+            $config['dnsmasq']['dhcp_ranges'][] = [
+                '@attributes' => ['uuid' => generate_uuid()],
+                'start_addr' => '::1000',
+                'end_addr' => '::2000',
+                'ra_mode' => 'slaac',
+                'interface' => 'lan',
             ];
 
             config_read_array('nat', 'outbound');
