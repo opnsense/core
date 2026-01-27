@@ -99,6 +99,9 @@ class KeaDhcpv6 extends BaseModel
                 if ($pool->prefix_len->getValue() >= $pool->delegated_len->getValue()) {
                     $messages->appendMessage(new Message(gettext("Delegated length must be longer than or equal to prefix length"), $key . ".delegated_len"));
                 }
+                if (!Util::isSubnetStrict($pool->prefix->getValue() . "/" . $pool->prefix_len->getValue())) {
+                    $messages->appendMessage(new Message(gettext("Invalid Pool boundaries, offered address is not the first address in the prefix."), $key . ".prefix"));
+                }
             }
 
         }
