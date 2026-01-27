@@ -189,24 +189,24 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
         }
         $radvdconf .= "# Generated RADVD config for manual assignment on {$dhcpv6if}\n";
         $radvdconf .= "interface {$device} {\n";
-        $radvdconf .= "\tAdvSendAdvert on;\n";
-        $radvdconf .= "\tMinRtrAdvInterval {$entry->MinRtrAdvInterval->getValue()};\n";
-        $radvdconf .= "\tMaxRtrAdvInterval {$entry->MaxRtrAdvInterval->getValue()};\n";
+        $radvdconf .= "    AdvSendAdvert on;\n";
+        $radvdconf .= "    MinRtrAdvInterval {$entry->MinRtrAdvInterval->getValue()};\n";
+        $radvdconf .= "    MaxRtrAdvInterval {$entry->MaxRtrAdvInterval->getValue()};\n";
         if ($entry->AdvDefaultLifetime->isSet()) {
-            $radvdconf .= "\tAdvDefaultLifetime {$entry->AdvDefaultLifetime->getValue()};\n";
+            $radvdconf .= "    AdvDefaultLifetime {$entry->AdvDefaultLifetime->getValue()};\n";
         }
-        $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 0);
-        $radvdconf .= "\tAdvDefaultPreference {$entry->AdvDefaultPreference->getValue()};\n";
+        $radvdconf .= sprintf("    AdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 0);
+        $radvdconf .= "    AdvDefaultPreference {$entry->AdvDefaultPreference->getValue()};\n";
 
         switch ($entry->mode->getValue()) {
             case 'assist':
             case 'managed':
-                $radvdconf .= "\tAdvManagedFlag on;\n";
-                $radvdconf .= "\tAdvOtherConfigFlag on;\n";
+                $radvdconf .= "    AdvManagedFlag on;\n";
+                $radvdconf .= "    AdvOtherConfigFlag on;\n";
                 break;
             case 'stateless':
-                $radvdconf .= "\tAdvManagedFlag off;\n";
-                $radvdconf .= "\tAdvOtherConfigFlag on;\n";
+                $radvdconf .= "    AdvManagedFlag off;\n";
+                $radvdconf .= "    AdvOtherConfigFlag on;\n";
                 break;
             default:
                 break;
@@ -247,72 +247,72 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
 
         if ($src_addr) {
             /* inject configured link-local address into the RA message */
-            $radvdconf .= "\tAdvRASrcAddress {\n";
-            $radvdconf .= "\t\t{$ifcfgipv6};\n";
-            $radvdconf .= "\t};\n";
+            $radvdconf .= "    AdvRASrcAddress {\n";
+            $radvdconf .= "        {$ifcfgipv6};\n";
+            $radvdconf .= "    };\n";
         }
 
         if ($carp_mode) {
             /* to avoid wrong MAC being stuck during failover */
-            $radvdconf .= "\tAdvSourceLLAddress off;\n";
+            $radvdconf .= "    AdvSourceLLAddress off;\n";
         }
 
         /* to avoid final advertisement with zero router lifetime */
-        $radvdconf .= "\tRemoveAdvOnExit " . (!$entry->RemoveAdvOnExit->isEmpty() ? $entry->RemoveAdvOnExit->getValue() : ($carp_mode ? 'off' : 'on')) . ";\n";
+        $radvdconf .= "    RemoveAdvOnExit " . (!$entry->RemoveAdvOnExit->isEmpty() ? $entry->RemoveAdvOnExit->getValue() : ($carp_mode ? 'off' : 'on')) . ";\n";
 
         /* VIPs may duplicate readings from system */
         $stanzas = array_unique($stanzas);
 
         foreach ($stanzas as $stanza) {
             if ($stanza === 'base6') {
-                $radvdconf .= "\tprefix ::/64 {\n";
+                $radvdconf .= "    prefix ::/64 {\n";
                 $baseif = get_real_interface($entry->Base6Interface->getValue(), 'inet6');
-                $radvdconf .= "\t\tBase6Interface {$baseif};\n";
+                $radvdconf .= "        Base6Interface {$baseif};\n";
             } else {
-                $radvdconf .= "\tprefix {$stanza} {\n";
+                $radvdconf .= "    prefix {$stanza} {\n";
             }
-            $radvdconf .= "\t\tDeprecatePrefix " . (!$entry->DeprecatePrefix->isEmpty() ? $entry->DeprecatePrefix->getValue() : ($carp_mode ? 'off' : 'on')) . ";\n";
+            $radvdconf .= "        DeprecatePrefix " . (!$entry->DeprecatePrefix->isEmpty() ? $entry->DeprecatePrefix->getValue() : ($carp_mode ? 'off' : 'on')) . ";\n";
             switch ($entry->mode->getValue()) {
                 case 'assist':
                 case 'stateless':
                 case 'unmanaged':
-                    $radvdconf .= "\t\tAdvOnLink on;\n";
-                    $radvdconf .= "\t\tAdvAutonomous on;\n";
+                    $radvdconf .= "        AdvOnLink on;\n";
+                    $radvdconf .= "        AdvAutonomous on;\n";
                     break;
                 case 'managed':
-                    $radvdconf .= "\t\tAdvOnLink on;\n";
-                    $radvdconf .= "\t\tAdvAutonomous off;\n";
+                    $radvdconf .= "        AdvOnLink on;\n";
+                    $radvdconf .= "        AdvAutonomous off;\n";
                     break;
                 case 'router':
-                    $radvdconf .= "\t\tAdvOnLink off;\n";
-                    $radvdconf .= "\t\tAdvAutonomous off;\n";
+                    $radvdconf .= "        AdvOnLink off;\n";
+                    $radvdconf .= "        AdvAutonomous off;\n";
                     break;
                 default:
                     break;
             }
             if (!$entry->AdvValidLifetime->isEmpty()) {
-                $radvdconf .= "\t\tAdvValidLifetime {$entry->AdvValidLifetime->getValue()};\n";
+                $radvdconf .= "        AdvValidLifetime {$entry->AdvValidLifetime->getValue()};\n";
             }
             if (!$entry->AdvPreferredLifetime->isEmpty()) {
-                $radvdconf .= "\t\tAdvPreferredLifetime {$entry->AdvPreferredLifetime->getValue()};\n";
+                $radvdconf .= "        AdvPreferredLifetime {$entry->AdvPreferredLifetime->getValue()};\n";
             }
-            $radvdconf .= "\t};\n";
+            $radvdconf .= "    };\n";
         }
 
         if (!$entry->routes->isEmpty()) {
             foreach ($entry->routes->getValues() as $raroute) {
-                $radvdconf .= "\troute {$raroute} {\n";
-                $radvdconf .= "\t\tRemoveRoute " . (!$entry->RemoveRoute->isEmpty() ? $entry->RemoveRoute->getValue() : ($carp_mode ? 'off' : 'on')) . ";\n";
+                $radvdconf .= "    route {$raroute} {\n";
+                $radvdconf .= "        RemoveRoute " . (!$entry->RemoveRoute->isEmpty() ? $entry->RemoveRoute->getValue() : ($carp_mode ? 'off' : 'on')) . ";\n";
                 if (!$entry->AdvRouteLifetime->isEmpty()) {
-                    $radvdconf .= "\t\tAdvRouteLifetime {$entry->AdvRouteLifetime->getValue()};\n";
+                    $radvdconf .= "        AdvRouteLifetime {$entry->AdvRouteLifetime->getValue()};\n";
                 }
-                $radvdconf .= "\t};\n";
+                $radvdconf .= "    };\n";
             }
         }
 
         if (!$entry->nat64prefix->isEmpty()) {
-            $radvdconf .= "\tnat64prefix {$entry->nat64prefix->getValue()} {\n";
-            $radvdconf .= "\t};\n";
+            $radvdconf .= "    nat64prefix {$entry->nat64prefix->getValue()} {\n";
+            $radvdconf .= "    };\n";
         }
 
         $dnssl = [];
@@ -354,19 +354,19 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
         }
 
         if (count($rdnss)) {
-            $radvdconf .= "\tRDNSS " . implode(" ", $rdnss) . " {\n";
+            $radvdconf .= "    RDNSS " . implode(" ", $rdnss) . " {\n";
             if (!$entry->AdvRDNSSLifetime->isEmpty()) {
-                $radvdconf .= "\t\tAdvRDNSSLifetime {$entry->AdvRDNSSLifetime->getValue()};\n";
+                $radvdconf .= "        AdvRDNSSLifetime {$entry->AdvRDNSSLifetime->getValue()};\n";
             }
-            $radvdconf .= "\t};\n";
+            $radvdconf .= "    };\n";
         }
 
         if (count($dnssl)) {
-            $radvdconf .= "\tDNSSL " . implode(" ", $dnssl) . " {\n";
+            $radvdconf .= "    DNSSL " . implode(" ", $dnssl) . " {\n";
             if (!$entry->AdvDNSSLLifetime->isEmpty()) {
-                $radvdconf .= "\t\tAdvDNSSLLifetime {$entry->AdvDNSSLLifetime->getValue()};\n";
+                $radvdconf .= "        AdvDNSSLLifetime {$entry->AdvDNSSLLifetime->getValue()};\n";
             }
-            $radvdconf .= "\t};\n";
+            $radvdconf .= "    };\n";
         }
 
         $radvdconf .= "};\n";
@@ -440,17 +440,17 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
 
         $radvdconf .= "# Generated RADVD config for {$autotype} assignment from {$trackif} on {$if}\n";
         $radvdconf .= "interface {$device} {\n";
-        $radvdconf .= "\tAdvSendAdvert on;\n";
-        $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 0);
-        $radvdconf .= "\tAdvManagedFlag on;\n";
-        $radvdconf .= "\tAdvOtherConfigFlag on;\n";
+        $radvdconf .= "    AdvSendAdvert on;\n";
+        $radvdconf .= sprintf("    AdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 0);
+        $radvdconf .= "    AdvManagedFlag on;\n";
+        $radvdconf .= "    AdvOtherConfigFlag on;\n";
 
         if (!empty($networkv6)) {
-            $radvdconf .= "\tprefix {$networkv6} {\n";
-            $radvdconf .= "\t\tDeprecatePrefix on;\n";
-            $radvdconf .= "\t\tAdvOnLink on;\n";
-            $radvdconf .= "\t\tAdvAutonomous on;\n";
-            $radvdconf .= "\t};\n";
+            $radvdconf .= "    prefix {$networkv6} {\n";
+            $radvdconf .= "        DeprecatePrefix on;\n";
+            $radvdconf .= "        AdvOnLink on;\n";
+            $radvdconf .= "        AdvAutonomous on;\n";
+            $radvdconf .= "    };\n";
         }
 
         foreach (config_read_array('virtualip', 'vip') as $vip) {
@@ -470,18 +470,18 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
                 continue;
             }
 
-            $radvdconf .= "\tprefix {$vipnetv6} {\n";
-            $radvdconf .= "\t\tDeprecatePrefix on;\n";
-            $radvdconf .= "\t\tAdvOnLink on;\n";
-            $radvdconf .= "\t\tAdvAutonomous on;\n";
-            $radvdconf .= "\t};\n";
+            $radvdconf .= "    prefix {$vipnetv6} {\n";
+            $radvdconf .= "        DeprecatePrefix on;\n";
+            $radvdconf .= "        AdvOnLink on;\n";
+            $radvdconf .= "        AdvAutonomous on;\n";
+            $radvdconf .= "    };\n";
         }
 
         if (count($dnslist) > 0) {
-            $radvdconf .= "\tRDNSS " . implode(" ", $dnslist) . " { };\n";
+            $radvdconf .= "    RDNSS " . implode(" ", $dnslist) . " { };\n";
         }
         if (!empty($config['system']['domain'])) {
-            $radvdconf .= "\tDNSSL {$config['system']['domain']} { };\n";
+            $radvdconf .= "    DNSSL {$config['system']['domain']} { };\n";
         }
         $radvdconf .= "};\n";
     }
