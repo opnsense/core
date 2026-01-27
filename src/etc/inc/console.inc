@@ -392,7 +392,8 @@ EOD;
                 }
             }
             $config['dnsmasq']['enable'] = '1';
-            $config['dnsmasq']['dhcp'] = ['enable_ra' => '1'];
+            config_read_array('dnsmasq', 'dhcp');
+            $config['dnsmasq']['dhcp']['enable_ra'] = '1';
             $config['dnsmasq']['dhcp_ranges'][] = [
                 '@attributes' => ['uuid' => generate_uuid()],
                 'start_addr' => '192.168.1.100',
