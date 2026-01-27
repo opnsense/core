@@ -42,9 +42,11 @@ class ServiceController extends ApiMutableServiceControllerBase
     public function searchAction()
     {
         $if_descr = [];
-        foreach ((Config::getInstance()->object())->interfaces->children() as $node) {
+
+        foreach ((Config::getInstance()->object())->interfaces->children() as $key => $node) {
             if (!empty((string)$node->if)) {
-                $if_descr[(string)$node->if] = (string)$node->descr ?? null;
+                $descr = (string)$node->descr;
+                $if_descr[(string)$node->if] = strlen($descr) ? $descr : strtoupper($key);
             }
         }
 
