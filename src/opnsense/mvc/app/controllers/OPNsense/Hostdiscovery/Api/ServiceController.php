@@ -49,6 +49,8 @@ class ServiceController extends ApiMutableServiceControllerBase
                 'ether_address' => $rec[1],
                 'ip_address' => $rec[2],
                 'organization_name' => $rec[3],
+                'first_seen' => $rec[4],
+                'last_seen' => $rec[5]
             ];
         }
         return $this->searchRecordsetBase($records);
