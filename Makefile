@@ -332,7 +332,8 @@ package: lint-plist manifest-check package-check clean-wrksrc
 
 upgrade-check:
 	@if ! ${PKG} info ${CORE_NAME} > /dev/null; then \
-		echo ">>> Cannot find package.  Please run 'opnsense-update -t ${CORE_NAME}'" >&2; \
+		REAL_NAME=$$(pkg which -q /usr/local/opnsense/version/core); \
+		echo ">>> Cannot find installed package.  Use CORE_NAME=$${REAL_NAME%-*} instead." >&2; \
 		exit 1; \
 	fi
 	@if [ "$$(${VERSIONBIN} -vH)" = "${CORE_PKGVERSION} ${CORE_HASH}" ]; then \
