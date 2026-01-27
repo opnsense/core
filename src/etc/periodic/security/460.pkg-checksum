@@ -1,0 +1,93 @@
+#!/bin/sh -
+#
+# $FreeBSD$
+#
+
+if [ -r /etc/defaults/periodic.conf ]; then
+	. /etc/defaults/periodic.conf
+	source_periodic_confs
+fi
+
+. /etc/periodic/security/security.functions
+
+: ${security_status_pkg_checksum_enable:=YES}
+: ${security_status_pkg_checksum_period:=daily}
+: ${security_status_pkg_checksum_chroots=$pkg_chroots}
+: ${security_status_pkg_checksum_jails=$pkg_jails}
+
+checksum_pkg() {
+    local pkgargs="$1"
+    local rc
+
+    rc=$(${pkgcmd} ${pkgargs} check -qsa 2>&1 |
+	sed -e 's/ checksum mismatch for//' |
+	tee /dev/stderr |
+	wc -l)
+    [ $rc -gt 1 ] && rc=1
+
+    return $rc
+}
+
+checksum_pkg_all() {
+    local rc
+
+    # We always check the checksums for the host system, but only
+    # print a banner line if we're also checking on any chroots or
+    # jails.
+
+    if [ -n "${security_status_pkg_checksum_chroots}" -o \
+	 -n "${security_status_pkg_checksum_jails}" ];
+    then
+	echo "Host system:"
+    fi
+
+    checksum_pkg ''
+
+    for c in $security_status_pkg_checksum_chroots ; do
+	echo
+	echo "chroot: $c"
+	checksum_pkg "-c $c"
+	[ $? -eq 1 ] && rc=1
+    done
+
+    case $security_status_pkg_checksum_jails in
+	\*)
+	    jails=$(jls -q -h name | sed -e 1d)
+	    ;;
+	'')
+	    jails=
+	    ;;
+	*)
+	    jails=$security_status_pkg_checksum_jails
+	    ;;
+    esac
+
+    for j in $jails ; do
+	echo
+	echo "jail: $j"
+	checksum_pkg "-j $j"
+	[ $? -eq 1 ] && rc=1
+    done
+
+    return $rc
+}
+
+rc=0
+
+if check_yesno_period security_status_pkg_checksum_enable
+then
+	pkgcmd=/usr/local/sbin/pkg
+
+	echo
+	echo 'Checking for packages with mismatched checksums:'
+
+	if ! ${pkgcmd} -N >/dev/null 2>&1 ; then
+		echo 'pkg-checksum is enabled but pkg is not used'
+		rc=2
+	else
+	    checksum_pkg_all
+	    rc=$?
+	fi
+fi
+
+exit $rc

@@ -1,0 +1,227 @@
+#!/bin/sh -f
+#
+# Copyright (c) 2004 Oliver Eikemeier. All rights reserved.
+# Copyright (c) 2014 Matthew Seaman <matthew@FreeBSD.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+# 1. Redistributions of source code must retain the above copyright notice
+#    this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# 3. Neither the name of the author nor the names of its contributors may be
+#    used to endorse or promote products derived from this software without
+#    specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+# COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+# NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# $FreeBSD$
+#
+
+if [ -r /etc/defaults/periodic.conf ]; then
+	. /etc/defaults/periodic.conf
+	source_periodic_confs
+fi
+
+: ${security_status_pkgaudit_enable:=YES}
+: ${security_status_pkgaudit_period:=daily}
+: ${security_status_pkgaudit_quiet:=YES}
+: ${security_status_pkgaudit_chroots=$pkg_chroots}
+: ${security_status_pkgaudit_jails=$pkg_jails}
+: ${security_status_pkgaudit_jails_ignore+=""}
+: ${security_status_pkgaudit_expiry:=2}
+: ${security_status_pkgaudit_expiration:=YES}
+: ${security_status_pkgaudit_deprecation:=YES}
+
+# Compute PKG_DBDIR from the config file.
+pkgcmd=/usr/local/sbin/pkg
+PKG_DBDIR=`${pkgcmd} config PKG_DBDIR`
+auditfile="${PKG_DBDIR}/vuln.xml"
+
+audit_pkgs() {
+	local pkgargs="$1"
+	local basedir="$2"
+	local rc
+	local then
+	local now
+
+	then=`stat -f '%m' "${basedir}${auditfile}" 2> /dev/null` || rc=3
+	now=`date +%s` || rc=3
+	# Add 10 minutes of padding since the check is in seconds.
+	if [ $rc -ne 0 -o \
+		$(( 86400 \* "${security_status_pkgaudit_expiry}" )) \
+		-le $(( ${now} - ${then} + 600 )) ]; then
+		# When non-interactive, sleep to reduce congestion on mirrors
+		anticongestion
+		${pkgcmd} ${pkgargs} audit -F $q || { rc=$?; [ $rc -lt 3 ] && rc=3; }
+	else
+		echo -n 'Database fetched: '
+		date -r "${then}" -Iminutes || rc=3
+		${pkgcmd} ${pkgargs} audit $q || { rc=$?; [ $rc -lt 3 ] && rc=3; }
+	fi
+
+	return $rc
+}
+
+expiration_pkgs() {
+	local pkgargs="$1"
+
+	case "$security_status_pkgaudit_expiration" in
+	[Yy][Ee][Ss])
+
+		output=$(${pkgcmd} ${pkgargs} annotate -a -S expiration_date)
+
+		if [ -n "${output}" ]; then
+			echo "${output}"
+			return 3
+		fi
+		;;
+	*)
+		return 0;;
+	esac
+}
+
+deprecation_pkgs() {
+	local pkgargs="$1"
+
+	case "$security_status_pkgaudit_deprecation" in
+	[Yy][Ee][Ss])
+		output=$(${pkgcmd} ${pkgargs} annotate -a -S deprecated)
+		if [ -n "${output}" ]; then
+			echo "${output}"
+			return 3
+		fi
+		;;
+	*)
+		return 0;;
+	esac
+}
+
+# Use $pkg_chroots to provide a default list of chroots, and
+# $pkg_jails to provide a default list of jails (or '*' for all jails)
+# for all pkg periodic scripts, or set
+# $security_status_pkgaudit_chroots and
+# $security_status_pkgaudit_jails for this script only.
+
+audit_pkgs_all() {
+	local rc
+	local last_rc
+	local jails
+
+	# We always show audit results for the base system, but only print
+	# a banner line if we're also showing audit results for any
+	# chroots or jails.
+
+	if [ -n "${security_status_pkgaudit_chroots}" -o \
+		-n "${security_status_pkgaudit_jails}" ]; then
+		echo "Host system:"
+	fi
+
+	for t in audit expiration deprecation; do
+		${t}_pkgs '' ''
+		last_rc=$?
+		[ $last_rc -gt 1 ] && rc=$last_rc
+	done
+
+	for c in $security_status_pkgaudit_chroots ; do
+		echo
+		echo "chroot: $c"
+		for t in audit expiration deprecation; do
+			${t}_pkgs "-c $c" $c
+			last_rc=$?
+			[ $last_rc -gt 1 ] && rc=$last_rc
+		done
+	done
+
+	case $security_status_pkgaudit_jails in
+	\*)
+		jails=$(jls -q -h name path | sed -e 1d -e 's/ /|/')
+		;;
+	'')
+		jails=
+		;;
+	*)
+		# Given the jail name or jid, find the jail path
+		jails=
+		for j in $security_status_pkgaudit_jails ; do
+			p=$(jls -j $j -h name path | sed -e 1d -e 's/ /|/')
+			jails="${jails} ${p}"
+		done
+		;;
+	esac
+
+	for j in ${jails} ; do
+		# ignore some jails
+		# we iterate to get exact matches because we want substring matches
+		# foo should not match foo.bar
+		for ignore in ${security_status_pkgaudit_jails_ignore} ; do
+			if [ "${j%|*}" = "${ignore}" ]; then
+				echo
+				echo "ignoring jail: ${j%|*}"
+				# continue with the main loop
+				continue 2
+			fi
+		done
+
+		# ignore some jails
+		# we iterate to get prefix matches because we foo to match foo.bar
+		for ignore in ${security_status_pkgaudit_jails_ignore_wild} ; do
+			if [ $(expr "${j%|*}" : "${ignore}") -ne 0 ] ; then
+				echo
+				echo "ignoring jail: ${j%|*}"
+				# continue with the main loop
+				continue 2
+			fi
+		done
+
+		echo
+		echo "jail: ${j%|*}"
+		for t in audit expiration deprecation; do
+			${t}_pkgs "-j ${j%|*}" ${j##*|}
+			last_rc=$?
+			[ $last_rc -gt 1 ] && rc=$last_rc
+		done
+	done
+
+	return $rc
+}
+
+rc=0
+
+if check_yesno_period security_status_pkgaudit_enable
+then
+	echo
+	echo 'Checking for packages with security vulnerabilities:'
+
+	if ! ${pkgcmd} -N >/dev/null 2>&1 ; then
+		echo 'pkg-audit is enabled but pkg is not used'
+		rc=2
+	else
+		case "${security_status_pkgaudit_quiet}" in
+		[Yy][Ee][Ss])
+			q='-q'
+			;;
+		*)
+			q=
+			;;
+		esac
+
+		audit_pkgs_all ; rc=$?
+	fi
+fi
+
+exit "$rc"

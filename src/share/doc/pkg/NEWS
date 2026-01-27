@@ -1,0 +1,949 @@
+Changes from 2.4.1 to 2.4.2
+- fix regression in pkg check -s output
+
+Changes from 2.4.0 to 2.4.1
+- Fix 32bit regression
+- cleanup trigger(5) manpage
+- fix a crash during 3 way merge
+
+Changes form 2.3.0 to 2.4.0
+- Use line buffering for the metalog file handle
+- Fix bug making pkg delete too many directories in case of split upgrades
+- BACKUP_LIBRARIES now create one backup package per source package
+- new metalog_copy lua function to create entries in the metalog cloning metadata
+  from another file
+- New OSVF Parser
+- New CPE Parser/Emitter
+- Lots of code cleanup and simplification
+- Add support for system triggers (triggers in /usr/share/pkg/triggers)
+- pkg check now respects -r (rootdir)
+- relax ABI checking
+- Lots of improvements and bugs fixes regaring BACKUP_LIBRARIES features
+- Integrate BACKUP_LIBRARIES in the solver
+- Add vital flag to the list of flag which we need to consider for package reinstallation
+- tack uname, gname, mtime, permissions and fflags in the db and in the manifest
+  instead of relying on the tar informations. which gives us pkg check -m to check for
+  for metadata changes.
+- METALOG: add entries for intermediate directories
+- better 404 reporting
+- fix return code for pkg upgrade -n
+- new pkg sets alias example in default pkg.conf
+- new DEBUG_SCHEDULER_DOT_FILE option to generate a graphviz DOT format for the job graph
+- loosen ordering for upgrade jobs (reduces a lot the number of split upgrades and speed up
+  the scheduler on setup with large number of packages.)
+
+Changes from 2.2.99.2 to 2.3.0
+- internal code cleanup
+- micro optimize upgrade candidate checking
+
+Changes from 2.2.99.1 to 2.2.99.2
+- archive improve reproducible build support
+- many improvements in manpages
+- scripts now support a new METALOG variable
+- run pkg delete script even during split upgrades
+- fetch: fix resuming
+- shlib: accept full path as a valid input
+- stats: only show local db, if no repo are active
+- backup libraries during split upgrades if needed
+- fetch: fix crash on invalid url
+- upgrade: only upgrade installed things on partial upgrades
+- repositories: allow negative priorities
+- upgrade: when pkg self restart do not warn about the env vars.
+- set: allow to bulk "partial replacement"
+- add: backout support for provides/requires
+
+Changes from 2.2.99.0 to 2.2.99.1
+- fix some sqlite iterator leakage
+- rework the scheduler to minimze the number of split upgrade
+
+Changes from 2.1.99.5 to 2.2.99.0
+- fix some sqlite statement leak
+- improve wording in manpages
+- update libcurl to 3.14.1
+- update sqlite to 3.50.1
+- update mum_hash to latest version
+
+Changes from 2.1.99.4 to 2.1.99.5
+- really use the cache file
+- improve error message when failing at parsing manifest printing the path of
+  the manifest.
+- improve multi repo priosation handling
+- fix selection of the most recent package in multirepo mode
+- fix the scheduler over splitting the upgrades
+
+Changes from 2.1.99.3 to 2.1.99.4
+- add a cache file for pkg_add()
+- fix 32bits issues
+
+Changes from 2.1.99.2 to 2.1.99.3
+- more work on pkg add performances
+- pkg(8): document -o options
+- fix pkg-static issue due to symbols collisions between libmd and libcrypto
+
+Changes from 2.1.99.1 to 2.1.99.2
+- fix regression regarding shlibs_required
+
+Changes from 2.1.99.0 to 2.1.99.1
+- strong refactoring in internal containers code.
+- performances improvements in pkg_add
+
+Changes from 2.0.99.10 to 2.1.99.0
+- pkg.conf(5): mention kmods repo
+- validate SHLIB_PROVIDE_PATHS_* options
+- pkg(8): mention -vv
+- new the FORCE_CAN_REMOVE_VITAL boolean config option
+- micro optimise pkg add
+
+Changes from 2.0.99.9 to 2.0.99.10
+- fix providing library via symlinks
+
+Changes from 2.0.99.8 to 2.0.99.9
+- pkg delete considers base libraries when not running on pkgbase system
+- install: allow overwrite installation timestamp with PKG_INSTALL_EPOCH
+- new --script-no-exec: which makes pkg dies if a script attempt to exec an
+  external binary
+
+Changes from 2.0.99.7 to 2.0.99.8
+- make info -d and -r show provides/requires
+
+Changes from 2.0.99.6 to 2.0.99.7
+- fix in non pkgbase context
+
+Changes from 2.0.99.5 to 2.0.99.6
+- add: readd support for provides/requires
+- fix pkg bootstrap -y
+- fix memory leaks
+- libpkg: allow non interactive way to set IGNORE OSVERSION
+- update libcurl to 8.12.1
+- fix progression counters
+- improve VITAL flag handling
+
+Changes from 2.0.99.4 to 2.0.99.5
+- allow to filter out and fine control which libs are provided
+
+Changes from 2.0.99.3 to 2.0.99.4
+- sort list in manifest for reproducibility
+- limite shlibs_requires to file starting with "lib"
+- on !pkgbase ignore lib32 compat if the lib32 set is not installed
+- update: be functionnal again with less than 300MB of memory available
+- small performances improvements in package loading and checksum validation
+- sqlite: update to 3.49.0
+
+Changes from 2.0.99.2 to 2.0.99.3
+- elf: prevent absolute path for DT_NEEDED libs
+- curl: be verbose about the fetch error
+- fix crash in case of conflicts
+- allow to define ABI_FILE in pkg.conf(5)
+- rework directories vs symlinks handling (give back flexibility to end users)
+
+Changes from 2.0.99.1 to 2.0.99.2
+- Relax OSVERSION requirement
+- Improve elf format detection
+- Remove debugging printf
+- Fix regression in the solver
+
+Changes from 2.0.99 to 2.0.99.1
+- pkg.conf.sample: use consistent UCL syntax
+- version: fix bad usage of pkg_printf
+- ABI: replace notice with warning message
+- fix pkg check -d on systems without pkgbase
+- improve the solver on system without pkgbase
+
+Changes from 1.21.99.6 to 2.0.99
+- allow IGNORE_OSVERSION on all oses
+- improve dealing with symlinks to directories and upgrades
+
+Changes from 1.21.99.5 to 1.21.99.6
+- allow IGNORE_OSVERSION on all oses
+
+- improve dealing with symlinks to directories and upgrades
+Changes from 1.21.99.6 to 1.21.99.6
+- ignore OSVERSION if set but ABI is not set
+
+Changes from 1.21.99.4 to 1.21.99.5
+- the pkg target ABI is now dynamically detected, pkg can be used to cross
+  install packages among OS.
+- macho ABI handling completly rewritten
+- ALTABI is not used anywhere anymore, we are now only working with ABI
+- Lots of cleanups thanks for compiler sanitizers
+- shlibs handling is now portable (and do not depend on elfhints anymore)
+- deprecate ALLOW_BASE_SHLIBS, now pkg scans for /lib and /usr/lib (respecting
+  rootdir) to find the list of shlibs provided by base. This scan is skipped
+  when using pkgbase.
+- new SHLIB_REQUIRE_IGNORE_GLOB and SHLIB_REQUIRE_IGNORE_REGEX to filter out
+  some librariries to be added to shlibs_required list
+- speed up pkg repo by using buffered stdio
+- pkg now tracks shlibs with tagging:
+   libfoo.so.1.0.0          - native (no change to status quo)
+   libfoo.so.1.0.0:32       - compat 32
+   libfoo.so.1.0.0:Linux    - compat Linux
+   libfoo.so.1.0.0:Linux:32 - compat Linux 32
+- pkg tracks 32bit compat shlibs
+- pkg can track linux shlibs for linux compatibility (disabled by default) via
+  TRACK_LINUX_COMPAT_SHLIBS
+
+Changes from 1.21.99.3 to 1.21.99.4
+- ABI detection related fixes
+- Lots of fixes for MacOS
+- Fix host component handling in file:// URLs
+- build system: add --with-tsan support
+- fix threads on MacOS
+- pkg -vv now shows bundled/external libraries version
+- pkg: -r command can be used multiple times to only enable
+  the specified repositories.
+- UI: small improvements in error messages
+- repositories: new pkg repositories command to list configured
+  repositories
+- vuxml: now fetched over https
+- check: now default on the -s option when no options is passed.
+
+Changes from 1.21.99.2 to 1.21.99.3
+- alias: prime-origins is now uniq
+- curl: improve debug output
+- file protocol now respects rfc8089 definition
+- fix glob search case sensitive support
+- update curl to latest version
+- update sqlite to latest version
+- update lua to latest version
+- time: remove usage of deprecated functions
+- allow to build against an external libcurl
+- fix build with external libarchive
+- improve portability
+- add support to use an external 3-way merge tool for @config files
+- rework the job scheduler, the new jobs scheduler:
+  all known to date scheduler issues are fixed with this new scheduler
+
+Changes from 1.21.99.1 to 1.21.99.2
+- audit: add -d to audit packages in a specified directory
+- bug fix: fix upgrade with symlinks becoming directories
+- debug: implement debug flags to allow to cherrypick the debug flags to print
+- check: remove -B and -r options
+- compression: allow to defined the number of threads to use with zstd and xz
+- curl: update to 8.9.0
+- http: add support for HTTP_PROXY_AUTH
+- periodic: remove compat_vars
+- info: fix json formatted output
+- manpages: lots of fixes and improvements
+- install/upgrade: now removed packaages are printed at the bottom of the list of changes
+- using -r <repo> now always enable the repository specified
+- periodic: provide a mechanism to ignore jails via prefix matching
+- upgrade: allow the used to ignore options changes in the triggers to reinstall a package
+- lock/unlock: fix batch operations
+- osversion: fix confusing message
+- new attempt at better handling vital during upgrades
+- sqlite: update to 3.46.0
+
+Changes from 1.21.99.0 to 1.21.99.1
+- fix regression in HANDLE_RC_SCRIPTS option (off by default)
+- fix processing entries spiner
+- fix database path handling for rootdir
+- revert a change in vital/lock handling in the solver cause
+  some vital packages to never be upgraded.
+
+Changes from 1.20.99.12 to 1.21.99.0
+- fix regressions in plist parsing
+
+Changes from 1.20.99.11 to 1.20.99.12
+- ECC signature: plenty of fixes
+- plist now have a "@var key value" to deal with %%KEY%% variables
+- upgrade sqlite to latest version
+
+Changes from 1.20.99.10 to 1.20.99.11
+- solver now excludes removal of packages flagged as vital or locked from
+  removal
+
+Changes from 1.20.99.9 to 1.20.99.10
+- fix trigger validation schema
+- use data.pkg instead of packagesite.pkg if available
+- update bundled curl to 8.6.0
+- update bundled libucl to latest version
+- data.pkg now receives the groups
+- lock and meta files are now saved under /var/db/repos/<reponame>/<file>
+- remote databases are now stored under /var/db/repos/<reponame>/db
+- pkg search now supports groups
+- pkg rquery now supports groups
+- pkg now support elfhints on any byte-order on FreeBSD
+- behaviour change: pkg lock/unlock errors if the package stated is unavailable
+- pkg now supports ECDSA and EdDSA for all its signature mechanism
+- new pkg key command which allows to generate keys.
+- plenty of minor code cleanup and bug fixes.
+
+Changes from 1.20.99.8 to 1.20.99.9
+- pkgbase: .snap now comes after .alpha in versionning
+- update: lock pkg update to avoid concurrent instance of pkg update to compete
+- bundled sqlite: update to 3.45.0
+- bootstrap now accepts -y
+- update bundled curl to 8.5.0
+- New PKG_ISCHROOTED env var for scripts so they can grow the knowledge they
+  are being run in a pkg -c chroot environement
+- update autosetup to 7.1
+- lots of small code optimizations
+- remove now unsupported arm architectures
+- refactor pkg_repo_create API to make it more flexible, while here document it
+- repo: to not generate anymore the meta.{pkg,txz} which is unused since pkg 1.13
+
+Changes from 1.20.99.7 to 1.20.99.8
+- fix a race in vulnxml fetch trigger
+- add a new data.pkg which contains a fully valid json and aim at replacing
+  packagesite.pkg because extensible, continue to produce packagesite.pkg
+- repo: remove ability to provide v1 repository format
+- deduplicate code directly using libucl exporters instead of home backed ones
+- undocument ftp support
+- provide FreeBSD native sandboxing function in the library directly (packagekit)
+- curl: provide libfetch compatiblity about HTTP_USER_AGENT
+- New keywork: @override_prefix (pkgbase)
+- repo: using threads instead of forks
+- add: only generates .pkgsave when really needed
+
+Changes from 1.20.99.6 to 1.20.99.7
+- update curl to 8.4.0
+- plug some memory leak
+- plug a db transaction leak
+- refactoring of the repository generation code
+
+Changes from 1.20.99.5 to 1.20.99.6
+- enable netrc support to be compatible with libfetch variable
+- enable by default all supported kind of authentication for curl
+- Fix duplicated rquery
+- Make missing plugins non fatal (needed for smooth packagekit support)
+- Do not complain about Last-Modified head if the fetch was a failure
+- Support for jobs cancellation (needed for packagekit support)
+- update sqlite3 to 3.43.0
+- update lua to 5.4.6
+- plug plenty of memory leaks
+- improve debug output in particular for sql statements
+- exclude locked package early from autoremove candidates
+- fix very slow orphan test computation consuming 100% of CPU in autoremove
+
+Changes from 1.20.99.4 to 1.20.99.5
+- fix a regression introduce with switch to libcurl which results in
+  the remote db mtime being badly set
+- fix a regression which makes pkg query report twice some packages
+  when configured in multirepository mode.
+- fix a compatibility issue with http_proxy env var (lowercase)
+- update libcurl to latest version
+- introduce PKG_EVENT_PKG_ERRNO new event type
+
+Changes from 1.20.99.3 to 1.20.99.4
+- backout pkg add support for provides/requires (performance issue)
+
+Changes from 1.20.99.2 to 1.20.99.3
+- curl add compatiblity for SSL_CLIENT_KEY_FILE, SSL_CLIENT_CERT_FILE,
+  SSL_CA_CERT_FILE
+- fixed FETCH_TIMEOUT adaptation to libcurl
+- speed up again pkg add and reduced its memory footprint
+
+Changes from 1.20.99.1 to 1.20.99.2
+- Fix regression regarding url parsing for ssh://
+- Reduce memory usage for pkg add
+- Fix a libfetch compatibility issue (typo in SSL_VERIFY_HOST)
+- Fix issue with version generation in configure script
+- Update pkg-triggers.5 manpage
+
+Changes from 1.20.99.0 to 1.20.99.1
+- Add compatibility with libfetch HTTP_AUTH
+
+Changes from 1.19.99.3 to 1.20.99.0
+- cleanup functions
+
+Changes from 1.19.99.2 to 1.19.99.3
+- fix memory leaks
+- fix regression: implement cancelling with libcurl
+- new event PKG_EVENT_INCREMENTAL_UPDATE_BEGIN
+- fix signature generation with openssl3
+- allow reading pre and post openssl3 signatures
+
+Changes from 1.19.99.1 to 1.19.99.2
+- Update libucl to latest version
+- Allow to configure COMPRESSION_FORMAT in pkg.conf
+- Remove support for legacy (pkg_* tools)
+- kill useless pkg_manifest_key API
+- pkg add (respect provide/require)
+- pkg autoremove: properly process provides/requires
+- pkg now requires C11
+- remplace pkg_set(3) API with a _Generic based API
+- periodic script: Use locale-agnostic (ISO 8601)
+- complete refactoring of the fetch code
+- new pkgdb_all_search to search local and remote DBs at the same time
+- fix plenty of memory leaks
+- fix a regression in -e
+- improve the plugin API
+- replace libfetch with libcurl
+- add support for http pipelining
+- improve SRV and HTTP mirroring, reducing the number of round trips
+- only keep one version of HTTP mirroring the one that respects the repo url
+
+Changes from 1.18.99.7 to 1.19.99.1
+- fix regression in pkg autoremove
+- fix regression preventing tracking files with path longer than 64 chars
+- fix build out of tree
+- fix spelling issues in pkg-trigger(8)
+
+Changes from 1.18.99.6 to 1.18.99.7
+- reduce the number of filedescriptors opened at the same time
+- update sqlite to 3.40.0
+- fix regression in pkg lock
+- fix annotate --modify
+
+Changes from 1.18.99.5 to1.18.99.6
+- remove backup command, do backup pkg shell .dump should be preferred
+  as already done via periodic script
+- (r)query: stricter command line validation
+- (r)query: new operators: =~ ==~ and !=~
+- fix merging of config files accross split upgrades
+- fix a regression when executing a shell script
+
+Changes from 1.18.99.4 to 1.18.99.5
+- delete: now handles properly provides/requipres
+
+Changes from 1.18.99.3 to 1.18.99.4
+- Accept '~' in the version or name of a package
+- Autoremove will not remove anything which is required
+  by another installed package (via provides or via shlibs_provides)
+- Update linenoise to latest version
+- Update sqlite to 3.39.3
+- Update lua to 5.4.4
+- doc: add example on how to restore a package
+- query: fix unicity issue
+
+Changes from 1.18.99.2 to 1.18.99.3
+- fix regression creating hardlinks
+
+Changes from 1.18.99.1 to 1.18.99.2
+- fix directory path matching in the new extraction code
+
+Changes from 1.17.99.11 to 1.18.99.1
+- rework the extraction process to fix the case when a file becomes a directory
+  during an upgrade
+- fix a crash in pkg create
+- fix a crash in pkg version -PvL=
+- allow to deal with 240 character long filenames
+- fix an issue when disabling a repository resulting in breakage of the
+  repository list
+- fix querying licenses
+- fix packaging the lua deinstall scripts
+- add pkg.symlink to allow creating symlinks from lua scripts
+- performance improvements
+- sync libfetch with base bringing in socks proxy support
+
+Changes from 1.17.99.10 to 1.17.99.11
+- Fix performance issue while computing upgrades
+- Fix shlibs always considered as changed
+
+Changes from 1.17.99.9 to 1.17.99.10
+- greatly improve test coverage
+- many improvements in error handling for pkg fetch
+- Remove the deprecated pkg_get() function from the API
+- prevent @config files to be verified from pkg checksums checking
+- Remove ftp(s):// support
+- add tcp:// protocol support which allows to server packages form inetd
+  and secure it via spiped for example
+- triggers can now be trigger when empty directories are added/removed
+- Add "orphans" aliases
+- speed up pkg which
+- Reduce the possibility to have a temporary file during package extraction
+  which exceed NAME_MAX (maxium file name length)
+- If the pattern has a '/' in it, it now search origin and all other categories
+  as well
+  for example graphics/zathura and print/zathura will both match the zathura
+  package
+- If the pattern has a '/' in it and a @ it will also search for the flavor
+  <category>/<portname>@<flavor>
+  # pkg install "editors/vim@tiny" # will install the vim-tiny package
+  $ pkg search -g "editors/vim@*"
+  vim                            Improved version of the vi editor (console flavor)
+  vim-gtk2                       Improved version of the vi editor (gtk2 flavor)
+  vim-gtk3                       Improved version of the vi editor (gtk3 flavor)
+  vim-motif                      Improved version of the vi editor (motif flavor)
+  vim-tiny                       Improved version of the vi editor (tiny flavor)
+  vim-x11                        Improved version of the vi editor (x11 flavor)
+- portability: build and run on alpine (musl)
+
+Changes from 1.17.99.8 to 1.17.99.9
+- pkg add: only runs triggers at the end of the equivalent of a transaction
+- pkg search: fix the combinaison of -q and -o
+- pkg fetch: correctly exit with error on fetch failures
+- Improve error message when failing to drop privileges
+- Ensure no temporary files are left overs when ignoring some files in package
+
+Changes from 1.17.99.7 to 1.17.99.8
+- ensure pkg waits for the programs executed by the triggers
+- bring back the fallback on the pkg add with mismatched version (with regression fixed)
+
+Changes from 1.17.99.6 to 1.17.99.7
+- speed up pkg repo on SMP machines
+- error on duplicated @config entry
+- revert the fallback on pkg add with mismatched version
+- document pkg upgrade --vulnerable
+- revert jail audit perdiodic script verbosity reduction
+
+Changes from 1.17.99.5 to 1.17.99.6
+- fix segfault when packaging packages providing shared libraries
+- fix fingerprint signature handling with rootdir
+
+Changes from 1.17.99.4 to 1.17.99.5
+- document triggers
+- add pkg.readdir to lua scripts
+- reduce memory usage for hashes
+- fix memory corruption which can happen in some corner cases
+- run triggers for pkg add and pkg register
+
+Changes from 1.17.99.3 to 1.17.99.4
+- pkg version: fix regression from conversion to pkghash
+- allow filtering files at install time
+- add periodic script to check vulnerabilities in base
+- fix pkg failing to find its db if run from a directory which does not exists
+  anymore
+- fix ubsan reported issues
+- fix priorization upgrade-removal along with other deletion
+- fix plenty of memory leaks
+
+Changes from 1.17.99.2 to 1.17.99.3
+- make pkg/audit.h C++ friendly
+- fix build with libressl
+- Enable aarch64 support for linux
+- plenty of portability fixes for linux with musl libc
+- autoremove: respect -q
+- version: report an error if the provided INDEX file does not exist
+- periodic: allow users so provide an ignore list of jails
+- periodic: reduce audit script verbosity
+- arch: to not consider .h as potentially arch specific
+- query: allow -e to be used with other filter options
+- register: implement a -N to disable registration in the database
+- rework internal hash tables
+- plenty of memory leak fixed
+- fetch; do not count cached files as files to be fetched
+
+Changes from 1.17.99.1 to 1.17.99.2
+- by default only create .txz symlinks for metadata
+- only consider the .pkg when creating a repository
+  add an option REPO_ACCEPT_LEGACY_PKG to keep index old pkg
+- Reduce usage of memory stack
+
+Changes from 1.16.99.5 to 1.17.99.1
+- fix plenty of typos
+- add --no-script to autoremove
+- deprecated meta file v1
+
+Changes from 1.16.99.4 to 1.16.99.5
+- allow to execute programs from lua script and triggers
+- fetch vuln.xml.xz by default
+- triggers detected by pkg -r are now deferred for firstboot
+- pkg triggers command can be executed at first boot to run the
+  deferred triggers
+
+Changes from 1.16.99.3 to 1.16.99.4
+- expose the name of the packages to its scripts lua and shell
+- plist: remove internal support for @*exec
+- plist: remove support for @ignore
+- plist: remove suppot for @dirrm/@dirrmtry
+- plist: remove support for @pkgdep
+- plist: remove stub support for @stopdaemon
+- plist: remove stub support for @display
+- plist: remove stub support for @mtree
+- plist: remove stub support for @conflict
+- info: fix info processing of mutliple compares
+- ci runs again on linux and osx
+- portability fixes for linux and osx
+- ubsan/asan related fixes
+
+Changes from 1.16.99.2 to 1.16.99.3
+- lua update to 5.4.2
+- pkg repo accept now all supported formats mixed without config
+- pkg now default on creating .bsd files with backward compatible symlinks
+- backward compatible symlinks are now an option
+- make the default comprpession format a config option
+- set the default compression level for zstd to 19
+- make the default compression level a config option
+- Update libucl to latest version
+- change the package extension to .pkg (with symlink on the old format)
+
+Changes from 1.16.99.1 to 1.16.99.2
+- libpkg: rsa: stop leaking an RSA object
+- libpkg: rsa: start abstracting away rsa bits
+- lua: filecmp: Fix for symlink
+
+Changes from 1.16.99.8 to 1.16.99.1
+- Avoid making making xstring.h public
+- audit: fix quiet
+- libpkg: add a snap(shot) version prefix
+- libpkg: only upgrade installed packages with pattern matches
+- libpkg: accept an "rsa:" prefixed file for pkg_finish_repo()
+
+Changes from 1.15.99.7 to 1.15.99.8
+- Update documentation about configuration options
+- Fix variable expansion while parsing pkg.conf and repositories
+- Fix scripts never ending on MacOS
+- Do not execute post-install script if extraction fails
+- Fix fetching of meta.conf if it is missing
+- Update lua to lua 5.3.6
+- Improve solver missing some reverse dependencies
+- 'audit' now accept a -R/--raw option for parseable output
+- 'audit' can now ignore packages based on use define globs or regexp
+- 'set' now reports when a package provided in command line is not installed
+- all commands are now consistently using --no-scritps instead of different
+  flavor per commands
+- when request to install many packages unavailable in the repo, print all the
+  missing one instead of stop at the first one only
+- 'info' now prints the timestamp and repository in the --raw output
+- Improve error messaging when parsing the configuration file
+- when upgrading in dry-run mode: stop first checking for pkg, but show all
+  the packages to be upgraded, pkg included
+- Fix crash when pkg is told to package a directory as a file
+- 'create' now accept -e to create package with an expanded version of the
+  manifest aka readable
+- Relax keywords attributes syntax by allowing spaces
+
+Changes from 1.15.99.6 to 1.15.99.7
+- Merge keywords preinstall script into a single "prepackaging script"
+- implement triggers (lua and shell)
+- fix issues with script leaving process in the background
+- fix an issue with metalog duplicated entries
+- improve performances of pkg query -F
+- get rid of sysexits
+
+Changes from 1.15.99.5 to 1.15.99.6
+- lots of keywords improvements:
+  * validation: lua script to validate the keyword line
+  * deprecated: boolean to mark a keyword as deprecated
+  * deprecation_message: message if deprecated
+  * actions_script: script version of 'actions' in lua
+  * lua scripts: now can have real arguments instead of
+  pre-expended ones
+
+Changes from 1.15.99.4 to 1.15.99.5
+- Use open_memstream instead of utstring
+- add @include support for plist
+
+Changes from 1.15.99.3 to 1.15.99.4
+- Fix build with non recent compiler
+
+Changes from 1.15.99.2 to 1.15.99.3
+- Fix cases where lua scripts are not properly recognized
+- Fix %# in scripts
+- Implement @include mechanism for plist
+- Fix lua_copy on arm64
+
+Changes from 1.15.99.1 to 1.15.99.2
+- Fix '%X' to include the file name and sum
+
+Changes from 1.14.99.7 to 1.15.99.1
+- Fix '%X' to not include the version
+
+Changes from 1.14.99.6 to 1.14.99.7
+- Default the OSVERSION check to false
+- Fix some errors related to getpwname_r/getgrnam_r
+- Add RISC-V ABI aliases
+- Add '%X' to pkg-query, this print the internal package checksum
+
+Changes from 1.14.99.5 to 1.14.99.6
+- Run lua scripts before shell scripts
+- unbreak build with -fno-common
+
+Changes from 1.14.99.4 to 1.14.99.5
+- Fix lua script during pkg_delete
+- Return file type for lua_stat
+
+Changes from 1.14.99.3 to 1.14.99.4
+- Add function to lua scripts:
+  * Simple stat()
+  * filecopy to copy a file preserving its attributes
+  * filecmp to compare files
+  * update sqlite to latest version
+  * Add a new 'hash' mode to pkg repo to make repositories CDN friendly
+  * Isolate transport protocol to be able to easily change implementations
+    in the futur
+  * Fix invalid json in even_pipe
+  * lots of portability fixes
+
+Changes from 1.14.99.2 to 1.14.99.3
+- Fix linking on FreeBSD
+
+Changes from 1.14.99.1 to 1.14.99.2
+- Fix hanging if a script spawn a process and
+  it still run after the scripts finish
+- Prevent potential hang with lua scripts
+- For http mirror first try to get the list from the
+  full path and then fallback on the root one if we
+  didn't find anything.
+- Add a debug message if obtaining the lock fails
+
+Changes from 1.13.99.7 to 1.14.99.1
+- parallelize the run of the tests
+- Fix VERSION_MINOR expansion
+- Fix chflags tests
+- Bring back pkg create -n but in a consistent way
+- Improve build of sqlite
+- Use mmap in sqlite
+- Update sqlite to latest version
+- Document pkg_create(3)
+- Prepare the land for futur proof remote dependency handling
+- Update usage of pkg set -A and pkg set -v
+- Add pkg create -l (compression level)
+
+Changes from 1.13.99.6 to 1.13.99.7
+- Fix a regression with sometimes makes some keywords being ignored
+  (aka scripts not appended to the list of scripts)
+- Fix ABI on DragonFly
+- Fix fd being closed twice
+- Improve a bit documentation
+
+Changes from 1.13.99.5 to 1.13.99.6
+- When backing up libraries, create a package 'compat-libraries'
+  in which the new libraries will be appended to and the version
+  bumped each time a new library is backed up.
+
+Changes from 1.13.99.4 to 1.13.99.5
+- Fix memory allocation bug during package creation
+
+Changes from 1.13.99.3 to 1.13.99.4
+- Fix detection of the zstd compression
+- Fix package creation on installed packages
+- Update autosetup to the latest version
+
+Changes from 1.13.99.2 to 1.13.99.3
+- Fix regression in ABI detection (add regression tests about it)
+- Fix regression concerning the timestamp of the packaged/installed file
+  (add  regression tests about it)
+
+Changes from 1.13.99.1 to 1.13.99.2
+- Fix pkg fetch -o
+- Implement a mechanism to autobackup libraries during upgrades
+- zsh-completion: disable repo update durign package retrival
+- Improve documentation
+- More variable are now expanded when reading the confirations files:
+  * OSNAME: FreeBSD
+  * RELEASE: 12.1
+  * ARCH: amd64
+  * VERSION_MAJOR (FreeBSD only)
+  * VERSION_MINOR (FreeBSD only)
+- Remove the unused and inconsistent pkg create -n
+- Add -t timestamp to pkg create to be able to specify the expected file timestamp
+  via command line.
+- Refactor the pkg_create API and mark as deprecated the old functions
+
+Changes from 1.13.99.0 to 1.13.99.1
+- Do not create a .pkgnew file in case installing a configure file over
+  a non existing file
+- Update linenoise to latest version
+- Update picosat to latest version
+- Implement HTTP keep-alive (imported from xbps)
+- fix a regression concerning valid url: ssh://user@host:/ was not valid
+  anymore
+
+Changes from 1.12.99.4 to 1.13.99.0
+- Fix inverted logic leading to rc scripts always being restarted
+
+Changes from 1.12.99.3 to 1.12.99.4
+- Document lua scripts
+- Document shell scripts
+- Document keywords ucl files
+- Add a variable to both lua scripts and shell script to allow
+  the scripts to know they are actually being upgrading things
+
+Changes from 1.12.99.2 to 1.12.99.3
+- Add more regression test
+- Improve consistency of the default ouput
+- Give a hint about running pkg update -f in case of "size mismatch"
+- Fix pkg backup since the sqlite syscall are overridden
+
+Changes from 1.12.99.1 to 1.12.99.2
+- lua script io.open function now always open relatively to the rootdir
+- lua script: all lua script are now run in a sandbox
+- expat has been replaced by yxml to parse vuxml
+- fix documentation of -y in pkg-set
+- update libucl to latest version
+- improve error reporting when parsing vuxml files
+- shell script can now print messages along with pkg-messages
+  by writing to ${PKG_MSGFD} file descriptor
+
+Changes from 1.12.99.0 to 1.12.99.1
+- When installing a file over a file that is not tracked by any
+  package, save the previous one as .pkgsave
+- Fix a chicken/egg problem with the meta being compressed and defining
+  the compression format. Now pkg repo will create a meta.conf file
+  uncompressed (it is small enough) and fallback on the old meta.txz.
+  Note that meta.txz is still created for backward compatibility
+- pkg repo now creates meta files in version 2 by default meaning the digests.txz
+  is not created anymore, it was only used up to pkg 1.2. anyone upgrading
+  from pkg 1.2 should first run pkg bootstrap -f to be on a recent version.
+- pkg -r now first lookup under the rootdir for its ABI_FILE.
+- suppress version checking when -j is specified
+- Alphabetically sort packages printed in the output of pkg commands to ease readability
+- pkg lock/unlock now allows multiple packages in arguments
+
+Changes from pkg 1.11.99.3 to 1.12.99.0
+- Fix a crash when specifying an unsupported ABI
+
+Changes from pkg 1.11.99.2 to 1.11.99.3
+- Warn about the fact @unexec is deprecated in pkg-plist
+- Fix build with gmake
+- Bundle lua functions into a proper package
+- Fix build on osx
+- Fix libelf detection on debian
+- Fix pkg_shutdown unproperly reinitializing closed fds
+
+Changes from pkg 1.11.99.1 to 1.11.99.2
+- Fix cross installation with new build system
+- Add a function to lua_script allowing to send a message which will be
+  printed along with the other messages at the end of the message process.
+- Fix detection of libarchive with zstd support
+
+Changes from pkg 1.11.99.0 to 1.11.99.1
+- Import lua 5.3.5
+- Recommand using pkg boostrap -f in case we do need to reinstall pkg
+- Scripts can now be written in lua
+- Keywords scripting part can now be written in lua
+
+Changes from pkg 1.10.99.13 to 1.10.99.14
+- fix libpkg.so when linked with binutils
+- instead of closing stdin for script just use /dev/null
+- force installation of symlinks to avoid make install to fail is some
+  symlinks are already there
+
+Changes from pkg 1.10.99.12 to 1.10.99.13
+- fix segfault when running pkg version <an_invalid_index_file>
+- fix segfault that can occurs sometime when forcing the installation of a
+  localpackage: pkg install -f ./mypkg-X.txz
+- fix abi detection when multiple elf notes are used in the binary like on
+  fedora
+
+Changes from pkg 1.10.99.11 to 1.10.99.12
+- use /usr/bin/uname to determine of the ABI
+- Add 3 new aliases:
+  * rall-depends: showing depenencies of a non installed package
+  * rcomment: showing only the comment of a non installed package
+  * rdesc: showing only the description of a non installed package
+- switch to cirrus-ci
+- improve portability on linux
+- simplify code to create the repository
+- close stdin when running scripts
+- update bundled libucl to latest version
+- remove backward compat (pkg_*) in periodic scripts
+- always use anticongersion on periodic scripts
+- Prevent SIGSEGV with 'pkg version' with packaged base
+- Fix issue with recent lld
+
+Changes from pkg 1.10.99.10 to 1.10.99.11
+- Fix typos in man pages
+- Attempt to fix build in head where libarchive now uses blake2b
+
+Changes from pkg 1.10.99.9 to 1.10.99.10
+- Fix incremental build
+- Fix loading plugins in the flat binary
+- Stop issueing wrong error message before creating the local repository for
+  the first time
+
+Changes from pkg 1.10.99.8 to 1.10.99.9
+- Remove a check for config files that have hardlinks
+- Add .gitlab-ci.yml to support the Gitlab CI service
+- Add a few more tests with hardlinks
+
+Changes from pkg 1.10.99.7 to 1.10.99.8
+- Add options to ignore OSVERSION check and document it
+- Complain about RO filesystem for pkgdb access if needed
+- Fix privileges drop done too early
+- Improve OSVERSION check
+- Fix some resource leaks
+- Lots of documentation improvements
+- Improve conflicts handling
+- Do not check remote packages when doing `pkg upgrade -v`
+- Convert from autotools to autosetup
+- Fix warnings spotted by gcc 7+
+- Fix pkg info -R to match the documented behaviour
+- Update zsh completion
+- Fix crash with config file handling
+- pkg is now a semi static binary
+
+Changes from pkg 1.10.99.6 to 1.10.99.7
+- Sort fts traversal in repo creation
+- Fix floating pint exception when packaging packages with weird elf files
+- More test cases for config merge
+- Fix running the testsuite on linux and osx
+- Fix pkg version regarding flavors
+- Add support for creating packages with a hash in their names
+- Accept DT_SONAME anywhere in .dynamic
+- make pkg version -r imply -R
+- Some fixes for the progression display
+- Rename some variables in security periodic scripts.
+- Parse FreeBSD OS version and forbid to install too new packages
+
+Changes from pkg 1.10.99.5 to 1.10.99.6
+- Lots of fixes/improvements on periodic scripts
+- Fix typo in the .pc file
+- Only check for origin if the strings contains / in pkg version
+- Support flags when exporting the metalog
+- Ignore flags when installing as a user
+- fix again using pattern as package arch
+- recognize armv7
+- add %q to pkg_printf(3) and pkg-query(8) to print altabi
+- add an extra line when printing pkg-messages to improve readability
+- stop considering nfs as dangerous and if a corruption happens on nfs drive
+  by a message the user to the highly possible reason of the corruption so
+  he can fix
+- zsh completion imrpovements
+
+Changes from pkg 1.10.99.4 to 1.10.99.5
+- pkg clean is now happy if the cache dir non existing
+- 410.pkg-audit now uses anticongestion on freebsd 12
+- fix pkg install -r foo if foo is a disabled repository
+- fix elf handling on non FreeBSD
+- fix support for platforms without AT_SYMLINK_NOFOLLOW
+- fix dropping privileges on Linux
+- fix build with recent libbsd
+- fix duplicate pkg registration overwriting the existing pkg
+- better ABI name on linux
+- lots of changes in internal API to use fd when possible
+- removed option: pkg repo -L
+
+Changes from pkg 1.10
+- Use dep_formula in the solver
+- Cache pw result to avoid over reloading nssswitch.conf
+- Remove pkg2ng and support for pkg_ databases
+
+Changes from pkg 1.9
+- fix pkg which -g
+- Do not use openssl for sha256
+- Improve the default output when fetching data
+- Update libfetch to the version of FreeBSD 11
+- Update libsbuf to the version of FreeBSD 11
+- Fix NetBSD ABI
+- Add a fallback for utimensat when reporting EOPNOTSUPP
+- replace libsbuf with utstring for portability
+- Overwrite some sqlite vfs functions to allow more capsicumisation of pkg
+- move more pkg audit details into the library
+- allow to run pkg query without any privileges
+- extend the audit periodic script to report deprecated packages
+- Fix fd leak to rcscripts
+- stop dropping privieges during fetching it causes more issues than it solves
+- speed walking though [reverse]dependencies
+- Update blake2b to latest version
+- Add blake2s to the list of supported checksums
+- Internal digest now default on blake2b on 64 bits and blake2s on 32 bits.
+- Fix segfault when ABI is defined but empty
+- Do not use the shared library provides/requires on non FreeBSD/Linux
+- Define _NETBSD_SOURCES on NetBSD to allow libfetch to use funopen
+- Document vital flags
+- Fix potential double free when dealing with @config keyword
+- Add progress when fetching (number of files to fetch)
+- Improved messages about locked packages
+- Return 1 when a user rejects the proposed plan
+- When dealing with configuration files '@config' never overwrites non tracked
+  files
+- Warn everyone about deprecation of @dirrm and @exec
+- Deduplicate metadata loading code
+- pkg register now understands context aware messages
+- Fix pkg register issues with some version of libarchive:
+  * hardlinks not being made hardlinks sometime
+  * issues when PREFIX is a symlink to another directory
+- Use portable mechanism to find the number of CPUs which allows pkg repo to be
+  faster on linux
+- New pkg upgrade --vulnerable
+
+Changes from pkg 1.8
+
+- Drop privileges in many commands
+- Drop privileges when fetching a file
+- Add resource limitation to sandboxes
+- Add support for metalog
+- pkg-delete now print a warning if no packages were matched

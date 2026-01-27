@@ -1,0 +1,100 @@
+#!/bin/sh -
+#
+# $FreeBSD$
+#
+
+if [ -r /etc/defaults/periodic.conf ]; then
+    . /etc/defaults/periodic.conf
+    source_periodic_confs
+fi
+pkgcmd=/usr/local/sbin/pkg
+
+status_pkg() {
+    local pkgargs
+    local rc
+
+    pkgargs="$1"
+
+    rc=$(${pkgcmd} ${pkgargs} version -CRv ${pkg_version_index} |
+	sed -n -e '/up-to-date/d' \
+	    -e 's/^\([^[:space:]]*\)[[:space:]]*[<>=!?][[:space:]]*\(.*\)$/\1 \2/p' |
+	tee /dev/stderr |
+	wc -l)
+
+    return $rc
+}
+
+# Use $pkg_chroots to provide a default list of chroots, and
+# $pkg_jails to provide a default list of jails (or '*' for all jails)
+# for all pkg periodic scripts, or set $weekly_pkg_status_chroots and
+# $weekly_pkg_status_jails for this script only.
+
+status_pkg_all() {
+    local rc
+    local jails
+
+    : ${weekly_status_pkg_chroots=$pkg_chroots}
+    : ${weekly_status_pkg_jails=$pkg_jails}
+
+    # We always show pkg status for the base system but only print a
+    # banner line if we're also showing status for any chroots or
+    # jails.
+
+    if [ -n "${weekly_status_pkg_chroots}" -o \
+	 -n "${weekly_status_pkg_jails}" ];
+    then
+	echo "Host system:"
+    fi
+
+    status_pkg ''
+    [ $? -gt 1 ] && rc=1
+
+    for c in $weekly_status_pkg_chroots ; do
+	echo
+	echo "chroot: $c"
+	status_pkg "-c $c"
+	[ $? -gt 1 ] && rc=1
+    done
+
+    case $weekly_status_pkg_jails in
+	\*)
+	    jails=$(jls -q -h name | sed -e 1d)
+	    ;;
+	'')
+	    jails=
+	    ;;
+	*)
+	    jails=$weekly_status_pkg_jails
+	    ;;
+    esac
+
+    for j in $jails ; do
+	echo
+	echo "jail: $j"
+	status_pkg "-j $j"
+	[ $? -gt 1 ] && rc=1
+    done
+
+    return $rc
+}
+
+case "$weekly_status_pkg_enable" in
+	[Yy][Ee][Ss])
+
+	echo
+	echo 'Checking for out of date packages:'
+
+	if ! ${pkgcmd} -N >/dev/null 2>&1 ; then
+	    echo 'status-pkg is enabled but pkg is not used'
+	    rc=2
+	else
+	    status_pkg_all
+	    rc=$?
+	fi
+	;;
+	*)
+	rc=0
+	;;
+esac
+
+exit $rc
