@@ -31,11 +31,8 @@
  * simple wrapper to convert legacy rules into usable data for our MVC implementation
  */
 
-require_once('script/load_phalcon.php');
 require_once('config.inc');
 require_once('filter.inc');
-
-use OPNsense\Firewall\Alias;
 
 $result = [];
 if (!empty($config['filter']['rule'])) {
