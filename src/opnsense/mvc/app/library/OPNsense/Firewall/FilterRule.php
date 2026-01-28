@@ -28,8 +28,6 @@
 
 namespace OPNsense\Firewall;
 
-use OPNsense\Firewall\Alias;
-
 /**
  * Class FilterRule
  * @package OPNsense\Firewall
