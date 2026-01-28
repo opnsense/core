@@ -868,7 +868,7 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
         case 'slaac':
         case 'dhcp6':
             interface_dhcpv6_prepare($interface, $ifcfg, true);
-            killbypid('/var/run/dhcp6c.pid', 'HUP');
+            killbypid("/var/run/dhcp6c.{$device}.pid", 'HUP');
             break;
         case 'idassoc6':
         case 'track6':
@@ -2609,7 +2609,7 @@ function interface_track6_configure($interface, $lancfg, $reload = false)
         case 'dhcp6':
             if ($reload || !isset($lancfg['enable'])) {
                 interface_dhcpv6_prepare($lancfg['track6-interface'], $trackcfg);
-                killbypid('/var/run/dhcp6c.pid', 'HUP');
+                killbypid("/var/run/dhcp6c.{$trackcfg['if']}.pid", 'HUP');
             }
             break;
     }
@@ -2893,15 +2893,16 @@ function interface_dhcpv6_configure($interface, $wancfg)
     }
 
     /* always kill rtsold in case of reconfigure */
-    killbypid('/var/run/rtsold.pid');
+    killbypid("/var/run/rtsold.{$wancfg['if']}.pid");
     @unlink("/tmp/rtsold.{$wancfg['if']}.done");
 
-    $rtsold_frmt = ['/usr/sbin/rtsold -%s -aiu -p %s -A %s -R %s'];
+    $rtsold_frmt = ['/usr/sbin/rtsold -%s -iu -p %s -A %s -R %s %s'];
     $rtsold_args = [
         $settings->dhcp6_debug->isEmpty() ? 'd' : 'D',
-        '/var/run/rtsold.pid',
+        "/var/run/rtsold.{$wancfg['if']}.pid",
         '/usr/local/opnsense/scripts/interfaces/rtsold_script.sh',
         '/usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh',
+        $wancfg['if'],
     ];
 
     /* fire up rtsold for IPv6 RAs first */
@@ -2978,21 +2979,6 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
     } else {
         @unlink("/var/etc/dhcp6c.{$device}.conf");
     }
-
-    $dhcp6cconf = '';
-
-    /* merge configs and prepare single instance of dhcp6c for startup */
-    foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $_interface => $_wancfg) {
-        if (empty($_wancfg['ipaddrv6']) || ($_wancfg['ipaddrv6'] != 'dhcp6' && $_wancfg['ipaddrv6'] != 'slaac')) {
-            continue;
-        }
-
-        if (file_exists("/var/etc/dhcp6c.{$_wancfg['if']}.conf")) {
-            $dhcp6cconf .= file_get_contents("/var/etc/dhcp6c.{$_wancfg['if']}.conf");
-        }
-    }
-
-    @file_put_contents('/var/etc/dhcp6c.conf', $dhcp6cconf);
 }
 
 function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
