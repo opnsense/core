@@ -38,17 +38,15 @@ export default class Services extends BaseTableWidget {
     }
 
     getMarkup() {
-        let $table = this.createTable('services-table', {
-            headerPosition: 'left',
-            headerBreakpoint: 270
-        });
-        return $(`<div id="services-container"></div>`).append($table);
+        return $(`<div id="services-container" style="display: flex; flex-wrap: wrap; padding: 5px; gap: 5px; justify-content: flex-start;"></div>`);
     }
 
     serviceControl(actions) {
         return actions.map(({ action, id, title, icon }) => `
             <button data-service_action="${action}" data-service="${id}"
-                  class="btn btn-xs btn-default srv_status_act2" style="font-size: 10px;" title="${title}" data-toggle="tooltip">
+                  class="btn btn-xs btn-default srv_status_act2"
+                  style="font-size: 10px; padding: 2px 6px;"
+                  title="${title}" data-toggle="tooltip">
                 <i class="fa fa-fw fa-${icon}"></i>
             </button>
         `).join('');
@@ -62,13 +60,15 @@ export default class Services extends BaseTableWidget {
             return;
         }
 
+        const $container = $('#services-container');
+        $container.empty();
+
         $('.service-status').tooltip('hide');
         $('.srv_status_act2').tooltip('hide');
 
-        for (const service of data.rows) {
-            let name = service.name;
-            let $description = $(`<div style="font-size: 12px;">${service.description}</div>`);
+        data.rows.sort((a, b) => a.description.localeCompare(b.description));
 
+        for (const service of data.rows) {
             let actions = [];
             if (service.locked) {
                 actions.push({ action: 'restart', id: service.id, title: this.translations.restart, icon: 'refresh' });
@@ -79,21 +79,49 @@ export default class Services extends BaseTableWidget {
                 actions.push({ action: 'start', id: service.id, title: this.translations.start, icon: 'play' });
             }
 
-            let $buttonContainer = $(`
-                <div style="margin-left: 45%">
-                <span class="label label-opnsense label-opnsense-xs
-                             label-${service.running ? 'success' : 'danger'}
-                             service-status"
-                             data-toggle="tooltip" title="${service.running ? this.translations.running : this.translations.stopped}"
-                             style="font-size: 10px;">
-                    <i class="fa fa-${service.running ? 'play' : 'stop'} fa-fw"></i>
-                </span>
+            let statusColor = service.running ? 'success' : 'danger';
+            let statusIcon = service.running ? 'play' : 'stop';
+            let statusTitle = service.running ? this.translations.running : this.translations.stopped;
+
+            let $tile = $(`
+                <div class="service-tile" style="
+                    border: 1px solid #e5e5e5;
+                    border-radius: 4px;
+                    padding: 8px;
+                    width: 32%;
+                    flex-grow: 1;
+                    min-width: 140px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    background-color: #fff;
+                    box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+                ">
+                    <div style="
+                        font-weight: bold;
+                        font-size: 12px;
+                        margin-bottom: 5px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        width: 100%;
+                        text-align: center;
+                        color: #555;
+                    " title="${service.description}">${service.description}</div>
+                    <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
+                        <span class="label label-opnsense label-opnsense-xs label-${statusColor} service-status"
+                              data-toggle="tooltip" title="${statusTitle}"
+                              style="font-size: 10px; margin-right: 8px; padding: 3px 6px;">
+                            <i class="fa fa-${statusIcon} fa-fw"></i>
+                        </span>
+                        <div class="btn-group" role="group">
+                            ${this.serviceControl(actions)}
+                        </div>
+                    </div>
                 </div>
             `);
 
-            $buttonContainer.append(this.serviceControl(actions));
-
-            super.updateTable('services-table', [[$description.prop('outerHTML'), $buttonContainer.prop('outerHTML')]], service.id);
+            $container.append($tile);
         }
 
         $('.service-status').tooltip({container: 'body'});
@@ -120,8 +148,7 @@ export default class Services extends BaseTableWidget {
     }
 
     displayError(message) {
-        const $error = $(`<div class="error-message"><a href="/ui/core/service">${message}</a></div>`);
-        $('#services-table').empty().append($error);
+        const $error = $(`<div class="error-message" style="width: 100%; text-align: center; padding: 10px;"><a href="/ui/core/service">${message}</a></div>`);
+        $('#services-container').empty().append($error);
     }
-
 }
