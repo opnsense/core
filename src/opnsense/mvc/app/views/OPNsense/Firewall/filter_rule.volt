@@ -444,7 +444,7 @@
                         const usedAdvancedFields = [];
 
                         advancedFieldIds.forEach(function (fieldId) {
-                            const value = row[fieldId];
+                            const value = row["%" + fieldId] ?? row[fieldId];
                             if (value !== undefined) {
                                 const lowerValue = value.toString().toLowerCase().trim();
                                 // Check: if the value is empty OR starts with any default prefix, consider it default
