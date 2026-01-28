@@ -473,11 +473,30 @@ class FilterController extends FilterBaseController
                 $categories[$category->name->getValue()] = $key;
             }
 
+            /* build alias name -> uuid map to accept legacy alias names for overload field */
+            $aliasNameMap = [];
+            $cachedAliases = \OPNsense\Firewall\Alias::getCachedData();
+            foreach ($cachedAliases['aliases']['alias'] ?? [] as $uuid => $adata) {
+                if (!empty($adata['name'])) {
+                    $aliasNameMap[$adata['name']] = $uuid;
+                }
+            }
+
+            /* build shaper description -> uuid map to accept legacy shaper names for shaper1/shaper2 */
+            $shaperNameMap = [];
+            $dntargets = (new \OPNsense\TrafficShaper\TrafficShaper())->fetchAllTargets();
+            foreach ($dntargets as $uuid => $info) {
+                $desc = $info['description'] ?? '';
+                if ($desc !== '') {
+                    $shaperNameMap[$desc] = $uuid;
+                }
+            }
+            
             return $this->importCsv(
                 'rules.rule',
                 $this->request->getPost('payload'),
                 ['@uuid'],
-                function (&$record) use ($categories) {
+                function (&$record) use ($categories, $aliasNameMap) {
                     if (!empty($record['categories'])) {
                         /* only map what we know, ignore the rest */
                         $cats = [];
@@ -487,6 +506,22 @@ class FilterController extends FilterBaseController
                             }
                         }
                         $record['categories'] = implode(',', $cats);
+                    }
+                    // accept overload as alias name (legacy exports) and convert to uuid when possible
+                    if (!empty($record['overload']) && !preg_match('/^[0-9a-fA-F-]{36}$/', $record['overload'])) {
+                        $name = trim($record['overload']);
+                        if (isset($aliasNameMap[$name])) {
+                            $record['overload'] = $aliasNameMap[$name];
+                        }
+                    }
+                    // accept shaper descriptions and convert to uuid when possible
+                    foreach (['shaper1', 'shaper2'] as $shaperField) {
+                        if (!empty($record[$shaperField]) && !preg_match('/^[0-9a-fA-F-]{36}$/', $record[$shaperField])) {
+                            $name = trim($record[$shaperField]);
+                            if (isset($shaperNameMap[$name])) {
+                                $record[$shaperField] = $shaperNameMap[$name];
+                            }
+                        }
                     }
                 }
             );
