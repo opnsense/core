@@ -489,7 +489,7 @@ class FilterController extends FilterBaseController
                         $record['categories'] = implode(',', $cats);
                     }
                     if (!empty($record['@uuid']) && !$that->isValidUUID($record['@uuid'])) {
-                        throw new \Exception (
+                        throw new \Exception(
                             sprintf("Invalid UUID offered (%s)", $record['@uuid'])
                         );
                     }
