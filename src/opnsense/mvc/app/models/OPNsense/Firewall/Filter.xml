@@ -221,7 +221,7 @@
                 </max-src-states>
                 <max-src-conn type="IntegerField">
                     <MinimumValue>1</MinimumValue>
-                    <MaximumValue>4294967</MaximumValue>
+                    <MaximumValue>2147483647</MaximumValue>
                 </max-src-conn>
                 <max type="IntegerField">
                     <MinimumValue>1</MinimumValue>
@@ -229,7 +229,7 @@
                 </max>
                 <max-src-conn-rate type="IntegerField">
                     <MinimumValue>1</MinimumValue>
-                    <MaximumValue>2147483647</MaximumValue>
+                    <MaximumValue>4294967</MaximumValue>
                 </max-src-conn-rate>
                 <max-src-conn-rates type="IntegerField">
                     <MinimumValue>1</MinimumValue>
