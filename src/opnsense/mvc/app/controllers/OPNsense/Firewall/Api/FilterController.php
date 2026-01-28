@@ -472,7 +472,6 @@ class FilterController extends FilterBaseController
             foreach ((new Category())->categories->category->iterateItems() as $key => $category) {
                 $categories[$category->name->getValue()] = $key;
             }
-
             return $this->importCsv(
                 'rules.rule',
                 $this->request->getPost('payload'),
