@@ -27,6 +27,7 @@
  */
 
 namespace OPNsense\Firewall;
+use OPNsense\Firewall\Alias;
 
 /**
  * Class FilterRule
@@ -254,6 +255,17 @@ class FilterRule extends Rule
                     }
                     if (!empty($rule['max-src-conn-rate']) && !empty($rule['max-src-conn-rates'])) {
                         $otbl = !empty($rule['overload']) ? $rule['overload'] : "virusprot";
+                        // ModelRelationField stores the selected option as the target model UUID.
+                        // Resolve UUID to alias name when needed so PF receives a valid table name.
+                            if (preg_match('/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/', $otbl)) {
+                                $cached = Alias::getCachedData();
+                                if (!empty($cached['aliases']['alias'][$otbl]['name'])) {
+                                    $otbl = $cached['aliases']['alias'][$otbl]['name'];
+                                } else {
+                                    // unresolved uuid, fallback to default overload table to avoid PF table-name errors
+                                    $otbl = "virusprot";
+                                }
+                            }
                         $rule['state']['options'][] = "max-src-conn-rate " . $rule['max-src-conn-rate'] . " " .
                                              "/" . $rule['max-src-conn-rates'] . ", overload <{$otbl}> flush global ";
                     }
