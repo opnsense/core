@@ -332,7 +332,12 @@ class ArrayField extends BaseField
 
         foreach ($records as $idx => $record) {
             if (is_callable($data_callback)) {
-                $data_callback($record);
+                try {
+                    $data_callback($record);
+                } catch (\Exception $e) {
+                    $results['validations'][] = ['sequence' => $idx, 'message' => $e->getMessage()];
+                    continue;
+                }
             }
             $keydata = [];
             foreach ($keyfields as $keyfield) {
