@@ -110,12 +110,6 @@ if (!empty($config['filter']['rule'])) {
             'shaper2' => $rule['shaper2'] ?? '',
             'description' => $rule['descr'] ?? '',
         ];
-        if (!empty($rule['overload'])) {
-            $alias = (new Alias())->getByName($rule['overload']);
-            if ($alias !== null) {
-                $target_rule['overload'] = (string)$alias->getAttribute('uuid');
-            }
-        }
         if (!isset($rule['quick'])) {
             $target_rule['quick'] = !empty($rule['floating']) ? '0' : '1';
         }

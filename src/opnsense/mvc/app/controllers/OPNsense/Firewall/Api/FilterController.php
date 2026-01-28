@@ -458,6 +458,12 @@ class FilterController extends FilterBaseController
                         }
                         $record['categories'] = implode(',', $cats);
                     }
+                    if (!empty($record['overload'])) {
+                        $alias = (new Alias())->getNodeByReference('aliases.alias.' . $record['overload']);
+                        if ($alias !== null) {
+                            $record['overload'] = $alias->name->getValue();
+                        }
+                    }
                     return array_merge(['@uuid' => $node->getAttribute('uuid')], $record);
                 }
             ));
@@ -487,6 +493,12 @@ class FilterController extends FilterBaseController
                             }
                         }
                         $record['categories'] = implode(',', $cats);
+                    }
+                    if (!empty($record['overload'])) {
+                        $alias = (new Alias())->getByName($record['overload']);
+                        if ($alias !== null) {
+                            $record['overload'] = (string)$alias->getAttribute('uuid');
+                        }
                     }
                 }
             );

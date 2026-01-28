@@ -256,13 +256,6 @@ class FilterRule extends Rule
                     }
                     if (!empty($rule['max-src-conn-rate']) && !empty($rule['max-src-conn-rates'])) {
                         $otbl = !empty($rule['overload']) ? $rule['overload'] : "virusprot";
-                        // If alias name cannot be resolved, assume it is an UUID and resolve its name
-                        if (!empty($otbl) && !Util::isAlias($otbl)) {
-                            $alias = (new Alias())->getNodeByReference('aliases.alias.' . $otbl);
-                            if ($alias !== null && !$alias->name->isEmpty()) {
-                                $otbl = $alias->name->getValue();
-                            }
-                        }
                         $rule['state']['options'][] = "max-src-conn-rate " . $rule['max-src-conn-rate'] . " " .
                                              "/" . $rule['max-src-conn-rates'] . ", overload <{$otbl}> flush global ";
                     }
