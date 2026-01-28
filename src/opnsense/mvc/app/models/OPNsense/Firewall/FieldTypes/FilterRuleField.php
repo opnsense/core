@@ -29,7 +29,7 @@
 namespace OPNsense\Firewall\FieldTypes;
 
 use OPNsense\Core\Config;
-use OPNsense\Firewall\Alias;
+use OPNsense\Firewall\Util;
 use OPNsense\Firewall\Group;
 use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\FieldTypes\ContainerField;
@@ -90,9 +90,9 @@ class FilterRuleContainerField extends ContainerField
             }
         }
         if (!$this->overload->isEmpty()) {
-            $alias = (new Alias())->getNodeByReference('aliases.alias.' . $this->overload->getValue());
+            $alias = Util::aliasUuidToName($this->overload->getValue());
             if ($alias !== null) {
-                $result['overload'] = $alias->name->getValue();
+                $result['overload'] = $alias;
             } else {
                 // fall back to default virusprod table
                 unset($result['overload']);
