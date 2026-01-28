@@ -1124,8 +1124,8 @@ class UIBootgrid {
             }
 
             const title = typeof command?.title === "function"
-                ? `title=${command?.title()}`
-                : `title=${command?.title}` ?? '';
+                ? `title="${command?.title()}"`
+                : `title="${command?.title}"` ?? '';
 
             const $element = $(`
                 <button type="button" class="btn btn-xs ${key === 'add' ? 'btn-primary' : 'btn-default'} command-${key} bootgrid-tooltip" ${title}>
@@ -1648,8 +1648,8 @@ class UIBootgrid {
 
                     if (has_option) {
                         let title = typeof command?.title === "function"
-                            ? `title=${command?.title(cell)}`
-                            : `title=${command?.title}` ?? '';
+                            ? `title="${command?.title(cell)}"`
+                            : `title="${command?.title}"` ?? '';
 
                         html.push(`
                             <button type="button"
