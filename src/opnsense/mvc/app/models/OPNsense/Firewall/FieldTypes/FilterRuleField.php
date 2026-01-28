@@ -93,6 +93,16 @@ class FilterRuleContainerField extends ContainerField
         $result['descr'] = (string)$this->description;
         $result['type'] = (string)$this->action;
         $result['reply-to'] = (string)$this->replyto;
+        // resolve overload UUID -> alias name for legacy consumers
+        if (!empty($result['overload'])) {
+            $otbl = $result['overload'];
+            if (preg_match('/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/', $otbl)) {
+                $cached = \OPNsense\Firewall\Alias::getCachedData();
+                if (!empty($cached['aliases']['alias'][$otbl]['name'])) {
+                    $result['overload'] = $cached['aliases']['alias'][$otbl]['name'];
+                }
+            }
+        }
         /* XXX this is an approximation of the complex situation and will be removed eventually */
         if (count($this->interface->getValues()) != 1 || !$this->interfacenot->isEmpty()) {
             $result['floating'] = true;
