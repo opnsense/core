@@ -93,6 +93,9 @@ class FilterRuleContainerField extends ContainerField
             $alias = (new Alias())->getNodeByReference('aliases.alias.' . $this->overload->getValue());
             if ($alias !== null) {
                 $result['overload'] = $alias->name->getValue();
+            } else {
+                // fall back to default virusprod table
+                unset($result['overload']);
             }
         }
         // field mappings and differences
