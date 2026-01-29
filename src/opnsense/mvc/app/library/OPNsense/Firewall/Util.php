@@ -178,6 +178,38 @@ class Util
     }
 
     /**
+     * fetch alias by uuid from model
+     * @param string $uuid
+     * @return Alias|null
+     */
+    private static function getAliasByUuid($uuid)
+    {
+        if (self::$aliasObject == null) {
+            // Cache the alias object to avoid object creation overhead.
+            self::$aliasObject = new Alias(true);
+            self::$aliasObject->flushCache();
+        }
+        if (!empty($uuid)) {
+            return self::$aliasObject->getNodeByReference('aliases.alias.' . $uuid);
+        }
+        return null;
+    }
+
+    /**
+     * resolve alias uuid to alias name
+     * @param string $uuid
+     * @return string|null
+     */
+    public static function aliasUuidToName($uuid)
+    {
+        $alias = self::getAliasByUuid($uuid);
+        if ($alias !== null) {
+            return $alias->name->getValue();
+        }
+        return null;
+    }
+
+    /**
      * fetch alias by name from model
      * @param string $name name
      * @return Alias|null
