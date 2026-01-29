@@ -331,10 +331,26 @@ class ArrayField extends BaseField
         }
 
         foreach ($records as $idx => $record) {
+            $uuid = $record['@uuid'] ?? '';
+            if (
+                !empty($uuid) &&
+                (
+                    !is_string($uuid) ||
+                    preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid) !== 1
+                )
+            ) {
+                $results['validations'][] = [
+                    'sequence' => $idx,
+                    'field' => '@uuid',
+                    'message' => sprintf("Invalid UUID offered (%s)", $uuid)
+                ];
+                continue;
+            }
             if (is_callable($data_callback)) {
                 try {
                     $data_callback($record);
                 } catch (\Exception $e) {
+                    /* callbacks may trow errors to report validation issues */
                     $results['validations'][] = ['sequence' => $idx, 'message' => $e->getMessage()];
                     continue;
                 }

@@ -472,12 +472,11 @@ class FilterController extends FilterBaseController
             foreach ((new Category())->categories->category->iterateItems() as $key => $category) {
                 $categories[$category->name->getValue()] = $key;
             }
-            $that = $this;
             return $this->importCsv(
                 'rules.rule',
                 $this->request->getPost('payload'),
                 ['@uuid'],
-                function (&$record) use ($categories, $that) {
+                function (&$record) use ($categories) {
                     if (!empty($record['categories'])) {
                         /* only map what we know, ignore the rest */
                         $cats = [];
@@ -487,11 +486,6 @@ class FilterController extends FilterBaseController
                             }
                         }
                         $record['categories'] = implode(',', $cats);
-                    }
-                    if (!empty($record['@uuid']) && !$that->isValidUUID($record['@uuid'])) {
-                        throw new \Exception(
-                            sprintf("Invalid UUID offered (%s)", $record['@uuid'])
-                        );
                     }
                 }
             );
