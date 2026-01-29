@@ -41,7 +41,7 @@ class ConfigMaintenance
     {
         $this->modelmap = $this->loadModels();
         $this->legacyPaths = [
-            'filter.rule' =>  gettext("Firewall / Rules (legacy)")
+            'filter.rule' =>  gettext('Firewall: Rules [legacy]'),
         ];
     }
 

@@ -84,6 +84,11 @@
                     "timestamp": function (column, row) {
                         return moment.unix(row[column.id]).local().format('YYYY-MM-DD HH:mm:ss');
                     },
+                    "reservation": function (column, row) {
+                        return row.is_reserved !== ''
+                            ? "{{ lang._('static') }}"
+                            : "{{ lang._('dynamic') }}";
+                    },
                     "commands": function (column, row) {
                         const baseUrl = `/ui/kea/dhcp/v4#reservations`;
                         const searchUrl = `${baseUrl}&search=${encodeURIComponent(row.hwaddr || '')}`;
@@ -96,7 +101,7 @@
 
                         let btn;
 
-                        if (row.is_reserved === '1') {
+                        if (row.is_reserved !== '') {
                             btn = $(`
                                 <button type="button" class="btn btn-xs" data-toggle="tooltip"
                                     title="{{ lang._('Find Reservation') }}">
@@ -151,6 +156,7 @@
                 <th data-column-id="valid_lifetime" data-type="integer">{{ lang._('Lifetime') }}</th>
                 <th data-column-id="expire" data-type="string" data-formatter="timestamp">{{ lang._('Expire') }}</th>
                 <th data-column-id="hostname" data-type="string" data-formatter="overflowformatter">{{ lang._('Hostname') }}</th>
+                <th data-column-id="is_reserved" data-type="string" data-formatter="reservation" data-width="6em">{{ lang._('Lease Type') }}</th>
                 <th data-column-id="commands" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
             </tr>
         </thead>

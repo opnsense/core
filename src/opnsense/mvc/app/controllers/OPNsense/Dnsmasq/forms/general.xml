@@ -114,7 +114,7 @@
         <id>dnsmasq.add_mac</id>
         <label>Add MAC</label>
         <type>dropdown</type>
-        <help>Add the MAC address of the requestor to DNS queries which are forwarded upstream. The MAC address will only be added if the upstream DNS Server is in the same subnet as the requestor. Since this is not standardized, it should be considered experiemental. This is useful for selective DNS filtering on the upstream DNS server.</help>
+        <help>Add the MAC address of the requestor to DNS queries which are forwarded upstream. The MAC address will only be added if the upstream DNS Server is in the same subnet as the requestor. Since this is not standardized, it should be considered experimental. This is useful for selective DNS filtering on the upstream DNS server.</help>
         <advanced>true</advanced>
     </field>
     <field>

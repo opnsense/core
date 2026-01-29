@@ -30,6 +30,7 @@ namespace OPNsense\Hostdiscovery\Api;
 
 use OPNsense\Base\ApiMutableServiceControllerBase;
 use OPNsense\Core\Backend;
+use OPNsense\Core\Config;
 
 class ServiceController extends ApiMutableServiceControllerBase
 {
@@ -40,15 +41,26 @@ class ServiceController extends ApiMutableServiceControllerBase
 
     public function searchAction()
     {
+        $if_descr = [];
+
+        foreach ((Config::getInstance()->object())->interfaces->children() as $key => $node) {
+            if (!empty((string)$node->if)) {
+                $descr = (string)$node->descr;
+                $if_descr[(string)$node->if] = strlen($descr) ? $descr : strtoupper($key);
+            }
+        }
+
         $data = json_decode((new Backend())->configdRun('hostwatch dump_full'), true) ?? [];
         $records = [];
         foreach ((!empty($data) && !empty($data['rows'])) ? $data['rows'] : [] as $rec) {
             $records[] = [
                 'source' => $data['source'],
-                'interface_name' => $rec[0],
+                'interface_name' => $if_descr[$rec[0]] ?? $rec[0],
                 'ether_address' => $rec[1],
                 'ip_address' => $rec[2],
                 'organization_name' => $rec[3],
+                'first_seen' => $rec[4],
+                'last_seen' => $rec[5]
             ];
         }
         return $this->searchRecordsetBase($records);

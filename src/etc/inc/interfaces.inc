@@ -2980,71 +2980,6 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
         @unlink("/var/etc/dhcp6c.{$device}.conf");
     }
 
-    $dhcp6cscript = <<<EOF
-#!/bin/sh
-
-FORCE=
-
-case \${REASON} in
-INFOREQ|REBIND|RENEW|REQUEST|SOLICIT)
-    /usr/bin/logger -t dhcp6c "dhcp6c_script: \${REASON} on {$device} executing"
-
-    ARGS=
-    for NAMESERVER in \${new_domain_name_servers}; do
-        ARGS="\${ARGS} -a \${NAMESERVER}"
-    done
-    /usr/local/sbin/ifctl -i {$device} -6nd \${ARGS}
-
-    ARGS=
-    for DOMAIN in \${new_domain_name}; do
-        ARGS="\${ARGS} -a \${DOMAIN}"
-    done
-    /usr/local/sbin/ifctl -i {$device} -6sd \${ARGS}
-
-    if [ \${REASON} = "REQUEST" -o \${REASON} = "SOLICIT" ]; then
-        /usr/bin/logger -t dhcp6c "dhcp6c_script: \${REASON} on {$device} connected to server"
-        FORCE=\${REASON}
-
-        # can safely clear the prefix during connect
-        /usr/local/sbin/ifctl -i {$device} -6pd
-    fi
-
-    if [ \${REASON} != "INFOREQ" -a -n "\${PDINFO}" ]; then
-        ARGS=
-        for PD in \${PDINFO}; do
-            ARGS="\${ARGS} -a \${PD}"
-        done
-
-        if /usr/local/sbin/ifctl -i {$device} -6pu \${ARGS}; then
-            /usr/bin/logger -t dhcp6c "dhcp6c_script: \${REASON} on {$device} prefix now \${PDINFO}"
-
-            if [ -z "\${FORCE}" ]; then
-                FORCE=\${REASON}
-            fi
-        fi
-    fi
-
-    /usr/local/sbin/configctl -d interface newipv6 {$device} \${FORCE}
-    ;;
-EXIT|RELEASE)
-    /usr/bin/logger -t dhcp6c "dhcp6c_script: \${REASON} on {$device} executing"
-
-    /usr/local/sbin/ifctl -i {$device} -6nd
-    /usr/local/sbin/ifctl -i {$device} -6sd
-    /usr/local/sbin/ifctl -i {$device} -6pd
-
-    /usr/local/sbin/configctl -d interface newipv6 {$device}
-    ;;
-*)
-    /usr/bin/logger -t dhcp6c "dhcp6c_script: \${REASON} on {$device} ignored"
-    ;;
-esac
-
-EOF;
-
-    @file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript);
-    @chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
-
     $dhcp6cconf = '';
 
     /* merge configs and prepare single instance of dhcp6c for startup */
@@ -3071,7 +3006,7 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
         $dhcp6cconf .= "  information-only;\n";
         $dhcp6cconf .= "  request domain-name-servers;\n";
         $dhcp6cconf .= "  request domain-name;\n";
-        $dhcp6cconf .= "  script \"/var/etc/dhcp6c_{$interface}_script.sh\";\n";
+        $dhcp6cconf .= "  script \"/usr/local/opnsense/scripts/interfaces/dhcp6c_script.sh\";\n";
         $dhcp6cconf .= "};\n";
     } elseif ($wancfg['ipaddrv6'] == 'dhcp6') {
         $assoc_pd = [];
@@ -3136,7 +3071,7 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
             $dhcp6cconf .= "  request domain-name;\n";
         }
 
-        $dhcp6cconf .= "  script \"/var/etc/dhcp6c_{$interface}_script.sh\";\n";
+        $dhcp6cconf .= "  script \"/usr/local/opnsense/scripts/interfaces/dhcp6c_script.sh\";\n";
         $dhcp6cconf .= "};\n";
 
         if (!isset($wancfg['dhcp6prefixonly'])) {
@@ -3181,7 +3116,7 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif, $id = 0)
         $information_only = "  information-only;\n";
     }
 
-    $script = "  script \"/var/etc/dhcp6c_{$interface}_script.sh\";\n";
+    $script = "  script \"/usr/local/opnsense/scripts/interfaces/dhcp6c_script.sh\";\n";
     if ($wancfg['adv_dhcp6_interface_statement_script'] != '') {
         $script = "  script \"{$wancfg['adv_dhcp6_interface_statement_script']}\";\n";
     }
