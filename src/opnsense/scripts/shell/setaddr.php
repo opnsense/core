@@ -539,7 +539,8 @@ function console_configure_dhcpd($version = 4)
     }
 
     if ($version === 6) {
-        $config['dnsmasq']['dhcp'] = ['enable_ra' => '1'];
+        config_read_array('dnsmasq', 'dhcp');
+        $config['dnsmasq']['dhcp']['enable_ra'] = '1';
     }
 }
 
