@@ -658,7 +658,7 @@ function filter_core_rules_system($fw, $defaults)
                 $parts = explode('-', $dnatrule['destination']['port']);
                 if (count($parts) == 2) {
                     $range_end = $parts[1] - $parts[0] +  $dnatrule['local-port'];
-                    $dnatrule['local-port'] .= sprint("-%s", $range_end);
+                    $dnatrule['local-port'] .= sprintf('-%s', $range_end);
                 }
             }
             $fw->registerFilterRule(500000, $tmprule); /* automatic at the end of our ruleset */
