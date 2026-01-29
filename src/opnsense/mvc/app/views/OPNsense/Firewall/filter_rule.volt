@@ -108,7 +108,8 @@
         /* hook import/export buttons */
         $("#upload_rules").SimpleFileUploadDlg({
             onAction: function(){
-                $('#{{formGridFilterRule["edit_dialog_id"]}}').bootgrid('reload');
+                $("#{{formGridFilterRule['table_id']}}").bootgrid('reload');
+                $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
             }
         });
 
