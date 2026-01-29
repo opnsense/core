@@ -954,7 +954,7 @@
                                     <td>
                                         <select id="alias.authtype" data-container="body" class="selectpicker" style="margin-bottom: 3px;"></select>
                                         <input type="text" placeholder="{{lang._('Username')}}" class="form-control" size="50" id="alias.username"/>
-                                        <input type="password" class="form-control" size="50" id="alias.password"/>
+                                        <input type="password" class="form-control" autocomplete="new-password" size="50" id="alias.password"/>
                                         <div class="hidden" data-for="help_for_alias.authtype">
                                             <small>
                                                 {{lang._('If the remote server enforces authorization, you can specify the authorization type here.')}}
