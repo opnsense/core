@@ -50,7 +50,7 @@ class Syslog
         openlog($this->name, $this->option, $this->facility);
         syslog($level, $message);
         if (self::$echo_stdout) {
-            echo sprintf("[%s] %s", $level, $message);
+            echo sprintf("%s\n", trim($message));
         }
     }
 
