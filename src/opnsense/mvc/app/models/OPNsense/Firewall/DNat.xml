@@ -49,7 +49,7 @@
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
                     <EnableAlias>Y</EnableAlias>
-                    <ValidationMessage>Please specify a valid portnumber, name, alias or range.</ValidationMessage>
+                    <ValidationMessage>Please specify a valid port number, well-known name, alias or range.</ValidationMessage>
                 </port>
                 <not type="BooleanField"/>
             </source>
@@ -61,14 +61,14 @@
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
                     <EnableAlias>Y</EnableAlias>
-                    <ValidationMessage>Please specify a valid portnumber, name, alias or range.</ValidationMessage>
+                    <ValidationMessage>Please specify a valid port number, well-known name, alias or range.</ValidationMessage>
                 </port>
                 <not type="BooleanField"/>
             </destination>
             <target type="NetworkAliasField"/>
             <local-port type="PortField">
                 <EnableAlias>Y</EnableAlias>
-                <ValidationMessage>Please specify a valid portnumber, name, alias or range.</ValidationMessage>
+                <ValidationMessage>Please specify a valid port number or alias.</ValidationMessage>
             </local-port>
             <!-- -->
             <poolopts type="OptionField">
