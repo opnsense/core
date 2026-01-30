@@ -36,6 +36,7 @@ class Syslog
     private $name = null;
     private $option = null;
     private $facility = null;
+    private static $echo_stdout = false;
 
     public function __construct($name, $option = null, $facility = null)
     {
@@ -48,6 +49,9 @@ class Syslog
     {
         openlog($this->name, $this->option, $this->facility);
         syslog($level, $message);
+        if (self::$echo_stdout) {
+            echo sprintf("[%s] %s", $level, $message);
+        }
     }
 
     public function alert($message)
@@ -89,5 +93,21 @@ class Syslog
     public function warning($message)
     {
         $this->send(LOG_WARNING, $message);
+    }
+
+    /**
+     * Enable local (stdout) logging for all syslog instances for this application, for debug purposes
+     */
+    public static function enableLocalEcho()
+    {
+        self::$echo_stdout = true;
+    }
+
+    /**
+     * Disable local (stdout) logging for all syslog instances for this application
+     */
+    public static function disableLocalEcho()
+    {
+        self::$echo_stdout = false;
     }
 }

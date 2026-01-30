@@ -32,7 +32,22 @@ require_once('script/load_phalcon.php');
 
 use OPNsense\Core\Config;
 
-$classprefix = !empty($argv[1]) ? str_replace('/', '\\', $argv[1]) : '';
+$classprefix = '';
+foreach ($argv as $idx => $arg) {
+    if ($idx > 0) {
+        if (strpos($arg, '-') === 0) {
+            if ($arg == '-v') {
+                /* verbose mode, force logging to stdout as well */
+                OPNsense\Core\Syslog::enableLocalEcho();
+            } elseif ($arg == '-h') {
+                echo sprintf("usage : %s [-v] [h] <classperefix>\n", $argv[0]);
+                exit(0);
+            }
+        } else {
+            $classprefix = str_replace('/', '\\', $arg);
+        }
+    }
+}
 
 $class_info = new \ReflectionClass("OPNsense\\Base\\BaseModel");
 $executed_migration = false;
