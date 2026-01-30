@@ -81,6 +81,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['ldap_authcn'] = $a_server[$id]['ldap_authcn'];
             $pconfig['ldap_extended_query'] = $a_server[$id]['ldap_extended_query'];
             $pconfig['ldap_attr_user'] = $a_server[$id]['ldap_attr_user'];
+            if (!empty($a_server[$id]['ldap_attr_member'])) {
+                $pconfig['ldap_attr_member'] = $a_server[$id]['ldap_attr_member'];
+            } else {
+                $pconfig['ldap_attr_member'] = 'memberof';
+            }
             if (!empty($a_server[$id]['ldap_binddn'])) {
                 $pconfig['ldap_binddn'] = $a_server[$id]['ldap_binddn'];
             }
@@ -154,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       if (in_array($pconfig['type'], array("ldap", "ldap-totp"))) {
           $reqdfields = explode(" ", "name type ldap_host ldap_port ".
                           "ldap_urltype ldap_protver ldap_scope ".
-                          "ldap_attr_user ldapauthcontainers");
+                          "ldap_attr_user ldap_attr_member ldapauthcontainers");
           $reqdfieldsn = array(
               gettext("Descriptive name"),
               gettext("Type"),
@@ -250,6 +255,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               $server['ldap_authcn'] = $pconfig['ldapauthcontainers'];
               $server['ldap_extended_query'] = $pconfig['ldap_extended_query'];
               $server['ldap_attr_user'] = $pconfig['ldap_attr_user'];
+              $server['ldap_attr_member'] = $pconfig['ldap_attr_member'];
               if (!empty($pconfig['ldap_binddn']) && !empty($pconfig['ldap_bindpw']) ){
                   $server['ldap_binddn'] = $pconfig['ldap_binddn'];
                   $server['ldap_bindpw'] = $pconfig['ldap_bindpw'];
@@ -348,6 +354,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 $all_authfields = [
     'enable_password_policy_constraints',
     'ldap_attr_user',
+    'ldap_attr_member',
     'ldap_authcn',
     'ldap_basedn',
     'ldap_binddn',
@@ -471,6 +478,9 @@ $( document ).ready(function() {
     }
     if ($("#ldap_attr_user").val() == "") {
         $("#ldap_tmpltype").change();
+    }
+    if ($("#ldap_attr_member").val() == "") {
+        $("#ldap_attr_member").val("memberof");
     }
     $("#enable_password_policy_constraints").change();
     $("#type").change();
@@ -801,6 +811,15 @@ endif; ?>
                     <input name="ldap_attr_user" type="text" id="ldap_attr_user" size="20" value="<?=$pconfig['ldap_attr_user'];?>"/>
                     <div class="hidden" data-for="help_for_ldap_attr_user">
                       <?= gettext('Typically "cn" (OpenLDAP, Novell eDirectory), "sAMAccountName" (Microsoft AD)') ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
+                  <td><a id="help_for_ldap_attr_member" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Group member attribute");?></td>
+                  <td>
+                    <input name="ldap_attr_member" type="text" id="ldap_attr_member" size="20" value="<?=$pconfig['ldap_attr_member'];?>"/>
+                    <div class="hidden" data-for="help_for_ldap_attr_member">
+                      <?= gettext('Typically "memberof" for most LDAP Systems') ?>
                     </div>
                   </td>
                 </tr>
