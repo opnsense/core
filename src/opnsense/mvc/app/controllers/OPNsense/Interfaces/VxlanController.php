@@ -28,7 +28,7 @@
 
 namespace OPNsense\Interfaces;
 
-class VxLanController extends \OPNsense\Base\IndexController
+class VxlanController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
