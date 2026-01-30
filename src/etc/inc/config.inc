@@ -170,7 +170,7 @@ function convert_config($verbose = false)
     $function = $verbose ? 'pass_safe' : 'mwexecf';
 
     /* chain the new migration into this function call */
-    $function('/usr/local/sbin/pluginctl -m');
+    $function('/usr/local/sbin/pluginctl %s', $verbose ? '-m' : '-M');
 
     /* register pluggable interfaces */
     $function('/usr/local/sbin/pluginctl -i');
