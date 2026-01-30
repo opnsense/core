@@ -5,6 +5,13 @@
         /* before rendering anything, check if ZFS is supported */
         ajaxGet('/api/core/snapshots/is_supported/', {}, function(data, status) {
             if (data && data.supported) {
+                /* for tooltip */
+                const snapshot_state_desc = {
+                    'N':  "{{ lang._('Snapshot is active right now') }}",
+                    'R':  "{{ lang._('Snapshot will be active after reboot') }}",
+                    'NR': "{{ lang._('Snapshot is active and will be used on reboots') }}",
+                    '-':  "{{ lang._('Snapshot is not active') }}"
+                };
                 $("#{{formGridSnapshot['table_id']}}").UIBootgrid({
                     get: '/api/core/snapshots/get/',
                     set: '/api/core/snapshots/set/',
@@ -31,8 +38,16 @@
                         multiSelect: false,
                         rowSelect: false,
                         formatters: {
-                            "timestamp": function (column, row) {
+                            timestamp: function (column, row) {
                                 return moment.unix(row[column.id]).local().format('YYYY-MM-DD HH:mm');
+                            },
+                            active: function (column, row) {
+                                const val = row[column.id] ?? '-';
+                                const desc = snapshot_state_desc[val];
+
+                                return desc
+                                    ? `<span class="has-tooltip" data-toggle="tooltip" title="${desc}">${val}</span>`
+                                    : val;
                             }
                         }
                     }
@@ -45,6 +60,18 @@
         });
     });
 </script>
+
+<style>
+    .has-tooltip {
+        cursor: help;
+    }
+    .has-tooltip::after {
+        content: " ⓘ";
+        font-size: 0.8em;
+        color: currentColor;
+        opacity: 0.6;
+    }
+</style>
 
 <div id="supported_block" class="content-box" style="display: none;">
     {{ partial('layout_partials/base_bootgrid_table', formGridSnapshot + {'command_width': '135', 'hide_delete': true}) }}

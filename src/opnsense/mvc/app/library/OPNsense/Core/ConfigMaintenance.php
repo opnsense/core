@@ -34,11 +34,15 @@ use OPNsense\Core\Syslog;
 class ConfigMaintenance
 {
     private $modelmap = [];
+    private $legacyPaths = [];
     private $foundrefs = [];
 
     public function __construct()
     {
         $this->modelmap = $this->loadModels();
+        $this->legacyPaths = [
+            'filter.rule' =>  gettext('Firewall: Rules [legacy]'),
+        ];
     }
 
     /**
@@ -89,12 +93,22 @@ class ConfigMaintenance
                 $this_path = ltrim($path . '.' . $xmlNode->getName(), '.');
                 if (in_array($this_path, $this->foundrefs)) {
                     continue;
-                } elseif (isset($this->modelmap[$this_path]) || !empty($xmlNode->attributes()['version'])) {
+                } elseif (
+                    isset($this->modelmap[$this_path]) ||
+                    isset($this->legacyPaths[$this_path]) ||
+                    !empty($xmlNode->attributes()['version'])
+                ) {
                     /* found a registered model or a container with a version tag (likely model, but not installed) */
                     $this->foundrefs[] = $this_path;
                     if (isset($this->modelmap[$this_path])) {
                         yield [
                             'description' => $this->modelmap[$this_path]['description'],
+                            'installed' => '1',
+                            'id' => $this_path,
+                        ];
+                    } elseif (isset($this->legacyPaths[$this_path])) {
+                        yield [
+                            'description' => $this->legacyPaths[$this_path],
                             'installed' => '1',
                             'id' => $this_path,
                         ];
@@ -115,27 +129,33 @@ class ConfigMaintenance
     }
 
     /**
-     *  del model item, requires a version attribute to identify itself as a model.
+     *  del model item, requires a version attribute or entry in legacyPaths to identify itself as a model
+     *  or removable entry.
      */
     public function delItem($item, $node = null, $path = '')
     {
         if ($node === null) {
             $node = (Config::getInstance())->object();
         }
+        $to_delete = [];
         foreach ($node->children() as $xmlNode) {
             if ($xmlNode->count() > 0 || !empty($xmlNode->attributes()['version'])) {
                 $this_path = ltrim($path . '.' . $xmlNode->getName(), '.');
-                if (!empty($xmlNode->attributes()['version'])) {
+                if (!empty($xmlNode->attributes()['version']) || isset($this->legacyPaths[$this_path])) {
                     if ($this_path == $item) {
-                        unset($xmlNode[0]);
-                        return true;
+                        $to_delete[] = $xmlNode;
                     }
                 } else {
                     $this->delItem($item, $xmlNode, $this_path);
                 }
             }
         }
-        return false;
+        $result = !empty($to_delete);
+        while (count($to_delete)) {
+            $tmp = array_pop($to_delete);
+            unset($tmp[0]);
+        }
+        return $result;
     }
 
     /**

@@ -3,8 +3,6 @@
 /usr/local/bin/python3
 /usr/local/etc/devd/carp.conf
 /usr/local/etc/devd/ifnet.conf
-/usr/local/etc/dhcpd.opnsense.d/README
-/usr/local/etc/dhcpd6.opnsense.d/README
 /usr/local/etc/dnsmasq.conf.d/README
 /usr/local/etc/inc/IPv6.inc
 /usr/local/etc/inc/XMLRPC_Client.inc
@@ -20,7 +18,6 @@
 /usr/local/etc/inc/plugins.inc
 /usr/local/etc/inc/plugins.inc.d/captiveportal.inc
 /usr/local/etc/inc/plugins.inc.d/core.inc
-/usr/local/etc/inc/plugins.inc.d/dhcpd.inc
 /usr/local/etc/inc/plugins.inc.d/dhcrelay.inc
 /usr/local/etc/inc/plugins.inc.d/dnsmasq.inc
 /usr/local/etc/inc/plugins.inc.d/dpinger.inc
@@ -81,8 +78,9 @@
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20230717
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20240105
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20240611
-/usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20241217
-/usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20250710
+/usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20241217
+/usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20250710
+/usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20260120
 /usr/local/etc/rc
 /usr/local/etc/rc.bootup
 /usr/local/etc/rc.carp_service_status.d/.placeholder
@@ -157,6 +155,7 @@
 /usr/local/etc/ssl/ext_sources/README
 /usr/local/etc/ssl/opnsense.cnf
 /usr/local/etc/strongswan.opnsense.d/README
+/usr/local/etc/sudoers.d/opnsense
 /usr/local/etc/suricata/conf.d/README
 /usr/local/etc/unbound.opnsense.d/README
 /usr/local/libexec/opnsense-auth
@@ -237,12 +236,6 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/IndexController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/ItemController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/forms/dialogEdit.xml
-/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv4/Api/LeasesController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv4/Api/ServiceController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv4/LeasesController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv6/Api/LeasesController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv6/Api/ServiceController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv6/LeasesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/DHCRelay/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/DHCRelay/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/DHCRelay/RelayController.php
@@ -307,6 +300,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/FilterController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/FilterUtilController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/GroupController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/MigrationController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/NptController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/OneToOneController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/SourceNatController.php
@@ -314,6 +308,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/DNatController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/FilterController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/GroupController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/MigrationController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/NptController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/OneToOneController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/SourceNatController.php
@@ -379,6 +374,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/LoopbackSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/NeighborSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/OverviewController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VipSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VlanSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VxlanSettingsController.php
@@ -389,6 +385,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/LoopbackController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/NeighborController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/OverviewController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VipController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VlanController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VxlanController.php
@@ -398,6 +395,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogLagg.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogLoopback.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogNeighbor.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVip.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVlan.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVxlan.xml
@@ -442,6 +440,10 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/forms/dialogInstance.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/forms/dialogStaticKey.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/forms/export_options.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Radvd/Api/ServiceController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Radvd/Api/SettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Radvd/SettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Radvd/forms/dialogEntry.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/Api/GatewayController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/Api/RoutesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/IndexController.php
@@ -566,8 +568,6 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/ExportFactory.php
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/IExportProvider.php
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/PlainOpenVPN.php
-/usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/TheGreenBow.php
-/usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/TheGreenBow.tgb
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/ViscosityVisz.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/AbstractStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/ConfigdProxyOverrideStatus.php
@@ -580,6 +580,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/LiveMediaStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/MonitOverrideStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/OpensshOverrideStatus.php
+/usr/local/opnsense/mvc/app/library/OPNsense/System/Status/ResolvConfOverrideStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/RootLockStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/SystemBootingStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/UnboundBlocklistStatus.php
@@ -682,6 +683,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/M1_0_1.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/MHA1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/MHA1_0_1.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/TUN1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Tunables.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Tunables.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/repositories/opnsense.xml
@@ -779,6 +781,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Migrations/M1_0_6.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Migrations/M1_0_7.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Migrations/M1_1_1.php
+/usr/local/opnsense/mvc/app/models/OPNsense/IDS/Migrations/M1_1_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/FieldTypes/CharonLogLevelField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/FieldTypes/ConnnectionField.php
@@ -801,6 +804,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Bridge.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Bridge.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/BridgeMemberField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/DUIDField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/LaggInterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/LinkAddressField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/NeighborField.php
@@ -817,9 +821,12 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Loopback.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Loopback.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Migrations/SET1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor/dhcpd.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Settings.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Settings.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vip.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vip.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vlan.php
@@ -857,6 +864,12 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/OpenVPN.php
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/OpenVPN.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Radvd/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Radvd/FieldTypes/VipLinkLocalField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Radvd/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Radvd/Migrations/M1_0_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Radvd/Radvd.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Radvd/Radvd.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Routes/Route.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Routes/Route.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Routing/FieldTypes/GatewayField.php
@@ -929,8 +942,6 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/snapshot.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/tunables.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Cron/index.volt
-/usr/local/opnsense/mvc/app/views/OPNsense/DHCPv4/leases.volt
-/usr/local/opnsense/mvc/app/views/OPNsense/DHCPv6/leases.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/DHCRelay/relay.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/arp.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/dns_diagnostics.volt
@@ -959,6 +970,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/category.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/dnat_rule.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/filter_rule.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Firewall/firewall_migration.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/group.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/npt_rule.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/onat_rule.volt
@@ -983,6 +995,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/loopback.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/neighbor.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/overview.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Interface/settings.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vip.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vlan.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vxlan.volt
@@ -998,6 +1011,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/export.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/instances.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/status.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Radvd/settings.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Routes/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Routing/configuration.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Syslog/index.volt
@@ -1118,15 +1132,8 @@
 /usr/local/opnsense/scripts/captiveportal/set_session_restrictions.py
 /usr/local/opnsense/scripts/captiveportal/sql/init.sql
 /usr/local/opnsense/scripts/captiveportal/strip_template.py
-/usr/local/opnsense/scripts/dhcp/cleanup_leases4.php
-/usr/local/opnsense/scripts/dhcp/cleanup_leases6.php
-/usr/local/opnsense/scripts/dhcp/dnsmasq_watcher.py
-/usr/local/opnsense/scripts/dhcp/get_leases.py
-/usr/local/opnsense/scripts/dhcp/get_leases6.py
-/usr/local/opnsense/scripts/dhcp/prefixes.php
-/usr/local/opnsense/scripts/dhcp/prefixes.sh
-/usr/local/opnsense/scripts/dhcp/unbound_watcher.py
 /usr/local/opnsense/scripts/dnsmasq/dnsmasq_dhcp_options.py
+/usr/local/opnsense/scripts/dnsmasq/dnsmasq_watcher.py
 /usr/local/opnsense/scripts/dnsmasq/get_dnsmasq_leases.py
 /usr/local/opnsense/scripts/filter/delete_table.py
 /usr/local/opnsense/scripts/filter/download_geoip.py
@@ -1144,6 +1151,8 @@
 /usr/local/opnsense/scripts/filter/lib/alias/pf.py
 /usr/local/opnsense/scripts/filter/lib/alias/uri.py
 /usr/local/opnsense/scripts/filter/lib/states.py
+/usr/local/opnsense/scripts/filter/list_divert_sockets.php
+/usr/local/opnsense/scripts/filter/list_legacy_rules.php
 /usr/local/opnsense/scripts/filter/list_non_mvc_rules.php
 /usr/local/opnsense/scripts/filter/list_osfp.py
 /usr/local/opnsense/scripts/filter/list_pfsync.py
@@ -1233,6 +1242,8 @@
 /usr/local/opnsense/scripts/interfaces/carp_global_status.php
 /usr/local/opnsense/scripts/interfaces/carp_set_status.php
 /usr/local/opnsense/scripts/interfaces/dhclient-script
+/usr/local/opnsense/scripts/interfaces/dhcp6c_script.sh
+/usr/local/opnsense/scripts/interfaces/gen_duid.php
 /usr/local/opnsense/scripts/interfaces/ifctl.sh
 /usr/local/opnsense/scripts/interfaces/lib/__init__.py
 /usr/local/opnsense/scripts/interfaces/list_arp.py
@@ -1257,6 +1268,7 @@
 /usr/local/opnsense/scripts/interfaces/reconfigure_vips.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vlans.php
 /usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh
+/usr/local/opnsense/scripts/interfaces/rtsold_script.sh
 /usr/local/opnsense/scripts/interfaces/setup_hostwatch.sh
 /usr/local/opnsense/scripts/interfaces/traceroute.py
 /usr/local/opnsense/scripts/interfaces/traffic_stats.php
@@ -1398,6 +1410,7 @@
 /usr/local/opnsense/scripts/unbound/restore_db.py
 /usr/local/opnsense/scripts/unbound/start.sh
 /usr/local/opnsense/scripts/unbound/stats.py
+/usr/local/opnsense/scripts/unbound/unbound_watcher.py
 /usr/local/opnsense/scripts/unbound/wrapper.py
 /usr/local/opnsense/scripts/wireguard/gen_keypair.py
 /usr/local/opnsense/scripts/wireguard/reresolve-dns.py
@@ -1407,8 +1420,6 @@
 /usr/local/opnsense/service/conf/actions.d/actions_captiveportal.conf
 /usr/local/opnsense/service/conf/actions.d/actions_configd.conf
 /usr/local/opnsense/service/conf/actions.d/actions_cron.conf
-/usr/local/opnsense/service/conf/actions.d/actions_dhcpd.conf
-/usr/local/opnsense/service/conf/actions.d/actions_dhcpd6.conf
 /usr/local/opnsense/service/conf/actions.d/actions_dhcrelay.conf
 /usr/local/opnsense/service/conf/actions.d/actions_dns.conf
 /usr/local/opnsense/service/conf/actions.d/actions_dnsmasq.conf
@@ -1426,6 +1437,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_ntpd.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openssh.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openvpn.conf
+/usr/local/opnsense/service/conf/actions.d/actions_radvd.conf
 /usr/local/opnsense/service/conf/actions.d/actions_shaper.conf
 /usr/local/opnsense/service/conf/actions.d/actions_syslog.conf
 /usr/local/opnsense/service/conf/actions.d/actions_system.conf
@@ -1526,7 +1538,6 @@
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/README
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/audit.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/configd.conf
-/usr/local/opnsense/service/templates/OPNsense/Syslog/local/dhcpd.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/dhcrelay.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/dnsmasq.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/filter.conf
@@ -1549,6 +1560,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Syslog/newsyslog.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/Syslog/sources/001-local.conf
+/usr/local/opnsense/service/templates/OPNsense/Syslog/sources/005-unbound.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/syslog-ng-config-events.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/syslog-ng-destinations.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/syslog-ng-local.conf
@@ -2517,20 +2529,14 @@
 /usr/local/www/interfaces_wireless_edit.php
 /usr/local/www/javascript/opnsense_legacy.js
 /usr/local/www/reporting_settings.php
-/usr/local/www/services_dhcp.php
-/usr/local/www/services_dhcp_edit.php
-/usr/local/www/services_dhcpv6.php
-/usr/local/www/services_dhcpv6_edit.php
 /usr/local/www/services_ntpd.php
 /usr/local/www/services_ntpd_gps.php
 /usr/local/www/services_ntpd_pps.php
 /usr/local/www/services_opendns.php
-/usr/local/www/services_router_advertisements.php
 /usr/local/www/status_wireless.php
 /usr/local/www/system_advanced_admin.php
 /usr/local/www/system_advanced_firewall.php
 /usr/local/www/system_advanced_misc.php
-/usr/local/www/system_advanced_network.php
 /usr/local/www/system_authservers.php
 /usr/local/www/system_gateway_groups.php
 /usr/local/www/system_gateway_groups_edit.php

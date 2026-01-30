@@ -61,7 +61,7 @@ abstract class BaseListField extends BaseField
      */
     protected function defaultValidationMessage()
     {
-        return gettext('Option not in list.');
+        return gettext('Option [%s] not in list.');
     }
 
     /**
@@ -155,8 +155,7 @@ abstract class BaseListField extends BaseField
                 if ($that->internalMultiSelect) {
                     foreach (explode(",", $data) as $valItem) {
                         if (!isset($this->internalOptionList[$valItem])) {
-                            $messages[] = $this->getValidationMessage();
-                            break;
+                            $messages[] = $this->getValidationMessage($valItem);
                         }
                     }
                 } elseif (!isset($this->internalOptionList[$data])) {

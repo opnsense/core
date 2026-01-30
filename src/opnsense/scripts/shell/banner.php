@@ -79,6 +79,9 @@ foreach ($iflist as $ifname => $ifcfg) {
         case '6to4':
             $class6 = '/6to4';
             break;
+        case 'idassoc6':
+            $class6 = '/ia6';
+            break;
         case 'track6':
             $class6 = '/t6';
             break;

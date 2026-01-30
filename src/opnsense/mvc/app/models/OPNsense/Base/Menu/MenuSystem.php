@@ -267,7 +267,7 @@ class MenuSystem
                     ) {
                         $iftargets['dhcp4'][$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
                     }
-                    if (!empty(filter_var($node->ipaddrv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) || !empty($node->{'track6-interface'})) {
+                    if (!empty(filter_var($node->ipaddrv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) || (string)$node->ipaddrv6 == 'track6' || (string)$node->ipaddrv6 == 'idassoc6') {
                         $iftargets['dhcp6'][$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
                     }
                 }
@@ -329,8 +329,13 @@ class MenuSystem
         }
 
         // add interfaces to "Firewall: Rules" menu tab...
+        $this->appendItem('Firewall.Rules', 'Migration', [
+                'url' => '/ui/firewall/migration',
+                'fixedname' => sprintf("<i class='fa fa-fw fa-gears'> </i> %s", gettext('Migration assistant')),
+                'order' => 0,
+        ]);
         $iftargets['fw'] = array_merge(['FloatingRules' => gettext('Floating')], $iftargets['fw']);
-        $ordid = 0;
+        $ordid = 1;
         foreach ($iftargets['fw'] as $key => $descr) {
             $this->appendItem('Firewall.Rules', $key, [
                 'url' => '/firewall_rules.php?if=' . $key,
@@ -360,6 +365,9 @@ class MenuSystem
         // add interfaces to "Services: DHCPv[46]" menu tab:
         $ordid = 0;
         foreach ($iftargets['dhcp4'] as $key => $descr) {
+            if (!file_exists('/usr/local/www/services_dhcp.php')) {
+                break;
+            }
             $this->appendItem('Services.ISC_DHCPv4', $key, [
                 'url' => '/services_dhcp.php?if=' . $key,
                 'fixedname' => "[$descr]",
@@ -380,6 +388,9 @@ class MenuSystem
         }
         $ordid = 0;
         foreach ($iftargets['dhcp6'] as $key => $descr) {
+            if (!file_exists('/usr/local/www/services_dhcpv6.php')) {
+                break;
+            }
             $this->appendItem('Services.ISC_DHCPv6', $key, [
                 'url' => '/services_dhcpv6.php?if=' . $key,
                 'fixedname' => "[$descr]",
@@ -392,11 +403,6 @@ class MenuSystem
             $this->appendItem('Services.ISC_DHCPv6.' . $key, 'Edit' . $key, [
                 'url' => '/services_dhcpv6_edit.php?if=' . $key . '&*',
                 'visibility' => 'hidden',
-            ]);
-            $this->appendItem('Services.RouterAdv', $key, [
-                'url' => '/services_router_advertisements.php?if=' . $key,
-                'fixedname' => "[$descr]",
-                'order' => $ordid++,
             ]);
         }
     }

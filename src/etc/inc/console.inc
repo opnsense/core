@@ -377,7 +377,7 @@ EOD;
             if ($wanif) {
                 $config['interfaces']['lan']['track6-interface'] = 'wan';
                 $config['interfaces']['lan']['track6-prefix-id'] = '0';
-                $config['interfaces']['lan']['ipaddrv6'] = 'track6';
+                $config['interfaces']['lan']['ipaddrv6'] = 'idassoc6';
                 $config['interfaces']['lan']['subnetv6'] = '64';
             }
 
@@ -392,10 +392,20 @@ EOD;
                 }
             }
             $config['dnsmasq']['enable'] = '1';
+            config_read_array('dnsmasq', 'dhcp');
+            $config['dnsmasq']['dhcp']['enable_ra'] = '1';
             $config['dnsmasq']['dhcp_ranges'][] = [
-                'interface' => 'lan',
+                '@attributes' => ['uuid' => generate_uuid()],
                 'start_addr' => '192.168.1.100',
-                'end_addr' => '192.168.1.200'
+                'end_addr' => '192.168.1.199',
+                'interface' => 'lan',
+            ];
+            $config['dnsmasq']['dhcp_ranges'][] = [
+                '@attributes' => ['uuid' => generate_uuid()],
+                'start_addr' => '::1000',
+                'end_addr' => '::2000',
+                'ra_mode' => 'slaac',
+                'interface' => 'lan',
             ];
 
             config_read_array('nat', 'outbound');

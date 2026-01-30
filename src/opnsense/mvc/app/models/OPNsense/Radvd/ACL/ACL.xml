@@ -1,0 +1,10 @@
+<acl>
+    <page-services-router-advertisements>
+        <name>Services: Router Advertisements: Settings</name>
+        <description>Allow access to Router Advertisement Settings</description>
+        <patterns>
+            <pattern>ui/radvd/settings</pattern>
+            <pattern>api/radvd/settings/*</pattern>
+        </patterns>
+    </page-services-router-advertisements>
+</acl>

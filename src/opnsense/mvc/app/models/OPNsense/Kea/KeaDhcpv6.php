@@ -57,6 +57,11 @@ class KeaDhcpv6 extends BaseModel
             if (!Util::isIPInCIDR($reservation->ip_address->getValue(), $subnet)) {
                 $messages->appendMessage(new Message(gettext("Address not in specified subnet"), $key . ".ip_address"));
             }
+            if (!$reservation->duid->isEmpty() && !$reservation->hw_address->isEmpty()) {
+                $messages->appendMessage(new Message(gettext("Either a DUID or an Ether address should be specified, but not both"), $key . ".duid"));
+            } elseif ($reservation->duid->isEmpty() && $reservation->hw_address->isEmpty()) {
+                $messages->appendMessage(new Message(gettext("Either a DUID or an Ether address should be specified."), $key . ".duid"));
+            }
         }
         // validate changed subnets
         $this_interfaces = $this->general->interfaces->getValues();
@@ -69,6 +74,46 @@ class KeaDhcpv6 extends BaseModel
                 $messages->appendMessage(
                     new Message(gettext("Interface not configured in general settings"), $key . ".interface")
                 );
+            }
+            foreach ($subnet->pools->getValues() as $pool) {
+                if (Util::isSubnet($pool)) {
+                    $range = Util::cidrToRange($pool);
+                } else {
+                    $range = explode('-', $pool);
+                }
+                foreach (!empty($range) ? $range : [] as $addr) {
+                    if (!Util::isIPInCIDR($addr, $subnet->subnet->getValue())) {
+                        $messages->appendMessage(
+                            new Message(sprintf(gettext("Pool %s not in specified subnet"), $pool), $key . ".pools")
+                        );
+                        break;
+                    }
+                }
+            }
+        }
+        // validate changed pd_pools
+        foreach ($this->pd_pools->pd_pool->iterateItems() as $pool) {
+            if (!$validateFullModel && !$pool->isFieldChanged()) {
+                continue;
+            }
+            $key = $pool->__reference;
+            if ($pool->prefix_len->getValue() >= $pool->delegated_len->getValue()) {
+                $messages->appendMessage(new Message(gettext("Delegated length must be longer than or equal to prefix length"), $key . ".delegated_len"));
+            }
+            $subnet = $pool->prefix->getValue() . "/" . $pool->prefix_len->getValue();
+            $trange = Util::cidrToRange($subnet);
+            if (!Util::isSubnetStrict($subnet)) {
+                $messages->appendMessage(new Message(gettext("Invalid Pool boundaries, offered address is not the first address in the prefix."), $key . ".prefix"));
+            }
+            foreach ($this->pd_pools->pd_pool->iterateItems() as $tmppool) {
+                if ($key === $tmppool->__reference) {
+                    continue;
+                }
+                $osubnet = $tmppool->prefix->getValue() . "/" . $tmppool->prefix_len->getValue();
+                $orange = Util::cidrToRange($osubnet);
+                if (Util::isIPInCIDR($orange[0], $subnet) || Util::isIPInCIDR($trange[0], $osubnet)) {
+                    $messages->appendMessage(new Message(gettext("Pool overlaps with an existing one."), $key . ".prefix"));
+                }
             }
         }
 
@@ -175,7 +220,7 @@ class KeaDhcpv6 extends BaseModel
                     continue;
                 }
                 $res = ['option-data' => []];
-                foreach (['duid', 'hostname'] as $key) {
+                foreach (['duid', 'hw_address', 'hostname'] as $key) {
                     if (!$reservation->$key->isEmpty()) {
                         $res[str_replace('_', '-', $key)] = $reservation->$key->getValue();
                     }
@@ -245,6 +290,9 @@ class KeaDhcpv6 extends BaseModel
             $cnf['Dhcp6']['hooks-libraries'] = [];
             $cnf['Dhcp6']['hooks-libraries'][] = [
                 'library' => '/usr/local/lib/kea/hooks/libdhcp_lease_cmds.so'
+            ];
+            $cnf['Dhcp6']['hooks-libraries'][] = [
+                'library' => '/usr/local/lib/kea/hooks/libdhcp_host_cmds.so'
             ];
             if (!$this->ha->enabled->isEmpty()) {
                 $record = [

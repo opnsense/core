@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2024 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2024-2026 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -105,32 +105,14 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
         }
 
         if ($relay->enabled->isEqual('1')) {
-            $carp_tracking[$relay->carp_depend_on->getValue()] = ['status' => 'DISABLED'];
             $relays[] = $relay;
+
+            if (!$relay->carp_depend_on->isEmpty()) {
+                $carp_tracking[$relay->carp_depend_on->getValue()] = ['status' => 'DISABLED'];
+            }
         }
 
         killbypid("/var/run/dhcrelay-{$target_id}.pid");
-    }
-
-    if (!empty($carp_tracking)) {
-        /* carp vhid tracking used */
-        foreach ((new OPNsense\Interfaces\Vip())->vip->iterateItems() as $id => $item) {
-            if ($item->mode == 'carp' && isset($carp_tracking[$id])) {
-                $carp_tracking[$id]['vhid'] = $item->vhid->getValue();
-            }
-        }
-        foreach (legacy_interfaces_details() as $ifdata) {
-            if (empty($ifdata['carp'])) {
-                continue;
-            }
-            foreach ($ifdata['carp'] as $data) {
-                foreach ($carp_tracking as &$item) {
-                    if (!empty($item) && $item['vhid'] == $data['vhid']) {
-                        $item['status'] = $data['status'];
-                    }
-                }
-            }
-        }
     }
 
     if (!count($relays)) {
@@ -141,6 +123,26 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
 
     $iflist = get_configured_interface_with_descr();
     $ifconfig_details = legacy_interfaces_details();
+
+    if (!empty($carp_tracking)) {
+        foreach ((new OPNsense\Interfaces\Vip())->vip->iterateItems() as $id => $item) {
+            if ($item->mode->isEqual('carp') && isset($carp_tracking[$id])) {
+                $carp_tracking[$id]['vhid'] = $item->vhid->getValue();
+            }
+        }
+        foreach ($ifconfig_details as $ifdata) {
+            if (empty($ifdata['carp'])) {
+                continue;
+            }
+            foreach ($ifdata['carp'] as $data) {
+                foreach ($carp_tracking as &$item) {
+                    if (isset($item['vhid']) && $item['vhid'] == $data['vhid']) {
+                        $item['status'] = $data['status'];
+                    }
+                }
+            }
+        }
+    }
 
     foreach ($relays as $relay) {
         $destination = $mdl->getNodeByReference("destinations.{$relay->destination}");
@@ -165,8 +167,9 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
         }
 
         if (
-            !isset($iflist[$interface]) || ($family == 'inet' && !get_interface_ip($interface, $ifconfig_details)) ||
-            ($family == 'inet6' && !get_interface_ipv6($interface, $ifconfig_details))
+            !isset($iflist[$interface]) ||
+            ($family == 'inet' && !isset($ifconfig_details[$device]['ipv4'][0])) ||
+            ($family == 'inet6' && !isset($ifconfig_details[$device]['ipv6'][0]))
         ) {
             log_msg("dhcrelay_configure_id() found no suitable IP address for $interface($device)", LOG_WARNING);
             continue;

@@ -29,5 +29,6 @@
 
 require_once("config.inc");
 require_once("system.inc");
+require_once("util.inc");
 
 echo json_encode(system_sysctl_defaults());

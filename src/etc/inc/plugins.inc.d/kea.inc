@@ -163,7 +163,7 @@ function kea_configure_do($verbose = false)
         if ($keaDhcpv6->isEnabled()) {
             mwexecfb(
                 '/usr/local/opnsense/scripts/kea/kea_prefix_watcher.py %s',
-                '/var/db/kea/kea-leases6.csv',
+                ['/var/db/kea/kea-leases6.csv'],
                 '/var/run/kea_prefix_watcher.pid',
                 '/var/log/kea/kea_prefix_watcher.log'
             );

@@ -77,12 +77,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (isset($config['system']['prefer_ipv4'])) {
                 $config['system']['dnsserver'][] = $v4_server[0];
                 $config['system']['dnsserver'][] = $v4_server[1];
-                if (isset($config['system']['ipv6allow'])) {
+                if (is_ipv6_allowed()) {
                     $config['system']['dnsserver'][] = $v6_server[0];
                     $config['system']['dnsserver'][] = $v6_server[1];
                 }
             } else {
-                if (isset($config['system']['ipv6allow'])) {
+                if (is_ipv6_allowed()) {
                     $config['system']['dnsserver'][] = $v6_server[0];
                     $config['system']['dnsserver'][] = $v6_server[1];
                 }

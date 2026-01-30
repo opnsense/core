@@ -2,7 +2,12 @@
 <opnsense>
   <trigger_initial_wizard/>
   <theme>opnsense</theme>
-  <sysctl/>
+  <sysctl>
+    <item>
+      <tunable>foo.bar</tunable>
+      <value>baz</value>
+    </item>
+  </sysctl>
   <unbound version="1.0.13" persisted_at="1762794040.38" description="Unbound configuration">
     <enable>1</enable>
   </unbound>

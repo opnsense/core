@@ -55,6 +55,15 @@ class IntegerField extends BaseField
     private $minimum_value = PHP_INT_MIN;
 
     /**
+     * getter for maximum value
+     * @param integer $value
+     */
+    public function getMaximumValue()
+    {
+        return $this->maximum_value;
+    }
+
+    /**
      * setter for maximum value
      * @param integer $value
      */
@@ -63,6 +72,15 @@ class IntegerField extends BaseField
         if (is_numeric($value)) {
             $this->maximum_value = $value;
         }
+    }
+
+    /**
+     * getter for minimum value
+     * @param integer $value
+     */
+    public function getMinimumValue()
+    {
+        return $this->minimum_value;
     }
 
     /**

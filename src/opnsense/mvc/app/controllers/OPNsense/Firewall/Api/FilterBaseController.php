@@ -377,7 +377,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
 
         if ($node === null) {
             throw new UserException(
-                gettext("Rule not found"),
+                gettext("Rule not found")
             );
         }
 

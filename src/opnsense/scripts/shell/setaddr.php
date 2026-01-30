@@ -321,7 +321,7 @@ function console_configure_ip_address($version)
             $upperifname
         ), 'y')
     ) {
-        $intip = 'track6';
+        $intip = 'idassoc6';
         $intbits = '64';
         $isintdhcp = true;
         $restart_dhcpd = true;
@@ -441,7 +441,7 @@ $config['interfaces'][$interface]['subnetv6'] = $intbits6;
 $config['interfaces'][$interface]['gatewayv6'] = $gwname6;
 $config['interfaces'][$interface]['enable'] = true;
 
-if ($intip6 == 'track6') {
+if ($intip6 == 'idassoc6') {
     $config['interfaces'][$interface]['track6-interface'] = 'wan';
     $config['interfaces'][$interface]['track6-prefix-id'] = '0';
 } else {
@@ -475,15 +475,18 @@ function console_configure_dhcpd($version = 4)
     global $config, $restart_dhcpd, $fp, $interface, $intip, $intbits, $intip6, $intbits6;
 
     $label_IPvX = ($version === 6) ? "IPv6"    : "IPv4";
-    $dhcpd      = ($version === 6) ? "dhcpdv6" : "dhcpd";
+    $restart_dhcpd = true;
 
-    if ($version === 4) {
-        config_read_array('dnsmasq', 'dhcp_ranges');
-        foreach ($config['dnsmasq']['dhcp_ranges'] as $idx => $range) {
-            if ($range['interface'] == $interface) {
-                unset($config['dnsmasq']['dhcp_ranges'][$idx]);
-            }
+    config_read_array('dnsmasq', 'dhcp_ranges');
+    foreach ($config['dnsmasq']['dhcp_ranges'] as $idx => $range) {
+        if ($range['interface'] != $interface) {
+            continue;
+        } elseif ($version === 4 && !is_ipaddrv4($range['start_addr'])) {
+            continue;
+        } elseif ($version === 6 && !is_ipaddrv6($range['start_addr'])) {
+            continue;
         }
+        unset($config['dnsmasq']['dhcp_ranges'][$idx]);
     }
 
     if (prompt_for_enable_dhcp_server($version)) {
@@ -522,33 +525,29 @@ function console_configure_dhcpd($version = 4)
                 }
             } while (!$is_ipaddr || !$is_inrange);
         } while ($not_inorder);
-        $restart_dhcpd = true;
-        if ($version === 4) {
-            $config['dnsmasq']['enable'] = '1';
-            $config['dnsmasq']['dhcp_ranges'][] = [
-                'interface' => $interface,
-                'start_addr' => $dhcpstartip,
-                'end_addr' => $dhcpendip
-            ];
-        } else {
-            $config['dhcpdv6'][$interface]['enable'] = true;
-            $config['dhcpdv6'][$interface]['range']['from'] = $dhcpstartip;
-            $config['dhcpdv6'][$interface]['range']['to'] = $dhcpendip;
+        $new_range = [
+            '@attributes' => ['uuid' => generate_uuid()],
+            'interface' => $interface,
+            'start_addr' => $dhcpstartip,
+            'end_addr' => $dhcpendip,
+        ];
+        if ($version === 6) {
+            $new_range['ra_mode'] = 'slaac';
         }
+        $config['dnsmasq']['dhcp_ranges'][] = $new_range;
         echo "\n";
-    } else {
-        if ($version === 6 && isset($config['dhcpdv6'][$interface]['enable'])) {
-            unset($config['dhcpdv6'][$interface]['enable']);
-            $restart_dhcpd = true;
-        } elseif ($version === 4) {
-            /* XXX: not disabling dnsmasq as there might be other consumers */
-            $restart_dhcpd = true;
-        }
+    }
+
+    if ($version === 6) {
+        config_read_array('dnsmasq', 'dhcp');
+        $config['dnsmasq']['dhcp']['enable_ra'] = '1';
     }
 }
 
 console_configure_dhcpd(4);
 console_configure_dhcpd(6);
+
+$restart_webgui = false;
 
 if ($config['system']['webgui']['protocol'] == 'https') {
     if (console_prompt_for_yn('Do you want to change the web GUI protocol from HTTPS to HTTP?', 'n')) {
@@ -599,6 +598,14 @@ if (empty($config['interfaces']['lan'])) {
     unset($config['nat']);
     shell_safe('rm /var/dhcpd/var/db/*');
     $restart_dhcpd = true;
+}
+
+if (isset($config['dhcpd'][$interface]['enable'])) {
+    unset($config['dhcpd'][$interface]['enable']);
+}
+
+if (isset($config['dhcpdv6'][$interface]['enable'])) {
+    unset($config['dhcpdv6'][$interface]['enable']);
 }
 
 echo "\nWriting configuration...";

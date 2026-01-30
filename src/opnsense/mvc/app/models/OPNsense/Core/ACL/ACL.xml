@@ -78,13 +78,6 @@
             <pattern>api/trafficshaper/service/statistics/*</pattern>
         </patterns>
     </page-diagnostics-limiter-info>
-    <page-diagnostics-logs-dhcp>
-        <name>Diagnostics: Logs: DHCP</name>
-        <patterns>
-            <pattern>ui/diagnostics/log/core/dhcpd/*</pattern>
-            <pattern>api/diagnostics/log/core/dhcpd/*</pattern>
-        </patterns>
-    </page-diagnostics-logs-dhcp>
     <page-diagnostics-logs-gateways>
         <name>Diagnostics: Logs: Gateways</name>
         <patterns>
@@ -360,42 +353,12 @@
             <pattern>api/core/initial_setup/*</pattern>
         </patterns>
     </page-wizard-system>
-    <page-services-dhcpserver-editstaticmapping>
-        <name>Services: DHCP Server: Edit static mapping</name>
-        <patterns>
-            <pattern>services_dhcp_edit.php*</pattern>
-        </patterns>
-    </page-services-dhcpserver-editstaticmapping>
-    <page-services-dhcpserver>
-        <name>Services: DHCP server</name>
-        <patterns>
-            <pattern>services_dhcp.php*</pattern>
-        </patterns>
-    </page-services-dhcpserver>
-    <page-services-dhcpserverv6-editstaticmapping>
-        <name>Services: DHCPv6 Server: Edit static mapping</name>
-        <patterns>
-            <pattern>services_dhcpv6_edit.php*</pattern>
-        </patterns>
-    </page-services-dhcpserverv6-editstaticmapping>
-    <page-services-dhcpv6server>
-        <name>Services: DHCPv6 server</name>
-        <patterns>
-            <pattern>services_dhcpv6.php*</pattern>
-        </patterns>
-    </page-services-dhcpv6server>
     <page-services-opendns>
         <name>Services: DNS Filter</name>
         <patterns>
             <pattern>services_opendns.php*</pattern>
         </patterns>
     </page-services-opendns>
-    <page-services-router-advertisements>
-        <name>Services: Router advertisements</name>
-        <patterns>
-            <pattern>services_router_advertisements.php*</pattern>
-        </patterns>
-    </page-services-router-advertisements>
     <page-status-habackup>
         <name>Status: HA backup</name>
         <patterns>
@@ -403,20 +366,6 @@
             <pattern>api/core/hasync_status/*</pattern>
         </patterns>
     </page-status-habackup>
-    <page-status-dhcpleases>
-        <name>Status: DHCP leases</name>
-        <patterns>
-            <pattern>ui/dhcpv4/leases</pattern>
-            <pattern>api/dhcpv4/leases/*</pattern>
-        </patterns>
-    </page-status-dhcpleases>
-    <page-status-dhcpv6leases>
-        <name>Status: DHCPv6 leases</name>
-        <patterns>
-            <pattern>ui/dhcpv6/leases</pattern>
-            <pattern>api/dhcpv6/leases/*</pattern>
-        </patterns>
-    </page-status-dhcpv6leases>
     <page-status-interfaces>
         <name>Status: Interfaces</name>
         <patterns>
@@ -511,12 +460,6 @@
             <pattern>system_advanced_misc.php*</pattern>
         </patterns>
     </page-system-advanced-misc>
-    <page-system-advanced-network>
-        <name>System: Advanced: Network</name>
-        <patterns>
-            <pattern>system_advanced_network.php*</pattern>
-        </patterns>
-    </page-system-advanced-network>
     <page-system-advanced-sysctl>
         <name>System: Advanced: Tunables</name>
         <patterns>

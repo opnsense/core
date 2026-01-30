@@ -49,8 +49,16 @@ shift $((OPTIND - 1))
 
 LOGTYPE=${1:-system}
 
+if [ "${LOGTYPE}" = "backend" ]; then
+	LOGTYPE=configd
+fi
+
 LOGFILE="/var/log/${LOGTYPE}/latest.log"
 LOGLIST=$(find -s /var/log -name latest.log)
+
+if [ "${LOGTYPE}" = "php" ]; then
+	LOGFILE=/var/lib/php/tmp/PHP_errors.log
+fi
 
 if [ -n "${DO_LIST}" ]; then
 	for LOG in ${LOGLIST}; do

@@ -105,6 +105,19 @@
             return Object.assign({}, resp, { rows: buckets });
         }
 
+        /* hook import/export buttons */
+        $("#upload_rules").SimpleFileUploadDlg({
+            onAction: function(){
+                $("#{{formGridFilterRule['table_id']}}").bootgrid('reload');
+                $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
+            }
+        });
+
+        $('#download_rules').click(function(e){
+            e.preventDefault();
+            window.open("/api/firewall/filter/download_rules");
+        });
+
         // Initialize grid
         const grid = $("#{{formGridFilterRule['table_id']}}").UIBootgrid({
             search:'/api/firewall/filter/search_rule/',
@@ -432,7 +445,7 @@
                         const usedAdvancedFields = [];
 
                         advancedFieldIds.forEach(function (fieldId) {
-                            const value = row[fieldId];
+                            const value = row["%" + fieldId] ?? row[fieldId];
                             if (value !== undefined) {
                                 const lowerValue = value.toString().toLowerCase().trim();
                                 // Check: if the value is empty OR starts with any default prefix, consider it default
@@ -863,9 +876,11 @@
         });
 
         // Hide additional protocol settings in dialog, e.g., ICMP types
-        $("#rule\\.protocol").change(function() {
-            $(".rule_protocol:not(div)").closest('tr').hide();
-            $(".protocol_"+$(this).val().toLowerCase()+':not(div)').closest('tr').show();
+        $('#rule\\.protocol').change(function() {
+            $('.rule_protocol:not(div)').closest('tr').hide();
+            $('.' + $.escapeSelector('protocol_' + $(this).val().toLowerCase()) + ':not(div)')
+                .closest('tr')
+                .show();
         });
 
         // Dynamically add fa icons to selectpickers
@@ -1088,7 +1103,29 @@
         </div>
     </div>
     <!-- grid -->
-    {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '150'}) }}
+    {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '150'}+ {
+                'grid_commands': {
+                    'upload_rules': {
+                        'title': lang._('Import csv'),
+                        'class': 'btn btn-xs',
+                        'icon_class': 'fa fa-fw fa-upload',
+                        'data': {
+                            'title': lang._('Import rules'),
+                            'endpoint': '/api/firewall/filter/upload_rules',
+                            'toggle': 'tooltip'
+                        }
+                    },
+                    'download_rules': {
+                        'title': lang._('Export as csv'),
+                        'class': 'btn btn-xs',
+                        'icon_class': 'fa fa-fw fa-table',
+                        'data': {
+                            'toggle': 'tooltip'
+                        }
+                    }
+                }
+        })
+    }}
 </div>
 
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/filter/apply'}) }}

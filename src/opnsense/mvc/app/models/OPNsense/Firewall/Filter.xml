@@ -2,7 +2,7 @@
     <mount>//OPNsense/Firewall/Filter</mount>
     <version>1.0.4</version>
     <migration_prefix>MFP</migration_prefix>
-    <description>Firewall automation rules</description>
+    <description>Firewall rules (new)</description>
     <items>
         <rules>
             <rule type=".\FilterRuleField">
@@ -67,6 +67,7 @@
                     <OptionValues>
                         <in>In</in>
                         <out>Out</out>
+                        <any>Both</any>
                     </OptionValues>
                 </direction>
                 <ipprotocol type="OptionField">
@@ -162,6 +163,10 @@
                     <EnableAlias>Y</EnableAlias>
                     <ValidationMessage>Please specify a valid portnumber, name, alias or range.</ValidationMessage>
                 </destination_port>
+                <divert-to type="JsonKeyValueStoreField">
+                    <ConfigdPopulateAct>filter list diverts</ConfigdPopulateAct>
+                    <ValidationMessage>Specify a valid divert-to target.</ValidationMessage>
+                </divert-to>
                 <gateway type="JsonKeyValueStoreField">
                     <ConfigdPopulateAct>interface gateways list -g</ConfigdPopulateAct>
                     <ValidationMessage>Specify a valid gateway from the list matching the networks ip protocol.</ValidationMessage>
@@ -224,7 +229,7 @@
                 </max>
                 <max-src-conn-rate type="IntegerField">
                     <MinimumValue>1</MinimumValue>
-                    <MaximumValue>2147483647</MaximumValue>
+                    <MaximumValue>4294967</MaximumValue>
                 </max-src-conn-rate>
                 <max-src-conn-rates type="IntegerField">
                     <MinimumValue>1</MinimumValue>

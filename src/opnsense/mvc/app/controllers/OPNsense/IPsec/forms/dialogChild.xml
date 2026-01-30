@@ -1,7 +1,7 @@
 <form>
     <field>
         <id>child.enabled</id>
-        <label>enabled</label>
+        <label>Enabled</label>
         <type>checkbox</type>
     </field>
     <field>
@@ -11,7 +11,7 @@
     </field>
     <field>
         <id>child.sha256_96</id>
-        <label>sha256_96</label>
+        <label>Use sha256_96</label>
         <type>checkbox</type>
         <help>
           HMAC-SHA-256 is used with 128-bit truncation with IPsec.

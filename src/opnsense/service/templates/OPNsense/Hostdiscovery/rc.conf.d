@@ -1,6 +1,6 @@
 {% if not helpers.empty('OPNsense.Hostwatch.general.enabled') %}
 hostwatch_enable="YES"
-hostwatch_flags="{% if helpers.empty('OPNsense.Hostwatch.general.promisc') %} -p {% endif %} -c -S -u hostd -g hostd"
+hostwatch_flags="{% if helpers.empty('OPNsense.Hostwatch.general.promisc') %}-p{% endif %} -c -S"
 hostwatch_pidfile="/var/run/hostwatch/hostwatch.pid"
 {%   if  not helpers.empty('OPNsense.Hostwatch.general.skip_nets') %}
 hostwatch_skip_nets="{{ OPNsense.Hostwatch.general.skip_nets|replace(',', ' ')}}"

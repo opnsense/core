@@ -88,7 +88,7 @@ class Config extends Singleton
 
     /**
      * serialize xml to array structure (backwards compatibility mode)
-     * @param null|array $forceList force specific tags to be contained in a list.
+     * @param null|array $forceList force specific tags to be contained in a list (providing them as array keys)
      * @param DOMNode $node node to read
      * @return string|array converted node data
      * @throws ConfigException when config could not be parsed
@@ -168,7 +168,7 @@ class Config extends Singleton
     /**
      * convert an arbitrary config xml file to an array
      * @param $filename config xml filename to parse
-     * @param null $forceList items to treat as list
+     * @param null|array $forceList force specific tags to be contained in a list (providing them as array keys)
      * @return array interpretation of config file
      * @throws ConfigException when config could not be parsed
      */

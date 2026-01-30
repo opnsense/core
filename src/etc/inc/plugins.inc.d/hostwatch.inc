@@ -33,13 +33,14 @@ function hostwatch_services()
     if (!(new \OPNsense\Hostdiscovery\Hostwatch())->general->enabled->isEmpty()) {
         $services[] = [
             'description' => gettext('Host discovery service'),
-            'pidfile' => '/var/run/hostwatch/hostwatch.pid',
+            /* XXX currently unreliable because too slow */
+            //'pidfile' => '/var/run/hostwatch/hostwatch.pid',
             'configd' => [
                 'restart' => ['hostwatch restart'],
                 'start' => ['hostwatch start'],
                 'stop' => ['hostwatch stop'],
             ],
-            'name' => 'hostdiscovery',
+            'name' => 'hostwatch',
         ];
     }
 
@@ -49,4 +50,16 @@ function hostwatch_services()
 function hostwatch_syslog()
 {
     return ['hostwatch' => ['facility' => ['hostwatch']]];
+}
+
+function hostwatch_xmlrpc_sync()
+{
+    $result = [];
+
+    $result['id'] = 'hostwatch';
+    $result['section'] = 'OPNsense.Hostwatch';
+    $result['description'] = gettext('Host discovery service');
+    $result['services'] = ['hostwatch'];
+
+    return [$result];
 }

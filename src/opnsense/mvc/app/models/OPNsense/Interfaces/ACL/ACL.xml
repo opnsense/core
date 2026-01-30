@@ -6,6 +6,13 @@
             <pattern>api/interfaces/neighbor/*</pattern>
         </patterns>
     </page-interfaces-neighbor>
+    <page-system-advanced-network>
+        <name>Interfaces: Settings</name>
+        <patterns>
+            <pattern>ui/interfaces/settings</pattern>
+            <pattern>api/interfaces/settings/*</pattern>
+        </patterns>
+    </page-system-advanced-network>
     <page-firewall-virtualipaddress-edit>
         <name>Interfaces: Virtual IPs: Settings</name>
         <patterns>

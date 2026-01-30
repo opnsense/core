@@ -285,7 +285,7 @@ function unbound_generate_config()
     $port = $general['port'];
 
     /* do not touch prefer-ip6 as it is defaulting to 'no' anyway */
-    $do_ip6 = isset($config['system']['ipv6allow']) ? 'yes' : 'no';
+    $do_ip6 = is_ipv6_allowed() ? 'yes' : 'no';
 
     if (!empty($general['regdhcp'])) {
         $include_dhcpleases = 'include: /var/unbound/dhcpleases.conf';

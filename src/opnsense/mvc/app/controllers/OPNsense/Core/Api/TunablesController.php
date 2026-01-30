@@ -75,7 +75,7 @@ class TunablesController extends ApiMutableModelControllerBase
 
             if (file_exists($default_xml)) {
                 Config::getInstance()->lock();
-                $factory_config = Config::getInstance()->toArrayFromFile($default_xml);
+                $factory_config = Config::getInstance()->toArrayFromFile($default_xml, array_flip(['item']));
                 $mdl = $this->getModel()->Default();
                 if (!empty($factory_config['sysctl']['item'])) {
                     foreach ($factory_config['sysctl']['item'] as $item) {

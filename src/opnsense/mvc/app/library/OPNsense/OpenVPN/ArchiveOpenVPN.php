@@ -108,7 +108,7 @@ class ArchiveOpenVPN extends PlainOpenVPN
         }
         file_put_contents("{$content_dir}/{$base_filename}.ovpn", implode("\n", $conf));
 
-        Shell::run_safe('cd %s && /usr/local/bin/zip -r %s %s', [$tempdir, $content_dir . "zip", $base_filename]);
+        Shell::run_safe('cd %s && /usr/local/bin/zip -r %s %s', [$tempdir, $content_dir . ".zip", $base_filename]);
         $result = file_get_contents($content_dir . ".zip");
 
         // cleanup

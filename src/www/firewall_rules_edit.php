@@ -936,33 +936,16 @@ include("head.inc");
                       </div>
                     </td>
                   </tr>
-<?php
-                  if( !empty($pconfig['associated-rule-id']) ): ?>
+<?php if (!empty($pconfig['associated-rule-id'])): ?>
                   <tr>
-                    <td><?=gettext("Associated filter rule");?></td>
+                    <td><i class="fa fa-exclamation-circle text-muted"></i> <?= gettext('Association') ?></td>
                     <td>
                       <input name='associated-rule-id' id='associated-rule-id' type='hidden' value='<?=$pconfig['associated-rule-id'];?>' />
-                      <span class="text-danger"><?= gettext('This is associated to a NAT rule.') ?><br />
-                      <?=gettext("You cannot edit the interface, protocol, source, or destination of associated filter rules.");?>
-                      <br />
-<?php
-                        if (isset($config['nat']['rule'])):
-                          foreach( $config['nat']['rule'] as $index => $nat_rule ):
-                            if( isset($nat_rule['associated-rule-id']) && $nat_rule['associated-rule-id']==$pconfig['associated-rule-id'] ) :
-?>
-                              <a href="firewall_nat_edit.php?id=<?=$index;?>"> <?=gettext("View the NAT rule");?> </a>
-<?php
-                              break;
-                            endif;
-                          endforeach;
-                        endif;
-?>
+                      <?= gettext('This rule was previously associated to a destination NAT rule.') ?>
                     </td>
                   </tr>
-<?php
-                  endif; ?>
-<?php
-                  if (!empty($pconfig['floating'])): ?>
+<?php endif ?>
+<?php if (!empty($pconfig['floating'])): ?>
                   <tr>
                     <td><a id="help_for_interfacenot" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface / Invert");?></td>
                     <td>
@@ -973,21 +956,16 @@ include("head.inc");
                         </div>
                     </td>
                   </tr>
-<?php
-                  endif;?>
+<?php endif ?>
                   <tr>
                     <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface");?></td>
                     <td>
-<?php
-                    if (!empty($pconfig['floating'])): ?>
-                      <select name="interface[]" id="interface" title="Select interfaces..." multiple="multiple" class="selectpicker" data-live-search="true" data-size="5" tabindex="2" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
-<?php
-                    else: ?>
-                      <select name="interface" id="interface" class="selectpicker" data-live-search="true" data-size="5" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
-<?php
-                    endif;
-
-                    foreach (legacy_config_get_interfaces(["enable" => true], ['lo0']) as $iface => $ifdetail): ?>
+<?php if (!empty($pconfig['floating'])): ?>
+                      <select name="interface[]" id="interface" title="Select interfaces..." multiple="multiple" class="selectpicker" data-live-search="true" data-size="5" tabindex="2">
+<?php else: ?>
+                      <select name="interface" id="interface" class="selectpicker" data-live-search="true" data-size="5">
+<?php endif ?>
+<?php foreach (legacy_config_get_interfaces(["enable" => true], ['lo0']) as $iface => $ifdetail): ?>
                         <option value="<?=$iface;?>"
                             <?= !empty($pconfig['interface']) && (
                                   $iface == $pconfig['interface'] ||
@@ -1051,7 +1029,7 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_protocol" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol");?></td>
                     <td>
-                      <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="protocol" id="proto" class="selectpicker" data-live-search="true" data-size="5" >
+                      <select name="protocol" id="proto" class="selectpicker" data-live-search="true" data-size="5" >
 <?php
                       foreach (get_protocols() as $proto): ?>
                         <option value="<?=strtolower($proto);?>" <?= strtolower($proto) == $pconfig['protocol'] ? "selected=\"selected\"" :""; ?>>
@@ -1069,7 +1047,7 @@ include("head.inc");
                   <tr id="icmpbox">
                     <td><a id="help_for_icmptype" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ICMP type");?></td>
                     <td>
-                      <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="icmptype[]" class="selectpicker" title="<?=gettext("Any");?>" data-live-search="true" data-size="5" multiple="multiple">
+                      <select name="icmptype[]" class="selectpicker" title="<?=gettext("Any");?>" data-live-search="true" data-size="5" multiple="multiple">
 <?php
                       $icmptypes = array(
                       "echoreq" => gettext("Echo Request"),
@@ -1105,7 +1083,7 @@ include("head.inc");
                   <tr id="icmp6box">
                     <td><a id="help_for_icmp6-type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ICMP6 type");?></td>
                     <td>
-                      <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="icmp6-type" class="selectpicker" data-live-search="true" data-size="5" >
+                      <select name="icmp6-type" class="selectpicker" data-live-search="true" data-size="5" >
 <?php
                       $icmp6types = array(
                           "" => gettext("any"),
@@ -1152,18 +1130,18 @@ include("head.inc");
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Source") . " / ".gettext("Invert");?> </td>
                     <td>
-                      <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>  name="srcnot" type="checkbox" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" : "";?> />
+                      <input name="srcnot" type="checkbox" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" : "";?> />
                       <?= gettext('Use this option to invert the sense of the match.') ?>
                     </td>
                   </tr>
                   <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Source"); ?></td>
                       <td>
-                        <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> id="src" name="src" class="net_selector_multi" type="text" value="<?=$pconfig['src'];?>" />
+                        <input id="src" name="src" class="net_selector_multi" type="text" value="<?=$pconfig['src'];?>" />
                       </td>
                   </tr>
                   <tr class="advanced_opt_src visible">
-                    <td><?=gettext("Source"); ?></td>
+                    <td>&nbsp;</td>
                     <td>
                       <input type="button" class="btn btn-default" value="<?= html_safe(gettext('Advanced')) ?>" id="showadvancedboxsrc" />
                       <div class="hidden" data-for="help_for_source">
@@ -1184,7 +1162,7 @@ include("head.inc");
                         <tbody>
                           <tr>
                             <td>
-                              <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>  id="srcbeginport" name="srcbeginport" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                              <select id="srcbeginport" name="srcbeginport" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                                 <option data-other=true value="<?=$pconfig['srcbeginport'];?>">(<?=gettext("other"); ?>)</option>
                                 <optgroup label="<?=gettext("Aliases");?>">
   <?php                        foreach (legacy_list_aliases("port") as $alias):
@@ -1201,7 +1179,7 @@ include("head.inc");
                               </select>
                             </td>
                             <td>
-                              <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>  id="srcendport" name="srcendport" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                              <select id="srcendport" name="srcendport" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                                 <option data-other=true value="<?=$pconfig['srcendport'];?>">(<?=gettext("other"); ?>)</option>
                                 <optgroup label="<?=gettext("Aliases");?>">
   <?php                        foreach (legacy_list_aliases("port") as $alias):
@@ -1220,10 +1198,10 @@ include("head.inc");
                           </tr>
                           <tr>
                             <td>
-                              <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>  type="text" value="<?=$pconfig['srcbeginport'];?>" class="portselect"  for="srcbeginport"> <!-- updates to "other" option in  srcbeginport -->
+                              <input type="text" value="<?=$pconfig['srcbeginport'];?>" class="portselect"  for="srcbeginport"> <!-- updates to "other" option in  srcbeginport -->
                             </td>
                             <td>
-                              <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>  type="text" value="<?=$pconfig['srcendport'];?>" class="portselect"  for="srcendport"> <!-- updates to "other" option in  srcendport -->
+                              <input type="text" value="<?=$pconfig['srcendport'];?>" class="portselect"  for="srcendport"> <!-- updates to "other" option in  srcendport -->
                             </td>
                           </tr>
                         </tbody>
@@ -1237,14 +1215,14 @@ include("head.inc");
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Destination") . " / ".gettext("Invert");?> </td>
                     <td>
-                      <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="dstnot" type="checkbox" id="dstnot" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" : "";?> />
+                      <input name="dstnot" type="checkbox" id="dstnot" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" : "";?> />
                       <?= gettext('Use this option to invert the sense of the match.') ?>
                     </td>
                   </tr>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Destination"); ?></td>
                     <td>
-                      <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> id="dst" name="dst" type="text" value="<?=$pconfig['dst'];?>"  class="net_selector_multi"  />
+                      <input id="dst" name="dst" type="text" value="<?=$pconfig['dst'];?>"  class="net_selector_multi"  />
                     </td>
                   </tr>
                   <tr>
@@ -1260,7 +1238,7 @@ include("head.inc");
                         <tbody>
                           <tr>
                             <td>
-                              <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> id="dstbeginport" name="dstbeginport" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                              <select id="dstbeginport" name="dstbeginport" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                                 <option data-other=true value="<?=$pconfig['dstbeginport'];?>">(<?=gettext("other"); ?>)</option>
                                 <optgroup label="<?=gettext("Aliases");?>">
   <?php                        foreach (legacy_list_aliases("port") as $alias):
@@ -1277,7 +1255,7 @@ include("head.inc");
                               </select>
                             </td>
                             <td>
-                              <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> id="dstendport" name="dstendport" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                              <select id="dstendport" name="dstendport" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                                 <option data-other=true value="<?=$pconfig['dstendport'];?>">(<?=gettext("other"); ?>)</option>
                                 <optgroup label="<?=gettext("Aliases");?>">
   <?php                        foreach (legacy_list_aliases("port") as $alias):
@@ -1296,10 +1274,10 @@ include("head.inc");
                           </tr>
                           <tr>
                             <td>
-                              <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> class="portselect"  type="text" value="<?=$pconfig['dstbeginport'];?>" for="dstbeginport"> <!-- updates to "other" option in  dstbeginport -->
+                              <input class="portselect"  type="text" value="<?=$pconfig['dstbeginport'];?>" for="dstbeginport"> <!-- updates to "other" option in  dstbeginport -->
                             </td>
                             <td>
-                              <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> class="portselect" type="text" value="<?=$pconfig['dstendport'];?>" for="dstendport"> <!-- updates to "other" option in  dstendport -->
+                              <input class="portselect" type="text" value="<?=$pconfig['dstendport'];?>" for="dstendport"> <!-- updates to "other" option in  dstendport -->
                             </td>
                           </tr>
                         </tbody>

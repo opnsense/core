@@ -70,7 +70,7 @@ if __name__ == '__main__':
         ):
             record = [row['interface_name'], row['ether_address'], row['ip_address']]
             if inputargs.verbose:
-                record.append(row['organization_name'])
+                record = record + [row['organization_name'], row['first_seen'], row['last_seen']]
             result['rows'].append(record)
     else:
         result['source'] = 'arp-ndp'

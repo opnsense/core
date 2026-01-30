@@ -145,7 +145,6 @@ CORE_DEPENDS?=		ca_root_nss \
 			hostwatch \
 			ifinfo \
 			iftop \
-			isc-dhcp44-server \
 			kea \
 			lighttpd \
 			monit \
@@ -206,7 +205,7 @@ CORE_CONFLICTS:=	${CORE_CONFLICTS:S/^/os-/g:O}
 
 mount:
 	@if [ ! -f ${WRKDIR}/.mount_done ]; then \
-	    echo -n "Enabling core live mount..."; \
+	    echo -n ">>> Enabling core live mount..."; \
 	    sed ${SED_REPLACE} ${.CURDIR}/src/${VERSIONFILE}.in > \
 	        ${.CURDIR}/src/${VERSIONFILE}; \
 	    mount_unionfs ${.CURDIR}/src ${LOCALBASE}; \
@@ -217,7 +216,7 @@ mount:
 
 umount:
 	@if [ -f ${WRKDIR}/.mount_done ]; then \
-	    echo -n "Disabling core live mount..."; \
+	    echo -n ">>> Disabling core live mount..."; \
 	    umount -f "<above>:${.CURDIR}/src"; \
 	    rm ${WRKDIR}/.mount_done; \
 	    echo "done"; \
@@ -228,7 +227,7 @@ manifest-check:
 	# check if all annotations are in the version file
 .for REPLACEMENT in ${REPLACEMENTS}
 	@grep -q '\"${REPLACEMENT}\": \"%%${REPLACEMENT}%%\"' ${.CURDIR}/src/${VERSIONFILE}.in || \
-	    (echo "Could not find ${REPLACEMENT} in version file"; exit 1)
+	    (echo ">>> Could not find ${REPLACEMENT} in version file" >&2; exit 1)
 .endfor
 
 manifest:
@@ -333,18 +332,21 @@ package: lint-plist manifest-check package-check clean-wrksrc
 
 upgrade-check:
 	@if ! ${PKG} info ${CORE_NAME} > /dev/null; then \
-		echo ">>> Cannot find package.  Please run 'opnsense-update -t ${CORE_NAME}'" >&2; \
+		REAL_NAME=$$(pkg which -q /usr/local/opnsense/version/core); \
+		echo ">>> Upgrade cannot continue without installed package" >&2; \
+		echo ">>> To continue anyway set CORE_NAME=$${REAL_NAME%-*}" >&2; \
 		exit 1; \
 	fi
 	@if [ "$$(${VERSIONBIN} -vH)" = "${CORE_PKGVERSION} ${CORE_HASH}" ]; then \
-		echo "Installed version already matches ${CORE_PKGVERSION} ${CORE_HASH}" >&2; \
+		echo ">>> Installed version already matches ${CORE_PKGVERSION} ${CORE_HASH}" >&2; \
+		echo ">>> To continue anyway set CORE_HASH=<something>" >&2; \
 		exit 1; \
 	fi
 
 upgrade: upgrade-check clean-pkgdir package
 	@${PKG} delete -fy ${CORE_NAME} || true
 	@${PKG} add ${PKGDIR}/*.pkg
-	@${PLUGINCTL} -c webgui
+	${.CURDIR}/src/etc/rc.restart_webgui
 
 glint: sweep plist-fix lint
 

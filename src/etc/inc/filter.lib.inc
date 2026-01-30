@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016 Deciso B.V.
+ * Copyright (C) 2016-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -206,7 +206,7 @@ function filter_core_rules_system($fw, $defaults)
 {
     global $config;
 
-    $ipv6_disabled = !isset($config['system']['ipv6allow']);
+    $ipv6_disabled = !is_ipv6_allowed();
 
     $dhcrelay6_interfaces = plugins_run('dhcrelay_interfaces', ['inet6']);
     $dhcrelay6_interfaces = !empty($dhcrelay6_interfaces['dhcrelay']) ? $dhcrelay6_interfaces['dhcrelay'] : [];
@@ -214,7 +214,7 @@ function filter_core_rules_system($fw, $defaults)
     $fw->registerFilterRule(
         1,
         ['ipprotocol' => 'inet6','descr' => 'Block all IPv6', 'disabled' => !$ipv6_disabled,
-            '#ref' => 'system_advanced_network.php#ipv6allow'],
+            '#ref' => 'ui/interfaces/settings'],
         $defaults['block']
     );
 
@@ -376,7 +376,7 @@ function filter_core_rules_system($fw, $defaults)
         if (!$ipv6_disabled && in_array($intfinfo['ipaddrv6'], ['dhcp6', 'slaac'])) {
             $fw->registerFilterRule(1, [
                 'descr' => 'allow dhcpv6 client in ' . $intfinfo['descr'],
-                '#ref' => 'system_advanced_network.php#ipv6allow',
+                '#ref' => 'ui/interfaces/settings',
                 'interface' => $intf,
                 'protocol' => 'udp',
                 /* omit 'from' as the server may use a GUA instead */
@@ -386,7 +386,7 @@ function filter_core_rules_system($fw, $defaults)
             ], $defaults['pass']);
             $dhcpv6_opts = [
                 'descr' => 'allow dhcpv6 client out ' . $intfinfo['descr'],
-                '#ref' => 'system_advanced_network.php#ipv6allow',
+                '#ref' => 'ui/interfaces/settings',
                 'direction' => 'out',
                 'interface' => $intf,
                 'protocol' => 'udp',
@@ -438,7 +438,7 @@ function filter_core_rules_system($fw, $defaults)
                 $fw->registerFilterRule(1, $dhcpv4_opts, $defaults['pass']);
                 break;
             default:
-                if (isset($config['dhcpd'][$intf]['enable'])) {
+                if (file_exists('/usr/local/www/services_dhcp.php') && isset($config['dhcpd'][$intf]['enable'])) {
                     $fw->registerFilterRule(
                         1,
                         ['protocol' => 'udp', 'direction' => 'in', 'from_port' => 68, 'to' => '255.255.255.255',
@@ -637,7 +637,7 @@ function filter_core_rules_system($fw, $defaults)
         }
     }
 
-    // auto-generated DNAT rules
+    /* auto-generated DNAT rules */
     foreach ((new OPNsense\Firewall\DNat(false))->rule->sortedBy(['sequence']) as $key => $rule) {
         if ($rule->disabled->isEmpty() && $rule->pass == 'rule') {
             $dnatrule = $rule->getNodeContent();
@@ -658,7 +658,7 @@ function filter_core_rules_system($fw, $defaults)
                 $parts = explode('-', $dnatrule['destination']['port']);
                 if (count($parts) == 2) {
                     $range_end = $parts[1] - $parts[0] +  $dnatrule['local-port'];
-                    $dnatrule['local-port'] .= sprint("-%s", $range_end);
+                    $dnatrule['local-port'] .= sprintf('-%s', $range_end);
                 }
             }
             $fw->registerFilterRule(500000, $tmprule); /* automatic at the end of our ruleset */

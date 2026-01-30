@@ -83,10 +83,12 @@ class FilterController extends FilterBaseController
         $show_all = !empty($this->request->get('show_all'));
         if (!empty($this->request->get('interface'))) {
             $interfaces = explode(',', $this->request->get('interface'));
-            /* add groups which contain the selected interface */
-            foreach ((new Group())->ifgroupentry->iterateItems() as $groupItem) {
-                if (array_intersect($interfaces, $groupItem->members->getValues())) {
-                    $interfaces[] = $groupItem->ifname->getValue();
+            if ($show_all) {
+                /* add groups which contain the selected interface when looking at full impact*/
+                foreach ((new Group())->ifgroupentry->iterateItems() as $groupItem) {
+                    if (array_intersect($interfaces, $groupItem->members->getValues())) {
+                        $interfaces[] = $groupItem->ifname->getValue();
+                    }
                 }
             }
         } else {
@@ -432,6 +434,78 @@ class FilterController extends FilterBaseController
         }
 
         return $result;
+    }
+
+    public function downloadRulesAction()
+    {
+        if ($this->request->isGet()) {
+            /* categories have unique names, export names instead of ids so we can easily map them on other targets */
+            $categories = [];
+            $aliases = [];
+            foreach ((new Category())->categories->category->iterateItems() as $key => $category) {
+                $categories[$key] = $category->name->getValue();
+            }
+            foreach ((new Alias())->aliases->alias->iterateItems() as $key => $alias) {
+                $aliases[$key] = $alias->name->getValue();
+            }
+            /* XXX:  as shaper1/2 don't have functional keys, we can only export uuid's here*/
+            $this->exportCsv($this->getModel()->rules->rule->asRecordSet(
+                false,
+                ['sort_order', 'prio_group'],
+                function ($node, $record) use ($categories, $aliases) {
+                    if (!empty($record['categories'])) {
+                        $cats = [];
+                        foreach (explode(',', $record['categories']) as $key) {
+                            if (isset($categories[$key])) {
+                                $cats[] = $categories[$key];
+                            }
+                        }
+                        $record['categories'] = implode(',', $cats);
+                    }
+                    if (!empty($record['overload']) && isset($aliases[$record['overload']])) {
+                        $record['overload'] = $aliases[$record['overload']];
+                    }
+                    return array_merge(['@uuid' => $node->getAttribute('uuid')], $record);
+                }
+            ));
+        }
+    }
+
+    public function uploadRulesAction()
+    {
+        if ($this->request->isPost() && $this->request->hasPost('payload')) {
+            /* catgories have unique names, need to map them to uuids */
+            $categories = [];
+            $aliases = [];
+            foreach ((new Category())->categories->category->iterateItems() as $key => $category) {
+                $categories[$category->name->getValue()] = $key;
+            }
+            foreach ((new Alias())->aliases->alias->iterateItems() as $key => $alias) {
+                $aliases[$alias->name->getValue()] = $key;
+            }
+            return $this->importCsv(
+                'rules.rule',
+                $this->request->getPost('payload'),
+                ['@uuid'],
+                function (&$record) use ($categories, $aliases) {
+                    if (!empty($record['categories'])) {
+                        /* only map what we know, ignore the rest */
+                        $cats = [];
+                        foreach (explode(',', $record['categories']) as $key) {
+                            if (isset($categories[$key])) {
+                                $cats[] = $categories[$key];
+                            }
+                        }
+                        $record['categories'] = implode(',', $cats);
+                    }
+                    if (!empty($record['overload']) && isset($aliases[$record['overload']])) {
+                        $record['overload'] = $aliases[$record['overload']];
+                    }
+                }
+            );
+        } else {
+            return ['status' => 'failed'];
+        }
     }
 
     public function flushInspectCacheAction()

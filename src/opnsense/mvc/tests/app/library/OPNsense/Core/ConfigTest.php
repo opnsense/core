@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2025 Deciso B.V.
+ * Copyright (C) 2025-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -51,7 +51,7 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
         (new AppConfig())->update('application.configDefault', self::$configDir . '/backup/array.xml');
         Config::getInstance()->forceReload();
 
-        $this->assertNotEmpty(Config::getInstance()->toArray(['rule']));
+        $this->assertNotEmpty(Config::getInstance()->toArray(array_flip(['rule'])));
     }
 
     /**
@@ -60,8 +60,24 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
     public function test_to_from_array()
     {
         $cnf = Config::getInstance();
-        $test = $cnf->toArray(['rule']);
 
+        /* no $forceList influences array result */
+        $test = $cnf->toArray();
+
+        /* 'item' will not be an array, instead we see children */
+        $this->assertEquals(count($test['sysctl']['item']), 2);
+        /* 'rule' is recurring so $forceList is automatic */
+        $this->assertEquals(count($test['filter']['rule']), 2);
+
+        /* proper way with $forceList set using array_flip() */
+        $test = $cnf->toArray(array_flip(['item', 'rule']));
+
+        /* 'item' will be an array, with one item */
+        $this->assertEquals(count($test['sysctl']['item']), 1);
+        /* 'rule' is forced but same result as above */
+        $this->assertEquals(count($test['filter']['rule']), 2);
+
+        /* manipulate indexes here to mock delte operation */
         $test['filter']['rule'][3] = $test['filter']['rule'][0];
         $test['filter']['rule'][5] = $test['filter']['rule'][1];
         unset($test['filter']['rule'][0]);
