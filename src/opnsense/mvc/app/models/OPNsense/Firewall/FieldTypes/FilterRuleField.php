@@ -29,6 +29,7 @@
 namespace OPNsense\Firewall\FieldTypes;
 
 use OPNsense\Core\Config;
+use OPNsense\Firewall\Util;
 use OPNsense\Firewall\Group;
 use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\FieldTypes\ContainerField;
@@ -86,6 +87,15 @@ class FilterRuleContainerField extends ContainerField
             }
             if (!empty((string)$this->destination_port)) {
                 $result['to_port'] = (string)$this->destination_port;
+            }
+        }
+        if (!$this->overload->isEmpty()) {
+            $alias = Util::aliasUuidToName($this->overload->getValue());
+            if ($alias !== null) {
+                $result['overload'] = $alias;
+            } else {
+                // fall back to default virusprod table
+                unset($result['overload']);
             }
         }
         // field mappings and differences
