@@ -493,9 +493,11 @@
 
         ajaxGet('/api/firewall/d_nat/list_port_select_options', [], function (data) {
             if (!data || !data.single) return;
-            $(".port_selector").each(function () {
-                $(this).replaceInputWithSelector(data, false);
-            });
+            // XXX: There are multiple port fields, but one of them does not support a range, so we replace the label
+            const singlePortOnly = $.extend(true, {}, data);
+            singlePortOnly.single.label = "{{ lang._('Single port') }}";
+            $('#row_rule\\.local-port .port_selector').replaceInputWithSelector(singlePortOnly, false);
+            $('.port_selector').not('#row_rule\\.local-port .port_selector').replaceInputWithSelector(data, false);
         });
 
         $('#category_filter').parent().find('.dropdown-toggle').prepend('<i class="fa fa-tag" style="margin-right: 6px;"></i>');

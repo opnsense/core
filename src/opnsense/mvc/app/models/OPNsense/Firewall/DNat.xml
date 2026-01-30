@@ -68,7 +68,7 @@
             <target type="NetworkAliasField"/>
             <local-port type="PortField">
                 <EnableAlias>Y</EnableAlias>
-                <ValidationMessage>Please specify a valid portnumber, name, alias or range.</ValidationMessage>
+                <ValidationMessage>Please specify a valid portnumber or alias.</ValidationMessage>
             </local-port>
             <!-- -->
             <poolopts type="OptionField">
