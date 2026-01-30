@@ -148,7 +148,7 @@ function get_all_services($name = '', $id = '')
 }
 
 $jflags = JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_INVALID_UTF8_IGNORE;
-$opts = getopt('46cDdfghIimrqSsvXx', [], $optind);
+$opts = getopt('46cDdfghIiMmrqSsvXx', [], $optind);
 $args = array_slice($argv, $optind);
 $ret = 0;
 

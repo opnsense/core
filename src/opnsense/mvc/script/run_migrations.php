@@ -94,6 +94,8 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($model_dir
     }
 }
 
+OPNsense\Core\Syslog::disableLocalEcho();
+
 if ($executed_migration) {
     // make changes persistent
     Config::getInstance()->save();
