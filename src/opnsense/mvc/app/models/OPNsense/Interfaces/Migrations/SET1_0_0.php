@@ -61,7 +61,7 @@ class SET1_0_0 extends BaseModelMigration
                 if (isset($config->system->$key)) {
                     $nodes[$_key] = (string)$config->system->$key;
                 }
-            } elseif ($key == 'dhcp6_debug') {
+            } elseif (in_array($key, ['dhcp6_debug', 'dhcp6_norelease'])) {
                 $nodes[$key] = isset($config->system->$key) ? '1' : '0';
             } elseif (isset($config->system->$key)) {
                 $nodes[$key] = (string)$config->system->$key;
