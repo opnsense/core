@@ -66,7 +66,9 @@
 
         // read interface from URL hash once, for the first grid load
         const hashMatchInterface = window.location.hash.match(/(?:^#|&)interface=([^&]+)/);
-        let pendingUrlInterface = hashMatchInterface ? decodeURIComponent(hashMatchInterface[1]) : null;
+        let pendingUrlInterface = hashMatchInterface
+            ? decodeURIComponent(hashMatchInterface[1])
+            : localStorage.getItem('firewall_rule_interface');
 
         // Lives outside the grid, so the logic of the response handler can be changed after grid initialization
         function dynamicResponseHandler(resp) {
@@ -739,12 +741,14 @@
                 false,
                 function (data) {  // post_callback, apply the URL hash logic
                     const match = window.location.hash.match(/^#interface=([^&]+)/);
-                    if (match) {
-                        const ifaceFromHash = decodeURIComponent(match[1]);
+                    const iface = match
+                        ? decodeURIComponent(match[1])
+                        : localStorage.getItem('firewall_rule_interface');
 
+                    if (iface) {
                         const allOptions = Object.values(data).flatMap(group => group.items.map(i => i.value));
-                        if (allOptions.includes(ifaceFromHash)) {
-                            $('#interface_select').val(ifaceFromHash).selectpicker('refresh');
+                        if (allOptions.includes(iface)) {
+                            $('#interface_select').val(iface).selectpicker('refresh');
                         }
                     }
                     interfaceInitialized = true;
@@ -763,6 +767,7 @@
             if (!interfaceInitialized || reconfigureActInProgress) return;
 
             const hashVal = encodeURIComponent($(this).val() ?? '');
+            localStorage.setItem('firewall_rule_interface', $(this).val() ?? '');
             history.replaceState(null, null, `#interface=${hashVal}`);
             grid.bootgrid('reload');
         });
