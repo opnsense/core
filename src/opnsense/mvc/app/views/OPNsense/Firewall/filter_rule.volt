@@ -550,14 +550,9 @@
                             return "";
                         }
 
-                        // Split into two vertical rows
-                        const firstGroup  = parts.slice(0, 2).join(" ");
-                        const secondGroup = parts.slice(2).join(" ");
-
                         return `
                             <div class="stats-cell">
-                                <div>${firstGroup}</div>
-                                <div>${secondGroup}</div>
+                                ${parts.join("")}
                             </div>
                         `;
                     },
@@ -1045,11 +1040,20 @@
 
     .stats-cell {
         display: flex;
-        flex-direction: column;
+        flex-wrap: wrap;
+        gap: 4px 10px;
+        align-items: center;
+        container-type: inline-size;
     }
 
-    .stats-cell div {
-        gap: 6px;
+    .stats-cell > span {
+        white-space: nowrap;
+    }
+
+    @container (max-width: 160px) {
+        .stats-cell > span {
+            flex: 1 1 50%;
+        }
     }
 
 </style>
