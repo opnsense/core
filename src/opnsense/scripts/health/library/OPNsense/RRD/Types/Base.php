@@ -151,7 +151,7 @@ abstract class Base
             return $this;
         }
 
-        $cmd_frmt = ['/usr/local/bin/rrdtool create %s --step %d'];
+        $cmd_frmt = ['/usr/local/bin/rrdtool create %s --step %s'];
         $cmd_args = [$this->filename, 60];
 
         foreach ($this->datasets as $dataset) {
