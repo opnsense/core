@@ -140,7 +140,7 @@
     </field>
     <field>
         <id>entries.AdvCurHopLimit</id>
-        <label>Hop Limit</label>
+        <label>Hop limit</label>
         <type>text</type>
         <help>Controls the maximum number of hops a packet can traverse before being discarded</help>
         <advanced>true</advanced>

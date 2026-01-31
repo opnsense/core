@@ -130,7 +130,7 @@
             <AdvCurHopLimit type="IntegerField">
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>255</MaximumValue>
-                <ValidationMessage>AdvCurHopLimit must be between 1 and 255 bytes.</ValidationMessage>
+                <ValidationMessage>Hop limit must be between 1 and 255.</ValidationMessage>
             </AdvCurHopLimit>
         </entries>
     </items>
