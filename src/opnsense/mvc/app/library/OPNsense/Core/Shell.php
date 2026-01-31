@@ -49,8 +49,9 @@ class Shell
         }
 
         foreach ($args as $id => $arg) {
-            $args[$id] = is_int($arg) || is_float($arg) ? $arg : escapeshellarg($arg ?? '');
+            $args[$id] = escapeshellarg($arg ?? '');
         }
+
         return vsprintf(implode(' ', $format), $args);
     }
 
