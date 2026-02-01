@@ -408,7 +408,6 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/DhcpController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/agentSettings.xml
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogDdnsDnsServer.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogDdnsForwardDomain.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogDdnsReverseDomain.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogDdnsTsigKey.xml
