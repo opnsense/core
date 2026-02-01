@@ -149,8 +149,16 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
 
         $carp_mode = false;
         $src_addr = false;
+        $ifcfgipv6 = null;
 
-        $ifcfgipv6 = !$entry->AdvRASrcAddress->isEmpty() ? $entry->AdvRASrcAddress->getValue() : get_interface_ipv6($dhcpv6if);
+        if (!$entry->AdvRASrcAddress->isEmpty()) {
+            $ifcfgipv6 = $entry->AdvRASrcAddress->getValue();
+        } elseif (!$entry->Base6Interface->isEmpty()) {
+            $ifcfgipv6 = get_interface_ipv6($entry->Base6Interface->getValue());
+        } else {
+            $ifcfgipv6 = get_interface_ipv6($dhcpv6if);
+        }
+
         if (!is_ipaddrv6($ifcfgipv6)) {
             $radvdconf .= "# Skipping addressless interface {$dhcpv6if}\n";
             continue;
