@@ -172,6 +172,9 @@ if __name__ == '__main__':
                 args.append(settings['packetsize'])
             if settings.get('disable_frag', '0') == '1':
                 args.append('-D')
+            if settings.get('interval', '') != '':
+                args.append('-i')
+                args.append(settings['interval'])
             args.append(settings.get('hostname', ''))
             if os.path.isfile(log_target):
                 os.remove(log_target)
