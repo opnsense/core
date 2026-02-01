@@ -149,7 +149,6 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
 
         $carp_mode = false;
         $src_addr = false;
-
         $ifcfgipv6 = null;
 
         if (!$entry->AdvRASrcAddress->isEmpty()) {
