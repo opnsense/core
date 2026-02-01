@@ -102,10 +102,6 @@ class DhcpController extends \OPNsense\Base\IndexController
         $this->view->formDialogReverseDomain = $this->getForm("dialogDdnsReverseDomain");
         $this->view->formGridReverseDomain = $this->getFormGrid("dialogDdnsReverseDomain");
 
-        // Shared DNS servers
-        $this->view->formDialogDnsServer = $this->getForm("dialogDdnsDnsServer");
-        $this->view->formGridDnsServer = $this->getFormGrid("dialogDdnsDnsServer");
-
         // TSIG keys
         $this->view->formDialogTsigKey = $this->getForm("dialogDdnsTsigKey");
         $this->view->formGridTsigKey = $this->getFormGrid("dialogDdnsTsigKey");
